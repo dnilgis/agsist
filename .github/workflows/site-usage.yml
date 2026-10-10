@@ -1,0 +1,63 @@
+name: Site usage (GA4 + Search Console, 90 days)
+
+# Per-page usage for the site audit: GA4 page views, users, engagement and
+# entrances, and Search Console clicks, impressions, CTR, position and top
+# queries, all for the last 90 days. Writes data/site-usage.json (aggregate
+# only) and commits it. Each source fails on its own: a missing secret or an
+# API error sets that block to null with a reason. If both fail, the file is
+# left as it was. Secrets are the same ones sponsor-report.yml and
+# gsc-sitemaps.yml already use.
+#
+# Monthly, 2nd of the month 14:37 UTC, off the hour. Run it by hand from the
+# Actions tab any time.
+
+on:
+  schedule:
+    - cron: '37 14 2 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: site-usage
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install google-auth (pinned)
+        run: pip install --disable-pip-version-check 'google-auth==2.40.3' 'requests==2.32.3'
+
+      - name: Selftest (offline, fake transports)
+        run: python3 scripts/site_usage_report.py --selftest
+
+      - name: Pull usage
+        env:
+          GA4_PROPERTY_ID:          ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT:      ${{ secrets.GA4_SERVICE_ACCOUNT }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE:                 ${{ vars.GSC_SITE }}
+        run: python3 scripts/site_usage_report.py
+
+      - name: Commit
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "bot@agsist.com"
+          git add data/site-usage.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no change"
+            exit 0
+          fi
+          git commit -m "site usage: 90 days through $(date -u -d yesterday +%Y-%m-%d) [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase --autostash && sleep 3
+          done

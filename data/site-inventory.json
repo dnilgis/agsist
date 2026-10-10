@@ -1,0 +1,3655 @@
+{
+ "schema": "agsist-site-inventory/1",
+ "generated": "2026-10-10T03:06:40+00:00",
+ "pathRule": "query, fragment, .html, trailing slash and /index removed",
+ "gitShallowBoundary": "2026-09-25",
+ "summary": {
+  "publishedPages": 11048,
+  "individualPages": 76,
+  "generatedSets": 18,
+  "generatedPages": 10972,
+  "fragmentsSkipped": [
+   "components/analytics.html",
+   "components/footer-fallback.html",
+   "components/footer.html",
+   "components/header-fallback.html",
+   "components/header.html",
+   "components/page-template.html",
+   "components/seo-template.html"
+  ],
+  "redirectStubs": 5,
+  "redirectStubPaths": [
+   "/basis-map",
+   "/cashbids",
+   "/cookies",
+   "/disclaimer",
+   "/fastfacts"
+  ],
+  "canonicalElsewhere": 2779,
+  "noindex": 2988,
+  "orphansZeroInbound": 5,
+  "orphansZeroInboundNotInNav": 5,
+  "zeroContextualInbound": 6,
+  "zeroContextualInboundNotInNav": 5,
+  "zeroContextualIndividualPaths": [
+   "/404",
+   "/accessibility",
+   "/embed/arc-plc",
+   "/embed/gdu",
+   "/offline",
+   "/sponsor-report"
+  ],
+  "orphanIndividualPaths": [
+   "/404",
+   "/embed/arc-plc",
+   "/embed/gdu",
+   "/offline",
+   "/sponsor-report"
+  ],
+  "notInSitemap": 2983,
+  "notInNav": 10984,
+  "notInNavOrSitemap": 2983,
+  "notInNavOrSitemapIndividual": [
+   "/404",
+   "/embed/arc-plc",
+   "/embed/gdu",
+   "/farmland-atlas/sheet",
+   "/offline",
+   "/sponsor-report"
+  ],
+  "indexableNotInSitemap": 0,
+  "sitemapUrlsWithNoPage": [],
+  "navLinksWithNoPage": [],
+  "duplicateTitleGroups": 0,
+  "pagesWithDuplicateTitle": 0,
+  "duplicateTitlesIndividual": {},
+  "missingTitle": 0,
+  "missingH1": 2,
+  "missingDescription": 2776,
+  "note": "orphan, sitemap and nav counts exclude redirect stubs; inbound counts static <a href> only; inboundContextual leaves out links inside <nav>, <header> and <footer>, which many pages bake in"
+ },
+ "pages": [
+  {
+   "path": "/",
+   "file": "index.html",
+   "title": "Corn, Soybean & Wheat Prices & Cash Grain Bids Today | AGSIST",
+   "h1": "Corn, Soybean & Wheat Prices, Farm Weather & Cash Bids",
+   "description": "Live corn, soybean and wheat futures, cash grain bids near you, farm weather, spray and urea risk, and USDA reports. Free, updated every 15 minutes.",
+   "words": 1785,
+   "inbound": 8218,
+   "inboundContextual": 11,
+   "inboundFrom": [
+    "/404",
+    "/changelog",
+    "/cot",
+    "/daily",
+    "/fast-facts"
+   ],
+   "dataFiles": [
+    "data/*",
+    "data/basis-sparklines/*",
+    "data/basis/*",
+    "data/bids-prev/*",
+    "data/bids.json",
+    "data/cards.json",
+    "data/cot.json",
+    "data/crop-progress.json",
+    "data/daily.json",
+    "data/elevator-contacts/*",
+    "data/elevator-coverage-counts.json",
+    "data/elevator-coverage.json",
+    "data/export-sales.json",
+    "data/fertilizer.json",
+    "data/hail/recent.json",
+    "data/harvest-prices.json",
+    "data/markets.json",
+    "data/merged-index.json",
+    "data/merged/...json",
+    "data/news.json",
+    "data/outlooks/manifest.json",
+    "data/page-sponsors.json",
+    "data/predictions.json",
+    "data/price-stats.json",
+    "data/prices.json",
+    "data/quote-pool.json",
+    "data/rma-planting-dates.json",
+    "data/rma-prices.json",
+    "data/sponsor.json",
+    "data/supporters.json",
+    "data/tariffs.json",
+    "data/transport/basis.json",
+    "data/wasde.json",
+    "data/wpi-history.json",
+    "data/yield-nowcast.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/404",
+   "file": "404.html",
+   "title": "Page Not Found | AGSIST",
+   "h1": "This field's not planted yet",
+   "description": "The page you're looking for may have moved or been renamed. Head back to the AGSIST agricultural dashboard for live grain prices, weather, and farm tools.",
+   "words": 50,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": null,
+   "canonicalElsewhere": false,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/about",
+   "file": "about.html",
+   "title": "About AGSIST: Built by Sigurd Lindquist",
+   "h1": "About AGSIST",
+   "description": "AGSIST is an ag data dashboard built solo by Certified Crop Adviser Sigurd Lindquist for working US producers.",
+   "words": 580,
+   "inbound": 4511,
+   "inboundContextual": 2851,
+   "inboundFrom": [
+    "/arc-plc",
+    "/arc-plc/alabama",
+    "/arc-plc/alabama/autauga-county",
+    "/arc-plc/alabama/baldwin-county",
+    "/arc-plc/alabama/barbour-county"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/about",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/accessibility",
+   "file": "accessibility.html",
+   "title": "Accessibility Statement | AGSIST",
+   "h1": "Accessibility Statement",
+   "description": "Accessibility Statement for AGSIST. Built with keyboard navigation, skip links, sufficient color contrast, and WCAG 2.1 AA as the target.",
+   "words": 375,
+   "inbound": 4511,
+   "inboundContextual": 0,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/about",
+    "/ag-odds",
+    "/arc-plc"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/accessibility",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/ag-odds",
+   "file": "ag-odds.html",
+   "title": "Ag Prediction Markets for Farmers: Daily Odds Board | AGSIST",
+   "h1": "Ag prediction markets",
+   "description": "Real-money prediction-market odds from Polymarket, screened once a day for farm impact, with what each contract means for your costs. Free.",
+   "words": 2163,
+   "inbound": 4511,
+   "inboundContextual": 6,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/fertilizer",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/daily.json",
+    "data/markets.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/ag-odds",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/arc-plc",
+   "file": "arc-plc.html",
+   "title": "ARC vs PLC 2026 and 2027 Calculator | AGSIST",
+   "h1": "ARC or PLC for 2026 and 2027: decision calculator",
+   "description": "Est. 2027 effective reference prices: corn $4.34, soybeans $10.62, wheat $6.35. FSA official county benchmarks. 2026 signup ends Dec 11.",
+   "words": 4357,
+   "inbound": 4516,
+   "inboundContextual": 2849,
+   "inboundFrom": [
+    "/",
+    "/arc-plc/alabama",
+    "/arc-plc/alabama/autauga-county",
+    "/arc-plc/alabama/baldwin-county",
+    "/arc-plc/alabama/barbour-county"
+   ],
+   "dataFiles": [
+    "data/arc-plc.json",
+    "data/arc-plc/nav.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/arc-plc",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/archive",
+   "file": "archive.html",
+   "title": "Daily Briefing Archive | AGSIST",
+   "h1": "Briefing Archive",
+   "description": "Archive of AGSIST Daily Ag Briefings. Browse past corn, soybean, and wheat market morning reports by date.",
+   "words": 2467,
+   "inbound": 4721,
+   "inboundContextual": 1,
+   "inboundFrom": [
+    "/daily"
+   ],
+   "dataFiles": [
+    "data/daily-archive/index.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/archive",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/basis",
+   "file": "basis.html",
+   "title": "Corn Basis vs Normal: Weak in 8 of 10 USDA Regions | AGSIST",
+   "h1": "Corn and soybean basis vs normal, and the freight behind it",
+   "description": "Week of Oct 2, 2026: corn basis is over 10¢ under its 5-year normal in 8 of 10 regions. Weakest: Kansas -$1.60 vs +$0.08. Barge rates that move it.",
+   "words": 629,
+   "inbound": 4559,
+   "inboundContextual": 82,
+   "inboundFrom": [
+    "/basis/arkansas",
+    "/basis/colorado",
+    "/basis/florida",
+    "/basis/georgia",
+    "/basis/idaho"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/transport/basis.json",
+    "data/transport/journey.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/basis",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/basis-map",
+   "file": "basis-map.html",
+   "title": "National Basis: moved | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 12,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": true,
+   "redirect": {
+    "type": "meta-refresh",
+    "to": "/cash-bids-national"
+   },
+   "canonical": "https://agsist.com/cash-bids-national",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/breakeven",
+   "file": "breakeven.html",
+   "title": "Break-Even Price Calculator: Corn, Soybeans, Wheat | AGSIST",
+   "h1": "Break-even price calculator",
+   "description": "Corn is near $4.80. Enter your cost per acre and your yield to get your break-even price per bushel, and the yield where the board stops covering them.",
+   "words": 491,
+   "inbound": 4559,
+   "inboundContextual": 21,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/arc-plc",
+    "/cattle-futures-prices",
+    "/changelog"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/breakeven",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cash-bids",
+   "file": "cash-bids.html",
+   "title": "Local Cash Grain Bids Today: Elevator Prices Near You | AGSIST",
+   "h1": "Cash bids near you",
+   "description": "Find local cash grain bids by ZIP: corn, soybean and wheat elevator prices, basis, and the Worth the Drive net-revenue tool.",
+   "words": 890,
+   "inbound": 4716,
+   "inboundContextual": 1747,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/about",
+    "/ag-odds",
+    "/basis"
+   ],
+   "dataFiles": [
+    "data/*",
+    "data/basis/*",
+    "data/bids-prev/*",
+    "data/bids.json",
+    "data/daily.json",
+    "data/markets.json",
+    "data/merged-index.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json",
+    "data/zips/*"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cash-bids",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-10",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cash-bids-national",
+   "file": "cash-bids-national.html",
+   "title": "National Grain Basis by State Today | AGSIST",
+   "h1": "Where basis is strongest nationally",
+   "description": "Corn, soybean and wheat basis ranked by state, cash minus futures, from the latest AGSIST bid pull. The strongest and weakest locations in the country.",
+   "words": 54,
+   "inbound": 2,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/basis-map",
+    "/cash-bids"
+   ],
+   "dataFiles": [
+    "data/basis-map.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cash-bids-national",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cash-lease",
+   "file": "cash-lease.html",
+   "title": "Farm Cash Lease: Free Fillable & Printable Form | AGSIST",
+   "h1": "A farm lease you can actually read",
+   "description": "Free fillable, printable cash farm lease with state termination deadlines, plus every lease type explained in plain English.",
+   "words": 1409,
+   "inbound": 4559,
+   "inboundContextual": 51,
+   "inboundFrom": [
+    "/cash-rent",
+    "/changelog",
+    "/land-tenure",
+    "/rent/alabama",
+    "/rent/arizona"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cash-lease",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cash-rent",
+   "file": "cash-rent.html",
+   "title": "Cash Rent Map: Rent vs Crop Revenue by County | AGSIST",
+   "h1": "Cash rent map: county rent against what the acre can gross",
+   "description": "USDA county cash rent mapped for every published county, with history and rent as a share of what the acre can really gross. Free, sources shown.",
+   "words": 1678,
+   "inbound": 2099,
+   "inboundContextual": 2096,
+   "inboundFrom": [
+    "/basis",
+    "/breakeven",
+    "/cash-lease",
+    "/changelog",
+    "/farmland-atlas"
+   ],
+   "dataFiles": [
+    "data/counties-index.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cash-rent",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cashbids",
+   "file": "cashbids.html",
+   "title": "Cash Grain Bids Near Me | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 5,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": true,
+   "redirect": {
+    "type": "meta-refresh",
+    "to": "https://agsist.com/cash-bids"
+   },
+   "canonical": "https://agsist.com/cash-bids",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-08",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cattle-futures-prices",
+   "file": "cattle-futures-prices.html",
+   "title": "CME Feeder Cattle Futures $343.90 & Live Cattle $224.60 | AGSIST",
+   "h1": "Live & Feeder Cattle Futures Prices Today",
+   "description": "Feeder cattle closed $343.90, live cattle Oct '26 $224.60. CME futures every 15 min, with 5-year ranges, the feeder-to-live ratio and cost of gain.",
+   "words": 1000,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/",
+    "/corn-futures-prices",
+    "/markets",
+    "/soybean-futures-prices",
+    "/wheat-futures-prices"
+   ],
+   "dataFiles": [
+    "data/cot.json",
+    "data/daily.json",
+    "data/markets.json",
+    "data/page-sponsors.json",
+    "data/price-stats.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cattle-futures-prices",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/changelog",
+   "file": "changelog.html",
+   "title": "What’s New on AGSIST: Site Updates & Changelog | AGSIST",
+   "h1": "What’s New on AGSIST",
+   "description": "Every meaningful change to AGSIST's free farm tools and data, dated and in plain language: new pages, improvements, and the fixes, kept on the record.",
+   "words": 14749,
+   "inbound": 1,
+   "inboundContextual": 1,
+   "inboundFrom": [
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/changelog",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/conditions",
+   "file": "conditions.html",
+   "title": "USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST",
+   "h1": "Crop conditions ranked against every year since 2000",
+   "description": "US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000: a percentile, not a feel.",
+   "words": 772,
+   "inbound": 4559,
+   "inboundContextual": 6,
+   "inboundFrom": [
+    "/about",
+    "/changelog",
+    "/conditions-yield",
+    "/crop-tour",
+    "/news"
+   ],
+   "dataFiles": [
+    "data/conditions/conditions.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/conditions",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/conditions-yield",
+   "file": "conditions-yield.html",
+   "title": "Do Crop Ratings Predict Yield? The Real R² | AGSIST",
+   "h1": "Do crop ratings actually predict yield?",
+   "description": "Iowa corn: Good+Excellent in its best week (week 39) explains 64% of yield deviation (26 years, in-sample R²). Every state and week shown.",
+   "words": 1283,
+   "inbound": 4511,
+   "inboundContextual": 6,
+   "inboundFrom": [
+    "/",
+    "/about",
+    "/changelog",
+    "/crop-tour",
+    "/farmland-atlas"
+   ],
+   "dataFiles": [
+    "data/cond-yield/fit.json",
+    "data/nowcast-direction.json",
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/yield-nowcast.json",
+    "data/yield-panel.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/conditions-yield",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/contact",
+   "file": "contact.html",
+   "title": "Contact AGSIST: Sigurd Lindquist, CCA",
+   "h1": "Contact",
+   "description": "Contact Sigurd Lindquist, creator of AGSIST and a Certified Crop Adviser. Sponsorship, data questions, or site feedback.",
+   "words": 165,
+   "inbound": 4511,
+   "inboundContextual": 4,
+   "inboundFrom": [
+    "/about",
+    "/accessibility",
+    "/data-sources",
+    "/developer"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/contact",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cookies",
+   "file": "cookies.html",
+   "title": "Cookie Policy: see Privacy | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 52,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": true,
+   "redirect": {
+    "type": "meta-refresh",
+    "to": "/privacy#cookies"
+   },
+   "canonical": "https://agsist.com/privacy",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/corn-futures-prices",
+   "file": "corn-futures-prices.html",
+   "title": "CBOT Corn Futures: Dec '26 $4.80, Live Prices | AGSIST",
+   "h1": "Corn Futures Prices Today",
+   "description": "Corn Dec '26 closed $4.80 (-3.9%) on Oct 9. Live CBOT corn futures refreshed every 30 min in session. December new-crop, RP floor, basis-to-cash, daily read.",
+   "words": 1644,
+   "inbound": 4511,
+   "inboundContextual": 10,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/cattle-futures-prices",
+    "/changelog",
+    "/crop-tour"
+   ],
+   "dataFiles": [
+    "data/*",
+    "data/bids.json",
+    "data/cot.json",
+    "data/crop-progress.json",
+    "data/daily.json",
+    "data/harvest-prices.json",
+    "data/markets.json",
+    "data/merged-index.json",
+    "data/page-sponsors.json",
+    "data/price-stats.json",
+    "data/prices.json",
+    "data/supporters.json",
+    "data/whats-priced-in.json",
+    "data/zips/*"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/corn-futures-prices",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/cot",
+   "file": "cot.html",
+   "title": "Managed Money Is Net Long Corn 330k: CFTC COT | AGSIST",
+   "h1": "CFTC Commitment of Traders",
+   "description": "Managed money is net long 329,839 corn contracts as of October 06, 2026. Funds cut 51,381 contracts week over week. Weekly CFTC ag positioning, 11 commodities.",
+   "words": 1212,
+   "inbound": 4559,
+   "inboundContextual": 9,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/corn-futures-prices",
+    "/data-sources",
+    "/fertilizer"
+   ],
+   "dataFiles": [
+    "data/cot-analysis.json",
+    "data/cot-history.json",
+    "data/cot-history.json*",
+    "data/cot.json",
+    "data/cot.json*",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/cot",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/crop-tour",
+   "file": "crop-tour.html",
+   "title": "Pro Farmer Crop Tour 2026: Corn 173.2 bu/ac | AGSIST",
+   "h1": "Pro Farmer Crop Tour 2026",
+   "description": "Pro Farmer's 2026 national corn estimate is 173.2 bu/ac. Set against USDA's number and ours, with how close the tour has actually been since 2015.",
+   "words": 2155,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/pod-counts",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/crop-tour",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/daily",
+   "file": "daily.html",
+   "title": "Daily Ag Briefing: Market Morning Report | AGSIST",
+   "h1": "Daily Ag Briefing",
+   "description": "The AGSIST Daily Briefing: corn, soybeans, wheat, cattle & energy, read before the open: graded calls, watch list, and the number that matters.",
+   "words": 264,
+   "inbound": 4769,
+   "inboundContextual": 223,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/ag-odds",
+    "/archive",
+    "/cattle-futures-prices"
+   ],
+   "dataFiles": [
+    "data/daily-archive/index.json",
+    "data/daily.json",
+    "data/page-sponsors.json",
+    "data/quote-pool.json",
+    "data/rma-prices.json",
+    "data/sponsor.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/daily",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/data-sources",
+   "file": "data-sources.html",
+   "title": "Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST",
+   "h1": "Data Sources",
+   "description": "Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, our elevator network plus a licensed feed for cash bids, Polymarket.",
+   "words": 643,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/developer",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/data-sources",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/developer",
+   "file": "developer.html",
+   "title": "Developer Docs: AGSIST Widget Embeds & Data Feeds",
+   "h1": "Developer Docs",
+   "description": "Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds. No account needed.",
+   "words": 766,
+   "inbound": 2,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/404",
+    "/terms"
+   ],
+   "dataFiles": [
+    "data/daily.json",
+    "data/markets.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/developer",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/disclaimer",
+   "file": "disclaimer.html",
+   "title": "Disclaimer: see Terms | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 12,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": true,
+   "redirect": {
+    "type": "meta-refresh",
+    "to": "/terms"
+   },
+   "canonical": "https://agsist.com/terms",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/drought-monitor",
+   "file": "drought-monitor.html",
+   "title": "US Drought Monitor: Weekly Map & Ag Impact | AGSIST",
+   "h1": "US Drought Monitor",
+   "description": "This week's US Drought Monitor map (national, Corn Belt, Plains and state views) with what each drought category means for crops. Free.",
+   "words": 846,
+   "inbound": 4559,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/changelog",
+    "/conditions",
+    "/farmland-atlas",
+    "/tools",
+    "/wheat-futures-prices"
+   ],
+   "dataFiles": [
+    "data/outlooks/manifest.json",
+    "data/page-sponsors.json",
+    "data/png/current/current_usdm_*",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/drought-monitor",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/elevators",
+   "file": "elevators.html",
+   "title": "Grain Elevator Coverage Map | AGSIST",
+   "h1": "Grain Elevator Coverage Map",
+   "description": "Live cash grain bids from elevators and co-ops nationwide. Enter your ZIP to find corn, soybean, and wheat prices near you. No account needed.",
+   "words": 1159,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/markets",
+    "/privacy",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/elevator-coverage.json",
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/us-states.geo.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/elevators",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/embed",
+   "file": "embed.html",
+   "title": "Embed AGSIST Tools: Free Ag Widgets for Your Site | AGSIST",
+   "h1": "Put AGSIST tools on your site",
+   "description": "Put the AGSIST GDU calculator on your own site. Free embed, no key, copy-paste setup. More widgets are on the way.",
+   "words": 450,
+   "inbound": 2,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/arc-plc",
+    "/developer"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/embed",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/embed/arc-plc",
+   "file": "embed/arc-plc.html",
+   "title": "ARC or PLC | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 257,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [
+    "data/arc-plc.json",
+    "data/prices.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/arc-plc",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/embed/gdu",
+   "file": "embed/gdu.html",
+   "title": "GDU Calculator Widget | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 45,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/gdu-calculator",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farm-bill",
+   "file": "farm-bill.html",
+   "title": "2026 Farm Bill: Status, House vs Senate & the Money | AGSIST",
+   "h1": "The 2026 Farm Bill",
+   "description": "The 2026 Farm Bill in plain English: where it stands after the Sep 30 extension lapsed, House vs Senate, and what stopped on Oct 1. Free, sources shown.",
+   "words": 4791,
+   "inbound": 4511,
+   "inboundContextual": 4,
+   "inboundFrom": [
+    "/arc-plc",
+    "/changelog",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farm-bill",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farmland-atlas",
+   "file": "farmland-atlas.html",
+   "title": "Farmland Atlas: Land Value, Rent & Risk by County | AGSIST",
+   "h1": "Farmland Atlas: land value, rent and risk by county",
+   "description": "Every U.S. county on one map: 2022 land value, cash rent, July night heat, water, crop insurance losses since 1989, drought, CRP and who farms it. Free, sourced.",
+   "words": 2172,
+   "inbound": 7762,
+   "inboundContextual": 3208,
+   "inboundFrom": [
+    "/",
+    "/drought-monitor",
+    "/farmland-atlas/alabama",
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county"
+   ],
+   "dataFiles": [
+    "data/afida/county.json",
+    "data/afida/national.json",
+    "data/atlas/atlas.json",
+    "data/atlas/more.json",
+    "data/cash-rent/national.json",
+    "data/counties-index.json",
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/tenure/tenure.json",
+    "data/us-states.geo.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farmland-atlas",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farmland-atlas/compare",
+   "file": "farmland-atlas/compare.html",
+   "title": "Compare Counties: Farmland Rent, Value, Yield and Risk Side by Side",
+   "h1": "Compare counties",
+   "description": "Put up to three U.S. counties side by side: cash rent, land value, corn yield, crop insurance record and drought. Every figure sourced, nothing scored.",
+   "words": 154,
+   "inbound": 3151,
+   "inboundContextual": 3151,
+   "inboundFrom": [
+    "/changelog",
+    "/farmland-atlas",
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county",
+    "/farmland-atlas/alabama/barbour-county"
+   ],
+   "dataFiles": [
+    "data/counties-index.json",
+    "data/counties.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farmland-atlas/compare",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farmland-atlas/data",
+   "file": "farmland-atlas/data.html",
+   "title": "Farmland Atlas Data: County CSV and How to Cite | AGSIST",
+   "h1": "County data and how to cite it",
+   "description": "One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.",
+   "words": 1181,
+   "inbound": 3152,
+   "inboundContextual": 3152,
+   "inboundFrom": [
+    "/changelog",
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county",
+    "/farmland-atlas/alabama/barbour-county",
+    "/farmland-atlas/alabama/bibb-county"
+   ],
+   "dataFiles": [
+    "data/atlas/atlas.json",
+    "data/counties.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farmland-atlas/data",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farmland-atlas/methods",
+   "file": "farmland-atlas/methods.html",
+   "title": "Farmland Atlas Methods: Sources and Formulas | AGSIST",
+   "h1": "How the Farmland Atlas is measured",
+   "description": "How every Farmland Atlas figure is measured: the federal and state files, the formulas, the gates, and what is withheld and why.",
+   "words": 4454,
+   "inbound": 3150,
+   "inboundContextual": 3150,
+   "inboundFrom": [
+    "/farmland-atlas",
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county",
+    "/farmland-atlas/alabama/barbour-county",
+    "/farmland-atlas/alabama/bibb-county"
+   ],
+   "dataFiles": [
+    "data/atlas/atlas.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farmland-atlas/methods",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/farmland-atlas/sheet",
+   "file": "farmland-atlas/sheet.html",
+   "title": "County Farmland Sheet: Rent, Value and Risk | AGSIST",
+   "h1": "'+esc(cname(d))+', '+esc(stateName)+'",
+   "description": "A one-page printable sheet for any US county: cash rent against the neighbours, land value, corn yield, the crop insurance record, drought, night heat and water, from public records.",
+   "words": 0,
+   "inbound": 3149,
+   "inboundContextual": 3149,
+   "inboundFrom": [
+    "/farmland-atlas",
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county",
+    "/farmland-atlas/alabama/barbour-county",
+    "/farmland-atlas/alabama/bibb-county"
+   ],
+   "dataFiles": [
+    "data/tenure/tenure.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/farmland-atlas/sheet",
+   "canonicalElsewhere": false,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/fast-facts",
+   "file": "fast-facts.html",
+   "title": "Corn & Soybean Reference Tables: N Rates, P&K, GDU | AGSIST",
+   "h1": "Corn & Soybean Reference Tables",
+   "description": "The on-farm reference: corn N rates, P&K by soil test, crop staging, pest thresholds, herbicide MOA, manure value, GDU, pH, and state stats.",
+   "words": 3627,
+   "inbound": 4512,
+   "inboundContextual": 13,
+   "inboundFrom": [
+    "/404",
+    "/ag-odds",
+    "/changelog",
+    "/corn-futures-prices",
+    "/fastfacts"
+   ],
+   "dataFiles": [
+    "data/fertilizer.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/state-stats.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/fast-facts",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/fastfacts",
+   "file": "fastfacts.html",
+   "title": "Agricultural Fast Facts | AGSIST",
+   "h1": null,
+   "description": null,
+   "words": 5,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": true,
+   "redirect": {
+    "type": "meta-refresh",
+    "to": "https://agsist.com/fast-facts"
+   },
+   "canonical": "https://agsist.com/fast-facts",
+   "canonicalElsewhere": true,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-08",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/fertilizer",
+   "file": "fertilizer.html",
+   "title": "Fertilizer Prices: Urea $590/ton, MAP $930, Potash $460 | AGSIST",
+   "h1": "Fertilizer Prices",
+   "description": "Midwest dealer quotes as of Sep 1, 2026: urea $590/ton ($695 on Jul 20), MAP $930, potash $460, AMS $460. Cost per lb of N, P and K.",
+   "words": 827,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/changelog",
+    "/fast-facts",
+    "/spray",
+    "/tools",
+    "/urea"
+   ],
+   "dataFiles": [
+    "data/daily.json",
+    "data/fertilizer.json",
+    "data/markets.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/fertilizer",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/field-scout",
+   "file": "field-scout.html",
+   "title": "Field Scout: Draw a Field, See Its Soil, Crops & Weather | AGSIST",
+   "h1": "Read any field in the country",
+   "description": "Draw any US field and see its soil types, 10-year crop rotation, weather, drought, and nearby cash grain bids. Free, no login.",
+   "words": 1743,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/changelog",
+    "/data-sources",
+    "/farmland-atlas",
+    "/hail-map",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/afida/county.json",
+    "data/atlas/counties.geo.json",
+    "data/atlas/counties/*",
+    "data/cash-rent/*",
+    "data/cond-yield/fit.json",
+    "data/conditions/conditions.json",
+    "data/hail/events-*",
+    "data/hail/events-YYYY.json",
+    "data/hail/mesh/*",
+    "data/hail/mesh/index.json",
+    "data/page-sponsors.json",
+    "data/storage/storage.json",
+    "data/supporters.json",
+    "data/tenure/tenure.json",
+    "data/transport/basis.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/field-scout",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/foreign-land",
+   "file": "foreign-land.html",
+   "title": "Foreign-Owned Farmland by County: 47M US Acres | AGSIST",
+   "h1": "Who owns American farmland from abroad",
+   "description": "Who owns 46.3 million acres of U.S. farmland from abroad? USDA AFIDA data mapped county by county, 2010-2024. Canada leads, nearly half is forest. Free.",
+   "words": 738,
+   "inbound": 4560,
+   "inboundContextual": 4,
+   "inboundFrom": [
+    "/farmland-atlas",
+    "/farmland-atlas/methods",
+    "/land-tenure",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/afida/county.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/foreign-land",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/gdu-calculator",
+   "file": "gdu-calculator.html",
+   "title": "GDU Calculator: Corn & Soybean Degree Units | AGSIST",
+   "h1": "GDU Calculator",
+   "description": "Free GDU calculator using real weather from your planting date. Track corn and soybean crop stage, project black layer, and monitor frost risk.",
+   "words": 1330,
+   "inbound": 4512,
+   "inboundContextual": 7,
+   "inboundFrom": [
+    "/developer",
+    "/embed/gdu",
+    "/fast-facts",
+    "/planting-date",
+    "/spray"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/gdu-calculator",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/grain-bin-calculator",
+   "file": "grain-bin-calculator.html",
+   "title": "Grain Bin Calculator: Bushels & Moisture Shrink | AGSIST",
+   "h1": "Grain bin calculator",
+   "description": "Free grain bin calculator: diameter and height to instant bushel capacity, moisture shrink, and net value. Peaked, level, draw-cone, and hopper bins.",
+   "words": 807,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/storage-crunch",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/grain-bin-calculator",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/hail",
+   "file": "hail/index.html",
+   "title": "US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST",
+   "h1": "US Hail Storm Log",
+   "description": "A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm, no charge, no login.",
+   "words": 1674,
+   "inbound": 244,
+   "inboundContextual": 1,
+   "inboundFrom": [
+    "/hail-map"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/hail/",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/hail-map",
+   "file": "hail-map.html",
+   "title": "Live Hail Map: US Swaths, Warnings & History | AGSIST",
+   "h1": "National Hail Map: did it hail at your place?",
+   "description": "Did it hail at your address? Live NWS hail warnings, daily radar swaths, 5 years of dated reports and 70 years of history for any US spot. Free alerts, no login.",
+   "words": 2161,
+   "inbound": 4854,
+   "inboundContextual": 300,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/data-sources",
+    "/farmland-atlas",
+    "/hail"
+   ],
+   "dataFiles": [
+    "data/hail/ncei/index.json",
+    "data/hail/ncei/tiles/*",
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/us-states.geo.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/hail-map",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/harvest-price-tracker",
+   "file": "harvest-price-tracker.html",
+   "title": "2026 Harvest vs Projected Price: Crop Insurance | AGSIST",
+   "h1": "When does your price get set?",
+   "description": "The 2026 RMA projected and harvest prices for corn and soybeans: the numbers behind Revenue Protection guarantees, plus 15 years of history.",
+   "words": 1582,
+   "inbound": 4512,
+   "inboundContextual": 6,
+   "inboundFrom": [
+    "/",
+    "/about",
+    "/arc-plc",
+    "/changelog",
+    "/presell-calculator"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/rma-prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/harvest-price-tracker",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-10",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/land-tenure",
+   "file": "land-tenure.html",
+   "title": "Who Owns the Ground? Rented vs Owned Land by County | AGSIST",
+   "h1": "Who owns the ground?",
+   "description": "39% of U.S. farmland is rented from someone else. County-by-county map of owned vs rented ground, 1997-2022 census history. Free, sources shown.",
+   "words": 994,
+   "inbound": 4512,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/farmland-atlas",
+    "/farmland-atlas/methods",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/tenure/tenure.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/land-tenure",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/markets",
+   "file": "markets.html",
+   "title": "Ag Markets Oct 9: Corn $4.80, Soybeans $12.92, Wheat $6.71 | AGSIST",
+   "h1": "Commodity Prices Today",
+   "description": "Last quotes Oct 9, 2026: Corn Dec '26 $4.80, soybeans Nov '26 $12.92, wheat Dec '26 $6.71, live cattle Oct '26 $224.60, crude $91.69.",
+   "words": 866,
+   "inbound": 4559,
+   "inboundContextual": 8,
+   "inboundFrom": [
+    "/ag-odds",
+    "/changelog",
+    "/drought-monitor",
+    "/news",
+    "/tariffs"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/markets",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/milk-prices",
+   "file": "milk-prices.html",
+   "title": "How US Milk Is Priced: The Milk Check, Explained | AGSIST",
+   "h1": "How US milk is priced",
+   "description": "Class III and IV milk prices, wholesale cheese, butter, and the component formula that builds your milk check, explained for dairy producers. Free, no login.",
+   "words": 4077,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/dairy-data.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/milk-prices",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/news",
+   "file": "news.html",
+   "title": "Ag Market Wire: What Just Moved | AGSIST",
+   "h1": "What just moved",
+   "description": "Dated grain and livestock market events the moment they are measurable: USDA surprises, positioning extremes, 52-week highs and lows, crop rating swings. Free.",
+   "words": 408,
+   "inbound": 4511,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/",
+    "/changelog"
+   ],
+   "dataFiles": [
+    "data/news.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/news",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/offline",
+   "file": "offline.html",
+   "title": "Offline | AGSIST",
+   "h1": "No signal",
+   "description": null,
+   "words": 57,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": null,
+   "canonicalElsewhere": false,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/planting-date",
+   "file": "planting-date.html",
+   "title": "Planting Date Calculator: Corn & Soybean Windows | AGSIST",
+   "h1": "Planting Date Calculator",
+   "description": "Free corn and soybean planting date tool for US growers: live soil temps at your location, last-frost odds, yield penalty by week, GDU projection.",
+   "words": 795,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/gdu-calculator",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/rma-planting-dates.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/planting-date",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/pod-counts",
+   "file": "pod-counts.html",
+   "title": "Do Pod Counts Predict Soybean Yield? We Measured It | AGSIST",
+   "h1": "Do pod counts predict soybean yield?",
+   "description": "Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.",
+   "words": 1252,
+   "inbound": 4511,
+   "inboundContextual": 1,
+   "inboundFrom": [
+    "/crop-tour"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/pod-counts",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/presell-calculator",
+   "file": "presell-calculator.html",
+   "title": "Insurance-Backed Pre-Sell Calculator | AGSIST",
+   "h1": "How much of your crop can you safely pre-sell?",
+   "description": "See how many bushels your crop-insurance revenue guarantee lets you forward-price with a floor underneath: corn, soybean & wheat.",
+   "words": 570,
+   "inbound": 4511,
+   "inboundContextual": 7,
+   "inboundFrom": [
+    "/about",
+    "/arc-plc",
+    "/changelog",
+    "/farm-bill",
+    "/storage-crunch"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/presell-calculator",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/privacy",
+   "file": "privacy.html",
+   "title": "Privacy Policy | AGSIST",
+   "h1": "Privacy Policy",
+   "description": "What AGSIST collects, who processes it, how long it is kept, and how to turn analytics off. Global Privacy Control is honored. Nothing is sold.",
+   "words": 1715,
+   "inbound": 4512,
+   "inboundContextual": 9,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/cookies",
+    "/cot",
+    "/daily"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/privacy",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/rent",
+   "file": "rent/index.html",
+   "title": "Cash Rent by State 2026: Every County’s USDA Rate | AGSIST",
+   "h1": "Cash Rent by State, 2026",
+   "description": "USDA county cash rent for all 47 published states, 2026: median $/acre, change vs 2025, and every county's rate one click deep. Free, sources shown.",
+   "words": 528,
+   "inbound": 4559,
+   "inboundContextual": 49,
+   "inboundFrom": [
+    "/cash-rent",
+    "/land-tenure",
+    "/rent/alabama",
+    "/rent/arizona",
+    "/rent/arkansas"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/rent/",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/scorecard",
+   "file": "scorecard.html",
+   "title": "Prediction Bot Scorecard | AGSIST",
+   "h1": "Prediction Bot Scorecard",
+   "description": "Statistical bot calls corn, soybeans and wheat four weeks out, once per CFTC report, graded by code on Yahoo daily closes. Backtest kept apart from live calls.",
+   "words": 1523,
+   "inbound": 4514,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/cot-deep.json",
+    "data/page-sponsors.json",
+    "data/predictions-backtest.json",
+    "data/predictions.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/scorecard",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/soybean-futures-prices",
+   "file": "soybean-futures-prices.html",
+   "title": "CBOT Soybean Futures: Nov '26 $12.92, Live Prices | AGSIST",
+   "h1": "Soybean Futures Prices Today",
+   "description": "Soybeans Nov '26 closed $12.92 (+0.4%) on Oct 9. Live CBOT soybean futures refreshed every 15 min in session. November new-crop, crush spread, cash bids.",
+   "words": 1823,
+   "inbound": 4511,
+   "inboundContextual": 4,
+   "inboundFrom": [
+    "/",
+    "/corn-futures-prices",
+    "/markets",
+    "/wheat-futures-prices"
+   ],
+   "dataFiles": [
+    "data/*",
+    "data/bids.json",
+    "data/cot.json",
+    "data/crop-progress.json",
+    "data/daily.json",
+    "data/harvest-prices.json",
+    "data/markets.json",
+    "data/merged-index.json",
+    "data/page-sponsors.json",
+    "data/price-stats.json",
+    "data/prices.json",
+    "data/supporters.json",
+    "data/whats-priced-in.json",
+    "data/zips/*"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/soybean-futures-prices",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/sponsor",
+   "file": "sponsor.html",
+   "title": "Advertise on AGSIST: Ads from $15 a Month, First Month Free | AGSIST",
+   "h1": "Put your business in front of the farmers who use AGSIST.",
+   "description": "Put your business in front of the farmers who use AGSIST. Footer spot $15 a month, your own page $29, the daily briefing $149. First month free, no card, cancel any time.",
+   "words": 588,
+   "inbound": 4562,
+   "inboundContextual": 58,
+   "inboundFrom": [
+    "/",
+    "/about",
+    "/changelog",
+    "/contact",
+    "/data-sources"
+   ],
+   "dataFiles": [
+    "data/audience.json",
+    "data/page-sponsors.json",
+    "data/rate-card.json",
+    "data/sponsor-slots.json",
+    "data/sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/sponsor",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/sponsor-apply",
+   "file": "sponsor-apply.html",
+   "title": "Advertise on AGSIST: Start Your Free Month | AGSIST",
+   "h1": "Put your business in front of farmers",
+   "description": "Put your business in front of US grain farmers on AGSIST. Pick a page, write your ad, see it live as you type. First month free, no card, cancel any time.",
+   "words": 365,
+   "inbound": 80,
+   "inboundContextual": 80,
+   "inboundFrom": [
+    "/archive",
+    "/basis",
+    "/breakeven",
+    "/cash-bids",
+    "/cash-lease"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/rate-card.json",
+    "data/sponsor-slots.json",
+    "data/sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/sponsor-apply",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/sponsor-report",
+   "file": "sponsor-report.html",
+   "title": "Campaign portal | AGSIST",
+   "h1": "' + esc(d.sponsor) + '",
+   "description": null,
+   "words": 3,
+   "inbound": 0,
+   "inboundContextual": 0,
+   "inboundFrom": [],
+   "dataFiles": [
+    "data/audience.json",
+    "data/daily.json",
+    "data/page-sponsors.json",
+    "data/sponsor.json",
+    "data/sponsors.json",
+    "data/sponsors/*",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": null,
+   "canonicalElsewhere": false,
+   "noindex": true,
+   "inSitemap": false,
+   "nav": [],
+   "inNav": false,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/spray",
+   "file": "spray.html",
+   "title": "Can I Spray Today? Conditions + Tank Mix Calculator | AGSIST",
+   "h1": "Is It Safe to Spray Right Now?",
+   "description": "Live spray conditions at your location (wind, temperature, humidity, inversion risk, 24-hour windows) plus tank mix and calibration calculators.",
+   "words": 7263,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/404",
+    "/changelog",
+    "/hail-map",
+    "/tools",
+    "/urea"
+   ],
+   "dataFiles": [
+    "data/daily.json",
+    "data/markets.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/spray",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/status",
+   "file": "status.html",
+   "title": "AGSIST Status: Live Data & Service Health | AGSIST",
+   "h1": "AGSIST Status",
+   "description": "Live status of AGSIST's data feeds and tools: grain prices, cash bids, the daily briefing, weather, and hail. Checked in your browser, in real time.",
+   "words": 256,
+   "inbound": 2,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/changelog",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/bids.json",
+    "data/cot.json",
+    "data/daily.json",
+    "data/dairy-data.json",
+    "data/feeds.json",
+    "data/hail/manifest.json",
+    "data/harvest-prices.json",
+    "data/merged-index.json",
+    "data/nowcast-direction.json",
+    "data/outlooks/manifest.json",
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json",
+    "data/yield-nowcast.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/status",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/storage-crunch",
+   "file": "storage-crunch.html",
+   "title": "Storage Crunch: Grain Grown vs Storage by State | AGSIST",
+   "h1": "Storage crunch: more grain than bins",
+   "description": "Seven states grew more grain in 2025 than their total bin space. Production vs storage capacity ranked by state, 2000-present. Free, USDA sources.",
+   "words": 999,
+   "inbound": 4511,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/storage/storage.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/storage-crunch",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/tariffs",
+   "file": "tariffs.html",
+   "title": "Ag Tariff Tracker: Trade Policy Impact on Grain | AGSIST",
+   "h1": "Ag Tariff Tracker",
+   "description": "Current tariff rates on US corn, soybean, wheat and pork exports to China, Canada and Mexico, and US ethanol into the EU. Updated as policy changes.",
+   "words": 768,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/404",
+    "/farm-bill",
+    "/fertilizer",
+    "/markets",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/tariffs.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/tariffs",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/terms",
+   "file": "terms.html",
+   "title": "Terms of Service | AGSIST",
+   "h1": "Terms of Service",
+   "description": "Terms of Service for AGSIST. Use the site and its data as one input. It's not a trading platform, and forecasts can be wrong.",
+   "words": 994,
+   "inbound": 4512,
+   "inboundContextual": 3,
+   "inboundFrom": [
+    "/changelog",
+    "/developer",
+    "/disclaimer"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/terms",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/tools",
+   "file": "tools.html",
+   "title": "Free Farm Tools & Ag Calculators | AGSIST",
+   "h1": "Farm Tools & Calculators",
+   "description": "Every AGSIST tool on one page: break-even, bin math, spray windows, GDUs, planting dates, yield estimates. Free, no login.",
+   "words": 708,
+   "inbound": 4511,
+   "inboundContextual": 2,
+   "inboundFrom": [
+    "/404",
+    "/changelog"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/tools",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/urea",
+   "file": "urea.html",
+   "title": "When to Apply Urea: Volatilization & N-Loss Risk | AGSIST",
+   "h1": "Urea Volatilization Risk Monitor",
+   "description": "Real-time urea volatilization risk score from local temp, humidity, wind, and rain. Temperature-gated: cold slows urease but does not stop loss. Free for farmers.",
+   "words": 2453,
+   "inbound": 4511,
+   "inboundContextual": 5,
+   "inboundFrom": [
+    "/",
+    "/404",
+    "/changelog",
+    "/spray",
+    "/tools"
+   ],
+   "dataFiles": [
+    "data/fertilizer.json",
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/urea",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/usda-calendar",
+   "file": "usda-calendar.html",
+   "title": "Next WASDE: Oct 9, 2026 | USDA Report Calendar | AGSIST",
+   "h1": "USDA Report Calendar",
+   "description": "The next WASDE lands Oct 9, 2026, today. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.",
+   "words": 547,
+   "inbound": 4511,
+   "inboundContextual": 15,
+   "inboundFrom": [
+    "/",
+    "/ag-odds",
+    "/cattle-futures-prices",
+    "/changelog",
+    "/corn-futures-prices"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/usda-calendar",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/usda-quick-stats",
+   "file": "usda-quick-stats.html",
+   "title": "Corn & Soybean Yields by State: USDA NASS Data | AGSIST",
+   "h1": "Corn, Soybean & Wheat Data by State",
+   "description": "Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat: USDA Quick Stats, made readable and free.",
+   "words": 1006,
+   "inbound": 4511,
+   "inboundContextual": 46,
+   "inboundFrom": [
+    "/about",
+    "/changelog",
+    "/markets",
+    "/tools",
+    "/yield/alabama"
+   ],
+   "dataFiles": [
+    "data/nass/corn-acres-us.json",
+    "data/nass/corn-acres.json",
+    "data/nass/corn-price-my.json",
+    "data/nass/corn-price.json",
+    "data/nass/corn-yield-us.json",
+    "data/nass/corn-yield.json",
+    "data/nass/soy-acres-us.json",
+    "data/nass/soy-acres.json",
+    "data/nass/soy-price-my.json",
+    "data/nass/soy-price.json",
+    "data/nass/soy-yield-us.json",
+    "data/nass/soy-yield.json",
+    "data/nass/wheat-price-my.json",
+    "data/nass/wheat-winter-yield-us.json",
+    "data/nass/wheat-yield-us.json",
+    "data/nass/wheat-yield.json",
+    "data/page-sponsors.json",
+    "data/state-stats.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/usda-quick-stats",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/whats-priced-in",
+   "file": "whats-priced-in.html",
+   "title": "What's Priced In: WASDE & USDA Report Expectations | AGSIST",
+   "h1": "What's priced in?",
+   "description": "What the market expects from the next USDA crop report, the trade estimate range and the surprise level that moves price, scored after each release.",
+   "words": 3549,
+   "inbound": 4559,
+   "inboundContextual": 16,
+   "inboundFrom": [
+    "/",
+    "/ag-odds",
+    "/cattle-futures-prices",
+    "/changelog",
+    "/conditions-yield"
+   ],
+   "dataFiles": [
+    "data/analyst-scorecard.json",
+    "data/page-sponsors.json",
+    "data/supporters.json",
+    "data/whats-priced-in.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/whats-priced-in",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/wheat-futures-prices",
+   "file": "wheat-futures-prices.html",
+   "title": "CBOT Wheat Futures: Dec '26 $6.71, SRW & KC HRW | AGSIST",
+   "h1": "Wheat Futures Prices Today",
+   "description": "Wheat Dec '26 closed $6.71 (-1.8%) on Oct 9. Live Chicago SRW futures refreshed every 30 min in session · KC HRW $7.19. Class spreads, cash bids by ZIP.",
+   "words": 2376,
+   "inbound": 4511,
+   "inboundContextual": 6,
+   "inboundFrom": [
+    "/",
+    "/changelog",
+    "/corn-futures-prices",
+    "/markets",
+    "/news"
+   ],
+   "dataFiles": [
+    "data/*",
+    "data/bids.json",
+    "data/cot.json",
+    "data/crop-progress.json",
+    "data/daily.json",
+    "data/export-sales.json",
+    "data/harvest-prices.json",
+    "data/markets.json",
+    "data/merged-index.json",
+    "data/page-sponsors.json",
+    "data/price-stats.json",
+    "data/prices.json",
+    "data/supporters.json",
+    "data/whats-priced-in.json",
+    "data/zips/*"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/wheat-futures-prices",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  },
+  {
+   "path": "/yield-estimator",
+   "file": "yield-estimator.html",
+   "title": "Soybean & Corn Yield Calculator: Pod and Ear Count | AGSIST",
+   "h1": "Soybean & Corn Yield Calculator",
+   "description": "Free soybean yield calculator (pod count) and corn yield estimator (ear count): bushels per acre from your own field counts before harvest. No login.",
+   "words": 1170,
+   "inbound": 4511,
+   "inboundContextual": 7,
+   "inboundFrom": [
+    "/changelog",
+    "/conditions",
+    "/conditions-yield",
+    "/crop-tour",
+    "/gdu-calculator"
+   ],
+   "dataFiles": [
+    "data/page-sponsors.json",
+    "data/prices.json",
+    "data/supporters.json"
+   ],
+   "isRedirectStub": false,
+   "redirect": null,
+   "canonical": "https://agsist.com/yield-estimator",
+   "canonicalElsewhere": false,
+   "noindex": false,
+   "inSitemap": true,
+   "nav": [
+    "footer",
+    "header"
+   ],
+   "inNav": true,
+   "lastCommit": "2026-10-09",
+   "lastCommitShallow": false,
+   "titleSharedWith": 0
+  }
+ ],
+ "sets": [
+  {
+   "pattern": "farmland-atlas/{state}/{county}.html",
+   "count": 3141,
+   "examples": [
+    "/farmland-atlas/alabama/autauga-county",
+    "/farmland-atlas/alabama/baldwin-county",
+    "/farmland-atlas/alabama/barbour-county"
+   ],
+   "exampleTitle": "Autauga County, Alabama Cash Rent 2026: $51/Acre | AGSIST",
+   "exampleH1": "Autauga County, Alabama",
+   "words": {
+    "min": 696,
+    "median": 1109,
+    "max": 1285
+   },
+   "inbound": {
+    "min": 2,
+    "median": 11,
+    "max": 17
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 2,
+    "median": 11,
+    "max": 17
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 72,
+   "inSitemap": 3069,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 3141,
+    "data/supporters.json": 3141
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "arc-plc/{state}/{place}-sheet.html",
+   "count": 2772,
+   "examples": [
+    "/arc-plc/alabama/autauga-county-sheet",
+    "/arc-plc/alabama/baldwin-county-sheet",
+    "/arc-plc/alabama/barbour-county-sheet"
+   ],
+   "exampleTitle": "Autauga County, AL ARC or PLC counter sheet | AGSIST",
+   "exampleH1": "Autauga County",
+   "words": {
+    "min": 141,
+    "median": 246,
+    "max": 441
+   },
+   "inbound": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 2772,
+   "noindex": 2772,
+   "inSitemap": 0,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 2772,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {},
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "arc-plc/{state}/{county}.html",
+   "count": 2771,
+   "examples": [
+    "/arc-plc/alabama/autauga-county",
+    "/arc-plc/alabama/baldwin-county",
+    "/arc-plc/alabama/barbour-county"
+   ],
+   "exampleTitle": "Autauga County, AL ARC or PLC 2026: Seed cotton Benchmark",
+   "exampleH1": "ARC or PLC: the short answer for Autauga County, Alabama",
+   "words": {
+    "min": 1318,
+    "median": 6911,
+    "max": 24769
+   },
+   "inbound": {
+    "min": 3,
+    "median": 6,
+    "max": 17
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 3,
+    "median": 6,
+    "max": 17
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 2771,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/arc-plc.json": 2771,
+    "data/arc-plc/nav.json": 2771,
+    "data/page-sponsors.json": 2771,
+    "data/prices.json": 2771,
+    "data/supporters.json": 2771,
+    "data/arc-plc/TX.json": 204,
+    "data/arc-plc/GA.json": 139,
+    "data/arc-plc/KY.json": 107,
+    "data/arc-plc/MO.json": 107,
+    "data/arc-plc/KS.json": 105,
+    "data/arc-plc/IL.json": 102,
+    "data/arc-plc/IA.json": 100,
+    "data/arc-plc/NC.json": 100,
+    "data/arc-plc/VA.json": 97,
+    "data/arc-plc/TN.json": 94,
+    "data/arc-plc/NE.json": 93,
+    "data/arc-plc/IN.json": 92,
+    "data/arc-plc/OH.json": 89,
+    "data/arc-plc/MN.json": 88,
+    "data/arc-plc/MI.json": 81,
+    "data/arc-plc/MS.json": 80,
+    "data/arc-plc/OK.json": 75,
+    "data/arc-plc/WI.json": 72,
+    "data/arc-plc/AL.json": 66,
+    "data/arc-plc/PA.json": 66,
+    "data/arc-plc/SD.json": 66,
+    "data/arc-plc/AR.json": 56,
+    "data/arc-plc/NY.json": 53,
+    "data/arc-plc/ND.json": 53,
+    "data/arc-plc/MT.json": 51,
+    "data/arc-plc/WV.json": 51,
+    "data/arc-plc/LA.json": 49,
+    "data/arc-plc/CO.json": 48,
+    "data/arc-plc/SC.json": 46,
+    "data/arc-plc/ID.json": 41,
+    "data/arc-plc/CA.json": 36,
+    "data/arc-plc/FL.json": 33,
+    "data/arc-plc/OR.json": 29,
+    "data/arc-plc/WA.json": 29,
+    "data/arc-plc/MD.json": 23,
+    "data/arc-plc/UT.json": 21,
+    "data/arc-plc/NM.json": 20,
+    "data/arc-plc/ME.json": 17,
+    "data/arc-plc/NJ.json": 16,
+    "data/arc-plc/WY.json": 16,
+    "data/arc-plc/VT.json": 14,
+    "data/arc-plc/MA.json": 11,
+    "data/arc-plc/AZ.json": 10,
+    "data/arc-plc/NH.json": 10,
+    "data/arc-plc/NV.json": 6,
+    "data/arc-plc/RI.json": 5,
+    "data/arc-plc/DE.json": 3,
+    "data/arc-plc/AK.json": 1
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "cash-bids/{state}/{place}.html",
+   "count": 1466,
+   "examples": [
+    "/cash-bids/arkansas/corning",
+    "/cash-bids/arkansas/des-arc",
+    "/cash-bids/arkansas/dumas"
+   ],
+   "exampleTitle": "Cash Grain Bids in Corning, AR Today | AGSIST",
+   "exampleH1": "Cash grain bids in Corning, AR today",
+   "words": {
+    "min": 150,
+    "median": 266,
+    "max": 1549
+   },
+   "inbound": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 40,
+   "inSitemap": 1426,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 1466,
+    "data/supporters.json": 1466
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-10"
+   }
+  },
+  {
+   "pattern": "hail/{date}.html",
+   "count": 243,
+   "examples": [
+    "/hail/2022-04-12",
+    "/hail/2022-04-13",
+    "/hail/2022-04-23"
+   ],
+   "exampleTitle": "Hail on April 12, 2022: Reports, Sizes & Map | AGSIST",
+   "exampleH1": "Hail on April 12, 2022: where it hit",
+   "words": {
+    "min": 359,
+    "median": 603,
+    "max": 649
+   },
+   "inbound": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 72,
+   "inSitemap": 171,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 243,
+    "data/supporters.json": 243,
+    "data/hail/events-2026.json": 155,
+    "data/hail/events-2023.json": 30,
+    "data/hail/events-2025.json": 19,
+    "data/hail/events-2022.json": 15,
+    "data/hail/events-2024.json": 14,
+    "data/hail/recent.json": 3
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "daily/{date}.html",
+   "count": 210,
+   "examples": [
+    "/daily/2026-03-04",
+    "/daily/2026-03-05",
+    "/daily/2026-03-06"
+   ],
+   "exampleTitle": "Crude rallies 3% as grains drift sideways, Mar 4, 2026 | AGSIST",
+   "exampleH1": "CRUDE RALLIES 3% AS GRAINS DRIFT SIDEWAYS",
+   "words": {
+    "min": 419,
+    "median": 854,
+    "max": 1957
+   },
+   "inbound": {
+    "min": 2,
+    "median": 3,
+    "max": 4
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 2
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 210,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 210,
+    "data/supporters.json": 210
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "hail-map/{state}.html",
+   "count": 51,
+   "examples": [
+    "/hail-map/alabama",
+    "/hail-map/alaska",
+    "/hail-map/arizona"
+   ],
+   "exampleTitle": "Hail Map Alabama: Worst Hail Counties & Hail Season | AGSIST",
+   "exampleH1": "Hail in Alabama: where it hits, county by county",
+   "words": {
+    "min": 398,
+    "median": 440,
+    "max": 462
+   },
+   "inbound": {
+    "min": 51,
+    "median": 51,
+    "max": 51
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 51,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 51,
+    "data/supporters.json": 51
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "farmland-atlas/{state}/index.html",
+   "count": 50,
+   "examples": [
+    "/farmland-atlas/alabama",
+    "/farmland-atlas/alaska",
+    "/farmland-atlas/arizona"
+   ],
+   "exampleTitle": "Alabama Farmland Values by County: Land Value, Yield & Risk",
+   "exampleH1": "Alabama farmland values by county",
+   "words": {
+    "min": 326,
+    "median": 931,
+    "max": 2854
+   },
+   "inbound": {
+    "min": 6,
+    "median": 69,
+    "max": 259
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 6,
+    "median": 69,
+    "max": 259
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 50,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 50,
+    "data/supporters.json": 50
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "arc-plc/{state}.html",
+   "count": 48,
+   "examples": [
+    "/arc-plc/alabama",
+    "/arc-plc/alaska",
+    "/arc-plc/arizona"
+   ],
+   "exampleTitle": "Alabama ARC-CO Benchmark Yields 2026, Official | AGSIST",
+   "exampleH1": "Alabama ARC-CO benchmark yields for 2026, by county",
+   "words": {
+    "min": 937,
+    "median": 3845,
+    "max": 11845
+   },
+   "inbound": {
+    "min": 50,
+    "median": 116,
+    "max": 268
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 50,
+    "median": 116,
+    "max": 268
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 1,
+   "inSitemap": 47,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/arc-plc/nav.json": 48,
+    "data/page-sponsors.json": 48,
+    "data/supporters.json": 48
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "rent/{state}.html",
+   "count": 47,
+   "examples": [
+    "/rent/alabama",
+    "/rent/arizona",
+    "/rent/arkansas"
+   ],
+   "exampleTitle": "Alabama Cash Rent by County 2026 | AGSIST",
+   "exampleH1": "Alabama Cash Rent by County, 2026",
+   "words": {
+    "min": 732,
+    "median": 1298,
+    "max": 2909
+   },
+   "inbound": {
+    "min": 55,
+    "median": 117,
+    "max": 307
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 55,
+    "median": 117,
+    "max": 307
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 47,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 47,
+    "data/supporters.json": 47
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "cash-bids/{state}/{county}.html",
+   "count": 44,
+   "examples": [
+    "/cash-bids/florida/lake-city",
+    "/cash-bids/illinois/crescent-city",
+    "/cash-bids/illinois/farmer-city"
+   ],
+   "exampleTitle": "Cash Grain Bids in Lake City, FL Today | AGSIST",
+   "exampleH1": "Cash grain bids in Lake City, FL today",
+   "words": {
+    "min": 158,
+    "median": 275,
+    "max": 857
+   },
+   "inbound": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 1,
+    "median": 1,
+    "max": 1
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 1,
+   "inSitemap": 43,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 44,
+    "data/supporters.json": 44
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-10"
+   }
+  },
+  {
+   "pattern": "yield/{state}.html",
+   "count": 42,
+   "examples": [
+    "/yield/alabama",
+    "/yield/arizona",
+    "/yield/arkansas"
+   ],
+   "exampleTitle": "Alabama Corn, Soy & Wheat Yield by Year (2010–2026) | AGSIST",
+   "exampleH1": "Alabama corn, soybean & wheat yield by year",
+   "words": {
+    "min": 428,
+    "median": 809,
+    "max": 823
+   },
+   "inbound": {
+    "min": 42,
+    "median": 43,
+    "max": 43
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 42,
+    "median": 43,
+    "max": 43
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 1,
+   "inSitemap": 41,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 42,
+    "data/supporters.json": 42,
+    "data/state-stats.json": 32
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "basis/{state}.html",
+   "count": 29,
+   "examples": [
+    "/basis/arkansas",
+    "/basis/colorado",
+    "/basis/florida"
+   ],
+   "exampleTitle": "Arkansas Corn & Soybean Basis Today: 13 Elevators | AGSIST",
+   "exampleH1": "Arkansas cash basis today: AGSIST network elevators",
+   "words": {
+    "min": 505,
+    "median": 2133,
+    "max": 14548
+   },
+   "inbound": {
+    "min": 32,
+    "median": 44,
+    "max": 375
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 32,
+    "median": 44,
+    "max": 375
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 11,
+   "inSitemap": 18,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 29,
+    "data/supporters.json": 29
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "cash-bids/{state}/index.html",
+   "count": 29,
+   "examples": [
+    "/cash-bids/arkansas",
+    "/cash-bids/colorado",
+    "/cash-bids/florida"
+   ],
+   "exampleTitle": "Arkansas Cash Grain Bids by Town Today | AGSIST",
+   "exampleH1": "Arkansas cash grain bids by town",
+   "words": {
+    "min": 110,
+    "median": 251,
+    "max": 3664
+   },
+   "inbound": {
+    "min": 30,
+    "median": 42,
+    "max": 373
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 30,
+    "median": 42,
+    "max": 373
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 1,
+   "inSitemap": 28,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 29,
+    "data/supporters.json": 29
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-10"
+   }
+  },
+  {
+   "pattern": "arc-plc/{slug}.html",
+   "count": 20,
+   "examples": [
+    "/arc-plc/barley",
+    "/arc-plc/canola",
+    "/arc-plc/crambe"
+   ],
+   "exampleTitle": "Barley ARC or PLC 2026 and 2027 | AGSIST",
+   "exampleH1": "Barley: ARC or PLC for 2026 and 2027",
+   "words": {
+    "min": 984,
+    "median": 1271,
+    "max": 3812
+   },
+   "inbound": {
+    "min": 37,
+    "median": 193,
+    "max": 2410
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 37,
+    "median": 193,
+    "max": 2410
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 20,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/arc-plc/nav.json": 20,
+    "data/page-sponsors.json": 20,
+    "data/supporters.json": 20
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "farmland-atlas/{state}/{place}.html",
+   "count": 7,
+   "examples": [
+    "/farmland-atlas/connecticut/capitol-planning-region",
+    "/farmland-atlas/connecticut/lower-ct-river-valley-planning-region",
+    "/farmland-atlas/connecticut/naugatuck-valley-planning-region"
+   ],
+   "exampleTitle": "Capitol Region, Connecticut: Farmland Value and Risk",
+   "exampleH1": "Capitol planning region, Connecticut",
+   "words": {
+    "min": 625,
+    "median": 683,
+    "max": 688
+   },
+   "inbound": {
+    "min": 2,
+    "median": 3,
+    "max": 3
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 2,
+    "median": 3,
+    "max": 3
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 6,
+   "inSitemap": 1,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/page-sponsors.json": 7,
+    "data/supporters.json": 7
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "arc-plc/{state}/{place}.html",
+   "count": 1,
+   "examples": [
+    "/arc-plc/virginia/bedford-city-former"
+   ],
+   "exampleTitle": "Bedford city (former), VA ARC or PLC 2026: Corn Benchmark",
+   "exampleH1": "ARC or PLC: the short answer for Bedford city (former), Virginia",
+   "words": {
+    "min": 1489,
+    "median": 1489,
+    "max": 1489
+   },
+   "inbound": {
+    "min": 2,
+    "median": 2,
+    "max": 2
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 2,
+    "median": 2,
+    "max": 2
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 1,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/arc-plc.json": 1,
+    "data/arc-plc/VA.json": 1,
+    "data/arc-plc/nav.json": 1,
+    "data/page-sponsors.json": 1,
+    "data/prices.json": 1,
+    "data/supporters.json": 1
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  },
+  {
+   "pattern": "farmland-atlas/{dir}/index.html",
+   "count": 1,
+   "examples": [
+    "/farmland-atlas/states"
+   ],
+   "exampleTitle": "Farmland Atlas by State and County | AGSIST",
+   "exampleH1": "Every county, on its own page",
+   "words": {
+    "min": 166,
+    "median": 166,
+    "max": 166
+   },
+   "inbound": {
+    "min": 52,
+    "median": 52,
+    "max": 52
+   },
+   "zeroInbound": 0,
+   "zeroInboundExamples": [],
+   "inboundContextual": {
+    "min": 2,
+    "median": 2,
+    "max": 2
+   },
+   "zeroInboundContextual": 0,
+   "redirectStubs": 0,
+   "canonicalElsewhere": 0,
+   "noindex": 0,
+   "inSitemap": 1,
+   "inNav": 0,
+   "missingTitle": 0,
+   "missingH1": 0,
+   "missingDescription": 0,
+   "duplicateTitlesInSet": 0,
+   "dataFiles": {
+    "data/counties-index.json": 1,
+    "data/page-sponsors.json": 1,
+    "data/supporters.json": 1
+   },
+   "lastCommit": {
+    "min": "2026-10-09",
+    "max": "2026-10-09"
+   }
+  }
+ ]
+}
