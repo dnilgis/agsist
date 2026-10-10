@@ -109,6 +109,15 @@ def judge(crons, max_delay, now, runs_after_tick, first_only):
     return "late", tick, None, "no run started within %d min of the %s tick" % (max_delay, t.strftime("%a %H:%M UTC"))
 
 
+def forgive(status, by, why, last_success):
+    """A tick whose run failed stays red only until the workflow succeeds again.
+    Without this, one failed report-day run kept the check red every half hour
+    until the next report, weeks later, long after the bug was fixed."""
+    if status == "late" and by and last_success and parse_ts(last_success) > parse_ts(by["created_at"]):
+        return "ok", why + "; a later run succeeded at " + last_success
+    return status, why
+
+
 def briefing_status(now, root=ROOT):
     from zoneinfo import ZoneInfo
     ct = now.astimezone(ZoneInfo("America/Chicago"))
@@ -152,6 +161,7 @@ def collect(now, repo, token, api):
                                   (t + timedelta(minutes=delay)).strftime("%Y-%m-%dT%H:%M:%SZ"))
                 runs = _get(base + "&created=" + rng, token).get("workflow_runs", [])
             status, tick, by, why = judge(crons, delay, now, runs, first_only=(wf in GATED))
+            status, why = forgive(status, by, why, row["last_success"])
         except Exception as e:
             row.update(status="unknown", why="could not read runs: %s" % e)
             rows.append(row)
@@ -301,6 +311,10 @@ def selftest():
     s, *_ = judge(["40 21 * * 1-5"], 60, T("2026-10-08 23:00"), [R(2, "2026-10-08 22:52")], True)
     check(s == "late", "a run outside max_delay does not serve the tick")
     check(max_spacing_minutes(cot) > 2 * 1440, "COT's max gap spans the weekend")
+    failed = R(7, "2026-10-09 18:13", "failure")
+    check(forgive("late", failed, "x", "2026-10-09T21:38:00Z")[0] == "ok", "a failed tick clears once a later run succeeds")
+    check(forgive("late", failed, "x", "2026-10-09T18:00:00Z")[0] == "late", "a success before the failure does not clear it")
+    check(forgive("late", None, "x", "2026-10-09T21:38:00Z")[0] == "late", "a tick nobody ran stays late")
 
     # should_commit
     now = T("2026-10-09 22:00")
