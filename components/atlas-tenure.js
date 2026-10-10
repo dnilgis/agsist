@@ -17,9 +17,9 @@
   var NO_RENT_PAGE={AK:1,HI:1,RI:1};    // no county cash rent survey pages for these
   var MAJOR_ACRES=5e6;                   // "major farm state": 5 million acres or more in farms, 2022
   var CSS='.at{margin:.4rem 0}.at .at-bar{display:flex;align-items:center;gap:.6rem;margin:.2rem 0;font-family:var(--font-mono);font-size:.8rem}'
-    +'.at .at-bar .y{width:3em;color:var(--text-muted)}.at .at-bar .b{height:12px;background:var(--gold);border-radius:3px;min-width:2px}'
+    +'.at .at-bar>span{flex:none;white-space:nowrap}.at .at-bar .y{width:3em;color:var(--text-muted)}.at .at-bar .b{height:12px;background:var(--gold);border-radius:3px;min-width:2px;flex:0 1 auto}'
     +'.at .at-bar .m{color:var(--text-muted);font-size:.72rem}.at .at-lead{font-size:1rem;line-height:1.6;margin:.4rem 0 .8rem}'
-    +'.at th{cursor:pointer}.at .up{color:var(--green)}.at .dn{color:var(--red)}:root[data-theme="light"] .at .dn{color:#b3261e}'
+    +'.at th{cursor:pointer}.at td a{color:var(--gold)}:root[data-theme="light"] .at td a{color:#6f5209}.at .up{color:var(--green)}.at .dn{color:var(--red)}:root[data-theme="light"] .at .dn{color:#b3261e}'
     +'.at details{border-bottom:1px solid var(--border);padding:.45rem 0}.at details summary{cursor:pointer}.at details p{color:var(--text-dim);font-size:.9rem;line-height:1.6;margin:.4rem 0}';
 
   function esc(t){ return String(t).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];}); }
@@ -50,7 +50,7 @@
       +maj.toLocaleString('en-US')+' of '+withFig.toLocaleString('en-US')+' counties with a '+last+' figure are majority-rented. The national share barely moves; the county map is where it moves.</p>';
     var top=Math.max.apply(null,ys.map(function(y){ var s=share(N[y]); return s==null?0:s; }));
     ys.forEach(function(y){ var s=share(N[y]); if(s==null){ h+='<div class="at-bar"><span class="y">'+y+'</span><span class="m">no national figure</span></div>'; return; }
-      h+='<div class="at-bar"><span class="y">'+y+'</span><span class="b" style="width:'+(s/top*55).toFixed(1)+'%"></span><span>'+pc(s)+'</span><span class="m">'+m1(N[y][1])+' of '+m1(N[y][0]+N[y][1])+' ac</span></div>'; });
+      h+='<div class="at-bar"><span class="y">'+y+'</span><span class="b" style="width:'+(s/top*38).toFixed(1)+'%"></span><span>'+pc(s)+'</span><span class="m">'+m1(N[y][1])+' of '+m1(N[y][0]+N[y][1])+' ac</span></div>'; });
     h+='<h3>Every state, ranked</h3><p class="fa-note">Share of land in farms rented from others, '+last+' census. Tap a heading to sort. A state name opens its county cash rent page.</p>';
     h+='<div class="tblscroll"><table class="fa-table" id="at-t"><thead><tr><th>State</th><th class="n">Rented '+last+'</th><th class="n">Change since '+first+'</th><th class="n">Rented acres</th><th class="n">Owned acres</th></tr></thead><tbody>';
     rows.forEach(function(r){
