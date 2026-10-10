@@ -1,10 +1,15 @@
 name: storage
 
-# Grain storage capacity vs production (/storage-crunch page). Capacity and
-# final production land each January; yearly cron + dispatch for rebuilds.
+# Grain storage capacity vs production (the storage section of /basis).
+# Capacity and final production land each January. The fall measure
+# (Sept 1 stocks + this year's corn, soybean and sorghum forecast, over
+# capacity) moves with each Crop Production report: Sept 1 stocks are out
+# Sept 30, state forecasts around the 10th-12th of Oct and Nov.
 on:
   schedule:
     - cron: "35 7 20 1 *"      # Jan 20 yearly, after Grain Stocks + Annual Production
+    - cron: "35 7 1,14 10 *"   # Oct 1 (Sept 1 stocks) and Oct 14 (October forecast)
+    - cron: "35 7 14 11 *"     # Nov 14 (November forecast)
   workflow_dispatch:
 
 permissions:

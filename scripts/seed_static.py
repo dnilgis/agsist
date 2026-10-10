@@ -834,90 +834,156 @@ def _basis_money(v):
 
 
 def basis_summary(j, today=None, crop="Corn"):
-    """Regions for one crop, the page's rules: a row older than the newest week
-    by more than 14 days is withheld. Returns (newest date, rows) where rows is
-    [(region, series, age_days)], or (None, [])."""
+    """Regions for one crop on the page's rules (2026-10-10): ONE WEEK PER
+    TABLE. The week is the one scripts/fetch_transport.py wrote for the crop
+    (basis.weeks; it steps back a week when a new week is held as a jump),
+    else the newest posting. Returns (week, rows, newest) where rows is
+    [(region, series, age_days_behind_week)]; age 0 = posted that week."""
     ser = (j or {}).get("series") or {}
     newest = None
     for s in ser.values():
         dt = _iso_date(s.get("date"))
         if dt and (newest is None or dt > newest):
             newest = dt
+    wk = _iso_date((((j or {}).get("weeks") or {}).get(f"{crop}|Elevator Bid") or {}).get("week")) or newest
     rows = []
     for k, s in ser.items():
         p = k.split("|")
         if len(p) != 3 or p[0] != crop or p[2] != "Elevator Bid":
             continue
         dt = _iso_date(s.get("date"))
-        age = (newest - dt).days if (newest and dt) else 999
+        age = (wk - dt).days if (wk and dt) else 999
         rows.append((p[1], s, age))
     rows.sort(key=lambda r: 9 if r[1].get("delta") is None else r[1]["delta"])
-    return newest, rows
+    return wk, rows, newest
+
+
+def basis_counts(rows):
+    """(under, over, near, n) among the rows posted in the table's week with a
+    normal: more than 10c under, more than 10c over, within 10c."""
+    cur = [r for r in rows if r[2] == 0 and r[1].get("delta") is not None]
+    under = sum(1 for r in cur if r[1]["delta"] < -0.1)
+    over = sum(1 for r in cur if r[1]["delta"] > 0.1)
+    return under, over, len(cur) - under - over, len(cur)
+
+
+def basis_held_text(j, crop, wk):
+    w = (((j or {}).get("weeks") or {}).get(f"{crop}|Elevator Bid") or {})
+    held = w.get("held") or []
+    if not held:
+        return ""
+    gate = ((((j or {}).get("jump") or {}).get("by_crop") or {}).get("Wheat" if "Wheat" in crop else crop) or {})
+    g = _jsround(100 * gate["threshold"]) if gate.get("threshold") is not None else 50
+    ex = []
+    for k in held[:3]:
+        h = next((x for x in (j.get("held") or {}).get(k, []) if x.get("date") == w.get("newest")), None)
+        ex.append(f"{k.split('|')[1]} {_basis_money(h['prev'])} to {_basis_money(h['value'])}" if h else k.split("|")[1])
+    nd = _iso_date(w.get("newest"))
+    return (f"USDA&rsquo;s week of {_md(nd)} moved {len(held)} region{'s' if len(held) != 1 else ''} more than {g}&cent; "
+            f"in one week ({', '.join(ex)}{', and more' if len(held) > 3 else ''}). That looks like a break in "
+            f"USDA&rsquo;s file, not the market, so this table shows the week of {_md(wk)} for every region until "
+            f"the next week confirms or undoes it.")
 
 
 def seed_basis(today):
     j = _load_json("data/transport/basis.json")
-    newest, rows = basis_summary(j)
+    wk, rows, newest = basis_summary(j)
     seeds = {}
-    if not rows or _stale(newest, today, "basis"):
-        why = (f"the newest USDA week on file is {_mdy(newest)}" if newest else "the basis file is missing")
+    if not rows or _stale(wk, today, "basis"):
+        why = (f"the newest USDA week on file is {_mdy(wk)}" if wk else "the basis file is missing")
         seeds["basisstats"] = f"No current regional basis: {why}."
         seeds["basistable"] = f'<tr><td style="color:#8a948f">No current USDA basis: {why}</td></tr>'
-        seeds["basisfresh"] = "-"
-        seeds["basisbig"] = "-"
-        seeds["basisword"] = ""
-        seeds["basissent"] = f"{why[:1].upper()}{why[1:]}."
-        return _write_seeds("basis.html", seeds)
-    cur = [r for r in rows if r[2] <= 14]
-    parts = []
-    for crop, word in (("Corn", "corn basis is"), ("Soybeans", "soybeans")):
-        _, cr = basis_summary(j, crop=crop)
-        cr = [r for r in cr if r[2] <= 14 and r[1].get("delta") is not None]
-        if not cr:
-            continue
-        under = sum(1 for r in cr if r[1]["delta"] < -0.1)
-        over = sum(1 for r in cr if r[1]["delta"] > 0.1)
-        w = cr[0]
-        lead = (f"{word} more than 10&cent; under its 5-year same-week normal in" if crop == "Corn"
-                else f"{word}")
-        parts.append(f"{lead} <strong>{under} of {len(cr)}</strong> regions ({over} stronger; weakest vs normal "
-                     f"{_e(w[0])} {_basis_money(w[1]['latest'])}/bu against {_basis_money(w[1]['avg5'])})")
-    seeds["basisstats"] = (f"USDA AgTransport elevator-bid basis, week of {_mdy(newest)}: " + "; ".join(parts) +
-                           ". Barge rates and origin-to-Gulf spreads below; USDA posts weekly.")
-    seeds["basisfresh"] = f"week of {newest.isoformat()}"
-    h = [f"<caption>Corn, week of {_mdy(newest)} &middot; weakest vs normal first</caption>"
-         "<tr><th>Region</th><th style=\"text-align:right\">Basis now</th>"
-         "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, $/bu</th></tr>"]
-    for name, s, age in rows:
-        if age > 14:
-            now = f"no USDA posting since {_md(_iso_date(s['date']))}"
-            vs = ""
-        else:
-            now = _basis_money(s["latest"]) + (f" as of {_md(_iso_date(s['date']))}" if age > 0 else "")
-            dl = s.get("delta")
-            # a delta that rounds to a cent of nothing reads "even", not "+$0.00"
-            vs = ("-" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
-        nrm = "-" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
-        h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
-    seeds["basistable"] = "".join(h)
-    # the verdict box defaults to Iowa corn, as the page script does
-    ia = next((r for r in cur if r[0] == "Iowa"), None) or (cur[0] if cur else None)
-    if ia:
-        name, s, _ = ia
-        dlt = s.get("delta")
-        word = ("NO NORMAL PUBLISHED" if dlt is None else "WAY UNDER NORMAL" if dlt <= -0.5 else
-                "UNDER NORMAL" if dlt < -0.1 else "ABOUT NORMAL" if dlt <= 0.1 else "STRONGER THAN NORMAL")
-        lab = _basis_money(s["latest"])
-        seeds["basisbig"] = lab
-        seeds["basisword"] = word
-        sent = f"Corn basis in the <b>{_e(name)}</b> region is <b>{lab}/bu</b> for the week of {_mdy(_iso_date(s['date']))}"
-        if dlt is not None:
-            sent += (", <b>even with normal</b>" if abs(dlt) < 0.005 else
-                     f", <b>{_basis_money(dlt)} vs normal</b>")
-            if s.get("avg5") is not None:
-                sent += f" (a normal week like this runs {_basis_money(s['avg5'])})"
-        seeds["basissent"] = sent + ". These are regional USDA markets. Your elevator sits a local spread away, but it moves with this."
+        seeds["basisfresh"] = f"week of {wk.isoformat()}" if wk else "no current week"
+        seeds["basisheld"] = ""
+    else:
+        parts = []
+        for crop, word in (("Corn", "corn"), ("Soybeans", "soybeans")):
+            cwk, cr, _ = basis_summary(j, crop=crop)
+            under, over, near, n = basis_counts(cr)
+            if not n:
+                continue
+            w = next(r for r in cr if r[2] == 0 and r[1].get("delta") is not None)
+            parts.append(f"{word}: <strong>{under} of {n}</strong> regions more than 10&cent; under normal, "
+                         f"{over} more than 10&cent; over, {near} within 10&cent; (weakest vs normal {_e(w[0])} "
+                         f"{_basis_money(w[1]['latest'])}/bu against {_basis_money(w[1]['avg5'])})")
+        seeds["basisstats"] = (f"USDA AgTransport elevator-bid basis against each region&rsquo;s own 5-year normal "
+                               f"for the same week, week of {_mdy(wk)}. " + "; ".join(parts) +
+                               ". Barge rates and origin-to-Gulf spreads below; USDA posts weekly.")
+        seeds["basisfresh"] = f"week of {wk.isoformat()}"
+        seeds["basisheld"] = basis_held_text(j, "Corn", wk)
+        h = [f"<caption>Corn, week of {_mdy(wk)} &middot; weakest vs normal first</caption>"
+             "<tr><th>Region</th><th style=\"text-align:right\">Basis now</th>"
+             "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, $/bu</th></tr>"]
+        for name, s, age in rows:
+            if age != 0:
+                now = f"no USDA posting for the week of {_md(wk)}; last {_md(_iso_date(s['date']))}"
+                vs = ""
+            else:
+                now = _basis_money(s["latest"])
+                dl = s.get("delta")
+                # a delta that rounds to a cent of nothing reads "even", not "+$0.00"
+                vs = ("" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
+            nrm = "" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
+            h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
+        seeds["basistable"] = "".join(h)
+    seeds["storage"] = storage_html(_load_json("data/storage/storage.json"), today)
     return _write_seeds("basis.html", seeds)
+
+
+# --- storage (the "why basis is wide" section of /basis) -----------------------
+FARMDOC = ("farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the "
+           "Corn Belt,&rdquo; Oct 7, 2026)")
+FARMDOC_URL = "https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd100726.pdf"
+ST_NAME = {"AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "GA": "Georgia", "ID": "Idaho", "IL": "Illinois",
+           "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota",
+           "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NY": "New York",
+           "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon",
+           "PA": "Pennsylvania", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "VA": "Virginia",
+           "WA": "Washington", "WI": "Wisconsin", "WY": "Wyoming", "DE": "Delaware", "MD": "Maryland",
+           "SC": "South Carolina", "LA": "Louisiana", "CA": "California", "AZ": "Arizona", "NM": "New Mexico",
+           "UT": "Utah", "FL": "Florida", "NV": "Nevada", "NJ": "New Jersey", "WV": "West Virginia"}
+
+
+def storage_html(d, today):
+    """This fall's grain against bin space. Computed only from the pipeline's
+    fall block for THIS year (Sept 1 stocks + this year's crop / capacity);
+    until NASS's numbers are pulled, farmdoc's published finding is cited
+    with its date instead, and last year's crop-only ratio is not shown."""
+    yr = int(today[:4])
+    lead = ("<p>Basis has to pay for space. When the grain that has to be held this fall is more than the bins "
+            "can take, elevators bid less to slow it down or pay to ship it out, and that comes out of your basis.</p>")
+    cr = (d or {}).get("crunch")
+    if not cr or int(cr.get("year") or 0) != yr:
+        return (lead + f"<p>{FARMDOC} found that the United States as a whole has room for this year&rsquo;s "
+                f"carry-in stocks and the fall harvest, but that carry-in plus this year&rsquo;s crop is more than "
+                f"storage capacity in most Corn Belt states. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>"
+                f"<p>Our own state-by-state version of that math (USDA NASS September 1 stocks plus the latest {yr} "
+                f"crop forecast, over on-farm plus off-farm capacity) fills in here once our next NASS pull "
+                f"lands. Until then this section shows no state numbers of its own.</p>")
+    rows = [(st, r) for st, r in cr["states"].items() if r.get("ratio") is not None]
+    rows.sort(key=lambda x: -x[1]["ratio"])
+    short = [st for st, r in rows if r["ratio"] > 1]
+    per = sorted({v[1] for _, r in rows for v in r.get("fall", {}).values()})
+    per_txt = ", ".join(p.replace("YEAR - ", "").replace(" FORECAST", " forecast").title().replace("Year", "final")
+                        for p in per) or "forecast"
+    trs = "".join(
+        f"<tr><td>{_e(ST_NAME.get(st, st))}</td><td class=\"num\">{r['ratio']:.2f}&times;</td>"
+        f"<td class=\"num\">{_commas(round(sum(r['stocks'].values()) / 1e6))}</td>"
+        f"<td class=\"num\">{_commas(round(sum(v[0] for v in r['fall'].values()) / 1e6))}</td>"
+        f"<td class=\"num\">{_commas(round(r['cap'] / 1e6))}</td></tr>" for st, r in rows)
+    none = sorted(ST_NAME.get(st, st) for st, r in cr["states"].items() if r.get("ratio") is None and r.get("why"))
+    out = (lead + f"<p>This fall, <strong>{len(short)} of {len(rows)}</strong> states with full NASS figures have "
+           f"more grain to hold than bin space: September 1 stocks plus the {yr} corn, soybean and sorghum crop "
+           f"({_e(per_txt)}), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p>"
+           f"<div class=\"tblscroll\"><table class=\"bs-tbl\"><caption>Million bushels &middot; most crowded first"
+           f"</caption><tr><th>State</th><th style=\"text-align:right\">Grain vs bins</th>"
+           f"<th style=\"text-align:right\">Sept 1 stocks</th><th style=\"text-align:right\">{yr} fall crop</th>"
+           f"<th style=\"text-align:right\">Capacity</th></tr>{trs}</table></div>")
+    if none:
+        out += f"<p>No ratio where NASS has no state figure for a crop the state grows: {_e(', '.join(none))}.</p>"
+    out += (f"<p>Same measure as {FARMDOC}. Wheat, barley and oats are harvested by September 1, so they count once, "
+            f"in the stocks. Source: USDA NASS Quick Stats, Grain Stocks and Crop Production.</p>")
+    return out
 
 
 # --- /elevators ----------------------------------------------------------------
@@ -967,7 +1033,22 @@ def seed_elevators(today):
     net += (f"It knows <span class=\"num\">{_commas(n['known'])}</span> more elevators that have no reader yet. "
             "<a href=\"#coverage-map\">See the map</a>.")
     seeds["elev:net"] = net
+    seeds["elev:bids"] = elevator_bids_line(_load_json("data/elevator-counts.json"), today)
     return _write_seeds("elevators.html", seeds)
+
+
+def elevator_bids_line(c, today):
+    """How many network elevators have a current bid, from data/elevator-counts.json,
+    the one file the site counts them in (scripts/build_cash_bid_pages.py). A
+    different question from boards read: a board can be read and post nothing
+    current. Empty (the line hides) when the file is missing or a day old."""
+    b = (c or {}).get("bids") or {}
+    gd = _iso_date((c or {}).get("generated"))
+    if not isinstance(b.get("elevators"), int) or not isinstance(b.get("towns"), int) or gd is None \
+            or (datetime.strptime(today, "%Y-%m-%d").date() - gd).days > 1:
+        return ""
+    return (f"On {_mdy(gd)}, <span class=\"num\">{_commas(b['elevators'])}</span> network elevators had a current "
+            f"bid on our cash bids pages, across <span class=\"num\">{_commas(b['towns'])}</span> towns.")
 
 
 def seed_data_pages(prices, today):
