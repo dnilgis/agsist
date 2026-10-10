@@ -167,7 +167,9 @@ def numbers_el(rows):
         u = (" " + r["unit"]) if r.get("unit") else ""
         exp = ((DASH + ('<div style="font-size:.72rem;color:var(--wp-mut)">'
                         + _esc4(r["expected_why"]) + "</div>" if r.get("expected_why") else ""))
-               if r.get("expected") is None else (_sig(r["expected"]) + u))
+               if r.get("expected") is None else (_sig(r["expected"]) + u + (
+                   '<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>'
+                   if r.get("source_date_unknown") else "")))
         rng = ('<div style="font-size:.72rem;color:var(--wp-mut)">range '
                + _sig(r["low"]) + " to " + _sig(r["high"]) + "</div>") \
             if (r.get("low") is not None and r.get("high") is not None) else ""
@@ -184,19 +186,12 @@ def numbers_el(rows):
                 tag = '<span class="v flat">in line</span>'
             else:
                 tag = '<span class="v flat" title="' + _esc4(r.get("why") or "") + '">no call</span>'
-            # A print past the average band can still sit inside the survey's
-            # own range: say so. Line-for-line port of numbersEl()'s inRng in
-            # whats-priced-in.html -- this is the exact parity gap
-            # test/wpi-numbers-strip.test.mjs exists to catch (found missing
-            # here on 2026-09-30, after it had already shipped on the real
-            # September soybean yield row: bearish by the tight yield band,
-            # but still inside the survey's own low-high range).
-            in_rng = ""
-            if (r.get("low") is not None and r.get("high") is not None
-                    and r["low"] <= r["actual"] <= r["high"]
-                    and sur in ("bullish", "bearish")):
-                in_rng = '<div style="font-size:.72rem;color:var(--wp-mut)">inside the trade range</div>'
-            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + in_rng + "</td>"
+            # Where it sat against the survey's own low and high, worded by the
+            # pipeline (report_bands.range_context). Line-for-line port of
+            # numbersEl()'s ctx; test/wpi-numbers-strip.test.mjs holds them.
+            ctx = ('<div style="font-size:.72rem;color:var(--wp-mut)">' + _esc4(r["context"]) + "</div>"
+                   if r.get("context") else "")
+            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + ctx + "</td>"
         body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
                     + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
     # One link per distinct survey, same as numbersEl(): a report's yields and its
@@ -214,20 +209,21 @@ def numbers_el(rows):
         links = ('<a href="' + _esc4(src) + '" rel="nofollow noopener" target="_blank">'
                  'Survey source</a>')
     note = ('<div class="src">Trade estimates are a published pre-report survey, typed '
-            'from the source and never computed here. ' + links + '. Graded against the '
-            'survey\u2019s low-high range when it is on file: below it bullish, above it '
-            'bearish, inside it in line. With no range, against the trade average: within '
-            '0.5% for a yield, 2% otherwise.</div>') if src else ""
+            'from the source and never computed here. ' + links + '. Graded on the distance '
+            'from the trade average: within 0.5% for a yield, 1% for production and 2% for '
+            'stocks is in line; past that, more supply than the trade expected is bearish and '
+            'less is bullish. The survey\u2019s low-high range is shown beside the grade and '
+            'does not change it.</div>') if src else ""
     waiting = all(r.get("actual") is None for r in rows)
     head = ("USDA prints at 12:00 PM ET. This fills in on its own." if waiting
             else "Graded against the pre-report survey.")
     return ('<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
             + head + '</span></div><table><thead><tr><th>Number</th><th>Trade expects</th>'
-            '<th>USDA now</th><th>USDA printed</th></tr></thead><tbody>'
+            '<th>' + ("USDA now" if waiting else "USDA before") + '</th><th>USDA printed</th></tr></thead><tbody>'
             + "".join(body) + "</tbody></table>" + note + "</div>")
 
 
-def next_card(n):
+def next_card(n, skip_nums=False):
     if not n:
         return ('<div class="wp-err">No upcoming report is scheduled right now. '
                 'Check the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA calendar</a>.</div>')
@@ -297,7 +293,7 @@ def next_card(n):
         f'<div class="wp-card"><div class="hd"><span class="rpt">{esc(n["report"])}</span>'
         f'<span class="cd">{esc(n["date"])}{time_part} · {cd}</span></div>'
         f'{commodity}{expectation}{range_html}{odds}{thr}{pos}'
-        f'{numbers_el(n.get("numbers"))}</div>'
+        f'{"" if skip_nums else numbers_el(n.get("numbers"))}</div>'
     )
 
 
@@ -330,13 +326,19 @@ def result_banner(lr):
             sign = "+" if b["gap_pct"] > 0 else ""
             gp = f' &middot; {sign}{b["gap_pct"]}% vs trade'
         reaction = f'<div class="wp-res-reaction">{esc(b["reaction"])}</div>' if b.get("reaction") else ""
+        # Mirrors resultBanner()'s inNote: the pipeline's range context.
+        in_note = ""
+        if b.get("context") and b.get("low") is not None and b.get("high") is not None:
+            c = b["context"]
+            in_note = (f'<div class="wp-res-reaction">{esc(c[:1].upper() + c[1:])} '
+                       f'({_sig(b["low"])} to {_sig(b["high"])}).</div>')
         big = (
             '<div class="wp-res-big">'
             f'<div class="wp-res-row"><span class="wp-res-metric">{esc(b["metric"])}</span>'
             f'<span class="wp-res-tag {sc}">{b.get("surprise") or "no trade estimate"}</span></div>'
             f'<div class="wp-res-nums"><b>{num(b.get("actual"), b.get("unit"))}</b> actual &middot; '
             f'{num(b.get("expected"), b.get("unit"))} expected{gp}</div>'
-            f'{reaction}</div>'
+            f'{in_note}{reaction}</div>'
         )
     return (
         f'<div class="wp-result {sc}"><div class="wp-res-hd">'
@@ -381,8 +383,11 @@ def history_el(h):
             # which is not the same as landing in line. See report_bands.py.
             tag = r.get("surprise") or "no trade estimate"
             gp = r.get("gap_pct")
-            gap_line = (f'<div class="wp-hr-gap">{"+" if gp > 0 else ""}{gp}% vs trade</div>'
+            ctx = f' &middot; {esc(r["context"])}' if r.get("context") else ""
+            gap_line = (f'<div class="wp-hr-gap">{"+" if gp > 0 else ""}{gp}% vs trade{ctx}</div>'
                         if gp is not None else "")
+            if r.get("source_date_unknown"):
+                gap_line += '<div class="wp-hr-gap">Trade survey source date unknown.</div>'
             reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}</div>' if r.get("reaction")
                         else '<div class="wp-hr-gap">No note written on how the market took it.</div>')
             body.append(
@@ -718,7 +723,12 @@ def bake_wpi(check_only=False):
     src = replace_region(src, "wp-result", result_banner(wpi.get("latest_result")), WPI_HTML)
     src = replace_region(src, "wp-nexthead", next_head(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-farmbox", farm_box(wpi.get("upcoming")), WPI_HTML)
-    src = replace_region(src, "wp-next", next_card(wpi.get("upcoming")), WPI_HTML)
+    # ONE TABLE: if the next card is still the report the banner graded, the
+    # banner carries its numbers. Mirrors the page's fetch handler.
+    _up, _lr = wpi.get("upcoming") or {}, wpi.get("latest_result") or {}
+    _skip = bool(_up.get("date") and _up.get("date") == _lr.get("date")
+                 and result_banner(wpi.get("latest_result")))
+    src = replace_region(src, "wp-next", next_card(wpi.get("upcoming"), _skip), WPI_HTML)
     src = replace_region(src, "wp-history", history_el(wpi.get("history")), WPI_HTML)
     pcls = primary_class(asd)
     src = replace_region(src, "as-board",

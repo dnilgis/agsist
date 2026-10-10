@@ -85,9 +85,10 @@ const ROWS = [
     source: "https://example.test/a?x=1&y=2" },
   { key: "soy_yield_2627", label: "2026/27 soybean yield", unit: "bu/acre",
     expected: 52.5, low: 51.5, high: 53.3, usda_current: 52.7,
-    actual: 52.8, surprise: "bearish", gap_pct: 0.6, why: "", source: null },
+    actual: 52.8, surprise: "bearish", gap_pct: 0.6, why: "", source: null,
+    context: "inside the range, near the top" },
   { key: "d", label: "2026/27 corn ending stocks", unit: "mil bu",
-    expected: 2100, low: null, high: null, usda_current: null,
+    expected: 2100, low: null, high: null, usda_current: null, source_date_unknown: true,
     actual: null, surprise: "", gap_pct: null, why: "not printed yet", source: null },
   { key: "e", label: 'Sorghum "production" & feed <use>', unit: "mil bu",
     expected: null, low: null, high: null, usda_current: 370,
@@ -109,6 +110,15 @@ test("every row shape is exercised, not just the easy one", () => {
   assert.match(html, /Graded against the pre-report survey\./);
   assert.match(html, /Sorghum &quot;production&quot; &amp; feed &lt;use&gt;/);
   assert.match(html, /x=1&amp;y=2/);
+  // the range is context under the grade, worded by the pipeline
+  assert.match(html, /bearish<\/span><div[^>]*>inside the range, near the top<\/div>/);
+  // a trade figure whose source date could not be established says so
+  assert.match(html, /2100 mil bu<div[^>]*>source date unknown<\/div>/);
+  // after the print, USDA's standing figure is the one from before the report
+  assert.match(html, /<th>USDA before<\/th>/);
+  assert.doesNotMatch(html, /<th>USDA now<\/th>/);
+  // the old range-first wording is gone from both
+  assert.doesNotMatch(html, /inside it in line/);
 });
 
 test("before the print, both say so and neither grades anything", () => {
@@ -116,6 +126,7 @@ test("before the print, both say so and neither grades anything", () => {
   const js = jsStrip(waiting);
   assert.equal(pyStrip(waiting), js);
   assert.match(js, /USDA prints at 12:00 PM ET\. This fills in on its own\./);
+  assert.match(js, /<th>USDA now<\/th>/);
   assert.doesNotMatch(js, /class="v (bull|bear|flat)"/);
 });
 
