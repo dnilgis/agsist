@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-09T23:08:59Z",
+ "generated_at": "2026-10-10T03:38:46Z",
  "note": "Written by scripts/cron_health.py. A workflow is late when the latest tick of its clock was not served by a successful run within max_delay_minutes. Committed when a status changes or every 6 hours, so last_success can trail the live run list.",
  "late": [
   "report-day.yml",
@@ -20,14 +20,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T23:07:02Z",
+   "last_success": "2026-10-10T03:37:01Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:22Z",
+   "last_tick": "2026-10-10T02:52Z",
    "why": "served",
    "served_by": {
-    "id": 37998815487,
+    "id": 38018524249,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-09T22:22:02Z",
+    "created_at": "2026-10-10T02:52:02Z",
     "conclusion": "success"
    }
   },
@@ -40,14 +40,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T23:00:10Z",
+   "last_success": "2026-10-10T03:30:08Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:15Z",
+   "last_tick": "2026-10-10T02:45Z",
    "why": "served",
    "served_by": {
-    "id": 37998179281,
+    "id": 38018098430,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-09T22:15:06Z",
+    "created_at": "2026-10-10T02:45:05Z",
     "conclusion": "success"
    }
   },
@@ -60,14 +60,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T23:00:19Z",
+   "last_success": "2026-10-10T03:30:18Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:15Z",
+   "last_tick": "2026-10-10T02:45Z",
    "why": "served",
    "served_by": {
-    "id": 37998194728,
+    "id": 38018111217,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:15:15Z",
+    "created_at": "2026-10-10T02:45:15Z",
     "conclusion": "success"
    }
   },
@@ -80,14 +80,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:23:23Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:22Z",
+   "last_tick": "2026-10-10T02:52Z",
    "why": "served",
    "served_by": {
-    "id": 37999220267,
+    "id": 38018613342,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:26:25Z",
+    "created_at": "2026-10-10T02:53:33Z",
     "conclusion": "success"
    }
   },
@@ -100,14 +100,14 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 4065,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:37Z",
+   "last_tick": "2026-10-09T23:52Z",
    "why": "served",
    "served_by": {
-    "id": 38000287940,
+    "id": 38006594432,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:38:18Z",
+    "created_at": "2026-10-09T23:53:27Z",
     "conclusion": "success"
    }
   },
@@ -120,7 +120,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 1365,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
    "last_tick": "2026-10-09T17:52Z",
    "why": "served",
@@ -141,7 +141,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4294,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "late",
    "last_tick": "2026-10-09T18:13Z",
    "why": "the run that served the Fri 18:13 UTC tick ended failure",
@@ -162,14 +162,14 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 690,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
-   "last_tick": "2026-10-09T22:12Z",
+   "last_tick": "2026-10-10T00:12Z",
    "why": "served",
    "served_by": {
-    "id": 37999220161,
+    "id": 38008829937,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:26:25Z",
+    "created_at": "2026-10-10T00:23:21Z",
     "conclusion": "success"
    }
   },
@@ -185,7 +185,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 9164,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "late",
    "last_tick": "2026-10-06T12:33Z",
    "why": "no run started within 60 min of the Tue 12:33 UTC tick",
@@ -203,7 +203,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 8667,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "late",
    "last_tick": "2026-10-09T13:20Z",
    "why": "no run started within 60 min of the Fri 13:20 UTC tick",
@@ -218,7 +218,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4380,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
    "last_tick": "2026-10-09T21:40Z",
    "why": "served",
@@ -238,7 +238,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4380,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
    "last_tick": "2026-10-09T21:47Z",
    "why": "served",
@@ -259,7 +259,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 3960,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "late",
    "last_tick": "2026-10-09T20:35Z",
    "why": "no run started within 60 min of the Fri 20:35 UTC tick",
@@ -274,7 +274,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 3900,
-   "last_success": "2026-10-09T23:08:29Z",
+   "last_success": "2026-10-10T03:38:20Z",
    "status": "ok",
    "last_tick": "2026-10-09T21:41Z",
    "why": "served",
@@ -299,6 +299,26 @@
    "clock": "baked from data/cot.json",
    "status": "ok",
    "why": "matches data/cot.json"
+  },
+  {
+   "workflow": "published-size",
+   "critical": true,
+   "clock": "GitHub Pages stops deploying over 1024 MB",
+   "status": "ok",
+   "why": "592.3 MB published (warn at 850, red at 900, Pages limit 1024); biggest: data 236.1 MB, farmland-atlas 150.0 MB, arc-plc 140.9 MB, cash-bids 32.4 MB",
+   "total_mb": 592.3,
+   "warn_mb": 850,
+   "fail_mb": 900,
+   "folders": {
+    "data": 236.1,
+    "farmland-atlas": 150.0,
+    "arc-plc": 140.9,
+    "cash-bids": 32.4,
+    "daily": 8.1,
+    "(root files)": 6.9,
+    "scripts": 4.3,
+    "basis": 2.7
+   }
   }
  ]
 }
