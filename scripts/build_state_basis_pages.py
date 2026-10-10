@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""build_state_basis_pages.py -- per-state cash basis pages, /basis/<state>,
+"""build_state_basis_pages.py -- RETIRED as a page builder 2026-10-10: the
+state basis is a section of /cash-bids/<state>/ (scripts/build_cash_bid_pages.py,
+method in scripts/basis_method.py) and main() writes /basis/<state> forwarding
+stubs. What follows is kept as the shared reader and helper library.
+
+Was: per-state cash basis pages, /basis/<state>,
 built from the AGSIST elevator network (dnilgis/bids) ONLY.
 
 SOURCE, AND WHY ONLY THIS ONE
@@ -73,17 +78,17 @@ except Exception:  # pragma: no cover
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_bids import _net_get_json, BIDS_NETWORK_BASE  # noqa: E402  (network reader only)
+from basis_method import (  # noqa: E402  (the one state-basis method)
+    CROP_ORDER, MIN_STAT, SANITY, match_key, median, state_basis)
 
 SITE = "https://agsist.com"
 OUT_DIR = "basis"
 FRESH_HOURS = 72
-MIN_STAT = 3          # elevators needed to print a median/range at all
 FOLD_ROWS = 8         # table rows shown on a phone before "Show all"
 MIN_INDEX = 5         # elevators behind a corn or soy headline to be indexable
 PREV_TARGET_H = 7 * 24
 PREV_WINDOW_H = 30    # accept a prior snapshot 7 d +/- 30 h back
 MAX_SNAPSHOT_AGE_H = 24
-SANITY = {"corn": 2.5, "soybeans": 2.5, "wheat": 3.0}   # |basis| $/bu beyond this = suspect parse
 BIDS_REPO_API = "https://api.github.com/repos/dnilgis/bids"
 BIDS_RAW = "https://raw.githubusercontent.com/dnilgis/bids"
 
@@ -106,7 +111,6 @@ ROOTS = {"ZC": "corn", "ZS": "soybeans", "KE": "wheat_hrw", "ZW": "wheat_srw",
          "MW": "wheat_hrs", "MWO": "wheat_hrs"}
 CROP_LABEL = {"corn": "Corn", "soybeans": "Soybeans", "wheat_hrw": "Hard red winter wheat",
               "wheat_srw": "Soft red winter wheat", "wheat_hrs": "Hard red spring wheat"}
-CROP_ORDER = ["corn", "soybeans", "wheat_hrw", "wheat_srw", "wheat_hrs"]
 EXCHANGE = {"ZC": "CBOT corn", "ZS": "CBOT soybeans", "KE": "KC HRW wheat",
             "ZW": "CBOT SRW wheat", "MW": "MIAX spring wheat", "MWO": "MIAX spring wheat (MWO)"}
 SPECIALTY = re.compile(r"white|organic|non[\s-]?gmo|nongmo|high oleic|\bip\b|food|waxy|popcorn|feed wheat|"
@@ -256,10 +260,6 @@ def period_start(period, snap):
     if end < snap_ym:
         return None
     return max(start, snap_ym)
-
-
-def median(vals):
-    return statistics.median(vals) if vals else None
 
 
 _PERIOD_TAIL = re.compile(r"^(.*\S)\s*\((\d{4})-(\d{2})\)\s*$")
@@ -497,52 +497,9 @@ def flag_futures_disagreement(rows, tol=0.03):
         r["fut_off"] = bool(m) and abs((r["cash"] - r["basis"]) / m - 1) > tol
 
 
-def match_key(r):
-    return (r["source"], r["group"], r["commodity"], r["period"], r["contract"])
-
-
-def summarise_state(rows, prev_map):
-    """Per crop group: headline contract stats + secondary contracts."""
-    by_group = {}
-    for r in rows:
-        by_group.setdefault(r["group"], []).append(r)
-    out = {}
-    for g in CROP_ORDER:
-        rs = by_group.get(g, [])
-        if not rs:
-            continue
-        for r in rs:
-            r["suspect"] = abs(r["basis"]) > SANITY[r["crop"]] or r.get("fut_off", False)
-            p = prev_map.get(match_key(r)) if prev_map is not None else None
-            r["wow"] = round((r["basis"] - p) * 100, 2) if p is not None else None
-        by_con = {}
-        for r in rs:
-            if r["contract"] is not None and not r["suspect"]:
-                by_con.setdefault(r["contract"], []).append(r)
-        groups = []
-        for con, crs in sorted(by_con.items(), key=lambda kv: (-len(kv[1]), kv[0][2], kv[0][1])):
-            vals = [r["basis"] for r in crs]
-            st = {"contract": con, "n": len(crs), "rows": crs}
-            if len(crs) >= MIN_STAT:
-                st["median"] = round(median(vals), 4)
-                st["lo"], st["hi"] = min(vals), max(vals)
-                st["asof_latest"] = max(r["priced"] for r in crs)
-                st["asof_oldest"] = min(r["priced"] for r in crs)
-                srt = sorted(crs, key=lambda r: (-r["basis"], r["city"]))
-                k = 3 if len(crs) >= 6 else 1
-                st["strong"], st["weak"] = srt[:k], list(reversed(srt[-k:]))
-                if prev_map is not None:
-                    ds = [r["wow"] for r in crs if r["wow"] is not None]
-                    if len(ds) >= MIN_STAT:
-                        st["wow_median"] = round(median(ds), 2)
-                        st["wow_n"] = len(ds)
-                        st["wow_up"] = sum(1 for d in ds if d > 0)
-                        st["wow_dn"] = sum(1 for d in ds if d < 0)
-            groups.append(st)
-        out[g] = {"rows": rs, "contracts": groups,
-                  "no_contract": [r for r in rs if r["contract"] is None],
-                  "suspect": [r for r in rs if r["suspect"]]}
-    return out
+# THE METHOD lives in scripts/basis_method.py, one copy for every surface that
+# states a state basis. summarise_state is that function under its old name.
+summarise_state = state_basis
 
 
 def build_prev_map(prev_doc):
@@ -1000,6 +957,66 @@ def build_all(merged, index, prev_doc=None, out_dir=OUT_DIR, root=".", now=None,
     return metas, drops
 
 
+# ---------------------------------------------------------------- retired: stubs
+# 2026-10-10: /basis/<state> merged into /cash-bids/<state>/ (the state's bids
+# and basis on one page, built by scripts/build_cash_bid_pages.py with the one
+# method in scripts/basis_method.py). This script no longer writes state pages
+# and its workflow is gone; main() writes the forwarding stubs so a link or a
+# bookmark to /basis/<state> lands on the #basis section. The helpers above
+# stay: the cash-bid builder imports them.
+def stub_html(final_path, title, msg, noindex=True, keep_hash=False):
+    """A static-host forward: canonical + meta refresh + location.replace,
+    carrying the query string. final_path may carry its own #fragment; the
+    reader's hash replaces it only when keep_hash (a hash the old page also
+    meant, e.g. #storage on a page whose sections moved with it)."""
+    base, _, frag = final_path.partition("#")
+    frag = "#" + frag if frag else ""
+    js_hash = (f"(location.hash||{json.dumps(frag)})" if keep_hash else json.dumps(frag)) if frag else "location.hash"
+    robots = '<meta name="robots" content="noindex,follow">\n' if noindex else ""
+    return f"""<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{esc(title)}</title>
+{robots}<link rel="canonical" href="{SITE}{base}">
+<meta http-equiv="refresh" content="0; url={esc(final_path)}">
+<link rel="stylesheet" href="/components/styles.css?v=23">
+<script>location.replace({json.dumps(base)}+location.search+{js_hash});</script>
+</head>
+<body>
+<main style="max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center">
+<p>{msg}</p>
+<p><a href="{esc(final_path)}" style="font-weight:600">Go there &rarr;</a></p>
+</main>
+</body>
+</html>
+"""
+
+
+def write_stubs(out_dir=OUT_DIR, states=None):
+    """basis/<state>.html -> /cash-bids/<state>/#basis for every state that
+    ever had a page (the files already there), plus any named. Empties
+    basis/_indexable.txt: none of these is a page to index any more."""
+    names = set(states or [])
+    if os.path.isdir(out_dir):
+        names |= {f[:-5] for f in os.listdir(out_dir) if f.endswith(".html")}
+    by_slug = {slug(n): n for n in STATE_NAMES.values()}
+    n = 0
+    for sl in sorted(names):
+        if sl not in by_slug:
+            continue
+        name = by_slug[sl]
+        with open(os.path.join(out_dir, f"{sl}.html"), "w", encoding="utf-8") as f:
+            f.write(stub_html(f"/cash-bids/{sl}/#basis", f"{name} basis: moved | AGSIST",
+                              f"{esc(name)} basis is now on the {esc(name)} cash bids page, with every elevator&rsquo;s bid."))
+        n += 1
+    with open(os.path.join(out_dir, "_indexable.txt"), "w") as f:
+        f.write("")
+    print(f"[state-basis] retired: {n} stubs in {out_dir}/ forward to /cash-bids/<state>/#basis")
+    return n
+
+
 # ---------------------------------------------------------------- selftest
 def _fixture():
     gen = "2026-10-06T13:00:00Z"
@@ -1119,6 +1136,17 @@ def selftest():
             raise AssertionError("stale snapshot built")
         except SystemExit:
             pass
+    # the retired pages forward: canonical, refresh and script all name the state page's #basis
+    with _tf.TemporaryDirectory() as td:
+        open(os.path.join(td, "iowa.html"), "w").write("old page")
+        assert write_stubs(td) == 1
+        st = open(os.path.join(td, "iowa.html")).read()
+        assert '<link rel="canonical" href="https://agsist.com/cash-bids/iowa/">' in st
+        assert 'content="0; url=/cash-bids/iowa/#basis"' in st and 'location.replace("/cash-bids/iowa/"+location.search+"#basis")' in st
+        assert open(os.path.join(td, "_indexable.txt")).read() == ""
+        keep = stub_html("/basis#storage", "t", "m", noindex=False, keep_hash=True)
+        assert 'noindex' not in keep and '(location.hash||"#storage")' in keep
+        assert 'location.replace("/basis"+location.search+location.hash)' in stub_html("/basis", "t", "m")
     print("selftest OK")
 
 
@@ -1136,7 +1164,10 @@ def main():
     if a.selftest:
         selftest()
         return
-    merged, index = load_network(a.bids_dir, a.base)
+    # RETIRED 2026-10-10: the state pages are /cash-bids/<state>/ now.
+    write_stubs(a.out)
+    return
+    merged, index = load_network(a.bids_dir, a.base)  # noqa: F841 (kept for a one-off rebuild by hand)
     gen = parse_ts(merged.get("generated"))
     prev = None
     if not a.no_wow and gen:

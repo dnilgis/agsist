@@ -7,12 +7,13 @@ name: Fetch Grain Bids
 #                            fetch in the browser. ~116 KB against 6.3 MB, and
 #                            the script proves on every run that the page picks
 #                            the same bid from it as from the full set.
-#   bids-full.json   FULL  - every row, gitignored, for build_basis_map.py.
+#   bids-full.json   FULL  - every row, gitignored, for the basis history and
+#                            the elevator directory steps below.
 #
-# build_basis_map.py therefore has to run HERE, in the same job, while the full
-# file still exists on the runner. That is why basis-map.yml no longer runs on
-# a schedule. It refuses to build from the slim file rather than quietly
-# averaging a handful of elevators per state.
+# Those steps therefore run HERE, in the same job, while the full file still
+# exists on the runner. (The national basis map that used to be built here was
+# retired 2026-10-10: every state basis now comes from scripts/basis_method.py
+# on the network data, in cash-bid-pages.yml.)
 
 on:
   schedule:
@@ -213,9 +214,6 @@ jobs:
         continue-on-error: true
         run: python scripts/build_elevator_contacts.py
 
-      - name: Build the national basis map
-        run: python scripts/build_basis_map.py
-
       # ALSO IN THIS JOB, AND FOR THE SAME REASON: the full set exists here and
       # nowhere else. Slimming data/bids.json on 2026-08-19 was right -- a
       # browser must not be sent 18,000 bids -- but it ended the per-elevator
@@ -225,7 +223,7 @@ jobs:
       # ordinary day, so the daily record is small and the state shards delta
       # to nearly nothing.
       #
-      # A FAILURE HERE MUST NOT COST THE BIDS. The bids and the basis map are
+      # A FAILURE HERE MUST NOT COST THE BIDS. The bids are
       # already written by the time this runs, and a history that skips a day
       # is a history with a gap; a run that aborts here would throw away a good
       # bids.json as well. So it warns and carries on, and the gap is visible
@@ -255,7 +253,7 @@ jobs:
 
       - name: Sizes
         run: |
-          ls -lh data/bids.json data/basis-map.json bids-full.json
+          ls -lh data/bids.json bids-full.json
           ls -lh data/bids-withheld.json 2>/dev/null || echo "no data/bids-withheld.json this run"
           du -sh data/basis data/basis-sparklines 2>/dev/null || true
 
@@ -266,7 +264,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
-          git add data/bids.json data/basis-map.json data/basis data/basis-sparklines data/elevator-directory.json
+          git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
           # The withheld-rows report is written by fetch_bids.py inside a try/except,
           # so it can be missing. A missing file must never cost the run its commit.
           [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true

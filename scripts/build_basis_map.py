@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-build_basis_map.py — National basis map for the AGSIST cash-bids page.
+build_basis_map.py -- RETIRED 2026-10-10 (see main()). Kept for wheat_class(),
+the reference components/cb-rank.js is tested against.
+
+Was: National basis map for the AGSIST cash-bids page.
 
 Reads data/bids.json (produced by fetch_bids.py from Barchart OnDemand),
 aggregates the Barchart-provided `basis` ($/bu, cash minus the futures month
@@ -215,79 +218,17 @@ def load_cash_bids(path=None):
                     "basis": round(basis, 4), "month": _mo})
     return out
 
-def build(records):
-    commodities = {}
-    withheld = {}
-    for r in records:
-        # Durum and hard white are the only two left off entirely: neither is
-        # priced off any contract this map names, and between them they are a
-        # handful of rows. Everything else is published under its own label.
-        if r["commodity"] in ("wheat-durum", "wheat-hdw"):
-            withheld[r["commodity"]] = withheld.get(r["commodity"], 0) + 1
-    for c in MAP_COMMODITIES:
-        recs = [r for r in records if r["commodity"] == c]
-        # location-level average (dedupe repeated delivery rows at one place)
-        loc = defaultdict(list); loc_state = {}
-        for r in recs:
-            loc[r["name"]].append(r["basis"]); loc_state[r["name"]] = r["state"]
-        locations = [{"name": nm, "basis": round(sum(v)/len(v), 2), "_st": loc_state[nm]}
-                     for nm, v in loc.items()]
-        # state-level from location averages; n = distinct locations
-        byst = defaultdict(list)
-        for L in locations: byst[L["_st"]].append(L["basis"])
-        states = [{"state": st, "name": STATE_NAMES[st],
-                   "basis": round(sum(v)/len(v), 2), "n": len(v)}
-                  for st, v in byst.items() if len(v) >= MIN_STATE_LOC]
-        states.sort(key=lambda s: s["basis"], reverse=True)
-        loclist = sorted(({"name": L["name"], "basis": L["basis"]} for L in locations),
-                         key=lambda x: x["basis"], reverse=True)
-        commodities[c] = {"futures_ref": FUTURES_REF[c],
-                          "states": states, "locations": loclist}
-    return commodities, withheld
-
 def main():
-    # resolve_bids_path() is the gate now: it refuses the slim browser copy
-    # and says why. The old bare os.path.exists check would have passed the
-    # slim file straight through.
-    src = resolve_bids_path()
-    records = nearest_only(load_cash_bids(src))
-    commodities, withheld = build(records)
-    has_data = any(commodities[c]["states"] for c in MAP_COMMODITIES)
-    # AUDIT 2026-08-11: `updated` reflects the AGE OF THE BIDS, not the
-    # build clock — rebuilding stale bids every 30 min used to relabel old
-    # data as fresh. Falls back to build time only if bids carry no stamp.
-    _src_ts = None
-    try:
-        with open(src) as _f:
-            _src_ts = (json.load(_f).get("fetched") or "")[:10] or None
-    except Exception:
-        pass
-    # THE WINDOW THE MAP COVERS, printed on it: the earliest and latest of
-    # the nearest months actually used, after the horizon cut -- the true
-    # span, not a board's placeholder end date.
-    _months = sorted({r["month"] for r in records if r.get("month")})
-    out = {"updated": _src_ts or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-           "window": ({"from": _months[0], "to": _months[-1], "rule": "nearest",
-                       "horizon_months": HORIZON_MONTHS} if _months else None),
-           "min_locations": MIN_STATE_LOC,
-           "sample": (not has_data),
-           "commodities": commodities,
-           # Beside `commodities`, not inside it: every value in there is
-           # {futures_ref, states, locations} and a consumer that iterates
-           # the dict should not meet something else.
-           "withheld": withheld}
-    os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
-    with open(OUT_PATH, "w") as f:
-        json.dump(out, f, separators=(",", ":"))
-    total_states = sum(len(commodities[c]["states"]) for c in MAP_COMMODITIES)
-    print(f"[basis-map] {len(records)} basis records -> {total_states} state rows")
-    for c in MAP_COMMODITIES:
-        print(f"  {c}: {len(commodities[c]['states'])} states, "
-              f"{len(commodities[c]['locations'])} locations")
-    # The rows that carry a basis and are deliberately not on the map.
-    for k, n in sorted(withheld.items()):
-        print(f"  withheld {k}: {n} records (priced off no contract this map names)")
-    print(f"[basis-map] sample={out['sample']} -> wrote {OUT_PATH}")
+    # RETIRED 2026-10-10. This averaged every board's basis against whatever
+    # futures month it quoted (Oct 2026 to Dec 2027 in one state number) and
+    # disagreed with the state pages, sometimes in sign (Tennessee corn -$0.12
+    # here, +$0.05 there). Every state basis on the site now comes from one
+    # method, scripts/basis_method.py: the median against a named futures
+    # month, unnamed months left out, n printed. Its page (/cash-bids-national)
+    # forwards to /basis#by-state. wheat_class() above stays: components/
+    # cb-rank.js ports it and test/cb-rank.test.mjs checks the two agree.
+    print("[build_basis_map] retired: state basis is scripts/basis_method.py; nothing written")
+
 
 if __name__ == "__main__":
     main()
