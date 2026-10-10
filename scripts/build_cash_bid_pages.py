@@ -74,6 +74,7 @@ from collections import Counter, defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
+import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -525,6 +526,7 @@ CSS = """
     .cbt-more{display:inline-block;margin:8px 0 4px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--gold);font-size:.92rem;cursor:pointer;font:inherit}
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
+    .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
 """
 
 
@@ -611,6 +613,36 @@ def page_end(ftr, house=False, table=False):
 """
 
 
+def hold_lines(bd):
+    """One "Hold to Jan? ..." line per crop from this elevator's own posted
+    later bids: scripts/storesell.py (the twin of components/storesell.js, so the
+    town page, /store-or-sell and the homepage say the same thing), with the
+    stated default storage, interest and shrink. All of the board's current rows
+    count, not only the ones the table shows. Within a crop the commodity name
+    the board posts most is used, so a #2 yellow and a non-GMO bid are never
+    mixed. A crop with no later month in this crop year gets no line."""
+    inputs = storesell.with_defaults({})
+    out = []
+    for c in CROPS:
+        rs = [r for r in bd["rows"] if r["crop"] == c]
+        if not rs:
+            continue
+        com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
+        per = []
+        for r in rs:
+            if r["commodity"].lower() != com:
+                continue
+            m = re.fullmatch(r"\d{4}-\d{2}/(\d{4}-\d{2})", str(r["period"]))
+            per.append({"start": r["dm"], "end": max(r["dm"], m.group(1)) if m else r["dm"], "cash": r["cash"]})
+        model = storesell.build_periods(per, c)
+        pk = storesell.pick_period(model, inputs) if model else None
+        if not pk:
+            continue
+        to = storesell.MON[int(pk["key"][5:]) - 1]
+        out.append((c, storesell.hold_line(to, pk["carry"], pk["months"], model["spot"]["cash"], "posted", inputs)))
+    return out
+
+
 def board_section(bd, snap_ct):
     rows, more = trim(bd["rows"])
     times = [r["priced"] for r in rows]
@@ -641,12 +673,14 @@ def board_section(bd, snap_ct):
     live = f'/cash-bids?zip={z}' if z else "/cash-bids"
     more_html = (f'<p class="cbt-sub" style="margin:6px 0 0">{more} more bid{"s" if more != 1 else ""} for later '
                  f'delivery on the <a href="{esc(live)}">live page</a>.</p>' if more else "")
+    holds = hold_lines(bd)
+    more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
-            f'{more_html}</section>'), rows, times
+            f'{more_html}</section>'), rows, times, bool(holds)
 
 
 WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
@@ -674,9 +708,10 @@ def build_town_page(t, ctx):
     order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
     live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
-    secs, times, crops, nrows, shown = [], [], set(), 0, []
+    secs, times, crops, nrows, shown, any_hold = [], [], set(), 0, [], False
     for bd in live_b:
-        h, rows, ts = board_section(bd, snap_ct)
+        h, rows, ts, held = board_section(bd, snap_ct)
+        any_hold = any_hold or held
         secs.append(h)
         times += ts
         shown += rows
@@ -747,6 +782,12 @@ def build_town_page(t, ctx):
         near_note += (f" An elevator with no town or ZIP we can confirm is listed here when it is within "
                       f"{NEAR_MI} miles of {esc(t['name'])}, measured from its map pin to the nearest elevator "
                       f"we list in {esc(t['name'])}; its card says how far.")
+    hold_note = ""
+    if any_hold:
+        ss = "/store-or-sell" + (f"?zip={z}" if z else "")
+        hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
+                     "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
+                     f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     hdr, ftr = ctx["chrome"]
     body = f"""
 <body>
@@ -765,7 +806,7 @@ def build_town_page(t, ctx):
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
-  has the newest board and nearby elevators.{near_note}</div>
+  has the newest board and nearby elevators.{near_note}{hold_note}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -1492,6 +1533,12 @@ def selftest():
         fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
         for leak in ("$1.1", "3.71", "3.72", "3.73", "5.55", "7.77", "777", "Oct 3", "New Crop 2025", "30.00"):
             assert leak not in fr, f"an excluded value leaked: {leak}"
+        # Op n0: Oct $3.90, Nov $3.91 (1 month): +1c, less 3.5c storage and 2.3c interest = -5c
+        assert ('<p class="cbt-hold">Corn: Hold to Nov? +1¢ posted carry, net of storage and interest: '
+                '−5¢ a bushel.</p>') in fr, re.findall(r'<p class="cbt-hold">.*?</p>', fr)
+        assert fr.count('class="cbt-hold"') == 1, "only a board with a later month in this crop year gets a line"
+        assert "storage at 3.5¢ a month (default), interest at 7% a year (default), no shrink (default); " in fr
+        assert '<a href="/store-or-sell?zip=68025">Store or sell</a>' in fr
         assert "$3.95" in fr and "By Oct 9" in fr and "Nov 2026" in fr and "(2026-12)" not in fr
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr

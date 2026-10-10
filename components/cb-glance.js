@@ -6,7 +6,7 @@
  *   CBGlance.renderMoved(el, ctx)      boards whose basis moved since the last daily record
  *   CBGlance.renderFreshness(el, ctx)  how recently each nearby board posted; tap to filter
  *   CBGlance.renderGrid(el, ctx)       elevators down, delivery months across, cash in cells
- *   CBGlance.renderCarry(el, ctx)      harvest month against later months, in cents a bushel
+ *   CBGlance.renderCarry(el, ctx)      harvest month against later months, and what holding nets
  *   CBGlance.toneFn(bids)              basis colour against the local median, for the cards
  *   CBGlance.snapshot(zip, radius)     the last good network read, for when both feeds fail
  *
@@ -16,8 +16,11 @@
  *
  * THE RULE FOR EVERY NUMBER HERE: it is a number an elevator posted, or a
  * difference between two numbers the same elevator posted. Nothing is averaged
- * into a price, nothing is estimated, no storage cost is assumed. Where the data
- * cannot answer, the panel says so or stays empty.
+ * into a price and nothing is estimated. Where the data cannot answer, the panel
+ * says so or stays empty. The one exception is stated on screen: the carry
+ * panel's "net of storage and interest" line is the site's one store-or-sell
+ * calculation (components/storesell.js holdLine), with the reader's own storage,
+ * interest and shrink from /store-or-sell or its stated defaults.
  *
  * The page's own helpers (delKey, basisCents, groupElevators, the basis history
  * loader) are handed in by CBGlance.init() so that one rule governs both the
@@ -28,7 +31,7 @@
   var A = null;                       /* the page's helpers, from init() */
   var FRESH_FILTER = null;            /* 'hour' | 'today' | 'older' | 'unread' | 'notime' | null */
   var GRID_ALL = false, CARRY_ALL = false, MOVED_ALL = false;
-  var STORAGE_CENTS = null;           /* only ever what the reader typed */
+  var SS_KEY = 'agsist_storesell';    /* the reader's storage, interest, shrink: shared with /store-or-sell */
   var LAST = null;                    /* last ctx, for re-renders from inside a panel */
   var SNAP_KEY = 'agsist_cb_snapshot';
   /* A snapshot older than this is not offered at all. It is dated either way;
@@ -180,18 +183,26 @@
       /* "Harvest" is spot or a month no later than this harvest's December. */
       if (near !== 'spot' && near > harvestEnd) return;
       var np = A.ppu(r.cells[near].cashPrice), bestK = null, bestP = null;
-      ks.slice(1).forEach(function (k) { var p = A.ppu(r.cells[k].cashPrice); if (bestP == null || p > bestP) { bestP = p; bestK = k; } });
+      /* Stored grain only: a month in next year's crop (September on for corn
+         and soybeans, June on for wheat) is a new-crop sale, not storage, and
+         is not paired with this year's harvest bid (storesell.js newCropFrom). */
+      var SSc = window.AgsistStoreSell, cut = SSc ? SSc.newCropFrom(near === 'spot' ? A.monthFloorKey() : near, crop) : '';
+      ks.slice(1).forEach(function (k) { if (cut && k >= cut) return; var p = A.ppu(r.cells[k].cashPrice); if (bestP == null || p > bestP) { bestP = p; bestK = k; } });
       if (bestK == null) return;
       lines.push({ elev: r.elev, near: near, np: np, far: bestK, fp: bestP, gain: Math.round((bestP - np) * 10000) / 100, months: monthsBetween(near, bestK) });
     });
-    var h = '<div class="cbg-h">Carry · ' + esc(CROP_WORD[crop] || crop) + ': harvest delivery against later months</div>';
+    var h = '<div class="cbg-h">Carry · ' + esc(CROP_WORD[crop] || crop) + ': harvest delivery against later months this crop year</div>';
     if (!lines.length) {
-      el.innerHTML = h + '<p class="cbg-none">No elevator nearby posts both a harvest month and a later month for ' + esc(CROP_WORD[crop] || crop) + '.</p>';
+      el.innerHTML = h + '<p class="cbg-none">No elevator nearby posts both a harvest month and a later month this crop year for ' + esc(CROP_WORD[crop] || crop) + '.</p>';
       return;
     }
     lines.sort(function (a, b) { return b.gain - a.gain; });
-    h += '<p class="cbg-sub">The elevator’s own two posted prices, nothing else. The best later month is shown. ' +
-      '<label class="cbg-stor">Your storage cost <input type="number" inputmode="decimal" min="0" max="50" step="0.5" id="cbg-stor" placeholder="none" value="' + (STORAGE_CENTS != null ? STORAGE_CENTS : '') + '"> ¢/bu a month</label></p>';
+    var SS = window.AgsistStoreSell, inputs = SS ? SS.withDefaults(readCosts()) : null;
+    var store = inputs ? Math.round(inputs.cost * 1000) / 10 : '';
+    h += '<p class="cbg-sub">The elevator’s own two posted prices; the best later month is shown. ' +
+      (inputs ? 'Net is the site’s one store-or-sell figure: ' + esc(SS.costNote(inputs, null, null)) + ' ' : '') +
+      '<label class="cbg-stor">Your storage cost <input type="number" inputmode="decimal" min="0" max="50" step="0.5" id="cbg-stor" placeholder="3.5" value="' + (inputs && inputs.assumed.indexOf('cost') < 0 ? store : '') + '"> ¢/bu a month</label> ' +
+      '<a href="/store-or-sell?crop=' + esc(crop) + '">Change interest and shrink →</a></p>';
     h += '<ul class="cbg-carry">';
     (CARRY_ALL ? lines : lines.slice(0, CARRY_FIRST)).forEach(function (l) {
       var nm = shortMonth(l.near), fm = shortMonth(l.far);
@@ -199,9 +210,10 @@
               : l.gain === 0 ? fm + ' pays the same as ' + nm
               : 'No later month pays more: ' + fm + ' is ' + centsTxt(l.gain) + ' under ' + nm;
       var net = '';
-      if (STORAGE_CENTS != null && l.gain > 0 && l.months > 0) {
-        var n = Math.round((l.gain - STORAGE_CENTS * l.months) * 100) / 100;
-        net = '<span class="cbg-net ' + (n > 0 ? 'cbg-up' : n < 0 ? 'cbg-dn' : '') + '">after your ' + centsTxt(STORAGE_CENTS) + ' × ' + l.months + ' month' + (l.months === 1 ? '' : 's') + ' of storage: ' + signedCents(n) + '</span>';
+      if (inputs && l.gain > 0 && l.months > 0) {
+        var n = SS.carryNet(l.np, l.gain / 100, l.months, inputs).net, nc = Math.round(n * 100);
+        net = '<span class="cbg-net ' + (nc > 0 ? 'cbg-up' : nc < 0 ? 'cbg-dn' : '') + '">' +
+          esc(SS.holdLine({ to: fm, carry: l.gain / 100, months: l.months, spot: l.np, kind: 'posted', inputs: inputs })) + '</span>';
       }
       h += '<li><span class="cbg-cname">' + esc(nameOf(l.elev)) + (l.elev.unread ? ' <span class="cbg-warn">(not reached)</span>' : '') + '</span>' +
         '<span class="cbg-csay ' + (l.gain > 0 ? 'cbg-up' : l.gain < 0 ? 'cbg-dn' : '') + '">' + esc(say) + '</span>' +
@@ -213,10 +225,27 @@
     var inp = el.querySelector('#cbg-stor');
     if (inp) inp.addEventListener('change', function () {
       var v = parseFloat(inp.value);
-      STORAGE_CENTS = (isFinite(v) && v >= 0 && inp.value.trim() !== '') ? Math.min(v, 50) : null;
+      writeCost((isFinite(v) && v >= 0 && inp.value.trim() !== '') ? String(Math.min(v, 50) / 100) : '');
       renderCarry(el, ctx);
       var again = el.querySelector('#cbg-stor'); if (again) again.focus();
     });
+  }
+  /* The same localStorage record /store-or-sell and the homepage calculator
+     keep ({cost: '$/bu a month', rate: '%', shrink: '%'}, strings). */
+  function readCosts() {
+    var s = null, o = {};
+    try { s = JSON.parse(window.localStorage.getItem(SS_KEY) || 'null'); } catch (e) { s = null; }
+    if (s && typeof s === 'object') ['cost', 'rate', 'shrink'].forEach(function (k) {
+      var v = parseFloat(s[k]); if (String(s[k] == null ? '' : s[k]).trim() !== '' && isFinite(v) && v >= 0) o[k] = v;
+    });
+    return o;
+  }
+  function writeCost(v) {
+    var s = null;
+    try { s = JSON.parse(window.localStorage.getItem(SS_KEY) || 'null'); } catch (e) { s = null; }
+    if (!s || typeof s !== 'object') s = {};
+    s.cost = v;
+    try { window.localStorage.setItem(SS_KEY, JSON.stringify(s)); } catch (e) {}
   }
 
   /* ════════════════════ 4. THE FRESHNESS SCOREBOARD ═════════════════════

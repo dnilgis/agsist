@@ -86,6 +86,7 @@ PAGES = [
     ("/usda-quick-stats", "USDA crop data", "Yields by state", "usda nass quick stats yields acres production data"),
     ("/breakeven", "Break-even calculator", "Cost per bushel", "breakeven break even cost bushel calculator profit"),
     ("/harvest-price-tracker#presell", "Safe pre-sell", "How many bushels your crop insurance backs", "presell pre sell forward contract insurance calculator hedge guaranteed bushels"),
+    ("/store-or-sell", "Store or sell?", "Carry after storage and interest", "store sell storage carry hold bin interest shrink later bid"),
     ("/arc-plc", "ARC or PLC, 2026 and 2027", "Reference prices and FSA county benchmarks", "arc plc arc-co price loss coverage agriculture risk coverage effective reference price benchmark yield base acres fsa farm program 2026 2027 signup calculator sco"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),

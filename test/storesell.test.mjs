@@ -130,3 +130,67 @@ test("price and carry text in quarter cents", () => {
   assert.equal(S.carryText(-0.15), "−15¢");
   assert.equal(S.carryText(0), "even");
 });
+
+/* ── the one store-or-sell calculation (2026-10-10) ───────────────────── */
+test("defaults are stated and fill only what is blank", () => {
+  const d = S.withDefaults({});
+  assert.deepEqual([d.cost, d.rate, d.shrink], [0.035, 7, 0]);
+  assert.deepEqual(Array.from(d.assumed), ["cost", "rate", "shrink"]);
+  const e = S.withDefaults({ cost: 0.02, rate: null, shrink: 1 });
+  assert.deepEqual([e.cost, e.rate, e.shrink], [0.02, 7, 1]);
+  assert.deepEqual(Array.from(e.assumed), ["rate"]);
+});
+
+test("interest is always counted: the futures pages' 'storing makes sense' case loses money", () => {
+  /* Dec '26 to Jul '27 corn on 2026-10-09: +17 3/4c over 7 months at $4.80 1/2.
+     The old card: 2.5c a month carry, "above typical storage cost of ~3.5c/mo"
+     would be false here too, but with interest the net is clearly negative. */
+  const n = S.carryNet(4.805, 0.1775, 7, S.withDefaults({}));
+  near(n.storage, 0.245, "storage");
+  near(n.interest, 4.805 * 0.07 * 7 / 12, "interest");
+  assert.ok(n.net < 0, "net " + n.net);
+});
+
+test("holdLine and costNote read the same on every surface", () => {
+  const d = S.withDefaults({});
+  assert.equal(S.holdLine({ to: "Jan", carry: 0.05, months: 3, spot: 4.18, inputs: d }),
+    "Hold to Jan? +5¢ posted carry, net of storage and interest: −13¢ a bushel.");
+  assert.equal(S.costNote(d, 3, 4.18),
+    "3 months of storage at 3.5¢ a month (default), interest at 7% a year on $4.18 (default), no shrink (default).");
+  assert.match(S.holdLine({ to: "Jul", carry: 0.1775, months: 7, spot: 4.805, kind: "futures", inputs: d }), /^Hold to Jul\? \+17 3\/4¢ futures carry/);
+});
+
+import { execFileSync } from "node:child_process";
+test("scripts/storesell.py (the town pages' twin) prints exactly what storesell.js prints", () => {
+  const cases = [
+    { to: "Jan", carry: 0.05, months: 3, spot: 4.18 },
+    { to: "Mar", carry: 0.27, months: 5, spot: 4.38, inputs: { cost: 0.03, rate: 7.5, shrink: 1 } },
+    { to: "Jul", carry: 0.1775, months: 7, spot: 4.805, kind: "futures" },
+    { to: "Dec", carry: -0.03, months: 2, spot: 12.13, inputs: { cost: 0.04 } },
+    { to: "May", carry: 0.2325, months: 7, spot: 6.7075, inputs: { cost: 0, rate: 0, shrink: 0 } },
+    { to: "Nov", carry: 0, months: 1, spot: 10.5 },
+  ];
+  const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify(cases) }).toString());
+  cases.forEach((c, i) => {
+    const inp = S.withDefaults(c.inputs || {});
+    assert.equal(py[i].line, S.holdLine({ to: c.to, carry: c.carry, months: c.months, spot: c.spot, kind: c.kind, inputs: inp }), "line " + i);
+    assert.equal(py[i].note, S.costNote(inp, c.months, c.spot), "note " + i);
+    near(py[i].net, S.carryNet(c.spot, c.carry, c.months, inp).net, "net " + i);
+  });
+});
+
+test("build_periods / pick_period / costNote(no months) in the Python twin match storesell.js", () => {
+  const rows = [{ start: "2026-10", end: "2026-10", cash: 4.18 }, { start: "2026-10", end: "2026-10", cash: 4.16 },
+    { start: "2026-11", end: "2026-11", cash: 4.2 }, { start: "2027-01", end: "2027-01", cash: 4.23 },
+    { start: "2027-03", end: "2027-03", cash: 4.4 }, { start: "2027-10", end: "2027-11", cash: 4.5 }];
+  const cases = [{ rows, crop: "corn" }, { rows, crop: "wheat", inputs: { cost: 0.02, rate: 5 } },
+    { rows: rows.slice(0, 1), crop: "soybeans" }];
+  const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify(cases) }).toString());
+  cases.forEach((c, i) => {
+    const inp = S.withDefaults(c.inputs || {}), m = S.buildPeriods(c.rows, c.crop), pk = S.pickPeriod(m, inp, null);
+    assert.equal(JSON.stringify(py[i].later), JSON.stringify(m.later.map((p) => p.key)), "later " + i);
+    assert.equal(JSON.stringify(py[i].newCrop), JSON.stringify(m.newCrop), "newCrop " + i);
+    assert.equal(py[i].pick, pk ? pk.key : null, "pick " + i);
+    assert.equal(py[i].note, S.costNote(inp, null, null), "note " + i);
+  });
+});

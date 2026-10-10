@@ -39,8 +39,12 @@
                              - storage cost x months
                              - price now x annual rate x months / 12   (money tied up, simple interest)
                              - shrink % x (price now + carry)          (bushels lost before the later sale)
-     A blank optional box is left out and the result says it was not
-     counted; it is never treated as a zero someone typed. */
+     2026-10-10: the arithmetic is the site's one store-or-sell calculation
+     (components/storesell.js carryNet). A blank storage, interest or shrink
+     box takes the stated default (3.5 cents a month, 7% a year, no shrink)
+     and the result says which defaults it used: interest is always counted,
+     so a carry that only beats storage no longer reads as "storing pencils
+     out". */
   function money(v){ return '$' + Math.abs(v).toFixed(2); }
   function calcStoreOrSell(){
     var priceEl = $('idx1-calc-price'), costEl = $('idx1-calc-cost'),
@@ -65,16 +69,16 @@
       math('');
     }
     boxes.forEach(function(b){ if(b) b.removeAttribute('aria-invalid'); });
-    if(priceRaw === '' || costRaw === '' || monthsRaw === '' || carryRaw === ''){
+    if(priceRaw === '' || monthsRaw === '' || carryRaw === ''){
       resultEl.style.color = 'var(--text-dim)';
       resultEl.textContent = 'Enter your numbers above.';
       math('');
       return;
     }
-    var price = parseFloat(priceRaw), cost = parseFloat(costRaw), months = parseFloat(monthsRaw), carry = parseFloat(carryRaw);
+    var price = parseFloat(priceRaw), cost = costRaw === '' ? null : parseFloat(costRaw), months = parseFloat(monthsRaw), carry = parseFloat(carryRaw);
     var rate = rateRaw === '' ? null : parseFloat(rateRaw), shrink = shrinkRaw === '' ? null : parseFloat(shrinkRaw);
     if(!isFinite(price) || price <= 0) return bad(priceEl, 'Cash price: enter a price above $0 per bushel.');
-    if(!isFinite(cost) || cost < 0) return bad(costEl, 'Storage cost: enter $0 or more per bushel per month.');
+    if(cost !== null && !(isFinite(cost) && cost >= 0)) return bad(costEl, 'Storage cost: enter $0 or more per bushel per month, or leave it blank.');
     if(!isFinite(months) || months < 0 || Math.round(months) !== months) return bad(monthsEl, 'Months you would store: enter whole months, 0 to 24.');
     if(months > 24) return bad(monthsEl, 'Months you would store: 24 at most.');
     if(!isFinite(carry)) return bad(carryEl, 'Carry: enter a number in $/bu. Use a minus sign when the later month pays less.');
@@ -86,20 +90,24 @@
       math('');
       return;
     }
-    var totalCost = cost * months;
-    var interest = rate === null ? 0 : price * (rate / 100) * months / 12;
-    var shrinkLoss = shrink === null ? 0 : (shrink / 100) * (price + carry);
-    var net = carry - totalCost - interest - shrinkLoss, cav = carryCaveat(months);
-    var left = [];
-    if(rate === null) left.push('interest');
-    if(shrink === null) left.push('shrink');
-    var notCounted = left.length ? ' ' + left.join(' and ').replace(/^./, function(c){ return c.toUpperCase(); }) + ' not counted.' : '';
+    var SS = window.AgsistStoreSell;
+    var inp = SS ? SS.withDefaults({ cost: cost, rate: rate, shrink: shrink })
+                 : { cost: cost == null ? 0.035 : cost, rate: rate == null ? 7 : rate, shrink: shrink == null ? 0 : shrink, assumed: [] };
+    if(!SS){ if(cost == null) inp.assumed.push('cost'); if(rate == null) inp.assumed.push('rate'); if(shrink == null) inp.assumed.push('shrink'); }
+    var n = SS ? SS.carryNet(price, carry, months, inp) : null;
+    var totalCost = n ? n.storage : inp.cost * months;
+    var interest = n ? n.interest : price * (inp.rate / 100) * months / 12;
+    var shrinkLoss = n ? n.shrink : (inp.shrink / 100) * (price + carry);
+    var net = n ? n.net : carry - totalCost - interest - shrinkLoss, cav = carryCaveat(months);
+    var dflt = function(k){ return inp.assumed.indexOf(k) >= 0 ? ' (default)' : ''; };
+    var notCounted = inp.assumed.length ? ' Defaults used: ' + [inp.assumed.indexOf('cost') >= 0 ? 'storage $' + inp.cost.toFixed(3) + '/bu a month' : '',
+      inp.assumed.indexOf('rate') >= 0 ? 'interest ' + inp.rate + '% a year' : '',
+      inp.assumed.indexOf('shrink') >= 0 ? 'no shrink' : ''].filter(Boolean).join(', ') + '.' : '';
     var lines = ['Carry you expect          ' + (carry < 0 ? '−' : '+') + money(carry),
-      '− storage ' + money(cost) + ' × ' + months + ' mo     −' + money(totalCost)];
-    lines.push(rate === null ? '− interest                not counted (no rate entered)'
-      : '− interest ' + money(price) + ' × ' + rate + '% × ' + months + '/12   −' + money(interest));
-    lines.push(shrink === null ? '− shrink                  not counted (no shrink entered)'
-      : '− shrink ' + shrink + '% × (' + money(price) + ' ' + (carry < 0 ? '−' : '+') + ' ' + money(carry) + ')   −' + money(shrinkLoss));
+      '− storage $' + (Math.round(inp.cost * 1000) % 10 ? inp.cost.toFixed(3) : inp.cost.toFixed(2)) + dflt('cost') + ' × ' + months + ' mo     −' + money(totalCost)];
+    lines.push('− interest ' + money(price) + ' × ' + inp.rate + '%' + dflt('rate') + ' × ' + months + '/12   −' + money(interest));
+    lines.push(inp.shrink ? '− shrink ' + inp.shrink + '%' + dflt('shrink') + ' × (' + money(price) + ' ' + (carry < 0 ? '−' : '+') + ' ' + money(carry) + ')   −' + money(shrinkLoss)
+      : '− shrink                  none' + dflt('shrink'));
     lines.push('= ' + (net >= 0 ? '+' : '−') + money(net) + ' per bushel stored, against selling at ' + money(price) + ' now');
     math(lines.join('\n'));
     /* WAVE3-H: the prefilled carry is for its own months. Months that differ
@@ -113,10 +121,10 @@
     }
     if(net > 0.001){
       resultEl.style.color = 'var(--green)';
-      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + notCounted;
+      resultEl.textContent = 'Storing nets +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, after storage and interest, if your carry estimate holds.' + notCounted;
     } else if(net < -0.001){
       resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + notCounted;
+      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, after storage and interest.' + notCounted;
     } else {
       resultEl.style.color = 'var(--text)';
       resultEl.textContent = 'Breakeven: storing and selling now cost the same at these numbers.' + notCounted;

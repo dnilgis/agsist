@@ -1,5 +1,16 @@
-/* storesell.js: the homepage "Store or sell?" carry, from one elevator's own
- * posted later-delivery bids.
+/* storesell.js: the site's one store-or-sell calculation (2026-10-10), and the
+ * homepage "Store or sell?" carry from one elevator's own posted later bids.
+ *
+ * ONE CALCULATION. The corn, soybean and wheat pages said "storing makes
+ * sense" from a flat 3.5 cents a month with no interest; the homepage counted
+ * interest and said the opposite; the cash bids page had a third version.
+ * Every surface now calls carryNet() / holdLine() here (store-or-sell.html,
+ * the futures pages' carry card, cash-bids, the town pages through the build's
+ * Python twin scripts/storesell.py, the homepage). Defaults are stated, the
+ * reader can change them, and interest is always counted:
+ *   storage  3.5 cents a bushel a month   (DEFAULTS.cost, the figure the site used)
+ *   interest 7% a year on the cash price  (DEFAULTS.rate, money tied up)
+ *   shrink   0%                           (DEFAULTS.shrink, dry grain in your own bin)
  *
  * The reader picks an elevator and crop in the calculator's "Price from" box
  * (homepage-extras.js). This file lists that elevator's posted delivery
@@ -71,19 +82,68 @@
     return { spot: spot, later: later, newCrop: dropped };
   }
 
-  /* inputs: {cost: $/bu/mo or null, rate: %/yr or null, shrink: % or null}.
-     A null optional input is left out, never read as zero typed in. Without a
-     storage cost there is no net. */
-  function netFor(p, spotCash, inputs){
+  var DEFAULTS = { cost: 0.035, rate: 7, shrink: 0 };   // $/bu/month, %/year, %
+
+  /* The reader's numbers with the stated defaults filling what is blank.
+     `assumed` names each default used, so the words can say so. */
+  function withDefaults(inputs){
     inputs = inputs || {};
-    var out = { carry: p.carry, storage: null, interest: null, shrink: null, net: null };
+    var o = { assumed: [] };
+    ['cost', 'rate', 'shrink'].forEach(function(k){
+      var v = inputs[k];
+      if(v == null || !isFinite(v)){ o[k] = DEFAULTS[k]; o.assumed.push(k); } else o[k] = v;
+    });
+    return o;
+  }
+
+  /* THE calculation. spot and carry in $/bu, months a count; inputs as in
+     netFor. interest = spot x rate x months / 12 (money tied up, simple
+     interest); shrink = shrink% x the later price (spot + carry). */
+  function carryNet(spot, carry, months, inputs){
+    inputs = inputs || {};
+    var out = { carry: carry, months: months, storage: null, interest: null, shrink: null, net: null };
     if(inputs.cost == null || !isFinite(inputs.cost)) return out;
-    out.storage = inputs.cost * p.months;
-    out.interest = inputs.rate == null ? 0 : spotCash * (inputs.rate / 100) * p.months / 12;
-    out.shrink = inputs.shrink == null ? 0 : (inputs.shrink / 100) * p.cash;
-    out.net = p.carry - out.storage - out.interest - out.shrink;
+    out.storage = inputs.cost * months;
+    out.interest = inputs.rate == null ? 0 : spot * (inputs.rate / 100) * months / 12;
+    out.shrink = inputs.shrink == null ? 0 : (inputs.shrink / 100) * (spot + carry);
+    out.net = carry - out.storage - out.interest - out.shrink;
     return out;
   }
+
+  /* inputs: {cost: $/bu/mo or null, rate: %/yr or null, shrink: % or null}.
+     A null optional input is left out, never read as zero typed in. Without a
+     storage cost there is no net. (Callers that want the stated defaults pass
+     withDefaults(inputs).) */
+  function netFor(p, spotCash, inputs){
+    var n = carryNet(spotCash, p.carry, p.months, inputs);
+    return { carry: n.carry, storage: n.storage, interest: n.interest, shrink: n.shrink, net: n.net };
+  }
+
+  /* The one-line answer every surface prints:
+       "Hold to Jan? +5¢ posted carry, net of storage and interest: −8¢ a bushel."
+     o: {to: 'Jan' (month word), carry ($/bu), months, spot ($/bu), kind:
+     'posted' | 'futures', inputs (already through withDefaults)}. */
+  function holdLine(o){
+    var inputs = o.inputs || withDefaults({});
+    var n = carryNet(o.spot, o.carry, o.months, inputs);
+    var c = netCents(n.net);
+    var what = o.kind === 'futures' ? ' futures carry' : ' posted carry';
+    var costs = 'storage and interest' + (inputs.shrink ? ' and shrink' : '');
+    var ct = carryText(o.carry);
+    return 'Hold to ' + o.to + '? ' + (ct === 'even' ? '0\u00a2' : ct) + what + ', net of ' + costs + ': '
+      + (c === 0 ? 'about even' : netText(n.net)) + ' a bushel.';
+  }
+  /* The assumptions under that line, in words. months null: no month count. */
+  function costNote(inputs, months, spot){
+    inputs = inputs || withDefaults({});
+    var a = inputs.assumed || [];
+    var parts = [(months == null ? 'storage' : months + ' month' + (months === 1 ? '' : 's') + ' of storage') + ' at ' + centsWord(inputs.cost) + ' a month' + (a.indexOf('cost') >= 0 ? ' (default)' : ''),
+                 'interest at ' + inputs.rate + '% a year' + (spot != null ? ' on ' + cashQ(spot) : '') + (a.indexOf('rate') >= 0 ? ' (default)' : '')];
+    if(inputs.shrink) parts.push(inputs.shrink + '% shrink' + (a.indexOf('shrink') >= 0 ? ' (default)' : ''));
+    else parts.push('no shrink' + (a.indexOf('shrink') >= 0 ? ' (default)' : ''));
+    return parts.join(', ') + '.';
+  }
+  function centsWord(d){ var c = Math.round(d * 1000) / 10; return (c % 1 === 0 ? String(c) : c.toFixed(1)) + '\u00a2'; }
 
   /* The period the plain line talks about: the reader's own pick if it is
      still posted, else the best net, else (no storage cost yet) the biggest
@@ -129,9 +189,26 @@
       + ' cent' + (Math.abs(c) === 1 ? '' : 's') + ' a bushel after your costs.' + tail;
   }
 
+  /* The futures carry the site prices for this crop year's stored grain:
+     first and last contract of the storage window, never next year's crop.
+     Read by the futures pages' carry card and /store-or-sell; move both ends
+     here when a contract expires (corn and soybeans after the July contract,
+     wheat after May). */
+  var FUTURES_CARRY = { corn: ['corn-dec', 'corn-jul27'], soybeans: ['beans-nov', 'beans-jul27'], wheat: ['wheat-dec26', 'wheat-may27'] };
+  var FCODE = 'FGHJKMNQUVXZ';
+  /* 'ZCZ26.CBT' -> {key:'2026-12', label:"Dec '26"} */
+  function futuresMonth(ticker){
+    var m = /^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(ticker || ''));
+    if(!m) return null;
+    var mo = FCODE.indexOf(m[1]) + 1, y = 2000 + (+m[2]);
+    return { key: y + '-' + (mo < 10 ? '0' : '') + mo, label: MON[mo - 1] + ' \'' + m[2] };
+  }
+
   var core = { buildPeriods: buildPeriods, netFor: netFor, pickPeriod: pickPeriod, headline: headline,
                newCropFrom: newCropFrom, monthsApart: monthsApart, carryText: carryText, netText: netText,
-               shortMon: shortMon, longMon: longMon, cashQ: cashQ };
+               shortMon: shortMon, longMon: longMon, cashQ: cashQ,
+               DEFAULTS: DEFAULTS, withDefaults: withDefaults, carryNet: carryNet, holdLine: holdLine,
+               costNote: costNote, centsWord: centsWord, FUTURES_CARRY: FUTURES_CARRY, futuresMonth: futuresMonth };
   root.AgsistStoreSell = core;
   if(typeof document === 'undefined') return;
 
@@ -182,7 +259,7 @@
     var H = window.__agsistHomeBidsInternals;
     var per = String(b.period || '');
     var start = H && H.rowMonthKey ? H.rowMonthKey({ deliveryStart: per, deliveryMonth: '', deliveryEnd: '', category: crop, netCrop: crop }) : '';
-    if(!start) { var m0 = /^(\d{4}-\d{2})/.exec(per); start = m0 ? m0[1] : ''; }
+    if(!start) { var m0 = /^(\d{4}-\d{2})/.exec(per); start = m0 ? m0[1] : (per === 'spot' ? thisMonth() : ''); }
     if(!start || start < thisMonth()) return null;
     var m = /^(\d{4}-\d{2})(?:\/(\d{4}-\d{2}))?/.exec(per);
     var end = m ? (m[2] || m[1]) : start;
@@ -242,7 +319,8 @@
   function render(){
     var box = $('ss-posted');
     if(!box || !cur) return;
-    var m = cur.model, o = cur.opt, inputs = readInputs();
+    /* Blank boxes take the stated defaults: interest is always counted. */
+    var m = cur.model, o = cur.opt, inputs = withDefaults(readInputs());
     var town = String(o.city || '').replace(/,\s*[A-Z]{2}$/, '').trim();
     if(town && String(o.where || '').toLowerCase().indexOf(town.toLowerCase()) >= 0) town = '';
     if(!m){ box.hidden = true; return; }
@@ -289,6 +367,7 @@
         + (cur.userPicked ? 'Tap another month to compare.' : 'The line above is the month that '
         + (inputs.cost != null ? 'nets the most' : 'pays the most carry') + '; tap another month to compare.'));
     }
+    if(m.later.length) fine.push('Costs: ' + costNote(inputs, null, null) + ' Change them in the boxes below.');
     if(m.newCrop.length) fine.push(m.newCrop.map(shortMon).join(', ') + ' left out: that is next year’s crop, not stored grain.');
     if(fine.length) html += '<p class="idx1-extras-fine ss-fine">' + esc(fine.join(' ')) + '</p>';
     body.innerHTML = html;
@@ -345,8 +424,11 @@
     var d = $('idx1-store-sell'), f = d && d.closest && d.closest('details');
     if(f) f.addEventListener('toggle', function(){ if(f.open) load(); });
   }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+  /* The homepage calculator only: other pages load this file for the core. */
+  function wireIfHome(){ if($('idx1-store-sell') || $('ss-posted')) wire(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireIfHome); else wireIfHome();
 
   core.show = show;
   core.driving = driving;
+  core.modelFor = modelFor;   // an elevator's posted periods for a crop (store-or-sell.html)
 })(typeof window !== 'undefined' ? window : globalThis);

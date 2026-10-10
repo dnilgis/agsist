@@ -791,19 +791,20 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
           <div class="idx1-calc-pickwrap"><label class="idx1-extras-field idx1-calc-pickfield">Price from<select id="idx1-calc-pick" aria-describedby="idx1-calc-why"></select></label>
           <div id="idx1-calc-why" class="idx1-extras-fine"></div></div>
-          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=2" defer></script>
+          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=3" defer></script>
           <div class="idx1-extras-row">
             <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
-            <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.01" min="0" placeholder="e.g. 0.03" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.005" min="0" placeholder="0.035 default" inputmode="decimal"></label>
             <label class="idx1-extras-field">Months you would store<input id="idx1-calc-months" type="number" step="1" min="0" max="24" inputmode="numeric"></label>
             <label class="idx1-extras-field">Carry you expect ($/bu)<input id="idx1-calc-carry" type="number" step="0.01" placeholder="e.g. 0.10" inputmode="decimal"></label>
           </div>
           <div class="idx1-extras-row idx1-calc-opt">
-            <label class="idx1-extras-field">Interest rate (%/yr) <span class="idx1-opt">optional</span><input id="idx1-calc-rate" type="number" step="0.1" min="0" max="30" placeholder="e.g. 7.5" inputmode="decimal"></label>
-            <label class="idx1-extras-field">Shrink (%) <span class="idx1-opt">optional</span><input id="idx1-calc-shrink" type="number" step="0.1" min="0" max="20" placeholder="e.g. 1" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Interest rate (%/yr)<input id="idx1-calc-rate" type="number" step="0.1" min="0" max="30" placeholder="7 default" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Shrink (%)<input id="idx1-calc-shrink" type="number" step="0.1" min="0" max="20" placeholder="0 default" inputmode="decimal"></label>
           </div>
           <div id="idx1-calc-result" role="status">Enter your numbers above.</div>
           <details class="idx1-calc-mathbox" hidden><summary>Show the math</summary><pre id="idx1-calc-math"></pre></details>
+          <p class="idx1-extras-fine"><a href="/store-or-sell">Store or sell: every later month at your elevator, with your costs &rarr;</a></p>
           <div class="idx1-extras-fine">Carry minus storage, interest on the cash price over your months, and bushels lost to shrink. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-calc">What&rsquo;s not counted</button><span id="tip-calc" role="tooltip" class="tip-t" hidden>Interest and shrink count only when you enter them. Quality risk, drying and handling charges are not included. Call your elevator for their exact terms.</span></span> <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-carry">What is carry?</button><span id="tip-carry" role="tooltip" class="tip-t" hidden>Carry is how much more a later delivery month pays than today, per bushel. It is what the market pays you to store.</span></span></div>
         </div>
         <div id="idx1-search-compare" class="idx1-extras-line" style="display:none"></div>
@@ -1810,7 +1811,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/bids-homepage.js?v=32" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=2" defer></script>
-<script src="/components/homepage-extras.js?v=13" defer></script>
+<script src="/components/homepage-extras.js?v=14" defer></script>
 <script>
 (function() {
   'use strict';

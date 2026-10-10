@@ -28,8 +28,7 @@ var CROPS={
   corn:{
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
-    fwd:[{key:"corn-sep26",month:"Sep '26",idx:321,tag:"old crop"},{key:"corn-dec",month:"Dec '26",idx:324,carryStart:true},{key:"corn-mar27",month:"Mar '27",idx:327},{key:"corn-may27",month:"May '27",idx:329},{key:"corn-jul27",month:"Jul '27",idx:331,carryEnd:true},{key:"corn-dec27",month:"Dec '27",idx:336,tag:"new crop 2027"}],
-    carryWindowLabel:"Dec '26 → Jul '27 (2026-crop storage window)",
+    fwd:[{key:"corn-sep26",month:"Sep '26",idx:321,tag:"old crop"},{key:"corn-dec",month:"Dec '26",idx:324},{key:"corn-mar27",month:"Mar '27",idx:327},{key:"corn-may27",month:"May '27",idx:329},{key:"corn-jul27",month:"Jul '27",idx:331},{key:"corn-dec27",month:"Dec '27",idx:336,newCrop:true}],
     /* the bid's board contract: Dec '26 also lives under the legacy key */
     boardAlias:{'dec26':'corn-dec'},
     tiles:[{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
@@ -88,10 +87,8 @@ var CROPS={
   soybean:{
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
-    /* carry:true marks the 2026-crop storage window (Nov '26 -> Jul '27).
-       Aug/Sep '26 are old-crop points; Nov '27 is new crop 2027: plotted, excluded from carry. */
-    fwd:[{key:"beans-aug26",month:"Aug '26",idx:320},{key:"beans-sep26",month:"Sep '26",idx:321},{key:"beans-nov",month:"Nov '26",idx:323,carry:true},{key:"beans-jan27",month:"Jan '27",idx:325,carry:true},{key:"beans-mar27",month:"Mar '27",idx:327,carry:true},{key:"beans-jul27",month:"Jul '27",idx:331,carry:true},{key:"beans-nov27",month:"Nov '27",idx:335,newCrop:true}],
-    carryWindowLabel:"Nov '26 → Jul '27 (2026-crop storage window)",
+    /* Aug/Sep '26 are old-crop points; Nov '27 is new crop 2027: plotted, excluded from carry. */
+    fwd:[{key:"beans-aug26",month:"Aug '26",idx:320},{key:"beans-sep26",month:"Sep '26",idx:321},{key:"beans-nov",month:"Nov '26",idx:323},{key:"beans-jan27",month:"Jan '27",idx:325},{key:"beans-mar27",month:"Mar '27",idx:327},{key:"beans-jul27",month:"Jul '27",idx:331},{key:"beans-nov27",month:"Nov '27",idx:335,newCrop:true}],
     boardAlias:{'nov26':'beans-nov'},
     tiles:[{key:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
@@ -149,9 +146,8 @@ var CROPS={
   wheat:{
     key:'wheat',label:'Wheat',root:'ZW',stats:'wheat',ga:'wheat',progressKey:null,
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>',
-    // Carry window: 2026-crop storage only (Sep '26 forward to May '27). Jul/Dec '27 are new-crop 2027, plotted, never in carry math.
+    // Carry window: components/storesell.js FUTURES_CARRY (Dec '26 to May '27). Jul/Dec '27 are new-crop 2027, plotted, never in carry math.
     fwd:[{key:"wheat-sep26",month:"Sep '26",idx:321},{key:"wheat-dec26",month:"Dec '26",idx:324},{key:"wheat-mar27",month:"Mar '27",idx:327},{key:"wheat-may27",month:"May '27",idx:329},{key:"wheat-jul27",month:"Jul '27",idx:331,newCrop:true},{key:"wheat-dec27",month:"Dec '27",idx:336,newCrop:true}],
-    carryLabelSuffix:" (2026-crop storage window)",
     boardAlias:{},
     tiles:[{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'oats',p:'p-oats',c:'c-oats',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-wheat','c-wheat'],
@@ -263,7 +259,6 @@ var CROP_LABEL=CROP.label;
 var CROP_EMOJI=CROP.emoji;
 var CROP_PROGRESS_KEY=CROP.progressKey;
 var FWD_CONTRACTS=CROP.fwd;
-var CARRY_WINDOW_LABEL=CROP.carryWindowLabel;
 
 /* ── small shared helpers ─────────────────────────────────────────────────── */
 function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
@@ -1558,93 +1553,17 @@ function loadBriefingStrip(){
 
 
 
-// ============ FORWARD CURVE ============
-// Renders every available contract month as an inline SVG scatter+line.
-// Computes carry ($/mo per bushel) vs typical storage cost.
-// cropKey = 'corn'|'beans'|'wheat', contractList = [{key:'corn-dec',month:'Dec',monthIdx:0},...]
-function fwdCurveCorn(cropKey,contractList,quotes,isGrain){
-  var svg=document.getElementById('fwd-svg');
-  var shape=document.getElementById('fwd-shape');
-  var interp=document.getElementById('fwd-interp');
-  if(!svg)return;
-  // Gather available points (carry flags + crop-year tags travel with each point)
-  var pts=[];
-  contractList.forEach(function(c){
-    var d=quotes[c.key];
-    if(d&&d.close!=null){
-      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close,tag:c.tag||null,carryStart:!!c.carryStart,carryEnd:!!c.carryEnd});
-    }
-  });
-  if(pts.length<2){
-    svg.style.display='none';
-    var empty=document.getElementById('fwd-empty');
-    if(empty)empty.style.display='block';
-    return;
-  }
-  // Compute bounds
-  var minP=Math.min.apply(null,pts.map(function(p){return p.price;}));
-  var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
-  var pad=(maxP-minP)*0.15||0.05;
-  minP-=pad;maxP+=pad;
-  var W=700,H=152,mL=40,mR=16,mT=10,mB=40;
-  var pw=W-mL-mR,ph=H-mT-mB;
-  function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
-  function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
-  // Build SVG
-  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-  // Y-axis labels (min and max price)
-  s.push('<text x="4" y="'+(mT+8)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
-  s.push('<text x="4" y="'+(mT+ph)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
-  // Connecting line
-  var path='';
-  pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
-  s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
-  // Dots + price labels + month labels (+ crop-year tag under the month where set)
-  pts.forEach(function(p,i){
-    s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="'+(p.tag&&p.tag.indexOf('new crop')===0?'#5a9b3c':'#d4a23f')+'"/>');
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" fill="#9aa39c" font-size="13" text-anchor="middle">'+p.label+'</text>');
-    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" fill="#7f8a82" font-size="10" text-anchor="middle">'+p.tag+'</text>');
-  });
-  s.push('</svg>');
-  svg.outerHTML=s.join('');
-  // Interpretation: contango/backwardation + carry over the SAME-crop storage window only.
-  // Old-crop nearby (Sep '26) and next-crop-year (Dec '27) points are plotted but excluded \u2014
-  // carry math across crop years is meaningless for a storage decision.
-  var cs=null,ce=null;
-  pts.forEach(function(p){if(p.carryStart)cs=p;if(p.carryEnd)ce=p;});
-  var shapeTxt,interpTxt;
-  if(cs&&ce&&ce.idx>cs.idx){
-    var totalDiff=ce.price-cs.price;
-    var monthsSpan=ce.idx-cs.idx;
-    var monthlyCarry=totalDiff/monthsSpan;
-    var STORAGE=0.035;
-    var windowLbl=(typeof CARRY_WINDOW_LABEL!=='undefined')?CARRY_WINDOW_LABEL:(cs.label+' \u2192 '+ce.label);
-    if(totalDiff>0.05){
-      shapeTxt='contango';
-      if(monthlyCarry>STORAGE*1.1){
-        interpTxt='<strong>'+windowLbl+': market is paying '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> to store, above typical storage cost of ~3.5\u00a2/mo. Storing makes sense if you have bin space. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
-      }else{
-        interpTxt='<strong>'+windowLbl+': modest carry of '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong>: near typical storage cost of ~3.5\u00a2/mo. Storage decision is roughly breakeven on carry alone. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
-      }
-    }else if(totalDiff<-0.05){
-      shapeTxt='backwardation';
-      interpTxt='<strong>'+windowLbl+': market is inverted</strong>, '+cs.label+' is $'+Math.abs(totalDiff).toFixed(2)+' above '+ce.label+'. Front-end demand is strong; storage penalty if you hold. Consider selling sooner. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
-    }else{
-      shapeTxt='flat';
-      interpTxt='<strong>'+windowLbl+': flat curve</strong>: deferred same-crop contracts are priced near Dec. Market is neutral on storage economics. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
-    }
-  }else{
-    shapeTxt='-';
-    interpTxt='Storage-carry contracts (Dec \u201926 and Jul \u201927) are not both available in the current data, so no carry figure is shown.';
-  }
-  if(shape)shape.textContent=shapeTxt;
-  if(interp)interp.innerHTML=interpTxt;
-}
-
-
-// ============ FORWARD CURVE ============
-function fwdCurveSoybean(cropKey,contractList,quotes,isGrain){
+// ============ FORWARD CURVE AND CARRY ============
+/* One chart and one carry line for the three crops (2026-10-10). The carry
+   card said "Storing makes sense if you have bin space" whenever the monthly
+   futures carry beat a flat 3.5 cents with no interest; with interest on the
+   grain's value the same carry loses money. It now prints the site's one
+   store-or-sell calculation (components/storesell.js holdLine: carry minus
+   storage, interest and shrink, stated defaults the reader can change on
+   /store-or-sell) for the storage window, and points to the elevator's own
+   posted carry, which is what a farmer actually gets paid. Contracts in the
+   next crop year are plotted and never in the carry. */
+function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var svg=document.getElementById('fwd-svg');
   var shape=document.getElementById('fwd-shape');
   var interp=document.getElementById('fwd-interp');
@@ -1653,162 +1572,73 @@ function fwdCurveSoybean(cropKey,contractList,quotes,isGrain){
   contractList.forEach(function(c){
     var d=quotes[c.key];
     if(d&&d.close!=null){
-      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close,carry:!!c.carry,newCrop:!!c.newCrop});
+      var nc=!!(c.newCrop||(c.tag&&c.tag.indexOf('new crop')===0));
+      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close,newCrop:nc,tag:c.tag||(nc?'new crop':null),key:c.key});
     }
   });
   if(pts.length<2){
     svg.style.display='none';
     var empty=document.getElementById('fwd-empty');
     if(empty)empty.style.display='block';
+    if(interp)interp.textContent='';
     return;
   }
   var minP=Math.min.apply(null,pts.map(function(p){return p.price;}));
   var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
   var pad=(maxP-minP)*0.15||0.05;
   minP-=pad;maxP+=pad;
-  var W=700,H=152,mL=40,mR=16,mT=10,mB=40;
+  var W=700,H=140,mL=60,mR=44,mT=10,mB=38;
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
   var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-  s.push('<text x="4" y="'+(mT+8)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
-  s.push('<text x="4" y="'+(mT+ph)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
+  s.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
+  s.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
   s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
   pts.forEach(function(p,i){
-    if(p.newCrop){
-      s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" stroke="#d4a23f" stroke-width="2"/>');
-    }else{
-      s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
-    }
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" fill="#9aa39c" font-size="13" text-anchor="middle">'+p.label+'</text>');
-    if(p.newCrop)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" fill="#9aa39c" font-size="11" text-anchor="middle">new crop 2027</text>');
+    s.push(p.newCrop?'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" stroke="#d4a23f" stroke-width="2"/>':'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
+    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" style="fill:var(--text,#e8ebe5)" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+(isGrain?AG.px.priceDollars(p.price,{style:'slash'}):'$'+p.price.toFixed(2))+'</text>');
+    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" text-anchor="middle">'+p.label+'</text>');
+    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" style="fill:var(--text-dim,#7f8a82)" font-size="10" text-anchor="middle">'+p.tag+'</text>');
   });
   s.push('</svg>');
   svg.outerHTML=s.join('');
-  /* Carry math never spans crop years: measured only across the 2026-crop
-     storage window (Nov '26 -> Jul '27). Aug/Sep '26 old-crop and Nov '27
-     new-crop points are plotted for context but excluded. */
-  var cw=pts.filter(function(p){return p.carry;});
-  var shapeTxt,interpTxt;
-  if(cw.length<2){
-    shapeTxt='-';
-    interpTxt='Carry not computed: the '+CARRY_WINDOW_LABEL+' contracts are not all available in the current data.';
-  }else{
-    var first=cw[0],last=cw[cw.length-1];
-    var totalDiff=last.price-first.price;
-    var monthsSpan=last.idx-first.idx;if(monthsSpan<=0)monthsSpan=1;
-    var monthlyCarry=totalDiff/monthsSpan;
-    var STORAGE=0.035;
-    var windowNote=' Carry window: <strong>'+CARRY_WINDOW_LABEL+'</strong>, Aug \u201926/Sep \u201926 are old-crop points and Nov \u201927 is new crop 2027, all excluded from carry math.';
-    if(totalDiff>0.05){
-      shapeTxt='contango';
-      if(monthlyCarry>STORAGE*1.1){
-        interpTxt='<strong>Market is paying '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> to store '+first.label+' through '+last.label+', above typical storage cost of ~3.5\u00a2/mo. Storing makes sense if you have bin space.'+windowNote;
-      }else{
-        interpTxt='<strong>Modest carry of '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong>: near typical storage cost of ~3.5\u00a2/mo. Storage decision is roughly breakeven on carry alone.'+windowNote;
-      }
-    }else if(totalDiff<-0.05){
-      shapeTxt='backwardation';
-      interpTxt='<strong>Market is inverted</strong>, '+first.label+' is $'+Math.abs(totalDiff).toFixed(2)+' above '+last.label+'. Front-end demand is strong; storage penalty if you hold. Consider selling sooner.'+windowNote;
-    }else{
-      shapeTxt='flat';
-      interpTxt='<strong>Flat curve</strong>: deferred contracts are priced near '+first.label+'. Market is neutral on storage economics.'+windowNote;
-    }
-  }
-  if(shape)shape.textContent=shapeTxt;
-  if(interp)interp.innerHTML=interpTxt;
-}
 
-
-// ============ FORWARD CURVE ============
-// Renders every available contract month as an inline SVG scatter+line.
-// Computes carry ($/mo per bushel) vs typical storage cost.
-// cropKey = 'corn'|'beans'|'wheat', contractList = [{key:'corn-dec',month:'Dec',monthIdx:0},...]
-function fwdCurveWheat(cropKey,contractList,quotes,isGrain){
-  var svg=document.getElementById('fwd-svg');
-  var shape=document.getElementById('fwd-shape');
-  var interp=document.getElementById('fwd-interp');
-  if(!svg)return;
-  // Gather available points
-  var pts=[];
-  contractList.forEach(function(c){
-    var d=quotes[c.key];
-    if(d&&d.close!=null){
-      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close,newCrop:!!c.newCrop});
-    }
-  });
-  if(pts.length<2){
-    svg.style.display='none';
-    var empty=document.getElementById('fwd-empty');
-    if(empty)empty.style.display='block';
-    return;
-  }
-  // Compute bounds
-  var minP=Math.min.apply(null,pts.map(function(p){return p.price;}));
-  var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
-  var pad=(maxP-minP)*0.15||0.05;
-  minP-=pad;maxP+=pad;
-  var W=700,H=140,mL=40,mR=16,mT=10,mB=28;
-  var pw=W-mL-mR,ph=H-mT-mB;
-  function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
-  function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
-  // Build SVG
-  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-  // Y-axis labels (min and max price)
-  s.push('<text x="4" y="'+(mT+8)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
-  s.push('<text x="4" y="'+(mT+ph)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
-  // Connecting line
-  var path='';
-  pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
-  s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
-  // Dots + price labels + month labels \u2014 new-crop 2027 points drawn hollow green
-  pts.forEach(function(p,i){
-    if(p.newCrop){
-      s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" stroke="#5fc28a" stroke-width="2"/>');
-    }else{
-      s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
-    }
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-8)+'" fill="'+(p.newCrop?'#5fc28a':'#9aa39c')+'" font-size="13" text-anchor="middle">'+p.label+(p.newCrop?'*':'')+'</text>');
-  });
-  s.push('</svg>');
-  svg.outerHTML=s.join('');
-  // Interpretation: contango/backwardation + carry \u2014 carry math stays inside the
-  // current-crop storage window and never spans into new-crop 2027 contracts.
-  var carryPts=pts.filter(function(p){return !p.newCrop;});
+  // the storage window: the first and last contracts of this crop year that trade
+  var SS=window.AgsistStoreSell;
+  var cw=(SS&&SS.FUTURES_CARRY[window.AGSIST_FUTURES==='soybean'?'soybeans':window.AGSIST_FUTURES])||[];
+  var first=pts.filter(function(p){return p.key===cw[0];})[0],last=pts.filter(function(p){return p.key===cw[1];})[0];
   var shapeTxt='',interpTxt='';
-  if(carryPts.length>=2){
-    var first=carryPts[0],last=carryPts[carryPts.length-1];
-    var windowLbl=first.label+' \u2192 '+last.label+CARRY_LABEL_SUFFIX;
-    var totalDiff=last.price-first.price;
-    var monthsSpan=last.idx-first.idx;if(monthsSpan<=0)monthsSpan=1;
-    var monthlyCarry=totalDiff/monthsSpan;
-    var STORAGE=0.035;
-    if(totalDiff>0.05){
-      shapeTxt='contango';
-      if(monthlyCarry>STORAGE*1.1){
-        interpTxt='<strong>Market is paying '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> to store across '+windowLbl+', above typical storage cost of ~3.5\u00a2/mo. Storing makes sense if you have bin space.';
-      }else{
-        interpTxt='<strong>Modest carry of '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> across '+windowLbl+', near typical storage cost. Storage decision is roughly breakeven on carry alone.';
-      }
-    }else if(totalDiff<-0.05){
-      shapeTxt='backwardation';
-      interpTxt='<strong>Market is inverted</strong> across '+windowLbl+', '+first.label+' is $'+Math.abs(totalDiff).toFixed(2)+' above '+last.label+'. Front-end demand is strong; storage penalty if you hold. Consider selling sooner.';
-    }else{
-      shapeTxt='flat';
-      interpTxt='<strong>Flat curve</strong> across '+windowLbl+', deferred contracts are priced near the nearby. Market is neutral on storage economics.';
-    }
+  if(!first||!last||!SS){
+    shapeTxt='-';
+    interpTxt='Not enough contracts in this crop year trade to show a carry.';
+  }else{
+    var months=Math.max(1,last.idx-first.idx);
+    var spread=last.price-first.price;
+    shapeTxt=spread>0.05?'contango':spread<-0.05?'backwardation':'flat';
+    var inputs=readStoreInputs();
+    var line=SS.holdLine({to:last.label,carry:spread,months:months,spot:first.price,kind:'futures',inputs:inputs});
+    interpTxt='<strong>'+esc(line)+'</strong> '
+      +esc(first.label+' to '+last.label+' futures: the later month pays '+AG.px.move(Math.abs(spread)*100,{style:'slash'})+(spread>=0?' more.':' less.'))+' '
+      +esc(SS.costNote(inputs,months,first.price))
+      +' Futures carry assumes your basis stays where it is; your elevator’s posted later bids show the carry it actually pays. '
+      +'<a style="color:var(--gold)" href="/store-or-sell?crop='+encodeURIComponent(window.AGSIST_FUTURES)+'">Store or sell, with your elevator’s bids and your costs →</a>';
   }
-  var hasNewCrop=pts.some(function(p){return p.newCrop;});
-  if(hasNewCrop)interpTxt+=(interpTxt?' ':'')+'<em>* Jul \u201927 and Dec \u201927 are new-crop 2027 contracts: plotted for reference, excluded from the carry math.</em>';
   if(shape)shape.textContent=shapeTxt;
-  if(interp&&interpTxt)interp.innerHTML=interpTxt;
+  if(interp)interp.innerHTML=interpTxt;
 }
-var CARRY_LABEL_SUFFIX=CROP.carryLabelSuffix||'';
-function renderForwardCurve(a,b,c,d){return ({corn:fwdCurveCorn,soybean:fwdCurveSoybean,wheat:fwdCurveWheat})[window.AGSIST_FUTURES](a,b,c,d);}
+/* The reader's own storage, interest and shrink from /store-or-sell (or the
+   homepage calculator): the same localStorage key, the stated defaults for
+   anything blank. */
+function readStoreInputs(){
+  var s=null,o={};
+  try{s=JSON.parse(localStorage.getItem('agsist_storesell')||'null');}catch(e){s=null;}
+  if(s&&typeof s==='object'){['cost','rate','shrink'].forEach(function(k){var v=parseFloat(s[k]);if(isFinite(v)&&v>=0)o[k]=v;});}
+  return window.AgsistStoreSell.withDefaults(o);
+}
+function esc(t){return window.AG&&AG.esc?AG.esc(t):String(t==null?'':t);}
 
 
 
