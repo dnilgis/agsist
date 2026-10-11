@@ -232,11 +232,11 @@ html[data-theme="light"]{--pd-red:#b3432c}
 </div>
 
 <main id="main" tabindex="-1" class="pd-page">
-<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Planting Date Calculator</nav>
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Planting date calculator</nav>
 
 <div class="pd-hero">
-  <div class="pd-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Planting Windows &middot; Soil Temps &middot; Frost Risk &middot; WI &amp; MN</div>
-  <h1>Planting Date<br>Calculator</h1>
+  <div class="pd-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Planting windows · soil temps · frost risk · WI and MN</div>
+  <h1>Planting date<br>calculator</h1>
   <p class="page-lede">Live soil temperature from your location, last frost probability by zone, yield penalty by planting week, and GDU accumulation projections comparing four planting dates side by side. Built for Wisconsin and Minnesota corn and soybean farmers. No login, no paywall.</p>
 </div>
 
@@ -265,13 +265,13 @@ html[data-theme="light"]{--pd-red:#b3432c}
         <div class="f-hint" id="pd-loc-display">Enter location for live soil temperature</div>
       </div>
 
-      <button class="f-btn" id="pd-fetch-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Load Soil Temp &amp; Conditions</button>
+      <button class="f-btn" id="pd-fetch-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Load soil temp and conditions</button>
       <div class="f-status" id="pd-status">Ready: enter location and click above</div>
     </div>
 
     <!-- Zone Selector for Frost Tables -->
     <div class="pd-card">
-      <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> WI / MN Frost Zone</div>
+      <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> WI / MN frost zone</div>
       <div class="f-group">
         <label class="f-label" for="pd-zone">Select your zone for frost probability table</label>
         <select class="f-input" id="pd-zone" style="cursor:pointer">
@@ -292,12 +292,12 @@ html[data-theme="light"]{--pd-red:#b3432c}
     <!-- Live Soil Temp -->
     <div class="st-display">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.3rem">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Current Soil Temperature</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Current soil temperature</span>
         <span class="live-badge" id="st-badge" style="display:none"><span class="live-dot"></span>Live</span>
       </div>
       <div class="st-grid">
         <div class="st-card"><div class="st-card-lbl">Soil 6 cm (~2")</div><div class="st-card-val" id="st-2in">-</div><div class="st-card-sub" id="st-2in-sub">&deg;F &middot; 3-day mean</div></div>
-        <div class="st-card"><div class="st-card-lbl">Air Temp Now</div><div class="st-card-val" id="st-air">-</div><div class="st-card-sub">&deg;F current</div></div>
+        <div class="st-card"><div class="st-card-lbl">Air temp now</div><div class="st-card-val" id="st-air">-</div><div class="st-card-sub">&deg;F current</div></div>
       </div>
       <div id="st-verdict-wrap" style="margin-top:.55rem"></div>
       <div class="f-hint" id="st-note" style="margin-top:.4rem">Soil temp is a weather-model estimate at 6 cm (~2 in), not a probe reading. For precision, check your local extension weather station.</div>
@@ -305,14 +305,14 @@ html[data-theme="light"]{--pd-red:#b3432c}
 
     <!-- Planting Window -->
     <div class="window-card" style="margin-bottom:1.1rem">
-      <div class="window-title" id="win-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Planting Window: Wisconsin</div>
+      <div class="window-title" id="win-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn planting window: Wisconsin</div>
       <div id="win-bars"></div>
       <div style="margin-top:.75rem" id="win-rows"></div>
     </div>
 
     <!-- GDU Projection Compare -->
     <div class="pd-card">
-      <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU Accumulation by Planting Date: Central WI Average</div>
+      <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU accumulation by planting date: central WI average</div>
       <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation from each planting date to the zone's 50% first-fall-frost date, for four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
       <div class="cmp-grid" id="cmp-grid"></div>
       <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
@@ -329,7 +329,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 
 <!-- ── SDS / DISEASE RISK ─────────────────────────────────────────────  -->
 <div class="pd-card" style="margin-top:1.1rem">
-  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Early Planting Disease Risks</div>
+  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Early planting disease risks</div>
   <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem">
     <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem" id="disease-grid">
     </div>
@@ -338,7 +338,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 
 <!-- ── SOIL TEMP PLANTING GUIDE ──────────────────────────────────────── -->
 <div class="pd-card" style="margin-top:1.1rem">
-  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Soil Temperature Planting Guide</div>
+  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Soil temperature planting guide</div>
   <div style="overflow-x:auto">
   <table class="pen-table">
   <thead><tr><th>Soil Temp (2")</th><th>Corn Risk</th><th>Soybean Risk</th><th>Action</th></tr></thead>
@@ -346,8 +346,8 @@ html[data-theme="light"]{--pd-red:#b3432c}
     <tr class="opt"><td>&ge;55&deg;F</td><td style="color:var(--green)">&#10003; Ideal</td><td style="color:var(--green)">&#10003; Ideal</td><td>Good for both crops</td></tr>
     <tr class="opt"><td>50&ndash;54&deg;F</td><td style="color:var(--green)">&#10003; Acceptable</td><td style="color:var(--green)">&#10003; Acceptable</td><td>Plant if forecast shows warming trend</td></tr>
     <tr class="warn"><td>46&ndash;49&deg;F</td><td style="color:var(--gold)">&#9651; Marginal</td><td style="color:var(--gold)">&#9651; Caution</td><td>Wait 2&ndash;3 days; cold soil injury risk rises</td></tr>
-    <tr class="hi"><td>40&ndash;45&deg;F</td><td style="color:var(--pd-red)">&#10007; High Risk</td><td style="color:var(--pd-red)">&#10007; High Risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
-    <tr class="hl"><td>&lt;40&deg;F</td><td style="color:var(--pd-red)">&#10007; Do Not Plant</td><td style="color:var(--pd-red)">&#10007; Do Not Plant</td><td>Significant stand and seedling disease risk</td></tr>
+    <tr class="hi"><td>40&ndash;45&deg;F</td><td style="color:var(--pd-red)">✗ High risk</td><td style="color:var(--pd-red)">✗ High risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
+    <tr class="hl"><td>&lt;40&deg;F</td><td style="color:var(--pd-red)">✗ Do not plant</td><td style="color:var(--pd-red)">✗ Do not plant</td><td>Significant stand and seedling disease risk</td></tr>
   </tbody>
   </table>
   </div>

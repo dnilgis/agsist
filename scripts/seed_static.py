@@ -613,8 +613,8 @@ def seed_news(today):
         datemod = upd.isoformat()
         items = (d.get("items") or [])[:NEWS_MAX]
         if not items:
-            seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has cleared the bar as of ' + _mdy(upd) +
-                                 '. That is the honest state of a quiet market, not a broken page.</div>\n    ')
+            seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has moved enough to post as of ' + _mdy(upd) +
+                                 '. Quiet markets can go days without one.</div>\n    ')
         else:
             out, last = ["\n"], None
             for i in items:

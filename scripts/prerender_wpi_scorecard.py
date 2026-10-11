@@ -209,8 +209,8 @@ def numbers_el(rows):
     else:
         links = ('<a href="' + _esc4(src) + '" rel="nofollow noopener" target="_blank">'
                  'Survey source</a>')
-    note = ('<div class="src">Trade estimates are a published pre-report survey, typed '
-            'from the source and never computed here. ' + links + '. Graded on the distance '
+    note = ('<div class="src">Trade estimates come from a published pre-report survey, entered '
+            'as published. ' + links + '. Graded on the distance '
             'from the trade average: within 0.5% for a yield, 1% for production and 2% for '
             'stocks is in line; past that, more supply than the trade expected is bearish and '
             'less is bullish. The survey\u2019s low-high range is shown beside the grade and '
@@ -463,7 +463,7 @@ def wins_badge(r):
     if only > 0:
         out += (u'<span class="as-wins mut" title="Closest of the forecasters who filed a number '
                 u'for that metric, but still further from the print than the free trade '
-                u'consensus. That is not a win.">%d\u00d7 closest filed, wider than '
+                u'consensus, so it did not beat the trade.">%d\u00d7 closest filed, wider than '
                 u'trade</span>' % only)
     return out
 
@@ -488,8 +488,8 @@ def board_row(r, rank, min_n, show_rank):
     calls = str(r["n"]) if qualified else u"%s of %s" % (r["n"], min_n)
     # We run this board AND we are on it. Say so on the row, not only in the
     # firm line -- a reader scanning names should not have to notice the domain.
-    ours = (u'<span class="as-ours" title="This is our own model. We run this board and score '
-            u'it, and the same rules apply to us.">ours</span>'
+    ours = (u'<span class="as-ours" title="AGSIST’s own model, scored by the same rules as '
+            u'everyone else.">ours</span>'
             if "agsist.com" in (r.get("firm") or "").lower() else "")
     rk = (u'<td class="rk" data-label="#">%s</td>' % (rank if rank else u"n/a")) if show_rank else ""
     return (u'<tr%s>%s'
@@ -565,8 +565,8 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
                 u'no places. This page prints a finishing order only once every forecaster above '
                 u'the line has <b>%d scored calls</b> in the same group. Under that, the gap '
                 u'between two averages sits inside the spread of each one\u2019s own calls '
-                u'(shown beside every average) and an order would be a coin flip '
-                u'written as a fact.</div>' % ord_min)
+                u'(shown beside every average), so an order would be a coin '
+                u'flip.</div>' % ord_min)
     return lead + head + cap + body + note + brows + u'</tbody></table>'
 
 

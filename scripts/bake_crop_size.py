@@ -92,10 +92,9 @@ def panel(d):
                if verdicts else "Other published forecasts, beside ours.")
     graded = any((d["crops"].get(k) or {}).get("graded") for k in LABEL)
     foot = ["Everything here was published by somebody else and is linked to where they published it. "
-            "Our own figure is read from the nowcast file below, not typed in beside it, so the two cannot drift apart.",
+            "Our own figure is read from the nowcast file below, so the two always match.",
             "Scored against USDA’s January final, misses included." if graded else
-            "Nobody is scored until USDA prints the January final. Being early is not the same as being right, "
-            "and this panel will not pretend otherwise."]
+            "Nobody is scored until USDA prints the January final."]
     if d.get("cross_checked"):
         foot.append("Cross-checked against the crop tour page so the two cannot print different numbers for the "
                     "same figure (" + ", ".join(d["cross_checked"]) + ").")

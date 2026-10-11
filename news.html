@@ -21,7 +21,7 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://agsist.com/news">
   <meta property="og:title" content="Ag Market Wire: What Just Moved | AGSIST">
-  <meta property="og:description" content="Dated grain and livestock market events the moment they are measurable. Not a headline aggregator.">
+  <meta property="og:description" content="Dated grain and livestock market events the moment they are measurable, each with its number and source.">
   <meta property="og:url" content="https://agsist.com/news">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
@@ -92,7 +92,7 @@
   <main id="main" tabindex="-1">
     <div class="nw-head">
       <h1>What just moved</h1>
-      <p class="nw-lede page-lede">Dated events from the numbers this site already reads: a USDA figure that missed the trade, positioning at a one-year extreme, a contract closing outside its 52-week range, a crop rating that swung. Each one is posted when the data says so, not when somebody writes it up.</p>
+      <p class="nw-lede page-lede">Dated events from the numbers this site already reads: a USDA figure that missed the trade, positioning at a one-year extreme, a contract closing outside its 52-week range, a crop rating that swung. Each one posts as soon as the number is in.</p>
       <div class="nw-meta">
         <span id="nw-updated"><!--SEED:newsupd-->Updated Oct 10, 2026, 14:05 UTC<!--/SEED--></span>
         <a href="/news.xml">RSS</a>
@@ -120,16 +120,16 @@
 
     <div class="nw-wrap" style="padding-top:0">
       <div class="nw-note">
-        <b>What this is not.</b> It is not a headline aggregator. Republishing somebody else&rsquo;s
-        story is slower than the story, and adds nothing to it. Everything here is a change
+        <b>Where it comes from.</b> No stories from other outlets. Everything here is a change
+        
         this site measured in a primary source it already polls, with the number in the item
         and a link to the page that shows the work.
         <br><br>
         <b>What earns a place.</b> Only a change the data itself defines: a bound the source
         file already carries (a 52-week high, a one-year positioning extreme, last
-        week&rsquo;s crop rating) or a plain percentage move. Nothing is measured against a
-        threshold typed in by hand, because a number somebody invented is one that will
-        eventually be wrong with no way to tell.
+        week&rsquo;s crop rating) or a plain percentage move. There are no hand-picked
+        cutoffs; one of those would drift out of date with nobody noticing.
+
       </div>
     </div>
   </main>
@@ -175,9 +175,9 @@
       {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
     var box=el('nw-list');
     if(!items.length){
-      box.innerHTML='<div class="nw-empty">Nothing has cleared the bar yet today. '+
-        'That is the honest state of a quiet market, not a broken page; the '+
-        '<a href="/daily" style="color:var(--gold)">morning briefing</a> runs every morning regardless.</div>';
+      box.innerHTML='<div class="nw-empty">Nothing has moved enough to post yet today. '+
+        'The '+
+        '<a href="/daily" style="color:var(--gold)">morning briefing</a> still runs every morning.</div>';
       return;
     }
     var html='', lastDay='';
@@ -195,7 +195,7 @@
     box.innerHTML=html;
     if(window.gaEvent) gaEvent('news_view',{items:items.length});
   }).catch(function(){
-    el('nw-list').innerHTML='<div class="nw-empty">The wire is briefly unavailable. '+
+    el('nw-list').innerHTML='<div class="nw-empty">The wire didn&rsquo;t load. Refresh in a minute. '+
       'The <a href="/daily" style="color:var(--gold)">morning briefing</a> and the '+
       '<a href="/markets" style="color:var(--gold)">board</a> are unaffected.</div>';
   });

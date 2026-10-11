@@ -3439,7 +3439,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
             names.append(f'{s.get("commodity","")} {arrow} {abs(s.get("pct_change",0)):.1f}%')
         surprise_html = (f'<div class="dv3-surprise-banner" style="display:flex">'
                          f'<span class="surprise-icon">!</span>'
-                         f'<span class="surprise-text"><strong>Overnight Surprise{"s" if surprise_count > 1 else ""}:</strong> '
+                         f'<span class="surprise-text"><strong>Overnight surprise{"s" if surprise_count > 1 else ""}:</strong> '
                          f'{" / ".join(names) if names else str(surprise_count) + " unusual move"}'
                          f'</span></div>')
 
@@ -3834,7 +3834,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 <div id="site-header"></div>
 <main id="main" tabindex="-1">
 <div class="dv3-page">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/daily">Daily Briefing</a> / <strong>{html_esc(date_display)}</strong></nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/daily">Daily briefing</a> / <strong>{html_esc(date_display)}</strong></nav>
   <article>
     <header class="dv3-header">
       <div class="dv3-header-row">

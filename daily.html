@@ -75,7 +75,7 @@
         {
           "@type": "Question",
           "name": "What is the AGSIST Daily Ag Briefing?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every morning before the market open, weekends included. No account required. Available at no charge." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every morning before the market open, weekends included. Free, no account needed." }
         },
         {
           "@type": "Question",
@@ -510,7 +510,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <div class="dv3-faq">
     <details class="dv3-faq-item">
       <summary>What is the AGSIST Daily Ag Briefing?</summary>
-      <p>The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every morning before the market open, weekends included. No account required. Available at no charge.</p>
+      <p>The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every morning before the market open, weekends included. Free, no account needed.</p>
     </details>
     <details class="dv3-faq-item">
       <summary>How do I get the daily briefing by email?</summary>
@@ -523,7 +523,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <div class="dv3-modal-overlay" id="dv3-modal" role="dialog" aria-modal="true" aria-labelledby="dv3-modal-title">
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-    <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily Briefing</h2>
+    <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily briefing</h2>
     <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning before the market open: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
@@ -637,7 +637,7 @@ function renderToday(data,why){
       if(rb)rb.addEventListener('click',function(){rb.disabled=true;rb.textContent='Trying\u2026';loadToday();});
       return;
     }
-    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published every morning before the market open.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
+    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing isn\'t up yet. It posts every morning before the market open.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
     // AUDIT 2026-08-11: don't dead-end — offer the most recent archived
     // briefing right here (the archive index is a cheap fetch).
     fetch('/data/daily-archive/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(ix){ix=agsND(ix);
@@ -1092,7 +1092,7 @@ function renderArchive(){
     .then(function(manifest){manifest=agsND(manifest);
       if(!manifest||!manifest.briefings||!manifest.briefings.length){
         // Keep the baked recent list (SEED:dailyrecent) if there is one.
-        if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
+        if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">The archive didn\'t load. Refresh to try again.</p>';
         return;
       }
       // Hero meta: briefings published count
@@ -1182,11 +1182,11 @@ if(form){
         if(r.ok){
           form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives tomorrow morning.</p>';
         } else {
-          alert('Something went wrong: try again or email sig@farmers1st.com');
+          alert('The signup did not go through. Try again, or email sig@farmers1st.com and I will add you by hand.');
         }
       })
       .catch(function(){
-        alert('Network error: try again or email sig@farmers1st.com');
+        alert('That didn\'t reach the server. Check your connection and try again, or email sig@farmers1st.com.');
       });
   });
 }

@@ -89,7 +89,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC publishes Commitments of Traders usually on Friday at 3:30 pm Eastern (when a federal holiday falls in the report week, on the Monday after), counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold." } },
-    { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed, not of where price is going. We tested that on the whole record and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
+    { "@type": "Question", "name": "How to use it", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
     { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "CTAs, commodity pools and hedge funds. They do not own grain, they trade paper, and their buying and selling moves the futures leg. It does not follow that it moves your basis. Basis is your local cash price minus futures, and it is set by what is happening at your elevator: bushels arriving, space, freight and demand. Fund flow and basis frequently move in opposite directions." } },
     { "@type": "Question", "name": "Where The Position Sits", "acceptedAnswer": { "@type": "Answer", "text": "The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record." } }
   ]
@@ -585,7 +585,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
     <p class="cot-page-sub page-lede">Where the big speculative funds sit in corn, soybeans, wheat, cattle, hogs and milk this week, and how crowded that is. Not a price forecast.</p>
     <details class="cot-more">
       <summary>Who the funds are, and how old these numbers are</summary>
-      <p class="cot-page-sub">These are hedge funds and commodity traders: they trade paper and never own a bushel. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. We tested that on the full record and published the result below.</p>
+      <p class="cot-page-sub">These are hedge funds and commodity traders: they trade paper and never own a bushel. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. The test on the full record is below.</p>
       <p class="cot-page-sub">Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after. The figures below carry their own age. <a href="/scorecard">Does positioning predict price? We test our own rule</a>, in public, one call per crop each week.</p>
     </details>
   </div>
@@ -608,13 +608,13 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   </div>
 
   <!-- Summary cards -->
-  <h2 class="cot-section-title">Fund Positioning by Commodity</h2>
+  <h2 class="cot-section-title">Fund positioning by commodity</h2>
   <div class="cot-summary-grid" id="cot-summary-grid"></div>
 
 
   <!-- ══ WHERE EVERY MARKET STANDS ══ renders from data/cot-analysis.json ══ -->
   <section class="cx" id="cx-board-sec" aria-labelledby="cx-board-h">
-    <h2 class="cx-h" id="cx-board-h">Where Every Market Stands</h2>
+    <h2 class="cx-h" id="cx-board-h">Where every market stands</h2>
     <p class="cx-sub">Each market placed by how crowded fund positioning is against <b>its own
       record</b>, and by what price has done since. Position is measured as a share of all open
       contracts, so an old reading and a new one mean the same thing in a market that has since
@@ -647,10 +647,10 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- ══ DOES THIS PREDICT PRICES ══ -->
   <section class="cx" id="cx-pred-sec" aria-labelledby="cx-pred-h">
     <details class="fold">
-      <summary><h2 class="cx-h" id="cx-pred-h">Does This Predict Prices?</h2> <span class="fold-hint">The test on the full record: does fund positioning line up with later price moves?</span></summary>
+      <summary><h2 class="cx-h" id="cx-pred-h">Does this predict prices?</h2> <span class="fold-hint">The test on the full record: does fund positioning line up with later price moves?</span></summary>
       <div class="fold-body">
-    <p class="cx-sub">The question everyone asks about this report, measured on the whole record
-      rather than asserted. Correlation runs from &minus;1 to +1; zero means no relationship.</p>
+    <p class="cx-sub">Measured on the full CFTC record.
+      Correlation runs from &minus;1 to +1; zero means no relationship.</p>
     <div class="cx-panel">
       <div id="cx-pred"></div>
     </div>
@@ -661,7 +661,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- Chart -->
   <div class="cot-chart-section">
     <div class="cot-chart-head">
-      <h2 class="cot-chart-title">Managed Money Net Position: 52 Weeks</h2>
+      <h2 class="cot-chart-title">Managed money net position: 52 weeks</h2>
       <div class="cot-chart-tabs" id="chart-tabs" role="group" aria-label="Filter chart by commodity group">
         <button type="button" class="cot-chart-tab active" data-key="grains" aria-pressed="true">Grains</button>
         <button type="button" class="cot-chart-tab" data-key="crush" aria-pressed="false">Crush</button>
@@ -682,7 +682,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 
   <!-- ══ ONE MARKET AT A TIME ══ -->
   <section class="cx" id="cx-deep-sec" aria-labelledby="cx-deep-h">
-    <h2 class="cx-h" id="cx-deep-h">One Market At A Time</h2>
+    <h2 class="cx-h" id="cx-deep-h">One market at a time</h2>
     <p class="cx-sub">Pick a market. Every figure is drawn from the full CFTC record. Forward returns
       are measured from the first close after the report was published, which is not always the
       Monday: federal holidays move it.</p>
@@ -696,7 +696,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- ══ METHOD ══ -->
   <section class="cx" id="cx-method-sec" aria-labelledby="cx-method-h">
     <details class="fold">
-      <summary><h2 class="cx-h" id="cx-method-h">Why Our Numbers Are Lower Than The Ones You'll See Elsewhere</h2> <span class="fold-hint">Four mistakes that make a positioning study look better than the trade it describes, and how this page avoids them.</span></summary>
+      <summary><h2 class="cx-h" id="cx-method-h">Why our numbers are lower than the ones you'll see elsewhere</h2> <span class="fold-hint">Four mistakes that make a positioning study look better than the trade it describes, and how this page avoids them.</span></summary>
       <div class="fold-body">
     <p class="cx-sub">Four mistakes make a positioning study look better than the trade it describes.
       They all push the same way, and they are all easy to make by accident.</p>
@@ -729,7 +729,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- Explainer -->
   <div class="cot-explainer has-fold">
     <details class="fold">
-      <summary><h2 class="cot-explainer-title">What Does This Mean for Farmers?</h2> <span class="fold-hint">What the report is, how to use it, what managed money means and where the position sits.</span></summary>
+      <summary><h2 class="cot-explainer-title">What does this mean for farmers?</h2> <span class="fold-hint">What the report is, how to use it, what managed money means and where the position sits.</span></summary>
       <div class="fold-body">
     <div class="cot-explainer-grid">
       <div class="cot-explainer-item">
@@ -737,15 +737,15 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
         <p>The CFTC publishes Commitments of Traders usually on Friday at 3:30 pm Eastern (when a federal holiday falls in the report week, on the Monday after), counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold.</p>
       </div>
       <div class="cot-explainer-item">
-        <h3>How to Use It</h3>
-        <p>As a measure of who is exposed, not of where price is going. We tested that on the whole record and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction.</p>
+        <h3>How to use it</h3>
+        <p>As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction.</p>
       </div>
       <div class="cot-explainer-item">
-        <h3>What "Managed Money" Means</h3>
+        <h3>What "managed money" means</h3>
         <p>CTAs, commodity pools and hedge funds. They do not own grain, they trade paper, and their buying and selling moves the futures leg. It does not follow that it moves your basis. Basis is your local cash price minus futures, and it is set by what is happening at your elevator: bushels arriving, space, freight and demand. Fund flow and basis frequently move in opposite directions.</p>
       </div>
       <div class="cot-explainer-item">
-        <h3>Where The Position Sits</h3>
+        <h3>Where the position sits</h3>
         <p>The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record.</p>
       </div>
     </div>
@@ -757,7 +757,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <div id="signup-card" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin:1.5rem 0">
     <div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem">Get the AGSIST Daily</div>
     <div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem;max-width:420px">
-      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, fund positioning shifts, and what to watch, by 6am CT every morning. Available at no charge.</p>
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, fund positioning shifts, and what to watch, by 6am CT every morning. Free.</p>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
         <input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px">
         <button type="button" id="signup-btn" style="padding:.6rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button>
@@ -2091,7 +2091,7 @@ cotTick(); setInterval(cotTick, 60000);
       + 'bootstraps that keep the week-to-week overlap, so they are several times wider than a '
       + 'textbook standard error would suggest. Read them, not the point estimate.</p>');
     o.push('<p class="cx-body">So this report tells you who is exposed, not which way the market goes. '
-      + 'That is still worth knowing: a crowded position is a list of people who may have to trade '
+      + 'A crowded position is a list of people who may have to trade '
       + 'whether they want to or not. Everything below is built on that, and where a reading does beat '
       + 'the base rate the test, the sample and the odds it is luck are shown with it.</p>');
 
@@ -2431,8 +2431,8 @@ cotTick(); setInterval(cotTick, 60000);
           + '.</b> The positioning figures above are CFTC\u2019s and are complete. Everything that needs a '
           + 'price, what followed last time, the analogs, the correlations, is withheld for that reason.'
         : 'Positioning in ' + esc(c.label) + ' is close enough to normal this week that there is no '
-          + 'unusual condition to test. That is the common case, and it is an answer rather than a '
-          + 'blank.') + '</div>');
+          + 'unusual condition to test. Most weeks look like this.'
+          ) + '</div>');
     }
 
     /* analogs */

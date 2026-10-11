@@ -522,7 +522,7 @@ function renderCOT(data){
   else if(k.crowded){interp='<strong>'+where+'unds are crowded '+k.crowded+'</strong>: '+kw+' of their record since '+k.since+', measured as a share of open interest. '+(k.tested||'');}
   else{interp='<strong>'+where+'unds are net '+side+', '+kw+'</strong> against their record since '+k.since+', not crowded. '+(k.tested||'');}
   if(CROP.cotClasses&&data.kcwheat&&data.kcwheat.net!=null&&d.net!=null&&((data.kcwheat.net>=0)!==(d.net>=0))){
-    interp+=' Note the classes are split: KC HRW funds sit on the opposite side of Chicago right now, so read the row for your class above.';
+    interp+=' The classes are split: KC HRW funds sit on the opposite side of Chicago right now, so read the row for your class above.';
   }
   var interpEl=document.getElementById('cot-interp');
   if(interpEl)interpEl.innerHTML=interp;
@@ -931,7 +931,7 @@ function renderPricedResult(sc){
       var note;
       if(pct===0)note='Nothing priced yet; all bushels are exposed to the market. Extension marketing programs generally favor pricing in <strong>increments</strong> through the pre-harvest window rather than one all-or-nothing decision, to avoid pricing everything at a low.';
       else if(pct<100)note='You\u2019ve scaled in on '+pct+'% and left '+(100-pct)+'% open. Scaled, incremental pricing is the discipline most extension programs teach. It trades the chance of a perfect top for protection against a bad one.';
-      else note='Fully priced, no remaining market exposure on '+CROP.pricedWord+'. Remember basis and any unpriced stored old crop still move your final number.';
+      else note='Fully priced, no remaining market exposure on '+CROP.pricedWord+'. Basis and any unpriced stored old crop still move your final number.';
       eduEl.innerHTML=note;
     }
   }
@@ -1015,7 +1015,7 @@ function buildActionLine(mr){
   // COT overlay: only when funds are crowded on the one measure, and with the
   // COT page's tested result, not a claim that crowded positions "unwind hard".
   if(cot&&cot.crowded){
-    lines.push('Note: managed money is <strong>crowded '+cot.crowded+'</strong> ('+(cot.word||'')+' of its record since '+cot.since+', as a share of open interest). '+(cot.tested||''));
+    lines.push('Managed money is <strong>crowded '+cot.crowded+'</strong> ('+(cot.word||'')+' of its record since '+cot.since+', as a share of open interest). '+(cot.tested||''));
   }
 
   // Crop progress overlay: only when there's a meaningful divergence
@@ -1704,9 +1704,9 @@ function initSignup(){
     fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:data,headers:{'Accept':'application/json'}})
       .then(function(r){
         if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}
-        else{alert('Something went wrong. Email sig@farmers1st.com and I will add you manually.');}
+        else{alert('The signup did not go through. Email sig@farmers1st.com and I will add you by hand.');}
       })
-      .catch(function(){alert('Something went wrong. Email sig@farmers1st.com and I will add you manually.');});
+      .catch(function(){alert('The signup did not go through. Email sig@farmers1st.com and I will add you by hand.');});
   });
 }
 

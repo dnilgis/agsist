@@ -318,12 +318,12 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       </div>
 
       <div class="f-group">
-        <label class="f-label" for="g-today">Today / End Date</label>
+        <label class="f-label" for="g-today">Today / end date</label>
         <input class="f-input" id="g-today" type="date">
       </div>
 
       <div class="f-group">
-        <label class="f-label" for="g-frost">Avg First Fall Frost (optional)</label>
+        <label class="f-label" for="g-frost">Avg first fall frost (optional)</label>
         <input class="f-input" id="g-frost" type="date">
         <div class="f-hint">Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5, central Corn Belt ~Oct 10&ndash;20. Your NWS office has local normals.</div>
       </div>
@@ -335,7 +335,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <p style="font-size:.9rem;color:var(--text-dim);line-height:1.5;margin:0 0 .85rem">Pulls the daily high and low for every day since planting from the Open-Meteo weather archive and adds up your GDUs.</p>
 
       <div class="f-group">
-        <label class="f-label" for="g-zip">Your Location (ZIP or City)</label>
+        <label class="f-label" for="g-zip">Your location (ZIP or city)</label>
         <div style="display:flex;gap:.4rem">
           <input class="f-input" id="g-zip" type="text" placeholder="ZIP code or city name" maxlength="40" style="flex:1">
           <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Auto</button>
@@ -344,29 +344,29 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       </div>
 
       <button class="fetch-btn" id="g-fetch-btn">
-        <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch Real GDUs from Weather Data
+        <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data
       </button>
       <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Until you fetch, the results are an example from the hand-entry temperatures below, not your weather.</div>
 
       <details class="gdu-manual"><summary>Or enter temperatures or GDUs by hand</summary>
 
       <div class="f-group">
-        <label class="f-label" for="g-method">Manual Entry Method</label>
+        <label class="f-label" for="g-method">Manual entry</label>
         <select class="f-select" id="g-method">
-          <option value="avg">Average Daily High &amp; Low</option>
-          <option value="cumulative">Enter Cumulative GDUs</option>
-          <option value="wi_hist">Upper Midwest 30-Year Historical Avg (WI/MN reference)</option>
+          <option value="avg">Average daily high and low</option>
+          <option value="cumulative">Enter cumulative GDUs</option>
+          <option value="wi_hist">Upper Midwest 30-year average (WI/MN reference)</option>
         </select>
       </div>
 
       <div id="g-avg-inputs">
         <div class="f-2col">
           <div class="f-group">
-            <label class="f-label" for="g-hi">Avg Daily High (&deg;F)</label>
+            <label class="f-label" for="g-hi">Avg daily high (°F)</label>
             <input class="f-input" id="g-hi" type="number" value="82" min="50" max="110" step="1">
           </div>
           <div class="f-group">
-            <label class="f-label" for="g-lo">Avg Daily Low (&deg;F)</label>
+            <label class="f-label" for="g-lo">Avg daily low (°F)</label>
             <input class="f-input" id="g-lo" type="number" value="58" min="30" max="85" step="1">
           </div>
         </div>
@@ -375,7 +375,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
       <div id="g-cum-inputs" style="display:none">
         <div class="f-group">
-          <label class="f-label" for="g-cumgdu">Accumulated GDUs to Date</label>
+          <label class="f-label" for="g-cumgdu">GDUs to date</label>
           <input class="f-input" id="g-cumgdu" type="number" value="800" min="0" max="4000" step="10">
         </div>
       </div>
@@ -443,7 +443,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
     <!-- Milestones -->
     <div class="gdu-card">
-      <div class="gdu-card-title" id="ms-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Key Growth Stage Milestones</div>
+      <div class="gdu-card-title" id="ms-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Growth stage milestones</div>
       <div class="milestones-grid" id="milestones"></div>
       <div class="f-hint" style="margin-top:.65rem">Scaled to your selected RM/MG. GDU requirements still vary &plusmn;100&ndash;200 by hybrid. Verify with your seed company&#8217;s published GDU chart.</div>
     </div>
@@ -469,7 +469,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch Real GDUs button above.</div>
     </div>
   <div class="gdu-card">
-    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Stage Reference</div>
+    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn stage reference</div>
     <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Corn stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
@@ -493,7 +493,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   </div>
 
   <div class="gdu-card">
-    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean Stage Reference</div>
+    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean stage reference</div>
     <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Soybean stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
@@ -518,7 +518,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
 <!-- ── FORMULA SECTION ───────────────────────────────────────────────── -->
 <div class="gdu-card" style="margin-top:1.25rem">
-  <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg> GDU Formula &amp; Methodology</div>
+  <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg> GDU formula and method</div>
   <div class="formula-grid">
     <div class="formula-card">
       <div class="formula-card-title">Corn Formula</div>
@@ -526,7 +526,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       Above <strong>86&deg;F</strong> corn growth doesn&rsquo;t increase; below <strong>50&deg;F</strong> there is no heat accumulation, so a day can never go negative.</p>
     </div>
     <div class="formula-card">
-      <div class="formula-card-title">RM &rarr; GDU Rule of Thumb</div>
+      <div class="formula-card-title">RM → GDU rule of thumb</div>
       <p>GDUs to black layer &asymp; <code>(RM &times; 22) + 250</code><br><br>
       Example: 108-day hybrid &asymp; <strong>2,626 GDUs</strong>; 110-day &asymp; 2,670. AGSIST line through two published anchors (110-day &asymp; 2,670, K-State; 112-day &asymp; 2,700, Purdue); an extrapolation away from 110&ndash;112 days. Always verify with your seed company&rsquo;s published hybrid-specific GDU requirement.</p>
     </div>
@@ -546,11 +546,11 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <div class="gdu-card" style="margin-top:1.25rem">
   <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Related Tools</div>
   <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Crop Stage Explorer</a>
+    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Crop stage explorer</a>
     <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
     <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even Calculator</a>
-    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Agricultural Fast Facts</a>
-    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting Date Tool</a>
+    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Fast facts</a>
+    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting date tool</a>
   </div>
 </div>
 
