@@ -102,6 +102,14 @@
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
     .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
+    .cbt-top{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;line-height:1.55;color:var(--text)}
+    .cbt-top p{margin:0 0 4px}.cbt-top p:last-child{margin:0}.cbt-top a{color:var(--gold)}
+    .cbt-nl{list-style:none;margin:6px 0 0;padding:0}
+    .cbt-nl li{padding:9px 0;border-bottom:1px solid var(--border);font-size:.9rem;line-height:1.5;color:var(--text)}
+    .cbt-nl li a{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--border)}
+    .cbt-nl li a:hover{color:var(--gold)}
+    .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
+    .cbt-nl .cbt-mut{white-space:nowrap}
   </style>
 </head>
 <body>
@@ -130,7 +138,7 @@
   <h1>Oregon cash grain bids and basis today</h1>
   <p class="cbt-sub">Bids and basis from elevators in the AGSIST network, read directly from each
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in Oregon; the
-  <a href="/cash-bids">live cash bids page</a> searches by ZIP and adds more sources.</p>
+  <a href="/cash-bids">live cash bids page</a> finds the ones nearest your ZIP.</p>
   
   <h2 id="basis">Oregon basis today</h2><div class="cbt-note"><b>No basis number today.</b> No elevator here had a fresh corn, soybean or wheat bid on a named futures month.</div>
   

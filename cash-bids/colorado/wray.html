@@ -108,6 +108,14 @@
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
     .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
+    .cbt-top{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;line-height:1.55;color:var(--text)}
+    .cbt-top p{margin:0 0 4px}.cbt-top p:last-child{margin:0}.cbt-top a{color:var(--gold)}
+    .cbt-nl{list-style:none;margin:6px 0 0;padding:0}
+    .cbt-nl li{padding:9px 0;border-bottom:1px solid var(--border);font-size:.9rem;line-height:1.5;color:var(--text)}
+    .cbt-nl li a{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--border)}
+    .cbt-nl li a:hover{color:var(--gold)}
+    .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
+    .cbt-nl .cbt-mut{white-space:nowrap}
   </style>
 </head>
 <body>
@@ -134,9 +142,12 @@
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/colorado/" style="color:var(--text-muted)">Colorado</a> &rsaquo; <b style="color:var(--text)">Wray</b></p>
   <h1>Cash grain bids in Wray, CO today</h1>
-  <p class="cbt-sub">Bids posted by <b>1</b> elevator in Wray, CO that the AGSIST network reads directly from the elevator&rsquo;s own bid board. Cash is $/bu; basis is cash minus the futures contract named under it. Prices move through the day, each elevator shows when it posted. Call the elevator before you haul.</p>
+  <p class="cbt-sub">Bids posted by <b>1</b> elevator in Wray, CO, read from each elevator&rsquo;s own bid board. Cash is $/bu. Each elevator shows when it posted; call before you haul.</p>
+  
+  
   <a class="cbt-live" href="/cash-bids">Live bids near Wray &rarr;</a>
   <section class="cbt-el"><h2>CHS High Plains</h2><div class="loc">Wray</div><p class="cbt-posted" title="Posted Oct 9, 1:30 PM CDT"><time class="asof" data-asof="bids" datetime="2026-10-09T18:30:56Z">Updated Oct 9, 1:30 pm</time> &middot; call to confirm</p><div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th><th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody><tr><td>Corn</td><td>OCT  2026</td><td class="n">$4.84</td><td class="n"><span style="white-space:nowrap">+$0.05</span><br><span class="mut">vs Dec &rsquo;26</span></td></tr><tr><td>Wheat <span class="mut">Wheat HRW</span></td><td>OCT  2026</td><td class="n">$6.64</td><td class="n"><span style="white-space:nowrap">&minus;$0.55</span><br><span class="mut">vs Dec &rsquo;26</span></td></tr><tr><td>Wheat <span class="mut">Wheat HRW</span></td><td>JULY 2027</td><td class="n">$7.37</td><td class="n">even<br><span class="mut">vs Jul &rsquo;27</span></td></tr></tbody></table></div></section>
+  <h2 id="nearby">Other elevators within 40 miles</h2><ul class="cbt-nl"><li><a href="/cash-bids/colorado/yuma"><b>CHS High Plains</b>, Yuma, CO</a> <span class="cbt-mut">17 mi &middot; posted Oct 9</span><br><span class="np">Corn $4.99 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/colorado/idalia"><b>CHS High Plains</b>, Idalia, CO</a> <span class="cbt-mut">17 mi &middot; posted Oct 9</span><br><span class="np">Corn $4.82 <span class="mut">Oct</span> &middot; Soybeans $12.07 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/colorado/yuma"><b>CHS High Plains</b>, Yuma, CO</a> <span class="cbt-mut">18 mi &middot; posted Oct 9</span><br><span class="np">Corn $4.99 <span class="mut">Oct</span> &middot; Soybeans $12.07 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/colorado/otis"><b>CHS High Plains</b>, Otis, CO</a> <span class="cbt-mut">30 mi &middot; posted Oct 9</span><br><span class="np">Corn $5.03 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/colorado/otis"><b>CHS High Plains</b>, Otis, CO</a> <span class="cbt-mut">31 mi &middot; posted Oct 9</span><br><span class="np">Corn $5.09 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/colorado/kirk"><b>CHS High Plains</b>, Kirk, CO</a> <span class="cbt-mut">32 mi &middot; posted Oct 9</span><br><span class="np">Corn $4.85 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the elevators in Wray. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
   <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
   <div data-signup-ask="Get Wray bids by email every weekday morning" data-source="town:colorado/wray"></div>
@@ -145,7 +156,7 @@
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="/cash-bids">live page</a>
-  has the newest board and nearby elevators.</div>
+  has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.</div>
   <p class="cbt-sub"><a href="/cash-bids/colorado/">Every Colorado town</a> &middot; <a href="/cash-bids/colorado/#basis">Colorado basis today</a></p>
 </main>
 <div id="site-footer">
@@ -162,6 +173,5 @@
 </div>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-<script src="/components/cb-house.js?v=1" defer></script>
 </body>
 </html>
