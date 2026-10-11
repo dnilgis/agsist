@@ -11,6 +11,8 @@
  *   - /count
  *   - the token checks on /list, /list?format=json and /count
  *   - an old v5.3 record ({ts, src}) reads as reports:true with no zip
+ *   - v5.11 notices: /notice, daily:true with a ZIP, /notice-list, /notice-mark,
+ *     /notice-unsubscribe, and the daily unsubscribe removing notices
  */
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -150,6 +152,91 @@ r = await call('/flag?k=briefed:2026-10-06&token=tok');
 A((await r.json()).set === false, '/flag GET unchanged');
 r = await call('/nowhere');
 A(r.status === 404, 'unknown route 404');
+
+// 13. v5.11 one-time notices: rent release and ARC/PLC reminder
+const note = (e) => JSON.parse(store.get('note:' + e));
+const plainNow = async () => (await (await call('/list?token=tok')).text()).split('\n');
+const iso = (days) => new Date(Date.now() + days * 864e5).toISOString().slice(0, 10);
+const D1 = iso(60), D2 = iso(150);
+r = await call('/notice', 'POST', { email: 'Rent@Farm.com', topic: 'rent:WI', source: 'rent:wi' });
+let j = await r.json();
+A(r.status === 200 && j.ok === true && j.topic === 'rent:wi' && j.daily === false, 'notice: rent:wi stored, answers {ok, topic, daily:false}');
+A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'notice: CORS for agsist.com');
+A(note('rent@farm.com').t['rent:wi'].src === 'rent:wi' && Number.isFinite(note('rent@farm.com').t['rent:wi'].ts), 'notice: topic keeps its source and time');
+A(!store.has('sub:rent@farm.com'), 'notice alone does NOT put the address on the daily list');
+A(!(await plainNow()).includes('rent@farm.com'), 'notice alone is not on /list');
+const nts = note('rent@farm.com').t['rent:wi'].ts;
+await sleep(3);
+r = await call('/notice', 'POST', { email: 'rent@farm.com', topic: 'rent:wi', source: 'other' });
+A(r.status === 200 && note('rent@farm.com').t['rent:wi'].ts === nts && note('rent@farm.com').t['rent:wi'].src === 'rent:wi', 'notice: asking twice keeps the first sign-up');
+r = await call('/notice', 'POST', { email: 'rent@farm.com', topic: 'arcplc:' + D1, source: 'arcplc:wi/dane-county' });
+A(r.status === 200 && Object.keys(note('rent@farm.com').t).length === 2, 'notice: a second topic on the same address');
+A(!store.has('sub:rent@farm.com'), 'still not on the daily list');
+// the morning briefing box: daily:true also subscribes, with the ZIP
+r = await call('/notice', 'POST', { email: 'both@farm.com', topic: 'arcplc:' + D1, source: 'arcplc:ia/story-county', daily: true, zip: '50010' });
+j = await r.json();
+A(j.ok === true && j.daily === true && store.has('note:both@farm.com'), 'notice with daily:true: notice stored');
+A(rec('both@farm.com').zip === '50010' && rec('both@farm.com').reports === true && rec('both@farm.com').src === 'arcplc:ia/story-county', 'notice with daily:true: on the daily list with zip, reports, source');
+r = await call('/notice', 'POST', { email: 'both2@farm.com', topic: 'rent:ia', daily: 'on', zip: '5001' });
+A(store.has('sub:both2@farm.com') && !('zip' in rec('both2@farm.com')), 'daily "on" subscribes; a 4-digit ZIP is dropped, the address kept');
+r = await call('/notice', 'POST', { email: 'nod@farm.com', topic: 'rent:ia', daily: 'false', zip: '50010' });
+A(!store.has('sub:nod@farm.com'), 'daily "false": not subscribed, zip not stored anywhere daily');
+// a daily reader who adds a notice keeps the daily record as it was
+const zr = store.get('sub:z@farm.com');
+r = await call('/notice', 'POST', { email: 'z@farm.com', topic: 'rent:ks' });
+A(store.get('sub:z@farm.com') === zr, 'notice without daily leaves an existing daily record untouched');
+// refusals
+for (const [b, why] of [[{ email: 'nope', topic: 'rent:wi' }, 'bad email'], [{ email: 'x@farm.com', topic: 'rent:xx' }, 'unknown state'],
+    [{ email: 'x@farm.com', topic: 'rent:wisconsin' }, 'long state'], [{ email: 'x@farm.com', topic: 'daily' }, 'unknown topic'],
+    [{ email: 'x@farm.com' }, 'no topic'], [{ email: 'x@farm.com', topic: 'arcplc:2026-02-30' }, 'impossible date'],
+    [{ email: 'x@farm.com', topic: 'arcplc:' + iso(-5) }, 'past deadline'], [{ email: 'x@farm.com', topic: 'arcplc:' + iso(500) }, 'deadline too far out'],
+    [{ email: 'x@farm.com', topic: '__proto__' }, 'proto topic']]) {
+  r = await call('/notice', 'POST', b);
+  A(r.status === 400 && (await r.json()).ok === false, 'notice refuses ' + why);
+}
+A(!store.has('note:x@farm.com') && !store.has('sub:x@farm.com'), 'a refused notice stores nothing');
+r = await w.fetch(new Request(H + '/notice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{nope' }), env);
+A(r.status === 400, 'notice: bad json is a 400 (no email)');
+r = await call('/notice', 'POST', { email: 'trap2@farm.com', topic: 'rent:wi', _gotcha: 'x', daily: true });
+A(r.status === 200 && !store.has('note:trap2@farm.com') && !store.has('sub:trap2@farm.com'), 'notice honeypot swallows');
+for (let i = 0; i < 25; i++) await call('/notice', 'POST', { email: 'many@farm.com', topic: 'rent:' + ['al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia','ks','ky','la','me','md','ma','mi','mn','ms','mo'][i] });
+A(Object.keys(note('many@farm.com').t).length === 20, 'notice: at most 20 topics an address');
+// /notice-list and /notice-mark
+for (const p of ['/notice-list', '/notice-list?token=bad']) { r = await call(p); A(r.status === 403, p + ' 403'); }
+r = await call('/notice-mark', 'POST', { email: 'rent@farm.com', topic: 'rent:wi' });
+A(r.status === 403, '/notice-mark without the token is 403');
+r = await call('/notice-list?token=tok&topic=rent:wi');
+let NL = await r.json();
+A(NL.length === 1 && NL.every(x => x.topic === 'rent:wi') && NL.some(x => x.email === 'rent@farm.com' && x.src === 'rent:wi' && x.sent === null), '/notice-list?topic=rent:wi');
+r = await call('/notice-list?token=tok&topic=arcplc:');
+NL = await r.json();
+A(NL.length === 2 && NL.every(x => x.topic === 'arcplc:' + D1), '/notice-list?topic=arcplc: (prefix)');
+r = await call('/notice-mark?token=tok', 'POST', { email: 'rent@farm.com', topic: 'rent:wi' });
+A((await r.json()).ok === true && Number.isFinite(note('rent@farm.com').t['rent:wi'].sent), '/notice-mark records sent');
+r = await call('/notice-list?token=tok&topic=rent:wi&unsent=1');
+A((await r.json()).every(x => x.email !== 'rent@farm.com'), '&unsent=1 leaves out a sent notice');
+r = await call('/notice-mark?token=tok', 'POST', { email: 'nobody@farm.com', topic: 'rent:wi' });
+A((await r.json()).skipped === true, '/notice-mark on a stopped notice skips');
+// /count
+r = await call('/count?token=tok');
+const C2 = await r.json();
+A(C2.notice === [...store.keys()].filter(k => k.startsWith('note:')).length && C2.notices['rent:wi'] === 1 && C2.notices['rent:ia'] === 3 && C2.notices['arcplc:' + D1] === 2, '/count notice and notices');
+A(C2.daily === (await plainNow()).length, '/count daily still counts only the daily list');
+// unsubscribes
+const sig = async (e) => { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode('sec'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return [...new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(e)))].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16); };
+let t = await sig('rent@farm.com');
+r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t + '&topic=rent:wi');
+A(r.status === 200 && (await r.text()).includes('Nothing happens') && 'rent:wi' in note('rent@farm.com').t, 'notice unsubscribe GET changes nothing');
+r = await call('/notice-unsubscribe?e=rent@farm.com&t=bad', 'POST');
+A((await r.text()).includes("isn't valid") && store.has('note:rent@farm.com'), 'notice unsubscribe with a bad token removes nothing');
+r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t + '&topic=rent:wi', 'POST');
+A(!('rent:wi' in note('rent@farm.com').t) && ('arcplc:' + D1) in note('rent@farm.com').t, 'notice unsubscribe one topic');
+r = await call('/notice-unsubscribe?e=rent@farm.com&t=' + t, 'POST');
+A(!store.has('note:rent@farm.com'), 'notice unsubscribe all');
+t = await sig('both@farm.com');
+r = await call('/unsubscribe?e=both@farm.com&t=' + t, 'POST');
+A(!store.has('sub:both@farm.com') && !store.has('note:both@farm.com'), 'the daily unsubscribe also stops the notices');
 
 if (fails.length) { for (const f of fails) console.log('FAIL', f); console.log(ok + ' passed, ' + fails.length + ' failed'); process.exit(1); }
 console.log('subs-worker-checks: ' + ok + ' passed');

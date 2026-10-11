@@ -1,6 +1,25 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.11 (2026-10-11): ONE-TIME NOTICES. New routes only, plus one line in
+ *   POST /unsubscribe; every other route answers exactly as before.
+ *   POST /notice  JSON {email, topic, source, daily?, zip?, reports?, _gotcha}.
+ *     topic = rent:<state> (one email when NASS puts out that state's next
+ *     county cash rents) | arcplc:<YYYY-MM-DD> (one reminder a week before
+ *     that ARC/PLC signup deadline; the date must be ahead, within 400 days).
+ *     Stored under note:<email> = {ts, t:{topic:{ts, src, sent?}}}, apart from
+ *     the daily list: a notice alone never puts anyone on AGSIST Daily or on
+ *     /list. daily:true (the page's "Also send the morning briefing" box)
+ *     also writes sub:<email> exactly as /subscribe does, zip and reports
+ *     included. Answers {ok:true, topic, daily}. At most 20 topics an address.
+ *   GET/POST /notice-unsubscribe?e=&t=[&topic=]  same HMAC as /unsubscribe;
+ *     GET asks, POST removes every notice, or the one topic.
+ *   GET  /notice-list?token=[&topic=rent:wi | rent: | arcplc:][&unsent=1]
+ *     [{email, topic, ts, src, sent}] for the job that mails a notice.
+ *   POST /notice-mark?token=  {email, topic}: records the notice as sent.
+ *   GET  /count gains notice (addresses) and notices {topic: n}.
+ *   POST /unsubscribe (the daily) also removes note:<email>, so its "No more
+ *   emails" stays true. No new binding and no new secret.
  * v5.10 (2026-10-11): RAIN PRINT PRODUCTS AND GIFTS. kind rain-print-order's
  *   choice is now digital | print12x18 | framed12x18 (Sig prints and frames
  *   12 x 18 himself; the 18 x 24 poster, print18x24, is no longer accepted).
@@ -281,6 +300,45 @@ function subRecord(email, raw) {
   };
 }
 
+// v5.4 merge, shared by /subscribe and /notice (daily:true). A bad ZIP is
+// dropped, never a reason to refuse the subscribe; the first ts is kept; zip,
+// reports and src change only when the request carries them.
+async function putSub(env, email, src, zipIn, repIn) {
+  const zip = subZip(zipIn), reports = subBool(repIn);
+  src = String(src || "").slice(0, 60);
+  let prev = null;
+  try { const v = await env.SUBS.get("sub:" + email); prev = v ? JSON.parse(v) : null; } catch (e) { prev = null; }
+  if (!prev || typeof prev !== "object") prev = {};
+  const rec = {
+    ts: Number.isFinite(prev.ts) ? prev.ts : Date.now(),
+    src: src || String(prev.src || ""),
+  };
+  const keepZip = zip || subZip(prev.zip);
+  if (keepZip) rec.zip = keepZip;
+  rec.reports = reports !== null ? reports : prev.reports !== false;
+  await env.SUBS.put("sub:" + email, JSON.stringify(rec));
+}
+
+// v5.11: notice topics. rent:<state> is one email when NASS puts out the next
+// county cash rents for that state. arcplc:<YYYY-MM-DD> is one reminder a week
+// before that FSA ARC/PLC signup deadline. Anything else is refused.
+const NOTE_MAX = 20;
+const RENT_STATES = new Set(("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy").split(" "));
+function noticeTopic(v, anyDate) {
+  const t = String(v == null ? "" : v).trim().toLowerCase();
+  let m = /^rent:([a-z]{2})$/.exec(t);
+  if (m) return RENT_STATES.has(m[1]) ? t : null;
+  m = /^arcplc:(\d{4})-(\d{2})-(\d{2})$/.exec(t);
+  if (m) {
+    const d = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    if (new Date(d).toISOString().slice(0, 10) !== t.slice(7)) return null;
+    // a deadline still ahead (a day of slack for time zones), within ~13 months
+    if (!anyDate && (d < Date.now() - 864e5 || d > Date.now() + 400 * 864e5)) return null;
+    return t;
+  }
+  return null;
+}
+
 function htmlPage(msg, extraHtml) {
   return new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
@@ -407,6 +465,16 @@ async function formRateOk(req, env) {
   return true;
 }
 
+async function noticeCounts(env) {
+  const keys = await listKeys(env, "note:"), by = {};
+  for (const k of keys) {
+    let r = null;
+    try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    for (const t of Object.keys((r && r.t) || {})) by[t] = (by[t] || 0) + 1;
+  }
+  return { notice: keys.length, notices: by };
+}
+
 async function formCounts(env) {
   const out = {};
   for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
@@ -450,22 +518,63 @@ export default {
       if (trap) return json({ ok: true }, 200, cors(req));
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
-      // v5.4: merge into what is already there. A bad ZIP is dropped, never
-      // a reason to refuse the subscribe.
-      const zip = subZip(zipIn), reports = subBool(repIn);
-      src = String(src || "").slice(0, 60);
-      let prev = null;
-      try { const v = await env.SUBS.get("sub:" + email); prev = v ? JSON.parse(v) : null; } catch (e) { prev = null; }
-      if (!prev || typeof prev !== "object") prev = {};
-      const rec = {
-        ts: Number.isFinite(prev.ts) ? prev.ts : Date.now(),
-        src: src || String(prev.src || ""),
-      };
-      const keepZip = zip || subZip(prev.zip);
-      if (keepZip) rec.zip = keepZip;
-      rec.reports = reports !== null ? reports : prev.reports !== false;
-      await env.SUBS.put("sub:" + email, JSON.stringify(rec));
+      await putSub(env, email, src, zipIn, repIn);
       return json({ ok: true }, 200, cors(req));
+    }
+
+    // ---------- v5.11: one-time notices (rent release, ARC/PLC reminder) ----------
+    // Kept under note:<email>, apart from the daily list, so a notice never
+    // puts anyone on AGSIST Daily. daily:true (the "Also send the morning
+    // briefing" box) adds the address to the daily list as /subscribe does.
+    if (path === "/notice" && req.method === "POST") {
+      let b = {};
+      try { b = await req.json(); } catch (e) { b = {}; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
+      if (b._gotcha) return json({ ok: true }, 200, cors(req));
+      const email = String(b.email || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email) || email.length > 254)
+        return json({ ok: false, error: "invalid email" }, 400, cors(req));
+      const topic = noticeTopic(b.topic);
+      if (!topic) return json({ ok: false, error: "invalid topic" }, 400, cors(req));
+      const src = String(b.source || "").slice(0, 60);
+      let r = null;
+      try { const v = await env.SUBS.get("note:" + email); r = v ? JSON.parse(v) : null; } catch (e) { r = null; }
+      if (!r || typeof r !== "object" || !r.t || typeof r.t !== "object") r = { ts: Date.now(), t: {} };
+      if (!(topic in r.t) && Object.keys(r.t).length >= NOTE_MAX)
+        return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
+      if (!(topic in r.t)) r.t[topic] = { ts: Date.now(), src };
+      await env.SUBS.put("note:" + email, JSON.stringify(r));
+      const daily = subBool(b.daily) === true;
+      if (daily) await putSub(env, email, src, b.zip, b.reports);
+      return json({ ok: true, topic, daily }, 200, cors(req));
+    }
+
+    if (path === "/notice-unsubscribe") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const t = url.searchParams.get("t") || "";
+      const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
+      const valid = EMAIL_RE.test(e) && t === await hmac16(e, env.UNSUB_SECRET);
+      if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
+      if (req.method === "GET") {
+        const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t) + (one ? "&topic=" + encodeURIComponent(one) : "");
+        return htmlPage(one ? "Stop this notice for this address?" : "Stop every AGSIST notice for this address?",
+          "<p>" + escHtml(e) + "</p>" +
+          "<form method=\"POST\" action=\"" + action + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button. AGSIST Daily, if you get it, is not changed.</p>");
+      }
+      if (req.method === "POST") {
+        let r = null;
+        try { const v = await env.SUBS.get("note:" + e); r = v ? JSON.parse(v) : null; } catch (x) { r = null; }
+        if (one && r && r.t && typeof r.t === "object") {
+          delete r.t[one];
+          if (Object.keys(r.t).length) await env.SUBS.put("note:" + e, JSON.stringify(r));
+          else await env.SUBS.delete("note:" + e);
+        } else {
+          await env.SUBS.delete("note:" + e);
+        }
+        return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
+      }
     }
 
     // ---------- hail alerts: register/move a watch pin ----------
@@ -513,6 +622,8 @@ export default {
 
       if (req.method === "POST") {
         await env.SUBS.delete((isAlert ? "alert:" : "sub:") + e);
+        // v5.11: "No more emails" covers the one-time notices too.
+        if (!isAlert) await env.SUBS.delete("note:" + e);
         return htmlPage(isAlert
           ? "Hail alerts stopped for this address. No more alert emails."
           : "You're unsubscribed. No more emails.");
@@ -633,7 +744,45 @@ export default {
         by_source: bySource,
         // v5.8: stored form posts per kind. Counts only.
         forms: await formCounts(env),
+        // v5.11: one-time notices: addresses, and sign-ups per topic.
+        ...(await noticeCounts(env)),
       }, 200, { "Access-Control-Allow-Origin": "*" });
+    }
+
+    // v5.11: the one-time notices, for the job that mails them. ?topic= is a
+    // whole topic (rent:wi) or a prefix ending in ":" (rent:, arcplc:);
+    // &unsent=1 leaves out the ones already marked sent. One row per
+    // address and topic.
+    if (path === "/notice-list" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const want = String(url.searchParams.get("topic") || "").trim().toLowerCase();
+      const unsent = url.searchParams.get("unsent") === "1";
+      const out = [];
+      for (const k of await listKeys(env, "note:")) {
+        let r = null;
+        try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+        if (!r || !r.t || typeof r.t !== "object") continue;
+        for (const [topic, v] of Object.entries(r.t)) {
+          if (want && !(want.endsWith(":") ? topic.startsWith(want) : topic === want)) continue;
+          if (unsent && v && v.sent) continue;
+          out.push({ email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null });
+        }
+      }
+      return json(out, 200);
+    }
+
+    if (path === "/notice-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400); }
+      const email = String(b.email || "").trim().toLowerCase(), topic = noticeTopic(b.topic, true);
+      if (!EMAIL_RE.test(email) || !topic) return json({ ok: false, error: "bad args" }, 400);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get("note:" + email)); } catch (e) { r = null; }
+      if (!r || !r.t || !(topic in r.t)) return json({ ok: true, skipped: true });   // stopped while the job ran
+      r.t[topic].sent = Date.now();
+      await env.SUBS.put("note:" + email, JSON.stringify(r));
+      return json({ ok: true });
     }
 
     if (path === "/alert-list" && req.method === "GET") {
