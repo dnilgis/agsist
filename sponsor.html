@@ -182,7 +182,7 @@
       </section>
 
       <!-- Prices are typed here AND in data/rate-card.json; scripts/test_rate_card.py fails if they drift.
-           Open/taken status is refreshed below from the same files the sign-up form reads. -->
+           Status shows only when a slot is full (no open-slot counters, 2026-10-11, Sig); it is refreshed below from the same files the sign-up form reads. -->
       <h2 class="sp-h2" id="slots">What you can buy</h2>
       <div class="sp-tiers">
         <div class="sp-tier sp-tier--top">
@@ -191,7 +191,7 @@
           <div class="sp-sketch" aria-hidden="true"><i></i><i style="width:70%"></i><b class="k-card"></b><i></i></div>
           <p>Your card in every morning briefing, on the web and in the email, plus a sponsor strip near the top of the homepage. Logo, headline, a few lines and your link. One sponsor only.</p>
           <p class="sp-tier-fine">$1,788 a year. Your rate is locked for 12 months.</p>
-          <span class="sp-status" data-status="founding">Open</span>
+          <span class="sp-status sp-status--wait" data-status="founding" hidden></span>
           <a class="sp-tier-go" href="/sponsor-apply?tier=founding">Apply for the Sponsor slot &rarr;</a>
         </div>
         <div class="sp-tier">
@@ -199,7 +199,7 @@
           <div class="sp-tier-price">$29<small> /month per page</small></div>
           <div class="sp-sketch" aria-hidden="true"><i></i><b class="k-ribbon"></b><i style="width:80%"></i><i style="width:60%"></i></div>
           <p>A sponsor ribbon on one page you pick: Cash Bids, the futures pages, Break-Even, Fertilizer, or your state&rsquo;s cash rent page. One business per page, so a competitor can&rsquo;t take it.</p>
-          <span class="sp-status" data-status="page">79 pages open</span>
+          <span class="sp-status sp-status--wait" data-status="page" hidden></span>
           <a class="sp-tier-go" href="/sponsor-apply?tier=page">Pick your page &rarr;</a>
         </div>
         <div class="sp-tier">
@@ -207,7 +207,7 @@
           <div class="sp-tier-price">$15<small> /month</small></div>
           <div class="sp-sketch" aria-hidden="true"><i></i><i style="width:75%"></i><div class="k-foot"><b></b><em></em><em></em></div></div>
           <p>Your name or logo in the Supporters strip at the bottom of every AGSIST page. Shared, but capped at 6 businesses.</p>
-          <span class="sp-status" data-status="supporter">6 of 6 spots open</span>
+          <span class="sp-status sp-status--wait" data-status="supporter" hidden></span>
           <a class="sp-tier-go" href="/sponsor-apply?tier=supporter">Become a Supporter &rarr;</a>
         </div>
       </div>
@@ -216,8 +216,8 @@
            the email list), dated, and refreshed from that file on load. Nothing here is typed from memory. -->
       <h2 class="sp-h2">Who sees it</h2>
       <ul class="sp-list">
-        <li><strong>Farmers come here to price grain and run numbers.</strong> <span data-a="views">10,329</span> page views from <span data-a="users">4,182</span> readers in the 28 days <span data-a="win">Sep 9 to Oct 6, 2026</span>, some of it automated. Cash Bids alone had <span data-a="cash">2,242</span>. <span class="sp-src">Google Analytics.</span></li>
-        <li><strong>The Sponsor card is on the homepage and in the email.</strong> The homepage had <span data-a="home">1,694</span> views in those 28 days, and the briefing email goes to <span data-a="subs">122</span> subscribers <span class="sp-src">(<span data-a="subsAsOf">Oct 8, 2026</span>)</span>.</li>
+        <li><strong>Farmers come here to price grain and run numbers.</strong> <span data-a="views">10,610</span> page views from <span data-a="users">4,277</span> readers in the 28 days <span data-a="win">Sep 12 to Oct 9, 2026</span>, some of it automated. Cash Bids alone had <span data-a="cash">2,244</span>. <span class="sp-src">Google Analytics.</span></li>
+        <li><strong>The Sponsor card is on the homepage and in the email.</strong> The homepage had <span data-a="home">1,747</span> views in those 28 days, and the briefing email goes to <span data-a="subs">129</span> subscribers <span class="sp-src">(<span data-a="subsAsOf">Oct 11, 2026</span>)</span>.</li>
         <li><strong>Search keeps sending new people.</strong> Bing and Copilot answers cited AGSIST pages <span data-a="ai">1,615</span> times a day, <span data-a="aiwin">Aug 19 to Sep 17, 2026</span>. <span class="sp-src">Bing Webmaster Tools.</span></li>
       </ul>
 
@@ -313,11 +313,13 @@
     function d(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
     function span(a, b) { return d(a) + ' to ' + d(b) + ', ' + String(b).slice(0, 4); }
     function set(k, v) { [].forEach.call(document.querySelectorAll('[data-a="' + k + '"]'), function (el) { if (v) el.textContent = v; }); }
+    /* Only a full slot gets a badge. Open-slot counts are never shown. */
     function status(t, txt, open) {
       var el = document.querySelector('[data-status="' + t + '"]');
       if (!el) return;
+      if (open) { el.hidden = true; return; }
       el.textContent = txt;
-      el.classList.toggle('sp-status--wait', !open);
+      el.hidden = false;
     }
     var slot = '';
     try { slot = new URLSearchParams(location.search).get('slot') || ''; } catch (e) {}
@@ -329,15 +331,15 @@
 
       if (r[1] && r[2]) {
         var open = slots.filter(function (s) { return !taken[s.id]; }).length;
-        status('page', open ? open + ' page' + (open === 1 ? '' : 's') + ' open' : 'All pages taken. Apply to be next in line.', open > 0);
+        status('page', 'All pages taken. Apply to be next in line.', open > 0);
       }
       if (r[3]) {
         var cap = r[3].cap || 0, act = (r[3].supporters || []).filter(function (s) { return s && s.active === true; }).length;
-        if (cap) status('supporter', act >= cap ? 'All spots taken. Apply to be next in line.' : (cap - act) + ' of ' + cap + ' spots open', act < cap);
+        if (cap) status('supporter', 'All spots taken. Apply to be next in line.', act < cap);
       }
       if (r[4]) {
         var held = (r[4].sponsors || []).some(function (s) { return s && s.active !== false && s.billing && s.billing.tier === 'founding'; });
-        status('founding', held ? 'Taken. Apply to be next in line.' : 'Open', !held);
+        status('founding', 'Taken. Apply to be next in line.', !held);
       }
 
       var a = r[5];
