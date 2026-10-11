@@ -276,6 +276,38 @@ def test_repair_carries_source_dates_and_age():
           and "meal" not in d2["stale_keys"])
 
 
+def test_rolled_benchmark_alias_is_not_the_front():
+    """2026-10-11: corn-dec / beans-nov now roll to next year's contract the
+    day the dated one dies (fetch_prices.build_symbols). Undated, they never
+    look expired, so had they stayed in the ladder, on Dec 16 2026 corn-dec
+    (= Dec '27) would have won ahead of corn-mar27 and the gate would have
+    'repaired' a clean March continuous to the December 2027 price."""
+    print("rolled benchmark alias")
+    dec16 = datetime(2026, 12, 16, 13, 0, tzinfo=timezone.utc)
+    feed = {"fetched": "2026-12-16T13:00:00Z", "quotes": {
+        "corn":       {"ticker": "ZC=F",      "close": 494.75, "open": 492.0,
+                       "netChange": 2.75, "pctChange": 0.559},
+        "corn-dec":   {"ticker": "ZCZ27.CBT", "close": 511.75, "open": 510.0,
+                       "netChange": 1.75, "pctChange": 0.3431},
+        "corn-mar27": {"ticker": "ZCH27.CBT", "close": 494.75, "open": 492.0,
+                       "netChange": 2.75, "pctChange": 0.559},
+        "corn-dec27": {"ticker": "ZCZ27.CBT", "close": 511.75, "open": 510.0,
+                       "netChange": 1.75, "pctChange": 0.3431},
+    }}
+    from preflight_prices import front_key
+    check("Dec 16 2026: the corn front is corn-mar27, not the rolled corn-dec",
+          front_key("corn", feed["quotes"], dec16) == "corn-mar27",
+          f'got {front_key("corn", feed["quotes"], dec16)}')
+    passed, issues, data = run(copy.deepcopy(feed), today=dec16, repair=True)
+    check("a clean March continuous is left alone",
+          data["quotes"]["corn"]["close"] == 494.75 and not data["quotes"]["corn"].get("repaired_from"),
+          f'issues={[(s, c) for s, c, _ in issues]}')
+    # a dated key the static FRONT list never named (generated curve) is used
+    q2 = {"corn-sep28": {"ticker": "ZCU28.CBT", "close": 500.0, "open": 500.0}}
+    check("a generated dated key outside the FRONT list is still a candidate",
+          front_key("corn", q2, datetime(2028, 8, 1, tzinfo=timezone.utc)) == "corn-sep28")
+
+
 def test_suite_does_not_depend_on_the_wall_clock():
     """THE 2026-08-15 REGRESSION. Six assertions in this file failed that
     Saturday — not because the gate broke, but because the fixture aged past
@@ -358,6 +390,7 @@ if __name__ == "__main__":
               test_optional_curve_present_repairs_instead_of_suppressing,
               test_cattle_does_not_roll_early,
               test_repair_carries_source_dates_and_age,
+              test_rolled_benchmark_alias_is_not_the_front,
               test_suite_does_not_depend_on_the_wall_clock):
         t()
     print()

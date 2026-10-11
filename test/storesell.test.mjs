@@ -194,3 +194,83 @@ test("build_periods / pick_period / costNote(no months) in the Python twin match
     assert.equal(py[i].note, S.costNote(inp, null, null), "note " + i);
   });
 });
+
+/* ── carryWindow / forwardCurve: contract months from the quotes on file ──
+   The fixture is the dated grain keys of data/prices.json on 2026-10-09,
+   plus the months a run generates later (fetch_prices GRAIN_CURVES), so the
+   window can be checked as the calendar moves. Every key carries a close. */
+const QK = [
+  "corn-dec26", "corn-mar27", "corn-may27", "corn-jul27", "corn-sep27", "corn-dec27", "corn-mar28", "corn-may28", "corn-jul28", "corn-dec28",
+  "beans-nov26", "beans-jan27", "beans-mar27", "beans-may27", "beans-jul27", "beans-aug27", "beans-sep27", "beans-nov27", "beans-nov28",
+  "wheat-dec26", "wheat-mar27", "wheat-may27", "wheat-jul27", "wheat-sep27", "wheat-dec27",
+  "kcwheat-dec26", "corn-dec", "beans-nov", "corn-nearby", "corn",
+];
+const MCODE = { jan: "F", mar: "H", may: "K", jul: "N", aug: "Q", sep: "U", nov: "X", dec: "Z" };
+const ROOTC = { corn: "ZC", beans: "ZS", wheat: "ZW", kcwheat: "KE" };
+const QUOTES = Object.fromEntries(QK.map((k, i) => {
+  const m = /^(\w+)-([a-z]{3})(\d{2})$/.exec(k);
+  return [k, { close: 500 + i, ticker: m ? ROOTC[m[1]] + MCODE[m[2]] + m[3] + ".CBT" : "X" }];
+}));
+const win = (crop, day, q = QUOTES) => { const w = S.carryWindow(crop, q, day); return w ? w.join(">") : null; };
+
+test("carryWindow on 2026-10-11 is the window the site had typed, on dated keys", () => {
+  assert.equal(win("corn", "2026-10-11"), "corn-dec26>corn-jul27");
+  assert.equal(win("soybeans", "2026-10-11"), "beans-nov26>beans-jul27");
+  assert.equal(win("wheat", "2026-10-11"), "wheat-dec26>wheat-may27");
+  assert.equal(win("soybean", "2026-10-11"), "beans-nov26>beans-jul27", "the futures page's crop name works too");
+  assert.equal(win("oats", "2026-10-11"), null);
+});
+
+test("carryWindow rolls the day a contract dies (the 15th), never into next year's crop", () => {
+  assert.equal(win("corn", "2026-12-14"), "corn-dec26>corn-jul27", "Dec '26 last trades Dec 14");
+  assert.equal(win("corn", "2026-12-15"), "corn-mar27>corn-jul27");
+  assert.equal(win("wheat", "2026-12-15"), "wheat-mar27>wheat-may27");
+  // Nov '26 beans last trade Fri Nov 13; the calendar holds a contract live
+  // through the 14th (dead from the 15th), the conservative side.
+  assert.equal(win("soybeans", "2026-11-13"), "beans-nov26>beans-jul27");
+  assert.equal(win("soybeans", "2026-11-15"), "beans-jan27>beans-jul27");
+  // mid-May to mid-July: only July is left in corn's crop year -> no window
+  assert.equal(win("corn", "2027-05-15"), null);
+  assert.equal(win("corn", "2027-07-14"), null);
+  assert.equal(win("soybeans", "2027-05-20"), null);
+  // wheat after May dies: the new crop year starts at its harvest contract, July
+  assert.equal(win("wheat", "2027-05-15"), "wheat-jul27>wheat-dec27", "Mar/May '28 not on file: last window month with a close");
+  // Jul 15 2027: corn's next crop year, when its keys are on file
+  assert.equal(win("corn", "2027-07-15"), "corn-dec27>corn-jul28");
+  const noNext = Object.fromEntries(Object.entries(QUOTES).filter(([k]) => !/^corn-(mar|may|jul)28$/.test(k)));
+  assert.equal(win("corn", "2027-07-15", noNext), null, "only Dec '27 on file -> null, not a guess");
+});
+
+test("carryWindow skips a month with no close and ignores the undated aliases", () => {
+  const q = { ...QUOTES, "corn-dec26": { close: null, ticker: "ZCZ26.CBT" } };
+  assert.equal(win("corn", "2026-10-11", q), "corn-mar27>corn-jul27");
+  const q2 = { ...QUOTES };
+  delete q2["corn-jul27"];
+  assert.equal(win("corn", "2026-10-11", q2), "corn-dec26>corn-may27", "missing July: the last month with a close");
+  const onlyAlias = { "corn-dec": { close: 480 }, "corn-jul27": { close: 507 } };
+  assert.equal(win("corn", "2026-10-11", onlyAlias), null, "corn-dec alias is not a window month");
+});
+
+test("carryWindow without a date string reads the Chicago calendar day", () => {
+  /* 2026-12-15 03:00 UTC is still Dec 14 in Chicago: Dec '26 still trades. */
+  assert.equal(win("corn", new Date("2026-12-15T03:00:00Z")), "corn-dec26>corn-jul27");
+  assert.equal(win("corn", new Date("2026-12-15T15:00:00Z")), "corn-mar27>corn-jul27");
+  /* no date at all: today's Chicago date */
+  const chi = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date());
+  for (const crop of ["corn", "soybeans", "wheat"]) assert.equal(win(crop, undefined), win(crop, chi), crop + " defaults to " + chi);
+});
+
+test("forwardCurve: live contracts on file, labels, idx, new crop and old crop", () => {
+  const fc = (crop, day) => S.forwardCurve(crop, QUOTES, day).map((r) => r.key + (r.newCrop ? "*" : r.tag ? "~" : "")).join(" ");
+  assert.equal(fc("corn", "2026-10-11"), "corn-dec26 corn-mar27 corn-may27 corn-jul27 corn-sep27~ corn-dec27*");
+  assert.equal(fc("soybeans", "2026-10-11"), "beans-nov26 beans-jan27 beans-mar27 beans-may27 beans-jul27 beans-aug27~ beans-sep27~ beans-nov27*");
+  assert.equal(fc("wheat", "2026-10-11"), "wheat-dec26 wheat-mar27 wheat-may27 wheat-jul27* wheat-sep27* wheat-dec27*");
+  assert.equal(fc("corn", "2026-12-16"), "corn-mar27 corn-may27 corn-jul27 corn-sep27~ corn-dec27*", "Dec '26 drops off on expiry");
+  assert.equal(fc("corn", "2027-07-15"), "corn-sep27~ corn-dec27 corn-mar28 corn-may28 corn-jul28 corn-dec28*", "next crop year: Sep '27 is old crop, Dec '28 new crop");
+  const rows = S.forwardCurve("corn", QUOTES, "2026-10-11");
+  assert.equal(rows[0].month, "Dec '26");
+  assert.equal(rows[0].idx, 26 * 12 + 12);
+  assert.equal(rows.find((r) => r.key === "corn-jul27").idx - rows[0].idx, 7, "months between = idx difference");
+  assert.ok(!rows.some((r) => r.key === "corn-dec28"), "Flash Grain's far Dec '28 stays off the chart");
+  assert.ok(!rows.some((r) => r.key === "corn-dec" || r.key === "corn-nearby"), "aliases are not curve points");
+});

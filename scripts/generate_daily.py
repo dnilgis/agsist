@@ -150,7 +150,7 @@ import random
 import re
 from datetime import datetime, timezone, timedelta, date
 
-from contract_calendar import is_expired, holiday_name   # ONE expiry rule + ONE trading calendar
+from contract_calendar import is_expired, holiday_name, next_live_year   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
 import arc_plc_link                         # first ARC/PLC mention links /arc-plc
 from pathlib import Path
@@ -211,9 +211,13 @@ SURPRISE_THRESHOLDS = {
     "dollar": 0.5, "sp500": 1.5, "bitcoin": 4.0,
 }
 
+# corn-dec / beans-nov roll to next year's contract the day the dated one
+# dies (fetch_prices.benchmark_ticker, same calendar), so the year is computed.
+_DEC_YY = f"{next_live_year(12) % 100:02d}"
+_NOV_YY = f"{next_live_year(11) % 100:02d}"
 COMMODITY_LABELS = {
-    "corn": "Corn (nearby)", "corn-dec": "Corn Dec '26",
-    "beans": "Soybeans (nearby)", "beans-nov": "Soybeans Nov '26",
+    "corn": "Corn (nearby)", "corn-dec": f"Corn Dec '{_DEC_YY}",
+    "beans": "Soybeans (nearby)", "beans-nov": f"Soybeans Nov '{_NOV_YY}",
     "wheat": "Chicago Wheat", "oats": "Oats",
     "cattle": "Live Cattle", "feeders": "Feeder Cattle",
     "hogs": "Lean Hogs", "milk": "Class III Milk",

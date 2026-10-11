@@ -9,7 +9,7 @@ import sys
 from datetime import datetime, timezone
 
 sys.path.insert(0, "scripts")
-from fetch_prices import class_spreads, unit_guard, SYMBOLS, first_notice_day
+from fetch_prices import class_spreads, unit_guard, SYMBOLS, build_symbols, first_notice_day
 from datetime import date
 
 T = lambda y, m, d: datetime(y, m, d, 13, 0, tzinfo=timezone.utc)
@@ -95,8 +95,16 @@ def main():
     chk(unit_guard(qs) == {} and "rice" in qs, "rice at 13.27 dollars per cwt is kept")
 
     # 7. The symbols the page reads are actually requested.
-    for k in ("kcwheat", "mplswheat", "cotton", "rice", "oats", "kcwheat-dec26"):
+    for k in ("kcwheat", "mplswheat", "cotton", "rice", "oats"):
         chk(k in SYMBOLS, f"SYMBOLS requests {k}")
+    # Dated KC months are generated from the calendar, so the month is checked
+    # as of a pinned date, and today's map must hold a live KC month with its
+    # same-month Chicago partner (what class_spreads subtracts).
+    chk("kcwheat-dec26" in build_symbols(T(2026, 10, 3)), "SYMBOLS on 2026-10-03 requests kcwheat-dec26")
+    from contract_calendar import is_expired
+    live_kc = [k for k in SYMBOLS if k.startswith("kcwheat-") and not is_expired(k)]
+    chk(bool(live_kc) and all("wheat-" + k.split("-")[1] in SYMBOLS for k in live_kc),
+        f"today's SYMBOLS requests live KC months {live_kc} and their Chicago partners")
 
     print("SELFTEST OK" if ok else "SELFTEST FAILED")
     sys.exit(0 if ok else 1)

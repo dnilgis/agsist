@@ -28,9 +28,7 @@ var CROPS={
   corn:{
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
-    fwd:[{key:"corn-sep26",month:"Sep '26",idx:321,tag:"old crop"},{key:"corn-dec",month:"Dec '26",idx:324},{key:"corn-mar27",month:"Mar '27",idx:327},{key:"corn-may27",month:"May '27",idx:329},{key:"corn-jul27",month:"Jul '27",idx:331},{key:"corn-dec27",month:"Dec '27",idx:336,newCrop:true}],
-    /* the bid's board contract: Dec '26 also lives under the legacy key */
-    boardAlias:{'dec26':'corn-dec'},
+    carry:'corn',
     tiles:[{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
     labels:function(lbl){
@@ -53,11 +51,13 @@ var CROPS={
         if(bz)bz.classList.add('active');
       }
       renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
-      // S2: new-crop at a glance: Dec '26 benchmark, one line under the status area. Hidden when the key is missing.
+      // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
+      // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
       var cornDec=q['corn-dec'];
       if(cornDec&&cornDec.close!=null){
         var ncEl=document.getElementById('nc-glance');
         if(ncEl){
+          var ncl=document.getElementById('nc-lbl'),ncm=contractLabel(cornDec);if(ncl&&ncm)ncl.textContent=ncm;
           var ncp=document.getElementById('nc-price');if(ncp)ncp.textContent=grain$(cornDec.close);
           var ncc=document.getElementById('nc-chg');
           if(ncc){
@@ -87,9 +87,7 @@ var CROPS={
   soybean:{
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
-    /* Aug/Sep '26 are old-crop points; Nov '27 is new crop 2027: plotted, excluded from carry. */
-    fwd:[{key:"beans-aug26",month:"Aug '26",idx:320},{key:"beans-sep26",month:"Sep '26",idx:321},{key:"beans-nov",month:"Nov '26",idx:323},{key:"beans-jan27",month:"Jan '27",idx:325},{key:"beans-mar27",month:"Mar '27",idx:327},{key:"beans-jul27",month:"Jul '27",idx:331},{key:"beans-nov27",month:"Nov '27",idx:335,newCrop:true}],
-    boardAlias:{'nov26':'beans-nov'},
+    carry:'soybeans',
     tiles:[{key:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
     labels:function(lbl,nearby){
@@ -104,11 +102,12 @@ var CROPS={
     tv:'CAPITALCOM:SOYBEAN',
     seasSuffix:'',
     prices:function(q,data,front){
-      /* v15 (S2): new-crop at a glance: Nov '26 benchmark, hidden if key missing */
+      /* v15 (S2): new-crop at a glance: the beans-nov benchmark (the next live Nov,
+         which rolls on its own; the label is read from its ticker), hidden if key missing */
       var ncQ=q['beans-nov'];
       var ncEl=document.getElementById('nc-line');
       if(ncEl&&ncQ&&ncQ.close!=null){
-        var ncHtml="Nov '26 new crop: <strong>"+grain$(ncQ.close)+"</strong>";
+        var ncHtml=(contractLabel(ncQ)||'Nov')+" new crop: <strong>"+grain$(ncQ.close)+"</strong>";
         if(ncQ.pctChange!=null&&!ncQ.roll){var np=ncQ.pctChange;ncHtml+=' <span class="'+(np>=0?'up':'dn')+'">('+AG.px.pct(np)+')</span>';}
         ncEl.innerHTML=ncHtml;
         ncEl.style.display='';
@@ -146,9 +145,10 @@ var CROPS={
   wheat:{
     key:'wheat',label:'Wheat',root:'ZW',stats:'wheat',ga:'wheat',progressKey:null,
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>',
-    // Carry window: components/storesell.js FUTURES_CARRY (Dec '26 to May '27). Jul/Dec '27 are new-crop 2027, plotted, never in carry math.
-    fwd:[{key:"wheat-sep26",month:"Sep '26",idx:321},{key:"wheat-dec26",month:"Dec '26",idx:324},{key:"wheat-mar27",month:"Mar '27",idx:327},{key:"wheat-may27",month:"May '27",idx:329},{key:"wheat-jul27",month:"Jul '27",idx:331,newCrop:true},{key:"wheat-dec27",month:"Dec '27",idx:336,newCrop:true}],
-    boardAlias:{},
+    // Forward curve and carry window: components/storesell.js forwardCurve /
+    // carryWindow, from the dated contracts on file (Dec '26 to May '27 on
+    // 2026-10-11). Jul '27 on is next year's crop: plotted, never in the carry.
+    carry:'wheat',
     tiles:[{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'oats',p:'p-oats',c:'c-oats',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-wheat','c-wheat'],
     labels:function(lbl){
@@ -258,10 +258,14 @@ var CROP_KEY=CROP.key;
 var CROP_LABEL=CROP.label;
 var CROP_EMOJI=CROP.emoji;
 var CROP_PROGRESS_KEY=CROP.progressKey;
-var FWD_CONTRACTS=CROP.fwd;
+/* The forward curve's contracts: every live dated contract on file, from
+   storesell.js forwardCurve (one rule for expiry, window and new crop). */
+function fwdContracts(q){var SS=window.AgsistStoreSell;return SS&&SS.forwardCurve?SS.forwardCurve(CROP.carry,q):[];}
 
 /* ── small shared helpers ─────────────────────────────────────────────────── */
 function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
+/* "Dec '26" from a dated quote's ticker (ZCZ26.CBT), else null. */
+function contractLabel(d){var SS=window.AgsistStoreSell,f=SS&&SS.futuresMonth&&d&&SS.futuresMonth(d.ticker);return f?f.label:null;}
 /* The quote the page leads with: the dated nearby contract when the pipeline
    publishes it with a price, else the continuous series (labeled as such). */
 function frontQuote(q){if(!q)return null;var n=q[CROP_KEY+'-nearby'];return (n&&n.close!=null)?n:(q[CROP_KEY]||null);}
@@ -786,8 +790,6 @@ function boardContractFromSymbol(sym){
   var ML={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
   var mon=MC[m[1]],yy=m[2];
   var candidates=[CROP_KEY+'-'+mon+yy];
-  var alias=CROP.boardAlias&&CROP.boardAlias[mon+yy];
-  if(alias)candidates.unshift(alias); // a benchmark month that lives under a legacy key
   for(var i=0;i<candidates.length;i++){
     var d=window.__agsistLastQ[candidates[i]];
     if(d&&d.close!=null)return {key:candidates[i],label:ML[m[1]]+" '"+yy,close:d.close};
@@ -1610,7 +1612,7 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
 
   // the storage window: the first and last contracts of this crop year that trade
   var SS=window.AgsistStoreSell;
-  var cw=(SS&&SS.FUTURES_CARRY[window.AGSIST_FUTURES==='soybean'?'soybeans':window.AGSIST_FUTURES])||[];
+  var cw=(SS&&SS.carryWindow&&SS.carryWindow(CROP.carry,quotes))||[];
   var first=pts.filter(function(p){return p.key===cw[0];})[0],last=pts.filter(function(p){return p.key===cw[1];})[0];
   var shapeTxt='',interpTxt='';
   if(!first||!last||!SS){
@@ -1782,7 +1784,7 @@ fetch('/data/prices.json',{cache:'no-store'})
     if(typeof gaEvent==='function')gaEvent('price_loaded',{page:CROP.ga,mins_old:minsForGA});
 
     // --- NEW: render forward curve ---
-    renderForwardCurve(CROP_KEY,FWD_CONTRACTS,q,true);
+    renderForwardCurve(CROP_KEY,fwdContracts(q),q,true);
     // --- v12: keep quotes accessible; reactive Market Read on breakeven change ---
     window.__agsistLastQ=q;
     window.addEventListener('be-updated',function(){

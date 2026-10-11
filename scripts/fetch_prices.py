@@ -54,34 +54,21 @@ v3 — 2026-04-26
   was rendering with one data point). All keys use an explicit year suffix so
   there is no ambiguity about which contract the data refers to.
 
-  ANNUAL CONTRACT MAINTENANCE — please read.
-  ------------------------------------------
-  CBOT grain contracts roll throughout the year as nearby months expire.
-  Roughly:
-    - Mar contracts (H) expire mid-March
-    - May contracts (K) expire mid-May
-    - Jul contracts (N) expire mid-July
-    - Sep contracts (U) expire mid-September
-    - Dec contracts (Z) expire mid-December
-    - Beans add Jan (F), Aug (Q), Nov (X)
+  CONTRACT MAINTENANCE (automatic for grains since 2026-10-11)
+  -------------------------------------------------------------
+  The dated corn, soybean, Chicago wheat and KC wheat tickers, and the two
+  new-crop benchmark aliases (corn-dec, beans-nov), are generated on every
+  run from scripts/contract_calendar.py: see GRAIN_CURVES and
+  grain_curve_symbols(). A contract drops out of the fetch the day the
+  calendar calls it dead (the 15th of its month), and the next year's months
+  come in on their own. corn-dec rolls to next year's Dec on Dec 15, beans-nov
+  to next year's Nov on Nov 15. Nothing to edit each year.
 
-  When a contract expires, yfinance starts returning empty data and the
-  "preserve last known value" logic in this script will keep the stale
-  number until you replace the ticker.
-
-  RECOMMENDED ROUTINE: Once a year (early Jan is convenient), audit the
-  SYMBOLS dict below. For each grain ticker, advance the year suffix on
-  any contract whose calendar month is now in the past. Pattern:
-
-      "corn-jul26": "ZCN26.CBT",     becomes
-      "corn-jul28": "ZCN28.CBT",     after July 2026 expires
-
-  Also update the two new-crop benchmark aliases each fall:
-      "corn-dec":  "ZCZ26.CBT"  →  ZCZ27.CBT  (around Nov-Dec each year)
-      "beans-nov": "ZSX26.CBT"  →  ZSX27.CBT  (around Oct-Nov each year)
-
-  These aliases are used by the corn-bean ratio business logic on the
-  futures pages and must point to the current new-crop benchmark.
+  STILL BY HAND: the cattle, feeder, hog, oats, meal, soyoil and milk curves
+  below. Their exchange calendars differ (see PRODUCT_RULE in
+  contract_calendar.py), so advance their year suffixes as months expire.
+  An expired key is retired (not fetched, not written, named in
+  retired_keys) whether it is generated or hand listed.
 
 v2 — 2026-03-24
   Added wk52_hi / wk52_lo from fast_info.year_high / year_low.
@@ -90,7 +77,7 @@ v2 — 2026-03-24
 import json
 import math
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import yfinance as yf
 
 
@@ -112,11 +99,12 @@ def _num(v):
     return f
 
 
-from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from  # ONE definition of contract expiry
+from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from, next_live_year  # ONE definition of contract expiry
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
-# whose ticker needs advancing (see ANNUAL CONTRACT MAINTENANCE above).
+# whose ticker needs advancing (grain curves roll themselves; livestock and
+# soy product curves are still listed by hand, see CONTRACT MAINTENANCE above).
 STALE_ALERT_DAYS = 3
 
 
@@ -325,191 +313,237 @@ def candidates(spec):
     symbol degrade to alternatives instead of silently freezing the quote."""
     return spec if isinstance(spec, list) else [spec]
 
-# Map our internal keys → Yahoo Finance ticker symbols
-SYMBOLS = {
-    # ── Grains: front month + new-crop benchmark aliases ──
-    "corn":       "ZC=F",
-    "corn-dec":   "ZCZ26.CBT",     # Dec 2026 — current new-crop benchmark; used by corn-bean ratio
-    "beans":      "ZS=F",
-    "beans-nov":  "ZSX26.CBT",     # Nov 2026 — current new-crop benchmark; used by corn-bean ratio
-    "wheat":      "ZW=F",
-    # Wheat classes (2026-07-28): the wheat page was Chicago-only while two
-    # thirds of the site's own wheat bids quote against KC or Minneapolis.
-    # Continuous most-active series, same as ZW=F. Tickers match the ones
-    # enrich_cot_prices.py already resolves via yfinance.
-    "kcwheat":    "KE=F",     # KC HRW (hard red winter)
-    # MGEX HRS (hard red spring). MWE=F has never landed in prices.json, and
-    # cot_deep.py's first run logged "Quote not found for symbol: MWE=F" for
-    # MW=F and MWE=F alike after MGEX became MIAX Futures. Kept as a fallback
-    # list so the first symbol Yahoo serves wins; until then the key is absent
-    # and the homepage prints an em dash with that reason.
-    "mplswheat":  ["MWE=F", "MW=F"],
-    "oats":       "ZO=F",
+# ── Grain curves: generated from the calendar (2026-10-11) ──────────────────
+# Until 2026-10-11 every dated corn, bean, wheat and KC wheat ticker was typed
+# by hand, with a note to advance the year suffixes once a year and to move
+# the corn-dec / beans-nov aliases each fall. Nobody has to now: the list is
+# computed on every run from contract_calendar, the one definition of expiry.
+#
+# Per root: every listed month from the contract that died most recently
+# (within RETIRE_LOOKBACK_DAYS, so mark_rolls can see the roll and the feed
+# names it in retired_keys) through the root's horizon.
+#   corn   all months through Dec of next calendar year, plus Dec of the
+#          year after (dnilgis/flashgrain reads corn-dec28 today)
+#   beans  all months through Nov of next calendar year, plus Nov of the
+#          year after (flashgrain reads beans-nov28)
+#   wheat  all months through Dec of next calendar year
+# The horizon moves on Jan 1, so a new year's far months arrive together;
+# a key only ever leaves the fetch when its contract dies.
+#   KC     the next KC_LIVE_COUNT live months (the class spread needs only the
+#          nearest same-month pair with Chicago, which the wheat curve covers)
+# On 2026-10-11 that is exactly the live part of the old hand list, plus
+# wheat-sep27, which the hand list skipped for no stated reason.
+RETIRE_LOOKBACK_DAYS = 31
+KC_LIVE_COUNT = 3
+FCODE = "FGHJKMNQUVXZ"
+_MON3 = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+# key root, Yahoo root, listed months, horizon month, add that month two years out
+GRAIN_CURVES = (
+    ("corn",  "ZC", (3, 5, 7, 9, 12), 12, True),
+    ("beans", "ZS", (1, 3, 5, 7, 8, 9, 11), 11, True),
+    ("wheat", "ZW", (3, 5, 7, 9, 12), 12, False),
+)
+KC_CURVE = ("kcwheat", "KE", (3, 5, 7, 9, 12))
 
-    # ── Southern crops (2026-10-03, wave1-C) ──
-    # UNVERIFIED: neither symbol appears anywhere else in this repo or in its
-    # data, so the first Actions run is what confirms them. Same continuous
-    # root=F pattern as ZC=F/ZW=F/ZO=F above. A symbol Yahoo does not serve
-    # logs LOST and nothing else breaks; the homepage prints an em dash.
-    # UNIT_RANGE below withholds a quote that arrives in a unit the page does
-    # not expect, instead of printing it under the wrong unit.
-    "cotton":     "CT=F",     # ICE cotton No. 2, cents per lb
-    "rice":       "ZR=F",     # CBOT rough rice, dollars per cwt
-    # Canola (ICE) left out: no canola symbol is used anywhere in this
-    # pipeline, so there is nothing to follow. Sorghum and peanuts have no
-    # liquid US futures; the site carries them through cash bids and RMA.
 
-    # ── Grain forward curve (year-explicit; UPDATE ANNUALLY) ──
-    # Corn active months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z)
-    "corn-jul26": "ZCN26.CBT",
-    "corn-sep26": "ZCU26.CBT",
-    "corn-dec26": "ZCZ26.CBT",   # dated Dec (same ticker as corn-dec alias) — REQUIRED so
-                                 # add_nearby can roll Sep->Dec on Sep 15; without it the
-                                 # nearby ladder would skip to Mar '27 (audit 2026-07-29)
-    "corn-mar27": "ZCH27.CBT",
-    "corn-may27": "ZCK27.CBT",
-    "corn-jul27": "ZCN27.CBT",
-    "corn-sep27": "ZCU27.CBT",
-    "corn-dec27": "ZCZ27.CBT",
-    # Read by dnilgis/flashgrain (Flash Grain's forward bids: every delivery
-    # month for the next year, plus Fall of this year and the next two). No
-    # page here draws these, and preflight's daily-limit gate covers them.
-    "corn-dec28": "ZCZ28.CBT",
+def _today(now=None):
+    d = now or datetime.now(timezone.utc)
+    return d.date() if isinstance(d, datetime) else d
 
-    # Beans active months: Jan (F), Mar (H), May (K), Jul (N), Aug (Q), Sep (U), Nov (X)
-    "beans-jul26":"ZSN26.CBT",
-    "beans-aug26":"ZSQ26.CBT",
-    "beans-sep26":"ZSU26.CBT",
-    "beans-nov26":"ZSX26.CBT",   # dated Nov (same ticker as beans-nov alias) — REQUIRED so
-                                 # add_nearby can roll Sep->Nov on Sep 15; without it the
-                                 # nearby ladder would skip to Jan '27 (audit 2026-07-29)
-    "beans-jan27":"ZSF27.CBT",
-    "beans-mar27":"ZSH27.CBT",
-    "beans-may27":"ZSK27.CBT",
-    "beans-jul27":"ZSN27.CBT",
-    "beans-aug27":"ZSQ27.CBT",
-    "beans-sep27":"ZSU27.CBT",
-    "beans-nov27":"ZSX27.CBT",
-    "beans-nov28":"ZSX28.CBT",   # Flash Grain's Fall '28 row, as corn-dec28
 
-    # Wheat active months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z)
-    "wheat-jul26":"ZWN26.CBT",
-    "wheat-sep26":"ZWU26.CBT",
-    "wheat-dec26":"ZWZ26.CBT",
-    "wheat-mar27":"ZWH27.CBT",
-    "wheat-may27":"ZWK27.CBT",
-    "wheat-jul27":"ZWN27.CBT",
-    "wheat-dec27":"ZWZ27.CBT",
+def _grain_entry(root, yroot, yr, mon):
+    yy = f"{yr % 100:02d}"
+    return f"{root}-{_MON3[mon - 1]}{yy}", f"{yroot}{FCODE[mon - 1]}{yy}.CBT"
 
-    # KC HRW dated contracts (2026-10-03, wave1-C), so the KC-Chicago spread
-    # is taken month against month (class_spreads below) instead of between
-    # two continuous series that may sit on different months. UNVERIFIED:
-    # same {ROOT}{MONTH}{YY}.CBT form as the Chicago curve, not yet seen in a
-    # live response. If they log LOST the spread falls back to the continuous
-    # pair and says so. Same five-month cycle as Chicago. UPDATE ANNUALLY.
-    "kcwheat-dec26":"KEZ26.CBT",
-    "kcwheat-mar27":"KEH27.CBT",
-    "kcwheat-may27":"KEK27.CBT",
 
-    # ── Livestock ──
-    "cattle":     "LE=F",
-    "feeders":    "GF=F",
-    "hogs":       "HE=F",
-    "milk":       "DC=F",
+def grain_curve_symbols(now=None):
+    """{key: ticker} for the dated corn, bean, wheat and KC wheat contracts a
+    run fetches, in calendar order per root. Expired months inside the
+    lookback are listed so main() retires them by name and mark_rolls sees
+    the roll; main() never fetches or writes them. Pure function of the
+    date; selftested in scripts/test_grain_symbols.py."""
+    today = _today(now)
+    floor = today - timedelta(days=RETIRE_LOOKBACK_DAYS)
+    out = {}
 
-    # ── Live cattle forward curve (CME; active months Feb G, Apr J, Jun M, Aug Q, Oct V, Dec Z) ──
-    # Yahoo livestock deferred format is {ROOT}{MONTH}{YY}.CME. VERIFY on first run:
-    # if any cattle-* key logs SKIP/LOST, the suffix/format needs adjusting (see note below).
-    # UPDATE ANNUALLY like the grain contracts — advance the year suffix as months expire.
-    "cattle-aug26": "LEQ26.CME",
-    "cattle-oct26": "LEV26.CME",
-    "cattle-dec26": "LEZ26.CME",
-    "cattle-feb27": "LEG27.CME",
-    "cattle-apr27": "LEJ27.CME",
-    "cattle-jun27": "LEM27.CME",
+    def ladder(months, last):
+        for yr in range(today.year - 1, last[0] + 1):
+            for mon in months:
+                if (yr, mon) <= last and dead_from(yr, mon, "GRAIN") >= floor:
+                    yield yr, mon
 
-    # ── Forward curves for the products that had NONE (added 2026-08-08) ──
-    # Why: on 2026-08-08 the briefing published "lean hogs had their biggest
-    # single-session gain in years... up 16.9%". Lean hogs cannot move 16.9% in
-    # a session -- that is 2.9x the CME expanded daily limit. HE=F had spliced
-    # August's close onto October's prior close. It went out because hogs, oats,
-    # feeders, meal, milk and soyoil had no dated contract anywhere in this feed,
-    # so preflight_prices.py had nothing to reconcile them against. Corn, beans,
-    # wheat and cattle were fine precisely because they DID have curves.
-    #
-    # VERIFY ON FIRST RUN. These symbols and contract-month sets have not been
-    # confirmed against a live Yahoo response or an authoritative CME listing --
-    # they are the widely published month cycles. A wrong symbol logs SKIP/LOST
-    # for that key and nothing else breaks: preflight treats a missing optional
-    # curve as a WARN, not a block (see FRONT_OPTIONAL in preflight_prices.py).
-    # Once a full session runs clean with no SKIPs, promote these out of
-    # FRONT_OPTIONAL into FRONT so a missing curve becomes a hard failure.
-    # UPDATE ANNUALLY, like the grain and cattle curves above.
-    #
-    # Lean hogs (CME) active months: Feb G, Apr J, May K, Jun M, Jul N, Aug Q, Oct V, Dec Z
-    "hogs-aug26": "HEQ26.CME",
-    "hogs-oct26": "HEV26.CME",
-    "hogs-dec26": "HEZ26.CME",
-    "hogs-feb27": "HEG27.CME",
-    "hogs-apr27": "HEJ27.CME",
-    "hogs-jun27": "HEM27.CME",
+    y = today.year
+    for root, yroot, months, bmon, far in GRAIN_CURVES:
+        for yr, mon in ladder(months, (y + 1, bmon)):
+            k, t = _grain_entry(root, yroot, yr, mon)
+            out[k] = t
+        if far:
+            k, t = _grain_entry(root, yroot, y + 2, bmon)
+            out[k] = t
+    root, yroot, months = KC_CURVE
+    live = 0
+    for yr, mon in ladder(months, (today.year + 2, 12)):
+        if today >= dead_from(yr, mon, "GRAIN"):
+            continue          # KC has no continuous roll to mark; live months only
+        if live == KC_LIVE_COUNT:
+            break
+        live += 1
+        k, t = _grain_entry(root, yroot, yr, mon)
+        out[k] = t
+    return out
 
-    # Feeder cattle (CME) active months: Jan F, Mar H, Apr J, May K, Aug Q, Sep U, Oct V, Nov X
-    "feeders-aug26": "GFQ26.CME",
-    "feeders-sep26": "GFU26.CME",
-    "feeders-oct26": "GFV26.CME",
-    "feeders-nov26": "GFX26.CME",
-    "feeders-jan27": "GFF27.CME",
-    "feeders-mar27": "GFH27.CME",
 
-    # Oats (CBOT) active months: Mar H, May K, Jul N, Sep U, Dec Z
-    "oats-sep26": "ZOU26.CBT",
-    "oats-dec26": "ZOZ26.CBT",
-    "oats-mar27": "ZOH27.CBT",
-    "oats-may27": "ZOK27.CBT",
+def benchmark_ticker(yroot, mon, now=None):
+    """The rolling new-crop benchmark: the next live contract in month `mon`.
+    'ZC', 12 -> 'ZCZ26.CBT' through Dec 14 2026, 'ZCZ27.CBT' from Dec 15."""
+    yr = next_live_year(mon, _today(now))
+    return f"{yroot}{FCODE[mon - 1]}{yr % 100:02d}.CBT"
 
-    # Soybean meal (CBOT) active months: Jan F, Mar H, May K, Jul N, Aug Q, Sep U, Oct V, Dec Z
-    "meal-aug26": "ZMQ26.CBT",
-    "meal-sep26": "ZMU26.CBT",
-    "meal-oct26": "ZMV26.CBT",
-    "meal-dec26": "ZMZ26.CBT",
-    "meal-jan27": "ZMF27.CBT",
-    "meal-mar27": "ZMH27.CBT",
 
-    # Soybean oil (CBOT) active months: same cycle as meal
-    "soyoil-aug26": "ZLQ26.CBT",
-    "soyoil-sep26": "ZLU26.CBT",
-    "soyoil-oct26": "ZLV26.CBT",
-    "soyoil-dec26": "ZLZ26.CBT",
-    "soyoil-jan27": "ZLF27.CBT",
-    "soyoil-mar27": "ZLH27.CBT",
+def build_symbols(now=None):
+    """Our internal keys -> Yahoo Finance ticker symbols, as of `now`."""
+    return {
+        # ── Grains: front month + new-crop benchmark aliases ──
+        "corn":       "ZC=F",
+        # corn-dec / beans-nov: the next live Dec corn / Nov beans contract. They
+        # roll the day the dated contract dies (Dec 15 / Nov 15, contract_calendar),
+        # so each always carries the same quote as one dated key (corn-dec26 now).
+        # Read by the futures pages, price watch, the briefing and sparklines.
+        "corn-dec":   benchmark_ticker("ZC", 12, now),
+        "beans":      "ZS=F",
+        "beans-nov":  benchmark_ticker("ZS", 11, now),
+        "wheat":      "ZW=F",
+        # Wheat classes (2026-07-28): the wheat page was Chicago-only while two
+        # thirds of the site's own wheat bids quote against KC or Minneapolis.
+        # Continuous most-active series, same as ZW=F. Tickers match the ones
+        # enrich_cot_prices.py already resolves via yfinance.
+        "kcwheat":    "KE=F",     # KC HRW (hard red winter)
+        # MGEX HRS (hard red spring). MWE=F has never landed in prices.json, and
+        # cot_deep.py's first run logged "Quote not found for symbol: MWE=F" for
+        # MW=F and MWE=F alike after MGEX became MIAX Futures. Kept as a fallback
+        # list so the first symbol Yahoo serves wins; until then the key is absent
+        # and the homepage prints an em dash with that reason.
+        "mplswheat":  ["MWE=F", "MW=F"],
+        "oats":       "ZO=F",
 
-    # Class III milk (CME) lists all twelve months
-    "milk-aug26": "DCQ26.CME",
-    "milk-sep26": "DCU26.CME",
-    "milk-oct26": "DCV26.CME",
-    "milk-nov26": "DCX26.CME",
-    "milk-dec26": "DCZ26.CME",
-    "milk-jan27": "DCF27.CME",
+        # ── Southern crops (2026-10-03, wave1-C) ──
+        # UNVERIFIED: neither symbol appears anywhere else in this repo or in its
+        # data, so the first Actions run is what confirms them. Same continuous
+        # root=F pattern as ZC=F/ZW=F/ZO=F above. A symbol Yahoo does not serve
+        # logs LOST and nothing else breaks; the homepage prints an em dash.
+        # UNIT_RANGE below withholds a quote that arrives in a unit the page does
+        # not expect, instead of printing it under the wrong unit.
+        "cotton":     "CT=F",     # ICE cotton No. 2, cents per lb
+        "rice":       "ZR=F",     # CBOT rough rice, dollars per cwt
+        # Canola (ICE) left out: no canola symbol is used anywhere in this
+        # pipeline, so there is nothing to follow. Sorghum and peanuts have no
+        # liquid US futures; the site carries them through cash bids and RMA.
 
-    # ── Oilseeds / Feed ──
-    "meal":       "ZM=F",
-    "soyoil":     "ZL=F",
-    # ── Energy ──
-    "crude":      "CL=F",
-    "natgas":     "NG=F",
-    # ── Metals ──
-    "gold":       "GC=F",
-    "silver":     "SI=F",
-    # ── Macro / Indices ──
-    "dollar":     ["DX-Y.NYB", "DX=F", "DXY"],  # DX=F was delisted on Yahoo ~mid-2026; try the index spot first, then fallbacks. First that resolves wins.
-    "treasury10": "^TNX",
-    "sp500":      "^GSPC",
-    # ── Crypto (replaces client-side CoinGecko) ──
-    "bitcoin":    "BTC-USD",
-    "ripple":     "XRP-USD",
-    "kaspa":      "KAS-USD",
-}
+        # ── Grain forward curves: generated, see GRAIN_CURVES above ──
+        **grain_curve_symbols(now),
+
+        # ── Livestock ──
+        "cattle":     "LE=F",
+        "feeders":    "GF=F",
+        "hogs":       "HE=F",
+        "milk":       "DC=F",
+
+        # ── Live cattle forward curve (CME; active months Feb G, Apr J, Jun M, Aug Q, Oct V, Dec Z) ──
+        # Yahoo livestock deferred format is {ROOT}{MONTH}{YY}.CME. VERIFY on first run:
+        # if any cattle-* key logs SKIP/LOST, the suffix/format needs adjusting (see note below).
+        # UPDATE ANNUALLY (by hand; only the grain curves roll themselves): advance the year suffix as months expire.
+        "cattle-aug26": "LEQ26.CME",
+        "cattle-oct26": "LEV26.CME",
+        "cattle-dec26": "LEZ26.CME",
+        "cattle-feb27": "LEG27.CME",
+        "cattle-apr27": "LEJ27.CME",
+        "cattle-jun27": "LEM27.CME",
+
+        # ── Forward curves for the products that had NONE (added 2026-08-08) ──
+        # Why: on 2026-08-08 the briefing published "lean hogs had their biggest
+        # single-session gain in years... up 16.9%". Lean hogs cannot move 16.9% in
+        # a session -- that is 2.9x the CME expanded daily limit. HE=F had spliced
+        # August's close onto October's prior close. It went out because hogs, oats,
+        # feeders, meal, milk and soyoil had no dated contract anywhere in this feed,
+        # so preflight_prices.py had nothing to reconcile them against. Corn, beans,
+        # wheat and cattle were fine precisely because they DID have curves.
+        #
+        # VERIFY ON FIRST RUN. These symbols and contract-month sets have not been
+        # confirmed against a live Yahoo response or an authoritative CME listing --
+        # they are the widely published month cycles. A wrong symbol logs SKIP/LOST
+        # for that key and nothing else breaks: preflight treats a missing optional
+        # curve as a WARN, not a block (see FRONT_OPTIONAL in preflight_prices.py).
+        # Once a full session runs clean with no SKIPs, promote these out of
+        # FRONT_OPTIONAL into FRONT so a missing curve becomes a hard failure.
+        # UPDATE ANNUALLY by hand, like the cattle curve above.
+        #
+        # Lean hogs (CME) active months: Feb G, Apr J, May K, Jun M, Jul N, Aug Q, Oct V, Dec Z
+        "hogs-aug26": "HEQ26.CME",
+        "hogs-oct26": "HEV26.CME",
+        "hogs-dec26": "HEZ26.CME",
+        "hogs-feb27": "HEG27.CME",
+        "hogs-apr27": "HEJ27.CME",
+        "hogs-jun27": "HEM27.CME",
+
+        # Feeder cattle (CME) active months: Jan F, Mar H, Apr J, May K, Aug Q, Sep U, Oct V, Nov X
+        "feeders-aug26": "GFQ26.CME",
+        "feeders-sep26": "GFU26.CME",
+        "feeders-oct26": "GFV26.CME",
+        "feeders-nov26": "GFX26.CME",
+        "feeders-jan27": "GFF27.CME",
+        "feeders-mar27": "GFH27.CME",
+
+        # Oats (CBOT) active months: Mar H, May K, Jul N, Sep U, Dec Z
+        "oats-sep26": "ZOU26.CBT",
+        "oats-dec26": "ZOZ26.CBT",
+        "oats-mar27": "ZOH27.CBT",
+        "oats-may27": "ZOK27.CBT",
+
+        # Soybean meal (CBOT) active months: Jan F, Mar H, May K, Jul N, Aug Q, Sep U, Oct V, Dec Z
+        "meal-aug26": "ZMQ26.CBT",
+        "meal-sep26": "ZMU26.CBT",
+        "meal-oct26": "ZMV26.CBT",
+        "meal-dec26": "ZMZ26.CBT",
+        "meal-jan27": "ZMF27.CBT",
+        "meal-mar27": "ZMH27.CBT",
+
+        # Soybean oil (CBOT) active months: same cycle as meal
+        "soyoil-aug26": "ZLQ26.CBT",
+        "soyoil-sep26": "ZLU26.CBT",
+        "soyoil-oct26": "ZLV26.CBT",
+        "soyoil-dec26": "ZLZ26.CBT",
+        "soyoil-jan27": "ZLF27.CBT",
+        "soyoil-mar27": "ZLH27.CBT",
+
+        # Class III milk (CME) lists all twelve months
+        "milk-aug26": "DCQ26.CME",
+        "milk-sep26": "DCU26.CME",
+        "milk-oct26": "DCV26.CME",
+        "milk-nov26": "DCX26.CME",
+        "milk-dec26": "DCZ26.CME",
+        "milk-jan27": "DCF27.CME",
+
+        # ── Oilseeds / Feed ──
+        "meal":       "ZM=F",
+        "soyoil":     "ZL=F",
+        # ── Energy ──
+        "crude":      "CL=F",
+        "natgas":     "NG=F",
+        # ── Metals ──
+        "gold":       "GC=F",
+        "silver":     "SI=F",
+        # ── Macro / Indices ──
+        "dollar":     ["DX-Y.NYB", "DX=F", "DXY"],  # DX=F was delisted on Yahoo ~mid-2026; try the index spot first, then fallbacks. First that resolves wins.
+        "treasury10": "^TNX",
+        "sp500":      "^GSPC",
+        # ── Crypto (replaces client-side CoinGecko) ──
+        "bitcoin":    "BTC-USD",
+        "ripple":     "XRP-USD",
+        "kaspa":      "KAS-USD",
+    }
+
+
+SYMBOLS = build_symbols()
 
 
 def close_and_prev(bars):
@@ -767,7 +801,7 @@ def main():
     if retired:
         print(f"\n  RETIRED {len(retired)} expired contract(s), not fetched, not written:")
         for k in retired:
-            print(f"    - {k}  (past last trading day; advance the ticker in SYMBOLS when you roll it)")
+            print(f"    - {k}  (past last trading day)")
 
     rolls = mark_rolls(quotes, SYMBOLS)
     if rolls:
@@ -867,7 +901,7 @@ def main():
         print(f"\n  Failed this run: {', '.join(failed_keys)}")
     if expired_suspects:
         print("\n  \u26A0\uFE0F  LIKELY-EXPIRED CONTRACTS (preserved >= "
-              f"{STALE_ALERT_DAYS}d) — advance the year suffix in SYMBOLS:")
+              f"{STALE_ALERT_DAYS}d) — check the ticker in SYMBOLS / GRAIN_CURVES:")
         for k, tk, d in expired_suspects:
             print(f"       {k:14s} {tk:14s}  stale {d:.1f}d")
     print(f"\nDone: {ok} fetched, {fail} failed, {len(stale_keys)} preserved-stale \u2192 data/prices.json updated")

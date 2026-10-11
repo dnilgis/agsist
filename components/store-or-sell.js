@@ -24,7 +24,7 @@
   var ALIAS = { soybean: 'soybeans', beans: 'soybeans', soy: 'soybeans' };
   var CROP_WORD = { corn: 'corn', soybeans: 'soybeans', wheat: 'wheat' };
   var MAX_TRY = 6;          // elevators read for their later months, nearest first
-  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, pick: null };
+  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, noWindow: false, pick: null };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -130,8 +130,11 @@
       .catch(function () { return null; });
     return state.futuresP;
   }
+  /* The storage window comes from the contracts on file (storesell.js
+     carryWindow): null when fewer than two of this crop year's contracts
+     still trade, e.g. corn from mid-May to mid-July. */
   function futuresModel(prices, crop) {
-    var w = SS.FUTURES_CARRY[crop], q = prices && prices.quotes || {};
+    var q = prices && prices.quotes || {}, w = SS.carryWindow(crop, q);
     if (!w) return null;
     var a = q[w[0]], b = q[w[1]];
     if (!a || !b || a.close == null || b.close == null) return null;
@@ -180,7 +183,7 @@
           'Interest is figured on the ' + fm.from.label + ' futures price, ' + SS.cashQ(fm.spot) + '; on a lower cash price it would be a little less.';
         drawMath(fm.spot, fm.carry, fm.months, inp, fm.from.label + ' futures', fm.to.label + ' futures');
       } else {
-        ans.textContent = state.zip && state.models === null ? 'Reading the elevators near ' + state.zip + '…' : 'Prices did not load. Try again in a minute.';
+        ans.textContent = state.zip && state.models === null ? 'Reading the elevators near ' + state.zip + '…' : state.noWindow ? noWindowText() : 'Prices did not load. Try again in a minute.';
         ans.className = 'sos-line';
         where.textContent = ''; note.textContent = '';
         drawMath(null);
@@ -212,9 +215,13 @@
         '<br><span class="' + tone(n) + '">' + esc(lineFor(m, p, inp)) + '</span> <span class="sos-mo">' + esc(SS.shortMon(m.spot.start)) + ' ' + esc(SS.cashQ(m.spot.cash)) + ' → ' + esc(SS.shortMon(p.key)) + ' ' + esc(SS.cashQ(p.cash)) + '</span></li>';
     }).join('');
   }
+  function noWindowText(short) {
+    return 'No board carry to show right now: fewer than two ' + CROP_WORD[state.crop] + ' contracts in this crop year still trade.' +
+      (state.zip || short ? '' : ' Enter your ZIP for your elevator’s own posted bids.');
+  }
   function drawFutures(fm, inp) {
     var el = $('sos-futures');
-    if (!fm) { el.textContent = 'Futures prices did not load.'; return; }
+    if (!fm) { el.textContent = state.noWindow ? noWindowText(true) : 'Futures prices did not load.'; return; }
     el.innerHTML = '<b>' + esc(SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp })) + '</b> ' +
       esc(fm.from.label + ' ' + SS.cashQ(fm.spot) + ' to ' + fm.to.label + ' ' + SS.cashQ(fm.spot + fm.carry) + ', ' + fm.months + ' months. ') +
       'Futures carry assumes your basis does not change; your elevator’s posted later bids are what it actually pays. ' +
@@ -245,7 +252,8 @@
     state.models = state.zip ? null : [];
     state.pick = null;
     pushUrl();
-    loadFutures().then(function (p) { if (seq !== state.seq) return; state.futures = futuresModel(p, state.crop); render(); });
+    loadFutures().then(function (p) { if (seq !== state.seq) return; state.futures = futuresModel(p, state.crop);
+      state.noWindow = !!(p && p.quotes) && !SS.carryWindow(state.crop, p.quotes); render(); });
     if (!state.zip) return;
     loadElevators(seq).then(function (ms) { if (seq !== state.seq || ms === null) return; state.models = ms || []; render(); });
   }

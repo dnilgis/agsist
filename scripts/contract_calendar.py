@@ -89,7 +89,8 @@ __all__ = ["is_expired", "front_key", "month_num", "EXPIRY_DAY",
            "expiry_date", "recent_expiry", "ROLL_WINDOW_DAYS",
            "PRODUCT_RULE", "rule_for", "dead_from",
            "is_trading_day", "holiday_name", "prior_trading_day",
-           "next_trading_day", "sessions_between", "market_holidays"]
+           "next_trading_day", "sessions_between", "market_holidays",
+           "next_live_year"]
 
 # How long after a dated contract dies we consider the continuous front-month
 # to be "in the roll window". Yahoo's continuous series (ZC=F etc.) switches
@@ -235,6 +236,18 @@ def recent_expiry(key, now=None, window_days=ROLL_WINDOW_DAYS):
     now = now or datetime.now(timezone.utc)
     days = (now.date() - exp.date()).days
     return 0 <= days < window_days
+
+
+def next_live_year(mon, now=None, rule="GRAIN"):
+    """Year of the next contract in calendar month `mon` that is still live.
+
+    The rolling benchmarks are built on this: Dec corn and Nov beans are the
+    current Dec/Nov until the day that contract dies, then next year's.
+    next_live_year(12, 2026-12-14) -> 2026; next_live_year(12, 2026-12-15) -> 2027.
+    `now` may be a date or a datetime (its calendar date is used, as is_expired
+    does)."""
+    d = _as_date(now or datetime.now(timezone.utc))
+    return d.year + (1 if d >= dead_from(d.year, mon, rule) else 0)
 
 
 def front_key(keys, now=None):
@@ -424,6 +437,14 @@ def _selftest():
     chk(is_expired("corn-dec26", T(2027, 1, 2)) is True, "last-year contract dead")
     chk(is_expired("beans-jan27", T(2027, 1, 15)) is True, "jan27 dead on Jan 15 2027")
     chk(is_expired("beans-jan27", T(2027, 1, 14)) is False, "jan27 live on Jan 14 2027")
+
+    # --- rolling benchmark year (fetch_prices corn-dec / beans-nov aliases) ---
+    chk(next_live_year(12, T(2026, 10, 11)) == 2026, "Dec benchmark on Oct 11 2026 is Dec '26")
+    chk(next_live_year(12, T(2026, 12, 14)) == 2026, "Dec benchmark on Dec 14 2026 (last trade) is still Dec '26")
+    chk(next_live_year(12, T(2026, 12, 15)) == 2027, "Dec benchmark rolls to Dec '27 on Dec 15 2026")
+    chk(next_live_year(11, T(2026, 11, 14)) == 2026, "Nov benchmark on Nov 14 2026 is still Nov '26")
+    chk(next_live_year(11, T(2026, 11, 15)) == 2027, "Nov benchmark rolls to Nov '27 on Nov 15 2026")
+    chk(next_live_year(12, date(2027, 1, 2)) == 2027, "a plain date works too")
 
     # --- per-product rules: the 2026-08-08 finding ---------------------------
     # cattle: CME Rule 10102.H, last business day of the contract month.

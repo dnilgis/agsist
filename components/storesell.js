@@ -189,12 +189,117 @@
       + ' cent' + (Math.abs(c) === 1 ? '' : 's') + ' a bushel after your costs.' + tail;
   }
 
-  /* The futures carry the site prices for this crop year's stored grain:
-     first and last contract of the storage window, never next year's crop.
-     Read by the futures pages' carry card and /store-or-sell; move both ends
-     here when a contract expires (corn and soybeans after the July contract,
-     wheat after May). */
-  var FUTURES_CARRY = { corn: ['corn-dec', 'corn-jul27'], soybeans: ['beans-nov', 'beans-jul27'], wheat: ['wheat-dec26', 'wheat-may27'] };
+  /* ── Contract months, from the quotes on file (2026-10-11) ──────────────
+     The carry window and the futures pages' forward curve used to be typed
+     by hand ('corn-dec' to 'corn-jul27') and went wrong each time a contract
+     expired. They are now worked out from the dated keys in
+     data/prices.json (corn-dec26, corn-mar27, ...; <root>-<mon><yy>), which
+     scripts/fetch_prices.py generates from the calendar.
+
+     Expiry is scripts/contract_calendar.py's CBOT grain rule, the site's one
+     definition: a contract is dead from the 15th of its month (the last
+     trade is the business day before). "Today" is the date in Chicago.
+
+     The storage window for crop year Y (the crop harvested in year Y):
+       corn      Dec Y, then Mar, May, Jul Y+1
+       soybeans  Nov Y, then Jan, Mar, May, Jul Y+1
+       wheat     Jul, Sep, Dec Y, then Mar, May Y+1
+     Wheat is winter wheat: cut in June and July of year Y, so July Y is its
+     harvest contract (corn's December) and May Y+1 is the last month before
+     the next harvest. July Y+1 is next year's crop and is never in the
+     window. On 2026-10-11 July and September '26 are dead, so wheat starts
+     at Dec '26, the same window the site had typed.
+
+     Y is the earliest year whose last window month still trades. The carry
+     runs from the nearest live month with a close to the last window month
+     with a close. If fewer than two remain (corn from mid-May to mid-July,
+     when only July is left), there is no window: callers say so rather than
+     reach into next year's crop. */
+  var MON3 = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  var EXPIRY_DAY = 15;
+  var CROPS = {
+    corn:     { root: 'corn',  first: [12],       later: [3, 5, 7], harvest: 12 },
+    soybeans: { root: 'beans', first: [11],       later: [1, 3, 5, 7], harvest: 11 },
+    wheat:    { root: 'wheat', first: [7, 9, 12], later: [3, 5], harvest: 12 }
+  };
+  CROPS.soybean = CROPS.beans = CROPS.soybeans;
+  /* Today's date in Chicago as y*10000+m*100+d. `now` may be a Date or
+     'YYYY-MM-DD'; a page that fakes Date gets its fake day. */
+  function dayNum(now){
+    if(typeof now === 'string'){
+      var s = /^(\d{4})-(\d{2})-(\d{2})/.exec(now);
+      if(s) return (+s[1]) * 10000 + (+s[2]) * 100 + (+s[3]);
+    }
+    var d = Object.prototype.toString.call(now) === '[object Date]' ? now : new Date();
+    try{
+      var p = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(d);
+      var o = {};
+      p.forEach(function(x){ o[x.type] = +x.value; });
+      if(o.year && o.month && o.day) return o.year * 10000 + o.month * 100 + o.day;
+    }catch(e){}
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  }
+  function dead(y, m, today){ return today >= y * 10000 + m * 100 + EXPIRY_DAY; }
+  function contractKey(root, y, m){ return root + '-' + MON3[m - 1] + String(y).slice(2); }
+  /* 'corn-dec26' -> {y:2026, m:12} for a dated key of that root; null for
+     'corn-dec', 'corn-nearby' and anything else. */
+  function parseKey(key, root){
+    var r = new RegExp('^' + root + '-([a-z]{3})(\\d{2})$').exec(String(key));
+    if(!r) return null;
+    var m = MON3.indexOf(r[1]) + 1;
+    return m ? { y: 2000 + (+r[2]), m: m } : null;
+  }
+  function hasClose(q){ return !!(q && q.close != null && isFinite(q.close)); }
+  /* The window months of crop year y, in order: [{y, m, key}]. */
+  function windowMonths(c, y){
+    return c.first.map(function(m){ return { y: y, m: m }; })
+      .concat(c.later.map(function(m){ return { y: y + 1, m: m }; }))
+      .map(function(x){ x.key = contractKey(c.root, x.y, x.m); return x; });
+  }
+  /* The crop year whose window is current: the earliest whose last month
+     still trades. */
+  function cropYear(c, today){
+    var y = Math.floor(today / 10000) - 1;
+    while(dead(y + 1, c.later[c.later.length - 1], today)) y++;
+    return y;
+  }
+  /* [firstKey, lastKey] of the storage window, or null (see above). */
+  function carryWindow(crop, quotes, now){
+    var c = CROPS[crop], q = quotes || {};
+    if(!c) return null;
+    var today = dayNum(now), y = cropYear(c, today);
+    var live = windowMonths(c, y).filter(function(x){ return !dead(x.y, x.m, today) && hasClose(q[x.key]); });
+    return live.length >= 2 ? [live[0].key, live[live.length - 1].key] : null;
+  }
+  /* The futures pages' forward curve: every live dated contract of the crop
+     on file, nearest first, through the harvest contract of the year the
+     current window ends (Dec '27 corn and wheat, Nov '27 soybeans on
+     2026-10-11; Flash Grain's corn-dec28 and beans-nov28 stay off the
+     chart). New crop = the next crop year, from its first window month on
+     (Dec '27 corn, Nov '27 soybeans, Jul '27 wheat on 2026-10-11): plotted
+     hollow, never in the carry. A live month outside the window that is not
+     new crop (corn Sep, soybeans Aug and Sep) is old crop: grain from the
+     crop already in the bin. idx = yy*12+month, so months apart = b.idx - a.idx. */
+  function forwardCurve(crop, quotes, now){
+    var c = CROPS[crop], q = quotes || {};
+    if(!c) return [];
+    var today = dayNum(now), y = cropYear(c, today), wm = windowMonths(c, y);
+    var ix = function(yr, m){ return (yr % 100) * 12 + m; };
+    var startIdx = ix(wm[0].y, wm[0].m), end = wm[wm.length - 1], endIdx = ix(end.y, end.m);
+    var nextIdx = ix(y + 1, c.first[0]), capIdx = ix(end.y, c.harvest);
+    var out = [];
+    Object.keys(q).forEach(function(k){
+      var p = parseKey(k, c.root);
+      if(!p || dead(p.y, p.m, today) || !hasClose(q[k])) return;
+      var idx = ix(p.y, p.m);
+      if(idx > capIdx) return;
+      var row = { key: k, month: MON[p.m - 1] + ' \'' + String(p.y).slice(2), idx: idx };
+      if(idx >= nextIdx) row.newCrop = true;
+      else if(idx < startIdx || idx > endIdx) row.tag = 'old crop';
+      out.push(row);
+    });
+    return out.sort(function(a, b){ return a.idx - b.idx; });
+  }
   var FCODE = 'FGHJKMNQUVXZ';
   /* 'ZCZ26.CBT' -> {key:'2026-12', label:"Dec '26"} */
   function futuresMonth(ticker){
@@ -208,7 +313,8 @@
                newCropFrom: newCropFrom, monthsApart: monthsApart, carryText: carryText, netText: netText,
                shortMon: shortMon, longMon: longMon, cashQ: cashQ,
                DEFAULTS: DEFAULTS, withDefaults: withDefaults, carryNet: carryNet, holdLine: holdLine,
-               costNote: costNote, centsWord: centsWord, FUTURES_CARRY: FUTURES_CARRY, futuresMonth: futuresMonth };
+               costNote: costNote, centsWord: centsWord, carryWindow: carryWindow, forwardCurve: forwardCurve,
+               futuresMonth: futuresMonth };
   root.AgsistStoreSell = core;
   if(typeof document === 'undefined') return;
 

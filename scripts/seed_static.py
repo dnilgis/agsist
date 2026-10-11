@@ -1112,6 +1112,18 @@ def _chg_seed(c):
     return ('<span class="' + c[1] + '">' + H.escape(c[0], quote=False) + "</span>") if c else ""
 
 
+_FCODE = "FGHJKMNQUVXZ"
+_MON_ABBR = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def _ticker_label(q, fallback):
+    """The month label, Dec '26, from a dated quote's ticker (ZCZ26.CBT). corn-dec and
+    beans-nov roll to next year's contract on their own (fetch_prices), so
+    the seed names the month the quote actually is, never a typed year."""
+    m = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\.", str((q or {}).get("ticker") or ""))
+    return (_MON_ABBR[_FCODE.index(m.group(1))] + " '" + m.group(2)) if m else fallback
+
+
 def _nearby_label(prices, crop, fallback):
     """'Nearby Dec \'26' the way each page script builds it, else its fallback."""
     q = (prices.get("quotes") or {}).get(crop + "-nearby")
@@ -1139,10 +1151,10 @@ def futures_hero_seeds(page, prices):
                 chg = '<span id="nc-chg" class="' + ("up" if net >= 0 else "dn") + '">(' + pricefmt.pct(pc) + ")</span>"
             else:
                 chg = '<span id="nc-chg"></span>'
-            out["nc"] = ('<div class="nc-glance" id="nc-glance">Dec \'26 new crop: <strong id="nc-price">$' +
+            out["nc"] = ('<div class="nc-glance" id="nc-glance"><span id="nc-lbl">' + _ticker_label(cd, "Dec") + '</span> new crop: <strong id="nc-price">$' +
                          grain_dollars(cd) + "</strong> " + chg + "</div>")
         else:
-            out["nc"] = ('<div class="nc-glance" id="nc-glance" style="display:none">Dec \'26 new crop: '
+            out["nc"] = ('<div class="nc-glance" id="nc-glance" style="display:none"><span id="nc-lbl">Dec</span> new crop: '
                          '<strong id="nc-price"></strong> <span id="nc-chg"></span></div>')
     elif page.startswith("soybean"):
         hq = q.get("beans-nearby") if (q.get("beans-nearby") or {}).get("close") is not None else q.get("beans")
@@ -1150,7 +1162,7 @@ def futures_hero_seeds(page, prices):
         out["chg"] = _chg_seed(_fut_chg(hq))
         nq = q.get("beans-nov")
         if nq and nq.get("close") is not None:
-            h = "Nov '26 new crop: <strong>$" + grain_dollars(nq) + "</strong>"
+            h = _ticker_label(nq, "Nov") + " new crop: <strong>$" + grain_dollars(nq) + "</strong>"
             np_ = nq.get("pctChange")
             if np_ is not None and not nq.get("roll"):
                 h += (' <span class="' + ("up" if np_ >= 0 else "dn") + '">(' + pricefmt.pct(np_) + ")</span>")
