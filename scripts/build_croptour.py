@@ -1076,7 +1076,10 @@ def render_band(data):
     # The widest band that still holds in all but one year is the useful one to
     # name; picked by the data, not by taste.
     k = next((k for k in (3, 4, 5, 6) if b["within"][k] >= b["n"] - 1), 6)
-    return (f'<p class="ct-band">{lead} Across {b["n"]} tours it has finished '
+    # Folded (2026-10-11): it restates the lean paragraph above with the spread
+    # added, and on a phone it ran nine lines before the year table.
+    return (f'<details class="ct-band-more"><summary>How to read the tour\'s number against its record</summary>'
+            f'<p class="ct-band">{lead} Across {b["n"]} tours it has finished '
             f'<b>below</b> the crop that actually came in {b["low"]} times and above it '
             f'{b["high"]}'
             + (f', landing on it exactly {"once" if b["exact"] == 1 else str(b["exact"]) + " times"}'
@@ -1087,7 +1090,7 @@ def render_band(data):
             f'the final crop in {b["within"][k]} of {b["n"]} years. '
             f'That is a count of what happened, not a forecast: it is not a reason to '
             f'adjust the tour\'s figure, and adding its average lean back on tested worse '
-            f'than leaving it alone.</p>')
+            f'than leaving it alone.</p></details>')
 
 
 def render_benchnote(data):
