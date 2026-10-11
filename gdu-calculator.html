@@ -63,10 +63,10 @@
 
 .gdu-page { max-width: 1060px; margin: 0 auto; padding: 0 1rem 3rem; }
 
-.gdu-hero { padding: 1.3rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.gdu-hero { padding: 1rem 0 .8rem; border-bottom: 1px solid var(--border); margin-bottom: 1.1rem; }
 .gdu-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
 .gdu-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
-.gdu-hero p { font-size:.82rem; color:var(--text-dim); line-height:1.6; max-width:660px; margin:0; }
+.gdu-hero p { font-size:1rem; color:var(--text-dim); line-height:1.6; max-width:660px; margin:0; }
 
 .gdu-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; }
 @media(min-width:700px){ .gdu-layout { grid-template-columns:minmax(0,360px) minmax(0,1fr); } }
@@ -208,7 +208,9 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 .tblscroll table{margin:0;min-width:480px}
 
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
-@media(max-width:640px){#g-method{min-height:40px}}
+@media(max-width:640px){#g-method{min-height:40px}.gdu-eyebrow{display:none}}
+.gdu-manual{margin-top:.8rem;border-top:1px solid var(--border);padding-top:.2rem}
+.gdu-manual summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:.9rem;font-weight:600;color:var(--gold)}
 </style>
 </head>
 <body>
@@ -290,7 +292,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <div class="gdu-hero">
   <div class="gdu-eyebrow page-kicker"> Heat units from real weather, any US location</div>
   <h1>GDU Calculator</h1>
-  <p class="page-lede">Auto-fetches <em>actual</em> accumulated heat units from your planting date using real historical weather data, no manual temperature entry needed. Track corn and soybean crop stage, project black layer date, check whether your crop will mature before first fall frost, and monitor season progress by field. Works anywhere in the continental US.</p>
+  <p class="page-lede">Heat units since planting from real daily weather at your ZIP, for corn or soybeans: crop stage, black layer date and frost risk.</p>
 </div>
 
 <div class="gdu-layout">
@@ -323,14 +325,14 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="f-group">
         <label class="f-label" for="g-frost">Avg First Fall Frost (optional)</label>
         <input class="f-input" id="g-frost" type="date">
-        <div class="f-hint">For a frost-risk check. Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5; central Corn Belt ~Oct 10&ndash;20. Check your local NWS climate normals.</div>
+        <div class="f-hint">Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5, central Corn Belt ~Oct 10&ndash;20. Your NWS office has local normals.</div>
       </div>
     </div>
 
     <!-- ── THE HERO FEATURE ──────────────────────────────────────── -->
     <div class="gdu-card" style="margin-bottom:1.1rem">
-      <div class="gdu-card-title"> Real Accumulated GDUs: Auto-Fetched</div>
-      <p style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;margin:0 0 .85rem">Enter your planting date and location, then click fetch. This calculator pulls <strong style="color:var(--text)">actual daily high &amp; low temperatures</strong> for every day since planting from the Open-Meteo weather archive and computes your exact accumulated GDUs, no manual entry, no guessing.</p>
+      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Your weather since planting</div>
+      <p style="font-size:.9rem;color:var(--text-dim);line-height:1.5;margin:0 0 .85rem">Pulls the daily high and low for every day since planting from the Open-Meteo weather archive and adds up your GDUs.</p>
 
       <div class="f-group">
         <label class="f-label" for="g-zip">Your Location (ZIP or City)</label>
@@ -344,9 +346,9 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <button class="fetch-btn" id="g-fetch-btn">
         <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch Real GDUs from Weather Data
       </button>
-      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Ready: enter planting date and click above</div>
+      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Until you fetch, the results are an example from the hand-entry temperatures below, not your weather.</div>
 
-      <div class="method-divider"><span>or enter manually</span></div>
+      <details class="gdu-manual"><summary>Or enter temperatures or GDUs by hand</summary>
 
       <div class="f-group">
         <label class="f-label" for="g-method">Manual Entry Method</label>
@@ -381,23 +383,9 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div id="g-hist-note" style="display:none">
         <div class="info-box green" style="margin-top:.5rem"><strong>Upper Midwest reference:</strong> 30-year NOAA normals for Wisconsin: ~7.5 GDU/day in May, 15.5 in June, 21.5 in July, 19.5 in August, 10.0 in September. Central Corn Belt runs ~15&ndash;20% higher. If you&rsquo;re outside the Upper Midwest, use the &ldquo;Fetch Real GDUs&rdquo; feature instead for location-accurate data.</div>
       </div>
+      </details>
     </div>
 
-    <!-- WI Monthly Averages -->
-    <div class="gdu-card">
-      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Upper Midwest GDU Reference (WI example)</div>
-      <div class="tblscroll" tabindex="0" role="region" aria-label="Wisconsin monthly GDU averages, scrollable table"><table class="wi-avg-table">
-        <thead><tr><th>Month</th><th>Avg Hi</th><th>Avg Lo</th><th>GDU/Day</th><th>Monthly</th></tr></thead>
-        <tbody>
-          <tr><td>May</td>     <td>65&deg;F</td><td>44&deg;F</td><td>7.5</td> <td>232</td></tr>
-          <tr><td>June</td>    <td>76&deg;F</td><td>55&deg;F</td><td>15.5</td><td>465</td></tr>
-          <tr><td>July</td>    <td>82&deg;F</td><td>61&deg;F</td><td>21.5</td><td>667</td></tr>
-          <tr><td>August</td>  <td>80&deg;F</td><td>59&deg;F</td><td>19.5</td><td>605</td></tr>
-          <tr><td>September</td><td>70&deg;F</td><td>50&deg;F</td><td>10.0</td><td>300</td></tr>
-        </tbody>
-      </table></div>
-      <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch Real GDUs button above.</div>
-    </div>
   </div>
 
   <!-- ── RIGHT: RESULTS ────────────────────────────────────────────── -->
@@ -465,6 +453,21 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
 <!-- ── REFERENCE TABLES ──────────────────────────────────────────────── -->
 <div class="ref-layout">
+    <!-- WI Monthly Averages -->
+  <div class="gdu-card">
+      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Upper Midwest GDU Reference (WI example)</div>
+      <div class="tblscroll" tabindex="0" role="region" aria-label="Wisconsin monthly GDU averages, scrollable table"><table class="wi-avg-table">
+        <thead><tr><th>Month</th><th>Avg Hi</th><th>Avg Lo</th><th>GDU/Day</th><th>Monthly</th></tr></thead>
+        <tbody>
+          <tr><td>May</td>     <td>65&deg;F</td><td>44&deg;F</td><td>7.5</td> <td>232</td></tr>
+          <tr><td>June</td>    <td>76&deg;F</td><td>55&deg;F</td><td>15.5</td><td>465</td></tr>
+          <tr><td>July</td>    <td>82&deg;F</td><td>61&deg;F</td><td>21.5</td><td>667</td></tr>
+          <tr><td>August</td>  <td>80&deg;F</td><td>59&deg;F</td><td>19.5</td><td>605</td></tr>
+          <tr><td>September</td><td>70&deg;F</td><td>50&deg;F</td><td>10.0</td><td>300</td></tr>
+        </tbody>
+      </table></div>
+      <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch Real GDUs button above.</div>
+    </div>
   <div class="gdu-card">
     <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Stage Reference</div>
     <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Corn stage reference, scrollable table">
@@ -882,6 +885,7 @@ function calcGDU(){
       else if(cumRaw>4000){bad='GDU total is above 4,000, the top of the range this field accepts.';}
       else{accumGDU=cumRaw;}
       gduPerDay=daysSincePlant>0?accumGDU/daysSincePlant:0;
+      document.getElementById('r-source').textContent='GDU total you entered';
     } else if(method==='wi_hist'){
       // Planting day through the end date, inclusive; the average divides by the same count.
       var d=new Date(plantD),nHist=0,outside=false;
@@ -893,7 +897,7 @@ function calcGDU(){
       }
       if(outside){bad='The Wisconsin table has no rate for April or October; use Fetch Real GDUs.';accumGDU=0;}
       gduPerDay=nHist>0?accumGDU/nHist:0;
-      document.getElementById('r-source').textContent='WI 30-yr historical avg';
+      document.getElementById('r-source').textContent='WI 30-yr averages, not fetched';
     } else {
       var hiRaw=parseFloat(document.getElementById('g-hi').value);
       var loRaw=parseFloat(document.getElementById('g-lo').value);
@@ -905,7 +909,7 @@ function calcGDU(){
         gduPerDay=gduDay(hiRaw,loRaw);
         accumGDU=gduPerDay*daysSincePlant;
       }
-      document.getElementById('r-source').textContent='Manual avg temp entry';
+      document.getElementById('r-source').textContent='Typed temperatures, not fetched';
     }
   }
 
@@ -975,7 +979,15 @@ function calcGDU(){
   // Update DOM
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   s('r-total',Math.round(accumGDU).toLocaleString());
-  s('r-total-unit',thruTxt?'GDUs through '+thruTxt:'GDUs accumulated');
+  var unitTxt='GDUs accumulated';
+  if(thruTxt){unitTxt='GDUs through '+thruTxt;}
+  else if(realAccum==null){
+    var mth=document.getElementById('g-method').value;
+    if(mth==='avg'){unitTxt='example, '+document.getElementById('g-hi').value+'/'+document.getElementById('g-lo').value+'\u00b0F days';}
+    else if(mth==='wi_hist'){unitTxt='GDUs at Wisconsin normals';}
+    else{unitTxt='GDUs you entered';}
+  }
+  s('r-total-unit',unitTxt);
   s('r-stage','Stage: '+currentStage);
   s('r-days',daysSincePlant+' days');
   s('r-gdu-day',gduPerDay.toFixed(1)+' GDU/day');
