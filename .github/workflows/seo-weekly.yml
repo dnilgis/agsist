@@ -1,0 +1,78 @@
+name: SEO weekly (index check + what to fix)
+
+# Two jobs in one run, both shown on /seo-report (noindex, in no sitemap):
+#
+#   scripts/gsc_index_check.py    asks the Search Console URL Inspection API
+#                                 about ~100 URLs (hub pages plus a rotating
+#                                 slice of each sitemap) and writes
+#                                 data/seo-index.json. Same secret and
+#                                 property as gsc-sitemaps.yml; without the
+#                                 secret it prints one notice and moves on.
+#   scripts/seo_opportunities.py  reads data/site-usage.json (site-usage.yml,
+#                                 monthly) and each page's current title and
+#                                 description, and writes
+#                                 data/seo-opportunities.json.
+#
+# Mondays 15:23 UTC, off the hour and after gsc-sitemaps.yml. Run it by hand
+# from the Actions tab any time.
+
+on:
+  schedule:
+    - cron: '23 15 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: seo-weekly
+  cancel-in-progress: false
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install google-auth (pinned)
+        run: pip install --disable-pip-version-check 'google-auth==2.40.3' 'requests==2.32.3'
+
+      - name: Selftests (offline, fake transport)
+        run: |
+          python3 scripts/gsc_index_check.py --selftest
+          python3 scripts/seo_opportunities.py --selftest
+
+      - name: Index check (URL Inspection sample)
+        # A failed index check (bad key, no property) must not stop the
+        # to-do list below from being rebuilt. The step still shows red.
+        continue-on-error: true
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE:                 ${{ vars.GSC_SITE }}
+        run: python3 scripts/gsc_index_check.py
+
+      - name: What to fix
+        run: python3 scripts/seo_opportunities.py --print
+
+      - name: Commit
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "bot@agsist.com"
+          # one path per add: a missing seo-index.json (no secret yet) must
+          # not stop the other file from being staged
+          for f in data/seo-index.json data/seo-opportunities.json; do
+            git add "$f" 2>/dev/null || true
+          done
+          if git diff --cached --quiet; then
+            echo "no change"
+            exit 0
+          fi
+          git commit -m "seo: weekly index sample and what-to-fix list $(date -u +%Y-%m-%d) [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase --autostash && sleep 3
+          done

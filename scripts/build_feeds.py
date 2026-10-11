@@ -174,6 +174,12 @@ PLANNED = {
     "data/dairy-data.json": ("planned",
         "The dairy pipeline has not made its first run yet. milk-prices.html "
         "falls back field by field until it does, on purpose."),
+    # Written by seo-weekly.yml (scripts/gsc_index_check.py) once the URL
+    # Inspection API answers; read only by the internal, noindex seo-report.html,
+    # which says "no index check has run yet" until then.
+    "data/seo-index.json": ("planned",
+        "The weekly Search Console index check has not made its first run yet. "
+        "Only the internal search report reads it, and it says so until then."),
 }
 
 CENTRAL_OFFSET_H = -5   # CDT. Enough to name an hour in a sentence; the status

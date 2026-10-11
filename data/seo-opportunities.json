@@ -1,0 +1,912 @@
+{
+ "schema": "agsist-seo-opportunities/1",
+ "generated": "2026-10-11T19:28:21+00:00",
+ "source": {
+  "file": "data/site-usage.json",
+  "generated": "2026-10-10T03:08:10+00:00",
+  "start": "2026-07-10",
+  "end": "2026-10-07",
+  "clicks": 3251,
+  "impressions": 274671
+ },
+ "method": {
+  "expectedCtr": [
+   {
+    "position": 1,
+    "ctr": 0.28
+   },
+   {
+    "position": 2,
+    "ctr": 0.16
+   },
+   {
+    "position": 3,
+    "ctr": 0.11
+   },
+   {
+    "position": 4,
+    "ctr": 0.08
+   },
+   {
+    "position": 5,
+    "ctr": 0.06
+   },
+   {
+    "position": 6,
+    "ctr": 0.05
+   },
+   {
+    "position": 7,
+    "ctr": 0.04
+   },
+   {
+    "position": 8,
+    "ctr": 0.032
+   },
+   {
+    "position": 9,
+    "ctr": 0.026
+   },
+   {
+    "position": 10,
+    "ctr": 0.022
+   },
+   {
+    "position": 12,
+    "ctr": 0.015
+   },
+   {
+    "position": 15,
+    "ctr": 0.01
+   },
+   {
+    "position": 20,
+    "ctr": 0.006
+   }
+  ],
+  "expectedCtrNote": "A rough benchmark smoothed from published organic CTR-by-position studies. Real CTR varies a lot by query type. Missed clicks are an estimate of the gap to an average page, for ranking only.",
+  "positionRange": [
+   3.0,
+   20.0
+  ],
+  "minImpressions": 500,
+  "gapRatio": 0.5,
+  "strengthenPosition": [
+   8.0,
+   20.0
+  ],
+  "strengthenMinImpressions": 50,
+  "zeroClickMinImpressions": 100,
+  "queriesNote": "Search Console returns at most 10 queries per page and hides rare ones; queryShare is the share of the page's impressions they cover. Operator searches, pasted questions, bare numbers and brand searches are left out of the lists."
+ },
+ "opportunities": [
+  {
+   "page": "/usda-quick-stats",
+   "file": "usda-quick-stats.html",
+   "impressions": 50358,
+   "clicks": 38,
+   "ctr": 0.0008,
+   "position": 7.5,
+   "expectedCtr": 0.036,
+   "estMissedClicks": 1775,
+   "queryShare": 0.001,
+   "topQueries": [
+    {
+     "query": "usda yield by state",
+     "impressions": 28,
+     "clicks": 2,
+     "position": 6
+    },
+    {
+     "query": "state corn and soybean yields",
+     "impressions": 2,
+     "clicks": 1,
+     "position": 6.5
+    }
+   ],
+   "junkQueries": 8,
+   "title": "Corn & Soybean Yields by State: USDA NASS Data | AGSIST",
+   "description": "Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat, from USDA Quick Stats.",
+   "titleMissing": []
+  },
+  {
+   "page": "/usda-calendar",
+   "file": "usda-calendar.html",
+   "impressions": 46503,
+   "clicks": 91,
+   "ctr": 0.002,
+   "position": 7.4,
+   "expectedCtr": 0.0368,
+   "estMissedClicks": 1620,
+   "queryShare": 0.034,
+   "topQueries": [
+    {
+     "query": "wasde report dates",
+     "impressions": 437,
+     "clicks": 2,
+     "position": 6.2
+    },
+    {
+     "query": "wasde report dates 2026",
+     "impressions": 268,
+     "clicks": 2,
+     "position": 5.5
+    },
+    {
+     "query": "next wasde report",
+     "impressions": 263,
+     "clicks": 1,
+     "position": 5.4
+    },
+    {
+     "query": "usda report calendar",
+     "impressions": 253,
+     "clicks": 2,
+     "position": 8.7
+    },
+    {
+     "query": "next usda report",
+     "impressions": 123,
+     "clicks": 2,
+     "position": 8.4
+    }
+   ],
+   "junkQueries": 0,
+   "title": "WASDE & USDA Report Dates 2026: Next WASDE Nov 10 | AGSIST",
+   "description": "The next WASDE report is Nov 10, 2026, in 30 days. Every USDA report date on one calendar: WASDE, Crop Production, Grain Stocks, Cattle on Feed.",
+   "titleMissing": []
+  },
+  {
+   "page": "/soybean-futures-prices",
+   "file": "soybean-futures-prices.html",
+   "impressions": 27653,
+   "clicks": 29,
+   "ctr": 0.001,
+   "position": 10.3,
+   "expectedCtr": 0.0209,
+   "estMissedClicks": 550,
+   "queryShare": 0.092,
+   "topQueries": [
+    {
+     "query": "cbot soybeans",
+     "impressions": 2248,
+     "clicks": 1,
+     "position": 11.1
+    },
+    {
+     "query": "cbot soybean price",
+     "impressions": 31,
+     "clicks": 1,
+     "position": 13.7
+    },
+    {
+     "query": "corn cbot futures",
+     "impressions": 1,
+     "clicks": 1,
+     "position": 18
+    },
+    {
+     "query": "/zs futures",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 37
+    }
+   ],
+   "junkQueries": 6,
+   "title": "CBOT Soybean Futures Price: Nov '26 $12.92¼ | AGSIST",
+   "description": "Soybeans Nov '26 closed $12.92¼ (+0.37%) on Oct 9. Live CBOT soybean futures refreshed every 15 min in session. November new-crop, crush spread, cash bids.",
+   "titleMissing": []
+  },
+  {
+   "page": "/cot",
+   "file": "cot.html",
+   "impressions": 8591,
+   "clicks": 16,
+   "ctr": 0.0019,
+   "position": 5.9,
+   "expectedCtr": 0.051,
+   "estMissedClicks": 422,
+   "queryShare": 0.001,
+   "topQueries": [
+    {
+     "query": "cftc coffee cot september 1 2026 managed money",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 8
+    },
+    {
+     "query": "si",
+     "impressions": 1,
+     "clicks": 1,
+     "position": 10
+    },
+    {
+     "query": "1 и 2",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 3
+    },
+    {
+     "query": "beides",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 3
+    },
+    {
+     "query": "cftc cocoa cot september 29 2026 managed money",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 10
+    }
+   ],
+   "junkQueries": 1,
+   "title": "Managed Money Is Net Long Corn 330k: CFTC COT | AGSIST",
+   "description": "Managed money is net long 329,839 corn contracts as of October 06, 2026. Funds cut 51,381 contracts week over week. Weekly CFTC ag positioning, 11 commodities.",
+   "titleMissing": []
+  },
+  {
+   "page": "/grain-bin-calculator",
+   "file": "grain-bin-calculator.html",
+   "impressions": 16273,
+   "clicks": 160,
+   "ctr": 0.0098,
+   "position": 8.3,
+   "expectedCtr": 0.0302,
+   "estMissedClicks": 331,
+   "queryShare": 0.078,
+   "topQueries": [
+    {
+     "query": "grain bin calculator",
+     "impressions": 811,
+     "clicks": 12,
+     "position": 8.4
+    },
+    {
+     "query": "bin calculator",
+     "impressions": 114,
+     "clicks": 1,
+     "position": 7.4
+    },
+    {
+     "query": "grain bin bushel calculator",
+     "impressions": 94,
+     "clicks": 2,
+     "position": 11.8
+    },
+    {
+     "query": "grain bin capacity calculator",
+     "impressions": 92,
+     "clicks": 1,
+     "position": 10.9
+    },
+    {
+     "query": "usda grain bin calculator",
+     "impressions": 50,
+     "clicks": 2,
+     "position": 9.3
+    }
+   ],
+   "junkQueries": 0,
+   "title": "Grain Bin Calculator: Bushels, Capacity & Shrink | AGSIST",
+   "description": "Free grain bin calculator: diameter and height to instant bushel capacity, moisture shrink, and net value. Peaked, level, draw-cone, and hopper bins.",
+   "titleMissing": []
+  },
+  {
+   "page": "/corn-futures-prices",
+   "file": "corn-futures-prices.html",
+   "impressions": 18146,
+   "clicks": 25,
+   "ctr": 0.0014,
+   "position": 14.7,
+   "expectedCtr": 0.0105,
+   "estMissedClicks": 166,
+   "queryShare": 0.034,
+   "topQueries": [
+    {
+     "query": "corn prices",
+     "impressions": 240,
+     "clicks": 1,
+     "position": 19.6
+    },
+    {
+     "query": "chicago board of trade corn price today",
+     "impressions": 181,
+     "clicks": 1,
+     "position": 9.4
+    },
+    {
+     "query": "chicago board of trade corn price",
+     "impressions": 153,
+     "clicks": 1,
+     "position": 10.0
+    },
+    {
+     "query": "cbot corn futures live",
+     "impressions": 32,
+     "clicks": 1,
+     "position": 9.3
+    },
+    {
+     "query": "corn price per bushel futures",
+     "impressions": 3,
+     "clicks": 1,
+     "position": 7.7
+    }
+   ],
+   "junkQueries": 3,
+   "title": "CBOT Corn Futures Price: Dec '26 $4.80½ | AGSIST",
+   "description": "Corn Dec '26 closed $4.80½ (−3.95%) on Oct 9. Live CBOT corn futures refreshed every 30 min in session. December new-crop, RP floor, basis-to-cash, daily read.",
+   "titleMissing": [
+    "chicago",
+    "board",
+    "trade"
+   ]
+  },
+  {
+   "page": "/crop-tour",
+   "file": "crop-tour.html",
+   "impressions": 6674,
+   "clicks": 48,
+   "ctr": 0.0072,
+   "position": 8.1,
+   "expectedCtr": 0.0314,
+   "estMissedClicks": 162,
+   "queryShare": 0.069,
+   "topQueries": [
+    {
+     "query": "pro farmer crop tour 2026",
+     "impressions": 202,
+     "clicks": 1,
+     "position": 7.6
+    },
+    {
+     "query": "crop tour 2026",
+     "impressions": 123,
+     "clicks": 1,
+     "position": 7.6
+    },
+    {
+     "query": "profarmer crop tour 2026",
+     "impressions": 41,
+     "clicks": 1,
+     "position": 10
+    },
+    {
+     "query": "pro farmer crop tour results",
+     "impressions": 22,
+     "clicks": 1,
+     "position": 13.9
+    },
+    {
+     "query": "pro farmer tour 2026",
+     "impressions": 17,
+     "clicks": 2,
+     "position": 13.6
+    }
+   ],
+   "junkQueries": 1,
+   "title": "Pro Farmer Crop Tour 2026 Results: Corn 173.2 bu/ac | AGSIST",
+   "description": "Pro Farmer's 2026 national corn estimate is 173.2 bu/ac. Set against USDA's number and ours, with how close the tour has actually been since 2015.",
+   "titleMissing": [
+    "profarmer"
+   ]
+  },
+  {
+   "page": "/rent/oregon",
+   "file": "rent/oregon.html",
+   "impressions": 2019,
+   "clicks": 7,
+   "ctr": 0.0035,
+   "position": 5.7,
+   "expectedCtr": 0.053,
+   "estMissedClicks": 100,
+   "queryShare": 0.002,
+   "topQueries": [
+    {
+     "query": "farm cash rent 2022",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 70.5
+    },
+    {
+     "query": "cash rents by county",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 52
+    }
+   ],
+   "junkQueries": 1,
+   "title": "Oregon Cash Rent by County 2026 | AGSIST",
+   "description": "Oregon farmland cash rent 2026: median $99.50/acre (non-irrigated cropland) across 15 published counties. Every county's USDA rate, history to 2008, free.",
+   "titleMissing": []
+  },
+  {
+   "page": "/wheat-futures-prices",
+   "file": "wheat-futures-prices.html",
+   "impressions": 7348,
+   "clicks": 4,
+   "ctr": 0.0005,
+   "position": 14.2,
+   "expectedCtr": 0.0113,
+   "estMissedClicks": 79,
+   "queryShare": 0.002,
+   "topQueries": [
+    {
+     "query": "cbot grain",
+     "impressions": 3,
+     "clicks": 0,
+     "position": 64.7
+    },
+    {
+     "query": "cbot grain futures",
+     "impressions": 3,
+     "clicks": 0,
+     "position": 48.7
+    },
+    {
+     "query": "bushel wheat price",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 64.5
+    },
+    {
+     "query": "alım fırsatı",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 1
+    },
+    {
+     "query": "at what price should i buy",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 2
+    }
+   ],
+   "junkQueries": 0,
+   "title": "CBOT Wheat Futures: Dec '26 $6.70¾, SRW & KC HRW | AGSIST",
+   "description": "Wheat Dec '26 closed $6.70¾ (−1.83%) on Oct 9. Live Chicago SRW futures refreshed every 30 min in session · KC HRW $7.19¼. Class spreads, cash bids by ZIP.",
+   "titleMissing": []
+  },
+  {
+   "page": "/breakeven",
+   "file": "breakeven.html",
+   "impressions": 2679,
+   "clicks": 12,
+   "ctr": 0.0045,
+   "position": 8.1,
+   "expectedCtr": 0.0314,
+   "estMissedClicks": 72,
+   "queryShare": 0.073,
+   "topQueries": [
+    {
+     "query": "break even price for corn",
+     "impressions": 35,
+     "clicks": 0,
+     "position": 10.3
+    },
+    {
+     "query": "bean cash calculator",
+     "impressions": 14,
+     "clicks": 0,
+     "position": 22.1
+    },
+    {
+     "query": "corn break even price",
+     "impressions": 10,
+     "clicks": 0,
+     "position": 10.3
+    },
+    {
+     "query": "break even price for soybeans",
+     "impressions": 3,
+     "clicks": 0,
+     "position": 20.7
+    },
+    {
+     "query": "corn breakeven price",
+     "impressions": 3,
+     "clicks": 0,
+     "position": 11.7
+    }
+   ],
+   "junkQueries": 2,
+   "title": "Break-Even Price Calculator: Corn, Soybeans, Wheat | AGSIST",
+   "description": "Corn is near $4.80½. Enter your cost per acre and your yield to get your break-even price per bushel, and the yield where the board stops covering them.",
+   "titleMissing": [
+    "bean",
+    "cash"
+   ]
+  },
+  {
+   "page": "/spray",
+   "file": "spray.html",
+   "impressions": 3158,
+   "clicks": 38,
+   "ctr": 0.012,
+   "position": 8.7,
+   "expectedCtr": 0.0278,
+   "estMissedClicks": 50,
+   "queryShare": 0.007,
+   "topQueries": [
+    {
+     "query": "can i spray today",
+     "impressions": 11,
+     "clicks": 1,
+     "position": 1.7
+    },
+    {
+     "query": "spray inversion chart",
+     "impressions": 4,
+     "clicks": 2,
+     "position": 9.2
+    },
+    {
+     "query": "30 day weather forecast",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 2
+    }
+   ],
+   "junkQueries": 7,
+   "title": "Can I Spray Today? Conditions + Tank Mix Calculator | AGSIST",
+   "description": "Live spray conditions at your location (wind, temperature, humidity, inversion risk, 24-hour windows) plus tank mix and calibration calculators.",
+   "titleMissing": []
+  },
+  {
+   "page": "/milk-prices",
+   "file": "milk-prices.html",
+   "impressions": 2194,
+   "clicks": 9,
+   "ctr": 0.0041,
+   "position": 11.7,
+   "expectedCtr": 0.0161,
+   "estMissedClicks": 26,
+   "queryShare": 0.007,
+   "topQueries": [
+    {
+     "query": "class 1 milk prices",
+     "impressions": 4,
+     "clicks": 0,
+     "position": 21.5
+    },
+    {
+     "query": "class 1 milk price",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 22.5
+    },
+    {
+     "query": "200k",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 1
+    },
+    {
+     "query": "american milk price",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 33
+    },
+    {
+     "query": "average cost of a pint of milk",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 43
+    }
+   ],
+   "junkQueries": 1,
+   "title": "How US Milk Is Priced: The Milk Check, Explained | AGSIST",
+   "description": "Class III and IV milk prices, wholesale cheese, butter, and the component formula that builds your milk check, explained for dairy producers. Free, no login.",
+   "titleMissing": []
+  },
+  {
+   "page": "/ag-odds",
+   "file": "ag-odds.html",
+   "impressions": 773,
+   "clicks": 8,
+   "ctr": 0.0103,
+   "position": 7.0,
+   "expectedCtr": 0.04,
+   "estMissedClicks": 23,
+   "queryShare": 0.111,
+   "topQueries": [
+    {
+     "query": "agodds",
+     "impressions": 34,
+     "clicks": 0,
+     "position": 5.3
+    },
+    {
+     "query": "farm price prediction",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 35
+    },
+    {
+     "query": "agriculture example",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 1
+    },
+    {
+     "query": "price of food",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 5
+    }
+   ],
+   "junkQueries": 6,
+   "title": "Ag Prediction Markets: moved | AGSIST",
+   "description": null,
+   "titleMissing": [
+    "agodds"
+   ]
+  },
+  {
+   "page": "/tariffs",
+   "file": "tariffs.html",
+   "impressions": 846,
+   "clicks": 3,
+   "ctr": 0.0035,
+   "position": 11.0,
+   "expectedCtr": 0.0185,
+   "estMissedClicks": 13,
+   "queryShare": 0.077,
+   "topQueries": [
+    {
+     "query": "usmca tariffs minnesota soybeans 2025-2026",
+     "impressions": 29,
+     "clicks": 0,
+     "position": 12.7
+    },
+    {
+     "query": "grain tariffs",
+     "impressions": 25,
+     "clicks": 0,
+     "position": 6.9
+    },
+    {
+     "query": "usmca tariffs minnesota soybeans 2025-2026 *",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 24.5
+    },
+    {
+     "query": "usmca tariffs minnesota soybeans 2025-2026 * *",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 17
+    },
+    {
+     "query": "agricultural tariff",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 32
+    }
+   ],
+   "junkQueries": 1,
+   "title": "Ag Tariff Tracker: Trade Policy Impact on Grain | AGSIST",
+   "description": "Current tariff rates on US corn, soybean, wheat and pork exports to China, Canada and Mexico, and US ethanol into the EU. Updated as policy changes.",
+   "titleMissing": [
+    "usmca",
+    "minnesota",
+    "soybeans",
+    "2025",
+    "2026"
+   ]
+  },
+  {
+   "page": "/cattle-futures-prices",
+   "file": "cattle-futures-prices.html",
+   "impressions": 1518,
+   "clicks": 5,
+   "ctr": 0.0033,
+   "position": 16.4,
+   "expectedCtr": 0.0089,
+   "estMissedClicks": 8,
+   "queryShare": 0.014,
+   "topQueries": [
+    {
+     "query": "cattle cwt",
+     "impressions": 6,
+     "clicks": 0,
+     "position": 18.3
+    },
+    {
+     "query": "cash feeder cattle prices",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 32.5
+    },
+    {
+     "query": "cattle feed prices",
+     "impressions": 2,
+     "clicks": 0,
+     "position": 48
+    },
+    {
+     "query": "angus beef market price",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 3
+    },
+    {
+     "query": "beef steer",
+     "impressions": 1,
+     "clicks": 0,
+     "position": 2
+    }
+   ],
+   "junkQueries": 2,
+   "title": "CME Feeder Cattle Futures $343.90 & Live Cattle $224.60 | AGSIST",
+   "description": "Feeder cattle closed $343.90, live cattle Oct '26 $224.60. CME futures every 15 min, with 5-year ranges, the feeder-to-live ratio and cost of gain.",
+   "titleMissing": []
+  }
+ ],
+ "strengthen": [
+  {
+   "query": "cbot soybeans",
+   "page": "/soybean-futures-prices",
+   "impressions": 2248,
+   "clicks": 1,
+   "position": 11.1
+  },
+  {
+   "query": "grain bin calculator",
+   "page": "/grain-bin-calculator",
+   "impressions": 811,
+   "clicks": 12,
+   "position": 8.4
+  },
+  {
+   "query": "hail map",
+   "page": "/hail-map",
+   "impressions": 279,
+   "clicks": 22,
+   "position": 10.5
+  },
+  {
+   "query": "usda report calendar",
+   "page": "/usda-calendar",
+   "impressions": 253,
+   "clicks": 2,
+   "position": 8.7
+  },
+  {
+   "query": "corn prices",
+   "page": "/corn-futures-prices",
+   "impressions": 240,
+   "clicks": 1,
+   "position": 19.6
+  },
+  {
+   "query": "chicago board of trade corn price today",
+   "page": "/corn-futures-prices",
+   "impressions": 181,
+   "clicks": 1,
+   "position": 9.4
+  },
+  {
+   "query": "hail tracker",
+   "page": "/hail-map",
+   "impressions": 155,
+   "clicks": 8,
+   "position": 9.6
+  },
+  {
+   "query": "chicago board of trade corn price",
+   "page": "/corn-futures-prices",
+   "impressions": 153,
+   "clicks": 1,
+   "position": 10.0
+  },
+  {
+   "query": "soybean yield estimate",
+   "page": "/yield-estimator",
+   "impressions": 127,
+   "clicks": 6,
+   "position": 10.1
+  },
+  {
+   "query": "next usda report",
+   "page": "/usda-calendar",
+   "impressions": 123,
+   "clicks": 2,
+   "position": 8.4
+  },
+  {
+   "query": "grain bin bushel calculator",
+   "page": "/grain-bin-calculator",
+   "impressions": 94,
+   "clicks": 2,
+   "position": 11.8
+  },
+  {
+   "query": "fertilizer prices",
+   "page": "/fertilizer",
+   "impressions": 93,
+   "clicks": 2,
+   "position": 18.6
+  },
+  {
+   "query": "grain bin capacity calculator",
+   "page": "/grain-bin-calculator",
+   "impressions": 92,
+   "clicks": 1,
+   "position": 10.9
+  },
+  {
+   "query": "gdu calculator",
+   "page": "/gdu-calculator",
+   "impressions": 89,
+   "clicks": 2,
+   "position": 18.1
+  },
+  {
+   "query": "ams fertilizer price",
+   "page": "/fertilizer",
+   "impressions": 87,
+   "clicks": 1,
+   "position": 8.4
+  },
+  {
+   "query": "cash rents by county",
+   "page": "/rent",
+   "impressions": 74,
+   "clicks": 2,
+   "position": 8.1
+  },
+  {
+   "query": "grain prices at local elevators today near me",
+   "page": "/cash-bids",
+   "impressions": 59,
+   "clicks": 4,
+   "position": 8.6
+  },
+  {
+   "query": "soybean gdu calculator",
+   "page": "/gdu-calculator",
+   "impressions": 51,
+   "clicks": 1,
+   "position": 13.4
+  },
+  {
+   "query": "usda grain bin calculator",
+   "page": "/grain-bin-calculator",
+   "impressions": 50,
+   "clicks": 2,
+   "position": 9.3
+  }
+ ],
+ "zeroClick": [
+  {
+   "page": "/fast-facts",
+   "impressions": 331,
+   "position": 25.4,
+   "title": "Corn & Soybean Reference Tables: N Rates, P&K, GDU | AGSIST",
+   "topQueries": [
+    "crop estimates",
+    "fertiliser per acre",
+    "fungicide cost per acre"
+   ]
+  },
+  {
+   "page": "/terms",
+   "impressions": 106,
+   "position": 2.6,
+   "title": "Terms of Service | AGSIST",
+   "topQueries": []
+  },
+  {
+   "page": "/presell-calculator",
+   "impressions": 105,
+   "position": 35.2,
+   "title": "Pre-Sell Calculator: moved | AGSIST",
+   "topQueries": [
+    "revenue protection crop insurance calculator",
+    "crop insurance calculator",
+    "prevent plant payment calculator"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search report | AGSIST</title>
+<!-- Internal: the weekly search to-do list. Not for search, in no sitemap.
+     Built in the browser from data/seo-opportunities.json
+     (scripts/seo_opportunities.py) and data/seo-index.json
+     (scripts/gsc_index_check.py), both written by .github/workflows/seo-weekly.yml. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="stylesheet" href="/components/styles.css?v=23">
+<style>
+.sr{max-width:1080px;margin:0 auto;padding:1.4rem 1rem 4rem;color:var(--text,#e7ece8)}
+.sr h1{font-size:1.5rem;margin:0 0 .3rem}
+.sr h2{font-size:1.1rem;margin:2.2rem 0 .4rem}
+.sr p{line-height:1.55;max-width:75ch}
+.sr .muted{color:var(--text-muted,#9bb0a3);font-size:.88rem}
+.sr .mono{font-family:'JetBrains Mono',monospace}
+.sr table{width:100%;border-collapse:collapse;font-size:.86rem;margin:.6rem 0}
+.sr th,.sr td{text-align:left;vertical-align:top;padding:.45rem .5rem;border-bottom:1px solid var(--border,#2a3324)}
+.sr th{color:var(--text-muted,#9bb0a3);font-weight:600;font-size:.78rem}
+.sr td.n,.sr th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.sr .wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sr .card{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;margin:.7rem 0}
+.sr .card h3{font-size:1rem;margin:0 0 .35rem}
+.sr .card h3 a{color:inherit}
+.sr .kv{display:grid;grid-template-columns:8.5rem 1fr;gap:.25rem .8rem;font-size:.86rem}
+.sr .kv dt{color:var(--text-muted,#9bb0a3)}
+.sr .kv dd{margin:0}
+.sr .flag{color:var(--gold,#d4a23f)}
+.sr .bad{color:var(--red,#e0685f)}
+.sr .q{display:block}
+@media (max-width:600px){.sr .kv{grid-template-columns:1fr}.sr .kv dt{margin-top:.3rem}}
+</style>
+</head>
+<body>
+<main class="sr">
+  <h1>Search report</h1>
+  <p class="muted" id="sr-src">Loading data/seo-opportunities.json</p>
+
+  <h2>Pages with a click-through gap</h2>
+  <p class="muted">Pages at average position 3 to 20 with enough impressions whose click-through rate is under half of a rough benchmark for that position. Missed clicks are an estimate of the gap to an average page, good for ranking the list and nothing else.</p>
+  <div id="sr-opps"></div>
+
+  <h2>Queries on the edge of page one</h2>
+  <p class="muted">Queries where a page ranks 8 to 20 with high impressions. A stronger page here moves the most.</p>
+  <div class="wrap" id="sr-strengthen"></div>
+
+  <h2>Pages with impressions and no clicks</h2>
+  <div class="wrap" id="sr-zero"></div>
+
+  <h2>Is Google indexing the sample</h2>
+  <p class="muted" id="sr-index-src">Loading data/seo-index.json</p>
+  <div class="wrap" id="sr-index"></div>
+  <div id="sr-index-bad"></div>
+
+  <h2>Method</h2>
+  <div id="sr-method" class="muted"></div>
+</main>
+<script>
+(function(){
+  'use strict';
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var pct=function(x,d){return x==null?'n/a':(x*100).toFixed(d==null?2:d)+'%';};
+  var num=function(x){return x==null?'n/a':Number(x).toLocaleString('en-US');};
+  var $=function(id){return document.getElementById(id);};
+  var get=function(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
+
+  get('/data/seo-opportunities.json').then(function(d){
+    if(!d){$('sr-src').textContent='data/seo-opportunities.json could not be loaded.';return;}
+    var s=d.source||{};
+    $('sr-src').textContent='Search Console, '+s.start+' to '+s.end+' ('+num(s.clicks)+' clicks, '+num(s.impressions)+' impressions site-wide). List built '+String(d.generated).slice(0,10)+'.';
+    var o=d.opportunities||[];
+    $('sr-opps').innerHTML=o.length?o.map(function(x){
+      var qs=(x.topQueries||[]).map(function(q){return '<span class="q">'+esc(q.query)+' <span class="muted mono">'+num(q.impressions)+' impr, pos '+q.position+', '+num(q.clicks)+' clicks</span></span>';}).join('')||'<span class="muted">No usable queries listed</span>';
+      return '<div class="card"><h3><a href="'+esc(x.page)+'">'+esc(x.page)+'</a></h3><dl class="kv">'+
+        '<dt>Position</dt><dd class="mono">'+x.position+'</dd>'+
+        '<dt>Impressions</dt><dd class="mono">'+num(x.impressions)+' ('+num(x.clicks)+' clicks)</dd>'+
+        '<dt>CTR</dt><dd class="mono">'+pct(x.ctr)+' against a benchmark near '+pct(x.expectedCtr,1)+'</dd>'+
+        '<dt>Missed clicks</dt><dd class="mono">about '+num(x.estMissedClicks)+' (estimate)</dd>'+
+        '<dt>Title</dt><dd>'+esc(x.title||'(none found)')+'</dd>'+
+        '<dt>Description</dt><dd>'+esc(x.description||'(none found)')+'</dd>'+
+        '<dt>Top queries</dt><dd>'+qs+'<span class="muted">Listed queries cover '+pct(x.queryShare,1)+' of impressions'+(x.junkQueries?'; '+x.junkQueries+' operator or junk queries left out':'')+'.</span></dd>'+
+        (x.titleMissing&&x.titleMissing.length?'<dt>Title lacks</dt><dd class="flag">'+x.titleMissing.map(esc).join(', ')+'</dd>':'')+
+        '</dl></div>';
+    }).join(''):'<p class="muted">No page meets the thresholds.</p>';
+
+    var st=d.strengthen||[];
+    $('sr-strengthen').innerHTML=st.length?'<table><thead><tr><th>Query</th><th>Page</th><th class="n">Impr</th><th class="n">Clicks</th><th class="n">Pos</th></tr></thead><tbody>'+
+      st.map(function(q){return '<tr><td>'+esc(q.query)+'</td><td><a href="'+esc(q.page)+'">'+esc(q.page)+'</a></td><td class="n">'+num(q.impressions)+'</td><td class="n">'+num(q.clicks)+'</td><td class="n">'+q.position+'</td></tr>';}).join('')+'</tbody></table>':'<p class="muted">None.</p>';
+
+    var z=d.zeroClick||[];
+    $('sr-zero').innerHTML=z.length?'<table><thead><tr><th>Page</th><th>Title</th><th>Top queries</th><th class="n">Impr</th><th class="n">Pos</th></tr></thead><tbody>'+
+      z.map(function(p){return '<tr><td><a href="'+esc(p.page)+'">'+esc(p.page)+'</a></td><td>'+esc(p.title||'')+'</td><td>'+(p.topQueries||[]).map(esc).join('<br>')+'</td><td class="n">'+num(p.impressions)+'</td><td class="n">'+p.position+'</td></tr>';}).join('')+'</tbody></table>':'<p class="muted">None.</p>';
+
+    var m=d.method||{};
+    $('sr-method').innerHTML='<p>'+esc(m.expectedCtrNote)+'</p><p>Benchmark CTR by position: '+
+      (m.expectedCtr||[]).map(function(p){return p.position+': '+pct(p.ctr,1);}).join(', ')+'. Linear in between.</p><p>'+esc(m.queriesNote)+'</p>'+
+      '<p>Thresholds: position '+(m.positionRange||[]).join(' to ')+', at least '+num(m.minImpressions)+' impressions, CTR under '+pct(m.gapRatio,0)+' of the benchmark.</p>';
+  });
+
+  get('/data/seo-index.json').then(function(d){
+    if(!d){$('sr-index-src').textContent='No index check has run yet. It needs the GSC_SERVICE_ACCOUNT_JSON secret and runs weekly.';return;}
+    $('sr-index-src').textContent='URL Inspection API, '+String(d.generated).slice(0,10)+', property '+d.site+'. '+d.note;
+    var g=d.summary||{};
+    $('sr-index').innerHTML='<table><thead><tr><th>Group</th><th class="n">Inspected</th><th class="n">Indexed</th><th class="n">Share</th><th class="n">Canonical differs</th><th class="n">Errors</th></tr></thead><tbody>'+
+      Object.keys(g).map(function(k){var v=g[k];return '<tr><td>'+esc(k)+'</td><td class="n">'+v.inspected+'</td><td class="n">'+v.indexed+'</td><td class="n">'+pct(v.shareIndexed,0)+'</td><td class="n">'+v.canonicalMismatch+'</td><td class="n">'+v.errors+'</td></tr>';}).join('')+'</tbody></table>';
+    var bad=(d.urls||[]).filter(function(u){return !u.error&&(u.verdict!=='PASS'||u.canonicalMismatch);});
+    $('sr-index-bad').innerHTML=bad.length?'<div class="wrap"><table><thead><tr><th>URL</th><th>Coverage</th><th>Last crawl</th><th>Google canonical</th></tr></thead><tbody>'+
+      bad.map(function(u){return '<tr><td><a href="'+esc(u.url)+'">'+esc(u.url.replace('https://agsist.com',''))+'</a></td><td class="'+(u.verdict==='PASS'?'':'bad')+'">'+esc(u.coverageState||u.verdict)+'</td><td class="mono">'+esc(String(u.lastCrawlTime||'never').slice(0,10))+'</td><td>'+(u.canonicalMismatch?'<span class="flag">'+esc(u.googleCanonical)+'</span>':'same')+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="muted">Every inspected URL is indexed with our canonical.</p>';
+  });
+})();
+</script>
+</body>
+</html>

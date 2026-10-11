@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 75,
- "with_known_cadence": 75,
+ "count": 78,
+ "with_known_cadence": 78,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -173,6 +173,7 @@
   {
    "path": "data/audience.json",
    "pages": [
+    "sponsor-kit.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -592,7 +593,8 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "sponsor-kit.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -1476,6 +1478,7 @@
   {
    "path": "data/rate-card.json",
    "pages": [
+    "sponsor-kit.html",
     "sponsor.html"
    ],
    "written_by": [],
@@ -1536,6 +1539,80 @@
    "max_gap_hours": 24.0,
    "quiet": "seasonal",
    "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
+  },
+  {
+   "path": "data/seo-index.json",
+   "pages": [
+    "seo-report.html"
+   ],
+   "written_by": [
+    "SEO weekly (index check + what to fix)"
+   ],
+   "touched_by": [
+    "Rebuild Feed Manifest",
+    "SEO weekly (index check + what to fix)"
+   ],
+   "cadence": "1 launch Mondays at about 10am Central",
+   "curated": false,
+   "planned": true,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 15 * * 1"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": "planned",
+   "why_quiet": "The weekly Search Console index check has not made its first run yet. Only the internal search report reads it, and it says so until then."
+  },
+  {
+   "path": "data/seo-opportunities.json",
+   "pages": [
+    "seo-report.html"
+   ],
+   "written_by": [
+    "SEO weekly (index check + what to fix)",
+    "Site usage (GA4 + Search Console, 90 days)"
+   ],
+   "touched_by": [
+    "SEO weekly (index check + what to fix)",
+    "Site usage (GA4 + Search Console, 90 days)"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 9am, 10am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 15 * * 1",
+    "37 14 2 * *"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/site-usage.json",
+   "pages": [
+    "sponsor-kit.html"
+   ],
+   "written_by": [
+    "Site usage (GA4 + Search Console, 90 days)"
+   ],
+   "touched_by": [
+    "SEO weekly (index check + what to fix)",
+    "Site usage (GA4 + Search Console, 90 days)"
+   ],
+   "cadence": "1 launch every day at about 9am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "37 14 2 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/sponsor-slots.json",
