@@ -1,0 +1,55 @@
+name: SEO guard
+
+# Every published page keeps the basics search needs: one title, unique
+# across indexable pages; a canonical that is the page's own clean
+# https://agsist.com URL; JSON-LD that parses; noindex pages and redirect
+# stubs out of the sitemaps; and no sitemap URL without a file behind it.
+# scripts/check_seo.py fails the push on those and prints warnings (meta
+# description length, an indexable page in no sitemap) without failing.
+# Known offenders go in its EXCEPTIONS list with a date and a reason.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
+      - 'scripts/check_seo.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-guard
+  cancel-in-progress: true
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prove the check
+        run: python3 scripts/check_seo.py --selftest
+
+      - name: Check every published page
+        run: |
+          set +e
+          python3 scripts/check_seo.py > /tmp/seo.txt
+          rc=$?
+          set -e
+          cat /tmp/seo.txt
+          {
+            echo "## SEO guard"
+            echo
+            echo '```'
+            head -200 /tmp/seo.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$rc" -ne 0 ]; then
+            grep '^ERROR:' /tmp/seo.txt | head -50 | while IFS= read -r line; do echo "::error title=SEO guard::${line#ERROR: }"; done
+            exit 1
+          fi
