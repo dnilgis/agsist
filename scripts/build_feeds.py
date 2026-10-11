@@ -305,7 +305,17 @@ def main():
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
     for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")):
-        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", read(p))):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
+        text = read(p)
+        # A page also reads what its own page scripts fetch. 2026-10-11: the
+        # homepage moved three big inline scripts to components/home-*.js, and
+        # a grep of the .html alone dropped index.html as a reader of eight
+        # feeds (and data/wpi-history.json from the manifest altogether).
+        # Only page-owned scripts (components/home-*.js) count here; shared
+        # components are left as they were, so this changes no other page.
+        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/home-[\w-]+\.js)""", text))):
+            if os.path.exists(js):
+                text += "\n" + read(js)
+        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
             # THE MANIFEST IS NOT ONE OF THE FEEDS IT DESCRIBES. status.html
             # reads it, so a plain grep enrolled it in its own list — with no
             # writer, which failed the "every feed has a cadence" check on the

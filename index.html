@@ -14,7 +14,7 @@
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
-<link rel="stylesheet" href="/css/home.css?v=16">
+<link rel="stylesheet" href="/css/home.css?v=17">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -80,7 +80,12 @@
 <script>
 /* Before first paint: a reader with a saved ZIP gets bids, so the bids box
    reserves its height (phone CLS measured 0.32 without this). */
-try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d{5}$/.test(_w.zip||''))document.documentElement.classList.add('has-zip');}catch(e){}
+try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d{5}$/.test(_w.zip||''))document.documentElement.classList.add('has-zip');
+/* 2026-10-11 polish: geo.js drops a saved location after 30 minutes and asks
+   the browser for a GPS fix; with location off, a reader who TYPED a ZIP was
+   asked for it again on every later visit. A typed ZIP is the reader's own
+   choice, so on the homepage it stays until they change it: re-stamp it. */
+if(_w&&_w.zipTyped&&/^\d{5}$/.test(String(_w.zip||''))&&_w.lat!=null&&_w.lon!=null&&!(typeof _w.ts==='number'&&Date.now()-_w.ts<18e5)){_w.ts=Date.now();localStorage.setItem('agsist-wx-loc',JSON.stringify(_w));}}catch(e){}
 /* wave1-E: theme before first paint. Saved choice first, else the device's
    prefers-color-scheme, else dark. components/loader.js applies the same rule. */
 try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}
@@ -126,7 +131,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <!-- /static-nav:header -->
 </div>
 <div class="idx1-subbar">
-  <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Jump to Cash Bids ZIP lookup">
+  <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Change your ZIP" hidden>
     <span class="idx1-zip-label">ZIP</span>
     <span class="idx1-zip-val" id="idx1-zip-val">Not set</span>
     <span class="idx1-zip-change" id="idx1-zip-change"><span class="idx1-zip-dot" aria-hidden="true">&middot; </span>Change<span class="idx1-zip-word"> ZIP</span></span>
@@ -165,10 +170,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     try { var wl = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); z = (wl && /^\d{5}$/.test(wl.zip || '')) ? wl.zip : ''; } catch(e){}
     if(!z){ try { z = localStorage.getItem('agsist_zip') || ''; } catch(e){} }
     out.textContent = z ? z : 'Not set';
+    /* 2026-10-11 polish: with no ZIP the hero band right below asks for it,
+       so the chip steps aside instead of asking a second time. */
+    var c = document.getElementById('idx1-zip-chip');
+    if(c){ c.hidden = !z; c.setAttribute('aria-label', z ? 'ZIP ' + z + ', change it' : 'Set your ZIP'); }
   }
   var chip = document.getElementById('idx1-zip-chip');
   if(chip){
     chip.addEventListener('click', function(){
+      /* 2026-10-11 polish: the one ZIP box is in the hero band. */
+      if(typeof window.agsistOpenZip === 'function'){ window.agsistOpenZip(); return; }
       var field = document.getElementById('bids-zip');
       /* With a ZIP saved the ZIP row is hidden; open it before scrolling to it. */
       var row = document.getElementById('bids-zip-row');
@@ -239,6 +250,81 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
+<!-- 2026-10-11 polish: <main> opens here so the hero band (the local bids
+     answer) comes first, then the briefing headline, then the cash bids card,
+     on a phone and on a desktop. The band used to sit under the briefing. -->
+<main id="main" class="main" role="main" tabindex="-1">
+  <!-- 2026-10-06 HERO BAND. Numbers, not words: the best local bid for corn
+       and soybeans, the two harvest futures, and whether today works for the
+       field. Every figure is read from data the page already loads:
+         bids     the agsist:bids-top event from components/bids-homepage.js
+                  (or window.__agsistBidsTop if it fired first)
+         futures  data/prices.json via the shared window.__agsistPricesP
+         weather  #wx-temp (geo.js) and the one spray rule (S7.spray)
+       Nothing here fetches on its own except the shared prices promise, and
+       a missing figure is an em dash with the reason, never a guess. -->
+  <style>.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
+    <!-- 2026-10-11 polish: the page's one h1, visible, says what AGSIST is in
+         one plain line. It used to be visually hidden, so nothing on the first
+         screen said what the site was. -->
+    <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
+    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
+    <div class="hb-top">
+      <span class="hb-where"><span class="hb-place" id="hb-place">Your area</span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
+      <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
+    </div>
+    <!-- 2026-10-11 polish: THE ZIP box for the whole page. It used to be asked
+         four times on the first screen (sub bar, this band, the bids card and
+         the weather card). This one fills cash bids, weather and basis through
+         window.agsistSetZip (geo.js); the other places show the saved ZIP and
+         send a reader here to change it. Shown at once with no saved ZIP
+         (.hb-nozip), behind "Change" once one is saved. -->
+    <form class="hb-zip" id="hb-zip-form" novalidate>
+      <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
+      <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
+      <button type="submit" class="hb-zip-go" id="hb-zip-go">Show bids</button>
+      <span class="hb-zip-msg" id="hb-zip-msg" role="status" aria-live="polite"></span>
+    </form>
+    <div class="hb-grid">
+      <a class="hb-cell hb-bid" id="hb-corn" href="#f1" data-track="hero">
+        <span class="hb-k" id="hb-corn-k">Top corn bid nearby</span>
+        <span class="hb-v" id="hb-corn-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+        <span class="hb-s" id="hb-corn-s"></span>
+      </a>
+      <a class="hb-cell hb-bid" id="hb-soy" href="#f1" data-track="hero">
+        <span class="hb-k" id="hb-soy-k">Top soybean bid nearby</span>
+        <span class="hb-v" id="hb-soy-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+        <span class="hb-s" id="hb-soy-s"></span>
+      </a>
+      <a class="hb-cell hb-fut" id="hb-fc" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fc-k">Dec corn futures</span>
+        <span class="hb-v hb-v2" id="hb-fc-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-fc-s"></span>
+      </a>
+      <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fs-k">Nov bean futures</span>
+        <span class="hb-v hb-v2" id="hb-fs-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-fs-s"></span>
+      </a>
+      <a class="hb-cell hb-wx" id="hb-wx" href="#f2" data-track="hero">
+        <span class="hb-k">Today</span>
+        <span class="hb-v hb-v2" id="hb-wx-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-wx-s"></span>
+      </a>
+    </div>
+    <!-- 2026-10-06 signup: one line under the bids. components/signup-ask.js
+         draws it, sends the saved ZIP with source "hero", and hides it for a
+         reader who already signed up. Loaded here, not deferred, so the line
+         is drawn (or hidden) before first paint and the bids card below
+         never jumps. -->
+    <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
+    <!-- Sponsor credit: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. Drawn only for a paid sponsor; unsold it stays hidden and empty. -->
+  <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
+  </section>
+  <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
+  <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
+  <script src="/components/signup-ask.js?v=5"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-11" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today’s Briefing &#x2193;</span></div>
@@ -349,17 +435,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <path d="M4.929 4.929 19.07 19.071" /></symbol><symbol id="i-banknote" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2" />
   <circle cx="12" cy="12" r="2" />
   <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="i-bean" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.165 6.598C9.954 7.478 9.64 8.36 9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22c7.732 0 14-6.268 14-14a6 6 0 0 0-11.835-1.402Z" />
-  <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" /></symbol><symbol id="i-beef" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3" />
-  <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
-  <circle cx="12.5" cy="8.5" r="2.5" /></symbol><symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" />
-  <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></symbol><symbol id="i-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V5" />
-  <path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4" />
-  <path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5" />
-  <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77" />
-  <path d="M18 18a4 4 0 0 0 2-7.464" />
-  <path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517" />
-  <path d="M6 18a4 4 0 0 1-2-7.464" />
-  <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" />
+  <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" /></symbol><symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" />
+  <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" />
   <path d="M16 2v4" />
   <rect width="18" height="18" x="3" y="4" rx="2" />
   <path d="M3 10h18" /></symbol><symbol id="i-chart-column" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
@@ -389,28 +466,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
   <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" />
   <path d="M11 20v2" />
-  <path d="M7 19v2" /></symbol><symbol id="i-construction" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="8" rx="1" />
-  <path d="M17 14v7" />
-  <path d="M7 14v7" />
-  <path d="M17 3v3" />
-  <path d="M7 3v3" />
-  <path d="M10 14 2.3 6.3" />
-  <path d="m14 6 7.7 7.7" />
-  <path d="m8 6 8 8" /></symbol><symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol><symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
-  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
-  <path d="M10 9H8" />
-  <path d="M16 13H8" />
-  <path d="M16 17H8" /></symbol><symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol><symbol id="i-flask-conical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
-  <path d="M6.453 15h11.094" />
-  <path d="M8.5 2h7" /></symbol><symbol id="i-fuel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" />
+  <path d="M7 19v2" /></symbol><symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol><symbol id="i-fuel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" />
   <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" />
   <path d="M2 21h13" />
-  <path d="M3 9h11" /></symbol><symbol id="i-gem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 3 8 9l4 13 4-13-2.5-6" />
-  <path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z" />
-  <path d="M2 9h20" /></symbol><symbol id="i-ham" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.144 21.144A7.274 10.445 45 1 0 2.856 10.856" />
-  <path d="M13.144 21.144A7.274 4.365 45 0 0 2.856 10.856a7.274 4.365 45 0 0 10.288 10.288" />
-  <path d="M16.565 10.435 18.6 8.4a2.501 2.501 0 1 0 1.65-4.65 2.5 2.5 0 1 0-4.66 1.66l-2.024 2.025" />
-  <path d="m8.5 16.5-1-1" /></symbol><symbol id="i-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14" />
+  <path d="M3 9h11" /></symbol><symbol id="i-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14" />
   <path d="M5 2h14" />
   <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
   <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" /></symbol><symbol id="i-landmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18v-7" />
@@ -428,19 +487,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <circle cx="12" cy="17" r="5" />
   <path d="M12 18v-2h-.5" /></symbol><symbol id="i-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
   <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14" />
-  <path d="M8 6v8" /></symbol><symbol id="i-message-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></symbol><symbol id="i-milk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8" />
-  <path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2" />
-  <path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol><symbol id="i-newspaper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18h-5" />
+  <path d="M8 6v8" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol><symbol id="i-newspaper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18h-5" />
   <path d="M18 14h-8" />
   <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2" />
   <rect width="8" height="4" x="10" y="6" rx="1" /></symbol><symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
   <path d="M12 22V12" />
   <polyline points="3.29 7 12 12 20.71 7" />
-  <path d="m7.5 4.27 9 5.15" /></symbol><symbol id="i-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
-  <path d="m14.5 12.5 2-2" />
-  <path d="m11.5 9.5 2-2" />
-  <path d="m8.5 6.5 2-2" />
-  <path d="m17.5 15.5 2-2" /></symbol><symbol id="i-satellite-dish" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a7.31 7.31 0 0 0 10 10Z" />
+  <path d="m7.5 4.27 9 5.15" /></symbol><symbol id="i-satellite-dish" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a7.31 7.31 0 0 0 10 10Z" />
   <path d="m9 15 3-3" />
   <path d="M17 13a6 6 0 0 0-6-6" />
   <path d="M21 13A10 10 0 0 0 11 3" /></symbol><symbol id="i-satellite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4 6-6-4-4Z"/><path d="m16 8 3-3"/><path d="M9 21a6 6 0 0 0-6-6"/></symbol><symbol id="i-share-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" />
@@ -480,8 +533,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <circle cx="12" cy="12" r="6" />
   <circle cx="12" cy="12" r="2" /></symbol><symbol id="i-thermometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></symbol><symbol id="i-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2" />
   <line x1="12" x2="15" y1="14" y2="11" />
-  <circle cx="12" cy="14" r="8" /></symbol><symbol id="i-trending-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6" />
-  <path d="m22 17-8.5-8.5-5 5L2 7" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6" />
+  <circle cx="12" cy="14" r="8" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6" />
   <path d="m22 7-8.5 8.5-5-5L2 17" /></symbol><symbol id="i-triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
   <path d="M12 9v4" />
   <path d="M12 17h.01" /></symbol><symbol id="i-wheat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22 16 8" />
@@ -494,66 +546,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 19.6A2 2 0 1 0 14 16H2" />
   <path d="M17.5 8a2.5 2.5 0 1 1 2 4H2" />
   <path d="M9.8 4.4A2 2 0 1 1 11 8H2" /></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" />
-  <path d="m6 6 12 12" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-7L3 8"/></symbol><symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol></defs></svg><main id="main" class="main" role="main" tabindex="-1">
+  <path d="m6 6 12 12" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-7L3 8"/></symbol><symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol></defs></svg>
 <div class="idx1-shell"><div class="idx1-content">
-  <!-- The page's one h1 lives inside <main> (2026-10-06); it is visually
-       hidden (styles.css .home-h1) and spans both columns (home.css). -->
-  <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
-  <!-- 2026-10-06 HERO BAND. Numbers, not words: the best local bid for corn
-       and soybeans, the two harvest futures, and whether today works for the
-       field. Every figure is read from data the page already loads:
-         bids     the agsist:bids-top event from components/bids-homepage.js
-                  (or window.__agsistBidsTop if it fired first)
-         futures  data/prices.json via the shared window.__agsistPricesP
-         weather  #wx-temp (geo.js) and the one spray rule (S7.spray)
-       Nothing here fetches on its own except the shared prices promise, and
-       a missing figure is an em dash with the reason, never a guess. -->
-  <style>.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
-  <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
-    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
-    <div class="hb-top">
-      <span class="hb-where"><span class="hb-place" id="hb-place">Your area</span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
-      <button type="button" class="hb-change" id="hb-change">Change</button>
-    </div>
-    <div class="hb-grid">
-      <a class="hb-cell hb-bid" id="hb-corn" href="#f1" data-track="hero">
-        <span class="hb-k" id="hb-corn-k">Top corn bid nearby</span>
-        <span class="hb-v" id="hb-corn-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
-        <span class="hb-s" id="hb-corn-s"></span>
-      </a>
-      <a class="hb-cell hb-bid" id="hb-soy" href="#f1" data-track="hero">
-        <span class="hb-k" id="hb-soy-k">Top soybean bid nearby</span>
-        <span class="hb-v" id="hb-soy-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
-        <span class="hb-s" id="hb-soy-s"></span>
-      </a>
-      <a class="hb-cell hb-fut" id="hb-fc" href="#f-prices" data-track="hero">
-        <span class="hb-k" id="hb-fc-k">Dec corn futures</span>
-        <span class="hb-v hb-v2" id="hb-fc-v"><span class="hb-skel" aria-hidden="true"></span></span>
-        <span class="hb-s" id="hb-fc-s"></span>
-      </a>
-      <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
-        <span class="hb-k" id="hb-fs-k">Nov bean futures</span>
-        <span class="hb-v hb-v2" id="hb-fs-v"><span class="hb-skel" aria-hidden="true"></span></span>
-        <span class="hb-s" id="hb-fs-s"></span>
-      </a>
-      <a class="hb-cell hb-wx" id="hb-wx" href="#f2" data-track="hero">
-        <span class="hb-k">Today</span>
-        <span class="hb-v hb-v2" id="hb-wx-v"><span class="hb-skel" aria-hidden="true"></span></span>
-        <span class="hb-s" id="hb-wx-s"></span>
-      </a>
-    </div>
-    <!-- 2026-10-06 signup: one line under the bids. components/signup-ask.js
-         draws it, sends the saved ZIP with source "hero", and hides it for a
-         reader who already signed up. Loaded here, not deferred, so the line
-         is drawn (or hidden) before first paint and the bids card below
-         never jumps. -->
-    <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
-    <!-- Sponsor credit: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. Drawn only for a paid sponsor; unsold it stays hidden and empty. -->
-  <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
-  </section>
-  <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
-  <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
-  <script src="/components/signup-ask.js?v=5"></script>
   <script>
   (function(){
     'use strict';
@@ -591,20 +585,55 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
        The bids card's status decides; before it speaks, the saved ZIP does. */
     var bidStatus=null;
     function noZip(){return bidStatus?bidStatus==='nozip':!hasZip();}
+    var looking='';
     function paintPlace(){
       var l=loc(),p=placeFromBids||(l&&l.label)||'',nz=noZip();
       var hb=$('hero-band');if(hb)hb.classList.toggle('hb-nozip',nz);
-      var el=$('hb-place');if(el)el.textContent=nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP');
+      var el=$('hb-place');if(el)el.textContent=looking?'Looking up ZIP '+looking:(nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP'));
       var b=$('hb-change');if(b){b.textContent=(p&&!nz)?'Change':'Set ZIP';b.setAttribute('aria-label',(p&&!nz)?'Change location ('+p+')':'Set your ZIP');}
+      if(!nz&&!looking){var f=$('hb-zip-form');if(f&&!f.classList.contains('is-open')){var i=$('hb-zip');if(i&&l&&/^\d{5}$/.test(String(l.zip||''))&&document.activeElement!==i)i.value=l.zip;}}
     }
     var dt=$('hb-date');
     if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
-    function openZip(){var c=$('idx1-zip-chip');if(c)c.click();}
-    var ch=$('hb-change');
-    if(ch)ch.addEventListener('click',openZip);
+    /* ---- the one ZIP box (2026-10-11 polish) ----
+       Every "Set ZIP", "Change ZIP" and "Enter ZIP" on the page opens this box
+       (window.agsistOpenZip). A ZIP typed here goes to window.agsistSetZip in
+       geo.js, which fills every other ZIP field, saves agsist-wx-loc and loads
+       weather, then the bids card, then basis. */
+    var form=$('hb-zip-form'),zin=$('hb-zip'),zmsg=$('hb-zip-msg'),chg=$('hb-change'),lookT=null,pendingZip='';
+    function setOpen(on){if(!form)return;form.classList.toggle('is-open',!!on);if(chg)chg.setAttribute('aria-expanded',on||noZip()?'true':'false');}
+    function openZip(){
+      if(!form||!zin)return;
+      setOpen(true);
+      var l=loc();if(!zin.value&&l&&/^\d{5}$/.test(String(l.zip||'')))zin.value=l.zip;
+      var hb=$('hero-band');
+      if(hb&&hb.getBoundingClientRect().top<0&&hb.scrollIntoView)hb.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){try{zin.focus({preventScroll:true});zin.select();}catch(e){zin.focus();}},250);
+    }
+    window.agsistOpenZip=openZip;
+    if(chg)chg.addEventListener('click',function(){if(!noZip()&&form&&form.classList.contains('is-open')){setOpen(false);return;}openZip();});
+    function say(t){if(zmsg)zmsg.textContent=t||'';}
+    function sendZip(z){
+      if(typeof window.agsistSetZip==='function'){window.agsistSetZip(z);return true;}
+      return false;
+    }
+    if(form)form.addEventListener('submit',function(ev){
+      ev.preventDefault();
+      var z=String(zin&&zin.value||'').replace(/\D/g,'');
+      if(z.length!==5){say('Enter a 5-digit ZIP code.');if(zin)zin.focus();return;}
+      say('');
+      try{if(typeof window.gtag==='function')gtag('event','bids_search',{page:'home',method:'zip'});}catch(e){}
+      looking=z;paintPlace();
+      if(zin)zin.blur();
+      setOpen(false);
+      if(!sendZip(z)){pendingZip=z;var tries=0;(function wait(){if(sendZip(pendingZip)){pendingZip='';return;}if(++tries<40)setTimeout(wait,250);})();}
+      clearTimeout(lookT);
+      lookT=setTimeout(function(){if(looking===z){looking='';paintPlace();setOpen(true);say('ZIP '+z+' didn’t load. Check it, or try again in a minute.');}},12000);
+    });
+    function zipLanded(){var l=loc();if(looking&&l&&String(l.zip||'')===looking){looking='';clearTimeout(lookT);say('');paintPlace();}}
     paintPlace();
     window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
-    window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(paintPlace,0);});
+    window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(function(){zipLanded();paintPlace();},0);});
     window.addEventListener('storage',paintPlace);
 
     /* ---- bids: the bids card publishes its top board per crop ----
@@ -626,6 +655,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
       bidStatus=d.status||null;
+      zipLanded();
       if(d.place)placeFromBids=String(d.place);
       paintPlace();
       var r=d.radiusMi!=null?d.radiusMi:d.radius;
@@ -774,9 +804,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div id="bids-list-area"><div class="bids-skeleton" role="status"><span class="visually-hidden">Loading cash bids</span><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
         <!-- 2026-10-06 HERO: "What is basis?", the posted-prices note and
              "Wrong number?" are in the card's own footer line (bids-homepage.js). -->
-        <details class="m-fold m-fold--calc"><summary class="m-fold-sum"><span>Store or sell?</span></summary>
+        <details class="m-fold m-fold--calc"><summary class="m-fold-sum"><span>Sell now or store?</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
-          <h3 class="idx1-extras-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store or sell?</h3>
+          <h3 class="idx1-extras-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Sell now or store?</h3>
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
           <div class="idx1-calc-pickwrap"><label class="idx1-extras-field idx1-calc-pickfield">Price from<select id="idx1-calc-pick" aria-describedby="idx1-calc-why"></select></label>
           <div id="idx1-calc-why" class="idx1-extras-fine"></div></div>
@@ -793,7 +823,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           </div>
           <div id="idx1-calc-result" role="status">Enter your numbers above.</div>
           <details class="idx1-calc-mathbox" hidden><summary>Show the math</summary><pre id="idx1-calc-math"></pre></details>
-          <p class="idx1-extras-fine"><a href="/store-or-sell">Store or sell: every later month at your elevator, with your costs &rarr;</a></p>
+          <p class="idx1-extras-fine"><a href="/store-or-sell">Every later month at your elevator, with your costs: Sell now or store? &rarr;</a></p>
           <div class="idx1-extras-fine">Carry minus storage, interest on the cash price over your months, and bushels lost to shrink. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-calc">What&rsquo;s not counted</button><span id="tip-calc" role="tooltip" class="tip-t" hidden>Interest and shrink count only when you enter them. Quality risk, drying and handling charges are not included. Call your elevator for their exact terms.</span></span> <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-carry">What is carry?</button><span id="tip-carry" role="tooltip" class="tip-t" hidden>Carry is how much more a later delivery month pays than today, per bushel. It is what the market pays you to store.</span></span></div>
         </div>
         <div id="idx1-search-compare" class="idx1-extras-line" style="display:none"></div>
@@ -829,7 +859,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
         </div>
         <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <div style="display:flex;gap:.5rem">
+          <!-- 2026-10-11 polish: no second ZIP box here. geo.js still reads #wx-zip (agsistSetZip writes it), so the field stays in the page, hidden. -->
+          <p class="wx-zip-ask">Set your ZIP at the top of the page for local weather and spray days. <button type="button" class="wx-zip-ask-b" onclick="if(window.agsistOpenZip)window.agsistOpenZip()">Set ZIP</button></p>
+          <div class="wx-zip-old" hidden>
             <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
             <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
           </div>
@@ -911,17 +943,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
     </div>
     </details>
-  <section class="wr fade-up" id="wire-band" aria-labelledby="wire-h" hidden>
-    <div class="sec-head"><h2 class="sec-title" id="wire-h">The Wire</h2><span class="sec-all wr-sub" id="wire-sub"></span></div>
-    <div class="wr-body">
-      <div class="wr-g" id="wire-g"></div>
-      <a class="wr-all" href="/news">Everything That Moved</a>
-    </div>
-  </section>
 
   <div class="price-cards-section fade-up" id="f-prices">
 
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 15 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 15 min</span><a href="/markets" class="sec-all">All markets</a></div></div>
     <h3 class="pc-section-lbl idx1-sub-h">Grains: Key Contracts</h3>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"><!--SEED:hp:corn-->$4.80 1/2<!--/SEED--></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near"></span></div><div class="pc-prev" id="pcprev-corn-near"><!--SEED:hp:corn-when-->Last close Oct 9 &middot; Yahoo Finance, delayed<!--/SEED--></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo"></span><span>52-week range</span><span id="pcrl-corn-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn"></div><div class="pc-range-dot" id="pcrd-corn"></div></div></div></div>
@@ -987,6 +1012,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="pc r7-row" role="row" data-spark="silver" data-r7k="silver"><span class="r7-c r7-nm" role="rowheader"><span class="r7-n">Silver</span><span class="r7-cm"></span></span><span class="r7-c r7-last" role="cell"><span class="pc-price" id="pcp-silver"></span><span class="r7-unit">per troy oz</span></span><span class="r7-c r7-ch" role="cell"><span class="r7-chg nc"></span></span><span class="r7-c r7-pc" role="cell"><span class="r7-pct nc"></span></span><span class="r7-c r7-rg" role="cell"><span class="r7-lo"></span><span class="r7-bar" aria-hidden="true"><i class="r7-dot"></i></span><span class="r7-hi"></span></span><span class="pc-chg-val nc" id="pcc-silver" hidden></span><span class="pc-prev" id="pcprev-silver" hidden></span></div>
       </div>
     </details>
+    <!-- 2026-10-11 polish: the tables above repeat /markets; this is the way there. -->
+    <a class="r7-more" href="/markets" data-track="markets">All markets: grains, livestock, energy and metals on one page &rarr;</a>
     </div>
   </div>
   </div>
@@ -1359,24 +1386,24 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More tools</span></summary>
     <ul class="land-links">
       <li><a href="/field-scout" data-track="land">Field Scout</a></li>
-      <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
-      <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
-      <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
-      <li><a href="/basis#storage" data-track="land">Storage Crunch</a></li>
-      <li><a href="/breakeven" data-track="land">Break-Even</a></li>
+      <li><a href="/cash-lease" data-track="land">Cash lease form</a></li>
+      <li><a href="/harvest-price-tracker" data-track="land">Harvest price and pre-sell</a></li>
+      <li><a href="/basis" data-track="land">Basis: your state, vs normal</a></li>
+      <li><a href="/basis#storage" data-track="land">Storage crunch</a></li>
+      <li><a href="/breakeven" data-track="land">Break-even</a></li>
       <li><a href="/arc-plc" data-track="land">ARC or PLC</a></li>
-      <li><a href="/grain-bin-calculator" data-track="land">Grain Bin</a></li>
-      <li><a href="/yield-estimator" data-track="land">Yield Estimator</a></li>
-      <li><a href="/fertilizer" data-track="land">Fertilizer Prices</a></li>
-      <li><a href="/tariffs" data-track="land">Tariffs</a></li>
-      <li><a href="/drought-monitor" data-track="land">Drought Monitor</a></li>
-      <li><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" data-track="land">NOAA Outlooks</a></li>
-      <li><a href="/farmland-atlas#l=ten_rent" data-track="land">Rented vs Owner-Farmed</a></li>
-      <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
-      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop Tour</a></li>
-      <li><a href="/farm-bill" data-track="land">Farm Bill</a></li>
-      <li><a href="/milk-prices" data-track="land">Milk Prices</a></li>
-      <li><a href="/archive" data-track="land">Briefing Archive</a></li>
+      <li><a href="/grain-bin-calculator" data-track="land">Grain bin calculator</a></li>
+      <li><a href="/yield-estimator" data-track="land">Yield estimator</a></li>
+      <li><a href="/fertilizer" data-track="land">Fertilizer prices</a></li>
+      <li><a href="/tariffs" data-track="land">Tariffs and trade</a></li>
+      <li><a href="/drought-monitor" data-track="land">Drought monitor</a></li>
+      <li><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" data-track="land">NOAA outlooks</a></li>
+      <li><a href="/farmland-atlas#l=ten_rent" data-track="land">Rented vs owner-farmed</a></li>
+      <li><a href="/foreign-land" data-track="land">Foreign-owned land</a></li>
+      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop tour</a></li>
+      <li><a href="/farm-bill" data-track="land">Farm bill</a></li>
+      <li><a href="/milk-prices" data-track="land">Milk prices</a></li>
+      <li><a href="/archive" data-track="land">Briefing archive</a></li>
     </ul>
     </details>
     </nav>
@@ -1803,435 +1830,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=2" defer></script>
 <script src="/components/homepage-extras.js?v=14" defer></script>
-<script>
-(function() {
-  'use strict';
-  function loadYieldNowcast(){
-    fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
-      if(!d||!d.crops)throw new Error('no-nowcast');
-      var map={corn:'nc-corn',soybeans:'nc-beans'};
-      var above=0,below=0;
-      Object.keys(map).forEach(function(crop){
-        var c=d.crops[crop];
-        /* A crop missing from the file: its box hides rather than print "--". */
-        if(!c||typeof c.nowcast!=='number'){var _bx=document.getElementById(map[crop]);if(_bx&&_bx.parentNode)_bx.parentNode.style.display='none';return;}
-        var el=document.getElementById(map[crop]);
-        var bd=document.getElementById(map[crop]+'-band');
-        var vs=document.getElementById(map[crop]+'-vs');
-        if(el)el.textContent=c.nowcast.toFixed(1);
-        if(bd)bd.textContent=typeof c.band80==='number'?c.band80.toFixed(1):'';
-        var diff=c.nowcast-c.trend;
-        if(diff>0.4)above++; else if(diff<-0.4)below++;
-        /* r7-bids 7b: the headline is the difference from USDA (filled below
-           from data/wasde.json). The trend is AGSIST's own linear fit on the
-           backtest years (scripts/build_yield_nowcast.py), and says so. */
-        if(vs){vs.textContent='USDA estimate not loaded yet';vs.style.color='var(--text-muted)';
-          var tl=document.getElementById(map[crop]+'-trend');
-          if(!tl){tl=document.createElement('div');tl.id=map[crop]+'-trend';tl.className='r7-nc-usda';vs.parentNode.insertBefore(tl,vs.nextSibling);}
-          tl.textContent='Our '+(c.backtest_years||'')+'-year trend: '+c.trend.toFixed(1)+(typeof c.mae==='number'?' \u00b7 backtest miss averages '+c.mae.toFixed(1)+' bu':'');}
-      });
-      var v=document.getElementById('nc-verdict');
-      if(v){v.className='ratio-verdict neutral';v.textContent='USDA not loaded yet';}
-      fetch('/data/wasde.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(w){if(!w||!w.metrics)return;
-        var rel=w.release?new Date(w.release+'T12:00:00'):null,rs=rel&&!isNaN(rel)?rel.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-        var ab=0,bl=0,n=0;
-        [['corn_yield','corn','nc-corn'],['soy_yield','soybeans','nc-beans']].forEach(function(p){var m=null;w.metrics.forEach(function(x){if(!m&&String(x.key).indexOf(p[0])===0&&typeof x.value==='number')m=x;});
-          var vs=document.getElementById(p[2]+'-vs'),c=d.crops[p[1]];if(!m||!vs||!c)return;
-          var df=Math.round((c.nowcast-m.value)*10)/10,bd=(typeof c.band80==='number'&&c.band80>0)?c.band80:0.4;n++;if(df>bd)ab++;else if(df<-bd)bl++;
-          vs.style.color='var(--text-dim)';
-          vs.textContent=(Math.abs(df)<0.05?'Even with':(Math.abs(df).toFixed(1)+' bu '+(df>0?'above':'below')))+' USDA\u2019s '+(rs?rs+' ':'')+'estimate ('+m.value.toFixed(1)+')';});
-        if(v&&n){v.textContent=ab&&!bl?'Above USDA':bl&&!ab?'Below USDA':'Near USDA';}
-      }).catch(function(){});
-      var wk=document.getElementById('nc-week');
-      if(wk&&d.crops.corn){
-        var _wkEnd=d.crops.corn.week_ending;
-        var _rd=/^\d{4}-\d{2}-\d{2}$/.test(String(_wkEnd))?new Date(_wkEnd+'T12:00:00'):new Date(_wkEnd);
-        var _daysOld=(_rd&&!isNaN(_rd.getTime()))?Math.round((Date.now()-_rd.getTime())/86400000):null;
-        var _age=_daysOld==null?'':_daysOld<=13?'':' <svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+_daysOld+'d old';
-        /* r7-bids: dates as "Sep 20, 2026", and say when the ratings week trails the latest Crop Progress week. */
-        var _wkTxt=function(s){var d=new Date(s+'T12:00:00');return isNaN(d)?s:d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});};
-        wk.innerHTML='Ratings week ending '+_wkTxt(_wkEnd)+' \u00b7 updates Tuesdays'+_age;
-        fetch('/data/crop-progress.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(cp){
-          if(!cp||!/^\d{4}-\d{2}-\d{2}$/.test(String(cp.report_date))||!/^\d{4}-\d{2}-\d{2}$/.test(String(_wkEnd)))return;
-          var n=Math.round((new Date(cp.report_date+'T12:00:00')-new Date(_wkEnd+'T12:00:00'))/6048e5);
-          if(n>=1)wk.innerHTML='Ratings week ending '+_wkTxt(_wkEnd)+', '+(n===1?'one week':n+' weeks')+' behind Crop Progress ('+_wkTxt(cp.report_date)+')'+_age;
-        }).catch(function(){});
-        if(_daysOld!=null&&_daysOld>=14){wk.style.color='#f0913a';}
-      }
-      var yr=document.getElementById('nc-years');
-      if(yr&&d.crops.corn)yr.textContent=d.crops.corn.backtest_years;
-    }).catch(function(){
-      var v=document.getElementById('nc-verdict');
-      if(v){v.className='ratio-verdict neutral';v.textContent='Data unavailable';}
-      var wk=document.getElementById('nc-week');
-      if(wk){wk.textContent='Could not load this week\u2019s ratings.';wk.style.color='';}
-      /* No numbers to show: the two "--" boxes hide; the line above says why. */
-      var _g=document.getElementById('nc-corn');_g=_g&&_g.parentNode&&_g.parentNode.parentNode;if(_g&&_g.style)_g.style.display='none';
-    });
-  }
-  loadYieldNowcast();
-  function blankRanges(){
-    // The dollar figures baked into the markup are a year old and only rot.
-    // If the live file cannot be read, show nothing rather than a confident
-    // wrong bar.
-    var rs=document.querySelectorAll('.pc-range');
-    for(var i=0;i<rs.length;i++)rs[i].style.visibility='hidden';
-  }
-  /* Reads the rendered cards rather than the feed: the two cards are fed by
-     different keys and a symbol match in the data would not prove the reader
-     is looking at the same two numbers. */
-  var FORWARD_YEAR={
-    'corn-dec':{dataKey:'corn-dec27',rangeId:'corn-dec',sym:'corn-dec',label:"Dec '27",tick:"Corn Dec '27"},
-    'bean-nov':{dataKey:'beans-nov27',rangeId:'beans-nov',sym:'beans-nov',label:"Nov '27",tick:"Soybeans Nov '27"}
-  };
-  function applyForwardYear(domSuffix,fwd){
-    var q=window.AGSIST_PRICE_DATA||{};
-    var fq=q[fwd.dataKey];
-    if(!fq||fq.close==null||fq.wk52_lo==null||fq.wk52_hi==null)return false;
-    if(typeof fmtPrice!=='function'||typeof fmtChange!=='function')return false;
-    var priceEl=document.getElementById('pcp-'+domSuffix);
-    var chgEl=document.getElementById('pcc-'+domSuffix);
-    var prevEl=document.getElementById('pcprev-'+domSuffix);
-    if(!priceEl||!chgEl)return false;
-    priceEl.textContent=fmtPrice(fq.close,2,true);
-    var chgObj=fmtChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
-    chgEl.textContent=chgObj.text;
-    chgEl.className='pc-chg-val '+chgObj.cls;
-    if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
-    var lo=fq.wk52_lo/100,hi=fq.wk52_hi/100,cl=fq.close/100;
-    if(hi>lo){
-      var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
-      var elLo=document.getElementById('pcrl-'+fwd.rangeId+'-lo'), elHi=document.getElementById('pcrl-'+fwd.rangeId+'-hi');
-      var elF=document.getElementById('pcrf-'+fwd.rangeId), elD=document.getElementById('pcrd-'+fwd.rangeId);
-      var fr=AG.px.range(fq.wk52_lo,fq.wk52_hi,{style:'slash'});
-      if(elLo)elLo.textContent=fr.lo;
-      if(elHi)elHi.textContent=fr.hi;
-      if(elF)elF.style.width=pct.toFixed(1)+'%';
-      if(elD)elD.style.left=pct.toFixed(1)+'%';
-    }
-    /* The ticker carries the same contract under the same key. Roll every
-       copy (rebuildTickerLoop clones the strip) so the strip does not read
-       "Corn Dec '26 $5.01" beside "Corn (front) $5.01". */
-    if(typeof fmtTickerPrice==='function'&&typeof fmtTickerChange==='function'){
-      var tp=fmtTickerPrice(fq.close,true,2), tc=fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
-      document.querySelectorAll('[data-sym="'+fwd.sym+'"]').forEach(function(el){
-        var le=el.querySelector('.t-label'), pe=el.querySelector('.t-price'), ce=el.querySelector('.t-chg');
-        if(le)le.textContent=fwd.tick;
-        if(pe)pe.textContent=tp;
-        if(ce){ce.textContent=tc.text;ce.className='t-chg '+tc.cls;}
-      });
-    }
-    return true;
-  }
-  /* 2026-10-01: when the front-month and this-year's-harvest contract are
-     the same contract (true for corn/beans from early fall through year end),
-     this used to hide the second tile and append "+ new crop" to the first.
-     Sig's call: never drop to one tile for corn or beans -- when that
-     happens, swap the second tile to NEXT year's harvest contract
-     (corn-dec27 / beans-nov27) instead, so the reader always sees two real,
-     distinct corn (or bean) prices. Both symbols are already fetched live by
-     scripts/fetch_prices.py into data/prices.json -- no new data source. */
-  function collapseSameContract(){
-    [['corn-near','corn-dec'],['bean-near','bean-nov']].forEach(function(pair){
-      var a=document.getElementById('pcp-'+pair[0]), b=document.getElementById('pcp-'+pair[1]);
-      var ap=document.getElementById('pcprev-'+pair[0]), bp=document.getElementById('pcprev-'+pair[1]);
-      if(!a||!b||!ap||!bp)return;
-      var at=(a.textContent||'').trim(), bt=(b.textContent||'').trim();
-      var as=(ap.textContent||'').trim(), bs=(bp.textContent||'').trim();
-      var card=b.parentNode;
-      while(card&&card!==document.body&&(' '+(card.className||'')+' ').indexOf(' pc ')<0)card=card.parentNode;
-      if(!card||card===document.body)return;
-      var same=at&&at!=='--'&&at===bt&&as&&as===bs;
-      var fwd=FORWARD_YEAR[pair[1]];
-      var swapped=(same&&fwd)?applyForwardYear(pair[1],fwd):false;
-      card.style.display=(same&&!swapped)?'none':'';
-      var keep=a.parentNode;
-      while(keep&&keep!==document.body&&(' '+(keep.className||'')+' ').indexOf(' pc ')<0)keep=keep.parentNode;
-      var lbl=keep&&keep.querySelector?keep.querySelector('.pc-contract'):null;
-      if(lbl){
-        /* geo.js names the contract on this chip ("Dec '26 - nearby") after
-           prices load. The old code cached the chip's FIRST text ("Front
-           Month") and wrote it back on every re-run, so the contract name
-           never survived. Only the suffix is ours; the base is whatever is
-           on the chip right now. */
-        var NEW_CROP_SUFFIX=' + new crop';
-        var cur=(lbl.textContent||'').trim();
-        var base=cur.slice(-NEW_CROP_SUFFIX.length)===NEW_CROP_SUFFIX?cur.slice(0,-NEW_CROP_SUFFIX.length):cur;
-        var want=(same&&!swapped)?(base+NEW_CROP_SUFFIX):base;
-        if(cur!==want)lbl.textContent=want;
-      }
-      if(same&&swapped){
-        var bLbl=card.querySelector&&card.querySelector('.pc-contract');
-        if(bLbl&&bLbl.textContent!==fwd.label)bLbl.textContent=fwd.label;
-      }
-    });
-  }
-  /* THE ACTION names a price. The briefing is written at 6:00 AM CT and the
-     board moves all day; by evening a reader can be told "nothing to do at
-     $5.25 corn" under a ticker that says $5.01. daily.json already carries
-     locked_prices (what the writer saw) and todays_call (which contract the
-     action is about); nothing on this page read either. This prints both
-     prices, and the gap, under the action. It never rewrites the action. */
-  window.agsistFrameAction=function(){
-    var d=window.AGSIST_DAILY, q=window.AGSIST_PRICE_DATA;
-    if(!d||!q)return;
-    var ta=document.getElementById('daily-takeaway');
-    if(!ta||ta.style.display==='none')return;
-    /* WAVE1-D: the bot's call names no price from the morning board, so
-       there is no "written at" price to frame it with. Without this guard the
-       instrument defaulted to corn and printed a corn gap under a four-crop
-       call. */
-    if(d.bot_call){var _old=document.getElementById('daily-takeaway-frame');if(_old)_old.remove();return;}
-    var call=d.todays_call||{}, lp=d.locked_prices||{};
-    /* No instrument named: no price to frame (a diesel line got a corn price under it). */
-    if(!call.instrument){var _o=document.getElementById('daily-takeaway-frame');if(_o)_o.remove();return;}
-    var key=call.instrument;
-    var NAMES={corn:'corn',beans:'beans',wheat:'wheat',oats:'oats',cattle:'live cattle',feeders:'feeders',hogs:'hogs',milk:'Class III milk',meal:'soy meal',crude:'crude',natgas:'natural gas'};
-    var GRAIN={corn:1,beans:1,wheat:1,oats:1,'corn-dec':1,'beans-nov':1};
-    var was=lp[key], live=q[key];
-    if(was==null||!live||live.close==null)return;
-    var now=GRAIN[key]?live.close/100:+live.close;
-    if(!isFinite(now)||!isFinite(+was))return;
-    /* Subtract the two PRINTED prices, so the gap a reader checks by hand
-       is the gap on the line ($5.25 - $5.01 = 24c, not the 23.25c of the
-       unrounded values). */
-    var diff=parseFloat((+now).toFixed(2))-parseFloat((+was).toFixed(2)), txt, fmt;
-    if(GRAIN[key]){
-      /* Grains print to the quarter cent (components/util.js), so the gap
-         is the difference of the two printed quarters. */
-      var c=(AG.px.quarters(+now*100)-AG.px.quarters(+was*100))/4;
-      txt=c===0?'unchanged since':AG.px.move(c,{style:'slash',sign:true})+' since';
-      fmt=function(v){return AG.px.priceDollars(v,{style:'slash'});};
-    }else{
-      txt=Math.abs(diff)<0.005?'unchanged since':(diff>0?'+':'\u2212')+'$'+Math.abs(diff).toFixed(2)+' since';
-      fmt=function(v){return '$'+(+v).toFixed(2);};
-    }
-    var line=document.getElementById('daily-takeaway-frame');
-    if(!line){
-      line=document.createElement('p');
-      line.id='daily-takeaway-frame';
-      line.className='daily-takeaway-frame';
-      line.setAttribute('style',"font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted);margin:.5rem 0 0;letter-spacing:.02em");
-      ta.appendChild(line);
-    }
-    line.textContent='Written at '+fmt(was)+' '+(NAMES[key]||key)+' \u00b7 now '+fmt(now)+' ('+txt+')';
-  };
-  /* Run it again whenever any of the four values it reads changes. The first
-     version ran once, straight after renderRanges, and compared price text a
-     different code path writes -- so on about half of loads the values were
-     still "--" when it looked, it bailed, and nothing ran it again. Measured
-     over four loads: 19, 21, 21, 19 visible cards. */
-  var _sameWired = false;
-  function watchSameContract(){
-    collapseSameContract();
-    if(_sameWired) return;
-    _sameWired = true;
-    var ids = ['pcp-corn-near','pcp-corn-dec','pcprev-corn-near','pcprev-corn-dec',
-               'pcp-bean-near','pcp-bean-nov','pcprev-bean-near','pcprev-bean-nov'];
-    if(typeof MutationObserver === 'function'){
-      var mo = new MutationObserver(function(){ collapseSameContract(); });
-      ids.forEach(function(id){
-        var el = document.getElementById(id);
-        if(el) mo.observe(el, {childList:true, characterData:true, subtree:true});
-      });
-    }else{
-      var n = 0;
-      (function again(){ collapseSameContract(); if(++n < 12) setTimeout(again, 400); })();
-    }
-  }
-  function renderRanges(q){
-    var GR={'corn':1,'corn-dec':1,'beans':1,'beans-nov':1,'wheat':1,'oats':1};
-    var SYMS=['corn','corn-dec','beans','beans-nov','wheat','oats','meal','cattle','feeders','hogs','milk','crude','natgas','dollar','sp500','treasury10','gold','silver','bitcoin','ripple','kaspa'];
-    /* CORRECTION 2026-09-24. These two labels are the 52-week LOW and the
-       52-week HIGH, and they were being rounded to whole dollars, which moved
-       them INSIDE the range that actually traded. Class III milk printed a
-       $15 low against a real low of $14.53; feeders printed $300 against
-       $299.52; the ten-year printed a 3.9% low against 3.947%. A low nobody
-       ever traded at is a wrong number on the page, and it is wrong in the
-       direction that makes the range look tighter than it was.
-
-       The low now rounds DOWN and the high rounds UP at the precision each
-       quote is actually quoted in, so the printed range always contains the
-       real one. The dollar index also loses the "$" it never should have
-       carried -- DX-Y.NYB is an index, not a price in dollars, and the
-       headline number above these labels has never had one. */
-    function fmt(sym,v,dir){
-      function snap(d){
-        var f=Math.pow(10,d);
-        return dir<0?Math.floor(v*f)/f:(dir>0?Math.ceil(v*f)/f:Math.round(v*f)/f);
-      }
-      function usd(d){
-        return '$'+snap(d).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-      }
-      if(sym==='treasury10')return snap(2).toFixed(2)+'%';
-      if(sym==='dollar')return snap(2).toFixed(2);
-      if(sym==='kaspa')return usd(3);
-      if(sym==='sp500')return snap(0).toLocaleString('en-US');
-      if(sym==='bitcoin')return usd(0);
-      return usd(2);
-    }
-    for(var i=0;i<SYMS.length;i++){
-      var sym=SYMS[i],x=q[sym];
-      if(!x)continue;
-      var lo=x.wk52_lo,hi=x.wk52_hi,cl=x.close;
-      if(lo==null||hi==null||cl==null||hi<=lo)continue;
-      if(GR[sym]){lo=lo/100;hi=hi/100;cl=cl/100;}
-      var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
-      var elLo=document.getElementById('pcrl-'+sym+'-lo');
-      var elHi=document.getElementById('pcrl-'+sym+'-hi');
-      var elF=document.getElementById('pcrf-'+sym);
-      var elD=document.getElementById('pcrd-'+sym);
-      /* Grains: the site formatter's range, to the quarter cent, never inward. */
-      var gr=GR[sym]?AG.px.range(x.wk52_lo,x.wk52_hi,{style:'slash'}):null;
-      if(elLo)elLo.textContent=gr?gr.lo:fmt(sym,lo,-1);
-      if(elHi)elHi.textContent=gr?gr.hi:fmt(sym,hi,1);
-      if(elF)elF.style.width=pct.toFixed(1)+'%';
-      if(elD)elD.style.left=pct.toFixed(1)+'%';
-    }
-  }
-  /* WAVE3-L 2026-10-03: a failed or malformed prices.json used to leave
-     every price cell on "Not loaded yet", an empty ticker and a header that
-     still said "Updated every 15 min". Now: one line saying the prices did
-     not load and when we tried, the empty ticker hidden, and a retry on a
-     timer and when the browser comes back online. A file with no quotes
-     object counts as malformed. */
-  var _pxTry=0,_pxTimer=null,_pxDone=false;
-  function pxCT(){try{return new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'}).format(new Date())+' CT';}catch(e){return '';}}
-  function pxFail(){
-    if(_pxDone)return;
-    var fp=document.getElementById('f-prices'),strip=document.querySelector('.prices-strip');
-    if(fp)fp.classList.add('px-off');if(strip)strip.classList.add('px-off');
-    var pa=document.getElementById('prices-age');if(pa)pa.textContent='';
-    var ln=document.getElementById('px-fail');
-    if(!ln&&fp){ln=document.createElement('p');ln.id='px-fail';ln.className='px-fail';ln.setAttribute('role','status');var sh=fp.querySelector('.sec-head');fp.insertBefore(ln,sh?sh.nextSibling:fp.firstChild);}
-    var t=pxCT();if(ln)ln.textContent='Prices did not load'+(t?' ('+t+')':'')+'. Retrying.';
-    clearTimeout(_pxTimer);_pxTimer=setTimeout(pxLoad,[30,60,120][_pxTry-1]*1000||300000);
-  }
-  function pxClear(){
-    var fp=document.getElementById('f-prices'),strip=document.querySelector('.prices-strip'),ln=document.getElementById('px-fail');
-    if(fp)fp.classList.remove('px-off');if(strip)strip.classList.remove('px-off');if(ln&&ln.parentNode)ln.parentNode.removeChild(ln);
-    var rs=document.querySelectorAll('.pc-range');for(var i=0;i<rs.length;i++)rs[i].style.visibility='';
-  }
-  window.addEventListener('online',function(){if(!_pxDone){clearTimeout(_pxTimer);pxLoad();}});
-  function pxLoad(){
-  _pxTry++;
-  var first=_pxTry===1;
-  fetch('/data/prices.json',{cache:first?'default':'no-store'}).then(function(r){
-    if(!r.ok)throw new Error('prices.json '+r.status);
-    return r.json();
-  }).then(function(data){
-    if(!data||typeof data!=='object'||!data.quotes||typeof data.quotes!=='object')throw new Error('prices.json malformed');
-    return data;
-  }).then(function(data){
-    _pxDone=true;clearTimeout(_pxTimer);
-    if(!first){
-      /* A retry worked: put the page back and let the other readers of the
-         file paint (geo.js the cards and ticker, r7-prices the ledgers). */
-      pxClear();
-      window.__agsistPricesP=Promise.resolve(data);
-      try{window.dispatchEvent(new CustomEvent('agsist:prices',{detail:data}));}catch(e){}
-      if(typeof window.fetchAllPrices==='function')window.fetchAllPrices();
-    }
-    var q=data.quotes||{};
-    /* The continuous series tracks the MOST-ACTIVE contract, so these bars
-       placed the December price inside the continuous 52-week band and read
-       85% of range when the contract a grower prices against sat at 42%. */
-    ['corn','beans','wheat','cattle'].forEach(function(c){
-      var nb=q[c+'-nearby'];
-      if(nb&&nb.close!=null)q[c]=nb;
-    });
-    /* Published BEFORE the collapse runs: the forward-year roll reads it. */
-    window.AGSIST_PRICE_DATA=q;
-    renderRanges(q);
-    watchSameContract();
-    if(typeof window.agsistFrameAction==='function')window.agsistFrameAction();
-    // Update "prices-age" label with actual fetch time
-    if(data.fetched){
-      var _pa=document.getElementById('prices-age');
-      if(_pa){
-        var _mins=Math.round((Date.now()-new Date(data.fetched).getTime())/60000);
-        /* THE BADGE AT THE TOP OF THE PAGE SAID LIVE WHATEVER THE AGE.
-           This age was already computed, and already rendered -- but into
-           #prices-age, which sits a thousand lines down beside a section
-           heading. The ticker above the fold carried a pulsing dot and the
-           word LIVE unconditionally. Measured 2026-09-12 at 03:06 UTC: the
-           feed was 185 minutes old and the badge still said LIVE.
-           Same computation, second rendering. Not a second calculation. */
-        var _tb=document.getElementById('ticker-age');
-        if(_tb){
-          /* r7-prices 2026-10-01 (7b): the quotes are delayed about 15
-             minutes while the market trades, and after the close they are the
-             settle. This reads the file's own fetch time against the CBOT grain
-             sessions (Central time): day 8:30 AM-1:20 PM, overnight 7:00 PM-
-             7:45 AM. Until 1:35 PM a quote may still be pre-settle. Full-closure
-             holidays are the same rules as scripts/contract_calendar.py
-             market_holidays(); early closes are not in the repo, so they are
-             not modelled. */
-          var _st=(function(iso){
-            var F=new Date(iso);if(isNaN(F.getTime()))return null;
-            var DY=864e5,MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            function U(y,m,d){return Date.UTC(y,m,d);}
-            function wd(t){return new Date(t).getUTCDay();}
-            function nth(y,m,w,n){var t=U(y,m,1);t+=((w-wd(t)+7)%7)*DY;return t+(n-1)*7*DY;}
-            function lastw(y,m,w){var t=U(y,m+1,0);return t-((wd(t)-w+7)%7)*DY;}
-            function obs(t){var x=wd(t);return x===6?t-DY:x===0?t+DY:t;}
-            function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);return U(y,Math.floor((h+l-7*m+114)/31)-1,((h+l-7*m+114)%31)+1);}
-            function hol(y){var o={};[[obs(U(y,0,1)),"New Year’s Day"],[nth(y,0,1,3),'Martin Luther King Jr. Day'],[nth(y,1,1,3),'Presidents Day'],[easter(y)-2*DY,'Good Friday'],[lastw(y,4,1),'Memorial Day'],[obs(U(y,5,19)),'Juneteenth'],[obs(U(y,6,4)),'Independence Day'],[nth(y,8,1,1),'Labor Day'],[nth(y,10,4,4),'Thanksgiving'],[obs(U(y,11,25)),'Christmas Day']].forEach(function(p){o[p[0]]=p[1];});return o;}
-            function holName(t){var y=new Date(t).getUTCFullYear();for(var i=-1;i<=1;i++){var n=hol(y+i)[t];if(n)return n;}return null;}
-            function trading(t){var x=wd(t);return x>=1&&x<=5&&!holName(t);}
-            function lbl(t){var d=new Date(t);return MN[d.getUTCMonth()]+' '+d.getUTCDate();}
-            function ct(d){var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'2-digit',minute:'2-digit',hourCycle:'h23',month:'numeric',day:'numeric',year:'numeric'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;});return p;}
-            function hm(d){return new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'}).format(d)+' CT';}
-            var p=ct(F),dayT=U(+p.year,+p.month-1,+p.day),m=(+p.hour%24)*60+(+p.minute);
-            var tr=trading(dayT),age=(Date.now()-F.getTime())/60000;
-            var read='Read at '+hm(F)+', '+lbl(dayT)+', '+p.year+'.';
-            var day=tr&&m>=510&&m<800, night=(m>=1140&&trading(dayT+DY))||(m<465&&tr);
-            if(day||night){
-              if(age<=45)return{t:'Delayed 15 min',live:true,title:'Futures prices delayed about 15 minutes. '+read};
-              var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
-              return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
-            }
-            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
-            if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
-            var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
-            var hn=holName(dayT);
-            /* "Close", not "Settle": these are Yahoo Finance closing prices,
-               not CME settlements (the two can differ by a tick or more). */
-            return{t:'Close '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Closing prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+' (Yahoo Finance closes, not CME settlements). '+read};
-          })(data.fetched);
-          if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
-          else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
-        }
-        if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
-        else{_pa.textContent=_mins<2?'• Live now':_mins<60?'• Updated '+_mins+' min ago':_mins<2880?'• Updated '+Math.round(_mins/60)+'h ago':'• Updated '+Math.round(_mins/1440)+'d ago';
-        _pa.style.color=_mins>60?'#f0913a':_mins>30?'var(--gold)':'var(--text-muted)';}
-      }
-    }
-    // Wire sparklines if geo.js hasn't already — REMOVED (sparklines disabled)
-    // window.AGSIST_PRICE_DATA is set above, before renderRanges.
-    // ---- staleness: ratio-widget flag + GA (per-tile dimming handled authoritatively in geo.js) ----
-    try{
-      var __sk=(data.stale_keys||[]);
-      function __st(k){return (q[k]&&q[k].stale===true)||__sk.indexOf(k)>-1;}
-      var __anyAg=['corn','beans','wheat','corn-dec','beans-nov'].some(__st);
-      if(__anyAg&&typeof gaEvent==='function'){gaEvent('quote_stale_shown',{page:'home'});}
-    }catch(e){}
-
-  },function(){
-    blankRanges();
-    // 2026-09-30: on an outright fetch failure (not just stale data — that
-    // case is handled above) this never touched #ticker-age, so a visitor
-    // kept seeing the static "LIVE" pulsing dot with a page full of "--"
-    // prices underneath it. Same dishonest-badge bug fixed for staleness on
-    // 2026-09-12; this closes the failure case too.
-    var _tbErr=document.getElementById('ticker-age');
-    if(_tbErr){_tbErr.innerHTML='Not loaded<br>yet';_tbErr.parentNode.classList.add('stale');}
-    pxFail();
-  });
-  }
-  pxLoad();
-})();
-</script>
+<script src="/components/home-yield.js?v=1"></script>
 <script>
 (function(){
   'use strict';
@@ -2735,11 +2334,14 @@ fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(
   if(teaser){teaser.addEventListener('click',expandDaily);teaser.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();expandDaily();}});}
   var btnDismiss=document.getElementById('btn-dismiss-daily');if(btnDismiss)btnDismiss.addEventListener('click',dismissDaily);
   var bidsEnterZip=document.getElementById('bids-enter-zip-btn');
-  if(bidsEnterZip){bidsEnterZip.addEventListener('click',function(){var gb=document.getElementById('bids-geo-bar'),zr=document.getElementById('bids-zip-row');if(gb)gb.style.display='none';if(zr){zr.style.display='block';}});}
+  /* 2026-10-11 polish: one ZIP box, in the hero band. These buttons open it;
+     the old in-card rows stay only as a fallback if the band is missing. */
+  function openHeroZip(){if(typeof window.agsistOpenZip==='function'){window.agsistOpenZip();return true;}return false;}
+  if(bidsEnterZip){bidsEnterZip.addEventListener('click',function(){if(openHeroZip())return;var gb=document.getElementById('bids-geo-bar'),zr=document.getElementById('bids-zip-row');if(gb)gb.style.display='none';if(zr){zr.style.display='block';}});}
   var bidsLookup=document.getElementById('bids-lookup-btn');if(bidsLookup)bidsLookup.addEventListener('click',function(){if(typeof lookupBids==='function')lookupBids();});
   var bidsZip=document.getElementById('bids-zip');if(bidsZip)bidsZip.addEventListener('keydown',function(e){if(e.key==='Enter'&&typeof lookupBids==='function')lookupBids();});
   var btnAllowLoc=document.getElementById('btn-allow-loc');if(btnAllowLoc)btnAllowLoc.addEventListener('click',function(){if(typeof requestGeo==='function')requestGeo();});
-  var btnZipInstead=document.getElementById('btn-zip-instead');if(btnZipInstead)btnZipInstead.addEventListener('click',function(){if(typeof showZipEntry==='function')showZipEntry();});
+  var btnZipInstead=document.getElementById('btn-zip-instead');if(btnZipInstead)btnZipInstead.addEventListener('click',function(){if(openHeroZip())return;if(typeof showZipEntry==='function')showZipEntry();});
   /* 2026-10-01: these two used to call loadWeatherZip() directly, which only
      ever updated the weather pane -- a ZIP typed here never reached Cash
      Bids, even though window.agsistSetZip (geo.js) already exists specifically
@@ -2761,7 +2363,7 @@ fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(
   }
   var btnWxGo=document.getElementById('btn-wx-go');if(btnWxGo)btnWxGo.addEventListener('click',wxZipSubmit);
   var wxZip=document.getElementById('wx-zip');if(wxZip)wxZip.addEventListener('keydown',function(e){if(e.key==='Enter')wxZipSubmit();});
-  var btnChangeLoc=document.getElementById('btn-change-loc');if(btnChangeLoc)btnChangeLoc.addEventListener('click',function(){if(typeof showZipEntry==='function')showZipEntry();});
+  var btnChangeLoc=document.getElementById('btn-change-loc');if(btnChangeLoc)btnChangeLoc.addEventListener('click',function(){if(openHeroZip())return;if(typeof showZipEntry==='function')showZipEntry();});
   var tabEmail=document.getElementById('tab-email');
   var formEmail=document.getElementById('form-email');
   if(tabEmail){tabEmail.addEventListener('click',function(){tabEmail.classList.add('active');if(formEmail)formEmail.style.display='flex';});}
@@ -3460,712 +3062,7 @@ window.hydrateDaily = function(data) {
   }
 })();
 </script>
-<script>
-(function(){
-'use strict';
-/* FINAL PLANTING DATES -- COUNTY OR NOTHING.
-   This used to hold one date per state scraped from 2025 farm-magazine
-   articles, plus a "national Corn Belt" pair for the 35 states its bounding
-   boxes did not cover, and it rendered both under the label "RMA Final
-   Planting Dates". The real RMA file disagrees inside almost every state it
-   covered (17 Kansas counties are May 15 against a May 25 state default) and
-   is wrong by six weeks outside them (Texas: 82 counties at Apr 15, shown
-   May 31). Missing a final planting date costs a grower his revenue
-   guarantee, so nothing is shown unless his own county is in the file. */
-var _rmaWatching=false;
-  function applyPlantingDates(lat,lon){
-    /* No sync pass any more -- there is nothing truthful to render until the
-       county is known, so the widget stays hidden until then.
-       It also no longer needs lat/lon. Those were only ever used by the
-       state-guessing that has been deleted; the county comes from
-       waitForGeoCounty(), which polls what geo.js already resolved. Keeping
-       the old guard meant the widget never appeared on the call that does not
-       pass coordinates -- caught by rendering it, not by reading it. */
-    if(_rmaWatching)return null; _rmaWatching=true;
-    /* The county can arrive late (permission prompt + fix + reverse-geocode)
-       and can CHANGE -- geo.js publishes a cached county first and corrects it
-       when the real one resolves. Latching the first value showed a grower in
-       Iowa a Texas deadline that had already passed. So: no deadline, and
-       re-render whenever the pair changes. */
-    var _rmaSeen='';
-    (function watch(){
-      var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
-      var key=w&&w.state&&w.county?(w.state+'|'+w.county):'';
-      if(key&&key!==_rmaSeen){ _rmaSeen=key; renderForCounty(w.state,w.county); }
-      setTimeout(watch,400);
-    })();
-    return null;
-  }
-
-  function renderForCounty(state,county){
-    Promise.all([loadRmaCountyData()]).then(function(res){
-      var rma=res[0];
-      var loc={state:state,county:county};
-      if(!rma||!loc.state||!loc.county)return;
-      if(!rma.index||!Object.keys(rma.index).length){ showRmaBroken(rma.data); return; }
-      var entry=lookupCounty(rma.index,loc.state,loc.county);
-      if(!entry){
-        /* A miss used to be a console.info and nothing else, which left a
-           guessed state date standing on screen with no way to know the
-           lookup had failed. Now it says so and points at the source. */
-        showRmaMiss(loc.county,loc.state,rma.data);
-        return;
-      }
-      renderPlantingDates(entry,rma.data);
-    }).catch(function(e){console.warn('[AGSIST] county RMA lookup failed:',e);});
-    return null;
-  }
-
-  function rmaSourceLine(data,extra){
-    var url=(data&&data.source_url)||'https://public-rma.fpac.usda.gov/apps/mapviewer/dates';
-    var up=(data&&data.updated)||'';
-    return (extra?extra+' ':'')+
-      'USDA RMA Revenue Protection final planting dates, '+((data&&data.crop_year)||'')+' crop year'+
-      (up?', updated '+up:'')+'. <a href="'+url+'" target="_blank" rel="noopener">Check the RMA map viewer</a> '+
-      'and confirm with your crop insurance agent before you plant.';
-  }
-
-  function showRmaBroken(data){
-    /* An empty index is a pipeline failure, not a county that is missing.
-       Telling a grower in a covered county "your county is not in this
-       dataset" tells him to stop looking. */
-    var w=document.getElementById('rma-widget');if(!w)return;
-    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
-        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
-        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
-    if(t)t.textContent='Final planting dates';
-    if(l)l.textContent='';
-    if(c)c.textContent='-'; if(b)b.textContent='-'; if(e)e.hidden=true;
-    if(src)src.innerHTML=rmaSourceLine(data,'<strong>The planting-date file could not be read.</strong>');
-    w.hidden=false;
-  }
-
-  function showRmaMiss(county,state,data){
-    var w=document.getElementById('rma-widget');if(!w)return;
-    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
-        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
-        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
-    if(t)t.textContent='Final planting dates';
-    if(l)l.textContent=String(county||'')+', '+String(state||'');
-    if(c)c.textContent='-';
-    if(b)b.textContent='-';
-    if(e)e.hidden=true;
-    if(src)src.innerHTML=rmaSourceLine(data,'<strong>Your county is not in this dataset.</strong>');
-    w.hidden=false;
-  }
-
-  function renderPlantingDates(entry,data){
-    var w=document.getElementById('rma-widget');if(!w)return;
-    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
-        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
-        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
-    /* THE CROP YEAR IS READ. parseMonthDayIso() used to stamp "May 31" with
-       whatever year the browser happened to be in, so on 2027-03-01 a 2026
-       file would have counted down to a 2027 deadline that may not exist.
-       Dates are built from the file's own crop_year, and when that is not the
-       current year the countdown is suppressed and the year is stated. */
-    var cy=+((data&&data.crop_year)||0)||null;
-    var nowY=new Date().getFullYear();
-    var current=(cy===nowY);
-    if(t)t.textContent='Final planting dates'+(cy?' \u00b7 '+cy+' crop':'');
-    if(l)l.textContent=entry.countyName+' County, '+entry.state;
-
-    function put(el,label,iso,isEstimate){
-      if(!el)return;
-      if(!label){el.textContent='-';return;}
-      var d=current?daysUntil(iso):null;
-      el.className='rma-d-v'+(d!=null&&d<0?' past':(d!=null&&d<=14?' soon':''));
-      el.textContent=label+(d!=null?' \u00b7 '+formatCountdown(d):'');
-    }
-    put(c,entry.cornLabel,entry.corn,false);
-    /* PROVENANCE, SHOWN. 1,786 of the 2,320 soybean dates in this file are
-       not RMA dates -- 618 are "corn + 20 days" and the file itself says
-       "verify at source_url". The source field was indexed and never read,
-       so all four classes rendered identically. An estimated date gets no
-       countdown, because a countdown is what makes it look like a deadline. */
-    var soyIsReal=(entry.source==='RMA');
-    if(soyIsReal){ put(b,entry.beansLabel,entry.beans,false); if(e)e.hidden=true; }
-    else {
-      if(b){ b.className='rma-d-v'; b.textContent=entry.beansLabel||'-'; }
-      if(e){ e.textContent='estimated, not an RMA date, confirm it'; e.hidden=false; }
-    }
-    if(src)src.innerHTML=rmaSourceLine(data, current?'':'<strong>'+
-      (cy?'These are '+cy+' crop-year dates and it is now '+nowY+'.'
-         :'This file does not state a crop year, so no countdown is shown.')+'</strong>');
-    /* r7-season: once both dates have passed, the card steps back. */
-    w.hidden=!!(current&&entry.corn&&daysUntil(entry.corn)<0&&(!entry.beans||daysUntil(entry.beans)<0));
-  }
-
-  // County-level RMA data: fetched once per page, cached, indexed by state+normalized-county-name.
-var _rmaDataPromise=null;
-function loadRmaCountyData(){
-  if(_rmaDataPromise)return _rmaDataPromise;
-  _rmaDataPromise=fetch('/data/rma-planting-dates.json').then(function(r){
-    if(!r.ok)throw new Error('rma fetch '+r.status);
-    return r.json();
-  }).then(function(data){
-    var counties=(data&&data.counties)||{},idx={};
-    var cy=(data&&data.crop_year)||null;
-    for(var fips in counties){
-      var e=counties[fips];if(!e||!e.state||!e.county)continue;
-      var row={
-        corn:parseMonthDayIso(e.corn,cy),cornLabel:e.corn,
-        beans:parseMonthDayIso(e.soybeans,cy),beansLabel:e.soybeans,
-        fips:fips,countyName:e.county,state:e.state,source:e.source
-      };
-      var ks=countyKeys(e.state,e.county);
-      for(var i=0;i<ks.length;i++){ if(!idx[ks[i]]) idx[ks[i]]=row; }
-    }
-    return {data:data,index:idx};
-  }).catch(function(err){console.warn('[AGSIST] RMA county data load failed:',err);_rmaDataPromise=null;return null;});
-  return _rmaDataPromise;
-}
-function normalizeCountyName(n){
-  return String(n||'').toLowerCase()
-    .replace(/\s+county$/,'').replace(/\s+parish$/,'').replace(/\s+city$/,'')
-    .replace(/^saint\s+/,'st ').replace(/\bst\.\s*/g,'st ')
-    .replace(/\./g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-}
-function parseMonthDayIso(s,yr){
-  /* "May 31" -> "2026-05-31". The year is the FILE'S crop_year, passed in.
-     This used to use new Date().getFullYear(), so a 2026 file silently
-     re-stamped itself every January and counted down to a deadline that had
-     already passed or had moved. */
-  var m=String(s||'').match(/^(\w+)\s+(\d+)$/);if(!m)return null;
-  var MO={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
-  var mon=MO[m[1].toLowerCase().slice(0,3)];if(!mon)return null;
-  var day=+m[2];
-  var y=+yr||new Date().getFullYear();
-  return y+'-'+(mon<10?'0':'')+mon+'-'+(day<10?'0':'')+day;
-}
-
-/* COUNTY NAMES DO NOT MATCH ON THE NOSE. The RMA file spells "O Brien",
-   "De Witt", "St Genevieve"; the reverse-geocoder returns "O'Brien County",
-   "DeWitt County", "Ste. Genevieve County". Normalising both sides still
-   leaves "o brien" against "obrien", so every one of those counties missed
-   and the reader was shown a state guess with no sign anything had failed.
-   Each row is therefore indexed under its spaced form AND its de-spaced
-   form, and the lookup tries both. */
-function countyKeys(state,name){
-  var n=normalizeCountyName(name);
-  var flat=n.replace(/\s+/g,'');
-  var ste=n.replace(/^ste\s+/,'st ');
-  var out=[state+'|'+n, state+'|'+flat];
-  if(ste!==n){ out.push(state+'|'+ste, state+'|'+ste.replace(/\s+/g,'')); }
-  return out;
-}
-function lookupCounty(idx,state,county){
-  var ks=countyKeys(state,county);
-  for(var i=0;i<ks.length;i++){ if(idx[ks[i]]) return idx[ks[i]]; }
-  return null;
-}
-// v2: geo.js populates window.AGSIST_STATE.weather.{state,county} after its own
-// Nominatim reverse-geocode resolves (~1–2s after geo). We poll briefly rather
-// than fire a second reverse-geocode. Matches the existing waitForGeo pattern
-// used elsewhere in this file.
-function waitForGeoCounty(timeoutMs){
-  timeoutMs=timeoutMs||6000;
-  return new Promise(function(resolve){
-    var deadline=Date.now()+timeoutMs;
-    (function check(){
-      var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
-      if(w&&w.state&&w.county){resolve({state:w.state,county:w.county});return;}
-      if(Date.now()>deadline){console.info('[AGSIST] geo.js did not populate state+county within '+timeoutMs+'ms, county-level RMA dates unavailable');resolve(null);return;}
-      setTimeout(check,200);
-    })();
-  });
-}
-var GDU_BASE_MAX=86,GDU_BASE_MIN=50;
-function calcGDU(tMaxC,tMinC){var tMaxF=(tMaxC*9/5)+32,tMinF=(tMinC*9/5)+32;var hi=Math.min(tMaxF,GDU_BASE_MAX),lo=Math.max(tMinF,GDU_BASE_MIN);return Math.max(0,(hi+lo)/2-GDU_BASE_MIN);}
-function daysUntil(iso){
-  /* Calendar-date difference. The old noon-anchored Math.ceil made the answer
-     a function of the time of day: a 31 May deadline read "1 day" at 07:00 on
-     31 May and "Today" at 07:00 on 1 June. Same fix as whats-priced-in.html,
-     which has carried it since the 2026-08-11 audit. */
-  if(!iso)return null;
-  var p=String(iso).split('-'); if(p.length!==3)return null;
-  var t=new Date(+p[0],+p[1]-1,+p[2]).getTime(); if(isNaN(t))return null;
-  var n=new Date(); n.setHours(0,0,0,0);
-  return Math.round((t-n.getTime())/86400000);
-}
-function formatCountdown(days){if(days==null)return'-';if(days<0)return'Past';if(days===0)return'Today';return days+' day'+(days===1?'':'s');}
-function waitForGeo(cb,retries){retries=retries||0;if(retries>20)return;var st=window.AGSIST_STATE;if(st&&st.weather&&st.weather.lat!=null){cb(st);}else{setTimeout(function(){waitForGeo(cb,retries+1);},400);}}
-
-// ---------- Monthly aggregation from Open-Meteo archive ----------
-function aggregateArchive(dailyHist){
-  // dailyHist = {time:[], temperature_2m_max:[], temperature_2m_min:[], precipitation_sum:[]}
-  // Returns {byYearMonth: {year:{month:{gdu,precip}}}, dailyLookup: {isoDate:{max,min,precip}}}
-  var times=(dailyHist&&dailyHist.time)||[];
-  var maxT=(dailyHist&&dailyHist.temperature_2m_max)||[];
-  var minT=(dailyHist&&dailyHist.temperature_2m_min)||[];
-  var pr=(dailyHist&&dailyHist.precipitation_sum)||[];
-  var byYM={},daily={};
-  for(var i=0;i<times.length;i++){
-    var iso=times[i];if(!iso)continue;
-    var parts=iso.split('-');
-    var y=+parts[0],m=+parts[1]-1; // 0-indexed month
-    if(isNaN(y)||isNaN(m))continue;
-    if(!byYM[y])byYM[y]={};
-    if(!byYM[y][m])byYM[y][m]={gdu:0,precip:0,nDays:0};
-    var hi=maxT[i],lo=minT[i],p=pr[i];
-    if(hi!=null&&lo!=null){
-      var hc=Math.min(hi,86),lc=Math.max(lo,50);
-      byYM[y][m].gdu+=Math.max(0,(hc+lc)/2-50);
-    }
-    if(p!=null)byYM[y][m].precip+=p;
-    byYM[y][m].nDays++;
-    daily[iso]={max:hi,min:lo,precip:p};
-  }
-  return {byYearMonth:byYM,daily:daily};
-}
-// ---------- YTD comparison helpers ----------
-function ytdGDU(dailyMap,year,fromIso,toIso){
-  // Sum GDU from fromIso (YYYY-MM-DD) to toIso inclusive
-  var sum=0;
-  for(var iso in dailyMap){
-    if(iso<fromIso||iso>toIso)continue;
-    var d=dailyMap[iso];
-    if(d.max!=null&&d.min!=null){
-      var hi=Math.min(d.max,86),lo=Math.max(d.min,50);
-      sum+=Math.max(0,(hi+lo)/2-50);
-    }
-  }
-  return sum;
-}
-function ytdPrecip(dailyMap,fromIso,toIso){
-  var sum=0;
-  for(var iso in dailyMap){
-    if(iso<fromIso||iso>toIso)continue;
-    if(dailyMap[iso].precip!=null)sum+=dailyMap[iso].precip;
-  }
-  return sum;
-}
-function padIso(y,m,d){
-  return y+'-'+(m<10?'0':'')+m+'-'+(d<10?'0':'')+d;
-}
-// v4.5: measure available chart width from the panel's visible parent (panel itself may be display:none)
-function wxChartWidth(panelId){
-  try{
-    var p=document.getElementById(panelId);
-    var host=p&&p.parentElement?p.parentElement:null;
-    var w=host?host.clientWidth:0;
-    if(!w||w<100)return 360;
-    return w-22; // panel horizontal padding
-  }catch(e){return 360;}
-}
-// ---------- SVG monthly bar chart (paired bars: avg + current) ----------
-function monthlyChartSvg(current,avg,monthLabels,fmtFn,pxWidth){
-  var mx=0;
-  for(var i=0;i<monthLabels.length;i++){
-    if(current[i]>mx)mx=current[i];
-    if(avg[i]>mx)mx=avg[i];
-  }
-  if(mx<0.01)mx=1; // avoid divide-by-zero
-  var scaleMax=mx*1.16; // v4.6: 16% headroom — tallest bar's value label sits in clear space, never on the bar (was yellow-on-yellow)
-  // v4.5: viewBox width tracks the rendered px width so font units ~= real px (legible on phones)
-  var W=Math.max(300,Math.min(760,Math.round(pxWidth||360))),H=180,PL=38,PR=8,PT=22,PB=28;
-  var cw=W-PL-PR,ch=H-PT-PB;
-  var n=monthLabels.length;
-  var gw=cw/n;
-  var bw=Math.max(5,Math.min(18,gw*0.36));
-  var gap=2;
-  var vf=(n<=8)?10:9; // value-label font; slightly smaller when 12 months so they don't crowd
-  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="Monthly comparison: this year vs 5-year average">';
-  // horizontal gridlines + y-axis value labels at 0/25/50/75/100% of max
-  var fracs=[0,0.25,0.5,0.75,1];
-  for(var g=0;g<fracs.length;g++){
-    var gy=PT+ch-(fracs[g]*(mx/scaleMax)*ch);
-    out+='<line x1="'+PL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+gy.toFixed(1)+'" stroke="#ffffff" stroke-opacity="'+(g===0?'0.20':'0.06')+'" stroke-width="0.5"/>';
-    out+='<text x="'+(PL-5)+'" y="'+(gy+3.2).toFixed(1)+'" font-size="10" fill="#aab4ae" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
-  }
-  for(var j=0;j<n;j++){
-    var gx=PL+gw*j+gw/2;
-    var aH=(avg[j]/scaleMax)*ch,aY=PT+ch-aH;
-    var aX=gx-bw-gap/2;
-    out+='<rect x="'+aX.toFixed(1)+'" y="'+aY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,aH).toFixed(1)+'" fill="#5fc28a" fill-opacity="0.5" rx="1.2"/>';
-    if(current[j]>0){
-      var cH=(current[j]/scaleMax)*ch,cY=PT+ch-cH;
-      var cX=gx+gap/2;
-      out+='<rect x="'+cX.toFixed(1)+'" y="'+cY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,cH).toFixed(1)+'" fill="#d4a23f" rx="1.2"/>';
-      var vY=Math.max(PT+9,cY-5);
-      out+='<text x="'+(cX+bw/2).toFixed(1)+'" y="'+vY.toFixed(1)+'" font-size="'+vf+'" fill="#e9edeb" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" stroke="#0a0c0d" stroke-width="2.5" paint-order="stroke">'+fmtFn(current[j])+'</text>';
-    }
-    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#b2bbb5" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
-  }
-  out+='</svg>';
-  return out;
-}
-// ---------- Chart toggle wiring ----------
-function wireChartToggle(statId,panelId,toggleId){
-  var stat=document.getElementById(statId),panel=document.getElementById(panelId),tog=document.getElementById(toggleId);
-  if(!stat||!panel||!tog)return;
-  function togglePanel(e){
-    if(e)e.stopPropagation();
-    var open=panel.classList.toggle('expanded');
-    stat.setAttribute('aria-expanded',open?'true':'false');
-    tog.innerHTML=open?'\u25B2 Hide':'\u25BC History';
-  }
-  stat.addEventListener('click',togglePanel);
-  stat.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();togglePanel(ev);}});
-}
-function wireHourlyToggle(){
-  var btn=document.getElementById('wx-hourly-toggle'),panel=document.getElementById('wx-hourly-panel');
-  if(!btn||!panel)return;
-  btn.addEventListener('click',function(){
-    var open=panel.classList.toggle('expanded');
-    btn.setAttribute('aria-expanded',open?'true':'false');
-    btn.innerHTML=open?'\u25B2 Hide hourly':'\u25BC Hourly';
-    // auto-scroll "now" cell into view when opening
-    if(open){var nowCell=panel.querySelector('.wx-hourly-cell.now');if(nowCell&&nowCell.scrollIntoView){try{nowCell.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}catch(e){}}}
-  });
-}
-// ---------- Weather code -> icon (Open-Meteo WMO codes) ----------
-function wxIcon(code,isDay){
-  if(code==null)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg>';
-  if(code===0)return isDay?'<svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg>'; // clear
-  if(code===1||code===2)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg>'; // partly cloudy
-  if(code===3)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg>'; // overcast
-  if(code===45||code===48)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-fog"/></svg>'; // fog
-  if(code>=51&&code<=57)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun-rain"/></svg>'; // drizzle
-  if(code>=61&&code<=67)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg>'; // rain
-  if(code>=71&&code<=77)return '<svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg>'; // snow
-  if(code>=80&&code<=82)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun-rain"/></svg>'; // showers
-  if(code===85||code===86)return '<svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg>'; // snow showers
-  if(code>=95)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-lightning"/></svg>'; // thunderstorm
-  return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg>';
-}
-// ---------- Wind direction: degrees to compass ----------
-function windDir(deg){
-  if(deg==null||isNaN(+deg))return '';
-  var dirs=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-  return dirs[Math.round((+deg%360)/22.5)%16];
-}
-function loadWeatherEnhancements(state){
-  var wx=state.weather||{},lat=wx.lat,lon=wx.lon;
-  if(lat==null||lon==null||isNaN(+lat)||isNaN(+lon))return;
-  var today=new Date();
-  var thisApr1=new Date(today.getFullYear(),3,1);
-  var d_apr1=thisApr1.toISOString().split('T')[0];
-  // Use yesterday as archive end_date — today's data is often not yet available
-  var yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
-  var d_yest=yesterday.toISOString().split('T')[0];
-  // Extend archive back 5 full years (Jan 1 of year-5) for monthly comparisons
-  var fiveYrsAgo=new Date(today.getFullYear()-5,0,1);
-  var d_5yr=fiveYrsAgo.toISOString().split('T')[0];
-  var soilUrl='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant,relative_humidity_2m_mean,weathercode,wind_gusts_10m_max&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_direction_10m,weathercode,soil_temperature_6cm,soil_temperature_18cm&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=5';
-  var histUrl='https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lon+'&start_date='+d_5yr+'&end_date='+d_yest+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
-  // Fetch independently — archive failure must not kill forecast/soil temp
-  var fcastPromise=fetch(soilUrl).then(function(r){return r.json();}).then(function(d){
-    if(d&&d.error){console.warn('[AGSIST] Open-Meteo forecast error:',d.reason||d.error);return null;}
-    return d;
-  }).catch(function(e){console.warn('[AGSIST] forecast fetch failed',e);return null;});
-  var histPromise=fetch(histUrl).then(function(r){return r.json();}).then(function(d){
-    if(d&&d.error){console.warn('[AGSIST] Open-Meteo archive error:',d.reason||d.error);return null;}
-    return d;
-  }).catch(function(e){console.warn('[AGSIST] archive fetch failed',e);return null;});
-  Promise.all([fcastPromise,histPromise]).then(function(results){
-    var forecast=results[0]||{},history=results[1]||{};try{if(window.S7)window.S7.onWx(results[0]);}catch(e){}
-    var dailyF=forecast.daily||{},dailyH=history.daily||{};
-    // GDU + precip30 scalars removed — computed via aggregateArchive+ytdGDU/ytdPrecip below for 5-yr comparison
-    // Soil temp — use current local hour from time array; fall back to nearest non-null, then daily average
-    var soilEstF=null;
-    var hourSoilArr=(forecast.hourly&&forecast.hourly.soil_temperature_6cm)||[];
-    var hourTimeArr=(forecast.hourly&&forecast.hourly.time)||[];
-    if(hourSoilArr.length>0){
-      var nowMs=Date.now();
-      var bestIdx=-1,bestDiff=Infinity;
-      for(var hi=0;hi<hourTimeArr.length;hi++){
-        if(hourSoilArr[hi]==null)continue;
-        var hT=new Date(hourTimeArr[hi]).getTime();
-        if(isNaN(hT))continue;
-        var diff=Math.abs(nowMs-hT);
-        if(diff<bestDiff){bestIdx=hi;bestDiff=diff;}
-      }
-      if(bestIdx>=0){
-        soilEstF=Math.round(hourSoilArr[bestIdx]);
-      } else {
-        // fallback: average today's available hourly values
-        var ss=0,sc=0;
-        for(var si=0;si<Math.min(24,hourSoilArr.length);si++){if(hourSoilArr[si]!=null){ss+=hourSoilArr[si];sc++;}}
-        if(sc>0)soilEstF=Math.round(ss/sc);
-      }
-    }
-    if(soilEstF==null){console.warn('[AGSIST] soil temp unavailable, hourly keys:',Object.keys((forecast&&forecast.hourly)||{}),'arr len:',hourSoilArr.length);}
-    var soilClass='warn',soilCtx='';
-    if(soilEstF!=null){
-      if(soilEstF<32){soilClass='cold';soilCtx='Too cold for field work';}
-      else if(soilEstF<40){soilClass='cold';soilCtx='Cold, wait for warmup';}
-      else if(soilEstF<50){soilClass='warn';soilCtx='Approaching planting threshold';}
-      else if(soilEstF<55){soilClass='warn';soilCtx='Near planting threshold (50\xb0F)';}
-      else if(soilEstF<60){soilClass='good';soilCtx='Good for planting';}
-      else{soilClass='good';soilCtx='Excellent planting conditions';}
-    }
-    var soilDisplay=soilEstF!=null?soilEstF+'\xb0F':'--\xb0F';
-    var stv=document.getElementById('soil-temp-val');
-    if(stv){stv.textContent=soilDisplay;stv.className='soil-temp-val '+soilClass;}
-    var stc=document.getElementById('soil-temp-ctx');if(stc)stc.textContent=soilCtx;
-    var str=document.getElementById('soil-temp-row');if(str)str.classList.add('loaded');
-    var gduStat=document.getElementById('gdu-stat');if(gduStat)gduStat.classList.add('loaded');
-    var precipStat=document.getElementById('precip-stat');if(precipStat)precipStat.classList.add('loaded');
-    // gdu-val and precip-val text set by INTEGRATION block after YTD calc
-    // Update Quick Tools planting dates location label with detected city + state-aware dates
-    var detectedState=applyPlantingDates(lat,lon);
-    var _wxSt=state.weather||{};
-    var _locLabel=document.getElementById('plant-dates-loc');
-    if(_locLabel){
-      var _locBase=_wxSt.city?_wxSt.city:(_wxSt.zip?'ZIP '+_wxSt.zip:'');
-      var _locSuffix=detectedState?(_locBase?_locBase+', '+detectedState:detectedState):_locBase;
-      _locLabel.textContent=_locSuffix?'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Dates, '+_locSuffix:'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Final Planting Dates';
-    }
-    // ========== HISTORICAL CHARTS (GDU + precip, 5-yr monthly) ==========
-    var agg=aggregateArchive(dailyH);
-    var curYear=today.getFullYear();
-    var pastYears=[];
-    for(var yy=curYear-5;yy<curYear;yy++)pastYears.push(yy);
-    var gduMonths=[3,4,5,6,7,8,9]; // Apr..Oct
-    var gduCurrent=[],gduAvg=[],gduLabels=['Apr','May','Jun','Jul','Aug','Sep','Oct'];
-    for(var gi=0;gi<gduMonths.length;gi++){
-      var mi=gduMonths[gi];
-      var curV=(agg.byYearMonth[curYear]&&agg.byYearMonth[curYear][mi])?agg.byYearMonth[curYear][mi].gdu:0;
-      var sum=0,cnt=0;
-      for(var py=0;py<pastYears.length;py++){
-        var yym=agg.byYearMonth[pastYears[py]];
-        if(yym&&yym[mi]){sum+=yym[mi].gdu;cnt++;}
-      }
-      gduCurrent.push(Math.round(curV));
-      gduAvg.push(cnt>0?Math.round(sum/cnt):0);
-    }
-    var gduSvgEl=document.getElementById('gdu-chart-svg');
-    if(gduSvgEl)gduSvgEl.innerHTML=monthlyChartSvg(gduCurrent,gduAvg,gduLabels,function(v){return Math.round(v);},wxChartWidth('gdu-chart-panel'));
-    // Precip: full 12-month
-    var prCurrent=[],prAvg=[];
-    var moLabels=['J','F','M','A','M','J','J','A','S','O','N','D'];
-    for(var mo=0;mo<12;mo++){
-      var cV=(agg.byYearMonth[curYear]&&agg.byYearMonth[curYear][mo])?agg.byYearMonth[curYear][mo].precip:0;
-      var sP=0,cP=0;
-      for(var py2=0;py2<pastYears.length;py2++){
-        var yym2=agg.byYearMonth[pastYears[py2]];
-        if(yym2&&yym2[mo]){sP+=yym2[mo].precip;cP++;}
-      }
-      prCurrent.push(Math.round(cV*10)/10);
-      prAvg.push(cP>0?Math.round((sP/cP)*10)/10:0);
-    }
-    var prSvgEl=document.getElementById('precip-chart-svg');
-    if(prSvgEl)prSvgEl.innerHTML=monthlyChartSvg(prCurrent,prAvg,moLabels,function(v){return (Math.round(v*10)/10)+'"';},wxChartWidth('precip-chart-panel'));
-    // ========== YTD STATS — % vs 5-yr same-period avg ==========
-    // GDU YTD: Apr 1 current year → yesterday. Compare to same (Apr 1 → same month/day) for past 5 years.
-    var todayIso=d_yest; // same window end as archive
-    var thisApr1Iso=d_apr1;
-    var curGDU=ytdGDU(agg.daily,curYear,thisApr1Iso,todayIso);
-    var pastGDUs=[];
-    var yToday=yesterday; // Date obj
-    for(var py3=0;py3<pastYears.length;py3++){
-      var y=pastYears[py3];
-      var fromI=y+'-04-01';
-      var toI=padIso(y,yToday.getMonth()+1,yToday.getDate());
-      pastGDUs.push(ytdGDU(agg.daily,y,fromI,toI));
-    }
-    var gduAvg5=pastGDUs.length?pastGDUs.reduce(function(a,b){return a+b;},0)/pastGDUs.length:0;
-    var gduPct=gduAvg5>10?Math.round(((curGDU-gduAvg5)/gduAvg5)*100):null;
-    var gduCtxEl=document.getElementById('gdu-ctx');
-    /* Signed number with a true minus sign (U+2212), not a hyphen. */
-    function sgnN(n){return (n>0?'+':n<0?'\u2212':'')+Math.abs(n);}
-    if(gduCtxEl&&gduPct!=null){
-      var cls=Math.abs(gduPct)<5?'':(gduPct>0?'warm':'cool');
-      gduCtxEl.innerHTML='vs 5-yr avg: <span style="font-weight:700;color:'+(cls==='warm'?'#d4a23f':cls==='cool'?'#5ba3e0':'var(--text)')+'">'+sgnN(gduPct)+'%</span>';
-    } else if(gduCtxEl){
-      gduCtxEl.textContent='';
-    }
-    // Precip: trailing 30 days vs same 30-day window avg of past 5 years
-    var win=new Date(yesterday);win.setDate(win.getDate()-29);
-    var winStartIso=win.toISOString().split('T')[0];
-    var curPrecip=ytdPrecip(agg.daily,winStartIso,todayIso);
-    var pastPrecips=[];
-    for(var py4=0;py4<pastYears.length;py4++){
-      var y2=pastYears[py4];
-      // same 30-day calendar window in past year
-      var pEnd=new Date(y2,yesterday.getMonth(),yesterday.getDate());
-      var pStart=new Date(pEnd);pStart.setDate(pStart.getDate()-29);
-      var fI=pStart.toISOString().split('T')[0],tI=pEnd.toISOString().split('T')[0];
-      pastPrecips.push(ytdPrecip(agg.daily,fI,tI));
-    }
-    var prAvg5=pastPrecips.length?pastPrecips.reduce(function(a,b){return a+b;},0)/pastPrecips.length:0;
-    var prPct=prAvg5>0.1?Math.round(((curPrecip-prAvg5)/prAvg5)*100):null;
-    var prCtxEl=document.getElementById('precip-ctx');
-    if(prCtxEl&&prPct!=null){
-      var prCls=Math.abs(prPct)<10?'':(prPct>0?'wet':'dry');
-      prCtxEl.innerHTML='vs 5-yr avg: <span style="font-weight:700;color:'+(prCls==='wet'?'#5ba3e0':prCls==='dry'?'#d4a23f':'var(--text)')+'">'+sgnN(prPct)+'%</span>';
-    } else if(prCtxEl){
-      prCtxEl.textContent='';
-    }
-    // ----- Plain-language takeaways: absolute delta + vs-normal + what it means -----
-    var gduTk=document.getElementById('gdu-takeaway');
-    if(gduTk){
-      if(gduPct!=null){
-        var dGdu=Math.round(curGDU-gduAvg5);
-        var gduDir=gduPct>2?'ahead of':(gduPct<-2?'behind':'on pace with');
-        var gduMsg=gduPct>2?'Heat is building faster than normal, crops are developing ahead of schedule.':(gduPct<-2?'Heat units are running behind, slower crop development so far this year.':'Heat accumulation is right about average for this point in the season.');
-        gduTk.innerHTML='<strong>'+sgnN(dGdu)+' GDU</strong> '+gduDir+' the 5-yr average ('+sgnN(gduPct)+'%). '+gduMsg;
-      } else { gduTk.textContent=''; }
-    }
-    var prTk=document.getElementById('precip-takeaway');
-    if(prTk){
-      if(prPct!=null){
-        var dPr=Math.round((curPrecip-prAvg5)*10)/10;
-        var prDir=prPct>5?'above':(prPct<-5?'below':'near');
-        var prMsg=prPct>15?'Much wetter than normal. Watch for saturated fields and delayed work.':(prPct>5?'A bit wetter than the 5-yr norm.':(prPct<-15?'Running dry versus normal, keep an eye on moisture stress.':(prPct<-5?'Slightly drier than the 5-yr norm.':'Rainfall is close to the 5-yr normal over the last 30 days.')));
-        prTk.innerHTML='<strong>'+sgnN(dPr)+'\"</strong> '+prDir+' the 5-yr average ('+sgnN(prPct)+'%). '+prMsg;
-      } else { prTk.textContent=''; }
-    }
-    // Override the basic values with cleaner display (already set earlier in loop above)
-    var _s7h=((dailyH&&dailyH.time)||[]).length>0;var gduEl2=document.getElementById('gdu-val');if(gduEl2)gduEl2.textContent=_s7h?Math.round(curGDU)+' GDU':'Not loaded yet';
-    var prEl2=document.getElementById('precip-val');if(prEl2)prEl2.textContent=_s7h?(Math.round(curPrecip*10)/10)+'"':'Not loaded yet';
-    var forecastMaxArr=dailyF.temperature_2m_max||[],forecastMinArr=dailyF.temperature_2m_min||[];
-    var forecastPrecipArr=dailyF.precipitation_sum||[],forecastWindArr=dailyF.windspeed_10m_max||[];
-    var forecastHumidArr=dailyF.relative_humidity_2m_mean||[];
-    /* r7-season: the per-day badges and the summary sentence come from
-       the one spray rule (S7.spray), the same one the tile uses. */
-    if(window.S7)window.S7.spray({max:forecastMaxArr,min:forecastMinArr,rain:forecastPrecipArr,wind:forecastWindArr,rh:forecastHumidArr,gust:dailyF.wind_gusts_10m_max||[],pop:dailyF.precipitation_probability_max||[],code:dailyF.weathercode||dailyF.weather_code||[],gduPct:(typeof gduPct==='number'?gduPct:null),prPct:(typeof prPct==='number'?prPct:null)});
-
-    // ========== 7-DAY FORECAST ==========
-    var forecastWcodeArr=dailyF.weathercode||[];
-    var forecastPrPctArr=dailyF.precipitation_probability_max||[];
-    var forecastWdirArr=dailyF.winddirection_10m_dominant||[];
-    var sevenEl=document.getElementById('wx-forecast-7day');
-    if(sevenEl&&forecastMaxArr.length>=1){
-      var dayNames7=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var todayDow7=new Date().getDay();
-      var cells7=sevenEl.querySelectorAll('.wx-7day-cell');
-      for(var fd2=0;fd2<Math.min(5,cells7.length,forecastMaxArr.length);fd2++){
-        var mx2=forecastMaxArr[fd2],mn2=forecastMinArr[fd2];
-        var pr2=forecastPrecipArr[fd2],prPct=forecastPrPctArr[fd2];
-        var wd2=forecastWindArr[fd2],wdir=forecastWdirArr[fd2];
-        var wc2=forecastWcodeArr[fd2];
-        var ic2=wxIcon(wc2,true);
-        var nm2=fd2===0?'Today':fd2===1?'Tmrw':dayNames7[(todayDow7+fd2)%7];
-        var cell=cells7[fd2];
-        var nmE=cell.querySelector('.wx-7day-name'),icE=cell.querySelector('.wx-7day-icon');
-        var tmE=cell.querySelector('.wx-7day-temps'),mtE=cell.querySelector('.wx-7day-meta');
-        if(nmE)nmE.textContent=nm2;
-        if(icE)icE.innerHTML=ic2;
-        if(tmE)tmE.innerHTML='<span class="hi">'+(mx2!=null?Math.round(mx2):'--')+'\u00B0</span><span class="lo">'+(mn2!=null?Math.round(mn2):'--')+'\u00B0</span>';
-        if(mtE){
-          var prTxt=(pr2!=null&&pr2>0)?(Math.round(pr2*100)/100)+'"':(prPct!=null&&prPct>20?prPct+'%':'0"');
-          var prCls=(pr2!=null&&pr2>0.15)||(prPct!=null&&prPct>50)?'rain-hi':'';
-          var wdTxt=wd2!=null?Math.round(wd2)+'mph':'--';
-          var wdCls=wd2!=null&&wd2>15?'wind-hi':'';
-          var dirTxt=windDir(wdir);
-          mtE.innerHTML='<div class="'+prCls+'"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> '+prTxt+'</div><div class="'+wdCls+'"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> '+(dirTxt?dirTxt+' ':'')+wdTxt+'</div>';
-        }
-      }
-      var locLabelEl2=document.getElementById('wx-loc-label');
-      if(locLabelEl2){
-        var _st2=window.AGSIST_STATE;
-        if(_st2&&_st2.weather&&_st2.weather.city)locLabelEl2.textContent=_st2.weather.city;
-        else if(_st2&&_st2.weather&&_st2.weather.zip)locLabelEl2.textContent='ZIP '+_st2.weather.zip;
-      }
-    }
-    // ========== HOURLY (next 24 hours from now) ==========
-    var hTime=(forecast.hourly&&forecast.hourly.time)||[];
-    var hTemp=(forecast.hourly&&forecast.hourly.temperature_2m)||[];
-    var hPrecip=(forecast.hourly&&forecast.hourly.precipitation)||[];
-    var hWind=(forecast.hourly&&forecast.hourly.wind_speed_10m)||[];
-    var hWdir=(forecast.hourly&&forecast.hourly.wind_direction_10m)||[];
-    var hWcode=(forecast.hourly&&forecast.hourly.weathercode)||[];
-    var hourStrip=document.getElementById('wx-hourly-strip');
-    if(hourStrip&&hTime.length>0){
-      var nowMs2=Date.now();
-      // Find the hour closest to now to mark as .now
-      var nowIdx=0,nowDiff=Infinity;
-      for(var hi2=0;hi2<hTime.length;hi2++){
-        var hMs=new Date(hTime[hi2]).getTime();
-        var df=Math.abs(nowMs2-hMs);
-        if(df<nowDiff){nowDiff=df;nowIdx=hi2;}
-      }
-      // Show 24 hours starting from now
-      var startI=Math.max(0,nowIdx);
-      var endI=Math.min(hTime.length,startI+24);
-      var cellsHtml='';
-      for(var hxi=startI;hxi<endI;hxi++){
-        var hd=new Date(hTime[hxi]);
-        if(isNaN(hd))continue;
-        var hh=hd.getHours();
-        var hlbl=hh===0?'12a':hh<12?hh+'a':hh===12?'12p':(hh-12)+'p';
-        var ht=hTemp[hxi]!=null?Math.round(hTemp[hxi])+'\u00B0':'--';
-        var hp=hPrecip[hxi]!=null&&hPrecip[hxi]>0?(Math.round(hPrecip[hxi]*100)/100)+'"':'';
-        var hw=hWind[hxi]!=null?Math.round(hWind[hxi])+'':'';
-        var hwd=windDir(hWdir[hxi]);
-        var hic=wxIcon(hWcode[hxi],hh>=6&&hh<20);
-        var cls='wx-hourly-cell'+(hxi===nowIdx?' now':'');
-        cellsHtml+='<div class="'+cls+'">'
-          +'<div class="wx-hourly-hr">'+hlbl+'</div>'
-          +'<div class="wx-hourly-icon">'+hic+'</div>'
-          +'<div class="wx-hourly-temp">'+ht+'</div>'
-          +'<div class="wx-hourly-precip">'+(hp||'&nbsp;')+'</div>'
-          +'<div class="wx-hourly-wind">'+(hwd||'')+(hw?' '+hw:'')+'</div>'
-          +'</div>';
-      }
-      hourStrip.innerHTML=cellsHtml;
-    }
-    // Wire the toggles (idempotent — guarded inside wireChartToggle/wireHourlyToggle)
-    if(!window._agsist_toggles_wired){
-      wireChartToggle('gdu-stat','gdu-chart-panel','gdu-chart-toggle');
-      wireChartToggle('precip-stat','precip-chart-panel','precip-chart-toggle');
-      wireHourlyToggle();
-      window._agsist_toggles_wired=true;
-    }
-  }).catch(function(){});
-}
-// v18 FIX: GDU / 30-day precip / soil temp / charts / planting dates were
-// pinned to the FIRST resolved location forever (_geoEnhDone one-shot guard).
-// Entering a new ZIP updated the main weather card but never re-ran the
-// enhancement block, so GDU and precip silently showed the old spot's data.
-// Now: dedupe on coordinates (~1.4 mi) instead of a one-shot flag, and watch
-// AGSIST_STATE.weather for location changes (ZIP entry, "Change location",
-// background geo refresh) — any coordinate move re-pulls the whole block.
-var _lastEnhLat=null,_lastEnhLon=null;
-function _runEnhancements(lat,lon,state){
-  if(lat==null||lon==null||isNaN(+lat)||isNaN(+lon))return;
-  if(_lastEnhLat!=null&&Math.abs(lat-_lastEnhLat)<0.02&&Math.abs(lon-_lastEnhLon)<0.02)return;
-  var isRefresh=(_lastEnhLat!=null);
-  _lastEnhLat=lat;_lastEnhLon=lon;
-  if(isRefresh){
-    // Visible cue that the numbers are re-pulling for the new location
-    ['gdu-val','precip-val','soil-temp-val'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='…';});
-    var _gc=document.getElementById('gdu-ctx');if(_gc)_gc.textContent='Updating…';
-    var _pc=document.getElementById('precip-ctx');if(_pc)_pc.textContent='Updating…';
-  }
-  loadWeatherEnhancements(state||{weather:{lat:lat,lon:lon}});
-}
-// Primary: wait for geo.js state
-waitForGeo(function(state){_runEnhancements(state.weather.lat,state.weather.lon,state);});
-// Watch for location changes after initial load — geo.js updates
-// AGSIST_STATE.weather.lat/lon whenever the user enters a ZIP or the
-// background cache-verify finds they moved. Cheap 2-number compare.
-// 2026-09-30: _runEnhancements() already short-circuits on an unchanged
-// coordinate (see the ~0.02deg check above), so this was never doing real
-// work most ticks — but it ran even with the tab backgrounded. Gated on
-// visibility so a tab left open in a truck doesn't keep polling for no
-// reader to see it.
-setInterval(function(){
-  if(document.visibilityState==='hidden')return;
-  var st=window.AGSIST_STATE;
-  if(st&&st.weather&&st.weather.lat!=null)_runEnhancements(st.weather.lat,st.weather.lon,st);
-},2500);
-// Fallback: browser geolocation after 3.5s if geo.js hasn't resolved
-setTimeout(function(){
-  if(_lastEnhLat!=null)return;
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(
-    function(pos){_runEnhancements(pos.coords.latitude,pos.coords.longitude,null);},
-    function(){},
-    {timeout:8000,maximumAge:300000}
-  );
-},3500);
-// Planting dates — render immediately with national default; loadWeatherEnhancements overrides with state-specific once geo resolves
-(function(){applyPlantingDates(null,null);})();
-})();
-</script>
+<script src="/components/home-planting.js?v=1"></script>
 <script>
 /* PWA: register service worker + show install hint with visual modal (v2, May 4 2026) */
 (function(){
@@ -4306,94 +3203,6 @@ setTimeout(function(){
 })();
 </script>
 
-<script>
-/* The wire, on the homepage. Reads the same file /news reads. Shows nothing at
-   all when there is nothing -- no skeleton, no empty box, no "check back later".
-   esc() comes from components/util.js, which loads before this. */
-(function(){
-  'use strict';
-  var KIND={usda:'USDA',positioning:'Positioning',board:'Board',crop:'Crop',weather:'Weather'};
-
-  /* r7-bids 2026-10-01 (7b): build_news.py runs in the evening and reads
-     the `close` in prices.json then, and files ":hi"/":lo" when that price
-     reaches the file's 52-week bound. That is a traded price, not a checked
-     settle, so the card says "traded to a 52-week high of $X" and names the
-     series (`corn` is the front-month continuous; `corn-dec` the December
-     contract). Words follow the page's vocabulary. */
-  var WIRE_SERIES={corn:'corn, front-month continuous',beans:'soybeans, front-month continuous',wheat:'wheat, front-month continuous','corn-dec':'December corn contract','beans-nov':'November soybean contract'};
-  var LONGMON=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  function wireVocab(t){t=String(t||'');
-    t=t.replace(/(\d(?:\.\d+)?) B bu\b/g,'$1 billion bu').replace(/\bSept\b\.?/g,'Sep').replace(/(\d+)\.0 cents/g,'$1 cents');
-    t=t.replace(new RegExp('\\b('+LONGMON.join('|')+') (\\d{1,2}), (\\d{4})','g'),function(_,m,d,y){return m.slice(0,3)+' '+(+d)+', '+y;});
-    t=t.replace(new RegExp('\\b(\\d{1,2}) ('+LONGMON.join('|')+')\\b','g'),function(_,d,m){return m.slice(0,3)+' '+(+d);});
-    return t;}
-  function wireHead(i){var h=String(i.headline||''),m,k=/^px:[\d-]+:([a-z-]+):(hi|lo)$/.exec(i.id||'');
-    if(k){var ser=WIRE_SERIES[k[1]]||k[1],w=k[2]==='hi'?'high':'low';
-      if((m=/^(.*?) took its 52-week (?:high|low) to (\$[\d.,]+)$/.exec(h)))return m[1]+' traded to a 52-week '+w+' of '+m[2]+' ('+ser+')';
-      if((m=/^(.*?) closed at a 52-week (?:high|low)$/.exec(h)))return m[1]+' traded to a 52-week '+w+' ('+ser+')';}
-    return wireVocab(h);}
-  function wireDetail(i){var d=String(i.detail||'');if(/:(hi|lo)$/.test(i.id||''))d=d.replace(/, the (highest|lowest) it has settled in a year\./,', the $1 in a year.');return wireVocab(d);}
-  function when(iso,dayOnly){
-    var d=new Date(iso); if(isNaN(d)) return '';
-    var t=new Date(), y=new Date(t.getTime()-864e5);
-    var same=function(a,b){return a.toDateString()===b.toDateString();};
-    if(same(d,t)) return dayOnly?'Today':d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    if(same(d,y)) return 'Yesterday';
-    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  }
-  var _boardReady=new Promise(function(res){var n=0;(function w(){if(window.AGSIST_PRICE_DATA||n++>40)return res();setTimeout(w,150);})();});
-function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
-  _boardReady.then(function(){return fetch('/data/news.json',{cache:'no-store'});}).then(function(r){
-    if(!r.ok) throw new Error(r.status); return r.json();
-  }).then(function(d){d=agsND(d);
-    var items=(d&&d.items)||[]; if(!items.length) return;   // stay hidden
-    var band=document.getElementById('wire-band'), g=document.getElementById('wire-g');
-    if(!band||!g) return;
-    var sub=document.getElementById('wire-sub');
-    /* r7-bids: counted below, from the cards actually shown. */
-    /* Same detail twice shows once (build_news.py also files one contract's
-       move once, under the named contract, and dates it by its own close). */
-    var seen={};
-    /* r7-bids: positioning items only from the latest COT report date in the file. */
-    var cotD=function(i){var m=/^cot:([^:]+):/.exec(i.id||'');var d=m?Date.parse(m[1]):NaN;return isNaN(d)?null:d;},cotMax=null;
-    items.forEach(function(i){var d=cotD(i);if(d!=null&&(cotMax==null||d>cotMax))cotMax=d;});
-    items=items.filter(function(i){var d=cotD(i);return d==null||d===cotMax;});
-    /* 2026-10-10: NEWEST FIRST, NOTHING OLDER THAN THREE DAYS. Sorting
-       "high" significance first put Sep 29-30 items above the Oct 9 WASDE.
-       Board moves are now written only from the close (build_news.py), so a
-       dated move from yesterday is still true and shows with its day; the
-       old today-only and live-direction guards compared yesterday's close
-       with today's board. COT items carry their publication day. */
-    var cutoff='';try{var _c=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));_c.setDate(_c.getDate()-3);cutoff=_c.getFullYear()+'-'+('0'+(_c.getMonth()+1)).slice(-2)+'-'+('0'+_c.getDate()).slice(-2);}catch(e){}
-    items=items.filter(function(i){
-      var k=(i.detail||'')+'|'+(i.kind||'');if(seen[k])return false;seen[k]=1;
-      var day=String(i.ts||'').slice(0,10);
-      return !!day&&(!cutoff||day>=cutoff);
-    });
-    if(!items.length) return;
-    items.sort(function(a,b){return String(b.ts||'').localeCompare(String(a.ts||''));});
-    var shown=items.slice(0,4);   /* r7-bids: the count is what is shown, after the guards above */
-    if(sub) sub.textContent='latest '+shown.length;
-    g.innerHTML=shown.map(function(i){
-      return '<a class="wr-c'+(i.significance==='high'?' hi':'')+'" data-track="wire" href="'+esc(i.url||'/news')+'">'
-        +'<span class="wr-when">'+esc(when(i.ts,i.day_only))+' &middot; '+esc(KIND[i.kind]||i.kind||'')+'</span>'
-        +'<strong>'+esc(wireHead(i))+'</strong>'
-        +'<em>'+esc(wireDetail(i))+'</em></a>';
-    }).join('');
-    var up=d.updated?new Date(d.updated):null;
-    if(up&&!isNaN(up)){var hrs=Math.round((Date.now()-up.getTime())/36e5);
-      var meta=document.createElement('p');meta.className='wr-meta';
-      if(window.AgAsOf)AgAsOf.set(meta,d.updated,'daily');else{meta.textContent=hrs<1?'':'Updated '+hrs+' h ago';if(!meta.textContent)meta.hidden=true;}
-      var all=band.querySelector('.wr-all');if(all){all.parentNode.insertBefore(meta,all);}}
-    band.hidden=false;
-    /* r7-bids 7b: the header counts the cards visible at this width (the layout hides some). */
-    var wcT=null;function wireCount(){var n=0;for(var c=g.firstElementChild;c;c=c.nextElementSibling){if(getComputedStyle(c).display!=='none')n++;}
-      if(sub)sub.textContent='latest '+n;}
-    wireCount();window.addEventListener('resize',function(){clearTimeout(wcT);wcT=setTimeout(wireCount,150);});
-    if(window.gaEvent) gaEvent('wire_band_shown',{items:items.length,shown:Math.min(4,items.length)});
-  }).catch(function(){ /* the band simply never appears */ });
-})();
-</script>
 <script>
 /* ===== 2026-10-01 r7-prices: ledger rows, ticker labels, key-tile wording, prediction markets ===== */
 (function(){
@@ -4664,802 +3473,7 @@ function boot(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
-<script>
-/* 2026-10-01 r7-season. The page changes with the month.
-   SEASON below is the only place that decides what leads and what steps
-   back. Every figure printed comes from a file in /data, /usda-calendar.ics
-   or the Open-Meteo forecast the page already loads; each says when it was
-   read. Anything that fails prints "Not loaded yet", never a 0. */
-(function(){
-  'use strict';
-  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var MONTH=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  /* lead: the cells of the "This month" strip, in order.
-     planting: Quick Tools final planting dates (also hide once both pass).
-     urea: urea loss tile. fallN: fall nitrogen window tile.
-     gdu: GDU in Local Conditions. hail: land band hail cell.
-     cropTour: crop tour link. band: harvest band shown / open.
-     hailLead: hail leads the land band. hp: insurance harvest price link. */
-  var SEASON={
-    1: /* Jan: annual crop numbers, rent talks, insurance decisions ahead */
-       {lead:['report','rent','insurance'],planting:true,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
-    2: /* Feb: projected price discovery (Feb average sets the guarantee) */
-       {lead:['insurance','report','rent'],planting:true,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
-    3: /* Mar: projected price out, sales closing, first soil readings */
-       {lead:['insurance','soilPlant','report','rent'],planting:true,urea:true,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
-    4: /* Apr: planting soil temperature, frost, early planting */
-       {lead:['soilPlant','planting','frost','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    5: /* May: planting pace, late frost, spray days */
-       {lead:['planting','soilPlant','frost','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    6: /* Jun: final planting, first condition ratings, spraying */
-       {lead:['planting','condition','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    7: /* Jul: condition and pollination weather, spraying */
-       {lead:['condition','spray','report'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'off',hailLead:true,hp:false},
-    8: /* Aug: crop tours, condition, harvest price window ahead */
-       {lead:['condition','spray','report','insurance'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:false},
-    9: /* Sep: early frost, condition, harvest price window ahead */
-       {lead:['condition','frost','insurance','report','harvest'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:true},
-    10:/* Oct: harvest price discovery, harvest, frost, fall N, Oct WASDE */
-       {lead:['insurance','harvest','frost','fallN','report'],planting:false,urea:false,fallN:true,gdu:true,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
-    11:/* Nov: harvest wraps, fall N, rent season opens */
-       {lead:['harvest','fallN','frost','report','rent'],planting:false,urea:false,fallN:true,gdu:false,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
-    12:/* Dec: rent and lease talks, harvest price settled, Dec WASDE */
-       {lead:['rent','insurance','report'],planting:false,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:true}
-  };
-  var NOW=new Date(), M=NOW.getMonth()+1, S=SEASON[M];
-  /* 2026-10-06 EARN, one fact one place: the strip does not repeat what the
-     page already shows. Frost and the spray verdict are in Local conditions
-     and the hero, the fall nitrogen read is one line in Local conditions, and
-     the next USDA report is the calendar's first card. */
-  var ELSEWHERE={frost:1,fallN:1,report:1,spray:1};
-  if(S)S={lead:S.lead.filter(function(m){return !ELSEWHERE[m];}),planting:S.planting,urea:S.urea,fallN:S.fallN,gdu:S.gdu,hail:S.hail,cropTour:S.cropTour,band:S.band,hailLead:S.hailLead,hp:S.hp};
-  var root=document.documentElement;
-  function $(i){return document.getElementById(i);}
-  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function n(x){return '<span class="n">'+x+'</span>';}
-  function NL(){return '<span class="s7-nl">Not loaded yet</span>';}
-  var MINUS='−';
-  function sgn(v){return v>0?'+':(v<0?MINUS:'');}
-  function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-  function getText(u){return fetch(u).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;});}
-  function tzParts(d,tz,o){try{return new Intl.DateTimeFormat('en-US',Object.assign({timeZone:tz},o)).format(d);}catch(e){return '';}}
-  function dateLong(d,tz){return tzParts(d,tz||'America/Chicago',{month:'short',day:'numeric',year:'numeric'});}
-  function timeIn(d,tz){return tzParts(d,tz,{hour:'numeric',minute:'2-digit'});}
-  function isoDay(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?MON[+m[2]-1]+' '+(+m[3])+', '+m[1]:'';}
-  function loc(){try{return JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){return null;}}
-  function hasLoc(){var l=loc();return !!(l&&l.lat!=null&&l.lon!=null);}
-
-  /* ---------- seasonal show/hide ---------- */
-  if(S){
-    if(!S.urea)root.classList.add('s7-no-urea');
-    if(!S.planting)root.classList.add('s7-no-planting');
-    if(!S.gdu)root.classList.add('s7-no-gdu');
-    if(!S.hail)root.classList.add('s7-no-hail');
-    if(!S.cropTour)root.classList.add('s7-no-croptour');
-    if(S.hailLead){root.classList.add('s7-hail-lead');var lh=$('land-hail');if(lh&&lh.parentNode&&lh.previousElementSibling)lh.parentNode.insertBefore(lh,lh.parentNode.firstElementChild);}
-    var fn=$('s7-falln');if(fn)fn.hidden=!S.fallN;
-    var hp=$('s7-hp-link');if(hp)hp.hidden=!S.hp;
-    var hb=$('harvest-band');
-    if(hb){if(S.band==='off')hb.hidden=true;else if(S.band==='open')hb.open=true;}
-  }
-
-  /* ---------- the "This month" strip ---------- */
-  var grid=$('s7-grid'), cells={};
-  var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',fallN:'Fall nitrogen window',
-    report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
-    soilPlant:'Planting soil temperature',spray:'Spray today'};
-  var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/urea',report:'/usda-calendar',
-    rent:'/rent/',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
-  if(grid&&S){
-    var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
-    var k=$('s7-month-k');if(k){k.textContent='';k.hidden=true;}
-    /* The insurance cell takes a full row of its own (one row per crop inside it). */
-    var cols=S.lead.filter(function(m){return m!=='insurance';}).map(function(){return 'minmax(0,1fr)';}).join(' ');
-    grid.style.gridTemplateColumns=cols;
-    S.lead.forEach(function(m){
-      /* The insurance cell holds a state picker and links, so it is a div. */
-      var ins=m==='insurance',a=document.createElement(ins?'div':'a');
-      a.className='s7-c'+(ins?' s7-wide':'');if(!ins)a.href=HREF[m]||'#';a.setAttribute('data-track','season');a.id='s7-c-'+m;
-      a.innerHTML=(ins?'<h3 class="s7-ck idx1-sub-h"><a href="'+HREF[m]+'">'+LABEL[m]+'</a></h3><label class="s7-ins-pick"><span class="visually-hidden">Your state</span><select id="s7-ins-state"></select></label>':'<span class="s7-ck">'+LABEL[m]+'</span>')+'<span class="s7-cv">'+NL()+'</span><span class="s7-cm" hidden></span><span class="s7-cs"></span>';
-      grid.appendChild(a);cells[m]=a;
-    });
-    grid.addEventListener('click',function(e){
-      var c=e.target.closest?e.target.closest('.s7-c[data-zip]'):null;if(!c)return;
-      e.preventDefault();var chip=$('idx1-zip-chip');if(chip)chip.click();
-    });
-  }
-  var jm=$('s7-jump-m');if(jm)jm.textContent=MONTH[M-1];
-  /* 2026-10-06 say it once: a cell keeps its figure and one short line. A
-     long sub-line keeps its first sentence; the rest of it, the meaning line
-     and any extra detail go to the closed notes under the grid. */
-  var NOTES={};
-  function note(m,html){
-    if(html)NOTES[m]=html;else delete NOTES[m];
-    var b=$('s7-notes-b'),d=$('s7-notes');if(!b||!d||!S)return;
-    var ks=S.lead.filter(function(k){return NOTES[k];});
-    b.innerHTML=ks.map(function(k){return '<p class="s7-note"><b>'+LABEL[k]+'.</b> '+NOTES[k]+'</p>';}).join('');
-    d.hidden=!ks.length;
-  }
-  function put(m,v,s,meaning,extra){
-    var c=cells[m];if(!c)return;
-    c.querySelector('.s7-cv').innerHTML=v;
-    var sub=String(s||''),more=[];
-    if(extra)more.push(extra);
-    if(sub.replace(/<[^>]*>/g,'').length>70){
-      var f=/^([\s\S]*?[.!?])\s+(?=[A-Z<])/.exec(sub);
-      if(f){more.push(sub.slice(f[0].length));sub=f[1];}
-    }
-    if(meaning)more.push(meaning);
-    c.querySelector('.s7-cs').innerHTML=sub;
-    var cm=c.querySelector('.s7-cm');cm.innerHTML='';cm.hidden=true;
-    note(m,more.join(' '));
-  }
-  function needZip(m){var c=cells[m];if(!c)return;c.setAttribute('data-zip','1');c.href='#bids-zip';put(m,'<span class="s7-nl">Set your ZIP</span>','For your location');}
-
-  /* ---------- shared fetches ---------- */
-  var P={};
-  function once(key,fn){return P[key]||(P[key]=fn());}
-  function prices(){return once('prices',function(){return get('/data/prices.json');});}
-  function rma(){return once('rma',function(){return get('/data/rma-prices.json');});}
-  function hprices(){return once('hp',function(){return get('/data/harvest-prices.json');});}
-  function progress(){return once('cp',function(){return get('/data/crop-progress.json');});}
-  function calendar(){return once('ics',function(){return getText('/usda-calendar.ics').then(parseIcs);});}
-  function parseIcs(t){
-    if(!t)return null;var out=[],cur=null;
-    t.replace(/\r/g,'').split('\n').forEach(function(line){
-      if(line==='BEGIN:VEVENT')cur={};
-      else if(line==='END:VEVENT'){if(cur&&cur.t&&cur.name)out.push(cur);cur=null;}
-      else if(cur){
-        /* Date-only rows (no release time) are not USDA releases with a time; skipped. */
-        var m=/^DTSTART:(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(line);
-        if(m)cur.t=new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]));
-        var s=/^SUMMARY:(.*)$/.exec(line);if(s)cur.name=s[1].trim();
-      }
-    });
-    /* Foreign agencies in the same file (Statistics Canada, CONAB) are not USDA. */
-    return out.filter(function(e){return !/\((Canada|Brazil)\)/.test(e.name);}).sort(function(a,b){return a.t-b.t;});
-  }
-  function shortName(s){return String(s).replace(/\s+Report$/,'').replace(/\s*\(.*?\)\s*$/,'');}
-
-  /* ---------- A1 insurance harvest price ---------- */
-  var AB={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
-  var MCODE={January:'F',February:'G',March:'H',April:'J',May:'K',June:'M',July:'N',August:'Q',September:'U',October:'V',November:'X',December:'Z'};
-  /* The reader's state, by full name. An explicit pick (this box, the old
-     #pdw widget, or the tracker's own picker) wins; a weather location is a
-     guess and is never written back. */
-  function stateName(){
-    var picked=null;try{picked=localStorage.getItem('agsist-rma-state');}catch(e){}
-    if(picked)return picked;
-    var pd=null;try{pd=localStorage.getItem('agsist-pd-state');}catch(e){}
-    if(pd&&AB[pd])return AB[pd];
-    var l=loc(),raw=l&&l.state?String(l.state).trim():'';
-    if(raw.length===2)return AB[raw.toUpperCase()]||null;
-    for(var k in AB){if(AB[k].toLowerCase()===raw.toLowerCase())return AB[k];}
-    return null;
-  }
-  function stateCode(name){for(var k in AB){if(AB[k]===name)return k;}return '';}
-  function dayStart(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
-  function quoteFor(q,root2,mon,yr){
-    /* The futures quote whose ticker is that exact contract (e.g. ZCZ26). */
-    var want=root2+MCODE[mon]+String(yr).slice(-2);
-    for(var k in q){var t=q[k]&&q[k].ticker;if(t&&t.toUpperCase().indexOf(want)===0&&q[k].close!=null)return q[k];}
-    return null;
-  }
-  /* CME/CBOT full closures, ported from scripts/contract_calendar.py
-     market_holidays() (computed, not listed). RMA averages trading days. */
-  function nthWd(y,m,wd,n){var d=new Date(y,m,1);d.setDate(1+((wd-d.getDay()+7)%7)+7*(n-1));return d;}
-  function lastWd(y,m,wd){var d=new Date(y,m+1,0);d.setDate(d.getDate()-((d.getDay()-wd+7)%7));return d;}
-  /* nyd: New Year's Day on a Saturday closes nothing. CME trades Fri Dec 31
-     (it did on Dec 31 2021), so that case returns null and is skipped. */
-  function obs(d,nyd){var w=d.getDay();if(w===6){if(nyd)return null;d.setDate(d.getDate()-1);}else if(w===0)d.setDate(d.getDate()+1);return d;}
-  function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);return new Date(y,Math.floor((h+l-7*m+114)/31)-1,((h+l-7*m+114)%31)+1);}
-  var HOL={};
-  function holidays(y){if(HOL[y])return HOL[y];var gf=easter(y);gf.setDate(gf.getDate()-2);
-    var l=[obs(new Date(y,0,1),1),nthWd(y,0,1,3),nthWd(y,1,1,3),gf,lastWd(y,4,1),obs(new Date(y,5,19)),obs(new Date(y,6,4)),nthWd(y,8,1,1),nthWd(y,10,4,4),obs(new Date(y,11,25))];
-    var o={};l.forEach(function(d){if(d)o[d.toDateString()]=1;});return HOL[y]=o;}
-  function isTrading(d){var w=d.getDay();if(w===0||w===6)return false;for(var y=d.getFullYear()-1;y<=d.getFullYear()+1;y++){if(holidays(y)[d.toDateString()])return false;}return true;}
-  function tradingDays(a,b){var n=0,d=new Date(a);while(d<=b){if(isTrading(d))n++;d.setDate(d.getDate()+1);}return n;}
-  /* The RMA price discovery block below the outlooks uses the same count. */
-  window.S7TD=function(a,b,t){return 'trading day '+tradingDays(a,t)+' of '+tradingDays(a,b);};
-  [].forEach.call(document.querySelectorAll('.s7-td'),function(x){x.textContent=window.S7TD(new Date(+x.getAttribute('data-a')),new Date(+x.getAttribute('data-b')),new Date(+x.getAttribute('data-t')));});
-  /* One row per crop the state has in rma-prices.json, each with its own
-     window, its own status and its own date. Conventional practice only;
-     organic is priced separately and lives on the tracker. */
-  var INS_CROPS=['Corn','Soybeans','Wheat','Grain Sorghum','Cotton','Rice','Peanuts'];
-  /* RMA posts rice, cotton and peanuts in dollars per lb (rice 0.165, cotton
-     0.78). Rice reads per cwt (x100 lb) and cotton in cents per lb, the way
-     both are quoted; peanuts stay dollars per lb. */
-  var UNIT={Rice:'cwt',Cotton:'c',Peanuts:'lb'};
-  var ROOT={Corn:'ZC',Soybeans:'ZS'};
-  function unitOf(crop){return UNIT[crop]||'bu';}
-  function usd(v,u){return u==='cwt'?'$'+(v*100).toFixed(2)+'/cwt':u==='c'?(v*100).toFixed(2)+'¢/lb':'$'+v.toFixed(u==='lb'?4:2);}
-  function gap(diff,u){
-    var c=(u==='bu')?Math.round(diff*100):Math.round(diff*10000)/100,a=Math.abs(c),t;
-    if(!c)return 'at projected';
-    if(u==='cwt')t='$'+a.toFixed(2)+'/cwt';
-    else if(u==='c')t=a.toFixed(2)+'¢/lb';
-    else t=(u==='bu'&&a>=100)?'$'+(a/100).toFixed(2):String(a)+'¢';
-    return t+' '+(c>0?'above':'below')+' projected';
-  }
-  function cropName(c){return c==='Grain Sorghum'?'Sorghum':c;}
-  /* "Spring wheat", "Long grain rice": the type leads, in sentence case. */
-  function rowName(crop,t){return t?t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()+' '+cropName(crop).toLowerCase():cropName(crop);}
-  /* "Yet To Start" ships as 0. A zero is not a price. */
-  function priceOf(v,status){var x=Number(v);if(v==null||!isFinite(x)||x<=0||/yet to start/i.test(status||''))return null;return x;}
-  function rng(a,b){return MON[a.getMonth()]+' '+a.getDate()+'–'+(a.getMonth()===b.getMonth()?'':MON[b.getMonth()]+' ')+b.getDate();}
-  function md(d){return MON[d.getMonth()]+' '+d.getDate();}
-  /* RMA's sales closing dates ("2/28/2026") as "Sales closing Feb 28" or
-     "Sales closing Feb 28, Mar 15". None in the file: the row says so. */
-  function scdLabel(l){
-    var t=(l||[]).map(function(v){var m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(v);return m?{k:+m[3]*1e4+ +m[1]*100+ +m[2],t:MON[+m[1]-1]+' '+(+m[2])}:null;}).filter(Boolean);
-    t.sort(function(a,b){return a.k-b.k;});
-    return t.length?'Sales closing '+t.map(function(x){return x.t;}).join(', '):'Sales closing date not in RMA’s file';
-  }
-  function realType(t){return (t&&!/^all\b/i.test(String(t)))?String(t):'';}
-  /* The site's own average of the settles, from data/harvest-prices.json
-     (scripts/fetch_harvest_prices.py computes it; the tracker bakes the same
-     figure). Only when that file covers this exact contract and window. */
-  function ownAvg(hp,crop,pick,hs,he,today){
-    if(!hp||!hs||!he)return null;
-    /* County windows (Texas has three for corn): one settled-only average per
-       contract and window, in hp.windows. Matched on the exact ticker and the
-       exact window dates RMA lists for this row. */
-    var root=ROOT[crop],tk=root&&MCODE[pick.h_mon]&&pick.h_yr?root+MCODE[pick.h_mon]+String(pick.h_yr).slice(-2)+'.CBT':'',ww=null;
-    (hp.windows||[]).forEach(function(w){if(w&&w.crop===crop&&w.ticker===tk&&w.start===pick.h_start&&w.end===pick.h_end)ww=w;});
-    if(ww){
-      var wa=ww.status==='final'?ww.price:ww.status==='running'?ww.running_avg:null;
-      var ws=ww.series||[],wl=ws.length?dayStart(ws[ws.length-1].d):null;
-      if(wa==null||!wl||wl>today||wl<hs||wl>he)return null;
-      return {avg:wa,days:ws.length,series:ws,last:ws[ws.length-1].d,fin:ww.status==='final'};
-    }
-    if(!hp.commodities)return null;
-    var c=null;hp.commodities.forEach(function(x){if(x.label===crop)c=x;});
-    var leg=c&&c.harvest;if(!leg||!leg.series||!leg.series.length)return null;
-    var want=String(pick.h_mon||'').slice(0,3)+" '"+String(pick.h_yr).slice(-2);
-    var monthEnd=new Date(hs.getFullYear(),hs.getMonth()+1,0);
-    if(c.contract!==want||hp.crop_year!==hs.getFullYear()||leg.window!==MONTH[hs.getMonth()]||hs.getDate()!==1||+he!==+monthEnd)return null;
-    var avg=leg.status==='final'?leg.price:leg.running_avg;
-    if(avg==null)return null;
-    var last=dayStart(leg.series[leg.series.length-1].d);
-    if(!last||last>today||last<hs)return null;
-    return {avg:avg,days:leg.series.length,series:leg.series,last:leg.series[leg.series.length-1].d};
-  }
-  /* How many settles RMA's posted figure holds: the day whose running
-     average (the pipeline writes it as "a") equals RMA's price. Only a single
-     match counts; otherwise the count is not printed. */
-  function rmaDays(own,h){
-    if(!own)return null;var hit=[];
-    own.series.forEach(function(s,i){if(s.a!=null&&Math.round(s.a*100)===Math.round(h*100))hit.push(i+1);});
-    return hit.length===1?hit[0]:null;
-  }
-  function dayWord(n){return n+' day'+(n===1?'':'s');}
-  function pickerFill(states,st){
-    var c=cells.insurance,sel=c&&c.querySelector?c.querySelector('#s7-ins-state'):null;if(!sel)return;
-    if(!sel.options.length||sel.options.length<2){
-      sel.innerHTML='<option value="">Pick your state</option>'+states.map(function(s){return '<option>'+esc(s)+'</option>';}).join('');
-      sel.addEventListener('change',function(){
-        var v=sel.value;
-        try{
-          if(v){localStorage.setItem('agsist-rma-state',v);localStorage.setItem('agsist-pd-state',stateCode(v));}
-          else{localStorage.removeItem('agsist-rma-state');localStorage.removeItem('agsist-pd-state');}
-        }catch(e){}
-        if(window.gaEvent)try{gaEvent('ins_state_pick',{state:v||'none'});}catch(e){}
-        insurance();
-      });
-    }
-    sel.value=(st&&states.indexOf(st)>=0)?st:'';
-  }
-  function insurance(){
-    if(!cells.insurance)return;
-    Promise.all([rma(),prices(),hprices()]).then(function(r){
-      var d=r[0],px=r[1],hp=r[2];
-      if(!d||!d.rows){put('insurance',NL(),'USDA RMA price discovery');return;}
-      var today=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());
-      var conv=d.rows.filter(function(x){return x.practice==='Conventional'&&x.year===d.crop_year;});
-      var states=[];conv.forEach(function(x){if(x.state&&states.indexOf(x.state)<0)states.push(x.state);});states.sort();
-      var st=stateName();if(st&&states.indexOf(st)<0)st=null;
-      pickerFill(states,st);
-      function wkey(x){return x.p_price+'|'+x.h_start+'|'+x.h_end;}
-      var groups=[],usedFut=false,extra=0;
-      if(st){
-        var mine=conv.filter(function(x){return x.state===st;}),byCT={},order=[];
-        mine.forEach(function(x){
-          if(INS_CROPS.indexOf(x.crop)<0){extra++;return;}
-          if(/^high amylose/i.test(x.type||''))return;
-          var k=x.crop+'|'+x.type,wk0=wkey(x);if(!byCT[k]){byCT[k]={};order.push(k);}
-          var o=byCT[k][wk0]||(byCT[k][wk0]={row:x,scd:[]});
-          if(x.scd&&o.scd.indexOf(x.scd)<0)o.scd.push(x.scd);
-        });
-        /* WAVE5-A: a crop with more than one county window (Texas corn has
-           three) gets one sub-row per window instead of "varies by county".
-           Each is labelled with its sales closing date(s) and its own window
-           dates, all from RMA's file. RMA's file names no counties. */
-        order.forEach(function(k){
-          var ws=Object.keys(byCT[k]).map(function(w){return byCT[k][w];});
-          if(ws.length>1){
-            ws.sort(function(a,b){return String(a.row.h_start).localeCompare(String(b.row.h_start))||String(a.row.p_start).localeCompare(String(b.row.p_start));});
-            ws.forEach(function(o,i){groups.push({crop:o.row.crop,type:o.row.type,row:o.row,win:{gid:k,i:i,n:ws.length,scd:o.scd}});});
-          }
-          else groups.push({crop:ws[0].row.crop,type:ws[0].row.type,row:ws[0].row});
-        });
-      } else {
-        /* No state known: corn and soybeans, the window most states share. */
-        ['Corn','Soybeans'].forEach(function(c){
-          var rows=conv.filter(function(x){return x.crop===c&&/^All/.test(x.type||'');}),cnt={},best=null;
-          rows.forEach(function(x){if(x.p_price!=null){var kk=wkey(x);cnt[kk]=(cnt[kk]||0)+1;}});
-          for(var kk in cnt){if(!best||cnt[kk]>cnt[best])best=kk;}
-          if(best)groups.push({crop:c,type:'',row:rows.filter(function(x){return wkey(x)===best;})[0]});
-        });
-      }
-      /* Status per group. rank: 0 in window, 1 not open yet or not released, 3 final. County windows share their best rank. */
-      groups.forEach(function(g){
-        var x=g.row,hs=dayStart(x.h_start),he=dayStart(x.h_end);
-        g.hs=hs;g.he=he;g.p=priceOf(x.p_price,x.p_status);g.h=priceOf(x.h_price,x.h_status);
-        if(hs&&he&&today>=hs&&today<=he)g.st='open';
-        else if(hs&&today<hs)g.st='soon';
-        else if(x.h_status==='Released'&&g.h!=null)g.st='final';
-        else g.st='closed';
-        g.rank={open:0,soon:1,closed:1,final:3}[g.st];
-      });
-      var gr={};groups.forEach(function(g){if(g.win)gr[g.win.gid]=Math.min(gr[g.win.gid]==null?9:gr[g.win.gid],g.rank);});
-      groups.forEach(function(g){if(g.win)g.rank=gr[g.win.gid];});
-      /* Types of one crop with no posted price and the same window (peanuts)
-         read as one row. */
-      var merged=[];
-      groups.forEach(function(g){
-        var m=null;
-        if(!g.win&&g.h==null)merged.forEach(function(o){if(!o.win&&o.h==null&&o.crop===g.crop&&o.st===g.st&&+o.hs===+g.hs&&+o.he===+g.he)m=o;});
-        if(m){(m.types=m.types||[{type:m.type,p:m.p}]).push({type:g.type,p:g.p});}else merged.push(g);
-      });
-      /* WAVE2-F: crops the reader picked in "What do you raise?" come first. */
-      var PREF=window.AGSIST_INS_PREF||[],pf=function(c){var i=PREF.indexOf(c);return i<0?99:i;};
-      merged.sort(function(a,b){return pf(a.crop)-pf(b.crop)||a.rank-b.rank||INS_CROPS.indexOf(a.crop)-INS_CROPS.indexOf(b.crop)||String(a.type).localeCompare(String(b.type))||(a.win?a.win.i:0)-(b.win?b.win.i:0);});
-      var anyCmp=false,trail=false;
-      /* WAVE3-M: each row is [name, tag, headline, details, window key, window text].
-         The window goes in the sub-line once when every open row shares it. */
-      var rows=merged.map(function(g){
-        var u=unitOf(g.crop),name=esc(rowName(g.crop,!g.types?realType(g.type):'')),tag='',big='',det=[],wk='',wt='';
-        var x=g.row,hs=g.hs,he=g.he,ex=!!(x.h_exch&&String(x.h_exch).trim());
-        var tot=ex&&hs&&he?tradingDays(hs,he):0;
-        var per=(u==='bu'||u==='lb')?' per '+u:'';
-        var proj=g.types?g.types.map(function(t){return esc(realType(t.type)||cropName(g.crop))+' '+(t.p!=null?usd(t.p,u):'-');}).join(', ')+per:(g.p!=null?usd(g.p,u):'-');
-        var projTxt='projected '+proj;
-        /* A county window: the projected window differs between windows, so it is named. */
-        if(g.win&&x.p_start&&x.p_end){var ps=dayStart(x.p_start),pe=dayStart(x.p_end);if(ps&&pe)projTxt+=' ('+rng(ps,pe)+')';}
-        if(g.st==='open'){
-          tag='in window';
-          var own=ownAvg(hp,g.crop,x,hs,he,today);
-          var win=hs&&he?rng(hs,he):'';
-          /* 2026-10-10 ONE COUNT: the settles in data/harvest-prices.json (the
-             tracker, the ARC/PLC snapshot and the briefing clock use the same
-             series). The calendar position ("trading day 7 of 22") read as a
-             third count beside 6 settles; it is not printed. */
-          if(tot&&own)win+=': '+own.days+' of '+tot+' settles counted';
-          else if(win)win='window '+win;
-          /* A county window names its dates in its label already. */
-          if(g.win)win=tot?win.replace(/^[^:]*: /,''):'';
-          wk=(hs&&he?+hs+'|'+(+he):'')+'|'+tot;wt=win;
-          if(g.p!=null&&(g.h!=null||own)){
-            /* Lead with the site's own average of the settles whenever the file
-               has it (the one count); RMA's posted figure follows it. RMA's count
-               is known only when its figure matches one day's running average. */
-            anyCmp=true;tag='so far';
-            var k=g.h!=null?rmaDays(own,g.h):null;
-            var useOwn=!!own;
-            var lead=useOwn?own.avg:g.h,n=useOwn?own.days:k;
-            /* One day count only, inside the line it describes; the window's own
-               position (trading day N of 22) sits in the sub-line. */
-            big=gap(lead-g.p,u);
-            if(g.h!=null&&!k)trail=true;
-            /* D12: the sample size stays on the visible tag. */
-            if(n)tag='so far, '+n+' settle'+(n===1?'':'s');
-            var rTxt=g.h!=null?'RMA '+usd(g.h,u)+(k?' ('+dayWord(k)+')':''):'RMA has not posted one';
-            var oTxt=own?'our average '+usd(own.avg,u)+' ('+own.days+(tot?' of '+tot:'')+' days, through '+(function(d){var x=dayStart(d);return x?MON[x.getMonth()]+' '+x.getDate():d;})(own.last)+')':'';
-            det=useOwn?[oTxt,rTxt]:[rTxt,oTxt];
-            det.push(projTxt);
-          } else if(g.h!=null){
-            big='RMA '+usd(g.h,u);trail=true;det.push(projTxt);
-          } else {
-            big='RMA has not released a harvest price yet';det.push(projTxt);
-          }
-        } else if(g.st==='soon'){
-          big='opens '+md(hs);
-          det.push(projTxt);
-          var q=(ROOT[g.crop]&&px&&px.quotes)?quoteFor(px.quotes,ROOT[g.crop],x.h_mon,x.h_yr):null;
-          if(q){usedFut=true;det.push((x.h_mon||'').slice(0,3)+' ’'+String(x.h_yr).slice(-2)+' futures '+usd(q.close/100,u)+' today, not the harvest price');}
-          det.push(g.win?(tot?tot+' trading days':''):rng(hs,he)+(tot?', '+tot+' trading days':''));
-        } else if(g.st==='final'){
-          tag='final';
-          if(g.p!=null){anyCmp=true;big=gap(g.h-g.p,u);}else big=usd(g.h,u);
-          det.push('harvest price '+usd(g.h,u));det.push(projTxt);if(!g.win)det.push(rng(hs,he));
-        } else {
-          tag='closed';big='not released yet';
-          det.push('window closed '+md(he)+'; RMA has not released the final price');
-          var ownC=(g.p!=null)?ownAvg(hp,g.crop,x,hs,he,today):null;
-          if(ownC&&ownC.fin)det.push('our average of all '+ownC.days+' settles '+usd(ownC.avg,u));
-          det.push(projTxt);
-        }
-        if(g.win){if(wt)det.push(wt);wk='';wt='';}
-        return [name,tag,big,det,wk,wt,g.win?{gid:g.win.gid,n:g.win.n,label:scdLabel(g.win.scd),win:hs&&he?rng(hs,he):''}:null];
-      });
-      var wks=[];rows.forEach(function(r){if(r[4]&&wks.indexOf(r[4])<0)wks.push(r[4]);});
-      var oneWin=wks.length===1?rows.filter(function(r){return r[4];})[0][5]:'';
-      if(!oneWin)rows.forEach(function(r){if(r[5])r[3].push(r[5]);});
-      var html='',seen={},insMore=[];
-      /* One short line per crop: the projected price it is measured against.
-         Averages, day counts and windows go to the notes, word for word. */
-      function shortDet(d){var p=d.filter(function(x){return /^projected /.test(x||'');})[0];return p||d.filter(Boolean)[0]||'';}
-      rows.forEach(function(r,i){
-        if(!r[6]){var full=r[3].filter(Boolean),sd=shortDet(full);if(full.length>1||full[0]!==sd)insMore.push('<span class="w1c-cp"><b>'+r[0]+':</b> '+full.join(' · ')+'</span>');
-          html+='<span class="s7-ir"><span class="s7-ir-k">'+r[0]+(r[1]?' <small>· '+r[1]+'</small>':'')+'</span><span class="s7-ir-v">'+r[2]+'</span><small class="s7-ir-d">'+sd+'</small></span>';return;}
-        var gid=r[6].gid;if(seen[gid])return;seen[gid]=1;
-        var subs=rows.filter(function(q){return q[6]&&q[6].gid===gid;});
-        html+='<span class="s7-ir s7-ir-m"><span class="s7-ir-k">'+r[0]+' <small>· '+subs.length+' county windows</small></span>'+
-          subs.map(function(q){
-            return '<span class="s7-iw"><span class="s7-ir-k">'+esc(q[6].label)+' <small>· harvest window '+esc(q[6].win||'not in RMA’s file')+(q[1]?' · '+q[1]:'')+'</small></span><span class="s7-ir-v">'+q[2]+'</span><small class="s7-ir-d">'+q[3].filter(Boolean).join(' · ')+'</small></span>';
-          }).join('')+'</span>';
-      });
-      if(!rows.length)html='<span class="s7-nl">No revenue price for '+esc(st||'this state')+' in RMA’s '+d.crop_year+' data</span>';
-      var meaning=anyCmp?'Revenue Protection uses the higher price. RP-HPE and Yield Protection stay at projected. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-s7-rp">When RP pays</button><span id="tip-s7-rp" role="tooltip" class="tip-t" hidden>RP pays when a unit’s revenue to count (production × harvest price) falls below its revenue guarantee.</span></span>':'';
-      var _fs=usedFut&&px&&px.fetched&&window.AgAsOf?AgAsOf.html(px.fetched,'prices',{prefix:'Futures updated'}):'';
-      var asof=_fs?' '+_fs+', delayed.':usedFut&&px&&px.fetched?' Futures '+dateLong(new Date(px.fetched)).replace(/, \d{4}$/,'')+', '+timeIn(new Date(px.fetched),'America/Chicago')+' CT, delayed.':'';
-      var cw=rows.some(function(r){return r[6];})?'County windows: your county’s sales closing date sets which one is yours. RMA’s file lists the dates, not the counties. ':'';
-      var lead1=cw+(oneWin?(oneWin.charAt(0).toUpperCase()+oneWin.slice(1))+'. ':'')+(trail?'RMA’s average can trail a day. ':'');
-      var sub=lead1+(st?'':'Most states. ')+'Conventional (non-organic) prices, USDA RMA.'+asof+' <a href="/harvest-price-tracker">'+(extra?'Other crops, organic and counties':'Organic and counties')+' on the tracker</a>';
-      put('insurance','<span class="s7-irs">'+html+'</span>',sub,meaning,insMore.join(''));
-    });
-  }
-
-  window.AGSIST_INS_RENDER=insurance;   /* WAVE2-F: the picker re-sorts the rows */
-
-  /* ---------- A2 harvest progress / condition / planting ---------- */
-  function cropLine(name,o,key,prev){
-    if(!o||o[key]==null)return null;
-    return name+' '+o[key]+'%'+(o[prev]!=null?' <small>'+o[prev]+'% '+(/5yr|avg/.test(prev)?'5-year':'a year ago')+'</small>':'');
-  }
-  function cropModules(){
-    if(!cells.harvest&&!cells.condition&&!cells.planting)return;
-    progress().then(function(d){
-      var asof=d&&d.report_date?'USDA Crop Progress, week ending '+isoDay(d.report_date)+'.':'';
-      var cpSt=d&&d.updated&&window.AgAsOf?' '+AgAsOf.html(d.updated,'usda'):'';
-      if(cells.harvest){
-        /* WAVE1-C 2026-10-03: every number says what it is. National corn and
-           soybeans: harvested, same week last year, 5-year average (computed
-           in fetch_crop_progress.py; withheld when any of the five years is
-           not bracketed). Then the reader's state from the same NASS file:
-           corn, soybeans, winter wheat planted/emerged, cotton, rice, peanuts,
-           sorghum, whichever NASS published for that state this week. */
-        var pc=function(v){return v==null?'-':v+'%';};
-        var hline=function(name,o){if(!o||o.harvest_pct==null)return null;
-          return name+' '+o.harvest_pct+'% <small>harvested'+(o.harvest_prev_year!=null?' \u00b7 '+o.harvest_prev_year+'% last year':'')+(o.harvest_5yr_avg!=null?' \u00b7 '+o.harvest_5yr_avg+'% 5-yr avg':'')+'</small>';};
-        var a=d&&hline('Corn',d.corn),b=d&&hline('Soybeans',d.soybeans);
-        var mt=d&&d.corn&&d.corn.mature_pct!=null?'<span class="s7-line"><small>Corn mature '+d.corn.mature_pct+'%</small></span>':'';
-        var hd=d&&((d.corn&&d.corn.harvest_date)||(d.soybeans&&d.soybeans.harvest_date));
-        var miss=d?[['Corn',d.corn],['soybean',d.soybeans]].filter(function(x){return x[1]&&x[1].harvest_pct!=null&&x[1].harvest_5yr_avg==null;}).map(function(x){return x[0];}):[];
-        /* WAVE3-M: the reason prints only when the pipeline withheld the average;
-           before the first run that computes it, the segment is simply absent. */
-        var avgWhy=miss.length&&d.progress?' '+(miss.length>1?'Corn and soybean':miss[0].charAt(0).toUpperCase()+miss[0].slice(1))+' 5-year average withheld: not every prior year had a NASS week on both sides of this date.':'';
-        var SL={corn_harvested:'Corn harvested',soybeans_harvested:'Soybeans harvested',winter_wheat_planted:'Winter wheat planted',winter_wheat_emerged:'Winter wheat emerged',
-          cotton_harvested:'Cotton harvested',rice_harvested:'Rice harvested',peanuts_harvested:'Peanuts harvested',sorghum_harvested:'Sorghum harvested'};
-        var L=loc(),st=L&&L.state,stTxt='';
-        if(!st)stTxt='<span class="w1c-cp">Set your ZIP to see your state.</span>';
-        else if(!d||!d.states)stTxt='';
-        else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
-          stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
-            :'<span class="w1c-cp"><b>'+esc(st)+':</b> NASS published no progress figure for this state this week.</span>';}
-        /* 2026-10-06 EARN: crop condition (good or excellent) joins this cell,
-           from the same NASS file and week; it left the markets fold. */
-        var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null)ge.push(x[0]+' '+x[1].good_excellent+'%');});}
-        var gel=ge.length?'<span class="s7-line">Good or excellent <small>'+ge.join(' \u00b7 ')+'</small></span>':'';
-        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+gel,esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof)+cpSt,stTxt,mt);
-        else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
-      }
-      if(cells.condition){
-        var c1=d&&cropLine('Corn',d.corn,'good_excellent','good_excellent_prev_year'),c2=d&&cropLine('Soybeans',d.soybeans,'good_excellent','good_excellent_prev_year');
-        if(c1||c2)put('condition',[c1,c2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Good or excellent. '+asof)+cpSt);
-        else put('condition',NL(),'');
-      }
-      if(cells.planting){
-        var p1=d&&cropLine('Corn',d.corn,'planting_pct','planting_prev_year'),p2=d&&cropLine('Soybeans',d.soybeans,'planting_pct','planting_prev_year');
-        if(p1||p2)put('planting',[p1,p2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Planted. '+asof)+cpSt);
-        else put('planting',NL(),'');
-      }
-    });
-  }
-
-  /* ---------- A5 next USDA report ---------- */
-  function report(){
-    if(!cells.report)return;
-    calendar().then(function(ev){
-      if(!ev){put('report',NL(),'USDA calendar');return;}
-      var next=ev.filter(function(e){return e.t>NOW;});
-      if(!next.length){put('report',NL(),'No later dates in the calendar file yet.');return;}
-      var t0=next[0].t,same=next.filter(function(e){return +e.t===+t0;}).map(function(e){return shortName(e.name);});
-      var days=Math.round((new Date(t0.getFullYear(),t0.getMonth(),t0.getDate())-new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate()))/864e5);
-      put('report','<span class="s7-line">'+tzParts(t0,'America/New_York',{weekday:'short'})+', '+dateLong(t0,'America/New_York').replace(/, \d{4}$/,'')+'</span><span class="s7-line"><small>'+timeIn(t0,'America/New_York')+' ET</small></span>',
-        esc(same.join(' and '))+'. '+(days===0?'Today.':(days===1?'Tomorrow.':'In '+days+' days.')));
-    });
-  }
-
-  /* ---------- rent ---------- */
-  function rent(){
-    if(!cells.rent)return;
-    var l=loc();if(!l||!l.state){needZip('rent');return;}
-    get('/farmland-atlas/data/cards.json').then(function(d){
-      if(!d||!d.counties){put('rent',NL(),'Farmland Atlas');return;}
-      var st=l.state,cty=String(l.county||'').replace(/\s+County$/i,'').toLowerCase(),hit=null;
-      for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty){hit=c;break;}}
-      if(hit&&hit.r!=null)put('rent','$'+Math.round(hit.r)+' <small>per acre'+(hit.ry?', '+hit.ry:'')+'</small>',esc(hit.n+', '+hit.st+'. USDA NASS county cash rent.'));
-      else if(d.states&&d.states[st]&&d.states[st].r!=null)put('rent','$'+Math.round(d.states[st].r)+' <small>per acre, state median of counties</small>',esc((d.states[st].n||st)+'. USDA NASS county cash rent survey.'));
-      else put('rent',NL(),'Farmland Atlas');
-    });
-  }
-
-  /* ---------- weather: frost, soil, spray (one rule) ---------- */
-  var WX={state:'wait',f:null,spray:null};
-  function localNowKey(f){var off=+(f&&f.utc_offset_seconds)||0;return new Date(Date.now()+off*1000).toISOString().slice(0,13);}
-  function hourIdx(times,key){for(var i=0;i<times.length;i++){if(String(times[i]).slice(0,13)>=key)return i;}return -1;}
-  function overnight(f){
-    var h=f&&f.hourly,t=h&&h.time,v=h&&h.temperature_2m;if(!t||!v||!t.length)return null;
-    var i0=hourIdx(t,localNowKey(f));if(i0<0)return null;
-    var hr=function(i){return +String(t[i]).slice(11,13);};
-    var s=i0;if(hr(s)>=10&&hr(s)<18){while(s<t.length&&hr(s)!==18)s++;}
-    var e=s+1;while(e<t.length&&hr(e)!==10)e++;
-    var lo=null;for(var i=s;i<e&&i<t.length;i++){if(v[i]!=null&&(lo==null||v[i]<lo))lo=v[i];}
-    return lo==null?null:Math.round(lo);
-  }
-  /* 33-36F: frost can form on plants while the air at 2 m stays above freezing. */
-  function frostFlag(lo){return lo<=28?'Hard freeze':(lo<=32?'Frost likely':(lo<=36?'Frost possible':''));}
-  function firstFrost(f){
-    var d=f&&f.daily,t=d&&d.time,v=d&&d.temperature_2m_min;if(!t||!v)return null;
-    for(var i=1;i<t.length;i++){if(v[i]!=null&&v[i]<=36){var dd=dayStart(t[i]);return {day:dd?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()]:t[i],lo:Math.round(v[i])};}}
-    return false;
-  }
-  function soil(f){
-    var h=f&&f.hourly,t=h&&h.time;if(!t)return null;
-    var a=h.soil_temperature_6cm,b=h.soil_temperature_18cm,i0=hourIdx(t,localNowKey(f));
-    if(!a||i0<0||a[i0]==null)return null;
-    var mx=null,mx2=null;for(var i=i0;i<a.length;i++){if(a[i]!=null&&(mx==null||a[i]>mx))mx=a[i];if(b&&b[i]!=null&&(mx2==null||b[i]>mx2))mx2=b[i];}
-    return {now:Math.round(a[i0]),max:mx==null?null:Math.round(mx),deep:(b&&b[i0]!=null)?Math.round(b[i0]):null,deepMax:mx2==null?null:Math.round(mx2)};
-  }
-  /* Fall anhydrous: wait until soil at 4 in stays below 50F (extension
-     guidance). This page reads Open-Meteo at 6 cm (2.4 in) and 18 cm (7 in);
-     it says so and never calls either reading 4 in. */
-  function fallVerdict(s){
-    if(s.now>=50)return {t:'Not yet',c:''};
-    /* In range only when both depths stay below 50F through the forecast. */
-    if(s.max!=null&&s.max<50&&s.deep!=null&&s.deepMax!=null&&s.deepMax<50)return {t:'In range',c:'s7-ok'};
-    return {t:'Getting close',c:''};
-  }
-  function paintWx(){
-    var f=WX.f,lo=f?overnight(f):null,s=f?soil(f):null,ff=f?firstFrost(f):null;
-    var noLoc=(WX.state==='wait'&&!hasLoc());
-    /* Local Conditions cells */
-    var lw=$('s7-wx-low'),sw=$('s7-wx-soil');
-    if(lw){
-      if(lo!=null){var fl=frostFlag(lo);lw.innerHTML=lo+'°F'+(fl?'<span class="s7-flag s7-warn">'+fl+'</span>':'<span class="s7-sub">No frost tonight</span>');}
-      else if(WX.state!=='wait')lw.innerHTML=NL();
-    }
-    if(sw){
-      if(s)sw.innerHTML=s.now+'°F'+(s.deep!=null?'<span class="s7-sub">7 in: '+s.deep+'°F</span>':'');
-      else if(WX.state!=='wait')sw.innerHTML=NL();
-    }
-    /* Strip cells */
-    if(cells.frost){
-      if(noLoc)needZip('frost');
-      else if(lo!=null){
-        var fl2=frostFlag(lo);
-        put('frost','<span class="s7-line">'+lo+'°F <small>overnight low</small></span>'+(fl2?'<span class="s7-line s7-warn">'+fl2+'</span>':''),
-          esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
-      } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
-    }
-    if(cells.fallN||cells.soilPlant||$('s7-falln')){
-      var fb=$('s7-falln-badge'),fr=$('s7-falln-rec');
-      if(noLoc){needZip('fallN');needZip('soilPlant');if(fb)fb.textContent='Set your ZIP';}
-      else if(s){
-        var v=fallVerdict(s);
-        var sub=(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day high '+Math.max(s.max,s.deepMax!=null?s.deepMax:-99)+'°F.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
-        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 2.4 in, modeled</small></span>',esc(sub));
-        put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 2.4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>','Soil at 2.4 in (6 cm). Corn is commonly planted once soil holds near 50°F.');
-        if(fb){fb.textContent=v.t+' · '+s.now+'°F';fb.style.color=v.c?'var(--green)':'var(--text)';}
-        if(fr)fr.textContent='Modeled. '+sub;   /* the cell already says "modelled" beside the reading */
-      } else if(WX.state!=='wait'){put('fallN',NL(),'Soil temperature forecast');put('soilPlant',NL(),'');if(fb)fb.textContent='Not loaded yet';}
-    }
-    if(cells.spray){
-      var d0=WX.spray&&WX.spray[0];
-      if(noLoc)needZip('spray');
-      else if(d0)put('spray',d0.long,esc(d0.why));
-      else if(WX.state!=='wait')put('spray',NL(),'');
-    }
-  }
-
-  /* F: ONE spray rule. Thresholds are the ones this page already used, now
-     in one place: the summary sentence, the per-day badges and the Spray
-     Advisory tile all call this with the same day's forecast. */
-  /* Inversion risk: the lowest hourly 10 m wind under 3 mph in the early
-     morning (5-9 AM) or evening (6-9 PM) of that day, from the hourly
-     forecast. No hourly data, no inversion line. */
-  function calmAt(k){
-    var f=WX.f,h=f&&f.hourly,t=h&&h.time,w=h&&h.wind_speed_10m,d=f&&f.daily&&f.daily.time;
-    if(!t||!w||!d||!d[k])return null;var lo=null;
-    for(var i=0;i<t.length;i++){var s=String(t[i]);if(s.slice(0,10)!==d[k])continue;var hr=+s.slice(11,13);
-      if(((hr>=5&&hr<=9)||(hr>=18&&hr<=21))&&w[i]!=null&&(lo==null||w[i]<lo))lo=w[i];}
-    return (lo!=null&&lo<3)?Math.round(lo*10)/10:null;
-  }
-  function sprayRule(x){
-    if(x.wind==null&&x.tmax==null)return null;
-    var stop=[],cau=[];
-    if(x.rain!=null&&x.rain>0.25)stop.push('rain '+(Math.round(x.rain*100)/100)+' in');
-    if(x.wind!=null&&x.wind>15)stop.push('wind '+Math.round(x.wind)+' mph');
-    if(x.tmax!=null&&x.tmax<40)stop.push('high '+Math.round(x.tmax)+'°F');
-    if(x.tmax!=null&&x.tmax>90)stop.push('high '+Math.round(x.tmax)+'°F');
-    /* 2026-10-06: the same day rule as /spray's day strip. A forecast weather
-       code of 51-95 (drizzle, rain, snow, showers, storms) is a stop there, and
-       a 40-49°F high is marginal; the homepage said "OK to spray" on both. */
-    if(x.code!=null&&x.code>=51&&x.code<=95)stop.push(x.code>=95?'thunderstorms forecast':(x.code>=71&&x.code<=77)||x.code===85||x.code===86?'snow forecast':'rain forecast');
-    if(x.wind!=null&&x.wind>10&&x.wind<=15)cau.push('wind '+Math.round(x.wind)+' mph');
-    if(x.calm!=null)cau.push('inversion risk, '+x.calm+' mph at dawn or dusk');
-    if(x.pop!=null&&x.pop>50)cau.push('rain chance '+Math.round(x.pop)+'%');
-    if(x.rh!=null&&x.rh>85)cau.push('humidity '+Math.round(x.rh)+'%');
-    if(x.rh!=null&&x.rh<40)cau.push('humidity '+Math.round(x.rh)+'%');
-    if(x.tmin!=null&&x.tmin<45)cau.push('low '+Math.round(x.tmin)+'°F');
-    if(x.tmax!=null&&x.tmax>85&&x.tmax<=90)cau.push('high '+Math.round(x.tmax)+'°F');
-    if(x.tmax!=null&&x.tmax>=40&&x.tmax<50)cau.push('high '+Math.round(x.tmax)+'°F');
-    var g=(x.gust!=null)?', gusts '+Math.round(x.gust)+' mph':'';
-    if(stop.length)return {s:'stop',t:'Hold off',long:'Hold off spraying',why:stop.join(', ')+g,short:stop[0].split(',')[0]};
-    if(cau.length)return {s:'caution',t:'Caution',long:'Use caution',why:cau.join(', ')+g,short:cau[0].split(',')[0]};
-    return {s:'go',t:'OK',long:'OK to spray',why:'wind up to '+Math.round(x.wind)+' mph'+g+(x.tmax!=null?', high '+Math.round(x.tmax)+'°F':''),short:'wind '+Math.round(x.wind)+' mph'};
-  }
-  var ICON={go:'#i-circle-check',caution:'#i-triangle-alert',stop:'#i-ban'};
-  var COLOR={go:'var(--green)',caution:'var(--gold)',stop:'var(--red)'};
-  function paintSprayTile(){
-    var r=WX.spray&&WX.spray[0];if(!r)return;
-    var ic=$('wsp-spray-icon'),st=$('wsp-spray-status'),dt=$('wsp-spray-detail');
-    if(ic){ic.innerHTML='<svg class="ic" aria-hidden="true"><use href="'+ICON[r.s]+'"/></svg>';ic.style.color=COLOR[r.s];}
-    if(st){st.textContent=r.long;st.style.color=COLOR[r.s];}
-    if(dt)dt.textContent='Today: '+r.why+'.';
-    var w=$('wsp-spray'),inner=w&&w.querySelector('div');if(inner){inner.style.background='';inner.style.borderColor='';}
-  }
-  /* geo.js paints the tile from the current reading; repaint it with the
-     one rule right after, so the page never shows two verdicts. */
-  var _uwp=window.updateWidgetPreviews;
-  if(typeof _uwp==='function'){window.updateWidgetPreviews=function(){var o=_uwp.apply(this,arguments);paintSprayTile();return o;};}
-
-  window.S7={
-    onWx:function(f){WX.f=(f&&f.hourly)?f:null;WX.state=WX.f?'ok':'fail';paintWx();
-      if(!WX.f){try{window.__agsistSprayToday=null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:null}));}catch(e){}}
-      if(!WX.f){var sv=$('wx-forecast-7day');if(sv&&!$('s7-wx-off')){var p=document.createElement('div');p.className='s7-wx-off';p.id='s7-wx-off';p.textContent='Forecast: Not loaded yet';sv.parentNode.insertBefore(p,sv);sv.hidden=true;}}},
-    spray:function(a){
-      var out=[],names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],dow=new Date().getDay();
-      var len=(a.max||[]).length;
-      for(var k=0;k<Math.min(5,len);k++){
-        var r=sprayRule({rain:a.rain[k],wind:a.wind[k],gust:a.gust[k],pop:a.pop[k],rh:a.rh[k],tmax:a.max[k],tmin:a.min[k],code:(a.code&&a.code[k]!=null&&!isNaN(a.code[k]))?Number(a.code[k]):null,calm:calmAt(k)});
-        if(r){r.label=k===0?'Today':(k===1?'Tmrw':names[(dow+k)%7]);r.pop=(a.pop&&a.pop[k]!=null&&!isNaN(a.pop[k]))?Number(a.pop[k]):null;}
-        out.push(r);
-      }
-      WX.spray=out.length&&out[0]?out:null;
-      /* 2026-10-06: the hero band reads today's verdict from here, so the page
-         never shows two spray reads. */
-      try{window.__agsistSprayToday=WX.spray?WX.spray[0]:null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:window.__agsistSprayToday}));}catch(e){}
-      var strip=$('spray-days-strip');
-      if(strip){
-        if(WX.spray){strip.innerHTML=out.map(function(r){return r?'<div class="spray-day '+r.s+'"><span class="spray-day-name">'+r.label+'</span><span class="spray-day-icon"><svg class="ic" aria-hidden="true"><use href="'+ICON[r.s]+'"/></svg></span><span class="spray-day-status">'+r.t+'</span><span class="spray-day-reason" title="'+esc(r.why)+'">'+esc(r.short)+'</span></div>':'';}).join('');var sw=$('spray-windows');if(sw)sw.classList.add('loaded');}
-        else strip.innerHTML='<div class="s7-wx-off">Not loaded yet</div>';
-      }
-      if(!WX.spray){
-        var st0=$('wsp-spray-status'),dt0=$('wsp-spray-detail');
-        if(st0){st0.textContent='Not loaded yet';st0.style.color='var(--text-muted)';}
-        if(dt0)dt0.textContent='The spray read needs the forecast, which has not loaded.';
-      }
-      var el=$('wx-today-summary');
-      if(el){
-        var r0=WX.spray&&WX.spray[0];
-        var clauses=[];
-        if(typeof a.gduPct==='number')clauses.push(a.gduPct>2?'season heat is running <strong>'+a.gduPct+'% ahead of</strong> the 5-year normal':(a.gduPct<-2?'season heat is running <strong>'+Math.abs(a.gduPct)+'% behind</strong> the 5-year normal':'season heat is right at the 5-year normal'));
-        if(typeof a.prPct==='number')clauses.push('30-day rain is '+(a.prPct>5?'<strong>'+a.prPct+'% above</strong>':(a.prPct<-5?'<strong>'+Math.abs(a.prPct)+'% below</strong>':'near'))+' normal');
-        var ctx='';if(clauses.length){var j=clauses.join(', and ');ctx=' '+j.charAt(0).toUpperCase()+j.slice(1)+'.';}
-        el.innerHTML=r0?'<span class="wx-today-icon" aria-hidden="true" style="color:'+COLOR[r0.s]+'"><svg class="ic" aria-hidden="true"><use href="'+ICON[r0.s]+'"/></svg></span><span class="wx-today-text"><strong>Today:</strong> '+r0.long+'. '+esc(r0.why.charAt(0).toUpperCase()+r0.why.slice(1))+'.'+ctx+'</span>'
-          :'<span class="wx-today-text"><strong>Today:</strong> spray read not loaded yet.</span>';
-        el.classList.add('loaded');
-      }
-      paintSprayTile();paintWx();
-    },
-    teaser:teaser
-  };
-
-  /* ---------- D: the briefing teaser ---------- */
-  function teaser(data){
-    var el=$('daily-teaser-text');if(!el||!data)return;
-    var gen=data.generated_at?new Date(data.generated_at):null;
-    var stamp=(gen&&!isNaN(gen))?timeIn(gen,'America/Chicago')+' CT':'';
-    var txt=String(data.teaser||'');
-    Promise.all([calendar(),get('/data/wpi-history.json')]).then(function(r){
-      var ev=(r[0]||[]).map(function(e){return {name:e.name,t:e.t};});
-      ((r[1]&&r[1].history)||[]).forEach(function(h){var d=dayStart(h.date);if(d&&h.report)ev.push({name:h.report,t:new Date(d.getTime()+12*36e5)});});
-      /* Text is stale when it is "ahead of" (or "before") a report whose
-         latest release is behind us and nearer than its next one. */
-      function staleIn(s){
-        var found=null,re=/\b(ahead of|before|into|awaiting|waiting (?:on|for))\b([^.;]{0,48})/ig,m;
-        var noise=/^(report|summary|the|of|and|sep|sept|september|october|quarterly|monthly|annual|final|\d+)$/;
-        while((m=re.exec(String(s||'')))){
-          var phrase=m[2].toLowerCase(),keys={};
-          ev.forEach(function(e){shortName(e.name).toLowerCase().split(/[^a-z]+/).forEach(function(w){if(w.length>3&&!noise.test(w)&&phrase.indexOf(w)>=0)keys[w]=1;});});
-          Object.keys(keys).forEach(function(w){
-            var hits=ev.filter(function(e){return shortName(e.name).toLowerCase().indexOf(w)>=0;});
-            var past=hits.filter(function(e){return e.t<=NOW;}).sort(function(a,b){return b.t-a.t;})[0];
-            var fut=hits.filter(function(e){return e.t>NOW;}).sort(function(a,b){return a.t-b.t;})[0];
-            if(past&&(!fut||(NOW-past.t)<(fut.t-NOW)))found=found||past;
-          });
-        }
-        return found;
-      }
-      var stale=staleIn(txt);
-      if(stale){
-        el.innerHTML=(stamp?'<span class="s7-stamp">'+stamp+'</span>':'')+'Today’s briefing. Tap to read it.';
-        el.setAttribute('data-s7','hidden-stale');
-      } else {
-        el.innerHTML=(stamp?'<span class="s7-stamp">Morning snapshot, '+stamp+'</span>':'')+esc(txt);
-        el.setAttribute('data-s7','stamped');
-      }
-      /* The full briefing: if its headline or lead treats a released report
-         as still ahead, say so above it rather than let it read as current. */
-      var hl=$('daily-headline'),ld=$('daily-lead');
-      var st2=staleIn((hl?hl.textContent:'')+'. '+(ld?ld.textContent:'')+'. '+(data.headline||'')+'. '+(data.lead||''));
-      var note=$('s7-brief-note');
-      if(st2&&hl){
-        if(!note){note=document.createElement('p');note.id='s7-brief-note';note.className='s7-brief-note';hl.parentNode.insertBefore(note,hl);}
-        note.textContent='Morning briefing'+(stamp?', '+stamp:'')+'. It treats '+shortName(st2.name)+' as still ahead; that report came out '+dateLong(st2.t,'America/New_York')+'.';
-      } else if(note){note.parentNode.removeChild(note);}
-    });
-  }
-  /* F14: the teaser opens the full briefing, the same way the "Read today's
-     full briefing" button does (it lives inside the hidden part). */
-  (function(){
-    var hero=$('daily-hero'),tz=$('daily-teaser');if(!hero||!tz)return;
-    function open(){
-      if(!hero.classList.contains('is-brief'))return;
-      hero.classList.remove('is-brief');hero.setAttribute('aria-expanded','true');var _tz2=document.getElementById('daily-teaser');if(_tz2)_tz2.setAttribute('aria-expanded','true');
-      var b=hero.querySelector('[data-daily-more]');if(b)b.setAttribute('aria-expanded','true');
-      var h=$('daily-headline');if(h){if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){}}
-      if(window.gaEvent)window.gaEvent('daily_expand',{from:'teaser'});
-    }
-    tz.addEventListener('click',open);
-    tz.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
-  })();
-  if(window.__s7daily)teaser(window.__s7daily);
-
-  /* ---------- C: chips ---------- */
-  function chip(){
-    var v=$('idx1-zip-val'),c=$('idx1-zip-change');if(!v||!c)return;
-    c.innerHTML='<span class="idx1-zip-dot" aria-hidden="true">· </span>'+(/^\d{5}$/.test(v.textContent.trim())?'Change':'Set')+'<span class="idx1-zip-word"> ZIP</span>';
-  }
-  chip();
-  window.addEventListener('agsist:bids',chip);window.addEventListener('storage',chip);
-  window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
-  window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(chip,0);paintWx();rent();});
-
-  /* ---------- H: drought valid date, I: NOAA dates ---------- */
-  get('/data/outlooks/manifest.json').then(function(mf){
-    var f=mf&&mf.files||{};
-    var u=f['usdm_latest.png'],dv=$('s7-usdm-valid');
-    if(dv)dv.textContent=(u&&u.data_valid)?'valid '+isoDay(u.data_valid):'';
-    var nd=$('s7-noaa-dates');if(!nd)return;
-    function valid(lm,months){
-      var d=new Date(lm);if(isNaN(d))return null;
-      /* CPC issues each outlook for the month(s) after the issue month. */
-      var a=new Date(d.getUTCFullYear(),d.getUTCMonth()+1,1),b=new Date(a.getFullYear(),a.getMonth()+months-1,1);
-      return 'valid '+MON[a.getMonth()]+(months>1?'–'+MON[b.getMonth()]:'')+' '+b.getFullYear()+', issued '+isoDay(lm);
-    }
-    var one=f['noaa_temp_30day.gif'],three=f['noaa_temp_90day.gif'];
-    var o=one&&one.last_modified?valid(one.last_modified,1):null,t=three&&three.last_modified?valid(three.last_modified,3):null;
-    nd.textContent=(o||t)?[o?'1-Month '+o:'',t?'3-Month '+t:''].filter(Boolean).join(' · '):'Issue dates: Not loaded yet';
-  });
-
-  /* ---------- run ---------- */
-  insurance();cropModules();report();rent();
-  if(!hasLoc())setTimeout(paintWx,0);
-})();
-</script>
+<script src="/components/home-season.js?v=1"></script>
 <script>
 /* ===== 2026-10-01 r7-bids: rail and footer, read from the page's own data files ===== */
 (function(){

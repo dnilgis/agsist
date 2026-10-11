@@ -2397,3 +2397,52 @@ html[data-look] #f1 .bh-elev>div:first-child>div:first-child{font-size:1rem;font
    column there, the next five. */
 @media(min-width:1240px){#usda-cal-strip{grid-template-columns:minmax(0,1fr)}#usda-cal-strip .cal-card:nth-child(n+6){display:none}}
 
+
+/* ===== 2026-10-11 polish: one ZIP box, a visible h1, phone order =====
+   The hero band now opens <main> and sits above the briefing teaser, so the
+   local bids answer is first at every width. */
+#main #hero-band h1.hb-h1{margin:2px 0 4px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.941rem;font-weight:600;line-height:1.35;letter-spacing:0;text-transform:none;color:var(--text-dim);text-wrap:pretty}
+@media(max-width:639px){#main #hero-band h1.hb-h1{font-size:.875rem;margin:4px 0 2px}}
+/* The ZIP form: shown with no saved ZIP, behind "Change" once there is one. */
+.hb-zip{display:none;flex-wrap:wrap;align-items:center;gap:8px;padding:2px 0 12px}
+.hb-nozip .hb-zip,.hb-zip.is-open{display:flex}
+.hb-nozip .hb-change{display:none}
+.hb-zip input{flex:1 1 8rem;max-width:14rem;min-width:0;min-height:44px;box-sizing:border-box;padding:.55rem .8rem;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);background:var(--surface);border:1px solid var(--ui-field,var(--border-2));border-radius:6px}
+.hb-zip input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.hb-zip-go{flex:none;min-height:44px;padding:0 1.1rem;font:700 .941rem/1 var(--font-body,Inter,system-ui,sans-serif);color:#0a0c0d;background:var(--gold-fill,var(--gold));border:0;border-radius:6px;cursor:pointer}
+.hb-zip-go:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.hb-zip-msg{flex-basis:100%;font-size:.824rem;font-weight:600;color:var(--orange)}
+[data-theme="light"] .hb-zip-msg{color:#86600f}
+.hb-zip-msg:empty{display:none}
+/* The old ZIP rows in the bids and weather cards stay in the page (geo.js
+   writes and reads them) but are never shown; the band is the one box. */
+#hero-band~.idx1-shell #bids-zip-row{display:none!important}
+.wx-zip-ask{margin:0;padding:12px 0;font-size:.882rem;line-height:1.5;color:var(--text-dim);text-align:center}
+.wx-zip-ask-b{background:none;border:0;padding:0 2px;min-height:44px;font:inherit;font-weight:700;color:var(--text);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* The sub bar ZIP chip shows only a saved ZIP. */
+.idx1-zip-chip[hidden]{display:none!important}
+/* The briefing teaser is inside <main> now; on a phone it keeps its full
+   width instead of taking main's 16px gutters. */
+@media(max-width:900px){#main>.daily-hero{margin-left:-16px;margin-right:-16px}}
+/* The link to /markets under the market tables. */
+.r7-more{display:inline-flex;align-items:center;min-height:44px;margin:4px 0 0;font-size:.882rem;font-weight:600;color:var(--text);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
+.r7-more:hover{text-decoration-color:currentColor}
+/* Phone order: the local bids, then the USDA report days, then local
+   conditions and the month; the market tables (all on /markets too) and
+   fund positioning drop below them. Desktop keeps its columns. */
+@media(max-width:900px){
+  .idx1-shell{display:flex!important;flex-direction:column;align-items:stretch!important;gap:0}
+  .idx1-shell>.idx1-content,.idx1-shell>#market-intel,.idx1-shell>.idx1-tail{display:contents!important}
+  #f1{order:-2}
+  #f5{order:-1;margin-bottom:24px}
+  #market-intel>.m-fold{margin-bottom:8px}
+  #f-prices{order:1;margin-bottom:16px}
+  #market-intel>.m-fold--cot{order:1}
+  .idx1-tail>*{order:2}
+}
+/* A returning reader's bid cells fill with three lines (elevator, town and
+   miles, month and basis) about a second after first paint; hold them. */
+html.has-zip .hb-bid .hb-s{min-height:4.2em}
+/* On a phone the "Updated ... days old" stamp lands as a third line under the
+   place and date; hold that line too. */
+@container hero (max-width:559px){html.has-zip .hb-where{min-height:66px;align-content:flex-start}}

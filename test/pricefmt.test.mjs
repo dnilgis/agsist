@@ -72,6 +72,8 @@ const SURFACES = [
   "components/cb-myelev.js", "components/cb-rank.js", "components/geo.js",
   "components/homepage-extras.js", "components/storesell.js", "components/cb-glance.js",
   "components/futures.js",
+  /* 2026-10-11: homepage scripts moved out of index.html stay under the guard. */
+  "components/home-yield.js", "components/home-planting.js", "components/home-season.js",
 ];
 /* The tell-tale of a home-made quarter formatter: a fraction lookup table. */
 const COPY = /\[\s*''\s*,\s*'(?:1\/4|\\u00bc|¼)'|f===1\?'(?:1\/4|¼|\\u00bc)'|f===0\.25\?/;
