@@ -1,0 +1,31 @@
+name: Subscriber counts
+
+# Prints how many people are on each list (daily email, alerts, watches) from
+# the subs worker's token-gated /count route. Counts only: no addresses are
+# requested or printed. Run by hand from the Actions tab.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Counts
+        env:
+          LIST_URL:   ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          u = urllib.parse.urlsplit(os.environ["LIST_URL"].strip())
+          url = "%s://%s/count?token=%s" % (u.scheme, u.netloc, urllib.parse.quote(os.environ["LIST_TOKEN"].strip()))
+          d = json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist-count"}), timeout=30))
+          keep = {k: v for k, v in d.items() if isinstance(v, (int, float)) or k == "by_source"}
+          if isinstance(keep.get("by_source"), dict):
+              keep["by_source"] = {str(k): v for k, v in keep["by_source"].items() if isinstance(v, (int, float)) and "@" not in str(k)}
+          print(json.dumps(keep, indent=2, sort_keys=True))
+          PY
