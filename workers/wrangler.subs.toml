@@ -15,7 +15,7 @@ keep_vars = true
 # SUBS -> copy its ID.
 [[kv_namespaces]]
 binding = "SUBS"
-id = "PASTE_SUBS_NAMESPACE_ID_HERE"
+id = "9024f0b7ca5948bf9ed98d6135d73357"
 
 # Secrets/vars (GMAIL_USER, GMAIL_APP_PASS, UNSUB_SECRET, LIST_TOKEN, etc.)
 # live on the Worker itself in the dashboard under Settings -> Variables and
