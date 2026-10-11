@@ -109,10 +109,11 @@ def farm_box(n):
                 'Your own numbers: <a href="/breakeven">break-even</a> &middot; '
                 '<a href="/harvest-price-tracker#presell">safe pre-sell</a>.</div>')
     when = _report_when(n)
-    metric = esc(n.get("metric", "the next set of USDA numbers"))
+    # A calendar-only record carries metric None; it used to print ". If you".
+    metric = esc(n.get("metric") or "")
     return ('<div class="wp-farmbox"><b>' + esc(n.get("report", "Next report")) +
             (f': {when}.</b> ' if when else '.</b> ') +
-            f'{metric}. If you are holding unpriced bushels, know the number to beat '
+            (f'{metric}. ' if metric else '') + 'If you are holding unpriced bushels, know the number to beat '
             'before that morning. Your own numbers: <a href="/breakeven">break-even</a> '
             '&middot; <a href="/harvest-price-tracker#presell">safe pre-sell</a>.</div>')
 
@@ -124,7 +125,7 @@ def sc_next_report(n):
     when = _report_when(n)
     return ('<b style="color:var(--text)">' + (when + ': ' if when else '') + '</b>' +
             esc(n.get("report", "Next USDA report")) + ': ' +
-            esc(n.get("metric", "the next USDA numbers")) + '. See '
+            esc(n.get("metric") or "the next USDA numbers") + '. See '
             '<a href="/whats-priced-in" style="color:var(--gold)">what the trade has '
             'priced in</a> before the number drops.')
 
