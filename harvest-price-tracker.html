@@ -57,6 +57,8 @@
   color:var(--pd-txt);font-weight:800;}
 .pd-verdict h2 em{font-style:normal;color:var(--pd-gold2);}
 .pd-verdict p{margin:0;color:var(--pd-mut);font-size:.98rem;max-width:62ch;}
+.pd-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--pd-gold2,var(--gold));font-weight:600;font-size:.95rem}
+#pd-cards{margin:0 0 1.2rem}
 
 /* ── crop card ───────────────────────────────────────────────────── */
 .pd-sect{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.11em;
@@ -325,7 +327,16 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 
   <div class="pd-verdict" id="pd-verdict" role="status" aria-live="polite">
     <h2 id="pd-verdict-h">Corn and soybean harvest prices are set in October.</h2>
-    <p id="pd-verdict-p">Across most of the country, not everywhere. Corn: eight southern states discover in August or mid-August to mid-September; North Carolina, Oklahoma and part of Texas in September; Idaho, Michigan, Oregon and Washington in November. Soybeans: ten eastern and southern states discover in November and Texas in September. Pick your state and this page will only show you yours.</p>
+    <p id="pd-verdict-p">Across most of the country, not everywhere. Pick your state for yours.</p>
+    <details class="pd-more" id="pd-verdict-more"><summary>States on other months</summary><p>Corn: eight southern states discover in August or mid-August to mid-September; North Carolina, Oklahoma and part of Texas in September; Idaho, Michigan, Oregon and Washington in November. Soybeans: ten eastern and southern states discover in November and Texas in September.</p></details>
+  </div>
+
+  <div class="hp-cards" id="pd-cards">
+  <!--SEED:hpcards-->
+    <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$5.01</span></div></div>
+    <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$12.88</span></div></div>
+    <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
+    <!--/SEED:hpcards-->
   </div>
 
   <div data-signup-ask="Get AGSIST Daily: your local top bid and the markets, free, every morning" data-source="page:harvest-price-tracker" data-reports="1"></div>
@@ -370,13 +381,6 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
       <div class="pd-crop-top"><h3 class="pd-cname">Soybeans</h3>
         <span class="pd-pill wait">October</span></div>
       <p class="pd-say">The projected price is <b class="pd-num">$11.09 /bu</b>, the February average of November CBOT soybean settlements. The harvest price is that contract averaged across October 1&ndash;31, on the same rule for Revenue Protection (with harvest price).</p>
-    </div>
-    <div class="hp-cards">
-    <!--SEED:hpcards-->
-      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$5.01</span></div></div>
-      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$12.88</span></div></div>
-      <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
-      <!--/SEED:hpcards-->
     </div>
     <p class="pd-note">Those are the Corn Belt's windows. Alabama, Arkansas, Florida, Georgia, Louisiana, Mississippi, South Carolina and Texas discover corn in August, or mid-August to mid-September; Idaho, Michigan, Oregon and Washington in November. Pick your state above for your own dates.</p>
   </div>
@@ -776,13 +780,15 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       $('pd-fallback').hidden=false;
       $('pd-your').innerHTML=''; $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
       $('pd-verdict-h').textContent='Corn and soybean harvest prices are set in October.';
-      $('pd-verdict-p').textContent='Across most of the country, not everywhere. Corn: eight southern states discover in August or mid-August to mid-September; North Carolina, Oklahoma and part of Texas in September; Idaho, Michigan, Oregon and Washington in November. Soybeans: ten eastern and southern states discover in November and Texas in September. Pick your state and this page will only show you yours.';
+      $('pd-verdict-p').textContent='Across most of the country, not everywhere. Pick your state for yours.';
+      $('pd-verdict-more').hidden=false; $('pd-cards').hidden=false;
       fillCrops([]); calc(true); paintMap(''); return;
     }
 
     // Generic blocks suppress the moment a state is chosen. That is the whole
     // point: picking your state has to make this page shorter, not longer.
     $('pd-fallback').hidden=true;
+    $('pd-verdict-more').hidden=true; $('pd-cards').hidden=true;
 
     var name=(BYST[code]&&BYST[code][0]&&BYST[code][0].state)||code;
     if(!groups.length){
@@ -1119,7 +1125,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var dsc=$('pd-disc'); if(dsc) dsc.hidden=true;
     Array.prototype.forEach.call(document.querySelectorAll('.hpc-pend'),function(x){ x.textContent='price data did not load, see prices.rma.usda.gov'; });
     var msg='Price data did not load. Try again.';
-    $('pd-verdict-h').textContent=msg; $('pd-verdict-p').textContent='';
+    $('pd-verdict-h').textContent=msg; $('pd-verdict-p').textContent=''; $('pd-verdict-more').hidden=true;
     $('pd-gout').textContent='-'; $('pd-gsub').textContent=msg;
     $('pd-gout2').className='pd-out2 flat'; $('pd-gout2').innerHTML='';
     var cs=$('pd-crop'); if(cs){ cs.innerHTML='<option value="">Price data did not load</option>'; cs.disabled=true; }
