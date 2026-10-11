@@ -32,7 +32,6 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Milk Prices](https://agsist.com/milk-prices): Class III and IV, cheese and butter, and the component formula behind the milk check
 - [Markets](https://agsist.com/markets): grains, livestock, milk, energy and metals in one view
 - [For Elevators](https://agsist.com/elevators): the map of every elevator AGSIST tracks, and how an elevator claims its board
-- [Elevator Websites](https://agsist.com/elevator-websites): for elevator and co-op managers: a hosted website on their own domain with their posted cash bids, hours and contacts; price and how to ask on the page
 
 ## What will USDA say, and what moves the price?
 
