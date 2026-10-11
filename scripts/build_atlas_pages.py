@@ -1520,6 +1520,7 @@ def county_page(W, f, d, stamp):
 <div class="kick">Farmland Atlas · county record</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
 <p class="sub">{esc(desc)} County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}.</p>
+{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>
@@ -1527,9 +1528,8 @@ def county_page(W, f, d, stamp):
   <button type="button" id="dl">Download CSV</button>
   <button type="button" id="cp">Copy link</button>
 </div>
+{read_html}
 {watch_form(f, lab, stn)}
-{warn}{read_html}
-<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 {S1}{S2}{S3}{S4}{S5}{S6}{ND}
 <h2>Cite this page</h2>
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
