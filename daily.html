@@ -364,6 +364,14 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-modal p{font-size:.85rem;color:var(--text-dim);line-height:1.65;margin:0 0 1rem;}
 .dv3-modal input[type="email"]{width:100%;padding:.65rem .9rem;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;outline:none;margin-bottom:.75rem;box-sizing:border-box;}
 .dv3-modal input[type="email"]:focus{border-color:var(--green);}
+/* 2026-10-11: optional ZIP, so the Daily leads with the reader's top local bid. 16px so phones do not zoom. */
+.dv3-modal input[type="email"],.dv3-modal #dv3-zip{font-size:1rem;min-height:44px}
+.dv3-zip-l{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 .3rem}
+.dv3-modal #dv3-zip{width:8rem;padding:.65rem .9rem;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);outline:none;margin-bottom:.75rem;box-sizing:border-box}
+.dv3-modal #dv3-zip:focus{border-color:var(--green)}
+.dv3-modal [aria-invalid="true"]{border-color:var(--red)!important}
+.dv3-modal .dv3-sub-msg{font-size:.85rem;line-height:1.45;color:var(--red);margin:0 0 .6rem}
+.dv3-modal .dv3-sub-msg:empty{display:none}
 .dv3-modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;line-height:1;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;}
 .dv3-modal-close:hover{color:var(--text);}
 .dv3-modal-submit{width:100%;padding:.65rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;cursor:pointer;letter-spacing:0;transition:filter .15s;min-height:44px}
@@ -527,8 +535,11 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning before the market open: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+      <label class="dv3-zip-l" for="dv3-zip">ZIP, for your top local bid in the email</label>
+      <input type="text" id="dv3-zip" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional">
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
       <input type="hidden" name="source" value="daily-briefing-subscribe">
+      <p class="dv3-sub-msg" id="dv3-sub-msg" role="status" aria-live="polite"></p>
       <button type="submit" class="dv3-modal-submit">Join the list at no charge</button>
     </form>
     <p class="dv3-modal-fine">Unsubscribe anytime. Your data is never sold. <a href="/privacy" style="color:var(--gold)">Privacy policy</a>.</p>
@@ -1151,6 +1162,9 @@ function openModal(){
   modal.classList.add('open');
   // Keyboard users were left focused on a button hidden behind the overlay.
   var em=document.querySelector('#dv3-sub-form input[type="email"]');
+  /* the saved location's ZIP, when the reader has one and has not typed another */
+  var zf=document.getElementById('dv3-zip');
+  if(zf&&!zf.value){var z='';try{z=window.AgsistSignup?window.AgsistSignup.zip():'';if(!z){var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');z=String((l&&l.zip)||localStorage.getItem('agsist_user_zip')||'');}}catch(e){}if(/^\d{5}$/.test(z))zf.value=z;}
   if(em)em.focus();
 }
 function closeModal(){
@@ -1174,20 +1188,33 @@ if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeMod
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
 if(form){
+  var zipIn=document.getElementById('dv3-zip'),subMsg=document.getElementById('dv3-sub-msg');
+  if(zipIn)zipIn.addEventListener('input',function(){zipIn.removeAttribute('aria-invalid');zipIn.value=zipIn.value.replace(/\D/g,'').slice(0,5);});
+  function done(){
+    form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives tomorrow morning.</p>';
+  }
+  function fail(msg,el){subMsg.textContent=msg;if(el){el.setAttribute('aria-invalid','true');el.focus();}}
   form.addEventListener('submit',function(e){
     e.preventDefault();
-    var formData=new FormData(form);
-    fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}})
-      .then(function(r){
-        if(r.ok){
-          form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives tomorrow morning.</p>';
-        } else {
-          alert('The signup did not go through. Try again, or email sig@farmers1st.com and I will add you by hand.');
-        }
-      })
-      .catch(function(){
-        alert('That didn\'t reach the server. Check your connection and try again, or email sig@farmers1st.com.');
-      });
+    var em=form.querySelector('input[type="email"]'),email=(em.value||'').trim(),zip=zipIn?(zipIn.value||'').trim():'';
+    if(form.elements._gotcha&&form.elements._gotcha.value)return;
+    em.removeAttribute('aria-invalid');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){fail('Enter a real email address.',em);return;}
+    if(zip&&!/^\d{5}$/.test(zip)){fail('A ZIP is 5 digits. Fix it, or leave it blank.',zipIn);return;}
+    subMsg.textContent='';
+    var btn=form.querySelector('button[type="submit"]'),label=btn.textContent;btn.disabled=true;btn.textContent='Sending…';
+    var S=window.AgsistSignup;
+    /* components/signup-ask.js (loaded by loader.js) owns the success rule: HTTP ok AND data.ok. */
+    var req=S?S.subscribe({email:email,source:'daily-briefing-subscribe',zip:zip,zipField:true}):
+      fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+        .then(function(r){return r.json().catch(function(){return null;}).then(function(d){return{ok:!!(r.ok&&d&&d.ok===true),status:r.status,data:d};});},
+              function(){return{ok:false,status:0,data:null};});
+    req.then(function(res){
+      if(res.ok){done();return;}
+      btn.disabled=false;btn.textContent=label;
+      fail(S?S.errText(res):(res.status===0?'Could not reach the signup service. Check your connection and try again.':'That did not go through (error '+res.status+'). Nothing was saved. Try again, or email sig@farmers1st.com and I will add you by hand.'),
+        res.status>=400&&res.status<500?em:null);
+    });
   });
 }
 

@@ -7,8 +7,25 @@
      <div data-signup-ask="Email me the best bids near me every morning"
           data-source="page:cash-bids"></div>
 
-   Optional: data-variant="hero" (the homepage hero line), data-reports="0".
+   Optional: data-variant="hero" (the homepage hero line), data-reports="0",
+   data-note="..." (one quiet line under the field).
    Without data-source the source is "page:<slug of this path>".
+
+   Every AGSIST Daily ask carries an optional ZIP box ("ZIP, for your top
+   local bid in the email"), filled from the page's own ZIP (data-zip-input,
+   data-zip) or the saved location. Page asks show it at once; the hero line
+   and the bar open it when the email box gets focus. Left blank, no ZIP is
+   sent. (2026-10-11)
+
+   One-time notices, not the Daily (worker v5.11, POST /notice):
+     <div data-signup-ask="Email me when the 2027 county rents for Iowa come out."
+          data-topic="rent:ia" data-ok="..."></div>
+     <div data-signup-ask data-deadlines="2026-12-11 2027-03-15"></div>
+   data-deadlines lists signup deadlines; the ask offers a reminder a week
+   before the first one that is still more than a week off, and hides when
+   none is. A notice ask shows to Daily readers too, hides once that notice
+   is asked for in this browser (agsist_notices), and enrolls nobody in the
+   Daily unless "Also send the morning briefing" is ticked.
 
    This file also owns:
      - the second-visit bar (sitewide; components/loader.js loads this file),
@@ -28,6 +45,9 @@
   if (window.AgsistSignup && window.AgsistSignup._v) { window.AgsistSignup.scan(); return; }
 
   var EP = 'https://agsist-subs.dnilgis.workers.dev/subscribe';
+  var EP_NOTICE = 'https://agsist-subs.dnilgis.workers.dev/notice';
+  var NOTICE_KEY = 'agsist_notices';
+  var ZIP_LABEL = 'ZIP, for your top local bid in the email';
   var DISMISS_DAYS = 35;
   var BAR_KEY = 'agsist_signup_bar_dismissed';
   var BAR_TEXT = 'AGSIST Daily: your local top bid and the markets, free, every morning';
@@ -51,6 +71,10 @@
       localStorage.setItem('agsist_subscribed', '1');
     } catch (e) {}
   }
+  /* One-time notices asked for in this browser: {topic: ms}. */
+  function notices() { try { var o = JSON.parse(localStorage.getItem(NOTICE_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
+  function noticeDone(t) { return !!notices()[t]; }
+  function setNoticeDone(t) { try { var o = notices(); o[t] = Date.now(); localStorage.setItem(NOTICE_KEY, JSON.stringify(o)); } catch (e) {} }
   /* Same rule as index.html's helpers: a timestamp that expires after 35 days. */
   function isDismissed(key) {
     try { var v = parseInt(localStorage.getItem(key), 10); if (!v) return false; return (Date.now() - v) < DISMISS_DAYS * 864e5; }
@@ -96,12 +120,38 @@
 
   /* ---------- POST /subscribe ----------
      Resolves {ok, status, data}. ok only when HTTP ok and data.ok === true. */
+  /* o.zipField: the reader saw a ZIP box, so send what is in it and nothing
+     else (blank means no ZIP). Without it, the saved location fills in. */
   function subscribe(o) {
     o = o || {};
     var body = { email: String(o.email || '').trim(), source: sourceFor(o.source), reports: o.reports !== false };
-    var z = /^\d{5}$/.test(String(o.zip || '')) ? String(o.zip) : zip();
+    var z = /^\d{5}$/.test(String(o.zip || '')) ? String(o.zip) : (o.zipField ? '' : zip());
     if (z) body.zip = z;
-    return fetch(EP, {
+    return post(EP, body).then(function (res) {
+      if (res.ok) signedUp(body.source);
+      return res;
+    });
+  }
+  function signedUp(source) {
+    setSignedUp();
+    track('email_signup', { source: source });
+    try { window.dispatchEvent(new CustomEvent('agsist:signed-up', { detail: { source: source } })); } catch (e) {}
+  }
+  /* POST /notice: a one-time notice; daily:true also joins the Daily. */
+  function notice(o) {
+    var body = { email: String(o.email || '').trim(), source: String(o.source || '').slice(0, 60), topic: o.topic, daily: !!o.daily };
+    if (o.daily) { body.reports = true; if (/^\d{5}$/.test(String(o.zip || ''))) body.zip = String(o.zip); }
+    return post(EP_NOTICE, body).then(function (res) {
+      if (res.ok) {
+        setNoticeDone(o.topic);
+        track('notice_signup', { topic: o.topic, source: body.source });
+        if (o.daily) signedUp(body.source);
+      }
+      return res;
+    });
+  }
+  function post(url, body) {
+    return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(body)
@@ -109,15 +159,7 @@
       return r.json().catch(function () { return null; }).then(function (d) {
         return { ok: !!(r.ok && d && d.ok === true), status: r.status, data: d };
       });
-    }, function () { return { ok: false, status: 0, data: null }; })
-      .then(function (res) {
-        if (res.ok) {
-          setSignedUp();
-          track('email_signup', { source: body.source });
-          try { window.dispatchEvent(new CustomEvent('agsist:signed-up', { detail: { source: body.source } })); } catch (e) {}
-        }
-        return res;
-      });
+    }, function () { return { ok: false, status: 0, data: null }; });
   }
   function errText(res) {
     if (!res || res.status === 0) return 'Could not reach the signup service. Check your connection and try again.';
@@ -148,6 +190,16 @@
     '.sa-b[disabled]{opacity:.75;cursor:default}',
     '.sa-m{margin:0;font-size:.875rem;line-height:1.4;color:var(--red)}',
     '.sa-m:empty{display:none}',
+    /* the optional ZIP box and the notice asks' daily box: one row each, under the field */
+    '.sa-z{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:2px 0 0}',
+    '.sa-z[hidden],.sa-d[hidden]{display:none!important}',
+    '.sa-zl{font-size:.875rem;line-height:1.35;color:var(--text-muted)}',
+    '.sa-zin{flex:none;width:7.5rem;box-sizing:border-box;min-height:44px;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px}',
+    '.sa-zin::placeholder{color:var(--text-muted);opacity:1}',
+    '.sa-zin:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}',
+    '.sa-zin[aria-invalid="true"]{border-color:var(--red)}',
+    '.sa-d{grid-column:1/-1;min-height:44px;padding:2px 0;align-items:center}',
+    '.sa-n{grid-column:1/-1;margin:0;font-size:.8125rem;line-height:1.4;color:var(--text-muted)}',
     '.sa-ok{margin:0;font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--green)}',
     '.sa-ok:focus{outline:none}',
     /* page asks: a quiet band, one line plus a field */
@@ -166,6 +218,9 @@
     '  .sa-ask--hero .sa-in:focus{outline:none}',
     '  .sa-ask--hero .sa-b{grid-column:2;grid-row:1;padding:0 .75rem}',
     '  .sa-ask--hero .sa-m{grid-column:1/-1;margin-top:4px}',
+    '  .sa-ask--hero .sa-z{grid-row:2;margin-top:6px}',
+    '  .sa-bar .sa-zl{font-size:.8125rem}',
+    '  .sa-bar .sa-zin{min-height:42px}',
     '}',
     /* tablet and up: one row, the line | the field | the button */
     '@media (min-width:640px){.sa-ask--hero .sa-f{grid-template-columns:minmax(0,1fr) auto}.sa-ask--hero .sa-box{grid-column:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(12rem,22rem);gap:6px 10px;align-items:center}.sa-ask--hero .sa-l,.sa-ask--hero .sa-in{grid-column:auto}.sa-ask--hero .sa-b{grid-column:2}}',
@@ -205,28 +260,84 @@
   function slug() { return (location.pathname.replace(/\/+$/, '').replace(/^\//, '').replace(/\.html$/, '') || 'home').slice(0, 54); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function day(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; }
+  function md(d) { return MON[d.getMonth()] + ' ' + d.getDate(); }
+  /* data-deadlines: the first deadline whose reminder day (a week before) is
+     still ahead. Dates come from the page, which build_arc_plc.py writes
+     from its own signup dates. */
+  function arcplc(el) {
+    var ds = String(el.getAttribute('data-deadlines') || '').split(/\s+/), now = Date.now();
+    for (var i = 0; i < ds.length; i++) {
+      var d = day(ds[i]); if (!d) continue;
+      var r = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 7);
+      if (r.getTime() > now) return { topic: 'arcplc:' + ds[i],
+        copy: 'Remind me a week before the ' + md(d) + ' signup deadline.',
+        ok: 'Done. I’ll email you on ' + md(r) + ', a week before the ' + md(d) + ' deadline.', btn: 'Remind me' };
+    }
+    return null;
+  }
+  /* The ZIP to start the box with: the page's own ZIP box, a town page's ZIP, the saved location. */
+  function zipStart(el) {
+    var zi = el.getAttribute('data-zip-input'), n = zi && document.getElementById(zi);
+    var v = n ? String(n.value || '').trim() : '';
+    if (/^\d{5}$/.test(v)) return v;
+    if (/^\d{5}$/.test(el.getAttribute('data-zip') || '')) return el.getAttribute('data-zip');
+    return zip();
+  }
+
   function mount(el) {
     if (!el || el.getAttribute('data-sa-ready')) return;
     el.setAttribute('data-sa-ready', '1');
-    if (isSignedUp()) { el.hidden = true; return; }
+    var arc = el.hasAttribute('data-deadlines') ? arcplc(el) : null;
+    if (el.hasAttribute('data-deadlines') && !arc) { el.hidden = true; return; }
+    var topic = arc ? arc.topic : (el.getAttribute('data-topic') || '');
+    if (topic) {
+      el.setAttribute('data-sa-topic', topic);
+      if (noticeDone(topic)) { el.hidden = true; return; }
+    } else if (isSignedUp()) { el.hidden = true; return; }
     css();
-    var copy = el.getAttribute('data-signup-ask') || BAR_TEXT;
+    var copy = arc ? arc.copy : (el.getAttribute('data-signup-ask') || BAR_TEXT);
     var variant = el.getAttribute('data-variant') || 'page';
     var source = el.getAttribute('data-source') || ('page:' + slug());
     var reports = el.getAttribute('data-reports') !== '0';
-    var BTN = variant === 'hero' ? 'Sign up' : 'Sign up free';
-    var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n;
+    var note = el.getAttribute('data-note') || '';
+    var BTN = topic ? (arc ? arc.btn : (el.getAttribute('data-btn') || 'Email me')) : (variant === 'hero' ? 'Sign up' : 'Sign up free');
+    var OK = topic ? (arc ? arc.ok : (el.getAttribute('data-ok') || 'Done. One email when it’s out.')) : okText();
+    var withDaily = topic && !isSignedUp();
+    var n = ++seq, iid = 'sa-e-' + n, mid = 'sa-m-' + n, zid = 'sa-z-' + n, did = 'sa-d-' + n;
+    /* the ZIP box: a Daily ask always has one; a notice ask only with the Daily box ticked */
+    var zipLater = topic ? true : (variant === 'hero' || variant === 'bar');
     el.classList.add('sa-ask', 'sa-ask--' + variant);
     el.innerHTML = '<form class="sa-f" novalidate>'
       + (variant === 'hero' ? '<span class="sa-box">' : '')
       + '<label class="sa-l" for="' + iid + '">' + esc(copy) + '</label>'
       + '<input class="sa-in" id="' + iid + '" type="email" name="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required aria-describedby="' + mid + '">'
       + (variant === 'hero' ? '</span>' : '')
-      + '<button class="sa-b" type="submit">' + BTN + '</button>'
+      + '<button class="sa-b" type="submit">' + esc(BTN) + '</button>'
+      + (withDaily ? '<label class="sa-optin sa-d" for="' + did + '"><input type="checkbox" id="' + did + '"> Also send the morning briefing</label>' : '')
+      + (topic && !withDaily ? '' : '<div class="sa-z"' + (zipLater ? ' hidden' : '') + '><label class="sa-zl" for="' + zid + '">' + ZIP_LABEL + '</label>'
+        + '<input class="sa-zin" id="' + zid + '" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Optional"></div>')
       + '<p class="sa-m" id="' + mid + '" role="status" aria-live="polite"></p>'
+      + (note ? '<p class="sa-n">' + esc(note) + '</p>' : '')
       + '</form>';
     el.hidden = false;
     var form = el.querySelector('form'), input = el.querySelector('.sa-in'), btn = el.querySelector('.sa-b'), msg = el.querySelector('.sa-m');
+    var zrow = el.querySelector('.sa-z'), zin = el.querySelector('.sa-zin'), dbox = el.querySelector('.sa-d input');
+    var zipTouched = false;
+    function fillZip() { if (zin && !zipTouched) zin.value = zipStart(el); }
+    function showZip(on) {
+      if (!zrow || zrow.hidden === !on) return;
+      zrow.hidden = !on; if (on) fillZip();
+      if (barEl && barEl.contains(el)) placeBar();
+    }
+    fillZip();
+    if (zin) {
+      zin.addEventListener('input', function () { zipTouched = true; zin.removeAttribute('aria-invalid'); zin.value = zin.value.replace(/\D/g, '').slice(0, 5); });
+    }
+    /* the page's own ZIP box may have been filled since the ask was drawn */
+    input.addEventListener('focus', function () { if (zrow && zrow.hidden && !topic) showZip(true); else fillZip(); });
+    if (dbox) dbox.addEventListener('change', function () { showZip(dbox.checked); });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = (input.value || '').trim();
@@ -236,24 +347,31 @@
         return;
       }
       input.removeAttribute('aria-invalid');
+      var zipShown = !!(zrow && !zrow.hidden), zv = zipShown ? String(zin.value || '').trim() : '';
+      if (zv && !/^\d{5}$/.test(zv)) {
+        msg.textContent = 'A ZIP is 5 digits. Fix it, or leave it blank.';
+        zin.setAttribute('aria-invalid', 'true'); zin.focus();
+        return;
+      }
       msg.textContent = '';
       btn.disabled = true; btn.textContent = 'Sending…';
       el.setAttribute('data-sa-busy', '1');
-      /* A page with its own ZIP box (cash-bids) names it; else the saved location. */
-      var zi = el.getAttribute('data-zip-input'), zv = zi && document.getElementById(zi) ? String(document.getElementById(zi).value || '').trim() : '';
-      /* A town page names its own ZIP, so the Daily brings that town's bids. */
-      if (!/^\d{5}$/.test(zv) && /^\d{5}$/.test(el.getAttribute('data-zip') || '')) zv = el.getAttribute('data-zip');
-      subscribe({ email: email, source: source, reports: reports, zip: /^\d{5}$/.test(zv) ? zv : '' }).then(function (res) {
+      var daily = !!(dbox && dbox.checked);
+      var req;
+      if (topic) req = notice({ email: email, source: source, topic: topic, daily: daily, zip: zv });
+      else if (zipShown) req = subscribe({ email: email, source: source, reports: reports, zip: zv, zipField: true });
+      else req = subscribe({ email: email, source: source, reports: reports, zip: zipStart(el) });
+      req.then(function (res) {
         el.removeAttribute('data-sa-busy');
         if (res.ok) {
           el.setAttribute('data-sa-done', '1');
-          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(okText()) + '</p>';
+          el.innerHTML = '<p class="sa-ok" tabindex="-1">' + esc(OK + (topic && daily ? ' The morning briefing starts tomorrow.' : '')) + '</p>';
           var ok = el.querySelector('.sa-ok'); try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); }
           return;
         }
         btn.disabled = false; btn.textContent = BTN;
         msg.textContent = errText(res);
-        if (res.status >= 400 && res.status < 500) { input.setAttribute('aria-invalid', 'true'); }
+        if (res.status >= 400 && res.status < 500 && /email/i.test(String(res.data && res.data.error || ''))) { input.setAttribute('aria-invalid', 'true'); }
         input.focus();
       });
     });
@@ -264,6 +382,13 @@
   function hideOthers() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-signup-ask],[data-signup-hide]'), function (el) {
       if (el.getAttribute('data-sa-done') || el.getAttribute('data-sa-busy')) return;
+      /* a notice ask is its own list: it stays, without its Daily box */
+      if (el.getAttribute('data-sa-topic')) {
+        var d = el.querySelector('.sa-d'), z = el.querySelector('.sa-z');
+        if (d) { d.hidden = true; d.querySelector('input').checked = false; }
+        if (z) z.hidden = true;
+        return;
+      }
       el.hidden = true;
     });
     var bar = document.getElementById('sa-bar');
@@ -349,7 +474,7 @@
     _v: 1,
     isSignedUp: isSignedUp, setSignedUp: setSignedUp,
     isDismissed: isDismissed, setDismissed: setDismissed,
-    zip: zip, subscribe: subscribe, okText: okText, errText: errText,
+    zip: zip, subscribe: subscribe, notice: notice, okText: okText, errText: errText,
     source: sourceFor, mount: mount, scan: scan, css: css
   };
 

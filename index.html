@@ -324,7 +324,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </section>
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
   <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
-  <script src="/components/signup-ask.js?v=5"></script>
+  <script src="/components/signup-ask.js?v=6"></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-11" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>

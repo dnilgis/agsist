@@ -2355,7 +2355,17 @@ def byline_html(D):
 
 def deadlines_box():
     sc = signup_copy(build_date())
-    return ('<div class="ap-dead"><ul>' + "".join(f'<li><span class="d">{t}</span><span>{x}</span></li>' for t, x in sc["items"]) + "</ul></div>")
+    return ('<div class="ap-dead"><ul>' + "".join(f'<li><span class="d">{t}</span><span>{x}</span></li>' for t, x in sc["items"]) + "</ul></div>"
+            + remind_ask())
+
+
+def remind_ask():
+    """The one signup ask on ARC/PLC pages (approved 2026-10-11): a reminder a week before the next
+    signup deadline. Only the dates ride in the page (about 60 bytes); components/signup-ask.js
+    writes the line, picks the first deadline still more than a week off and posts topic
+    arcplc:<date> to the subs worker's /notice. It puts nobody on AGSIST Daily unless they tick the box."""
+    left = [YEAR_INFO[py]["close"] for py in YEARS if dt.date.fromisoformat(YEAR_INFO[py]["close"]) > build_date()]
+    return f'<div data-signup-ask data-deadlines="{" ".join(left)}"></div>' if left else ""
 
 
 def picker_html(D, st="", fips=""):
@@ -3110,6 +3120,13 @@ def selftest():
     def win(d, y):
         return [d[k] for k in range(y - 6, y - 1)]
 
+    global BUILD_DATE
+    _bd = BUILD_DATE
+    for today, want in (("2026-10-11", '<div data-signup-ask data-deadlines="2026-12-11 2027-03-15"></div>'),
+                        ("2026-12-12", '<div data-signup-ask data-deadlines="2027-03-15"></div>'), ("2027-03-16", "")):
+        BUILD_DATE = dt.date.fromisoformat(today)
+        ck(f"reminder ask on {today} names only deadlines still ahead", remind_ask() == want, remind_ask())
+    BUILD_DATE = _bd
     ck("ERP 2024 corn 4.01 (85%)", erp_calc(win(corn, 2024), 3.70, 0.85)["erp"] == 4.01)
     ck("ERP 2024 soybeans 9.26", erp_calc(win(soy, 2024), 8.40, 0.85)["erp"] == 9.26)
     ck("ERP 2024 wheat 5.50 statutory", erp_calc(win(wht, 2024), 5.50, 0.85)["binding"] == "statutory")

@@ -482,6 +482,15 @@ def state_cloud(states, exclude=None):
     return '<p class="rs-cloud">' + " &middot; ".join(links) + "</p>"
 
 
+def rent_ask(st, name, yr):
+    """One line under the county table: one email when NASS puts out the next
+    year's county rents for this state. components/signup-ask.js draws it and
+    posts topic rent:<st> to the subs worker's /notice (v5.11); it puts nobody
+    on AGSIST Daily unless they tick the box for it."""
+    return (f'<div data-signup-ask="Email me when the {yr + 1} county rents for {name} come out." data-topic="rent:{st.lower()}" '
+            f'data-ok="Done. One email when USDA puts out the {yr + 1} {name} county rents, usually in August."></div>')
+
+
 def faq_html(faq):
     """The FAQ, visibly, with the exact text the FAQPage JSON-LD carries:
     structured data must match what a reader sees."""
@@ -593,6 +602,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
   one its rent share calculator starts from.</p>
   {county_table(st, s, aslug)}
+  {rent_ask(st, name, yr)}
   <h2>{name} median county rent by year</h2>
   <p class="sub">Median of counties published each year ({plabel}). Years with no survey
   are left blank.</p>
@@ -867,6 +877,7 @@ def selftest():
         for st_ in stats:
             pg = open(os.path.join(td, f"{slug(STATE_NAMES[st_])}.html")).read()
             assert pg.count('class="rs-atlas"') == 1, f"{st_}: Atlas line missing"
+            assert pg.count(f'data-topic="rent:{st_.lower()}"') == 1, f"{st_}: rent release ask missing"
             for h_ in _re.findall(r'href="/farmland-atlas/([^"#]+)"', pg):
                 assert os.path.exists(os.path.join("farmland-atlas", h_ + "index.html" if h_.endswith("/") else h_ + ".html")), f"{st_}: {h_} has no page"
         hub = open(os.path.join(td, "index.html")).read()
