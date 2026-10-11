@@ -9,6 +9,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
+  <script src="/components/util.js?v=17"></script>
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -219,8 +220,7 @@
         <div class="panel-head"><h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> YOUR CROP AND COSTS</h2></div>
         <div class="panel-body">
           <div class="live-price-bar" id="live-bar" style="display:none">
-            <span class="live-dot"></span>
-            <span>Live <span id="live-crop-name">Corn</span>:</span>
+            <span><span id="live-crop-name">Corn</span>:</span>
             <span class="price-tag" id="live-price-val">--</span>
             <span class="chg-tag" id="live-chg-val"></span>
             <button onclick="useLivePrice()">Use this price</button>
@@ -440,7 +440,7 @@
     document.getElementById('costPerBu').textContent=_beOK?'$'+costPerBu.toFixed(2)+'/bu':BEWHY;
     document.getElementById('yieldNeeded').textContent=!_pOK?WHYP:!_cOK?CWHY:(cash>0?Math.ceil(yldNeeded-1e-9)+' bu/ac':DASH+' \u00b7 basis is larger than the price');
     document.getElementById('revenue').textContent=(_ok&&_pOK)?fM(revenue)+'/ac':(!_ok?DASH+' \u00b7 '+YWHY:WHYP);
-    var beEl=document.getElementById('breakeven');var beState=!_pOK?'':(cash>costPerBu&&costPerBu>0)?' · under market':(cash<costPerBu&&costPerBu>0)?' · over market':'';if(_ok&&beState&&basis===0)beState+=' · futures terms';var bsEl=document.getElementById('be-sub');if(bsEl){var _b0=_ok&&beState&&basis===0;bsEl.hidden=!_b0;bsEl.textContent=_b0?'Basis is 0, so cash and futures are the same.':'';}beEl.textContent=_beOK?('$'+costPerBu.toFixed(2)+'/bu'+beState):BEWHY;beEl.className='result-value be-highlight '+(!_calc||!_beOK?'highlight':cash>costPerBu&&costPerBu>0?'positive':cash<costPerBu&&costPerBu>0?'negative':'highlight');
+    var beEl=document.getElementById('breakeven');var beState=!_pOK?'':(cash>costPerBu&&costPerBu>0)?', below your price':(cash<costPerBu&&costPerBu>0)?', above your price':'';var bsEl=document.getElementById('be-sub');if(bsEl){var _b0=_ok&&beState&&basis===0;bsEl.hidden=!_b0;bsEl.textContent=_b0?'Basis is 0, so cash and futures are the same.':'';}beEl.textContent=_beOK?('$'+costPerBu.toFixed(2)+'/bu'+beState):BEWHY;beEl.className='result-value be-highlight '+(!_calc||!_beOK?'highlight':cash>costPerBu&&costPerBu>0?'positive':cash<costPerBu&&costPerBu>0?'negative':'highlight');
     var fnEl=document.getElementById('futNeeded');if(fnEl)fnEl.textContent=!_beOK?BEWHY:_bBad?DASH+' \u00b7 '+BWHY:'$'+(costPerBu-basis).toFixed(2)+'/bu';
     var snEl=document.getElementById('split-note');
     if(snEl){
@@ -493,7 +493,7 @@
   function printReport(){document.getElementById('print-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});calcBreakeven();setTimeout(function(){window.print();},150);}
   var _pricesFetched=null;
   function fetchLivePrices(){fetch('/data/prices.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(data){_livePrices=data.quotes||{};_pricesFetched=data.fetched||null;updateLiveBar();}).catch(function(){});}
-  function updateLiveBar(){var bar=document.getElementById('live-bar');if(!_livePrices){bar.style.display='none';return;}var crop=document.getElementById('crop').value,q=_livePrices[CROP_PRICE_KEY[crop]];if(!q||q.close==null){bar.style.display='none';return;}var _ft=_pricesFetched?new Date(_pricesFetched).getTime():NaN,_stale=!(isFinite(_ft)&&(Date.now()-_ft)<=60*3600000);if(_stale){document.getElementById('live-price-val').textContent='-';document.getElementById('live-crop-name').textContent=CROP_CONTRACT[crop]||CROP_NAMES[crop];delete bar.dataset.price;var ub=bar.querySelector('button');if(ub)ub.style.display='none';var ce=document.getElementById('live-chg-val');ce.textContent='price file is stale, enter your own price';ce.className='chg-tag';bar.style.display='flex';return;}var ub2=bar.querySelector('button');if(ub2)ub2.style.display='';var priceDollars=(q.close/100).toFixed(2);document.getElementById('live-price-val').textContent='$'+priceDollars+'/bu';document.getElementById('live-crop-name').textContent=CROP_CONTRACT[crop]||CROP_NAMES[crop];bar.dataset.price=priceDollars;var chgEl=document.getElementById('live-chg-val');var meta='';if(_pricesFetched){try{var ft=new Date(_pricesFetched),ageMin=Math.round((Date.now()-ft.getTime())/60000);meta=(ageMin<90)?(' · as of '+ft.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})):' · last close';}catch(e){}}
+  function updateLiveBar(){var bar=document.getElementById('live-bar');if(!_livePrices){bar.style.display='none';return;}var crop=document.getElementById('crop').value,q=_livePrices[CROP_PRICE_KEY[crop]];if(!q||q.close==null){bar.style.display='none';return;}var _ft=_pricesFetched?new Date(_pricesFetched).getTime():NaN,_stale=!(isFinite(_ft)&&(Date.now()-_ft)<=60*3600000);if(_stale){document.getElementById('live-price-val').textContent='-';document.getElementById('live-crop-name').textContent=CROP_CONTRACT[crop]||CROP_NAMES[crop];delete bar.dataset.price;var ub=bar.querySelector('button');if(ub)ub.style.display='none';var ce=document.getElementById('live-chg-val');ce.textContent='price file is stale, enter your own price';ce.className='chg-tag';bar.style.display='flex';return;}var ub2=bar.querySelector('button');if(ub2)ub2.style.display='';var priceDollars=(q.close/100).toFixed(2);document.getElementById('live-price-val').textContent=((window.AG&&AG.px)?AG.px.price(q.close):'$'+priceDollars)+'/bu';document.getElementById('live-crop-name').textContent=CROP_CONTRACT[crop]||CROP_NAMES[crop];bar.dataset.price=priceDollars;var chgEl=document.getElementById('live-chg-val');var meta='';if(_pricesFetched){try{var ft=new Date(_pricesFetched),ageMin=Math.round((Date.now()-ft.getTime())/60000);meta=(ageMin<90)?(' · as of '+ft.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})):' · last close';}catch(e){}}
     if(q.pctChange!=null){var pct=q.pctChange;chgEl.textContent=(pct>=0?'▲':'▼')+' '+Math.abs(pct).toFixed(2)+'%'+meta;chgEl.className='chg-tag '+(pct>=0?'up':'dn');}else{chgEl.textContent=meta.replace(' · ','');}bar.style.display='flex';
     seedLivePriceIfUntouched();}
   /* THE DEFAULT IS ONLY A DEFAULT UNTIL THE BOARD LOADS. CROP_DEFAULTS
