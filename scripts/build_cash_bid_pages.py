@@ -246,7 +246,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
-            "town": tname, "state": st})
+            "town": tname, "state": st, "pin": _pin(b)})
         pt = parse_ts(b.get("pricedAt"))
         if pt and (bd["last_priced"] is None or pt > bd["last_priced"]):
             bd["last_priced"] = pt
@@ -527,6 +527,14 @@ CSS = """
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
     .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
+    .cbt-top{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;line-height:1.55;color:var(--text)}
+    .cbt-top p{margin:0 0 4px}.cbt-top p:last-child{margin:0}.cbt-top a{color:var(--gold)}
+    .cbt-nl{list-style:none;margin:6px 0 0;padding:0}
+    .cbt-nl li{padding:9px 0;border-bottom:1px solid var(--border);font-size:.9rem;line-height:1.5;color:var(--text)}
+    .cbt-nl li a{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--border)}
+    .cbt-nl li a:hover{color:var(--gold)}
+    .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
+    .cbt-nl .cbt-mut{white-space:nowrap}
 """
 
 
@@ -639,8 +647,128 @@ def hold_lines(bd):
         if not pk:
             continue
         to = storesell.MON[int(pk["key"][5:]) - 1]
-        out.append((c, storesell.hold_line(to, pk["carry"], pk["months"], model["spot"]["cash"], "posted", inputs)))
+        net = storesell.carry_net(model["spot"]["cash"], pk["carry"], pk["months"], inputs)["net"]
+        out.append((c, storesell.hold_line(to, pk["carry"], pk["months"], model["spot"]["cash"], "posted", inputs),
+                    pk["carry"] if net is None else net))
     return out
+
+
+# ---------------------------------------------------------------- nearby elevators (2026-10-11)
+# A town page used to end at its own elevators, and a town with no current bid
+# was a dead end ("No current bid", then a link). Each town page now lists the
+# nearest OTHER network elevators that have a current bid, from the same rows
+# this build already gated (72 h, live board, delivery open, misreads out):
+# nothing is read or shown that a town page of its own would not show.
+NEARBY_MI = 40                # a town with bids: other elevators this close
+NEARBY_MAX = 6
+NEAREST_N = 5                 # a town with none: the nearest this many ...
+NEAREST_MAX_MI = 100          # ... no farther than this
+
+
+def board_glance(bd):
+    """{crop: (cash, 'YYYY-MM', posted)} for one board: per crop, the commodity
+    it posts most (a #2 yellow and a non-GMO bid are never mixed), its nearest
+    delivery month, the highest cash there."""
+    out = {}
+    for c in CROPS:
+        rs = [r for r in bd["rows"] if r["crop"] == c]
+        if not rs:
+            continue
+        com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
+        rs = [r for r in rs if r["commodity"].lower() == com]
+        m = min(r["dm"] for r in rs)
+        best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
+        out[c] = (best["cash"], m, best["priced"])
+    return out
+
+
+def live_board_list(towns):
+    """Every board with a current bid and a map pin, once, for the nearby lists."""
+    out = []
+    for (st, slug), t in towns.items():
+        for bd in t["boards"].values():
+            if not bd["rows"] or not bd.get("pin"):
+                continue
+            g = board_glance(bd)
+            if not g:
+                continue
+            out.append({"town_key": (st, slug), "pin": bd["pin"], "name": bd["operator"] or bd["city"],
+                        "town": t["name"], "state": st,
+                        "path": f"/cash-bids/{url_slug(STATE_NAMES[st])}/{slug}", "glance": g,
+                        "posted": max(v[2] for v in g.values())})
+    out.sort(key=lambda b: (b["state"], b["town"], b["name"]))
+    return out
+
+
+def town_center(t, z, zip_coord):
+    """(lat, lon, what it is): the town's ZIP centroid, else the middle of its
+    own boards' pins, else None (no nearby list is drawn)."""
+    c = zip_coord(z) if (zip_coord and z) else None
+    if c:
+        return c[0], c[1], f"the center of ZIP {z}"
+    pins = [bd["pin"] for bd in t["boards"].values() if bd.get("pin")]
+    if pins:
+        return (sum(p[0] for p in pins) / len(pins), sum(p[1] for p in pins) / len(pins),
+                f"the elevators in {t['name']}")
+    return None
+
+
+def _mon(dm, snap_ct):
+    y, m = int(dm[:4]), int(dm[5:7])
+    return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" &rsquo;{y % 100:02d}")
+
+
+def nearby_section(t, center, live_all, snap_ct, has_own):
+    """The nearest other elevators with a current bid, or "" when none qualify."""
+    if not center or not live_all:
+        return ""
+    lat, lon, what = center
+    tk = (t["state"], t["slug"])
+    cand = sorted(((miles(lat, lon, b["pin"][0], b["pin"][1]), b) for b in live_all if b["town_key"] != tk),
+                  key=lambda x: (x[0], x[1]["name"]))
+    if has_own:
+        pick = [x for x in cand if x[0] <= NEARBY_MI][:NEARBY_MAX]
+        h2 = f"Other elevators within {NEARBY_MI} miles"
+    else:
+        pick = [x for x in cand if x[0] <= NEAREST_MAX_MI][:NEAREST_N]
+        h2 = "Nearest elevators with a current bid"
+    if not pick:
+        if has_own:
+            return ""
+        return (f'<h2>{h2}</h2><p class="cbt-sub">No elevator the AGSIST network reads has a current bid within '
+                f'{NEAREST_MAX_MI} miles of {esc(t["name"])}.</p>')
+    lis = []
+    for d, b in pick:
+        g = b["glance"]
+        cs = [c for c in ("corn", "soybeans") if c in g] or [c for c in CROPS if c in g][:1]
+        prices = " &middot; ".join(f'{CROP_LABEL[c]} ${g[c][0]:.2f} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
+                                   for c in cs)
+        p = b["posted"].astimezone(CT)
+        dist = "under 1 mi" if d < 1 else f"{d:.0f} mi"
+        lis.append(f'<li><a href="{b["path"]}"><b>{esc(b["name"])}</b>, {esc(b["town"])}, {b["state"]}</a> '
+                   f'<span class="cbt-mut">{dist} &middot; posted {MONTH_ABBR[p.month - 1]} {p.day}</span><br>'
+                   f'<span class="np">{prices}</span></li>')
+    return (f'<h2 id="nearby">{h2}</h2><ul class="cbt-nl">{"".join(lis)}</ul>'
+            f'<p class="cbt-sub">Straight-line miles from {esc(what)}. Each price is that elevator&rsquo;s highest '
+            f'posted cash for its nearest delivery month, posted in the last {FRESH_HOURS} hours. '
+            f'Call to confirm before you haul.</p>')
+
+
+def top_holds(held, ss):
+    """The store-or-sell line worth reading first: per crop (corn and soybeans
+    first, two at most), the elevator in town whose own later bid nets the most
+    after the stated default costs. The same lines are on each card below."""
+    best = {}
+    for name, holds in held:
+        for c, text, net in holds:
+            if c not in best or net > best[c][2] + 1e-9:
+                best[c] = (name, text, net)
+    cs = [c for c in CROPS if c in best][:2]
+    if not cs:
+        return ""
+    lines = "".join(f'<p><b>{esc(CROP_LABEL[c])}, {esc(best[c][0])}:</b> {esc(best[c][1])}</p>' for c in cs)
+    return (f'<div class="cbt-top">{lines}<p class="cbt-mut">Default storage and interest; '
+            f'<a href="{esc(ss)}">put in your own costs</a>.</p></div>')
 
 
 def board_section(bd, snap_ct):
@@ -674,13 +802,13 @@ def board_section(bd, snap_ct):
     more_html = (f'<p class="cbt-sub" style="margin:6px 0 0">{more} more bid{"s" if more != 1 else ""} for later '
                  f'delivery on the <a href="{esc(live)}">live page</a>.</p>' if more else "")
     holds = hold_lines(bd)
-    more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t in holds)
+    more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
-            f'{more_html}</section>'), rows, times, bool(holds)
+            f'{more_html}</section>'), rows, times, holds
 
 
 WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
@@ -708,10 +836,12 @@ def build_town_page(t, ctx):
     order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
     live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
-    secs, times, crops, nrows, shown, any_hold = [], [], set(), 0, [], False
+    secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
     for bd in live_b:
         h, rows, ts, held = board_section(bd, snap_ct)
-        any_hold = any_hold or held
+        any_hold = any_hold or bool(held)
+        if held:
+            held_all.append((bd["operator"] or bd["city"], held))
         secs.append(h)
         times += ts
         shown += rows
@@ -753,16 +883,14 @@ def build_town_page(t, ctx):
         if n_near:
             who += (" and " if n_in else "") + (f'<b>{n_near}</b> elevator{"s" if n_near != 1 else ""} within '
                                                 f'{NEAR_MI} miles of {esc(t["name"])}')
-        intro = (f'<p class="cbt-sub">Bids posted by {who} '
-                 f'that the AGSIST network reads directly from the elevator&rsquo;s own bid board. Cash is $/bu; '
-                 f'basis is cash minus the futures contract named under it. Prices move through the day, '
-                 f'each elevator shows when it posted. Call the elevator before you haul.</p>')
+        intro = (f'<p class="cbt-sub">Bids posted by {who}, read from each elevator&rsquo;s own bid board. '
+                 f'Cash is $/bu. Each elevator shows when it posted; call before you haul.</p>')
     else:
         desc = (f"Cash grain bids in {place}: no current bid from the elevators the AGSIST network reads here. "
-                f"See the live page for bids nearby.")[:160]
+                f"The nearest elevators with a current bid are listed.")[:160]
         tops, share = {}, None
         intro = (f'<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in '
-                 f'{esc(place)} has a bid we could confirm right now. The live page shows bids nearby.</div>')
+                 f'{esc(place)} has a bid we could confirm right now. The nearest ones that do are below.</div>')
     quiet_html = ""
     if quiet:
         quiet_html = (f'<h2>Also in {esc(t["name"])}, no current bid</h2><ul class="cbt-list">'
@@ -783,8 +911,10 @@ def build_town_page(t, ctx):
                       f"{NEAR_MI} miles of {esc(t['name'])}, measured from its map pin to the nearest elevator "
                       f"we list in {esc(t['name'])}; its card says how far.")
     hold_note = ""
+    ss = "/store-or-sell" + (f"?zip={z}" if z else "")
+    top_html = top_holds(held_all, ss)
+    near_html = nearby_section(t, town_center(t, z, ctx.get("zip_coord")), ctx.get("live_all"), snap_ct, indexable)
     if any_hold:
-        ss = "/store-or-sell" + (f"?zip={z}" if z else "")
         hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
@@ -796,8 +926,11 @@ def build_town_page(t, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
   {intro}
+  {top_html}
+  {'' if indexable else near_html}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {''.join(secs)}
+  {near_html if indexable else ''}
   <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
   <script>try{{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}}catch(e){{}}</script>
   <div data-signup-ask="Get {esc(t['name'])} bids by email every weekday morning" data-source="town:{ssl}/{t['slug']}"{f' data-zip="{z}"' if z else ''}></div>
@@ -806,7 +939,7 @@ def build_town_page(t, ctx):
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
-  has the newest board and nearby elevators.{near_note}{hold_note}</div>
+  has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -865,6 +998,14 @@ def basis_stat(g, st, prev_gen):
             f'{money_basis(st["lo"])} to {money_basis(st["hi"])}{wow}</div></div>')
 
 
+def dtext(r):
+    """SB.delivery_text, with a DTN-style "10/01/2026" month start read as
+    "Oct 2026" (the state page's best card printed the raw date)."""
+    d = SB.delivery_text(r)
+    m = re.fullmatch(r"(\d{2})/01/(\d{4})", d.strip())
+    return f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}" if m and 1 <= int(m.group(1)) <= 12 else d
+
+
 def best_bids(near):
     """{crop: row} the highest cash among each crop's nearest delivery start
     in the state, for corn and soybeans (and a wheat class with no corn or
@@ -886,7 +1027,7 @@ def best_card(g, r, town_paths):
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
     return (f'<div class="cbt-stat"><div class="v">${r["cash"]:.2f}</div>'
-            f'<div class="l">Top {SB.CROP_LABEL[g].lower()} bid, nearest delivery ({esc(SB.delivery_text(r))})</div>'
+            f'<div class="l">Top {SB.CROP_LABEL[g].lower()} bid, nearest delivery ({esc(dtext(r))})</div>'
             f'<div class="s">{esc(r["operator"])}, {where} &middot; {bas} &middot; posted {fmt_day(r["priced"])}. '
             f'Call to confirm.</div></div>')
 
@@ -967,7 +1108,7 @@ def top_bid_table(g, near, town_paths):
         tl = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
         con = f'<br><span class="mut">vs {contract_label(r["contract"])}</span>' if r["contract"] else ""
         trs.append(f'<tr><td>{esc(r["operator"])}<br><span class="mut">{tl}</span></td>'
-                   f'<td>{esc(SB.delivery_text(r))}</td><td class="n">${r["cash"]:.2f}</td>'
+                   f'<td>{esc(dtext(r))}</td><td class="n">${r["cash"]:.2f}</td>'
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
@@ -989,7 +1130,7 @@ def state_table_doc(st, near, ctx, town_paths):
         rows.append([r["group"], r["operator"], SB.town_text(r["city"]), tp[1] if tp else "",
                      round(r["cash"], 4), round(r["basis"], 4),
                      SB.contract_plain(r["contract"]) if r["contract"] else "",
-                     SB.delivery_text(r), r.get("wow"), r["priced"].strftime("%Y-%m-%dT%H:%M:%SZ"), flag])
+                     dtext(r), r.get("wow"), r["priced"].strftime("%Y-%m-%dT%H:%M:%SZ"), flag])
     pg = ctx.get("prev_generated")
     return {"schema": "agsist-state-basis/1", "state": st, "name": STATE_NAMES[st],
             "generated": ctx["snap_iso"], "prev": pg.strftime("%Y-%m-%dT%H:%M:%SZ") if pg else None,
@@ -1258,7 +1399,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   <h1>{esc(sname)} cash grain bids and basis today</h1>
   <p class="cbt-sub">Bids and basis from elevators in the AGSIST network, read directly from each
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
-  <a href="/cash-bids">live cash bids page</a> searches by ZIP and adds more sources.</p>
+  <a href="/cash-bids">live cash bids page</a> finds the ones nearest your ZIP.</p>
   {best_html}
   {basis_section(st, summ, pg)}
   {el_html}
@@ -1377,7 +1518,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                      | boards_st) & set(STATE_NAMES), key=lambda s: STATE_NAMES[s])
     ctx = {"snap_ct": gen.astimezone(CT), "root": root, "chrome": SB.static_chrome(root), "states": states,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
-           "counts": state_counts(towns, near)}
+           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns)}
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -1522,6 +1663,12 @@ def selftest():
                                  "period": "2026-10"}, snap)
     assert town_name("BAXTER  SPRINGS") == "Baxter Springs" and url_slug("St. Paul") == "st-paul"
     merged, index = _fixture()
+    # map pins for the nearby lists: Fremont and Hooper are about 13 mi apart, Iowa is far
+    PINS = {"FREMONT": (41.433, -96.498), "Fremont": (41.433, -96.498), "Hooper": (41.611, -96.548),
+            "Hooper, NE": (41.611, -96.548)}
+    for b in merged["bids"]:
+        if b["city"] in PINS:
+            b["lat"], b["lon"] = PINS[b["city"]]
     ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
     with _tf.TemporaryDirectory() as td:
         out, sm = os.path.join(td, "cash-bids"), os.path.join(td, "sm.xml")
@@ -1565,12 +1712,23 @@ def selftest():
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
         assert "1.16" not in ho and "1.17" not in ho and "$9.70" in ho
         assert "Op old: no price posted in the last 72 hours" in ho, "a quiet board must be named, unpriced"
+        # nearby: a town with bids lists the other elevators within 40 mi, with their own gated numbers
+        assert "Other elevators within 40 miles" in fr and 'href="/cash-bids/nebraska/hooper"' in fr
+        near_fr = fr[fr.index('id="nearby"'):]
+        assert "Soybeans $9.70" in near_fr and "13 mi" in near_fr and "posted Oct 7" in near_fr, near_fr[:900]
+        assert "1.16" not in near_fr and "Redfield" not in near_fr, "only gated rows, only within 40 mi"
+        assert "Op n0" not in near_fr, "a town's own elevators are not repeated as its neighbours"
+        # the store-or-sell line is read first, above the cards
+        assert fr.index('<div class="cbt-top"><p><b>Corn, Op n0:</b> Hold to Nov?') < fr.index('class="cbt-el"')
         # a town whose only boards are quiet is written noindex and left out of the sitemap
         lone = json.loads(json.dumps(merged))
         lone["bids"] = [x for x in lone["bids"] if x["source"] != "t-st"]
         build_all(lone, index, ZT, out_dir=out + "2", root=".", min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
         ho2 = open(os.path.join(out + "2", "nebraska", "hooper.html")).read()
         assert 'content="noindex,follow"' in ho2 and "No current bid." in ho2
+        # no dead end: the nearest elevators that do have a bid, above the cards
+        assert "Nearest elevators with a current bid" in ho2 and 'href="/cash-bids/nebraska/fremont"' in ho2
+        assert "Corn $3.95" in ho2 and "1.17" not in ho2
         assert "Top bids" not in ho2 and '<meta property="og:title" content="Cash Grain Bids in Hooper, NE Today' in ho2
         assert os.path.exists(os.path.join(out, "iowa", "redfield.html"))
         assert not os.path.exists(os.path.join(out, "iowa", "lincolnway-energy.html"))
