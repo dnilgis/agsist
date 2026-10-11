@@ -35,9 +35,24 @@ COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
      month because heat and the partial-year loss record move; most of the
      numbers a read uses do not. Each read stores the hash of its block.
 
-  Prompt caching is NOT used: the system prompt is about 500 tokens and the
-  documented minimum is 1,024 (Sonnet) and 4,096 (Haiku 4.5). Marking it
-  would change nothing.
+  Prompt caching is NOT used: the system prompt is about 900 tokens since the
+  voice section went in (2026-10-11) and the documented minimum is 1,024
+  (Sonnet) and 4,096 (Haiku 4.5). Marking it would change nothing.
+
+VOICE (2026-10-11)
+  The 9/19 reads passed every number check and still read as machine-written:
+  1,929 opened "Non-irrigated cash rent in X County runs $N", 695 said "stands
+  at", 443 "sits at", 260 "no clear direction", 122 repeated the page's own
+  "operators' own estimate, not a sale price". The prompt now names those
+  shapes and asks for Sig's voice; the block no longer hands the model the
+  phrases it echoed. Every answer then goes through atlas_reads_cleanup.py:
+  clean_text() makes the safe rewrites (never a number), voice_hits() lists
+  what is left. A read with hits goes round once more with them named; if the
+  second answer is no better it is kept, because its numbers passed, and
+  stored with a "voice" list so the next look can find it.
+  Changing the prompt changes every block hash, so nothing is carried forward
+  on the next monthly build: every county whose fingerprint moved is written
+  again once (about 3,000 batch requests).
 
 FATAL ERRORS STOP THE RUN AND TOUCH NOTHING
   2026-09-19: "Your credit balance is too low" came back on every call after
@@ -65,6 +80,9 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from atlas_reads_cleanup import clean_text, voice_hits, hits_feedback  # noqa: E402
 
 ATLAS = "data/atlas/atlas.json"
 DETAIL_DIR = "data/atlas/counties"
@@ -108,19 +126,27 @@ CAUSE_WORDS = {"heat_drought": "heat and drought", "wet": "excess moisture and f
                "wind": "wind", "cold": "freeze and frost", "irrigation": "irrigation failure",
                "price": "price decline", "unassigned": "area and index plans with no peril assigned", "other": "other causes"}
 
-SYSTEM = """You write the county read for AGSIST's Farmland Atlas. First person plural is not used; write as "I". Plain, short sentences. No adjectives of alarm. No advice to buy or sell. No emoji. No headings, no bullets.
+SYSTEM = """You write the county read for AGSIST's Farmland Atlas, in the voice of Sig Lindquist, a Certified Crop Adviser in Wisconsin, talking to a farmer or a landowner who just pulled up this county. Write as "I" when you need a person at all; most sentences need none. Plain, short sentences, the words a farmer uses: rent, ground, acres, bushels, claims, dry years. Contractions are fine. No adjectives of alarm. No advice to buy or sell. No emoji. No headings, no bullets.
+
+How the read should sound (a second program checks these shapes and sends the read back if it finds them):
+A. Lead with what is notable about this county, not with the rent by habit. If most of the cropland is irrigated, if drought weeks or heat-and-drought claims stand out, if the loss ratio is over 1, if the land value is high next to the rent, if CRP or wind and solar is large, start there. Do not open with "Non-irrigated cash rent in".
+B. Use "is", "was", "has", "paid". Never "stands at", "sits at", "stood at", "runs $", "comes in at", "carries a census value", "carries at".
+C. Pick the one or two numbers that matter and say each once. For a trend over periods, give the first and the latest period in plain words ("heat and drought went from 9 percent of claims in 1989-1999 to 33 percent in 2020-2025"). Do not chain three or four periods with "to ... to ...", and never write "has moved from".
+D. A line marked "not a clear trend" is not news. Leave that trend out; never write "no clear direction".
+E. The page already prints, right beside the read, that the census land value is the operators' own estimate and not a sale price, the county name and state, and the sources. Do not repeat any of that.
+F. Skip these shapes: "per acre a year on published years", "Drought pressure has been present", "ran hot", "X, not Y" contrasts, a colon reveal, three items in a row for rhythm, em dashes.
 
 Rules that are checked by a program after you answer:
 1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block. A negative number in the block is a fall: write "down 40 percent" or "falling 2.3 bushels per acre a year", never a minus sign.
 2. Name a period exactly as the block writes it. The block writes "1989-1999", so write "1989-1999". Never turn a period into a decade: "the 1990s" puts the number 1990 in your answer, 1990 is not in the block, and the check rejects it. The same goes for "the 2000s" and "the 2020s" unless the block writes that exact token.
 3. The block lists only what is measured for this county. Do not mention anything that is missing, withheld, unpublished or not measured, and do not guess at it.
-4. Four or five sentences. Keep it under 120 words; a program rejects anything at 130 words or more, so 120 is the target and not a stretch.
-5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present.
+4. Three to five sentences. Keep it under 100 words; a program rejects anything at 130 words or more.
+5. Say what is present. Do not say what the county lacks.
 6. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
 7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust.
 8. To compare two numbers, write both numbers and stop. Do not state the gap, the ratio, a share of a total, or how many years a period spans: each of those is a new number and fails the check.
 9. Write money exactly as the block writes it, with the dollar sign and commas: "$10,914 per acre", "$156.5 million". Never write "dollars" after a number.
-10. Do not say a figure rose, fell, grew or shrank across three or more periods unless every step moves the same way. Otherwise list the periods and stop.
+10. Do not say a figure rose, fell, grew or shrank across three or more periods unless every step moves the same way. Otherwise give the first and latest periods and stop.
 11. Do not mention how this text was written, by whom or by what, or that anything checks it."""
 
 
@@ -157,6 +183,14 @@ def pct100(x):
     return int(math.floor(x * 100 + 0.5))
 
 
+def _direction(d):
+    """'rising' / 'warming' as given; anything else is the one phrase the prompt
+    tells the model to leave out. 'no clear direction' handed over verbatim came
+    back in 260 reads (2026-09)."""
+    d = str(d or "")
+    return f"trend {d}" if d in ("rising", "falling", "warming", "cooling") else "not a clear trend"
+
+
 def inputs_block(fips, rec):
     """The numbers the model may use, one per line. Everything else is withheld."""
     # The unit word, not a bare " County". 134 of the 3,144 are a parish, a
@@ -177,12 +211,12 @@ def inputs_block(fips, rec):
     y = rec.get("yield") or {}
     if y.get("status") == "ok":
         if y.get("slope") is not None:
-            L.append(f"County corn yield trend, fitted on published years {y.get('window') or ''}: {fmt_num(round(y['slope'], 1))} bushels per acre a year")
+            L.append(f"County corn yield trend, fitted over the published years {y.get('window') or ''}: {fmt_num(round(y['slope'], 1))} bushels per acre a year")
         L.append(f"Median county corn yield {y.get('first_year')}-{y.get('last_year')}: {fmt_num(y['median'])} bushels per acre; worst year {y['worst']['year']} at {fmt_num(y['worst']['value'])}")
     wp = rec.get("water_premium") or {}
     if wp.get("status") == "ok":
         if wp["latest"].get("ratio") is not None and wp["first"].get("ratio") is not None and not str(wp.get("direction", "")).startswith("not called"):
-            L.append(f"Irrigated cash rent as a multiple of non-irrigated rent: {wp['latest']['ratio']:.2f} in {wp['latest']['year']}, {wp['first']['ratio']:.2f} in {wp['first']['year']}; direction of the multiple: {wp['direction']}")
+            L.append(f"Irrigated cash rent as a multiple of non-irrigated rent: {wp['latest']['ratio']:.2f} in {wp['latest']['year']}, {wp['first']['ratio']:.2f} in {wp['first']['year']}; {_direction(wp['direction'])}")
     h = rec.get("heat") or {}
     if h.get("status") == "ok":
         j = (h.get("months") or {}).get("jul") or {}
@@ -192,7 +226,7 @@ def inputs_block(fips, rec):
             L.append(f"July average nightly low, 1991-2020 normal: {fmt_num(j['normal_1991_2020']['mean'])} F")
         t = j.get("trend") or {}
         if t.get("per_decade") is not None:
-            L.append(f"July nightly low trend since {t['from']}: {fmt_num(t['per_decade'])} F per decade, direction: {t['direction']}")
+            L.append(f"July nightly low trend since {t['from']}: {fmt_num(t['per_decade'])} F per decade, {_direction(t['direction'])}")
         d = j.get("decades") or {}
         if d:
             hot = sum(v.get("hot", 0) for v in d.values())
@@ -231,7 +265,9 @@ def inputs_block(fips, rec):
             L.append(f"Indemnity paid per $100 of insured value, {l10['from']}-{l10['to']}: ${l10['loss_cost'] * 100:.2f}")
     v = rec.get("value") or {}
     if v.get("status") == "ok" and v.get("latest") is not None:
-        L.append(f"Census value of land and buildings, {v['latest_year']} (the operators' own estimate, not a sale price): {usd(v['latest'])} per acre")
+        # The page prints "operators' own estimate, not a sale price" beside the
+        # read. Handing the model that phrase put it back in 122 reads (2026-09).
+        L.append(f"Census value of land and buildings, {v['latest_year']}: {usd(v['latest'])} per acre")
         if (v.get("change") or {}).get("cagr_pct") is not None:
             L.append(f"Land value change {v['change']['from_year']}-{v['change']['to_year']}: {fmt_num(v['change']['pct'])} percent, {fmt_num(v['change']['cagr_pct'])} percent a year")
         if (v.get("rent_to_value") or {}).get("pct") is not None:
@@ -408,15 +444,50 @@ def api_json(api_key, method, path, payload=None, timeout=120, retry=True):
 
 
 _FEEDBACK = {}   # fips -> why the first read failed the gate; sent back once in round 2
+_FIRST_OK = {}   # fips -> (text, sha, block): passed the gate, failed the voice check; used if round 2 does worse
+_FIRST_OK_HITS = {}
 
 
 def request_params(block, model, why=None):
     # Sonnet 5 thinks by default and the thinking counts against max_tokens: on 9/19 it
     # used up the 400 before the read in 828 of 2,331 requests (stop_reason max_tokens),
     # and those tokens were billed. A 130-word read from a fixed block needs no thinking.
+    if why and why.startswith("voice: "):
+        retry = (f"\n\nA first read of these numbers passed the number check but used these shapes: {why[7:]}. "
+                 "Write a new one in plain words that avoids them; stay under 100 words.")
+    elif why:
+        retry = f"\n\nA first read of these numbers failed the check: {why}. Write a new one that passes; stay under 110 words."
+    else:
+        retry = ""
     return {"model": model, "max_tokens": 400, "thinking": {"type": "disabled"}, "system": SYSTEM,
-            "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."
-                          + (f"\n\nA first read of these numbers failed the check: {why}. Write a new one that passes; stay under 110 words." if why else "")}]}
+            "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read." + retry}]}
+
+
+def finish(text, fips):
+    """The model's text after the safe rewrites (atlas_reads_cleanup.clean_text:
+    "stands at" -> "is", dashes, the template's land-value note, a rotated
+    opener; never a number), and the voice habits still in it."""
+    t = clean_text(text, fips)
+    return t, voice_hits(t)
+
+
+def _keep_first_ok(reads, pending):
+    """Round 2 never came back: a county sent again only for its voice keeps the
+    first read, whose numbers passed, flagged. Returns how many."""
+    n = 0
+    for fips in pending:
+        if fips in _FIRST_OK:
+            reads["counties"][fips] = _entry(*_FIRST_OK[fips], MODEL, _FIRST_OK_HITS[fips])
+            n += 1
+    return n
+
+
+def _entry(text, sha, block, model, hits):
+    e = {"text": text, "sha": sha, "block": block_hash(block), "model": model, "generated": _now()}
+    if hits:
+        # kept, because every number checked out, but marked for the next look
+        e["voice"] = sorted({h[0] for h in hits})
+    return e
 
 
 def parse_results(jsonl_bytes):
@@ -570,12 +641,19 @@ def one(api_key, fips, rec, model=None):
     model = model or MODEL
     block = inputs_block(fips, rec)
     last = None
+    first_ok = None          # a read that passed the gate but not the voice check
     for attempt in range(2):
-        text = call_model(api_key, block, model)
+        text, hits = finish(call_model(api_key, block, model), fips)
         why = gate(text, block)
+        if why is None and (not hits or attempt == 1):
+            return _entry(text, rec["sha"], block, model, hits)
         if why is None:
-            return {"text": text, "sha": rec["sha"], "block": block_hash(block), "model": model,
-                    "generated": _now()}
+            first_ok = (text, hits)
+            _FEEDBACK[fips] = "voice: " + hits_feedback(hits)
+            log(f"  {fips}: voice ({', '.join(sorted({h[0] for h in hits}))}), attempt {attempt + 1}")
+            continue
+        if first_ok:
+            return _entry(first_ok[0], rec["sha"], block, model, first_ok[1])
         last = why
         log(f"  {fips}: gate failed ({why}), attempt {attempt + 1}")
         _log_reject(fips, why, text)
@@ -720,6 +798,52 @@ def selftest():
     assert salvage_text("Night heat is withheld. Rent is 12345 dollars.", block) is None
     assert salvage_text("Rent is 999 dollars an acre in Adams County, Nebraska, for the record. That rent is up 7.8 percent since 2014 on every acre counted.", block) is None
     assert carry({"text": sv, "sha": "old", "block": block_hash(block), "salvaged": True}, {"sha": "new"}, block) is None
+
+    # VOICE (2026-10-11). The 9/19 run wrote "Non-irrigated cash rent in X County
+    # runs $N" 1,929 times, "stands at" 695, "sits at" 443, "no clear direction"
+    # 260 and the page's own land-value note 122. The prompt names each shape...
+    for shape in ("Non-irrigated cash rent in", "stands at", "sits at", "has moved from", "no clear direction",
+                  "carries a census value", "on published years", "operators' own estimate", "Sig Lindquist"):
+        assert shape in SYSTEM, f"the prompt no longer names: {shape}"
+    # ...the block stops handing the model the phrases it then repeats...
+    rec2 = dict(rec, value={"status": "ok", "latest": 6763.0, "latest_year": 2022,
+                            "change": {"from_year": 2017, "to_year": 2022, "pct": 25.9, "cagr_pct": 4.7}},
+                heat={"status": "ok", "months": {"jul": {"recent": {"from": 2017, "to": 2026, "mean": 67.8},
+                                                         "trend": {"from": 1976, "per_decade": 0.1, "direction": "no clear direction"}}}})
+    b2 = inputs_block("19145", rec2)
+    assert "estimate" not in b2 and "sale price" not in b2 and "no clear direction" not in b2, b2
+    assert "not a clear trend" in b2 and "$6,763 per acre" in b2 and "over the published years 2008-2024" in b2, b2
+    assert "trend rising" in b2, b2
+    # ...the safe rewrites run on every answer, and what is left is checked.
+    raw = ("Non-irrigated cash rent in Adams County stands at $138 per acre in 2025, up 7.8 percent since 2014. "
+           "Irrigated ground sits at $289. Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, a rising trend.")
+    t2, h2 = finish(raw, "31001")
+    assert numbers_in(t2) == numbers_in(raw) and gate(t2, block) is None and not h2, (t2, h2)
+    assert "stands at" not in t2 and "sits at" not in t2, t2
+    t3, h3 = finish(ok + " July lows show no clear direction, with heat and drought's share moving from 9 percent in "
+                    "1989-1999 to 12 percent in 2000-2009 to 33 percent in 2010-2019.", "31001")
+    assert {"no-clear-direction"} <= {h[0] for h in h3} or "had no clear trend" in t3, (t3, h3)
+    fb = request_params(block, "m", "voice: " + hits_feedback(voice_hits("Land value has moved from $1 in 2017 to $2 in 2022.")))
+    assert "passed the number check but used these shapes" in fb["messages"][0]["content"], fb
+    # the sync path: a voice miss goes round once; a retry that breaks the numbers
+    # falls back to the first read, flagged
+    global call_model
+    _real = call_model
+    try:
+        bad_voice = ok + " Irrigated rent has gone with no clear direction."
+        seq = iter([bad_voice, ok])
+        call_model = lambda *a, **k: next(seq)
+        e = one("k", "31001", rec)
+        assert e.get("text") == clean_text(ok, "31001") and "voice" not in e, e
+        seq = iter([bad_voice, ok.replace("2.09", "2.1")])
+        e = one("k", "31001", rec)
+        assert e.get("text") == clean_text(bad_voice, "31001") and e.get("voice") == ["no-clear-direction"], e
+        seq = iter([bad_voice, bad_voice])
+        e = one("k", "31001", rec)
+        assert e.get("voice") == ["no-clear-direction"] and e.get("text"), e
+    finally:
+        call_model = _real
+        _FEEDBACK.clear()
     log("selftest ok")
 
 
@@ -761,8 +885,9 @@ def trial(api_key, atlas, n):
                 except ApiError as e:
                     tries.append({"text": "", "gate": f"API error: {e}"})
                     break
+                text, hits = finish(text, fips)
                 why = gate(text, block)
-                tries.append({"text": text, "gate": why or "pass"})
+                tries.append({"text": text, "gate": why or "pass", "voice": sorted({h[0] for h in hits})})
                 log(f"  --- {m} {fips} try {attempt + 1}: {why or 'PASS'}\n{text}")
                 if why is None:
                     break
@@ -933,13 +1058,15 @@ def main():
                     break
                 if time.time() > _DEADLINE:
                     log(f"  round {rnd} not submitted: past the run's deadline; {len(pending)} counties keep their entries")
+                    written += _keep_first_ok(reads, pending)
                     break
                 res = run_batch(api_key, pending, MODEL, f"round {rnd}")
                 if res is None:
                     log("  the batch outlived this run's wait; counties in it keep their previous entries")
+                    written += _keep_first_ok(reads, pending)
                     break
                 retry = {}
-                n_gate = n_err = 0
+                n_gate = n_err = n_voice = 0
                 why_err = {}
                 for fips, block in pending.items():
                     kind, val = res.get(fips, ("error", "missing from results"))
@@ -950,13 +1077,27 @@ def main():
                         why_err[val[:60]] = why_err.get(val[:60], 0) + 1
                         if rnd == 1:
                             retry[fips] = block
+                        elif fips in _FIRST_OK:
+                            reads["counties"][fips] = _entry(*_FIRST_OK[fips], MODEL, _FIRST_OK_HITS[fips])
+                            written += 1
                         else:
                             kept_old += 1
                         continue
+                    val, hits = finish(val, fips)
                     why = gate(val, block)
-                    if why is None:
-                        reads["counties"][fips] = {"text": val, "sha": recs[fips]["sha"], "block": block_hash(block),
-                                                   "model": MODEL, "generated": _now()}
+                    if why is None and hits and rnd == 1:
+                        # numbers fine, voice not: once more with the habits named
+                        n_voice += 1
+                        retry[fips] = block
+                        _FEEDBACK[fips] = "voice: " + hits_feedback(hits)
+                        _FIRST_OK[fips] = (val, recs[fips]["sha"], block)
+                        _FIRST_OK_HITS[fips] = hits
+                    elif why is None:
+                        reads["counties"][fips] = _entry(val, recs[fips]["sha"], block, MODEL, hits)
+                        written += 1
+                    elif fips in _FIRST_OK:
+                        # the retry broke the numbers; the first read kept them
+                        reads["counties"][fips] = _entry(*_FIRST_OK[fips], MODEL, _FIRST_OK_HITS[fips])
                         written += 1
                     elif rnd == 1:
                         n_gate += 1
@@ -968,7 +1109,8 @@ def main():
                         reads["counties"][fips] = {"status": f"withheld: {why}", "sha": recs[fips]["sha"],
                                                    "block": block_hash(block), "model": MODEL, "generated": _now()}
                         written += 1
-                log(f"  round {rnd}: {n_gate} failed the gate, {n_err} came back as API errors"
+                log(f"  round {rnd}: {n_gate} failed the gate, {n_voice} passed it but go again for voice, "
+                    f"{n_err} came back as API errors"
                     + (f"; {len(retry)} go round again" if rnd == 1 and retry else ""))
                 for w, n in sorted(why_err.items(), key=lambda x: -x[1])[:5]:
                     log(f"    {n} x {w}")
