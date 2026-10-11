@@ -47,7 +47,9 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import voice_lint  # noqa: E402
 
-# voice_lint's slang list is about market notes; everything else carries over.
+# voice_lint's slang list is about market notes; everything else carries over,
+# including its shape tells ("Let's", "Whether you're", "here's what", "the
+# bottom line", "It isn't X. It's Y.", "honestly", "may potentially").
 # Its dash rule is replaced: an en dash in a range ("March–May", "V4 – V6",
 # "1–4 hours") is ordinary punctuation; an em dash, a "--" or a spaced en
 # dash inside a sentence is the tell.
@@ -81,9 +83,6 @@ SITE_TELLS = [
     ("intuitive", re.compile(r"\bintuitive(?:ly)?\b", re.I)),
     ("effortless", re.compile(r"\beffortless(?:ly)?\b", re.I)),
     ("dive-in", re.compile(r"\bdive (?:in|into|deeper)\b", re.I)),
-    ("lets", re.compile(rf"\blet{W}s\b", re.I)),
-    ("whether-youre", re.compile(rf"\bwhether you{W}?re\b", re.I)),
-    ("important-to", re.compile(r"\b(?:it(?:'|’)s|it is)\s+important\s+to\s+(?:remember|note|understand|keep in mind)\b", re.I)),
     ("simply-easily", re.compile(r"\b(?:simply|easily)\b", re.I)),
     ("insights", re.compile(r"\binsights?\b", re.I)),
     ("ever-changing", re.compile(r"\bever[- ](?:changing|evolving)\b", re.I)),

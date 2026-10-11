@@ -1879,7 +1879,7 @@ SECTION BODY example (livestock, from the 2026-10-07 issue):
 
 SO WHAT examples (adds something the title does not say, MAX 15 WORDS):
 - "The market already knew the corn was there."
-- "This is a crush story, not an export story."
+- "The bean move came from meal and oil."
 - "Short local storage can weigh on basis even when futures sit still."
 - "Nothing new today, so there is nothing to explain."
 
@@ -1903,6 +1903,12 @@ WORDS TO SKIP:
 - academic register: "indicates," "suggests," "reflects" → "says," "shows"; "elevated levels" → the actual level; "amid concerns" / "against the backdrop of" → cut; "market participants" → "the funds," "merchandisers," "farmers" (be specific); "investors are watching closely", "in light of recent developments" → cut
 - machine tells, never use: "delve", "landscape", "navigate", "it's worth noting", "in today's [anything]", "game-changer", "unprecedented", "robust", "tapestry", "crucially", "notably", "underscores", "furthermore", "moreover", "pivotal", "in conclusion", "ultimately", "leverage", "deep dive"
 - machine shapes, never use: "not just X but Y" / "isn't just X, it's Y"; three adjectives in a row ("volatile, uncertain and fragile"); em dashes
+- the contrast formula, never use: "It isn't X. It's Y.", "less X, more Y", or a sentence that sets up a thing only to knock it down. Say what it is. Keep "X, not Y" only when the contrast is itself the fact ("the move came from the cash side, not a report").
+- rule of three, never use: three short sentences or fragments in a row for rhythm ("Quiet. Steady. Waiting."), or a list of three when two things are true. List what is there.
+- colon reveals, never use: "The bottom line:", "Here's the thing:", "Why it matters:", "The short answer:", "The takeaway:", "Translation:", "The catch:", "Bottom line:". Say the point as a plain sentence.
+- signposting, never use: "here's what", "here's why", "let's", "when it comes to", "at the end of the day", "it's important to", "keep in mind", "what you need to know", "whether you're X or Y". Start with the fact.
+- honesty narration, never use: "honestly", "to be honest", "frankly", "the truth is", "make no mistake", "plain and simple", "no spin". Being straight is shown by the numbers, not announced.
+- hedge stacks, never use: "may potentially", "could possibly", "might perhaps", "tends to generally", "somewhat likely". One hedge, where it is true, or none.
 - hype, never use: "massive", "stunning", "staggering", "blockbuster", "whopping", "eye-popping"
 - trader slang Sig does not use: "basis is talking" / "basis is yelling", "carry's working" / "carry's broken", "the funds got lost", "coiled spring", "the tape", "the $5 handle", "drag-day", "the chart says" / "the chart wants"
 

@@ -157,24 +157,30 @@ The briefing is SHORT by design: about 400 words, 450 is a hard ceiling. The rea
 
 9. VOICE, THE BIGGEST ONE. The briefing carries Sig Lindquist's name, a Certified Crop Adviser (CCA), and should read like him talking to a neighbor at the elevator. Plain words, short sentences, calm, practical, no hype, no clever wordplay, no trading-desk slang, no commands barked at the reader, proper capitalization. Does it sound like him, or like a Bloomberg/Reuters wire summary, or like a trader blog? Wire-neutral prose scores BELOW 5. Hype, swagger or slang ("basis is yelling", "carry's working", "the funds got lost", "the tape", "coiled spring") scores BELOW 5. This rule has the lowest tolerance for drift.
 
-INVENTED FIRST PERSON, INDIVIDUALLY DISQUALIFYING: first person is allowed only to frame an opinion ("I'd", "I think", "my read"). Any sentence that claims Sig did, saw, heard, sold or was told something ("I talked to elevators today", "my neighbor said", "a buyer told me", "we hauled beans", "around here") is a made-up fact under his name: Rule 9 scores 1 and the rewrite DELETES the sentence, it does not reword it. The draft's `voice_lint` field lists what a machine already found: every `fabricated` entry is this failure, and every `tells` entry (em dash, "delve", "landscape", "navigate", "it's worth noting", "in today's", "game-changer", "unprecedented", "robust", "tapestry", "not just X but Y", three adjectives in a row, hype, slang, Title Case) scores Rule 9 below 5 and names the field holding it as the target.
+INVENTED FIRST PERSON, INDIVIDUALLY DISQUALIFYING: first person is allowed only to frame an opinion ("I'd", "I think", "my read"). Any sentence that claims Sig did, saw, heard, sold or was told something ("I talked to elevators today", "my neighbor said", "a buyer told me", "we hauled beans", "around here") is a made-up fact under his name: Rule 9 scores 1 and the rewrite DELETES the sentence, it does not reword it. The draft's `voice_lint` field lists what a machine already found: every `fabricated` entry is this failure, and every `tells` entry (em dash, "delve", "landscape", "navigate", "it's worth noting", "in today's", "game-changer", "unprecedented", "robust", "tapestry", "not just X but Y", "It isn't X. It's Y.", a colon reveal, signposting, honesty narration, a hedge stack, three adjectives in a row, hype, slang, Title Case) scores Rule 9 below 5 and names the field holding it as the target.
 
 ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
-  - "binary" / "binary level" / "binary week" / "binary support" — trader-tech jargon
-  - "referendum on" — wire-blog cliche
-  - "categorical" / "categorically" — press-release register
-  - "decisively below" / "decisively above" / "decisively through" — risks the math contradiction in Rule 13
-  - "exploded" / "explode" / "explosion" — CNBC drama verb
-  - "crater" / "cratered" / "cratering" — same
-  - "crashed" / "crash" used as verb form — same; "the crash of [year]" as noun is permissible
-  - "surge" / "surged" / "surging" — wire-service drama
-  - "soared" / "soaring" / "rocketed" / "skyrocketed" — same
-  - "plunged" / "plunging" / "plummeted" — same
-  - "slashed" used as a price/volume verb — wire register
-  - "exodus" / "fleeing" / "panic" — drama, not analysis
-  - "ignited" / "caught fire" / "torched" — drama
-  - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
-  - "vaulted" / "leaped" (in price context) — drama
+  - "binary" / "binary level" / "binary week" / "binary support": trader-tech jargon
+  - "referendum on": wire-blog cliche
+  - "categorical" / "categorically": press-release register
+  - "decisively below" / "decisively above" / "decisively through": risks the math contradiction in Rule 13
+  - "exploded" / "explode" / "explosion": CNBC drama verb
+  - "crater" / "cratered" / "cratering": same
+  - "crashed" / "crash" used as verb form: same; "the crash of [year]" as noun is permissible
+  - "surge" / "surged" / "surging": wire-service drama
+  - "soared" / "soaring" / "rocketed" / "skyrocketed": same
+  - "plunged" / "plunging" / "plummeted": same
+  - "slashed" used as a price/volume verb: wire register
+  - "exodus" / "fleeing" / "panic": drama, not analysis
+  - "ignited" / "caught fire" / "torched": drama
+  - "bloodbath" / "carnage" / "meltdown" / "rout": never appropriate
+  - "vaulted" / "leaped" (in price context): drama
+  - the contrast formula: "It isn't X. It's Y.", "less X, more Y", "not just X but Y", a sentence that sets something up only to knock it down. "X, not Y" passes only when the contrast is itself the fact.
+  - rule of three: three short sentences or fragments in a row for rhythm ("Quiet. Steady. Waiting."), or three items listed when two are true
+  - colon reveals: "The bottom line:", "Here's the thing:", "Why it matters:", "The short answer:", "The takeaway:", "Translation:"
+  - signposting: "here's what", "here's why", "let's", "when it comes to", "at the end of the day", "it's important to", "keep in mind", "whether you're X or Y"
+  - honesty narration: "honestly", "to be honest", "frankly", "the truth is", "make no mistake", "plain and simple"
+  - hedge stacks: "may potentially", "could possibly", "might perhaps", "tends to generally". One hedge where it is true.
 
 CNBC DRAMA VERB PRINCIPLE: AGSIST is Sig talking plainly to farmers he knows. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, or one_number context = auto Rule 9 below 5 = forced rewrite.
 

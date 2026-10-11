@@ -15,6 +15,10 @@ mouth that a prompt alone does not stop:
               as hype: em dashes, "delve", "landscape", "navigate", "it's
               worth noting", "in today's ...", "game-changer",
               "unprecedented", "robust", "tapestry", "not just X but Y",
+              "It isn't X. It's Y.", "less X, more Y", a colon reveal
+              ("The bottom line:"), signposting ("here's what", "let's",
+              "when it comes to"), honesty narration ("honestly",
+              "frankly"), a hedge stack ("may potentially"),
               a run of three adjectives, trader slang he does not use, and a
               Title Case or ALL CAPS headline.
 
@@ -155,6 +159,26 @@ TELLS = [
                                 r"\b(?:isn(?:'|’)t|is not|wasn(?:'|’)t|aren(?:'|’)t)\s+"
                                 r"(?:just|only|merely)\b[^.;!?]{1,50}[,;]\s*(?:it(?:'|’)s|it is|"
                                 r"this is|that(?:'|’)s)\b", re.I)),
+    # "It isn't a demand story. It's a supply story." / "less noise, more signal"
+    ("isnt-its", re.compile(r"\b(?:isn(?:'|’)t|is not|wasn(?:'|’)t|was not|aren(?:'|’)t|are not)\b"
+                            r"[^.,;!?\n]{1,45}[.;]\s+(?:It(?:'|’)s|It is|This is|That(?:'|’)s|They(?:'|’)re|"
+                            r"It was)\s+(?:a|an|the|about|all about)\b", re.I)),
+    ("less-more", re.compile(r"\bless\s+\w+(?:\s+\w+)?,\s+more\s+\w+", re.I)),
+    # "The bottom line:", "Here's the thing:", "Why it matters:"
+    ("colon-reveal", re.compile(r"(?:^|(?<=[.!?\n] )|(?<=\n))(?:the\s+)?(?:short answer|takeaway|"
+                                r"key takeaway|here(?:'|’)s the (?:deal|kicker|catch)|"
+                                r"good to know|pro tip|heads up|in short|tl;?dr|translation|the catch|the kicker)\s*:",
+                                re.I)),
+    ("bottom-line", re.compile(r"\bthe bottom line\b|\bbottom line\s*:", re.I)),
+    ("signpost", re.compile(r"\bhere(?:'|’)s (?:what|why|how|the thing)\b|\bwhy (?:it|this) matters\b|"
+                            r"\bwhat you need to know\b|\bwhen it comes to\b|\bkeep in mind\b|"
+                            r"\b(?:it(?:'|’)s|it is)\s+important\s+to\b", re.I)),
+    ("lets", re.compile(r"\blet(?:'|’)s\b", re.I)),
+    ("whether-youre", re.compile(r"\bwhether you(?:'|’)?re\b|\bwhether you are\b", re.I)),
+    ("honesty", re.compile(r"\b(?:honestly|to be honest|frankly|truth be told|the truth is|make no mistake|"
+                           r"let me be clear|plain and simple|no spin|no fluff)\b", re.I)),
+    ("hedge-stack", re.compile(r"\b(?:may|might|could)\s+(?:potentially|possibly|perhaps|conceivably)\b|"
+                               r"\btends? to generally\b|\bgenerally tends?\b|\bsomewhat likely\b", re.I)),
     ("hype", re.compile(r"\b(?:massive|stunning|staggering|jaw-dropping|blockbuster|mind-blowing|"
                         r"insane|monster move|eye-popping|whopping)\b", re.I)),
     ("slang", re.compile(r"\b(?:is yelling|basis is talking|carry(?:'|’)s (?:working|broken)|"
@@ -444,12 +468,34 @@ _FAIL_TELL = [
     "The market was volatile, uncertain and fragile.",
     "A rich tapestry of factors.",
     "Basis is yelling.",
+    "This isn't a demand story. It's a supply story.",
+    "Less noise, more signal from the board.",
+    "The bottom line: corn is still at $5.",
+    "Bottom line: beans held.",
+    "Here's the thing: basis is wide.",
+    "Here's what the report said.",
+    "Why it matters: storage is short.",
+    "When it comes to corn, $5 is the line.",
+    "Let's see what Thursday brings.",
+    "Whether you're long or short, Thursday matters.",
+    "At the end of the day, corn held.",
+    "It's important to remember the carry.",
+    "Keep in mind the report is Friday.",
+    "Honestly, nobody knows.",
+    "Cattle may potentially slip.",
 ]
 _PASS_TELL = [
     "Corn held $5.00 even with heavy stocks.",
     "Corn, beans and wheat all firmed.",
     "Soybean oil gained 2.7% and meal was up 0.8%.",
     "Cattle eased a quarter; nothing new in the boxed beef.",
+    "The move came from the cash side, not a report.",
+    "Corn isn't over $5 yet. It needs a close above $5.02 first.",
+    "Beans held $12.90 at 7:30 a.m. CT: export sales were soft.",
+    "Less than 1.5 MMT would look soft.",
+    "That would be a short answer to a long question.",
+    "Corn may slip if harvest runs fast.",
+    "The honest number is in the table.",
 ]
 
 
