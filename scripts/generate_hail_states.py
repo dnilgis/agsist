@@ -204,12 +204,12 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + str(dmg_in) + "\u2033 or larger, the size that damages roofs, vehicles, and crops.")
     key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures: " + esc(name) + " hail at a glance</h2><ul>"
         + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
-        "<p class=\"hs-cite\">Citing these figures? Attribution: <em>AGSIST National Hail Map, "
+        "<p class=\"hs-cite\">To cite these figures: <em>AGSIST National Hail Map, "
         + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. "
-        "Data is available at no charge; a link back keeps it that way.</p></section>\n")
+        "A link back is appreciated.</p></section>\n")
 
-    b2b = ("<p class=\"hs-pro\">Insurance, roofing, or ag professional using this data in client-facing work? "
-        "The same dataset is available as a licensable embeddable widget. See "
+    b2b = ("<p class=\"hs-pro\">Insurance, roofing and ag firms that use this data with clients can license it as an "
+        "embeddable widget. See "
         "<a href=\"/sponsor\">details on the sponsor page</a> or email "
         "<a href=\"mailto:sig@farmers1st.com\">sig@farmers1st.com</a>.</p>\n")
 
@@ -288,7 +288,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
         + b2b +
-        "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts; the persistent leaders are real hail geography. Compiled by Sigurd Lindquist \u00b7 AGSIST \u00b7 available at no charge.</div>\n"
+        "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. Compiled by Sigurd Lindquist \u00b7 AGSIST.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
         "<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
 

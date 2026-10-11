@@ -338,14 +338,14 @@ def meta_description(nd, fig, mesh_max, has_swath):
     else:
         cores = [f"Hail on {nd}: no ground reports archived; NOAA radar estimated hail"
                  + (f" up to {mesh_max:.2f} in." if mesh_max else ".")]
-    tails = [" See the largest stones, top counties and the swath map. Free, no login.",
+    tails = [" See the largest stones, top counties and the swath map, or check an address.",
              " See the largest stones, top counties and the swath map.",
-             " Largest stones, top counties, swath map. Free, no login.",
+             " Largest stones, top counties and the swath map.",
              " Top counties, sizes and swath map.",
-             " Free, no login."] if n else [
-             " See the estimated swath map and check any address. Free, no login.",
+             ""] if n else [
+             " See the estimated swath map and check whether it reached your address.",
              " See the estimated swath map and check any address.",
-             " See the swath map. Free, no login."]
+             " See the swath map."]
     best = None
     for c in cores:
         for t in tails:
@@ -431,7 +431,7 @@ def method_html(fig, has_swath):
         "Damaging size means 1 inch or larger, the National Weather Service severe-hail size. State is the state named on the report. "
         "County is not carried in the archived file; it is assigned here by placing each report's "
         "coordinates (rounded to about 1 km) inside US Census cartographic county boundaries, so a "
-        "report near a county line can land in the neighbouring county."
+        "report near a county line can land in the neighboring county."
         + (" Radar figures are NOAA MRMS MESH, a radar estimate of maximum hail size, not a measurement."
            if has_swath else "") + "</p></details>\n")
 
@@ -457,7 +457,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
          (f"The largest reported stone on {nd} was {mx:.2f} inches" if mx else
           f"No measured sizes were reported on {nd}") +
          (f", among {n:,} reports nationwide" if n else "") +
-         (". Radar (NOAA MRMS MESH) also estimated the swath footprint, an estimate, not a measurement." if has_swath else ".")),
+         (". NOAA MRMS MESH radar also estimated the swath footprint." if has_swath else ".")),
     ]
     if fig["n_states"]:
         st_txt = ", ".join(state_name(s) + " (" + f"{c:,}" + ")" for s, c in fig["states"][:5])
@@ -537,7 +537,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<p><a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">Check any address against this storm on the hail map &rarr;</a></p>\n"
         "<h2>Questions about the " + esc(nd) + " hail</h2>\n" + faq_vis + "\n"
         + method_html(fig, has_swath) +
-        "<div class=\"he-src\">Sources: NWS Local Storm Reports via the Iowa Environmental Mesonet (reported sizes, preliminary); NOAA MRMS MESH via Iowa State (radar-estimated swaths); US Census cartographic boundaries (county placement). Reported and estimated are different things and are labeled throughout. Compiled by Sigurd Lindquist · AGSIST · no charge, no login.</div>\n"
+        "<div class=\"he-src\">Sources: NWS Local Storm Reports via the Iowa Environmental Mesonet (reported sizes, preliminary); NOAA MRMS MESH via Iowa State (radar-estimated swaths); US Census cartographic boundaries (county placement). Compiled by Sigurd Lindquist · AGSIST.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
 
 
@@ -617,7 +617,7 @@ def hub_html(dates_meta, today):
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST</title>\n"
-        "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm, no charge, no login.\">\n"
+        "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm.\">\n"
         "<link rel=\"canonical\" href=\"https://agsist.com/hail/\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
         "<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n"
@@ -641,7 +641,7 @@ def hub_html(dates_meta, today):
         ".he-recap{line-height:1.7;border-left:3px solid var(--brand,#d4a23f);padding-left:.8rem}.he-recap a{color:var(--brand,#d4a23f)}</style>\n</head>\n<body>\n"
         "<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<h1>US Hail Storm Log</h1>\n"
-        "<p>One page per significant hail day: report counts, largest stones, and the radar swath map where there is one. Newest first. Checking one address? <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">The hail map's search</a> pulls its full history.</p>\n"
+        "<p>One page per significant hail day: report counts, largest stones, and the radar swath map where there is one. Newest first. To check one address, <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">the hail map's search</a> pulls its full history.</p>\n"
         + season_recap_html(dates_meta) + jump +
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
