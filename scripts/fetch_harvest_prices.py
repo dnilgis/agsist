@@ -369,15 +369,29 @@ def roll_crop_year(d, today):
     return True
 
 
+def _span(series):
+    """'Oct 1 to 9' (or 'Sep 30 to Oct 2') from a settle series, '' if empty."""
+    if not series:
+        return ""
+    a, b = date.fromisoformat(series[0]["d"]), date.fromisoformat(series[-1]["d"])
+    fa = a.strftime("%b ") + str(a.day)
+    if a == b:
+        return fa
+    return fa + " to " + (str(b.day) if (a.year, a.month) == (b.year, b.month) else b.strftime("%b ") + str(b.day))
+
+
 def card_html(c, crop_year):
     def leg_line(leg, label, month_word):
         if leg["status"] == "final":
             return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ' \u00b7 final)</span>'
                     '<span class="hpc-v">$' + f"{leg['price']:.2f}" + '</span></div>')
         if leg["status"] == "running":
-            # the one count: settles in the series (also days_counted)
-            return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' \u00b7 ' + str(len(leg.get("series") or []))
-                    + ' of ' + str(leg.get("days_total", "?")) + ' settles \u00b7 running estimate</span>'
+            # the one count: settles in the series (also days_counted). Not the
+            # official figure: RMA's is. Same settles, same method, so it is
+            # labeled as a running average with the days it covers.
+            ser = leg.get("series") or []
+            return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' so far: running average, ' + _span(ser)
+                    + ' (' + str(len(ser)) + ' of ' + str(leg.get("days_total", "?")) + ' settles)</span>'
                     '<span class="hpc-v">$' + f"{leg['running_avg']:.2f}" + '</span></div>')
         return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ')</span>'
                 '<span class="hpc-v hpc-pend">pending: discovery opens '
@@ -393,8 +407,10 @@ def seed_page(d, today):
     src = PAGE.read_text(encoding="utf-8")
     block = ("<!--SEED:hpcards-->\n      "
              + "\n      ".join(card_html(c, d["crop_year"]) for c in d["commodities"])
-             + '\n      <div class="hp-seed-note">Figures above are baked in daily on trading days; '
-             'in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>'
+             + '\n      <div class="hp-seed-note">The official harvest price is USDA RMA&rsquo;s: the average of the '
+             'daily settles of the contract above across the window, released after it closes. The running average is '
+             'the same math on the settles so far, updated each trading evening, so it can lag RMA&rsquo;s posted '
+             'figure by a day.</div>'
              "\n      <!--/SEED:hpcards-->")
     pat = re.compile(r"<!--SEED:hpcards-->.*?<!--/SEED:hpcards-->", re.S)
     if not pat.search(src):
