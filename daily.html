@@ -943,8 +943,10 @@ function renderToday(data,why){
       otpRendered.push('<div class="dv3-otp-item">'+tagH+titleH+bodyH+'</div>');
     }
     if(otpRendered.length){
-      var otpLabel=marketClosed?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
-      var otpSub=marketClosed?'Coming up next week.':'Not moving prices today, but worth knowing.';
+      /* otp_week_ahead, not marketClosed: set by the generator only when the
+         item names a dated upcoming event (generate_daily.mark_week_ahead). */
+      var otpLabel=data.otp_week_ahead?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
+      var otpSub=data.otp_week_ahead?'Coming up next week.':'Not moving prices today, but worth knowing.';
       outsidePit='<div class="dv3-otp" aria-label="'+otpLabel+'">'+
         '<div class="dv3-otp-header">'+
           '<span class="dv3-otp-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg>'+otpLabel+'</span>'+
@@ -1035,9 +1037,9 @@ function renderToday(data,why){
     '<a class="dv3-forward-cta" href="https://agsist.com/daily?subscribe=1">Subscribe \u2192</a>'+
   '</div>';
 
-  // Byline (Sigurd, founder)
+  // Byline (Sigurd Lindquist, Certified Crop Adviser (CCA))
   var byline='<div class="dv3-byline">'+
-    'Written by <strong>Sigurd Lindquist</strong>, founder. Reply at '+
+    'Written by <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA). Reply at '+
     '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>: I read everything.'+
   '</div>';
 

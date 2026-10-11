@@ -510,11 +510,14 @@ def apply_rewrite(briefing, critique):
 def re_archive(briefing):
     """Re-render archive HTML and re-save daily.json after a rewrite."""
     try:
-        from generate_daily import save_archive
+        from generate_daily import save_archive, mark_week_ahead
     except ImportError as e:
         print(f"  [warn] could not import generate_daily.save_archive: {e}", file=sys.stderr)
         print(f"  [warn] daily.json will be updated but archive HTML will not be re-rendered.", file=sys.stderr)
         return False
+    # A trimmed outside_the_pit body may no longer name its event's day; the
+    # "Week ahead" label is decided again on the text that ships.
+    mark_week_ahead(briefing)
     save_archive(briefing)
     return True
 

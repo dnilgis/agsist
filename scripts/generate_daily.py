@@ -328,9 +328,15 @@ US 2026 holidays (markets closed; never schedule events on these dates):
   - Nov 27 Fri      Early close (1 PM CT equities, 12:05 PM CT CBOT)
   - Dec 25 Fri      Christmas
 
+Federal holidays when grain markets are OPEN but USDA is CLOSED:
+  - Oct 12 Mon      Columbus Day (Crop Progress moves to Tue Oct 13)
+  - Nov 11 Wed      Veterans Day
+
 USDA recurring report release times (use these exact day/time pairings):
-  - Crop Progress:        Monday 3:00 PM CT during planting/growing/harvest season.
-                          If Monday is a holiday, releases Tuesday 3:00 PM CT.
+  - Crop Progress:        Monday 3:00 PM CT, early April to late November.
+                          If Monday is a federal holiday (Columbus Day included,
+                          though markets trade), releases Tuesday 3:00 PM CT.
+                          The THIS WEEK line below gives the exact day.
   - WASDE:                Monthly, around the 9th-12th, 11:00 AM CT.
   - Weekly Export Sales:  Every Thursday, 7:30 AM CT.
   - Cattle on Feed:       Monthly, third or fourth Friday, 2:00 PM CT.
@@ -347,6 +353,73 @@ CME settlement times (relevant for "Friday's close" framing):
 If a watch_list item references one of these releases, the day-of-week and
 time MUST match this table. Never invent alternate release times.
 """
+
+
+def weekly_release_line(today=None):
+    """The exact days of this week's weekly USDA releases, from usda_dates (the
+    rule /usda-calendar and the homepage strip use). On a weekend it describes
+    the coming week. 2026-10-11: the prompt said "Monday 3:00 PM CT" and the
+    watch list repeated it for Columbus Day week, when NASS releases Tuesday."""
+    import usda_dates
+    if today is None:
+        today = datetime.now().date()
+    ref = today + timedelta(days=(7 - today.weekday()) % 7) if today.weekday() >= 5 else today
+    parts = []
+    cp = usda_dates.crop_progress_date(ref)
+    if cp and cp >= today:
+        normal = cp - timedelta(days=cp.weekday())
+        parts.append("Crop Progress: %s, %s" % (usda_dates.describe_release(cp, normal),
+                                                usda_dates.CROP_PROGRESS_TIME_CT))
+    es = usda_dates.export_sales_date(ref)
+    if es >= today:
+        normal = es - timedelta(days=es.weekday()) + timedelta(days=3)
+        parts.append("Weekly Export Sales: %s, %s" % (usda_dates.describe_release(es, normal),
+                                                      usda_dates.EXPORT_SALES_TIME_CT))
+    if not parts:
+        return ""
+    return ("THIS WEEK (computed from the federal holiday calendar; use these exact days "
+            "in the watch list):\n  - " + "\n  - ".join(parts))
+
+
+def fix_crop_progress_day(briefing, today=None):
+    """A watch_list item about Crop Progress must carry the day it really comes
+    out. If the item names one weekday and it is not the release day, put the
+    release day in its place (keeps the time). Only touches items that say
+    "Crop Progress" and name exactly one weekday."""
+    import usda_dates
+    if today is None:
+        today = datetime.now().date()
+    cp = usda_dates.next_crop_progress(today)
+    fixes = []
+    if not cp or (cp - today).days > 7:
+        return briefing, fixes
+    right = cp.strftime("%A")
+    wd = re.compile(r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|"
+                    r"Mon|Tue|Tues|Wed|Thu|Thur|Thurs|Fri|Sat|Sun)\b\.?")
+    for item in briefing.get("watch_list", []) or []:
+        text = " ".join(str(item.get(k) or "") for k in ("time", "desc"))
+        if not re.search(r"crop progress", text, re.I):
+            continue
+        hits = [m.group(1) for k in ("time", "desc") for m in wd.finditer(str(item.get(k) or ""))]
+        if len(hits) != 1 or hits[0][:3].lower() == right[:3].lower():
+            continue
+        # The weekday, and a "Month D" written right after it, become the
+        # release day's ("Monday Oct 12" -> "Tuesday Oct 13").
+        dated = re.compile(wd.pattern + r"(,?\s+)(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+                           r"[a-z]*\.?\s+\d{1,2}\b")
+
+        def _sub(m, short=len(hits[0]) <= 4):
+            out = right[:3] if short else right
+            if m.re is dated:
+                out += m.group(2) + cp.strftime("%b ") + str(cp.day)
+            return out
+        for k in ("time", "desc"):
+            v = item.get(k)
+            if isinstance(v, str) and wd.search(v):
+                item[k] = (dated.sub(_sub, v, count=1) if dated.search(v)
+                           else wd.sub(_sub, v, count=1))
+                fixes.append("Crop Progress %s -> %s" % (hits[0], right))
+    return briefing, fixes
 
 
 
@@ -1520,21 +1593,18 @@ def get_usda_release_today():
     # market-status check so we never assert a report on a closed day.
     status = get_market_status()
     is_holiday_today = status["is_closed"] and status["reason"] == "holiday"
-    yday = today - timedelta(days=1)
 
     releases = []
+    import usda_dates
     if not is_holiday_today:
-        # Weekly recurring — normal schedule
-        if weekday == 0 and 4 <= today.month <= 11:   # Monday: Crop Progress
-            releases.append("USDA Crop Progress, 3:00 PM CT")
-        if weekday == 3:                               # Thursday: Weekly Export Sales
-            releases.append("USDA Weekly Export Sales, 7:30 AM CT")
-        # Day-after-holiday shifts: Tue-after-Mon-holiday, Fri-after-Thu-holiday
-        if weekday == 1 and 4 <= today.month <= 11 and today.year == 2026 \
-                and (yday.month, yday.day) in {(1,19),(2,16),(5,25),(9,7)}:
-            releases.append("USDA Crop Progress, 3:00 PM CT (shifted from Monday holiday)")
-        if weekday == 4 and today.year == 2026 and (yday.month, yday.day) == (11, 26):
-            releases.append("USDA Weekly Export Sales, 7:30 AM CT (shifted from Thanksgiving)")
+        # Weekly recurring: usda_dates.weekly_releases, the one rule. A weekly
+        # release due on a FEDERAL holiday moves to the next business day,
+        # including Columbus Day, when CME trades and the market-status check
+        # above says "open" (2026-10-11: this used to announce Crop Progress
+        # on Monday Oct 12 and nothing on Tuesday Oct 13).
+        for name, at, moved in usda_dates.weekly_releases(today.date()):
+            releases.append("%s, %s%s" % (name, at, " (moved from %s, %s)" % (
+                moved.strftime("%A"), usda_dates.federal_holiday_name(moved)) if moved else ""))
 
     # Monthly: Cattle on Feed (3rd or 4th Friday). Hardcoded 2026 dates:
     cof_2026 = {"01-23", "02-20", "03-20", "04-24", "05-22",
@@ -1749,6 +1819,13 @@ Output as the yesterdays_call object in the JSON: {{"outcome": your best read ('
 
     # v4.6: alias the module-level constants into local scope for the f-string below.
     CALENDAR_FACTS_2026_LOCAL = CALENDAR_FACTS_2026
+    try:
+        _wk = weekly_release_line()
+    except Exception as _e:                  # never block the prompt on it
+        print(f"  [warn] weekly release line skipped ({type(_e).__name__}: {_e})")
+        _wk = ""
+    if _wk:
+        CALENDAR_FACTS_2026_LOCAL = CALENDAR_FACTS_2026.rstrip() + "\n\n" + _wk + "\n"
     return f"""You are writing the AGSIST Daily, a morning farm markets briefing read every day by US producers across grain, livestock, dairy, and specialty operations. It goes out under Sig Lindquist's name. Sig is a Certified Crop Adviser (CCA) who works with farmers. Write it the way he would talk to a neighbor at the elevator.
 
 ══ THE VOICE ══
@@ -1958,7 +2035,8 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
   "outside_the_pit": [
     {{"title": "Short headline of the news item, 6-12 words, sentence case.",
       "body": "1-2 sentences, MAX 30 WORDS, in the same plain voice. Why this matters even though it's not in today's prices.",
-      "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL."}}
+      "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL.",
+      "event_date": "OPTIONAL. YYYY-MM-DD of the upcoming event this item is about, ONLY if the news block gives that date. null for news that already happened."}}
   ],
   "watch_list": [{{"time": "Time", "desc": "What. EXACTLY 3 items, each under 20 words. Two of three carry a level or threshold (RULE 4)."}}],
   "daily_quote": {{"text": "EXACT quote.", "attribution": "EXACT attribution."}},
@@ -1975,6 +2053,7 @@ SECTIONS:
 OMISSIONS, set fields to null or empty objects when not applicable:
 - action, todays_call, yesterdays_call: NEVER emit them (RULE 11). A machine deletes them if you do.
 - outside_the_pit: REQUIRED every day, weekday and weekend. EXACTLY 1 item. Pull from the news block.
+  ON A WEEKEND it is shown as "Week ahead in ag", so make it an event COMING UP in the next seven days (a report, a deadline, a vote, a meeting, a port or rail date) that the news block names with its date: set event_date to that date and name the day in the title or body ("Tuesday", "Oct 13"). Never invent an event or a date. If the news block names no upcoming dated event, use the most useful recent item, leave event_date null, and it is shown as "Outside the pit" instead. Never describe something that already happened as coming up.
 - watch_list: REQUIRED every day. EXACTLY 3 items.
 - Do NOT emit these fields at all; they are retired and a machine deletes them: subheadline, the_takeaway, the_more_you_know, weekly_thread, catalyst, vs_yesterday, bottom_line, farmer_action, summary.
 
@@ -2692,7 +2771,7 @@ def render_forward_block_html(date_iso):
 
 def render_byline_block_html():
     return ('<div class="dv3-byline">'
-            'Written by <strong>Sigurd Lindquist</strong>, founder. Reply at '
+            'Written by <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA). Reply at '
             '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
             '</div>')
 
@@ -2764,10 +2843,57 @@ def render_thread_marker_html(thread, market_closed=False):
             f'</div>')
 
 
-def render_outside_the_pit_html(items, market_closed=False):
+_WD_NAMES = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+
+
+def mark_week_ahead(briefing, today=None):
+    """Decide, by code, whether the outside_the_pit item may wear the
+    "WEEK AHEAD IN AG / Coming up next week" label, and record it in
+    briefing["otp_week_ahead"] for every renderer (this file, daily.html,
+    index.html).
+
+    2026-10-11: on weekends the label went on whatever the model wrote, and
+    Sunday's item said the CRP payments "went out late Thursday" under
+    "Coming up next week". Now it is True only on a closed-market day when an
+    item carries an event_date in the next nine days AND its own text names
+    that day (weekday, "Oct 13" or "October 13"), so the label never claims a
+    date the reader cannot see. An event_date in the past, unparseable or too
+    far out is removed. Returns the reasons for the log."""
+    if today is None:
+        today = datetime.now().date()
+    notes, ahead = [], False
+    for it in briefing.get("outside_the_pit") or []:
+        if not isinstance(it, dict) or "event_date" not in it:
+            continue
+        raw = it.get("event_date")
+        try:
+            ev = date.fromisoformat(str(raw).strip()[:10]) if raw else None
+        except ValueError:
+            ev = None
+        if ev is None or not (today < ev <= today + timedelta(days=9)):
+            it.pop("event_date", None)
+            if raw:
+                notes.append(f"event_date {raw!r} dropped (not in the next nine days)")
+            continue
+        it["event_date"] = ev.isoformat()
+        text = " ".join(str(it.get(k) or "") for k in ("title", "body")).lower()
+        named = (re.search(r"\b" + _WD_NAMES[ev.weekday()] + r"\b", text)
+                 or re.search(r"\b(" + ev.strftime("%b").lower() + r"|" + ev.strftime("%B").lower()
+                              + r")\.?\s+" + str(ev.day) + r"\b", text))
+        if named:
+            ahead = True
+        else:
+            notes.append(f"event_date {ev} not named in the item's text")
+    briefing["otp_week_ahead"] = bool(ahead and briefing.get("market_closed"))
+    return notes
+
+
+def render_outside_the_pit_html(items, week_ahead=False):
     """v4.4: render outside_the_pit block, ag news in the calculus that
     isn't moving today's prices but matters for what's coming. 3 items
-    expected; renders whatever's provided. Empty/missing → no render."""
+    expected; renders whatever's provided. Empty/missing → no render.
+    week_ahead is briefing["otp_week_ahead"] (mark_week_ahead), never
+    simply "the market is closed"."""
     if not items or not isinstance(items, list):
         return ""
     rendered_items = []
@@ -2789,9 +2915,9 @@ def render_outside_the_pit_html(items, market_closed=False):
         )
     if not rendered_items:
         return ""
-    label_text = "WEEK AHEAD IN AG" if market_closed else "OUTSIDE THE PIT"
+    label_text = "WEEK AHEAD IN AG" if week_ahead else "OUTSIDE THE PIT"
     label_sub = ("Not moving prices today, but worth knowing."
-                 if not market_closed else
+                 if not week_ahead else
                  "Coming up next week.")
     return (f'<div class="dv3-otp" aria-label="{label_text}">'
             f'<div class="dv3-otp-header">'
@@ -2935,6 +3061,30 @@ _HL_DANGLING = {"a", "an", "and", "as", "at", "by", "for", "from", "in", "into",
 _MON_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
+# ── LOWERCASE ACRONYMS (2026-10-11) ─────────────────────────────────────────
+# "Corn takes the brunt of wasde" shipped: a mixed-case headline is left as
+# written, so nothing above ever saw the lowercase "wasde". These are repaired
+# wherever they appear as a whole word, any case. Only acronyms that are never
+# an ordinary lowercase word are on the list. COT, ARC and PLC are ordinary
+# words or names in another sense ("a cot", "an arc"), so they are repaired
+# only in the two forms that cannot mean anything else: "ARC/PLC" and "COT
+# report". "us" is a pronoun and is never touched; "u.s." is.
+_FIX_ACRONYMS = ("WASDE", "USDA", "CFTC", "NASS", "FSA", "CME", "CBOT", "FAS", "EIA",
+                 "RMA", "ERS", "NOAA", "EPA", "RFS", "SAF", "ETF", "NOPA", "FOMC")
+_FIX_ACRONYM_RX = re.compile(r"(?<![\w.\-/@])(" + "|".join(_FIX_ACRONYMS) + r")(?![\w\-@]|\.\w)", re.I)
+
+
+def fix_acronyms(text):
+    """Upper-case the known acronyms in `text` (whole words, any case)."""
+    if not isinstance(text, str) or not text:
+        return text
+    out = _FIX_ACRONYM_RX.sub(lambda m: m.group(1).upper(), text)
+    out = re.sub(r"(?<![\w.])u\.s\.(?=[\s,;:)]|$)", "U.S.", out, flags=re.I)
+    out = re.sub(r"(?<![\w/])arc\s*/\s*plc(?![\w/])", "ARC/PLC", out, flags=re.I)
+    out = re.sub(r"(?<![\w])cot(?=\s+(?:report|data|positioning|numbers)\b)", "COT", out, flags=re.I)
+    return out
+
+
 def sentence_case_headline(h):
     """ALL-CAPS headline -> sentence case, keeping acronyms and proper nouns.
 
@@ -2948,6 +3098,7 @@ def sentence_case_headline(h):
     letters = [c for c in h if c.isalpha()]
     upper = sum(1 for c in letters if c.isupper())
     if letters and upper / len(letters) < 0.8:
+        h = fix_acronyms(h)
         return h[0].upper() + h[1:]
 
     def word(m):
@@ -3003,6 +3154,14 @@ def fix_headline_case(briefing):
         briefing, _ = _vl.fix_case(briefing)
     except Exception as _e:
         print(f"  [warn] title case pass skipped ({type(_e).__name__}: {_e})")
+    # Last, so neither case pass can lower them again.
+    for k in ("headline", "teaser", "subject_line"):
+        if isinstance(briefing.get(k), str):
+            briefing[k] = fix_acronyms(briefing[k])
+    for key in ("sections", "outside_the_pit"):
+        for item in briefing.get(key) or []:
+            if isinstance(item, dict) and isinstance(item.get("title"), str):
+                item["title"] = fix_acronyms(item["title"])
     return briefing
 
 
@@ -3433,7 +3592,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     top_attr_html = "" if _house_attr else sponsor_attr_html
     bottom_attr_html = sponsor_attr_html if _house_attr else ""
     # v4.4: outside_the_pit (news in the calculus, not in today's prices)
-    outside_pit_html = render_outside_the_pit_html(briefing.get("outside_the_pit"), is_weekend_brief)
+    outside_pit_html = render_outside_the_pit_html(briefing.get("outside_the_pit"),
+                                                   bool(briefing.get("otp_week_ahead")))
 
     # v4.6.3: archive interlinking — static prev/next so crawlers (and
     # readers) can walk the briefing corpus. next_date is filled in for
@@ -4806,6 +4966,9 @@ def main():
     briefing, _wd_fixes = fix_weekday_labels(briefing)
     if _wd_fixes:
         print(f"  Weekday corrections: {_wd_fixes}")
+    briefing, _cp_fixes = fix_crop_progress_day(briefing)
+    if _cp_fixes:
+        print(f"  Crop Progress day corrections: {_cp_fixes}")
 
     # v5.1 the cut, in this order: drop what the prompt retired, then cut to
     # the budget deterministically (weakest block first), then grade the call
@@ -4932,6 +5095,9 @@ def main():
     briefing["price_validation_clean"] = is_clean
     briefing["market_closed"] = market_status["is_closed"]
     briefing["market_status_reason"] = market_status["reason"]
+    for _n in mark_week_ahead(briefing):
+        print(f"  Outside the Pit: {_n}")
+    print(f"  Outside the Pit label: {'WEEK AHEAD IN AG' if briefing['otp_week_ahead'] else 'OUTSIDE THE PIT'}")
     if "meta" not in briefing: briefing["meta"] = {}
     briefing["meta"]["overnight_surprises_count"] = len(surprises)
     briefing["meta"]["word_count"] = _wc_total

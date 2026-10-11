@@ -352,6 +352,14 @@ jobs:
       - name: GATE 0f - report-day line selftest
         run: python scripts/report_day.py --selftest
 
+      # 2026-10-11: Crop Progress day in a federal-holiday week (from
+      # usda_dates), the "Week ahead in ag" label only over a dated upcoming
+      # event, the byline, and lowercase acronyms in headlines.
+      - name: GATE 0g - holiday week, week-ahead label, byline, acronyms
+        run: |
+          python scripts/usda_dates.py --selftest
+          python scripts/test_daily_trust.py
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a

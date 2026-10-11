@@ -81,6 +81,7 @@ OPTIONAL_TOP_LEVEL = [
     "the_takeaway",        # str: single-sentence "if you remember one thing"
     "subject_line",        # str: AI-suggested email subject for daily send
     "named_week",          # {title, started_at, theme} — Mon-Fri week-arc title
+    "otp_week_ahead",      # 2026-10-11: bool, outside_the_pit is a dated upcoming event (generate_daily.mark_week_ahead)
     "harvest_clock",       # 2026-10-09: {asof, start, end, crops, lines, note, url} from scripts/harvest_clock.py
 ]
 

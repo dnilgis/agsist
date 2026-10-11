@@ -309,7 +309,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
                  ad inside carries click attributes only, so a view counts once. -->
             <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing"></div>
           </div>
-          <div class="daily-byline" id="daily-byline">By <strong>Sigurd Lindquist</strong>, founder &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
+          <div class="daily-byline" id="daily-byline">By <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA) &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
         </div>
         <div class="hero-sidebar">
           <div class="s-card s-card--gold" style="display:none"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num"></div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
@@ -2809,10 +2809,15 @@ fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(
          rows in that file (CONAB, StatCan) are left out: this is the USDA list.
        - The next WASDE is always on the strip, even when weekly rows would
          push it past the tenth card.
-       - Weekly releases that fall on a federal holiday (fixed by law: the
-         2nd Monday of October and so on) say "holiday, date may shift" --
-         the same rule /usda-calendar uses. Nothing in the repo says which
-         day USDA moves a holiday release to, so this does not say either. */
+       - A weekly release whose day is a federal holiday (fixed by law: the
+         2nd Monday of October and so on) moves to the next business day and
+         says it moved: Crop Progress comes out Tuesday after a Monday
+         holiday. 2026-10-11: this used to keep the Monday with "date may
+         shift" while /usda-calendar said Tuesday. One rule now, the one in
+         scripts/usda_dates.py; test/usda-holidays.test.mjs runs these
+         functions against /usda-calendar's holiday list.
+       - Crop Progress runs from the first Monday of April to the Monday of
+         Thanksgiving week, as on /usda-calendar. */
     function etParts(d){var s=d.toLocaleString('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
       var m=/(\d+)\/(\d+)\/(\d+),?\s+(\d+):(\d+)/.exec(s);return m?{y:+m[3],mo:+m[1],d:+m[2],h:(+m[4])%24,mi:+m[5]}:null;}
     function etToUtc(y,mo,d,h,mi){var g=Date.UTC(y,mo-1,d,h,mi),p=etParts(new Date(g));if(!p)return new Date(g);return new Date(g-(Date.UTC(p.y,p.mo-1,p.d,p.h,p.mi)-g));}
@@ -2826,15 +2831,17 @@ fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(
     [nowEt.y,nowEt.y+1].forEach(function(y){holidays(y).forEach(function(h){HOL[h]=1;});});
     var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function clock(h,mi){return ((h%12)||12)+':'+('0'+mi).slice(-2)+' '+(h<12?'AM':'PM')+' ET';}
-    var weekly=[{name:'Export Sales',wd:4,h:8,mi:30},{name:'Export Inspections',wd:1,h:11,mi:0},{name:'Crop Progress',wd:1,h:16,mi:0}];
+    function nextBiz(di){var p=di.split('-'),d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));do{d.setUTCDate(d.getUTCDate()+1);}while(d.getUTCDay()===0||d.getUTCDay()===6||HOL[iso(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate())]);return iso(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
+    function cpSeason(di){var y=+di.slice(0,4);return di>=iso(y,4,nth(y,4,1,1))&&di<=iso(y,11,nth(y,11,4,4)-3);}
+    var weekly=[{name:'Export Sales',wd:4,h:8,mi:30},{name:'Export Inspections',wd:1,h:11,mi:0},{name:'Crop Progress',wd:1,h:16,mi:0,season:cpSeason}];
     var events=[];
-    for(var i=0;i<28;i++){
-      var dd=new Date(Date.UTC(nowEt.y,nowEt.mo-1,nowEt.d+i)),y=dd.getUTCFullYear(),mo=dd.getUTCMonth()+1,da=dd.getUTCDate(),wd=dd.getUTCDay(),di=iso(y,mo,da);
+    for(var i=-4;i<28;i++){
+      var dd=new Date(Date.UTC(nowEt.y,nowEt.mo-1,nowEt.d+i)),wd=dd.getUTCDay(),di=iso(dd.getUTCFullYear(),dd.getUTCMonth()+1,dd.getUTCDate());
       var mon=new Date(dd.getTime()-((wd+6)%7)*864e5),holWk=!!HOL[iso(mon.getUTCFullYear(),mon.getUTCMonth()+1,mon.getUTCDate())];
-      weekly.forEach(function(r){if(r.wd!==wd)return;var at=etToUtc(y,mo,da,r.h,r.mi),hol=!!HOL[di];
-        /* A holiday row stays until its day is over: its time is not known. */
-        if(hol?di<todayIso:at<=now)return;
-        events.push({name:r.name,day:di,mo:mo,da:da,at:at,time:hol?'Holiday: date may shift':clock(r.h,r.mi)+(holWk?' · may shift':'')});});
+      weekly.forEach(function(r){if(r.wd!==wd)return;if(r.season&&!r.season(di))return;
+        var hol=!!HOL[di],rd=hol?nextBiz(di):di,p=rd.split('-'),y=+p[0],mo=+p[1],da=+p[2],at=etToUtc(y,mo,da,r.h,r.mi);
+        if(at<=now)return;
+        events.push({name:r.name,day:rd,mo:mo,da:da,at:at,moved:hol?di:null,time:clock(r.h,r.mi)+(hol?' · moved from '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][wd]+' '+months[dd.getUTCMonth()]+' '+dd.getUTCDate()+', holiday':holWk?' · may shift':'')});});
     }
     function render(list,note){
       list.sort(function(a,b){return a.at-b.at;});
@@ -2852,10 +2859,10 @@ fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(
          of that week is described, not moved. */
       var last=shown.length?shown[shown.length-1].day:todayIso,hd=Object.keys(HOL).sort().filter(function(h){return h>=todayIso&&h<=last;})[0];
       var hn=document.getElementById('r7-cal-hol'),host=strip.parentNode;
-      /* wave1-E: a card dated on the holiday already says so; one note, not two. */
-      if(hd&&shown.some(function(ev){return ev.day===hd;}))hd=null;
+      /* wave1-E: a card moved off the holiday already says so; one note, not two. */
+      if(hd&&shown.some(function(ev){return ev.day===hd||ev.moved===hd;}))hd=null;
       if(hd){if(!hn){hn=document.createElement('p');hn.id='r7-cal-hol';host.parentNode.insertBefore(hn,host.nextSibling);}
-        var hp=hd.split('-');hn.textContent='Federal holiday '+months[+hp[1]-1]+' '+(+hp[2])+': release dates that week may shift, check USDA.';}
+        var hp=hd.split('-');hn.textContent='Federal holiday '+months[+hp[1]-1]+' '+(+hp[2])+': a USDA release due that day comes out the next business day.';}
       else if(hn){hn.parentNode.removeChild(hn);}
       if(note){var n=document.createElement('div');n.className='cal-card';n.setAttribute('role','listitem');n.innerHTML='<div class="cal-name">'+note+'</div><div class="cal-time"><a href="/usda-calendar">Full Calendar</a></div>';strip.appendChild(n);}
     }
@@ -3121,8 +3128,10 @@ window.hydrateDaily = function(data) {
     }
     if(otpHtml){
       otpGrid.innerHTML=otpHtml;
-      if(otpLabelText)otpLabelText.textContent=data.market_closed?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
-      if(otpSubText)otpSubText.textContent=data.market_closed?'Coming up next week.':'Not moving prices today, but worth knowing.';
+      /* otp_week_ahead, not market_closed: the generator sets it only when the
+         item names a dated upcoming event (generate_daily.mark_week_ahead). */
+      if(otpLabelText)otpLabelText.textContent=data.otp_week_ahead?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
+      if(otpSubText)otpSubText.textContent=data.otp_week_ahead?'Coming up next week.':'Not moving prices today, but worth knowing.';
       otpEl.classList.add('is-active');
     } else {
       otpEl.classList.remove('is-active');
