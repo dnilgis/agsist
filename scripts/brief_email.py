@@ -519,7 +519,7 @@ def subject_line(daily, prior):
     issue = daily.get("issue_number")
     head = soften_caps(strip_md(daily.get("headline"))) or "AGSIST Daily"
     mover, p = biggest_mover(daily, prior)
-    bits = ["AGSIST" + (" #%s" % issue if issue else "")]
+    bits = ["AGSIST"]  # 2026-10-11: no issue number shown
     if mover and p is not None and abs(p) >= 0.5:
         bits.append("%s %s%.1f%%" % (mover, "+" if p > 0 else "−", abs(p)))
     # Gmail's desktop list shows roughly 70 characters and its phone list far
@@ -732,7 +732,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
     # every email "2026-08-26" for months.
     date_display = strip_md(daily.get("date")) or date_display or ""
 
-    mast = "AGSIST DAILY" + (" &middot; No. %s" % e(issue) if issue else "")
+    mast = "AGSIST DAILY"  # 2026-10-11: no issue number shown
     body = [
         # Preheader: what the inbox preview shows. Hidden in the body itself so
         # it is not said twice.
@@ -878,7 +878,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
     prior, prior_day = prior_board(daily)
     L = []
     issue = daily.get("issue_number")
-    L.append("AGSIST DAILY" + (" No. %s" % issue if issue else ""))
+    L.append("AGSIST DAILY")  # 2026-10-11: no issue number shown
     L.append(strip_md(daily.get("date")) or (date_display or ""))
     if local and not local.get("ask_url"):
         L += local_text(local)

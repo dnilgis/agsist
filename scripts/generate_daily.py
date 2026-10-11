@@ -3259,7 +3259,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     og_description = html_esc(page_desc_raw)
     desc_escaped = og_description
     headline_sc = html_esc(sentence_case_headline(briefing.get("headline", "")) or "AGSIST Daily Briefing")
-    issue_suffix = f" &middot; ISSUE #{issue_num}" if issue_num else ""
+    # 2026-10-11: no issue number on the page (Sig: it dates the project).
+    issue_suffix = ""
 
     surprise_html = ""
     if surprise_count > 0 and not is_weekend_brief:

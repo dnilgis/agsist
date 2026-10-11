@@ -187,7 +187,7 @@ def fmt_change(pct):
 
 def section_header(daily, today):
     issue = daily.get("issue_number")
-    issue_str = f"  ·  ISSUE #{issue}" if issue else ""
+    issue_str = ""  # 2026-10-11: no issue number shown
     mood = (daily.get("meta") or {}).get("market_mood", "")
     mood_label = MOOD_LABEL.get(mood.lower(), mood.title()) if mood else ""
     mood_str = f"  ·  Mood: {mood_label}" if mood_label else ""
@@ -630,7 +630,7 @@ def main():
 
     headline = (daily.get("headline") or "Daily Brief").strip()
     issue = daily.get("issue_number")
-    issue_str = f"#{issue} " if issue else ""
+    issue_str = ""  # 2026-10-11: no issue number shown
     subject = f"AGSIST {issue_str}{today.strftime('%b %-d')} — {headline}"
 
     send(subject, email_body, sms_body)
