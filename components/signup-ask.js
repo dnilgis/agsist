@@ -312,7 +312,11 @@
   }
   function bar() {
     var p = location.pathname.replace(/\/+$/, '') || '/';
-    if (/^\/(daily|field-scout)(\.html)?$/.test(p)) return;
+    /* No sticky bar where it covers the work or is the wrong ask: the briefing
+       and its archive (/daily/2026-10-11), the field tools and print sheets,
+       the sponsor pages, and the store-or-sell worksheet (2026-10-11). */
+    if (/^\/(daily|field-scout|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell)(\.html)?$/.test(p)
+        || /^\/daily\/[^/]+$/.test(p)) return;
     if (isSignedUp() || visits() < 2 || isDismissed(BAR_KEY)) return;
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return; } catch (e) {}
     if (document.getElementById('sa-bar')) return;
