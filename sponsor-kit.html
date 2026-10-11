@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>AGSIST Sponsor Sheet</title>
+<meta name="description" content="One-page AGSIST sponsor sheet to print or hand out: who reads AGSIST, what a sponsorship includes, prices and how to start.">
+<link rel="canonical" href="https://agsist.com/sponsor-kit">
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<!--
+  The printable sponsor sheet (Letter, one page). Figures are written in for
+  the first paint and refreshed on load from the same files /sponsor reads:
+    numbers  data/audience.json, data/site-usage.json (Google search), data/elevator-counts.json
+    prices   data/rate-card.json
+  Nothing here is typed from memory. No open-slot counts (Sig, 2026-10-11).
+-->
+<style>
+  @page { size: letter; margin: 0.5in; }
+  :root { --ink:#1d2a1f; --dim:#5b6b5e; --line:#d9ded6; --gold:#b8862b; --green:#2f6b3a; --paper:#fff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #eef0ec; color: var(--ink); font: 15px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  .bar { max-width: 8.5in; margin: 16px auto 0; padding: 0 16px; display: flex; gap: 10px; justify-content: flex-end; }
+  .bar button, .bar a { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink); text-decoration: none; cursor: pointer; }
+  .bar button { background: var(--green); color: #fff; border-color: var(--green); }
+  .sheet { max-width: 8.5in; margin: 12px auto 32px; background: var(--paper); padding: 0.55in 0.6in; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 3px solid var(--gold); padding-bottom: 12px; }
+  .brand { font-weight: 800; font-size: 30px; letter-spacing: .02em; }
+  .brand small { display: block; font-weight: 600; font-size: 13px; color: var(--dim); letter-spacing: 0; }
+  .tag { text-align: right; font-size: 13px; color: var(--dim); }
+  h1 { font-size: 23px; line-height: 1.2; margin: 16px 0 6px; }
+  .lede { margin: 0 0 14px; color: var(--dim); }
+  .nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 6px 0 4px; }
+  .num { border: 1px solid var(--line); border-radius: 10px; padding: 10px 10px 8px; }
+  .num b { display: block; font-size: 24px; line-height: 1.1; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .num span { font-size: 12px; color: var(--dim); }
+  .src { font-size: 11px; color: var(--dim); margin: 4px 0 14px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--green); margin: 14px 0 6px; }
+  ul { margin: 0; padding-left: 18px; }
+  li { margin: 2px 0; }
+  .tiers { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px; }
+  .tier { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .tier.top1 { border: 2px solid var(--gold); }
+  .tier .n { font-weight: 700; }
+  .tier .p { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .tier .p small { font-size: 12px; font-weight: 600; color: var(--dim); font-family: Inter, system-ui, sans-serif; }
+  .tier p { margin: 4px 0 0; font-size: 13px; }
+  .terms { margin: 10px 0 0; font-size: 14px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .who { font-size: 14px; }
+  .who b { font-size: 16px; }
+  .qr { text-align: center; font-size: 11px; color: var(--dim); }
+  .qr svg { width: 1.15in; height: 1.15in; display: block; margin: 0 auto 2px; }
+  .fine { font-size: 11px; color: var(--dim); margin-top: 8px; }
+  @media (max-width: 700px) {
+    .sheet { padding: 20px 16px; margin: 8px 0 24px; }
+    .nums { grid-template-columns: repeat(2, 1fr); }
+    .tiers { grid-template-columns: 1fr; }
+    .top, .foot { flex-direction: column; align-items: flex-start; }
+    .tag { text-align: left; }
+  }
+  @media print {
+    html, body { background: #fff; font-size: 13.5px; }
+    .bar { display: none; }
+    .sheet { box-shadow: none; margin: 0; padding: 0; max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <a href="/sponsor">Back to /sponsor</a>
+  <button type="button" onclick="window.print()">Print or save as PDF</button>
+</div>
+
+<main class="sheet">
+  <div class="top">
+    <div class="brand">AGSIST<small>Free grain markets, cash bids and farm tools</small></div>
+    <div class="tag">agsist.com<br><span data-k="asof">Figures as of Oct 9, 2026</span></div>
+  </div>
+
+  <h1>Reach farmers when they are pricing grain and running the numbers.</h1>
+  <p class="lede">AGSIST is a free site farmers use for futures, local cash bids, the morning grain briefing, USDA report days, cash rent and calculators. Readers come from across the Corn Belt and beyond.</p>
+
+  <div class="nums">
+    <div class="num"><b data-k="users90">11,768</b><span>readers in 90 days</span></div>
+    <div class="num"><b data-k="views90">31,253</b><span>page views in 90 days</span></div>
+    <div class="num"><b data-k="gsc">274,671</b><span>times shown in Google search, 90 days</span></div>
+    <div class="num"><b data-k="subs">129</b><span>morning briefing email subscribers</span></div>
+  </div>
+  <p class="src">Google Analytics (some traffic is automated), Google Search Console, the AGSIST email list. Top states by readers: <span data-k="states">Illinois, Minnesota, Iowa, Texas, Wisconsin</span>.</p>
+
+  <h2>What farmers use it for</h2>
+  <ul>
+    <li><b>Cash bids</b> from <span data-k="elev">1,785</span> elevators, refreshed through the trading day.</li>
+    <li><b>The morning briefing</b>, on the web and by email, before the markets open.</li>
+    <li><b>Futures, USDA report days, funds positioning</b>, and tools like the grain bin calculator, yield estimator and cash rent by state.</li>
+  </ul>
+
+  <h2>Ways to sponsor</h2>
+  <div class="tiers">
+    <div class="tier top1">
+      <div class="n">Sponsor</div>
+      <div class="p" data-k="p-founding">$149<small> /month</small></div>
+      <p>Your card in every morning briefing, web and email, plus a strip near the top of the homepage. One sponsor at a time. Rate locked 12 months.</p>
+    </div>
+    <div class="tier">
+      <div class="n">Own a page</div>
+      <div class="p" data-k="p-page">$29<small> /month</small></div>
+      <p>A ribbon on one page you pick: Cash Bids, a futures page, Break-Even, Fertilizer, or a state cash rent page. One business per page.</p>
+    </div>
+    <div class="tier">
+      <div class="n">Supporter</div>
+      <div class="p" data-k="p-supporter">$15<small> /month</small></div>
+      <p>Your name or logo in the Supporters strip at the bottom of every page.</p>
+    </div>
+  </div>
+  <p class="terms"><b>First month free.</b> No card, no contract, cancel any time. Then one invoice a month. Sponsors never change data, rankings or bid order.</p>
+
+  <div class="foot">
+    <div class="who">
+      <b>Talk to Sig directly</b><br>
+      Sigurd Lindquist, Certified Crop Adviser (CCA), built and runs AGSIST.<br>
+      715-797-2428 &middot; sig@farmers1st.com
+    </div>
+    <div class="qr" id="qr">agsist.com/sponsor</div>
+  </div>
+  <p class="fine">Sig also owns Farmers First Agri Service, a licensed crop insurance agency. If you sell insurance, it may compete with you.</p>
+</main>
+
+<script src="/components/qr.js?v=8"></script>
+<script>
+(function () {
+  'use strict';
+  var q = document.getElementById('qr');
+  if (window.AgQR && q) q.innerHTML = window.AgQR.svg('https://agsist.com/sponsor', 'Scan for agsist.com/sponsor') + 'Scan: agsist.com/sponsor';
+  function get(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  function n(x) { return Number(x).toLocaleString('en-US'); }
+  function set(k, v) { var el = document.querySelector('[data-k="' + k + '"]'); if (el && v != null && v !== '') el.textContent = v; }
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function d(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0] : ''; }
+  Promise.all([get('/data/audience.json'), get('/data/rate-card.json'), get('/data/elevator-counts.json'), get('/data/site-usage.json')]).then(function (r) {
+    var a = r[0], c = r[1], e = r[2], u = r[3];
+    if (a && a.totals && a.totals['90d']) {
+      set('users90', n(a.totals['90d'].users)); set('views90', n(a.totals['90d'].views));
+      var w = (a.ranges || []).filter(function (x) { return x.id === '90d'; })[0];
+      if (w) set('asof', 'Figures as of ' + d(w.end));
+      var st = (a.states && a.states['90d']) || [];
+      if (st.length) set('states', st.slice().sort(function (x, y) { return y.users - x.users; }).slice(0, 5).map(function (s) { return s.name; }).join(', '));
+    }
+    if (a && a.email && a.email.subscribers) set('subs', n(a.email.subscribers));
+    if (c && c.tiers) c.tiers.forEach(function (t) {
+      var el = document.querySelector('[data-k="p-' + t.id + '"]');
+      if (el && t.price_month) el.innerHTML = '$' + t.price_month + '<small> /month</small>';
+    });
+    if (e && e.bids && e.bids.elevators) set('elev', n(e.bids.elevators));
+    if (u && u.gsc && u.gsc.totals && u.gsc.totals.impressions) set('gsc', n(u.gsc.totals.impressions));
+  });
+})();
+</script>
+</body>
+</html>
