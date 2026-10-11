@@ -200,6 +200,13 @@
     .rs-t .mut{color:var(--text-muted)}
     .rs-t .up{color:var(--green)}.rs-t .dn{color:var(--red)}
     [data-theme="light"] .rs-t .dn{color:#b3261e}
+    .rs-swipe{display:none}
+    .rs-tnote{font-size:.78rem;margin:4px 0 10px}
+    @media (max-width:640px){
+      .rs-swipe{display:block;color:var(--text-muted);font-size:.75rem;margin:8px 0 -4px}
+      .rs-t th{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}
+      .rs-t td{padding:6px 7px;font-size:.8rem}
+    }
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
     .rs-bar .y{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}

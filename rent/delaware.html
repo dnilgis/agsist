@@ -141,6 +141,13 @@
     .rs-t .mut{color:var(--text-muted)}
     .rs-t .up{color:var(--green)}.rs-t .dn{color:var(--red)}
     [data-theme="light"] .rs-t .dn{color:#b3261e}
+    .rs-swipe{display:none}
+    .rs-tnote{font-size:.78rem;margin:4px 0 10px}
+    @media (max-width:640px){
+      .rs-swipe{display:block;color:var(--text-muted);font-size:.75rem;margin:8px 0 -4px}
+      .rs-t th{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}
+      .rs-t td{padding:6px 7px;font-size:.8rem}
+    }
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
     .rs-bar .y{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}
@@ -194,8 +201,6 @@
   <h1>Delaware Cash Rent by County, 2026</h1>
   <p class="sub">Every USDA-published county cash rental rate in Delaware, straight from the NASS Cash Rents
   Survey. Nothing is estimated or modeled, and there is no login. <span id="rs-seed"><!--SEED:rentstate-->3 Delaware counties with a published 2026 non-irrigated cropland rent &middot; median $106/acre &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
-  <p class="rs-atlas">Part of the <a href="/farmland-atlas/delaware/">Farmland Atlas</a>: land values, rent and risk for every county.</p>
-  <p class="sub">Choosing ARC or PLC for 2026 or 2027? See <a href="/arc-plc/delaware" style="color:var(--gold)">Delaware ARC or PLC by county</a>.</p>
   
   <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:#8a948f">$106</div>
@@ -204,6 +209,8 @@
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median Delaware county paid <b style="color:#8a948f">$106 an acre</b> for non-irrigated cropland in 2026. Highest county: Kent at $119. Every county is in the table below.</div>
     </div>
   </div>
+  <p class="rs-atlas">Part of the <a href="/farmland-atlas/delaware/">Farmland Atlas</a>: land values, rent and risk for every county.</p>
+  <p class="sub">Choosing ARC or PLC for 2026 or 2027? See <a href="/arc-plc/delaware" style="color:var(--gold)">Delaware ARC or PLC by county</a>.</p>
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">$106</div><div class="l">median rent /ac &middot; 2026</div><div class="s">non-irrigated cropland, 3 counties</div></div>
     <div class="rs-stat"><div class="v mut">-</div><div class="l">vs 2025</div><div class="s">too few matched counties</div></div>
@@ -218,7 +225,7 @@
   and drought). Corn trend is the county&rsquo;s 15-yr trend yield (projected 2026) from NASS county estimates,
   fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
   one its rent share calculator starts from.</p>
-  <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th title="county corn yield, 15-year least-squares trend projected to 2026, fitted on the same practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend 2026</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/delaware/kent-county" title="Kent: Farmland Atlas county record">Kent</a></td><td data-v="119.0">$119</td><td class="up" data-v="20.8">+20.8%</td><td data-v="151.1">151 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/new-castle-county" title="New Castle: Farmland Atlas county record">New Castle</a></td><td data-v="102.0">$102</td><td class="dn" data-v="-7.3">-7.3%</td><td data-v="156.8">157 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/sussex-county" title="Sussex: Farmland Atlas county record">Sussex</a></td><td data-v="106.0">$106</td><td class="up" data-v="0.0">+0.0%</td><td data-v="120.3">120 bu</td></tr></tbody></table></div>
+  <p class="rs-swipe">Swipe the table sideways for every column.</p><div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th title="county corn yield, 15-year least-squares trend projected to 2026, fitted on the same practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend 2026</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/delaware/kent-county" title="Kent: Farmland Atlas county record">Kent</a></td><td data-v="119.0">$119</td><td class="up" data-v="20.8">+20.8%</td><td data-v="151.1">151 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/new-castle-county" title="New Castle: Farmland Atlas county record">New Castle</a></td><td data-v="102.0">$102</td><td class="dn" data-v="-7.3">-7.3%</td><td data-v="156.8">157 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/sussex-county" title="Sussex: Farmland Atlas county record">Sussex</a></td><td data-v="106.0">$106</td><td class="up" data-v="0.0">+0.0%</td><td data-v="120.3">120 bu</td></tr></tbody></table></div>
   <h2>Delaware median county rent by year</h2>
   <p class="sub">Median of counties published each year (non-irrigated cropland). Gap years are shown as gaps;
   drawing a line across them would be an invention.</p>

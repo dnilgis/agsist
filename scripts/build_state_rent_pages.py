@@ -33,11 +33,12 @@ import glob
 import html
 import json
 import os
+import re
 import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fetch_cash_rent import NO_SURVEY_YEARS, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
+from fetch_cash_rent import NO_SURVEY_YEARS, REASON_MIXED, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
 
 DATA_DIR = "data/cash-rent"
 MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
@@ -308,6 +309,13 @@ def head(title, desc, path, jsonld):
     .rs-t .mut{{color:var(--text-muted)}}
     .rs-t .up{{color:var(--green)}}.rs-t .dn{{color:var(--red)}}
     [data-theme="light"] .rs-t .dn{{color:#b3261e}}
+    .rs-swipe{{display:none}}
+    .rs-tnote{{font-size:.78rem;margin:4px 0 10px}}
+    @media (max-width:640px){{
+      .rs-swipe{{display:block;color:var(--text-muted);font-size:.75rem;margin:8px 0 -4px}}
+      .rs-t th{{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}}
+      .rs-t td{{padding:6px 7px;font-size:.8rem}}
+    }}
     .rs-bars{{margin:8px 0}}
     .rs-bar{{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}}
     .rs-bar .y{{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}}
@@ -389,7 +397,7 @@ def county_table(st, s, aslug=None):
         f'<th title="{lab}, $/acre">{TYPE_SHORT[t]} {yr}</th>' for t, lab in cols)
     thead += ('<th>YoY</th><th title="county corn yield, 15-year least-squares trend projected to %s, fitted on the same '
               'practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend %s</th>' % (s["ty"], s["ty"]))
-    body = []
+    body, seen = [], set()
     for c in sorted(s["counties"], key=lambda c: c["name"]):
         a = (aslug or {}).get(c.get("fips"))
         cells = [f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a></td>'
@@ -409,12 +417,32 @@ def county_table(st, s, aslug=None):
             cells.append(f'<td class="{"up" if ch >= 0 else "dn"}" data-v="{ch:.1f}">{"+" if ch >= 0 else ""}{ch:.1f}%</td>')
         else:
             cells.append('<td class="mut" data-v="-999">n/a</td>')
-        ct = ((pair_county(c) or {}).get("corn") or {}).get("t", {}).get("v")
-        cells.append(f'<td data-v="{ct if ct is not None else -1}">'
-                     + (f"{ct:.0f} bu" if ct is not None else '<span class="mut">n/a</span>') + "</td>")
+        tr = ((pair_county(c) or {}).get("corn") or {}).get("t", {})
+        ct = tr.get("v")
+        if ct is not None:
+            lab = f"{ct:.0f} bu"
+        else:
+            # say WHY there is no trend instead of a bare n/a (the pairing rule withholds it on purpose)
+            why, ends = tr.get("w") or "", re.search(r"ends in (\d{4})", tr.get("w") or "")
+            if ends:
+                lab, k = f"ends {ends.group(1)}", "ends"
+            elif REASON_MIXED in why:
+                lab, k = "mixed", "mixed"
+            else:
+                lab, k = "n/a", "na"
+            seen.add(k)
+            lab = f'<span class="mut">{lab}</span>'
+        cells.append(f'<td data-v="{ct if ct is not None else -1}">{lab}</td>')
         body.append("<tr>" + "".join(cells) + "</tr>")
-    return (f'<div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
-            f'<tbody>{"".join(body)}</tbody></table></div>')
+    keys = [("mixed", "<b>mixed</b>: NASS publishes only an all-practice corn yield for the county, and the county "
+                      "also irrigates, so that yield is withheld rather than set beside dryland rent"),
+            ("ends", "<b>ends</b>: the county&rsquo;s yield series stopped that year, too long ago to project"),
+            ("na", "<b>n/a</b>: too few years of county yield on record")]
+    note = "; ".join(t for k, t in keys if k in seen)
+    return (f'<p class="rs-swipe">Swipe the table sideways for every column.</p>'
+            f'<div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
+            f'<tbody>{"".join(body)}</tbody></table></div>'
+            + (f'<p class="sub rs-tnote">Corn trend: {note}.</p>' if note else ""))
 
 
 SORT_JS = """<script>
@@ -540,6 +568,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>
     </div>
   </div>
+  {atlas_line(atlas_state_href(st))}{arc_line(st)}
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
     <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'vs {yr-1}')}</div>
@@ -555,7 +584,6 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
   Survey. Nothing is estimated or modeled, and there is no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
-  {atlas_line(atlas_state_href(st))}{arc_line(st)}
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h2>Every published county, {yr}</h2>
