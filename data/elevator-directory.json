@@ -1,15 +1,15 @@
 {
- "generated": "2026-10-11T16:53:13Z",
+ "generated": "2026-10-11T17:08:18Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2288,
+  "facilities": 2289,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2221,
+  "with_phone": 2222,
   "saturated_zips": 0,
   "failed_zips": 0,
   "rows_read": 17385
@@ -22305,6 +22305,15 @@
    "facility_type": "Country Elevator",
    "locationId": 2765,
    "elevatorId": 1356
+  },
+  {
+   "facility": "Manning Grain Company",
+   "branch": "Burress",
+   "city": "Fairmont",
+   "state": "NE",
+   "zip": "68354",
+   "phone": "(402) 266-3701",
+   "source": "barchart"
   },
   {
    "company": "Nebraska Corn Processing",
