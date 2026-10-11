@@ -1,4 +1,6 @@
 /**
+ * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
+ *   every push to main that touches this file. No more pasting into the dashboard.
  * v5.8 (2026-10-11): SITE FORMS MOVE OFF FORMSPREE. New routes only; every
  *   existing route answers exactly as before. Three forms used to post to
  *   Formspree: the elevator claim form (elevators.html), the approval and
