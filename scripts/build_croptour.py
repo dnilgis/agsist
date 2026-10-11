@@ -461,7 +461,7 @@ def render_hero(data, st, ph, today, sst=None):
                       f"USDA now {float(ub['corn']):.1f} ({short(ub['as_of'])}).")
         else:
             kicker = "Tour number is in"
-        verdict = "Now compare it to the record below"
+        verdict = "Its record against the final crop is below"
 
     # "the last N tours (first-last)" is only true if nothing inside that span
     # was dropped for want of a figure. stats() counts what it skipped.
@@ -534,7 +534,6 @@ def render_bias_claim(st, plain=False):
     n = st["n"]
     b = "" if plain else "<b>"
     _b = "" if plain else "</b>"
-    dash = ": "
     parts = [f"The tour has also leaned one way: it came in {b}under{_b} the final yield in "
              f"{st['tour_low']} of {n} years"]
     if st["tour_low_mean"] is not None:
@@ -548,7 +547,7 @@ def render_bias_claim(st, plain=False):
         parts.append(f". Across all {n}, the net lean is {net:.1f} bushels "
                      f"{'low' if st['tour_bias'] < 0 else 'high'}")
     if st["tour_high"]:
-        parts.append(f". That is a real tendency, not a rule{dash}it ran high in "
+        parts.append(f". It still ran high in "
                      f"{st['tour_high']} of them, the widest by {st['tour_high_max']:.1f} bushels")
     else:
         parts.append(". It has not once finished above the final")
@@ -1088,9 +1087,9 @@ def render_band(data):
             f'{b["q1"]:+.1f} and {b["q3"]:+.1f} bushels, the widest between '
             f'{b["min"]:+.1f} and {b["max"]:+.1f}, and it has landed within {k} bushels of '
             f'the final crop in {b["within"][k]} of {b["n"]} years. '
-            f'That is a count of what happened, not a forecast: it is not a reason to '
-            f'adjust the tour\'s figure, and adding its average lean back on tested worse '
-            f'than leaving it alone.</p></details>')
+            f'That is a count of past years, not a forecast, and not a reason to adjust the '
+            f'tour\'s figure: adding its average '
+            f'lean back on tested worse than leaving it alone.</p></details>')
 
 
 def render_benchnote(data):

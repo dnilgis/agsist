@@ -124,8 +124,7 @@ def apply_to_tour(tour, cur=_READ):
         sb = "soybeans %s" % cur["soybeans"]
         sw = change_words(cur, "soybeans")
         bits.append(sb + (" (%s)" % sw if sw else ""))
-    b["note"] = ("USDA's %s %d WASDE: %s. Read from data/wasde.json, the file the "
-                 "WASDE watcher fills the moment NASS publishes." % (d.strftime("%B"), d.day, ", ".join(bits)))
+    b["note"] = ("USDA's %s %d WASDE: %s." % (d.strftime("%B"), d.day, ", ".join(bits)))
     b["short"] = "USDA's %s %d estimate." % (d.strftime("%B"), d.year)
     b["source"] = cur["source"]
     return True

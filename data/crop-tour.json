@@ -148,7 +148,7 @@
     },
     "agsist": {
       "label": "AGSIST nowcast",
-      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file. The band is the 80th percentile of backtest errors at this week of the season, each year scored using only the years before it, recomputed every run.",
+      "note": "Our ratings-only nowcast of the US final yield. The band is the 80th percentile of backtest errors at this week of the season, each year scored using only the years before it, recomputed every run.",
       "correction": "Corrected 2026-08-20. An earlier 183.6, locked Aug 11, was computed on a history file that carried in-season forecasts in place of final yields. Superseded; the source defect is fixed.",
       "source": "data/yield-nowcast.json"
     },
@@ -223,7 +223,7 @@
       "tour_soy_prod": 4.362,
       "usda_aug_soy_prod": 4.42,
       "usda_final_soy_prod": 4.14,
-      "note": "The August 10 derecho flattened millions of Iowa acres. USDA's August forecast, approved August 12, was based on conditions as of August 1 and so contains none of that damage — the report says so on its face. The tour walked those fields the following week, though it ran in modified form that year, with scouts reporting from the road instead of meeting up at night, so 2020 is not measuring quite the same exercise as the others. It is the year the two numbers diverge most, and it carries more weight than any other year in comparisons drawn from this table."
+      "note": "The August 10 derecho flattened millions of Iowa acres. USDA's August forecast, approved August 12, was based on conditions as of August 1 and so contains none of that damage. The tour walked those fields the following week, though it ran in modified form that year, with scouts reporting from the road instead of meeting up at night, so 2020 is not measuring quite the same exercise as the others. It is the year the two numbers diverge most, and it carries more weight than any other year in comparisons drawn from this table."
     },
     {
       "year": 2021,

@@ -1858,7 +1858,6 @@
   {
    "path": "data/wasde.json",
    "pages": [
-    "crop-tour.html",
     "index.html"
    ],
    "written_by": [
