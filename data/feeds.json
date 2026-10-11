@@ -1702,6 +1702,7 @@
   {
    "path": "data/supporters.json",
    "pages": [
+    "components/footer.html",
     "sponsor.html"
    ],
    "written_by": [],

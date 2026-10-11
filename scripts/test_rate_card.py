@@ -81,11 +81,11 @@ def main():
         check(("$%s" % f"{yr:,}") in pitch or ("$%d" % yr) in pitch,
               "and it is the figure the page quotes", yr)
 
-    print("\nevery open slot on the site shows the card's price")
+    print("\nevery slot price on the site is the card's price")
     import subprocess
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "stamp_rates.py"), "--check"],
                        capture_output=True, text=True)
-    check(r.returncode == 0, "ribbons, homepage chip and footer slot match the card (scripts/stamp_rates.py --check)",
+    check(r.returncode == 0, "every ribbon's price matches the card (scripts/stamp_rates.py --check)",
           (r.stdout + r.stderr).strip()[-300:])
 
     print("\nthe supporter cap is the one the strip renders")

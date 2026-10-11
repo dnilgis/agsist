@@ -2718,7 +2718,9 @@ def render_sponsor_block_html(sponsor, surface="archive", slot=None):
     given and the ad is paid, adds the measurement attributes that
     components/sponsor-metrics.js counts.
     """
-    if not sponsor: return ""
+    # 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+    # house ad is never drawn; components/sponsor-ad.js returns the same "".
+    if not sponsor or sponsor.get("is_house_ad"): return ""
     sp = sponsor
     house = bool(sp.get("is_house_ad"))
     slot = str(slot) if (slot and not house) else ""
@@ -2778,22 +2780,20 @@ def render_byline_block_html():
 
 def render_sponsor_attribution_html(sponsor, surface="archive"):
     """Tiny single-line sponsor attribution that sits between the date and
-    the headline. Renders 'Today's sponsor: [Name] \u2192' when paid, or
-    'Sponsor this slot \u2192' when house-ad. Click-through goes to the same
+    the headline. Renders 'Today's sponsor: [Name] \u2192' when paid, and
+    nothing when house-ad (2026-10-11). Click-through goes to the same
     cta_url the main sponsor block uses."""
     if not sponsor: return ""
     is_house = sponsor.get("is_house_ad", False)
+    if is_house:
+        return ""   # 2026-10-11: an unsold slot shows nothing, not "Sponsor this slot"
     cta_url = html_esc(_sponsor_cta(sponsor, surface))
     target = ' target="_blank"' if cta_url.startswith('http') else ''
-    rel_attr = ' rel="sponsored noopener"' if not is_house else ''
-    if is_house:
-        text = "&#x25CF; Sponsor this slot &rarr;"
-        cls = "dv3-spattr dv3-spattr--house"
-    else:
-        advertiser = html_esc(sponsor.get("advertiser", "")).strip()
-        if not advertiser: return ""
-        text = f"&#x25CF; Today's sponsor: <strong>{advertiser}</strong> &rarr;"
-        cls = "dv3-spattr dv3-spattr--paid"
+    rel_attr = ' rel="sponsored noopener"'
+    advertiser = html_esc(sponsor.get("advertiser", "")).strip()
+    if not advertiser: return ""
+    text = f"&#x25CF; Today's sponsor: <strong>{advertiser}</strong> &rarr;"
+    cls = "dv3-spattr dv3-spattr--paid"
     return (f'<a class="{cls}" href="{cta_url}"{target}{rel_attr} aria-label="Sponsor information">'
             f'{text}</a>')
 
@@ -3655,7 +3655,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta name="twitter:image" content="{og_image_url}">
 <link rel="preload" href="/components/styles.css?v=23" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=23">
-<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <!-- 2026-09-30: JetBrains Mono and Oswald are self-hosted in styles.css now
      (see components/styles.css) -- no more separate Google Fonts fetch here,
      and no preconnect to an origin nothing fetches from anymore. -->

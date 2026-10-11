@@ -143,6 +143,7 @@
     .hm-alerts--bar .hm-alerts-h{font-size:.8rem;margin-bottom:.25rem}
     .hm-alerts--bar .hm-alerts-p{font-size:0.795rem;margin:.2rem 0 .5rem;line-height:1.55}
     .hm-sponsor--ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem .45rem 1rem;margin:0 0 1rem;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.34);border-left:4px solid var(--ad-orange,#e8743a);border-radius:8px;background:rgba(var(--ad-orange-rgb,232,116,58),.05);color:var(--text-dim,#8a948f);line-height:1.6}
+    .hm-sponsor[hidden]{display:none!important}
     .hm-sponsor--ribbon .hm-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad-orange,#e8743a);margin-right:.5rem}
     .hm-sponsor--ribbon p{display:inline;margin:0}
     .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:10px}
@@ -465,7 +466,8 @@
           </div>
           <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
         </div>
-      <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor"><span class="hm-sponsor-tag">Sponsor this map</span> 573 people pulled a county hail lookup here last month. One category-exclusive slot on this page, and your name on the alert emails it sends. Prefer just your state? Any of the 51 state hail pages can carry its own exclusive ribbon. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
+      <!-- 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The ribbon stays in the markup, hidden, for whoever wires up a sold version. -->
+      <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor" hidden><span class="hm-sponsor-tag">Sponsor this map</span> 573 people pulled a county hail lookup here last month. One category-exclusive slot on this page, and your name on the alert emails it sends. Prefer just your state? Any of the 51 state hail pages can carry its own exclusive ribbon. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
 
 
 

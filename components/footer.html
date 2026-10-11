@@ -9,20 +9,11 @@
   .adspace-sub strong{color:var(--text);font-weight:600;}
   .adspace-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(168px,100%),1fr));gap:.6rem;}
   .ad-slot{display:flex;flex-direction:column;justify-content:space-between;gap:.5rem;min-height:96px;padding:.8rem .85rem;border-radius:8px;text-decoration:none;}
-  .ad-slot--open{border:1px dashed rgba(var(--ad-rgb),.5);background:rgba(var(--ad-rgb),.03);transition:border-color .15s,background .15s,transform .15s;}
-  .ad-slot--open:hover{border-color:var(--ad);background:rgba(var(--ad-rgb),.09);transform:translateY(-2px);}
-  /* 2026-10-07 (Sig): "make the sponsor slots catch your eye" -- this replaces
-     the 2026-10-06 toned-down dashed row. Same language as the page ribbons
-     (components/styles.css): pulsing OPEN pill, price chip from the rate card,
-     a real button. #0d1117 on the ad orange is 6.4:1. */
-  .ad-slot--lead{flex-direction:row;align-items:center;flex-wrap:wrap;gap:.5rem .8rem;min-height:0;padding:.75rem .9rem;border:1px solid rgba(var(--ad-rgb),.55);border-left:5px solid var(--ad);background:linear-gradient(100deg,rgba(var(--ad-rgb),.16),rgba(var(--ad-rgb),.05) 60%);box-shadow:0 2px 14px rgba(var(--ad-rgb),.12);}
-  .ad-slot--lead:hover{border-color:var(--ad);transform:translateY(-1px);}
-  .ad-slot--lead .ad-slot-tag{display:inline-flex;align-items:center;gap:.4rem;align-self:center;color:#0d1117;background:var(--ad);border:0;border-radius:999px;padding:.2rem .6rem .2rem .5rem;font-weight:800;}
-  .ad-slot--lead .ad-slot-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:#0d1117;animation:ag-open-pulse 1.8s ease-out infinite;}
-  .ad-slot--lead .ad-slot-pitch{color:var(--text);font-size:.9rem;font-weight:600;}
-  .ad-slot-price{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:800;color:var(--text);border:1px solid rgba(var(--ad-rgb),.6);border-radius:6px;padding:.12rem .5rem;white-space:nowrap;margin-left:.2rem;}
-  .ad-slot--lead .ad-slot-cta{margin-left:auto;font-family:inherit;color:#0d1117;background:var(--ad);border-radius:8px;padding:.4rem .9rem;font-size:.85rem;font-weight:800;letter-spacing:0;white-space:nowrap;}
-  @media (prefers-reduced-motion:reduce){.ad-slot--lead .ad-slot-tag::before{animation:none;}.ad-slot--lead:hover{transform:none;}}
+  /* 2026-10-11 (Sig, "tone it down"): no open slot. This strip is hidden
+     until data/supporters.json has an active supporter; components/loader.js
+     renderSupporters() then fills it and shows it. The one way in when
+     nothing is sold is the quiet Advertise link in the bottom row. */
+  .footer-adspace[hidden]{display:none!important;}
   .ad-slot-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:0.735rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad);border:1px solid rgba(var(--ad-rgb),.45);border-radius:3px;padding:.1rem .4rem;}
   .ad-slot-pitch{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.25;}
   .ad-slot-cta{font-family:'JetBrains Mono',monospace;font-size:0.767rem;font-weight:700;letter-spacing:.03em;color:var(--ad);}
@@ -64,9 +55,6 @@
     footer details.footer-col[open]{padding-bottom:.4rem;}
     .footer .footer-adspace{margin-top:.75rem;padding-top:0;border-top:0;}
     .footer .adspace-head{margin-bottom:.4rem;}
-    .footer .ad-slot--lead{padding:.55rem .7rem;gap:.35rem .6rem;}
-    .footer .ad-slot--lead .ad-slot-pitch{font-size:.84rem;}
-    .footer .ad-slot--lead .ad-slot-cta{padding:.35rem .75rem;font-size:.8rem;}
     .footer .footer-bottom{padding:.5rem 0 .6rem;}
     .footer .footer-legal{justify-content:center;row-gap:0;}
   }
@@ -157,25 +145,17 @@
     </div>
 
 
-    <div class="footer-adspace">
+    <div class="footer-adspace" id="footer-adspace" hidden>
       <div class="adspace-head">
         <span class="adspace-lbl">Advertise on AGSIST</span>
       </div>
-      <!-- loader.js can swap any .ad-slot--open for a filled advertiser card -->
-      <div class="adspace-row" id="adspace-row">
-
-        <a href="/sponsor-apply?tier=supporter" class="ad-slot ad-slot--open ad-slot--lead" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_adspace_slot1'})">
-          <span class="ad-slot-tag">Open</span>
-          <span class="ad-slot-pitch">Your logo here, on every page. <span class="ad-slot-price" data-rate="supporter">$15/mo &middot; first month free</span></span>
-          <span class="ad-slot-cta">Put your logo here &rarr;</span>
-        </a>
-
-      </div>
+      <!-- loader.js fills this with active supporters and unhides the strip -->
+      <div class="adspace-row" id="adspace-row"></div>
     </div>
     <div class="footer-bottom">
       <div class="footer-legal">
         <span>© 2026 AGSIST</span><span class="footer-sep">·</span>
-        <a href="/sponsor" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_legal'})">Sponsor</a><span class="footer-sep">·</span>
+        <a href="/sponsor" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_legal'})">Advertise</a><span class="footer-sep">·</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">·</span>
         <a href="/accessibility">Accessibility</a><span class="footer-sep">·</span>
         <a href="/terms">Terms</a>

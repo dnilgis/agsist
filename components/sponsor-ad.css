@@ -126,3 +126,10 @@
 [data-theme="light"] .sa-logo{box-shadow:0 0 0 1px rgba(0,0,0,.09)}
 [data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:rgba(232,116,58,.08)}
 [data-theme="light"] .sa-phone:hover{color:#a8380a}
+
+/* 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+   renderers no longer draw the house ad, but archive pages written before
+   this carry it (and its "Sponsor this slot" credit) in their HTML. Every
+   archive page links this file, so they are hidden here rather than by
+   rewriting 200 pages. */
+.sa-ad--house,.dv3-spattr--house{display:none!important}

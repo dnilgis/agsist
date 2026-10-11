@@ -24,7 +24,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '36'; // v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '37'; // v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -284,53 +284,51 @@
         })
         .catch(function () { /* keep the static fallback shown in the footer */ });
     }
-    // 2) fill open ad slots with active sponsors (mockups stay where none)
+    // 2) the footer strip shows ONLY active supporters (2026-10-11, Sig:
+    //    "tone it down"). It ships hidden and empty; with no active supporter,
+    //    or on any failure, it stays hidden. No open slot, no price, no pulse.
     var row = document.getElementById('adspace-row');
     if (!row) return;
+    var strip = document.getElementById('footer-adspace');
     fetch(BASE + '/data/supporters.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) {
         var ctaUrl = (d && d.cta_url) || '/sponsor#slots';
         var list = ((d && d.supporters) || []).filter(function (s) { return s && s.active === true; });
         if (!list.length) return;
-        var open = row.querySelectorAll('.ad-slot--open');
-        // Fill the open slot(s) first; if there are more paying supporters
-        // than open slots (footer now carries a single teaser slot), append
-        // extra filled cards so no paying sponsor is ever dropped.
         for (var i = 0; i < list.length; i++) {
-          (function (s, slot) {
-            var url = s.url || ctaUrl;
-            if (!/^(https?:\/\/|\/)/.test(url)) url = ctaUrl;
-            var ext = url.indexOf('http') === 0;
-            var a = document.createElement('a');
-            a.className = 'ad-slot ad-slot--filled';
-            a.href = url;
-            if (ext) { a.target = '_blank'; a.rel = 'sponsored noopener'; }
-            else { a.rel = 'sponsored'; }
-            a.innerHTML = supporterInner(s);
-            // MEASURED BY components/sponsor-metrics.js, NOT HERE.
-            // This card is only ever built for an ACTIVE supporter, so unlike
-            // the open slot beside it, it is a real ad and counts as one. The
-            // old inline supporter_click listener was DELETED in the same edit
-            // that added these attributes -- leaving both would have counted
-            // every click twice, and a doubled CTR is worse than no CTR.
-            a.setAttribute('data-sponsor-slot', 'footer-strip');
-            a.setAttribute('data-sponsor-click', 'footer-strip');
-            if (slot) slot.parentNode.replaceChild(a, slot);
-            else row.appendChild(a);
-          })(list[i], open[i]);
+          var s = list[i];
+          var url = s.url || ctaUrl;
+          if (!/^(https?:\/\/|\/)/.test(url)) url = ctaUrl;
+          var ext = url.indexOf('http') === 0;
+          var a = document.createElement('a');
+          a.className = 'ad-slot ad-slot--filled';
+          a.href = url;
+          if (ext) { a.target = '_blank'; a.rel = 'sponsored noopener'; }
+          else { a.rel = 'sponsored'; }
+          a.innerHTML = supporterInner(s);
+          // MEASURED BY components/sponsor-metrics.js, NOT HERE.
+          // This card is only ever built for an ACTIVE supporter, so it is a
+          // real ad and counts as one. The old inline supporter_click listener
+          // was DELETED in the same edit that added these attributes -- leaving
+          // both would have counted every click twice.
+          a.setAttribute('data-sponsor-slot', 'footer-strip');
+          a.setAttribute('data-sponsor-click', 'footer-strip');
+          row.appendChild(a);
         }
+        if (strip) strip.hidden = false;
       })
-      .catch(function () { /* leave mockups on any failure */ });
+      .catch(function () { /* the strip stays hidden */ });
   }
 
   // ── Sold page slots (2026-10-07) ───────────────────────────────
-  // Each tool page ships an OPEN ribbon ("Sponsor this page", price, button).
+  // Each tool page ships its ribbon markup ("Sponsor this page", price,
+  // button), HIDDEN by components/styles.css until sold (2026-10-11).
   // When a sponsor has bought that page, data/page-sponsors.json carries them
   // under the ribbon's slot id, written by scripts/sponsor_apply.py once Sig
   // approves. From the entry's start date (Central time) the open ribbon is
-  // replaced by theirs. Any failure leaves the open ribbon, which is honest:
-  // the slot is shown as for sale rather than as somebody's ad gone blank.
+  // replaced by theirs and shown. Any failure leaves the ribbon hidden: an
+  // unsold slot shows nothing.
   // ONE RENDERER for a sold slot, shared with the sign-up form's live preview
   // (sponsor-apply.html calls window.AgsistSlots), so what a sponsor sees
   // before they apply is what the site draws after Sig approves.
@@ -383,7 +381,7 @@
         rib.setAttribute('aria-label', 'Sponsored: ' + sp.company);
         rib.innerHTML = ribbonInner(sp, id, true);
       })
-      .catch(function () { /* the open ribbon stays */ });
+      .catch(function () { /* the ribbon stays hidden */ });
   }
 
   // ── Sponsor measurement ────────────────────────────────────────

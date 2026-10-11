@@ -15,7 +15,10 @@
  *          data-sponsor-slot and its links data-sponsor-click, and
  *          components/sponsor-metrics.js counts it (MRC viewable: half the
  *          pixels, one continuous second). Absent -> nothing is counted, which
- *          is what the house ad and the sponsor's own proof copy need.
+ *          is what the sponsor's own proof copy needs.
+ *
+ * A house ad (is_house_ad) renders as an empty string: nothing is drawn in an
+ * unsold slot.
  *
  * scripts/generate_daily.py render_sponsor_block_html() writes the same markup
  * in Python for the archive pages. scripts/sponsor-checks.mjs renders one
@@ -50,7 +53,11 @@
   }
 
   function render(sp, surface, opts) {
-    if (!sp) return '';
+    /* 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+       house ad ("SPONSOR · 1 SLOT", our own pitch for the space) is no longer
+       drawn on any surface. generate_daily.render_sponsor_block_html returns
+       the same empty string; scripts/sponsor-checks.mjs holds them equal. */
+    if (!sp || sp.is_house_ad) return '';
     opts = opts || {};
     var house = !!sp.is_house_ad;
     var slot = (!house && opts.slot) ? String(opts.slot) : '';

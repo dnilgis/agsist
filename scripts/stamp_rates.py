@@ -2,9 +2,11 @@
 """
 PRICES ON THE OPEN SPONSOR SLOTS, FROM THE RATE CARD.
 
-Every open slot on the site -- the 79 "Sponsor this page" ribbons, the
-homepage "Become a sponsor" chip, the footer's open slot -- shows what it
-costs. Those prices are written here from data/rate-card.json, into
+Every "Sponsor this page" ribbon carries what the slot costs. Since
+2026-10-11 an unsold ribbon is hidden on the page (components/styles.css;
+the homepage chip and the footer's open slot are gone), but the ribbon
+markup is still where each slot's id and price live, for data/sponsor-slots.json
+and the sign-up form. Those prices are written here from data/rate-card.json, into
 <span ... data-rate="TIER">...</span>, and nowhere by hand. A price typed into
 eighty pages is eighty copies that will disagree the first time it changes
 (2026-10-07: the footer said $25/week while the card had moved on).

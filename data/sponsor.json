@@ -1,5 +1,5 @@
 {
-  "_": "NOT LIVE. active=false means generate_daily.build_sponsor_block ignores this file and keeps running the house ad, on every surface. Flip active to true and the next briefing run puts Apex in the slot: homepage, archive page, RSS, the subscriber email and the forwarding brief. Nothing else has to change.",
+  "_": "NOT LIVE. active=false means generate_daily.build_sponsor_block ignores this file and the slot shows nothing, on every surface (since 2026-10-11 the house ad is not drawn). Flip active to true and the next briefing run puts Apex in the slot: homepage, archive page, RSS, the subscriber email and the forwarding brief. Nothing else has to change.",
   "_before_going_live": [
     "Rich approves on his portal: the proof code in his approval email must match the one the portal shows. Record it in data/sponsors.json -> sponsors[slug=apex].approved.",
     "Then flip active to true here AND set data/sponsors.json -> sponsors[slug=apex].start to the date the first ad runs. Both, same commit. scripts/sponsor-checks.mjs fails if one moves without the other.",

@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<script src="/components/sponsor-ad.js?v=1"></script>
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
+<script src="/components/sponsor-ad.js?v=2"></script>
 <link rel="stylesheet" href="/components/harvest-clock.css?v=1">
 <script src="/components/harvest-clock.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
@@ -703,8 +703,8 @@ function renderToday(data,why){
     ticker+='</div>';
   }
 
-  // Sponsor attribution line — sits between header and lead. Two states:
-  // empty (house) → "Sponsor this slot →" subdued; paid → "Today's sponsor: <Name> →"
+  // Sponsor attribution line, between header and lead. Paid only:
+  // "Today's sponsor: <Name> →". Unsold (house) draws nothing.
   var attribution='';
   var spA=data.sponsor;
   var aIsHouse=!spA||spA.is_house_ad===true||(!spA.advertiser&&!spA.name);
@@ -1006,25 +1006,14 @@ function renderToday(data,why){
     '</div>';
   }
 
-  // Sponsor block (paid or house-ad fallback)
+  // Sponsor block: a paid sponsor only. 2026-10-11 (Sig, "tone it down"):
+  // no sponsor, or the house ad, draws nothing (AgsistAd.render returns '').
   var sponsor='';
   var sp=data.sponsor||null;
-  if(!sp){
-    sp={
-      label:'SPONSOR \u00B7 1 SLOT',
-      advertiser:'AGSIST',
-      headline:'Sponsor the AGSIST Daily Briefing.',
-      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations. Read before the market open. First month free, then $149 a month, rate locked for 12 months. No minimum, cancel anytime.',
-      cta_text:'See the sponsor pitch',
-      cta_url:'/sponsor',
-      disclosure:'One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.',
-      is_house_ad:true
-    };
-  }
   /* ONE RENDERER: components/sponsor-ad.js, the same markup the homepage, the
      archive pages (scripts/generate_daily.py) and the sponsor's portal draw.
      Measured as its own slot, "daily-page", so the sponsor's report can tell
-     /daily apart from the homepage. The house pitch is never measured. */
+     /daily apart from the homepage. */
   sponsor=window.AgsistAd?window.AgsistAd.render(sp,'daily_page',{slot:'daily-page'}):'';
 
   // Forward block

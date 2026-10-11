@@ -598,17 +598,17 @@ def breadcrumb(items):
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
 
 
-# Town pages only: components/cb-house.js puts the email ask in the footer's
-# open sponsor slot while it is unsold, and leaves a sold one alone.
-HOUSE_JS = '<script src="/components/cb-house.js?v=1" defer></script>\n'
+# 2026-10-11: no house ask in the footer's sponsor slot any more. An unsold
+# slot shows nothing (components/loader.js keeps the strip hidden), so town
+# pages no longer load components/cb-house.js.
 
 
-def page_end(ftr, house=False, table=False):
+def page_end(ftr, table=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{HOUSE_JS if house else ''}{TABLE_JS if table else ''}</body>
+{TABLE_JS if table else ''}</body>
 </html>
 """
 
@@ -813,7 +813,7 @@ def build_town_page(t, ctx):
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
             "share": share}
-    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr, house=True), meta
+    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -1543,7 +1543,8 @@ def selftest():
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
         assert 'data-signup-ask=' in fr and 'data-zip="68025"' in fr, "a town page asks for an email with its own ZIP"
-        assert "/components/cb-house.js" in fr, "a town page carries the house ask for its unsold footer slot"
+        assert "cb-house" not in fr and "Sponsor this" not in fr and "ad-slot--open" not in fr, \
+            "a town page shows nothing in an unsold sponsor slot: no house ask, no open slot"
         assert "Cash grain bids in Fremont, NE today" in fr
         assert "Op bad" not in fr or "did not check out" in fr
         # the link preview carries the page's own top nearby bids and their posted time

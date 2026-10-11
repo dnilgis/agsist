@@ -294,5 +294,99 @@ check("the ribbon's link is a 44px tap target", () => {
   assert.ok(m && +m[1] >= 44, "ribbon link min-height is " + (m ? m[1] : "unset"));
 });
 
+/* ── AN UNSOLD SLOT SHOWS NOTHING ───────────────────────────────────────
+   2026-10-11 (Sig, "tone it down, whatever that looks like"). Five reviewers
+   read the house ads, open ribbons, pulsing OPEN pills and prices as the site
+   advertising that nothing had sold. The rule: a placement shows only when it
+   is sold. Unsold, nothing is drawn; the one way in is the footer's quiet
+   Advertise link. Every check is paired: unsold draws nothing AND sold draws
+   the ad, so "hide everything" cannot pass either. */
+console.log("\nAN UNSOLD SLOT SHOWS NOTHING");
+const STYLES = decomment(R("components/styles.css"));
+const FOOTER = decomment(R("components/footer.html"));
+const HOUSE = { is_house_ad: true, label: "SPONSOR · 1 SLOT", advertiser: "AGSIST", headline: "Sponsor the AGSIST Daily Briefing", body: "b", cta_text: "Go", cta_url: "/sponsor", disclosure: "d" };
+const PAID = Object.assign({}, JSON.parse(R("data/sponsor.json")), { active: true, cta_urls: { daily_page: "https://a.example/" } });
+check("the JS renderer draws nothing for the house ad, and the paid ad in full", () => {
+  assert.equal(AgsistAd.render(HOUSE, "daily_page", { slot: "daily-page" }), "");
+  assert.equal(AgsistAd.render(HOUSE, "homepage", { click: "daily-briefing" }), "");
+  const html = AgsistAd.render(PAID, "daily_page", { slot: "daily-page" });
+  assert.match(html, /^<aside class="sa-ad"/, "a paid sponsor is not drawn");
+  assert.ok(html.includes(AgsistAd.esc(PAID.advertiser)) && html.includes('data-sponsor-slot="daily-page"'));
+});
+{
+  const { execFileSync } = await import("node:child_process");
+  const out = JSON.parse(execFileSync("python3", ["-c",
+    "import sys,json;sys.path.insert(0,'scripts');import generate_daily as g;d=json.loads(sys.stdin.read());" +
+    "print(json.dumps([g.render_sponsor_block_html(d['h'],'archive','daily-archive'),g.render_sponsor_attribution_html(d['h'])," +
+    "g.render_sponsor_block_html(d['p'],'archive','daily-archive'),g.render_sponsor_attribution_html(d['p']),g.render_sponsor_block_html(dict(g.SPONSOR_HOUSE_AD))]))"],
+    { input: JSON.stringify({ h: HOUSE, p: PAID }), cwd: ROOT }).toString());
+  console.log("  the Python renderers (scripts/generate_daily.py):");
+  check("  generate_daily: house block, house credit and SPONSOR_HOUSE_AD are all empty", () => {
+    assert.equal(out[0], ""); assert.equal(out[1], ""); assert.equal(out[4], "");
+  });
+  check("  generate_daily: a paid sponsor gets the block and the credit", () => {
+    assert.match(out[2], /^<aside class="sa-ad" aria-label="Sponsored: /);
+    assert.match(out[2], /data-sponsor-slot="daily-archive"/);
+    assert.match(out[3], /dv3-spattr--paid[\s\S]*Today's sponsor/);
+  });
+}
+check("archive pages written before the change hide their baked house ad", () => {
+  assert.match(decomment(AD_CSS), /\.sa-ad--house\s*,\s*\.dv3-spattr--house\s*\{\s*display:\s*none!important/);
+  const days = readdirSync(ROOT + "daily").filter((f) => /^\d{4}-\d{2}-\d{2}\.html$/.test(f));
+  assert.ok(days.length > 100, "only " + days.length + " archive pages");
+  for (const f of days) {
+    const src = R("daily/" + f);
+    if (/sa-ad--house|dv3-spattr--house/.test(src))
+      assert.match(src, /\/components\/sponsor-ad\.css\?v=2"/, "daily/" + f + " carries a house ad but not the stylesheet that hides it");
+  }
+});
+check("the page ribbon is hidden until loader.js marks it sold", () => {
+  assert.match(STYLES, /aside\.ag-sponsor-ribbon:not\(\.ag-sponsor-ribbon--sold\):not\(\.idx1-sponsor\)\{display:none!important\}/);
+  const fill = LOADER.slice(LOADER.indexOf("function fillPageRibbons"), LOADER.indexOf("function loadSponsorMetrics"));
+  assert.match(fill, /classList\.add\('ag-sponsor-ribbon--sold'\)/, "a sold ribbon is never marked sold, so it would stay hidden");
+  assert.match(fill, /sp\.start > today\) return;[\s\S]*ag-sponsor-ribbon--sold/, "a slot is marked sold before its start date");
+  assert.match(STYLES, /\.ag-sponsor-ribbon--sold\{/, "the sold ribbon lost its style");
+});
+check("no pulsing OPEN dot anywhere in the shared chrome", () => {
+  for (const [n, src] of [["styles.css", STYLES], ["footer.html", FOOTER], ["loader.js", LOADER]])
+    assert.ok(!/ag-open-pulse|ad-slot--open/.test(src), n + " still carries the open-slot pulse or class");
+});
+check("the footer strip ships hidden and empty; loader.js shows it only for an active supporter", () => {
+  assert.match(FOOTER, /<div class="footer-adspace" id="footer-adspace" hidden>/);
+  assert.match(FOOTER, /<div class="adspace-row" id="adspace-row"><\/div>/, "the strip ships with something in it");
+  assert.ok(!/Your logo here|data-rate=|first month free/i.test(FOOTER), "the footer still prices an empty slot");
+  const fn = LOADER.slice(LOADER.indexOf("function renderSupporters"), LOADER.indexOf("function slotEsc"));
+  const ret = fn.indexOf("if (!list.length) return;"), show = fn.indexOf("strip.hidden = false");
+  assert.ok(ret > 0 && show > ret, "the strip is shown before the active-supporter check");
+  assert.match(fn, /s\.active === true/);
+});
+check("the footer's bottom row keeps exactly one quiet Advertise link", () => {
+  const bottom = FOOTER.slice(FOOTER.indexOf('<div class="footer-bottom">'));
+  const links = bottom.match(/<a [^>]*href="\/sponsor[^"]*"[^>]*>[^<]*<\/a>/g) || [];
+  assert.equal(links.length, 1, links.length + " sponsor links in the bottom row");
+  assert.match(links[0], />Advertise<\/a>$/);
+  assert.equal((FOOTER.match(/href="\/sponsor/g) || []).length, 1, "a second sponsor link elsewhere in the footer");
+});
+check("the homepage: nothing for an unsold slot, the ad for a sold one", () => {
+  assert.match(INDEX, /id="daily-sponsor"[^>]*style="display:none"/, "the briefing slot is visible before the data says it is sold");
+  assert.match(INDEX, /<div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor"[^>]*><\/a><\/div>/,
+    "the hero sponsor credit ships with text or visible");
+  assert.ok(!/id="dsp-empty"|Become a sponsor|Sponsor the AGSIST Daily Briefing|data-rate=/.test(INDEX), "the homepage still carries the house pitch");
+  const i = INDEX.indexOf("var sp=data.sponsor");
+  const blk = INDEX.slice(i, INDEX.indexOf("};", i));
+  assert.match(blk, /if\(!\(sp&&!sp\.is_house_ad&&\(sp\.advertiser\|\|sp\.name\)&&\(sp\.headline\|\|sp\.tagline\)\)\)\{[\s\S]{0,200}spEl\.style\.display='none'/,
+    "the unsold branch does not hide the slot");
+  assert.match(blk, /\}\s*else\s*\{[\s\S]*spEl\.style\.display='';[\s\S]*AgsistAd\.render\(sp,'homepage'/, "a paid sponsor is not drawn");
+});
+check("/daily keeps no house-ad fallback of its own", () =>
+  assert.ok(!/1 SLOT|1 Slot|is_house_ad:true/.test(DAILY), "daily.html still builds a house ad"));
+check("the hail map's ribbon is hidden", () =>
+  assert.match(HAIL, /<aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor" hidden>/));
+check("cash bids: no house ask in an unsold slot, on /cash-bids or the town pages", () => {
+  assert.ok(!/Sponsor this|innerHTML|ad-slot/.test(decomment(R("components/cb-house.js"))), "cb-house.js still draws into the slot");
+  assert.ok(!R("cash-bids.html").includes("cb-house.js"), "/cash-bids still loads cb-house.js");
+  assert.ok(!py(R("scripts/build_cash_bid_pages.py")).includes("cb-house.js"), "the town page builder still adds cb-house.js");
+});
+
 console.log("\n  " + pass + " passed, " + fail + " failed\n");
 process.exit(fail ? 1 : 0);

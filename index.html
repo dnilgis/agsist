@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <link rel="stylesheet" href="/css/home.css?v=16">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
@@ -22,7 +22,7 @@
      "Loaded BEFORE any page script and not deferred, so it is there whenever
      a page's own code runs" — not every inline caller guards for its
      absence, unlike the two callers above. Left as-is. -->
-<script src="/components/sponsor-ad.js?v=1" defer></script>
+<script src="/components/sponsor-ad.js?v=2" defer></script>
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -285,24 +285,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <!-- WAVE1-D 2026-10-03: the sponsor slot sat directly under THE ACTION,
                which is now the prediction bot's call. It lives here, after the
                briefing's sections, so the ad and the call never read as one. -->
-          <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
-            <!-- Empty state: billboard for finding the sponsor -->
-            <div class="dsp-empty" id="dsp-empty">
-              <div class="dsp-tags">
-                <span class="dsp-tag dsp-tag-available"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Available</span>
-                <span class="dsp-tag dsp-tag-founding">Sponsor &middot; 1 Slot &middot; First Month Free</span>
-              </div>
-              <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, read before the market open. <strong>First month free, then $149 a month, rate locked 12 months. No minimum, cancel anytime.</strong></p>
-              <div class="dsp-actions">
-                <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the sponsor pitch</a>
-              </div>
-              <div class="dsp-contact">
-                <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
-                <span class="dsp-contact-sep">&middot;</span>
-                <a href="tel:+17157972428" aria-label="Call Sigurd at 715-797-2428">715-797-2428</a>
-              </div>
-            </div>
+          <!-- 2026-10-11 (Sig, "tone it down"): shown only for a paid sponsor.
+               Unsold, this slot shows nothing (no house billboard). -->
+          <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot" style="display:none">
             <!-- Filled state: shown when data.sponsor is populated -->
             <!-- Filled state: the paid ad, drawn by components/sponsor-ad.js from
                  data/daily.json -> sponsor. This wrapper is the measured slot; the
@@ -561,8 +546,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          is drawn (or hidden) before first paint and the bids card below
          never jumps. -->
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
-    <!-- Sponsor pill: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. -->
-  <div class="s7-adrow s7-adrow--hb"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
+    <!-- Sponsor credit: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. Drawn only for a paid sponsor; unsold it stays hidden and empty. -->
+  <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
   </section>
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
   <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
@@ -3313,21 +3298,27 @@ window.hydrateDaily = function(data) {
     } else { bsEl.style.display='none'; }
   }
 
-  // v4.1: sponsor block — billboard empty state, subdued filled state, plus collapsed teaser pill.
-  // States: data.sponsor === false → hide both; object with name/tagline → filled; null/undefined → empty (default).
-  var sp=data.sponsor,spEl=el('daily-sponsor'),spEmpty=el('dsp-empty'),spFilled=el('dsp-filled'),spTeaser=el('daily-teaser-sponsor');
+  // v4.1: sponsor block, filled state plus the collapsed teaser credit.
+  // 2026-10-11 (Sig, "tone it down"): only a PAID sponsor draws anything. No
+  // sponsor, sponsor:false or the house ad -> the block, the credit and the
+  // strip all stay hidden. There is no empty-state billboard any more.
+  var sp=data.sponsor,spEl=el('daily-sponsor'),spFilled=el('dsp-filled'),spTeaser=el('daily-teaser-sponsor');
   // v4.2: inline sponsor attribution above the greeting — second touchpoint (block + teaser + this line)
   var spAttr=el('daily-spattr');
   if(spEl){
     var _tw=el('idx1-sponsor-wrap'),_tb=el('idx1-sponsor');
     if(_tw){_tw.hidden=true;}
-    if(spTeaser&&spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow'))spTeaser.parentNode.style.display='';
+    var spRow=(spTeaser&&spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow'))?spTeaser.parentNode:null;
     if(_tb){_tb.innerHTML='';_tb.removeAttribute('data-sponsor-slot');}
-    if(sp===false){
+    if(!(sp&&!sp.is_house_ad&&(sp.advertiser||sp.name)&&(sp.headline||sp.tagline))){
+      // Unsold (or switched off): nothing shows.
       spEl.style.display='none';
+      spEl.classList.remove('filled');
+      if(spFilled){spFilled.style.display='none';spFilled.innerHTML='';}
+      if(spRow)spRow.style.display='none';
       if(spTeaser)spTeaser.style.display='none';
       if(spAttr)spAttr.style.display='none';
-    } else if(sp&&!sp.is_house_ad&&(sp.advertiser||sp.name)&&(sp.headline||sp.tagline)){
+    } else {
       // data/sponsor.json carries advertiser/headline/body/cta_url. This used to
       // test sp.name/sp.tagline, which that file has never had, so a paid
       // sponsor fell through to the house billboard below.
@@ -3336,7 +3327,6 @@ window.hydrateDaily = function(data) {
       // Filled state — paid sponsor placement
       spEl.style.display='';
       spEl.classList.add('filled');
-      if(spEmpty)spEmpty.style.display='none';
       if(spFilled)spFilled.style.display='block';
       /* ONE RENDERER. components/sponsor-ad.js draws this ad on the homepage,
          /daily and the sponsor's own portal; the archive pages get the same
@@ -3344,8 +3334,8 @@ window.hydrateDaily = function(data) {
       if(spFilled)spFilled.innerHTML=(window.AgsistAd?window.AgsistAd.render(sp,'homepage',{click:'daily-briefing'}):'');
       // Collapsed teaser sponsor — quiet attribution
       if(spTeaser){
+        if(spRow)spRow.style.display='';
         spTeaser.style.display='';
-        spTeaser.classList.remove('empty-state');
         spTeaser.classList.add('has-sponsor');
         spTeaser.textContent='Sponsored by '+(spNm||'partner');
         if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
@@ -3373,24 +3363,6 @@ window.hydrateDaily = function(data) {
         spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+escHtml(spNm)+'</strong> \u2192';
         if(spHref){spAttr.href=spHref;spAttr.target='_blank';spAttr.rel='sponsored noopener';}
         else{spAttr.removeAttribute('target');spAttr.rel='sponsored';spAttr.href='mailto:sig@farmers1st.com';}
-      }
-    } else {
-      // Empty state — billboard CTA (default HTML)
-      spEl.style.display='';
-      spEl.classList.remove('filled');
-      if(spEmpty)spEmpty.style.display='block';
-      if(spFilled)spFilled.style.display='none';
-      if(spTeaser){
-        spTeaser.style.display='';
-        spTeaser.classList.remove('has-sponsor');
-        spTeaser.classList.add('empty-state');
-        // Keep default HTML href + textContent ("Sponsor this →") — no JS update needed
-      }
-      // Inline attribution above greeting — empty state (default HTML already has the right content)
-      if(spAttr){
-        spAttr.style.display='inline-flex';
-        spAttr.classList.remove('daily-spattr--paid');
-        spAttr.classList.add('daily-spattr--house');
       }
     }
   }
