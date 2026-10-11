@@ -140,6 +140,10 @@
 .cot-page-sub {
   font-size: .84rem; color: var(--text-muted); line-height: 1.55; max-width: 620px;
 }
+.cot-more { margin-top: .35rem; max-width: 620px; }
+.cot-more summary { cursor: pointer; font-size: .84rem; font-weight: 600; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
+.cot-more .cot-page-sub { margin: 0 0 .55rem; }
+.cot-math summary { cursor: pointer; padding: .35rem 0; min-height: 32px; }
 
 /* ── Verdict banner ── */
 .cot-verdict-banner {
@@ -488,8 +492,6 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 .cx-link { background:none; border:none; padding:0; font:inherit; color:var(--gold); cursor:pointer;
   text-decoration:underline; text-underline-offset:2px; }
 .cx-link:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
-.cx-card20 { font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700; letter-spacing:.02em;
-  margin:-.2rem 0 .35rem; }
 @media (max-width:620px){ .cx-three { grid-template-columns:1fr; } }
 
 
@@ -580,8 +582,12 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <div class="cot-hero">
     <div class="cot-eyebrow page-kicker">CFTC data · Updated weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
-    <p class="cot-page-sub page-lede">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against every week of the same report we hold, and what it does and does not tell you about price.</p>
-  <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after, the figures below carry their own age. <a href="/scorecard">Does positioning predict price? We test our own rule</a>, in public, one call per crop each week.</p>
+    <p class="cot-page-sub page-lede">Where the big speculative funds sit in corn, soybeans, wheat, cattle, hogs and milk this week, and how crowded that is. Not a price forecast.</p>
+    <details class="cot-more">
+      <summary>Who the funds are, and how old these numbers are</summary>
+      <p class="cot-page-sub">These are hedge funds and commodity traders: they trade paper and never own a bushel. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. We tested that on the full record and published the result below.</p>
+      <p class="cot-page-sub">Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after. The figures below carry their own age. <a href="/scorecard">Does positioning predict price? We test our own rule</a>, in public, one call per crop each week.</p>
+    </details>
   </div>
 
   <!-- The Read: single most important positioning signal -->
@@ -986,7 +992,7 @@ function renderInsight(key){
   var cr=c.crowd,cp=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);
   if(pill){
     pill.textContent=cp==null?'':((c.crowded&&cr&&cr.word)?cr.word+', crowded '+c.crowded:ordinal(Math.max(1,Math.min(99,cp)))+' percentile')
-      +' \u00b7 share of open interest since '+String(c.first_week||'').slice(0,4)+' (n = '+Number(c.weeks_of_history||0).toLocaleString('en-US')+' weeks)';
+      +' of every week since '+String(c.first_week||'').slice(0,4)+', as a share of open interest';
     pill.className='cot-pctl'+(c.crowded==='long'?' hot':c.crowded==='short'?' cold':'');
   }
   if(!el) return k;
@@ -1008,13 +1014,13 @@ function renderInsight(key){
   if(k.divergence){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
     var nd=k.chg4>0?'rising':k.chg4<0?'falling':'flat', pd=k.price4>0?'rising':k.price4<0?'falling':'flat';
-    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%, roll-repaired), <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
+    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%), <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
   }
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
      counted overlapping weeks of one episode as separate cases. */
   html+='<details class="cot-math"><summary>Show the math</summary>A shorter yardstick, in contracts: the net sits at the '
-    +ordinal(k.pct)+' percentile of the last '+k.weeks+' weeks (n = '+k.weeks+'). Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
+    +ordinal(k.pct)+' percentile of the last '+k.weeks+' weeks. Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
   el.innerHTML=html;
   return k;
 }
@@ -1056,7 +1062,7 @@ function renderCard(key, d) {
 
   var chgEl = document.getElementById('chg-' + key);
   if (chgEl && isFinite(chg)) {
-    chgEl.textContent = (chg >= 0 ? '▲' : '▼') + ' ' + fmtMag(chg) + ' wk/wk';
+    chgEl.textContent = (chg >= 0 ? '▲' : '▼') + ' ' + fmtMag(chg) + ' this week';
     chgEl.className = 'cot-card-chg ' + (chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nc');
   }
 
@@ -2570,7 +2576,6 @@ cotTick(); setInterval(cotTick, 60000);
     buildPicker();
     drawBoard();
     renderPredictive();
-    decorateCards();
 
     /* Open on CORN. Opening on whichever market was furthest from normal
        handed a corn farmer who searched for corn a Minneapolis spring wheat
@@ -2646,29 +2651,9 @@ cotTick(); setInterval(cotTick, 60000);
     }
   }
 
-  /* The cards above rank against the last 52 weeks; everything below ranks
-     against the whole record. A reader met "100th percentile" at the top and
-     "89th" further down with nothing to reconcile them. Put both on the card. */
-  function decorateCards(){
-    for (var key in CX.commodities) {
-      var c = CX.commodities[key];
-      var card = document.getElementById('card-' + key);
-      if (!card) continue;
-      var el = document.getElementById('cx20-' + key);
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'cx20-' + key;
-        el.className = 'cx-card20';
-        var anchor = document.getElementById('pctl-' + key);
-        if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(el, anchor.nextSibling);
-        else card.appendChild(el);
-      }
-      var p = c.pctl.net_oi_all;
-      el.textContent = (p === null ? 'no long-run ranking'
-        : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ', share of open: ' + crowdWord(p));
-      el.style.color = c.crowded === 'long' ? 'var(--gold)' : c.crowded === 'short' ? 'var(--cx-cold)' : 'var(--text-muted)';
-    }
-  }
+  /* The card pill already carries the long-run ranking (share of open
+     interest since 2010), so the second "vs 2010, share of open" line that
+     used to sit under it is gone (2026-10-11). */
 
   function hideAll(){
     SECTIONS.forEach(function(id){ var el = $(id); if (el) el.className = 'cx'; });
