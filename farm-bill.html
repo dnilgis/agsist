@@ -100,6 +100,9 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .bill-id{font-family:var(--mono);color:var(--accent)}
 .lede{max-width:700px;color:var(--text);opacity:.86;font-size:17px;margin-top:22px}
 .lede b{opacity:1;font-weight:600}
+.lede-more{max-width:700px;margin-top:10px}
+.lede-more summary{cursor:pointer;color:var(--gold);font-weight:600;font-size:15px;min-height:44px;display:flex;align-items:center}
+.lede-more p{color:var(--text);opacity:.86;font-size:16px;margin:4px 0 0}
 .status-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .pill{font-family:var(--mono);font-size:13.2px;letter-spacing:.03em;padding:7px 12px;border:1px solid var(--hair-strong);
   border-radius:2px;color:var(--dim);display:inline-block;line-height:1.45;background:var(--surface)}
@@ -342,14 +345,19 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     <div class="eyebrow page-kicker">Farm Bill Tracker &middot; National</div>
     <h1>The 2026 Farm Bill</h1>
     <p class="sub">What it changes for a corn and soybean farm this year: not much.</p>
-    <p class="lede">Your PLC and ARC numbers are already law. The 2025 reconciliation law (P.L.&nbsp;119&ndash;21)
-      runs ARC and PLC through the 2031 crop year and set the statutory reference prices at <b>$4.10</b> for corn and
-      <b>$10.00</b> for soybeans for 2025 through 2030; from 2031 they rise 0.5% a year. Crop insurance runs on
-      permanent law, so your policy and guarantee don&rsquo;t hang on this fight. What is stuck: <b>new CRP
-      enrollment</b>, and the aid money people are pushing for, which has no rules yet. The two bills in
-      Congress, the House-passed <span class="bill-id">H.R. 7567</span> and the Senate Agriculture Committee's
-      <span class="bill-id">Agricultural Act of 2026</span>, mostly move conservation and nutrition money around.
-      Each scores about budget-neutral against the programs&rsquo; $1.374 trillion ten-year baseline.</p>
+    <p class="lede">Your ARC and PLC numbers are already law: reference prices of <b>$4.10</b> for corn and
+      <b>$10.00</b> for soybeans through 2030, and crop insurance runs on permanent law. What is stuck: <b>new CRP
+      enrollment</b> and new aid money.</p>
+    <details class="lede-more">
+      <summary>The law behind that, and what the two bills do</summary>
+      <p>The 2025 reconciliation law (P.L.&nbsp;119&ndash;21) runs ARC and PLC through the 2031 crop year and set
+      those statutory reference prices for 2025 through 2030; from 2031 they rise 0.5% a year. Crop insurance runs on
+      permanent law, so your policy and guarantee don&rsquo;t hang on this fight. The aid money people are pushing for
+      has no rules yet. The two bills in Congress, the House-passed <span class="bill-id">H.R. 7567</span> and the
+      Senate Agriculture Committee's <span class="bill-id">Agricultural Act of 2026</span>, mostly move conservation
+      and nutrition money around. Each scores about budget-neutral against the programs&rsquo; $1.374 trillion
+      ten-year baseline.</p>
+    </details>
     <div class="status-row">
       <!--FB:pills-->
       <span class="pill live"><span class="mk"></span>House passed <b>224&ndash;200</b> &middot; Apr 30, 2026</span>
