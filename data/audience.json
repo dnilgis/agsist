@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-11T14:39:32+00:00",
+ "built": "2026-10-11T16:38:45+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5450,8 +5450,8 @@
     "d": "2026-10-09",
     "users": 315,
     "engaged": 224,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 65,
+    "gImpr": 3594,
     "bClicks": 123,
     "bImpr": 3204
    }
@@ -5464,32 +5464,32 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 40,
-     "impr": 748,
+     "clicks": 41,
+     "impr": 768,
      "pos": 5.1
     },
     {
      "q": "agsist",
-     "clicks": 21,
-     "impr": 51,
+     "clicks": 22,
+     "impr": 53,
      "pos": 1
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 16,
-     "impr": 234,
+     "impr": 247,
      "pos": 4.3
     },
     {
      "q": "usda cash rent by county",
      "clicks": 9,
-     "impr": 88,
-     "pos": 8.0
+     "impr": 90,
+     "pos": 7.9
     },
     {
      "q": "cash rents by county",
      "clicks": 6,
-     "impr": 84,
+     "impr": 89,
      "pos": 5.7
     },
     {
@@ -5500,14 +5500,14 @@
     },
     {
      "q": "hail map today",
-     "clicks": 4,
-     "impr": 10,
-     "pos": 4.2
+     "clicks": 5,
+     "impr": 12,
+     "pos": 4.5
     },
     {
      "q": "grain bin calculator",
      "clicks": 3,
-     "impr": 341,
+     "impr": 346,
      "pos": 8.6
     },
     {
@@ -5519,7 +5519,7 @@
     {
      "q": "hail tracker",
      "clicks": 3,
-     "impr": 54,
+     "impr": 55,
      "pos": 9.1
     },
     {
@@ -5537,7 +5537,7 @@
     {
      "q": "soybean yield estimate calculator",
      "clicks": 3,
-     "impr": 41,
+     "impr": 42,
      "pos": 4.1
     },
     {
@@ -5555,14 +5555,14 @@
     {
      "q": "current hail map",
      "clicks": 2,
-     "impr": 24,
-     "pos": 9
+     "impr": 25,
+     "pos": 9.1
     },
     {
      "q": "grain prices at local elevators today near me",
      "clicks": 2,
-     "impr": 27,
-     "pos": 3.7
+     "impr": 31,
+     "pos": 4.1
     },
     {
      "q": "hail map live",
@@ -6076,21 +6076,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-09",
-   "fetched": "2026-10-11T14:39:32+00:00"
+   "fetched": "2026-10-11T16:38:45+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-11T14:39:32+00:00"
+   "fetched": "2026-10-11T16:38:45+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-11T14:39:32+00:00"
+   "fetched": "2026-10-11T16:38:45+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-11T14:39:32+00:00"
+   "fetched": "2026-10-11T16:38:45+00:00"
   }
  }
 }
