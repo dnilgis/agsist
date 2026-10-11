@@ -48,6 +48,19 @@ def esc(s):
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
+def county_name(c):
+    """Upstream sends some counties in capitals ("LINN") and some not ("Story"),
+    so one table read "LINN, SCOTT, Story". Capitals are set in title case;
+    a name that already has lower case, or carries a digit (marine zones), is
+    left as sent."""
+    c = str(c or "")
+    if not c.isupper() or any(ch.isdigit() for ch in c):
+        return c
+    t = c.title()
+    t = re.sub(r"\bMc([a-z])", lambda m: "Mc" + m.group(1).upper(), t)
+    return t
+
+
 def all_state_links(current):
     return " ".join('<a href="/hail-map/' + slug(n) + '">' + esc(n) + "</a>"
                     for n in sorted(STATE_NAME.values()) if n != current)
@@ -105,7 +118,7 @@ def merge_counties(rows, n_yrs):
             if T:
                 m["dmg_pct"] = round(((m.get("dmg_pct", 0) or 0) * t1 +
                                       (r.get("dmg_pct", 0) or 0) * t2) / T)
-            if t2 > t1:
+            if t2 > t1 and not (str(r.get("county", "")).isupper() and not str(m["county"]).isupper()):
                 m["county"] = r.get("county", m["county"])
                 m["peak"] = r.get("peak") or m.get("peak")
             m["total"] = T
@@ -123,6 +136,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     rows = merge_counties(rows, span)
     for r in rows:
         r["avg"] = round(r.get("total", 0) / span, 1)
+        r["county"] = county_name(r.get("county", ""))
     total = sum(r.get("total", 0) for r in rows)
     top = rows[0] if rows else None
     # dominant peak month across the top counties, weighted by report count
@@ -168,14 +182,14 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
 
     intro = (
         "<p class=\"hs-sub\">" +
-        (("Hail is a fact of life on " + name + " ground: " + f"{total:,}" +
-          " National Weather Service hail reports in the last " + str(n_yrs) + " years, led by " +
-          esc(top["county"]) + " County" + (", peaking around " + peak_full if peak_full else "") + ".")
+        ((name + " logged " + f"{total:,}" +
+          " National Weather Service hail reports in the last " + str(n_yrs) + " years. " +
+          esc(top["county"]) + " County had the most" + (", and reports peak around " + peak_full if peak_full else "") + ".")
          if heavy and top else
          (name + " logged " + f"{total:,}" + " National Weather Service hail reports over the last " +
           str(n_yrs) + " years, " + ("meaningful but not hail-alley volume." if total >= 60 else
           "a comparatively quiet record by national standards."))) +
-        " The table below ranks the counties; the interactive national map shows exactly where, year by year. Checking a specific address? The map\u2019s search box pulls every dated report within 25 miles.</p>")
+        " The table ranks the counties. To check one address, use the map\u2019s search: it lists every dated report within 25 miles.</p>")
 
     # Key Figures — complete standalone sentences, because that is what
     # writers and AI engines lift verbatim (see: insurance lead-gen pages
@@ -243,18 +257,21 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         "h1{font-size:clamp(1.5rem,4vw,2.1rem);margin:.2rem 0 .6rem}\n"
         ".hs-sub{color:var(--text,#e6ebe9);line-height:1.7;max-width:70ch}\n"
         ".hs-cta{display:inline-flex;align-items:center;gap:.4rem;margin:.9rem 0 1.4rem;padding:.6rem 1rem;border:1px solid var(--brand,#d4a23f);border-radius:8px;color:var(--brand,#d4a23f);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;text-decoration:none}\n"
-        "table{width:100%;border-collapse:collapse;font-size:.88rem;margin:.4rem 0 1.4rem}\n"
+        ".hs-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.4rem 0 .4rem}\n"
+        ".hs-note{font-size:.8rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:0 0 1.4rem}\n"
+        "table{width:100%;border-collapse:collapse;font-size:.88rem}\n"
+        "@media(max-width:480px){.hs-tw th,.hs-tw td{padding:.5rem .3rem}.hs-tw th{letter-spacing:.04em}}\n"
         "th,td{border-bottom:1px solid var(--border,rgba(132,160,168,.12));padding:.5rem .55rem;text-align:left}\n"
         "th{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f)}\n"
         "td.num,th.num{text-align:right;font-family:'JetBrains Mono',monospace}\n"
         "details{border-top:1px solid var(--border,rgba(132,160,168,.12));padding:.7rem 0}\n"
         "summary{cursor:pointer;font-weight:600}\n"
         "details p{color:var(--text,#e6ebe9);line-height:1.7;font-size:.92rem}\n"
-        ".hs-states{margin:1.6rem 0 0}.hs-states h2{font-size:1rem}.hs-states p{line-height:2;font-size:.8rem}.hs-states a{color:var(--text-dim,#9aa39e);text-decoration:none;margin-right:.65rem;white-space:nowrap}.hs-states a:hover{color:var(--brand,#d4a23f)}\n"
+        ".hs-states{margin:1.6rem 0 0}.hs-states h2{font-size:1rem}.hs-states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 .8rem;font-size:.85rem}.hs-states a{color:var(--text-dim,#9aa39e);text-decoration:none;display:flex;align-items:center;min-height:40px}.hs-states a:hover{color:var(--brand,#d4a23f)}\n"
         ".hs-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
         ".hs-figs{border:1px solid var(--border,rgba(132,160,168,.12));padding:1rem 1.1rem;margin:1.4rem 0}.hs-figs h2{margin:0 0 .5rem;font-size:1rem}.hs-figs ul{margin:.3rem 0 .7rem;padding-left:1.1rem}.hs-figs li{line-height:1.75;margin:.25rem 0}\n"
         ".hs-cite{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}\n"
-        ".hs-days ul{list-style:none;margin:.4rem 0 .6rem;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.1rem .9rem}.hs-days li{line-height:2;font-size:.88rem}.hs-days a{color:var(--brand,#d4a23f);text-decoration:none}.hs-days li span{color:var(--text-dim,#8a948f);font-size:.8rem}.hs-days p{line-height:1.7;font-size:.9rem}\n"
+        ".hs-days ul{list-style:none;margin:.4rem 0 .6rem;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.1rem .9rem}.hs-days li{font-size:.88rem}.hs-days li a{display:inline-block;min-height:40px;line-height:40px}.hs-days a{color:var(--brand,#d4a23f);text-decoration:none}.hs-days li span{color:var(--text-dim,#8a948f);font-size:.8rem}.hs-days p{line-height:1.7;font-size:.9rem}\n"
         ".hs-pro{font-size:.85rem;color:var(--text-dim,#8a948f);line-height:1.7;margin-top:1.2rem}.hs-pro a{color:var(--brand,#d4a23f)}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"hs-wrap\">\n"
         "<nav class=\"hs-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> \u203a <a href=\"/hail-map\">Hail Map</a> \u203a " + esc(name) + "</nav>\n"
@@ -262,13 +279,14 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         + intro +
         "\n<a class=\"hs-cta\" href=\"/hail-map?state=" + abbr + "\">Open the interactive map on " + esc(name) + " \u2192</a>\n"
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
-        "<table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak month</th><th class=\"num\">% damaging (\u2265" + str(dmg_in) + "\u2033)</th></tr></thead>"
-        "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table>\n"
+        "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + str(dmg_in) + "\u2033</th></tr></thead>"
+        "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table></div>\n"
+        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + str(dmg_in) + "\u2033 is the share of its reports with stones " + str(dmg_in) + "\u2033 or larger, the size this page counts as damaging.</p>\n"
         + key_figs
         + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
         + faq_vis +
-        "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><p>" + all_state_links(name) + "</p></nav>\n"
+        "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
         + b2b +
         "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts; the persistent leaders are real hail geography. Compiled by Sigurd Lindquist \u00b7 AGSIST \u00b7 available at no charge.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"

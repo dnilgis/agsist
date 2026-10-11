@@ -284,31 +284,33 @@ def summary_sentence(nd, fig, mesh_max, has_swath):
                 "; the radar swath map is the record for this day." if has_swath else "."))
         return s
     k = fig["n_states"]
-    s = (f"On {nd}, the archived NWS Local Storm Reports hold {n:,} hail report"
+    # Short sentences: a phone reader gets the count, the size and the state
+    # in three reads instead of one 60-word sentence (polish pass 2026-10-11).
+    s = (f"The archived NWS Local Storm Reports for {nd} hold {n:,} hail report"
          + ("s" if n != 1 else "")
          + ((f" across {k} states" if k > 1 else " in " + state_name(fig["states"][0][0])) if k else ""))
     if fig["measured"]:
         am = fig["at_max"]
         if len(am) == 1:
-            s += f"; the largest reported stone was {fig['max']:.2f} inches, in {_place(am[0])}"
+            s += f". The largest reported stone was {fig['max']:.2f} inches, in {_place(am[0])}"
         else:
             places = []
             for r in am:
                 p = _place(r)
                 if p not in places:
                     places.append(p)
-            s += (f"; the largest reported size, {fig['max']:.2f} inches, was logged {len(am)} times"
+            s += (f". The largest reported size, {fig['max']:.2f} inches, was logged {len(am)} times"
                   + (" (" + "; ".join(places[:3]) + ("; and more" if len(places) > 3 else "") + ")"))
     else:
-        s += "; none of them carries a measured size"
+        s += ". None of them carries a measured size"
     if fig["states"]:
         top = fig["states"][0][1]
         tied = [state_name(st) for st, c in fig["states"] if c == top]
         if k > 1:
             if len(tied) == 1:
-                s += f", and {tied[0]} logged the most reports ({top})"
+                s += f". {tied[0]} logged the most reports ({top})"
             elif len(tied) <= 3:
-                s += f", and {_list_and(tied)} tied for the most reports ({top} each)"
+                s += f". {_list_and(tied)} tied for the most reports ({top} each)"
     return s + "."
 
 
@@ -443,8 +445,8 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
     summary = summary_sentence(nd, fig, mesh_max, has_swath)
 
     lead = ("<p class=\"he-sub\">" + esc(summary) +
-        " Every number below is the public record: reported sizes from spotters and radar-estimated "
-        "swaths from NOAA MRMS, labeled as what they are.</p>")
+        (" Report sizes are as people reported them; radar sizes are NOAA estimates." if has_swath and n else
+         " Report sizes are as people reported them." if n else "") + "</p>")
 
     swath_cta = (('<a class="he-cta" href="/hail-map?swath=' + date + '">Open the radar swath map for ' + esc(nd) + ' &rarr;</a>')
                  if has_swath else
@@ -528,7 +530,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{mx:.2f}″" if mx else "-") + "</div><div class=\"l\">largest reported</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">reports ≥1″ (severe)</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(fig["n_states"]) + "</div><div class=\"l\">states reporting</div></div>"
-        + ("<div class=\"he-stat\"><div class=\"v\">" + (f"{mesh_max:.2f}″" if mesh_max else "✓") + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath else "")
+        + ("<div class=\"he-stat\"><div class=\"v\">" + f"{mesh_max:.2f}″" + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath and mesh_max else "")
         + "</div>\n"
         + swath_cta + "\n"
         + figures_html(nd, fig) +
@@ -570,13 +572,48 @@ def storm_days_doc(dates_meta, day_idx):
     return {"damaging_in": DAMAGING_IN, "days": out}
 
 
+def _hub_date(d):
+    dt = datetime.strptime(d, "%Y-%m-%d")
+    return dt.strftime("%b ") + str(dt.day) + ", " + d[:4]
+
+
+def season_recap_html(dates_meta):
+    """One plain line on the newest year in the log: how many storm-day pages,
+    the day with the most reports, the largest reported stone. Counted from
+    the pages in this log only, and it says so."""
+    if not dates_meta:
+        return ""
+    yr = dates_meta[0][0][:4]
+    days = [(d, m) for d, m in dates_meta if d[:4] == yr]
+    busiest = max(days, key=lambda x: (x[1].get("n") or 0, x[0]))
+    biggest = max(days, key=lambda x: (x[1].get("max") or 0, x[0]))
+    parts = [f"{len(days)} storm day" + ("" if len(days) == 1 else "s") + " logged so far"]
+    if busiest[1].get("n"):
+        parts.append(f"the busiest was <a href=\"/hail/{busiest[0]}\">{esc(_hub_date(busiest[0]))}</a> "
+                     f"with {busiest[1]['n']:,} reports")
+    if biggest[1].get("max"):
+        parts.append(f"the largest reported stone was {biggest[1]['max']:.2f}\u2033 on "
+                     f"<a href=\"/hail/{biggest[0]}\">{esc(_hub_date(biggest[0]))}</a>")
+    return ("<p class=\"he-recap\"><strong>" + yr + " in this log:</strong> " + "; ".join(parts) + ". "
+            "Most US hail falls April through July. A new storm day gets its page the morning after.</p>\n")
+
+
 def hub_html(dates_meta, today):
-    rows = "".join(
-        "<tr><td><a href=\"/hail/" + d + "\">" + esc(nice_date(d)) + "</a></td>"
-        "<td class=\"num\">" + (f"{m['n']:,}" if m and m.get("n") else "n/a") + "</td>"
-        "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m and m.get("max") else "n/a") + "</td>"
-        "<td>" + ("swath map" if m.get("swath") else "reports") + "</td></tr>"
-        for d, m in dates_meta)
+    years = []
+    rows = []
+    for d, m in dates_meta:
+        if d[:4] not in years:
+            years.append(d[:4])
+            rows.append("<tr class=\"yr\" id=\"y" + d[:4] + "\"><th colspan=\"4\" scope=\"rowgroup\">" + d[:4] + "</th></tr>")
+        n = m.get("n") if m else 0
+        rows.append(
+            "<tr><td><a href=\"/hail/" + d + "\">" + esc(_hub_date(d)) + "</a></td>"
+            "<td class=\"num\">" + (f"{n:,}" if n else "0") + "</td>"
+            "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m and m.get("max") else "-") + "</td>"
+            "<td class=\"rec\">" + (("Radar + reports" if n else "Radar only") if m.get("swath") else "Reports only") + "</td></tr>")
+    rows = "".join(rows)
+    jump = ("<nav class=\"he-years\" aria-label=\"Jump to year\">" +
+            "".join("<a href=\"#y" + y + "\">" + y + "</a>" for y in years) + "</nav>\n") if len(years) > 1 else ""
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST</title>\n"
@@ -596,10 +633,16 @@ def hub_html(dates_meta, today):
         "th,td{border-bottom:1px solid var(--border,rgba(132,160,168,.12));padding:.5rem .55rem;text-align:left}"
         "th{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f)}"
         "td.num,th.num{text-align:right;font-family:'JetBrains Mono',monospace}"
-        "td a{color:var(--brand,#d4a23f);text-decoration:none}</style>\n</head>\n<body>\n"
+        "td a{color:var(--brand,#d4a23f);text-decoration:none;display:inline-block;min-height:40px;line-height:40px;white-space:nowrap}"
+        "td{padding-top:0;padding-bottom:0;height:44px}td.rec{font-size:.8rem;line-height:1.3;color:var(--text-dim,#8a948f)}"
+        "tr.yr th{font-size:.8rem;color:var(--text,#e6ebe9);padding-top:1.2rem;letter-spacing:.12em}"
+        ".he-years{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0 0}"
+        ".he-years a{font-family:'JetBrains Mono',monospace;font-size:.8rem;min-height:40px;line-height:40px;padding:0 .9rem;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:999px;color:var(--text,#e6ebe9);text-decoration:none}"
+        ".he-recap{line-height:1.7;border-left:3px solid var(--brand,#d4a23f);padding-left:.8rem}.he-recap a{color:var(--brand,#d4a23f)}</style>\n</head>\n<body>\n"
         "<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<h1>US Hail Storm Log</h1>\n"
-        "<p>Every significant hail day on record here, one page per storm with report counts, largest stones, and the radar swath map. Newest first. Checking a specific address? <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">The hail map's search</a> pulls its full history in one tap.</p>\n"
+        "<p>One page per significant hail day: report counts, largest stones, and the radar swath map where there is one. Newest first. Checking one address? <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">The hail map's search</a> pulls its full history.</p>\n"
+        + season_recap_html(dates_meta) + jump +
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")

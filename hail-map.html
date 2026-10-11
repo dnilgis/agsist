@@ -191,6 +191,7 @@
     .hm-sponsor-p a{color:var(--brand,#d4a23f);font-weight:700}
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
     .hm-mapstack{display:flex;flex-direction:column}
+    .hm-controls:empty{display:none}
     .hm-mapstack .hm-controls{margin:.5rem 0 .6rem}
     @media(max-width:640px){
       /* DOM order is controls-then-map so the tab sequence runs down the
@@ -237,6 +238,14 @@
     .hm-banner{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);text-align:center;margin-top:.6rem}
     @media(max-width:640px){#hm-map{height:54vh}}
     .hm-mapwrap{position:relative}
+    /* 2026-10-11. When Leaflet or the data could not load, the map was a blank
+       grey box with "… hail reports" under it and the reason in a note further
+       down. The reason now sits in the box, with a way to try again. */
+    .hm-mapfail{position:absolute;inset:0;z-index:700;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.8rem;padding:4.5rem 1.2rem 1.2rem;text-align:center;color:var(--text,#1a1f1c);background:var(--surface,#f4f4f0);border-radius:12px}
+    .hm-mapfail p{margin:0;max-width:34ch;line-height:1.5;font-size:1rem}
+    .hm-mapfail small{display:block;color:var(--text-dim,#5c6560);font-size:.85rem;margin-top:.3rem}
+    .hm-mapfail button{font:inherit;font-weight:700;min-height:44px;padding:.5rem 1.2rem;border-radius:8px;border:1px solid var(--brand,#d4a23f);background:var(--brand-fill,var(--brand,#d4a23f));color:#1a1206;cursor:pointer}
+    .hm-meta[hidden]{display:none}
 .hm-about{max-width:70ch;margin:.9rem 0 0;color:var(--text-muted,#7d8782);font-size:.92rem;line-height:1.6}
     .hm-yearbadge{position:absolute;top:10px;right:14px;z-index:450;pointer-events:none;
       font-family:var(--font-display);font-weight:700;font-size:clamp(1rem,2.1vw,1.5rem);
@@ -296,6 +305,13 @@
       .hm-controls, .hm-meshnav{position:sticky;bottom:8px;z-index:650;background:rgba(11,15,14,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--card-r);padding:.5rem .6rem;box-shadow:0 4px 16px rgba(0,0,0,.5)}
       .hm-controls button, .hm-meshnav button{min-height:44px}
       .hm-mesh-note{display:none}
+      /* One scrolling row of chips instead of four wrapped rows: the wrapped
+         bar was ~220px tall and pinned over the bottom half of the map. */
+      .hm-controls{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      .hm-controls::-webkit-scrollbar{display:none}
+      .hm-controls>*{flex:0 0 auto}
+      .hm-cmp td:first-child{white-space:normal;width:30%}
+      .hm-cmp{font-size:.8rem}
     }
 
 /* phones: 40px tap targets */
@@ -473,18 +489,18 @@
 
       
 
-      <p class="hm-biasnote" id="hm-biasnote">Colour is <strong>report density</strong>, not hail risk. A Local Storm Report exists because somebody called it in, so cities glow: of the ten densest cells on this map, nine are metro areas. Counted by hail <em>days</em> instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota, the &ldquo;hail alley&rdquo; described in the questions below. <strong>For your own place, use the lookup above</strong>: it counts reports near a point and checks the radar, neither of which cares how many neighbours you have.</p>
+      <p class="hm-biasnote" id="hm-biasnote">Color is <strong>report density</strong>, not hail risk. A Local Storm Report exists because somebody called it in, so cities glow: of the ten densest cells on this map, nine are metro areas. Counted by hail <em>days</em> instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota, the &ldquo;hail alley&rdquo; described in the questions below. <strong>For your own place, use the lookup above</strong>: it counts reports near a point and checks the radar, neither of which cares how many neighbors you have.</p>
 
-      <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season: the High Plains, the Front Range, the southern Plains. For crops, roofs, equipment or a whole town, the record is here, and when a storm is running, the live warning layer below shows it as the Weather Service issues it. No charge, no login.</p>
+      <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or press play to see the same corridors light up each season: the High Plains, the Front Range, the southern Plains. Most US hail falls April through July. Outside those months this is the record for checking a claim or planning next year's coverage, and any new hail day still gets its own page the next morning. No charge, no login.</p>
 
       <div class="hm-note">
-        <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office: a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record, but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
+        <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office: a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Reporting follows population and spotters, so this is a map of <em>reported</em> hail, not every stone that fell. The corridors that show up year after year are real.
         <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; Want a per-field read? <a href="/field-scout">Draw your field in Field Scout &rarr;</a></div>
       </div>
 
       <section class="hm-cty" aria-labelledby="hm-cty-h">
         <div class="hm-cty-head">
-          <h2 id="hm-cty-h">Top hail counties: <span id="hm-cty-state">United States</span></h2>
+          <h2 id="hm-cty-h">Top hail counties: <span id="hm-cty-state">by state</span></h2>
           <label class="hm-cty-pick">State
             <select id="hm-cty-select" aria-label="Choose a state"></select>
           </label>
@@ -629,7 +645,16 @@
     
 
     function init(){
-      if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load; refresh the page.'); return; }
+      if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){
+        mapFail('The map did not load. Try again.', 'The county rankings below do not need the map and still work.');
+        loadCounties();
+        /* The lookup draws on the map, so without it the Check button would
+           do nothing at all. Say so instead. */
+        ['hm-go','hm-gps'].forEach(function(id){ var el=document.getElementById(id);
+          if(el) el.addEventListener('click', function(){ mapFail('The address lookup needs the map, and the map did not load. Try again.');
+            var f=document.querySelector('.hm-mapfail'); if(f && f.scrollIntoView) f.scrollIntoView({block:'center'}); }); });
+        return;
+      }
       map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:12, worldCopyJump:false, preferCanvas:true })
         .setView([39.5, -98.35], 4); // CONUS -- the seed view fitBounds needs
       /* Zoom 4 fitted North America, not the country the data is in. These
@@ -702,7 +727,7 @@
       fetch(DATA+'manifest.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(m){
-          if(!m || !m.years || !m.years.length){ banner('The hail data is being prepared. Check back shortly.'); return; }
+          if(!m || !m.years || !m.years.length){ mapFail('The hail reports are being rebuilt. Try again in a few minutes.'); return; }
           manifest = m;
           buildControls();
           /* Two vintages, both stated: the archive (monthly) and the 30-day layer (daily). */
@@ -712,7 +737,7 @@
           if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
           else setView('all'); // open on the full 5-year picture — the strongest view
         })
-        .catch(function(){ banner('Couldn\u2019t load the hail data just now; refresh to try again.'); });
+        .catch(function(){ mapFail('The hail reports did not load. Try again.'); });
     }
 
     // ── Location lookup: did it hail HERE? ─────────────────────────────
@@ -1405,6 +1430,22 @@
     }
 
     function banner(html){ var b=document.getElementById('hm-banner'); if(b){ b.innerHTML=html; b.hidden=false; } }
+    /* The failure goes in the map box itself, with a retry, and the
+       "… hail reports" count and legend under it are hidden: they describe a
+       map that is not there. */
+    function mapFail(msg, sub){
+      var wrap=document.querySelector('.hm-mapwrap'); if(!wrap) return;
+      var old=wrap.querySelector('.hm-mapfail'); if(old) old.remove();
+      var d=document.createElement('div'); d.className='hm-mapfail'; d.setAttribute('role','alert');
+      var p=document.createElement('p'); p.textContent=msg;
+      if(sub){ var sm=document.createElement('small'); sm.textContent=sub; p.appendChild(sm); }
+      var b=document.createElement('button'); b.type='button'; b.textContent='Try again';
+      b.addEventListener('click', function(){ location.reload(); });
+      d.appendChild(p); d.appendChild(b); wrap.appendChild(d);
+      var meta=document.querySelector('.hm-meta'); if(meta) meta.hidden=true;
+      var yb=document.getElementById('hm-yearbadge'); if(yb) yb.hidden=true;
+      ga('hail_map_fail',{reason:msg.slice(0,40)});
+    }
     function clearBanner(){ var b=document.getElementById('hm-banner'); if(b){ b.hidden=true; } }
 
     function buildControls(){
@@ -1847,11 +1888,11 @@
              one, so the label never claims a size the numbers were not built on. */
           if(d.damaging_in){ var di=document.getElementById('hm-dmg-in'), dn=document.getElementById('hm-dmg-note'); if(di) di.textContent=String(d.damaging_in); if(dn) dn.hidden=(+d.damaging_in!==1); }
           buildStateSelect();
-          var c=map.getCenter();
-          var st=stateAt(c.lat, c.lng);
+          var c=map ? map.getCenter() : null;
+          var st=c ? stateAt(c.lat, c.lng) : null;
           if(!st || !countyData.states[st]) st=topState();
           renderCountyTable(st);
-          map.on('moveend', onMove);
+          if(map) map.on('moveend', onMove);
         })
         .catch(function(){
           var b=document.getElementById('hm-cty-body');
@@ -1884,12 +1925,12 @@
         var st=sel.value;
         renderCountyTable(st);
         var b=STATE_BBOX[st];
-        if(b) map.fitBounds([[b[1],b[0]],[b[3],b[2]]], {padding:[20,20]});
+        if(b && map) map.fitBounds([[b[1],b[0]],[b[3],b[2]]], {padding:[20,20]});
       });
     }
 
     function onMove(){
-      if(!countyData) return;
+      if(!countyData || !map) return;
       var c=map.getCenter();
       var st=stateAt(c.lat, c.lng);
       if(st && countyData.states[st] && st!==countyState) renderCountyTable(st);
