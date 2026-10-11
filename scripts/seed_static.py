@@ -35,6 +35,7 @@ import sys
 from datetime import datetime, timezone
 
 import pricefmt  # grain price text, the twin of components/util.js AG.px
+from contract_calendar import is_expired, _parse as _contract_ym
 try:
     from zoneinfo import ZoneInfo
     CT = ZoneInfo("America/Chicago")
@@ -55,7 +56,9 @@ SITEMAP = "sitemap.xml"
 PAGES = {
     "corn-futures-prices.html":    ("corn",  "corn-dec",   "December new-crop", "corn"),
     "soybean-futures-prices.html": ("beans", "beans-nov",  "November new-crop", "soybeans"),
-    "wheat-futures-prices.html":   ("wheat", "wheat-dec26","December (deferred)", "wheat"),
+    # wheat's deferred benchmark is not a fixed key: it is the next live dated
+    # contract after the nearby (wheat_deferred below), labeled from its ticker
+    "wheat-futures-prices.html":   ("wheat", None,         "Deferred",          "wheat"),
 }
 
 # Meta-description templates. A numeric, dated description is the main
@@ -1124,6 +1127,45 @@ def _ticker_label(q, fallback):
     return (_MON_ABBR[_FCODE.index(m.group(1))] + " '" + m.group(2)) if m else fallback
 
 
+def _ct_now():
+    n = datetime.now(timezone.utc)
+    return n.astimezone(CT) if CT else n
+
+
+def wheat_deferred(quotes, now=None):
+    """(key, quote) of the wheat page's deferred card: the next live dated
+    Chicago wheat contract after the front (the nearby), by the GRAIN calendar
+    in contract_calendar.py. Twin of components/futures.js wheatDeferred, which
+    uses storesell.js forwardCurve. It rolls on its own: Mar '27 while Dec '26
+    is the nearby, May '27 from Dec 15 when Mar '27 becomes the nearby.
+    (None, None) when nothing qualifies."""
+    now = now or _ct_now()
+    q = quotes or {}
+    live = []
+    for k, v in q.items():
+        if not re.match(r"^wheat-[a-z]{3}\d{2}$", k):
+            continue
+        ym = _contract_ym(k)
+        if not ym or is_expired(k, now) or not v or v.get("close") is None:
+            continue
+        live.append((ym, k, v))
+    live.sort()
+    if not live:
+        return None, None
+    n = q.get("wheat-nearby") or {}
+    ft = n.get("ticker") if n.get("close") is not None else None
+    fym = None
+    m = re.match(r"^ZW([FGHJKMNQUVXZ])(\d{2})\.", str(ft or ""))
+    if m:
+        fym = (2000 + int(m.group(2)), _FCODE.index(m.group(1)) + 1)
+    else:
+        fym = live[0][0]   # no dated nearby: the nearest live contract is the front
+    for ym, k, v in live:
+        if ym > fym and v.get("ticker") != ft:
+            return k, v
+    return None, None
+
+
 def _nearby_label(prices, crop, fallback):
     """'Nearby Dec \'26' the way each page script builds it, else its fallback."""
     q = (prices.get("quotes") or {}).get(crop + "-nearby")
@@ -1133,7 +1175,7 @@ def _nearby_label(prices, crop, fallback):
     return ("Nearby " + lab) if lab else fallback
 
 
-def futures_hero_seeds(page, prices):
+def futures_hero_seeds(page, prices, now=None):
     """{tag: html} for the hero seeds a futures page carries."""
     q = prices.get("quotes") or {}
     out = {}
@@ -1177,12 +1219,12 @@ def futures_hero_seeds(page, prices):
         hq = n if (n and n.get("close") is not None) else q.get("wheat")
         out["contract"] = "&middot; " + _e(("Nearby " + n["contract"]) if (n and n.get("contract")) else "Most-active (ZW)")
         out["chg"] = _chg_seed(_fut_chg(hq))
-        d26 = q.get("wheat-dec26")
-        same = bool(d26 and hq and hq.get("ticker") and hq.get("ticker") == d26.get("ticker"))
-        if d26 and d26.get("close") is not None and not same:
-            pc = d26.get("pctChange")
-            chg = (" (" + pricefmt.pct(pc) + ")") if pc is not None else ""
-            out["bench"] = ('<div class="benchline" id="benchline">Dec \'26 (deferred): <strong>$' + grain_dollars(d26) +
+        _, dq = wheat_deferred(q, now)
+        same = bool(dq and hq and hq.get("ticker") and hq.get("ticker") == dq.get("ticker"))
+        if dq and not same:
+            pc = dq.get("pctChange")
+            chg = (" (" + pricefmt.pct(pc) + ")") if (pc is not None and not dq.get("roll")) else ""
+            out["bench"] = ('<div class="benchline" id="benchline">' + _e(_ticker_label(dq, "Deferred")) + ' (deferred): <strong>$' + grain_dollars(dq) +
                             "</strong>" + chg + ", winter wheat new-crop is July</div>")
         else:
             out["bench"] = '<div class="benchline" id="benchline" style="display:none"></div>'
@@ -1217,7 +1259,12 @@ def seed_futures_pages(prices, today):
         # continuous key is the fallback (it may be pinned to most-active).
         fq = quotes.get(crop_key + "-nearby") or quotes.get(crop_key)
         mon = (fq or {}).get("contract")   # e.g. "Sep '26"; None on fallback
-        bq = quotes.get(bench_key)
+        if bench_key is None:      # wheat: next live contract after the nearby
+            bq = wheat_deferred(quotes)[1]
+            if bq:
+                bench_label = _ticker_label(bq, "Deferred") + " (deferred)"
+        else:
+            bq = quotes.get(bench_key)
         # the benchmark is often the same contract as the nearby (Dec corn in Sep); list it once
         if mon and bq and bench_label[:3].lower() == mon[:3].lower():
             bq = None

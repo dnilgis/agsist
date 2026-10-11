@@ -172,9 +172,11 @@ var CROPS={
     cropProgress:function(){wheatCropProgress();},
     prices:function(q,data,front){
       // Class quote cards: KC HRW (KE) + Minneapolis HRS (MWE), rendered only when keys exist,
-      // plus Dec '26 (deferred: winter wheat new-crop is July, so Dec is a storage month)
-      [{key:'kcwheat',card:'cc-kcwheat',p:'p-kcwheat',c:'c-kcwheat'},{key:'mplswheat',card:'cc-mplswheat',p:'p-mplswheat',c:'c-mplswheat'},{key:'wheat-dec26',card:'cc-wheat-dec26',p:'p-wheat-dec26',c:'c-wheat-dec26'}].forEach(function(m){
-        var d=q[m.key];var cardEl=document.getElementById(m.card);
+      // plus the deferred card: the next live contract after the nearby (wheatDeferred), labeled from its ticker
+      var dfr=wheatDeferred(q,front);
+      if(dfr)setTxt('l-wheat-def',(contractLabel(q[dfr])||'Deferred')+' (deferred)');
+      [{key:'kcwheat',card:'cc-kcwheat',p:'p-kcwheat',c:'c-kcwheat'},{key:'mplswheat',card:'cc-mplswheat',p:'p-mplswheat',c:'c-mplswheat'},{key:dfr,card:'cc-wheat-def',p:'p-wheat-def',c:'c-wheat-def'}].forEach(function(m){
+        var d=m.key?q[m.key]:null;var cardEl=document.getElementById(m.card);
         if(!d||d.close==null){if(cardEl)cardEl.style.display='none';return;}
         if(cardEl)cardEl.style.display='';
         setEl(m.p,grain$(d.close));
@@ -209,16 +211,15 @@ var CROPS={
         var bz=document.getElementById('bz'+(whBu<5?0:whBu<6?1:whBu<7?2:3));
         if(bz)bz.classList.add('active');
       }
-      // Dec '26 benchmark line: for wheat this is a DEFERRED/storage month, not new-crop
+      // Deferred benchmark line: the same contract as the deferred card (never the nearby)
     (function(){
       var bl=document.getElementById('benchline');
       if(!bl)return;
-      var d26=q['wheat-dec26'];
-      /* in the fall the nearby is Dec itself; the hero already shows it */
+      var d26=dfr?q[dfr]:null;
       if(!d26||d26.close==null||(front&&front.ticker&&front.ticker===d26.ticker)){bl.style.display='none';return;}
       var chg='';
-      if(d26.pctChange!=null)chg=' ('+AG.px.pct(d26.pctChange)+')';
-      bl.innerHTML="Dec '26 (deferred): <strong>"+grain$(d26.close)+'</strong>'+chg+', winter wheat new-crop is July';
+      if(d26.pctChange!=null&&!d26.roll)chg=' ('+AG.px.pct(d26.pctChange)+')';
+      bl.innerHTML=esc(contractLabel(d26)||'Deferred')+' (deferred): <strong>'+grain$(d26.close)+'</strong>'+chg+', winter wheat new-crop is July';
       bl.style.display='block';
     })();
       // Feed spread: SAME-MONTH contracts only (Sep '26 wheat minus Sep '26 corn).
@@ -269,6 +270,19 @@ function fwdContracts(q){var SS=window.AgsistStoreSell;return SS&&SS.forwardCurv
 
 /* ── small shared helpers ─────────────────────────────────────────────────── */
 function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
+/* Wheat's deferred contract: the next live dated contract after the front
+   (the nearby), from the forward curve (storesell.js forwardCurve: GRAIN
+   calendar, dead from the 15th). Mar '27 while Dec '26 is the nearby, May '27
+   once Dec dies. No dated front: the nearest live contract counts as the
+   front. Twin of scripts/seed_static.py wheat_deferred. Key or null. */
+function wheatDeferred(q,front){
+  var rows=fwdContracts(q);if(!rows.length)return null;
+  var SS=window.AgsistStoreSell,f=front&&front.ticker&&SS&&SS.futuresMonth?SS.futuresMonth(front.ticker):null;
+  var fIdx=rows[0].idx;
+  if(f){var p=/^(\d{4})-(\d{2})$/.exec(f.key);fIdx=(+p[1]%100)*12+(+p[2]);}
+  for(var i=0;i<rows.length;i++){var r=rows[i],d=q[r.key];if(r.idx>fIdx&&!(front&&d&&d.ticker===front.ticker))return r.key;}
+  return null;
+}
 /* "Dec '26" from a dated quote's ticker (ZCZ26.CBT), else null. */
 function contractLabel(d){var SS=window.AgsistStoreSell,f=SS&&SS.futuresMonth&&d&&SS.futuresMonth(d.ticker);return f?f.label:null;}
 /* The quote the page leads with: the dated nearby contract when the pipeline
