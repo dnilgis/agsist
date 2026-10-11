@@ -799,7 +799,7 @@ function runVerdict(){
       verdict='Out of the planting window';
       cls='wait';
       noteText=_tooLate
-        ? 'The soil reading below is real, but this is past the '+(_isBeans?'soybean':'corn')+' planting window this page covers for Wisconsin and Minnesota. It is not a green light. The yield table above is the honest read on late planting, and insurance final planting dates are earlier still.'
+        ? 'The soil reading below is current, but this is past the '+(_isBeans?'soybean':'corn')+' planting window this page covers for Wisconsin and Minnesota. The yield table above shows what late planting costs, and insurance final planting dates are earlier still.'
         : 'Too early in the year for this call to mean anything. Come back once soils are working in spring.';
     }
     else if(soilNum>=55){verdict='\u2713 Plant Now: Soil temp ideal (\u226555\u00b0F)';cls='go';noteText='Excellent planting conditions. Proceed when field is fit.';}

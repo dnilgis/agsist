@@ -2172,7 +2172,7 @@
     // Border ZIPs pull Ontario/Manitoba elevators quoting CAD. This page prints "$" and
     // multiplies by US county yields, so a CAD price would read as a US price. Leave them out.
     flat = flat.filter(function(x){ return !isNaN(x.cash) && x.cur==='USD'; }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
-    if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere. This isn\u2019t an error.</div>'); return; }
+    if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere.</div>'); return; }
     // record best CONVENTIONAL corn & bean bid for the insight engine — specialty
     // bids (organic, food-grade, white, popcorn, seed, non-GMO) trade $2–8/bu over
     // conventional and must never headline as "cash corn". The full list below
@@ -2919,7 +2919,7 @@
       var fr=f&&f.crops&&f.crops[cropKey]&&f.crops[cropKey].states&&f.crops[cropKey].states[abbr];
       var r2 = fr&&wk!=null&&fr.weeks&&fr.weeks[wk] ? fr.weeks[wk].r2 : null;
       if(r2!=null){
-        html+='<p class="fs-cline">Fair warning from the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong>, '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
+        html+='<p class="fs-cline">From the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong>, '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
       }
       html+=csrc('USDA NASS weekly crop condition · week of '+esc(cc.week_ending||'')+' · state-level, ranked against the same week 2000–present');
       FIELD.county.cond={ ge:srow.ge, pctile:srow.pctile, week:cc.week_ending, r2:r2, crop:cropWord };
@@ -3124,7 +3124,7 @@
         if(nT && nT.dir==='easing' && ixTr && ixTr.dir!=='easing'){
           push({ sev:3, act:true, topic:'nitrogen', tag:'a fading nitrogen signal under a full canopy',
             title:'the nitrogen signal is fading while the canopy holds. Check N before the window closes',
-            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong>: the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it is exactly what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
+            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong>: the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it matches what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
             watch: pollenWindow()!=null ? 'Pollination (~'+pollenWindow()+' days out) sets kernel count; a tissue or soil nitrate check before then still leaves time to sidedress or Y-drop.' : 'A tissue or soil nitrate check confirms it either way; the satellite can only point.' });
         }
       }
@@ -3137,7 +3137,7 @@
           push({ sev:mSev, act:mSev>=3, topic:'moisture', tag:'a canopy drying on two independent reads',
             title: mSev>=4 ? 'the canopy is drying on every read; moisture is the story on this field'
                            : 'two independent satellite reads agree the canopy is drying',
-            detail:'Canopy moisture (NDMI) is <strong>falling</strong> and the moisture-stress index (MSI) is <strong>rising</strong> across recent passes: two separate calculations from different light bands telling the same story. When they agree like this, the drying is real, not noise.'+(inDrought?' It lines up with the '+esc(d.cat)+' drought status.':'')+' <span class="fs-src">source: Sentinel-2 NDMI + MSI, cloud-masked</span>',
+            detail:'Canopy moisture (NDMI) is <strong>falling</strong> and the moisture-stress index (MSI) is <strong>rising</strong> across recent passes: two separate calculations from different light bands telling the same story. When they agree like this, the drying is likely real.'+(inDrought?' It lines up with the '+esc(d.cat)+' drought status.':'')+' <span class="fs-src">source: Sentinel-2 NDMI + MSI, cloud-masked</span>',
             watch: pollenWindow()!=null && pollenWindow()<=21 ? 'Moisture stress through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is.' : 'Watch the rain forecast; a timely inch changes this read fast.' });
         }
       }

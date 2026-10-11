@@ -170,7 +170,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <div class="arc-hero">
     <div class="arc-hero-left">
       <div class="arc-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-newspaper"/></svg> AGSIST Daily</div>
-      <h1>Briefing Archive</h1>
+      <h1>Briefing archive</h1>
       <p class="arc-sub page-lede">Past market morning reports. Search by keyword or browse by month.</p>
     </div>
     <a href="/daily" class="arc-back">&#x2190; Today&#x2019;s Briefing</a>
@@ -626,7 +626,7 @@ fetch('/data/daily-archive/index.json', {cache:'no-store'})
   .catch(function(){
     var loadEl = document.getElementById('arc-loading');
     if(loadEl && document.querySelector('#arc-static a')){ loadEl.style.display='none'; return; }
-    if(loadEl) loadEl.innerHTML = '<div class="arc-empty"><strong>Archive unavailable</strong>Check back later or <a href="/daily" style="color:var(--gold)">read today\'s briefing \u2192</a></div>';
+    if(loadEl) loadEl.innerHTML = '<div class="arc-empty"><strong>The archive didn\u2019t load.</strong>Refresh in a minute, or <a href="/daily" style="color:var(--gold)">read today\'s briefing \u2192</a></div>';
   });
 
 })();

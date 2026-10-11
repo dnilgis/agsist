@@ -885,7 +885,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
             <div class="soil-air-card-body">Determines whether <strong>enzyme is active at all</strong>. In early spring, air may be 58°F but soil surface is still 38–42°F, so risk is genuinely lower than this tool shows. Conversely, a black soil surface in full sun can be 15–20°F warmer than air temperature, making risk higher. Use air temp as a starting point, but know your soils.</div>
           </div>
         </div>
-        <div style="margin-top:.85rem;font-size:0.797rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">Spring application note:</strong> When daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F (earlier in the southern US, late spring further north) risk rises quickly and the score becomes your most reliable guide.</div>
+        <div style="margin-top:.85rem;font-size:0.797rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">In spring:</strong> when daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F (earlier in the southern US, late spring further north) risk rises quickly and the score becomes your most reliable guide.</div>
       </div>
       <div class="fade-up" id="section-nsources" style="margin-bottom:2rem">
         <h2 class="edu-head" style="margin-bottom:.9rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Urea vs. UAN vs. ESN: picking the N source</h2>
@@ -925,7 +925,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="chem-note">Urease enzyme, present in soil and especially in crop residue, converts urea to ammonia. At the soil surface, that ammonia gas escapes into the air rather than converting to plant-available ammonium (NH₄⁺). The granule looks intact. The nitrogen is gone.</div>
         </div>
         <div class="edu-grid">
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></div><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease enzyme activity increases exponentially with temperature above 50°F, a pattern consistent with standard enzyme kinetics (Q10 ≈ 2 per 10°C). At 50°F you have days to incorporate. At 80°F you may have only hours. Cold weather is your best friend, but below freezing urease only slows down. It does not stop. Urea left on cold or frozen ground averaged 16% and up to 44% loss over fall to spring in field trials, mostly as the surface thawed and dried.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Exponential increase above 65°F</div></div>
+          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></div><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease enzyme activity increases exponentially with temperature above 50°F, a pattern consistent with standard enzyme kinetics (Q10 ≈ 2 per 10°C). At 50°F you have days to incorporate. At 80°F you may have only hours. Cold weather helps, but below freezing urease only slows down. It does not stop. Urea left on cold or frozen ground averaged 16% and up to 44% loss over fall to spring in field trials, mostly as the surface thawed and dried.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Exponential increase above 65°F</div></div>
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></div><div class="edu-card-title">Moisture</div><div class="edu-card-text">The most dangerous scenario: 0.1–0.4 inches of rain after application. Just enough to dissolve the granule and activate the enzyme, but not enough to move N below the surface.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></div><div class="edu-card-title">Wind</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Amplifies all other risk factors</div></div>
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg></div><div class="edu-card-title">Soil pH</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, extension trials commonly report losses of 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:rgba(240,96,96,.12);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
@@ -945,7 +945,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
             </div>
           </div>
           <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:7px;font-size:.82rem;color:var(--text-dim);line-height:1.65">
-            <strong style="color:var(--green)">Bottom line:</strong> Stabilizer is insurance. You don’t always need it, but when you do, you really do. Use the score to make the call on every load.
+            Stabilizer is insurance. You won’t need it on every load; use the score to decide which ones.
           </div>
         </div>
       </div>
@@ -1297,7 +1297,7 @@ function loadWeather(lat,lon,label){
     buildForecastStrip(d.daily,phMult(),tillMult());
     try{var _o={};try{_o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}')||{};}catch(e){_o={};}_o.lat=lat;_o.lon=lon;_o.label=label||null;localStorage.setItem('agsist-wx-loc',JSON.stringify(_o));}catch(e){}
     if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json').then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'';var st=geo.address.state_code||'';if(city)document.getElementById('risk-location').innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> '+city+(st?', '+st:'');}).catch(function(){});}
-  }).catch(function(){document.getElementById('risk-verdict').textContent='Weather data unavailable. Check your connection and try again.';});
+  }).catch(function(){document.getElementById('risk-verdict').textContent='The weather didn’t load. Check your connection and refresh.';});
 }
 
 function requestGeo(){

@@ -620,7 +620,7 @@ fetch('/data/fertilizer.json').then(function(r){if(!r.ok)throw new Error('no-fer
   var tb=document.getElementById('fert-nutrient-body');if(tb)tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">'+msg+'</td></tr>';
   var co=document.getElementById('calc-out');if(co)co.innerHTML='<p class="calc-hint">'+msg+'</p>';
   var cards=document.getElementById('fert-price-cards');
-  if(cards)cards.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Price data unavailable. Check back shortly.</div>';
+  if(cards)cards.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">The price file didn&rsquo;t load. Refresh in a minute.</div>';
 });
 
 fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){

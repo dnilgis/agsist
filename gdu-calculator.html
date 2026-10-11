@@ -48,8 +48,8 @@
   {"@type":"Question","name":"What is a growing degree unit (GDU)?","acceptedAnswer":{"@type":"Answer","text":"A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50\u00b0F for corn. Formula: GDU/day = ((Hi + Lo) \u00f7 2) \u2212 50, with Hi and Lo each set to 50\u00b0F if below 50 and to 86\u00b0F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression."}},
   {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
   {"@type":"Question","name":"What GDU accumulation does the US Corn Belt average per season?","acceptedAnswer":{"@type":"Answer","text":"May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location\u2019s typical GDU accumulation."}},
-  {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing, different names for the same calculation. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
-  {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch Real GDUs\u2019, the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
+  {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same calculation under two names. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
+  {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch GDUs\u2019 and the calculator pulls daily weather for your location and adds up GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
 ]}
 </script>
 <script type="application/ld+json">
@@ -290,7 +290,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; GDU Calculator</nav>
 
 <div class="gdu-hero">
-  <div class="gdu-eyebrow page-kicker"> Heat units from real weather, any US location</div>
+  <div class="gdu-eyebrow page-kicker"> Heat units from your weather, any US location</div>
   <h1>GDU Calculator</h1>
   <p class="page-lede">Heat units since planting from real daily weather at your ZIP, for corn or soybeans: crop stage, black layer date and frost risk.</p>
 </div>
@@ -381,7 +381,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       </div>
 
       <div id="g-hist-note" style="display:none">
-        <div class="info-box green" style="margin-top:.5rem"><strong>Upper Midwest reference:</strong> 30-year NOAA normals for Wisconsin: ~7.5 GDU/day in May, 15.5 in June, 21.5 in July, 19.5 in August, 10.0 in September. Central Corn Belt runs ~15&ndash;20% higher. If you&rsquo;re outside the Upper Midwest, use the &ldquo;Fetch Real GDUs&rdquo; feature instead for location-accurate data.</div>
+        <div class="info-box green" style="margin-top:.5rem"><strong>Upper Midwest reference:</strong> 30-year NOAA normals for Wisconsin: ~7.5 GDU/day in May, 15.5 in June, 21.5 in July, 19.5 in August, 10.0 in September. Central Corn Belt runs ~15&ndash;20% higher. If you&rsquo;re outside the Upper Midwest, use the &ldquo;Fetch GDUs&rdquo; feature instead for location-accurate data.</div>
       </div>
       </details>
     </div>
@@ -466,7 +466,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
           <tr><td>September</td><td>70&deg;F</td><td>50&deg;F</td><td>10.0</td><td>300</td></tr>
         </tbody>
       </table></div>
-      <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch Real GDUs button above.</div>
+      <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch GDUs button above.</div>
     </div>
   <div class="gdu-card">
     <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn stage reference</div>
@@ -572,8 +572,8 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <details><summary>What is a growing degree unit (GDU)?</summary><div class="agf-a">A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50°F for corn. Formula: GDU/day = ((Hi + Lo) ÷ 2) − 50, with Hi and Lo each set to 50°F if below 50 and to 86°F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression.</div></details>
 <details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
 <details><summary>What GDU accumulation does the US Corn Belt average per season?</summary><div class="agf-a">May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location’s typical GDU accumulation.</div></details>
-<details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing, different names for the same calculation. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
-<details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch Real GDUs’, the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
+<details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same calculation under two names. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
+<details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch GDUs’ and the calculator pulls daily weather for your location and adds up GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
 </section>
 <!--FAQ:END-->
 
@@ -832,7 +832,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     setStatus('\u2717 '+err.message,'err');
   }).finally(function(){
     btn.disabled=false;
-    btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch Real GDUs from Weather Data';
+    btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data';
   });
 });
 
@@ -895,7 +895,7 @@ function calcGDU(){
         nHist++;
         d.setDate(d.getDate()+1);
       }
-      if(outside){bad='The Wisconsin table has no rate for April or October; use Fetch Real GDUs.';accumGDU=0;}
+      if(outside){bad='The Wisconsin table has no rate for April or October; use Fetch GDUs.';accumGDU=0;}
       gduPerDay=nHist>0?accumGDU/nHist:0;
       document.getElementById('r-source').textContent='WI 30-yr averages, not fetched';
     } else {

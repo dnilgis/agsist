@@ -130,6 +130,8 @@ QUESTION_OK = {
     "How much of your crop can you safely pre-sell?",
     "Is It Safe to SprayRight Now?",
     "Is It Safe to Spray Right Now?",
+    "Is it safe to sprayright now?",
+    "Is it safe to spray right now?",
     "What's priced in?",
 }
 
