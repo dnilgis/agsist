@@ -6,7 +6,12 @@ own forms (the first three used to go to Formspree).
   elevators.html      claim your board               kind claim
   sponsor-report.html approval and requests box      kind sponsor-feedback
   farmland-atlas.html Parcel Report waitlist         kind atlas-feedback
-  rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9)
+  rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9;
+                                                     gift orders, v5.10)
+
+A gift order (this year's print, ordered before the year is over) says so in
+the subject, "Rain print order (2026 gift, January): ...", and its body tells
+Sig to make it after January 1, once NOAA's December numbers are in.
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
@@ -48,8 +53,13 @@ KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order")
 KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
              "rain-print-order": "Rain print order"}
 # What a rain print order's choice means, in the subject and the body.
-RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "print18x24": "18 x 24 print"}
+RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "framed12x18": "12 x 18 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
+YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
+RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
+GIFT_NOTE = "Yes: make it after January 1, once the station's December numbers are in"
+# Values printed as a mailto link.
+MAIL_LABELS = ("Work email", "Email", "Reply to", "Their email")
 # The order and labels each kind prints in. Anything else stored is ignored.
 FIELDS = {
     "claim": [("elevator", "Elevator or co-op"), ("town", "Town"), ("state", "State"), ("contact_name", "Contact"),
@@ -58,7 +68,9 @@ FIELDS = {
     "sponsor-feedback": [("request", "Request"), ("sponsor", "Sponsor"), ("proof", "Proof code"), ("email", "Reply to"),
                          ("message", "Message")],
     "atlas-feedback": [("email", "Email"), ("source", "Source")],
-    "rain-print-order": [("choice", "Choice"), ("name", "Name"), ("email", "Email"), ("address", "Ship to"),
+    "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("name", "Name"), ("email", "Email"),
+                         ("gift_to", "Gift for"), ("gift_deliver", "Deliver to"), ("gift_email", "Their email"),
+                         ("gift_message", "Card message"), ("address", "Ship to"),
                          ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design")],
 }
 
@@ -103,18 +115,42 @@ def subject(posts):
         if p["kind"] == "sponsor-feedback":
             return p.get("subject") or "AGSIST portal: %s (%s)" % (p.get("request", ""), p.get("sponsor", ""))
         if p["kind"] == "rain-print-order":
-            return "Rain print order: %s for %s" % (RP_CHOICE.get(p.get("choice"), p.get("choice", "")), p.get("name", ""))
+            return "Rain print order%s: %s for %s" % (gift_tag(p), RP_CHOICE.get(p.get("choice"), p.get("choice", "")), p.get("name", ""))
         return "Parcel Report interest"
     return "AGSIST forms: %s" % ", ".join(parts)
+
+
+def is_gift(p):
+    return p.get("kind") == "rain-print-order" and p.get("gift_january") == "yes"
+
+
+def gift_tag(p):
+    """' (2026 gift, January)' for a gift order, the year read from its design link; '' otherwise."""
+    if not is_gift(p):
+        return ""
+    m = YEAR_RE.search(str(p.get("design_url") or ""))
+    return " (%s gift, January)" % m.group(1) if m else " (gift, January)"
+
+
+def value(p, f):
+    v = p[f]
+    if f == "choice":
+        return RP_CHOICE.get(v, str(v))
+    if f == "gift_january":
+        return GIFT_NOTE
+    if f == "gift_deliver":
+        return RP_DELIVER.get(v, str(v))
+    return str(v)
 
 
 def blocks(posts):
     """-> [(heading, [(label, value)])] in arrival order."""
     out = []
     for p in sorted(posts, key=lambda x: x.get("ts") or 0):
-        rows = [(lab, RP_CHOICE.get(p[f], str(p[f])) if f == "choice" else str(p[f]))
-                for f, lab in FIELDS[p["kind"]] if p.get(f) not in (None, "")]
-        out.append(("%s, %s" % (KIND_NAME[p["kind"]], when(p.get("ts") or 0)), rows))
+        gift = is_gift(p)
+        rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
+                if p.get(f) not in (None, "") and (gift or not f.startswith("gift_"))]
+        out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
     return out
 
 
@@ -143,7 +179,7 @@ def build(posts, to, fn="AGSIST", fa=""):
         hb.append('<table style="font-size:14px;line-height:1.5;border-collapse:collapse">')
         for lab, val in rows:
             v = e(val).replace("\n", "<br>")
-            if lab in ("Work email", "Email", "Reply to"):
+            if lab in MAIL_LABELS:
                 v = '<a href="mailto:%s">%s</a>' % (e(val, quote=True), e(val))
             elif lab == "Design" and DESIGN_RE.fullmatch(val):
                 # Only the page's own design links are made clickable.
@@ -256,7 +292,7 @@ def selftest():
              "email": "farmer@x.com", "source": "farmland-atlas"}
 
     rp = {"key": "form:rain-print-order:%d:0a1b2c40" % (ts + 3), "kind": "rain-print-order", "ts": ts + 3, "n": 0,
-          "choice": "print18x24", "name": "Jane Olson", "email": "jane@farm.com", "address": "12 Main St\nChetek WI 54728",
+          "choice": "framed12x18", "name": "Jane Olson", "email": "jane@farm.com", "address": "12 Main St\nChetek WI 54728",
           "notes": "Gift <for> Dad", "design_code": "MXxDaGV0ZWs",
           "design_url": "https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&layout=staircase&name=The+Olson+Farm"}
 
@@ -267,8 +303,15 @@ def selftest():
     ck("several: counted by kind", subject([claim, fb, atlas]) ==
        "AGSIST forms: 1 elevator claim, 1 sponsor request, 1 parcel report waitlist", subject([claim, fb, atlas]))
     ck("plural", "2 elevator claims" in subject([claim, dict(claim, key="form:claim:1:00000000")]))
-    ck("one rain print order: choice and buyer", subject([rp]) == "Rain print order: 18 x 24 print for Jane Olson", subject([rp]))
+    ck("one rain print order: choice and buyer", subject([rp]) == "Rain print order: 12 x 18 framed print for Jane Olson", subject([rp]))
     ck("rain print orders counted", "2 rain print orders" in subject([rp, dict(rp, key="form:rain-print-order:1:00000000")]))
+    gift = dict(rp, gift_january="yes", gift_to="Dad Olson", gift_deliver="recipient", gift_message="For every inch\nyou <b>farmed</b>",
+                design_code="GIFT-MXxDaGV0ZWs",
+                design_url="https://agsist.com/rain-print?place=Chetek%2C+WI&year=2026&layout=staircase&gift=1")
+    ck("one gift order: year, gift and January in the subject", subject([gift]) == "Rain print order (2026 gift, January): 12 x 18 framed print for Jane Olson", subject([gift]))
+    ck("a gift order with no year in its link still says gift", subject([dict(gift, design_url="https://agsist.com/rain-print?place=X")]) ==
+       "Rain print order (gift, January): 12 x 18 framed print for Jane Olson")
+    ck("gift fields without the flag do not make a gift", subject([dict(rp, gift_to="Dad")]) == "Rain print order: 12 x 18 framed print for Jane Olson")
 
     print("\nthe email")
     m = build([claim], "sig@x.com", fa="me@agsist.com")
@@ -292,11 +335,28 @@ def selftest():
     ck("rain print order: Reply-To is the buyer", m["Reply-To"] == "jane@farm.com", m["Reply-To"])
     t = m.get_body(("plain",)).get_content()
     ck("rain print order: every field, choice spelled out", all(s in t for s in (
-        "Choice: 18 x 24 print", "Name: Jane Olson", "Ship to: 12 Main St", "Design code: MXxDaGV0ZWs",
+        "Choice: 12 x 18 framed print", "Name: Jane Olson", "Ship to: 12 Main St", "Design code: MXxDaGV0ZWs",
         "Design: https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025")), t)
     h = m.get_body(("html",)).get_content()
     ck("rain print order: design link is clickable", '<a href="https://agsist.com/rain-print?place=Chetek%2C+WI&amp;year=2025&amp;layout=staircase&amp;name=The+Olson+Farm">' in h, h)
     ck("rain print order: notes escaped, address lines kept", "Gift &lt;for&gt; Dad" in h and "12 Main St<br>Chetek" in h)
+    t = build([rp], "s").get_body(("plain",)).get_content()
+    ck("an ordinary order shows no gift lines", "Gift" not in t.replace("Gift <for> Dad", ""), t)
+    m = build([gift], "sig@x.com")
+    t = m.get_body(("plain",)).get_content()
+    ck("gift order: the January note and every gift field", all(s in t for s in (
+        "Rain print order (2026 gift, January), ", "Gift: Yes: make it after January 1, once the station's December numbers are in",
+        "Gift for: Dad Olson", "Deliver to: The person it is for", "Card message: For every inch\nyou <b>farmed</b>",
+        "Ship to: 12 Main St", "Design code: GIFT-MXxDaGV0ZWs")), t)
+    ck("gift order: Reply-To is still the buyer", m["Reply-To"] == "jane@farm.com")
+    h = m.get_body(("html",)).get_content()
+    ck("gift order: card message escaped, lines kept", "For every inch<br>you &lt;b&gt;farmed&lt;/b&gt;" in h, h)
+    t = build([dict(gift, choice="digital", gift_email="dad@farm.com", address="")], "s").get_body(("plain",)).get_content()
+    ck("gift file: the recipient's email is shown", "Their email: dad@farm.com" in t and "Ship to" not in t, t)
+    h = build([dict(gift, choice="digital", gift_email="dad@farm.com")], "s").get_body(("html",)).get_content()
+    ck("gift file: the recipient's email is a mailto link", '<a href="mailto:dad@farm.com">' in h)
+    t = build([dict(rp, gift_to="Dad", gift_message="x")], "s").get_body(("plain",)).get_content()
+    ck("gift fields without the flag are not printed", "Gift for" not in t and "Card message" not in t, t)
     h = build([dict(rp, design_url="https://evil.example/rain-print?x=1")], "s").get_body(("html",)).get_content()
     ck("a design link off agsist.com is printed, not linked", '<a href="https://evil.example' not in h and "https://evil.example/rain-print?x=1" in h)
 

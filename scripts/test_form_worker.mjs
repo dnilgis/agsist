@@ -1,4 +1,4 @@
-// Runs the v5.8/v5.9 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// Runs the v5.8/v5.9/v5.10 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -60,7 +60,7 @@ r = await post({ kind: 'sponsor-feedback', request: 'Note', message: 'm'.repeat(
 r = await post({ kind: 'atlas-feedback', email: 'a@farm.com', source: 'farmland-atlas' }); A(r.status === 200, 'atlas stored');
 r = await post({ kind: 'atlas-feedback', email: '' }); A(r.status === 400, 'atlas needs email');
 
-// v5.9 rain print orders: address required for a poster, dropped for the file
+// v5.9/v5.10 rain print orders: address required for the print and the framed print, dropped for the file
 const rp = { kind: 'rain-print-order', name: 'Jane Olson', email: 'Jane@Farm.com', choice: 'print12x18',
   address: '12 Main St\r\nChetek WI 54728', notes: 'Gift', design_code: 'MXxDaGV0ZWsgV0l8MTIzfDIwMjV8c3AwYXw',
   design_url: 'https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&layout=staircase', page: '/rain-print', extra: 'x' };
@@ -72,7 +72,11 @@ r = await post(Object.assign({}, rp, { choice: 'digital' })); A(r.status === 200
 rec = JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).sort().pop()));
 A(rec.choice === 'digital' && !('address' in rec), 'digital order keeps no address');
 r = await post(Object.assign({}, rp, { choice: 'digital', address: '' })); A(r.status === 200, 'digital order needs no address');
-for (const [patch, why] of [[{ address: '' }, 'poster needs an address'], [{ address: '   ' }, 'blank address'],
+r = await post(Object.assign({}, rp, { choice: 'framed12x18' })); A(r.status === 200, 'framed order stored');
+rec = JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).pop()));
+A(rec.choice === 'framed12x18' && rec.address === '12 Main St\nChetek WI 54728', 'framed order keeps its address');
+for (const [patch, why] of [[{ address: '' }, 'print needs an address'], [{ choice: 'framed12x18', address: '' }, 'framed print needs an address'],
+    [{ choice: 'print18x24' }, '18 x 24 is no longer offered'], [{ address: '   ' }, 'blank address'],
     [{ choice: 'canvas' }, 'unknown choice'], [{ choice: '' }, 'choice required'], [{ name: '' }, 'name required'],
     [{ email: 'x' }, 'email'], [{ design_url: 'https://evil.example/rain-print?x=1' }, 'design url off-site'],
     [{ design_url: 'https://agsist.com/rain-print?x="><script>' }, 'design url odd characters'],
@@ -80,6 +84,30 @@ for (const [patch, why] of [[{ address: '' }, 'poster needs an address'], [{ add
     [{ design_code: 'abc def' }, 'design code characters'], [{ design_code: '' }, 'design code required'],
     [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ address: 'a'.repeat(601) }, 'address cap']]) {
   r = await post(Object.assign({}, rp, patch)); A(r.status === 400, 'rain print rejects ' + why);
+}
+A(!('gift_january' in JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:'))[0]))), 'an ordinary order carries no gift key');
+
+// v5.10 gift orders: this year's print, made in January
+// newest by insertion: two posts in the same millisecond sort by their random suffix
+const newestRp = () => JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).pop()));
+const gift = Object.assign({}, rp, { choice: 'framed12x18', gift_january: true, gift_to: 'Dad Olson', gift_deliver: 'recipient',
+  gift_message: 'For every inch\r\nyou farmed', design_code: 'GIFT-MXxDaGV0ZWsgV0l8MTIzfDIwMjZ8c3AwYXw',
+  design_url: 'https://agsist.com/rain-print?place=Chetek%2C+WI&year=2026&layout=staircase&gift=1' });
+r = await post(gift); A(r.status === 200, 'gift order stored');
+rec = newestRp();
+A(rec.gift_january === 'yes' && rec.gift_to === 'Dad Olson' && rec.gift_deliver === 'recipient' && rec.gift_message === 'For every inch\nyou farmed', 'gift fields kept, message keeps its line');
+A(rec.design_code.startsWith('GIFT-') && rec.address.includes('Main St') && !('gift_email' in rec), 'GIFT- code kept; a framed print ships to the address, no recipient email kept');
+r = await post(Object.assign({}, gift, { gift_january: 'yes', gift_deliver: '' })); A(r.status === 200, 'gift flag as "yes", no deliver choice');
+A(newestRp().gift_deliver === 'buyer', 'deliver defaults to the buyer');
+r = await post(Object.assign({}, gift, { choice: 'digital', gift_email: 'Dad@Farm.com' })); A(r.status === 200, 'gift file straight to the recipient');
+rec = newestRp(); A(rec.gift_email === 'dad@farm.com' && !('address' in rec), 'recipient email kept and cleaned for a gift file');
+r = await post(Object.assign({}, rp, { gift_to: 'Dad', gift_message: 'hi', gift_deliver: 'recipient', gift_email: 'd@x.com' })); A(r.status === 200, 'gift fields without the flag');
+rec = newestRp(); A(!Object.keys(rec).some(k => k.startsWith('gift_')), 'gift fields dropped without gift_january');
+r = await post(Object.assign({}, gift, { gift_january: false })); A(r.status === 200 && !('gift_to' in newestRp()), 'gift_january false is an ordinary order');
+for (const [patch, why] of [[{ gift_deliver: 'neighbor' }, 'unknown deliver'], [{ gift_message: 'm'.repeat(241) }, 'gift message cap'],
+    [{ gift_to: 't'.repeat(81) }, 'gift_to cap'], [{ choice: 'digital', gift_email: '' }, 'gift file to the recipient needs their email'],
+    [{ choice: 'digital', gift_email: 'nope' }, 'recipient email checked'], [{ design_code: 'GIFT MX' }, 'gift code characters']]) {
+  r = await post(Object.assign({}, gift, patch)); A(r.status === 400, 'gift order rejects ' + why);
 }
 const rpStored = forms().filter(x => x.startsWith('form:rain-print-order:')).length;
 
@@ -111,7 +139,7 @@ r = await call('/form-mark', 'POST', { keys: [j[1].key] }); A(r.status === 403, 
 // /count
 r = await call('/count?token=tok'); j = await r.json();
 A(j.forms && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1 && j.forms['atlas-feedback'] === 9, '/count forms ' + JSON.stringify(j.forms));
-A(rpStored === 3 && j.forms['rain-print-order'] === 3, '/count forms rain-print-order ' + JSON.stringify(j.forms));
+A(rpStored === 9 && j.forms['rain-print-order'] === 9, '/count forms rain-print-order ' + JSON.stringify(j.forms));
 A(!JSON.stringify(j).includes('@'), '/count carries no address');
 
 // older routes still answer the same

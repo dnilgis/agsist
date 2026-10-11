@@ -1,6 +1,18 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.10 (2026-10-11): RAIN PRINT PRODUCTS AND GIFTS. kind rain-print-order's
+ *   choice is now digital | print12x18 | framed12x18 (Sig prints and frames
+ *   12 x 18 himself; the 18 x 24 poster, print18x24, is no longer accepted).
+ *   address is required for the print and the framed print. It also takes a
+ *   gift order: this year's print, ordered now and made after January 1 once
+ *   NOAA's December numbers are in. New optional fields: gift_january (true,
+ *   stored as "yes"; absent on an ordinary order), gift_to (who it is for, 80),
+ *   gift_deliver (buyer | recipient), gift_email (the recipient's address for
+ *   a digital file sent straight to them) and gift_message (the card message,
+ *   240, keeps line breaks). The gift_ fields are dropped unless gift_january
+ *   is set. design_code may start with GIFT-. Every other route and field
+ *   answers exactly as before. No new binding and no new secret.
  * v5.9 (2026-10-11): RAIN PRINT ORDERS. One new form kind on POST /form;
  *   every route answers exactly as before. kind rain-print-order (rain-print.html)
  *   takes name, email, choice (digital | print12x18 | print18x24), address
@@ -313,13 +325,17 @@ const FORM_KINDS = {
   },
   "atlas-feedback": { email: [254, true, "email"], source: [60], page: [60] },
   // v5.9: Rain Print order requests (rain-print.html). address is required for
-  // a printed poster (checked at the end of formClean), never for the digital file.
+  // the print and the framed print (checked at the end of formClean), never for the digital file.
   "rain-print-order": {
     name: [80, true], email: [254, true, "email"], choice: [20, true, "rpchoice"], address: [600, false, "text"],
     notes: [2000, false, "text"], design_url: [1200, true, "rpurl"], design_code: [300, true, "rpcode"], page: [60],
+    // v5.10: a gift of this year's print, made in January. Kept only with gift_january.
+    gift_january: [3, false, "flag"], gift_to: [80], gift_deliver: [10, false, "rpdeliver"],
+    gift_email: [254, false, "email"], gift_message: [240, false, "text"],
   },
 };
-const RP_CHOICES = ["digital", "print12x18", "print18x24"];
+const RP_CHOICES = ["digital", "print12x18", "framed12x18"];
+const RP_DELIVER = ["buyer", "recipient"];
 const FORM_MAX_BYTES = 16 * 1024;
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
@@ -332,6 +348,8 @@ function formClean(kind, b) {
     const [max, req, type] = spec[f];
     let v = b[f];
     if (type === "yesno") { out[f] = (v === true || /^(yes|on|true|1)$/i.test(String(v == null ? "" : v).trim())) ? "yes" : "no"; continue; }
+    // v5.10: stored as "yes" only when set; an unset flag leaves no key at all.
+    if (type === "flag") { if (v === true || /^(yes|on|true|1)$/i.test(String(v == null ? "" : v).trim())) out[f] = "yes"; continue; }
     v = String(v == null ? "" : v);
     // A message keeps its line breaks; every other field is one line.
     v = type === "text" ? v.replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ")
@@ -352,6 +370,8 @@ function formClean(kind, b) {
       if (!/^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/.test(v)) return { error: "invalid " + f };
     } else if (type === "rpcode") {
       if (!/^[A-Za-z0-9_-]+$/.test(v)) return { error: "invalid " + f };
+    } else if (type === "rpdeliver") {
+      if (!RP_DELIVER.includes(v)) return { error: "invalid " + f };
     } else if (type === "url") {
       if (!/^https?:\/\//i.test(v)) v = "https://" + v;
       try { const u = new URL(v); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
@@ -363,6 +383,14 @@ function formClean(kind, b) {
   if (kind === "rain-print-order") {
     if (out.choice === "digital") delete out.address;
     else if (!out.address) return { error: "address is required for a print" };
+    if (out.gift_january !== "yes") {
+      for (const g of ["gift_to", "gift_deliver", "gift_email", "gift_message"]) delete out[g];
+    } else {
+      if (!out.gift_deliver) out.gift_deliver = "buyer";
+      // a file sent straight to the person it is for needs their address; a print or framed print goes to Ship to
+      if (out.choice === "digital" && out.gift_deliver === "recipient" && !out.gift_email) return { error: "gift_email is required to send the file to the recipient" };
+      if (!(out.choice === "digital" && out.gift_deliver === "recipient")) delete out.gift_email;
+    }
   }
   return { rec: out };
 }

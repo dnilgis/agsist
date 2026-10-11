@@ -1,13 +1,19 @@
 {
-  "_about": "Prices and payment links for /rain-print. The page reads this file; change a price here and the page follows. payment_links: paste a Stripe Payment Link (https://buy.stripe.com/...) per product. While a link is null, that button opens the order request form instead. The page adds client_reference_id=<design code> to the link, so each Stripe payment carries the design; open https://agsist.com/rain-print?d=<code> to see it.",
+  "_about": "Prices and payment links for /rain-print. Products: digital (the 12 x 18 print files, emailed), print12x18 (12 x 18 print, unframed, shipped rolled in a tube), framed12x18 (12 x 18 print in a black frame with an acrylic front, ready to hang); Sig prints, frames and ships them himself. The page reads this file; change a price here and the page follows. payment_links: paste a Stripe Payment Link (https://buy.stripe.com/...) per product. While a link is null, that button opens the order request form instead. The page adds client_reference_id=<design code> to the link, so each Stripe payment carries the design; open https://agsist.com/rain-print?d=<code> to see it. A gift order's code starts with GIFT- (this year's print: make it after January 1, once the December numbers are in); ?d= opens it with or without that prefix. Gift text (this year's print, ordered now and delivered in January): {year} becomes the current year and {next} the year after, on the page and the printed gift card. Say January, not a date: the print waits on NOAA's December numbers. Christmas cutoffs (print_christmas_cutoff, framed_christmas_cutoff, YYYY-MM-DD): from October 1 to the cutoff the print and framed cards say \"Order by <date> for Christmas delivery.\"; after it, through Dec 25, they say new orders ship after Christmas. Change the date here for next year. This year's gift prints ship in January and show no cutoff.",
   "currency": "USD",
   "digital": 19,
   "print12x18": 45,
-  "print18x24": 59,
+  "framed12x18": 89,
   "payment_links": {
     "digital": null,
     "print12x18": null,
-    "print18x24": null
+    "framed12x18": null
   },
-  "ships_within": "Printed posters ship rolled in a tube within 7 business days after you approve the proof. US addresses only for now."
+  "ships_within": "Prints and framed prints ship within 7 business days after you approve the proof. US addresses only for now.",
+  "print_christmas_cutoff": "2026-12-14",
+  "framed_christmas_cutoff": "2026-12-12",
+  "gift_year_label": "{year}, as a gift (delivered in January)",
+  "gift_delivery": "Sig makes the print once the station's December numbers are in, and it goes out in January {next}. You get a proof first, as with every order.",
+  "gift_card_title": "Your {year} Rain Print is coming in January",
+  "gift_card_note": "The finished print shows every day of rain from January 1 to December 31, {year}."
 }

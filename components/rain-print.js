@@ -27,9 +27,24 @@
  * /rain-print?d=<code> and the same print draws again.
  *
  * DOWNLOADS. The public button gives a watermarked preview PNG. /rain-print?maker=1
- * shows Sig's clean 300 dpi print files (12x18 and 18x24 in, 0.125 in bleed),
+ * shows Sig's clean 300 dpi print files (12x18 in, 0.125 in bleed, so 12.25 x 18.25 in
+ * and fits the 13 x 19 sheets his Epson takes),
  * a PDF of the same and the SVG. That switch is a convenience, not security:
  * the art is drawn in the reader's browser and anyone can save it.
+ *
+ * THIS YEAR, AS A GIFT (2026-10-11). The year list starts with the current
+ * year (America/Chicago), offered as a gift delivered in January. It draws a
+ * PREVIEW from Jan 1 through the station's last recorded day, laid out on the
+ * whole calendar, with a band across the art and a line on the page saying so;
+ * a comparison covers the same days. Under GIFT_MIN_DAYS recorded days there
+ * is no art, only a plain message, and ordering stays open. A gift order's
+ * code is GIFT- plus the design code (Stripe's client_reference_id and the
+ * order form carry it); the QR and shared links carry the plain code. A
+ * one-page gift card prints from #rp-giftcard (print stylesheet in the page).
+ *
+ * PRODUCTS (2026-10-11): digital file, 12 x 18 print, 12 x 18 framed; Sig
+ * prints, frames and ships them. 18 x 24 is gone; an old code with its size
+ * letter still opens as 12 x 18. The maker's seal is square to the page.
  *
  * The pure parts (design code, query string) run without a document, for
  * test/rain-print.test.mjs.
@@ -41,12 +56,13 @@
   var LAYOUT = { staircase: 's', waveform: 'w' };
   var PALETTE = { paper: 'p', night: 'n', blueprint: 'b' };
   var CMP = { none: '0', normal: 'n', station: 's' };
-  var SIZE = { '12x18': 'a', '18x24': 'b' };
+  var SIZE = { '12x18': 'a' };   // one print size since 2026-10-11 (18 x 24 was dropped)
   var LIMITS = { place: 32, name: 24, label: 13, markers: 3 };  // at these caps the QR link still fits (qr.js: version 10, level M)
   var SITE = 'https://agsist.com/rain-print';
 
   function inv(o) { var r = {}; Object.keys(o).forEach(function (k) { r[o[k]] = k; }); return r; }
   var LAYOUT_R = inv(LAYOUT), PALETTE_R = inv(PALETTE), CMP_R = inv(CMP), SIZE_R = inv(SIZE);
+  SIZE_R.b = '12x18';  // a code made while 18 x 24 was offered still opens, as the 12 x 18 shape (same art)
 
   function cleanText(s, n) {
     return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f|]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n).trim();
@@ -67,7 +83,7 @@
   }
 
   function defaults() {
-    return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [] };
+    return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false };
   }
   /* Whatever came in (URL, code, form), out comes a design with only allowed values. */
   function normalize(x) {
@@ -87,7 +103,46 @@
       if (dayIndex(s.year, m.date) < 0) return;
       s.markers.push({ date: m.date, label: cleanText(m.label, LIMITS.label) });
     });
+    s.gift = x.gift === true || x.gift === '1' || x.gift === 1;
     return s;
+  }
+
+  /* Today's date in Chetek (America/Chicago), as YYYY-MM-DD. The year a reader
+     may order as a gift is this date's year, so it never needs a code change. */
+  function chicagoToday(now) {
+    now = now || new Date();
+    try {
+      var p = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' })
+        .formatToParts(now).forEach(function (x) { p[x.type] = x.value; });
+      if (p.year && p.month && p.day) return p.year + '-' + p.month + '-' + p.day;
+    } catch (e) {}
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  }
+  /* 'done': a finished year, drawn whole. 'gift': this year, drawn as a preview
+     of the days recorded so far and ordered for delivery in January. 'future':
+     nothing to draw. */
+  function yearMode(year, todayIso) {
+    var cy = parseInt(String(todayIso || chicagoToday()).slice(0, 4), 10);
+    if (!year) return '';
+    return year < cy ? 'done' : year === cy ? 'gift' : 'future';
+  }
+  /* The Christmas line on a product, from its cutoff date in data/rain-print.json.
+     October 1 through the cutoff: "Order by Dec 12 for Christmas delivery."
+     After it, through Dec 25: new orders ship after Christmas. Otherwise nothing.
+     A plain date, never a countdown. */
+  function cutoffNote(todayIso, cutoffIso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(cutoffIso || ''));
+    if (!m || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || ''))) return '';
+    if (todayIso < m[1] + '-10-01' || todayIso > m[1] + '-12-25') return '';
+    if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery.';
+    return 'Orders placed now ship after Christmas.';
+  }
+  /* Index of the last day that has a recorded value (v not null), or -1. A
+     preview ends there: the days after it are not in yet, not dry. */
+  function lastRecorded(days) {
+    for (var i = (days || []).length - 1; i >= 0; i--) if (days[i] && days[i].v !== null && days[i].v !== undefined) return i;
+    return -1;
   }
 
   function utf8b64url(str) {
@@ -106,17 +161,25 @@
   /* Design code v1: base64url of "1|place|station|year|LPCS|name|day|label|day|label|day|label"
      (L P C S = one letter each for layout, palette, comparison, size; day = day of
      the year in base 36). Only the characters A-Z a-z 0-9 - _ so Stripe takes it
-     as a client_reference_id (200 at most). */
+     as a client_reference_id (200 at most).
+     A gift order (this year, delivered in January) is the same code with GIFT-
+     in front, so Sig sees it in Stripe without decoding anything. A v1 code
+     always starts with M (base64 of "1|"), so the prefix cannot be mistaken
+     for part of a code. */
+  var GIFT_PREFIX = 'GIFT-';
   function encodeCode(x) {
     var s = normalize(x);
     if (!s.place || !s.year) return '';
     var f = ['1', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size], s.name];
     s.markers.forEach(function (m) { f.push(dayIndex(s.year, m.date).toString(36), m.label); });
     while (f.length > 6 && f[f.length - 1] === '' && f[f.length - 2] === '') f.length -= 2;
-    return utf8b64url(f.join('|'));
+    return (s.gift ? GIFT_PREFIX : '') + utf8b64url(f.join('|'));
   }
   function decodeCode(code) {
-    if (!/^[A-Za-z0-9_-]{8,400}$/.test(String(code || ''))) return null;
+    code = String(code || '');
+    var gift = code.indexOf(GIFT_PREFIX) === 0;
+    if (gift) code = code.slice(GIFT_PREFIX.length);
+    if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) return null;
     var raw;
     try { raw = b64urlUtf8(code); } catch (e) { return null; }
     var f = raw.split('|');
@@ -133,7 +196,7 @@
       markers.push({ date: iso, label: f[i + 1] });
     }
     var s = normalize({ place: f[1], station: f[2], year: year, layout: LAYOUT_R[k[0]], palette: PALETTE_R[k[1]],
-      cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers });
+      cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift });
     return s.place ? s : null;
   }
 
@@ -148,6 +211,7 @@
     if (s.cmp !== 'none') q.set('cmp', s.cmp);
     if (s.name) q.set('name', s.name);
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
+    if (s.gift) q.set('gift', '1');
     return q.toString();
   }
   function fromParams(search) {
@@ -159,13 +223,14 @@
       if (v) markers.push({ date: v.slice(0, 10), label: v.slice(10).trim() });
     }
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
-      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers });
+      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers, gift: q.get('gift') });
   }
   function designUrl(x) { return SITE + '?' + toParams(x); }
   function shortUrl(x) { var c = encodeCode(x); return c ? SITE + '?d=' + c : SITE; }
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS };
+    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS,
+    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -179,17 +244,25 @@
     blueprint: {bg:'#1E3F73', ink:'#EEF3FA', mute:'#B0C1DC', rain:'#FFFFFF', rule:'#31548C', fill:'rgba(255,255,255,.20)', dryFill:'rgba(255,217,160,.16)', temp:'#FFD9A0', grain:false}
   };
   /* Print sizes, landscape: trim width and height in inches. Art is 1400 units wide. */
-  var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' }, '18x24': { w: 24, h: 18, label: '18 x 24 in' } };
+  var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
   var ART_W = 1400, BLEED_IN = 0.125, DPI = 300;
   var MISS_OK = 10;      // auto station pick: first of the nearest three with at most this many unrecorded days
   var MISS_BLOCK = 31;   // more than a month unrecorded: no print, the page says why
-  var CURRENT_YEAR = new Date().getFullYear();
+  var TODAY = chicagoToday();                     // YYYY-MM-DD in Chetek's time zone
+  var CURRENT_YEAR = parseInt(TODAY.slice(0, 4), 10);
+  var GIFT_MIN_DAYS = 60;  // a gift preview needs the year recorded at least this far (to about March 1); less is too thin to draw fairly
+  var STALE_DAYS = 30;     // this year: a station whose record stopped longer ago than this is not reporting, so it cannot make the print
   var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
-  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', print18x24: '18 x 24 print' };
+  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
+  var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@farmers1st.com';
 
   var ST = fromParams(root.location.search);
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '';
+  /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
+     while a year-to-date preview is drawn. NOART: the plain message shown
+     instead of art when the year so far is too thin to draw; ordering stays open. */
+  var PREVIEW = null, NOART = '';
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
 
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
@@ -242,13 +315,16 @@
     });
   }
   function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
+  function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
+  function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
   function stations(lat, lon, year) {
     var d = 0.6;
     var u = 'https://data.rcc-acis.org/StnMeta?' + new URLSearchParams({
       bbox: [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(','),
-      elems: 'pcpn', sdate: year + '-01-01', edate: year + '-12-31', meta: 'name,sids,ll,valid_daterange,state'
+      elems: 'pcpn', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'name,sids,ll,valid_daterange,state'
     });
-    var y0 = year + '-01-01', y1 = year + '-12-31';
+    // This year: the record must reach back to Jan 1 and still be current.
+    var y0 = year + '-01-01', y1 = year === CURRENT_YEAR ? isoMinusDays(TODAY, STALE_DAYS) : year + '-12-31';
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
       return (j.meta || []).filter(function (m) { return m.ll && m.sids && m.sids[0] && m.valid_daterange && m.valid_daterange[0] && m.valid_daterange[0][0] <= y0 && m.valid_daterange[0][1] >= y1; })
         .map(function (m) { return Object.assign({}, m, { sid: cleanSid(m.sids[0]), km: haversine(lat, lon, m.ll[1], m.ll[0]) }); })
@@ -269,7 +345,7 @@
   function daily(sid, year) {
     var key = sid + '|' + year;
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
-    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: 'pcpn,avgt', meta: 'name,state,ll' });
+    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt', meta: 'name,state,ll' });
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('The weather service has no usable data for that station and year. Try another station from the list.');
       var days = [];
@@ -278,6 +354,9 @@
         var dt = new Date(row[0] + 'T00:00:00');
         days.push({ date: row[0], v: p.v, flag: p.flag, t: t, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
       });
+      // This year: stop at the last recorded day. The days after it have not
+      // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
+      if (year === CURRENT_YEAR) days = days.slice(0, lastRecorded(days) + 1);
       var out = { meta: j.meta || {}, days: days, d: derive(days) };
       DAILY_CACHE.set(key, out);
       return out;
@@ -405,6 +484,7 @@
     var D = DATA.d, m = META;
     var sub = [f2(D.total) + ' IN PRECIPITATION', D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS'];
     if (D.missing) sub.push(D.missing + ' UNRECORDED');
+    if (PREVIEW) sub.push('PREVIEW THROUGH ' + fmtDate(PREVIEW.last));
     var mi = miles(m.km);
     var away = mi < 1 ? '' : ', ' + Math.round(mi) + ' MI AWAY';
     return {
@@ -437,7 +517,7 @@
     var mono = "'IBM Plex Mono',monospace", serif = "'Fraunces',Georgia,serif";
     var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '"' + size + ' font-family="\'IBM Plex Sans\',system-ui,sans-serif" role="img" aria-labelledby="rpT rpD">' +
       (o.fontCss ? '<style>' + o.fontCss + '</style>' : '') +
-      '<title id="rpT">' + esc(F.place) + ', ' + esc(F.year) + ', rain print</title>' +
+      '<title id="rpT">' + esc(F.place) + ', ' + esc(F.year) + ', rain print' + (PREVIEW ? ' preview through ' + esc(fmtDate(PREVIEW.last)) : '') + '</title>' +
       '<desc id="rpD">' + esc(F.sub) + '. ' + esc(F.prov) + '</desc>' +
       '<rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W + 2 * b) + '" height="' + (H + 2 * b) + '" fill="' + p.bg + '"/>' + grain + inner +
       '<text x="' + mx + '" y="' + FL.placeY + '" font-family="' + serif + '" font-size="30" font-weight="300" fill="' + p.ink + '">' + esc(F.place) + '</text>' +
@@ -445,8 +525,31 @@
       (ST.name ? '<text x="' + (mx + 2) + '" y="' + FL.persoY + '" font-family="' + mono + '" font-size="13" font-weight="500" fill="' + p.ink + '" opacity="0.8" letter-spacing="1.2">' + esc(ST.name.toUpperCase()) + '</text>' : '') +
       FL.sub.map(function (l) { return '<text x="' + mx + '" y="' + l[1] + '" font-family="' + mono + '" font-size="14" fill="' + p.mute + '" letter-spacing="1">' + esc(l[0]) + '</text>'; }).join('') +
       FL.prov.map(function (l) { return '<text x="' + mx + '" y="' + l[1] + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" letter-spacing="0.5">' + esc(l[0]) + '</text>'; }).join('') +
-      hankoMark(p, W, H) + (o.watermark ? watermark(p, W, H) : '') + '</svg>';
+      hankoMark(p, W, H) + (o.watermark ? watermark(p, W, H) : '') + (PREVIEW ? previewBand(p, W, FL) : '') + '</svg>';
     return s;
+  }
+  /* This year's preview carries a solid band across the art, on screen, in the
+     download and on the gift card, so nobody takes it for the finished print. */
+  function previewBand(p, W, FL) {
+    var y = Math.round(FL.top * 0.42), h = 58, mono = "'IBM Plex Mono',monospace";
+    return '<g aria-hidden="true"><rect x="-40" y="' + (y - h / 2) + '" width="' + (W + 80) + '" height="' + h + '" fill="' + p.ink + '" opacity="0.88"/>' +
+      '<text x="' + (W / 2) + '" y="' + (y - 4) + '" font-family="' + mono + '" font-size="19" font-weight="500" fill="' + p.bg + '" text-anchor="middle" letter-spacing="2.5">PREVIEW THROUGH ' + esc(fmtDate(PREVIEW.last)) + '</text>' +
+      '<text x="' + (W / 2) + '" y="' + (y + 18) + '" font-family="' + mono + '" font-size="13" fill="' + p.bg + '" text-anchor="middle" letter-spacing="1.5">YOUR PRINT WILL SHOW THE FULL YEAR, JAN 1 TO DEC 31, ' + META.year + '</text></g>';
+  }
+  // Month i's first day and length on the x axis. A preview lays out the whole
+  // calendar year, so the months still to come keep their place.
+  function monthSpan(i, days, D) {
+    if (PREVIEW) {
+      var y = META.year, mm = function (k) { return y + '-' + String(k).padStart(2, '0') + '-01'; };
+      var a = dayIndex(y, mm(i + 1)), b = i === 11 ? PREVIEW.yearLen : dayIndex(y, mm(i + 2));
+      return [a, b - a];
+    }
+    var s0 = days.findIndex(function (x) { return x.m === i; });
+    return [s0, s0 < 0 ? 0 : D.mdays[i]];
+  }
+  // where a preview stops: a quiet dashed line at the last recorded day
+  function cutLine(p, X, yTop, yBase) {
+    return PREVIEW ? '<line x1="' + f2(X) + '" y1="' + f2(yTop) + '" x2="' + f2(X) + '" y2="' + f2(yBase) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="3 4" opacity="0.7"/>' : '';
   }
   function watermark(p, W, H) {
     var line = 'PREVIEW  ·  AGSIST.COM/RAIN-PRINT  ·  ', row = '', i, out = '';
@@ -548,8 +651,10 @@
   // bottom right. It is a real QR code (components/qr.js, level M, quiet zone
   // kept) that opens this exact design at agsist.com/rain-print?d=<code>.
   var QR_OK = true;
+  // The design itself, without the gift marker: what the QR and shared links open.
+  function artDesign() { return Object.assign({}, ST, { gift: false }); }
   function hankoMark(p, W, H) {
-    var url = shortUrl(ST);
+    var url = shortUrl(artDesign());
     QR_OK = false;
     if (!root.AgQR || url === SITE) return '';
     var m;
@@ -565,8 +670,8 @@
     for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (m[r][c]) {
       mods += '<rect x="' + f2(cox + c * cell) + '" y="' + f2(coy + r * cell) + '" width="' + f2(cell + 0.3) + '" height="' + f2(cell + 0.3) + '"/>';
     }
-    var cx = ox + stampSize / 2, cy = oy + stampSize / 2;
-    return '<g transform="rotate(-1.4 ' + f2(cx) + ' ' + f2(cy) + ')" opacity="0.95" aria-hidden="true">' +
+    // square to the page edges (Sig, 2026-10-11): no tilt
+    return '<g opacity="0.95" aria-hidden="true">' +
       '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="#F7F6F1"/>' +
       '<rect x="' + f2(ox + 1.5) + '" y="' + f2(oy + 1.5) + '" width="' + f2(stampSize - 3) + '" height="' + f2(stampSize - 3) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
       '<g fill="#B0231A">' + mods + '</g></g>';
@@ -576,7 +681,7 @@
   function waveform(p, W, H, o) {
     var FL = footLayout(W, H);
     var x0 = 90, x1 = W - 70, base = FL.top - 76, top = 110, D = DATA.d, days = DATA.days, DOM = domain();
-    var k = (base - top) / DOM.daily, w = (x1 - x0) / D.n, mono = "'IBM Plex Mono',monospace";
+    var k = (base - top) / DOM.daily, w = (x1 - x0) / (PREVIEW ? PREVIEW.yearLen : D.n), mono = "'IBM Plex Mono',monospace";
     var bars = '', grid = '';
     var step = DOM.daily > 4 ? 1 : DOM.daily > 1.5 ? 0.5 : 0.25;
     for (var r = 0; r <= DOM.daily + 1e-9; r += step) {
@@ -585,17 +690,18 @@
         '<text x="' + (x0 - 10) + '" y="' + f2(Y + 4) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" text-anchor="end">' + r.toFixed(2).replace(/\.?0+$/, '') + (r === 0 ? ' in' : '') + '</text>';
     }
     for (var i = 0; i < 12; i++) {
-      var s0 = days.findIndex(function (x) { return x.m === i; });
+      var ms = monthSpan(i, days, D), s0 = ms[0];
       if (s0 < 0) continue;
       var X = x0 + s0 * w;
       grid += '<line x1="' + f2(X) + '" y1="' + top + '" x2="' + f2(X) + '" y2="' + base + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.4"/>' +
         '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
-        '<text x="' + f2(X + D.mdays[i] * w / 2) + '" y="' + (base + 27) + '" font-size="12.5" font-weight="500" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.8">' + MON[i].toUpperCase() + '</text>';
+        '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (base + 27) + '" font-size="12.5" font-weight="500" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.8">' + MON[i].toUpperCase() + '</text>';
     }
     var overlay = '', OV = overlaySeries();
     if (OV) {
-      overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.daily.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
+      overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.daily.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
     }
+    if (PREVIEW) overlay += cutLine(p, x0 + D.n * w, top, base);
     days.forEach(function (x) {
       var X = x0 + x.doy * w + w / 2, isMax = D.max.v > 0 && x.doy === D.max.doy;
       if (x.v === null) bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base - 6) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="1 1"/>';
@@ -620,7 +726,7 @@
   function staircase(p, W, H, o) {
     var FL = footLayout(W, H);
     var x0 = 90, x1 = W - 90, y0 = 90, y1 = FL.top - 74, D = DATA.d, days = DATA.days, DOM = domain();
-    var k = (y1 - y0) / DOM.annual, w = (x1 - x0) / D.n, mono = "'IBM Plex Mono',monospace";
+    var k = (y1 - y0) / DOM.annual, w = (x1 - x0) / (PREVIEW ? PREVIEW.yearLen : D.n), mono = "'IBM Plex Mono',monospace";
     var d = 'M' + x0 + ',' + y1;
     days.forEach(function (x) { d += 'L' + f2(x0 + (x.doy + 1) * w) + ',' + f2(y1 - D.cum[x.doy] * k); });
     var grid = '', step = DOM.annual > 20 ? 5 : DOM.annual > 8 ? 2 : 1;
@@ -629,15 +735,17 @@
       grid += '<line x1="' + x0 + '" y1="' + f2(Y) + '" x2="' + x1 + '" y2="' + f2(Y) + '" stroke="' + p.rule + '" stroke-width="0.8" opacity="' + (r === 0 ? 1 : 0.55) + '"/><text x="' + (x0 - 10) + '" y="' + f2(Y + 4) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" text-anchor="end">' + r + (r === 0 ? ' in' : '') + '</text>';
     }
     for (var i = 0; i < 12; i++) {
-      var s0 = days.findIndex(function (x) { return x.m === i; });
+      var ms = monthSpan(i, days, D), s0 = ms[0];
       if (s0 < 0) continue;
       var X = x0 + s0 * w;
       grid += '<line x1="' + f2(X) + '" y1="' + y0 + '" x2="' + f2(X) + '" y2="' + y1 + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="2 4" opacity="0.35"/>' +
-        '<text x="' + f2(X + D.mdays[i] * w / 2) + '" y="' + (y1 + 26) + '" font-size="12" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.5">' + MON[i].toUpperCase() + '</text>';
+        '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (y1 + 26) + '" font-size="12" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.5">' + MON[i].toUpperCase() + '</text>';
     }
+    var endX = x0 + D.n * w, endY = y1 - D.total * k;
+    grid += cutLine(p, endX, y0, y1);
     var OV = overlaySeries();
     // the line is the hero: a soft wash under it turns the staircase into a landscape profile
-    var areaFill = OV ? '' : '<defs><linearGradient id="stairFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + p.rain + '" stop-opacity="0.22"/><stop offset="100%" stop-color="' + p.rain + '" stop-opacity="0.02"/></linearGradient></defs><path d="' + d + ' L' + f2(x1) + ',' + f2(y1) + ' Z" fill="url(#stairFill)"/>';
+    var areaFill = OV ? '' : '<defs><linearGradient id="stairFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + p.rain + '" stop-opacity="0.22"/><stop offset="100%" stop-color="' + p.rain + '" stop-opacity="0.02"/></linearGradient></defs><path d="' + d + ' L' + f2(PREVIEW ? endX : x1) + ',' + f2(y1) + ' Z" fill="url(#stairFill)"/>';
     var path = '<path d="' + d + '" fill="none" stroke="' + p.rain + '" stroke-width="2.75" stroke-linejoin="round" stroke-linecap="round"/>';
     var waypoint = '';
     if (D.max.v > 0 && D.max.doy >= 0) {
@@ -660,16 +768,19 @@
     }
     if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, D.dryMax.len + ' dry days');
     // headline: the comparison, computed from the two real running totals, baseline always named
-    var endX = x0 + D.n * w, endY = y1 - D.total * k;
+    // A preview compares the same days: Jan 1 through the last recorded day, on both lines.
     var pct = OV && OV.total > 0 ? Math.round((D.total - OV.total) / OV.total * 100) : null;
     var baseline = ST.cmp === 'station' ? 'this station’s full record' : 'the 30-year normal';
     var insight = pct === null ? '' : pct === 0 ? 'dead on ' + baseline : pct > 0 ? pct + '% wetter than ' + baseline : Math.abs(pct) + '% drier than ' + baseline;
+    if (insight && PREVIEW) insight += ' so far';
+    var thru = PREVIEW ? fmtDate(PREVIEW.last).replace(/^(\w)(\w+)/, function (a, b, c) { return b + c.toLowerCase(); }) : '';
     ann += '<circle cx="' + f2(endX) + '" cy="' + f2(endY) + '" r="3.5" fill="' + p.ink + '"/>';
     if (insight) {
       ann += '<text x="' + f2(x1) + '" y="' + f2(y0 - 34) + '" font-family="\'Fraunces\',Georgia,serif" font-size="30" font-weight="600" fill="' + p.temp + '" text-anchor="end">' + esc(insight) + '</text>' +
-        '<text x="' + f2(x1) + '" y="' + f2(y0 - 10) + '" font-family="' + mono + '" font-size="13" fill="' + p.mute + '" text-anchor="end">' + f2(D.total) + ' in this year · ' + f2(OV.total) + ' in a typical year</text>';
+        '<text x="' + f2(x1) + '" y="' + f2(y0 - 10) + '" font-family="' + mono + '" font-size="13" fill="' + p.mute + '" text-anchor="end">' +
+        (PREVIEW ? f2(D.total) + ' in through ' + thru + ' · ' + f2(OV.total) + ' in by then in a typical year' : f2(D.total) + ' in this year · ' + f2(OV.total) + ' in a typical year') + '</text>';
     } else {
-      ann += '<text x="' + f2(x1) + '" y="' + f2(y0 - 20) + '" font-family="\'Fraunces\',Georgia,serif" font-size="34" font-weight="600" fill="' + p.ink + '" text-anchor="end">' + f2(D.total) + '<tspan font-size="16" font-weight="400" fill="' + p.mute + '"> in, by Dec 31</tspan></text>';
+      ann += '<text x="' + f2(x1) + '" y="' + f2(y0 - 20) + '" font-family="\'Fraunces\',Georgia,serif" font-size="34" font-weight="600" fill="' + p.ink + '" text-anchor="end">' + f2(D.total) + '<tspan font-size="16" font-weight="400" fill="' + p.mute + '">' + (PREVIEW ? ' in, through ' + thru : ' in, by Dec 31') + '</tspan></text>';
     }
     var marks = lifeMarkers(p, printMarkers(), x0, x1, w, function (doy) { return y1 - D.cum[Math.min(doy, D.n - 1)] * k; }, D.max.doy, y0);
     return frame(p, W, H, grid + areaFill + overlay + path + waypoint + marks + ann, FL, o);
@@ -695,15 +806,24 @@
     }
     var pick = function (n, dflt) { var r = radios(n).find(function (x) { return x.checked; }); return r ? r.value : dflt; };
     return normalize({ place: $('rp-place').value, year: $('rp-year').value, station: ST.station,
-      layout: pick('rp-layout', 'staircase'), palette: pick('rp-pal', 'paper'), size: pick('rp-size', '12x18'),
+      layout: pick('rp-layout', 'staircase'), palette: pick('rp-pal', 'paper'), size: '12x18',
       cmp: $('rp-cmp').value, name: $('rp-name').value, markers: markers });
+  }
+  // The year list: this year first (a gift, delivered in January), then every finished year.
+  function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year}, as a gift (delivered in January)'); }
+  function buildYears() {
+    var h = '<option value="' + CURRENT_YEAR + '">' + esc(giftYearLabel()) + '</option>';
+    for (var y = CURRENT_YEAR - 1; y >= 1890; y--) h += '<option value="' + y + '">' + y + '</option>';
+    $('rp-year').innerHTML = h;
   }
   function writeInputs(s) {
     $('rp-place').value = s.place;
-    $('rp-year').value = s.year || (CURRENT_YEAR - 1);
+    var yr = s.year || (CURRENT_YEAR - 1), sel = $('rp-year');
+    // a year from a link that is not in the list (next year, or before 1890) still shows, so its message can explain
+    if (!sel.querySelector('option[value="' + yr + '"]')) { var o = doc.createElement('option'); o.value = yr; o.textContent = yr; sel.insertBefore(o, sel.firstChild); }
+    sel.value = String(yr);
     radios('rp-layout').forEach(function (r) { r.checked = r.value === s.layout; });
     radios('rp-pal').forEach(function (r) { r.checked = r.value === s.palette; });
-    radios('rp-size').forEach(function (r) { r.checked = r.value === s.size; });
     $('rp-cmp').value = s.cmp;
     $('rp-name').value = s.name;
     for (var i = 1; i <= 3; i++) {
@@ -728,8 +848,64 @@
   function showBuy(on) {
     $('rp-buy').classList.toggle('rp-off', !on);
     doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = !on; });
-    $('rp-dl').disabled = !on;
-    doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on; });
+    $('rp-dl').disabled = !on || !DATA;
+    // print files wait for the full year: a preview is never sent to the printer
+    doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
+    syncGift();
+  }
+
+  // ---------- this year, as a gift ----------
+  var GIFT_MSG_MAX = 240, GIFT_TO_MAX = 80;
+  function fill(t) { return String(t || '').replace(/\{year\}/g, String(CURRENT_YEAR)).replace(/\{next\}/g, String(CURRENT_YEAR + 1)); }
+  function giftMode() { return !!ST.year && yearMode(ST.year, TODAY) === 'gift'; }
+  function canOrder() { return !BLOCKED && (!!DATA || !!NOART); }
+  function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
+  var ORDER_NOTE = '';
+  function syncGift() {
+    var on = giftMode() && canOrder();
+    $('rp-gift').hidden = !on;
+    $('ro-deliver-wrap').hidden = !on;
+    if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
+    $('ro-order-note').textContent = on ? 'Sig will email you within a day with a payment link. Nothing is charged until you pay it. The proof comes in January, once the full year is drawn.' : ORDER_NOTE;
+    $('ro-address-label').textContent = on ? 'Ship to (name, street, town, state, ZIP; theirs is fine)' : 'Ship to (name, street, town, state, ZIP)';
+    $('rp-preview-line').hidden = !(on && PREVIEW);
+    syncAddress();
+    syncCutoffs();
+  }
+  // Christmas lines on the print and framed cards. This year's gift ships in January anyway, so none show in gift mode.
+  var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
+  function syncCutoffs() {
+    Object.keys(CUTOFF_KEY).forEach(function (id) {
+      var el = $('rp-cut-' + id);
+      if (!el) return;
+      var t = giftMode() && canOrder() ? '' : cutoffNote(TODAY, PRICES && PRICES[CUTOFF_KEY[id]]);
+      el.textContent = t;
+      el.hidden = !t;
+    });
+  }
+
+  function distText(m) {
+    var mi = miles(m.km);
+    return mi < 1 ? 'under a mile from ' + m.place : (mi < 10 ? mi.toFixed(1) : Math.round(mi)) + ' miles from ' + m.place;
+  }
+  function setDesignRefs() {
+    var code = encodeCode(ST);
+    $('rp-code').textContent = code;
+    $('rp-code-wrap').hidden = !code;
+    $('ro-design').value = designUrl(ST);
+    updateUrl();
+  }
+  /* This year, too thin to draw: a plain message instead of art. The order stays
+     open; Sig draws the print from the full year in January. */
+  function renderNoArt() {
+    var m = META;
+    art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
+    art.classList.add('rp-empty');
+    $('rp-stats-wrap').hidden = true;
+    $('rp-source').innerHTML = 'The print will come from <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(distText(m)) +
+      '. Daily NOAA observations through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
+    setDesignRefs();
+    showBuy(true);
   }
 
   function render() {
@@ -737,32 +913,33 @@
     art.innerHTML = buildSvg({});
     art.classList.remove('rp-empty');
     var D = DATA.d, m = META, OV = overlaySeries();
-    var mi = miles(m.km);
-    var dist = mi < 1 ? 'under a mile from ' + m.place : (mi < 10 ? mi.toFixed(1) : Math.round(mi)) + ' miles from ' + m.place;
+    var dist = distText(m);
+    var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
+    if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> Your print will show the full year.';
     $('rp-source').innerHTML = 'Recorded at <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
-      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (D.missing ? ', <b>' + D.missing + ' unrecorded</b> (drawn as flat on Staircase, marked on Waveform and counted on the print)' : '') + '. ' +
+      (PREVIEW ? 'This preview uses the days in so far: ' : '') +
+      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ', January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? ', <b>' + D.missing + ' unrecorded</b> (drawn as flat on Staircase, marked on Waveform and counted on the print)' : '') + '. ' +
+      (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
+      (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       'Daily NOAA observations through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
       (EXT ? 'Scale fixed to this station’s record, ' + EXT.yearFrom + ' to ' + EXT.yearTo + '.' : 'The station history did not load, so the scale is this year only.') +
       (QR_OK ? '' : ' <b>No QR stamp on this one:</b> the name and labels are too long to fit in it. Shorten them and it comes back.') +
       (ST.cmp !== 'none' && !OV ? ' <b>No comparison is drawn:</b> ' + (ST.cmp === 'normal' ? 'this station has no NOAA normal.' : 'the station history did not load.') : '');
     var rows = [
-      ['Total', f2(D.total) + ' in'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
+      [PREVIEW ? 'Total so far' : 'Total', f2(D.total) + ' in'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
       ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : 'no measurable rain'],
       ['Trace days', D.trace], ['Unrecorded days', D.missing],
-      ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' : 'nothing']
+      ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
     $('rp-stats').innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(String(r[1])) + '</dd></div>'; }).join('');
     $('rp-stats-wrap').hidden = false;
-    var code = encodeCode(ST);
-    $('rp-code').textContent = code;
-    $('rp-code-wrap').hidden = !code;
-    $('ro-design').value = designUrl(ST);
-    updateUrl();
+    setDesignRefs();
     showBuy(true);
   }
 
   function blockPrint(msg) {
     BLOCKED = msg;
+    PREVIEW = null; NOART = '';
     art.innerHTML = '<p class="rp-placeholder">No print from this station. Pick another under Weather station in Make it yours, below.</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
@@ -788,18 +965,21 @@
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Enter a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Enter a year.');
-      if (ST.year >= CURRENT_YEAR) throw new Error(ST.year + ' is not over yet. A print needs a full year of days, so try ' + (CURRENT_YEAR - 1) + ' or earlier.');
+      var mode = yearMode(ST.year, TODAY);
+      if (mode === 'future') throw new Error(ST.year + ' has not started yet. Pick ' + CURRENT_YEAR + ' to order this year as a gift, or an earlier year.');
+      ST.gift = mode === 'gift';
       setStatus('Finding ' + ST.place + '…');
       return geocode(ST.place);
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
-      setStatus('Finding weather stations near ' + g.name + ', ' + g.admin1 + ' with a record covering ' + ST.year + '…');
+      setStatus('Finding weather stations near ' + g.name + ', ' + g.admin1 + (ST.gift ? ' reporting in ' : ' with a record covering ') + ST.year + '…');
       return stations(g.latitude, g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
       STATIONS = list;
-      if (!list.length) throw new Error('No weather station within about 40 miles of ' + g.name + ' has a record covering all of ' + ST.year + '. Try a nearby town or another year.');
+      if (!list.length) throw new Error(ST.gift ? 'No weather station within about 40 miles of ' + g.name + ' has been reporting since January 1, ' + ST.year + ', so no print of this year can be made there. Try a nearby town.'
+        : 'No weather station within about 40 miles of ' + g.name + ' has a record covering all of ' + ST.year + '. Try a nearby town or another year.');
       var want = list.find(function (s) { return s.sid === ST.station; });
       if (want) { chosen = want; return daily(want.sid, ST.year).then(function (d) { picked = d; }); }
       // Nearest first; take the first of three with a near-complete year, else the most complete.
@@ -817,6 +997,8 @@
       return step();
     }).then(function () {
       if (my !== reqToken) throw 'stale';
+      // This year with nothing back yet: the station is still the one for the print, so ordering stays open.
+      if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
       if (!picked) throw new Error('None of the stations near ' + g.name + ' returned data for ' + ST.year + '. Try again in a minute.');
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
@@ -830,7 +1012,17 @@
         blockPrint(toTitle(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. A print with that many gaps would show dry weeks that may not have been dry, so none is drawn. Pick another station from the list, or another year.');
         throw 'blocked';
       }
-      DATA = { days: picked.days, d: picked.d };
+      if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
+        DATA = null; PREVIEW = null;
+        NOART = 'Too little of ' + ST.year + ' is recorded yet to draw a fair preview. ' +
+          (picked.days.length ? 'The record so far runs through ' + longDate(picked.days[picked.days.length - 1].date) + '. ' : 'No days of ' + ST.year + ' have come in from this station yet. ') +
+          'You can still order it as a gift: the full-year print is drawn and delivered in January.';
+        renderNoArt();
+        setStatus('No preview yet: too few days of ' + ST.year + ' are recorded. Ordering is open.');
+        throw 'noart';
+      }
+      DATA = { days: picked.days, d: picked.d }; NOART = '';
+      PREVIEW = ST.gift ? { last: picked.days[picked.days.length - 1].date, yearLen: isLeap(ST.year) ? 366 : 365 } : null;
       setStatus('Loading the full history of ' + toTitle(META.name) + '…');
       return Promise.all([
         stationExtremes(chosen.sid).catch(function () { return null; }),
@@ -840,11 +1032,12 @@
       if (my !== reqToken) throw 'stale';
       EXT = res[0]; NORM30 = res[1];
       var D = DATA.d;
-      setStatus('Drawn from ' + (D.n - D.missing) + ' recorded days at ' + toTitle(META.name) + '.' + (D.missing ? ' ' + D.missing + ' days are unrecorded; the print says so.' : ''));
+      setStatus('Drawn from ' + (D.n - D.missing) + ' recorded days at ' + toTitle(META.name) + '.' + (D.missing ? ' ' + D.missing + ' days are unrecorded; the print says so.' : '') +
+        (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : ''));
       render();
       ga('rain_print_draw', { layout: ST.layout });
     }).catch(function (err) {
-      if (err === 'stale' || err === 'blocked') return;
+      if (err === 'stale' || err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
       setStatus(err && err.message ? err.message : 'Something went wrong. Try again.', true);
     }).then(done);
@@ -853,6 +1046,7 @@
   function restyle() {
     var next = readInputs();
     next.station = ST.station;
+    next.gift = ST.gift;
     var yearChanged = next.year !== ST.year, placeChanged = next.place !== ST.place;
     if (yearChanged || placeChanged) { syncMarkerBounds(); return; }
     ST = next;
@@ -865,11 +1059,15 @@
     return fetch('/data/rain-print.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || typeof j.digital !== 'number') return;
       PRICES = j;
-      ['digital', 'print12x18', 'print18x24'].forEach(function (id) {
+      PRODUCTS.forEach(function (id) {
         var el = doc.querySelector('[data-price="' + id + '"]');
         if (el && typeof j[id] === 'number') el.textContent = money(j[id]);
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
+      if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
+      syncCutoffs();
+      var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
+      if (o) o.textContent = giftYearLabel();
     }).catch(function () {});
   }
   function payLink(id) {
@@ -877,13 +1075,16 @@
     return typeof l === 'string' && /^https:\/\/[^\s"<>]+$/.test(l) ? l : '';
   }
   function buy(id) {
-    if (!DATA || BLOCKED) { setStatus('Draw your print first, then choose.', true); return; }
+    if (!canOrder()) { setStatus('Draw your print first, then choose.', true); return; }
     var code = encodeCode(ST), link = payLink(id), note = $('rp-buy-note');
-    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form' });
+    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
+    // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters; a gift code is GIFT- plus the design code.
     if (link && code && code.length <= 200) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
-      note.innerHTML = 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.';
+      note.innerHTML = ST.gift
+        ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells Sig it is a gift for January. He emails you to confirm where it goes, and sends the proof once the full year is drawn.'
+        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.';
       return;
     }
     openOrder(id);
@@ -902,10 +1103,20 @@
     var print = $('ro-choice').value !== 'digital';
     $('ro-address-wrap').hidden = !print;
     $('ro-address').required = print;
+    // a gift file sent straight to the person it is for needs their email
+    var theirs = giftMode() && canOrder() && !print && $('ro-deliver').value === 'recipient';
+    $('ro-gift-email-wrap').hidden = !theirs;
+    $('ro-gift-email').required = theirs;
   }
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
+  function orderSubject(x) {
+    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
+  }
   function orderText(x) {
-    return 'Rain print order: ' + CHOICE[x.choice] + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
+    return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
+      (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' +
+        (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
+        (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
       '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + '\n';
   }
@@ -914,38 +1125,94 @@
     e.preventDefault();
     if (sending) return;
     var out = $('ro-out');
-    if (!DATA || BLOCKED) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
+    if (!canOrder()) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
     var x = {
       name: cleanText($('ro-name').value, 80), email: $('ro-email').value.trim(), choice: $('ro-choice').value,
       address: $('ro-address').value.trim().slice(0, 600), notes: $('ro-notes').value.trim().slice(0, 2000),
       design_url: designUrl(ST), design_code: encodeCode(ST), page: '/rain-print'
     };
     if (x.choice === 'digital') x.address = '';
+    var gift = giftMode();
+    if (gift) {
+      x.gift_january = true;
+      x.gift_to = cleanText($('rp-gift-to').value, GIFT_TO_MAX);
+      x.gift_deliver = $('ro-deliver').value === 'recipient' ? 'recipient' : 'buyer';
+      x.gift_email = x.choice === 'digital' && x.gift_deliver === 'recipient' ? $('ro-gift-email').value.trim() : '';
+      x.gift_message = $('rp-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
+    }
     var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address Sig can reply to.']
-      : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.'] : null;
+      : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.']
+      : (gift && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
     var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
-    var subj = 'Rain print order: ' + CHOICE[x.choice] + ' for ' + x.name;
+    var subj = orderSubject(x);
     var fs = Object.assign({ _subject: subj, _replyto: x.email, form: 'rain-print-order' }, x);
     if (hp && hp.value) fs._gotcha = hp.value;
     var btn = $('ro-submit'), was = btn.textContent;
     sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-order', data, fs).then(function () {
-      ga('rain_print_order', { result: 'ok', choice: x.choice });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link and a proof.</p>' +
-        '<p>He writes to ' + esc(x.email) + '. Nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>';
+      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : 0 });
+      out.innerHTML = gift
+        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link.</p>' +
+          '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
+          '; nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p>' +
+          '<p><button class="btn btn-secondary" id="ro-card" type="button">Print a gift card</button></p></div>'
+        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link and a proof.</p>' +
+          '<p>He writes to ' + esc(x.email) + '. Nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>';
+      if ($('ro-card')) $('ro-card').addEventListener('click', printCard);
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
-      ga('rain_print_order', { result: 'fail', choice: x.choice });
+      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : 0 });
       var body = orderText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
       out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That did not go through. Nothing was sent.</b></p><p>Send it by email instead; the message is written out for you, to ' + ORDER_TO + '.</p>' +
         '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
       try { $('ro-mail').focus(); } catch (err) {}
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+  }
+
+  // ---------- the gift card ----------
+  /* One printed page to put under the tree, built into #rp-giftcard (a child of
+     <body>, shown only in print while body has .rp-carding). One shared layout
+     filled from the design on the page: no file per order. */
+  function cardSvg() {
+    // its own ids, so the copy does not lean on the art above (hidden while printing)
+    return buildSvg({}).replace(/id="(rpT|rpD|paperGrain|stairFill)"/g, 'id="gc$1"').replace(/url\(#(paperGrain|stairFill)\)/g, 'url(#gc$1)')
+      .replace('aria-labelledby="rpT rpD"', 'aria-labelledby="gcrpT gcrpD"');
+  }
+  function cardHtml() {
+    var J = PRICES || {}, m = META;
+    var title = fill(J.gift_card_title || 'Your {year} Rain Print is coming in January');
+    var note = fill(J.gift_card_note || 'The finished print shows every day of rain from January 1 to December 31, {year}.');
+    var to = cleanText($('rp-gift-to').value, GIFT_TO_MAX), msg = $('rp-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
+    var qr = '';
+    try { if (root.AgQR) qr = root.AgQR.svg(shortUrl(artDesign()), 'QR code that opens this design'); } catch (e) { qr = ''; }
+    var art = DATA && PREVIEW
+      ? '<figure class="rpc-art"><div class="rpc-svg">' + cardSvg() + '</div><figcaption><b>Preview through ' + esc(longDate(PREVIEW.last)) + '</b>, drawn from the days recorded so far. ' + esc(note) + '</figcaption></figure>'
+      : '<p class="rpc-noart">' + esc(note) + ' The art is drawn in January, once the whole year is recorded.</p>';
+    return '<div class="rpc">' +
+      '<p class="rpc-kick">A Rain Print from AGSIST</p>' +
+      (to ? '<p class="rpc-to">For ' + esc(to) + '</p>' : '') +
+      '<p class="rpc-title">' + esc(title) + '</p>' +
+      '<p class="rpc-place">' + esc(m.place) + ' &middot; NOAA station ' + esc(toTitle(m.name)) + '</p>' +
+      art +
+      (msg ? '<p class="rpc-msg">' + esc(msg).replace(/\n/g, '<br>') + '</p>' : '') +
+      '<div class="rpc-foot">' + (qr ? '<div class="rpc-qr">' + qr + '</div>' : '') +
+      '<p>Scan to open this design at agsist.com/rain-print. Once the year is over, the same code shows all of ' + META.year + '.</p></div>' +
+      '</div>';
+  }
+  function printCard() {
+    if (!canOrder() || !giftMode() || !META) return;
+    var el = $('rp-giftcard');
+    el.innerHTML = cardHtml();
+    doc.body.classList.add('rp-carding');
+    var done = function () { doc.body.classList.remove('rp-carding'); root.removeEventListener('afterprint', done); };
+    root.addEventListener('afterprint', done);
+    ga('rain_print_gift_card', { art: DATA ? 1 : 0 });
+    fontsReady().then(function () { try { root.print(); } catch (e) {} });
   }
 
   // ---------- downloads ----------
@@ -1071,23 +1338,29 @@
   }
 
   // ---------- wire up ----------
+  buildYears();
   writeInputs(ST);
+  doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
+  // "Giving it for Christmas?" reads right from October through December only
+  $('rp-gift-hint').hidden = parseInt(TODAY.slice(5, 7), 10) < 10;
   if (MAKER) $('rp-maker').hidden = false;
   form.addEventListener('submit', run);
   $('rp-station').addEventListener('change', function () { ST.station = $('rp-station').value; run(); });
   $('rp-year').addEventListener('input', syncMarkerBounds);
   ['rp-cmp'].forEach(function (id) { $(id).addEventListener('change', restyle); });
   ['rp-name', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
-  radios('rp-layout').concat(radios('rp-pal'), radios('rp-size')).forEach(function (r) { r.addEventListener('change', restyle); });
+  radios('rp-layout').concat(radios('rp-pal')).forEach(function (r) { r.addEventListener('change', restyle); });
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', syncAddress);
+  $('ro-deliver').addEventListener('change', syncAddress);
+  $('rp-card').addEventListener('click', printCard);
   $('ro-form').addEventListener('submit', submitOrder);
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
     b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
-    var u = shortUrl(ST), b = $('rp-copy');
+    var u = shortUrl(artDesign()), b = $('rp-copy');
     var ok = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link to this design'; }, 2000); };
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
