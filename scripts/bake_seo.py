@@ -133,10 +133,18 @@ def seo_usda_calendar(c):
         raise ValueError(f"next_wasde returned {w}, already in the past")
     days = (w - c["today"]).days
     when = "today" if days == 0 else ("tomorrow" if days == 1 else f"in {days} days")
-    return (f"Next WASDE: {mdY(w)} | USDA Report Calendar{SUFFIX}",
-            f"The next WASDE lands {mdY(w)}, {when}. Every 2026 USDA report date "
-            f"(WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what "
-            f"each one moves.")
+    # RETITLED 2026-10-11 from "Next WASDE: Nov 10, 2026 | USDA Report
+    # Calendar". Over Jul 10-Oct 7 that title held position 7.4 on 46,503
+    # impressions at 0.20% CTR, and the queries Search Console names are
+    # about DATES: "wasde report dates" 437 impressions, "wasde report dates
+    # 2026" 268, "next wasde report" 263, "usda report calendar" 253, "usda
+    # report calendar 2026" 119. "dates" was the one word the old title
+    # lacked. The next date stays in the title; the year is the WASDE's own.
+    # The description names no year: in December the next WASDE is January's
+    # while the calendar below may still hold this year's dates.
+    return (f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}",
+            f"The next WASDE report is {mdY(w)}, {when}. Every USDA report date on "
+            f"one calendar: WASDE, Crop Production, Grain Stocks, Cattle on Feed.")
 
 
 def _cot_side(net):
@@ -235,7 +243,10 @@ def seo_crop_tour(c):
 
     tour = (d.get("benchmarks") or {}).get("tour") or {}
     if tour.get("corn"):
-        return (f"Pro Farmer Crop Tour {yr}: Corn {tour['corn']} bu/ac{SUFFIX}",
+        # "Results" added 2026-10-11: "pro farmer crop tour results" and
+        # "... 2026 results" are among the page's named queries, and after the
+        # tour the results are what the page holds.
+        return (f"Pro Farmer Crop Tour {yr} Results: Corn {tour['corn']} bu/ac{SUFFIX}",
                 f"Pro Farmer's {yr} national corn estimate is {tour['corn']} "
                 f"bu/ac. Set against USDA's number and ours, with how close the "
                 f"tour has actually been since 2015.")
@@ -363,11 +374,18 @@ def seo_breakeven(c):
 # description and rewrites it with the day's close every trading day; two
 # writers on one field is how you get numbers that disagree in public.
 
+# Corn and soybeans changed 2026-10-11 from "CBOT Corn Futures: Dec '26
+# $4.80, Live Prices" to "CBOT Corn Futures Price: Dec '26 $4.80". Over Jul
+# 10-Oct 7 the named queries ask for a PRICE: corn "chicago board of trade corn
+# price today" 181 impressions, "chicago board of trade corn price" 153; beans
+# "cbot soybean price" 31 beside "cbot soybeans" 2,248 at position 11. The
+# trailing "Live Prices" said nothing the number did not. extra=None means no
+# tail.
 FUTURES = {
     "corn-futures-prices.html":
-        ("CBOT", "Corn", "corn", "Live Prices"),
+        ("CBOT", "Corn", "corn", None),
     "soybean-futures-prices.html":
-        ("CBOT", "Soybean", "beans", "Live Prices"),
+        ("CBOT", "Soybean", "beans", None),
     "wheat-futures-prices.html":
         ("CBOT", "Wheat", "wheat", "SRW & KC HRW"),
 }
@@ -454,6 +472,8 @@ def make_futures(page):
             return None
         # grain boards quote in cents; cattle already quotes in dollars per cwt
         money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
+        if extra is None:
+            return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
         return (f"{exch} {crop} Futures: {lab} {money}, {extra}{SUFFIX}", None)
 
     build.__name__ = f"seo_{key}_futures"
@@ -808,8 +828,8 @@ def selftest():
 
     print("titles lead with the answer")
     t, d = seo_usda_calendar(ctx)
-    ck("WASDE title leads with the date", t.startswith("Next WASDE: Sep 11, 2026"), t)
-    ck("WASDE title keeps the keyword", "USDA Report Calendar" in t, t)
+    ck("WASDE title leads with the searched words", t.startswith("WASDE & USDA Report Dates 2026"), t)
+    ck("WASDE title names the next date", t.endswith("Next WASDE Sep 11" + SUFFIX), t)
     ck("WASDE description counts the days", "in 26 days" in d, d)
 
     t, d = seo_cot(ctx)
@@ -910,7 +930,7 @@ def selftest():
     ck("the day after: Nov 10, printed or not",
        next_unprinted_wasde(date(2026, 10, 10), None) == date(2026, 11, 10))
     ck("the title names it", seo_usda_calendar(dict(ctx, today=date(2026, 10, 10),
-                                                     next_wasde=date(2026, 11, 10)))[0].startswith("Next WASDE: Nov 10, 2026"))
+                                                     next_wasde=date(2026, 11, 10)))[0].startswith("WASDE & USDA Report Dates 2026: Next WASDE Nov 10 |"))
 
     print("\nrails")
     try:
@@ -965,8 +985,8 @@ def selftest():
 
     print("\nfutures titles carry the exchange the query uses")
     for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures: Sep '26 $6.74"),
-                       ("corn-futures-prices.html", "CBOT Corn Futures: Sep '26 $4.59"),
-                       ("soybean-futures-prices.html", "CBOT Soybean Futures: Aug '26 $11.76"),
+                       ("corn-futures-prices.html", "CBOT Corn Futures Price: Sep '26 $4.59"),
+                       ("soybean-futures-prices.html", "CBOT Soybean Futures Price: Aug '26 $11.76"),
                        ("cattle-futures-prices.html", "CME Feeder Cattle Futures $341.27")):
         t, d = PAGES[page][0](ctx)
         ck(f"{page.split('-')[0]} title leads with the exchange and the price",
