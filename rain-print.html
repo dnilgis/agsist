@@ -68,6 +68,8 @@
   .rp-date{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
   .rp-status{font-family:var(--font-mono);font-size:.82rem;color:var(--text-muted);min-height:1.4em;margin:.2rem 0 .6rem}
   .rp-status.rp-bad,.rp-bad{color:var(--red)}
+  .rp-sample-line{margin:0 0 .5rem;color:var(--text-dim);line-height:1.5;font-size:.92rem}
+  .rp-sample-use{font:inherit;font-size:.88rem;min-height:40px;padding:0 .2rem;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer}
   .rp-art{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface2)}
   .rp-art svg{display:block;width:100%;height:auto}
   .rp-art.rp-empty{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;padding:1rem}
@@ -179,6 +181,7 @@
     <p class="rp-gift-hint" id="rp-gift-hint">Giving it for Christmas? Pick <span class="rp-cy">2026</span>: you get a gift card to print now, and the full-year print in January.</p>
     <p class="rp-status" id="rp-status" role="status" aria-live="polite">Enter a town and a year, then Draw my print.</p>
     <p class="rp-preview-line" id="rp-preview-line" hidden></p>
+    <p class="rp-sample-line" id="rp-sample-line" hidden><span id="rp-sample-txt"></span> <button type="button" class="rp-sample-use" id="rp-sample-use">Use this design</button></p>
     <div class="rp-art rp-empty" id="rp-art"><p class="rp-placeholder">Your print appears here. Staircase draws the running total of the year's rain: flat stretches are dry, steep steps are heavy days.</p></div>
     <p class="rp-source" id="rp-source"></p>
     <div class="rp-acts">
@@ -307,6 +310,6 @@
   <script src="/components/util.js?v=17"></script>
   <script src="/components/qr.js?v=8"></script>
   <script src="/components/form-post.js?v=2"></script>
-  <script src="/components/rain-print.js?v=2"></script>
+  <script src="/components/rain-print.js?v=3"></script>
 </body>
 </html>

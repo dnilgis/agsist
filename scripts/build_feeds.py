@@ -113,6 +113,10 @@ CURATED = {
     "data/page-sponsors.json", "data/supporters.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
+    # Rain Print prices, payment links and the seasonal promo switch. Edited by
+    # hand by Sig; read by /rain-print, components/rain-print-promo.js (homepage,
+    # /cash-bids, /daily) and scripts/brief_email.py. No cadence to keep.
+    "data/rain-print.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────

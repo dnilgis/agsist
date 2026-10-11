@@ -631,6 +631,41 @@ def sponsor_block(daily):
 # Nothing here computes a figure. None (no centroid, bids unreadable) renders
 # nothing, so that reader's email is the one everybody got before.
 # `forward_url` is the plain sign-up link for a neighbour.
+RAIN_PRINT_JSON = os.path.join(_REPO, "data", "rain-print.json")
+
+
+def rain_print_line(today=None, cfg=None):
+    """The one Rain Print line for the end of the email, or "" for none.
+
+    OFF unless Sig sets, in data/rain-print.json, promote true AND a string
+    briefing_line, and today (America/Chicago) falls within promote_from ..
+    promote_until inclusive. components/rain-print-promo.js applies the same
+    rule to /daily. Any problem reading the file means no line.
+    """
+    if cfg is None:
+        try:
+            with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            return ""
+    if not isinstance(cfg, dict) or cfg.get("promote") is not True:
+        return ""
+    line = cfg.get("briefing_line")
+    if not isinstance(line, str) or not line.strip():
+        return ""
+    lo, hi = str(cfg.get("promote_from") or ""), str(cfg.get("promote_until") or "")
+    if not (re.match(r"^\d{4}-\d{2}-\d{2}$", lo) and re.match(r"^\d{4}-\d{2}-\d{2}$", hi)):
+        return ""
+    if today is None:
+        try:
+            from zoneinfo import ZoneInfo
+            today = datetime.now(ZoneInfo("America/Chicago")).date()
+        except Exception:
+            today = date.today()
+    t = today.isoformat() if hasattr(today, "isoformat") else str(today)[:10]
+    return strip_md(line.strip()) if lo <= t <= hi else ""
+
+
 def local_html(local):
     if not local:
         return ""
@@ -801,6 +836,12 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
     if mine:
         body.append(_rule())
         body.append(mine)
+
+    _rp = rain_print_line(today)
+    if _rp:
+        body.append('<tr><td class="mute" style="padding:18px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
+                    'color:%s"><a href="https://agsist.com/rain-print" style="color:%s">%s</a></td></tr>'
+                    % (SANS, MUTE, GOLD, e(_rp)))
 
     # Outlook's Word engine throws away padding and background on an inline
     # <a>, so a styled anchor arrives there as a bare blue link. The button is
@@ -977,6 +1018,9 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
         L.append("  The elevators' own posted boards, read when this email was sent. Not a contract. "
                  "Call to confirm before you haul.")
+    _rp = rain_print_line(today)
+    if _rp:
+        L += ["", _rp + " https://agsist.com/rain-print"]
     L += ["", "Charts, calls and the full issue: " + site]
     if local and local.get("ask_url"):
         L += local_text(local)
@@ -1044,6 +1088,21 @@ def _selftest():
             bad.append(("clock " + when.isoformat(), got, want))
     if "HARVEST PRICE CLOCK" in render_text(d, "https://agsist.com/", today=date(2026, 10, 9)):
         bad.append(("clock with no block", "", ""))
+    # The Rain Print line: off by default, on only with promote, a line and a date in the window.
+    rp = {"promote": True, "promote_from": "2026-11-01", "promote_until": "2026-12-12",
+          "briefing_line": "A year of your farm's rain, as a gift."}
+    for cfg, when, want in ((rp, date(2026, 11, 15), True), (rp, date(2026, 10, 31), False),
+                            (rp, date(2026, 12, 13), False), (dict(rp, promote=False), date(2026, 11, 15), False),
+                            (dict(rp, briefing_line=None), date(2026, 11, 15), False),
+                            (dict(rp, promote="true"), date(2026, 11, 15), False)):
+        if bool(rain_print_line(when, cfg)) != want:
+            bad.append(("rain print line", cfg, when))
+    with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
+        shipped = json.load(f)
+    if shipped.get("promote") is not False or shipped.get("briefing_line") is not None:
+        bad.append(("data/rain-print.json ships with the promo on", shipped.get("promote"), shipped.get("briefing_line")))
+    if "rain-print" in render_text(d, "https://agsist.com/", today=date(2026, 11, 15)):
+        bad.append(("rain print line in the email while the shipped file has it off", "", ""))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))

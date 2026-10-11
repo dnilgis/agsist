@@ -263,6 +263,13 @@
      while a year-to-date preview is drawn. NOART: the plain message shown
      instead of art when the year so far is too thin to draw; ordering stays open. */
   var PREVIEW = null, NOART = '';
+  /* SAMPLE (2026-10-11): with no design in the URL the page draws Chetek, WI
+     for the last finished year, through the same geocode and ACIS calls a
+     reader's own town takes, so the box is never empty. A sample cannot be
+     ordered: the buy buttons stay off, nothing goes into the URL or the order
+     form, and the town field stays empty, until the reader draws their own
+     place or clicks "Use this design". Any failure puts the empty box back. */
+  var SAMPLE = null;
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
 
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
@@ -796,7 +803,41 @@
 
   // ---------------------------------------------------------------- UI
   var form = $('rp-form'), statusEl = $('rp-status'), art = $('rp-art');
-  function setStatus(msg, bad) { statusEl.textContent = msg; statusEl.classList.toggle('rp-bad', !!bad); }
+  function setStatus(msg, bad) { if (SAMPLE) return; statusEl.textContent = msg; statusEl.classList.toggle('rp-bad', !!bad); }
+  var EMPTY_ART = art.innerHTML, EMPTY_STATUS = statusEl.textContent;
+  function sampleLine(on) {
+    $('rp-sample-line').hidden = !on;
+    if (on) $('rp-sample-txt').textContent = 'Sample: ' + SAMPLE.place + ' ' + SAMPLE.year + '. Type your own town to make yours.';
+  }
+  // Back to the page as it loads with no design: the empty box and the first instruction.
+  function clearSample() {
+    if (!SAMPLE) return;
+    SAMPLE = null;
+    sampleLine(false);
+    DATA = null; PREVIEW = null; NOART = ''; BLOCKED = '';
+    art.innerHTML = EMPTY_ART;
+    art.classList.add('rp-empty');
+    $('rp-stats-wrap').hidden = true;
+    $('rp-source').textContent = '';
+    $('rp-code-wrap').hidden = true;
+    $('ro-design').value = '';
+    setStatus(EMPTY_STATUS);
+    showBuy(false);
+  }
+  function lastFullYear() { return CURRENT_YEAR - 1; }
+  function runSample() {
+    SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
+    run(null, normalize({ place: SAMPLE.place, year: SAMPLE.year, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [] }));
+  }
+  function useSample() {
+    if (!SAMPLE || !DATA) return;
+    SAMPLE = null;
+    sampleLine(false);
+    writeInputs(ST);
+    setDesignRefs();
+    showBuy(true);
+    setStatus('Using the sample design for ' + ST.place + ', ' + ST.year + '. Change anything you like, or order it below.');
+  }
   function radios(name) { return Array.prototype.slice.call(doc.querySelectorAll('input[name="' + name + '"]')); }
   function readInputs() {
     var markers = [];
@@ -841,11 +882,13 @@
     }
   }
   function updateUrl() {
+    if (SAMPLE) return;   // a sample never goes into the address bar
     var q = toParams(ST) + (MAKER ? '&maker=1' : '');
     try { root.history.replaceState(null, '', root.location.pathname + '?' + q); } catch (e) {}
   }
 
   function showBuy(on) {
+    on = on && !SAMPLE;
     $('rp-buy').classList.toggle('rp-off', !on);
     doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = !on; });
     $('rp-dl').disabled = !on || !DATA;
@@ -858,7 +901,7 @@
   var GIFT_MSG_MAX = 240, GIFT_TO_MAX = 80;
   function fill(t) { return String(t || '').replace(/\{year\}/g, String(CURRENT_YEAR)).replace(/\{next\}/g, String(CURRENT_YEAR + 1)); }
   function giftMode() { return !!ST.year && yearMode(ST.year, TODAY) === 'gift'; }
-  function canOrder() { return !BLOCKED && (!!DATA || !!NOART); }
+  function canOrder() { return !SAMPLE && !BLOCKED && (!!DATA || !!NOART); }
   function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
   var ORDER_NOTE = '';
   function syncGift() {
@@ -889,6 +932,7 @@
     return mi < 1 ? 'under a mile from ' + m.place : (mi < 10 ? mi.toFixed(1) : Math.round(mi)) + ' miles from ' + m.place;
   }
   function setDesignRefs() {
+    if (SAMPLE) { $('rp-code-wrap').hidden = true; $('ro-design').value = ''; return; }
     var code = encodeCode(ST);
     $('rp-code').textContent = code;
     $('rp-code-wrap').hidden = !code;
@@ -935,6 +979,7 @@
     $('rp-stats-wrap').hidden = false;
     setDesignRefs();
     showBuy(true);
+    sampleLine(!!SAMPLE);
   }
 
   function blockPrint(msg) {
@@ -949,13 +994,24 @@
   }
 
   var reqToken = 0;
-  function run(e) {
+  function run(e, preset) {
     if (e) e.preventDefault();
+    var next;
+    if (preset) next = preset;
+    else {
+      if (SAMPLE) {
+        // The reader's own draw replaces the sample. An empty town keeps the sample up and says what is missing.
+        var want = readInputs();
+        if (!want.place) { statusEl.textContent = 'Enter a town and state, like Chetek, WI.'; statusEl.classList.add('rp-bad'); return; }
+        clearSample();
+        ST.station = '';
+      }
+      var fromUrlStation = ST.station;
+      next = readInputs();
+      if (e && e.type === 'submit' && (next.place !== ST.place || next.year !== ST.year)) next.station = '';
+      else next.station = fromUrlStation;
+    }
     var my = ++reqToken;
-    var fromUrlStation = ST.station;
-    var next = readInputs();
-    if (e && e.type === 'submit' && (next.place !== ST.place || next.year !== ST.year)) next.station = '';
-    else next.station = fromUrlStation;
     ST = next;
     var go = $('rp-go'), sel = $('rp-station');
     go.disabled = true; sel.disabled = true;
@@ -1035,9 +1091,12 @@
       setStatus('Drawn from ' + (D.n - D.missing) + ' recorded days at ' + toTitle(META.name) + '.' + (D.missing ? ' ' + D.missing + ' days are unrecorded; the print says so.' : '') +
         (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : ''));
       render();
-      ga('rain_print_draw', { layout: ST.layout });
+      if (SAMPLE) setStatus(EMPTY_STATUS);
+      else ga('rain_print_draw', { layout: ST.layout });
     }).catch(function (err) {
-      if (err === 'stale' || err === 'blocked' || err === 'noart') return;
+      if (err === 'stale') return;
+      if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
+      if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
       setStatus(err && err.message ? err.message : 'Something went wrong. Try again.', true);
     }).then(done);
@@ -1045,6 +1104,7 @@
 
   function restyle() {
     var next = readInputs();
+    if (SAMPLE) { next.place = ST.place; next.year = ST.year; }   // style choices try out on the sample
     next.station = ST.station;
     next.gift = ST.gift;
     var yearChanged = next.year !== ST.year, placeChanged = next.place !== ST.place;
@@ -1345,7 +1405,11 @@
   $('rp-gift-hint').hidden = parseInt(TODAY.slice(5, 7), 10) < 10;
   if (MAKER) $('rp-maker').hidden = false;
   form.addEventListener('submit', run);
-  $('rp-station').addEventListener('change', function () { ST.station = $('rp-station').value; run(); });
+  $('rp-station').addEventListener('change', function () {
+    ST.station = $('rp-station').value;
+    if (SAMPLE) run(null, Object.assign({}, ST)); else run();
+  });
+  $('rp-sample-use').addEventListener('click', useSample);
   $('rp-year').addEventListener('input', syncMarkerBounds);
   ['rp-cmp'].forEach(function (id) { $(id).addEventListener('change', restyle); });
   ['rp-name', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
@@ -1368,4 +1432,5 @@
   showBuy(false);
   loadPrices();
   if (ST.place && ST.year) run();
+  else runSample();
 })(typeof window !== 'undefined' ? window : this);

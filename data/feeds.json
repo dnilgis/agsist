@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 78,
- "with_known_cadence": 78,
+ "count": 79,
+ "with_known_cadence": 79,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1459,6 +1459,25 @@
    "path": "data/quote-pool.json",
    "pages": [
     "daily.html",
+    "index.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rain-print.json",
+   "pages": [
     "index.html"
    ],
    "written_by": [],

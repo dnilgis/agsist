@@ -179,3 +179,26 @@ test("gift text lives in data/rain-print.json; the FAQ and its structured data s
   assert.ok(faq.some((q) => /give a \d{4} print for Christmas/.test(q.name)));
   assert.ok(!/first half of January/i.test(html), "January, not a narrower promise");
 });
+
+test("the seasonal promo ships off, and shows only with promote on, inside its Chicago-date window", () => {
+  const pctx = {}; pctx.window = pctx;
+  vm.runInNewContext(readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), pctx);
+  const P = pctx.AgsistRainPromo;
+  const shipped = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.equal(shipped.promote, false, "data/rain-print.json must ship with the promo off");
+  assert.equal(shipped.briefing_line, null);
+  assert.equal(shipped.promote_from, "2026-11-01");
+  assert.equal(shipped.promote_until, "2026-12-12");
+  assert.equal(P.lineFor(shipped, "", "2026-11-15"), "");
+  const on = { ...shipped, promote: true };
+  assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 12.");
+  assert.equal(P.lineFor(on, "", "2026-11-01") !== "", true, "the first day counts");
+  assert.equal(P.lineFor(on, "", "2026-12-12") !== "", true, "the last day counts");
+  assert.equal(P.lineFor(on, "", "2026-10-31"), "");
+  assert.equal(P.lineFor(on, "", "2026-12-13"), "");
+  assert.equal(P.lineFor({ ...on, promote: "true" }, "", "2026-11-15"), "", "only a real true turns it on");
+  assert.equal(P.lineFor(on, "briefing", "2026-11-15"), "", "no briefing line unless one is written");
+  assert.equal(P.lineFor({ ...on, briefing_line: "One line." }, "briefing", "2026-11-15"), "One line.");
+  // 04:30 UTC on Nov 1 is still Oct 31 in Chicago (CDT, UTC-5)
+  assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
+});
