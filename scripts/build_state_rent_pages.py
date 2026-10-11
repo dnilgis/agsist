@@ -380,7 +380,7 @@ def bars_html(hist):
     for h in hist:
         if h.get("v") is None:
             rows.append(f'<div class="rs-bar"><span class="y">{h["y"]}</span>'
-                        f'<span class="gap">{h["why"]}; gap shown, not interpolated</span></div>')
+                        f'<span class="gap">{h["why"]}</span></div>')
         else:
             w = max(2, round(100 * h["v"] / top, 1))
             rows.append(f'<div class="rs-bar"><span class="y">{h["y"]}</span>'
@@ -516,7 +516,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
         {"q": f"Why is my {name} county not listed?",
          "a": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back "
               "(and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, "
-              "NASS did not publish a rate for it, and this page never estimates one."},
+              "NASS did not publish a rate for it."},
         {"q": "When is county cash rent data released?",
          "a": "USDA NASS releases county cash rent estimates each August for the current crop year. "
               "This page rebuilds automatically when new data lands."},
@@ -582,8 +582,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <main class="rs-wrap">
   <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
   <h1>{name} Cash Rent by County, {yr}</h1>
-  <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
-  Survey. Nothing is estimated or modeled, and there is no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
+  <p class="sub">Every USDA-published county cash rental rate in {name}, from the NASS Cash Rents
+  Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h2>Every published county, {yr}</h2>
@@ -594,15 +594,14 @@ def build_state_page(st, d, s, all_states, aslug=None):
   one its rent share calculator starts from.</p>
   {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
-  <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps;
-  drawing a line across them would be an invention.</p>
+  <p class="sub">Median of counties published each year ({plabel}). Years with no survey
+  are left blank.</p>
   {bars_html(s['hist'])}
   <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>.
   Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
-  of the survey can&rsquo;t fake a trend. Treat any county number as the start of a conversation, not a rate card.</div>
-  <div class="rs-note rs-links" style="border-left-color:#5fc28a"><b>Do something with it:</b>
-  open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
+  of the survey can&rsquo;t fake a trend.</div>
+  <div class="rs-note rs-links" style="border-left-color:#5fc28a">Open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
       " (termination notice: " + NOTICE[st] + ")" if st in NOTICE else ""} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
@@ -611,7 +610,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   {state_cloud(all_states, exclude=st)}
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats, Cash Rents Survey county
   estimates (released each August) and county yield estimates. Page rebuilt automatically from data refreshed
-  {esc(d.get('generated', ''))}. AGSIST is free and sells nothing on this page.</p>
+  {esc(d.get('generated', ''))}.</p>
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
@@ -651,10 +650,9 @@ HUB_FAQ = [
           "earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication."},
     {"q": "Why is there no 2015 or 2018 cash rent data?",
      "a": "NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data "
-          "runs 2008 to 2014, 2016 to 2017, and 2019 forward. These pages show those years as gaps rather than drawing a line across them, "
-          "because a line across them would be an invention."},
+          "runs 2008 to 2014, 2016 to 2017, and 2019 forward. These pages leave those years blank."},
     {"q": "What percent of gross revenue should cash rent be?",
-     "a": "There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful "
+     "a": "There is no single correct figure. Rent as a share of gross revenue is useful "
           "because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own "
           "county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover (seed, "
           "fertilizer, chemical, machinery, labor, interest) varies enormously between operations."},
@@ -662,8 +660,8 @@ HUB_FAQ = [
      "a": "The rent share calculator on each Farmland Atlas county page charts it for every county with the data. For each year it divides "
           "that year's published county rent by that year's actual county yield for the same practice times that year's state average price "
           "received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated "
-          "and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line "
-          "shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share "
+          "and dryland acres, that year is withheld and marked. Every term is a USDA figure published after the fact, so the line "
+          "shows what happened, not a projection. The pattern in most Corn Belt counties is that rent takes a far larger share "
           "of the gross in low-price years than in high-price years, even when the rent itself barely moves."},
     {"q": "Does this use futures prices or what farmers actually got?",
      "a": "The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual "
@@ -697,11 +695,11 @@ HUB_EXPLAIN = """<h2>How to read rent</h2>
   years ago, no trend is shown at all.</p></details>
   <details class="rs-faq"><summary>Three things this data will not do</summary>
   <p><b>It will not fill in your county if NASS didn&rsquo;t.</b> Counties with too few survey responses are withheld. Where that happens
-  you get a blank and a plain statement that NASS did not publish, never a neighbor&rsquo;s number wearing your county&rsquo;s name.</p>
+  you get a blank and a note that NASS did not publish, never a neighbor&rsquo;s number.</p>
   <p><b>It has no 2015 or 2018.</b> NASS ran no county Cash Rents Survey in those years, so the series runs 2008 to 2014, 2016 to 2017
-  and 2019 forward. Drawing a line across the gap would be inventing a year.</p>
+  and 2019 forward. Those years are left blank.</p>
   <p><b>It is a county mean, not a rate card.</b> Rents differ between farms on the same road: soil, drainage, field size, yield history,
-  and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</p></details>
+  and how badly the neighbor wants it.</p></details>
   <details class="rs-faq"><summary>Using it in an actual rent conversation</summary>
   <p>The common landlord conversation is a number against a feeling. The calculator gives both sides the same arithmetic to argue
   about, which is usually a shorter argument. Put your real yield in: if your ground beats the county by fifteen bushels, type that in.
