@@ -508,6 +508,7 @@ details.fa-arith .body a{color:var(--gold)}
 
 
 
+  <div id="fa-outline-banner" class="fa-notice" role="status" hidden></div>
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas data has not been published yet. The county layers appear here after the first data run.</div>
 
   <div id="fa-loading" class="fa-notice fa-loading" role="status" aria-live="polite" aria-busy="true"><span class="sr-only">Loading the map: 3,141 counties.</span><span class="st-sk fa-sk-bar" aria-hidden="true"></span><span class="st-sk fa-sk-map" aria-hidden="true"></span></div>
@@ -2181,6 +2182,8 @@ function boot(){
     if(L.livestock&&L.livestock.status==='ok') v.push('Livestock: census 2017, 2022'); else v.push('Livestock: not yet measured');
     $('fa-vint').innerHTML=v.map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
     for(var rf in ATLAS.counties){ var ry=get(ATLAS.counties[rf],'rent','nonirr','year'); if(ry&&(!RENT_LATEST||ry>RENT_LATEST)) RENT_LATEST=ry; }
+    // the state borders are their own file: if it failed, draw the counties anyway and say the borders are missing
+    if(!STATES||!STATES.features){ var ob=$('fa-outline-banner'); ob.innerHTML='The state borders did not load, so the map shows counties without them. Every county figure is unaffected. <a href="">Reload</a> to try again.'; ob.hidden=false; STATES=null; }
     buildPaths(GEO,STATES);
     // Codes in the data with no boundary: Connecticut's planning regions and NASS's split reporting
     // districts (W Pottawattamie, West Otter Tail ...). They keep their numbers but are not called counties.
