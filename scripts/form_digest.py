@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Site forms digest (2026-10-11): emails Sig what came in through the three
-forms that used to go to Formspree.
+Site forms digest (2026-10-11): emails Sig what came in through the site's
+own forms (the first three used to go to Formspree).
 
   elevators.html      claim your board               kind claim
   sponsor-report.html approval and requests box      kind sponsor-feedback
   farmland-atlas.html Parcel Report waitlist         kind atlas-feedback
+  rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9)
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
@@ -43,8 +44,12 @@ except Exception:                                          # noqa: BLE001
     CT = None
 
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
-KINDS = ("claim", "sponsor-feedback", "atlas-feedback")
-KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist"}
+KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order")
+KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
+             "rain-print-order": "Rain print order"}
+# What a rain print order's choice means, in the subject and the body.
+RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "print18x24": "18 x 24 print"}
+DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 # The order and labels each kind prints in. Anything else stored is ignored.
 FIELDS = {
     "claim": [("elevator", "Elevator or co-op"), ("town", "Town"), ("state", "State"), ("contact_name", "Contact"),
@@ -53,6 +58,8 @@ FIELDS = {
     "sponsor-feedback": [("request", "Request"), ("sponsor", "Sponsor"), ("proof", "Proof code"), ("email", "Reply to"),
                          ("message", "Message")],
     "atlas-feedback": [("email", "Email"), ("source", "Source")],
+    "rain-print-order": [("choice", "Choice"), ("name", "Name"), ("email", "Email"), ("address", "Ship to"),
+                         ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design")],
 }
 
 
@@ -95,6 +102,8 @@ def subject(posts):
             return "Claim your board: %s, %s %s" % (p.get("elevator", ""), p.get("town", ""), p.get("state", ""))
         if p["kind"] == "sponsor-feedback":
             return p.get("subject") or "AGSIST portal: %s (%s)" % (p.get("request", ""), p.get("sponsor", ""))
+        if p["kind"] == "rain-print-order":
+            return "Rain print order: %s for %s" % (RP_CHOICE.get(p.get("choice"), p.get("choice", "")), p.get("name", ""))
         return "Parcel Report interest"
     return "AGSIST forms: %s" % ", ".join(parts)
 
@@ -103,7 +112,8 @@ def blocks(posts):
     """-> [(heading, [(label, value)])] in arrival order."""
     out = []
     for p in sorted(posts, key=lambda x: x.get("ts") or 0):
-        rows = [(lab, str(p[f])) for f, lab in FIELDS[p["kind"]] if p.get(f) not in (None, "")]
+        rows = [(lab, RP_CHOICE.get(p[f], str(p[f])) if f == "choice" else str(p[f]))
+                for f, lab in FIELDS[p["kind"]] if p.get(f) not in (None, "")]
         out.append(("%s, %s" % (KIND_NAME[p["kind"]], when(p.get("ts") or 0)), rows))
     return out
 
@@ -135,6 +145,10 @@ def build(posts, to, fn="AGSIST", fa=""):
             v = e(val).replace("\n", "<br>")
             if lab in ("Work email", "Email", "Reply to"):
                 v = '<a href="mailto:%s">%s</a>' % (e(val, quote=True), e(val))
+            elif lab == "Design" and DESIGN_RE.fullmatch(val):
+                # Only the page's own design links are made clickable.
+                v = '<a href="%s">Open this design on agsist.com</a><br><span style="font-size:12px;color:#6b6b6b;word-break:break-all">%s</span>' % (
+                    e(val, quote=True), e(val))
             hb.append('<tr><td style="color:#6b6b6b;padding:2px 12px 2px 0;vertical-align:top">%s</td><td>%s</td></tr>' % (e(lab), v))
         hb.append("</table>")
     m.add_alternative('<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px 16px;color:#1a1a1a;background:#fff">'
@@ -241,6 +255,11 @@ def selftest():
     atlas = {"key": "form:atlas-feedback:%d:0a1b2c3f" % (ts + 2), "kind": "atlas-feedback", "ts": ts + 2, "n": 0,
              "email": "farmer@x.com", "source": "farmland-atlas"}
 
+    rp = {"key": "form:rain-print-order:%d:0a1b2c40" % (ts + 3), "kind": "rain-print-order", "ts": ts + 3, "n": 0,
+          "choice": "print18x24", "name": "Jane Olson", "email": "jane@farm.com", "address": "12 Main St\nChetek WI 54728",
+          "notes": "Gift <for> Dad", "design_code": "MXxDaGV0ZWs",
+          "design_url": "https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&layout=staircase&name=The+Olson+Farm"}
+
     print("subjects")
     ck("one claim: the subject the claim form always had", subject([claim]) == "Claim your board: Chetek Co-op, Chetek WI", subject([claim]))
     ck("one approval: the page's own subject", subject([fb]) == "Approved: Apex ad, proof AB12")
@@ -248,6 +267,8 @@ def selftest():
     ck("several: counted by kind", subject([claim, fb, atlas]) ==
        "AGSIST forms: 1 elevator claim, 1 sponsor request, 1 parcel report waitlist", subject([claim, fb, atlas]))
     ck("plural", "2 elevator claims" in subject([claim, dict(claim, key="form:claim:1:00000000")]))
+    ck("one rain print order: choice and buyer", subject([rp]) == "Rain print order: 18 x 24 print for Jane Olson", subject([rp]))
+    ck("rain print orders counted", "2 rain print orders" in subject([rp, dict(rp, key="form:rain-print-order:1:00000000")]))
 
     print("\nthe email")
     m = build([claim], "sig@x.com", fa="me@agsist.com")
@@ -267,6 +288,18 @@ def selftest():
     ck("arrival order", t.index("Elevator claim") < t.index("Sponsor request") < t.index("Parcel Report waitlist"))
     ck("internal fields not printed", "form:claim" not in t and "n: 0" not in t)
 
+    m = build([rp], "sig@x.com")
+    ck("rain print order: Reply-To is the buyer", m["Reply-To"] == "jane@farm.com", m["Reply-To"])
+    t = m.get_body(("plain",)).get_content()
+    ck("rain print order: every field, choice spelled out", all(s in t for s in (
+        "Choice: 18 x 24 print", "Name: Jane Olson", "Ship to: 12 Main St", "Design code: MXxDaGV0ZWs",
+        "Design: https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025")), t)
+    h = m.get_body(("html",)).get_content()
+    ck("rain print order: design link is clickable", '<a href="https://agsist.com/rain-print?place=Chetek%2C+WI&amp;year=2025&amp;layout=staircase&amp;name=The+Olson+Farm">' in h, h)
+    ck("rain print order: notes escaped, address lines kept", "Gift &lt;for&gt; Dad" in h and "12 Main St<br>Chetek" in h)
+    h = build([dict(rp, design_url="https://evil.example/rain-print?x=1")], "s").get_body(("html",)).get_content()
+    ck("a design link off agsist.com is printed, not linked", '<a href="https://evil.example' not in h and "https://evil.example/rain-print?x=1" in h)
+
     print("\nthe run (fake worker, fake mail)")
     calls, sent = [], []
 
@@ -285,7 +318,7 @@ def selftest():
     ck("marks exactly what it sent", calls[-1][0] == "form-mark" and calls[-1][1]["keys"] == [claim["key"], fb["key"], atlas["key"]])
     ck("log has counts only, no addresses or names",
        not any("@" in x or "Chetek" in x or "Apex" in x or "715" in x for x in log) and
-       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1" in log, log)
+       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0" in log, log)
     calls.clear(); sent.clear()
     code, log = run("https://w.dev", "t", "s", False, sent.append, fake([]))
     ck("nothing new: no mail, no mark", code == 0 and not sent and [c[0] for c in calls] == ["form-list"])

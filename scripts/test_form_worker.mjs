@@ -1,4 +1,4 @@
-// Runs the v5.8 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// Runs the v5.8/v5.9 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -60,6 +60,29 @@ r = await post({ kind: 'sponsor-feedback', request: 'Note', message: 'm'.repeat(
 r = await post({ kind: 'atlas-feedback', email: 'a@farm.com', source: 'farmland-atlas' }); A(r.status === 200, 'atlas stored');
 r = await post({ kind: 'atlas-feedback', email: '' }); A(r.status === 400, 'atlas needs email');
 
+// v5.9 rain print orders: address required for a poster, dropped for the file
+const rp = { kind: 'rain-print-order', name: 'Jane Olson', email: 'Jane@Farm.com', choice: 'print12x18',
+  address: '12 Main St\r\nChetek WI 54728', notes: 'Gift', design_code: 'MXxDaGV0ZWsgV0l8MTIzfDIwMjV8c3AwYXw',
+  design_url: 'https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&layout=staircase', page: '/rain-print', extra: 'x' };
+r = await post(rp); A(r.status === 200, 'rain print order stored');
+rec = JSON.parse(store.get(forms().find(x => x.startsWith('form:rain-print-order:'))));
+A(rec.email === 'jane@farm.com' && rec.address === '12 Main St\nChetek WI 54728' && rec.choice === 'print12x18' && !('extra' in rec), 'rain print order cleaned');
+A(/^form:rain-print-order:\d{13}:[0-9a-f]{8}$/.test(forms().find(x => x.startsWith('form:rain-print-order:'))), 'rain print key matches FORM_KEY_RE shape');
+r = await post(Object.assign({}, rp, { choice: 'digital' })); A(r.status === 200, 'digital order stored');
+rec = JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).sort().pop()));
+A(rec.choice === 'digital' && !('address' in rec), 'digital order keeps no address');
+r = await post(Object.assign({}, rp, { choice: 'digital', address: '' })); A(r.status === 200, 'digital order needs no address');
+for (const [patch, why] of [[{ address: '' }, 'poster needs an address'], [{ address: '   ' }, 'blank address'],
+    [{ choice: 'canvas' }, 'unknown choice'], [{ choice: '' }, 'choice required'], [{ name: '' }, 'name required'],
+    [{ email: 'x' }, 'email'], [{ design_url: 'https://evil.example/rain-print?x=1' }, 'design url off-site'],
+    [{ design_url: 'https://agsist.com/rain-print?x="><script>' }, 'design url odd characters'],
+    [{ design_url: 'https://agsist.com/elevators?x=1' }, 'design url other page'], [{ design_url: '' }, 'design url required'],
+    [{ design_code: 'abc def' }, 'design code characters'], [{ design_code: '' }, 'design code required'],
+    [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ address: 'a'.repeat(601) }, 'address cap']]) {
+  r = await post(Object.assign({}, rp, patch)); A(r.status === 400, 'rain print rejects ' + why);
+}
+const rpStored = forms().filter(x => x.startsWith('form:rain-print-order:')).length;
+
 // rate limit: 8 per IP an hour, all kinds together
 const same = { 'CF-Connecting-IP': '192.0.2.9' };
 let codes = [];
@@ -88,6 +111,7 @@ r = await call('/form-mark', 'POST', { keys: [j[1].key] }); A(r.status === 403, 
 // /count
 r = await call('/count?token=tok'); j = await r.json();
 A(j.forms && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1 && j.forms['atlas-feedback'] === 9, '/count forms ' + JSON.stringify(j.forms));
+A(rpStored === 3 && j.forms['rain-print-order'] === 3, '/count forms rain-print-order ' + JSON.stringify(j.forms));
 A(!JSON.stringify(j).includes('@'), '/count carries no address');
 
 // older routes still answer the same

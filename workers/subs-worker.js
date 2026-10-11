@@ -1,6 +1,14 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.9 (2026-10-11): RAIN PRINT ORDERS. One new form kind on POST /form;
+ *   every route answers exactly as before. kind rain-print-order (rain-print.html)
+ *   takes name, email, choice (digital | print12x18 | print18x24), address
+ *   (required for either poster, dropped for the digital file), notes,
+ *   design_url (must be https://agsist.com/rain-print?...), design_code
+ *   (A-Z a-z 0-9 - _) and page. Same origin check, 16 KB cap, rate limit,
+ *   year-long storage and digest as the other kinds; /count forms gains
+ *   rain-print-order. No new binding and no new secret.
  * v5.8 (2026-10-11): SITE FORMS MOVE OFF FORMSPREE. New routes only; every
  *   existing route answers exactly as before. Three forms used to post to
  *   Formspree: the elevator claim form (elevators.html), the approval and
@@ -304,7 +312,14 @@ const FORM_KINDS = {
     email: [254, false, "email"], page: [60],
   },
   "atlas-feedback": { email: [254, true, "email"], source: [60], page: [60] },
+  // v5.9: Rain Print order requests (rain-print.html). address is required for
+  // a printed poster (checked at the end of formClean), never for the digital file.
+  "rain-print-order": {
+    name: [80, true], email: [254, true, "email"], choice: [20, true, "rpchoice"], address: [600, false, "text"],
+    notes: [2000, false, "text"], design_url: [1200, true, "rpurl"], design_code: [300, true, "rpcode"], page: [60],
+  },
 };
+const RP_CHOICES = ["digital", "print12x18", "print18x24"];
 const FORM_MAX_BYTES = 16 * 1024;
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
@@ -330,6 +345,13 @@ function formClean(kind, b) {
     } else if (type === "state") {
       v = v.toUpperCase();
       if (!/^[A-Z]{2}$/.test(v)) return { error: "invalid state" };
+    } else if (type === "rpchoice") {
+      if (!RP_CHOICES.includes(v)) return { error: "invalid " + f };
+    } else if (type === "rpurl") {
+      // The design link the page builds: always agsist.com/rain-print plus its query.
+      if (!/^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/.test(v)) return { error: "invalid " + f };
+    } else if (type === "rpcode") {
+      if (!/^[A-Za-z0-9_-]+$/.test(v)) return { error: "invalid " + f };
     } else if (type === "url") {
       if (!/^https?:\/\//i.test(v)) v = "https://" + v;
       try { const u = new URL(v); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
@@ -337,6 +359,10 @@ function formClean(kind, b) {
       if (v.length > max) return { error: f + " is too long" };
     }
     out[f] = v;
+  }
+  if (kind === "rain-print-order") {
+    if (out.choice === "digital") delete out.address;
+    else if (!out.address) return { error: "address is required for a print" };
   }
   return { rec: out };
 }

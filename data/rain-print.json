@@ -1,0 +1,13 @@
+{
+  "_about": "Prices and payment links for /rain-print. The page reads this file; change a price here and the page follows. payment_links: paste a Stripe Payment Link (https://buy.stripe.com/...) per product. While a link is null, that button opens the order request form instead. The page adds client_reference_id=<design code> to the link, so each Stripe payment carries the design; open https://agsist.com/rain-print?d=<code> to see it.",
+  "currency": "USD",
+  "digital": 19,
+  "print12x18": 45,
+  "print18x24": 59,
+  "payment_links": {
+    "digital": null,
+    "print12x18": null,
+    "print18x24": null
+  },
+  "ships_within": "Printed posters ship rolled in a tube within 7 business days after you approve the proof. US addresses only for now."
+}

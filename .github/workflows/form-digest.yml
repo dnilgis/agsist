@@ -1,7 +1,7 @@
 name: Site forms digest
 # Emails Sig what came in through the elevator claim form, the sponsor proof
-# approval and requests box, and the Parcel Report waitlist
-# (scripts/form_digest.py). The posts live in the subs worker (KV prefix
+# approval and requests box, the Parcel Report waitlist and Rain Print order
+# requests (scripts/form_digest.py; rain-print-order needs worker v5.9). The posts live in the subs worker (KV prefix
 # form:, workers/subs-worker.js v5.8); nothing is written to this repo and the
 # log prints counts only. Until v5.8 is deployed the worker has no
 # /form-list and the job says so and exits cleanly (the pages send to

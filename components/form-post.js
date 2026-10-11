@@ -1,11 +1,13 @@
-/* The site's three forms (elevator claim, sponsor proof approval and
- * requests, Parcel Report waitlist), 2026-10-11.
+/* The site's forms (elevator claim, sponsor proof approval and requests,
+ * Parcel Report waitlist, 2026-10-11; Rain Print order requests, kind
+ * rain-print-order, worker v5.9, same day).
  *
  * They post to AGSIST's own subs worker (POST /form, workers/subs-worker.js
  * v5.8), which stores them; scripts/form_digest.py mails Sig. Until Sig
  * deploys that worker version the route does not exist, so whenever the
  * worker answers 403, 404, 405 or 5xx, does not answer, or the browser cannot
- * read the answer, the same post goes to the Formspree form these pages used
+ * read the answer, or the worker does not know the form's kind yet (400
+ * "unknown form"), the same post goes to the Formspree form these pages used
  * before. A refusal the worker means (400 bad field, 429 too many) is passed
  * back to the page, which shows its own "did not go through" message.
  *
@@ -33,6 +35,10 @@
       return r.json().then(function (j) {
         if (r.ok && j && j.ok === true) return { ok: true, via: 'worker' };
         if (r.ok) return 'fallback';
+        /* A worker older than the form (a new kind, not deployed yet) answers
+           400 "unknown form": that is the worker missing, not the reader's
+           mistake, so it goes to Formspree like a 404. */
+        if (r.status === 400 && j && j.error === 'unknown form') return 'fallback';
         throw new Error('refused');
       }, function () {
         if (r.ok) return 'fallback';

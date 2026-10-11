@@ -61,6 +61,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [GDU Calculator](https://agsist.com/gdu-calculator): growing degree units from planting, crop stage and black layer
 - [Planting Date Calculator](https://agsist.com/planting-date): corn and soybean planting windows and final planting dates
 - [Drought Monitor](https://agsist.com/drought-monitor): this week's US Drought Monitor map and what each category means for crops
+- [Rain Print](https://agsist.com/rain-print): one year of daily rain at the nearest NOAA weather station, drawn as wall art with your farm name and dates; free to make, prints for sale
 - [Field Scout](https://agsist.com/field-scout): draw a field and see its soils, crop history, weather, drought and nearby bids
 - [Fertilizer Prices](https://agsist.com/fertilizer): dealer quotes for urea, MAP, potash and AMS, dated per row
 - [Ag Fast Facts](https://agsist.com/fast-facts): on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value

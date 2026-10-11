@@ -97,6 +97,7 @@ PAGES = [
     ("/spray", "Spray advisory", "Can I spray today", "spray spraying sprayer wind drift inversion herbicide tank mix weather"),
     ("/urea", "Urea risk", "Volatilization and N loss", "urea nitrogen volatilization n loss fertilizer apply"),
     ("/drought-monitor", "Drought monitor", "Weekly drought map", "drought dry monitor map rain weather"),
+    ("/rain-print", "Rain Print", "Your farm's rainfall year as wall art", "rain print rainfall precipitation year poster wall art gift noaa station farm name"),
     ("/conditions", "Crop conditions", "Good to excellent by state", "crop conditions ratings good excellent progress"),
     ("/crop-tour", "Crop tour", "Pro Farmer tour results", "crop tour pro farmer yield"),
     ("/conditions-yield", "2026 crop size", "Every yield forecast, side by side", "crop size yield forecast estimate usda ratings conditions predict nowcast"),
