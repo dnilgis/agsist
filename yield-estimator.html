@@ -54,13 +54,22 @@
 
 .ye-page{max-width:860px;margin:0 auto;padding:0 1rem 3.5rem;}
 
-.ye-hero{padding:1.3rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
+.ye-hero{padding:1rem 0 .6rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
 .ye-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
 .ye-hero h1{font-family:var(--font-display);font-size:1.65rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;line-height:1.1;}
-.ye-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:640px;margin:0;}
+.ye-hero .page-lede{font-size:1rem;color:var(--text-dim);line-height:1.5;max-width:640px;margin:0;}
 .inl-ye{color:var(--gold);border-bottom:1px solid rgba(212,162,63,.35)}
 .inl-ye:hover{border-bottom-color:var(--gold)}
-.ye-calibration{font-size:0.775rem;color:var(--text-muted);margin-top:.6rem;padding-top:.55rem;border-top:1px dashed var(--border);line-height:1.55;}
+.ye-more{margin-top:.35rem;font-size:.9rem;color:var(--text-dim);line-height:1.55;max-width:640px}
+.ye-more summary{cursor:pointer;color:var(--gold);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center}
+.ye-more p{margin:.2rem 0 .5rem}
+.ye-start{margin:0 0 .7rem;font-size:.9rem;color:var(--text-muted);line-height:1.45}
+@media(max-width:600px){.ye-eyebrow{display:none}.ye-panel-head .badge{display:none}.ye-method{padding:.9rem .85rem}.ye-tabs{margin-bottom:1rem}.ye-panel-head{margin-bottom:.7rem}}
+.ye-tab .ic-sp{margin-right:.4em}
+.ye-plain{margin:.55rem 0 0;font-size:1rem;line-height:1.5;color:var(--text)}
+.ye-math{margin-top:.85rem;padding:.2rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px}
+.ye-math summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:0.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.ye-math-body{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-dim);line-height:1.7;padding-bottom:.6rem}
 
 .ye-tabs{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap;}
 .ye-tab{padding:.45rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
@@ -87,13 +96,14 @@
 .mn-type-btn:hover{border-color:var(--gold);color:var(--text);}
 .mn-type-btn.active{border-color:var(--gold);background:rgba(230,176,66,.1);color:var(--text);}
 
-.field-row{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.65rem;}
+.field-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.65rem .9rem;align-items:start;margin-bottom:.65rem;}
+.field-group.span-all{grid-column:1/-1}
 .field-group{display:flex;flex-direction:column;gap:.28rem;}
 .field-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
 .field-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;outline:none;box-sizing:border-box;}
 .field-input:focus{border-color:var(--gold);}
-.field-input.wide{width:170px;max-width:100%;}
-.field-note{font-size:1rem;color:var(--text-muted);margin-top:.1rem;}
+.field-input.wide{width:100%;max-width:200px;}
+.field-note{font-size:.88rem;line-height:1.4;color:var(--text-muted);margin-top:.1rem;}
 
 .result-bar{background:linear-gradient(135deg,rgba(58,139,60,.08),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.3);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
 .result-item{display:flex;flex-direction:column;gap:.15rem;}
@@ -108,7 +118,7 @@
 .mn-result-val{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:var(--gold);}
 .mn-result-unit{font-size:0.75rem;color:var(--text-muted);}
 
-.quickfill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.85rem;}
+.quickfill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.2rem;}
 .qf-btn{padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
 .qf-btn:hover{border-color:var(--gold);color:var(--gold);}
 .qf-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
@@ -173,43 +183,36 @@
   <div class="ye-hero">
     <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Soybean &amp; Corn<br>Yield Calculator</h1>
-    <p class="page-lede">Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans), the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
-    <div class="ye-calibration">
-      <strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample; widely referenced across US Corn Belt extension services).
-      <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac: the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.
-      Not a substitute for certified yield monitoring or combine data.
-    </div>
+    <p class="page-lede">Corn and soybean bushels per acre from your own field counts: ear counts for corn, pod counts for soybeans.</p>
+    <details class="ye-more"><summary>When to count, and how accurate it is</summary>
+      <p>Count corn from the milk stage (R3) on and soybeans at R6 to R7, the same ear-count and kernel-count math crop tour scouts run in August. Sample at least 5 locations per field, 10 ears or plants each.</p>
+      <p><strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample), widely referenced across US Corn Belt extension services. <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac, the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6. Not a substitute for yield monitor or combine data.</p>
+      <p>Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
+    </details>
   </div>
 
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
-    <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Yield Estimator</button>
-    <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean Yield Estimator</button>
+    <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
+    <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
   </nav>
 
   <!-- CORN TAB -->
   <div class="ye-panel active" id="ye-corn" role="tabpanel" aria-labelledby="ye-tab-corn" tabindex="0">
     <div class="ye-panel-head">
-      <h2>Corn <span style="color:var(--gold)">Yield Estimator</span></h2>
+      <h2>Corn <span style="color:var(--gold)">yield calculator</span></h2>
       <span class="badge">Ear Count Method</span>
     </div>
     <div class="ye-panel-body">
 
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill: Start from a Typical Scenario</div>
-        <div class="qf-label">Select a scenario to auto-fill inputs:</div>
-        <div class="quickfill-row">
-          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
-          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
-          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
-        </div>
-
-        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Ears</div>
+        <p class="ye-start">The boxes start with example counts. Type your own. Test weight does not enter this method.</p>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Ears</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-row-width">Row Width (inches)</label>
             <select class="field-input wide" id="c-row-width" style="font-size:1rem">
-              <option value="30">30 in (standard)</option>
-              <option value="20">20 in (narrow)</option>
+              <option value="30">30 in</option>
+              <option value="20">20 in</option>
               <option value="36">36 in</option>
               <option value="38">38 in</option>
               <option value="40">40 in</option>
@@ -235,9 +238,6 @@
             <input class="field-input" id="c-kernels-row" type="number" value="32" step="1" min="10" max="55">
             <span class="field-note">Count from base to tip</span>
           </div>
-          <div class="field-group">
-            <span class="field-note">Test weight does not enter this estimate. The ear-count method uses only ears, rows and kernels.</span>
-          </div>
         </div>
 
         <div class="result-bar" id="c-result" aria-live="polite">
@@ -262,14 +262,20 @@
             <div class="result-sub">if 65k&ndash;95k kernels/bu</div>
           </div>
         </div>
-
-        <div style="margin-top:.85rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
-          <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
-            Yield (bu/ac) = (ears &times; kernel rows &times; kernels/row) &divide; 90<br>
-            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State); Some extension guides use a lower figure for modern hybrids, so the range above sweeps 65,000&ndash;95,000. Valid from the milk (R3) stage on. Test weight is not part of the formula. The yield range above only shows what changes if kernels per bushel are 65,000 to 95,000 instead of 90,000. It is not the field error. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
-          </div>
+        <p class="ye-plain" id="c-plain" aria-live="polite"></p>
+        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try a typical scenario</div>
+        <div class="quickfill-row">
+          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
+          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
+          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
         </div>
+
+        <details class="ye-math"><summary>Show the math</summary>
+          <div class="ye-math-body">
+            Yield (bu/ac) = (ears &times; kernel rows &times; kernels/row) &divide; 90<br>
+            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State). Some extension guides use a lower figure for modern hybrids, so the yield range shows what changes if a bushel holds 65,000 to 95,000 kernels instead of 90,000. That range is not the field error. Valid from the milk (R3) stage on. Test weight is not part of the formula. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
+          </div>
+        </details>
       </div>
 
       <div class="ye-method">
@@ -292,20 +298,13 @@
   <!-- SOYBEAN TAB -->
   <div class="ye-panel" id="ye-bean" role="tabpanel" aria-labelledby="ye-tab-bean" tabindex="0" aria-hidden="true">
     <div class="ye-panel-head">
-      <h2>Soybean <span style="color:var(--gold)">Yield Estimator</span></h2>
+      <h2>Soybean <span style="color:var(--gold)">yield calculator</span></h2>
       <span class="badge">Pod Count Method</span>
     </div>
     <div class="ye-panel-body">
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill: Example Soybean Scenarios</div>
-        <div class="qf-label">Select an example (not an average):</div>
-        <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="Example: ~54 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~54 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="Example: ~43 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Typical stand ~43 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="Example: ~32 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~32 bu</button>
-        </div>
-
-        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Plants</div>
+        <p class="ye-start">The boxes start with example counts, not an average. Type your own.</p>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Plants</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-row-width">Row Width (inches)</label>
@@ -364,14 +363,20 @@
             <div class="result-sub">2,500&ndash;3,500 seeds/lb</div>
           </div>
         </div>
+        <p class="ye-plain" id="b-plain" aria-live="polite"></p>
+        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try an example stand</div>
+        <div class="quickfill-row">
+          <button class="qf-btn" id="qf-bean-high" title="Example: ~54 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~54 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="Example: ~43 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Typical stand ~43 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="Example: ~32 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~32 bu</button>
+        </div>
 
-        <div style="margin-top:.85rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
-          <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
+        <details class="ye-math"><summary>Show the math</summary>
+          <div class="ye-math-body">
             Yield (bu/ac) = (plants/ac &times; pods/plant &times; seeds/pod) &divide; (seeds/lb &times; 60)<br>
             <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,500&ndash;3,500 (3,000 average) &middot; Plant count &times; 1000 = plants/acre</span>
           </div>
-        </div>
+        </details>
       </div>
     </div>
   </div>
@@ -506,6 +511,7 @@ function calcCorn(){
   if(why){
     ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'-');});
     s('c-yield-sub',why);
+    s('c-plain','Enter all three counts to see a yield.');
     return;
   }
   s('c-yield-sub','bu / acre');
@@ -519,6 +525,7 @@ function calcCorn(){
   // Range is only the kernels-per-bushel sweep (65k-95k) around the 90k headline
   // basis. It is not the field error.
   s('c-range-val',Math.round(kernels/95000)+'–'+Math.round(kernels/65000));
+  s('c-plain','About '+yield_bu.toFixed(0)+' bushels per acre at 90,000 kernels per bushel. Heavier or lighter kernels move it to '+Math.round(kernels/95000)+' to '+Math.round(kernels/65000)+'. Field error is about ±20 bu/ac.');
   activeCrop='corn';
 }
 ['c-row-width','c-ear-count','c-kernel-rows','c-kernels-row'].forEach(function(id){
@@ -556,6 +563,7 @@ function calcBean(){
   if(why){
     ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'-');});
     s('b-yield-sub',why);
+    s('b-plain','Enter all four counts to see a yield.');
     return;
   }
   s('b-yield-sub','bu / acre');
@@ -568,6 +576,7 @@ function calcBean(){
   // Sweep the seed-size range extension teaches (2,500 large seed - 3,500 stressed)
   // rather than a symmetric percentage.
   s('b-range-val',Math.round((pop*spp)/(3500*60))+'–'+Math.round((pop*spp)/(2500*60)));
+  s('b-plain','About '+yield_bu.toFixed(0)+' bushels per acre at '+Math.round(slb).toLocaleString('en-US')+' seeds per pound. Seed size from 2,500 to 3,500 per pound moves it to '+Math.round((pop*spp)/(3500*60))+' to '+Math.round((pop*spp)/(2500*60))+'.');
   activeCrop='bean';
 }
 ['b-row-width','b-plant-count','b-pods-plant','b-seeds-pod','b-seeds-lb'].forEach(function(id){
