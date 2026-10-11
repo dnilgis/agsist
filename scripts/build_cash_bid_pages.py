@@ -904,8 +904,8 @@ def build_town_page(t, ctx):
     hows = {b["how"] for b in t["boards"].values()}
     near_note = ""
     if "zip" in hows:
-        near_note += (f" An elevator whose board names a site rather than a town is listed here when its ZIP is a "
-                      f"{esc(t['name'])} ZIP; its card shows the board&rsquo;s own name and the ZIP.")
+        near_note += (f" An elevator whose board names a site rather than a town is listed here when its ZIP belongs to "
+                      f"{esc(t['name'])}; its card shows the board&rsquo;s own name and the ZIP.")
     if "near" in hows:
         near_note += (f" An elevator with no town or ZIP we can confirm is listed here when it is within "
                       f"{NEAR_MI} miles of {esc(t['name'])}, measured from its map pin to the nearest elevator "
@@ -1340,7 +1340,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                        else f"<li>{lab}</li>")
         quiet_html += ('<h2>Network elevators not placed in a town</h2><p class="cbt-sub">These boards name a '
                        'facility rather than a town, their ZIP does not confirm one, and they are not within '
-                       f'{NEAR_MI} miles of a town listed here. We do not guess the town. Their bids are on the live '
+                       f'{NEAR_MI} miles of a town listed here. Their bids are on the live '
                        'page.</p><ul class="cbt-list">' + "".join(lis) + "</ul>")
     others = " &middot; ".join(f'<a href="/cash-bids/{url_slug(STATE_NAMES[o])}/">{STATE_NAMES[o]}</a>'
                                for o in ctx["states"] if o != st)
@@ -1389,8 +1389,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
     pg = ctx.get("prev_generated")
     wow_note = (f" Change in a week compares each bid with the same elevator&rsquo;s same delivery and futures month "
                 f"in the network snapshot of {fmt_day(pg)}." if pg else
-                " No change in a week is shown: a network snapshot about seven days back was not available to this "
-                "build, and a change is never estimated.")
+                " No change in a week is shown: no network snapshot from about seven days back was available to this "
+                "build.")
     body = f"""
 <body>
 {hdr}

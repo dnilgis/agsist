@@ -603,15 +603,15 @@ function fetchWeather(lat, lon, label, known) {
         var sprayR = calcSprayRating(tempF, humid, wind);
         var sprayMsg;
         if (sprayR === 'poor') {
-          if (tempF < 32)       sprayMsg = 'Do Not Spray: Below freezing (' + tempF + '\u00B0F) \u2192';
-          else if (tempF < 40)  sprayMsg = 'Do Not Spray: Too cold (' + tempF + '\u00B0F) \u2192';
-          else if (wind > 15)   sprayMsg = 'Poor Spray Conditions: Wind too high (' + wind + ' mph) \u2192';
-          else if (tempF > 90)  sprayMsg = 'Poor Spray Conditions: Too hot (' + tempF + '\u00B0F) \u2192';
-          else                  sprayMsg = 'Poor Spray Conditions: Humidity too low (' + humid + '%) \u2192';
+          if (tempF < 32)       sprayMsg = 'Do not spray: below freezing (' + tempF + '\u00B0F) \u2192';
+          else if (tempF < 40)  sprayMsg = 'Do not spray: too cold (' + tempF + '\u00B0F) \u2192';
+          else if (wind > 15)   sprayMsg = 'Poor spray conditions: wind too high (' + wind + ' mph) \u2192';
+          else if (tempF > 90)  sprayMsg = 'Poor spray conditions: too hot (' + tempF + '\u00B0F) \u2192';
+          else                  sprayMsg = 'Poor spray conditions: humidity too low (' + humid + '%) \u2192';
         } else if (sprayR === 'caution') {
-          sprayMsg = 'Marginal Spray Conditions: Review before applying \u2192';
+          sprayMsg = 'Marginal spray conditions: check the hourly forecast before you spray \u2192';
         } else {
-          sprayMsg = '\u2713 Good Spray Conditions \u2192';
+          sprayMsg = '\u2713 Good spray conditions \u2192';
         }
         spray.className = 'spray-badge ' + sprayR;
         spray.textContent = sprayMsg;
@@ -1241,7 +1241,7 @@ function fetchKalshiMarkets() {
           + ''
           + '<div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem">No active prediction markets right now</div>'
           + '<div style="font-size:.78rem;color:var(--text-muted);line-height:1.5;max-width:32rem;margin:0 auto">'
-          + 'We scan Kalshi and Polymarket once a day for events that affect agriculture: tariffs, weather, trade, energy, USDA reports, and more.</div>'
+          + 'Kalshi and Polymarket are checked once a day for markets on tariffs, weather, trade, energy and USDA reports.</div>'
           + '<div style="margin-top:.75rem;font-size:.78rem">'
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Browse Kalshi \u2192</a>'
           + '<span style="color:var(--text-muted);margin:0 .5rem">\u00B7</span>'
@@ -1305,7 +1305,7 @@ function fetchKalshiMarkets() {
     .catch(function() {
       if (loading) {
         loading.innerHTML = ''
-          + 'Market data updating shortly. '
+          + 'The prediction markets did not load. '
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Kalshi \u2192</a> \u00B7 '
           + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Polymarket \u2192</a>';
       }
@@ -1346,7 +1346,7 @@ function buildMarketCard(m, showExtras) {
       + 'border:1px solid var(--border);margin-top:.1rem">'
       + '<span style="font-weight:700;color:var(--text-muted);font-size:.58rem;'
       + 'letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:.2rem">'
-      + 'Why it matters to farmers</span>' + whyText + '</div>';
+      + 'For farmers</span>' + whyText + '</div>';
   }
 
   var div = document.createElement('div');
