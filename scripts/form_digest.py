@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Site forms digest (2026-10-11): emails Sig what came in through the three
-forms that used to go to Formspree.
+Site forms digest (2026-10-11): emails Sig what came in through the site's
+forms (the first three used to go to Formspree).
 
   elevators.html      claim your board               kind claim
   sponsor-report.html approval and requests box      kind sponsor-feedback
   farmland-atlas.html Parcel Report waitlist         kind atlas-feedback
+  elevator-websites.html  hosted website request     kind elevator-site (worker v5.9)
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
@@ -43,8 +44,9 @@ except Exception:                                          # noqa: BLE001
     CT = None
 
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
-KINDS = ("claim", "sponsor-feedback", "atlas-feedback")
-KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist"}
+KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "elevator-site")
+KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
+             "elevator-site": "Elevator website request"}
 # The order and labels each kind prints in. Anything else stored is ignored.
 FIELDS = {
     "claim": [("elevator", "Elevator or co-op"), ("town", "Town"), ("state", "State"), ("contact_name", "Contact"),
@@ -53,6 +55,9 @@ FIELDS = {
     "sponsor-feedback": [("request", "Request"), ("sponsor", "Sponsor"), ("proof", "Proof code"), ("email", "Reply to"),
                          ("message", "Message")],
     "atlas-feedback": [("email", "Email"), ("source", "Source")],
+    "elevator-site": [("elevator", "Elevator or co-op"), ("contact_name", "Contact"), ("phone", "Phone"),
+                      ("email", "Email"), ("town", "Town"), ("website", "Current website"),
+                      ("bids_now", "Posts bids today"), ("notes", "Notes")],
 }
 
 
@@ -93,6 +98,8 @@ def subject(posts):
         p = posts[0]
         if p["kind"] == "claim":
             return "Claim your board: %s, %s %s" % (p.get("elevator", ""), p.get("town", ""), p.get("state", ""))
+        if p["kind"] == "elevator-site":
+            return "Elevator website request: %s" % p.get("elevator", "")
         if p["kind"] == "sponsor-feedback":
             return p.get("subject") or "AGSIST portal: %s (%s)" % (p.get("request", ""), p.get("sponsor", ""))
         return "Parcel Report interest"
@@ -241,6 +248,11 @@ def selftest():
     atlas = {"key": "form:atlas-feedback:%d:0a1b2c3f" % (ts + 2), "kind": "atlas-feedback", "ts": ts + 2, "n": 0,
              "email": "farmer@x.com", "source": "farmland-atlas"}
 
+    es = {"key": "form:elevator-site:%d:0a1b2c40" % (ts + 3), "kind": "elevator-site", "ts": ts + 3, "n": 0,
+          "elevator": "Chetek Co-op", "contact_name": "Al Smith", "phone": "715-555-0100", "email": "al@chetek.coop",
+          "town": "Chetek, WI", "website": "https://chetek.coop", "bids_now": "Phone only, not posted",
+          "notes": "Two locations\nCorn and soybeans"}
+
     print("subjects")
     ck("one claim: the subject the claim form always had", subject([claim]) == "Claim your board: Chetek Co-op, Chetek WI", subject([claim]))
     ck("one approval: the page's own subject", subject([fb]) == "Approved: Apex ad, proof AB12")
@@ -248,6 +260,9 @@ def selftest():
     ck("several: counted by kind", subject([claim, fb, atlas]) ==
        "AGSIST forms: 1 elevator claim, 1 sponsor request, 1 parcel report waitlist", subject([claim, fb, atlas]))
     ck("plural", "2 elevator claims" in subject([claim, dict(claim, key="form:claim:1:00000000")]))
+    ck("one website request: named", subject([es]) == "Elevator website request: Chetek Co-op", subject([es]))
+    ck("website requests counted", subject([claim, es, dict(es, key="form:elevator-site:2:00000000")]) ==
+       "AGSIST forms: 1 elevator claim, 2 elevator website requests", subject([claim, es, es]))
 
     print("\nthe email")
     m = build([claim], "sig@x.com", fa="me@agsist.com")
@@ -258,6 +273,14 @@ def selftest():
     ck("one post: Reply-To is the sender", m["Reply-To"] == "al@chetek.coop")
     ck("goes to Sig", m["To"] == "sig@x.com")
     ck("an odd address is not put in a header", build([dict(atlas, email="a,b@x.com")], "s")["Reply-To"] is None)
+    m = build([es], "sig@x.com")
+    t = m.get_body(("plain",)).get_content()
+    ck("every website request field", all(x in t for x in (
+        "Elevator or co-op: Chetek Co-op", "Contact: Al Smith", "Phone: 715-555-0100", "Email: al@chetek.coop",
+        "Town: Chetek, WI", "Current website: https://chetek.coop", "Posts bids today: Phone only, not posted",
+        "Notes: Two locations\nCorn and soybeans")), t)
+    ck("website request: Reply-To is the sender", m["Reply-To"] == "al@chetek.coop")
+    ck("website request email is a link", 'href="mailto:al@chetek.coop"' in m.get_body(("html",)).get_content())
     m = build([claim, fb, atlas], "sig@x.com")
     ck("several: no Reply-To", m["Reply-To"] is None)
     h = m.get_body(("html",)).get_content()
@@ -285,7 +308,7 @@ def selftest():
     ck("marks exactly what it sent", calls[-1][0] == "form-mark" and calls[-1][1]["keys"] == [claim["key"], fb["key"], atlas["key"]])
     ck("log has counts only, no addresses or names",
        not any("@" in x or "Chetek" in x or "Apex" in x or "715" in x for x in log) and
-       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1" in log, log)
+       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, elevator-site 0" in log, log)
     calls.clear(); sent.clear()
     code, log = run("https://w.dev", "t", "s", False, sent.append, fake([]))
     ck("nothing new: no mail, no mark", code == 0 and not sent and [c[0] for c in calls] == ["form-list"])

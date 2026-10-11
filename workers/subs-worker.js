@@ -1,6 +1,13 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.9 (2026-10-11): ONE NEW FORM KIND. POST /form takes kind
+ *   "elevator-site", the request form on /elevator-websites: elevator,
+ *   contact_name, phone, email, town (all required), website (optional URL),
+ *   bids_now (required, how they post bids today), notes (optional, up to
+ *   2000 chars, keeps line breaks), page. Same body cap, origin check and
+ *   8-an-hour limit as the other kinds; /form-list and /count forms carry it.
+ *   No other route, field or key changes.
  * v5.8 (2026-10-11): SITE FORMS MOVE OFF FORMSPREE. New routes only; every
  *   existing route answers exactly as before. Three forms used to post to
  *   Formspree: the elevator claim form (elevators.html), the approval and
@@ -304,6 +311,11 @@ const FORM_KINDS = {
     email: [254, false, "email"], page: [60],
   },
   "atlas-feedback": { email: [254, true, "email"], source: [60], page: [60] },
+  // v5.9: request for a hosted elevator website (elevator-websites.html).
+  "elevator-site": {
+    elevator: [120, true], contact_name: [80, true], phone: [30, true], email: [254, true, "email"],
+    town: [80, true], website: [320, false, "url"], bids_now: [60, true], notes: [2000, false, "text"], page: [60],
+  },
 };
 const FORM_MAX_BYTES = 16 * 1024;
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together

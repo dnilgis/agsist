@@ -88,6 +88,7 @@ PAGES = [
         ("/milk-prices", "Milk Prices", "Class III and IV, cheese and butter, and the component formula behind the milk check"),
         ("/markets", "Markets", "grains, livestock, milk, energy and metals in one view"),
         ("/elevators", "For Elevators", "the map of every elevator AGSIST tracks, and how an elevator claims its board"),
+        ("/elevator-websites", "Elevator Websites", "for elevator and co-op managers: a hosted website on their own domain with their posted cash bids, hours and contacts; price and how to ask on the page"),
     ]),
     ("What will USDA say, and what moves the price?", [
         ("/usda-calendar", "USDA Report Calendar", "every USDA report date"),

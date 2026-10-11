@@ -1,0 +1,7 @@
+{
+  "_": "THE ONE PLACE the elevator website offer is priced (elevator-websites.html). Change a number here and commit. The page re-reads this file on load, and .github/workflows/elevator-sites.yml runs scripts/build_elevator_sites.py on the push to bake the same numbers into the page text, its meta description and its structured data, so search engines and readers without JavaScript see them too. Whole US dollars.",
+  "setup_usd": 750,
+  "monthly_usd": 99,
+  "terms": "Month-to-month. Cancel anytime.",
+  "live": "within a week"
+}

@@ -1,4 +1,4 @@
-// Runs the v5.8 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// Runs the v5.8/v5.9 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -60,6 +60,26 @@ r = await post({ kind: 'sponsor-feedback', request: 'Note', message: 'm'.repeat(
 r = await post({ kind: 'atlas-feedback', email: 'a@farm.com', source: 'farmland-atlas' }); A(r.status === 200, 'atlas stored');
 r = await post({ kind: 'atlas-feedback', email: '' }); A(r.status === 400, 'atlas needs email');
 
+// v5.9: elevator website request (elevator-websites.html)
+const es = { kind: 'elevator-site', elevator: 'Chetek Co-op', contact_name: 'Al Smith', phone: '715-555-0100',
+  email: 'Al@Chetek.coop', town: 'Chetek, WI', website: 'chetekcoop.com', bids_now: 'Phone only, not posted',
+  notes: 'Two locations\r\nCorn and soybeans', page: '/elevator-websites', role: 'dropped' };
+r = await post(es); A(r.status === 200 && (await r.json()).ok === true, 'elevator-site stored');
+k = forms().find(x => x.startsWith('form:elevator-site:')); rec = JSON.parse(store.get(k));
+A(/^form:elevator-site:\d{13}:[0-9a-f]{8}$/.test(k), 'key form:elevator-site:<ts>:<rand>');
+A(rec.email === 'al@chetek.coop' && rec.website === 'https://chetekcoop.com' && rec.town === 'Chetek, WI'
+  && rec.bids_now === 'Phone only, not posted' && rec.page === '/elevator-websites', 'elevator-site cleaned');
+A(rec.notes === 'Two locations\nCorn and soybeans', 'notes keep line breaks');
+A(!('role' in rec) && rec.kind === 'elevator-site' && rec.n === 0, 'elevator-site: unknown field dropped');
+r = await post(Object.assign({}, es, { website: '', notes: '' }));
+const esRecs = forms().filter(x => x.startsWith('form:elevator-site:')).map(x => JSON.parse(store.get(x)));
+A(r.status === 200 && esRecs.length === 2 && esRecs.some(x => !('website' in x) && !('notes' in x)), 'website and notes optional');
+for (const [patch, why] of [[{ elevator: '' }, 'elevator'], [{ contact_name: '' }, 'contact name'], [{ phone: '' }, 'phone'],
+    [{ email: '' }, 'email'], [{ email: 'al@' }, 'bad email'], [{ town: '' }, 'town'], [{ bids_now: '' }, 'bids_now'],
+    [{ website: 'ftp://x.com' }, 'website scheme'], [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ bids_now: 'b'.repeat(61) }, 'bids_now cap']]) {
+  r = await post(Object.assign({}, es, patch)); A(r.status === 400, 'elevator-site rejects ' + why);
+}
+
 // rate limit: 8 per IP an hour, all kinds together
 const same = { 'CF-Connecting-IP': '192.0.2.9' };
 let codes = [];
@@ -87,7 +107,8 @@ r = await call('/form-mark', 'POST', { keys: [j[1].key] }); A(r.status === 403, 
 
 // /count
 r = await call('/count?token=tok'); j = await r.json();
-A(j.forms && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1 && j.forms['atlas-feedback'] === 9, '/count forms ' + JSON.stringify(j.forms));
+A(j.forms && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1 && j.forms['atlas-feedback'] === 9
+  && j.forms['elevator-site'] === 2, '/count forms ' + JSON.stringify(j.forms));
 A(!JSON.stringify(j).includes('@'), '/count carries no address');
 
 // older routes still answer the same
