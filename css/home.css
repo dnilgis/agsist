@@ -364,7 +364,7 @@
   .cot-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
   .cot-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
   .cot-widget-title{font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
-  .cot-caption{font-size:1rem;color:var(--text-muted);line-height:1.4;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+  .cot-caption{font-size:.84rem;color:var(--text-muted);line-height:1.45;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
   .cot-dir{font-family:'JetBrains Mono',monospace;font-size:.765rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .32rem;border-radius:3px;flex-shrink:0;}
   .cot-dir.long{color:var(--green);background:rgba(34,197,94,.1);}
   .cot-dir.short{color:#ef4444;background:rgba(239,68,68,.1);}
@@ -1895,7 +1895,7 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #f-prices.px-off .price-cards-grid,#f-prices.px-off .r7-ledgers,#f-prices.px-off .pc-range{visibility:hidden}
 .px-fail,.cot-fail,.crop-fail{font-size:.82rem;color:var(--text-dim);margin:.4rem 0}
 .sig-asof{font-size:.765rem;color:var(--text-muted);margin:.4rem 0 0}
-.cot-badges{display:inline-flex;flex-wrap:wrap;gap:.3rem;justify-content:flex-end}
+.cot-badges{display:flex;flex-wrap:wrap;gap:.2rem .9rem;justify-content:flex-start;width:100%}
 :where(h3.idx1-sub-h){margin:0;font-size:inherit;font-weight:inherit;line-height:inherit}
 /* 2026-10-06: labels that were divs and are now h3s. styles.css gives every h3 the
    display face and -0.01em tracking; these keep the inherited face they had as
