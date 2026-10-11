@@ -1,6 +1,8 @@
 name = "agsist-subs"
 main = "subs-worker.js"
 compatibility_date = "2026-09-30"
+# Never wipe settings made in the dashboard on a Git deploy.
+keep_vars = true
 
 # The KV store holding every subscriber, alert and sponsor application.
 # MUST be declared here: a Git deploy sets the Worker's bindings to exactly
