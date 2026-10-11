@@ -22,7 +22,7 @@ var MONTH_TIPS={
   soybean:['January is South American harvest pressure season. Watch Brazil crop estimates closely','February marks peak South American harvest; US basis is typically under competitive export pressure','March is a transition month as South American exports compete while US planting plans take shape','April brings corn/bean ratio decisions and early US planting weather focus','May builds new-crop weather premium as US soybean planting accelerates','June: pod-set weather can move prices hard from one forecast to the next','July crop condition scores increasingly lock in the price range for the remainder of the season','August pod-fill conditions are critical: dry weather now can move prices fast','September: harvest starts and new-crop supply begins to reach the market','October is peak US harvest supply; see the seasonal chart for how recent years actually traded this month','November post-harvest: South American planting underway, watch early growing season weather','December: early South American weather starts to shape next year\'s global supply'],
   wheat:['January: winter wheat is dormant; the Southern Hemisphere harvest sets the supply picture','February: winter wheat begins to break dormancy; cold stress is the risk to watch','March: global supply questions build ahead of Northern Hemisphere planting','April frost risk premium can add volatility as winter wheat breaks dormancy and heads out','May is pre-harvest season: wheat is heading, quality risk keeps buyers attentive','June: SRW harvest begins and new-crop supply arrives; see the seasonal chart for how recent years traded','July is peak harvest; combines roll across the Northern Hemisphere','August is the post-harvest recovery window; old crop clears and new positions begin building','September: global buyers restock after the Northern Hemisphere harvest','October: winter wheat goes in, and stand establishment and early crop reports lead','November: wheat goes dormant and the year\'s global supply gets clearer','December Southern Hemisphere harvest updates and year-end fund positioning drive market direction']
 };
-function zoneOf(pct){return pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half of its 52-week range':pct<75?'upper half of its range':'upper quartile: near recent highs';}
+function zoneOf(pct){return pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
 
 var CROPS={
   corn:{
@@ -54,7 +54,10 @@ var CROPS={
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
       var cornDec=q['corn-dec'];
-      if(cornDec&&cornDec.close!=null){
+      /* when the nearby IS the new-crop contract (Dec corn from Sep to Dec) the hero
+         already shows it; the line would only repeat the same price */
+      var ncSame=!!(front&&cornDec&&front.ticker&&front.ticker===cornDec.ticker);
+      if(cornDec&&cornDec.close!=null&&!ncSame){
         var ncEl=document.getElementById('nc-glance');
         if(ncEl){
           var ncl=document.getElementById('nc-lbl'),ncm=contractLabel(cornDec);if(ncl&&ncm)ncl.textContent=ncm;
@@ -106,7 +109,8 @@ var CROPS={
          which rolls on its own; the label is read from its ticker), hidden if key missing */
       var ncQ=q['beans-nov'];
       var ncEl=document.getElementById('nc-line');
-      if(ncEl&&ncQ&&ncQ.close!=null){
+      var ncSame=!!(front&&ncQ&&front.ticker&&front.ticker===ncQ.ticker);
+      if(ncEl&&ncQ&&ncQ.close!=null&&!ncSame){
         var ncHtml=(contractLabel(ncQ)||'Nov')+" new crop: <strong>"+grain$(ncQ.close)+"</strong>";
         if(ncQ.pctChange!=null&&!ncQ.roll){var np=ncQ.pctChange;ncHtml+=' <span class="'+(np>=0?'up':'dn')+'">('+AG.px.pct(np)+')</span>';}
         ncEl.innerHTML=ncHtml;
@@ -210,7 +214,8 @@ var CROPS={
       var bl=document.getElementById('benchline');
       if(!bl)return;
       var d26=q['wheat-dec26'];
-      if(!d26||d26.close==null){bl.style.display='none';return;}
+      /* in the fall the nearby is Dec itself; the hero already shows it */
+      if(!d26||d26.close==null||(front&&front.ticker&&front.ticker===d26.ticker)){bl.style.display='none';return;}
       var chg='';
       if(d26.pctChange!=null)chg=' ('+AG.px.pct(d26.pctChange)+')';
       bl.innerHTML="Dec '26 (deferred): <strong>"+grain$(d26.close)+'</strong>'+chg+', winter wheat new-crop is July';

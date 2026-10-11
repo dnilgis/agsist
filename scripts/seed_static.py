@@ -242,7 +242,7 @@ def px_table(rows, flabel, in_session=False):
     grain quotes in cents; quotes may be None (row skipped)."""
     noun = state_words(in_session)[1]
     out = ['<table class="seed-tbl"><caption>' + noun + ' &middot; as of ' + flabel +
-           ' &middot; Yahoo Finance, delayed (not CME settlements) &middot; live quotes above update in session</caption>',
+           ' &middot; Yahoo Finance, delayed (not CME settlements) &middot; quotes above refresh every 15 minutes in session</caption>',
            '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">' +
            ("Last" if in_session else "Close") + '</th>'
            '<th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th>'
@@ -1142,7 +1142,9 @@ def futures_hero_seeds(page, prices):
         out["exch"] = "CBOT &middot; CME Group &middot; " + _e(_nearby_label(prices, "corn", "Most-active (ZC)")) + " &middot; Refreshed in session"
         out["chg"] = _chg_seed(_fut_chg(hq))
         cd = q.get("corn-dec")
-        if cd and cd.get("close") is not None:
+        # nearby == new crop (Dec corn from Sep on): the hero already shows it
+        same = bool(cd and hq and hq.get("ticker") and hq.get("ticker") == cd.get("ticker"))
+        if cd and cd.get("close") is not None and not same:
             pc = cd.get("pctChange")
             if cd.get("roll"):
                 chg = '<span id="nc-chg" class="roll">(contract roll)</span>'
@@ -1161,7 +1163,8 @@ def futures_hero_seeds(page, prices):
         out["contract"] = _e(_nearby_label(prices, "beans", "Most-active (ZS)"))
         out["chg"] = _chg_seed(_fut_chg(hq))
         nq = q.get("beans-nov")
-        if nq and nq.get("close") is not None:
+        same = bool(nq and hq and hq.get("ticker") and hq.get("ticker") == nq.get("ticker"))
+        if nq and nq.get("close") is not None and not same:
             h = _ticker_label(nq, "Nov") + " new crop: <strong>$" + grain_dollars(nq) + "</strong>"
             np_ = nq.get("pctChange")
             if np_ is not None and not nq.get("roll"):
@@ -1175,7 +1178,8 @@ def futures_hero_seeds(page, prices):
         out["contract"] = "&middot; " + _e(("Nearby " + n["contract"]) if (n and n.get("contract")) else "Most-active (ZW)")
         out["chg"] = _chg_seed(_fut_chg(hq))
         d26 = q.get("wheat-dec26")
-        if d26 and d26.get("close") is not None:
+        same = bool(d26 and hq and hq.get("ticker") and hq.get("ticker") == d26.get("ticker"))
+        if d26 and d26.get("close") is not None and not same:
             pc = d26.get("pctChange")
             chg = (" (" + pricefmt.pct(pc) + ")") if pc is not None else ""
             out["bench"] = ('<div class="benchline" id="benchline">Dec \'26 (deferred): <strong>$' + grain_dollars(d26) +
@@ -1227,13 +1231,6 @@ def seed_futures_pages(prices, today):
             flabel = flabel or today
             verb = state_words(live)[0]
             t, c1 = seed_between(t, "px", "$" + f_usd)
-            note = (front_label + " " + verb + " near <strong>$" + f_usd +
-                    "</strong>" + stale +
-                    ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
-                    " &middot; as of " + flabel +
-                    " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.")
-            t, c2 = seed_between(t, "note", note)
-            changed = c1 or c2
 
             # crawler-visible last-close table (marker optional per page)
             rows = [((("Nearby " + mon) if mon else "Front month"), fq),
@@ -1242,6 +1239,17 @@ def seed_futures_pages(prices, today):
                 rows += [("KC HRW (KE, most-active)", quotes.get("kcwheat")),
                          ("Minneapolis HRS (MWE, most-active)", quotes.get("mplswheat"))]
             tbl = px_table(rows, flabel, live is True)
+            has_tbl = bool(tbl) and "<!--SEED:pxtable-->" in t
+            # the table caption names the source and delay; when it is on the
+            # page the sentence above it does not repeat them (2026-10-11)
+            note = (front_label + " " + verb + " near <strong>$" + f_usd +
+                    "</strong>" + stale +
+                    ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
+                    " &middot; as of " + flabel +
+                    ("." if has_tbl else
+                     " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest."))
+            t, c2 = seed_between(t, "note", note)
+            changed = c1 or c2
             if tbl:
                 t, c4 = seed_between(t, "pxtable", tbl)
                 changed = changed or c4
