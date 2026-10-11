@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-10T23:47:45Z",
+ "generated": "2026-10-11T01:47:25Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1825,
-  "towns": 1452
+  "elevators": 1773,
+  "towns": 1396
  },
  "states": {
   "AR": {
@@ -24,28 +24,28 @@
    "towns": 8
   },
   "IA": {
-   "elevators": 415,
-   "towns": 312
+   "elevators": 350,
+   "towns": 250
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 202,
-   "towns": 145
+   "elevators": 204,
+   "towns": 147
   },
   "IN": {
    "elevators": 59,
    "towns": 47
   },
   "KS": {
-   "elevators": 244,
-   "towns": 179
+   "elevators": 236,
+   "towns": 170
   },
   "KY": {
-   "elevators": 8,
-   "towns": 8
+   "elevators": 9,
+   "towns": 9
   },
   "LA": {
    "elevators": 1,
@@ -56,31 +56,31 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 150,
-   "towns": 126
+   "elevators": 155,
+   "towns": 130
   },
   "MO": {
-   "elevators": 27,
-   "towns": 26
+   "elevators": 28,
+   "towns": 27
   },
   "MT": {
    "elevators": 5,
    "towns": 5
   },
   "ND": {
-   "elevators": 49,
-   "towns": 46
+   "elevators": 54,
+   "towns": 50
   },
   "NE": {
-   "elevators": 237,
-   "towns": 180
+   "elevators": 240,
+   "towns": 181
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 73,
+   "elevators": 74,
    "towns": 66
   },
   "OK": {
@@ -96,7 +96,7 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 105,
+   "elevators": 106,
    "towns": 91
   },
   "TN": {
@@ -112,8 +112,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 67,
-   "towns": 62
+   "elevators": 69,
+   "towns": 64
   },
   "WY": {
    "elevators": 1,
