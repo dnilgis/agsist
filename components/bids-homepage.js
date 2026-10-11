@@ -28,7 +28,7 @@
 
   // Set to false the day the second feed ends. Off means off: the
   // proxy is not called at all, rather than called and ignored.
-  var LICENSED_FEED = true;
+  var LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
   var LICENSED_DEADLINE_MS = 6000;
   var NET_SCRIPT = '/components/bids-network.js?v=5';
 

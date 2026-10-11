@@ -2021,7 +2021,7 @@
   // what the network does not cover. Neither failing empties the card. Set
   // FS_LICENSED_FEED = false the day the subscription ends and the proxy is
   // never called.
-  var FS_LICENSED_FEED = true;
+  var FS_LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
   var FS_LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
   function fsKey(name, city, state){
     var t = String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/co op/g,'coop').replace(/co operative/g,'cooperative').split(' ').filter(Boolean);

@@ -24,10 +24,7 @@
 name: harvest elevator directory
 
 on:
-  schedule:
-    # 07:20 UTC on the 2nd of each month — well clear of the price windows and
-    # of the top of the hour, which is the busiest minute on the platform.
-    - cron: "20 7 2 * *"
+  # Monthly cron (07:20 UTC on the 2nd) removed 2026-10-11: Barchart turned off.
   workflow_dispatch:
     inputs:
       max_distance:
@@ -74,6 +71,9 @@ jobs:
           # No key is a normal state once the subscription is cancelled
           # (2026-09-25). The directory already written stays exactly as it
           # is; this run says so and ends green instead of failing monthly.
+          # Barchart turned off 2026-10-11 (Sig cancelling the subscription).
+          echo "::notice::Barchart is turned off. Nothing harvested; data/elevator-directory.json is unchanged."
+          exit 0
           if [ -z "$BARCHART_API_KEY" ]; then
             echo "::notice::No BARCHART_API_KEY. Nothing harvested; data/elevator-directory.json is unchanged."
             exit 0

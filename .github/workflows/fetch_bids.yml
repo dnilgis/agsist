@@ -177,7 +177,9 @@ jobs:
       - name: Fetch grain bids
         id: fetch
         env:
-          BARCHART_MODE: ${{ vars.BARCHART_MODE }}
+          # Off in code, not just a repo variable: Barchart turned off 2026-10-11
+          # (Sig cancelling the subscription). The network alone feeds bids.json.
+          BARCHART_MODE: 'off'
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
           BARCHART_TOTAL_LOCATIONS: ${{ github.event.inputs.total_locations }}
         run: python scripts/fetch_bids.py

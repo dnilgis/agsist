@@ -1554,15 +1554,15 @@
    ],
    "cadence": "1 launch Mondays at about 10am Central",
    "curated": false,
-   "planned": true,
+   "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "23 15 * * 1"
    ],
    "max_gap_hours": 168.0,
-   "quiet": "planned",
-   "why_quiet": "The weekly Search Console index check has not made its first run yet. Only the internal search report reads it, and it says so until then."
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/seo-opportunities.json",
