@@ -25,8 +25,10 @@ COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
   1. Message Batches, 50% off input and output. A monthly job does not need
      its answers in seconds. Batches usually finish within the hour and are
      allowed 24.
-  2. The model is a setting: ATLAS_READS_MODEL, default claude-sonnet-5
-     ($2/$10 per million tokens against $3/$15 for 4.6). `--trial N` writes N
+  2. The model is a setting: ATLAS_READS_MODEL, default claude-haiku-4-5-20251001
+     since 2026-10-11 (Sig: use the cheaper model; was claude-sonnet-5,
+     $2/$10 per million tokens against $1/$5 for Haiku 4.5). The number
+     check and the voice check still gate every read, whichever model wrote it. `--trial N` writes N
      counties on two models side by side into data/atlas/reads-trial.json so
      the cheaper one (claude-haiku-4-5-20251001, $1/$5) can be judged on this
      gate's own pass rate before it is used for real.
@@ -88,7 +90,7 @@ ATLAS = "data/atlas/atlas.json"
 DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
-MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or "claude-sonnet-5"
+MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or "claude-haiku-4-5-20251001"   # Sig 2026-10-11: the cheaper model
 MODE = os.environ.get("ATLAS_READS_MODE", "").strip() or "batch"      # batch | sync
 BATCH_WAIT_MIN = float(os.environ.get("ATLAS_READS_BATCH_WAIT_MIN", "") or 180)
 # ONE DEADLINE, AND IT COUNTS FROM THE JOB'S START WHEN THE WORKFLOW SAYS WHEN
