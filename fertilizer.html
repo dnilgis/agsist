@@ -107,10 +107,11 @@
 
 .fert-page{max-width:900px;margin:0 auto;padding:0 1rem 3rem}
 
-.fert-hero{padding:1.4rem 0 .9rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+@media(max-width:600px){.fert-hero .fert-eyebrow{display:none}}
+.fert-hero{padding:1rem 0 .8rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
 .fert-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
 .fert-page-title{font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--text);line-height:1.1;margin:0 0 .35rem;text-transform:uppercase;letter-spacing:-.01em}
-.fert-page-sub{font-size:.84rem;color:var(--text-dim);line-height:1.55;max-width:640px}
+.fert-page-sub{font-size:1rem;color:var(--text-dim);line-height:1.55;max-width:640px}
 
 .fert-updated-bar{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
@@ -304,7 +305,7 @@
 <style>.fert-stale{border:1px solid rgba(212,162,63,.45);background:rgba(212,162,63,.07);color:var(--text-dim);border-radius:9px;padding:.6rem .8rem;margin:0 0 .6rem;font-size:.87rem;line-height:1.6}
 .fert-stale b{color:var(--text)}
 </style>
-    <p class="fert-page-sub page-lede">Current US benchmark prices for urea, MAP, potash, ammonium sulfate (AMS), K-Mag, and pelletized lime, the inputs that drive corn and soybean fertility costs for farmers nationwide. Midwest dealer quotes, hand-collected; each row carries the date it was last quoted.</p>
+    <p class="fert-page-sub page-lede">Midwest dealer prices for urea, MAP, potash, AMS, K-Mag and lime, collected by hand. Each row shows the date it was quoted.</p>
   </div>
 
   <div class="fert-updated-bar">
@@ -312,7 +313,7 @@
     <div>As of <strong id="fert-updated-date">-</strong> &middot; <span id="fert-source-lbl">Midwest dealer benchmark</span></div>
   </div>
 
-  <div class="fert-disclaimer">
+  <div class="fert-disclaimer" id="fert-disclaimer">
     <svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Benchmark reference prices, not quotes. Verify current prices with your local dealer or co-op before purchasing.
   </div>
 
@@ -339,7 +340,7 @@
 
   <section class="fert-calc" aria-labelledby="calc-h">
     <h2 class="fert-calc-h" id="calc-h">Build Your Fertility Bill</h2>
-    <p class="fert-calc-sub">Enter your crop and yield goal. This prices out the cheapest program to replace what the crop removes, using this week&#x2019;s benchmarks. Nitrogen is costed at a yield-goal rate; phosphate and potash at crop removal.</p>
+    <p class="fert-calc-sub">Enter your crop and yield goal. This prices out the cheapest program to replace what the crop removes, using the benchmark prices above. Nitrogen is costed at a yield-goal rate; phosphate and potash at crop removal.</p>
     <div class="calc-inputs">
       <div class="calc-field"><label for="calc-crop">Crop</label><select id="calc-crop"><option value="corn">Corn</option><option value="soybean">Soybeans</option><option value="wheat">Wheat</option></select></div>
       <div class="calc-field"><label for="calc-yield">Yield goal (bu/acre)</label><input id="calc-yield" type="number" inputmode="numeric" min="0" step="5" value="180"></div>
@@ -519,6 +520,7 @@ function renderCards(data){
       host.innerHTML='<b>This sheet is dated '+days+' days ago.</b> It is collected by hand about once a month, '
         +'so treat this as a benchmark to argue from, not today\u2019s price. Call your dealer for a live quote.';
       host.style.display='block';
+      var dis=document.getElementById('fert-disclaimer'); if(dis)dis.style.display='none'; // the stale note already says call your dealer
     } else { host.style.display='none'; }
   })();
   var src=document.getElementById('fert-source-lbl');if(src&&data.source)src.textContent=data.source.split('\u2014')[0].trim();
