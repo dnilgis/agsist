@@ -142,13 +142,13 @@
 <div class="dev-page">
 
 <h1>Embed tools and data feeds</h1>
-<p class="sub page-lede">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
+<p class="sub page-lede">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or read the feeds and build your own display.</p>
 
-<div class="dev-lead"><strong>One script, one div.</strong> Two tools are live: the GDU calculator and the ARC or PLC calculator. Both load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
+<div class="dev-lead">Two tools are live: the GDU calculator and the ARC or PLC calculator. Both load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
 
 <!-- ═══ WIDGETS (merged from the old /embed page, 2026-10) ═══════════════ -->
 <h2 id="widgets" style="scroll-margin-top:80px">Embeddable widgets</h2>
-<p>Run a co-op, elevator, ag-retail or extension site? Copy a snippet, paste it into your page, and your visitors get the live tool. Free, no account, no API key.</p>
+<p>Run a co-op, elevator, ag-retail or extension site? Copy a snippet, paste it into your page, and your visitors get the live tool. It's free and needs no account or API key.</p>
 
 <!-- ── GDU Calculator ────────────────────────────────────────────── -->
 <div class="widget-card" id="gdu">
@@ -159,7 +159,7 @@
         <span class="wc-name">GDU Calculator</span>
         <span class="wc-tag wc-tag--live">Live</span>
       </div>
-      <p class="wc-desc">Pulls real growing degree units from a planting date and location, tracks corn and soybean stage, projects black layer, and flags first-frost risk.</p>
+      <p class="wc-desc">Adds up growing degree units from a planting date and location, tracks corn and soybean stage, projects black layer, and flags first-frost risk.</p>
     </div>
   </div>
   <div class="wc-body">
@@ -221,12 +221,12 @@
   </div>
 </div>
 
-<p class="wc-desc"><strong>A note on the link.</strong> The script places a real &ldquo;Powered by AGSIST&rdquo; link in your page, and the iframe snippet carries the same link under it. I&rsquo;d appreciate you keeping it. It&rsquo;s how a free tool stays free. Nothing tracks your visitors beyond standard, anonymized usage stats on the tool itself. Want a widget built for your operation? <a href="mailto:sig@farmers1st.com?subject=AGSIST%20embed%20widget">Email sig@farmers1st.com</a>.</p>
+<p class="wc-desc">The script places a &ldquo;Powered by AGSIST&rdquo; link in your page, and the iframe snippet carries the same link under it. Please keep it; links like that are how people find the site. Nothing tracks your visitors beyond standard, anonymized usage stats on the tool itself. Want a widget built for your operation? <a href="mailto:sig@farmers1st.com?subject=AGSIST%20embed%20widget">Email sig@farmers1st.com</a>.</p>
 
 
 <!-- ═══ LIVE DATA FEEDS ══════════════════════════════════════════════ -->
-<h2>Live Data Feeds</h2>
-<p>These JSON endpoints update automatically. Consume them directly to build your own UI without using the widget script at all.</p>
+<h2>Data feeds</h2>
+<p>These JSON files update on their own schedule. Read them directly if you'd rather build your own display than use the widget.</p>
 
 <div class="ep-list">
 
@@ -299,12 +299,12 @@
 
 
 <!-- ═══ USAGE POLICY ═════════════════════════════════════════════════ -->
-<h2>Usage Policy</h2>
+<h2>Usage policy</h2>
 <ul>
   <li>Non-commercial use by farms, extension offices, and co-ops is welcome at no charge.</li>
   <li>Commercial licensing and white-labeling require a written agreement: <a href="mailto:sig@farmers1st.com">contact me</a>.</li>
-  <li>Cache data on your end. Please limit requests to one fetch per 15 minutes or longer. Don't hammer the endpoints.</li>
-  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link. It's how a free tool stays free.</li>
+  <li>Cache data on your end. Please fetch no more than once every 15 minutes.</li>
+  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link.</li>
   <li>All price data is delayed a minimum of 15 minutes during market hours. Do not use for live trading decisions.</li>
 </ul>
 
@@ -313,12 +313,12 @@
 <p>AGSIST&#8217;s own writing, design, code, name, and logo are &copy; Sigurd Lindquist, all rights reserved. AGSIST-compiled datasets (the Farmland Atlas and its CSV files) are CC BY 4.0: credit &#8220;AGSIST (agsist.com)&#8221; with a link. Third-party data shown on the site (Yahoo Finance prices, elevator bids, Polymarket odds, Open-Meteo and NWS weather) is not AGSIST&#8217;s to license and no right to redistribute it is granted. Full wording: <a href="/terms#licence">Terms</a>.</p>
 
 <!-- ═══ DATA SOURCES ══════════════════════════════════════════════════ -->
-<h2>Data Sources</h2>
-<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Prediction markets via the Polymarket API. See the <a href="/data-sources">full data sources page</a> for complete attribution details.</p>
+<h2>Data sources</h2>
+<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Prediction markets via the Polymarket API. The <a href="/data-sources">data sources page</a> lists every provider.</p>
 
 <!-- ═══ CONTACT ═══════════════════════════════════════════════════════ -->
-<h2>Questions &amp; Licensing</h2>
-<p>I'm a solo developer and I answer integration questions fast. For early access, custom builds or commercial licensing, email me.</p>
+<h2>Questions and licensing</h2>
+<p>For integration questions, custom builds or commercial licensing, email me. I usually answer within a day or two.</p>
 <div class="contact-card">
   <div class="cc-name">Sigurd Lindquist</div>
   <div class="cc-title">Founder, AGSIST</div>

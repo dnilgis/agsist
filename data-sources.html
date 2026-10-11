@@ -20,7 +20,7 @@
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="AGSIST Data Sources: transparency on every data provider used">
+  <meta property="og:image:alt"    content="AGSIST data sources: every data provider the site uses">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
@@ -124,10 +124,10 @@
 </div>
   <main id="main" tabindex="-1">
     <div class="info-page">
-      <h1>Data Sources</h1>
+      <h1>Data sources</h1>
       <p class="sub page-lede">Where the numbers on AGSIST come from. Last reviewed September 26, 2026. Whether each feed is current right now is on the <a href="/status">status page</a>.</p>
 
-      <h2>Commodity Prices</h2>
+      <h2>Commodity prices</h2>
       <div class="info-card" id="yahoo">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Yahoo Finance (via yfinance)</h3>
         <p class="ds-status"><a href="/status#st-prices">Live status of this feed &rarr;</a></p>
@@ -158,7 +158,7 @@
         <p><a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a></p>
       </div>
 
-      <h2>Positioning, Hail &amp; Transport</h2>
+      <h2>Positioning, hail and transport</h2>
       <div class="info-card" id="cftc">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> CFTC Commitments of Traders</h3>
         <p class="ds-status"><a href="/status#st-cot">Live status of this feed &rarr;</a></p>
@@ -177,14 +177,14 @@
         <p><a href="https://agtransport.usda.gov" target="_blank" rel="noopener">agtransport.usda.gov</a></p>
       </div>
 
-      <h2>Prediction Markets</h2>
+      <h2>Prediction markets</h2>
       <div class="info-card" id="polymarket">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Polymarket</h3>
         <p><strong>Used for:</strong> Event probabilities in the odds block on the <a href="/#f-kalshi">home page</a>. AGSIST collects them once a day from Polymarket's Gamma API (and Kalshi's public market data) on the server, filters them for farm relevance, and the home page reads that one file. Every contract published today is from Polymarket.</p>
         <p><a href="https://polymarket.com" target="_blank" rel="noopener">polymarket.com</a></p>
       </div>
 
-      <h2>USDA Reports</h2>
+      <h2>USDA reports</h2>
       <div class="info-card" id="usda">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> USDA</h3>
         <p class="ds-status"><a href="/status#st-direction">Live status of this feed &rarr;</a></p>
@@ -192,7 +192,7 @@
         <p><a href="https://www.usda.gov" target="_blank" rel="noopener">usda.gov</a>: public APIs.</p>
       </div>
 
-      <h2>More USDA and Government Data</h2>
+      <h2>More USDA and government data</h2>
       <div class="info-card" id="nass">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> USDA NASS Quick Stats and Census of Agriculture</h3>
         <p class="ds-status"><a href="/status#st-nowcast">Live status of this feed &rarr;</a></p>
@@ -229,7 +229,7 @@
         <p><strong>Used for:</strong> Soil maps (SSURGO), crop history (Cropland Data Layer) and Sentinel-1 and Sentinel-2 satellite layers on <a href="/field-scout">Field Scout</a>, requested through AGSIST&rsquo;s own Cloudflare Worker.</p>
       </div>
 
-      <h2>Audience Numbers</h2>
+      <h2>Audience numbers</h2>
       <div class="info-card" id="analytics">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Google Analytics, Search Console and Bing Webmaster Tools</h3>
         <p><strong>Used for:</strong> The reader and search figures on the <a href="/sponsor">sponsor page</a>, read from AGSIST&rsquo;s own analytics accounts. The Bing Webmaster figure counts Bing and Copilot answers only.</p>
@@ -241,14 +241,14 @@
         <p><strong>Used for:</strong> Reverse geocoding browser lat/lng to city, state, and ZIP code. No personal location data is stored on my servers.</p>
       </div>
 
-      <h2>Cash Bids</h2>
+      <h2>Cash bids</h2>
       <div class="info-card" id="cash-bids">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> AGSIST elevator network + licensed feed</h3>
         <p class="ds-status"><a href="/status#st-bids">Live status of this feed &rarr;</a></p>
         <p>Cash bids come from AGSIST&rsquo;s own elevator network (bid boards read directly from each elevator) plus a licensed cash-bid feed for elevators AGSIST does not read itself.</p>
       </div>
 
-      <p>See a data issue? <a href="/contact">Contact me directly</a>.</p>
+      <p>See a number that looks wrong? <a href="/contact">Tell me</a>.</p>
 
       <div class="built-by">
         Built and maintained by <strong>Sigurd Lindquist</strong>, Farmers First Agri Service<br>

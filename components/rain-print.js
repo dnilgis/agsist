@@ -1098,7 +1098,7 @@
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
-      setStatus(err && err.message ? err.message : 'Something went wrong. Try again.', true);
+      setStatus(err && err.message ? err.message : 'The print did not draw. Press Draw my print again; if it fails twice, try another year or town.', true);
     }).then(done);
   }
 
