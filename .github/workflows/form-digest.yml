@@ -1,0 +1,64 @@
+name: Site forms digest
+# Emails Sig what came in through the elevator claim form, the sponsor proof
+# approval and requests box, and the Parcel Report waitlist
+# (scripts/form_digest.py). The posts live in the subs worker (KV prefix
+# form:, workers/subs-worker.js v5.8); nothing is written to this repo and the
+# log prints counts only. Until v5.8 is deployed the worker has no
+# /form-list and the job says so and exits cleanly (the pages send to
+# Formspree meanwhile).
+# Secrets: the same ones the sponsor job uses -- LIST_URL, LIST_TOKEN,
+# SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME,
+# FORMS_TO (else SPONSOR_TO, else sig@farmers1st.com).
+
+on:
+  schedule:
+    # Hourly fallback; the bids chain below does most of the work.
+    - cron: '41 * * * *'
+  # Runs after every "Fetch Grain Bids" (started every 15 minutes by
+  # cron-job.org), the same chain the sponsor sign-up job rides.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print the counts; send and mark nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: form-digest
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/form_digest.py --selftest
+          node scripts/test_form_worker.mjs
+      - name: Run
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          FORMS_TO: ${{ secrets.FORMS_TO }}
+          SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/form_digest.py

@@ -237,11 +237,20 @@ def main():
         check("@" not in blob.replace("sig@farmers1st.com", ""), "no email address is written into the public file")
 
     print("\nthe requests box never pretends")
-    check("formspree.io/f/xnjbwepn" in html, "requests post to the site's own Formspree form")
+    # 2026-10-11: the post goes through components/form-post.js (the subs
+    # worker first, the same Formspree form as the fallback), so the two
+    # checks that used to read the page now read the helper the page loads.
+    fp = (ROOT / "components" / "form-post.js").read_text()
+    check('<script src="/components/form-post.js?v=' in html and "sendForm(" in html and "fetch(" not in html.split("function sendForm")[1].split("\n  }")[0],
+          "approval and requests post through the shared form helper")
+    check("agsist-subs.dnilgis.workers.dev/form" in fp and "formspree.io/f/xnjbwepn" in fp,
+          "requests post to the subs worker, with the site's own Formspree form as the fallback")
     check("That did not go through." in html and "mailto:" in html,
           "a failed request says so and hands over a written email")
-    check("if (!j || j.ok === false || j.errors) throw 0;" in html,
-          "only an explicit ok from Formspree counts as sent")
+    check("if (!j || j.ok === false || j.errors) throw" in fp and "j.ok === true" in fp,
+          "only an explicit ok from the worker or from Formspree counts as sent")
+    check("j.ok === false" not in html.split("function sendForm")[1],
+          "the page keeps no second, older send path")
     check("Nothing changes until" in html, "the box says a person acts on it, not the button")
     conf_ls = [sp_.get("licensed_states") for sp_ in conf.get("sponsors", [])]
     for v in conf_ls:

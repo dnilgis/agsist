@@ -663,7 +663,7 @@ details.fa-arith .body a{color:var(--gold)}
     <div class="fa-cta">
       <div class="fa-lbl">Coming: the Parcel Report</div>
       <p class="lead" style="color:var(--text);margin:0">The same record for one field instead of one county: its soils and water-holding capacity, the hail that has actually hit that ground, the county's night-heat trend, water dependence, loss record and rent, in one document. It will be paid. It is not built yet. If you would use it, leave an address and I will tell you when it exists and what it costs.</p>
-      <form action="https://formspree.io/f/xnjbwepn" method="POST">
+      <form action="https://formspree.io/f/xnjbwepn" method="POST" id="fa-parcel-form">
         <input type="hidden" name="_subject" value="Parcel Report interest">
         <input type="hidden" name="source" value="farmland-atlas">
         <input type="email" name="email" placeholder="you@farm.com" required aria-label="Email address">
@@ -691,6 +691,36 @@ details.fa-arith .body a{color:var(--gold)}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=18" defer></script>
+<script src="/components/form-post.js?v=1"></script>
+<script>/* Parcel Report waitlist (2026-10-11): goes to AGSIST's subs worker
+   (kind atlas-feedback). If the worker cannot take it (not deployed yet,
+   down) or the script is missing, the form submits itself to Formspree as it
+   always has. Without JavaScript it is still a plain Formspree form. */
+(function(){
+  var f=document.getElementById('fa-parcel-form');
+  if(!f||!window.agsistFormPost||!window.agsistFormPost.worker) return;
+  var busy=false;
+  f.addEventListener('submit',function(e){
+    if(busy) return;
+    var em=f.elements.email, btn=f.querySelector('button[type=submit]');
+    if(!em||!em.value||(em.checkValidity&&!em.checkValidity())) return;
+    e.preventDefault();
+    busy=true; if(btn) btn.disabled=true;
+    var plain=function(){ busy=false; if(btn) btn.disabled=false; HTMLFormElement.prototype.submit.call(f); };
+    window.agsistFormPost.worker('atlas-feedback',{email:em.value.trim(),source:'farmland-atlas',page:'/farmland-atlas'})
+      .then(function(x){
+        if(x==='fallback') return plain();
+        try{ if(window.gaEvent) window.gaEvent('parcel_waitlist',{result:'ok'}); }catch(err){}
+        var p=document.createElement('p');
+        p.className='fa-parcel-ok'; p.setAttribute('role','status'); p.setAttribute('tabindex','-1');
+        p.style.margin='.7rem 0 0'; p.style.color='var(--text)';
+        p.innerHTML='<b>Thanks.</b> You are on the list. I will email you when the Parcel Report exists and what it costs.';
+        f.parentNode.replaceChild(p,f);
+        try{ p.focus(); }catch(err){}
+      },plain);
+  });
+})();
+</script>
 <script>
 (function(){
 'use strict';

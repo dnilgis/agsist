@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/sponsor-ad.js?v=1"></script>
+<script src="/components/form-post.js?v=1"></script>
 <style>
 /* THE CAMPAIGN PORTAL. Every colour is a site token (styles.css) or the ad
    orange the ad itself uses; a block does not get its own colour vocabulary.
@@ -549,8 +550,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
      Everything the approval needs is already on the page -- the proof code,
      the advertiser, the headline, the button and its link, the phone. There
      is nothing for the sponsor to type, so there is no reason to make him
-     open a mail program to send it. */
-  var APPROVE_FORM = 'https://formspree.io/f/xnjbwepn';
+     open a mail program to send it.
+     It goes to AGSIST's subs worker (kind sponsor-feedback) through
+     components/form-post.js, and to the site's Formspree form if the worker
+     cannot take it (not deployed yet, down). */
+  function sendForm(data, fsf) {
+    var send = window.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
+    data.page = '/sponsor-report';
+    return send('sponsor-feedback', data, fsf);
+  }
   function approveSentKey(code) { return 'agsist_approved_' + (code || ''); }
   function approveSentAt(code) {
     try { return localStorage.getItem(approveSentKey(code)) || ''; } catch (e) { return ''; }
@@ -600,16 +608,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var m = mailParts(href);
     var was = el.textContent;
     el.disabled = true; el.textContent = 'Sending\u2026';
-    var fd = new FormData();
-    fd.append('_subject', m.subject);
-    fd.append('request', 'Approval');
-    fd.append('sponsor', d.sponsor || '');
-    fd.append('proof', s.code || '');
-    fd.append('message', m.body);
-    fetch(APPROVE_FORM, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) {
-        if (!j || j.ok === false || j.errors) throw 0;
+    var fd = { _subject: m.subject, request: 'Approval', sponsor: d.sponsor || '', proof: s.code || '', message: m.body };
+    sendForm({ subject: m.subject, request: 'Approval', sponsor: d.sponsor || '', proof: s.code || '', message: m.body }, fd)
+      .then(function () {
         rememberApproveSent(s.code);
         el.textContent = was; el.disabled = false; el.hidden = true;
         approveSay(el, '<p class="cp-req-ok"><b>Approval sent.</b> Sig has it, with proof code ' +
@@ -965,13 +966,12 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
      Everything a sponsor might ask for, in one place: a change to the ad, a
      different plan, more time, a pause, a cancellation, or just a note.
 
-     It posts to the site's Formspree form (the same one /farmland-atlas uses),
-     which emails Sig. Nothing here changes the campaign by itself -- a person
+     It posts to AGSIST's subs worker, or the site's Formspree form when the
+     worker cannot take it (sendForm above); either way Sig gets it. Nothing here changes the campaign by itself -- a person
      reads it and acts -- and the page says so. If the post fails for any
      reason the page says it did NOT send and hands over a ready-written email
      with the same words, because a request that quietly vanishes is the worst
      thing this box could do. */
-  var FORM = 'https://formspree.io/f/xnjbwepn';
   var ACTS = [
     ['change', 'Change the ad', 'What should the ad say or link to instead?'],
     ['plan', 'Switch plan', 'Anything we should know about the switch?'],
@@ -1084,13 +1084,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          two were corrected. */
       var mail = 'mailto:' + to + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
       var go = f.querySelector('#cp-req-send'); go.disabled = true; go.textContent = 'Sending…';
-      var fd = new FormData();
-      fd.append('_subject', subj); fd.append('request', A[1]); fd.append('sponsor', d.sponsor || ''); fd.append('message', body);
-      if (em) fd.append('email', em);
-      fetch(FORM, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) {
-          if (!j || j.ok === false || j.errors) throw 0;
+      var fd = { _subject: subj, request: A[1], sponsor: d.sponsor || '', message: body };
+      if (em) fd.email = em;
+      sendForm({ subject: subj, request: A[1], sponsor: d.sponsor || '', proof: s.code || '', message: body, email: em }, fd)
+        .then(function () {
           out.innerHTML = '<p class="cp-req-ok"><b>Sent.</b> Sig has it' + (em ? ' and will reply to ' + esc(em) : '') + '. Nothing changes until he confirms it with you.</p>';
           f.querySelector('#cp-req-msg').value = '';
         })

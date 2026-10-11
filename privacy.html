@@ -160,7 +160,7 @@
     <div class="legal-page">
 
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: Oct 8, 2026</p>
+      <p class="updated">Last updated: Oct 11, 2026</p>
 
       <div class="tldr">
         <strong>Plain English</strong>
@@ -182,7 +182,7 @@
         <li><strong>Settings in your browser.</strong> Your last location and ZIP, calculator inputs, saved Field Scout fields, theme and similar choices are kept in your browser&rsquo;s local storage so the tools remember your work. They stay on your device. The full list is under Cookies and Local Storage below.</li>
         <li><strong>A location you give.</strong> Your browser&rsquo;s location, if you allow it, or a ZIP code you type. It is sent to the service that answers the question (weather, a place name, nearby cash bids), as listed below.</li>
         <li><strong>Your email, if you sign up.</strong> For the AGSIST Daily, a price alert, an elevator watch, a county watch or a hail alert, together with what you asked to watch. Details are under Alerts and Watches below.</li>
-        <li><strong>What you send me.</strong> Emails you write to me, and three forms that go through Formspree: the Parcel Report waitlist, the sponsor approval form, and the elevator claim form on the <a href="/elevators">elevators page</a>. The claim form sends the business name, town and state, a contact name and role, a work email, a phone number and bid-page address if you give them, and whether you want to hear about a hosted bid board.</li>
+        <li><strong>What you send me.</strong> Emails you write to me, and three forms: the Parcel Report waitlist, the sponsor approval and requests form, and the elevator claim form on the <a href="/elevators">elevators page</a>. They go to AGSIST&rsquo;s own Cloudflare Worker, which keeps what you sent for up to a year and emails it to me. If the worker cannot take it, the form sends it through Formspree instead. The claim form sends the business name, town and state, a contact name and role, a work email, a phone number and bid-page address if you give them, and whether you want to hear about a hosted bid board.</li>
       </ul>
 
       <h2>What Is Not Collected</h2>
@@ -198,7 +198,7 @@
         <li><strong>GitHub Pages</strong>: hosts the site itself.</li>
         <li><strong>Google Analytics</strong>: the visit counts described above, when analytics is on.</li>
         <li><strong>Gmail (Google)</strong>: sends the AGSIST Daily, the alert and watch emails, and their confirmation emails, so Google handles those messages in transit.</li>
-        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), look up cash bids by ZIP, and answer Field Scout requests. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
+        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), take the three forms above, look up cash bids by ZIP, and answer Field Scout requests. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
         <li><strong>Barchart</strong>: the second cash-bid feed. When you look up bids by ZIP, your browser sends the ZIP and search radius to AGSIST&rsquo;s Cloudflare Worker, and the worker asks Barchart for bids near that ZIP. Barchart gets the ZIP from the worker, not from your browser.</li>
         <li><strong>Open-Meteo</strong>: weather. It receives the coordinates of the place you asked about, and turns a ZIP into a place on the home page&rsquo;s bid search.</li>
         <li><strong>OpenStreetMap Nominatim</strong>: turns coordinates into a place name.</li>
@@ -206,7 +206,7 @@
         <li><strong>Field Scout services</strong>: a field you draw or look up goes to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history), the FCC (county lookup), the U.S. Drought Monitor, Iowa Environmental Mesonet and Copernicus Sentinel (imagery). Weather history for the field is fetched by your browser from Open-Meteo, using the field&rsquo;s coordinates. Map tiles come from Esri (satellite) and CARTO (base map).</li>
         <li><strong>TradingView</strong>: the price charts on the corn, soybean and wheat futures pages load from TradingView.</li>
         <li><strong>Windy</strong>: the radar map on the home page is a frame from Windy.</li>
-        <li><strong>Formspree</strong>: receives the Parcel Report waitlist form on the Farmland Atlas, the approval form on sponsor proofs, and the elevator claim form on the elevators page.</li>
+        <li><strong>Formspree</strong>: the backup for the Parcel Report waitlist on the Farmland Atlas, the approval and requests form on sponsor proofs, and the elevator claim form on the elevators page. It gets a form only when AGSIST&rsquo;s worker cannot take it.</li>
         <li><strong>Google Fonts</strong>: older Daily archive pages and two Farmland Atlas pages load typefaces from Google. Other pages use fonts served by AGSIST.</li>
         <li><strong>jsDelivr, cdnjs and unpkg</strong>: host map and chart code some pages load.</li>
       </ul>

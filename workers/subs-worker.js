@@ -1,4 +1,25 @@
 /**
+ * v5.8 (2026-10-11): SITE FORMS MOVE OFF FORMSPREE. New routes only; every
+ *   existing route answers exactly as before. Three forms used to post to
+ *   Formspree: the elevator claim form (elevators.html), the approval and
+ *   requests box on sponsor proofs (sponsor-report.html) and the Parcel Report
+ *   waitlist (farmland-atlas.html). They now post here first. A page that
+ *   gets 403/404/405/5xx or no answer from this route sends to Formspree
+ *   instead (components/form-post.js), so the pages work the same before this
+ *   is deployed.
+ *   POST /form  JSON {kind, ...fields, _gotcha}. kind = claim |
+ *     sponsor-feedback | atlas-feedback; each has its own field list, lengths
+ *     and required fields (FORM_KINDS). Unknown fields are dropped. Body at
+ *     most 16 KB. Origin must be agsist.com. At most 8 posts per IP an hour
+ *     across all three (the IP is kept only as an HMAC, for two hours).
+ *     Stored under form:<kind>:<ms>:<rand> for a year. Nothing is sent from
+ *     here; scripts/form_digest.py mails Sig.
+ *   GET  /form-list?token=[&kind=][&new=1]  the stored posts, newest last.
+ *   POST /form-mark?token=  {keys:[...]} the digest job marks posts it mailed.
+ *   GET  /count gains forms:{claim, sponsor-feedback, atlas-feedback}: counts.
+ *   No new binding and no new secret.
+ */
+/**
  * v5.7 (2026-10-09): the confirm/unsubscribe pages carry a viewport meta, so
  *   they read at full size on a phone. No route, field or token changes.
  */
@@ -269,6 +290,73 @@ const SAPP_DECISIONS = {
 };
 function sappExpired(r) { return r.status === "pending" && pendExpired(r); }
 
+// v5.8: the site's own forms (were Formspree). [max length, required, type]
+const FORM_KINDS = {
+  claim: {
+    elevator: [120, true], town: [80, true], state: [2, true, "state"], contact_name: [80, true],
+    role: [80, true], email: [254, true, "email"], phone: [30], bid_page_url: [320, false, "url"],
+    hosted_board: [3, false, "yesno"], page: [60],
+  },
+  "sponsor-feedback": {
+    request: [60, true], sponsor: [120], proof: [40], subject: [200], message: [6000, true, "text"],
+    email: [254, false, "email"], page: [60],
+  },
+  "atlas-feedback": { email: [254, true, "email"], source: [60], page: [60] },
+};
+const FORM_MAX_BYTES = 16 * 1024;
+const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
+const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
+const FORM_KEY_RE = /^form:[a-z-]{2,30}:\d{10,16}:[0-9a-f]{8}$/;
+
+function formClean(kind, b) {
+  const spec = FORM_KINDS[kind];
+  const out = {};
+  for (const f of Object.keys(spec)) {
+    const [max, req, type] = spec[f];
+    let v = b[f];
+    if (type === "yesno") { out[f] = (v === true || /^(yes|on|true|1)$/i.test(String(v == null ? "" : v).trim())) ? "yes" : "no"; continue; }
+    v = String(v == null ? "" : v);
+    // A message keeps its line breaks; every other field is one line.
+    v = type === "text" ? v.replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ")
+                        : v.replace(/[\u0000-\u001f\u007f]/g, " ");
+    v = v.trim();
+    if (!v) { if (req) return { error: f + " is required" }; continue; }
+    if (v.length > max) return { error: f + " is too long" };
+    if (type === "email") {
+      v = v.toLowerCase();
+      if (!EMAIL_RE.test(v)) return { error: "invalid email" };
+    } else if (type === "state") {
+      v = v.toUpperCase();
+      if (!/^[A-Z]{2}$/.test(v)) return { error: "invalid state" };
+    } else if (type === "url") {
+      if (!/^https?:\/\//i.test(v)) v = "https://" + v;
+      try { const u = new URL(v); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
+      catch (e) { return { error: "invalid " + f }; }
+      if (v.length > max) return { error: f + " is too long" };
+    }
+    out[f] = v;
+  }
+  return { rec: out };
+}
+
+async function formRateOk(req, env) {
+  const ip = req.headers.get("CF-Connecting-IP") || "";
+  if (!ip) return true;
+  // Only an HMAC of the address is stored, and only for two hours.
+  const h = await hmac16("form-ip|" + ip, env.UNSUB_SECRET || "agsist-form");
+  const k = "rl:form:" + h + ":" + Math.floor(Date.now() / 3600e3);
+  const n = Number(await env.SUBS.get(k)) || 0;
+  if (n >= FORM_RATE_MAX) return false;
+  await env.SUBS.put(k, String(n + 1), { expirationTtl: 7200 });
+  return true;
+}
+
+async function formCounts(env) {
+  const out = {};
+  for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
+  return out;
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -487,6 +575,8 @@ export default {
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
         by_source: bySource,
+        // v5.8: stored form posts per kind. Counts only.
+        forms: await formCounts(env),
       }, 200, { "Access-Control-Allow-Origin": "*" });
     }
 
@@ -987,6 +1077,71 @@ export default {
       if (r.status === "expired" || r.status === "ended") await env.SUBS.delete("sapp-logo:" + id);
       await env.SUBS.put("sapp:" + id, JSON.stringify(r));
       return json({ ok: true });
+    }
+
+    // ---------- v5.8: the site's own forms ----------
+    if (path === "/form" && req.method === "POST") {
+      const c = cors(req);
+      const origin = req.headers.get("Origin") || "";
+      if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, c);
+      if (Number(req.headers.get("Content-Length") || 0) > FORM_MAX_BYTES)
+        return json({ ok: false, error: "too large" }, 413, c);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > FORM_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      if (b._gotcha) return json({ ok: true }, 200, c);
+      const kind = String(b.kind || "");
+      if (!Object.prototype.hasOwnProperty.call(FORM_KINDS, kind)) return json({ ok: false, error: "unknown form" }, 400, c);
+      const v = formClean(kind, b);
+      if (v.error) return json({ ok: false, error: v.error }, 400, c);
+      if (!(await formRateOk(req, env))) return json({ ok: false, error: "too many posts; try again in an hour" }, 429, c);
+      const ts = Date.now();
+      const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+      await env.SUBS.put("form:" + kind + ":" + ts + ":" + rnd,
+        JSON.stringify(Object.assign({ kind, ts, n: 0 }, v.rec)), { expirationTtl: FORM_TTL_S });
+      return json({ ok: true }, 200, c);
+    }
+
+    if (path === "/form-list" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const kind = String(url.searchParams.get("kind") || "");
+      if (kind && !Object.prototype.hasOwnProperty.call(FORM_KINDS, kind)) return json({ ok: false, error: "unknown form" }, 400);
+      const onlyNew = url.searchParams.get("new") === "1";
+      const out = [];
+      for (const k of await listKeys(env, "form:" + (kind ? kind + ":" : ""))) {
+        try {
+          const r = JSON.parse(await env.SUBS.get(k));
+          if (!r || (onlyNew && r.n)) continue;
+          r.key = k; out.push(r);
+        } catch (e) { /* skip */ }
+      }
+      out.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+      return json(out, 200, { "Access-Control-Allow-Origin": "*" });
+    }
+
+    if (path === "/form-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400); }
+      const keys = Array.isArray(b.keys) ? b.keys.slice(0, 500) : [];
+      let marked = 0;
+      for (const k of keys) {
+        if (typeof k !== "string" || !FORM_KEY_RE.test(k)) continue;
+        const raw = await env.SUBS.get(k);
+        if (!raw) continue;
+        let r;
+        try { r = JSON.parse(raw); } catch (e) { continue; }
+        if (r.n) continue;
+        r.n = 1;
+        // Keep the original one-year expiry; a put without one would drop it.
+        const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + FORM_TTL_S);
+        await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
+        marked++;
+      }
+      return json({ ok: true, marked });
     }
 
     return json({ ok: false, error: "not found" }, 404);

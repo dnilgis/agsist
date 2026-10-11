@@ -413,7 +413,7 @@ button,a,[role="button"]{touch-action:manipulation}
       <label class="cl-chk"><input type="checkbox" name="hosted_board" value="yes"> Tell me about a hosted bid board for our website</label>
       <div class="cl-go">
         <button type="submit" class="cl-btn" id="cl-send">Claim our board</button>
-        <p class="cl-note">Goes to Sig at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> through Formspree. Nothing changes on the site until he confirms it with you.</p>
+        <p class="cl-note">Goes to Sig at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. Nothing changes on the site until he confirms it with you.</p>
       </div>
     </form>
     <div class="cl-out" id="cl-out" role="status" aria-live="polite"></div>
@@ -782,10 +782,13 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
     .catch(giveUp);
 })();
 </script>
+<script src="/components/form-post.js?v=1"></script>
 <script>
 /* ===== 2026-10-01 r7-claim: "Claim your board" form =====
-   WHERE IT GOES: the site's existing Formspree form, the same one
-   /farmland-atlas and /sponsor-report post to, which emails Sig. Fields:
+   WHERE IT GOES (2026-10-11): AGSIST's subs worker (POST /form, kind claim)
+   through components/form-post.js; the digest job mails Sig. If the worker
+   cannot take it (not deployed yet, down), the helper sends the same fields
+   to the site's Formspree form, the one this used before. Fields:
    _subject, form, elevator, town, state, contact_name, role, email, phone,
    bid_page_url, hosted_board, page (+ the _gotcha honeypot). Nothing else.
    IF IT FAILS the page says nothing was sent and hands over the same text as
@@ -794,7 +797,6 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
    ANALYTICS: claim_submit with result ok|fail. No field values, ever. */
 (function () {
   'use strict';
-  var FORM_URL = 'https://formspree.io/f/xnjbwepn';
   var TO = 'sig@farmers1st.com';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var f = document.getElementById('cl-form');
@@ -938,21 +940,21 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
     if (first) { try { first.focus(); } catch (err) {} return; }
 
     var x = fields();
-    var fd = new FormData();
-    fd.append('_subject', subject(x));
-    fd.append('form', 'claim-board');
-    Object.keys(x).forEach(function (k) { fd.append(k, x[k]); });
-    fd.append('page', '/elevators#claim');
+    /* What Formspree gets if the worker cannot take it: the same fields as before. */
+    var fd = { _subject: subject(x), form: 'claim-board' };
+    Object.keys(x).forEach(function (k) { fd[k] = x[k]; });
+    fd.page = '/elevators#claim';
     busy = true;
     btn.disabled = true;
     var was = btn.textContent;
     btn.textContent = 'Sending…';
     out.innerHTML = '';
 
-    fetch(FORM_URL, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
-      .then(function (j) {
-        if (!j || j.ok === false || j.errors) throw 0;
+    var wx = { page: '/elevators#claim' };
+    Object.keys(x).forEach(function (k) { wx[k] = x[k]; });
+    var send = window.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
+    send('claim', wx, fd)
+      .then(function () {
         ga('claim_submit', { result: 'ok' });
         sec.classList.add('sent');
         out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> Sig has your claim for ' + esc(x.elevator) +
