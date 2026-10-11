@@ -49,7 +49,7 @@
         {"@type":"Question","name":"When is the WASDE report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It can move corn and soybean futures sharply at release."}},
         {"@type":"Question","name":"When is the USDA Export Sales report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA Export Sales report is released every Thursday at 8:30 AM Eastern Time by the USDA Foreign Agricultural Service. It covers weekly net export sales of corn, soybeans, and wheat."}},
         {"@type":"Question","name":"When is the Prospective Plantings report?","acceptedAnswer":{"@type":"Answer","text":"The USDA Prospective Plantings report is typically released in late March, usually the last business day of the month. It surveys farmers on intended corn, soybean, and wheat planting acres and is one of the most market-moving reports of the year."}},
-        {"@type":"Question","name":"When is Crop Progress released?","acceptedAnswer":{"@type":"Answer","text":"USDA Crop Progress is released every Monday at 4:00 PM Eastern Time during the growing season, from early April through late November. It provides weekly condition ratings and planting and harvest progress percentages by state."}}
+        {"@type":"Question","name":"When is Crop Progress released?","acceptedAnswer":{"@type":"Answer","text":"USDA Crop Progress is released every Monday at 4:00 PM Eastern Time (Tuesday when Monday is a federal holiday), from the first Monday in April through the Monday of Thanksgiving week. It provides weekly condition ratings and planting and harvest progress percentages by state."}}
       ]}
     ]
   }
@@ -76,6 +76,7 @@
     @keyframes ldp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
     .cal-cd-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.2rem;line-height:1.2;}
     .cal-cd-date{font-size:0.78rem;color:var(--text-dim);margin-bottom:.85rem;line-height:1.5;}
+    .cal-cd-moves{font-size:.85rem;color:var(--text);line-height:1.5;margin:-.35rem auto .85rem;max-width:30rem;}
     .cal-cd-num{font-family:var(--font-display);font-size:3.2rem;font-weight:700;color:var(--gold);line-height:1;}
     .cal-cd-unit{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);margin-top:.2rem;}
     .cal-main{max-width:1100px;margin:0 auto;padding:0 1rem 4rem;}
@@ -251,12 +252,13 @@
       <div>
         <div class="cal-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA REPORT SCHEDULE</div>
         <h1 class="cal-h1">USDA Report <span>Calendar</span></h1>
-        <p class="cal-sub page-lede">Every major USDA report date (WASDE, Crop Progress, Export Sales, Prospective Plantings, and Grain Stocks) plus market-moving international releases from Brazil (CONAB) and Canada (StatCan), with market impact ratings for corn, soybean, and grain producers.</p>
+        <p class="cal-sub page-lede">Every USDA report date and release time, with how much each one tends to move corn and soybeans. Brazil and Canada crop reports are listed too.</p>
       </div>
       <div class="cal-countdown" aria-live="polite">
         <div class="cal-cd-label"><span class="live-dot"></span> NEXT USDA REPORT</div>
         <div class="cal-cd-name" id="next-name">-</div>
         <div class="cal-cd-date" id="next-date">-</div>
+        <div class="cal-cd-moves" id="next-moves" hidden></div>
         <div class="cal-cd-num" id="next-num">-</div>
         <div class="cal-cd-unit" id="next-unit"></div>
         <a class="cal-cd-cal" id="next-cal" href="#" target="_blank" rel="noopener" hidden><svg class="ic" aria-hidden="true"><use href="#i-calendar-plus"/></svg> Add to Google Calendar</a>
@@ -335,8 +337,8 @@
         </div>
         <div class="cal-exp-card">
           <h3 style="color:#4ade80"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Crop Progress</h3>
-          <p>Weekly condition ratings (Excellent/Good/Fair/Poor/VP) and planting or harvest progress by state. Released Mondays at 4:00 PM ET from April through November.</p>
-          <div class="cal-exp-imp"><div class="imp-dots"><div class="imp-dot f moderate"></div><div class="imp-dot f moderate"></div><div class="imp-dot f moderate"></div><div class="imp-dot"></div><div class="imp-dot"></div></div><span class="imp-lbl moderate">MODERATE</span><span class="cal-exp-imp-note">&middot; G/E % moves prices</span></div>
+          <p>Weekly condition ratings (Excellent/Good/Fair/Poor/VP) and planting or harvest progress by state. Released Mondays at 4:00 PM ET (Tuesday after a Monday holiday) from the first Monday in April through Thanksgiving week.</p>
+          <div class="cal-exp-imp"><div class="imp-dots"><div class="imp-dot f low"></div><div class="imp-dot f low"></div><div class="imp-dot"></div><div class="imp-dot"></div><div class="imp-dot"></div></div><span class="imp-lbl low">LOW-MOD</span><span class="cal-exp-imp-note">&middot; Summer G/E ratings move prices most</span></div>
         </div>
         <div class="cal-exp-card">
           <h3 style="color:#4ade80"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales</h3>
@@ -363,7 +365,7 @@
 <details><summary>When is the WASDE report released?</summary><div class="agf-a">The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It can move corn and soybean futures sharply at release.</div></details>
 <details><summary>When is the USDA Export Sales report released?</summary><div class="agf-a">The USDA Export Sales report is released every Thursday at 8:30 AM Eastern Time by the USDA Foreign Agricultural Service. It covers weekly net export sales of corn, soybeans, and wheat.</div></details>
 <details><summary>When is the Prospective Plantings report?</summary><div class="agf-a">The USDA Prospective Plantings report is typically released in late March, usually the last business day of the month. It surveys farmers on intended corn, soybean, and wheat planting acres and is one of the most market-moving reports of the year.</div></details>
-<details><summary>When is Crop Progress released?</summary><div class="agf-a">USDA Crop Progress is released every Monday at 4:00 PM Eastern Time during the growing season, from early April through late November. It provides weekly condition ratings and planting and harvest progress percentages by state.</div></details>
+<details><summary>When is Crop Progress released?</summary><div class="agf-a">USDA Crop Progress is released every Monday at 4:00 PM Eastern Time (Tuesday when Monday is a federal holiday), from the first Monday in April through the Monday of Thanksgiving week. It provides weekly condition ratings and planting and harvest progress percentages by state.</div></details>
 </section>
 <!--FAQ:END-->
 
@@ -509,6 +511,15 @@
   }
   function buildEventSchema(){var ti=today.toISOString().slice(0,10);var ups=REPORTS.filter(function(r){return r.type!=='export'&&r.type!=='croprog'&&r.date>=ti;}).sort(function(a,b){return a.date.localeCompare(b.date);}).slice(0,24);if(!ups.length)return;var nodes=ups.map(function(r){var il=r.type==='intl';var org=il?(/CONAB/.test(r.name)?{name:'CONAB',url:'https://www.gov.br/conab/'}:{name:'Statistics Canada',url:'https://www.statcan.gc.ca/'}):{name:'USDA',url:'https://www.usda.gov/'};return{"@type":"Event",name:il?r.name:r.name+' (USDA)',startDate:isoStart(r),eventAttendanceMode:'https://schema.org/OnlineEventAttendanceMode',eventStatus:'https://schema.org/EventScheduled',description:r.desc||'',organizer:{"@type":"GovernmentOrganization",name:org.name,url:org.url},location:{"@type":"VirtualLocation",url:'https://agsist.com/usda-calendar'}};});var sc=document.createElement('script');sc.type='application/ld+json';sc.textContent=JSON.stringify({"@context":"https://schema.org","@graph":nodes});document.head.appendChild(sc);}
 
+  const NEXT_MOVES={
+    croprog:'Planting or harvest pace and crop ratings by state. Usually a small mover, bigger when summer ratings shift.',
+    wasde:'USDA supply and demand for corn, soybeans and wheat. One of the biggest scheduled movers each month.',
+    supply:'USDA yield and production estimates for corn and soybeans.',
+    stocks:'How much corn, soybeans and wheat is in storage. Can move prices sharply on the day.',
+    plantings:'What farmers plan to plant. Sets the acreage view for the year and can move prices sharply.',
+    export:'Weekly export sales of corn, soybeans and wheat. Large buys can move soybeans and corn.',
+    outlook:'USDA\u2019s first look at next year: acres, yields and prices.'
+  };
   function getImpact(r){
     if(r.name.includes('Acreage'))        return{level:'extreme',score:5,label:'EXTREME'};
     if(r.name.includes('Prospective'))    return{level:'extreme',score:5,label:'EXTREME'};
@@ -568,8 +579,13 @@
       document.getElementById('next-name').textContent=next.name;
       var _ti=isoStart(next);
       nextTarget=new Date(/T/.test(_ti)?_ti:next.date+'T12:00:00-05:00');
-      var _lt=parseTime24(next.time)?' \u00b7 '+new Date(_ti).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' your time':'';
+      /* the reader's own clock, only when it differs from Eastern */
+      var _loc=parseTime24(next.time)?new Date(_ti).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
+      var _lt=(_loc&&next.time.indexOf(_loc+' ')!==0)?' \u00b7 '+_loc+' your time':'';
       document.getElementById('next-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' \u00b7 '+next.time+_lt;
+      /* what the report covers and what it tends to move, in a line */
+      var mv=document.getElementById('next-moves');
+      if(mv){var mt=(NEXT_MOVES[next.type]||'')+(next.moved?' '+String(next.desc||'').replace(/^.*?(Moved from)/,'$1'):'');mv.textContent=mt.trim();mv.hidden=!mt.trim();}
       var _cd=fmtCountdown(nextTarget);
       document.getElementById('next-num').textContent=_cd.num;
       document.getElementById('next-unit').textContent=_cd.unit;

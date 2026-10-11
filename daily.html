@@ -182,10 +182,6 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec-header{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .5rem;margin-bottom:.55rem;}
 .dv3-sec-icon{font-size:1.15rem;flex-shrink:0;}
 .dv3-sec-title{font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);flex:1;}
-.dv3-sec-cnv{font-family:'JetBrains Mono',monospace;font-size:0.745rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap;}
-.dv3-sec-cnv--hi{color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.28);}
-.dv3-sec-cnv--md{color:var(--gold);background:rgba(var(--gold-rgb),.1);border:1px solid rgba(var(--gold-rgb),.28);}
-.dv3-sec-cnv--lo{color:var(--text-muted);background:var(--surface);border:1px solid var(--border);}
 .dv3-sec-body{font-size:.88rem;line-height:1.72;color:var(--text-dim);margin-bottom:.55rem;}
 .dv3-sec-body strong{color:var(--text);}
 .dv3-sec-bottomline{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface);border-radius:4px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45;}
@@ -479,9 +475,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-hero">
     <div class="dv3-hero-left">
-      <div class="dv3-eyebrow page-kicker"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published every morning before the market open, weekends included</div>
+      <div class="dv3-eyebrow page-kicker"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Every morning before the open</div>
       <h1>Daily Ag Briefing</h1>
-      <p class="dv3-sub page-lede">A morning market report for working US ag producers: grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
+      <p class="dv3-sub page-lede">Grain and livestock markets in a few minutes, before the open. Free, no account needed.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
     <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>
@@ -619,12 +615,6 @@ var dv3Perm={cands:[],headline:'',index:null,set:null,check:function(){
     if(dateOnly(this.index[j].date||'')===this.cands[i]){this.set(this.cands[i]);return;}
   }
 }};
-function convictionClass(c){
-  var v=(c||'').toUpperCase();
-  if(v.indexOf('HIGH')===0)return'hi';
-  if(v.indexOf('LOW')===0)return'lo';
-  return'md';
-}
 
 // ── today's briefing ──────────────────────────────────────────────────
 function renderToday(data,why){
@@ -861,8 +851,6 @@ function renderToday(data,why){
       var classes=['dv3-sec'];
       if(i===heatIdx)classes.push('dv3-sec--heat');
       if(sec.overnight_surprise)classes.push('dv3-sec--surprise');
-      var cnv=sec.conviction_level||'';
-      var cnvCls=convictionClass(cnv);
       // v4.3: vs_yesterday continuity chip (per-section, optional, weekday only)
       var vsY=(sec.vs_yesterday||'').trim();
       var vsHtml=(vsY && !marketClosed)
@@ -877,7 +865,6 @@ function renderToday(data,why){
         '<div class="dv3-sec-header">'+
           (sec.icon?'<span class="dv3-sec-icon">'+escHtml(sec.icon)+'</span>':'')+
           '<span class="dv3-sec-title">'+escHtml(sec.title||'')+'</span>'+
-          (cnv?'<span class="dv3-sec-cnv dv3-sec-cnv--'+cnvCls+'">'+escHtml(cnv)+' CONVICTION</span>':'')+
         '</div>'+
         catHtml+
         vsHtml+

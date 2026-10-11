@@ -3477,16 +3477,9 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
         # v5.1: so_what is the field; bottom_line is read for archived issues.
         bottom_line = html_esc(sec.get("so_what") or sec.get("bottom_line", ""))
         farmer_action = html_esc(sec.get("farmer_action", ""))
-        conviction = sec.get("conviction_level", "")
-        conviction_html = ""
-        if conviction:
-            cv_colors = {
-                "high":   ("var(--green)", "rgba(58,139,60,.10)", "rgba(58,139,60,.25)"),
-                "medium": ("var(--gold)", "rgba(218,165,32,.10)", "rgba(218,165,32,.25)"),
-                "low":    ("var(--text-muted)", "var(--surface2)", "var(--border)"),
-            }
-            cv = cv_colors.get(conviction, cv_colors["medium"])
-            conviction_html = f'<span class="dv3-sec-conviction" style="color:{cv[0]};background:{cv[1]};border:1px solid {cv[2]}">{conviction.upper()} CONVICTION</span>'
+        # conviction_level still ranks sections and picks the scored call, but
+        # it is not shown: a "MEDIUM CONVICTION" chip read as machine output
+        # to readers (2026-10-11 review).
         bottom_html = f'<div class="dv3-sec-bottomline">{bottom_line}</div>' if bottom_line else ""
         action_html = f'<div class="dv3-sec-action">&rarr; {farmer_action}</div>' if farmer_action else ""
         # v4.4: per-section catalyst marker (RULE 14)
@@ -3508,7 +3501,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
                          f'</div>')
         sections_html += (f'<div class="{cls}" style="position:relative">'
                           f'<div class="dv3-sec-header">'
-                          f'<span class="dv3-sec-title">{title}</span>{conviction_html}</div>'
+                          f'<span class="dv3-sec-title">{title}</span></div>'
                           f'{catalyst_html}'
                           f'{vs_y_html}'
                           f'<div class="dv3-sec-body">{body}</div>{bottom_html}{action_html}</div>')
@@ -3719,7 +3712,6 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec-header{{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .55rem;margin-bottom:.65rem}}
 .dv3-sec-icon{{font-size:1.3rem;flex-shrink:0}}
 .dv3-sec-title{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);flex:1}}
-.dv3-sec-conviction{{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap}}
 .dv3-sec-bullets{{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem}}
 .dv3-sec-bullets li{{position:relative;padding-left:1.05rem;font-size:.92rem;line-height:1.65;color:var(--text-dim)}}
 .dv3-sec-bullets li::before{{content:"";position:absolute;left:0;top:.62em;width:.42rem;height:.42rem;border-radius:2px;background:rgba(218,165,32,.55)}}
