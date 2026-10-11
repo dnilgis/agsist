@@ -517,7 +517,7 @@ COLUMNS = [
     ("rent_pasture_usd_ac", "$/acre", "NASS Cash Rents Survey", "permanent pasture cash rent"),
     ("value_usd_ac", "$/acre", "Census of Agriculture", "land and buildings, operators' own estimate, not a sale price"),
     ("value_year", "year", "Census of Agriculture", "census year of that value"),
-    ("value_flag", "", "AGSIST", "rose or fell when the 2022 value moved against its neighbours; the change, ratio and rank are withheld"),
+    ("value_flag", "", "AGSIST", "rose or fell when the 2022 value moved against its neighbors; the change, ratio and rank are withheld"),
     ("value_cagr_pct", "% a year", "Census of Agriculture", "compound annual change between the last two censuses, nominal"),
     ("rent_to_value_pct", "%", "NASS and Census", "dry rent divided by census value, same year"),
     ("corn_yield_median_bu_ac", "bu/acre", "NASS county yields", "median published county corn yield"),
@@ -1262,7 +1262,7 @@ def county_page(W, f, d, stamp):
     ch = lines_svg(sets, "Cash rent by survey year, dollars per acre", money) if sets else ""
     S1 += "<h2>Cash rent</h2>" + ch
     if ch:
-        S1 += '<p class="note">Dollars per acre, USDA NASS county survey. A break in a line is a year with no published survey; nothing is drawn across it.</p>'
+        S1 += '<p class="note">Dollars per acre, USDA NASS county survey. A break in a line is a year with no published survey.</p>'
     if rent_link:
         S1 += '<p class="note">Every published %s county rate, side by side: %s.</p>' % (esc(stn), rent_link)
     if ok(R):
@@ -1653,7 +1653,7 @@ def state_page(W, st):
                               f"{stn} Farmland Values by County: Value, Yield & Risk",
                               f"{stn} Farmland Values by County: Yield & Risk") if len(t) <= 60),
                  f"{stn} Farmland Values by County")
-    desc = "%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly." % (stn, len(fs))
+    desc = "%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly." % (stn, len(fs))
     rent_link = ('<a href="/rent/%s">%s cash rent by county</a>' % (slugify(stn), esc(stn))) if st in W.rent_states else ""
     body = f"""
 <main class="ap">
@@ -1666,7 +1666,7 @@ def state_page(W, st):
 <h2>{esc(stn)} at a glance</h2>
 {facts}
 <h2>Map: every county is a link</h2>
-<div class="mp"><label for="mm">Colour by</label><select id="mm"><option value="r">Dry cash rent</option><option value="v">Land and buildings</option><option value="y">Corn yield</option><option value="c">Claims per $100 of coverage</option><option value="d">Drought weeks</option></select></div>
+<div class="mp"><label for="mm">Color by</label><select id="mm"><option value="r">Dry cash rent</option><option value="v">Land and buildings</option><option value="y">Corn yield</option><option value="c">Claims per $100 of coverage</option><option value="d">Drought weeks</option></select></div>
 {smap}
 <p class="note" id="mn">Dry cash rent, {get(W.atlas, "national", "rent", "year") or W.rent_latest} survey. Five equal-count groups of the state's counties: each swatch shows the range it covers. Grey is a county with no figure. Land values flagged to read with care are left grey.</p>
 <h2>Every county</h2>
@@ -1686,7 +1686,7 @@ function paint(k){{
   var ps=[].slice.call(svg.querySelectorAll('path')),vals=[];
   ps.forEach(function(p){{var v=p.getAttribute('data-'+k);if(v!==null)vals.push(+v);}});
   vals.sort(function(a,b){{return a-b;}});var n=vals.length;
-  if(n<10){{leg.textContent='Too few counties with this figure to colour a map.';ps.forEach(function(p){{p.setAttribute('class','qn');}});return;}}
+  if(n<10){{leg.textContent='Too few counties with this figure to color a map.';ps.forEach(function(p){{p.setAttribute('class','qn');}});return;}}
   var br=[1,2,3,4].map(function(i){{return vals[Math.floor(n*i/5)];}}),e=[vals[0]].concat(br,[vals[n-1]]),f=M[k][1];
   ps.forEach(function(p){{var v=p.getAttribute('data-'+k);if(v===null){{p.setAttribute('class','qn');return;}}
     var c=0;br.forEach(function(x){{if(+v>=x)c++;}});p.setAttribute('class','q'+c);}});
