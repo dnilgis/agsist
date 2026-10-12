@@ -1,4 +1,4 @@
-// Runs the v5.8/v5.9/v5.10 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -147,6 +147,93 @@ r = await call('/count?token=tok'); j = await r.json();
 A(j.forms && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1 && j.forms['atlas-feedback'] === 9, '/count forms ' + JSON.stringify(j.forms));
 A(rpStored === 9 && j.forms['rain-print-order'] === 9, '/count forms rain-print-order ' + JSON.stringify(j.forms));
 A(!JSON.stringify(j).includes('@'), '/count carries no address');
+
+// v5.12 Rain Print business quotes (after /count above, so those counts stay as they were)
+const rbKeys = () => forms().filter(x => x.startsWith('form:rain-print-business:'));
+const rbNew = (before) => { const k = rbKeys().filter(x => !before.includes(x)); A(k.length === 1, 'exactly one new business record'); return JSON.parse(store.get(k[0])); };
+const biz = { kind: 'rain-print-business', business: 'Chetek Co-op', name: 'Al Smith', email: 'Al@Chetek.Coop', phone: '715-555-0100',
+  quantity: '12', product: 'framed', towns: 'Chetek, WI 2025\r\nRice Lake, WI 2012', ship: 'each', notes: 'Card in each box', page: '/rain-print#rp-biz',
+  extra: 'dropped', design_url: 'https://agsist.com/rain-print?x=1', gift_january: true };
+let rbBefore = rbKeys();
+r = await post(biz); j = await r.json();
+A(r.status === 200 && j.ok === true, 'business quote stored');
+rec = rbNew(rbBefore);
+A(/^form:rain-print-business:\d{13}:[0-9a-f]{8}$/.test(rbKeys()[0]), 'business key matches FORM_KEY_RE shape');
+A(rec.kind === 'rain-print-business' && rec.n === 0 && rec.email === 'al@chetek.coop' && rec.quantity === '12' && rec.product === 'framed' &&
+  rec.ship === 'each' && rec.towns === 'Chetek, WI 2025\nRice Lake, WI 2012' && rec.phone === '715-555-0100', 'business quote cleaned, towns keep their lines');
+A(!('extra' in rec) && !('design_url' in rec) && !('gift_january' in rec), 'business: unknown fields dropped, order fields not carried over');
+const rbk = rbKeys()[0];
+A(opts.get(rbk) && opts.get(rbk).expirationTtl === 365 * 24 * 3600, 'business quote kept a year');
+rbBefore = rbKeys();
+r = await post(Object.assign({}, biz, { phone: '', notes: '', quantity: 500, product: 'not-sure', ship: 'not-sure' })); A(r.status === 200, 'business: optional fields empty, quantity 500 as a number');
+rec = rbNew(rbBefore); A(rec.quantity === '500' && !('phone' in rec) && !('notes' in rec) && rec.product === 'not-sure', 'business: numeric quantity stored as digits, no empty keys');
+rbBefore = rbKeys();
+r = await post(Object.assign({}, biz, { quantity: '10', product: 'digital', ship: 'one' })); A(r.status === 200 && rbNew(rbBefore).quantity === '10', 'business: quantity 10, the least');
+rbBefore = rbKeys();
+r = await post(Object.assign({}, biz, { quantity: '025' })); A(r.status === 200 && rbNew(rbBefore).quantity === '25', 'business: "025" stored as 25');
+for (const [patch, why] of [[{ business: '' }, 'business required'], [{ name: '' }, 'contact name required'], [{ email: '' }, 'email required'],
+    [{ email: 'nope' }, 'bad email'], [{ quantity: '' }, 'quantity required'], [{ towns: '  ' }, 'towns required'], [{ product: '' }, 'product required'],
+    [{ ship: '' }, 'ship required'], [{ product: 'canvas' }, 'bad product'], [{ product: 'framed12x18' }, 'consumer choice is not a product here'],
+    [{ ship: 'pickup' }, 'bad ship'], [{ ship: 'EACH' }, 'enum is exact'], [{ quantity: '0' }, 'quantity 0'], [{ quantity: '1' }, 'quantity 1'], [{ quantity: '9' }, 'quantity 9, under the business minimum'], [{ quantity: 9 }, 'numeric 9'], [{ quantity: '009' }, '"009"'], [{ quantity: '501' }, 'quantity 501'],
+    [{ quantity: 1000 }, 'quantity 1000'], [{ quantity: '-5' }, 'negative quantity'], [{ quantity: '2.5' }, 'fractional quantity'],
+    [{ quantity: 'ten' }, 'quantity words'], [{ quantity: '1e2' }, 'quantity exponent'], [{ towns: 't'.repeat(8001) }, 'towns cap'], [{ note_all: 'n'.repeat(301) }, 'note_all cap'],
+    [{ business: 'b'.repeat(121) }, 'business cap'], [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ phone: '1'.repeat(31) }, 'phone cap']]) {
+  r = await post(Object.assign({}, biz, patch)); A(r.status === 400 && (await r.json()).ok === false, 'business rejects ' + why);
+}
+r = await post(Object.assign({}, biz, { towns: 't'.repeat(8000) })); A(r.status === 200, 'business: towns at 8000 fits');
+rbBefore = rbKeys();
+r = await post(Object.assign({}, biz, { note_all: 'Thanks for another year.\r\nFrom all of us at the Chetek Co-op.' })); A(r.status === 200, 'business: note for every print');
+rec = rbNew(rbBefore); A(rec.note_all === 'Thanks for another year.\nFrom all of us at the Chetek Co-op.', 'business: note_all kept, keeps its line');
+rbBefore = rbKeys();
+r = await post(Object.assign({}, biz, { note_all: 'n'.repeat(300) })); A(r.status === 200 && rbNew(rbBefore).note_all.length === 300, 'business: note_all at 300 fits');
+rbBefore = rbKeys();
+r = await post(biz); A(r.status === 200 && !('note_all' in rbNew(rbBefore)), 'business: no note_all key when none sent');
+
+// v5.12 an ordinary order as a gift: gift:true keeps the gift_ fields, as gift_january does
+const rpOrd = () => forms().filter(x => x.startsWith('form:rain-print-order:'));
+const rpNew = (before) => { const k = rpOrd().filter(x => !before.includes(x)); A(k.length === 1, 'exactly one new order record'); return JSON.parse(store.get(k[0])); };
+let ob = rpOrd();
+r = await post(Object.assign({}, rp, { gift: true, gift_to: 'Dad Olson', gift_deliver: 'recipient', gift_message: 'For every inch\r\nyou farmed' }));
+A(r.status === 200, 'plain gift order stored');
+rec = rpNew(ob);
+A(rec.gift === 'yes' && !('gift_january' in rec) && rec.gift_to === 'Dad Olson' && rec.gift_deliver === 'recipient' && rec.gift_message === 'For every inch\nyou farmed',
+  'gift:true keeps gift_to, gift_deliver and gift_message');
+A(rec.address === '12 Main St\nChetek WI 54728' && !('gift_email' in rec), 'plain gift print ships to the address, no recipient email kept');
+ob = rpOrd();
+r = await post(Object.assign({}, rp, { gift: 'yes', gift_to: 'Dad', gift_deliver: '' })); A(r.status === 200 && rpNew(ob).gift_deliver === 'buyer', 'plain gift: deliver defaults to the buyer');
+ob = rpOrd();
+r = await post(Object.assign({}, rp, { choice: 'digital', gift: true, gift_to: 'Dad', gift_deliver: 'recipient', gift_email: 'Dad@Farm.com' }));
+rec = rpNew(ob); A(r.status === 200 && rec.gift_email === 'dad@farm.com' && !('address' in rec), 'plain gift file straight to the recipient keeps their email');
+ob = rpOrd();
+r = await post(Object.assign({}, rp, { gift: false, gift_to: 'Dad', gift_message: 'hi', gift_deliver: 'recipient' }));
+rec = rpNew(ob); A(r.status === 200 && !('gift' in rec) && !Object.keys(rec).some(k => k.startsWith('gift')), 'gift:false is an ordinary order, gift fields dropped');
+ob = rpOrd();
+r = await post(Object.assign({}, rp, { gift_to: 'Dad', gift_message: 'hi' }));
+rec = rpNew(ob); A(r.status === 200 && !Object.keys(rec).some(k => k.startsWith('gift')), 'a plain order still drops the gift fields');
+ob = rpOrd();
+r = await post(Object.assign({}, gift)); rec = rpNew(ob);
+A(r.status === 200 && rec.gift_january === 'yes' && !('gift' in rec) && rec.gift_to === 'Dad Olson', 'gift_january still works on its own');
+for (const [patch, why] of [[{ gift_message: 'm'.repeat(241) }, 'gift note cap'], [{ gift_to: 't'.repeat(81) }, 'gift_to cap'],
+    [{ gift_deliver: 'neighbor' }, 'unknown deliver'], [{ choice: 'digital', gift_deliver: 'recipient', gift_email: '' }, 'gift file to them needs their email']]) {
+  r = await post(Object.assign({}, rp, { gift: true, gift_to: 'Dad' }, patch)); A(r.status === 400, 'plain gift rejects ' + why);
+}
+r = await post(Object.assign({}, rp, { gift: true, gift_to: 'Dad', gift_message: 'm'.repeat(240) })); A(r.status === 200, 'plain gift note at 240 fits');
+r = await post(biz, { Origin: 'https://evil.example' }); A(r.status === 403, 'business: foreign origin refused');
+let rbCount = rbKeys().length;
+r = await post(Object.assign({}, biz, { _gotcha: 'x' })); A(r.status === 200 && rbKeys().length === rbCount, 'business honeypot: ok answer, nothing stored');
+// the rate limit is shared: business quotes and every other kind count against the same 8 an hour
+const same2 = { 'CF-Connecting-IP': '192.0.2.77' };
+codes = [];
+for (let i = 0; i < 4; i++) codes.push((await post(Object.assign({}, biz, { business: 'B' + i }), same2)).status);
+for (let i = 0; i < 4; i++) codes.push((await post(Object.assign({}, rp), same2)).status);
+codes.push((await post(biz, same2)).status);
+codes.push((await post(Object.assign({}, rp), same2)).status);
+A(codes.slice(0, 8).every(c => c === 200) && codes[8] === 429 && codes[9] === 429, 'business and order posts share the 8-an-hour limit ' + codes);
+rbCount = rbKeys().length;
+r = await call('/form-list?token=tok&kind=rain-print-business'); j = await r.json();
+A(r.status === 200 && j.length === rbCount && j.every(x => x.kind === 'rain-print-business'), '/form-list by kind rain-print-business');
+r = await call('/count?token=tok'); j = await r.json();
+A(j.forms['rain-print-business'] === rbCount && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1, '/count forms rain-print-business ' + JSON.stringify(j.forms));
 
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');

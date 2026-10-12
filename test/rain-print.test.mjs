@@ -176,7 +176,10 @@ test("gift text lives in data/rain-print.json; the FAQ and its structured data s
   const dec = (t) => t.replace(/&rsquo;/g, "’").replace(/&amp;/g, "&");
   const shown = [...html.matchAll(/<details><summary>(.*?)<\/summary><p>(.*?)<\/p><\/details>/g)].map((m) => [dec(m[1]), dec(m[2])]);
   assert.deepEqual(faq.map((q) => [q.name, q.acceptedAnswer.text]), shown, "FAQPage matches the visible FAQ");
-  assert.ok(faq.some((q) => /give a \d{4} print for Christmas/.test(q.name)));
+  // e6bb20b46 took the year out of this question so it stays right every Christmas; the test still asked for one.
+  assert.ok(faq.some((q) => /give this year's print for Christmas/.test(q.name)), "the Christmas gift question is there");
+  assert.ok(!faq.some((q) => /Christmas/.test(q.name) && /\d{4}/.test(q.name)), "and names no year");
+  assert.ok(faq.some((q) => q.name === "Can you ship it straight to them with a note?" && /No prices go in the box\./.test(q.acceptedAnswer.text)), "the gift note question");
   assert.ok(!/first half of January/i.test(html), "January, not a narrower promise");
 });
 
@@ -201,4 +204,88 @@ test("the seasonal promo ships off, and shows only with promote on, inside its C
   assert.equal(P.lineFor({ ...on, briefing_line: "One line." }, "briefing", "2026-11-15"), "One line.");
   // 04:30 UTC on Nov 1 is still Oct 31 in Chicago (CDT, UTC-5)
   assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
+});
+
+/* For businesses (2026-10-12): every figure the section prints comes from
+   data/rain-print.json. The expected numbers are worked here from the json's
+   own fields, and the shipped values are pinned too, so a change to either
+   the math or the data shows. */
+test("business tiers: per-print prices come from the json and round to the cent", () => {
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  const cents = (p, pct) => Math.round(Math.round(p * 100) * (100 - pct) / 100) / 100;
+  const rows = plain(RP.bizRows(J));
+  assert.equal(rows.length, J.business_tiers.length, "one row per tier");
+  J.business_tiers.forEach((t, i) => {
+    assert.equal(rows[i].from, t.min);
+    assert.equal(rows[i].pct, t.pct);
+    for (const id of ["print12x18", "framed12x18", "digital"]) assert.equal(rows[i].prices[id], cents(J[id], t.pct), id + " at " + t.min);
+  });
+  assert.equal(rows[0].to, J.business_tiers[1].min - 1);
+  assert.equal(rows.at(-1).to, null, "the last tier runs to 'or more'");
+  assert.equal(RP.bizRange(rows[0]), "10–24");
+  assert.equal(RP.bizRange(rows[1]), "25 or more");
+  // Sig's figures, against the shipped json
+  assert.deepEqual(rows.map((r) => [r.prices.print12x18, r.prices.framed12x18, r.prices.digital]), [[40.5, 80.1, 17.1], [38.25, 75.65, 16.15]]);
+  // rounding: 15% off $89 is 75.65 exactly, never 75.64999...
+  assert.equal(RP.bizPrice(89, 15), 75.65);
+  assert.equal(RP.bizPrice(19.99, 15), 16.99, "16.9915 rounds to 16.99");
+  assert.equal(RP.bizPrice(10.05, 50), 5.03, "half a cent rounds up");
+  // a different json moves every figure with it
+  const alt = { ...J, framed12x18: 100, business_tiers: [{ min: 50, pct: 20 }, { min: 10, pct: 5 }] };
+  assert.deepEqual(plain(RP.bizRows(alt)).map((r) => [r.from, r.to, r.prices.framed12x18]), [[10, 49, 95], [50, null, 80]], "sorted by min, from the json");
+});
+
+test("business tiers: none set means no table and no discount", () => {
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  for (const t of [undefined, null, [], [{ min: 5, pct: 10 }], [{ min: 10, pct: 0 }], [{ min: 10, pct: "10" }]]) {
+    const x = { ...J, business_tiers: t };
+    assert.deepEqual(plain(RP.bizRows(x)), [], JSON.stringify(t));
+    assert.equal(RP.bizQuote(x, 10, "framed12x18", "each").pct, 0, "full price at 10 with no usable tier " + JSON.stringify(t));
+  }
+});
+
+test("business shipping: per print, one-address discount from the json, full price to each customer", () => {
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  const S = J.business_shipping, OT = J.business_shipping_one_address_tiers;
+  const cents = (p, pct) => Math.round(Math.round(p * 100) * (100 - pct) / 100) / 100;
+  assert.ok(!("business_shipping_tiers" in J), "the old shipping tiers are gone");
+  const rows = plain(RP.bizRows(J));
+  rows.forEach((r) => {
+    const opct = OT.filter((t) => r.from >= t.min).at(-1).pct;
+    for (const id of ["print12x18", "framed12x18"]) {
+      assert.equal(r.one[id], cents(S[id], opct), id + " to one address at " + r.from);
+      assert.equal(r.each[id], S[id], id + " to each customer is full price");
+    }
+    assert.equal(r.one.digital, 0);
+  });
+  assert.deepEqual(rows.map((r) => [r.one.print12x18, r.one.framed12x18, r.each.print12x18, r.each.framed12x18]), [[6.3, 13.3, 9, 19], [5.4, 11.4, 9, 19]]);
+  // the quote line's totals: (price + shipping) x quantity
+  const q1 = RP.bizQuote(J, 10, "framed12x18", "one"), q2 = RP.bizQuote(J, 10, "framed12x18", "each");
+  assert.deepEqual([q1.unit, q1.ship, q1.total], [80.1, 13.3, 934]);
+  assert.deepEqual([q2.unit, q2.ship, q2.total], [80.1, 19, 991]);
+  const q3 = RP.bizQuote(J, 30, "print12x18", "one");
+  assert.equal(q3.total, Math.round((cents(J.print12x18, 15) + cents(S.print12x18, 40)) * 30 * 100) / 100);
+  assert.equal(q3.total, 1309.5);
+  assert.equal(RP.bizQuote(J, 12, "digital", "each").total, 205.2, "a digital file has no shipping");
+  // business orders are 10 to 500 prints
+  assert.equal(RP.BIZ_MIN, 10);
+  assert.equal(RP.bizQuote(J, 9, "framed12x18", "one"), null);
+  assert.equal(RP.bizQuote(J, 501, "framed12x18", "one"), null);
+  assert.equal(RP.bizQuote(J, 10, "not-sure", "one"), null);
+  // no shipping in the json: no shipping figure, and the table has no shipping columns
+  const noShip = { ...J, business_shipping: null };
+  assert.equal(RP.bizQuote(noShip, 10, "framed12x18", "one").ship, null);
+  assert.equal(RP.bizQuote(noShip, 10, "framed12x18", "one").total, 801);
+  assert.equal(plain(RP.bizRows(noShip))[0].one, null);
+});
+
+test("business cutoff line: from the json, a date only while it is ahead", () => {
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.equal(J.business_cutoff, "2026-11-20");
+  assert.equal(J.business_note, null, "business_note ships empty");
+  assert.equal(RP.bizCutoffNote("2026-10-12", J.business_cutoff), "For Christmas, send your list by Nov 20.");
+  assert.equal(RP.bizCutoffNote("2026-11-20", J.business_cutoff), "For Christmas, send your list by Nov 20.", "the day itself counts");
+  assert.equal(RP.bizCutoffNote("2026-11-21", J.business_cutoff), "");
+  assert.equal(RP.bizCutoffNote("2026-10-12", null), "");
+  assert.equal(RP.bizCutoffNote("2026-10-12", "Nov 20"), "");
 });
