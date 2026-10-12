@@ -62,6 +62,8 @@ CHECKS = [
      "after every Fetch Grain Bids on WASDE days, 16:00-17:59 UTC"),
     ("report-day.yml", ["47 16 * * 1-5", "13 18 * * 1-5"], 60, True,
      "after WASDE watch, What's Priced In and Fetch Grain Bids"),
+    ("arcplc-reminder.yml", ["10 14,17,20 * 11,12,2,3 *"], 120, False,
+     "three times a day in Nov, Dec, Feb, Mar; mails only on an ARC/PLC deadline minus 7 days"),
     ("news.yml", None, 30, False, "chained, gated to its own schedule"),
     ("crop_progress.yml", None, 60, False, "chained, gated to its own schedule"),
     ("export_sales.yml", None, 60, False, "chained, gated to its own schedule"),
@@ -311,6 +313,9 @@ def selftest():
     s, *_ = judge(["40 21 * * 1-5"], 60, T("2026-10-08 23:00"), [R(2, "2026-10-08 22:52")], True)
     check(s == "late", "a run outside max_delay does not serve the tick")
     check(max_spacing_minutes(cot) > 2 * 1440, "COT's max gap spans the weekend")
+    arc = ["10 14,17,20 * 11,12,2,3 *"]
+    check(latest_tick(arc, T("2026-12-04 15:00")) == T("2026-12-04 14:10"), "ARC/PLC reminder: Dec 4 judges the 14:10 UTC fire")
+    check(latest_tick(arc, T("2026-10-12 15:00")) is None, "ARC/PLC reminder: no tick due in October")
     failed = R(7, "2026-10-09 18:13", "failure")
     check(forgive("late", failed, "x", "2026-10-09T21:38:00Z")[0] == "ok", "a failed tick clears once a later run succeeds")
     check(forgive("late", failed, "x", "2026-10-09T18:00:00Z")[0] == "late", "a success before the failure does not clear it")

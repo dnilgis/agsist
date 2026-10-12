@@ -1,0 +1,71 @@
+name: ARC/PLC signup reminder
+# Mails the readers who asked an ARC/PLC page to "Remind me a week before the
+# Dec 11 signup deadline" (subs worker v5.11, topic arcplc:<deadline>).
+# Runs three times a day in Nov, Dec, Feb and Mar. scripts/send_notice.py
+# decides: it mails only when today (America/Chicago) is a deadline from
+# build_arc_plc.py minus 7 days (Dec 4 2026 for Dec 11, Mar 8 2027 for Mar 15),
+# with three days of catch-up if GitHub drops every fire that day. Every
+# other run prints "no notice due" and stops. Each address is marked in the
+# worker after its send, so the later fires that day mail nobody twice.
+# Manual run: dry_run (default true) prints counts and a preview with a
+# made-up address; a topic sends that topic on any day before its deadline.
+# Secrets (the same as the other senders): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
+# SMTP_USER/SMTP_PASS (or GMAIL_USER/GMAIL_APP_PASS). Optional: SMTP_HOST,
+# SMTP_PORT, FROM_ADDR, REPLY_TO.
+on:
+  schedule:
+    - cron: '10 14,17,20 * 11,12,2,3 *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic to mail, e.g. arcplc:2026-12-11 (blank = whatever is due today)"
+        type: string
+        default: ""
+      dry_run:
+        description: "Report counts and a preview; send and mark nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  group: arcplc-reminder
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            arc-plc
+            workers
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: python3 scripts/send_notice.py --selftest
+      - name: Send
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          EVENT: ${{ github.event_name }}
+          TOPIC: ${{ inputs.topic }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          set --
+          if [ "$EVENT" = "schedule" ] || [ "$DRY" = "false" ]; then set -- --send; fi
+          if [ -n "$TOPIC" ]; then set -- "$@" --topic "$TOPIC" --any-day; fi
+          python3 scripts/send_notice.py "$@"
