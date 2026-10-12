@@ -581,11 +581,11 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- Hero -->
   <div class="cot-hero">
     <div class="cot-eyebrow page-kicker">CFTC data · Updated weekly</div>
-    <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
+    <h1 class="cot-page-title">CFTC Commitments of Traders</h1>
     <p class="cot-page-sub page-lede">Where the big speculative funds sit in corn, soybeans, wheat, cattle, hogs and milk this week, and how crowded that is. Not a price forecast.</p>
     <details class="cot-more">
       <summary>Who the funds are, and how old these numbers are</summary>
-      <p class="cot-page-sub">These are hedge funds and commodity traders: they trade paper and never own a bushel. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. The test on the full record is below.</p>
+      <p class="cot-page-sub">These are the traders the CFTC calls <b>managed money</b>: registered commodity trading advisors, commodity pool operators and unregistered funds that trade futures for clients. They trade paper and never own a bushel. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. The test on the full record is below.</p>
       <p class="cot-page-sub">Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after. The figures below carry their own age. <a href="/scorecard">Does positioning predict price? We test our own rule</a>, in public, one call per crop each week.</p>
     </details>
   </div>
@@ -610,6 +610,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- Summary cards -->
   <h2 class="cot-section-title">Fund positioning by commodity</h2>
   <div class="cot-summary-grid" id="cot-summary-grid"></div>
+  <div class="method-note" id="cot-method"><b>Method</b> · The percentile on each card ranks this week's managed-money net, as a share of open interest, against every week in that market's record (the card names the start year). It is the share of weeks at or below this one. Crowded means the 90th percentile or higher while funds are net long, or the 10th or lower while they are net short. "Show the math" ranks raw contracts over the last 52 reports instead, this week included. · <b>Sources</b> · CFTC Disaggregated Commitments of Traders, futures only, all contract months. · Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
 
 
   <!-- ══ WHERE EVERY MARKET STANDS ══ renders from data/cot-analysis.json ══ -->
@@ -797,7 +798,7 @@ var CFG = [
   {key:'corn',        label:'Corn',             short:'Corn',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>', color:'#d4a23f', group:'grains'},
   {key:'beans',       label:'Soybeans',         short:'Beans',  emoji:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg>', color:'#4aab4c', group:'grains'},
   {key:'wheat',       label:'Wheat (SRW)',      short:'SRW',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#5ba3e0', group:'grains'},
-  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#c98a3a', group:'grains'},
+  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#2fb5a5', group:'grains'},
   {key:'mplswheat',   label:'Mpls Wheat (HRS)', short:'Mpls',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#9b7cc4', group:'grains'},
   {key:'soymeal',     label:'Soybean Meal',     short:'Meal',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-package"/></svg>', color:'#7ab87c', group:'crush'},
   {key:'soyoil',      label:'Soybean Oil',      short:'Oil',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg>', color:'#d8c24a', group:'crush'},
@@ -873,7 +874,7 @@ buildCards();
 
 function fmtK(n) {
   if (n == null || isNaN(n)) return '--';
-  var abs = Math.abs(n), sign = n >= 0 ? '+' : '-';
+  var abs = Math.abs(n), sign = n >= 0 ? '+' : '\u2212';
   return sign + (abs >= 1000 ? (abs/1000).toFixed(1)+'k' : abs);
 }
 /* MAGNITUDE ONLY, NO SIGN. fmtK() always prefixes + or -, so fmtK(Math.abs(x))
@@ -888,7 +889,7 @@ function fmtMag(n) {
 function fmtKShort(n) {
   if (n == null || isNaN(n)) return '--';
   var abs = Math.abs(n);
-  return (n < 0 ? '-' : '') + (abs >= 1000 ? Math.round(abs/1000)+'k' : Math.round(abs));
+  return (n < 0 ? '\u2212' : '') + (abs >= 1000 ? Math.round(abs/1000)+'k' : Math.round(abs));
 }
 
 
@@ -1013,8 +1014,9 @@ function renderInsight(key){
     +'.'+flipTxt;
   if(k.divergence){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
-    var nd=k.chg4>0?'rising':k.chg4<0?'falling':'flat', pd=k.price4>0?'rising':k.price4<0?'falling':'flat';
-    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%), <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
+    /* Said once: "net and price both fell (price −5.0%)", not the rising/falling
+       sentence and then the label repeating it. */
+    html+=' Over 4 weeks, <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b> (price '+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%).';
   }
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
@@ -1222,51 +1224,73 @@ function drawChart(key) {
      price scale on the page read 125 / 114 / 104 / 93 for ~1259 / ~1147 /
      ~1043 / ~930 -- wrong by a factor of ten, with nothing to check it
      against. Right-align the ticks and give the overlay a real gutter. */
-  var PAD = { top: 16, right: (keys.length === 1 ? 46 : 16), bottom: 32, left: 52 };
+  var PAD = { top: 16, right: (keys.length === 1 ? 50 : 16), bottom: 32, left: 54 };
   var cW = W - PAD.left - PAD.right;
   var cH = H - PAD.top  - PAD.bottom;
 
   function xOf(i) { return PAD.left + (i / Math.max(allDates.length - 1, 1)) * cW; }
   function yOf(n) { return PAD.top + (1 - (n - minNet) / netRange) * cH; }
 
-  var zeroY = yOf(0);
-  ctx.strokeStyle = chartInk('.12');
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 4]);
-  ctx.beginPath(); ctx.moveTo(PAD.left, zeroY); ctx.lineTo(PAD.left + cW, zeroY); ctx.stroke();
-  ctx.setLineDash([]);
-
-  ctx.fillStyle = chartInk('.25');
-  ctx.font = '10px JetBrains Mono, monospace';
-  ctx.textAlign = 'right';
-  ctx.fillText('0', PAD.left - 4, zeroY + 4);
-
-  var yTicks = 4;
-  ctx.fillStyle = chartInk('.35');
-  ctx.font = '10px JetBrains Mono, monospace';
-  ctx.textAlign = 'right';
-  for (var t = 0; t <= yTicks; t++) {
-    var nVal = minNet + (t / yTicks) * netRange;
-    var yy = yOf(nVal);
-    var lbl = (nVal >= 1000 || nVal <= -1000)
-      ? (nVal >= 0 ? '+' : '') + Math.round(nVal / 1000) + 'k'
-      : Math.round(nVal);
-    ctx.fillText(lbl, PAD.left - 4, yy + 4);
-    ctx.strokeStyle = chartInk('.05');
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD.left, yy); ctx.lineTo(PAD.left + cW, yy); ctx.stroke();
+  /* AXIS (2026-10-12): ticks at 1-2-5 steps (50k, 100k, 200k...), not at
+     quarter points of a padded range, which printed "-68k" and "-248k". Hairline
+     gridlines at each tick, a solid zero line (net long above, net short below),
+     11px text, signs with a true minus. Dates as "Oct 14". */
+  function niceStep(span, n) {
+    var raw = span / Math.max(1, n), p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
   }
+  function fmtTick(v) {
+    if (v === 0) return '0';
+    var a = Math.abs(v), t = a >= 1000 ? (Math.round(a / 100) / 10).toString().replace(/\.0$/, '') + 'k' : String(Math.round(a));
+    return (v < 0 ? '−' : '+') + t;
+  }
+  var CH_FONT = '11px JetBrains Mono, monospace';
+  var tStep = niceStep(netRange, cH < 200 ? 4 : 5);
+  ctx.font = CH_FONT;
+  ctx.textAlign = 'right';
+  for (var tv = Math.ceil(minNet / tStep) * tStep; tv <= maxNet; tv += tStep) {
+    var yy = yOf(tv);
+    if (Math.abs(tv) < tStep / 2) continue;           // the zero line is drawn below
+    ctx.strokeStyle = chartInk('.08');
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD.left, Math.round(yy) + .5); ctx.lineTo(PAD.left + cW, Math.round(yy) + .5); ctx.stroke();
+    ctx.fillStyle = chartInk('.62');
+    ctx.fillText(fmtTick(tv), PAD.left - 6, yy + 4);
+  }
+  var zeroY = yOf(0);
+  ctx.strokeStyle = chartInk('.4');
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD.left, Math.round(zeroY) + .5); ctx.lineTo(PAD.left + cW, Math.round(zeroY) + .5); ctx.stroke();
+  ctx.fillStyle = chartInk('.62');
+  ctx.fillText('0', PAD.left - 6, zeroY + 4);
 
-  ctx.fillStyle = chartInk('.3');
-  ctx.font = '9px JetBrains Mono, monospace';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  ctx.fillStyle = chartInk('.62');
+  ctx.font = CH_FONT;
   ctx.textAlign = 'center';
-  var step = Math.max(1, Math.floor(allDates.length / 8));
-  allDates.forEach(function(d, i) {
-    if (i % step !== 0 && i !== allDates.length - 1) return;
-    var parts = d.split('-');
-    var lbl = (parts[1] || '') + '/' + (parts[2] || '').replace(/^0/,'');
-    ctx.fillText(lbl, xOf(i), H - 8);
-  });
+  var maxLabels = Math.max(2, Math.floor(cW / 64));
+  var step = Math.max(1, Math.ceil(allDates.length / maxLabels));
+  var lastI = allDates.length - 1;
+  function dLbl(i, yr) {
+    var parts = allDates[i].split('-');
+    return MON[(+parts[1] || 1) - 1] + ' ' + (+parts[2] || '') + (yr ? ' ’' + String(parts[0]).slice(2) : '');
+  }
+  /* The first and latest weeks carry the year (the window spans two); the
+     ones between are placed only where they clear their neighbours. */
+  var taken = [];
+  function place(i, lbl, align) {
+    var w = ctx.measureText(lbl).width, x = align === 'right' ? xOf(i) + 2 : xOf(i);
+    var x0 = align === 'left' ? x : align === 'right' ? x - w : x - w / 2, x1 = x0 + w;
+    for (var q = 0; q < taken.length; q++) if (x0 < taken[q][1] + 10 && x1 > taken[q][0] - 10) return;
+    taken.push([x0, x1]);
+    ctx.textAlign = align;
+    ctx.fillText(lbl, x, H - 8);
+  }
+  place(lastI, dLbl(lastI, true), 'right');
+  if (lastI > 0) place(0, dLbl(0, true), 'left');
+  for (var di = step; di < lastI; di += step) place(di, dLbl(di, false), 'center');
+  if (taken.length < 3 && lastI > 2) place(Math.round(lastI / 2), dLbl(Math.round(lastI / 2), false), 'center');
+  ctx.textAlign = 'right';
 
   keys.forEach(function(k) {
     var pts = history[k] || [];
@@ -1341,7 +1365,7 @@ function drawChart(key) {
       var lastP=pricedVis[pricedVis.length-1]; var lpx=xOf(allDates.indexOf(lastP.date)), lpy=yOfP(lastP.price);
       ctx.beginPath(); ctx.arc(lpx,lpy,3,0,Math.PI*2); ctx.fillStyle=chartOverlayInk('.95'); ctx.fill();
       // right-axis price ticks
-      ctx.fillStyle=chartInk('.45'); ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
+      ctx.fillStyle=chartInk('.62'); ctx.font='11px JetBrains Mono, monospace'; ctx.textAlign='left';
       ctx.textAlign='right';
       for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), W-4, py+3); }
       priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length,adjusted:!!useAdj,
