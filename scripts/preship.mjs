@@ -265,6 +265,19 @@ async function render(browser, port, page, sc) {
       window.scrollTo(0, 0);
     });
     await p.waitForTimeout(WAIT);
+    /* Open every <details> before reading the page, baseline and candidate
+       alike (2026-10-12). innerText leaves out what a closed <details> holds,
+       so a page that files content under one by design read as content lost:
+       adding one day to the changelog moved September 26 under "Older
+       changes" and the page measured 10,840 characters against 27,298, "more
+       than half the page is gone", with nothing gone. Opened, the two sides
+       are compared on everything a reader can reach, and the NaN and
+       undefined checks now see inside the drawers too. Content hidden by a
+       failed script (hidden, display:none) still reads as missing. */
+    await p.evaluate(async () => {
+      document.querySelectorAll('details:not([open])').forEach((d) => { d.open = true; });
+      await new Promise(r => setTimeout(r, 500));
+    });
     const r = await p.evaluate(() => ({
       text: document.body ? document.body.innerText : '',
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,

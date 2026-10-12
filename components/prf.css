@@ -222,8 +222,18 @@ table.prf-sub-t { border-collapse: collapse; margin: 0 0 .9rem; font-size: var(-
   .prf-nb-c { min-height: 96px; padding: .4rem; }
   .prf-t th, .prf-t td { padding: 6px 6px; }
 }
+.prf-printonly { display: none; }
 @media print {
-  #site-header, #site-footer, .prf-live, .prf-find, .prf-find-msg, .prf-browse, .prf-acts, .prf-addb, .prf-iv-foot button, .prf-step, .prf-links, .breadcrumb, .skip { display: none !important; }
-  .prf-tool { grid-template-columns: minmax(0, 1fr) !important; }
-  .prf { max-width: none; }
+  /* a printed sheet: the grid, the policy in one line, the answer, the chart and every year. Dark tokens are swapped for ink. */
+  :root, [data-theme] { --bg: #fff; --surface: #fff; --surface2: #fff; --text: #000; --text-dim: #111; --text-muted: #333; --border: #bbb; --border-2: #888; --gold: #000; --brand: #000; --gold-rgb: 0,0,0; --green: #000; }
+  body { background: #fff !important; }
+  #site-header, #site-footer, #topnav, #drawer, #draw-ov, body > footer, .skip, .sa-bar, .breadcrumb,
+  .prf-live, .prf-find, .prf-find-msg, .prf-browse, .prf-start, .prf-acts, .prf-o3, .prf-o4, .prf-co-wrap, .prf-read, .prf-prose, .prf-lede,
+  #prf-rec-d, #prf-nb-d, .prf-d > summary { display: none !important; }
+  .prf-printonly { display: block; color: #000; font-size: .85rem; line-height: 1.5; margin: 0 0 .6rem; }
+  .prf { max-width: none; padding: 0; --prf-bar: #444; --prf-dot: #000; }
+  .prf-tool { display: block !important; }
+  .prf-scroll { overflow: visible; }
+  .prf-block, .prf-fig { break-inside: avoid; }
+  .prf a { color: #000; }
 }

@@ -209,6 +209,8 @@
      evenly from the months it had. An empty one gets the page's example. */
   function fit(setup) {
     var mm = minmax(), on = setup.split.map(function (p, i) { return p > 0 && mm.valid[i]; });
+    /* two months that share a month cannot both stay (a hand-edited link can ask for them): the earlier one is kept */
+    for (var k = 1; k < N; k++) if (on[k] && on[k - 1]) on[k] = false;
     if (!on.some(Boolean)) { on = blank().map(function (_, i) { return (i === 3 || i === 5) && mm.valid[i]; }); setup.even = true; }
     if (!on.some(Boolean)) { setup.split = blank(); return; }
     var chk = M.checkSplit(setup.split, mm.min, mm.max, mm.valid);
@@ -448,7 +450,9 @@
   function niceMax(v) {
     if (!(v > 0)) return 1;
     var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), m = v / p;
-    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+    var steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (var i = 0; i < steps.length; i++) if (m <= steps[i]) return steps[i] * p;
+    return 10 * p;
   }
   /* R: the setup being edited, drawn as bars. other: the second setup, when
      there is one and it can be priced, drawn as dots. names: ['A','B'] or null. */
@@ -701,6 +705,11 @@
     drawChart(R, S.B ? (onB ? RA : RB) : null, S.B ? (onB ? ['B', 'A'] : ['A', 'B']) : null);
     drawYears(R); drawRecord(); drawCompare(RA, RB); drawNeighbors();
     $('prf-acts').hidden = !R.ok;
+    /* the policy in one line, for the printed sheet (the controls do not print) */
+    var c0 = county();
+    $('prf-printsum').textContent = states[S.st].combos[S.use] + ' \u00b7 ' + S.acres.toLocaleString('en-US') + ' acres \u00b7 share ' + S.share + '% \u00b7 coverage ' + R.setup.cov + '% \u00b7 productivity factor ' + R.setup.pf
+      + ' \u00b7 ' + (R.setup.split.map(function (p, i) { return p > 0 ? LABELS[i] + ' ' + p + '%' : ''; }).filter(Boolean).join(', ') || 'no months picked')
+      + ' \u00b7 ' + c0.n + ' County, ' + S.st + ' \u00b7 crop year ' + meta.crop_year + ' \u00b7 agsist.com/prf';
     drawBar(R);
     $('prf-answer-h').textContent = S.B ? 'Setup ' + S.on + ': what the record says' : 'What the record says';
     remember();
