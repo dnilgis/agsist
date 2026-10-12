@@ -20,7 +20,7 @@ jobs:
           mkdir -p data/fsa
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
           PAGE="https://www.fsa.usda.gov/resources/programs/arc-plc/program-data"
-          curl -sSL -m 60 -A "$UA" "$PAGE" -o /tmp/pd.html
+          curl -sSL --retry 4 --retry-delay 30 --retry-all-errors -m 60 -A "$UA" "$PAGE" -o /tmp/pd.html
           echo "page bytes: $(wc -c < /tmp/pd.html)"
           grep -o -i -E 'href="[^"]+"' /tmp/pd.html | sed 's/href="//;s/"$//' | sort -u > /tmp/all.txt
           echo "--- every link mentioning 2025, 2026 or 2027:"; grep -E '202[5-7]' /tmp/all.txt || true
@@ -33,7 +33,7 @@ jobs:
           while read -r l; do
             case "$l" in http*) u="$l";; /*) u="https://www.fsa.usda.gov$l";; *) u="https://www.fsa.usda.gov/$l";; esac
             f="data/fsa/$(basename "${u%%\?*}" | sed 's/%20/_/g; s/[^A-Za-z0-9._-]/_/g')"
-            if curl -sSL -m 120 -A "$UA" "$u" -o "$f"; then
+            if curl -sSL --retry 3 --retry-delay 20 --retry-all-errors -m 120 -A "$UA" "$u" -o "$f"; then
               printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$f" "$(wc -c < "$f")" "$u" >> data/fsa/manifest.tsv
               echo "ok $f $(wc -c < "$f")"
             else echo "FAILED $u"; fi
@@ -45,7 +45,7 @@ jobs:
             if head -c 200 "$p" | grep -qi '<!doctype html'; then
               grep -o -i -E 'https://www\.fsa\.usda\.gov/sites/default/files/[^"<> ]+\.(xlsx|xls|csv|pdf|zip)' "$p" | sort -u | while read -r u; do
                 n="data/fsa/$(basename "$u" | sed 's/%20/_/g; s/%28/(/g; s/%29/)/g; s/[^A-Za-z0-9._-]/_/g')"
-                if curl -sSL -m 120 -A "$UA" "$u" -o "$n"; then
+                if curl -sSL --retry 3 --retry-delay 20 --retry-all-errors -m 120 -A "$UA" "$u" -o "$n"; then
                   printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$n" "$(wc -c < "$n")" "$u" >> data/fsa/manifest.tsv; echo "file $n $(wc -c < "$n")"
                 fi
               done

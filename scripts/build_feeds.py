@@ -117,6 +117,10 @@ CURATED = {
     # hand by Sig; read by /rain-print, components/rain-print-promo.js (homepage,
     # /cash-bids, /daily) and scripts/brief_email.py. No cadence to keep.
     "data/rain-print.json",
+    # The rain gauge scale strip: marker positions, stripe and scale for the
+    # /gauge-lab photo reader and the printed strip. Changed only with the
+    # gauge design. No cadence to keep.
+    "data/gauge-strip.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
