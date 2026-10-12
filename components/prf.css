@@ -197,7 +197,7 @@ table.prf-iv { width: 100%; border-collapse: collapse; }
 .prf details.prf-d > summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-weight: 600; color: var(--text); }
 .prf details.prf-d[open] > summary { margin-bottom: .35rem; }
 .prf details.prf-d > div { padding: 0 0 .9rem; }
-.prf-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.prf-scroll { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .prf-scroll-tall { max-height: 32rem; overflow-y: auto; }
 .prf-scroll-tall thead th { position: sticky; top: 0; background: var(--bg); }
 .prf-cap { caption-side: top; text-align: left; font-size: var(--fs-xs); color: var(--text-muted); padding: 0 0 .4rem; }
@@ -287,3 +287,13 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-fig { break-inside: avoid; }
   .prf a { color: #000; }
 }
+
+/* ---- the state pages, prf/<state>.html (scripts/build_prf_states.py) */
+.prf-st .prf-cta { display: inline-flex; align-items: center; text-decoration: none; margin: .2rem 0 1rem; }
+.prf-st-figs { margin: .4rem 0 .4rem; }
+.prf-st-figs dd { font-size: 1.05rem; }
+.prf-st .prf-note { border-left: 3px solid var(--gold); padding: .2rem 0 .2rem .8rem; color: var(--text-dim); line-height: 1.6; max-width: 46em; }
+.prf-co-t td a { color: var(--brand); font-family: inherit; }
+.prf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.prf-st-links a { min-height: 40px; }
+.prf-states a { color: var(--brand); }

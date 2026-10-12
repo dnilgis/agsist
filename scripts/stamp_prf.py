@@ -148,7 +148,7 @@ def values(meta, chk, facts):
     pb = facts["payback"]["all"]
     iv_rows = "".join(f'<tr><th scope="row">{LONG_IV[i]}</th><td>{r["mid_normal_in"]:.2f} in</td><td>{money2(r["mid_rate_per_100"])}</td><td>{r["mid_years_below"]}</td></tr>'
                       for i, r in enumerate(facts["intervals_at_90"]))
-    states_html = "".join(f'<li>{html.escape(x["name"])} <span>{x["counties"]} {"county" if x["counties"] == 1 else "counties"}, {x["grids"]:,} grids</span></li>'
+    states_html = "".join(f'<li><a href="/prf/{re.sub(r"[^a-z0-9]+", "-", x["name"].lower()).strip("-")}">{html.escape(x["name"])}</a> <span>{x["counties"]} {"county" if x["counties"] == 1 else "counties"}, {x["grids"]:,} grids</span></li>'
                           for x in facts["states"])
     jf = facts["limits"]["jan_feb_max"].get("25", 0)
     dry = facts["largest_net_in_two_driest"]

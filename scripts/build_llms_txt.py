@@ -139,7 +139,7 @@ PAGES = [
         ("@machine", "arc-county"),
         ("@machine", "arc-crops"),
         ("/prf", "PRF Rainfall Insurance Calculator",
-         "Pasture, Rangeland, Forage rainfall index insurance: pick a grid, acres and two-month intervals and see the premium, USDA's share, and what the policy would have paid in every year since 1951 at this year's rates, for every grid in the 48 contiguous states"),
+         "Pasture, Rangeland, Forage rainfall index insurance: pick a grid, acres and two-month intervals and see the premium, USDA's share, and what the policy would have paid in every year since 1951 at this year's rates, for every grid in the 48 contiguous states; one page per state at /prf/<state> with every county's USDA base values"),
         ("/farm-bill", "Farm Bill", "what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes"),
         ("/cash-lease", "Cash Farm Lease", "a fillable, printable plain-English cash lease with state termination notes"),
         ("/foreign-land", "Foreign-Owned Farmland", "USDA AFIDA disclosures mapped by county"),
@@ -169,7 +169,7 @@ OMIT = {
 }
 
 # Generated page sets: a URL under one of these is covered by its set's line.
-SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed)/.+")
+SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed|prf)/.+")
 
 
 def url_file(path, root=REPO):

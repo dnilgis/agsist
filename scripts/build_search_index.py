@@ -88,7 +88,7 @@ PAGES = [
     ("/harvest-price-tracker#presell", "Safe pre-sell", "How many bushels your crop insurance backs", "presell pre sell forward contract insurance calculator hedge guaranteed bushels"),
     ("/store-or-sell", "Store or sell?", "Carry after storage and interest", "store sell storage carry hold bin interest shrink later bid"),
     ("/arc-plc", "ARC or PLC, 2026 and 2027", "Reference prices and FSA county benchmarks", "arc plc arc-co price loss coverage agriculture risk coverage effective reference price benchmark yield base acres fsa farm program 2026 2027 signup calculator sco"),
-    ("/prf", "PRF rainfall insurance", "What your grid would have paid, every year", "prf pasture rangeland forage rainfall index insurance grid hay grazing pasture rain drought premium usda rma"),
+    ("/prf", "PRF pasture insurance calculator", "What your grid would have paid, every year", "prf pasture rangeland forage rainfall index insurance calculator grid lookup hay grazing rain drought premium cost deadline sign up signup interval months stocking rate livestock ncei usda rma"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),

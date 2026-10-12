@@ -266,7 +266,7 @@ payment              = interval protection
     </div>
 
     <h2 id="states">PRF by state</h2>
-    <p>Grids with PRF offers for {mk("crop_year")}, by state. A grid on a state line counts in both.</p>
+    <p>Counties and grids with PRF offers for {mk("crop_year")}, by state. A grid on a state line counts in both. Each state has its own page with every county&rsquo;s values.</p>
     <ul class="prf-states">{mk("state_list")}</ul>
 
     <nav class="prf-links" aria-label="Related tools">
