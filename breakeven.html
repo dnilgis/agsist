@@ -117,8 +117,9 @@
     .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.795rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
     .btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border-color:transparent;font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;letter-spacing:0;border-radius:var(--btn-r)}
     .btn-primary:hover{filter:brightness(.94)}
-    .btn-secondary{background:var(--surface);color:var(--text-dim);}
-    .btn-secondary:hover{color:var(--text);border-color:var(--green);}
+    /* the shared secondary button (styles.css): body face, sentence case, 44px, gold on hover */
+    .btn-secondary{background:transparent;color:var(--text);border:2px solid var(--border-2);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;letter-spacing:0;border-radius:var(--btn-r);min-height:var(--btn-h);justify-content:center}
+    .btn-secondary:hover{color:var(--brand);border-color:var(--brand);}
     .be-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem auto;max-width:1100px;}
     .be-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold);}
     .be-faq-item{border-bottom:1px solid var(--border);}.be-faq-item:last-child{border-bottom:none;}
