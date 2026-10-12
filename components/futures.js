@@ -29,7 +29,7 @@ var CROPS={
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
     carry:'corn',
-    tiles:[{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('corn','dec'),alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
     labels:function(lbl){
       setTxt('lbl-corn',lbl);
@@ -53,7 +53,7 @@ var CROPS={
       renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
-      var cornDec=q['corn-dec'];
+      var cornDec=q[newCropKey('corn','dec')]||q['corn-dec'];
       /* when the nearby IS the new-crop contract (Dec corn from Sep to Dec) the hero
          already shows it; the line would only repeat the same price */
       var ncSame=!!(front&&cornDec&&front.ticker&&front.ticker===cornDec.ticker);
@@ -91,7 +91,7 @@ var CROPS={
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
     carry:'soybeans',
-    tiles:[{key:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('beans','nov'),alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
     labels:function(lbl,nearby){
       setTxt('hero-contract',lbl);
@@ -107,7 +107,7 @@ var CROPS={
     prices:function(q,data,front){
       /* v15 (S2): new-crop at a glance: the beans-nov benchmark (the next live Nov,
          which rolls on its own; the label is read from its ticker), hidden if key missing */
-      var ncQ=q['beans-nov'];
+      var ncQ=q[newCropKey('beans','nov')]||q['beans-nov'];
       var ncEl=document.getElementById('nc-line');
       var ncSame=!!(front&&ncQ&&front.ticker&&front.ticker===ncQ.ticker);
       if(ncEl&&ncQ&&ncQ.close!=null&&!ncSame){
@@ -284,6 +284,11 @@ function wheatDeferred(q,front){
   return null;
 }
 /* "Dec '26" from a dated quote's ticker (ZCZ26.CBT), else null. */
+/* NEW CROP is next year's crop once this one is in the bin (Sep 1 on): in
+   October 2026 that is Dec '27 corn and Nov '27 beans. The undated corn-dec
+   key is the next live Dec, which in the fall is the hero's own contract, so
+   a "new crop" tile on it repeated the hero (agecon review, 2026-10-12). */
+function newCropKey(root,mon){var d=new Date(),y=d.getFullYear()+(d.getMonth()>=8?1:0);return root+'-'+mon+String(y).slice(-2);}
 function contractLabel(d){var SS=window.AgsistStoreSell,f=SS&&SS.futuresMonth&&d&&SS.futuresMonth(d.ticker);return f?f.label:null;}
 /* The quote the page leads with: the dated nearby contract when the pipeline
    publishes it with a price, else the continuous series (labeled as such). */
@@ -1743,10 +1748,17 @@ fetch('/data/prices.json',{cache:'no-store'})
     window.__agsistHeroQ=front;
     CROP.labels(heroLabel,F.nearby);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
-    CROP.tiles.forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
+    CROP.tiles.forEach(function(m){var d=q[m.key]||(m.alt&&q[m.alt]);if(!d||d.close==null)return;if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
+      /* The baked note and the table's nearby row are the no-script copy of
+         this hero. Once the live quote is up they showed a second, older
+         price for the same contract ($4.81½ under a $4.82¾ hero). */
+      var __sn=document.querySelector('.px-seed-note');if(__sn)__sn.style.display='none';
+      var __st=document.querySelector('.seed-tbl-wrap'),__rows=__st?__st.querySelectorAll('tbody tr'):[];
+      for(var __i=0;__i<__rows.length;__i++){var __td=__rows[__i].cells[0];if(__td&&/^Nearby/.test(__td.textContent))__rows[__i].style.display='none';}
+      if(__st&&![].some.call(__rows,function(r){return r.style.display!=='none';}))__st.style.display='none';
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){

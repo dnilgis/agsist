@@ -189,6 +189,13 @@ def _chg(q):
     return pricefmt.pct(p)
 
 
+def _chg_cents(q):
+    """Cents first, percent second, as the live tiles print it: '+1¾¢ (+0.36%)'."""
+    if q.get("netChange") is None:
+        return _chg(q)
+    return pricefmt.change(q["netChange"], q.get("pctChange"), arrow=False)[0]
+
+
 # Day-session close, Central time. CBOT grains 1:20 p.m. CT; CME live and
 # feeder cattle 1:05 p.m. CT. freshness.yml runs at 13:35 and 20:35 UTC, so the
 # morning run lands IN SESSION and prices.json then carries close_date = today
@@ -264,7 +271,7 @@ def px_table(rows, flabel, in_session=False):
         # proportional face and ranged left is the loudest "not a finance site"
         # signal there is; the styling rule lives once in components/styles.css.
         out.append('<tr><td>' + label + stale + '</td><td class="num">$' + usd +
-                   '</td><td class="num">' + (_chg(q) or "n/a") +
+                   '</td><td class="num">' + (_chg_cents(q) or "n/a") +
                    '</td><td class="num">' + rng + '</td></tr>')
     out.append("</tbody></table>")
     return "".join(out) if n else None
