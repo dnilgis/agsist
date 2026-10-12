@@ -340,7 +340,7 @@
 
   <section class="fert-calc" aria-labelledby="calc-h">
     <h2 class="fert-calc-h" id="calc-h">Build your fertility bill</h2>
-    <p class="fert-calc-sub">Enter your crop and yield goal. This prices out the cheapest program to replace what the crop removes, using the benchmark prices above. Nitrogen is costed at a yield-goal rate; phosphate and potash at crop removal.</p>
+    <p class="fert-calc-sub">Enter your crop and yield goal. This prices out the cheapest program to replace what the crop removes, using the benchmark prices above. Phosphate and potash are costed at crop removal. Nitrogen is an N budget estimate at a yield-goal rate, not a rate recommendation; for a corn N rate use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>.</p>
     <div class="calc-inputs">
       <div class="calc-field"><label for="calc-crop">Crop</label><select id="calc-crop"><option value="corn">Corn</option><option value="soybean">Soybeans</option><option value="wheat">Wheat</option></select></div>
       <div class="calc-field"><label for="calc-yield">Yield goal (bu/acre)</label><input id="calc-yield" type="number" inputmode="numeric" min="0" step="5" value="180"></div>
@@ -352,7 +352,7 @@
       <summary>How this is calculated</summary>
       <div class="calc-method-body">
         <p>Cost per pound of nutrient = price &#xF7; (2000 lb/ton &#xD7; grade %). Each nutrient is sourced from the cheapest product carrying it; nitrogen already supplied by your phosphate source (e.g. MAP) is credited before pricing urea.</p>
-        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.37, K&#x2082;O 0.24 &middot; Soybeans 0.80 / 1.30 &middot; Wheat 0.50 / 0.30</code>: reflect grain nutrient removal commonly published by university extension and IPNI. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N). These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
+        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.37, K&#x2082;O 0.24 &middot; Soybeans 0.80 / 1.30 &middot; Wheat 0.50 / 0.30</code>: reflect grain nutrient removal commonly published by university extension and IPNI. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N), so the N line is a budget estimate, not a rate recommendation. Corn Belt extension services set corn N rates with the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>. These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
       </div>
     </details>
   </section>
@@ -592,7 +592,7 @@ function runCalc(){
   var sLine=(prog.sSupplied>0&&!inc)?'You\u2019re also getting <strong>'+Math.round(prog.sSupplied)+' lb/acre sulfur</strong>'+(prog.mgSupplied>0?' and '+Math.round(prog.mgSupplied)+' lb Mg':'')+' from this program.':'';
   var sAdv=(prog.sSupplied<prog.sNeed)?' Most '+prog.crop.toLowerCase()+' wants roughly '+prog.sNeed+' lb S/acre. Consider moving some nitrogen to ammonium sulfate to close the gap.':'';
   var nNote=c.fixesN?'<div class="calc-note">Soybeans fix their own nitrogen; no N purchase needed. This bill is phosphate and potash to replace what '+y+'-bu beans remove.</div>':'';
-  out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>Example: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. Your rate depends on previous crop and soil test.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
+  out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>N budget estimate, not a rate recommendation: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. For a corn rate, use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">MRTN calculator</a>.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
     '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Cheapest source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
     '<div class="calc-headline"><div><span>Fertility cost</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
     missNote+totalAc+nNote+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':'')+
