@@ -797,7 +797,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
       <div class="risk-badge moderate" id="risk-badge"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg> Loading…</div>
       <div class="risk-verdict" id="risk-verdict">Getting your local conditions…</div>
       <div class="risk-location" id="risk-location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Detecting location</div>
-      <div class="risk-method" style="font-size:.72rem;color:var(--text-muted);margin-top:.55rem;line-height:1.5">Higher score = more N lost to the air. Under 30 is a safe window; over 55, protect it or wait. Weighted estimate: temp 35% &middot; humidity 25% &middot; wind 20% &middot; rain 20%, adjusted for your soil pH and residue. AGSIST rule of thumb, not a validated model. The score and its bands are our own.</div>
+      <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20%, adjusted for your soil pH and residue; an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> Open-Meteo forecast; rain thresholds from Hargrove 1988 and Ferguson et al. 1984 &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
     </div>
   </div>
 </section>
@@ -862,7 +862,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="factor">
             <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg></span>Soil pH</div><span class="factor-score note">NOTE</span></div>
             <div class="factor-val">Variable</div>
-            <div class="factor-desc">Higher pH dramatically increases urease activity. Extension trials generally show markedly higher loss as pH climbs above 7, and above pH 7.5 in warm, moist conditions losses can be severe. Know your field pH.</div>
+            <div class="factor-desc">Higher pH shifts more of the ammonium that urease releases into ammonia gas, the form that escapes to the air. Extension trials generally show markedly higher loss as pH climbs above 7, and above pH 7.5 in warm, moist conditions losses can be severe. Know your field pH.</div>
             <div class="factor-bar"><div class="factor-bar-fill" style="width:55%;background:var(--risk-mod)"></div></div>
           </div>
           <div class="factor">
@@ -1133,10 +1133,10 @@ function rainRiskDaily(pop, precipMm){
   if(precipInches>=0.5)return 8;      // incorporation rain — volatilization risk removed
   if(precipInches>=0.25)return 35;    // partial incorporation possible — meaningful risk reduction
   if(precipInches>0)return 88;        // WORST case: dissolves granules and activates enzyme without incorporating
-  // No forecast precip — fall back to probability. Amount unknown, so like rainRisk()
-  // a high chance never drops to low: 45 matches rainRisk's >=70% band.
+  // No forecast precip — fall back to probability, using the same bands as rainRisk().
+  // Amount unknown, so a high chance never drops to low, and risk only falls as the chance rises.
   if(pop>=70)return 45;
-  if(pop>=50)return 35;
+  if(pop>=50)return 52;
   if(pop>=30)return 60;
   return 70;                          // dry window — extended exposure; loss builds as dew cycles dissolve granules
 }
