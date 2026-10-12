@@ -54,17 +54,17 @@
    "kb":374.1
   },
   "IN":{
-   "rows":1887,
+   "rows":1895,
    "facilities":107,
-   "kb":80.9
+   "kb":81.2
   },
   "KS":{
-   "rows":7311,
+   "rows":7304,
    "facilities":432,
-   "kb":317.3
+   "kb":317.0
   },
   "KY":{
-   "rows":98,
+   "rows":100,
    "facilities":9,
    "kb":4.9
   },
@@ -84,9 +84,9 @@
    "kb":335.2
   },
   "MO":{
-   "rows":1207,
+   "rows":1209,
    "facilities":96,
-   "kb":52.6
+   "kb":52.7
   },
   "MT":{
    "rows":216,
