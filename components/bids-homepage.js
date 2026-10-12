@@ -850,7 +850,7 @@
         var r = resolveRef(crop, forCrop, parseFloat(el.getAttribute('data-ref-imp')), el.getAttribute('data-ref-end'), q, el.getAttribute('data-ref-on') || '', hpData);
         if(!r) continue;
         var sdl = r.settleDay ? ctShortDay(r.settleDay) : '';
-        /* A cell reads "−62 Dec"; the expanded row names the full contract. */
+        /* A cell reads "−62¢ Dec"; the expanded row names the full contract. */
         if(el.classList.contains('bh-refm')){ el.textContent = ' ' + r.short; el.title = 'basis vs ' + r.text + (sdl ? ', matched to the ' + sdl + ' settle' : ''); continue; }
         el.textContent = 'basis vs ' + r.text;
         if(r.settleDay){ settled[r.label + ' ' + sdl] = r.close; n++; continue; }
@@ -1789,7 +1789,7 @@
       + '<a class="bh-fl r7-claim" href="/elevators#claim" data-track="claim_board">Claim your board</a>'
       + '</div>';
     html += '<div class="bh-tip" id="bh-tip"' + (tipOpen ? '' : ' hidden') + '>'
-      + '<div><b>Basis</b> is the cash bid minus the futures price it is quoted against. −62 Dec means 62¢ under December futures. Less negative is stronger.</div>'
+      + '<div><b>Basis</b> is the cash bid minus the futures price it is quoted against. −62¢ Dec means 62¢ under December futures. Less negative is stronger.</div>'
       + '<div class="r7-ref-note" hidden></div>'
       + '<div>Tap for phone, nearest delivery month, the board’s best later month (carry), basis vs normal and posting time.</div>'
       + '<div><b>Date tag:</b> a green dot and a date mean the board posted on the latest trading day. “Old” and an orange dot mean it has not posted since the date shown. A dash means the feed sends no posting time.</div>'

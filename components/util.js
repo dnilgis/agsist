@@ -148,8 +148,61 @@
     return { lo: l, hi: h };
   }
 
+  /* A CASH BID AS THE ELEVATOR POSTED IT, in dollars: 4.2125 -> "$4.2125",
+     12.475 -> "$12.475", 4.2 -> "$4.20". Two decimals, more only when the
+     board wrote more, never more than four. toFixed(2) rounded 12.475 to
+     "12.47" (the binary value is 12.47499...) and cut ADM's 4.2125 to 4.21.
+     opts: dollar false (no "$"). Twin: scripts/pricefmt.py cash(). */
+  function cash(v, o) {
+    if (!ok(v)) return '';
+    var n = Number(v), r = Math.round(Math.abs(n) * 10000) / 10000;
+    var s = r.toFixed(4).replace(/0+$/, '');
+    if (s.length - s.indexOf('.') - 1 < 2) s = r.toFixed(2);
+    return (n < 0 && r ? MINUS : '') + (o && o.dollar === false ? '' : '$') + s;
+  }
+
+  /* Basis in signed cents with a true minus: -65 -> "−65¢", 12.5 -> "+12½¢",
+     0 -> "even". A quarter-cent basis prints its glyph; anything finer prints
+     as posted, to two places ("−12.3¢"). opts.contract appends the month:
+     basis(-65, {contract:"Dec '26"}) -> "−65¢ Dec '26". Input is CENTS.
+     Twin: scripts/pricefmt.py basis(). */
+  function basis(c, o) {
+    if (!ok(c)) return '';
+    o = o || {};
+    var n = Number(c), a = Math.round(Math.abs(n) * 100) / 100, body;
+    if (a === 0) body = 'even';
+    else {
+      var q = Math.round(a * 4 * 1e6) / 1e6;
+      if (q === Math.floor(q)) {
+        var w = Math.floor(q / 4), f = q % 4;
+        body = (w || !f ? String(w) : '') + GLYPH[f];
+      } else body = String(a);
+      body = (n > 0 ? '+' : MINUS) + body + '¢';
+    }
+    return body + (o.contract ? ' ' + o.contract : '');
+  }
+
+  /* One label for a futures contract: "Dec '26". Reads "Dec 2026",
+     "December 2026", "Dec26", "Dec 26", "Dec ’26" and tickers (ZCZ26, ZCZ6).
+     Anything after the year ("Dec 26 KCBT Red Wheat") is kept; text that is
+     not a month is returned as written. Twin: scripts/pricefmt.py contract(). */
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var CODE = 'FGHJKMNQUVXZ';
+  function contract(s) {
+    var t = String(s == null ? '' : s).trim();
+    if (!t) return '';
+    /* a month name first: "Nov26" is November, not the ticker N-O-V26 */
+    var m = /^([A-Za-z]{3})[A-Za-z]*\.?\s*['’]?(\d{4}|\d{2})(?!\d)\s*(.*)$/.exec(t);
+    var i = m ? MON.map(function (x) { return x.toLowerCase(); }).indexOf(m[1].toLowerCase()) : -1;
+    if (i >= 0) return MON[i] + " '" + m[2].slice(-2) + (m[3] ? ' ' + m[3] : '');
+    var k = /^[A-Z]{1,3}([FGHJKMNQUVXZ])(\d{1,2})$/.exec(t.toUpperCase());
+    if (k) return MON[CODE.indexOf(k[1])] + " '" + (k[2].length === 1 ? '2' + k[2] : k[2]);
+    return t;
+  }
+
   var px = { quarters: quarters, parts: parts, price: price, priceDollars: priceDollars,
-             move: move, pct: pct, change: change, range: range, MINUS: MINUS };
+             move: move, pct: pct, change: change, range: range, cash: cash, basis: basis,
+             contract: contract, MINUS: MINUS };
 
   if (typeof w.esc !== 'function') w.esc = esc;
   if (typeof w.el !== 'function') w.el = el;

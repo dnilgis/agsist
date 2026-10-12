@@ -78,6 +78,7 @@ except Exception:  # pragma: no cover
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_bids import _net_get_json, BIDS_NETWORK_BASE  # noqa: E402  (network reader only)
+import pricefmt  # noqa: E402  (cash as posted, basis in cents, "Dec '26": twin of components/util.js AG.px)
 from basis_method import (  # noqa: E402  (the one state-basis method)
     CROP_ORDER, MIN_STAT, SANITY, match_key, median, state_basis)
 
@@ -155,24 +156,22 @@ def _cents2(v):
 
 
 def money_basis(v):
-    """Basis in $/bu with an explicit sign: -$0.42, +$0.05, or "even".
+    """Basis (input $/bu) in signed cents with a true minus: −65¢, +5¢, −12½¢,
+    or "even". One style site-wide, pricefmt.basis (AG.px.basis in the browser).
 
     A zero basis is a real bid at futures (ADM Mound City corn posts -20c,
     0c, +18c for neighbouring months), so it is printed the way the trade
-    says it, "even" -- never a bare $0.00, which reads as a missing value."""
+    says it, "even" -- never a bare 0, which reads as a missing value."""
     if v is None:
         return "n/a"
-    a = _cents2(v)
-    if a == "0.00":
+    t = pricefmt.basis(v * 100)
+    if t == "even":
         return "even"
-    return f"<span style=\"white-space:nowrap\">{'+' if v > 0 else '&minus;'}${a}</span>"
+    return f"<span style=\"white-space:nowrap\">{t}</span>"
 
 
 def plain_basis(v):
-    a = _cents2(v)
-    if a == "0.00":
-        return "even"
-    return f"{'+' if v > 0 else '-'}${a}"
+    return pricefmt.basis(v * 100)
 
 
 def cents_delta(v):
@@ -234,7 +233,8 @@ def contract_code(c):
 
 
 def contract_label(c):
-    return f"{MONTH_ABBR[c[1]]} &rsquo;{c[2] % 100:02d}"
+    """One contract style site-wide: "Dec '26" (straight apostrophe)."""
+    return contract_plain(c)
 
 
 def contract_plain(c):
@@ -675,7 +675,7 @@ def stat_block(group, st, prev_gen):
 
 def loc_li(r):
     return (f'<li>{esc(r["operator"])}, {esc(town_text(r["city"]))}: basis <b>{money_basis(r["basis"])}</b>, '
-            f'cash ${r["cash"]:.2f} ({esc(delivery_text(r))}), as of {fmt_ct(r["priced"])}</li>')
+            f'cash {pricefmt.cash(r["cash"])} ({esc(delivery_text(r))}), as of {fmt_ct(r["priced"])}</li>')
 
 
 EXPLAINER = """<h2>What basis is, in one paragraph</h2>
@@ -838,7 +838,7 @@ def build_state_page(st, rows_all, summ, ctx):
             more = ' class="more"' if i >= FOLD_ROWS else ""
             trs.append(f'<tr{more}><td class="c-el">{elevator_link(r)}</td>'
                        f'<td class="c-town">{esc(town_text(r["city"]))}</td>'
-                       f'<td class="n c-bas" data-l="Basis">{bas}</td><td class="n c-cash" data-l="Cash">${r["cash"]:.2f}</td>'
+                       f'<td class="n c-bas" data-l="Basis">{bas}</td><td class="n c-cash" data-l="Cash">{pricefmt.cash(r["cash"])}</td>'
                        f'<td class="c-com">{com}</td><td class="c-del" data-l="Delivery">{esc(delivery_text(r))}</td>'
                        f'<td class="c-con" data-l="vs">{con}</td>{wow}'
                        f'<td class="c-asof" data-l="As of">{fmt_ct(r["priced"])}</td></tr>')
@@ -1092,7 +1092,7 @@ def selftest():
     assert delivery_text({"delivery": "Dec 2026 (2027-01)"}) == "Dec 2026 (2027-01)"
     assert delivery_text({"delivery": "October (2026-12)"}) == "October (2026-12)"
     assert _crop_norm("CORN") == _crop_norm("Corn") and _crop_norm("#2 Corn") != _crop_norm("Corn")
-    assert plain_basis(-0.625) == "-$0.63" and money_basis(0.0) == "even" and plain_basis(0.0) == "even"
+    assert plain_basis(-0.625) == "\u221262\u00bd\u00a2" and money_basis(0.0) == "even" and plain_basis(0.0) == "even"
     merged, index, prev = _fixture()
     with _tf.TemporaryDirectory() as td:
         metas, drops = build_all(merged, index, prev, out_dir=td, root=".",

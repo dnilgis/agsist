@@ -47,7 +47,13 @@ const saneLine = h.match(/var BASIS_SANE=\{[^}]*\};/);
 if (!saneLine) throw new Error("no BASIS_SANE");
 const src = ["normSym", "classify", "ppu", "basisUnit", "basisCents", "basisUnusual", "basisUnclear", "fmtPx", "formatBasis", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
   + "\n" + bandLine[0] + "\n" + saneLine[0];
-const M = new Function(src + "; return {fmtPx,classify,ppu,basisUnit,basisCents,basisUnusual,basisUnclear,formatBasis,plausible,futuresOf,contractLabel,contractStrip};")();
+/* The page's formatters call the site's one formatter (components/util.js
+   AG.px), so the shipped util.js is loaded first, as the page loads it. */
+const UTIL = [join(HERE, "components", "util.js"), join(HERE, "..", "components", "util.js")]
+  .find((p) => { try { readFileSync(p); return true; } catch { return false; } });
+const W = {};
+new Function("window", readFileSync(UTIL, "utf8"))(W);
+const M = new Function("AG", src + "; return {fmtPx,classify,ppu,basisUnit,basisCents,basisUnusual,basisUnclear,formatBasis,plausible,futuresOf,contractLabel,contractStrip};")(W.AG);
 
 /* The captured board, verbatim in the fields the page reads. */
 const ROWS = [
@@ -111,9 +117,9 @@ ok(true, "-> a strip built per elevator prints 5.36 on Badger's card and 5.37 on
 const strip = (fac, cat) => M.contractStrip(BIDS.filter((b) => b.facility === fac && b.category === cat));
 const br = strip("Big River Resources", "corn");
 eq(br.length, 5, "Big River's twelve corn rows collapse to five contracts");
-eq(br.map((e) => e.label).join(" "), "Sep26 Dec26 Mar27 May27 Jul27", "in delivery order, labelled as a person says them");
+eq(br.map((e) => e.label).join(" "), "Sep '26 Dec '26 Mar '27 May '27 Jul '27", "in delivery order, labelled as a person says them");
 eq(br.map((e) => e.price.toFixed(2)).join(" "), "5.14 5.37 5.51 5.57 5.59", "with the prices the board implies");
-eq(strip("Badger Grain Supply", "corn").map((e) => e.label + " " + e.price.toFixed(2)).join(" · "), "Sep26 5.14 · Dec26 5.36", "Badger's own two contracts, its own numbers");
+eq(strip("Badger Grain Supply", "corn").map((e) => e.label + " " + e.price.toFixed(2)).join(" · "), "Sep '26 5.14 · Dec '26 5.36", "Badger's own two contracts, its own numbers");
 eq(strip("Wheaton Grain", "soybeans").length, 1, "soybeans get their own strip");
 eq(strip("Wheaton Grain", "soybeans")[0].price.toFixed(2), "12.66", "at 12.66");
 
@@ -169,18 +175,18 @@ ok(M.basisUnusual({ category: "corn", cashPrice: 4.62, basis: -2.6 }) && !M.basi
    "corn/soy cap is $2.50, exclusive -- the state basis pages' SANITY rule");
 
 /* ---- 6. the label -------------------------------------------------------- */
-eq(M.contractLabel({ basisMonth: "Dec 2026" }), "Dec26", "Dec 2026 -> Dec26");
-eq(M.contractLabel({ basisMonth: "Sep 2027" }), "Sep27", "Sep 2027 -> Sep27");
+eq(M.contractLabel({ basisMonth: "Dec 2026" }), "Dec '26", "Dec 2026 -> Dec '26");
+eq(M.contractLabel({ basisMonth: "Sep 2027" }), "Sep '27", "Sep 2027 -> Sep '27");
 eq(M.contractLabel({ basisMonth: "" }), "", "nothing in, nothing out");
 eq(M.contractLabel({ basisMonth: "December" }), "December", "an unexpected shape is passed through, not mangled");
 /* The bids network writes the month in full, and boards post half cents. */
-eq(M.contractLabel({ basisMonth: "December 2026" }), "Dec26", "December 2026 -> Dec26");
-eq(M.contractLabel({ basisMonth: "Dec 26 KCBT Red Wheat" }), "Dec26 KCBT Red Wheat", "the exchange is kept: KC and Chicago are two prices");
+eq(M.contractLabel({ basisMonth: "December 2026" }), "Dec '26", "December 2026 -> Dec '26");
+eq(M.contractLabel({ basisMonth: "Dec 26 KCBT Red Wheat" }), "Dec '26 KCBT Red Wheat", "the exchange is kept: KC and Chicago are two prices");
 eq(M.contractLabel({ basisMonth: "Fall 2026" }), "Fall 2026", "a season is not a month and is not shortened");
 eq(M.fmtPx(12.475), "12.475", "a half-cent price is printed as posted, not a cent low");
 eq(M.fmtPx(4.2125), "4.2125", "a quarter-cent board keeps its digits");
 eq(M.fmtPx(4.5), "4.50", "two decimals otherwise");
-eq(M.formatBasis(-0.125, { category: "corn", cashPrice: 4.6, basis: -0.125 }).str, "&minus;12.5&#162;", "a half-cent basis is not rounded to a whole cent");
+eq(M.formatBasis(-0.125, { category: "corn", cashPrice: 4.6, basis: -0.125 }).str, "\u221212\u00bd\u00a2", "a half-cent basis is not rounded to a whole cent");
 
 console.log("\n" + pass + " passed, " + fail + " failed");
 process.exit(fail ? 1 : 0);

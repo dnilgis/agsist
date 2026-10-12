@@ -400,7 +400,7 @@
           big='opens '+md(hs);
           det.push(projTxt);
           var q=(ROOT[g.crop]&&px&&px.quotes)?quoteFor(px.quotes,ROOT[g.crop],x.h_mon,x.h_yr):null;
-          if(q){usedFut=true;det.push((x.h_mon||'').slice(0,3)+' ’'+String(x.h_yr).slice(-2)+' futures '+usd(q.close/100,u)+' today, not the harvest price');}
+          if(q){usedFut=true;det.push(AG.px.contract((x.h_mon||'')+' '+x.h_yr)+' futures '+usd(q.close/100,u)+' today, not the harvest price');}
           det.push(g.win?(tot?tot+' trading days':''):rng(hs,he)+(tot?', '+tot+' trading days':''));
         } else if(g.st==='final'){
           tag='final';

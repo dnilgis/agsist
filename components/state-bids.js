@@ -11,10 +11,10 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  /* Basis ($/bu in the file) in signed cents, one style site-wide:
+     −65¢, +5¢, even (components/util.js AG.px.basis, loaded first). */
   function money(v) {
-    var a = Math.abs(v).toFixed(2);
-    if (a === '0.00') return 'even';
-    return (v > 0 ? '+' : '−') + '$' + a;
+    return v == null ? 'n/a' : AG.px.basis(Number(v) * 100);
   }
   function cents(v) {
     if (v == null) return '';
@@ -54,7 +54,7 @@
         var fl = r[ix.flag] ? '<br><span class="mut">' + esc(FLAG[r[ix.flag]] || r[ix.flag]) + '</span>' : '';
         out += '<tr><td>' + esc(r[ix.elevator]) + '<br><span class="mut">' + town + ' &middot; ' + esc(r[ix.delivery])
           + ' &middot; posted ' + esc(when(r[ix.priced])) + '</span>' + fl + '</td>'
-          + '<td class="n">$' + Number(r[ix.cash]).toFixed(2) + '</td>'
+          + '<td class="n">' + AG.px.cash(r[ix.cash]) + '</td>'
           + '<td class="n">' + money(r[ix.basis]) + '<br><span class="mut">' + vs + '</span></td>'
           + (wk ? '<td class="n">' + (r[ix.wow_cents] == null ? '<span class="mut" title="not posted both weeks">n/a</span>' : cents(r[ix.wow_cents])) + '</td>' : '')
           + '</tr>';

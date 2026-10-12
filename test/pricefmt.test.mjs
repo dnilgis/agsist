@@ -122,6 +122,38 @@ test("scripts/pricefmt.py prints exactly what util.js prints", () => {
   for (let i = 0; i < js.length; i++) assert.deepEqual(py[i], js[i], `case ${JSON.stringify(cases[i])}`);
 });
 
+test("cash as posted, basis in signed cents, one contract label", () => {
+  assert.equal(P.cash(4.2125), "$4.2125");
+  assert.equal(P.cash(12.475), "$12.475");
+  assert.equal(P.cash(4.2), "$4.20");
+  assert.equal(P.cash(4.21, { dollar: false }), "4.21");
+  assert.equal(P.cash(-0.65), "−$0.65");
+  assert.equal(P.cash(null), "");
+  assert.equal(P.basis(-65), "−65¢");
+  assert.equal(P.basis(12.5), "+12½¢");
+  assert.equal(P.basis(-0.25), "−¼¢");
+  assert.equal(P.basis(0), "even");
+  assert.equal(P.basis(-12.3), "−12.3¢");
+  assert.equal(P.basis(-65, { contract: "Dec '26" }), "−65¢ Dec '26");
+  for (const [inp, want] of [["Dec 2026", "Dec '26"], ["December 2026", "Dec '26"], ["Dec26", "Dec '26"],
+    ["Dec 26", "Dec '26"], ["Dec \u201926", "Dec '26"], ["Dec '26", "Dec '26"], ["ZCZ26", "Dec '26"], ["ZSF7", "Jan '27"],
+    ["Nov26", "Nov '26"], ["LEV26", "Oct '26"], ["Dec 26 KCBT Red Wheat", "Dec '26 KCBT Red Wheat"], ["Spot", "Spot"], ["", ""]]) {
+    assert.equal(P.contract(inp), want, inp);
+  }
+  const cases = [], js = [];
+  for (const v of [4.2125, 12.475, 4.2, 4.21, -0.65, 0, 6.8125, 12.7125, 3.999999, 4.80499]) {
+    cases.push({ fn: "cash", args: [v] }); js.push(P.cash(v));
+  }
+  for (const v of [-65, 12.5, -0.25, 0, -12.3, -12.75, 7, -100.5, 0.004]) {
+    cases.push({ fn: "basis", args: [v] }); js.push(P.basis(v));
+  }
+  for (const v of ["Dec 2026", "December 2026", "Dec26", "Dec 26", "ZCZ26", "ZSF7", "Nov26", "LEV26", "Dec 26 KCBT Red Wheat", "Spot"]) {
+    cases.push({ fn: "contract", args: [v] }); js.push(P.contract(v));
+  }
+  const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/pricefmt.py", "--json"], { input: JSON.stringify(cases) }).toString());
+  for (let i = 0; i < js.length; i++) assert.deepEqual(py[i], js[i], `case ${JSON.stringify(cases[i])}`);
+});
+
 /* index.html once declared `var AG = /corn|.../` at the top level of a page
    script, which replaced window.AG (and AG.px with it) for every script after
    it. No page may declare a variable named AG. */

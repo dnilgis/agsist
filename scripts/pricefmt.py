@@ -1,5 +1,8 @@
 """Grain price text for the build: the Python twin of components/util.js AG.px.
 
+Also cash() (a bid as posted), basis() (signed cents, "even" at zero) and
+contract() ("Dec '26"), each the twin of the util.js function of that name.
+
 A page's seed (the price baked into the HTML) and the price its script prints
 after load must be the same characters, or the number changes in front of the
 reader. So the build prints grain prices with exactly the rules the browser
@@ -107,6 +110,67 @@ def range_ends(lo, hi, style="glyph"):
     return (price(lo, style=style, mode="down"), price(hi, style=style, mode="up"))
 
 
+def cash(v, dollar=True):
+    """A cash bid as the elevator posted it, in dollars: 4.2125 -> "$4.2125",
+    12.475 -> "$12.475", 4.2 -> "$4.20". Twin of util.js AG.px.cash."""
+    if not _ok(v):
+        return ""
+    n = float(v)
+    r = _js_round(abs(n) * 10000) / 10000
+    s = _to_fixed(r, 4).rstrip("0")
+    if len(s) - s.index(".") - 1 < 2:
+        s = _to_fixed(r, 2)
+    return (MINUS if n < 0 and r else "") + ("$" if dollar else "") + s
+
+
+def _num_text(a):
+    """JS String(number) for a value already rounded to two places."""
+    return ("%.2f" % a).rstrip("0").rstrip(".") if a != int(a) else str(int(a))
+
+
+def basis(c, contract=None):
+    """Basis in signed cents: -65 -> "−65¢", 12.5 -> "+12½¢", 0 -> "even".
+    contract appends the month: "−65¢ Dec '26". Twin of util.js AG.px.basis."""
+    if not _ok(c):
+        return ""
+    n = float(c)
+    a = _js_round(abs(n) * 100) / 100
+    if a == 0:
+        body = "even"
+    else:
+        q = _js_round(a * 4 * 1e6) / 1e6
+        if q == math.floor(q):
+            q = int(q)
+            w, f = q // 4, q % 4
+            body = (str(w) if (w or not f) else "") + GLYPH[f]
+        else:
+            body = _num_text(a)
+        body = ("+" if n > 0 else MINUS) + body + "¢"
+    return body + ((" " + contract) if contract else "")
+
+
+_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+_CODE = "FGHJKMNQUVXZ"
+
+
+def contract(s):
+    """One futures contract label: "Dec '26". Reads "Dec 2026", "December
+    2026", "Dec26", "Dec ’26", ZCZ26, ZCZ6. Twin of util.js AG.px.contract."""
+    import re
+    t = str("" if s is None else s).strip()
+    if not t:
+        return ""
+    m = re.match(r"^([A-Za-z]{3})[A-Za-z]*\.?\s*['\u2019]?(\d{4}|\d{2})(?!\d)\s*(.*)$", t, re.S)
+    i = [x.lower() for x in _MON].index(m.group(1).lower()) if m and m.group(1).lower() in [x.lower() for x in _MON] else -1
+    if i >= 0:
+        return _MON[i] + " '" + m.group(2)[-2:] + ((" " + m.group(3)) if m.group(3) else "")
+    k = re.match(r"^[A-Z]{1,3}([FGHJKMNQUVXZ])(\d{1,2})$", t.upper())
+    if k:
+        y = k.group(2)
+        return _MON[_CODE.index(k.group(1))] + " '" + ("2" + y if len(y) == 1 else y)
+    return t
+
+
 def _selftest():
     assert price(480.5) == "$4.80½"
     assert price(480.5, style="slash") == "$4.80 1/2"
@@ -126,6 +190,13 @@ def _selftest():
     assert pct(0.125) == "+0.13%"
     assert change(-19.75, -3.95) == ("▼ " + MINUS + "19¾¢ (" + MINUS + "3.95%)", "dn")
     assert change(0, 0) == ("unch", "nc")
+    assert cash(4.2125) == "$4.2125" and cash(12.475) == "$12.475" and cash(4.2) == "$4.20"
+    assert cash(-0.65) == MINUS + "$0.65" and cash(4.21, dollar=False) == "4.21"
+    assert basis(-65) == MINUS + "65¢" and basis(12.5) == "+12½¢" and basis(0) == "even"
+    assert basis(-65, "Dec '26") == MINUS + "65¢ Dec '26" and basis(-12.3) == MINUS + "12.3¢"
+    assert contract("Dec 2026") == "Dec '26" and contract("ZCZ26") == "Dec '26"
+    assert contract("Nov26") == "Nov '26" and contract("ZSF7") == "Jan '27"
+    assert contract("Dec 26 KCBT Red Wheat") == "Dec '26 KCBT Red Wheat" and contract("Spot") == "Spot"
     print("pricefmt selftest ok")
 
 
@@ -139,6 +210,7 @@ if __name__ == "__main__":
         out = []
         for c in cases:
             fn, args, kw = c["fn"], c.get("args", []), c.get("kw", {})
-            r = {"price": price, "move": move, "pct": pct, "change": change, "range": range_ends}[fn](*args, **kw)
+            r = {"price": price, "move": move, "pct": pct, "change": change, "range": range_ends,
+                  "cash": cash, "basis": basis, "contract": contract}[fn](*args, **kw)
             out.append(list(r) if isinstance(r, tuple) else r)
         print(json.dumps(out))

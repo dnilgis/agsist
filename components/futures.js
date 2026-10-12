@@ -1435,12 +1435,12 @@ function renderBasisCard(data){
       locEl.textContent=locStr;
     }
 
-    if(bidEl)bidEl.textContent=bidPrice!=null?'$'+Number(bidPrice).toFixed(2):'-';
+    if(bidEl)bidEl.textContent=bidPrice!=null?AG.px.cash(bidPrice):'-';
     try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),symbol:(b.symbol||b.futures_symbol||b.futuresSymbol||null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
     if(spreadEl){
       if(basis!=null){
         var bv=Number(basis);
-        spreadEl.textContent=(bv>=0?'+':'\u2212')+'$'+Math.abs(bv).toFixed(2);
+        spreadEl.textContent=AG.px.basis(bv*100);   /* −65¢, +5¢, even: one basis style */
         spreadEl.className='basis-cell-val '+(bv>=0?'basis-pos':'basis-neg');
       }else{spreadEl.textContent='-';spreadEl.className='basis-cell-val';}
     }
@@ -1449,14 +1449,14 @@ function renderBasisCard(data){
     if(interpEl){
       var interp;
       if(basis!=null){
-        var bvi=Number(basis),absV=Math.abs(bvi).toFixed(2);
+        var bvi=Number(basis),absV=AG.px.basis(Math.abs(bvi)*100).replace(/^\+/,'');
         if(bvi===0)interp='Cash is <strong>level with its board futures contract</strong>. A flat basis is neither a premium nor a discount; the elevator is paying the exchange price.';
-        else if(bvi>0)interp='Cash is <strong>$'+absV+' above the board contract it is quoted against'+(b.symbol?' ('+b.symbol+')':'')+'</strong>. Positive basis signals firm local demand: buyers are willing to pay above the exchange to attract bushels.';
-        else if(bvi>=-0.20)interp='Cash is <strong>$'+absV+' below futures</strong>. A tight basis like this is firm, typical of strong local demand or proximity to a processor.';
-        else if(bvi>=-0.40)interp='Cash is <strong>$'+absV+' below futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
-        else interp='Cash is <strong>$'+absV+' below futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
+        else if(bvi>0)interp='Cash is <strong>'+absV+' above the board contract it is quoted against'+(b.symbol?' ('+b.symbol+')':'')+'</strong>. Positive basis signals firm local demand: buyers are willing to pay above the exchange to attract bushels.';
+        else if(bvi>=-0.20)interp='Cash is <strong>'+absV+' under futures</strong>. A tight basis like this is firm, typical of strong local demand or proximity to a processor.';
+        else if(bvi>=-0.40)interp='Cash is <strong>'+absV+' under futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
+        else interp='Cash is <strong>'+absV+' under futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
       }else{
-        interp='Bid <strong>$'+(bidPrice!=null?Number(bidPrice).toFixed(2):'-')+'/bu</strong> at this location. Basis vs futures not reported.';
+        interp='Bid <strong>'+(bidPrice!=null?AG.px.cash(bidPrice):'-')+'/bu</strong> at this location. Basis vs futures not reported.';
       }
       interpEl.innerHTML=interp;
     }
@@ -1480,8 +1480,8 @@ function renderBasisCard(data){
       var bidLocLbl=bidGrid?bidGrid.label:'this location';
       if(basis!=null){
         var bv2=Number(basis);
-        if(bv2>=0)bp+='at <strong>+$'+bv2.toFixed(2)+' near '+bidLocLbl+'</strong> is positive: a sign of firm local demand';
-        else bp+='at <strong>\u2212$'+Math.abs(bv2).toFixed(2)+' near '+bidLocLbl+'</strong>';
+        if(bv2>0)bp+='at <strong>'+AG.px.basis(bv2*100)+' near '+bidLocLbl+'</strong> is positive: a sign of firm local demand';
+        else bp+='at <strong>'+AG.px.basis(bv2*100)+' near '+bidLocLbl+'</strong>';
         window.__agsistMR.basis=[bp];
         if(typeof renderMarketRead==='function')renderMarketRead();
       }

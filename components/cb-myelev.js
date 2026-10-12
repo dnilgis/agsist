@@ -175,13 +175,9 @@
 
   /* ── numbers as the card prints them ───────────────────────────────── */
   function ppu(raw){ return raw == null ? null : (raw > 30 ? raw / 100 : raw); }
-  function fmtPx(v){
-    var r = Math.round(Math.abs(v) * 10000) / 10000, s = r.toFixed(4).replace(/0+$/, '');
-    if(s.length - s.indexOf('.') - 1 < 2) s = r.toFixed(2);
-    return s;
-  }
+  function fmtPx(v){ return AG.px.cash(v, { dollar: false }); }   // as posted (components/util.js)
   function quarterCents(c){ return AG.px.move(c, { style: 'slash', cent: false }); }
-  function centsTxt(c){ return c === 0 ? 'even' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
+  function centsTxt(c){ return AG.px.basis(c); }   // −65¢, +5¢, even (components/util.js)
   function delLabel(period, delivery){
     var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?$/.exec(period || '');
     if(m && MON[+m[2] - 1]) return MON[+m[2] - 1] + (m[3] && m[4] !== m[2] && MON[+m[4] - 1] ? '–' + MON[+m[4] - 1] : '') + ' ' + (m[3] || m[1]);
@@ -385,7 +381,7 @@
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=2'; document.head.appendChild(l);
-    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=2'; s.defer = true;
+    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=3'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }
   window.addEventListener('storage', function(e){ if(e.key === KEY) changed(); });

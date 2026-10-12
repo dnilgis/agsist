@@ -838,7 +838,9 @@ def seed_scorecard(today):
 
 # --- /basis --------------------------------------------------------------------
 def _basis_money(v):
-    return ("-" if v < 0 else "+") + "$" + _fixed(abs(v), 2)
+    """USDA basis ($/bu, to the cent) in signed cents: −91¢, +4¢, even.
+    The twin of basis.html fmt$ (AG.px.basis on the rounded cent)."""
+    return pricefmt.basis(pricefmt._js_round(v * 100))
 
 
 def basis_summary(j, today=None, crop="Corn"):
@@ -913,7 +915,7 @@ def seed_basis(today):
             w = next(r for r in cr if r[2] == 0 and r[1].get("delta") is not None)
             parts.append(f"{word}: <strong>{under} of {n}</strong> regions more than 10&cent; under normal, "
                          f"{over} more than 10&cent; over, {near} within 10&cent; (weakest vs normal {_e(w[0])} "
-                         f"{_basis_money(w[1]['latest'])}/bu against {_basis_money(w[1]['avg5'])})")
+                         f"{_basis_money(w[1]['latest'])} against {_basis_money(w[1]['avg5'])})")
         seeds["basisstats"] = (f"USDA AgTransport elevator-bid basis against each region&rsquo;s own 5-year normal "
                                f"for the same week, week of {_mdy(wk)}. " + "; ".join(parts) +
                                ". Barge rates and origin-to-Gulf spreads below; USDA posts weekly.")
@@ -921,7 +923,7 @@ def seed_basis(today):
         seeds["basisheld"] = basis_held_text(j, "Corn", wk)
         h = [f"<caption>Corn, week of {_mdy(wk)} &middot; weakest vs normal first</caption>"
              "<tr><th>Region</th><th style=\"text-align:right\">Basis now</th>"
-             "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, $/bu</th></tr>"]
+             "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, cents/bu</th></tr>"]
         for name, s, age in rows:
             if age != 0:
                 now = f"no USDA posting for the week of {_md(wk)}; last {_md(_iso_date(s['date']))}"
@@ -930,7 +932,7 @@ def seed_basis(today):
                 now = _basis_money(s["latest"])
                 dl = s.get("delta")
                 # a delta that rounds to a cent of nothing reads "even", not "+$0.00"
-                vs = ("" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
+                vs = ("" if dl is None else _basis_money(dl))
             nrm = "" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
             h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
         seeds["basistable"] = "".join(h)
