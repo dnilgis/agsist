@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-  <script src="/components/util.js?v=17"></script>
+  <script src="/components/util.js?v=18"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -82,6 +82,7 @@
     .bs-barval{font-family:'JetBrains Mono',monospace;font-size:0.785rem;text-align:right;color:var(--bs-hi);line-height:1.3}
     .bs-barval small{display:block;font-size:0.72rem;color:var(--bs-dim);white-space:nowrap}
     .bs-barval.neg small{color:inherit}
+    :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
     .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:var(--text-muted);margin:16px 0}
     .bs-note strong{color:var(--gold)}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
@@ -173,11 +174,12 @@
   <section class="bs-panel" id="usda" aria-labelledby="bs-reg-t">
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-reg-t">USDA regions: basis vs 5-year same-week normal</span><span class="bs-fresh" id="bs-fresh"><!--SEED:basisfresh-->week of 2026-09-25<!--/SEED--></span></div>
     <div class="bs-panel-b">
-      <p class="bs-seed"><!--SEED:basisstats-->USDA AgTransport elevator-bid basis against each region&rsquo;s own 5-year normal for the same week, week of Sep 25, 2026. corn: <strong>6 of 10</strong> regions more than 10&cent; under normal, 2 more than 10&cent; over, 2 within 10&cent; (weakest vs normal Minnesota -$0.91/bu against -$0.45); soybeans: <strong>0 of 10</strong> regions more than 10&cent; under normal, 4 more than 10&cent; over, 6 within 10&cent; (weakest vs normal Kansas -$0.92/bu against -$0.82). Barge rates and origin-to-Gulf spreads below; USDA posts weekly.<!--/SEED--></p>
-      <p class="bs-held" id="bs-held"><!--SEED:basisheld-->USDA&rsquo;s week of Oct 2 moved 4 regions more than 99&cent; in one week (Kansas -$0.35 to -$1.60, Nebraska -$0.47 to -$1.47, North Carolina +$0.33 to -$0.80, and more). That looks like a break in USDA&rsquo;s file, not the market, so this table shows the week of Sep 25 for every region until the next week confirms or undoes it.<!--/SEED--></p>
+      <p class="bs-seed"><!--SEED:basisstats-->USDA AgTransport elevator-bid basis against each region&rsquo;s own 5-year normal for the same week, week of Sep 25, 2026. corn: <strong>6 of 10</strong> regions more than 10&cent; under normal, 2 more than 10&cent; over, 2 within 10&cent; (weakest vs normal Minnesota −91¢ against −45¢); soybeans: <strong>0 of 10</strong> regions more than 10&cent; under normal, 4 more than 10&cent; over, 6 within 10&cent; (weakest vs normal Kansas −92¢ against −82¢). Barge rates and origin-to-Gulf spreads below; USDA posts weekly.<!--/SEED--></p>
+      <p class="bs-held" id="bs-held"><!--SEED:basisheld-->USDA&rsquo;s week of Oct 2 moved 4 regions more than 99&cent; in one week (Kansas −35¢ to −160¢, Nebraska −47¢ to −147¢, North Carolina +33¢ to −80¢, and more). That looks like a break in USDA&rsquo;s file, not the market, so this table shows the week of Sep 25 for every region until the next week confirms or undoes it.<!--/SEED--></p>
       <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
-      <div class="tblscroll"><table class="bs-tbl" id="bs-table"><!--SEED:basistable--><caption>Corn, week of Sep 25, 2026 &middot; weakest vs normal first</caption><tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">Vs normal, $/bu</th></tr><tr><td>Minnesota</td><td class="num">-$0.91</td><td class="num">-$0.45 n=5 yrs</td><td class="num">-$0.46</td></tr><tr><td>Kansas</td><td class="num">-$0.35</td><td class="num">+$0.07 n=5 yrs</td><td class="num">-$0.42</td></tr><tr><td>South Dakota</td><td class="num">-$0.71</td><td class="num">-$0.39 n=5 yrs</td><td class="num">-$0.32</td></tr><tr><td>North Dakota</td><td class="num">-$0.74</td><td class="num">-$0.50 n=5 yrs</td><td class="num">-$0.25</td></tr><tr><td>Nebraska</td><td class="num">-$0.47</td><td class="num">-$0.27 n=5 yrs</td><td class="num">-$0.20</td></tr><tr><td>Iowa</td><td class="num">-$0.43</td><td class="num">-$0.31 n=5 yrs</td><td class="num">-$0.12</td></tr><tr><td>Ohio</td><td class="num">-$0.37</td><td class="num">-$0.36 n=5 yrs</td><td class="num">-$0.01</td></tr><tr><td>Illinois</td><td class="num">-$0.34</td><td class="num">-$0.35 n=5 yrs</td><td class="num">even</td></tr><tr><td>Indiana</td><td class="num">-$0.20</td><td class="num">-$0.33 n=5 yrs</td><td class="num">+$0.13</td></tr><tr><td>North Carolina</td><td class="num">+$0.33</td><td class="num">+$0.16 n=5 yrs</td><td class="num">+$0.17</td></tr><!--/SEED--></table></div>
+      <div class="tblscroll"><table class="bs-tbl" id="bs-table"><!--SEED:basistable--><caption>Corn, week of Sep 25, 2026 &middot; weakest vs normal first</caption><tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">Vs normal, cents/bu</th></tr><tr><td>Minnesota</td><td class="num">−91¢</td><td class="num">−45¢ n=5 yrs</td><td class="num">−46¢</td></tr><tr><td>Kansas</td><td class="num">−35¢</td><td class="num">+7¢ n=5 yrs</td><td class="num">−42¢</td></tr><tr><td>South Dakota</td><td class="num">−71¢</td><td class="num">−39¢ n=5 yrs</td><td class="num">−32¢</td></tr><tr><td>North Dakota</td><td class="num">−74¢</td><td class="num">−50¢ n=5 yrs</td><td class="num">−25¢</td></tr><tr><td>Nebraska</td><td class="num">−47¢</td><td class="num">−27¢ n=5 yrs</td><td class="num">−20¢</td></tr><tr><td>Iowa</td><td class="num">−43¢</td><td class="num">−31¢ n=5 yrs</td><td class="num">−12¢</td></tr><tr><td>Ohio</td><td class="num">−37¢</td><td class="num">−36¢ n=5 yrs</td><td class="num">−1¢</td></tr><tr><td>Illinois</td><td class="num">−34¢</td><td class="num">−35¢ n=5 yrs</td><td class="num">even</td></tr><tr><td>Indiana</td><td class="num">−20¢</td><td class="num">−33¢ n=5 yrs</td><td class="num">+13¢</td></tr><tr><td>North Carolina</td><td class="num">+33¢</td><td class="num">+16¢ n=5 yrs</td><td class="num">+17¢</td></tr><!--/SEED--></table></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets. Your specific elevator sits some local spread away from its region, but it moves with it.</p>
+      <div class="method-note"><b>Method</b> &middot; &ldquo;Normal&rdquo; is the average of the same week (or the week either side, when USDA skipped it) in each of the five prior years, 2021 to 2025 for 2026; the n beside it is how many of those years USDA posted. Delta is this week minus that normal. &middot; <b>Sources</b> &middot; USDA AgTransport weekly grain basis, elevator bid series. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
   </section>
 
@@ -251,7 +253,9 @@
   var CROPS=['Corn','Soybeans','Hard Red Winter Wheat','Soft Red Winter Wheat','Hard Red Spring Wheat'];
   var SHORT={'Hard Red Winter Wheat':'HRW Wheat','Soft Red Winter Wheat':'SRW Wheat','Hard Red Spring Wheat':'HRS Wheat'};
 
-  function fmt$(v){ return (v<0?'-':'+')+'$'+Math.abs(v).toFixed(2); }
+  /* USDA posts basis in $/bu to the cent; printed in signed cents, one style
+     site-wide (components/util.js AG.px.basis): −91¢, +4¢, even. */
+  function fmt$(v){ return AG.px.basis(Math.round(v*100)); }
   function spark(hist, avg5, dom){
     // v4: the bar IS the "vs normal" column — thick diverging bar with its
     // own value printed at the tip. Center tick = this region's 5-yr
@@ -262,10 +266,10 @@
     var d=cur-avg5, W=250, C=125, HALF=78;
     var len=Math.min(HALF, Math.abs(d)/dom*HALF);
     var x0=d<0?C-len:C, col=d<-0.02?'var(--bs-neg)':(d>0.02?'var(--bs-pos)':'var(--bs-dim)');
-    var lab=(d>0?'+':'-')+'$'+Math.abs(d).toFixed(2);
+    var lab=AG.px.basis(Math.round(d*100));   /* "even" at normal, as the seed prints it */
     var lx=d<0?(C-len-6):(C+len+6), anchor=d<0?'end':'start';
     return '<svg class="bs-spark" viewBox="0 0 '+W+' 30" role="img" preserveAspectRatio="xMinYMid meet">'
-      +'<title>now '+cur.toFixed(2)+' minus 5-yr normal '+avg5.toFixed(2)+' = '+lab+'/bu vs normal</title>'
+      +'<title>now '+fmt$(cur)+' minus 5-yr normal '+fmt$(avg5)+' = '+lab+' vs normal</title>'
       +'<line x1="'+(C-HALF)+'" y1="15" x2="'+(C+HALF)+'" y2="15" style="stroke:var(--bs-line)" stroke-width="1"/>'
       +'<rect x="'+x0.toFixed(1)+'" y="7" width="'+Math.max(len,1.5).toFixed(1)+'" height="16" rx="3" style="fill:'+col+'"/>'
       +'<line x1="'+C+'" y1="3" x2="'+C+'" y2="27" style="stroke:var(--bs-dim)" stroke-width="1.4"/>'
@@ -304,7 +308,7 @@
     $('bs-fresh').textContent='week of '+(wk0||'-');
     if(window.AgAsOf&&basis.generated)$('bs-fresh').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(basis.generated,'usda'));
     var dom=dmax*1.05;
-    var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th>Vs its own 5-yr normal, $/bu &nbsp;<span style="text-transform:none;letter-spacing:0;color:var(--bs-dim)">| = normal for this week &middot; <span style="color:var(--bs-neg)">\u25a0</span> weaker &middot; <span style="color:var(--bs-pos)">\u25a0</span> stronger &middot; all rows same scale</span></th></tr>';
+    var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th>Vs its own 5-yr normal, cents/bu &nbsp;<span style="text-transform:none;letter-spacing:0;color:var(--bs-dim)">| = normal for this week &middot; <span style="color:var(--bs-neg)">\u25a0</span> weaker &middot; <span style="color:var(--bs-pos)">\u25a0</span> stronger &middot; all rows same scale</span></th></tr>';
     rows.forEach(function(r){
       var d=r.s.delta;
       /* A ROW IS ONLY "NOW" IF USDA POSTED IT THIS WEEK. SRW Illinois was last
@@ -395,7 +399,7 @@
   var F2A={}, doc=null, sel=document.getElementById('bs-st-sel'), box=document.getElementById('bs-pick');
   if(!sel||!box) return;
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-  function money(v){ var a=Math.abs(v).toFixed(2); if(a==='0.00') return 'even'; return (v>0?'+':'−')+'$'+a; }
+  function money(v){ return AG.px.basis(v*100); }   /* −65¢, +5¢, even (components/util.js) */
   function cents(v){ return v===0?'0¢':(v>0?'+':'−')+Math.abs(v)+'¢'; }
   function day(iso){ var d=new Date(iso); if(isNaN(d)) return ''; return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear(); }
   var LAB={corn:'Corn',soybeans:'Soybeans'};
