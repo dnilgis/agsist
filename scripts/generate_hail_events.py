@@ -44,14 +44,26 @@ MIN_REPORTS = 150          # report-count threshold for days with no swath file
 THIN_REPORTS = 25          # below this a day page is noindex,follow and not in the sitemap
 TOP_STONES = 5
 TOP_PLACES = 10
-# Damaging size: 1 inch, the NWS severe-hail threshold and the one line the
-# whole site uses (fetch_hail.DAMAGING_IN, the Farmland Atlas 1-inch days).
+# Severe size: 1 inch, the NWS severe-hail threshold and the one line the
+# whole site uses. Pages call it "severe", not "damaging": crops can be hurt by
+# smaller hail, and the loss depends on growth stage (fetch_hail.DAMAGING_IN, the Farmland Atlas 1-inch days).
 DAMAGING_IN = 1.0
 DAYS_JSON = "data/hail/storm-days.json"   # every storm-day page, newest first, with reports by state
 MAP_PAGE = "hail-map.html"                # its SEED:stormdays strip lists the newest RECENT_STRIP days
 RECENT_STRIP = 5
 
 STATE_NAME = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"}
+
+
+def asset_url(path):
+    """path with the ?v= that hail-map.html carries for it, so generated pages
+    pick up a new stylesheet or loader the same day the top pages do."""
+    try:
+        with open(MAP_PAGE, encoding="utf-8") as f:
+            m = re.search(re.escape(path) + r"\?v=(\d+)", f.read())
+        return path + "?v=" + m.group(1) if m else path
+    except OSError:
+        return path
 
 
 def esc(s):
@@ -428,12 +440,19 @@ def method_html(fig, has_swath):
         " Local Storm Reports are preliminary and unverified: sizes are what spotters, the public and "
         "emergency managers reported, and NOAA NCEI's Storm Data, published months later, is the "
         "verified record. A report with no size counts toward the total but not toward the size figures. "
-        "Damaging size means 1 inch or larger, the National Weather Service severe-hail size. State is the state named on the report. "
+        "Severe size means 1 inch or larger, the National Weather Service threshold. Crops can be hurt by smaller hail, "
+        "especially with wind, and the loss depends on growth stage: the corn growing point stays below ground until about V6, "
+        "and leaf loss near tasseling costs the most yield. State is the state named on the report. "
         "County is not carried in the archived file; it is assigned here by placing each report's "
         "coordinates (rounded to about 1 km) inside US Census cartographic county boundaries, so a "
         "report near a county line can land in the neighboring county."
         + (" Radar figures are NOAA MRMS MESH, a radar estimate of maximum hail size, not a measurement."
-           if has_swath else "") + "</p></details>\n")
+           if has_swath else "") + "</p>"
+        "<p class=\"method-note\"><b>Method:</b> one day of hail reports, counted and ranked as filed; county placed by "
+        "coordinates; severe means 1\u2033 or larger (NWS) &middot; <b>Sources:</b> NWS Local Storm Reports via the Iowa "
+        "Environmental Mesonet, NOAA MRMS MESH, US Census county boundaries, "
+        "<a href=\"https://www.extension.purdue.edu/extmedia/nch/nch-1.html\" target=\"_blank\" rel=\"noopener\">Assessing Hail Damage to Corn (NCH-1)</a> "
+        "&middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p></details>\n")
 
 
 def page_html(date, rec, has_swath, mesh_max, today, counties=None):
@@ -489,7 +508,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<meta name=\"twitter:card\" content=\"summary_large_image\">\n"
         "<meta name=\"twitter:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
         "<link rel=\"icon\" type=\"image/x-icon\" href=\"/img/favicon.ico\">\n"
-        "<link rel=\"stylesheet\" href=\"/components/styles.css\">\n"
+        "<link rel=\"stylesheet\" href=\"" + asset_url("/components/styles.css") + "\">\n"
         "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@graph\":["
         "{\"@type\":\"WebPage\",\"@id\":\"" + canonical + "#webpage\",\"url\":\"" + canonical + "\","
         "\"name\":\"Hail on " + esc(nd) + "\",\"datePublished\":\"" + date + "\",\"dateModified\":\"" + today + "\","
@@ -528,7 +547,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<div class=\"he-stats\">"
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{n:,}" if n else "0") + "</div><div class=\"l\">NWS reports</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{mx:.2f}″" if mx else "-") + "</div><div class=\"l\">largest reported</div></div>"
-        "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">reports ≥1″ (severe)</div></div>"
+        "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">severe size (NWS, 1″+)</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(fig["n_states"]) + "</div><div class=\"l\">states reporting</div></div>"
         + ("<div class=\"he-stat\"><div class=\"v\">" + f"{mesh_max:.2f}″" + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath and mesh_max else "")
         + "</div>\n"
@@ -538,7 +557,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<h2>Questions about the " + esc(nd) + " hail</h2>\n" + faq_vis + "\n"
         + method_html(fig, has_swath) +
         "<div class=\"he-src\">Sources: NWS Local Storm Reports via the Iowa Environmental Mesonet (reported sizes, preliminary); NOAA MRMS MESH via Iowa State (radar-estimated swaths); US Census cartographic boundaries (county placement). Compiled by Sigurd Lindquist · AGSIST.</div>\n"
-        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
+        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
 
 
 def _short(d):
@@ -625,7 +644,7 @@ def hub_html(dates_meta, today):
         "<meta name=\"twitter:card\" content=\"summary_large_image\">\n"
         "<meta name=\"twitter:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
         "<link rel=\"icon\" type=\"image/x-icon\" href=\"/img/favicon.ico\">\n"
-        "<link rel=\"stylesheet\" href=\"/components/styles.css\">\n"
+        "<link rel=\"stylesheet\" href=\"" + asset_url("/components/styles.css") + "\">\n"
         "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"CollectionPage\","
         "\"name\":\"US Hail Storm Log\",\"url\":\"https://agsist.com/hail/\",\"dateModified\":\"" + today + "\"}"
         "</script>\n<style>.he-wrap{max-width:820px;margin:0 auto;padding:1.2rem .9rem 3rem}"
@@ -645,7 +664,7 @@ def hub_html(dates_meta, today):
         + season_recap_html(dates_meta) + jump +
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
-        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
+        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
 
 
 def main():
