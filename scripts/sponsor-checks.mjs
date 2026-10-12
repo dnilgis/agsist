@@ -30,7 +30,8 @@ const py = (s) => s.replace(/^\s*#.*$/gm, "").replace(/"""[\s\S]*?"""/g, "");
 
 const METRICS = decomment(R("components/sponsor-metrics.js"));
 const LOADER  = decomment(R("components/loader.js"));
-const INDEX   = decomment(R("index.html"));
+/* the homepage page script moved from index.html into components/home.js (2026-10-12) */
+const INDEX   = decomment(R("index.html") + "\n" + R("components/home.js"));
 const HAIL    = decomment(R("hail-map.html"));
 const BUILDER = py(R("scripts/build_sponsor_report.py"));
 const REPORT  = decomment(R("sponsor-report.html"));
@@ -252,7 +253,7 @@ check("the ad's button ink is readable on its orange", () => {
   }
 });
 check("the ad's CSS lives in one file", () => {
-  for (const [name, src] of [["index.html", R("index.html")], ["daily.html", R("daily.html")], ["sponsor-report.html", R("sponsor-report.html")], ["scripts/generate_daily.py", GEN]])
+  for (const [name, src] of [["index.html", R("index.html") + "\n" + R("components/home.js")], ["daily.html", R("daily.html")], ["sponsor-report.html", R("sponsor-report.html")], ["scripts/generate_daily.py", GEN]])
     assert.ok(!/(^|\})\s*\.sa-(ad|headline|cta|body|facts)\s*\{/m.test(src), name + " carries its own copy of the ad's rules");
 });
 

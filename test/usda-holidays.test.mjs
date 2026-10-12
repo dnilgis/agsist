@@ -16,13 +16,14 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const INDEX = readFileSync(ROOT + "index.html", "utf8");
+/* The homepage page script lives in components/home.js since 2026-10-12. */
+const INDEX = readFileSync(ROOT + "index.html", "utf8") + "\n" + readFileSync(ROOT + "components/home.js", "utf8");
 const CAL = readFileSync(ROOT + "usda-calendar.html", "utf8");
 
 const fnSrc = (() => {
   const a = INDEX.indexOf("function buildUSDACalendar(){");
   const b = INDEX.indexOf("\n  buildUSDACalendar();", a);
-  assert.ok(a > 0 && b > a, "buildUSDACalendar found in index.html");
+  assert.ok(a > 0 && b > a, "buildUSDACalendar found in index.html or components/home.js");
   return INDEX.slice(a, b);
 })();
 
