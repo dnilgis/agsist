@@ -80,6 +80,9 @@ export function build(dir) {
   const all = [], byCov = {}, byIv = M.LABELS.map(() => []), rate90 = M.LABELS.map(() => []), paidYears90 = M.LABELS.map(() => []), normal = M.LABELS.map(() => []);
   M.COVERAGE.forEach((c) => { byCov[c] = []; });
   let grids = 0, multi = 0, example = null, dryTop = 0, dryAsked = 0;
+  /* per state: every grid that touches one of its PRF counties */
+  const ST = {};
+  const stAcc = (st) => (ST[st] = ST[st] || { rate: M.LABELS.map(() => []), below: M.LABELS.map(() => []), normal: M.LABELS.map(() => []), pb: [] });
   const sub90 = meta.subsidy['90'];
   for (const f of fs.readdirSync(path.join(dir, 'g')).filter((x) => x.endsWith('.json')).sort()) {
     const d = JSON.parse(fs.readFileSync(path.join(dir, 'g', f), 'utf8'));
@@ -91,8 +94,9 @@ export function build(dir) {
       if ((rec.c || []).filter((code) => countyOf[code]).length > 1) multi++;
       if (+id === 30454) example = { rec, o, index };
       const net90 = [];
+      const gst = [...new Set((rec.c || []).filter((code) => countyOf[code]).map((code) => countyOf[code].st))];
       for (let i = 0; i < M.N; i++) {
-        if (o.avgMm && o.avgMm[i] != null) normal[i].push(o.avgMm[i] / 25.4);
+        if (o.avgMm && o.avgMm[i] != null) { normal[i].push(o.avgMm[i] / 25.4); gst.forEach((st) => stAcc(st).normal[i].push(o.avgMm[i] / 25.4)); }
         for (const cov of M.COVERAGE) {
           const rate = o.rates[cov][i]; if (rate == null || !(rate > 0)) continue;
           const mf = meanFactor(index, i, cov); if (mf == null) continue;
@@ -102,6 +106,7 @@ export function build(dir) {
             byIv[i].push(pb); rate90[i].push(rate * 100);
             let below = 0; Object.keys(index).forEach((y) => { if (index[y][i] < 0.9 - 1e-12) below++; });
             paidYears90[i].push(below);
+            gst.forEach((st) => { const a = stAcc(st); a.rate[i].push(rate * 100); a.below[i].push(below); a.pb.push(pb); });
             if (o.avgMm && o.avgMm[i] != null) net90.push({ i, net: mf - rate * (1 - sub90), mm: o.avgMm[i] });
           }
         }
@@ -145,6 +150,21 @@ export function build(dir) {
     example: { grid: 30454, county: 'Barron County, Wisconsin', acres: 100, coverage: 90, months: 'April to May and June to July, half in each', grazing: ex(0), hay: ex(4) },
   };
   out.example_years = exYears;
+  /* county base values by state, straight from the s files: the spread a reader sees on the state page */
+  out.by_state = {};
+  for (const s of meta.states) {
+    const a = ST[s.st]; if (!a) continue;
+    const vals = (k) => Object.values(countyOf).filter((x) => x.st === s.st && x.c.b[k] != null).map((x) => x.c.b[k]);
+    const span = (v) => (v.length ? { n: v.length, low: Math.min(...v), mid: r2(quantile(v, 0.5)), high: Math.max(...v) } : null);
+    out.by_state[s.st] = {
+      payback_mid_90: r2(quantile(a.pb, 0.5)), payback_n_90: a.pb.length,
+      grazing: span(vals(0)), hay_dry: span(vals(4)), hay_irr: span(vals(1)),
+      intervals: M.LABELS.map((l, i) => ({ interval: l, grids: a.rate[i].length,
+        mid_rate_per_100: a.rate[i].length ? r2(quantile(a.rate[i], 0.5)) : null,
+        mid_years_below: a.below[i].length ? quantile(a.below[i], 0.5) : null,
+        mid_normal_in: a.normal[i].length ? r2(quantile(a.normal[i], 0.5)) : null })),
+    };
+  }
   return out;
 }
 

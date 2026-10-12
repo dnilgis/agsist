@@ -260,7 +260,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-nb-c { min-height: 96px; padding: .4rem; }
   .prf-t th, .prf-t td { padding: 6px 6px; }
 }
-.prf-printonly { display: none; }
+.prf-printonly, .prf-printfoot { display: none; }
 @media print {
   /* a printed sheet: the grid, the policy in one line, the answer, the chart and every year. Dark tokens are swapped for ink. */
   :root, [data-theme] { --bg: #fff; --surface: #fff; --surface2: #fff; --text: #000; --text-dim: #111; --text-muted: #333; --border: #bbb; --border-2: #888; --gold: #000; --brand: #000; --gold-rgb: 0,0,0; --green: #000; }
@@ -269,11 +269,21 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-live, .prf-find, .prf-find-msg, .prf-browse, .prf-start, .prf-acts, .prf-o3, .prf-o4, .prf-co-wrap, .prf-readrow, .prf-prose, .prf-lede, .prf-win,
   #prf-rec-d, #prf-nb-d, #prf-idx-d, #prf-lad-d, .prf-d > summary, .prf-noprint { display: none !important; }
   .prf-printonly { display: inline !important; }
+  .prf-printfoot { display: block !important; font-size: .8rem; line-height: 1.5; color: #000; border-top: 1px solid #888; padding-top: .5rem; margin-top: .8rem; break-inside: avoid; }
   .prf-answer, .prf-o5 { min-height: 0; }
   .prf-byline { break-inside: avoid; color: #000; }
   .prf { max-width: none; padding: 0; --prf-bar: #444; --prf-dot: #000; }
-  .prf-tool { display: block !important; }
+  /* one page if it fits: the policy, the answer, the chart and the lines; then the conditions; then every year */
+  .prf-tool { display: flex !important; flex-direction: column; }
+  .prf-pane, .prf-o6 { display: contents !important; }
+  .prf-o1 { order: 1; } .prf-o2 { order: 2; } .prf-o5 { order: 3; } #prf-pol-d { order: 4; } .prf-printfoot { order: 5; } #prf-years-d { order: 6; }
+  .prf h1 { font-size: 1.25rem; margin: 0 0 .3rem; } .page-kicker { margin: 0; }
+  .prf-where { grid-template-columns: 96px 1fr; gap: .6rem; } .prf-block { padding: .4rem 0; border-top: 0; }
+  .prf-figs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .3rem .8rem; }
+  .prf-caveat .prf-link { display: none; }
+  .prf-t th, .prf-t td { padding: 2px 6px; font-size: .72rem; }
+  #prf-years-d { break-before: page; }
   .prf-scroll { overflow: visible; }
-  .prf-block, .prf-fig { break-inside: avoid; }
+  .prf-fig { break-inside: avoid; }
   .prf a { color: #000; }
 }

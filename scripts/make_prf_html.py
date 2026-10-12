@@ -168,8 +168,10 @@ HTML = f"""<!DOCTYPE html>
           <details class="prf-d" id="prf-idx-d"><summary>The grid&rsquo;s index, all eleven intervals, every year</summary><div id="prf-idx"></div></details>
           <details class="prf-d" id="prf-nb-d"><summary>The grids next door, same policy</summary><div id="prf-nb"></div></details>
           </div>
+    <p class="prf-printfoot">Crop year {mk("crop_year")}. Sales closing date {mk("sales_long")}; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). The native sod rule and the administrative fee are not included. PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Every year is priced at {mk("crop_year")} rates on USDA&rsquo;s {mk("crop_year")} record: it is not what PRF paid then, and not a forecast. Your insurer&rsquo;s quote is what counts. agsist.com/prf</p>
         </div>
       </div>
+
     </div>
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. {mk("built")}. {mk("check")}</p>
