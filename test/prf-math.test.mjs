@@ -41,7 +41,9 @@ for (const [name, c] of CASES) {
         cbv: p.summary.CountyBaseValue, coverage: c.coverage, productivity: p.pf,
         acres: p.acres, share: p.interest, split: c.split, rates, subsidy: p.summary.SubsidyLevel,
       });
-      assert.ok(Math.abs(pol.protectionPerAcre - p.summary.ProtectionPerAcre) < 1e-6, "protection per acre");
+      /* RMA's summary line prints the per-acre figure unrounded (37.638) and builds
+         every row from it rounded to the cent (37.64): see the live cases below. */
+      assert.equal(pol.protectionPerAcre, M.cents(p.summary.ProtectionPerAcre), "protection per acre");
       for (const r of p.rows) {
         const i = M.CODES.indexOf(r.IntervalCode), mine = pol.rows[i];
         assert.equal(mine.rate, r.PremiumRate, `rate ${r.IntervalCode}`);
@@ -52,8 +54,7 @@ for (const [name, c] of CASES) {
         assert.equal(mine.subsidy, r.PremiumSubsidy, `subsidy ${r.IntervalCode}`);
         assert.equal(mine.producer, r.ProducerPremium, `producer premium ${r.IntervalCode}`);
         assert.equal(FX.index[String(p.year)][i], r.PercentOfNormal, `index ${r.IntervalCode}`);
-        const pay = M.dollars(M.payment(mine.protection, r.PercentOfNormal, c.coverage));
-        assert.equal(pay, r.Indemnity, `indemnity ${r.IntervalCode}`);
+        assert.equal(M.pay(mine.protection, r.PercentOfNormal, c.coverage), r.Indemnity, `indemnity ${r.IntervalCode}`);
       }
       assert.equal(pol.total.protection, p.total.PolicyProtection, "total protection");
       assert.equal(pol.total.premium, p.total.TotalPremium, "total premium");
@@ -111,11 +112,71 @@ test("the loops above looked at something", () => {
 });
 
 test("the payment factor is not rounded to three places (RMA: $3,532, not $3,527)", () => {
-  assert.equal(M.dollars(M.payment(16557, 0.708, 90)), 3532);
+  assert.equal(M.pay(16557, 0.708, 90), 3532);
   assert.equal(M.dollars(16557 * 0.213), 3527);
 });
 
+/* ---- fifty policies RMA priced on 2026-10-12, from all over the country ---- */
+const LIVE = JSON.parse(readFileSync(ROOT + "test/fixtures/prf/rma-live-2026-10-12.json", "utf8"));
+let liveRows = 0;
+test("fifty live policies: protection, premium, subsidy and indemnity, every row to the dollar", () => {
+  assert.equal(LIVE.cases.length, 50);
+  assert.ok(new Set(LIVE.cases.map((c) => c.st)).size >= 20, "from at least twenty states");
+  for (const c of LIVE.cases) {
+    const pol = M.policy({ cbv: c.cbv, coverage: c.coverage, productivity: c.pf, acres: c.acres, share: c.share,
+                           split: c.split, rates: c.rates, subsidy: c.subsidy });
+    const tag = `${c.label} (${c.countyName} ${c.st}, grid ${c.grid})`;
+    for (const r of c.rma.rows) {
+      const i = M.CODES.indexOf(r.IntervalCode), mine = pol.rows[i];
+      liveRows++;
+      assert.equal(mine.rate, r.PremiumRate, `${tag}: rate ${r.IntervalCode}`);
+      assert.equal(c.index[i], r.PercentOfNormal, `${tag}: index ${r.IntervalCode}`);
+      assert.equal(mine.protection, r.PolicyProtection, `${tag}: protection ${r.IntervalCode}`);
+      assert.equal(mine.premium, r.TotalPremium, `${tag}: premium ${r.IntervalCode}`);
+      assert.equal(mine.subsidy, r.PremiumSubsidy, `${tag}: subsidy ${r.IntervalCode}`);
+      assert.equal(mine.producer, r.ProducerPremium, `${tag}: producer premium ${r.IntervalCode}`);
+      assert.equal(M.pay(mine.protection, c.index[i], c.coverage), r.Indemnity, `${tag}: indemnity ${r.IntervalCode}`);
+    }
+    assert.equal(pol.total.protection, c.rma.total.PolicyProtection, `${tag}: total protection`);
+    assert.equal(pol.total.premium, c.rma.total.TotalPremium, `${tag}: total premium`);
+    assert.equal(pol.total.producer, c.rma.total.ProducerPremium, `${tag}: total producer premium`);
+    assert.equal(M.history(pol, { [c.year]: c.index })[0].indemnity, c.rma.total.Indemnity, `${tag}: the year's indemnity`);
+  }
+  assert.equal(liveRows, 152, "priced rows checked");
+});
+
+test("the cent: Pike County AL, grazing, 1,304 acres. $40.77 an acre, not $40.766", () => {
+  const c = LIVE.cases.find((x) => x.countyName === "Pike" && x.st === "AL");
+  assert.ok(c, "the Pike County case is in the fixture");
+  const pol = M.policy({ cbv: c.cbv, coverage: c.coverage, productivity: c.pf, acres: c.acres, share: c.share, split: c.split, rates: c.rates, subsidy: c.subsidy });
+  assert.equal(pol.protectionPerAcre, M.cents(c.cbv * c.coverage / 100 * c.pf / 100));
+  assert.equal(pol.total.protection, c.rma.total.PolicyProtection);
+  const unrounded = c.split.reduce((a, pct) => a + (pct ? M.dollars(c.cbv * c.coverage / 100 * c.pf / 100 * c.acres * c.share / 100 * pct / 100) : 0), 0);
+  assert.notEqual(unrounded, c.rma.total.PolicyProtection, "without the cent it is off");
+});
+
+test("the half dollars RMA answered: three round up, and $80.50 of indemnity pays $80", () => {
+  /* grid 30152, non-irrigated hay, 90%, half in Apr-May and half in Jun-Jul */
+  const half = Object.fromEntries(LIVE.cases.filter((c) => c.label.startsWith("half")).map((c) => [c.label, c]));
+  assert.equal(Object.keys(half).length, 5);
+  assert.equal(M.dollars(310.5), 311);                                   /* protection, 3 acres: RMA 311 */
+  assert.equal(half["half dollar in the protection"].rma.rows[0].PolicyProtection, 311);
+  assert.equal(M.dollars(275000 * 0.1119), 30773);                       /* premium 30,772.50: RMA 30,773 */
+  assert.equal(half["half dollar in the premium"].rma.rows[0].TotalPremium, 30773);
+  assert.equal(M.dollars(950 * 0.51), 485);                              /* subsidy 484.50: RMA 485 */
+  assert.equal(half["half dollar in the subsidy"].rma.rows[0].PremiumSubsidy, 485);
+  assert.equal(M.pay(414, 0.725, 90), 80);                               /* 80.50 in plain arithmetic: RMA 80 */
+  assert.equal(half["half dollar in the indemnity"].rma.rows[0].Indemnity, 80);
+  assert.equal(M.pay(207, 0.85, 90), 12);                                /* 11.50 in plain arithmetic: RMA 12 */
+  assert.equal(half["half dollar in the indemnity, odd dollar"].rma.rows[0].Indemnity, 12);
+});
+
 test("an index at or above the trigger pays nothing; a missing index is not a zero", () => {
+  assert.equal(M.pay(1000, 0.9, 90), 0);
+  assert.equal(M.pay(1000, 0.899, 90), 1);
+  assert.equal(M.pay(1000, null, 90), null);
+  assert.equal(M.pay(1000, 0.45, 90), 500);
+  assert.equal(M.pay(1000, 0, 70), 1000);
   assert.equal(M.payment(1000, 0.9, 90), 0);
   assert.equal(M.payment(1000, 1.2, 90), 0);
   assert.equal(M.payment(1000, null, 90), null);
@@ -154,6 +215,14 @@ test("split rules: adds to 100, inside the limits, no shared month", () => {
   assert.ok(lo.errors.some((e) => e.why === "below" && e.i === 1) && lo.errors.some((e) => e.why === "above" && e.i === 3));
   /* January-February and November-December share no month. */
   assert.ok(M.checkSplit([25, 0, 0, 0, 0, 0, 25, 0, 0, 0, 50], min, max).ok);
+});
+
+test("cents rounds half away from zero", () => {
+  assert.equal(M.cents(40.766), 40.77);
+  assert.equal(M.cents(255.833), 255.83);
+  assert.equal(M.cents(1.005), 1.01);
+  assert.equal(M.cents(279.45), 279.45);
+  assert.equal(M.cents(null), null);
 });
 
 test("dollars rounds half away from zero and ignores binary noise", () => {
@@ -215,6 +284,7 @@ test("blank acres gives per-acre figures, unrounded", () => {
   const c = FX.cases.hay_nonirr_90, rates = c.valid.map((v) => v[1]);
   const pol = M.policy({ cbv: 230, coverage: 90, productivity: 100, acres: null, split: c.split, rates, subsidy: 0.51 });
   assert.ok(pol.perAcre);
+  assert.equal(pol.protectionPerAcre, 207);
   assert.ok(Math.abs(pol.rows[3].protection - 103.5) < 1e-9);
   assert.ok(Math.abs(pol.rows[3].premium - 103.5 * 0.1119) < 1e-9);
   assert.ok(Math.abs(pol.total.producer - (103.5 * 0.1119 + 103.5 * 0.0942) * 0.49) < 1e-9);

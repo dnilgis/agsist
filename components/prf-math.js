@@ -14,19 +14,40 @@
      years each, and 75 years of estimated indemnities. The steps below are the
      ones that reproduce them. Measured, not taken from a handbook:
 
-       protection per acre   = county base value x coverage x productivity
+       protection per acre   = county base value x coverage x productivity,
+                               ROUNDED TO THE CENT
        interval protection   = protection per acre x acres x share x split,
                                rounded to the dollar
        interval premium      = interval protection x rate, to the dollar
        premium subsidy       = interval premium x subsidy rate, to the dollar
        producer premium      = interval premium - subsidy
        trigger               = coverage x 100 (the expected index is 100)
-       payment factor        = (trigger - index) / trigger, when index < trigger
-       indemnity             = payment factor x interval protection
+       payment factor        = (trigger - index) / trigger, when index < trigger,
+                               carried to 28 decimal places
+       indemnity             = payment factor x interval protection, to the dollar
+
+     Every rounding is half a unit up, away from zero.
 
      The payment factor is NOT rounded to three places first: at 90% coverage
      and an index of 70.8, three places gives $3,527 on $16,557 of protection
      and RMA's tool says $3,532.
+
+     THE TWO LINES IN CAPITALS AND THE 28 PLACES CAME FROM THE FIRST LIVE CHECK,
+     2026-10-12 (scripts/check_prf_rma.mjs, run 38193769189), which this file
+     failed on 7 of 12 policies by $1 to $6:
+       * The cent. Pike County AL, grazing, 85%, factor 88, 1,304 acres: RMA's
+         total protection is $53,164, which is $40.77 an acre, the per-acre
+         figure rounded to the cent; unrounded ($40.766) gives $53,158. New
+         Castle DE and Androscoggin ME say the same. The saved answers for grid
+         30152 could not show it: its per-acre figures happen to end on the cent.
+       * The 28 places. Grid 30152, 4 acres of hay at 90%, Apr-May 1996, index
+         72.5: 414 x (90 - 72.5) / 90 is $80.50 exactly, and RMA pays $80. Its
+         three other half-dollar cases (protection, premium, subsidy) round up.
+         A payment factor held as a 28-place decimal (0.19444...4, cut short)
+         times 414 is a hair under $80.50. That is how a .NET decimal divides,
+         and it is the only reading that fits all four. It is an inference from
+         RMA's answers, not from RMA's code, and the live check carries a second
+         half-dollar case of the opposite parity to prove or break it.
 
      RMA's tool disagrees with itself by cents: its Decision Support tab rounds
      the interval protection to the dollar before multiplying, and its
@@ -90,6 +111,13 @@
     if (v == null || !isFinite(v)) return null;
     var r = Math.round(Math.abs(v) * 1e6) / 1e6;
     var out = Math.floor(r + 0.5);
+    return v < 0 ? -out : out;
+  }
+  /* the same rule at the cent */
+  function cents(v) {
+    if (v == null || !isFinite(v)) return null;
+    var r = Math.round(Math.abs(v) * 1e8) / 1e8;
+    var out = Math.floor(r * 100 + 0.5 + 1e-9) / 100;
     return v < 0 ? -out : out;
   }
 
@@ -165,7 +193,7 @@
     var acres = perAcre ? 1 : +p.acres;
     var share = perAcre ? 1 : (p.share == null ? 100 : +p.share) / 100;
     var cov = p.coverage / 100;
-    var ppa = p.cbv * cov * (p.productivity == null ? 100 : +p.productivity) / 100;
+    var ppa = cents(p.cbv * cov * (p.productivity == null ? 100 : +p.productivity) / 100);
     var rows = [], tot = { protection: 0, premium: 0, subsidy: 0, producer: 0 };
     for (var i = 0; i < N; i++) {
       var f = (+p.split[i] || 0) / 100;
@@ -189,12 +217,28 @@
              priced: rows.every(function (r) { return !r.pct || r.rate != null; }) };
   }
 
-  /* What one interval would have paid: exact, and to the dollar. */
+  /* What one interval would have paid, in plain arithmetic, not rounded. */
   function payment(protection, index, coverage) {
     if (index == null || protection == null) return null;
     var trig = coverage / 100;
     if (!(index < trig - 1e-12)) return 0;
     return protection * (trig - index) / trig;
+  }
+
+  /* The same, to the dollar, the way RMA's tool gets there: the payment factor
+     is carried to 28 decimal places and no further (see the top of this file),
+     so 414 x 17.5 / 90, which is $80.50 in plain arithmetic, is a hair under
+     and pays $80. Whole numbers all the way, so no binary noise. */
+  var P28 = typeof BigInt === 'function' ? BigInt('10000000000000000000000000000') : null;
+  function pay(protection, index, coverage) {
+    if (index == null || protection == null) return null;
+    var T = Math.round(coverage * 10), I = Math.round(index * 1000);
+    if (I >= T) return 0;
+    if (!P28 || protection !== Math.floor(protection) || protection < 0) return dollars(payment(protection, index, coverage));
+    var den = BigInt(T), two = BigInt(2);
+    var pcf = (BigInt(T - I) * P28 * two + den) / (den * two);
+    var whole = BigInt(protection) * pcf, d = whole / P28, rem = whole % P28;
+    return Number(rem * two >= P28 ? d + BigInt(1) : d);
   }
 
   /* Every year on record for one policy.
@@ -208,9 +252,9 @@
       var row = index[y], cells = [], paid = 0, complete = true, any = false;
       used.forEach(function (r) {
         var idx = row ? row[r.i] : null;
-        var pay = payment(r.protection, idx, pol.coverage);
-        if (pay == null) complete = false; else { any = true; if (!pol.perAcre) pay = dollars(pay); paid += pay; }
-        cells.push({ i: r.i, index: idx, paid: pay });
+        var got = pol.perAcre ? payment(r.protection, idx, pol.coverage) : pay(r.protection, idx, pol.coverage);
+        if (got == null) complete = false; else { any = true; paid += got; }
+        cells.push({ i: r.i, index: idx, paid: got });
       });
       if (!any) return;
       out.push({ year: y, cells: cells, complete: complete && pol.priced,
@@ -260,8 +304,8 @@
   var api = {
     CODES: CODES, LABELS: LABELS, LONG: LONG, COVERAGE: COVERAGE, N: N, MISSING: MISSING, BLOCK: BLOCK,
     gridFromLatLon: gridFromLatLon, gridRowCol: gridRowCol, gridBounds: gridBounds, shardKey: shardKey,
-    dollars: dollars, decodeU16: decodeU16, openGrid: openGrid,
-    checkSplit: checkSplit, policy: policy, payment: payment, history: history,
+    dollars: dollars, cents: cents, decodeU16: decodeU16, openGrid: openGrid,
+    checkSplit: checkSplit, policy: policy, payment: payment, pay: pay, history: history,
     summarize: summarize, intervalRecord: intervalRecord
   };
   root.AgPrfMath = api;

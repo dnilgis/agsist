@@ -10,11 +10,15 @@
  *   dollar. It runs in the prf workflow after the build and before the commit.
  *
  * WHAT IT ASKS
- *   Four policies on grid 30152, found by search, that land exactly on fifty
- *   cents over an even dollar in the protection, the premium, the subsidy and
- *   the indemnity. That is the one thing the saved answers cannot settle:
- *   whether RMA rounds a half dollar up or to the even dollar. This file's
- *   arithmetic rounds up. If RMA does not, these four say so on the first run.
+ *   Policies on grid 30152, found by search, that land exactly on fifty cents
+ *   in the protection, the premium, the subsidy and the indemnity, because a
+ *   half dollar is where two plausible rounding rules part. The first runs
+ *   (2026-10-12) settled three: protection, premium and subsidy round up. The
+ *   indemnity cases found then ($80.50 paid $80, $11.50 paid $12) fit two
+ *   rules equally: "round the exact figure to the even dollar", and "carry the
+ *   payment factor to 28 places, then round up", which is what this repo's
+ *   arithmetic does. The case labelled "tells the two rules apart" is one
+ *   where those two give different dollars. It is asked on every run.
  *   Then --random N policies (default 8) from anywhere in the country:
  *   a county, one of its grids, a use and practice it offers, a coverage
  *   level, a split inside the county's limits, odd acres, a past year.
@@ -131,7 +135,8 @@ function compare(c, m, rma) {
   const diffs = [];
   const eq = (what, a, b, tol = 0) => { if (a == null || b == null ? a !== b : Math.abs(a - b) > tol) diffs.push({ what, agsist: a, rma: b }); };
   eq("county base value", baseValue(states[c.st].counties[c.county], c.combo, c.grid), rma.PricingRateSummary.CountyBaseValue, 1e-9);
-  eq("protection per acre", m.pol.protectionPerAcre, rma.PricingRateSummary.ProtectionPerAcre, 1e-6);
+  /* RMA's summary prints this unrounded and prices every row from it rounded to the cent */
+  eq("protection per acre", m.pol.protectionPerAcre, cents(rma.PricingRateSummary.ProtectionPerAcre), 1e-9);
   eq("subsidy rate", meta.subsidy[String(c.coverage)], rma.PricingRateSummary.SubsidyLevel, 1e-9);
   let used = 0;
   for (const r of rma.PricingRateRows) {
@@ -187,7 +192,16 @@ if (!REPLAY) (function fixed() {
      round-half-to-even gives the even dollar below, so the two rules disagree */
   const frac5 = (v) => Math.abs(v - Math.floor(v) - 0.5) < 1e-7 && Math.floor(v) % 2 === 0;
   const frac5odd = (v) => Math.abs(v - Math.floor(v) - 0.5) < 1e-7 && Math.floor(v) % 2 === 1;
-  const found = { protection: null, premium: null, subsidy: null, indemnity: null, "indemnity, odd dollar": null };
+  const found = { protection: null, premium: null, subsidy: null, indemnity: null, "indemnity, odd dollar": null,
+                  "indemnity, tells the two rules apart": null };
+  /* exact fifty cents where "to the even dollar" and "28 places, then up" disagree */
+  const splits = (prot, idx1000, T) => {
+    const num = BigInt(prot) * BigInt(T - idx1000), den = BigInt(T);
+    if ((num * 2n) % den !== 0n || ((num * 2n) / den) % 2n === 0n) return false;     /* not exactly .5 */
+    const floorEven = (num / den) % 2n === 0n;
+    const up28 = (((BigInt(T - idx1000) * 10n ** 28n) % den) * 2n) >= den;           /* the 28th place rounds up */
+    return floorEven === up28;                                                      /* even floor + up, or odd floor + down */
+  };
   for (let acres = 1; acres <= 4000 && Object.values(found).some((v) => !v); acres++) {
     const exact = cents(cbv * 0.9) * acres * 0.5;
     if (!found.protection && frac5(exact)) found.protection = { acres, year: years[years.length - 1] };
@@ -199,6 +213,15 @@ if (!REPLAY) (function fixed() {
       for (const y of years) {
         const p3 = M.payment(prot, g.index[y][3], cov), p5 = M.payment(prot, g.index[y][5], cov);
         if ((p3 > 0 && frac5(p3)) || (p5 > 0 && frac5(p5))) { found.indemnity = { acres, year: y }; break; }
+      }
+    }
+    if (!found["indemnity, tells the two rules apart"]) {
+      for (const y of years) {
+        for (const i of [3, 5]) {
+          const I = Math.round(g.index[y][i] * 1000);
+          if (I < 900 && splits(prot, I, 900)) { found["indemnity, tells the two rules apart"] = { acres, year: y }; break; }
+        }
+        if (found["indemnity, tells the two rules apart"]) break;
       }
     }
     if (!found["indemnity, odd dollar"]) {

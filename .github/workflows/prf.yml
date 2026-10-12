@@ -41,6 +41,10 @@ on:
         description: "How many random policies to set against RMA's tool (default 8)"
         required: false
         default: ""
+      from_staging:
+        description: "Do not fetch. Take the files the last fetch left on the prf-staging branch and go straight to the check (type: yes)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -65,9 +69,31 @@ jobs:
       - name: The arithmetic and the fetcher, offline, before anything is asked
         run: |
           python scripts/fetch_prf.py --selftest
+          python scripts/stamp_prf.py --selftest
           node --test test/prf-math.test.mjs test/prf-check.test.mjs
 
+      # A FETCH IS 13,400 CALLS TO RMA AND MUST NOT BE THROWN AWAY BY A LATER STEP.
+      # The first two full runs (2026-10-12) each fetched everything, failed the
+      # check on this repo's own arithmetic, committed nothing, and so asked RMA
+      # for all of it again. Every fetch is now left on the prf-staging branch
+      # before the check runs, and from_staging: yes starts from there.
+      - name: Take the staged files instead of fetching
+        if: github.event.inputs.from_staging == 'yes'
+        run: |
+          set -o pipefail
+          git fetch -q --depth 1 origin prf-staging
+          rm -rf data/prf && mkdir -p data
+          git archive FETCH_HEAD data/prf | tar -x
+          rm -f data/prf/check.json
+          python - <<'PY' | tee prf-run.log
+          import json
+          m = json.load(open('data/prf/meta.json'))
+          print("from prf-staging: built %s, crop year %d, %d grids, complete to %d" % (
+              m['built'], m['crop_year'], m['counts']['grids'], m['years']['last_complete']))
+          PY
+
       - name: Fetch
+        if: github.event.inputs.from_staging != 'yes'
         run: |
           set -o pipefail
           ARGS=""
@@ -76,12 +102,33 @@ jobs:
           if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ github.event.inputs.limit }}"; fi
           python scripts/fetch_prf.py $ARGS 2>&1 | tee prf-run.log
 
+      - name: Leave the fetch on the prf-staging branch
+        if: github.event.inputs.limit == '' && github.event.inputs.from_staging != 'yes'
+        run: |
+          rm -rf /tmp/prf-stage && mkdir -p /tmp/prf-stage/data
+          cp -r data/prf /tmp/prf-stage/data/prf
+          rm -f /tmp/prf-stage/data/prf/check.json
+          cd /tmp/prf-stage
+          git init -q -b prf-staging
+          git config user.name "agsist-probe"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "prf fetch $(date -u +%Y-%m-%dT%H:%M:%SZ) run ${{ github.run_id }}, not yet checked"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" prf-staging
+
       - name: Against RMA's own tool
         if: github.event.inputs.limit == ''
         run: |
           set -o pipefail
           N="${{ github.event.inputs.check_random }}"
           node scripts/check_prf_rma.mjs --random "${N:-8}" --detail prf-check-detail.json 2>&1 | tee -a prf-run.log
+
+      # The dates, counts, subsidy rates and the line about this check that
+      # prf.html prints come from the files above (scripts/stamp_prf.py).
+      - name: Stamp the page
+        if: github.event.inputs.limit == ''
+        run: |
+          if [ -f prf.html ]; then python scripts/stamp_prf.py; else echo "no prf.html yet"; fi
 
       - name: Site budget
         if: github.event.inputs.limit == ''
@@ -95,6 +142,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A data/prf
+          if [ -f prf.html ]; then git add prf.html; fi
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           C=$(python - <<'PY'
           import json
