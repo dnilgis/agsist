@@ -8,10 +8,14 @@ own forms (the first three used to go to Formspree).
   farmland-atlas.html Parcel Report waitlist         kind atlas-feedback
   rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9;
                                                      gift orders, v5.10)
+  rain-print.html     For businesses quote request   kind rain-print-business (worker v5.12)
 
 A gift order (this year's print, ordered before the year is over) says so in
 the subject, "Rain print order (2026 gift, January): ...", and its body tells
-Sig to make it after January 1, once NOAA's December numbers are in.
+Sig to make it after January 1, once NOAA's December numbers are in. An
+ordinary order given as a gift (gift:true, worker v5.12) says "(gift)" instead,
+and both list who it is for, where it goes and the note for the card. A
+business quote shipped to each customer lists its note for every print.
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
@@ -49,15 +53,19 @@ except Exception:                                          # noqa: BLE001
     CT = None
 
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
-KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order")
+KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order", "rain-print-business")
 KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
-             "rain-print-order": "Rain print order"}
+             "rain-print-order": "Rain print order", "rain-print-business": "Rain Print business quote"}
 # What a rain print order's choice means, in the subject and the body.
 RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "framed12x18": "12 x 18 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
 RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
+# A business quote's product and shipping choice, spelled out.
+RPB_PRODUCT = {"print": "12 x 18 print", "framed": "12 x 18 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
+RPB_SHIP = {"one": "All to one address", "each": "One to each customer", "not-sure": "Not sure yet"}
 GIFT_NOTE = "Yes: make it after January 1, once the station's December numbers are in"
+PLAIN_GIFT_NOTE = "Yes: a note card in the box, no prices"
 # Values printed as a mailto link.
 MAIL_LABELS = ("Work email", "Email", "Reply to", "Their email")
 # The order and labels each kind prints in. Anything else stored is ignored.
@@ -68,10 +76,13 @@ FIELDS = {
     "sponsor-feedback": [("request", "Request"), ("sponsor", "Sponsor"), ("proof", "Proof code"), ("email", "Reply to"),
                          ("message", "Message")],
     "atlas-feedback": [("email", "Email"), ("source", "Source")],
-    "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("name", "Name"), ("email", "Email"),
+    "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("gift", "Gift"), ("name", "Name"), ("email", "Email"),
                          ("gift_to", "Gift for"), ("gift_deliver", "Deliver to"), ("gift_email", "Their email"),
                          ("gift_message", "Card message"), ("address", "Ship to"),
                          ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design")],
+    "rain-print-business": [("business", "Business"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
+                            ("quantity", "How many"), ("product", "Product"), ("ship", "Ship to"),
+                            ("note_all", "Note for every print"), ("towns", "Towns and years"), ("notes", "Notes")],
 }
 
 
@@ -116,18 +127,30 @@ def subject(posts):
             return p.get("subject") or "AGSIST portal: %s (%s)" % (p.get("request", ""), p.get("sponsor", ""))
         if p["kind"] == "rain-print-order":
             return "Rain print order%s: %s for %s" % (gift_tag(p), RP_CHOICE.get(p.get("choice"), p.get("choice", "")), p.get("name", ""))
+        if p["kind"] == "rain-print-business":
+            q = str(p.get("quantity", ""))
+            return "Rain Print business quote: %s, %s print%s, %s" % (p.get("business", ""), q, "" if q == "1" else "s",
+                                                                   RPB_PRODUCT.get(p.get("product"), p.get("product", "")).lower())
         return "Parcel Report interest"
     return "AGSIST forms: %s" % ", ".join(parts)
 
 
-def is_gift(p):
+def is_january(p):
     return p.get("kind") == "rain-print-order" and p.get("gift_january") == "yes"
 
 
+def is_gift(p):
+    """A January gift or an ordinary order given as a gift: either keeps the gift_ fields."""
+    return is_january(p) or (p.get("kind") == "rain-print-order" and p.get("gift") == "yes")
+
+
 def gift_tag(p):
-    """' (2026 gift, January)' for a gift order, the year read from its design link; '' otherwise."""
+    """' (2026 gift, January)' for a January gift, the year read from its design link;
+    ' (gift)' for an ordinary order given as a gift; '' otherwise."""
     if not is_gift(p):
         return ""
+    if not is_january(p):
+        return " (gift)"
     m = YEAR_RE.search(str(p.get("design_url") or ""))
     return " (%s gift, January)" % m.group(1) if m else " (gift, January)"
 
@@ -136,8 +159,14 @@ def value(p, f):
     v = p[f]
     if f == "choice":
         return RP_CHOICE.get(v, str(v))
+    if p.get("kind") == "rain-print-business" and f == "product":
+        return RPB_PRODUCT.get(v, str(v))
+    if p.get("kind") == "rain-print-business" and f == "ship":
+        return RPB_SHIP.get(v, str(v))
     if f == "gift_january":
         return GIFT_NOTE
+    if f == "gift" and p.get("kind") == "rain-print-order":
+        return PLAIN_GIFT_NOTE
     if f == "gift_deliver":
         return RP_DELIVER.get(v, str(v))
     return str(v)
@@ -149,7 +178,8 @@ def blocks(posts):
     for p in sorted(posts, key=lambda x: x.get("ts") or 0):
         gift = is_gift(p)
         rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
-                if p.get(f) not in (None, "") and (gift or not f.startswith("gift_"))]
+                if p.get(f) not in (None, "") and (gift or not f.startswith("gift_"))
+                and (f != "gift" or (gift and not is_january(p)))]
         out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
     return out
 
@@ -360,6 +390,56 @@ def selftest():
     h = build([dict(rp, design_url="https://evil.example/rain-print?x=1")], "s").get_body(("html",)).get_content()
     ck("a design link off agsist.com is printed, not linked", '<a href="https://evil.example' not in h and "https://evil.example/rain-print?x=1" in h)
 
+    print("\ngift orders that are not January gifts")
+    pg = dict(rp, gift="yes", gift_to="Dad Olson", gift_deliver="recipient", gift_message="Thanks for\nevery year")
+    ck("plain gift: (gift) in the subject, apart from a January gift",
+       subject([pg]) == "Rain print order (gift): 12 x 18 framed print for Jane Olson" and "January" not in subject([pg]), subject([pg]))
+    t = build([pg], "s").get_body(("plain",)).get_content()
+    ck("plain gift: note card line, recipient, where it goes and the note", all(x in t for x in (
+        "Rain print order (gift), ", "Gift: Yes: a note card in the box, no prices", "Gift for: Dad Olson",
+        "Deliver to: The person it is for", "Card message: Thanks for\nevery year")) and "January" not in t, t)
+    t = build([dict(gift, gift="yes")], "s").get_body(("plain",)).get_content()
+    ck("both flags: one Gift line, the January one", t.count("Gift: ") == 1 and GIFT_NOTE in t, t)
+    t = build([dict(rp, gift="no", gift_to="Dad")], "s").get_body(("plain",)).get_content()
+    ck("no gift flag: no gift lines", "Gift" not in t.replace("Gift <for> Dad", ""), t)
+
+    print("\nrain print business quotes")
+    rb = {"key": "form:rain-print-business:%d:0a1b2c41" % (ts + 4), "kind": "rain-print-business", "ts": ts + 4, "n": 0,
+          "business": "Chetek <Co-op>", "name": "Al Smith", "email": "al@chetek.coop", "phone": "715-555-0100", "quantity": "12",
+          "product": "framed", "ship": "each", "towns": "Chetek, WI 2025\nRice Lake, WI 2012", "notes": "Card in each box", "page": "/rain-print#rp-biz"}
+    ck("one business quote: business, count and product in the subject",
+       subject([rb]) == "Rain Print business quote: Chetek <Co-op>, 12 prints, 12 x 18 framed print", subject([rb]))
+    ck("one print is singular", subject([dict(rb, quantity="1", product="not-sure")]) == "Rain Print business quote: Chetek <Co-op>, 1 print, not sure yet",
+       subject([dict(rb, quantity="1", product="not-sure")]))
+    ck("business quotes counted", "2 rain print business quotes" in subject([rb, dict(rb, key="form:rain-print-business:1:00000000")]),
+       subject([rb, dict(rb, key="form:rain-print-business:1:00000000")]))
+    m = build([rb], "sig@x.com")
+    ck("business quote: Reply-To is the contact", m["Reply-To"] == "al@chetek.coop")
+    t = m.get_body(("plain",)).get_content()
+    ck("business quote: every field, named and spelled out", all(s in t for s in (
+        "Rain Print business quote, Oct 11", "Business: Chetek <Co-op>", "Contact: Al Smith", "Email: al@chetek.coop",
+        "Phone: 715-555-0100", "How many: 12", "Product: 12 x 18 framed print", "Ship to: One to each customer",
+        "Towns and years: Chetek, WI 2025\nRice Lake, WI 2012", "Notes: Card in each box")), t)
+    ck("business quote: page and internal fields not printed", "rp-biz" not in t and "form:rain" not in t, t)
+    h = m.get_body(("html",)).get_content()
+    ck("business quote: html escaped, town lines kept, email linked",
+       "Chetek &lt;Co-op&gt;" in h and "Chetek, WI 2025<br>Rice Lake" in h and '<a href="mailto:al@chetek.coop">' in h, h)
+    t = build([dict(rb, note_all="Thanks for another year.\nFrom all of us at the co-op.")], "s").get_body(("plain",)).get_content()
+    ck("business quote: the note for every print", "Note for every print: Thanks for another year.\nFrom all of us" in t, t)
+    t = build([dict(rb, product="not-sure", ship="one", phone="")], "s").get_body(("plain",)).get_content()
+    ck("business quote: not sure, one address, no phone line", "Product: Not sure yet" in t and "Ship to: All to one address" in t and "Phone" not in t, t)
+    t = build([claim, rb, rp], "s").get_body(("plain",)).get_content()
+    ck("business quote sits with the other kinds, in arrival order", t.index("Elevator claim") < t.index("Rain print order") < t.index("Rain Print business quote"), t)
+    calls0 = []
+
+    def f0(base, path, tok, body=None, **q):
+        calls0.append(path)
+        return [rb] if path == "form-list" else {"ok": True, "marked": len(body["keys"])}
+    sent0 = []
+    code, log = run("https://w.dev", "t", "s", False, sent0.append, f0)
+    ck("business quote: mailed, marked, counted in the log without names",
+       code == 0 and len(sent0) == 1 and calls0 == ["form-list", "form-mark"] and "rain-print-business 1" in log[0] and "Chetek" not in " ".join(log), log)
+
     print("\nthe run (fake worker, fake mail)")
     calls, sent = [], []
 
@@ -378,7 +458,7 @@ def selftest():
     ck("marks exactly what it sent", calls[-1][0] == "form-mark" and calls[-1][1]["keys"] == [claim["key"], fb["key"], atlas["key"]])
     ck("log has counts only, no addresses or names",
        not any("@" in x or "Chetek" in x or "Apex" in x or "715" in x for x in log) and
-       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0" in log, log)
+       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0, rain-print-business 0" in log, log)
     calls.clear(); sent.clear()
     code, log = run("https://w.dev", "t", "s", False, sent.append, fake([]))
     ck("nothing new: no mail, no mark", code == 0 and not sent and [c[0] for c in calls] == ["form-list"])

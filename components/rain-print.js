@@ -52,7 +52,16 @@
  * buttons stay live while the sample shows: they send the reader up to the
  * town box, since an order carries the reader's own design.
  *
- * The pure parts (design code, query string) run without a document, for
+ * FOR BUSINESSES (2026-10-12). A quote request for a set of prints (#rb-form,
+ * kind rain-print-business, subs worker v5.12): business, contact, how many,
+ * product, towns and years, ship to one address or each customer. It needs no
+ * drawn design. The cutoff line, the discount table and the per-print price
+ * and shipping readout come from business_cutoff, business_note,
+ * business_tiers, business_shipping and business_shipping_tiers in
+ * data/rain-print.json; with none set the section shows no date and no
+ * discount. Consumer orders above it never use them.
+ *
+ * The pure parts (design code, query string, business tiers) run without a document, for
  * test/rain-print.test.mjs.
  */
 (function (root) {
@@ -144,6 +153,88 @@
     if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery.';
     return 'Orders placed now ship after Christmas.';
   }
+  /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
+     data/rain-print.json: "For Christmas, send your list by Nov 20." through
+     that date; nothing after it, or while it is null. */
+  function bizCutoffNote(todayIso, cutoffIso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(cutoffIso || ''));
+    if (!m || +m[2] < 1 || +m[2] > 12 || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || todayIso > cutoffIso) return '';
+    return 'For Christmas, send your list by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + '.';
+  }
+  /* Business prices and shipping, all from data/rain-print.json:
+     business_tiers [{min, pct}] off the three prices; business_shipping
+     {print12x18, framed12x18, digital} dollars a print, charged in full when
+     each print goes to a different customer; business_shipping_one_address_tiers
+     [{min, pct}] off that shipping when the whole order goes to one address.
+     A business order is BIZ_MIN to BIZ_MAX prints (the worker checks the same).
+     No usable tier: no rows, so the page shows no table and no discount
+     wording. No usable shipping: ship is null and the page says shipping is
+     quoted with the order. Every per-print figure is rounded to the cent. */
+  var BIZ_PRODUCTS = ['print12x18', 'framed12x18', 'digital'];
+  var BIZ_MIN = 10, BIZ_MAX = 500;
+  function bizPrice(price, pct) {
+    return Math.round(Math.round(price * 100) * (100 - pct) / 100) / 100;
+  }
+  function bizTiers(list) {
+    var seen = {};
+    return (Array.isArray(list) ? list : []).filter(function (t) {
+      var ok = t && Number.isInteger(t.min) && t.min >= BIZ_MIN && t.min <= BIZ_MAX && typeof t.pct === 'number' && t.pct > 0 && t.pct < 100 && !seen[t.min];
+      if (ok) seen[t.min] = 1;
+      return ok;
+    }).sort(function (a, b) { return a.min - b.min; });
+  }
+  function bizPct(tiers, qty) {
+    var p = 0;
+    tiers.forEach(function (t) { if (qty >= t.min) p = t.pct; });
+    return p;
+  }
+  function bizPricesOk(j) { return !!j && BIZ_PRODUCTS.every(function (id) { return typeof j[id] === 'number' && j[id] > 0; }); }
+  function bizShip(j) {
+    var s = j && j.business_shipping;
+    if (!s || typeof s !== 'object') return null;
+    var out = {};
+    for (var i = 0; i < BIZ_PRODUCTS.length; i++) {
+      var id = BIZ_PRODUCTS[i], v = id === 'digital' && s[id] == null ? 0 : s[id];
+      if (typeof v !== 'number' || !(v >= 0)) return null;
+      out[id] = v;
+    }
+    return out;
+  }
+  /* Shipping a print of product id at qty: dest 'one' (all to one address,
+     the one-address discount) or 'each' (one to each customer, full price). */
+  function bizShipFor(j, id, qty, dest) {
+    var s = bizShip(j);
+    if (!s) return null;
+    return dest === 'one' ? bizPrice(s[id], bizPct(bizTiers(j.business_shipping_one_address_tiers), qty)) : s[id];
+  }
+  /* The table: one row per tier, from its min to the next tier's min less one
+     (the last runs to "or more"). Each row: {from, to, pct, prices, one, each}. */
+  function bizRows(j) {
+    if (!bizPricesOk(j)) return [];
+    var tiers = bizTiers(j.business_tiers), ship = bizShip(j);
+    if (!tiers.length) return [];
+    return tiers.map(function (t, i) {
+      var r = { from: t.min, to: i + 1 < tiers.length ? tiers[i + 1].min - 1 : null, pct: t.pct, prices: {}, one: ship ? {} : null, each: ship ? {} : null };
+      BIZ_PRODUCTS.forEach(function (id) {
+        r.prices[id] = bizPrice(j[id], t.pct);
+        if (ship) { r.one[id] = bizShipFor(j, id, t.min, 'one'); r.each[id] = bizShipFor(j, id, t.min, 'each'); }
+      });
+      return r;
+    });
+  }
+  function bizRowFor(rows, qty) {
+    for (var i = 0; i < (rows || []).length; i++) if (qty >= rows[i].from && (rows[i].to === null || qty <= rows[i].to)) return rows[i];
+    return null;
+  }
+  /* One product, one quantity, one destination: {unit, ship, pct, total}.
+     ship is null when business_shipping is not set; total is then the prints
+     alone. total = (unit + ship) x qty, to the cent. null outside BIZ_MIN..BIZ_MAX. */
+  function bizQuote(j, qty, id, dest) {
+    if (!bizPricesOk(j) || BIZ_PRODUCTS.indexOf(id) < 0 || !Number.isInteger(qty) || qty < BIZ_MIN || qty > BIZ_MAX) return null;
+    var pct = bizPct(bizTiers(j.business_tiers), qty), unit = bizPrice(j[id], pct), ship = bizShipFor(j, id, qty, dest);
+    return { unit: unit, ship: ship, pct: pct, total: Math.round((Math.round(unit * 100) + Math.round((ship || 0) * 100)) * qty) / 100 };
+  }
+  function bizRange(r) { return r.to === null ? r.from + ' or more' : r.from === r.to ? String(r.from) : r.from + '\u2013' + r.to; }
   /* Index of the last day that has a recorded value (v not null), or -1. A
      preview ends there: the days after it are not in yet, not dry. */
   function lastRecorded(days) {
@@ -236,7 +327,8 @@
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS,
-    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX };
+    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
+    bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -959,10 +1051,8 @@
   function syncGift() {
     var on = giftMode() && canOrder();
     $('rp-gift').hidden = !on;
-    $('ro-deliver-wrap').hidden = !on;
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = on ? 'Sig will email you within a day with a payment link. Nothing is charged until you pay it. The proof comes in January, once the full year is drawn.' : ORDER_NOTE;
-    $('ro-address-label').textContent = on ? 'Ship to (name, street, town, state, ZIP; theirs is fine)' : 'Ship to (name, street, town, state, ZIP)';
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1179,6 +1269,8 @@
       syncCutoffs();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
       if (o) o.textContent = giftYearLabel();
+      syncBiz();
+      syncAddress();
     }).catch(function () {});
   }
   function payLink(id) {
@@ -1196,14 +1288,15 @@
       return;
     }
     var code = encodeCode(ST), link = payLink(id), note = $('rp-buy-note');
-    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
+    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters; a gift code is GIFT- plus the design code.
     if (link && code && code.length <= 200) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
       note.innerHTML = ST.gift
         ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells Sig it is a gift for January. He emails you to confirm where it goes, and sends the proof once the full year is drawn.'
-        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.';
+        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.' +
+          (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '');
       return;
     }
     openOrder(id);
@@ -1218,22 +1311,56 @@
     try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     try { $('ro-name').focus({ preventScroll: true }); } catch (e) {}
   }
+  /* "It's a gift" on an ordinary order (2026-10-12), a tick box over the price
+     cards. Any finished year and any product; this year's January gift has its
+     own box (#rp-gift), so the tick box is not offered then.
+     A product WITH a Stripe Payment Link still goes straight to checkout; its
+     Payment Link asks who it's for and the note, and Stripe takes the shipping
+     address, so the page only says so (#rp-gift-checkout).
+     A product WITHOUT a link opens the order request form, which then shows
+     who it's for, a note printed on a card in the box (no prices go in), and
+     where it goes. Same gift_ fields, plus gift:true (worker v5.12). */
+  function januaryGift() { return giftMode() && canOrder(); }
+  function giftTicked() { return !januaryGift() && $('ro-isgift').checked; }
+  function plainGift() { return giftTicked() && !payLink($('ro-choice').value); }
+  function syncGiftCheckout() {
+    var el = $('rp-gift-checkout'), linked = PRODUCTS.filter(function (id) { return payLink(id); });
+    var t = '';
+    if (giftTicked() && linked.length) {
+      t = 'You\u2019ll add their name and your note at checkout. Use their address for shipping if it goes straight to them.';
+      if (linked.length < PRODUCTS.length) {
+        var names = linked.map(function (id) { return CHOICE[id].replace(/^Digital/, 'digital'); });
+        t = 'For the ' + names.join(' and the ') + ', y' + t.slice(1) + ' The others take your note on the order form.';
+      }
+    }
+    el.textContent = t;
+    el.hidden = !t;
+  }
   function syncAddress() {
-    var print = $('ro-choice').value !== 'digital';
+    var print = $('ro-choice').value !== 'digital', jan = januaryGift(), plain = plainGift();
     $('ro-address-wrap').hidden = !print;
     $('ro-address').required = print;
+    $('rp-isgift-wrap').hidden = jan;
+    syncGiftCheckout();
+    $('ro-gift-box').hidden = !plain;
+    $('ro-gift-line').textContent = print ? 'Sig prints the note on a card in the box. No prices go in the box.'
+      : 'Sig sends the note with the file. No prices go with it.';
+    $('ro-deliver-wrap').hidden = !(jan || plain);
+    var theirs = (jan || plain) && $('ro-deliver').value === 'recipient';
+    $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, state, ZIP; theirs is fine)'
+      : plain && theirs ? 'Ship to them (their name, street, town, state, ZIP)' : 'Ship to (name, street, town, state, ZIP)';
     // a gift file sent straight to the person it is for needs their email
-    var theirs = giftMode() && canOrder() && !print && $('ro-deliver').value === 'recipient';
-    $('ro-gift-email-wrap').hidden = !theirs;
-    $('ro-gift-email').required = theirs;
+    var mail = theirs && !print;
+    $('ro-gift-email-wrap').hidden = !mail;
+    $('ro-gift-email').required = mail;
   }
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   function orderSubject(x) {
-    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
+    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' : '\nGift: yes, a note card in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
@@ -1251,7 +1378,14 @@
       design_url: designUrl(ST), design_code: encodeCode(ST), page: '/rain-print'
     };
     if (x.choice === 'digital') x.address = '';
-    var gift = giftMode();
+    var gift = giftMode(), plain = plainGift();
+    if (plain) {
+      x.gift = true;
+      x.gift_to = cleanText($('ro-gift-to').value, GIFT_TO_MAX);
+      x.gift_deliver = $('ro-deliver').value === 'recipient' ? 'recipient' : 'buyer';
+      x.gift_email = x.choice === 'digital' && x.gift_deliver === 'recipient' ? $('ro-gift-email').value.trim() : '';
+      x.gift_message = $('ro-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
+    }
     if (gift) {
       x.gift_january = true;
       x.gift_to = cleanText($('rp-gift-to').value, GIFT_TO_MAX);
@@ -1261,7 +1395,8 @@
     }
     var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address Sig can reply to.']
       : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.']
-      : (gift && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
+      : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick It\u2019s a gift.']
+      : ((gift || plain) && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
     var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
@@ -1272,7 +1407,7 @@
     sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-order', data, fs).then(function () {
-      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : 0 });
+      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
         ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link.</p>' +
           '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
@@ -1284,13 +1419,131 @@
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
-      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : 0 });
+      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       var body = orderText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
       out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below.</p>' +
         '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
       try { $('ro-mail').focus(); } catch (err) {}
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+  }
+
+  // ---------- for businesses: a quote request for a set of prints ----------
+  /* Its own form (#rb-form, kind rain-print-business, worker v5.12). It needs
+     no drawn design: the business sends a list of towns and years and Sig
+     quotes it. The cutoff line, the table and the per-print readout come only
+     from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above). */
+  var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
+  var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed', 'framed'], digital: ['digital file', 'digital files'],
+    'not-sure': ['not sure yet', 'not sure yet'] };
+  var BIZ_SHIP = { one: 'All to one address', each: 'One to each customer', 'not-sure': 'Not sure yet' };
+  function radioVal(name) { var r = doc.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
+  function syncBiz() {
+    var j = PRICES;
+    if (!j) return;
+    var cut = bizCutoffNote(TODAY, j.business_cutoff);
+    $('rp-biz-cutoff').textContent = cut; $('rp-biz-cutoff').hidden = !cut;
+    var note = typeof j.business_note === 'string' ? cleanText(j.business_note, 300) : '';
+    $('rp-biz-note').textContent = note; $('rp-biz-note').hidden = !note;
+    var ship = bizShip(j), rows = bizRows(j);
+    $('rp-biz-ship').textContent = ship ? 'Shipping is per print, to US addresses. The digital file is emailed.' : 'Shipping is quoted with your order.';
+    $('rp-biz-ship').hidden = false;
+    $('rp-tiers-box').hidden = !rows.length;
+    if (rows.length) {
+      var d2 = function (x) { return money(x); };
+      var pair = function (o) { return d2(o.print12x18) + ' / ' + d2(o.framed12x18); };
+      $('rp-tiers-head').innerHTML = ship
+        ? '<tr><th scope="col" rowspan="2" class="rp-l">Quantity</th><th scope="colgroup" colspan="3">Price per print</th><th scope="colgroup" colspan="2" class="rp-sh">Shipping per print (print / framed)</th></tr>' +
+          '<tr><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th><th scope="col" class="rp-sh">To one address</th><th scope="col" class="rp-sh">To each customer</th></tr>'
+        : '<tr><th scope="col" class="rp-l">Quantity</th><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th></tr>';
+      $('rp-tiers-body').innerHTML = rows.map(function (r) {
+        // data-label: on a phone each row stacks into a card that names its cells (CSS in the page)
+        var lab = { print12x18: 'Print', framed12x18: 'Framed', digital: 'Digital' };
+        return '<tr><th scope="row" class="rp-l">' + esc(bizRange(r)) + ' <span class="rp-off">' + esc(r.pct + '% off') + '</span></th>' +
+          BIZ_PRODUCTS.map(function (id) { return '<td class="rp-num" data-label="' + lab[id] + '">' + d2(r.prices[id]) + '</td>'; }).join('') +
+          (ship ? '<td class="rp-num rp-sh" data-label="Shipping to one address (print / framed)">' + pair(r.one) + '</td>' +
+            '<td class="rp-num rp-sh" data-label="Shipping to each customer (print / framed)">' + pair(r.each) + '</td>' : '') + '</tr>';
+      }).join('');
+    }
+    syncBizTier();
+  }
+  var BIZ_DEST = { one: ' to one address', each: ' to each customer' };
+  function syncBizShip() {
+    var each = radioVal('rb-ship') === 'each';
+    $('rb-note-all-wrap').hidden = !each;
+    $('rb-towns-help').hidden = !each;
+  }
+  function syncBizTier() {
+    var out = $('rb-tier'), raw = String($('rb-qty').value || '').trim(), qty = /^\d{1,4}$/.test(raw) ? +raw : 0;
+    var pick = radioVal('rb-product'), dest = radioVal('rb-ship'), id = BIZ_PRODUCT[pick];
+    var c = function (x) { return '$' + x.toFixed(2).replace(/\B(?=(\d{3})+\.)/g, ','); };
+    out.textContent = '';
+    if (!qty || !PRICES) return;
+    if (qty < BIZ_MIN) {
+      out.innerHTML = 'For fewer than ' + BIZ_MIN + ', <a href="#rp-buy">order the regular way above</a>. Shipping is included in those prices.';
+      return;
+    }
+    if (qty > BIZ_MAX) { out.textContent = 'Up to ' + BIZ_MAX + ' here. For more, put ' + BIZ_MAX + ' and say how many in the notes.'; return; }
+    if (!id) return;
+    var what = qty + ' ' + BIZ_WORD[pick][1];
+    var one = bizQuote(PRICES, qty, id, 'one'), each = bizQuote(PRICES, qty, id, 'each');
+    if (!one || !each) return;
+    if (one.ship === null) { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' before shipping.'; return; }
+    if (id === 'digital') { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' total.'; return; }
+    var q = dest === 'one' ? one : dest === 'each' ? each : null;
+    out.textContent = q
+      ? what + BIZ_DEST[dest] + ': ' + c(q.unit) + ' + ' + c(q.ship) + ' shipping each, ' + c(q.total) + ' total.'
+      : what + ': ' + c(one.unit) + ' + ' + c(one.ship) + ' to ' + c(each.ship) + ' shipping each, ' + c(one.total) + ' to ' + c(each.total) + ' total.';
+  }
+  function bizSubject(x) { return 'Rain Print business quote: ' + x.business + ', ' + x.quantity + ' ' + BIZ_WORD[x.product][x.quantity === '1' ? 0 : 1]; }
+  function bizText(x) {
+    return bizSubject(x) + '\n\nBusiness: ' + x.business + '\nContact: ' + x.name + '\nEmail: ' + x.email + (x.phone ? '\nPhone: ' + x.phone : '') +
+      '\nHow many: ' + x.quantity + '\nProduct: ' + BIZ_WORD[x.product][0] + '\nShip to: ' + BIZ_SHIP[x.ship] +
+      (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') + '\n';
+  }
+  var bizSending = false;
+  function submitBiz(e) {
+    e.preventDefault();
+    if (bizSending) return;
+    var out = $('rb-out'), qraw = String($('rb-qty').value || '').trim();
+    var x = {
+      business: cleanText($('rb-business').value, 120), name: cleanText($('rb-name').value, 80), email: $('rb-email').value.trim(),
+      phone: cleanText($('rb-phone').value, 30), quantity: qraw, product: radioVal('rb-product') || 'not-sure',
+      towns: $('rb-towns').value.replace(/\r\n?/g, '\n').trim().slice(0, 8000), ship: radioVal('rb-ship') || 'not-sure',
+      notes: $('rb-notes').value.replace(/\r\n?/g, '\n').trim().slice(0, 2000), page: '/rain-print#rp-biz'
+    };
+    var qn = /^\d{1,4}$/.test(qraw) ? +qraw : 0;
+    var bad = !x.business ? ['rb-business', 'Add the business name.'] : !x.name ? ['rb-name', 'Add your name.']
+      : !EMAIL_RE.test(x.email) ? ['rb-email', 'Add an email address Sig can reply to.']
+      : qn >= 1 && qn < BIZ_MIN ? ['rb-qty', 'Business orders start at ' + BIZ_MIN + '. For fewer, order the regular way above.']
+      : !(qn >= BIZ_MIN && qn <= BIZ_MAX) ? ['rb-qty', 'Put how many prints, from ' + BIZ_MIN + ' to ' + BIZ_MAX + '. For more than ' + BIZ_MAX + ', put ' + BIZ_MAX + ' and say how many in the notes.']
+      : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
+    if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
+    x.quantity = String(qn);
+    // the shared note card goes only to prints shipped one to each customer
+    if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
+    var hp = doc.querySelector('#rb-form input[name="_gotcha"]');
+    var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
+    var subj = bizSubject(x);
+    var fs = Object.assign({ _subject: subj, _replyto: x.email, form: 'rain-print-business' }, x);
+    if (hp && hp.value) fs._gotcha = hp.value;
+    var btn = $('rb-submit'), was = btn.textContent;
+    bizSending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
+    var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
+    send('rain-print-business', data, fs).then(function () {
+      ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
+      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will write to ' + esc(x.email) + ' with a quote, then proofs.</p>' +
+        '<p>Nothing is printed or charged until you OK them.</p></div>';
+      $('rb-form').reset(); syncBizShip(); syncBizTier();
+      try { out.firstChild.focus(); } catch (err) {}
+    }).catch(function () {
+      ga('rain_print_business', { result: 'fail', product: x.product, qty: qn });
+      var body = bizText(x);
+      var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below.</p>' +
+        '<p><a class="rp-btn2" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
+      try { $('rb-mail').focus(); } catch (err) {}
+    }).then(function () { bizSending = false; btn.disabled = false; btn.textContent = was; });
   }
 
   // ---------- the gift card ----------
@@ -1477,8 +1730,13 @@
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', syncAddress);
   $('ro-deliver').addEventListener('change', syncAddress);
+  $('ro-isgift').addEventListener('change', syncAddress);
   $('rp-card').addEventListener('click', printCard);
   $('ro-form').addEventListener('submit', submitOrder);
+  $('rb-form').addEventListener('submit', submitBiz);
+  $('rb-qty').addEventListener('input', syncBizTier);
+  radios('rb-product').concat(radios('rb-ship')).forEach(function (r) { r.addEventListener('change', syncBizTier); });
+  radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
     b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });

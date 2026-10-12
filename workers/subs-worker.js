@@ -1,6 +1,21 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.12 (2026-10-12): RAIN PRINT BUSINESS QUOTES AND GIFT NOTES. One new form
+ *   kind on POST /form and one new optional field on rain-print-order; every
+ *   existing route answers exactly as before. kind rain-print-business (the
+ *   "For businesses" form on rain-print.html) takes business (120), name (80),
+ *   email, phone (30, optional), quantity (whole number 10 to 500; fewer than
+ *   10 order the regular way), product (print | framed | digital | not-sure),
+ *   towns (8000, keeps line breaks), ship (one | each | not-sure), note_all
+ *   (300, keeps line breaks, optional: the note card for every print shipped
+ *   to each customer), notes (2000, optional) and page. Same origin check,
+ *   16 KB cap, rate limit (shared with every other kind), year-long storage
+ *   and digest; /count forms gains rain-print-business.
+ *   rain-print-order gains gift (flag): an ordinary order given as a gift,
+ *   with a note card in the box. The gift_ fields are now kept when gift OR
+ *   gift_january is set, under the same rules; an order with neither flag
+ *   still drops them, exactly as before. No new binding and no new secret.
  * v5.11 (2026-10-11): ONE-TIME NOTICES. New routes only, plus one line in
  *   POST /unsubscribe; every other route answers exactly as before.
  *   POST /notice  JSON {email, topic, source, daily?, zip?, reports?, _gotcha}.
@@ -390,10 +405,21 @@ const FORM_KINDS = {
     // v5.10: a gift of this year's print, made in January. Kept only with gift_january.
     gift_january: [3, false, "flag"], gift_to: [80], gift_deliver: [10, false, "rpdeliver"],
     gift_email: [254, false, "email"], gift_message: [240, false, "text"],
+    // v5.12: an ordinary order given as a gift (note card in the box). Keeps the gift_ fields like gift_january.
+    gift: [3, false, "flag"],
+  },
+  // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
+  "rain-print-business": {
+    business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30],
+    quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [8000, true, "text"],
+    ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
   },
 };
 const RP_CHOICES = ["digital", "print12x18", "framed12x18"];
 const RP_DELIVER = ["buyer", "recipient"];
+const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
+const RPB_SHIP = ["one", "each", "not-sure"];
+const RPB_QTY_MIN = 10, RPB_QTY_MAX = 500;   // business orders start at 10 prints
 const FORM_MAX_BYTES = 16 * 1024;
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
@@ -430,6 +456,14 @@ function formClean(kind, b) {
       if (!/^[A-Za-z0-9_-]+$/.test(v)) return { error: "invalid " + f };
     } else if (type === "rpdeliver") {
       if (!RP_DELIVER.includes(v)) return { error: "invalid " + f };
+    } else if (type === "rpqty") {
+      // a whole number of prints, 10 to 500, stored as its digits ("010" is "10")
+      if (!/^\d{1,3}$/.test(v) || +v < RPB_QTY_MIN || +v > RPB_QTY_MAX) return { error: "invalid " + f };
+      v = String(+v);
+    } else if (type === "rpbproduct") {
+      if (!RPB_PRODUCTS.includes(v)) return { error: "invalid " + f };
+    } else if (type === "rpbship") {
+      if (!RPB_SHIP.includes(v)) return { error: "invalid " + f };
     } else if (type === "url") {
       if (!/^https?:\/\//i.test(v)) v = "https://" + v;
       try { const u = new URL(v); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
@@ -441,7 +475,7 @@ function formClean(kind, b) {
   if (kind === "rain-print-order") {
     if (out.choice === "digital") delete out.address;
     else if (!out.address) return { error: "address is required for a print" };
-    if (out.gift_january !== "yes") {
+    if (out.gift_january !== "yes" && out.gift !== "yes") {
       for (const g of ["gift_to", "gift_deliver", "gift_email", "gift_message"]) delete out[g];
     } else {
       if (!out.gift_deliver) out.gift_deliver = "buyer";
