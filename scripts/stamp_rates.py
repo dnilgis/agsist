@@ -43,7 +43,7 @@ def label(card, tier):
 
 def pages():
     out = []
-    for pat in ("*.html", "rent/*.html", "basis/*.html", "yield/*.html", "hail-map/*.html",
+    for pat in ("*.html", "rent/*.html", "basis/*.html", "yield/*.html", "hail-map/*.html", "prf/*.html",
                 "components/*.html"):
         out += sorted(ROOT.glob(pat))
     return out
@@ -77,7 +77,9 @@ def slot_entry(rel, text):
     parts = [x for x in url.split("/") if x]
     words = lambda x: " ".join(w if w in ("COT", "USDA", "GDU") else w.capitalize()
                                for w in x.replace("-", " ").replace("cot", "COT").replace("usda", "USDA").replace("gdu", "GDU").split())
-    if parts and parts[0] == "rent":
+    if parts and parts[0] == "prf" and len(parts) > 1:
+        name = "PRF insurance in " + words(parts[1])
+    elif parts and parts[0] == "rent":
         name = (words(parts[1]) + " cash rent") if len(parts) > 1 else "Cash rent by state"
     else:
         name = NAMES.get(parts[-1]) or words(parts[-1]) if parts else "Home"

@@ -126,6 +126,13 @@ def page(st, meta, facts, sd, states, BOOT):
             {"@type": "ListItem", "position": 3, "name": name, "item": url}]},
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
+    card = json.load(open(os.path.join(ROOT, "data", "rate-card.json")))
+    tier = next(t for t in card["tiers"] if t["id"] == "page")
+    price = f'${tier["price_month"]}/mo &middot; first month free'   # the same label scripts/stamp_rates.py writes
+    ribbon = (f'<aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> '
+              f'One sponsor for PRF in {e(name)}: your name on this page, seen by people pricing PRF here before the {sales} sales closing. '
+              f'<span class="ag-sponsor-price" data-rate="page">{price}</span> '
+              f'<a href="/sponsor-apply?slot=prf-{code.lower()}&amp;utm_source=prf-{slug(name)}&amp;utm_medium=slot">Claim this page &rarr;</a></aside>')
     subrow = ", ".join(f"{int(round(sub[c] * 100))}% at {c}%" for c in sorted(sub, key=int))
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -178,6 +185,7 @@ def page(st, meta, facts, sd, states, BOOT):
     </dl>
     <p class="prf-fine">The first figure is the middle county; the small ones are the lowest and highest. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.</p>
     {sod}
+    {ribbon}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
@@ -202,7 +210,7 @@ def page(st, meta, facts, sd, states, BOOT):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance, asks for no contact details and sends no one to any agent. Sponsored space is marked in orange. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
   </div>
   </main>

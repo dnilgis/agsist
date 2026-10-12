@@ -297,3 +297,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 .prf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .prf-st-links a { min-height: 40px; }
 .prf-states a { color: var(--brand); }
+
+/* Sig, 2026-10-12: the PRF state pages advertise their own sponsor slot before
+   sales closing, an exception to "an unsold slot shows nothing" (styles.css). */
+.prf.prf-st aside.ag-sponsor-ribbon.ag-sponsor-ribbon { display: flex !important; }
