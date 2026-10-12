@@ -1,6 +1,6 @@
 {
  "schema": "agsist-seo-index/1",
- "generated": "2026-10-11T19:42:03+00:00",
+ "generated": "2026-10-12T22:43:06+00:00",
  "site": "sc-domain:agsist.com",
  "note": "A weekly sample from the Search Console URL Inspection API: the hub pages every week, plus a rotating slice of each sitemap. Shares are of the inspected sample only; 'inspected' is the sample size.",
  "sampleSize": 100,
@@ -15,43 +15,47 @@
   },
   "sitemap.xml": {
    "inspected": 20,
-   "indexed": 20,
+   "indexed": 17,
    "errors": 0,
    "canonicalMismatch": 0,
-   "notIndexedStates": {},
-   "shareIndexed": 1.0
+   "notIndexedStates": {
+    "Discovered - currently not indexed": 1,
+    "URL is unknown to Google": 2
+   },
+   "shareIndexed": 0.85
   },
   "sitemap-atlas.xml": {
    "inspected": 20,
-   "indexed": 12,
+   "indexed": 9,
    "errors": 0,
    "canonicalMismatch": 0,
    "notIndexedStates": {
-    "Discovered - currently not indexed": 7,
-    "URL is unknown to Google": 1
+    "Discovered - currently not indexed": 9,
+    "URL is unknown to Google": 2
    },
-   "shareIndexed": 0.6
+   "shareIndexed": 0.45
   },
   "sitemap-cash-bids.xml": {
    "inspected": 20,
-   "indexed": 3,
+   "indexed": 4,
    "errors": 0,
    "canonicalMismatch": 0,
    "notIndexedStates": {
-    "Discovered - currently not indexed": 14,
-    "URL is unknown to Google": 3
+    "URL is unknown to Google": 3,
+    "Discovered - currently not indexed": 13
    },
-   "shareIndexed": 0.15
+   "shareIndexed": 0.2
   },
   "sitemap-arc-plc.xml": {
    "inspected": 20,
-   "indexed": 0,
+   "indexed": 4,
    "errors": 0,
    "canonicalMismatch": 0,
    "notIndexedStates": {
-    "URL is unknown to Google": 20
+    "Discovered - currently not indexed": 10,
+    "URL is unknown to Google": 6
    },
-   "shareIndexed": 0.0
+   "shareIndexed": 0.2
   }
  },
  "history": [
@@ -77,6 +81,31 @@
     "sitemap-arc-plc.xml": {
      "inspected": 20,
      "indexed": 0
+    }
+   }
+  },
+  {
+   "date": "2026-10-12",
+   "groups": {
+    "hubs": {
+     "inspected": 20,
+     "indexed": 20
+    },
+    "sitemap.xml": {
+     "inspected": 20,
+     "indexed": 17
+    },
+    "sitemap-atlas.xml": {
+     "inspected": 20,
+     "indexed": 9
+    },
+    "sitemap-cash-bids.xml": {
+     "inspected": 20,
+     "indexed": 4
+    },
+    "sitemap-arc-plc.xml": {
+     "inspected": 20,
+     "indexed": 4
     }
    }
   }
@@ -140,7 +169,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T06:54:16Z",
+   "lastCrawlTime": "2026-10-12T09:27:24Z",
    "googleCanonical": "https://agsist.com/farmland-atlas",
    "userCanonical": "https://agsist.com/farmland-atlas",
    "canonicalMismatch": false,
@@ -166,7 +195,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T06:24:12Z",
+   "lastCrawlTime": "2026-10-12T21:08:08Z",
    "googleCanonical": "https://agsist.com/usda-calendar",
    "userCanonical": "https://agsist.com/usda-calendar",
    "canonicalMismatch": false,
@@ -179,7 +208,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T06:19:24Z",
+   "lastCrawlTime": "2026-10-12T03:12:14Z",
    "googleCanonical": "https://agsist.com/usda-quick-stats",
    "userCanonical": "https://agsist.com/usda-quick-stats",
    "canonicalMismatch": false,
@@ -192,7 +221,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T07:57:20Z",
+   "lastCrawlTime": "2026-10-12T08:40:15Z",
    "googleCanonical": "https://agsist.com/corn-futures-prices",
    "userCanonical": "https://agsist.com/corn-futures-prices",
    "canonicalMismatch": false,
@@ -205,7 +234,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T06:26:11Z",
+   "lastCrawlTime": "2026-10-12T07:36:11Z",
    "googleCanonical": "https://agsist.com/soybean-futures-prices",
    "userCanonical": "https://agsist.com/soybean-futures-prices",
    "canonicalMismatch": false,
@@ -231,7 +260,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T12:57:27Z",
+   "lastCrawlTime": "2026-10-12T20:53:35Z",
    "googleCanonical": "https://agsist.com/cattle-futures-prices",
    "userCanonical": "https://agsist.com/cattle-futures-prices",
    "canonicalMismatch": false,
@@ -270,7 +299,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T16:36:59Z",
+   "lastCrawlTime": "2026-10-12T17:35:35Z",
    "googleCanonical": "https://agsist.com/hail-map",
    "userCanonical": "https://agsist.com/hail-map",
    "canonicalMismatch": false,
@@ -283,7 +312,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T05:28:25Z",
+   "lastCrawlTime": "2026-10-12T12:39:04Z",
    "googleCanonical": "https://agsist.com/cot",
    "userCanonical": "https://agsist.com/cot",
    "canonicalMismatch": false,
@@ -309,7 +338,7 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T11:06:07Z",
+   "lastCrawlTime": "2026-10-12T21:02:19Z",
    "googleCanonical": "https://agsist.com/fertilizer",
    "userCanonical": "https://agsist.com/fertilizer",
    "canonicalMismatch": false,
@@ -348,11 +377,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-07-21T03:11:24Z",
-   "googleCanonical": "https://agsist.com/daily/2026-03-05",
-   "userCanonical": "https://agsist.com/daily/2026-03-05",
+   "lastCrawlTime": "2026-09-24T04:13:53Z",
+   "googleCanonical": "https://agsist.com/cash-lease",
+   "userCanonical": "https://agsist.com/cash-lease",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-03-05",
+   "url": "https://agsist.com/cash-lease",
    "group": "sitemap.xml"
   },
   {
@@ -361,11 +390,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-06-13T11:45:34Z",
-   "googleCanonical": "https://agsist.com/daily/2026-04-11",
-   "userCanonical": "https://agsist.com/daily/2026-04-11",
+   "lastCrawlTime": "2026-09-05T08:58:17Z",
+   "googleCanonical": "https://agsist.com/daily/2026-04-07",
+   "userCanonical": "https://agsist.com/daily/2026-04-07",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-04-11",
+   "url": "https://agsist.com/daily/2026-04-07",
    "group": "sitemap.xml"
   },
   {
@@ -374,11 +403,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-08-30T02:59:07Z",
-   "googleCanonical": "https://agsist.com/daily/2026-05-09",
-   "userCanonical": "https://agsist.com/daily/2026-05-09",
+   "lastCrawlTime": "2026-10-08T15:09:12Z",
+   "googleCanonical": "https://agsist.com/daily/2026-05-08",
+   "userCanonical": "https://agsist.com/daily/2026-05-08",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-05-09",
+   "url": "https://agsist.com/daily/2026-05-08",
    "group": "sitemap.xml"
   },
   {
@@ -387,11 +416,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-06-13T03:59:48Z",
-   "googleCanonical": "https://agsist.com/daily/2026-06-06",
-   "userCanonical": "https://agsist.com/daily/2026-06-06",
+   "lastCrawlTime": "2026-09-22T22:02:34Z",
+   "googleCanonical": "https://agsist.com/daily/2026-06-07",
+   "userCanonical": "https://agsist.com/daily/2026-06-07",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-06-06",
+   "url": "https://agsist.com/daily/2026-06-07",
    "group": "sitemap.xml"
   },
   {
@@ -400,11 +429,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-09-15T00:37:45Z",
-   "googleCanonical": "https://agsist.com/daily/2026-07-04",
-   "userCanonical": "https://agsist.com/daily/2026-07-04",
+   "lastCrawlTime": "2026-08-31T01:10:16Z",
+   "googleCanonical": "https://agsist.com/daily/2026-07-08",
+   "userCanonical": "https://agsist.com/daily/2026-07-08",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-07-04",
+   "url": "https://agsist.com/daily/2026-07-08",
    "group": "sitemap.xml"
   },
   {
@@ -413,11 +442,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-04T03:18:38Z",
-   "googleCanonical": "https://agsist.com/daily/2026-08-01",
-   "userCanonical": "https://agsist.com/daily/2026-08-01",
+   "lastCrawlTime": "2026-08-08T04:32:49Z",
+   "googleCanonical": "https://agsist.com/daily/2026-08-07",
+   "userCanonical": "https://agsist.com/daily/2026-08-07",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-08-01",
+   "url": "https://agsist.com/daily/2026-08-07",
    "group": "sitemap.xml"
   },
   {
@@ -426,11 +455,24 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-09-02T15:02:42Z",
-   "googleCanonical": "https://agsist.com/daily/2026-08-29",
-   "userCanonical": "https://agsist.com/daily/2026-08-29",
+   "lastCrawlTime": "2026-09-13T03:02:32Z",
+   "googleCanonical": "https://agsist.com/daily/2026-09-07",
+   "userCanonical": "https://agsist.com/daily/2026-09-07",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-08-29",
+   "url": "https://agsist.com/daily/2026-09-07",
+   "group": "sitemap.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/daily/2026-10-08",
    "group": "sitemap.xml"
   },
   {
@@ -439,11 +481,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-09-26T19:47:07Z",
-   "googleCanonical": "https://agsist.com/daily/2026-09-26",
-   "userCanonical": "https://agsist.com/daily/2026-09-26",
+   "lastCrawlTime": "2026-07-05T15:12:52Z",
+   "googleCanonical": "https://agsist.com/hail-map/kansas",
+   "userCanonical": "https://agsist.com/hail-map/kansas",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/daily/2026-09-26",
+   "url": "https://agsist.com/hail-map/kansas",
    "group": "sitemap.xml"
   },
   {
@@ -452,11 +494,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T13:25:31Z",
-   "googleCanonical": "https://agsist.com/hail-map/arkansas",
-   "userCanonical": "https://agsist.com/hail-map/arkansas",
+   "lastCrawlTime": "2026-10-12T01:12:40Z",
+   "googleCanonical": "https://agsist.com/hail-map/virginia",
+   "userCanonical": "https://agsist.com/hail-map/virginia",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/hail-map/arkansas",
+   "url": "https://agsist.com/hail-map/virginia",
    "group": "sitemap.xml"
   },
   {
@@ -465,11 +507,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T04:54:46Z",
-   "googleCanonical": "https://agsist.com/hail-map/new-mexico",
-   "userCanonical": "https://agsist.com/hail-map/new-mexico",
+   "lastCrawlTime": "2026-09-24T09:45:15Z",
+   "googleCanonical": "https://agsist.com/hail/2023-05-09",
+   "userCanonical": "https://agsist.com/hail/2023-05-09",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/hail-map/new-mexico",
+   "url": "https://agsist.com/hail/2023-05-09",
    "group": "sitemap.xml"
   },
   {
@@ -478,11 +520,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-09-23T01:05:47Z",
-   "googleCanonical": "https://agsist.com/hail/2022-05-15",
-   "userCanonical": "https://agsist.com/hail/2022-05-15",
+   "lastCrawlTime": "2026-08-25T21:57:17Z",
+   "googleCanonical": "https://agsist.com/hail/2024-05-27",
+   "userCanonical": "https://agsist.com/hail/2024-05-27",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/hail/2022-05-15",
+   "url": "https://agsist.com/hail/2024-05-27",
    "group": "sitemap.xml"
   },
   {
@@ -491,11 +533,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-07-05T05:06:59Z",
-   "googleCanonical": "https://agsist.com/hail/2023-06-27",
-   "userCanonical": "https://agsist.com/hail/2023-06-27",
+   "lastCrawlTime": "2026-09-22T19:31:45Z",
+   "googleCanonical": "https://agsist.com/hail/2026-04-27",
+   "userCanonical": "https://agsist.com/hail/2026-04-27",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/hail/2023-06-27",
+   "url": "https://agsist.com/hail/2026-04-27",
    "group": "sitemap.xml"
   },
   {
@@ -504,37 +546,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-08-28T20:00:14Z",
-   "googleCanonical": "https://agsist.com/hail/2025-04-18",
-   "userCanonical": "https://agsist.com/hail/2025-04-18",
+   "lastCrawlTime": "2026-07-05T10:44:21Z",
+   "googleCanonical": "https://agsist.com/hail/2026-06-08",
+   "userCanonical": "https://agsist.com/hail/2026-06-08",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/hail/2025-04-18",
-   "group": "sitemap.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-07-05T01:44:50Z",
-   "googleCanonical": "https://agsist.com/hail/2026-05-09",
-   "userCanonical": "https://agsist.com/hail/2026-05-09",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/hail/2026-05-09",
-   "group": "sitemap.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-08-25T12:29:20Z",
-   "googleCanonical": "https://agsist.com/hail/2026-06-11",
-   "userCanonical": "https://agsist.com/hail/2026-06-11",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/hail/2026-06-11",
+   "url": "https://agsist.com/hail/2026-06-08",
    "group": "sitemap.xml"
   },
   {
@@ -551,16 +567,29 @@
    "group": "sitemap.xml"
   },
   {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-09-24T16:07:11Z",
-   "googleCanonical": "https://agsist.com/planting-date",
-   "userCanonical": "https://agsist.com/planting-date",
+   "verdict": "NEUTRAL",
+   "coverageState": "URL is unknown to Google",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/planting-date",
+   "url": "https://agsist.com/prf",
+   "group": "sitemap.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "URL is unknown to Google",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/prf/north-carolina",
    "group": "sitemap.xml"
   },
   {
@@ -569,11 +598,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T08:22:57Z",
-   "googleCanonical": "https://agsist.com/rent/nebraska",
-   "userCanonical": "https://agsist.com/rent/nebraska",
+   "lastCrawlTime": "2026-10-12T21:15:40Z",
+   "googleCanonical": "https://agsist.com/rent/illinois",
+   "userCanonical": "https://agsist.com/rent/illinois",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/rent/nebraska",
+   "url": "https://agsist.com/rent/illinois",
    "group": "sitemap.xml"
   },
   {
@@ -582,11 +611,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T01:05:15Z",
-   "googleCanonical": "https://agsist.com/terms",
-   "userCanonical": "https://agsist.com/terms",
+   "lastCrawlTime": "2026-10-11T09:20:02Z",
+   "googleCanonical": "https://agsist.com/rent/vermont",
+   "userCanonical": "https://agsist.com/rent/vermont",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/terms",
+   "url": "https://agsist.com/rent/vermont",
    "group": "sitemap.xml"
   },
   {
@@ -595,24 +624,24 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-07T10:27:43Z",
-   "googleCanonical": "https://agsist.com/yield/new-york",
-   "userCanonical": "https://agsist.com/yield/new-york",
+   "lastCrawlTime": "2026-10-12T20:22:35Z",
+   "googleCanonical": "https://agsist.com/yield/maryland",
+   "userCanonical": "https://agsist.com/yield/maryland",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/yield/new-york",
+   "url": "https://agsist.com/yield/maryland",
    "group": "sitemap.xml"
   },
   {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T14:54:14Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/alabama/geneva-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/alabama/geneva-county",
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/alabama/geneva-county",
+   "url": "https://agsist.com/farmland-atlas/alabama/greene-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -625,20 +654,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/california/modoc-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T05:31:38Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/florida/miami-dade-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/florida/miami-dade-county",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/florida/miami-dade-county",
+   "url": "https://agsist.com/farmland-atlas/california/mono-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -647,11 +663,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T05:10:36Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/georgia/tattnall-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/georgia/tattnall-county",
+   "lastCrawlTime": "2026-10-08T23:56:46Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/florida/nassau-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/florida/nassau-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/georgia/tattnall-county",
+   "url": "https://agsist.com/farmland-atlas/florida/nassau-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -660,11 +676,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T21:29:59Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/illinois/putnam-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/illinois/putnam-county",
+   "lastCrawlTime": "2026-10-09T20:20:27Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/georgia/taylor-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/georgia/taylor-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/illinois/putnam-county",
+   "url": "https://agsist.com/farmland-atlas/georgia/taylor-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -673,11 +689,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T02:17:16Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/iowa/grundy-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/iowa/grundy-county",
+   "lastCrawlTime": "2026-10-09T20:12:48Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/illinois/randolph-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/illinois/randolph-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/iowa/grundy-county",
+   "url": "https://agsist.com/farmland-atlas/illinois/randolph-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -690,33 +706,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/kansas/stanton-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T18:49:30Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/louisiana/iberville-parish",
-   "userCanonical": "https://agsist.com/farmland-atlas/louisiana/iberville-parish",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/louisiana/iberville-parish",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T01:30:47Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/michigan/montcalm-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/michigan/montcalm-county",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/michigan/montcalm-county",
+   "url": "https://agsist.com/farmland-atlas/iowa/guthrie-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -729,7 +719,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/mississippi/lincoln-county",
+   "url": "https://agsist.com/farmland-atlas/kansas/stevens-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -738,11 +728,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T11:32:43Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/montana/beaverhead-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/montana/beaverhead-county",
+   "lastCrawlTime": "2026-10-09T19:01:58Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/louisiana/jackson-parish",
+   "userCanonical": "https://agsist.com/farmland-atlas/louisiana/jackson-parish",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/montana/beaverhead-county",
+   "url": "https://agsist.com/farmland-atlas/louisiana/jackson-parish",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -755,20 +745,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/nevada/esmeralda-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/north-carolina/carteret-county",
+   "url": "https://agsist.com/farmland-atlas/michigan/montmorency-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -777,24 +754,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T02:07:41Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/ohio/crawford-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/ohio/crawford-county",
+   "lastCrawlTime": "2026-10-09T19:06:55Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/mississippi/lowndes-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/mississippi/lowndes-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/ohio/crawford-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/oregon/crook-county",
+   "url": "https://agsist.com/farmland-atlas/mississippi/lowndes-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -803,11 +767,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-08T23:43:51Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/south-dakota/brookings-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/south-dakota/brookings-county",
+   "lastCrawlTime": "2026-10-11T17:21:58Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/montana/big-horn-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/montana/big-horn-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/south-dakota/brookings-county",
+   "url": "https://agsist.com/farmland-atlas/montana/big-horn-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -820,33 +784,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/tennessee/white-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-09T19:07:05Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/texas/lynn-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/texas/lynn-county",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/texas/lynn-county",
-   "group": "sitemap-atlas.xml"
-  },
-  {
-   "verdict": "PASS",
-   "coverageState": "Submitted and indexed",
-   "indexingState": "INDEXING_ALLOWED",
-   "robotsTxtState": "ALLOWED",
-   "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-10T18:54:20Z",
-   "googleCanonical": "https://agsist.com/farmland-atlas/virginia/bath-county",
-   "userCanonical": "https://agsist.com/farmland-atlas/virginia/bath-county",
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/virginia/bath-county",
+   "url": "https://agsist.com/farmland-atlas/nevada/eureka-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -859,7 +797,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/farmland-atlas/west-virginia/mason-county",
+   "url": "https://agsist.com/farmland-atlas/north-carolina/caswell-county",
    "group": "sitemap-atlas.xml"
   },
   {
@@ -872,8 +810,47 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/illinois/champaign",
-   "group": "sitemap-cash-bids.xml"
+   "url": "https://agsist.com/farmland-atlas/ohio/cuyahoga-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/farmland-atlas/oregon/curry-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-08T22:40:31Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/south-dakota/brown-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/south-dakota/brown-county",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/farmland-atlas/south-dakota/brown-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-09T19:08:12Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/tennessee/williamson-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/tennessee/williamson-county",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/farmland-atlas/tennessee/williamson-county",
+   "group": "sitemap-atlas.xml"
   },
   {
    "verdict": "NEUTRAL",
@@ -885,7 +862,46 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/illinois/ohio",
+   "url": "https://agsist.com/farmland-atlas/texas/madison-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-11T18:05:22Z",
+   "googleCanonical": "https://agsist.com/farmland-atlas/virginia/bedford-county",
+   "userCanonical": "https://agsist.com/farmland-atlas/virginia/bedford-county",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/farmland-atlas/virginia/bedford-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/farmland-atlas/west-virginia/mcdowell-county",
+   "group": "sitemap-atlas.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "URL is unknown to Google",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/georgia/davisboro",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -898,7 +914,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/indiana/garrett",
+   "url": "https://agsist.com/cash-bids/illinois/hoopeston",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -911,7 +927,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/iowa/cleghorn",
+   "url": "https://agsist.com/cash-bids/illinois/strasburg",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -924,7 +940,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/iowa/inwood",
+   "url": "https://agsist.com/cash-bids/iowa/alta",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -937,7 +953,33 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/iowa/pella",
+   "url": "https://agsist.com/cash-bids/iowa/fonda",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/iowa/mc-gregor",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/iowa/shell-rock",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -946,24 +988,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T16:16:01Z",
-   "googleCanonical": "https://agsist.com/cash-bids/kansas/arkansas-city",
-   "userCanonical": "https://agsist.com/cash-bids/kansas/arkansas-city",
+   "lastCrawlTime": "2026-10-12T06:11:09Z",
+   "googleCanonical": "https://agsist.com/cash-bids/kansas/colby",
+   "userCanonical": "https://agsist.com/cash-bids/kansas/colby",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/kansas/arkansas-city",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/kansas/herndon",
+   "url": "https://agsist.com/cash-bids/kansas/colby",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -972,102 +1001,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T09:37:20Z",
-   "googleCanonical": "https://agsist.com/cash-bids/kansas/randall",
-   "userCanonical": "https://agsist.com/cash-bids/kansas/randall",
+   "lastCrawlTime": "2026-10-11T16:58:51Z",
+   "googleCanonical": "https://agsist.com/cash-bids/kansas/levant",
+   "userCanonical": "https://agsist.com/cash-bids/kansas/levant",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/kansas/randall",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/minnesota/argyle",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/minnesota/marshall",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/missouri/marshall",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/nebraska/elgin",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/nebraska/palmyra",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/north-dakota/hague",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "Discovered - currently not indexed",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/ohio/mount-vernon",
+   "url": "https://agsist.com/cash-bids/kansas/levant",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -1076,24 +1014,11 @@
    "indexingState": "INDEXING_ALLOWED",
    "robotsTxtState": "ALLOWED",
    "pageFetchState": "SUCCESSFUL",
-   "lastCrawlTime": "2026-10-11T17:36:32Z",
-   "googleCanonical": "https://agsist.com/cash-bids/oklahoma/marshall",
-   "userCanonical": "https://agsist.com/cash-bids/oklahoma/marshall",
+   "lastCrawlTime": "2026-10-11T17:36:36Z",
+   "googleCanonical": "https://agsist.com/cash-bids/kansas/winfield",
+   "userCanonical": "https://agsist.com/cash-bids/kansas/winfield",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/oklahoma/marshall",
-   "group": "sitemap-cash-bids.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/south-dakota/huron",
+   "url": "https://agsist.com/cash-bids/kansas/winfield",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -1106,7 +1031,59 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/washington/",
+   "url": "https://agsist.com/cash-bids/minnesota/emmons",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/minnesota/saint-peter",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/nebraska/barneston",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/nebraska/hildreth",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/nebraska/tilden",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -1119,7 +1096,46 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/cash-bids/wisconsin/whitewater",
+   "url": "https://agsist.com/cash-bids/ohio/columbus",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-11T17:36:05Z",
+   "googleCanonical": "https://agsist.com/cash-bids/oklahoma/cashion",
+   "userCanonical": "https://agsist.com/cash-bids/oklahoma/cashion",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/oklahoma/cashion",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/south-dakota/aurora",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/cash-bids/south-dakota/twin-brooks",
    "group": "sitemap-cash-bids.xml"
   },
   {
@@ -1132,7 +1148,46 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/alaska/delta-county",
+   "url": "https://agsist.com/cash-bids/wisconsin/mauston",
+   "group": "sitemap-cash-bids.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/arizona",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/colorado/montrose-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/georgia/monroe-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1145,7 +1200,59 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/colorado/montezuma-county",
+   "url": "https://agsist.com/arc-plc/illinois/kankakee-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/indiana/wabash-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/kansas/graham-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/kentucky/mccracken-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/massachusetts/middlesex-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1158,7 +1265,7 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/georgia/mitchell-county",
+   "url": "https://agsist.com/arc-plc/minnesota/pennington-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1171,7 +1278,33 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/illinois/kane-county",
+   "url": "https://agsist.com/arc-plc/missouri/crawford-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/nebraska/boyd-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-11T04:01:11Z",
+   "googleCanonical": "https://agsist.com/arc-plc/new-york",
+   "userCanonical": "https://agsist.com/arc-plc/new-york",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/new-york",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1184,7 +1317,20 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/indiana/vigo-county",
+   "url": "https://agsist.com/arc-plc/north-carolina/transylvania-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/ohio/scioto-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1197,7 +1343,46 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/kansas/gove-county",
+   "url": "https://agsist.com/arc-plc/pennsylvania/columbia-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "NEUTRAL",
+   "coverageState": "Discovered - currently not indexed",
+   "indexingState": "INDEXING_STATE_UNSPECIFIED",
+   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+   "lastCrawlTime": null,
+   "googleCanonical": null,
+   "userCanonical": null,
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/south-dakota/jackson-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-11T02:31:10Z",
+   "googleCanonical": "https://agsist.com/arc-plc/texas/bexar-county",
+   "userCanonical": "https://agsist.com/arc-plc/texas/bexar-county",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/texas/bexar-county",
+   "group": "sitemap-arc-plc.xml"
+  },
+  {
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-12T22:27:51Z",
+   "googleCanonical": "https://agsist.com/arc-plc/texas/rains-county",
+   "userCanonical": "https://agsist.com/arc-plc/texas/rains-county",
+   "canonicalMismatch": false,
+   "url": "https://agsist.com/arc-plc/texas/rains-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
@@ -1210,176 +1395,20 @@
    "googleCanonical": null,
    "userCanonical": null,
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/kentucky/mason-county",
+   "url": "https://agsist.com/arc-plc/virginia/lunenburg-county",
    "group": "sitemap-arc-plc.xml"
   },
   {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
+   "verdict": "PASS",
+   "coverageState": "Submitted and indexed",
+   "indexingState": "INDEXING_ALLOWED",
+   "robotsTxtState": "ALLOWED",
+   "pageFetchState": "SUCCESSFUL",
+   "lastCrawlTime": "2026-10-10T07:29:44Z",
+   "googleCanonical": "https://agsist.com/arc-plc/wisconsin/douglas-county",
+   "userCanonical": "https://agsist.com/arc-plc/wisconsin/douglas-county",
    "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/massachusetts/hampshire-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/minnesota/otter-tail-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/missouri/cooper-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/nebraska/box-butte-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/new-mexico/valencia-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/north-carolina/swain-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/ohio/sandusky-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/pennsylvania/clinton-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/south-dakota/hyde-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/texas/bell-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/texas/potter-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/virginia/louisa-county",
-   "group": "sitemap-arc-plc.xml"
-  },
-  {
-   "verdict": "NEUTRAL",
-   "coverageState": "URL is unknown to Google",
-   "indexingState": "INDEXING_STATE_UNSPECIFIED",
-   "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-   "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-   "lastCrawlTime": null,
-   "googleCanonical": null,
-   "userCanonical": null,
-   "canonicalMismatch": false,
-   "url": "https://agsist.com/arc-plc/wisconsin/door-county",
+   "url": "https://agsist.com/arc-plc/wisconsin/douglas-county",
    "group": "sitemap-arc-plc.xml"
   }
  ]
