@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Oct 2026 10:54:49 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Oct 2026 10:47:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn steadies near $4.81 after Friday's WASDE hit</title>
+      <link>https://agsist.com/daily/2026-10-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-12</guid>
+      <pubDate>Mon, 12 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn is at $4.81 overnight, up a quarter cent from Friday's $4.79¾ settle, a small bounce after Friday's near 4% drop on USDA's yield number. Soybean meal gained 2.2% to $368.70 while beans slipped to $12.83. Monday's quiet bounce doesn't undo Friday's loss on unpriced corn.
+• Corn finds its feet after WASDE
+• Cattle and feeders keep climbing
+• Crude firms as tankers take more hits
+Read more: https://agsist.com/daily/2026-10-12</description>
+    </item>
     <item>
       <title>Corn's near-4% WASDE drop closes out a mixed week</title>
       <link>https://agsist.com/daily/2026-10-11</link>
@@ -339,20 +350,6 @@ Friday's WASDE report sent soybeans lower and corn sideways, while crude fell ha
 • CRUDE FALLS ON SAUDI PIPELINE REVERSAL
 • CATTLE FIRMS; HOGS SLIP
 Read more: https://agsist.com/daily/2026-09-12</description>
-    </item>
-    <item>
-      <title>WASDE AT 11 CT; CRUDE DROPS 4%, BEANS FIRM</title>
-      <link>https://agsist.com/daily/2026-09-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-11</guid>
-      <pubDate>Fri, 11 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans firmed to $13.17 at the 52-week high while crude fell hard to $99.06, its sharpest one-session drop in weeks, as the whole complex repositioned ahead of the September WASDE at 11 CT. The meal/bean side held; the energy side gave back two weeks of war premium in one morning. WASDE decides which part of the market read this week correctly.
-September WASDE prints in hours while crude's biggest single-day drop in weeks reshapes the input-cost math for fall fieldwork.
-• WASDE POSITIONING; BEANS AT 52-WEEK HIGH
-  → If you have unpriced new-crop beans above $13.17, hold through 11 CT and let the WASDE print before making a sale.
-• CRUDE DROPS HARD; DIESEL HITS $6
-  → Today's crude pullback to $99 is the window to price fall diesel, not a reason to wait for $95.
-• CATTLE FIRMS; FEEDLOT MARGINS STILL DEEP RED
-Read more: https://agsist.com/daily/2026-09-11</description>
     </item>
   </channel>
 </rss>
