@@ -171,7 +171,7 @@ def prf_line(st, root="."):
         return ""
     return (f'<p class="sub">Insuring pasture or hay ground? See <a href="{href}" style="color:var(--gold)">'
             f'PRF rainfall insurance in {STATE_NAMES[st]}</a>: county values, what each pair of months costs, '
-            f'and the payback record since 1951.</p>')
+            f'and every year since 1951.</p>')
 
 
 def esc(s):
