@@ -301,7 +301,43 @@
              costPer100: n ? cost / n * 100 : null, ratePer100: rate == null ? null : rate * 100 };
   }
 
+  /* A whole-percent split across the chosen intervals, as even as the county's
+     limits allow (34/33/33, or 25/75 cut to what the caps permit). on: eleven
+     booleans. Returns eleven percents, or null when the limits cannot reach
+     100: two intervals capped at 25 and 70 stop at 95. */
+  function evenSplit(on, minPct, maxPct) {
+    var idx = [], out = new Array(N), i, left = 100;
+    for (i = 0; i < N; i++) { out[i] = 0; if (on[i]) idx.push(i); }
+    if (!idx.length) return out;
+    idx.forEach(function (k) { out[k] = minPct && minPct[k] != null ? minPct[k] : 10; left -= out[k]; });
+    if (left < 0) return null;
+    while (left > 0) {
+      var best = -1;
+      for (i = 0; i < idx.length; i++) {
+        var k = idx[i], cap = maxPct && maxPct[k] != null ? maxPct[k] : 100;
+        if (out[k] < cap && (best < 0 || out[k] < out[best])) best = k;
+      }
+      if (best < 0) return null;
+      out[best]++; left--;
+    }
+    return out;
+  }
+
+  /* The longest run of years in a row with no payment at all. A year that is
+     not complete, or a gap in the years, ends a run: it is not a dry year. */
+  function longestDry(hist) {
+    var best = null, cur = null;
+    hist.forEach(function (h) {
+      if (!h.complete || h.indemnity > 0) { cur = null; return; }
+      if (!cur || h.year !== cur.to + 1) cur = { from: h.year, to: h.year, n: 0 };
+      cur.to = h.year; cur.n++;
+      if (!best || cur.n > best.n) best = { from: cur.from, to: cur.to, n: cur.n };
+    });
+    return best;
+  }
+
   var api = {
+    evenSplit: evenSplit, longestDry: longestDry,
     CODES: CODES, LABELS: LABELS, LONG: LONG, COVERAGE: COVERAGE, N: N, MISSING: MISSING, BLOCK: BLOCK,
     gridFromLatLon: gridFromLatLon, gridRowCol: gridRowCol, gridBounds: gridBounds, shardKey: shardKey,
     dollars: dollars, cents: cents, decodeU16: decodeU16, openGrid: openGrid,

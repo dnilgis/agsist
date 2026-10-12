@@ -14,7 +14,16 @@ WHY THIS EXISTS
 
   It also writes the meta descriptions and the JSON-LD. The FAQPage JSON-LD is
   built from the visible FAQ on the page, after stamping, so the two cannot
-  drift. The data-deadlines attribute of the reminder ask is stamped too.
+  drift. The data-deadlines attribute of a reminder ask is stamped too, when
+  the page carries one (it does not yet: the subs worker only takes arcplc:
+  and rent: topics).
+
+  SOME OF THE PAGE IS ABOUT ONE CROP YEAR AND CANNOT BE STAMPED
+  "What changed for 2027" is prose about 2027's rules. It carries
+  data-prf-written-for="2027". When the crop year in data/prf/meta.json moves
+  on, this script stops and names that section, so the data cannot roll to
+  2028 under a paragraph that still describes 2027. Rewrite the section, set
+  the attribute to the new year, run again.
 
   Idempotent. A marker the page uses and this script does not know stops the
   run, and so does a marker this script knows and the page lacks.
@@ -164,8 +173,12 @@ def stamp(page, meta, chk):
         if not n:
             raise ValueError(f"marker {k} was not found twice-tagged (open and close)")
     page, n = re.subn(r'data-deadlines="[^"]*"', f'data-deadlines="{v["_sales_iso"]}"', page)
-    if n != 1:
-        raise ValueError(f"expected one data-deadlines attribute, found {n}")
+    if n > 1:
+        raise ValueError(f"expected at most one data-deadlines attribute, found {n}")
+    for yr in re.findall(r'data-prf-written-for="(\d{4})"', page):
+        if yr != v["crop_year"]:
+            raise ValueError(f"prf.html has a section written for crop year {yr} and the data is crop year {v['crop_year']}: "
+                             "rewrite that section, then set its data-prf-written-for")
     desc = html.escape(DESC.format(y0=v["y0"], cy=v["crop_year"], sales_short=v["sales_short"]), quote=True)
     if len(html.unescape(desc)) > 160:
         raise ValueError(f"description is {len(html.unescape(desc))} characters")
@@ -221,6 +234,14 @@ def selftest():
     ok('"name": "When?"' in out and '"text": "Closes Dec 1, 2026."' in out, "FAQ JSON-LD reads the stamped page")
     ok('"name": "Q2 & more"' in out and '"text": "A2 link."' in out, "FAQ text is the visible text")
     ok("Sign-up closes Dec 1." in out and "<title>PRF Insurance Calculator: Every Year Since 1951 | AGSIST</title>" in out, "head")
+    nodl = page.replace('<div data-deadlines="1999-01-01"></div>', "")
+    ok(stamp(nodl, meta, None).count("data-deadlines") == 0, "a page with no reminder ask stamps")
+    ok('data-prf-written-for="2027"' in stamp(page + '<h2 data-prf-written-for="2027">x</h2>', meta, None), "a section written for this crop year passes")
+    try:
+        stamp(page + '<h2 data-prf-written-for="2026">x</h2>', meta, None)
+        ok(False, "a section written for another crop year should stop the run")
+    except ValueError as e:
+        ok("written for crop year 2026" in str(e), str(e))
     for bad, needle in ((page + "<!--prf:mystery-->x<!--/prf:mystery-->", "does not fill"),
                         (page.replace("<!--prf:grids-->old<!--/prf:grids-->", ""), "lacks markers")):
         try:
