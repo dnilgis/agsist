@@ -132,6 +132,8 @@ QUESTION_OK = {
     "Is It Safe to Spray Right Now?",
     "Is it safe to sprayright now?",
     "Is it safe to spray right now?",
+    "Can I sprayright now?",
+    "Can I spray right now?",
     "What's priced in?",
 }
 
