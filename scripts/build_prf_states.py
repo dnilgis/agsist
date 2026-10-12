@@ -126,13 +126,17 @@ def page(st, meta, facts, sd, states, BOOT):
             {"@type": "ListItem", "position": 3, "name": name, "item": url}]},
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
-    card = json.load(open(os.path.join(ROOT, "data", "rate-card.json")))
-    tier = next(t for t in card["tiers"] if t["id"] == "page")
-    price = f'${tier["price_month"]}/mo &middot; first month free'   # the same label scripts/stamp_rates.py writes
+    # Sig, 2026-10-12: the PRF state slots are priced on request, prepaid, with the
+    # placement guaranteed to the end of the year. Kept out of the self-serve
+    # monthly flow (/sponsor-apply) and out of data/sponsor-slots.json on purpose:
+    # the link is not /sponsor-apply, so scripts/stamp_rates.py adds no price.
+    yr = meta["dates"]["sales_closing"][:4]
+    subj = f"PRF sponsor: {name}".replace(" ", "%20")
     ribbon = (f'<aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> '
               f'One sponsor for PRF in {e(name)}: your name on this page, seen by people pricing PRF here before the {sales} sales closing. '
-              f'<span class="ag-sponsor-price" data-rate="page">{price}</span> '
-              f'<a href="/sponsor-apply?slot=prf-{code.lower()}&amp;utm_source=prf-{slug(name)}&amp;utm_medium=slot">Claim this page &rarr;</a></aside>')
+              f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
+              f'<span class="ag-sponsor-price">Price on request</span> '
+              f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Ask about this page &rarr;</a></aside>')
     subrow = ", ".join(f"{int(round(sub[c] * 100))}% at {c}%" for c in sorted(sub, key=int))
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
