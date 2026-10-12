@@ -904,14 +904,13 @@ def render_quote_strip_html(strip):
         if abs(d) < 0.0001: direction = "flat"
         elif d > 0: direction = "up"
         else: direction = "down"
-        arrow = {"up": "\u25B2", "down": "\u25BC"}.get(direction, "")
         cls = {"up": "pos", "down": "neg"}.get(direction, "flat")
-        cents = abs(d) * 100
-        cents_str = ""
-        if cents >= 0.005:
-            cents_str = f"{cents:.2f}".rstrip("0").rstrip(".") + "¢"
-        pct_str = "unch" if direction == "flat" else f"{arrow} {abs(pct):.1f}%"
-        price_str = f"${last:.2f}"
+        # The site's one grain formatter (pricefmt, twin of AG.px): the price
+        # to the quarter cent ($4.79¾, not $4.80), the move in cents first
+        # with its sign, then percent. The chip is small mono type, where a
+        # ¾ glyph reads as %, so it takes the slash style. Was "▲ 0.3% 1.25¢".
+        chg_str = "unch" if direction == "flat" else pricefmt.change(d * 100, pct, style="slash")[0]
+        price_str = pricefmt.price(last * 100)
         aria = (f"{q['name']} {q['contract']}, {price_str}, "
                 + ("unchanged" if direction == "flat" else f"{direction} {abs(pct):.1f}%")
                 + " vs the prior close")
@@ -920,15 +919,13 @@ def render_quote_strip_html(strip):
             f'<div class="dv3-quote-top"><span class="dv3-quote-name">{html_esc(q["name"])}</span>'
             f'<span class="dv3-quote-win">{html_esc(q["contract"])}</span></div>'
             f'<span class="dv3-quote-price">{price_str}</span>'
-            f'<span class="dv3-quote-chg {cls}">{pct_str}'
-            + (f'<span class="cents">{cents_str}</span>' if cents_str else "")
-            + '</span></div>')
+            f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span></div>')
     bits = []
     asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
     if asof: bits.append(f"Quotes as of {asof}")
     vs = _ct_weekday(strip.get("vs_session")) if strip.get("vs_session") else ""
     if vs: bits.append(f"change vs {vs} close")
-    bits.append("CME futures, delayed")
+    bits.append("Yahoo Finance, delayed, not CME settlements")
     asof_html = f'<div class="dv3-quote-asof">{html_esc(" · ".join(bits))}</div>'
     return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
 
@@ -3880,7 +3877,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=18" defer></script>
 <script>
 (function(){{
   var permalink='{js_permalink}';
