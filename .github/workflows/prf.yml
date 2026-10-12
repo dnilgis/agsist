@@ -18,7 +18,7 @@ name: prf
 # Weekly, because RMA publishes an interval's final index roughly once a month
 # and on no fixed day. Off the hour (rule 27).
 #
-# The run log is also pushed to the `probe-prf` branch as prf-run.log, because
+# The run log is also pushed to the `prf-log` branch as prf-run.log, because
 # run logs cannot be read from the sandbox this is maintained in.
 on:
   schedule:
@@ -66,10 +66,14 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Pillow, for the share image
+        run: pip install pillow==11.0.0
+
       - name: The arithmetic and the fetcher, offline, before anything is asked
         run: |
           python scripts/fetch_prf.py --selftest
           python scripts/stamp_prf.py --selftest
+          node scripts/prf_facts.mjs --selftest
           node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs
 
       # A FETCH IS 13,400 CALLS TO RMA AND MUST NOT BE THROWN AWAY BY A LATER STEP.
@@ -123,12 +127,18 @@ jobs:
           N="${{ github.event.inputs.check_random }}"
           node scripts/check_prf_rma.mjs --random "${N:-8}" --detail prf-check-detail.json 2>&1 | tee -a prf-run.log
 
-      # The dates, counts, subsidy rates and the line about this check that
-      # prf.html prints come from the files above (scripts/stamp_prf.py).
-      - name: Stamp the page
+      # Everything the pages print comes from the files above: the national and
+      # state figures (prf_facts.mjs), the dates, counts and check line on /prf
+      # (stamp_prf.py), the 48 state pages and the share image.
+      - name: Figures, page, state pages, share image
         if: github.event.inputs.limit == ''
         run: |
-          if [ -f prf.html ]; then python scripts/stamp_prf.py; else echo "no prf.html yet"; fi
+          set -o pipefail
+          node scripts/prf_facts.mjs 2>&1 | tee -a prf-run.log
+          python scripts/stamp_prf.py 2>&1 | tee -a prf-run.log
+          python scripts/build_prf_states.py 2>&1 | tee -a prf-run.log
+          python scripts/build_prf_card.py 2>&1 | tee -a prf-run.log
+          node scripts/prf_facts.mjs --check && python scripts/stamp_prf.py --check && python scripts/build_prf_states.py --check
 
       - name: Site budget
         if: github.event.inputs.limit == ''
@@ -141,8 +151,18 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/prf
-          if [ -f prf.html ]; then git add prf.html; fi
+          # when USDA's numbers moved, the PRF pages' sitemap dates move with them
+          if [ -n "$(git status --porcelain data/prf/g data/prf/y data/prf/s)" ]; then
+            python - <<'PY'
+          import re, datetime
+          day = datetime.date.today().isoformat()
+          s = open('sitemap.xml').read()
+          s = re.sub(r'(<loc>https://agsist\.com/prf(?:/[a-z-]+)?</loc><lastmod>)[0-9-]+(</lastmod>)', lambda m: m.group(1) + day + m.group(2), s)
+          open('sitemap.xml', 'w').write(s)
+          PY
+            echo "changed=1" >> "$GITHUB_ENV"
+          fi
+          git add -A data/prf prf.html prf img/og/prf.jpg sitemap.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           C=$(python - <<'PY'
           import json
@@ -163,7 +183,16 @@ jobs:
           done
           echo "push failed after 5 attempts"; exit 1
 
-      - name: Publish the run log to the probe-prf branch
+      - name: Tell search engines the PRF pages changed
+        if: env.changed == '1' && github.event.inputs.limit == ''
+        run: |
+          python - <<'PY' > urls.txt
+          import re
+          print("\n".join(re.findall(r'<loc>(https://agsist\.com/prf(?:/[a-z-]+)?)</loc>', open('sitemap.xml').read())))
+          PY
+          python scripts/indexnow_submit.py --urls $(cat urls.txt) || echo "IndexNow ping failed - harmless"
+
+      - name: Publish the run log to the prf-log branch
         if: always()
         run: |
           mkdir -p /tmp/prf-log && cd /tmp/prf-log
@@ -173,9 +202,9 @@ jobs:
           cp "$GITHUB_WORKSPACE/prf-check-detail.json" . 2>/dev/null || true
           if [ -d "$GITHUB_WORKSPACE/data/prf-trial" ]; then cp -r "$GITHUB_WORKSPACE/data/prf-trial" .; fi
           echo "run ${{ github.run_id }} ${{ job.status }} $(date -u +%Y-%m-%dT%H:%M:%SZ)" > status.txt
-          git init -q -b probe-prf
+          git init -q -b prf-log
           git config user.name "agsist-probe"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git commit -q -m "prf run log $(date -u +%Y-%m-%dT%H:%M:%SZ) run ${{ github.run_id }} (${{ job.status }})"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" probe-prf
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" prf-log

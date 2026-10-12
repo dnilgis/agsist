@@ -9,7 +9,7 @@
      "tag": "new",
      "page": "/prf",
      "name": "PRF rainfall insurance calculator",
-     "text": "Pick your grid, acres and two-month intervals for Pasture, Rangeland, Forage insurance and see the premium, USDA's share of it, and what the policy would have paid in each year from 1951 to 2025 at 2027 rates. It covers all 13,414 grids in the 48 contiguous states, applies your county's interval limits, compares two setups side by side, and shows the grids next door. The arithmetic is checked against USDA's own tool on every data refresh."
+     "text": "Pick your grid, acres and two-month intervals for Pasture, Rangeland, Forage insurance and see the premium, USDA's share of it, and what the policy would have paid in each year from 1951 to 2025 at 2027 rates. It covers all 13,414 grids in the 48 contiguous states, works out which county a point is in, applies your county's interval limits, shows each interval's normal precipitation in inches, compares two setups and all five coverage levels, and prints a one-page sheet. Each state has its own page with every county's USDA values, at /prf/<state>."
     }
    ]
   },
@@ -55,7 +55,7 @@
      "tag": "fixed",
      "page": "/",
      "name": "Open harvest bids were being hidden",
-     "text": "A bid good for a delivery window that started before this month was treated as expired. On October 1 the homepage told a reader at Abbyville, Kansas there were no bids within 50 miles while the co-op in town was posting corn at $4.71 for August through November delivery. Open windows now show, labelled with the whole window (\"Aug\u2013Nov 2026\")."
+     "text": "A bid good for a delivery window that started before this month was treated as expired. On October 1 the homepage told a reader at Abbyville, Kansas there were no bids within 50 miles while the co-op in town was posting corn at $4.71 for August through November delivery. Open windows now show, labelled with the whole window (\"Aug–Nov 2026\")."
     },
     {
      "tag": "fixed",
@@ -91,7 +91,7 @@
      "tag": "fixed",
      "page": "/cash-bids",
      "name": "A flat basis reads \"even\"",
-     "text": "A bid posted at the futures price showed \"+0\u00a2\". It now reads \"even\", on the homepage card and on Cash Bids."
+     "text": "A bid posted at the futures price showed \"+0¢\". It now reads \"even\", on the homepage card and on Cash Bids."
     },
     {
      "tag": "fixed",
@@ -108,7 +108,7 @@
      "tag": "new",
      "page": "/whats-priced-in",
      "name": "September Grain Stocks graded against the actual print",
-     "text": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843\u20132.005B), a real miss versus what the trade had priced in. Soybean stocks printed 0.315B, a mild bullish surprise inside the trade range. Wheat stocks printed 1.846B; no trade estimate was ever on file for it, so it is shown ungraded rather than scored against a guess."
+     "text": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843–2.005B), a real miss versus what the trade had priced in. Soybean stocks printed 0.315B, a mild bullish surprise inside the trade range. Wheat stocks printed 1.846B; no trade estimate was ever on file for it, so it is shown ungraded rather than scored against a guess."
     },
     {
      "tag": "new",
@@ -302,7 +302,7 @@
      "tag": "improved",
      "page": "/corn-futures-prices",
      "name": "Your nearest cash bid is now read minutes ago, not yesterday",
-     "text": "The cash bid card on the corn, soybean and wheat pages read a file that a job rewrote about twice an hour. When that job stopped, the card kept showing the last thing it had written, and it stopped for a day. It now reads the elevator boards AGSIST polls every ten minutes, directly. A reader at Chetek, Wisconsin was being shown a bid in Rochester, Indiana labelled \u201cnot near you\u201d; the same reader now gets an elevator 52 miles away read twelve minutes ago. Where there is no elevator within seventy-five miles, outside the twenty-nine states we read, the card falls back to the licensed feed exactly as before, and says which one it used."
+     "text": "The cash bid card on the corn, soybean and wheat pages read a file that a job rewrote about twice an hour. When that job stopped, the card kept showing the last thing it had written, and it stopped for a day. It now reads the elevator boards AGSIST polls every ten minutes, directly. A reader at Chetek, Wisconsin was being shown a bid in Rochester, Indiana labelled “not near you”; the same reader now gets an elevator 52 miles away read twelve minutes ago. Where there is no elevator within seventy-five miles, outside the twenty-nine states we read, the card falls back to the licensed feed exactly as before, and says which one it used."
     },
     {
      "tag": "fixed",
@@ -313,7 +313,7 @@
     {
      "tag": "fixed",
      "page": "/news",
-     "name": "\u201cBiggest corn net long in a year\u201d for a one-contract week",
+     "name": "“Biggest corn net long in a year” for a one-contract week",
      "text": "Managed money's corn net long went from +414,459 contracts to +414,460 and we published it as the biggest position in a year. That is one contract in 414,460, and it was true only because the yardstick we measured against included the week we were measuring. An extreme now has to be reached by a week that actually moved, measured against the position's own 52-week range. The item has been taken off the page."
     },
     {
@@ -332,7 +332,7 @@
      "tag": "fixed",
      "page": "/#f-kalshi",
      "name": "The Fed card said the opposite of the contract",
-     "text": "\u201cWill no Fed rate cuts happen in 2026?\u201d was trading at 96 cents and this page printed \u201c96% odds of a rate cut\u201d beside it. It is a contract that pays if there is NO cut, so the sentence was backwards, and the same fault turned \u201cWill 1 Fed rate cut happen in 2026?\u201d into another reading of the same thing. Every one of these now reads off the question it belongs to. This was ours."
+     "text": "“Will no Fed rate cuts happen in 2026?” was trading at 96 cents and this page printed “96% odds of a rate cut” beside it. It is a contract that pays if there is NO cut, so the sentence was backwards, and the same fault turned “Will 1 Fed rate cut happen in 2026?” into another reading of the same thing. Every one of these now reads off the question it belongs to. This was ours."
     },
     {
      "tag": "improved",
@@ -350,7 +350,7 @@
      "tag": "improved",
      "page": "/whats-priced-in",
      "name": "Closest of who filed is not the same as beating the market",
-     "text": "Both \u201cclosest\u201d badges this board had ever awarded sat on forecasts that landed further from the USDA print than the free trade consensus in the column beside them. A badge now only says a forecast beat the trade when it did; the rest say, in words, that it was the closest of those who filed and still wider than the consensus. Every average now carries the spread of the calls behind it."
+     "text": "Both “closest” badges this board had ever awarded sat on forecasts that landed further from the USDA print than the free trade consensus in the column beside them. A badge now only says a forecast beat the trade when it did; the rest say, in words, that it was the closest of those who filed and still wider than the consensus. Every average now carries the spread of the calls behind it."
     },
     {
      "tag": "new",
@@ -380,13 +380,13 @@
      "tag": "fixed",
      "page": "/conditions-yield",
      "name": "What the accuracy number is measuring",
-     "text": "The page said the model explained a share \u201cof final yield\u201d. It does not. It explains that share of how Iowa's final yield differs from its trend, which is a much narrower claim and the one the number actually supports. The wording is corrected everywhere it appeared on the page."
+     "text": "The page said the model explained a share “of final yield”. It does not. It explains that share of how Iowa's final yield differs from its trend, which is a much narrower claim and the one the number actually supports. The wording is corrected everywhere it appeared on the page."
     },
     {
      "tag": "fixed",
      "page": "/",
      "name": "The prediction-market panel was empty every day",
-     "text": "The homepage panel said \u201cNo ag-relevant markets found today\u201d while the file behind it held nine contracts and the full page showed them. The panel was looking for the price under a field name the file stopped using. It reads them again."
+     "text": "The homepage panel said “No ag-relevant markets found today” while the file behind it held nine contracts and the full page showed them. The panel was looking for the price under a field name the file stopped using. It reads them again."
     },
     {
      "tag": "improved",
@@ -398,7 +398,7 @@
      "tag": "fixed",
      "page": "/",
      "name": "A price cut in half on a phone",
-     "text": "The 52-week low and high under each price ran out of room on a phone and broke across two lines mid-number: soybeans read \u201c$10.4 / 8\u201d and corn ran the low into the caption as \u201c$4.2552-Wk Range\u201d. The caption is gone on a narrow screen; the two figures sit at either end of the range bar, and neither number breaks now."
+     "text": "The 52-week low and high under each price ran out of room on a phone and broke across two lines mid-number: soybeans read “$10.4 / 8” and corn ran the low into the caption as “$4.2552-Wk Range”. The caption is gone on a narrow screen; the two figures sit at either end of the range bar, and neither number breaks now."
     },
     {
      "tag": "fixed",
@@ -410,7 +410,7 @@
      "tag": "fixed",
      "page": "/",
      "name": "The same headline twice on two days",
-     "text": "The wire carried \u201cCorn closed at a 52-week high \u2014 $5.43 a bushel, taking out the $5.39 top of its range\u201d on two consecutive days, word for word, and the same doubling for soybeans. Each was true the day it was written, but the second one could not be: by then the top of the range was $5.43. A headline already on the wire is not posted again."
+     "text": "The wire carried “Corn closed at a 52-week high — $5.43 a bushel, taking out the $5.39 top of its range” on two consecutive days, word for word, and the same doubling for soybeans. Each was true the day it was written, but the second one could not be: by then the top of the range was $5.43. A headline already on the wire is not posted again."
     },
     {
      "tag": "improved",
@@ -474,7 +474,7 @@
      "tag": "new",
      "page": "/cash-bids",
      "name": "Bids read straight from the elevator",
-     "text": "AGSIST now reads a growing number of elevators' own posted bid boards directly, rather than only through a licensed feed. Where we do, the card says \u201cdirect from the elevator\u201d and that board is the one you see. It is the elevator's own posting, so it wins over any copy of it. Everything else is unchanged, and the page still shows every elevator it showed before."
+     "text": "AGSIST now reads a growing number of elevators' own posted bid boards directly, rather than only through a licensed feed. Where we do, the card says “direct from the elevator” and that board is the one you see. It is the elevator's own posting, so it wins over any copy of it. Everything else is unchanged, and the page still shows every elevator it showed before."
     },
     {
      "tag": "new",
@@ -486,7 +486,7 @@
      "tag": "new",
      "page": "/cash-bids",
      "name": "Market session clock",
-     "text": "The badge beside the results now says which CBOT session is running and counts down to the next one: the overnight session, the 8:30 open, the 1:20 close, and the Sunday evening reopen. It previously only knew about the day session, so it read \u201cmarket closed\u201d through every overnight."
+     "text": "The badge beside the results now says which CBOT session is running and counts down to the next one: the overnight session, the 8:30 open, the 1:20 close, and the Sunday evening reopen. It previously only knew about the day session, so it read “market closed” through every overnight."
     },
     {
      "tag": "fixed",
@@ -674,7 +674,7 @@
     {
      "tag": "fixed",
      "page": "/usda-quick-stats",
-     "name": "State crop numbers were calling a standing crop \u201cfinal\u201d",
+     "name": "State crop numbers were calling a standing crop “final”",
      "text": "On Friday our monthly USDA pull picked up the August 12 Crop Production forecast and published it labeled \"2026 crop year -- USDA NASS final.\" Iowa corn read 216 bushels for a crop still standing in the field. Nine states -- Arizona, California, Florida, Montana, New Mexico, Oregon, Utah, West Virginia and Wyoming -- dropped off the page entirely, because USDA's August forecast only covers principal states. Every state now carries its own honest label: the forecast states say \"August forecast,\" and the states USDA does not forecast keep their real final with the year it belongs to. A survey estimate is a good number to have. Calling it final is a lie, and it was ours."
     },
     {
@@ -1060,7 +1060,7 @@
      "tag": "improved",
      "page": "/spray",
      "name": "Spray Conditions and Urea Risk",
-     "text": "Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85\u00b0F, no application at 95\u00b0F), the AMS prohibition, and the R1 cutoff: checked against the labels, not memory."
+     "text": "Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85°F, no application at 95°F), the AMS prohibition, and the R1 cutoff: checked against the labels, not memory."
     },
     {
      "tag": "improved",

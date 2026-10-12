@@ -11,7 +11,7 @@ WHY THIS EXISTS
   arithmetic needs is public; this mirrors it, unchanged, so the page can do the
   arithmetic in the reader's hand. Nothing here is estimated or modelled.
 
-THE TWO SOURCES (both opened by scripts/probe_prf.py on 2026-10-12)
+THE TWO SOURCES (both opened by a probe on 2026-10-12, since removed)
   1. The Actuarial Data Master, one zip per crop year, about 1.2 GB:
        https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/<YYYY>/<YYYY>_ADM_YTD.zip
      Pipe-delimited, one header line per member. PRF is commodity 0088, plan 13.
@@ -646,6 +646,32 @@ def build(adm, out, full, fetch=None, limit=None, now_year=None, workers=WORKERS
             if int(gid) not in open_years and int(gid) in failed:
                 open_years[int(gid)] = rec
 
+    # A FINAL INDEX DOES NOT UN-PUBLISH. RMA's service answered 200 with empty
+    # rows on a bad day in testing, and the old code then wrote every open year
+    # away and committed it (audit 2026-10-12). Within one crop year a value
+    # already published is kept when the new answer has none for it.
+    same_year = bool(old_meta) and old_meta.get("crop_year") == adm["crop_year"] and not limit
+    kept_values = 0
+    if same_year:
+        for doc in old_y.values():
+            for gid, rec in doc.get("g", {}).items():
+                g = int(gid)
+                if g not in grids:
+                    continue
+                cur = open_years.setdefault(g, {})
+                for y, vals in rec.items():
+                    new = cur.get(y)
+                    if new is None:
+                        cur[y] = list(vals)
+                        kept_values += sum(v is not None for v in vals)
+                        continue
+                    for i, v in enumerate(vals):
+                        if v is not None and new[i] is None:
+                            new[i] = v
+                            kept_values += 1
+        if kept_values:
+            log(f"kept {kept_values} published open-year values the service did not return this run")
+
     g_docs, y_docs = collections.defaultdict(dict), collections.defaultdict(dict)
     no_history = []
     for g in grids:
@@ -689,6 +715,23 @@ def build(adm, out, full, fetch=None, limit=None, now_year=None, workers=WORKERS
                 if v is not None:
                     p[i] += 1
     built = len(grids) - len(no_history)
+    # FEWER THAN LAST TIME STOPS THE RUN. Within one crop year the grids, the
+    # counties and the open-year values only grow; a drop means USDA or the
+    # service gave a partial answer, and the site keeps what it had.
+    if same_year:
+        oc = old_meta.get("counts", {})
+        drops = []
+        if built < oc.get("grids", 0):
+            drops.append(f"grids {oc.get('grids')} -> {built}")
+        if len(adm["county"]) < oc.get("counties", 0):
+            drops.append(f"counties {oc.get('counties')} -> {len(adm['county'])}")
+        for y, p_old in (old_meta.get("years", {}).get("open") or {}).items():
+            p_new = progress.get(y, [0] * 11)
+            for i, (a_, b_) in enumerate(zip(p_old, p_new)):
+                if b_ < a_:
+                    drops.append(f"{y} interval {CODES[i]} values {a_} -> {b_}")
+        if drops:
+            raise RuntimeError("smaller than the committed build, nothing should be written: " + "; ".join(drops[:6]))
     meta = {
         "v": V, "crop_year": adm["crop_year"],
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -1017,17 +1060,33 @@ def main():
     if not path:
         path = os.path.join(tempfile.gettempdir(), "prf_adm.zip")
         now = datetime.now(timezone.utc).year
+        # Next year's ADM appears in spring with no PRF in it until the August
+        # filing (audit 2026-10-12): take the newest zip that has PRF offers.
+        adm = None
         for y in ([a.year] if a.year else [now + 1, now]):
             log(f"ADM for crop year {y}")
+            if os.path.exists(path):
+                os.remove(path)
             lm = download_adm(y, path)
-            if lm is not None or os.path.exists(path) and os.path.getsize(path) > 1e6:
-                break
-        else:
-            raise RuntimeError("no ADM zip found for this year or next")
+            if lm is None and not (os.path.exists(path) and os.path.getsize(path) > 1e6):
+                continue
+            t0 = time.time()
+            try:
+                adm = read_adm(path)
+            except RuntimeError as e:
+                if "no PRF offers" in str(e) and not a.year:
+                    log(f"  crop year {y}: {e}; trying the year before")
+                    continue
+                raise
+            adm["last_modified"] = lm
+            break
+        if adm is None:
+            raise RuntimeError("no ADM zip with PRF offers found for this year or next")
+    else:
+        t0 = time.time()
+        adm = read_adm(path)
+        adm["last_modified"] = lm
     log("reading the ADM")
-    t0 = time.time()
-    adm = read_adm(path)
-    adm["last_modified"] = lm
     log(f"  read in {time.time() - t0:.0f}s: crop year {adm['crop_year']}, checks {adm['checks']}")
     build(adm, out, full=a.full, limit=a.limit or None, workers=a.workers)
     return 0

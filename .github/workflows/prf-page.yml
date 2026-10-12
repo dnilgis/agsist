@@ -16,7 +16,12 @@ on:
       - 'components/prf-math.js'
       - 'components/prf.css'
       - 'scripts/stamp_prf.py'
+      - 'scripts/prf_facts.mjs'
+      - 'scripts/build_prf_states.py'
+      - 'scripts/make_prf_html.py'
+      - 'prf/**'
       - 'data/prf/meta.json'
+      - 'data/prf/facts.json'
       - 'data/prf/check.json'
       - 'test/prf-*.mjs'
       - '.github/workflows/prf-page.yml'
@@ -42,7 +47,10 @@ jobs:
       - name: The page is what the stamper writes
         run: |
           python scripts/stamp_prf.py --selftest
+          node scripts/prf_facts.mjs --selftest
+          node scripts/prf_facts.mjs --check
           python scripts/stamp_prf.py --check
+          python scripts/build_prf_states.py --check
       - name: Scripts parse
         run: |
           node --check components/prf.js

@@ -316,7 +316,12 @@ const out = {
                                acres: r.acres, factor: r.pf, share: r.share, year: r.year, split: r.split,
                                reached: r.reached, agrees: r.reached ? r.agrees : null, differences: r.differences || [] })),
 };
-writeFileSync(DIR + "check.json", JSON.stringify(out));
+/* RMA not answering is not news about the data. The page says "last checked on <date>", so when nothing
+   was reached and an earlier check for the same crop year exists, that file stands (audit 2026-10-12). */
+let prior = null;
+try { prior = JSON.parse(readFileSync(DIR + "check.json", "utf8")); } catch (e) {}
+if (!out.reached && prior && prior.reached && prior.crop_year === out.crop_year) console.log(`RMA did not answer: kept the check of ${prior.checked} (${prior.agreed} of ${prior.reached})`);
+else writeFileSync(DIR + "check.json", JSON.stringify(out));
 if (DETAIL) writeFileSync(ROOT + DETAIL, JSON.stringify({ about: "RMA's answers and the inputs AGSIST priced them from, " + out.checked, crop_year: meta.crop_year, cases: detail }));
 console.log(`\nasked ${out.asked}, reached ${out.reached}, agreed ${out.agreed}, differ ${bad.length}`);
 if (!results.length) { console.log("no cases could be built from the data: that is a failure of this check"); process.exit(1); }
