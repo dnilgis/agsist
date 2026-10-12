@@ -130,6 +130,20 @@ def merge_counties(rows, n_yrs):
     return out
 
 
+MAP_PAGE = "hail-map.html"
+
+
+def asset_url(path):
+    """path with the ?v= that hail-map.html carries for it, so generated pages
+    pick up a new stylesheet or loader the same day the top pages do."""
+    try:
+        with open(MAP_PAGE, encoding="utf-8") as f:
+            m = re.search(re.escape(path) + r"\?v=(\d+)", f.read())
+        return path + "?v=" + m.group(1) if m else path
+    except OSError:
+        return path
+
+
 def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     n_yrs = len(years)
     span = span or n_yrs
@@ -170,7 +184,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
          " with most activity in the spring-through-midsummer window. Any single year can break the pattern."),
         ("How much of " + name + "'s hail is damaging?",
          "On this page, damaging means reported stones of " + str(dmg_in) +
-         "\u2033 or larger, the size that reliably dents roofs and vehicles and strips crops. The per-county damaging share is in the table; statewide, hail of any size totaled " +
+         "\u2033 or larger, the National Weather Service severe size, which dents roofs and vehicles. Crops can be hurt by smaller hail, especially with wind, and the loss depends on growth stage. The per-county severe share is in the table; statewide, hail of any size totaled " +
          f"{total:,}" + " reports over " + str(n_yrs) + " years."),
     ]
     faq_ld = ",".join(
@@ -201,7 +215,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     if peak_full:
         figs.append("Reported hail in " + name + " peaks in " + peak_full + ".")
     if total:
-        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + str(dmg_in) + "\u2033 or larger, the size that damages roofs, vehicles, and crops.")
+        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + str(dmg_in) + "\u2033 or larger, the National Weather Service severe size.")
     key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures: " + esc(name) + " hail at a glance</h2><ul>"
         + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
         "<p class=\"hs-cite\">To cite these figures: <em>AGSIST National Hail Map, "
@@ -214,7 +228,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         "<a href=\"mailto:sig@farmers1st.com\">sig@farmers1st.com</a>.</p>\n")
 
     dataset_ld = ("{\"@type\":\"Dataset\",\"name\":\"" + esc(name) + " hail reports by county\","
-        "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and damaging-hail share.\","
+        "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and severe-hail share.\","
         "\"url\":\"" + canonical + "\",\"temporalCoverage\":\"" + str(years[0]) + "/" + str(years[-1]) + "\","
         "\"spatialCoverage\":\"" + esc(name) + ", United States\","
         "\"isBasedOn\":\"NWS Local Storm Reports via Iowa Environmental Mesonet\","
@@ -224,7 +238,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>Hail Map " + esc(name) + ": Worst Hail Counties &amp; Hail Season | AGSIST</title>\n"
-        "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and damaging-hail share, with an interactive map and address lookup.\">\n"
+        "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and severe-hail share, with an interactive map and address lookup.\">\n"
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
         "<meta property=\"og:title\" content=\"Hail Map " + esc(name) + ": Worst Hail Counties | AGSIST\">\n"
         "<meta property=\"og:description\" content=\"" + str(n_yrs) + " years of hail reports across " + esc(name) + ", county by county.\">\n"
@@ -238,7 +252,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         "<link rel=\"icon\" type=\"image/x-icon\" href=\"/img/favicon.ico\">\n"
         "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/img/favicon-32.png\">\n"
         "<link rel=\"apple-touch-icon\" href=\"/img/apple-touch-icon.png\">\n"
-        "<link rel=\"stylesheet\" href=\"/components/styles.css\">\n"
+        "<link rel=\"stylesheet\" href=\"" + asset_url("/components/styles.css") + "\">\n"
         "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@graph\":["
         "{\"@type\":\"WebPage\",\"@id\":\"" + canonical + "#webpage\",\"url\":\"" + canonical + "\","
         "\"name\":\"Hail Map " + esc(name) + ": Worst Hail Counties\",\"dateModified\":\"" + today + "\","
@@ -281,7 +295,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
         "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + str(dmg_in) + "\u2033</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table></div>\n"
-        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + str(dmg_in) + "\u2033 is the share of its reports with stones " + str(dmg_in) + "\u2033 or larger, the size this page counts as damaging.</p>\n"
+        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + str(dmg_in) + "\u2033 is the share of its reports with stones " + str(dmg_in) + "\u2033 or larger, the National Weather Service severe size. Crops can be hurt by smaller hail; the loss depends on growth stage.</p>\n"
         + key_figs
         + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
@@ -290,7 +304,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         + b2b +
         "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. Compiled by Sigurd Lindquist \u00b7 AGSIST.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
-        "<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
+        "<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
 
 
 def main():

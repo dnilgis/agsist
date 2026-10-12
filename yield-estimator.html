@@ -100,7 +100,7 @@
 .field-group.span-all{grid-column:1/-1}
 .field-group{display:flex;flex-direction:column;gap:.28rem;}
 .field-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
-.field-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;outline:none;box-sizing:border-box;}
+.field-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;min-height:44px;outline:none;box-sizing:border-box;}
 .field-input:focus{border-color:var(--gold);}
 .field-input.wide{width:100%;max-width:200px;}
 .field-note{font-size:.88rem;line-height:1.4;color:var(--text-muted);margin-top:.1rem;}
@@ -133,6 +133,8 @@
 
 .ye-disclaimer{font-size:0.763rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important;} }
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/yield-estimator#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Yield Estimator","item":"https://agsist.com/yield-estimator"}]}]}</script>
 </head>
@@ -276,6 +278,7 @@
             <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State). Some extension guides use a lower figure for modern hybrids, so the yield range shows what changes if a bushel holds 65,000 to 95,000 kernels instead of 90,000. That range is not the field error. Valid from the milk (R3) stage on. Test weight is not part of the formula. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
           </div>
         </details>
+        <p class="method-note"><b>Method:</b> ears times kernel rows times kernels per row, divided by 90, for a 1/1000-acre sample; the range sweeps 65,000 to 95,000 kernels per bushel; field error is about &plusmn;20 bu/ac &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
       </div>
 
       <div class="ye-method">
@@ -360,7 +363,7 @@
           <div class="result-item">
             <div class="result-label">Yield Range</div>
             <div class="result-value dim" id="b-range-val">-</div>
-            <div class="result-sub">2,500&ndash;3,500 seeds/lb</div>
+            <div class="result-sub">seeds/lb &plusmn;500</div>
           </div>
         </div>
         <p class="ye-plain" id="b-plain" aria-live="polite"></p>
@@ -377,6 +380,7 @@
             <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,500&ndash;3,500 (3,000 average) &middot; Plant count &times; 1000 = plants/acre</span>
           </div>
         </details>
+        <p class="method-note"><b>Method:</b> plants per acre times pods per plant times seeds per pod, divided by seeds per pound times 60; the range moves seed size 500 per pound either side of your entry &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State for soybean accuracy (&plusmn;25% or worse before R6) &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
       </div>
     </div>
   </div>
@@ -410,8 +414,7 @@
   </div>
 
   <div class="ye-source">
-    Method: Yield Component Method &middot; Referenced by
-    University of Wisconsin-Extension, University of Minnesota Extension, and Iowa State University Extension &middot;
+    Method: Yield Component Method &middot; Sources: Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State (soybean accuracy) &middot;
     <a href="/">&#8592; AGSIST Dashboard</a> &middot;
     <a href="/fast-facts">Fast Facts</a> &middot;
     <a href="/breakeven">Break-Even Calculator</a> &middot;
@@ -573,10 +576,12 @@ function calcBean(){
   s('b-yield-val',yield_bu.toFixed(0));
   s('b-pop-val',(pop/1000).toFixed(0)+'k');
   s('b-spp-val',spp.toFixed(0));
-  // Sweep the seed-size range extension teaches (2,500 large seed - 3,500 stressed)
-  // rather than a symmetric percentage.
-  s('b-range-val',Math.round((pop*spp)/(3500*60))+'–'+Math.round((pop*spp)/(2500*60)));
-  s('b-plain','About '+yield_bu.toFixed(0)+' bushels per acre at '+Math.round(slb).toLocaleString('en-US')+' seeds per pound. Seed size from 2,500 to 3,500 per pound moves it to '+Math.round((pop*spp)/(3500*60))+' to '+Math.round((pop*spp)/(2500*60))+'.');
+  // Sweep seed size 500 seeds/lb either side of the entry, so the headline always sits
+  // inside the range (a fixed 2,500-3,500 sweep left an entry of 2,300 outside it).
+  var slbLo=Math.max(1000,slb-500),slbHi=slb+500;
+  var yLo=Math.round((pop*spp)/(slbHi*60)),yHi=Math.round((pop*spp)/(slbLo*60));
+  s('b-range-val',yLo+'–'+yHi);
+  s('b-plain','About '+yield_bu.toFixed(0)+' bushels per acre at '+Math.round(slb).toLocaleString('en-US')+' seeds per pound. Seed size from '+Math.round(slbLo).toLocaleString('en-US')+' to '+Math.round(slbHi).toLocaleString('en-US')+' per pound moves it to '+yLo+' to '+yHi+'.');
   activeCrop='bean';
 }
 ['b-row-width','b-plant-count','b-pods-plant','b-seeds-pod','b-seeds-lb'].forEach(function(id){
