@@ -674,7 +674,12 @@ def lines_svg(seriesets, label, unit_fmt, w=640, h=170):
         return ""
     x0, x1 = min(p[0] for p in allp), max(p[0] for p in allp)
     vmax = max(p[1] for p in allp)
-    L, R, T, B = 34, 70, 14, 22
+    # The end label ("$216 irrigated") sits right of the last point. A fixed
+    # 70-unit margin cut "irrigated" off at the frame edge; size the margin to
+    # the longest end label instead (10px bold text runs about 6.2 units a
+    # character), so a dry-only chart keeps its width.
+    ends = ["%s %s" % (unit_fmt(sd["d"][max(sd["d"])]), sd["n"]) for sd in seriesets if sd["d"]]
+    L, R, T, B = 34, max(40, int(max(len(e) for e in ends) * 6.2) + 12), 14, 22
     top = vmax * 1.1
     X = lambda y: L + (0 if x1 == x0 else (y - x0) / (x1 - x0)) * (w - L - R)
     Y = lambda v: T + (1 - v / top) * (h - T - B)
