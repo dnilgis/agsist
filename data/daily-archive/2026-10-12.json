@@ -1,6 +1,6 @@
 {
   "headline": "Corn steadies near $4.81 after Friday's WASDE hit",
-  "lead": "Corn is at $4.81 overnight, up a quarter cent from Friday's $4.79¾ settle, a small bounce after Friday's near 4% drop on USDA's yield number. Soybean meal gained 2.2% to $368.70 while beans slipped to $12.83. Monday's quiet bounce doesn't undo Friday's loss on unpriced corn.",
+  "lead": "Corn is at $4.81 overnight, up 1¼¢ from Friday's $4.79¾ settle, a small bounce after Friday's near 4% drop on USDA's yield number. Soybean meal gained 2.2% to $368.70 while beans slipped to $12.83. Monday's quiet bounce doesn't undo Friday's loss on unpriced corn.",
   "teaser": "Corn holds steady after Friday's WASDE drop; meal leads the soy complex higher.",
   "one_number": {
     "value": "$634,974",
@@ -10,7 +10,7 @@
   "sections": [
     {
       "title": "Corn finds its feet after WASDE",
-      "body": "- Corn is at **$4.81** overnight, up a quarter cent, a day after Friday's near 4% drop on USDA's yield number.\n- Soybeans slipped seven cents to $12.83 even with a record crop already priced in from Friday.\n- Soybean meal gained 2.2% to $368.70, the biggest move in the grain complex today.",
+      "body": "- Corn is at **$4.81** overnight, up 1¼¢, a day after Friday's near 4% drop on USDA's yield number.\n- Soybeans slipped 9¼¢ to $12.83 even with a record crop already priced in from Friday.\n- Soybean meal gained 2.2% to $368.70, the biggest move in the grain complex today.",
       "so_what": "Meal is doing the work in soy, not beans themselves.",
       "conviction_level": "low",
       "overnight_surprise": true
@@ -40,7 +40,7 @@
   "watch_list": [
     {
       "time": "Tuesday, Oct 13, 3:00 p.m. CT",
-      "desc": "Crop Progress, delayed a day for Columbus Day. Harvest pace matters more than usual after Friday's yield cut."
+      "desc": "Crop Progress, delayed a day for Columbus Day. Harvest pace matters more than usual after USDA raised the corn yield on Friday."
     },
     {
       "time": "Thursday, Oct 15, 7:30 a.m. CT",
