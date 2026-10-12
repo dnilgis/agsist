@@ -86,6 +86,7 @@ jobs:
           python3 scripts/test_rate_card.py
           python3 scripts/audience_from_exports.py --selftest
           python3 scripts/build_audience.py --selftest
+          python3 scripts/build_signups.py --selftest
           node scripts/sponsor-checks.mjs
 
       # WHO READS AGSIST -- the dashboard on every sponsor's portal. Each source
@@ -102,6 +103,15 @@ jobs:
           LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
         run: python3 scripts/build_audience.py
 
+      # Email signups by page ask, ZIPs given, one-time notices: counts only, for
+      # /seo-report. Same token, same rule: no address reaches the file or the log.
+      - name: Count signups by source
+        continue-on-error: true
+        env:
+          LIST_URL:            ${{ secrets.LIST_URL }}
+          LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
+        run: python3 scripts/build_signups.py
+
       # No secrets, no report, no failure. A fork or a PR cannot have these and
       # should not go red for it — the script says so and exits 0.
       - name: Build the reports
@@ -114,7 +124,7 @@ jobs:
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/sponsors data/audience.json 2>/dev/null || true
+          git add data/sponsors data/audience.json data/signups.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"
             exit 0

@@ -56,6 +56,11 @@
   <div class="wrap" id="sr-index"></div>
   <div id="sr-index-bad"></div>
 
+  <h2>Email signups by page</h2>
+  <p class="muted" id="sr-sign-src">Loading data/signups.json</p>
+  <div class="wrap" id="sr-sign"></div>
+  <div class="wrap" id="sr-notice"></div>
+
   <h2>Method</h2>
   <div id="sr-method" class="muted"></div>
 </main>
@@ -99,6 +104,19 @@
     $('sr-method').innerHTML='<p>'+esc(m.expectedCtrNote)+'</p><p>Benchmark CTR by position: '+
       (m.expectedCtr||[]).map(function(p){return p.position+': '+pct(p.ctr,1);}).join(', ')+'. Linear in between.</p><p>'+esc(m.queriesNote)+'</p>'+
       '<p>Thresholds: position '+(m.positionRange||[]).join(' to ')+', at least '+num(m.minImpressions)+' impressions, CTR under '+pct(m.gapRatio,0)+' of the benchmark.</p>';
+  });
+
+  get('/data/signups.json').then(function(d){
+    if(!d){$('sr-sign-src').textContent='No signup count yet. It runs each morning with the sponsor reports and needs LIST_URL and LIST_TOKEN.';return;}
+    var by=d.bySource||[],tot=function(k){return by.reduce(function(a,b){return a+(b[k]||0);},0);};
+    var days=d.daily||[],last=days.slice(-14).map(function(x){return x.d.slice(5)+' '+x.n;}).join(' · ');
+    $('sr-sign-src').textContent='Subscriber list as of '+d.asOf+': '+num(d.subscribers)+' addresses, '+num(d.withZip)+' with a ZIP. New in the last 7 days: '+tot('last7')+'; last 30 days: '+tot('last30')+'. Each address counts once, under the page it first signed up from. Last 14 days: '+last+'.';
+    $('sr-sign').innerHTML=by.length?'<table><thead><tr><th>Where they signed up</th><th class="n">Last 7 days</th><th class="n">Last 30 days</th><th class="n">All time</th></tr></thead><tbody>'+
+      by.map(function(b){return '<tr><td class="mono">'+esc(b.src)+'</td><td class="n">'+b.last7+'</td><td class="n">'+b.last30+'</td><td class="n">'+b.total+'</td></tr>';}).join('')+'</tbody></table>':'<p class="muted">No signups yet.</p>';
+    var nt=d.notices;
+    $('sr-notice').innerHTML=!nt?'<p class="muted">The one-time notice list did not load this run.</p>':nt.length?'<table><thead><tr><th>One-time notice</th><th class="n">Last 7 days</th><th class="n">All</th><th class="n">Already sent</th><th>By state or date</th></tr></thead><tbody>'+
+      nt.map(function(t){var dt=Object.keys(t.detail||{}).sort(function(a,b){return t.detail[b]-t.detail[a];}).map(function(k){return esc(k)+' '+t.detail[k];}).join(', ');
+        return '<tr><td>'+esc(t.topic==='rent'?'Cash rent update':t.topic==='arcplc'?'ARC/PLC deadline':t.topic)+'</td><td class="n">'+t.last7+'</td><td class="n">'+t.total+'</td><td class="n">'+t.sent+'</td><td>'+dt+'</td></tr>';}).join('')+'</tbody></table>':'<p class="muted">No one-time notice signups yet.</p>';
   });
 
   get('/data/seo-index.json').then(function(d){
