@@ -31,9 +31,10 @@
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function usd(v) { if (v == null || !isFinite(v)) return '—'; var n = Math.round(v); return (n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
-  function usd2(v) { if (v == null || !isFinite(v)) return '—'; return (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function half(x, places) { var f = Math.pow(10, places); return Math.floor(Math.abs(x) * f + 0.5 + 1e-7) / f * (x < 0 ? -1 : 1); }
+  function usd2(v) { if (v == null || !isFinite(v)) return '—'; v = half(v, 2); return (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function signed(v) { if (v == null || !isFinite(v)) return '—'; var n = Math.round(v); return (n > 0 ? '+' : n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
-  function pctOfNormal(v) { return v == null ? '—' : (Math.round(v * 1000) / 10).toFixed(1); }
+  function pctOfNormal(v) { return v == null ? '—' : half(v * 100, 1).toFixed(1); }
   var DASH = '\u2014';
   function nw(t) { return '<span class="prf-nw">' + t + '</span>'; }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
@@ -256,7 +257,7 @@
             });
           }
           if (!pick && offered.length === 1) { pick = offered[0]; how = 'only'; }
-          S.grid = id; S.codes = offered; S.coHow = how;
+          S.grid = id; S.codes = offered; S.coHow = how; $('prf-tool').classList.remove('is-stale');
           S.st = stateByFips((pick || offered[0]).slice(0, 2)).st;
           S.co = pick ? pick.slice(2) : null;
           if (!keep) S.pt = want.pt || null;
@@ -371,6 +372,7 @@
       function go(r) { return atPoint(r.latitude, r.longitude, r.name + (r.admin1 ? ', ' + r.admin1 : ''), { countyName: r.admin2, stateName: r.admin1 }); }
       if (uniq.length === 1) return go(uniq[0]);
       choices = uniq.slice(0, 8);
+      $('prf-tool').classList.add('is-stale');
       sayHtml('More than one “' + esc(parts.name) + '”. Pick yours: ' + choices.map(function (r, i) {
         return '<button type="button" class="prf-chip" data-choice="' + i + '">' + esc((r.admin2 ? r.admin2 + ', ' : '') + (r.admin1 || '')) + '</button>';
       }).join(' '));
@@ -502,7 +504,7 @@
     if (document.activeElement !== $('prf-acres')) $('prf-acres').value = S.acres || '';
     if (document.activeElement !== $('prf-share')) $('prf-share').value = S.share == null ? '' : S.share;
     if (document.activeElement !== $('prf-pf-n')) $('prf-pf-n').value = s.pf;
-    $('prf-pf').value = s.pf;
+    if (s.pf >= 60 && s.pf <= 150) $('prf-pf').value = s.pf;
     var cbv = baseValue();
     $('prf-pf-hint').textContent = cbv == null ? '' : 'How much to insure each acre for. 100 is USDA’s county value, ' + usd2(cbv) + ' an acre here for this use. 150 raises the premium and any payment by half. It does not change how often it pays.';
     $('prf-use-note').innerHTML = isGrazing()
@@ -575,6 +577,7 @@
     render();
   }
 
+  function sameYears(a, b) { return a.length === b.length && a.every(function (h, i) { return h.year === b[i].year; }); }
   /* ---------------------------------------------------------------- the answer */
   function yearsPhrase(sum) {
     var all = meta.years.last_complete - meta.years.first + 1;
@@ -612,15 +615,15 @@
       + '<div><dt>USDA pays toward the premium</dt><dd>' + usd(t.subsidy) + ' <span class="prf-sub">' + pctSub + '% of the ' + usd(t.premium) + ' premium, if you qualify</span></dd></div>'
       + '<div><dt>Most it can pay in a year</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre of protection</span></dd></div>'
       + '<div><dt>Average payout a year</dt><dd>' + usd(s.avgIndemnity) + ' <span class="prf-sub">over all ' + s.years + ' years, the no-payment years included</span></dd></div>'
-      + '<div><dt>Payout in the middle year</dt><dd>' + usd(R.mid) + ' <span class="prf-sub">half the years would have paid less than this</span></dd></div>'
+      + '<div><dt>Payout in the middle year</dt><dd>' + usd(R.mid) + ' <span class="prf-sub">' + (R.mid > 0 ? 'half the years paid this or less' : 'more than half the years would have paid nothing') + '</span></dd></div>'
       + '<div><dt>Most in one year</dt><dd>' + best + '</dd></div>'
       + '<div><dt>Longest run with no payment</dt><dd>' + dry + '</dd></div>'
       + '</dl>';
     if (backFull != null) {
       var lr = root.getAttribute('data-lr-mid'), lo = root.getAttribute('data-lr-lo'), hi = root.getAttribute('data-lr-hi'), all = meta.years.last_complete - meta.years.first + 1;
       h += '<p class="prf-back">For each $1 of the full premium, this policy would have paid back <b>' + usd2(backFull) + '</b> over those ' + s.years + ' years.'
-        + (lr ? ' Across the country the middle is $' + lr + ', and nine in ten fall between $' + lo + ' and $' + hi + ', at every coverage level and in every month, because USDA sets its rates from this record.' : '')
-        + ' What comes back above your own ' + usd(t.producer) + ' is USDA’s ' + pctSub + '% share of the bill.</p>';
+        + (lr ? ' Across all ' + all + ' years and every grid, month and coverage level USDA rates, the middle is $' + lr + ', and nine in ten fall between $' + lo + ' and $' + hi + '. On the full premium, no grid, month or coverage level stands out.' : '')
+        + '</p>';
     }
     h += '<ul class="prf-caveat">'
       + '<li>Every year is priced at ' + meta.crop_year + ' rates and county values, on the precipitation record USDA publishes for ' + meta.crop_year
@@ -647,7 +650,7 @@
     var box = $('prf-chart'), fig = $('prf-chart-fig');
     if (!RA.ok) { fig.hidden = true; chartState = null; return; }
     fig.hidden = false;
-    var two = !!S.B, hb = RB && RB.ok && RB.hist.length === RA.hist.length ? RB.hist : null;
+    var two = !!S.B, hb = RB && RB.ok && sameYears(RB.hist, RA.hist) ? RB.hist : null;
     var hist = RA.hist, n = hist.length;
     /* drawn at the width it is shown at, so the axis type is the same size on a phone as on a desk */
     var W = Math.max(280, Math.round(box.clientWidth || 760)), small = W < 520;
@@ -853,7 +856,7 @@
       h += '<tr' + (cv === s.cov ? ' class="is-on"' : '') + '><th scope="row">' + cv + '%</th><td>' + usd(t.producer) + '</td><td>' + usd(t.subsidy) + ' <span class="prf-th-s">' + Math.round(R.subsidy * 100) + '%</span></td><td>' + usd(t.protection) + '</td><td>'
         + R.sum.paidYears + ' of ' + R.sum.years + '</td><td>' + usd(R.sum.avgIndemnity) + '</td><td>' + usd(R.mid) + '</td></tr>';
     });
-    h += '</tbody></table></div><p class="prf-fine">' + (why ? esc(why) + ' ' : '') + 'A lower coverage level pays less often and costs less, and USDA covers a larger part of a smaller bill. The record does not favor one level: at each, it pays back about the same part of the full premium.</p>';
+    h += '</tbody></table></div><p class="prf-fine">' + (why ? esc(why) + ' ' : '') + 'A lower coverage level pays less often and costs less, and USDA covers a larger part of a smaller bill. On the full premium, the record does not favor one level: at each, it pays back about the same part of it.</p>';
     box.innerHTML = h;
   }
 
@@ -870,7 +873,7 @@
       ['You pay, a year', function (R) { return usd(R.pol.total.producer); }],
       ['Most it can pay in a year', function (R) { return usd(R.pol.total.protection); }],
       ['Years it would have paid', function (R) { return R.sum.paidYears + ' of ' + R.sum.years; }],
-      ['Years it would have paid more than the premium', function (R) { return R.sum.aheadYears + ' of ' + R.sum.years; }],
+      ['Years it would have paid more than your share of the premium', function (R) { return R.sum.aheadYears + ' of ' + R.sum.years; }],
       ['Average payout a year', function (R) { return usd(R.sum.avgIndemnity); }],
       ['Payout in the middle year', function (R) { return usd(R.mid); }],
       ['Most in one year', function (R) { return R.sum.best && R.sum.best.indemnity > 0 ? usd(R.sum.best.indemnity) + ' (' + R.sum.best.year + ')' : DASH; }],
@@ -887,7 +890,7 @@
     if (!RA.ok) h += '<p class="prf-fine">Setup A: ' + esc(RA.why) + '</p>';
     if (!RB.ok) h += '<p class="prf-fine">Setup B: ' + esc(RB.why) + '</p>';
     if (RA.ok && RB.ok) {
-      if (RA.hist.length !== RB.hist.length) {
+      if (!sameYears(RA.hist, RB.hist)) {
         h += '<p class="prf-fine">The two setups are not counted over the same years here: USDA publishes no index for some interval in one of them. Compare the year table, not the totals.</p>';
       } else {
         var d = RA.hist.map(function (ha, i) { return { year: ha.year, a: ha.indemnity, b: RB.hist[i].indemnity }; });
@@ -1035,7 +1038,7 @@
       el.addEventListener('blur', function () { el._sel = false; });
     }
     ['prf-acres', 'prf-share', 'prf-pf-n'].forEach(function (id) { selectAll($(id)); });
-    $('prf-acres').addEventListener('input', function () { var v = Math.round(+this.value); S.acres = v > 0 && v <= 5000000 ? v : 0; touch(); render(); });
+    $('prf-acres').addEventListener('input', function () { var v = +this.value; S.acres = v >= 1 && v <= 5000000 && v === Math.floor(v) ? v : 0; touch(); render(); });
     $('prf-acres').addEventListener('blur', function () { this.value = S.acres || ''; });
     $('prf-share').addEventListener('input', function () { var v = +this.value; S.share = this.value !== '' && v >= 1 && v <= 100 ? Math.round(v) : null; touch(); render(); });
     $('prf-share').addEventListener('blur', function () { if (S.share != null) this.value = S.share; });

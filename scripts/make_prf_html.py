@@ -187,7 +187,7 @@ HTML = f"""<!DOCTYPE html>
       <li><span class="d">Jan 1 to Dec 31</span><span>The coverage year. Each pair of months you insure stands on its own.</span></li>
       <li><span class="d">{mk("billing_long")}</span><span>Premium billing date. The premium is earned when the acreage is reported and billed no earlier than this. Premium you owe is taken out of any payment due you, even one paid before this date.</span></li>
     </ul>
-    <p>A PRF policy is continuous. If you are already insured and change nothing, it renews on its own with the same elections. Unpaid premium by the termination date ends your eligibility.</p>
+    <p>A PRF policy is continuous. If you are already insured and change nothing, it renews on its own with the same elections. Premium still unpaid on the termination date, Dec 1, ends your eligibility.</p>
     <p>A payment, when one is owed, is issued &ldquo;not later than 60 days following the date RMA publishes the final grid index&rdquo; for that interval (Rainfall Index Basic Provisions, section 8(d)). No claim is filed. The dates above are read from USDA&rsquo;s {mk("crop_year")} actuarial files.</p>
 
     <h2 id="cost">USDA&rsquo;s share of the premium</h2>
@@ -196,11 +196,11 @@ HTML = f"""<!DOCTYPE html>
     <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning and veteran farmers and ranchers get a larger share. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
 
     <h2 id="payback">Does PRF pay back more than it costs?</h2>
-    <p>On the full premium, no grid, month or coverage level stands out. USDA sets each rate from the same precipitation record. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
-    <p>You do not pay the full premium. USDA pays 51% to 59% of it, so over the record a policy returns more than the producer&rsquo;s own share on average. That average is made of a few big years and many small or empty ones, and it says nothing about next year.</p>
+    <p>On the full premium, no grid, month or coverage level stands out. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
+    <p>You do not pay the full premium: USDA pays 51% to 59% of it, if you qualify. Any average over the record is made of a few big years and many small or empty ones, and it says nothing about next year.</p>
     <p>The months with the highest rates bring the most dollars of USDA&rsquo;s share per $100 of protection. On {mk("dry_two")} grids, the interval that comes out furthest ahead of your share is one of the grid&rsquo;s two driest. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>
-    <table class="prf-sub-t prf-iv-t"><caption>Each pair of months across the country, at 90% coverage: the grid in the middle of the {mk("grids")}.</caption>
-      <thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {mk("nyears")}</th></tr></thead>
+    <table class="prf-sub-t prf-iv-t"><caption>Each pair of months across the country, at 90% coverage: the middle grid among those USDA rates for that pair.</caption>
+      <thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {mk("nyears")}</th><th scope="col">Grids rated</th></tr></thead>
       <tbody>{mk("iv_rows")}</tbody></table>
 
     <h2 id="new" data-prf-written-for="2027">New for 2027</h2>
@@ -214,10 +214,10 @@ HTML = f"""<!DOCTYPE html>
     <ul>
       <li>You need an insurable interest: you own or lease the ground, and for grazing, the livestock. A lease must be signed and in by the acreage reporting date.</li>
       <li>PRF covers perennial grass, pasture and hay. Forage planted every year is a separate policy, Annual Forage.</li>
-      <li>Land in the Conservation Reserve Program, ground with no record of your share, and an allotment with zero authorized use cannot be insured.</li>
+      <li>Land in the Conservation Reserve Program or another USDA program that bars haying and grazing, ground with no record of your share, and an allotment with zero authorized use cannot be insured.</li>
       <li>Each acre goes in one grid. You pick a point inside the acres and the grid and county follow from it. Land that lies across a grid line can go in either grid or be split.</li>
       <li>You do not have to insure every acre.</li>
-      <li>One coverage level and one productivity factor per county and use. The same acre cannot be insured for both grazing and haying.</li>
+      <li>One coverage level and one productivity factor per county, use and practice. The same acre cannot be insured for both grazing and haying.</li>
       <li>A third party may not pay your premium in return for part of the payment. RMA is investigating such deals.</li>
     </ul>
 
@@ -253,7 +253,7 @@ payment              = interval protection
     <details><summary>What is PRF insurance?</summary><p>Pasture, Rangeland, Forage (PRF) is a federal crop insurance policy for grazing land and hay ground. It pays when precipitation in your grid, over a two-month interval you chose, comes in under a set share of that grid&rsquo;s long-run average. You pick the coverage level, from 70% to 90%, and how to spread the policy across the intervals. USDA pays {mk("subsidy_sentence")} of the premium.</p></details>
     <details><summary>When is the PRF deadline for {mk("crop_year")}?</summary><p>The sales closing date is {mk("sales_long")}. The acreage report is due {mk("acreage_long")}. The premium is billed no earlier than {mk("billing_long")}.</p></details>
     <details><summary>How much does PRF cost per acre?</summary><p>It depends on the grid, the months, the coverage level and the county&rsquo;s value for grazing or hay. {mk("ex_line")} Enter your grid and acres above for your own figure.</p></details>
-    <details><summary>Is PRF insurance worth it?</summary><p>On the full premium, the record treats every grid, month and coverage level about the same: over {mk("y0")} to {mk("y1")} at {mk("crop_year")} rates, $1 of premium would have paid back a middle ${mk("lr_mid")}. USDA pays 51% to 59% of the premium, so on average the policy has returned more than the producer&rsquo;s share. Most of that comes in a few dry years. It is worth more to someone whose grass or hay follows precipitation in the months insured.</p></details>
+    <details><summary>Is PRF insurance worth it?</summary><p>On the full premium, the record treats every grid, month and coverage level about the same: over {mk("y0")} to {mk("y1")} at {mk("crop_year")} rates, $1 of premium would have paid back a middle ${mk("lr_mid")}. USDA pays 51% to 59% of the premium if you qualify. Payments come in a few dry years, with many years of nothing between. It is worth more to someone whose grass or hay follows precipitation in the months insured.</p></details>
     <details><summary>What are the PRF intervals?</summary><p>Eleven two-month intervals: January to February, February to March, March to April, April to May, May to June, June to July, July to August, August to September, September to October, October to November and November to December. You insure at least two, no month in two of them, each with at least 10% of the policy. January to February is capped at 25% in {mk("jf_capped")} counties.</p></details>
     <details><summary>Which months should I insure?</summary><p>The policy needs at least two intervals, no month used twice, each between your county&rsquo;s minimum and maximum. Past that it is your call, and no record can make it for you. RMA&rsquo;s handbook puts it this way: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. The calculator shows each interval&rsquo;s normal precipitation in inches.</p></details>
     <details><summary>Is PRF drought insurance?</summary><p>No. It pays on a precipitation index for a grid, two months at a time. A dry summer after a wet spring, a drought declaration, heat or a short hay crop do not trigger it. Only the index does, and only for the months you insured.</p></details>

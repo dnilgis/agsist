@@ -146,7 +146,7 @@ def values(meta, chk, facts):
     if not facts or facts.get("crop_year") != meta["crop_year"] or facts.get("built_from") != meta["built"]:
         raise ValueError("data/prf/facts.json is missing or from another build of data/prf: run node scripts/prf_facts.mjs")
     pb = facts["payback"]["all"]
-    iv_rows = "".join(f'<tr><th scope="row">{LONG_IV[i]}</th><td>{r["mid_normal_in"]:.2f} in</td><td>{money2(r["mid_rate_per_100"])}</td><td>{r["mid_years_below"]}</td></tr>'
+    iv_rows = "".join(f'<tr><th scope="row">{LONG_IV[i]}</th><td>{r["mid_normal_in"]:.2f} in</td><td>{money2(r["mid_rate_per_100"])}</td><td>{r["mid_years_below"]}</td><td>{r["grids"]:,}</td></tr>'
                       for i, r in enumerate(facts["intervals_at_90"]))
     states_html = "".join(f'<li><a href="/prf/{re.sub(r"[^a-z0-9]+", "-", x["name"].lower()).strip("-")}">{html.escape(x["name"])}</a> <span>{x["counties"]} {"county" if x["counties"] == 1 else "counties"}, {x["grids"]:,} grids</span></li>'
                           for x in facts["states"])
@@ -279,7 +279,7 @@ def selftest():
             "counts": {"grids": 13414, "counties": 3070, "states": 48}}
     ex = {"use": "Grazing", "cbv": 32.8, "premium": 305, "usda": 155, "you": 150, "per_acre": 1.5, "protection": 2952, "years": 75, "paid_years": 44, "ahead_years": 33, "avg": 261}
     facts = {"crop_year": 2027, "built_from": meta["built"], "payback": {"all": {"n": 722380, "p05": 0.78, "mid": 0.87, "p95": 0.89}},
-             "intervals_at_90": [{"mid_normal_in": 3.08, "mid_rate_per_100": 17.4, "mid_years_below": 35}] * 11,
+             "intervals_at_90": [{"mid_normal_in": 3.08, "mid_rate_per_100": 17.4, "mid_years_below": 35, "grids": 13414}] * 11,
              "states": [{"name": "Wisconsin", "counties": 72, "grids": 300}], "limits": {"jan_feb_max": {"25": 3067, "50": 3}},
              "largest_net_in_two_driest": {"grids": 7899, "of": 13307}, "grids_in_more_than_one_county": 9601,
              "example": {"grid": 30454, "county": "Barron County, Wisconsin", "acres": 100, "coverage": 90, "months": "April to May and June to July, half in each",

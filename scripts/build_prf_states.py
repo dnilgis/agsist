@@ -104,10 +104,10 @@ def page(st, meta, facts, sd, states, BOOT):
          f"{money2(gz['low'])} to {money2(gz['high'])} an acre{', and for non-irrigated hay from ' + money2(hy['low']) + ' to ' + money2(hy['high']) if hy else ''}. "
          f"USDA pays 51% to 59% of the premium. The calculator gives the figure for your grid, acres and months."),
         (f"Is PRF offered in every {name} county?",
-         f"USDA&rsquo;s {cy} files list PRF in {n_co} {name} {'county' if n_co == 1 else 'counties'}, across {n_grid:,} grids. Each county row below opens the calculator on that county."),
+         f"USDA&rsquo;s {cy} files list PRF in {n_co} {name} {'county' if n_co == 1 else 'counties'}, across {n_grid:,} grids. Each county row in the table above opens the calculator on that county."),
         (f"Has PRF paid more than it cost in {name}?",
-         f"On the full premium, about the same as everywhere: across {name}&rsquo;s grids at 90% coverage, $1 of premium would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates. "
-         f"USDA pays half or more of the premium, so the producer&rsquo;s share has done better on average. Most of that comes in a few dry years, and none of it says what next year will do."),
+         f"On the full premium, about the same as everywhere: across {name}&rsquo;s grids at 90% coverage, $1 of premium would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates, close to the national middle of $0.87. "
+         f"That average is made of a few big years and many small or empty ones, and none of it says what next year will do."),
     ]
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     others = " ".join(f'<a href="/prf/{slug(x["name"])}">{e(x["name"])}</a>' for x in states if x["st"] != code)
@@ -132,11 +132,11 @@ def page(st, meta, facts, sd, states, BOOT):
     # the link is not /sponsor-apply, so scripts/stamp_rates.py adds no price.
     yr = meta["dates"]["sales_closing"][:4]
     subj = f"PRF sponsor: {name}".replace(" ", "%20")
-    ribbon = (f'<aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> '
-              f'One sponsor for PRF in {e(name)}: your name on this page, seen by people pricing PRF here before the {sales} sales closing. '
+    ribbon = (f'<aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">For businesses: sponsor this page</span> '
+              f'One business can sponsor PRF in {e(name)}: its name on this page, seen by people pricing PRF here before the {sales} sales closing. '
               f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
               f'<span class="ag-sponsor-price">Price on request</span> '
-              f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Ask about this page &rarr;</a></aside>')
+              f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Advertise on this page &rarr;</a></aside>')
     subrow = ", ".join(f"{int(round(sub[c] * 100))}% at {c}%" for c in sorted(sub, key=int))
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -189,17 +189,17 @@ def page(st, meta, facts, sd, states, BOOT):
     </dl>
     <p class="prf-fine">The first figure is the middle county; the small ones are the lowest and highest. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.</p>
     {sod}
-    {ribbon}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
     <div class="prf-scroll"><table class="prf-sub-t prf-iv-t"><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid</th><th scope="col">Premium per $100, middle grid</th><th scope="col">Years under 90% of normal, of {ny}, middle grid</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
-    <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs). USDA sets each rate from the same record, so no month or grid is a bargain on it. The months to insure are the ones when a dry spell costs you grass or hay.</p>
+    <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs), close to the national middle of $0.87. On the full premium, no month or grid stands out. The months to insure are the ones when a dry spell costs you grass or hay.</p>
     </div>
 
     <h2 id="counties">PRF in every {e(name)} county</h2>
     <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. Open a county to set acres, months and coverage.</p>
     <div class="prf-scroll"><table class="prf-t prf-co-t"><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    {ribbon}
 
     <div class="prf-prose">
     <h2 id="dates">PRF dates for {cy}</h2>
@@ -214,7 +214,7 @@ def page(st, meta, facts, sd, states, BOOT):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance, asks for no contact details and sends no one to any agent. Sponsored space is marked in orange. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
   </div>
   </main>

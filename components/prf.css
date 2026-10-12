@@ -301,3 +301,10 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 /* Sig, 2026-10-12: the PRF state pages advertise their own sponsor slot before
    sales closing, an exception to "an unsold slot shows nothing" (styles.css). */
 .prf.prf-st aside.ag-sponsor-ribbon.ag-sponsor-ribbon { display: flex !important; }
+
+/* a place is being chosen: the figures below belong to the last grid, so they step back */
+.prf-tool.is-stale { opacity: .35; pointer-events: none; }
+.prf-hint .prf-link { display: inline-block; padding: 10px 0; margin: -10px 0; }
+.prf-co-t td a { display: inline-block; padding: 12px 8px; margin: -12px -8px; }
+/* hold the room the search block takes, so the page does not jump when it appears */
+.prf-status:not(:empty):not(.is-bad) { min-height: 9.5rem; }
