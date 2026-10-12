@@ -46,7 +46,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"What is a growing degree unit (GDU)?","acceptedAnswer":{"@type":"Answer","text":"A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50\u00b0F for corn. Formula: GDU/day = ((Hi + Lo) \u00f7 2) \u2212 50, with Hi and Lo each set to 50\u00b0F if below 50 and to 86\u00b0F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression."}},
-  {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
+  {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,650 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
   {"@type":"Question","name":"What GDU accumulation does the US Corn Belt average per season?","acceptedAnswer":{"@type":"Answer","text":"May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location\u2019s typical GDU accumulation."}},
   {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same calculation under two names. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
   {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch GDUs\u2019 and the calculator pulls daily weather for your location and adds up GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
@@ -323,7 +323,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       </div>
 
       <div class="f-group">
-        <label class="f-label" for="g-frost">Avg first fall frost (optional)</label>
+        <label class="f-label" for="g-frost">First killing freeze, 28&deg;F (optional)</label>
         <input class="f-input" id="g-frost" type="date">
         <div class="f-hint">Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5, central Corn Belt ~Oct 10&ndash;20. Your NWS office has local normals.</div>
       </div>
@@ -431,10 +431,10 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="mat-grid">
         <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">-</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
         <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">-</div><div class="mat-card-sub">remaining</div></div>
-        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub">at monthly-average rate</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub">at Wisconsin rates</div></div>
       </div>
       <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">-</span></div>
-      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">-</span></div>
+      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. black layer, Wisconsin rates</span><span class="r-val green" id="r-mat-date">-</span></div>
       <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">-</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
       <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
@@ -480,7 +480,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Post-emerge herbicide window closes on many labels: read yours; rapid growth begins</td></tr>
       <tr><td>V8</td><td>~610</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
       <tr><td>V10</td><td>~740</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
-      <tr class="hi"><td>VT</td><td>~1135</td><td>Tasseling: pollen shed</td><td>Critical drought window; fungicide timing</td></tr>
+      <tr class="hi"><td>VT</td><td>~1135&ndash;1350</td><td>Tasseling: pollen shed</td><td>Critical drought window. Sources differ on the GDU: Purdue NCH-40 / UKY AGR-202 list 1,135; tassels usually emerge 1&ndash;3 days before silking (UW-Madison). Time a VT/R1 fungicide by what you see in the field, not by GDU</td></tr>
       <tr class="hi"><td>R1</td><td>~1400</td><td>Silking</td><td>Most drought-sensitive stage; rootworm silk threshold</td></tr>
       <tr><td>R2</td><td>~1660</td><td>Blister</td><td>Kernel number locked; protect from disease</td></tr>
       <tr class="hi"><td>R4</td><td>~1925</td><td>Dough</td><td>Grain fill accelerating; watch Gray Leaf Spot</td></tr>
@@ -500,16 +500,16 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     <tbody>
       <tr><td>VE</td><td>~130</td><td>Emergence</td><td>Stand count; 100k plants/ac minimum</td></tr>
       <tr><td>V1</td><td>~200</td><td>First trifoliate</td><td>Post-emerge herbicide window</td></tr>
-      <tr><td>V3</td><td>~400</td><td>Third trifoliate</td><td>Last effective post-emerge herbicide</td></tr>
+      <tr><td>V3</td><td>~400</td><td>Third trifoliate</td><td>Post-emerge herbicide window: cutoff stage is set by the product label</td></tr>
       <tr><td>V5</td><td>~600</td><td>Fifth trifoliate</td><td>Branching begins; canopy closure</td></tr>
       <tr class="hi"><td>R1</td><td>~800</td><td>First flower</td><td>Fungicide window opens (frogeye, white mold)</td></tr>
-      <tr class="hi"><td>R2</td><td>~1000</td><td>Full bloom</td><td>Primary fungicide window; N fixation peak</td></tr>
-      <tr class="hi"><td>R3</td><td>~1200</td><td>Beginning pod set</td><td>Most drought-sensitive window through R6</td></tr>
+      <tr class="hi"><td>R2</td><td>~1000</td><td>Full bloom</td><td>N fixation climbing; fungicide is usually timed at R3</td></tr>
+      <tr class="hi"><td>R3</td><td>~1200</td><td>Beginning pod set</td><td>Primary fungicide window; most drought-sensitive stretch through R6</td></tr>
       <tr class="hi"><td>R4</td><td>~1400</td><td>Full pod</td><td>Irrigation highest priority; pod abortion risk</td></tr>
       <tr class="hi"><td>R5</td><td>~1600</td><td>Beginning seed fill</td><td>Seed size and oil/protein content determined</td></tr>
-      <tr><td>R6</td><td>~1750</td><td>Full seed</td><td>Harvest planning; watch for shattering</td></tr>
-      <tr class="hi"><td>R7</td><td>~1900</td><td>Beginning maturity</td><td>50% of pods mature color</td></tr>
-      <tr class="hi"><td>R8</td><td>~2000</td><td>Full maturity</td><td>95% pods tan/brown; harvest &lt;15% moisture</td></tr>
+      <tr><td>R6</td><td>~1750</td><td>Full seed</td><td>Harvest planning</td></tr>
+      <tr class="hi"><td>R7</td><td>~1900</td><td>Beginning maturity</td><td>One normal pod on the main stem at mature color</td></tr>
+      <tr class="hi"><td>R8</td><td>~2000</td><td>Full maturity</td><td>95% pods tan/brown; harvest &lt;15% moisture; watch for shattering after R8</td></tr>
     </tbody>
     </table>
     </div>
@@ -528,7 +528,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     <div class="formula-card">
       <div class="formula-card-title">RM → GDU rule of thumb</div>
       <p>GDUs to black layer &asymp; <code>(RM &times; 22) + 250</code><br><br>
-      Example: 108-day hybrid &asymp; <strong>2,626 GDUs</strong>; 110-day &asymp; 2,670. AGSIST line through two published anchors (110-day &asymp; 2,670, K-State; 112-day &asymp; 2,700, Purdue); an extrapolation away from 110&ndash;112 days. Always verify with your seed company&rsquo;s published hybrid-specific GDU requirement.</p>
+      Example: 108-day hybrid &asymp; <strong>2,650 GDUs</strong> (2,626 on the line; the calculator rounds to the nearest 50). AGSIST line through two published anchors (110-day &asymp; 2,670, K-State; 112-day &asymp; 2,700, Purdue); an extrapolation away from 110&ndash;112 days. Always verify with your seed company&rsquo;s published hybrid-specific GDU requirement.</p>
     </div>
     <div class="formula-card">
       <div class="formula-card-title">Soybean Notes</div>
@@ -540,6 +540,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <p>Real GDU fetch uses the <strong>Open-Meteo weather archive API</strong>: no API key required. Historical data is ERA5-based, validated against NOAA station data. Accuracy: typically &plusmn;2 GDU/day vs. on-farm weather stations.</p>
     </div>
   </div>
+  <p class="method-note"><b>Method:</b> daily 86/50 GDUs from the Open-Meteo archive; stage GDUs scaled to your hybrid&rsquo;s target; dates projected at Wisconsin monthly rates and withheld outside the Upper Midwest; VT shown as 1,135&ndash;1,350 because sources differ &middot; <b>Sources:</b> <a href="https://www.extension.purdue.edu/extmedia/nch/nch-40.html" target="_blank" rel="noopener">Purdue NCH-40</a> and UKY AGR-202 (Neild &amp; Newman corn stages), UW-Madison (tassel to silk 1&ndash;3 days), <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a>, K-State and Purdue maturity anchors, Wisconsin 30-year monthly GDU normals &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
 </div>
 
 <!-- ── RELATED TOOLS ─────────────────────────────────────────────────── -->
@@ -570,7 +571,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>What is a growing degree unit (GDU)?</summary><div class="agf-a">A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50°F for corn. Formula: GDU/day = ((Hi + Lo) ÷ 2) − 50, with Hi and Lo each set to 50°F if below 50 and to 86°F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression.</div></details>
-<details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
+<details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,650 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
 <details><summary>What GDU accumulation does the US Corn Belt average per season?</summary><div class="agf-a">May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location’s typical GDU accumulation.</div></details>
 <details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same calculation under two names. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
 <details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch GDUs’ and the calculator pulls daily weather for your location and adds up GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
@@ -626,7 +627,10 @@ var CORN_STAGES=[
   {s:'V8', gdu:610,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Kernel rows set'},
   {s:'V10',gdu:740,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Rapid growth'},
   {s:'V12',gdu:870,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear size being set'},
-  {s:'VT', gdu:1135, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Tasseling'},
+  // VT is a range, not one number. NCH-40 / UKY AGR-202 print 1135 and R1 1400, but tassels
+  // usually emerge only 1-3 days before silking (UW-Madison), and other guides put VT near 1,300.
+  // gdu is the low end (used for stage order); hi is the top of the range shown to the reader.
+  {s:'VT', gdu:1135, hi:1350, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Tasseling (GDU varies by source; check the field)'},
   {s:'R1', gdu:1400, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-flower"/></svg>', desc:'Silking'},
   {s:'R2', gdu:1660, key:false, icon:'', desc:'Blister'},
   {s:'R4', gdu:1925, key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Dough stage'},
@@ -670,6 +674,10 @@ var realAccum=null; // set when fetch succeeds
 var realDays=null;  // actual measured days from the archive (excludes pending/missing)
 var realThrough=null; // last date with real data
 var userLat=null, userLon=null;
+// State of the fetched location (from the geocoder). The maturity projection walks forward at
+// Wisconsin monthly rates, so outside the Upper Midwest the date is withheld.
+var userState=null;
+var UPPER_MW=['Minnesota','Wisconsin','Iowa','Illinois','Michigan','North Dakota','South Dakota'];
 var zipTouched=false; // true once the user has typed in the ZIP box
 var ready=false; // gates persistence so initial defaults don't clobber saved state
 
@@ -744,6 +752,9 @@ document.getElementById('g-locate-btn').addEventListener('click',function(){
   navigator.geolocation.getCurrentPosition(function(pos){
     userLat=pos.coords.latitude;
     userLon=pos.coords.longitude;
+    userState=null;
+    fetch('https://nominatim.openstreetmap.org/reverse?lat='+userLat+'&lon='+userLon+'&format=json&zoom=5')
+      .then(function(r){return r.json();}).then(function(d){userState=(d&&d.address&&d.address.state)||null;calcGDU();}).catch(function(){});
     document.getElementById('g-loc-display').textContent='Location: '+userLat.toFixed(3)+'\u00b0N, '+Math.abs(userLon).toFixed(3)+'\u00b0W';
     document.getElementById('g-zip').value='';
     btn.textContent='Auto';
@@ -753,12 +764,13 @@ document.getElementById('g-locate-btn').addEventListener('click',function(){
 
 /* ─── ZIP GEOCODE ───────────────────────────────────────────────────── */
 function geocodeZip(query){
-  return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(query)+'&countrycodes=us&format=json&limit=1')
+  return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(query)+'&countrycodes=us&format=json&limit=1&addressdetails=1')
     .then(function(r){return r.json();})
     .then(function(d){
       if(!d||!d[0])throw new Error('Location not found');
       userLat=parseFloat(d[0].lat);
       userLon=parseFloat(d[0].lon);
+      userState=(d[0].address&&d[0].address.state)||null;
       var name=d[0].display_name.split(',').slice(0,2).join(',');
       document.getElementById('g-loc-display').textContent='Location: '+name;
       return {lat:userLat,lon:userLon};
@@ -850,7 +862,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
 // next Fetch geocodes what is in the box (the same handler exists in /planting-date).
 document.getElementById('g-zip').addEventListener('input',function(){
   zipTouched=true;
-  userLat=null;userLon=null;
+  userLat=null;userLon=null;userState=null;
   realAccum=null;realDays=null;realThrough=null;
   var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
   document.getElementById('g-loc-display').textContent='Your location appears here after fetching';
@@ -924,7 +936,7 @@ function calcGDU(){
     ['r-total','r-stage','r-days','r-gdu-day','r-target','r-remaining','r-days-left','r-pct','r-mat-date'].forEach(function(id){d0(id,'-');});
     d0('r-total-unit','GDUs accumulated');
     renderProgLabels(null,null);
-    d0('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
+    d0('r-mat-lbl',(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', Wisconsin rates');
     var fv0=document.getElementById('r-frost-verdict');if(fv0){fv0.textContent='-';fv0.style.color='var(--text-muted)';}
     d0('r-mat-note',bad);
     var arc0=document.getElementById('arc-fill');if(arc0)arc0.style.strokeDashoffset='257';
@@ -936,14 +948,15 @@ function calcGDU(){
   var stages=crop==='corn'?CORN_STAGES:BEAN_STAGES;
   // Corn: rm*22+250, an AGSIST line through K-State (110-day ~2,670) and Purdue (112-day ~2,700). Soybean: NDSU-anchored line, MG 00.8-1.1 only;
   // any other MG gets no target (null), and with it no R8 date and no frost verdict.
-  var gduTarget=crop==='corn'?Math.round(rm*22+250):beanTarget(rm);
+  // Corn target is rounded to the nearest 50: the line is a rule of thumb, so more digits would overstate it.
+  var gduTarget=crop==='corn'?Math.round((rm*22+250)/50)*50:beanTarget(rm);
   // Reconcile the stage table to THIS hybrid: scale every threshold so the final
   // stage (black layer / R8) equals the hybrid's rated GDU target. Keeps the gauge %,
   // the stage badge, and the milestones internally consistent at every RM/MG.
   // With no target the page's own reference table is used unscaled.
   var refBL=stages[stages.length-1].gdu;
   var scale=(gduTarget!=null&&refBL>0)?gduTarget/refBL:1;
-  var scaledStages=stages.map(function(st){return {s:st.s,gdu:Math.round(st.gdu*scale),key:st.key,icon:st.icon,desc:st.desc};});
+  var scaledStages=stages.map(function(st){return {s:st.s,gdu:Math.round(st.gdu*scale),hi:st.hi?Math.round(st.hi*scale):null,key:st.key,icon:st.icon,desc:st.desc};});
 
   var gduRemaining=gduTarget!=null?Math.max(0,gduTarget-accumGDU):null;
   var pctDone=gduTarget!=null?Math.min(100,(accumGDU/gduTarget)*100):null;
@@ -968,13 +981,17 @@ function calcGDU(){
       if(matDate)daysLeft=Math.max(0,Math.round((matDate-todayD)/86400000));
     }
   }
+  // Fetched weather from outside the Upper Midwest: the GDUs so far are real, but the Wisconsin
+  // rates the projection uses do not fit there, so no date (and no frost verdict) is shown.
+  var outsideUM=(realAccum!=null&&userState&&UPPER_MW.indexOf(userState)<0)?userState:null;
+  if(outsideUM&&gduRemaining>0){matDate=null;daysLeft=null;}
   var thruTxt=(realAccum!=null&&realThrough)?new Date(realThrough+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):null;
 
   // Physiological maturity = black layer (R6) = the hybrid GDU target. Same event; no separate hardcoded value.
 
   // Current stage (hybrid-scaled, so it agrees with the gauge)
   var currentStage=scaledStages[0].s;
-  for(var i=0;i<scaledStages.length;i++){if(accumGDU>=scaledStages[i].gdu)currentStage=scaledStages[i].s;}
+  for(var i=0;i<scaledStages.length;i++){if(accumGDU>=scaledStages[i].gdu)currentStage=(scaledStages[i].hi&&accumGDU<scaledStages[i].hi)?'near '+scaledStages[i].s+' (check the field)':scaledStages[i].s;}
 
   // Update DOM
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
@@ -993,17 +1010,17 @@ function calcGDU(){
   s('r-gdu-day',gduPerDay.toFixed(1)+' GDU/day');
   s('r-target',gduTarget!=null?gduTarget.toLocaleString():'-');
   s('r-target-sub',crop==='corn'?'to maturity':(gduTarget!=null?'to R8 \u00b7 NDSU model':'to R8'));
-  s('r-remaining',gduRemaining!=null?Math.round(gduRemaining).toLocaleString():'-');
+  s('r-remaining',gduRemaining!=null?(crop==='corn'?'~'+(Math.round(gduRemaining/50)*50).toLocaleString():Math.round(gduRemaining).toLocaleString()):'-');
   s('r-days-left',daysLeft!=null?daysLeft+' days':'-');
   s('r-pct',pctDone!=null?pctDone.toFixed(1)+'% complete':'-');
   s('r-mat-date',matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'-');
-  s('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
+  s('r-mat-lbl',(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', Wisconsin rates');
   // Frost-risk verdict: optional user frost date vs projected maturity
   var frostStr=document.getElementById('g-frost')?document.getElementById('g-frost').value:'';
   var fv=document.getElementById('r-frost-verdict');
   if(fv){
-    if(gduTarget==null){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
-    else if(!frostStr){ fv.textContent='Add frost date'; fv.style.color='var(--text-muted)'; }
+    if(gduTarget==null||(outsideUM&&!matDate)){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
+    else if(!frostStr){ fv.textContent='Add freeze date'; fv.style.color='var(--text-muted)'; }
     else if(!matDate){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
     else { var frostD=new Date(frostStr+'T00:00:00'); var margin=Math.round((frostD-matDate)/86400000);
       if(margin>=7){ fv.textContent='\u2713 '+margin+' days to spare'; fv.style.color='var(--green)'; }
@@ -1013,6 +1030,7 @@ function calcGDU(){
 
   var note='';
   if(gduTarget==null){note=beanNoTarget(rm)+' Stage shown from this page\u2019s soybean reference table, unscaled.';}
+  else if(outsideUM&&pctDone<100){note='No maturity date for '+outsideUM+'. The projection walks forward at Wisconsin monthly GDU rates, which do not fit there. The GDUs so far come from your own weather.';}
   else if(pctDone>=100){note='Crop has reached physiological maturity. Monitor for harvest timing.';}
   else if(daysLeft!=null&&daysLeft<14){note='Approaching maturity. Scout for stalk integrity and harvest timing.';}
   else if(daysLeft!=null){note='Projection uses the Wisconsin monthly average GDU per day from '+(thruTxt?'the day after '+thruTxt+', the last day in the weather archive,':'the day after the end date')+' on (the September rate is about half of July). Weather changes it.'+(crop==='corn'?'':' Soybean target: NDSU soybean GDD model, MG 00.8\u20131.1.');}
@@ -1064,7 +1082,7 @@ function renderMilestones(stages,accum){
     return '<div class="'+cls+'">'
       +'<div class="ms-icon">'+(isCurrent?st.icon:reached?'&#10003;':st.icon)+'</div>'
       +'<div class="ms-stage">'+st.s+'</div>'
-      +'<div class="ms-gdu">'+st.gdu.toLocaleString()+' GDU</div>'
+      +'<div class="ms-gdu">'+st.gdu.toLocaleString()+(st.hi?'\u2013'+st.hi.toLocaleString():'')+' GDU</div>'
       +'<div class="ms-desc">'+st.desc+'</div>'
       +'</div>';
   }).join('');
