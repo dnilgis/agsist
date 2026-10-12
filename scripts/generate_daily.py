@@ -153,6 +153,7 @@ from datetime import datetime, timezone, timedelta, date
 from contract_calendar import is_expired, holiday_name, next_live_year   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
 import arc_plc_link                         # first ARC/PLC mention links /arc-plc
+import pricefmt                            # ONE grain price/cents formatter (twin of AG.px)
 from pathlib import Path
 
 try:
@@ -651,7 +652,12 @@ def load_prices():
         pct = float(pct) if pct is not None else ((net / opn) * 100 if opn != 0 else 0.0)
         is_grain = key in GRAIN_KEYS
         if is_grain:
-            price_str = f"${close / 100:.2f}/bu"; chg_str = f"{net / 100:+.4f} ({pct:+.1f}%)"
+            # In cents with the pit's fractions, the way the prose must say it.
+            # This line used to read "+0.0125" (dollars, four places), and on
+            # 2026-10-12 the model wrote that 1.25-cent move as "a quarter
+            # cent". The price had the same problem: $4.7975 printed "$4.80".
+            price_str = pricefmt.price(close) + "/bu"
+            chg_str = f"{pricefmt.move(net, sign=True) or '0¢'} ({pct:+.1f}%)"
             locked_prices[key] = close / 100
         elif key in ("gold", "bitcoin"):
             price_str = f"${close:,.0f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close

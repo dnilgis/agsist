@@ -177,5 +177,32 @@ check(b["outside_the_pit"][0]["title"] == "NOAA winter outlook", "outside the pi
 check(g.daily_page_title({"headline": "Corn takes the brunt of wasde"}, "2026-10-11").startswith(
     "Corn takes the brunt of WASDE"), "the page title too")
 
+print("\n5. The 2026-10-12 cents and the USDA direction\n")
+# Shipped: corn "up a quarter cent" (board +1.25c), beans "slipped seven
+# cents" (board -9.25c), and "Friday's yield cut" after USDA raised corn to
+# 181.2 from 178.5. The model was shown the move as "+0.0125" dollars.
+import json as _json
+import briefing_gate as _bg  # noqa: E402
+ROOT = os.path.dirname(HERE)
+for rel in ("data/daily.json", "data/daily-archive/2026-10-12.json", "daily/2026-10-12.html"):
+    t = open(os.path.join(ROOT, rel), encoding="utf-8").read()
+    if not ('"date": "Monday, October 12, 2026"' in t or "2026-10-12" in rel):
+        continue
+    check("a quarter cent" not in t and "seven cents" not in t and "yield cut" not in t,
+          f"{rel}: the wrong figures are gone")
+    check("up 1\u00bc\u00a2" in t and "9\u00bc\u00a2" in t and "USDA raised the corn yield" in t,
+          f"{rel}: up 1\u00bc\u00a2, 9\u00bc\u00a2 and the yield raise are printed")
+_d = _json.load(open(os.path.join(ROOT, "data/daily-archive/2026-10-12.json"), encoding="utf-8"))
+_iss = []
+_bg.check_number_binding(_d, lambda c, m: _iss.append(("FAIL", c, m)), lambda c, m: _iss.append(("WARN", c, m)),
+                         archive_dir=os.path.join(ROOT, "data/daily-archive"))
+_bg.check_usda_revisions(_d, lambda c, m: _iss.append(("FAIL", c, m)), lambda c, m: _iss.append(("WARN", c, m)),
+                         est_path=os.path.join(ROOT, "data/analyst-estimates.json"))
+_bad = [m for s, c, m in _iss if c in ("bind:cents", "usda-revision")]
+check(not _bad, "the corrected issue passes the cents and USDA-direction checks", _bad)
+_src = open(os.path.join(HERE, "generate_daily.py"), encoding="utf-8").read()
+check("net / 100:+.4f" not in _src and "pricefmt.move(net, sign=True)" in _src,
+      "the model's price block states grain moves in cents (pricefmt), not dollars")
+
 print(f"\n{len(fails)} failure(s)")
 sys.exit(1 if fails else 0)
