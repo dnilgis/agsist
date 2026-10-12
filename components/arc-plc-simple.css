@@ -116,3 +116,6 @@
   .ap-sheet{width:auto;max-width:none;min-height:0;height:10.05in;margin:0;padding:0;box-shadow:none;overflow:hidden}
   .ap-find,.ap-seg,.ap-loc{display:none!important}
 }
+
+/* method-note fallback until the shared rule in styles.css lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem}

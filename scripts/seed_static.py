@@ -189,6 +189,13 @@ def _chg(q):
     return pricefmt.pct(p)
 
 
+def _chg_cents(q):
+    """Cents first, percent second, as the live tiles print it: '+1¾¢ (+0.36%)'."""
+    if q.get("netChange") is None:
+        return _chg(q)
+    return pricefmt.change(q["netChange"], q.get("pctChange"), arrow=False)[0]
+
+
 # Day-session close, Central time. CBOT grains 1:20 p.m. CT; CME live and
 # feeder cattle 1:05 p.m. CT. freshness.yml runs at 13:35 and 20:35 UTC, so the
 # morning run lands IN SESSION and prices.json then carries close_date = today
@@ -264,7 +271,7 @@ def px_table(rows, flabel, in_session=False):
         # proportional face and ranged left is the loudest "not a finance site"
         # signal there is; the styling rule lives once in components/styles.css.
         out.append('<tr><td>' + label + stale + '</td><td class="num">$' + usd +
-                   '</td><td class="num">' + (_chg(q) or "n/a") +
+                   '</td><td class="num">' + (_chg_cents(q) or "n/a") +
                    '</td><td class="num">' + rng + '</td></tr>')
     out.append("</tbody></table>")
     return "".join(out) if n else None
@@ -474,7 +481,23 @@ MK_MAP = [
 ]
 
 
-def _chg_str(net, pct, grain):
+_MK_TICK, _MK_CENTS, _MK_INDEX = {"cattle", "feeders", "hogs"}, {"soyoil"}, {"dollar", "sp500"}
+
+
+def _mk_num(v, key):
+    """markets.html num(): livestock to the tick, everything else two places."""
+    if key in _MK_TICK:
+        return pricefmt.cash(v, dollar=False)
+    return "{:,.2f}".format(float(_fixed(v, 2)))
+
+
+def _mk_price(c, key):
+    """markets.html dollar$(): $224.975, 67.72¢, 102.42 (index), $4,162.40."""
+    t = _mk_num(abs(float(c)), key)
+    return ("−" if float(c) < 0 else "") + ("" if key in _MK_INDEX or key in _MK_CENTS else "$") + t + ("¢" if key in _MK_CENTS else "")
+
+
+def _chg_str(net, pct, grain, key=None):
     """markets.html chgStr, character for character."""
     if net is None:
         return "-"
@@ -482,7 +505,7 @@ def _chg_str(net, pct, grain):
         return pricefmt.change(net, pct)[0]
     a = "▲" if net > 0 else ("▼" if net < 0 else "")
     s = "+" if net > 0 else ("−" if net < 0 else "")
-    return f"{a + ' ' if a else ''}{s}{_fixed(abs(net), 2)} ({pricefmt.pct(pct)})"
+    return f"{a + ' ' if a else ''}{s}{_mk_num(abs(net), key)}{'¢' if key in _MK_CENTS else ''} ({pricefmt.pct(pct)})"
 
 
 def seed_markets(prices, today):
@@ -520,7 +543,7 @@ def seed_markets(prices, today):
             seeds["mk:" + cid] = "-"
             continue
         n += 1
-        seeds["mk:" + pid] = (pricefmt.price(c) if grain else "$" + "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
+        seeds["mk:" + pid] = (pricefmt.price(c) if grain else _mk_price(c, key))  # as the page script prints it
         cd = _iso_date(d.get("close_date")) or fd
         when = " &middot; " + _md(cd)
         if d.get("stale"):
@@ -528,7 +551,7 @@ def seed_markets(prices, today):
         if d.get("roll"):
             seeds["mk:" + cid] = "contract roll" + when
         else:
-            seeds["mk:" + cid] = _chg_str(d.get("netChange"), d.get("pctChange"), grain) + when
+            seeds["mk:" + cid] = _chg_str(d.get("netChange"), d.get("pctChange"), grain, key) + when
     for crop, sym in (("corn", "corn"), ("beans", "beans")):
         d = q.get(crop) or {}
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
@@ -838,7 +861,9 @@ def seed_scorecard(today):
 
 # --- /basis --------------------------------------------------------------------
 def _basis_money(v):
-    return ("-" if v < 0 else "+") + "$" + _fixed(abs(v), 2)
+    """USDA basis ($/bu, to the cent) in signed cents: −91¢, +4¢, even.
+    The twin of basis.html fmt$ (AG.px.basis on the rounded cent)."""
+    return pricefmt.basis(pricefmt._js_round(v * 100))
 
 
 def basis_summary(j, today=None, crop="Corn"):
@@ -913,7 +938,7 @@ def seed_basis(today):
             w = next(r for r in cr if r[2] == 0 and r[1].get("delta") is not None)
             parts.append(f"{word}: <strong>{under} of {n}</strong> regions more than 10&cent; under normal, "
                          f"{over} more than 10&cent; over, {near} within 10&cent; (weakest vs normal {_e(w[0])} "
-                         f"{_basis_money(w[1]['latest'])}/bu against {_basis_money(w[1]['avg5'])})")
+                         f"{_basis_money(w[1]['latest'])} against {_basis_money(w[1]['avg5'])})")
         seeds["basisstats"] = (f"USDA AgTransport elevator-bid basis against each region&rsquo;s own 5-year normal "
                                f"for the same week, week of {_mdy(wk)}. " + "; ".join(parts) +
                                ". Barge rates and origin-to-Gulf spreads below; USDA posts weekly.")
@@ -921,7 +946,7 @@ def seed_basis(today):
         seeds["basisheld"] = basis_held_text(j, "Corn", wk)
         h = [f"<caption>Corn, week of {_mdy(wk)} &middot; weakest vs normal first</caption>"
              "<tr><th>Region</th><th style=\"text-align:right\">Basis now</th>"
-             "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, $/bu</th></tr>"]
+             "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, cents/bu</th></tr>"]
         for name, s, age in rows:
             if age != 0:
                 now = f"no USDA posting for the week of {_md(wk)}; last {_md(_iso_date(s['date']))}"
@@ -930,7 +955,7 @@ def seed_basis(today):
                 now = _basis_money(s["latest"])
                 dl = s.get("delta")
                 # a delta that rounds to a cent of nothing reads "even", not "+$0.00"
-                vs = ("" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
+                vs = ("" if dl is None else _basis_money(dl))
             nrm = "" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
             h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
         seeds["basistable"] = "".join(h)

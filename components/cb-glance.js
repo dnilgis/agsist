@@ -54,7 +54,7 @@
     return s + '¢';
   }
   function signedCents(c) { return (c === 0 ? '' : minus(c)) + centsTxt(c); }
-  function money(p) { return '$' + p.toFixed(2); }
+  function money(p) { return AG.px.cash(p); }   // as posted (components/util.js)
   function shortMonth(k) {                      /* '2026-10' -> 'Oct 26' */
     if (k === 'spot') return 'Spot';
     var p = k.split('-'); return MON[+p[1] - 1] + ' ' + p[0].slice(2);
@@ -157,7 +157,7 @@
         if (!b) { h += '<td class="cbg-blank"><span class="cbg-sr">not posted</span></td>'; return; }
         var p = A.ppu(b.cashPrice), isBest = best[c] != null && Math.abs(p - best[c]) < 1e-9;
         var bc = A.basisCents(b.basis, b);
-        var title = (b.deliveryMonth ? 'Board says: ' + b.deliveryMonth : '') + (bc != null ? ' · basis ' + signedCents(bc) : '');
+        var title = (b.deliveryMonth ? 'Board says: ' + b.deliveryMonth : '') + (bc != null ? ' · basis ' + AG.px.basis(bc) : '');
         h += '<td class="' + (isBest ? 'cbg-best' : '') + '" title="' + esc(title) + '">' + money(p) + (isBest ? '<span class="cbg-sr"> best in column</span>' : '') + '</td>';
       });
       h += '</tr>';
@@ -356,7 +356,7 @@
         var more = it.mv.length > 1 ? (it.same ? ' (and ' + (it.mv.length - 1) + ' more month' + (it.mv.length > 2 ? 's' : '') + ', same move)' : ' (' + (it.mv.length - 1) + ' other month' + (it.mv.length > 2 ? 's' : '') + ' moved too)') : '';
         h += '<li><span class="cbg-mv ' + (up ? 'cbg-up' : 'cbg-dn') + '" aria-hidden="true">' + (up ? '▲' : '▼') + '</span> ' +
           '<b>' + esc(nameOf(it.e)) + '</b> ' + esc(it.crop) + ' ' + esc(mon) + ' basis <b class="' + (up ? 'cbg-up' : 'cbg-dn') + '">' + signedCents(f.d) + '</b> ' + esc(f.when) +
-          ' <span class="cbg-mut">(' + signedCents(f.from) + ' → ' + signedCents(f.to) + ')' + esc(more) + (it.e.distance != null ? ' · ' + Math.round(it.e.distance) + ' mi' : '') + '</span></li>';
+          ' <span class="cbg-mut">(' + AG.px.basis(f.from) + ' → ' + AG.px.basis(f.to) + ')' + esc(more) + (it.e.distance != null ? ' · ' + Math.round(it.e.distance) + ' mi' : '') + '</span></li>';
       });
       h += '</ul>';
       if (items.length > MOVED_FIRST) h += '<p class="cbg-foot"><button type="button" class="cbg-link" data-cbg="moved-all">' + (MOVED_ALL ? 'Show fewer' : 'Show all ' + items.length) + '</button></p>';

@@ -129,6 +129,99 @@ _PCT_NOT_PRICE = re.compile(
     r'dough|dent|silking|podd\w*|moisture|protein|test weight|share|of the crop|'
     r'unemploy\w*|inflation|interest rate|coverage level|probability|odds)\b', re.I)
 _CENTS = re.compile(r'\b(\d+(?:[.\u00bd]\d+)?|\d+)\s?(?:cents|cent|\u00a2)\b', re.I)
+# ── CENTS WRITTEN AS WORDS WERE INVISIBLE ────────────────────────────────────
+# 2026-10-12 shipped "Corn ... up a quarter cent" on a 1.25-cent session and
+# "Soybeans slipped seven cents" on a 9.25-cent one. _CENTS above reads digits
+# only, so neither sentence was checked at all. It also never matched "4¢ " (a
+# word boundary after the cent sign needs a letter next) or "4½ cents" (the
+# half sign must be followed by a digit). _cent_claims() reads all of them:
+# digits, glyphs (¼ ½ ¾), slashes (4 1/4), word numbers ("seven", "twenty-one"),
+# "and a quarter", "a quarter cent", "half a cent", "a penny", "a nickel", "a dime".
+# _CENTS stays for anything that imports it; the binding uses _cent_claims().
+_NUM_WORDS = {w: i for i, w in enumerate(
+    'zero one two three four five six seven eight nine ten eleven twelve thirteen '
+    'fourteen fifteen sixteen seventeen eighteen nineteen'.split())}
+_NUM_WORDS.update({w: 10 * (i + 2) for i, w in enumerate(
+    'twenty thirty forty fifty sixty seventy eighty ninety'.split())})
+_NUM_WORD_RX = re.compile(
+    r'\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[- ](one|two|three|four|five|six|seven|eight|nine))?\b'
+    r'|\b(' + '|'.join(sorted(_NUM_WORDS, key=len, reverse=True)) + r')\b', re.I)
+# The percentage window list minus "overnight": the issue LOCKS overnight
+# quotes, so "at $4.81 overnight, up a quarter cent" is the board's own move.
+_CENT_PERIOD = re.compile(
+    r'\b(early|intraday|at one point|off (?:its|the) (?:high|low)|from (?:its|the) (?:high|low)|'
+    r'week\w*|month\w*|year\w*|ytd|year[- ]to[- ]date|session[- ]high|since|so far|'
+    r'52[- ]week|five[- ]year|average)\b', re.I)
+_CENT_UNIT = r'(?:\s*-?\s*(?:of\s+a\s+)?(?:cents?\b|\u00a2))'
+_FRAC_VAL = {'\u00bc': .25, '\u00bd': .5, '\u00be': .75, '1/4': .25, '1/2': .5, '3/4': .75}
+_CENT_AMOUNT = re.compile(
+    r'(?<![\d.$\u00bc\u00bd\u00be/])(\d+(?:\.\d+)?)?\s?([\u00bc\u00bd\u00be]|(?<=\d) [13]/[24]|(?<!\d)[13]/[24])?'
+    + _CENT_UNIT, re.I)
+
+
+def _cent_claims(sent):
+    """Every cents figure the sentence states, as (value_in_cents, as_written).
+
+    >>> [v for v, _ in _cent_claims("up a quarter cent from Friday")]
+    [0.25]
+    >>> [v for v, _ in _cent_claims("Soybeans slipped seven cents")]
+    [7.0]
+    """
+    t = sent.replace('\u2011', '-')
+    def words(m):
+        if m.group(1):
+            return str(_NUM_WORDS[m.group(1).lower()] + (_NUM_WORDS[m.group(2).lower()] if m.group(2) else 0))
+        return str(_NUM_WORDS[m.group(3).lower()])
+    t = _NUM_WORD_RX.sub(words, t)
+    # "a penny and a half", "a cent and a half"
+    t = re.sub(r'\b(?:a|1)\s+(?:penny|cent)\s+and\s+a\s+half\b', '1\u00bd cents', t, flags=re.I)
+    # coins first: they carry their own unit
+    t = re.sub(r'\b(?:a|1)\s+penny\b', '1 cent', t, flags=re.I)
+    t = re.sub(r'\b(?:a|1)\s+nickel\b', '5 cents', t, flags=re.I)
+    t = re.sub(r'\b(?:a|1)\s+dime\b', '10 cents', t, flags=re.I)
+    look = r'(?=' + _CENT_UNIT + r')'
+    # "4 and a quarter cents", "two and a half cents", "4 and three-quarters cents"
+    t = re.sub(r'(\d)\s+and\s+(?:a\s+)?quarter' + look, '\\1\u00bc', t, flags=re.I)
+    t = re.sub(r'(\d)\s+and\s+(?:a\s+)?half' + look, '\\1\u00bd', t, flags=re.I)
+    t = re.sub(r'(\d)\s+and\s+(?:3|three)[- ]quarters?' + look, '\\1\u00be', t, flags=re.I)
+    # "a quarter cent", "a quarter of a cent", "half a cent", "a half-cent",
+    # "three-quarters of a cent"
+    t = re.sub(r'\b(?:3|three)[- ]quarters?' + look, '\u00be', t, flags=re.I)
+    t = re.sub(r'\b(?:a|1)\s+quarter' + look, '\u00bc', t, flags=re.I)
+    t = re.sub(r'\bhalf\s+an?' + r'(?=\s*(?:cents?\b|\u00a2))', '\u00bd', t, flags=re.I)
+    t = re.sub(r'\ba\s+half' + look, '\u00bd', t, flags=re.I)
+    # a bare "a cent" / "one cent" is one cent
+    t = re.sub(r'(?<!of )\ba(?=\s+cent\b)', '1', t, flags=re.I)
+    out = []
+    for m in _CENT_AMOUNT.finditer(t):
+        whole, frac = m.group(1), (m.group(2) or '').strip()
+        if not whole and not frac:
+            continue
+        # "the same 15-cent range", "down 20 to 40 cents for the week": a
+        # range or another window, not the session's move. Same window rule
+        # the percentages use.
+        if re.match(r'\s*(?:wide\s+)?(?:range|band|spread|trading range)\b', t[m.end():], re.I):
+            continue
+        if _CENT_PERIOD.search(t[max(0, m.start() - 45):min(len(t), m.end() + 45)]):
+            continue
+        try:
+            v = float(whole) if whole else 0.0
+        except ValueError:
+            continue
+        v += _FRAC_VAL.get(frac, 0.0)
+        out.append((v, m.group(0).strip()))
+    return out
+
+
+def _cent_tol(net):
+    """How far a stated cents move may sit from the board's and still be the
+    same move. A flat 1.5 cents let "a quarter cent" stand for 1.25 (off by
+    1.0) and was a third of the whole move. Grains trade in quarter cents, so
+    honest rounding to the nearest cent is half a cent; the band widens with
+    the move (15% of it) up to the old 1.5-cent ceiling and never past it.
+        1.25-cent move -> 0.5      9.25 -> 1.39      25.75 -> 1.5
+    """
+    return max(0.5, min(_CENT_TOL, 0.15 * abs(net)))
 _SENT_SPLIT = re.compile(r'(?<=[.!?])\s+|\n+')
 _FLAT_BAND = 0.25   # |pct| under this may honestly be called flat
 _PCT_TOL   = 0.15   # percentage points
@@ -340,6 +433,7 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
     # and it has been going out.
     HARD = F
     DIR_BLOCK_PCT = 2.0
+    CENT_BLOCK_MIN, CENT_BLOCK_SHARE = 1.0, 0.5
 
     if not strict:
         F = W
@@ -434,15 +528,29 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
 
             # --- cents, grains only ------------------------------------------
             if grain and net is not None:
-                for m in _CENTS.finditer(sent):
-                    try:
-                        claim = float(str(m.group(1)).replace('\u00bd', '.5'))
-                    except ValueError:
+                own_board = isinstance(market_board.locked_row(daily, key), dict)
+                for claim, said in _cent_claims(sent):
+                    off = round(abs(claim - abs(net)), 4)   # 4.81 - 4.7975 is 1.2499999 cents
+                    if off <= _cent_tol(net):
                         continue
-                    if abs(claim - abs(net)) > _CENT_TOL:
-                        F('bind:cents',
-                          '%s says %s cents for %s but the board moved %+.1f cents -- "%s"'
-                          % (loc, m.group(1), key, net, sent.strip()[:110]))
+                    # A GROSS MISS ON THE ISSUE'S OWN BOARD BLOCKS. Swept
+                    # 2026-10-12 over the 28 archived issues that carry
+                    # locked_changes (their previous close was recorded by the
+                    # same fetch that set the price, so there is no window to
+                    # argue about). Off by a cent or more AND by half the move
+                    # or more fired on two issues, both indefensible:
+                    #   2026-10-07 corn "down seven and a half cents"  board -3.75
+                    #   2026-10-12 corn "up a quarter cent"            board +1.25
+                    # Everything smaller ("seven cents" for 9.25, "five cents"
+                    # for 6.25) stays a warning. Older issues bind against the
+                    # archive walk and never block on cents.
+                    big = own_board and off >= max(CENT_BLOCK_MIN, CENT_BLOCK_SHARE * abs(net))
+                    (HARD if big else F)(
+                        'bind:cents',
+                        '%s says "%s" (%g cents) for %s but the board moved %+.2f cents%s -- "%s"'
+                        % (loc, said, claim, key, net,
+                           '  [BLOCKING: off by %.2f cents on its own board]' % off if big else '',
+                           sent.strip()[:110]))
 
             # --- direction words ---------------------------------------------
             # BOUND ONLY WHEN THE SENTENCE IS PLAINLY ABOUT THIS PRICE: the verb
@@ -484,6 +592,112 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
                     % (loc, key, word, hit.group(0), pct,
                        '  [BLOCKING: past the %.1f%% line]' % DIR_BLOCK_PCT if big else '',
                        sent.strip()[:110]))
+
+
+# ══ USDA REVISION DIRECTION ════════════════════════════════════════════════
+# 2026-10-12 told readers to watch harvest pace "after Friday's yield cut".
+# Friday's Crop Production RAISED corn to 181.2 from 178.5 and soybeans to 53.1
+# from 52.8; the next watch-list line even called it "record-crop weight". The
+# numbers were in data/analyst-estimates.json the whole time, typed in by hand
+# the afternoon of the report, and nothing compared the prose to them.
+#
+# The check: a sentence that says USDA cut or raised a yield, within a week of
+# a report that revised one, must agree with the file's direction for the crop
+# it names (every revised yield in the report when it names none). Hypotheticals
+# and previews ("a yield cut would...", "traders expect a cut") are left alone.
+# A contradiction BLOCKS: it is a stated fact about a federal report under a
+# real man's byline, the class the fabricated-WASDE check already blocks.
+_REV_CUT = re.compile(r'\b(cut|cuts|cutting|lower(?:ed|ing|s)?|reduc\w*|trimm?\w*|slash\w*|shav\w*|'
+                      r'took down|dropp\w*|downgrad\w*)\b', re.I)
+_REV_RAISE = re.compile(r'\b(rais\w*|increas\w*|hik\w*|boost\w*|bump\w*|lift\w*|upgrad\w*)\b', re.I)
+_REV_HYPO = re.compile(r'\b(would|could|might|may|if|unless|whether|expect\w*|estimat\w*|survey\w*|'
+                       r'consensus|guess\w*|ahead of|preview|another|any|fear\w*|hop\w*|risk)\b', re.I)
+_REV_CROP = (('corn', re.compile(r'\bcorn\b', re.I)),
+             ('soy', re.compile(r'\b(soy\w*|beans?)\b', re.I)),
+             ('wheat', re.compile(r'\bwheat\b', re.I)))
+# The sentence must be about the report: "a cold snap now cuts yield" is
+# agronomy, not a claim about USDA.
+_REV_SOURCE = re.compile(r"\b(USDA|WASDE|NASS|Crop Production|report\w*|"
+                         r"(?:Monday|Tuesday|Wednesday|Thursday|Friday)'s|last week's)", re.I)
+_REV_MONTHS = ('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec')
+_REV_MONTH_RX = re.compile(r'\b(jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d|'
+                           r'\b(january|february|march|april|june|july|august|september|october|'
+                           r'november|december)\b', re.I)
+REVISION_WINDOW_DAYS = 7
+
+
+def _yield_revisions(est, ref):
+    """{crop: +1 raised / -1 cut} for yields revised by the latest report
+    dated before `ref` and within REVISION_WINDOW_DAYS of it."""
+    best = None
+    for r in (est or {}).get('reports') or []:
+        try:
+            d = dt.date.fromisoformat(str(r.get('date'))[:10])
+        except ValueError:
+            continue
+        if not (0 < (ref - d).days <= REVISION_WINDOW_DAYS):
+            continue
+        revs = {}
+        for m in r.get('metrics') or []:
+            k, a, u = str(m.get('key') or ''), m.get('actual'), m.get('usda_current')
+            if 'yield' not in k or not isinstance(a, (int, float)) or not isinstance(u, (int, float)) or a == u:
+                continue
+            revs[k.split('_')[0]] = 1 if a > u else -1
+        if revs and (best is None or d > best[0]):
+            best = (d, r.get('report') or 'USDA', revs)
+    return best
+
+
+def check_usda_revisions(daily, F, W, est_path='data/analyst-estimates.json', today=None):
+    """Prose that says USDA cut or raised a yield must match the report."""
+    ref = None
+    for cand in (daily.get('date'), str(daily.get('generated_at') or '')[:10]):
+        try:
+            ref = dt.date.fromisoformat(str(cand)[:10]); break
+        except Exception:
+            continue
+    ref = ref or today or dt.date.today()
+    try:
+        est = json.load(open(est_path))
+    except Exception as e:
+        W('usda-revision', 'could not read %s (%s)' % (est_path, type(e).__name__))
+        return
+    best = _yield_revisions(est, ref)
+    if not best:
+        return
+    rdate, rname, revs = best
+    for loc, text in prose_fields(daily):
+        if loc.startswith('yesterdays_call'):
+            continue
+        for sent in _SENT_SPLIT.split(text):
+            if not re.search(r'\byields?\b', sent, re.I) or _REV_HYPO.search(sent):
+                continue
+            if not _REV_SOURCE.search(sent):
+                continue
+            # "cut corn yield 2.3 bu from July on the Aug 12 WASDE" is history
+            # about another report; only the report's own month binds.
+            named = {(m.group(1) or m.group(2))[:3].lower() for m in _REV_MONTH_RX.finditer(sent)}
+            if named and _REV_MONTHS[rdate.month - 1] not in named:
+                continue
+            said = []
+            for rx, sign in ((_REV_CUT, -1), (_REV_RAISE, 1)):
+                for m in rx.finditer(sent):
+                    # the verb must sit next to "yield": "yield cut", "cut its
+                    # corn yield", "raised the corn yield to 181.2"
+                    win = sent[max(0, m.start() - 25):m.end() + 25]
+                    if re.search(r'\byields?\b', win, re.I):
+                        said.append((sign, m.group(0)))
+            signs = {sg for sg, _ in said}
+            if len(signs) != 1:
+                continue                      # no claim, or both directions named
+            sign = signs.pop()
+            crops = [c for c, rx in _REV_CROP if rx.search(sent) and c in revs] or list(revs)
+            if any(revs[c] == sign for c in crops):
+                continue
+            F('usda-revision',
+              '%s says USDA %s the %s yield, but the %s (%s) %s it -- "%s"'
+              % (loc, 'raised' if sign > 0 else 'cut', '/'.join(crops), rname, rdate.isoformat(),
+                 'raised' if revs[crops[0]] > 0 else 'cut', sent.strip()[:110]))
 
 
 def wasde_fabrication_hits(daily, today=None):
@@ -819,6 +1033,12 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
         check_number_binding(daily, F, W, archive_dir, today, bind_strict)
     except Exception as _e:
         W('bind:error', 'number binding could not run (%s: %s)' % (type(_e).__name__, _e))
+
+    # A stated USDA yield revision must point the way the report did.
+    try:
+        check_usda_revisions(daily, F, W, today=today)
+    except Exception as _e:
+        W('usda-revision', 'revision check could not run (%s: %s)' % (type(_e).__name__, _e))
 
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues

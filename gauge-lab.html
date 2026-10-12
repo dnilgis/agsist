@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111a0a">
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <title>Rain Gauge Reader (Lab) | AGSIST</title>
+  <meta name="description" content="Prototype: photograph a 10:1 rain gauge tube with the AGSIST scale strip behind it, check the reading and keep a rain log on your phone.">
+  <meta name="robots" content="noindex,nofollow">
+  <!--
+    Unlisted prototype (2026-10-12). Not in the sitemap, menu, footer, search
+    index or llms.txt, and noindex,nofollow. The QR code on the gauge opens
+    /gauge-lab?g=<gauge id>.
+      reading   components/gauge-read.js (pure, node --test test/gauge-read.test.mjs)
+      page      components/gauge-lab.js
+      strip     data/gauge-strip.json (also drawn here as the print-at-100% test strip)
+      test set  scripts/gauge_synth.py + scripts/gauge_eval.mjs
+    Photos never leave the device. The log is localStorage, keyed by ?g=.
+  -->
+  <style>
+    .gl-main { max-width: 980px; margin: 0 auto; padding: var(--page-top) 16px 48px; }
+    .gl-main .page-lede { margin-top: .6rem; }
+    .gl-gauge { margin-top: .5rem; font-size: var(--fs-sm); color: var(--text-muted); }
+    .gl-gauge b { font-family: var(--font-mono); color: var(--text-dim); }
+    .gl-sec { margin-top: 1.6rem; }
+    .gl-status, #gl-log { scroll-margin-top: 96px; }
+    .gl-sec > h2 { margin-bottom: .6rem; }
+    .gl-start { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    .gl-start[disabled] { opacity: .6; }
+    .gl-file { position: relative; }
+    .gl-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .gl-file:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .gl-hint { margin-top: .6rem; font-size: var(--fs-sm); color: var(--text-muted); max-width: 46rem; line-height: 1.55; }
+    .gl-status { margin-top: 1rem; padding: .7rem .9rem; border-radius: var(--r-sm); border: 1px solid var(--border-2); background: var(--surface); font-size: var(--fs-sm); line-height: 1.5; color: var(--text-dim); }
+    .gl-status.is-ok { border-color: rgba(var(--green-rgb), .5); }
+    .gl-status.is-bad { border-color: rgba(var(--red-rgb), .6); color: var(--text); }
+    .gl-card { margin-top: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-r); padding: 1rem; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .gl-views { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: .75rem; align-items: start; }
+    .gl-views canvas { display: block; width: 100%; height: auto; border-radius: var(--r-sm); border: 1px solid var(--border-2); background: #888; touch-action: manipulation; }
+    .gl-views.is-tap canvas { cursor: crosshair; outline: 2px dashed var(--gold); outline-offset: 2px; }
+    .gl-cap { font-size: var(--fs-xs); color: var(--text-muted); margin-top: .3rem; }
+    .gl-photo-wrap canvas { display: block; max-width: 100%; height: auto; border-radius: var(--r-sm); }
+    .gl-side { display: flex; flex-direction: column; gap: .9rem; min-width: 0; }
+    .gl-read { display: flex; align-items: center; gap: .5rem; }
+    .gl-read .btn { min-width: 52px; font-size: 1.4rem; padding: .3rem .6rem; }
+    .gl-num { display: flex; align-items: baseline; gap: .35rem; min-width: 0; }
+    .gl-num input { width: 4.2ch; min-width: 0; font-family: var(--font-mono); font-size: clamp(2.6rem, 9vw, 3.6rem); font-weight: 800; line-height: 1.05; color: var(--text); background: transparent; border: 0; border-bottom: 2px solid var(--border-2); padding: 0; text-align: right; -moz-appearance: textfield; appearance: textfield; }
+    .gl-num input::-webkit-outer-spin-button, .gl-num input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .gl-num input:focus { outline: none; border-bottom-color: var(--gold); }
+    .gl-num span { font-size: 1.4rem; font-weight: 700; color: var(--text-dim); }
+    .gl-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-end; }
+    .gl-row .field { flex: 1 1 13rem; }
+    .gl-note { font-size: var(--fs-xs); color: var(--text-muted); line-height: 1.5; }
+    .gl-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+    .gl-tot { background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-r); padding: .7rem .8rem; min-width: 0; }
+    .gl-tot b { display: block; font-family: var(--font-mono); font-size: 1.5rem; line-height: 1.15; color: var(--text); }
+    .gl-tot span { font-size: var(--fs-xs); color: var(--text-muted); }
+    .gl-tot .field { margin-top: .35rem; }
+    .gl-table { width: 100%; border-collapse: collapse; margin-top: .9rem; }
+    .gl-table td { padding: .45rem .3rem; border-top: 1px solid var(--border); vertical-align: middle; font-size: var(--fs-sm); }
+    .gl-table .num { font-family: var(--font-mono); font-weight: 700; white-space: nowrap; }
+    .gl-act { text-align: right; }
+    .gl-act .btn + .btn { margin-left: .35rem; }
+    .gl-sm { padding: .35rem .7rem; font-size: var(--fs-sm); }
+    .gl-edit { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-end; }
+    .gl-edit .field { flex: 1 1 11rem; }
+    .gl-edit-b { display: flex; gap: .4rem; }
+    .gl-dl { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+    .gl-coco-wrap { margin-top: 1rem; }
+    .gl-coco-wrap textarea { width: 100%; min-height: 5.2rem; font-family: var(--font-mono); font-size: max(16px, var(--fs-sm)); color: var(--text); background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--r-sm); padding: .6rem .75rem; resize: vertical; }
+    .gl-undo { margin-top: .6rem; display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; font-size: var(--fs-sm); color: var(--text-dim); }
+    .gl-check { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; font-size: var(--fs-sm); color: var(--text-dim); }
+    .gl-check svg { flex: none; }
+    .gl-tiles { display: flex; gap: .5in; flex-wrap: wrap; margin-top: .6rem; }
+    .gl-tile { margin: 0; }
+    .gl-tile figcaption { font-size: 12px; line-height: 1.35; color: var(--text-dim); margin-bottom: 4px; max-width: 3in; }
+    .gl-sheet-screen { overflow: hidden; }
+    .gl-sheet-screen .gl-tiles svg { width: 120px; height: auto; }
+    .gl-steps { margin: .6rem 0 0 1.1rem; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-dim); max-width: 46rem; }
+    .gl-print-only { display: none; }
+    @media (max-width: 760px) {
+      .gl-card { grid-template-columns: minmax(0, 1fr); }
+      .gl-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gl-totals .gl-tot:last-child { grid-column: 1 / -1; }
+      .gl-table tr { display: grid; grid-template-columns: 1fr auto; }
+      .gl-table td { border-top: 0; }
+      .gl-table tr { border-top: 1px solid var(--border); padding: .25rem 0; }
+      .gl-table td.gl-act { grid-column: 1 / -1; text-align: left; padding-top: 0; }
+    }
+    @media print {
+      @page { size: letter; margin: 0.4in; }
+      html, body { background: #fff !important; color: #000 !important; }
+      body > *:not(main), .gl-main > *:not(#gl-strip) { display: none !important; }
+      .gl-main { padding: 0; max-width: none; }
+      #gl-strip { margin: 0; }
+      #gl-strip .gl-screen-only { display: none !important; }
+      #gl-strip .gl-print-only { display: block; }
+      #gl-strip h2, #gl-strip p, #gl-strip li, .gl-tile figcaption, .gl-check { color: #000 !important; }
+      .gl-sheet-screen .gl-tiles svg { width: auto; }
+      .gl-tiles { gap: 0.5in; break-inside: avoid; }
+      .gl-check svg line { stroke: #000; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+
+  <main id="main" class="gl-main">
+    <div class="page-head">
+      <p class="page-kicker">Lab · unlisted prototype</p>
+      <h1>Rain gauge reader</h1>
+      <p class="page-lede">Take a photo of the tube with the scale strip behind it. The page finds the water line, you check it, and it goes in your rain log. The photo stays on this phone.</p>
+      <p class="gl-gauge" id="gl-gauge" hidden>Gauge <b id="gl-gauge-id"></b></p>
+    </div>
+
+    <section class="gl-sec" aria-labelledby="gl-h-photo">
+      <h2 class="sec-h" id="gl-h-photo">Read the gauge</h2>
+      <fieldset class="gl-start" id="gl-start" disabled>
+        <legend class="sr-only">Photo of the gauge</legend>
+        <label class="btn btn-primary gl-file">Take a photo
+          <input type="file" id="gl-cam" accept="image/*" capture="environment">
+        </label>
+        <label class="btn btn-secondary gl-file">Pick from photos
+          <input type="file" id="gl-lib" accept="image/*">
+        </label>
+      </fieldset>
+      <p class="gl-hint">Hold the phone level with the water, straight on, with all four black corner squares in the frame. Shade the tube if the sun is on it. Reading it by eye? <button type="button" class="btn btn-secondary gl-sm" id="gl-type">Type it in</button></p>
+      <p class="gl-status" id="gl-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="gl-card" id="gl-card" hidden>
+        <div>
+          <div class="gl-views" id="gl-views" hidden>
+            <div>
+              <canvas id="gl-over" width="240" height="848" aria-label="The whole strip, straightened, with the water line"></canvas>
+              <p class="gl-cap">Whole strip</p>
+            </div>
+            <div>
+              <canvas id="gl-zoom" width="360" height="180" aria-label="Close-up of the water line"></canvas>
+              <p class="gl-cap">Close-up. The orange line is the reading.</p>
+            </div>
+          </div>
+          <div class="gl-photo-wrap" id="gl-photo-wrap" hidden>
+            <canvas id="gl-photo" width="300" height="400" aria-label="Your photo"></canvas>
+            <p class="gl-cap">Your photo</p>
+          </div>
+        </div>
+        <div class="gl-side">
+          <div class="gl-read">
+            <button type="button" class="btn btn-secondary" id="gl-minus" aria-label="Take off 0.01 inch">−</button>
+            <label class="gl-num"><span class="sr-only">Rain in inches</span>
+              <input type="number" id="gl-val" inputmode="decimal" step="0.01" min="0" max="9.99" value="0.00"><span>in</span>
+            </label>
+            <button type="button" class="btn btn-secondary" id="gl-plus" aria-label="Add 0.01 inch">+</button>
+          </div>
+          <div><button type="button" class="chip" id="gl-tap" aria-pressed="false">Tap the water line</button></div>
+          <div class="gl-row">
+            <label class="field"><span>Date and time you read the gauge</span><input type="datetime-local" id="gl-when"></label>
+            <button type="button" class="btn btn-secondary" id="gl-now">Now</button>
+          </div>
+          <p class="gl-note">Morning reading? Use the time you read it. CoCoRaHS files a 7 AM reading under that day, and it covers the 24 hours before.</p>
+          <div><button type="button" class="btn btn-primary" id="gl-logit">Log it</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gl-sec" id="gl-log" aria-labelledby="gl-h-log">
+      <h2 class="sec-h" id="gl-h-log">Your rain log</h2>
+      <div class="gl-totals">
+        <div class="gl-tot"><b id="gl-month">0.00 in</b><span>This month</span></div>
+        <div class="gl-tot"><b id="gl-season">0.00 in</b><span>Season</span>
+          <label class="field"><span>Season starts</span><input type="date" id="gl-season-start"></label>
+        </div>
+        <div class="gl-tot"><b id="gl-count">0 readings</b><span>On this phone</span></div>
+      </div>
+      <p class="gl-hint" id="gl-nosave" hidden>This browser isn't saving the log (private browsing does that). Download the CSV before you close the page.</p>
+      <p class="gl-hint" id="gl-empty">Nothing logged yet.</p>
+      <table class="gl-table" id="gl-table" hidden><tbody id="gl-rows"></tbody></table>
+      <div class="gl-undo" id="gl-undo" hidden><span id="gl-undo-msg"></span><button type="button" class="btn btn-secondary gl-sm" id="gl-undo-b">Undo</button></div>
+      <div class="gl-dl" id="gl-dl" hidden>
+        <button type="button" class="btn btn-secondary" id="gl-csv">Download CSV</button>
+        <button type="button" class="btn btn-secondary" id="gl-ics">Download calendar (.ics)</button>
+      </div>
+      <div class="gl-coco-wrap" id="gl-coco-wrap" hidden>
+        <label class="field"><span>For your CoCoRaHS report</span><textarea id="gl-coco" readonly rows="3"></textarea></label>
+        <div class="gl-dl"><button type="button" class="btn btn-secondary" id="gl-copy">Copy</button> <span class="gl-note" id="gl-copied" aria-live="polite"></span></div>
+        <p class="gl-note">CoCoRaHS doesn't take reports from other sites, so this page can't send it for you. Copy it, then enter it in your daily report at <a href="https://www.cocorahs.org/" rel="noopener">cocorahs.org</a>.</p>
+      </div>
+    </section>
+
+    <section class="gl-sec" id="gl-strip" aria-labelledby="gl-h-strip">
+      <h2 class="sec-h" id="gl-h-strip">Test strip</h2>
+      <p class="gl-hint gl-screen-only">Print this to try the reader before the AGSIST gauge exists. It fits any 10:1 tube that reads 0.00 to 1.00 in over 10 inches, like the inner tube of a CoCoRaHS 4-inch gauge.</p>
+      <div class="gl-screen-only"><button type="button" class="btn btn-primary" id="gl-print">Print the test strip</button></div>
+      <p class="gl-print-only"><b>AGSIST rain gauge test strip.</b> Print at 100% (Actual size), not Fit to page.</p>
+      <div class="gl-check">
+        <svg width="1in" height="0.25in" viewBox="0 0 1 0.25" aria-label="One inch check line"><line x1="0.005" y1="0.02" x2="0.005" y2="0.23" stroke="currentColor" stroke-width="0.01"/><line x1="0.995" y1="0.02" x2="0.995" y2="0.23" stroke="currentColor" stroke-width="0.01"/><line x1="0" y1="0.125" x2="1" y2="0.125" stroke="currentColor" stroke-width="0.012"/></svg>
+        <span>Check this line with a ruler. It should be exactly 1 inch. If not, print again at 100%.</span>
+      </div>
+      <ol class="gl-steps">
+        <li>Cut out both pieces on the gray outline. Lay piece B over the top of piece A so the tick marks line up, and tape or glue them.</li>
+        <li>Tape the strip flat behind the tube, blue stripe centered behind it. Line up the strip's 0.00 line with the tube's 0.00 mark.</li>
+        <li>Keep all four black squares in view beside the tube. Don't cover or trim them.</li>
+      </ol>
+      <div class="gl-sheet-screen"><div class="gl-tiles" id="gl-tiles"></div></div>
+    </section>
+
+    <div class="method-note">
+      <p><b>How it reads</b> The four corner squares fix the strip's position, so the photo can be straightened. Water in the tube magnifies the blue stripe, and the stripe pinches to a point at the surface. The reader finds that point, takes inches of water in the tube and divides by 10. On 38 made-up test photos it read within 0.01 in or said it couldn't read. It hasn't been tried on real photos yet, so check every reading before you log it.</p>
+      <p><b>Your data</b> The photo is read on this phone and isn't uploaded. The log is kept in this browser only. Download the CSV to keep a copy.</p>
+      <p>Prototype by Sigurd Lindquist, Certified Crop Adviser (CCA).</p>
+    </div>
+  </main>
+
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/gauge-read.js?v=1"></script>
+  <script src="/components/gauge-lab.js?v=1"></script>
+  <script src="/components/loader.js?v=18" defer></script>
+</body>
+</html>

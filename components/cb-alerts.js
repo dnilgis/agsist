@@ -72,7 +72,7 @@
         + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
     }catch(e){ return ''; }
   }
-  function cash$(c){ return '$' + (c / 100).toFixed(2); }
+  function cash$(c){ return AG.px.cash(c / 100); }   // as posted (components/util.js)
   function miles(a, b){
     var R = 3958.7613, r = Math.PI / 180, dLat = (b[0] - a[0]) * r, dLon = (b[1] - a[1]) * r;
     var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -251,7 +251,7 @@
     function sync(){
       if(!crop) return;
       var r = rows[+crop.value];
-      form.querySelector('.cba-now').textContent = 'Now ' + cash$(r.cash) + (r.basis != null ? ', basis ' + (r.basis === 0 ? 'even' : (r.basis > 0 ? '+' : '−') + Math.abs(r.basis) + '¢') : '')
+      form.querySelector('.cba-now').textContent = 'Now ' + cash$(r.cash) + (r.basis != null ? ', basis ' + AG.px.basis(r.basis) : '')
         + (ctTime(r.pricedAt) ? ', posted ' + ctTime(r.pricedAt) : '') + '.';
       price.placeholder = (r.cash / 100).toFixed(2);
       var k = form.querySelector('input[name="' + id + '-k"]:checked').value;

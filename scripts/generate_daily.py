@@ -153,6 +153,7 @@ from datetime import datetime, timezone, timedelta, date
 from contract_calendar import is_expired, holiday_name, next_live_year   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
 import arc_plc_link                         # first ARC/PLC mention links /arc-plc
+import pricefmt                            # ONE grain price/cents formatter (twin of AG.px)
 from pathlib import Path
 
 try:
@@ -651,7 +652,12 @@ def load_prices():
         pct = float(pct) if pct is not None else ((net / opn) * 100 if opn != 0 else 0.0)
         is_grain = key in GRAIN_KEYS
         if is_grain:
-            price_str = f"${close / 100:.2f}/bu"; chg_str = f"{net / 100:+.4f} ({pct:+.1f}%)"
+            # In cents with the pit's fractions, the way the prose must say it.
+            # This line used to read "+0.0125" (dollars, four places), and on
+            # 2026-10-12 the model wrote that 1.25-cent move as "a quarter
+            # cent". The price had the same problem: $4.7975 printed "$4.80".
+            price_str = pricefmt.price(close) + "/bu"
+            chg_str = f"{pricefmt.move(net, sign=True) or '0¢'} ({pct:+.1f}%)"
             locked_prices[key] = close / 100
         elif key in ("gold", "bitcoin"):
             price_str = f"${close:,.0f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
@@ -898,14 +904,13 @@ def render_quote_strip_html(strip):
         if abs(d) < 0.0001: direction = "flat"
         elif d > 0: direction = "up"
         else: direction = "down"
-        arrow = {"up": "\u25B2", "down": "\u25BC"}.get(direction, "")
         cls = {"up": "pos", "down": "neg"}.get(direction, "flat")
-        cents = abs(d) * 100
-        cents_str = ""
-        if cents >= 0.005:
-            cents_str = f"{cents:.2f}".rstrip("0").rstrip(".") + "¢"
-        pct_str = "unch" if direction == "flat" else f"{arrow} {abs(pct):.1f}%"
-        price_str = f"${last:.2f}"
+        # The site's one grain formatter (pricefmt, twin of AG.px): the price
+        # to the quarter cent ($4.79¾, not $4.80), the move in cents first
+        # with its sign, then percent. The chip is small mono type, where a
+        # ¾ glyph reads as %, so it takes the slash style. Was "▲ 0.3% 1.25¢".
+        chg_str = "unch" if direction == "flat" else pricefmt.change(d * 100, pct, style="slash")[0]
+        price_str = pricefmt.price(last * 100)
         aria = (f"{q['name']} {q['contract']}, {price_str}, "
                 + ("unchanged" if direction == "flat" else f"{direction} {abs(pct):.1f}%")
                 + " vs the prior close")
@@ -914,15 +919,13 @@ def render_quote_strip_html(strip):
             f'<div class="dv3-quote-top"><span class="dv3-quote-name">{html_esc(q["name"])}</span>'
             f'<span class="dv3-quote-win">{html_esc(q["contract"])}</span></div>'
             f'<span class="dv3-quote-price">{price_str}</span>'
-            f'<span class="dv3-quote-chg {cls}">{pct_str}'
-            + (f'<span class="cents">{cents_str}</span>' if cents_str else "")
-            + '</span></div>')
+            f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span></div>')
     bits = []
     asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
     if asof: bits.append(f"Quotes as of {asof}")
     vs = _ct_weekday(strip.get("vs_session")) if strip.get("vs_session") else ""
     if vs: bits.append(f"change vs {vs} close")
-    bits.append("CME futures, delayed")
+    bits.append("Yahoo Finance, delayed, not CME settlements")
     asof_html = f'<div class="dv3-quote-asof">{html_esc(" · ".join(bits))}</div>'
     return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
 
@@ -3874,7 +3877,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=18" defer></script>
 <script>
 (function(){{
   var permalink='{js_permalink}';

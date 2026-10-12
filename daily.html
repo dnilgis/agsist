@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
+<script src="/components/util.js?v=18"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <script src="/components/sponsor-ad.js?v=2"></script>
@@ -824,12 +825,11 @@ function renderToday(data,why){
     strip.quotes.forEach(function(q){
       var d=q.last-q.prev;
       var dir=Math.abs(d)<0.0001?'flat':(d>0?'up':'down');
-      var arrow=dir==='up'?'\u25B2':dir==='down'?'\u25BC':'';
       var cls=dir==='up'?'pos':dir==='down'?'neg':'flat';
-      var cents=Math.abs(d)*100;
-      var centsStr=cents>=0.005?(String(+cents.toFixed(2))+'\u00A2'):'';
-      var pctStr=dir==='flat'?'unch':(arrow+' '+Math.abs(q.pct).toFixed(1)+'%');
-      var priceStr='$'+q.last.toFixed(2);
+      /* AG.px, as generate_daily.py render_quote_strip_html prints it: price to
+         the quarter cent, the move in cents then percent, slash in the mono chip */
+      var chgStr=dir==='flat'?'unch':AG.px.change(d*100,q.pct,{style:'slash'}).t;
+      var priceStr=AG.px.price(q.last*100);
       var aria=q.name+(q.contract?' '+q.contract:'')+', '+priceStr+', '+
         (dir==='flat'?'unchanged':(dir+' '+Math.abs(q.pct).toFixed(1)+'%'))+' vs the prior close';
       sparks+='<div class="dv3-quote" role="img" aria-label="'+escHtml(aria)+'">'+
@@ -838,7 +838,7 @@ function renderToday(data,why){
           (q.contract?'<span class="dv3-quote-win">'+escHtml(q.contract)+'</span>':'')+
         '</div>'+
         '<span class="dv3-quote-price">'+priceStr+'</span>'+
-        '<span class="dv3-quote-chg '+cls+'">'+pctStr+(centsStr?'<span class="cents">'+centsStr+'</span>':'')+'</span>'+
+        '<span class="dv3-quote-chg '+cls+'">'+escHtml(chgStr)+'</span>'+
       '</div>';
     });
     sparks+='</div>';
@@ -846,7 +846,7 @@ function renderToday(data,why){
     var qSt=strip.asof&&window.AgAsOf?AgAsOf.html(strip.asof,'daily',{prefix:'Quotes as of'}):'';
     if(strip.asof&&!qSt){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
     if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
-    asofBits.push('CME futures, delayed');
+    asofBits.push('Yahoo Finance, delayed, not CME settlements');
     sparks+='<div class="dv3-quote-asof">'+(qSt?qSt+' \u00B7 ':'')+escHtml(asofBits.join(' \u00B7 '))+'</div>';
   }
 

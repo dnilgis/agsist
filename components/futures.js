@@ -29,7 +29,7 @@ var CROPS={
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
     carry:'corn',
-    tiles:[{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('corn','dec'),alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
     labels:function(lbl){
       setTxt('lbl-corn',lbl);
@@ -53,7 +53,7 @@ var CROPS={
       renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
-      var cornDec=q['corn-dec'];
+      var cornDec=q[newCropKey('corn','dec')]||q['corn-dec'];
       /* when the nearby IS the new-crop contract (Dec corn from Sep to Dec) the hero
          already shows it; the line would only repeat the same price */
       var ncSame=!!(front&&cornDec&&front.ticker&&front.ticker===cornDec.ticker);
@@ -91,7 +91,7 @@ var CROPS={
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
     carry:'soybeans',
-    tiles:[{key:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('beans','nov'),alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
     labels:function(lbl,nearby){
       setTxt('hero-contract',lbl);
@@ -107,7 +107,7 @@ var CROPS={
     prices:function(q,data,front){
       /* v15 (S2): new-crop at a glance: the beans-nov benchmark (the next live Nov,
          which rolls on its own; the label is read from its ticker), hidden if key missing */
-      var ncQ=q['beans-nov'];
+      var ncQ=q[newCropKey('beans','nov')]||q['beans-nov'];
       var ncEl=document.getElementById('nc-line');
       var ncSame=!!(front&&ncQ&&front.ticker&&front.ticker===ncQ.ticker);
       if(ncEl&&ncQ&&ncQ.close!=null&&!ncSame){
@@ -117,14 +117,14 @@ var CROPS={
         ncEl.style.display='';
       }else if(ncEl){ncEl.style.display='none';}
       renderRatio(data,function(r){return r<2.4?'Corn favored: soybeans historically the weaker per-acre choice':r<2.6?'Neutral: an even acre split is common at these levels':'Beans favored: soybeans historically earn more per acre';});
-      var meal=q.meal,soyoil=q.soyoil;
-      if(front&&meal&&soyoil&&front.close&&meal.close&&soyoil.close){
-        var mealPbu=(meal.close/2000)*44,oilPbu=(soyoil.close/100)*11,beanCost=front.close/100,crush=mealPbu+oilPbu-beanCost;
-        setEl('crush-val',(crush>=0?'+':'')+'$'+crush.toFixed(2)+'/bu');
-        var cz=document.getElementById('cz'+(crush<0.75?0:crush<1.5?1:crush<2.5?2:3));
+      var BC=boardCrush(q,front),cw=document.getElementById('crush-card');
+      if(BC){
+        if(cw)cw.style.display='';
+        setEl('crush-val',(BC.crush>=0?'+':'\u2212')+'$'+Math.abs(BC.crush).toFixed(2)+'/bu');
+        var cz=document.getElementById('cz'+BC.band);
         if(cz)cz.classList.add('active');
-        setEl('crush-sub','Meal: $'+meal.close.toFixed(0)+'/ton · Oil: '+soyoil.close.toFixed(2)+'¢/lb · Beans: $'+beanCost.toFixed(2)+'/bu');
-      }
+        setEl('crush-sub',BC.months+': meal $'+BC.meal.close.toFixed(0)+'/short ton, oil '+BC.oil.close.toFixed(2)+'\u00a2/lb, beans '+grain$(front.close)+'/bu');
+      }else if(cw){cw.style.display='none';}
     },
     read:function(q,data,front,lbl,nearby){
       var sp=[];
@@ -137,10 +137,11 @@ var CROPS={
         var r2=PR.value,rl=' ('+PR.label+')';
         sp.push(r2<2.4?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' historically signals corn as the stronger per-acre choice this season':r2<2.6?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' is in neutral territory: an even acre split is common at these levels':'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' gives soybeans the historical per-acre edge');
       }
-      var meal=q.meal,soyoil=q.soyoil;
-      if(front&&meal&&soyoil&&front.close&&meal.close&&soyoil.close){
-        var mPbu=(meal.close/2000)*44,oPbu=(soyoil.close/100)*11,bCost=front.close/100,cr=mPbu+oPbu-bCost;
-        sp.push(cr<0.75?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is narrow: processor demand may slow, a headwind for beans':cr<1.5?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is in normal range: solid domestic demand support':cr<2.5?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is strong: processors are actively bidding for beans':'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is exceptional: crush expansion likely, very supportive for prices');
+      var BC2=boardCrush(q,front);
+      if(BC2){
+        /* A size, not a price call: the gross board crush leaves out what it
+           costs to run a plant, and the bands are AGSIST rules of thumb. */
+        sp.push('the <strong>gross board crush</strong> ('+BC2.months+') is <strong>'+(BC2.crush<0?'\u2212':'')+'$'+Math.abs(BC2.crush).toFixed(2)+'/bu</strong>, '+['narrow','typical','strong','wide'][BC2.band]+' by AGSIST\u2019s rule-of-thumb bands');
       }
       return sp;
     }
@@ -222,17 +223,18 @@ var CROPS={
       bl.innerHTML=esc(contractLabel(d26)||'Deferred')+' (deferred): <strong>'+grain$(d26.close)+'</strong>'+chg+', winter wheat new-crop is July';
       bl.style.display='block';
     })();
-      // Feed spread: SAME-MONTH contracts only (Sep '26 wheat minus Sep '26 corn).
+      // Feed spread: SAME-MONTH contracts only (Dec wheat minus Dec corn, wheatCornPair).
     // Mixing a continuous most-active with a dated month was silently ~22c off.
-    var wSep=q['wheat-sep26'],cSep=q['corn-sep26'];
+    var WC=wheatCornPair(q),wSep=WC&&WC.w,cSep=WC&&WC.c;
     var wcCard=document.getElementById('wc-card');
-    if(wSep&&cSep&&wSep.close!=null&&cSep.close!=null){
+    if(WC){
       if(wcCard)wcCard.style.display='';
+      var wcl=document.getElementById('wc-lbl-m');if(wcl)wcl.textContent=WC.label;
       var spread=(wSep.close-cSep.close)/100;
-      setEl('wc-spread',(spread>=0?'+':'')+'$'+spread.toFixed(2)+'/bu');
+      setEl('wc-spread',(spread>=0?'+':'\u2212')+'$'+Math.abs(spread).toFixed(2)+'/bu');
       var gp=Math.min(100,Math.max(0,(spread/2)*100));
       document.getElementById('wc-dot').style.left='calc('+gp+'% - 8px)';
-      var it=spread<0.25?'Parity: feed wheat demand is activated, price floor in effect (Sep/Sep)':spread<0.75?'Narrowing: feed buyers starting to substitute wheat for corn (Sep/Sep)':spread<1.5?'Normal premium: standard market structure (Sep/Sep)':'Wide spread: feeders are using corn; wheat feed demand absent (Sep/Sep)';
+      var it=(spread<0.25?'Parity: feed wheat demand is activated, price floor in effect':spread<0.75?'Narrowing: feed buyers starting to substitute wheat for corn':spread<1.5?'Normal premium: standard market structure':'Wide spread: feeders are using corn; wheat feed demand absent')+' ('+WC.label+' wheat and corn)';
       setEl('wc-interp',it);
     }else if(wcCard){
       wcCard.style.display='none';
@@ -244,10 +246,10 @@ var CROPS={
         var pct=pctInRange(front);
         sp.push('<strong>Wheat ('+lbl+') at '+grain$(front.close)+'</strong> sits <strong>'+pct+'% of the way up</strong> its 52-week range ('+zoneOf(pct)+')');
       }
-      var wSep=q['wheat-sep26'],cSep=q['corn-sep26'];
-    if(wSep&&cSep&&wSep.close!=null&&cSep.close!=null){
-      var sprd=(wSep.close-cSep.close)/100;
-      sp.push(sprd<0.25?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is at parity: feed wheat demand is active, providing a price floor':sprd<0.75?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is narrow: feed buyers are beginning to substitute wheat for corn':sprd<1.5?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is in normal range':'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is wide: feeders are using corn and wheat loses that demand support');
+      var WC2=wheatCornPair(q);
+    if(WC2){
+      var sprd=(WC2.w.close-WC2.c.close)/100,wcs='the <strong>'+WC2.label+' wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong>';
+      sp.push(sprd<0.25?wcs+' is at parity: feed wheat demand is active, providing a price floor':sprd<0.75?wcs+' is narrow: feed buyers are beginning to substitute wheat for corn':sprd<1.5?wcs+' is in normal range':wcs+' is wide: feeders are using corn and wheat loses that demand support');
     }
     if(front&&front.close){
       var whBu2=front.close/100;
@@ -284,6 +286,35 @@ function wheatDeferred(q,front){
   return null;
 }
 /* "Dec '26" from a dated quote's ticker (ZCZ26.CBT), else null. */
+/* BOARD CRUSH, named months only. Nov beans crush against Dec meal and oil;
+   any other bean month against the same month of meal and oil. A missing leg
+   hides the card: the old continuous ZM=F/ZL=F against a dated bean month
+   mixed contracts nobody named. Gross: 44 lb of meal and 11 lb of oil per
+   bushel, minus the beans, before any plant cost. */
+var MON3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function boardCrush(q,front){
+  var m=front&&/^ZS([FGHJKMNQUVXZ])(\d{2})/.exec(String(front.ticker||''));
+  if(!m||!front.close)return null;
+  var mi='FGHJKMNQUVXZ'.indexOf(m[1]),pm=mi===10?11:mi,yy=m[2];
+  var meal=q['meal-'+MON3[pm]+yy],oil=q['soyoil-'+MON3[pm]+yy];
+  if(!meal||!oil||meal.close==null||oil.close==null||meal.stale||oil.stale)return null;
+  var crush=(meal.close/2000)*44+(oil.close/100)*11-front.close/100;
+  return {crush:crush,meal:meal,oil:oil,band:crush<0.75?0:crush<1.5?1:crush<2.5?2:3,
+          months:AG.px.contract(MON3[pm]+' 20'+yy)+' meal and oil, '+AG.px.contract(MON3[mi]+' 20'+yy)+' beans'};
+}
+/* The wheat-corn feed spread, same month for both: the next Dec that trades.
+   It read Sep '26 keys that stopped trading in September and went blank. */
+function wheatCornPair(q){
+  var y=new Date().getFullYear()%100;
+  for(var k=0;k<2;k++){var yy=String(y+k),w=q['wheat-dec'+yy],c=q['corn-dec'+yy];
+    if(w&&c&&w.close!=null&&c.close!=null&&!w.stale&&!c.stale)return {w:w,c:c,label:"Dec '"+yy};}
+  return null;
+}
+/* NEW CROP is next year's crop once this one is in the bin (Sep 1 on): in
+   October 2026 that is Dec '27 corn and Nov '27 beans. The undated corn-dec
+   key is the next live Dec, which in the fall is the hero's own contract, so
+   a "new crop" tile on it repeated the hero (agecon review, 2026-10-12). */
+function newCropKey(root,mon){var d=new Date(),y=d.getFullYear()+(d.getMonth()>=8?1:0);return root+'-'+mon+String(y).slice(-2);}
 function contractLabel(d){var SS=window.AgsistStoreSell,f=SS&&SS.futuresMonth&&d&&SS.futuresMonth(d.ticker);return f?f.label:null;}
 /* The quote the page leads with: the dated nearby contract when the pipeline
    publishes it with a price, else the continuous series (labeled as such). */
@@ -841,13 +872,15 @@ function computeScorecard(){
     var sv=window.__agsistSeas[mo];
     factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:seasWin()});
   }
-  // 5. RP revenue floor (crop insurance), only when harvest-prices has this crop.
+  // 5. RP projected price (crop insurance), only when harvest-prices has this crop.
+  //    It is a price, not a floor: the guarantee is APH yield times coverage
+  //    times the higher of the projected and harvest prices.
   //    Measured against the quote the page leads with (the nearby contract).
   var fq=frontQuote(window.__agsistLastQ);
   if(rp&&rp.floor!=null){
     var _bq=(fq&&fq.close!=null)?fq.close/100:null;
     var _gap=(_bq!=null)?(rp.floor-_bq):null;
-    factors.push({lbl:'RP Revenue Floor',val:'$'+rp.floor.toFixed(2),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?((_gap>=0?'+':'−')+AG.px.priceDollars(Math.abs(_gap))+'/bu vs today’s board'):('projected '+(rp.window||'')+' avg'))});
+    factors.push({lbl:'RP projected price',val:AG.px.priceDollars(rp.floor),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?(AG.px.quarters(_gap*100)===0?'level with today’s board':AG.px.move(Math.abs(_gap)*100)+' '+(_gap>0?'above':'below')+' today’s board'):('projected '+(rp.window||'')+' avg'))});
   }
   // composite descriptive situation (NOT a recommendation)
   var sit='';
@@ -900,10 +933,11 @@ function renderScorecard(){
   if(rpEl){
     if(sc.rp&&sc.rp.floor!=null){
       var bq=(sc.priceCents!=null)?sc.priceCents/100:null;
-      var L='<strong>Your RP revenue floor:</strong> projected <strong>$'+sc.rp.floor.toFixed(2)+'</strong>'+(sc.rp.contract?' ('+sc.rp.contract+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
+      var L='<strong>RP projected price:</strong> <strong>'+AG.px.priceDollars(sc.rp.floor)+'</strong>'+(sc.rp.contract?' ('+AG.px.contract(sc.rp.contract)+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
       /* the board is a futures price, printed to the quarter cent like the hero; it is not "the cash market" */
-      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+', so your floor sits <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+AG.px.priceDollars(Math.abs(g))+'/bu</span> '+(g>=0?'above':'below')+' the board.';}
-      if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+' Your guarantee uses the higher of the two.</span>';}
+      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+(AG.px.quarters(g*100)===0?', level with the board.':', <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+AG.px.move(Math.abs(g)*100)+'</span> '+(g>0?'above':'below')+' the board.');}
+      L+=' Your revenue guarantee is your APH yield times your coverage level times the higher of the projected and harvest prices.';
+      if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+'</span>';}
       rpEl.innerHTML=L; rpEl.style.display='block';
       try{if(typeof gaEvent==='function')gaEvent('rp_floor_shown',{crop:CROP_KEY});else if(window.gtag)gtag('event','rp_floor_shown',{crop:CROP_KEY});}catch(e){}
     } else { rpEl.style.display='none'; }
@@ -1435,12 +1469,12 @@ function renderBasisCard(data){
       locEl.textContent=locStr;
     }
 
-    if(bidEl)bidEl.textContent=bidPrice!=null?'$'+Number(bidPrice).toFixed(2):'-';
+    if(bidEl)bidEl.textContent=bidPrice!=null?AG.px.cash(bidPrice):'-';
     try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),symbol:(b.symbol||b.futures_symbol||b.futuresSymbol||null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
     if(spreadEl){
       if(basis!=null){
         var bv=Number(basis);
-        spreadEl.textContent=(bv>=0?'+':'\u2212')+'$'+Math.abs(bv).toFixed(2);
+        spreadEl.textContent=AG.px.basis(bv*100);   /* −65¢, +5¢, even: one basis style */
         spreadEl.className='basis-cell-val '+(bv>=0?'basis-pos':'basis-neg');
       }else{spreadEl.textContent='-';spreadEl.className='basis-cell-val';}
     }
@@ -1449,14 +1483,14 @@ function renderBasisCard(data){
     if(interpEl){
       var interp;
       if(basis!=null){
-        var bvi=Number(basis),absV=Math.abs(bvi).toFixed(2);
+        var bvi=Number(basis),absV=AG.px.basis(Math.abs(bvi)*100).replace(/^\+/,'');
         if(bvi===0)interp='Cash is <strong>level with its board futures contract</strong>. A flat basis is neither a premium nor a discount; the elevator is paying the exchange price.';
-        else if(bvi>0)interp='Cash is <strong>$'+absV+' above the board contract it is quoted against'+(b.symbol?' ('+b.symbol+')':'')+'</strong>. Positive basis signals firm local demand: buyers are willing to pay above the exchange to attract bushels.';
-        else if(bvi>=-0.20)interp='Cash is <strong>$'+absV+' below futures</strong>. A tight basis like this is firm, typical of strong local demand or proximity to a processor.';
-        else if(bvi>=-0.40)interp='Cash is <strong>$'+absV+' below futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
-        else interp='Cash is <strong>$'+absV+' below futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
+        else if(bvi>0)interp='Cash is <strong>'+absV+' above the board contract it is quoted against'+(b.symbol?' ('+b.symbol+')':'')+'</strong>. Positive basis signals firm local demand: buyers are willing to pay above the exchange to attract bushels.';
+        else if(bvi>=-0.20)interp='Cash is <strong>'+absV+' under futures</strong>. A tight basis like this is firm, typical of strong local demand or proximity to a processor.';
+        else if(bvi>=-0.40)interp='Cash is <strong>'+absV+' under futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
+        else interp='Cash is <strong>'+absV+' under futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
       }else{
-        interp='Bid <strong>$'+(bidPrice!=null?Number(bidPrice).toFixed(2):'-')+'/bu</strong> at this location. Basis vs futures not reported.';
+        interp='Bid <strong>'+(bidPrice!=null?AG.px.cash(bidPrice):'-')+'/bu</strong> at this location. Basis vs futures not reported.';
       }
       interpEl.innerHTML=interp;
     }
@@ -1480,8 +1514,8 @@ function renderBasisCard(data){
       var bidLocLbl=bidGrid?bidGrid.label:'this location';
       if(basis!=null){
         var bv2=Number(basis);
-        if(bv2>=0)bp+='at <strong>+$'+bv2.toFixed(2)+' near '+bidLocLbl+'</strong> is positive: a sign of firm local demand';
-        else bp+='at <strong>\u2212$'+Math.abs(bv2).toFixed(2)+' near '+bidLocLbl+'</strong>';
+        if(bv2>0)bp+='at <strong>'+AG.px.basis(bv2*100)+' near '+bidLocLbl+'</strong> is positive: a sign of firm local demand';
+        else bp+='at <strong>'+AG.px.basis(bv2*100)+' near '+bidLocLbl+'</strong>';
         window.__agsistMR.basis=[bp];
         if(typeof renderMarketRead==='function')renderMarketRead();
       }
@@ -1610,25 +1644,42 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
   var pad=(maxP-minP)*0.15||0.05;
   minP-=pad;maxP+=pad;
-  var W=700,H=140,mL=60,mR=44,mT=10,mB=38;
+  /* The viewBox is the drawn width, so font sizes below are CSS pixels (a
+     13-unit label in a 700-wide box was about 7px on a phone). No y-axis:
+     its padded bounds were prices that never traded and collided with the
+     point labels, and every point carries its own price. */
+  var W=Math.round(Math.max(300,Math.min(900,(svg.getBoundingClientRect&&svg.getBoundingClientRect().width)||700))),mL=34,mR=34,mT=22;
+  var NARROW=(W-mL-mR)/Math.max(1,pts.length-1)<95,H=NARROW?176:150,mB=NARROW?58:38;
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
   var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-  s.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
-  s.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
-  s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
+  s.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');
   pts.forEach(function(p,i){
-    s.push(p.newCrop?'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" stroke="#d4a23f" stroke-width="2"/>':'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" style="fill:var(--text,#e8ebe5)" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+(isGrain?AG.px.priceDollars(p.price,{style:'slash'}):'$'+p.price.toFixed(2))+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" text-anchor="middle">'+p.label+'</text>');
-    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" style="fill:var(--text-dim,#7f8a82)" font-size="10" text-anchor="middle">'+p.tag+'</text>');
+    s.push(p.newCrop?'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" style="stroke:var(--gold,#d4a23f)" stroke-width="2"/>':'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" style="fill:var(--gold,#d4a23f)"/>');
+    /* $/bu is the card's unit, so the labels drop the "$"; the end labels
+       anchor inward, and on a narrow chart the values sit in a row of their own. */
+    var anc=i===0?'start':i===pts.length-1?'end':'middle',lx=x(i)+(i===0?-4:i===pts.length-1?4:0);
+    /* narrow: the value goes in its own row under the month, clear of the line */
+    var ly=NARROW?(H-34):y(p.price)-9;if(NARROW){anc='middle';lx=x(i);}
+    s.push('<text x="'+lx+'" y="'+ly+'" style="fill:var(--text,#e8ebe5)" font-size="'+(NARROW?11:12)+'" font-family="'+(NARROW?'Inter,system-ui,sans-serif':'JetBrains Mono,monospace')+'" text-anchor="'+anc+'" font-weight="700">'+(isGrain?AG.px.priceDollars(p.price,{style:NARROW?'glyph':'slash',dollar:false}):p.price.toFixed(2))+'</text>');
+    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" style="fill:var(--text-muted,#9aa39c)" font-size="11" text-anchor="middle">'+p.label+'</text>');
+    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" style="fill:var(--text-dim,#7f8a82)" font-size="11" text-anchor="middle">'+p.tag+'</text>');
   });
   s.push('</svg>');
   svg.outerHTML=s.join('');
 
+  /* The carry is counted contract to contract (Dec to Jul is 7 months). Grain
+     binned now waits until the first contract too, and pays storage for it;
+     say so rather than let "7 months" stand for grain in the bin since harvest. */
+  var FULLMON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function binNote(f){
+    var d=new Date(),extra=f.idx-((d.getFullYear()%100)*12+d.getMonth()+1);   /* idx = yy*12 + month (storesell.js) */
+    if(!(extra>0&&extra<12))return '';
+    return ' Grain in the bin now pays '+extra+' more month'+(extra===1?'':'s')+' of storage before '+FULLMON[(f.idx-1)%12]+'.';
+  }
   // the storage window: the first and last contracts of this crop year that trade
   var SS=window.AgsistStoreSell;
   var cw=(SS&&SS.carryWindow&&SS.carryWindow(CROP.carry,quotes))||[];
@@ -1645,7 +1696,8 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
     var line=SS.holdLine({to:last.label,carry:spread,months:months,spot:first.price,kind:'futures',inputs:inputs});
     interpTxt='<strong>'+esc(line)+'</strong> '
       +esc(first.label+' to '+last.label+' futures: the later month pays '+AG.px.move(Math.abs(spread)*100,{style:'slash'})+(spread>=0?' more.':' less.'))+' '
-      +esc(SS.costNote(inputs,months,first.price))
+      +esc(SS.costNote(inputs,months,first.price,FULLMON[(first.idx-1)%12]))
+      +esc(binNote(first))
       +' Futures carry assumes your basis stays where it is; your elevator’s posted later bids show the carry it actually pays. '
       +'<a style="color:var(--gold)" href="/store-or-sell?crop='+encodeURIComponent(window.AGSIST_FUTURES)+'">Store or sell, with your elevator’s bids and your costs →</a>';
   }
@@ -1722,7 +1774,7 @@ function raw$(v,d){return v.toFixed(d||2);}
 
 function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
 
-function chgTxt(net,pct,roll,g,u){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};if(g!==false)return AG.px.change(net,pct);var a=net>=0?'▲':'▼';var s=net>0?'+':net<0?'−':'';u=u||{};return{t:a+' '+s+(u.pre||'')+Math.abs(net).toFixed(2)+(u.suf||'')+' ('+AG.px.pct(pct)+')',c:net>=0?'up':'dn'};}
+function chgTxt(net,pct,roll,g,u){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};if(g!==false)return AG.px.change(net,pct);if(Math.abs(net)<0.005)return{t:'unch',c:'nc'};var a=net>=0?'▲':'▼';var s=net>0?'+':net<0?'−':'';u=u||{};return{t:a+' '+s+(u.pre||'')+Math.abs(net).toFixed(2)+(u.suf||'')+' ('+AG.px.pct(pct)+')',c:net>=0?'up':'dn'};}
 /* cents first, percent second: reader request 2026-07-20 *//* roll: the front month just switched contracts: the day-change would compare two different months, so it's labeled, not shown (2026-07-20) */
 function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.textContent=txt;el.classList.remove('sk');if(cls){el.classList.remove('up','dn','roll');el.classList.add(cls);}}
 
@@ -1740,10 +1792,17 @@ fetch('/data/prices.json',{cache:'no-store'})
     window.__agsistHeroQ=front;
     CROP.labels(heroLabel,F.nearby);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
-    CROP.tiles.forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
+    CROP.tiles.forEach(function(m){var d=q[m.key]||(m.alt&&q[m.alt]);if(!d||d.close==null)return;if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
+      /* The baked note and the table's nearby row are the no-script copy of
+         this hero. Once the live quote is up they showed a second, older
+         price for the same contract ($4.81½ under a $4.82¾ hero). */
+      var __sn=document.querySelector('.px-seed-note');if(__sn)__sn.style.display='none';
+      var __st=document.querySelector('.seed-tbl-wrap'),__rows=__st?__st.querySelectorAll('tbody tr'):[];
+      for(var __i=0;__i<__rows.length;__i++){var __td=__rows[__i].cells[0];if(__td&&/^Nearby/.test(__td.textContent))__rows[__i].style.display='none';}
+      if(__st&&![].some.call(__rows,function(r){return r.style.display!=='none';}))__st.style.display='none';
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){

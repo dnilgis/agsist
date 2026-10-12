@@ -44,6 +44,9 @@ from datetime import datetime, date
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pricefmt  # noqa: E402  (as-posted dollars, the twin of components/util.js AG.px.cash)
+
 REPO = Path(__file__).resolve().parent.parent
 DATA = REPO / "data" / "rma-prices.json"
 PAGE = REPO / "harvest-price-tracker.html"
@@ -100,13 +103,22 @@ def group(open_rows):
     return g
 
 
+# RMA prices these crops per pound and the rest per bushel. Read from the
+# values in data/rma-prices.json: rice runs $0.11 to $0.40, cotton up to
+# $1.38, so neither a threshold nor "under a dollar" can tell them apart.
+PER_LB = {"Canola", "Cotton", "Peanuts", "Popcorn", "Rice", "Sunflowers"}
+
+
+def unit(crop):
+    return "/lb" if crop in PER_LB else "/bu"
+
+
 def fmt_money(v):
+    """As RMA posts it, never fewer than two decimals: $0.80, not $0.8;
+    $0.2141 keeps its four. pricefmt.cash, the twin of AG.px.cash."""
     if v is None:
         return "n/a"
-    # RMA quotes some crops per pound (cotton, rice, canola); those come back
-    # as fractions of a dollar and must not be rounded to two places.
-    s = ("%.4f" % v).rstrip("0").rstrip(".") if abs(v) < 1 else "%.2f" % v
-    return "$" + s
+    return pricefmt.cash(v)
 
 
 def price_span(rows, leg):
@@ -192,7 +204,7 @@ def build(rows, today):
                 return "<span class='dn-na'>pending</span>"
             # A RANGE WHENEVER THE STATES DISAGREE. Winter wheat Conventional
             # runs $6.49 to $7.31 across nine states; one number would be nobody's.
-            return fmt_money(lo) if lo == hi else fmt_money(lo) + "&ndash;" + fmt_money(hi)
+            return (fmt_money(lo) if lo == hi else fmt_money(lo) + "&ndash;" + fmt_money(hi)) + unit(crop)
 
         # THE CONTRACT SITS UNDER THE CROP NAME, NOT IN ITS OWN COLUMN. As a
         # column it was the first thing to scroll off a phone -- and it is the

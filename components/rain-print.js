@@ -46,7 +46,22 @@
  * prints, frames and ships them. 18 x 24 is gone; an old code with its size
  * letter still opens as 12 x 18. The maker's seal is square to the page.
  *
- * The pure parts (design code, query string) run without a document, for
+ * THE PAGE AROUND IT (2026-10-12). The art sits in a CSS frame on a wall tone
+ * at the top of the page (#rp-wall; "Print only" takes the frame off). With no
+ * design in the URL it shows the Chetek sample, labeled as one. The order
+ * buttons stay live while the sample shows: they send the reader up to the
+ * town box, since an order carries the reader's own design.
+ *
+ * FOR BUSINESSES (2026-10-12). A quote request for a set of prints (#rb-form,
+ * kind rain-print-business, subs worker v5.12): business, contact, how many,
+ * product, towns and years, ship to one address or each customer. It needs no
+ * drawn design. The cutoff line, the discount table and the per-print price
+ * and shipping readout come from business_cutoff, business_note,
+ * business_tiers, business_shipping and business_shipping_tiers in
+ * data/rain-print.json; with none set the section shows no date and no
+ * discount. Consumer orders above it never use them.
+ *
+ * The pure parts (design code, query string, business tiers) run without a document, for
  * test/rain-print.test.mjs.
  */
 (function (root) {
@@ -138,6 +153,88 @@
     if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery.';
     return 'Orders placed now ship after Christmas.';
   }
+  /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
+     data/rain-print.json: "For Christmas, send your list by Nov 20." through
+     that date; nothing after it, or while it is null. */
+  function bizCutoffNote(todayIso, cutoffIso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(cutoffIso || ''));
+    if (!m || +m[2] < 1 || +m[2] > 12 || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || todayIso > cutoffIso) return '';
+    return 'For Christmas, send your list by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + '.';
+  }
+  /* Business prices and shipping, all from data/rain-print.json:
+     business_tiers [{min, pct}] off the three prices; business_shipping
+     {print12x18, framed12x18, digital} dollars a print, charged in full when
+     each print goes to a different customer; business_shipping_one_address_tiers
+     [{min, pct}] off that shipping when the whole order goes to one address.
+     A business order is BIZ_MIN to BIZ_MAX prints (the worker checks the same).
+     No usable tier: no rows, so the page shows no table and no discount
+     wording. No usable shipping: ship is null and the page says shipping is
+     quoted with the order. Every per-print figure is rounded to the cent. */
+  var BIZ_PRODUCTS = ['print12x18', 'framed12x18', 'digital'];
+  var BIZ_MIN = 10, BIZ_MAX = 500;
+  function bizPrice(price, pct) {
+    return Math.round(Math.round(price * 100) * (100 - pct) / 100) / 100;
+  }
+  function bizTiers(list) {
+    var seen = {};
+    return (Array.isArray(list) ? list : []).filter(function (t) {
+      var ok = t && Number.isInteger(t.min) && t.min >= BIZ_MIN && t.min <= BIZ_MAX && typeof t.pct === 'number' && t.pct > 0 && t.pct < 100 && !seen[t.min];
+      if (ok) seen[t.min] = 1;
+      return ok;
+    }).sort(function (a, b) { return a.min - b.min; });
+  }
+  function bizPct(tiers, qty) {
+    var p = 0;
+    tiers.forEach(function (t) { if (qty >= t.min) p = t.pct; });
+    return p;
+  }
+  function bizPricesOk(j) { return !!j && BIZ_PRODUCTS.every(function (id) { return typeof j[id] === 'number' && j[id] > 0; }); }
+  function bizShip(j) {
+    var s = j && j.business_shipping;
+    if (!s || typeof s !== 'object') return null;
+    var out = {};
+    for (var i = 0; i < BIZ_PRODUCTS.length; i++) {
+      var id = BIZ_PRODUCTS[i], v = id === 'digital' && s[id] == null ? 0 : s[id];
+      if (typeof v !== 'number' || !(v >= 0)) return null;
+      out[id] = v;
+    }
+    return out;
+  }
+  /* Shipping a print of product id at qty: dest 'one' (all to one address,
+     the one-address discount) or 'each' (one to each customer, full price). */
+  function bizShipFor(j, id, qty, dest) {
+    var s = bizShip(j);
+    if (!s) return null;
+    return dest === 'one' ? bizPrice(s[id], bizPct(bizTiers(j.business_shipping_one_address_tiers), qty)) : s[id];
+  }
+  /* The table: one row per tier, from its min to the next tier's min less one
+     (the last runs to "or more"). Each row: {from, to, pct, prices, one, each}. */
+  function bizRows(j) {
+    if (!bizPricesOk(j)) return [];
+    var tiers = bizTiers(j.business_tiers), ship = bizShip(j);
+    if (!tiers.length) return [];
+    return tiers.map(function (t, i) {
+      var r = { from: t.min, to: i + 1 < tiers.length ? tiers[i + 1].min - 1 : null, pct: t.pct, prices: {}, one: ship ? {} : null, each: ship ? {} : null };
+      BIZ_PRODUCTS.forEach(function (id) {
+        r.prices[id] = bizPrice(j[id], t.pct);
+        if (ship) { r.one[id] = bizShipFor(j, id, t.min, 'one'); r.each[id] = bizShipFor(j, id, t.min, 'each'); }
+      });
+      return r;
+    });
+  }
+  function bizRowFor(rows, qty) {
+    for (var i = 0; i < (rows || []).length; i++) if (qty >= rows[i].from && (rows[i].to === null || qty <= rows[i].to)) return rows[i];
+    return null;
+  }
+  /* One product, one quantity, one destination: {unit, ship, pct, total}.
+     ship is null when business_shipping is not set; total is then the prints
+     alone. total = (unit + ship) x qty, to the cent. null outside BIZ_MIN..BIZ_MAX. */
+  function bizQuote(j, qty, id, dest) {
+    if (!bizPricesOk(j) || BIZ_PRODUCTS.indexOf(id) < 0 || !Number.isInteger(qty) || qty < BIZ_MIN || qty > BIZ_MAX) return null;
+    var pct = bizPct(bizTiers(j.business_tiers), qty), unit = bizPrice(j[id], pct), ship = bizShipFor(j, id, qty, dest);
+    return { unit: unit, ship: ship, pct: pct, total: Math.round((Math.round(unit * 100) + Math.round((ship || 0) * 100)) * qty) / 100 };
+  }
+  function bizRange(r) { return r.to === null ? r.from + ' or more' : r.from === r.to ? String(r.from) : r.from + '\u2013' + r.to; }
   /* Index of the last day that has a recorded value (v not null), or -1. A
      preview ends there: the days after it are not in yet, not dry. */
   function lastRecorded(days) {
@@ -230,7 +327,8 @@
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS,
-    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX };
+    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
+    bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -308,15 +406,16 @@
   function miles(km) { return km * 0.621371; }
 
   function safeFetch(url) {
+    var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
     return fetch(url).then(function (r) {
-      if (!r.ok) throw new Error('The weather data service is not answering right now (code ' + r.status + '). Try again in a minute.');
+      if (!r.ok) throw new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.');
       return r;
-    }, function () { throw new Error('Could not reach the weather data service. Check your connection and try again.'); });
+    }, function () { throw new Error(who + ' couldn\u2019t be reached. Check the connection and press Draw it again.'); });
   }
   function geocode(q) {
     var u = 'https://geocoding-api.open-meteo.com/v1/search?count=5&countryCode=US&name=' + encodeURIComponent(q.replace(/,.*$/, '').trim());
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
-      if (!j.results || !j.results.length) throw new Error('No US place found for "' + q + '". Try a town name and state, like Chetek, WI.');
+      if (!j.results || !j.results.length) throw new Error('Couldn\u2019t find "' + q + '". Type a town and state, like Chetek, WI.');
       var st = (q.split(',')[1] || '').trim().toLowerCase();
       return st ? (j.results.find(function (x) { var a = (x.admin1 || '').toLowerCase(); return a === STATE[st] || a === st; }) || j.results[0]) : j.results[0];
     });
@@ -352,14 +451,16 @@
   function daily(sid, year) {
     var key = sid + '|' + year;
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
-    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt', meta: 'name,state,ll' });
+    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow', meta: 'name,state,ll' });
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
-      if (j.error || !Array.isArray(j.data)) throw new Error('The weather service has no usable data for that station and year. Try another station from the list.');
+      if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
       j.data.forEach(function (row) {
-        var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null;
+        // snow: NOAA's separate snowfall record (inches of snow as it fell). pcpn already
+        // counts that snow melted down to water, so snowfall is shown beside it, never added.
+        var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null, sn = row[3] !== undefined ? parsePcpn(row[3]).v : null;
         var dt = new Date(row[0] + 'T00:00:00');
-        days.push({ date: row[0], v: p.v, flag: p.flag, t: t, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
+        days.push({ date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
       });
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
@@ -437,13 +538,18 @@
     var validMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (i) { return monthValid[i] > 0; });
     var maxMonth = validMonths.length ? Math.max.apply(null, validMonths.map(function (i) { return month[i]; })) : 0;
     var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
+    // Snowfall prints only when the station kept a snowfall record nearly every day
+    // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
+    var snowTotal = 0, snowMissing = 0;
+    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
+    var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
     var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
     days.forEach(function (x) {
       if (x.t === null) return;
       if (hot.v === null || x.t > hot.v) hot = { v: x.t, date: x.date, doy: x.doy };
       if (cold.v === null || x.t < cold.v) cold = { v: x.t, date: x.date, doy: x.doy };
     });
-    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold };
+    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
   }
   function overlayKey() { return ST.cmp === 'normal' ? 'normal30' : ST.cmp === 'station' ? 'full' : ''; }
   // The chosen comparison as daily amounts + running total, aligned to the year, or null.
@@ -489,8 +595,9 @@
   }
   function footerText() {
     var D = DATA.d, m = META;
-    var sub = [f2(D.total) + ' IN PRECIPITATION', D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS'];
-    if (D.missing) sub.push(D.missing + ' UNRECORDED');
+    var sub = [f2(D.total) + ' IN PRECIPITATION'];
+    if (D.snow !== null && D.snow !== undefined) sub.push(D.snow.toFixed(1) + ' IN SNOWFALL');
+    sub.push(D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS');
     if (PREVIEW) sub.push('PREVIEW THROUGH ' + fmtDate(PREVIEW.last));
     var mi = miles(m.km);
     var away = mi < 1 ? '' : ', ' + Math.round(mi) + ' MI AWAY';
@@ -506,10 +613,10 @@
      nothing overlaps. */
   function footLayout(W, H) {
     var F = footerText(), marginX = 60, maxW = W - marginX * 2 - 190;
-    var provLines = wrapMono(F.prov, maxW, 11), subLines = wrapMono(F.sub, maxW, 14);
-    var y = H - 26, prov = [], sub = [];
-    for (var i = provLines.length - 1; i >= 0; i--) { prov.unshift([provLines[i], y]); y -= 16; }
-    y -= 8;
+    // No source line on the art (Sig, 2026-10-12): the station and NOAA credit stay in the
+    // SVG description and under the print on the page.
+    var subLines = wrapMono(F.sub, maxW, 14);
+    var y = H - 26, prov = [], sub = [], i;
     for (i = subLines.length - 1; i >= 0; i--) { sub.unshift([subLines[i], y]); y -= 20; }
     if (ST.name) y -= 22;
     var persoY = y; y -= 26;
@@ -580,6 +687,15 @@
     if (D.hot && D.hot.v !== null) nearest = Math.min(nearest, Math.abs(D.hot.doy - maxDoy));
     if (D.cold && D.cold.v !== null) nearest = Math.min(nearest, Math.abs(D.cold.doy - maxDoy));
     return nearest < 18 ? 34 : 0;
+  }
+  // "JUN 21 TO 30 · 10 dry days" (or "JUN 24 TO JUL 3 · ..."): the bracket names its first and last day.
+  function dryLabel(D) {
+    var a = DATA.days.filter(function (x) { return x.doy === D.dryMax.startDoy; })[0], b = D.dryMax.end;
+    var len = D.dryMax.len + ' dry days';
+    if (!a || !b) return len;
+    var A = fmtDate(a.date), B = fmtDate(b);
+    if (A.slice(0, 3) === B.slice(0, 3)) B = B.slice(4);
+    return A + ' TO ' + B + '  ·  ' + len;
   }
   function bracket(p, xa, xb, y, text) {
     return '<path d="M' + f2(xa) + ',' + f2(y - 6) + ' L' + f2(xa) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y - 6) + '" fill="none" stroke="' + p.mute + '" stroke-width="1"/>' +
@@ -667,9 +783,11 @@
     var m;
     try { m = root.AgQR.matrix(url); } catch (e) { return ''; }
     QR_OK = true;
-    // cell size capped so the stamp never grows past about 150 units
-    var n = m.length, quiet = 4, cell = Math.min(3.1, 136 / (n + 2 * quiet));
-    var quietBox = n * cell + 2 * quiet * cell, frameGap = 3, frameW = 3;
+    // About 78 units, 1.0 in on the 18 in print (Sig, 2026-10-12: smaller again).
+    // A 3-module quiet zone inside a thinner frame keeps the modules as large as
+    // the space allows: 0.6 mm for a plain code, 0.4 mm at the longest one.
+    var n = m.length, quiet = 3, cell = Math.min(1.9, 70 / (n + 2 * quiet));
+    var quietBox = n * cell + 2 * quiet * cell, frameGap = 2, frameW = 2;
     var stampSize = quietBox + 2 * frameGap + 2 * frameW;
     var ox = W - 60 - stampSize, oy = H - 26 - stampSize;
     var cox = ox + (stampSize - quietBox) / 2 + quiet * cell, coy = oy + (stampSize - quietBox) / 2 + quiet * cell;
@@ -680,7 +798,7 @@
     // square to the page edges (Sig, 2026-10-11): no tilt
     return '<g opacity="0.95" aria-hidden="true">' +
       '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="#F7F6F1"/>' +
-      '<rect x="' + f2(ox + 1.5) + '" y="' + f2(oy + 1.5) + '" width="' + f2(stampSize - 3) + '" height="' + f2(stampSize - 3) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
+      '<rect x="' + f2(ox + frameW / 2) + '" y="' + f2(oy + frameW / 2) + '" width="' + f2(stampSize - frameW) + '" height="' + f2(stampSize - frameW) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
       '<g fill="#B0231A">' + mods + '</g></g>';
   }
 
@@ -704,6 +822,8 @@
         '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
         '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (base + 27) + '" font-size="12.5" font-weight="500" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.8">' + MON[i].toUpperCase() + '</text>';
     }
+    var yearEndW = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
+    grid += '<line x1="' + f2(yearEndW) + '" y1="' + base + '" x2="' + f2(yearEndW) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>';
     var overlay = '', OV = overlaySeries();
     if (OV) {
       overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.daily.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
@@ -724,7 +844,7 @@
       var mx = x0 + D.max.doy * w + w / 2;
       ann += callout(p, mx, base - D.max.v * k, fmtDate(D.max.date) + '  ' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), top + 2);
     }
-    if (D.dryMax.len > 0) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, D.dryMax.len + ' dry days');
+    if (D.dryMax.len > 0) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, dryLabel(D));
     var key = '<text x="' + x0 + '" y="' + (top - 30) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '">' + (OV ? 'shaded: ' + esc(OV.label) : "one line per day · height is that day's precipitation") + '</text>';
     return frame(p, W, H, grid + overlay + bars + temp + ann + key, FL, o);
   }
@@ -745,9 +865,13 @@
       var ms = monthSpan(i, days, D), s0 = ms[0];
       if (s0 < 0) continue;
       var X = x0 + s0 * w;
+      // a tick on the date axis where each month starts, so the first and last day of every month read at a glance
       grid += '<line x1="' + f2(X) + '" y1="' + y0 + '" x2="' + f2(X) + '" y2="' + y1 + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="2 4" opacity="0.35"/>' +
+        '<line x1="' + f2(X) + '" y1="' + f2(y1) + '" x2="' + f2(X) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
         '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (y1 + 26) + '" font-size="12" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.5">' + MON[i].toUpperCase() + '</text>';
     }
+    var yearEndX = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
+    grid += '<line x1="' + f2(yearEndX) + '" y1="' + f2(y1) + '" x2="' + f2(yearEndX) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>';
     var endX = x0 + D.n * w, endY = y1 - D.total * k;
     grid += cutLine(p, endX, y0, y1);
     var OV = overlaySeries();
@@ -773,7 +897,7 @@
       var mx = x0 + (D.max.doy + 1) * w, my = y1 - D.cum[D.max.doy] * k;
       ann += callout(p, mx, my, fmtDate(D.max.date) + '  +' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), y0 + 2);
     }
-    if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, D.dryMax.len + ' dry days');
+    if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, dryLabel(D));
     // headline: the comparison, computed from the two real running totals, baseline always named
     // A preview compares the same days: Jan 1 through the last recorded day, on both lines.
     var pct = OV && OV.total > 0 ? Math.round((D.total - OV.total) / OV.total * 100) : null;
@@ -804,17 +928,32 @@
   // ---------------------------------------------------------------- UI
   var form = $('rp-form'), statusEl = $('rp-status'), art = $('rp-art');
   function setStatus(msg, bad) { if (SAMPLE) return; statusEl.textContent = msg; statusEl.classList.toggle('rp-bad', !!bad); }
-  var EMPTY_ART = art.innerHTML, EMPTY_STATUS = statusEl.textContent;
+  var EMPTY_ART = art.innerHTML, EMPTY_STATUS = statusEl.textContent, EMPTY_CAP = $('rp-sample-txt').textContent;
+  // The line under the frame: what is hanging there.
   function sampleLine(on) {
     $('rp-sample-line').hidden = !on;
-    if (on) $('rp-sample-txt').textContent = 'Sample: ' + SAMPLE.place + ' ' + SAMPLE.year + '. Type your own town to make yours.';
+    var t = EMPTY_CAP;
+    if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + '.';
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.');
+    $('rp-sample-txt').textContent = t;
+  }
+  // Framed or print only: the same art, with or without the CSS frame.
+  function setView(v) {
+    $('rp-wall').setAttribute('data-view', v);
+    doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    sampleLine(!!SAMPLE);
+  }
+  // After the reader's own draw, bring the frame into view if it is above the screen.
+  function showArt() {
+    var w = $('rp-wall');
+    try { if (w.getBoundingClientRect().top < 0) w.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
   }
   // Back to the page as it loads with no design: the empty box and the first instruction.
   function clearSample() {
     if (!SAMPLE) return;
     SAMPLE = null;
-    sampleLine(false);
     DATA = null; PREVIEW = null; NOART = ''; BLOCKED = '';
+    sampleLine(false);
     art.innerHTML = EMPTY_ART;
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
@@ -827,6 +966,7 @@
   function lastFullYear() { return CURRENT_YEAR - 1; }
   function runSample() {
     SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
+    art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
     run(null, normalize({ place: SAMPLE.place, year: SAMPLE.year, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [] }));
   }
   function useSample() {
@@ -836,7 +976,8 @@
     writeInputs(ST);
     setDesignRefs();
     showBuy(true);
-    setStatus('Using the sample design for ' + ST.place + ', ' + ST.year + '. Change anything you like, or order it below.');
+    sampleLine(false);
+    setStatus('This is the ' + ST.place + ', ' + ST.year + ' design now. Change what you like, or order it below.');
   }
   function radios(name) { return Array.prototype.slice.call(doc.querySelectorAll('input[name="' + name + '"]')); }
   function readInputs() {
@@ -889,8 +1030,11 @@
 
   function showBuy(on) {
     on = on && !SAMPLE;
-    $('rp-buy').classList.toggle('rp-off', !on);
-    doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = !on; });
+    // Before anything of the reader's is drawn the buttons stay live and point at the town box; a station with too many gaps turns them off.
+    $('rp-buy').classList.toggle('rp-off', !!BLOCKED);
+    doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = !!BLOCKED; });
+    $('rp-to-buy').classList.toggle('btn-primary', on);
+    $('rp-to-buy').classList.toggle('btn-secondary', !on);
     $('rp-dl').disabled = !on || !DATA;
     // print files wait for the full year: a preview is never sent to the printer
     doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
@@ -907,10 +1051,8 @@
   function syncGift() {
     var on = giftMode() && canOrder();
     $('rp-gift').hidden = !on;
-    $('ro-deliver-wrap').hidden = !on;
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = on ? 'Sig will email you within a day with a payment link. Nothing is charged until you pay it. The proof comes in January, once the full year is drawn.' : ORDER_NOTE;
-    $('ro-address-label').textContent = on ? 'Ship to (name, street, town, state, ZIP; theirs is fine)' : 'Ship to (name, street, town, state, ZIP)';
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -947,7 +1089,7 @@
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
     $('rp-source').innerHTML = 'The print will come from <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(distText(m)) +
-      '. Daily NOAA observations through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
+      '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
     setDesignRefs();
     showBuy(true);
   }
@@ -959,20 +1101,20 @@
     var D = DATA.d, m = META, OV = overlaySeries();
     var dist = distText(m);
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
-    if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> Your print will show the full year.';
-    $('rp-source').innerHTML = 'Recorded at <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
-      (PREVIEW ? 'This preview uses the days in so far: ' : '') +
-      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ', January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? ', <b>' + D.missing + ' unrecorded</b> (drawn as flat on Staircase, marked on Waveform and counted on the print)' : '') + '. ' +
+    if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
+    $('rp-source').innerHTML = 'Rain gauge: <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
+      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, drawn' : ' days, drawn') + ' as no rain' : '') + '. ' +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
-      'Daily NOAA observations through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
-      (EXT ? 'Scale fixed to this station’s record, ' + EXT.yearFrom + ' to ' + EXT.yearTo + '.' : 'The station history did not load, so the scale is this year only.') +
-      (QR_OK ? '' : ' <b>No QR stamp on this one:</b> the name and labels are too long to fit in it. Shorten them and it comes back.') +
-      (ST.cmp !== 'none' && !OV ? ' <b>No comparison is drawn:</b> ' + (ST.cmp === 'normal' ? 'this station has no NOAA normal.' : 'the station history did not load.') : '');
+      'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
+      (EXT ? 'Scale set by this station’s record, ' + EXT.yearFrom + ' to ' + EXT.yearTo + '.' : 'The station history didn’t load, so the scale fits this year only.') +
+      (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
+      (ST.cmp !== 'none' && !OV ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
     var rows = [
-      [PREVIEW ? 'Total so far' : 'Total', f2(D.total) + ' in'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
+      [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
+      ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
       ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : 'no measurable rain'],
-      ['Trace days', D.trace], ['Unrecorded days', D.missing],
+      ['Trace days', D.trace], ['Days with no report', D.missing],
       ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
     $('rp-stats').innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(String(r[1])) + '</dd></div>'; }).join('');
@@ -985,7 +1127,7 @@
   function blockPrint(msg) {
     BLOCKED = msg;
     PREVIEW = null; NOART = '';
-    art.innerHTML = '<p class="rp-placeholder">No print from this station. Pick another under Weather station in Make it yours, below.</p>';
+    art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station. Pick another under Weather station, below.</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
     $('rp-source').textContent = '';
@@ -1002,7 +1144,7 @@
       if (SAMPLE) {
         // The reader's own draw replaces the sample. An empty town keeps the sample up and says what is missing.
         var want = readInputs();
-        if (!want.place) { statusEl.textContent = 'Enter a town and state, like Chetek, WI.'; statusEl.classList.add('rp-bad'); return; }
+        if (!want.place) { statusEl.textContent = 'Type a town and state, like Chetek, WI.'; statusEl.classList.add('rp-bad'); return; }
         clearSample();
         ST.station = '';
       }
@@ -1019,23 +1161,23 @@
     var g, chosen, picked;
     var done = function () { if (my === reqToken) { go.disabled = false; sel.disabled = STATIONS.length < 2; } };
     Promise.resolve().then(function () {
-      if (!ST.place) throw new Error('Enter a town and state, like Chetek, WI.');
-      if (!ST.year) throw new Error('Enter a year.');
+      if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
+      if (!ST.year) throw new Error('Pick a year.');
       var mode = yearMode(ST.year, TODAY);
-      if (mode === 'future') throw new Error(ST.year + ' has not started yet. Pick ' + CURRENT_YEAR + ' to order this year as a gift, or an earlier year.');
+      if (mode === 'future') throw new Error(ST.year + ' hasn\u2019t happened yet. Pick ' + CURRENT_YEAR + ' to give this year as a gift, or an earlier year.');
       ST.gift = mode === 'gift';
       setStatus('Finding ' + ST.place + '…');
       return geocode(ST.place);
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
-      setStatus('Finding weather stations near ' + g.name + ', ' + g.admin1 + (ST.gift ? ' reporting in ' : ' with a record covering ') + ST.year + '…');
+      setStatus('Looking for NOAA stations near ' + g.name + ', ' + g.admin1 + '…');
       return stations(g.latitude, g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
       STATIONS = list;
-      if (!list.length) throw new Error(ST.gift ? 'No weather station within about 40 miles of ' + g.name + ' has been reporting since January 1, ' + ST.year + ', so no print of this year can be made there. Try a nearby town.'
-        : 'No weather station within about 40 miles of ' + g.name + ' has a record covering all of ' + ST.year + '. Try a nearby town or another year.');
+      if (!list.length) throw new Error(ST.gift ? 'No NOAA station within about 40 miles of ' + g.name + ' has a ' + ST.year + ' record from January 1 on. Try a bigger town nearby.'
+        : 'No NOAA station within about 40 miles of ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
       var want = list.find(function (s) { return s.sid === ST.station; });
       if (want) { chosen = want; return daily(want.sid, ST.year).then(function (d) { picked = d; }); }
       // Nearest first; take the first of three with a near-complete year, else the most complete.
@@ -1055,7 +1197,7 @@
       if (my !== reqToken) throw 'stale';
       // This year with nothing back yet: the station is still the one for the print, so ordering stays open.
       if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
-      if (!picked) throw new Error('None of the stations near ' + g.name + ' returned data for ' + ST.year + '. Try again in a minute.');
+      if (!picked) throw new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.');
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
         return '<option value="' + esc(s.sid) + '">' + esc(toTitle(s.name)) + ', ' + Math.round(miles(s.km)) + ' mi, record ' + s.valid_daterange[0][0].slice(0, 4) + '–' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
@@ -1065,21 +1207,20 @@
       META = { name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
-        blockPrint(toTitle(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. A print with that many gaps would show dry weeks that may not have been dry, so none is drawn. Pick another station from the list, or another year.');
+        blockPrint(toTitle(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. Pick another station below, or another year.');
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
         DATA = null; PREVIEW = null;
-        NOART = 'Too little of ' + ST.year + ' is recorded yet to draw a fair preview. ' +
-          (picked.days.length ? 'The record so far runs through ' + longDate(picked.days[picked.days.length - 1].date) + '. ' : 'No days of ' + ST.year + ' have come in from this station yet. ') +
-          'You can still order it as a gift: the full-year print is drawn and delivered in January.';
+        NOART = (picked.days.length ? 'This station only has ' + ST.year + ' through ' + longDate(picked.days[picked.days.length - 1].date) + ', too little to draw a fair preview. ' : 'No days of ' + ST.year + ' have come in from this station yet. ') +
+          'You can still order it as a gift. The full-year print is drawn and sent in January.';
         renderNoArt();
-        setStatus('No preview yet: too few days of ' + ST.year + ' are recorded. Ordering is open.');
+        setStatus('No preview yet, but you can still order it.');
         throw 'noart';
       }
       DATA = { days: picked.days, d: picked.d }; NOART = '';
       PREVIEW = ST.gift ? { last: picked.days[picked.days.length - 1].date, yearLen: isLeap(ST.year) ? 366 : 365 } : null;
-      setStatus('Loading the full history of ' + toTitle(META.name) + '…');
+      setStatus('Reading the full record at ' + toTitle(META.name) + '…');
       return Promise.all([
         stationExtremes(chosen.sid).catch(function () { return null; }),
         stationNormal(chosen.sid, ST.year).catch(function () { return null; })
@@ -1088,17 +1229,17 @@
       if (my !== reqToken) throw 'stale';
       EXT = res[0]; NORM30 = res[1];
       var D = DATA.d;
-      setStatus('Drawn from ' + (D.n - D.missing) + ' recorded days at ' + toTitle(META.name) + '.' + (D.missing ? ' ' + D.missing + ' days are unrecorded; the print says so.' : '') +
+      setStatus('Drawn from ' + (D.n - D.missing) + ' days at ' + toTitle(META.name) + '.' + '' +
         (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : ''));
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
-      else ga('rain_print_draw', { layout: ST.layout });
+      else { ga('rain_print_draw', { layout: ST.layout }); if (e) showArt(); }
     }).catch(function (err) {
       if (err === 'stale') return;
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
-      setStatus(err && err.message ? err.message : 'The print did not draw. Press Draw my print again; if it fails twice, try another year or town.', true);
+      setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Press Draw it again. If it fails twice, try another town or year.', true);
     }).then(done);
   }
 
@@ -1128,6 +1269,8 @@
       syncCutoffs();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
       if (o) o.textContent = giftYearLabel();
+      syncBiz();
+      syncAddress();
     }).catch(function () {});
   }
   function payLink(id) {
@@ -1135,16 +1278,25 @@
     return typeof l === 'string' && /^https:\/\/[^\s"<>]+$/.test(l) ? l : '';
   }
   function buy(id) {
-    if (!canOrder()) { setStatus('Draw your print first, then choose.', true); return; }
+    if (!canOrder()) {
+      // Nothing of the reader's is drawn yet (the sample, or an empty box): send them to the town box.
+      if (BLOCKED) return;
+      try { $('rp-form').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
+      try { $('rp-place').focus({ preventScroll: true }); } catch (err) {}
+      statusEl.textContent = 'Type the town nearest the farm and press Draw it. The order carries the print you draw.';
+      statusEl.classList.remove('rp-bad');
+      return;
+    }
     var code = encodeCode(ST), link = payLink(id), note = $('rp-buy-note');
-    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
+    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters; a gift code is GIFT- plus the design code.
     if (link && code && code.length <= 200) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
       note.innerHTML = ST.gift
         ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells Sig it is a gift for January. He emails you to confirm where it goes, and sends the proof once the full year is drawn.'
-        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.';
+        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.' +
+          (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '');
       return;
     }
     openOrder(id);
@@ -1159,22 +1311,56 @@
     try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     try { $('ro-name').focus({ preventScroll: true }); } catch (e) {}
   }
+  /* "It's a gift" on an ordinary order (2026-10-12), a tick box over the price
+     cards. Any finished year and any product; this year's January gift has its
+     own box (#rp-gift), so the tick box is not offered then.
+     A product WITH a Stripe Payment Link still goes straight to checkout; its
+     Payment Link asks who it's for and the note, and Stripe takes the shipping
+     address, so the page only says so (#rp-gift-checkout).
+     A product WITHOUT a link opens the order request form, which then shows
+     who it's for, a note printed on a card in the box (no prices go in), and
+     where it goes. Same gift_ fields, plus gift:true (worker v5.12). */
+  function januaryGift() { return giftMode() && canOrder(); }
+  function giftTicked() { return !januaryGift() && $('ro-isgift').checked; }
+  function plainGift() { return giftTicked() && !payLink($('ro-choice').value); }
+  function syncGiftCheckout() {
+    var el = $('rp-gift-checkout'), linked = PRODUCTS.filter(function (id) { return payLink(id); });
+    var t = '';
+    if (giftTicked() && linked.length) {
+      t = 'You\u2019ll add their name and your note at checkout. Use their address for shipping if it goes straight to them.';
+      if (linked.length < PRODUCTS.length) {
+        var names = linked.map(function (id) { return CHOICE[id].replace(/^Digital/, 'digital'); });
+        t = 'For the ' + names.join(' and the ') + ', y' + t.slice(1) + ' The others take your note on the order form.';
+      }
+    }
+    el.textContent = t;
+    el.hidden = !t;
+  }
   function syncAddress() {
-    var print = $('ro-choice').value !== 'digital';
+    var print = $('ro-choice').value !== 'digital', jan = januaryGift(), plain = plainGift();
     $('ro-address-wrap').hidden = !print;
     $('ro-address').required = print;
+    $('rp-isgift-wrap').hidden = jan;
+    syncGiftCheckout();
+    $('ro-gift-box').hidden = !plain;
+    $('ro-gift-line').textContent = print ? 'Sig prints the note on a card in the box. No prices go in the box.'
+      : 'Sig sends the note with the file. No prices go with it.';
+    $('ro-deliver-wrap').hidden = !(jan || plain);
+    var theirs = (jan || plain) && $('ro-deliver').value === 'recipient';
+    $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, state, ZIP; theirs is fine)'
+      : plain && theirs ? 'Ship to them (their name, street, town, state, ZIP)' : 'Ship to (name, street, town, state, ZIP)';
     // a gift file sent straight to the person it is for needs their email
-    var theirs = giftMode() && canOrder() && !print && $('ro-deliver').value === 'recipient';
-    $('ro-gift-email-wrap').hidden = !theirs;
-    $('ro-gift-email').required = theirs;
+    var mail = theirs && !print;
+    $('ro-gift-email-wrap').hidden = !mail;
+    $('ro-gift-email').required = mail;
   }
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   function orderSubject(x) {
-    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
+    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' : '\nGift: yes, a note card in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
@@ -1192,7 +1378,14 @@
       design_url: designUrl(ST), design_code: encodeCode(ST), page: '/rain-print'
     };
     if (x.choice === 'digital') x.address = '';
-    var gift = giftMode();
+    var gift = giftMode(), plain = plainGift();
+    if (plain) {
+      x.gift = true;
+      x.gift_to = cleanText($('ro-gift-to').value, GIFT_TO_MAX);
+      x.gift_deliver = $('ro-deliver').value === 'recipient' ? 'recipient' : 'buyer';
+      x.gift_email = x.choice === 'digital' && x.gift_deliver === 'recipient' ? $('ro-gift-email').value.trim() : '';
+      x.gift_message = $('ro-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
+    }
     if (gift) {
       x.gift_january = true;
       x.gift_to = cleanText($('rp-gift-to').value, GIFT_TO_MAX);
@@ -1202,7 +1395,8 @@
     }
     var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address Sig can reply to.']
       : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.']
-      : (gift && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
+      : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick It\u2019s a gift.']
+      : ((gift || plain) && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
     var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
@@ -1213,7 +1407,7 @@
     sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-order', data, fs).then(function () {
-      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : 0 });
+      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
         ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link.</p>' +
           '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
@@ -1225,13 +1419,131 @@
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
-      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : 0 });
+      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       var body = orderText(x);
       var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That did not go through. Nothing was sent.</b></p><p>Send it by email instead; the message is written out for you, to ' + ORDER_TO + '.</p>' +
+      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below.</p>' +
         '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
       try { $('ro-mail').focus(); } catch (err) {}
     }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+  }
+
+  // ---------- for businesses: a quote request for a set of prints ----------
+  /* Its own form (#rb-form, kind rain-print-business, worker v5.12). It needs
+     no drawn design: the business sends a list of towns and years and Sig
+     quotes it. The cutoff line, the table and the per-print readout come only
+     from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above). */
+  var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
+  var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed', 'framed'], digital: ['digital file', 'digital files'],
+    'not-sure': ['not sure yet', 'not sure yet'] };
+  var BIZ_SHIP = { one: 'All to one address', each: 'One to each customer', 'not-sure': 'Not sure yet' };
+  function radioVal(name) { var r = doc.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
+  function syncBiz() {
+    var j = PRICES;
+    if (!j) return;
+    var cut = bizCutoffNote(TODAY, j.business_cutoff);
+    $('rp-biz-cutoff').textContent = cut; $('rp-biz-cutoff').hidden = !cut;
+    var note = typeof j.business_note === 'string' ? cleanText(j.business_note, 300) : '';
+    $('rp-biz-note').textContent = note; $('rp-biz-note').hidden = !note;
+    var ship = bizShip(j), rows = bizRows(j);
+    $('rp-biz-ship').textContent = ship ? 'Shipping is per print, to US addresses. The digital file is emailed.' : 'Shipping is quoted with your order.';
+    $('rp-biz-ship').hidden = false;
+    $('rp-tiers-box').hidden = !rows.length;
+    if (rows.length) {
+      var d2 = function (x) { return money(x); };
+      var pair = function (o) { return d2(o.print12x18) + ' / ' + d2(o.framed12x18); };
+      $('rp-tiers-head').innerHTML = ship
+        ? '<tr><th scope="col" rowspan="2" class="rp-l">Quantity</th><th scope="colgroup" colspan="3">Price per print</th><th scope="colgroup" colspan="2" class="rp-sh">Shipping per print (print / framed)</th></tr>' +
+          '<tr><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th><th scope="col" class="rp-sh">To one address</th><th scope="col" class="rp-sh">To each customer</th></tr>'
+        : '<tr><th scope="col" class="rp-l">Quantity</th><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th></tr>';
+      $('rp-tiers-body').innerHTML = rows.map(function (r) {
+        // data-label: on a phone each row stacks into a card that names its cells (CSS in the page)
+        var lab = { print12x18: 'Print', framed12x18: 'Framed', digital: 'Digital' };
+        return '<tr><th scope="row" class="rp-l">' + esc(bizRange(r)) + ' <span class="rp-off">' + esc(r.pct + '% off') + '</span></th>' +
+          BIZ_PRODUCTS.map(function (id) { return '<td class="rp-num" data-label="' + lab[id] + '">' + d2(r.prices[id]) + '</td>'; }).join('') +
+          (ship ? '<td class="rp-num rp-sh" data-label="Shipping to one address (print / framed)">' + pair(r.one) + '</td>' +
+            '<td class="rp-num rp-sh" data-label="Shipping to each customer (print / framed)">' + pair(r.each) + '</td>' : '') + '</tr>';
+      }).join('');
+    }
+    syncBizTier();
+  }
+  var BIZ_DEST = { one: ' to one address', each: ' to each customer' };
+  function syncBizShip() {
+    var each = radioVal('rb-ship') === 'each';
+    $('rb-note-all-wrap').hidden = !each;
+    $('rb-towns-help').hidden = !each;
+  }
+  function syncBizTier() {
+    var out = $('rb-tier'), raw = String($('rb-qty').value || '').trim(), qty = /^\d{1,4}$/.test(raw) ? +raw : 0;
+    var pick = radioVal('rb-product'), dest = radioVal('rb-ship'), id = BIZ_PRODUCT[pick];
+    var c = function (x) { return '$' + x.toFixed(2).replace(/\B(?=(\d{3})+\.)/g, ','); };
+    out.textContent = '';
+    if (!qty || !PRICES) return;
+    if (qty < BIZ_MIN) {
+      out.innerHTML = 'For fewer than ' + BIZ_MIN + ', <a href="#rp-buy">order the regular way above</a>. Shipping is included in those prices.';
+      return;
+    }
+    if (qty > BIZ_MAX) { out.textContent = 'Up to ' + BIZ_MAX + ' here. For more, put ' + BIZ_MAX + ' and say how many in the notes.'; return; }
+    if (!id) return;
+    var what = qty + ' ' + BIZ_WORD[pick][1];
+    var one = bizQuote(PRICES, qty, id, 'one'), each = bizQuote(PRICES, qty, id, 'each');
+    if (!one || !each) return;
+    if (one.ship === null) { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' before shipping.'; return; }
+    if (id === 'digital') { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' total.'; return; }
+    var q = dest === 'one' ? one : dest === 'each' ? each : null;
+    out.textContent = q
+      ? what + BIZ_DEST[dest] + ': ' + c(q.unit) + ' + ' + c(q.ship) + ' shipping each, ' + c(q.total) + ' total.'
+      : what + ': ' + c(one.unit) + ' + ' + c(one.ship) + ' to ' + c(each.ship) + ' shipping each, ' + c(one.total) + ' to ' + c(each.total) + ' total.';
+  }
+  function bizSubject(x) { return 'Rain Print business quote: ' + x.business + ', ' + x.quantity + ' ' + BIZ_WORD[x.product][x.quantity === '1' ? 0 : 1]; }
+  function bizText(x) {
+    return bizSubject(x) + '\n\nBusiness: ' + x.business + '\nContact: ' + x.name + '\nEmail: ' + x.email + (x.phone ? '\nPhone: ' + x.phone : '') +
+      '\nHow many: ' + x.quantity + '\nProduct: ' + BIZ_WORD[x.product][0] + '\nShip to: ' + BIZ_SHIP[x.ship] +
+      (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') + '\n';
+  }
+  var bizSending = false;
+  function submitBiz(e) {
+    e.preventDefault();
+    if (bizSending) return;
+    var out = $('rb-out'), qraw = String($('rb-qty').value || '').trim();
+    var x = {
+      business: cleanText($('rb-business').value, 120), name: cleanText($('rb-name').value, 80), email: $('rb-email').value.trim(),
+      phone: cleanText($('rb-phone').value, 30), quantity: qraw, product: radioVal('rb-product') || 'not-sure',
+      towns: $('rb-towns').value.replace(/\r\n?/g, '\n').trim().slice(0, 8000), ship: radioVal('rb-ship') || 'not-sure',
+      notes: $('rb-notes').value.replace(/\r\n?/g, '\n').trim().slice(0, 2000), page: '/rain-print#rp-biz'
+    };
+    var qn = /^\d{1,4}$/.test(qraw) ? +qraw : 0;
+    var bad = !x.business ? ['rb-business', 'Add the business name.'] : !x.name ? ['rb-name', 'Add your name.']
+      : !EMAIL_RE.test(x.email) ? ['rb-email', 'Add an email address Sig can reply to.']
+      : qn >= 1 && qn < BIZ_MIN ? ['rb-qty', 'Business orders start at ' + BIZ_MIN + '. For fewer, order the regular way above.']
+      : !(qn >= BIZ_MIN && qn <= BIZ_MAX) ? ['rb-qty', 'Put how many prints, from ' + BIZ_MIN + ' to ' + BIZ_MAX + '. For more than ' + BIZ_MAX + ', put ' + BIZ_MAX + ' and say how many in the notes.']
+      : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
+    if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
+    x.quantity = String(qn);
+    // the shared note card goes only to prints shipped one to each customer
+    if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
+    var hp = doc.querySelector('#rb-form input[name="_gotcha"]');
+    var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
+    var subj = bizSubject(x);
+    var fs = Object.assign({ _subject: subj, _replyto: x.email, form: 'rain-print-business' }, x);
+    if (hp && hp.value) fs._gotcha = hp.value;
+    var btn = $('rb-submit'), was = btn.textContent;
+    bizSending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
+    var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
+    send('rain-print-business', data, fs).then(function () {
+      ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
+      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will write to ' + esc(x.email) + ' with a quote, then proofs.</p>' +
+        '<p>Nothing is printed or charged until you OK them.</p></div>';
+      $('rb-form').reset(); syncBizShip(); syncBizTier();
+      try { out.firstChild.focus(); } catch (err) {}
+    }).catch(function () {
+      ga('rain_print_business', { result: 'fail', product: x.product, qty: qn });
+      var body = bizText(x);
+      var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn’t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The request is written out below.</p>' +
+        '<p><a class="rp-btn2" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
+      try { $('rb-mail').focus(); } catch (err) {}
+    }).then(function () { bizSending = false; btn.disabled = false; btn.textContent = was; });
   }
 
   // ---------- the gift card ----------
@@ -1393,7 +1705,7 @@
       });
     }
     job.then(function (msg) { out.textContent = msg; ga('rain_print_download', { kind: kind, fmt: fmt }); },
-      function () { out.textContent = 'This browser could not make that file. A desktop browser handles the big print files best.'; })
+      function () { out.textContent = 'This browser couldn\u2019t make the file. Try it on a computer.'; })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
 
@@ -1410,6 +1722,7 @@
     if (SAMPLE) run(null, Object.assign({}, ST)); else run();
   });
   $('rp-sample-use').addEventListener('click', useSample);
+  doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
   $('rp-year').addEventListener('input', syncMarkerBounds);
   ['rp-cmp'].forEach(function (id) { $(id).addEventListener('change', restyle); });
   ['rp-name', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
@@ -1417,15 +1730,20 @@
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', syncAddress);
   $('ro-deliver').addEventListener('change', syncAddress);
+  $('ro-isgift').addEventListener('change', syncAddress);
   $('rp-card').addEventListener('click', printCard);
   $('ro-form').addEventListener('submit', submitOrder);
+  $('rb-form').addEventListener('submit', submitBiz);
+  $('rb-qty').addEventListener('input', syncBizTier);
+  radios('rb-product').concat(radios('rb-ship')).forEach(function (r) { r.addEventListener('change', syncBizTier); });
+  radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
     b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
     var u = shortUrl(artDesign()), b = $('rp-copy');
-    var ok = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link to this design'; }, 2000); };
+    var ok = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link'; }, 2000); };
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
