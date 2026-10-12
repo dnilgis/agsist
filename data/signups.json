@@ -1,17 +1,17 @@
 {
  "schema": 1,
  "asOf": "2026-10-12",
- "built": "2026-10-12T20:17:09+00:00",
+ "built": "2026-10-12T22:14:39+00:00",
  "note": "Counts only. Each address counts once, under the page it first signed up from.",
- "subscribers": 135,
+ "subscribers": 134,
  "withZip": 11,
- "reportDays": 135,
+ "reportDays": 134,
  "bySource": [
   {
    "src": "daily-briefing-subscribe",
-   "total": 18,
-   "last7": 4,
-   "last30": 7
+   "total": 17,
+   "last7": 3,
+   "last30": 6
   },
   {
    "src": "page:cash-bids",
@@ -307,7 +307,7 @@
   },
   {
    "d": "2026-10-12",
-   "n": 5
+   "n": 4
   }
  ],
  "notices": []
