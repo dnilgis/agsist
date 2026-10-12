@@ -377,6 +377,8 @@ def _selftest():
     check("nextBizDay(iso)" in cal and "type:'croprog'" in cal,
           "and moves a holiday Crop Progress to the next business day")
     idx = open(os.path.join(here, "..", "index.html"), encoding="utf-8").read()
+    # the homepage page script moved to components/home.js (2026-10-12)
+    idx += open(os.path.join(here, "..", "components", "home.js"), encoding="utf-8").read()
     check("date may shift" not in idx, "the homepage strip no longer leaves the date open")
 
     print()

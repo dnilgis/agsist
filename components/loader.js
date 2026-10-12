@@ -929,3 +929,64 @@
   }, { passive: true, capture: true });
   document.addEventListener('mouseout', function () { clearTimeout(hoverTimer); }, { passive: true, capture: true });
 })();
+
+// Service worker: registered here so every page that loads this file gets it
+// (until 2026-10-12 only the homepage registered it). Pages without loader.js
+// load components/sw-register.js, the same block; the flag keeps it to once.
+(function () {
+  'use strict';
+  var w = window, n = w.navigator;
+  if (w.__agsistSW || !n || !('serviceWorker' in n)) return;
+  w.__agsistSW = 1;
+  try { if (w.self !== w.top) return; } catch (e) { return; }   // not from an embed
+  if (w.isSecureContext === false) return;
+  function go() {
+    n.serviceWorker.register('/sw.js').catch(function (err) {
+      try { console.warn('[AGSIST] service worker registration failed:', err); } catch (e) {}
+    });
+  }
+  if (document.readyState === 'complete') go();
+  else w.addEventListener('load', go, { once: true });
+
+  // sw.js answers prices, bids, the daily brief and weather from the last
+  // saved copy when the network fails or takes over 3 s, and posts a message.
+  // components/asof.js turns that into its "Offline. Showing ..." line; a page
+  // without asof.js gets this plain one, so a saved price is never shown as live.
+  var NAMES = { prices: 'prices', bids: 'bids', daily: 'the daily brief', weather: 'weather' };
+  var seen = {}, bar = null;
+  function when(iso) {   // Central time, like components/asof.js
+    var t = Date.parse(iso || '');
+    if (isNaN(t)) return '';
+    try {
+      var day = function (x) { return new Date(x).toLocaleDateString('en-US', { timeZone: 'America/Chicago', month: 'short', day: 'numeric' }); };
+      var hm = new Date(t).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }).replace(' AM', ' am').replace(' PM', ' pm');
+      return (day(t) === day(Date.now()) ? '' : day(t) + ', ') + hm + ' CT';
+    } catch (e) { return ''; }
+  }
+  function paint(weak) {
+    if (w.AgAsOf) return;
+    var bits = [];
+    for (var f in seen) bits.push(NAMES[f] + (seen[f] ? ' from ' + seen[f] : ''));
+    if (!bits.length) return;
+    if (!bar) {
+      bar = document.createElement('p');
+      bar.className = 'asof-offline sw-saved-note';
+      bar.setAttribute('role', 'status');
+      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,6px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
+      var host = document.querySelector('main') || document.body;
+      if (!host) return;
+      host.insertBefore(bar, host.firstChild);
+    }
+    bar.textContent = (weak && n.onLine ? 'Weak signal.' : 'Offline.') + ' Showing saved ' + bits.slice(0, 2).join(' and ') + '.';
+  }
+  try {
+    n.serviceWorker.addEventListener('message', function (e) {
+      var m = e.data || {};
+      if (m.type !== 'agsist-saved-data' || !NAMES[m.feed]) return;
+      seen[m.feed] = when(m.dataTime || m.saved);
+      var weak = m.reason === 'timeout';
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { paint(weak); });
+      else paint(weak);
+    });
+  } catch (e) {}
+})();

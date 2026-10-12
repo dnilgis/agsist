@@ -138,6 +138,8 @@ check('"event_date"' in prompt and "Never invent an event or a date" in prompt
 for f, needle in (("index.html", "data.otp_week_ahead?'WEEK AHEAD IN AG'"),
                   ("daily.html", "data.otp_week_ahead?'WEEK AHEAD IN AG'")):
     src = open(os.path.join(HERE, "..", f), encoding="utf-8").read()
+    if f == "index.html":  # its page script moved to components/home.js (2026-10-12)
+        src += open(os.path.join(HERE, "..", "components", "home.js"), encoding="utf-8").read()
     check(needle in src and "market_closed?'WEEK AHEAD" not in src and "marketClosed?'WEEK AHEAD" not in src,
           f"{f} reads otp_week_ahead, not market_closed")
 

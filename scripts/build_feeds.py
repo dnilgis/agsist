@@ -312,7 +312,8 @@ def main():
         # feeds (and data/wpi-history.json from the manifest altogether).
         # Only page-owned scripts (components/home-*.js) count here; shared
         # components are left as they were, so this changes no other page.
-        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/home-[\w-]+\.js)""", text))):
+        # 2026-10-12: the rest of its inline script moved to components/home.js.
+        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/home(?:-[\w-]+)?\.js)""", text))):
             if os.path.exists(js):
                 text += "\n" + read(js)
         for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
