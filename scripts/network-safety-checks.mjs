@@ -5,7 +5,18 @@
    with a Barchart response that never changes, against every way the network
    can fail. The answer must be byte-identical rows every time. */
 import { readFileSync } from "node:fs";
-const PAGE = readFileSync(new URL("../cash-bids.html", import.meta.url), "utf8");
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+/* The page script moved out of cash-bids.html into components/cash-bids.js
+   (2026-10-12). Read the page and the script it loads as one text, and
+   insist the page still loads that script, so the functions checked here
+   are the ones the browser runs. */
+const PAGE = (() => {
+  const html = readFileSync(fileURLToPath(new URL("../cash-bids.html", import.meta.url)), "utf8");
+  const m = html.match(/<script src="\/components\/cash-bids\.js\?v=\d+"><\/script>/);
+  if (!m) { console.error("cash-bids.html no longer loads /components/cash-bids.js"); process.exit(1); }
+  return html + "\n" + readFileSync(join(dirname(fileURLToPath(new URL("../cash-bids.html", import.meta.url))), "components", "cash-bids.js"), "utf8");
+})();
 
 function lift(name) {
   const s = PAGE.indexOf(`function ${name}(`);
