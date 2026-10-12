@@ -841,13 +841,15 @@ function computeScorecard(){
     var sv=window.__agsistSeas[mo];
     factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:seasWin()});
   }
-  // 5. RP revenue floor (crop insurance), only when harvest-prices has this crop.
+  // 5. RP projected price (crop insurance), only when harvest-prices has this crop.
+  //    It is a price, not a floor: the guarantee is APH yield times coverage
+  //    times the higher of the projected and harvest prices.
   //    Measured against the quote the page leads with (the nearby contract).
   var fq=frontQuote(window.__agsistLastQ);
   if(rp&&rp.floor!=null){
     var _bq=(fq&&fq.close!=null)?fq.close/100:null;
     var _gap=(_bq!=null)?(rp.floor-_bq):null;
-    factors.push({lbl:'RP Revenue Floor',val:'$'+rp.floor.toFixed(2),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?((_gap>=0?'+':'−')+AG.px.priceDollars(Math.abs(_gap))+'/bu vs today’s board'):('projected '+(rp.window||'')+' avg'))});
+    factors.push({lbl:'RP projected price',val:AG.px.priceDollars(rp.floor),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?(AG.px.quarters(_gap*100)===0?'level with today’s board':AG.px.move(Math.abs(_gap)*100)+' '+(_gap>0?'above':'below')+' today’s board'):('projected '+(rp.window||'')+' avg'))});
   }
   // composite descriptive situation (NOT a recommendation)
   var sit='';
@@ -900,10 +902,11 @@ function renderScorecard(){
   if(rpEl){
     if(sc.rp&&sc.rp.floor!=null){
       var bq=(sc.priceCents!=null)?sc.priceCents/100:null;
-      var L='<strong>Your RP revenue floor:</strong> projected <strong>$'+sc.rp.floor.toFixed(2)+'</strong>'+(sc.rp.contract?' ('+sc.rp.contract+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
+      var L='<strong>RP projected price:</strong> <strong>'+AG.px.priceDollars(sc.rp.floor)+'</strong>'+(sc.rp.contract?' ('+AG.px.contract(sc.rp.contract)+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
       /* the board is a futures price, printed to the quarter cent like the hero; it is not "the cash market" */
-      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+', so your floor sits <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+AG.px.priceDollars(Math.abs(g))+'/bu</span> '+(g>=0?'above':'below')+' the board.';}
-      if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+' Your guarantee uses the higher of the two.</span>';}
+      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+(AG.px.quarters(g*100)===0?', level with the board.':', <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+AG.px.move(Math.abs(g)*100)+'</span> '+(g>0?'above':'below')+' the board.');}
+      L+=' Your revenue guarantee is your APH yield times your coverage level times the higher of the projected and harvest prices.';
+      if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+'</span>';}
       rpEl.innerHTML=L; rpEl.style.display='block';
       try{if(typeof gaEvent==='function')gaEvent('rp_floor_shown',{crop:CROP_KEY});else if(window.gtag)gtag('event','rp_floor_shown',{crop:CROP_KEY});}catch(e){}
     } else { rpEl.style.display='none'; }
