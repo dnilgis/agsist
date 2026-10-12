@@ -68,12 +68,18 @@ r = await post(rp); A(r.status === 200, 'rain print order stored');
 rec = JSON.parse(store.get(forms().find(x => x.startsWith('form:rain-print-order:'))));
 A(rec.email === 'jane@farm.com' && rec.address === '12 Main St\nChetek WI 54728' && rec.choice === 'print12x18' && !('extra' in rec), 'rain print order cleaned');
 A(/^form:rain-print-order:\d{13}:[0-9a-f]{8}$/.test(forms().find(x => x.startsWith('form:rain-print-order:'))), 'rain print key matches FORM_KEY_RE shape');
+/* The newest record is the key that was not there before the post: two posts in the same
+   millisecond sort by their random suffix, so "last in sort order" picked the wrong one at times. */
+const rpKeys = () => forms().filter(x => x.startsWith('form:rain-print-order:'));
+const newKey = (before) => { const k = rpKeys().filter(x => !before.includes(x)); A(k.length === 1, 'exactly one new rain print record'); return k[0]; };
+let rpBefore = rpKeys();
 r = await post(Object.assign({}, rp, { choice: 'digital' })); A(r.status === 200, 'digital order stored');
-rec = JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).sort().pop()));
+rec = JSON.parse(store.get(newKey(rpBefore)));
 A(rec.choice === 'digital' && !('address' in rec), 'digital order keeps no address');
 r = await post(Object.assign({}, rp, { choice: 'digital', address: '' })); A(r.status === 200, 'digital order needs no address');
+rpBefore = rpKeys();
 r = await post(Object.assign({}, rp, { choice: 'framed12x18' })); A(r.status === 200, 'framed order stored');
-rec = JSON.parse(store.get(forms().filter(x => x.startsWith('form:rain-print-order:')).pop()));
+rec = JSON.parse(store.get(newKey(rpBefore)));
 A(rec.choice === 'framed12x18' && rec.address === '12 Main St\nChetek WI 54728', 'framed order keeps its address');
 for (const [patch, why] of [[{ address: '' }, 'print needs an address'], [{ choice: 'framed12x18', address: '' }, 'framed print needs an address'],
     [{ choice: 'print18x24' }, '18 x 24 is no longer offered'], [{ address: '   ' }, 'blank address'],
