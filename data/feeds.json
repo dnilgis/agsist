@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 81,
- "with_known_cadence": 81,
+ "count": 78,
+ "with_known_cadence": 78,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1576,79 +1576,6 @@
    "max_gap_hours": 24.0,
    "quiet": "seasonal",
    "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
-  },
-  {
-   "path": "data/seo-index.json",
-   "pages": [
-    "seo-report.html"
-   ],
-   "written_by": [
-    "SEO weekly (index check + what to fix)"
-   ],
-   "touched_by": [
-    "Rebuild Feed Manifest",
-    "SEO weekly (index check + what to fix)"
-   ],
-   "cadence": "1 launch Mondays at about 10am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 15 * * 1"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/seo-opportunities.json",
-   "pages": [
-    "seo-report.html"
-   ],
-   "written_by": [
-    "SEO weekly (index check + what to fix)",
-    "Site usage (GA4 + Search Console, 90 days)"
-   ],
-   "touched_by": [
-    "SEO weekly (index check + what to fix)",
-    "Site usage (GA4 + Search Console, 90 days)"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 9am, 10am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 15 * * 1",
-    "37 14 2 * *"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/signups.json",
-   "pages": [
-    "seo-report.html"
-   ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "touched_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "12 11 * * *"
-   ],
-   "max_gap_hours": 24.0,
-   "quiet": null,
-   "why_quiet": null
   },
   {
    "path": "data/site-usage.json",

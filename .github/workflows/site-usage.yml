@@ -57,7 +57,6 @@ jobs:
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
           git add data/site-usage.json 2>/dev/null || true
-          git add data/seo-opportunities.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"
             exit 0

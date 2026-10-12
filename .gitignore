@@ -12,3 +12,8 @@ bids-full.json
 # Barchart's rows alone, before the network is merged in. Same lifetime as
 # bids-full.json: written and read inside one job, never committed.
 barchart-raw.json
+
+# private, never published (Sig, 2026-10-12)
+data/signups.json
+data/seo-opportunities.json
+data/seo-index.json

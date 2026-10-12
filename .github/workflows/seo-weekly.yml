@@ -64,7 +64,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # one path per add: a missing seo-index.json (no secret yet) must
           # not stop the other file from being staged
-          for f in data/seo-index.json data/seo-opportunities.json; do
+          for f in; do
             git add "$f" 2>/dev/null || true
           done
           if git diff --cached --quiet; then
