@@ -553,7 +553,11 @@
     if (ev) s.split = ev;
     return !!ev;
   }
+  /* Clear can be undone until the next edit, or for eight seconds */
+  var undo = null, undoT = null;
+  function dropUndo() { undo = null; clearTimeout(undoT); var b = $('prf-clear'); if (b) b.textContent = 'Clear'; }
   function toggleIv(i, on) {
+    dropUndo();
     var s = cur(), mm = minmax();
     if (on) {
       if (!mm.valid[i] || (i > 0 && s.split[i - 1] > 0) || (i < N - 1 && s.split[i + 1] > 0)) return;
@@ -564,7 +568,7 @@
     render();
   }
   function setPct(i, v) {
-    var s = cur();
+    var s = cur(); dropUndo();
     v = Math.max(0, Math.min(100, Math.round(+v) || 0));
     if (s.split[i] === v) return;
     s.split[i] = v; s.even = false; S.touched = true;
@@ -585,7 +589,7 @@
   var SOD = { IA: 1, MN: 1, MT: 1, NE: 1, ND: 1, SD: 1 };
   function drawAnswer(R) {
     var box = $('prf-answer'), line = $('prf-printsum');
-    line.innerHTML = (S.touched ? '' : '<b>Example policy.</b> Change it below. ') + esc(policyLine(R.setup)) + '<span class="prf-printonly"> · crop year ' + meta.crop_year + ' · agsist.com/prf</span>';
+    line.innerHTML = (S.touched ? '' : '<span class="prf-noprint"><b>Example policy.</b> Change it below. </span>') + esc(policyLine(R.setup)) + '<span class="prf-printonly"> · crop year ' + meta.crop_year + ' · agsist.com/prf</span>';
     if (!R.ok) {
       box.innerHTML = '<p class="prf-verdict prf-wait">' + esc(R.why) + '</p>';
       box.classList.add('is-wait');
@@ -615,8 +619,8 @@
     if (backFull != null) {
       var lr = root.getAttribute('data-lr-mid'), lo = root.getAttribute('data-lr-lo'), hi = root.getAttribute('data-lr-hi'), all = meta.years.last_complete - meta.years.first + 1;
       h += '<p class="prf-back">For each $1 of the full premium, this policy would have paid back <b>' + usd2(backFull) + '</b> over those ' + s.years + ' years.'
-        + (lr ? ' USDA sets its rates from this same record. Over all ' + all + ' years the middle grid and interval comes to $' + lr + ', and nine in ten sit between $' + lo + ' and $' + hi + ', at every coverage level.' : '')
-        + ' So no grid, month or coverage level is a bargain on the record. What comes back above your own ' + usd(t.producer) + ' is the ' + pctSub + '% of the bill USDA pays.</p>';
+        + (lr ? ' Across the country the middle is $' + lr + ', and nine in ten fall between $' + lo + ' and $' + hi + ', at every coverage level and in every month, because USDA sets its rates from this record.' : '')
+        + ' What comes back above your own ' + usd(t.producer) + ' is USDA’s ' + pctSub + '% share of the bill.</p>';
     }
     h += '<ul class="prf-caveat">'
       + '<li>Every year is priced at ' + meta.crop_year + ' rates and county values, on the precipitation record USDA publishes for ' + meta.crop_year
@@ -1024,7 +1028,13 @@
     function touch() { S.touched = true; }
     $('prf-use').addEventListener('change', function () { S.use = +this.value; touch(); ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); }); render(); });
     /* a number box that is tapped is about to be replaced, not added to: 100 then "3000" must not read 1003000 */
-    ['prf-acres', 'prf-share', 'prf-pf-n'].forEach(function (id) { $(id).addEventListener('focus', function () { var el = this; setTimeout(function () { try { el.select(); } catch (e) {} }, 0); }); });
+    /* select on focus, and keep the mouseup or tap that focused it from undoing the selection */
+    function selectAll(el) {
+      el.addEventListener('focus', function () { try { el.select(); } catch (e) {} el._sel = true; });
+      el.addEventListener('mouseup', function (e) { if (el._sel) { e.preventDefault(); el._sel = false; } });
+      el.addEventListener('blur', function () { el._sel = false; });
+    }
+    ['prf-acres', 'prf-share', 'prf-pf-n'].forEach(function (id) { selectAll($(id)); });
     $('prf-acres').addEventListener('input', function () { var v = Math.round(+this.value); S.acres = v > 0 && v <= 5000000 ? v : 0; touch(); render(); });
     $('prf-acres').addEventListener('blur', function () { this.value = S.acres || ''; });
     $('prf-share').addEventListener('input', function () { var v = +this.value; S.share = this.value !== '' && v >= 1 && v <= 100 ? Math.round(v) : null; touch(); render(); });
@@ -1038,7 +1048,7 @@
       var t = e.target;
       if (t.hasAttribute('data-iv-on')) toggleIv(+t.getAttribute('data-iv-on'), t.checked);
     });
-    body.addEventListener('focusin', function (e) { var t = e.target; if (t.hasAttribute && t.hasAttribute('data-iv-pct')) setTimeout(function () { try { t.select(); } catch (er) {} }, 0); });
+    body.addEventListener('focusin', function (e) { var t = e.target; if (t.hasAttribute && t.hasAttribute('data-iv-pct') && !t._selWired) { t._selWired = true; selectAll(t); try { t.select(); } catch (er) {} t._sel = true; } });
     /* A percent being typed: an empty box or a zero is a number half typed,
        not "turn this month off". The month goes off when the box is left that way. */
     body.addEventListener('input', function (e) {
@@ -1061,16 +1071,15 @@
       setPct(i, v);
     });
     $('prf-even').addEventListener('click', function () {
-      var s = cur(), tot = $('prf-iv-total'); s.even = true; S.touched = true;
+      var s = cur(), tot = $('prf-iv-total'); s.even = true; S.touched = true; dropUndo();
       var ok = rebalance(s); render();
       if (!ok) { tot.textContent = 'These months cannot be split to 100% within this county’s limits. Add or drop a pair.'; tot.classList.add('is-bad'); }
     });
-    var undo = null;
     $('prf-clear').addEventListener('click', function () {
       var s = cur(), b = this;
-      if (undo) { s.split = undo; undo = null; b.textContent = 'Clear'; render(); return; }
-      undo = s.split.slice(); s.split = blank(); s.even = true; S.touched = true; render();
-      b.textContent = 'Undo clear'; setTimeout(function () { undo = null; b.textContent = 'Clear'; }, 8000);
+      if (undo) { var back = undo; dropUndo(); s.split = back; render(); return; }
+      var keep = s.split.slice(); s.split = blank(); s.even = true; S.touched = true; render();
+      undo = keep; b.textContent = 'Undo clear'; undoT = setTimeout(dropUndo, 8000);
     });
     $('prf-addb').addEventListener('click', function () { S.B = { cov: S.A.cov, pf: S.A.pf, split: S.A.split.slice(), even: S.A.even }; S.on = 'B'; S.touched = true; render(); track('prf_compare', {}); $('prf-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('prf-tab-a').addEventListener('click', function () { S.on = 'A'; render(); });

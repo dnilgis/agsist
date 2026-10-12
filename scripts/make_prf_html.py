@@ -14,6 +14,8 @@ def mk(k, v=""):
 
 COV = "".join(f'<button type="button" data-cov="{c}" aria-pressed="false">{c}%</button>' for c in (70, 75, 80, 85, 90))
 
+WIN = "".join(f'<button type="button" data-win="{w}" aria-pressed="false">{w}</button>' for w in (0, 30, 20, 10))
+
 HTML = f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -22,7 +24,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=1">
+  <link rel="stylesheet" href="/components/prf.css?v=2">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -36,15 +38,18 @@ HTML = f"""<!DOCTYPE html>
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="PRF rainfall insurance: what your grid would have paid, every year on record">
+  <meta property="og:title"        content="">
   <meta property="og:description" content="">
   <meta property="og:url"          content="https://agsist.com/prf">
-  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image"        content="https://agsist.com/img/og/prf.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
-  <meta name="twitter:title"       content="PRF rainfall insurance: what your grid would have paid, every year on record">
+  <meta name="twitter:title"       content="">
   <meta name="twitter:description" content="">
-  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/prf.jpg">
   {BOOT}
   <!-- prf:jsonld --><!-- /prf:jsonld -->
 </head>
@@ -52,20 +57,19 @@ HTML = f"""<!DOCTYPE html>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
   <main id="main" class="main" tabindex="-1">
-  <div class="prf" data-prf data-src="/data/prf/">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; <span aria-current="page">PRF rainfall insurance</span></nav>
-    <p class="page-kicker">Crop year {mk("crop_year")} &middot; sign-up closes {mk("sales_long")}</p>
-    <h1>PRF rainfall insurance: what your grid would have paid, every year since {mk("y0")}</h1>
-    <p class="prf-lede">Pick your grid, your acres and your months. See the premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}, at this year&rsquo;s rates. It covers all {mk("grids")} grids, across {mk("counties")} counties in {mk("states")} states.</p>
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA). {mk("built")}. {mk("check")}</p>
+  <div class="prf" data-prf data-src="/data/prf/" data-lr-mid="" data-lr-lo="" data-lr-hi="">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; <span aria-current="page">PRF insurance calculator</span></nav>
+    <p class="page-kicker">Crop year {mk("crop_year")} &middot; sign-up deadline {mk("sales_long")}</p>
+    <h1>PRF insurance calculator: what your grid would have paid, every year since {mk("y0")}</h1>
+    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. Type the ZIP or town nearest the land. You get the {mk("crop_year")} premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}. Free, with no sign-up, for all {mk("grids")} grids in {mk("states")} states.</p>
 
-    <p class="prf-status" id="prf-status" role="status">Loading the rain record&hellip;</p>
-    <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules and the method below do not.</p></noscript>
+    <p class="prf-status" id="prf-status" role="status"></p>
+    <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules, the worked example and the method below do not.</p></noscript>
 
     <div id="prf-app" hidden>
       <form class="prf-find" id="prf-find" autocomplete="off">
-        <label for="prf-q">ZIP, town, or latitude and longitude
-          <input id="prf-q" type="text" inputmode="text" enterkeyhint="search" placeholder="54728, or 45.31, -91.65"></label>
+        <label for="prf-q">ZIP, town and state, coordinates, or grid ID
+          <input id="prf-q" type="text" inputmode="text" enterkeyhint="search" placeholder="54728, or Chetek WI"></label>
         <button type="submit" class="prf-btn prf-btn-go">Find the grid</button>
         <button type="button" class="prf-btn" id="prf-loc">Use my location</button>
       </form>
@@ -83,14 +87,15 @@ HTML = f"""<!DOCTYPE html>
       <div class="prf-tool" id="prf-tool" hidden>
         <div class="prf-pane">
           <section class="prf-block prf-o1" aria-labelledby="prf-where-h">
-            <h3 id="prf-where-h">Your grid</h3>
+            <h2 id="prf-where-h">Your grid</h2>
             <div class="prf-where">
               <div class="prf-map" id="prf-map"></div>
               <p class="prf-where-t" id="prf-where-t"></p>
             </div>
             <div class="prf-co-wrap" id="prf-co-wrap" hidden>
-              <label for="prf-co">County the land is in. This grid touches <span id="prf-co-n"></span>, and each has its own values.</label>
+              <label for="prf-co">County the land is in. This grid touches <span id="prf-co-n"></span>, and each has its own dollar values and limits.</label>
               <select id="prf-co"></select>
+              <p class="prf-hint" id="prf-co-how"></p>
             </div>
           </section>
 
@@ -100,24 +105,25 @@ HTML = f"""<!DOCTYPE html>
               <button type="button" id="prf-tab-b" aria-pressed="false">Setup B</button>
               <button type="button" class="prf-link" id="prf-dropb">Remove B</button>
             </div>
-            <h3 id="prf-setup-h">Your policy</h3>
+            <h2 id="prf-setup-h">Your policy</h2>
+            <p class="prf-hint" id="prf-both" hidden>Use of the land, acres and share are the same for both setups. Coverage, productivity factor and months are set for each.</p>
             <div class="prf-fields">
-              <div class="prf-f prf-f-wide"><label for="prf-use">Use of the land</label><select id="prf-use"></select></div>
+              <div class="prf-f prf-f-wide"><label for="prf-use">Use of the land</label><select id="prf-use"></select><p class="prf-hint" id="prf-use-note"></p></div>
               <div class="prf-f"><label for="prf-acres">Acres to insure</label><input id="prf-acres" type="number" inputmode="numeric" min="1" step="1" value="100"></div>
-              <div class="prf-f"><label for="prf-share">Your share, %</label><input id="prf-share" type="number" inputmode="numeric" min="1" max="100" step="1" value="100"></div>
+              <div class="prf-f"><label for="prf-share">Your share of the hay or livestock, %</label><input id="prf-share" type="number" inputmode="numeric" min="1" max="100" step="1" value="100"><p class="prf-hint">100 unless a landlord or partner takes part.</p></div>
               <div class="prf-f prf-f-wide"><span class="prf-lab" id="prf-cov-l">Coverage level</span>
                 <div class="prf-cov" id="prf-cov" role="group" aria-labelledby="prf-cov-l">{COV}</div>
-                <p class="prf-hint">It pays when the index for a month pair lands below this number.</p></div>
+                <p class="prf-hint">It pays when two months of precipitation in the grid come in under this percent of normal. 90% pays soonest and costs most.</p></div>
               <div class="prf-f prf-f-wide"><label for="prf-pf-n">Productivity factor, 60 to 150</label>
                 <div class="prf-pf"><input id="prf-pf" type="range" min="60" max="150" step="1" value="100" aria-label="Productivity factor"><input id="prf-pf-n" type="number" inputmode="numeric" min="60" max="150" step="1" value="100"></div>
-                <p class="prf-hint">Scales the county&rsquo;s dollar value per acre. 100 is the county value. Protection and premium move together.</p></div>
+                <p class="prf-hint" id="prf-pf-hint"></p></div>
             </div>
           </section>
 
           <section class="prf-block prf-o4" aria-labelledby="prf-iv-h">
-            <h3 id="prf-iv-h">Months to insure</h3>
+            <h2 id="prf-iv-h">Months to insure</h2>
             <table class="prf-iv">
-              <thead><tr><th scope="col">Two-month interval</th><th scope="col">Share of value</th></tr></thead>
+              <thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th></tr></thead>
               <tbody id="prf-iv-body"></tbody>
             </table>
             <div class="prf-iv-foot">
@@ -125,15 +131,16 @@ HTML = f"""<!DOCTYPE html>
               <button type="button" class="prf-link" id="prf-even">Split evenly</button>
               <button type="button" class="prf-link" id="prf-clear">Clear</button>
             </div>
-            <p class="prf-hint">At least two intervals. No month twice. Where the county offers them, the page starts on April to May and June to July as an example, not a recommendation.</p>
+            <p class="prf-hint">At least two pairs of months, no month in two pairs, and the parts add to 100%. The page opens on April to May and June to July as an example, not a recommendation. Insure the months when a dry spell costs you grass or hay.</p>
             <button type="button" class="prf-btn prf-addb" id="prf-addb">Compare with a second setup</button>
           </section>
         </div>
 
         <div class="prf-pane">
           <section class="prf-block prf-o2" aria-labelledby="prf-answer-h">
-            <h3 id="prf-answer-h">What the record says</h3>
-            <p class="prf-printonly" id="prf-printsum"></p>
+            <h2 id="prf-answer-h">What it costs and what it would have paid</h2>
+            <p class="prf-policy" id="prf-printsum"></p>
+            <div class="prf-win" role="group" aria-label="Years counted"><span class="prf-lab">Years counted</span>{WIN}</div>
             <div class="prf-answer" id="prf-answer" role="status" aria-live="polite"></div>
             <div class="prf-acts" id="prf-acts" hidden>
               <button type="button" class="prf-btn" id="prf-share-b">Copy a link to this</button>
@@ -142,92 +149,131 @@ HTML = f"""<!DOCTYPE html>
             </div>
           </section>
 
-          <section class="prf-block prf-o5">
+          <section class="prf-block prf-o5" aria-label="Year by year">
             <figure class="prf-fig" id="prf-chart-fig" hidden>
               <figcaption>What it would have paid, year by year</figcaption>
               <div class="prf-chart" id="prf-chart"></div>
-              <p class="prf-read" id="prf-read" aria-live="off"></p>
+              <div class="prf-readrow"><button type="button" class="prf-step" data-yr="-1" aria-label="Year before">&lsaquo;</button><p class="prf-read" id="prf-read" aria-live="polite"></p><button type="button" class="prf-step" data-yr="1" aria-label="Year after">&rsaquo;</button></div>
               <div class="prf-legend" id="prf-legend"></div>
             </figure>
-            <div id="prf-cmp-wrap" hidden><h3 style="margin-top:1.1rem">Setup A against setup B</h3><div id="prf-cmp"></div></div>
+            <div id="prf-cmp-wrap" hidden><h3>Setup A against setup B</h3><div id="prf-cmp"></div></div>
           </section>
 
           <div class="prf-o6">
           <details class="prf-d" id="prf-years-d"><summary>Every year, in numbers</summary><div id="prf-years"></div></details>
-          <details class="prf-d" id="prf-rec-d"><summary>Each two-month interval on its own</summary><div><div id="prf-rec"></div>
-            <p class="prf-fine">The months that paid back the most per dollar are often not the months your grass grows. A study of two Nebraska sites found PRF lowered income risk when the growing-season months were insured, and that some months raised it (<a href="https://doi.org/10.1108/AFR-10-2017-0097" rel="noopener">Westerhold and others, 2018</a>).</p></div></details>
+          <details class="prf-d" id="prf-pol-d"><summary>The policy, interval by interval</summary><div id="prf-pol"></div></details>
+          <details class="prf-d" id="prf-rec-d"><summary>Each pair of months on its own</summary><div><div id="prf-rec"></div>
+            <p class="prf-fine">RMA&rsquo;s handbook: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. A study of two Nebraska sites found PRF lowered income risk when growing-season months were insured, and that winter months raised it (<a href="https://doi.org/10.1108/AFR-10-2017-0097" rel="noopener">Westerhold and others, 2018</a>).</p></div></details>
+          <details class="prf-d" id="prf-lad-d"><summary>The five coverage levels side by side</summary><div id="prf-lad"></div></details>
+          <details class="prf-d" id="prf-idx-d"><summary>The grid&rsquo;s index, all eleven intervals, every year</summary><div id="prf-idx"></div></details>
           <details class="prf-d" id="prf-nb-d"><summary>The grids next door, same policy</summary><div id="prf-nb"></div></details>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="prf-prose">
-    <h2 id="dates">PRF sign-up and billing dates for {mk("crop_year")}</h2>
-    <p>PRF has one deadline a year. For the {mk("crop_year")} crop year it is {mk("sales_long")}. Miss {mk("sales_short")} and the next chance is a year later.</p>
-    <ul class="prf-dates">
-      <li><span class="d">{mk("sales_long")}</span><span>Sign-up closes. New policies, and changes to coverage level, months or acres on an existing one, are due at your agent.</span></li>
-      <li><span class="d">{mk("acreage_long")}</span><span>Acreage report due. Without one there is no coverage for the year.</span></li>
-      <li><span class="d">Jan 1 to Dec 31</span><span>The coverage year. Each two-month interval you insure stands on its own.</span></li>
-      <li><span class="d">{mk("billing_long")}</span><span>Premium billing date. The policy says you are billed no earlier than this, and that premium you owe is taken out of any payment due you.</span></li>
-    </ul>
-    <p>A payment, when one is owed, is issued &ldquo;not later than 60 days following the date RMA publishes the final grid index&rdquo; for that interval (Rainfall Index Basic Provisions, section 8(d)). For 2026, RMA published the March to April index on July 7. The dates above are read from USDA&rsquo;s {mk("crop_year")} actuarial files.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. {mk("built")}. {mk("check")}</p>
 
-    <h2 id="cost">What PRF costs, and USDA&rsquo;s share</h2>
-    <p>USDA pays part of every PRF premium: {mk("subsidy_sentence")}. You pay the rest.</p>
+    <div class="prf-prose">
+    <h2 id="example">What PRF costs: a worked example</h2>
+    {mk("example")}
+
+    <h2 id="dates">PRF sign-up and billing dates for {mk("crop_year")}</h2>
+    <ul class="prf-dates">
+      <li><span class="d">{mk("sales_long")}</span><span>Sales closing date. New policies, and changes to coverage level, months, acres or productivity factor on an existing one, are due at your agent.</span></li>
+      <li><span class="d">{mk("acreage_long")}</span><span>Acreage report due, with any lease signed and in hand. Without a report there is no coverage for the year.</span></li>
+      <li><span class="d">Jan 1 to Dec 31</span><span>The coverage year. Each pair of months you insure stands on its own.</span></li>
+      <li><span class="d">{mk("billing_long")}</span><span>Premium billing date. The premium is earned when the acreage is reported and billed no earlier than this. Premium you owe is taken out of any payment due you, even one paid before this date.</span></li>
+    </ul>
+    <p>A PRF policy is continuous. If you are already insured and change nothing, it renews on its own with the same elections. Unpaid premium by the termination date ends your eligibility.</p>
+    <p>A payment, when one is owed, is issued &ldquo;not later than 60 days following the date RMA publishes the final grid index&rdquo; for that interval (Rainfall Index Basic Provisions, section 8(d)). No claim is filed. The dates above are read from USDA&rsquo;s {mk("crop_year")} actuarial files.</p>
+
+    <h2 id="cost">USDA&rsquo;s share of the premium</h2>
+    <p>USDA pays {mk("subsidy_sentence")}. You pay the rest, plus an administrative fee per crop and county that this page leaves out.</p>
     <table class="prf-sub-t"><thead><tr><th scope="col">Coverage level</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{mk("subsidy_rows")}</tbody></table>
-    <p>The premium rate is different for every grid, every interval and every coverage level. The calculator above uses the rate for yours. It leaves out the policy&rsquo;s administrative fee, which is charged per crop and county.</p>
+    <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning and veteran farmers and ranchers get a larger share. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
+
+    <h2 id="payback">Does PRF pay back more than it costs?</h2>
+    <p>On the full premium, no grid, month or coverage level stands out. USDA sets each rate from the same precipitation record. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
+    <p>You do not pay the full premium. USDA pays 51% to 59% of it, so over the record a policy returns more than the producer&rsquo;s own share on average. That average is made of a few big years and many small or empty ones, and it says nothing about next year.</p>
+    <p>The months with the highest rates bring the most dollars of USDA&rsquo;s share per $100 of protection. On {mk("dry_two")} grids, the interval that comes out furthest ahead of your share is one of the grid&rsquo;s two driest. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>
+    <table class="prf-sub-t prf-iv-t"><caption>Each pair of months across the country, at 90% coverage: the grid in the middle of the {mk("grids")}.</caption>
+      <thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {mk("nyears")}</th></tr></thead>
+      <tbody>{mk("iv_rows")}</tbody></table>
 
     <h2 id="new" data-prf-written-for="2027">New for 2027</h2>
     <ul>
-      <li><b>A new rain record.</b> The index now comes from NOAA&rsquo;s National Centers for Environmental Information, in place of the Climate Prediction Center data used through 2026 (<a href="https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source" rel="noopener">USDA RMA, April 30, 2026</a>). The record starts in {mk("y0")}, not 1948, and each interval is measured against its {mk("y0")} to {mk("y1")} average (<a href="https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf" rel="noopener">RMA&rsquo;s processing note</a>). The grids did not move. Every past year on this page is the figure from that new record.</li>
-      <li><b>January to February is capped at 25%.</b> In USDA&rsquo;s 2027 files, 3,067 of the 3,070 counties with PRF limit that interval to 25% of a policy&rsquo;s value. The other intervals allow 50%, 60% or 70%, by county. The calculator applies your county&rsquo;s limits.</li>
-      <li><b>Grazing land needs livestock on it.</b> The 2027 Crop Provisions, section 4(j): &ldquo;For the intended use of grazing, you must have an insurable interest in enough livestock grazing the acres that would equate to at least 25% of the stocking rate for the insured acres.&rdquo; RMA&rsquo;s question-and-answer sheet on the rule says: &ldquo;Failure means no indemnity is due and full premium is owed.&rdquo; Records are asked for on request, not filed. Hay ground is not under this rule. This page does not work out head counts; your agent does, from the FSA National Crop Table or your state or federal lease (<a href="https://www.rma.usda.gov/sites/default/files/2026-10/Pasture%20Rangeland%20Forage%20Stocking%20Rate%20FAQs.pdf" rel="noopener">RMA stocking rate questions</a>).</li>
+      <li><b>A new precipitation record.</b> The index now comes from NOAA&rsquo;s National Centers for Environmental Information (NCEI), in place of the Climate Prediction Center (CPC) data used through 2026 (<a href="https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source" rel="noopener">USDA RMA, April 30, 2026</a>). The record starts in {mk("y0")}, not 1948, and each interval is measured against its {mk("y0")} to {mk("y1")} average (<a href="https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf" rel="noopener">RMA&rsquo;s processing note</a>). The grids did not move. Every past year on this page is the figure from that new record.</li>
+      <li><b>January to February is capped at 25%.</b> In USDA&rsquo;s {mk("crop_year")} files, {mk("jf_capped")} of the {mk("counties")} counties with PRF limit that interval to 25% of a policy&rsquo;s value. Every interval needs at least 10%, and the others allow up to 50%, 60% or 70%, by county. The calculator applies your county&rsquo;s limits.</li>
+      <li><b>Grazing land needs livestock on it.</b> The 2027 Crop Provisions, section 4(j): &ldquo;For the intended use of grazing, you must have an insurable interest in enough livestock grazing the acres that would equate to at least 25% of the stocking rate for the insured acres.&rdquo; RMA&rsquo;s question-and-answer sheet on the rule says: &ldquo;Failure means no indemnity is due and full premium is owed.&rdquo; The livestock can graze the acres at any time in the crop year. Records are asked for on request, not filed, and kept three years. Only natural causes excuse a shortfall. Hay ground is not under this rule. The producer works out the number with the agent, from the FSA National Crop Table or a state or federal lease (<a href="https://www.rma.usda.gov/sites/default/files/2026-10/Pasture%20Rangeland%20Forage%20Stocking%20Rate%20FAQs.pdf" rel="noopener">RMA stocking rate questions</a>).</li>
+    </ul>
+
+    <h2 id="before">Before you sign</h2>
+    <ul>
+      <li>You need an insurable interest: you own or lease the ground, and for grazing, the livestock. A lease must be signed and in by the acreage reporting date.</li>
+      <li>PRF covers perennial grass, pasture and hay. Forage planted every year is a separate policy, Annual Forage.</li>
+      <li>Land in the Conservation Reserve Program, ground with no record of your share, and an allotment with zero authorized use cannot be insured.</li>
+      <li>Each acre goes in one grid. You pick a point inside the acres and the grid and county follow from it. Land that lies across a grid line can go in either grid or be split.</li>
+      <li>You do not have to insure every acre.</li>
+      <li>One coverage level and one productivity factor per county and use. The same acre cannot be insured for both grazing and haying.</li>
+      <li>A third party may not pay your premium in return for part of the payment. RMA is investigating such deals.</li>
     </ul>
 
     <h2 id="prf-not">What PRF does not do</h2>
     <blockquote>&ldquo;This policy does not directly measure, capture, or utilize any actual crop production, including any of your actual crop production. For example, it is possible for you to receive an indemnity payment without suffering a loss of actual crop production. However, you may experience a loss of crop production and not receive an indemnity payment.&rdquo;<cite>USDA RMA, Rainfall Index Basic Provisions (27.1-RI), section 13</cite></blockquote>
     <ul>
-      <li>It pays on one thing: rain in your grid over two months, against that grid&rsquo;s long-run average. Not on hay yield, cattle weights, heat, hail or a drought declaration.</li>
-      <li>The grid is a quarter of a degree on each side. The rain figure is worked out for the whole grid from weather stations. Your own gauge does not count, and a neighbor a mile away can be in a different grid.</li>
-      <li>Rain and grass do not move together as closely as the policy assumes. On three university ranches in Kansas and Nebraska, swapping the grid figure for rain measured at the site would have cut the mismatch by only 5% to 9% (<a href="https://doi.org/10.22004/ag.econ.281319" rel="noopener">Yu and others, 2019</a>). On California rangeland, the chance of a forage loss in an insured interval with no payment was put at 31% to 46% (<a href="https://doi.org/10.1111/ajae.12282" rel="noopener">Keller and Saitone, 2022</a>).</li>
-      <li>Six states have a native sod rule this page does not apply: in Iowa, Minnesota, Montana, Nebraska, North Dakota and South Dakota, recently broken native sod gets less protection and less subsidy (Crop Provisions, section 4(g)).</li>
+      <li>It pays on one thing: precipitation in your grid over two months, against that grid&rsquo;s long-run average. Not on hay yield, cattle weights, heat, hail or a drought declaration.</li>
+      <li>The grid is a quarter of a degree on each side. The figure is worked out for the whole grid from weather stations. Your own gauge does not count, and a neighbor a mile away can be in a different grid.</li>
+      <li>Precipitation and grass do not move in step. On three university ranches in Kansas and Nebraska, swapping the grid figure for precipitation measured at the site would have cut the mismatch by only 5% to 9% (<a href="https://doi.org/10.22004/ag.econ.281319" rel="noopener">Yu and others, 2019</a>). On California rangeland, insuring one interval, a forage loss went unpaid 31% to 46% of the time (<a href="https://doi.org/10.1111/ajae.12282" rel="noopener">Keller and Saitone, 2022</a>).</li>
+      <li>Native sod: in Iowa, Minnesota, Montana, Nebraska, North Dakota and South Dakota, native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share (Crop Provisions, section 4(g)). The calculator does not apply this. It shows a note in those states.</li>
     </ul>
 
     <h2 id="method">How this page figures it</h2>
-    <p>Nothing here is modelled or estimated. The inputs are USDA&rsquo;s own, copied unchanged: premium rates, county base values, interval limits, subsidy rates and dates from the {mk("crop_year")} Actuarial Data Master, and each grid&rsquo;s index history from the service behind RMA&rsquo;s PRF tool. The arithmetic is the policy&rsquo;s.</p>
-    <pre class="prf-math">protection per acre  = county base value x coverage level x productivity factor
-interval protection  = protection per acre x acres x your share x share of value in the interval
+    <p>The inputs are USDA&rsquo;s own, copied unchanged: premium rates, county base values, interval limits, subsidy rates and dates from the {mk("crop_year")} Actuarial Data Master, and each grid&rsquo;s index history from the service behind RMA&rsquo;s PRF tool. The arithmetic is the policy&rsquo;s:</p>
+    <pre class="prf-math">protection per acre  = county base value x coverage level
+                       x productivity factor
+interval protection  = protection per acre x acres x share
+                       x part of the policy in the interval
 interval premium     = interval protection x premium rate
 you pay              = interval premium - USDA's share
-payment              = interval protection x (coverage level x 100 - index) / (coverage level x 100)
-                       when the index is below the coverage level, else nothing</pre>
-    <p>Dollars are rounded the way RMA&rsquo;s tool rounds them: protection per acre to the cent, everything else to the dollar. {mk("check")}</p>
-    <p>What the history is: this year&rsquo;s rates, this year&rsquo;s county values and this year&rsquo;s rain record, run over each past year. RMA&rsquo;s tool does the same, one year at a time. It is not a record of what PRF paid. Rates, values and the data source were different then, and the averages each year is measured against move every crop year.</p>
+payment              = interval protection
+                       x (coverage x 100 - index) / (coverage x 100)
+                       when the index is under coverage x 100</pre>
+    <p>Dollars are rounded the way RMA&rsquo;s own calculator rounds them: protection per acre to the cent, each line to the dollar. An insurer&rsquo;s figure can differ by a dollar or two. {mk("check")}</p>
+    <p>What the history is: this year&rsquo;s rates, this year&rsquo;s county values and this year&rsquo;s precipitation record, run over each past year. RMA&rsquo;s own calculator does the same. It is not a record of what PRF paid. Rates, values and the data source were different then, and the average each year is measured against moves every crop year.</p>
+    <p>Which county a point is in comes from the Census Bureau&rsquo;s county lines. Within about a mile of a county line the page asks instead of guessing, because the county sets the dollars. {mk("multi_grids")} of the {mk("grids")} grids lie across more than one county.</p>
     <p>What it leaves out: Hawaii, which has its own program and grids. The administrative fee. The native sod rule. Any year USDA has not finished publishing is listed and kept out of every total.</p>
-    <p>I own a licensed crop insurance agency. This page sells nothing, takes no contact details and sends no one to it. Any crop insurance agent can write PRF: <a href="https://www.rma.usda.gov/tools-reports/agent-locator" rel="noopener">USDA&rsquo;s agent locator</a>. For the official grid for your land, use <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener">USDA&rsquo;s grid locator</a>. Your policy and your agent&rsquo;s quote are what count.</p>
+    <p>A ZIP or town you type is sent to a free place-lookup service (Open-Meteo) to find it on the map. The page counts visits and which grids are opened with Google Analytics, unless your browser asks not to be tracked. Nothing you type is stored anywhere but your own browser. Any crop insurance agent can write PRF: <a href="https://www.rma.usda.gov/tools-reports/agent-locator" rel="noopener" data-out="agent-locator">USDA&rsquo;s agent locator</a>. For the official grid for your land, use <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener" data-out="rma-tool">USDA&rsquo;s grid locator</a>. Your policy and your agent&rsquo;s quote are what count.</p>
 
     <h2 id="faq">Questions ranchers and hay growers ask</h2>
     <div class="prf-faq">
     <!--prf:faq-->
-    <details><summary>What is PRF insurance?</summary><p>Pasture, Rangeland, Forage is a federal crop insurance policy for grazing land and hay ground. It pays when rain in your grid, over a two-month interval you chose, comes in below a share of that grid&rsquo;s long-run average. You pick the coverage level, from 70% to 90%, and how to spread the policy across the intervals. USDA pays part of the premium.</p></details>
-    <details><summary>When is the PRF deadline for {mk("crop_year")}?</summary><p>Sign-up closes {mk("sales_long")}. The acreage report is due {mk("acreage_long")}. The premium is billed {mk("billing_long")}.</p></details>
-    <details><summary>How much does PRF cost per acre?</summary><p>It depends on the grid, the months, the coverage level and the county&rsquo;s value for grazing or hay, so there is no one number. USDA pays {mk("subsidy_sentence")}. Enter your grid and acres above to see your share of the premium in dollars and per acre, billed {mk("billing_short")} of the crop year.</p></details>
-    <details><summary>Which months should I insure?</summary><p>The policy needs at least two intervals, no month used twice, each between your county&rsquo;s minimum and maximum. Past that it is your call, and no record can make it for you. The calculator shows how each interval did over {mk("nyears")} years at your grid. Months that paid back the most are often winter months when little grows. RMA&rsquo;s handbook puts it this way: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy.</p></details>
-    <details><summary>Is PRF drought insurance?</summary><p>No. It pays on a rain index for a grid, two months at a time. A dry summer after a wet spring, a drought declaration, heat or a short hay crop do not trigger it. Only the index does, and only for the months you insured.</p></details>
-    <details><summary>How big is a PRF grid, and which one am I in?</summary><p>A grid is a quarter of a degree of latitude by a quarter of a degree of longitude: about 17 miles north to south, and 11 to 16 miles east to west, narrower the farther north you are. There are {mk("grids")} of them with PRF offers in {mk("states")} states. Type a ZIP or coordinates above to see yours. Your agent sets the official grid from a point on your land.</p></details>
-    <details><summary>Why are these numbers different from what PRF paid in past years?</summary><p>Because they are not a payment history. Every year is run at {mk("crop_year")} rates and county values, on the rain record USDA publishes for {mk("crop_year")}, which starts in {mk("y0")}. Policies through 2026 were paid on a different data source, with the rates of their own year. RMA&rsquo;s own tool works the same way.</p></details>
-    <details><summary>Do I need livestock to insure grazing land?</summary><p>Yes. Starting with the 2027 crop year, land insured for grazing needs livestock you have an interest in, grazing those acres, equal to at least 25% of the stocking rate. Fall short and no payment is due while the full premium is still owed. Hay ground is not under the rule. Your agent works out the number with you.</p></details>
+    <details><summary>What is PRF insurance?</summary><p>Pasture, Rangeland, Forage (PRF) is a federal crop insurance policy for grazing land and hay ground. It pays when precipitation in your grid, over a two-month interval you chose, comes in under a set share of that grid&rsquo;s long-run average. You pick the coverage level, from 70% to 90%, and how to spread the policy across the intervals. USDA pays {mk("subsidy_sentence")} of the premium.</p></details>
+    <details><summary>When is the PRF deadline for {mk("crop_year")}?</summary><p>The sales closing date is {mk("sales_long")}. The acreage report is due {mk("acreage_long")}. The premium is billed no earlier than {mk("billing_long")}.</p></details>
+    <details><summary>How much does PRF cost per acre?</summary><p>It depends on the grid, the months, the coverage level and the county&rsquo;s value for grazing or hay. {mk("ex_line")} Enter your grid and acres above for your own figure.</p></details>
+    <details><summary>Is PRF insurance worth it?</summary><p>On the full premium, the record treats every grid, month and coverage level about the same: over {mk("y0")} to {mk("y1")} at {mk("crop_year")} rates, $1 of premium would have paid back a middle ${mk("lr_mid")}. USDA pays 51% to 59% of the premium, so on average the policy has returned more than the producer&rsquo;s share. Most of that comes in a few dry years. It is worth more to someone whose grass or hay follows precipitation in the months insured.</p></details>
+    <details><summary>What are the PRF intervals?</summary><p>Eleven two-month intervals: January to February, February to March, March to April, April to May, May to June, June to July, July to August, August to September, September to October, October to November and November to December. You insure at least two, no month in two of them, each with at least 10% of the policy. January to February is capped at 25% in {mk("jf_capped")} counties.</p></details>
+    <details><summary>Which months should I insure?</summary><p>The policy needs at least two intervals, no month used twice, each between your county&rsquo;s minimum and maximum. Past that it is your call, and no record can make it for you. RMA&rsquo;s handbook puts it this way: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. The calculator shows each interval&rsquo;s normal precipitation in inches.</p></details>
+    <details><summary>Is PRF drought insurance?</summary><p>No. It pays on a precipitation index for a grid, two months at a time. A dry summer after a wet spring, a drought declaration, heat or a short hay crop do not trigger it. Only the index does, and only for the months you insured.</p></details>
+    <details><summary>How big is a PRF grid, and which one am I in?</summary><p>A grid is a quarter of a degree of latitude by a quarter of a degree of longitude: about 17 miles north to south, and 11 to 16 miles east to west, narrower the farther north. There are {mk("grids")} of them with PRF offers in {mk("states")} states. Type a ZIP, a town or coordinates above to see yours. On a policy, the grid follows from a point you pick inside the acres you insure.</p></details>
+    <details><summary>Why are these numbers different from what PRF paid in past years?</summary><p>Because they are not a payment history. Every year is run at {mk("crop_year")} rates and county values, on the precipitation record USDA publishes for {mk("crop_year")}, which starts in {mk("y0")}. Policies through 2026 were paid on a different data source, with the rates of their own year. RMA&rsquo;s own calculator works the same way.</p></details>
+    <details><summary>Do I need livestock to insure grazing land?</summary><p>Yes. Starting with the 2027 crop year, land insured for grazing needs livestock you have an interest in, grazing those acres at some time in the year, equal to at least 25% of the stocking rate. Fall short, for any reason but a natural cause, and no payment is due while the full premium is still owed. Hay ground is not under the rule.</p></details>
     <details><summary>Why did my neighbor get a PRF payment when I did not?</summary><p>Three usual reasons: they are in a different grid, they insured different months, or they chose a higher coverage level. Each interval pays on its own, so one dry pair of months can pay a neighbor who insured it and miss you if you did not.</p></details>
-    <details><summary>When would I be paid?</summary><p>Not later than 60 days after RMA publishes the final index for the interval. For 2026, RMA published the March to April index on July 7. Premium you owe is taken out of a payment first.</p></details>
+    <details><summary>When would I be paid?</summary><p>Not later than 60 days after RMA publishes the final index for the interval, with no claim to file. Premium you owe is taken out of a payment first.</p></details>
     <!--/prf:faq-->
     </div>
 
+    <h2 id="states">PRF by state</h2>
+    <p>Grids with PRF offers for {mk("crop_year")}, by state. A grid on a state line counts in both.</p>
+    <ul class="prf-states">{mk("state_list")}</ul>
+
     <nav class="prf-links" aria-label="Related tools">
-      <a href="/farmland-atlas">Farmland Atlas</a>
       <a href="/drought-monitor">Drought Monitor</a>
-      <a href="/cash-rent">Cash rent by county</a>
+      <a href="/hail-map">Hail map</a>
+      <a href="/farmland-atlas">Farmland Atlas</a>
+      <a href="/rent/">Cash rent by county</a>
       <a href="/cattle-futures-prices">Cattle futures</a>
+      <a href="/harvest-price-tracker">Harvest price tracker</a>
       <a href="/arc-plc">ARC or PLC</a>
     </nav>
     </div>
@@ -235,8 +281,8 @@ payment              = interval protection x (coverage level x 100 - index) / (c
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
-  <script src="/components/prf-math.js?v=1" defer></script>
-  <script src="/components/prf.js?v=1" defer></script>
+  <script src="/components/prf-math.js?v=2" defer></script>
+  <script src="/components/prf.js?v=2" defer></script>
 </body>
 </html>
 """

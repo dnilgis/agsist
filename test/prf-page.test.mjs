@@ -28,7 +28,7 @@ test("every id the script asks for is on the page, once", () => {
   const asked = [...new Set([...js.matchAll(/\$\('([a-z0-9-]+)'\)/g)].map((m) => m[1]))];
   assert.ok(asked.length >= 45, `only ${asked.length} ids found in prf.js: the pattern this test reads has changed`);
   /* ids the script builds itself at run time, inside markup it writes */
-  const madeByScript = new Set(["prf-cross", "prf-asgrid"]);
+  const madeByScript = new Set(["prf-cross"]);
   const missing = [], twice = [];
   for (const id of asked) {
     if (madeByScript.has(id)) { assert.ok(js.includes(`id="${id}"`), `${id} is said to be script-made and the script does not make it`); continue; }

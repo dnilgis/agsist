@@ -439,8 +439,9 @@
     var p = location.pathname.replace(/\/+$/, '') || '/';
     /* No sticky bar where it covers the work or is the wrong ask: the briefing
        and its archive (/daily/2026-10-11), the field tools and print sheets,
-       the sponsor pages, and the store-or-sell worksheet (2026-10-11). */
-    if (/^\/(daily|field-scout|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell)(\.html)?$/.test(p)
+       the sponsor pages, the store-or-sell worksheet (2026-10-11), and /prf, which says it takes no
+       contact details (2026-10-12). */
+    if (/^\/(daily|field-scout|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return;
     if (isSignedUp() || visits() < 2 || isDismissed(BAR_KEY)) return;
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return; } catch (e) {}

@@ -79,7 +79,8 @@ export function build(dir) {
   /* ---- every grid: payback, and which grids touch more than one county ---- */
   const all = [], byCov = {}, byIv = M.LABELS.map(() => []), rate90 = M.LABELS.map(() => []), paidYears90 = M.LABELS.map(() => []), normal = M.LABELS.map(() => []);
   M.COVERAGE.forEach((c) => { byCov[c] = []; });
-  let grids = 0, multi = 0, example = null;
+  let grids = 0, multi = 0, example = null, dryTop = 0, dryAsked = 0;
+  const sub90 = meta.subsidy['90'];
   for (const f of fs.readdirSync(path.join(dir, 'g')).filter((x) => x.endsWith('.json')).sort()) {
     const d = JSON.parse(fs.readFileSync(path.join(dir, 'g', f), 'utf8'));
     if (d.cy !== meta.crop_year) throw new Error(f + ' is crop year ' + d.cy + ', meta.json is ' + meta.crop_year);
@@ -89,6 +90,7 @@ export function build(dir) {
       Object.keys(o.index).forEach((y) => { if (+y >= first && +y <= last) index[y] = o.index[y]; });
       if ((rec.c || []).filter((code) => countyOf[code]).length > 1) multi++;
       if (+id === 30454) example = { rec, o, index };
+      const net90 = [];
       for (let i = 0; i < M.N; i++) {
         if (o.avgMm && o.avgMm[i] != null) normal[i].push(o.avgMm[i] / 25.4);
         for (const cov of M.COVERAGE) {
@@ -100,8 +102,16 @@ export function build(dir) {
             byIv[i].push(pb); rate90[i].push(rate * 100);
             let below = 0; Object.keys(index).forEach((y) => { if (index[y][i] < 0.9 - 1e-12) below++; });
             paidYears90[i].push(below);
+            if (o.avgMm && o.avgMm[i] != null) net90.push({ i, net: mf - rate * (1 - sub90), mm: o.avgMm[i] });
           }
         }
+      }
+      /* the interval whose payment less your share of the premium is largest per $100 of protection: is it one of the grid's two driest? */
+      if (net90.length >= 3) {
+        dryAsked++;
+        const top = net90.reduce((a, b) => (b.net > a.net ? b : a));
+        const wetter = net90.filter((x) => x.mm < top.mm).length;
+        if (wetter <= 1) dryTop++;
       }
     }
   }
@@ -109,16 +119,18 @@ export function build(dir) {
   if (counties !== meta.counts.counties) throw new Error('found ' + counties + ' counties, meta.json says ' + meta.counts.counties);
   if (!example) throw new Error('the example grid 30454 is not in the data');
   /* ---- the worked example: grid 30454, Barron County, Wisconsin ---- */
+  let exYears = null;
   const ex = (useIdx) => {
     const c = countyOf['55005'], split = [0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0];
     const cbv = c.c.bg && c.c.bg['30454'] && c.c.bg['30454'][String(useIdx)] != null ? c.c.bg['30454'][String(useIdx)] : c.c.b[useIdx];
     const pol = M.policy({ cbv, coverage: 90, productivity: 100, acres: 100, share: 100, split, rates: example.o.rates[90], subsidy: meta.subsidy['90'] });
     const hist = M.history(pol, example.index), sum = M.summarize(hist, pol);
+    if (useIdx === 0) exYears = { first: hist[0].year, last: hist[hist.length - 1].year, you: pol.total.producer, paid: hist.map((h) => h.indemnity) };
     return { use: c.combos[useIdx], cbv, premium: pol.total.premium, usda: pol.total.subsidy, you: pol.total.producer, per_acre: r2(pol.total.producer / 100),
              protection: pol.total.protection, years: sum.years, paid_years: sum.paidYears, ahead_years: sum.aheadYears, avg: Math.round(sum.avgIndemnity) };
   };
   const q = (v) => ({ n: v.length, p05: r2(quantile(v, 0.05)), mid: r2(quantile(v, 0.5)), p95: r2(quantile(v, 0.95)) });
-  return {
+  const out = {
     v: 1, crop_year: meta.crop_year, built_from: meta.built, years: { first, last, n: last - first + 1 },
     payback: { what: 'average payment factor over the complete years, divided by the premium rate: dollars back per $1 of full premium',
                all: q(all), by_coverage: Object.fromEntries(M.COVERAGE.map((c) => [c, q(byCov[c])])),
@@ -126,10 +138,14 @@ export function build(dir) {
     intervals_at_90: M.LABELS.map((l, i) => ({ interval: l, grids: rate90[i].length, mid_rate_per_100: r2(quantile(rate90[i], 0.5)),
                                               mid_years_below: quantile(paidYears90[i], 0.5), mid_normal_in: r2(quantile(normal[i], 0.5)) })),
     limits: { jan_feb_max: capCount, jan_feb_not_25: exceptions.sort(), min_pct: [...minSeen].sort((a, b) => a - b), other_max: [...maxSeen].sort((a, b) => a - b) },
-    grids_in_more_than_one_county: multi, native_sod_state_counties: sodCounties,
+    grids_in_more_than_one_county: multi,
+    largest_net_in_two_driest: { what: 'grids where the interval with the most (average payment less your share of the premium) per $100 of protection at 90% coverage is one of the two driest intervals on that grid', grids: dryTop, of: dryAsked }, native_sod_state_counties: sodCounties,
     states: states.sort((a, b) => (a.name < b.name ? -1 : 1)),
+    example_years: null,
     example: { grid: 30454, county: 'Barron County, Wisconsin', acres: 100, coverage: 90, months: 'April to May and June to July, half in each', grazing: ex(0), hay: ex(4) },
   };
+  out.example_years = exYears;
+  return out;
 }
 
 const arg = process.argv[2];
