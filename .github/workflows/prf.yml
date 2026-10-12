@@ -37,6 +37,10 @@ on:
         description: "Trial: only the first N grids, written to data/prf-trial and NOT committed"
         required: false
         default: ""
+      check_random:
+        description: "How many random policies to set against RMA's tool (default 8)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -76,7 +80,8 @@ jobs:
         if: github.event.inputs.limit == ''
         run: |
           set -o pipefail
-          node scripts/check_prf_rma.mjs --random 8 2>&1 | tee -a prf-run.log
+          N="${{ github.event.inputs.check_random }}"
+          node scripts/check_prf_rma.mjs --random "${N:-8}" --detail prf-check-detail.json 2>&1 | tee -a prf-run.log
 
       - name: Site budget
         if: github.event.inputs.limit == ''
@@ -117,6 +122,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/prf-run.log" . 2>/dev/null || echo "no log was written" > prf-run.log
           cp "$GITHUB_WORKSPACE/data/prf/meta.json" . 2>/dev/null || true
           cp "$GITHUB_WORKSPACE/data/prf/check.json" . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/prf-check-detail.json" . 2>/dev/null || true
           if [ -d "$GITHUB_WORKSPACE/data/prf-trial" ]; then cp -r "$GITHUB_WORKSPACE/data/prf-trial" .; fi
           echo "run ${{ github.run_id }} ${{ job.status }} $(date -u +%Y-%m-%dT%H:%M:%SZ)" > status.txt
           git init -q -b probe-prf

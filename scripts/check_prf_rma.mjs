@@ -48,6 +48,7 @@ const N_RANDOM = +arg("random", 8);
 const today = new Date().toISOString().slice(0, 10);
 const SEED = +arg("seed", today.replace(/-/g, ""));
 const REPLAY = arg("replay", "");
+const DETAIL = arg("detail", "");     /* also save RMA's whole answer and our inputs for every case, to this file */
 const TIMEOUT = +arg("timeout", 120000), TRIES = +arg("tries", 3);
 const API = "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalPricingRates/GetPricingRates";
 const UA = "AGSIST-automation/1.0 (+https://agsist.com/prf)";
@@ -183,11 +184,12 @@ if (!REPLAY) (function fixed() {
   /* exactly fifty cents over an EVEN dollar: half-up gives the odd dollar above,
      round-half-to-even gives the even dollar below, so the two rules disagree */
   const frac5 = (v) => Math.abs(v - Math.floor(v) - 0.5) < 1e-7 && Math.floor(v) % 2 === 0;
-  const found = { protection: null, premium: null, subsidy: null, indemnity: null };
+  const frac5odd = (v) => Math.abs(v - Math.floor(v) - 0.5) < 1e-7 && Math.floor(v) % 2 === 1;
+  const found = { protection: null, premium: null, subsidy: null, indemnity: null, "indemnity, odd dollar": null };
   for (let acres = 1; acres <= 4000 && Object.values(found).some((v) => !v); acres++) {
-    const exact = cbv * 0.9 * acres * 0.5;
+    const exact = M.cents(cbv * 0.9) * acres * 0.5;
     if (!found.protection && frac5(exact)) found.protection = { acres, year: years[years.length - 1] };
-    const prot = M.dollars(exact);
+    const prot = M.dollars(M.cents(cbv * 0.9) * acres * 0.5);
     if (!found.premium && (frac5(prot * rates[3]) || frac5(prot * rates[5]))) found.premium = { acres, year: years[years.length - 1] };
     const prem = M.dollars(prot * rates[3]);
     if (!found.subsidy && frac5(prem * sub)) found.subsidy = { acres, year: years[years.length - 1] };
@@ -195,6 +197,12 @@ if (!REPLAY) (function fixed() {
       for (const y of years) {
         const p3 = M.payment(prot, g.index[y][3], cov), p5 = M.payment(prot, g.index[y][5], cov);
         if ((p3 > 0 && frac5(p3)) || (p5 > 0 && frac5(p5))) { found.indemnity = { acres, year: y }; break; }
+      }
+    }
+    if (!found["indemnity, odd dollar"]) {
+      for (const y of years) {
+        const p3 = M.payment(prot, g.index[y][3], cov), p5 = M.payment(prot, g.index[y][5], cov);
+        if ((p3 > 0 && frac5odd(p3)) || (p5 > 0 && frac5odd(p5))) { found["indemnity, odd dollar"] = { acres, year: y }; break; }
       }
     }
   }
@@ -242,7 +250,7 @@ if (!REPLAY) (function random() {
 })();
 
 /* ---- run ---- */
-const results = [];
+const results = [], detail = [];
 for (const c of cases) {
   const doc = stateDoc(c.st), m = mine(c, doc);
   const head = `${c.label}: ${c.countyName} ${c.st}, grid ${c.grid}, ${meta.combos[c.combo]}, ${c.coverage}%, ${c.acres} ac, factor ${c.pf}, share ${c.share}, ${c.year}, split ${JSON.stringify(c.split)}`;
@@ -253,6 +261,13 @@ for (const c of cases) {
     continue;
   }
   const diffs = compare(c, m, rma);
+  if (DETAIL) {
+    const county = doc.counties[c.county], g = grid(c.grid);
+    detail.push({ label: c.label, st: c.st, state: c.state, county: c.county, countyName: c.countyName, grid: c.grid, combo: c.combo,
+                  coverage: c.coverage, split: c.split, acres: c.acres, pf: c.pf, share: c.share, year: c.year,
+                  cbv: baseValue(county, c.combo, c.grid), rates: g.rates[c.coverage], subsidy: meta.subsidy[String(c.coverage)],
+                  index: g.index[c.year], agrees: !diffs.length, rma });
+  }
   console.log(`${diffs.length ? "DIFFERS     " : "agrees      "} ${head}`);
   for (const d of diffs) console.log(`             ${d.what}: agsist ${d.agsist}, RMA ${d.rma}`);
   delete c.replay;
@@ -270,6 +285,7 @@ const out = {
                                reached: r.reached, agrees: r.reached ? r.agrees : null, differences: r.differences || [] })),
 };
 writeFileSync(DIR + "check.json", JSON.stringify(out));
+if (DETAIL) writeFileSync(ROOT + DETAIL, JSON.stringify({ about: "RMA's answers and the inputs AGSIST priced them from, " + out.checked, crop_year: meta.crop_year, cases: detail }));
 console.log(`\nasked ${out.asked}, reached ${out.reached}, agreed ${out.agreed}, differ ${bad.length}`);
 if (!results.length) { console.log("no cases could be built from the data: that is a failure of this check"); process.exit(1); }
 process.exit(bad.length ? 1 : 0);
