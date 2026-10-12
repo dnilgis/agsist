@@ -1644,21 +1644,29 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
   var pad=(maxP-minP)*0.15||0.05;
   minP-=pad;maxP+=pad;
-  var W=700,H=140,mL=60,mR=44,mT=10,mB=38;
+  /* The viewBox is the drawn width, so font sizes below are CSS pixels (a
+     13-unit label in a 700-wide box was about 7px on a phone). No y-axis:
+     its padded bounds were prices that never traded and collided with the
+     point labels, and every point carries its own price. */
+  var W=Math.round(Math.max(300,Math.min(900,(svg.getBoundingClientRect&&svg.getBoundingClientRect().width)||700))),mL=34,mR=34,mT=22;
+  var NARROW=(W-mL-mR)/Math.max(1,pts.length-1)<95,H=NARROW?176:150,mB=NARROW?58:38;
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
   var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-  s.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(2)+'</text>');
-  s.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
-  s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
+  s.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');
   pts.forEach(function(p,i){
-    s.push(p.newCrop?'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" stroke="#d4a23f" stroke-width="2"/>':'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" style="fill:var(--text,#e8ebe5)" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+(isGrain?AG.px.priceDollars(p.price,{style:'slash'}):'$'+p.price.toFixed(2))+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" style="fill:var(--text-muted,#9aa39c)" font-size="13" text-anchor="middle">'+p.label+'</text>');
-    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" style="fill:var(--text-dim,#7f8a82)" font-size="10" text-anchor="middle">'+p.tag+'</text>');
+    s.push(p.newCrop?'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="none" style="stroke:var(--gold,#d4a23f)" stroke-width="2"/>':'<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" style="fill:var(--gold,#d4a23f)"/>');
+    /* $/bu is the card's unit, so the labels drop the "$"; the end labels
+       anchor inward, and on a narrow chart the values sit in a row of their own. */
+    var anc=i===0?'start':i===pts.length-1?'end':'middle',lx=x(i)+(i===0?-4:i===pts.length-1?4:0);
+    /* narrow: the value goes in its own row under the month, clear of the line */
+    var ly=NARROW?(H-34):y(p.price)-9;if(NARROW){anc='middle';lx=x(i);}
+    s.push('<text x="'+lx+'" y="'+ly+'" style="fill:var(--text,#e8ebe5)" font-size="'+(NARROW?11:12)+'" font-family="'+(NARROW?'Inter,system-ui,sans-serif':'JetBrains Mono,monospace')+'" text-anchor="'+anc+'" font-weight="700">'+(isGrain?AG.px.priceDollars(p.price,{style:NARROW?'glyph':'slash',dollar:false}):p.price.toFixed(2))+'</text>');
+    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" style="fill:var(--text-muted,#9aa39c)" font-size="11" text-anchor="middle">'+p.label+'</text>');
+    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" style="fill:var(--text-dim,#7f8a82)" font-size="11" text-anchor="middle">'+p.tag+'</text>');
   });
   s.push('</svg>');
   svg.outerHTML=s.join('');
@@ -1766,7 +1774,7 @@ function raw$(v,d){return v.toFixed(d||2);}
 
 function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
 
-function chgTxt(net,pct,roll,g,u){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};if(g!==false)return AG.px.change(net,pct);var a=net>=0?'▲':'▼';var s=net>0?'+':net<0?'−':'';u=u||{};return{t:a+' '+s+(u.pre||'')+Math.abs(net).toFixed(2)+(u.suf||'')+' ('+AG.px.pct(pct)+')',c:net>=0?'up':'dn'};}
+function chgTxt(net,pct,roll,g,u){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};if(g!==false)return AG.px.change(net,pct);if(Math.abs(net)<0.005)return{t:'unch',c:'nc'};var a=net>=0?'▲':'▼';var s=net>0?'+':net<0?'−':'';u=u||{};return{t:a+' '+s+(u.pre||'')+Math.abs(net).toFixed(2)+(u.suf||'')+' ('+AG.px.pct(pct)+')',c:net>=0?'up':'dn'};}
 /* cents first, percent second: reader request 2026-07-20 *//* roll: the front month just switched contracts: the day-change would compare two different months, so it's labeled, not shown (2026-07-20) */
 function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.textContent=txt;el.classList.remove('sk');if(cls){el.classList.remove('up','dn','roll');el.classList.add(cls);}}
 
