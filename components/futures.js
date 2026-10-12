@@ -1637,6 +1637,15 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   s.push('</svg>');
   svg.outerHTML=s.join('');
 
+  /* The carry is counted contract to contract (Dec to Jul is 7 months). Grain
+     binned now waits until the first contract too, and pays storage for it;
+     say so rather than let "7 months" stand for grain in the bin since harvest. */
+  var FULLMON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function binNote(f){
+    var d=new Date(),extra=f.idx-((d.getFullYear()%100)*12+d.getMonth()+1);   /* idx = yy*12 + month (storesell.js) */
+    if(!(extra>0&&extra<12))return '';
+    return ' Grain in the bin now pays '+extra+' more month'+(extra===1?'':'s')+' of storage before '+FULLMON[(f.idx-1)%12]+'.';
+  }
   // the storage window: the first and last contracts of this crop year that trade
   var SS=window.AgsistStoreSell;
   var cw=(SS&&SS.carryWindow&&SS.carryWindow(CROP.carry,quotes))||[];
@@ -1653,7 +1662,8 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
     var line=SS.holdLine({to:last.label,carry:spread,months:months,spot:first.price,kind:'futures',inputs:inputs});
     interpTxt='<strong>'+esc(line)+'</strong> '
       +esc(first.label+' to '+last.label+' futures: the later month pays '+AG.px.move(Math.abs(spread)*100,{style:'slash'})+(spread>=0?' more.':' less.'))+' '
-      +esc(SS.costNote(inputs,months,first.price))
+      +esc(SS.costNote(inputs,months,first.price,FULLMON[(first.idx-1)%12]))
+      +esc(binNote(first))
       +' Futures carry assumes your basis stays where it is; your elevator’s posted later bids show the carry it actually pays. '
       +'<a style="color:var(--gold)" href="/store-or-sell?crop='+encodeURIComponent(window.AGSIST_FUTURES)+'">Store or sell, with your elevator’s bids and your costs →</a>';
   }
