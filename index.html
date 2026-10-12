@@ -3066,17 +3066,10 @@ window.hydrateDaily = function(data) {
 </script>
 <script src="/components/home-planting.js?v=1"></script>
 <script>
-/* PWA: register service worker + show install hint with visual modal (v2, May 4 2026) */
+/* PWA: show install hint with visual modal (v2, May 4 2026). The service
+   worker is registered by components/loader.js (2026-10-12). */
 (function(){
   'use strict';
-  // Register existing sw.js
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('/sw.js').catch(function(err){
-        console.warn('[AGSIST] service worker registration failed:', err);
-      });
-    });
-  }
   var hint = document.getElementById('pwa-hint');
   if(!hint) return;
   // Bail if already running as installed PWA
