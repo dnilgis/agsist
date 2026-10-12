@@ -119,6 +119,7 @@
 .fwd-shape{font-size:0.77rem;color:var(--text-dim,#9bb0a3);font-family:'JetBrains Mono',monospace}
 .fwd-svg{width:100%;height:auto;display:block;max-height:180px}
 .fwd-interp{font-size:0.78rem;color:var(--text-dim,#9bb0a3);line-height:1.55;margin-top:8px;border-top:1px solid var(--border,#2a3324);padding-top:7px}.fwd-interp strong{color:var(--text,#e7ece8)}
+:where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim,#9bb0a3);margin-top:.6rem} /* fallback until styles.css lands; zero specificity */
 .fwd-empty{font-size:0.78rem;color:var(--text-dim,#9bb0a3);padding:20px;text-align:center}
 .seas-wrap{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:13px 14px;margin:12px 0}
 .seas-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:4px}
@@ -291,6 +292,7 @@
     <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
     <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
     <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
+    <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, last trade in $/cwt (hundredweight, 100 lb live), the next five contracts. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   </section>
   <script>
   (function(){
@@ -313,17 +315,17 @@
       if(card)card.style.display='block';
       var minP=Math.min.apply(null,pts.map(function(p){return p.price;})),maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
       var pad=(maxP-minP)*0.18||1;minP-=pad;maxP+=pad;
-      var W=700,H=140,mL=52,mR=18,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
+      var W=700,H=140,mL=52,mR=36,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
       function X(i){return mL+(i/(pts.length-1))*pw;}function Y(v){return mT+ph-((v-minP)/(maxP-minP))*ph;}
       var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-      a.push('<text x="4" y="'+(mT+8)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'/cwt</text>');
-      a.push('<text x="4" y="'+(mT+ph)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'/cwt</text>');
+      a.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'/cwt</text>');
+      a.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'/cwt</text>');
       var path='';pts.forEach(function(p,i){path+=(i===0?'M':'L')+X(i).toFixed(1)+','+Y(p.price).toFixed(1);});
-      a.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
+      a.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');
       pts.forEach(function(p,i){
-        a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" fill="#d4a23f"/>');
-        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" fill="#e7ece8" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+AG.px.cash(p.price,{dollar:false})+'</text>');
-        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" fill="#9bb0a3" font-size="11" text-anchor="middle">'+p.label+'</text>');
+        a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" style="fill:var(--gold,#d4a23f)"/>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" style="fill:var(--text,#e7ece8)" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+AG.px.cash(p.price,{dollar:false})+'</text>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="11" text-anchor="middle">'+p.label+'</text>');
       });
       a.push('</svg>');
       if(svg)svg.outerHTML=a.join('');

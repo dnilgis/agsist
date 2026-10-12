@@ -287,6 +287,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 [data-theme="light"] .dn-t td{border-bottom-color:var(--border)}
 [data-theme="light"] .pd-map .pd-st.sel{outline-color:var(--text)}
 [data-theme="light"] .pd-map .pd-st[style*="background:#232a26"]{background:var(--surface2)!important;color:var(--text-muted)!important}
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
 </style>
 </head>
 <body>
@@ -337,6 +338,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
       <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price so far: running average, Oct 1 to 9 (7 of 22 settles)</span><span class="hpc-v">$12.89</span></div></div>
       <div class="hp-seed-note">The official harvest price is USDA RMA&rsquo;s: the average of the daily settles of the contract above across the window, released after it closes. The running average is the same math on the settles so far, updated each trading evening, so it can lag RMA&rsquo;s posted figure by a day.</div>
       <!--/SEED:hpcards-->
+      <div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; <b>Sources</b> &middot; CBOT settles; USDA RMA Price Discovery for the window and the official price. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   </div>
 
   <div data-signup-ask="Get AGSIST Daily: your local top bid and the markets, free, every morning" data-source="page:harvest-price-tracker" data-reports="1"></div>
