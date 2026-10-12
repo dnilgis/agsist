@@ -289,3 +289,91 @@ test("business cutoff line: from the json, a date only while it is ahead", () =>
   assert.equal(RP.bizCutoffNote("2026-10-12", null), "");
   assert.equal(RP.bizCutoffNote("2026-10-12", "Nov 20"), "");
 });
+
+/* The year's numbers (2026-10-12). Days are built the way daily() builds
+   them from an ACIS row: pcpn through parsePcpn, snow as a number or null. */
+const mkDays = (rows, year = 2025) => rows.map(([pcpn, snow = 0], i) => {
+  const dt = new Date(Date.UTC(year, 0, 1 + i)), p = RP.parsePcpn(pcpn);
+  return { date: dt.toISOString().slice(0, 10), v: p.v, flag: p.flag, t: null, s: snow, m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i };
+});
+const rep = (x, n) => Array(n).fill(x);
+
+test("a missing day is a gap in the Staircase line, not a dry step", () => {
+  const days = mkDays([["0.50"], ["0.00"], ["M"], ["M"], ["0.20"], ["0.00"]]);
+  const D = RP.derive(days);
+  const d = RP.stairPath(days, D.cum, 0, 100, 10, 10);
+  // one drawn point per known day, none for the two missing days
+  assert.equal((d.match(/L/g) || []).length, 4, d);
+  // the pen lifts and comes down at the start of day 5 (x = 40), at the total before it
+  assert.match(d, /L20\.00,95\.00M40\.00,95\.00L50\.00,93\.00/, d);
+  assert.ok(!/L30\.00|L40\.00/.test(d), "nothing drawn to the end of a missing day: " + d);
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.ok(!/DAYS? NOT REPORTED|NO REPORT ON|UNRECORDED/i.test(S.slice(S.indexOf("function footerText"), S.indexOf("function footLayout"))), "no missing-day count on the art");
+});
+
+test("the comparison leaves missing days out of both totals", () => {
+  const days = mkDays([["0.10"], ["M"], ["0.10"], ["S"], ["0.30A"]]);
+  const normal = new Map(days.map((x) => [x.date.slice(5), 0.1]));
+  const o = RP.overlayDaily(days, normal);
+  assert.equal(o.daily[1], 0, "no normal rain on the unrecorded day");
+  assert.equal(o.daily[3], 0.1, "an S day keeps its normal: its rain is in the A total");
+  assert.equal(Math.round(o.total * 100) / 100, 0.4);
+  assert.equal(o.cum.at(-1), o.total);
+  assert.equal(o.normal[1], 0.1, "the comparison's own shape is unchanged");
+  assert.equal(Math.round(RP.derive(days).total * 100) / 100, 0.5, "the year counts the A total once");
+  assert.equal(RP.overlayDaily(days, new Map()), null);
+});
+
+test("an S day is not dry and not a measured 0; an A total is never the wettest day", () => {
+  assert.deepEqual(plain(RP.parsePcpn("S")), { v: 0, flag: "S" });
+  assert.deepEqual(plain(RP.parsePcpn("1.20A")), { v: 1.2, flag: "A" });
+  // 4 dry, 3 S, 4 dry: without the S days this would be one 11-day spell
+  const days = mkDays([["0.40"], ...rep(["0.00"], 4), ...rep(["S"], 3), ["2.00A"], ...rep(["0.00"], 4)]);
+  const D = RP.derive(days);
+  assert.equal(D.dryMax.len, 4, "S days end a dry run");
+  assert.equal(D.unsplit, 3);
+  assert.equal(D.missing, 0, "S days are not unrecorded days");
+  assert.equal(D.total, 2.4, "the accumulated amount stays in the total");
+  assert.equal(D.cum[8] - D.cum[7], 2, "on the day the A total is reported");
+  assert.equal(D.max.v, 0.4, "the 2.00 A total is not the wettest day");
+  assert.equal(D.max.date, "2025-01-01");
+  const onlyA = RP.derive(mkDays([["S"], ["1.50A"], ["0.00"]]));
+  assert.equal(onlyA.max.v, 0);
+  assert.equal(onlyA.max.doy, -1);
+  // and the Staircase lifts its pen across S days too
+  const d = RP.stairPath(days, D.cum, 0, 100, 10, 1);
+  assert.equal((d.match(/L/g) || []).length, days.length - 3, d);
+});
+
+test("a day with snow ends a dry run, whatever the gauge read", () => {
+  const days = mkDays([...rep(["0.00"], 4), ["0.00", 1.5], ...rep(["0.00"], 4)]);
+  assert.equal(RP.derive(days).dryMax.len, 4);
+  assert.equal(RP.derive(mkDays([...rep(["0.00"], 4), ["0.00", null], ...rep(["0.00"], 4)])).dryMax.len, 9, "no snow record is no snow");
+});
+
+test("a wettest day on Jan 1 gets its riser from 0", () => {
+  const D = RP.derive(mkDays([["1.25"], ["0.10"], ["0.00"]]));
+  assert.equal(D.max.doy, 0);
+  assert.deepEqual(plain(RP.riserSpan(D)), [0, 1.25]);
+  const D2 = RP.derive(mkDays([["0.10"], ["1.25"]]));
+  assert.deepEqual(plain(RP.riserSpan(D2)), [0.1, 1.35]);
+  assert.equal(RP.riserSpan(RP.derive(mkDays([["0.00"], ["T"]]))), null);
+});
+
+test("the header comment does not claim a missing-day count on the art", () => {
+  const head = readFileSync(ROOT + "components/rain-print.js", "utf8").split("*/")[0];
+  assert.ok(!/printed as a count on the art/i.test(head), "old claim gone");
+  assert.match(head, /no count of them is printed on the art/);
+});
+
+test("one dry-spell rule for both layouts: 7 days or more", () => {
+  assert.equal(RP.DRY_MIN, 7);
+  assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 6), ["0.10"]]))), false, "6 days: not marked");
+  assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 7), ["0.10"]]))), true, "7 days: marked");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  const wave = S.slice(S.indexOf("function waveform("), S.indexOf("function staircase(")), stair = S.slice(S.indexOf("function staircase("), S.indexOf("function buildSvg("));
+  for (const [name, src] of [["waveform", wave], ["staircase", stair]]) {
+    assert.match(src, /if \(showDry\(D\)\) ann \+= bracket\(/, name + " uses the shared rule");
+    assert.ok(!/dryMax\.len\s*(>|>=)\s*\d/.test(src), name + " has no threshold of its own");
+  }
+});

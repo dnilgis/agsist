@@ -18,7 +18,9 @@
  *             labeled with its years
  *   A station with more than MISS_BLOCK unrecorded days in the year gets no
  *   print: the page says so and offers the other stations. Fewer missing days
- *   are printed as a count on the art itself.
+ *   are left as gaps in the line (never drawn as dry, never added to either
+ *   total), and no count of them is printed on the art (Sig); the line under
+ *   the print on the page states how many there were.
  *
  * THE DESIGN IS THE URL. Every choice (place, station, year, layout, palette,
  * size, comparison, name, up to three dates) round-trips through the query
@@ -242,6 +244,105 @@
     return -1;
   }
 
+  // ---------- the year's numbers (pure: the tests run these) ----------
+  var MISS_OK = 10;      // auto station pick: first of the nearest three with at most this many unrecorded days
+  var DRY_MIN = 7;       // a dry spell is marked on the art, on either layout, only at this many days or more
+  var f2 = function (x) { return x.toFixed(2); };
+  /* One ACIS daily value. M: not recorded. T: a trace (counts as 0, ends a
+     dry run). S: the observer did not read the gauge that day; its catch is in
+     the next "A" value (an accumulated total over several days). v stays 0 on
+     an S day so the year's total counts that catch once, on the day the A total
+     was reported, but an S day is not a dry day and not a measured 0. */
+  function parsePcpn(raw) {
+    var s = String(raw).trim();
+    if (s === 'M') return { v: null, flag: 'M' };
+    if (s === 'T') return { v: 0, flag: 'T' };
+    if (s === 'S') return { v: 0, flag: 'S' };
+    var v = parseFloat(s);
+    if (isNaN(v)) return { v: null, flag: 'M' };
+    return { v: v, flag: /A$/.test(s) ? 'A' : '' };
+  }
+  // A day whose own amount nobody knows: unrecorded, or rolled into a later A total.
+  function unknownDay(x) { return x.v === null || x.v === undefined || x.flag === 'S'; }
+  function derive(days) {
+    var n = days.length, month = Array(12).fill(0), mdays = Array(12).fill(0), monthValid = Array(12).fill(0);
+    var total = 0, wet = 0, missing = 0, trace = 0, unsplit = 0, max = { v: 0, date: '', doy: -1 };
+    var dry = 0, dryStart = -1, dryMax = { len: 0, end: '', endDoy: -1, startDoy: -1 }, cum = [], over1 = 0;
+    function endDry() { dry = 0; dryStart = -1; }
+    days.forEach(function (x) {
+      mdays[x.m]++;
+      // An unrecorded day ends a dry run: nobody knows whether it rained.
+      if (x.v === null || x.v === undefined) { missing++; endDry(); cum.push(total); return; }
+      monthValid[x.m]++;
+      // An S day is the same: its rain was real, but it is counted on the A day.
+      if (x.flag === 'S') { unsplit++; endDry(); cum.push(total); return; }
+      if (x.flag === 'T') { trace++; endDry(); cum.push(total); return; }
+      total += x.v; month[x.m] += x.v; cum.push(total);
+      if (x.v >= 1) over1++;
+      if (x.v > 0) {
+        wet++; endDry();
+        // An A value is several days' catch, so it cannot be the wettest single day.
+        if (x.flag !== 'A' && x.v > max.v) max = { v: x.v, date: x.date, doy: x.doy };
+      }
+      else if (x.s > 0) endDry();   // snow fell: not a dry day, whatever the gauge read (Sig)
+      else { if (dry === 0) dryStart = x.doy; dry++; if (dry > dryMax.len) dryMax = { len: dry, end: x.date, endDoy: x.doy, startDoy: dryStart }; }
+    });
+    var validMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (i) { return monthValid[i] > 0; });
+    var maxMonth = validMonths.length ? Math.max.apply(null, validMonths.map(function (i) { return month[i]; })) : 0;
+    var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
+    // Snowfall prints only when the station kept a snowfall record nearly every day
+    // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
+    var snowTotal = 0, snowMissing = 0;
+    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
+    var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
+    var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
+    days.forEach(function (x) {
+      if (x.t === null || x.t === undefined) return;
+      if (hot.v === null || x.t > hot.v) hot = { v: x.t, date: x.date, doy: x.doy };
+      if (cold.v === null || x.t < cold.v) cold = { v: x.t, date: x.date, doy: x.doy };
+    });
+    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, unsplit: unsplit, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
+  }
+  // the same rule on both layouts
+  function showDry(D) { return D.dryMax.len >= DRY_MIN; }
+  /* The comparison's daily amounts, aligned to the year. `normal` is the
+     comparison as it is; `daily` (what the running total, band and headline
+     use) is 0 on a day the station did not record, since the year's total has
+     nothing for that day either. An S day keeps its normal: its rain is in the
+     year's total, on the A day. Null when the comparison has no dates at all. */
+  function overlayDaily(days, byDate) {
+    var none = 0, normal = [], daily = [];
+    days.forEach(function (x) {
+      var v = byDate.get(x.date.slice(5));
+      if (v === undefined) { none++; v = 0; }
+      normal.push(v);
+      daily.push(x.v === null || x.v === undefined ? 0 : v);
+    });
+    if (none === days.length) return null;
+    var cum = [], run = 0;
+    daily.forEach(function (v) { run += v; cum.push(run); });
+    return { normal: normal, daily: daily, cum: cum, total: run };
+  }
+  /* Staircase trace: a point at the end of each day at that day's running
+     total. The pen lifts across a day with no amount of its own (missing or S),
+     so a gap never reads as a dry step, and comes down again at the start of
+     the next known day, at the total before it. */
+  function stairPath(days, cum, x0, y1, w, k) {
+    var d = 'M' + x0 + ',' + y1, pen = true;
+    days.forEach(function (x) {
+      if (unknownDay(x)) { pen = false; return; }
+      if (!pen) { d += 'M' + f2(x0 + x.doy * w) + ',' + f2(y1 - (x.doy > 0 ? cum[x.doy - 1] : 0) * k); pen = true; }
+      d += 'L' + f2(x0 + (x.doy + 1) * w) + ',' + f2(y1 - cum[x.doy] * k);
+    });
+    return d;
+  }
+  // The wettest day's red riser runs from the running total before that day
+  // (0 on Jan 1) to the total after it.
+  function riserSpan(D) {
+    if (!(D.max.v > 0) || D.max.doy < 0) return null;
+    return [D.max.doy > 0 ? D.cum[D.max.doy - 1] : 0, D.cum[D.max.doy]];
+  }
+
   function utf8b64url(str) {
     var bytes = new TextEncoder().encode(str), bin = '';
     for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
@@ -328,7 +429,8 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS,
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX };
+    bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -344,7 +446,6 @@
   /* Print sizes, landscape: trim width and height in inches. Art is 1400 units wide. */
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
   var ART_W = 1400, BLEED_IN = 0.125, DPI = 300;
-  var MISS_OK = 10;      // auto station pick: first of the nearest three with at most this many unrecorded days
   var MISS_BLOCK = 31;   // more than a month unrecorded: no print, the page says why
   var TODAY = chicagoToday();                     // YYYY-MM-DD in Chetek's time zone
   var CURRENT_YEAR = parseInt(TODAY.slice(0, 4), 10);
@@ -371,7 +472,6 @@
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
 
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
-  var f2 = function (x) { return x.toFixed(2); };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
   // ---------- color helpers for the seasonal bar tint (Sig's) ----------
@@ -436,15 +536,6 @@
         .map(function (m) { return Object.assign({}, m, { sid: cleanSid(m.sids[0]), km: haversine(lat, lon, m.ll[1], m.ll[0]) }); })
         .sort(function (a, b) { return a.km - b.km; });
     });
-  }
-  function parsePcpn(raw) {
-    var s = String(raw).trim();
-    if (s === 'M') return { v: null, flag: 'M' };
-    if (s === 'T') return { v: 0, flag: 'T' };
-    if (s === 'S') return { v: 0, flag: 'S' };
-    var v = parseFloat(s);
-    if (isNaN(v)) return { v: null, flag: 'M' };
-    return { v: v, flag: /A$/.test(s) ? 'A' : '' };
   }
   function parseTemp(raw) { var s = String(raw).trim(); if (s === 'M' || s === '') return null; var v = parseFloat(s); return isNaN(v) ? null : v; }
   // pcpn and avgt (daily mean temperature, F) come back as parallel columns from one call
@@ -520,37 +611,6 @@
   }
 
   // ---------- derived ----------
-  function derive(days) {
-    var n = days.length, month = Array(12).fill(0), mdays = Array(12).fill(0), monthValid = Array(12).fill(0);
-    var total = 0, wet = 0, missing = 0, trace = 0, max = { v: 0, date: '', doy: -1 };
-    var dry = 0, dryStart = -1, dryMax = { len: 0, end: '', endDoy: -1, startDoy: -1 }, cum = [], over1 = 0;
-    days.forEach(function (x) {
-      mdays[x.m]++;
-      // An unrecorded day ends a dry run: nobody knows whether it rained.
-      if (x.v === null) { missing++; dry = 0; dryStart = -1; cum.push(total); return; }
-      monthValid[x.m]++;
-      if (x.flag === 'T') { trace++; dry = 0; dryStart = -1; cum.push(total); return; }
-      total += x.v; month[x.m] += x.v; cum.push(total);
-      if (x.v >= 1) over1++;
-      if (x.v > 0) { wet++; dry = 0; dryStart = -1; if (x.v > max.v) max = { v: x.v, date: x.date, doy: x.doy }; }
-      else { if (dry === 0) dryStart = x.doy; dry++; if (dry > dryMax.len) dryMax = { len: dry, end: x.date, endDoy: x.doy, startDoy: dryStart }; }
-    });
-    var validMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (i) { return monthValid[i] > 0; });
-    var maxMonth = validMonths.length ? Math.max.apply(null, validMonths.map(function (i) { return month[i]; })) : 0;
-    var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
-    // Snowfall prints only when the station kept a snowfall record nearly every day
-    // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
-    var snowTotal = 0, snowMissing = 0;
-    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
-    var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
-    var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
-    days.forEach(function (x) {
-      if (x.t === null) return;
-      if (hot.v === null || x.t > hot.v) hot = { v: x.t, date: x.date, doy: x.doy };
-      if (cold.v === null || x.t < cold.v) cold = { v: x.t, date: x.date, doy: x.doy };
-    });
-    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
-  }
   function overlayKey() { return ST.cmp === 'normal' ? 'normal30' : ST.cmp === 'station' ? 'full' : ''; }
   // The chosen comparison as daily amounts + running total, aligned to the year, or null.
   function overlaySeries() {
@@ -560,18 +620,16 @@
     if (key === 'normal30' && NORM30) { byDate = NORM30; label = 'NOAA 30-year normal'; }
     else if (key === 'full' && EXT && EXT.avgByDate.size) { byDate = EXT.avgByDate; label = EXT.yearFrom + '–' + EXT.yearTo + ' station average (' + EXT.years + ' yrs)'; }
     else return null;
-    var missing = 0;
-    var dailyV = DATA.days.map(function (x) { var v = byDate.get(x.date.slice(5)); if (v === undefined) { missing++; return 0; } return v; });
-    if (missing === DATA.days.length) return null;
-    var cum = [], run = 0;
-    dailyV.forEach(function (v) { run += v; cum.push(run); });
-    return { daily: dailyV, cum: cum, total: run, label: label };
+    var o = overlayDaily(DATA.days, byDate);
+    if (!o) return null;
+    o.label = label;
+    return o;
   }
   // one fixed scale per station: its full-record maxima, never smaller than this year needs
   function domain() {
     var D = DATA.d, ov = overlaySeries();
     return {
-      daily: Math.max(EXT ? EXT.maxDaily : 0, D.maxDay, ov ? Math.max.apply(null, ov.daily) : 0, 0.01),
+      daily: Math.max(EXT ? EXT.maxDaily : 0, D.maxDay, ov ? Math.max.apply(null, ov.normal) : 0, 0.01),
       annual: Math.max(EXT ? EXT.maxAnnual : 0, D.total, ov ? ov.total : 0, 0.01)
     };
   }
@@ -826,12 +884,12 @@
     grid += '<line x1="' + f2(yearEndW) + '" y1="' + base + '" x2="' + f2(yearEndW) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>';
     var overlay = '', OV = overlaySeries();
     if (OV) {
-      overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.daily.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
+      overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.normal.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
     }
     if (PREVIEW) overlay += cutLine(p, x0 + D.n * w, top, base);
     days.forEach(function (x) {
       var X = x0 + x.doy * w + w / 2, isMax = D.max.v > 0 && x.doy === D.max.doy;
-      if (x.v === null) bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base - 6) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="1 1"/>';
+      if (unknownDay(x)) bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base - 6) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="1 1"/>';
       else if (x.v > 0) {
         var barTop = base - x.v * k, col = isMax ? p.temp : seasonalColor(p.rain, x.m);
         bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + f2(barTop) + '" stroke="' + col + '" stroke-width="' + f2(isMax ? Math.max(2.2, w * 1.1) : Math.max(1.4, w * 0.75)) + '"/>';
@@ -844,7 +902,7 @@
       var mx = x0 + D.max.doy * w + w / 2;
       ann += callout(p, mx, base - D.max.v * k, fmtDate(D.max.date) + '  ' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), top + 2);
     }
-    if (D.dryMax.len > 0) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, dryLabel(D));
+    if (showDry(D)) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, dryLabel(D));
     var key = '<text x="' + x0 + '" y="' + (top - 30) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '">' + (OV ? 'shaded: ' + esc(OV.label) : "one line per day · height is that day's precipitation") + '</text>';
     return frame(p, W, H, grid + overlay + bars + temp + ann + key, FL, o);
   }
@@ -854,8 +912,10 @@
     var FL = footLayout(W, H);
     var x0 = 90, x1 = W - 90, y0 = 90, y1 = FL.top - 74, D = DATA.d, days = DATA.days, DOM = domain();
     var k = (y1 - y0) / DOM.annual, w = (x1 - x0) / (PREVIEW ? PREVIEW.yearLen : D.n), mono = "'IBM Plex Mono',monospace";
-    var d = 'M' + x0 + ',' + y1;
-    days.forEach(function (x) { d += 'L' + f2(x0 + (x.doy + 1) * w) + ',' + f2(y1 - D.cum[x.doy] * k); });
+    var d = stairPath(days, D.cum, x0, y1, w, k);
+    // the soft wash under the line stays one closed shape, so it runs on under a gap
+    var fillD = 'M' + x0 + ',' + y1;
+    days.forEach(function (x) { fillD += 'L' + f2(x0 + (x.doy + 1) * w) + ',' + f2(y1 - D.cum[x.doy] * k); });
     var grid = '', step = DOM.annual > 20 ? 5 : DOM.annual > 8 ? 2 : 1;
     for (var r = 0; r <= DOM.annual; r += step) {
       var Y = y1 - r * k;
@@ -876,12 +936,13 @@
     grid += cutLine(p, endX, y0, y1);
     var OV = overlaySeries();
     // the line is the hero: a soft wash under it turns the staircase into a landscape profile
-    var areaFill = OV ? '' : '<defs><linearGradient id="stairFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + p.rain + '" stop-opacity="0.22"/><stop offset="100%" stop-color="' + p.rain + '" stop-opacity="0.02"/></linearGradient></defs><path d="' + d + ' L' + f2(PREVIEW ? endX : x1) + ',' + f2(y1) + ' Z" fill="url(#stairFill)"/>';
+    var areaFill = OV ? '' : '<defs><linearGradient id="stairFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + p.rain + '" stop-opacity="0.22"/><stop offset="100%" stop-color="' + p.rain + '" stop-opacity="0.02"/></linearGradient></defs><path d="' + fillD + ' L' + f2(PREVIEW ? endX : x1) + ',' + f2(y1) + ' Z" fill="url(#stairFill)"/>';
     var path = '<path d="' + d + '" fill="none" stroke="' + p.rain + '" stroke-width="2.75" stroke-linejoin="round" stroke-linecap="round"/>';
     var waypoint = '';
-    if (D.max.v > 0 && D.max.doy >= 0) {
-      var wx = x0 + (D.max.doy + 1) * w, wy = y1 - D.cum[D.max.doy] * k;
-      var wx0 = x0 + D.max.doy * w, wy0 = y1 - D.cum[D.max.doy - 1 >= 0 ? D.max.doy - 1 : 0] * k;
+    var rs = riserSpan(D);
+    if (rs) {
+      var wx = x0 + (D.max.doy + 1) * w, wy = y1 - rs[1] * k;
+      var wx0 = x0 + D.max.doy * w, wy0 = y1 - rs[0] * k;
       waypoint = '<line x1="' + f2(wx0) + '" y1="' + f2(wy0) + '" x2="' + f2(wx) + '" y2="' + f2(wy) + '" stroke="' + p.temp + '" stroke-width="3.25" stroke-linecap="round"/><circle cx="' + f2(wx) + '" cy="' + f2(wy) + '" r="4" fill="' + p.temp + '"/>';
     }
     var overlay = '';
@@ -897,7 +958,7 @@
       var mx = x0 + (D.max.doy + 1) * w, my = y1 - D.cum[D.max.doy] * k;
       ann += callout(p, mx, my, fmtDate(D.max.date) + '  +' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), y0 + 2);
     }
-    if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, dryLabel(D));
+    if (showDry(D)) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, dryLabel(D));
     // headline: the comparison, computed from the two real running totals, baseline always named
     // A preview compares the same days: Jan 1 through the last recorded day, on both lines.
     var pct = OV && OV.total > 0 ? Math.round((D.total - OV.total) / OV.total * 100) : null;
@@ -1103,7 +1164,8 @@
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
     $('rp-source').innerHTML = 'Rain gauge: <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
-      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, drawn' : ' days, drawn') + ' as no rain' : '') + '. ' +
+      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
+      (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
@@ -1113,7 +1175,7 @@
     var rows = [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
       ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
-      ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : 'no measurable rain'],
+      ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : D.wet ? 'not known (rain reported only as multi-day totals)' : 'no measurable rain'],
       ['Trace days', D.trace], ['Days with no report', D.missing],
       ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
