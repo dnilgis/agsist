@@ -1,0 +1,26 @@
+{
+  "id": "agsist-strip-v1",
+  "about": "Scale strip for a 10:1 rain gauge tube, read by /gauge-lab. Units are inches. x runs from the strip's left edge; y runs up from the zero line (the tube's 0.00 mark). 1.00 in of rain stands 10.0 in in the tube, so rain = y / ratio.",
+  "units": "in",
+  "ratio": 10,
+  "rain_step": 0.01,
+  "width": 3.0,
+  "y_min": -0.9,
+  "y_max": 10.9,
+  "scale": { "zero_y": 0, "full_y": 10, "minor": 0.1, "mid": 0.5, "major": 1.0 },
+  "markers": {
+    "size": 0.5,
+    "hole": 0.2,
+    "tl": [0.4, 10.45],
+    "tr": [2.6, 10.45],
+    "bl": [0.4, -0.45],
+    "br": [2.6, -0.45]
+  },
+  "stripe": { "x": 1.5, "width": 0.08, "color": "#1f6fd1" },
+  "tube": { "x0": 0.75, "x1": 2.25 },
+  "ticks": { "left": [0.08, 0.68], "right": [2.32, 2.92] },
+  "tiles": [
+    { "name": "A", "y0": -0.9, "y1": 5.3 },
+    { "name": "B", "y0": 4.7, "y1": 10.9 }
+  ]
+}
