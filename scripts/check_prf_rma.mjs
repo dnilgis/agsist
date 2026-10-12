@@ -139,10 +139,17 @@ function compare(c, m, rma) {
   eq("protection per acre", m.pol.protectionPerAcre, cents(rma.PricingRateSummary.ProtectionPerAcre), 1e-9);
   eq("subsidy rate", meta.subsidy[String(c.coverage)], rma.PricingRateSummary.SubsidyLevel, 1e-9);
   let used = 0;
+  const lim = limitsFor(states[c.st].counties[c.county], c.combo);
   for (const r of rma.PricingRateRows) {
     const i = M.CODES.indexOf(r.IntervalCode), row = m.pol.rows[i];
     if (i < 0) { diffs.push({ what: "interval code RMA sent", rma: r.IntervalCode }); continue; }
-    eq(`rate ${M.LABELS[i]}`, row.rate, r.PremiumRate, 1e-9);
+    /* The rate belongs to the grid; whether an interval is OFFERED belongs to the
+       county. A grid can straddle a county that offers May-Jun and one that does
+       not (grid 21035: Stanislaus County CA does not, and RMA answers rate 0 there
+       while the grid file carries 0.4239 from its neighbour). So: offered here ->
+       the rates must be equal; not offered here -> RMA must say 0. */
+    if (lim && lim[i]) eq(`rate ${M.LABELS[i]}`, row.rate, r.PremiumRate, 1e-9);
+    else eq(`rate ${M.LABELS[i]}, which this county does not offer`, 0, r.PremiumRate, 1e-9);
     eq(`index ${M.LABELS[i]} ${c.year}`, m.index ? m.index[i] : null, r.PercentOfNormal, 1e-9);
     if (!c.split[i]) continue;
     used++;
