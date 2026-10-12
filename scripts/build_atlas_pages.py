@@ -1287,6 +1287,13 @@ def county_page(W, f, d, stamp):
         S1 += fact("Irrigated, %s" % ri["year"], money(ri["value"]) + "/ac", "no dry rent published")
     else:
         S1 += fwith("Cash rent", why(R))
+    # PRF: counties with a published pasture rent or 10,000+ acres of pastureland
+    # (2022 census), only where prf/<state>.html is on disk (another builder's pages)
+    pas_rent = ok(R) and R.get("pasture") and (not RL or R["pasture"]["year"] >= RL - 3)
+    pas_ac = get(d, "livestock", "pasture", "value") if ok(d.get("livestock") or {}) else None
+    prf_sl = slugify(stn)
+    if (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", prf_sl + ".html")):
+        S1 += '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>.</p>' % (prf_sl, esc(stn))
     rr = W.rrev.get(f)
     if rr and rr.get("p") is not None:
         if rr.get("rent") is not None:
