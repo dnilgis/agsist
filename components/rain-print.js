@@ -506,10 +506,10 @@
      nothing overlaps. */
   function footLayout(W, H) {
     var F = footerText(), marginX = 60, maxW = W - marginX * 2 - 190;
-    var provLines = wrapMono(F.prov, maxW, 11), subLines = wrapMono(F.sub, maxW, 14);
-    var y = H - 26, prov = [], sub = [];
-    for (var i = provLines.length - 1; i >= 0; i--) { prov.unshift([provLines[i], y]); y -= 16; }
-    y -= 8;
+    // No source line on the art (Sig, 2026-10-12): the station and NOAA credit stay in the
+    // SVG description and under the print on the page.
+    var subLines = wrapMono(F.sub, maxW, 14);
+    var y = H - 26, prov = [], sub = [], i;
     for (i = subLines.length - 1; i >= 0; i--) { sub.unshift([subLines[i], y]); y -= 20; }
     if (ST.name) y -= 22;
     var persoY = y; y -= 26;
@@ -580,6 +580,15 @@
     if (D.hot && D.hot.v !== null) nearest = Math.min(nearest, Math.abs(D.hot.doy - maxDoy));
     if (D.cold && D.cold.v !== null) nearest = Math.min(nearest, Math.abs(D.cold.doy - maxDoy));
     return nearest < 18 ? 34 : 0;
+  }
+  // "JUN 21 TO 30 · 10 dry days" (or "JUN 24 TO JUL 3 · ..."): the bracket names its first and last day.
+  function dryLabel(D) {
+    var a = DATA.days.filter(function (x) { return x.doy === D.dryMax.startDoy; })[0], b = D.dryMax.end;
+    var len = D.dryMax.len + ' dry days';
+    if (!a || !b) return len;
+    var A = fmtDate(a.date), B = fmtDate(b);
+    if (A.slice(0, 3) === B.slice(0, 3)) B = B.slice(4);
+    return A + ' TO ' + B + '  ·  ' + len;
   }
   function bracket(p, xa, xb, y, text) {
     return '<path d="M' + f2(xa) + ',' + f2(y - 6) + ' L' + f2(xa) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y - 6) + '" fill="none" stroke="' + p.mute + '" stroke-width="1"/>' +
@@ -667,10 +676,11 @@
     var m;
     try { m = root.AgQR.matrix(url); } catch (e) { return ''; }
     QR_OK = true;
-    // cell size capped so the stamp stays about 100 units, 1.3 in on the 18 in print
-    // (Sig, 2026-10-12: smaller). Modules stay 0.44 mm or larger at the longest code.
-    var n = m.length, quiet = 4, cell = Math.min(2.2, 88 / (n + 2 * quiet));
-    var quietBox = n * cell + 2 * quiet * cell, frameGap = 3, frameW = 3;
+    // About 78 units, 1.0 in on the 18 in print (Sig, 2026-10-12: smaller again).
+    // A 3-module quiet zone inside a thinner frame keeps the modules as large as
+    // the space allows: 0.6 mm for a plain code, 0.4 mm at the longest one.
+    var n = m.length, quiet = 3, cell = Math.min(1.9, 70 / (n + 2 * quiet));
+    var quietBox = n * cell + 2 * quiet * cell, frameGap = 2, frameW = 2;
     var stampSize = quietBox + 2 * frameGap + 2 * frameW;
     var ox = W - 60 - stampSize, oy = H - 26 - stampSize;
     var cox = ox + (stampSize - quietBox) / 2 + quiet * cell, coy = oy + (stampSize - quietBox) / 2 + quiet * cell;
@@ -681,7 +691,7 @@
     // square to the page edges (Sig, 2026-10-11): no tilt
     return '<g opacity="0.95" aria-hidden="true">' +
       '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="#F7F6F1"/>' +
-      '<rect x="' + f2(ox + 1.5) + '" y="' + f2(oy + 1.5) + '" width="' + f2(stampSize - 3) + '" height="' + f2(stampSize - 3) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
+      '<rect x="' + f2(ox + frameW / 2) + '" y="' + f2(oy + frameW / 2) + '" width="' + f2(stampSize - frameW) + '" height="' + f2(stampSize - frameW) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
       '<g fill="#B0231A">' + mods + '</g></g>';
   }
 
@@ -725,7 +735,7 @@
       var mx = x0 + D.max.doy * w + w / 2;
       ann += callout(p, mx, base - D.max.v * k, fmtDate(D.max.date) + '  ' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), top + 2);
     }
-    if (D.dryMax.len > 0) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, D.dryMax.len + ' dry days');
+    if (D.dryMax.len > 0) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, dryLabel(D));
     var key = '<text x="' + x0 + '" y="' + (top - 30) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '">' + (OV ? 'shaded: ' + esc(OV.label) : "one line per day · height is that day's precipitation") + '</text>';
     return frame(p, W, H, grid + overlay + bars + temp + ann + key, FL, o);
   }
@@ -774,7 +784,7 @@
       var mx = x0 + (D.max.doy + 1) * w, my = y1 - D.cum[D.max.doy] * k;
       ann += callout(p, mx, my, fmtDate(D.max.date) + '  +' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), y0 + 2);
     }
-    if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, D.dryMax.len + ' dry days');
+    if (D.dryMax.len >= 5) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, dryLabel(D));
     // headline: the comparison, computed from the two real running totals, baseline always named
     // A preview compares the same days: Jan 1 through the last recorded day, on both lines.
     var pct = OV && OV.total > 0 ? Math.round((D.total - OV.total) / OV.total * 100) : null;
