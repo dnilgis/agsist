@@ -471,7 +471,8 @@ def parse_index(doc, grid):
     rows = doc.get("HistoricalIndexRows")
     if not isinstance(rows, list):
         raise RuntimeError(f"grid {grid}: no HistoricalIndexRows in {str(doc)[:200]}")
-    years, avg, status = {}, [None] * 11, collections.Counter()
+    years, status = {}, collections.Counter()
+    avgs = [collections.Counter() for _ in range(11)]
     for row in rows:
         vals = [None] * 11
         cols = row.get("HistoricalIndexDataColumns") or []
@@ -492,14 +493,16 @@ def parse_index(doc, grid):
             status[(int(row["Year"]), c.get("FilingStatusId"))] += 1
             a = c.get("AverageIntervalMeasurement")
             if a is not None:
-                a10 = int(round(a * 10))
-                if avg[i] is None:
-                    avg[i] = a10
-                elif avg[i] != a10:
-                    raise RuntimeError(f"grid {grid} interval {code}: the long-term average changes between "
-                                       f"years ({avg[i] / 10} and {a}); the file holds one per interval")
+                avgs[i][int(round(a * 10))] += 1
         if any(v is not None for v in vals):
             years[int(row["Year"])] = vals
+    # THE AVERAGE IS NOT ONE NUMBER PER INTERVAL. Measured on the first trial
+    # run, 2026-10-12: every year from 1951 to 2025 carries the crop year's own
+    # baseline (grid 30152, Jan-Feb: 45.1245 mm, the mean of those 75 years)
+    # and the open year 2026 carries a different one (45.4104). The index is
+    # what the policy pays on and is kept year by year exactly as published;
+    # the average kept here is the one most of the years share, for display.
+    avg = [(cnt.most_common(1)[0][0] if cnt else None) for cnt in avgs]
     return years, avg, status
 
 
@@ -525,6 +528,10 @@ def fetch_all(grids, y0, y1, fetch=None, workers=WORKERS):
                     log(f"  grid {g}: {e}")
             if n % 1000 == 0:
                 log(f"  {n} of {len(grids)} grids, {len(failed)} failed, {time.time() - t0:.0f}s")
+            if n == 200 and len(failed) > 100:
+                for f2 in futs:
+                    f2.cancel()
+                raise RuntimeError(f"{len(failed)} of the first 200 grids did not answer or could not be read; stopping")
     return got, sorted(failed)
 
 
@@ -812,7 +819,8 @@ def _fixture():
                     v = None
                 cols.append({"Year": y, "IntervalCode": c, "PercentOfNormal": v,
                              "IntervalMeasurement": None if v is None else 1.0,
-                             "AverageIntervalMeasurement": None if v is None else fx["avg_mm"][i],
+                             # the open year has its own baseline in RMA's answers
+                             "AverageIntervalMeasurement": None if v is None else fx["avg_mm"][i] + (0.3 if y == 2026 else 0),
                              "GridId": grid, "FilingStatusId": 6 if v is not None else 0})
             rows.append({"Year": y, "HistoricalIndexDataColumns": cols})
         return {"HistoricalIndexRows": rows}
