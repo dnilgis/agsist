@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: "Comma-separated: app,gis,api,pages,adm. Blank = all."
+        description: "Comma-separated: app,gis,api,pages,adm (first pass) or api2,grid,pages2,adm2 (second). Blank = first pass."
         required: false
         default: ""
       grid:

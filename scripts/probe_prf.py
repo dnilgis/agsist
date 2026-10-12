@@ -367,6 +367,358 @@ def step_pages():
             break
 
 
+# ---------------------------------------------------------------- second pass
+#
+# The first run (2026-10-12) settled the names. RMA's page calls
+# public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternal*/..., the grid layer host
+# (pdgis.rm.usda.net) does not resolve from outside and is reached through
+# /apps/prf/proxy/proxy.ashx, and the 2027 ADM carries PRF in InsuranceOffer,
+# Price, AreaCoverageLevel and AreaRate. These steps read real values for one
+# county so a fetcher can be checked against RMA's own answers.
+
+API = "https://public-rma.fpac.usda.gov/apps/PrfWebApi/"
+PROXY = "https://public-rma.fpac.usda.gov/apps/prf/proxy/proxy.ashx"
+REFERER = "https://public-rma.fpac.usda.gov/apps/PRF/"
+TEST_STATE, TEST_COUNTY_NAME = "55", "Barron"
+
+
+def api(path, params=None, name=None, timeout=90):
+    url = API + path + ("?" + urllib.parse.urlencode(params) if params else "")
+    st, _, body = get(url, timeout=timeout)
+    if st == 200 and name:
+        save("api2_" + name + ".json", body)
+    try:
+        return json.loads(body.decode("utf-8", "replace")) if st == 200 else None
+    except Exception as e:
+        say("    not JSON:", type(e).__name__, body[:200])
+        return None
+
+
+def show(label, obj, n=700):
+    say("   ", label, re.sub(r"\s+", " ", json.dumps(obj))[:n])
+
+
+def step_api2(grid_arg):
+    say("\n=== api2: real answers for one county ===")
+    counties = api("PrfExternalStates/GetCountiesByState", {"stateCode": TEST_STATE}, "counties_55")
+    show("counties:", counties)
+    code = None
+    rows = counties if isinstance(counties, list) else (counties or {}).get("counties") or \
+        next((v for v in (counties or {}).values() if isinstance(v, list)), [])
+    for c in rows or []:
+        if TEST_COUNTY_NAME.lower() in json.dumps(c).lower():
+            code = c.get("Code") or c.get("CountyCode")
+            say("    county record:", c)
+            break
+    years = api("PrfExternalIndexes/GetListOfAvailableRainfallYears", None, "years")
+    show("years:", years)
+    glist = api("PrfExternalNoaaGrids/GetContinentalUsGridList", None, "grid_list")
+    if glist is not None:
+        seq = glist if isinstance(glist, list) else next(
+            (v for v in glist.values() if isinstance(v, list)), [])
+        say("    grid list length:", len(seq), "first:", seq[:8], "last:", seq[-8:])
+    if not code:
+        say("    county code not found; stopping api2")
+        return
+    subs = api("PrfExternalStates/GetSubCountiesByCountyAndState",
+               {"stateCode": TEST_STATE, "countyCode": code}, "subcounties")
+    show("grids in the county:", subs, 1500)
+    seq = subs if isinstance(subs, list) else next(
+        (v for v in (subs or {}).values() if isinstance(v, list)), [])
+    if not seq:
+        return
+    g = seq[0]
+    gid, gname = g.get("NoaaGridId"), g.get("NoaaGridName")
+    if grid_arg:
+        gid = gname = grid_arg
+    say("    using grid id", gid, "name", gname)
+    t0 = time.time()
+    idx = api("PrfExternalIndexes/GetIndexValues",
+              {"intervalType": "BiMonthly", "sampleYearMinimum": 1948,
+               "sampleYearMaximum": 2026, "gridId": gid}, "index_values")
+    say(f"    index history took {time.time()-t0:.1f}s")
+    if idx:
+        rws = idx.get("HistoricalIndexRows", [])
+        for r in rws[:1] + rws[-3:]:
+            show(f"{r.get('Year')}:", r.get("HistoricalIndexDataColumns"), 1600)
+    show("where the grid sits:", api("PrfExternalStates/GetCountiesAndStatesFromGridId",
+                                     {"gridId": gid, "gridName": gname}, "grid_counties"), 1500)
+    show("grid id for the name:", api("PrfExternalNoaaGrids/GetNoaaGridId", {"gridName": gname}))
+    cases = [
+        ("hay_nonirr_90", "030", "003", "997", 90, [0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0]),
+        ("hay_nonirr_70", "030", "003", "997", 70, [0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0]),
+        ("graze_85", "007", "997", "997", 85, [0, 0, 20, 0, 30, 0, 30, 0, 20, 0, 0]),
+        ("hay_irr_org_90", "030", "002", "001", 90, [60, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0]),
+    ]
+    for name, use, irr, org, clp, ipov in cases:
+        base = {"intervalType": "BiMonthly", "irrigationPracticeCode": irr,
+                "organicPracticeCode": org, "intendedUseCode": use,
+                "stateCode": TEST_STATE, "countyCode": code,
+                "gridId": gid, "gridName": gname}
+        say(f"\n    case {name}: use {use} irr {irr} org {org} coverage {clp} split {ipov}")
+        show("valid intervals:", api("PrfExternalIntervalCodes/GetValidIntervalCodes",
+                                     dict(base, coverageLevelPercent=clp), name + "_valid"), 900)
+        show("max acre percent:", api("PrfExternalMaxAcrePercentage/GetMaxAcrePercentage",
+                                      base, name + "_maxpct"), 900)
+        for acres, pf, ii, yr in ((100, 100, 100, 2012), (237, 135, 50, 2023)):
+            calc = dict(base, productivityFactor=pf, insurableInterest=ii, insuredAcres=acres,
+                        sampleYear=yr, intervalPercentOfValues=json.dumps(ipov),
+                        coverageLevelPercent=clp)
+            show(f"pricing {acres} ac pf {pf} interest {ii} year {yr}:",
+                 api("PrfExternalPricingRates/GetPricingRates", calc,
+                     f"{name}_pricing_{acres}_{pf}_{ii}_{yr}"), 3500)
+        est = dict(base, productivityFactor=100, insuredAcres=100, sampleYearMinimum=1948,
+                   sampleYearMaximum=2025, intervalPercentOfValues=json.dumps(ipov),
+                   insurableInterest=100, coverageLevelPercent=clp)
+        show("estimated indemnities 1948-2025:",
+             api("PrfExternalEstimatedIndemnities/GetEstimatedIndemnityValues", est,
+                 name + "_indemnities"), 2500)
+
+
+def step_grid():
+    say("\n=== grid: the locator tab and the layer behind the proxy ===")
+    tab = ("https://public-rma.fpac.usda.gov/apps/PRF/Html/_GridLocatorTab.html?GridsLayerUrl="
+           + urllib.parse.quote(GIS + "/0", safe="") + "&CountiesLayerUrl="
+           + urllib.parse.quote(GIS + "/1", safe=""))
+    st, _, body = get(tab)
+    if st == 200:
+        html = body.decode("utf-8", "replace")
+        save("gridtab.html", html)
+        for s in re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', html, flags=re.I):
+            u = urllib.parse.urljoin(tab, s)
+            say("    script:", u)
+            if "public-rma" in u:
+                st2, _, js = get(u, limit=3_000_000)
+                if st2 == 200:
+                    save("gridtab_" + slug(u.split("/")[-1]), js)
+        for m in re.finditer(r"(proxy|GRID|gridcode|outFields|queryTask|where)", html, flags=re.I):
+            a, b = max(0, m.start() - 100), min(len(html), m.end() + 200)
+            say("    ...", re.sub(r"\s+", " ", html[a:b]))
+
+    def via_proxy(tail, name):
+        url = PROXY + "?" + GIS + tail
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": REFERER})
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                body = r.read()
+                say(f"  GET {url[:230]} -> {r.status} {len(body)} bytes")
+                save("grid_" + name + ".json", body)
+                return body.decode("utf-8", "replace")
+        except Exception as e:
+            say(f"  GET {url[:230]} -> FAILED {type(e).__name__}: {e}")
+            return ""
+
+    say("    layer 0:", re.sub(r"\s+", " ", via_proxy("/0?f=json", "layer0"))[:1500])
+    say("    count:", via_proxy("/0/query?" + urllib.parse.urlencode(
+        {"where": "1=1", "returnCountOnly": "true", "f": "json"}), "count")[:300])
+    say("    five features:", re.sub(r"\s+", " ", via_proxy("/0/query?" + urllib.parse.urlencode(
+        {"where": "1=1", "outFields": "*", "resultRecordCount": 5, "outSR": 4326,
+         "returnGeometry": "true", "f": "json"}), "five"))[:3000])
+    say("    test point:", re.sub(r"\s+", " ", via_proxy("/0/query?" + urllib.parse.urlencode(
+        {"geometry": f"{TEST_LON},{TEST_LAT}", "geometryType": "esriGeometryPoint", "inSR": 4326,
+         "spatialRel": "esriSpatialRelIntersects", "outFields": "*", "returnGeometry": "true",
+         "outSR": 4326, "f": "json"}), "point"))[:2500])
+
+
+def step_adm2():
+    """One county end to end from the ADM, plus what the whole PRF book looks like."""
+    import collections
+    say("\n=== adm2: PRF in the 2027 Actuarial Data Master ===")
+    url = ADM + "2027/2027_ADM_YTD.zip"
+    tmp = "/tmp/adm.zip"
+    if not os.path.exists(tmp):
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        t0 = time.time()
+        with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as f:
+            while True:
+                chunk = r.read(1 << 20)
+                if not chunk:
+                    break
+                f.write(chunk)
+        say(f"    downloaded in {time.time()-t0:.0f}s")
+    z = zipfile.ZipFile(tmp)
+    members = {re.sub(r"^\d{4}_(A\d{5})_.*", r"\1", zi.filename): zi for zi in z.infolist()}
+
+    def rows(code):
+        with z.open(members[code]) as f:
+            rd = io.TextIOWrapper(f, encoding="latin-1", newline="")
+            header = [c.strip() for c in rd.readline().rstrip("\r\n").split("|")]
+            for line in rd:
+                yield header, line.rstrip("\r\n").split("|")
+
+    def col(header, name):
+        return header.index(name)
+
+    # full headers, untruncated
+    for code in ("A00810", "A01130", "A01135", "A00030", "A00200", "A00070", "A00480"):
+        with z.open(members[code]) as f:
+            h = io.TextIOWrapper(f, encoding="latin-1").readline().rstrip("\r\n")
+        save(f"adm_header_{code}.txt", h)
+        say(f"    {code}: {len(h.split('|'))} header fields")
+
+    say("\n    intervals 625-635:")
+    for h, r in rows("A00480"):
+        d = dict(zip(h, r))
+        if d.get("Interval Code", "") >= "620" and d.get("Interval Code", "") <= "640":
+            say("      ", {k: v for k, v in d.items() if v})
+    say("\n    subsidy rows naming plan 13:")
+    for h, r in rows("A00070"):
+        d = dict(zip(h, r))
+        if d.get("Insurance Plan Code") == "13":
+            say("      ", {k: v for k, v in d.items() if v})
+
+    # every PRF offer
+    offers = {}
+    for h, r in rows("A00030"):
+        if len(r) != len(h):
+            say("    A00030 row with", len(r), "fields, header has", len(h)); break
+        if r[col(h, "Commodity Code")] == "0088":
+            offers[r[col(h, "ADM Insurance Offer ID")]] = (
+                r[col(h, "State Code")], r[col(h, "County Code")], r[col(h, "Intended Use Code")],
+                r[col(h, "Irrigation Practice Code")], r[col(h, "Organic Practice Code")],
+                r[col(h, "Interval Code")], r[col(h, "Insurance Plan Code")],
+                r[col(h, "Type Code")], r[col(h, "Practice Code")])
+    say(f"\n    PRF offers: {len(offers)}")
+    C = collections.Counter
+    say("    by plan:", C(v[6] for v in offers.values()))
+    say("    by use/irrigation/organic:", sorted(C((v[2], v[3], v[4]) for v in offers.values()).items()))
+    say("    by interval:", sorted(C(v[5] for v in offers.values()).items()))
+    say("    states:", len({v[0] for v in offers.values()}),
+        "counties:", len({v[:2] for v in offers.values()}))
+
+    dates = C()
+    for h, r in rows("A00200"):
+        if r[col(h, "Commodity Code")] == "0088":
+            d = dict(zip(h, r))
+            dates[(d.get("Sales Closing Date"), d.get("Acreage Reporting Date"),
+                   d.get("Premium Billing Date"), d.get("Contract Change Date"),
+                   d.get("Cancellation Date"), d.get("End Of Insurance Date"))] += 1
+    say("    dates (sales closing, acreage report, billing, contract change, cancel, end):")
+    for k, n in dates.most_common(12):
+        say("      ", n, k)
+
+    # Price: grid level
+    samp_states = {"55", "48", "30"}
+    price = {}                       # (offer, grid) -> (cbv, min, max, expected)  sample states
+    grids, minmax, expd = set(), C(), C()
+    cbv_by_key = collections.defaultdict(set)   # (state,county,use,irr,org) -> {cbv}
+    nprice = bad = 0
+    for h, r in rows("A00810"):
+        if r[col(h, "Commodity Code")] != "0088":
+            continue
+        if len(r) != len(h):
+            bad += 1
+            if bad <= 2:
+                say("    A00810 row with", len(r), "fields, header has", len(h))
+            continue
+        nprice += 1
+        oid, grid = r[col(h, "ADM Insurance Offer ID")], r[col(h, "Sub County Code")]
+        cbv = r[col(h, "County Base Value")]
+        mn, mx = r[col(h, "Minimum Acre Percent")], r[col(h, "Maximum Acre Percent")]
+        ex = r[col(h, "Expected Index Value")]
+        grids.add(grid)
+        minmax[(mn, mx)] += 1
+        expd[ex] += 1
+        o = offers.get(oid)
+        if o:
+            cbv_by_key[o[:5]].add(cbv)
+            if o[0] in samp_states:
+                price[(oid, grid)] = (cbv, mn, mx, ex)
+    say(f"\n    Price rows for PRF: {nprice} (rows with a different field count: {bad})")
+    say("    distinct grids:", len(grids), "lowest", min(grids), "highest", max(grids))
+    say("    min/max acre percent:", minmax.most_common(10))
+    say("    expected index values:", expd.most_common(5))
+    multi = sum(1 for v in cbv_by_key.values() if len(v) > 1)
+    say(f"    county+use+irrigation+organic keys: {len(cbv_by_key)}; keys with more than one "
+        f"county base value: {multi}")
+    for k, v in list(cbv_by_key.items())[:3]:
+        say("      e.g.", k, sorted(v))
+    save("adm_grid_ids.txt", "\n".join(sorted(grids)))
+
+    # AreaCoverageLevel -> rate ids, sample states only
+    acl = {}        # (offer, grid, cov) -> (rate id, start, end, factor)
+    need = set()
+    n = 0
+    for h, r in rows("A01130"):
+        oid = r[col(h, "ADM Insurance Offer ID")]
+        o = offers.get(oid)
+        if not o:
+            continue
+        n += 1
+        if o[0] in samp_states:
+            rid = r[col(h, "Area Rate ID")]
+            acl[(oid, r[col(h, "Sub County Code")], r[col(h, "Coverage Level Percent")])] = (
+                rid, r[col(h, "Area Loss Start Percent")], r[col(h, "Area Loss End Percent")],
+                r[col(h, "Payment Factor")])
+            need.add(rid)
+    say(f"\n    AreaCoverageLevel rows for PRF offers: {n}; kept for WI, TX, MT: {len(acl)}; "
+        f"distinct rate ids there: {len(need)}")
+    rate = {}
+    for h, r in rows("A01135"):
+        rid = r[col(h, "Area Rate ID")]
+        if rid in need:
+            rate[rid] = (r[col(h, "Base Rate")], r[col(h, "Price Volatility Factor")])
+    say(f"    rates found: {len(rate)} of {len(need)}")
+
+    # does the rate depend on anything but grid, interval and coverage level?
+    by_gic = collections.defaultdict(set)
+    by_gicu = collections.defaultdict(set)
+    for (oid, grid, cov), (rid, *_rest) in acl.items():
+        o = offers[oid]
+        br = rate.get(rid, (None,))[0]
+        by_gic[(grid, o[5], cov)].add(br)
+        by_gicu[(grid, o[5], cov, o[2], o[3], o[4])].add(br)
+    say("    (grid, interval, coverage) keys:", len(by_gic), "with more than one rate:",
+        sum(1 for v in by_gic.values() if len(v) > 1))
+    say("    (grid, interval, coverage, use, irrigation, organic) keys:", len(by_gicu),
+        "with more than one rate (i.e. the county matters):",
+        sum(1 for v in by_gicu.values() if len(v) > 1))
+    ex = [(k, sorted(v)) for k, v in by_gic.items() if len(v) > 1][:5]
+    for k, v in ex:
+        say("      e.g.", k, v)
+
+    # the test county, in full
+    code = None
+    for h, r in rows("A00440"):
+        d = dict(zip(h, r))
+        if d.get("State Code") == TEST_STATE and TEST_COUNTY_NAME.lower() in json.dumps(d).lower():
+            code = d.get("County Code")
+            say("\n    county record:", {k: v for k, v in d.items() if v})
+    out = ["offer|use|irr|org|interval|grid|coverage|base_rate|cbv|min|max|expected|start|end|factor"]
+    for (oid, grid, cov), (rid, st_, en, fac) in sorted(acl.items()):
+        o = offers[oid]
+        if o[0] == TEST_STATE and o[1] == code:
+            p = price.get((oid, grid), ("", "", "", ""))
+            out.append("|".join([oid, o[2], o[3], o[4], o[5], grid, cov,
+                                 rate.get(rid, ("",))[0], *p, st_, en, fac]))
+    save("adm_test_county.txt", "\n".join(out))
+    say(f"    test county rows written: {len(out)-1}")
+    for line in out[:14]:
+        say("      ", line)
+
+
+def step_pages2():
+    say("\n=== pages2: the Rainfall Index policy page ===")
+    want = re.compile(r"(ncei|noaa|rainfall|grid|index|\.xlsx?|\.csv|prf|nclim|data)", re.I)
+    for url in ("https://www.rma.usda.gov/policy-procedure/general-policies/rainfall-index",
+                "https://www.rma.usda.gov/policy-procedure/crop-policies/pasture-rangeland-forage",
+                "https://www.rma.usda.gov/policy-procedure/crop-policies"):
+        st, _, body = get(url, timeout=60, limit=3_000_000)
+        if st != 200:
+            continue
+        html = body.decode("utf-8", "replace")
+        save("page2_" + slug(url.split("usda.gov/")[-1]) + ".html", html)
+        seen = set()
+        for href, text in re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', html, flags=re.I | re.S):
+            label = re.sub(r"<[^>]+>|\s+", " ", text).strip()
+            if (want.search(href) or want.search(label)) and href not in seen:
+                seen.add(href)
+                say(f"      {urllib.parse.urljoin(url, href)}   [{label[:90]}]")
+        for m in re.finditer(r"(NCEI|National Centers for Environmental Information)", html):
+            a, b = max(0, m.start() - 300), min(len(html), m.end() + 500)
+            say("      NCEI mention:", re.sub(r"<[^>]+>|\s+", " ", html[a:b]).strip()[:700])
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -389,6 +741,14 @@ def main():
                 step_pages()
             elif s == "adm":
                 step_adm()
+            elif s == "api2":
+                step_api2(a.grid.strip())
+            elif s == "grid":
+                step_grid()
+            elif s == "adm2":
+                step_adm2()
+            elif s == "pages2":
+                step_pages2()
             else:
                 say("unknown step", s)
         except Exception as e:  # a probe reports, it does not stop
