@@ -294,11 +294,20 @@
   </section>
   <script>
   (function(){
-    var FWD=[{k:"cattle-oct26",m:"Oct 26",idx:322},{k:"cattle-dec26",m:"Dec 26",idx:324},{k:"cattle-feb27",m:"Feb 27",idx:326},{k:"cattle-apr27",m:"Apr 27",idx:328},{k:"cattle-jun27",m:"Jun 27",idx:330}];
+    /* The contracts are read from the price file (cattle-oct26, cattle-dec26...),
+       not typed in: a hardcoded "Oct 26" stayed on the curve after LEV26
+       expired. Labels are the site's one contract style, "Oct '26". */
+    var MONS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
     var card=document.getElementById('fwd-card');
     fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.quotes)return;var q=d.quotes,pts=[];
-      FWD.forEach(function(c){var x=q[c.k];if(x&&x.close!=null&&!x.stale)pts.push({label:c.m,idx:c.idx,price:x.close});});
+      if(!d||!d.quotes)return;var q=d.quotes,pts=[],now=new Date(),nowIdx=now.getFullYear()*12+now.getMonth();
+      Object.keys(q).forEach(function(k){
+        var m=/^cattle-([a-z]{3})(\d{2})$/.exec(k),x=q[k],mi=m?MONS.indexOf(m[1]):-1;
+        if(mi<0||!x||x.close==null||x.stale)return;
+        var idx=(2000+(+m[2]))*12+mi;if(idx<nowIdx)return;
+        pts.push({label:AG.px.contract(m[1]+' 20'+m[2]),idx:idx,price:x.close});
+      });
+      pts.sort(function(a,b){return a.idx-b.idx;});pts=pts.slice(0,5);
       var svg=document.getElementById('fwd-svg'),shape=document.getElementById('fwd-shape'),interp=document.getElementById('fwd-interp'),empty=document.getElementById('fwd-empty');
       if(pts.length<2){if(card)card.style.display='none';return;}
       if(card)card.style.display='block';
@@ -307,13 +316,13 @@
       var W=700,H=140,mL=52,mR=18,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
       function X(i){return mL+(i/(pts.length-1))*pw;}function Y(v){return mT+ph-((v-minP)/(maxP-minP))*ph;}
       var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-      a.push('<text x="4" y="'+(mT+8)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'</text>');
-      a.push('<text x="4" y="'+(mT+ph)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'</text>');
+      a.push('<text x="4" y="'+(mT+8)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'/cwt</text>');
+      a.push('<text x="4" y="'+(mT+ph)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'/cwt</text>');
       var path='';pts.forEach(function(p,i){path+=(i===0?'M':'L')+X(i).toFixed(1)+','+Y(p.price).toFixed(1);});
       a.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
       pts.forEach(function(p,i){
         a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" fill="#d4a23f"/>');
-        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" fill="#e7ece8" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+p.price.toFixed(2)+'</text>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" fill="#e7ece8" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+AG.px.cash(p.price,{dollar:false})+'</text>');
         a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" fill="#9bb0a3" font-size="11" text-anchor="middle">'+p.label+'</text>');
       });
       a.push('</svg>');
