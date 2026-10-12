@@ -13,8 +13,8 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
-  <link rel="stylesheet" href="/components/arc-plc.css?v=8">
-  <link rel="stylesheet" href="/components/arc-plc-simple.css?v=8">
+  <link rel="stylesheet" href="/components/arc-plc.css?v=9">
+  <link rel="stylesheet" href="/components/arc-plc-simple.css?v=9">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -197,14 +197,14 @@
     <li><b>2026 price, every crop.</b> Start: USDA&rsquo;s projected 2026/27 season-average price (USDA WASDE, Oct 9, 2026): $4.70 corn,
     $12.00 soybeans, $6.30 wheat. Corn and soybean spread: how far each past year&rsquo;s final season-average price (NASS) ended from that
     October&rsquo;s futures average (RMA&rsquo;s harvest price, on our <a href="/harvest-price-tracker#history">price tracker</a>), scaled to average 1: the uncertainty left in October.</li>
-    <li><b>Second start, as a check.</b> Corn $4.97 (Dec &#x27;26 October average so far, $5.01 over 5 of 22 trading days, &times; 0.991, the 2015 to 2025 average of final MYA / October futures); soybeans $12.84 (Nov &#x27;26 October average so far, $12.89 over 5 of 22 trading days, &times; 0.996, the 2015 to 2025 average of final MYA / October futures). Where USDA&rsquo;s start and this one disagree on which program leads, or on a clear pick,
+    <li><b>Second start, as a check.</b> Corn $4.97 (Dec &#x27;26 October average so far, $5.01 over 5 of 22 trading days, times 0.991: from 2015 to 2025, the years with FSA county yields that the scenarios use, the final season-average price averaged 0.991 times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price); soybeans $12.84 (Nov &#x27;26 October average so far, $12.89 over 5 of 22 trading days, times 0.996: from 2015 to 2025, the years with FSA county yields that the scenarios use, the final season-average price averaged 0.996 times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price). Where USDA&rsquo;s start and this one disagree on which program leads, or on a clear pick,
     a clear pick drops to Leans. A study of corn found WASDE and futures-based forecasts about equally accurate (<a href="https://www.researchgate.net/publication/282941394_Forecast_performance_of_WASDE_price_projections_for_US_corn" rel="noopener">Hoffman, Etienne, Irwin, Colino and Toasa (2015), Forecast performance of WASDE price projections for U.S. corn</a>).</li>
     <li><b>2026 spread for wheat and the smaller crops.</b> None of them has its own October futures history on file. Wheat uses its own year-to-year price changes,
     scaled to average 1 and then to the size of corn&rsquo;s October swings (standard deviation 7.3%). The smaller crops have too few years in FSA&rsquo;s
     price tables, so they use corn&rsquo;s October swings. Because the spread is borrowed, their call stops at Leans.</li>
     <li><b>2026 county yield.</b> The 2026 crop is mostly harvested, so every scenario year uses a normal crop: the county&rsquo;s FSA benchmark yield. Only the price moves.
     In the calculator, type the county yield if you know it and the 2026 call uses it.</li>
-    <li><b>2027 price, corn and soybeans.</b> Start: Dec 2027 corn futures $5.12 (Oct 9, 2026) &times; 0.959, the 2011 to 2025 average of final MYA / February futures: $4.91 corn; soybeans Nov 2027 soybean futures $12.45 (Oct 9, 2026) &times; 0.978, the 2011 to 2025 average of final MYA / February futures: $12.17. Spread: each past year&rsquo;s change in the
+    <li><b>2027 price, corn and soybeans.</b> Start: Dec &#x27;27 corn futures $5.12 (Oct 9, 2026) times 0.959: from 2011 to 2025, every year of RMA price history on file, the final season-average price averaged 0.959 times that year&rsquo;s February average of the harvest contract (RMA&rsquo;s projected price): $4.91 corn; soybeans Nov &#x27;27 soybean futures $12.45 (Oct 9, 2026) times 0.978: from 2011 to 2025, every year of RMA price history on file, the final season-average price averaged 0.978 times that year&rsquo;s February average of the harvest contract (RMA&rsquo;s projected price): $12.17. Spread: each past year&rsquo;s change in the
     final season-average price, scaled to average 1, because 2027 is a whole year out.</li>
     <li><b>2027, wheat and every other crop.</b> No 2027 price we can check against past years (no futures history on file for them), so no 2027 call. Reusing the 2026 price
     would only repeat the 2026 answer. Type a 2027 price in the calculator to see the dollars.</li>
@@ -218,6 +218,7 @@
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
   </ul>
+  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   <h3>Scenario prices (11 years)</h3>
   <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th><th class="num">2026 corn</th><th class="num">2026 soybeans</th><th class="num">2026 wheat</th><th class="num">2027 corn</th><th class="num">2027 soybeans</th></tr></thead><tbody><tr><th scope="row">2015</th><td class="num">$4.47</td><td class="num">$12.10</td><td class="num">$5.92</td><td class="num">$4.68</td><td class="num">$10.65</td></tr><tr><th scope="row">2016</th><td class="num">$4.56</td><td class="num">$11.70</td><td class="num">$5.88</td><td class="num">$4.46</td><td class="num">$12.72</td></tr><tr><th scope="row">2017</th><td class="num">$4.56</td><td class="num">$11.53</td><td class="num">$6.71</td><td class="num">$4.79</td><td class="num">$11.84</td></tr><tr><th scope="row">2018</th><td class="num">$4.65</td><td class="num">$11.88</td><td class="num">$6.47</td><td class="num">$5.15</td><td class="num">$10.93</td></tr><tr><th scope="row">2019</th><td class="num">$4.33</td><td class="num">$11.16</td><td class="num">$6.06</td><td class="num">$4.73</td><td class="num">$12.15</td></tr><tr><th scope="row">2020</th><td class="num">$5.38</td><td class="num">$12.33</td><td class="num">$6.49</td><td class="num">$6.10</td><td class="num">$15.15</td></tr><tr><th scope="row">2021</th><td class="num">$5.30</td><td class="num">$13.03</td><td class="num">$7.31</td><td class="num">$6.35</td><td class="num">$14.81</td></tr><tr><th scope="row">2022</th><td class="num">$4.52</td><td class="num">$12.39</td><td class="num">$6.60</td><td class="num">$5.23</td><td class="num">$12.84</td></tr><tr><th scope="row">2023</th><td class="num">$4.42</td><td class="num">$11.64</td><td class="num">$5.86</td><td class="num">$3.34</td><td class="num">$10.50</td></tr><tr><th scope="row">2024</th><td class="num">$4.83</td><td class="num">$12.01</td><td class="num">$5.87</td><td class="num">$4.47</td><td class="num">$9.70</td></tr><tr><th scope="row">2025</th><td class="num">$4.67</td><td class="num">$12.22</td><td class="num">$6.12</td><td class="num">$4.70</td><td class="num">$12.62</td></tr></tbody></table></div>
   <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
@@ -250,7 +251,7 @@
 </div>
 <script src="/components/asof.js?v=1" defer></script>
 <script src="/components/loader.js?v=18" defer></script>
-<script src="/components/arc-plc-simple.js?v=8" defer></script>
-<script src="/components/arc-plc.js?v=8" defer></script>
+<script src="/components/arc-plc-simple.js?v=9" defer></script>
+<script src="/components/arc-plc.js?v=9" defer></script>
 </body>
 </html>
