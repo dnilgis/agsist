@@ -82,6 +82,7 @@
     .bs-barval{font-family:'JetBrains Mono',monospace;font-size:0.785rem;text-align:right;color:var(--bs-hi);line-height:1.3}
     .bs-barval small{display:block;font-size:0.72rem;color:var(--bs-dim);white-space:nowrap}
     .bs-barval.neg small{color:inherit}
+    :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
     .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:var(--text-muted);margin:16px 0}
     .bs-note strong{color:var(--gold)}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
@@ -178,6 +179,7 @@
       <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
       <div class="tblscroll"><table class="bs-tbl" id="bs-table"><!--SEED:basistable--><caption>Corn, week of Sep 25, 2026 &middot; weakest vs normal first</caption><tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">Vs normal, cents/bu</th></tr><tr><td>Minnesota</td><td class="num">−91¢</td><td class="num">−45¢ n=5 yrs</td><td class="num">−46¢</td></tr><tr><td>Kansas</td><td class="num">−35¢</td><td class="num">+7¢ n=5 yrs</td><td class="num">−42¢</td></tr><tr><td>South Dakota</td><td class="num">−71¢</td><td class="num">−39¢ n=5 yrs</td><td class="num">−32¢</td></tr><tr><td>North Dakota</td><td class="num">−74¢</td><td class="num">−50¢ n=5 yrs</td><td class="num">−25¢</td></tr><tr><td>Nebraska</td><td class="num">−47¢</td><td class="num">−27¢ n=5 yrs</td><td class="num">−20¢</td></tr><tr><td>Iowa</td><td class="num">−43¢</td><td class="num">−31¢ n=5 yrs</td><td class="num">−12¢</td></tr><tr><td>Ohio</td><td class="num">−37¢</td><td class="num">−36¢ n=5 yrs</td><td class="num">−1¢</td></tr><tr><td>Illinois</td><td class="num">−34¢</td><td class="num">−35¢ n=5 yrs</td><td class="num">even</td></tr><tr><td>Indiana</td><td class="num">−20¢</td><td class="num">−33¢ n=5 yrs</td><td class="num">+13¢</td></tr><tr><td>North Carolina</td><td class="num">+33¢</td><td class="num">+16¢ n=5 yrs</td><td class="num">+17¢</td></tr><!--/SEED--></table></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets. Your specific elevator sits some local spread away from its region, but it moves with it.</p>
+      <div class="method-note"><b>Method</b> &middot; &ldquo;Normal&rdquo; is the average of the same week (or the week either side, when USDA skipped it) in each of the five prior years, 2021 to 2025 for 2026; the n beside it is how many of those years USDA posted. Delta is this week minus that normal. &middot; <b>Sources</b> &middot; USDA AgTransport weekly grain basis, elevator bid series. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
   </section>
 
