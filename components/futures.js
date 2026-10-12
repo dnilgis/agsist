@@ -1947,36 +1947,53 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // TradingView widget: CAPITALCOM:CORN / SOYBEAN / WHEAT are CFDs that track
   // the CBOT contract and render on the free tier without a TradingView account
-  var tvTimeout=setTimeout(function(){
+  // tv.js is a large third-party bundle and the chart sits below the fold, so
+  // it is fetched only when the chart nears the viewport or the reader taps
+  // the button. Until then the box holds a static placeholder with a link.
+  var tvStarted=false,tvTimeout=null;
+  function tvFail(){
     var chart=document.getElementById('tv-chart');
     var fallback=document.getElementById('tv-fallback');
-    if(chart&&!chart.children.length){
-      chart.style.display='none';
-      if(fallback)fallback.style.display='flex';
-    }
-  },6000);
+    if(chart)chart.style.display='none';
+    if(fallback)fallback.style.display='flex';
+  }
   function initTV(){
-    clearTimeout(tvTimeout);
     var chart=document.getElementById('tv-chart');
     if(!chart)return;
     try{
+      chart.innerHTML='';
       new TradingView.widget({container_id:'tv-chart',autosize:true,symbol:CROP.tv,interval:'D',timezone:'America/Chicago',theme:'dark',style:'1',locale:'en',toolbar_bg:'#1a2410',enable_publishing:false,hide_top_toolbar:false,hide_legend:false,save_image:false,backgroundColor:'#1a2410',gridColor:'rgba(255,255,255,0.04)',allow_symbol_change:false});
-    }catch(e){
-      chart.style.display='none';
-      var fallback=document.getElementById('tv-fallback');
-      if(fallback)fallback.style.display='flex';
+    }catch(e){clearTimeout(tvTimeout);tvFail();}
+  }
+  function startTV(){
+    if(tvStarted)return;
+    var chart=document.getElementById('tv-chart');
+    if(!chart)return;
+    tvStarted=true;
+    var btn=document.getElementById('tv-load');
+    if(btn){btn.disabled=true;btn.textContent='Loading chart';}
+    tvTimeout=setTimeout(function(){if(!chart.querySelector('iframe'))tvFail();},8000);
+    if(typeof TradingView!=='undefined'){initTV();return;}
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';s.async=true;
+    s.onload=function(){if(typeof TradingView!=='undefined')initTV();else{clearTimeout(tvTimeout);tvFail();}};
+    s.onerror=function(){clearTimeout(tvTimeout);tvFail();};
+    document.head.appendChild(s);
+  }
+  (function(){
+    var chart=document.getElementById('tv-chart');
+    if(!chart)return;
+    var btn=document.getElementById('tv-load');
+    if(btn)btn.addEventListener('click',startTV);
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(es){
+        if(es.some(function(e){return e.isIntersecting;})){io.disconnect();startTV();}
+      },{rootMargin:'300px'});
+      io.observe(chart);
+    } else {
+      startTV();
     }
-  }
-  if(typeof TradingView!=='undefined'){
-    initTV();
-  } else {
-    var tvPoll=0;
-    var tvCheck=setInterval(function(){
-      tvPoll++;
-      if(typeof TradingView!=='undefined'){clearInterval(tvCheck);initTV();}
-      else if(tvPoll>50){clearInterval(tvCheck);}
-    },100);
-  }
+  })();
 
   document.querySelectorAll('.faq-q').forEach(function(q){
     q.setAttribute('aria-expanded','false');
