@@ -474,7 +474,23 @@ MK_MAP = [
 ]
 
 
-def _chg_str(net, pct, grain):
+_MK_TICK, _MK_CENTS, _MK_INDEX = {"cattle", "feeders", "hogs"}, {"soyoil"}, {"dollar", "sp500"}
+
+
+def _mk_num(v, key):
+    """markets.html num(): livestock to the tick, everything else two places."""
+    if key in _MK_TICK:
+        return pricefmt.cash(v, dollar=False)
+    return "{:,.2f}".format(float(_fixed(v, 2)))
+
+
+def _mk_price(c, key):
+    """markets.html dollar$(): $224.975, 67.72¢, 102.42 (index), $4,162.40."""
+    t = _mk_num(abs(float(c)), key)
+    return ("−" if float(c) < 0 else "") + ("" if key in _MK_INDEX or key in _MK_CENTS else "$") + t + ("¢" if key in _MK_CENTS else "")
+
+
+def _chg_str(net, pct, grain, key=None):
     """markets.html chgStr, character for character."""
     if net is None:
         return "-"
@@ -482,7 +498,7 @@ def _chg_str(net, pct, grain):
         return pricefmt.change(net, pct)[0]
     a = "▲" if net > 0 else ("▼" if net < 0 else "")
     s = "+" if net > 0 else ("−" if net < 0 else "")
-    return f"{a + ' ' if a else ''}{s}{_fixed(abs(net), 2)} ({pricefmt.pct(pct)})"
+    return f"{a + ' ' if a else ''}{s}{_mk_num(abs(net), key)}{'¢' if key in _MK_CENTS else ''} ({pricefmt.pct(pct)})"
 
 
 def seed_markets(prices, today):
@@ -520,7 +536,7 @@ def seed_markets(prices, today):
             seeds["mk:" + cid] = "-"
             continue
         n += 1
-        seeds["mk:" + pid] = (pricefmt.price(c) if grain else "$" + "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
+        seeds["mk:" + pid] = (pricefmt.price(c) if grain else _mk_price(c, key))  # as the page script prints it
         cd = _iso_date(d.get("close_date")) or fd
         when = " &middot; " + _md(cd)
         if d.get("stale"):
@@ -528,7 +544,7 @@ def seed_markets(prices, today):
         if d.get("roll"):
             seeds["mk:" + cid] = "contract roll" + when
         else:
-            seeds["mk:" + cid] = _chg_str(d.get("netChange"), d.get("pctChange"), grain) + when
+            seeds["mk:" + cid] = _chg_str(d.get("netChange"), d.get("pctChange"), grain, key) + when
     for crop, sym in (("corn", "corn"), ("beans", "beans")):
         d = q.get(crop) or {}
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
