@@ -1,0 +1,49 @@
+name: probe-prf
+
+# Diagnostic only. Opens the USDA sources behind the Pasture, Rangeland, Forage
+# rainfall index and saves what it found. Publishes nothing to the site.
+#
+# The output goes to the `probe-prf` BRANCH, not to main, because run logs
+# cannot be read from the sandbox the code is written in and a branch can.
+# Each run replaces that branch with one commit. Manual dispatch only.
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Comma-separated: app,gis,api,pages,adm. Blank = all."
+        required: false
+        default: ""
+      grid:
+        description: "A PRF grid id to ask the api for. Blank = the grid under the test point."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probe-prf
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe
+        run: python scripts/probe_prf.py --steps "${{ github.event.inputs.steps }}" --grid "${{ github.event.inputs.grid }}"
+      - name: Publish the output to the probe-prf branch
+        if: always()
+        run: |
+          mkdir -p probe-out
+          cd probe-out
+          git init -q -b probe-prf
+          git config user.name "agsist-probe"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "probe-prf output $(date -u +%Y-%m-%dT%H:%M:%SZ) run ${{ github.run_id }}" || echo "nothing to commit"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" probe-prf
