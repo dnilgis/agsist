@@ -157,6 +157,23 @@ def arc_line(st, root="."):
             f'{STATE_NAMES[st]} ARC or PLC by county</a>.</p>')
 
 
+def prf_href(st, root="."):
+    """The state's PRF page (another builder writes prf/<state>.html), only when it is on disk."""
+    sl = slug(STATE_NAMES[st])
+    return f"/prf/{sl}" if os.path.exists(os.path.join(root, "prf", sl + ".html")) else ""
+
+
+def prf_line(st, root="."):
+    """One plain line from pasture rent to the state's PRF page. Empty when
+    the state has no PRF page."""
+    href = prf_href(st, root)
+    if not href:
+        return ""
+    return (f'<p class="sub">Insuring pasture or hay ground? See <a href="{href}" style="color:var(--gold)">'
+            f'PRF rainfall insurance in {STATE_NAMES[st]}</a>: county values, what each pair of months costs, '
+            f'and the payback record since 1951.</p>')
+
+
 def esc(s):
     return html.escape(str(s), quote=True)
 
@@ -513,6 +530,17 @@ def build_state_page(st, d, s, all_states, aslug=None):
     title = f"{name} Cash Rent by County {yr}"
     desc = (f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across "
             f"{s['n']} published counties. Every county's USDA rate, history to {s['y0']}, free.")[:160]
+    # pasture searches land here too: name the pasture median when it fits in 160
+    pas = s["other"].get("pasture")
+    if pas:
+        lead = f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across {s['n']} "
+        tail = f" Every county's USDA rate, history to {s['y0']}."
+        for mid in (f"published counties; pasture {money(pas['median'])}/acre.",
+                    f"counties; pasture {money(pas['median'])}/acre.",
+                    f"counties; pasture {money(pas['median'])}."):
+            if len(lead + mid + tail) <= 160:
+                desc = lead + mid + tail
+                break
     hi_s = ", ".join(f"{n} ({money(v)})" for n, v in s["hi"][:3])
     lo_s = ", ".join(f"{n} ({money(v)})" for n, v in s["lo"][:3])
     faq = [
@@ -535,6 +563,16 @@ def build_state_page(st, d, s, all_states, aslug=None):
          "a": "USDA NASS releases county cash rent estimates each August for the current crop year. "
               "This page rebuilds automatically when new data lands."},
     ]
+    if pas:
+        pv = sorted(((c["rent"]["pasture"][str(yr)], c["name"]) for c in s["counties"]
+                     if str(yr) in c["rent"].get("pasture", {})), reverse=True)
+        p_hi = ", ".join(f"{n} ({money(v)})" for v, n in pv[:3])
+        p_lo = ", ".join(f"{n} ({money(v)})" for v, n in pv[-3:][::-1])
+        faq.insert(1, {"q": f"How much does pasture rent for per acre in {name}?",
+                       "a": (f"The median USDA NASS county cash rent for permanent pasture in {name} is {money(pas['median'])} "
+                             f"per acre across the {pas['n']} counties with a published {yr} pasture rate. "
+                             + (f"Highest {p_hi}; lowest {p_lo}. " if len(pv) >= 5 else "")
+                             + "Each county's pasture rate is in its own column in the county table below.")})
     if st in NOTICE:
         faq.append({"q": f"When must I give notice to terminate {article(name)} {name} farm lease?",
                     "a": f"{name} statute sets the deadline at {NOTICE[st].replace('&sect;', 'section ')}. "
@@ -574,6 +612,12 @@ def build_state_page(st, d, s, all_states, aslug=None):
         f'<div class="s">{TYPE_LABEL[t_]}, {o["n"]} counties, shown apart</div></div>'
         for t_, o in s["other"].items())
     vw, vc = rent_verdict(s["yoy"])
+    # PRF link beside the pasture figure; a state with no pasture rent gets it in the links note
+    has_pasture = "pasture" in s["have_types"]
+    pasture_prf = ("\n  " + prf_line(st)) if has_pasture and prf_line(st) else ""
+    prf_rel = ""
+    if not has_pasture and prf_href(st):
+        prf_rel = (f' &middot; insuring hay ground? See <a href="{prf_href(st)}">PRF rainfall insurance in {name}</a>')
     hero = f"""
   <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
@@ -589,7 +633,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>
   </div>
-  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}"""
+  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}"""
     page = head(title, desc, f"/rent/{sl}", jsonld) + f"""
 <body>
 <div id="site-header"></div>
@@ -619,7 +663,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <div class="rs-note rs-links" style="border-left-color:#5fc28a">Open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
       " (termination notice: " + NOTICE[st] + ")" if st in NOTICE else ""} &middot;
-  check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
+  check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
   {faq_html(faq)}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
@@ -779,15 +823,25 @@ def build_hub(states, stats, generated):
     # the headline compares like with like: dryland cropland medians only
     medians = sorted(((s["median"], st) for st, s in stats.items() if s["primary"] == "nonirr"), reverse=True)
     no_dry = sorted((st for st, s in stats.items() if s["primary"] != "nonirr"), key=lambda x: STATE_NAMES[x])
-    desc = (f"USDA county cash rent for all {len(states)} published states, {yr}: median $/acre, change vs "
-            f"{yr-1}, and every county's rate one click deep. Free, sources shown.")[:160]
+    desc = (f"USDA county cash rent for cropland and pasture in all {len(states)} published states, {yr}: median $/acre, "
+            f"change vs {yr-1}, every county's rate one click deep.")[:160]
+    # pasture rental rates by county: state medians of the published county pasture rents
+    pmeds = sorted((type_med(stats[x], "pasture")[0], x) for x in states if type_med(stats[x], "pasture")[0] is not None)
+    hub_faq = list(HUB_FAQ)
+    if len(pmeds) >= 2:
+        hub_faq.insert(1, {"q": "What are pasture rental rates by county?",
+                           "a": ("USDA NASS publishes a separate cash rent for permanent pasture in each county where enough pasture "
+                                 f"leases come back in the survey. In {yr} the state medians of those county rates ran from "
+                                 f"{money(pmeds[0][0])} an acre in {STATE_NAMES[pmeds[0][1]]} to {money(pmeds[-1][0])} in "
+                                 f"{STATE_NAMES[pmeds[-1][1]]}, across {len(pmeds)} states. The Pasture column above has each "
+                                 "state's median; open a state for every county's pasture rate and its history.")})
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "CollectionPage", "name": f"Cash Rent by State, {yr}",
          "url": f"{SITE}/rent/", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE}},
         HUB_DATASET,
         {"@type": "FAQPage", "mainEntity": [
-            {"@type": "Question", "name": f["q"], "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in HUB_FAQ]},
+            {"@type": "Question", "name": f["q"], "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in hub_faq]},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
             {"@type": "ListItem", "position": 2, "name": "Cash Rent by State", "item": f"{SITE}/rent/"}]},
@@ -813,8 +867,10 @@ def build_hub(states, stats, generated):
   {yr}, the same counties the Farmland Atlas state pages use. Irrigated cropland and pasture are separate columns and never
   stand in for it. YoY compares only counties published in both years. For rent as a share of what the acre can gross,
   open any county on the <a href="/farmland-atlas" style="color:var(--gold)">Farmland Atlas</a> and tap the rent share calculator.</p>
+  <p class="sub">Insuring pasture or hay ground? <a href="/prf" style="color:var(--gold)">PRF rainfall insurance</a> has every
+  grid&rsquo;s premium and what it would have paid each year since 1951, with a page for each state.</p>
   {HUB_EXPLAIN}
-  {faq_html(HUB_FAQ)}
+  {faq_html(hub_faq)}
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Cash Rents Survey county estimates.
   Pages rebuild automatically when NASS publishes (each August). Data refreshed {esc(generated)}.</p>
 </main>
@@ -898,6 +954,10 @@ def selftest():
             {k: s_["primary"] for k, s_ in stats.items() if s_["primary"] != "nonirr"}
         # the moved /cash-rent FAQ and Dataset are on the hub, visibly
         assert "#dataset" in hub and hub.count('class="rs-faq"') >= 11, "hub explainer or FAQ missing"
+        # PRF: the hub links the PRF hub; a state page links its own PRF page only when it is on disk
+        assert 'href="/prf"' in hub, "hub PRF link missing"
+        if prf_href("IA"):
+            assert 'href="/prf/iowa"' in ia and "How much does pasture rent for per acre in Iowa?" in ia, "IA PRF link or pasture FAQ missing"
         for blk in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', hub, _re.S):
             for g in json.loads(blk)["@graph"]:
                 if g["@type"] == "FAQPage":
