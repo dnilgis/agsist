@@ -59,6 +59,8 @@ const ctx = { window: {}, Buffer };
 vm.runInNewContext(readFileSync(ROOT + "components/prf-math.js", "utf8"), ctx);
 const M = ctx.window.AgPrfMath;
 const read = (p) => JSON.parse(readFileSync(DIR + p, "utf8"));
+/* the search for half-dollar cases uses the same per-acre rounding the arithmetic does, whatever that is */
+const cents = M.cents || ((v) => v);
 const meta = read("meta.json");
 
 /* mulberry32: small, seeded, good enough to pick test cases */
@@ -187,9 +189,9 @@ if (!REPLAY) (function fixed() {
   const frac5odd = (v) => Math.abs(v - Math.floor(v) - 0.5) < 1e-7 && Math.floor(v) % 2 === 1;
   const found = { protection: null, premium: null, subsidy: null, indemnity: null, "indemnity, odd dollar": null };
   for (let acres = 1; acres <= 4000 && Object.values(found).some((v) => !v); acres++) {
-    const exact = M.cents(cbv * 0.9) * acres * 0.5;
+    const exact = cents(cbv * 0.9) * acres * 0.5;
     if (!found.protection && frac5(exact)) found.protection = { acres, year: years[years.length - 1] };
-    const prot = M.dollars(M.cents(cbv * 0.9) * acres * 0.5);
+    const prot = M.dollars(cents(cbv * 0.9) * acres * 0.5);
     if (!found.premium && (frac5(prot * rates[3]) || frac5(prot * rates[5]))) found.premium = { acres, year: years[years.length - 1] };
     const prem = M.dollars(prot * rates[3]);
     if (!found.subsidy && frac5(prem * sub)) found.subsidy = { acres, year: years[years.length - 1] };
