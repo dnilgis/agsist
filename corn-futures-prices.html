@@ -13,7 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
-<script src="/components/util.js?v=17"></script>
+<script src="/components/util.js?v=18"></script>
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <title>CBOT Corn Futures Price: Dec '26 $4.81½ | AGSIST</title>
-<meta name="description" content="Corn Dec '26 last traded $4.81½ (+0.36%) at 8:31 a.m. CT Oct 12. Live CBOT corn futures refreshed every 30 min in session.">
+<meta name="description" content="Corn Dec '26 last traded $4.82¼ (+0.52%) at 9:16 a.m. CT Oct 12. Live CBOT corn futures refreshed every 30 min in session.">
 <meta name="keywords" content="corn futures prices today, corn futures price, CBOT corn futures, ZC futures, corn futures chart, corn price today, corn harvest price, December corn futures, corn bean ratio, corn market data, corn price per bushel, grain futures today">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -94,6 +94,8 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
 .rat-interp{font-size:0.787rem;color:var(--text-dim);min-height:1.1em;margin-bottom:6px}
 .rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:none}
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim);margin-top:.6rem}
 .be-zones{display:flex;flex-direction:column;gap:3px;margin:8px 0}
 .be-zone{font-size:0.77rem;color:var(--text-dim);padding:4px 8px;border-radius:4px;border:1px solid transparent;transition:all .3s}.be-zone.active{font-weight:700}
 .be-zone.z0.active{background:rgba(200,50,50,.15);border-color:var(--red);color:var(--red)}
@@ -410,16 +412,16 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="ph-exch" id="ph-exch"><!--SEED:exch-->CBOT &middot; CME Group &middot; Nearby Dec '26 &middot; Refreshed in session<!--/SEED--></div>
     </div>
     <div class="ph-price">
-      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$4.81½<!--/SEED--></div>
+      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$4.82¼<!--/SEED--></div>
       <div class="ph-unit">$ / bushel</div>
-      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +1¾¢ (+0.36%)</span><!--/SEED--></div>
+      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +2½¢ (+0.52%)</span><!--/SEED--></div>
     </div>
   </div>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-glance" id="nc-glance" style="display:none"><span id="nc-lbl">Dec</span> new crop: <strong id="nc-price"></strong> <span id="nc-chg"></span></div><!--/SEED-->
-  <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Dec '26 corn last traded near <strong>$4.81½</strong> &middot; as of Oct 12, 8:31 a.m. CT.<!--/SEED--></p>
-  <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last trade &middot; as of Oct 12, 8:31 a.m. CT &middot; Yahoo Finance, delayed (not CME settlements) &middot; quotes above refresh every 15 minutes in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Last</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Dec '26</td><td class="num">$4.81½</td><td class="num">+0.36%</td><td class="num">$4.25¾&ndash;$5.49¾</td></tr></tbody></table><!--/SEED--></div>
+  <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Dec '26 corn last traded near <strong>$4.82¼</strong> &middot; as of Oct 12, 9:16 a.m. CT.<!--/SEED--></p>
+  <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last trade &middot; as of Oct 12, 9:16 a.m. CT &middot; Yahoo Finance, delayed (not CME settlements) &middot; quotes above refresh every 15 minutes in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Last</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Dec '26</td><td class="num">$4.82¼</td><td class="num">+2½¢ (+0.52%)</td><td class="num">$4.25¾&ndash;$5.49¾</td></tr></tbody></table><!--/SEED--></div>
 
   <div class="qa">
     <style>
@@ -437,7 +439,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <input type="number" id="be-input" placeholder="$/bu" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel" aria-describedby="be-hint">
     <span class="be-result" id="be-result"></span>
     <button type="button" class="be-clear" id="be-clear">clear</button>
-    <span class="be-hint" id="be-hint">Typical $4.00 to $5.50/bu. Varies widely by farm (university crop budgets).</span>
+    <span class="be-hint" id="be-hint">Typical $4.00 to $5.50/bu, an AGSIST rule of thumb. Varies widely by farm.</span>
   </div>
 
   <div class="snap-card">
@@ -485,7 +487,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
   <div class="cg">
     <div class="cc hi"><div class="cc-lbl" id="lbl-corn">Nearby Corn</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
-    <div class="cc"><div class="cc-lbl">Dec new crop (ZCZ)</div><div class="cc-p sk" id="p-corndec">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corndec"></div></div>
+    <div class="cc"><div class="cc-lbl" id="lbl-corndec">Dec new crop (ZCZ)</div><div class="cc-p sk" id="p-corndec">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corndec"></div></div>
     <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
     <div class="cc"><div class="cc-lbl">Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
     <div class="cc"><div class="cc-lbl">Crude Oil (CL)</div><div class="cc-p sk" id="p-crude">-</div><div class="cc-u">$/bbl</div><div class="cc-c" id="c-crude"></div></div>
@@ -518,6 +520,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       </div>
       <div class="rat-interp" id="cb-interp">Nov Beans ÷ Dec Corn · live from futures</div>
       <div class="rat-note">Planting mix signal · <a href="/breakeven">Build your full breakeven →</a></div>
+      <div class="method-note"><b>Method</b> · Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. · Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
     <div class="rat-card">
       <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Corn price vs. typical breakeven</div>
@@ -529,6 +532,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
         <div class="be-zone z0" id="bz0">Below $4.00 · Below full cost for most</div>
       </div>
       <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
+      <div class="method-note"><b>Method</b> · The live nearby corn price against four bands. The $4.00, $4.75 and $5.50 lines are AGSIST rules of thumb for a Corn Belt full-cost breakeven (land, machinery and inputs), not a USDA or university figure; your own costs decide. · Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
   </div>
 
@@ -648,13 +652,13 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="xr"><span class="xl">Cash price</span><span class="xv">Futures + local basis</span></div>
       <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans ÷ Dec corn</span></div>
       <div class="xr"><span class="xl">New crop</span><span class="xv">Dec = harvest benchmark</span></div>
-      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu: varies widely by farm (university crop budgets)</span></div>
+      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu, an AGSIST rule of thumb: varies widely by farm</span></div>
     </div>
     <div class="xc">
       <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US corn use</h4>
-      <div class="xr"><span class="xl">Ethanol</span><span class="xv">top-two domestic use</span></div>
-      <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">~36% of crop</span></div>
-      <div class="xr"><span class="xl">Exports</span><span class="xv">~14% of crop</span></div>
+      <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">largest use (USDA WASDE)</span></div>
+      <div class="xr"><span class="xl">Ethanol</span><span class="xv">second-largest use</span></div>
+      <div class="xr"><span class="xl">Exports</span><span class="xv">third-largest use</span></div>
       <div class="xr"><span class="xl">Top buyers</span><span class="xv">Mexico, Japan, China</span></div>
     </div>
   </div>
@@ -668,7 +672,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       </div>
       <div class="edu-block">
         <h4>Reading the corn/bean planting ratio</h4>
-        <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. USDA tracks this ratio when forecasting spring planted acres in the March Prospective Plantings report. Check it against your own breakeven and rotation before you change acres.</p>
+        <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. The March Prospective Plantings report is a USDA survey of what farmers say they will plant, so it shows where growers landed, not a forecast built from the ratio. Check it against your own breakeven and rotation before you change acres.</p>
       </div>
       <div class="edu-block">
         <h4>What moves corn prices</h4>
@@ -763,7 +767,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/geo.js?v=25" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=4"></script><script src="/components/futures.js?v=8"></script>
+<script src="/components/storesell.js?v=5"></script><script src="/components/futures.js?v=9"></script>
 <script async src="https://s3.tradingview.com/tv.js"></script>
 
 </body>

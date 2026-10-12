@@ -68,6 +68,7 @@
   .sos-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;font-size:.85rem}
   .sos-links a{display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold);text-decoration:none}
   @media(max-width:480px){.sos-line{font-size:1.08rem;min-height:4.2em} .sos-t th,.sos-t td{padding:6px 4px} .sos-costs label{font-size:.74rem}}
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
   </style>
 </head>
 <body>
@@ -119,7 +120,8 @@
     <details id="sos-others-wrap" hidden><summary>Other elevators near you</summary><ul class="sos-others" id="sos-others"></ul></details>
     <details><summary>What the board pays to store</summary><p class="sos-note" id="sos-futures" style="margin-bottom:.8rem">Loading futures prices.</p></details>
     <details><summary>Show the math</summary><pre class="sos-math" id="sos-math"></pre>
-      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. Bids from the AGSIST elevator network; futures are Yahoo Finance daily closes, not CME settlements. For planning only; call the elevator before you count on a bid.</p></details>
+      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. Bids from the AGSIST elevator network; futures are Yahoo Finance daily closes, not CME settlements. For planning only; call the elevator before you count on a bid.</p><div class="method-note">Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
+    </details>
     <h2>Common questions</h2>
     <details class="sos-faq"><summary>How do I know if storing grain pays?</summary><p>Take the elevator's posted bid for the later month, subtract its bid for delivery now: that is the carry. Then take off what holding costs you: storage for each month, interest on the money the grain is worth today, and any shrink. If what is left is above zero, storing pays at today's bids. This page does that arithmetic with your elevator's own posted bids.</p></details>
     <details class="sos-faq"><summary>What storage cost and interest rate does this use?</summary><p>Unless you enter your own: 3.5 cents a bushel a month for storage, 7% a year interest on the value of the grain, and no shrink. Change any of them and the page remembers your numbers on this device.</p></details>
@@ -149,7 +151,7 @@
   <script src="/components/loader.js?v=18" defer></script>
   <script src="/components/util.js?v=17"></script>
   <script src="/components/bids-network.js?v=5"></script>
-  <script src="/components/storesell.js?v=4"></script>
+  <script src="/components/storesell.js?v=5"></script>
   <script src="/components/store-or-sell.js?v=2"></script>
 </body>
 </html>

@@ -74,6 +74,7 @@ from collections import Counter, defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
+import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
@@ -597,7 +598,7 @@ def share_prices(tops, n=3):
     """-> ("corn $4.38, soybeans $9.87", the oldest posted time among them),
     from top_nearby(), at most n crops."""
     cs = [c for c in CROPS if c in tops][:n]
-    return (", ".join(f"{CROP_LABEL[c].lower()} ${tops[c][0]:.2f}" for c in cs),
+    return (", ".join(f"{CROP_LABEL[c].lower()} {pricefmt.cash(tops[c][0])}" for c in cs),
             min(tops[c][1] for c in cs))
 
 
@@ -741,7 +742,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
     for d, b in pick:
         g = b["glance"]
         cs = [c for c in ("corn", "soybeans") if c in g] or [c for c in CROPS if c in g][:1]
-        prices = " &middot; ".join(f'{CROP_LABEL[c]} ${g[c][0]:.2f} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
+        prices = " &middot; ".join(f'{CROP_LABEL[c]} {pricefmt.cash(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
                                    for c in cs)
         p = b["posted"].astimezone(CT)
         dist = "under 1 mi" if d < 1 else f"{d:.0f} mi"
@@ -795,7 +796,7 @@ def board_section(bd, snap_ct):
             bas = money_basis(r["basis"])
             if r["contract"]:
                 bas += f'<br><span class="mut">vs {contract_label(r["contract"])}</span>'
-        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">${r["cash"]:.2f}</td>'
+        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
                    f'<td class="n">{bas}</td></tr>')
     z = bd["zip"]
     live = f'/cash-bids?zip={z}' if z else "/cash-bids"
@@ -960,7 +961,8 @@ STATE_DATA_DIR = os.path.join("data", "state-basis")
 BASIS_STATES = os.path.join("data", "basis-states.json")
 TOP_ROWS = 10                 # elevators per crop in the page's own bid list
 HUB_PAGE = "basis.html"
-TABLE_JS = '<script src="/components/state-bids.js?v=1" defer></script>\n'
+TABLE_JS = ('<script src="/components/util.js?v=18" defer></script>\n'
+            '<script src="/components/state-bids.js?v=2" defer></script>\n')
 
 
 def state_basis_rows(merged, index):
@@ -1026,7 +1028,7 @@ def best_card(g, r, town_paths):
     where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
-    return (f'<div class="cbt-stat"><div class="v">${r["cash"]:.2f}</div>'
+    return (f'<div class="cbt-stat"><div class="v">{pricefmt.cash(r["cash"])}</div>'
             f'<div class="l">Top {SB.CROP_LABEL[g].lower()} bid, nearest delivery ({esc(dtext(r))})</div>'
             f'<div class="s">{esc(r["operator"])}, {where} &middot; {bas} &middot; posted {fmt_day(r["priced"])}. '
             f'Call to confirm.</div></div>')
@@ -1108,7 +1110,7 @@ def top_bid_table(g, near, town_paths):
         tl = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
         con = f'<br><span class="mut">vs {contract_label(r["contract"])}</span>' if r["contract"] else ""
         trs.append(f'<tr><td>{esc(r["operator"])}<br><span class="mut">{tl}</span></td>'
-                   f'<td>{esc(dtext(r))}</td><td class="n">${r["cash"]:.2f}</td>'
+                   f'<td>{esc(dtext(r))}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
@@ -1744,10 +1746,10 @@ def selftest():
         # the best bid first, the misread board left out and said so
         assert '<h2 id="basis">Nebraska basis today</h2>' in ne and 'href="/cash-bids/nebraska/#basis"' in fr
         assert ne.index('id="best"') < ne.index('id="basis"') < ne.index('id="elevators"') < ne.index('id="towns"')
-        assert "&minus;$0.32</span></div><div class=\"l\">Corn: middle basis vs Dec &rsquo;26" in ne, "median of six Dec bids"
+        assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn: middle basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
         assert "n = <b>6</b> elevators" in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
-        assert "/components/state-bids.js?v=1" in ne and "/basis/" not in ne
+        assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
                          r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm\.">',
                          ne), ne[:3000]

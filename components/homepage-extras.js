@@ -279,7 +279,7 @@
      elevator's nearest open bid per crop in sum.options. */
   var pickOptions = [];
   function optLabel(o){
-    return o.where + (townOf(o) ? ', ' + townOf(o) : '') + ' · ' + o.cropName + ' ' + o.monthLabel + ' · $' + (+o.cash).toFixed(2) + (o.miles != null ? ' · ' + Math.round(o.miles) + ' mi' : '');
+    return o.where + (townOf(o) ? ', ' + townOf(o) : '') + ' · ' + o.cropName + ' ' + o.monthLabel + ' · ' + AG.px.cash(+o.cash) + (o.miles != null ? ' · ' + Math.round(o.miles) + ' mi' : '');
   }
   function townOf(o){
     var c = String(o.city || ''), t = c.replace(/,\s*[A-Z]{2}$/, '');
@@ -401,7 +401,12 @@
       var xs = tms.map(function(tm, i){ return (pts.length === 1 || !(t1 > t0)) ? pad + i * (w - 2 * pad) / Math.max(1, pts.length - 1) : pad + (tm - t0) * (w - 2 * pad) / (t1 - t0); });
       var ys = cents.map(function(c){ return h - pad - (c - lo) * (h - 2 * pad) / (hi - lo); });
       var zeroY = (lo <= 0 && hi >= 0) ? (h - pad - (0 - lo) * (h - 2 * pad) / (hi - lo)) : null;
-      var poly = xs.map(function(x, i){ return x.toFixed(1) + ',' + ys[i].toFixed(1); }).join(' ');
+      /* A STEP, not a slope: each point is a logged change, and the basis held
+         flat until the next one. A sloped line drew drifts that never happened. */
+      var poly = xs.map(function(x, i){
+        var pt = x.toFixed(1) + ',' + ys[i].toFixed(1);
+        return i ? x.toFixed(1) + ',' + ys[i - 1].toFixed(1) + ' ' + pt : pt;
+      }).join(' ');
       var last = cents[cents.length - 1];
       /* WAVE1-A: one colour. A negative basis is not bad news by itself. */
       var lineColor = 'var(--gold)';
@@ -416,7 +421,7 @@
       svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + sc(rawLo) + ' to ' + sc(rawHi) + ' cents over the last ' + pts.length + ' logged changes, most recently ' + sc(last) + ' cents.');
 
       var firstDate = pts[0].date;
-      var monShort = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) : '';
+      var monShort = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' 20' + bestMon.slice(3) : '';   /* a delivery month: "Oct 2026" */
       var monTxt = monShort ? monShort + ' delivery' : 'one delivery month';
       /* WAVE3-H: say which month the chart is, and when it is not the bid's
          month, say that plainly with the bid's month named. */

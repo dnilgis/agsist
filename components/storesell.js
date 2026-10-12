@@ -133,11 +133,13 @@
     return 'Hold to ' + o.to + '? ' + (ct === 'even' ? '0\u00a2' : ct) + what + ', net of ' + costs + ': '
       + (c === 0 ? 'about even' : netText(n.net)) + ' a bushel.';
   }
-  /* The assumptions under that line, in words. months null: no month count. */
-  function costNote(inputs, months, spot){
+  /* The assumptions under that line, in words. months null: no month count.
+     from (optional): the month the count starts, "December", for a futures
+     carry counted contract to contract rather than from today. */
+  function costNote(inputs, months, spot, from){
     inputs = inputs || withDefaults({});
     var a = inputs.assumed || [];
-    var parts = [(months == null ? 'storage' : months + ' month' + (months === 1 ? '' : 's') + ' of storage') + ' at ' + centsWord(inputs.cost) + ' a month' + (a.indexOf('cost') >= 0 ? ' (default)' : ''),
+    var parts = [(months == null ? 'storage' : months + ' month' + (months === 1 ? '' : 's') + ' of storage' + (from ? ' from ' + from : '')) + ' at ' + centsWord(inputs.cost) + ' a month' + (a.indexOf('cost') >= 0 ? ' (default)' : ''),
                  'interest at ' + inputs.rate + '% a year' + (spot != null ? ' on ' + cashQ(spot) : '') + (a.indexOf('rate') >= 0 ? ' (default)' : '')];
     if(inputs.shrink) parts.push(inputs.shrink + '% shrink' + (a.indexOf('shrink') >= 0 ? ' (default)' : ''));
     else parts.push('no shrink' + (a.indexOf('shrink') >= 0 ? ' (default)' : ''));

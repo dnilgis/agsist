@@ -152,7 +152,7 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
-CALC_V = "8"   # 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "9"   # 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -241,13 +241,13 @@ PARAMS = {
 }
 YEAR_INFO = {
     2026: {"open": "2026-09-16", "close": "2026-12-11", "pay_after": "2027-10-01",
-           "fut": {"corn": ("corn-dec26", "Dec 2026 corn futures"), "soybeans": ("beans-nov26", "Nov 2026 soybean futures"),
-                   "wheat": ("wheat-dec26", "Dec 2026 Chicago wheat futures")},
-           "my": {"corn": "Sept 2026 to Aug 2027", "soybeans": "Sept 2026 to Aug 2027", "wheat": "June 2026 to May 2027"}},
+           "fut": {"corn": ("corn-dec26", "Dec '26 corn futures"), "soybeans": ("beans-nov26", "Nov '26 soybean futures"),
+                   "wheat": ("wheat-dec26", "Dec '26 Chicago wheat futures")},
+           "my": {"corn": "Sep 2026 to Aug 2027", "soybeans": "Sep 2026 to Aug 2027", "wheat": "June 2026 to May 2027"}},
     2027: {"open": "2026-11-02", "close": "2027-03-15", "pay_after": "2028-10-01",
-           "fut": {"corn": ("corn-dec27", "Dec 2027 corn futures"), "soybeans": ("beans-nov27", "Nov 2027 soybean futures"),
-                   "wheat": ("wheat-jul27", "Jul 2027 Chicago wheat futures")},
-           "my": {"corn": "Sept 2027 to Aug 2028", "soybeans": "Sept 2027 to Aug 2028", "wheat": "June 2027 to May 2028"}},
+           "fut": {"corn": ("corn-dec27", "Dec '27 corn futures"), "soybeans": ("beans-nov27", "Nov '27 soybean futures"),
+                   "wheat": ("wheat-jul27", "Jul '27 Chicago wheat futures")},
+           "my": {"corn": "Sep 2027 to Aug 2028", "soybeans": "Sep 2027 to Aug 2028", "wheat": "June 2027 to May 2028"}},
 }
 CROPS = {
     "corn": {"label": "Corn", "statutory": 4.10, "loan": 2.42, "mya": "corn-price-my", "fsa": "Corn",
@@ -1080,8 +1080,9 @@ def price_scen(inp, k, py):
         return {**base, "kind": "fut", "center": round(fu["price"] * g, 4), "fut": fu["price"], "fut_date": nice_date(fu["date"]),
                 "gap": round(g, 4), "gap_years": [gy[0], gy[-1], len(gy)],
                 "ratios": {t: round(v / m, 4) for t, v in yoy.items()},
-                "center_label": (f"{'Dec 2027 corn' if k == 'corn' else 'Nov 2027 soybean'} futures {usd(fu['price'])} ({nice_date(fu['date'])}) "
-                                 f"&times; {g:.3f}, the {gy[0]} to {gy[-1]} average of final MYA / February futures")}
+                "center_label": (f"{'Dec &#x27;27 corn' if k == 'corn' else 'Nov &#x27;27 soybean'} futures {usd(fu['price'])} ({nice_date(fu['date'])}) "
+                                 f"times {g:.3f}: from {gy[0]} to {gy[-1]}, every year of RMA price history on file, the final season-average price "
+                                 f"averaged {g:.3f} times that year&rsquo;s February average of the harvest contract (RMA&rsquo;s projected price)")}
     if py == 2027:
         return {**base, "kind": "noprice", "center": None, "ratios": {},
                 "why": "There is no 2027 price outlook for this crop we can check against past years, so no 2027 call. "
@@ -1741,7 +1742,8 @@ def method_html(D):
     corn_sd = sd1(v for v in c6["ratios"].values()) if c6.get("ratios") else None
     def altp(sc):
         return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average so far, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
-                f'&times; {sc["oct_mean"]:.3f}, the {yrs[0]} to {yrs[-1]} average of final MYA / October futures)') if sc.get("alt") else "not available"
+                f'times {sc["oct_mean"]:.3f}: from {yrs[0]} to {yrs[-1]}, the years with FSA county yields that the scenarios use, the final season-average price averaged '
+                f'{sc["oct_mean"]:.3f} times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price)') if sc.get("alt") else "not available"
     return f"""<h2 id="method">How the ARC or PLC verdict is figured</h2>
   <p>The verdict compares what each program is expected to pay per base acre across past years ({yrs[0]} to {yrs[-1]}, each year with a final USDA price), not one guess.</p>
   <ul class="ap-list">
@@ -1769,6 +1771,7 @@ def method_html(D):
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
   </ul>
+  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   <h3>Scenario prices ({len(yrs)} years)</h3>
   <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
   <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
@@ -2562,7 +2565,8 @@ def math_globals(D, ks):
              "hub": (f'{XC.XCROPS[k].get("note", "")} <a href="{XC.hub_path(k)}">All {esc(CROP_LC[k])} counties</a>.' if k in XC.XCROPS else "")}
         if k in ("corn", "soybeans") and sc_.get("alt"):
             x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average so far, "
-                        f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, &times; {sc_['oct_mean']:.3f}, the {min(sc_['ratios'])} to {max(sc_['ratios'])} average of final price / October futures).")
+                        f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, times {sc_['oct_mean']:.3f}: from {min(sc_['ratios'])} to {max(sc_['ratios'])}, "
+                        f"the final season-average price averaged {sc_['oct_mean']:.3f} times that year&rsquo;s October average of the harvest contract).")
         if k in ("corn", "soybeans") and (y7.get(k) or {}).get("scen"):
             x["c7"] = f"{CROP_LC[k]} {usd(y7[k]['scen']['center'])} ({y7[k]['scen']['center_label']})"
         crops[k] = x
@@ -2901,6 +2905,7 @@ def county_page(st, S, c, D, ch):
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
+  <div class="method-note"><b>Method</b> &middot; Each program&rsquo;s expected payment per base acre across past years&rsquo; price and county yield swings, centered on USDA&rsquo;s 2026/27 price; <a href="/arc-plc#method">the full method</a>. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
   <p class="ap-printonly ap-small">Printed from {share}</p>
 </main>

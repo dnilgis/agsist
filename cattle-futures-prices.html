@@ -12,7 +12,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
-<script src="/components/util.js?v=17"></script>
+<script src="/components/util.js?v=18"></script>
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
@@ -119,6 +119,7 @@
 .fwd-shape{font-size:0.77rem;color:var(--text-dim,#9bb0a3);font-family:'JetBrains Mono',monospace}
 .fwd-svg{width:100%;height:auto;display:block;max-height:180px}
 .fwd-interp{font-size:0.78rem;color:var(--text-dim,#9bb0a3);line-height:1.55;margin-top:8px;border-top:1px solid var(--border,#2a3324);padding-top:7px}.fwd-interp strong{color:var(--text,#e7ece8)}
+:where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim,#9bb0a3);margin-top:.6rem} /* fallback until styles.css lands; zero specificity */
 .fwd-empty{font-size:0.78rem;color:var(--text-dim,#9bb0a3);padding:20px;text-align:center}
 .seas-wrap{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:13px 14px;margin:12px 0}
 .seas-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:4px}
@@ -206,12 +207,12 @@
       <div class="ph-exch">CME Group · LE=F &amp; GF=F · Updated every 15 min</div>
     </div>
     <div class="ph-price">
-      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$224.98<!--/SEED--></div>
+      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$224.60<!--/SEED--></div>
       <div class="ph-unit">$ / cwt · Live Cattle</div>
-      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +$3.10 (+1.40%)</span><!--/SEED--></div>
+      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −$0.38 (−0.17%)</span><!--/SEED--></div>
     </div>
   </div>
-  <p class="ct-seednote"><!--SEED:note-->Live cattle closed near <strong>$224.98</strong> &middot; feeders near $343.85 &middot; $/cwt &middot; as of Oct 9 &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
+  <p class="ct-seednote"><!--SEED:note-->Live cattle last traded near <strong>$224.60</strong> &middot; feeders near $342.83 &middot; $/cwt &middot; as of Oct 12, 9:16 a.m. CT &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
   <!-- ░░ static, AI-readable lead ░░ -->
@@ -291,30 +292,40 @@
     <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
     <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
     <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
+    <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, last trade in $/cwt (hundredweight, 100 lb live), the next five contracts. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   </section>
   <script>
   (function(){
-    var FWD=[{k:"cattle-oct26",m:"Oct 26",idx:322},{k:"cattle-dec26",m:"Dec 26",idx:324},{k:"cattle-feb27",m:"Feb 27",idx:326},{k:"cattle-apr27",m:"Apr 27",idx:328},{k:"cattle-jun27",m:"Jun 27",idx:330}];
+    /* The contracts are read from the price file (cattle-oct26, cattle-dec26...),
+       not typed in: a hardcoded "Oct 26" stayed on the curve after LEV26
+       expired. Labels are the site's one contract style, "Oct '26". */
+    var MONS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
     var card=document.getElementById('fwd-card');
     fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.quotes)return;var q=d.quotes,pts=[];
-      FWD.forEach(function(c){var x=q[c.k];if(x&&x.close!=null&&!x.stale)pts.push({label:c.m,idx:c.idx,price:x.close});});
+      if(!d||!d.quotes)return;var q=d.quotes,pts=[],now=new Date(),nowIdx=now.getFullYear()*12+now.getMonth();
+      Object.keys(q).forEach(function(k){
+        var m=/^cattle-([a-z]{3})(\d{2})$/.exec(k),x=q[k],mi=m?MONS.indexOf(m[1]):-1;
+        if(mi<0||!x||x.close==null||x.stale)return;
+        var idx=(2000+(+m[2]))*12+mi;if(idx<nowIdx)return;
+        pts.push({label:AG.px.contract(m[1]+' 20'+m[2]),idx:idx,price:x.close});
+      });
+      pts.sort(function(a,b){return a.idx-b.idx;});pts=pts.slice(0,5);
       var svg=document.getElementById('fwd-svg'),shape=document.getElementById('fwd-shape'),interp=document.getElementById('fwd-interp'),empty=document.getElementById('fwd-empty');
       if(pts.length<2){if(card)card.style.display='none';return;}
       if(card)card.style.display='block';
       var minP=Math.min.apply(null,pts.map(function(p){return p.price;})),maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
       var pad=(maxP-minP)*0.18||1;minP-=pad;maxP+=pad;
-      var W=700,H=140,mL=52,mR=18,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
+      var W=700,H=140,mL=52,mR=36,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
       function X(i){return mL+(i/(pts.length-1))*pw;}function Y(v){return mT+ph-((v-minP)/(maxP-minP))*ph;}
       var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
-      a.push('<text x="4" y="'+(mT+8)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'</text>');
-      a.push('<text x="4" y="'+(mT+ph)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'</text>');
+      a.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'/cwt</text>');
+      a.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'/cwt</text>');
       var path='';pts.forEach(function(p,i){path+=(i===0?'M':'L')+X(i).toFixed(1)+','+Y(p.price).toFixed(1);});
-      a.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
+      a.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');
       pts.forEach(function(p,i){
-        a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" fill="#d4a23f"/>');
-        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" fill="#e7ece8" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+p.price.toFixed(2)+'</text>');
-        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" fill="#9bb0a3" font-size="11" text-anchor="middle">'+p.label+'</text>');
+        a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" style="fill:var(--gold,#d4a23f)"/>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" style="fill:var(--text,#e7ece8)" font-size="12" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">'+AG.px.cash(p.price,{dollar:false})+'</text>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="11" text-anchor="middle">'+p.label+'</text>');
       });
       a.push('</svg>');
       if(svg)svg.outerHTML=a.join('');
