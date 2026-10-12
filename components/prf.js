@@ -38,9 +38,14 @@
   function nw(t) { return '<span class="prf-nw">' + t + '</span>'; }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
   function track(name, p) { try { if (typeof window.gtag === 'function') window.gtag('event', name, p || {}); } catch (e) {} }
+  /* inches from the tenths of a millimetre USDA's average is stored in */
+  function inches(mm) { return mm == null || !isFinite(mm) ? null : mm / 25.4; }
+  function inTxt(mm) { var v = inches(mm); return v == null ? DASH : v.toFixed(v < 10 ? 2 : 1) + ' in'; }
+  /* a per-$100 figure less a whole-percent share, in whole cents, halves up (5.355 is $5.36, not the $5.35 a float gives) */
+  function lessPct(per100, pct) { var c = Math.round(per100 * 100) * (100 - pct); return Math.floor(c / 100 + 0.5) / 100; }
 
   /* ---------------------------------------------------------------- data */
-  var meta = null, states = {}, shards = {}, inflight = {};
+  var meta = null, states = {}, shards = {}, cells = {}, inflight = {};
   function getJSON(url, optional) {
     if (inflight[url]) return inflight[url];
     inflight[url] = fetch(url).then(function (r) {
@@ -77,11 +82,38 @@
     });
     return { done: done, open: open, rates: o.rates, avgMm: o.avgMm, counties: o.counties };
   }
+  /* The complete years the totals run over: all of them, or the last S.win. */
+  function windowed(done) {
+    if (!S.win) return done;
+    var out = {}, from = meta.years.last_complete - S.win + 1;
+    Object.keys(done).forEach(function (y) { if (+y >= from) out[y] = done[y]; });
+    return out;
+  }
+  /* Which county a point is in (data/prf/c/, scripts/build_prf_county_cells.mjs).
+     Resolves to a five-digit county code, or null when the point is within a
+     cell of a county line, off the map, or the file did not load. null means
+     ASK THE READER. It never means "take the first county listed". */
+  function countyAtPoint(id, lat, lon) {
+    var key = M.shardKey(id);
+    var got = cells[key] ? Promise.resolve(cells[key]) : getJSON(SRC + 'c/' + key + '.json', true).then(function (d) { cells[key] = d || { g: {} }; return cells[key]; });
+    return got.then(function (d) {
+      var rec = d.g && d.g[String(id)], n = d.n, b = M.gridBounds(id);
+      if (!rec || !n || !b) return null;
+      var r = Math.min(n - 1, Math.max(0, Math.floor((lat - b.south) / (0.25 / n)))), c = Math.min(n - 1, Math.max(0, Math.floor((lon - b.west) / (0.25 / n))));
+      var want = r * n + c, at = 0, hit = null;
+      rec.m.replace(/([a-z?\-])(\d+)/g, function (_, ch, k) { if (hit == null && want < at + +k) hit = ch; at += +k; return ''; });
+      if (hit == null || hit === '?' || hit === '-') return null;
+      return rec.c[hit.charCodeAt(0) - 97] || null;
+    }).catch(function () { return null; });
+  }
 
   /* ---------------------------------------------------------------- state */
   function blank() { var a = []; for (var i = 0; i < N; i++) a.push(0); return a; }
-  var S = { grid: null, st: null, co: null, pt: null, use: 0, acres: 100, share: 100,
+  /* touched: the reader has changed the policy. Until then the card says it is showing the page's example.
+     win: 0 for every complete year, else the last 30, 20 or 10. alt: a five-digit entry that is also a grid ID. */
+  var S = { grid: null, st: null, co: null, pt: null, use: 0, acres: 100, share: 100, win: 0, touched: false, alt: null,
             A: { cov: 90, pf: 100, split: blank(), even: true }, B: null, on: 'A' };
+  var WINDOWS = [0, 30, 20, 10];
   function cur() { return S[S.on] || S.A; }
   function county() { return S.st && states[S.st] && S.co ? states[S.st].counties[S.co] : null; }
   function limits() { var c = county(); if (!c) return null; return c.lim || (c.limc || {})[String(S.use)] || null; }
@@ -106,12 +138,16 @@
     var cbv = baseValue(), mm = minmax();
     out.g = g; out.mm = mm; out.cbv = cbv;
     if (cbv == null) { out.why = 'USDA lists no county base value for this use in ' + c.n + ' County. Pick another use.'; return out; }
-    if (!(S.acres > 0)) { out.why = 'Enter the acres to insure.'; return out; }
+    if (!(S.acres > 0)) { out.why = 'Enter the acres to insure, in whole acres.'; return out; }
+    if (!(S.share >= 1 && S.share <= 100)) { out.why = 'Enter your share of the hay or livestock, 1 to 100 percent.'; return out; }
+    if (!(setup.pf >= 60 && setup.pf <= 150)) { out.why = 'The productivity factor runs from 60 to 150.'; return out; }
     var rates = g.rates[setup.cov], chk = M.checkSplit(setup.split, mm.min, mm.max, mm.valid);
     out.check = chk; out.rates = rates;
-    var msgs = [];
+    var msgs = [], room = 0, picked = [];
+    for (var k = 0; k < N; k++) if (setup.split[k] > 0 && mm.valid[k]) { room += mm.max[k]; picked.push(LABELS[k] + ' (' + mm.max[k] + '% at most)'); }
     chk.errors.forEach(function (e) {
-      if (e.why === 'sum') msgs.push(e.sum < 100 ? 'The months add to ' + e.sum + '%. Place ' + (100 - e.sum) + '% more.' : 'The months add to ' + e.sum + '%. Take ' + (e.sum - 100) + '% off.');
+      if (e.why === 'sum' && e.sum < 100 && picked.length >= 2 && room < 100) msgs.push(picked.join(' and ') + ' cannot reach 100% between them in this county. Add another pair of months.');
+      else if (e.why === 'sum') msgs.push(e.sum < 100 ? 'The months add to ' + e.sum + '%. Place ' + (100 - e.sum) + '% more.' : 'The months add to ' + e.sum + '%. Take ' + (e.sum - 100) + '% off.');
       else if (e.why === 'below') msgs.push(LABELS[e.i] + ' needs at least ' + e.limit + '%.');
       else if (e.why === 'above') msgs.push(LABELS[e.i] + ' is capped at ' + e.limit + '% in this county.');
       else if (e.why === 'adjacent') msgs.push(LABELS[e.other] + ' and ' + LABELS[e.i] + ' share a month. Keep one.');
@@ -123,8 +159,15 @@
     if (msgs.length) { out.why = msgs.join(' '); out.msgs = msgs; return out; }
     var pol = M.policy({ cbv: cbv, coverage: setup.cov, productivity: setup.pf, acres: S.acres, share: S.share,
                          split: setup.split, rates: rates, subsidy: meta.subsidy[String(setup.cov)] });
-    var hist = M.history(pol, g.done), sum = M.summarize(hist, pol);
+    var hist = M.history(pol, windowed(g.done)), sum = M.summarize(hist, pol);
     if (!sum.years) { out.why = 'USDA has published no index for these intervals at this grid.'; return out; }
+    /* a closed year with no index for a chosen interval is left out of every count, and the card says which */
+    out.gaps = hist.filter(function (h) { return !h.complete; }).map(function (h) { return h.year; });
+    hist = hist.filter(function (h) { return h.complete; });
+    var paid = hist.map(function (h) { return h.indemnity; }).sort(function (a, z) { return a - z; }), nh = paid.length;
+    out.mid = nh % 2 ? paid[(nh - 1) / 2] : (paid[nh / 2 - 1] + paid[nh / 2]) / 2;
+    var top = 0; hist.forEach(function (h) { if (sum.best && h.indemnity === sum.best.indemnity) top++; });
+    out.bestTies = top;
     out.ok = true; out.pol = pol; out.hist = hist; out.sum = sum; out.dry = M.longestDry(hist);
     out.open = M.history(pol, g.open);
     out.subsidy = meta.subsidy[String(setup.cov)];
@@ -142,68 +185,111 @@
   function shareUrl() {
     var q = ['g=' + S.grid, 'c=' + (stateFips() + S.co), 'u=' + S.use, 'ac=' + S.acres, 'sh=' + S.share, 'a=' + setupStr(S.A)];
     if (S.B) q.push('b=' + setupStr(S.B));
-    return location.origin + location.pathname + '?' + q.join('&');
+    if (S.win) q.push('w=' + S.win);
+    return location.origin + '/prf?' + q.join('&');
   }
   function stateFips() { return states[S.st] ? states[S.st].fips : ''; }
   function remember() {
     if (!S.grid || !S.co) return;
-    try { history.replaceState(null, '', shareUrl().replace(location.origin, '')); } catch (e) {}
-    try { localStorage.setItem(KEY, JSON.stringify({ g: S.grid, c: stateFips() + S.co, u: S.use, ac: S.acres, sh: S.share, a: setupStr(S.A), b: S.B ? setupStr(S.B) : '', pt: S.pt })); } catch (e) {}
+    try { history.replaceState(null, '', shareUrl().replace(location.origin, '').replace(/^\/prf\?/, location.pathname + '?')); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify({ g: S.grid, c: stateFips() + S.co, u: S.use, ac: S.acres, sh: S.share, a: setupStr(S.A), b: S.B ? setupStr(S.B) : '', w: S.win, pt: S.pt, t: S.touched ? 1 : 0 })); } catch (e) {}
   }
+  /* What to open with: a link's own figures, else what this browser last had.
+     fromLink marks a link, whose every unreadable part is reported, not papered over. */
   function saved() {
     var q = {}, had = false;
-    location.search.replace(/^\?/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) { q[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); had = true; } });
-    if (had && q.g) return q;
+    location.search.replace(/^\?/, '').split('&').forEach(function (kv) {
+      var i = kv.indexOf('='); if (i <= 0) return;
+      try { q[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); had = true; } catch (e) {}
+    });
+    if (had && (q.g || q.c || q.st)) { q.fromLink = true; return q; }
     try { var o = JSON.parse(localStorage.getItem(KEY) || 'null'); if (o && o.g) return o; } catch (e) {}
     return null;
   }
 
   /* ---------------------------------------------------------------- choosing a grid */
   function say(msg, bad) { var el = $('prf-find-msg'); el.textContent = msg || ''; el.classList.toggle('is-bad', !!bad); }
-  function norm(s) { return String(s || '').toLowerCase().replace(/\bcounty\b|\bparish\b/g, '').replace(/[^a-z]/g, ''); }
+  function sayHtml(html, bad) { var el = $('prf-find-msg'); el.innerHTML = html; el.classList.toggle('is-bad', !!bad); }
+  function norm(s) {
+    return String(s || '').toLowerCase().replace(/\bcounty\b|\bparish\b/g, '').replace(/\bsainte\b/g, 'ste').replace(/\bsaint\b/g, 'st').replace(/[^a-z]/g, '');
+  }
+  function hasOffers(code) { var s = stateByFips(code.slice(0, 2)); return !!(s && states[s.st] && states[s.st].counties[code.slice(2)]); }
+  function countyName(code) { var s = stateByFips(code.slice(0, 2)); return states[s.st].counties[code.slice(2)].n + ' County, ' + s.st; }
+  function gridButton(id, text) { return '<button type="button" class="prf-link" data-asgrid="' + id + '">' + esc(text) + '</button>'; }
 
-  /* Move to a grid. want: { county: 'SSCCC' } or { countyName, stateName }. */
+  /* Every search, tap and late answer takes a ticket. Only the newest one may
+     change the page, so a slow file for the grid before last cannot land on
+     top of the grid the reader is looking at now. */
+  var ticket = 0;
+
+  /* Move to a grid.
+     want.county  'SSCCC', when the reader or a link named it
+     want.pt      { lat, lon, label, zip } the point that led here
+     want.countyName / stateName  what the place lookup said
+     The county is taken, in order, from: the one named; the county the point
+     is in (data/prf/c); the lookup's own county; the grid's only county. If
+     none of those settles it the page ASKS. It does not price a guess. */
   function goGrid(id, want, keep) {
-    id = +id;
-    var key = M.shardKey(id);
+    id = +id; want = want || {};
+    var my = ++ticket, key = M.shardKey(id);
     if (!key) { say('That is not a grid in the 48 contiguous states.', true); return Promise.resolve(false); }
     say('Reading grid ' + id + '…');
     return loadShard(key).then(function (sh) {
+      if (my !== ticket) return false;
       var rec = sh.g && sh.g.g ? sh.g.g[String(id)] : null;
       if (!rec) { say('USDA offers no PRF grid there. Grids cover the 48 contiguous states; Hawaii is a separate program and is not on this page.', true); return false; }
       var codes = rec.c || [], sts = {};
       codes.forEach(function (c) { var s = stateByFips(c.slice(0, 2)); if (s) sts[s.st] = 1; });
       return Promise.all(Object.keys(sts).map(loadState)).then(function () {
-        var pick = null;
-        if (want && want.county && codes.indexOf(want.county) >= 0) pick = want.county;
-        if (!pick && want && want.countyName) {
-          codes.forEach(function (c) {
-            var s = stateByFips(c.slice(0, 2)), d = s && states[s.st], co = d && d.counties[c.slice(2)];
-            if (!pick && co && norm(co.n) === norm(want.countyName) && (!want.stateName || norm(d.name) === norm(want.stateName))) pick = c;
-          });
-        }
-        if (!pick && S.co && codes.indexOf(stateFips() + S.co) >= 0) pick = stateFips() + S.co;
-        if (!pick) pick = codes.filter(function (c) { var s = stateByFips(c.slice(0, 2)); return s && states[s.st] && states[s.st].counties[c.slice(2)]; })[0];
-        if (!pick) { say('Grid ' + id + ' has no county with PRF offers in the data.', true); return false; }
-        S.grid = id; S.st = stateByFips(pick.slice(0, 2)).st; S.co = pick.slice(2);
-        if (!keep) S.pt = want && want.pt ? want.pt : null;
-        afterGrid();
-        say('');
-        return true;
+        var offered = codes.filter(hasOffers);
+        if (!offered.length) { if (my === ticket) say('Grid ' + id + ' has no county with PRF offers in the data.', true); return false; }
+        var named = want.county && offered.indexOf(want.county) >= 0 ? want.county : null;
+        var byPoint = !named && want.pt && offered.length > 1 ? countyAtPoint(id, want.pt.lat, want.pt.lon) : Promise.resolve(null);
+        return byPoint.then(function (cell) {
+          if (my !== ticket) return false;
+          var pick = named, how = named ? 'named' : '';
+          if (!pick && cell && offered.indexOf(cell) >= 0) { pick = cell; how = 'point'; }
+          if (!pick && want.countyName) {
+            offered.forEach(function (c) {
+              var s = stateByFips(c.slice(0, 2)), d = states[s.st], co = d.counties[c.slice(2)];
+              if (!pick && norm(co.n) === norm(want.countyName) && (!want.stateName || norm(d.name) === norm(want.stateName))) { pick = c; how = 'lookup'; }
+            });
+          }
+          if (!pick && offered.length === 1) { pick = offered[0]; how = 'only'; }
+          S.grid = id; S.codes = offered; S.coHow = how;
+          S.st = stateByFips((pick || offered[0]).slice(0, 2)).st;
+          S.co = pick ? pick.slice(2) : null;
+          if (!keep) S.pt = want.pt || null;
+          S.alt = want.alt || null;
+          afterGrid();
+          say('');
+          return true;
+        });
       });
-    }).catch(function () { say('The data for that grid did not load. Check the connection and try again.', true); return false; });
+    }).catch(function () { if (my === ticket) say('The data for that grid did not load. Check the connection and try again.', true); return false; });
   }
 
   /* After the grid or county changes: the use must be one the county offers,
-     and each setup's split must fit the county's limits. */
+     and each setup's split must fit the county's limits. With no county yet,
+     only the grid block and the question are shown. */
   function afterGrid() {
-    var c = county();
+    var c = county(), tool = $('prf-tool');
+    tool.hidden = false; $('prf-start').hidden = true;
+    tool.classList.toggle('is-nocounty', !c);
+    drawWhere();
+    if (!c) {
+      var box = $('prf-answer');
+      box.innerHTML = '<p class="prf-verdict prf-wait">Grid ' + S.grid + ' lies across ' + S.codes.length + ' counties, and each has its own dollar values and limits. Pick the county the land is in, under the grid above.</p>';
+      box.classList.add('is-wait');
+      $('prf-chart-fig').hidden = true; $('prf-acts').hidden = true; $('prf-cmp-wrap').hidden = true;
+      drawBar({ ok: false, why: 'Pick the county the land is in.' });
+      track('prf_grid', { grid: S.grid, state: S.st, county_from: 'ask' });
+      return;
+    }
     if (c.b[S.use] == null) { for (var i = 0; i < c.b.length; i++) if (c.b[i] != null) { S.use = i; break; } }
     ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); });
-    $('prf-tool').hidden = false;
-    $('prf-start').hidden = true;
-    drawWhere(); buildUse(); buildIv(); render();
-    track('prf_grid', { grid: S.grid, state: S.st });
+    buildUse(); buildIv(); render();
+    track('prf_grid', { grid: S.grid, state: S.st, county_from: S.coHow || 'named' });
   }
   /* A split that no longer fits (a month not offered here, a cap) is rebuilt
      evenly from the months it had. An empty one gets the page's example. */
@@ -219,57 +305,101 @@
     if (ev) { setup.split = ev; setup.even = true; }
   }
 
+  /* "Valentine NE", "valentine, nebraska", "Las Cruces New Mexico": the state, when one ends the entry. */
+  function splitState(q) {
+    var name = q, st = null, m = /^(.*?)\s*,\s*(.+)$/.exec(q);
+    function known(tok) {
+      tok = String(tok || '').toLowerCase().replace(/\./g, '').trim();
+      for (var i = 0; i < meta.states.length; i++) if (meta.states[i].st.toLowerCase() === tok || meta.states[i].name.toLowerCase() === tok) return meta.states[i];
+      return null;
+    }
+    if (m) { st = known(m[2]); if (st) name = m[1]; }
+    else {
+      var w = q.split(/\s+/);
+      if (w.length >= 3 && known(w.slice(-2).join(' '))) { st = known(w.slice(-2).join(' ')); name = w.slice(0, -2).join(' '); }
+      else if (w.length >= 2 && known(w[w.length - 1])) { st = known(w[w.length - 1]); name = w.slice(0, -1).join(' '); }
+    }
+    return { name: name.trim(), st: st };
+  }
+  function lookup(name) {
+    return fetch(GEO + '?name=' + encodeURIComponent(name) + '&count=10&language=en&format=json&countryCode=US')
+      .then(function (r) { if (!r.ok) throw new Error('geo ' + r.status); return r.json(); })
+      .then(function (d) { if (!d || d.error) throw new Error('geo'); return d.results || []; });
+  }
   function find(q) {
     q = String(q || '').trim();
-    if (!q) { say('Type a ZIP, a town, or a latitude and longitude.', true); return; }
+    if (!q) { say('Type a ZIP, a town and state, coordinates, or a grid ID.', true); return; }
     var m = /^\s*(-?\d{1,3}(?:\.\d+)?)\s*[, ]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/.exec(q);
     if (m) {
       var lat = +m[1], lon = +m[2];
       if (lon > 0) lon = -lon;                     /* a US longitude typed without its minus sign */
-      return atPoint(lat, lon, lat.toFixed(4) + ', ' + lon.toFixed(4), null);
+      track('prf_find', { by: 'coordinates' });
+      return atPoint(lat, lon, lat.toFixed(4) + ', ' + lon.toFixed(4), {});
     }
-    m = /^grid\s*#?\s*(\d{1,5})$/i.exec(q);
-    if (m) return goGrid(+m[1], null).then(function (ok) { if (ok && window.innerWidth < 980) $('prf-where-h').scrollIntoView({ block: 'start' }); });
+    m = /^grid\s*(?:id)?\s*#?\s*(\d{1,5})$/i.exec(q) || /^(\d{1,4})$/.exec(q);
+    if (m) { track('prf_find', { by: 'grid' }); return goGrid(+m[1], {}).then(function (ok) { if (ok) toGrid(); return ok; }); }
+    var my = ++ticket, isZip = /^\d{5}$/.test(q), asGrid = isZip && M.shardKey(+q) ? +q : null;
     say('Looking that up…');
-    var isZip = /^\d{5}$/.test(q);
-    fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=5&language=en&format=json&countryCode=US')
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var r = d && d.results && d.results[0];
+    track('prf_find', { by: isZip ? 'zip' : 'town' });
+    if (isZip) {
+      return lookup(q).then(function (res) {
+        if (my !== ticket) return false;
+        var r = res[0];
         if (!r) {
-          if (/^\d{1,5}$/.test(q)) return goGrid(+q, null);
-          say('No place found for “' + q + '”. Try a ZIP or a latitude and longitude.', true); return;
+          sayHtml('The place lookup has no ZIP ' + esc(q) + '. Type the nearest town and state, or coordinates.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''), true);
+          return false;
         }
-        var place = isZip ? 'the middle of ZIP ' + q : (r.name + (r.admin1 ? ', ' + r.admin1 : ''));
-        return atPoint(r.latitude, r.longitude, place, { countyName: r.admin2, stateName: r.admin1 }).then(function (ok) {
-          if (ok && isZip && M.shardKey(+q)) {
-            var el = $('prf-find-msg');
-            el.innerHTML = 'Showing the grid at the middle of ZIP ' + esc(q) + '. <button type="button" class="prf-link" id="prf-asgrid">Meant grid ID ' + esc(q) + '?</button>';
-            $('prf-asgrid').addEventListener('click', function () { goGrid(+q, null); });
-          }
-        });
-      })
-      .catch(function () { say('The place lookup did not answer. Enter a latitude and longitude, or pick by state and county below.', true); });
+        var town = r.name + (r.admin1 ? ', ' + r.admin1 : '');
+        return atPoint(r.latitude, r.longitude, town, { countyName: r.admin2, stateName: r.admin1, alt: asGrid }, q);
+      }).catch(function () {
+        if (my !== ticket) return false;
+        sayHtml('The place lookup did not answer. Type coordinates, or pick by state and county below.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''), true);
+        return false;
+      });
+    }
+    var parts = splitState(q);
+    return lookup(parts.name).then(function (res) {
+      if (my !== ticket) return false;
+      if (parts.st) res = res.filter(function (r) { return norm(r.admin1) === norm(parts.st.name); });
+      /* one entry per state and county: the lookup lists a town and its township as two places */
+      var seen = {}, uniq = [];
+      res.forEach(function (r) { var k = norm(r.admin1) + '|' + norm(r.admin2); if (!seen[k]) { seen[k] = 1; uniq.push(r); } });
+      if (!uniq.length) {
+        say(parts.st ? 'No place called “' + parts.name + '” found in ' + parts.st.name + '. Try a ZIP, or coordinates.' : 'No place found for “' + q + '”. Try a town with its state, a ZIP, or coordinates.', true);
+        return false;
+      }
+      function go(r) { return atPoint(r.latitude, r.longitude, r.name + (r.admin1 ? ', ' + r.admin1 : ''), { countyName: r.admin2, stateName: r.admin1 }); }
+      if (uniq.length === 1) return go(uniq[0]);
+      choices = uniq.slice(0, 8);
+      sayHtml('More than one “' + esc(parts.name) + '”. Pick yours: ' + choices.map(function (r, i) {
+        return '<button type="button" class="prf-chip" data-choice="' + i + '">' + esc((r.admin2 ? r.admin2 + ', ' : '') + (r.admin1 || '')) + '</button>';
+      }).join(' '));
+      choiceGo = go;
+      return false;
+    }).catch(function () {
+      if (my !== ticket) return false;
+      say('The place lookup did not answer. Type coordinates, or pick by state and county below.', true);
+      return false;
+    });
   }
-  function atPoint(lat, lon, label, want) {
+  var choices = [], choiceGo = null;
+  /* on one column the answer sits below the fold of the search box: bring the grid to the top */
+  function toGrid() { if (window.innerWidth < 980) $('prf-where-h').scrollIntoView({ block: 'start' }); }
+  function atPoint(lat, lon, label, want, zip) {
     var id = M.gridFromLatLon(lat, lon);
     if (!id) { say('That point is outside the 48 contiguous states.', true); return Promise.resolve(false); }
-    want = want || {}; want.pt = { lat: +lat, lon: +lon, label: label };
-    return goGrid(id, want).then(function (ok) {
-      /* on one column the answer sits below the fold of the search box: bring the grid to the top */
-      if (ok && window.innerWidth < 980) $('prf-where-h').scrollIntoView({ block: 'start' });
-      return ok;
-    });
+    want = want || {}; want.pt = { lat: +lat, lon: +lon, label: label, zip: zip || null };
+    return goGrid(id, want).then(function (ok) { if (ok) toGrid(); return ok; });
   }
 
   /* ---------------------------------------------------------------- where: the grid, drawn */
   function miles(lat) { return { ns: 0.25 * 69.05, ew: 0.25 * 69.17 * Math.cos(lat * Math.PI / 180) }; }
   function drawWhere() {
-    var c = county(), d = states[S.st], b = M.gridBounds(S.grid), rc = M.gridRowCol(S.grid);
+    var c = county(), b = M.gridBounds(S.grid), rc = M.gridRowCol(S.grid);
     var mi = miles((b.south + b.north) / 2);
     var inCounty = {}, inState = {};
-    c.g.forEach(function (g) { inCounty[g] = 1; });
-    Object.keys(d.counties).forEach(function (k) { d.counties[k].g.forEach(function (g) { inState[g] = 1; }); });
+    if (c) c.g.forEach(function (g) { inCounty[g] = 1; });
+    S.codes.forEach(function (code) { var d = states[stateByFips(code.slice(0, 2)).st]; Object.keys(d.counties).forEach(function (k) { d.counties[k].g.forEach(function (g) { inState[g] = 1; }); }); });
     var W = 186, cell = 60, pad = 3, svg = [];
     svg.push('<svg viewBox="0 0 ' + W + ' ' + W + '" role="group" aria-label="Grid ' + S.grid + ' and the eight grids around it. North is up.">');
     for (var dr = 1; dr >= -1; dr--) for (var dc = -1; dc <= 1; dc++) {
@@ -277,7 +407,7 @@
       if (r < 0 || cc < 0 || r >= 120 || cc >= 300) continue;
       var id = r * 300 + cc + 1, here = dr === 0 && dc === 0;
       var cls = here ? 'is-here' : inCounty[id] ? 'is-county' : inState[id] ? 'is-state' : 'is-out';
-      svg.push('<g class="prf-cell ' + cls + '"' + (here ? '' : ' data-grid="' + id + '" role="button" tabindex="0" aria-label="Switch to grid ' + id + (inCounty[id] ? ', also in ' + esc(c.n) + ' County' : '') + '"') + '>'
+      svg.push('<g class="prf-cell ' + cls + '"' + (here ? '' : ' data-grid="' + id + '" role="button" tabindex="0" aria-label="Show grid ' + id + (c && inCounty[id] ? ', also in ' + esc(c.n) + ' County' : '') + '"') + '>'
         + '<rect x="' + x + '" y="' + y + '" width="' + (cell - 2) + '" height="' + (cell - 2) + '" rx="3"/>'
         + '<text x="' + (x + cell / 2 - 1) + '" y="' + (y + cell / 2 + 4) + '" text-anchor="middle">' + id + '</text></g>');
     }
@@ -287,28 +417,35 @@
       svg.push('<circle class="prf-pin" cx="' + (pad + cell + fx * (cell - 2)).toFixed(1) + '" cy="' + (pad + cell + fy * (cell - 2)).toFixed(1) + '" r="4"/>');
       var edges = [['north', (b.north - S.pt.lat) / 0.25 * mi.ns], ['south', (S.pt.lat - b.south) / 0.25 * mi.ns],
                    ['east', (b.east - S.pt.lon) / 0.25 * mi.ew], ['west', (S.pt.lon - b.west) / 0.25 * mi.ew]].sort(function (a, z) { return a[1] - z[1]; });
-      note = ' The dot is ' + esc(S.pt.label) + ', about ' + edges[0][1].toFixed(1) + ' miles from the grid’s ' + edges[0][0] + ' edge.';
+      note = ' The dot is ' + esc(S.pt.label) + (S.pt.zip ? ', the town ZIP ' + esc(S.pt.zip) + ' is listed under' : '') + ', about ' + edges[0][1].toFixed(1) + ' miles from the grid’s ' + edges[0][0] + ' edge.'
+        + (S.pt.zip ? ' A rural ZIP can cover several grids. If the land is somewhere else, tap its grid or type its coordinates.' : '');
+    } else if (S.pt) {
+      note = ' You are looking at a grid next to the one ' + esc(S.pt.label) + ' is in. ' + gridButton(M.gridFromLatLon(S.pt.lat, S.pt.lon), 'Back to grid ' + M.gridFromLatLon(S.pt.lat, S.pt.lon));
     }
     svg.push('</svg>');
     $('prf-map').innerHTML = svg.join('');
-    $('prf-where-h').textContent = 'Grid ' + S.grid + ' · ' + c.n + ' County, ' + d.name;
+    $('prf-where-h').textContent = 'Grid ' + S.grid + ' · ' + (c ? c.n + ' County, ' + states[S.st].name : 'pick the county');
     $('prf-where-t').innerHTML = 'Covers ' + b.south.toFixed(2) + '° to ' + b.north.toFixed(2) + '° N, ' + Math.abs(b.east).toFixed(2) + '° to ' + Math.abs(b.west).toFixed(2) + '° W: about '
       + mi.ns.toFixed(0) + ' miles north to south and ' + mi.ew.toFixed(0) + ' east to west.' + note
-      + ' Your agent sets the grid from a point on the land you insure, using <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener">USDA’s grid locator</a>.';
-    /* county: a grid can lie in more than one */
-    var codes = (shards[M.shardKey(S.grid)].g.g[String(S.grid)].c || []).filter(function (code) {
-      var s = stateByFips(code.slice(0, 2)); return s && states[s.st] && states[s.st].counties[code.slice(2)];
-    });
-    var sel = $('prf-co'), wrap = $('prf-co-wrap');
-    sel.innerHTML = codes.map(function (code) {
+      + (S.alt ? ' ' + esc(String(S.alt)) + ' is also a grid ID. ' + gridButton(S.alt, 'Open grid ' + S.alt + ' instead') + '.' : '')
+      + ' On a policy, you pick a point inside the acres you insure and the grid and county follow from it. <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener">USDA’s grid locator</a> is the official map.';
+    /* county: a grid can lie in more than one, and the county sets the dollars */
+    var sel = $('prf-co'), wrap = $('prf-co-wrap'), codes = S.codes;
+    sel.innerHTML = (c ? '' : '<option value="" selected>Pick the county</option>') + codes.map(function (code) {
       var s = stateByFips(code.slice(0, 2)), co = states[s.st].counties[code.slice(2)];
-      return '<option value="' + code + '"' + (s.st === S.st && code.slice(2) === S.co ? ' selected' : '') + '>' + esc(co.n) + ', ' + s.st + '</option>';
+      return '<option value="' + code + '"' + (c && s.st === S.st && code.slice(2) === S.co ? ' selected' : '') + '>' + esc(co.n) + ', ' + s.st + '</option>';
     }).join('');
     wrap.hidden = codes.length < 2;
+    wrap.classList.toggle('is-ask', !c);
     $('prf-co-n').textContent = codes.length;
+    $('prf-co-how').textContent = !c ? 'This page could not tell which one the point is in.'
+      : S.coHow === 'point' ? 'The point is in ' + c.n + ' County, by the Census Bureau’s county lines.'
+      : S.coHow === 'lookup' ? c.n + ' County is the place lookup’s county for that town.' : '';
     /* the browse boxes follow */
-    if ($('prf-b-st').value !== S.st) { $('prf-b-st').value = S.st; fillBrowseCounties(); }
-    $('prf-b-co').value = S.co; fillBrowseGrids();
+    if (c) {
+      if ($('prf-b-st').value !== S.st) { $('prf-b-st').value = S.st; fillBrowseCounties().then(function () { $('prf-b-co').value = S.co; fillBrowseGrids(); }); }
+      else { $('prf-b-co').value = S.co; fillBrowseGrids(); }
+    }
   }
   function fillBrowseCounties() {
     var st = $('prf-b-st').value, co = $('prf-b-co');
@@ -320,15 +457,27 @@
       co.disabled = false;
     }).catch(function () { say('That state’s file did not load. Try again.', true); });
   }
+  /* The county's grids, laid out where they lie: north at the top, west at the
+     left, one box per quarter degree. A row of numbers in ID order said nothing
+     about which grid the land is in. */
   function fillBrowseGrids() {
     var st = $('prf-b-st').value, k = $('prf-b-co').value, box = $('prf-b-grids');
     if (!st || !k || !states[st] || !states[st].counties[k]) { box.innerHTML = ''; return; }
-    var c = states[st].counties[k], f = states[st].fips;
-    box.innerHTML = '<span class="prf-b-l">' + plural(c.g.length, 'grid touches', 'grids touch') + ' ' + esc(c.n) + ' County:</span> '
-      + c.g.map(function (g) { return '<button type="button" class="prf-chip' + (g === S.grid && st === S.st && k === S.co ? ' is-on' : '') + '" data-grid="' + g + '" data-county="' + f + k + '">' + g + '</button>'; }).join('');
+    var c = states[st].counties[k], f = states[st].fips, r0 = 1e9, r1 = -1, c0 = 1e9, c1 = -1;
+    c.g.forEach(function (g) { var rc = M.gridRowCol(g); if (rc.row < r0) r0 = rc.row; if (rc.row > r1) r1 = rc.row; if (rc.col < c0) c0 = rc.col; if (rc.col > c1) c1 = rc.col; });
+    var bn = M.gridBounds(r1 * 300 + c0 + 1), bs = M.gridBounds(r0 * 300 + c1 + 1);
+    box.innerHTML = '<p class="prf-b-l">' + plural(c.g.length, 'grid touches', 'grids touch') + ' ' + esc(c.n) + ' County. They are drawn where they lie, north at the top: '
+      + bn.north.toFixed(2) + '° N at the top edge, ' + bs.south.toFixed(2) + '° N at the bottom, ' + Math.abs(bn.west).toFixed(2) + '° W at the left, ' + Math.abs(bs.east).toFixed(2) + '° W at the right. Not sure which? Type the nearest town above.</p>'
+      + '<div class="prf-b-scroll"><div class="prf-b-map" style="grid-template-columns:repeat(' + (c1 - c0 + 1) + ',minmax(3.4rem,1fr))">'
+      + c.g.map(function (g) {
+          var rc = M.gridRowCol(g);
+          return '<button type="button" class="prf-chip' + (g === S.grid && st === S.st && k === S.co ? ' is-on' : '') + '" style="grid-row:' + (r1 - rc.row + 1) + ';grid-column:' + (rc.col - c0 + 1) + '" data-grid="' + g + '" data-county="' + f + k + '">' + g + '</button>';
+        }).join('') + '</div></div>';
   }
 
   /* ---------------------------------------------------------------- the setup controls */
+  function useName() { return states[S.st].combos[S.use]; }
+  function isGrazing() { return /^graz/i.test(useName()); }
   function buildUse() {
     var c = county(), d = states[S.st], sel = $('prf-use');
     sel.innerHTML = d.combos.map(function (name, i) {
@@ -338,9 +487,9 @@
   function buildIv() {
     var rows = '';
     for (var i = 0; i < N; i++) {
-      rows += '<tr data-i="' + i + '"><th scope="row"><label class="prf-ivl"><input type="checkbox" data-iv-on="' + i + '"><span class="prf-ivm"><span>' + LABELS[i] + '</span><small data-iv-note="' + i + '"></small></span></label></th>'
+      rows += '<tr data-i="' + i + '"><th scope="row"><label class="prf-ivl"><input type="checkbox" data-iv-on="' + i + '" aria-label="Insure ' + M.LONG[i] + '"><span class="prf-ivm"><span>' + LABELS[i] + '</span><small data-iv-note="' + i + '"></small></span></label></th>'
         + '<td class="prf-ivp"><button type="button" class="prf-step" data-iv-step="-5" data-i="' + i + '" aria-label="5 percent less in ' + M.LONG[i] + '">−</button>'
-        + '<input type="number" inputmode="numeric" min="0" max="100" step="1" data-iv-pct="' + i + '" aria-label="Percent of value in ' + M.LONG[i] + '">'
+        + '<input type="number" inputmode="numeric" min="0" max="100" step="1" data-iv-pct="' + i + '" aria-label="Percent of the policy in ' + M.LONG[i] + '">'
         + '<button type="button" class="prf-step" data-iv-step="5" data-i="' + i + '" aria-label="5 percent more in ' + M.LONG[i] + '">+</button><span class="prf-pc">%</span></td></tr>';
     }
     $('prf-iv-body').innerHTML = rows;
@@ -350,12 +499,21 @@
   function syncControls() {
     var s = cur(), mm = minmax(), g = openGrid(S.grid);
     $('prf-use').value = String(S.use);
-    $('prf-acres').value !== String(S.acres) && document.activeElement !== $('prf-acres') && ($('prf-acres').value = S.acres);
-    document.activeElement !== $('prf-share') && ($('prf-share').value = S.share);
-    document.activeElement !== $('prf-pf-n') && ($('prf-pf-n').value = s.pf);
+    if (document.activeElement !== $('prf-acres')) $('prf-acres').value = S.acres || '';
+    if (document.activeElement !== $('prf-share')) $('prf-share').value = S.share == null ? '' : S.share;
+    if (document.activeElement !== $('prf-pf-n')) $('prf-pf-n').value = s.pf;
     $('prf-pf').value = s.pf;
+    var cbv = baseValue();
+    $('prf-pf-hint').textContent = cbv == null ? '' : 'How much to insure each acre for. 100 is USDA’s county value, ' + usd2(cbv) + ' an acre here for this use. 150 raises the premium and any payment by half. It does not change how often it pays.';
+    $('prf-use-note').innerHTML = isGrazing()
+      ? 'From 2027, grazing land needs your livestock on it: at least 25% of the stocking rate, or no payment is due and the premium is still owed. <button type="button" class="prf-link" data-jump="new">The rule</button>'
+      : 'PRF covers perennial hay ground. Forage planted every year is a different policy, Annual Forage.';
     Array.prototype.forEach.call(document.querySelectorAll('[data-cov]'), function (b) {
       var on = +b.getAttribute('data-cov') === s.cov; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-win]'), function (b) {
+      var w = +b.getAttribute('data-win'), on = w === S.win; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.textContent = w ? 'Last ' + w : 'All ' + (meta.years.last_complete - meta.years.first + 1);
     });
     var rates = g && g.rates ? g.rates[s.cov] : null;
     for (var i = 0; i < N; i++) {
@@ -368,11 +526,12 @@
       inp.disabled = !on; if (document.activeElement !== inp) inp.value = on ? s.split[i] : '';
       Array.prototype.forEach.call(tr.querySelectorAll('.prf-step'), function (b) { b.disabled = !on; });
       tr.classList.toggle('is-on', on); tr.classList.toggle('is-off', blocked);
-      var t = '';
+      var t = '', mm_ = g && g.avgMm ? g.avgMm[i] : null;
       if (!offered) t = 'not offered in this county';
-      else if (!on && nb >= 0) t = 'shares a month with ' + LABELS[nb];
+      else if (!on && nb >= 0) t = 'off: overlaps ' + LABELS[nb];
       else {
-        t = mm.min[i] + ' to ' + mm.max[i] + '%';
+        t = mm.min[i] + '% to ' + mm.max[i] + '% allowed';
+        if (mm_ != null) t += ' · normal ' + inTxt(mm_) + (on ? ', pays under ' + inTxt(mm_ * s.cov / 100) : '');
         if (rates && rates[i] == null) t += ' · no rate at this grid';
       }
       note.textContent = t;
@@ -385,11 +544,14 @@
     $('prf-tab-a').classList.toggle('is-on', S.on === 'A'); $('prf-tab-a').setAttribute('aria-pressed', S.on === 'A' ? 'true' : 'false');
     $('prf-tab-b').classList.toggle('is-on', S.on === 'B'); $('prf-tab-b').setAttribute('aria-pressed', S.on === 'B' ? 'true' : 'false');
     $('prf-addb').hidden = !!S.B;
+    $('prf-both').hidden = !S.B;
     $('prf-setup-h').textContent = S.B ? 'Setup ' + S.on : 'Your policy';
+    $('prf-iv-h').textContent = S.B ? 'Months to insure, setup ' + S.on : 'Months to insure';
   }
   function rebalance(s) {
     var mm = minmax(), ev = M.evenSplit(s.split.map(function (p) { return p > 0; }), mm.min, mm.max);
     if (ev) s.split = ev;
+    return !!ev;
   }
   function toggleIv(i, on) {
     var s = cur(), mm = minmax();
@@ -398,20 +560,32 @@
       s.split[i] = mm.min[i] || 10;
     } else s.split[i] = 0;
     if (s.even) rebalance(s);
+    S.touched = true;
     render();
   }
   function setPct(i, v) {
     var s = cur();
     v = Math.max(0, Math.min(100, Math.round(+v) || 0));
     if (s.split[i] === v) return;
-    s.split[i] = v; s.even = false;
+    s.split[i] = v; s.even = false; S.touched = true;
     render();
   }
 
   /* ---------------------------------------------------------------- the answer */
-  function yearsPhrase(sum) { return sum.years + ' years on record, ' + sum.first + ' to ' + sum.last; }
+  function yearsPhrase(sum) {
+    var all = meta.years.last_complete - meta.years.first + 1;
+    return (S.win && S.win < all ? 'last ' + S.win + ' years on record, ' : sum.years + ' years on record, ') + sum.first + ' to ' + sum.last;
+  }
+  function splitWords(setup) { return setup.split.map(function (p, i) { return p > 0 ? LABELS[i] + ' ' + p + '%' : ''; }).filter(Boolean).join(', ') || 'no months picked'; }
+  function policyLine(setup) {
+    var c = county();
+    return useName() + ' · ' + (S.acres || 0).toLocaleString('en-US') + ' acres · ' + (S.share === 100 ? '' : 'share ' + S.share + '% · ') + setup.cov + '% coverage · '
+      + (setup.pf === 100 ? '' : 'productivity factor ' + setup.pf + ' · ') + splitWords(setup) + ' · ' + c.n + ' County, ' + S.st + ' · grid ' + S.grid;
+  }
+  var SOD = { IA: 1, MN: 1, MT: 1, NE: 1, ND: 1, SD: 1 };
   function drawAnswer(R) {
-    var box = $('prf-answer');
+    var box = $('prf-answer'), line = $('prf-printsum');
+    line.innerHTML = (S.touched ? '' : '<b>Example policy.</b> Change it below. ') + esc(policyLine(R.setup)) + '<span class="prf-printonly"> · crop year ' + meta.crop_year + ' · agsist.com/prf</span>';
     if (!R.ok) {
       box.innerHTML = '<p class="prf-verdict prf-wait">' + esc(R.why) + '</p>';
       box.classList.add('is-wait');
@@ -419,34 +593,43 @@
     }
     box.classList.remove('is-wait');
     var s = R.sum, p = R.pol, t = p.total, per = t.producer / S.acres;
-    var back = t.producer > 0 ? s.avgIndemnity / t.producer : null, backFull = t.premium > 0 ? s.avgIndemnity / t.premium : null;
+    var backFull = t.premium > 0 ? s.avgIndemnity / t.premium : null;
     var verdict;
     if (s.paidYears === 0) verdict = 'In the ' + yearsPhrase(s) + ', this policy would not have paid once.';
     else verdict = 'In the ' + yearsPhrase(s) + ', this policy would have paid something in ' + s.paidYears
-      + ' and paid more than your premium in ' + s.aheadYears + '.';
-    var best = s.best && s.best.indemnity > 0 ? usd(s.best.indemnity) + ' <span class="prf-sub">in ' + s.best.year + '</span>' : '—';
-    var dry = R.dry ? plural(R.dry.n, 'year', 'years') + ' <span class="prf-sub">' + (R.dry.n > 1 ? R.dry.from + ' to ' + R.dry.to : R.dry.from) + '</span>' : 'none';
+      + ' and more than your premium in ' + s.aheadYears + '.';
+    if (R.gaps && R.gaps.length) verdict += ' ' + R.gaps.join(', ') + (R.gaps.length > 1 ? ' are' : ' is') + ' left out: USDA publishes no index for a chosen interval in ' + (R.gaps.length > 1 ? 'those years' : 'that year') + '.';
+    var best = s.best && s.best.indemnity > 0 ? usd(s.best.indemnity) + ' <span class="prf-sub">in ' + s.best.year + (R.bestTies > 1 ? ' and ' + plural(R.bestTies - 1, 'other year', 'other years') : '') + '</span>' : DASH + ' <span class="prf-sub">it never paid</span>';
+    var dry = R.dry ? plural(R.dry.n, 'year', 'years') + ' <span class="prf-sub">' + (R.dry.n > 1 ? R.dry.from + ' to ' + R.dry.to : R.dry.from) + ', the first run that long</span>' : 'none <span class="prf-sub">it paid every year</span>';
+    var pctSub = Math.round(R.subsidy * 100);
     var h = '<p class="prf-verdict">' + verdict + '</p>'
       + '<dl class="prf-figs">'
-      + '<div><dt>You pay, a year</dt><dd>' + usd(t.producer) + ' <span class="prf-sub">' + usd2(per) + ' an acre</span></dd></div>'
-      + '<div><dt>USDA pays</dt><dd>' + usd(t.subsidy) + ' <span class="prf-sub">' + Math.round(R.subsidy * 100) + '% of the ' + usd(t.premium) + ' premium</span></dd></div>'
-      + '<div><dt>Protection</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre</span></dd></div>'
-      + '<div><dt>Paid in an average year</dt><dd>' + usd(s.avgIndemnity) + ' <span class="prf-sub">all ' + s.years + ' years, the zeros counted</span></dd></div>'
+      + '<div><dt>You pay, a year</dt><dd>' + usd(t.producer) + ' <span class="prf-sub">' + usd2(per) + ' an acre, before the policy fee</span></dd></div>'
+      + '<div><dt>USDA pays toward the premium</dt><dd>' + usd(t.subsidy) + ' <span class="prf-sub">' + pctSub + '% of the ' + usd(t.premium) + ' premium, if you qualify</span></dd></div>'
+      + '<div><dt>Most it can pay in a year</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre of protection</span></dd></div>'
+      + '<div><dt>Average payout a year</dt><dd>' + usd(s.avgIndemnity) + ' <span class="prf-sub">over all ' + s.years + ' years, the no-payment years included</span></dd></div>'
+      + '<div><dt>Payout in the middle year</dt><dd>' + usd(R.mid) + ' <span class="prf-sub">half the years would have paid less than this</span></dd></div>'
       + '<div><dt>Most in one year</dt><dd>' + best + '</dd></div>'
       + '<div><dt>Longest run with no payment</dt><dd>' + dry + '</dd></div>'
       + '</dl>';
-    if (back != null) {
-      h += '<p class="prf-back">Over those ' + s.years + ' years the record pays back <b>' + usd2(back) + '</b> for each $1 of premium you pay, and <b>' + usd2(backFull)
-        + '</b> for each $1 of the whole premium. The gap is USDA’s share of the bill.</p>';
+    if (backFull != null) {
+      var lr = root.getAttribute('data-lr-mid'), lo = root.getAttribute('data-lr-lo'), hi = root.getAttribute('data-lr-hi'), all = meta.years.last_complete - meta.years.first + 1;
+      h += '<p class="prf-back">For each $1 of the full premium, this policy would have paid back <b>' + usd2(backFull) + '</b> over those ' + s.years + ' years.'
+        + (lr ? ' USDA sets its rates from this same record. Over all ' + all + ' years the middle grid and interval comes to $' + lr + ', and nine in ten sit between $' + lo + ' and $' + hi + ', at every coverage level.' : '')
+        + ' So no grid, month or coverage level is a bargain on the record. What comes back above your own ' + usd(t.producer) + ' is the ' + pctSub + '% of the bill USDA pays.</p>';
     }
-    h += '<p class="prf-caveat">Every year is priced at ' + meta.crop_year + ' rates and county values, on the rain record USDA publishes for ' + meta.crop_year
-      + '. It is not what PRF paid in those years, and it says nothing about next year’s rain. '
-      + '<button type="button" class="prf-link" data-jump="prf-not">What this insurance does not do</button></p>';
+    h += '<ul class="prf-caveat">'
+      + '<li>Every year is priced at ' + meta.crop_year + ' rates and county values, on the precipitation record USDA publishes for ' + meta.crop_year
+      + '. It is not what PRF paid in those years, and it says nothing about next year.</li>'
+      + '<li>USDA’s share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date. Beginning and veteran farmers get a larger share.</li>'
+      + (SOD[S.st] ? '<li>In ' + esc(states[S.st].name) + ', native sod broken in recent years gets less protection and 50 points less of USDA’s share. That rule is not applied here.</li>' : '')
+      + '<li>An insurer’s own figure can differ from this by a few dollars of rounding. <button type="button" class="prf-link" data-jump="prf-not">What this insurance does not do</button></li>'
+      + '</ul>';
     box.innerHTML = h;
   }
 
   /* ---------------------------------------------------------------- the year chart */
-  var chartState = null, READ_HINT = '<span class="prf-read-h">Point at a year, or tap one, for its figures.</span>';
+  var chartState = null, READ_HINT = '<span class="prf-read-h">Tap the chart, slide a finger across it, or use the arrows, for one year’s figures.</span>';
   function niceMax(v) {
     if (!(v > 0)) return 1;
     var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), m = v / p;
@@ -454,23 +637,23 @@
     for (var i = 0; i < steps.length; i++) if (m <= steps[i]) return steps[i] * p;
     return 10 * p;
   }
-  /* R: the setup being edited, drawn as bars. other: the second setup, when
-     there is one and it can be priced, drawn as dots. names: ['A','B'] or null. */
-  function drawChart(R, other, names) {
+  /* RA is always the bars and RB, when there is a second setup that can be
+     priced, is always the dots. The colours never swap with the tab. */
+  function drawChart(RA, RB) {
     var box = $('prf-chart'), fig = $('prf-chart-fig');
-    if (!R.ok) { fig.hidden = true; chartState = null; return; }
+    if (!RA.ok) { fig.hidden = true; chartState = null; return; }
     fig.hidden = false;
-    var RB = other && other.ok ? other : null;
-    var hist = R.hist, hb = RB ? RB.hist : null, n = hist.length;
+    var two = !!S.B, hb = RB && RB.ok && RB.hist.length === RA.hist.length ? RB.hist : null;
+    var hist = RA.hist, n = hist.length;
     /* drawn at the width it is shown at, so the axis type is the same size on a phone as on a desk */
     var W = Math.max(280, Math.round(box.clientWidth || 760)), small = W < 520;
-    var H = small ? 210 : 250, L = 44, Rr = 6, T = 12, Bm = 24, pw = W - L - Rr, ph = H - T - Bm, every = small ? 20 : 10;
+    var H = small ? 210 : 250, L = 46, Rr = 6, T = 12, Bm = 24, pw = W - L - Rr, ph = H - T - Bm, every = n <= 30 ? 5 : small ? 20 : 10;
     var mx = 0;
     hist.forEach(function (h) { if (h.indemnity > mx) mx = h.indemnity; });
     if (hb) hb.forEach(function (h) { if (h.indemnity > mx) mx = h.indemnity; });
-    mx = niceMax(Math.max(mx, R.pol.total.producer * 1.15));
+    mx = niceMax(Math.max(mx, RA.pol.total.producer * 1.15));
     var y = function (v) { return T + ph - (v / mx) * ph; }, bw = pw / n;
-    var s = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Payment by year, ' + hist[0].year + ' to ' + hist[n - 1].year + '. The table below holds every figure.">'];
+    var s = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="What the policy would have paid in each year, ' + hist[0].year + ' to ' + hist[n - 1].year + '. The table under “Every year, in numbers” holds every figure.">'];
     [0, 0.5, 1].forEach(function (f) {
       var v = mx * f;
       s.push('<line class="prf-grid" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '"/>');
@@ -484,24 +667,37 @@
     if (hb) hb.forEach(function (h, i) {
       s.push('<circle class="prf-dot" cx="' + (L + i * bw + bw / 2).toFixed(1) + '" cy="' + y(h.indemnity).toFixed(1) + '" r="2.6"/>');
     });
-    var py = y(R.pol.total.producer);
+    var py = y(RA.pol.total.producer);
     s.push('<line class="prf-prem" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + py.toFixed(1) + '" y2="' + py.toFixed(1) + '"/>');
     s.push('<line class="prf-cross" id="prf-cross" x1="0" x2="0" y1="' + T + '" y2="' + (T + ph) + '" visibility="hidden"/>');
     s.push('</svg>');
     box.innerHTML = s.join('');
-    $('prf-read').innerHTML = READ_HINT;
-    $('prf-legend').innerHTML = '<span class="prf-lg"><i class="prf-sw prf-sw-bar"></i>' + (names ? 'Setup ' + names[0] + ', paid that year' : 'Paid that year') + '</span>'
-      + (hb ? '<span class="prf-lg"><i class="prf-sw prf-sw-dot"></i>Setup ' + names[1] + ', paid that year</span>' : '')
-      + '<span class="prf-lg"><i class="prf-sw prf-sw-line"></i>Your premium' + (names ? ', setup ' + names[0] : '') + ': ' + usd(R.pol.total.producer) + ' a year</span>';
-    chartState = { hist: hist, hb: hb, L: L, pw: pw, W: W, R: R, RB: RB, names: names, args: [R, other, names] };
+    $('prf-legend').innerHTML = '<span class="prf-lg"><i class="prf-sw prf-sw-bar"></i>' + (two ? 'Setup A, would have paid' : 'Would have paid that year') + '</span>'
+      + (hb ? '<span class="prf-lg"><i class="prf-sw prf-sw-dot"></i>Setup B, would have paid</span>' : '')
+      + '<span class="prf-lg"><i class="prf-sw prf-sw-line"></i>Your premium' + (two ? ', setup A' : '') + ': ' + usd(RA.pol.total.producer) + ' a year</span>';
+    var keep = chartState && chartState.k != null && chartState.k < n && chartState.hist[chartState.k] && chartState.hist[chartState.k].year === hist[chartState.k].year ? chartState.k : null;
+    chartState = { hist: hist, hb: hb, L: L, pw: pw, W: W, RA: RA, RB: RB, two: two, k: null, args: [RA, RB] };
+    if (keep != null) pickYear(keep); else $('prf-read').innerHTML = READ_HINT;
   }
   function tipFor(k) {
-    var c = chartState, h = c.hist[k], b = c.hb ? c.hb[k] : null;
-    function lines(hh, R, tag) {
-      return '<span class="prf-read-l">' + (tag ? '<b>' + tag + '</b> ' : '') + 'paid <b>' + usd(hh.indemnity) + '</b>, ' + signed(hh.net) + ' after premium'
-        + ' <span class="prf-read-s">(' + hh.cells.map(function (cl) { return nw(LABELS[cl.i] + ' index ' + pctOfNormal(cl.index)) + ', ' + usd(cl.paid); }).join('; ') + ')</span></span>';
+    var c = chartState, h = c.hist[k], b = c.hb ? c.hb[k] : null, g = openGrid(S.grid);
+    function lines(hh, tag) {
+      return '<span class="prf-read-l">' + (tag ? '<b>' + tag + '</b> ' : '') + 'would have paid <b>' + usd(hh.indemnity) + '</b>, ' + signed(hh.net) + ' after premium'
+        + ' <span class="prf-read-s">(' + hh.cells.map(function (cl) {
+            var mm_ = g && g.avgMm ? g.avgMm[cl.i] : null;
+            return nw(LABELS[cl.i] + ' ' + pctOfNormal(cl.index) + '% of normal') + (mm_ != null && cl.index != null ? ' ' + nw('(' + inTxt(mm_ * cl.index) + ')') : '') + ', ' + usd(cl.paid);
+          }).join('; ') + ')</span></span>';
     }
-    return '<b class="prf-read-y">' + h.year + '</b> ' + lines(h, c.R, c.names ? c.names[0] : '') + (b ? lines(b, c.RB, c.names[1]) : '');
+    return '<b class="prf-read-y">' + h.year + '</b> ' + lines(h, c.two ? 'A' : '') + (b ? lines(b, 'B') : '');
+  }
+  function pickYear(k) {
+    var c = chartState, svg = $('prf-chart').querySelector('svg'); if (!c || !svg) return;
+    k = Math.max(0, Math.min(c.hist.length - 1, k)); c.k = k;
+    var cx = c.L + (k + 0.5) * (c.pw / c.hist.length), cross = $('prf-cross');
+    cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.setAttribute('visibility', 'visible');
+    Array.prototype.forEach.call(svg.querySelectorAll('.prf-bar.is-hot'), function (b) { b.classList.remove('is-hot'); });
+    var bar = svg.querySelector('.prf-bar[data-k="' + k + '"]'); if (bar) bar.classList.add('is-hot');
+    $('prf-read').innerHTML = tipFor(k);
   }
   function chartMove(ev) {
     var c = chartState, box = $('prf-chart'); if (!c) return;
@@ -509,20 +705,9 @@
     var r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * c.W;
     var k = Math.floor((x - c.L) / (c.pw / c.hist.length));
     if (k < 0 || k >= c.hist.length) return;
-    var cx = c.L + (k + 0.5) * (c.pw / c.hist.length), cross = $('prf-cross');
-    cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.setAttribute('visibility', 'visible');
-    Array.prototype.forEach.call(svg.querySelectorAll('.prf-bar.is-hot'), function (b) { b.classList.remove('is-hot'); });
-    var bar = svg.querySelector('.prf-bar[data-k="' + k + '"]'); if (bar) bar.classList.add('is-hot');
-    $('prf-read').innerHTML = tipFor(k);
+    pickYear(k);
   }
-  /* a mouse leaving clears the readout; a finger lifting leaves the year it chose */
-  function chartOut(ev) {
-    if (ev && ev.pointerType && ev.pointerType !== 'mouse') return;
-    var cross = $('prf-cross');
-    if (cross) cross.setAttribute('visibility', 'hidden');
-    Array.prototype.forEach.call(document.querySelectorAll('.prf-bar.is-hot'), function (b) { b.classList.remove('is-hot'); });
-    if ($('prf-read')) $('prf-read').innerHTML = READ_HINT;
-  }
+  /* the year a reader chose stays on screen until another is chosen: a readout that clears itself reads as a glitch */
   var resizeT = null;
   function chartResize() {
     clearTimeout(resizeT);
@@ -540,35 +725,62 @@
     if (!R.ok) { box.innerHTML = '<p class="prf-fine">' + esc(R.why) + '</p>'; return; }
     var used = R.pol.rows.filter(function (r) { return r.pct > 0; });
     /* the totals come first so they stay on a phone's screen; the intervals scroll */
-    var h = '<div class="prf-scroll"><table class="prf-t"><thead><tr><th scope="col">Year</th><th scope="col">Paid</th><th scope="col">After premium</th>'
-      + used.map(function (r) { return '<th scope="col" colspan="2">' + nw(LABELS[r.i]) + ' <span class="prf-th-s">' + r.pct + '%</span></th>'; }).join('')
-      + '</tr><tr class="prf-t-sub"><th></th><th></th><th></th>' + used.map(function () { return '<th scope="col">index</th><th scope="col">paid</th>'; }).join('') + '</tr></thead><tbody>';
+    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': ' : '') + esc(splitWords(R.setup)) + ', ' + R.setup.cov + '% coverage. What it would have paid, year by year.</caption><thead><tr><th scope="col">Year</th><th scope="col">Would have paid</th><th scope="col">After premium</th>'
+      + used.map(function (r) { return '<th scope="col" colspan="2">' + nw(LABELS[r.i]) + ' <span class="prf-th-s">' + R.setup.split[r.i] + '%</span></th>'; }).join('')
+      + '</tr><tr class="prf-t-sub"><td></td><td></td><td></td>' + used.map(function () { return '<th scope="col">% of normal</th><th scope="col">paid</th>'; }).join('') + '</tr></thead><tbody>';
     function row(hh, openYear) {
       var whole = hh.complete;
       return '<tr' + (openYear ? ' class="is-open"' : '') + '><th scope="row">' + hh.year + (openYear ? ' <span class="prf-th-s">' + (whole ? 'not in totals' : 'so far') + '</span>' : '') + '</th>'
         + '<td>' + (whole ? usd(hh.indemnity) : DASH) + '</td><td class="' + (whole && hh.net > 0 ? 'is-up' : '') + '">' + (whole ? signed(hh.net) : DASH) + '</td>'
-        + hh.cells.map(function (c) { return '<td>' + pctOfNormal(c.index) + '</td><td>' + (c.paid == null ? DASH : usd(c.paid)) + '</td>'; }).join('') + '</tr>';
+        + hh.cells.map(function (c) { return '<td' + (c.paid > 0 ? ' class="is-pay"' : '') + '>' + pctOfNormal(c.index) + '</td><td>' + (c.paid == null ? DASH : usd(c.paid)) + '</td>'; }).join('') + '</tr>';
     }
     R.open.slice().reverse().forEach(function (hh) { h += row(hh, true); });
     R.hist.slice().reverse().forEach(function (hh) { h += row(hh, false); });
     h += '</tbody></table></div>';
     if (R.open.length) h += '<p class="prf-fine">' + R.open.map(function (o) { return o.year; }).join(', ') + ' is listed and not counted: the figures above stop at ' + meta.years.last_complete
-      + ', so every setup is judged on the same years. A dash is an interval USDA has not published yet. These are the ' + meta.crop_year + ' record\u2019s figures and may differ from the index a ' + R.open[0].year + ' policy is paid on.</p>';
-    h += '<p class="prf-fine">Index is rain in the grid as a percent of its ' + meta.years.first + ' to ' + meta.years.last_complete + ' average for those two months. Below ' + R.setup.cov + ' it pays.</p>';
+      + ', so every setup is judged on the same years. A dash is an interval USDA has not published yet. These are the ' + meta.crop_year + ' record’s figures and may differ from the index a ' + R.open[0].year + ' policy is paid on.</p>';
+    h += '<p class="prf-fine">Percent of normal is precipitation in the grid over those two months, rain and snow together, against its ' + meta.years.first + ' to ' + meta.years.last_complete + ' average. This is the policy’s “index”. Below ' + R.setup.cov + ' it pays.</p>';
     box.innerHTML = h;
+  }
+  function download(name, text) {
+    var blob = new Blob([text], { type: 'text/csv' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function csvHead(extra) {
+    var c = county();
+    return '# AGSIST agsist.com/prf. Grid ' + S.grid + '; ' + c.n + ' County ' + S.st + '; ' + useName().replace(/,/g, '') + '; ' + S.acres + ' acres; share ' + S.share + '%. ' + extra
+      + ' Crop year ' + meta.crop_year + ' rates and county values on every year. Not what PRF paid in those years.\n';
   }
   function csv(R) {
     var used = R.pol.rows.filter(function (r) { return r.pct > 0; });
-    var out = [['year'].concat(used.reduce(function (a, r) { return a.concat([LABELS[r.i] + ' index', LABELS[r.i] + ' paid']); }, []), ['paid', 'producer premium', 'after premium'])];
-    R.hist.forEach(function (h) {
-      out.push([h.year].concat(h.cells.reduce(function (a, c) { return a.concat([pctOfNormal(c.index), c.paid]); }, []), [h.indemnity, R.pol.total.producer, h.net]));
+    var out = [['year'].concat(used.reduce(function (a, r) { return a.concat([LABELS[r.i] + ' percent of normal', LABELS[r.i] + ' would have paid']); }, []), ['would have paid', 'you pay (producer premium)', 'after premium', 'counted in totals'])];
+    function row(h, counted) {
+      out.push([h.year].concat(h.cells.reduce(function (a, c) { return a.concat([c.index == null ? '' : pctOfNormal(c.index), c.paid == null ? '' : c.paid]); }, []),
+        [h.indemnity == null ? '' : h.indemnity, R.pol.total.producer, h.net == null ? '' : h.net, counted ? 'yes' : 'no']));
+    }
+    R.hist.forEach(function (h) { row(h, true); });
+    R.open.forEach(function (h) { row(h, false); });
+    var head = csvHead((S.B ? 'Setup ' + S.on + '. ' : '') + R.setup.cov + '% coverage; productivity factor ' + R.setup.pf + '; ' + splitWords(R.setup).replace(/,/g, ';') + '.');
+    download('prf-grid-' + S.grid + (S.B ? '-setup-' + S.on.toLowerCase() : '') + '.csv', head + out.map(function (r) { return r.join(','); }).join('\n') + '\n');
+    track('prf_csv', { grid: S.grid, what: 'policy' });
+  }
+
+  /* ---------------------------------------------------------------- the policy, interval by interval */
+  function drawPolicy(R) {
+    var box = $('prf-pol');
+    if (!$('prf-pol-d').open) { box.innerHTML = ''; return; }
+    if (!R.ok) { box.innerHTML = '<p class="prf-fine">' + esc(R.why) + '</p>'; return; }
+    var c = county(), p = R.pol, t = p.total, pctSub = Math.round(R.subsidy * 100);
+    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + '. ' : '') + 'The policy as an insurer’s schedule lists it, one line for each interval.</caption><thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th><th scope="col">Protection</th><th scope="col">Premium per $100</th><th scope="col">Premium</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>';
+    p.rows.forEach(function (r) {
+      if (!(r.pct > 0)) return;
+      h += '<tr><th scope="row">' + LABELS[r.i] + '</th><td>' + R.setup.split[r.i] + '%</td><td>' + usd(r.protection) + '</td><td>' + usd2(r.rate * 100) + '</td><td>' + usd(r.premium) + '</td><td>' + usd(r.subsidy) + '</td><td>' + usd(r.producer) + '</td></tr>';
     });
-    var c = county(), head = '# AGSIST agsist.com/prf. Grid ' + S.grid + ', ' + c.n + ' County ' + S.st + ', ' + states[S.st].combos[S.use] + ', ' + R.setup.cov + '% coverage, productivity ' + R.setup.pf
-      + ', ' + S.acres + ' acres, share ' + S.share + '%. Crop year ' + meta.crop_year + ' rates on every year. Not what PRF paid in those years.\n';
-    var blob = new Blob([head + out.map(function (r) { return r.join(','); }).join('\n') + '\n'], { type: 'text/csv' });
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'prf-grid-' + S.grid + '.csv';
-    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-    track('prf_csv', { grid: S.grid });
+    h += '</tbody><tfoot><tr><th scope="row">Whole policy</th><td>100%</td><td>' + usd(t.protection) + '</td><td></td><td>' + usd(t.premium) + '</td><td>' + usd(t.subsidy) + '</td><td>' + usd(t.producer) + '</td></tr></tfoot></table></div>'
+      + '<p class="prf-fine">County base value for ' + esc(useName().toLowerCase()) + ' in ' + esc(c.n) + ' County: <b>' + usd2(R.cbv) + '</b> an acre. Protection per acre is that value times ' + R.setup.cov + '% coverage times a productivity factor of ' + R.setup.pf
+      + ': <b>' + usd2(p.protectionPerAcre) + '</b>. Protection in an interval is that, times ' + S.acres.toLocaleString('en-US') + ' acres, times your ' + S.share + '% share, times the interval’s part of the policy. USDA’s part of the premium is ' + pctSub + '% at ' + R.setup.cov + '% coverage. Each line is rounded to the dollar, as on USDA’s own calculator.</p>';
+    box.innerHTML = h;
   }
 
   /* ---------------------------------------------------------------- each interval on its own */
@@ -577,20 +789,67 @@
     if (!$('prf-rec-d').open) { box.innerHTML = ''; return; }
     var g = openGrid(S.grid), s = cur(), mm = minmax();
     if (!g || g.stale) { box.innerHTML = ''; return; }
-    var sub = meta.subsidy[String(s.cov)], ny = meta.years.last_complete - meta.years.first + 1;
-    var h = '<div class="prf-scroll"><table class="prf-t"><thead><tr><th scope="col">Interval</th><th scope="col">Paid in</th><th scope="col">Lowest index</th><th scope="col">Premium per $100</th><th scope="col">Your share per $100</th><th scope="col">Paid per $100, average year</th></tr></thead><tbody>';
+    var pctSub = Math.round(meta.subsidy[String(s.cov)] * 100), done = windowed(g.done), ys = Object.keys(done).map(Number), ny = ys.length;
+    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">Every interval at this grid, ' + Math.min.apply(null, ys) + ' to ' + Math.max.apply(null, ys) + ', at ' + s.cov + '% coverage.</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Pays under</th><th scope="col">Years it would have paid</th><th scope="col">Driest year, % of normal</th><th scope="col">Middle year, % of normal</th><th scope="col">Premium per $100</th><th scope="col">You pay per $100</th><th scope="col">Would have paid per $100, average year</th></tr></thead><tbody>';
     for (var i = 0; i < N; i++) {
-      var r = M.intervalRecord(g.done, i, s.cov, g.rates[s.cov][i]);
-      if (!mm.valid[i]) { h += '<tr class="is-off"><th scope="row">' + LABELS[i] + '</th><td colspan="5" class="prf-td-l">not offered in this county</td></tr>'; continue; }
+      var r = M.intervalRecord(done, i, s.cov, g.rates[s.cov][i]), mm_ = g.avgMm ? g.avgMm[i] : null;
+      if (!mm.valid[i]) { h += '<tr class="is-off"><th scope="row">' + LABELS[i] + '</th><td>' + inTxt(mm_) + '</td><td colspan="7" class="prf-td-l">not offered in this county</td></tr>'; continue; }
       h += '<tr' + (s.split[i] > 0 ? ' class="is-on"' : '') + '><th scope="row">' + LABELS[i] + '</th>'
-        + '<td>' + (r.years ? r.below + ' of ' + r.years : '—') + '</td>'
-        + '<td>' + (r.lowest ? pctOfNormal(r.lowest.index) + ' <span class="prf-th-s">' + r.lowest.year + '</span>' : '—') + '</td>'
-        + '<td>' + (r.ratePer100 == null ? '—' : usd2(r.ratePer100)) + '</td>'
-        + '<td>' + (r.ratePer100 == null ? '—' : usd2(r.ratePer100 * (1 - sub))) + '</td>'
-        + '<td>' + (r.costPer100 == null ? '—' : usd2(r.costPer100)) + '</td></tr>';
+        + '<td>' + inTxt(mm_) + '</td><td>' + (mm_ == null ? DASH : inTxt(mm_ * s.cov / 100)) + '</td>'
+        + '<td>' + (r.years ? r.below + ' of ' + r.years : DASH) + '</td>'
+        + '<td>' + (r.lowest ? pctOfNormal(r.lowest.index) + ' <span class="prf-th-s">' + r.lowest.year + '</span>' : DASH) + '</td>'
+        + '<td>' + (r.middle == null ? DASH : pctOfNormal(r.middle)) + '</td>'
+        + '<td>' + (r.ratePer100 == null ? DASH : usd2(r.ratePer100)) + '</td>'
+        + '<td>' + (r.ratePer100 == null ? DASH : usd2(lessPct(r.ratePer100, pctSub))) + '</td>'
+        + '<td>' + (r.costPer100 == null ? DASH : usd2(r.costPer100)) + '</td></tr>';
     }
-    h += '</tbody></table></div><p class="prf-fine">At ' + s.cov + '% coverage, per $100 of protection placed in that interval, over the ' + ny + ' years ' + meta.years.first + ' to ' + meta.years.last_complete
-      + '. Your share is the premium less USDA’s ' + Math.round(sub * 100) + '%. A dash is a rate USDA does not publish for this grid.</p>';
+    h += '</tbody></table></div><p class="prf-fine">Per $100 of protection placed in that interval, over the ' + ny + ' years shown. Normal precipitation is USDA’s ' + meta.years.first + ' to ' + meta.years.last_complete
+      + ' average for the grid, rain and snow together, and “pays under” is ' + s.cov + '% of it. You pay the premium less USDA’s ' + pctSub + '%. The middle year is the one with half the years drier and half wetter: where it sits well under 100, a few very wet years carry the average and the interval lands below its trigger often. A dash is a rate USDA does not publish for this grid.</p>';
+    box.innerHTML = h;
+  }
+
+  /* ---------------------------------------------------------------- the index, all eleven intervals */
+  function indexRows() {
+    var g = openGrid(S.grid), rows = [];
+    Object.keys(g.done).map(Number).sort(function (a, z) { return a - z; }).forEach(function (y) { rows.push({ year: y, v: g.done[y], open: false }); });
+    Object.keys(g.open).map(Number).sort(function (a, z) { return a - z; }).forEach(function (y) { rows.push({ year: y, v: g.open[y], open: true }); });
+    return rows;
+  }
+  function drawIndex() {
+    var box = $('prf-idx');
+    if (!$('prf-idx-d').open) { box.innerHTML = ''; return; }
+    var g = openGrid(S.grid), s = cur();
+    if (!g || g.stale) { box.innerHTML = ''; return; }
+    var h = '<p class="prf-fine"><button type="button" class="prf-btn" id="prf-idx-csv">Download this table (CSV)</button></p><div class="prf-scroll prf-scroll-tall"><table class="prf-t prf-t-idx"><caption class="prf-cap">Grid ' + S.grid + ': precipitation as a percent of normal, every interval, every year. Shaded cells are under ' + s.cov + ', where a policy at ' + s.cov + '% coverage pays.</caption><thead><tr><th scope="col">Year</th>'
+      + LABELS.map(function (l) { return '<th scope="col">' + nw(l) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    indexRows().reverse().forEach(function (r) {
+      h += '<tr' + (r.open ? ' class="is-open"' : '') + '><th scope="row">' + r.year + '</th>' + r.v.map(function (v) { return '<td' + (v != null && v < s.cov / 100 - 1e-12 ? ' class="is-pay"' : '') + '>' + pctOfNormal(v) + '</td>'; }).join('') + '</tr>';
+    });
+    h += '</tbody></table></div><p class="prf-fine">USDA’s ' + meta.crop_year + ' record for this grid. A dash is an interval not yet published.</p>';
+    box.innerHTML = h;
+  }
+  function csvIndex() {
+    var out = [['year'].concat(LABELS)];
+    indexRows().forEach(function (r) { out.push([r.year].concat(r.v.map(function (v) { return v == null ? '' : pctOfNormal(v); }))); });
+    download('prf-grid-' + S.grid + '-index.csv', '# AGSIST agsist.com/prf. Grid ' + S.grid + '. Precipitation as a percent of the ' + meta.years.first + ' to ' + meta.years.last_complete + ' average, by two-month interval. USDA RMA, crop year ' + meta.crop_year + ' record.\n'
+      + out.map(function (r) { return r.join(','); }).join('\n') + '\n');
+    track('prf_csv', { grid: S.grid, what: 'index' });
+  }
+
+  /* ---------------------------------------------------------------- the five coverage levels */
+  function drawLadder() {
+    var box = $('prf-lad');
+    if (!$('prf-lad-d').open) { box.innerHTML = ''; return; }
+    var s = cur();
+    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">The same acres and months at each coverage level' + (S.B ? ', setup ' + S.on : '') + '.</caption><thead><tr><th scope="col">Coverage</th><th scope="col">You pay, a year</th><th scope="col">USDA pays</th><th scope="col">Most it can pay</th><th scope="col">Years it would have paid</th><th scope="col">Average payout</th><th scope="col">Middle year</th></tr></thead><tbody>', why = '';
+    M.COVERAGE.forEach(function (cv) {
+      var R = compute({ cov: cv, pf: s.pf, split: s.split, even: s.even });
+      if (!R.ok) { why = R.why; h += '<tr><th scope="row">' + cv + '%</th><td colspan="6" class="prf-td-l">' + DASH + '</td></tr>'; return; }
+      var t = R.pol.total;
+      h += '<tr' + (cv === s.cov ? ' class="is-on"' : '') + '><th scope="row">' + cv + '%</th><td>' + usd(t.producer) + '</td><td>' + usd(t.subsidy) + ' <span class="prf-th-s">' + Math.round(R.subsidy * 100) + '%</span></td><td>' + usd(t.protection) + '</td><td>'
+        + R.sum.paidYears + ' of ' + R.sum.years + '</td><td>' + usd(R.sum.avgIndemnity) + '</td><td>' + usd(R.mid) + '</td></tr>';
+    });
+    h += '</tbody></table></div><p class="prf-fine">' + (why ? esc(why) + ' ' : '') + 'A lower coverage level pays less often and costs less, and USDA covers a larger part of a smaller bill. The record does not favor one level: at each, it pays back about the same part of the full premium.</p>';
     box.innerHTML = h;
   }
 
@@ -599,21 +858,23 @@
     var box = $('prf-cmp'), wrap = $('prf-cmp-wrap');
     wrap.hidden = !S.B;
     if (!S.B) { box.innerHTML = ''; return; }
-    function col(R, f) { return R.ok ? f(R) : '—'; }
+    function col(R, f) { return R.ok ? f(R) : DASH; }
     function months(st) { return st.split.map(function (p, i) { return p > 0 ? nw(LABELS[i] + ' ' + p + '%') : ''; }).filter(Boolean).join('<br>') || DASH; }
     var rows = [
-      ['Coverage, productivity', function (R) { return R.setup.cov + '%, ' + R.setup.pf; }, true],
+      ['Coverage, productivity factor', function (R) { return R.setup.cov + '%, ' + R.setup.pf; }, true],
       ['Months', function (R) { return months(R.setup); }, true],
       ['You pay, a year', function (R) { return usd(R.pol.total.producer); }],
-      ['Protection', function (R) { return usd(R.pol.total.protection); }],
-      ['Years it paid', function (R) { return R.sum.paidYears + ' of ' + R.sum.years; }],
-      ['Years it paid more than the premium', function (R) { return R.sum.aheadYears + ' of ' + R.sum.years; }],
-      ['Paid in an average year', function (R) { return usd(R.sum.avgIndemnity); }],
-      ['Paid back per $1 you pay', function (R) { return R.pol.total.producer > 0 ? usd2(R.sum.avgIndemnity / R.pol.total.producer) : '—'; }],
-      ['Most in one year', function (R) { return R.sum.best && R.sum.best.indemnity > 0 ? usd(R.sum.best.indemnity) + ' (' + R.sum.best.year + ')' : '—'; }],
+      ['Most it can pay in a year', function (R) { return usd(R.pol.total.protection); }],
+      ['Years it would have paid', function (R) { return R.sum.paidYears + ' of ' + R.sum.years; }],
+      ['Years it would have paid more than the premium', function (R) { return R.sum.aheadYears + ' of ' + R.sum.years; }],
+      ['Average payout a year', function (R) { return usd(R.sum.avgIndemnity); }],
+      ['Payout in the middle year', function (R) { return usd(R.mid); }],
+      ['Most in one year', function (R) { return R.sum.best && R.sum.best.indemnity > 0 ? usd(R.sum.best.indemnity) + ' (' + R.sum.best.year + ')' : DASH; }],
       ['Longest run with no payment', function (R) { return R.dry ? plural(R.dry.n, 'year', 'years') : 'none'; }]
     ];
-    var h = '<div class="prf-scroll"><table class="prf-t prf-t-cmp"><thead><tr><th scope="col"></th><th scope="col">Setup A</th><th scope="col">Setup B</th></tr></thead><tbody>';
+    var c = county();
+    var h = '<p class="prf-fine">Both setups: ' + esc(useName()) + ', ' + S.acres.toLocaleString('en-US') + ' acres, ' + S.share + '% share, grid ' + S.grid + ', ' + esc(c.n) + ' County.</p>'
+      + '<div class="prf-scroll"><table class="prf-t prf-t-cmp"><thead><tr><td></td><th scope="col">Setup A</th><th scope="col">Setup B</th></tr></thead><tbody>';
     rows.forEach(function (r) {
       var a = r[2] ? r[1]({ setup: S.A }) : col(RA, r[1]), b = r[2] ? r[1]({ setup: S.B }) : col(RB, r[1]);
       h += '<tr><th scope="row">' + r[0] + '</th><td>' + a + '</td><td>' + b + '</td></tr>';
@@ -622,11 +883,14 @@
     if (!RA.ok) h += '<p class="prf-fine">Setup A: ' + esc(RA.why) + '</p>';
     if (!RB.ok) h += '<p class="prf-fine">Setup B: ' + esc(RB.why) + '</p>';
     if (RA.ok && RB.ok) {
-      var d = RA.hist.map(function (ha, i) { return { year: ha.year, a: ha.indemnity, b: RB.hist[i].indemnity, d: ha.indemnity - RB.hist[i].indemnity }; });
-      var onlyA = d.filter(function (x) { return x.a > 0 && x.b === 0; }).length, onlyB = d.filter(function (x) { return x.b > 0 && x.a === 0; }).length;
-      var top = d.slice().sort(function (x, z) { return Math.abs(z.d) - Math.abs(x.d); }).slice(0, 5).filter(function (x) { return x.d !== 0; });
-      h += '<p class="prf-fine">Both setups are run over the same ' + RA.sum.years + ' years. Only A paid in ' + plural(onlyA, 'year', 'years') + '; only B paid in ' + plural(onlyB, 'year', 'years') + '.'
-        + (top.length ? ' Furthest apart: ' + top.map(function (x) { return x.year + ' (A ' + usd(x.a) + ', B ' + usd(x.b) + ')'; }).join('; ') + '.' : '') + '</p>';
+      if (RA.hist.length !== RB.hist.length) {
+        h += '<p class="prf-fine">The two setups are not counted over the same years here: USDA publishes no index for some interval in one of them. Compare the year table, not the totals.</p>';
+      } else {
+        var d = RA.hist.map(function (ha, i) { return { year: ha.year, a: ha.indemnity, b: RB.hist[i].indemnity }; });
+        var onlyA = d.filter(function (x) { return x.a > 0 && x.b === 0; }).length, onlyB = d.filter(function (x) { return x.b > 0 && x.a === 0; }).length, both = d.filter(function (x) { return x.a > 0 && x.b > 0; }).length;
+        h += '<p class="prf-fine">Both setups are run over the same ' + RA.sum.years + ' years, ' + RA.sum.first + ' to ' + RA.sum.last + '. Both would have paid in ' + plural(both, 'year', 'years') + ', only A in ' + onlyA + ', only B in ' + onlyB + ', neither in ' + (d.length - both - onlyA - onlyB)
+          + '. The table says what each would have done. It does not say which to buy: the months to insure are the ones when a dry spell costs you grass or hay.</p>';
+      }
     }
     box.innerHTML = h;
   }
@@ -642,10 +906,10 @@
       var id = r * 300 + cc + 1; ids.push(id);
       if (c.g.indexOf(id) >= 0) want[M.shardKey(id)] = 1;
     }
-    var grid = S.grid, co = S.co, tag = setupStr(s) + S.use + S.acres + S.share;
+    var grid = S.grid, co = S.co, tag = setupStr(s) + S.use + S.acres + S.share + S.win;
     box.innerHTML = '<p class="prf-fine">Reading the grids next door…</p>';
     Promise.all(Object.keys(want).map(loadShard)).then(function () {
-      if (grid !== S.grid || co !== S.co || tag !== setupStr(cur()) + S.use + S.acres + S.share || !$('prf-nb-d').open) return;
+      if (grid !== S.grid || co !== S.co || tag !== setupStr(cur()) + S.use + S.acres + S.share + S.win || !$('prf-nb-d').open) return;
       var h = '<div class="prf-nb-g">', shown = 0;
       ids.forEach(function (id) {
         if (id == null) { h += '<div class="prf-nb-c is-out"></div>'; return; }
@@ -654,24 +918,24 @@
         var R = compute(s); S.grid = keepG;
         shown++;
         h += '<' + (id === grid ? 'div' : 'button type="button" data-grid="' + id + '" data-county="' + stateFips() + S.co + '"') + ' class="prf-nb-c' + (id === grid ? ' is-here' : '') + '">'
-          + '<span class="prf-nb-id">' + id + (id === grid ? ' · yours' : '') + '</span>'
-          + (R.ok ? '<span class="prf-nb-v">' + usd(R.sum.avgIndemnity) + '</span><span class="prf-nb-x">a year on average · paid ' + R.sum.paidYears + ' of ' + R.sum.years + ' · you pay ' + usd(R.pol.total.producer) + '</span>'
+          + '<span class="prf-nb-id">' + id + (id === grid ? ' · shown above' : '') + '</span>'
+          + (R.ok ? '<span class="prf-nb-v">' + usd(R.pol.total.producer) + '</span><span class="prf-nb-x">you pay · would have paid in ' + R.sum.paidYears + ' of ' + R.sum.years + ' · average ' + usd(R.sum.avgIndemnity) + '</span>'
                   : '<span class="prf-nb-x">' + esc(R.why) + '</span>')
           + '</' + (id === grid ? 'div' : 'button') + '>';
       });
-      h += '</div><p class="prf-fine">The same policy on each grid’s own rain record and rates, ' + c.n + ' County values. North is up. Land that runs across a grid line can be insured in either grid or split between them; your agent can say which applies.</p>';
-      box.innerHTML = shown > 1 ? h : '<p class="prf-fine">Grid ' + grid + ' is the only grid in ' + esc(c.n) + ' County with PRF offers next to itself.</p>';
+      h += '</div><p class="prf-fine">The same policy on each grid’s own record and rates, with ' + esc(c.n) + ' County values. North is up. A grid that paid more also costs more: USDA sets each grid’s rate from its own record. Which grid a policy uses follows from where the land is. You pick a point inside the acres you insure, and land that lies across a grid line can go in either grid or be split between them (Rainfall Index Basic Provisions, section 6(f)).</p>';
+      box.innerHTML = shown > 1 ? h : '<p class="prf-fine">Grid ' + grid + ' has no neighbor in ' + esc(c.n) + ' County with PRF offers.</p>';
     }).catch(function () { box.innerHTML = '<p class="prf-fine">The neighboring grids did not load. Try again.</p>'; });
   }
 
   /* ---------------------------------------------------------------- the pinned line */
-  var answerSeen = true;
+  var answerSeen = true, lookNow = function () {};
   function drawBar(R) {
     var bar = $('prf-bar');
     if (R) {
       bar.setAttribute('data-ok', R.ok ? '1' : '0');
       bar.innerHTML = R.ok
-        ? 'You pay <b>' + usd(R.pol.total.producer) + '</b> \u00b7 paid <b>' + R.sum.paidYears + ' of ' + R.sum.years + '</b> yrs \u00b7 avg <b>' + usd(R.sum.avgIndemnity) + '</b>'
+        ? (S.touched ? '' : 'Example: ') + S.acres.toLocaleString('en-US') + ' ac · you pay <b>' + usd(R.pol.total.producer) + '</b> · paid <b>' + R.sum.paidYears + ' of ' + R.sum.years + '</b> yrs · avg <b>' + usd(R.sum.avgIndemnity) + '</b>'
         : esc(R.why);
     }
     var nav = document.querySelector('.nav');
@@ -692,6 +956,7 @@
     function ask() { if (!queued) { queued = true; (window.requestAnimationFrame || setTimeout)(look); } }
     window.addEventListener('scroll', ask, { passive: true });
     window.addEventListener('resize', ask);
+    lookNow = ask;
   }
 
   /* ---------------------------------------------------------------- draw everything */
@@ -702,61 +967,78 @@
     var RA = compute(S.A), RB = S.B ? compute(S.B) : null, onB = S.on === 'B' && !!RB, R = onB ? RB : RA;
     lastR = R;
     drawAnswer(R);
-    drawChart(R, S.B ? (onB ? RA : RB) : null, S.B ? (onB ? ['B', 'A'] : ['A', 'B']) : null);
-    drawYears(R); drawRecord(); drawCompare(RA, RB); drawNeighbors();
+    drawChart(RA, RB);
+    drawYears(R); drawPolicy(R); drawRecord(); drawIndex(); drawLadder(); drawCompare(RA, RB); drawNeighbors();
     $('prf-acts').hidden = !R.ok;
-    /* the policy in one line, for the printed sheet (the controls do not print) */
-    var c0 = county();
-    $('prf-printsum').textContent = states[S.st].combos[S.use] + ' \u00b7 ' + S.acres.toLocaleString('en-US') + ' acres \u00b7 share ' + S.share + '% \u00b7 coverage ' + R.setup.cov + '% \u00b7 productivity factor ' + R.setup.pf
-      + ' \u00b7 ' + (R.setup.split.map(function (p, i) { return p > 0 ? LABELS[i] + ' ' + p + '%' : ''; }).filter(Boolean).join(', ') || 'no months picked')
-      + ' \u00b7 ' + c0.n + ' County, ' + S.st + ' \u00b7 crop year ' + meta.crop_year + ' \u00b7 agsist.com/prf';
     drawBar(R);
-    $('prf-answer-h').textContent = S.B ? 'Setup ' + S.on + ': what the record says' : 'What the record says';
+    $('prf-answer-h').textContent = 'What it costs and what it would have paid' + (S.B ? ', setup ' + S.on : '');
     remember();
+    lookNow();
   }
 
   /* ---------------------------------------------------------------- wiring */
   function wire() {
-    $('prf-find').addEventListener('submit', function (e) { e.preventDefault(); find($('prf-q').value); });
+    $('prf-find').addEventListener('submit', function (e) { e.preventDefault(); $('prf-q').blur(); find($('prf-q').value); });
     $('prf-loc').addEventListener('click', function () {
       if (!navigator.geolocation) { say('This browser will not share a location. Type a ZIP.', true); return; }
+      var my = ++ticket;
       say('Asking the browser for your location…');
-      navigator.geolocation.getCurrentPosition(function (p) { atPoint(p.coords.latitude, p.coords.longitude, 'your location', null); },
-        function () { say('The browser did not share a location. Type a ZIP, or pick by state and county.', true); }, { timeout: 12000, maximumAge: 600000 });
+      track('prf_find', { by: 'location' });
+      navigator.geolocation.getCurrentPosition(function (p) { if (my === ticket) atPoint(p.coords.latitude, p.coords.longitude, 'your location', {}); },
+        function () { if (my === ticket) say('The browser did not share a location. Type a ZIP, or pick by state and county.', true); }, { timeout: 12000, maximumAge: 600000 });
     });
-    $('prf-eg').addEventListener('click', function () { goGrid(30454, { county: '55005' }); });
+    $('prf-eg').addEventListener('click', function () { S.touched = false; goGrid(30454, { county: '55005' }); track('prf_find', { by: 'example' }); });
     $('prf-b-st').addEventListener('change', fillBrowseCounties);
     $('prf-b-co').addEventListener('change', fillBrowseGrids);
     root.addEventListener('click', function (e) {
-      var t = e.target.closest ? e.target.closest('[data-grid]') : null;
-      if (t && !t.closest('#prf-map')) { goGrid(+t.getAttribute('data-grid'), { county: t.getAttribute('data-county') }, true); return; }
-      t = e.target.closest ? e.target.closest('[data-jump]') : null;
-      if (t) { var d = $(t.getAttribute('data-jump')); if (d) { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+      var cl = function (sel) { return e.target.closest ? e.target.closest(sel) : null; };
+      var t = cl('[data-asgrid]');
+      if (t) { goGrid(+t.getAttribute('data-asgrid'), {}).then(function (ok) { if (ok) toGrid(); }); return; }
+      t = cl('[data-choice]');
+      if (t && choiceGo) { var r = choices[+t.getAttribute('data-choice')]; if (r) choiceGo(r); return; }
+      t = cl('[data-grid]');
+      if (t && !t.closest('#prf-map')) { goGrid(+t.getAttribute('data-grid'), { county: t.getAttribute('data-county') }, true).then(function (ok) { if (ok && t.closest('#prf-b-grids')) toGrid(); }); return; }
+      t = cl('[data-jump]');
+      if (t) { var d = $(t.getAttribute('data-jump')); if (d) { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } return; }
+      t = cl('[data-win]');
+      if (t) { S.win = +t.getAttribute('data-win'); render(); track('prf_window', { years: S.win || 'all' }); return; }
+      t = cl('[data-yr]');
+      if (t && chartState) { pickYear(chartState.k == null ? (+t.getAttribute('data-yr') > 0 ? 0 : chartState.hist.length - 1) : chartState.k + +t.getAttribute('data-yr')); return; }
+      if (cl('#prf-idx-csv')) { csvIndex(); return; }
+      t = cl('a[data-out]');
+      if (t) track('prf_out', { to: t.getAttribute('data-out') });
     });
     function mapPick(e) {
       var t = e.target.closest ? e.target.closest('[data-grid]') : null;
       if (!t) return;
       if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
       e.preventDefault();
-      goGrid(+t.getAttribute('data-grid'), { county: stateFips() + S.co }, false);
+      goGrid(+t.getAttribute('data-grid'), { county: S.co ? stateFips() + S.co : null }, true);
     }
     $('prf-map').addEventListener('click', mapPick);
     $('prf-map').addEventListener('keydown', mapPick);
     $('prf-co').addEventListener('change', function () {
-      var v = this.value; S.st = stateByFips(v.slice(0, 2)).st; S.co = v.slice(2); afterGrid();
+      var v = this.value; if (!v) return;
+      S.st = stateByFips(v.slice(0, 2)).st; S.co = v.slice(2); S.coHow = 'named'; afterGrid();
     });
-    $('prf-use').addEventListener('change', function () { S.use = +this.value; ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); }); render(); });
-    $('prf-acres').addEventListener('input', function () { var v = Math.round(+this.value); S.acres = v > 0 && v <= 5000000 ? v : 0; render(); });
-    $('prf-share').addEventListener('input', function () { var v = Math.round(+this.value); S.share = v >= 1 && v <= 100 ? v : 100; render(); });
-    $('prf-pf').addEventListener('input', function () { cur().pf = +this.value; render(); });
-    $('prf-pf-n').addEventListener('input', function () { var v = Math.round(+this.value); if (v >= 60 && v <= 150) { cur().pf = v; render(); } });
-    $('prf-pf-n').addEventListener('blur', function () { this.value = cur().pf; });
-    $('prf-cov').addEventListener('click', function (e) { var b = e.target.closest ? e.target.closest('[data-cov]') : null; if (b) { cur().cov = +b.getAttribute('data-cov'); render(); } });
+    function touch() { S.touched = true; }
+    $('prf-use').addEventListener('change', function () { S.use = +this.value; touch(); ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); }); render(); });
+    /* a number box that is tapped is about to be replaced, not added to: 100 then "3000" must not read 1003000 */
+    ['prf-acres', 'prf-share', 'prf-pf-n'].forEach(function (id) { $(id).addEventListener('focus', function () { var el = this; setTimeout(function () { try { el.select(); } catch (e) {} }, 0); }); });
+    $('prf-acres').addEventListener('input', function () { var v = Math.round(+this.value); S.acres = v > 0 && v <= 5000000 ? v : 0; touch(); render(); });
+    $('prf-acres').addEventListener('blur', function () { this.value = S.acres || ''; });
+    $('prf-share').addEventListener('input', function () { var v = +this.value; S.share = this.value !== '' && v >= 1 && v <= 100 ? Math.round(v) : null; touch(); render(); });
+    $('prf-share').addEventListener('blur', function () { if (S.share != null) this.value = S.share; });
+    $('prf-pf').addEventListener('input', function () { cur().pf = +this.value; touch(); render(); });
+    $('prf-pf-n').addEventListener('input', function () { var v = +this.value; cur().pf = this.value !== '' && v >= 60 && v <= 150 ? Math.round(v) : NaN; touch(); render(); });
+    $('prf-pf-n').addEventListener('blur', function () { if (!(cur().pf >= 60)) { cur().pf = 100; render(); } this.value = cur().pf; });
+    $('prf-cov').addEventListener('click', function (e) { var b = e.target.closest ? e.target.closest('[data-cov]') : null; if (b) { cur().cov = +b.getAttribute('data-cov'); touch(); render(); } });
     var body = $('prf-iv-body');
     body.addEventListener('change', function (e) {
       var t = e.target;
       if (t.hasAttribute('data-iv-on')) toggleIv(+t.getAttribute('data-iv-on'), t.checked);
     });
+    body.addEventListener('focusin', function (e) { var t = e.target; if (t.hasAttribute && t.hasAttribute('data-iv-pct')) setTimeout(function () { try { t.select(); } catch (er) {} }, 0); });
     /* A percent being typed: an empty box or a zero is a number half typed,
        not "turn this month off". The month goes off when the box is left that way. */
     body.addEventListener('input', function (e) {
@@ -778,19 +1060,31 @@
       var inp = body.querySelector('[data-iv-pct="' + i + '"]'); if (inp) inp.value = v;
       setPct(i, v);
     });
-    $('prf-even').addEventListener('click', function () { var s = cur(); s.even = true; rebalance(s); render(); });
-    $('prf-clear').addEventListener('click', function () { var s = cur(); s.split = blank(); s.even = true; render(); });
-    $('prf-addb').addEventListener('click', function () { S.B = { cov: S.A.cov, pf: S.A.pf, split: S.A.split.slice(), even: S.A.even }; S.on = 'B'; render(); track('prf_compare', {}); $('prf-setup-h').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    $('prf-even').addEventListener('click', function () {
+      var s = cur(), tot = $('prf-iv-total'); s.even = true; S.touched = true;
+      var ok = rebalance(s); render();
+      if (!ok) { tot.textContent = 'These months cannot be split to 100% within this county’s limits. Add or drop a pair.'; tot.classList.add('is-bad'); }
+    });
+    var undo = null;
+    $('prf-clear').addEventListener('click', function () {
+      var s = cur(), b = this;
+      if (undo) { s.split = undo; undo = null; b.textContent = 'Clear'; render(); return; }
+      undo = s.split.slice(); s.split = blank(); s.even = true; S.touched = true; render();
+      b.textContent = 'Undo clear'; setTimeout(function () { undo = null; b.textContent = 'Clear'; }, 8000);
+    });
+    $('prf-addb').addEventListener('click', function () { S.B = { cov: S.A.cov, pf: S.A.pf, split: S.A.split.slice(), even: S.A.even }; S.on = 'B'; S.touched = true; render(); track('prf_compare', {}); $('prf-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('prf-tab-a').addEventListener('click', function () { S.on = 'A'; render(); });
     $('prf-tab-b').addEventListener('click', function () { S.on = 'B'; render(); });
     $('prf-dropb').addEventListener('click', function () { S.B = null; S.on = 'A'; render(); });
-    ['prf-years-d', 'prf-rec-d', 'prf-nb-d'].forEach(function (id) { $(id).addEventListener('toggle', render); });
+    ['prf-years-d', 'prf-pol-d', 'prf-rec-d', 'prf-idx-d', 'prf-lad-d', 'prf-nb-d'].forEach(function (id) {
+      $(id).addEventListener('toggle', function () { if (this.open) track('prf_open', { what: id.replace(/^prf-|-d$/g, '') }); render(); });
+    });
     watchAnswer();
     var ch = $('prf-chart');
-    ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove); ch.addEventListener('pointerleave', chartOut);
+    ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove);
     window.addEventListener('resize', chartResize);
     $('prf-csv').addEventListener('click', function () { if (lastR && lastR.ok) csv(lastR); });
-    $('prf-print').addEventListener('click', function () { $('prf-years-d').open = true; render(); window.print(); });
+    $('prf-print').addEventListener('click', function () { $('prf-years-d').open = true; $('prf-pol-d').open = true; render(); track('prf_print', { grid: S.grid }); window.print(); });
     $('prf-share-b').addEventListener('click', function () {
       var u = shareUrl(), b = this, done = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy a link to this'; }, 2200); };
       track('prf_share', { grid: S.grid });
@@ -800,30 +1094,49 @@
   }
 
   function start() {
-    var st = $('prf-status');
+    var st = $('prf-status'), o = saved();
+    st.textContent = 'Loading the rain record…';
+    /* a link or a return visit is about to draw the whole tool: hold the room for it so the page below does not jump */
+    if (o && o.g) $('prf-app').style.minHeight = '100vh';
     getJSON(SRC + 'meta.json').then(function (m) {
       meta = m;
       if (!meta || !meta.states || !meta.years || !meta.subsidy) throw new Error('meta');
       $('prf-b-st').innerHTML = '<option value="">Pick a state</option>' + meta.states.map(function (s) { return '<option value="' + s.st + '">' + esc(s.name) + '</option>'; }).join('');
       wire();
-      st.hidden = true;
+      st.hidden = true; st.textContent = '';
       $('prf-app').hidden = false;
-      var o = saved();
       if (o && o.g) {
-        var a = parseSetup(o.a), b = parseSetup(o.b);
-        if (a) S.A = a;
-        if (b) S.B = b;
-        if (o.u != null && +o.u >= 0 && +o.u < 7) S.use = +o.u;
-        if (+o.ac > 0) S.acres = Math.round(+o.ac);
-        if (+o.sh >= 1 && +o.sh <= 100) S.share = Math.round(+o.sh);
+        var bad = [], a = parseSetup(o.a), b = o.b ? parseSetup(o.b) : null, nyears = meta.years.last_complete - meta.years.first + 1;
+        if (a) S.A = a; else if (o.fromLink && o.a != null) bad.push('the months and coverage');
+        if (b) S.B = b; else if (o.fromLink && o.b) bad.push('the second setup');
+        if (o.u != null) { if (/^\d$/.test(String(o.u)) && +o.u < 7) S.use = +o.u; else if (o.fromLink) bad.push('the use of the land'); }
+        if (o.ac != null) { if (+o.ac >= 1 && +o.ac <= 5000000) S.acres = Math.round(+o.ac); else if (o.fromLink) bad.push('the acres'); }
+        if (o.sh != null) { if (+o.sh >= 1 && +o.sh <= 100) S.share = Math.round(+o.sh); else if (o.fromLink) bad.push('the share'); }
+        if (o.w != null && o.w !== '' && +o.w !== 0) { if (WINDOWS.indexOf(+o.w) > 0 && +o.w < nyears) S.win = +o.w; else if (o.fromLink) bad.push('the years counted'); }
+        S.touched = o.fromLink ? true : !!o.t;
         var pt = o.pt && isFinite(o.pt.lat) && isFinite(o.pt.lon) ? o.pt : null;
-        goGrid(+o.g, { county: o.c, pt: pt });
+        goGrid(/^\d{1,5}$/.test(String(o.g)) ? +o.g : NaN, { county: o.c, pt: pt }).then(function (ok) {
+          $('prf-app').style.minHeight = '';
+          if (ok && bad.length) say('This link’s figures for ' + bad.join(', ') + ' could not be read, so the page’s own are shown for ' + (bad.length > 1 ? 'those' : 'that') + '.', true);
+          if (ok && o.fromLink) { toGrid(); lookNow(); }
+        });
+      } else if (o && (o.c || o.st)) {
+        /* a link to a county or a state: open the picker there */
+        var code = /^\d{5}$/.test(String(o.c || '')) ? String(o.c) : null, s0 = code ? stateByFips(code.slice(0, 2)) : null;
+        if (!s0 && o.st) meta.states.forEach(function (s) { if (s.st === String(o.st).toUpperCase()) s0 = s; });
+        if (s0) {
+          document.querySelector('.prf-browse').open = true;
+          $('prf-b-st').value = s0.st;
+          fillBrowseCounties().then(function () { if (code && states[s0.st] && states[s0.st].counties[code.slice(2)]) { $('prf-b-co').value = code.slice(2); fillBrowseGrids(); } });
+        }
       }
     }).catch(function () {
+      $('prf-app').style.minHeight = '';
+      st.hidden = false;
       st.textContent = 'The rain record did not load, so the calculator is off. Reload the page, or try again in a few minutes. The rules and dates below do not need it.';
       st.classList.add('is-bad');
     });
   }
-  window.AgPrf = { state: S, compute: compute, find: find, goGrid: goGrid, shareUrl: shareUrl };
+  window.AgPrf = { state: S, compute: compute, find: find, goGrid: goGrid, shareUrl: shareUrl, countyAtPoint: countyAtPoint };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

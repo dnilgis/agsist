@@ -1,0 +1,553 @@
+{
+ "v": 1,
+ "crop_year": 2027,
+ "built_from": "2026-10-12T03:16:13Z",
+ "years": {
+  "first": 1951,
+  "last": 2025,
+  "n": 75
+ },
+ "payback": {
+  "what": "average payment factor over the complete years, divided by the premium rate: dollars back per $1 of full premium",
+  "all": {
+   "n": 722380,
+   "p05": 0.78,
+   "mid": 0.87,
+   "p95": 0.89
+  },
+  "by_coverage": {
+   "70": {
+    "n": 144476,
+    "p05": 0.75,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "75": {
+    "n": 144476,
+    "p05": 0.76,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "80": {
+    "n": 144476,
+    "p05": 0.78,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "85": {
+    "n": 144476,
+    "p05": 0.79,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "90": {
+    "n": 144476,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   }
+  },
+  "by_interval_at_90": [
+   {
+    "interval": "Jan-Feb",
+    "n": 13414,
+    "p05": 0.82,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Feb-Mar",
+    "n": 13307,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Mar-Apr",
+    "n": 13307,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Apr-May",
+    "n": 13150,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "May-Jun",
+    "n": 12896,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Jun-Jul",
+    "n": 12913,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Jul-Aug",
+    "n": 12809,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Aug-Sep",
+    "n": 12860,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Sep-Oct",
+    "n": 13150,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Oct-Nov",
+    "n": 13256,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Nov-Dec",
+    "n": 13414,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   }
+  ]
+ },
+ "intervals_at_90": [
+  {
+   "interval": "Jan-Feb",
+   "grids": 13414,
+   "mid_rate_per_100": 17.4,
+   "mid_years_below": 35,
+   "mid_normal_in": 3.08
+  },
+  {
+   "interval": "Feb-Mar",
+   "grids": 13307,
+   "mid_rate_per_100": 16,
+   "mid_years_below": 35,
+   "mid_normal_in": 3.44
+  },
+  {
+   "interval": "Mar-Apr",
+   "grids": 13307,
+   "mid_rate_per_100": 14.64,
+   "mid_years_below": 34,
+   "mid_normal_in": 4.53
+  },
+  {
+   "interval": "Apr-May",
+   "grids": 13150,
+   "mid_rate_per_100": 14.43,
+   "mid_years_below": 34,
+   "mid_normal_in": 5.77
+  },
+  {
+   "interval": "May-Jun",
+   "grids": 12896,
+   "mid_rate_per_100": 13.66,
+   "mid_years_below": 34,
+   "mid_normal_in": 6.57
+  },
+  {
+   "interval": "Jun-Jul",
+   "grids": 12913,
+   "mid_rate_per_100": 13.79,
+   "mid_years_below": 33,
+   "mid_normal_in": 5.98
+  },
+  {
+   "interval": "Jul-Aug",
+   "grids": 12809,
+   "mid_rate_per_100": 13.59,
+   "mid_years_below": 33,
+   "mid_normal_in": 5.42
+  },
+  {
+   "interval": "Aug-Sep",
+   "grids": 12860,
+   "mid_rate_per_100": 15.99,
+   "mid_years_below": 35,
+   "mid_normal_in": 5.15
+  },
+  {
+   "interval": "Sep-Oct",
+   "grids": 13150,
+   "mid_rate_per_100": 19.11,
+   "mid_years_below": 36,
+   "mid_normal_in": 4.93
+  },
+  {
+   "interval": "Oct-Nov",
+   "grids": 13256,
+   "mid_rate_per_100": 18.3,
+   "mid_years_below": 36,
+   "mid_normal_in": 4.22
+  },
+  {
+   "interval": "Nov-Dec",
+   "grids": 13414,
+   "mid_rate_per_100": 18.91,
+   "mid_years_below": 36,
+   "mid_normal_in": 3.63
+  }
+ ],
+ "limits": {
+  "jan_feb_max": {
+   "25": 3067,
+   "50": 3
+  },
+  "jan_feb_not_25": [
+   "Imperial, CA",
+   "Riverside, CA",
+   "San Bernardino, CA"
+  ],
+  "min_pct": [
+   10
+  ],
+  "other_max": [
+   50,
+   60,
+   70
+  ]
+ },
+ "grids_in_more_than_one_county": 9601,
+ "native_sod_state_counties": 454,
+ "states": [
+  {
+   "st": "AL",
+   "name": "Alabama",
+   "counties": 67,
+   "grids": 241
+  },
+  {
+   "st": "AZ",
+   "name": "Arizona",
+   "counties": 15,
+   "grids": 499
+  },
+  {
+   "st": "AR",
+   "name": "Arkansas",
+   "counties": 75,
+   "grids": 237
+  },
+  {
+   "st": "CA",
+   "name": "California",
+   "counties": 58,
+   "grids": 750
+  },
+  {
+   "st": "CO",
+   "name": "Colorado",
+   "counties": 63,
+   "grids": 513
+  },
+  {
+   "st": "CT",
+   "name": "Connecticut",
+   "counties": 9,
+   "grids": 36
+  },
+  {
+   "st": "DE",
+   "name": "Delaware",
+   "counties": 3,
+   "grids": 21
+  },
+  {
+   "st": "FL",
+   "name": "Florida",
+   "counties": 67,
+   "grids": 269
+  },
+  {
+   "st": "GA",
+   "name": "Georgia",
+   "counties": 159,
+   "grids": 276
+  },
+  {
+   "st": "ID",
+   "name": "Idaho",
+   "counties": 44,
+   "grids": 461
+  },
+  {
+   "st": "IL",
+   "name": "Illinois",
+   "counties": 102,
+   "grids": 289
+  },
+  {
+   "st": "IN",
+   "name": "Indiana",
+   "counties": 92,
+   "grids": 194
+  },
+  {
+   "st": "IA",
+   "name": "Iowa",
+   "counties": 99,
+   "grids": 299
+  },
+  {
+   "st": "KS",
+   "name": "Kansas",
+   "counties": 105,
+   "grids": 425
+  },
+  {
+   "st": "KY",
+   "name": "Kentucky",
+   "counties": 120,
+   "grids": 215
+  },
+  {
+   "st": "LA",
+   "name": "Louisiana",
+   "counties": 64,
+   "grids": 236
+  },
+  {
+   "st": "ME",
+   "name": "Maine",
+   "counties": 16,
+   "grids": 170
+  },
+  {
+   "st": "MD",
+   "name": "Maryland",
+   "counties": 23,
+   "grids": 72
+  },
+  {
+   "st": "MA",
+   "name": "Massachusetts",
+   "counties": 14,
+   "grids": 57
+  },
+  {
+   "st": "MI",
+   "name": "Michigan",
+   "counties": 83,
+   "grids": 338
+  },
+  {
+   "st": "MN",
+   "name": "Minnesota",
+   "counties": 87,
+   "grids": 448
+  },
+  {
+   "st": "MS",
+   "name": "Mississippi",
+   "counties": 82,
+   "grids": 228
+  },
+  {
+   "st": "MO",
+   "name": "Missouri",
+   "counties": 114,
+   "grids": 363
+  },
+  {
+   "st": "MT",
+   "name": "Montana",
+   "counties": 56,
+   "grids": 769
+  },
+  {
+   "st": "NE",
+   "name": "Nebraska",
+   "counties": 93,
+   "grids": 376
+  },
+  {
+   "st": "NV",
+   "name": "Nevada",
+   "counties": 17,
+   "grids": 513
+  },
+  {
+   "st": "NH",
+   "name": "New Hampshire",
+   "counties": 10,
+   "grids": 61
+  },
+  {
+   "st": "NJ",
+   "name": "New Jersey",
+   "counties": 21,
+   "grids": 54
+  },
+  {
+   "st": "NM",
+   "name": "New Mexico",
+   "counties": 33,
+   "grids": 526
+  },
+  {
+   "st": "NY",
+   "name": "New York",
+   "counties": 62,
+   "grids": 281
+  },
+  {
+   "st": "NC",
+   "name": "North Carolina",
+   "counties": 100,
+   "grids": 269
+  },
+  {
+   "st": "ND",
+   "name": "North Dakota",
+   "counties": 53,
+   "grids": 390
+  },
+  {
+   "st": "OH",
+   "name": "Ohio",
+   "counties": 88,
+   "grids": 211
+  },
+  {
+   "st": "OK",
+   "name": "Oklahoma",
+   "counties": 77,
+   "grids": 340
+  },
+  {
+   "st": "OR",
+   "name": "Oregon",
+   "counties": 36,
+   "grids": 503
+  },
+  {
+   "st": "PA",
+   "name": "Pennsylvania",
+   "counties": 67,
+   "grids": 243
+  },
+  {
+   "st": "RI",
+   "name": "Rhode Island",
+   "counties": 5,
+   "grids": 13
+  },
+  {
+   "st": "SC",
+   "name": "South Carolina",
+   "counties": 46,
+   "grids": 155
+  },
+  {
+   "st": "SD",
+   "name": "South Dakota",
+   "counties": 66,
+   "grids": 413
+  },
+  {
+   "st": "TN",
+   "name": "Tennessee",
+   "counties": 95,
+   "grids": 232
+  },
+  {
+   "st": "TX",
+   "name": "Texas",
+   "counties": 254,
+   "grids": 1120
+  },
+  {
+   "st": "UT",
+   "name": "Utah",
+   "counties": 29,
+   "grids": 399
+  },
+  {
+   "st": "VT",
+   "name": "Vermont",
+   "counties": 14,
+   "grids": 64
+  },
+  {
+   "st": "VA",
+   "name": "Virginia",
+   "counties": 98,
+   "grids": 219
+  },
+  {
+   "st": "WA",
+   "name": "Washington",
+   "counties": 39,
+   "grids": 377
+  },
+  {
+   "st": "WV",
+   "name": "West Virginia",
+   "counties": 55,
+   "grids": 140
+  },
+  {
+   "st": "WI",
+   "name": "Wisconsin",
+   "counties": 72,
+   "grids": 312
+  },
+  {
+   "st": "WY",
+   "name": "Wyoming",
+   "counties": 23,
+   "grids": 501
+  }
+ ],
+ "example": {
+  "grid": 30454,
+  "county": "Barron County, Wisconsin",
+  "acres": 100,
+  "coverage": 90,
+  "months": "April to May and June to July, half in each",
+  "grazing": {
+   "use": "Grazing",
+   "cbv": 32.8,
+   "premium": 305,
+   "usda": 155,
+   "you": 150,
+   "per_acre": 1.5,
+   "protection": 2952,
+   "years": 75,
+   "paid_years": 44,
+   "ahead_years": 33,
+   "avg": 261
+  },
+  "hay": {
+   "use": "Haying, non-irrigated",
+   "cbv": 230,
+   "premium": 2136,
+   "usda": 1089,
+   "you": 1047,
+   "per_acre": 10.47,
+   "protection": 20700,
+   "years": 75,
+   "paid_years": 44,
+   "ahead_years": 33,
+   "avg": 1829
+  }
+ }
+}
