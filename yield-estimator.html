@@ -133,6 +133,8 @@
 
 .ye-disclaimer{font-size:0.763rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important;} }
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/yield-estimator#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Yield Estimator","item":"https://agsist.com/yield-estimator"}]}]}</script>
 </head>

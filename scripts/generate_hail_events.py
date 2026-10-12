@@ -540,6 +540,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         ".he-ol{line-height:1.8;padding-left:1.4rem}\n"
         "details{border-top:1px solid var(--border,rgba(132,160,168,.12));padding:.7rem 0}summary{cursor:pointer;font-weight:600}details p{line-height:1.7;font-size:.92rem}\n"
         ".he-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
+        ":where(.method-note){font-size:.85rem;color:var(--text-dim,#8a948f)}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<nav class=\"he-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> › <a href=\"/hail-map\">Hail Map</a> › <a href=\"/hail/\">Storm Log</a> › " + esc(nd) + "</nav>\n"
         "<h1>Hail on " + esc(nd) + ": where it hit</h1>\n"

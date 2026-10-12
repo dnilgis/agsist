@@ -211,6 +211,8 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 @media(max-width:640px){#g-method{min-height:40px}.gdu-eyebrow{display:none}}
 .gdu-manual{margin-top:.8rem;border-top:1px solid var(--border);padding-top:.2rem}
 .gdu-manual summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:.9rem;font-weight:600;color:var(--gold)}
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
 </head>
 <body>

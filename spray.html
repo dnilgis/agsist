@@ -931,6 +931,8 @@ details.fold>summary>.nozzle-card-head{font-size:1rem}
   .pg > .sidebar > .sc-live{order:0}
   .pg > div:first-child{order:1}
 }
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}

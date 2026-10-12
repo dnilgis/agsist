@@ -172,6 +172,8 @@ html[data-theme="light"]{--pd-red:#b3432c}
 }
 .pd-source { font-size:0.763rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
 .pd-source a { color:var(--gold); text-decoration:none; }
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AGSIST Corn & Soybean Planting Date Calculator","url":"https://agsist.com/planting-date","applicationCategory":"Agricultural planting date calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Free corn and soybean planting date tool for US growers: live soil temperatures at your location, last-frost odds, yield penalty by planting week, and GDU accumulation by planting date.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Live soil temperature at your location","Last spring frost probability by zone","Yield penalty by planting date","GDU accumulation by planting date","Soil temperature planting guide"]},{"@type":"BreadcrumbList","@id":"https://agsist.com/planting-date#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Planting Date Calculator","item":"https://agsist.com/planting-date"}]}]}</script>
 </head>
