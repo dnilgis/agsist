@@ -1,0 +1,127 @@
+name: prf
+
+# The data behind /prf: USDA RMA's Pasture, Rangeland, Forage rainfall index.
+#
+#   fetch   scripts/fetch_prf.py   the Actuarial Data Master (rates, county base
+#                                  values, limits, dates; about 1.2 GB, no key)
+#                                  and RMA's index service, one call per grid
+#   check   scripts/check_prf_rma.mjs   prices a dozen policies from the files
+#                                  just written and asks RMA's own tool for the
+#                                  same ones. A difference stops the run before
+#                                  the commit: the site keeps what it had.
+#
+# A refresh asks only for the years still open and takes about ten minutes. A
+# full run asks for every grid's whole history (about 13,400 calls) and is
+# needed once a year, when the new crop year's ADM arrives at the end of August;
+# fetch_prf.py does it by itself when the crop year changes.
+#
+# Weekly, because RMA publishes an interval's final index roughly once a month
+# and on no fixed day. Off the hour (rule 27).
+#
+# The run log is also pushed to the `probe-prf` branch as prf-run.log, because
+# run logs cannot be read from the sandbox this is maintained in.
+on:
+  schedule:
+    - cron: "23 10 * * 3"      # Wednesdays, 10:23 UTC
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Refetch every grid's whole history (type: yes)"
+        required: false
+        default: ""
+      year:
+        description: "Crop year of the ADM. Blank = newest that exists."
+        required: false
+        default: ""
+      limit:
+        description: "Trial: only the first N grids, written to data/prf-trial and NOT committed"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prf
+  cancel-in-progress: false
+
+jobs:
+  prf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: The arithmetic and the fetcher, offline, before anything is asked
+        run: |
+          python scripts/fetch_prf.py --selftest
+          node --test test/prf-math.test.mjs test/prf-check.test.mjs
+
+      - name: Fetch
+        run: |
+          set -o pipefail
+          ARGS=""
+          if [ "${{ github.event.inputs.full }}" = "yes" ]; then ARGS="$ARGS --full"; fi
+          if [ -n "${{ github.event.inputs.year }}" ]; then ARGS="$ARGS --year ${{ github.event.inputs.year }}"; fi
+          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ github.event.inputs.limit }}"; fi
+          python scripts/fetch_prf.py $ARGS 2>&1 | tee prf-run.log
+
+      - name: Against RMA's own tool
+        if: github.event.inputs.limit == ''
+        run: |
+          set -o pipefail
+          node scripts/check_prf_rma.mjs --random 8 2>&1 | tee -a prf-run.log
+
+      - name: Site budget
+        if: github.event.inputs.limit == ''
+        run: |
+          set -o pipefail
+          python scripts/check_site_budget.py 2>&1 | tee -a prf-run.log
+
+      - name: Commit
+        if: github.event.inputs.limit == ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/prf
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          C=$(python - <<'PY'
+          import json
+          m = json.load(open('data/prf/meta.json'))
+          c = json.load(open('data/prf/check.json'))
+          o = m['years']['open']
+          print("crop year %d, %d grids, %d counties, complete to %d, open %s; RMA check %d of %d reached agree" % (
+              m['crop_year'], m['counts']['grids'], m['counts']['counties'], m['years']['last_complete'],
+              ",".join(sorted(o)) or "none", c['agreed'], c['reached']))
+          PY
+          )
+          git commit -q -m "data: prf ($C)"
+          # other workflows commit to main all day; rebase and retry
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((30 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Publish the run log to the probe-prf branch
+        if: always()
+        run: |
+          mkdir -p /tmp/prf-log && cd /tmp/prf-log
+          cp "$GITHUB_WORKSPACE/prf-run.log" . 2>/dev/null || echo "no log was written" > prf-run.log
+          cp "$GITHUB_WORKSPACE/data/prf/meta.json" . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/data/prf/check.json" . 2>/dev/null || true
+          if [ -d "$GITHUB_WORKSPACE/data/prf-trial" ]; then cp -r "$GITHUB_WORKSPACE/data/prf-trial" .; fi
+          echo "run ${{ github.run_id }} ${{ job.status }} $(date -u +%Y-%m-%dT%H:%M:%SZ)" > status.txt
+          git init -q -b probe-prf
+          git config user.name "agsist-probe"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "prf run log $(date -u +%Y-%m-%dT%H:%M:%SZ) run ${{ github.run_id }} (${{ job.status }})"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" probe-prf
