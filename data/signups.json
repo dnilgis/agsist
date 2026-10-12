@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "asOf": "2026-10-12",
- "built": "2026-10-12T22:14:39+00:00",
+ "built": "2026-10-12T23:34:15+00:00",
  "note": "Counts only. Each address counts once, under the page it first signed up from.",
  "subscribers": 134,
  "withZip": 11,
@@ -310,5 +310,15 @@
    "n": 4
   }
  ],
- "notices": []
+ "notices": [
+  {
+   "topic": "rent",
+   "total": 1,
+   "last7": 1,
+   "sent": 0,
+   "detail": {
+    "ia": 1
+   }
+  }
+ ]
 }
