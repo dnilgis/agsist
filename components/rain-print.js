@@ -359,14 +359,16 @@
   function daily(sid, year) {
     var key = sid + '|' + year;
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
-    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt', meta: 'name,state,ll' });
+    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow', meta: 'name,state,ll' });
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
       j.data.forEach(function (row) {
-        var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null;
+        // snow: NOAA's separate snowfall record (inches of snow as it fell). pcpn already
+        // counts that snow melted down to water, so snowfall is shown beside it, never added.
+        var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null, sn = row[3] !== undefined ? parsePcpn(row[3]).v : null;
         var dt = new Date(row[0] + 'T00:00:00');
-        days.push({ date: row[0], v: p.v, flag: p.flag, t: t, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
+        days.push({ date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length });
       });
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
@@ -444,13 +446,18 @@
     var validMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (i) { return monthValid[i] > 0; });
     var maxMonth = validMonths.length ? Math.max.apply(null, validMonths.map(function (i) { return month[i]; })) : 0;
     var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
+    // Snowfall prints only when the station kept a snowfall record nearly every day
+    // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
+    var snowTotal = 0, snowMissing = 0;
+    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
+    var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
     var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
     days.forEach(function (x) {
       if (x.t === null) return;
       if (hot.v === null || x.t > hot.v) hot = { v: x.t, date: x.date, doy: x.doy };
       if (cold.v === null || x.t < cold.v) cold = { v: x.t, date: x.date, doy: x.doy };
     });
-    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold };
+    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
   }
   function overlayKey() { return ST.cmp === 'normal' ? 'normal30' : ST.cmp === 'station' ? 'full' : ''; }
   // The chosen comparison as daily amounts + running total, aligned to the year, or null.
@@ -496,8 +503,9 @@
   }
   function footerText() {
     var D = DATA.d, m = META;
-    var sub = [f2(D.total) + ' IN PRECIPITATION', D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS'];
-    if (D.missing) sub.push(D.missing + ' UNRECORDED');
+    var sub = [f2(D.total) + ' IN PRECIPITATION'];
+    if (D.snow !== null && D.snow !== undefined) sub.push(D.snow.toFixed(1) + ' IN SNOWFALL');
+    sub.push(D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS');
     if (PREVIEW) sub.push('PREVIEW THROUGH ' + fmtDate(PREVIEW.last));
     var mi = miles(m.km);
     var away = mi < 1 ? '' : ', ' + Math.round(mi) + ' MI AWAY';
@@ -722,6 +730,8 @@
         '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
         '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (base + 27) + '" font-size="12.5" font-weight="500" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.8">' + MON[i].toUpperCase() + '</text>';
     }
+    var yearEndW = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
+    grid += '<line x1="' + f2(yearEndW) + '" y1="' + base + '" x2="' + f2(yearEndW) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>';
     var overlay = '', OV = overlaySeries();
     if (OV) {
       overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.daily.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
@@ -763,9 +773,13 @@
       var ms = monthSpan(i, days, D), s0 = ms[0];
       if (s0 < 0) continue;
       var X = x0 + s0 * w;
+      // a tick on the date axis where each month starts, so the first and last day of every month read at a glance
       grid += '<line x1="' + f2(X) + '" y1="' + y0 + '" x2="' + f2(X) + '" y2="' + y1 + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="2 4" opacity="0.35"/>' +
+        '<line x1="' + f2(X) + '" y1="' + f2(y1) + '" x2="' + f2(X) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
         '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (y1 + 26) + '" font-size="12" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.5">' + MON[i].toUpperCase() + '</text>';
     }
+    var yearEndX = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
+    grid += '<line x1="' + f2(yearEndX) + '" y1="' + f2(y1) + '" x2="' + f2(yearEndX) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>';
     var endX = x0 + D.n * w, endY = y1 - D.total * k;
     grid += cutLine(p, endX, y0, y1);
     var OV = overlaySeries();
@@ -999,7 +1013,7 @@
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
     $('rp-source').innerHTML = 'Rain gauge: <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
-      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; <b>' + D.missing + ' unrecorded</b>, counted on the print' : '') + '. ' +
+      (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, drawn' : ' days, drawn') + ' as no rain' : '') + '. ' +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
@@ -1007,9 +1021,10 @@
       (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
       (ST.cmp !== 'none' && !OV ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
     var rows = [
-      [PREVIEW ? 'Total so far' : 'Total', f2(D.total) + ' in'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
+      [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
+      ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
       ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : 'no measurable rain'],
-      ['Trace days', D.trace], ['Unrecorded days', D.missing],
+      ['Trace days', D.trace], ['Days with no report', D.missing],
       ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
     $('rp-stats').innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(String(r[1])) + '</dd></div>'; }).join('');
@@ -1124,7 +1139,7 @@
       if (my !== reqToken) throw 'stale';
       EXT = res[0]; NORM30 = res[1];
       var D = DATA.d;
-      setStatus('Drawn from ' + (D.n - D.missing) + ' days at ' + toTitle(META.name) + '.' + (D.missing ? ' The ' + D.missing + ' missing days are counted on the print.' : '') +
+      setStatus('Drawn from ' + (D.n - D.missing) + ' days at ' + toTitle(META.name) + '.' + '' +
         (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : ''));
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
