@@ -108,6 +108,11 @@
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
   --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --r-8: 8px;  /* 2026-10-12: the most common off-scale corner (cards and fields on cash bids, futures, home); a token so those become token uses, no visual change */
+  --page-max: 1100px; --page-max-wide: 1400px;  /* reading width (main.tool-main) and wide width (.main); not applied by default */
+  /* Charts (2026-10-12): axis and label text never under 11 CSS px, hairline grid in the border colour, a solid zero line. */
+  --chart-fs: 11px; --chart-text: var(--text-muted); --chart-grid: var(--border); --chart-zero: var(--border-2);
+  --chart-1: var(--gold); --chart-2: #8fa6b2;  /* one series in gold, a second in slate */
   --card-bw: 1px; --card-r: var(--r-md);  /* card border and corner: the homepage and cash-bids cards */
   /* ONE LOOK 2026-10-09: the scale every page draws from (see the ONE LOOK
      section at the end of this file for the classes that use it). */
@@ -147,6 +152,7 @@
      status, spray, breakeven, cattle) rendered near-black in light mode. Dark
      mode keeps those fallbacks; light mode gets the light surfaces. */
   --card: var(--surface); --card-2: var(--surface2); --red: #c0492f; --red-rgb:192,73,47;
+  --chart-2: #4f6670;
   --glow-gold: none;
   --glow-card: 0 1px 6px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
   --glow-lift: 0 3px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(166,124,38,.14);
@@ -392,7 +398,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
    silently cut off rather than shown in full -- caught by measuring rendered
    scrollWidth against clientWidth, not by reading the CSS. Letting the pill
    wrap keeps every digit visible instead of hiding real data. */
-.pc-chg-val { font-family: var(--font-mono); font-size: .98rem; font-weight: 800; letter-spacing: .01em; white-space: normal; padding: .08rem .45rem; border-radius: 6px; }
+.pc-chg-val { font-family: var(--font-body); font-size: .98rem; font-weight: 800; letter-spacing: .01em; white-space: normal; padding: .08rem .45rem; border-radius: 6px; }
 .pc-chg-val.up { color: #8ceeb2; background: rgba(var(--green-rgb),.14); border: 1px solid rgba(var(--green-rgb),.3); }
 .pc-chg-val.dn { color: #ffa198; background: rgba(224,104,95,.14); border: 1px solid rgba(224,104,95,.32); }
 /* light theme: the pastel chip text above reads ~1.8:1 on the tinted light chips */
@@ -401,7 +407,7 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .pc-chg-val.nc { color: var(--text-muted); padding: .08rem 0; }
 .pc-prev { font-family: var(--font-mono); font-size:0.765rem; color: var(--text-muted); margin-top: .15rem; letter-spacing: .01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 1.1em; line-height: 1.1; }
 .pc-range { margin-top: auto; padding-top: .45rem; border-top: 1px solid var(--border) }
-.pc-range-labels { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size:0.755rem; color: var(--text-muted); margin-bottom: .3rem; }
+.pc-range-labels { display: flex; justify-content: space-between; font-family: var(--font-body); font-size:0.755rem; color: var(--text-muted); margin-bottom: .3rem; }
 .pc-range-track { height: 5px; background: linear-gradient(to right, var(--red), var(--gold) 50%, var(--green)); border-radius: 3px; position: relative; overflow: visible }
 .pc-range-fill { display: none }
 .pc-range-dot { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; background: var(--text); border: 2px solid var(--bg); transform: translate(-50%, -50%); transition: left .6s cubic-bezier(.4,0,.2,1); box-shadow: 0 1px 4px rgba(0,0,0,.4); }
@@ -1194,11 +1200,61 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .btn-secondary:hover { border-color: var(--brand); color: var(--brand) }
 /* Toggle chips (filters, crop pickers): .is-on / .active / aria-pressed is the selected one. */
 .chip {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: .35rem .85rem;
+  display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h); padding: .35rem .85rem;
   border: 1px solid var(--border-2); border-radius: var(--r-sm); background: var(--surface);
   font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600; color: var(--text-dim); cursor: pointer;
 }
 .chip:is(.is-on, .active, [aria-pressed="true"]) { background: var(--brand-fill); border-color: var(--brand-fill); color: #0a0c0d }
+/* The page-level chips that predate .chip (cash bids .cb-filt, USDA calendar
+   .cal-filter, yield .ye-tab, hail map .hm-rchip, homepage .tip-b) share only
+   the hit area here; each keeps its own look until its page moves to .chip. */
+:is(.cb-filt, .cal-filter, .ye-tab, .hm-rchip, .tip-b) { min-height: var(--btn-h) }
+
+/* Section heads (2026-10-12). Measured: h2 came in 13 looks on 16 pages.
+   The bare rule is :where() (0,0,1), so it only reaches an h2 that no page
+   rule sizes; every page's own h2 rule still wins. A page adopts the shared
+   look by adding a class:
+     .sec-h      the section head: Inter 700 at --fs-xl, sentence case, ink
+     .sec-label  the small mono kicker for label-style heads ("RESULTS")
+   Those two are written against :is(#main, .page-head) like ONE LOOK above,
+   so the class beats the page's single-class rule with no !important. */
+:where(#main, .page-head) h2 { font-size: var(--fs-xl); line-height: var(--lh-snug) }
+:is(#main, .page-head) .sec-h, .sec-h {
+  font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 700;
+  line-height: var(--lh-snug); letter-spacing: -.01em; text-transform: none; color: var(--text);
+}
+:is(#main, .page-head) .sec-label, .sec-label {
+  font-family: var(--font-mono); font-size: var(--fs-2xs); font-weight: 700; line-height: 1.5;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted);
+}
+
+/* Form field: a label over a 44px input, select or textarea. 16px text so
+   iOS does not zoom; the focus ring is the sitewide :focus-visible one.
+     <label class="field"><span>Yield (bu/ac)</span><input ...></label>
+   or put .field on the control itself. */
+.field { display: flex; flex-direction: column; gap: .3rem; min-width: 0 }
+.field > :is(span, label, .field-label) { font-size: var(--fs-xs); font-weight: 600; color: var(--text-dim); line-height: 1.4 }
+.field :is(input, select, textarea), :is(input, select, textarea).field {
+  width: 100%; min-height: var(--btn-h); padding: .55rem .75rem;
+  font-family: var(--font-body); font-size: max(16px, var(--fs-sm)); color: var(--text);
+  background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--r-sm);
+  transition: border-color .15s;
+}
+.field :is(input, select, textarea):focus, :is(input, select, textarea).field:focus { border-color: var(--brand) }
+.field :is(input, select, textarea):focus-visible, :is(input, select, textarea).field:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
+
+/* Method note: how a number is built, its sources, who reviewed it. Quiet:
+   small muted text under a hairline, so it reads as a footnote to the card.
+     <div class="method-note"><b>Method</b> ... · <b>Sources</b> ... ·
+       Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div> */
+.method-note {
+  margin-top: 1rem; padding-top: .7rem; border-top: 1px solid var(--border);
+  font-family: var(--font-body); font-size: var(--fs-xs); line-height: 1.6; color: var(--text-muted);
+  text-transform: none; letter-spacing: 0; max-width: 46rem;
+}
+.method-note p + p { margin-top: .4rem }
+.method-note :is(b, strong) { color: var(--text-dim); font-weight: 600 }
+.method-note a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px }
 
 /* Data table and numbers, for new markup. */
 .tbl { width: 100%; border-collapse: collapse }
