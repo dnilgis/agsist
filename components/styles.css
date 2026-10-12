@@ -1212,13 +1212,15 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 
 /* Section heads (2026-10-12). Measured: h2 came in 13 looks on 16 pages.
    The bare rule is :where() (0,0,1), so it only reaches an h2 that no page
-   rule sizes; every page's own h2 rule still wins. A page adopts the shared
+   rule sizes; every page's own h2 rule still wins. It sets the size only:
+   measured on the ten busiest pages, a shared line-height moved 40+ heads
+   that inherit the body's 1.65. A page adopts the shared
    look by adding a class:
      .sec-h      the section head: Inter 700 at --fs-xl, sentence case, ink
      .sec-label  the small mono kicker for label-style heads ("RESULTS")
    Those two are written against :is(#main, .page-head) like ONE LOOK above,
    so the class beats the page's single-class rule with no !important. */
-:where(#main, .page-head) h2 { font-size: var(--fs-xl); line-height: var(--lh-snug) }
+:where(#main, .page-head) h2 { font-size: var(--fs-xl) }
 :is(#main, .page-head) .sec-h, .sec-h {
   font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 700;
   line-height: var(--lh-snug); letter-spacing: -.01em; text-transform: none; color: var(--text);
