@@ -667,8 +667,9 @@
     var m;
     try { m = root.AgQR.matrix(url); } catch (e) { return ''; }
     QR_OK = true;
-    // cell size capped so the stamp never grows past about 150 units
-    var n = m.length, quiet = 4, cell = Math.min(3.1, 136 / (n + 2 * quiet));
+    // cell size capped so the stamp stays about 100 units, 1.3 in on the 18 in print
+    // (Sig, 2026-10-12: smaller). Modules stay 0.44 mm or larger at the longest code.
+    var n = m.length, quiet = 4, cell = Math.min(2.2, 88 / (n + 2 * quiet));
     var quietBox = n * cell + 2 * quiet * cell, frameGap = 3, frameW = 3;
     var stampSize = quietBox + 2 * frameGap + 2 * frameW;
     var ox = W - 60 - stampSize, oy = H - 26 - stampSize;
