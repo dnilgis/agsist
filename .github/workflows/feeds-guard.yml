@@ -13,11 +13,12 @@ on:
     paths:
       - '**.html'          # cash-bids.html is what network-checks.mjs lifts from
       - 'components/bids-*.js'
+      - 'components/cash-bids.js'   # the /cash-bids page script those checks lift from
       - '.github/workflows/**'
       - 'scripts/**'
       - 'data/feeds.json'
   pull_request:
-    paths: ['**.html', 'scripts/**', 'components/bids-*.js', 'data/feeds.json']
+    paths: ['**.html', 'scripts/**', 'components/bids-*.js', 'components/cash-bids.js', 'data/feeds.json']
   schedule:
     - cron: '52 14 * * 2'
   workflow_dispatch:

@@ -314,10 +314,11 @@ def main():
         # homepage moved three big inline scripts to components/home-*.js, and
         # a grep of the .html alone dropped index.html as a reader of eight
         # feeds (and data/wpi-history.json from the manifest altogether).
-        # Only page-owned scripts (components/home-*.js) count here; shared
+        # Only page-owned scripts (components/home*.js, cash-bids.js) count here; shared
         # components are left as they were, so this changes no other page.
-        # 2026-10-12: the rest of its inline script moved to components/home.js.
-        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/home(?:-[\w-]+)?\.js)""", text))):
+        # 2026-10-12: the rest of its inline script moved to components/home.js,
+        # and /cash-bids' inline script moved to components/cash-bids.js.
+        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:home(?:-[\w-]+)?|cash-bids)\.js)""", text))):
             if os.path.exists(js):
                 text += "\n" + read(js)
         for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
