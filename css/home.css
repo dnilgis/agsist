@@ -1887,6 +1887,8 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 .idx1-basis-ends{display:flex;justify-content:space-between;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-dim);margin-top:-.15rem}
 #idx1-store-sell input[aria-invalid="true"],#pa-form input[aria-invalid="true"],.we-form [aria-invalid="true"]{border-color:var(--red)!important}
 #pa-status:focus,#pa-done:focus,.watch-elevator-status:focus,.we-done:focus{outline:2px solid var(--gold);outline-offset:2px}
+/* 2026-10-12: the price alert fields and button meet the 44px tap size */
+#pa-form select,#pa-form input[type="number"],#pa-form input[type="email"],#pa-go{min-height:44px;box-sizing:border-box}
 /* ===== WAVE3-L: no-quote rows, failure lines, ranking note, COT badges */
 #f-prices .r7-row.r7-noq,#f-prices .r7-led .pc.r7-row.r7-noq,#f-prices .r7-led .r7-row.r7-noq{display:none!important}
 .r7-noq-note{font-size:.765rem;color:var(--text-muted);margin:.3rem 0 0}

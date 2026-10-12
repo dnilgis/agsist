@@ -14,7 +14,7 @@
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
-<link rel="stylesheet" href="/css/home.css?v=18">
+<link rel="stylesheet" href="/css/home.css?v=19">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -3226,7 +3226,24 @@ function cmKey(k){var m=/-(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\d\d
    nearby label, else the dated contract the continuous series was repaired
    from, else the one dated contract whose close, previous close and change
    all equal it. No match: "Front month". */
+/* agecon 8 (2026-10-12): the rows this script prices itself (KC, MGEX,
+   cotton, rice) show the earliest dated contract on file, its price, change,
+   range and month together. The continuous series (KE=F) is often a few
+   ticks off every dated contract, which left the row saying "Front month"
+   next to a spread figured on Dec '26. */
+var MI={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function frontKey(k){
+  if(!D||!D.quotes||!(CFG[k]&&CFG[k].own))return null;var best=null,bt=Infinity;
+  Object.keys(D.quotes).forEach(function(x){
+    var m=/-(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\d\d)$/.exec(x),y=D.quotes[x];
+    if(!m||x.indexOf(k+'-')!==0||x.length!==k.length+6||!y||y.close==null||y.stale===true)return;
+    var t=+m[2]*12+MI[m[1]];if(t<bt){bt=t;best=x;}
+  });
+  return best;
+}
+function ownQ(k){var fk=frontKey(k);return fk?D.quotes[fk]:(Q[k]||(D&&D.quotes?D.quotes[k]:null));}
 function source(k){
+  var fk=frontKey(k);if(fk)return{label:cmKey(fk),rq:D.quotes[fk]};
   var q=Q[k];if(!q)return null;
   function dated(lb){var d=null;Object.keys(Q).some(function(x){if(x.indexOf(k+'-')===0&&cmKey(x)===lb&&Q[x]){d=x;return true;}return false;});return d;}
   if(NB[k]&&NB[k]!=='nearby'&&NB[k]!=='most-active'){var d0=dated(NB[k]);return{label:NB[k],rq:d0?Q[d0]:q};}
@@ -3298,7 +3315,7 @@ function spreadTxt(k,rowMon){
 }
 /* WAVE3-L: does the price file carry a quote for this key at all. Null
    until the file has loaded, so nothing hides before we know. */
-function quoted(k){if(!D||!D.quotes)return null;var x=D.quotes[k]||D.quotes[k+'-nearby']||Q[k];return !!(x&&x.close!=null);}
+function quoted(k){if(!D||!D.quotes)return null;var x=D.quotes[k]||D.quotes[k+'-nearby']||Q[k];if(!(x&&x.close!=null))x=ownQ(k);return !!(x&&x.close!=null);}
 /* WAVE3-L: a row with no quote is hidden, and the hidden rows are named
    once under their table, so the gap is still said. */
 function noQuoteNote(){
@@ -3311,7 +3328,7 @@ function noQuoteNote(){
   });
 }
 function renderRow(row){
-  var k=row.getAttribute('data-r7k'),c=CFG[k],q=Q[k]||(c&&c.own&&D&&D.quotes?D.quotes[k]:null);
+  var k=row.getAttribute('data-r7k'),c=CFG[k],q=c&&c.own&&D?ownQ(k):Q[k];
   var hasQ=quoted(k);if(hasQ!==null)row.classList.toggle('r7-noq',!hasQ);
   if(c&&c.own&&D&&(!q||q.close==null)){renderMissing(row,k);return;}
   if(!q||!c||q.close==null)return;
@@ -3341,7 +3358,7 @@ function renderTicker(){
   var ch=false;
   /* WAVE1-C: price and change for the keys geo.js does not write. */
   Object.keys(CFG).forEach(function(k){
-    var c=CFG[k];if(!c.own||!D)return;var q=Q[k]||(D.quotes&&D.quotes[k]),has=q&&q.close!=null;
+    var c=CFG[k];if(!c.own||!D)return;var q=ownQ(k),has=q&&q.close!=null;
     var pt=has?(c.g?qc(q.close):ownPrice(k,q)):'-',cg=has?chg(k,q):{t:'no quote',c:'nc'};
     qa('.prices-strip [data-sym="'+k+'"]').forEach(function(it){
       var pe=it.querySelector('.t-price'),ce=it.querySelector('.t-chg');
