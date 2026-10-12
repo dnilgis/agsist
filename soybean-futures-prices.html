@@ -101,6 +101,8 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .crush-zone.cz2.active{background:rgba(58,139,60,.15);border-color:var(--green);color:var(--green)}
 .crush-zone.cz3.active{background:rgba(58,139,60,.2);border-color:var(--green);color:var(--green)}
 .crush-sub{font-size:0.77rem;color:var(--text-dim);margin-top:4px}
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim);margin-top:.6rem}
 .cp{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;margin-bottom:14px}
 .cp-head{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .cp-head h2{margin:0;font-size:.85rem;color:var(--gold)}.cp-src{font-size:0.755rem;color:var(--text-muted);text-align:right}
@@ -522,18 +524,19 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       </div>
       <div class="rat-interp" id="cb-interp">Nov Beans &divide; Dec Corn &middot; live from futures</div>
       <div class="rat-note">Planting mix signal &middot; <a href="/breakeven">Build your full breakeven &rarr;</a></div>
+      <div class="method-note"><b>Method</b> &middot; Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
-    <div class="rat-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-factory"/></svg> Gross board crush spread (est.)</div>
+    <div class="rat-card" id="crush-card">
+      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-factory"/></svg> Gross board crush (est.)</div>
       <div class="rat-val sk" id="crush-val">-</div>
       <div class="crush-zones">
-        <div class="crush-zone cz3" id="cz3">Above $2.50/bu &middot; Exceptional margins &middot; crush expanding</div>
-        <div class="crush-zone cz2" id="cz2">$1.50&ndash;$2.50/bu &middot; Strong crush &middot; processors bid beans up</div>
-        <div class="crush-zone cz1" id="cz1">$0.75&ndash;$1.50/bu &middot; Normal processing margin</div>
-        <div class="crush-zone cz0" id="cz0">Below $0.75/bu &middot; Narrow margin &middot; crush may slow</div>
+        <div class="crush-zone cz3" id="cz3">Above $2.50/bu &middot; wide</div>
+        <div class="crush-zone cz2" id="cz2">$1.50&ndash;$2.50/bu &middot; strong</div>
+        <div class="crush-zone cz1" id="cz1">$0.75&ndash;$1.50/bu &middot; typical</div>
+        <div class="crush-zone cz0" id="cz0">Below $0.75/bu &middot; narrow</div>
       </div>
-      <div class="crush-sub" id="crush-sub">Meal + Oil value minus bean cost &middot; per bushel</div>
-      <div class="rat-note">44 lbs meal + 11 lbs oil per bushel &middot; simplified gross estimate</div>
+      <div class="crush-sub" id="crush-sub">Meal and oil value minus bean cost, per bushel</div>
+      <div class="method-note"><b>Method</b> &middot; 44 lb of meal (priced per short ton) plus 11 lb of oil (priced in cents a pound) from one bushel, minus the bean price. Nov beans pair with Dec meal and oil; other bean months with the same month. Gross: no plant costs. The bands are AGSIST rules of thumb, not USDA or university figures. &middot; <b>Sources</b> &middot; CBOT soybean, meal and oil futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
   </div>
 

@@ -94,6 +94,8 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
 .rat-interp{font-size:0.787rem;color:var(--text-dim);min-height:1.1em;margin-bottom:6px}
 .rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:none}
+/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+:where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim);margin-top:.6rem}
 .be-zones{display:flex;flex-direction:column;gap:3px;margin:8px 0}
 .be-zone{font-size:0.77rem;color:var(--text-dim);padding:4px 8px;border-radius:4px;border:1px solid transparent;transition:all .3s}.be-zone.active{font-weight:700}
 .be-zone.z0.active{background:rgba(200,50,50,.15);border-color:var(--red);color:var(--red)}
@@ -437,7 +439,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <input type="number" id="be-input" placeholder="$/bu" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel" aria-describedby="be-hint">
     <span class="be-result" id="be-result"></span>
     <button type="button" class="be-clear" id="be-clear">clear</button>
-    <span class="be-hint" id="be-hint">Typical $4.00 to $5.50/bu. Varies widely by farm (university crop budgets).</span>
+    <span class="be-hint" id="be-hint">Typical $4.00 to $5.50/bu, an AGSIST rule of thumb. Varies widely by farm.</span>
   </div>
 
   <div class="snap-card">
@@ -518,6 +520,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       </div>
       <div class="rat-interp" id="cb-interp">Nov Beans ÷ Dec Corn · live from futures</div>
       <div class="rat-note">Planting mix signal · <a href="/breakeven">Build your full breakeven →</a></div>
+      <div class="method-note"><b>Method</b> · Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. · Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
     <div class="rat-card">
       <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Corn price vs. typical breakeven</div>
@@ -529,6 +532,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
         <div class="be-zone z0" id="bz0">Below $4.00 · Below full cost for most</div>
       </div>
       <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
+      <div class="method-note"><b>Method</b> · The live nearby corn price against four bands. The $4.00, $4.75 and $5.50 lines are AGSIST rules of thumb for a Corn Belt full-cost breakeven (land, machinery and inputs), not a USDA or university figure; your own costs decide. · Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
     </div>
   </div>
 
@@ -648,13 +652,13 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="xr"><span class="xl">Cash price</span><span class="xv">Futures + local basis</span></div>
       <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans ÷ Dec corn</span></div>
       <div class="xr"><span class="xl">New crop</span><span class="xv">Dec = harvest benchmark</span></div>
-      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu: varies widely by farm (university crop budgets)</span></div>
+      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu, an AGSIST rule of thumb: varies widely by farm</span></div>
     </div>
     <div class="xc">
       <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US corn use</h4>
-      <div class="xr"><span class="xl">Ethanol</span><span class="xv">top-two domestic use</span></div>
-      <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">~36% of crop</span></div>
-      <div class="xr"><span class="xl">Exports</span><span class="xv">~14% of crop</span></div>
+      <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">largest use (USDA WASDE)</span></div>
+      <div class="xr"><span class="xl">Ethanol</span><span class="xv">second-largest use</span></div>
+      <div class="xr"><span class="xl">Exports</span><span class="xv">third-largest use</span></div>
       <div class="xr"><span class="xl">Top buyers</span><span class="xv">Mexico, Japan, China</span></div>
     </div>
   </div>
@@ -668,7 +672,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       </div>
       <div class="edu-block">
         <h4>Reading the corn/bean planting ratio</h4>
-        <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. USDA tracks this ratio when forecasting spring planted acres in the March Prospective Plantings report. Check it against your own breakeven and rotation before you change acres.</p>
+        <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. The March Prospective Plantings report is a USDA survey of what farmers say they will plant, so it shows where growers landed, not a forecast built from the ratio. Check it against your own breakeven and rotation before you change acres.</p>
       </div>
       <div class="edu-block">
         <h4>What moves corn prices</h4>

@@ -117,14 +117,14 @@ var CROPS={
         ncEl.style.display='';
       }else if(ncEl){ncEl.style.display='none';}
       renderRatio(data,function(r){return r<2.4?'Corn favored: soybeans historically the weaker per-acre choice':r<2.6?'Neutral: an even acre split is common at these levels':'Beans favored: soybeans historically earn more per acre';});
-      var meal=q.meal,soyoil=q.soyoil;
-      if(front&&meal&&soyoil&&front.close&&meal.close&&soyoil.close){
-        var mealPbu=(meal.close/2000)*44,oilPbu=(soyoil.close/100)*11,beanCost=front.close/100,crush=mealPbu+oilPbu-beanCost;
-        setEl('crush-val',(crush>=0?'+':'')+'$'+crush.toFixed(2)+'/bu');
-        var cz=document.getElementById('cz'+(crush<0.75?0:crush<1.5?1:crush<2.5?2:3));
+      var BC=boardCrush(q,front),cw=document.getElementById('crush-card');
+      if(BC){
+        if(cw)cw.style.display='';
+        setEl('crush-val',(BC.crush>=0?'+':'\u2212')+'$'+Math.abs(BC.crush).toFixed(2)+'/bu');
+        var cz=document.getElementById('cz'+BC.band);
         if(cz)cz.classList.add('active');
-        setEl('crush-sub','Meal: $'+meal.close.toFixed(0)+'/ton · Oil: '+soyoil.close.toFixed(2)+'¢/lb · Beans: $'+beanCost.toFixed(2)+'/bu');
-      }
+        setEl('crush-sub',BC.months+': meal $'+BC.meal.close.toFixed(0)+'/short ton, oil '+BC.oil.close.toFixed(2)+'\u00a2/lb, beans '+grain$(front.close)+'/bu');
+      }else if(cw){cw.style.display='none';}
     },
     read:function(q,data,front,lbl,nearby){
       var sp=[];
@@ -137,10 +137,11 @@ var CROPS={
         var r2=PR.value,rl=' ('+PR.label+')';
         sp.push(r2<2.4?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' historically signals corn as the stronger per-acre choice this season':r2<2.6?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' is in neutral territory: an even acre split is common at these levels':'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' gives soybeans the historical per-acre edge');
       }
-      var meal=q.meal,soyoil=q.soyoil;
-      if(front&&meal&&soyoil&&front.close&&meal.close&&soyoil.close){
-        var mPbu=(meal.close/2000)*44,oPbu=(soyoil.close/100)*11,bCost=front.close/100,cr=mPbu+oPbu-bCost;
-        sp.push(cr<0.75?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is narrow: processor demand may slow, a headwind for beans':cr<1.5?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is in normal range: solid domestic demand support':cr<2.5?'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is strong: processors are actively bidding for beans':'the estimated <strong>crush margin at $'+cr.toFixed(2)+'/bu</strong> is exceptional: crush expansion likely, very supportive for prices');
+      var BC2=boardCrush(q,front);
+      if(BC2){
+        /* A size, not a price call: the gross board crush leaves out what it
+           costs to run a plant, and the bands are AGSIST rules of thumb. */
+        sp.push('the <strong>gross board crush</strong> ('+BC2.months+') is <strong>'+(BC2.crush<0?'\u2212':'')+'$'+Math.abs(BC2.crush).toFixed(2)+'/bu</strong>, '+['narrow','typical','strong','wide'][BC2.band]+' by AGSIST\u2019s rule-of-thumb bands');
       }
       return sp;
     }
@@ -222,17 +223,18 @@ var CROPS={
       bl.innerHTML=esc(contractLabel(d26)||'Deferred')+' (deferred): <strong>'+grain$(d26.close)+'</strong>'+chg+', winter wheat new-crop is July';
       bl.style.display='block';
     })();
-      // Feed spread: SAME-MONTH contracts only (Sep '26 wheat minus Sep '26 corn).
+      // Feed spread: SAME-MONTH contracts only (Dec wheat minus Dec corn, wheatCornPair).
     // Mixing a continuous most-active with a dated month was silently ~22c off.
-    var wSep=q['wheat-sep26'],cSep=q['corn-sep26'];
+    var WC=wheatCornPair(q),wSep=WC&&WC.w,cSep=WC&&WC.c;
     var wcCard=document.getElementById('wc-card');
-    if(wSep&&cSep&&wSep.close!=null&&cSep.close!=null){
+    if(WC){
       if(wcCard)wcCard.style.display='';
+      var wcl=document.getElementById('wc-lbl-m');if(wcl)wcl.textContent=WC.label;
       var spread=(wSep.close-cSep.close)/100;
-      setEl('wc-spread',(spread>=0?'+':'')+'$'+spread.toFixed(2)+'/bu');
+      setEl('wc-spread',(spread>=0?'+':'\u2212')+'$'+Math.abs(spread).toFixed(2)+'/bu');
       var gp=Math.min(100,Math.max(0,(spread/2)*100));
       document.getElementById('wc-dot').style.left='calc('+gp+'% - 8px)';
-      var it=spread<0.25?'Parity: feed wheat demand is activated, price floor in effect (Sep/Sep)':spread<0.75?'Narrowing: feed buyers starting to substitute wheat for corn (Sep/Sep)':spread<1.5?'Normal premium: standard market structure (Sep/Sep)':'Wide spread: feeders are using corn; wheat feed demand absent (Sep/Sep)';
+      var it=(spread<0.25?'Parity: feed wheat demand is activated, price floor in effect':spread<0.75?'Narrowing: feed buyers starting to substitute wheat for corn':spread<1.5?'Normal premium: standard market structure':'Wide spread: feeders are using corn; wheat feed demand absent')+' ('+WC.label+' wheat and corn)';
       setEl('wc-interp',it);
     }else if(wcCard){
       wcCard.style.display='none';
@@ -244,10 +246,10 @@ var CROPS={
         var pct=pctInRange(front);
         sp.push('<strong>Wheat ('+lbl+') at '+grain$(front.close)+'</strong> sits <strong>'+pct+'% of the way up</strong> its 52-week range ('+zoneOf(pct)+')');
       }
-      var wSep=q['wheat-sep26'],cSep=q['corn-sep26'];
-    if(wSep&&cSep&&wSep.close!=null&&cSep.close!=null){
-      var sprd=(wSep.close-cSep.close)/100;
-      sp.push(sprd<0.25?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is at parity: feed wheat demand is active, providing a price floor':sprd<0.75?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is narrow: feed buyers are beginning to substitute wheat for corn':sprd<1.5?'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is in normal range':'the <strong>Sep/Sep wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong> is wide: feeders are using corn and wheat loses that demand support');
+      var WC2=wheatCornPair(q);
+    if(WC2){
+      var sprd=(WC2.w.close-WC2.c.close)/100,wcs='the <strong>'+WC2.label+' wheat–corn spread at $'+sprd.toFixed(2)+'/bu</strong>';
+      sp.push(sprd<0.25?wcs+' is at parity: feed wheat demand is active, providing a price floor':sprd<0.75?wcs+' is narrow: feed buyers are beginning to substitute wheat for corn':sprd<1.5?wcs+' is in normal range':wcs+' is wide: feeders are using corn and wheat loses that demand support');
     }
     if(front&&front.close){
       var whBu2=front.close/100;
@@ -284,6 +286,30 @@ function wheatDeferred(q,front){
   return null;
 }
 /* "Dec '26" from a dated quote's ticker (ZCZ26.CBT), else null. */
+/* BOARD CRUSH, named months only. Nov beans crush against Dec meal and oil;
+   any other bean month against the same month of meal and oil. A missing leg
+   hides the card: the old continuous ZM=F/ZL=F against a dated bean month
+   mixed contracts nobody named. Gross: 44 lb of meal and 11 lb of oil per
+   bushel, minus the beans, before any plant cost. */
+var MON3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function boardCrush(q,front){
+  var m=front&&/^ZS([FGHJKMNQUVXZ])(\d{2})/.exec(String(front.ticker||''));
+  if(!m||!front.close)return null;
+  var mi='FGHJKMNQUVXZ'.indexOf(m[1]),pm=mi===10?11:mi,yy=m[2];
+  var meal=q['meal-'+MON3[pm]+yy],oil=q['soyoil-'+MON3[pm]+yy];
+  if(!meal||!oil||meal.close==null||oil.close==null||meal.stale||oil.stale)return null;
+  var crush=(meal.close/2000)*44+(oil.close/100)*11-front.close/100;
+  return {crush:crush,meal:meal,oil:oil,band:crush<0.75?0:crush<1.5?1:crush<2.5?2:3,
+          months:AG.px.contract(MON3[pm]+' 20'+yy)+' meal and oil, '+AG.px.contract(MON3[mi]+' 20'+yy)+' beans'};
+}
+/* The wheat-corn feed spread, same month for both: the next Dec that trades.
+   It read Sep '26 keys that stopped trading in September and went blank. */
+function wheatCornPair(q){
+  var y=new Date().getFullYear()%100;
+  for(var k=0;k<2;k++){var yy=String(y+k),w=q['wheat-dec'+yy],c=q['corn-dec'+yy];
+    if(w&&c&&w.close!=null&&c.close!=null&&!w.stale&&!c.stale)return {w:w,c:c,label:"Dec '"+yy};}
+  return null;
+}
 /* NEW CROP is next year's crop once this one is in the bin (Sep 1 on): in
    October 2026 that is Dec '27 corn and Nov '27 beans. The undated corn-dec
    key is the next live Dec, which in the fall is the hero's own contract, so
