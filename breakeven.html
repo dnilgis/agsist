@@ -59,10 +59,10 @@
     @media(prefers-reduced-motion:reduce){.live-dot{animation:none;}.hint-popup{animation:none;}.cost-bar-seg,.profit-gauge-fill,.profit-gauge-marker,.be-faq-a{transition:none;}}
     .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;}
     .hint-icon:hover,.hint-icon.active{background:var(--green);color:#06110b;}
-    /* 40px tap target around the 20px dot; the dot itself is unchanged */
+    /* 44px tap target around the 20px dot (12px on each side); the dot itself is unchanged */
     .hint-icon{position:relative;}.hint-icon::before{content:"";position:absolute;inset:-12px;}
     /* light mode: dark text on the light-theme --green (#2e7d4f) read 3.8:1; white reads 5.1:1 */
-    [data-theme="light"] .live-price-bar button,[data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
+    [data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
     .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
@@ -74,8 +74,7 @@
     .live-price-bar .price-tag{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);}
     .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:600;}
     .live-price-bar .chg-tag.up{color:var(--green);}.live-price-bar .chg-tag.dn{color:var(--red);}
-    .live-price-bar button{background:var(--green);color:#06110b;border:none;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-left:auto;min-height:44px;}
-    .live-price-bar button:hover{background:#1b4d1c;color:#fff;}
+    .live-price-bar .btn{margin-left:auto;}
     .cost-breakdown{margin-top:16px;}
     .cost-breakdown-title{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:700;}
     .cost-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:8px;}
@@ -130,7 +129,7 @@
     .be-faq-item.open .be-faq-a{max-height:900px;}
     .be-faq-ai{padding:0 16px 13px;font-size:1rem;color:var(--text-dim);line-height:1.68;}
     @media(max-width:768px){.grid-2{display:block!important;}.grid-2>.panel{margin-bottom:12px;}}
-    @media(max-width:500px){.input-grid-2{grid-template-columns:1fr!important;}.sens-table{font-size:0.757rem;}.sens-table th,.sens-table td{padding:3px 4px;}.live-price-bar{gap:6px;font-size:0.787rem;padding:8px 10px;}.live-price-bar button{margin-left:0;width:100%;text-align:center;}.acres-inner{flex-direction:column;align-items:stretch;text-align:center;}.acres-input-group{justify-content:center;}}
+    @media(max-width:500px){.input-grid-2{grid-template-columns:1fr!important;}.sens-table{font-size:0.757rem;}.sens-table th,.sens-table td{padding:3px 4px;}.live-price-bar{gap:6px;font-size:0.787rem;padding:8px 10px;}.live-price-bar .btn{margin-left:0;width:100%;}.acres-inner{flex-direction:column;align-items:stretch;text-align:center;}.acres-input-group{justify-content:center;}}
     @media not print{.print-header,.print-footer,.print-summary{display:none;}}
     @media print{
       @page{size:letter landscape;margin:0.4in 0.5in;}
@@ -223,10 +222,10 @@
             <span><span id="live-crop-name">Corn</span>:</span>
             <span class="price-tag" id="live-price-val">--</span>
             <span class="chg-tag" id="live-chg-val"></span>
-            <button onclick="useLivePrice()">Use this price</button>
+            <button type="button" class="btn btn-secondary" onclick="useLivePrice()">Use this price</button>
           </div>
           <div style="margin-bottom:20px">
-            <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 8px">CROP &amp; YIELD</h2>
+            <h2 class="sec-label" style="margin:0 0 8px">CROP &amp; YIELD</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px">
               <div class="input-wrap"><label style="font-size:0.787rem" for="crop">Crop</label><select id="crop" onchange="onCropChange()"><option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option></select></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="yield">Expected Yield (bu/ac) <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="yield" min="0" max="1000" value="180" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Yield Checklist</div><ul class="hint-list"><li>Your APH (actual production history)</li><li>County average vs. your field history</li><li>Trend-adjusted yield for this year</li><li>Soil type &amp; drainage quality</li><li>Planting date impact on potential</li></ul><div class="hint-note">Conservative estimates protect your plan.</div></div></div>
@@ -234,7 +233,7 @@
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px"><div class="input-wrap"><label style="font-size:0.787rem" for="price">Futures Price ($/bu) <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="price" value="" placeholder="enter a price" step="0.0025" min="0" max="100" inputmode="decimal" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Price Considerations</div><ul class="hint-list"><li>New-crop contract: Dec corn / Nov beans</li><li>Forward contract commitments</li><li>Harvest vs. spring delivery timing</li><li>On-farm storage premium potential</li></ul><div class="hint-note">Use the live new-crop price above if available.</div></div></div><div class="input-wrap"><label style="font-size:0.787rem" for="basis">Your local basis ($/bu) <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="basis" value="0" step="0.05" oninput="calcBreakeven()" placeholder="-0.35"><div class="hint-popup" inert><div class="hint-title">Basis</div><ul class="hint-list"><li>Your elevator&rsquo;s bid minus the futures price</li><li>Usually negative in the Corn Belt (e.g. -0.35)</li><li>Enter 0 to work in futures terms</li></ul><div class="hint-note">Find yours on <a href="/cash-bids" style="color:var(--gold,#d4a23f)">AGSIST cash bids</a>: bid minus board.</div></div></div></div>
           </div>
           <div style="margin-bottom:20px">
-            <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 8px">INPUT COSTS ($/ac)</h2>
+            <h2 class="sec-label" style="margin:0 0 8px">INPUT COSTS ($/ac)</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
               <div class="input-wrap"><label style="font-size:0.787rem" for="seed">Seed <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="seed" min="0" value="125" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Base seed cost per bag</li><li>Seed treatment</li><li>Technology / trait fees</li><li>Replant seed reserve</li><li>Inoculant (soybeans)</li></ul></div></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="fertilizer">Fertilizer <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="fertilizer" min="0" value="175" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Nitrogen (anhydrous, urea, UAN)</li><li>Phosphorus (MAP/DAP)</li><li>Potash (K2O)</li><li>Lime (amortized)</li><li>Sulfur &amp; micros</li><li>Application fees</li></ul><div class="hint-note">Soil test recommendations should drive rates.</div></div></div>
@@ -243,12 +242,12 @@
             </div>
           </div>
           <div style="margin-bottom:20px">
-            <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 8px">OPERATING COSTS ($/ac)</h2>
+            <h2 class="sec-label" style="margin:0 0 8px">OPERATING COSTS ($/ac)</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
               <div class="input-wrap"><label style="font-size:0.787rem" for="machinery">Machinery <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="machinery" min="0" value="145" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Fuel &amp; lube</li><li>Repairs &amp; maintenance</li><li>Depreciation</li><li>Custom hire</li><li>Hauling / trucking</li></ul></div></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="labor">Labor <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="labor" min="0" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Hired labor</li><li>Owner/operator time value</li><li>Seasonal help</li><li>Benefits &amp; payroll taxes</li></ul></div></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="land">Land Rent/Cost <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="land" min="0" value="250" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Cash rent (or flex rent)</li><li>Property tax (if owned)</li><li>Drainage tile payments</li><li>Opportunity cost of owned land</li></ul><div class="hint-note">See your county&rsquo;s published rate on <a href="/rent/" style="color:var(--gold,#d4a23f)">AGSIST cash rent by state</a>.</div></div>
-              <button type="button" id="split-toggle" aria-expanded="false" style="margin-top:6px;background:none;border:none;color:var(--gold,#d4a23f);font-size:0.78rem;cursor:pointer;padding:4px 0;min-height:32px;text-decoration:underline;text-align:left">Split owned vs rented ground &rarr;</button>
+              <button type="button" id="split-toggle" aria-expanded="false" style="margin-top:6px;background:none;border:none;color:var(--gold,#d4a23f);font-size:0.78rem;cursor:pointer;padding:4px 0;min-height:44px;text-decoration:underline;text-align:left">Split owned vs rented ground &rarr;</button>
               <div id="split-panel" hidden style="grid-column:1 / -1;background:var(--surface2,#1a1f18);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem;margin-top:4px">
                 <div style="font-size:0.76rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:.5rem">Owned vs rented split <span style="text-transform:none;font-weight:400;letter-spacing:0">: blends your land cost by acres and shows a break-even for each</span></div>
                 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
