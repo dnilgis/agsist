@@ -1,11 +1,11 @@
 {
  "schema": 1,
  "asOf": "2026-10-12",
- "built": "2026-10-12T17:38:20+00:00",
+ "built": "2026-10-12T20:17:09+00:00",
  "note": "Counts only. Each address counts once, under the page it first signed up from.",
- "subscribers": 134,
- "withZip": 10,
- "reportDays": 134,
+ "subscribers": 135,
+ "withZip": 11,
+ "reportDays": 135,
  "bySource": [
   {
    "src": "daily-briefing-subscribe",
@@ -93,6 +93,12 @@
   },
   {
    "src": "town:iowa/marcus",
+   "total": 1,
+   "last7": 1,
+   "last30": 1
+  },
+  {
+   "src": "town:michigan/grand-ledge",
    "total": 1,
    "last7": 1,
    "last30": 1
@@ -301,7 +307,7 @@
   },
   {
    "d": "2026-10-12",
-   "n": 4
+   "n": 5
   }
  ],
  "notices": []
