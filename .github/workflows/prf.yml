@@ -70,7 +70,7 @@ jobs:
         run: |
           python scripts/fetch_prf.py --selftest
           python scripts/stamp_prf.py --selftest
-          node --test test/prf-math.test.mjs test/prf-check.test.mjs
+          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs
 
       # A FETCH IS 13,400 CALLS TO RMA AND MUST NOT BE THROWN AWAY BY A LATER STEP.
       # The first two full runs (2026-10-12) each fetched everything, failed the

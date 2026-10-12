@@ -138,6 +138,8 @@ PAGES = [
         ("@machine", "arc"),
         ("@machine", "arc-county"),
         ("@machine", "arc-crops"),
+        ("/prf", "PRF Rainfall Insurance Calculator",
+         "Pasture, Rangeland, Forage rainfall index insurance: pick a grid, acres and two-month intervals and see the premium, USDA's share, and what the policy would have paid in every year since 1951 at this year's rates, for every grid in the 48 contiguous states"),
         ("/farm-bill", "Farm Bill", "what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes"),
         ("/cash-lease", "Cash Farm Lease", "a fillable, printable plain-English cash lease with state termination notes"),
         ("/foreign-land", "Foreign-Owned Farmland", "USDA AFIDA disclosures mapped by county"),

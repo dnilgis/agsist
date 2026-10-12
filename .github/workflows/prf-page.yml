@@ -1,0 +1,49 @@
+name: prf page
+
+# The /prf page's own checks, on every push that touches it. Seconds, no
+# network: the arithmetic against RMA's saved answers, the page's wiring
+# (every element the script reaches for exists), and that prf.html is exactly
+# what scripts/stamp_prf.py writes from data/prf/meta.json.
+#
+# The data itself is checked against RMA's live tool by the `prf` workflow.
+# preship renders the page; this is what a render cannot see.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prf.html'
+      - 'components/prf.js'
+      - 'components/prf-math.js'
+      - 'components/prf.css'
+      - 'scripts/stamp_prf.py'
+      - 'data/prf/meta.json'
+      - 'data/prf/check.json'
+      - 'test/prf-*.mjs'
+      - '.github/workflows/prf-page.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Arithmetic, wiring, helpers
+        run: node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs
+      - name: The page is what the stamper writes
+        run: |
+          python scripts/stamp_prf.py --selftest
+          python scripts/stamp_prf.py --check
+      - name: Scripts parse
+        run: |
+          node --check components/prf.js
+          node --check components/prf-math.js

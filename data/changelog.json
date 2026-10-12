@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-06",
+ "updated": "2026-10-12",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-12",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/prf",
+     "name": "PRF rainfall insurance calculator",
+     "text": "Pick your grid, acres and two-month intervals for Pasture, Rangeland, Forage insurance and see the premium, USDA's share of it, and what the policy would have paid in each year from 1951 to 2025 at 2027 rates. It covers all 13,414 grids in the 48 contiguous states, applies your county's interval limits, compares two setups side by side, and shows the grids next door. The arithmetic is checked against USDA's own tool on every data refresh."
+    }
+   ]
+  },
   {
    "date": "2026-10-06",
    "items": [
