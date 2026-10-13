@@ -5,6 +5,30 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.14 (2026-10-13): RAIN PRINT SHORT LINKS. New routes only; every existing
+ *   route answers exactly as before. The print's QR used to carry
+ *   agsist.com/rain-print?d=<design code> (QR version 6 to 10); it can now
+ *   carry HTTPS://AGSIST.COM/R?<id>, a 5-character id (26 bytes in byte mode,
+ *   exactly what version 2 holds at level M: 25 x 25 modules). /R (R.html,
+ *   r.html) looks the id up here and opens /rain-print?d=<code>.
+ *   POST /rp-short  JSON {code}. A public POST: publicGate (Origin agsist.com
+ *     or www, Content-Type application/json) and RATE["/rp-short"] (60 new
+ *     ids per address an hour, 200 a day, 600 for everyone a day; a repeat of
+ *     a known code is not counted and writes nothing). code is a plain Rain
+ *     Print design code, checked against the v1 rules of decodeCode in
+ *     components/rain-print.js (base64url, 8 to 400 characters; a GIFT- code
+ *     is refused). Only a design code is stored, never a URL: /R always builds
+ *     /rain-print?d=<code> itself. Body at most 1 KB. Answers {ok:true, id}.
+ *     The id is the first 5 characters of Crockford base32 (0-9 A-Z without
+ *     I L O U) of SHA-256(code); if that id already holds a different code it
+ *     grows to 6, 7, then 8 characters (409 past 8). Stored as rps:<id> =
+ *     code, no expiry. Idempotent: the same code always gets the same id.
+ *   GET  /rp-short/<id>  {ok:true, code} (Cache-Control public, a week,
+ *     immutable), or 404 (not cached). Only rps:<id> keys for a well-formed id
+ *     are ever read. Lowercase and the Crockford look-alikes (I L -> 1, O -> 0)
+ *     are read as the id. CORS for agsist.com. Per isolate, 30 unknown ids
+ *     an hour per address, then 429 (walking the 33.5 million 5-letter ids).
+ *   No new binding and no new secret (rps: keys live in the SUBS KV).
  * v5.13 (2026-10-13): HARDENING. Every existing route answers as before for a
  *   real AGSIST page and for the jobs. No new binding and no new secret.
  *   - Public POSTs (/subscribe, /notice, /alert-subscribe, /watch-subscribe,
@@ -374,7 +398,8 @@ function oneLine(v, max) {
 // daily.html, and copies of older pages still in a reader's cache), but only
 // from an AGSIST page: the Origin check alone stops the cross-site post.
 const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/watch-subscribe",
-  "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form"]);
+  "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form",
+  "/rp-short"]);   // v5.14
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -393,6 +418,9 @@ const RATE = {
   "/subscribe": [10, 30, 150], "/notice": [10, 30, 150], "/alert-subscribe": [10, 30, 100],
   "/watch-subscribe": [10, 30, 50], "/elevator-watch-subscribe": [10, 30, 50],
   "/price-watch-subscribe": [10, 30, 50], "/sponsor-apply": [5, 10, 25], "/form": [8, 24, 500],
+  // v5.14: new Rain Print short links only (a repeat of a known code is free).
+  // No mail; the daily total bounds KV writes (two per new id).
+  "/rp-short": [60, 200, 600],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -702,6 +730,75 @@ async function formRateOk(req, env) {
   if (n >= FORM_RATE_MAX) return false;
   await env.SUBS.put(k, String(n + 1), { expirationTtl: 7200 });
   return true;
+}
+
+// v5.14: Rain Print short links. rps:<id> = a plain design code, no expiry.
+const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at 26 bytes: QR version 2, 25 x 25
+const RPS_MAX_BYTES = 1024;
+const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
+const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
+// The v1 design-code rules of decodeCode (components/rain-print.js): base64url
+// of "1|place|station|year|LPCS|name[|day|label]...". The letters behind LPCS
+// are the page's to change, so only their shape is checked here.
+function rpsCodeOk(code) {
+  if (typeof code !== "string" || !/^[A-Za-z0-9_-]{8,400}$/.test(code)) return false;
+  let raw;
+  try {
+    let b = code.replace(/-/g, "+").replace(/_/g, "/");
+    while (b.length % 4) b += "=";
+    const bin = atob(b), bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch (e) { return false; }
+  const f = raw.split("|");
+  if (f[0] !== "1" || f.length < 6 || (f.length - 6) % 2) return false;
+  if (!f[1].trim()) return false;
+  if (!/^[a-z0-9]{4}$/.test(f[4])) return false;
+  const year = parseInt(f[3], 10);
+  if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
+  for (let i = 6; i + 1 < f.length; i += 2) {
+    if (!/^[0-9a-z]{1,2}$/.test(f[i]) || parseInt(f[i], 36) > 365) return false;
+  }
+  return true;
+}
+async function rpsHash(code) {
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)));
+  let out = "", acc = 0, bits = 0;
+  for (let i = 0; out.length < RPS_MAX_LEN; i++) {
+    acc = (acc << 8) | d[i]; bits += 8;
+    while (bits >= 5 && out.length < RPS_MAX_LEN) { bits -= 5; out += RPS_B32[(acc >> bits) & 31]; }
+    acc &= (1 << bits) - 1;
+  }
+  return out;
+}
+function rpsId(v) {
+  const id = String(v == null ? "" : v).trim().toUpperCase().replace(/[IL]/g, "1").replace(/O/g, "0");
+  return RPS_ID_RE.test(id) ? id : "";
+}
+
+// v5.14: a cheap brake that costs no KV: per isolate and client address an
+// hour, at most RPS_MEM_MAX.post POSTs (repeats included, which RATE does not
+// count) and RPS_MEM_MAX.miss GETs of an unknown id (someone walking the id
+// space). Past the miss cap every GET from that address answers 429 until
+// the hour turns, so a hit cannot be found by walking ids either.
+const RPS_MEM_MAX = { post: 240, miss: 30 };
+const RPS_MEM = new Map();
+function rpsMemKey(req, kind) {
+  return "rps|" + kind + "|" + ipBucket(req.headers.get("CF-Connecting-IP") || "") + "|" + Math.floor(Date.now() / 3600e3);
+}
+function rpsMemOk(req, kind) {
+  if (!req.headers.get("CF-Connecting-IP")) return true;
+  if (RPS_MEM.size > 5000) RPS_MEM.clear();
+  if (kind === "get") return (RPS_MEM.get(rpsMemKey(req, "miss")) || 0) < RPS_MEM_MAX.miss;
+  const k = rpsMemKey(req, kind), n = RPS_MEM.get(k) || 0;
+  if (n >= RPS_MEM_MAX[kind]) return false;
+  RPS_MEM.set(k, n + 1);
+  return true;
+}
+function rpsMemMiss(req) {
+  if (!req.headers.get("CF-Connecting-IP")) return;
+  const k = rpsMemKey(req, "miss");
+  RPS_MEM.set(k, (RPS_MEM.get(k) || 0) + 1);
 }
 
 // v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code and the portal link's
@@ -1622,6 +1719,53 @@ async function handle(req, env) {
       if (r.status === "expired" || r.status === "ended") await env.SUBS.delete("sapp-logo:" + id);
       await env.SUBS.put("sapp:" + id, JSON.stringify(r));
       return json({ ok: true });
+    }
+
+    // ---------- v5.14: Rain Print short links ----------
+    // publicGate (Origin, JSON) has already run: /rp-short is in PUBLIC_POSTS.
+    if (path === "/rp-short" && req.method === "POST") {
+      const c = cors(req);
+      if (!rpsMemOk(req, "post")) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
+      if (Number(req.headers.get("Content-Length") || 0) > RPS_MAX_BYTES)
+        return json({ ok: false, error: "too large" }, 413, c);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPS_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      const code = b.code;
+      if (!rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
+      const full = await rpsHash(code);
+      for (let len = RPS_LEN; len <= RPS_MAX_LEN; len++) {
+        const id = full.slice(0, len), have = await env.SUBS.get("rps:" + id);
+        if (have === code) return json({ ok: true, id }, 200, c);
+        if (have === null) {
+          // Only a new id is counted (RATE["/rp-short"]); a repeat writes nothing.
+          const slow = await rateLimit(req, env, path);
+          if (slow) return slow;
+          await env.SUBS.put("rps:" + id, code);
+          return json({ ok: true, id }, 200, c);
+        }
+      }
+      return json({ ok: false, error: "no free id" }, 409, c);
+    }
+
+    if (path.startsWith("/rp-short/") && req.method === "GET") {
+      const c = Object.assign({ "Vary": "Origin", "X-Content-Type-Options": "nosniff" }, cors(req));
+      let seg = "";
+      try { seg = decodeURIComponent(path.slice("/rp-short/".length)); } catch (e) { seg = ""; }
+      const id = rpsId(seg);
+      if (!id) return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "public, max-age=86400" }, c));
+      if (!rpsMemOk(req, "get")) return json({ ok: false, error: "too many requests; try again later" }, 429, Object.assign({ "Cache-Control": "no-store" }, c));
+      const code = await env.SUBS.get("rps:" + id);
+      // An id never changes its code once written, so a hit may be cached for
+      // a week; a miss is not cached (the id may be made a moment later).
+      if (typeof code !== "string" || !rpsCodeOk(code)) {
+        rpsMemMiss(req);
+        return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "no-store" }, c));
+      }
+      return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=604800, immutable" }, c));
     }
 
     // ---------- v5.8: the site's own forms ----------
