@@ -459,10 +459,76 @@
   function designUrl(x) { return SITE + '?' + toParams(x); }
   function shortUrl(x) { var c = encodeCode(x); return c ? SITE + '?d=' + c : SITE; }
 
+  // ---------- places (pure: the tests run these) ----------
+  var STATE = {wi:'wisconsin',mn:'minnesota',ia:'iowa',il:'illinois',mi:'michigan',nd:'north dakota',sd:'south dakota',ne:'nebraska',ks:'kansas',mo:'missouri',in:'indiana',oh:'ohio',ky:'kentucky',tn:'tennessee',tx:'texas',ok:'oklahoma',co:'colorado',mt:'montana',wy:'wyoming',id:'idaho',wa:'washington',or:'oregon',ca:'california',nv:'nevada',ut:'utah',az:'arizona',nm:'new mexico',ar:'arkansas',la:'louisiana',ms:'mississippi',al:'alabama',ga:'georgia',fl:'florida',sc:'south carolina',nc:'north carolina',va:'virginia',wv:'west virginia',pa:'pennsylvania',ny:'new york',nj:'new jersey',ct:'connecticut',ri:'rhode island',ma:'massachusetts',vt:'vermont',nh:'new hampshire',me:'maine',md:'maryland',de:'delaware',ak:'alaska',hi:'hawaii',dc:'district of columbia',pr:'puerto rico'};
+  function abbrFor(full) { for (var k in STATE) if (STATE[k] === full) return k.toUpperCase(); return null; }
+  function toTitle(s) { return String(s).split(' ').map(function (w) { return /\d/.test(w) ? w : (w.length ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w); }).join(' '); }
+  function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
+  /* The town lookup (Open-Meteo, US only). A plain town with no state that
+     matches towns in more than one place comes back as {pick: [...]} so the page
+     can ask which one; a town and state that match nothing in that state is an
+     error, not the first town of that name somewhere else. Five digits are sent
+     as a ZIP code (Open-Meteo matches postal codes); the town found is what the
+     print and the order then name. */
+  function placeLabel(x) { return x.name + ', ' + (abbrFor(String(x.admin1 || '').toLowerCase()) || x.admin1 || ''); }
+  function geocodeQuery(q) {
+    var zip = /^\s*(\d{5})(?:-\d{4})?\s*$/.exec(q);
+    var parts = q.split(','), town = zip ? zip[1] : parts[0].trim(), st = zip ? '' : (parts[1] || '').trim().toLowerCase();
+    return { zip: zip ? zip[1] : '', town: town, st: st };
+  }
+  function geoPick(q, results) {
+    var g = geocodeQuery(q), list = (results || []).filter(function (x) { return x && typeof x.latitude === 'number' && typeof x.longitude === 'number' && x.name; });
+    if (!list.length) return { error: g.zip ? 'Couldn\u2019t find ZIP ' + g.zip + '. Type the town and state instead, like Chetek, WI.' : 'Couldn\u2019t find "' + q + '". Check the spelling, and type a town and state, like Chetek, WI.' };
+    if (g.zip) return { hit: list[0] };
+    if (g.st) {
+      var inSt = list.filter(function (x) { var a = String(x.admin1 || '').toLowerCase(); return a === STATE[g.st] || a === g.st; });
+      if (!inSt.length) return { error: 'Couldn\u2019t find "' + parts0(q) + '" in ' + (STATE[g.st] ? toTitle(STATE[g.st]) : g.st.toUpperCase()) + '. Check the spelling of the town and the state.' };
+      list = inSt;
+    }
+    // more than one town of that name, far enough apart to have different gauges: ask
+    var far = list.filter(function (x, i) { return i === 0 || haversine(list[0].latitude, list[0].longitude, x.latitude, x.longitude) > 30; });
+    if (far.length > 1) return { pick: far.slice(0, 6) };
+    return { hit: list[0] };
+  }
+  function parts0(q) { return String(q).split(',')[0].trim(); }
+
+  /* Why a share link can't be drawn, in words, or '' when it can (or there is no design in it). */
+  function linkProblem(search) {
+    var q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+    if (q.get('d')) return decodeCode(q.get('d')) ? '' : 'That link\u2019s design code is damaged or cut short, so it can\u2019t be drawn. Below is a sample; type the town to draw your own.';
+    if (q.has('year') && normalize({ year: q.get('year') }).year === null) return 'That link\u2019s year (' + cleanText(q.get('year'), 12) + ') isn\u2019t one we can draw. Pick a year from 1890 on and press Draw it.';
+    if (q.has('year') && !cleanText(q.get('place'), LIMITS.place)) return 'That link has no town in it. Type the town and press Draw it.';
+    return '';
+  }
+
+  // ---------- stations in plain words (pure) ----------
+  /* "471667 2" is ACIS's id plus its network (2 = NOAA co-op); the page shows
+     "NOAA co-op station 471667", never the raw pair. Names come in caps:
+     "CAMERON 2 NE" reads "Cameron, 2 mi NE", "RICE LAKE MUNI AP" reads
+     "Rice Lake Municipal Airport". */
+  function sidPlain(sid) {
+    var p = String(sid || '').trim().split(/\s+/);
+    return (p[1] === '2' ? 'NOAA co-op station ' : 'NOAA station ') + p[0];
+  }
+  var STN_WORD = { AP: 'Airport', MUNI: 'Municipal', INTL: 'International', RGNL: 'Regional', CO: 'County', FLD: 'Field', ARPT: 'Airport', STN: 'Station', EXP: 'Experiment', AG: 'Ag' };
+  function stationName(raw) {
+    var s = String(raw || '').trim().replace(/\s+/g, ' ');
+    var off = /^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$/.exec(s), tail = '';
+    if (off) { s = off[1]; tail = ', ' + off[2] + ' mi ' + off[3]; }
+    return s.split(' ').map(function (w) {
+      var u = w.toUpperCase();
+      if (STN_WORD[u]) return STN_WORD[u];
+      if (/^[NSEW]{1,3}$/.test(u) || /\d/.test(w)) return u;
+      return u.charAt(0) + u.slice(1).toLowerCase();
+    }).join(' ') + tail;
+  }
+  function milesText(mi) { return mi < 0.1 ? 'under 0.1 mi' : (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; }
+
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -485,7 +551,7 @@
   var ORDER_TO = 'sig@farmers1st.com';
 
   var ST = fromParams(root.location.search);
-  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '';
+  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '', DRAWING = false;
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
      while a year-to-date preview is drawn. NOART: the plain message shown
      instead of art when the year so far is too thin to draw; ordering stays open. */
@@ -503,27 +569,41 @@
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
   // ---------- data ----------
-  var STATE = {wi:'wisconsin',mn:'minnesota',ia:'iowa',il:'illinois',mi:'michigan',nd:'north dakota',sd:'south dakota',ne:'nebraska',ks:'kansas',mo:'missouri',in:'indiana',oh:'ohio',ky:'kentucky',tn:'tennessee',tx:'texas',ok:'oklahoma',co:'colorado',mt:'montana',wy:'wyoming',id:'idaho',wa:'washington',or:'oregon',ca:'california',nv:'nevada',ut:'utah',az:'arizona',nm:'new mexico',ar:'arkansas',la:'louisiana',ms:'mississippi',al:'alabama',ga:'georgia',fl:'florida',sc:'south carolina',nc:'north carolina',va:'virginia',wv:'west virginia',pa:'pennsylvania',ny:'new york',nj:'new jersey',ct:'connecticut',ri:'rhode island',ma:'massachusetts',vt:'vermont',nh:'new hampshire',me:'maine',md:'maryland',de:'delaware',ak:'alaska',hi:'hawaii',dc:'district of columbia',pr:'puerto rico'};
-  function abbrFor(full) { for (var k in STATE) if (STATE[k] === full) return k.toUpperCase(); return null; }
-  function toTitle(s) { return String(s).split(' ').map(function (w) { return /\d/.test(w) ? w : (w.length ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w); }).join(' '); }
   function miles(km) { return km * 0.621371; }
 
+  /* Every outside call gives up after FETCH_MS (2026-10-13: a slow NOAA left
+     "Looking for NOAA stations" up for good with Draw turned off). The error
+     says who was slow; the status line then offers a Try again button. */
+  var FETCH_MS = 15000;
   function safeFetch(url) {
     var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
-    return fetch(url).then(function (r) {
-      if (!r.ok) throw new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.');
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null, timedOut = false;
+    var timer = setTimeout(function () { timedOut = true; if (ctl) ctl.abort(); }, FETCH_MS);
+    var slow = function () { var e = new Error(who + ' is slow right now and didn\u2019t answer in ' + (FETCH_MS / 1000) + ' seconds. Try again in a minute.'); e.retry = true; return e; };
+    var race = new Promise(function (res, rej) { setTimeout(function () { if (!ctl) rej(slow()); }, FETCH_MS + 50); });
+    var f = fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
+      clearTimeout(timer);
+      if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; throw e; }
       return r;
-    }, function () { throw new Error(who + ' couldn\u2019t be reached. Check the connection and press Draw it again.'); });
+    }, function () {
+      clearTimeout(timer);
+      if (timedOut) throw slow();
+      var e = new Error(who + ' couldn\u2019t be reached. Check the connection and try again.'); e.retry = true; throw e;
+    });
+    return Promise.race([f, race]);
   }
+  var PICKED = null;   // {q, hit}: the town the reader chose from a "which one?" list
   function geocode(q) {
-    var u = 'https://geocoding-api.open-meteo.com/v1/search?count=5&countryCode=US&name=' + encodeURIComponent(q.replace(/,.*$/, '').trim());
+    if (PICKED && PICKED.q === q) return Promise.resolve(PICKED.hit);
+    var g = geocodeQuery(q);
+    var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
-      if (!j.results || !j.results.length) throw new Error('Couldn\u2019t find "' + q + '". Type a town and state, like Chetek, WI.');
-      var st = (q.split(',')[1] || '').trim().toLowerCase();
-      return st ? (j.results.find(function (x) { var a = (x.admin1 || '').toLowerCase(); return a === STATE[st] || a === st; }) || j.results[0]) : j.results[0];
+      var r = geoPick(q, j && j.results);
+      if (r.error) throw new Error(r.error);
+      if (r.pick) { var e = new Error('pick'); e.pick = r.pick; throw e; }
+      return r.hit;
     });
   }
-  function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
   function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
   function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
   function stations(lat, lon, year) {
@@ -842,8 +922,17 @@
   function showBuy(on) {
     on = on && !SAMPLE;
     // Before anything of the reader's is drawn the buttons stay live and point at the town box; a station with too many gaps turns them off.
-    $('rp-buy').classList.toggle('rp-off', !!BLOCKED);
-    doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = !!BLOCKED; });
+    var off = !!BLOCKED || DRAWING;
+    $('rp-buy').classList.toggle('rp-off', off);
+    doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = off; });
+    // why the buttons are off, in words, by the buttons
+    var why = $('rp-buy-why');
+    if (why) {
+      why.textContent = DRAWING ? 'Drawing your print. Ordering opens when it is done.'
+        : BLOCKED === 'failed' ? 'Ordering is off until your print draws. See the message by the town box above.'
+        : BLOCKED ? 'Ordering is off: this station is missing too many days for a fair print. Pick another station or year above.' : '';
+      why.hidden = !why.textContent;
+    }
     $('rp-to-buy').classList.toggle('btn-primary', on);
     $('rp-to-buy').classList.toggle('btn-secondary', !on);
     $('rp-dl').disabled = !on || !DATA;
@@ -856,7 +945,7 @@
   var GIFT_MSG_MAX = 240, GIFT_TO_MAX = 80;
   function fill(t) { return String(t || '').replace(/\{year\}/g, String(CURRENT_YEAR)).replace(/\{next\}/g, String(CURRENT_YEAR + 1)); }
   function giftMode() { return !!ST.year && yearMode(ST.year, TODAY) === 'gift'; }
-  function canOrder() { return !SAMPLE && !BLOCKED && (!!DATA || !!NOART); }
+  function canOrder() { return !SAMPLE && !BLOCKED && !DRAWING && (!!DATA || !!NOART); }
   function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
   var ORDER_NOTE = '';
   function syncGift() {
@@ -881,8 +970,20 @@
   }
 
   function distText(m) {
-    var mi = miles(m.km);
-    return mi < 1 ? 'under a mile from ' + m.place : (mi < 10 ? mi.toFixed(1) : Math.round(mi)) + ' miles from ' + m.place;
+    return milesText(miles(m.km)) + ' from ' + m.city;
+  }
+  // "the Chetek, WI weather station, 0.4 mi from Chetek (NOAA co-op station 471667)"
+  function gaugeWords(m) { return stationName(m.name) + ', ' + (m.state || m.stateAbbr) + ' weather station'; }
+  function gaugeHtml(m) {
+    return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' +
+      (STATIONS.length > 1 ? ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
+  }
+  // the station line on the art itself: name and distance, both styles
+  function gaugeLine(m) { return 'Rain gauge: ' + gaugeWords(m) + ', ' + distText(m); }
+  function usualWords() {
+    if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
+    if (ST.cmp === 'station' && EXT) return 'A usual year here means this station\u2019s own average, ' + EXT.yearFrom + ' to ' + EXT.yearTo + ', counted only on the days it reported.';
+    return '';
   }
   function setDesignRefs() {
     if (SAMPLE) { $('rp-code-wrap').hidden = true; $('ro-design').value = ''; return; }
@@ -899,7 +1000,7 @@
     art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
-    $('rp-source').innerHTML = 'The print will come from <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(distText(m)) +
+    $('rp-source').innerHTML = 'The print will come from the ' + gaugeHtml(m) +
       '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
     setDesignRefs();
     showBuy(true);
@@ -914,11 +1015,12 @@
     var dist = distText(m);
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
-    $('rp-source').innerHTML = 'Rain gauge: <b>' + esc(toTitle(m.name)) + ', ' + esc(m.state) + '</b> (NOAA station ' + esc(m.sid) + '), ' + esc(dist) + '. ' +
+    $('rp-source').innerHTML = 'Rain gauge: the ' + gaugeHtml(m) + '. ' +
       (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
+      (usualWords() ? esc(usualWords()) + ' ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
       (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
@@ -942,12 +1044,56 @@
   function blockPrint(msg) {
     BLOCKED = msg;
     PREVIEW = null; NOART = '';
-    art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station. Pick another under Weather station, below.</p>';
+    art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station for a fair print.</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
     $('rp-source').textContent = '';
+    $('rp-code-wrap').hidden = true;
+    $('ro-design').value = '';
+    $('rp-order').hidden = true;
     showBuy(false);
+    sampleLine(false);
     setStatus(msg, true);
+  }
+  /* A draw that failed (a misspelled town, a slow NOAA, no station): the old
+     design comes down with it, so nothing stale can be ordered (2026-10-13:
+     "Chetk, WI" left Chetek's art and live order buttons up). */
+  function failDraw(err) {
+    DATA = null; META = null; PREVIEW = null; NOART = ''; EXT = null; NORM30 = null;
+    BLOCKED = 'failed';
+    art.innerHTML = EMPTY_ART;
+    art.classList.add('rp-empty');
+    $('rp-stats-wrap').hidden = true;
+    $('rp-source').textContent = '';
+    $('rp-preview-line').hidden = true;
+    $('rp-code-wrap').hidden = true;
+    $('ro-design').value = '';
+    $('rp-order').hidden = true;
+    showBuy(false);
+    sampleLine(false);
+    if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?'); return; }
+    setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.', true);
+    $('rp-retry-row').hidden = !(err && err.retry);
+  }
+  // "Which Springfield?": one button per town, with its county
+  function showPick(list) {
+    var box = $('rp-pick');
+    box.innerHTML = '';
+    list.forEach(function (x) {
+      var b = doc.createElement('button');
+      b.type = 'button'; b.className = 'chip';
+      b.textContent = placeLabel(x) + (x.admin2 ? ' (' + x.admin2 + (/county|parish|borough/i.test(x.admin2) ? '' : ' County') + ')' : '');
+      b.addEventListener('click', function () {
+        var q = placeLabel(x);
+        PICKED = { q: q, hit: x };
+        $('rp-place').value = q;
+        box.hidden = true;
+        run({ type: 'submit', preventDefault: function () {} });
+      });
+      box.appendChild(b);
+    });
+    box.hidden = false;
+    try { box.querySelector('button').focus(); } catch (e) {}
   }
 
   var reqToken = 0;
@@ -972,9 +1118,12 @@
     ST = next;
     var go = $('rp-go'), sel = $('rp-station');
     go.disabled = true; sel.disabled = true;
-    BLOCKED = '';
-    var g, chosen, picked;
-    var done = function () { if (my === reqToken) { go.disabled = false; sel.disabled = STATIONS.length < 2; } };
+    BLOCKED = ''; DRAWING = true;
+    $('rp-retry-row').hidden = true;
+    if (!preset) $('rp-pick').hidden = true;
+    showBuy(!!DATA);
+    var g, chosen, picked, autoPick = false;
+    var done = function () { if (my === reqToken) { DRAWING = false; go.disabled = false; sel.disabled = STATIONS.length < 2; showBuy(canOrder()); } };
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
@@ -986,6 +1135,8 @@
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
+      // a ZIP or a picked town: the print, the link and the order name the town found
+      if (geocodeQuery(ST.place).zip) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
       setStatus('Looking for NOAA stations near ' + g.name + ', ' + g.admin1 + '…');
       return stations(g.latitude, g.longitude, ST.year);
     }).then(function (list) {
@@ -996,6 +1147,7 @@
       var want = list.find(function (s) { return s.sid === ST.station; });
       if (want) { chosen = want; return daily(want.sid, ST.year).then(function (d) { picked = d; }); }
       // Nearest first; take the first of three with a near-complete year, else the most complete.
+      autoPick = true;
       var tries = list.slice(0, 3), best = null, bestSt = null, i = 0;
       var step = function () {
         if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
@@ -1015,14 +1167,15 @@
       if (!picked) throw new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.');
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
-        return '<option value="' + esc(s.sid) + '">' + esc(toTitle(s.name)) + ', ' + Math.round(miles(s.km)) + ' mi, record ' + s.valid_daterange[0][0].slice(0, 4) + '–' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ' away, record ' + s.valid_daterange[0][0].slice(0, 4) + '–' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
       }).join('');
       sel.value = chosen.sid;
       var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
       META = { name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
-        blockPrint(toTitle(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. Pick another station below, or another year.');
+        blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
+          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.' : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has a full ' + ST.year + '. Try another year, or a bigger town nearby.'));
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
@@ -1055,7 +1208,7 @@
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
-      setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Press Draw it again. If it fails twice, try another town or year.', true);
+      failDraw(err);
     }).then(done);
   }
 
@@ -1572,10 +1725,37 @@
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
+  $('rp-retry').addEventListener('click', function () { $('rp-retry-row').hidden = true; run(); });
+  doc.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: 'smooth', block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
+  });
+  // A share link that can't be drawn says why, over the sample (2026-10-13: it fell back quietly).
+  var LINK_WHY = linkProblem(root.location.search);
+  if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
   showBuy(false);
   // the art measures its labels with these fonts: draw again once they are in
   fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
   loadPrices();
   if (ST.place && ST.year) run();
   else runSample();
+
+  /* Gift card codes (?gift=RP-XXXX-XXXX-XXXX): components/rp-gift.js handles
+     them when the page loads it, through window.AgRpGift.init(code, PAGE).
+     ?gift=1 is the old "this year as a gift" switch, not a code. Without the
+     gift script the reader is told how to use the code by email. */
+  var GIFT_CODE = (function () { var g = new URLSearchParams(root.location.search).get('gift') || ''; return /^RP[-\s]?[0-9A-Za-z]/i.test(g) ? g.slice(0, 40) : ''; })();
+  var PAGE = {
+    design: function () { return Object.assign({}, ST); }, designCode: function () { return encodeCode(ST); },
+    designUrl: function () { return designUrl(ST); }, canOrder: canOrder, openOrder: openOrder, meta: function () { return META ? Object.assign({}, META) : null; }
+  };
+  root.RainPrint.page = PAGE;
+  function giftHook() {
+    if (!GIFT_CODE) return;
+    if (root.AgRpGift && typeof root.AgRpGift.init === 'function') { try { root.AgRpGift.init(GIFT_CODE, PAGE); } catch (e) {} return; }
+    var n = $('rp-link-note');
+    n.textContent = 'Have a gift card code? Email it to ' + ORDER_TO + ' with the town and year you want, and Sig will set it up.';
+    n.hidden = false;
+  }
+  if (doc.readyState === 'complete') giftHook(); else root.addEventListener('load', giftHook);
 })(typeof window !== 'undefined' ? window : this);

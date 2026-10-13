@@ -94,6 +94,8 @@
   .rp-preview-line{margin:0 0 .5rem;padding:9px 12px;border:1px solid var(--brand);border-left-width:4px;border-radius:var(--r-8);background:var(--surface);color:var(--text);line-height:1.5}
   .rp-source{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.6;margin:.4rem 0}
   .rp-source:empty{display:none}
+  .rp-pick{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .6rem}
+  .rp-retry-row{margin:0 0 .6rem}
   .rp-source b{color:var(--text-dim)}
   .rp-source a{color:var(--link)}
   .rp-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
@@ -301,7 +303,10 @@
           <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
         </div></fieldset>
         <p class="rp-gift-hint" id="rp-gift-hint">For Christmas, pick <span class="rp-cy">2026</span>. You print a gift card for under the tree now, and the full-year print comes in January.</p>
+        <p class="rp-status rp-bad" id="rp-link-note" hidden></p>
         <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
+        <div class="rp-pick" id="rp-pick" role="group" aria-label="Which town?" hidden></div>
+        <p class="rp-retry-row" id="rp-retry-row" hidden><button type="button" class="btn btn-secondary" id="rp-retry">Try again</button></p>
         <p class="rp-preview-line" id="rp-preview-line" hidden></p>
         <p class="rp-source" id="rp-source"></p>
         <div class="rp-acts">
@@ -391,6 +396,7 @@
         <label class="rp-check"><input id="ro-isgift" type="checkbox"><span>It's a gift</span></label>
         <p class="rp-note" id="rp-gift-checkout" hidden></p>
       </div>
+      <p class="rp-note rp-bad" id="rp-buy-why" hidden></p>
       <div class="rp-prods">
         <div class="rp-prod"><h3>Digital file</h3><div class="rp-price" data-price="digital">$19</div>
           <ul><li>The print files, 12 x 18 in at 300 dpi</li><li>Emailed to you</li><li>Take them to any print shop</li></ul>
