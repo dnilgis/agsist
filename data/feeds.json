@@ -1687,6 +1687,7 @@
   {
    "path": "data/rain-print.json",
    "pages": [
+    "gifts-for-farmers.html",
     "index.html",
     "rain-print.html"
    ],
