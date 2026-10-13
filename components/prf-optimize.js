@@ -1041,18 +1041,18 @@
       var ranked = [];
       for (var q = 0; q < N; q++) if (G.allowed[q]) ranked.push(q);
       ranked.sort(function (a, b) { return G.rates[b] - G.rates[a] || a - b; });
-      out.push('RMA charges the most here for ' + listAnd(ranked.slice(0, 2).map(function (j) { return LABELS[j] + ' (' + per100(G.rates[j]) + ' per $100 of protection)'; }))
-        + ' and the least for ' + LABELS[ranked[ranked.length - 1]] + ' (' + per100(G.rates[ranked[ranked.length - 1]]) + '). USDA pays ' + pct(G.subsidy)
-        + ' of whatever premium is owed, so the months with the highest rate carry the most USDA money.');
-      out.push('Across every offered interval, this grid would have paid back $' + rec.values.payback.toFixed(2) + ' per $1 of full premium over ' + n + ' years ('
-        + G.years[0] + ' to ' + G.years[n - 1] + '), against the $' + (1 - G.subsidy).toFixed(2) + ' you pay. That gap, times the rate, is the expected net, and it is largest where the rate is largest.');
+      out.push('RMA’s rate here is highest for ' + listAnd(ranked.slice(0, 2).map(function (j, x) { return LABELS[j] + ' (' + per100(G.rates[j]) + (x ? '' : ' per $100 of protection') + ')'; }))
+        + ', lowest for ' + LABELS[ranked[ranked.length - 1]] + ' (' + per100(G.rates[ranked[ranked.length - 1]]) + '). USDA pays ' + pct(G.subsidy)
+        + ' of the premium, so the highest-rate months carry the most USDA money.');
+      out.push('Over ' + n + ' years (' + G.years[0] + ' to ' + G.years[n - 1] + '), all offered intervals paid back $' + rec.values.payback.toFixed(2) + ' per $1 of full premium, against the $'
+        + (1 - G.subsidy).toFixed(2) + ' you pay. That gap times the rate is the expected net, so it is largest where the rate is.');
     }
     var trig = G.coverage;
     used.forEach(function (j) {
       var below = 0, sum = 0;
       for (var k = 0; k < n; k++) { if (G.P[k][j] > 0) below++; sum += G.P[k][j]; }
-      out.push(LABELS[j] + ' came in under the ' + trig + '% trigger in ' + below + ' of ' + n + ' years. Per $100 of protection it would have paid '
-        + per100(sum / n) + ' a year on average, against ' + per100(G.cost[j]) + ' of producer premium.');
+      out.push(LABELS[j] + ': under the ' + trig + '% trigger in ' + below + ' of ' + n + ' years. Paid ' + per100(sum / n) + ' a year per $100 of protection on average, against '
+        + per100(G.cost[j]) + ' of your premium.');
     });
     used.forEach(function (j) {
       if (sp[j] === G.hi[j] && used.length > 1) out.push(LABELS[j] + ' is held to ' + G.hi[j] + '%, ' + (j === 0 ? 'the 2027 cap on January and February.' : 'this county’s cap for it.'));
