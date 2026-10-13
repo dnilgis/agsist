@@ -234,7 +234,10 @@
       var mid = (Math.min.apply(null, it.xs) + Math.max.apply(null, it.xs)) / 2 - it.w / 2;
       // best: centered under its tick, kept inside the style's own margins when it can be (bounds)
       var pL = Math.max(lo, bounds[0]), pR = Math.min(hi, bounds[1] - it.w);
-      var pref = pL <= pR ? Math.max(pL, Math.min(pR, mid)) : Math.max(lo, Math.min(hi, mid)), xsCand = [];
+      var x0 = Math.min.apply(null, it.xs), x1 = Math.max.apply(null, it.xs);
+      // at a margin: start just left of the tick (or end just right of it), as the print always has
+      var edge = mid < bounds[0] ? x0 - 12 : mid + it.w > bounds[1] ? x1 + 12 - it.w : mid;
+      var pref = pL <= pR ? Math.max(pL, Math.min(pR, mid)) : Math.max(lo, Math.min(hi, edge)), xsCand = [];
       if (hi < lo) return [];
       for (var d = 0; d <= hi - lo + 4; d += 4) { [pref - d, pref + d].forEach(function (x) { if (x >= lo - 1e-9 && x <= hi + 1e-9 && xsCand.indexOf(x) < 0) xsCand.push(x); }); }
       [lo, hi].forEach(function (x) { if (xsCand.indexOf(x) < 0) xsCand.push(x); });
@@ -519,7 +522,8 @@
   }
 
   // ======================================================================= R1
-  function r1(I) {
+  // wetHead: the biggest rain found no clean spot on the chart, so it is a line in the header, in red
+  function r1(I, wetHead) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
     var ML = 120, X0 = 196, X1 = 1680, PW = X1 - X0, w = PW / N;
     var showN = E.showN;
@@ -643,7 +647,7 @@
     var yLab = (E.full ? 'your year, rain and melted snow' : E.snowState === 'none' ? 'your year, rain' : 'your year') + E.soFar;
     var uLab = E.preview ? 'a usual year by then' : 'a usual year';
     var keyW = 46 + W(E.T + ' in', yN) + 10 + W(yLab, yL) + (E.cmp ? 40 + 46 + W(f2(E.normalRec) + ' in', uN) + 10 + W(uLab, uL) : 0);
-    var hLines = recs.lines.concat(extraLines);
+    var hLines = recs.lines.concat(extraLines).concat(wetHead ? [E.wetText] : []);
     var hw = Math.max(W(head, hs), W(factLine, fs), keyW, Math.max.apply(null, [0].concat(hLines.map(function (t) { return W(t, lineSt); }))));
     var hh = 62 + 62 + 56 + (hLines.length ? 28 + (hLines.length - 1) * 28 : 0) + 4;
     function header(HX, TOP) {
@@ -658,7 +662,7 @@
         p.push(T(kx, KY, uLab, uL));
       }
       p.push(T(HX, KY + 40, factLine, fs));
-      hLines.forEach(function (t, k) { p.push(T(HX, KY + 70 + k * 28, t, lineSt)); });
+      hLines.forEach(function (t, k) { p.push(T(HX, KY + 70 + k * 28, t, wetHead && t === E.wetText ? Object.assign({}, lineSt, { fill: C.accent }) : lineSt)); });
       return p.join('');
     }
 
@@ -730,7 +734,7 @@
 
     // ---- the biggest rain, in words, close to its red riser
     var wetAt = null;
-    if (E.wi >= 0) {
+    if (E.wi >= 0 && !wetHead) {
       var wst = { w: 500, size: 23, fill: C.accent }, wmy = (y(wc0) + y(wc1)) / 2, s = E.wetText;
       var wc = [];
       [34, 64, 94, 124, 154].forEach(function (dy) { wc.push({ x: wx + 16, y: y(wc0) + dy, a: 'start' }); });
@@ -740,14 +744,17 @@
       wetAt = choose(wc, function (c) {
         var b = box(c.x, c.y, s, Object.assign({}, wst, { anchor: c.a }));
         if (!inPlot(b)) return 0;
-        var sgn = c.a === 'start' ? 1 : -1, L = [wx + 4 * sgn, wmy, c.x - 4 * sgn, b.y + b.h / 2];
-        if (sgn * (L[2] - L[0]) < 0 || !room.clear(L, 'wet', 2)) return 0;
         if (!room.free(b, 'wet', false)) return 0;
+        // the leader leaves the riser from its side, or from its top or foot (a date's drop line may run beside it)
+        var sgn = c.a === 'start' ? 1 : -1, ey = b.y + b.h / 2, ex = c.x - 4 * sgn;
+        var L = [[wx + 4 * sgn, wmy], [wx, y(wc1) - 7], [wx, y(wc0) + 7]].map(function (p) { return [p[0], p[1], ex, ey]; })
+          .filter(function (l) { return sgn * (l[2] - l[0]) >= 0 && room.clear(l, 'wet', 2); })[0];
+        if (!L) return 0;
         c.b = b; c.L = L;
         return room.free(b, 'wet', true) ? 2 : 1;
       });
       if (wetAt) { room.text(wetAt.b, 'wet'); room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 1, 'wet', 'lead'); }
-      else skipped.push(E.wetText);
+      else return r1(I, true);
     }
 
     // ---- remarkable days: a small open ring on the line, a label clear of everything
@@ -1050,7 +1057,7 @@
         return room.free(b, 'wet', true) ? 2 : 1;
       });
       if (wetAt) { room.text(wetAt.b, 'wet'); if (wetAt.L) room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 1, 'wet', 'lead'); }
-      else skipped.push(E.wetText);
+      else foot.push(E.wetText);   // no clean spot under the ground: it is said in the footer
     }
 
     // ---- the dry stretch, under the ground, if it fits among the bars
@@ -1080,7 +1087,7 @@
       var top0 = E.P[r.i] > 0 && !(E.full && days[r.i].s > 0) ? ry(E.P[r.i]) + 4 : G + 5;
       var cands = [];
       // beside its leader, or hanging under it (below the bars around it)
-      for (var yy = G + 70; yy <= RB - 4; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
+      for (var yy = G + 70; yy <= RB + 50; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
       // a label that spans another record's column would stand in its leader's way: only if nothing else fits
       var cols = rings.filter(function (rx, j) { return j !== k && !at[j]; });
       var spans = function (b) { return cols.some(function (rx) { return rx > b.x - 4 && rx < b.x + b.w + 4; }); };
