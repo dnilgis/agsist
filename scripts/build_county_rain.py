@@ -98,7 +98,11 @@ def compare(c, year_word="a usual year to date"):
     if c["usual"] is None:
         return f"This {'gauge' if c['station']['net'] == 'cocorahs' else 'station'} has no NOAA normal, so there is no usual year to compare it with."
     if c["pct"] is None:
-        return "It is too early in the year for a fair comparison with a usual year."
+        # the usual so far is under an inch: before April that is the calendar,
+        # later it is a dry place (the desert), not "early"
+        if int(c["as_of"][5:7]) < 4:
+            return "It is too early in the year for a fair comparison with a usual year."
+        return "The usual rain so far here is under an inch, too little for a fair percent."
     d = c["total"] - c["usual"]
     if abs(d) < 0.05:
         return f"That is about the same as {year_word} ({c['pct']}%)."
@@ -115,6 +119,11 @@ def answer(c, county, year, done):
                 + compare(c, f"a usual year through {short_date(c['as_of'])}"))
     return (f"{inches_word(c['total'])} of rain so far in {year} at {w}, {county}, through {short_date(c['as_of'])}. "
             + compare(c))
+
+
+def miles_from(mi):
+    n = round(mi)
+    return "less than a mile from" if n == 0 else "1 mile from" if n == 1 else f"{n} miles from"
 
 
 def days_word(n):
@@ -342,7 +351,7 @@ def county_page(ctx):
     # ---- station
     miss = c["missing"]
     station_p = (f"The numbers come from NOAA&rsquo;s daily record for {'the CoCoRaHS volunteer gauge' if stw['net'] == 'cocorahs' else 'the station'} "
-                 f"{e(R.station_where(stw['raw']))} (station {e(stw['raw'])}), {stw['mi']:.0f} miles from the middle of {e(name)}. "
+                 f"{e(R.station_where(stw['raw']))} (station {e(stw['raw'])}), {miles_from(stw['mi'])} the middle of {e(name)}. "
                  f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}"
                  + (f"; {'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry." if miss else ", every one.")
                  + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero.")
@@ -565,7 +574,7 @@ def build(data_dir, C=None, NB=None):
         for fips, c in d["counties"].items():
             if fips in C:
                 pages[fips] = (c["name"], f"/rain/{R.slug(R.STATES[st])}/{C[fips]['slug']}",
-                               f"{inch(c['total'])} in" + (f", {c['pct']}%" if c["pct"] is not None else ""))
+                               f"{inch(c['total'])} in" + (f", {c['pct']}%" if c["pct"] is not None else ""), c["as_of"])
     want, urls = {}, []
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         st_slug = R.slug(R.STATES[st])
@@ -575,7 +584,9 @@ def build(data_dir, C=None, NB=None):
                 continue
             nb = [f for f in NB.get(fips, []) if f in pages]
             nb.sort(key=lambda f: (C[f]["st"] != st, pages[f][0]))
-            nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1], pages[f][2]) for f in nb[:4]]
+            # a neighbor whose station stops on another day says which day
+            nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
+                     pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1)})
             body = nav.fill_fonts(body)
@@ -700,6 +711,16 @@ def selftest():
         ok('<svg viewBox' in story and 'class="rc-us"' in story, "chart with the usual line")
         ok("1991 to 2020" in story, "normals period named when ACIS confirmed it")
         ok('href="/rain/iowa/polk-county"' in story or 'href="/rain/iowa/marshall-county"' in story, "next-door links")
+        # a neighbor whose station stops earlier says to which day
+        dn = os.path.join(t, "nbr")
+        os.makedirs(dn)
+        ij = json.load(open(os.path.join(data, "ia.json")))
+        nf = next(f for f, x in ij["counties"].items() if f != "19169" and f"/rain/iowa/{R.slug(x['name'])}" in story)
+        ij["counties"][nf]["as_of"] = "2026-10-02"
+        json.dump(ij, open(os.path.join(dn, "ia.json"), "w"))
+        sn = build(dn)["rain/iowa/story-county.html"]
+        ok(re.search(r'<a href="/rain/iowa/' + R.slug(ij["counties"][nf]["name"]) + r'">[^<]*<small>[^<]* to Oct 2</small>', sn) is not None, "next-door chip names an older last day")
+        ok(re.search(r"<small>[^<]* to Oct 12</small>", sn) is None, "next-door chip on the same day carries no date")
         ok("3 days not reported" not in story and "1 day not reported" in story, "a month with a gap says so")
         jef = want.get("rain/iowa/greene-county.html", "")
         ok(jef and "no NOAA normal" in jef and "Percent of usual" not in jef and 'class="rc-us"' not in jef, "no normals: no percent, no usual line")
@@ -711,6 +732,12 @@ def selftest():
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
         ok(ks and "read the gauge after more than one day" in ks, "accumulated reports explained")
+        for mi, words in ((0.4, "less than a mile from the middle"), (1.2, "1 mile from the middle"), (7.6, "8 miles from the middle")):
+            pg = county_page({"c": dict(c, station=dict(c["station"], mi=mi)), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+            ok(words in pg and " 1 miles" not in pg and " 0 miles" not in pg, f"station distance {mi}: {words}")
+        dz = dict(c, usual=0.8, pct=None, as_of="2026-10-12")
+        ok(compare(dz) == "The usual rain so far here is under an inch, too little for a fair percent.", f"a desert in October is not early in the year: {compare(dz)}")
+        ok("too early" in compare(dict(dz, as_of="2026-02-10")), "February with under an inch usual: too early")
         c1 = dict(c, acc=0, unsplit=3)
         nb = county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         ok("On 0 reports" not in nb, "no multi-day reports: no line about them")
