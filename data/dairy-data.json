@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-04T00:00:35Z",
+ "updated": "2026-10-13T20:12:17Z",
  "sources": {
   "class": "https://www.ams.usda.gov/mnreports/dymclassprices.pdf",
   "all_milk": "https://quickstats.nass.usda.gov/"
@@ -195,5 +195,18 @@
  "spot_date": "USDA survey avg · Sep 2026",
  "survey_cheese": 1.5577,
  "survey_whey": 0.6694,
- "survey_fat": 1.4762
+ "survey_fat": 1.4762,
+ "class3_math": {
+  "protein": 2.6619,
+  "other_solids": 0.4147,
+  "butterfat": 1.4762,
+  "lb_protein": 3.3,
+  "lb_other": 6.0,
+  "lb_fat": 3.5,
+  "skim_share": 0.965,
+  "skim_exact": 11.2725,
+  "skim": 11.27,
+  "class3_exact": 16.0423,
+  "class3": 16.04
+ }
 }
