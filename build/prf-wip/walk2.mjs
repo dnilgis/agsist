@@ -1,4 +1,4 @@
-import { open, done, overflow } from './harness.mjs';
+import { open, done, overflow, openSetup } from './harness.mjs';
 const W = +(process.argv[2] || 390);
 const geocode = {
   '54728': { results: [{ name: 'Chetek', latitude: 45.31413, longitude: -91.651, admin1: 'Wisconsin', admin2: 'Barron' }] },
@@ -35,7 +35,7 @@ await o.shot('n-ask-' + W, { full: false });
 // pick a county if asked
 if (await p.locator('.prf-co-wrap.is-ask').count()) { const v = await p.locator('#prf-co option').nth(1).getAttribute('value'); await p.selectOption('#prf-co', v); await p.waitForTimeout(400); await say(' after picking county'); }
 // back to example and break rules
-await p.click('#prf-eg').catch(() => {}); await p.goto(o.BASE + '/prf.html?g=30454&c=55005&u=0&ac=100&sh=100&a=90_100_0.0.0.50.0.50.0.0.0.0.0'); await p.waitForSelector('.prf-figs');
+await p.click('#prf-eg').catch(() => {}); await p.goto(o.BASE + '/prf.html?g=30454&c=55005&u=0&ac=100&sh=100&a=90_100_0.0.0.50.0.50.0.0.0.0.0'); await p.waitForSelector('.prf-figs'); await openSetup(p);
 await p.click('#prf-acres'); await p.keyboard.type('3000'); await p.waitForTimeout(200); console.log('acres typed 3000 ->', await p.inputValue('#prf-acres'), '|', await t('.prf-figs dd'));
 await p.fill('#prf-share', '0'); await p.waitForTimeout(150); console.log('share 0 ->', await t('.prf-verdict'));
 await p.fill('#prf-share', '100'); await p.fill('#prf-acres', '100');
@@ -44,7 +44,7 @@ for (let i = 0; i < 12; i++) { await p.click('[data-iv-step="5"][data-i="0"]').c
 console.log('caps dead end ->', await t('.prf-verdict'));
 await p.click('#prf-even'); console.log(' even ->', await t('#prf-iv-total'));
 await p.click('#prf-clear'); console.log('clear button now:', await t('#prf-clear')); await p.click('#prf-clear'); console.log(' undo ->', await t('#prf-iv-total'));
-await p.goto(o.BASE + '/prf.html?g=30454&c=55005&u=0&ac=100&sh=100&a=90_100_0.0.0.50.0.50.0.0.0.0.0'); await p.waitForSelector('.prf-figs');
+await p.goto(o.BASE + '/prf.html?g=30454&c=55005&u=0&ac=100&sh=100&a=90_100_0.0.0.50.0.50.0.0.0.0.0'); await p.waitForSelector('.prf-figs'); await openSetup(p);
 for (const w of [30, 10, 0]) { await p.click(`[data-win="${w}"]`); await p.waitForTimeout(100); console.log('window', w, '->', (await t('.prf-verdict')).slice(0, 120)); }
 for (const id of ['prf-years-d', 'prf-pol-d', 'prf-rec-d', 'prf-lad-d', 'prf-idx-d', 'prf-nb-d']) { await p.locator('#' + id + ' > summary').click(); }
 await p.waitForTimeout(600);

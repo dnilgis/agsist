@@ -281,7 +281,7 @@
     if (!c) {
       var box = $('prf-answer');
       box.innerHTML = '<p class="prf-verdict prf-wait">Grid ' + S.grid + ' lies across ' + S.codes.length + ' counties, and each has its own dollar values and limits. Pick the county the land is in, under the grid above.</p>';
-      box.classList.add('is-wait');
+      box.classList.add('is-wait'); $('prf-notes').innerHTML = ''; $('prf-yrs-p').innerHTML = ''; document.querySelector('.prf-o2').style.minHeight = '';
       $('prf-chart-fig').hidden = true; $('prf-acts').hidden = true; $('prf-cmp-wrap').hidden = true;
       drawBar({ ok: false, why: 'Pick the county the land is in.' });
       track('prf_grid', { grid: S.grid, state: S.st, county_from: 'ask' });
@@ -386,7 +386,21 @@
   }
   var choices = [], choiceGo = null;
   /* on one column the answer sits below the fold of the search box: bring the grid to the top */
-  function toGrid() { if (window.innerWidth < 980) $('prf-where-h').scrollIntoView({ block: 'start' }); }
+  function motion() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch (e) { return 'smooth'; } }
+  function toGrid() {
+    if (window.innerWidth < 980) {
+      /* one column: the grid card just under the site header, unless that leaves the
+         answer's first figures under the fold; then scroll on until they show */
+      var nav = document.querySelector('.nav'), top = nav ? Math.max(0, nav.getBoundingClientRect().bottom) : 0, y0 = window.pageYOffset;
+      var want = document.querySelector('.prf-o1').getBoundingClientRect().top + y0 - top - 8;
+      var fig = document.querySelector('#prf-answer .prf-figs div');
+      if (fig) want = Math.max(want, fig.getBoundingClientRect().bottom + y0 - window.innerHeight + 12);
+      window.scrollTo(0, Math.max(0, want));
+      return;
+    }
+    /* two columns: the search card to the top, so the answer beside the grid is on the first screen */
+    var f = $('prf-find-h'); if (f.getBoundingClientRect().top > 160) f.scrollIntoView({ block: 'start' });
+  }
   function atPoint(lat, lon, label, want, zip) {
     var id = M.gridFromLatLon(lat, lon);
     if (!id) { say('That point is outside the 48 contiguous states.', true); return Promise.resolve(false); }
@@ -419,18 +433,20 @@
       svg.push('<circle class="prf-pin" cx="' + (pad + cell + fx * (cell - 2)).toFixed(1) + '" cy="' + (pad + cell + fy * (cell - 2)).toFixed(1) + '" r="4"/>');
       var edges = [['north', (b.north - S.pt.lat) / 0.25 * mi.ns], ['south', (S.pt.lat - b.south) / 0.25 * mi.ns],
                    ['east', (b.east - S.pt.lon) / 0.25 * mi.ew], ['west', (S.pt.lon - b.west) / 0.25 * mi.ew]].sort(function (a, z) { return a[1] - z[1]; });
-      note = ' The dot is ' + esc(S.pt.label) + (S.pt.zip ? ', the town ZIP ' + esc(S.pt.zip) + ' is listed under' : '') + ', about ' + edges[0][1].toFixed(1) + ' miles from the grid’s ' + edges[0][0] + ' edge.'
-        + (S.pt.zip ? ' A rural ZIP can cover several grids. If the land is somewhere else, tap its grid or type its coordinates.' : '');
+      note = ' The dot is ' + esc(S.pt.label) + (S.pt.zip ? ', the town for ZIP ' + esc(S.pt.zip) : '') + ', about ' + edges[0][1].toFixed(1) + ' miles from the grid’s ' + edges[0][0] + ' edge.'
+        + (S.pt.zip ? ' A rural ZIP can cover several grids: if the land is elsewhere, tap its grid or type its coordinates.' : '');
     } else if (S.pt) {
       note = ' You are looking at a grid next to the one ' + esc(S.pt.label) + ' is in. ' + gridButton(M.gridFromLatLon(S.pt.lat, S.pt.lon), 'Back to grid ' + M.gridFromLatLon(S.pt.lat, S.pt.lon));
     }
     svg.push('</svg>');
     $('prf-map').innerHTML = svg.join('');
     $('prf-where-h').textContent = 'Grid ' + S.grid + ' · ' + (c ? c.n + ' County, ' + states[S.st].name : 'pick the county');
-    $('prf-where-t').innerHTML = 'Covers ' + b.south.toFixed(2) + '° to ' + b.north.toFixed(2) + '° N, ' + Math.abs(b.east).toFixed(2) + '° to ' + Math.abs(b.west).toFixed(2) + '° W: about '
-      + mi.ns.toFixed(0) + ' miles north to south and ' + mi.ew.toFixed(0) + ' east to west.' + note
-      + (S.alt ? ' ' + esc(String(S.alt)) + ' is also a grid ID. ' + gridButton(S.alt, 'Open grid ' + S.alt + ' instead') + '.' : '')
-      + ' On a policy, you pick a point inside the acres you insure and the grid and county follow from it. <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener">USDA’s grid locator</a> is the official map.';
+    /* where the dot is, and the rural-ZIP warning, stay in view; the edges and the policy rule fold under "Grid edges" */
+    var covers = 'Covers ' + b.south.toFixed(2) + '° to ' + b.north.toFixed(2) + '° N, ' + Math.abs(b.east).toFixed(2) + '° to ' + Math.abs(b.west).toFixed(2) + '° W: about '
+      + mi.ns.toFixed(0) + ' miles north to south and ' + mi.ew.toFixed(0) + ' east to west.';
+    $('prf-where-t').innerHTML = (note ? note.replace(/^ /, '') : covers)
+      + (S.alt ? ' ' + esc(String(S.alt)) + ' is also a grid ID. ' + gridButton(S.alt, 'Open grid ' + S.alt + ' instead') + '.' : '');
+    $('prf-where-f').innerHTML = (note ? covers + ' ' : '') + 'On a policy, you pick a point inside the acres you insure and the grid and county follow from it. <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener">USDA’s grid locator</a> is the official map.';
     /* county: a grid can lie in more than one, and the county sets the dollars */
     var sel = $('prf-co'), wrap = $('prf-co-wrap'), codes = S.codes;
     sel.innerHTML = (c ? '' : '<option value="" selected>Pick the county</option>') + codes.map(function (code) {
@@ -440,6 +456,8 @@
     wrap.hidden = codes.length < 2;
     wrap.classList.toggle('is-ask', !c);
     $('prf-co-n').textContent = codes.length;
+    /* why the county matters is said while the page asks; once the county is known, how it was found is enough */
+    $('prf-co-why').hidden = !!c && !!S.coHow && S.coHow !== 'named';
     $('prf-co-how').textContent = !c ? 'This page could not tell which one the point is in.'
       : S.coHow === 'point' ? 'The point is in ' + c.n + ' County, by the Census Bureau’s county lines.'
       : S.coHow === 'lookup' ? c.n + ' County is the place lookup’s county for that town.' : '';
@@ -489,10 +507,11 @@
   function buildIv() {
     var rows = '';
     for (var i = 0; i < N; i++) {
-      rows += '<tr data-i="' + i + '"><th scope="row"><label class="prf-ivl"><input type="checkbox" data-iv-on="' + i + '" aria-label="Insure ' + M.LONG[i] + '"><span class="prf-ivm"><span>' + LABELS[i] + '</span><small data-iv-note="' + i + '"></small></span></label></th>'
+      rows += '<tr data-i="' + i + '"><th scope="row"><label class="prf-ivl"><input type="checkbox" data-iv-on="' + i + '" aria-label="Insure ' + M.LONG[i] + '" aria-describedby="prf-ivn-' + i + '"><span class="prf-ivm">' + LABELS[i] + '</span></label></th>'
         + '<td class="prf-ivp"><button type="button" class="prf-step" data-iv-step="-5" data-i="' + i + '" aria-label="5 percent less in ' + M.LONG[i] + '">−</button>'
         + '<input type="number" inputmode="numeric" min="0" max="100" step="1" data-iv-pct="' + i + '" aria-label="Percent of the policy in ' + M.LONG[i] + '">'
-        + '<button type="button" class="prf-step" data-iv-step="5" data-i="' + i + '" aria-label="5 percent more in ' + M.LONG[i] + '">+</button><span class="prf-pc">%</span></td></tr>';
+        + '<button type="button" class="prf-step" data-iv-step="5" data-i="' + i + '" aria-label="5 percent more in ' + M.LONG[i] + '">+</button><span class="prf-pc">%</span></td>'
+        + '<td class="prf-ivn"><small id="prf-ivn-' + i + '" data-iv-note="' + i + '"></small></td></tr>';
     }
     $('prf-iv-body').innerHTML = rows;
   }
@@ -547,7 +566,9 @@
     $('prf-tab-b').classList.toggle('is-on', S.on === 'B'); $('prf-tab-b').setAttribute('aria-pressed', S.on === 'B' ? 'true' : 'false');
     $('prf-addb').hidden = !!S.B;
     $('prf-both').hidden = !S.B;
-    $('prf-setup-h').textContent = S.B ? 'Setup ' + S.on : 'Your policy';
+    $('prf-setup-h').textContent = S.B ? 'Describe your pasture, setup ' + S.on : 'Describe your pasture';
+    $('prf-pf-sum').textContent = s.pf >= 60 && s.pf <= 150 ? String(s.pf) : '';
+    $('prf-setup-sum-t').textContent = county() ? (S.touched ? '' : 'Example policy: ') + (S.B ? 'Setup ' + S.on + ': ' : '') + policyLine(s) : '';
     $('prf-iv-h').textContent = S.B ? 'Months to insure, setup ' + S.on : 'Months to insure';
   }
   function rebalance(s) {
@@ -592,10 +613,11 @@
   var SOD = { IA: 1, MN: 1, MT: 1, NE: 1, ND: 1, SD: 1 };
   function drawAnswer(R) {
     var box = $('prf-answer'), line = $('prf-printsum');
-    line.innerHTML = (S.touched ? '' : '<span class="prf-noprint"><b>Example policy.</b> Change it below. </span>') + esc(policyLine(R.setup)) + '<span class="prf-printonly"> · crop year ' + meta.crop_year + ' · agsist.com/prf</span>';
+    line.innerHTML = (S.touched ? '' : '<span class="prf-noprint"><b>Example policy.</b> Change it in step 2. </span>') + esc(policyLine(R.setup)) + '<span class="prf-printonly"> · crop year ' + meta.crop_year + ' · agsist.com/prf</span>';
     if (!R.ok) {
       box.innerHTML = '<p class="prf-verdict prf-wait">' + esc(R.why) + '</p>';
       box.classList.add('is-wait');
+      $('prf-notes').innerHTML = '';
       return;
     }
     box.classList.remove('is-wait');
@@ -615,10 +637,12 @@
       + '<div><dt>USDA pays toward the premium</dt><dd>' + usd(t.subsidy) + ' <span class="prf-sub">' + pctSub + '% of the ' + usd(t.premium) + ' premium, if you qualify</span></dd></div>'
       + '<div><dt>Most it can pay in a year</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre of protection</span></dd></div>'
       + '<div><dt>Average payout a year</dt><dd>' + usd(s.avgIndemnity) + ' <span class="prf-sub">over all ' + s.years + ' years, the no-payment years included</span></dd></div>'
+      + '</dl><dl class="prf-figs prf-figs-more">'
       + '<div><dt>Payout in the middle year</dt><dd>' + usd(R.mid) + ' <span class="prf-sub">' + (R.mid > 0 ? 'half the years paid this or less' : 'more than half the years would have paid nothing') + '</span></dd></div>'
       + '<div><dt>Most in one year</dt><dd>' + best + '</dd></div>'
       + '<div><dt>Longest run with no payment</dt><dd>' + dry + '</dd></div>'
       + '</dl>';
+    box.innerHTML = h; h = '';
     if (backFull != null) {
       var lr = root.getAttribute('data-lr-mid'), lo = root.getAttribute('data-lr-lo'), hi = root.getAttribute('data-lr-hi'), all = meta.years.last_complete - meta.years.first + 1;
       h += '<p class="prf-back">For each $1 of the full premium, this policy would have paid back <b>' + usd2(backFull) + '</b> over those ' + s.years + ' years.'
@@ -632,7 +656,7 @@
       + (SOD[S.st] ? '<li>In ' + esc(states[S.st].name) + ', native sod broken in recent years gets less protection and 50 points less of USDA’s share. That rule is not applied here.</li>' : '')
       + '<li>An insurer’s own figure can differ from this by a few dollars of rounding. <button type="button" class="prf-link" data-jump="prf-not">What this insurance does not do</button></li>'
       + '</ul>';
-    box.innerHTML = h;
+    $('prf-notes').innerHTML = h;
   }
 
   /* ---------------------------------------------------------------- the year chart */
@@ -648,7 +672,7 @@
      priced, is always the dots. The colours never swap with the tab. */
   function drawChart(RA, RB) {
     var box = $('prf-chart'), fig = $('prf-chart-fig');
-    if (!RA.ok) { fig.hidden = true; chartState = null; return; }
+    if (!RA.ok) { fig.hidden = true; chartState = null; $('prf-legend').innerHTML = ''; return; }
     fig.hidden = false;
     var two = !!S.B, hb = RB && RB.ok && sameYears(RB.hist, RA.hist) ? RB.hist : null;
     var hist = RA.hist, n = hist.length;
@@ -660,7 +684,9 @@
     if (hb) hb.forEach(function (h) { if (h.indemnity > mx) mx = h.indemnity; });
     mx = niceMax(Math.max(mx, RA.pol.total.producer * 1.15));
     var y = function (v) { return T + ph - (v / mx) * ph; }, bw = pw / n;
-    var s = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="What the policy would have paid in each year, ' + hist[0].year + ' to ' + hist[n - 1].year + '. The table under “Every year, in numbers” holds every figure.">'];
+    var sm = RA.sum, alt = 'What the policy would have paid in each year, ' + hist[0].year + ' to ' + hist[n - 1].year + ': something in ' + sm.paidYears + ' of ' + sm.years + ' years'
+      + (sm.best && sm.best.indemnity > 0 ? ', most ' + usd(sm.best.indemnity) + ' in ' + sm.best.year : '') + ', against a premium of ' + usd(RA.pol.total.producer) + ' a year. The table under “Every year, in numbers” holds every figure.';
+    var s = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(alt) + '">'];
     [0, 0.5, 1].forEach(function (f) {
       var v = mx * f;
       s.push('<line class="prf-grid" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '"/>');
@@ -732,7 +758,7 @@
     if (!R.ok) { box.innerHTML = '<p class="prf-fine">' + esc(R.why) + '</p>'; return; }
     var used = R.pol.rows.filter(function (r) { return r.pct > 0; });
     /* the totals come first so they stay on a phone's screen; the intervals scroll */
-    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': ' : '') + esc(splitWords(R.setup)) + ', ' + R.setup.cov + '% coverage. What it would have paid, year by year.</caption><thead><tr><th scope="col">Year</th><th scope="col">Would have paid</th><th scope="col">After premium</th>'
+    var h = '<div class="prf-scroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': ' : '') + esc(splitWords(R.setup)) + ', ' + R.setup.cov + '% coverage. What it would have paid, year by year.</caption><thead><tr><th scope="col">Year</th><th scope="col">Would have paid</th><th scope="col">After premium</th>'
       + used.map(function (r) { return '<th scope="col" colspan="2">' + nw(LABELS[r.i]) + ' <span class="prf-th-s">' + R.setup.split[r.i] + '%</span></th>'; }).join('')
       + '</tr><tr class="prf-t-sub"><td></td><td></td><td></td>' + used.map(function () { return '<th scope="col">% of normal</th><th scope="col">paid</th>'; }).join('') + '</tr></thead><tbody>';
     function row(hh, openYear) {
@@ -748,6 +774,22 @@
       + ', so every setup is judged on the same years. A dash is an interval USDA has not published yet. These are the ' + meta.crop_year + ' record’s figures and may differ from the index a ' + R.open[0].year + ' policy is paid on.</p>';
     h += '<p class="prf-fine">Percent of normal is precipitation in the grid over those two months, rain and snow together, against its ' + meta.years.first + ' to ' + meta.years.last_complete + ' average. This is the policy’s “index”. Below ' + R.setup.cov + ' it pays.</p>';
     box.innerHTML = h;
+  }
+  /* The print sheet's year list: every counted year and what it would have
+     paid, in seven blocks so the sheet stays one page. The same figures as the
+     chart and the year table. Hidden on screen. */
+  function drawPrintYears(R) {
+    var box = $('prf-yrs-p');
+    if (!R.ok) { box.innerHTML = ''; return; }
+    var hs = R.hist, B = 7, per = Math.ceil(hs.length / B), h = '<table class="prf-t prf-t-yp"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': w' : 'W') + 'hat it would have paid each year, ' + hs[0].year + ' to ' + hs[hs.length - 1].year + '</caption><thead><tr>';
+    for (var c = 0; c < B; c++) h += '<th scope="col">Year</th><th scope="col">Paid</th>';
+    h += '</tr></thead><tbody>';
+    for (var r = 0; r < per; r++) {
+      h += '<tr>';
+      for (c = 0; c < B; c++) { var x = hs[c * per + r]; h += x ? '<th scope="row">' + x.year + '</th><td' + (x.indemnity > 0 ? ' class="is-pay"' : '') + '>' + usd(x.indemnity) + '</td>' : '<td></td><td></td>'; }
+      h += '</tr>';
+    }
+    box.innerHTML = h + '</tbody></table>';
   }
   function download(name, text) {
     var blob = new Blob([text], { type: 'text/csv' });
@@ -779,7 +821,7 @@
     if (!$('prf-pol-d').open) { box.innerHTML = ''; return; }
     if (!R.ok) { box.innerHTML = '<p class="prf-fine">' + esc(R.why) + '</p>'; return; }
     var c = county(), p = R.pol, t = p.total, pctSub = Math.round(R.subsidy * 100);
-    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + '. ' : '') + 'The policy as an insurer’s schedule lists it, one line for each interval.</caption><thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th><th scope="col">Protection</th><th scope="col">Premium per $100</th><th scope="col">Premium</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>';
+    var h = '<div class="prf-scroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="prf-t"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + '. ' : '') + 'The policy as an insurer’s schedule lists it, one line for each interval.</caption><thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th><th scope="col">Protection</th><th scope="col">Premium per $100</th><th scope="col">Premium</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>';
     p.rows.forEach(function (r) {
       if (!(r.pct > 0)) return;
       h += '<tr><th scope="row">' + LABELS[r.i] + '</th><td>' + R.setup.split[r.i] + '%</td><td>' + usd(r.protection) + '</td><td>' + usd2(r.rate * 100) + '</td><td>' + usd(r.premium) + '</td><td>' + usd(r.subsidy) + '</td><td>' + usd(r.producer) + '</td></tr>';
@@ -797,7 +839,7 @@
     var g = openGrid(S.grid), s = cur(), mm = minmax();
     if (!g || g.stale) { box.innerHTML = ''; return; }
     var pctSub = Math.round(meta.subsidy[String(s.cov)] * 100), done = windowed(g.done), ys = Object.keys(done).map(Number), ny = ys.length;
-    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">Every interval at this grid, ' + Math.min.apply(null, ys) + ' to ' + Math.max.apply(null, ys) + ', at ' + s.cov + '% coverage.</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Pays under</th><th scope="col">Years it would have paid</th><th scope="col">Driest year, % of normal</th><th scope="col">Middle year, % of normal</th><th scope="col">Premium per $100</th><th scope="col">You pay per $100</th><th scope="col">Would have paid per $100, average year</th></tr></thead><tbody>';
+    var h = '<div class="prf-scroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="prf-t"><caption class="prf-cap">Every interval at this grid, ' + Math.min.apply(null, ys) + ' to ' + Math.max.apply(null, ys) + ', at ' + s.cov + '% coverage.</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Pays under</th><th scope="col">Years it would have paid</th><th scope="col">Driest year, % of normal</th><th scope="col">Middle year, % of normal</th><th scope="col">Premium per $100</th><th scope="col">You pay per $100</th><th scope="col">Would have paid per $100, average year</th></tr></thead><tbody>';
     for (var i = 0; i < N; i++) {
       var r = M.intervalRecord(done, i, s.cov, g.rates[s.cov][i]), mm_ = g.avgMm ? g.avgMm[i] : null;
       if (!mm.valid[i]) { h += '<tr class="is-off"><th scope="row">' + LABELS[i] + '</th><td>' + inTxt(mm_) + '</td><td colspan="7" class="prf-td-l">not offered in this county</td></tr>'; continue; }
@@ -827,7 +869,7 @@
     if (!$('prf-idx-d').open) { box.innerHTML = ''; return; }
     var g = openGrid(S.grid), s = cur();
     if (!g || g.stale) { box.innerHTML = ''; return; }
-    var h = '<p class="prf-fine"><button type="button" class="prf-btn" id="prf-idx-csv">Download this table (CSV)</button></p><div class="prf-scroll prf-scroll-tall"><table class="prf-t prf-t-idx"><caption class="prf-cap">Grid ' + S.grid + ': precipitation as a percent of normal, every interval, every year. Shaded cells are under ' + s.cov + ', where a policy at ' + s.cov + '% coverage pays.</caption><thead><tr><th scope="col">Year</th>'
+    var h = '<p class="prf-fine"><button type="button" class="btn btn-secondary" id="prf-idx-csv">Download this table (CSV)</button></p><div class="prf-scroll prf-scroll-tall" tabindex="0" role="region" aria-label="Table, scrolls both ways"><table class="prf-t prf-t-idx"><caption class="prf-cap">Grid ' + S.grid + ': precipitation as a percent of normal, every interval, every year. Shaded cells are under ' + s.cov + ', where a policy at ' + s.cov + '% coverage pays.</caption><thead><tr><th scope="col">Year</th>'
       + LABELS.map(function (l) { return '<th scope="col">' + nw(l) + '</th>'; }).join('') + '</tr></thead><tbody>';
     indexRows().reverse().forEach(function (r) {
       h += '<tr' + (r.open ? ' class="is-open"' : '') + '><th scope="row">' + r.year + '</th>' + r.v.map(function (v) { return '<td' + (v != null && v < s.cov / 100 - 1e-12 ? ' class="is-pay"' : '') + '>' + pctOfNormal(v) + '</td>'; }).join('') + '</tr>';
@@ -848,7 +890,7 @@
     var box = $('prf-lad');
     if (!$('prf-lad-d').open) { box.innerHTML = ''; return; }
     var s = cur();
-    var h = '<div class="prf-scroll"><table class="prf-t"><caption class="prf-cap">The same acres and months at each coverage level' + (S.B ? ', setup ' + S.on : '') + '.</caption><thead><tr><th scope="col">Coverage</th><th scope="col">You pay, a year</th><th scope="col">USDA pays</th><th scope="col">Most it can pay</th><th scope="col">Years it would have paid</th><th scope="col">Average payout</th><th scope="col">Middle year</th></tr></thead><tbody>', why = '';
+    var h = '<div class="prf-scroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="prf-t"><caption class="prf-cap">The same acres and months at each coverage level' + (S.B ? ', setup ' + S.on : '') + '.</caption><thead><tr><th scope="col">Coverage</th><th scope="col">You pay, a year</th><th scope="col">USDA pays</th><th scope="col">Most it can pay</th><th scope="col">Years it would have paid</th><th scope="col">Average payout</th><th scope="col">Middle year</th></tr></thead><tbody>', why = '';
     M.COVERAGE.forEach(function (cv) {
       var R = compute({ cov: cv, pf: s.pf, split: s.split, even: s.even });
       if (!R.ok) { why = R.why; h += '<tr><th scope="row">' + cv + '%</th><td colspan="6" class="prf-td-l">' + DASH + '</td></tr>'; return; }
@@ -881,7 +923,7 @@
     ];
     var c = county();
     var h = '<p class="prf-fine">Both setups: ' + esc(useName()) + ', ' + S.acres.toLocaleString('en-US') + ' acres, ' + S.share + '% share, grid ' + S.grid + ', ' + esc(c.n) + ' County.</p>'
-      + '<div class="prf-scroll"><table class="prf-t prf-t-cmp"><thead><tr><td></td><th scope="col">Setup A</th><th scope="col">Setup B</th></tr></thead><tbody>';
+      + '<div class="prf-scroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="prf-t prf-t-cmp"><caption class="prf-sr">Setup A against setup B</caption><thead><tr><td></td><th scope="col">Setup A</th><th scope="col">Setup B</th></tr></thead><tbody>';
     rows.forEach(function (r) {
       var a = r[2] ? r[1]({ setup: S.A }) : col(RA, r[1]), b = r[2] ? r[1]({ setup: S.B }) : col(RB, r[1]);
       h += '<tr><th scope="row">' + r[0] + '</th><td>' + a + '</td><td>' + b + '</td></tr>';
@@ -935,6 +977,19 @@
     }).catch(function () { box.innerHTML = '<p class="prf-fine">The neighboring grids did not load. Try again.</p>'; });
   }
 
+  /* ---------------------------------------------------------------- step 2 on a phone
+     On one column the controls fold into one line that names the policy, so
+     the answer is on the first screen once a grid is set. Tapping the line
+     opens them; once open they stay open. Two columns show them always. */
+  var setupIsOpen = false;
+  function setupOpen(on) {
+    setupIsOpen = !!on;
+    $('prf-setup').classList.toggle('is-open', setupIsOpen);
+    $('prf-setup-sum').setAttribute('aria-expanded', setupIsOpen ? 'true' : 'false');
+    document.querySelector('.prf-setup-sum-a').textContent = setupIsOpen ? 'Close' : 'Change';
+  }
+  function openFor(el) { if (el && $('prf-setup-body').contains(el)) setupOpen(true); }
+
   /* ---------------------------------------------------------------- the pinned line */
   var answerSeen = true, lookNow = function () {};
   function drawBar(R) {
@@ -967,18 +1022,35 @@
   }
 
   /* ---------------------------------------------------------------- draw everything */
-  var lastR = null;
+  var lastR = null, sayT = null;
+  /* one short line for a screen reader, a moment after the last change, in place of re-reading the whole card */
+  function sayResult(R) {
+    clearTimeout(sayT);
+    var t = R.ok ? (S.B ? 'Setup ' + S.on + '. ' : '') + 'You pay ' + usd(R.pol.total.producer) + ' a year. Would have paid in ' + R.sum.paidYears + ' of ' + R.sum.years + ' years, ' + usd(R.sum.avgIndemnity) + ' in an average year.' : R.why;
+    sayT = setTimeout(function () { $('prf-say').textContent = t; }, 900);
+  }
+  /* While a split is half made the card shrinks to one line. Hold the room the
+     last good card took, so the control in use does not jump (iOS has no scroll
+     anchoring); let go as soon as the figures are back. */
+  function holdRoom(ok) {
+    var el = document.querySelector('.prf-o2');
+    if (!ok) { if (!el.style.minHeight) el.style.minHeight = el.offsetHeight + 'px'; }
+    else el.style.minHeight = '';
+  }
   function render() {
     if (!S.grid || !county()) return;
     syncControls();
     var RA = compute(S.A), RB = S.B ? compute(S.B) : null, onB = S.on === 'B' && !!RB, R = onB ? RB : RA;
+    if (lastR && lastR.ok) holdRoom(R.ok); else if (R.ok) holdRoom(true);
     lastR = R;
+    sayResult(R);
     drawAnswer(R);
     drawChart(RA, RB);
-    drawYears(R); drawPolicy(R); drawRecord(); drawIndex(); drawLadder(); drawCompare(RA, RB); drawNeighbors();
+    drawYears(R); drawPrintYears(R); drawPolicy(R); drawRecord(); drawIndex(); drawLadder(); drawCompare(RA, RB); drawNeighbors();
     $('prf-acts').hidden = !R.ok;
     drawBar(R);
     $('prf-answer-h').textContent = 'What it costs and what it would have paid' + (S.B ? ', setup ' + S.on : '');
+    $('prf-chart-cap').textContent = 'What it would have paid, year by year' + (S.B ? ': setup A as bars' + (RB && RB.ok ? ', setup B as dots' : '') : '');
     remember();
     lookNow();
   }
@@ -1006,7 +1078,7 @@
       t = cl('[data-grid]');
       if (t && !t.closest('#prf-map')) { goGrid(+t.getAttribute('data-grid'), { county: t.getAttribute('data-county') }, true).then(function (ok) { if (ok && t.closest('#prf-b-grids')) toGrid(); }); return; }
       t = cl('[data-jump]');
-      if (t) { var d = $(t.getAttribute('data-jump')); if (d) { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } return; }
+      if (t) { var d = $(t.getAttribute('data-jump')); if (d) { openFor(d); d.scrollIntoView({ behavior: motion(), block: 'start' }); } return; }
       t = cl('[data-win]');
       if (t) { S.win = +t.getAttribute('data-win'); render(); track('prf_window', { years: S.win || 'all' }); return; }
       t = cl('[data-yr]');
@@ -1084,10 +1156,12 @@
       var keep = s.split.slice(); s.split = blank(); s.even = true; S.touched = true; render();
       undo = keep; b.textContent = 'Undo clear'; undoT = setTimeout(dropUndo, 8000);
     });
-    $('prf-addb').addEventListener('click', function () { S.B = { cov: S.A.cov, pf: S.A.pf, split: S.A.split.slice(), even: S.A.even }; S.on = 'B'; S.touched = true; render(); track('prf_compare', {}); $('prf-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    $('prf-addb').addEventListener('click', function () { S.B = { cov: S.A.cov, pf: S.A.pf, split: S.A.split.slice(), even: S.A.even }; S.on = 'B'; S.touched = true; render(); track('prf_compare', {}); setupOpen(true); $('prf-tabs').scrollIntoView({ behavior: motion(), block: 'start' }); });
+    $('prf-setup-sum').addEventListener('click', function () { setupOpen(!setupIsOpen); if (setupIsOpen) $('prf-use').focus(); });
     $('prf-tab-a').addEventListener('click', function () { S.on = 'A'; render(); });
     $('prf-tab-b').addEventListener('click', function () { S.on = 'B'; render(); });
     $('prf-dropb').addEventListener('click', function () { S.B = null; S.on = 'A'; render(); });
+    $('prf-more').addEventListener('toggle', function () { if (this.open) track('prf_open', { what: 'pf' }); });
     ['prf-years-d', 'prf-pol-d', 'prf-rec-d', 'prf-idx-d', 'prf-lad-d', 'prf-nb-d'].forEach(function (id) {
       $(id).addEventListener('toggle', function () { if (this.open) track('prf_open', { what: id.replace(/^prf-|-d$/g, '') }); render(); });
     });
@@ -1096,7 +1170,8 @@
     ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove);
     window.addEventListener('resize', chartResize);
     $('prf-csv').addEventListener('click', function () { if (lastR && lastR.ok) csv(lastR); });
-    $('prf-print').addEventListener('click', function () { $('prf-years-d').open = true; $('prf-pol-d').open = true; render(); track('prf_print', { grid: S.grid }); window.print(); });
+    /* Print is one Letter page: the grid, the policy, the answer, the chart, every year's payout, the policy lines (the button opens them) and the conditions. */
+    $('prf-print').addEventListener('click', function () { $('prf-pol-d').open = true; render(); track('prf_print', { grid: S.grid }); window.print(); });
     $('prf-share-b').addEventListener('click', function () {
       var u = shareUrl(), b = this, done = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy a link to this'; }, 2200); };
       track('prf_share', { grid: S.grid });
