@@ -612,14 +612,36 @@ def breadcrumb(items):
 # pages no longer load components/cb-house.js.
 
 
-def page_end(ftr, table=False):
+# The bid email box (components/cb-signup.js): one shared file, loaded once
+# per town page; the page carries only the placeholder tag. Bump ?v= on any
+# change to either file.
+SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=1">\n'
+SIGNUP_JS = '<script src="/components/cb-signup.js?v=1" defer></script>\n'
+
+
+def page_end(ftr, table=False, signup=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}</body>
 </html>
 """
+
+
+def signup_box(t, z, ssl, crops, tops):
+    """The placeholder components/cb-signup.js draws into: "Every morning: the
+    top corn and soybean bids within 50 mi of <town>" (AGSIST Daily with this
+    ZIP) and "Tell me when <crop> within 25 mi pays $__" (the ZIP price
+    alert). Only with a ZIP: both read one. data-top is the page's own top
+    nearest-delivery cash per crop, used as the price field's placeholder."""
+    if not z:
+        return ""
+    cs = " ".join(c for c in CROPS if c in crops)
+    top = " ".join(f"{c}:{tops[c][0]:.2f}" for c in CROPS if c in tops)
+    return (f'<div data-bid-alerts data-place="{esc(t["name"])}" data-zip="{z}" '
+            f'data-source="town:{ssl}/{t["slug"]}"' + (f' data-crops="{cs}"' if cs else "")
+            + (f' data-top="{top}"' if top else "") + '></div>')
 
 
 def hold_lines(bd):
@@ -920,6 +942,16 @@ def build_town_page(t, ctx):
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     hdr, ftr = ctx["chrome"]
+    # The bid email box sits right under the first elevator's table (or under
+    # the intro when no elevator here has a current bid), so a phone reaches it
+    # without scrolling past every board. A town with no ZIP keeps the plain
+    # Daily ask at the bottom: the box's two choices both need a ZIP.
+    box = signup_box(t, z, ssl, crops, tops)
+    ask = "" if box else (
+        "<!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->\n"
+        "  <script>try{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')"
+        "document.documentElement.classList.add('sa-subbed')}catch(e){}</script>\n"
+        f'  <div data-signup-ask="Get {esc(t["name"])} bids by email every morning" data-source="town:{ssl}/{t["slug"]}"></div>')
     body = f"""
 <body>
 {hdr}
@@ -930,11 +962,11 @@ def build_town_page(t, ctx):
   {top_html}
   {'' if indexable else near_html}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
-  {''.join(secs)}
+  {''.join(secs[:1])}
+  {box}
+  {''.join(secs[1:])}
   {near_html if indexable else ''}
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}}catch(e){{}}</script>
-  <div data-signup-ask="Get {esc(t['name'])} bids by email every weekday morning" data-source="town:{ssl}/{t['slug']}"{f' data-zip="{z}"' if z else ''}></div>
+  {ask}
   {quiet_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
@@ -947,7 +979,12 @@ def build_town_page(t, ctx):
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
             "share": share}
-    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr), meta
+    h = head(title, desc, path, jsonld, indexable, share)
+    if box:
+        sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
+        assert sheet in h, "head() changed shape; update build_town_page()"
+        h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
+    return h + body + page_end(ftr, signup=bool(box)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -1691,7 +1728,15 @@ def selftest():
         assert "$3.95" in fr and "By Oct 9" in fr and "Nov 2026" in fr and "(2026-12)" not in fr
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
-        assert 'data-signup-ask=' in fr and 'data-zip="68025"' in fr, "a town page asks for an email with its own ZIP"
+        # the bid email box: the town's own ZIP and place, right under the first
+        # elevator's table, its script and sheet once each, and no second ask below
+        assert 'data-bid-alerts data-place="Fremont" data-zip="68025" data-source="town:nebraska/fremont"' in fr, \
+            "a town page asks for an email with its own ZIP"
+        assert fr.index("</table>") < fr.index("data-bid-alerts") < fr.index("Where these come from"), \
+            "the bid email box sits under the first elevator's table"
+        assert re.search(r'data-bid-alerts [^>]*data-top="corn:\d+\.\d\d', fr), "the price field's hint is the page's own top bid"
+        assert fr.count('/components/cb-signup.js?v=') == 1 and fr.count('/components/cb-signup.css?v=') == 1
+        assert "data-signup-ask=" not in fr, "one email ask per town page"
         assert "cb-house" not in fr and "Sponsor this" not in fr and "ad-slot--open" not in fr, \
             "a town page shows nothing in an unsold sponsor slot: no house ask, no open slot"
         assert "Cash grain bids in Fremont, NE today" in fr
