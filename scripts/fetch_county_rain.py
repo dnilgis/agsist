@@ -194,7 +194,15 @@ def build_state(src, st, year, edate, C, fetched):
         summ, why = R.summarize(year, dates, vals, norms, edate)
         lon, lat = meta["ll"][0], meta["ll"][1]
         c = mine[fips]
-        cand = {"meta": meta, "summary": summ, "why": why, "mi": R.miles(c["lat"], c["lon"], lat, lon), "vals": vals}
+        mi = R.miles(c["lat"], c["lon"], lat, lon)
+        # Farther from the middle than any corner of the county: NOAA's county
+        # code and the station's place disagree (2026-10-13: WHITESTONE FARMS,
+        # near Delta Junction, filed under North Slope Borough, 411 mi out).
+        # Leave that station out of this county instead of refusing the state.
+        if c.get("reach") and mi > c["reach"] + 5:
+            print(f"  {st} {fips}: skipping {meta.get('name')} ({mi:.0f} mi out, the county reaches {c['reach']:.0f})", flush=True)
+            continue
+        cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals}
         cands.setdefault(fips, []).append(cand)
     picked, none = {}, {}
     for fips, c in sorted(mine.items()):
@@ -396,6 +404,20 @@ def selftest():
     ok(s and s["wet_month"] is None, f"a skipped month that beats the wettest withholds it: {s and s['wet_month']}")
     s, _ = R.summarize(2026, d90, ["0.05"] * 31 + ["0.02"] * 28 + ["0.01"] * 10 + ["M"] * 5 + ["0.01"] * 16 + ["0.01"] * 30, ["0.1"] * 120, "2026-04-30")
     ok(s and s["wet_month"] == [0, 1.55], f"a skipped month below the wettest keeps it: {s and s['wet_month']}")
+    # a station whose NOAA county code disagrees with its place is left out of
+    # that county, and the rest of the state still publishes
+    class _Src:
+        def __init__(self, rows): self.rows = rows
+        def call(self, q): return {"data": self.rows} if "state" in q else {"data": []}
+    _C = {"02185": {"st": "AK", "name": "North Slope Borough", "slug": "x", "lat": 69.3, "lon": -153.5, "reach": 330},
+          "02090": {"st": "AK", "name": "Fairbanks North Star Borough", "slug": "y", "lat": 64.8, "lon": -146.6, "reach": 110}}
+    _d = R.days_of(2026, "2026-01-01", 20)
+    _row = lambda name, sid, ll, fips: {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips}, "data": [["0.10", "0.05"]] * 20}
+    _out = build_state(_Src([_row("WHITESTONE FARMS", "509793 2", [-145.8894, 64.1539], "02185"),
+                             _row("FAIRBANKS INTL AP", "502968 2", [-147.8761, 64.8039], "02090")]),
+                       "AK", 2026, "2026-01-20", _C, "2026-01-21T00:00:00Z")
+    ok("02185" not in _out["counties"] and "02090" in _out["counties"],
+       f"a station 400 mi outside its county is skipped, not the state: {sorted(_out['counties'])}")
     # trailing S days (the A that ends them has not come in) are not reported yet
     d40 = R.days_of(2026, "2026-01-01", 40)
     s, _ = R.summarize(2026, d40, ["0.10"] * 36 + ["S", "S", "S", "M"], ["0.05"] * 40, "2026-02-09")
