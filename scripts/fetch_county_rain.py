@@ -586,6 +586,14 @@ def selftest():
     _dry = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", True, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", True)]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _dry) == "STUCK",
        "a dry spell every gauge around shared is real: the most complete gauge still answers")
+    # the gauges around caught little, but on and off (south Florida, Jan-Feb 2026)
+    def _sprinkle(name, sid, ll, fips, gap=False):
+        return {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips},
+                "data": [["M" if gap and i == 5 else _wet(i, True) if not 30 <= i < 70 else ("0.05" if i % 5 == 0 else "0.00"), "0.10"]
+                         for i in range(100)]}
+    _spr = [_sprinkle("GOOD", "2 2", [-93.05, 42.05], "19001", gap=True), _sprinkle("NEAR", "3 2", [-93.3, 42.0], "19003")]
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _spr) == "GOOD",
+       "0.00 for 44 days while the gauges around caught a little every few days is left out")
     _des = [_g(x[0], x[1], x[2], x[3], False, nrm="0.01", gap=x[4]) for x in (("GOOD", "2 2", [-93.05, 42.05], "19001", True), ("NEAR", "3 2", [-93.3, 42.0], "19003", False))]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="0.01")] + _des) == "STUCK",
        "desert: 40 days at 0.00 is 0.4 in of usual, not a stuck gauge")

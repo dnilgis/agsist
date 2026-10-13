@@ -424,6 +424,7 @@ STUCK_USUAL = 3.0       # inches of usual rain over the run
 STUCK_MIN_DAYS = 7      # shorter runs are not looked at
 STUCK_NEAR_MI = 40      # gauges this close are the check
 STUCK_NEAR_CATCH = 1.0  # their median catch over the run that proves rain fell
+STUCK_NEAR_SOME = 0.25  # or this much, with their longest zero run inside it under half of it
 
 
 def daily_normals(dates, norms):
@@ -477,15 +478,26 @@ def _span_catch(parsed, i, j):
     return sum(got) if len(got) >= MIN_SHARE * (j - i + 1) else None
 
 
+def _span_longest_zero(parsed, i, j):
+    """Longest run of plain 0.00 days inside days i..j, or None when under MIN_SHARE reported."""
+    if _span_catch(parsed, i, j) is None:
+        return None
+    return max((b - a + 1 for a, b in zero_runs(parsed[i:j + 1])), default=0)
+
+
 def stuck_run(parsed, nv, near):
     """The first run of 0.00 days that a working gauge could not have had, or None.
     parsed: parse_pcpn() of each day; nv: daily_normals() (or None);
     near: [(parsed, nv)] of the gauges within STUCK_NEAR_MI, on the same days.
     Usual over the run is the station's own normals, or the median of the
     nearby gauges' normals when it has none. With 3 in or more of usual, the
-    run is stuck unless the nearby gauges' median catch over it is under 1 in
-    (they were dry too). With no nearby gauge to check against, it is stuck:
-    withheld, not guessed. Returns (first, last, usual, nearby catch or None)."""
+    run is stuck when the nearby gauges' median catch over it is 1 in or more,
+    or 0.25 in or more with their median longest zero run inside it under half
+    its length (2026 Jan-Feb in south Florida: the gauges around Fort
+    Lauderdale caught little, but on and off, with runs of 9 to 11 days; that
+    airport read 0.00 for 47). A dry spell the gauges around shared is real.
+    With no nearby gauge to check against, it is stuck: withheld, not guessed.
+    Returns (first, last, usual, nearby catch or None)."""
     for i, j in zero_runs(parsed):
         if j - i + 1 < STUCK_MIN_DAYS:
             continue
@@ -496,6 +508,9 @@ def stuck_run(parsed, nv, near):
             continue
         catch = _median([c for c in (_span_catch(p, i, j) for p, _ in near) if c is not None])
         if catch is None or catch >= STUCK_NEAR_CATCH:
+            return i, j, round(usual, 2), (round(catch, 2) if catch is not None else None)
+        their = _median([r for r in (_span_longest_zero(p, i, j) for p, _ in near) if r is not None])
+        if catch >= STUCK_NEAR_SOME and their is not None and their < (j - i + 1) / 2:
             return i, j, round(usual, 2), (round(catch, 2) if catch is not None else None)
     return None
 
