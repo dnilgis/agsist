@@ -57,6 +57,15 @@ with tempfile.TemporaryDirectory() as td:
     empty.mkdir()
     check(I.robots_sitemaps(empty) == [I.SITEMAP_URL], "no robots.txt falls back to sitemap.xml")
 
+listed = ["https://agsist.com/", "https://agsist.com/cot", "https://agsist.com/farmland-atlas/alabama/",
+          "https://agsist.com/farmland-atlas/iowa/story-county", "https://agsist.com/arc-plc"]
+got = I.changed_urls(["index.html", "cot.html", "farmland-atlas/alabama/index.html", "farmland-atlas/iowa/story-county.html",
+                      "farmland-atlas/alaska/denali-borough.html", "data/x.json", "cot.html", "post.html"], listed)
+check(got == ["https://agsist.com/", "https://agsist.com/cot", "https://agsist.com/farmland-atlas/alabama/",
+              "https://agsist.com/farmland-atlas/iowa/story-county"], "changed files map to their sitemap URLs only, once each", got)
+check(I.changed_urls(["arc-plc/index.html"], listed) == ["https://agsist.com/arc-plc"], "a folder page matches the sitemap's spelling")
+check(I.changed_urls(["data/a.json", "README.md"], listed) == [], "files that are not pages send nothing")
+
 big = [f"https://agsist.com/p{i}" for i in range(25_001)]
 b = I.chunks(big)
 check([len(x) for x in b] == [10_000, 10_000, 5_001], "25,001 URLs go as 10,000 + 10,000 + 5,001", [len(x) for x in b])
