@@ -1,0 +1,83 @@
+name: prf outlook
+
+# The long-range outlook panel on /prf (components/prf-outlook.js) reads
+# data/prf/outlook.json, written here by scripts/fetch_prf_outlook.py from:
+#   NOAA CPC seasonal and one-month precipitation outlooks (third Thursday of
+#   the month, the one-month also updated the last day of the month), CPC's
+#   ENSO discussion and probabilities (second Thursday) and the US Drought
+#   Monitor map (Thursdays, 8:30 ET).
+#
+# Thursday afternoon and Friday morning UTC, off the hour: each release is
+# picked up the day it comes out or the next.
+#
+# A separate workflow on purpose: it cannot touch prf.yml's fetch of USDA's
+# data, and prf.yml cannot hold it up. A source that fails keeps the section
+# already published (the script merges per section, never goes back to an
+# older issue, and refuses a thin answer); the page withholds any section past
+# its age limit, so a dead source shows as withheld, not as a current outlook.
+on:
+  schedule:
+    - cron: "47 15 * * 4"      # Thursdays 15:47 UTC
+    - cron: "17 11 * * 5"      # Fridays 11:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prf-outlook
+  cancel-in-progress: false
+
+jobs:
+  outlook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Offline first
+        run: |
+          python scripts/fetch_prf_outlook.py --selftest
+          node --test test/prf-outlook.test.mjs
+
+      # continue-on-error: a source that is down marks the run, and whatever
+      # did come back is still committed below. The script never writes a file
+      # that fails its own check.
+      - name: Fetch
+        id: fetch
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/fetch_prf_outlook.py 2>&1 | tee prf-outlook.log
+
+      - name: The file is well formed, and inside the size budget
+        run: |
+          python scripts/fetch_prf_outlook.py --check
+          python scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prf/outlook.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          ISSUED=$(python -c "import json;d=json.load(open('data/prf/outlook.json'));print(', '.join('%s %s'%(k,(d.get(k) or {}).get('issued') or (d.get(k) or {}).get('map_date') or 'none') for k in ('seasonal','monthly','enso','drought')))")
+          git commit -q -m "data: prf outlook ($ISSUED)"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Say which source failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          grep -E "FAILED|kept the published|refusing" prf-outlook.log || true
+          echo "::warning::A PRF outlook source failed; the published section was kept. See the Fetch step."

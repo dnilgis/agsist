@@ -71,6 +71,7 @@ CHECKS = [
     ("harvest-prices.yml", None, 60, False, "chained, gated to its own schedule"),
     ("freshness.yml", None, 60, False, "chained, gated to its own schedule"),
     ("prf.yml", ["23 10 * * 3"], 240, False, "weekly PRF data refresh, Wednesdays; a full run after the August ADM takes about two hours"),
+    ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
 ]
 
 # The briefing is judged by what it publishes: today's archive file, by 07:30

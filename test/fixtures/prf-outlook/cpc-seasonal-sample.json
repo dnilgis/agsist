@@ -1,0 +1,716 @@
+{
+"_note": "SYNTHETIC TEST FIXTURE for scripts/fetch_prf_outlook.py --selftest and test/prf-outlook*. Shaped like NOAA's map service answer; the boxes and numbers are made up and are NOT a real CPC outlook.",
+"layers": {
+"1": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "OND 2026",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"2": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+37.75
+],
+[
+-97.5,
+37.75
+],
+[
+-97.5,
+38.5
+],
+[
+-100.5,
+38.5
+],
+[
+-100.5,
+37.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "NDJ 2026",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "NDJ 2026",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"3": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+37.75
+],
+[
+-97.5,
+37.75
+],
+[
+-97.5,
+38.5
+],
+[
+-100.5,
+38.5
+],
+[
+-100.5,
+37.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "DJF 2027",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "DJF 2027",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-99.5,
+30.75
+],
+[
+-99.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "DJF 2027",
+"prob": 50,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"4": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+37.75
+],
+[
+-97.5,
+37.75
+],
+[
+-97.5,
+38.5
+],
+[
+-100.5,
+38.5
+],
+[
+-100.5,
+37.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "JFM 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "JFM 2027",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"5": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "FMA 2027",
+"prob": 40,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"6": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+30.75
+],
+[
+-97.5,
+30.75
+],
+[
+-97.5,
+31.5
+],
+[
+-100.5,
+31.5
+],
+[
+-100.5,
+30.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "MAM 2027",
+"prob": 33,
+"cat": "Above",
+"idp_source": "fixture"
+}
+}
+]
+},
+"7": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "AMJ 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"8": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "MJJ 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"9": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100.5,
+37.75
+],
+[
+-97.5,
+37.75
+],
+[
+-97.5,
+38.5
+],
+[
+-100.5,
+38.5
+],
+[
+-100.5,
+37.75
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "JJA 2027",
+"prob": 33,
+"cat": "Above",
+"idp_source": "fixture"
+}
+}
+]
+},
+"10": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "JAS 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"11": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "ASO 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"12": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "SON 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+},
+"13": {
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-75,
+40
+],
+[
+-74,
+40
+],
+[
+-74,
+41
+],
+[
+-75,
+41
+],
+[
+-75,
+40
+]
+]
+]
+},
+"properties": {
+"objectid": 1,
+"fcst_date": 1789603200000,
+"valid_seas": "OND 2027",
+"prob": 33,
+"cat": "Below",
+"idp_source": "fixture"
+}
+}
+]
+}
+}
+}
