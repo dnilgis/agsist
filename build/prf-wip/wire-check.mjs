@@ -14,6 +14,12 @@ for (const W of [390, 1280]) {
   await page.waitForSelector('#prf-optimize .po-use', { timeout: 10000 }).catch(() => {});
   const where = (await page.textContent('#prf-where-h')).replace(/\s+/g, ' ').trim();
   ok(where.startsWith('Grid 30454 · Barron County, Wisconsin'), W + ' zip finds 30454 Barron');
+  // the answer first: on a phone the pick and both buttons sit in the panel's first ~750 px, the rest behind disclosure rows
+  const top = await page.evaluate(() => { const s = document.getElementById('prf-optimize'), u = s.querySelectorAll('.po-use'); return Math.round(u[u.length - 1].getBoundingClientRect().bottom - s.getBoundingClientRect().top); });
+  if (W === 390) ok(top <= 750, W + ' pick and buttons within the panel top (' + top + ' px)');
+  // "Compare setups" holds the dollar figures; open it the way a reader does
+  if (!(await page.$eval('#prf-optimize details[data-po=compare]', d => d.open))) await page.click('#prf-optimize details[data-po=compare] > summary');
+  ok(await page.$eval('#prf-optimize details[data-po=compare]', d => d.open), W + ' Compare setups opens');
   const opt = await page.evaluate(() => document.querySelector('#prf-optimize [data-opt-body]').innerText);
   console.log(W, 'OPT body', opt.length, 'chars:', opt.replace(/\s+/g, ' ').slice(0, 220));
   ok(/The pick for grid 30454/.test(opt), W + ' pick heading');
