@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Oct 2026 10:47:52 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 13 Oct 2026 10:47:48 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn and beans drift lower as crop progress looms</title>
+      <link>https://agsist.com/daily/2026-10-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-13</guid>
+      <pubDate>Tue, 13 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat because USDA's record crop numbers are already priced in, not because anyone expects news today.
+• Grain finds its footing
+• Cattle and hogs mixed overnight
+• Crude pulls back from Saudi move higher
+Read more: https://agsist.com/daily/2026-10-13</description>
+    </item>
     <item>
       <title>Corn steadies near $4.81 after Friday's WASDE hit</title>
       <link>https://agsist.com/daily/2026-10-12</link>
@@ -337,19 +348,6 @@ Action: Unpriced new-crop beans: hold above $12.99; a close below $12.85 any day
 • CRUDE BELOW $100; IRAN WAR PRICED LONGER
 • CATTLE FIRMS; FEEDERS PUSH HIGHER
 Read more: https://agsist.com/daily/2026-09-13</description>
-    </item>
-    <item>
-      <title>SEPTEMBER WASDE PRINTS; BEANS GIVE BACK 24 CENTS</title>
-      <link>https://agsist.com/daily/2026-09-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-12</guid>
-      <pubDate>Sat, 12 Sep 2026 05:00:00 -0600</pubDate>
-      <description>The September WASDE printed Thursday, and Friday the market said what it thought: soybeans at $12.99 gave back 24 cents, the sharpest single-session drop in weeks, while December corn at $5.32 actually added a nickel. The USDA printed something, the funds sold beans and held corn, and now the question is whether $12.99 is the new floor or the first step lower.
-Friday's WASDE report sent soybeans lower and corn sideways, while crude fell hard on the Saudi pipeline story reversing course.
-• WASDE PRINTS; BEANS FOLD
-  → If you have unpriced new-crop beans, $12.99 is the line. A close below $12.85 next week says the WASDE break has legs; price on that signal, not ahead of it.
-• CRUDE FALLS ON SAUDI PIPELINE REVERSAL
-• CATTLE FIRMS; HOGS SLIP
-Read more: https://agsist.com/daily/2026-09-12</description>
     </item>
   </channel>
 </rss>

@@ -1,0 +1,365 @@
+{
+  "headline": "Corn and beans drift lower as crop progress looms",
+  "lead": "Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat because USDA's record crop numbers are already priced in, not because anyone expects news today.",
+  "teaser": "Corn and beans eased overnight while Crop Progress waits for its 3 p.m. slot.",
+  "one_number": {
+    "value": "16",
+    "unit": "billion bushels, USDA's corn crop estimate",
+    "context": "USDA's October report put corn as the second biggest crop ever and soybeans as the biggest ever, a size the market is still digesting."
+  },
+  "sections": [
+    {
+      "title": "Grain finds its footing",
+      "body": "- Corn is at **$4.81¼** overnight, down slightly after Friday's hard WASDE drop and a Monday session that mostly held steady.\n- USDA's own October numbers call for the second biggest corn crop ever and a record soybean crop, so the big supply is already known and priced.",
+      "so_what": "The market already has the big crop news. Today is about digesting it, not reacting.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Cattle and hogs mixed overnight",
+      "body": "- Live cattle slipped to **$224.75**, down a tenth of a percent, after climbing for several sessions behind tight feeder supply.\n- Feeders eased to $343.48, a pause after recent gains, with no fresh Cattle on Feed data due for weeks.\n- Hogs bucked the trend, up seven tenths of a percent to $75.60.",
+      "so_what": "Cattle cooling off after a run looks like a pause, not a turn.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Crude pulls back from Saudi move higher",
+      "body": "- WTI crude is at **$91.86** overnight, down 2.0%, pulling back after Saudi Arabia pledged to keep exports flowing despite fresh Houthi missile attacks near Riyadh.\n- Saudi Arabia is also moving to expand pipeline capacity that bypasses the Strait of Hormuz, a long-term hedge against the kind of disruption that has pushed prices around all year.",
+      "so_what": "Saudi Arabia answering supply fears with a pledge, not just words, is why crude eased.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    }
+  ],
+  "outside_the_pit": [
+    {
+      "title": "FSA and UNL host farm safety net webinar Oct. 15",
+      "body": "USDA's Farm Service Agency and the University of Nebraska are holding a webinar on commodity crop safety net programs this Thursday.",
+      "tag": "POLICY",
+      "event_date": "2026-10-15"
+    }
+  ],
+  "watch_list": [
+    {
+      "time": "Tuesday, Oct 13, 3:00 p.m. CT",
+      "desc": "Crop Progress, delayed a day for Columbus Day; watch harvest pace against the five-year average."
+    },
+    {
+      "time": "Thursday, Oct 15, 7:30 a.m. CT",
+      "desc": "Weekly export sales; corn sales need to hold up against the record crop size."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Corn back above $4.85 would say the Friday WASDE drop is done weighing on the board."
+    }
+  ],
+  "source_summary": "CME overnight quotes as of 5:46 a.m. CT; USDA WASDE October report; feedstuffs.com; oilprice.com; thefencepost.com",
+  "date": "Tuesday, October 13, 2026",
+  "meta": {
+    "market_mood": "mixed",
+    "heat_section": 0,
+    "overnight_surprises_count": 0,
+    "word_count": 363,
+    "news_coverage": {
+      "ok": 14,
+      "total": 17,
+      "items": 66,
+      "dark": [
+        "brownfieldagnews.com",
+        "dairyherd.com",
+        "porkbusiness.com"
+      ]
+    }
+  },
+  "locked_prices": {
+    "corn": 4.8125,
+    "corn-dec": 4.8125,
+    "beans": 12.83,
+    "beans-nov": 12.83,
+    "wheat": 6.6925,
+    "oats": 4.07,
+    "cattle": 224.75,
+    "feeders": 343.47501,
+    "hogs": 75.6,
+    "milk": 14.97,
+    "meal": 375.60001,
+    "soyoil": 68.3,
+    "crude": 91.86,
+    "natgas": 3.109,
+    "gold": 4207.5,
+    "silver": 60.655,
+    "dollar": 102.304,
+    "sp500": 7807.24023,
+    "bitcoin": 83182.07812
+  },
+  "locked_changes": {
+    "corn": {
+      "prev": 4.83,
+      "pct": -0.3623
+    },
+    "corn-dec": {
+      "prev": 4.83,
+      "pct": -0.3623
+    },
+    "beans": {
+      "prev": 12.8775,
+      "pct": -0.3689
+    },
+    "beans-nov": {
+      "prev": 12.8775,
+      "pct": -0.3689
+    },
+    "wheat": {
+      "prev": 6.7225,
+      "pct": -0.4463
+    },
+    "oats": {
+      "prev": 4.1025,
+      "pct": -0.7922
+    },
+    "cattle": {
+      "prev": 224.975,
+      "pct": -0.1
+    },
+    "feeders": {
+      "prev": 343.85,
+      "pct": -0.1091
+    },
+    "hogs": {
+      "prev": 75.05,
+      "pct": 0.7328
+    },
+    "milk": {
+      "prev": 14.96,
+      "pct": 0.0668
+    },
+    "meal": {
+      "prev": 368.7,
+      "pct": 1.8714
+    },
+    "soyoil": {
+      "prev": 67.72,
+      "pct": 0.8565
+    },
+    "crude": {
+      "prev": 93.74,
+      "pct": -2.0055
+    },
+    "natgas": {
+      "prev": 3.167,
+      "pct": -1.8314
+    },
+    "gold": {
+      "prev": 4190.6001,
+      "pct": 0.4033
+    },
+    "silver": {
+      "prev": 60.141,
+      "pct": 0.8547
+    },
+    "dollar": {
+      "prev": 102.58,
+      "pct": -0.2691
+    },
+    "sp500": {
+      "prev": 7811.54,
+      "pct": -0.055
+    },
+    "bitcoin": {
+      "prev": 81762.5625,
+      "pct": 1.7361
+    }
+  },
+  "board": {
+    "fetched": "2026-10-13T10:46:06Z",
+    "quote_session": "2026-10-13",
+    "prev_close_session": "2026-10-12"
+  },
+  "harvest_clock": {
+    "asof": "2026-10-12",
+    "updated": "2026-10-13T03:13:15Z",
+    "source": "USDA RMA Price Discovery",
+    "url": "/harvest-price-tracker",
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "crops": [
+      {
+        "crop": "Corn",
+        "contract": "Dec '26",
+        "harvest": 4.96,
+        "projected": 4.62,
+        "pct": 7.4,
+        "days_done": 8,
+        "days_total": 22,
+        "days_left": 14,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 31,
+        "all_states": false,
+        "rma_harvest": 4.98,
+        "through": "2026-10-12",
+        "source": "settles"
+      },
+      {
+        "crop": "Soybeans",
+        "contract": "Nov '26",
+        "harvest": 12.89,
+        "projected": 11.09,
+        "pct": 16.2,
+        "days_done": 8,
+        "days_total": 22,
+        "days_left": 14,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 25,
+        "all_states": false,
+        "rma_harvest": 12.89,
+        "through": "2026-10-12",
+        "source": "settles"
+      }
+    ],
+    "lines": [
+      "Corn harvest price so far: $4.96 vs $4.62 projected (+7.4%), 8 of 22 trading days in.",
+      "Soybeans harvest price so far: $12.89 vs $11.09 projected (+16.2%), 8 of 22 trading days in."
+    ],
+    "note": "Average of the daily CBOT settles through Oct 12, figured the way USDA RMA does. RMA posts corn at $4.98. Window and projected price: USDA RMA, as of Oct 12. Oct 1-31 window, most states."
+  },
+  "chart_series": {
+    "corn": [
+      5.2475,
+      5.0375,
+      5.0,
+      5.005,
+      5.0025,
+      5.0425,
+      5.025,
+      5.0075,
+      4.81,
+      4.8125
+    ],
+    "soybeans": [
+      13.025,
+      12.925,
+      12.7725,
+      12.89,
+      12.8625,
+      13.0375,
+      12.9425,
+      12.9375,
+      12.8275,
+      12.83
+    ]
+  },
+  "chart_dates": [
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13"
+  ],
+  "chart_window": "Sep 30 - Oct 13",
+  "quote_strip": {
+    "asof": "2026-10-13T10:46:06Z",
+    "session": "2026-10-13",
+    "vs_session": "2026-10-12",
+    "quotes": [
+      {
+        "key": "corn-dec",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "last": 4.8125,
+        "prev": 4.83,
+        "pct": -0.3623
+      },
+      {
+        "key": "beans-nov",
+        "name": "Soybeans",
+        "contract": "Nov '26",
+        "last": 12.83,
+        "prev": 12.8775,
+        "pct": -0.3689
+      },
+      {
+        "key": "wheat",
+        "name": "Wheat",
+        "contract": "nearby",
+        "last": 6.6925,
+        "prev": 6.7225,
+        "pct": -0.4463
+      }
+    ]
+  },
+  "sponsor": {
+    "active": false,
+    "label": "SPONSOR · 1 SLOT",
+    "advertiser": "AGSIST",
+    "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+    "is_house_ad": true
+  },
+  "issue_number": 214,
+  "generated_at": "2026-10-13T10:47:39.971105+00:00",
+  "generator_version": "5.5.0",
+  "surprise_count": 0,
+  "surprises": [],
+  "price_validation_clean": true,
+  "market_closed": false,
+  "market_status_reason": "open",
+  "otp_week_ahead": false,
+  "critic_pass": {
+    "version": "2.0",
+    "ran_at": "2026-10-13T10:47:46.423876+00:00",
+    "threshold": 7,
+    "final_scores": {
+      "rule_1_lead_so_what": 4,
+      "rule_2_conviction_earned": 7,
+      "rule_3_lede_no_deferral": 3,
+      "rule_4_watch_conditional": 8,
+      "rule_5_so_what_synthesizes": 6,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_yc_honesty": 10,
+      "rule_8_word_budget": 9,
+      "rule_9_voice": 8,
+      "rule_10_forward_test": 4,
+      "rule_11_action_thresholded": 10,
+      "rule_12_one_fact_one_home": 6,
+      "rule_13_level_coherence": 10,
+      "rule_14_one_number_coherence": 9,
+      "rule_15_markdown_not_html": 10,
+      "rule_16_macro_anchoring": 5
+    },
+    "rewrites_applied": [
+      {
+        "pass": 1,
+        "target": "lead",
+        "rule": "rule_3_lede_no_deferral",
+        "scores_before": {
+          "rule_1_lead_so_what": 4,
+          "rule_2_conviction_earned": 7,
+          "rule_3_lede_no_deferral": 3,
+          "rule_4_watch_conditional": 8,
+          "rule_5_so_what_synthesizes": 6,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_yc_honesty": 10,
+          "rule_8_word_budget": 9,
+          "rule_9_voice": 8,
+          "rule_10_forward_test": 4,
+          "rule_11_action_thresholded": 10,
+          "rule_12_one_fact_one_home": 6,
+          "rule_13_level_coherence": 10,
+          "rule_14_one_number_coherence": 9,
+          "rule_15_markdown_not_html": 10,
+          "rule_16_macro_anchoring": 5
+        }
+      }
+    ],
+    "dry_run": false
+  }
+}
