@@ -16,10 +16,12 @@ tracked the index. The panel on /prf reads it only if one of them held up.
 SOURCES
   NMME, through the IRI/LDEO Data Library (no key):
     https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/
-    NOAA NCEP CFSv2, NOAA GFDL SPEAR, NASA GEOS-S2S, NCAR CESM1 (COLA-RSMAS),
-    Environment Canada CanSIPS. Re-forecasts from 1982 (CFSv2 1982-2010,
-    others vary), real-time forecasts after. 1 degree, leads 0.5 to 11.5
-    months (CFSv2 to 9.5). Monthly precipitation, mm/day.
+    NOAA NCEP CFSv2, NOAA GFDL SPEAR, NASA GEOS-S2S, COLA-RSMAS CESM1,
+    Environment Canada CanSIPS-IC4. Re-forecasts from 1982 (CFSv2), 1981
+    (GEOS) or 1990-91 (the rest), real-time forecasts after. 1 degree, leads
+    0.5 to 11.5 months (CFSv2 to 9.5, GEOS to 8.5). Monthly precipitation,
+    mm/day. The exact datasets, and why, are listed at NMME below. NOAA
+    CPC's real-time files fill a missing latest year.
   Copernicus C3S, through the Climate Data Store (needs the CDS_API_KEY
   secret; without it these are skipped and said so):
     https://cds.climate.copernicus.eu/datasets/seasonal-monthly-single-levels
@@ -39,6 +41,8 @@ did come back is written.
 
   python3 scripts/fetch_seasonal_models.py              # fetch and write
   python3 scripts/fetch_seasonal_models.py --only cfsv2,ecmwf
+  python3 scripts/fetch_seasonal_models.py --minutes 40 # stop by then, whatever is left
+  python3 scripts/fetch_seasonal_models.py --probe      # one cell from every path, 30 s each
   python3 scripts/fetch_seasonal_models.py --check      # validate the file
   python3 scripts/fetch_seasonal_models.py --selftest   # synthetic data, no network, no key
 
@@ -49,10 +53,12 @@ import calendar
 import datetime as dt
 import glob
 import json
+import math
 import os
 import sys
 import tempfile
 import time
+import urllib.parse
 import urllib.request
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -64,26 +70,73 @@ AREA = {"north": 50.0, "south": 20.0, "west": -130.0, "east": -66.0}
 INIT_MONTH = 11
 N_INTERVALS = 11
 
-# Each model's dataset. NMME: the Data Library paths, tried in order until one
-# answers (the Library has renamed some entries over the years; the log says
-# which one answered). leads: months from the start month, the start month
-# being lead index 0 (NMME's lead 0.5).
+# Each NMME model's datasets in the IRI/LDEO Data Library, as the Library's
+# own catalog pages list them (checked Oct 2026):
+#   https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/            (index)
+#   .NCEP-CFSv2/.HINDCAST/.MONTHLY          24 members, starts 1982-2010
+#   .NCEP-CFSv2/.FORECAST/.PENTAD_SAMPLES/.MONTHLY   starts Apr 2011 on,
+#                                           "matching pattern of CFSv2 hindcast starts"
+#   .GFDL-SPEAR/.HINDCAST/.MONTHLY          15 members, starts 1991-2020
+#   .GFDL-SPEAR/.FORECAST/.MONTHLY          real time
+#   .NASA-GEOSS2S/.HINDCAST/.MONTHLY        4 members, starts Feb 1981-2017, leads 0.5-8.5
+#   .NASA-GEOSS2S/.FORECAST/.MONTHLY        10 members, starts Feb 2017 on
+#   .COLA-RSMAS-CESM1/.MONTHLY              one set, hindcast and forecast: starts 1991 on
+#   .CanSIPS-IC4/.HINDCAST/.MONTHLY and .FORECAST/.MONTHLY (CanESM5 + GEM5.2-NEMO);
+#     each half also sits on its own (.CanSIPS-IC4/.CanESM5/..., .GEM5.2-NEMO/...),
+#     and the two halves have the same member count, so their average is the
+#     system's ensemble mean. That is the fallback.
+# Variable .prec, mm/day; dimensions S (start, months since 1960-01-01),
+# L (lead, 0.5 = the start month), M (member), X (0-359 E), Y.
+#
+# Each path carries the November starts it is documented to hold ("starts":
+# first, last; None = still running), so a run never spends time asking a
+# dataset for years it does not have. That was the old bug: every path was
+# asked from 1982 and dropped after three empty years, so a set starting in
+# 1991 was never read. Paths for the same years are fallbacks for each other.
+# A model never mixes in a different system (CanSIPS-IC3 is not IC4).
+#
+# FALLBACK for the latest years: NOAA CPC's real-time NMME files over HTTPS,
+#   https://ftp.cpc.ncep.noaa.gov/NMME/realtime_anom/ENSMEAN/YYYY110800/
+#   <CPC name>.prate.YYYY11.ENSMEAN.fcst.nc   (full field, not the anomaly)
+# netCDF from Nov 2022 (GRIB before). Used only for a November start the Data
+# Library did not return, and only when the file's units and leads read
+# cleanly. It holds no hindcasts, so it can never carry a model alone (see
+# MIN_YEARS).
+#
+# leads: months from the start month, the start month being lead index 0.
 NMME = {
-    "cfsv2":   {"system": "NCEP-CFSv2", "leads": 10,
-                "paths": ["NCEP-CFSv2/.HINDCAST/.PENTAD_SAMPLES_FULL/.MONTHLY", "NCEP-CFSv2/.HINDCAST/.MONTHLY",
-                          "NCEP-CFSv2/.FORECAST/.EARLY_MONTH_SAMPLES/.MONTHLY", "NCEP-CFSv2/.FORECAST/.MONTHLY"]},
-    "spear":   {"system": "GFDL-SPEAR", "leads": 12,
-                "paths": ["GFDL-SPEAR/.HINDCAST/.MONTHLY", "GFDL-SPEAR/.FORECAST/.MONTHLY"]},
-    "geos":    {"system": "NASA-GEOSS2S", "leads": 9,
-                "paths": ["NASA-GEOSS2S/.HINDCAST/.MONTHLY", "NASA-GEOSS2S/.FORECAST/.MONTHLY"]},
-    "cesm":    {"system": "COLA-RSMAS-CESM1", "leads": 12,
-                "paths": ["COLA-RSMAS-CESM1/.HINDCAST/.MONTHLY", "COLA-RSMAS-CESM1/.FORECAST/.MONTHLY"]},
-    "cansips": {"system": "CanSIPS-IC4", "leads": 12,
-                "paths": ["CanSIPS-IC4/.HINDCAST/.MONTHLY", "CanSIPS-IC4/.FORECAST/.MONTHLY",
-                          "CanSIPS-IC3/.HINDCAST/.MONTHLY", "CanSIPS-IC3/.FORECAST/.MONTHLY"]},
+    "cfsv2":   {"system": "NCEP-CFSv2", "leads": 10, "cpc": ["CFSv2"],
+                "paths": [{"p": "NCEP-CFSv2/.HINDCAST/.MONTHLY", "starts": (1982, 2010)},
+                          {"p": "NCEP-CFSv2/.FORECAST/.PENTAD_SAMPLES/.MONTHLY", "starts": (2011, None)},
+                          {"p": "NCEP-CFSv2/.FORECAST/.EARLY_MONTH_SAMPLES/.MONTHLY", "starts": (2011, None)}]},
+    "spear":   {"system": "GFDL-SPEAR", "leads": 12, "cpc": ["GFDL_SPEAR"],
+                "paths": [{"p": "GFDL-SPEAR/.HINDCAST/.MONTHLY", "starts": (1991, 2020)},
+                          {"p": "GFDL-SPEAR/.FORECAST/.MONTHLY", "starts": (2020, None)}]},
+    "geos":    {"system": "NASA-GEOSS2S", "leads": 9, "cpc": ["NASA_GEOS5v2"],
+                "paths": [{"p": "NASA-GEOSS2S/.HINDCAST/.MONTHLY", "starts": (1981, 2016)},
+                          {"p": "NASA-GEOSS2S/.FORECAST/.MONTHLY", "starts": (2017, None)}]},
+    "cesm":    {"system": "COLA-RSMAS-CESM1", "leads": 12, "cpc": ["COLA-RSMAS-CESM1"],
+                "paths": [{"p": "COLA-RSMAS-CESM1/.MONTHLY", "starts": (1991, None)}]},
+    "cansips": {"system": "CanSIPS-IC4", "leads": 12, "cpc": ["CanESM5", "GEM5.2_NEMO"],
+                "paths": [{"p": "CanSIPS-IC4/.HINDCAST/.MONTHLY", "starts": (1990, 2020)},
+                          {"p": "CanSIPS-IC4/.FORECAST/.MONTHLY", "starts": (2021, None)},
+                          {"p": ["CanSIPS-IC4/.CanESM5/.HINDCAST/.MONTHLY", "CanSIPS-IC4/.GEM5.2-NEMO/.HINDCAST/.MONTHLY"],
+                           "starts": (1990, 2020)},
+                          {"p": ["CanSIPS-IC4/.CanESM5/.FORECAST/.MONTHLY", "CanSIPS-IC4/.GEM5.2-NEMO/.FORECAST/.MONTHLY"],
+                           "starts": (2021, None)}]},
 }
 NMME_BASE = "https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/"
+CPC_BASE = "https://ftp.cpc.ncep.noaa.gov/NMME/realtime_anom/ENSMEAN/"
+CPC_FIRST_NC = 2022          # November starts before this are GRIB only
 NMME_FIRST = 1982
+MIN_YEARS = 10               # fewer November starts than this is a failure, not a model
+PROBE_POINT = (267.0, 42.0)  # one Data Library cell in central Iowa (X east, Y)
+
+# Time limits, so a dead path can never eat the run. A whole fetch stops at
+# --minutes (default 40; the workflow step is capped at 45); each model gets
+# a fair share of what is left when its turn comes.
+T_BLOCK, T_YEAR, T_PROBE = 240, 75, 30     # seconds per request
+DEFAULT_MINUTES = 40
 
 C3S = {
     "ecmwf":       {"centre": "ecmwf", "system": "51"},
@@ -269,81 +322,386 @@ def write(models, path=OUT):
     return len(raw)
 
 
+class OutOfTime(Exception):
+    pass
+
+
+class Clock:
+    """the run's deadline, and each model's share of it"""
+
+    def __init__(self, minutes, now=time.monotonic):
+        self.now = now
+        self.end = now() + minutes * 60.0
+        self.until = self.end
+
+    def left(self):
+        return max(0.0, self.until - self.now())
+
+    def share(self, models_left):
+        """give the next model an equal part of what is left"""
+        self.until = self.now() + (self.end - self.now()) / max(1, models_left)
+        return self.left()
+
+    def timeout(self, t):
+        left = self.left()
+        if left < 5:
+            raise OutOfTime("out of time")
+        return min(t, left)
+
+
+NO_CLOCK = Clock(10 ** 6)
+
+
+# ---------------------------------------------------------------- Data Library URLs (selftested)
+def lib_sel_starts(first, last):
+    """the S selection: one November, or every November first..last in one go"""
+    if first == last:
+        return "S/(0000 1 Nov %d)VALUES/" % first
+    return "S/(0000 1 Nov %d-%d)VALUES/" % (first, last)
+
+
+def lib_url(path, first, last, leads, point=None):
+    """ensemble mean of .prec for November starts first..last (start years),
+    every lead, over the PRF area (or one cell, for a probe), as netCDF"""
+    if point:
+        where = "X/(%g)VALUES/Y/(%g)VALUES/" % point
+        lsel = "L/(0.5)VALUES/"
+    else:
+        where = "X/(%g)(%g)RANGEEDGES/Y/(%g)(%g)RANGEEDGES/" % (AREA["west"] + 360, AREA["east"] + 360, AREA["south"], AREA["north"])
+        lsel = "L/(0.5)(%.1f)RANGE/" % (leads - 0.5)
+    # The Library's dates have spaces in them, "(0000 1 Nov 1990)". Sent raw,
+    # Python refuses the URL before it leaves the runner ("URL can't contain
+    # control characters"): that, retried with sleeps, was the first run's
+    # hour and a half of nothing. They go as %20.
+    # Every Data Library entry name starts with a dot: .NMME/.GFDL-SPEAR, not
+    # .NMME/GFDL-SPEAR (the first run also dropped that dot).
+    q = "." + path + "/.prec/" + lib_sel_starts(first, last) + lsel + where + "M/average/data.nc"
+    return NMME_BASE + urllib.parse.quote(q, safe="/().-_")
+
+
+def cpc_url(name, start_year):
+    return "%s%d110800/%s.prate.%d11.ENSMEAN.fcst.nc" % (CPC_BASE, start_year, name, start_year)
+
+
+def months_since_to_ym(v, units):
+    """an S value in the Data Library's 'months since 1960-01-01' -> (year, month)"""
+    w = (units or "").lower().replace("-", " ").split()
+    if len(w) < 4 or w[0] != "months" or w[1] != "since":
+        raise ValueError("S units " + repr(units))
+    y0, m0 = int(w[2]), int(w[3])
+    total = y0 * 12 + (m0 - 1) + math.floor(float(v) + 1e-6)
+    return total // 12, total % 12 + 1
+
+
+def start_years(path_starts, last_start):
+    """the November starts to ask a path for: what it is documented to hold,
+    within the years the test uses"""
+    a, b = path_starts
+    a = max(a, NMME_FIRST - 1)
+    b = last_start if b is None else min(b, last_start)
+    return list(range(a, b + 1)) if a <= b else []
+
+
+def runs(years):
+    """[1990, 1991, 1992, 1995] -> [(1990, 1992), (1995, 1995)]"""
+    out = []
+    for y in sorted(years):
+        if out and y == out[-1][1] + 1:
+            out[-1] = (out[-1][0], y)
+        else:
+            out.append((y, y))
+    return out
+
+
+def average_halves(a, b):
+    """two halves of one system with equal members, each {start: {lead: {box: mm}}}:
+    their mean, only where both have the value"""
+    out = {}
+    for y in a:
+        if y not in b:
+            continue
+        for lead, boxes in a[y].items():
+            other = b[y].get(lead)
+            if not other:
+                continue
+            m = {k: (v + other[k]) / 2.0 for k, v in boxes.items() if k in other}
+            if m:
+                out.setdefault(y, {})[lead] = m
+    return out
+
+
+def unit_scale(units):
+    """precipitation units -> factor to mm/day, or None when unknown"""
+    u = (units or "").lower().replace(" ", "")
+    if u in ("mm/day", "mm/d", "mmday-1", "mm/24hr", "mmd-1"):
+        return 1.0
+    if u in ("kgm-2s-1", "kg/m2/s", "kg/m^2/s", "mm/s", "kgm**-2s**-1"):
+        return 86400.0
+    return None
+
+
 # ---------------------------------------------------------------- fetching (runner only)
-def http_get(url, tries=4):
+RETRY_CODES = (429, 500, 502, 503, 504)
+
+
+def http_get(url, timeout, clock=NO_CLOCK, tries=2, headers=None):
+    """one GET with a hard timeout; retried once only on a timeout or a
+    server-busy answer, never on a 'not here' (404) or a refused request"""
+    import urllib.error
     last = None
     for t in range(tries):
+        h = {"User-Agent": "agsist.com PRF backtest (+https://agsist.com/prf)"}
+        h.update(headers or {})
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist.com PRF backtest"}), timeout=180) as r:
-                return r.read()
-        except Exception as e:  # noqa: BLE001 - logged and retried
+            with urllib.request.urlopen(urllib.request.Request(url, headers=h), timeout=clock.timeout(timeout)) as r:
+                return r.status, r.read(), dict(r.headers)
+        except urllib.error.HTTPError as e:
+            body = b""
+            try:
+                body = e.read()[:400]
+            except Exception:  # noqa: BLE001
+                pass
+            last = RuntimeError("HTTP %d %s" % (e.code, body.decode("utf8", "replace").replace("\n", " ")[:160]))
+            last.code = e.code
+            if e.code not in RETRY_CODES:
+                raise last
+        except OutOfTime:
+            raise
+        except Exception as e:  # noqa: BLE001 - timeouts, resets
             last = e
-            time.sleep(10 * (t + 1))
+        if t + 1 < tries:
+            time.sleep(5)
     raise last
 
 
 def nc_open(blob):
     import xarray as xr  # noqa: E402 - runner only
+    if blob[:3] != b"CDF" and blob[:4] != b"\x89HDF":
+        raise RuntimeError("not netCDF: " + blob[:120].decode("utf8", "replace").replace("\n", " "))
     f = tempfile.NamedTemporaryFile(suffix=".nc", delete=False)
     f.write(blob)
     f.close()
     return xr.open_dataset(f.name, decode_times=False), f.name
 
 
-def nmme_year(path, year, leads, keep):
-    """one November start from the Data Library: ensemble mean, CONUS, every lead"""
-    q = (NMME_BASE + path + "/.prec/S/(0000 1 Nov %d)VALUES/L/(0.5)(%.1f)RANGEEDGES/M/average/"
-         "X/(%g)(%g)RANGEEDGES/Y/(%g)(%g)RANGEEDGES/data.nc"
-         % (year - 1, leads - 0.5, AREA["west"] + 360, AREA["east"] + 360, AREA["south"], AREA["north"]))
-    ds, fn = nc_open(http_get(q))
+def lib_read(blob, first, last, leads, keep):
+    """a Data Library netCDF of .prec (mm/day) -> {start year: {lead: {box: mm}}}"""
+    ds, fn = nc_open(blob)
     try:
-        da = ds["prec"].squeeze()
+        da = ds["prec"]
         lats, lons = da["Y"].values.tolist(), da["X"].values.tolist()
+        if "S" in da.dims:
+            svals = da["S"].values.tolist()
+            units = da["S"].attrs.get("units", "")
+        else:
+            svals, units = [None], ""
+        out = {}
+        for si, sv in enumerate(svals):
+            if sv is None:
+                if first != last:
+                    raise RuntimeError("no S in a reply for several starts")
+                year = first
+            else:
+                year, month = months_since_to_ym(sv, units)
+                if month != INIT_MONTH:
+                    continue
+            sub = da.isel(S=si) if "S" in da.dims else da
+            per_lead = {}
+            for li, L in enumerate(sub["L"].values.tolist()):
+                lead = int(round(L - 0.5))
+                if lead >= leads:
+                    continue
+                y, m = lead_month(year + 1, lead)
+                fld = sub.isel(L=li).transpose("Y", "X").values * calendar.monthrange(y, m)[1]
+                per_lead[lead] = box_means(fld.tolist(), lats, lons, keep)
+            if any(per_lead.values()):
+                out[year] = per_lead
+        return out
+    finally:
+        ds.close()
+        os.unlink(fn)
+
+
+def lib_fetch_path(path, years, leads, keep, clock, errs):
+    """every November start in `years` from one Data Library path: all at
+    once first, then year by year for whatever that missed. Stops a path
+    after three misses in a row with nothing back."""
+    got = {}
+    for a, b in runs(years):
+        try:
+            _, blob, _ = http_get(lib_url(path, a, b, leads), T_BLOCK, clock)
+            got.update(lib_read(blob, a, b, leads, keep))
+        except OutOfTime:
+            raise
+        except Exception as e:  # noqa: BLE001 - logged; year by year next
+            errs.append("%s %d-%d at once: %s" % (path, a, b, str(e)[:160]))
+    misses = 0
+    for y in years:
+        if y in got:
+            continue
+        try:
+            _, blob, _ = http_get(lib_url(path, y, y, leads), T_YEAR, clock)
+            got.update(lib_read(blob, y, y, leads, keep))
+            misses = 0
+        except OutOfTime:
+            raise
+        except Exception as e:  # noqa: BLE001
+            misses += 1
+            errs.append("%s %d: %s" % (path, y, str(e)[:160]))
+            if misses >= 3 and not got:
+                errs.append("%s: three misses in a row, nothing back; next path" % path)
+                break
+    return got
+
+
+def cpc_read(blob, start_year, leads, keep):
+    """CPC's real-time ensemble-mean forecast file -> {lead: {box: mm}}, or
+    an error when it does not read cleanly (units, leads, dimensions)"""
+    ds, fn = nc_open(blob)
+    try:
+        cands = [v for v in ds.data_vars if len(ds[v].dims) >= 3]
+        if not cands:
+            raise RuntimeError("no gridded variable")
+        da = ds[cands[0]]
+        dims = list(da.dims)
+        lat = next((d for d in dims if d.lower() in ("lat", "latitude", "y")), None)
+        lon = next((d for d in dims if d.lower() in ("lon", "longitude", "x")), None)
+        if not lat or not lon:
+            raise RuntimeError("no lat/lon in %s" % dims)
+        scale = unit_scale(da.attrs.get("units"))
+        if scale is None:
+            raise RuntimeError("units %r not read" % da.attrs.get("units"))
+        for d in dims:
+            if d not in (lat, lon) and da.sizes[d] == 1:
+                da = da.isel({d: 0})
+        rest = [d for d in da.dims if d not in (lat, lon)]
+        if len(rest) != 1 or not (6 <= da.sizes[rest[0]] <= 12):
+            raise RuntimeError("dimensions %s not read as leads" % dict(da.sizes))
+        ld = rest[0]
+        lats, lons = da[lat].values.tolist(), da[lon].values.tolist()
         per_lead = {}
-        for li, L in enumerate(da["L"].values.tolist()):
-            lead = int(round(L - 0.5))
-            y, m = lead_month(year, lead)
-            fld = (da.isel(L=li).values * calendar.monthrange(y, m)[1]).tolist()
-            per_lead[lead] = box_means(fld, lats, lons, keep)
+        for lead in range(min(leads, da.sizes[ld])):
+            y, m = lead_month(start_year + 1, lead)
+            fld = da.isel({ld: lead}).transpose(lat, lon).values * scale * calendar.monthrange(y, m)[1]
+            per_lead[lead] = box_means(fld.tolist(), lats, lons, keep)
         return per_lead
     finally:
         ds.close()
         os.unlink(fn)
 
 
-def fetch_nmme(key, cfg, keep, last_year):
-    by_year, used = {}, []
-    for path in cfg["paths"]:
-        got = 0
-        for year in range(NMME_FIRST, last_year + 1):
-            if year in by_year:
+def fetch_nmme(key, cfg, keep, last_year, clock=NO_CLOCK):
+    """one model: each documented path for its own years, fallbacks for the
+    years a path did not return, CPC for the latest starts still missing"""
+    leads, last_start = cfg["leads"], last_year - 1
+    by_start, used, errs = {}, [], []
+    try:
+        for entry in cfg["paths"]:
+            want = [y for y in start_years(entry["starts"], last_start) if y not in by_start]
+            if not want:
                 continue
-            try:
-                per = nmme_year(path, year, cfg["leads"], keep)
-            except Exception as e:  # noqa: BLE001
-                if got == 0 and year > NMME_FIRST + 2:
-                    break      # this path does not hold these years
-                continue
-            tot = interval_totals(per, year, cfg["leads"])
-            if tot:
-                by_year[year] = tot
-                got += 1
-        if got:
-            used.append("%s (%d years)" % (path, got))
-    m = encode_model(by_year, reachable_intervals(cfg["leads"]), keep)
-    if not m:
-        raise RuntimeError("no November start came back from any path")
-    m.update({"source": "NMME, IRI/LDEO Data Library", "system": cfg["system"], "url": NMME_BASE + cfg["system"] + "/", "paths": used})
+            paths = entry["p"] if isinstance(entry["p"], list) else [entry["p"]]
+            parts = [lib_fetch_path(p, want, leads, keep, clock, errs) for p in paths]
+            got = parts[0] if len(parts) == 1 else average_halves(parts[0], parts[1])
+            if got:
+                by_start.update(got)
+                used.append("%s (%d starts)" % (" + ".join(paths), len(got)))
+        missing = [y for y in range(max(CPC_FIRST_NC, NMME_FIRST - 1), last_start + 1) if y not in by_start]
+        for y in missing:
+            halves = []
+            for name in cfg["cpc"]:
+                try:
+                    _, blob, _ = http_get(cpc_url(name, y), T_YEAR, clock)
+                    halves.append({y: cpc_read(blob, y, leads, keep)})
+                except OutOfTime:
+                    raise
+                except Exception as e:  # noqa: BLE001
+                    errs.append("CPC %s %d: %s" % (name, y, str(e)[:160]))
+                    break
+            if len(halves) == len(cfg["cpc"]):
+                got = halves[0] if len(halves) == 1 else average_halves(halves[0], halves[1])
+                if got.get(y) and any(got[y].values()):
+                    by_start[y] = got[y]
+                    used.append("CPC %s %d" % ("+".join(cfg["cpc"]), y))
+    except OutOfTime:
+        errs.append("out of time: this model's share of the run ran out")
+    for e in errs[:12]:
+        log("    " + e)
+    if len(errs) > 12:
+        log("    ... %d more" % (len(errs) - 12))
+    by_year = {}
+    for s, per in by_start.items():
+        tot = interval_totals(per, s + 1, leads)
+        if tot:
+            by_year[s + 1] = tot
+    if len(by_year) < MIN_YEARS:
+        raise RuntimeError("%d November starts came back (%s); need %d" % (len(by_year), "; ".join(used) or "no path answered", MIN_YEARS))
+    m = encode_model(by_year, reachable_intervals(leads), keep)
+    m.update({"source": "NMME, IRI/LDEO Data Library" + (" and NOAA CPC" if any(u.startswith("CPC") for u in used) else ""),
+              "system": cfg["system"], "url": NMME_BASE + "." + cfg["system"] + "/", "paths": used})
     return m
 
 
-def fetch_c3s(key, cfg, keep, last_year, api_key):
+# ---------------------------------------------------------------- probe
+def probe(only=None, last_year=None):
+    """one start, one lead, one cell from every path, 30 s each: which answer"""
+    if last_year is None:
+        last_year = default_last_year(dt.date.today())
+    last_start = last_year - 1
+    dead = []
+    for k, cfg in NMME.items():
+        if only and k not in only:
+            continue
+        ok = False
+        for entry in cfg["paths"]:
+            ys = start_years(entry["starts"], last_start - 1)     # last year's start is surely out
+            if not ys:
+                continue
+            for p in (entry["p"] if isinstance(entry["p"], list) else [entry["p"]]):
+                for label, a, b in (("one start", ys[len(ys) // 2], ys[len(ys) // 2]), ("all starts", ys[0], ys[-1])):
+                    url = lib_url(p, a, b, cfg["leads"], point=PROBE_POINT)
+                    ok |= probe_one("%-8s %-46s %-10s %d-%d" % (k, p, label, a, b), url)
+        for name in cfg["cpc"]:
+            ok |= probe_one("%-8s %-46s %-10s %d" % (k, "CPC " + name, "one start", last_start - 1),
+                            cpc_url(name, last_start - 1), headers={"Range": "bytes=0-1023"})
+        if not ok:
+            dead.append(k)
+    log("CDS_API_KEY is %s (the Copernicus models are not probed)." % ("set" if os.environ.get("CDS_API_KEY", "").strip() else "not set"))
+    log("no path answered for: " + ", ".join(dead) if dead else "every NMME model has a path that answered")
+    return 1 if dead else 0
+
+
+def probe_one(label, url, headers=None):
+    t0 = time.monotonic()
+    try:
+        status, blob, hdr = http_get(url, T_PROBE, tries=1, headers=headers)
+        size = hdr.get("Content-Range", "").split("/")[-1] or str(len(blob))
+        kind = "netCDF" if blob[:3] == b"CDF" or blob[:4] == b"\x89HDF" else "NOT netCDF: " + blob[:60].decode("utf8", "replace").replace("\n", " ")
+        log("  OK   %s  HTTP %d, %s bytes, %s, %.1f s" % (label, status, size, kind, time.monotonic() - t0))
+        return kind == "netCDF"
+    except Exception as e:  # noqa: BLE001
+        log("  FAIL %s  %s, %.1f s" % (label, str(e)[:140], time.monotonic() - t0))
+        log("       " + url)
+        return False
+
+
+def default_last_year(today):
+    """a policy year's November start is out by the 14th (C3S posts on the 13th)"""
+    return today.year + 1 if (today.month == 11 and today.day >= 14) or today.month == 12 else today.year
+
+
+def fetch_c3s(key, cfg, keep, last_year, api_key, clock=NO_CLOCK):
     import cdsapi  # noqa: E402 - runner only
     import xarray as xr  # noqa: E402 - runner only
     c = cdsapi.Client(url="https://cds.climate.copernicus.eu/api", key=api_key, quiet=True, progress=False)
     by_year = {}
     for y0 in range(C3S_FIRST, last_year + 1, 6):
         years = [str(y - 1) for y in range(y0, min(y0 + 6, last_year + 1))]
+        try:
+            clock.timeout(60)
+        except OutOfTime:
+            log("  %s: out of time before %s-%s; stopped there" % (key, years[0], years[-1]))
+            break
         fn = tempfile.NamedTemporaryFile(suffix=".nc", delete=False).name
         try:
             c.retrieve(C3S_DATASET, {
@@ -402,35 +760,34 @@ def main(argv):
     only = None
     if "--only" in argv:
         only = set(argv[argv.index("--only") + 1].split(","))
+    if "--probe" in argv:
+        return probe(only)
+    minutes = float(argv[argv.index("--minutes") + 1]) if "--minutes" in argv else DEFAULT_MINUTES
+    clock = Clock(minutes)
     old = json.load(open(OUT))["models"] if os.path.exists(OUT) else {}
     keep = prf_boxes()
-    now = dt.date.today()
-    # a policy year's November start is out by the 14th (C3S posts on the 13th)
-    last_year = now.year + 1 if (now.month == 11 and now.day >= 14) or now.month == 12 else now.year
-    log("boxes holding a PRF grid: %d; policy years up to %d" % (len(keep), last_year))
-    new, failed = {}, []
-    for k, cfg in NMME.items():
-        if only and k not in only:
-            continue
-        try:
-            new[k] = fetch_nmme(k, cfg, keep, last_year)
-            log("  %s: %d-%d, %d boxes, intervals %s" % (k, new[k]["first"], new[k]["last"], len(new[k]["v"]), new[k]["intervals"]))
-        except Exception as e:  # noqa: BLE001
-            failed.append(k)
-            log("  %s: FAILED %s" % (k, str(e)[:200]))
+    last_year = default_last_year(dt.date.today())
     api_key = os.environ.get("CDS_API_KEY", "").strip()
+    todo = [("nmme", k, cfg) for k, cfg in NMME.items() if not only or k in only]
     if not api_key:
         log("CDS_API_KEY is not set: the Copernicus models (%s) are skipped, not failed." % ", ".join(C3S))
     else:
-        for k, cfg in C3S.items():
-            if only and k not in only:
-                continue
-            try:
-                new[k] = fetch_c3s(k, cfg, keep, last_year, api_key)
-                log("  %s: %d-%d, %d boxes, intervals %s" % (k, new[k]["first"], new[k]["last"], len(new[k]["v"]), new[k]["intervals"]))
-            except Exception as e:  # noqa: BLE001
-                failed.append(k)
-                log("  %s: FAILED %s" % (k, str(e)[:200]))
+        todo += [("c3s", k, cfg) for k, cfg in C3S.items() if not only or k in only]
+    log("boxes holding a PRF grid: %d; policy years up to %d; %g minutes for %d models" % (len(keep), last_year, minutes, len(todo)))
+    new, failed = {}, []
+    for n, (src, k, cfg) in enumerate(todo):
+        share = clock.share(len(todo) - n)
+        t0 = time.monotonic()
+        log("  %s: up to %.0f s" % (k, share))
+        try:
+            if src == "nmme":
+                new[k] = fetch_nmme(k, cfg, keep, last_year, clock)
+            else:
+                new[k] = fetch_c3s(k, cfg, keep, last_year, api_key, clock)
+            log("  %s: %d-%d, %d boxes, intervals %s, %.0f s" % (k, new[k]["first"], new[k]["last"], len(new[k]["v"]), new[k]["intervals"], time.monotonic() - t0))
+        except Exception as e:  # noqa: BLE001
+            failed.append(k)
+            log("  %s: FAILED %s (%.0f s)" % (k, str(e)[:300], time.monotonic() - t0))
     models = merge(old, new)
     if models:
         n = write(models)
@@ -492,6 +849,85 @@ def selftest():
     if os.path.exists(OUT):
         raw = open(OUT).read()
         assert not check(json.loads(raw), len(raw.encode())), check(json.loads(raw), len(raw.encode()))
+    # the Data Library requests: documented datasets, November starts, every lead, ensemble mean
+    u = lib_url("GFDL-SPEAR/.HINDCAST/.MONTHLY", 1991, 2020, 12)
+    assert u.startswith("https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/.GFDL-SPEAR/.HINDCAST/.MONTHLY/.prec/"), u
+    assert u == (NMME_BASE + ".GFDL-SPEAR/.HINDCAST/.MONTHLY/.prec/S/(0000%201%20Nov%201991-2020)VALUES/L/(0.5)(11.5)RANGE/"
+                 "X/(230)(294)RANGEEDGES/Y/(20)(50)RANGEEDGES/M/average/data.nc"), u
+    assert "S/(0000%201%20Nov%202005)VALUES/" in lib_url("x", 2005, 2005, 10)
+    # every URL can be sent: no spaces or control characters (the first run's failure)
+    for k, cfg in NMME.items():
+        for e in cfg["paths"]:
+            for p in (e["p"] if isinstance(e["p"], list) else [e["p"]]):
+                for url in (lib_url(p, 1991, 2020, cfg["leads"]), lib_url(p, 2005, 2005, cfg["leads"], point=PROBE_POINT)):
+                    assert not any(ch <= " " or ch == "\x7f" for ch in url), url
+                    urllib.request.Request(url)       # urllib's own check passes
+    pu = lib_url("x", 2005, 2005, 10, point=PROBE_POINT)
+    assert "L/(0.5)VALUES/X/(267)VALUES/Y/(42)VALUES/M/average/data.nc" in pu and "RANGE" not in pu
+    assert cpc_url("CFSv2", 2023) == CPC_BASE + "2023110800/CFSv2.prate.202311.ENSMEAN.fcst.nc"
+    assert months_since_to_ym(370, "months since 1960-01-01") == (1990, 11)
+    assert months_since_to_ym(370.0, "months since 1960-01-01 00:00:00") == (1990, 11)
+    assert months_since_to_ym(0, "months since 1960-1-1") == (1960, 1)
+    try:
+        months_since_to_ym(370, "days since 1960-01-01")
+        raise AssertionError("days are not months")
+    except ValueError:
+        pass
+    for k, cfg in NMME.items():
+        for e in cfg["paths"]:
+            for p in (e["p"] if isinstance(e["p"], list) else [e["p"]]):
+                assert p.startswith(cfg["system"] + "/."), (k, p)        # never another system
+        assert cfg["cpc"] and 1 <= len(cfg["cpc"]) <= 2 and 6 <= cfg["leads"] <= 12
+    # each path is asked only for its own years, never past the latest start
+    assert start_years((1991, 2020), 2025) == list(range(1991, 2021))
+    assert start_years((2021, None), 2025) == [2021, 2022, 2023, 2024, 2025]
+    assert start_years((1981, 2016), 2025)[0] == NMME_FIRST - 1
+    assert start_years((2027, None), 2025) == []
+    assert runs([1990, 1991, 1992, 1995, 1997, 1998]) == [(1990, 1992), (1995, 1995), (1997, 1998)] and runs([]) == []
+    # the old bug: a set starting in 1991 is asked for 1991 on, not dropped after 1982-1984 came back empty
+    assert NMME["spear"]["paths"][0]["starts"][0] == 1991 and NMME["cesm"]["paths"][0]["p"] == "COLA-RSMAS-CESM1/.MONTHLY"
+    # two halves of CanSIPS: mean where both have the value, nothing where one is missing
+    ha = {2000: {2: {"a": 10.0, "b": 4.0}}, 2001: {2: {"a": 1.0}}}
+    hb = {2000: {2: {"a": 20.0}, 3: {"a": 1.0}}}
+    assert average_halves(ha, hb) == {2000: {2: {"a": 15.0}}}
+    assert unit_scale("mm/day") == 1.0 and unit_scale("kg m-2 s-1") == 86400.0 and unit_scale("inches") is None
+    # the clock: a model gets its share of what is left, and a request past the deadline is refused
+    tick = [0.0]
+    c = Clock(10, now=lambda: tick[0])
+    assert abs(c.share(4) - 150.0) < 1e-9
+    assert c.timeout(240) == 150.0
+    tick[0] = 148.0
+    try:
+        c.timeout(30)
+        raise AssertionError("past its share, nothing is asked")
+    except OutOfTime:
+        pass
+    assert abs(c.share(3) - (600 - 148) / 3.0) < 1e-9
+    tick[0] = 601.0
+    assert c.share(1) == 0.0
+    assert default_last_year(dt.date(2026, 11, 13)) == 2026 and default_last_year(dt.date(2026, 11, 14)) == 2027
+    assert default_last_year(dt.date(2026, 12, 1)) == 2027 and default_last_year(dt.date(2026, 3, 1)) == 2026
+    # a model whose paths all fail, quickly, is a failure with the reasons, not an hour of waiting
+    global http_get
+    real_get, calls = http_get, []
+
+    def dead_get(url, timeout, clock=NO_CLOCK, tries=2, headers=None):
+        calls.append(url)
+        e = RuntimeError("HTTP 404 not here")
+        e.code = 404
+        raise e
+    http_get = dead_get
+    try:
+        t0 = time.monotonic()
+        try:
+            fetch_nmme("spear", NMME["spear"], keep, 2026, Clock(1))
+            raise AssertionError("no data is a failure")
+        except RuntimeError as e:
+            assert "0 November starts" in str(e) and "no path answered" in str(e), e
+        assert time.monotonic() - t0 < 5 and len(calls) < 20, len(calls)
+        assert any("1991-2020" in u for u in calls) and not any("Nov 1985" in u for u in calls)
+    finally:
+        http_get = real_get
     # no key is a skip, not a failure, and the key is never printed
     assert "CDS_API_KEY" not in json.dumps(NMME) and all("key" not in c for c in C3S.values())
     print("selftest ok")

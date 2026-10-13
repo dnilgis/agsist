@@ -15,10 +15,19 @@ name: seasonal models
 # 13th), off the hour, and by hand. A model that fails keeps what is
 # already published for it; the step is marked failed and nothing older
 # replaces anything newer.
+#
+# Run by hand with "probe" ticked to see which source paths answer (one
+# start, one lead, one cell from each, 30 s each) without fetching or
+# committing anything; it finishes in a few minutes.
 on:
   schedule:
     - cron: "41 15 15 11,12 *"   # Nov 15 and Dec 15, 15:41 UTC
   workflow_dispatch:
+    inputs:
+      probe:
+        description: "Only probe which source paths answer; fetch and commit nothing"
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -27,9 +36,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  models:
+  probe:
+    if: github.event_name == 'workflow_dispatch' && inputs.probe
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Probe the source paths
+        timeout-minutes: 8
+        run: python3 scripts/fetch_seasonal_models.py --probe
+
+  models:
+    if: github.event_name != 'workflow_dispatch' || !inputs.probe
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
     permissions:
       contents: write          # commits the two data files below
     steps:
@@ -51,12 +76,12 @@ jobs:
       - name: Fetch
         id: fetch
         continue-on-error: true
-        timeout-minutes: 150
+        timeout-minutes: 45     # the script stops itself at 40
         env:
           CDS_API_KEY: ${{ secrets.CDS_API_KEY }}
         run: |
           set -o pipefail
-          python3 scripts/fetch_seasonal_models.py 2>&1 | tee seasonal.log
+          python3 scripts/fetch_seasonal_models.py --minutes 40 2>&1 | tee seasonal.log
 
       - name: Re-run the optimizer test with the models
         run: |
@@ -83,5 +108,5 @@ jobs:
       - name: Say which model failed
         if: steps.fetch.outcome == 'failure'
         run: |
-          grep -E "FAILED|refusing|less than published" seasonal.log || true
+          grep -E "FAILED|refusing|less than published|out of time" seasonal.log || true
           echo "::warning::A seasonal model source failed; what was published for it was kept. See the Fetch step."
