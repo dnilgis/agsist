@@ -487,6 +487,23 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   A(st.slice(0, 10).every(c => c === 200) && st[10] === 429, 'rain-gauge sign-ups share /notice\'s rate limit');
 }
 
+// v5.19: GET /where hands back Cloudflare's town for the request, keeps nothing
+{
+  const where = (cf, h = { Origin: 'https://agsist.com' }) => { const q = new Request('https://x.dev/where', { headers: h }); if (cf) Object.defineProperty(q, 'cf', { value: cf }); return w.fetch(q, env); };
+  const keys = store.size;
+  let q = await where({ country: 'US', city: 'Rice Lake', region: 'Wisconsin', regionCode: 'WI', latitude: '45.50612', longitude: '-91.73822', asn: 7018 });
+  let jj = await q.json();
+  A(q.status === 200 && jj.ok && jj.city === 'Rice Lake' && jj.region_code === 'WI' && jj.lat === 45.51 && jj.lon === -91.74, '/where gives the town, rounded');
+  A(Object.keys(jj).sort().join() === 'city,lat,lon,ok,region,region_code', '/where gives nothing else (no ASN, no IP)');
+  A(q.headers.get('Cache-Control') === 'private, no-store', '/where is never cached');
+  A(q.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', '/where answers agsist.com');
+  A(store.size === keys, '/where stores nothing');
+  jj = await (await where({ country: 'CA', city: 'Winnipeg', latitude: '49.9', longitude: '-97.1' })).json(); A(jj.ok === false && !jj.city, '/where outside the US: ok false');
+  jj = await (await where({ country: 'US', latitude: '45', longitude: '-91' })).json(); A(jj.ok === false, '/where with no city: ok false');
+  jj = await (await where(null)).json(); A(jj.ok === false, '/where with no cf data: ok false');
+  q = await w.fetch(new Request('https://x.dev/where', { method: 'POST', headers: { Origin: 'https://agsist.com' } }), env); A(q.status === 404 || q.status === 405 || q.status === 403, '/where is GET only');
+}
+
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');
 r = await call('/nope'); A(r.status === 404, 'unknown path 404');

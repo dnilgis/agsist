@@ -640,6 +640,50 @@
      form, and the town field stays empty, until the reader draws their own
      place or clicks "Use this design". Any failure puts the empty box back. */
   var SAMPLE = null;
+  /* THE EXAMPLE (2026-10-13, Sig): a new visitor starts with every option in
+     use, a name, a line, three dates, the normals and remarkable days, so they
+     see a whole print and trim it down. Example words can't be ordered by
+     mistake: exampleLeft() names any still on the print, and ordering waits
+     until they are changed or cleared. A design from a link is never touched. */
+  var EXAMPLE = { name: 'The Johnson Farm', dedication: 'For Dad, his 40th crop. Love, Kate',
+    markers: [{ md: '05-08', label: 'Planted' }, { md: '07-12', label: 'Hail' }, { md: '10-24', label: 'Harvest done' }] };
+  function withExample(s, year) {
+    s.name = EXAMPLE.name; s.dedication = EXAMPLE.dedication;
+    s.markers = EXAMPLE.markers.map(function (m) { return { date: year + '-' + m.md, label: m.label }; });
+    s.cmp = 'normal'; s.normals = true; s.records = true;
+    return s;
+  }
+  function exampleMarker(d, l) { return EXAMPLE.markers.some(function (m) { return m.label === l && String(d || '').slice(5) === m.md; }); }
+  function exampleLeft(s) {
+    var out = [];
+    if (s.name === EXAMPLE.name) out.push('the name');
+    if (s.dedication === EXAMPLE.dedication) out.push('the line under it');
+    var n = (s.markers || []).filter(function (m) { return exampleMarker(m.date, m.label); }).length;
+    if (n) out.push(n === 1 ? 'one of the dates' : n + ' of the dates');
+    return out;
+  }
+  // the example dates follow the year picked, so they stay on the print
+  function reyearExample() {
+    var y = parseInt($('rp-year').value, 10);
+    if (!y) return;
+    for (var i = 1; i <= 3; i++) {
+      var d = $('rp-m' + i + 'd'), l = $('rp-m' + i + 'l');
+      if (exampleMarker(d.value, l.value)) d.value = y + '-' + d.value.slice(5);
+    }
+  }
+  function clearExample() {
+    if ($('rp-name').value === EXAMPLE.name) $('rp-name').value = '';
+    if ($('rp-ded').value === EXAMPLE.dedication) $('rp-ded').value = '';
+    for (var i = 1; i <= 3; i++) {
+      if (exampleMarker($('rp-m' + i + 'd').value, $('rp-m' + i + 'l').value)) { $('rp-m' + i + 'd').value = ''; $('rp-m' + i + 'l').value = ''; }
+    }
+    syncCounts(); syncDates();
+    restyle();
+  }
+  function syncExampleNote() {
+    var left = exampleLeft(readInputs());
+    $('rp-ex-note').hidden = !left.length;
+  }
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
 
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
@@ -899,7 +943,8 @@
     $('rp-sample-line').hidden = !on;
     var t = EMPTY_CAP;
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + '.';
-    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.');
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.') +
+      (NEAR && ST.place === NEAR ? ' Your area, going by your internet connection. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
   // Framed or print only: the same art, with or without the CSS frame.
@@ -929,10 +974,40 @@
     showBuy(false);
   }
   function lastFullYear() { return CURRENT_YEAR - 1; }
+  /* THE READER'S OWN AREA (2026-10-13, Sig): a new visitor's first print is
+     their own town, last full year, from the subs worker's GET /where (the
+     town Cloudflare puts on the request: no prompt, nothing kept). It is a
+     real draw, the town in the box, ready to order. Outside the US, no
+     answer in WHERE_MS, or any failure: the Chetek sample, as before. */
+  var NEAR = '', WHERE_MS = 2500;
+  function startNear() {
+    // the reader typed a town and pressed Draw while this was waiting: theirs wins
+    var mine = function () { return DATA || DRAWING || $('rp-place').value.trim(); };
+    var done = false, fall = function () { if (!done) { done = true; if (!mine()) runSample(); } };
+    art.innerHTML = '<p class="rp-placeholder">Drawing a year of rain near you\u2026</p>';
+    setTimeout(fall, WHERE_MS);
+    try {
+      fetch('https://agsist-subs.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
+        if (done) return;
+        var town = j && j.ok && j.city && /^[A-Z]{2}$/.test(j.region_code || '') ? cleanText(j.city + ', ' + j.region_code, LIMITS.place) : '';
+        if (!town || mine()) return fall();
+        done = true;
+        NEAR = town;
+        $('rp-place').value = town;
+        ga('rain_print_near', { state: j.region_code });
+        run();
+      }).catch(fall);
+    } catch (e) { fall(); }
+  }
+  // the reader's dates moved onto the sample's year, so they show on it
+  function sampleWords(w) { w.markers = w.markers.map(function (m) { return { date: SAMPLE.year + '-' + m.date.slice(5), label: m.label }; }); return w; }
   function runSample() {
     SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
     art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
-    run(null, normalize({ place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') }));
+    var s = { place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') };
+    // the sample wears whatever is in the boxes: the example at first, then the reader's own words
+    var w = sampleWords(readInputs()); s.name = w.name; s.dedication = w.dedication; s.markers = w.markers; s.cmp = w.cmp; s.normals = w.normals; s.records = w.records;
+    run(null, normalize(s));
   }
   function useSample() {
     if (!SAMPLE || !DATA) return;
@@ -983,7 +1058,7 @@
       $('rp-m' + i + 'l').value = m ? m.label : '';
     }
     syncMarkerBounds();
-    if ($('rp-name-n')) { syncCounts(); syncDates(); }
+    if ($('rp-name-n')) { syncCounts(); syncDates(); syncExampleNote(); }
   }
   /* Counters under the name and the line ("12 of 24 letters"), emoji and
      symbols taken out as typed, with a note. maxlength stops typing at the
@@ -1064,7 +1139,7 @@
     var on = giftMode() && canOrder();
     $('rp-gift').hidden = !on;
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
-    $('ro-order-note').textContent = on ? 'Sig will email you within a day with a payment link. Nothing is charged until you pay it. The proof comes in January, once the full year is drawn.' : ORDER_NOTE;
+    $('ro-order-note').textContent = on ? 'I\u2019ll email you within a day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1244,6 +1319,7 @@
         ST.station = '';
       }
       var fromUrlStation = ST.station;
+      reyearExample();
       next = readInputs();
       if (e && e.type === 'submit' && (next.place !== ST.place || next.year !== ST.year)) next.station = '';
       else next.station = fromUrlStation;
@@ -1348,12 +1424,13 @@
 
   function restyle() {
     var next = readInputs();
-    if (SAMPLE) { next.place = ST.place; next.year = ST.year; }   // style choices try out on the sample
+    if (SAMPLE) { next.place = ST.place; next.year = ST.year; sampleWords(next); }   // style choices try out on the sample
     next.station = ST.station;
     next.gift = ST.gift;
     var yearChanged = next.year !== ST.year, placeChanged = next.place !== ST.place;
     if (yearChanged || placeChanged) { syncMarkerBounds(); return; }
     ST = next;
+    syncExampleNote();
     if (ST.records && !root.AgRainRecords) recordsReady().then(function (ok) { if (ok) render(); });
     render();
   }
@@ -1398,15 +1475,22 @@
       statusEl.classList.remove('rp-bad');
       return;
     }
-    var code = refFor(), link = payLink(id), note = $('rp-buy-note');
+    var left = exampleLeft(ST), note = $('rp-buy-note');
+    if (left.length) {
+      note.innerHTML = 'The example is still on the print (' + esc(left.join(', ')) + '). Put in your own words, or clear the example, then order. <button type="button" class="btn btn-secondary" id="rp-ex-clear2">Clear the example</button>';
+      $('rp-ex-clear2').addEventListener('click', function () { clearExample(); note.textContent = ''; });
+      try { $('rp-design-h').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) {}
+      return;
+    }
+    var code = refFor(), link = payLink(id);
     ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
       note.innerHTML = ST.gift
-        ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells Sig it is a gift for January. He emails you to confirm where it goes, and sends the proof once the full year is drawn.'
-        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and Sig emails a proof before printing.' +
+        ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells me it\u2019s a gift for January. I\u2019ll email you to confirm where it goes, and send the proof once the full year is in.'
+        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and I email you a proof before I print.' +
           (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '');
       return;
     }
@@ -1434,8 +1518,8 @@
     var price = typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift(), print = id !== 'digital';
     var steps = jan
-      ? ['Sig emails you within 1 business day with a payment link. Nothing is charged until you pay it.', 'In January, once NOAA\u2019s December numbers are in, he draws the full year and emails you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed once you OK it.']
-      : ['Sig emails you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once NOAA\u2019s December numbers are in, I draw the full year and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed once you OK it.']
+      : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
         print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you pay.'];
     el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">check the proof first</a>') + '</p>' +
       '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
@@ -1510,8 +1594,8 @@
     $('rp-isgift-wrap').hidden = jan;
     syncGiftCheckout();
     $('ro-gift-box').hidden = !plain;
-    $('ro-gift-line').textContent = print ? 'Sig prints the note on a card in the box. No prices go in the box.'
-      : 'Sig sends the note with the file. No prices go with it.';
+    $('ro-gift-line').textContent = print ? 'I print the note on a card and put it in the box. No prices go in.'
+      : 'I send the note with the file. No prices go with it.';
     $('ro-deliver-wrap').hidden = !(jan || plain);
     var theirs = (jan || plain) && $('ro-deliver').value === 'recipient';
     $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, state, ZIP; theirs is fine)'
@@ -1539,6 +1623,8 @@
     if (sending) return;
     var out = $('ro-out');
     if (!canOrder()) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
+    var left = exampleLeft(ST);
+    if (left.length) { out.innerHTML = '<p class="rp-msg rp-bad">The example is still on the print (' + esc(left.join(', ')) + '). Change it or clear it under &ldquo;Add a name and dates&rdquo;, then send.</p>'; return; }
     var x = {
       name: cleanText($('ro-name').value, 80), email: $('ro-email').value.trim(), choice: $('ro-choice').value,
       address: $('ro-address').value.trim().slice(0, 600), notes: $('ro-notes').value.trim().slice(0, 2000),
@@ -1562,7 +1648,7 @@
       x.gift_email = x.choice === 'digital' && x.gift_deliver === 'recipient' ? $('ro-gift-email').value.trim() : '';
       x.gift_message = $('rp-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
     }
-    var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address Sig can reply to.']
+    var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address I can reply to.']
       : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.']
       : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick It\u2019s a gift.']
       : ((gift || plain) && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
@@ -1588,11 +1674,11 @@
     send('rain-print-order', data, fs).then(function () {
       ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
-        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link.</p>' +
-          '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
+        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within a day with a payment link.</p>' +
+          '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. I send the proof then, and it\u2019s delivered in January. I\u2019ll write to ' + esc(x.email) +
           '; nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p>' +
-          '<p>Once you\u2019ve paid, Sig emails you a gift card to print, with a code that opens their print.</p></div>'
-        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
+          '<p>Once you\u2019ve paid, I email you a gift card to print, with a code that opens their print.</p></div>'
+        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
           '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you pay.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
           ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
@@ -1633,8 +1719,8 @@
     $('rp-biz-ship').textContent = rows.length
       ? 'Every price is per print, delivered: shipping to US addresses is included, one to each customer or all to one. ' +
         (offs.length && firstOff ? 'All to one address' + (firstOff.from > rows[0].from ? ', from ' + firstOff.from + ' prints' : '') + ': ' + offs.join(', ') + '. ' : '') + 'A digital file is ' + money(j.digital) + ' each, emailed. ' +
-        (max < BIZ_MAX ? 'Over ' + max + ' prints, ask Sig and he quotes it.' : '')
-      : 'Sig quotes business orders by email. Shipping to US addresses is included.';
+        (max < BIZ_MAX ? 'Over ' + max + ' prints, ask me for a quote.' : '')
+      : 'I quote business orders by email. Shipping to US addresses is included.';
     $('rp-biz-ship').hidden = false;
     $('rp-tiers-box').hidden = !rows.length;
     if (rows.length) {
@@ -1671,7 +1757,7 @@
     if (!id) return;
     var what = qty + ' ' + BIZ_WORD[pick][1];
     var one = bizQuote(PRICES, qty, id, 'one'), each = bizQuote(PRICES, qty, id, 'each');
-    if (!one || !each) { out.textContent = 'For ' + qty + ', Sig quotes it himself. Send the request and he writes back.'; return; }
+    if (!one || !each) { out.textContent = 'For ' + qty + ', I quote it myself. Send the request and I\u2019ll write back.'; return; }
     if (id === 'digital') { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' total, emailed.'; return; }
     var q = dest === 'one' ? one : dest === 'each' ? each : null;
     out.textContent = q
@@ -1699,7 +1785,7 @@
     };
     var qn = /^\d{1,4}$/.test(qraw) ? +qraw : 0;
     var bad = !x.business ? ['rb-business', 'Add the business name.'] : !x.name ? ['rb-name', 'Add your name.']
-      : !EMAIL_RE.test(x.email) ? ['rb-email', 'Add an email address Sig can reply to.']
+      : !EMAIL_RE.test(x.email) ? ['rb-email', 'Add an email address I can reply to.']
       : qn >= 1 && qn < BIZ_MIN ? ['rb-qty', 'Business orders start at ' + BIZ_MIN + '. For fewer, order the regular way above.']
       : !(qn >= BIZ_MIN && qn <= BIZ_MAX) ? ['rb-qty', 'Put how many prints, from ' + BIZ_MIN + ' to ' + BIZ_MAX + '. For more than ' + BIZ_MAX + ', put ' + BIZ_MAX + ' and say how many in the notes.']
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
@@ -1717,7 +1803,7 @@
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-business', data, fs).then(function () {
       ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will write to ' + esc(x.email) + ' with a quote, then proofs.</p>' +
+      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' with a quote, then proofs.</p>' +
         '<p>Nothing is printed or charged until you OK them.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
       try { out.firstChild.focus(); } catch (err) {}
@@ -1861,6 +1947,8 @@
 
   // ---------- wire up ----------
   buildYears();
+  // a new visitor starts from the example; a design from a link comes in as it was made
+  if (!(ST.place && ST.year)) withExample(ST, lastFullYear());
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // "Giving it for Christmas?" reads right from October through December only
@@ -1873,7 +1961,8 @@
   });
   $('rp-sample-use').addEventListener('click', useSample);
   doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
-  $('rp-year').addEventListener('input', function () { syncMarkerBounds(); syncDates(); });
+  $('rp-year').addEventListener('input', function () { reyearExample(); syncMarkerBounds(); syncDates(); });
+  $('rp-ex-clear').addEventListener('click', clearExample);
   ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { cleanField(id); restyle(); }); });
   ['rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', function () { syncDates(); restyle(); }); });
   // label ideas as buttons: a tap fills the first empty label (its date box next)
@@ -1945,7 +2034,7 @@
   fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
   loadPrices();
   if (ST.place && ST.year) run();
-  else runSample();
+  else startNear();
 
   /* THE GIFT CARD (2026-10-13). A card is issued by Sig after payment (worker
      v5.16) and printed from /rp-gift. Its link, /rain-print?gift=RP-XXXX-XXXX-XXXX,

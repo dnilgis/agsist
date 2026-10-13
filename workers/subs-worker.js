@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.19 (2026-10-13): GET /where, for the Rain Print page's first print.
+ *   Answers with the town Cloudflare already puts on the request (req.cf:
+ *   country, region, regionCode, city, latitude, longitude), so the page can
+ *   draw the reader's own area with no location prompt. Nothing is stored or
+ *   logged, no KV is touched, Cache-Control: private, no-store. Only the
+ *   agsist.com origins get CORS. Outside the US, or with no city, it answers
+ *   {ok:false} and the page draws its usual sample. Every other route answers
+ *   exactly as before. No new binding and no new secret.
  * v5.18 (2026-10-13): RAIN GAUGE WAITING LIST. /notice takes one more topic,
  *   "rain-gauge" (updates on the rain gauge Sig is designing, from
  *   /rain-gauge). With that topic only, an optional 5-digit zip and an
@@ -1108,6 +1116,15 @@ async function handle(req, env) {
           "Access-Control-Max-Age": "86400",
         }, cors(req)),
       });
+    }
+
+    // v5.19: the reader's own town, from Cloudflare's request data. Nothing kept.
+    if (path === "/where" && req.method === "GET") {
+      const cf = req.cf || {}, h = Object.assign({ "Cache-Control": "private, no-store" }, cors(req));
+      const lat = Number(cf.latitude), lon = Number(cf.longitude);
+      if (cf.country !== "US" || !cf.city || !Number.isFinite(lat) || !Number.isFinite(lon)) return json({ ok: false }, 200, h);
+      return json({ ok: true, city: String(cf.city).slice(0, 60), region: String(cf.region || "").slice(0, 60),
+        region_code: String(cf.regionCode || "").slice(0, 3), lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }, 200, h);
     }
 
     // v5.13: origin and content type, before any public POST reads its body.

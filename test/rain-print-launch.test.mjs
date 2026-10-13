@@ -243,6 +243,11 @@ test("the proof view and the order summary are on the page", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /\$\('rp-zoom'\)\.addEventListener\('click', openProof\)/, "zoom opens the full-size view");
   assert.match(S, /art\.addEventListener\('click'/, "tapping the preview opens it too");
+  assert.match(S, /else startNear\(\);/, "a new visitor's first print is their own area");
+  assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
+  assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
+  assert.match(S, /if \(!\(ST\.place && ST\.year\)\) withExample\(ST, lastFullYear\(\)\)/, "the example fills a new visit only, never a design from a link");
+  assert.match(S, /var left = exampleLeft\(ST\)/, "ordering waits while example words are on the print");
   assert.match(S, /PROOF_VIEW = \$\('rp-wall'\)\.getAttribute\('data-view'\)/, "it opens framed or print only, as set under the preview");
   assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
   assert.match(S, /What happens next/);
@@ -284,7 +289,7 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.match(faq, new RegExp("5 to 9 are the regular prices on one invoice"));
   assert.match(faq, new RegExp("10 to 24 are \\$" + T[1].print12x18 + " a print or \\$" + T[1].framed12x18 + " framed; 25 to 49, \\$" + T[2].print12x18 + " or \\$" + T[2].framed12x18 + "; 50 to 100, \\$" + T[3].print12x18 + " or \\$" + T[3].framed12x18));
   assert.match(faq, new RegExp("From 10 prints, all to one address takes \\$" + off.print12x18 + " off each print and \\$" + off.framed12x18 + " off each framed"));
-  assert.match(faq, /Over 100, ask Sig/);
+  assert.match(faq, /Over 100, ask me/);
   assert.equal(T[0].print12x18, J.print12x18, "5-9 is the card price");
   assert.equal(T[0].framed12x18, J.framed12x18);
   assert.match(HTML, /How many prints \(5 to 500\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
