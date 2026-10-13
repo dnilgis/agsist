@@ -13,7 +13,9 @@ THE RULES (the same ones Rain Print follows, components/rain-print.js)
   * "S" is a day the observer did not read the gauge; that catch is in the
     next "A" value (a total over several days). An S day is reported (the
     rain is in the year's total, once, on the A day) but it is not a dry day.
-  * An "A" value is several days' rain, so it is never the biggest single day.
+  * An "A" value is several days' rain, so it is never the biggest single day;
+    and when an A value spread evenly over its days beats the biggest one-day
+    reading, no biggest day is given at all (some day inside it was bigger).
   * The days after a station's last report have not come in yet (NOAA's
     daily numbers lag a few days). They are not gaps; the county's as-of date
     is that last report.
@@ -294,6 +296,7 @@ def summarize(year, dates, vals, norms, edate):
     months = {}
     cum = []
     best = None
+    acc_day = 0.0
     run = run_start = 0
     dry = None
     for i, (d, (v, flag)) in enumerate(zip(dates, parsed)):
@@ -315,6 +318,13 @@ def summarize(year, dates, vals, norms, edate):
                 acc += 1
             if flag == "" and v > 0 and (best is None or v > best[1]):
                 best = (d, round(v, 2))
+            if flag == "A":
+                # an A total covers the S days before it and its own day: at
+                # least one of those days had value / days
+                k = i
+                while k > 0 and parsed[k - 1][1] == "S":
+                    k -= 1
+                acc_day = max(acc_day, v / (i - k + 1))
         if v is not None and flag == "" and v == 0:
             if run == 0:
                 run_start = i
@@ -331,6 +341,10 @@ def summarize(year, dates, vals, norms, edate):
         mlist.append([round(t, 2), round(u, 2) if nv is not None else None, r, k])
     full = [(m, x) for m, x in enumerate(mlist) if x[3] and x[2] >= MIN_SHARE * x[3]]
     wet = max(full, key=lambda t: t[1][0], default=None)
+    # a month left out for its gaps whose reported days alone reach the winner's
+    # total proves the winner is not the wettest: say nothing rather than that
+    if wet and any(x[0] >= wet[1][0] for m, x in enumerate(mlist) if x[3] and x[2] < MIN_SHARE * x[3]):
+        wet = None
     usual_r = round(usual, 2) if nv is not None else None
     pct = round(100 * total / usual) if usual_r is not None and usual_r >= PCT_MIN_NORMAL else None
     return {
@@ -339,7 +353,9 @@ def summarize(year, dates, vals, norms, edate):
         "total": round(total, 2), "usual": usual_r, "pct": pct,
         "months": mlist,
         "wet_month": [wet[0], wet[1][0]] if wet and wet[1][0] > 0 else None,
-        "max_day": list(best) if best else None,
+        # withheld when a multi-day report proves some day in it beat the
+        # biggest one-day reading: that reading is then not the biggest day
+        "max_day": list(best) if best and round(acc_day, 2) <= best[1] else None,
         "dry": list(dry) if dry else None,
         "cum": cum,
     }, "ok"

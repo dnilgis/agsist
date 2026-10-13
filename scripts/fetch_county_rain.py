@@ -375,10 +375,24 @@ def selftest():
     ok(s and s["missing"] == 1 and s["reported"] == 10, f"one gap inside the year: {s}")
     ok(s and abs(s["total"] - 1.90) < 1e-9, f"S days count once, on the A day: {s and s['total']}")
     ok(s and abs(s["usual"] - 1.00) < 1e-9, f"usual leaves the gap out too: {s and s['usual']}")
-    ok(s and s["max_day"] == ["2026-01-10", 0.4], f"an A total is not the biggest day: {s and s['max_day']}")
+    # 1.50A covers Jan 7 to 9, so one of those days had at least 0.50, more than
+    # Jan 10's 0.40: the A total is not a day, and 0.40 is not the biggest day either
+    ok(s and s["max_day"] is None, f"an A total is not the biggest day, and hides a bigger one: {s and s['max_day']}")
     ok(s and s["dry"] == [3, "2026-01-01", "2026-01-03"], f"a gap ends a dry stretch: {s and s['dry']}")
     ok(s and s["trace"] == 1 and s["acc"] == 1 and s["unsplit"] == 2, "trace, A and S counted")
     ok(s and s["pct"] == 190, f"percent of usual: {s and s['pct']}")
+    # 0.40 on one day, then S, S, 3.10A: some day in those three had at least 1.03
+    d14 = R.days_of(2026, "2026-01-01", 14)
+    s, _ = R.summarize(2026, d14, ["0"] * 10 + ["0.40", "S", "S", "3.10A"], ["0.1"] * 14, "2026-01-14")
+    ok(s and s["max_day"] is None, f"a multi-day report that beats the biggest day withholds it: {s and s['max_day']}")
+    s, _ = R.summarize(2026, d14, ["0"] * 10 + ["1.40", "S", "S", "3.10A"], ["0.1"] * 14, "2026-01-14")
+    ok(s and s["max_day"] == ["2026-01-11", 1.4], f"a multi-day report smaller per day keeps the biggest day: {s and s['max_day']}")
+    # wettest month: March missed 5 days mid-month but its 26 reported days beat every full month
+    d90 = R.days_of(2026, "2026-01-01", 120)
+    s, _ = R.summarize(2026, d90, ["0.05"] * 31 + ["0.02"] * 28 + ["0.5"] * 10 + ["M"] * 5 + ["0.5"] * 16 + ["0.01"] * 30, ["0.1"] * 120, "2026-04-30")
+    ok(s and s["wet_month"] is None, f"a skipped month that beats the wettest withholds it: {s and s['wet_month']}")
+    s, _ = R.summarize(2026, d90, ["0.05"] * 31 + ["0.02"] * 28 + ["0.01"] * 10 + ["M"] * 5 + ["0.01"] * 16 + ["0.01"] * 30, ["0.1"] * 120, "2026-04-30")
+    ok(s and s["wet_month"] == [0, 1.55], f"a skipped month below the wettest keeps it: {s and s['wet_month']}")
     s, why = R.summarize(2026, dates, ["0.1", "M", "M", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1"], norms, "2026-01-12")
     ok(s is None and "83%" in why, f"under 90% of days: withheld ({why})")
     s, why = R.summarize(2026, dates, ["0.1"] * 12, norms, "2026-01-30")

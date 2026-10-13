@@ -245,10 +245,11 @@ def county_page(ctx):
              else f"How Much Rain Has {full} Had in {year}? | AGSIST")
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if done else ' to date'}" if c["pct"] is not None else ""
+    has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
     desc = (f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. "
-            f"Month by month, the wettest month, the biggest rain and the longest dry stretch.")
+            + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".")
     if len(desc) > 165:
-        desc = f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. Month by month and the year's biggest rain."
+        desc = f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else ".")
     if len(desc) > 165:
         desc = f"{inch(c['total'])} inches of rain in {full}, {span}, {year}{pct_bit}."
     stw = c["station"]
@@ -302,10 +303,14 @@ def county_page(ctx):
         faq.append((f"What was the wettest month in {name} in {year}?",
                     f"{ML[m]}, with {inches_word(v)} at {where_words(c)}{'' if done else ', counting the months through ' + short_date(asof)}."))
     if c.get("max_day"):
+        # with multi-day reports in the year, a day inside one could have been
+        # bigger, so it is the biggest one-day reading, not the most in one day
         dd, v = c["max_day"]
-        facts.append(f"<li><b>Biggest single day:</b> {inches_word(v)} on {short_date(dd)}.</li>")
+        facts.append(f"<li><b>{'Biggest one-day reading' if c['acc'] else 'Biggest single day'}:</b> {inches_word(v)} on {short_date(dd)}.</li>")
         faq.append((f"What was the biggest rain in {name} in {year}?",
-                    f"{inches_word(v)} on {long_date(dd)}, the most the gauge caught in one day{'' if done else ' this year through ' + short_date(asof)}."
+                    f"{inches_word(v)} on {long_date(dd)}, "
+                    + ("the biggest one-day reading" if c["acc"] else "the most the gauge caught in one day")
+                    + f"{'' if done else ' this year through ' + short_date(asof)}."
                     + (" Reports that cover more than one day are not counted as one day." if c["acc"] else "")))
     if c.get("dry") and c["dry"][0] >= 2:
         n, a, b = c["dry"]
@@ -693,6 +698,12 @@ def selftest():
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
         ok(ks and "read the gauge after more than one day" in ks, "accumulated reports explained")
+        c1 = dict(c, max_day=None, acc=2)
+        nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
+        ok("biggest rain" not in nb and "Biggest single day" not in nb and "Biggest one-day" not in nb, "no biggest day: not claimed anywhere")
+        c1 = dict(c, acc=2)
+        nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
+        ok("the most the gauge caught in one day" not in nb and "Biggest one-day reading" in nb, "with multi-day reports: a one-day reading, not the most in one day")
         de = want.get("rain/delaware/kent-county.html", "")
         ok(de and "How Much Rain Did Kent County, Delaware Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
