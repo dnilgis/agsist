@@ -1291,8 +1291,12 @@ def county_page(W, f, d, stamp):
     # (2022 census), only where prf/<state>.html is on disk (another builder's pages)
     pas_rent = ok(R) and R.get("pasture") and (not RL or R["pasture"]["year"] >= RL - 3)
     pas_ac = get(d, "livestock", "pasture", "value") if ok(d.get("livestock") or {}) else None
+    # The county's own PRF page (scripts/build_prf_counties.py, prf/<state>/<county>.html,
+    # same slug as this page) when it is on disk, else the state's.
     prf_sl = slugify(stn)
-    if (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", prf_sl + ".html")):
+    if (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", W.slug[f] + ".html")):
+        S1 += '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>: its grids, county values and record.</p>' % (W.slug[f], esc(lab))
+    elif (pas_rent or (pas_ac or 0) >= 10000) and os.path.exists(os.path.join(W.root, "prf", prf_sl + ".html")):
         S1 += '<p class="note">Insuring pasture or hay? See <a href="/prf/%s">PRF rainfall insurance in %s</a>.</p>' % (prf_sl, esc(stn))
     rr = W.rrev.get(f)
     if rr and rr.get("p") is not None:
