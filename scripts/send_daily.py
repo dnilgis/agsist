@@ -70,6 +70,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import brief_email        # noqa: E402  (needs the path line above)
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
+import log_safe           # noqa: E402  (no address in the public log)
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
@@ -336,20 +337,12 @@ def main():
                                        _counts.get("ask_zip", 0),
                                        _counts.get("plain", 0) + _counts.get("no_centroid", 0) + _counts.get("unreadable", 0),
                                        _counts.get("plain", 0), _counts.get("no_centroid", 0), _counts.get("unreadable", 0)))
-        shown = set()
-        for r in subs:
-            kind = (r.get("zip") or "(no zip)")
-            if kind in shown or len(shown) >= 6:
-                continue
-            shown.add(kind)
-            mm = build_email(day, b, r["email"], from_name, from_addr, reply_to)
-            first = mm.get_body(("plain",)).get_content().split("\n")
-            print("--- first lines for %s (zip %s) ---" % (r["email"], kind))
-            print("\n".join(first[:8]))
-            tail = [ln for ln in first if ln.startswith("Add your ZIP") or ln.startswith("Forward to a neighbor")]
-            for ln in tail:
-                print("   ... " + ln)
-        m = build_email(day, b, recipients[0], from_name, from_addr, reply_to)
+        # COUNTS ONLY. Manual runs of daily.yml are dry runs and the Actions
+        # log is public, so no reader's address or ZIP is printed here. The
+        # sample below is built for a made-up address.
+        print("preview: %d distinct ZIP(s) on the list, %d reader(s) with none"
+              % (len({r.get("zip") for r in subs if r.get("zip")}), sum(1 for r in subs if not r.get("zip"))))
+        m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         _prior, _pday = brief_email.prior_board(b)
         print("SUBJECT: " + str(m["Subject"]))
         print("board: this issue's locked close, against " + str(_pday or "(no prior board found)"))
@@ -439,9 +432,15 @@ def main():
     if sent > 0:
         flag(day, set_it=True)
     if failed:
+        # Full addresses go to Sig by private mail; the public annotation gets
+        # the count and masked addresses only.
+        mailed = log_safe.owner_mail("AGSIST Daily %s: %d of %d did not send" % (day, len(failed), len(recipients)),
+                                     ["Resend to these addresses individually (the day is flagged):", ""] + failed)
         print("::error::failed (" + str(len(failed)) + " of " + str(len(recipients))
               + ") — the day is flagged, so a plain rerun will NOT resend to "
-              "anyone. Resend to these addresses individually: " + ", ".join(failed))
+              "anyone. Resend to these addresses individually ("
+              + ("full list mailed to Sig" if mailed else "full list NOT mailed")
+              + "): " + ", ".join(log_safe.mask_text(f) for f in failed))
     return 0 if sent > 0 else 1
 
 

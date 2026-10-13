@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -27,7 +29,8 @@ jobs:
         if: github.event.inputs.only != 'rent'
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
-        run: python scripts/probe_sources.py --only "${{ github.event.inputs.only }}"
+          IN_ONLY: ${{ github.event.inputs.only }}
+        run: python scripts/probe_sources.py --only "$IN_ONLY"
 
       - name: Probe rent (settles pasture short_desc, 2015, forecast filter)
         if: github.event.inputs.only == '' || github.event.inputs.only == 'rent'

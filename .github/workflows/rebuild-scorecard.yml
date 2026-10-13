@@ -50,7 +50,7 @@ jobs:
         # build_scorecard imports grade_calls, which imports contract_calendar.
         # None of them need the network; requests/feedparser are here only
         # because prerender_wpi_scorecard imports the generator module.
-        run: pip install feedparser requests
+        run: pip install feedparser==6.0.14 requests==2.34.2
 
       - name: Prove the grading rule before rebuilding on it
         run: |

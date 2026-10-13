@@ -1,4 +1,4 @@
-import { open, done, overflow } from './harness.mjs';
+import { open, done, overflow, openSetup } from './harness.mjs';
 const W = +process.argv[2] || 390;
 const geocode = { '54728': { results: [{ name: '54728', latitude: 45.3147, longitude: -91.6510, admin1: 'Wisconsin', admin2: 'Barron' }] },
                   'Valentine, NE': { results: [{ name: 'Valentine', latitude: 42.8728, longitude: -100.5510, admin1: 'Nebraska', admin2: 'Cherry' }] }, 'zzzz': {} };
@@ -8,7 +8,7 @@ const txt = (sel) => page.textContent(sel).then(t => (t || '').replace(/\s+/g, '
 await page.goto(BASE + '/prf.html'); await page.waitForSelector('#prf-app:not([hidden])');
 // 1. ZIP
 await page.fill('#prf-q', '54728'); await page.click('#prf-find button[type=submit]');
-await page.waitForSelector('.prf-figs');
+await page.waitForSelector('.prf-figs'); await openSetup(page);
 console.log('ZIP ->', await txt('#prf-where-h'), '|', await txt('#prf-find-msg'));
 ok((await txt('#prf-where-h')).startsWith('Grid 30454 · Barron County, Wisconsin'), 'zip finds 30454 Barron');
 ok(await page.$('.prf-pin'), 'pin drawn');

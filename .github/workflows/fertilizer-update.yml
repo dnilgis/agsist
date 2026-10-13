@@ -29,18 +29,34 @@ jobs:
         run: python3 scripts/update_fertilizer.py --selftest
 
       - name: Apply prices
+        # Inputs reach the shell only through env, and each must be a number.
+        env:
+          IN_UREA: ${{ inputs.urea }}
+          IN_POTASH: ${{ inputs.potash }}
+          IN_MAP_S: ${{ inputs.map_s }}
+          IN_AMS: ${{ inputs.ams }}
+          IN_KMAG: ${{ inputs.kmag }}
+          IN_LIME: ${{ inputs.lime }}
+          IN_FORCE: ${{ inputs.force }}
         run: |
           set -euo pipefail
-          ARGS=""
-          [ -n "${{ inputs.urea }}"   ] && ARGS="$ARGS --urea ${{ inputs.urea }}"
-          [ -n "${{ inputs.potash }}" ] && ARGS="$ARGS --potash ${{ inputs.potash }}"
-          [ -n "${{ inputs.map_s }}"  ] && ARGS="$ARGS --map-s ${{ inputs.map_s }}"
-          [ -n "${{ inputs.ams }}"    ] && ARGS="$ARGS --ams ${{ inputs.ams }}"
-          [ -n "${{ inputs.kmag }}"   ] && ARGS="$ARGS --kmag ${{ inputs.kmag }}"
-          [ -n "${{ inputs.lime }}"   ] && ARGS="$ARGS --lime ${{ inputs.lime }}"
-          [ "${{ inputs.force }}" = "yes" ] && ARGS="$ARGS --force"
-          if [ -z "$ARGS" ]; then echo "No prices entered — nothing to do."; exit 1; fi
-          python3 scripts/update_fertilizer.py $ARGS
+          ARGS=()
+          add() {
+            [ -z "$2" ] && return 0
+            if ! printf '%s' "$2" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
+              echo "::error::$1 must be a number of dollars per ton"; exit 1
+            fi
+            ARGS+=("$1" "$2")
+          }
+          add --urea "$IN_UREA"
+          add --potash "$IN_POTASH"
+          add --map-s "$IN_MAP_S"
+          add --ams "$IN_AMS"
+          add --kmag "$IN_KMAG"
+          add --lime "$IN_LIME"
+          if [ "$IN_FORCE" = "yes" ]; then ARGS+=(--force); fi
+          if [ ${#ARGS[@]} -eq 0 ]; then echo "No prices entered — nothing to do."; exit 1; fi
+          python3 scripts/update_fertilizer.py "${ARGS[@]}"
 
       - name: Commit
         run: |

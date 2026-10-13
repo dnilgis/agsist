@@ -15,6 +15,9 @@ on:
       - 'components/prf.js'
       - 'components/prf-math.js'
       - 'components/prf.css'
+      - 'components/prf-outlook.js'
+      - 'scripts/fetch_prf_outlook.py'
+      - 'test/fixtures/prf-outlook/**'
       - 'scripts/stamp_prf.py'
       - 'scripts/prf_facts.mjs'
       - 'scripts/build_prf_states.py'
@@ -36,6 +39,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -43,7 +48,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Arithmetic, wiring, helpers
-        run: node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs
+        run: |
+          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-outlook.test.mjs
+          python scripts/fetch_prf_outlook.py --selftest
       - name: The page is what the stamper writes
         run: |
           python scripts/stamp_prf.py --selftest
@@ -55,3 +62,4 @@ jobs:
         run: |
           node --check components/prf.js
           node --check components/prf-math.js
+          node --check components/prf-outlook.js

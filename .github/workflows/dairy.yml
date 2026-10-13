@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install pypdf (fallback if pdftotext is missing)
-        run: pip install pypdf
+        run: pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_dairy.py --selftest
       - name: Probe (raw source capture)

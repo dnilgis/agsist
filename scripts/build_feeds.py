@@ -84,6 +84,23 @@ QUIET = {
         "Checked hourly; it changes when the sources do. The US Drought "
         "Monitor map is released Thursday mornings and the NOAA 30- and "
         "90-day outlooks on the third Thursday of the month."),
+    # Checked twice a week, CHANGED when a source issues: the Drought Monitor
+    # weekly, CPC's outlooks and ENSO monthly. fetch_prf_outlook.py writes only
+    # when a section changes, so the file's age is the newest issue's age.
+    "data/prf/outlook.json": (
+        "weekly",
+        "Checked Thursdays and Fridays; it changes when a source issues. The "
+        "US Drought Monitor map comes out Thursday mornings, CPC's seasonal "
+        "outlooks on the third Thursday of the month and the ENSO discussion "
+        "on the second."),
+    # Written monthly by climate-indices.yml (scripts/fetch_climate_indices.py),
+    # which keeps a series unchanged when NOAA has not posted a new month.
+    # components/prf-optimize-ui.js reads it; the feed joins this manifest the
+    # day /prf loads that script.
+    "data/prf/climate-indices.json": (
+        "monthly",
+        "NOAA posts the PDO and AMO once a month, so the climate indices job "
+        "runs on the 9th and the file moves only when a new month is out."),
 }
 
 # ── feeds nobody schedules, because a person maintains them ──────────────────
@@ -182,9 +199,22 @@ PLANNED = {
     "data/dairy-data.json": ("planned",
         "The dairy pipeline has not made its first run yet. milk-prices.html "
         "falls back field by field until it does, on purpose."),
+    # Written by prf-outlook.yml (scripts/fetch_prf_outlook.py), whose first
+    # run is on a GitHub runner: NOAA and the Drought Monitor cannot be reached
+    # from the sandbox the panel was built in. components/prf-outlook.js says
+    # "did not load" and the calculator is untouched until then.
+    "data/prf/outlook.json": ("planned",
+        "The PRF outlook job has not made its first run yet. The outlook panel "
+        "on /prf says its file did not load until it does; the calculator does not need it."),
     # Written by seo-weekly.yml (scripts/gsc_index_check.py) once the URL
     # Inspection API answers; read only by the internal, noindex seo-report.html,
     # which says "no index check has run yet" until then.
+    # NOAA cannot be reached from the sandbox the optimizer was built in;
+    # climate-indices.yml makes the first fetch on a GitHub runner. Until
+    # then the PRF optimizer test says the PDO and AMO tilts are untested.
+    "data/prf/climate-indices.json": ("planned",
+        "The climate indices job has not made its first run yet. The PRF "
+        "optimizer lists the PDO and AMO tests as not run until it does."),
     "data/seo-index.json": ("planned",
         "The weekly Search Console index check has not made its first run yet. "
         "Only the internal search report reads it, and it says so until then."),
@@ -314,11 +344,15 @@ def main():
         # homepage moved three big inline scripts to components/home-*.js, and
         # a grep of the .html alone dropped index.html as a reader of eight
         # feeds (and data/wpi-history.json from the manifest altogether).
-        # Only page-owned scripts (components/home*.js, cash-bids.js) count here; shared
+        # Only page-owned scripts (components/home*.js, prf-*.js, cash-bids.js) count here; shared
         # components are left as they were, so this changes no other page.
         # 2026-10-12: the rest of its inline script moved to components/home.js,
         # and /cash-bids' inline script moved to components/cash-bids.js.
-        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:home(?:-[\w-]+)?|cash-bids)\.js)""", text))):
+        # 2026-10-13: /prf's panels too (components/prf-outlook.js reads
+        # data/prf/outlook.json). Still only scripts the page itself loads, so
+        # the feed joins the manifest the day prf.html adds the script tag,
+        # and feeds-guard asks for the rebuild in that commit.
+        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf)(?:-[\w-]+)?|cash-bids)\.js)""", text))):
             if os.path.exists(js):
                 text += "\n" + read(js)
         for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json

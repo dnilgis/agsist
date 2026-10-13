@@ -43,7 +43,7 @@ jobs:
 
       - name: Install the card renderer
         run: |
-          pip install --quiet playwright pillow
+          pip install --quiet playwright==1.63.0 pillow==12.3.0
           python -m playwright install --with-deps chromium
 
       - name: Selftest (gate)

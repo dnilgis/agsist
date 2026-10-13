@@ -75,7 +75,7 @@ def example_html(ex):
                     f'<td>{money(e["protection"])}</td><td>{e["paid_years"]} of {e["years"]}</td><td>{money(e["avg"])}</td></tr>')
     return (f'<p>Grid {ex["grid"]} in {ex["county"]}: {ex["acres"]} acres, {ex["coverage"]}% coverage, productivity factor 100, '
             f'{ex["months"]}. Figures at {{cy}} rates.</p>'
-            '<div class="prf-scroll"><table class="prf-sub-t prf-ex-t"><thead><tr><th scope="col">Use of the land</th><th scope="col">County base value per acre</th>'
+            f'<div class="prf-scroll" tabindex="0" role="region" aria-label="Worked example, scrolls sideways"><table class="prf-sub-t prf-ex-t"><caption class="prf-sr">What PRF costs for grid {ex["grid"]}: grazing and hay at the same policy</caption><thead><tr><th scope="col">Use of the land</th><th scope="col">County base value per acre</th>'
             '<th scope="col">Premium</th><th scope="col">USDA pays</th><th scope="col">You pay, a year</th><th scope="col">Most it can pay in a year</th>'
             '<th scope="col">Years it would have paid</th><th scope="col">Average payout a year</th></tr></thead><tbody>' + "".join(rows) + '</tbody></table></div>'
             '<p>Hay ground costs more than grazing land because USDA values an acre of hay higher. Both use the same grid and months, so they would have paid in the same years. '

@@ -116,7 +116,7 @@ jobs:
       # zone as a hard failure rather than a silent fall back to UTC. Installing
       # the wheel makes zoneinfo work with or without the system database.
       - name: Timezone database
-        run: python3 -m pip install --quiet tzdata
+        run: python3 -m pip install --quiet tzdata==2026.5
 
       - name: Check bake_seo
         run: python3 scripts/bake_seo.py --selftest

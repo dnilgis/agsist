@@ -36,10 +36,13 @@ jobs:
   # board does not move and a fetch would only re-stamp `fetched`.
   hours:
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       open: ${{ steps.h.outputs.open }}
     steps:
       - id: h
+        env:
+          IN_FORCE: ${{ inputs.force }}
         run: |
           DOW=$(TZ=America/Chicago date +%u)              # 1=Mon .. 7=Sun
           HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))   # e.g. 1845
@@ -49,7 +52,7 @@ jobs:
             1|2|3|4) { [ "$HM" -lt 1400 ] || [ "$HM" -ge 1845 ]; } && OPEN=1 ;;
             5)       [ "$HM" -lt 1400 ] && OPEN=1 ;;
           esac
-          [ "${{ inputs.force }}" = "true" ] && OPEN=1
+          [ "$IN_FORCE" = "true" ] && OPEN=1
           echo "CT day $DOW, $HM -> open=$OPEN"
           echo "open=$OPEN" >> "$GITHUB_OUTPUT"
 
@@ -75,7 +78,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install yfinance
+        run: pip install yfinance==1.7.0
 
       # Selftests gate the fetch: if the ONE expiry/roll rule or the roll marker
       # is broken, fail RED here — before a bad feed gets committed 10x/session.

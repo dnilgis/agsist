@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install --quiet yfinance pandas
+        run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
       # The rule before the run: grading, the refusal of a target at or behind
       # its entry, the session count, the contract choice, the binomial and

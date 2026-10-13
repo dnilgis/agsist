@@ -12,9 +12,9 @@ BOOT = m.group(0)
 def mk(k, v=""):
     return f"<!--prf:{k}-->{v}<!--/prf:{k}-->"
 
-COV = "".join(f'<button type="button" data-cov="{c}" aria-pressed="false">{c}%</button>' for c in (70, 75, 80, 85, 90))
+COV = "".join(f'<button type="button" class="chip" data-cov="{c}" aria-pressed="false">{c}%</button>' for c in (70, 75, 80, 85, 90))
 
-WIN = "".join(f'<button type="button" data-win="{w}" aria-pressed="false">{w}</button>' for w in (0, 30, 20, 10))
+WIN = "".join(f'<button type="button" class="chip" data-win="{w}" aria-pressed="false">{w}</button>' for w in (0, 30, 20, 10))
 
 HTML = f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -24,7 +24,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=2">
+  <link rel="stylesheet" href="/components/prf.css?v=3">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -61,113 +61,136 @@ HTML = f"""<!DOCTYPE html>
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; <span aria-current="page">PRF insurance calculator</span></nav>
     <p class="page-kicker">Crop year {mk("crop_year")} &middot; sign-up deadline {mk("sales_long")}</p>
     <h1>PRF insurance calculator: what your grid would have paid, every year since {mk("y0")}</h1>
-    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. Type the ZIP or town nearest the land. You get the {mk("crop_year")} premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}. Free, with no sign-up, for all {mk("grids")} grids in {mk("states")} states.</p>
+    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. Find your grid to see the {mk("crop_year")} premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}. Free, no sign-up, all {mk("grids")} grids in {mk("states")} states.</p>
 
     <p class="prf-status" id="prf-status" role="status"></p>
     <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules, the worked example and the method below do not.</p></noscript>
 
     <div id="prf-app" hidden>
-      <form class="prf-find" id="prf-find" autocomplete="off">
-        <label for="prf-q">ZIP, town and state, coordinates, or grid ID
-          <input id="prf-q" type="text" inputmode="text" enterkeyhint="search" placeholder="54728, or Chetek WI"></label>
-        <button type="submit" class="prf-btn prf-btn-go">Find the grid</button>
-        <button type="button" class="prf-btn" id="prf-loc">Use my location</button>
-      </form>
-      <p class="prf-find-msg" id="prf-find-msg" role="status" aria-live="polite"></p>
-      <details class="prf-browse"><summary>Or pick by state and county</summary>
-        <div class="prf-browse-g">
-          <select id="prf-b-st" aria-label="State"></select>
-          <select id="prf-b-co" aria-label="County" disabled><option value="">Pick a state first</option></select>
+      <section class="prf-card prf-step-find" aria-labelledby="prf-find-h">
+        <h2 class="prf-step-h" id="prf-find-h"><span class="prf-n" aria-hidden="true">1</span>Find your grid</h2>
+        <form class="prf-find" id="prf-find" autocomplete="off" role="search" aria-labelledby="prf-find-h">
+          <label class="prf-find-l" for="prf-q">ZIP, town and state, coordinates, or grid ID</label>
+          <div class="prf-find-row">
+            <input id="prf-q" type="text" inputmode="text" enterkeyhint="search" placeholder="54728, or Chetek WI" aria-describedby="prf-find-msg">
+            <button type="submit" class="btn btn-primary prf-btn-go"><span>Find<span class="prf-find-x"> the grid</span></span></button>
+          </div>
+        </form>
+        <div class="prf-find-alt">
+          <button type="button" class="prf-alt" id="prf-loc">Use my location</button>
+          <details class="prf-browse"><summary class="prf-alt">Pick by state and county</summary>
+            <div class="prf-browse-g">
+              <div class="field"><label for="prf-b-st">State</label><select id="prf-b-st"></select></div>
+              <div class="field"><label for="prf-b-co">County</label><select id="prf-b-co" disabled><option value="">Pick a state first</option></select></div>
+            </div>
+            <div class="prf-b-grids" id="prf-b-grids"></div>
+          </details>
+          <span class="prf-start" id="prf-start"><button type="button" class="prf-alt" id="prf-eg">Open an example: grid 30454, Barron County, Wisconsin</button></span>
         </div>
-        <div class="prf-b-grids" id="prf-b-grids"></div>
-      </details>
-      <p class="prf-start" id="prf-start">No grid picked yet. <button type="button" class="prf-link" id="prf-eg">Open an example: grid 30454, Barron County, Wisconsin</button></p>
+        <p class="prf-find-msg" id="prf-find-msg" role="status" aria-live="polite"></p>
+      </section>
       <button type="button" class="prf-live" id="prf-bar" data-jump="prf-answer-h" hidden></button>
+      <p class="prf-sr" id="prf-say" aria-live="polite" aria-atomic="true"></p>
 
       <div class="prf-tool" id="prf-tool" hidden>
-        <div class="prf-pane">
-          <section class="prf-block prf-o1" aria-labelledby="prf-where-h">
-            <h2 id="prf-where-h">Your grid</h2>
+        <div class="prf-pane prf-pane-l">
+          <section class="prf-card prf-block prf-o1" aria-labelledby="prf-where-h">
+            <h2 class="prf-grid-h" id="prf-where-h">Your grid</h2>
             <div class="prf-where">
               <div class="prf-map" id="prf-map"></div>
               <p class="prf-where-t" id="prf-where-t"></p>
             </div>
-            <div class="prf-co-wrap" id="prf-co-wrap" hidden>
-              <label for="prf-co">County the land is in. This grid touches <span id="prf-co-n"></span>, and each has its own dollar values and limits.</label>
-              <select id="prf-co"></select>
-              <p class="prf-hint" id="prf-co-how"></p>
+            <div class="prf-co-wrap field" id="prf-co-wrap" hidden>
+              <label for="prf-co">County the land is in</label>
+              <select id="prf-co" aria-describedby="prf-co-why prf-co-how"></select>
+              <p class="prf-hint"><span id="prf-co-why">This grid touches <span id="prf-co-n"></span> counties, and each has its own dollar values and limits.</span> <span id="prf-co-how"></span></p>
             </div>
+            <details class="prf-about"><summary>Grid edges, size and the official map</summary><p class="prf-fine" id="prf-where-f"></p></details>
           </section>
 
-          <section class="prf-block prf-o3" aria-labelledby="prf-setup-h">
-            <div class="prf-tabs" id="prf-tabs" hidden>
-              <button type="button" id="prf-tab-a" aria-pressed="true">Setup A</button>
-              <button type="button" id="prf-tab-b" aria-pressed="false">Setup B</button>
-              <button type="button" class="prf-link" id="prf-dropb">Remove B</button>
+          <section class="prf-card prf-block prf-o3" id="prf-setup" aria-labelledby="prf-setup-h">
+            <h2 class="prf-step-h"><span class="prf-n" aria-hidden="true">2</span><span id="prf-setup-h">Describe your pasture</span></h2>
+            <button type="button" class="prf-setup-sum" id="prf-setup-sum" aria-expanded="false" aria-controls="prf-setup-body"><span class="prf-setup-sum-t" id="prf-setup-sum-t"></span><span class="prf-setup-sum-a">Change</span></button>
+            <div class="prf-setup-body" id="prf-setup-body">
+            <div class="prf-tabs" id="prf-tabs" role="group" aria-label="Which setup the controls change" hidden>
+              <button type="button" class="chip" id="prf-tab-a" aria-pressed="true">Setup A</button>
+              <button type="button" class="chip" id="prf-tab-b" aria-pressed="false">Setup B</button>
+              <button type="button" class="prf-link" id="prf-dropb">Remove setup B</button>
             </div>
-            <h2 id="prf-setup-h">Your policy</h2>
-            <p class="prf-hint" id="prf-both" hidden>Use of the land, acres and share are the same for both setups. Coverage, productivity factor and months are set for each.</p>
+            <p class="prf-hint prf-both" id="prf-both" hidden>Use of the land, acres and share are the same for both setups. Coverage, productivity factor and months are set for each.</p>
             <div class="prf-fields">
-              <div class="prf-f prf-f-wide"><label for="prf-use">Use of the land</label><select id="prf-use"></select><p class="prf-hint" id="prf-use-note"></p></div>
-              <div class="prf-f"><label for="prf-acres">Acres to insure</label><input id="prf-acres" type="number" inputmode="numeric" min="1" step="1" value="100"></div>
-              <div class="prf-f"><label for="prf-share">Your share of the hay or livestock, %</label><input id="prf-share" type="number" inputmode="numeric" min="1" max="100" step="1" value="100"><p class="prf-hint">100 unless a landlord or partner takes part.</p></div>
-              <div class="prf-f prf-f-wide"><span class="prf-lab" id="prf-cov-l">Coverage level</span>
-                <div class="prf-cov" id="prf-cov" role="group" aria-labelledby="prf-cov-l">{COV}</div>
-                <p class="prf-hint">It pays when two months of precipitation in the grid come in under this percent of normal. 90% pays soonest and costs most.</p></div>
-              <div class="prf-f prf-f-wide"><label for="prf-pf-n">Productivity factor, 60 to 150</label>
-                <div class="prf-pf"><input id="prf-pf" type="range" min="60" max="150" step="1" value="100" aria-label="Productivity factor"><input id="prf-pf-n" type="number" inputmode="numeric" min="60" max="150" step="1" value="100"></div>
-                <p class="prf-hint" id="prf-pf-hint"></p></div>
+              <div class="prf-f prf-f-wide field"><label for="prf-use">Use of the land</label><select id="prf-use" aria-describedby="prf-use-note"></select><p class="prf-hint" id="prf-use-note"></p></div>
+              <div class="prf-f field"><label for="prf-acres">Acres to insure</label><input id="prf-acres" type="number" inputmode="numeric" min="1" step="1" value="100"></div>
+              <div class="prf-f field"><label for="prf-share">Your share, %</label><input id="prf-share" type="number" inputmode="numeric" min="1" max="100" step="1" value="100" aria-describedby="prf-share-hint"></div>
+              <p class="prf-hint prf-f-wide prf-share-hint" id="prf-share-hint">Share of the hay or livestock: 100 unless a landlord or partner takes part.</p>
+              <fieldset class="prf-f prf-f-wide"><legend class="prf-lab">Coverage level</legend>
+                <div class="prf-cov" id="prf-cov">{COV}</div>
+                <p class="prf-hint">It pays when two months of precipitation in the grid come in under this percent of normal. 90% pays soonest and costs most.</p></fieldset>
             </div>
-          </section>
 
-          <section class="prf-block prf-o4" aria-labelledby="prf-iv-h">
-            <h2 id="prf-iv-h">Months to insure</h2>
-            <table class="prf-iv">
-              <thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th></tr></thead>
-              <tbody id="prf-iv-body"></tbody>
-            </table>
-            <div class="prf-iv-foot">
-              <span class="prf-iv-total" id="prf-iv-total" role="status" aria-live="polite"></span>
-              <button type="button" class="prf-link" id="prf-even">Split evenly</button>
-              <button type="button" class="prf-link" id="prf-clear">Clear</button>
+            <div class="prf-ivwrap prf-o4">
+              <div class="prf-iv-head"><h3 id="prf-iv-h">Months to insure</h3><span class="prf-iv-total" id="prf-iv-total" role="status" aria-live="polite"></span></div>
+              <table class="prf-iv" aria-labelledby="prf-iv-h">
+                <thead><tr><th scope="col">Months</th><th scope="col">% of the policy</th></tr></thead>
+                <tbody id="prf-iv-body"></tbody>
+              </table>
+              <div class="prf-iv-foot">
+                <button type="button" class="prf-link" id="prf-even">Split evenly</button>
+                <button type="button" class="prf-link" id="prf-clear">Clear</button>
+              </div>
+              <p class="prf-hint">At least two pairs of months, no month in two pairs, and the parts add to 100%. The page opens on April to May and June to July as an example, not a recommendation. Insure the months when a dry spell costs you grass or hay.</p>
             </div>
-            <p class="prf-hint">At least two pairs of months, no month in two pairs, and the parts add to 100%. The page opens on April to May and June to July as an example, not a recommendation. Insure the months when a dry spell costs you grass or hay.</p>
-            <button type="button" class="prf-btn prf-addb" id="prf-addb">Compare with a second setup</button>
+
+            <section class="prf-outlook" id="prf-outlook" aria-labelledby="prf-outlook-h" hidden>
+              <h3 id="prf-outlook-h">Long-range outlook</h3>
+              <div class="prf-outlook-body" id="prf-outlook-body"></div>
+            </section>
+
+            <details class="prf-more" id="prf-more">
+              <summary><span>Productivity factor</span> <span class="prf-more-v" id="prf-pf-sum"></span></summary>
+              <fieldset class="prf-f"><legend class="prf-sr">Productivity factor, 60 to 150</legend>
+                <div class="prf-pf"><input id="prf-pf" type="range" min="60" max="150" step="1" value="100" aria-label="Productivity factor, slider"><label class="prf-sr" for="prf-pf-n">Productivity factor, 60 to 150</label><input id="prf-pf-n" type="number" inputmode="numeric" min="60" max="150" step="1" value="100" aria-describedby="prf-pf-hint"></div>
+                <p class="prf-hint" id="prf-pf-hint"></p></fieldset>
+            </details>
+            <button type="button" class="btn btn-secondary prf-addb" id="prf-addb">Compare with a second setup</button>
+            </div>
           </section>
         </div>
 
-        <div class="prf-pane">
-          <section class="prf-block prf-o2" aria-labelledby="prf-answer-h">
-            <h2 id="prf-answer-h">What it costs and what it would have paid</h2>
+        <div class="prf-pane prf-pane-r">
+          <section class="prf-card prf-block prf-o2" aria-labelledby="prf-answer-h">
+            <h2 class="prf-step-h"><span class="prf-n" aria-hidden="true">3</span><span id="prf-answer-h">What it costs and what it would have paid</span></h2>
             <p class="prf-policy" id="prf-printsum"></p>
-            <div class="prf-win" role="group" aria-label="Years counted"><span class="prf-lab">Years counted</span>{WIN}</div>
-            <div class="prf-answer" id="prf-answer" role="status" aria-live="polite"></div>
-            <div class="prf-acts" id="prf-acts" hidden>
-              <button type="button" class="prf-btn" id="prf-share-b">Copy a link to this</button>
-              <button type="button" class="prf-btn" id="prf-print">Print</button>
-              <button type="button" class="prf-btn" id="prf-csv">Download every year (CSV)</button>
-            </div>
-          </section>
-
-          <section class="prf-block prf-o5" aria-label="Year by year">
+            <div class="prf-answer" id="prf-answer"></div>
+            <fieldset class="prf-win"><legend class="prf-lab">Years counted</legend><div class="prf-win-b">{WIN}</div></fieldset>
             <figure class="prf-fig" id="prf-chart-fig" hidden>
-              <figcaption>What it would have paid, year by year</figcaption>
+              <figcaption id="prf-chart-cap">What it would have paid, year by year</figcaption>
               <div class="prf-chart" id="prf-chart"></div>
-              <div class="prf-readrow"><button type="button" class="prf-step" data-yr="-1" aria-label="Year before">&lsaquo;</button><p class="prf-read" id="prf-read" aria-live="polite"></p><button type="button" class="prf-step" data-yr="1" aria-label="Year after">&rsaquo;</button></div>
               <div class="prf-legend" id="prf-legend"></div>
+              <div class="prf-readrow"><button type="button" class="prf-step" data-yr="-1" aria-label="Year before">&lsaquo;</button><p class="prf-read" id="prf-read" aria-live="polite"></p><button type="button" class="prf-step" data-yr="1" aria-label="Year after">&rsaquo;</button></div>
             </figure>
-            <div id="prf-cmp-wrap" hidden><h3>Setup A against setup B</h3><div id="prf-cmp"></div></div>
+            <div class="prf-acts" id="prf-acts" hidden>
+              <button type="button" class="btn btn-secondary" id="prf-share-b">Copy a link to this</button>
+              <button type="button" class="btn btn-secondary" id="prf-print">Print</button>
+              <button type="button" class="btn btn-secondary" id="prf-csv">Download every year (CSV)</button>
+            </div>
+            <div class="prf-notes" id="prf-notes"></div>
+            <div class="prf-yrs-p" id="prf-yrs-p"></div>
           </section>
 
-          <div class="prf-o6">
-          <details class="prf-d" id="prf-years-d"><summary>Every year, in numbers</summary><div id="prf-years"></div></details>
-          <details class="prf-d" id="prf-pol-d"><summary>The policy, interval by interval</summary><div id="prf-pol"></div></details>
-          <details class="prf-d" id="prf-rec-d"><summary>Each pair of months on its own</summary><div><div id="prf-rec"></div>
+          <section class="prf-block prf-o5" id="prf-cmp-wrap" aria-labelledby="prf-cmp-h" hidden><h3 id="prf-cmp-h">Setup A against setup B</h3><div id="prf-cmp"></div></section>
+
+          <section class="prf-o6" aria-labelledby="prf-det-h">
+          <h2 class="prf-step-h"><span class="prf-n" aria-hidden="true">4</span><span id="prf-det-h">The details</span></h2>
+          <details class="prf-d" id="prf-years-d"><summary><span class="prf-d-t">Every year, in numbers<span class="prf-d-x">What it would have paid each year, interval by interval</span></span></summary><div id="prf-years"></div></details>
+          <section id="prf-optimize" class="prf-block" aria-labelledby="prf-opt-h"><h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">This is what the history and current outlook point to, not advice. RMA rates already price most of this in.</p><div data-opt-body></div></section>
+          <details class="prf-d" id="prf-pol-d"><summary><span class="prf-d-t">The policy, interval by interval<span class="prf-d-x">Protection, premium and USDA&rsquo;s share on each line, as an insurer lists them</span></span></summary><div id="prf-pol"></div></details>
+          <details class="prf-d" id="prf-rec-d"><summary><span class="prf-d-t">Each pair of months on its own<span class="prf-d-x">Normal precipitation, the trigger and how often each interval paid</span></span></summary><div><div id="prf-rec"></div>
             <p class="prf-fine">RMA&rsquo;s handbook: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. A study of two Nebraska sites found PRF lowered income risk when growing-season months were insured, and that winter months raised it (<a href="https://doi.org/10.1108/AFR-10-2017-0097" rel="noopener">Westerhold and others, 2018</a>).</p></div></details>
-          <details class="prf-d" id="prf-lad-d"><summary>The five coverage levels side by side</summary><div id="prf-lad"></div></details>
-          <details class="prf-d" id="prf-idx-d"><summary>The grid&rsquo;s index, all eleven intervals, every year</summary><div id="prf-idx"></div></details>
-          <details class="prf-d" id="prf-nb-d"><summary>The grids next door, same policy</summary><div id="prf-nb"></div></details>
-          </div>
+          <details class="prf-d" id="prf-lad-d"><summary><span class="prf-d-t">The five coverage levels side by side<span class="prf-d-x">The same acres and months at 70% to 90%</span></span></summary><div id="prf-lad"></div></details>
+          <details class="prf-d" id="prf-idx-d"><summary><span class="prf-d-t">The grid&rsquo;s index, all eleven intervals, every year<span class="prf-d-x">Precipitation as a percent of normal, with a CSV</span></span></summary><div id="prf-idx"></div></details>
+          <details class="prf-d" id="prf-nb-d"><summary><span class="prf-d-t">The grids next door, same policy<span class="prf-d-x">The eight grids around this one, north up</span></span></summary><div id="prf-nb"></div></details>
+          </section>
     <p class="prf-printfoot">Crop year {mk("crop_year")}. Sales closing date {mk("sales_long")}; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). The native sod rule and the administrative fee are not included. PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Every year is priced at {mk("crop_year")} rates on USDA&rsquo;s {mk("crop_year")} record: it is not what PRF paid then, and not a forecast. Your insurer&rsquo;s quote is what counts. agsist.com/prf</p>
         </div>
       </div>
@@ -192,10 +215,10 @@ HTML = f"""<!DOCTYPE html>
 
     <h2 id="cost">USDA&rsquo;s share of the premium</h2>
     <p>USDA pays {mk("subsidy_sentence")}. You pay the rest, plus an administrative fee per crop and county that this page leaves out.</p>
-    <table class="prf-sub-t"><thead><tr><th scope="col">Coverage level</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{mk("subsidy_rows")}</tbody></table>
+    <table class="prf-sub-t"><caption class="prf-sr">USDA&rsquo;s share of the premium by coverage level</caption><thead><tr><th scope="col">Coverage level</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{mk("subsidy_rows")}</tbody></table>
     <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning and veteran farmers and ranchers get a larger share. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
 
-    <h2 id="payback">Does PRF pay back more than it costs?</h2>
+    <h2 id="payback">How payouts compare with the premium</h2>
     <p>On the full premium, no grid, month or coverage level stands out. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
     <p>You do not pay the full premium: USDA pays 51% to 59% of it, if you qualify. Any average over the record is made of a few big years and many small or empty ones, and it says nothing about next year.</p>
     <p>The months with the highest rates bring the most dollars of USDA&rsquo;s share per $100 of protection. On {mk("dry_two")} grids, the interval that comes out furthest ahead of your share is one of the grid&rsquo;s two driest. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>
@@ -232,7 +255,7 @@ HTML = f"""<!DOCTYPE html>
 
     <h2 id="method">How this page figures it</h2>
     <p>The inputs are USDA&rsquo;s own, copied unchanged: premium rates, county base values, interval limits, subsidy rates and dates from the {mk("crop_year")} Actuarial Data Master, and each grid&rsquo;s index history from the service behind RMA&rsquo;s PRF tool. The arithmetic is the policy&rsquo;s:</p>
-    <pre class="prf-math">protection per acre  = county base value x coverage level
+    <pre class="prf-math" tabindex="0" aria-label="The arithmetic">protection per acre  = county base value x coverage level
                        x productivity factor
 interval protection  = protection per acre x acres x share
                        x part of the policy in the interval
@@ -284,7 +307,10 @@ payment              = interval protection
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
-  <script src="/components/prf.js?v=2" defer></script>
+  <script src="/components/prf.js?v=4" defer></script>
+  <script src="/components/prf-outlook.js?v=2" defer></script>
+  <script src="/components/prf-optimize.js?v=2" defer></script>
+  <script src="/components/prf-optimize-ui.js?v=3" defer></script>
 </body>
 </html>
 """
