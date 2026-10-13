@@ -1,0 +1,681 @@
+/* components/prf-optimize.js: "what the numbers would pick" for a PRF grid
+   (window.AgPrfOptimize). Used by components/prf-optimize-ui.js on /prf.
+
+   WHAT IT DOES
+     For one grid, one county's interval limits and one coverage level, it
+     finds the split of the policy across the eleven two-month intervals that
+     scores best on the grid's own index record, 1951 to the last complete
+     year, at 2027 rates and the producer's share of the premium. Then it
+     checks itself: a walk-forward test picks each year from 1981 on using only
+     the years before it, scores the pick on that year, and compares it with
+     an even spread, the page's default and a "two driest months" rule.
+
+   THE TWO SCORES (say which one is shown)
+     'net'  expected payment minus producer premium, per $1 of protection,
+            over every year on record.
+     'dry'  the same, over only the driest fifth of years by the grid's whole-
+            year precipitation (the six intervals that share no month,
+            weighted by their normal inches). A downside measure: what the
+            policy would have done in the years a rancher most needs it.
+
+   TWO WAYS TO ESTIMATE AN INTERVAL'S AVERAGE PAYMENT (estimator)
+     'history'  the grid's own record for that interval. This is the naive
+                machine pick, and the walk-forward test found it does worse
+                than an even spread out of sample: seventy years of one
+                interval are too few to tell a dry interval from a lucky one.
+     'priced'   RMA's rate for the interval times the grid's payback on its
+                rates, pooled over all its intervals, tilted by the outlook.
+                The default for 'net', and the one that held up. It leans
+                to the months RMA charges most for, because USDA pays a fixed
+                share of whatever premium is owed.
+     'dry' always uses 'history': a dry-year average has no rate behind it.
+
+   WHY THE SEARCH IS EXACT
+     Both scores are linear in the split: score = sum of pct_i x value_i, where
+     value_i = average payment factor of interval i (over the chosen years)
+     minus rate_i x (1 - subsidy). So for any set of intervals the best split
+     gives each its minimum and pours what is left into the highest values up
+     to their caps, in whole steps (greedy fill of a box with a fixed sum,
+     integral when the limits are whole steps). The search runs that fill
+     over every set of intervals the rules allow (at least two, none sharing a
+     month, each offered and priced): at most 232 sets for eleven intervals.
+     Dollar rounding per unit is left out; it moves a figure by cents.
+
+   NO LOOK-AHEAD IN THE TEST, AND WHAT IT CANNOT AVOID
+     * The pick for year Y sees only years before Y (walkForward's onTrain
+       hook lets the test prove it), and only the ENSO reading of the fall
+       before Y (Aug-Oct of Y-1), which was published before the Dec 1 sales
+       closing.
+     * It cannot avoid two things, and the panel says so: every year is
+       scored at 2027 rates, which RMA set with the whole record in view (past
+       rates are not in the data), and USDA's index is percent of a normal
+       computed over 1951 to 2025. Both apply equally to every strategy.
+     * NOAA's seasonal outlooks cannot be tested: no archive of past outlooks
+       is in the data. The outlook tilt is shown, never scored.
+
+   THE ENSO TABLE
+     ONI_ASO below: the Nino 3.4 sea surface anomaly averaged over August,
+     September and October of each year, in degrees C. 1950 to 2021 are the
+     September (ASO-centred) three-month values of the Nino 3.4 series shipped
+     with the Pyleoclim package (LinkedEarth/Pyleoclim_util,
+     pyleoclim/data/oni.csv). That series starts in 1871, so it is a long
+     reconstruction, not CPC's ERSSTv5 ONI, and values can differ from CPC's
+     by a tenth or two. 2022 to 2024 are CPC's ONI (v5) for ASO as
+     transcribed: -1.0, 1.5, -0.2; the phase of those three is not in doubt.
+     CPC's page could not be reached from the machine that built this
+     (www.cpc.ncep.noaa.gov refused). scripts/check_prf_oni.py compares this
+     table with CPC's file and lists every phase that differs; run it where
+     NOAA is reachable before trusting a phase call near 0.5.
+     Phases: El Nino at +0.5 or above, La Nina at -0.5 or below, else neutral.
+
+   No DOM. Loads in a browser after prf-math.js, or under node. */
+(function (root) {
+  'use strict';
+  var M = root.AgPrfMath || (typeof require === 'function' ? require('./prf-math.js') : null);
+  var N = 11;
+  var LABELS = M ? M.LABELS : ['Jan-Feb', 'Feb-Mar', 'Mar-Apr', 'Apr-May', 'May-Jun', 'Jun-Jul',
+                               'Jul-Aug', 'Aug-Sep', 'Sep-Oct', 'Oct-Nov', 'Nov-Dec'];
+  /* the six intervals that share no month and cover the whole year */
+  var YEAR_SET = [0, 2, 4, 6, 8, 10];
+
+  var ONI_FIRST = 1950;
+  var ONI_ASO = [
+    /* 1950 */ -0.26, 0.99, 0.15, 0.78, -0.90, -1.09, -0.46, 1.33, 0.39, -0.09,
+    /* 1960 */ 0.27, -0.30, -0.11, 1.22, -0.76, 1.85, -0.05, -0.30, 0.45, 0.79,
+    /* 1970 */ -0.77, -0.82, 1.58, -1.45, -0.41, -1.37, 0.62, 0.57, -0.42, 0.33,
+    /* 1980 */ -0.07, -0.16, 1.58, -0.45, -0.24, -0.40, 0.71, 1.65, -1.19, -0.24,
+    /* 1990 */ 0.39, 0.62, -0.13, 0.15, 0.55, -0.81, -0.35, 2.14, -1.31, -1.16,
+    /* 2000 */ -0.55, -0.19, 1.01, 0.26, 0.70, -0.11, 0.53, -1.08, -0.25, 0.71,
+    /* 2010 */ -1.55, -0.83, 0.36, -0.26, 0.22, 2.16, -0.62, -0.38, 0.51, 0.20,
+    /* 2020 */ -0.88, -0.68, -1.0, 1.5, -0.2
+  ];
+  var ONI_SOURCE = {
+    what: 'Nino 3.4 sea surface temperature anomaly, August to October, degrees C',
+    years: '1950-2021: Pyleoclim package Nino 3.4 series (github.com/LinkedEarth/Pyleoclim_util, pyleoclim/data/oni.csv), September-centred three-month value. 2022-2024: NOAA CPC ONI v5, ASO.',
+    cpc: 'https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt',
+    thresholds: 'El Nino at +0.5 or above, La Nina at -0.5 or below'
+  };
+  var PHASE_NAME = { 'el-nino': 'El Niño', 'la-nina': 'La Niña', neutral: 'neutral' };
+
+  function oniASO(year) {
+    var k = year - ONI_FIRST;
+    return k >= 0 && k < ONI_ASO.length ? ONI_ASO[k] : null;
+  }
+  function ensoPhase(v) {
+    if (v == null || !isFinite(v)) return null;
+    return v >= 0.5 - 1e-9 ? 'el-nino' : v <= -0.5 + 1e-9 ? 'la-nina' : 'neutral';
+  }
+  /* The ENSO reading a buyer had for policy year Y: Aug-Oct of Y-1, out in
+     early November, before the Dec 1 sales closing. Never year Y itself. */
+  function phaseKnownFor(policyYear) { return ensoPhase(oniASO(policyYear - 1)); }
+  function normPhase(p) {
+    if (p == null) return null;
+    var s = String(p).toLowerCase().replace(/[^a-z]/g, '');
+    if (s === 'elnino' || s === 'warm') return 'el-nino';
+    if (s === 'lanina' || s === 'cold' || s === 'cool') return 'la-nina';
+    if (s === 'neutral') return 'neutral';
+    return null;
+  }
+
+  /* ------------------------------------------------------------ preparing a grid */
+  /* input: {
+       index:   { year: [11 fractions of normal, or null] }   (complete years)
+       rates:   [11] premium rates at the chosen coverage, null where none
+       coverage: 70..90
+       subsidy: fraction USDA pays at that coverage (0.51)
+       min, max: [11] whole-percent limits for the county, null where not offered
+       valid:   [11] booleans, offered in the county (optional; min/max decide)
+       avgMm:   [11] normal precipitation, any unit (for the dry-year measure)
+       lastComplete: last year that may be counted (optional)
+     } */
+  function prepare(input) {
+    var cov = +input.coverage, T = cov / 100, sub = +input.subsidy;
+    var allowed = [], cost = [], lo = [], hi = [];
+    for (var i = 0; i < N; i++) {
+      var r = input.rates ? input.rates[i] : null;
+      var mn = input.min ? input.min[i] : null, mx = input.max ? input.max[i] : null;
+      var ok = r != null && isFinite(r) && mn != null && mx != null && mx >= mn && (!input.valid || input.valid[i] !== false);
+      allowed.push(ok);
+      cost.push(ok ? r * (1 - sub) : null);
+      lo.push(ok ? +mn : null); hi.push(ok ? +mx : null);
+    }
+    var years = Object.keys(input.index || {}).map(Number).filter(function (y) {
+      if (input.lastComplete != null && y > input.lastComplete) return false;
+      var row = input.index[y];
+      if (!row) return false;
+      for (var j = 0; j < N; j++) if (allowed[j] && row[j] == null) return false;
+      return true;
+    }).sort(function (a, b) { return a - b; });
+    var P = [], X = [], A = [];
+    var mm = input.avgMm || [], mmOk = YEAR_SET.every(function (j) { return mm[j] != null && mm[j] > 0; });
+    years.forEach(function (y) {
+      var row = input.index[y], p = new Array(N), x = new Array(N);
+      for (var j = 0; j < N; j++) {
+        var v = row[j];
+        x[j] = v == null ? null : v;
+        p[j] = v == null ? null : (v < T - 1e-12 ? (T - v) / T : 0);
+      }
+      var num = 0, den = 0, have = true;
+      YEAR_SET.forEach(function (j) {
+        if (row[j] == null) { have = false; return; }
+        var w = mmOk ? mm[j] : 1; num += w * row[j]; den += w;
+      });
+      P.push(p); X.push(x); A.push(have ? num / den : null);
+    });
+    return { years: years, P: P, X: X, annual: A, allowed: allowed, cost: cost, lo: lo, hi: hi,
+             coverage: cov, subsidy: sub, rates: input.rates, avgMm: mm };
+  }
+
+  /* ------------------------------------------------------------ small statistics */
+  function quantile(sorted, q) {
+    var n = sorted.length; if (!n) return null;
+    var h = (n - 1) * q, a = Math.floor(h), b = Math.min(n - 1, a + 1);
+    return sorted[a] + (h - a) * (sorted[b] - sorted[a]);
+  }
+  /* exact two-sided sign test: the odds that a fair coin gives a split at
+     least this lopsided */
+  function signTest(wins, losses) {
+    var n = wins + losses; if (!n) return 1;
+    var k = Math.min(wins, losses), p = 0, c = 1;
+    for (var i = 0; i <= n; i++) {
+      if (i > 0) c = c * (n - i + 1) / i;
+      if (i <= k) p += c;
+    }
+    p = 2 * p / Math.pow(2, n);
+    return Math.min(1, p);
+  }
+
+  /* Odds that pure luck gives an average difference this far from zero: flip
+     the sign of each year's difference at random (2,000 times, fixed seed, so
+     the answer is the same every run) and count how often the average comes
+     out at least as far from zero. Two-sided. Fit for skewed payoffs, where
+     a sign test is not: a policy can be behind in most years and ahead on
+     average. */
+  function flipTest(diffs, draws) {
+    var n = diffs.length; if (!n) return 1;
+    draws = draws || 2000;
+    var obs = 0, i; for (i = 0; i < n; i++) obs += diffs[i];
+    obs = Math.abs(obs);
+    var seed = 20261012, hit = 0;
+    for (var d = 0; d < draws; d++) {
+      var s = 0;
+      for (i = 0; i < n; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        s += (seed & 0x80000000) ? -diffs[i] : diffs[i];
+      }
+      if (Math.abs(s) >= obs - 1e-12) hit++;
+    }
+    return (hit + 1) / (draws + 1);
+  }
+
+  /* ------------------------------------------------------------ weights */
+  /* Per year and interval, how much a past year counts.
+       enso:   the phase this year ('el-nino' | 'la-nina' | 'neutral'): years
+               whose fall phase matched count (1 + ensoBoost) times.
+       outlook: [11] of { below, near, above } probabilities, or null per
+               interval: each past year counts 3 x the probability of the
+               tercile it fell in (terciles of that interval over the years in
+               use), so a 40/33/27 lean makes dry years count 1.2 and wet 0.81.
+     Returns W[k][i], 0 for years not in use. */
+  function weights(G, use, opts) {
+    opts = opts || {};
+    var W = [], boost = opts.ensoBoost == null ? 1 : +opts.ensoBoost, phase = normPhase(opts.enso);
+    var cuts = null;
+    if (opts.outlook) {
+      cuts = [];
+      for (var i = 0; i < N; i++) {
+        var o = opts.outlook[i];
+        if (!o) { cuts.push(null); continue; }
+        var v = [];
+        for (var k = 0; k < G.years.length; k++) if (use[k] && G.X[k][i] != null) v.push(G.X[k][i]);
+        v.sort(function (a, b) { return a - b; });
+        cuts.push(v.length >= 9 ? [quantile(v, 1 / 3), quantile(v, 2 / 3)] : null);
+      }
+    }
+    for (var k2 = 0; k2 < G.years.length; k2++) {
+      var row = new Array(N);
+      var base = use[k2] ? 1 : 0;
+      if (base && phase && phaseKnownFor(G.years[k2]) === phase) base *= 1 + boost;
+      for (var j = 0; j < N; j++) {
+        var w = base;
+        if (w && cuts && cuts[j]) {
+          var x = G.X[k2][j], o2 = opts.outlook[j];
+          var p = x <= cuts[j][0] ? o2.below : x <= cuts[j][1] ? o2.near : o2.above;
+          w *= 3 * (+p || 0);
+        }
+        row[j] = w;
+      }
+      W.push(row);
+    }
+    return W;
+  }
+
+  /* The years a score averages over. 'net': all in use. 'dry': the driest
+     fifth of those by whole-year precipitation (ties in, so never fewer). */
+  function scoreYears(G, use, objective) {
+    var out = use.slice();
+    if (objective !== 'dry') return { mask: out, cut: null };
+    var a = [];
+    for (var k = 0; k < G.years.length; k++) if (use[k] && G.annual[k] != null) a.push(G.annual[k]);
+    a.sort(function (x, y) { return x - y; });
+    var cut = quantile(a, 0.2);
+    for (var k2 = 0; k2 < G.years.length; k2++) out[k2] = !!(use[k2] && G.annual[k2] != null && G.annual[k2] <= cut + 1e-12);
+    return { mask: out, cut: cut };
+  }
+
+  /* value_i: weighted average payment factor over the scored years, less the
+     producer's premium rate. Per $1 of protection. */
+  function values(G, W, mask) {
+    var v = new Array(N);
+    for (var i = 0; i < N; i++) {
+      if (!G.allowed[i]) { v[i] = null; continue; }
+      var s = 0, w = 0;
+      for (var k = 0; k < G.years.length; k++) {
+        if (!mask[k]) continue;
+        var wk = W[k][i]; if (!wk) continue;
+        s += wk * G.P[k][i]; w += wk;
+      }
+      v[i] = w > 0 ? s / w - G.cost[i] : null;
+    }
+    return v;
+  }
+
+  /* value_i the 'priced' way: RMA's rate for the interval times the grid's
+     own payback on its rates (pooled over every offered interval, so seventy
+     years of eleven intervals inform one number, not seventy years each),
+     times a forecast tilt for the interval: its weighted average payment
+     over its plain average (1 with no forecast). Less the producer premium.
+     Why: the grid's per-interval history did not predict the next year in
+     the walk-forward test (scripts/prf_opt_backtest.mjs); RMA's rate did
+     better, because the subsidy is a fixed share of whatever premium is owed
+     and RMA prices each interval to pay back about the same share. */
+  function pricedValues(G, W, mask) {
+    var num = 0, den = 0, v = new Array(N), i, k;
+    for (k = 0; k < G.years.length; k++) {
+      if (!mask[k]) continue;
+      for (i = 0; i < N; i++) if (G.allowed[i]) { num += G.P[k][i]; den += G.rates[i]; }
+    }
+    var payback = den > 0 ? num / den : null;
+    for (i = 0; i < N; i++) {
+      if (!G.allowed[i] || payback == null) { v[i] = null; continue; }
+      var s = 0, w = 0, plain = 0, n = 0;
+      for (k = 0; k < G.years.length; k++) {
+        if (!mask[k]) continue;
+        plain += G.P[k][i]; n++;
+        var wk = W[k][i]; if (wk) { s += wk * G.P[k][i]; w += wk; }
+      }
+      var tilt = plain > 0 && w > 0 ? (s / w) / (plain / n) : 1;
+      v[i] = G.rates[i] * payback * tilt - G.cost[i];
+    }
+    v.payback = payback;
+    return v;
+  }
+
+  /* ------------------------------------------------------------ the search */
+  /* every set of at least two intervals, no two sharing a month, all allowed */
+  var supportCache = {};
+  function supports(allowed) {
+    var key = allowed.map(function (b) { return b ? 1 : 0; }).join('');
+    if (supportCache[key]) return supportCache[key];
+    var out = [];
+    (function walk(i, cur) {
+      if (i >= N) { if (cur.length >= 2) out.push(cur.slice()); return; }
+      walk(i + 1, cur);
+      if (allowed[i] && !(cur.length && cur[cur.length - 1] === i - 1)) { cur.push(i); walk(i + 1, cur); cur.pop(); }
+    })(0, []);
+    supportCache[key] = out;
+    return out;
+  }
+
+  /* The best split for these values. step: whole percents per notch (1).
+     Ties go to the first found, in a fixed order, so the answer never depends
+     on anything but the inputs. */
+  function solve(G, v, step) {
+    step = step || 1;
+    var best = null, sets = supports(G.allowed.map(function (a, i) { return a && v[i] != null; }));
+    var units = Math.round(100 / step);
+    for (var s = 0; s < sets.length; s++) {
+      var S = sets[s], lo = [], hi = [], sumLo = 0, sumHi = 0, ok = true;
+      for (var t = 0; t < S.length; t++) {
+        var a = Math.ceil(G.lo[S[t]] / step - 1e-9), b = Math.floor(G.hi[S[t]] / step + 1e-9);
+        if (a < 1) a = 1;
+        if (b < a) { ok = false; break; }
+        lo.push(a); hi.push(b); sumLo += a; sumHi += b;
+      }
+      if (!ok || sumLo > units || sumHi < units) continue;
+      var alloc = lo.slice(), left = units - sumLo;
+      var order = S.map(function (_, q) { return q; }).sort(function (p, q) { return v[S[q]] - v[S[p]] || S[p] - S[q]; });
+      for (var o = 0; o < order.length && left > 0; o++) {
+        var q = order[o], room = hi[q] - alloc[q], put = Math.min(room, left);
+        alloc[q] += put; left -= put;
+      }
+      var score = 0, split = new Array(N);
+      for (var z = 0; z < N; z++) split[z] = 0;
+      for (var t2 = 0; t2 < S.length; t2++) { split[S[t2]] = alloc[t2] * step; score += alloc[t2] * step / 100 * v[S[t2]]; }
+      if (!best || score > best.score + 1e-12) best = { split: split, score: score };
+    }
+    return best;
+  }
+
+  /* ------------------------------------------------------------ fixed rules to compare against */
+  function fill(G, on) {
+    if (!M) return null;
+    var ok = on.filter(Boolean).length >= 2 && on.every(function (b, i) { return !b || G.allowed[i]; });
+    if (!ok) return null;
+    var sp = M.evenSplit(on, G.lo, G.hi);
+    if (!sp) return null;
+    var chk = M.checkSplit(sp, G.lo, G.hi, G.allowed);
+    return chk.ok && chk.used >= 2 ? sp : null;
+  }
+  /* An even spread over the six intervals that share no month (as even as the
+     county's caps allow; Jan-Feb's 25% cap leaves 15/17/17/17/17/17), over
+     the allowed ones of them; failing that, the other five. */
+  function evenSpread(G) {
+    var on = [], i;
+    for (i = 0; i < N; i++) on.push(i % 2 === 0 && G.allowed[i]);
+    var sp = fill(G, on);
+    if (sp) return sp;
+    on = []; for (i = 0; i < N; i++) on.push(i % 2 === 1 && G.allowed[i]);
+    return fill(G, on);
+  }
+  /* The page's example: Apr-May and Jun-Jul, half and half. */
+  function pageDefault(G) {
+    var on = []; for (var i = 0; i < N; i++) on.push(i === 3 || i === 5);
+    return fill(G, on);
+  }
+  /* "Insure the two driest months": the two allowed intervals, sharing no
+     month, with the least normal precipitation between them, half and half
+     (as near as the caps allow). A pair whose caps cannot reach 100 (Jan-Feb
+     at 25 with a 70 cap beside it) is passed over for the next driest. */
+  function driestTwo(G) {
+    var mm = G.avgMm || [], pairs = [];
+    for (var a = 0; a < N; a++) for (var b = a + 2; b < N; b++) {
+      if (!G.allowed[a] || !G.allowed[b] || mm[a] == null || mm[b] == null) continue;
+      pairs.push({ a: a, b: b, s: mm[a] + mm[b] });
+    }
+    pairs.sort(function (x, y) { return x.s - y.s || x.a - y.a || x.b - y.b; });
+    for (var k = 0; k < pairs.length; k++) {
+      var on = []; for (var i = 0; i < N; i++) on.push(i === pairs[k].a || i === pairs[k].b);
+      var sp = fill(G, on);
+      if (sp) return sp;
+    }
+    return null;
+  }
+
+  /* ------------------------------------------------------------ scoring */
+  function netIn(G, split, k) {
+    if (!split) return null;
+    var s = 0;
+    for (var i = 0; i < N; i++) if (split[i]) s += split[i] / 100 * (G.P[k][i] - G.cost[i]);
+    return s;
+  }
+  function premiumOf(G, split) {
+    var s = 0; for (var i = 0; i < N; i++) if (split[i]) s += split[i] / 100 * G.cost[i]; return s;
+  }
+  /* What a split would have done in every year in mask, per $1 of protection. */
+  function record(G, split, mask) {
+    var nets = [], paid = 0, yrs = [];
+    for (var k = 0; k < G.years.length; k++) {
+      if (mask && !mask[k]) continue;
+      var n = netIn(G, split, k), any = false;
+      for (var i = 0; i < N; i++) if (split[i] && G.P[k][i] > 0) any = true;
+      if (any) paid++;
+      nets.push(n); yrs.push(G.years[k]);
+    }
+    var srt = nets.slice().sort(function (a, b) { return a - b; }), sum = 0;
+    nets.forEach(function (x) { sum += x; });
+    var worst = null, best = null;
+    nets.forEach(function (x, j) {
+      if (!worst || x < worst.net) worst = { year: yrs[j], net: x };
+      if (!best || x > best.net) best = { year: yrs[j], net: x };
+    });
+    var run = 0, longest = 0;
+    for (var k2 = 0; k2 < G.years.length; k2++) {
+      if (mask && !mask[k2]) continue;
+      var hit = false;
+      for (var i2 = 0; i2 < N; i2++) if (split[i2] && G.P[k2][i2] > 0) hit = true;
+      run = hit ? 0 : run + 1; if (run > longest) longest = run;
+    }
+    return { n: nets.length, first: yrs[0], last: yrs[yrs.length - 1], mean: nets.length ? sum / nets.length : null,
+             p10: quantile(srt, 0.1), mid: quantile(srt, 0.5), p90: quantile(srt, 0.9),
+             worst: worst, best: best, paidYears: paid, premium: premiumOf(G, split), longestDry: longest };
+  }
+
+  function allMask(G) { return G.years.map(function () { return true; }); }
+
+  /* ------------------------------------------------------------ one pick */
+  /* opts: { objective: 'net'|'dry', estimator: 'priced'|'history', step,
+             enso, ensoBoost, outlook, use (mask) }
+     The estimator defaults to 'priced' for 'net' and is always 'history'
+     for 'dry' (a dry-year average has no rate to anchor to). */
+  function estimatorFor(opts) {
+    if (opts.objective === 'dry') return 'history';
+    return opts.estimator === 'history' ? 'history' : 'priced';
+  }
+  function pick(G, opts) {
+    opts = opts || {};
+    var use = opts.use || allMask(G);
+    var W = weights(G, use, opts), sy = scoreYears(G, use, opts.objective);
+    var est = estimatorFor(opts);
+    var v = est === 'priced' ? pricedValues(G, W, sy.mask) : values(G, W, sy.mask);
+    var best = solve(G, v, opts.step);
+    if (!best) return null;
+    return { split: best.split, score: best.score, values: v, scored: sy, estimator: est };
+  }
+
+  /* ------------------------------------------------------------ walk-forward */
+  /* For each year Y from opts.from (1981) to the last year in G, with at least
+     opts.minTrain (30) earlier years: pick with years < Y only, score on Y.
+     opts.onTrain(Y, yearsUsed) is called with the exact years each pick saw. */
+  function walkForward(G, opts) {
+    opts = opts || {};
+    var from = opts.from || 1981, minTrain = opts.minTrain || 30, objective = opts.objective || 'net';
+    var even = evenSpread(G), def = pageDefault(G), dry2 = driestTwo(G);
+    var rows = [];
+    for (var t = 0; t < G.years.length; t++) {
+      var Y = G.years[t];
+      if (Y < from) continue;
+      var use = G.years.map(function (y) { return y < Y; });
+      var nTrain = use.filter(Boolean).length;
+      if (nTrain < minTrain) continue;
+      if (opts.onTrain) opts.onTrain(Y, G.years.filter(function (y, k) { return use[k]; }));
+      var a = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use });
+      var phase = phaseKnownFor(Y);
+      var b = phase ? pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use, enso: phase, ensoBoost: opts.ensoBoost }) : a;
+      if (!a) continue;
+      var hst = a.estimator === 'history' ? a : pick(G, { objective: objective, estimator: 'history', step: opts.step, use: use });
+      /* was Y a dry year, by the cut from earlier years only */
+      var cut = scoreYears(G, use, 'dry').cut, dryYear = G.annual[t] != null && cut != null && G.annual[t] <= cut + 1e-12;
+      rows.push({ year: Y, phase: phase, dry: dryYear,
+                  opt: netIn(G, a.split, t), optEnso: b ? netIn(G, b.split, t) : null, hist: netIn(G, hst.split, t),
+                  even: netIn(G, even, t), def: netIn(G, def, t), dry2: netIn(G, dry2, t),
+                  pick: a.split, pickEnso: b ? b.split : null });
+    }
+    return { rows: rows, even: even, def: def, dry2: dry2, objective: objective, estimator: estimatorFor({ objective: objective, estimator: opts.estimator }) };
+  }
+
+  /* compare one strategy's yearly nets with another's */
+  function versus(rows, key, other, onlyDry) {
+    var w = 0, l = 0, ties = 0, sum = 0, n = 0, a = 0, b = 0, diffs = [];
+    rows.forEach(function (r) {
+      if (onlyDry && !r.dry) return;
+      if (r[key] == null || r[other] == null) return;
+      var d = r[key] - r[other];
+      n++; sum += d; a += r[key]; b += r[other]; diffs.push(d);
+      if (d > 1e-9) w++; else if (d < -1e-9) l++; else ties++;
+    });
+    return { n: n, wins: w, losses: l, ties: ties, meanDiff: n ? sum / n : null,
+             meanA: n ? a / n : null, meanB: n ? b / n : null, pSign: signTest(w, l), p: flipTest(diffs) };
+  }
+
+  /* A verdict in words, first, from the out-of-sample record against an even
+     spread. Gates: fewer than 20 scored years says so instead. */
+  function verdict(vs) {
+    if (!vs || vs.n < 20) return { key: 'thin', text: 'Not enough history to say.' };
+    if (vs.meanDiff <= 0) return { key: 'behind', text: 'Picking months this way would not have beaten an even spread here.' };
+    if (vs.p < 0.05) return { key: 'held', text: 'Picking months this way held up here.' };
+    return { key: 'luck', text: 'Picking months this way came out ahead here, by a margin luck could produce.' };
+  }
+
+  function summarizeBacktest(wf) {
+    var rows = wf.rows;
+    return {
+      years: rows.length, first: rows.length ? rows[0].year : null, last: rows.length ? rows[rows.length - 1].year : null,
+      objective: wf.objective, estimator: wf.estimator,
+      histVsEven: versus(rows, 'hist', 'even'),
+      vsEven: versus(rows, 'opt', 'even'), vsDefault: versus(rows, 'opt', 'def'), vsDry2: versus(rows, 'opt', 'dry2'),
+      ensoVsHistory: versus(rows, 'optEnso', 'opt'), ensoVsEven: versus(rows, 'optEnso', 'even'),
+      dryVsEven: versus(rows, 'opt', 'even', true),
+      changes: rows.reduce(function (c, r, i) { return c + (i && r.pick.join() !== rows[i - 1].pick.join() ? 1 : 0); }, 0)
+    };
+  }
+
+  /* ------------------------------------------------------------ outlook input */
+  /* Turns data/prf/outlook.json (scripts/fetch_prf_outlook.py, not merged
+     yet) into what weights() takes, for one grid. Shapes read:
+       { enso: { phase, oni, season, issued }, intervals: { "625": {below,near,above}, ... } }
+       { enso, grids: { "<grid id>": { "625": {...}, ... } } }
+     Probabilities as fractions or percents. Anything else gives no tilt. */
+  function outlookFor(json, gridId) {
+    if (!json || typeof json !== 'object') return { outlook: null, enso: null, issued: null };
+    var per = null;
+    if (json.grids && json.grids[String(gridId)]) per = json.grids[String(gridId)];
+    else if (json.intervals) per = json.intervals;
+    var out = null, codes = M ? M.CODES : null;
+    if (per && codes) {
+      out = [];
+      var any = false;
+      for (var i = 0; i < N; i++) {
+        var o = per[codes[i]] || per[LABELS[i]];
+        if (!o) { out.push(null); continue; }
+        var b = +o.below, n = +o.near, a = +o.above;
+        if (!(isFinite(b) && isFinite(n) && isFinite(a))) { out.push(null); continue; }
+        var s = b + n + a;
+        if (!(s > 0)) { out.push(null); continue; }
+        out.push({ below: b / s, near: n / s, above: a / s }); any = true;
+      }
+      if (!any) out = null;
+    }
+    var e = json.enso || null, phase = e ? normPhase(e.phase) || ensoPhase(e.oni) : null;
+    return { outlook: out, enso: phase, ensoInfo: e, issued: json.issued || (e && e.issued) || null, source: json.source || null };
+  }
+
+  /* ------------------------------------------------------------ plain-English reasons */
+  function pct(x) { return Math.round(x * 100) + '%'; }
+  function per100(x) { return '$' + (Math.round(x * 10000) / 100).toFixed(2); }
+  function listAnd(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+
+  function reasons(G, rec, fc, bt, opts) {
+    var out = [], sp = rec.split, used = [], n = G.years.length;
+    for (var i = 0; i < N; i++) if (sp[i]) used.push(i);
+    used.sort(function (a, b) { return sp[b] - sp[a] || a - b; });
+    out.push('The split: ' + listAnd(used.map(function (j) { return LABELS[j] + ' ' + sp[j] + '%'; })) + '.');
+    if (rec.estimator === 'priced' && rec.values.payback != null) {
+      var ranked = [];
+      for (var q = 0; q < N; q++) if (G.allowed[q]) ranked.push(q);
+      ranked.sort(function (a, b) { return G.rates[b] - G.rates[a] || a - b; });
+      out.push('RMA charges the most here for ' + listAnd(ranked.slice(0, 2).map(function (j) { return LABELS[j] + ' (' + per100(G.rates[j]) + ' per $100 of protection)'; }))
+        + ' and the least for ' + LABELS[ranked[ranked.length - 1]] + ' (' + per100(G.rates[ranked[ranked.length - 1]]) + '). USDA pays ' + pct(G.subsidy)
+        + ' of whatever premium is owed, so the months with the highest rate carry the most USDA money.');
+      out.push('Across every offered interval, this grid would have paid back $' + rec.values.payback.toFixed(2) + ' per $1 of full premium over ' + n + ' years ('
+        + G.years[0] + ' to ' + G.years[n - 1] + '), against the $' + (1 - G.subsidy).toFixed(2) + ' you pay. That gap, times the rate, is the expected net, and it is largest where the rate is largest.');
+    }
+    var trig = G.coverage;
+    used.forEach(function (j) {
+      var below = 0, sum = 0;
+      for (var k = 0; k < n; k++) { if (G.P[k][j] > 0) below++; sum += G.P[k][j]; }
+      out.push(LABELS[j] + ' came in under the ' + trig + '% trigger in ' + below + ' of ' + n + ' years. Per $100 of protection it would have paid '
+        + per100(sum / n) + ' a year on average, against ' + per100(G.cost[j]) + ' of producer premium.');
+    });
+    used.forEach(function (j) {
+      if (sp[j] === G.hi[j] && used.length > 1) out.push(LABELS[j] + ' is held to ' + G.hi[j] + '%, ' + (j === 0 ? 'the 2027 cap on January and February.' : 'this county’s cap for it.'));
+    });
+    if (fc && fc.notes) fc.notes.forEach(function (t) { out.push(t); });
+    if (bt) {
+      var vs = bt.objective === 'dry' ? bt.dryVsEven : bt.vsEven;
+      out.push(bt.verdict.text + ' ' + (bt.objective === 'dry'
+        ? 'In the ' + vs.n + ' dry years from ' + bt.first + ' to ' + bt.last + ', a pick made each fall from the years before it beat an even spread in ' + vs.wins + '.'
+        : 'From ' + bt.first + ' to ' + bt.last + ', a pick made each fall from the years before it beat an even spread in ' + vs.wins + ' of ' + vs.n + ' years.')
+        + ' On average it came out ' + (vs.meanDiff >= 0 ? 'ahead by ' : 'behind by ') + per100(Math.abs(vs.meanDiff)) + ' a year per $100 of protection.'
+        + (vs.meanDiff > 0 && vs.losses > vs.wins ? ' It was behind in ' + vs.losses + ' of those years, when it cost more and paid nothing, and made up the gap in the years it paid.' : ''));
+    }
+    return out;
+  }
+
+  /* ------------------------------------------------------------ everything the panel needs */
+  /* input as prepare(); opts: { objective, step, enso, outlook, ensoBoost, backtest: true } */
+  function recommend(input, opts) {
+    opts = opts || {};
+    var objective = opts.objective === 'dry' ? 'dry' : 'net';
+    var G = prepare(input);
+    if (G.years.length < 30) return { ok: false, why: 'Fewer than 30 complete years on record for the offered intervals here, so the panel says nothing.' };
+    var allowedN = G.allowed.filter(Boolean).length;
+    if (allowedN < 2) return { ok: false, why: 'This county offers fewer than two priced intervals at this coverage, so there is nothing to choose.' };
+    var all = allMask(G);
+    var h = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step });
+    if (!h) return { ok: false, why: 'No split fits this county’s limits at this coverage.' };
+    var dryMask = scoreYears(G, all, 'dry').mask;
+    var rec = { split: h.split, score: h.score, values: h.values, estimator: h.estimator, record: record(G, h.split), dryRecord: record(G, h.split, dryMask) };
+    var hh = h.estimator === 'history' ? h : pick(G, { objective: objective, estimator: 'history', step: opts.step });
+    var naive = hh && { split: hh.split, record: record(G, hh.split) };
+    var even = evenSpread(G), def = pageDefault(G), dry2 = driestTwo(G);
+    var base = {
+      even: even && { split: even, record: record(G, even), dryRecord: record(G, even, dryMask) },
+      def: def && { split: def, record: record(G, def), dryRecord: record(G, def, dryMask) },
+      dry2: dry2 && { split: dry2, record: record(G, dry2), dryRecord: record(G, dry2, dryMask) }
+    };
+
+    /* the forecast tilt */
+    var fc = null, phase = normPhase(opts.enso), outl = opts.outlook || null;
+    if (phase || outl) {
+      var f = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, enso: phase, ensoBoost: opts.ensoBoost, outlook: outl });
+      var moved = 0;
+      for (var i = 0; i < N; i++) moved += Math.abs(f.split[i] - h.split[i]);
+      moved /= 2;
+      var notes = [];
+      if (phase) {
+        var match = G.years.filter(function (y) { return phaseKnownFor(y) === phase; });
+        var top = h.split.indexOf(Math.max.apply(null, h.split));
+        var short = 0;
+        G.years.forEach(function (y, k) { if (phaseKnownFor(y) === phase && G.P[k][top] > 0) short++; });
+        var allShort = 0; G.years.forEach(function (y, k) { if (G.P[k][top] > 0) allShort++; });
+        notes.push('This fall reads ' + PHASE_NAME[phase] + '. In the ' + match.length + ' years on record that followed a ' + PHASE_NAME[phase] + ' fall, ' + LABELS[top]
+          + ' came in under the trigger in ' + short + ' (' + (match.length ? pct(short / match.length) : 'none') + '), against ' + allShort + ' of ' + G.years.length + ' (' + pct(allShort / G.years.length) + ') in all years.');
+      }
+      if (outl) {
+        for (var j = 0; j < N; j++) {
+          var o = outl[j];
+          if (!o || !(f.split[j] || h.split[j])) continue;
+          var lean = o.below - o.above;
+          if (Math.abs(lean) < 0.05) continue;
+          notes.push('NOAA’s outlook leans ' + (lean > 0 ? 'dry' : 'wet') + ' for ' + LABELS[j] + ' (' + pct(o.below) + ' below normal, ' + pct(o.near) + ' near, ' + pct(o.above) + ' above).');
+        }
+      }
+      notes.push(moved ? 'The outlook moved ' + moved + '% of the policy compared with the record alone.' : 'The outlook did not change the pick.');
+      fc = { split: f.split, score: f.score, moved: moved, record: record(G, f.split), notes: notes, enso: phase, outlook: !!outl,
+             historyScoreOfForecastPick: (function () { var s = 0; for (var q = 0; q < N; q++) if (f.split[q]) s += f.split[q] / 100 * h.values[q]; return s; })() };
+    }
+
+    var bt = null;
+    if (opts.backtest !== false) {
+      var wf = walkForward(G, { objective: objective, estimator: opts.estimator, step: opts.step, ensoBoost: opts.ensoBoost });
+      bt = summarizeBacktest(wf);
+      bt.verdict = verdict(objective === 'dry' ? bt.dryVsEven : bt.vsEven);
+      bt.rows = wf.rows.map(function (r) { return { year: r.year, opt: r.opt, optEnso: r.optEnso, hist: r.hist, even: r.even, def: r.def, dry2: r.dry2, dry: r.dry, phase: r.phase }; });
+    }
+    return { ok: true, objective: objective, coverage: G.coverage, subsidy: G.subsidy, years: { n: G.years.length, first: G.years[0], last: G.years[G.years.length - 1] },
+             rec: rec, naive: naive, forecast: fc, base: base, backtest: bt, reasons: reasons(G, rec, fc, bt, opts), limits: { lo: G.lo, hi: G.hi, allowed: G.allowed } };
+  }
+
+  var api = {
+    N: N, LABELS: LABELS, YEAR_SET: YEAR_SET,
+    ONI_FIRST: ONI_FIRST, ONI_ASO: ONI_ASO, ONI_SOURCE: ONI_SOURCE, PHASE_NAME: PHASE_NAME,
+    oniASO: oniASO, ensoPhase: ensoPhase, phaseKnownFor: phaseKnownFor, normPhase: normPhase,
+    prepare: prepare, weights: weights, scoreYears: scoreYears, values: values, supports: supports, solve: solve,
+    pick: pick, pricedValues: pricedValues, estimatorFor: estimatorFor, record: record, netIn: netIn, evenSpread: evenSpread, pageDefault: pageDefault, driestTwo: driestTwo,
+    walkForward: walkForward, versus: versus, verdict: verdict, summarizeBacktest: summarizeBacktest,
+    outlookFor: outlookFor, reasons: reasons, recommend: recommend, signTest: signTest, flipTest: flipTest, quantile: quantile
+  };
+  root.AgPrfOptimize = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
