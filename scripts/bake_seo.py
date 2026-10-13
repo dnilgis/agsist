@@ -960,7 +960,7 @@ def run(today, dry=False, only=None):
                 skipped.append((page, f"body builder raised: {exc}")); continue
             out, found = bake_body(out, name, inner)
             if not found:
-                skipped.append((page, f"no <!--BAKE:{name}--> markers — markup changed; "
+                skipped.append((page, f"no <!--BAKE:{name}--> markers: markup changed; "
                                       f"refusing to half-update"))
                 continue
             print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
