@@ -503,7 +503,7 @@
   // where the preview band goes: the first height that hides no words, mark or leader
   function bandAt(room, prefer, lo, hi, x0, x1, alt) {
     var ys = prefer.slice();
-    for (var y = lo; y <= hi; y += 8) ys.push(y);
+    for (var y = lo; y <= hi; y += 4) ys.push(y);
     var cost = function (y, a0, a1) {
       var n = 0, bb = { x: a0, y: y - 36, w: a1 - a0, h: 72 };
       room.each(bb, 0, function (it) {
@@ -1060,27 +1060,6 @@
       else foot.push(E.wetText);   // no clean spot under the ground: it is said in the footer
     }
 
-    // ---- the dry stretch, under the ground, if it fits among the bars
-    var dryAt = null;
-    if (E.dry) {
-      var da = X0 + E.dry.s * w, db = X0 + (E.dry.e + 1) * w, dcx = (da + db) / 2;
-      var ds = E.dry.len + ' dry days', dst = { it: true, size: 15, fill: C.mute, anchor: 'middle' };
-      var dw = W(ds, dst), dc = [];
-      for (var dd2 = 0; dd2 <= (db - da) / 2 + 4; dd2 += 6) [dcx - dd2, dcx + dd2].forEach(function (x) { if (x >= da && x <= db && dc.indexOf(x) < 0) dc.push(x); });
-      [G + 30, G + 52].some(function (yy) {
-        return dc.some(function (x) {
-          var b = box(x, yy, ds, dst);
-          if (b.x < X0 || b.x + b.w > X1 || x - dw / 2 < X0) return false;
-          if (room.free(b, 'dry', true)) { dryAt = { x: x, y: yy, b: b }; return true; }
-          return false;
-        });
-      });
-      if (dryAt) room.text(dryAt.b, 'dry');
-    }
-    if (E.dry && !dryAt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
-    else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
-    fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
-
     // ---- remarkable days: an open ring on the ground line, the label down in the open soil, clear of every bar
     var recAt = placeAll(recs.pts, function (k, at) {
       var r = recs.pts[k], x = rings[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
@@ -1109,6 +1088,27 @@
       return its;
     }, skipped, recs.pts.map(function (r, k) { return k; }).reverse());   // right to left: a label reaching right passes under the leaders it meets
     
+    // ---- the dry stretch, under the ground, if it fits among the bars (after the remarkable days: they come first)
+    var dryAt = null;
+    if (E.dry) {
+      var da = X0 + E.dry.s * w, db = X0 + (E.dry.e + 1) * w, dcx = (da + db) / 2;
+      var ds = E.dry.len + ' dry days', dst = { it: true, size: 15, fill: C.mute, anchor: 'middle' };
+      var dw = W(ds, dst), dc = [];
+      for (var dd2 = 0; dd2 <= (db - da) / 2 + 4; dd2 += 6) [dcx - dd2, dcx + dd2].forEach(function (x) { if (x >= da && x <= db && dc.indexOf(x) < 0) dc.push(x); });
+      [G + 30, G + 52].some(function (yy) {
+        return dc.some(function (x) {
+          var b = box(x, yy, ds, dst);
+          if (b.x < X0 || b.x + b.w > X1 || x - dw / 2 < X0) return false;
+          if (room.free(b, 'dry', true)) { dryAt = { x: x, y: yy, b: b }; return true; }
+          return false;
+        });
+      });
+      if (dryAt) room.text(dryAt.b, 'dry');
+    }
+    if (E.dry && !dryAt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
+    else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
+    fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
+
     // ================= draw, back to front
     o.push(G0('totals') + draw(totals) + G1);
     o.push(G0('title') + draw(title) + G1);
@@ -1150,7 +1150,7 @@
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, X1, 1100));
     last_skipped = skipped;
-    return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
+    return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
   var last_skipped = [];
