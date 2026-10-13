@@ -453,15 +453,70 @@ def _px(prices, key):
     return None
 
 
+BE_COST_KEYS = ("seed", "fertilizer", "chemicals", "insurance", "machinery",
+                "labor", "land", "overhead")
+
+
+def _be_defaults(crop, page_text=None):
+    """(cost per acre, yield) from breakeven.html's own CROP_DEFAULTS, the
+    numbers the calculator opens with. Read from the page so the example in
+    the snippet is always the one the calculator shows."""
+    t = page_text if page_text is not None else (REPO / "breakeven.html").read_text(encoding="utf-8")
+    m = re.search(r"\b" + crop + r":\{([^}]*)\}", t[t.find("CROP_DEFAULTS"):])
+    if not m:
+        return None
+    kv = dict(re.findall(r"(\w+):'?([\d.]*)'?", m.group(1)))
+    try:
+        cost = sum(float(kv[k]) for k in BE_COST_KEYS)
+        yld = float(kv["yield"])
+    except (KeyError, ValueError):
+        return None
+    if cost <= 0 or yld <= 0:
+        return None
+    return cost, yld
+
+
 def seo_breakeven(c):
     px = _px(c["prices"], "corn")
     if px is None:
         return None
     cents = px if px > 50 else px * 100.0      # cents vs dollars
-    return (f"Break-Even Price Calculator: Corn, Soybeans, Wheat{SUFFIX}",
+    # RETITLED 2026-10-13 from "Break-Even Price Calculator: Corn, Soybeans,
+    # Wheat" (2,679 impressions, 12 clicks, Jul 10-Oct 7). The named queries
+    # ask for a number: "break even price for corn" 35 impressions, "corn
+    # break even price" 10. The description now gives the calculator's own
+    # opening example, labeled as an example, beside the board.
+    title = f"Corn & Soybean Break-Even Price per Bushel Calculator{SUFFIX}"
+    d = _be_defaults("corn")
+    if d:
+        cost, yld = d
+        desc = (f"Example: ${cost:,.0f} an acre at {yld:g} bu/ac is a ${cost / yld:.2f} corn "
+                f"break-even; futures are near {pricefmt.price(cents)}. Put in your own costs "
+                f"for corn, soybeans or wheat.")
+        if len(desc) <= DESC_MAX:
+            return title, desc
+    return (title,
             f"Corn is near {pricefmt.price(cents)}. Enter your cost per acre and your yield "
             f"to get your break-even price per bushel, and the yield where the "
             f"board stops covering them.")
+
+
+def body_breakeven(c):
+    """The calculator's opening example as a line a reader sees before
+    touching an input, and a crawler sees at all (the results panel is
+    drawn by the page script)."""
+    bits = []
+    for crop, name in (("corn", "corn"), ("soybeans", "soybeans")):
+        d = _be_defaults(crop)
+        if not d:
+            raise ValueError(f"no {crop} defaults in breakeven.html")
+        cost, yld = d
+        bits.append((name, cost, yld))
+    (n1, c1, y1), (n2, c2, y2) = bits
+    return (f"<strong>Example with this page's default costs:</strong> {n1} at "
+            f"${c1:,.0f} an acre and {y1:g} bu/ac breaks even at ${c1 / y1:.2f} a bushel; "
+            f"{n2} at ${c2:,.0f} and {y2:g} bu/ac at ${c2 / y2:.2f}. "
+            f"Change any line below to get yours.")
 
 
 # ---------------------------------------------------------------- futures
@@ -789,6 +844,7 @@ PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 BODY = {
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
     "usda-quick-stats.html": ("state-yields", body_quick_stats),
+    "breakeven.html": ("be-example", body_breakeven),
 }
 
 
@@ -1143,6 +1199,28 @@ def selftest():
                                                 crop_tour=dict(ctx["crop_tour"],
                                                                nights=[{"posted": False}] * 4)))[0])
            for d_ in (17, 18, 19, 20, 21, 22)))
+
+    print("\nbreak-even example comes from the calculator's own defaults")
+    _fake = ("var CROP_DEFAULTS={corn:{yield:180,price:'',basis:0,seed:125,fertilizer:175,"
+             "chemicals:65,insurance:35,machinery:145,labor:35,land:250,overhead:75},"
+             "soybeans:{yield:55,price:'',basis:0,seed:75,fertilizer:45,chemicals:55,"
+             "insurance:30,machinery:110,labor:30,land:250,overhead:55}};")
+    ck("corn defaults sum the eight cost lines", _be_defaults("corn", _fake) == (905.0, 180.0),
+       str(_be_defaults("corn", _fake)))
+    ck("soybean defaults", _be_defaults("soybeans", _fake) == (650.0, 55.0),
+       str(_be_defaults("soybeans", _fake)))
+    ck("price and basis are not costs", _be_defaults("corn", _fake.replace("price:''", "price:'4.5'"))[0] == 905.0)
+    ck("a page without the table gives no example", _be_defaults("corn", "nothing") is None)
+    _bt, _bd = seo_breakeven(ctx)
+    ck("break-even title names the query's words", "Break-Even Price per Bushel" in _bt, _bt)
+    _live = _be_defaults("corn")
+    ck("breakeven.html still carries CROP_DEFAULTS", _live is not None)
+    if _live:
+        ck("the snippet's example is the calculator's opening numbers",
+           f"${_live[0] / _live[1]:.2f} corn break-even" in _bd and "Example" in _bd, _bd)
+        ck("the visible example line agrees", f"${_live[0] / _live[1]:.2f} a bushel" in body_breakeven(ctx))
+    _bp = (REPO / "breakeven.html").read_text(encoding="utf-8")
+    ck("breakeven.html carries the be-example markers", bake_body(_bp, "be-example", "x")[1])
 
     print("\nusda calendar rolls at the print")
     ck("report morning, not printed: Oct 9 is next",
