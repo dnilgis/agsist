@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Advertise to Ranchers: Sponsor PRF Pasture Insurance Pages</title>
+  <meta name="description" content="Reach ranchers pricing PRF pasture, rangeland and forage insurance. One business per state on AGSIST&#x27;s PRF state and county pages. Price on request.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical"    href="https://agsist.com/prf-sponsor">
+  <!--
+    PRF state sponsors, sold passively (Sig, 2026-10-13: "just passive and see
+    if anyone bites"). Every PRF offer (state page ribbon, the /prf box, the
+    county page line, the sponsor sheet) links here with ?state=XX.
+    Standing decisions: say "Sponsor", never "founding"; price on request,
+    never printed or suggested; prepaid, placement guaranteed through Dec 31,
+    first say on renewing; one business per state; no open-slot counters;
+    Farmers First never in a slot; PRF figures stay neutral. PRF slots stay
+    out of /sponsor-apply and data/sponsor-slots.json.
+    The state boxes below come from data/prf/meta.json;
+    test/prf-sponsor-page.test.mjs fails if they drift.
+    The form posts kind prf-sponsor to the subs worker (v5.22) and
+    scripts/form_digest.py mails Sig. A sale is a line in data/prf-sponsors.json.
+  -->
+
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Sponsor PRF in your state on AGSIST">
+  <meta property="og:description"  content="One business per state on AGSIST&#x27;s PRF state page, every county page and the calculator result. Price on request.">
+  <meta property="og:url"          content="https://agsist.com/prf-sponsor">
+  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="AGSIST: sponsor PRF in your state">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@agsist">
+  <meta name="twitter:title"       content="Sponsor PRF in your state on AGSIST">
+  <meta name="twitter:description" content="One business per state on AGSIST&#x27;s PRF state page, every county page and the calculator result. Price on request.">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
+  <link rel="manifest"                            href="/manifest.json">
+  <style>
+    .le{max-width:820px;margin:0 auto;padding:2.2rem 1rem 4rem}
+    .le h1{font-family:var(--font-display);font-size:1.75rem;font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .7rem}
+    @media(min-width:640px){.le h1{font-size:2.2rem}}
+    .le h2{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text);margin:2rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--border)}
+    .le p,.le li{color:var(--text-dim);font-size:1rem;line-height:1.65}
+    .le p{margin:0 0 .8rem}
+    .le a{color:var(--gold)}
+    .le-lede{font-size:1.08rem;color:var(--text)!important;max-width:62ch}
+    .le ul,.le ol{margin:.2rem 0 1rem;padding-left:1.25rem}
+    .le li{margin:0 0 .4rem}
+    .le li b{color:var(--text)}
+    .le-go{display:inline-flex;align-items:center;min-height:44px;padding:.6rem 1.2rem;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink)!important;font-weight:700;text-decoration:none;margin:.4rem 1rem .2rem 0}
+    .le-or{color:var(--text-muted);font-size:.92rem}
+    .le-sig{color:var(--text-muted);font-size:.9rem}
+    .le-from{border-left:2px solid var(--gold);padding:.5rem .8rem;margin:0 0 1.2rem;color:var(--text)!important;font-size:.95rem!important}
+    .le-from[hidden]{display:none}
+    .le-who{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;padding:0!important;margin:.4rem 0 1rem!important}
+    .le-who li{margin:0;padding:.3rem .7rem;border:1px solid var(--border-2);border-radius:999px;font-size:.9rem;color:var(--text)}
+    .le-faq details{border-bottom:1px solid var(--border);padding:.2rem 0}
+    .le-faq summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--text);font-size:1rem}
+    .le-faq details p{margin:.2rem 0 .8rem}
+    /* the preview: the PRF pages' own sponsor block (components/prf.css), drawn by prf-sponsor.js */
+    .ps-pv{grid-column:1/-1;border:1px dashed var(--border-2);border-radius:var(--r-sm);padding:.8rem .9rem .2rem;background:var(--bg)}
+    .ps-pv-top{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;margin-bottom:.4rem}
+    .ps-pv-top b{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+    .ps-pv-top select{background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-sm);color:var(--text);padding:.35rem .5rem;min-height:40px;font:inherit;font-size:.9rem}
+    .ps-pv .k{display:block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin:.7rem 0 0}
+    .ps-pv .ag-sponsor-ribbon{margin:.35rem 0 .3rem}
+    .ps-where{font-size:.88rem!important;color:var(--text-muted)!important;margin:.5rem 0 .6rem!important}
+    .prf-spon .ag-sponsor-copy{flex:1 1 16rem}
+    .prf-spon .prf-spon-ask{display:block;margin-top:.3rem;font-size:.82rem}
+    .prf-spon a[href]{white-space:normal;text-align:center;text-decoration:none}
+    .prf-spon .prf-spon-tel{white-space:nowrap}
+    .prf-spon-county{font-size:.82rem;padding:.6rem .8rem}
+    .prf-spon-county a[href]{min-height:40px}
+    /* the form: the same look as the other AGSIST request forms */
+    .cl-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.25rem;max-width:760px;margin-top:1rem}
+    .cl-f{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+    .cl-f.full{grid-column:1/-1}
+    .cl-f label,.cl-f legend{font-family:var(--font-mono);font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);padding:0}
+    .cl-f .opt{text-transform:none;letter-spacing:0;font-weight:400}
+    .cl-f input,.cl-f select,.cl-f textarea{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .75rem;font-family:var(--font-body);font-size:.95rem;color:var(--text);min-height:44px;width:100%;box-sizing:border-box}
+    .cl-f textarea{min-height:90px;resize:vertical}
+    .cl-f input:focus,.cl-f select:focus,.cl-f textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+    .cl-f input[aria-invalid="true"]{border-color:var(--red)}
+    fieldset.cl-f{border:0;margin:0;padding:0}
+    .ps-states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 1rem}
+    .ps-states label{display:flex;align-items:center;gap:.5rem;min-height:40px;font-family:var(--font-body);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text);font-weight:400;cursor:pointer}
+    .ps-states input{width:20px;height:20px;min-height:0;flex:none;margin:0;accent-color:var(--gold)}
+    .cl-err{font-size:.8rem;color:var(--red);line-height:1.4;margin:0}
+    .cl-err:empty{display:none}
+    .le-n{font-size:.75rem;color:var(--text-muted);text-align:right;margin:0!important}
+    .cl-go{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
+    .cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px}
+    .cl-btn:disabled{opacity:.6;cursor:default}
+    .cl-btn2{display:inline-flex;align-items:center;justify-content:center;padding:.65rem 1.1rem;border:1px solid var(--border-2);border-radius:var(--r-sm);background:transparent;color:var(--text)!important;font-family:var(--font-mono);font-size:.8rem;font-weight:600;text-decoration:none;cursor:pointer;min-height:44px}
+    .cl-note{font-size:.85rem!important;color:var(--text-muted)!important;margin:0!important;flex:1 1 260px}
+    .cl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .cl-out:empty{display:none}
+    .cl-msg{border-top:1px solid var(--border-2);border-bottom:1px solid var(--border-2);padding:1rem 0;max-width:760px;margin-top:1rem}
+    .cl-msg p{color:var(--text)}
+    .cl-msg.ok{border-left:2px solid var(--green);padding-left:1rem}
+    .cl-msg.bad{border-left:2px solid var(--red);padding-left:1rem}
+    .cl-msg .cl-acts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.75rem}
+    .cl-msg textarea{width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:.8rem;line-height:1.5;background:var(--bg);color:var(--text-dim);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem;margin-top:.6rem}
+    .sent .cl-form,.sent .le-from{display:none}
+    @media(max-width:600px){
+      .cl-form{grid-template-columns:1fr}
+      .ps-states{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .cl-f input,.cl-f select,.cl-f textarea,.ps-pv-top select{font-size:16px}
+      .cl-btn{width:100%}
+    }
+  </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebPage","url":"https://agsist.com/prf-sponsor","name":"Sponsor PRF in your state on AGSIST","description":"Reach ranchers pricing PRF pasture, rangeland and forage insurance. One business per state on AGSIST's PRF state and county pages. Price on request.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type": "Question", "name": "What does it cost to sponsor PRF in a state?", "acceptedAnswer": {"@type": "Answer", "text": "The price is on request, and it depends on the state. Send the form on this page or email Sig, and he replies with a price for the states you ask about."}},
+{"@type": "Question", "name": "How long does a PRF sponsorship run?", "acceptedAnswer": {"@type": "Answer", "text": "It is prepaid, and the placement is guaranteed through December 31. You get the first say on renewing for the next year. If you do not renew, your block comes down after December 31."}},
+{"@type": "Question", "name": "Can one business sponsor more than one state?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each state has one sponsor, and one business can take as many states as it wants."}},
+{"@type": "Question", "name": "Does a sponsor have any say over the PRF figures?", "acceptedAnswer": {"@type": "Answer", "text": "No. The figures come from USDA RMA's rates, county base values and PRF index record. A sponsor has no say over any figure, and every block is labeled Sponsor."}},
+{"@type": "Question", "name": "Can a crop insurance agency sponsor PRF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The PRF pages tell readers that a sponsor may sell crop insurance. The advertising rules set by your company and your state apply to your block."}},
+{"@type": "Question", "name": "Who runs AGSIST?", "acceptedAnswer": {"@type": "Answer", "text": "Sigurd Lindquist, a Certified Crop Adviser (CCA). He also owns Farmers First Agri Service, a licensed crop insurance agency. Farmers First never takes a sponsor slot and gets no referrals from the PRF pages."}}]},
+{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"PRF pasture insurance","item":"https://agsist.com/prf"},{"@type":"ListItem","position":3,"name":"Sponsor PRF in your state","item":"https://agsist.com/prf-sponsor"}]}]}
+</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <div class="le">
+      <h1>Sponsor PRF in your state</h1>
+      <p class="le-lede page-lede">AGSIST has a free <a href="/prf">PRF calculator</a> and a page for every state and county where USDA offers Pasture, Rangeland, Forage insurance. Ranchers use them to price coverage before the Dec 1 sales closing. One business per state can put its name on those pages.</p>
+      <a class="le-go" href="#ask">See your block and ask</a> <span class="le-or">or email Sig: <a href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor">sig@farmers1st.com</a></span>
+
+      <h2>Who it is for</h2>
+      <p>Businesses that sell to people running cattle on grass or putting up hay:</p>
+      <ul class="le-who">
+        <li>Crop insurance agencies</li>
+        <li>Ag lenders</li>
+        <li>Ranch supply</li>
+        <li>Cattle buyers and sale barns</li>
+        <li>Seed dealers</li>
+        <li>Fencing dealers</li>
+      </ul>
+
+      <h2>What a sponsor gets</h2>
+      <ul>
+        <li><b>The state PRF page.</b> Your block on that state&rsquo;s page, the one with every county&rsquo;s USDA base values and the key dates.</li>
+        <li><b>Every county page in the state.</b> 3,070 county pages across 48 states. A smaller version of your block on each one in your state.</li>
+        <li><b>The calculator result.</b> Your block beside the result on <a href="/prf">/prf</a> whenever a rancher&rsquo;s grid is in your state.</li>
+        <li><b>Your name, logo, one line, phone and a link,</b> labeled Sponsor.</li>
+        <li><b>A word for you from AGSIST.</b> Each block tells readers that AGSIST is free because businesses like yours pay for it, and asks them to tell you they saw you there.</li>
+      </ul>
+
+      <section id="ask" aria-labelledby="ask-h" style="scroll-margin-top:84px">
+        <h2 id="ask-h">See your block, then ask</h2>
+        <p>Type your business the way you want it to read. The preview below is drawn by the same code the PRF pages use, so this is what it would look like.</p>
+        <p id="ps-from" class="le-from" hidden></p>
+        <form class="cl-form" id="ps-form" novalidate data-track="prf_sponsor">
+          <input type="text" name="_gotcha" class="cl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="cl-f full">
+            <label for="ps-business">Business name</label>
+            <input id="ps-business" name="business" type="text" autocomplete="organization" maxlength="120" required aria-describedby="ps-business-e">
+            <p class="cl-err" id="ps-business-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-f full">
+            <label for="ps-line">One line about you <span class="opt">(optional)</span></label>
+            <input id="ps-line" name="line" type="text" maxlength="120" placeholder="PRF and livestock coverage for western Kansas" aria-describedby="ps-line-e ps-line-n">
+            <p class="le-n" id="ps-line-n">0 / 120</p>
+            <p class="cl-err" id="ps-line-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-f">
+            <label for="ps-phone">Phone <span class="opt">(optional)</span></label>
+            <input id="ps-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" aria-describedby="ps-phone-e">
+            <p class="cl-err" id="ps-phone-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-f">
+            <label for="ps-website">Website <span class="opt">(optional)</span></label>
+            <input id="ps-website" name="website" type="text" inputmode="url" autocomplete="url" maxlength="320" placeholder="yourbusiness.com" aria-describedby="ps-website-e">
+            <p class="cl-err" id="ps-website-e" aria-live="polite"></p>
+          </div>
+          <div class="ps-pv" id="ps-preview" aria-label="Preview of your sponsor block">
+            <div class="ps-pv-top"><b>Preview</b>
+              <label for="ps-pick" class="sr-only">Show it for</label>
+              <select id="ps-pick"><option value="">Pick a state</option><option value="AL">Alabama</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option></select>
+            </div>
+            <p class="ps-where" id="ps-where">Tick a state below to see it with that state&rsquo;s name and county count.</p>
+            <span class="k">State page</span>
+            <aside class="ag-sponsor-ribbon ag-sponsor-ribbon--sold prf-spon prf-spon-state" data-ps-kind="state"><span class="ag-sponsor-tag">Sponsor</span><span class="ag-sponsor-copy"><b>PRF in your state is sponsored by Your Business.</b> Your one line goes here, up to 120 characters.</span></aside>
+            <span class="k">Each county page</span>
+            <aside class="ag-sponsor-ribbon ag-sponsor-ribbon--sold prf-spon prf-spon-county" data-ps-kind="county"><span class="ag-sponsor-tag">Sponsor</span><span class="ag-sponsor-copy"><b>PRF in your state is sponsored by Your Business.</b></span></aside>
+            <p class="ps-where">Your logo shows beside your name on the state page and the calculator result. Send it after; PNG, JPG or WebP.</p>
+          </div>
+          <fieldset class="cl-f full" aria-describedby="ps-states-e">
+            <legend>States you want</legend>
+            <div class="ps-states">
+              <label><input type="checkbox" name="states" value="AL" data-name="Alabama" data-counties="67"> Alabama</label>
+              <label><input type="checkbox" name="states" value="AZ" data-name="Arizona" data-counties="15"> Arizona</label>
+              <label><input type="checkbox" name="states" value="AR" data-name="Arkansas" data-counties="75"> Arkansas</label>
+              <label><input type="checkbox" name="states" value="CA" data-name="California" data-counties="58"> California</label>
+              <label><input type="checkbox" name="states" value="CO" data-name="Colorado" data-counties="63"> Colorado</label>
+              <label><input type="checkbox" name="states" value="CT" data-name="Connecticut" data-counties="9"> Connecticut</label>
+              <label><input type="checkbox" name="states" value="DE" data-name="Delaware" data-counties="3"> Delaware</label>
+              <label><input type="checkbox" name="states" value="FL" data-name="Florida" data-counties="67"> Florida</label>
+              <label><input type="checkbox" name="states" value="GA" data-name="Georgia" data-counties="159"> Georgia</label>
+              <label><input type="checkbox" name="states" value="ID" data-name="Idaho" data-counties="44"> Idaho</label>
+              <label><input type="checkbox" name="states" value="IL" data-name="Illinois" data-counties="102"> Illinois</label>
+              <label><input type="checkbox" name="states" value="IN" data-name="Indiana" data-counties="92"> Indiana</label>
+              <label><input type="checkbox" name="states" value="IA" data-name="Iowa" data-counties="99"> Iowa</label>
+              <label><input type="checkbox" name="states" value="KS" data-name="Kansas" data-counties="105"> Kansas</label>
+              <label><input type="checkbox" name="states" value="KY" data-name="Kentucky" data-counties="120"> Kentucky</label>
+              <label><input type="checkbox" name="states" value="LA" data-name="Louisiana" data-counties="64"> Louisiana</label>
+              <label><input type="checkbox" name="states" value="ME" data-name="Maine" data-counties="16"> Maine</label>
+              <label><input type="checkbox" name="states" value="MD" data-name="Maryland" data-counties="23"> Maryland</label>
+              <label><input type="checkbox" name="states" value="MA" data-name="Massachusetts" data-counties="14"> Massachusetts</label>
+              <label><input type="checkbox" name="states" value="MI" data-name="Michigan" data-counties="83"> Michigan</label>
+              <label><input type="checkbox" name="states" value="MN" data-name="Minnesota" data-counties="87"> Minnesota</label>
+              <label><input type="checkbox" name="states" value="MS" data-name="Mississippi" data-counties="82"> Mississippi</label>
+              <label><input type="checkbox" name="states" value="MO" data-name="Missouri" data-counties="114"> Missouri</label>
+              <label><input type="checkbox" name="states" value="MT" data-name="Montana" data-counties="56"> Montana</label>
+              <label><input type="checkbox" name="states" value="NE" data-name="Nebraska" data-counties="93"> Nebraska</label>
+              <label><input type="checkbox" name="states" value="NV" data-name="Nevada" data-counties="17"> Nevada</label>
+              <label><input type="checkbox" name="states" value="NH" data-name="New Hampshire" data-counties="10"> New Hampshire</label>
+              <label><input type="checkbox" name="states" value="NJ" data-name="New Jersey" data-counties="21"> New Jersey</label>
+              <label><input type="checkbox" name="states" value="NM" data-name="New Mexico" data-counties="33"> New Mexico</label>
+              <label><input type="checkbox" name="states" value="NY" data-name="New York" data-counties="62"> New York</label>
+              <label><input type="checkbox" name="states" value="NC" data-name="North Carolina" data-counties="100"> North Carolina</label>
+              <label><input type="checkbox" name="states" value="ND" data-name="North Dakota" data-counties="53"> North Dakota</label>
+              <label><input type="checkbox" name="states" value="OH" data-name="Ohio" data-counties="88"> Ohio</label>
+              <label><input type="checkbox" name="states" value="OK" data-name="Oklahoma" data-counties="77"> Oklahoma</label>
+              <label><input type="checkbox" name="states" value="OR" data-name="Oregon" data-counties="36"> Oregon</label>
+              <label><input type="checkbox" name="states" value="PA" data-name="Pennsylvania" data-counties="67"> Pennsylvania</label>
+              <label><input type="checkbox" name="states" value="RI" data-name="Rhode Island" data-counties="5"> Rhode Island</label>
+              <label><input type="checkbox" name="states" value="SC" data-name="South Carolina" data-counties="46"> South Carolina</label>
+              <label><input type="checkbox" name="states" value="SD" data-name="South Dakota" data-counties="66"> South Dakota</label>
+              <label><input type="checkbox" name="states" value="TN" data-name="Tennessee" data-counties="95"> Tennessee</label>
+              <label><input type="checkbox" name="states" value="TX" data-name="Texas" data-counties="254"> Texas</label>
+              <label><input type="checkbox" name="states" value="UT" data-name="Utah" data-counties="29"> Utah</label>
+              <label><input type="checkbox" name="states" value="VT" data-name="Vermont" data-counties="14"> Vermont</label>
+              <label><input type="checkbox" name="states" value="VA" data-name="Virginia" data-counties="98"> Virginia</label>
+              <label><input type="checkbox" name="states" value="WA" data-name="Washington" data-counties="39"> Washington</label>
+              <label><input type="checkbox" name="states" value="WV" data-name="West Virginia" data-counties="55"> West Virginia</label>
+              <label><input type="checkbox" name="states" value="WI" data-name="Wisconsin" data-counties="72"> Wisconsin</label>
+              <label><input type="checkbox" name="states" value="WY" data-name="Wyoming" data-counties="23"> Wyoming</label>
+            </div>
+            <p class="cl-err" id="ps-states-e" aria-live="polite"></p>
+          </fieldset>
+          <div class="cl-f">
+            <label for="ps-name">Your name</label>
+            <input id="ps-name" name="name" type="text" autocomplete="name" maxlength="80" required aria-describedby="ps-name-e">
+            <p class="cl-err" id="ps-name-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-f">
+            <label for="ps-email">Your email</label>
+            <input id="ps-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="ps-email-e">
+            <p class="cl-err" id="ps-email-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-f full">
+            <label for="ps-message">Anything else <span class="opt">(optional)</span></label>
+            <textarea id="ps-message" name="message" maxlength="1000" rows="3" aria-describedby="ps-message-e ps-message-n" placeholder="Questions, best time to call"></textarea>
+            <p class="le-n" id="ps-message-n">0 / 1000</p>
+            <p class="cl-err" id="ps-message-e" aria-live="polite"></p>
+          </div>
+          <div class="cl-go">
+            <button type="submit" class="cl-btn" id="ps-send">Ask about these states</button>
+            <p class="cl-note">It comes to Sig. He replies by email with the price for the states you ticked. Your details are used only to answer you.</p>
+          </div>
+        </form>
+        <div class="cl-out" id="ps-out" aria-live="polite"></div>
+        <noscript><p>The preview and the form need JavaScript. Email <a href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor">sig@farmers1st.com</a> with your business name and the states you want.</p></noscript>
+      </section>
+
+      <h2>The figures stay USDA&rsquo;s</h2>
+      <ul>
+        <li>Every figure on the PRF pages comes from USDA RMA&rsquo;s own rates, county base values and PRF index record.</li>
+        <li>The pages stay neutral: no lead forms, no &ldquo;best&rdquo; months, no routing to an agent.</li>
+        <li>A sponsor has no say over any figure. Every block is labeled Sponsor, and its link is marked as sponsored.</li>
+        <li>The PRF pages tell readers that a sponsor may sell crop insurance.</li>
+      </ul>
+
+      <h2>The terms</h2>
+      <ul>
+        <li><b>One business per state.</b> Take as many states as you want.</li>
+        <li><b>Prepaid.</b> The placement is guaranteed through Dec 31, and you get the first say on renewing for the next year.</li>
+        <li><b>Price on request.</b> It depends on the state. Sig replies with a price for the states you ask about.</li>
+        <li><b>Live once paid.</b> Sig puts the block up himself and it shows on every page in the state at once. He can turn a block down.</li>
+        <li><b>Traffic on request.</b> The PRF pages are new this fall, so ask for the latest figures for your state.</li>
+        <li>The advertising rules set by your company and your state apply to your block.</li>
+      </ul>
+
+      <h2>Questions</h2>
+      <div class="le-faq">
+        <details><summary>What does it cost to sponsor PRF in a state?</summary><p>The price is on request, and it depends on the state. Send the form on this page or email Sig, and he replies with a price for the states you ask about.</p></details>
+        <details><summary>How long does a PRF sponsorship run?</summary><p>It is prepaid, and the placement is guaranteed through December 31. You get the first say on renewing for the next year. If you do not renew, your block comes down after December 31.</p></details>
+        <details><summary>Can one business sponsor more than one state?</summary><p>Yes. Each state has one sponsor, and one business can take as many states as it wants.</p></details>
+        <details><summary>Does a sponsor have any say over the PRF figures?</summary><p>No. The figures come from USDA RMA&#x27;s rates, county base values and PRF index record. A sponsor has no say over any figure, and every block is labeled Sponsor.</p></details>
+        <details><summary>Can a crop insurance agency sponsor PRF?</summary><p>Yes. The PRF pages tell readers that a sponsor may sell crop insurance. The advertising rules set by your company and your state apply to your block.</p></details>
+        <details><summary>Who runs AGSIST?</summary><p>Sigurd Lindquist, a Certified Crop Adviser (CCA). He also owns Farmers First Agri Service, a licensed crop insurance agency. Farmers First never takes a sponsor slot and gets no referrals from the PRF pages.</p></details>
+      </div>
+      <p class="le-sig">Sigurd Lindquist, Certified Crop Adviser (CCA), AGSIST. <a href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a>.</p>
+    </div>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/prf-sponsor.js?v=2"></script>
+  <script src="/components/form-post.js?v=2"></script>
+  <script src="/components/prf-sponsor-page.js?v=1"></script>
+  <script src="/components/loader.js?v=18" defer></script>
+</body>
+</html>
