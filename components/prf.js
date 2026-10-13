@@ -1054,7 +1054,7 @@
     remember();
     lookNow();
     // Panels that read the page's grid: the long-range outlook and "What the numbers would pick".
-    try { document.dispatchEvent(new CustomEvent('prf:grid', { detail: { grid: S.grid, split: cur().split } })); } catch (e) {}
+    try { document.dispatchEvent(new CustomEvent('prf:grid', { detail: { grid: S.grid, split: cur().split, st: S.st, stName: states[S.st] ? states[S.st].name : S.st } })); } catch (e) {}
     try {
       var g_ = openGrid(S.grid), s_ = cur();
       /* Kept on window.AgPrf.optCtx too: this can run before prf-optimize-ui.js has loaded (a returning

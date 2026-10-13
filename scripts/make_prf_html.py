@@ -24,7 +24,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="stylesheet" href="/components/prf.css?v=4">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -178,6 +178,7 @@ HTML = f"""<!DOCTYPE html>
             <div class="prf-yrs-p" id="prf-yrs-p"></div>
           </section>
 
+          <aside class="prf-spon prf-o2s" id="prf-spon" hidden></aside>
           <section class="prf-block prf-o5" id="prf-cmp-wrap" aria-labelledby="prf-cmp-h" hidden><h3 id="prf-cmp-h">Setup A against setup B</h3><div id="prf-cmp"></div></section>
 
           <section class="prf-o6" aria-labelledby="prf-det-h">
@@ -292,6 +293,7 @@ payment              = interval protection
     <p>Counties and grids with PRF offers for {mk("crop_year")}, by state. A grid on a state line counts in both. Each state has its own page with every county&rsquo;s values, and each county its own page with its grids and their record. New to PRF? <a href="/prf/how-prf-works">How PRF works, in plain words</a>.</p>
     <ul class="prf-states">{mk("state_list")}</ul>
 
+    <aside class="ag-sponsor-ribbon prf-spon-offer" aria-label="For businesses"><span class="ag-sponsor-tag">For businesses</span> <span class="ag-sponsor-copy"><b>Sponsor PRF in your states.</b> One business per state, on the state page and every county page in it. Own one state or as many as you like. Prepaid, with the placement guaranteed through Dec 31 and the first say on renewing.</span> <span class="ag-sponsor-price">Price on request</span> <a href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor" data-out="prf-sponsor">Ask about a state &rarr;</a></aside>
     <nav class="prf-links" aria-label="Related tools">
       <a href="/drought-monitor">Drought Monitor</a>
       <a href="/hail-map">Hail map</a>
@@ -306,8 +308,9 @@ payment              = interval protection
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
+  <script src="/components/prf-sponsor.js?v=1" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
-  <script src="/components/prf.js?v=4" defer></script>
+  <script src="/components/prf.js?v=5" defer></script>
   <script src="/components/prf-outlook.js?v=2" defer></script>
   <script src="/components/prf-optimize.js?v=4" defer></script>
   <script src="/components/prf-optimize-ui.js?v=5" defer></script>

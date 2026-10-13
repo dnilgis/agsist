@@ -79,6 +79,21 @@ def text_of(fragment):
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
+PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=1" defer></script>'
+
+
+def sponsor_ribbon(name, code, sales, yr):
+    """The unsold offer on /prf/<state>. Price on request, never printed."""
+    subj = f"PRF sponsor: {name}".replace(" ", "%20")
+    return (f'<aside class="ag-sponsor-ribbon" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}">'
+            f'<span class="ag-sponsor-tag">For businesses: sponsor this page</span> '
+            f'One business can sponsor PRF in {e(name)}: its name on this page and on every {e(name)} county page, seen by people pricing PRF here before the {sales} sales closing. '
+            f'Own one state or several. '
+            f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
+            f'<span class="ag-sponsor-price">Price on request</span> '
+            f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Advertise on this page &rarr;</a></aside>')
+
+
 def page(st, meta, facts, sd, states, BOOT, where=None):
     name, code = sd["name"], st["st"]
     f = facts["by_state"][code]
@@ -149,13 +164,11 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     # placement guaranteed to the end of the year. Kept out of the self-serve
     # monthly flow (/sponsor-apply) and out of data/sponsor-slots.json on purpose:
     # the link is not /sponsor-apply, so scripts/stamp_rates.py adds no price.
-    yr = meta["dates"]["sales_closing"][:4]
-    subj = f"PRF sponsor: {name}".replace(" ", "%20")
-    ribbon = (f'<aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">For businesses: sponsor this page</span> '
-              f'One business can sponsor PRF in {e(name)}: its name on this page, seen by people pricing PRF here before the {sales} sales closing. '
-              f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
-              f'<span class="ag-sponsor-price">Price on request</span> '
-              f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Advertise on this page &rarr;</a></aside>')
+    # 2026-10-13: one business per state, on this page and every county page in
+    # it; a business may own one state or several. A sale is a line in
+    # data/prf-sponsors.json, and components/prf-sponsor.js swaps this offer for
+    # the sponsor in the browser (data-prf-spon), so no page is rebuilt to sell.
+    ribbon = sponsor_ribbon(name, code, sales, meta["dates"]["sales_closing"][:4])
     subrow = ", ".join(f"{int(round(sub[c] * 100))}% at {c}%" for c in sorted(sub, key=int))
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -165,7 +178,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="stylesheet" href="/components/prf.css?v=4">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -240,6 +253,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
+  {PRF_SPONSOR_JS}
 </body>
 </html>
 """
@@ -322,7 +336,7 @@ def guide(meta, facts, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="stylesheet" href="/components/prf.css?v=4">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">

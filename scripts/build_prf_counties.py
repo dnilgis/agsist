@@ -228,7 +228,7 @@ def page(ctx):
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="stylesheet" href="/components/prf.css?v=4">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>
@@ -295,6 +295,7 @@ def page(ctx):
     </div>
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
+    <p class="prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}">For businesses: <a href="/prf/{st_slug}#sponsor">Sponsor PRF in {e(stn)}</a></p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     <p class="rp-promo" data-rain-print-promo="see" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
@@ -302,6 +303,7 @@ def page(ctx):
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
+  {S.PRF_SPONSOR_JS}
 </body>
 </html>
 """
