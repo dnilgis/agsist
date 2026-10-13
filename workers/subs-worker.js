@@ -5,6 +5,16 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.18 (2026-10-13): RAIN GAUGE WAITING LIST. /notice takes one more topic,
+ *   "rain-gauge" (updates on the rain gauge Sig is designing, from
+ *   /rain-gauge). With that topic only, an optional 5-digit zip and an
+ *   optional one-line note (what the reader wants the gauge to do, control
+ *   characters stripped, 280 characters at most) are kept on the topic:
+ *   note:<email>.t["rain-gauge"] = {ts, src, zip?, note?}. /notice-list
+ *   (token only) returns zip and note on rows that have them. Every other
+ *   topic and route answers exactly as before; /count's notices {topic: n}
+ *   counts it. scripts/send_notice.py has no template for it, so nothing
+ *   is mailed. No new binding and no new secret.
  * v5.17 (2026-10-13): RAIN PRINT BUSINESS MINIMUM 5. kind rain-print-business
  *   takes quantity 5 to 500 (was 10 to 500), Sig's decision; nothing else
  *   changes. 4 and under still answer "invalid quantity".
@@ -357,7 +367,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.17): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.18): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -608,11 +618,14 @@ async function subAll(env) {
 
 // v5.11: notice topics. rent:<state> is one email when NASS puts out the next
 // county cash rents for that state. arcplc:<YYYY-MM-DD> is one reminder a week
-// before that FSA ARC/PLC signup deadline. Anything else is refused.
+// before that FSA ARC/PLC signup deadline. v5.18: rain-gauge is the waiting
+// list for the rain gauge (no mail goes out on it). Anything else is refused.
 const NOTE_MAX = 20;
+const NOTE_TEXT_MAX = 280;   // v5.18: the rain-gauge note, one line
 const RENT_STATES = new Set(("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy").split(" "));
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
+  if (t === "rain-gauge") return t;
   let m = /^rent:([a-z]{2})$/.exec(t);
   if (m) return RENT_STATES.has(m[1]) ? t : null;
   m = /^arcplc:(\d{4})-(\d{2})-(\d{2})$/.exec(t);
@@ -1150,7 +1163,15 @@ async function handle(req, env) {
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
-      if (!(topic in r.t)) r.t[topic] = { ts: Date.now(), src };
+      if (!(topic in r.t)) {
+        r.t[topic] = { ts: Date.now(), src };
+        // v5.18: the rain gauge list keeps an optional ZIP and a one-line note
+        if (topic === "rain-gauge") {
+          const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
+          if (z) r.t[topic].zip = z;
+          if (nt) r.t[topic].note = nt;
+        }
+      }
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
       if (daily) await putSub(env, email, src, b.zip, b.reports);
@@ -1392,7 +1413,10 @@ async function handle(req, env) {
         for (const [topic, v] of Object.entries(r.t)) {
           if (want && !(want.endsWith(":") ? topic.startsWith(want) : topic === want)) continue;
           if (unsent && v && v.sent) continue;
-          out.push({ email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null });
+          const row = { email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null };
+          if (v && v.zip) row.zip = v.zip;     // v5.18: rain-gauge only
+          if (v && v.note) row.note = v.note;
+          out.push(row);
         }
       }
       return json(out, 200);

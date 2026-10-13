@@ -4,7 +4,7 @@
 Run by .github/workflows/sponsor-report.yml right after build_audience.py,
 with the same LIST_URL + LIST_TOKEN. It reads the subs worker's token-gated
 /list?format=json (one row per address: src, zip, ts) and /notice-list (one
-row per address and one-time notice topic: rent:<st>, arcplc:<date>) and
+row per address and one-time notice topic: rent:<st>, arcplc:<date>, rain-gauge) and
 writes how many came from each page ask, how many gave a ZIP, the last 30
 days by day, and the notice sign-ups by topic. /seo-report shows it.
 
@@ -150,7 +150,8 @@ def selftest():
     ]
     notes = [{"email": "a@x.com", "topic": "rent:wi", "ts": ms(2026, 10, 11), "sent": None},
              {"email": "b@x.com", "topic": "rent:ia", "ts": ms(2026, 9, 1), "sent": 1},
-             {"email": "c@x.com", "topic": "arcplc:2026-12-11", "ts": ms(2026, 10, 12), "sent": None}]
+             {"email": "c@x.com", "topic": "arcplc:2026-12-11", "ts": ms(2026, 10, 12), "sent": None},
+             {"email": "d@x.com", "topic": "rain-gauge", "ts": ms(2026, 10, 13), "sent": None, "zip": "54728", "note": "n"}]
     o = build(recs, notes, today)
     s = {b["src"]: b for b in o["bySource"]}
     t(o["subscribers"] == 5 and o["withZip"] == 2 and o["reportDays"] == 4, "totals, ZIPs and report-day opt-ins")
@@ -162,6 +163,8 @@ def selftest():
     n = {x["topic"]: x for x in o["notices"]}
     t(n["rent"]["total"] == 2 and n["rent"]["sent"] == 1 and n["rent"]["detail"] == {"wi": 1, "ia": 1}, "rent notices by state")
     t(n["arcplc"]["last7"] == 1, "ARC/PLC notices")
+    t(n["rain-gauge"]["total"] == 1 and n["rain-gauge"]["detail"] == {}, "rain gauge waiting list: a count only")
+    t("54728" not in json.dumps(o) and "d@x.com" not in json.dumps(o), "no ZIP, note or address from the notice list in the output")
     t("notices" not in build(recs, None, today), "a failed notice list leaves the section out")
     t("@" not in json.dumps(o), "no address in the output")
     print("selftest " + ("passed" if ok else "FAILED"))

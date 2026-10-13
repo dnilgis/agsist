@@ -445,6 +445,48 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   A(okN === 240 && last === 429, 'rp-short: 240 posts an hour per address, then 429');
 }
 
+// v5.18: the rain gauge waiting list is a /notice topic with an optional ZIP and one-line note
+{
+  const nPost = (b, h = {}) => w.fetch(new Request('https://x.dev/notice', { method: 'POST',
+    headers: Object.assign({ 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.9.0.' + (++ipN) }, h),
+    body: JSON.stringify(b) }), env);
+  const nrec = (e) => JSON.parse(store.get('note:' + e));
+  r = await nPost({ email: 'Gauge@Farm.com', topic: 'Rain-Gauge', source: 'rain-gauge', zip: '54728', note: 'Read it\r\nfrom my truck' });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'rain-gauge' && j.daily === false, 'rain-gauge: stored, answers {ok, topic, daily:false}');
+  let g = nrec('gauge@farm.com').t['rain-gauge'];
+  A(g.src === 'rain-gauge' && g.zip === '54728' && g.note === 'Read it from my truck' && Number.isFinite(g.ts), 'rain-gauge: zip kept, note on one line');
+  A(!store.has('sub:gauge@farm.com'), 'rain-gauge alone does not join the daily list');
+  r = await nPost({ email: 'g2@farm.com', topic: 'rain-gauge', zip: '5472', note: 'n'.repeat(400) });
+  g = nrec('g2@farm.com').t['rain-gauge'];
+  A(r.status === 200 && !('zip' in g) && g.note.length === 280, 'rain-gauge: a bad ZIP is dropped, the note is cut at 280');
+  r = await nPost({ email: 'g3@farm.com', topic: 'rain-gauge' });
+  g = nrec('g3@farm.com').t['rain-gauge'];
+  A(r.status === 200 && !('zip' in g) && !('note' in g), 'rain-gauge: ZIP and note are optional');
+  r = await nPost({ email: 'g4@farm.com', topic: 'rent:wi', zip: '54728', note: 'x' });
+  g = nrec('g4@farm.com').t['rent:wi'];
+  A(!('zip' in g) && !('note' in g), 'other topics keep no ZIP or note, as before');
+  r = await nPost({ email: 'gauge@farm.com', topic: 'rain-gauge', zip: '50010', note: 'changed' });
+  A(nrec('gauge@farm.com').t['rain-gauge'].note === 'Read it from my truck', 'rain-gauge: asking twice keeps the first sign-up');
+  for (const [b, h, code, why] of [[{ email: 'g5@farm.com', topic: 'rain-gauges' }, {}, 400, 'near-miss topic'],
+      [{ email: 'g5@farm.com', topic: 'rain-gauge' }, { Origin: 'https://evil.example' }, 403, 'foreign origin'],
+      [{ email: 'nope', topic: 'rain-gauge' }, {}, 400, 'bad email']]) {
+    r = await nPost(b, h); A(r.status === code && !store.has('note:g5@farm.com'), 'rain-gauge refuses ' + why);
+  }
+  r = await nPost({ email: 'g6@farm.com', topic: 'rain-gauge', _gotcha: 'x' });
+  A(r.status === 200 && !store.has('note:g6@farm.com'), 'rain-gauge honeypot swallows');
+  r = await call('/notice-list?token=tok&topic=rain-gauge'); const NL = await r.json();
+  A(NL.length === 3 && NL.some(x => x.email === 'gauge@farm.com' && x.zip === '54728' && x.note === 'Read it from my truck') &&
+    NL.some(x => x.email === 'g3@farm.com' && !('zip' in x) && !('note' in x)), '/notice-list carries zip and note when given');
+  r = await call('/notice-list?topic=rain-gauge'); A(r.status === 403, '/notice-list without the token is 403');
+  r = await call('/count?token=tok'); j = await r.json();
+  A(j.notices && j.notices['rain-gauge'] === 3, '/count notices counts rain-gauge');
+  // the shared limit: 10 an hour per address on /notice
+  const one = { 'CF-Connecting-IP': '198.51.100.77' }; const st = [];
+  for (let i = 0; i < 11; i++) st.push((await nPost({ email: 'rl' + i + '@farm.com', topic: 'rain-gauge' }, one)).status);
+  A(st.slice(0, 10).every(c => c === 200) && st[10] === 429, 'rain-gauge sign-ups share /notice\'s rate limit');
+}
+
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');
 r = await call('/nope'); A(r.status === 404, 'unknown path 404');
