@@ -231,8 +231,12 @@
       '<title id="' + id + 'T">' + esc(title) + '</title><desc id="' + id + 'D">' + esc(desc) + '</desc>' +
       '<rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W0 + 2 * b) + '" height="' + (H0 + 2 * b) + '" fill="#FFFFFF"/>';
   }
-  function close(I, E, o, bandY) {
-    if (E.preview) o.push(previewBand(E, bandY));
+  // bandYs: where the preview band may go, best first; the first that covers no label wins
+  function close(I, E, o, bandYs, placed) {
+    if (E.preview) {
+      var by = bandYs.filter(function (y) { return !(placed || []).some(function (b) { return hit(b, { x: 0, y: y - 40, w: W0, h: 80 }); }); })[0];
+      o.push(previewBand(E, by === undefined ? bandYs[0] : by));
+    }
     if (I.watermark) o.push(watermark());
     o.push('</svg>');
     return o.join('');
@@ -442,7 +446,7 @@
 
     o.push(qrMark(I.qr, 1690, 1100));
     last_skipped = skipped;
-    return close(I, E, o, (PTOP + PB) / 2 + 60);
+    return close(I, E, o, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], placed);
   }
 
   // ======================================================================= R2
@@ -631,7 +635,7 @@
     o.push(T(ML, 1100, foot.join('  ·  '), fst));
     o.push(qrMark(I.qr, X1, 1100));
     last_skipped = skipped;
-    return close(I, E, o, (G + RB) / 2 + 40);
+    return close(I, E, o, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], placed);
   }
 
   var last_skipped = [];
