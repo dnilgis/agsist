@@ -78,7 +78,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install yfinance
+        run: pip install yfinance==1.7.0
 
       # Selftests gate the fetch: if the ONE expiry/roll rule or the roll marker
       # is broken, fail RED here — before a bad feed gets committed 10x/session.

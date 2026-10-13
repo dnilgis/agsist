@@ -85,7 +85,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install
-        run: pip install --quiet openpyxl pyarrow
+        run: pip install --quiet openpyxl==3.1.5 pyarrow==26.0.0
 
       # Offline, no keys. If a parser is broken there is no point downloading
       # a gigabyte of RMA files to find out.

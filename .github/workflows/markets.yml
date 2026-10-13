@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests==2.34.2
 
       - name: Fetch markets
         run: python scripts/fetch_markets.py

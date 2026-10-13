@@ -127,6 +127,8 @@ jobs:
       skip: ${{ steps.g.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - id: g
         env:
           IN_HEARTBEAT: ${{ github.event.inputs.heartbeat || 'false' }}
@@ -308,7 +310,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install feedparser requests pillow
+        run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
 
       # The gate's own selftest runs first. It regression-locks the two holes that
       # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the

@@ -83,6 +83,7 @@ jobs:
       - if: steps.window.outputs.open == '1'
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           sparse-checkout: |
             scripts/cron_gate.py
             data/cot.json
@@ -158,7 +159,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
-        run: pip install --quiet yfinance pandas
+        run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
       # ── THE HOT PATH ─────────────────────────────────────────────────────
       # Everything here is O(one week). The twenty-year archive is NOT

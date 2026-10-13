@@ -35,7 +35,7 @@ jobs:
         # rebuild_archive_html.py imports generate_daily.py at module level,
         # which imports requests + feedparser. No API keys needed — the
         # rebuild only calls the HTML template function, never the generator.
-        run: pip install feedparser requests
+        run: pip install feedparser==6.0.14 requests==2.34.2
 
       - name: Rebuild all archive pages
         run: python scripts/rebuild_archive_html.py

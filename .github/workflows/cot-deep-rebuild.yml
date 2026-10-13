@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install --quiet yfinance pandas
+        run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
       - name: Prove the readers and the calendar
         run: |
