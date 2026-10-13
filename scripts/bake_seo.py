@@ -118,6 +118,7 @@ def build_ctx(today):
         "crop_progress": _load("crop-progress.json"),
         "basis": _load("transport/basis.json"),
         "fertilizer": _load("fertilizer.json"),
+        "dairy": _load("dairy-data.json"),
     }
 
 
@@ -819,6 +820,59 @@ def seo_fertilizer(c):
     return title, desc
 
 
+# Added 2026-10-13. /milk-prices was titled as a tool ("Class III & IV Milk
+# Prices and Your Milk Check, Explained") while the searcher wants the month's
+# number. The body figures are baked from the same file by seed_static.py
+# (seed_milk) in the same runs, so the title and the strip cannot disagree.
+# The month is the class month the file names, never the run date. Once the
+# next month's announcement is due and the file does not have it (7 CFR
+# 1000.53: on or before the 5th), the page goes back to the descriptive title
+# rather than keep a stale number in the result.
+MILK_PAGE = "milk-prices.html"
+MILK_TITLE = "Class III & IV Milk Prices and Your Milk Check, Explained" + SUFFIX
+MILK_DESC = ("USDA announced Class III and Class IV milk prices, the all-milk price and the DMC "
+             "margin, plus the federal order formula that builds your milk check. No login.")
+
+
+def milk_month(d, today):
+    """(month index, label) of the class prices in the dairy file when they are
+    still the newest that must exist, else None."""
+    import re as _re
+    m = _re.match(r"^(\d{4})-(\d{2})$", str((d or {}).get("class_month_key") or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return None
+    idx = int(m.group(1)) * 12 + int(m.group(2)) - 1
+    now = today.year * 12 + today.month - 1
+    due = now - (1 if today.day > 5 else 2)
+    if idx < due or idx > now:
+        return None
+    return idx, f"{MONTHS[idx % 12]} {idx // 12}"
+
+
+def seo_milk(c):
+    from seed_static import _fixed
+    d = c.get("dairy")
+    if not d:
+        return None
+    c3, c4 = d.get("class3"), d.get("class4")
+    ok = all(isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 for v in (c3, c4))
+    mm = milk_month(d, c["today"]) if ok else None
+    if not mm:
+        return MILK_TITLE, MILK_DESC
+    idx, label = mm
+    title = f"USDA Class III Milk Price {label}: ${_fixed(c3, 2)}{SUFFIX}"
+    p3 = d.get("class3_prev")
+    chg = ""
+    if isinstance(p3, (int, float)) and not isinstance(p3, bool) and p3 > 0:
+        x = float(_fixed(c3 - p3, 2))
+        chg = (f", {'up' if x > 0 else 'down'} ${_fixed(abs(x), 2)} from {MONTHS[(idx + 11) % 12]}"
+               if x else f", unchanged from {MONTHS[(idx + 11) % 12]}")
+    head = f"USDA announced {label} Class III at ${_fixed(c3, 2)}/cwt{chg}, Class IV ${_fixed(c4, 2)}."
+    tail = " All-milk by state and the formula behind your milk check."
+    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    return title, desc
+
+
 PAGES = {
     "usda-calendar.html":    (seo_usda_calendar, frozenset({"title", "desc"})),
     "cot.html":              (seo_cot,           frozenset({"title", "desc"})),
@@ -835,6 +889,7 @@ PAGES = {
     "markets.html":          (seo_markets,       frozenset({"title", "desc"})),
     "basis.html":            (seo_basis,         frozenset({"title", "desc", "alt"})),
     "fertilizer.html":       (seo_fertilizer,    frozenset({"title", "desc"})),
+    MILK_PAGE:               (seo_milk,          frozenset({"title", "desc"})),
 }
 for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
@@ -1005,6 +1060,8 @@ def selftest():
            "cond_yield": {"crops": {"corn": {"states": {"IA": {"weeks": {
                "22": {"r2": 0.003, "n": 26}, "35": {"r2": 0.59, "n": 26},
                "39": {"r2": 0.64, "n": 26}}}}}}},
+           "dairy": {"class_month": "July 2026", "class_month_key": "2026-07",
+                     "class3": 17.5, "class4": 18.04, "class3_prev": 17.62},
            "crop_progress": {"in_season": True,
                              "corn": {"good_excellent": 57, "good_excellent_prev_year": 66},
                              "soybeans": {"good_excellent": 58}},
@@ -1395,6 +1452,29 @@ def selftest():
     ck("fertilizer is skipped when the newest quote is over 120 days old",
        seo_fertilizer(dict(ctx, today=date(2026, 12, 15))) is None)
     ck("fertilizer skipped with no file", seo_fertilizer(dict(ctx, fertilizer=None)) is None)
+
+    print("\nmilk: the class month the file names, 50-60 characters, dropped when due")
+    t, d = seo_milk(ctx)
+    ck("milk title names the class month and the Class III price",
+       t == "USDA Class III Milk Price July 2026: $17.50 | AGSIST", t)
+    ck("milk description names both classes and the change",
+       "July 2026 Class III at $17.50/cwt, down $0.12 from June, Class IV $18.04." in d, d)
+    lens = [len(seo_milk(dict(ctx, today=date(2026, k + 2, 10),
+                              dairy=dict(ctx["dairy"], class3=px,
+                                         class_month_key=f"2026-{k + 1:02d}")))[0])
+            for k in range(11) for px in (9.99, 29.99)]   # Jan-Nov 2026, priced the next month
+    ck("every month and price keeps the milk title within 50-60 characters",
+       all(50 <= n <= 60 for n in lens), str(sorted(set(lens))))
+    ck("milk title and description carry no em dash", "\u2014" not in t + d)
+    ck("on the 3rd the month before last is still current",
+       seo_milk(dict(ctx, today=date(2026, 9, 3)))[0].startswith("USDA Class III Milk Price July"))
+    ck("on the 6th it is due: back to the descriptive title, no stale number",
+       seo_milk(dict(ctx, today=date(2026, 9, 6))) == (MILK_TITLE, MILK_DESC))
+    ck("a class month in the future is not titled",
+       seo_milk(dict(ctx, dairy=dict(ctx["dairy"], class_month_key="2026-09"))) == (MILK_TITLE, MILK_DESC))
+    ck("a file with no Class III is not titled",
+       seo_milk(dict(ctx, dairy=dict(ctx["dairy"], class3=None))) == (MILK_TITLE, MILK_DESC))
+    ck("no dairy file: the page is left alone", seo_milk(dict(ctx, dairy=None)) is None)
 
     print("\nstamping")
     html = ('<title>Old</title>\n<meta name="description" content="old">\n'
