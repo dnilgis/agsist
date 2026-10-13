@@ -173,6 +173,19 @@ def ask_last_year(src, st, sids, as_of_last):
 
 # ---------------------------------------------------------------- one state
 
+def nearby(pool, g, mi=None):
+    """The other gauges in pool within mi miles (default R.STUCK_NEAR_MI) of g."""
+    mi = mi or R.STUCK_NEAR_MI
+    dlat = mi / 69.0
+    out = []
+    for h in pool:
+        if h is g or h["sid"] == g["sid"] or abs(h["lat"] - g["lat"]) > dlat:
+            continue
+        if R.miles(g["lat"], g["lon"], h["lat"], h["lon"]) <= mi:
+            out.append(h)
+    return out
+
+
 REACH_SLACK = 15   # miles past the county outline's farthest corner a station may sit
 
 def build_state(src, st, year, edate, C, fetched):
@@ -181,18 +194,24 @@ def build_state(src, st, year, edate, C, fetched):
     dates = R.days_of(year, f"{year}-01-01", n)
     mine = {f: c for f, c in C.items() if c["st"] == st}
     cands = {}
+    pool = []      # every gauge in the state with a place: the check on stuck gauges
     seen = 0
     for s in rows:
         meta = s.get("meta") or {}
-        fips = str(meta.get("county") or "")
-        if fips not in mine or not meta.get("ll") or not meta.get("sids"):
+        if not meta.get("ll") or not meta.get("sids"):
             continue
-        seen += 1
         data = [R.row_values(r) for r in (s.get("data") or [])][:n]
         if len(data) < n:
             data += [["M", "M"]] * (n - len(data))
         vals = [r[0] if r else "M" for r in data]
         norms = [r[1] if len(r) > 1 else "M" for r in data] if has_norm else None
+        gauge = {"sid": meta["sids"][0], "lat": meta["ll"][1], "lon": meta["ll"][0],
+                 "parsed": [R.parse_pcpn(v) for v in vals], "nv": R.daily_normals(dates, norms)}
+        pool.append(gauge)
+        fips = str(meta.get("county") or "")
+        if fips not in mine:
+            continue
+        seen += 1
         summ, why = R.summarize(year, dates, vals, norms, edate)
         lon, lat = meta["ll"][0], meta["ll"][1]
         c = mine[fips]
@@ -206,8 +225,22 @@ def build_state(src, st, year, edate, C, fetched):
         if c.get("reach") and mi > c["reach"] + REACH_SLACK:
             print(f"  {st} {fips}: skipping {meta.get('name')} ({mi:.0f} mi out, the county reaches {c['reach']:.0f})", flush=True)
             continue
-        cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals}
+        cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals, "gauge": gauge}
         cands.setdefault(fips, []).append(cand)
+    # a run of zeros the gauges around it did not have: leave that gauge out
+    # so the next one in the county can answer
+    for fips, cs in sorted(cands.items()):
+        for x in cs:
+            g = x["gauge"]
+            if not x["summary"] or not any(j - i + 1 >= R.STUCK_MIN_DAYS for i, j in R.zero_runs(g["parsed"])):
+                continue
+            bad = R.stuck_run(g["parsed"], g["nv"], [(h["parsed"], h["nv"]) for h in nearby(pool, g)])
+            if bad:
+                i, j, u, got = bad
+                print(f"  {st} {fips}: skipping {x['meta'].get('name')} (0.00 for {j - i + 1} days, {dates[i]} to {dates[j]}, "
+                      f"usual {u:.1f} in; gauges within {R.STUCK_NEAR_MI} mi "
+                      + (f"caught {got:.1f} in)" if got is not None else "none to check)"), flush=True)
+                x["summary"], x["why"] = None, f"stuck at 0.00 {dates[i]} to {dates[j]}"
     picked, none = {}, {}
     for fips, c in sorted(mine.items()):
         ok = sorted((x for x in cands.get(fips, []) if x["summary"]), key=R.rank_key)
@@ -468,6 +501,32 @@ def selftest():
                        "AK", 2026, "2026-01-20", _C, "2026-01-21T00:00:00Z")
     ok("02185" not in _out["counties"] and "02090" in _out["counties"],
        f"a station 400 mi outside its county is skipped, not the state: {sorted(_out['counties'])}")
+    # a stuck gauge: 40 days at 0.00 where a usual year gives 4 in and the gauges
+    # around it caught rain. It is left out and the next gauge in the county answers.
+    _SC = {"19001": {"st": "IA", "name": "A County", "slug": "a", "lat": 42.0, "lon": -93.0, "reach": 30},
+           "19003": {"st": "IA", "name": "B County", "slug": "b", "lat": 42.0, "lon": -93.4, "reach": 30}}
+
+    def _wet(i, dry):
+        return "0.00" if dry and 30 <= i < 70 else ("0.30" if i % 3 == 0 else "0.00")
+
+    def _g(name, sid, ll, fips, dry, nrm="0.10", gap=False):
+        return {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips},
+                "data": [["M" if gap and i == 5 else _wet(i, dry), nrm] for i in range(100)]}
+
+    def _pick(rows):
+        o = build_state(_Src(rows), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
+        return o["counties"].get("19001", {}).get("station", {}).get("raw")
+    _near = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", False, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", False)]
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _near) == "GOOD",
+       f"a gauge at 0.00 for 40 days while its neighbors caught rain is left out: {_pick([_g('STUCK', '1 2', [-93.0, 42.0], '19001', True)] + _near)}")
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="M")] + _near) == "GOOD",
+       "with no normal of its own, the neighbors' normals say what a usual year would have given")
+    _dry = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", True, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", True)]
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _dry) == "STUCK",
+       "a dry spell every gauge around shared is real: the most complete gauge still answers")
+    _des = [_g(x[0], x[1], x[2], x[3], False, nrm="0.01", gap=x[4]) for x in (("GOOD", "2 2", [-93.05, 42.05], "19001", True), ("NEAR", "3 2", [-93.3, 42.0], "19003", False))]
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="0.01")] + _des) == "STUCK",
+       "desert: 40 days at 0.00 is 0.4 in of usual, not a stuck gauge")
     # Ocracoke is in Hyde County NC, but the simplified outline leaves the island out
     _H = {"37095": {"st": "NC", "name": "Hyde County", "slug": "h", "lat": 35.5294, "lon": -76.2645, "reach": 24.2}}
     _out = build_state(_Src([_row("OCRACOKE", "316349 2", [-75.9872, 35.1075], "37095")]),

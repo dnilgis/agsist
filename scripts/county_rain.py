@@ -332,16 +332,9 @@ def summarize(year, dates, vals, norms, edate):
         return None, f"{round(100 * reported / n)}% of days reported"
     # normals: a reported day whose normal is missing withholds the comparison,
     # except Feb 29, which takes Feb 28's normal (NOAA's normals are 365 days)
-    nv = None
-    if norms is not None:
-        nv = []
-        for i, d in enumerate(dates):
-            x, _ = parse_pcpn(norms[i])
-            if x is None and d[5:] == "02-29" and i > 0:
-                x, _ = parse_pcpn(norms[i - 1])
-            nv.append(x)
-        if any(nv[i] is None for i, (v, _) in enumerate(parsed) if v is not None):
-            nv = None
+    nv = daily_normals(dates, norms)
+    if nv is not None and any(nv[i] is None for i, (v, _) in enumerate(parsed) if v is not None):
+        nv = None
     total = usual = 0.0
     trace = acc = unsplit = 0
     months = {}
@@ -415,6 +408,96 @@ def summarize(year, dates, vals, norms, edate):
         "dry": list(dry) if dry else None,
         "cum": cum,
     }, "ok"
+
+
+# ---------------------------------------------------------------- stuck gauges
+
+# A run of plain 0.00 days long enough that a usual year would have put 3
+# inches or more in the gauge, while the gauges around it caught rain, is a
+# stuck, clogged or unread gauge, not a dry spell (2026-10-13: Moultrie GA,
+# 61 days at zero from Feb 21 while the stations around it had runs of 19;
+# Fort Lauderdale Executive airport, 47 days in Jan and Feb). The gauges
+# around it are the check: in the 2026 Texas drought whole regions ran 50 to
+# 70 days at zero together, and those runs are real. Desert runs never come
+# near 3 inches of usual (Yuma's 59 days from Apr 14 are about 0.14 in).
+STUCK_USUAL = 3.0       # inches of usual rain over the run
+STUCK_MIN_DAYS = 7      # shorter runs are not looked at
+STUCK_NEAR_MI = 40      # gauges this close are the check
+STUCK_NEAR_CATCH = 1.0  # their median catch over the run that proves rain fell
+
+
+def daily_normals(dates, norms):
+    """NOAA's daily normal for each day (None where ACIS gave none), Feb 29
+    taking Feb 28's. None when there are no normals at all."""
+    if norms is None:
+        return None
+    nv = []
+    for i, d in enumerate(dates):
+        x, _ = parse_pcpn(norms[i])
+        if x is None and d[5:] == "02-29" and i > 0:
+            x, _ = parse_pcpn(norms[i - 1])
+        nv.append(x)
+    return nv
+
+
+def zero_runs(parsed):
+    """(first, last) index of each run of plain 0.00 days. A trace, an S or A
+    day, or a gap ends a run, as in the page's dry stretch."""
+    out, start = [], None
+    for i, (v, f) in enumerate(parsed):
+        if v is not None and f == "" and v == 0:
+            if start is None:
+                start = i
+        else:
+            if start is not None:
+                out.append((start, i - 1))
+            start = None
+    if start is not None:
+        out.append((start, len(parsed) - 1))
+    return out
+
+
+def _median(xs):
+    xs = sorted(xs)
+    n = len(xs)
+    return None if not n else xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2
+
+
+def _span_normal(nv, i, j):
+    if nv is None or j >= len(nv) or any(nv[k] is None for k in range(i, j + 1)):
+        return None
+    return sum(nv[i:j + 1])
+
+
+def _span_catch(parsed, i, j):
+    """Rain over days i..j, or None when under MIN_SHARE of them reported."""
+    if j >= len(parsed):
+        return None
+    got = [v for v, _ in parsed[i:j + 1] if v is not None]
+    return sum(got) if len(got) >= MIN_SHARE * (j - i + 1) else None
+
+
+def stuck_run(parsed, nv, near):
+    """The first run of 0.00 days that a working gauge could not have had, or None.
+    parsed: parse_pcpn() of each day; nv: daily_normals() (or None);
+    near: [(parsed, nv)] of the gauges within STUCK_NEAR_MI, on the same days.
+    Usual over the run is the station's own normals, or the median of the
+    nearby gauges' normals when it has none. With 3 in or more of usual, the
+    run is stuck unless the nearby gauges' median catch over it is under 1 in
+    (they were dry too). With no nearby gauge to check against, it is stuck:
+    withheld, not guessed. Returns (first, last, usual, nearby catch or None)."""
+    for i, j in zero_runs(parsed):
+        if j - i + 1 < STUCK_MIN_DAYS:
+            continue
+        usual = _span_normal(nv, i, j)
+        if usual is None:
+            usual = _median([u for u in (_span_normal(n, i, j) for _, n in near) if u is not None])
+        if usual is None or usual < STUCK_USUAL:
+            continue
+        catch = _median([c for c in (_span_catch(p, i, j) for p, _ in near) if c is not None])
+        if catch is None or catch >= STUCK_NEAR_CATCH:
+            return i, j, round(usual, 2), (round(catch, 2) if catch is not None else None)
+    return None
 
 
 def same_date_last_year(as_of):
