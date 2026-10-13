@@ -277,7 +277,8 @@ def summarize(year, dates, vals, norms, edate):
     reason it does not qualify. dates/vals/norms are parallel (norms may be None).
     Returns (summary or None, reason)."""
     parsed = [parse_pcpn(v) for v in vals]
-    last = max((i for i, (v, _) in enumerate(parsed) if v is not None), default=-1)
+    # the last day reported; trailing S days wait for the A value that ends them
+    last = max((i for i, (v, f) in enumerate(parsed) if v is not None and f != "S"), default=-1)
     if last < 0:
         return None, "no days reported"
     as_of = dates[last]

@@ -396,6 +396,10 @@ def selftest():
     ok(s and s["wet_month"] is None, f"a skipped month that beats the wettest withholds it: {s and s['wet_month']}")
     s, _ = R.summarize(2026, d90, ["0.05"] * 31 + ["0.02"] * 28 + ["0.01"] * 10 + ["M"] * 5 + ["0.01"] * 16 + ["0.01"] * 30, ["0.1"] * 120, "2026-04-30")
     ok(s and s["wet_month"] == [0, 1.55], f"a skipped month below the wettest keeps it: {s and s['wet_month']}")
+    # trailing S days (the A that ends them has not come in) are not reported yet
+    d40 = R.days_of(2026, "2026-01-01", 40)
+    s, _ = R.summarize(2026, d40, ["0.10"] * 36 + ["S", "S", "S", "M"], ["0.05"] * 40, "2026-02-09")
+    ok(s and s["as_of"] == "2026-02-05" and s["unsplit"] == 0 and s["acc"] == 0, f"trailing S days wait for their A: {s and (s['as_of'], s['unsplit'])}")
     s, why = R.summarize(2026, dates, ["0.1", "M", "M", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1"], norms, "2026-01-12")
     ok(s is None and "83%" in why, f"under 90% of days: withheld ({why})")
     s, why = R.summarize(2026, dates, ["0.1"] * 12, norms, "2026-01-30")

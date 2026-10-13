@@ -329,7 +329,7 @@ def county_page(ctx):
                     f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1}"
                     + (f" ({year - 1} missed {days_word(lmiss)})" if lmiss else "") + f" and {inches_word(c['total'])} in {year}"
                     + (f" ({year} missed {days_word(c['missing'])})" if c["missing"] else "") + "." + (" " + vs if vs else "")))
-    if c["acc"] or c["unsplit"]:
+    if c["acc"]:
         facts.append(f"<li>On {c['acc']} {'report' if c['acc'] == 1 else 'reports'} the observer read the gauge after more than one day. "
                      "That rain counts on the day it was read, so it is in the totals but not split by day.</li>")
     facts_html = f'<ul class="rc-list">{"".join(facts)}</ul>' if facts else ""
@@ -704,6 +704,9 @@ def selftest():
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
         ok(ks and "read the gauge after more than one day" in ks, "accumulated reports explained")
+        c1 = dict(c, acc=0, unsplit=3)
+        nb = county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok("On 0 reports" not in nb, "no multi-day reports: no line about them")
         c1 = dict(c, max_day=None, acc=2)
         nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
         ok("biggest rain" not in nb and "Biggest single day" not in nb and "Biggest one-day" not in nb, "no biggest day: not claimed anywhere")
