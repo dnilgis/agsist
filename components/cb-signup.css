@@ -1,0 +1,31 @@
+/* components/cb-signup.css -- the bid email box near the top of /cash-bids
+   and every /cash-bids/<state>/<town> page (components/cb-signup.js). Page
+   tokens only, so light and dark follow the page. The placeholder holds its
+   space before the script draws it, so nothing below it jumps. */
+[data-bid-alerts]{display:block;box-sizing:border-box;margin:12px 0 14px}
+[data-bid-alerts]:not([data-cbs-ready]){min-height:214px}
+@media (min-width:700px){[data-bid-alerts]:not([data-cbs-ready]){min-height:168px}}
+.cbs{box-sizing:border-box;padding:.7rem .9rem .75rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--surface2,var(--surface));color:var(--text);font-family:var(--font-body,Inter,system-ui,sans-serif)}
+.cbs-h{margin:0 0 .35rem;font-size:1rem;font-weight:700;line-height:1.3;color:var(--text)}
+.cbs-f{display:flex;flex-direction:column;gap:.3rem;margin:0}
+.cbs-opt{display:flex;align-items:center;flex-wrap:wrap;gap:.2rem .4rem;min-height:40px;font-size:.92rem;line-height:1.35;color:var(--text)}
+.cbs-opt[hidden]{display:none}
+.cbs-ck{display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;min-height:40px}
+.cbs-ck input{flex:none;width:1.15rem;height:1.15rem;margin:0;accent-color:var(--gold)}
+.cbs-f select,.cbs-f input[type="number"],.cbs-f input[type="email"],.cbs-f input[type="tel"]{box-sizing:border-box;min-height:40px;max-width:100%;padding:.3rem .5rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,var(--bg));border:1px solid var(--border-2,var(--border));border-radius:7px}
+.cbs-f input[type="number"]{width:5.6rem;font-family:'JetBrains Mono',monospace}
+.cbs-f input[type="tel"]{width:6.4rem;font-family:'JetBrains Mono',monospace}
+.cbs-f select:focus,.cbs-f input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.cbs-f input[aria-invalid="true"]{border-color:var(--red,#ef4444)}
+.cbs-row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-top:.2rem}
+.cbs-row .cbs-em{flex:1 1 12rem;min-height:44px}
+.cbs-go{min-height:44px;padding:.45rem 1.1rem;font:inherit;font-size:.95rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:7px;cursor:pointer;white-space:nowrap}
+.cbs-go:hover{filter:brightness(.94)}
+.cbs-go:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.cbs-go[disabled]{opacity:.7;cursor:default}
+.cbs-msg{margin:0;font-size:.875rem;line-height:1.4;color:var(--red,#ef4444)}
+.cbs-msg:empty{display:none}
+.cbs-note{margin:.15rem 0 0;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
+.cbs-done{margin:0;font-size:.92rem;line-height:1.5;color:var(--text)}
+.cbs-done b{color:var(--green)}
+.cbs-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
