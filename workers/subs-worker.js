@@ -1985,55 +1985,56 @@ async function handle(req, env) {
     // Sig only: issue, void (and reissue), find. The token must come as
     // "Authorization: Bearer"; ?token= is refused here so it never sits in a URL.
     const sig = !!bearer && authed;
+    const ac = cors(req);   // the admin page on agsist.com reads these answers
     if (path === "/rp-gift/issue" && req.method === "POST") {
-      if (!sig) return json({ ok: false }, 403);
+      if (!sig) return json({ ok: false }, 403, ac);
       const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
-      if (p.error) return json({ ok: false, error: p.error }, p.status);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
       const v = rpgIssueClean(p.b);
-      if (v.error) return json({ ok: false, error: v.error }, 400);
+      if (v.error) return json({ ok: false, error: v.error }, 400, ac);
       // already_redeemed: the giver gave the address at purchase; the card only announces it.
       const out = await rpgIssue(env, v.rec, p.b.already_redeemed === true ? { status: "redeemed" } : null);
-      if (!out) return json({ ok: false, error: "no free code; try again" }, 500);
-      return json(out);
+      if (!out) return json({ ok: false, error: "no free code; try again" }, 500, ac);
+      return json(out, 200, ac);
     }
 
     if (path === "/rp-gift/void" && req.method === "POST") {
-      if (!sig) return json({ ok: false }, 403);
+      if (!sig) return json({ ok: false }, 403, ac);
       const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
-      if (p.error) return json({ ok: false, error: p.error }, p.status);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
       const b = p.b;
       let key = "";
       if (b.code) { const c = rpgNorm(b.code); if (c) key = await rpgKey(env, c); }
       else if (typeof b.key === "string" && RPG_KEY_RE.test(b.key)) key = b.key;
-      if (!key) return json({ ok: false, error: "give code or key" }, 400);
+      if (!key) return json({ ok: false, error: "give code or key" }, 400, ac);
       let rec = null;
       try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
-      if (!rec) return json({ ok: false, error: "no such card" }, 404);
-      if (rec.status === "void") return json({ ok: false, error: "already void", last4: rec.last4 }, 409);
+      if (!rec) return json({ ok: false, error: "no such card" }, 404, ac);
+      if (rec.status === "void") return json({ ok: false, error: "already void", last4: rec.last4 }, 409, ac);
       if (rec.status === "redeemed" && b.force !== true)
-        return json({ ok: false, error: "this card was used on " + rpgDay(rec.redeemed_ts) + "; send force:true to void it anyway", last4: rec.last4 }, 409);
+        return json({ ok: false, error: "this card was used on " + rpgDay(rec.redeemed_ts) + "; send force:true to void it anyway", last4: rec.last4 }, 409, ac);
       rec.status = "void"; rec.void_ts = Date.now(); rec.void_reason = oneLine(b.reason || "voided", 200);
       const out = { ok: true, voided: rec.last4, order_ref: rec.order_ref };
       if (b.reissue === true) {
         const f = { kind: rec.kind, product: rec.product, order_ref: rec.order_ref, giver: rec.giver || { name: "", email: "" },
           to: rec.to, from_line: rec.from_line, message: rec.message, lock: rec.lock, ships: rec.ships };
         const n = await rpgIssue(env, f, { replaces: rec.last4 });
-        if (!n) return json({ ok: false, error: "no free code; nothing was voided" }, 500);
+        if (!n) return json({ ok: false, error: "no free code; nothing was voided" }, 500, ac);
         rec.replaced_by = n.last4;
-        Object.assign(out, { code: n.code, card_url: n.card_url, no: n.no, last4: n.last4, key: n.key });
+        Object.assign(out, { code: n.code, card_url: n.card_url, no: n.no, last4: n.last4, key: n.key, status: n.status, ships: n.ships });
       }
       await env.SUBS.put(key, JSON.stringify(rec));
-      return json(out);
+      return json(out, 200, ac);
     }
 
     if (path === "/rp-gift/find" && req.method === "GET") {
-      if (!sig) return json({ ok: false }, 403);
+      if (!sig) return json({ ok: false }, 403, ac);
       const ref = String(url.searchParams.get("order_ref") || "").trim();
       const em = String(url.searchParams.get("email") || "").trim().toLowerCase();
       let idx = "";
       if (ref && RPG_REF_RE.test(ref)) idx = "rpg-ref:" + ref;
       else if (em && EMAIL_RE.test(em)) idx = "rpg-by:" + await hmac16("rp-gift-by|" + em, env.UNSUB_SECRET);
-      if (!idx) return json({ ok: false, error: "give order_ref or email" }, 400);
+      if (!idx) return json({ ok: false, error: "give order_ref or email" }, 400, ac);
       let keys = [];
       try { keys = JSON.parse(await env.SUBS.get(idx)) || []; } catch (e) { keys = []; }
       const cards = [];
@@ -2046,7 +2047,7 @@ async function handle(req, env) {
           order_ref: r.order_ref, ships: r.ships, issued_on: rpgDay(r.issued_ts), redeemed_on: rpgDay(r.redeemed_ts),
           void_reason: r.void_reason, replaces: r.replaces || null, replaced_by: r.replaced_by || null });
       }
-      return json({ ok: true, cards });
+      return json({ ok: true, cards }, 200, ac);
     }
 
     // The printable card's data: only with k, the card link's own signature,

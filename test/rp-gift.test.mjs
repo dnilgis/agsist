@@ -365,3 +365,47 @@ test("redeem: a lost race (a stale read at another edge) marks the second order 
   assert.equal(posts.length, 2);
   assert.deepEqual(posts.map((p) => p.gift_card_twice || ""), ["", "yes"]);
 });
+
+test("the admin page can read Sig's answers (CORS for agsist.com), and the pages are noindex", async () => {
+  const { env } = makeEnv();
+  const r = await W.fetch(new Request(H + "/rp-gift/issue", { method: "POST", body: JSON.stringify({ product: "digital", order_ref: "A1" }),
+    headers: { "Content-Type": "application/json", Authorization: "Bearer tok", Origin: "https://agsist.com" } }), env);
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get("Access-Control-Allow-Origin"), "https://agsist.com");
+  const pre = await W.fetch(new Request(H + "/rp-gift/issue", { method: "OPTIONS", headers: { Origin: "https://agsist.com" } }), env);
+  assert.match(pre.headers.get("Access-Control-Allow-Headers"), /Authorization/);
+  for (const p of ["rp-gift.html", "rp-gift-admin.html"]) {
+    const h = read(p);
+    assert.match(h, /<meta name="robots" content="noindex, nofollow">/, p);
+    assert.match(h, /<meta name="referrer" content="no-referrer">/, p);
+    assert.doesNotMatch(h, /googletagmanager|gtag\(/, p + ": no analytics");
+    assert.doesNotMatch(read("sitemap.xml"), new RegExp("agsist\\.com/" + p.replace(".html", "") + "(<|\\.html)"), p + " not in the sitemap");
+  }
+  assert.doesNotMatch(read("rp-gift-admin.html"), /[?&]token=/, "the token never goes in a URL");
+});
+
+test("rp-gift.js: the same code rules as the worker, and the banner words", () => {
+  const c = { TextEncoder, TextDecoder, URLSearchParams, atob, setTimeout, clearTimeout };
+  c.window = c;
+  vm.runInNewContext(read("components/rp-gift.js"), c);
+  const G = c.AgRpGift;
+  assert.equal(G.norm("rp 7k3m q9tw h2f4"), G.norm("RP-7K3M-Q9TW-H2F4"));
+  let body = "7K3MQ9TWH2F", m = checkOf(body);
+  while (m >= 32) { body = body.slice(0, 10) + B32[(B32.indexOf(body[10]) + 1) % 32]; m = checkOf(body); }
+  const good = "RP-" + body.slice(0, 4) + "-" + body.slice(4, 8) + "-" + body.slice(8) + B32[m];
+  assert.equal(G.norm(good.toLowerCase().replace(/-/g, " ")), good);
+  assert.equal(G.norm(good.slice(0, -1) + (good.slice(-1) === "A" ? "B" : "A")), "");
+  const s = G.summary(CODE);
+  assert.equal(s.place, "Chetek, WI"); assert.equal(s.year, 2025); assert.equal(s.name, "The Olson Farm"); assert.equal(s.style, "Roots");
+  const open = G._state({ ok: true, kind: "open", product: "framed12x18", to: "Dad", from_line: "Kate", ships: "now", status: "issued" }, good);
+  assert.equal(open.usable, true);
+  assert.match(open.text, /^A gift from Kate: one framed 12 x 18 Rain Print, shipped free\. Pick the farm and the year/);
+  const lk = G._state({ ok: true, kind: "locked", product: "print12x18", lock: { design_code: CODE, edit: "name" }, ships: "january", status: "issued" }, good);
+  assert.deepEqual(lk.locked.includes("name"), false);
+  assert.ok(lk.locked.includes("year") && lk.locked.includes("place"));
+  assert.match(lk.text, /Your 2025 print comes in January/);
+  const used = G._state({ ok: true, status: "redeemed", redeemed_on: "Dec 28, 2026" }, good);
+  assert.equal(used.usable, false); assert.match(used.text, /used on Dec 28, 2026/);
+  assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);
+  for (const f of ["components/rp-gift.js", "rp-gift.html"]) assert.doesNotMatch(read(f), /—/, f + ": no em dashes");
+});
