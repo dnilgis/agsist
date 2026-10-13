@@ -157,7 +157,8 @@ def page(ctx):
     many = ng > 1
     # ---- recent years: rows are intervals, columns are years
     rec = fx["recent"]
-    yr_head = "".join(f'<th scope="col">{x["year"]}{'<br><span class="prf-th-s">so far</span>' if x.get("open") else ""}</th>' for x in rec)
+    so_far = '<br><span class="prf-th-s">so far</span>'
+    yr_head = "".join(f'<th scope="col">{x["year"]}{so_far if x.get("open") else ""}</th>' for x in rec)
     yr_rows = "".join(f'<tr><th scope="row">{SHORT_IV[i]}</th>{"".join(pct_cell(x["iv"][i]) for x in rec)}</tr>' for i in range(11))
     open_y = next((x for x in rec if x.get("open")), None)
     open_n = sum(1 for v in (open_y["iv"] if open_y else []) if v)

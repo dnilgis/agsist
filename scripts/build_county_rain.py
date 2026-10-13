@@ -510,7 +510,9 @@ def hub_page(files, built):
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} counties'
                     + (f", middle county {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
-    desc = (f"Rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from a NOAA or CoCoRaHS station in each county: inches, percent of a usual year, month by month.")
+    sofar = "" if done else "so far "
+    yin = "in " + yw if yw[0].isdigit() else yw
+    desc = (f"Rain {sofar}{yin} for {total:,} US counties, from a NOAA or CoCoRaHS station in each county: inches, percent of a usual year, month by month.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
