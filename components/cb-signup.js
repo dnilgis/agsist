@@ -137,7 +137,7 @@
       + '<p class="cbs-ok" role="status"></p>'
       + '<p class="cbs-msg" id="' + id + '-m" role="alert"></p>'
       + '<p class="cbs-note">Free. ' + (onDaily ? '' : 'The morning email is AGSIST Daily: these bids first, then the markets. ')
-      + 'A price alert watches the boards AGSIST reads direct and starts once you confirm it by email. Every email has an unsubscribe link.</p>'
+      + 'A price alert checks the elevators whose own bid boards we read, and starts once you confirm it by email. Every email has an unsubscribe link.</p>'
       + '</form></section>';
     el.innerHTML = h;
     el.setAttribute('data-cbs-ready', '1');
