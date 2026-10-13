@@ -1,0 +1,60 @@
+# Add an elevator to the AGSIST portal and EMAIL its private link to Sig.
+# Actions -> "Add elevator to portal" -> Run workflow -> fill in -> Run.
+# The link is a password for the listing and this repo's logs are public, so it
+# is never printed: scripts/elev_create.py sends it to FORMS_TO (else
+# sig@farmers1st.com). Do not put anything private in these fields: run inputs
+# are visible in the run page. Same secrets as the form digest.
+name: Add elevator to portal
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:      { description: "id: lowercase-with-dashes, e.g. bunge-ladoga-in (cannot change later)", required: true }
+      name:    { description: "Name shown on agsist.com, e.g. Bunge Ladoga", required: true }
+      town:    { description: "Town", required: true }
+      state:   { description: "State, two letters", required: true }
+      zip:     { description: "ZIP", required: true }
+      lat:     { description: "Latitude, e.g. 39.87265", required: true }
+      lon:     { description: "Longitude, e.g. -86.80011", required: true }
+      contact: { description: "Contact name farmers see (optional)", required: false, default: "" }
+      phone:   { description: "Phone farmers call (optional)", required: false, default: "" }
+      hours:   { description: "Regular hours (optional)", required: false, default: "" }
+
+permissions:
+  contents: read
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Selftest
+        run: python3 scripts/elev_create.py --selftest
+      - name: Create and email the link
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          FORMS_TO: ${{ secrets.FORMS_TO }}
+          EL_ID: ${{ inputs.id }}
+          EL_NAME: ${{ inputs.name }}
+          EL_TOWN: ${{ inputs.town }}
+          EL_STATE: ${{ inputs.state }}
+          EL_ZIP: ${{ inputs.zip }}
+          EL_LAT: ${{ inputs.lat }}
+          EL_LON: ${{ inputs.lon }}
+          EL_CONTACT: ${{ inputs.contact }}
+          EL_PHONE: ${{ inputs.phone }}
+          EL_HOURS: ${{ inputs.hours }}
+        run: python3 scripts/elev_create.py
