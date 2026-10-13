@@ -43,6 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
@@ -205,6 +206,10 @@ def page(ctx):
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     nb_html = (" ".join(f'<a href="{h}">{e(n)}</a>' for n, h in nbrs)) if nbrs else ""
     more = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in links)
+    # The rain STATE page only: rain county pages can come and go week to week,
+    # and this build must not read data/rain (it is held to its output by --check).
+    rain = (f'<p class="prf-fine"><a href="/rain/{rain_slug(RAIN_STATES[stc])}">Rain so far this year in {e(RAIN_STATES[stc])}, county by county</a></p>'
+            if stc in RAIN_STATES else "")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": meta["built"][:10], "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
@@ -299,6 +304,7 @@ def page(ctx):
     <p class="prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}">For businesses: <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)}</a></p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
+    {rain}
     <p class="rp-promo" data-rain-print-promo="see" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
   </div>
   </main>
