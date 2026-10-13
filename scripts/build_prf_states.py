@@ -146,7 +146,7 @@ def page(st, meta, facts, sd, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=2">
+  <link rel="stylesheet" href="/components/prf.css?v=3">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -178,7 +178,7 @@ def page(st, meta, facts, sd, states, BOOT):
     <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
     <h1>PRF insurance in {e(name)}: {cy} county values and rates</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {n_co} {e(name)} {'county' if n_co == 1 else 'counties'}, on {n_grid:,} grids. The policy pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
-    <p><a class="prf-btn prf-btn-go prf-cta" href="/prf?st={code}">Open the PRF calculator for {e(name)}</a></p>
+    <p><a class="btn btn-primary prf-cta" href="/prf?st={code}">Open the PRF calculator for {e(name)}</a></p>
     <dl class="prf-figs prf-st-figs">
       <div><dt>Counties with PRF</dt><dd>{n_co}</dd></div>
       <div><dt>Grids</dt><dd>{n_grid:,}</dd></div>
@@ -192,13 +192,13 @@ def page(st, meta, facts, sd, states, BOOT):
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
-    <div class="prf-scroll"><table class="prf-sub-t prf-iv-t"><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid</th><th scope="col">Premium per $100, middle grid</th><th scope="col">Years under 90% of normal, of {ny}, middle grid</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle grid</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid</th><th scope="col">Premium per $100, middle grid</th><th scope="col">Years under 90% of normal, of {ny}, middle grid</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
     <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs), close to the national middle of $0.87. On the full premium, no month or grid stands out. The months to insure are the ones when a dry spell costs you grass or hay.</p>
     </div>
 
     <h2 id="counties">PRF in every {e(name)} county</h2>
     <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. Open a county to set acres, months and coverage.</p>
-    <div class="prf-scroll"><table class="prf-t prf-co-t"><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF county base values in every {e(name)} county, {cy}</caption><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
     {ribbon}
 
     <div class="prf-prose">
@@ -208,7 +208,7 @@ def page(st, meta, facts, sd, states, BOOT):
       <li><b>{acre}</b>: acreage report, with any lease signed and in hand.</li>
       <li><b>{bill}</b>: premium billed, no earlier than this. Premium owed comes out of any payment first.</li>
     </ul>
-    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed (2027 Crop Provisions, section 4(j)). USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">Does PRF pay back more than it costs?</a></p>
+    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed (2027 Crop Provisions, section 4(j)). USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">How payouts compare with the premium</a></p>
 
     <h2 id="faq">PRF questions in {e(name)}</h2>
     <div class="prf-faq">{faq_html}</div>
