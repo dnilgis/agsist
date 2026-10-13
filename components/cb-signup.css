@@ -3,8 +3,10 @@
    tokens only, so light and dark follow the page. The placeholder holds its
    space before the script draws it, so nothing below it jumps. */
 [data-bid-alerts]{display:block;box-sizing:border-box;margin:12px 0 14px}
-[data-bid-alerts]:not([data-cbs-ready]){min-height:214px}
-@media (min-width:700px){[data-bid-alerts]:not([data-cbs-ready]){min-height:168px}}
+/* measured at 390 and 1280 wide (town box; /cash-bids adds its ZIP row) */
+[data-bid-alerts]:not([data-cbs-ready]){min-height:346px}
+[data-bid-alerts][data-zip-input]:not([data-cbs-ready]){min-height:391px}
+@media (min-width:700px){[data-bid-alerts]:not([data-cbs-ready]){min-height:240px}[data-bid-alerts][data-zip-input]:not([data-cbs-ready]){min-height:285px}}
 .cbs{box-sizing:border-box;padding:.7rem .9rem .75rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--surface2,var(--surface));color:var(--text);font-family:var(--font-body,Inter,system-ui,sans-serif)}
 .cbs-h{margin:0 0 .35rem;font-size:1rem;font-weight:700;line-height:1.3;color:var(--text)}
 .cbs-f{display:flex;flex-direction:column;gap:.3rem;margin:0}
