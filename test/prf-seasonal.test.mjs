@@ -81,6 +81,18 @@ test("the forecast file decodes the way scripts/fetch_seasonal_models.py writes 
   assert.equal(O.blockOf(30454), Math.floor(101 / 24) + "_" + Math.floor(153 / 32));
 });
 
+test("what the Python writer encodes, the browser's reader decodes: same box, year, interval and value", () => {
+  const py = `import sys, json; sys.path.insert(0, ${JSON.stringify(ROOT + "scripts")}); import fetch_seasonal_models as F
+by = {y: {F.grid_box(30454): {i: 100 + 10 * (y - 2000) + i for i in (0, 1, 2)}, "5_10": {0: 7}} for y in range(2000, 2004)}
+print(json.dumps(F.encode_model(by, [0, 1, 2], {F.grid_box(30454), "5_10"})))`;
+  const r = spawnSync("python3", ["-c", py], { encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  const m = JSON.parse(r.stdout), sea = { models: { cfsv2: m } };
+  for (let y = 2000; y < 2004; y++) for (const i of [0, 1, 2]) assert.equal(O.seasonalRaw(sea, "cfsv2", O.boxOf(30454), i, y), 100 + 10 * (y - 2000) + i);
+  assert.equal(O.seasonalRaw(sea, "cfsv2", "5_10", 1, 2001), null);
+  assert.equal(O.seasonalRaw(sea, "cfsv2", "5_10", 0, 2003), 7);
+});
+
 test("a model's z for Y is standardized on its own forecasts before Y only, by hand", () => {
   const sea = fakeSeasonal();
   const Y = 2010, i = 2, past = [];

@@ -1,0 +1,87 @@
+name: seasonal models
+
+# Seasonal forecast models started in November (NMME through the IRI Data
+# Library; Copernicus C3S through the Climate Data Store), written to
+# data/prf/seasonal-fc.json by scripts/fetch_seasonal_models.py, then the PRF
+# optimizer's walk-forward test (scripts/prf_opt_backtest.mjs) is re-run so
+# data/prf/opt.json tests each model and their average on the new data.
+# Until this has run once, opt.json lists every model as "not tested yet".
+#
+# The Copernicus models need the CDS_API_KEY repository secret (a free
+# Climate Data Store account; the key is on the account page). Without it
+# they are skipped and said so; NMME needs no key.
+#
+# On the 15th of November and December (both November sources are out by the
+# 13th), off the hour, and by hand. A model that fails keeps what is
+# already published for it; the step is marked failed and nothing older
+# replaces anything newer.
+on:
+  schedule:
+    - cron: "41 15 15 11,12 *"   # Nov 15 and Dec 15, 15:41 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: seasonal-models
+  cancel-in-progress: false
+
+jobs:
+  models:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    permissions:
+      contents: write          # commits the two data files below
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: true   # this job pushes
+
+      - name: Offline first
+        run: python3 scripts/fetch_seasonal_models.py --selftest
+
+      - name: Install the readers
+        run: |
+          for i in 1 2 3; do
+            python3 -m pip install --quiet --user "numpy==2.1.3" "xarray==2024.10.0" "netCDF4==1.7.2" "cdsapi==0.7.4" && exit 0
+            sleep $((15 * i))
+          done
+          exit 1
+
+      - name: Fetch
+        id: fetch
+        continue-on-error: true
+        timeout-minutes: 150
+        env:
+          CDS_API_KEY: ${{ secrets.CDS_API_KEY }}
+        run: |
+          set -o pipefail
+          python3 scripts/fetch_seasonal_models.py 2>&1 | tee seasonal.log
+
+      - name: Re-run the optimizer test with the models
+        run: |
+          python3 scripts/fetch_seasonal_models.py --check
+          node scripts/prf_opt_backtest.mjs --quiet
+          node --test test/prf-optimize.test.mjs test/prf-climate.test.mjs test/prf-seasonal.test.mjs
+          python3 scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prf/seasonal-fc.json data/prf/opt.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          WHAT=$(python3 -c "import json;d=json.load(open('data/prf/seasonal-fc.json'));print(', '.join('%s %d-%d'%(k,v['first'],v['last']) for k,v in d['models'].items()))")
+          git commit -q -m "data: seasonal forecast models ($WHAT), PRF optimizer test re-run"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Say which model failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          grep -E "FAILED|refusing|less than published" seasonal.log || true
+          echo "::warning::A seasonal model source failed; what was published for it was kept. See the Fetch step."

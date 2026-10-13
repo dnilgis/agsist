@@ -101,6 +101,15 @@ QUIET = {
         "monthly",
         "NOAA posts the PDO and AMO once a month, so the climate indices job "
         "runs on the 9th and the file moves only when a new month is out."),
+    # Written by seasonal-models.yml (scripts/fetch_seasonal_models.py) on
+    # Nov 15 and Dec 15: the models start one forecast a year that the PRF
+    # test uses, in November. Read by components/prf-optimize-ui.js only if a
+    # model held up in data/prf/opt.json.
+    "data/prf/seasonal-fc.json": (
+        "seasonal",
+        "The PRF test uses one forecast a year from each model, the one started "
+        "in November, so the seasonal models job runs in mid November and mid "
+        "December and the file sits still the rest of the year."),
 }
 
 # ── feeds nobody schedules, because a person maintains them ──────────────────
@@ -215,6 +224,12 @@ PLANNED = {
     "data/prf/climate-indices.json": ("planned",
         "The climate indices job has not made its first run yet. The PRF "
         "optimizer lists the PDO and AMO tests as not run until it does."),
+    # NOAA's NMME archive and Copernicus cannot be reached from the sandbox
+    # the models test was built in; seasonal-models.yml makes the first fetch
+    # on a GitHub runner (Copernicus also needs the CDS_API_KEY secret).
+    "data/prf/seasonal-fc.json": ("planned",
+        "The seasonal models job has not made its first run yet. The PRF "
+        "optimizer lists every forecast model as not tested until it does."),
     "data/seo-index.json": ("planned",
         "The weekly Search Console index check has not made its first run yet. "
         "Only the internal search report reads it, and it says so until then."),

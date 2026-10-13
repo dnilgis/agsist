@@ -53,9 +53,15 @@ const DRAWS = 20000;   /* sign flips for the predictor tests: enough to resolve 
 
 /* the climate indices, when the climate-indices workflow has written them; a
    predictor that needs a missing series is skipped and the file says why */
-const climate = existsSync(CLIMATE_FILE) ? JSON.parse(readFileSync(CLIMATE_FILE, "utf8")) : null;
-const PRED_IDS = O.PREDICTORS.filter((p) => !p.untestable).map((p) => p.id);
-const RUN_IDS = PRED_IDS.filter((id) => !O.predictorUnavailable(id, climate));
+let climate = existsSync(CLIMATE_FILE) ? JSON.parse(readFileSync(CLIMATE_FILE, "utf8")) : null;
+/* the seasonal forecast models, when the seasonal-models workflow has written
+   them (scripts/fetch_seasonal_models.py); without the file every model is
+   listed as not tested yet and still counted in the family */
+const SEASONAL_FILE = arg("--seasonal", ROOT + "data/prf/seasonal-fc.json");
+const seasonal = existsSync(SEASONAL_FILE) ? JSON.parse(readFileSync(SEASONAL_FILE, "utf8")) : null;
+if (seasonal) climate = { ...(climate || { series: {} }), seasonal };
+const PRED_IDS = O.PREDICTORS.filter((p) => !p.untestable && !p.structural).map((p) => p.id);
+let RUN_IDS = [];
 
 const REGION = {
   "Northern Plains": ["ND", "SD", "NE", "KS"],
@@ -97,6 +103,24 @@ sample.sort((a, b) => a.id - b.id);
 const stCount = {};
 sample.forEach((g) => { stCount[g.st] = (stCount[g.st] || 0) + 1; });
 if (!QUIET) console.error(`sample: ${sample.length} grids in ${Object.keys(stCount).length} states (every grid ID divisible by ${STEP})`);
+
+const inputFor = (g, cov) => ({ index: g.o.index, rates: g.o.rates[cov], coverage: cov, subsidy: meta.subsidy[String(cov)], grid: g.id,
+  min: g.lim.map((p) => (p ? p[0] : null)), max: g.lim.map((p) => (p ? p[1] : null)), avgMm: g.o.avgMm, lastComplete: meta.years.last_complete });
+
+/* the skill tables, one per forecast id and policy year, each from the years
+   before it only (O.forecastSkill), over every sampled grid */
+const FIRST_Y = 1981, LAST_Y = meta.years.last_complete;
+if (seasonal) {
+  const t0 = Date.now(), obs = sample.map((g) => O.prepare(inputFor(g, 90)));
+  climate.seasonalSkill = {};
+  for (const p of O.PREDICTORS.filter((q) => q.family === "forecast")) {
+    const tbl = {};
+    for (let Y = FIRST_Y; Y <= meta.crop_year; Y++) tbl[Y] = O.forecastSkill(seasonal, p.id, Y, obs);
+    climate.seasonalSkill[p.id] = tbl;
+  }
+  if (!QUIET) console.error(`skill tables: ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+}
+RUN_IDS = PRED_IDS.filter((id) => !O.predictorUnavailable(id, climate));
 
 const r4 = (x) => (x == null || !isFinite(x) ? null : Math.round(x * 10000) / 100); /* per $1 -> per $100, 2 places */
 const round4 = (x) => (x == null ? null : Math.round(x * 10000) / 10000);
@@ -147,10 +171,7 @@ function run(cov, obj) {
   const byYear = {};
   const t0 = Date.now();
   for (const g of sample) {
-    const input = { index: g.o.index, rates: g.o.rates[cov], coverage: cov, subsidy: meta.subsidy[String(cov)],
-                    min: g.lim.map((p) => (p ? p[0] : null)), max: g.lim.map((p) => (p ? p[1] : null)),
-                    avgMm: g.o.avgMm, lastComplete: meta.years.last_complete };
-    const G = O.prepare(input);
+    const G = O.prepare(inputFor(g, cov));
     if (G.years.length < 30 || G.allowed.filter(Boolean).length < 2) continue;
     const wf = O.walkForward(G, { objective: obj, predictors: obj === "net" ? RUN_IDS : [], climate });
     if (!wf.rows.length || !wf.even) continue;
@@ -249,13 +270,115 @@ function run(cov, obj) {
   return res;
 }
 
+/* ---------------------------------------------------------------- structure */
+/* Two tests that pick something other than the months, on the same grids and
+   years with the same Dec 1 rule:
+     cov-pick  each fall, the coverage level (70 to 90%) with the most expected
+               return on the producer's premium (O.coverageEdge), its rate-led
+               split, against always buying 90% and always buying 70%. Scored
+               as dollars back per $100 the producer paid (the measure the pick
+               chases), and per $100 of protection. A family member.
+     spread    at 90% and at 70%, the steadier split (O.spreadPick: within 5% of
+               the best expected score, fewest earlier years with no payment)
+               against the rate-led pick: years with no payment at all, the
+               average, and the year-to-year swing. A risk feature, not a
+               return edge, so it is tested in a family of its own (two). */
+function runStructure() {
+  const COV_ALL = meta.coverage;
+  const yr = {}, t0 = Date.now();
+  let grids = 0;
+  const covCount = {};
+  const spreadGrid = { 90: [], 70: [] };
+  for (const g of sample) {
+    const Gs = {};
+    for (const c of COV_ALL) Gs[c] = O.prepare(inputFor(g, c));
+    const G90 = Gs[90];
+    if (G90.years.length < 30 || COV_ALL.some((c) => Gs[c].allowed.filter(Boolean).length < 2)) continue;
+    grids++;
+    const kOf = {};
+    for (const c of COV_ALL) { kOf[c] = {}; Gs[c].years.forEach((y, k) => { kOf[c][y] = k; }); }
+    const sg = { 90: { plainNets: [], spreadNets: [] }, 70: { plainNets: [], spreadNets: [] } };
+    for (let t = 0; t < G90.years.length; t++) {
+      const Y = G90.years[t];
+      if (Y < FIRST_Y || t < 30 || COV_ALL.some((c) => kOf[c][Y] == null)) continue;
+      const picks = {}, ratio = {}, net = {};
+      let ok = true;
+      for (const c of COV_ALL) {
+        const G = Gs[c], use = G.years.map((y) => y < Y), k = kOf[c][Y];
+        const a = O.pick(G, { use, asOf: Y });
+        if (!a) { ok = false; break; }
+        picks[c] = a;
+        net[c] = O.netIn(G, a.split, k);
+        ratio[c] = net[c] / O.premiumOf(G, a.split);
+      }
+      if (!ok) continue;
+      const best = O.coverageEdge(Gs, G90.years.map((y) => y < Y), Y);
+      const b = (yr[Y] = yr[Y] || { n: 0, r90: 0, r70: 0, p90: 0, p70: 0, pick: 0, rPick: 0, pickNet: 0, net90: 0, net70: 0, s: { 90: { n: 0, zp: 0, zs: 0, np: 0, ns: 0 }, 70: { n: 0, zp: 0, zs: 0, np: 0, ns: 0 } } });
+      b.n++;
+      b.rPick += ratio[best.coverage]; b.r90 += ratio[90]; b.r70 += ratio[70];
+      b.pickNet += net[best.coverage]; b.net90 += net[90]; b.net70 += net[70];
+      covCount[best.coverage] = (covCount[best.coverage] || 0) + 1;
+      for (const c of [90, 70]) {
+        const G = Gs[c], use = G.years.map((y) => y < Y), k = kOf[c][Y];
+        const sp = O.spreadPick(G, { use, asOf: Y });
+        if (!sp) continue;
+        const paid = (split) => split.some((p, i) => p && G.P[k][i] > 0);
+        const ns = O.netIn(G, sp.split, k), np = net[c];
+        const o = b.s[c];
+        o.n++; o.np += np; o.ns += ns;
+        if (!paid(picks[c].split)) o.zp++;
+        if (!paid(sp.split)) o.zs++;
+        sg[c].plainNets.push(np); sg[c].spreadNets.push(ns);
+      }
+    }
+    for (const c of [90, 70]) if (sg[c].plainNets.length > 2) spreadGrid[c].push(sg[c]);
+  }
+  const years = Object.keys(yr).map(Number).sort((a, b) => a - b);
+  const sum = (f) => years.reduce((a, y) => a + f(yr[y]), 0);
+  const gy = sum((b) => b.n);
+  const covPick = {};
+  for (const base of [90, 70]) {
+    const key = "r" + base, nk = "net" + base;
+    const yd = years.map((y) => (yr[y].rPick - yr[y][key]) / yr[y].n);
+    covPick[base] = {
+      years: years.length, gridYears: gy,
+      perPaid: { pick: r4(sum((b) => b.rPick) / gy), base: r4(sum((b) => b[key]) / gy), meanDiff: r4(sum((b) => b.rPick - b[key]) / gy) },
+      perProtection: { pick: r4(sum((b) => b.pickNet) / gy), base: r4(sum((b) => b[nk]) / gy), meanDiff: r4(sum((b) => b.pickNet - b[nk]) / gy) },
+      yearsBetter: yd.filter((x) => x > 1e-12).length, yearsWorse: yd.filter((x) => x < -1e-12).length,
+      p: O.flipTest(yd, DRAWS)
+    };
+  }
+  const chosen = {};
+  for (const c of COV_ALL) chosen[c] = pct(covCount[c] || 0, gy);
+  const spread = {};
+  for (const c of [90, 70]) {
+    const n = sum((b) => b.s[c].n);
+    const zd = years.map((y) => (yr[y].s[c].zs - yr[y].s[c].zp) / (yr[y].s[c].n || 1));
+    const nd = years.map((y) => (yr[y].s[c].ns - yr[y].s[c].np) / (yr[y].s[c].n || 1));
+    const sd = (a) => { const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / (a.length - 1)); };
+    const sdP = spreadGrid[c].map((q) => sd(q.plainNets)), sdS = spreadGrid[c].map((q) => sd(q.spreadNets));
+    const avg = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+    spread[c] = {
+      gridYears: n, years: years.length,
+      noPaymentPct: { plain: pct(sum((b) => b.s[c].zp), n), steadier: pct(sum((b) => b.s[c].zs), n) },
+      mean: { plain: r4(sum((b) => b.s[c].np) / n), steadier: r4(sum((b) => b.s[c].ns) / n), meanDiff: r4(sum((b) => b.s[c].ns - b.s[c].np) / n), p: round4(O.flipTest(nd, DRAWS)) },
+      swing: { plain: r4(avg(sdP)), steadier: r4(avg(sdS)), what: "average across grids of the standard deviation of a grid's yearly net, per $100 of protection" },
+      yearsFewerMisses: zd.filter((x) => x < -1e-12).length, yearsMoreMisses: zd.filter((x) => x > 1e-12).length,
+      p: O.flipTest(zd, DRAWS)
+    };
+  }
+  if (!QUIET) console.error(`  structure: ${grids} grids, ${gy} grid-years, ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+  return { grids, covPick, chosenPct: chosen, spread };
+}
+
 const out = {
   v: 2, crop_year: meta.crop_year, built_from: meta.built, last_complete: meta.years.last_complete,
   what: "Walk-forward test of the PRF interval optimizer (components/prf-optimize.js). Each year from 1981 the split is picked from what a buyer had at the Dec 1 sales closing the fall before (earlier years, less that fall's Oct-Nov and Nov-Dec, which were not final yet) and scored on that year at 2027 rates and the producer's share of premium. Figures are dollars per $100 of protection per year.",
   caveats: [
     "Every year is scored at 2027 rates; RMA set them with the whole record in view. Past rates are not in the data.",
     "USDA's index is percent of a 1951-2025 normal, so early years are measured against a normal that includes later ones. This applies equally to every strategy.",
-    "NOAA seasonal outlooks are not tested: no archive of past outlooks is in the data.",
+    "NOAA's own seasonal outlook maps are not tested: no archive of past outlooks is in the data. The forecast models behind them are tested where their archive is in.",
+    ...(seasonal ? ["Forecast models are scored on re-forecasts (hindcasts) for the years before each model was running: the model was built later, with those years in view, so its skill there can look better than it was in real time."] : []),
     "Grids next to each other share weather, so grid-years are not independent; the year counts are the closer measure."
   ],
   sample: { step: STEP, grids: sample.length, states: Object.keys(stCount).length, rule: `every grid ID divisible by ${STEP}, first county listed that offers it, its interval limits` },
@@ -263,6 +386,7 @@ const out = {
   results: {}
 };
 for (const cov of COVS) for (const obj of OBJS) out.results[`${cov}_${obj}`] = run(cov, obj);
+const structure = runStructure();
 
 /* ---------------------------------------------------------------- the family, adjusted */
 /* Every comparison promised in O.FAMILY counts, run or not (a missing one is
@@ -272,6 +396,7 @@ for (const cov of O.FAMILY_COVERAGES) {
   const r = out.results[`${cov}_net`];
   fam[`enso@${cov}`] = r.ensoFamilyP;
   for (const [id, st] of Object.entries(r.predictors || {})) fam[`${id}@${cov}`] = st.p;
+  fam[`cov-pick@${cov}`] = structure.covPick[cov].p;
 }
 const adj = O.holm(fam, O.FAMILY);
 const money = (x) => (x < 0 ? "-$" : "+$") + Math.abs(x).toFixed(2);
@@ -300,11 +425,29 @@ const describe = (id, name, stats) => {
   predictors.enso = describe("enso", "El Niño or La Niña in the fall before (already in the panel when the outlook file or the reader sets it)", st);
 }
 for (const p of O.PREDICTORS) {
+  if (p.structural) {
+    const st = {};
+    for (const cov of O.FAMILY_COVERAGES) {
+      const c = structure.covPick[cov];
+      st[cov] = { meanDiff: c.perPaid.meanDiff, perPaid: c.perPaid, perProtection: c.perProtection, yearsBetter: c.yearsBetter, yearsWorse: c.yearsWorse,
+                  years: c.years, p: round4(c.p), adj: round4(adj[`${p.id}@${cov}`]) };
+    }
+    const kept = O.FAMILY_COVERAGES.every((c) => st[c].adj < 0.05 && st[c].meanDiff > 0);
+    const ch = structure.chosenPct;
+    const tail = `${money(st[90].perPaid.meanDiff)} back per $100 you pay against always buying 90%, ${money(st[70].perPaid.meanDiff)} against always buying 70%; `
+      + `per $100 of protection ${money(st[90].perProtection.meanDiff)} and ${money(st[70].perProtection.meanDiff)}. It chose 70% in ${ch[70]}% of grid-years, 75% in ${ch[75]}%, 80% in ${ch[80]}%, 85% in ${ch[85]}% and 90% in ${ch[90]}%`;
+    const verdictWords = kept ? `held up after counting all ${O.FAMILY.length} tests` : (st[90].meanDiff <= 0 && st[70].meanDiff <= 0) ? "no edge; it did worse"
+      : O.FAMILY_COVERAGES.some((c) => st[c].adj < 0.05 && st[c].meanDiff > 0) ? `held up against ${O.FAMILY_COVERAGES.filter((c) => st[c].adj < 0.05 && st[c].meanDiff > 0).join("% and ")}% only, so it is not counted as a find`
+      : `no edge after counting all ${O.FAMILY.length} tests`;
+    predictors[p.id] = { name: p.name, kept, tested: true, structural: true, byCoverage: st, line: `${p.name}: ${verdictWords} (${tail}).` };
+    continue;
+  }
   if (p.untestable) { predictors[p.id] = { name: p.name, kept: false, tested: false, line: `${p.name}: not tested. ${p.untestable}` }; continue; }
   const why = O.predictorUnavailable(p.id, climate);
   if (why) {
     predictors[p.id] = { name: p.name, kept: false, tested: false, why,
-      line: p.stub ? `${p.name}: not tested yet. NOAA's archive of past forecasts is not in the data; the access path is written up in scripts/fetch_climate_indices.py.`
+      line: p.family === "forecast" ? `${p.name}: not tested yet. Its past forecasts are not in the data yet; the seasonal models job (scripts/fetch_seasonal_models.py) fetches them.`
+          : p.stub ? `${p.name}: not tested yet. NOAA's archive of past forecasts is not in the data; the access path is written up in scripts/fetch_climate_indices.py.`
                    : `${p.name}: not tested yet. It waits on NOAA's ${(p.needs || []).map((n) => n.toUpperCase()).join(" and ")} series, which the climate indices workflow fetches.` };
     continue;
   }
@@ -322,10 +465,35 @@ for (const cov of O.FAMILY_COVERAGES) {
   for (const s of Object.values(r.predictors || {})) delete s.byRegion;   /* kept once, under predictors */
 }
 out.predictors = predictors;
+/* the steadier spread: its own family of two (90 and 70), Holm */
+{
+  const sp = structure.spread, a2 = O.holm({ 90: sp[90].p, 70: sp[70].p }, ["90", "70"]);
+  for (const c of [90, 70]) { sp[c].p = round4(sp[c].p); sp[c].adj = round4(a2[c]); }
+  const fewer = [90, 70].every((c) => sp[c].adj < 0.05 && sp[c].noPaymentPct.steadier < sp[c].noPaymentPct.plain);
+  const s9 = sp[90], s7 = sp[70];
+  out.risk = {
+    name: "A steadier split: intervals that do not dry out together, at about the same expected dollars",
+    rule: `of every split the rules allow, those within ${Math.round(O.SPREAD_NEAR * 100)}% of the best expected score; the one whose intervals together missed paying in the fewest earlier years`,
+    held: fewer, byCoverage: sp,
+    line: `A steadier split (intervals that do not dry out together, at about the same expected dollars): `
+      + `years with no payment at all went from ${s9.noPaymentPct.plain}% to ${s9.noPaymentPct.steadier}% at 90% coverage and from ${s7.noPaymentPct.plain}% to ${s7.noPaymentPct.steadier}% at 70%, `
+      + `with the average ${money(s9.mean.meanDiff)} and ${money(s7.mean.meanDiff)} per $100 of protection a year against the plain pick. `
+      + (fewer ? "Fewer empty years held up after counting both tests. It is a way to steady the check, not to earn more." : "The drop in empty years did not hold up once luck is allowed for, so it is not counted as a find.")
+  };
+  out.productivity = "Productivity factor (60 to 150%) scales protection, premium and payments alike; the rate and USDA's share do not change with it. It changes how many dollars ride on the policy, not the return per dollar you pay, so there is nothing for a test to pick.";
+  out.stationDensity = "Not tested: how many rain gauges sit near a grid is not in the data here, and NOAA's gauge counts could not be reached from where this was built.";
+  out.structure = { grids: structure.grids, chosenPct: structure.chosenPct };
+}
+/* the current skill table for any forecast that held up, so the panel can use it */
+{
+  const keptFc = Object.entries(predictors).filter(([id, p]) => p.kept && (O.predictorById(id) || {}).family === "forecast").map(([id]) => id);
+  if (keptFc.length) out.seasonalSkill = Object.fromEntries(keptFc.map((id) => [id, { [meta.crop_year]: climate.seasonalSkill[id][meta.crop_year] }]));
+}
 out.family = { size: O.FAMILY.length, run: Object.keys(fam).length, members: O.FAMILY, adjustment: "Holm step-down over the whole family; comparisons not yet run count as p = 1",
                expectedByChanceAt5pct: Math.round(O.FAMILY.length * 0.05 * 10) / 10, test: `year-by-year sign-flip test of the average gain across grids, ${DRAWS} flips, fixed seed`,
                rule: "a predictor may move the panel's pick only if its adjusted odds are under 0.05 and its gain is positive at both 90% and 70% coverage" };
-out.climate = climate ? Object.fromEntries(Object.entries(climate.series || {}).map(([k, v]) => [k, { url: v.url, as_of: v.as_of }])) : null;
+out.climate = climate && climate.series ? Object.fromEntries(Object.entries(climate.series).map(([k, v]) => [k, { url: v.url, as_of: v.as_of }])) : null;
+out.seasonal = seasonal ? Object.fromEntries(Object.entries(seasonal.models || {}).map(([k, v]) => [k, { source: v.source, system: v.system, first: v.first, last: v.last, intervals: v.intervals }])) : null;
 writeFileSync(OUT, JSON.stringify(out) + "\n");
 if (!QUIET) {
   for (const [k, r] of Object.entries(out.results)) {
