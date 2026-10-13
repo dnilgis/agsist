@@ -1,4 +1,8 @@
 /**
+ * UNSUB_SECRET MUST BE SET on this Worker in Cloudflare (Settings -> Variables
+ *   and Secrets), the same value the Actions jobs sign links with. Check it:
+ *   GET /count?token=... answers "secret": true or false (never the value).
+ *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
  * v5.13 (2026-10-13): HARDENING. Every existing route answers as before for a
@@ -302,6 +306,19 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 // unsubscribe and confirm token, so anyone could have made a valid link.
 // Now any operation that needs the secret refuses with a 503 and logs why.
 class NoSecretError extends Error {}
+// v5.13: an unsubscribe must always work. With UNSUB_SECRET set the token is
+// checked against it, exactly as before (tokens are made by the Actions jobs
+// with that same secret; there never was a fallback key for them: before
+// v5.13 a missing secret made every unsubscribe crash). With it unset, the
+// unsubscribe is honoured without a check, and the log says so loudly:
+// removing someone from a list is low harm, a dead stop link is not.
+async function unsubOk(env, msg, t) {
+  if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) {
+    console.error("agsist-subs: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
+    return true;
+  }
+  return safeEq(t, await hmac16(msg, env.UNSUB_SECRET));
+}
 async function hmac16(email, secret) {
   if (typeof secret !== "string" || !secret)
     throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to sign or check a token");
@@ -831,7 +848,7 @@ async function handle(req, env) {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
       const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
-      const valid = EMAIL_RE.test(e) && safeEq(t, await hmac16(e, env.UNSUB_SECRET));
+      const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
       if (req.method === "GET") {
         const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t) + (one ? "&topic=" + encodeURIComponent(one) : "");
@@ -885,7 +902,7 @@ async function handle(req, env) {
     if (path === "/unsubscribe" || path === "/alert-unsubscribe") {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
-      const valid = EMAIL_RE.test(e) && safeEq(t, await hmac16(e, env.UNSUB_SECRET));
+      const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       const isAlert = path === "/alert-unsubscribe";
 
       if (!valid) return htmlPage("That unsubscribe link isn't valid.");
@@ -958,8 +975,9 @@ async function handle(req, env) {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/watch-confirm";
       const fOk = conf ? /^\d{5}$/.test(f) : (f === "" || /^\d{5}$/.test(f));
-      const want = await hmac16(e + (conf ? "|c|" + f : (f ? "|w|" + f : "|w")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && fOk && safeEq(t, want))) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|c|" + f, env.UNSUB_SECRET)) : await unsubOk(env, e + (f ? "|w|" + f : "|w"), t);
+      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return htmlPage("That link isn't valid.");
       const action = path + "?e=" + encodeURIComponent(e) + (f ? "&f=" + f : "") + "&t=" + encodeURIComponent(t);
       if (req.method === "GET") {
         return htmlPage(
@@ -1036,6 +1054,8 @@ async function handle(req, env) {
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
         by_source: bySource,
+        // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
+        secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
         // v5.8: stored form posts per kind. Counts only.
         forms: await formCounts(env),
         // v5.11: one-time notices: addresses, and sign-ups per topic.
@@ -1228,8 +1248,9 @@ async function handle(req, env) {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/elevator-watch-confirm";
       const wOk = conf ? /^[a-f0-9]{8,16}$/.test(w) : (w === "" || /^[a-f0-9]{8,16}$/.test(w));
-      const want = await hmac16(e + (conf ? "|ec|" + w : (w ? "|ew|" + w : "|ew")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && wOk && safeEq(t, want))) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|ec|" + w, env.UNSUB_SECRET)) : await unsubOk(env, e + (w ? "|ew|" + w : "|ew"), t);
+      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getEWatch(e);
       const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
       const action = path + "?e=" + encodeURIComponent(e) + (w ? "&w=" + w : "") + "&t=" + encodeURIComponent(t);
@@ -1364,8 +1385,9 @@ async function handle(req, env) {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/price-watch-confirm";
       const pOk = conf ? /^[a-f0-9]{8,16}$/.test(p) : (p === "" || /^[a-f0-9]{8,16}$/.test(p));
-      const want = await hmac16(e + (conf ? "|pc|" + p : (p ? "|pw|" + p : "|pw")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && pOk && safeEq(t, want))) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|pc|" + p, env.UNSUB_SECRET)) : await unsubOk(env, e + (p ? "|pw|" + p : "|pw"), t);
+      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getPWatch(e);
       const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
       const action = path + "?e=" + encodeURIComponent(e) + (p ? "&p=" + p : "") + "&t=" + encodeURIComponent(t);

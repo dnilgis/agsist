@@ -559,26 +559,59 @@ for (const [p, b] of Object.entries(goodBodies)) {
   A((await r.json()).every(x => /^[0-9a-f]{12}$/.test(x.id)), '/sponsor-apps lists only applications, never the index');
 }
 
-// 21. no fallback secret: without UNSUB_SECRET every signed link is refused, never checked against a public constant
+// 21. UNSUB_SECRET: stop links always work; confirms and IP hashes need the secret
+{
+  // a link from mail sent before v5.13: the Actions jobs signed it with UNSUB_SECRET (sig() above is that recipe)
+  const F = fresh();
+  F.st.set('sub:old@farm.com', '{}'); F.st.set('alert:old@farm.com', '{}');
+  F.st.set('watch:old@farm.com', JSON.stringify({ pend: {}, w: { '55005': null } }));
+  r = await req(F.env, '/unsubscribe?e=old@farm.com&t=' + await sig('old@farm.com'), { m: 'POST' });
+  A(r.status === 200 && !F.st.has('sub:old@farm.com'), 'secret set: an old daily stop link still unsubscribes');
+  r = await req(F.env, '/alert-unsubscribe?e=old@farm.com&t=' + await sig('old@farm.com'), { m: 'POST' });
+  A(!F.st.has('alert:old@farm.com'), 'secret set: an old hail stop link still works');
+  r = await req(F.env, '/watch-unsubscribe?e=old@farm.com&t=' + await sig('old@farm.com|w'), { m: 'POST' });
+  A(!F.st.has('watch:old@farm.com'), 'secret set: an old county stop link still works');
+  F.st.set('sub:old2@farm.com', '{}');
+  r = await req(F.env, '/unsubscribe?e=old2@farm.com&t=0123456789abcdef', { m: 'POST' });
+  A(F.st.has('sub:old2@farm.com'), 'secret set: a made-up token still changes nothing');
+  r = await req(F.env, '/count?token=tok', { m: 'GET' });
+  const cs = await r.json();
+  A(cs.secret === true && !Object.values(cs).includes('sec') && !JSON.stringify(cs).includes('"sec"'), '/count reports secret: true (a boolean, never the value)');
+}
 {
   const F = fresh({ UNSUB_SECRET: undefined });
-  const undefTok = async (m) => { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode('undefined'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-    return [...new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(m)))].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16); };
-  F.st.set('sub:x@farm.com', '{}'); F.st.set('watch:x@farm.com', JSON.stringify({ pend: { '55005': { ts: Date.now(), m: 0 } }, w: {} }));
   const errs = []; const ce = console.error; console.error = (m) => errs.push(String(m));
-  for (const [p, m] of [['/unsubscribe?e=x@farm.com&t=' + await undefTok('x@farm.com'), 'POST'], ['/unsubscribe?e=x@farm.com&t=x', 'GET'],
-                        ['/watch-confirm?e=x@farm.com&f=55005&t=' + await undefTok('x@farm.com|c|55005'), 'POST'],
-                        ['/notice-unsubscribe?e=x@farm.com&t=' + await undefTok('x@farm.com'), 'POST']]) {
-    r = await req(F.env, p, { m });
-    A(r.status === 503, p.split('?')[0] + ' ' + m + ' without UNSUB_SECRET is a 503 (got ' + r.status + ')');
-    A(/html/.test(r.headers.get('Content-Type')) && r.headers.get('X-Frame-Options') === 'DENY', p.split('?')[0] + ': the 503 page carries the page headers');
+  F.st.set('sub:x@farm.com', '{}'); F.st.set('note:x@farm.com', '{"t":{}}'); F.st.set('alert:x@farm.com', '{}');
+  F.st.set('watch:x@farm.com', JSON.stringify({ pend: { '55005': { ts: Date.now(), m: 0 } }, w: {} }));
+  F.st.set('ewatch:x@farm.com', JSON.stringify({ pend: {}, w: { abcdef12: { label: 'L' } } }));
+  F.st.set('pwatch:x@farm.com', JSON.stringify({ pend: {}, w: { abcdef12: { label: 'L' } } }));
+  r = await req(F.env, '/unsubscribe?e=x@farm.com&t=c0ffee0123456789', { m: 'GET' });
+  A(r.status === 200 && (await r.text()).includes('Yes, unsubscribe') && F.st.has('sub:x@farm.com'), 'secret unset: the stop page still shows its button and changes nothing on GET');
+  r = await req(F.env, '/unsubscribe?e=x@farm.com&t=c0ffee0123456789', { m: 'POST' });
+  A(r.status === 200 && !F.st.has('sub:x@farm.com') && !F.st.has('note:x@farm.com'), 'secret unset: an old daily stop link still unsubscribes');
+  for (const [p, key] of [['/alert-unsubscribe?e=x@farm.com&t=1', 'alert:'], ['/elevator-watch-unsubscribe?e=x@farm.com&t=1', 'ewatch:'], ['/price-watch-unsubscribe?e=x@farm.com&w=&t=1', 'pwatch:']]) {
+    r = await req(F.env, p, { m: 'POST' });
+    A(r.status === 200 && !F.st.has(key + 'x@farm.com'), 'secret unset: ' + p.split('?')[0] + ' still works');
   }
-  A(F.st.has('sub:x@farm.com') && JSON.parse(F.st.get('watch:x@farm.com')).pend['55005'], 'a token made with the key "undefined" changes nothing');
+  r = await req(F.env, '/unsubscribe?e=not-an-email&t=1', { m: 'POST' });
+  A((await r.text()).includes("isn't valid"), 'secret unset: a bad address is still refused');
+  A(errs.some(m => /UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking/.test(m)), 'secret unset: each unchecked unsubscribe logs a loud error');
+  errs.length = 0;
+  // confirming (a new subscription) needs the secret
+  r = await req(F.env, '/watch-confirm?e=x@farm.com&f=55005&t=whatever', { m: 'POST' });
+  A(r.status === 503 && JSON.parse(F.st.get('watch:x@farm.com')).pend['55005'] && /html/.test(r.headers.get('Content-Type')), 'secret unset: a confirm is a 503 and confirms nothing');
+  for (const p of ['/elevator-watch-confirm?e=x@farm.com&w=abcdef12&t=1', '/price-watch-confirm?e=x@farm.com&p=abcdef12&t=1', '/sponsor-confirm?i=000000000000&t=1']) {
+    r = await req(F.env, p, { m: 'POST' });
+    A(r.status === 503 || (await r.text()).includes("isn't valid"), 'secret unset: ' + p.split('?')[0] + ' confirms nothing');
+  }
   r = await reqH(F.env, '/subscribe', { email: 'y@farm.com' }, { 'CF-Connecting-IP': '192.0.2.250' });
-  A(r.status === 503 && !F.st.has('sub:y@farm.com') && (await r.json()).ok === false, 'a public POST that needs the IP hash is refused, as JSON');
+  A(r.status === 503 && !F.st.has('sub:y@farm.com') && (await r.json()).ok === false, 'secret unset: a public POST that needs the IP hash is refused, as JSON');
   A(![...F.st.keys()].some(k => k.startsWith('rlq:') || k.startsWith('rl:')), 'no rate key hashed with a public constant');
+  r = await req(F.env, '/count?token=tok', { m: 'GET' });
+  const cj = await r.json();
+  A(cj.secret === false, '/count reports secret: false');
   console.error = ce;
-  A(errs.length >= 5 && errs.every(m => /UNSUB_SECRET is not set/.test(m)), 'each refusal logs the reason');
+  A(errs.length >= 2 && errs.every(m => /UNSUB_SECRET is not set/.test(m)), 'each refusal logs the reason');
 }
 
 // 22. the token as "Authorization: Bearer", beside ?token=
