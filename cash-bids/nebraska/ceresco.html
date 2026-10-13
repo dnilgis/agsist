@@ -13,6 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="stylesheet" href="/components/cb-signup.css?v=1">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -144,13 +145,13 @@
   <h1>Cash grain bids in Ceresco, NE today</h1>
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Ceresco, NE has a bid we could confirm right now. The nearest ones that do are below.</div>
   
-  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/nebraska/wahoo"><b>Elkhorn Valley Grain</b>, Wahoo, NE</a> <span class="cbt-mut">11 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.31 <span class="mut">Oct</span> &middot; Soybeans $12.35 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/raymond"><b>Farmers Cooperative Dorchester</b>, Raymond, NE</a> <span class="cbt-mut">12 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.41 <span class="mut">Oct</span> &middot; Soybeans $12.42 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/raymond"><b>Prinsburg Farmers Co-op</b>, Raymond, NE</a> <span class="cbt-mut">12 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.15 <span class="mut">Oct</span> &middot; Soybeans $12.28 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/lincoln"><b>ADM</b>, Lincoln, NE</a> <span class="cbt-mut">14 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.6525 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/lincoln"><b>Central Valley Ag</b>, Lincoln, NE</a> <span class="cbt-mut">15 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.55 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 68017. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
+  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/nebraska/wahoo"><b>Elkhorn Valley Grain</b>, Wahoo, NE</a> <span class="cbt-mut">11 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.31 <span class="mut">Oct</span> &middot; Soybeans $12.34 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/raymond"><b>Farmers Cooperative Dorchester</b>, Raymond, NE</a> <span class="cbt-mut">12 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.41 <span class="mut">Oct</span> &middot; Soybeans $12.41 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/raymond"><b>Prinsburg Farmers Co-op</b>, Raymond, NE</a> <span class="cbt-mut">12 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.15 <span class="mut">Oct</span> &middot; Soybeans $12.28 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/lincoln"><b>ADM</b>, Lincoln, NE</a> <span class="cbt-mut">14 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.64 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/nebraska/lincoln"><b>Central Valley Ag</b>, Lincoln, NE</a> <span class="cbt-mut">15 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.55 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 68017. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   <a class="cbt-live" href="/cash-bids?zip=68017">Live bids near 68017 &rarr;</a>
   
+  <div data-bid-alerts data-place="Ceresco" data-zip="68017" data-source="town:nebraska/ceresco"></div>
   
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
-  <div data-signup-ask="Get Ceresco bids by email every weekday morning" data-source="town:nebraska/ceresco" data-zip="68017"></div>
+  
+  
   <h2>Also in Ceresco, no current bid</h2><ul class="cbt-list"><li>Frontier Cooperative: board not confirmed on the latest read, last read Oct 13, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
@@ -173,5 +174,6 @@
 </div>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
+<script src="/components/cb-signup.js?v=1" defer></script>
 </body>
 </html>

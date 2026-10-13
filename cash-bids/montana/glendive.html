@@ -13,6 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="stylesheet" href="/components/cb-signup.css?v=1">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -147,10 +148,10 @@
   <h2>Nearest elevators with a current bid</h2><p class="cbt-sub">No elevator the AGSIST network reads has a current bid within 100 miles of Glendive.</p>
   <a class="cbt-live" href="/cash-bids">Live bids near Glendive &rarr;</a>
   
+  <div data-bid-alerts data-place="Glendive" data-zip="59330" data-source="town:montana/glendive"></div>
   
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
-  <div data-signup-ask="Get Glendive bids by email every weekday morning" data-source="town:montana/glendive"></div>
+  
+  
   <h2>Also in Glendive, no current bid</h2><ul class="cbt-list"><li>CHS Farmers Elevator (Montana): board not confirmed on the latest read, last read Oct 13, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
@@ -173,5 +174,6 @@
 </div>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
+<script src="/components/cb-signup.js?v=1" defer></script>
 </body>
 </html>
