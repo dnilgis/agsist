@@ -201,6 +201,27 @@ test("walk-forward: rewriting every year from Y on does not change the pick for 
   }
 });
 
+test("walk-forward: Oct-Nov and Nov-Dec of Y-1 (not final by the Dec 1 sales closing) do not change the pick for Y, either score", () => {
+  for (const objective of ["net", "dry"]) {
+    const base = O.walkForward(O.prepare(fxInput(90)), { objective });
+    for (const Y of [1983, 1998, 2012, 2025]) {
+      const idx = {};
+      for (const [y, row] of Object.entries(FX.index)) idx[y] = +y === Y - 1 ? row.map((v, i) => (i >= 9 && v != null ? 2.4 - v : v)) : row;
+      const wf = O.walkForward(O.prepare({ ...fxInput(90), index: idx }), { objective });
+      const a = base.rows.find((r) => r.year === Y), b = wf.rows.find((r) => r.year === Y);
+      assert.deepEqual(Array.from(b.pick), Array.from(a.pick), `${objective} ${Y}: the pick read a late interval of ${Y - 1}`);
+      assert.deepEqual(Array.from(b.pickEnso), Array.from(a.pickEnso), `${objective} ${Y}: the ENSO pick read a late interval of ${Y - 1}`);
+      /* the values behind the pick, not only the pick: a one-year change rarely flips a split */
+      const G0 = O.prepare(fxInput(90)), G1 = O.prepare({ ...fxInput(90), index: idx });
+      for (const extra of [{}, { enso: "la-nina" }, { estimator: "history" }]) {
+        const v0 = O.pick(G0, { objective, use: G0.years.map((y) => y < Y), asOf: Y, ...extra }).values;
+        const v1 = O.pick(G1, { objective, use: G1.years.map((y) => y < Y), asOf: Y, ...extra }).values;
+        assert.deepEqual(Array.from(v1), Array.from(v0), `${objective} ${Y} ${JSON.stringify(extra)}: the values read a late interval of ${Y - 1}`);
+      }
+    }
+  }
+});
+
 test("the ENSO reading for policy year Y is the August-October reading of Y-1, never Y", () => {
   for (let y = 1951; y <= 2025; y++) assert.equal(O.phaseKnownFor(y), O.ensoPhase(O.oniASO(y - 1)), String(y));
   assert.equal(O.oniASO(1949), null);

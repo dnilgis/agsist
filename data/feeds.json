@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 81,
- "with_known_cadence": 81,
+ "count": 82,
+ "with_known_cadence": 82,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1417,7 +1417,8 @@
    "touched_by": [
     "climate indices",
     "prf",
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "seasonal models"
    ],
    "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
    "curated": false,
@@ -1439,20 +1440,23 @@
    ],
    "written_by": [
     "climate indices",
-    "prf"
+    "prf",
+    "seasonal models"
    ],
    "touched_by": [
     "climate indices",
-    "prf"
+    "prf",
+    "seasonal models"
    ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
+   "cadence": "3 launches on a fixed schedule at about 5am, 9am, 10am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "37 14 9 * *",
-    "23 10 * * 3"
+    "23 10 * * 3",
+    "41 15 15 11,12 *"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -1487,6 +1491,34 @@
    "max_gap_hours": 119.1,
    "quiet": "weekly",
    "why_quiet": "Checked Thursdays and Fridays; it changes when a source issues. The US Drought Monitor map comes out Thursday mornings, CPC's seasonal outlooks on the third Thursday of the month and the ENSO discussion on the second."
+  },
+  {
+   "path": "data/prf/seasonal-fc.json",
+   "pages": [
+    "prf.html"
+   ],
+   "written_by": [
+    "prf",
+    "seasonal models"
+   ],
+   "touched_by": [
+    "climate indices",
+    "prf",
+    "Rebuild Feed Manifest",
+    "seasonal models"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 5am, 10am Central",
+   "curated": false,
+   "planned": true,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 10 * * 3",
+    "41 15 15 11,12 *"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": "seasonal",
+   "why_quiet": "The PRF test uses one forecast a year from each model, the one started in November, so the seasonal models job runs in mid November and mid December and the file sits still the rest of the year."
   },
   {
    "path": "data/price-stats.json",
