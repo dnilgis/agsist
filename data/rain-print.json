@@ -7,7 +7,7 @@
   "payment_links": {
     "digital": null,
     "print12x18": null,
-    "framed12x18": null
+    "framed12x18": "https://buy.stripe.com/eVq7sLbS76LH4c3cxo1wY06"
   },
   "ships_within": "Prints and framed prints ship within 7 business days after you approve the proof. US addresses only for now.",
   "proof_business_days": 1,
