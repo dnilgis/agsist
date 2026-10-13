@@ -313,6 +313,29 @@ def seo_crop_tour(c):
             f"close the tour has actually been.")
 
 
+def _qs_kind(ia):
+    """How the file labels Iowa's number: never call a forecast a final."""
+    yr = ia.get("year")
+    if ia.get("forecast"):
+        m = ia.get("forecast_month")
+        return f"USDA {m} {yr} forecast" if m else f"USDA {yr} forecast"
+    return f"USDA {yr} final"
+
+
+def _qs_top(ss, ia, crop, n):
+    """The n largest producing states for `crop`, counted only when their
+    figure is the same vintage as Iowa's (same year, same forecast status,
+    same forecast month), so one line never mixes a final with a forecast."""
+    same = lambda v: (v.get("year") == ia.get("year") and
+                      bool(v.get("forecast")) == bool(ia.get("forecast")) and
+                      v.get("forecast_month") == ia.get("forecast_month"))
+    rows = [(v.get(f"{crop}_prod") or 0, v.get("name") or k, v.get(f"{crop}_yield"))
+            for k, v in ss.items()
+            if isinstance(v, dict) and same(v) and v.get(f"{crop}_yield") is not None]
+    rows.sort(key=lambda r: -r[0])
+    return [(nm, y) for _, nm, y in rows[:n]]
+
+
 def seo_quick_stats(c):
     d = c["state_stats"]
     if not d or not d.get("stateStats"):
@@ -322,16 +345,49 @@ def seo_quick_stats(c):
     y = ia.get("corn_yield")
     if y is None:
         return None
-    # label it exactly as the file does; never call a forecast a final
-    kind = "forecast" if ia.get("forecast") else "final"
-    # which month's forecast, when the file knows (build_state_stats.py)
-    if ia.get("forecast") and ia.get("forecast_month"):
-        kind = f"USDA {ia['forecast_month']} forecast"
-    yr = ia.get("year")
-    return (f"Corn & Soybean Yields by State: USDA NASS Data{SUFFIX}",
-            f"Iowa corn {y:g} bu/ac ({yr} {kind}). Yields, acres, production "
-            f"and prices by state for corn, soybeans and wheat, from USDA Quick "
-            f"Stats.")
+    # RETITLED 2026-10-13 from "Corn & Soybean Yields by State: USDA NASS
+    # Data". Over Jul 10-Oct 7 that held position 7.5 on 50,358 impressions at
+    # 0.08% CTR, the most-shown and least-clicked page on the site. The
+    # queries Search Console names ask for a yield by state ("usda yield by
+    # state", "state corn and soybean yields"). The title now names the
+    # vintage the numbers are (which month's forecast, or final) and the
+    # description leads with the largest states' numbers.
+    kind = _qs_kind(ia)
+    title = (f"Corn & Soybean Yield by State: "
+             f"{kind.replace('forecast', 'Forecast').replace('final', 'Final')}{SUFFIX}")
+    if len(title) > TITLE_MAX:
+        title = f"Corn & Soybean Yield by State, {ia.get('year')}{SUFFIX}"
+    corn = _qs_top(ss, ia, "corn", 3)
+    beans = _qs_top(ss, ia, "bean", 1)
+    lead = ", ".join(f"{nm} {v:g}" if i else f"{nm} corn {v:g} bu/ac"
+                     for i, (nm, v) in enumerate(corn)) or f"Iowa corn {y:g} bu/ac"
+    if beans:
+        lead += f"; {beans[0][0]} soybeans {beans[0][1]:g}"
+    head = f"{kind}: {lead}."
+    for tail in (" Every state, yields since 2010, from NASS Quick Stats.",
+                 " Every state, from NASS Quick Stats.", ""):
+        if len(head + tail) <= DESC_MAX:
+            return title, head + tail
+    return title, f"{kind}: Iowa corn {y:g} bu/ac. Every state, from NASS Quick Stats."
+
+
+def body_quick_stats(c):
+    """One visible line under the heading with the largest states' yields.
+    The top-states list lower down is drawn by the page script; this is the
+    same file (data/state-stats.json) as text a crawler can read."""
+    d = c["state_stats"]
+    ss = (d or {}).get("stateStats") or {}
+    ia = ss.get("IA") or {}
+    if ia.get("corn_yield") is None:
+        raise ValueError("no Iowa corn yield in state-stats.json")
+    kind = _qs_kind(ia)
+    corn = _qs_top(ss, ia, "corn", 5)
+    beans = _qs_top(ss, ia, "bean", 5)
+    out = (f"<strong>Yield by state, {kind}:</strong> corn " +
+           ", ".join(f"{nm} {v:g}" for nm, v in corn) + " bu/ac")
+    if beans:
+        out += "; soybeans " + ", ".join(f"{nm} {v:g}" for nm, v in beans) + " bu/ac"
+    return out + "."
 
 
 def seo_cond_yield(c):
@@ -731,6 +787,7 @@ PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 # the line a reader sees and the snippet Google shows cannot disagree.
 BODY = {
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
+    "usda-quick-stats.html": ("state-yields", body_quick_stats),
 }
 
 
@@ -1023,16 +1080,39 @@ def selftest():
     ck("conditions stays quiet out of season",
        seo_conditions(dict(ctx, crop_progress={"in_season": False})) is None)
 
+    # Label strings changed 2026-10-13 with the copy ("USDA September 2026
+    # forecast" where the description used to say "(2026 USDA September
+    # forecast)"); what is asserted is unchanged: a forecast is called a
+    # forecast, its month is named, a final is called a final.
     t, d = seo_quick_stats(ctx)
-    ck("a forecast is called a forecast, never a final", "2026 forecast" in d, d)
+    ck("a forecast is called a forecast, never a final", "2026 forecast" in d and "final" not in d, d)
+    ck("...in the title too", "2026 Forecast" in t and "Final" not in t, t)
     _qs = seo_quick_stats(dict(ctx, state_stats={"stateStats": {"IA": {
-        "corn_yield": 219.0, "year": 2026, "forecast": True, "forecast_month": "September"}}}))
-    ck("quick stats names the month of the forecast", "(2026 USDA September forecast)" in _qs[1], _qs[1])
-    ck("and still fits the description cap with the longest month", check(_qs[0], _qs[1], "usda-quick-stats.html"))
+        "name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
+        "year": 2026, "forecast": True, "forecast_month": "September"},
+        "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0,
+               "bean_prod": 709, "year": 2026, "forecast": True, "forecast_month": "September"},
+        "NE": {"name": "Nebraska", "corn_yield": 188.0, "corn_prod": 1807,
+               "year": 2026, "forecast": True, "forecast_month": "August"},
+        "MN": {"name": "Minnesota", "corn_yield": 195.0, "corn_prod": 1618,
+               "year": 2026, "forecast": True, "forecast_month": "September"}}}))
+    ck("quick stats names the month of the forecast", "USDA September 2026 forecast" in _qs[1], _qs[1])
+    ck("and still fits the caps with the longest month", check(_qs[0], _qs[1], "usda-quick-stats.html"))
+    ck("the description leads with the largest states",
+       "Iowa corn 219 bu/ac, Illinois 208, Minnesota 195; Illinois soybeans 68" in _qs[1], _qs[1])
+    ck("a state on another month's forecast is left out", "Nebraska" not in _qs[1], _qs[1])
     ctx4 = dict(ctx, state_stats={"stateStats": {"IA": {"corn_yield": 211.0, "year": 2025,
                                                         "forecast": False}}})
-    _, d4 = seo_quick_stats(ctx4)
-    ck("a final is called a final", "2025 final" in d4, d4)
+    t4, d4 = seo_quick_stats(ctx4)
+    ck("a final is called a final", "2025 final" in d4 and "forecast" not in d4, d4)
+    ck("...in the title too", "USDA 2025 Final" in t4 and "Forecast" not in t4, t4)
+    _b = body_quick_stats(dict(ctx, state_stats=_qs and {"stateStats": {"IA": {
+        "name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
+        "year": 2026, "forecast": True, "forecast_month": "October"}}}))
+    ck("the visible state line names its vintage", "USDA October 2026 forecast" in _b, _b)
+    _qp = (REPO / "usda-quick-stats.html").read_text(encoding="utf-8")
+    ck("usda-quick-stats.html carries the state-yields markers",
+       bake_body(_qp, "state-yields", "x")[1])
 
     # THE 2026-08-17 BUG. Day one of the tour, nothing announced yet, and the
     # title said "Night 1 Results". Every assertion below is on the state that
