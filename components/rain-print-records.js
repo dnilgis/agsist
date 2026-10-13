@@ -38,6 +38,9 @@
  *   means rank at most max(1, floor(n / 50)) counting values within the band
  *   (0.05 in, 0.5 F) as ties against it: the record when n < 100, top 2%
  *   beyond. 2%, not 5%, because twelve months are checked each year.
+ *
+ * NOT YET RUN ON LIVE ACIS DATA (2026-10-13): the build sandbox cannot reach
+ * data.rcc-acis.org. Tests use fixture responses only.
  */
 (function (root) {
   'use strict';
