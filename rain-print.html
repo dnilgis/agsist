@@ -255,29 +255,6 @@
   .rp-sum p{margin:0 0 .35rem}.rp-sum ol{margin:.2rem 0 0;padding-left:1.3rem}
   .rp-sum dl{display:grid;grid-template-columns:max-content 1fr;gap:.15rem .8rem;margin:0 0 .5rem}.rp-sum dt{color:var(--text-muted)}.rp-sum dd{margin:0;overflow-wrap:anywhere}
 
-  /* the gift card: built into #rp-giftcard and printed alone (letter, one page) */
-  #rp-giftcard{display:none}
-  @page rpcard{size:letter portrait;margin:.45in}
-  @media print{
-    body.rp-carding>*:not(#rp-giftcard){display:none!important}
-    body.rp-carding{background:#fff!important;margin:0;padding:0}
-    body.rp-carding #rp-giftcard{display:block;page:rpcard}
-  }
-  .rpc{box-sizing:border-box;width:7.6in;height:10in;margin:0 auto;padding:.5in .55in .45in;border:1.5pt solid #1B2430;outline:.75pt solid #1B2430;outline-offset:-6pt;background:#fff;color:#1B2430;font-family:'IBM Plex Sans',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;overflow:hidden;break-inside:avoid}
-  .rpc p{margin:0}
-  .rpc-kick{font-family:'IBM Plex Mono',monospace;font-size:9pt;letter-spacing:.22em;text-transform:uppercase;color:#73798A}
-  .rpc-to{font-family:'Fraunces',Georgia,serif;font-weight:300;font-size:17pt;margin-top:.22in!important}
-  .rpc-title{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:27pt;line-height:1.12;margin:.12in 0 .1in!important;max-width:6in}
-  .rpc-place{font-family:'IBM Plex Mono',monospace;font-size:9.5pt;letter-spacing:.06em;color:#2E5C86;text-transform:uppercase}
-  .rpc-art{margin:.25in 0 0;width:6.4in}
-  .rpc-svg svg{display:block;width:100%;height:auto;border:.75pt solid #DCDFD8}
-  .rpc-art figcaption,.rpc-noart{font-family:'IBM Plex Mono',monospace;font-size:8.5pt;line-height:1.5;color:#4b5263;margin-top:.08in;max-width:6in;margin-left:auto;margin-right:auto}
-  .rpc-noart{margin:.5in auto .2in!important;font-size:10pt}
-  .rpc-msg{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:14pt;line-height:1.45;max-width:5.6in;margin:.28in 0 0!important}
-  .rpc-foot{margin-top:auto;display:flex;align-items:center;gap:.18in;text-align:left;max-width:6in}
-  .rpc-qr{flex:0 0 .95in;padding:3pt;border:1.5pt solid #B0231A}
-  .rpc-qr svg{display:block;width:100%;height:auto}
-  .rpc-foot p{font-family:'IBM Plex Mono',monospace;font-size:8.5pt;line-height:1.5;color:#4b5263}
   @media(max-width:760px){.rp-prods,.rp-steps{grid-template-columns:1fr}.rp-dates{grid-template-columns:1fr}}
   @media(max-width:480px){.rp-ogrid,.rp-opts{grid-template-columns:1fr}.rp-form .btn{width:100%}}
   </style>
@@ -321,6 +298,7 @@
       </figure>
 
       <div class="rp-side">
+        <div id="rp-gift-banner" hidden></div>
         <p class="sec-label rp-kick">Rain Print</p>
         <h1>A year of rain on the farm, or back home, printed for the wall</h1>
         <p class="rp-lede">Farmers remember years by the rain. Pick the one they still talk about, at the farm or any town that means something, and this draws every rain of it at the nearest NOAA weather station, with a name and up to three dates on it. Drawing one is free. A print file is $19; a 12 x 18 print is $45, or $89 framed, shipping included.</p>
@@ -430,13 +408,14 @@
           <label class="field"><span>Who it's for (optional)</span><input id="rp-gift-to" type="text" maxlength="80" placeholder="Dad"></label>
           <label class="field rp-wide"><span>A message for the card (optional)</span><textarea id="rp-gift-msg" maxlength="240" rows="2" placeholder="Every inch of the year you farmed."></textarea></label>
         </div>
-        <div class="rp-acts"><button class="btn btn-secondary" id="rp-card" type="button">Print a gift card</button><p class="rp-note">One letter-size page with their name, your message, a preview of the year so far and a QR code that opens the design.</p></div>
+        <p class="rp-note">Want a card to put under the tree? Order it as a gift with the box above filled in. Once you&rsquo;ve paid, Sig emails you a gift card to print, with a code they use to see their print.</p>
       </div>
       <div class="rp-isgift" id="rp-isgift-wrap">
         <label class="rp-check"><input id="ro-isgift" type="checkbox"><span>It's a gift</span></label>
         <p class="rp-note" id="rp-gift-checkout" hidden></p>
       </div>
       <p class="rp-note rp-bad" id="rp-buy-why" hidden></p>
+      <div class="rp-gift-use" id="rp-gift-use-wrap" hidden><p class="rp-note" id="rp-gift-use-note"></p><button class="btn btn-primary" id="rp-gift-use" type="button">Use my gift</button></div>
       <div class="rp-prods">
         <div class="rp-prod"><h3>Digital file</h3><div class="rp-price" data-price="digital">$19</div>
           <ul><li>The print files, 12 x 18 in at 300 dpi, no watermark</li><li>Emailed to you within 1 business day after you pay</li><li>Take them to any print shop</li></ul>
@@ -589,7 +568,6 @@
     <label class="rp-check"><input type="checkbox" id="rp-proof-ok"><span>I&rsquo;ve checked the spelling and the dates</span></label>
     <p class="rp-acts"><button type="button" class="btn btn-primary" id="rp-proof-order">Order this print</button></p>
   </dialog>
-  <div id="rp-giftcard" aria-hidden="true"></div>
   <script src="/components/loader.js?v=18" defer></script>
   <script src="/components/util.js?v=19"></script>
   <script src="/components/qr.js?v=8"></script>
@@ -597,5 +575,6 @@
   <script src="/components/rp-short.js?v=1"></script>
   <script src="/components/rain-print-art.js?v=1"></script>
   <script src="/components/rain-print.js?v=12"></script>
+  <script src="/components/rp-gift.js" defer></script>
 </body>
 </html>

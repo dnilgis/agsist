@@ -49,7 +49,8 @@
  * is no art, only a plain message, and ordering stays open. A gift order's
  * code is GIFT- plus the design code (Stripe's client_reference_id and the
  * order form carry it); the QR and shared links carry the plain code. A
- * one-page gift card prints from #rp-giftcard (print stylesheet in the page).
+ * gift card is issued by Sig after payment (components/rp-gift.js, worker v5.16);
+ * a ?gift=CODE link redeems one here (see THE GIFT CARD below).
  *
  * PRODUCTS (2026-10-11): digital file, 12 x 18 print, 12 x 18 framed; Sig
  * prints, frames and ships them. 18 x 24 is gone; an old code with its size
@@ -1043,6 +1044,7 @@
     // print files wait for the full year: a preview is never sent to the printer
     doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
     syncGift();
+    if (typeof GIFT !== 'undefined' && GIFT) syncGiftUse();
   }
 
   // ---------- this year, as a gift ----------
@@ -1244,7 +1246,7 @@
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false;
-    var done = function () { if (my === reqToken) { DRAWING = false; go.disabled = false; sel.disabled = STATIONS.length < 2; showBuy(canOrder()); } };
+    var done = function () { if (my === reqToken) { DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
@@ -1553,6 +1555,16 @@
     if (hp && hp.value) fs._gotcha = hp.value;
     var btn = $('ro-submit'), was = btn.textContent;
     sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
+    if (GIFT && GIFT.usable && root.AgRpGift) {
+      x.choice = GIFT.product;
+      root.AgRpGift.redeem(GIFT, x).then(function (r) {
+        ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
+        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
+        if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
+        try { out.firstChild.focus(); } catch (err) {}
+      }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+      return;
+    }
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-order', data, fs).then(function () {
       ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
@@ -1560,11 +1572,10 @@
         ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link.</p>' +
           '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
           '; nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p>' +
-          '<p><button class="btn btn-secondary" id="ro-card" type="button">Print a gift card</button></p></div>'
+          '<p>Once you\u2019ve paid, Sig emails you a gift card to print, with a code that opens their print.</p></div>'
         : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
           '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you pay.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
           ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
-      if ($('ro-card')) $('ro-card').addEventListener('click', printCard);
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
@@ -1693,46 +1704,6 @@
         '<p><a class="rp-btn2" id="rb-mail" href="' + esc(href) + '">Email the request</a></p><textarea readonly rows="7" aria-label="Your quote request, as text">' + esc(body) + '</textarea></div>';
       try { $('rb-mail').focus(); } catch (err) {}
     }).then(function () { bizSending = false; btn.disabled = false; btn.textContent = was; });
-  }
-
-  // ---------- the gift card ----------
-  /* One printed page to put under the tree, built into #rp-giftcard (a child of
-     <body>, shown only in print while body has .rp-carding). One shared layout
-     filled from the design on the page: no file per order. */
-  function cardSvg() {
-    // its own ids, so the copy does not lean on the art above (hidden while printing)
-    return buildSvg({ idPrefix: 'gc' });
-  }
-  function cardHtml() {
-    var J = PRICES || {}, m = META;
-    var title = fill(J.gift_card_title || 'Your {year} Rain Print is coming in January');
-    var note = fill(J.gift_card_note || 'The finished print shows every day of rain from January 1 to December 31, {year}.');
-    var to = cleanText($('rp-gift-to').value, GIFT_TO_MAX), msg = $('rp-gift-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX);
-    var qr = '';
-    try { if (root.AgQR) qr = root.AgQR.svg(shortUrl(artDesign()), 'QR code that opens this design'); } catch (e) { qr = ''; }
-    var art = DATA && PREVIEW
-      ? '<figure class="rpc-art"><div class="rpc-svg">' + cardSvg() + '</div><figcaption><b>Preview through ' + esc(longDate(PREVIEW.last)) + '</b>, drawn from the days recorded so far. ' + esc(note) + '</figcaption></figure>'
-      : '<p class="rpc-noart">' + esc(note) + ' The art is drawn in January, once the whole year is recorded.</p>';
-    return '<div class="rpc">' +
-      '<p class="rpc-kick">A Rain Print from AGSIST</p>' +
-      (to ? '<p class="rpc-to">For ' + esc(to) + '</p>' : '') +
-      '<p class="rpc-title">' + esc(title) + '</p>' +
-      '<p class="rpc-place">' + esc(m.place) + ' &middot; NOAA station ' + esc(toTitle(m.name)) + '</p>' +
-      art +
-      (msg ? '<p class="rpc-msg">' + esc(msg).replace(/\n/g, '<br>') + '</p>' : '') +
-      '<div class="rpc-foot">' + (qr ? '<div class="rpc-qr">' + qr + '</div>' : '') +
-      '<p>Scan to open this design at agsist.com/rain-print. Once the year is over, the same code shows all of ' + META.year + '.</p></div>' +
-      '</div>';
-  }
-  function printCard() {
-    if (!canOrder() || !giftMode() || !META) return;
-    var el = $('rp-giftcard');
-    el.innerHTML = cardHtml();
-    doc.body.classList.add('rp-carding');
-    var done = function () { doc.body.classList.remove('rp-carding'); root.removeEventListener('afterprint', done); };
-    root.addEventListener('afterprint', done);
-    ga('rain_print_gift_card', { art: DATA ? 1 : 0 });
-    fontsReady(true).then(function () { try { root.print(); } catch (e) {} });
   }
 
   // ---------- downloads ----------
@@ -1917,7 +1888,6 @@
   })();
   $('ro-deliver').addEventListener('change', syncAddress);
   $('ro-isgift').addEventListener('change', syncAddress);
-  $('rp-card').addEventListener('click', printCard);
   $('ro-form').addEventListener('submit', submitOrder);
   $('rb-form').addEventListener('submit', submitBiz);
   $('rb-qty').addEventListener('input', syncBizTier);
@@ -1933,6 +1903,7 @@
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
+  $('rp-gift-use').addEventListener('click', function () { useGift(); });
   $('rp-retry').addEventListener('click', function () { $('rp-retry-row').hidden = true; run(); });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;
@@ -1948,22 +1919,58 @@
   if (ST.place && ST.year) run();
   else runSample();
 
-  /* Gift card codes (?gift=RP-XXXX-XXXX-XXXX): components/rp-gift.js handles
-     them when the page loads it, through window.AgRpGift.init(code, PAGE).
-     ?gift=1 is the old "this year as a gift" switch, not a code. Without the
-     gift script the reader is told how to use the code by email. */
-  var GIFT_CODE = (function () { var g = new URLSearchParams(root.location.search).get('gift') || ''; return /^RP[-\s]?[0-9A-Za-z]/i.test(g) ? g.slice(0, 40) : ''; })();
-  var PAGE = {
-    design: function () { return Object.assign({}, ST); }, designCode: function () { return encodeCode(ST); },
-    designUrl: function () { return designUrl(ST); }, canOrder: canOrder, openOrder: openOrder, meta: function () { return META ? Object.assign({}, META) : null; }
-  };
-  root.RainPrint.page = PAGE;
-  function giftHook() {
-    if (!GIFT_CODE) return;
-    if (root.AgRpGift && typeof root.AgRpGift.init === 'function') { try { root.AgRpGift.init(GIFT_CODE, PAGE); } catch (e) {} return; }
-    var n = $('rp-link-note');
-    n.textContent = 'Have a gift card code? Email it to ' + ORDER_TO + ' with the town and year you want, and Sig will set it up.';
-    n.hidden = false;
+  /* THE GIFT CARD (2026-10-13). A card is issued by Sig after payment (worker
+     v5.16) and printed from /rp-gift. Its link, /rain-print?gift=RP-XXXX-XXXX-XXXX,
+     is redeemed here through components/rp-gift.js (loaded with defer, so this
+     runs once the page is parsed): a banner says whose gift it is, a locked
+     card draws its design and holds those inputs still, the three buy buttons
+     become one "Use my gift", and the order posts /rp-gift/redeem instead of a
+     plain order. ?gift=1 is the old January design flag, not a card. */
+  var GIFT = null;
+  var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
+    dedication: ['rp-ded'], markers: ['rp-m1d', 'rp-m1l', 'rp-m2d', 'rp-m2l', 'rp-m3d', 'rp-m3l'], normals: ['rp-normals'], records: ['rp-records'] };
+  function lockInput(field) {
+    (LOCK_IDS[field] || []).forEach(function (id) {
+      if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.disabled = true; }); return; }
+      var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }
+    });
   }
-  if (doc.readyState === 'complete') giftHook(); else root.addEventListener('load', giftHook);
+  function syncGiftUse() {
+    var on = !!(GIFT && GIFT.usable);
+    $('rp-gift-use-wrap').hidden = !on;
+    doc.querySelectorAll('.rp-prods, #rp-isgift-wrap').forEach(function (el) { if (on) el.hidden = true; });
+    if (!on) return;
+    $('rp-gift-use-note').textContent = 'Your card covers ' + root.AgRpGift.product(GIFT.product) + '.' + (canOrder() ? '' : ' Draw the print above first.');
+    $('rp-gift-use').disabled = !canOrder();
+  }
+  function useGift() {
+    if (!GIFT || !GIFT.usable) return;
+    if (!canOrder()) { buy(GIFT.product); return; }
+    openOrder(GIFT.product);
+    $('ro-choice').disabled = true;
+    $('ro-submit').textContent = 'Use my gift';
+  }
+  function giftStart() {
+    var A = root.AgRpGift;
+    if (!A || typeof A.fromUrl !== 'function') return;
+    var gc = A.fromUrl();
+    if (!gc) return;
+    A.open(gc, { banner: $('rp-gift-banner'), onChange: takeGift }).then(takeGift);
+  }
+  function takeGift(g) {
+    if (!g || !g.usable) return;
+    GIFT = g;
+    if (g.lock && g.lock.design) {
+      var keepName = g.lock.edit === 'name' && $('rp-name').value ? $('rp-name').value : null;
+      ST = normalize(g.lock.design);
+      if (keepName) ST.name = cleanText(printable(keepName), LIMITS.name);
+      if (SAMPLE) { SAMPLE = null; sampleLine(false); }
+      writeInputs(ST);
+      run();
+    }
+    (g.locked || []).forEach(lockInput);
+    syncGiftUse();
+    ga('rain_print_gift_open', { kind: g.kind || '' });
+  }
+  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', giftStart); else giftStart();
 })(typeof window !== 'undefined' ? window : this);

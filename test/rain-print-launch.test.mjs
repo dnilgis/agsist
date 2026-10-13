@@ -237,3 +237,29 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
   assert.match(S, /What happens next/);
 });
+
+// ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
+test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
+  const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(H, /<script src="\/components\/rp-gift\.js" defer><\/script>/);
+  assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
+  for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
+  assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
+  assert.match(S, /A\.open\(gc, \{ banner: \$\('rp-gift-banner'\)/, "the banner is filled by rp-gift.js");
+  const sub = S.slice(S.indexOf("function submitOrder"), S.indexOf("// ---------- for businesses"));
+  assert.ok(sub.indexOf("root.AgRpGift.redeem(GIFT, x)") > 0 && sub.indexOf("root.AgRpGift.redeem(GIFT, x)") < sub.indexOf("send('rain-print-order'"), "a gift order posts redeem, not a plain order");
+  assert.match(S, /\(g\.locked \|\| \[\]\)\.forEach\(lockInput\)/, "a locked card holds its inputs still");
+  for (const f of ["place", "year", "style", "name", "dedication", "markers", "normals", "records", "cmp", "station"]) assert.ok(new RegExp("\\b" + f + ": \\[").test(S.slice(S.indexOf("var LOCK_IDS"), S.indexOf("function lockInput"))), "lockable: " + f);
+});
+
+test("rp-gift.js reads a locked card's design with this page's decoder", () => {
+  const g = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, Map, Promise };
+  g.window = g;
+  vm.runInNewContext(readFileSync(ROOT + "components/rain-print.js", "utf8"), g);
+  vm.runInNewContext(readFileSync(ROOT + "components/rp-gift.js", "utf8"), g);
+  const design = g.RainPrint.encodeCode({ place: "Chetek, WI", year: 2025, style: "r2", name: "The Olson Farm", dedication: "For Grandpa Erling, sixty harvests and counting. Love, all the grandkids".slice(0, 70) });
+  const G = g.AgRpGift._state({ ok: true, kind: "locked", product: "framed12x18", status: "issued", lock: { design_code: design, edit: "name" } }, "RP-7K3M-Q9TW-H2F3");
+  assert.equal(G.usable, true);
+  assert.equal(G.lock.design.dedication.length, 70, "a 70-letter line survives the card");
+  assert.ok(!G.locked.includes("name") && G.locked.includes("place"));
+});
