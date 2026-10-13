@@ -90,7 +90,7 @@ test("the sold block: labelled Sponsor, rel=sponsored, asks readers to support t
     assert.ok(h.includes('href="https://example.com/ag" rel="sponsored noopener"'), kind);
     assert.ok(h.includes("Visit Example Ag Lending &rarr;"), kind);
     assert.ok(h.includes(EX.line), kind);
-    assert.ok(h.includes("515-555-0100."), kind);
+    assert.ok(h.includes(">515-555-0100</span>."), kind);
     assert.ok(!PRICE.test(h) && !/price|founding/i.test(h), kind);
     assert.equal(h.includes('src="/img/sponsors/example.webp"'), kind !== "county", kind + " logo");
   }

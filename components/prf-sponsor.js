@@ -83,7 +83,7 @@
     var noSay = kind === 'state' ? '' : ' <span class="prf-spon-ask">A sponsor has no say over any figure here.</span>';
     return '<span class="ag-sponsor-tag">Sponsor</span>' + logo +
       '<span class="ag-sponsor-copy"><b>PRF in ' + esc(stName) + ' is sponsored by ' + n + '.</b>' +
-      (sp.line ? ' ' + esc(sp.line) : '') + (sp.phone ? ' ' + esc(sp.phone) + '.' : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
+      (sp.line ? ' ' + esc(sp.line) : '') + (sp.phone ? ' <span class="prf-spon-tel">' + esc(sp.phone) + '</span>.' : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
   }
 
   function show(el, sp, stName, kind) {
