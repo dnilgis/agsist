@@ -121,10 +121,14 @@ jobs:
   # Manual dispatches always run.
   gate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       skip: ${{ steps.g.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - id: g
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
@@ -148,7 +152,7 @@ jobs:
           # It arrives every thirty minutes all morning, so it must obey the
           # floor and the published check exactly as the push trigger was meant
           # to. Only a human clicking Run workflow gets to override them.
-          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"
+          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"   # boolean input: only true/false can arrive
           [ "$EVENT" = "workflow_dispatch" ] && [ "$HEARTBEAT" = "true" ] && EVENT="heartbeat"
 
           # THE WAIT IS CAPPED AT FORTY MINUTES, DOWN FROM 150. Not a tuning
@@ -304,7 +308,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install feedparser requests pillow
+        run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
 
       # The gate's own selftest runs first. It regression-locks the two holes that
       # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the

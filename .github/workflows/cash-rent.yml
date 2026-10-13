@@ -48,7 +48,12 @@ jobs:
         if: steps.window.outputs.go == '1'
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
-        run: python scripts/fetch_cash_rent.py --states "${{ github.event.inputs.states }}"
+          IN_STATES: ${{ github.event.inputs.states }}
+        run: |
+          if ! printf '%s' "$IN_STATES" | grep -Eq '^[A-Za-z, ]*$'; then
+            echo "::error::states must be like IA,IL"; exit 1
+          fi
+          python scripts/fetch_cash_rent.py --states "$IN_STATES"
 
       - name: Commit
         if: steps.window.outputs.go == '1'

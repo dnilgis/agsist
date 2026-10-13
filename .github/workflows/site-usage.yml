@@ -50,7 +50,7 @@ jobs:
       # Fresh numbers, fresh to-do list (/seo-report). seo-weekly.yml rebuilds
       # it every Monday as well, after titles have changed.
       - name: What to fix (search)
-        run: python3 scripts/seo_opportunities.py --print
+        run: python3 scripts/seo_opportunities.py   # no --print: the Actions log is public
 
       - name: Commit
         run: |

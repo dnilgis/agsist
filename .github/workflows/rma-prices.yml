@@ -44,11 +44,17 @@ jobs:
         run: python3 scripts/test_rma_prices.py
 
       - name: Pull RMA price discovery
+        env:
+          IN_PROBE: ${{ inputs.probe }}
+          IN_YEAR: ${{ inputs.year }}
         run: |
-          ARGS=""
-          if [ "${{ inputs.probe }}" = "true" ]; then ARGS="$ARGS --probe"; fi
-          if [ -n "${{ inputs.year }}" ]; then ARGS="$ARGS --year ${{ inputs.year }}"; fi
-          python3 scripts/fetch_rma_prices.py $ARGS
+          ARGS=()
+          if [ "$IN_PROBE" = "true" ]; then ARGS+=(--probe); fi
+          if [ -n "$IN_YEAR" ]; then
+            printf '%s' "$IN_YEAR" | grep -Eq '^[0-9]{4}$' || { echo "::error::year must be 4 digits"; exit 1; }
+            ARGS+=(--year "$IN_YEAR")
+          fi
+          python3 scripts/fetch_rma_prices.py "${ARGS[@]}"
 
       # WHAT IS IN DISCOVERY TODAY, ONTO THE TRACKER PAGE.
       #

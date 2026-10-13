@@ -56,6 +56,9 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
+
 try:
     from zoneinfo import ZoneInfo
     CT = ZoneInfo("America/Chicago")
@@ -452,7 +455,8 @@ def main():
                 mark(a, invoiced=(a.get("invoiced") or 0) + 1)
         except Exception as e:                               # noqa: BLE001
             failed += 1
-            print("%s %s failed: %s" % (action, a.get("id"), e))
+            # mask_text: an SMTPRecipientsRefused message carries the address
+            print("%s %s failed: %s" % (action, a.get("id"), log_safe.mask_text(e)))
     if conn:
         conn.quit()
     return 1 if failed else 0

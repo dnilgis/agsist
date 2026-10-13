@@ -38,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           ref: main   # workflow_run defaults to the pre-mesh commit — must
                       # checkout main to see the swath day mesh.yml just pushed
 
@@ -54,7 +55,7 @@ jobs:
         run: python3 scripts/test_send_loops.py
 
       - name: Install geometry lib
-        run: pip install shapely --quiet
+        run: pip install shapely==2.2.0 --quiet
 
       - name: Check watch areas and send alerts
         env:

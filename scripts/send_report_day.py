@@ -62,6 +62,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
+import log_safe           # noqa: E402  (no address in the public log)
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
 from report_bands import surprise as band_surprise, range_context   # noqa: E402  (the one grading rule)
 
@@ -502,7 +503,9 @@ def main(argv=()):
     from_name = env("FROM_NAME") or "AGSIST"
     reply_to = env("REPLY_TO")
     if dry:
-        m = build_email(day, b, recipients[0], from_name, from_addr, reply_to)
+        # A made-up address: the preview body carries the unsubscribe link,
+        # and the Actions log is public.
+        m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
         print("would send to %d reader(s)" % len(recipients))
         print("-" * 60)
@@ -566,9 +569,15 @@ def main(argv=()):
     if sent > 0:
         flag(day, set_it=True)
     if failed:
+        # Full addresses go to Sig by private mail; the public annotation gets
+        # the count and masked addresses only.
+        mailed = log_safe.owner_mail("AGSIST report email %s: %d of %d did not send" % (day, len(failed), len(recipients)),
+                                     ["Resend to these addresses individually (the report is flagged):", ""] + failed)
         print("::error::failed (" + str(len(failed)) + " of " + str(len(recipients))
               + ") — the report is flagged, so a plain rerun will NOT resend to "
-              "anyone. Resend to these addresses individually: " + ", ".join(failed))
+              "anyone. Resend to these addresses individually ("
+              + ("full list mailed to Sig" if mailed else "full list NOT mailed")
+              + "): " + ", ".join(log_safe.mask_text(f) for f in failed))
     return 0 if sent > 0 else 1
 
 

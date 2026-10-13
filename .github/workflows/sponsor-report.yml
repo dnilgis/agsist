@@ -77,7 +77,7 @@ jobs:
       # ran after the guards on 2026-09-22 and the first run died on
       # "No module named 'google'" before any report was built.
       - name: Install the GA4 client
-        run: pip install --quiet google-analytics-data google-auth requests
+        run: pip install --quiet google-analytics-data==0.23.3 google-auth==2.62.0 requests==2.34.2
 
       - name: The portal cannot approve words nobody saw
         run: |

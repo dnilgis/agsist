@@ -60,6 +60,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import send_elevator_watch as sew  # noqa: E402
+import log_safe  # noqa: E402  (no address in the public log)
 
 ZIPS_URL = "https://dnilgis.github.io/bids/data/zips/{}.json"
 RADII = (10, 25, 50, 75, 100)           # what components/cb-alerts.js offers
@@ -452,12 +453,12 @@ def main():
           + "; ".join(f"{k} {v}" for k, v in n.items()))
     if dry:
         for x in confirms:
-            print("would confirm", x[0], x[1], x[2])
+            print("would confirm", log_safe.mask(x[0]), x[1], x[2])
         for x in sends:
-            print("would alert", x[0], x[1], x[2], "|", len(x[3]), "at or above; top", x[3][0]["facility"],
+            print("would alert", log_safe.mask(x[0]), x[1], x[2], "|", len(x[3]), "at or above; top", x[3][0]["facility"],
                   sew.fmt_cash(x[3][0]["cash"]), f"{x[3][0]['miles']:.0f} mi", "posted", x[3][0]["pricedAt"])
         for x in rearms:
-            print("would re-arm", x[0], x[1], x[2], "| best now", sew.fmt_cash(x[3]["cash"]))
+            print("would re-arm", log_safe.mask(x[0]), x[1], x[2], "| best now", sew.fmt_cash(x[3]["cash"]))
         return 0
     for e, w, label, row in rearms:                        # silent: dropped back below
         sew.worker(base, "elevator-watch-mark", tok, state_mark(e, w, False, row))
@@ -500,7 +501,13 @@ def main():
                 conn.quit()
             except Exception:
                 pass
-    print(f"sent {sent}; failed {len(failed)}" + (": " + ", ".join(failed[:10]) if failed else ""))
+    # Counts and masked addresses only: the Actions log is public. The full
+    # list goes to Sig by private mail.
+    print(f"sent {sent}; failed {len(failed)}"
+          + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
+    if failed:
+        log_safe.owner_mail(f"AGSIST ZIP alert: {len(failed)} send(s) failed",
+                            ["These did not send (they stay unmarked and retry next run):", ""] + failed)
     if jobs and len(jobs) > cap:
         print(f"cap reached: {len(jobs) - cap} left for the next run")
     return 1 if failed and not sent else 0

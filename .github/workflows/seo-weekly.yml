@@ -56,7 +56,7 @@ jobs:
         run: python3 scripts/gsc_index_check.py
 
       - name: What to fix
-        run: python3 scripts/seo_opportunities.py --print
+        run: python3 scripts/seo_opportunities.py   # no --print: the Actions log is public
 
       - name: Commit
         run: |

@@ -33,6 +33,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+import log_safe  # noqa: E402  (the real masker; only its mail is faked below)
 
 # (script, what its own loop calls the messages)
 SENDERS = [
@@ -69,7 +71,7 @@ def lift(script):
 
 def run(body, fail_on=(), fail_with=OSError, n=6):
     """Run one lifted loop against a fake server. Returns (rc, state)."""
-    state = {"sent": [], "connects": 0, "flagged": None, "printed": []}
+    state = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": []}
 
     class FakeSMTP:
         def __init__(self, *a, **k):
@@ -110,6 +112,13 @@ def run(body, fail_on=(), fail_with=OSError, n=6):
         "day_flag": flagger,
         "flag": flagger,
         "print": lambda *a, **k: state["printed"].append(" ".join(str(x) for x in a)),
+        # The private mail to Sig is captured, never sent; masking is real.
+        "log_safe": type("L", (), {
+            "mask": staticmethod(log_safe.mask),
+            "mask_text": staticmethod(log_safe.mask_text),
+            "owner_mail": staticmethod(
+                lambda subject, lines: state["owner"].append((subject, list(lines))) or True),
+        }),
         "isinstance": isinstance, "type": type, "len": len, "str": str,
         "enumerate": enumerate, "OSError": OSError, "Exception": Exception,
     }
@@ -171,9 +180,15 @@ for script, plural in SENDERS:
     check("::error::" in out,
           W("a partial send printed no ::error:: annotation — the day is flagged, "
             "so a rerun will not retry these and nobody will know they are missing"))
-    check("w2@example.com" in out,
-          W("the addresses that did not receive are not named, so they cannot be "
-            "sent by hand"))
+    # ...but the log and the annotation are PUBLIC: no full address in them.
+    check("@example.com" not in out,
+          W("a full subscriber address was printed to the public Actions log"))
+    check("w***@e***.com" in out,
+          W("the failed addresses are not even named masked in the annotation"))
+    private = "\n".join("\n".join(ln) for _s, ln in st["owner"])
+    check("w2@example.com" in private,
+          W("the addresses that did not receive are not mailed to Sig, so they "
+            "cannot be sent by hand"))
 
     # ── repeated drops do not loop forever ────────────────────────────────
     rc, st = run(body, fail_on=tuple(range(6)), fail_with=OSError, n=6)
