@@ -51,7 +51,7 @@ import inject_static_nav as nav  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=1">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=2">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
