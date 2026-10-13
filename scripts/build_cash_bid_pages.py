@@ -629,6 +629,35 @@ def page_end(ftr, table=False, signup=False):
 """
 
 
+def town_zips(zip_towns):
+    """{(ST, normalised town name): [ZIPs]} from geocodes/zip-towns.json, the
+    same table known_towns() reads."""
+    out = defaultdict(list)
+    for zc, v in ((zip_towns or {}).get("zips") or {}).items():
+        if isinstance(v, list) and len(v) == 2 and re.fullmatch(r"\d{5}", str(zc)):
+            out[(v[1], town_key(v[0]))].append(str(zc))
+    return {k: sorted(v) for k, v in out.items()}
+
+
+def box_zip(t, z, ctx):
+    """The ZIP the bid email box sends: the page's own (its boards'), else one
+    of the town's own ZIPs from the ZIP table. With pins and centroids, the one
+    whose centre is nearest the town's elevators, and only within ZIP_PIN_MI of
+    them; without, the lowest. "" when the town has none: no box is drawn."""
+    if z:
+        return z
+    cands = (ctx.get("town_zips") or {}).get((t["state"], town_key(t["name"]))) or []
+    if not cands:
+        return ""
+    zc = ctx.get("zip_coord")
+    pins = [bd["pin"] for bd in t["boards"].values() if bd.get("pin")]
+    if zc and pins:
+        lat, lon = sum(p[0] for p in pins) / len(pins), sum(p[1] for p in pins) / len(pins)
+        best = min(((miles(lat, lon, c[0], c[1]), x) for x in cands for c in [zc(x)] if c), default=None)
+        return best[1] if best and best[0] <= ZIP_PIN_MI else ""
+    return cands[0]
+
+
 def signup_box(t, z, ssl, crops, tops):
     """The placeholder components/cb-signup.js draws into: "Every morning: the
     top corn and soybean bids within 50 mi of <town>" (AGSIST Daily with this
@@ -946,7 +975,7 @@ def build_town_page(t, ctx):
     # the intro when no elevator here has a current bid), so a phone reaches it
     # without scrolling past every board. A town with no ZIP keeps the plain
     # Daily ask at the bottom: the box's two choices both need a ZIP.
-    box = signup_box(t, z, ssl, crops, tops)
+    box = signup_box(t, box_zip(t, z, ctx), ssl, crops, tops)
     ask = "" if box else (
         "<!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->\n"
         "  <script>try{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')"
@@ -1557,7 +1586,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                      | boards_st) & set(STATE_NAMES), key=lambda s: STATE_NAMES[s])
     ctx = {"snap_ct": gen.astimezone(CT), "root": root, "chrome": SB.static_chrome(root), "states": states,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
-           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns)}
+           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns),
+           "town_zips": town_zips(zip_towns)}
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -1855,6 +1885,19 @@ def selftest():
             raise AssertionError("stale snapshot built")
         except SystemExit:
             pass
+    # the bid email box's ZIP: the page's own, else the town's own ZIP nearest
+    # its elevators (never one far off), else none and no box
+    tz = town_zips({"zips": {"50001": ["Ackworth", "IA"], "50002": ["Ackworth", "IA"], "68025": ["Fremont", "NE"],
+                             "5000x": ["Ackworth", "IA"]}})
+    assert tz == {("IA", "ackworth"): ["50001", "50002"], ("NE", "fremont"): ["68025"]}, tz
+    cent = {"50001": (41.0, -93.0), "50002": (41.40, -93.47)}.get
+    tw = {"state": "IA", "name": "Ackworth", "boards": {"a": {"pin": (41.37, -93.47)}}}
+    assert box_zip(tw, "50999", {"town_zips": tz, "zip_coord": cent}) == "50999"
+    assert box_zip(tw, "", {"town_zips": tz, "zip_coord": cent}) == "50002"
+    assert box_zip(dict(tw, boards={"a": {"pin": (43.0, -96.0)}}), "", {"town_zips": tz, "zip_coord": cent}) == ""
+    assert box_zip(dict(tw, boards={}), "", {"town_zips": tz, "zip_coord": cent}) == "50001"
+    assert box_zip(dict(tw, name="Nowhere"), "", {"town_zips": tz}) == ""
+    assert signup_box(tw, "", "iowa", {"corn"}, {}) == ""
     print("selftest OK")
 
 
