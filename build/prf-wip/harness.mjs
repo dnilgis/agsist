@@ -32,3 +32,5 @@ export async function open(opts = {}) {
 }
 export function done() { server.close(); }
 export const overflow = (page) => page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
+/* On a phone, step 2 (the policy controls) is folded to one line until it is tapped; the productivity factor sits under "Productivity factor". */
+export const openSetup = (page) => page.evaluate(() => { const b = document.getElementById('prf-setup-sum'); if (b && b.offsetParent && b.getAttribute('aria-expanded') !== 'true') b.click(); const m = document.getElementById('prf-more'); if (m) m.open = true; });
