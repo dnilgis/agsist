@@ -32,8 +32,8 @@
   "gift_delivery": "A {year} print ships in January {next}, once the station's December numbers are in. The gift card comes as soon as you have paid, and you get a proof first, as with every order.",
   "gift_card_title": "Your {year} Rain Print is coming in January",
   "gift_card_note": "The finished print shows every day of rain from January 1 to December 31, {year}.",
-  "_promote": "Seasonal promo, OFF by default. promote:true shows one line, \"A year of your farm's rain, as a gift. Order framed by <framed_christmas_cutoff>.\", linking /rain-print, on the homepage (under the briefing teaser) and /cash-bids (under the bids), only while today in America/Chicago is between promote_from and promote_until inclusive (components/rain-print-promo.js). briefing_line: null for none, or one sentence; with promote on and in the window it shows once near the end of /daily and of the daily email (scripts/brief_email.py rain_print_line).",
-  "promote": false,
+  "_promote": "promote:true (on since 2026-10-13, Sig: Rain Print is launched; ordering is the request form until payment_links are filled) turns on the homepage card (components/rain-print-promo.js, after the daily content: Christmas wording from promote_from through framed_christmas_cutoff, then the gift-card wording through Dec 24, otherwise year-round wording), the \"see a year of rain here\" lines on related pages, and, between promote_from and promote_until only, one line, \"A year of your farm's rain, as a gift. Order framed by <framed_christmas_cutoff>.\", linking /rain-print, on /cash-bids (under the bids), only while today in America/Chicago is between promote_from and promote_until inclusive (components/rain-print-promo.js). false hides all of these; the menu and footer links stay either way. briefing_line: null for none, or one sentence; with promote on and in the window it shows once near the end of /daily and of the daily email (scripts/brief_email.py rain_print_line).",
+  "promote": true,
   "promote_from": "2026-11-01",
   "promote_until": "2026-12-03",
   "briefing_line": null

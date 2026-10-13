@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>A Better Rain Gauge, in the Works | AGSIST</title>
+  <meta name="description" content="Sig is designing a rain gauge for the farm. Read it like any gauge, or scan its QR code and a phone photo logs the reading. Get updates.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/rain-gauge">
+
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="A better rain gauge, in the works">
+  <meta property="og:description"  content="Sig is designing a rain gauge for the farm. Read it like any gauge, or scan its QR code and a phone photo logs the reading. Get updates.">
+  <meta property="og:url"          content="https://agsist.com/rain-gauge">
+  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@agsist">
+  <meta name="twitter:title"       content="A better rain gauge, in the works">
+  <meta name="twitter:description" content="Sig is designing a rain gauge for the farm. Read it like any gauge, or scan its QR code and a phone photo logs the reading. Get updates.">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .rg{max-width:720px;margin:0 auto;padding:2.6rem 1rem 4rem}
+    .rg h1{font-size:clamp(1.6rem,4.5vw,2.2rem);line-height:1.2;margin:0 0 .6rem;color:var(--text)}
+    .rg .lead{font-size:1.05rem;line-height:1.65;color:var(--text-dim);margin:0 0 1.8rem}
+    .rg h2{font-size:1.1rem;margin:2rem 0 .6rem;color:var(--text)}
+    .rg p,.rg li{font-size:.98rem;line-height:1.7;color:var(--text-dim)}
+    .rg ul{padding-left:1.2rem;margin:.4rem 0 0}
+    .rg li{margin:.35rem 0}
+    .rg li b{color:var(--text)}
+    .rg a{color:var(--brand)}
+    .rg-form{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.2rem 1.1rem;margin:1rem 0 0}
+    .rg-form label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin:.8rem 0 .3rem}
+    .rg-form label:first-of-type{margin-top:0}
+    .rg-form label span{font-weight:400;color:var(--text-muted)}
+    .rg-form input[type=email],.rg-form input[type=text]{width:100%;box-sizing:border-box;min-height:44px;padding:.55rem .7rem;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px}
+    .rg-form input:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+    .rg-row{display:grid;grid-template-columns:8rem 1fr;gap:.8rem}
+    .rg-row label{margin-top:.8rem}
+    @media (max-width:520px){.rg-row{grid-template-columns:1fr;gap:0}}
+    .rg-form button{margin-top:1rem;min-height:44px;padding:.6rem 1.3rem;font:inherit;font-weight:700;color:#14110a;background:var(--gold-fill);border:0;border-radius:6px;cursor:pointer}
+    .rg-form button[disabled]{opacity:.6;cursor:default}
+    .rg-fine{font-size:.84rem!important;color:var(--text-muted)!important;margin:.7rem 0 0}
+    .rg-msg{margin:.8rem 0 0;font-size:.95rem;font-weight:600}
+    .rg-msg.ok{color:var(--green,#5bb974)}
+    .rg-msg.err{color:var(--red,#e5534b)}
+    .rg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/rain-gauge","name":"A better rain gauge, in the works","description":"Sig is designing a rain gauge for the farm. Read it like any gauge, or scan its QR code and a phone photo logs the reading. Get updates.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Rain gauge","item":"https://agsist.com/rain-gauge"}]}}
+</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="rg">
+      <h1>A better rain gauge, in the works</h1>
+      <p class="lead">I am designing a rain gauge for the farm. It is not for sale yet, and there is no date or price. If you want to hear when there is something real, leave your email below.</p>
+      <p>The idea: it reads like any good rain gauge, so you can walk out and look at it the way you always have. It also carries a QR code. Scan it, take a picture of the gauge with your phone, and the reading is logged for that gauge, with no typing. No phone, no problem: it still works as a plain gauge.</p>
+      <p>Nothing has been built or tested in rain yet. The first ones get set next to a standard gauge for a season before I would sell one.</p>
+      <p>Designed, made, sold and shipped from Chetek, Wisconsin.</p>
+
+      <!-- SLOT: hero image (second pass, from the concept renders in the gauge vision work). Concept art only: no CAD, no dimensions. -->
+
+      <!-- SLOT: "How it would work" section (second pass). Plain steps for the reader; never how the photo is read. -->
+
+      <h2 id="updates">Get updates</h2>
+      <form class="rg-form" id="rg-form" novalidate>
+        <label for="rg-email">Email</label>
+        <input type="email" id="rg-email" name="email" autocomplete="email" inputmode="email" required maxlength="254">
+        <div class="rg-row">
+          <div>
+            <label for="rg-zip">ZIP <span>(optional)</span></label>
+            <input type="text" id="rg-zip" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}">
+          </div>
+          <div>
+            <label for="rg-note">What would you want it to do? <span>(optional)</span></label>
+            <input type="text" id="rg-note" name="note" maxlength="280">
+          </div>
+        </div>
+        <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha">Leave this empty</label><input type="text" id="rg-gotcha" name="_gotcha" tabindex="-1" autocomplete="off"></div>
+        <button type="submit" id="rg-go">Get updates</button>
+        <p class="rg-msg" id="rg-msg" role="status" aria-live="polite" hidden></p>
+        <p class="rg-fine">Only rain gauge news goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
+      </form>
+
+      <p style="margin-top:2.2rem">While you wait: <a href="/rain-print">Rain Print</a> draws a year of rain at your nearest NOAA station as a print for the wall.</p>
+      <!-- SLOT: FAQ (second pass). Add FAQPage structured data with it. -->
+
+      <p class="rg-fine">Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=18" defer></script>
+  <script>
+  (function () {
+    'use strict';
+    var EP = 'https://agsist-subs.dnilgis.workers.dev/notice';
+    var KEY = 'agsist_notices';
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    var f = document.getElementById('rg-form'), msg = document.getElementById('rg-msg'), go = document.getElementById('rg-go');
+    var zipIn = document.getElementById('rg-zip');
+    try { var o = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); if (o && /^\d{5}$/.test(o.zip || '') && !zipIn.value) zipIn.value = o.zip; } catch (e) {}
+    function say(t, ok) { msg.textContent = t; msg.className = 'rg-msg ' + (ok ? 'ok' : 'err'); msg.hidden = false; }
+    function done() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; n['rain-gauge'] = Date.now(); localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} }
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var email = document.getElementById('rg-email').value.trim();
+      var zip = zipIn.value.trim(), note = document.getElementById('rg-note').value.trim();
+      if (!EMAIL_RE.test(email)) { say('That email does not look right. Check it and try again.', false); return; }
+      if (zip && !/^\d{5}$/.test(zip)) { say('A ZIP is five digits. Fix it or leave it blank.', false); return; }
+      var body = { email: email, topic: 'rain-gauge', source: 'rain-gauge', _gotcha: document.getElementById('rg-gotcha').value };
+      if (zip) body.zip = zip;
+      if (note) body.note = note.slice(0, 280);
+      go.disabled = true;
+      fetch(EP, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return null; }).then(function (d) { return { ok: !!(r.ok && d && d.ok === true), status: r.status }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            done();
+            say('Thanks. You are on the list for rain gauge news.', true);
+            f.querySelectorAll('input').forEach(function (i) { i.disabled = true; });
+            try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge' }); } catch (e) {}
+          } else {
+            go.disabled = false;
+            say(res.status === 429 ? 'Too many tries from here. Try again in an hour.' : 'That did not go through. Try again in a minute.', false);
+          }
+        })
+        .catch(function () { go.disabled = false; say('That did not go through. Check your connection and try again.', false); });
+    });
+  })();
+  </script>
+</body>
+</html>

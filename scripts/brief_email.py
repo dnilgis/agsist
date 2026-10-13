@@ -1099,10 +1099,12 @@ def _selftest():
             bad.append(("rain print line", cfg, when))
     with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
         shipped = json.load(f)
-    if shipped.get("promote") is not False or shipped.get("briefing_line") is not None:
-        bad.append(("data/rain-print.json ships with the promo on", shipped.get("promote"), shipped.get("briefing_line")))
+    # 2026-10-13: promote is on since launch (the site card and menu), but the
+    # email line stays off until Sig writes a briefing_line.
+    if not isinstance(shipped.get("promote"), bool) or shipped.get("briefing_line") is not None:
+        bad.append(("data/rain-print.json ships with an email line", shipped.get("promote"), shipped.get("briefing_line")))
     if "rain-print" in render_text(d, "https://agsist.com/", today=date(2026, 11, 15)):
-        bad.append(("rain print line in the email while the shipped file has it off", "", ""))
+        bad.append(("rain print line in the email while the shipped file has no briefing_line", "", ""))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))

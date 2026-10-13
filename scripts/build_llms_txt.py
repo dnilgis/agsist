@@ -116,6 +116,7 @@ PAGES = [
         ("/planting-date", "Planting Date Calculator", "corn and soybean planting windows and final planting dates"),
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest NOAA weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
+        ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is designing: reads like any gauge, and a QR code lets a phone photo log the reading; no date or price yet, updates by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value"),

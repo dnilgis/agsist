@@ -202,12 +202,18 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   assert.deepEqual([w, h], [1200, 630]);
 });
 
-test("Rain Print stays out of the menus and footer until launch (it is already in sitemap.xml from 2026-10-12)", () => {
-  assert.equal(J.promote, false);
+/* 2026-10-13, Sig: Rain Print launches, with the rain gauge waiting list. Both are
+   in the menu and the footer (live and static copies alike) and the promo is on. */
+test("Rain Print and the rain gauge list are in the menus and footer at launch (2026-10-13)", () => {
+  assert.equal(J.promote, true);
   for (const f of ["components/header.html", "components/footer.html", "components/header-fallback.html", "components/footer-fallback.html"]) {
-    let t = ""; try { t = readFileSync(ROOT + f, "utf8"); } catch (e) { continue; }
-    assert.ok(!/rain-print/.test(t), f + " has no Rain Print link yet");
+    const t = readFileSync(ROOT + f, "utf8");
+    assert.ok(/href="\/rain-print"/.test(t), f + " links Rain Print");
+    assert.ok(/href="\/rain-gauge"/.test(t), f + " links the rain gauge page");
   }
+  const h = readFileSync(ROOT + "components/header.html", "utf8");
+  assert.equal((h.match(/href="\/rain-print"/g) || []).length, 2, "the desktop menu and the phone drawer, once each");
+  assert.ok(/<symbol id="i-cloud-rain"/.test(h) && /<symbol id="i-test-tube"/.test(h), "their icons are in the sprite");
 });
 
 // ---------- checkout and proof ----------

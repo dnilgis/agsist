@@ -245,5 +245,5 @@ test("the page offers the two styles, the dedication and both switches, and load
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);
     assert.ok(readFileSync(ROOT + "fonts/" + f).length > 10000);
   }
-  assert.equal(JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8")).promote, false, "the promo stays off");
+  assert.equal(JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8")).promote, true, "launched 2026-10-13: the promo is on");
 });
