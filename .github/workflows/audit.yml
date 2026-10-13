@@ -75,14 +75,25 @@ jobs:
       - name: Audit
         id: audit
         continue-on-error: true
+        # Inputs reach the shell only through env and are checked first: a
+        # dispatch token must not be able to run commands in a write job.
+        env:
+          IN_PAGES: ${{ inputs.pages }}
+          IN_BASE: ${{ inputs.base || 'https://agsist.com' }}
         run: |
-          ARGS=""
-          if [ -n "${{ inputs.pages }}" ]; then
-            for p in ${{ inputs.pages }}; do
-              if [ "$p" = "--all" ]; then ARGS="$ARGS --all"; else ARGS="$ARGS --page $p"; fi
+          if ! printf '%s' "$IN_BASE" | grep -Eq '^https://[A-Za-z0-9.-]+(:[0-9]+)?/?$'; then
+            echo "::error::base must be https://host"; exit 1
+          fi
+          ARGS=()
+          if [ -n "$IN_PAGES" ]; then
+            read -r -a PAGES <<< "$IN_PAGES"
+            for p in "${PAGES[@]}"; do
+              if [ "$p" = "--all" ]; then ARGS+=(--all)
+              elif printf '%s' "$p" | grep -Eq '^/?[A-Za-z0-9._/-]*$'; then ARGS+=(--page "$p")
+              else echo "::error::not a page path"; exit 1; fi
             done
           fi
-          node scripts/audit-site.mjs --base "${{ inputs.base || 'https://agsist.com' }}" $ARGS
+          node scripts/audit-site.mjs --base "$IN_BASE" "${ARGS[@]}"
 
       # Committed so the TREND exists. One audit says what is broken today; a
       # file in git says whether the site is getting better or worse.

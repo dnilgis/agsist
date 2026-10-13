@@ -67,6 +67,11 @@ jobs:
       - name: Sweep the grid for locations
         env:
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
+          IN_MAX_DISTANCE: ${{ inputs.max_distance || '75' }}
+          IN_TOTAL_LOCATIONS: ${{ inputs.total_locations || '500' }}
+          IN_START: ${{ inputs.start || '0' }}
+          IN_LIMIT: ${{ inputs.limit || '0' }}
+          IN_MINUTES: ${{ inputs.minutes || '40' }}
         run: |
           # No key is a normal state once the subscription is cancelled
           # (2026-09-25). The directory already written stays exactly as it
@@ -78,13 +83,16 @@ jobs:
             echo "::notice::No BARCHART_API_KEY. Nothing harvested; data/elevator-directory.json is unchanged."
             exit 0
           fi
+          for v in "$IN_MAX_DISTANCE" "$IN_TOTAL_LOCATIONS" "$IN_START" "$IN_LIMIT" "$IN_MINUTES"; do
+            printf '%s' "$v" | grep -Eq '^[0-9]+$' || { echo "::error::numeric inputs only"; exit 1; }
+          done
           python scripts/extract_directory.py \
             ${{ inputs.probe_cap && '--probe-cap' || '' }} \
-            --max-distance "${{ inputs.max_distance || '75' }}" \
-            --total-locations "${{ inputs.total_locations || '500' }}" \
-            --start "${{ inputs.start || '0' }}" \
-            --limit "${{ inputs.limit || '0' }}" \
-            --minutes "${{ inputs.minutes || '40' }}"
+            --max-distance "$IN_MAX_DISTANCE" \
+            --total-locations "$IN_TOTAL_LOCATIONS" \
+            --start "$IN_START" \
+            --limit "$IN_LIMIT" \
+            --minutes "$IN_MINUTES"
 
       # THE NUMBERS GO WHERE A PERSON WILL SEE THEM. The point of this run is
       # the counts -- how many facilities, how many with an address, how many

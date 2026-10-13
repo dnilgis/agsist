@@ -70,6 +70,8 @@ jobs:
     timeout-minutes: 300     # the first RMA pull is 38 zips; later runs are minutes
     env:
       LAYERS: ${{ github.event.inputs.layers }}
+      IN_LOSS_ALL: ${{ github.event.inputs.loss_all }}
+      IN_REFETCH_ALL: ${{ github.event.inputs.refetch_all }}
     steps:
       # The job's own start time, for atlas_reads.py: its batch wait ends early
       # enough that the Commit step still runs inside the 300-minute ceiling.
@@ -151,7 +153,7 @@ jobs:
         env:
           RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
         run: |
-          if [ "${{ github.event.inputs.loss_all }}" = "yes" ] || [ "${{ github.event.inputs.refetch_all }}" = "yes" ]; then
+          if [ "$IN_LOSS_ALL" = "yes" ] || [ "$IN_REFETCH_ALL" = "yes" ]; then
             python scripts/fetch_atlas_loss.py --all
           else
             python scripts/fetch_atlas_loss.py
@@ -255,7 +257,7 @@ jobs:
         env:
           RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
         run: |
-          if [ "${{ github.event.inputs.refetch_all }}" = "yes" ]; then
+          if [ "$IN_REFETCH_ALL" = "yes" ]; then
             python scripts/fetch_atlas_sob.py --all
           else
             python scripts/fetch_atlas_sob.py
@@ -268,7 +270,7 @@ jobs:
         if: steps.which.outputs.drought == '1'
         continue-on-error: true
         run: |
-          if [ "${{ github.event.inputs.refetch_all }}" = "yes" ]; then
+          if [ "$IN_REFETCH_ALL" = "yes" ]; then
             python scripts/fetch_atlas_drought.py --all
           else
             python scripts/fetch_atlas_drought.py

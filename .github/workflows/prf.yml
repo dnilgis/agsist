@@ -98,13 +98,23 @@ jobs:
 
       - name: Fetch
         if: github.event.inputs.from_staging != 'yes'
+        env:
+          IN_FULL: ${{ github.event.inputs.full }}
+          IN_YEAR: ${{ github.event.inputs.year }}
+          IN_LIMIT: ${{ github.event.inputs.limit }}
         run: |
           set -o pipefail
-          ARGS=""
-          if [ "${{ github.event.inputs.full }}" = "yes" ]; then ARGS="$ARGS --full"; fi
-          if [ -n "${{ github.event.inputs.year }}" ]; then ARGS="$ARGS --year ${{ github.event.inputs.year }}"; fi
-          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ github.event.inputs.limit }}"; fi
-          python scripts/fetch_prf.py $ARGS 2>&1 | tee prf-run.log
+          ARGS=()
+          if [ "$IN_FULL" = "yes" ]; then ARGS+=(--full); fi
+          if [ -n "$IN_YEAR" ]; then
+            printf '%s' "$IN_YEAR" | grep -Eq '^[0-9]{4}$' || { echo "::error::year must be 4 digits"; exit 1; }
+            ARGS+=(--year "$IN_YEAR")
+          fi
+          if [ -n "$IN_LIMIT" ]; then
+            printf '%s' "$IN_LIMIT" | grep -Eq '^[0-9]+$' || { echo "::error::limit must be a number"; exit 1; }
+            ARGS+=(--limit "$IN_LIMIT")
+          fi
+          python scripts/fetch_prf.py "${ARGS[@]}" 2>&1 | tee prf-run.log
 
       - name: Leave the fetch on the prf-staging branch
         if: github.event.inputs.limit == '' && github.event.inputs.from_staging != 'yes'
@@ -122,9 +132,12 @@ jobs:
 
       - name: Against RMA's own tool
         if: github.event.inputs.limit == ''
+        env:
+          IN_CHECK_RANDOM: ${{ github.event.inputs.check_random }}
         run: |
           set -o pipefail
-          N="${{ github.event.inputs.check_random }}"
+          N="$IN_CHECK_RANDOM"
+          if [ -n "$N" ] && ! printf '%s' "$N" | grep -Eq '^[0-9]+$'; then echo "::error::check_random must be a number"; exit 1; fi
           node scripts/check_prf_rma.mjs --random "${N:-8}" --detail prf-check-detail.json 2>&1 | tee -a prf-run.log
 
       # Everything the pages print comes from the files above: the national and
