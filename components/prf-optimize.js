@@ -42,10 +42,12 @@
      Dollar rounding per unit is left out; it moves a figure by cents.
 
    NO LOOK-AHEAD IN THE TEST, AND WHAT IT CANNOT AVOID
-     * The pick for year Y sees only years before Y (walkForward's onTrain
-       hook lets the test prove it), and only the ENSO reading of the fall
-       before Y (Aug-Oct of Y-1), which was published before the Dec 1 sales
-       closing.
+     * The pick for year Y sees only what a buyer had on Dec 1 of Y-1: the
+       years before Y, less Oct-Nov and Nov-Dec of Y-1, which end after the
+       sales closing (lateUnknown; walkForward's onTrain hook lets the test
+       prove it), and only the ENSO reading of the fall before Y (Aug-Oct of
+       Y-1), which was published before the Dec 1 sales closing. Before
+       2026-10-13 the test read all of Y-1; that flattered it slightly.
      * It cannot avoid two things, and the panel says so: every year is
        scored at 2027 rates, which RMA set with the whole record in view (past
        rates are not in the data), and USDA's index is percent of a normal
@@ -85,6 +87,11 @@
                                'Jul-Aug', 'Aug-Sep', 'Sep-Oct', 'Oct-Nov', 'Nov-Dec'];
   /* the six intervals that share no month and cover the whole year */
   var YEAR_SET = [0, 2, 4, 6, 8, 10];
+
+  /* Oct-Nov and Nov-Dec (9, 10) end Nov 30 and Dec 31: not final by the Dec 1
+     sales closing, so the pick for policy year Y never reads them for Y-1. */
+  var FIRST_LATE = 9;
+  function lateUnknown(G, k, i, asOf) { return asOf != null && G.years[k] === asOf - 1 && i >= FIRST_LATE; }
 
   var ONI_FIRST = 1950;
   var ONI_ASO = [
@@ -408,7 +415,7 @@
         var o = opts.outlook[i];
         if (!o) { cuts.push(null); continue; }
         var v = [];
-        for (var k = 0; k < G.years.length; k++) if (use[k] && G.X[k][i] != null) v.push(G.X[k][i]);
+        for (var k = 0; k < G.years.length; k++) if (use[k] && G.X[k][i] != null && !lateUnknown(G, k, i, opts.asOf)) v.push(G.X[k][i]);
         v.sort(function (a, b) { return a - b; });
         cuts.push(v.length >= 9 ? [quantile(v, 1 / 3), quantile(v, 2 / 3)] : null);
       }
@@ -420,7 +427,7 @@
       if (base && phase && phaseKnownFor(G.years[k2]) === phase) base *= 1 + boost;
       if (base && opts.recency) base *= recencyWeight(G.years[k2], opts.recency);
       for (var j = 0; j < N; j++) {
-        var w = base;
+        var w = lateUnknown(G, k2, j, opts.asOf) ? 0 : base;
         for (var a = 0; a < analogs.length && w; a++) {
           var an = analogs[a];
           if (an.phase == null || (an.intervals && an.intervals.indexOf(j) < 0)) continue;
@@ -440,14 +447,16 @@
 
   /* The years a score averages over. 'net': all in use. 'dry': the driest
      fifth of those by whole-year precipitation (ties in, so never fewer). */
-  function scoreYears(G, use, objective) {
+  function scoreYears(G, use, objective, asOf) {
     var out = use.slice();
     if (objective !== 'dry') return { mask: out, cut: null };
+    /* the whole-year total of Y-1 needs Nov-Dec, not final by Dec 1 of Y-1 */
+    var ok = function (k) { return use[k] && G.annual[k] != null && !(asOf != null && G.years[k] === asOf - 1); };
     var a = [];
-    for (var k = 0; k < G.years.length; k++) if (use[k] && G.annual[k] != null) a.push(G.annual[k]);
+    for (var k = 0; k < G.years.length; k++) if (ok(k)) a.push(G.annual[k]);
     a.sort(function (x, y) { return x - y; });
     var cut = quantile(a, 0.2);
-    for (var k2 = 0; k2 < G.years.length; k2++) out[k2] = !!(use[k2] && G.annual[k2] != null && G.annual[k2] <= cut + 1e-12);
+    for (var k2 = 0; k2 < G.years.length; k2++) out[k2] = !!(ok(k2) && G.annual[k2] <= cut + 1e-12);
     return { mask: out, cut: cut };
   }
 
@@ -477,18 +486,18 @@
      the walk-forward test (scripts/prf_opt_backtest.mjs); RMA's rate did
      better, because the subsidy is a fixed share of whatever premium is owed
      and RMA prices each interval to pay back about the same share. */
-  function pricedValues(G, W, mask) {
+  function pricedValues(G, W, mask, asOf) {
     var num = 0, den = 0, v = new Array(N), i, k;
     for (k = 0; k < G.years.length; k++) {
       if (!mask[k]) continue;
-      for (i = 0; i < N; i++) if (G.allowed[i]) { num += G.P[k][i]; den += G.rates[i]; }
+      for (i = 0; i < N; i++) if (G.allowed[i] && !lateUnknown(G, k, i, asOf)) { num += G.P[k][i]; den += G.rates[i]; }
     }
     var payback = den > 0 ? num / den : null;
     for (i = 0; i < N; i++) {
       if (!G.allowed[i] || payback == null) { v[i] = null; continue; }
       var s = 0, w = 0, plain = 0, n = 0;
       for (k = 0; k < G.years.length; k++) {
-        if (!mask[k]) continue;
+        if (!mask[k] || lateUnknown(G, k, i, asOf)) continue;
         plain += G.P[k][i]; n++;
         var wk = W[k][i]; if (wk) { s += wk * G.P[k][i]; w += wk; }
       }
@@ -643,9 +652,9 @@
   function pick(G, opts) {
     opts = opts || {};
     var use = opts.use || allMask(G);
-    var W = weights(G, use, opts), sy = scoreYears(G, use, opts.objective);
+    var W = weights(G, use, opts), sy = scoreYears(G, use, opts.objective, opts.asOf);
     var est = estimatorFor(opts);
-    var v = est === 'priced' ? pricedValues(G, W, sy.mask) : values(G, W, sy.mask);
+    var v = est === 'priced' ? pricedValues(G, W, sy.mask, opts.asOf) : values(G, W, sy.mask);
     var best = solve(G, v, opts.step);
     if (!best) return null;
     return { split: best.split, score: best.score, values: v, scored: sy, estimator: est };
@@ -670,11 +679,12 @@
       var nTrain = use.filter(Boolean).length;
       if (nTrain < minTrain) continue;
       if (opts.onTrain) opts.onTrain(Y, G.years.filter(function (y, k) { return use[k]; }));
-      var a = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use });
+      /* asOf: what a buyer had on Dec 1 of Y-1 (see lateUnknown) */
+      var a = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use, asOf: Y });
       var phase = phaseKnownFor(Y);
-      var b = phase ? pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use, enso: phase, ensoBoost: opts.ensoBoost }) : a;
+      var b = phase ? pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, use: use, asOf: Y, enso: phase, ensoBoost: opts.ensoBoost }) : a;
       if (!a) continue;
-      var hst = a.estimator === 'history' ? a : pick(G, { objective: objective, estimator: 'history', step: opts.step, use: use });
+      var hst = a.estimator === 'history' ? a : pick(G, { objective: objective, estimator: 'history', step: opts.step, use: use, asOf: Y });
       /* was Y a dry year, by the cut from earlier years only */
       var cut = scoreYears(G, use, 'dry').cut, dryYear = G.annual[t] != null && cut != null && G.annual[t] <= cut + 1e-12;
       var row = { year: Y, phase: phase, dry: dryYear,
@@ -689,7 +699,7 @@
         for (var q = 0; q < preds.length; q++) {
           var tf = tiltFor(G, preds[q], Y, use, opts.climate);
           if (opts.onTilt) opts.onTilt(Y, preds[q], tf ? tf.used : null);
-          var pk = tf && tf.state != null ? pick(G, Object.assign({ objective: objective, estimator: opts.estimator, step: opts.step, use: use }, tf.opts)) : a;
+          var pk = tf && tf.state != null ? pick(G, Object.assign({ objective: objective, estimator: opts.estimator, step: opts.step, use: use, asOf: Y }, tf.opts)) : a;
           row.tilt[preds[q]] = netIn(G, (pk || a).split, t);
           row.tiltPick[preds[q]] = (pk || a).split;
           row.tiltState[preds[q]] = tf ? tf.state : null;
