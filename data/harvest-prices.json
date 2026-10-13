@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-10-12",
+ "updated": "2026-10-13",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -17,7 +17,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 4.96,
+    "running_avg": 4.95,
     "window": "October",
     "series": [
      {
@@ -57,11 +57,16 @@
      },
      {
       "d": "2026-10-12",
-      "s": 4.835,
+      "s": 4.83,
       "a": 4.96
+     },
+     {
+      "d": "2026-10-13",
+      "s": 4.8275,
+      "a": 4.95
      }
     ],
-    "days_counted": 8,
+    "days_counted": 9,
     "days_total": 22
    }
   },
@@ -79,7 +84,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 12.89,
+    "running_avg": 12.88,
     "window": "October",
     "series": [
      {
@@ -119,11 +124,16 @@
      },
      {
       "d": "2026-10-12",
-      "s": 12.8825,
+      "s": 12.8775,
       "a": 12.89
+     },
+     {
+      "d": "2026-10-13",
+      "s": 12.8275,
+      "a": 12.88
      }
     ],
-    "days_counted": 8,
+    "days_counted": 9,
     "days_total": 22
    }
   }
@@ -175,14 +185,19 @@
     },
     {
      "d": "2026-10-12",
-     "s": 4.835,
+     "s": 4.83,
      "a": 4.96
+    },
+    {
+     "d": "2026-10-13",
+     "s": 4.8275,
+     "a": 4.95
     }
    ],
-   "days_counted": 8,
+   "days_counted": 9,
    "status": "running",
    "price": null,
-   "running_avg": 4.96
+   "running_avg": 4.95
   },
   {
    "key": "ZSX26.CBT|2026-10-01|2026-10-31",
@@ -230,14 +245,19 @@
     },
     {
      "d": "2026-10-12",
-     "s": 12.8825,
+     "s": 12.8775,
      "a": 12.89
+    },
+    {
+     "d": "2026-10-13",
+     "s": 12.8275,
+     "a": 12.88
     }
    ],
-   "days_counted": 8,
+   "days_counted": 9,
    "status": "running",
    "price": null,
-   "running_avg": 12.89
+   "running_avg": 12.88
   }
  ]
 }
