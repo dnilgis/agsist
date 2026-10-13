@@ -11,6 +11,8 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rp-fraunces-opsz-400i.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rp-plex-sans-400i.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -99,7 +101,7 @@
   .rp-step-h{display:flex;align-items:center;gap:.55rem;margin:0;font-size:var(--fs-lg);line-height:1.25}
   .rp-hero>.rp-step-h{margin-top:.4rem}
   .rp-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--brand-fill);color:#0a0c0d;font-family:var(--font-mono);font-size:.8em;font-weight:700}
-  #rp-design,#rp-buy,.rp-order{scroll-margin-top:84px}
+  #rp-draw-h,#rp-design,#rp-buy,.rp-order{scroll-margin-top:84px}
   #rp-buy-h:focus{outline:none}
   #rp-buy-h:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
   .rp-acts-next{margin:1rem 0 0}
@@ -133,6 +135,7 @@
   .rp-form .btn{flex:0 0 auto;min-width:8rem}
   .rp textarea{min-height:88px;resize:vertical}
   .rp-xmas{font-size:var(--fs-sm);color:var(--text-dim);margin:0 0 .6rem;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-8);background:var(--surface);line-height:1.5}
+  .rp-xmas a{color:var(--link)}
   .rp-xmas p{margin:0 0 .35rem}.rp-xmas p:last-child{margin:0}.rp-xmas b{color:var(--text)}
   .rp-status{font-size:var(--fs-sm);color:var(--text-muted);min-height:1.4em;margin:.2rem 0 .5rem;line-height:1.5}
   .rp-status:empty{min-height:0;margin:0}
@@ -451,7 +454,7 @@
       <h2 class="sec-h rp-step-h" id="rp-buy-h" tabindex="-1"><span class="rp-n" aria-hidden="true">3</span>Prices and ordering</h2>
       <div class="rp-xmas" id="rp-gift-hint">
         <p><b>For Christmas.</b> <span id="rp-xmas-past">Any past year can be there by Christmas. The order-by dates are on the price cards below.</span></p>
-        <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: once you&rsquo;ve paid, I email you a card to print for under the tree, and the print follows in January.</p>
+        <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: pick <span class="rp-cy">2026</span> in the <a href="#rp-draw-h" class="rp-inl">Year box up top</a>. Once you&rsquo;ve paid, I email you a card to print for under the tree, and the print follows in January.</p>
       </div>
       <div class="rp-gift" id="rp-gift" hidden>
         <h3>Giving <span class="rp-cy">2026</span> as a gift</h3>
