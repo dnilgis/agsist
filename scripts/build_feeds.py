@@ -137,6 +137,9 @@ CURATED = {
     # stamp_rates.py and the sponsor pages. No cadence to keep.
     "data/rate-card.json", "data/sponsor-slots.json",
     "data/page-sponsors.json", "data/supporters.json",
+    # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
+    # sells or renews; each entry lapses on its own "through" date.
+    "data/prf-sponsors.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
     # Rain Print prices, payment links and the seasonal promo switch. Edited by
@@ -180,6 +183,13 @@ EXTERNAL = {
         "feed alone "
         "if it is unreachable, so a stale or missing feed costs coverage and "
         "never breaks the page."),
+    "data/directory.json": (
+        "published by dnilgis/bids, rebuilt with the elevator roster",
+        "Every elevator the bid network knows, read or not. The town page "
+        "builder lists the ones it cannot read, with a link for the elevator "
+        "to ask to post its own bids, and Sig's elevator desk matches each "
+        "request against it. Unreachable means the town pages leave that "
+        "list out and the desk says to check by hand; nothing breaks."),
 }
 
 # ── feeds whose real clock is outside GitHub ────────────────────────────────

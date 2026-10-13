@@ -13,6 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="stylesheet" href="/components/cb-signup.css?v=2">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -148,10 +149,12 @@
   <a class="cbt-live" href="/cash-bids?zip=61774">Live bids near 61774 &rarr;</a>
   
   
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
-  <div data-signup-ask="Get Stanford bids by email every weekday morning" data-source="town:illinois/stanford" data-zip="61774"></div>
+  <div id="bid-email" data-bid-alerts data-place="Stanford" data-zip="61774" data-source="town:illinois/stanford"></div>
+  
+  
+  
   <h2>Also in Stanford, no current bid</h2><ul class="cbt-list"><li>Stanford Grain Company: board not confirmed on the latest read, last read Oct 13, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
+  <h2>Also in Stanford, bids not read yet</h2><p class="cbt-sub">AGSIST knows these elevators are here but does not read their bids yet, so no price is shown for them.</p><ul class="cbt-list"><li>Stanford Grain Company, The <a href="/list-your-elevator?id=reg%3AIL%7Cstanfordgraincompanythe%7Cstanford&amp;name=Stanford%20Grain%20Company%2C%20The&amp;town=Stanford&amp;state=IL&amp;zip=61774" style="color:var(--gold);border:0;font-size:.85rem;white-space:nowrap">Is this your elevator? Post your bids free</a></li></ul>
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
@@ -173,5 +176,6 @@
 </div>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
+<script src="/components/cb-signup.js?v=2" defer></script>
 </body>
 </html>

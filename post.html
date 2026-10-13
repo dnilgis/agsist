@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Post your bids | AGSIST</title>
+  <meta name="description" content="The private page an elevator uses to keep its AGSIST listing current.">
+  <!-- The elevator's own page (subs worker v5.20). The key in ?k= is the only
+       thing that opens a listing, so this page loads no analytics (gtag is a
+       no-op below, so loader.js does not add it), sends no referrer, and is
+       noindex and in no sitemap. One page for every elevator. -->
+  <script>window.gtag = function () {}; window.agsistGaOff = true; window.AgsistSignup = window.AgsistSignup || { off: true };</script>
+  <script>/* agsist-theme-early */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
+  <link rel="manifest"                            href="/manifest.json">
+  <script src="/components/util.js?v=19"></script>
+  <style>
+    .ep{max-width:760px;margin:0 auto;padding:1.25rem 1rem 7rem}
+    .ep h1{font-family:var(--font-display);font-size:1.6rem;line-height:1.15;color:var(--text);margin:0}
+    .ep .ep-where{color:var(--text-dim);margin:.15rem 0 0;font-size:.95rem}
+    .ep .ep-stamp{margin:.6rem 0 0;font-size:.95rem;color:var(--text-dim)}
+    .ep .ep-stamp b{color:var(--text)}
+    .ep .ep-stamp .old{color:var(--orange)}
+    .ep-msg{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin:1.5rem 0;line-height:1.6;color:var(--text-dim)}
+    .ep-msg h1{margin-bottom:.5rem}
+    .ep-msg a{color:var(--gold)}
+    .ep-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:1rem 0}
+    .ep-card h2{font-size:1.05rem;margin:0 0 .25rem;color:var(--text)}
+    .ep-card .hint{font-size:.85rem;color:var(--text-muted);margin:0 0 .6rem;line-height:1.5}
+    .ep-nochange{display:block;width:100%;min-height:64px;margin:1rem 0 .3rem;font:inherit;font-size:1.15rem;font-weight:700;border-radius:10px;
+      border:2px solid var(--green);background:var(--green);color:#08130a;cursor:pointer}
+    .ep-nochange[disabled]{opacity:.45;cursor:not-allowed}
+    .ep-nochange-note{font-size:.85rem;color:var(--text-muted);margin:0 0 .5rem;text-align:center}
+    .ep label{display:block;font-size:.8rem;font-weight:600;color:var(--text-dim);margin:.55rem 0 .2rem}
+    .ep input[type=text],.ep input[type=tel],.ep input[type=date],.ep input[type=number],.ep select,.ep textarea{
+      font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:44px;padding:.4rem .55rem;border:1px solid var(--border-2,var(--border));
+      border-radius:6px;background:var(--bg);color:var(--text)}
+    .ep textarea{min-height:72px;resize:vertical}
+    .ep .two{display:grid;grid-template-columns:1fr 1fr;gap:0 .75rem}
+    .ep-row{border:1px solid var(--border);border-radius:8px;padding:.75rem;margin:.75rem 0;background:var(--bg2,var(--bg))}
+    .ep-row .top{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"crop fut" "per per";gap:0 .6rem}
+    .ep-row .top .crop{grid-area:crop}.ep-row .top .per{grid-area:per}.ep-row .top .fut{grid-area:fut}
+    .ep-row .dates{display:grid;grid-template-columns:1fr 1fr;gap:0 .6rem}
+    .ep-row .top>div,.ep-row .dates>div{min-width:0}
+    .ep-row input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
+    .ep-row .money{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:flex-end;margin-top:.2rem}
+    .ep-step{display:flex;align-items:stretch}
+    .ep-step button{font:inherit;font-size:1.4rem;font-weight:700;width:48px;min-height:48px;border:1px solid var(--border-2,var(--border));background:var(--surface2,var(--surface));color:var(--text);cursor:pointer}
+    .ep-step button:first-child{border-radius:6px 0 0 6px}
+    .ep-step button:last-child{border-radius:0 6px 6px 0}
+    .ep-step input{width:96px!important;min-height:48px!important;text-align:center;border-radius:0!important;font-family:'JetBrains Mono',monospace;font-size:1.1rem!important}
+    .ep-cash{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text);line-height:1.2}
+    .ep-cash small{display:block;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:.72rem;font-weight:400;color:var(--text-muted)}
+    .ep-row .foot{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem;gap:.5rem}
+    .ep-row .fut-px{font-size:.8rem;color:var(--text-muted)}
+    .ep-del{white-space:nowrap;flex:0 0 auto;font:inherit;font-size:.85rem;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;min-height:40px;padding:0 .8rem;cursor:pointer}
+    .ep-add{font:inherit;font-weight:600;min-height:48px;width:100%;border:1px dashed var(--border-2,var(--border));border-radius:8px;background:none;color:var(--gold);cursor:pointer;margin-top:.25rem}
+    .ep-add[disabled]{opacity:.5;cursor:not-allowed}
+    .ep-bad{border-color:var(--red)!important}
+    .ep-err{color:var(--red);font-size:.8rem;margin:.25rem 0 0}
+    .ep-switch{display:flex;align-items:center;gap:.7rem;margin:.8rem 0 .2rem;font-weight:600;color:var(--text)!important;font-size:1rem!important;cursor:pointer}
+    .ep-switch input{width:26px;height:26px;accent-color:var(--red);margin:0}
+    .ep-count{font-size:.75rem;color:var(--text-muted);text-align:right;margin-top:.15rem}
+    .ep-foot-note{font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:.6rem 0 0}
+    .ep-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--surface);border-top:1px solid var(--border);padding:.6rem 1rem calc(.6rem + env(safe-area-inset-bottom))}
+    .ep-bar .in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:.75rem}
+    .ep-save{font:inherit;font-size:1.05rem;font-weight:700;min-height:52px;padding:0 1.6rem;border-radius:8px;border:2px solid var(--gold);background:var(--gold);color:#141005;cursor:pointer;flex:0 0 auto}
+    .ep-save[disabled]{opacity:.6;cursor:wait}
+    [data-theme="light"] .ep-save,[data-theme="light"] .ep-nochange{color:#fff}
+    .ep-state{font-size:.9rem;line-height:1.35;color:var(--text-dim);flex:1 1 auto;min-width:0}
+    .ep-state.ok{color:var(--green)}
+    .ep-state.bad{color:var(--red)}
+    .ep-state.dirty{color:var(--orange)}
+    @media(min-width:700px){
+      .ep{padding-top:2rem}
+      .ep h1{font-size:2rem}
+      .ep-row .top{grid-template-columns:1fr 1.2fr 1fr;grid-template-areas:"crop per fut"}
+      .ep-row .lower{display:grid;grid-template-columns:1.2fr 1fr;gap:0 1rem;align-items:end}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <div class="ep" id="ep">
+      <div class="ep-msg" id="ep-loading" role="status">Opening your listing...</div>
+      <noscript><div class="ep-msg">This page needs JavaScript turned on to post bids.</div></noscript>
+    </div>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/elev-post.js?v=1"></script>
+  <script src="/components/loader.js?v=18" defer></script>
+</body>
+</html>

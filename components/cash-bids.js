@@ -980,6 +980,61 @@ function flatten(data){
 
 /* The feed sends "N/A" for boards with no phone. Not a number: no Call button. */
 function hasPhone(p){return String(p||'').replace(/\D/g,'').length>=7;}
+/* ── AN ELEVATOR'S OWN LISTING (agsist.com/post) ──────────────────────────
+   Elevators that post through the portal carry `info` on their shard:
+   { listingId, name, contactName, hours, harvestHours, note, closedUntil,
+   infoUpdatedAt }. Every one of those is typed by the elevator, so each is
+   cut to a plain one-line string here and escaped where it is drawn. A shard
+   without `info` gives null and the card is exactly what it was before. */
+function portalInfo(x){
+  if(!x||typeof x!=='object'||Array.isArray(x))return null;
+  var t=function(v,max){
+    if(typeof v!=='string')return'';
+    v=v.replace(/[\u0000-\u001f\u007f]+/g,' ').replace(/\s+/g,' ').trim();
+    return v.length>max?v.slice(0,max-1)+'…':v;
+  };
+  var c=typeof x.closedUntil==='string'?Date.parse(x.closedUntil):NaN;
+  var o={contactName:t(x.contactName,40),hours:t(x.hours,120),harvestHours:t(x.harvestHours,120),
+         note:t(x.note,140),closedUntil:isFinite(c)?c:null};
+  if(!o.contactName&&!o.hours&&!o.harvestHours&&!o.note&&o.closedUntil==null)return null;
+  return o;
+}
+/* "Closed today" only while closedUntil is still ahead. The portal sets it to
+   the end of that day in Central time; anything further out says the date. */
+function portalClosedLabel(info,nowMs){
+  if(!info||info.closedUntil==null||!(info.closedUntil>nowMs))return'';
+  var day=function(ms){return new Date(ms).toLocaleDateString('en-US',{timeZone:'America/Chicago',year:'numeric',month:'short',day:'numeric'});};
+  if(day(info.closedUntil)===day(nowMs))return'Closed today';
+  return'Closed until '+new Date(info.closedUntil).toLocaleDateString('en-US',{timeZone:'America/Chicago',weekday:'short',month:'short',day:'numeric'});
+}
+function portalBadge(info,nowMs){
+  var l=portalClosedLabel(info,nowMs);
+  return l?'<div class="elev-closed" data-portal-until="'+info.closedUntil+'" title="The elevator marked itself closed. Its last bids still show; call before you haul.">'+escH(l)+'</div>':'';
+}
+/* Hours, harvest hours and the elevator's note, under the card's title row.
+   The contact name sits on the Call button; it is listed here only when the
+   card has no phone to put it on. */
+function portalLines(info,withPhone){
+  if(!info)return'';
+  var h='';
+  if(info.hours)h+='<div class="elev-pl"><span class="elev-pk">Hours</span> '+escH(info.hours)+'</div>';
+  if(info.harvestHours)h+='<div class="elev-pl"><span class="elev-pk">Harvest</span> '+escH(info.harvestHours)+'</div>';
+  if(info.contactName&&!withPhone)h+='<div class="elev-pl"><span class="elev-pk">Ask for</span> '+escH(info.contactName)+'</div>';
+  if(info.note)h+='<div class="elev-pnote">'+escH(info.note)+'</div>';
+  return h?'<div class="elev-portal">'+h+'</div>':'';
+}
+/* A page left open overnight must not keep saying "Closed today": each badge
+   is removed when its own closedUntil passes. */
+var _portalT=null;
+function portalExpire(root){
+  clearTimeout(_portalT);
+  var next=Infinity;
+  root.querySelectorAll('[data-portal-until]').forEach(function(el){
+    var u=+el.getAttribute('data-portal-until');
+    if(!(u>Date.now()))el.parentNode.removeChild(el);else if(u<next)next=u;
+  });
+  if(next<Infinity)_portalT=setTimeout(function(){portalExpire(root);},Math.min(next-Date.now()+1000,2147483647));
+}
 /* What a card prints for the town: the feed's display town when the place's
    `city` is an elevator's name, else the city. Keys still use `city`. */
 function townOf(x){return String((x&&(x.town||x.city))||'');}
@@ -987,7 +1042,7 @@ function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null};
+    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null,portal:null};
     /* One row read straight from the board makes the elevator a direct read. */
     if(b.via==='direct')map[key].via='direct';
     /* AND ONE ROW WHOSE READ FAILED MAKES THE CARD SAY SO. Flagged, never
@@ -997,6 +1052,8 @@ function groupElevators(bids){
     if(b.stale===true)map[key].unread=true;
     if(b.asOf){var _t=Date.parse(b.asOf);if(!isNaN(_t)&&(map[key].asOfT==null||_t>map[key].asOfT))map[key].asOfT=_t;}
     var e=map[key],cat=b.category||'other';
+    /* The elevator's own listing (hours, contact, note), from its shard. */
+    if(!e.portal&&b.portal)e.portal=b.portal;
     if(!hasPhone(e.phone)&&hasPhone(b.phone))e.phone=b.phone;
     if(!e.commodities[cat])e.commodities[cat]=[];
     e.commodities[cat].push(b);
@@ -1214,6 +1271,9 @@ function renderBestBids(elevators){
         html+='<div class="bbc-note">'+(o.cls?escH(clsName(o.cls)):'Class not stated')+': '+escH((o.top.rk.remark?cbRank.priceText(o.top.rk,fmtPx):'$'+fmtPx(ppu(o.top.bid.cashPrice))))+' at '+escH(o.top.elev.facility)+(placeOf(o.top.elev)?', '+escH(placeOf(o.top.elev)):'')+' (different wheat, not compared)</div>';
       });
       if(topElev.unread)html+='<div class="bbc-note bbc-warn">board not reached, call before you load</div>';
+      /* A best bid at an elevator that said it is closed today says so. */
+      var _cl=portalClosedLabel(topElev.portal,Date.now());
+      if(_cl)html+='<div class="bbc-note bbc-warn" data-portal-until="'+topElev.portal.closedUntil+'">'+escH(_cl)+', call before you haul</div>';
       html+='</div><div class="bbc-actions">';
       if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+' on '+escH(fmtPhone(topElev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
       html+='<a class="bbc-dir-btn" href="'+mapsUrl(dirName(topElev),townOf(topElev),topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
@@ -1558,6 +1618,9 @@ function renderBids(bids,keepLimit){
     /* THE BOARD COULD NOT BE READ THIS RUN. Drawn under the provenance badge
        because it qualifies exactly that claim: the row did come from this
        elevator's own board, just not today's. */
+    /* The elevator said it is closed. Its bids still show (the network has no
+       closed state), so the card says so plainly, and only until closedUntil. */
+    html+=portalBadge(elev.portal,Date.now());
     if(elev.unread)html+='<div class="elev-stale" title="AGSIST could not reach this elevator\u2019s board on the latest run. This is the last price it posted, confirm before hauling.">board not reached, call before you load</div>';
     /* Per-elevator stale flag: renders ONLY when the feed carries a real
        timestamp for this elevator AND it's >18h old — fresh or timestamp-less
@@ -1593,10 +1656,11 @@ function renderBids(bids,keepLimit){
       }
     }
     html+='</div><div class="elev-meta">';
-    if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(elev.facility)+' on '+escH(fmtPhone(elev.phone))+'" title="'+escH(fmtPhone(elev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
+    if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+(elev.portal&&elev.portal.contactName?escH(elev.portal.contactName)+' at ':'')+escH(elev.facility)+' on '+escH(fmtPhone(elev.phone))+'" title="'+escH(fmtPhone(elev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call'+(elev.portal&&elev.portal.contactName?' <span class="elev-who">'+escH(truncName(elev.portal.contactName,14))+'</span>':'')+'</a>';
     html+='<a class="elev-dir-btn" href="'+murl+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(elev.facility)+'" title="Directions"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg><span class="elev-btn-t"> Directions</span></a>';
     if(!window.CBMyElev)html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove '+escH(elev.facility)+' from':'Add '+escH(elev.facility)+' to')+' comparison" title="Compare side by side">'+(isPinned?'&#10003;<span class="elev-btn-t"> Added</span>':'&#43;<span class="elev-btn-t"> Compare</span>')+'</button>';
     html+='</div></div>';
+    html+=portalLines(elev.portal,!!elev.phone);
     /* Save (My elevators, components/cb-myelev.js; saved = compared) and the
        alert bell (components/cb-alerts.js owns the button, the form and the
        post). Keep both calls in any card rebuild. */
@@ -1659,6 +1723,7 @@ function renderBids(bids,keepLimit){
     html+='<div class="cb-more-wrap"><button class="cb-more-btn" id="cb-more-btn">Show '+Math.min(CB_PAGE_STEP,pool.length-shown.length)+' more elevators <span class="cb-more-n">('+shown.length+' of '+pool.length+' shown · sorted by '+(currentSort==='best-cash'?'best cash price':currentSort==='best-basis'?'best basis':currentSort==='name'?'name':'distance')+')</span></button></div>';
   }
   results.innerHTML=html;
+  portalExpire(document);
   results.querySelectorAll('.bid-more').forEach(function(btn){btn.addEventListener('click',function(){var box=btn.closest('.bid-rows');var open=box.classList.toggle('bids-open');btn.setAttribute('aria-expanded',open?'true':'false');btn.innerHTML=open?'Show fewer &#9652;':btn.getAttribute('data-label')||btn.innerHTML;if(open)btn.setAttribute('data-label',btn.innerHTML);});});
   var moreBtn=document.getElementById('cb-more-btn');
   if(moreBtn)moreBtn.addEventListener('click',function(){cbVisibleLimit+=CB_PAGE_STEP;renderBids(cbLastBids,true);if(window.gaEvent)gaEvent('bids_show_more',{limit:cbVisibleLimit});});
@@ -1922,6 +1987,9 @@ function netRowsFrom(shard,distanceMi){
       /* The elevator's own number from its source file, published on the
          shard header by dnilgis/bids. Empty when the source has none. */
       phone:String(shard.phone||b.phone||''),
+      /* Hours, contact name, note and closed-until, only on shards of
+         elevators that post through agsist.com/post. Null for every other. */
+      portal:portalInfo(shard.info),
       commodity:b.commodity||'',
       cashPrice:cash,
       basis:basis,

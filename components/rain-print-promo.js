@@ -17,6 +17,11 @@
    The card: Christmas wording from promote_from through the framed order-by
    date; then, through Dec 24 and only while the gift flow is in the data
    (gift_card_title), "give this year's print"; otherwise year-round wording.
+   The Christmas card links /gifts-for-farmers (Rain Print first, then other
+   gift ideas); the other two link /rain-print.
+   xmasLine() is the order-by sentence on /gifts-for-farmers, from the two
+   Christmas cutoffs in data/rain-print.json: Oct 1 through Dec 25 of the
+   cutoff's year only, a plain date, never a countdown.
    "see" links /rain-print with the reader's saved ZIP and last year when the
    site knows the ZIP (agsist-wx-loc), so the print opens already drawn.
    Off, out of the window, or on any failure, the element stays hidden and
@@ -56,16 +61,28 @@
     var cut = ISO.test(cfg.framed_christmas_cutoff || '') ? cfg.framed_christmas_cutoff : '';
     var from = ISO.test(cfg.promote_from || '') ? cfg.promote_from : '';
     if (cut && from && today >= from && today <= cut) {
-      return { angle: 'christmas', title: 'A Christmas gift for the farm',
+      return { angle: 'christmas', title: 'A Christmas gift for the farm', href: '/gifts-for-farmers', cta: 'Gift ideas',
         text: 'A year of rain at their place, printed for the wall. Order framed by ' + shortDate(cut) + ' for Christmas delivery.', price: price };
     }
     var dec24 = cut.slice(0, 4) + '-12-24';   // the cutoff's own December, so a stale cutoff never runs a gift line all next year
     if (cut && today > cut && today <= dec24 && typeof cfg.gift_card_title === 'string' && cfg.gift_card_title) {
-      return { angle: 'gift', title: 'Still need a gift?',
+      return { angle: 'gift', title: 'Still need a gift?', href: '/rain-print', cta: 'Make yours',
         text: 'Give this year’s Rain Print. Print a gift card for under the tree now; the print ships in January, once the year is in.', price: price };
     }
-    return { angle: 'evergreen', title: 'A year of rain, printed for the wall',
+    return { angle: 'evergreen', title: 'A year of rain, printed for the wall', href: '/rain-print', cta: 'Make yours',
       text: 'Type your town and see every rain of the year at the nearest NOAA station, drawn on one 12 x 18 print. Free to make.', price: price };
+  }
+  /* The Christmas order-by sentence for /gifts-for-farmers, or '' outside
+     Oct 1..Dec 25 of the cutoffs' year or when a cutoff is missing. */
+  function xmasLine(cfg, today) {
+    var pc = cfg && cfg.print_christmas_cutoff, fc = cfg && cfg.framed_christmas_cutoff;
+    if (!ISO.test(pc || '') || !ISO.test(fc || '') || !ISO.test(today || '')) return '';
+    var y = pc.slice(0, 4);
+    if (fc.slice(0, 4) !== y || today < y + '-10-01' || today > y + '-12-25') return '';
+    if (today <= pc && today <= fc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.';
+    if (today <= pc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.';
+    if (today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
+    return 'A past year ordered now ships after Christmas. This year\u2019s print still works: you get a card to give now, and the print follows in January.';
   }
   // Where "see" points: the saved ZIP and last year when known, else the plain page.
   function seeHref(zip, today) {
@@ -73,7 +90,7 @@
     if (/^\d{5}$/.test(String(zip || '')) && y > 1900) return '/rain-print?place=' + zip + '&year=' + (y - 1);
     return '/rain-print';
   }
-  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, seeHref: seeHref, chicagoToday: chicagoToday };
+  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgsistRainPromo = api;
 
@@ -119,10 +136,10 @@
         var c = cardFor(cfg, today);
         if (!c) continue;
         css();
-        el.innerHTML = '<a class="rp-card" href="/rain-print" data-placement="home-card-' + c.angle + '">' +
+        el.innerHTML = '<a class="rp-card" href="' + esc(c.href) + '" data-placement="home-card-' + c.angle + '">' +
           '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="247" alt="A sample Rain Print, made-up numbers" loading="lazy" decoding="async"><span class="rp-card-s" aria-hidden="true">Sample</span></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
-          '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>Make yours &rarr;</b></span></span></a>';
+          '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
         el.hidden = false;
         track(el.firstChild, 'rain_print_promo_click');
         continue;

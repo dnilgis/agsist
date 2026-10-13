@@ -413,3 +413,12 @@ test("one dry-spell rule for both layouts: 7 days or more", () => {
     assert.equal(new RegExp(n + " dry days|dry stretch", "i").test(svg), want, `${style}: ${n} days ${want ? "marked" : "not marked"}`);
   }
 });
+
+test("county-page links: a station town with a field name falls back to shorter towns", () => {
+  assert.deepEqual([...RP.shorterPlaces("Wilmington New Castle County, DE")],
+    ["Wilmington New Castle, DE", "Wilmington New, DE", "Wilmington, DE"]);
+  assert.deepEqual([...RP.shorterPlaces("Topeka Billard, KS")], ["Topeka, KS"]);
+  assert.deepEqual([...RP.shorterPlaces("Ames, IA")], []);
+  assert.deepEqual([...RP.shorterPlaces("50010")], []);
+  assert.deepEqual([...RP.shorterPlaces("Garden City")], []);
+});

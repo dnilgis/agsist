@@ -118,6 +118,7 @@ def build_ctx(today):
         "crop_progress": _load("crop-progress.json"),
         "basis": _load("transport/basis.json"),
         "fertilizer": _load("fertilizer.json"),
+        "dairy": _load("dairy-data.json"),
     }
 
 
@@ -125,14 +126,22 @@ def build_ctx(today):
 # Each returns (title, description) or None to skip the page. Raising is fine:
 # main() catches, reports and leaves the page alone.
 
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+WASDE_TIME = "noon ET (11 a.m. CT)"      # usda-calendar.html: every WASDE row is 12:00 PM ET
+
+
 def seo_usda_calendar(c):
     w = c["next_wasde"]
     if not w:
-        return None
+        # Past the end of the date table (after the last WASDE of the year,
+        # until usda_dates.py gets next year's dates). Returning None here used
+        # to leave "Next WASDE Dec 10" in the title for weeks after Dec 10.
+        # Say what the page holds and name no date.
+        return ("WASDE & USDA Report Dates: The Full USDA Calendar" + SUFFIX,
+                "Every USDA report date and release time on one calendar: WASDE "
+                f"at {WASDE_TIME}, Crop Production, Grain Stocks, Crop Progress.")
     if w < c["today"]:
         raise ValueError(f"next_wasde returned {w}, already in the past")
-    days = (w - c["today"]).days
-    when = "today" if days == 0 else ("tomorrow" if days == 1 else f"in {days} days")
     # RETITLED 2026-10-11 from "Next WASDE: Nov 10, 2026 | USDA Report
     # Calendar". Over Jul 10-Oct 7 that title held position 7.4 on 46,503
     # impressions at 0.20% CTR, and the queries Search Console names are
@@ -142,9 +151,35 @@ def seo_usda_calendar(c):
     # lacked. The next date stays in the title; the year is the WASDE's own.
     # The description names no year: in December the next WASDE is January's
     # while the calendar below may still hold this year's dates.
+    #
+    # 2026-10-13: the description gives the weekday and the release time in
+    # place of "in 28 days". The count was right on the morning it was baked
+    # and wrong every day after until the next bake (none on weekends), and
+    # "wasde report today" (30 impressions) asks for the time, which never
+    # goes stale.
+    when = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
     return (f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}",
-            f"The next WASDE report is {mdY(w)}, {when}. Every USDA report date on "
-            f"one calendar: WASDE, Crop Production, Grain Stocks, Cattle on Feed.")
+            f"The next WASDE report is {when}, {mdY(w)}, at {WASDE_TIME}. Every "
+            f"USDA report date on one calendar: WASDE, Crop Production, Grain Stocks.")
+
+
+def body_usda_calendar(c):
+    """The one visible line under the calendar's heading that answers "next
+    wasde report" and "wasde report dates 2026" without JavaScript. The
+    countdown card beside it is filled by the page script, so a crawler (and a
+    reader whose script failed) saw "NEXT USDA REPORT - - -" and no date.
+    Dates come from usda_dates.WASDE_2026, the table the title already uses."""
+    import usda_dates
+    w = c["next_wasde"]
+    year = sorted(usda_dates.WASDE_2026)
+    lst = (f"{year[0].year} WASDE dates: " +
+           ", ".join(f"{MONTHS[d.month - 1][:3]} {d.day}" for d in year) + ".")
+    if not w:
+        return f"{lst} Each one is out at {WASDE_TIME}."
+    if w < c["today"]:
+        raise ValueError(f"next_wasde returned {w}, already in the past")
+    day = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
+    return (f"<strong>Next WASDE: {day}, {mdY(w)}, at {WASDE_TIME}.</strong> {lst}")
 
 
 def _cot_side(net):
@@ -165,26 +200,49 @@ def seo_cot(c):
     k = abs(net) / 1000.0
     kk = f"{k:,.0f}k" if k >= 10 else f"{k:,.1f}k"
     rpt = d.get("report_date") or ""
+    # "October 06, 2026" in the file. The CFTC names each report by this
+    # Tuesday as-of date, so "COT Report, Oct 6" is the report's own name.
+    try:
+        rd = datetime.strptime(rpt, "%B %d, %Y").date()
+    except ValueError:
+        rd = None
     prev = corn.get("prev")
     move = ""
     if isinstance(prev, (int, float)):
         delta = net - int(prev)
         if delta:
             move = (f" Funds {'added' if (delta > 0) == (net >= 0) else 'cut'} "
-                    f"{abs(delta):,} contracts week over week.")
+                    f"{abs(delta):,} on the week.")
+    # RETITLED 2026-10-13 from "Managed Money Is Net Long Corn 330k: CFTC
+    # COT". Over Jul 10-Oct 7 that held position 5.9 on 8,591 impressions at
+    # 0.19% CTR. The queries Search Console names are a report and a date:
+    # "cftc commitment of traders report", "cftc ... cot september 1 2026
+    # managed money". The title now leads with the report's name and its
+    # as-of date, then the corn position; the description spells out
+    # "Commitments of Traders" and names the other markets on the page.
+    when = f"{MONTHS[rd.month - 1][:3]} {rd.day}" if rd else ""
+    rlong = mdY(rd) if rd else rpt
     if side == "flat":
-        head = (f"Managed money is near flat in corn (net {_cot_side(net)} {abs(net):,} "
-                f"contracts, under {d.get('flat_oi_pct', 2.0)}% of open interest) as of {rpt}.")
+        head = (f"CFTC Commitments of Traders, {rlong}: managed money near flat in "
+                f"corn (net {_cot_side(net)} {abs(net):,} contracts, under "
+                f"{d.get('flat_oi_pct', 2.0)}% of open interest).")
+        pos = "Managed Money Near Flat in Corn"
     else:
-        head = (f"Managed money is net {side} {abs(net):,} corn contracts as of "
-                f"{rpt}.")
-    tail = " Weekly CFTC ag positioning, 11 commodities."
+        head = (f"CFTC Commitments of Traders, {rlong}: managed money net {side} "
+                f"{abs(net):,} corn contracts.")
+        pos = f"Managed Money Net {side.title()} Corn {kk}"
+    tail = " Soybeans, wheat, cattle, hogs, milk too."
     desc = head + move + tail
     if len(desc) > DESC_MAX:          # the move clause is the optional one
         desc = head + tail
-    if side == "flat":
-        return (f"Managed Money Is Near Flat In Corn: CFTC COT{SUFFIX}", desc)
-    return (f"Managed Money Is Net {side.title()} Corn {kk}: CFTC COT{SUFFIX}", desc)
+    if len(desc) > DESC_MAX:
+        desc = head
+    for cand in ((f"CFTC COT Report, {when}: {pos}" if when else None),
+                 (f"COT Report, {when}: {pos}" if when else None),
+                 f"CFTC COT Report: {pos}"):
+        if cand and len(cand + SUFFIX) <= TITLE_MAX:
+            return (cand + SUFFIX, desc)
+    return None
 
 
 def seo_crop_tour(c):
@@ -256,6 +314,29 @@ def seo_crop_tour(c):
             f"close the tour has actually been.")
 
 
+def _qs_kind(ia):
+    """How the file labels Iowa's number: never call a forecast a final."""
+    yr = ia.get("year")
+    if ia.get("forecast"):
+        m = ia.get("forecast_month")
+        return f"USDA {m} {yr} forecast" if m else f"USDA {yr} forecast"
+    return f"USDA {yr} final"
+
+
+def _qs_top(ss, ia, crop, n):
+    """The n largest producing states for `crop`, counted only when their
+    figure is the same vintage as Iowa's (same year, same forecast status,
+    same forecast month), so one line never mixes a final with a forecast."""
+    same = lambda v: (v.get("year") == ia.get("year") and
+                      bool(v.get("forecast")) == bool(ia.get("forecast")) and
+                      v.get("forecast_month") == ia.get("forecast_month"))
+    rows = [(v.get(f"{crop}_prod") or 0, v.get("name") or k, v.get(f"{crop}_yield"))
+            for k, v in ss.items()
+            if isinstance(v, dict) and same(v) and v.get(f"{crop}_yield") is not None]
+    rows.sort(key=lambda r: -r[0])
+    return [(nm, y) for _, nm, y in rows[:n]]
+
+
 def seo_quick_stats(c):
     d = c["state_stats"]
     if not d or not d.get("stateStats"):
@@ -265,16 +346,49 @@ def seo_quick_stats(c):
     y = ia.get("corn_yield")
     if y is None:
         return None
-    # label it exactly as the file does; never call a forecast a final
-    kind = "forecast" if ia.get("forecast") else "final"
-    # which month's forecast, when the file knows (build_state_stats.py)
-    if ia.get("forecast") and ia.get("forecast_month"):
-        kind = f"USDA {ia['forecast_month']} forecast"
-    yr = ia.get("year")
-    return (f"Corn & Soybean Yields by State: USDA NASS Data{SUFFIX}",
-            f"Iowa corn {y:g} bu/ac ({yr} {kind}). Yields, acres, production "
-            f"and prices by state for corn, soybeans and wheat, from USDA Quick "
-            f"Stats.")
+    # RETITLED 2026-10-13 from "Corn & Soybean Yields by State: USDA NASS
+    # Data". Over Jul 10-Oct 7 that held position 7.5 on 50,358 impressions at
+    # 0.08% CTR, the most-shown and least-clicked page on the site. The
+    # queries Search Console names ask for a yield by state ("usda yield by
+    # state", "state corn and soybean yields"). The title now names the
+    # vintage the numbers are (which month's forecast, or final) and the
+    # description leads with the largest states' numbers.
+    kind = _qs_kind(ia)
+    title = (f"Corn & Soybean Yield by State: "
+             f"{kind.replace('forecast', 'Forecast').replace('final', 'Final')}{SUFFIX}")
+    if len(title) > TITLE_MAX:
+        title = f"Corn & Soybean Yield by State, {ia.get('year')}{SUFFIX}"
+    corn = _qs_top(ss, ia, "corn", 3)
+    beans = _qs_top(ss, ia, "bean", 1)
+    lead = ", ".join(f"{nm} {v:g}" if i else f"{nm} corn {v:g} bu/ac"
+                     for i, (nm, v) in enumerate(corn)) or f"Iowa corn {y:g} bu/ac"
+    if beans:
+        lead += f"; {beans[0][0]} soybeans {beans[0][1]:g}"
+    head = f"{kind}: {lead}."
+    for tail in (" Every state, yields since 2010, from NASS Quick Stats.",
+                 " Every state, from NASS Quick Stats.", ""):
+        if len(head + tail) <= DESC_MAX:
+            return title, head + tail
+    return title, f"{kind}: Iowa corn {y:g} bu/ac. Every state, from NASS Quick Stats."
+
+
+def body_quick_stats(c):
+    """One visible line under the heading with the largest states' yields.
+    The top-states list lower down is drawn by the page script; this is the
+    same file (data/state-stats.json) as text a crawler can read."""
+    d = c["state_stats"]
+    ss = (d or {}).get("stateStats") or {}
+    ia = ss.get("IA") or {}
+    if ia.get("corn_yield") is None:
+        raise ValueError("no Iowa corn yield in state-stats.json")
+    kind = _qs_kind(ia)
+    corn = _qs_top(ss, ia, "corn", 5)
+    beans = _qs_top(ss, ia, "bean", 5)
+    out = (f"<strong>Yield by state, {kind}:</strong> corn " +
+           ", ".join(f"{nm} {v:g}" for nm, v in corn) + " bu/ac")
+    if beans:
+        out += "; soybeans " + ", ".join(f"{nm} {v:g}" for nm, v in beans) + " bu/ac"
+    return out + "."
 
 
 def seo_cond_yield(c):
@@ -340,15 +454,70 @@ def _px(prices, key):
     return None
 
 
+BE_COST_KEYS = ("seed", "fertilizer", "chemicals", "insurance", "machinery",
+                "labor", "land", "overhead")
+
+
+def _be_defaults(crop, page_text=None):
+    """(cost per acre, yield) from breakeven.html's own CROP_DEFAULTS, the
+    numbers the calculator opens with. Read from the page so the example in
+    the snippet is always the one the calculator shows."""
+    t = page_text if page_text is not None else (REPO / "breakeven.html").read_text(encoding="utf-8")
+    m = re.search(r"\b" + crop + r":\{([^}]*)\}", t[t.find("CROP_DEFAULTS"):])
+    if not m:
+        return None
+    kv = dict(re.findall(r"(\w+):'?([\d.]*)'?", m.group(1)))
+    try:
+        cost = sum(float(kv[k]) for k in BE_COST_KEYS)
+        yld = float(kv["yield"])
+    except (KeyError, ValueError):
+        return None
+    if cost <= 0 or yld <= 0:
+        return None
+    return cost, yld
+
+
 def seo_breakeven(c):
     px = _px(c["prices"], "corn")
     if px is None:
         return None
     cents = px if px > 50 else px * 100.0      # cents vs dollars
-    return (f"Break-Even Price Calculator: Corn, Soybeans, Wheat{SUFFIX}",
+    # RETITLED 2026-10-13 from "Break-Even Price Calculator: Corn, Soybeans,
+    # Wheat" (2,679 impressions, 12 clicks, Jul 10-Oct 7). The named queries
+    # ask for a number: "break even price for corn" 35 impressions, "corn
+    # break even price" 10. The description now gives the calculator's own
+    # opening example, labeled as an example, beside the board.
+    title = f"Corn & Soybean Break-Even Price per Bushel Calculator{SUFFIX}"
+    d = _be_defaults("corn")
+    if d:
+        cost, yld = d
+        desc = (f"Example: ${cost:,.0f} an acre at {yld:g} bu/ac is a ${cost / yld:.2f} corn "
+                f"break-even; futures are near {pricefmt.price(cents)}. Put in your own costs "
+                f"for corn, soybeans or wheat.")
+        if len(desc) <= DESC_MAX:
+            return title, desc
+    return (title,
             f"Corn is near {pricefmt.price(cents)}. Enter your cost per acre and your yield "
             f"to get your break-even price per bushel, and the yield where the "
             f"board stops covering them.")
+
+
+def body_breakeven(c):
+    """The calculator's opening example as a line a reader sees before
+    touching an input, and a crawler sees at all (the results panel is
+    drawn by the page script)."""
+    bits = []
+    for crop, name in (("corn", "corn"), ("soybeans", "soybeans")):
+        d = _be_defaults(crop)
+        if not d:
+            raise ValueError(f"no {crop} defaults in breakeven.html")
+        cost, yld = d
+        bits.append((name, cost, yld))
+    (n1, c1, y1), (n2, c2, y2) = bits
+    return (f"<strong>Example with this page's default costs:</strong> {n1} at "
+            f"${c1:,.0f} an acre and {y1:g} bu/ac breaks even at ${c1 / y1:.2f} a bushel; "
+            f"{n2} at ${c2:,.0f} and {y2:g} bu/ac at ${c2 / y2:.2f}. "
+            f"Change any line below to get yours.")
 
 
 # ---------------------------------------------------------------- futures
@@ -380,7 +549,8 @@ def seo_breakeven(c):
 # price today" 181 impressions, "chicago board of trade corn price" 153; beans
 # "cbot soybean price" 31 beside "cbot soybeans" 2,248 at position 11. The
 # trailing "Live Prices" said nothing the number did not. extra=None means no
-# tail.
+# tail. Wheat took "Futures Price" too on 2026-10-13 (7,348 impressions, 4
+# clicks, position 14.2 over the same window).
 FUTURES = {
     "corn-futures-prices.html":
         ("CBOT", "Corn", "corn", None),
@@ -474,7 +644,7 @@ def make_futures(page):
         money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
         if extra is None:
             return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
-        return (f"{exch} {crop} Futures: {lab} {money}, {extra}{SUFFIX}", None)
+        return (f"{exch} {crop} Futures Price: {lab} {money}, {extra}{SUFFIX}", None)
 
     build.__name__ = f"seo_{key}_futures"
     return build
@@ -626,8 +796,10 @@ def seo_fertilizer(c):
         return None
     title = None
     for n in range(len(named), 0, -1):
-        bits = [f"{s} ${r['price']:,.0f}" + ("/ton" if i == 0 else "") for i, (s, r) in enumerate(named[:n])]
-        cand = "Fertilizer Prices: " + ", ".join(bits) + SUFFIX
+        # "per Ton" moved up from "/ton" on the first price 2026-10-13: the
+        # page's named queries are "... fertilizer price(s) per ton".
+        bits = [f"{s} ${r['price']:,.0f}" for s, r in named[:n]]
+        cand = "Fertilizer Prices per Ton: " + ", ".join(bits) + SUFFIX
         if len(cand) <= TITLE_MAX:
             title = cand
             break
@@ -648,6 +820,59 @@ def seo_fertilizer(c):
     return title, desc
 
 
+# Added 2026-10-13. /milk-prices was titled as a tool ("Class III & IV Milk
+# Prices and Your Milk Check, Explained") while the searcher wants the month's
+# number. The body figures are baked from the same file by seed_static.py
+# (seed_milk) in the same runs, so the title and the strip cannot disagree.
+# The month is the class month the file names, never the run date. Once the
+# next month's announcement is due and the file does not have it (7 CFR
+# 1000.53: on or before the 5th), the page goes back to the descriptive title
+# rather than keep a stale number in the result.
+MILK_PAGE = "milk-prices.html"
+MILK_TITLE = "Class III & IV Milk Prices and Your Milk Check, Explained" + SUFFIX
+MILK_DESC = ("USDA announced Class III and Class IV milk prices, the all-milk price and the DMC "
+             "margin, plus the federal order formula that builds your milk check. No login.")
+
+
+def milk_month(d, today):
+    """(month index, label) of the class prices in the dairy file when they are
+    still the newest that must exist, else None."""
+    import re as _re
+    m = _re.match(r"^(\d{4})-(\d{2})$", str((d or {}).get("class_month_key") or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return None
+    idx = int(m.group(1)) * 12 + int(m.group(2)) - 1
+    now = today.year * 12 + today.month - 1
+    due = now - (1 if today.day > 5 else 2)
+    if idx < due or idx > now:
+        return None
+    return idx, f"{MONTHS[idx % 12]} {idx // 12}"
+
+
+def seo_milk(c):
+    from seed_static import _fixed
+    d = c.get("dairy")
+    if not d:
+        return None
+    c3, c4 = d.get("class3"), d.get("class4")
+    ok = all(isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 for v in (c3, c4))
+    mm = milk_month(d, c["today"]) if ok else None
+    if not mm:
+        return MILK_TITLE, MILK_DESC
+    idx, label = mm
+    title = f"USDA Class III Milk Price {label}: ${_fixed(c3, 2)}{SUFFIX}"
+    p3 = d.get("class3_prev")
+    chg = ""
+    if isinstance(p3, (int, float)) and not isinstance(p3, bool) and p3 > 0:
+        x = float(_fixed(c3 - p3, 2))
+        chg = (f", {'up' if x > 0 else 'down'} ${_fixed(abs(x), 2)} from {MONTHS[(idx + 11) % 12]}"
+               if x else f", unchanged from {MONTHS[(idx + 11) % 12]}")
+    head = f"USDA announced {label} Class III at ${_fixed(c3, 2)}/cwt{chg}, Class IV ${_fixed(c4, 2)}."
+    tail = " All-milk by state and the formula behind your milk check."
+    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    return title, desc
+
+
 PAGES = {
     "usda-calendar.html":    (seo_usda_calendar, frozenset({"title", "desc"})),
     "cot.html":              (seo_cot,           frozenset({"title", "desc"})),
@@ -664,10 +889,20 @@ PAGES = {
     "markets.html":          (seo_markets,       frozenset({"title", "desc"})),
     "basis.html":            (seo_basis,         frozenset({"title", "desc", "alt"})),
     "fertilizer.html":       (seo_fertilizer,    frozenset({"title", "desc"})),
+    MILK_PAGE:               (seo_milk,          frozenset({"title", "desc"})),
 }
 for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
 PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
+
+# Visible lines baked into the page body, between <!--BAKE:name--> and
+# <!--/BAKE-->. Same data, same run and same rails as the head tags above, so
+# the line a reader sees and the snippet Google shows cannot disagree.
+BODY = {
+    "usda-calendar.html": ("next-wasde", body_usda_calendar),
+    "usda-quick-stats.html": ("state-yields", body_quick_stats),
+    "breakeven.html": ("be-example", body_breakeven),
+}
 
 
 # ---------------------------------------------------------------- stamping
@@ -730,6 +965,15 @@ def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
     return text, n
 
 
+def bake_body(text, name, inner):
+    """(text, found). Replaces what sits between the markers; found is False
+    when the page has no such markers (markup changed: write nothing)."""
+    pat = re.compile(r"(<!--BAKE:" + re.escape(name) + r"-->)(.*?)(<!--/BAKE-->)", re.S)
+    if not pat.search(text):
+        return text, False
+    return pat.sub(lambda m: m.group(1) + inner + m.group(3), text, count=1), True
+
+
 def expected_tags(owns):
     return sum(1 for _, which in TAGS if which in owns)
 
@@ -763,6 +1007,18 @@ def run(today, dry=False, only=None):
             skipped.append((page, f"stamped {n} of {want} tags — markup changed; "
                                   f"refusing to half-update"))
             continue
+        if page in BODY:
+            name, bfn = BODY[page]
+            try:
+                inner = bfn(ctx)
+            except Exception as exc:                      # noqa: BLE001
+                skipped.append((page, f"body builder raised: {exc}")); continue
+            out, found = bake_body(out, name, inner)
+            if not found:
+                skipped.append((page, f"no <!--BAKE:{name}--> markers: markup changed; "
+                                      f"refusing to half-update"))
+                continue
+            print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
         print(f"\n{page}  ({n} tags, owns {'+'.join(sorted(owns))})")
         if title:
             print(f"  title [{len(title):>3}] {title}")
@@ -804,6 +1060,8 @@ def selftest():
            "cond_yield": {"crops": {"corn": {"states": {"IA": {"weeks": {
                "22": {"r2": 0.003, "n": 26}, "35": {"r2": 0.59, "n": 26},
                "39": {"r2": 0.64, "n": 26}}}}}}},
+           "dairy": {"class_month": "July 2026", "class_month_key": "2026-07",
+                     "class3": 17.5, "class4": 18.04, "class3_prev": 17.62},
            "crop_progress": {"in_season": True,
                              "corn": {"good_excellent": 57, "good_excellent_prev_year": 66},
                              "soybeans": {"good_excellent": 58}},
@@ -830,11 +1088,67 @@ def selftest():
     t, d = seo_usda_calendar(ctx)
     ck("WASDE title leads with the searched words", t.startswith("WASDE & USDA Report Dates 2026"), t)
     ck("WASDE title names the next date", t.endswith("Next WASDE Sep 11" + SUFFIX), t)
-    ck("WASDE description counts the days", "in 26 days" in d, d)
+    # Changed 2026-10-13 with the copy: the description gives the weekday and
+    # the release time instead of a day count that went stale between bakes.
+    ck("WASDE description gives the weekday, date and release time",
+       "is Friday, Sep 11, 2026, at noon ET (11 a.m. CT)" in d, d)
+    ck("WASDE description names no day count", "days" not in d, d)
+    ck("WASDE description names only reports the page lists", "Cattle on Feed" not in d, d)
+    _rd = seo_usda_calendar(dict(ctx, today=date(2026, 9, 11)))[1]
+    ck("on report day it says today", "is today, Sep 11, 2026" in _rd, _rd)
+    _nt, _nd = seo_usda_calendar(dict(ctx, next_wasde=None))
+    ck("past the date table: only reports the page lists", "Cattle on Feed" not in _nd, _nd)
+    ck("past the date table: no next date is claimed",
+       "Next" not in _nt and "next" not in _nd and not re.search(r"\d{4}", _nt + _nd), _nt + " / " + _nd)
+
+    print("\nusda calendar: the visible next-WASDE line")
+    import usda_dates as _ud
+    b = body_usda_calendar(ctx)
+    ck("the line names the next WASDE with weekday and time",
+       "Next WASDE: Friday, Sep 11, 2026, at noon ET (11 a.m. CT)." in b, b)
+    ck("the line lists every WASDE date in the table",
+       all(f"{MONTHS[x.month - 1][:3]} {x.day}" in b for x in _ud.WASDE_2026), b)
+    b0 = body_usda_calendar(dict(ctx, next_wasde=None))
+    ck("past the table the line claims no next date", "Next" not in b0, b0)
+    try:
+        body_usda_calendar(dict(ctx, next_wasde=date(2026, 1, 1)))
+        ck("a past WASDE in the body line raises", False, "it returned a line")
+    except ValueError:
+        ck("a past WASDE in the body line raises", True)
+    _cal = (REPO / "usda-calendar.html").read_text(encoding="utf-8")
+    ck("usda-calendar.html carries the next-wasde markers",
+       bake_body(_cal, "next-wasde", "x")[1])
+    _page_w = set(re.findall(r"\{date:'(\d{4}-\d\d-\d\d)',name:'WASDE'", _cal))
+    _tbl = {x.isoformat() for x in _ud.WASDE_2026}
+    ck("the page's WASDE rows hold every date the line prints", _tbl <= _page_w,
+       f"missing on the page: {sorted(_tbl - _page_w)}")
+    ck("every page WASDE time is noon ET, as the line says",
+       all("12:00 PM ET" in m for m in re.findall(r"\{date:'2026-[^}]*name:'WASDE'[^}]*\}", _cal)))
+    _bo, _bf = bake_body("<p><!--BAKE:next-wasde-->old<!--/BAKE--></p>", "next-wasde", "new")
+    ck("body bake replaces between the markers", _bf and _bo == "<p><!--BAKE:next-wasde-->new<!--/BAKE--></p>", _bo)
+    ck("body bake reports missing markers", bake_body("<p>x</p>", "next-wasde", "y")[1] is False)
 
     t, d = seo_cot(ctx)
     ck("COT title states the position", "Net Long Corn 126k" in t, t)
-    ck("COT description carries the report date", "August 11, 2026" in d, d)
+    # Changed 2026-10-13 with the copy: the report's name and as-of date lead
+    # the title, and the description dates it as Aug 11, 2026 (was "August
+    # 11, 2026", the file's own spelling).
+    ck("COT title leads with the report name and its date",
+       t.startswith("CFTC COT Report, Aug 11: Managed Money Net Long Corn 126k"), t)
+    ck("COT description carries the report date", "Aug 11, 2026" in d, d)
+    ck("COT description spells out the report", d.startswith("CFTC Commitments of Traders"), d)
+    _cs = seo_cot(dict(ctx, cot={"report_date": "September 29, 2026", "flat_oi_pct": 2.0,
+                                 "corn": {"net": -312345, "prev": -298000}}))
+    ck("a short corn position says short", "Net Short Corn 312k" in _cs[0], _cs[0])
+    _cf = seo_cot(dict(ctx, cot={"report_date": "September 29, 2026", "flat_oi_pct": 2.0,
+                                 "corn": {"net": 4100, "prev": 9000, "side": "flat"}}))
+    ck("a flat corn position says near flat, no side in the title",
+       "Near Flat in Corn" in _cf[0] and "Long" not in _cf[0], _cf[0])
+    _cx = seo_cot(dict(ctx, cot={"report_date": "sometime", "corn": {"net": 125875}}))
+    ck("an unreadable report date drops the date, not the page",
+       _cx and _cx[0].startswith("CFTC COT Report: Managed Money"), _cx)
+    for _c in (_cs, _cf, _cx):
+        check(_c[0], _c[1], "cot.html")
 
     t, d = seo_crop_tour(ctx)
     ck("tour title says it starts tomorrow", "Starts Tomorrow" in t, t)
@@ -882,16 +1196,39 @@ def selftest():
     ck("conditions stays quiet out of season",
        seo_conditions(dict(ctx, crop_progress={"in_season": False})) is None)
 
+    # Label strings changed 2026-10-13 with the copy ("USDA September 2026
+    # forecast" where the description used to say "(2026 USDA September
+    # forecast)"); what is asserted is unchanged: a forecast is called a
+    # forecast, its month is named, a final is called a final.
     t, d = seo_quick_stats(ctx)
-    ck("a forecast is called a forecast, never a final", "2026 forecast" in d, d)
+    ck("a forecast is called a forecast, never a final", "2026 forecast" in d and "final" not in d, d)
+    ck("...in the title too", "2026 Forecast" in t and "Final" not in t, t)
     _qs = seo_quick_stats(dict(ctx, state_stats={"stateStats": {"IA": {
-        "corn_yield": 219.0, "year": 2026, "forecast": True, "forecast_month": "September"}}}))
-    ck("quick stats names the month of the forecast", "(2026 USDA September forecast)" in _qs[1], _qs[1])
-    ck("and still fits the description cap with the longest month", check(_qs[0], _qs[1], "usda-quick-stats.html"))
+        "name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
+        "year": 2026, "forecast": True, "forecast_month": "September"},
+        "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0,
+               "bean_prod": 709, "year": 2026, "forecast": True, "forecast_month": "September"},
+        "NE": {"name": "Nebraska", "corn_yield": 188.0, "corn_prod": 1807,
+               "year": 2026, "forecast": True, "forecast_month": "August"},
+        "MN": {"name": "Minnesota", "corn_yield": 195.0, "corn_prod": 1618,
+               "year": 2026, "forecast": True, "forecast_month": "September"}}}))
+    ck("quick stats names the month of the forecast", "USDA September 2026 forecast" in _qs[1], _qs[1])
+    ck("and still fits the caps with the longest month", check(_qs[0], _qs[1], "usda-quick-stats.html"))
+    ck("the description leads with the largest states",
+       "Iowa corn 219 bu/ac, Illinois 208, Minnesota 195; Illinois soybeans 68" in _qs[1], _qs[1])
+    ck("a state on another month's forecast is left out", "Nebraska" not in _qs[1], _qs[1])
     ctx4 = dict(ctx, state_stats={"stateStats": {"IA": {"corn_yield": 211.0, "year": 2025,
                                                         "forecast": False}}})
-    _, d4 = seo_quick_stats(ctx4)
-    ck("a final is called a final", "2025 final" in d4, d4)
+    t4, d4 = seo_quick_stats(ctx4)
+    ck("a final is called a final", "2025 final" in d4 and "forecast" not in d4, d4)
+    ck("...in the title too", "USDA 2025 Final" in t4 and "Forecast" not in t4, t4)
+    _b = body_quick_stats(dict(ctx, state_stats=_qs and {"stateStats": {"IA": {
+        "name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
+        "year": 2026, "forecast": True, "forecast_month": "October"}}}))
+    ck("the visible state line names its vintage", "USDA October 2026 forecast" in _b, _b)
+    _qp = (REPO / "usda-quick-stats.html").read_text(encoding="utf-8")
+    ck("usda-quick-stats.html carries the state-yields markers",
+       bake_body(_qp, "state-yields", "x")[1])
 
     # THE 2026-08-17 BUG. Day one of the tour, nothing announced yet, and the
     # title said "Night 1 Results". Every assertion below is on the state that
@@ -921,6 +1258,28 @@ def selftest():
                                                 crop_tour=dict(ctx["crop_tour"],
                                                                nights=[{"posted": False}] * 4)))[0])
            for d_ in (17, 18, 19, 20, 21, 22)))
+
+    print("\nbreak-even example comes from the calculator's own defaults")
+    _fake = ("var CROP_DEFAULTS={corn:{yield:180,price:'',basis:0,seed:125,fertilizer:175,"
+             "chemicals:65,insurance:35,machinery:145,labor:35,land:250,overhead:75},"
+             "soybeans:{yield:55,price:'',basis:0,seed:75,fertilizer:45,chemicals:55,"
+             "insurance:30,machinery:110,labor:30,land:250,overhead:55}};")
+    ck("corn defaults sum the eight cost lines", _be_defaults("corn", _fake) == (905.0, 180.0),
+       str(_be_defaults("corn", _fake)))
+    ck("soybean defaults", _be_defaults("soybeans", _fake) == (650.0, 55.0),
+       str(_be_defaults("soybeans", _fake)))
+    ck("price and basis are not costs", _be_defaults("corn", _fake.replace("price:''", "price:'4.5'"))[0] == 905.0)
+    ck("a page without the table gives no example", _be_defaults("corn", "nothing") is None)
+    _bt, _bd = seo_breakeven(ctx)
+    ck("break-even title names the query's words", "Break-Even Price per Bushel" in _bt, _bt)
+    _live = _be_defaults("corn")
+    ck("breakeven.html still carries CROP_DEFAULTS", _live is not None)
+    if _live:
+        ck("the snippet's example is the calculator's opening numbers",
+           f"${_live[0] / _live[1]:.2f} corn break-even" in _bd and "Example" in _bd, _bd)
+        ck("the visible example line agrees", f"${_live[0] / _live[1]:.2f} a bushel" in body_breakeven(ctx))
+    _bp = (REPO / "breakeven.html").read_text(encoding="utf-8")
+    ck("breakeven.html carries the be-example markers", bake_body(_bp, "be-example", "x")[1])
 
     print("\nusda calendar rolls at the print")
     ck("report morning, not printed: Oct 9 is next",
@@ -984,7 +1343,9 @@ def selftest():
             ck(f"crop tour '{label}' within caps", False, str(exc))
 
     print("\nfutures titles carry the exchange the query uses")
-    for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures: Sep '26 $6.74"),
+    # wheat changed 2026-10-13 to "Futures Price", the form corn and beans
+    # took on 2026-10-11; the assertion follows that copy.
+    for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures Price: Sep '26 $6.74"),
                        ("corn-futures-prices.html", "CBOT Corn Futures Price: Sep '26 $4.59"),
                        ("soybean-futures-prices.html", "CBOT Soybean Futures Price: Aug '26 $11.76"),
                        ("cattle-futures-prices.html", "CME Feeder Cattle Futures $341.27")):
@@ -1081,7 +1442,8 @@ def selftest():
     ck("a held week is named and Indiana's jumped week is not counted",
        "Aug 7, 2026" in d and "Aug 14 week is held" in d and "Indiana" not in d, d)
     t, d = seo_fertilizer(ctx)
-    ck("fertilizer title names this round's quotes", "Urea $590/ton" in t, t)
+    # string follows the 2026-10-13 copy ("per Ton" leads, was "Urea $590/ton")
+    ck("fertilizer title names this round's quotes", "Prices per Ton: Urea $590, MAP $930" in t, t)
     ck("fertilizer title carries NO date (weekly/monthly data)",
        not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)
     ck("fertilizer description carries the quotes' own as-of date",
@@ -1090,6 +1452,29 @@ def selftest():
     ck("fertilizer is skipped when the newest quote is over 120 days old",
        seo_fertilizer(dict(ctx, today=date(2026, 12, 15))) is None)
     ck("fertilizer skipped with no file", seo_fertilizer(dict(ctx, fertilizer=None)) is None)
+
+    print("\nmilk: the class month the file names, 50-60 characters, dropped when due")
+    t, d = seo_milk(ctx)
+    ck("milk title names the class month and the Class III price",
+       t == "USDA Class III Milk Price July 2026: $17.50 | AGSIST", t)
+    ck("milk description names both classes and the change",
+       "July 2026 Class III at $17.50/cwt, down $0.12 from June, Class IV $18.04." in d, d)
+    lens = [len(seo_milk(dict(ctx, today=date(2026, k + 2, 10),
+                              dairy=dict(ctx["dairy"], class3=px,
+                                         class_month_key=f"2026-{k + 1:02d}")))[0])
+            for k in range(11) for px in (9.99, 29.99)]   # Jan-Nov 2026, priced the next month
+    ck("every month and price keeps the milk title within 50-60 characters",
+       all(50 <= n <= 60 for n in lens), str(sorted(set(lens))))
+    ck("milk title and description carry no em dash", "\u2014" not in t + d)
+    ck("on the 3rd the month before last is still current",
+       seo_milk(dict(ctx, today=date(2026, 9, 3)))[0].startswith("USDA Class III Milk Price July"))
+    ck("on the 6th it is due: back to the descriptive title, no stale number",
+       seo_milk(dict(ctx, today=date(2026, 9, 6))) == (MILK_TITLE, MILK_DESC))
+    ck("a class month in the future is not titled",
+       seo_milk(dict(ctx, dairy=dict(ctx["dairy"], class_month_key="2026-09"))) == (MILK_TITLE, MILK_DESC))
+    ck("a file with no Class III is not titled",
+       seo_milk(dict(ctx, dairy=dict(ctx["dairy"], class3=None))) == (MILK_TITLE, MILK_DESC))
+    ck("no dairy file: the page is left alone", seo_milk(dict(ctx, dairy=None)) is None)
 
     print("\nstamping")
     html = ('<title>Old</title>\n<meta name="description" content="old">\n'

@@ -79,17 +79,22 @@ PAGES = {
 DESC_MAX = 160
 
 DESC = {
+    # 2026-10-13: "every 30 min" on corn and wheat said what the prices loop
+    # did before 2026-10-07; the page body and the loop say 15. "Live" is
+    # dropped: the body says these are delayed quotes. Corn and soybeans spell
+    # out Chicago Board of Trade, the words of the named queries ("chicago
+    # board of trade corn price", "cbot soybeans").
     "corn-futures-prices.html": (
-        "Corn {mon} {verb} ${px} ({chg}) {when}. Live CBOT corn futures refreshed every "
-        "30 min in session.",
-        " December new-crop, RP floor, basis-to-cash, daily read."),
+        "Corn {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) corn "
+        "futures, refreshed every 15 min in session.",
+        " December new-crop, basis, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Live CBOT soybean futures refreshed "
-        "every 15 min in session.",
-        " November new-crop, crush spread, cash bids."),
+        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) "
+        "soybean futures, refreshed every 15 min in session.",
+        " Crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} {verb} ${px} ({chg}) {when}. Live Chicago SRW futures refreshed every "
-        "30 min in session{kc}.",
+        "Wheat {mon} {verb} ${px} ({chg}) {when}. Chicago SRW wheat futures, refreshed "
+        "every 15 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
 }
 
@@ -1084,6 +1089,476 @@ def elevator_bids_line(c, today):
             f"bid on our cash bids pages, across <span class=\"num\">{_commas(b['towns'])}</span> towns.")
 
 
+
+# --- /milk-prices ---------------------------------------------------------------
+# The dated figures on milk-prices.html, from data/dairy-data.json (written by
+# scripts/fetch_dairy.py, the dairy workflow). Until 2026-10-13 these were typed
+# by hand and the page body sat on August ($16.64) for crawlers and no-JS
+# readers while the file already held September ($16.04). Every string here is
+# the page script's own (classBlock, verdict, allMilk, states, render), so the
+# live fill rewrites text in place and both say the same thing. Runs from the
+# dairy workflow right after a fetch, and from freshness daily, which is what
+# turns a class month into a dash once the next one is due and missing.
+MILK_PAGE = "milk-prices.html"
+MILK_DATA = "data/dairy-data.json"
+MONL = ["January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December"]
+MINUS = "−"
+# Class III teaching model, the page's classIII(): 7 CFR 1000.50 as amended 2025
+MILK_MA_CHEESE, MILK_MA_WHEY = 0.2519, 0.2668
+MILK_LB = {"protein": 3.30, "fat": 3.50, "os": 6.00}
+
+
+def _mkey(k):
+    m = re.match(r"^(\d{4})-(\d{2})$", str(k or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return None
+    return int(m.group(1)) * 12 + int(m.group(2)) - 1
+
+
+def _mlabel_idx(s):
+    m = re.match(r"^\s*([A-Za-z]+)\s+(\d{4})\s*$", str(s or ""))
+    if not m:
+        return None
+    low = [x.lower() for x in MONL]
+    return int(m.group(2)) * 12 + low.index(m.group(1).lower()) if m.group(1).lower() in low else None
+
+
+def _ilong(i):
+    return f"{MONL[i % 12]} {i // 12}"
+
+
+def _ishort(i):
+    return f"{MON3[i % 12]} {i // 12}"
+
+
+def _pos(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v == v and v > 0 and v != float("inf")
+
+
+def _fin(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v == v and abs(v) != float("inf")
+
+
+def _cwt(v):
+    return "$" + _fixed(v, 2)
+
+
+def _money4(v):
+    return "$" + _fixed(v, 4)
+
+
+def _sg(v, dp):
+    r = float(_fixed(v, dp))
+    return ("+" if r > 0 else MINUS if r < 0 else "") + "$" + _fixed(abs(r), dp)
+
+
+def _arr(v):
+    r = float(_fixed(v, 4))
+    return "▲" if r > 0 else "▼" if r < 0 else "–"
+
+
+def _cl(v):
+    r = float(_fixed(v, 4))
+    return "dp-pos" if r > 0 else "dp-neg" if r < 0 else "dp-flat"
+
+
+def _jr(x, n):
+    """Math.round(x*10^n)/10^n, halves up, as the page's r2/r4."""
+    import math
+    f = 10 ** n
+    return math.floor(x * f + 0.5) / f
+
+
+def milk_class3(cheese, whey, fat):
+    """The page's classIII() teaching model, step for step."""
+    c = cheese - MILK_MA_CHEESE
+    pp = _jr(c * 1.383 + (c * 1.589 - fat * 0.91) * 1.17, 4)
+    os_ = _jr((whey - MILK_MA_WHEY) * 1.03, 4)
+    se = _jr(pp * MILK_LB["protein"] + os_ * MILK_LB["os"], 4)
+    sk = _jr(se, 2)
+    return {"pp": pp, "os": os_, "skimExact": se, "skim": sk,
+            "val": _jr(0.965 * sk + MILK_LB["fat"] * fat, 2)}
+
+
+def _milk_now(today):
+    t = datetime.strptime(today, "%Y-%m-%d").date()
+    now_idx = t.year * 12 + t.month - 1
+    # last month's prices are announced on or before the 5th (7 CFR 1000.53):
+    # until the 6th the month before that is still the newest that must exist
+    return now_idx, now_idx - (1 if t.day > 5 else 2)
+
+
+def _cell(cid, name, val, unit, chg, chg_cls, meta, attrs=""):
+    chg_html = (f'<span class="dp-cell-chg {chg_cls}" id="{cid}-chg">{chg}</span>'
+                if chg is not None else "")
+    v = (val + f'<span class="dp-cell-unit">{unit}</span>') if unit else val
+    return (f'<div class="dp-cell"><span class="dp-cell-name">{name}</span>'
+            f'<span class="dp-cell-val" id="{cid}-val"{attrs}>{v}</span>{chg_html}'
+            f'<span class="dp-cell-meta" id="{cid}-meta">{meta}</span></div>')
+
+
+def milk_class_state(d, today):
+    """(idx, stale) for the class block, or None when the file cannot seed it
+    (no class prices, no month, or a month in the future)."""
+    if not d or not (_pos(d.get("class3")) or _pos(d.get("class4")) or _pos(d.get("class2"))):
+        return None
+    idx = _mkey(d.get("class_month_key"))
+    if idx is None:
+        idx = _mlabel_idx(d.get("class_month"))
+    now_idx, due = _milk_now(today)
+    if idx is None or idx > now_idx:
+        return None
+    return idx, idx < due
+
+
+def milk_allmilk_ok(a, today):
+    """The page's window for NASS figures: this month back to two months ago."""
+    if not a:
+        return None
+    idx = _mkey(a.get("month_key"))
+    if idx is None:
+        idx = _mlabel_idx(a.get("month"))
+    now_idx, _ = _milk_now(today)
+    if idx is None:
+        return None
+    return idx, not (now_idx - 2 <= idx <= now_idx)
+
+
+def milk_seeds(d, today):
+    """{tag: html} plus the class month key, or ({}, None) when nothing can be seeded."""
+    seeds = {}
+    cs = milk_class_state(d, today)
+    seed_key = None
+    STRIP_TAIL = []
+    if cs:
+        idx, stale = cs
+        seed_key = f"{idx // 12}-{idx % 12 + 1:02d}"
+        m = _e(d.get("class_month") or _ilong(idx))
+        sh, pv = _ishort(idx), MON3[(idx + 11) % 12]
+        c3, c4 = d.get("class3"), d.get("class4")
+        p3, p4 = d.get("class3_prev"), d.get("class4_prev")
+        cells = []
+        if stale:
+            why = f"Latest on file: {_ilong(idx)}. Older than last month’s announcement."
+            for cid, name in (("c3", "Class III milk"), ("c4", "Class IV milk"), ("c2", "Class II milk")):
+                cells.append(_cell(cid, name, "-", "", "", "dp-flat", why))
+            seeds["milkverdict"] = f"The newest announced milk prices held here are from {_ilong(idx)}. A new month is due."
+            seeds["milkvcls"] = (f'<li><span class="n">{MON3[idx % 12]}</span><span id="dp-v-aug">'
+                                 "Class prices are not shown until the new month is loaded.</span></li>")
+            seeds["milkcompsrc"] = "Component prices are not shown: the newest figures held are too old."
+            seeds["milkprodsrc"] = "Product prices are not shown: the newest figures held are too old."
+            seeds["milkcomp"] = "".join(_cell(cid, name, "-", "", None, "", why) for cid, name in (
+                ("bf", "Butterfat"), ("pr", "Protein"), ("nf", "Nonfat solids"), ("os", "Other solids")))
+            seeds["milkprod"] = "".join(_cell(cid, name, "-", "", "", "dp-flat", why) for cid, name in (
+                ("chz", "Cheese"), ("but", "Butter"), ("ndm", "Nonfat dry milk"), ("dw", "Dry whey")))
+        else:
+            meta = f"{sh} · USDA announced"
+            for cid, name, v, p in (("c3", "Class III milk", c3, p3), ("c4", "Class IV milk", c4, p4),
+                                    ("c2", "Class II milk", d.get("class2"), d.get("class2_prev"))):
+                if _pos(v):
+                    dl = v - p if _pos(p) else None
+                    attrs = f' data-v="{_fixed(v, 2)}"' if cid in ("c3", "c4") else ""
+                    cells.append(_cell(cid, name, _cwt(v), "/cwt",
+                                       "" if dl is None else f"{_arr(dl)} {_sg(dl, 2)} vs {pv}",
+                                       "dp-flat" if dl is None else _cl(dl), meta, attrs))
+                else:
+                    cells.append(_cell(cid, name, "-", "", "", "dp-flat", "Not in the latest announcement feed"))
+            # the verdict line and its list item (verdict())
+            if _pos(c3) and _pos(c4):
+                v = f"{_e(d.get('class_month') or _ilong(idx))} announced prices: Class III {_cwt(c3)}, Class IV {_cwt(c4)}."
+                if _pos(p3) and _pos(p4):
+                    d3, d4 = c3 - p3, c4 - p4
+
+                    def mv(x):
+                        return ("rose" if x > 0 else "fell" if x < 0 else "was unchanged") + (f" {_cwt(abs(x))}" if x else "")
+                    v = f"{MON3[idx % 12]}: Class III {mv(d3)} to {_cwt(c3)}. Class IV {mv(d4)} to {_cwt(c4)}."
+                seeds["milkverdict"] = v
+                t = f"Class III, USDA announced: <strong>{_cwt(c3)}/cwt</strong>"
+                if _pos(p3):
+                    x = c3 - p3
+                    t += (f", {'up ' if x > 0 else 'down '}{_cwt(abs(x))} from {MONL[(idx + 11) % 12]}"
+                          if x else f", unchanged from {MONL[(idx + 11) % 12]}")
+                t += f". Class IV: <strong>{_cwt(c4)}/cwt</strong>"
+                if _pos(p4):
+                    y = c4 - p4
+                    t += f", {'up ' if y > 0 else 'down '}{_cwt(abs(y))}" if y else ", unchanged"
+                seeds["milkvcls"] = (f'<li><span class="n">{MON3[idx % 12]}</span>'
+                                     f'<span id="dp-v-aug">{t}.</span></li>')
+            # components
+            cp = d.get("components") or {}
+            comp = []
+            for cid, name, k, meta2 in (("bf", "Butterfat", "butterfat", "per lb of butterfat"),
+                                        ("pr", "Protein", "protein", "per lb of protein"),
+                                        ("nf", "Nonfat solids", "nonfat_solids", "per lb of nonfat solids"),
+                                        ("os", "Other solids", "other_solids", "per lb of other solids")):
+                v = cp.get(k)
+                comp.append(_cell(cid, name, _money4(v), "/lb", None, "", meta2) if _pos(v) else
+                            _cell(cid, name, "-", "", None, "", "Not in the latest announcement feed"))
+            seeds["milkcomp"] = "".join(comp)
+            src = "USDA AMS announcement of class and component prices"
+            rel = _iso_date(d.get("class_release")) if d.get("class_release") else None
+            if rel:
+                src += f" · released {_mdy(rel)}"
+            seeds["milkcompsrc"] = f"{m} · {src}. What each is paid per pound in your milk if you are on component pricing."
+            # products: USDA survey averages
+            sd = d.get("spot_date")
+            pm = _e(sd) if isinstance(sd, str) and sh.lower() in sd.lower() else f"USDA survey avg · {sh}"
+            prod = []
+            for cid, name, k, ck in (("chz", "Cheese", "cheese", "cheese_chg"), ("but", "Butter", "butter", "butter_chg"),
+                                     ("ndm", "Nonfat dry milk", "ndm", "ndm_chg"), ("dw", "Dry whey", "whey", "whey_chg")):
+                v, c = d.get(k), d.get(ck)
+                if _pos(v):
+                    chg = (f"{_arr(c)} {re.sub(r'[.]0$', '', _fixed(abs(c * 100), 1))}¢ vs {pv}" if _fin(c) else "")
+                    prod.append(_cell(cid, name, "$" + _fixed(v, 2), "/lb", chg, _cl(c) if _fin(c) else "dp-flat", pm))
+                else:
+                    prod.append(_cell(cid, name, "-", "", "", "dp-flat", "Not in the latest announcement feed"))
+            seeds["milkprod"] = "".join(prod)
+            seeds["milkprodsrc"] = f"USDA survey averages of what plants sold, {sh}. They feed the formulas. They are not CME spot closes."
+        STRIP_TAIL = cells
+        # the spread line (spread()); hidden, as the script hides it, when the block is not shown
+        spread_tail = (' How far apart the two classes sit matters for your check. <a class="dp-jump" '
+                       'href="#dp-trap">Why: the trap, when your best milk pays you less</a></p>')
+        if _pos(c3) and _pos(c4):
+            s = _jr(c3 - c4, 2)
+            a = _fixed(abs(s), 2)
+            words = "Class III equals Class IV." if s == 0 else f"Class III is ${a}{' above' if s > 0 else ' below'} Class IV."
+            seeds["milkspread"] = (f'<p class="dp-spread" id="dp-spread"{" hidden" if stale else ""}>'
+                                   f"<strong>Class III minus Class IV, {sh}: <span id=\"dp-spread-val\">"
+                                   f"{'+' if s > 0 else MINUS if s < 0 else ''}${a}/cwt</span>.</strong> "
+                                   f'<span id="dp-spread-words">{words}</span>' + spread_tail)
+        # the waterfall (render(..., true)) and the sandbox's starting point
+        sc = d.get("survey_cheese") if _pos(d.get("survey_cheese")) else d.get("cheese")
+        sw = d.get("survey_whey") if _pos(d.get("survey_whey")) else d.get("whey")
+        sf = cp_fat = (d.get("components") or {}).get("butterfat")
+        if not _pos(cp_fat):
+            sf = d.get("survey_fat")
+        if _pos(sc) and _pos(sw) and _pos(sf) and _pos(c3) and abs(milk_class3(sc, sw, sf)["val"] - c3) <= 0.02:
+            seeds.update(milk_fall(sc, sw, sf, c3, d.get("class_month") or _ilong(idx), d.get("class3_math")))
+    # all-milk (allMilk())
+    a = (d or {}).get("all_milk")
+    am = milk_allmilk_ok(a, today) if a and _pos(a.get("value")) else None
+    am_cell = None
+    if am:
+        aidx, astale = am
+        alab = _e(a.get("month") or _ilong(aidx))
+        key = f"{aidx // 12}-{aidx % 12 + 1:02d}"
+        if astale:
+            am_cell = (f'<div class="dp-cell"><span class="dp-cell-name">All-milk price</span>'
+                       f'<span class="dp-cell-val" id="am-val" data-key="{key}">-</span>'
+                       f'<span class="dp-cell-chg dp-flat" id="am-chg"></span>'
+                       f'<span class="dp-cell-meta" id="am-meta">Latest held: {_ilong(aidx)}. Too old to show.</span></div>')
+            seeds["milkamsrc"] = "All-milk price is not shown: the newest figure held is too old."
+            seeds["milkvam"] = (f'<li><span class="n">{MON3[aidx % 12]}</span><span id="dp-v-jul">'
+                                "All-milk price is not shown until a newer month is loaded.</span></li>")
+        else:
+            v = a["value"]
+            pvm, yl = MON3[(aidx + 11) % 12], f"{MON3[aidx % 12]} {aidx // 12 - 1}"
+            parts = []
+            if _pos(a.get("prev_month")):
+                x = v - a["prev_month"]
+                parts.append(f'<span class="{_cl(x)}">{_arr(x)} {_sg(x, 2)} vs {pvm}</span>')
+            if _pos(a.get("year_ago")):
+                x = v - a["year_ago"]
+                parts.append(f'<span class="{_cl(x)}">{_arr(x)} {_sg(x, 2)} vs {yl}</span>')
+            am_cell = (f'<div class="dp-cell"><span class="dp-cell-name">All-milk price</span>'
+                       f'<span class="dp-cell-val" id="am-val" data-key="{key}">{_cwt(v)}<span class="dp-cell-unit">/cwt</span></span>'
+                       f'<span class="dp-cell-chg" id="am-chg">{"<br>".join(parts)}</span>'
+                       f'<span class="dp-cell-meta" id="am-meta">USDA NASS · {alab}</span></div>')
+            seeds["milkamsrc"] = (f"All-milk price: USDA NASS, Agricultural Prices, {alab}; before hauling, "
+                                  "includes quality, quantity and other premiums.")
+            s = f"All-milk price, USDA NASS: <strong>{_cwt(v)}/cwt</strong>"
+            pl = MONL[(aidx + 11) % 12]
+            if _pos(a.get("prev_month")):
+                e1 = v - a["prev_month"]
+                s += f", {'up ' if e1 > 0 else 'down '}{_cwt(abs(e1))} from {pl}" if e1 else f", unchanged from {pl}"
+            if _pos(a.get("year_ago")):
+                e2 = v - a["year_ago"]
+                s += (" and " if _pos(a.get("prev_month")) else ", ") + (
+                    f"{'up ' if e2 > 0 else 'down '}{_cwt(abs(e2))} from a year earlier" if e2 else "unchanged from a year earlier")
+            seeds["milkvam"] = (f'<li><span class="n">{MON3[aidx % 12]}</span>'
+                                f'<span id="dp-v-jul">{s}. It is paid before hauling.</span></li>')
+            seeds["milkexample"] = milk_example(v, alab)
+    if cs and am_cell is None:
+        am_cell = ('<div class="dp-cell"><span class="dp-cell-name">All-milk price</span>'
+                   '<span class="dp-cell-val" id="am-val">-</span><span class="dp-cell-chg dp-flat" id="am-chg"></span>'
+                   '<span class="dp-cell-meta" id="am-meta">Not in the latest NASS feed</span></div>')
+    if cs:
+        seeds["milkstrip"] = "\n      ".join(STRIP_TAIL + [am_cell])
+    st = milk_states((d or {}).get("all_milk_states"), today)
+    if st:
+        seeds["milkstates"] = st
+    return seeds, seed_key
+
+
+def milk_fall(cheese, whey, fat, c3, month, math=None):
+    """The waterfall as the page's render(SEED..., true) draws it, the sandbox
+    sliders at the same point, and the script's SEED object."""
+    r = milk_class3(cheese, whey, fat)
+    mm = math if isinstance(math, dict) and math.get("class3") == c3 else None
+    if mm:
+        r = {"pp": mm.get("protein"), "os": mm.get("other_solids"), "skimExact": mm.get("skim_exact"),
+             "skim": mm.get("skim"), "val": r["val"], "fat": mm.get("butterfat")}
+    mon = _e(month)
+
+    def row(cls, icon, name, desc, val, unit):
+        return (f'<div class="dp-row {cls}"><div class="dp-row-main"><div class="dp-row-name">'
+                + (f'<svg class="ic" aria-hidden="true"><use href="#{icon}"/></svg> ' if icon else "") + name + "</div>"
+                + (f'<div class="dp-row-desc">{desc}</div>' if desc else "")
+                + f'</div><div class="dp-row-val">{val}' + (f'<span class="u">{unit}</span>' if unit else "") + "</div></div>")
+    skim_round = (f", which the federal order rounds to {_cwt(r['skim'])}"
+                  if _jsround(r["skimExact"] * 10000) != _jsround(r["skim"] * 10000) else "")
+    rows = [
+        row("", "i-package", "Cheese price", "The USDA survey price for 40-lb cheddar blocks. Barrels left this survey in June 2025, so it is no longer a block-and-barrel weighted average.", _money4(cheese), "/lb"),
+        row("dp-op deduct", "", "&minus; Make allowance (cheese)", "A fixed credit for turning milk into cheese, subtracted before the value reaches the farmer: a standard assumed cost across the order, not any one plant’s actual cost. Raised in 2025.", "&minus;" + _money4(MILK_MA_CHEESE), "/lb"),
+        row("dp-result", "", "Protein price", "What’s left of the cheese value, converted to a per-pound milk-protein price by the federal yield formula.", _money4(r["pp"]), "/lb"),
+        row("", "i-package", "Dry whey price", "The other cheese-plant output; its value becomes \"other solids\", the lactose and minerals in milk.", _money4(whey), "/lb"),
+        row("dp-op deduct", "", "&minus; Make allowance (whey)", "The processing credit for drying whey, subtracted the same way.", "&minus;" + _money4(MILK_MA_WHEY), "/lb"),
+        row("dp-result", "", "Other solids price", "", _money4(r["os"]), "/lb"),
+        row("", "i-droplet", "Butterfat price", "Derived from the butter market (shared with Class IV). The fat in your milk.", _money4(fat), "/lb"),
+        row("dp-op credit", "", "Component math &middot; per cwt at test",
+            f"Skim milk price = protein {_money4(r['pp'])} × {_fixed(MILK_LB['protein'], 2)} lb + other solids {_money4(r['os'])} "
+            f"× {_fixed(MILK_LB['os'], 2)} lb = {_money4(r['skimExact'])}{skim_round}. Class III = 0.965 × {_cwt(r['skim'])}, "
+            f"plus butterfat {_money4(r.get('fat') if r.get('fat') is not None else fat)} × {_fixed(MILK_LB['fat'], 2)} lb.",
+            "+ sum", ""),
+        row("dp-final", "", "Class III milk price", "The federal minimum a cheese plant must pay for 100 lb of milk this month, as announced by USDA. What lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.", _cwt(c3), "/cwt"),
+    ]
+
+    def slider(key, label, lo, hi, v, aria):
+        return (f'<div class="dp-slider-row">\n          <span class="dp-slider-lbl">{label}</span>\n'
+                f'          <input type="range" class="dp-slider" id="sl-{key}" min="{lo}" max="{hi}" step="0.0001" '
+                f'value="{_fixed(v, 4)}" aria-label="{aria}">\n'
+                f'          <span class="dp-slider-val" id="sv-{key}">{_money4(v)}</span>\n        </div>')
+    js = {"cheese": float(_fixed(cheese, 4)), "whey": float(_fixed(whey, 4)), "fat": float(_fixed(fat, 4)),
+          "classIII": c3, "month": str(month)}
+    if mm:
+        js["math"] = mm
+    return {
+        "milkfallmonth": f"Class III &middot; <b>{mon}</b> &middot; the cheese-milk formula",
+        "milkreset": f"&#x21BA; Reset to {mon} actuals",
+        "milkfallbody": "\n        " + "\n\n        ".join(rows),
+        "milksliders": "\n        ".join([
+            slider("cheese", "Cheese", "1.00", "2.60", cheese, "Cheese price per pound"),
+            slider("whey", "Dry whey", "0.20", "1.00", whey, "Dry whey price per pound"),
+            slider("fat", "Butterfat", "1.00", "3.50", fat, "Butterfat price per pound")]),
+        "__js": "var SEED=" + json.dumps(js, separators=(",", ":")).replace("</", "<\\/") + ";",
+    }
+
+
+MILK_EX_CWT, MILK_EX_COST = 2170, 19
+
+
+def milk_example(v, alab):
+    """One farm, one month: 2,170 cwt at the all-milk price against ERS's ~$19."""
+    gross = _jr(MILK_EX_CWT * v, 0)
+    cost = MILK_EX_CWT * MILK_EX_COST
+    left = gross - cost
+    lc = "pos" if left >= 0 else "neg"
+    ls = ("" if left >= 0 else "&minus;") + "$" + _commas(abs(left))
+    return (f'<div class="dp-example-line"><span>Ships ~217,000 lb/mo (2,170 cwt) at the {alab} all-milk price</span>'
+            f'<span class="v">{_cwt(v)}/cwt</span></div>\n'
+            f'      <div class="dp-example-line"><span>Gross milk check, before hauling</span><span class="v">${_commas(gross)}</span></div>\n'
+            f'      <div class="dp-example-line"><span>Est. cost to produce at ~$19/cwt (ERS avg herd)</span>'
+            f'<span class="v neg">&minus;${_commas(cost)}</span></div>\n'
+            f'      <div class="dp-example-line tot"><span>Left for the mortgage, family, and reinvestment</span>'
+            f'<span class="v {lc}">{ls}</span></div>\n'
+            f"      <p class=\"dp-example-note\">Illustrative, using USDA NASS's {alab} all-milk price (before hauling and "
+            "co-op deductions) and ERS's average cost of production. The mailbox price itself isn't published in real "
+            "time (see above), so the true net figure, after hauling and PPD, sits lower than this. Beef and cull-cow "
+            "income and each farm's own cost structure move the real number, which is exactly why the only cost that "
+            "matters is <a href=\"/breakeven\" style=\"color:var(--gold);text-decoration:none\">your own</a>.</p>")
+
+
+def milk_states(f, today):
+    """The by-state table as the page's states() draws it. A table outside the
+    page's window ships hidden behind the same dash line the script shows."""
+    if not f or not isinstance(f.get("rows"), list) or not f["rows"]:
+        return None
+    mi = _mkey(f.get("month_key"))
+    if mi is None:
+        return None
+    now_idx, _ = _milk_now(today)
+    stale = not (now_idx - 2 <= mi <= now_idx)
+    mlabel = _ilong(mi)
+    rows = [r for r in f["rows"] if isinstance(r, dict) and isinstance(r.get("state"), str)]
+    us = next((r for r in rows if r["state"] == "United States"), None)
+    st = sorted((r for r in rows if r["state"] != "United States"),
+                key=lambda r: (-(r["value"] if _pos(r.get("value")) else -1), r["state"]))
+    have = [r for r in st if _pos(r.get("value"))]
+    s = f"By state, {mlabel}: "
+    if us and _pos(us.get("value")):
+        s += f"United States {_cwt(us['value'])}/cwt. "
+    if len(have) > 1:
+        hi, lo = have[0], have[-1]
+        s += (f"Highest {_e(hi['state'])} {_cwt(hi['value'])}, lowest {_e(lo['state'])} {_cwt(lo['value'])}, "
+              f"gap {_cwt(hi['value'] - lo['value'])}.")
+
+    def chg(v, base):
+        if _pos(v) and _pos(base):
+            x = v - base
+            return f'<td class="num {_cl(x)}">{_arr(x)} {_sg(x, 2)}</td>'
+        return '<td class="num">-</td>'
+    body = []
+    for r in ([us] if us else []) + st:
+        cls = ' class="dp-us"' if r["state"] == "United States" else ""
+        val = (f'<td class="num">{_cwt(r["value"])}</td>' if _pos(r.get("value"))
+               else '<td class="num" title="Not reported in this table">-</td>')
+        body.append(f'<tr{cls} data-state="{H.escape(r["state"])}"><th scope="row">{_e(r["state"])}</th>{val}'
+                    f'{chg(r.get("value"), r.get("prev_month"))}{chg(r.get("value"), r.get("year_ago"))}</tr>')
+    src = f"USDA NASS, Agricultural Prices, {mlabel}."
+    src = (f"A dash means NASS gave no value for that state. {src}" if any(not _pos(r.get("value")) for r in st)
+           else f"{src} Sorted high to low. Only states in the NASS table are shown.")
+    none = (f'<p class="dp-fut-none" id="dp-states-none">- State prices are not shown: the newest held ({mlabel}) are too old.</p>'
+            if stale else '<p class="dp-fut-none" id="dp-states-none" hidden></p>')
+    seed_json = json.dumps({"month": f.get("month") or mlabel, "month_key": f.get("month_key"), "rows": rows},
+                           separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
+    return (none + "\n"
+            f'      <details class="dp-states" id="dp-states"{" hidden" if stale else ""}>\n'
+            f'        <summary id="dp-states-sum">{s}</summary>\n'
+            '        <div class="dp-states-pick"><label for="dp-state-sel">Highlight my state</label> <select id="dp-state-sel"><option value="">None</option></select></div>\n'
+            '        <div class="dp-tbl-wrap"><table class="dp-tbl" aria-describedby="dp-states-cap">\n'
+            '          <caption class="dp-sr">All-milk price received by farmers, by state, dollars per hundredweight</caption>\n'
+            f'          <thead><tr><th scope="col">State</th><th scope="col" class="num" id="dp-st-h1">{_ishort(mi)} $/cwt</th>'
+            f'<th scope="col" class="num" id="dp-st-h2">vs {MON3[(mi + 11) % 12]}</th>'
+            f'<th scope="col" class="num" id="dp-st-h3">vs {MON3[mi % 12]} {mi // 12 - 1}</th></tr></thead>\n'
+            '          <tbody id="dp-states-body">\n' + "\n".join(body) + "\n          </tbody>\n"
+            '        </table></div>\n'
+            f'        <p class="dp-note-src" id="dp-states-cap">Before hauling. Includes premiums. Not your mailbox price. <span id="dp-states-src">{src}</span></p>\n'
+            '      </details>\n'
+            f'      <script type="application/json" id="dp-states-seed">{seed_json}</script>')
+
+
+MILK_JS_SEED = re.compile(r"var SEED=\{[^\n]*\};")
+MILK_SEC = re.compile(r'(<section class="dp-sec" aria-labelledby="dp-mkt" id="dp-mkt-sec" data-seed-month=")([^"]*)(")')
+
+
+def seed_milk(today):
+    d = _load_json(MILK_DATA)
+    if not isinstance(d, dict):
+        print(f"  {MILK_PAGE}: {MILK_DATA} missing or unreadable, left alone")
+        return False
+    seeds, key = milk_seeds(d, today)
+    js = seeds.pop("__js", None)
+
+    def extra(t):
+        if key:
+            t = MILK_SEC.sub(lambda m: m.group(1) + key + m.group(3), t, count=1)
+        if js:
+            t = MILK_JS_SEED.sub(lambda m: js, t, count=1)
+        return t
+    if not seeds and not js:
+        print(f"  {MILK_PAGE}: nothing seedable in {MILK_DATA}")
+        return False
+    changed = _write_seeds(MILK_PAGE, seeds, extra)
+    if changed:
+        t = open(MILK_PAGE, encoding="utf-8").read()
+        t2, c = stamp_datemodified(t, today)
+        if c:
+            open(MILK_PAGE, "w", encoding="utf-8").write(t2)
+        bump_sitemap(today, ["https://agsist.com/milk-prices"])
+    return changed
+
+
 def seed_data_pages(prices, today):
     """Each page fails alone: one bad file never stops the others."""
     ch = False
@@ -1093,7 +1568,8 @@ def seed_data_pages(prices, today):
                      ("conditions", lambda: seed_conditions(today)),
                      ("scorecard", lambda: seed_scorecard(today)),
                      ("basis", lambda: seed_basis(today)),
-                     ("elevators", lambda: seed_elevators(today))):
+                     ("elevators", lambda: seed_elevators(today)),
+                     ("milk", lambda: seed_milk(today))):
         try:
             ch = fn() or ch
         except Exception as e:                        # noqa: BLE001
@@ -1101,14 +1577,14 @@ def seed_data_pages(prices, today):
     return ch
 
 
-def bump_sitemap(today):
+def bump_sitemap(today, urls=None):
     try:
         t = open(SITEMAP, "r", encoding="utf-8").read()
     except FileNotFoundError:
         print("  sitemap.xml not found — skipped")
         return False
     orig = t
-    for url in SITEMAP_URLS:
+    for url in (SITEMAP_URLS if urls is None else urls):
         # match the <url> block for this exact loc, replace its lastmod
         pat = re.compile(
             r"(<loc>" + re.escape(url) + r"</loc>\s*<lastmod>)([^<]*)(</lastmod>)")
@@ -1397,6 +1873,12 @@ def main():
     now = datetime.now(timezone.utc)
     today = now.strftime("%Y-%m-%d")
     print(f"seed_static.py — {now.strftime('%Y-%m-%d %H:%M UTC')}")
+
+    # --only milk: the dairy workflow seeds milk-prices.html right after a
+    # fetch, without touching the price pages it has no business committing
+    if sys.argv[1:] == ["--only", "milk"]:
+        print("CHANGED" if seed_milk(today) else "NO-CHANGE")
+        return
 
     try:
         prices = load_prices()

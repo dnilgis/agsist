@@ -58,6 +58,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
+from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 SITE = "https://agsist.com"
 DATA = "data/atlas"
@@ -1411,6 +1412,10 @@ def county_page(W, f, d, stamp):
                    ("1991–2020 normal; last ten years %s%% of it" % Cl["gs_recent"]["pct_of_normal"]) if get(Cl, "gs_recent", "pct_of_normal") is not None else "1991–2020 normal")
     if ok(Sm):
         S5 += fact("Days with hail 1 inch or larger", f1(Sm["hail_1in_days_per_year"]) + " a year", "reports, %s–%s; a zero is no report, not proof of no hail" % (Sm["from"], Sm["to"]))
+    # The rain STATE page only (scripts/build_county_rain.py): its county pages can come
+    # and go week to week, and this build must not read data/rain.
+    if st in RAIN_STATES:
+        S5 += '<p class="note"><a href="/rain/%s">Rain so far this year in %s, county by county</a></p>' % (rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]))
 
     S6 = "<h2>Land, water and programs</h2>"
     if ok(Wt):

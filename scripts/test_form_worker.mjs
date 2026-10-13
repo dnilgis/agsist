@@ -1,4 +1,5 @@
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// the v5.22 PRF sponsor inquiries (kind prf-sponsor)
 // and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
@@ -485,6 +486,72 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   const one = { 'CF-Connecting-IP': '198.51.100.77' }; const st = [];
   for (let i = 0; i < 11; i++) st.push((await nPost({ email: 'rl' + i + '@farm.com', topic: 'rain-gauge' }, one)).status);
   A(st.slice(0, 10).every(c => c === 200) && st[10] === 429, 'rain-gauge sign-ups share /notice\'s rate limit');
+}
+
+// v5.19: GET /where hands back Cloudflare's town for the request, keeps nothing
+{
+  const where = (cf, h = { Origin: 'https://agsist.com' }) => { const q = new Request('https://x.dev/where', { headers: h }); if (cf) Object.defineProperty(q, 'cf', { value: cf }); return w.fetch(q, env); };
+  const keys = store.size;
+  let q = await where({ country: 'US', city: 'Rice Lake', region: 'Wisconsin', regionCode: 'WI', latitude: '45.50612', longitude: '-91.73822', asn: 7018 });
+  let jj = await q.json();
+  A(q.status === 200 && jj.ok && jj.city === 'Rice Lake' && jj.region_code === 'WI' && jj.lat === 45.51 && jj.lon === -91.74, '/where gives the town, rounded');
+  A(Object.keys(jj).sort().join() === 'city,lat,lon,ok,region,region_code', '/where gives nothing else (no ASN, no IP)');
+  A(q.headers.get('Cache-Control') === 'private, no-store', '/where is never cached');
+  A(q.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', '/where answers agsist.com');
+  A(store.size === keys, '/where stores nothing');
+  jj = await (await where({ country: 'CA', city: 'Winnipeg', latitude: '49.9', longitude: '-97.1' })).json(); A(jj.ok === false && !jj.city, '/where outside the US: ok false');
+  jj = await (await where({ country: 'US', latitude: '45', longitude: '-91' })).json(); A(jj.ok === false, '/where with no city: ok false');
+  jj = await (await where(null)).json(); A(jj.ok === false, '/where with no cf data: ok false');
+  q = await w.fetch(new Request('https://x.dev/where', { method: 'POST', headers: { Origin: 'https://agsist.com' } }), env); A(q.status === 404 || q.status === 405 || q.status === 403, '/where is GET only');
+}
+
+// v5.22: a business asks about sponsoring PRF in its states (prf-sponsor.html)
+{
+  const pk = () => forms().filter(x => x.startsWith('form:prf-sponsor:')).sort();
+  const ASK = { kind: 'prf-sponsor', business: '  Plains Crop Insurance ', name: 'Dana Roe', email: 'Dana@Plains.EXAMPLE',
+    phone: '(785) 555-0100', states: ['ne', 'KS', 'ks'], line: 'PRF and livestock coverage for western Kansas.',
+    website: 'plains.example/prf', message: 'Call after 4.\r\nAsk for Dana.', page: '/prf-sponsor', extra: 'dropped', price: '1' };
+  r = await post(ASK); j = await r.json();
+  A(r.status === 200 && j.ok === true, 'prf-sponsor: stored');
+  A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'prf-sponsor: CORS');
+  const k0 = pk()[0];
+  A(/^form:prf-sponsor:\d{13}:[0-9a-f]{8}$/.test(k0), 'prf-sponsor: key shape ' + k0);
+  let q = JSON.parse(store.get(k0));
+  A(q.kind === 'prf-sponsor' && q.n === 0 && q.business === 'Plains Crop Insurance' && q.email === 'dana@plains.example', 'prf-sponsor: cleaned');
+  A(q.states === 'KS, NE', 'prf-sponsor: states known, once each, A to Z: ' + q.states);
+  A(q.website === 'https://plains.example/prf' && q.message === 'Call after 4.\nAsk for Dana.' && q.phone === '(785) 555-0100', 'prf-sponsor: website, message line breaks, phone');
+  A(!('extra' in q) && !('price' in q), 'prf-sponsor: unknown fields dropped');
+  A(opts.get(k0) && opts.get(k0).expirationTtl === 365 * 24 * 3600, 'prf-sponsor: kept a year');
+  r = await post({ kind: 'prf-sponsor', business: 'Hi Plains Ranch Supply', name: 'Lee', email: 'lee@x.com', states: 'wy' });
+  q = JSON.parse(store.get(pk().find(x => x !== k0)));
+  A(r.status === 200 && q.states === 'WY' && !('phone' in q) && !('message' in q) && !('line' in q) && !('website' in q), 'prf-sponsor: phone, line, website and message optional; states as text');
+  for (const [patch, why] of [[{ business: '' }, 'business required'], [{ name: '' }, 'name required'], [{ email: '' }, 'email required'],
+      [{ email: 'nope' }, 'bad email'], [{ states: [] }, 'no state'], [{ states: '' }, 'empty states'], [{ states: 'HI' }, 'Hawaii is not a PRF page'],
+      [{ states: ['IA', 'XX'] }, 'unknown state'], [{ states: 'Iowa' }, 'state name'], [{ phone: '555-0100' }, 'phone too few digits'],
+      [{ phone: 'call 7855550100' }, 'phone with words'], [{ website: 'javascript:alert(1)' }, 'website scheme'],
+      [{ line: 'x'.repeat(121) }, 'line over 120'], [{ message: 'm'.repeat(1001) }, 'message too long'], [{ business: 'b'.repeat(121) }, 'business too long']]) {
+    const before = pk().length;
+    r = await post(Object.assign({}, ASK, patch));
+    A(r.status === 400 && pk().length === before, 'prf-sponsor rejects ' + why + ' (' + r.status + ')');
+  }
+  const before = pk().length;
+  r = await post(Object.assign({}, ASK, { _gotcha: 'bot' })); A(r.status === 200 && pk().length === before, 'prf-sponsor honeypot: ok, nothing stored');
+  r = await post(ASK, { Origin: 'https://evil.example' }); A(r.status === 403 && pk().length === before, 'prf-sponsor: foreign origin refused');
+  r = await post('business=x', { 'Content-Type': 'application/x-www-form-urlencoded' }); A(r.status === 415, 'prf-sponsor: form body refused');
+  { // the shared limit: 8 posts an hour per address across every kind
+    const ip = { 'CF-Connecting-IP': '198.51.100.88' }; let last = 0;
+    for (let i = 0; i < 9; i++) last = (await post(ASK, ip)).status;
+    A(last === 429, 'prf-sponsor: ninth post from one address in an hour refused');
+  }
+  r = await call('/form-list?token=tok&kind=prf-sponsor'); j = await r.json();
+  A(Array.isArray(j) && j.length === pk().length && j.every(x => x.kind === 'prf-sponsor' && x.key), '/form-list knows prf-sponsor');
+  r = await call('/count?token=tok'); j = await r.json();
+  A(j.forms && j.forms['prf-sponsor'] === pk().length, '/count forms prf-sponsor');
+  // the worker's PRF state list is the site's (data/prf/meta.json)
+  const meta = JSON.parse(fs.readFileSync(path.resolve(path.dirname(src), '..', 'data', 'prf', 'meta.json'), 'utf8'));
+  const wsrc = fs.readFileSync(src, 'utf8');
+  const listed = JSON.parse(wsrc.match(/const PRF_STATES = (\[[^\]]*\])/)[1]);
+  A(JSON.stringify([...listed].sort()) === JSON.stringify(meta.states.map(x => x.st).sort()), 'PRF_STATES matches data/prf/meta.json');
 }
 
 // older routes still answer the same

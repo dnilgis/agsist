@@ -43,6 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
@@ -157,7 +158,8 @@ def page(ctx):
     many = ng > 1
     # ---- recent years: rows are intervals, columns are years
     rec = fx["recent"]
-    yr_head = "".join(f'<th scope="col">{x["year"]}{'<br><span class="prf-th-s">so far</span>' if x.get("open") else ""}</th>' for x in rec)
+    so_far = '<br><span class="prf-th-s">so far</span>'
+    yr_head = "".join(f'<th scope="col">{x["year"]}{so_far if x.get("open") else ""}</th>' for x in rec)
     yr_rows = "".join(f'<tr><th scope="row">{SHORT_IV[i]}</th>{"".join(pct_cell(x["iv"][i]) for x in rec)}</tr>' for i in range(11))
     open_y = next((x for x in rec if x.get("open")), None)
     open_n = sum(1 for v in (open_y["iv"] if open_y else []) if v)
@@ -204,6 +206,10 @@ def page(ctx):
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     nb_html = (" ".join(f'<a href="{h}">{e(n)}</a>' for n, h in nbrs)) if nbrs else ""
     more = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in links)
+    # The rain STATE page only: rain county pages can come and go week to week,
+    # and this build must not read data/rain (it is held to its output by --check).
+    rain = (f'<p class="prf-fine"><a href="/rain/{rain_slug(RAIN_STATES[stc])}">Rain so far this year in {e(RAIN_STATES[stc])}, county by county</a></p>'
+            if stc in RAIN_STATES else "")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": meta["built"][:10], "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
@@ -228,7 +234,7 @@ def page(ctx):
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="stylesheet" href="/components/prf.css?v=5">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>
@@ -295,13 +301,16 @@ def page(ctx):
     </div>
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
+    <p class="prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}">For businesses: <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)}</a></p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
+    {rain}
     <p class="rp-promo" data-rain-print-promo="see" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
   </div>
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=18" defer></script>
+  {S.PRF_SPONSOR_JS}
 </body>
 </html>
 """

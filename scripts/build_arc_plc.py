@@ -1998,7 +1998,7 @@ def hist_table(e, cd=None):
     u = XC.UNIT[cd["unit"]]["short"]
     rows = "".join(
         f'<tr><td>{h["py"]}</td><td class="num">{h["by"]:,.2f}</td><td class="num">{XC.pf(cd, h["bp"]) if h["bp"] else "n/a"}</td>'
-        f'<td class="num">{f"{h["ay"]:.2f}" if h["ay"] is not None else "not yet"}</td>'
+        f'<td class="num">{"not yet" if h["ay"] is None else format(h["ay"], ".2f")}</td>'
         f'<td class="num">{("none" if h["pay"] == 0 else usd(h["pay"])) if h["pay"] is not None else "not yet"}</td></tr>' for h in hist)
     return (f'<h3>FSA history, {esc(ent_label(e).lower())}</h3><div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>'
             f'<th class="num">Benchmark</th><th class="num">Price</th><th class="num">County yield</th><th class="num">ARC-CO $/ac</th></tr></thead>'

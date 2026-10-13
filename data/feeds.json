@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 83,
- "with_known_cadence": 83,
+ "count": 85,
+ "with_known_cadence": 85,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -300,6 +300,7 @@
    "touched_by": [
     "cond-yield",
     "conditions",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch on a fixed schedule at about 8pm Central",
@@ -484,6 +485,7 @@
    ],
    "touched_by": [
     "Fetch Crop Progress",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Feed Manifest"
    ],
@@ -573,6 +575,7 @@
    ],
    "touched_by": [
     "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Feed Manifest"
    ],
    "cadence": "4 launches on a fixed schedule at about 9am, 10am, 4pm Central",
@@ -591,6 +594,26 @@
    "why_quiet": null
   },
   {
+   "path": "data/directory.json",
+   "pages": [
+    "elev-admin.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "cash-bid-pages",
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "published by dnilgis/bids, rebuilt with the elevator roster",
+   "curated": false,
+   "planned": false,
+   "external": true,
+   "url": "https://dnilgis.github.io/bids/data/directory.json",
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and Sig's elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
+  },
+  {
    "path": "data/elevator-counts.json",
    "pages": [
     "index.html",
@@ -601,6 +624,7 @@
    ],
    "touched_by": [
     "cash-bid-pages",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7pm Central",
@@ -649,6 +673,7 @@
    ],
    "touched_by": [
     "Coverage map \u2014 the elevator directory, drawn",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7am Central",
@@ -743,6 +768,7 @@
     "MESH radar hail swaths \u2014 daily"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
     "MESH radar hail swaths \u2014 daily"
@@ -1265,6 +1291,7 @@
     "The wire"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire"
    ],
@@ -1389,6 +1416,7 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Prediction bot \u2014 call and grade"
    ],
@@ -1402,6 +1430,27 @@
     "41 23 * * 1-5"
    ],
    "max_gap_hours": 71.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/prf-sponsors.json",
+   "pages": [
+    "prf-sponsor.html",
+    "prf.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Site forms digest",
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
@@ -1436,7 +1485,8 @@
   {
    "path": "data/prf/meta.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "prf-sponsor.html"
    ],
    "written_by": [
     "prf"
@@ -1590,6 +1640,7 @@
     "ARC/PLC refresh",
     "cash-bid-pages",
     "Generate Daily Briefing",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Build Price Stats (5-year percentile)",
@@ -1636,6 +1687,7 @@
   {
    "path": "data/rain-print.json",
    "pages": [
+    "gifts-for-farmers.html",
     "index.html",
     "rain-print.html"
    ],
@@ -1745,6 +1797,7 @@
   {
    "path": "data/sponsor-slots.json",
    "pages": [
+    "prf-sponsor.html",
     "sponsor.html"
    ],
    "written_by": [],
@@ -1906,6 +1959,7 @@
     "transport"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "transport"
    ],

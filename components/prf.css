@@ -449,3 +449,24 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 .prf.prf-st aside.ag-sponsor-ribbon.ag-sponsor-ribbon { display: flex !important; }
 
 .prf-co-t td a { display: inline-block; padding: 12px 8px; margin: -12px -8px; }
+
+/* PRF state sponsors (2026-10-13; components/prf-sponsor.js, data/prf-sponsors.json).
+   The /prf offer box shows unsold, like the state ribbons (Sig's exception).
+   A sold state's sponsor sits beside the result on /prf, in place of the
+   ribbon on its state page and in place of the one-line offer on its county
+   pages, always labelled Sponsor in ad orange. Never printed. */
+.prf aside.ag-sponsor-ribbon.prf-spon-offer { display: flex !important; margin: 1.6rem 0 1.2rem; }
+#prf-spon { order: 3; margin: 0; }
+#prf-spon[hidden] { display: none !important; }
+.prf-tool.is-nocounty #prf-spon { display: none; }
+.prf-spon .ag-sponsor-copy { flex: 1 1 16rem; }
+.prf-spon .prf-spon-ask { display: block; margin-top: .3rem; font-size: .82rem; }
+.prf-spon a[href] { white-space: normal; text-align: center; text-decoration: none; }
+.prf-spon .prf-spon-tel { white-space: nowrap; }
+/* The second way to ask, beside the button on an unsold offer: a plain link, not a second button (2026-10-13). */
+.ag-sponsor-ribbon a.prf-spon-mail[href] { margin-left: 0; background: transparent; border: 0; box-shadow: none; transform: none; color: var(--text-dim) !important; font-weight: 600; text-decoration: underline; padding: .4rem .3rem; }
+.prf-spon-line { font-size: .85rem; color: var(--text-dim); margin: 1rem 0; }
+.prf-spon-line a { color: var(--brand); }
+.prf-spon-county { font-size: .82rem; padding: .6rem .8rem; }
+.prf-spon-county a[href] { min-height: 40px; }
+@media print { .prf-spon, .prf-spon-offer, .prf-spon-line { display: none !important; } }

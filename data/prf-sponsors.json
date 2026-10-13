@@ -1,0 +1,3 @@
+{
+  "_how": "PRF state sponsors, read by components/prf-sponsor.js on /prf, /prf/<state> and every county page. One entry per state code, e.g. \"IA\": {\"name\": \"Business name\", \"url\": \"https://...\", \"line\": \"One sentence, 120 characters at most.\", \"logo\": \"/img/sponsors/name.webp\", \"through\": \"2026-12-31\"}. logo is optional. The day after through, the state shows its offer again. Checked by test/prf-sponsor.test.mjs."
+}

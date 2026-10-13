@@ -13,6 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="stylesheet" href="/components/cb-signup.css?v=2">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -144,14 +145,16 @@
   <h1>Cash grain bids in Pleasant Hill, IA today</h1>
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Pleasant Hill, IA has a bid we could confirm right now. The nearest ones that do are below.</div>
   
-  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/iowa/des-moines"><b>Innovative Ag Services</b>, Des Moines, IA</a> <span class="cbt-mut">2 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.44 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/des-moines"><b>ADM</b>, Des Moines, IA</a> <span class="cbt-mut">4 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.4525 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/des-moines"><b>Mid-Iowa Cooperative</b>, Des Moines, IA</a> <span class="cbt-mut">6 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.44 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/carlisle"><b>Heartland Co-op</b>, Carlisle, IA</a> <span class="cbt-mut">7 mi &middot; posted Oct 12</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.22 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/mitchellville"><b>Heartland Co-op</b>, Mitchellville, IA</a> <span class="cbt-mut">9 mi &middot; posted Oct 12</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.17 <span class="mut">Nov</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 50327. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
+  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/iowa/des-moines"><b>Innovative Ag Services</b>, Des Moines, IA</a> <span class="cbt-mut">2 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.39 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/des-moines"><b>ADM</b>, Des Moines, IA</a> <span class="cbt-mut">4 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.4375 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/des-moines"><b>Mid-Iowa Cooperative</b>, Des Moines, IA</a> <span class="cbt-mut">6 mi &middot; posted Oct 13</span><br><span class="np">Soybeans $12.44 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/carlisle"><b>Heartland Co-op</b>, Carlisle, IA</a> <span class="cbt-mut">7 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.47 <span class="mut">Nov</span> &middot; Soybeans $12.16 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/mitchellville"><b>Heartland Co-op</b>, Mitchellville, IA</a> <span class="cbt-mut">9 mi &middot; posted Oct 13</span><br><span class="np">Corn $4.47 <span class="mut">Nov</span> &middot; Soybeans $12.11 <span class="mut">Nov</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 50327. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   <a class="cbt-live" href="/cash-bids?zip=50327">Live bids near 50327 &rarr;</a>
   
   
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
-  <div data-signup-ask="Get Pleasant Hill bids by email every weekday morning" data-source="town:iowa/pleasant-hill" data-zip="50327"></div>
+  <div id="bid-email" data-bid-alerts data-place="Pleasant Hill" data-zip="50327" data-source="town:iowa/pleasant-hill"></div>
+  
+  
+  
   <h2>Also in Pleasant Hill, no current bid</h2><ul class="cbt-list"><li>Landus Cooperative: board not confirmed on the latest read, last read Oct 13, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
+  
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
@@ -173,5 +176,6 @@
 </div>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
+<script src="/components/cb-signup.js?v=2" defer></script>
 </body>
 </html>

@@ -47,6 +47,18 @@ PAGES
   cash-bids/_new.txt              (with --print-new) URLs first written this
                                   run, for the IndexNow ping
 
+UNREAD ELEVATORS (2026-10-13)
+  data/directory.json (the bids network's roster) also names elevators it
+  knows but cannot read: status "known", ids known:... (the licensed roster)
+  and reg:... (state and federal warehouse licences). A town page lists the
+  ones in its town under "Also in <town>, bids not read yet", each with a link
+  to /list-your-elevator filled in from the roster, so the elevator can ask to
+  post its own bids. No price, phone or address of theirs is printed. At most
+  KNOWN_MAX per page; the rest are counted with a link to the coverage map.
+  When the roster cannot be read the section is left out and every page is
+  built exactly as before. Styles are inline on that section only, so a town
+  with no unread elevator does not change a byte.
+
 Per-elevator pages were measured and not built: 1,694 places sit in 1,625
 towns (2026-10-07), so an elevator page would repeat its town page almost
 word for word for 96% of elevators.
@@ -61,6 +73,7 @@ Usage:
   python3 scripts/build_cash_bid_pages.py --selftest
 """
 import argparse
+from html import unescape as html_unescape
 import datetime as dt
 import json
 import math
@@ -201,6 +214,58 @@ def tel(p):
     return d if len(d) == 10 else ""
 
 
+def _one_line(v, n):
+    """A plain one-line string of at most n characters, or "" (typed by the elevator)."""
+    if not isinstance(v, str):
+        return ""
+    v = re.sub(r"\s+", " ", re.sub(r"[\x00-\x1f\x7f]+", " ", v)).strip()
+    return v if len(v) <= n else v[:n - 1] + "\u2026"
+
+
+def portal_info(p):
+    """The listing an elevator keeps on agsist.com/post, as the network carries
+    it on its index.json row (`portal`: listingId, name, contactName, hours,
+    harvestHours, note, closedUntil, infoUpdatedAt). None for every other board.
+    Only the fields a town page prints are kept, each one cut to one line."""
+    if not isinstance(p, dict):
+        return None
+    o = {"contact": _one_line(p.get("contactName"), 40), "hours": _one_line(p.get("hours"), 120),
+         "harvest": _one_line(p.get("harvestHours"), 120), "note": _one_line(p.get("note"), 140),
+         "closed_until": parse_ts(p.get("closedUntil")) if isinstance(p.get("closedUntil"), str) else None}
+    return o if any(o.values()) else None
+
+
+def portal_html(pi, snap):
+    """Hours, harvest hours and the note for a portal elevator's section.
+    CLOSED TODAY IS NOT BAKED IN: a static page outlives the day. When the
+    snapshot still has closedUntil ahead, the page carries the time in a hidden
+    line and a few bytes of script show it only while the reader's clock is
+    before it (and hide it again when it passes). Past closedUntil, nothing."""
+    if not pi:
+        return ""
+    out = ""
+    cu = pi.get("closed_until")
+    if cu and snap and cu > snap:
+        iso = cu.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        out += (f'<p class="cbt-closed" data-closed-until="{iso}" hidden style="display:inline-block;margin:4px 0 2px;'
+                'padding:1px 7px;border:1px solid var(--red);border-radius:5px;color:var(--red);font-size:.8rem;'
+                'font-weight:700">Closed today</p>'
+                '<script>(function(e){var u=Date.parse(e.getAttribute("data-closed-until")),n=Date.now();'
+                'if(u>n){e.hidden=false;setTimeout(function(){e.hidden=true},Math.min(u-n,2147483647))}})'
+                '(document.currentScript.previousElementSibling)</script>')
+    lines = []
+    if pi.get("hours"):
+        lines.append(f'<b>Hours</b> {esc(pi["hours"])}')
+    if pi.get("harvest"):
+        lines.append(f'<b>Harvest</b> {esc(pi["harvest"])}')
+    if lines:
+        out += f'<p class="cbt-posted" style="margin:2px 0">{"<br>".join(lines)}</p>'
+    if pi.get("note"):
+        out += (f'<p class="cbt-posted" style="margin:4px 0 6px;color:var(--text);border-left:2px solid var(--gold);'
+                f'padding-left:8px;overflow-wrap:anywhere">{esc(pi["note"])}</p>')
+    return out
+
+
 # ---------------------------------------------------------------- selection
 def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
@@ -247,7 +312,10 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
-            "town": tname, "state": st, "pin": _pin(b)})
+            "town": tname, "state": st, "pin": _pin(b),
+            # hours, contact, note and closed-until of an elevator that posts
+            # its own bids through agsist.com/post; None for every other board
+            "portal": portal_info(src.get("portal"))})
         pt = parse_ts(b.get("pricedAt"))
         if pt and (bd["last_priced"] is None or pt > bd["last_priced"]):
             bd["last_priced"] = pt
@@ -349,6 +417,81 @@ def town_of(b, src, towns_by_state):
         if k:
             hit = known.get(town_key(" ".join(words[k:])))
     return town_name(hit) if hit else None
+
+
+KNOWN_MAX = 6         # unread elevators named on one town page; the rest are counted
+LISTING_PAGE = "/list-your-elevator"
+DIR_ID_RE = re.compile(r'^(known|reg):[^<>"`\\]{1,190}$')   # the worker's and the form's dir_id rule
+OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|"
+                      r"elevator|elevators|farmers)\b")
+TOWN_ALT = {"saint": "st", "mount": "mt", "fort": "ft", "sainte": "ste"}
+
+
+def op_key(name, town=""):
+    """An operator name with the legal and trade words, and the town's own
+    name, taken out: "Bartlett Grain Company- St. Joseph" and "Bartlett Grain
+    Company, LLC" in Saint Joseph are one operator there. For telling an unread
+    roster entry apart from another one, or from a board already on the page."""
+    s = OP_NOISE.sub(" ", (name or "").lower())
+    for w in re.findall(r"[a-z0-9]+", (town or "").lower()):
+        for v in {w, TOWN_ALT.get(w, w)}:
+            s = re.sub(rf"\b{v}\b", " ", s)
+    return re.sub(r"[^a-z0-9]", "", s)
+
+
+def known_by_town(directory, towns_by_state):
+    """{(ST, town slug): [{id, name, town, state}]} for every roster entry the
+    network knows but does not read, placed in a town the same way a board is
+    (town_of on its location). One entry per operator per town; sorted by name."""
+    out = defaultdict(list)
+    seen = set()
+    for e in (directory or {}).get("elevators") or []:
+        if not isinstance(e, dict) or e.get("status") != "known":
+            continue
+        st = (e.get("state") or "").upper()
+        eid = str(e.get("id") or "")
+        name = re.sub(r"\s+", " ", str(e.get("operator") or "")).strip()
+        if st not in STATE_NAMES or not name or not DIR_ID_RE.match(eid):
+            continue
+        tname = town_of({"state": st, "city": e.get("location") or "", "operator": name}, {}, towns_by_state)
+        if not tname:
+            continue
+        tk = (st, url_slug(tname))
+        k = (tk, op_key(name, tname) or name.lower())
+        if k in seen:
+            continue
+        seen.add(k)
+        out[tk].append({"id": eid, "name": name, "town": tname, "state": st})
+    for v in out.values():
+        v.sort(key=lambda x: x["name"].lower())
+    return out
+
+
+def listing_link(e, z=""):
+    """/list-your-elevator with the form filled in from the roster (components/list-elevator.js prefill)."""
+    from urllib.parse import quote
+    q = f"id={quote(e['id'], safe='')}&name={quote(e['name'], safe='')}&town={quote(e['town'], safe='')}&state={e['state']}"
+    if z and re.fullmatch(r"\d{5}", z):
+        q += f"&zip={z}"
+    return f"{LISTING_PAGE}?{q}"
+
+
+def known_section(t, known, z=""):
+    """'Also in <town>, bids not read yet': the roster's unread elevators in
+    this town that are not already a board on the page. '' when there are none."""
+    ops = {op_key(b["operator"], t["name"]) for b in t["boards"].values()} - {""}
+    ks = [e for e in known if op_key(e["name"], t["name"]) not in ops]
+    if not ks:
+        return ""
+    lis = "".join(f'<li>{esc(e["name"])} <a href="{esc(listing_link(e, z))}" style="color:var(--gold);border:0;'
+                  f'font-size:.85rem;white-space:nowrap">Is this your elevator? Post your bids free</a></li>'
+                  for e in ks[:KNOWN_MAX])
+    more = len(ks) - KNOWN_MAX
+    more_html = (f'<li style="color:var(--text-muted)">and {more} more on the '
+                 f'<a href="/elevators#coverage-map">coverage map</a></li>') if more > 0 else ""
+    return (f'<h2>Also in {esc(t["name"])}, bids not read yet</h2>'
+            f'<p class="cbt-sub">AGSIST knows these elevators are here but does not read their bids yet, so no '
+            f'price is shown for them.</p><ul class="cbt-list">{lis}{more_html}</ul>')
 
 
 NEAR_MI = 10          # a place with no town and no usable ZIP goes on a town page this close, or nowhere
@@ -612,14 +755,65 @@ def breadcrumb(items):
 # pages no longer load components/cb-house.js.
 
 
-def page_end(ftr, table=False):
+# The bid email box (components/cb-signup.js): one shared file, loaded once
+# per town page; the page carries only the placeholder tag. Bump ?v= on any
+# change to either file.
+SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
+SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
+
+
+def page_end(ftr, table=False, signup=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}</body>
 </html>
 """
+
+
+def town_zips(zip_towns):
+    """{(ST, normalised town name): [ZIPs]} from geocodes/zip-towns.json, the
+    same table known_towns() reads."""
+    out = defaultdict(list)
+    for zc, v in ((zip_towns or {}).get("zips") or {}).items():
+        if isinstance(v, list) and len(v) == 2 and re.fullmatch(r"\d{5}", str(zc)):
+            out[(v[1], town_key(v[0]))].append(str(zc))
+    return {k: sorted(v) for k, v in out.items()}
+
+
+def box_zip(t, z, ctx):
+    """The ZIP the bid email box sends: the page's own (its boards'), else one
+    of the town's own ZIPs from the ZIP table. With pins and centroids, the one
+    whose centre is nearest the town's elevators, and only within ZIP_PIN_MI of
+    them; without, the lowest. "" when the town has none: no box is drawn."""
+    if z:
+        return z
+    cands = (ctx.get("town_zips") or {}).get((t["state"], town_key(t["name"]))) or []
+    if not cands:
+        return ""
+    zc = ctx.get("zip_coord")
+    pins = [bd["pin"] for bd in t["boards"].values() if bd.get("pin")]
+    if zc and pins:
+        lat, lon = sum(p[0] for p in pins) / len(pins), sum(p[1] for p in pins) / len(pins)
+        best = min(((miles(lat, lon, c[0], c[1]), x) for x in cands for c in [zc(x)] if c), default=None)
+        return best[1] if best and best[0] <= ZIP_PIN_MI else ""
+    return cands[0]
+
+
+def signup_box(t, z, ssl, crops, tops):
+    """The placeholder components/cb-signup.js draws into: "Every morning: the
+    top corn and soybean bids within 50 mi of <town>" (AGSIST Daily with this
+    ZIP) and "Tell me when <crop> within 25 mi pays $__" (the ZIP price
+    alert). Only with a ZIP: both read one. data-top is the page's own top
+    nearest-delivery cash per crop, used as the price field's placeholder."""
+    if not z:
+        return ""
+    cs = " ".join(c for c in CROPS if c in crops)
+    top = " ".join(f"{c}:{tops[c][0]:.2f}" for c in CROPS if c in tops)
+    return (f'<div id="bid-email" data-bid-alerts data-place="{esc(t["name"])}" data-zip="{z}" '
+            f'data-source="town:{ssl}/{t["slug"]}"' + (f' data-crops="{cs}"' if cs else "")
+            + (f' data-top="{top}"' if top else "") + '></div>')
 
 
 def hold_lines(bd):
@@ -780,8 +974,10 @@ def board_section(bd, snap_ct):
     if (hi - lo).total_seconds() > 3600:
         posted = f"{fmt_posted(lo, snap_ct)} to {fmt_posted(hi, snap_ct)}"
     ph = tel(bd["phone"])
-    call = (f'<a href="tel:+1{ph}">call to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
-            else "call to confirm")
+    pi = bd.get("portal")
+    who = f" {esc(pi['contact'])}" if pi and pi.get("contact") else ""
+    call = (f'<a href="tel:+1{ph}">call{who} to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
+            else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
     loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
     trs = []
@@ -806,6 +1002,7 @@ def board_section(bd, snap_ct):
     more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
+            + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
@@ -897,6 +1094,7 @@ def build_town_page(t, ctx):
         quiet_html = (f'<h2>Also in {esc(t["name"])}, no current bid</h2><ul class="cbt-list">'
                       + "".join(quiet_line(b) for b in quiet) + "</ul>"
                       '<p class="cbt-sub">No price is shown for these until their board posts again.</p>')
+    known_html = known_section(t, (ctx.get("known") or {}).get((st, t["slug"]), []), z)
     links = [f'<a href="/cash-bids/{ssl}/">Every {esc(sname)} town</a>',
              f'<a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a>']
     jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb([
@@ -920,6 +1118,20 @@ def build_town_page(t, ctx):
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     hdr, ftr = ctx["chrome"]
+    # The bid email box sits right under the first elevator's table (or under
+    # the intro when no elevator here has a current bid), so a phone reaches it
+    # without scrolling past every board. A town with no ZIP keeps the plain
+    # Daily ask at the bottom: the box's two choices both need a ZIP.
+    box = signup_box(t, box_zip(t, z, ctx), ssl, crops, tops)
+    # one line under the title that jumps to it, when a table sits between
+    first = next((c for c in CROPS if c in crops), "corn")
+    jump = (f'<p class="cbt-jump"><a href="#bid-email" data-bid-alerts-jump>Email me {esc(t["name"])} bids each '
+            f'morning, or when {CROP_LABEL[first].lower()} hits my price</a></p>') if box and secs else ""
+    ask = "" if box else (
+        "<!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->\n"
+        "  <script>try{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')"
+        "document.documentElement.classList.add('sa-subbed')}catch(e){}</script>\n"
+        f'  <div data-signup-ask="Get {esc(t["name"])} bids by email every morning" data-source="town:{ssl}/{t["slug"]}"></div>')
     body = f"""
 <body>
 {hdr}
@@ -930,12 +1142,14 @@ def build_town_page(t, ctx):
   {top_html}
   {'' if indexable else near_html}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
-  {''.join(secs)}
+  {jump}
+  {''.join(secs[:1])}
+  {box}
+  {''.join(secs[1:])}
   {near_html if indexable else ''}
-  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
-  <script>try{{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}}catch(e){{}}</script>
-  <div data-signup-ask="Get {esc(t['name'])} bids by email every weekday morning" data-source="town:{ssl}/{t['slug']}"{f' data-zip="{z}"' if z else ''}></div>
+  {ask}
   {quiet_html}
+  {known_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
@@ -947,7 +1161,12 @@ def build_town_page(t, ctx):
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
             "share": share}
-    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr), meta
+    h = head(title, desc, path, jsonld, indexable, share)
+    if box:
+        sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
+        assert sheet in h, "head() changed shape; update build_town_page()"
+        h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
+    return h + body + page_end(ftr, signup=bool(box)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -1478,9 +1697,11 @@ def write_sitemap(path, entries):
 
 # ---------------------------------------------------------------- build
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None):
+              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
-    go (None = not written). hub: /basis page to bake the state ranking into."""
+    go (None = not written). hub: /basis page to bake the state ranking into.
+    directory: the bids network's data/directory.json, for the unread
+    elevators on each town page (None = that section is left out)."""
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
     if gen is None:
@@ -1520,7 +1741,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                      | boards_st) & set(STATE_NAMES), key=lambda s: STATE_NAMES[s])
     ctx = {"snap_ct": gen.astimezone(CT), "root": root, "chrome": SB.static_chrome(root), "states": states,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
-           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns)}
+           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns),
+           "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -1691,7 +1913,17 @@ def selftest():
         assert "$3.95" in fr and "By Oct 9" in fr and "Nov 2026" in fr and "(2026-12)" not in fr
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
-        assert 'data-signup-ask=' in fr and 'data-zip="68025"' in fr, "a town page asks for an email with its own ZIP"
+        # the bid email box: the town's own ZIP and place, right under the first
+        # elevator's table, its script and sheet once each, and no second ask below
+        assert 'id="bid-email" data-bid-alerts data-place="Fremont" data-zip="68025" data-source="town:nebraska/fremont"' in fr, \
+            "a town page asks for an email with its own ZIP"
+        assert fr.index("</table>") < fr.index('id="bid-email"') < fr.index("Where these come from"), \
+            "the bid email box sits under the first elevator's table"
+        assert re.search(r'data-bid-alerts [^>]*data-top="corn:\d+\.\d\d', fr), "the price field's hint is the page's own top bid"
+        assert fr.count('/components/cb-signup.js?v=') == 1 and fr.count('/components/cb-signup.css?v=') == 1
+        assert "data-signup-ask=" not in fr, "one email ask per town page"
+        assert fr.index('href="#bid-email" data-bid-alerts-jump>Email me Fremont bids each morning, or when corn hits my price') \
+            < fr.index("<table"), "a line near the top jumps to the box"
         assert "cb-house" not in fr and "Sponsor this" not in fr and "ad-slot--open" not in fr, \
             "a town page shows nothing in an unsold sponsor slot: no house ask, no open slot"
         assert "Cash grain bids in Fremont, NE today" in fr
@@ -1810,7 +2042,120 @@ def selftest():
             raise AssertionError("stale snapshot built")
         except SystemExit:
             pass
+    # AN ELEVATOR THAT KEEPS ITS OWN LISTING (agsist.com/post): hours, harvest
+    # hours, contact name and note print escaped; "Closed today" only as a
+    # hidden line the reader's clock shows while closedUntil is ahead; boards
+    # without `portal` print none of it.
+    for closed, want in (("2026-10-08T04:59:59.999Z", True), ("2026-10-07T04:59:59.999Z", False)):
+        pm, pidx = _fixture()
+        for b in pm["bids"]:
+            if b["city"] in PINS:
+                b["lat"], b["lon"] = PINS[b["city"]]
+        for src in pidx["sources"]:
+            if src["id"] == "t-st":
+                src["portal"] = {"listingId": "op-st-hooper-ne", "name": "Op st", "contactName": "Wyatt",
+                                 "hours": "Mon-Fri 7-5, Sat 7-12", "harvestHours": "7am-9pm <b>through</b> Nov 15",
+                                 "note": '<img src=x onerror=alert(1)> Dump closes at 8:30 & "sharp"',
+                                 "closedUntil": closed, "infoUpdatedAt": "2026-10-06T16:00:00Z"}
+        with _tf.TemporaryDirectory() as td:
+            out = os.path.join(td, "cash-bids")
+            build_all(pm, pidx, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
+            ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
+            fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+        assert "<img src=x" not in ho and "<b>through</b>" not in ho, "portal text printed as HTML"
+        assert "&lt;img src=x onerror=alert(1)&gt; Dump closes at 8:30 &amp; &quot;sharp&quot;" in ho
+        assert "<b>Hours</b> Mon-Fri 7-5, Sat 7-12" in ho and "&lt;b&gt;through&lt;/b&gt;" in ho
+        assert "call Wyatt to confirm (402-555-0101)" in ho
+        if want:
+            assert ('<p class="cbt-closed" data-closed-until="2026-10-08T04:59:59Z" hidden' in ho
+                    and "if(u>n){e.hidden=false" in ho), "closed line is hidden and shown only by the clock"
+        else:
+            assert "cbt-closed" not in ho and "Closed today" not in ho, "a past closedUntil prints nothing"
+        for x in ("cbt-closed", "Closed today", "<b>Hours</b>", "Wyatt", "Dump closes"):
+            assert x not in fr, f"portal text on a board without a listing: {x}"
+    assert portal_info(None) is None and portal_info("x") is None and portal_info({"note": "  "}) is None
+    assert portal_info({"note": "a\n<b>" + "x" * 300})["note"] == "a <b>" + "x" * 134 + "\u2026"
+    # the bid email box's ZIP: the page's own, else the town's own ZIP nearest
+    # its elevators (never one far off), else none and no box
+    tz = town_zips({"zips": {"50001": ["Ackworth", "IA"], "50002": ["Ackworth", "IA"], "68025": ["Fremont", "NE"],
+                             "5000x": ["Ackworth", "IA"]}})
+    assert tz == {("IA", "ackworth"): ["50001", "50002"], ("NE", "fremont"): ["68025"]}, tz
+    cent = {"50001": (41.0, -93.0), "50002": (41.40, -93.47)}.get
+    tw = {"state": "IA", "name": "Ackworth", "boards": {"a": {"pin": (41.37, -93.47)}}}
+    assert box_zip(tw, "50999", {"town_zips": tz, "zip_coord": cent}) == "50999"
+    assert box_zip(tw, "", {"town_zips": tz, "zip_coord": cent}) == "50002"
+    assert box_zip(dict(tw, boards={"a": {"pin": (43.0, -96.0)}}), "", {"town_zips": tz, "zip_coord": cent}) == ""
+    assert box_zip(dict(tw, boards={}), "", {"town_zips": tz, "zip_coord": cent}) == "50001"
+    assert box_zip(dict(tw, name="Nowhere"), "", {"town_zips": tz}) == ""
+    assert signup_box(tw, "", "iowa", {"corn"}, {}) == ""
+    _selftest_known()
     print("selftest OK")
+
+
+def _selftest_known():
+    """Unread roster elevators on town pages: placed by town, linked to the
+    request form with the roster's id, escaped, capped, never a board twice,
+    and with no roster every page is byte for byte what it was."""
+    import tempfile as _tf
+    from urllib.parse import parse_qs, urlsplit
+    merged, index = _fixture()
+    ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
+    hostile = 'Sam\'s 12" <b>Co-op</b> & Sons'
+    d = {"elevators": [
+        {"id": "reg:NE|fremontgrain|fremont", "operator": "FREMONT GRAIN CO", "location": "FREMONT", "state": "NE", "status": "known"},
+        {"id": "known:Agrex Inc|Fremont|Fremont|NE", "operator": "Agrex Inc", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "known:Agrex Inc|Agrex-East|Fremont|NE", "operator": "Agrex Inc", "location": "Fremont, NE", "state": "NE", "status": "known"},
+        {"id": "known:9001", "operator": hostile, "location": "Hooper, NE", "state": "NE", "status": "known"},
+        {"id": "known:9002", "operator": "Op n1, Inc.", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "t-n2", "operator": "Read Board", "location": "Fremont", "state": "NE", "status": "read"},
+        {"id": "known:9003", "operator": "Nowhere Feed", "location": "Big River Plant", "state": "NE", "status": "known"},
+        {"id": "known:9004", "operator": "Ontario Grain", "location": "Fremont", "state": "ON", "status": "known"},
+        {"id": "bad:1", "operator": "Bad Id", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "known:9005", "operator": "Ackworth Co", "location": "Ackworth", "state": "IA", "status": "known"},
+    ] + [{"id": f"reg:IA|x{i}|ackworth", "operator": f"Extra Elevator {i}", "location": "ACKWORTH", "state": "IA",
+          "status": "known"} for i in range(KNOWN_MAX + 2)]}
+    kb = known_by_town(d, known_towns(ZT))
+    assert [e["name"] for e in kb[("NE", "fremont")]] == ["Agrex Inc", "FREMONT GRAIN CO", "Op n1, Inc."], kb[("NE", "fremont")]
+    assert kb[("NE", "hooper")][0]["id"] == "known:9001" and len(kb[("IA", "ackworth")]) == KNOWN_MAX + 3
+    assert not any(e["name"] in ("Read Board", "Nowhere Feed", "Ontario Grain", "Bad Id") for v in kb.values() for e in v)
+    assert op_key("Op n1, Inc.") == op_key("Op n1") and op_key("FREMONT GRAIN CO") == "fremont"
+    assert op_key("Bartlett Grain Company- St. Joseph", "Saint Joseph") == op_key("Bartlett Grain Company, LLC", "Saint Joseph")
+    assert op_key("Frenchman Valley Coop", "Pine Bluffs") == op_key("Frenchman Valley Farmers Cooperative, Inc.", "Pine Bluffs")
+    assert op_key("Agrex Inc", "Fremont") != op_key("ADM", "Fremont")
+    with _tf.TemporaryDirectory() as td:
+        out0 = os.path.join(td, "a")
+        build_all(merged, index, ZT, out_dir=out0, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
+        out1 = os.path.join(td, "b")
+        build_all(merged, index, ZT, out_dir=out1, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"),
+                  directory=d)
+        out2 = os.path.join(td, "c")
+        build_all(merged, index, ZT, out_dir=out2, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"),
+                  directory={"elevators": []})
+        rd = lambda o, *p: open(os.path.join(o, *p), encoding="utf-8").read()  # noqa: E731
+        fr, ho, ak = rd(out1, "nebraska", "fremont.html"), rd(out1, "nebraska", "hooper.html"), rd(out1, "iowa", "ackworth.html")
+        assert "Also in Fremont, bids not read yet" in fr and "no price is shown for them" in fr
+        assert "FREMONT GRAIN CO" in fr and fr.count("Agrex Inc") == 1, "one line per operator in a town"
+        assert "Op n1, Inc." not in fr, "a board already on the page is not listed again"
+        links = re.findall(r'<a href="([^"]+)" style="color:var\(--gold\)[^"]*">Is this your elevator\? Post your bids free</a>', fr)
+        assert len(links) == 2, links
+        q = parse_qs(urlsplit(html_unescape(links[1])).query)
+        assert urlsplit(links[1]).path == LISTING_PAGE
+        assert q == {"id": ["reg:NE|fremontgrain|fremont"], "name": ["FREMONT GRAIN CO"], "town": ["Fremont"],
+                     "state": ["NE"], "zip": ["68025"]}, q
+        # escaping: the name in text and in the link
+        assert hostile not in ho and "Sam&#x27;s 12&quot; &lt;b&gt;Co-op&lt;/b&gt; &amp; Sons" in ho, \
+            re.findall(r"Sam.{0,80}", ho)
+        hl = re.findall(r'<a href="(/list-your-elevator\?[^"]+)"', ho)[0]
+        assert "<" not in hl and '"' not in hl and "'" not in hl, hl
+        assert parse_qs(urlsplit(html_unescape(hl)).query)["name"] == [hostile]
+        assert f"and 3 more on the " in ak and ak.count("Is this your elevator?") == KNOWN_MAX
+        assert "Also in Redfield" not in rd(out1, "iowa", "redfield.html")
+        for o in (out1, out2):
+            for dp, _, fs in os.walk(out0):
+                for fn in fs:
+                    rel = os.path.relpath(os.path.join(dp, fn), out0)
+                    if o == out2 or rel not in ("nebraska/fremont.html", "nebraska/hooper.html", "iowa/ackworth.html"):
+                        assert rd(out0, rel) == rd(o, rel), f"{rel} changed with no unread elevator in its town"
 
 
 def zip_centroids(base):
@@ -1854,9 +2199,15 @@ def main():
     prev = None
     if not a.no_wow and gen:
         prev = SB.load_previous(gen, bids_dir=a.bids_dir, prev_file=a.prev_file, allow_remote=not a.bids_dir)
+    try:
+        directory = SB._net_get_json(base, "data/directory.json")
+    except Exception as e:  # noqa: BLE001
+        print(f"[cash-bid-pages] data/directory.json unreadable ({e}); town pages list no unread elevators")
+        directory = None
     metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
-                                      data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE))
+                                      data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
+                                      directory=directory)
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)

@@ -1,0 +1,98 @@
+name: county rain
+
+# /rain, /rain/<state> and /rain/<state>/<county>: rain so far this year in
+# every US county with a NOAA station that reported enough days.
+#   scripts/fetch_county_rain.py  RCC-ACIS, one MultiStnData call per state
+#                                 (plus one for last year) -> data/rain/<st>.json
+#   scripts/build_county_rain.py  the pages and sitemap-rain.xml
+# Both happen here, in one commit: a push made with this workflow's token does
+# not start other workflows, so nothing else would build the pages.
+#
+# Mondays 13:23 UTC (morning in Central), after NOAA's weekend reports are in.
+# Jan 2 fetches the finished year (through Dec 31); every run in January does,
+# so late reports still land. RCC-ACIS cannot be reached from the sandbox this
+# was built in; the first real fetch is a workflow_dispatch on main.
+on:
+  schedule:
+    - cron: "23 13 * * 1"      # Mondays 13:23 UTC
+    - cron: "41 14 2 1 *"      # Jan 2 14:41 UTC, the finished year
+  workflow_dispatch:
+    inputs:
+      states:
+        description: 'Comma-separated state codes (leave empty for every state)'
+        required: false
+        default: ''
+      year:
+        description: 'Year (leave empty: this year, or last year in January)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: county-rain
+  cancel-in-progress: false
+
+jobs:
+  rain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Offline first
+        run: |
+          python scripts/fetch_county_rain.py --selftest
+          python scripts/build_county_rain.py --selftest
+
+      # The script stops itself at 40 minutes (each state is one or two calls,
+      # each call has a timeout and three retries). A state that fails keeps
+      # its published file; whatever did come back is still built below.
+      - name: Fetch
+        id: fetch
+        continue-on-error: true
+        timeout-minutes: 45
+        env:
+          PYTHONUNBUFFERED: "1"
+          STATES: ${{ github.event.inputs.states }}
+          YEAR: ${{ github.event.inputs.year }}
+        run: |
+          set -o pipefail
+          ARGS=""
+          if [ -n "$STATES" ]; then ARGS="$ARGS --states $STATES"; fi
+          if [ -n "$YEAR" ]; then ARGS="$ARGS --year $YEAR"; fi
+          # shellcheck disable=SC2086
+          python scripts/fetch_county_rain.py $ARGS 2>&1 | tee county-rain.log
+
+      - name: Check the data, build the pages, check the budget
+        run: |
+          python scripts/fetch_county_rain.py --check
+          python scripts/build_county_rain.py
+          python scripts/build_county_rain.py --check
+          python scripts/check_seo.py
+          python scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/rain rain rain.html sitemap-rain.xml 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          N=$(ls data/rain/*.json 2>/dev/null | wc -l)
+          git commit -q -m "data: county rain ($N states)"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Say which state failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          grep -E "FAILED|refusing|time cap" county-rain.log || true
+          echo "::warning::A county rain state failed or the run hit its time cap; those states kept their published files. See the Fetch step."

@@ -145,6 +145,8 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-panel-list b{color:var(--text,#e8ede9);font-weight:600}
 .el-panel-list em{font-style:normal;font-size:.76rem;color:var(--text-muted,#6d7671)}
 .el-panel-list .el-more{color:var(--text-muted,#6d7671);font-size:.8rem}
+.el-panel-list li{flex-wrap:wrap}
+.el-panel-list .el-claim{font-size:.76rem;color:var(--gold,#d4a23f);white-space:nowrap}
 .el-panel-prec{margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--border,#2a3230);
   font-size:.78rem;color:var(--text-muted,#6d7671)}
 .el-map-foot{font-size:.78rem;color:var(--text-muted,#6d7671);margin:.55rem 0 0;line-height:1.6;max-width:70ch}
@@ -236,7 +238,7 @@ button,a,[role="button"]{touch-action:manipulation}
       <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
       <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
-        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a><br>
         <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
         <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
       </nav>
@@ -264,7 +266,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
   <h2 class="el-h2" id="coverage-map">Coverage map</h2>
-  <p class="el-map-lede">Every grain elevator AGSIST tracks, across the US plus Ontario. <strong>Green</strong> means we read at least one elevator&rsquo;s own posted board at that spot (click it for the list). <strong>Amber</strong> means we have a reader that did not answer the latest pass. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks. If yours is grey, tell us and it moves up.</p>
+  <p class="el-map-lede">Every grain elevator AGSIST tracks, across the US plus Ontario. <strong>Green</strong> means we read at least one elevator&rsquo;s own posted board at that spot (click it for the list). <strong>Amber</strong> means we have a reader that did not answer the latest pass. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks. If yours is grey, <a href="/list-your-elevator">post your bids yourself, free</a>.</p>
 
   <div class="el-map-wrap">
     <div id="cov-map" role="img" aria-label="Map of grain elevators AGSIST knows about, coloured by whether its bid board is read"></div>
@@ -273,14 +275,14 @@ button,a,[role="button"]{touch-action:manipulation}
   </div>
 
   <div class="el-map-key" id="cov-key">
-    <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read"><!--SEED:elev:cov-n-read-->1,873<!--/SEED--></b> read direct</button>
-    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true" title="We have a reader for these. It did not answer the pass this map was built from, or the board is refusing."><span class="el-dot"></span><b id="cov-n-quiet"><!--SEED:elev:cov-n-quiet-->165<!--/SEED--></b> checking</button>
-    <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known"><!--SEED:elev:cov-n-known-->6,366<!--/SEED--></b> in the queue</button>
+    <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read"><!--SEED:elev:cov-n-read-->1,454<!--/SEED--></b> read direct</button>
+    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true" title="We have a reader for these. It did not answer the pass this map was built from, or the board is refusing."><span class="el-dot"></span><b id="cov-n-quiet"><!--SEED:elev:cov-n-quiet-->601<!--/SEED--></b> checking</button>
+    <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known"><!--SEED:elev:cov-n-known-->6,348<!--/SEED--></b> in the queue</button>
   </div>
 
   <div class="el-map-panel" id="cov-panel" hidden aria-live="polite"></div>
 
-  <p class="el-map-foot" id="cov-foot"><!--SEED:elev:foot-->8,404 elevators tracked. 82 could not be placed on the map and are not drawn. Several share a town centre, so one pin can cover more than one. Click to see what is there. We have readers for 2,038 of them; 1,873 answered the pass this map was built from (2026-10-12 22:00 UTC).<!--/SEED--></p>
+  <p class="el-map-foot" id="cov-foot"><!--SEED:elev:foot-->8,403 elevators tracked. 101 could not be placed on the map and are not drawn. Several share a town centre, so one pin can cover more than one. Click to see what is there. We have readers for 2,055 of them; 1,454 answered the pass this map was built from (2026-10-13 19:19 UTC).<!--/SEED--></p>
 
   <div class="el-thin"><strong>Missing your elevator?</strong> Some smaller independents don&rsquo;t post bids electronically at all, and some we haven&rsquo;t added yet. Either way the form below is the fastest way to get it on the map.</div>
 
@@ -289,8 +291,8 @@ button,a,[role="button"]{touch-action:manipulation}
     <p class="cl-kick">For elevators and co-ops</p>
     <h2 id="cl-h">Run an elevator? Claim your board.</h2>
     <p class="cl-lede">Producers in your area already look up bids here. Claim your listing so what they see is right: your name, your town, your phone and your own board.</p>
-    <p class="cl-net" id="cl-net"><!--SEED:elev:net-->In the read of Oct 12, 2026, 5:00 PM CT, AGSIST read <span class="num">1,873</span> elevator boards direct. <span class="num">165</span> more have a reader that did not answer that pass. It knows <span class="num">6,366</span> more elevators that have no reader yet. <a href="#coverage-map">See the map</a>.<!--/SEED--></p>
-    <p class="cl-net" id="cl-bids"><!--SEED:elev:bids-->On Oct 13, 2026, <span class="num">1,715</span> network elevators had a current bid on our cash bids pages, across <span class="num">1,356</span> towns.<!--/SEED--></p>
+    <p class="cl-net" id="cl-net"><!--SEED:elev:net-->In the read of Oct 13, 2026, 2:19 PM CT, AGSIST read <span class="num">1,454</span> elevator boards direct. <span class="num">601</span> more have a reader that did not answer that pass. It knows <span class="num">6,348</span> more elevators that have no reader yet. <a href="#coverage-map">See the map</a>.<!--/SEED--></p>
+    <p class="cl-net" id="cl-bids"><!--SEED:elev:bids-->On Oct 13, 2026, <span class="num">1,786</span> network elevators had a current bid on our cash bids pages, across <span class="num">1,423</span> towns.<!--/SEED--></p>
     <ul class="cl-pts">
       <li class="cl-pt">
         <p class="cl-pt-k">What you get</p>
@@ -313,6 +315,7 @@ button,a,[role="button"]{touch-action:manipulation}
         <p>Payment never changes bid order or ranking. Bids are shown as you posted them, with the time they were read.</p>
       </li>
     </ul>
+    <p class="cl-soon"><b>Run an elevator? Post your bids free.</b> Post your own bids from your morning bid email or a private link on your phone. <a href="/list-your-elevator">Ask to post your bids</a>.</p>
     <p class="cl-soon">Coming later: a hosted bid board, or an embed for your own website. Tick the box in the form to hear about it.</p>
 
     <form class="cl-form" id="cl-form" novalidate data-track="claim_board">
@@ -460,7 +463,7 @@ button,a,[role="button"]{touch-action:manipulation}
        Same links as components/footer.html (the --check fails if they drift). -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
-    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
@@ -742,12 +745,19 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
       };
       var LABEL = { read: 'read direct', quiet: 'checking', known: 'in the queue' };
 
+      /* A grey elevator can ask to post its own bids: the form on
+         /list-your-elevator, filled in from this pin (name, town, state). */
+      function claimLink(a, st) {
+        var q = 'name=' + encodeURIComponent(a[0] || '') + (a[1] ? '&town=' + encodeURIComponent(a[1]) : '') +
+          (st && /^[A-Z]{2}$/.test(st) ? '&state=' + st : '');
+        return ' <a class="el-claim" href="/list-your-elevator?' + esc(q) + '" data-track="elev_listing_pin">Is this yours? Post your bids free</a>';
+      }
       function show(p) {
         if (!panel) return;
         var rows = p.a.map(function (a) {
           return '<li><span class="el-dot el-dot-' + a[2] + '"></span>' +
                  '<b>' + esc(a[0]) + '</b>' + (a[1] ? ', ' + esc(a[1]) : '') +
-                 ' <em>' + LABEL[a[2]] + '</em></li>';
+                 ' <em>' + LABEL[a[2]] + '</em>' + (a[2] === 'known' ? claimLink(a, p.s) : '') + '</li>';
         }).join('');
         var more = p.n > p.a.length ? '<li class="el-more">and ' + (p.n - p.a.length) + ' more at this point</li>' : '';
         panel.innerHTML = '<div class="el-panel-head">' + p.n + ' elevator' + (p.n === 1 ? '' : 's') +

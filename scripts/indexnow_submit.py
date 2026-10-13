@@ -12,14 +12,18 @@ https://api.indexnow.org/IndexNow in batches of at most 10,000 (the
 protocol's per-request limit). Before 2026-10-09 it read sitemap.xml only,
 so the ~2,800 ARC/PLC pages and the town and atlas pages were never sent.
 
-It does not track which URLs changed since the last run; the daily run sends
-every URL in the sitemaps, as it always has.
+--changed PATH... (2026-10-13): send only the pages behind these changed
+files, and only those the sitemaps list (so a noindex page is never sent).
+A push sends what it changed; the full sitemap goes once a week. Sending all
+11,000 URLs on every push, many times a day, is what IndexNow asks sites not
+to do.
 
 Usage:
     python scripts/indexnow_submit.py
     python scripts/indexnow_submit.py --urls https://agsist.com/foo https://agsist.com/bar
     python scripts/indexnow_submit.py --root /path/to/repo
     python scripts/indexnow_submit.py --dry-run     # list counts, send nothing
+    python scripts/indexnow_submit.py --changed a.html farmland-atlas/iowa/story-county.html
 """
 
 import argparse
@@ -110,6 +114,31 @@ def sitemap_urls(url, repo_root: Path, _seen=None):
     return [u for u in locs if urllib.parse.urlparse(u).hostname == HOST]
 
 
+def url_for_path(path):
+    """The page URL forms a repo file can have: x.html -> /x, a/index.html -> /a/ and /a."""
+    p = str(path).replace("\\", "/").lstrip("./")
+    if not p.endswith(".html"):
+        return []
+    p = p[:-5]
+    if p == "index":
+        return [f"https://{HOST}/"]
+    if p.endswith("/index"):
+        d = p[:-6]
+        return [f"https://{HOST}/{d}/", f"https://{HOST}/{d}"]
+    return [f"https://{HOST}/{p}", f"https://{HOST}/{p}/"]
+
+
+def changed_urls(paths, listed):
+    """Sitemap URLs behind the changed files, in the sitemap's own spelling."""
+    listed = set(listed)
+    out = []
+    for path in paths:
+        hit = next((u for u in url_for_path(path) if u in listed), None)
+        if hit and hit not in out:
+            out.append(hit)
+    return out
+
+
 def fetch_sitemap_urls(repo_root: Path):
     """Every page URL from every sitemap robots.txt lists."""
     urls = []
@@ -169,6 +198,11 @@ def main():
         help="Specific URLs to submit (default: full sitemap)",
     )
     parser.add_argument(
+        "--changed",
+        nargs="*",
+        help="Changed repo files; send only the sitemap URLs behind them",
+    )
+    parser.add_argument(
         "--root",
         default=".",
         help="Repo root containing the IndexNow key file (default: cwd)",
@@ -186,6 +220,11 @@ def main():
 
     if args.urls:
         urls = args.urls
+    elif args.changed is not None:
+        urls = changed_urls(args.changed, fetch_sitemap_urls(root))
+        if not urls:
+            print("[ok] no changed page is in a sitemap; nothing to send")
+            return 0
     else:
         urls = fetch_sitemap_urls(root)
 

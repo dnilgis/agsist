@@ -290,6 +290,9 @@ def selftest():
             "years": {"first": 1951, "last_complete": 2025, "open": {}},
             "dates": {"sales_closing": "2026-12-01", "acreage_reporting": "2026-12-01", "premium_billing": "2027-09-01"},
             "subsidy": {"70": 0.59, "75": 0.59, "80": 0.55, "85": 0.55, "90": 0.51},
+            # the real meta.json carries its sources; the stamp cites them (isBasedOn)
+            "sources": {"adm": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/2027_ADM_YTD.zip",
+                        "index": "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues"},
             "counts": {"grids": 13414, "counties": 3070, "states": 48}}
     ex = {"use": "Grazing", "cbv": 32.8, "premium": 305, "usda": 155, "you": 150, "per_acre": 1.5, "protection": 2952, "years": 75, "paid_years": 44, "ahead_years": 33, "avg": 261}
     facts = {"crop_year": 2027, "built_from": meta["built"], "payback": {"all": {"n": 722380, "p05": 0.78, "mid": 0.87, "p95": 0.89}},
