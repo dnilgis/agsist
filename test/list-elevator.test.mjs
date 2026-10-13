@@ -107,7 +107,8 @@ test("the page: indexable, in the sitemap, structured data, and linked from the 
   assert.match(h, /<link rel="canonical"\s+href="https:\/\/agsist.com\/list-your-elevator">/);
   assert.match(h, /<meta name="robots" content="index, follow/);
   for (const b of h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(b.replace(/<\/?script[^>]*>/g, ""));
-  assert.ok(h.includes('"@type":"FAQPage"') && h.includes('"@type":"BreadcrumbList"'));
+  // the freshness bake re-serializes JSON-LD with spaces, so match the type, not the spacing
+  assert.ok(/"@type":\s*"FAQPage"/.test(h) && /"@type":\s*"BreadcrumbList"/.test(h));
   assert.ok(h.includes("static-nav:header") && h.includes("static-nav:footer"), "site nav and footer");
   assert.ok(h.includes("I run AGSIST"), "Sig's own voice");
   assert.ok(!/—/.test(h.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes in the copy");
