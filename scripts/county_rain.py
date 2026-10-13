@@ -352,9 +352,15 @@ def same_date_last_year(as_of):
     return dt.date(y, d.month, day).isoformat()
 
 
-def last_year_total(vals, sdate, as_of_last):
-    """Total for last year, Jan 1 through as_of_last, from that year's values
-    (which start at sdate). None unless at least MIN_SHARE of those days reported."""
+def last_year_total(vals, sdate, as_of_last, this=None):
+    """Last year, Jan 1 through as_of_last, from that year's values (which
+    start at sdate). None unless at least MIN_SHARE of those days reported.
+
+    this: {"MM-DD": this year's raw value} for this year's days through its
+    as-of date. With it, "both" counts the days reported in BOTH years, and
+    this_both / last_both are each year's rain on just those days: a day one
+    year missed adds nothing to either side, so the gaps cannot make one year
+    look wetter than the other."""
     n = (dt.date.fromisoformat(as_of_last) - dt.date.fromisoformat(sdate)).days + 1
     vals = list(vals[:n])
     if len(vals) < n:
@@ -363,7 +369,17 @@ def last_year_total(vals, sdate, as_of_last):
     rep = sum(1 for v in parsed if v is not None)
     if rep < MIN_SHARE * n:
         return None
-    return {"total": round(sum(v for v in parsed if v is not None), 2), "reported": rep, "days": n, "through": as_of_last}
+    out = {"total": round(sum(v for v in parsed if v is not None), 2), "reported": rep, "days": n, "through": as_of_last}
+    if this is not None:
+        both = tb = lb = 0
+        for d, v in zip(days_of(0, sdate, n), parsed):
+            t = parse_pcpn(this.get(d[5:], "M"))[0]
+            if v is not None and t is not None:
+                both += 1
+                tb += t
+                lb += v
+        out.update({"both": both, "this_both": round(tb, 2), "last_both": round(lb, 2)})
+    return out
 
 
 def rank_key(cand):

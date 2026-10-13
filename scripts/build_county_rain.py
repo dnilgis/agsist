@@ -110,6 +110,24 @@ def answer(c, county, year):
             + compare(c))
 
 
+def days_word(n):
+    return f"{n} {'day' if n == 1 else 'days'}"
+
+
+def last_year_words(c, L, year):
+    """This year against last, on the days BOTH years reported, so a day one
+    year missed cannot read as rain the other year had. '' when the data file
+    does not say which days those were."""
+    if "both" not in L:
+        return ""
+    d2 = L["this_both"] - L["last_both"]
+    every = L["both"] == L["days"] == c["days"]
+    pre = "" if every else f"On the {L['both']} days both years reported, "
+    tail = "about the same" if abs(d2) < 0.05 else f"{inches_word(abs(d2), 1)} {'more' if d2 > 0 else 'less'}"
+    out = f"{pre}{year} had {tail}."
+    return out[0].upper() + out[1:]
+
+
 def rain_print_href(c, st, year):
     town = R.station_town(c["station"]["raw"])
     place = f"{town[:32 - len(st) - 2].rstrip()}, {st}"   # shorten the town, never the state
@@ -296,11 +314,14 @@ def county_page(ctx):
                      + (", still going on the last day reported" if still else "") + ".</li>")
     if c.get("last"):
         L = c["last"]
-        d2 = c["total"] - L["total"]
-        facts.append(f"<li><b>{year - 1}{', the whole year' if done else ' by the same date'}:</b> {inches_word(L['total'])} at the same station, "
-                     + (f"so {year} is {inches_word(abs(d2), 1)} {'ahead' if d2 > 0 else 'behind'}." if abs(d2) >= 0.05 else f"about the same as {year}.") + "</li>")
+        lmiss = L["days"] - L["reported"]
+        vs = last_year_words(c, L, year)
+        facts.append(f"<li><b>{year - 1}{', the whole year' if done else ' by the same date'}:</b> {inches_word(L['total'])} at the same station"
+                     + (f" (it missed {days_word(lmiss)})" if lmiss else "") + "." + (" " + vs if vs else "") + "</li>")
         faq.append((f"How does {year} compare with {year - 1} in {name}?",
-                    f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1} and {inches_word(c['total'])} in {year}."))
+                    f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1}"
+                    + (f" ({year - 1} missed {days_word(lmiss)})" if lmiss else "") + f" and {inches_word(c['total'])} in {year}"
+                    + (f" ({year} missed {days_word(c['missing'])})" if c["missing"] else "") + "." + (" " + vs if vs else "")))
     if c["acc"] or c["unsplit"]:
         facts.append(f"<li>On {c['acc']} {'report' if c['acc'] == 1 else 'reports'} the observer read the gauge after more than one day. "
                      "That rain counts on the day it was read, so it is in the totals but not split by day.</li>")
@@ -652,6 +673,13 @@ def selftest():
         lg = urllib.parse.parse_qs(rain_print_href({"station": {"raw": "SOUTH SAINT FRANCISVILLE HEIGHTS CROSSROADS", "sid": "1 2"}}, "KS", 2026)[12:])["place"][0]
         ok(lg.endswith(", KS") and len(lg) <= 32, f"a long town is shortened, the state kept: {lg!r}")
         ok("See the whole year on a print you can hang" in story, "Rain Print CTA")
+        # last year with 28 June days missing: the difference is counted on the days both years reported
+        c0 = dict(c, total=28.5, days=285, reported=285, missing=0,
+                  last={"total": 25.7, "reported": 257, "days": 285, "through": "2025-10-12", "both": 257, "this_both": 25.7, "last_both": 25.7})
+        lyh = county_page({"c": c0, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        lyw = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", lyh, flags=re.S))
+        ok(not re.search(r"2\.8 inches|\bahead\b|\bbehind\b", lyw), "last year's gaps are not counted as rain this year had")
+        ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same." in lyw, "last year's gaps said, and the comparison on common days")
         ok("ship in January" in story, "this year's prints ship in January")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")
         ok("As of Oct 12, 2026" in story, "as-of date shown")

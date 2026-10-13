@@ -194,7 +194,7 @@ def build_state(src, st, year, edate, C, fetched):
         summ, why = R.summarize(year, dates, vals, norms, edate)
         lon, lat = meta["ll"][0], meta["ll"][1]
         c = mine[fips]
-        cand = {"meta": meta, "summary": summ, "why": why, "mi": R.miles(c["lat"], c["lon"], lat, lon)}
+        cand = {"meta": meta, "summary": summ, "why": why, "mi": R.miles(c["lat"], c["lon"], lat, lon), "vals": vals}
         cands.setdefault(fips, []).append(cand)
     picked, none = {}, {}
     for fips, c in sorted(mine.items()):
@@ -217,7 +217,9 @@ def build_state(src, st, year, edate, C, fetched):
             vals = [R.row_values(r)[0] if R.row_values(r) else "M" for r in (s.get("data") or [])]
             for f, x in picked.items():
                 if x["meta"]["sids"][0] in ss:
-                    last[f] = R.last_year_total(vals, f"{int(year) - 1}-01-01", R.same_date_last_year(x["summary"]["as_of"]))
+                    k = dates.index(x["summary"]["as_of"]) + 1
+                    this = {d[5:]: v for d, v in zip(dates[:k], x["vals"][:k])}
+                    last[f] = R.last_year_total(vals, f"{int(year) - 1}-01-01", R.same_date_last_year(x["summary"]["as_of"]), this)
     out = {}
     for fips, x in sorted(picked.items()):
         m, s = x["meta"], x["summary"]
@@ -394,6 +396,16 @@ def selftest():
     lt = R.last_year_total(["0.10"] * 59, "2023-01-01", "2023-02-28")
     ok(lt and lt["total"] == 5.9 and lt["days"] == 59, f"last year to the same date: {lt}")
     ok(R.last_year_total(["0.10"] * 40, "2023-01-01", "2023-02-28") is None, "last year with too few days: withheld")
+    # last year missed 28 June days: compared only on the days both years reported
+    ty = R.days_of(2026, "2026-01-01", 285)
+    this = {d[5:]: "0.10" for d in ty}
+    lv = ["0.10" if not d[5:].startswith("06-") or d[8:] > "28" else "M" for d in R.days_of(2025, "2025-01-01", 285)]
+    lt = R.last_year_total(lv, "2025-01-01", "2025-10-12", this)
+    ok(lt and lt["reported"] == 257 and lt["both"] == 257 and lt["this_both"] == lt["last_both"] == 25.7,
+       f"last year's gaps are left out of this year's side too: {lt}")
+    this["03-03"] = "M"
+    lt = R.last_year_total(lv, "2025-01-01", "2025-10-12", this)
+    ok(lt and lt["both"] == 256 and lt["last_both"] == 25.6, f"this year's gaps are left out of last year's side: {lt}")
     ok(R.station_name("AMES 8 WSW") == "Ames, 8 mi WSW", "station name plain words")
     ok(R.station_where("AMES 8 WSW") == "8 miles west-southwest of Ames", R.station_where("AMES 8 WSW"))
     ok(R.station_town("DES MOINES INTL AP") == "Des Moines", "town of an airport station")
