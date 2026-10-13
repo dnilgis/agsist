@@ -5,7 +5,7 @@
   "print12x18": 45,
   "framed12x18": 89,
   "payment_links": {
-    "digital": null,
+    "digital": "https://buy.stripe.com/7sYeVd7BR1rn23Vapg1wY09",
     "print12x18": "https://buy.stripe.com/14A7sLcWb5HDaAr1SK1wY07",
     "framed12x18": "https://buy.stripe.com/eVq7sLbS76LH4c3cxo1wY06"
   },
