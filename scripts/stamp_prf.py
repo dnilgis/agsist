@@ -190,7 +190,7 @@ def faq_pairs(page):
     return [(text_of(q), text_of(a)) for q, a in pairs]
 
 
-def jsonld(page, v):
+def jsonld(page, v, meta=None):
     desc = DESC.format(y0=v["y0"], cy=v["crop_year"])
     blocks = [
         {"@context": "https://schema.org", "@type": "WebApplication", "@id": URL + "#app",
@@ -198,7 +198,7 @@ def jsonld(page, v):
          "applicationCategory": "FinanceApplication", "operatingSystem": "Any",
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "isAccessibleForFree": True, "description": desc,
          "dateModified": v["_built"], "inLanguage": "en-US",
-         "author": {"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about"},
+         "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}},
         {"@context": "https://schema.org", "@type": "FAQPage",
          "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
@@ -208,6 +208,20 @@ def jsonld(page, v):
             {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"},
             {"@type": "ListItem", "position": 3, "name": "PRF rainfall insurance", "item": URL}]},
     ]
+    if meta:
+        # the data behind the page, as a schema.org Dataset: USDA's files, public domain
+        blocks.append({"@context": "https://schema.org", "@type": "Dataset",
+                       "name": f"PRF premium rates, county base values and rainfall index history, crop year {meta['crop_year']}",
+                       "description": (f"USDA RMA's Pasture, Rangeland, Forage rainfall index insurance for crop year {meta['crop_year']}: premium rates, "
+                                       f"county base values and interval limits for {meta['counts']['counties']:,} counties, and the precipitation index "
+                                       f"for {meta['counts']['grids']:,} grids from {meta['years']['first']} to {meta['years']['last_complete']}."),
+                       "url": URL, "temporalCoverage": f"{meta['years']['first']}/{meta['years']['last_complete']}",
+                       "spatialCoverage": {"@type": "Place", "name": "48 contiguous United States"},
+                       "dateModified": v["_built"], "isAccessibleForFree": True, "license": "https://www.usa.gov/government-works",
+                       "creator": {"@type": "Organization", "name": "USDA Risk Management Agency", "url": "https://www.rma.usda.gov/"},
+                       "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
+                       "isBasedOn": [meta["sources"]["adm"], meta["sources"]["index"]],
+                       "variableMeasured": ["premium rate", "county base value per acre", "precipitation index"]})
     return "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>"
                    for b in blocks)
 
@@ -258,7 +272,7 @@ def stamp(page, meta, chk, facts):
     if n != 1:
         raise ValueError("expected one <title>")
     page, n = re.subn(r"<!-- prf:jsonld -->.*?<!-- /prf:jsonld -->",
-                      lambda m: "<!-- prf:jsonld -->" + jsonld(page, v) + "<!-- /prf:jsonld -->", page, flags=re.S)
+                      lambda m: "<!-- prf:jsonld -->" + jsonld(page, v, meta) + "<!-- /prf:jsonld -->", page, flags=re.S)
     if n != 1:
         raise ValueError("expected one <!-- prf:jsonld --> block")
     return page

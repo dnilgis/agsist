@@ -5,6 +5,57 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.16 (2026-10-13): RAIN PRINT GIFT CARDS. New routes only; every existing
+ *   route answers exactly as before. No new binding and no new secret: the
+ *   records live in the SUBS KV, signed with UNSUB_SECRET, and Sig's routes
+ *   take LIST_TOKEN. A card is only issued after the giver has paid.
+ *   Code: RP-XXXX-XXXX-XXXX, 11 random Crockford base32 characters (0-9 A-Z
+ *     without I L O U, from crypto.getRandomValues) and a mod-37 check
+ *     character (a draw needing one of the 5 symbols past V is thrown away, so
+ *     the card shows letters and digits only). Typed any case, spaces and
+ *     dashes ignored, I L read as 1, O as 0. No expiry.
+ *   Stored as rpg:<hmac16("rp-gift|" + CODE)> (never the code itself) =
+ *     {v, kind open|locked, product, status issued|pending|redeemed|void,
+ *     issued_ts, no, last4, order_ref, giver {name, email}, to, from_line,
+ *     message (240), lock null|{design_code, edit none|name}, ships
+ *     now|january, redeemed_ts, redeem_key, form_key, void_reason, void_ts,
+ *     replaces, replaced_by}. Indexes rpg-ref:<order_ref> and
+ *     rpg-by:<hmac16("rp-gift-by|" + email)> list record keys; rpg-n counts
+ *     cards for "No. 0007".
+ *   POST /rp-gift/issue   Sig only: "Authorization: Bearer <LIST_TOKEN>"
+ *     (?token= is refused on these routes). JSON {product, order_ref, kind,
+ *     giver {name, email}, to, from_line, message, lock {design_code, edit},
+ *     ships, already_redeemed}. Answers {code, card_url, no, last4, key};
+ *     card_url = https://agsist.com/rp-gift?c=CODE&k=hmac16("rp-gift-card|"
+ *     + CODE). A locked card for this year or later ships "january" unless
+ *     ships is given.
+ *   POST /rp-gift/void    Sig only. {code | key, reason, force, reissue}.
+ *     A used card needs force:true. reissue:true issues a new code with the
+ *     same giver, words and order (lost codes) and answers its card_url.
+ *   GET  /rp-gift/find?order_ref= | ?email=   Sig only. The cards on file
+ *     (last4, status, dates), never a code.
+ *   GET  /rp-gift/card?c=&k=   the printable card's fields, message included;
+ *     404 without the right k. no-store.
+ *   POST /rp-gift/check {code}   public: publicGate, 1 KB, RATE 20 an hour,
+ *     60 a day, 1000 for everyone a day, and 10 unknown codes an hour per
+ *     address per isolate (then 429 for every code). Answers kind, product,
+ *     to, from_line, lock, ships, status, redeemed_on; never the giver's email
+ *     or message.
+ *   POST /rp-gift/redeem   public: publicGate, 8 KB, RATE 5 / 10 / 100, the
+ *     same miss cap. {code, choice, name, email, address, notes, design_url,
+ *     design_code}, checked by the rain-print-order rules. A locked card takes
+ *     only its design (edit "name": the name line may differ). Single use:
+ *     status pending with a fresh redeem_key, read back, then a normal
+ *     form:rain-print-order post with gift_card "RP-...-X2F4 (No. 7)",
+ *     gift_card_paid, gift_card_order, gift_card_from (gift_card_upgrade when
+ *     the choice is above what was paid; gift_january for a January card),
+ *     so the hourly digest mails Sig, then status redeemed. Each redeem also
+ *     writes rpg-used:<record id>:<ts>:<key>; a second one sets
+ *     gift_card_twice "yes" on the order. 409 when used
+ *     ("This card was used on Dec 28, 2026."), 410 when void. KV has no
+ *     compare-and-swap: two redeems at different edges inside about a minute
+ *     could both pass; the digest flags the same card twice and Sig honours
+ *     the first. A redeem that dies while pending frees the card after 2 min.
  * v5.15 (2026-10-13): /rp-short also takes a v2 Rain Print design code
  *   ("2|place|station|year|LPCSX|name[|day|label]...[|dedication]": the style
  *   and two switches in a fifth key letter, an optional dedication last). v1
@@ -303,7 +354,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.16): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -403,7 +454,8 @@ function oneLine(v, max) {
 // from an AGSIST page: the Origin check alone stops the cross-site post.
 const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/watch-subscribe",
   "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form",
-  "/rp-short"]);   // v5.14
+  "/rp-short",   // v5.14
+  "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -425,6 +477,9 @@ const RATE = {
   // v5.14: new Rain Print short links only (a repeat of a known code is free).
   // No mail; the daily total bounds KV writes (two per new id).
   "/rp-short": [60, 200, 600],
+  // v5.16: gift cards. Every check counts (hit or miss): 20 an hour, 60 a day
+  // per address, so walking 2^55 codes is hopeless; redeem is rarer still.
+  "/rp-gift/check": [20, 60, 1000], "/rp-gift/redeem": [5, 10, 100],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -806,6 +861,157 @@ function rpsMemMiss(req) {
   if (!req.headers.get("CF-Connecting-IP")) return;
   const k = rpsMemKey(req, "miss");
   RPS_MEM.set(k, (RPS_MEM.get(k) || 0) + 1);
+}
+
+// v5.16: RAIN PRINT GIFT CARDS. A card is a code RP-XXXX-XXXX-XXXX: 11
+// characters from crypto.getRandomValues in Crockford base32 (0-9 A-Z without
+// I L O U), then one check character, the 11 read as a base-32 number mod 37
+// (Crockford's check, which catches any one wrong character and any two
+// neighbours swapped). The 5 check values past V (* ~ $ = U) are never made:
+// a draw that would need one is thrown away and drawn again, so every
+// character on a card is a plain letter or digit (54.8 random bits). The
+// code is never stored: the record is rpg:<hmac16("rp-gift|" + CODE)>, so a
+// KV listing gives nothing a stranger could type.
+const RPG_RE = /^[0-9A-HJKMNP-TV-Z]{12}$/;
+const RPG_KEY_RE = /^rpg:[0-9a-f]{16}$/;
+const RPG_REF_RE = /^[A-Za-z0-9][A-Za-z0-9-]{0,39}$/;
+const RPG_RANK = { digital: 0, print12x18: 1, framed12x18: 2 };
+const RPG_MAX_BYTES = 1024, RPG_REDEEM_MAX_BYTES = 8 * 1024, RPG_ADMIN_MAX_BYTES = 8 * 1024;
+const RPG_PENDING_MS = 120e3;   // a redeem that died half way frees the card after 2 minutes
+const RPG_MEM_MISS = 10;        // unknown codes per address an hour, per isolate, then 429
+const RPG_SITE = "https://agsist.com";
+function rpgCheck(body) {
+  let m = 0;
+  for (const ch of body) m = (m * 32 + RPS_B32.indexOf(ch)) % 37;
+  return m;
+}
+function rpgFormat(s) { return "RP-" + s.slice(0, 4) + "-" + s.slice(4, 8) + "-" + s.slice(8, 12); }
+function rpgNew() {
+  for (;;) {
+    const body = [...crypto.getRandomValues(new Uint8Array(11))].map(b => RPS_B32[b & 31]).join("");
+    const c = rpgCheck(body);
+    if (c < 32) return rpgFormat(body + RPS_B32[c]);
+  }
+}
+// Forgiving input: any case, spaces, dashes and dots ignored, the RP in front
+// optional, I and L read as 1, O as 0. Answers the code as printed, or "".
+function rpgNorm(v) {
+  let s = String(v == null ? "" : v).toUpperCase().replace(/[\s._\u2010-\u2015-]/g, "")
+    .replace(/[IL]/g, "1").replace(/O/g, "0");
+  if (s.length === 14 && s.startsWith("RP")) s = s.slice(2);
+  if (!RPG_RE.test(s) || rpgCheck(s.slice(0, 11)) !== RPS_B32.indexOf(s[11])) return "";
+  return rpgFormat(s);
+}
+async function rpgKey(env, code) { return "rpg:" + await hmac16("rp-gift|" + code, env.UNSUB_SECRET); }
+async function rpgCardK(env, code) { return hmac16("rp-gift-card|" + code, env.UNSUB_SECRET); }
+function rpgMemKey(req) { return rpsMemKey(req, "gmiss"); }
+function rpgMemOk(req) {
+  if (!req.headers.get("CF-Connecting-IP")) return true;
+  if (RPS_MEM.size > 5000) RPS_MEM.clear();
+  return (RPS_MEM.get(rpgMemKey(req)) || 0) < RPG_MEM_MISS;
+}
+function rpgMemMiss(req) {
+  if (!req.headers.get("CF-Connecting-IP")) return;
+  const k = rpgMemKey(req);
+  RPS_MEM.set(k, (RPS_MEM.get(k) || 0) + 1);
+}
+// The fields of a design code ("2|place|station|year|keys|name|..."), or null.
+function rpgFields(code) {
+  code = String(code || "").replace(/^GIFT-/, "");
+  if (!rpsCodeOk(code)) return null;
+  let b = code.replace(/-/g, "+").replace(/_/g, "/");
+  while (b.length % 4) b += "=";
+  const bin = atob(b), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes).split("|");
+}
+// A locked card takes only its own design; with edit "name" the name line
+// (field 5) may differ and nothing else.
+function rpgLockOk(lock, code) {
+  const a = rpgFields(lock.design_code), b = rpgFields(code);
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i] && !(i === 5 && lock.edit === "name")) return false;
+  return true;
+}
+function rpgDay(ts) {
+  return ts ? new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/Chicago" }) : null;
+}
+function rpgYearNow() { return Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric" }).format(new Date())); }
+function rpgText(v, max) {
+  return String(v == null ? "" : v).replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u2028\u2029]/g, " ")
+    .replace(/\n{3,}/g, "\n\n").trim().slice(0, max);
+}
+// What a stranger with the code may see: never the giver's email or message.
+function rpgPublic(r) {
+  return { kind: r.kind, product: r.product, to: r.to || "", from_line: r.from_line || "",
+    lock: r.lock ? { design_code: r.lock.design_code, edit: r.lock.edit } : null, ships: r.ships,
+    status: r.status === "pending" && Date.now() - (r.pending_ts || 0) > RPG_PENDING_MS ? "issued" : r.status,
+    redeemed_on: r.status === "redeemed" ? rpgDay(r.redeemed_ts) : null };
+}
+// Sig's issue body -> the record's fields, or {error}.
+function rpgIssueClean(b) {
+  const product = String(b.product || "");
+  if (!RP_CHOICES.includes(product)) return { error: "product must be one of " + RP_CHOICES.join(", ") };
+  const order_ref = String(b.order_ref == null ? "" : b.order_ref).trim();
+  if (!RPG_REF_RE.test(order_ref)) return { error: "order_ref is required (letters, digits, dashes; 40 at most)" };
+  const g = b.giver && typeof b.giver === "object" ? b.giver : {};
+  const email = String(g.email == null ? "" : g.email).trim().toLowerCase();
+  if (email && !EMAIL_RE.test(email)) return { error: "invalid giver email" };
+  const kind = b.lock ? "locked" : String(b.kind || "open");
+  if (kind !== "open" && kind !== "locked") return { error: "kind must be open or locked" };
+  let lock = null, year = 0;
+  if (kind === "locked") {
+    const l = b.lock && typeof b.lock === "object" ? b.lock : {};
+    const dc = String(l.design_code || "").replace(/^GIFT-/, "");
+    const f = rpgFields(dc);
+    if (!f) return { error: "a locked card needs lock.design_code, a Rain Print design code" };
+    const edit = String(l.edit || "none");
+    if (edit !== "none" && edit !== "name") return { error: "lock.edit must be none or name" };
+    lock = { design_code: dc, edit };
+    year = Number(f[3]);
+  }
+  let ships = b.ships == null || b.ships === "" ? (lock && year >= rpgYearNow() ? "january" : "now") : String(b.ships);
+  if (ships !== "now" && ships !== "january") return { error: "ships must be now or january" };
+  return { rec: { kind, product, order_ref, giver: { name: oneLine(g.name, 80), email },
+    to: oneLine(b.to, 80), from_line: oneLine(b.from_line, 80), message: rpgText(b.message, 240), lock, ships } };
+}
+async function rpgBody(req, max) {
+  if (Number(req.headers.get("Content-Length") || 0) > max) return { status: 413, error: "too large" };
+  let raw = "";
+  try { raw = await req.text(); } catch (e) { raw = ""; }
+  if (raw.length > max) return { status: 413, error: "too large" };
+  let b = null;
+  try { b = JSON.parse(raw); } catch (e) { b = null; }
+  if (!b || typeof b !== "object" || Array.isArray(b)) return { status: 400, error: "bad json" };
+  return { b };
+}
+async function rpgIndex(env, k, recKey) {
+  let a = [];
+  try { a = JSON.parse(await env.SUBS.get(k)) || []; } catch (e) { a = []; }
+  if (!Array.isArray(a)) a = [];
+  if (!a.includes(recKey)) a.push(recKey);
+  await env.SUBS.put(k, JSON.stringify(a.slice(-50)));
+}
+// Writes a new card. Sig only (the caller has checked the token).
+async function rpgIssue(env, f, extra) {
+  let code = "", key = "";
+  for (let i = 0; i < 5 && !code; i++) {
+    const c = rpgNew(), k = await rpgKey(env, c);
+    if ((await env.SUBS.get(k)) === null) { code = c; key = k; }
+  }
+  if (!code) return null;
+  const no = (Number(await env.SUBS.get("rpg-n")) || 0) + 1;   // Sig alone issues, one at a time
+  await env.SUBS.put("rpg-n", String(no));
+  const now = Date.now(), last4 = code.slice(-4);
+  const rec = Object.assign({ v: 1 }, f, { status: "issued", issued_ts: now, no, last4,
+    redeemed_ts: null, redeem_key: null, void_reason: null }, extra || {});
+  if (rec.status === "redeemed") rec.redeemed_ts = now;
+  await env.SUBS.put(key, JSON.stringify(rec));
+  await rpgIndex(env, "rpg-ref:" + f.order_ref, key);
+  if (f.giver.email) await rpgIndex(env, "rpg-by:" + await hmac16("rp-gift-by|" + f.giver.email, env.UNSUB_SECRET), key);
+  const k = await rpgCardK(env, code);
+  return { ok: true, code, no, last4, key, status: rec.status, ships: rec.ships,
+    card_url: RPG_SITE + "/rp-gift?c=" + code + "&k=" + k };
 }
 
 // v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code and the portal link's
@@ -1773,6 +1979,159 @@ async function handle(req, env) {
         return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "no-store" }, c));
       }
       return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=604800, immutable" }, c));
+    }
+
+    // ---------- v5.16: Rain Print gift cards ----------
+    // Sig only: issue, void (and reissue), find. The token must come as
+    // "Authorization: Bearer"; ?token= is refused here so it never sits in a URL.
+    const sig = !!bearer && authed;
+    const ac = cors(req);   // the admin page on agsist.com reads these answers
+    if (path === "/rp-gift/issue" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
+      const v = rpgIssueClean(p.b);
+      if (v.error) return json({ ok: false, error: v.error }, 400, ac);
+      // already_redeemed: the giver gave the address at purchase; the card only announces it.
+      const out = await rpgIssue(env, v.rec, p.b.already_redeemed === true ? { status: "redeemed" } : null);
+      if (!out) return json({ ok: false, error: "no free code; try again" }, 500, ac);
+      return json(out, 200, ac);
+    }
+
+    if (path === "/rp-gift/void" && req.method === "POST") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const p = await rpgBody(req, RPG_ADMIN_MAX_BYTES);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
+      const b = p.b;
+      let key = "";
+      if (b.code) { const c = rpgNorm(b.code); if (c) key = await rpgKey(env, c); }
+      else if (typeof b.key === "string" && RPG_KEY_RE.test(b.key)) key = b.key;
+      if (!key) return json({ ok: false, error: "give code or key" }, 400, ac);
+      let rec = null;
+      try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
+      if (!rec) return json({ ok: false, error: "no such card" }, 404, ac);
+      if (rec.status === "void") return json({ ok: false, error: "already void", last4: rec.last4 }, 409, ac);
+      if (rec.status === "redeemed" && b.force !== true)
+        return json({ ok: false, error: "this card was used on " + rpgDay(rec.redeemed_ts) + "; send force:true to void it anyway", last4: rec.last4 }, 409, ac);
+      rec.status = "void"; rec.void_ts = Date.now(); rec.void_reason = oneLine(b.reason || "voided", 200);
+      const out = { ok: true, voided: rec.last4, order_ref: rec.order_ref };
+      if (b.reissue === true) {
+        const f = { kind: rec.kind, product: rec.product, order_ref: rec.order_ref, giver: rec.giver || { name: "", email: "" },
+          to: rec.to, from_line: rec.from_line, message: rec.message, lock: rec.lock, ships: rec.ships };
+        const n = await rpgIssue(env, f, { replaces: rec.last4 });
+        if (!n) return json({ ok: false, error: "no free code; nothing was voided" }, 500, ac);
+        rec.replaced_by = n.last4;
+        Object.assign(out, { code: n.code, card_url: n.card_url, no: n.no, last4: n.last4, key: n.key, status: n.status, ships: n.ships });
+      }
+      await env.SUBS.put(key, JSON.stringify(rec));
+      return json(out, 200, ac);
+    }
+
+    if (path === "/rp-gift/find" && req.method === "GET") {
+      if (!sig) return json({ ok: false }, 403, ac);
+      const ref = String(url.searchParams.get("order_ref") || "").trim();
+      const em = String(url.searchParams.get("email") || "").trim().toLowerCase();
+      let idx = "";
+      if (ref && RPG_REF_RE.test(ref)) idx = "rpg-ref:" + ref;
+      else if (em && EMAIL_RE.test(em)) idx = "rpg-by:" + await hmac16("rp-gift-by|" + em, env.UNSUB_SECRET);
+      if (!idx) return json({ ok: false, error: "give order_ref or email" }, 400, ac);
+      let keys = [];
+      try { keys = JSON.parse(await env.SUBS.get(idx)) || []; } catch (e) { keys = []; }
+      const cards = [];
+      for (const k of Array.isArray(keys) ? keys : []) {
+        if (typeof k !== "string" || !RPG_KEY_RE.test(k)) continue;
+        let r = null;
+        try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+        if (!r) continue;
+        cards.push({ key: k, no: r.no, last4: r.last4, status: r.status, kind: r.kind, product: r.product, to: r.to,
+          order_ref: r.order_ref, ships: r.ships, issued_on: rpgDay(r.issued_ts), redeemed_on: rpgDay(r.redeemed_ts),
+          void_reason: r.void_reason, replaces: r.replaces || null, replaced_by: r.replaced_by || null });
+      }
+      return json({ ok: true, cards }, 200, ac);
+    }
+
+    // The printable card's data: only with k, the card link's own signature,
+    // so a guessed code cannot read the giver's message.
+    if (path === "/rp-gift/card" && req.method === "GET") {
+      const c = Object.assign({ "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" }, cors(req));
+      if (!rpgMemOk(req)) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
+      const code = rpgNorm(url.searchParams.get("c"));
+      const k = String(url.searchParams.get("k") || "").toLowerCase();
+      const miss = () => { rpgMemMiss(req); return json({ ok: false, error: "not found" }, 404, c); };
+      if (!code || !/^[0-9a-f]{16}$/.test(k) || !safeEq(k, await rpgCardK(env, code))) return miss();
+      let rec = null;
+      try { rec = JSON.parse(await env.SUBS.get(await rpgKey(env, code))); } catch (e) { rec = null; }
+      if (!rec) return miss();
+      return json(Object.assign({ ok: true, code, no: rec.no, message: rec.message || "", issued_on: rpgDay(rec.issued_ts) }, rpgPublic(rec)), 200, c);
+    }
+
+    // Public: publicGate has run (both are in PUBLIC_POSTS). Every try counts
+    // toward RATE; an unknown code also counts toward the per-isolate miss cap,
+    // past which even a real code answers 429 until the hour turns.
+    if (path === "/rp-gift/check" && req.method === "POST") {
+      const c = cors(req);
+      if (!rpgMemOk(req)) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
+      const p = await rpgBody(req, RPG_MAX_BYTES);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      const code = rpgNorm(p.b.code);
+      let rec = null;
+      if (code) try { rec = JSON.parse(await env.SUBS.get(await rpgKey(env, code))); } catch (e) { rec = null; }
+      if (!rec) { rpgMemMiss(req); return json({ ok: false, error: "We don't know that code. Check it against the card." }, 404, c); }
+      return json(Object.assign({ ok: true, code }, rpgPublic(rec)), 200, c);
+    }
+
+    // Single use. KV has no compare-and-swap, so: refuse anything not issued,
+    // write status "pending" with a fresh redeem_key, read it back, and go on
+    // only if the key is still ours. Two redeems at one edge cannot both pass;
+    // two at different edges inside KV's propagation window (up to about a
+    // minute) could. Both orders then carry the same gift_card in the digest,
+    // which flags it, and Sig honours the first.
+    if (path === "/rp-gift/redeem" && req.method === "POST") {
+      const c = cors(req);
+      if (!rpgMemOk(req)) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
+      const p = await rpgBody(req, RPG_REDEEM_MAX_BYTES);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      const b = p.b, code = rpgNorm(b.code);
+      const key = code ? await rpgKey(env, code) : "";
+      let rec = null;
+      if (key) try { rec = JSON.parse(await env.SUBS.get(key)); } catch (e) { rec = null; }
+      if (!rec) { rpgMemMiss(req); return json({ ok: false, error: "We don't know that code. Check it against the card." }, 404, c); }
+      if (rec.status === "void") return json({ ok: false, error: "This card is no longer active. Write to sig@farmers1st.com." }, 410, c);
+      if (rec.status === "redeemed") return json({ ok: false, error: "This card was used on " + rpgDay(rec.redeemed_ts) + "." }, 409, c);
+      if (rec.status === "pending" && Date.now() - (rec.pending_ts || 0) <= RPG_PENDING_MS)
+        return json({ ok: false, error: "This card is being used right now. Try again in two minutes." }, 409, c);
+      const choice = b.choice == null || b.choice === "" ? rec.product : b.choice;
+      const v = formClean("rain-print-order", Object.assign({}, b, { choice, gift: "", gift_january: "" }));
+      if (v.error) return json({ ok: false, error: v.error }, 400, c);
+      if (rec.lock && !rpgLockOk(rec.lock, v.rec.design_code))
+        return json({ ok: false, error: rec.lock.edit === "name" ? "This card is for the design the giver chose; only the name line can change." : "This card is for the design the giver chose." }, 400, c);
+      const mine = [...crypto.getRandomValues(new Uint8Array(8))].map(x => x.toString(16).padStart(2, "0")).join("");
+      rec.status = "pending"; rec.pending_ts = Date.now(); rec.redeem_key = mine;
+      await env.SUBS.put(key, JSON.stringify(rec));
+      let back = null;
+      try { back = JSON.parse(await env.SUBS.get(key)); } catch (e) { back = null; }
+      if (!back || back.redeem_key !== mine) return json({ ok: false, error: "This card is being used right now. Try again in two minutes." }, 409, c);
+      const ts = Date.now(), up = RPG_RANK[v.rec.choice] > RPG_RANK[rec.product];
+      const post = Object.assign({ kind: "rain-print-order", ts, n: 0 }, v.rec, {
+        gift_card: "RP-\u2026-" + rec.last4 + " (No. " + rec.no + ")", gift_card_paid: rec.product,
+        gift_card_order: rec.order_ref, gift_card_from: rec.from_line || (rec.giver && rec.giver.name) || "" });
+      if (up) post.gift_card_upgrade = "yes";
+      // One marker per redeem that got this far; a second one means the race
+      // above was lost, and the digest says so in red.
+      const used = "rpg-used:" + key.slice(4) + ":";
+      await env.SUBS.put(used + ts + ":" + mine, "", { expirationTtl: FORM_TTL_S });
+      try { if ((await env.SUBS.list({ prefix: used, limit: 10 })).keys.length > 1) post.gift_card_twice = "yes"; } catch (e) { /* the digest still compares */ }
+      if (rec.ships === "january") { post.gift_january = "yes"; if (rec.to) post.gift_to = rec.to; }
+      const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+      const fkey = "form:rain-print-order:" + ts + ":" + rnd;
+      await env.SUBS.put(fkey, JSON.stringify(post), { expirationTtl: FORM_TTL_S });
+      rec.status = "redeemed"; rec.redeemed_ts = ts; rec.form_key = fkey; delete rec.pending_ts;
+      await env.SUBS.put(key, JSON.stringify(rec));
+      return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
     }
 
     // ---------- v5.8: the site's own forms ----------

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Gift card desk | AGSIST</title>
+<!-- Sig's desk for Rain Print gift cards (subs worker v5.16). Not linked from
+     anywhere and noindex. Every action needs LIST_TOKEN, typed into the box
+     below: it is sent only in the Authorization header, never in an address,
+     and kept only in this tab's memory (gone on reload). Issue a card only
+     after the giver has paid. No analytics on this page. -->
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--text:#1E2125;--dim:#5E6475;--line:#d6d9d2;--accent:#2B5C8A;--warn:#A8321E;--ok:#2f6b3a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}}
+:root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin:0 0 .3rem}
+h2{font-size:1.05rem;margin:0 0 .6rem}
+p{margin:.3rem 0;color:var(--dim)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
+label{display:block;font-size:.85rem;font-weight:600;margin:.55rem 0 .15rem}
+input,select,textarea{font:inherit;width:100%;box-sizing:border-box;min-height:38px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+textarea{min-height:70px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+.chk{display:flex;align-items:center;gap:.5rem;font-weight:400;margin:.5rem 0}
+.chk input{width:auto;min-height:0}
+button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+:root[data-theme="dark"] button{color:#10151a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button{color:#10151a}}
+.out{margin-top:.7rem;white-space:pre-wrap;word-break:break-word;font-size:.9rem}
+.out.bad{color:var(--warn)}.out.good{color:var(--ok)}
+.out a{color:var(--accent)}
+code{font-family:"IBM Plex Mono",ui-monospace,monospace}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.5rem}
+td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+</style>
+</head>
+<body>
+<main>
+  <h1>Gift card desk</h1>
+  <p>Issue a card only after the giver has paid. The code shows once, here and on the card link; it is not stored anywhere you can read it back.</p>
+
+  <section>
+    <label for="tok">Token (LIST_TOKEN)</label>
+    <input id="tok" type="password" autocomplete="off" spellcheck="false">
+    <p>Kept in this tab's memory only. Never put it in a link.</p>
+  </section>
+
+  <section>
+    <h2>Issue a card</h2>
+    <form id="issue" novalidate>
+      <div class="row">
+        <div><label for="i-product">What they paid for</label>
+          <select id="i-product"><option value="framed12x18">Framed 12 x 18 print ($89)</option><option value="print12x18">12 x 18 print ($45)</option><option value="digital">Digital file ($19)</option></select></div>
+        <div><label for="i-ref">Order reference</label><input id="i-ref" placeholder="RP-1042 or the Stripe payment id" required></div>
+      </div>
+      <div class="row">
+        <div><label for="i-gname">Giver's name</label><input id="i-gname"></div>
+        <div><label for="i-gmail">Giver's email</label><input id="i-gmail" type="email"></div>
+      </div>
+      <div class="row">
+        <div><label for="i-to">For (on the card: "For Dad")</label><input id="i-to" maxlength="80"></div>
+        <div><label for="i-from">From line ("From Kate")</label><input id="i-from" maxlength="80"></div>
+      </div>
+      <label for="i-msg">Message on the card (240 at most)</label>
+      <textarea id="i-msg" maxlength="240"></textarea>
+      <label for="i-design">Locked design (leave empty for an open card)</label>
+      <input id="i-design" placeholder="Paste the design code, or a rain-print link with ?d=">
+      <label class="chk"><input id="i-editname" type="checkbox"> They may change the name line</label>
+      <div class="row">
+        <div><label for="i-ships">Ships</label>
+          <select id="i-ships"><option value="">Work it out (a locked card for this year: January)</option><option value="now">Now</option><option value="january">January</option></select></div>
+        <div><label class="chk" style="margin-top:2rem"><input id="i-done" type="checkbox"> Already redeemed (the giver gave the address)</label></div>
+      </div>
+      <button type="submit">Issue the card</button>
+    </form>
+    <div id="i-out" class="out" role="status"></div>
+  </section>
+
+  <section>
+    <h2>Find cards</h2>
+    <form id="find" novalidate>
+      <label for="f-q">Order reference or giver's email</label>
+      <input id="f-q">
+      <button type="submit">Find</button>
+    </form>
+    <div id="f-out" class="out" role="status"></div>
+  </section>
+
+  <section>
+    <h2>Void a card (lost code, refund)</h2>
+    <form id="void" novalidate>
+      <label for="v-id">The code, or a key from Find (rpg:...)</label>
+      <input id="v-id" spellcheck="false">
+      <label for="v-why">Why</label>
+      <input id="v-why" placeholder="lost, refund, typo">
+      <label class="chk"><input id="v-re" type="checkbox"> Issue a new code with the same words (lost card)</label>
+      <label class="chk"><input id="v-force" type="checkbox"> Void it even though it was used</label>
+      <button type="submit">Void</button>
+    </form>
+    <div id="v-out" class="out" role="status"></div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-gift/';
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function show(id, html, kind) { var o = $(id); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
+  function call(path, body) {
+    var tok = $('tok').value.trim();
+    if (!tok) return Promise.resolve({ ok: false, error: 'Type the token first.' });
+    return fetch(API + path, { method: body ? 'POST' : 'GET', body: body ? JSON.stringify(body) : undefined, cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok } })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 403) j.error = 'The token was not accepted.'; return j; }); },
+        function () { return { ok: false, error: 'Could not reach the worker.' }; });
+  }
+  function designCode(v) {
+    v = String(v || '').trim();
+    if (!v) return '';
+    var m = /[?&]d=([A-Za-z0-9_-]+)/.exec(v);
+    return m ? m[1] : v.replace(/^GIFT-/, '');
+  }
+  function cardLines(j) {
+    return '<b>Card No. ' + esc(j.no) + ': <code>' + esc(j.code) + '</code></b> (' + esc(j.status) + ', ships ' + esc(j.ships) + ')\n' +
+      'Card link for the giver: <a href="' + esc(j.card_url) + '" target="_blank" rel="noopener">' + esc(j.card_url) + '</a>\n' +
+      '<button type="button" data-copy="' + esc(j.card_url) + '">Copy the card link</button>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-copy]');
+    if (!b) return;
+    try { navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () { b.textContent = 'Copied'; }); } catch (err) {}
+  });
+  $('issue').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dc = designCode($('i-design').value);
+    var body = { product: $('i-product').value, order_ref: $('i-ref').value.trim(),
+      giver: { name: $('i-gname').value.trim(), email: $('i-gmail').value.trim() },
+      to: $('i-to').value.trim(), from_line: $('i-from').value.trim(), message: $('i-msg').value.trim() };
+    if (dc) body.lock = { design_code: dc, edit: $('i-editname').checked ? 'name' : 'none' };
+    if ($('i-ships').value) body.ships = $('i-ships').value;
+    if ($('i-done').checked) body.already_redeemed = true;
+    show('i-out', 'Issuing...');
+    call('issue', body).then(function (j) {
+      if (!j.ok) return show('i-out', esc(j.error || 'Not issued.'), 'bad');
+      show('i-out', cardLines(j), 'good');
+    });
+  });
+  $('find').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = $('f-q').value.trim();
+    show('f-out', 'Looking...');
+    call('find?' + (q.indexOf('@') > 0 ? 'email=' : 'order_ref=') + encodeURIComponent(q)).then(function (j) {
+      if (!j.ok) return show('f-out', esc(j.error || 'Nothing found.'), 'bad');
+      if (!j.cards.length) return show('f-out', 'No cards on file for that.');
+      show('f-out', '<table><tr><th>No.</th><th>Ends</th><th>Status</th><th>What</th><th>For</th><th>Issued</th><th>Key</th></tr>' + j.cards.map(function (c) {
+        return '<tr><td>' + esc(c.no) + '</td><td><code>' + esc(c.last4) + '</code></td><td>' + esc(c.status) + (c.redeemed_on ? ' ' + esc(c.redeemed_on) : '') +
+          (c.void_reason ? ' (' + esc(c.void_reason) + ')' : '') + (c.replaced_by ? ', new card ends ' + esc(c.replaced_by) : '') + '</td><td>' + esc(c.kind + ', ' + c.product) +
+          '</td><td>' + esc(c.to) + '</td><td>' + esc(c.issued_on) + '</td><td><code>' + esc(c.key) + '</code></td></tr>';
+      }).join('') + '</table>');
+    });
+  });
+  $('void').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = $('v-id').value.trim();
+    var body = /^rpg:/.test(id) ? { key: id } : { code: id };
+    body.reason = $('v-why').value.trim() || 'voided';
+    if ($('v-re').checked) body.reissue = true;
+    if ($('v-force').checked) body.force = true;
+    show('v-out', 'Voiding...');
+    call('void', body).then(function (j) {
+      if (!j.ok) return show('v-out', esc(j.error || 'Not voided.'), 'bad');
+      show('v-out', 'Voided the card ending ' + esc(j.voided) + '.' + (j.code ? '\n' + cardLines(j) : ''), 'good');
+    });
+  });
+})();
+</script>
+</body>
+</html>

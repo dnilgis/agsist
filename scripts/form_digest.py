@@ -66,6 +66,8 @@ RPB_PRODUCT = {"print": "12 x 18 print", "framed": "12 x 18 framed print", "digi
 RPB_SHIP = {"one": "All to one address", "each": "One to each customer", "not-sure": "Not sure yet"}
 GIFT_NOTE = "Yes: make it after January 1, once the station's December numbers are in"
 PLAIN_GIFT_NOTE = "Yes: a note card in the box, no prices"
+CARD_TWICE_NOTE = "THIS GIFT CARD WAS USED MORE THAN ONCE. Honour the first order only."
+CARD_UPGRADE_NOTE = "Yes: they chose more than the card paid for. Email a link for the difference."
 # Values printed as a mailto link.
 MAIL_LABELS = ("Work email", "Email", "Reply to", "Their email")
 # The order and labels each kind prints in. Anything else stored is ignored.
@@ -79,7 +81,10 @@ FIELDS = {
     "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("gift", "Gift"), ("name", "Name"), ("email", "Email"),
                          ("gift_to", "Gift for"), ("gift_deliver", "Deliver to"), ("gift_email", "Their email"),
                          ("gift_message", "Card message"), ("address", "Ship to"),
-                         ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design")],
+                         ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design"),
+                         # worker v5.16: an order placed with a gift card (POST /rp-gift/redeem)
+                         ("gift_card_twice", "Warning"), ("gift_card", "Gift card"), ("gift_card_paid", "Card paid for"),
+                         ("gift_card_upgrade", "Upgrade"), ("gift_card_order", "Card order"), ("gift_card_from", "Card from")],
     "rain-print-business": [("business", "Business"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
                             ("quantity", "How many"), ("product", "Product"), ("ship", "Ship to"),
                             ("note_all", "Note for every print"), ("towns", "Towns and years"), ("notes", "Notes")],
@@ -146,7 +151,12 @@ def is_gift(p):
 
 def gift_tag(p):
     """' (2026 gift, January)' for a January gift, the year read from its design link;
-    ' (gift)' for an ordinary order given as a gift; '' otherwise."""
+    ' (gift)' for an ordinary order given as a gift; ' (gift card)' for an order
+    placed with a gift card (with the January tag when it is one); '' otherwise."""
+    if p.get("kind") == "rain-print-order" and p.get("gift_card"):
+        m = YEAR_RE.search(str(p.get("design_url") or ""))
+        jan = (" %s," % m.group(1) if m else "") + " January" if is_january(p) else ""
+        return " (gift card%s)" % ("," + jan if jan else "")
     if not is_gift(p):
         return ""
     if not is_january(p):
@@ -169,16 +179,30 @@ def value(p, f):
         return PLAIN_GIFT_NOTE
     if f == "gift_deliver":
         return RP_DELIVER.get(v, str(v))
+    if f == "gift_card_paid":
+        return RP_CHOICE.get(v, str(v))
+    if f == "gift_card_twice":
+        return CARD_TWICE_NOTE
+    if f == "gift_card_upgrade":
+        return CARD_UPGRADE_NOTE
     return str(v)
 
 
 def blocks(posts):
     """-> [(heading, [(label, value)])] in arrival order."""
     out = []
+    # The same gift card on two orders in one batch is flagged too (the worker
+    # flags it across batches when it can see the first redeem).
+    cards = {}
+    for p in posts:
+        if p.get("gift_card"):
+            cards[p["gift_card"]] = cards.get(p["gift_card"], 0) + 1
     for p in sorted(posts, key=lambda x: x.get("ts") or 0):
+        if cards.get(p.get("gift_card"), 0) > 1:
+            p = dict(p, gift_card_twice="yes")
         gift = is_gift(p)
         rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
-                if p.get(f) not in (None, "") and (gift or not f.startswith("gift_"))
+                if p.get(f) not in (None, "") and (gift or not f.startswith("gift_") or f.startswith("gift_card"))
                 and (f != "gift" or (gift and not is_january(p)))]
         out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
     return out
@@ -342,6 +366,18 @@ def selftest():
     ck("a gift order with no year in its link still says gift", subject([dict(gift, design_url="https://agsist.com/rain-print?place=X")]) ==
        "Rain print order (gift, January): 12 x 18 framed print for Jane Olson")
     ck("gift fields without the flag do not make a gift", subject([dict(rp, gift_to="Dad")]) == "Rain print order: 12 x 18 framed print for Jane Olson")
+
+    card = dict(rp, gift_card="RP-\u2026-X2F4 (No. 7)", gift_card_paid="digital", gift_card_order="RP-1042",
+                gift_card_from="Kate", gift_card_upgrade="yes")
+    ck("a gift card order says so in the subject", subject([card]) == "Rain print order (gift card): 12 x 18 framed print for Jane Olson", subject([card]))
+    t = build([card], "s").get_body(("plain",)).get_content()
+    ck("a gift card order shows the card lines", all(x in t for x in (
+        "Gift card: RP-\u2026-X2F4 (No. 7)", "Card paid for: Digital file", "Card order: RP-1042", "Card from: Kate",
+        "Upgrade: Yes: they chose more than the card paid for")) and "Warning" not in t, t)
+    t = build([card, dict(card, key="form:rain-print-order:9:00000009", ts=ts + 9)], "s").get_body(("plain",)).get_content()
+    ck("the same card twice in one batch is flagged on both", t.count("THIS GIFT CARD WAS USED MORE THAN ONCE") == 2, t)
+    t = build([dict(card, gift_card_twice="yes")], "s").get_body(("plain",)).get_content()
+    ck("the worker's twice flag is shown", "Warning: THIS GIFT CARD WAS USED MORE THAN ONCE" in t, t)
 
     print("\nthe email")
     m = build([claim], "sig@x.com", fa="me@agsist.com")

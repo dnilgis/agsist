@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Rain Print gift card | AGSIST</title>
+<!-- The printable Rain Print gift card. ONE shared page for every card (CLAUDE.md:
+     one page with a query, never a file per card). Opened from the link Sig
+     emails after payment: /rp-gift?c=RP-XXXX-XXXX-XXXX&k=<16 hex>. k is the
+     worker's signature for that code (subs worker v5.16, GET /rp-gift/card), so
+     a guessed code shows nothing. No analytics on this page: the address
+     carries the code. Sizes: 5 x 7 card, half letter two up on a letter sheet
+     (front and inside, cut or fold on the middle), full letter. -->
+<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/rp-plex-mono-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<style>
+@font-face{font-family:'Fraunces';font-weight:300 600;font-style:normal;font-display:swap;src:url(/fonts/rp-fraunces-opsz.woff2) format('woff2')}
+@font-face{font-family:'Fraunces';font-weight:400;font-style:italic;font-display:swap;src:url(/fonts/rp-fraunces-opsz-400i.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:300 600;font-style:normal;font-display:swap;src:url(/fonts/rp-plex-sans-var.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-style:normal;font-display:swap;src:url(/fonts/rp-plex-mono-400.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-style:normal;font-display:swap;src:url(/fonts/rp-plex-mono-500.woff2) format('woff2')}
+:root{--bg:#ece9e2;--panel:#f7f5f0;--text:#1E2125;--dim:#5E6475;--line:#cfd1c9;--accent:#2B5C8A;--warn:#A8321E;
+  --ink:#1E2125;--mute:#5E6475;--soft:#8A8F98;--guide:#D6D9D2;--rain:#2B5C8A;--red:#A8321E;--paper:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78}}
+:root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-serif}
+.bar{max-width:880px;margin:0 auto;padding:18px 16px 8px}
+.bar h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:1.45rem;margin:0 0 .2rem}
+.bar p{margin:.2rem 0;color:var(--dim);font-size:.92rem}
+.sizes{display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0 .4rem}
+.sizes button,.go{font:inherit;font-size:.9rem;font-weight:600;min-height:40px;padding:0 .85rem;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+.sizes button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}
+.sizes .go{background:var(--accent);border-color:var(--accent);color:#fff;border-radius:6px}
+.sizes .go:disabled{opacity:.5;cursor:default}
+:root[data-theme="dark"] .sizes .go{color:#10151a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sizes .go{color:#10151a}}
+#msg{max-width:880px;margin:.6rem auto;padding:0 16px;font-weight:600}
+#msg.bad{color:var(--warn)}
+#stage{max-width:880px;margin:0 auto 3rem;padding:8px 16px;box-sizing:border-box;overflow:hidden}
+#fit{transform-origin:top left}
+.sheet{background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.12);position:relative;overflow:hidden;color:var(--ink);
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}
+.sz-5x7 .sheet{width:5in;height:7in}
+.sz-half .sheet{width:11in;height:8.5in;display:flex}
+.sz-letter .sheet{width:8.5in;height:11in}
+
+/* the card faces */
+.face{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;text-align:center;height:100%;position:relative}
+.face p{margin:0}
+.kick{font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+.to{font-family:'Fraunces',Georgia,serif;font-weight:300}
+.title{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.1;letter-spacing:-.01em}
+.where{font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--rain)}
+.ded{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--mute)}
+.axis{display:block;width:100%;height:auto;overflow:visible}
+.lede{color:var(--mute);line-height:1.45}
+.jan{font-family:'IBM Plex Sans',sans-serif;font-weight:500;color:var(--ink);border-top:.75pt solid var(--guide);border-bottom:.75pt solid var(--guide)}
+.msg{font-family:'Fraunces',Georgia,serif;font-weight:400;line-height:1.42;white-space:pre-line;color:var(--ink)}
+.from{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--mute)}
+.good{color:var(--ink);line-height:1.4}
+.good b{font-weight:600}
+.code{font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.08em;color:var(--ink);border:1pt solid var(--ink);display:inline-block;white-space:nowrap}
+.never{font-family:'IBM Plex Mono',monospace;color:var(--mute);letter-spacing:.04em}
+.how{display:flex;align-items:center;text-align:left}
+.how .qrbox{flex:0 0 auto;padding:2pt;border:1.25pt solid var(--red);background:#fff;line-height:0}
+.how .qrbox svg{display:block;width:100%;height:auto}
+.how p{color:var(--mute);line-height:1.45}
+.how b{color:var(--ink);font-weight:600}
+.how .url{font-family:'IBM Plex Mono',monospace;font-size:.94em;color:var(--ink);white-space:nowrap}
+.foot{margin-top:auto!important;font-family:'IBM Plex Mono',monospace;color:var(--soft);letter-spacing:.03em}
+.rule{width:100%;border:0;border-top:.75pt solid var(--guide)}
+
+/* 5 x 7: one face, everything on it */
+.sz-5x7 .face{padding:.42in .4in .3in}
+.sz-5x7 .kick{font-size:6.5pt}
+.sz-5x7 .to{font-size:16pt;margin-top:.18in}
+.sz-5x7 .title{font-size:20pt;margin-top:.04in;max-width:4.1in}
+.sz-5x7 .where{font-size:7pt;margin-top:.06in}
+.sz-5x7 .ded{font-size:9.5pt;margin-top:.04in}
+.sz-5x7 .art{width:3.9in;margin-top:.2in}
+.sz-5x7 .lede{font-size:8pt;margin-top:.04in;max-width:3.8in}
+.sz-5x7 .jan{font-size:8pt;padding:.04in 0;margin-top:.08in}
+.sz-5x7 .msg{font-size:12pt;margin-top:.22in;max-width:4.1in}
+.sz-5x7 .from{font-size:10pt;margin-top:.04in}
+.sz-5x7 .good{font-size:9pt;margin-top:.2in}
+.sz-5x7 .code{font-size:14pt;padding:.06in .14in;margin-top:.09in}
+.sz-5x7 .never{font-size:6.5pt;margin-top:.05in}
+.sz-5x7 .how{gap:.14in;margin-top:.18in;max-width:4.2in}
+.sz-5x7 .how .qrbox{width:.95in}
+.sz-5x7 .how p{font-size:7pt}
+.sz-5x7 .foot{font-size:6pt;padding-top:.08in}
+
+/* half letter, two up: front on the left, inside on the right */
+.sz-half .face{width:5.5in;height:8.5in;padding:.6in .55in .45in}
+.sz-half .kick{font-size:7.5pt}
+.sz-half .to{font-size:20pt;margin-top:.35in}
+.sz-half .title{font-size:26pt;margin-top:.08in;max-width:4.6in}
+.sz-half .where{font-size:8pt;margin-top:.12in}
+.sz-half .ded{font-size:12pt;margin-top:.08in}
+.sz-half .art{width:4.3in;margin-top:.45in}
+.sz-half .lede{font-size:9.5pt;margin-top:.1in;max-width:4.1in}
+.sz-half .jan{font-size:10pt;padding:.07in 0;margin-top:.3in}
+.sz-half .face>:first-child{margin-top:auto!important}
+.sz-half .msg{font-size:15pt;max-width:4.3in}
+.sz-half .from{font-size:13pt;margin-top:.1in}
+.sz-half .good{font-size:10.5pt;margin-top:.4in;max-width:4.4in}
+.sz-half .code{font-size:17pt;padding:.08in .18in;margin-top:.14in}
+.sz-half .never{font-size:7.5pt;margin-top:.08in}
+.sz-half .how{gap:.16in;margin-top:.3in;max-width:4.5in}
+.sz-half .how .qrbox{width:1.05in}
+.sz-half .how p{font-size:8.5pt}
+.sz-half .foot{font-size:7pt}
+.sz-half .cut{position:absolute;left:5.5in;width:0;border-left:.75pt solid var(--ink);height:.22in}
+.sz-half .cut.t{top:.18in}.sz-half .cut.b{bottom:.18in}
+.sz-half .fold{position:absolute;left:5.5in;top:.55in;bottom:.55in;border-left:.5pt dashed var(--guide)}
+.sz-half .cutnote{position:absolute;bottom:.2in;left:5.62in;font:6pt 'IBM Plex Mono',monospace;color:var(--soft)}
+
+/* letter: one big face */
+.sz-letter .face{padding:.8in .8in .55in}
+.sz-letter .kick{font-size:9pt}
+.sz-letter .to{font-size:24pt;margin-top:.35in}
+.sz-letter .title{font-size:34pt;margin-top:.08in;max-width:6.4in}
+.sz-letter .where{font-size:9.5pt;margin-top:.14in}
+.sz-letter .ded{font-size:14pt;margin-top:.1in}
+.sz-letter .art{width:6.2in;margin-top:.35in}
+.sz-letter .lede{font-size:11pt;margin-top:.1in;max-width:5.8in}
+.sz-letter .jan{font-size:11.5pt;padding:.08in 0;margin-top:.22in}
+.sz-letter .msg{font-size:17pt;margin-top:.4in;max-width:6in}
+.sz-letter .from{font-size:14pt;margin-top:.1in}
+.sz-letter .good{font-size:12pt;margin-top:.35in}
+.sz-letter .code{font-size:21pt;padding:.1in .22in;margin-top:.14in}
+.sz-letter .never{font-size:8.5pt;margin-top:.1in}
+.sz-letter .how{gap:.25in;margin-top:.32in;max-width:6in}
+.sz-letter .how .qrbox{width:1.3in}
+.sz-letter .how p{font-size:10pt}
+.sz-letter .foot{font-size:8pt}
+
+@media print{
+  html,body{background:#fff!important}
+  .noprint,#msg{display:none!important}
+  #stage{padding:0;margin:0;max-width:none;overflow:visible}
+  #fit{transform:none!important;height:auto!important}
+  .sheet{box-shadow:none}
+}
+</style>
+<style id="page-size">@page{size:5in 7in;margin:0}</style>
+</head>
+<body class="sz-5x7">
+<div class="bar noprint">
+  <h1>Your Rain Print gift card</h1>
+  <p>Pick a size, then print at 100% (Actual size) on card stock or plain paper.</p>
+  <div class="sizes" role="group" aria-label="Card size">
+    <button type="button" data-size="5x7" aria-pressed="true">5 x 7 card</button>
+    <button type="button" data-size="half" aria-pressed="false">Half letter, two up</button>
+    <button type="button" data-size="letter" aria-pressed="false">Full letter</button>
+    <button type="button" class="go" id="print" disabled>Print the card</button>
+  </div>
+  <p id="sizehelp">One 5 x 7 card. Set the printer's paper size to 5 x 7, or print on letter and trim.</p>
+</div>
+<p id="msg" role="status">Getting your card&hellip;</p>
+<noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@farmers1st.com</p></noscript>
+<div id="stage"><div id="fit"></div></div>
+<script src="/components/qr.js"></script>
+<script src="/components/rp-gift.js"></script>
+<script>
+(function () {
+  'use strict';
+  var G = window.AgRpGift, doc = document;
+  var $ = function (id) { return doc.getElementById(id); };
+  var SIZES = {
+    '5x7': ['5in 7in', 'One 5 x 7 card. Set the printer\u2019s paper size to 5 x 7, or print on letter and trim.'],
+    half: ['11in 8.5in', 'Letter paper turned sideways: the front on the left, the inside on the right. Cut on the middle marks for two pieces, or fold there and glue back to back.'],
+    letter: ['8.5in 11in', 'One full letter page, the whole card on it.']
+  };
+  var MONTHS = 'JFMAMJJASOND';
+  var C = null, size = '5x7';
+  try { var s0 = localStorage.getItem('agsist-rpg-size'); if (SIZES[s0]) size = s0; } catch (e) {}
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function say(t, bad) { var m = $('msg'); m.textContent = t; m.className = bad ? 'bad' : ''; m.hidden = !t; }
+
+  // An empty year: twelve months on a line and nothing drawn on it. A made-up
+  // rain line would look like data, so the card never has one.
+  function axis() {
+    var w = 360, o = '<svg class="axis" viewBox="0 0 ' + w + ' 34" aria-hidden="true">';
+    o += '<line x1="0" y1="10" x2="' + w + '" y2="10" stroke="#1E2125" stroke-width="1"/>';
+    for (var i = 0; i <= 12; i++) {
+      var x = i * w / 12;
+      o += '<line x1="' + x + '" y1="10" x2="' + x + '" y2="16" stroke="#1E2125" stroke-width=".75"/>';
+      if (i < 12) o += '<text x="' + (x + w / 24) + '" y="29" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8F98" text-anchor="middle">' + MONTHS[i] + '</text>';
+    }
+    return o + '</svg>';
+  }
+  function front() {
+    var s = C.lock && G.summary(C.lock.design_code), o = '<p class="kick">A Rain Print from AGSIST</p>';
+    if (C.to) o += '<p class="to">For ' + esc(C.to) + '</p>';
+    if (s) {
+      o += '<p class="title">' + esc(s.name || s.place) + '</p>';
+      o += '<p class="where">' + esc(s.place) + ' &middot; ' + s.year + '</p>';
+      if (s.dedication) o += '<p class="ded">' + esc(s.dedication) + '</p>';
+      o += '<div class="art">' + axis() + '</div>';
+      o += '<p class="lede">Every rain of ' + s.year + ' at the NOAA gauge nearest ' + esc(s.place.split(',')[0]) + ', drawn day by day' + (s.dates.length ? ', with ' + esc(s.dates.join(', ')) : '') + '.</p>';
+      if (C.ships === 'january') o += '<p class="jan">Your ' + s.year + ' print comes in January, once the year\u2019s last rain is in.</p>';
+    } else {
+      o += '<p class="title">Any farm, any year since 1890</p>';
+      o += '<div class="art">' + axis() + '</div>';
+      o += '<p class="lede">Pick the place and the year. Every rain that year at the nearest NOAA gauge, drawn day by day and printed for the wall.</p>';
+      if (C.ships === 'january') o += '<p class="jan">The print comes in January, once the year\u2019s last rain is in.</p>';
+    }
+    return o;
+  }
+  function inside(withFoot) {
+    var url = 'https://agsist.com/rain-print?gift=' + C.code, o = '', qr = '';
+    try { qr = window.AgQR ? window.AgQR.svg(url, 'QR code that opens Rain Print with this card') : ''; } catch (e) { qr = ''; }
+    if (C.message) o += '<p class="msg">' + esc(C.message) + '</p>';
+    if (C.from_line) o += '<p class="from">From ' + esc(C.from_line) + '</p>';
+    o += '<p class="good">This card is good for <b>' + esc(G.product(C.product)) + '</b>.</p>';
+    o += '<p class="code" aria-label="Gift card code ' + esc(C.code.split('').join(' ')) + '">' + esc(C.code) + '</p>';
+    if (C.status === 'redeemed') {
+      o += '<p class="never">Already set: Sig has the order. Nothing to do.</p>';
+    } else {
+      o += '<p class="never">Never expires. Use it once.</p>';
+      o += '<div class="how">' + (qr ? '<div class="qrbox">' + qr + '</div>' : '') + '<p><b>To use it,</b> scan the square, or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span><br>' +
+        (C.lock ? 'Your design is already picked. Add where it goes and it\u2019s done.' : 'Pick the farm and the year, then press Use my gift.') + '</p></div>';
+    }
+    if (withFoot) o += '<p class="foot">No. ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
+    return o;
+  }
+  function render() {
+    doc.body.className = 'sz-' + size;
+    $('page-size').textContent = '@page{size:' + SIZES[size][0] + ';margin:0}';
+    $('sizehelp').textContent = SIZES[size][1];
+    [].forEach.call(doc.querySelectorAll('.sizes [data-size]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-size') === size)); });
+    if (!C) return;
+    var html = size === 'half'
+      ? '<div class="sheet"><div class="face front">' + front() + '<p class="foot">No. ' + String(C.no || 0).padStart(4, '0') + '</p></div>' +
+        '<div class="face inside">' + inside(true) + '</div><span class="cut t"></span><span class="cut b"></span><span class="fold"></span></div>'
+      : '<div class="sheet"><div class="face">' + front() + '<hr class="rule" style="margin:' + (size === 'letter' ? '.35in' : '.14in') + ' 0 0">' + inside(true) + '</div></div>';
+    $('fit').innerHTML = html;
+    fit();
+  }
+  function fit() {
+    var f = $('fit'), sh = f.firstChild;
+    if (!sh) return;
+    f.style.transform = 'none';
+    var avail = $('stage').clientWidth - 32, w = sh.offsetWidth, h = sh.offsetHeight;
+    var k = Math.min(1, avail / w);
+    f.style.transform = 'scale(' + k + ')';
+    f.style.height = (h * k) + 'px';
+  }
+  [].forEach.call(doc.querySelectorAll('.sizes [data-size]'), function (b) {
+    b.addEventListener('click', function () {
+      size = b.getAttribute('data-size');
+      try { localStorage.setItem('agsist-rpg-size', size); } catch (e) {}
+      render();
+    });
+  });
+  $('print').addEventListener('click', function () {
+    var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
+    ready.then(function () { window.print(); });
+  });
+  window.addEventListener('resize', fit);
+  window.addEventListener('beforeprint', function () { $('fit').style.transform = 'none'; });
+  window.addEventListener('afterprint', fit);
+
+  render();
+  var q = new URLSearchParams(location.search), c = q.get('c') || '', k = q.get('k') || '';
+  if (!G || !c || !k) { say('This page prints a gift card from the link Sig emails after you buy one. Open that link, or write to sig@farmers1st.com.', true); return; }
+  G.card(c, k).then(function (j) {
+    if (!j.ok) {
+      say(j.status_code === 404 ? 'That card link isn\u2019t right. Use the whole link from Sig\u2019s email, or write to sig@farmers1st.com.' : G.errorText(j), true);
+      return;
+    }
+    if (j.status === 'void') { say('This card was replaced or refunded, so it can\u2019t be printed. If Sig sent you a new link, use that one. Questions: sig@farmers1st.com', true); return; }
+    C = j;
+    say(j.status === 'redeemed' ? 'This card has been used (' + j.redeemed_on + '). You can still print it as a keepsake.' : '');
+    $('print').disabled = false;
+    render();
+  });
+})();
+</script>
+</body>
+</html>

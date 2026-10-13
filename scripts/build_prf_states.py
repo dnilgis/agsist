@@ -60,12 +60,26 @@ def boot():
     return m.group(0)
 
 
+def dataset(meta, name, desc, url, place=None):
+    """schema.org Dataset for a PRF page: USDA's files, as read on the build date. USDA data is public domain."""
+    d = {"@context": "https://schema.org", "@type": "Dataset", "name": name, "description": desc, "url": url,
+         "temporalCoverage": f"{meta['years']['first']}/{meta['years']['last_complete']}", "dateModified": meta["built"][:10],
+         "isAccessibleForFree": True, "license": "https://www.usa.gov/government-works",
+         "creator": {"@type": "Organization", "name": "USDA Risk Management Agency", "url": "https://www.rma.usda.gov/"},
+         "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
+         "isBasedOn": [meta["sources"]["adm"], meta["sources"]["index"]],
+         "variableMeasured": ["county base value per acre", "premium rate", "precipitation index"]}
+    if place:
+        d["spatialCoverage"] = {"@type": "Place", "name": place + ", United States"}
+    return d
+
+
 def text_of(fragment):
     t = re.sub(r"<[^>]+>", "", fragment)
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
-def page(st, meta, facts, sd, states, BOOT):
+def page(st, meta, facts, sd, states, BOOT, where=None):
     name, code = sd["name"], st["st"]
     f = facts["by_state"][code]
     cy, y0, y1 = meta["crop_year"], meta["years"]["first"], meta["years"]["last_complete"]
@@ -89,7 +103,9 @@ def page(st, meta, facts, sd, states, BOOT):
     for k, c in counties:
         lim = c.get("lim") or next(iter((c.get("limc") or {}).values()), None)
         b = c["b"]
-        rows.append(f'<tr><th scope="row">{e(c["n"])}</th><td>{len(c["g"])}</td><td>{money2(b[0])}</td><td>{money2(b[4])}</td>'
+        href = (where or {}).get(sd["fips"] + k)
+        cname = f'<a href="{href[1]}">{e(c["n"])}</a>' if href else e(c["n"])
+        rows.append(f'<tr><th scope="row">{cname}</th><td>{len(c["g"])}</td><td>{money2(b[0])}</td><td>{money2(b[4])}</td>'
                     f'<td>{(str(lim[0][1]) + "%") if lim and lim[0] else "&mdash;"}</td>'
                     f'<td><a href="/prf?c={sd["fips"]}{k}" rel="nofollow">Open</a></td></tr>')
     iv = "".join(f'<tr><th scope="row">{LONG_IV[i]}</th><td>{("%.2f in" % r["mid_normal_in"]) if r["mid_normal_in"] is not None else "&mdash;"}</td>'
@@ -124,6 +140,9 @@ def page(st, meta, facts, sd, states, BOOT):
             {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
             {"@type": "ListItem", "position": 2, "name": "PRF insurance calculator", "item": "https://agsist.com/prf"},
             {"@type": "ListItem", "position": 3, "name": name, "item": url}]},
+        dataset(meta, f"PRF county base values and rainfall index record, {name}, {cy}",
+                f"USDA RMA's {cy} Pasture, Rangeland, Forage county base values for grazing and hay in {n_co} {name} counties, interval limits, "
+                f"and premium rates and precipitation index history for the {n_grid:,} grids that touch them, {y0} to {y1}.", url, name),
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
     # Sig, 2026-10-12: the PRF state slots are priced on request, prepaid, with the
@@ -197,7 +216,7 @@ def page(st, meta, facts, sd, states, BOOT):
     </div>
 
     <h2 id="counties">PRF in every {e(name)} county</h2>
-    <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. Open a county to set acres, months and coverage.</p>
+    <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. A county&rsquo;s name opens its page with the grids and their record; Open sets acres, months and coverage in the calculator.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF county base values in every {e(name)} county, {cy}</caption><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
     {ribbon}
 
@@ -208,7 +227,7 @@ def page(st, meta, facts, sd, states, BOOT):
       <li><b>{acre}</b>: acreage report, with any lease signed and in hand.</li>
       <li><b>{bill}</b>: premium billed, no earlier than this. Premium owed comes out of any payment first.</li>
     </ul>
-    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed (2027 Crop Provisions, section 4(j)). USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">How payouts compare with the premium</a></p>
+    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed (2027 Crop Provisions, section 4(j)). USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf/how-prf-works">How PRF works</a> &middot; <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">How payouts compare with the premium</a></p>
 
     <h2 id="faq">PRF questions in {e(name)}</h2>
     <div class="prf-faq">{faq_html}</div>
@@ -216,6 +235,162 @@ def page(st, meta, facts, sd, states, BOOT):
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
+  </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="/components/loader.js?v=18" defer></script>
+</body>
+</html>
+"""
+
+
+def dollars(x):
+    return f"${x:,.0f}"
+
+
+GUIDE_SLUG = "how-prf-works"
+
+
+def guide(meta, facts, states, BOOT):
+    """/prf/how-prf-works: the plain-words explainer, every figure from facts.json and meta.json."""
+    cy, y0, y1 = meta["crop_year"], facts["years"]["first"], facts["years"]["last"]
+    ny = facts["years"]["n"]
+    sales, acre, bill = (long_date(meta["dates"][k]) for k in ("sales_closing", "acreage_reporting", "premium_billing"))
+    sub = meta["subsidy"]
+    ex, exg, exh = facts["example"], facts["example"]["grazing"], facts["example"]["hay"]
+    paid = facts["example_years"]["paid"]
+    big = max(paid)
+    big_year = y0 + paid.index(big)
+    pb90 = facts["payback"]["by_coverage"]["90"]
+    you90 = pb90["mid"] / (1 - sub["90"])
+    lim = facts["limits"]
+    jf25 = lim["jan_feb_max"].get("25", 0)
+    other_max = lim["other_max"]
+    dry = facts["largest_net_in_two_driest"]
+    ivs = facts["intervals_at_90"]
+    cheap = min(ivs, key=lambda r: r["mid_rate_per_100"])
+    dear = max(ivs, key=lambda r: r["mid_rate_per_100"])
+    n_grids, n_co = meta["counts"]["grids"], meta["counts"]["counties"]
+    url = f"https://agsist.com/prf/{GUIDE_SLUG}"
+    title = f"How PRF Insurance Works: Intervals, Coverage, Productivity Factor ({cy}) | AGSIST"
+    desc = (f"How Pasture, Rangeland, Forage (PRF) insurance works for {cy}, in plain words: the grid, the eleven intervals, coverage, "
+            f"productivity factor, USDA's share and what the record says.")
+    if len(desc) > 160:
+        desc = f"How PRF (Pasture, Rangeland, Forage) insurance works for {cy}: grids, intervals, coverage, productivity factor, USDA's share and the record."
+    subrows = "".join(f"<tr><th scope=\"row\">{c}%</th><td>{int(round(sub[c] * 100))}%</td><td>{100 - int(round(sub[c] * 100))}%</td></tr>"
+                      for c in sorted(sub, key=int))
+    ivrows = "".join(f'<tr><th scope="row">{LONG_IV[i]}</th><td>{r["mid_normal_in"]:.2f} in</td><td>{money2(r["mid_rate_per_100"])}</td><td>{r["mid_years_below"]}</td></tr>'
+                     for i, r in enumerate(ivs))
+    faq = [
+        ("How does PRF insurance work?",
+         f"You insure grazing land or hay ground in a grid, pick a coverage level from 70% to 90% and spread the policy over at least two two-month intervals. "
+         f"When the grid&rsquo;s precipitation index for an interval you insured comes in under your coverage level, it pays, with no claim to file. USDA pays {int(round(sub['90'] * 100))}% to {int(round(sub['70'] * 100))}% of the premium."),
+        ("What is the PRF productivity factor?",
+         "A percent from 60 to 150 you choose for each county, use and practice. It moves the protection per acre, and the premium with it, in the same proportion. "
+         "At 150 you insure half again the county base value and pay half again the premium; the payment per premium dollar does not change."),
+        ("What are the best PRF intervals?",
+         f"No interval stands out on the record: at {cy} rates, $1 of full premium at 90% coverage would have paid back a middle ${pb90['mid']:.2f} over {y0} to {y1}, "
+         f"with 90% of grid-interval pairs between ${pb90['p05']:.2f} and ${pb90['p95']:.2f}. The intervals to insure are the ones when a dry spell costs you grass or hay."),
+        ("Is PRF worth it?",
+         f"On the full premium the record returns a bit less than it costs, a middle ${pb90['mid']:.2f} per $1 at 90% coverage. USDA pays {int(round(sub['90'] * 100))}% of that premium, "
+         f"so on the share you pay the same record works out to about ${you90:.2f} per $1. The money comes in a few dry years with many years of little or nothing between, and none of it says what next year will do."),
+        (f"When is the PRF deadline for {cy}?",
+         f"The sales closing date is {sales}. The acreage report is due {acre}. The premium is billed no earlier than {bill}."),
+    ]
+    faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
+    ld = [
+        {"@context": "https://schema.org", "@type": "Article", "@id": url, "url": url, "headline": title.replace(" | AGSIST", ""), "description": desc,
+         "dateModified": meta["built"][:10], "inLanguage": "en-US", "image": "https://agsist.com/img/og/prf.jpg",
+         "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
+         "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/apple-touch-icon.png"}},
+         "mainEntityOfPage": url, "isBasedOn": meta["sources"]["adm"]},
+        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": text_of(q), "acceptedAnswer": {"@type": "Answer", "text": text_of(a)}} for q, a in faq]},
+        {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
+            {"@type": "ListItem", "position": 2, "name": "PRF insurance calculator", "item": "https://agsist.com/prf"},
+            {"@type": "ListItem", "position": 3, "name": "How PRF works", "item": url}]},
+    ]
+    ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
+    st_links = " ".join(f'<a href="/prf/{slug(x["name"])}">{e(x["name"])}</a>' for x in states)
+    return f"""<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="stylesheet" href="/components/prf.css?v=3">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <title>{e(title)}</title>
+  <meta name="description" content="{e(desc)}">
+  <meta name="author" content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical" href="{url}">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:title" content="{e(title.replace(' | AGSIST', ''))}">
+  <meta property="og:description" content="{e(desc)}">
+  <meta property="og:url" content="{url}">
+  <meta property="og:image" content="https://agsist.com/img/og/prf.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/prf.jpg">
+  {BOOT}
+  {ldh}
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+  <main id="main" class="main" tabindex="-1">
+  <div class="prf prf-st">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/prf">PRF insurance calculator</a> &rsaquo; <span aria-current="page">How PRF works</span></nav>
+    <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
+    <h1>How PRF insurance works, in plain words</h1>
+    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. It does not look at your grass, your hay or your cattle. It pays when precipitation in your grid, over two months you chose, comes in under a share of that grid&rsquo;s normal. For {cy} it is offered on {n_grids:,} grids in {n_co:,} counties of the 48 contiguous states.</p>
+    <p><a class="btn btn-primary prf-cta" href="/prf">Open the PRF calculator</a></p>
+    <div class="prf-prose">
+    <h2 id="grid">1. The grid</h2>
+    <p>The country is cut into squares a quarter of a degree on each side: about 17 miles north to south and 11 to 16 miles east to west. USDA works out each grid&rsquo;s precipitation from weather stations, as an index where 100 is the grid&rsquo;s normal for those two months. Your own rain gauge does not count. You pick a point inside the acres you insure and the grid follows from it. Every grid number has its own record from {y0}; the <a href="/prf">calculator</a> finds yours from a ZIP or coordinates, and each state page lists the grids county by county.</p>
+
+    <h2 id="intervals">2. The eleven intervals</h2>
+    <p>The year is split into eleven overlapping two-month intervals, January to February through November to December. You spread the policy over at least two of them, no month in two, each with at least {lim['min_pct'][0]}% of the policy and no more than {' or '.join(str(x) + '%' for x in other_max)}, depending on the county. January to February is capped at 25% in {jf25:,} counties. Each interval pays on its own.</p>
+    <p>Across every grid at 90% coverage, the middle grid looks like this. Normal is the grid&rsquo;s average precipitation for the two months; the premium is the full rate per $100 of protection; the last column counts the years from {y0} to {y1} when the index came in under 90.</p>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each interval, scrolls sideways"><table class="prf-t prf-sub-t"><caption class="prf-sr">Each interval at 90% coverage, middle grid, all grids</caption><thead><tr><th scope="col">Interval</th><th scope="col">Normal</th><th scope="col">Premium per $100</th><th scope="col">Years under 90, of {ny}</th></tr></thead><tbody>{ivrows}</tbody></table></div>
+    <p>Coverage costs least in {LONG_IV[ivs.index(cheap)]} and most in {LONG_IV[ivs.index(dear)]}, on the middle grid. The price follows how often and how far the index has fallen short, so a cheaper interval is not a better buy. RMA&rsquo;s handbook says choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. On {dry['grids']:,} of {dry['of']:,} grids, the interval with the most average payment over your share of the premium was one of the grid&rsquo;s two driest.</p>
+
+    <h2 id="coverage">3. Coverage level and USDA&rsquo;s share</h2>
+    <p>You pick 70%, 75%, 80%, 85% or 90%. At 90% an interval pays once the index is under 90; at 70% it has to fall under 70. A higher level pays sooner and costs more. USDA pays part of the premium, more at the lower levels:</p>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="USDA share by coverage level"><table class="prf-t prf-sub-t"><caption class="prf-sr">USDA share of the PRF premium by coverage level, {cy}</caption><thead><tr><th scope="col">Coverage</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{subrows}</tbody></table></div>
+
+    <h2 id="productivity">4. The productivity factor</h2>
+    <p>USDA sets a county base value per acre for grazing and for hay, the same on every grid in the county. You choose a productivity factor from 60 to 150 to move it up or down for your ground. Protection per acre is the county base value times your coverage level times the factor. The premium moves with it in the same proportion, so the factor changes how many dollars ride on the policy, not the odds or the payment per premium dollar. One factor per county, use and practice.</p>
+
+    <h2 id="payment">5. How a payment is figured</h2>
+    <p>For an interval you insured, the payment is that interval&rsquo;s protection times how far the index fell under your coverage level, as a share of it. At 90% coverage, an index of 72 pays (90 &minus; 72) / 90 = 20% of the interval&rsquo;s protection. Payment comes within 60 days after RMA publishes the final index, with no claim to file, and any premium owed comes out first.</p>
+    <p>A worked example on grid {ex['grid']}, {e(ex['county'])}: {ex['acres']} acres of grazing land, {ex['coverage']}% coverage, productivity factor 100, {e(ex['months'])}. At {cy} rates the county base value is {money2(exg['cbv'])} an acre, the protection {dollars(exg['protection'])}, the premium {dollars(exg['premium'])}, of which USDA pays {dollars(exg['usda'])} and you pay {dollars(exg['you'])} (${exg['per_acre']:.2f} an acre). Run over {y0} to {y1}, that policy would have paid something in {exg['paid_years']} of {exg['years']} years, more than your share of the premium in {exg['ahead_years']}, an average of {dollars(exg['avg'])} a year, and most in {big_year}: {dollars(big)}. The same policy on non-irrigated hay costs you {dollars(exh['you'])} on a county value of {money2(exh['cbv'])}.</p>
+
+    <h2 id="worth">6. What the record says</h2>
+    <p>For every grid, interval and coverage level USDA prices, the calculator works out what $1 of full premium would have paid back over {y0} to {y1} at {cy} rates. At 90% coverage the middle is ${pb90['mid']:.2f}, and 90% of the {pb90['n']:,} grid and interval pairs fall between ${pb90['p05']:.2f} and ${pb90['p95']:.2f}. No grid or interval stands out. On the share you pay after USDA&rsquo;s {int(round(sub['90'] * 100))}%, the same record is about ${you90:.2f} per $1. These are averages of a few big years and many small or empty ones. The neighboring grids and intervals move together, and none of it says what next year will do.</p>
+
+    <h2 id="dates">7. Dates for {cy}</h2>
+    <ul>
+      <li><b>{sales}</b>: sales closing. New policies and any change to coverage, intervals, acres or productivity factor are due at your agent.</li>
+      <li><b>{acre}</b>: acreage report, with any lease signed and in hand.</li>
+      <li><b>{bill}</b>: premium billed, no earlier than this.</li>
+    </ul>
+    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed. USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#prf-not">What PRF does not do</a> &middot; <a href="/prf#method">How the calculator figures it</a></p>
+
+    <h2 id="faq">Questions</h2>
+    <div class="prf-faq">{faq_html}</div>
+    </div>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <nav class="prf-links prf-st-links" aria-label="PRF by state"><a href="/prf">PRF calculator</a> {st_links}</nav>
   </div>
   </main>
   <div id="site-footer"></div>
@@ -235,13 +410,16 @@ def main():
     import inject_static_nav as nav   # the site header, footer and font preloads, as on every top-level page
     hdr, ftr = nav.block('header'), nav.block('footer')
     states = sorted(meta["states"], key=lambda s: s["name"])
+    import build_prf_counties  # each county row links to its page (prf/<state>/<county>.html)
+    where = build_prf_counties.county_urls(meta)[0]
     want = {}
     for st in states:
         sd = json.load(open(os.path.join(D, "s", st["st"] + ".json")))
-        body = nav.render(page(st, meta, facts, sd, states, BOOT), slug(st['name']) + '.html', hdr, ftr)
+        body = nav.render(page(st, meta, facts, sd, states, BOOT, where), slug(st['name']) + '.html', hdr, ftr)
         if len(body.encode()) > MAX_KB * 1024:
             raise SystemExit(f"prf/{slug(st['name'])}.html would be {len(body.encode()) // 1024} KB, over {MAX_KB} KB")
         want[slug(st["name"]) + ".html"] = body
+    want[GUIDE_SLUG + ".html"] = nav.render(guide(meta, facts, states, BOOT), GUIDE_SLUG + ".html", hdr, ftr)
     check = "--check" in sys.argv
     bad = []
     for fn, body in want.items():

@@ -1,0 +1,231 @@
+/* components/rp-gift.js: Rain Print gift cards (2026-10-13).
+ *
+ * The subs worker (v5.16) holds the cards: POST /rp-gift/check, POST
+ * /rp-gift/redeem, GET /rp-gift/card. This file is the client for both pages:
+ * rp-gift.html (the printable card) and rain-print.html (redeeming a card).
+ * It draws nothing on rain-print.html by itself; the page calls it.
+ *
+ * Code: RP-XXXX-XXXX-XXXX. 11 random Crockford base32 characters (0-9 A-Z
+ * without I L O U) and a mod-37 check character. Typed any case, with or
+ * without spaces, dashes or the RP; I and L read as 1, O as 0.
+ *
+ * THE HOOK FOR rain-print.html (window.AgRpGift):
+ *
+ *   AgRpGift.fromUrl()  -> 'RP-....' or ''. Reads ?gift=CODE, takes it out of
+ *     the address bar (history.replaceState; the page's analytics already send
+ *     the bare path only) and keeps it in sessionStorage, so a reload in the
+ *     same tab still knows the card. Also answers a code kept from earlier in
+ *     this tab. Call it once on load.
+ *   AgRpGift.open(code, { banner: el }) -> Promise of a gift state G:
+ *     { ok, usable, code, kind 'open'|'locked', product, to, from_line, ships,
+ *       status, redeemed_on, lock: null | { design_code, edit 'none'|'name',
+ *       design: RainPrint.decodeCode(design_code) or null }, locked: [field
+ *       names the reader may not change], text: the banner sentence, error }
+ *     usable is true only for an unused card. With banner, it fills that
+ *     element with the banner (and a box to type a code if the link's was
+ *     wrong). It never throws; a network failure answers ok:false.
+ *   AgRpGift.redeem(G, order) -> Promise of {ok:true, redeemed_on, ships,
+ *     upgrade} or {ok:false, error, status}. order is what the page already
+ *     posts for an order: name, email, address, notes, design_url, design_code,
+ *     and choice (leave it out to take the card's product).
+ *   AgRpGift.doneHtml(G, result) -> the thank-you message for the order box.
+ *   Smaller pieces: norm(code), product(p) ("one framed 12 x 18 Rain Print"),
+ *   summary(designCode) (place, year, name, dedication, style), LOCKABLE.
+ *
+ * Nothing here is sent anywhere except the worker, and only the code and the
+ * order the reader typed. */
+(function (root) {
+  'use strict';
+  if (root.AgRpGift) return;
+
+  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-gift/';
+  var KEY = 'agsist-rp-gift';
+  var TIMEOUT_MS = 12000;
+  var B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  var RE = /^[0-9A-HJKMNP-TV-Z]{12}$/;
+  var PRODUCT = {
+    digital: ['the digital file of one Rain Print', 'Rain Print digital file'],
+    print12x18: ['one 12 x 18 Rain Print, shipped free', '12 x 18 print'],
+    framed12x18: ['one framed 12 x 18 Rain Print, shipped free', 'Framed 12 x 18 print']
+  };
+  // Every design input on rain-print.html a locked card can hold still.
+  var LOCKABLE = ['place', 'station', 'year', 'style', 'layout', 'palette', 'size', 'cmp', 'name', 'dedication', 'markers', 'normals', 'records'];
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function check(body) { var m = 0; for (var i = 0; i < body.length; i++) m = (m * 32 + B32.indexOf(body[i])) % 37; return m; }
+  function norm(v) {
+    var s = String(v == null ? '' : v).toUpperCase().replace(/[\s._\u2010-\u2015-]/g, '').replace(/[IL]/g, '1').replace(/O/g, '0');
+    if (s.length === 14 && s.indexOf('RP') === 0) s = s.slice(2);
+    if (!RE.test(s) || check(s.slice(0, 11)) !== B32.indexOf(s[11])) return '';
+    return 'RP-' + s.slice(0, 4) + '-' + s.slice(4, 8) + '-' + s.slice(8);
+  }
+  function product(p, short) { var x = PRODUCT[p]; return x ? x[short ? 1 : 0] : 'one Rain Print'; }
+
+  // A design code's words, without loading the whole Rain Print page script:
+  // base64url of "2|place|station|year|keys|name[|day|label]...[|dedication]".
+  function summary(code) {
+    code = String(code || '').replace(/^GIFT-/, '');
+    if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) return null;
+    var raw;
+    try {
+      var b = code.replace(/-/g, '+').replace(/_/g, '/');
+      while (b.length % 4) b += '=';
+      var bin = atob(b), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      raw = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    } catch (e) { return null; }
+    var f = raw.split('|'), v2 = f[0] === '2', ded = '';
+    if ((f[0] !== '1' && !v2) || f.length < 6) return null;
+    if (v2 && (f.length - 6) % 2) ded = f.pop();
+    var x5 = v2 ? 'abcdefgh'.indexOf((f[4] || '')[4]) : -1;
+    var year = parseInt(f[3], 10);
+    if (!(year >= 1850 && year <= 2200)) return null;
+    var dates = [];
+    for (var j = 6; j + 1 < f.length; j += 2) if (f[j + 1]) dates.push(f[j + 1]);
+    return { place: f[1], station: f[2], year: year, name: f[5] || '', dedication: ded, dates: dates,
+      style: x5 >= 0 && (x5 & 4) ? 'Roots' : 'Staircase' };
+  }
+
+  function post(path, body) {
+    var ctl = root.AbortController ? new root.AbortController() : null;
+    var t = ctl ? setTimeout(function () { ctl.abort(); }, TIMEOUT_MS) : null;
+    return fetch(API + path, { method: 'POST', body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined,
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          j = j && typeof j === 'object' ? j : {};
+          j.status_code = r.status;
+          if (!r.ok) j.ok = false;
+          return j;
+        });
+      }, function () { return { ok: false, status_code: 0 }; })
+      .then(function (j) { if (t) clearTimeout(t); return j; });
+  }
+  function errorText(j) {
+    if (j.status_code === 429) return 'Too many tries from this connection. Wait an hour and try again, or write to sig@farmers1st.com.';
+    if (!j.status_code || j.status_code >= 500) return 'We couldn\u2019t reach the gift card desk just now. Try again in a minute.';
+    return j.error || 'That code didn\u2019t work. Check it against the card.';
+  }
+
+  function stateFrom(j, code) {
+    var G = { ok: !!j.ok, usable: false, code: code, kind: j.kind, product: j.product, to: j.to || '', from_line: j.from_line || '',
+      ships: j.ships || 'now', status: j.status, redeemed_on: j.redeemed_on || null, lock: null, locked: [], text: '', error: '' };
+    if (!j.ok) { G.error = errorText(j); return G; }
+    if (j.lock && j.lock.design_code) {
+      var d = null;
+      try { d = root.RainPrint && root.RainPrint.decodeCode ? root.RainPrint.decodeCode(j.lock.design_code) : null; } catch (e) { d = null; }
+      G.lock = { design_code: j.lock.design_code, edit: j.lock.edit === 'name' ? 'name' : 'none', design: d, summary: summary(j.lock.design_code) };
+      G.locked = LOCKABLE.filter(function (k) { return !(G.lock.edit === 'name' && k === 'name'); });
+    }
+    var from = G.from_line ? 'A gift from ' + G.from_line : 'A gift for you';
+    var what = product(G.product);
+    var yr = G.lock && G.lock.summary ? G.lock.summary.year : '';
+    if (G.status === 'redeemed') G.text = 'This card was used on ' + G.redeemed_on + '. If that wasn\u2019t you, write to sig@farmers1st.com.';
+    else if (G.status === 'void') G.text = 'This card is no longer active. Write to sig@farmers1st.com and Sig will sort it out.';
+    else if (G.status === 'pending') G.text = 'This card is being used right now. Try again in two minutes.';
+    else {
+      G.usable = true;
+      G.text = from + ': ' + what + '. ' + (G.lock
+        ? 'The design is already chosen' + (G.lock.edit === 'name' ? '; you can change the name line' : '') + '. Add where it goes and press Use my gift.'
+        : 'Pick the farm and the year, then press Use my gift.') +
+        (G.ships === 'january' ? ' Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the year\u2019s last rain is in.' : '');
+    }
+    return G;
+  }
+
+  var BANNER_CSS = '.rpg-banner{border:1px solid var(--border-2,#c9ccc4);border-left:4px solid #2B5C8A;border-radius:6px;padding:12px 14px;margin:0 0 1rem;background:var(--surface,#fff);color:var(--text,#1E2125);line-height:1.55}' +
+    '.rpg-banner p{margin:0 0 .4rem}.rpg-banner p:last-child{margin:0}.rpg-banner b{font-weight:600}' +
+    '.rpg-banner .rpg-code{font-family:"IBM Plex Mono",monospace;font-size:.85em;color:var(--text-dim,#5E6475)}' +
+    '.rpg-banner.rpg-bad{border-left-color:#A8321E}.rpg-banner form{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}' +
+    '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:uppercase;flex:1 1 14em;max-width:20em}' +
+    '.rpg-banner button{font:inherit;font-weight:600;min-height:40px;padding:0 .9rem;border-radius:4px;border:1px solid #2B5C8A;background:#2B5C8A;color:#fff;cursor:pointer}';
+  function css(doc) {
+    if (doc.getElementById('rpg-css')) return;
+    var s = doc.createElement('style'); s.id = 'rpg-css'; s.textContent = BANNER_CSS;
+    (doc.head || doc.documentElement).appendChild(s);
+  }
+  function banner(el, G, retry) {
+    if (!el) return;
+    var doc = el.ownerDocument;
+    css(doc);
+    el.hidden = false;
+    el.className = 'rpg-banner' + (G.usable ? '' : ' rpg-bad');
+    el.setAttribute('role', 'status');
+    var html = '<p><b>' + esc(G.ok ? G.text : G.error) + '</b></p>';
+    if (G.ok && G.to) html += '<p>For ' + esc(G.to) + '. <span class="rpg-code">Card ' + esc(G.code) + '</span></p>';
+    if (!G.ok) html += '<form novalidate><label class="sr-only" for="rpg-in">Gift card code</label><input id="rpg-in" autocomplete="off" spellcheck="false" placeholder="RP-XXXX-XXXX-XXXX" value="' + esc(G.code || '') + '"><button type="submit">Check the code</button></form>';
+    el.innerHTML = html;
+    var f = el.querySelector('form');
+    if (f && retry) f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var c = norm(el.querySelector('input').value);
+      if (!c) { el.querySelector('b').textContent = 'That isn\u2019t a gift card code. It looks like RP-7K3M-Q9TW-H2F4.'; return; }
+      retry(c);
+    });
+  }
+
+  function remember(code) { try { root.sessionStorage.setItem(KEY, code); } catch (e) { /* only this load knows it */ } }
+  function fromUrl() {
+    var code = '';
+    try {
+      var q = new URLSearchParams(root.location.search);
+      if (q.has('gift') && q.get('gift') !== '1') {   // ?gift=1 is the January design flag, not a card
+        code = norm(q.get('gift')) || String(q.get('gift')).slice(0, 40);
+        q.delete('gift');
+        var s = q.toString();
+        root.history.replaceState(root.history.state, '', root.location.pathname + (s ? '?' + s : '') + root.location.hash);
+      }
+    } catch (e) { code = ''; }
+    if (code) { remember(code); return code; }
+    try { code = root.sessionStorage.getItem(KEY) || ''; } catch (e) { code = ''; }
+    return code;
+  }
+  function open(code, opts) {
+    opts = opts || {};
+    var c = norm(code);
+    var go = function (cc) {
+      return post('check', { code: cc }).then(function (j) {
+        var G = stateFrom(j, cc);
+        if (G.ok) remember(cc);
+        banner(opts.banner, G, function (again) { go(again).then(opts.onChange || function () {}); });
+        return G;
+      });
+    };
+    if (!c) {
+      var G = stateFrom({ ok: false, status_code: 400, error: 'That isn\u2019t a gift card code. Type it as it is on the card.' }, String(code || ''));
+      banner(opts.banner, G, function (again) { go(again).then(opts.onChange || function () {}); });
+      return Promise.resolve(G);
+    }
+    return go(c);
+  }
+  function redeem(G, order) {
+    if (!G || !G.usable) return Promise.resolve({ ok: false, error: 'This card can\u2019t be used.' });
+    var body = { code: G.code };
+    ['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page'].forEach(function (k) {
+      if (order && order[k] != null && order[k] !== '') body[k] = order[k];
+    });
+    return post('redeem', body).then(function (j) {
+      if (j.ok) { G.usable = false; G.status = 'redeemed'; try { root.sessionStorage.removeItem(KEY); } catch (e) {} return j; }
+      return { ok: false, error: errorText(j), status: j.status_code };
+    });
+  }
+  function doneHtml(G, r) {
+    var jan = r && r.ships === 'january';
+    return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> Sig has your order and will email you a proof' +
+      (jan ? ' in January, once the year\u2019s last rain is in' : ' within a day') + '. Nothing prints until you say it looks right.</p>' +
+      (r && r.upgrade ? '<p>You picked more than the card covers, so Sig will email a link for the difference.</p>' : '') +
+      '<p>Card ' + esc(G.code) + ' is now used.</p></div>';
+  }
+  // For rp-gift.html: the card's own data (needs the k from Sig's link).
+  function card(c, k) {
+    var ctl = root.AbortController ? new root.AbortController() : null;
+    var t = ctl ? setTimeout(function () { ctl.abort(); }, TIMEOUT_MS) : null;
+    return fetch(API + 'card?c=' + encodeURIComponent(c) + '&k=' + encodeURIComponent(k), { signal: ctl ? ctl.signal : undefined, headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j = j || {}; j.status_code = r.status; if (!r.ok) j.ok = false; return j; }); },
+        function () { return { ok: false, status_code: 0 }; })
+      .then(function (j) { if (t) clearTimeout(t); return j; });
+  }
+
+  root.AgRpGift = { norm: norm, product: product, summary: summary, fromUrl: fromUrl, open: open, redeem: redeem,
+    doneHtml: doneHtml, card: card, errorText: errorText, LOCKABLE: LOCKABLE, API: API, _state: stateFrom };
+})(typeof window !== 'undefined' ? window : this);
