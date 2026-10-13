@@ -11,6 +11,8 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rp-fraunces-opsz-400i.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rp-plex-sans-400i.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -90,21 +92,38 @@
   .rp-side{display:contents}
   .rp-side>*{order:7}
   #rp-gift-banner{order:0}.rp-side>.rp-kick{order:1}.rp-side>h1{order:2}.rp-side>.rp-lede{order:3}
-  .rp-wall{order:4}.rp-form{order:5}
+  .rp-wall{order:4}#rp-draw-h,.rp-form,.rp-side>.rp-style-pick{order:5}
   #rp-link-note,#rp-status,#rp-pick,#rp-retry-row{order:6}
   .rp-hero>*{margin-top:0;margin-bottom:0}
   #main .rp .rp-side>h1{font-size:clamp(1.55rem,4.2vw,2.3rem);text-wrap:balance}
   .rp-side>.rp-lede{max-width:68ch;font-size:var(--fs-sm)}
-  @media(max-width:899px){
-    .rp-mini:not([hidden]){display:block;position:sticky;top:64px;z-index:5;width:62%;margin:0 auto .8rem;padding:4px;background:#131313;border-radius:2px;box-shadow:0 8px 16px -8px rgba(0,0,0,.5)}
-    .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
-    .rp-opts input,.rp-opts select{scroll-margin-top:calc(80px + 42vw)}
+  /* Steps: 1 draw, 2 style, name and dates, 3 prices and ordering. */
+  .rp-step-h{display:flex;align-items:center;gap:.55rem;margin:0;font-size:var(--fs-lg);line-height:1.25}
+  .rp-hero>.rp-step-h{margin-top:.4rem}
+  .rp-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--brand-fill);color:#0a0c0d;font-family:var(--font-mono);font-size:.8em;font-weight:700}
+  #rp-draw-h,#rp-design,#rp-buy,.rp-order{scroll-margin-top:84px}
+  #rp-buy-h:focus{outline:none}
+  #rp-buy-h:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+  .rp-acts-next{margin:1rem 0 0}
+  /* Section 2 keeps a small copy of the print in view while the words are typed:
+     on a phone it sits at the top of the screen, on a wide screen beside the boxes. */
+  .rp-mini:not([hidden]){display:block;position:sticky;top:68px;z-index:5;width:62%;max-width:340px;margin:0 auto .8rem;padding:4px;background:#131313;border-radius:2px;box-shadow:0 8px 16px -8px rgba(0,0,0,.5);cursor:zoom-in}
+  .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
+  @media(max-width:899px){.rp-opts input,.rp-opts select{scroll-margin-top:calc(84px + min(42vw,230px))}}
+  @media(min-width:900px){
+    .rp-design-grid:has(>.rp-mini:not([hidden])){display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,380px);gap:0 1.6rem;align-items:start}
+    .rp-design-main{grid-column:1;grid-row:1;min-width:0}
+    .rp-mini:not([hidden]){grid-column:2;grid-row:1;top:88px;width:auto;max-width:none;margin:0;padding:3.2%}
+    .rp-design .rp-dates{grid-template-columns:1fr}
   }
   @media(min-width:900px){
-    .rp-hero{max-width:900px;margin:0 auto;gap:.6rem}
+    /* the hero runs the page's full width so steps 1, 2 and 3 line up */
+    .rp-hero{gap:.6rem}
     #main .rp .rp-side>h1{font-size:1.5rem}
     .rp-wall{width:100%;box-sizing:border-box}
-    .rp-side>.rp-lede{max-width:none}
+    .rp-side>.rp-lede{max-width:78ch}
+    .rp-side>.rp-source{max-width:96ch}
+    .rp-form{max-width:760px}
     .rp-wall{margin:.4rem 0;padding:26px 40px 2px;border-radius:var(--r-lg)}
     .rp-frame{max-width:560px}
     .rp-cap{max-width:560px}
@@ -116,6 +135,7 @@
   .rp-form .btn{flex:0 0 auto;min-width:8rem}
   .rp textarea{min-height:88px;resize:vertical}
   .rp-xmas{font-size:var(--fs-sm);color:var(--text-dim);margin:0 0 .6rem;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-8);background:var(--surface);line-height:1.5}
+  .rp-xmas a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
   .rp-xmas p{margin:0 0 .35rem}.rp-xmas p:last-child{margin:0}.rp-xmas b{color:var(--text)}
   .rp-status{font-size:var(--fs-sm);color:var(--text-muted);min-height:1.4em;margin:.2rem 0 .5rem;line-height:1.5}
   .rp-status:empty{min-height:0;margin:0}
@@ -137,6 +157,8 @@
   .rp-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem 1rem;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md)}
   .rp-opts .rp-wide2,.rp-dates{grid-column:1/-1}
   .rp-ex-note{margin:0;padding:.6rem .8rem;border-left:3px solid var(--gold,#A87D1E);background:var(--surface-2,rgba(255,255,255,.04));font-size:var(--fs-sm)}
+  .rp-ex-note.rp-flash{animation:rp-flash 1.8s ease-out}
+  @keyframes rp-flash{0%,30%{box-shadow:0 0 0 3px var(--gold,#A87D1E)}100%{box-shadow:0 0 0 3px transparent}}
   .rp-ex-note .btn{margin-left:.4rem;min-height:var(--btn-h);padding:.2rem .7rem;font-size:var(--fs-xs)}
   .rp-opts fieldset{border:0;margin:0;padding:0;min-width:0}
   .rp-opts legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin:0 0 .3rem;padding:0}
@@ -149,7 +171,7 @@
   .rp-dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
   .rp-dates-h{grid-column:1/-1;margin:0;font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
   .rp-date{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
-  .rp-style-pick{border:0;padding:0;margin:.8rem 0 .2rem}
+  .rp-style-pick{border:0;padding:0;margin:0}
   .rp-style-pick legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin-bottom:.35rem;padding:0}
   .rp-checks{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem}
   .rp-check{display:inline-flex;align-items:center;gap:.5rem;min-height:var(--btn-h);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer}
@@ -159,7 +181,7 @@
   .rp-count.rp-at{color:var(--text);font-weight:600}
   .rp-dates-n{grid-column:1/-1;margin:0}
   .rp-presets{display:inline-flex;flex-wrap:wrap;gap:.3rem;vertical-align:middle}
-  .rp-presets button{font:inherit;font-size:var(--fs-xs);min-height:32px;padding:0 .6rem;border:1px solid var(--border-2);border-radius:var(--r-pill);background:var(--bg);color:var(--text-dim);cursor:pointer}
+  .rp-presets button{font:inherit;font-size:var(--fs-xs);min-height:36px;padding:0 .6rem;border:1px solid var(--border-2);border-radius:var(--r-pill);background:var(--bg);color:var(--text-dim);cursor:pointer}
   .rp-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.2rem 1rem;margin:0 0 .6rem}
   .rp-stats div{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px solid var(--border);padding:5px 0;font-size:var(--fs-sm)}
   .rp-stats dt{color:var(--text-muted)} .rp-stats dd{margin:0;font-family:var(--font-mono);text-align:right}
@@ -179,7 +201,7 @@
   .rp-sig figcaption{margin-top:.35rem;font-size:var(--fs-xs);color:var(--text-muted)}
 
   /* prices and the order form */
-  .rp-buy{scroll-margin-top:12px}
+  @media(pointer:coarse){.rp-presets button{min-height:44px}}
   .rp-prods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
   .rp-prod{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;display:flex;flex-direction:column;gap:.45rem}
   .rp-prod h3{margin:0;font-size:var(--fs-lg)}
@@ -191,7 +213,7 @@
   .rp-prod .btn:disabled{opacity:.55;cursor:not-allowed}
   .rp-buy.rp-off .rp-prod{opacity:.6}
   .rp-code{font-family:var(--font-mono);font-size:var(--fs-xs);word-break:break-all;color:var(--text-dim)}
-  .rp-order{margin:1rem 0 0;padding:16px;background:var(--surface);border:1px solid var(--border-g);border-radius:var(--r-md);scroll-margin-top:12px}
+  .rp-order{margin:1rem 0 0;padding:16px;background:var(--surface);border:1px solid var(--border-g);border-radius:var(--r-md)}
   .rp-order h3{margin:0 0 .4rem;font-size:var(--fs-lg)}
   .rp-ogrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
   .rp-ogrid .rp-wide{grid-column:1/-1}
@@ -259,27 +281,47 @@
   .rp-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.6rem 0 1rem;font-size:var(--fs-sm)}
   .rp-links a{display:inline-flex;align-items:center;min-height:var(--btn-h);border:1px solid var(--border);border-radius:var(--r-pill);padding:0 .9rem;color:var(--link);text-decoration:none}
 
-  /* the proof: the exact print file, fit or at actual size, framed or not */
-  .rp-proof{width:min(1180px,calc(100vw - 16px));max-width:none;max-height:calc(100dvh - 16px);padding:14px 16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);color:var(--text);box-sizing:border-box}
+  /* the proof: the exact print file, fit or at actual size, framed or not. The
+     dialog takes the screen's height; the print gets what the bar and the
+     order row leave, so the order button is always in view. */
+  .rp-proof{--sp:16px;--fp:24px;width:min(1180px,calc(100vw - 16px));max-width:none;height:min(900px,calc(100dvh - 16px));max-height:calc(100dvh - 16px);padding:14px 16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);color:var(--text);box-sizing:border-box;overflow:hidden;margin:auto;inset:0}
+  .rp-proof[open]{display:flex;flex-direction:column;gap:.5rem}
   .rp-proof::backdrop{background:rgba(0,0,0,.6)}
-  .rp-proof-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 .5rem}
+  .rp-proof-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex:none}
   .rp-proof-top h2{margin:0;font-size:var(--fs-lg)}
-  .rp-proof-bar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:0 0 .6rem}
+  .rp-proof-bar{display:flex;flex-wrap:wrap;gap:.4rem 1rem;flex:none}
+  .rp-proof-bar .rp-seg{gap:.3rem}
   .rp-proof-bar .chip{min-height:var(--btn-h);padding:.3rem .8rem;font-size:var(--fs-sm)}
-  .rp-proof-stage{overflow:auto;max-height:62dvh;background:linear-gradient(180deg,var(--rp-wall-a,#3a3630),var(--rp-wall-b,#27241f));border-radius:var(--r-8);padding:16px;cursor:grab;-webkit-overflow-scrolling:touch}
+  .rp-proof-stage{flex:1 1 auto;min-height:150px;container-type:size;overflow:auto;background:linear-gradient(180deg,var(--rp-wall-a,#3a3630),var(--rp-wall-b,#27241f));border-radius:var(--r-8);padding:var(--sp);box-sizing:border-box;cursor:grab;-webkit-overflow-scrolling:touch}
   .rp-proof-frame{margin:0 auto;background:#fff}
-  .rp-proof[data-zoom="fit"] .rp-proof-frame{max-width:calc((62dvh - 32px) * 1.5 - 48px)}
-  .rp-proof[data-zoom="fit"][data-view="framed"] .rp-proof-frame{max-width:calc((62dvh - 80px) * 1.5 + 48px)}
-  .rp-proof[data-view="framed"] .rp-proof-frame{background:#131313;padding:24px;box-shadow:0 12px 24px -10px rgba(0,0,0,.5)}
+  .rp-proof[data-zoom="fit"] .rp-proof-stage{display:flex;align-items:center}
+  .rp-proof[data-zoom="fit"] .rp-proof-frame{width:100%;max-width:calc((100cqh - 2 * var(--sp)) * 1.5)}
+  .rp-proof[data-zoom="fit"][data-view="framed"] .rp-proof-frame{max-width:calc((100cqh - 2 * var(--sp) - 2 * var(--fp)) * 1.5 + 2 * var(--fp))}
+  .rp-proof[data-view="framed"] .rp-proof-frame{background:#131313;padding:var(--fp);box-shadow:0 12px 24px -10px rgba(0,0,0,.5)}
   .rp-proof-art{background:#fff}
   .rp-proof-art svg{display:block;width:100%;height:auto}
   .rp-proof[data-zoom="close"] .rp-proof-frame{width:max-content}
   .rp-proof[data-zoom="close"] .rp-proof-art svg{width:12in;max-width:none}
   .rp-proof[data-zoom="full"] .rp-proof-frame{width:max-content}
   .rp-proof[data-zoom="full"] .rp-proof-art svg{width:18in;max-width:none}
-  .rp-proof-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.2rem 1rem;margin:.7rem 0 .3rem;font-size:var(--fs-sm)}
-  .rp-proof-sum div{display:flex;gap:.5rem;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0}
-  .rp-proof-sum dt{color:var(--text-muted)}.rp-proof-sum dd{margin:0;text-align:right;color:var(--text);overflow-wrap:anywhere}
+  .rp-proof-foot{flex:none;max-height:48%;display:flex;flex-direction:column;gap:.3rem;min-height:0}
+  .rp-proof-more{flex:0 1 auto;min-height:0;overflow:auto}
+  .rp-proof-go,#rp-proof-why{flex:none}
+  .rp-proof-more>summary{cursor:pointer;min-height:var(--btn-h);display:flex;align-items:center;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
+  .rp-proof-more .rp-note{margin:.3rem 0 .4rem}
+  .rp-proof-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.2rem 1rem;margin:.2rem 0 .3rem;font-size:var(--fs-sm)}
+  .rp-proof-sum div{display:flex;gap:.8rem;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0}
+  .rp-proof-sum dt{color:var(--text-muted);flex:none;white-space:nowrap}.rp-proof-sum dd{margin:0;text-align:right;color:var(--text);overflow-wrap:anywhere}
+  .rp-proof-go{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.4rem 1rem}
+  .rp-proof-go .rp-check{flex:1 1 220px}
+  #rp-proof-why{margin:.2rem 0;color:var(--text)}
+  @media(max-width:600px){
+    .rp-proof{--sp:8px;--fp:10px;width:calc(100vw - 12px);height:calc(100dvh - 12px);max-height:calc(100dvh - 12px);padding:10px 12px}
+    .rp-proof-top h2{font-size:var(--fs-md)}
+    .rp-proof-bar{gap:.35rem .6rem}
+    .rp-proof-bar .chip{padding:.3rem .6rem}
+    .rp-proof-go .btn{flex:1 1 100%}
+  }
   .rp-sum{margin:.4rem 0 .8rem;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-8);background:var(--bg);font-size:var(--fs-sm);line-height:1.5}
   .rp-sum p{margin:0 0 .35rem}.rp-sum ol{margin:.2rem 0 0;padding-left:1.3rem}
   .rp-sum dl{display:grid;grid-template-columns:max-content 1fr;gap:.15rem .8rem;margin:0 0 .5rem}.rp-sum dt{color:var(--text-muted)}.rp-sum dd{margin:0;overflow-wrap:anywhere}
@@ -315,25 +357,26 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Rain Print</nav>
 
     <div class="rp-hero">
-      <figure class="rp-wall" id="rp-wall" data-view="framed">
-        <div class="rp-frame"><div class="rp-art rp-empty" id="rp-art"><p class="rp-placeholder">Type the town nearest the farm and press Draw.</p></div></div>
-        <figcaption class="rp-cap">
-          <span class="rp-cap-l"><span id="rp-sample-txt">12 x 18 print in a black frame</span><span class="rp-sample-line" id="rp-sample-line" hidden> <button type="button" class="rp-sample-use" id="rp-sample-use">Order this one</button></span></span>
-          <span class="rp-view" role="group" aria-label="Show the print">
-            <button type="button" class="chip" data-view="framed" aria-pressed="true">Framed</button>
-            <button type="button" class="chip" data-view="print" aria-pressed="false">Print only</button>
-            <button type="button" class="chip rp-zoom-btn" id="rp-zoom" disabled>Zoom in</button>
-          </span>
-        </figcaption>
-      </figure>
-
       <div class="rp-side">
         <div id="rp-gift-banner" hidden></div>
         <p class="sec-label rp-kick">Rain Print</p>
         <h1>A year of rain on the farm, or back home, printed for the wall</h1>
         <p class="rp-lede">Every farmer has a year they still talk about. Type the town and the year, and this draws every rain that fell there, from the nearest NOAA weather station. Put a name on it and mark up to three days that mattered. Drawing it is free. A print file is $19; a 12 x 18 print is $45, or $89 framed, shipping included.</p>
 
-        <form class="rp-form" id="rp-form" autocomplete="off">
+        <figure class="rp-wall" id="rp-wall" data-view="framed">
+          <div class="rp-frame"><div class="rp-art rp-empty" id="rp-art"><p class="rp-placeholder">Type the town nearest the farm and press Draw.</p></div></div>
+          <figcaption class="rp-cap">
+            <span class="rp-cap-l"><span id="rp-sample-txt">12 x 18 print in a black frame</span><span class="rp-sample-line" id="rp-sample-line" hidden> <button type="button" class="rp-sample-use" id="rp-sample-use">Order this one</button></span></span>
+            <span class="rp-view" role="group" aria-label="Show the print">
+              <button type="button" class="chip" data-view="framed" aria-pressed="true">Framed</button>
+              <button type="button" class="chip" data-view="print" aria-pressed="false">Print only</button>
+              <button type="button" class="chip rp-zoom-btn" id="rp-zoom" disabled>Zoom in</button>
+            </span>
+          </figcaption>
+        </figure>
+
+        <h2 class="rp-step-h" id="rp-draw-h"><span class="rp-n" aria-hidden="true">1</span>Draw your year</h2>
+        <form class="rp-form" id="rp-form" autocomplete="off" aria-labelledby="rp-draw-h">
           <label class="field rp-place"><span>Town nearest the farm or home</span><input id="rp-place" type="text" maxlength="32" placeholder="Chetek, WI" required></label>
           <label class="field rp-year"><span>Year</span><select id="rp-year"><option value="2025">2025</option></select></label>
           <button class="btn btn-primary" id="rp-go" type="submit">Draw it</button>
@@ -342,20 +385,15 @@
           <label><input type="radio" name="rp-style" value="r1" checked><span>Staircase</span></label>
           <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
         </div></fieldset>
-        <div class="rp-xmas" id="rp-gift-hint">
-          <p><b>For Christmas.</b> <span id="rp-xmas-past">Any past year can be there by Christmas. The order-by dates are on the price cards below.</span></p>
-          <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: once you&rsquo;ve paid, I email you a card to print for under the tree, and the print follows in January.</p>
-        </div>
         <p class="rp-status rp-bad" id="rp-link-note" hidden></p>
         <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
         <div class="rp-pick" id="rp-pick" role="group" aria-label="Which town?" hidden></div>
         <p class="rp-retry-row" id="rp-retry-row" hidden><button type="button" class="btn btn-secondary" id="rp-retry">Try again</button></p>
         <p class="rp-preview-line" id="rp-preview-line" hidden></p>
         <p class="rp-source" id="rp-source"></p>
-        <div class="rp-acts">
-          <a class="btn btn-secondary" id="rp-to-buy" href="#rp-buy">Prices and ordering</a>
+        <div class="rp-acts rp-acts-hero">
+          <a class="btn btn-secondary" id="rp-to-design" href="#rp-design">Next: add a name and dates</a>
           <button class="btn btn-secondary" id="rp-copy" type="button">Copy link</button>
-          <button class="btn btn-secondary" id="rp-proof-open" type="button" disabled>See it full size</button>
           <button class="btn btn-secondary" id="rp-dl" type="button" disabled>Download a preview</button>
         </div>
         <p class="rp-note" id="rp-dl-note" aria-live="polite"></p>
@@ -371,9 +409,11 @@
       </div>
     </div>
 
-    <section class="rp-sec" aria-labelledby="rp-design-h">
-      <h2 class="sec-h" id="rp-design-h">Add a name and dates</h2>
+    <section class="rp-sec rp-design" id="rp-design" aria-labelledby="rp-design-h">
+      <h2 class="sec-h rp-step-h" id="rp-design-h"><span class="rp-n" aria-hidden="true">2</span>Add a name and dates</h2>
+      <div class="rp-design-grid">
       <div class="rp-mini" id="rp-mini" aria-hidden="true" hidden></div>
+      <div class="rp-design-main">
       <div class="rp-opts">
         <p class="rp-ex-note rp-wide2" id="rp-ex-note" hidden>I filled this in with an example so you can see everything a print can carry. Type over it, or clear the parts you don&rsquo;t want. <button type="button" class="btn btn-secondary" id="rp-ex-clear">Clear the example</button></p>
         <div class="rp-wide2"><label class="field"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm" aria-describedby="rp-name-n"></label><p class="rp-count" id="rp-name-n" aria-live="polite">0 of 24 letters</p></div>
@@ -402,45 +442,28 @@
       <div id="rp-stats-wrap" hidden>
         <details class="rp-stats-d"><summary>The year in numbers</summary><dl class="rp-stats" id="rp-stats"></dl></details>
       </div>
-    </section>
-
-    <section class="rp-sec" aria-labelledby="rp-why-h">
-      <h2 class="sec-h" id="rp-why-h">Which year to pick</h2>
-      <p class="rp-p">If it's a gift, for Christmas, a retirement or an anniversary, the year usually picks itself:</p>
-      <ul class="rp-years">
-        <li>The drought, when the gauge sat empty for weeks</li>
-        <li>The flood, or the spring you couldn't get in the field</li>
-        <li>The first crop on new ground</li>
-        <li>The year the farm changed hands</li>
-        <li>A mom's or dad's last crop</li>
-        <li>The year you got married</li>
-        <li>The last year before retiring</li>
-      </ul>
-    </section>
-
-    <section class="rp-sec" aria-labelledby="rp-how-h">
-      <h2 class="sec-h" id="rp-how-h">How ordering works</h2>
-      <ol class="rp-steps">
-        <li><b>Draw it here.</b> Type the town nearest the farm, pick the year, and change the name and dates to yours. Drawing is free.</li>
-        <li><b>I email you a proof.</b> Within a day you get the proof and a payment link. Nothing&rsquo;s charged until you pay it, and I don&rsquo;t print until you OK the proof. Shipping is in the price.</li>
-        <li><b>I print it and ship it.</b> On my own Epson, framed if you ordered the frame, shipped from Chetek, Wisconsin.</li>
-      </ol>
-      <figure class="rp-sig">
-        <blockquote><p>I'm a crop adviser in Chetek, Wisconsin, and I run AGSIST. I print every one of these myself, one at a time, and you see yours before I do.</p></blockquote>
-        <figcaption>Sigurd Lindquist, Certified Crop Adviser (CCA)</figcaption>
-      </figure>
+      </div>
+      </div>
+      <div class="rp-acts rp-acts-next">
+        <button class="btn btn-secondary" id="rp-proof-open" type="button" disabled>See it up close</button>
+        <a class="btn btn-secondary" id="rp-to-buy" href="#rp-buy">Next: prices and ordering</a>
+      </div>
     </section>
 
     <section class="rp-buy rp-sec" id="rp-buy" aria-labelledby="rp-buy-h">
-      <h2 class="sec-h" id="rp-buy-h">Prices</h2>
+      <h2 class="sec-h rp-step-h" id="rp-buy-h" tabindex="-1"><span class="rp-n" aria-hidden="true">3</span>Prices and ordering</h2>
+      <div class="rp-xmas" id="rp-gift-hint">
+        <p><b>For Christmas.</b> <span id="rp-xmas-past">Any past year can be there by Christmas. The order-by dates are on the price cards below.</span></p>
+        <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: pick <span class="rp-cy">2026</span> in the <a href="#rp-draw-h" class="rp-inl">Year box up top</a>. Once you&rsquo;ve paid, I email you a card to print for under the tree, and the print follows in January.</p>
+      </div>
       <div class="rp-gift" id="rp-gift" hidden>
         <h3>Giving <span class="rp-cy">2026</span> as a gift</h3>
         <p id="rp-gift-delivery">A 2026 print ships in January, once the station&rsquo;s December numbers are in. The gift card comes as soon as you have paid, and you get a proof first, as with every order.</p>
-        <div class="rp-ogrid">
+        <div class="rp-ogrid" id="rp-gift-fields">
           <label class="field"><span>Who it's for (optional)</span><input id="rp-gift-to" type="text" maxlength="80" placeholder="Dad"></label>
           <label class="field rp-wide"><span>A message for the card (optional)</span><textarea id="rp-gift-msg" maxlength="240" rows="2" placeholder="Every inch of the year you farmed."></textarea></label>
         </div>
-        <p class="rp-note">Want a card to put under the tree? Order it as a gift with the box above filled in. Once you&rsquo;ve paid, I email you a gift card to print, with a code they use to see their print.</p>
+        <p class="rp-note" id="rp-gift-cardnote">Want a card to put under the tree? Order it as a gift with the box above filled in. Once you&rsquo;ve paid, I email you a gift card to print, with a code they use to see their print.</p>
       </div>
       <div class="rp-isgift" id="rp-isgift-wrap">
         <label class="rp-check"><input id="ro-isgift" type="checkbox"><span>It's a gift</span></label>
@@ -498,6 +521,33 @@
         </form>
         <div id="ro-out" aria-live="polite"></div>
       </div>
+    </section>
+
+    <section class="rp-sec" aria-labelledby="rp-how-h">
+      <h2 class="sec-h" id="rp-how-h">After you order</h2>
+      <ol class="rp-steps">
+        <li><b>You pay at checkout.</b> Your design goes with the payment, so I know exactly which print is yours. Shipping is in the price.</li>
+        <li><b>I email you a proof.</b> Within a business day (for this year&rsquo;s gift print, in January). Nothing prints until you OK it.</li>
+        <li><b>I print it and ship it.</b> On my own Epson, framed if you ordered the frame, shipped from Chetek, Wisconsin. A digital file comes by email instead.</li>
+      </ol>
+      <figure class="rp-sig">
+        <blockquote><p>I'm a crop adviser in Chetek, Wisconsin, and I run AGSIST. I print every one of these myself, one at a time, and you see yours before I do.</p></blockquote>
+        <figcaption>Sigurd Lindquist, Certified Crop Adviser (CCA)</figcaption>
+      </figure>
+    </section>
+
+    <section class="rp-sec" aria-labelledby="rp-why-h">
+      <h2 class="sec-h" id="rp-why-h">Which year to pick</h2>
+      <p class="rp-p">If it's a gift, for Christmas, a retirement or an anniversary, the year usually picks itself:</p>
+      <ul class="rp-years">
+        <li>The drought, when the gauge sat empty for weeks</li>
+        <li>The flood, or the spring you couldn't get in the field</li>
+        <li>The first crop on new ground</li>
+        <li>The year the farm changed hands</li>
+        <li>A mom's or dad's last crop</li>
+        <li>The year you got married</li>
+        <li>The last year before retiring</li>
+      </ul>
     </section>
 
     <section class="rp-sec rp-biz" id="rp-biz" aria-labelledby="rp-biz-h">
@@ -589,7 +639,7 @@
 </div>
   <dialog class="rp-proof" id="rp-proof" aria-labelledby="rp-proof-h">
     <div class="rp-proof-top">
-      <h2 id="rp-proof-h">Your print, up close: this is the print file</h2>
+      <h2 id="rp-proof-h">Your print, up close</h2>
       <button type="button" class="btn btn-secondary rp-proof-x" id="rp-proof-close">Close</button>
     </div>
     <div class="rp-proof-bar">
@@ -598,10 +648,17 @@
       <div class="rp-seg" role="group" aria-label="Zoom"><button type="button" class="chip" data-pzoom="fit">Fit</button><button type="button" class="chip" data-pzoom="close">Closer</button><button type="button" class="chip" data-pzoom="full">Actual size</button></div>
     </div>
     <div class="rp-proof-stage" id="rp-proof-stage" tabindex="0" aria-label="The print, scroll to move around"><div class="rp-proof-frame" id="rp-proof-frame"><div class="rp-proof-art" id="rp-proof-art"></div></div></div>
-    <dl class="rp-proof-sum" id="rp-proof-sum"></dl>
-    <p class="rp-note">Actual size is 18 x 12 inches; on a phone you can also pinch to zoom. Drag or scroll to check every word. The QR in the corner is my maker&rsquo;s mark. When I print it I add a thin edge past the border and trim it off.</p>
-    <label class="rp-check"><input type="checkbox" id="rp-proof-ok"><span>I&rsquo;ve checked the spelling and the dates</span></label>
-    <p class="rp-acts"><button type="button" class="btn btn-primary" id="rp-proof-order">Order this print</button></p>
+    <div class="rp-proof-foot">
+      <details class="rp-proof-more"><summary>What&rsquo;s on it, in words</summary>
+        <dl class="rp-proof-sum" id="rp-proof-sum"></dl>
+        <p class="rp-note">This is the print file itself. Actual size is 18 x 12 inches; on a phone you can also pinch to zoom. Drag or scroll to check every word. The QR in the corner is my maker&rsquo;s mark. When I print it I add a thin edge past the border and trim it off.</p>
+      </details>
+      <p class="rp-note rp-bad" id="rp-proof-why" hidden></p>
+      <div class="rp-proof-go">
+        <label class="rp-check"><input type="checkbox" id="rp-proof-ok"><span>I&rsquo;ve checked the spelling and the dates</span></label>
+        <button type="button" class="btn btn-primary" id="rp-proof-order">Order this print</button>
+      </div>
+    </div>
   </dialog>
   <script src="/components/loader.js?v=18" defer></script>
   <script src="/components/util.js?v=19"></script>
@@ -609,7 +666,7 @@
   <script src="/components/form-post.js?v=2"></script>
   <script src="/components/rp-short.js?v=1"></script>
   <script src="/components/rain-print-art.js?v=2"></script>
-  <script src="/components/rain-print.js?v=16"></script>
+  <script src="/components/rain-print.js?v=17"></script>
   <script src="/components/rp-gift.js?v=1" defer></script>
 </body>
 </html>

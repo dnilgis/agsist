@@ -25,6 +25,10 @@
  * Price on request: nothing here prints, suggests or links to a price.
  * Farmers First never appears in a slot, so an entry naming it is dropped.
  *
+ * Every unsold offer links to /prf-sponsor?state=XX (prf-sponsor.html), where
+ * a business sees its block drawn by render() below and asks; the mailto to
+ * Sig stays beside it as the second way.
+ *
  * Tested by test/prf-sponsor.test.mjs (node loads the pure part below).
  */
 (function (root) {
@@ -121,14 +125,18 @@
     });
   }
 
-  /* /prf: prf.js says which state the grid's county is in, on every render. */
+  /* /prf: prf.js says which state the grid's county is in, on every render.
+     The "For businesses" offer near the bottom then links to /prf-sponsor
+     with that state ticked (2026-10-13). */
   var box = doc.getElementById('prf-spon');
+  var offer = doc.querySelector ? doc.querySelector('a[data-prf-offer]') : null;
   if (box) {
     var asked = '';
     doc.addEventListener('prf:grid', function (ev) {
       var dt = (ev && ev.detail) || {}, st = dt.st || '';
       if (st === asked) return;
       asked = st;
+      if (offer) offer.setAttribute('href', ST_RE.test(st) ? '/prf-sponsor?state=' + st : '/prf-sponsor');
       load().then(function (d) {
         if (asked !== st) return;
         var sp = pick(d, st, today());

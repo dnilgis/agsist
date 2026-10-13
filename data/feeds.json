@@ -1436,10 +1436,12 @@
   {
    "path": "data/prf-sponsors.json",
    "pages": [
+    "prf-sponsor.html",
     "prf.html"
    ],
    "written_by": [],
    "touched_by": [
+    "Site forms digest",
     "Rebuild Feed Manifest"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -1483,7 +1485,8 @@
   {
    "path": "data/prf/meta.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "prf-sponsor.html"
    ],
    "written_by": [
     "prf"
@@ -1793,6 +1796,7 @@
   {
    "path": "data/sponsor-slots.json",
    "pages": [
+    "prf-sponsor.html",
     "sponsor.html"
    ],
    "written_by": [],
