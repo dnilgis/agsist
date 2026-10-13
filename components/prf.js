@@ -1053,6 +1053,17 @@
     $('prf-chart-cap').textContent = 'What it would have paid, year by year' + (S.B ? ': setup A as bars' + (RB && RB.ok ? ', setup B as dots' : '') : '');
     remember();
     lookNow();
+    // Panels that read the page's grid: the long-range outlook and "What the numbers would pick".
+    try { document.dispatchEvent(new CustomEvent('prf:grid', { detail: { grid: S.grid, split: cur().split } })); } catch (e) {}
+    try {
+      var g_ = openGrid(S.grid), s_ = cur();
+      /* Kept on window.AgPrf.optCtx too: this can run before prf-optimize-ui.js has loaded (a returning
+         reader's grid opens from cache), and that file picks the last one up when it arrives. */
+      var optCtx = g_ && !g_.stale ? { grid: S.grid, county: county().n + ' County, ' + S.st, index: g_.done, rates: g_.rates, avgMm: g_.avgMm, limits: minmax(), cov: s_.cov, pf: s_.pf, acres: S.acres, share: S.share, cbv: baseValue(), subsidy: meta.subsidy, lastComplete: meta.years.last_complete, src: SRC,
+        apply: function (sp) { var s = cur(); s.split = sp.slice(); s.even = false; S.touched = true; render(); $('prf-iv-h').scrollIntoView({ block: 'start' }); } } : null;
+      if (window.AgPrf) window.AgPrf.optCtx = optCtx;
+      if (optCtx && window.AgPrfOptUI) window.AgPrfOptUI.update(optCtx);
+    } catch (e) {}
   }
 
   /* ---------------------------------------------------------------- wiring */

@@ -197,6 +197,7 @@
   function mount(el) {
     if (!el || el.getAttribute('data-prfo') === 'on') return;
     el.setAttribute('data-prfo', 'on');
+    /* The page ships it hidden; it stays hidden until the outlook file loads, so a missing file shows nothing. */
     el.classList.add('prfo');
     el.setAttribute('aria-labelledby', 'prf-outlook-h');
     if (!document.getElementById('prfo-css')) {
@@ -223,8 +224,8 @@
       if (want === key) return;
       want = key;
       body.innerHTML = '<p class="prfo-withheld">Loading the outlook for grid ' + esc(g.grid) + '…</p>';
-      (load() || Promise.resolve(data)).then(function () { if (want === key) body.innerHTML = render(data, +g.grid, g.split, today); },
-        function () { if (want === key) { want = null; body.innerHTML = '<p class="prfo-withheld">The outlook file did not load, so nothing is shown here. The calculator above does not need it. Reload the page to try again.</p>'; } });
+      (load() || Promise.resolve(data)).then(function () { if (want === key) { body.innerHTML = render(data, +g.grid, g.split, today); el.hidden = false; } },
+        function () { if (want === key) { want = null; el.hidden = true; } });
     }
     document.addEventListener('prf:grid', function (ev) { eventSeen = true; show(ev.detail || {}); });
     /* Until prf.js sends the event: read the state it already exposes. */

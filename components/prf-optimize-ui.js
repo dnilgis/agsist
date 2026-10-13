@@ -264,4 +264,7 @@
   }
 
   root.AgPrfOptUI = { update: update, _state: state };
+  /* prf.js may have rendered a grid before this file loaded; take its last context. */
+  var pending = root.AgPrf && root.AgPrf.optCtx;
+  if (pending && typeof document !== 'undefined') update(pending);
 })(typeof window !== 'undefined' ? window : globalThis);
