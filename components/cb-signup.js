@@ -134,9 +134,10 @@
       + '<div class="cbs-row"><label class="cbs-sr" for="' + id + '-e">Email address</label>'
       + '<input type="email" class="cbs-em" id="' + id + '-e" autocomplete="email" inputmode="email" placeholder="Email address" aria-describedby="' + id + '-m">'
       + '<button type="submit" class="cbs-go">Email me</button></div>'
+      + '<p class="cbs-ok" role="status"></p>'
       + '<p class="cbs-msg" id="' + id + '-m" role="alert"></p>'
-      + '<p class="cbs-note">Free. ' + (onDaily ? '' : 'The morning email is AGSIST Daily: those bids first, then the markets. ')
-      + 'The price alert is one email when an elevator AGSIST reads direct posts your price, after you confirm it by email. Every email has an unsubscribe link.</p>'
+      + '<p class="cbs-note">Free. ' + (onDaily ? '' : 'The morning email is AGSIST Daily: these bids first, then the markets. ')
+      + 'A price alert watches the boards AGSIST reads direct and starts once you confirm it by email. Every email has an unsubscribe link.</p>'
       + '</form></section>';
     el.innerHTML = h;
     el.setAttribute('data-cbs-ready', '1');
@@ -147,6 +148,7 @@
     var form = el.querySelector('form'), d = form.querySelector('.cbs-d'), p = form.querySelector('.cbs-p');
     var crop = form.querySelector('.cbs-crop'), price = form.querySelector('.cbs-price'), zf = form.querySelector('.cbs-zip');
     var em = form.querySelector('.cbs-em'), msg = form.querySelector('.cbs-msg'), go = form.querySelector('.cbs-go');
+    var okEl = form.querySelector('.cbs-ok');
     var where = form.querySelector('.cbs-where'), zipTouched = false;
     var saved = store('cba_email'); if (saved && EMAIL_RE.test(saved)) em.value = saved;
     function hint() { price.placeholder = o.top[crop.value] || ''; }
@@ -174,7 +176,7 @@
       return false;
     }
     function clear() {
-      msg.textContent = '';
+      msg.textContent = ''; okEl.innerHTML = '';
       [price, em, zf].forEach(function (f) { if (f) f.removeAttribute('aria-invalid'); });
     }
     form.addEventListener('submit', function (e) {
@@ -209,12 +211,26 @@
         if (okD && d) { d.checked = false; d.closest('.cbs-opt').hidden = true; o.onDaily = true; }
         if (okP) p.checked = false;
         go.disabled = false; go.textContent = 'Email me';
-        msg.innerHTML = (done.length ? done.join(' ') + ' ' : '') + esc(errs.join(' '));
+        okEl.innerHTML = done.join(' ');
+        msg.textContent = errs.join(' ');
         var bad1 = errs.join(' ').indexOf('email address') >= 0 ? em : null;
         if (bad1) { bad1.setAttribute('aria-invalid', 'true'); bad1.focus(); } else go.focus();
       });
     });
   }
+
+  /* A "jump to the box" link higher up the page (the town pages' line under
+     the title): land on the box with the email field ready. */
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[data-bid-alerts-jump]');
+    if (!a) return;
+    var box = document.getElementById(a.getAttribute('href').slice(1));
+    var f = box && box.querySelector('.cbs-em');
+    if (!f) return;
+    e.preventDefault();
+    try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (x) { box.scrollIntoView(); }
+    try { f.focus({ preventScroll: true }); } catch (x) { f.focus(); }
+  });
 
   function scan() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-bid-alerts]:not([data-cbs-ready])'), draw);

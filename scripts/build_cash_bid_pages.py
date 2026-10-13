@@ -615,8 +615,8 @@ def breadcrumb(items):
 # The bid email box (components/cb-signup.js): one shared file, loaded once
 # per town page; the page carries only the placeholder tag. Bump ?v= on any
 # change to either file.
-SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=1">\n'
-SIGNUP_JS = '<script src="/components/cb-signup.js?v=1" defer></script>\n'
+SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
+SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
 def page_end(ftr, table=False, signup=False):
@@ -668,7 +668,7 @@ def signup_box(t, z, ssl, crops, tops):
         return ""
     cs = " ".join(c for c in CROPS if c in crops)
     top = " ".join(f"{c}:{tops[c][0]:.2f}" for c in CROPS if c in tops)
-    return (f'<div data-bid-alerts data-place="{esc(t["name"])}" data-zip="{z}" '
+    return (f'<div id="bid-email" data-bid-alerts data-place="{esc(t["name"])}" data-zip="{z}" '
             f'data-source="town:{ssl}/{t["slug"]}"' + (f' data-crops="{cs}"' if cs else "")
             + (f' data-top="{top}"' if top else "") + '></div>')
 
@@ -976,6 +976,10 @@ def build_town_page(t, ctx):
     # without scrolling past every board. A town with no ZIP keeps the plain
     # Daily ask at the bottom: the box's two choices both need a ZIP.
     box = signup_box(t, box_zip(t, z, ctx), ssl, crops, tops)
+    # one line under the title that jumps to it, when a table sits between
+    first = next((c for c in CROPS if c in crops), "corn")
+    jump = (f'<p class="cbt-jump"><a href="#bid-email" data-bid-alerts-jump>Email me {esc(t["name"])} bids each '
+            f'morning, or when {CROP_LABEL[first].lower()} hits my price</a></p>') if box and secs else ""
     ask = "" if box else (
         "<!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->\n"
         "  <script>try{if(/(^|;\\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')"
@@ -991,6 +995,7 @@ def build_town_page(t, ctx):
   {top_html}
   {'' if indexable else near_html}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
+  {jump}
   {''.join(secs[:1])}
   {box}
   {''.join(secs[1:])}
@@ -1760,13 +1765,15 @@ def selftest():
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
         # the bid email box: the town's own ZIP and place, right under the first
         # elevator's table, its script and sheet once each, and no second ask below
-        assert 'data-bid-alerts data-place="Fremont" data-zip="68025" data-source="town:nebraska/fremont"' in fr, \
+        assert 'id="bid-email" data-bid-alerts data-place="Fremont" data-zip="68025" data-source="town:nebraska/fremont"' in fr, \
             "a town page asks for an email with its own ZIP"
-        assert fr.index("</table>") < fr.index("data-bid-alerts") < fr.index("Where these come from"), \
+        assert fr.index("</table>") < fr.index('id="bid-email"') < fr.index("Where these come from"), \
             "the bid email box sits under the first elevator's table"
         assert re.search(r'data-bid-alerts [^>]*data-top="corn:\d+\.\d\d', fr), "the price field's hint is the page's own top bid"
         assert fr.count('/components/cb-signup.js?v=') == 1 and fr.count('/components/cb-signup.css?v=') == 1
         assert "data-signup-ask=" not in fr, "one email ask per town page"
+        assert fr.index('href="#bid-email" data-bid-alerts-jump>Email me Fremont bids each morning, or when corn hits my price') \
+            < fr.index("<table"), "a line near the top jumps to the box"
         assert "cb-house" not in fr and "Sponsor this" not in fr and "ad-slot--open" not in fr, \
             "a town page shows nothing in an unsold sponsor slot: no house ask, no open slot"
         assert "Cash grain bids in Fremont, NE today" in fr
