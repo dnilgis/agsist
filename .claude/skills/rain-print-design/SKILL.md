@@ -8,7 +8,7 @@ description: Use when changing how a Rain Print looks or showing Sig a design. C
 - Prototype harness: an ES module exporting `fonts` and `render(data)` (SVG, viewBox 0 0 1800 1200). Render with `node design/harness/render.mjs <module> <out> [data.json]`, which writes the flat print PNG and a framed-on-wall PNG. Use data/r-year.json (it has a dedication). Make dry (p x0.25) and wet (p x2.2) copies and render those too.
 - LOOK at every PNG before sending. Send Sig one design at a time with a short caption, and ask for a 1-5 score and a note. Log each score in scores.md.
 - Sig's rules:
-  - snow days are drawn above the line only, never also as rain below
+  - snow days are drawn above the line only, never also as rain below, in BOTH styles (Staircase too, 2026-10-13); rain and snow must be clearly distinguishable at a glance
   - R1 verdict and year totals go upper left so the chart runs full width
   - optional 30-year monthly normals, with missing days excluded on both sides
   - optional dedication
