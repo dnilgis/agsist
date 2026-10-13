@@ -208,6 +208,45 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
 });
 
+/* The homepage card and the related-page lines (2026-10-13, Sig): Christmas
+   wording from promote_from through the framed order-by date, then the gift
+   card through Dec 24 while the gift flow is in the data, otherwise year-round.
+   Never a countdown, never an em dash. */
+test("the homepage card's seasonal wording, the see line and the gauge line", () => {
+  const pctx = {}; pctx.window = pctx;
+  vm.runInNewContext(readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), pctx);
+  const P = pctx.AgsistRainPromo;
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.equal(P.cardFor({ ...J, promote: false }, "2026-11-15"), null, "promote false: no card");
+  assert.equal(P.cardFor({ ...J, promote: "true" }, "2026-11-15"), null, "only a real true");
+  const ang = (d, c = J) => P.cardFor(c, d).angle;
+  assert.equal(ang("2026-10-31"), "evergreen");
+  assert.equal(ang("2026-11-01"), "christmas", "from Nov 1");
+  assert.equal(ang("2026-12-03"), "christmas", "through the framed order-by date");
+  assert.equal(ang("2026-12-04"), "gift", "then the gift card");
+  assert.equal(ang("2026-12-24"), "gift");
+  assert.equal(ang("2026-12-25"), "evergreen");
+  assert.equal(ang("2027-01-10"), "evergreen");
+  assert.equal(ang("2026-12-10", { ...J, gift_card_title: null }), "evergreen", "no gift flow, no gift wording");
+  const xmas = P.cardFor(J, "2026-11-20");
+  assert.equal(xmas.title, "A Christmas gift for the farm");
+  assert.match(xmas.text, /Order framed by Dec 3 for Christmas delivery\.$/);
+  assert.equal(xmas.price, "Prints from $" + J.print12x18 + ", shipping included.");
+  for (const d of ["2026-10-31", "2026-11-20", "2026-12-10"]) {
+    const c = P.cardFor(J, d);
+    for (const v of [c.title, c.text, c.price]) {
+      assert.ok(!/\u2014|\u2013|!|hurry|only \d|left|days? to go/i.test(v), "plain, no pressure: " + v);
+    }
+  }
+  assert.equal(P.lineFor(J, "see", "2026-10-13"), "See a year of rain at your place, drawn as a print for the wall.");
+  assert.equal(P.lineFor({ ...J, promote: false }, "see", "2026-10-13"), "");
+  assert.equal(P.lineFor(null, "gauge", "2026-10-13"), "Want a better rain gauge? Sig is designing one. Get updates.", "the gauge line needs no switch");
+  assert.equal(P.seeHref("54728", "2026-10-13"), "/rain-print?place=54728&year=2025", "a saved ZIP opens last year, drawn");
+  assert.equal(P.seeHref("", "2026-10-13"), "/rain-print");
+  assert.equal(P.seeHref("5472", "2026-10-13"), "/rain-print");
+  assert.ok(readFileSync(ROOT + "img/rain-print-thumb.jpg").length < 20000, "the card's thumbnail stays small");
+});
+
 /* For businesses (Sig, 2026-10-13): one price per print, delivered, like the
    cards: 5-9 at the card prices on one invoice, 10-24 $40/$79, 25-49 $37/$75,
    50-100 $35/$72; all to one address $3 off each print, $6 off each framed;
