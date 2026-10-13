@@ -183,6 +183,13 @@ EXTERNAL = {
         "feed alone "
         "if it is unreachable, so a stale or missing feed costs coverage and "
         "never breaks the page."),
+    "data/directory.json": (
+        "published by dnilgis/bids, rebuilt with the elevator roster",
+        "Every elevator the bid network knows, read or not. The town page "
+        "builder lists the ones it cannot read, with a link for the elevator "
+        "to ask to post its own bids, and Sig's elevator desk matches each "
+        "request against it. Unreachable means the town pages leave that "
+        "list out and the desk says to check by hand; nothing breaks."),
 }
 
 # ── feeds whose real clock is outside GitHub ────────────────────────────────

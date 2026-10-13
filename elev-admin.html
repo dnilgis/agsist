@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Elevator desk | AGSIST</title>
-<!-- Sig's desk for the elevator portal (subs worker v5.20). Not linked from
+<!-- Sig's desk for the elevator portal (subs worker v5.20; Requests, v5.21). Not linked from
      anywhere and noindex. Every action needs LIST_TOKEN: it is sent only in
      the Authorization header, never in an address. It is kept in this
      browser's localStorage so it is pasted once; "Forget the token" clears
@@ -48,6 +48,19 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
 .on{color:var(--ok);font-weight:600}
 .dim{color:var(--dim);font-size:.82rem}
 .m{display:none}
+.req{border-top:1px solid var(--line);padding:.7rem 0}
+.req:first-child{border-top:0}
+.req h3{font-size:1rem;margin:0 0 .2rem}
+.req p{margin:.15rem 0}
+.req .k{font-weight:600;color:var(--text)}
+.req a{color:var(--accent)}
+.match{border-left:3px solid var(--line);padding:.3rem .6rem;margin:.4rem 0;font-size:.88rem}
+.match.hit{border-left-color:var(--ok)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;border:1px solid var(--line);border-radius:3px;padding:0 .35rem;margin-left:.3rem;color:var(--dim)}
+.banner{border:1px solid var(--accent);border-radius:5px;padding:.5rem .7rem;margin:.2rem 0 .6rem;font-size:.9rem}
+.banner[hidden]{display:none}
+.chk{display:flex;align-items:center;gap:.4rem;font-weight:400;margin:.6rem 0 0}
+.chk input{width:auto;min-height:0}
 @media(max-width:640px){
   table,tbody,tr,td{display:block;width:100%}
   thead{display:none}
@@ -68,8 +81,18 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
     <p>Paste it once; this browser keeps it. Never put it in a link.</p>
   </section>
 
-  <section>
+  <section id="requests">
+    <h2>Requests</h2>
+    <p>Elevators that asked to post their bids (agsist.com/list-your-elevator). Call the elevator at its own number before you make a listing.</p>
+    <button type="button" id="r-load" class="small">Load the requests</button>
+    <label class="chk"><input type="checkbox" id="r-done"> Show made and dismissed</label>
+    <div id="r-out" class="out" role="status"></div>
+    <div id="r-list"></div>
+  </section>
+
+  <section id="add">
     <h2>Add an elevator</h2>
+    <div id="c-from" class="banner" hidden></div>
     <form id="create" novalidate>
       <div class="row3">
         <div><label for="c-name">Name (as farmers know it)</label><input id="c-name" placeholder="Bunge" required maxlength="80"></div>
@@ -163,6 +186,11 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
       if (!j.ok) return show('c-out', 'Not added: ' + esc(j.error || 'unknown error') + '.', 'bad');
       show('c-out', linkBlock(body.name + ', ' + body.town, j.link, body.email), 'good');
       $('create').reset(); idTouched = false;
+      if (fromReq) {
+        var k = fromReq;
+        fromReq = null; $('c-from').hidden = true;
+        call('request', { key: k, status: 'created', id: j.id }).then(function () { loadReqs(); });
+      }
       load();
     });
   });
@@ -222,7 +250,106 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
       });
     }
   });
-  if ($('tok').value) load();
+  /* ---------- Requests (worker v5.21) ---------- */
+  var DIR_URL = 'https://dnilgis.github.io/bids/data/directory.json';
+  var dirP = null, reqs = {}, fromReq = null;
+  var PREC = { street: 'located to the street address', town: 'located to the town centre only', county: 'located to the county only', zip: 'located to the ZIP only' };
+  function norm(s) { return String(s || '').toLowerCase().replace(/\b(inc|llc|co|company|corp|cooperative|coop|co-op|the|grain|elevator|farmers)\b/g, ' ').replace(/[^a-z0-9]/g, ''); }
+  function townKey(s) { return String(s || '').toLowerCase().replace(/,\s*[a-z]{2}$/, '').replace(/\bsaint\b/g, 'st').replace(/[^a-z0-9]/g, ''); }
+  function directory() {
+    if (!dirP) dirP = fetch(DIR_URL, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) { return (d && d.elevators) || []; }, function () { dirP = null; return null; });
+    return dirP;
+  }
+  /* The roster entry this request is about: its id when the link carried one,
+     else the same operator in the same town and state. */
+  function matchOf(q, list) {
+    if (!list) return null;
+    if (q.dir_id) for (var i = 0; i < list.length; i++) if (list[i].id === q.dir_id) return { e: list[i], by: 'id' };
+    var n = norm(q.elevator), t = townKey(q.town), hits = list.filter(function (e) {
+      return e.state === q.state && townKey(e.location) === t && norm(e.operator) && (norm(e.operator).indexOf(n) >= 0 || n.indexOf(norm(e.operator)) >= 0);
+    });
+    return hits.length ? { e: hits[0], by: 'name', more: hits.length - 1 } : null;
+  }
+  function matchHtml(q, m, list) {
+    if (!list) return '<div class="match">The elevator list could not load. Check the elevator on the coverage map by hand.</div>';
+    if (!m) return '<div class="match">Not found in the elevator list' + (q.dir_id ? ' (id ' + esc(q.dir_id) + ')' : '') + '. Look it up before you call.</div>';
+    var e = m.e;
+    return '<div class="match hit"><b>In the elevator list</b> (by ' + (m.by === 'id' ? 'the link it came from' : 'name and town') + '): ' +
+      esc(e.operator) + ', ' + esc(e.location) + ' ' + esc(e.state) + ' <span class="tag">' + esc(e.status === 'known' ? 'not read' : e.status) + '</span>' +
+      (e.phone ? '<br>Phone on file: <a href="tel:' + esc(String(e.phone).replace(/[^0-9+]/g, '')) + '">' + esc(e.phone) + '</a> (call this one, not only the number typed in)' : '<br>No phone on file: find the elevator’s own number before you call.') +
+      (e.address ? '<br>' + esc(e.address) : '') + (e.facility ? '<br>Facility: ' + esc(e.facility) : '') +
+      (e.lat != null ? '<br><span class="dim">' + esc(PREC[e.precision] || 'location unknown') + ': ' + esc(e.lat) + ', ' + esc(e.lon) + '</span>' : '') +
+      (m.more ? '<br><span class="dim">' + m.more + ' more in the list with that name in that town.</span>' : '') + '</div>';
+  }
+  var HOW = { email: 'From the bid sheet they already send (set it up by hand until the bids inbox exists)', phone: 'A private phone link', 'not-sure': 'Not sure yet' };
+  function drawReqs(list, dir) {
+    var showDone = $('r-done').checked;
+    var rows = list.filter(function (q) { return showDone || q.status === 'pending'; });
+    var pending = list.filter(function (q) { return q.status === 'pending'; }).length;
+    show('r-out', pending + ' waiting' + (list.length > pending ? ', ' + (list.length - pending) + ' made or dismissed' : '') + '.');
+    if (!rows.length) { $('r-list').innerHTML = '<p>' + (list.length ? 'Nothing waiting.' : 'No requests yet.') + '</p>'; return; }
+    $('r-list').innerHTML = rows.map(function (q) {
+      var m = matchOf(q, dir);
+      q._m = m;
+      var st = q.status === 'created' ? '<span class="tag">made' + (q.elev_id ? ': ' + esc(q.elev_id) : '') + '</span>' :
+        q.status === 'dismissed' ? '<span class="tag">dismissed</span>' : '';
+      return '<div class="req" data-key="' + esc(q.key) + '"><h3>' + esc(q.elevator) + ', ' + esc(q.town) + ' ' + esc(q.state) + ' ' + esc(q.zip) + st + '</h3>' +
+        '<p><span class="k">' + esc(q.name) + '</span>, ' + esc(q.role) + ' &middot; <a href="tel:' + esc(String(q.phone || '').replace(/[^0-9+]/g, '')) + '">' + esc(q.phone) + '</a> &middot; <a href="mailto:' + esc(q.email) + '">' + esc(q.email) + '</a></p>' +
+        '<p>Crops: ' + esc(q.crops) + ' &middot; Wants: ' + esc(HOW[q.how] || q.how) + '</p>' +
+        (q.note ? '<p>Note: ' + esc(q.note).replace(/\n/g, '<br>') + '</p>' : '') +
+        '<p class="dim">Sent ' + esc(ago(new Date(q.ts || 0).toISOString())) + '</p>' +
+        matchHtml(q, m, dir) +
+        (q.status === 'pending' ? '<button type="button" class="small" data-make="1">Make the listing</button><button type="button" class="small quiet" data-dismiss="1">Dismiss</button>'
+          : '<button type="button" class="small quiet" data-reopen="1">Back to waiting</button>') +
+        '<div class="out"></div></div>';
+    }).join('');
+  }
+  function loadReqs() {
+    show('r-out', 'Loading...');
+    return call('requests').then(function (j) {
+      if (!j.ok) return show('r-out', esc(j.error || 'Could not load the requests.'), 'bad');
+      reqs = {};
+      j.requests.forEach(function (q) { reqs[q.key] = q; });
+      drawReqs(j.requests, undefined);
+      if (!j.requests.length) return;
+      return directory().then(function (dir) { drawReqs(j.requests, dir); });
+    });
+  }
+  $('r-load').addEventListener('click', loadReqs);
+  $('r-done').addEventListener('change', function () { var l = Object.keys(reqs).map(function (k) { return reqs[k]; }).sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }); if (l.length) directory().then(function (d) { drawReqs(l, d); }); });
+  function fillFrom(q) {
+    var e = q._m && q._m.e;
+    var set = function (id, v) { $(id).value = v == null ? '' : v; };
+    $('create').reset(); idTouched = false;
+    set('c-name', q.elevator); set('c-town', q.town); set('c-state', q.state); set('c-zip', q.zip);
+    $('c-name').dispatchEvent(new Event('input'));
+    set('c-ll', e && e.lat != null ? e.lat + ', ' + e.lon : '');
+    set('c-cname', q.name); set('c-cphone', (e && e.phone) || q.phone); set('c-email', q.email);
+    fromReq = q.key;
+    $('c-from').innerHTML = 'Filled in from the request of <b>' + esc(q.name) + '</b> for ' + esc(q.elevator) + ', ' + esc(q.town) + '. ' +
+      (e && e.lat != null ? (e.precision === 'street' ? 'The location is the street address on file. ' : 'The location is only the ' + esc(e.precision || 'rough') + ' centre: move it onto the elevator. ') : 'Paste the location from a map. ') +
+      'Check every field, then press Add. <button type="button" class="small quiet" id="c-from-x">Not from this request</button>';
+    $('c-from').hidden = false;
+    $('c-from-x').addEventListener('click', function () { fromReq = null; $('c-from').hidden = true; });
+    try { $('add').scrollIntoView({ behavior: 'smooth' }); } catch (err) { $('add').scrollIntoView(); }
+    $('c-name').focus({ preventScroll: true });
+  }
+  $('r-list').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'), box = ev.target.closest('.req');
+    if (!b || !box) return;
+    var q = reqs[box.getAttribute('data-key')], o = box.querySelector('.out');
+    if (!q) return;
+    if (b.hasAttribute('data-make')) return fillFrom(q);
+    var to = b.hasAttribute('data-dismiss') ? 'dismissed' : 'pending';
+    if (to === 'dismissed' && !window.confirm('Dismiss the request for ' + q.elevator + ', ' + q.town + '? Nothing is sent to them.')) return;
+    call('request', { key: q.key, status: to }).then(function (j) {
+      if (!j.ok) { o.innerHTML = esc(j.error || 'failed'); o.className = 'out bad'; return; }
+      loadReqs();
+    });
+  });
+
+  if ($('tok').value) { load(); loadReqs(); }
 })();
 </script>
 </body>

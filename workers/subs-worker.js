@@ -5,6 +5,24 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.21 (2026-10-13): AN ELEVATOR ASKS TO POST ITS OWN BIDS. One new form
+ *   kind on POST /form and two new admin routes; every existing route answers
+ *   exactly as before. No new binding and no new secret.
+ *   kind elevator-listing (agsist.com/list-your-elevator) takes elevator
+ *     (120), town (80), state, zip (5 digits), name (80), role (80), phone (at
+ *     least 10 digits, 30), email, crops (corn, soybeans, wheat, sorghum,
+ *     oats, other; at least one, stored as "corn, soybeans"), how (email |
+ *     phone | not-sure), note (600, keeps line breaks, optional), dir_id (the
+ *     bids network directory id the link came from, known:... or reg:...,
+ *     200, optional) and page. Same origin check, 16 KB cap, rate limits,
+ *     honeypot, year-long storage and digest as the other kinds; /count forms
+ *     gains elevator-listing. Nothing is published from a request: Sig calls
+ *     the elevator, then makes the listing on elev-admin.html.
+ *   GET  /elev/admin/requests  Bearer LIST_TOKEN: every elevator-listing post
+ *     with its key and status (pending | created | dismissed), newest first.
+ *   POST /elev/admin/request   Bearer LIST_TOKEN {key, status, id?}: marks
+ *     one request; id (the listing made from it) only with created. The
+ *     record keeps its one-year expiry.
  * v5.20 (2026-10-13): THE ELEVATOR PORTAL. New routes only; every existing
  *   route answers exactly as before. No new binding and no new secret. An
  *   elevator keeps its own listing from a private phone link
@@ -397,7 +415,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.20): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.21): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -756,7 +774,17 @@ const FORM_KINDS = {
     quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [8000, true, "text"],
     ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
   },
+  // v5.21: an elevator asks to post its own bids (list-your-elevator.html). Sig confirms by phone first.
+  "elevator-listing": {
+    elevator: [120, true], town: [80, true], state: [2, true, "state"], zip: [5, true, "zip5"],
+    name: [80, true], role: [80, true], phone: [30, true, "phone"], email: [254, true, "email"],
+    crops: [120, true, "crops"], how: [10, true, "elhow"], note: [600, false, "text"],
+    dir_id: [200, false, "dirid"], page: [60],
+  },
 };
+const EL_CROPS = ["corn", "soybeans", "wheat", "sorghum", "oats", "other"];
+const EL_HOW = ["email", "phone", "not-sure"];
+const EL_REQ_STATUS = ["pending", "created", "dismissed"];
 const RP_CHOICES = ["digital", "print12x18", "framed12x18"];
 const RP_DELIVER = ["buyer", "recipient"];
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
@@ -806,6 +834,19 @@ function formClean(kind, b) {
       if (!RPB_PRODUCTS.includes(v)) return { error: "invalid " + f };
     } else if (type === "rpbship") {
       if (!RPB_SHIP.includes(v)) return { error: "invalid " + f };
+    } else if (type === "zip5") {
+      if (!/^\d{5}$/.test(v)) return { error: "invalid " + f };
+    } else if (type === "phone") {
+      if (!/^[0-9+().\-\s]+$/.test(v) || v.replace(/\D/g, "").length < 10) return { error: "invalid " + f };
+    } else if (type === "crops") {
+      // a list ("corn, soybeans" or an array): known crops only, each once, in the table's order
+      const got = (Array.isArray(b[f]) ? b[f].map(String) : v.split(/[,;\s]+/)).map(x => x.trim().toLowerCase()).filter(Boolean);
+      if (!got.length || got.some(x => !EL_CROPS.includes(x))) return { error: "invalid " + f };
+      v = EL_CROPS.filter(x => got.includes(x)).join(", ");
+    } else if (type === "elhow") {
+      if (!EL_HOW.includes(v)) return { error: "invalid " + f };
+    } else if (type === "dirid") {
+      if (!/^(known|reg):[^<>"`\\]{1,190}$/.test(v)) return { error: "invalid " + f };
     } else if (type === "url") {
       if (!/^https?:\/\//i.test(v)) v = "https://" + v;
       try { const u = new URL(v); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
@@ -2380,6 +2421,21 @@ async function handle(req, env) {
         out.sort((a, b) => String(a.id).localeCompare(String(b.id)));
         return json({ ok: true, elevators: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
       }
+      // v5.21: requests from list-your-elevator, for the Requests list on elev-admin.html.
+      if (path === "/elev/admin/requests" && req.method === "GET") {
+        const out = [];
+        for (const k of await listKeys(env, "form:elevator-listing:")) {
+          try {
+            const r = JSON.parse(await env.SUBS.get(k));
+            if (!r) continue;
+            r.key = k;
+            if (!EL_REQ_STATUS.includes(r.status)) r.status = "pending";
+            out.push(r);
+          } catch (e) { /* skip */ }
+        }
+        out.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+        return json({ ok: true, requests: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+      }
       if (req.method !== "POST") return json({ ok: false, error: "not found" }, 404, ac);
       const p = await elevBody(req);
       if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
@@ -2391,6 +2447,24 @@ async function handle(req, env) {
         await env.SUBS.put("elev:" + v.rec.id, JSON.stringify(v.rec));
         const link = await elevSetKey(env, v.rec.id);
         return json({ ok: true, id: v.rec.id, link }, 200, ac);
+      }
+      if (path === "/elev/admin/request") {
+        const key = typeof b.key === "string" ? b.key : "";
+        if (!key.startsWith("form:elevator-listing:") || !FORM_KEY_RE.test(key)) return json({ ok: false, error: "no such request" }, 404, ac);
+        const raw = await env.SUBS.get(key);
+        let r = null;
+        try { r = JSON.parse(raw); } catch (e) { r = null; }
+        if (!r) return json({ ok: false, error: "no such request" }, 404, ac);
+        const status = String(b.status || "");
+        if (!EL_REQ_STATUS.includes(status)) return json({ ok: false, error: "status must be pending, created or dismissed" }, 400, ac);
+        const lid = typeof b.id === "string" ? b.id.trim() : "";
+        if (lid && (status !== "created" || !ELEV_ID_RE.test(lid) || lid.length > 60)) return json({ ok: false, error: "invalid id" }, 400, ac);
+        r.status = status; r.status_ts = Date.now();
+        if (lid) r.elev_id = lid; else delete r.elev_id;
+        // Keep the original one-year expiry; a put without one would drop it.
+        const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + FORM_TTL_S);
+        await env.SUBS.put(key, JSON.stringify(r), { expiration: exp });
+        return json({ ok: true, key, status, id: r.elev_id || null }, 200, ac);
       }
       const id = typeof b.id === "string" ? b.id.trim() : "";
       const rec = ELEV_ID_RE.test(id) ? await elevGet(env, id) : null;

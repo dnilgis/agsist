@@ -1,5 +1,6 @@
 name: Site forms digest
-# Emails Sig what came in through the elevator claim form, the sponsor proof
+# Emails Sig what came in through the elevator claim form, elevator listing
+# requests (list-your-elevator, worker v5.21), the sponsor proof
 # approval and requests box, the Parcel Report waitlist and Rain Print order
 # requests (scripts/form_digest.py; rain-print-order needs worker v5.9). The posts live in the subs worker (KV prefix
 # form:, workers/subs-worker.js v5.8); nothing is written to this repo and the

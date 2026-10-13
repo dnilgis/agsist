@@ -9,6 +9,7 @@ own forms (the first three used to go to Formspree).
   rain-print.html     Rain Print order request       kind rain-print-order (worker v5.9;
                                                      gift orders, v5.10)
   rain-print.html     For businesses quote request   kind rain-print-business (worker v5.12)
+  list-your-elevator  an elevator asks to post bids  kind elevator-listing (worker v5.21)
 
 A gift order (this year's print, ordered before the year is over) says so in
 the subject, "Rain print order (2026 gift, January): ...", and its body tells
@@ -53,9 +54,15 @@ except Exception:                                          # noqa: BLE001
     CT = None
 
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
-KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order", "rain-print-business")
+KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order", "rain-print-business", "elevator-listing")
 KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
-             "rain-print-order": "Rain print order", "rain-print-business": "Rain Print business quote"}
+             "rain-print-order": "Rain print order", "rain-print-business": "Rain Print business quote",
+             "elevator-listing": "Elevator listing request"}
+# How an elevator asking to post its bids would like to do it (worker v5.21).
+EL_HOW = {"email": "Add bids@agsist.com to the morning bid email or text", "phone": "A private phone link",
+          "not-sure": "Not sure yet"}
+EL_NEXT = ("Call the elevator at its own number (not only the one typed here) and ask for this person. "
+           "Then make the listing at agsist.com/elev-admin under Requests, or Dismiss it there.")
 # What a rain print order's choice means, in the subject and the body.
 RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "framed12x18": "12 x 18 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
@@ -88,6 +95,9 @@ FIELDS = {
     "rain-print-business": [("business", "Business"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
                             ("quantity", "How many"), ("product", "Product"), ("ship", "Ship to"),
                             ("note_all", "Note for every print"), ("towns", "Towns and years"), ("notes", "Notes")],
+    "elevator-listing": [("elevator", "Elevator"), ("town", "Town"), ("state", "State"), ("zip", "ZIP"), ("name", "Contact"),
+                         ("role", "Role"), ("phone", "Phone"), ("email", "Email"), ("crops", "Crops"), ("how", "How to post"),
+                         ("note", "Note"), ("dir_id", "Directory id")],
 }
 
 
@@ -136,6 +146,8 @@ def subject(posts):
             q = str(p.get("quantity", ""))
             return "Rain Print business quote: %s, %s print%s, %s" % (p.get("business", ""), q, "" if q == "1" else "s",
                                                                    RPB_PRODUCT.get(p.get("product"), p.get("product", "")).lower())
+        if p["kind"] == "elevator-listing":
+            return "Elevator wants to post bids: %s, %s %s" % (p.get("elevator", ""), p.get("town", ""), p.get("state", ""))
         return "Parcel Report interest"
     return "AGSIST forms: %s" % ", ".join(parts)
 
@@ -173,6 +185,8 @@ def value(p, f):
         return RPB_PRODUCT.get(v, str(v))
     if p.get("kind") == "rain-print-business" and f == "ship":
         return RPB_SHIP.get(v, str(v))
+    if p.get("kind") == "elevator-listing" and f == "how":
+        return EL_HOW.get(v, str(v))
     if f == "gift_january":
         return GIFT_NOTE
     if f == "gift" and p.get("kind") == "rain-print-order":
@@ -204,6 +218,8 @@ def blocks(posts):
         rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
                 if p.get(f) not in (None, "") and (gift or not f.startswith("gift_") or f.startswith("gift_card"))
                 and (f != "gift" or (gift and not is_january(p)))]
+        if p["kind"] == "elevator-listing":
+            rows.append(("Next", EL_NEXT))
         out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
     return out
 
@@ -476,6 +492,25 @@ def selftest():
     ck("business quote: mailed, marked, counted in the log without names",
        code == 0 and len(sent0) == 1 and calls0 == ["form-list", "form-mark"] and "rain-print-business 1" in log[0] and "Chetek" not in " ".join(log), log)
 
+    el = {"key": "form:elevator-listing:%d:0a1b2c51" % (ts + 5), "kind": "elevator-listing", "ts": ts + 5, "n": 0,
+          "elevator": "Lingle <Elevator>", "town": "Lingle", "state": "WY", "zip": "82223", "name": "Pat Doe", "role": "Manager",
+          "phone": "307-555-0100", "email": "pat@example.com", "crops": "corn, wheat", "how": "phone",
+          "note": "Call after 3.\nAsk for Pat.", "dir_id": "reg:WY|westplainsllc|lingle", "page": "/list-your-elevator"}
+    ck("elevator listing: subject", subject([el]) == "Elevator wants to post bids: Lingle <Elevator>, Lingle WY", subject([el]))
+    m = build([el], "s")
+    t = m.get_body(("plain",)).get_content()
+    ck("elevator listing: every field, spelled out, and the next step", all(x in t for x in (
+        "Elevator listing request, Oct 11", "Elevator: Lingle <Elevator>", "ZIP: 82223", "Contact: Pat Doe", "Role: Manager",
+        "Phone: 307-555-0100", "Email: pat@example.com", "Crops: corn, wheat", "How to post: A private phone link",
+        "Note: Call after 3.\nAsk for Pat.", "Directory id: reg:WY|westplainsllc|lingle", "Next: Call the elevator at its own number")), t)
+    ck("elevator listing: page and internal fields not printed", "/list-your-elevator" not in t and "form:elevator" not in t, t)
+    h = m.get_body(("html",)).get_content()
+    ck("elevator listing: html escaped, email linked", "Lingle &lt;Elevator&gt;" in h and '<a href="mailto:pat@example.com">' in h, h)
+    t = build([dict(el, how="email")], "s").get_body(("plain",)).get_content()
+    ck("elevator listing: the email way", "How to post: Add bids@agsist.com to the morning bid email or text" in t, t)
+    ck("elevator listing counted", "1 elevator listing request" in subject([el, rb]) and "2 elevator listing requests" in subject([el, dict(el, key="x")]),
+       subject([el, rb]))
+
     print("\nthe run (fake worker, fake mail)")
     calls, sent = [], []
 
@@ -494,7 +529,7 @@ def selftest():
     ck("marks exactly what it sent", calls[-1][0] == "form-mark" and calls[-1][1]["keys"] == [claim["key"], fb["key"], atlas["key"]])
     ck("log has counts only, no addresses or names",
        not any("@" in x or "Chetek" in x or "Apex" in x or "715" in x for x in log) and
-       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0, rain-print-business 0" in log, log)
+       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0, rain-print-business 0, elevator-listing 0" in log, log)
     calls.clear(); sent.clear()
     code, log = run("https://w.dev", "t", "s", False, sent.append, fake([]))
     ck("nothing new: no mail, no mark", code == 0 and not sent and [c[0] for c in calls] == ["form-list"])

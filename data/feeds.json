@@ -594,6 +594,26 @@
    "why_quiet": null
   },
   {
+   "path": "data/directory.json",
+   "pages": [
+    "elev-admin.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "cash-bid-pages",
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "published by dnilgis/bids, rebuilt with the elevator roster",
+   "curated": false,
+   "planned": false,
+   "external": true,
+   "url": "https://dnilgis.github.io/bids/data/directory.json",
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and Sig's elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
+  },
+  {
    "path": "data/elevator-counts.json",
    "pages": [
     "index.html",
