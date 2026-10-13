@@ -164,3 +164,28 @@ test("the panel with NOAA's outlook and ENSO: the tilt is shown as untested, and
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+test("the steadier option: shown only when the published test held, labeled, legal, and its button hands over its own split", { skip }, async () => {
+  const srv = await serve(false), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { page, errors } = await open(browser, port, "light", 390);
+    const text = await page.$eval("#prf-optimize", (s) => s.textContent);
+    const held = !!(OPT.risk && OPT.risk.held);
+    assert.equal(text.includes("Steadier option:"), held, "the labeled line follows opt.json's verdict");
+    if (OPT.risk) assert.ok(text.includes(OPT.risk.line), "the risk test is listed under what we tested");
+    if (OPT.productivity) assert.ok(text.includes(OPT.productivity));
+    if (held) {
+      const btns = await page.$$eval("#prf-optimize .po-use", (bs) => bs.map((b) => b.getAttribute("data-opt-use").split(".").map(Number)));
+      assert.equal(btns.length, 2);
+      assert.ok(legal(btns[1]), `steadier split breaks a rule: ${btns[1]}`);
+      assert.notDeepEqual(btns[1], btns[0]);
+      await page.click("#prf-optimize .po-use >> nth=1");
+      assert.deepEqual((await page.evaluate(() => window.__applied))[0], btns[1]);
+      const r = OPT.risk.byCoverage["90"];
+      assert.ok(text.includes(`from ${r.noPaymentPct.plain}% to ${r.noPaymentPct.steadier}%`), "the across-grid figures are the 90% ones");
+    }
+    assert.ok(!/NaN|undefined|\bnull\b/.test(text) && !text.includes("—"));
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});

@@ -77,8 +77,15 @@
     state.loading = Promise.all([get(src + 'opt.json'), get(src + 'outlook.json')]).then(function (r) {
       state.opt = r[0]; state.outlookJson = r[1];
       state.kept = O.keptPredictors(state.opt);
-      var needs = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.needs && p.needs.length; });
-      return needs ? get(src + 'climate-indices.json').then(function (c) { state.climate = c; }) : null;
+      var needs = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.needs && p.needs.some(function (n) { return n !== 'seasonal'; }); });
+      var fc = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.family === 'forecast'; });
+      /* a forecast model that held up: its file and the skill table the test
+         wrote for the coming policy year */
+      return Promise.all([needs ? get(src + 'climate-indices.json') : null, fc ? get(src + 'seasonal-fc.json') : null]).then(function (r2) {
+        if (!needs && !fc) return;
+        state.climate = r2[0] || { series: {} };
+        if (fc && r2[1]) { state.climate.seasonal = r2[1]; state.climate.seasonalSkill = state.opt.seasonalSkill || null; }
+      });
     }).then(function () { state.loaded = true; });
     return state.loading;
   }
@@ -131,8 +138,9 @@
     var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete, (state.kept || []).join(',')].join('|');
     if (state.cache.key === key) return state.cache.res;
     var res = O.recommend({ index: ctx.index, rates: ctx.rates ? ctx.rates[ctx.cov] : null, coverage: ctx.cov, subsidy: ctx.subsidy ? ctx.subsidy[String(ctx.cov)] : null,
-                            min: mm.min, max: mm.max, valid: mm.valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete },
-                          { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: state.climate || null, policyYear: ctx.cropYear || null });
+                            min: mm.min, max: mm.max, valid: mm.valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete, grid: ctx.grid },
+                          { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: state.climate || null, policyYear: ctx.cropYear || null,
+                            steadier: !!(state.opt && state.opt.risk && state.opt.risk.held) });
     res.outlookMeta = outl;
     res.ensoUsed = enso;
     state.cache = { key: key, res: res };
@@ -180,6 +188,14 @@
     for (var i = 0; i < N; i++) if (sp[i]) h += '<div class="po-iv"><b>' + sp[i] + '%</b><span>' + LABELS[i] + '</span></div>';
     h += '</div>';
     h += '<button type="button" class="po-use" data-opt-use="' + sp.join('.') + '">Use this setup in the calculator above</button>';
+    if (res.steadier) {
+      var st = res.steadier, rk = state.opt.risk.byCoverage, rr = rk[String(ctx.cov)] || rk[ctx.cov >= 80 ? '90' : '70'];
+      h += '<p class="po-fine"><b>Steadier option:</b> ' + esc(splitWords(st.split)) + '. On this grid’s record it paid in ' + st.record.paidYears + ' of ' + st.record.n
+        + ' years, against ' + res.rec.record.paidYears + ' for the pick, at ' + (function (d) { return d >= 0 ? per100(d) + ' less' : per100(-d) + ' more'; })(100 * (res.rec.record.mean - st.record.mean)) + ' a year per $100 of protection. '
+        + 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
+        + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection. It steadies the check; it does not earn more.</p>'
+        + '<button type="button" class="po-use" data-opt-use="' + st.split.join('.') + '">Use the steadier setup instead</button>';
+    }
 
     if (prot) {
       h += '<p class="po-fine">About, for ' + esc(ctx.acres.toLocaleString('en-US')) + ' acres at ' + ctx.cov + '% coverage and productivity factor ' + ctx.pf
@@ -187,6 +203,7 @@
         + '<div class="po-wrap"><table aria-label="The pick beside other setups"><thead><tr><th scope="col">Setup</th><th scope="col">You pay a year</th><th scope="col">Average after premium</th><th scope="col">Middle year</th><th scope="col">Worst and best year</th><th scope="col">Years it paid</th></tr></thead><tbody>';
       if (res.forecast) h += row(tiltOnly ? 'With what held up' : 'With the outlook', res.forecast, prot);
       h += row(res.forecast ? 'Record alone' : 'This pick', res.rec, prot);
+      if (res.steadier) h += row('Steadier option', res.steadier, prot);
       if (res.naive && res.naive.split.join() !== res.rec.split.join()) h += row('Grid’s own record alone', res.naive, prot);
       h += row('Even spread', res.base.even, prot);
       h += row('The page’s example (Apr-May, Jun-Jul)', res.base.def, prot, 'not offered in this county');
@@ -205,10 +222,10 @@
           + ' it beat an even spread in ' + vs.wins + '. Too few dry years in one grid to tell skill from luck; the test across grids above is the better guide.';
       } else {
         h += 'Picked each fall from only the years before, then scored on the next year, ' + bt.first + ' to ' + bt.last + ' (' + vs.n + ' years): ahead of an even spread in '
-          + vs.wins + ', behind in ' + vs.losses + (vs.ties ? ', even in ' + vs.ties : '') + '. On average ' + (prot ? signed(vs.meanDiff * prot) + ' a year for these acres' : per100(vs.meanDiff) + ' per $100 of protection')
+          + vs.wins + ', behind in ' + vs.losses + (vs.ties ? ', even in ' + vs.ties : '') + '. On average ' + (prot ? signed(vs.meanDiff * prot) + ' a year for these acres' : per100(100 * vs.meanDiff) + ' per $100 of protection')
           + (vs.p >= 0.2 ? '. A gap this size turns up by luck alone ' + (vs.p >= 0.5 ? 'more often than not' : 'often') + ', so it says little either way.' : '. Odds that luck alone gives a gap this size: ' + pOdds(vs.p) + '.');
         var en = bt.ensoVsHistory;
-        if (en && en.n) h += ' Weighting years by the fall’s El Niño or La Niña reading changed the result by ' + (prot ? signed(en.meanDiff * prot) : per100(en.meanDiff)) + ' a year on average here (better in ' + en.wins + ' years, worse in ' + en.losses + ').';
+        if (en && en.n) h += ' Weighting years by the fall’s El Niño or La Niña reading changed the result by ' + (prot ? signed(en.meanDiff * prot) : per100(100 * en.meanDiff)) + ' a year on average here (better in ' + en.wins + ' years, worse in ' + en.losses + ').';
       }
       h += '</p>';
     }
@@ -247,12 +264,19 @@
     var h = '<details><summary>What we tested</summary><div class="po-fine">';
     if (!pr || !fam) return h + '<p>The test across grids did not load, so the list of what was tried is not shown. Without it, nothing but the record and the rates moves the pick.</p></div></details>';
     var kept = state.kept || [];
-    h += '<p>Other weather signals, each tried as a tilt on the pick above and scored the same way: picked each fall from the years before, then scored on the next year, across '
+    h += '<p>Other ideas, each tried on the pick above and scored the same way: picked each fall from the years before, then scored on the next year, across '
       + o.sample.grids.toLocaleString('en-US') + ' grids, 1981 to ' + o.last_complete + '. ' + fam.size + ' comparisons were promised and are counted together (' + fam.run
       + ' run so far); by luck alone about ' + fam.expectedByChanceAt5pct + ' of them would look like a find, so each is judged after that count. '
       + (kept.length ? 'Only what held up after the count moves the pick.' : 'None held up after the count, so none of these moves the pick.') + '</p><ul class="po-why">';
     Object.keys(pr).forEach(function (id) { h += '<li>' + esc(pr[id].line) + '</li>'; });
-    return h + '</ul></div></details>';
+    h += '</ul>';
+    if (o.risk || o.productivity) {
+      h += '<p>Not about earning more, so judged on their own:</p><ul class="po-why">';
+      if (o.risk) h += '<li>' + esc(o.risk.line) + '</li>';
+      if (o.productivity) h += '<li>' + esc(o.productivity) + '</li>';
+      h += '</ul>';
+    }
+    return h + '</div></details>';
   }
 
   function onClick(e) {

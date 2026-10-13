@@ -1137,6 +1137,14 @@
              historyScoreOfForecastPick: (function () { var s = 0; for (var q = 0; q < N; q++) if (f.split[q]) s += f.split[q] / 100 * h.values[q]; return s; })() };
     }
 
+    /* the steadier split (spreadPick), only when the published test says it
+       cut the years with no payment (opts.steadier) and it differs */
+    var steadier = null;
+    if (opts.steadier && objective === 'net') {
+      var sp = spreadPick(G, { step: opts.step });
+      if (sp && sp.split.join() !== h.split.join()) steadier = { split: sp.split, score: sp.score, record: record(G, sp.split) };
+    }
+
     var bt = null;
     if (opts.backtest !== false) {
       var wf = walkForward(G, { objective: objective, estimator: opts.estimator, step: opts.step, ensoBoost: opts.ensoBoost });
@@ -1145,7 +1153,7 @@
       bt.rows = wf.rows.map(function (r) { return { year: r.year, opt: r.opt, optEnso: r.optEnso, hist: r.hist, even: r.even, def: r.def, dry2: r.dry2, dry: r.dry, phase: r.phase }; });
     }
     return { ok: true, objective: objective, coverage: G.coverage, subsidy: G.subsidy, years: { n: G.years.length, first: G.years[0], last: G.years[G.years.length - 1] },
-             rec: rec, naive: naive, forecast: fc, base: base, tiltNotes: tiltNotes, backtest: bt, reasons: reasons(G, rec, fc, bt, opts), limits: { lo: G.lo, hi: G.hi, allowed: G.allowed } };
+             rec: rec, naive: naive, forecast: fc, steadier: steadier, base: base, tiltNotes: tiltNotes, backtest: bt, reasons: reasons(G, rec, fc, bt, opts), limits: { lo: G.lo, hi: G.hi, allowed: G.allowed } };
   }
 
   var api = {
