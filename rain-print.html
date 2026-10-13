@@ -115,10 +115,13 @@
     .rp-design .rp-dates{grid-template-columns:1fr}
   }
   @media(min-width:900px){
-    .rp-hero{max-width:900px;margin:0 auto;gap:.6rem}
+    /* the hero runs the page's full width so steps 1, 2 and 3 line up */
+    .rp-hero{gap:.6rem}
     #main .rp .rp-side>h1{font-size:1.5rem}
     .rp-wall{width:100%;box-sizing:border-box}
-    .rp-side>.rp-lede{max-width:none}
+    .rp-side>.rp-lede{max-width:78ch}
+    .rp-side>.rp-source{max-width:96ch}
+    .rp-form{max-width:760px}
     .rp-wall{margin:.4rem 0;padding:26px 40px 2px;border-radius:var(--r-lg)}
     .rp-frame{max-width:560px}
     .rp-cap{max-width:560px}
@@ -278,7 +281,7 @@
   /* the proof: the exact print file, fit or at actual size, framed or not. The
      dialog takes the screen's height; the print gets what the bar and the
      order row leave, so the order button is always in view. */
-  .rp-proof{--sp:16px;--fp:24px;width:min(1180px,calc(100vw - 16px));max-width:none;height:min(900px,calc(100dvh - 16px));max-height:calc(100dvh - 16px);padding:14px 16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);color:var(--text);box-sizing:border-box;overflow:hidden}
+  .rp-proof{--sp:16px;--fp:24px;width:min(1180px,calc(100vw - 16px));max-width:none;height:min(900px,calc(100dvh - 16px));max-height:calc(100dvh - 16px);padding:14px 16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);color:var(--text);box-sizing:border-box;overflow:hidden;margin:auto;inset:0}
   .rp-proof[open]{display:flex;flex-direction:column;gap:.5rem}
   .rp-proof::backdrop{background:rgba(0,0,0,.6)}
   .rp-proof-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex:none}
@@ -298,7 +301,9 @@
   .rp-proof[data-zoom="close"] .rp-proof-art svg{width:12in;max-width:none}
   .rp-proof[data-zoom="full"] .rp-proof-frame{width:max-content}
   .rp-proof[data-zoom="full"] .rp-proof-art svg{width:18in;max-width:none}
-  .rp-proof-foot{flex:none;max-height:45%;overflow:auto}
+  .rp-proof-foot{flex:none;max-height:48%;display:flex;flex-direction:column;gap:.3rem;min-height:0}
+  .rp-proof-more{flex:0 1 auto;min-height:0;overflow:auto}
+  .rp-proof-go,#rp-proof-why{flex:none}
   .rp-proof-more>summary{cursor:pointer;min-height:var(--btn-h);display:flex;align-items:center;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
   .rp-proof-more .rp-note{margin:.3rem 0 .4rem}
   .rp-proof-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.2rem 1rem;margin:.2rem 0 .3rem;font-size:var(--fs-sm)}
@@ -306,7 +311,7 @@
   .rp-proof-sum dt{color:var(--text-muted);flex:none;white-space:nowrap}.rp-proof-sum dd{margin:0;text-align:right;color:var(--text);overflow-wrap:anywhere}
   .rp-proof-go{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.4rem 1rem}
   .rp-proof-go .rp-check{flex:1 1 220px}
-  #rp-proof-why{margin:.2rem 0}
+  #rp-proof-why{margin:.2rem 0;color:var(--text)}
   @media(max-width:600px){
     .rp-proof{--sp:8px;--fp:10px;width:calc(100vw - 12px);height:calc(100dvh - 12px);max-height:calc(100dvh - 12px);padding:10px 12px}
     .rp-proof-top h2{font-size:var(--fs-md)}
@@ -434,11 +439,11 @@
       <div id="rp-stats-wrap" hidden>
         <details class="rp-stats-d"><summary>The year in numbers</summary><dl class="rp-stats" id="rp-stats"></dl></details>
       </div>
+      </div>
+      </div>
       <div class="rp-acts rp-acts-next">
         <button class="btn btn-secondary" id="rp-proof-open" type="button" disabled>See it up close</button>
         <a class="btn btn-secondary" id="rp-to-buy" href="#rp-buy">Next: prices and ordering</a>
-      </div>
-      </div>
       </div>
     </section>
 
