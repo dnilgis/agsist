@@ -602,7 +602,7 @@
     var dateRows = [RY, RY + 24, RY + 48];
     var placedDates = placeDates(marks, dateRows, function (s) { return W(s, mst); },
       function (it, b) { return b.y + b.h < 1138 && room.free(b, 'mark:' + it.ids[0], false); },
-      function (A, ba, ra, B, bb) { return !hit(ba, bb, 20); }, [0.77 * 18, 0.27 * 18], [ML, 1738]);
+      function (A, ba, ra, B, bb, rb) { return !hit(ba, bb, ra === rb ? 20 : 2); }, [0.77 * 18, 0.27 * 18], [ML, 1738]);   // 20 apart along a row; rows may stack
     placedDates.forEach(function (pd) {
       pd.own = 'mark:' + pd.it.ids[0];
       pd.box = box(pd.x, pd.y, pd.it.label, mst);
@@ -1005,7 +1005,7 @@
     var placed = placeDates(marks, [LY, LY - 22, LY - 44], function (s) { return W(s, mst2); },
       function (it, b) { return b.y > 62 && room.free(b, 'mark:' + it.ids[0], false); },
       function (A, ba, ra, B, bb, rb) {
-        if (hit(ba, bb, 20)) return false;
+        if (hit(ba, bb, ra === rb ? 20 : 2)) return false;
         // a higher label's tick runs down past the lower rows: it may not cut a lower label
         var through = function (xsL, b) { return xsL.some(function (x) { return x > b.x - 4 && x < b.x + b.w + 4; }); };
         if (ra > rb && through(A.xs, bb)) return false;

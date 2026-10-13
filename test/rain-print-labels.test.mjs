@@ -83,9 +83,12 @@ test("three dates on one day all print: stacked over their tick, or one label in
     for (const l of ["Harvest done", "Sold the crop", "Sprayed beans"]) assert.ok(t.some((x) => x.includes(l)), style + " " + l);
     assert.deepEqual(HARD(check(svg)), [], style);
   }
-  // the dates crowd Jan 1 under a long place name: one label, in date order
+  // the dates crowd Jan 1 under a long place name (it takes the third row): two rows, the first joined in date order, each over the tick
   const { svg } = draw({ ...base, style: "r1", place: "long", markers: "jan1x3" });
-  assert.ok(texts(svg).includes("Planted corn · Sold the crop · Harvest done"));
+  const rows = parse(svg).texts.filter((t) => /^mark/.test(t.rp));
+  assert.deepEqual(rows.map((t) => t.s), ["Planted corn · Sold the crop", "Harvest done"]);
+  for (const t of rows) assert.ok(t.x < 198 && t.x + t.w > 198, t.s + " sits over Jan 1");
+  assert.deepEqual(HARD(check(svg)), []);
 });
 
 test("Jan 1 and Dec 31 picks stay inside the 0.6 in margin and over their own ticks", () => {
