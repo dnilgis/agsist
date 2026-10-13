@@ -42,6 +42,12 @@ FOLDER_MB = {
     "farmland-atlas": 200,
     "cash-bids": 60,
     "daily": 30,
+    # prf: 75 (2026-10-13). 48 state pages (1.6 MB) plus 3,070 county pages
+    # from scripts/build_prf_counties.py at about 20 KB each (61 MB): the grids,
+    # values, a month table, five recent years and the grid list, nothing more;
+    # the year-by-year record stays in the calculator. No static header or
+    # footer copy in the county pages.
+    "prf": 75,
 }
 DEFAULT_FOLDER_MB = 25
 
