@@ -199,26 +199,49 @@ def seo_cot(c):
     k = abs(net) / 1000.0
     kk = f"{k:,.0f}k" if k >= 10 else f"{k:,.1f}k"
     rpt = d.get("report_date") or ""
+    # "October 06, 2026" in the file. The CFTC names each report by this
+    # Tuesday as-of date, so "COT Report, Oct 6" is the report's own name.
+    try:
+        rd = datetime.strptime(rpt, "%B %d, %Y").date()
+    except ValueError:
+        rd = None
     prev = corn.get("prev")
     move = ""
     if isinstance(prev, (int, float)):
         delta = net - int(prev)
         if delta:
             move = (f" Funds {'added' if (delta > 0) == (net >= 0) else 'cut'} "
-                    f"{abs(delta):,} contracts week over week.")
+                    f"{abs(delta):,} on the week.")
+    # RETITLED 2026-10-13 from "Managed Money Is Net Long Corn 330k: CFTC
+    # COT". Over Jul 10-Oct 7 that held position 5.9 on 8,591 impressions at
+    # 0.19% CTR. The queries Search Console names are a report and a date:
+    # "cftc commitment of traders report", "cftc ... cot september 1 2026
+    # managed money". The title now leads with the report's name and its
+    # as-of date, then the corn position; the description spells out
+    # "Commitments of Traders" and names the other markets on the page.
+    when = f"{MONTHS[rd.month - 1][:3]} {rd.day}" if rd else ""
+    rlong = mdY(rd) if rd else rpt
     if side == "flat":
-        head = (f"Managed money is near flat in corn (net {_cot_side(net)} {abs(net):,} "
-                f"contracts, under {d.get('flat_oi_pct', 2.0)}% of open interest) as of {rpt}.")
+        head = (f"CFTC Commitments of Traders, {rlong}: managed money near flat in "
+                f"corn (net {_cot_side(net)} {abs(net):,} contracts, under "
+                f"{d.get('flat_oi_pct', 2.0)}% of open interest).")
+        pos = "Managed Money Near Flat in Corn"
     else:
-        head = (f"Managed money is net {side} {abs(net):,} corn contracts as of "
-                f"{rpt}.")
-    tail = " Weekly CFTC ag positioning, 11 commodities."
+        head = (f"CFTC Commitments of Traders, {rlong}: managed money net {side} "
+                f"{abs(net):,} corn contracts.")
+        pos = f"Managed Money Net {side.title()} Corn {kk}"
+    tail = " Soybeans, wheat, cattle, hogs, milk too."
     desc = head + move + tail
     if len(desc) > DESC_MAX:          # the move clause is the optional one
         desc = head + tail
-    if side == "flat":
-        return (f"Managed Money Is Near Flat In Corn: CFTC COT{SUFFIX}", desc)
-    return (f"Managed Money Is Net {side.title()} Corn {kk}: CFTC COT{SUFFIX}", desc)
+    if len(desc) > DESC_MAX:
+        desc = head
+    for cand in ((f"CFTC COT Report, {when}: {pos}" if when else None),
+                 (f"COT Report, {when}: {pos}" if when else None),
+                 f"CFTC COT Report: {pos}"):
+        if cand and len(cand + SUFFIX) <= TITLE_MAX:
+            return (cand + SUFFIX, desc)
+    return None
 
 
 def seo_crop_tour(c):
@@ -934,7 +957,25 @@ def selftest():
 
     t, d = seo_cot(ctx)
     ck("COT title states the position", "Net Long Corn 126k" in t, t)
-    ck("COT description carries the report date", "August 11, 2026" in d, d)
+    # Changed 2026-10-13 with the copy: the report's name and as-of date lead
+    # the title, and the description dates it as Aug 11, 2026 (was "August
+    # 11, 2026", the file's own spelling).
+    ck("COT title leads with the report name and its date",
+       t.startswith("CFTC COT Report, Aug 11: Managed Money Net Long Corn 126k"), t)
+    ck("COT description carries the report date", "Aug 11, 2026" in d, d)
+    ck("COT description spells out the report", d.startswith("CFTC Commitments of Traders"), d)
+    _cs = seo_cot(dict(ctx, cot={"report_date": "September 29, 2026", "flat_oi_pct": 2.0,
+                                 "corn": {"net": -312345, "prev": -298000}}))
+    ck("a short corn position says short", "Net Short Corn 312k" in _cs[0], _cs[0])
+    _cf = seo_cot(dict(ctx, cot={"report_date": "September 29, 2026", "flat_oi_pct": 2.0,
+                                 "corn": {"net": 4100, "prev": 9000, "side": "flat"}}))
+    ck("a flat corn position says near flat, no side in the title",
+       "Near Flat in Corn" in _cf[0] and "Long" not in _cf[0], _cf[0])
+    _cx = seo_cot(dict(ctx, cot={"report_date": "sometime", "corn": {"net": 125875}}))
+    ck("an unreadable report date drops the date, not the page",
+       _cx and _cx[0].startswith("CFTC COT Report: Managed Money"), _cx)
+    for _c in (_cs, _cf, _cx):
+        check(_c[0], _c[1], "cot.html")
 
     t, d = seo_crop_tour(ctx)
     ck("tour title says it starts tomorrow", "Starts Tomorrow" in t, t)
