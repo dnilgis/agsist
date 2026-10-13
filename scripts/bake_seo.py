@@ -138,8 +138,7 @@ def seo_usda_calendar(c):
         # Say what the page holds and name no date.
         return ("WASDE & USDA Report Dates: The Full USDA Calendar" + SUFFIX,
                 "Every USDA report date and release time on one calendar: WASDE "
-                f"at {WASDE_TIME}, Crop Production, Grain Stocks, Crop Progress, "
-                "Cattle on Feed.")
+                f"at {WASDE_TIME}, Crop Production, Grain Stocks, Crop Progress.")
     if w < c["today"]:
         raise ValueError(f"next_wasde returned {w}, already in the past")
     # RETITLED 2026-10-11 from "Next WASDE: Nov 10, 2026 | USDA Report
@@ -902,6 +901,7 @@ def selftest():
     _rd = seo_usda_calendar(dict(ctx, today=date(2026, 9, 11)))[1]
     ck("on report day it says today", "is today, Sep 11, 2026" in _rd, _rd)
     _nt, _nd = seo_usda_calendar(dict(ctx, next_wasde=None))
+    ck("past the date table: only reports the page lists", "Cattle on Feed" not in _nd, _nd)
     ck("past the date table: no next date is claimed",
        "Next" not in _nt and "next" not in _nd and not re.search(r"\d{4}", _nt + _nd), _nt + " / " + _nd)
 
