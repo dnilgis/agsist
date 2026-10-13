@@ -34,9 +34,9 @@
     9: /* Sep: early frost, condition, harvest price window ahead */
        {lead:['condition','frost','insurance','report','harvest'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:true},
     10:/* Oct: harvest price discovery, harvest, frost, fall N, Oct WASDE */
-       {lead:['insurance','harvest','frost','fallN','report'],planting:false,urea:false,fallN:true,gdu:true,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
+       {lead:['insurance','prf','harvest','frost','fallN','report'],planting:false,urea:false,fallN:true,gdu:true,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
     11:/* Nov: harvest wraps, fall N, rent season opens */
-       {lead:['harvest','fallN','frost','report','rent'],planting:false,urea:false,fallN:true,gdu:false,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
+       {lead:['prf','harvest','fallN','frost','report','rent'],planting:false,urea:false,fallN:true,gdu:false,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
     12:/* Dec: rent and lease talks, harvest price settled, Dec WASDE */
        {lead:['rent','insurance','report'],planting:false,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:true}
   };
@@ -82,9 +82,9 @@
   var grid=$('s7-grid'), cells={};
   var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',fallN:'Fall nitrogen window',
     report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
-    soilPlant:'Planting soil temperature',spray:'Spray today'};
+    soilPlant:'Planting soil temperature',spray:'Spray today',prf:'PRF pasture insurance'};
   var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/urea',report:'/usda-calendar',
-    rent:'/rent/',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
+    rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
     var k=$('s7-month-k');if(k){k.textContent='';k.hidden=true;}
@@ -530,6 +530,27 @@
     });
   }
 
+  /* ---------- PRF sign-up (Oct and Nov) ----------
+     The sales closing date and crop year come from /data/prf/meta.json, the
+     file the PRF pages are built from. The cell hides itself once that date
+     has passed in Central time, so it never counts down to a closed sign-up. */
+  function prf(){
+    if(!cells.prf)return;
+    get('/data/prf/meta.json').then(function(m){
+      var c=cells.prf;if(!c)return;
+      var d=m&&m.dates&&m.dates.sales_closing;
+      if(!d){put('prf',NL(),'PRF calculator');return;}
+      var today=tzParts(new Date(),'America/Chicago',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/^(\d{2})\/(\d{2})\/(\d{4})$/,'$3-$1-$2');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(today)||today>d){c.hidden=true;return;}
+      var days=Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))-Date.UTC(+today.slice(0,4),+today.slice(5,7)-1,+today.slice(8,10)))/864e5);
+      var l=loc(),st=null;
+      if(l&&l.state&&m.states)m.states.forEach(function(x){if(x.st===l.state)st=x;});
+      if(st)c.href='/prf/'+String(st.name).toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      put('prf',esc(isoDay(d).replace(/, \d{4}$/,''))+' <small>sign-up deadline'+(days===0?', today':(days===1?', tomorrow':', '+days+' days'))+'</small>',
+          esc((m.crop_year||'')+' crop year. '+(st?'PRF in '+st.name+', county by county.':'Price your grid, every year since 1951.')));
+    });
+  }
+
   /* ---------- weather: frost, soil, spray (one rule) ---------- */
   var WX={state:'wait',f:null,spray:null};
   function localNowKey(f){var off=+(f&&f.utc_offset_seconds)||0;return new Date(Date.now()+off*1000).toISOString().slice(0,13);}
@@ -771,7 +792,7 @@
   chip();
   window.addEventListener('agsist:bids',chip);window.addEventListener('storage',chip);
   window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
-  window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(chip,0);paintWx();rent();});
+  window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(chip,0);paintWx();rent();prf();});
 
   /* ---------- H: drought valid date, I: NOAA dates ---------- */
   get('/data/outlooks/manifest.json').then(function(mf){
@@ -791,6 +812,6 @@
   });
 
   /* ---------- run ---------- */
-  insurance();cropModules();report();rent();
+  insurance();cropModules();report();rent();prf();
   if(!hasLoc())setTimeout(paintWx,0);
 })();
