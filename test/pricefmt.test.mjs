@@ -160,7 +160,7 @@ test("cash as posted, basis in signed cents, one contract label", () => {
    it. No page may declare a variable named AG. */
 test("no page script declares its own AG", () => {
   let seen = 0;
-  for (const f of SURFACES.concat(["cash-bids.html", "spray.html", "fertilizer.html", "cattle-futures-prices.html", "store-or-sell.html"])) {
+  for (const f of SURFACES.concat(["cash-bids.html", "spray.html", "fertilizer.html", "cattle-futures-prices.html", "store-or-sell.html", "components/cash-bids.js"])) {
     let src; try { src = readFileSync(ROOT + f, "utf8"); } catch { continue; }
     seen++;
     assert.ok(!/(?:^|[;{\s])(?:var|let|const)\s+AG\s*=/.test(src), `${f} declares a variable named AG`);

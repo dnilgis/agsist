@@ -385,7 +385,7 @@ check("the hail map's ribbon is hidden", () =>
   assert.match(HAIL, /<aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor" hidden>/));
 check("cash bids: no house ask in an unsold slot, on /cash-bids or the town pages", () => {
   assert.ok(!/Sponsor this|innerHTML|ad-slot/.test(decomment(R("components/cb-house.js"))), "cb-house.js still draws into the slot");
-  assert.ok(!R("cash-bids.html").includes("cb-house.js"), "/cash-bids still loads cb-house.js");
+  assert.ok(!(R("cash-bids.html") + R("components/cash-bids.js")).includes("cb-house.js"), "/cash-bids still loads cb-house.js");
   assert.ok(!py(R("scripts/build_cash_bid_pages.py")).includes("cb-house.js"), "the town page builder still adds cb-house.js");
 });
 

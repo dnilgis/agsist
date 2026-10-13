@@ -26,7 +26,16 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PAGE = readFileSync(join(ROOT, "cash-bids.html"), "utf8");
+/* The page script moved out of cash-bids.html into components/cash-bids.js
+   (2026-10-12). Read the page and the script it loads as one text, and
+   insist the page still loads that script, so the functions checked here
+   are the ones the browser runs. */
+const PAGE = (() => {
+  const html = readFileSync(join(ROOT, "cash-bids.html"), "utf8");
+  const m = html.match(/<script src="\/components\/cash-bids\.js\?v=\d+"><\/script>/);
+  if (!m) { console.error("cash-bids.html no longer loads /components/cash-bids.js"); process.exit(1); }
+  return html + "\n" + readFileSync(join(dirname(join(ROOT, "cash-bids.html")), "components", "cash-bids.js"), "utf8");
+})();
 
 let pass = 0;
 const fails = [];

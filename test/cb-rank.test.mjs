@@ -15,7 +15,16 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const PAGE = readFileSync(ROOT + "cash-bids.html", "utf8");
+/* The page script moved out of cash-bids.html into components/cash-bids.js
+   (2026-10-12). Read the page and the script it loads as one text, and
+   insist the page still loads that script, so the functions run here are
+   the ones the browser runs. */
+const PAGE = (() => {
+  const html = readFileSync(ROOT + "cash-bids.html", "utf8");
+  assert.ok(/<script src="\/components\/cash-bids\.js\?v=\d+"><\/script>/.test(html),
+    "cash-bids.html no longer loads /components/cash-bids.js");
+  return html + "\n" + readFileSync(ROOT + "components/cash-bids.js", "utf8");
+})();
 const RANK = readFileSync(ROOT + "components/cb-rank.js", "utf8");
 
 function liftFn(name) {

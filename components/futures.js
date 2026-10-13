@@ -1783,8 +1783,9 @@ function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.t
 // when the pipeline publishes it with a price, else the continuous most-active
 // series, labeled "Most-active (ZC)" and never "Front Month".
 function loadPrices(){
-fetch('/data/prices.json',{cache:'no-store'})
-  .then(function(r){return r.json();})
+/* AG.json (util.js): one request for prices.json, shared with geo.js and the
+   range/seasonal block below. */
+AG.json('/data/prices.json')
   .then(function(data){
     var q=data.quotes||{};
     window.__agsistLastQ=q;
@@ -1890,7 +1891,7 @@ loadPrices();
 /* 5-year range bar and the seasonal index, from /data/price-stats.json (was an
    inline script on each page). Stashes the seasonality for the chart and the
    scorecard and announces it with an "agsist-seas" event. */
-(function(){var KEY=CROP.stats,QK=CROP_KEY;function $(i){return document.getElementById(i);}function m(v,md){return AG.px.priceDollars(v,{mode:md});}function ord(n){var v=n%100;if(v>=10&&v<=20)return "th";return {1:"st",2:"nd",3:"rd"}[n%10]||"th";}function band(p){return p<10?"historically very low: near a 5-year bottom":p<25?"historically low: below most of the last 5 years":p<45?"below the 5-year midpoint":p<=55?"right around the 5-year midpoint":p<75?"above the 5-year midpoint":p<90?"historically high: above most of the last 5 years":"historically very high: near a 5-year peak";}function ct(iso){try{return new Date(iso).toLocaleString("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" CT";}catch(e){return String(iso);}}function J(u){return fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+(function(){var KEY=CROP.stats,QK=CROP_KEY;function $(i){return document.getElementById(i);}function m(v,md){return AG.px.priceDollars(v,{mode:md});}function ord(n){var v=n%100;if(v>=10&&v<=20)return "th";return {1:"st",2:"nd",3:"rd"}[n%10]||"th";}function band(p){return p<10?"historically very low: near a 5-year bottom":p<25?"historically low: below most of the last 5 years":p<45?"below the 5-year midpoint":p<=55?"right around the 5-year midpoint":p<75?"above the 5-year midpoint":p<90?"historically high: above most of the last 5 years":"historically very high: near a 5-year peak";}function ct(iso){try{return new Date(iso).toLocaleString("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" CT";}catch(e){return String(iso);}}function J(u){return AG.json(u).catch(function(){return null;});}
   /* 5-yr bar = ONE measure: the dot sits at the percentile the sentence prints (share of weekly closes at or below the price), not at (price-low)/(high-low). When price-stats.json carries the weekly history (hist), today's live quote is ranked against it so the bar and the hero show the same price; otherwise the stored position is shown and dated. */
   Promise.all([J("/data/price-stats.json"),J("/data/prices.json")]).then(function(a){var d=a[0],p=a[1],s=d&&d[KEY];if(s&&s.seasonality&&s.seasonality.length===12){window.__agsistSeas=s.seasonality;window.__agsistSeasN=s.seasonality_n||s.n||null;window.__agsistSeasS=s;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var qs=(p&&p.quotes)||{},q=qs[QK+"-nearby"]||qs[QK]||null,live=(q&&q.close!=null)?q.close/100:null;var h=s.hist,cur,pct,n,lo,hi,note;if(h&&h.length>=29&&live!=null){var c=1;lo=live;hi=live;for(var i=0;i<h.length;i++){if(h[i]<=live)c++;if(h[i]<lo)lo=h[i];if(h[i]>hi)hi=h[i];}n=h.length+1;pct=Math.round(100*c/n);cur=live;note="Ranks today’s quote ("+m(live)+(p.fetched?", "+ct(p.fetched):"")+") against the prior "+h.length+" weekly closes.";}else{pct=s.pct;cur=s.cur;n=s.n;lo=s.lo;hi=s.hi;note="5-yr position as of the "+(d.updated?ct(d.updated):"last")+" update ("+m(s.cur)+"), not today’s live quote.";}pct=Math.max(0,Math.min(100,pct));$("rng5-lo").textContent="5-yr low "+m(lo,"down");$("rng5-hi").textContent="5-yr high "+m(hi,"up");$("rng5-cur").textContent=m(cur)+" · "+pct+ord(pct)+" pct";$("rng5-fill").style.width=pct+"%";$("rng5-dot").style.left="calc("+pct+"% - 6px)";$("rng5-read").textContent="At the "+pct+ord(pct)+" percentile of the last "+(s.years||5)+" years: "+band(pct)+". n = "+n+" weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). "+note;w.style.display="";});})();
 
@@ -1947,36 +1948,53 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // TradingView widget: CAPITALCOM:CORN / SOYBEAN / WHEAT are CFDs that track
   // the CBOT contract and render on the free tier without a TradingView account
-  var tvTimeout=setTimeout(function(){
+  // tv.js is a large third-party bundle and the chart sits below the fold, so
+  // it is fetched only when the chart nears the viewport or the reader taps
+  // the button. Until then the box holds a static placeholder with a link.
+  var tvStarted=false,tvTimeout=null;
+  function tvFail(){
     var chart=document.getElementById('tv-chart');
     var fallback=document.getElementById('tv-fallback');
-    if(chart&&!chart.children.length){
-      chart.style.display='none';
-      if(fallback)fallback.style.display='flex';
-    }
-  },6000);
+    if(chart)chart.style.display='none';
+    if(fallback)fallback.style.display='flex';
+  }
   function initTV(){
-    clearTimeout(tvTimeout);
     var chart=document.getElementById('tv-chart');
     if(!chart)return;
     try{
+      chart.innerHTML='';
       new TradingView.widget({container_id:'tv-chart',autosize:true,symbol:CROP.tv,interval:'D',timezone:'America/Chicago',theme:'dark',style:'1',locale:'en',toolbar_bg:'#1a2410',enable_publishing:false,hide_top_toolbar:false,hide_legend:false,save_image:false,backgroundColor:'#1a2410',gridColor:'rgba(255,255,255,0.04)',allow_symbol_change:false});
-    }catch(e){
-      chart.style.display='none';
-      var fallback=document.getElementById('tv-fallback');
-      if(fallback)fallback.style.display='flex';
+    }catch(e){clearTimeout(tvTimeout);tvFail();}
+  }
+  function startTV(){
+    if(tvStarted)return;
+    var chart=document.getElementById('tv-chart');
+    if(!chart)return;
+    tvStarted=true;
+    var btn=document.getElementById('tv-load');
+    if(btn){btn.disabled=true;btn.textContent='Loading chart';}
+    tvTimeout=setTimeout(function(){if(!chart.querySelector('iframe'))tvFail();},8000);
+    if(typeof TradingView!=='undefined'){initTV();return;}
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';s.async=true;
+    s.onload=function(){if(typeof TradingView!=='undefined')initTV();else{clearTimeout(tvTimeout);tvFail();}};
+    s.onerror=function(){clearTimeout(tvTimeout);tvFail();};
+    document.head.appendChild(s);
+  }
+  (function(){
+    var chart=document.getElementById('tv-chart');
+    if(!chart)return;
+    var btn=document.getElementById('tv-load');
+    if(btn)btn.addEventListener('click',startTV);
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(es){
+        if(es.some(function(e){return e.isIntersecting;})){io.disconnect();startTV();}
+      },{rootMargin:'300px'});
+      io.observe(chart);
+    } else {
+      startTV();
     }
-  }
-  if(typeof TradingView!=='undefined'){
-    initTV();
-  } else {
-    var tvPoll=0;
-    var tvCheck=setInterval(function(){
-      tvPoll++;
-      if(typeof TradingView!=='undefined'){clearInterval(tvCheck);initTV();}
-      else if(tvPoll>50){clearInterval(tvCheck);}
-    },100);
-  }
+  })();
 
   document.querySelectorAll('.faq-q').forEach(function(q){
     q.setAttribute('aria-expanded','false');

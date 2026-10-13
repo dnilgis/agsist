@@ -418,6 +418,9 @@ def css_structure(path="components/styles.css"):
     return out
 
 
+PAGE_SCRIPTS = {"index.html": "components/home.js", "cash-bids.html": "components/cash-bids.js"}
+
+
 def audit(pages, today):
     findings = css_structure()
     titles, descs = {}, {}
@@ -426,7 +429,12 @@ def audit(pages, today):
         html = p.read_text(encoding="utf-8", errors="replace")
         findings += static_checks(page, html, today)
         findings += link_targets_exist(page, html)
-        findings += data_refs_exist(page, html)
+        # A page whose inline script moved to its own file is still asked
+        # about the data that script fetches (index.html -> home.js on
+        # 2026-10-12, cash-bids.html -> cash-bids.js the same day).
+        ps = PAGE_SCRIPTS.get(page)
+        findings += data_refs_exist(page, html + ("\n" + (REPO / ps).read_text(encoding="utf-8")
+                                                  if ps and (REPO / ps).exists() else ""))
         # A noindex page (a working copy, a sponsor's own link) can't compete
         # with anything for ranking, so a title/description it shares with a
         # real page is not a finding.
