@@ -5,6 +5,10 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.15 (2026-10-13): /rp-short also takes a v2 Rain Print design code
+ *   ("2|place|station|year|LPCSX|name[|day|label]...[|dedication]": the style
+ *   and two switches in a fifth key letter, an optional dedication last). v1
+ *   codes are checked exactly as before. Nothing else changed.
  * v5.14 (2026-10-13): RAIN PRINT SHORT LINKS. New routes only; every existing
  *   route answers exactly as before. The print's QR used to carry
  *   agsist.com/rain-print?d=<design code> (QR version 6 to 10); it can now
@@ -737,9 +741,10 @@ const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at
 const RPS_MAX_BYTES = 1024;
 const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
 const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
-// The v1 design-code rules of decodeCode (components/rain-print.js): base64url
-// of "1|place|station|year|LPCS|name[|day|label]...". The letters behind LPCS
-// are the page's to change, so only their shape is checked here.
+// The design-code rules of decodeCode (components/rain-print.js): base64url
+// of "1|place|station|year|LPCS|name[|day|label]..." (v1) or
+// "2|place|station|year|LPCSX|name[|day|label]...[|dedication]" (v2, v5.15).
+// The key letters are the page's to change, so only their shape is checked here.
 function rpsCodeOk(code) {
   if (typeof code !== "string" || !/^[A-Za-z0-9_-]{8,400}$/.test(code)) return false;
   let raw;
@@ -750,10 +755,12 @@ function rpsCodeOk(code) {
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch (e) { return false; }
-  const f = raw.split("|");
-  if (f[0] !== "1" || f.length < 6 || (f.length - 6) % 2) return false;
+  const f = raw.split("|"), v2 = f[0] === "2";
+  if ((f[0] !== "1" && !v2) || f.length < 6) return false;
+  if (v2 && (f.length - 6) % 2 && !f.pop().trim()) return false;   // the dedication, when there is one
+  if ((f.length - 6) % 2) return false;
   if (!f[1].trim()) return false;
-  if (!/^[a-z0-9]{4}$/.test(f[4])) return false;
+  if (!(v2 ? /^[a-z0-9]{5}$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;
   const year = parseInt(f[3], 10);
   if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
   for (let i = 6; i + 1 < f.length; i += 2) {

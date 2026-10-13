@@ -14,6 +14,7 @@
  *   style: 'r1' | 'r2', year, place (long form, "Chetek, Wisconsin"), name, dedication,
  *   days: engine days [{date, v, flag, s, m, doy}], D: RainPrint.derive(days),
  *   axisLen: days on the x axis (a preview lays out the whole calendar year),
+ *   showDry: RainPrint.showDry(D), whether the longest dry stretch is marked,
  *   ov: the comparison {daily (0 on unrecorded days), total} or null,
  *   ovNote: what "usual" means, printed small ("Usual = 30-year normal"),
  *   showNormals: month normals under the month totals,
@@ -26,7 +27,7 @@
  * RULES carried from the engine: an unrecorded or S day is a gap (no step, no
  * bar, ground line broken), never a dry day; the comparison is 0 on those days,
  * so both totals leave them out; an A total is never the biggest rain; a dry
- * stretch is marked only at 7 days or more (the engine's showDry).
+ * stretch is marked only when the engine's showDry says so (7 days or more).
  */
 (function (root) {
   'use strict';
@@ -147,7 +148,8 @@
     var pct = ov && ov.total > 0 ? Math.round((total - ov.total) / ov.total * 100) : null;
     var soFar = I.preview ? ' so far' : '';
     var verdict = pct === null ? null : (Math.abs(pct) < 3 ? 'About a usual year' : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than a usual year') + soFar;
-    var dry = D.dryMax && D.dryMax.len >= 7 && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
+    // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
+    var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
     var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, 3)
       .map(function (mk) { return { i: mk.doy, label: String(mk.label || '') }; }).sort(function (a, b) { return a.i - b.i; });
