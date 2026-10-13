@@ -53,6 +53,14 @@
      * NOAA's seasonal outlooks cannot be tested: no archive of past outlooks
        is in the data. The outlook tilt is shown, never scored.
 
+   MORE CLIMATE PREDICTORS (PREDICTORS, tiltFor)
+     Recency weighting, last fall's index on the grid, PDO with ENSO, AMO, and
+     two that cannot be tested yet or at all (NMME forecasts, April 1
+     snowpack). Each reweights past years on top of the rate-led pick, with
+     settings fixed before the test. The walk-forward test runs them, counts
+     every one (FAMILY) and adjusts; recommend() applies only the ids the
+     published test kept (opts.tilts, from keptPredictors(opt.json)).
+
    THE ENSO TABLE
      ONI_ASO below: the Nino 3.4 sea surface anomaly averaged over August,
      September and October of each year, in degrees C. 1950 to 2021 are the
@@ -208,6 +216,174 @@
     return (hit + 1) / (draws + 1);
   }
 
+  /* ------------------------------------------------------------ more climate predictors */
+  /* Each is an optional tilt on the rate-led pick: it reweights past years and
+     nothing else, so the rates, the pooled payback and the rules stay as they
+     are. Every setting below was fixed before the walk-forward test was run
+     and none was tuned on it. scripts/prf_opt_backtest.mjs tests every one,
+     counts all of them (FAMILY) and adjusts for the count; data/prf/opt.json
+     says which held up, and only those may move the panel's pick.
+
+     What a buyer can know at the Dec 1 sales closing for policy year Y:
+       * the grid's index for every complete year before Y, and for Sep-Oct of
+         Y-1 (it ends Oct 31; RMA's final index is out in November). Oct-Nov
+         of Y-1 ends Nov 30 and is not final by Dec 1, so it is not used;
+       * PDO for August to October of Y-1 (NOAA NCEI posts each month early in
+         the next), AMO for July to September of Y-1 (NOAA PSL posts with a
+         longer lag, so one month earlier to be safe);
+       * NMME forecasts made in early November of Y-1 (not in the data yet);
+       * not April 1 snowpack: it is measured four months after sign-up. */
+  var PREDICTORS = [
+    { id: 'recent15', family: 'trend', recency: { halfLife: 15 },
+      name: 'Recent years count more (weight halves every 15 years)' },
+    { id: 'recent30', family: 'trend', recency: { halfLife: 30 },
+      name: 'Recent years count more (weight halves every 30 years)' },
+    { id: 'last30', family: 'trend', recency: { lastN: 30 },
+      name: 'The last 30 years only' },
+    { id: 'fall', family: 'persistence', intervals: [0, 1],
+      name: 'Last fall on this grid (its Sep-Oct index, dry, middle or wet third) tilting Jan-Feb and Feb-Mar' },
+    { id: 'pdo-enso', family: 'ocean', needs: ['pdo'],
+      name: 'Pacific Decadal Oscillation phase together with El Niño or La Niña' },
+    { id: 'amo', family: 'ocean', needs: ['amo'],
+      name: 'Atlantic Multidecadal Oscillation phase, warm or cold' },
+    { id: 'nmme', family: 'forecast', needs: ['nmme'], stub: true,
+      name: 'NOAA’s multi-model seasonal forecasts (NMME), made in November' },
+    { id: 'swe', family: 'snow', untestable: 'April 1 snowpack is measured four months after the Dec 1 sales closing, so no buyer can know it when choosing.',
+      name: 'April 1 mountain snowpack' }
+  ];
+  /* Every comparison the test makes or has promised to make: the ENSO tilt
+     and each testable predictor above, at 90% and 70% coverage. The
+     adjustment divides by this whole count, including the ones still waiting
+     on data, so running them later cannot make an earlier one look better. */
+  var FAMILY_COVERAGES = [90, 70];
+  var FAMILY = (function () {
+    var ids = ['enso'];
+    PREDICTORS.forEach(function (p) { if (!p.untestable) ids.push(p.id); });
+    var out = [];
+    FAMILY_COVERAGES.forEach(function (c) { ids.forEach(function (id) { out.push(id + '@' + c); }); });
+    return out;
+  })();
+  var CLIMATE_MONTHS = { pdo: [8, 9, 10], amo: [7, 8, 9] };
+  var FALL_INTERVAL = 8;   /* Sep-Oct */
+
+  function predictorById(id) { for (var i = 0; i < PREDICTORS.length; i++) if (PREDICTORS[i].id === id) return PREDICTORS[i]; return null; }
+
+  /* How much a past year counts toward policy year asOf. age 0 is the year
+     before. halfLife h: 0.5^(age/h). lastN n: 1 for the n most recent years,
+     0 before. A year at or after asOf counts 0, whatever the caller passed. */
+  function recencyWeight(year, r) {
+    var age = r.asOf - 1 - year;
+    if (!(age >= 0)) return 0;
+    if (r.lastN) return age < r.lastN ? 1 : 0;
+    if (r.halfLife) return Math.pow(0.5, age / r.halfLife);
+    return 1;
+  }
+
+  /* A climate series' mean over months (1-12) of one year, or null if any
+     month is missing. log, if given, collects every month read ('pdo:2019-08'),
+     so the test can check none was later than the sales closing allowed. */
+  function seasonMean(climate, name, year, months, log) {
+    var s = climate && climate.series && climate.series[name];
+    if (!s || !s.monthly) return null;
+    var row = s.monthly[String(year)], sum = 0;
+    for (var i = 0; i < months.length; i++) {
+      if (log) log.push(name + ':' + year + '-' + (months[i] < 10 ? '0' : '') + months[i]);
+      var v = row ? row[months[i] - 1] : null;
+      if (v == null || !isFinite(v)) return null;
+      sum += +v;
+    }
+    return sum / months.length;
+  }
+  function signPhase(v) { return v == null ? null : v >= 0 ? 'warm' : 'cold'; }
+
+  /* Why a predictor cannot run with this data, or null when it can. */
+  function predictorUnavailable(id, climate) {
+    var p = predictorById(id);
+    if (!p) return 'unknown predictor';
+    if (p.untestable) return p.untestable;
+    if (p.stub) return 'no archive in the data yet';
+    var needs = p.needs || [];
+    for (var i = 0; i < needs.length; i++) {
+      var s = climate && climate.series && climate.series[needs[i]];
+      if (!s || !s.monthly || !Object.keys(s.monthly).length) return 'data/prf/climate-indices.json has no ' + needs[i].toUpperCase() + ' series';
+    }
+    return null;
+  }
+
+  /* The weights options for one predictor, for policy year Y, from the years
+     in use (all before Y in the test) and what was known at the sales closing.
+     Returns { opts, state, used } where state is this year's reading (null:
+     unknown, so the pick is the plain one) and used lists what was read:
+     used.years the index years, used.climate the months. */
+  function tiltFor(G, id, Y, use, climate) {
+    var p = predictorById(id), used = { years: [], climate: [] }, opts = {};
+    if (!p || predictorUnavailable(id, climate)) return null;
+    G.years.forEach(function (y, k) { if (use[k]) used.years.push(y); });
+    if (p.recency) {
+      opts.recency = { asOf: Y, halfLife: p.recency.halfLife, lastN: p.recency.lastN };
+      return { opts: opts, state: 'recency', used: used };
+    }
+    var labels = {}, state = null;
+    if (id === 'fall') {
+      var kOf = {}, v = [];
+      G.years.forEach(function (y, k) { kOf[y] = k; });
+      for (var k = 0; k < G.years.length; k++) if (use[k] && G.X[k][FALL_INTERVAL] != null) v.push(G.X[k][FALL_INTERVAL]);
+      if (v.length < 9) return { opts: opts, state: null, used: used };
+      v.sort(function (a, b) { return a - b; });
+      var lo = quantile(v, 1 / 3), hi = quantile(v, 2 / 3);
+      var third = function (y) {
+        var kk = kOf[y];
+        if (kk == null || !use[kk]) return null;   /* only years in use, all before Y */
+        var x = G.X[kk][FALL_INTERVAL];
+        return x == null ? null : x <= lo ? 'dry' : x <= hi ? 'mid' : 'wet';
+      };
+      G.years.forEach(function (y, k2) { if (use[k2]) labels[y] = third(y - 1); });
+      state = third(Y - 1);
+      opts.analogs = [{ labels: labels, phase: state, boost: 1, intervals: p.intervals }];
+      return { opts: opts, state: state, used: used };
+    }
+    var log = used.climate;
+    var labelFor = function (y) {   /* the reading a buyer had for policy year y */
+      if (id === 'pdo-enso') {
+        var e = phaseKnownFor(y), pd = signPhase(seasonMean(climate, 'pdo', y - 1, CLIMATE_MONTHS.pdo, log));
+        return e && pd ? e + '/' + pd : null;
+      }
+      if (id === 'amo') return signPhase(seasonMean(climate, 'amo', y - 1, CLIMATE_MONTHS.amo, log));
+      return null;
+    };
+    G.years.forEach(function (y, k) { if (use[k]) labels[y] = labelFor(y); });
+    state = labelFor(Y);
+    opts.analogs = [{ labels: labels, phase: state, boost: 1, intervals: p.intervals || null }];
+    return { opts: opts, state: state, used: used };
+  }
+
+  /* The predictors data/prf/opt.json says held up: kept is set by the
+     backtest only when the adjusted odds clear 5% and the edge is positive
+     at every coverage tested. Anything else, or no file, keeps nothing. */
+  function keptPredictors(optJson) {
+    var p = optJson && optJson.predictors, out = [];
+    if (!p) return out;
+    PREDICTORS.forEach(function (d) { if (p[d.id] && p[d.id].kept === true && !d.untestable && !d.stub) out.push(d.id); });
+    return out;
+  }
+
+  /* Holm's step-down adjustment over a family of m comparisons. ps: { key: p }
+     for those run; keys of the family not in ps count as p = 1. Returns
+     { key: adjusted p } for the keys in ps. */
+  function holm(ps, family) {
+    var keys = family.slice();
+    Object.keys(ps).forEach(function (k) { if (keys.indexOf(k) < 0) keys.push(k); });
+    var m = keys.length;
+    var rows = keys.map(function (k) { return { k: k, p: ps[k] == null ? 1 : ps[k] }; });
+    rows.sort(function (a, b) { return a.p - b.p || (a.k < b.k ? -1 : 1); });
+    var out = {}, run = 0;
+    rows.forEach(function (r, i) {
+      run = Math.max(run, Math.min(1, (m - i) * r.p));
+      if (ps[r.k] != null) out[r.k] = run;
+    });
+    return out;
+  }
+
   /* ------------------------------------------------------------ weights */
   /* Per year and interval, how much a past year counts.
        enso:   the phase this year ('el-nino' | 'la-nina' | 'neutral'): years
@@ -216,6 +392,11 @@
                interval: each past year counts 3 x the probability of the
                tercile it fell in (terciles of that interval over the years in
                use), so a 40/33/27 lean makes dry years count 1.2 and wet 0.81.
+       recency: { asOf: policy year, halfLife | lastN }: recent years count
+               more (see recencyWeight).
+       analogs: [{ labels: { year: label }, phase, boost, intervals }]: years
+               whose label equals phase count (1 + boost) times, on the listed
+               intervals only (all when intervals is null). Built by tiltFor.
      Returns W[k][i], 0 for years not in use. */
   function weights(G, use, opts) {
     opts = opts || {};
@@ -232,12 +413,19 @@
         cuts.push(v.length >= 9 ? [quantile(v, 1 / 3), quantile(v, 2 / 3)] : null);
       }
     }
+    var analogs = opts.analogs || [];
     for (var k2 = 0; k2 < G.years.length; k2++) {
       var row = new Array(N);
       var base = use[k2] ? 1 : 0;
       if (base && phase && phaseKnownFor(G.years[k2]) === phase) base *= 1 + boost;
+      if (base && opts.recency) base *= recencyWeight(G.years[k2], opts.recency);
       for (var j = 0; j < N; j++) {
         var w = base;
+        for (var a = 0; a < analogs.length && w; a++) {
+          var an = analogs[a];
+          if (an.phase == null || (an.intervals && an.intervals.indexOf(j) < 0)) continue;
+          if (an.labels[G.years[k2]] === an.phase) w *= 1 + (an.boost == null ? 1 : +an.boost);
+        }
         if (w && cuts && cuts[j]) {
           var x = G.X[k2][j], o2 = opts.outlook[j];
           var p = x <= cuts[j][0] ? o2.below : x <= cuts[j][1] ? o2.near : o2.above;
@@ -472,6 +660,9 @@
     var from = opts.from || 1981, minTrain = opts.minTrain || 30, objective = opts.objective || 'net';
     var even = evenSpread(G), def = pageDefault(G), dry2 = driestTwo(G);
     var rows = [];
+    /* opts.predictors: ids from PREDICTORS to test alongside; those the data
+       cannot support (opts.climate lacks the series) are left out */
+    var preds = (opts.predictors || []).filter(function (id) { return !predictorUnavailable(id, opts.climate); });
     for (var t = 0; t < G.years.length; t++) {
       var Y = G.years[t];
       if (Y < from) continue;
@@ -486,12 +677,27 @@
       var hst = a.estimator === 'history' ? a : pick(G, { objective: objective, estimator: 'history', step: opts.step, use: use });
       /* was Y a dry year, by the cut from earlier years only */
       var cut = scoreYears(G, use, 'dry').cut, dryYear = G.annual[t] != null && cut != null && G.annual[t] <= cut + 1e-12;
-      rows.push({ year: Y, phase: phase, dry: dryYear,
+      var row = { year: Y, phase: phase, dry: dryYear,
                   opt: netIn(G, a.split, t), optEnso: b ? netIn(G, b.split, t) : null, hist: netIn(G, hst.split, t),
                   even: netIn(G, even, t), def: netIn(G, def, t), dry2: netIn(G, dry2, t),
-                  pick: a.split, pickEnso: b ? b.split : null });
+                  pick: a.split, pickEnso: b ? b.split : null };
+      /* each predictor: the same pick, reweighted by what was known for Y.
+         With no reading for Y (state null) it is the plain pick, so it scores
+         the same as opt that year. */
+      if (preds.length) {
+        row.tilt = {}; row.tiltPick = {}; row.tiltState = {};
+        for (var q = 0; q < preds.length; q++) {
+          var tf = tiltFor(G, preds[q], Y, use, opts.climate);
+          if (opts.onTilt) opts.onTilt(Y, preds[q], tf ? tf.used : null);
+          var pk = tf && tf.state != null ? pick(G, Object.assign({ objective: objective, estimator: opts.estimator, step: opts.step, use: use }, tf.opts)) : a;
+          row.tilt[preds[q]] = netIn(G, (pk || a).split, t);
+          row.tiltPick[preds[q]] = (pk || a).split;
+          row.tiltState[preds[q]] = tf ? tf.state : null;
+        }
+      }
+      rows.push(row);
     }
-    return { rows: rows, even: even, def: def, dry2: dry2, objective: objective, estimator: estimatorFor({ objective: objective, estimator: opts.estimator }) };
+    return { rows: rows, even: even, def: def, dry2: dry2, objective: objective, estimator: estimatorFor({ objective: objective, estimator: opts.estimator }), predictors: preds };
   }
 
   /* compare one strategy's yearly nets with another's */
@@ -625,10 +831,23 @@
       dry2: dry2 && { split: dry2, record: record(G, dry2), dryRecord: record(G, dry2, dryMask) }
     };
 
-    /* the forecast tilt */
+    /* the forecast tilt, and any predictor that held up out of sample
+       (opts.tilts: ids the published test kept; never one it did not) */
     var fc = null, phase = normPhase(opts.enso), outl = opts.outlook || null;
-    if (phase || outl) {
-      var f = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, enso: phase, ensoBoost: opts.ensoBoost, outlook: outl });
+    var policyYear = opts.policyYear || G.years[G.years.length - 1] + 1, tiltOn = [], tiltOpts = { analogs: [] }, tiltNotes = [];
+    (opts.tilts || []).forEach(function (id) {
+      var p = predictorById(id);
+      if (!p || objective !== 'net') return;
+      var why = predictorUnavailable(id, opts.climate);
+      var tf = why ? null : tiltFor(G, id, policyYear, all, opts.climate);
+      if (!tf || tf.state == null) { tiltNotes.push(p.name + ': held up in the test, but this year’s reading is ' + (why ? 'missing (' + why + ')' : 'not known yet') + ', so it does not move the pick.'); return; }
+      if (tf.opts.recency) tiltOpts.recency = tf.opts.recency;
+      if (tf.opts.analogs) tiltOpts.analogs = tiltOpts.analogs.concat(tf.opts.analogs);
+      tiltOn.push(id);
+      tiltNotes.push(p.name + ': held up in the test across grids, so it is part of this pick.');
+    });
+    if (phase || outl || tiltOn.length) {
+      var f = pick(G, { objective: objective, estimator: opts.estimator, step: opts.step, enso: phase, ensoBoost: opts.ensoBoost, outlook: outl, recency: tiltOpts.recency, analogs: tiltOpts.analogs });
       var moved = 0;
       for (var i = 0; i < N; i++) moved += Math.abs(f.split[i] - h.split[i]);
       moved /= 2;
@@ -651,8 +870,9 @@
           notes.push('NOAA’s outlook leans ' + (lean > 0 ? 'dry' : 'wet') + ' for ' + LABELS[j] + ' (' + pct(o.below) + ' below normal, ' + pct(o.near) + ' near, ' + pct(o.above) + ' above).');
         }
       }
+      tiltNotes.forEach(function (t) { notes.push(t); });
       notes.push(moved ? 'The outlook moved ' + moved + '% of the policy compared with the record alone.' : 'The outlook did not change the pick.');
-      fc = { split: f.split, score: f.score, moved: moved, record: record(G, f.split), notes: notes, enso: phase, outlook: !!outl,
+      fc = { split: f.split, score: f.score, moved: moved, record: record(G, f.split), notes: notes, enso: phase, outlook: !!outl, tilts: tiltOn,
              historyScoreOfForecastPick: (function () { var s = 0; for (var q = 0; q < N; q++) if (f.split[q]) s += f.split[q] / 100 * h.values[q]; return s; })() };
     }
 
@@ -664,7 +884,7 @@
       bt.rows = wf.rows.map(function (r) { return { year: r.year, opt: r.opt, optEnso: r.optEnso, hist: r.hist, even: r.even, def: r.def, dry2: r.dry2, dry: r.dry, phase: r.phase }; });
     }
     return { ok: true, objective: objective, coverage: G.coverage, subsidy: G.subsidy, years: { n: G.years.length, first: G.years[0], last: G.years[G.years.length - 1] },
-             rec: rec, naive: naive, forecast: fc, base: base, backtest: bt, reasons: reasons(G, rec, fc, bt, opts), limits: { lo: G.lo, hi: G.hi, allowed: G.allowed } };
+             rec: rec, naive: naive, forecast: fc, base: base, tiltNotes: tiltNotes, backtest: bt, reasons: reasons(G, rec, fc, bt, opts), limits: { lo: G.lo, hi: G.hi, allowed: G.allowed } };
   }
 
   var api = {
@@ -674,7 +894,10 @@
     prepare: prepare, weights: weights, scoreYears: scoreYears, values: values, supports: supports, solve: solve,
     pick: pick, pricedValues: pricedValues, estimatorFor: estimatorFor, record: record, netIn: netIn, evenSpread: evenSpread, pageDefault: pageDefault, driestTwo: driestTwo,
     walkForward: walkForward, versus: versus, verdict: verdict, summarizeBacktest: summarizeBacktest,
-    outlookFor: outlookFor, reasons: reasons, recommend: recommend, signTest: signTest, flipTest: flipTest, quantile: quantile
+    outlookFor: outlookFor, reasons: reasons, recommend: recommend, signTest: signTest, flipTest: flipTest, quantile: quantile,
+    PREDICTORS: PREDICTORS, FAMILY: FAMILY, FAMILY_COVERAGES: FAMILY_COVERAGES, CLIMATE_MONTHS: CLIMATE_MONTHS, FALL_INTERVAL: FALL_INTERVAL,
+    predictorById: predictorById, predictorUnavailable: predictorUnavailable, recencyWeight: recencyWeight, seasonMean: seasonMean,
+    tiltFor: tiltFor, holm: holm, keptPredictors: keptPredictors
   };
   root.AgPrfOptimize = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

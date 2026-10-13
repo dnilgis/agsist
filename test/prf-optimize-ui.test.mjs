@@ -108,6 +108,9 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     assert.ok(verdict.includes(`${r.yearsAheadOfEven} of ${r.years.n} years`), verdict);
     assert.ok(text.includes("Would it have worked here?"), "the grid's own out-of-sample record is shown");
     assert.ok(/not loaded/.test(text), "says the outlook is not loaded");
+    assert.ok(text.includes("What we tested"), "the list of what was tried is offered");
+    const testedText = await page.$eval("#prf-optimize", (s) => s.textContent);
+    for (const p of Object.values(OPT.predictors)) assert.ok(testedText.includes(p.line), `missing line: ${p.line}`);
     assert.ok(!text.includes("—"), "no em dash");
     assert.ok(!/NaN|undefined|\bnull\b/.test(text), "no broken number");
 

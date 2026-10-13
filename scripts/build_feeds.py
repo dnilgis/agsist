@@ -93,6 +93,14 @@ QUIET = {
         "US Drought Monitor map comes out Thursday mornings, CPC's seasonal "
         "outlooks on the third Thursday of the month and the ENSO discussion "
         "on the second."),
+    # Written monthly by climate-indices.yml (scripts/fetch_climate_indices.py),
+    # which keeps a series unchanged when NOAA has not posted a new month.
+    # components/prf-optimize-ui.js reads it; the feed joins this manifest the
+    # day /prf loads that script.
+    "data/prf/climate-indices.json": (
+        "monthly",
+        "NOAA posts the PDO and AMO once a month, so the climate indices job "
+        "runs on the 9th and the file moves only when a new month is out."),
 }
 
 # ── feeds nobody schedules, because a person maintains them ──────────────────
@@ -201,6 +209,12 @@ PLANNED = {
     # Written by seo-weekly.yml (scripts/gsc_index_check.py) once the URL
     # Inspection API answers; read only by the internal, noindex seo-report.html,
     # which says "no index check has run yet" until then.
+    # NOAA cannot be reached from the sandbox the optimizer was built in;
+    # climate-indices.yml makes the first fetch on a GitHub runner. Until
+    # then the PRF optimizer test says the PDO and AMO tilts are untested.
+    "data/prf/climate-indices.json": ("planned",
+        "The climate indices job has not made its first run yet. The PRF "
+        "optimizer lists the PDO and AMO tests as not run until it does."),
     "data/seo-index.json": ("planned",
         "The weekly Search Console index check has not made its first run yet. "
         "Only the internal search report reads it, and it says so until then."),

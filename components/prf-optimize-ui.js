@@ -68,13 +68,18 @@
     document.head.appendChild(st);
   }
 
-  /* opt.json and outlook.json, once; both optional, the panel says what is missing */
+  /* opt.json and outlook.json, once; both optional, the panel says what is
+     missing. data/prf/climate-indices.json only when a predictor that held up
+     in opt.json needs a NOAA series (PDO, AMO); otherwise it is not fetched. */
   function load(src) {
     if (state.loading) return state.loading;
     function get(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
     state.loading = Promise.all([get(src + 'opt.json'), get(src + 'outlook.json')]).then(function (r) {
-      state.opt = r[0]; state.outlookJson = r[1]; state.loaded = true;
-    });
+      state.opt = r[0]; state.outlookJson = r[1];
+      state.kept = O.keptPredictors(state.opt);
+      var needs = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.needs && p.needs.length; });
+      return needs ? get(src + 'climate-indices.json').then(function (c) { state.climate = c; }) : null;
+    }).then(function () { state.loaded = true; });
     return state.loading;
   }
 
@@ -123,11 +128,11 @@
     var outl = state.outlookJson ? O.outlookFor(state.outlookJson, ctx.grid) : { outlook: null, enso: null };
     state.ensoFromFile = outl.enso;
     var enso = state.enso === 'none' ? null : (state.enso || outl.enso || null);
-    var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete].join('|');
+    var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete, (state.kept || []).join(',')].join('|');
     if (state.cache.key === key) return state.cache.res;
     var res = O.recommend({ index: ctx.index, rates: ctx.rates ? ctx.rates[ctx.cov] : null, coverage: ctx.cov, subsidy: ctx.subsidy ? ctx.subsidy[String(ctx.cov)] : null,
                             min: mm.min, max: mm.max, valid: mm.valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete },
-                          { objective: state.objective, enso: enso, outlook: outl.outlook });
+                          { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: state.climate || null, policyYear: ctx.cropYear || null });
     res.outlookMeta = outl;
     res.ensoUsed = enso;
     state.cache = { key: key, res: res };
@@ -169,7 +174,8 @@
       : 'the split that would have paid most, after your share of the premium, in the driest fifth of years here (by whole-year precipitation), at ' + ctx.cov + '% coverage.') + '</p>';
 
     var pk = res.forecast || res.rec, sp = pk.split;
-    h += '<h3>' + (res.forecast ? 'The pick, with this fall’s outlook' : 'The pick') + ' for grid ' + esc(ctx.grid) + (ctx.county ? ', ' + esc(ctx.county) : '') + '</h3>';
+    var tiltOnly = res.forecast && !res.forecast.enso && !res.forecast.outlook;
+    h += '<h3>' + (res.forecast ? (tiltOnly ? 'The pick, with what held up in the test' : 'The pick, with this fall’s outlook') : 'The pick') + ' for grid ' + esc(ctx.grid) + (ctx.county ? ', ' + esc(ctx.county) : '') + '</h3>';
     h += '<div class="po-split">';
     for (var i = 0; i < N; i++) if (sp[i]) h += '<div class="po-iv"><b>' + sp[i] + '%</b><span>' + LABELS[i] + '</span></div>';
     h += '</div>';
@@ -179,7 +185,7 @@
       h += '<p class="po-fine">About, for ' + esc(ctx.acres.toLocaleString('en-US')) + ' acres at ' + ctx.cov + '% coverage and productivity factor ' + ctx.pf
         + ', every year ' + res.years.first + ' to ' + res.years.last + ' at 2027 rates. The calculator above gives the exact dollars.</p>'
         + '<div class="po-wrap"><table aria-label="The pick beside other setups"><thead><tr><th scope="col">Setup</th><th scope="col">You pay a year</th><th scope="col">Average after premium</th><th scope="col">Middle year</th><th scope="col">Worst and best year</th><th scope="col">Years it paid</th></tr></thead><tbody>';
-      if (res.forecast) h += row('With the outlook', res.forecast, prot);
+      if (res.forecast) h += row(tiltOnly ? 'With what held up' : 'With the outlook', res.forecast, prot);
       h += row(res.forecast ? 'Record alone' : 'This pick', res.rec, prot);
       if (res.naive && res.naive.split.join() !== res.rec.split.join()) h += row('Grid’s own record alone', res.naive, prot);
       h += row('Even spread', res.base.even, prot);
@@ -215,11 +221,12 @@
         return '<option value="' + o[0] + '"' + (on ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
       }).join('') + '</select></div>';
     h += '<p class="po-fine">' + (om.outlook ? 'NOAA’s seasonal precipitation outlook' + (om.issued ? ' issued ' + esc(om.issued) : '') + ' is in. ' : 'NOAA’s seasonal precipitation outlook is not loaded, so no month is tilted by it. ')
-      + (res.forecast ? esc(res.forecast.notes.join(' ')) : 'With no outlook set, the pick uses the record and the rates alone.')
+      + (res.forecast ? esc(res.forecast.notes.join(' ')) : 'With no outlook set, the pick uses the record and the rates alone.' + (res.tiltNotes && res.tiltNotes.length ? ' ' + esc(res.tiltNotes.join(' ')) : ''))
       + ' The El Niño and La Niña weighting was tested above; NOAA’s monthly outlook could not be, because past outlooks are not in the data.</p>';
 
     h += '<h3>Why these months</h3><ul class="po-why">' + res.reasons.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
 
+    h += tested();
     h += '<details><summary>Show the arithmetic</summary><div class="po-fine">'
       + '<p>Every interval’s payment in every year is the policy’s own rule: (trigger minus index) over trigger, when the index is under the trigger, times the protection. Premium is RMA’s 2027 rate times the protection; you pay what is left after USDA’s ' + Math.round(res.subsidy * 100) + '%.</p>'
       + '<p>“Most expected dollars” rates each interval by RMA’s 2027 rate times this grid’s payback on its rates over all offered intervals and years, less your share. It then searches every split the rules allow (whole percents, at least two intervals, no month twice, each between the county’s minimum and maximum, January and February at most 25%) for the highest total. The grid’s own record for each interval alone, without the rates, was also tested and did worse than an even spread across grids.</p>'
@@ -230,6 +237,22 @@
       + '<p>Figures in dollars leave out RMA’s rounding of each unit to the dollar, so they can differ from the calculator by a few dollars.</p>'
       + '</div></details>';
     b.innerHTML = h;
+  }
+
+  /* Every idea the test across grids tried, one plain line each, the ones that
+     failed included. Lines and verdicts come from data/prf/opt.json
+     (scripts/prf_opt_backtest.mjs); nothing here judges them. */
+  function tested() {
+    var o = state.opt, pr = o && o.predictors, fam = o && o.family;
+    var h = '<details><summary>What we tested</summary><div class="po-fine">';
+    if (!pr || !fam) return h + '<p>The test across grids did not load, so the list of what was tried is not shown. Without it, nothing but the record and the rates moves the pick.</p></div></details>';
+    var kept = state.kept || [];
+    h += '<p>Other weather signals, each tried as a tilt on the pick above and scored the same way: picked each fall from the years before, then scored on the next year, across '
+      + o.sample.grids.toLocaleString('en-US') + ' grids, 1981 to ' + o.last_complete + '. ' + fam.size + ' comparisons were promised and are counted together (' + fam.run
+      + ' run so far); by luck alone about ' + fam.expectedByChanceAt5pct + ' of them would look like a find, so each is judged after that count. '
+      + (kept.length ? 'Only what held up after the count moves the pick.' : 'None held up after the count, so none of these moves the pick.') + '</p><ul class="po-why">';
+    Object.keys(pr).forEach(function (id) { h += '<li>' + esc(pr[id].line) + '</li>'; });
+    return h + '</ul></div></details>';
   }
 
   function onClick(e) {
@@ -254,7 +277,8 @@
 
   /* ctx: { grid, county, index (complete years), rates (by coverage), avgMm,
             limits {min,max,valid}, cov, pf, acres, share, cbv, subsidy (by
-            coverage), lastComplete, src, apply(split) } */
+            coverage), lastComplete, cropYear (optional, the policy year being
+            picked), src, apply(split) } */
   function update(ctx) {
     state.ctx = ctx;
     if (!section()) return;
