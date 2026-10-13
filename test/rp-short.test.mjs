@@ -1,5 +1,5 @@
 /* Rain Print short links (2026-10-12): the QR size they buy, the /R page, the
- * client (components/rp-short.js) and that the worker (v5.13, POST /rp-short)
+ * client (components/rp-short.js) and that the worker (v5.14, POST /rp-short)
  * takes every code the page makes.
  *
  * Runs the shipped files: components/qr.js, components/rain-print.js and
@@ -158,4 +158,60 @@ test("the worker accepts every code rain-print.js encodes, at the page's limits"
     const g = await w.fetch(new Request("https://x.dev/rp-short/" + j.id), env);
     assert.equal((await g.json()).code, code);
   }
+});
+
+// ---------- the /R page's own script ----------
+async function runR(search, fetchImpl) {
+  const html = read("R.html");
+  const js = /<script>([\s\S]*?)<\/script>/.exec(html)[1];
+  const els = { msg: { textContent: "" }, sub: { textContent: "" }, box: { className: "" } };
+  const out = { replaced: null, asked: [], els };
+  const c = {
+    location: { search, replace(u) { out.replaced = u; } },
+    document: { getElementById: (k) => els[k] },
+    setTimeout, clearTimeout,
+  };
+  if (fetchImpl) c.fetch = async (u) => { out.asked.push(u); return fetchImpl(u); };
+  vm.runInNewContext(js, c);
+  await new Promise((r) => setTimeout(r, 20));
+  return out;
+}
+const API = "https://agsist-subs.dnilgis.workers.dev/rp-short/";
+const okCode = async () => ({ ok: true, status: 200, json: async () => ({ ok: true, code: CODE }) });
+
+test("/R: every way the id can arrive opens the design", async () => {
+  for (const s of ["?K7Q2M", "?k7q2m", "?id=K7Q2M", "?K7Q2M&fbclid=abc", "?utm_source=x&id=k7q2m", "?K7Q2M%20"]) {
+    const o = await runR(s, okCode);
+    assert.deepEqual(o.asked, [API + "K7Q2M"], s);
+    assert.equal(o.replaced, "/rain-print?d=" + CODE, s);
+    assert.equal(o.els.box.className, "", "no message shown " + s);
+  }
+  const o = await runR("?K7QLO", okCode);
+  assert.deepEqual(o.asked, [API + "K7Q10"], "look-alike letters read as digits");
+});
+
+test("/R: an unknown, malformed or unreachable link says so and stays put", async () => {
+  for (const s of ["", "?", "?ABCD", "?ABCDEFGHJ", "?K7Q2U", "?x=1"]) {
+    const o = await runR(s, okCode);
+    assert.deepEqual(o.asked, [], "no request for " + JSON.stringify(s));
+    assert.equal(o.replaced, null);
+    assert.equal(o.els.box.className, "now");
+    assert.match(o.els.sub.textContent, /not one we know/);
+  }
+  const cases = [
+    [async () => ({ ok: false, status: 404, json: async () => ({}) }), /not one we know/],
+    [async () => ({ ok: false, status: 503, json: async () => ({}) }), /connection dropped/],
+    [async () => ({ ok: false, status: 429, json: async () => ({}) }), /connection dropped/],
+    [async () => { throw new Error("offline"); }, /connection dropped/],
+    [async () => ({ ok: true, status: 200, json: async () => ({ ok: true, code: "javascript:alert(1)" }) }), /connection dropped/],
+  ];
+  for (const [f, re] of cases) {
+    const o = await runR("?K7Q2M", f);
+    assert.equal(o.replaced, null);
+    assert.equal(o.els.box.className, "now");
+    assert.match(o.els.sub.textContent, re);
+  }
+  const o = await runR("?K7Q2M");
+  assert.equal(o.replaced, null, "no fetch at all");
+  assert.match(o.els.sub.textContent, /connection dropped/);
 });
