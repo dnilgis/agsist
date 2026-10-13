@@ -200,7 +200,7 @@ def build_state(src, st, year, edate, C, fetched):
     for fips, c in sorted(mine.items()):
         ok = sorted((x for x in cands.get(fips, []) if x["summary"]), key=R.rank_key)
         if ok:
-            picked[fips] = ok[0]
+            picked[fips] = dict(ok[0], n_ok=len(ok))
         else:
             got = cands.get(fips, [])
             none[fips] = {"name": c["name"], "stations": len(got)}
@@ -226,6 +226,7 @@ def build_state(src, st, year, edate, C, fetched):
                            "sid": m["sids"][0], "net": R.network(m["sids"]),
                            "ll": [round(m["ll"][0], 4), round(m["ll"][1], 4)], "mi": round(x["mi"], 1)}}
         rec.update(s)
+        rec["n_ok"] = x["n_ok"]
         rec["last"] = last.get(fips)
         out[fips] = rec
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,

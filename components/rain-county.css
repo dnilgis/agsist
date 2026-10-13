@@ -1,0 +1,59 @@
+/* /rain, /rain/<state> and /rain/<state>/<county> (scripts/build_county_rain.py).
+   Shared by every county page so no page carries its own styles. Colors come
+   from components/styles.css tokens, so light and dark both work. */
+.rc { max-width: 980px; margin: 0 auto; padding: 0 16px 2.5rem; }
+.rc h1 { margin: .2rem 0 .7rem; max-width: 24em; }
+.rc h2 { font-size: var(--fs-xl); margin: 2rem 0 .5rem; line-height: 1.25; }
+.rc p, .rc li { line-height: 1.6; }
+.rc a { color: var(--brand); }
+.rc-sr { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.rc-asof { display: inline-block; font-size: var(--fs-sm); color: var(--text); background: var(--surface); border: 1px solid var(--border-g); border-radius: var(--r-pill); padding: .2rem .7rem; margin: 0 0 .6rem; }
+.rc-answer { font-size: 1.18rem; line-height: 1.5; color: var(--text); max-width: 40em; margin: 0 0 1rem; }
+.rc-answer b { color: var(--brand); }
+.rc-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: 0 0 1.2rem; padding: 0; }
+.rc-figs div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: .65rem .8rem; }
+.rc-figs dt { font-size: var(--fs-xs); color: var(--text-muted); margin: 0 0 .2rem; }
+.rc-figs dd { margin: 0; font-size: 1.3rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text); }
+.rc-figs dd small { font-size: var(--fs-xs); font-weight: 400; color: var(--text-muted); font-family: var(--font-body, inherit); }
+.rc-chart { margin: 0 0 1.2rem; }
+.rc-chart svg { width: 100%; height: auto; display: block; max-width: 760px; }
+.rc-chart figcaption { font-size: var(--fs-sm); color: var(--text-muted); margin-top: .3rem; max-width: 46em; }
+.rc-ax { stroke: var(--border-2, var(--border)); stroke-width: 1; }
+.rc-grid { stroke: var(--border); stroke-width: 1; }
+.rc-lab { fill: var(--text-muted); font-size: 12px; font-family: var(--font-body, sans-serif); }
+.rc-yr { fill: none; stroke: var(--blue); stroke-width: 2.5; stroke-linejoin: round; }
+.rc-us { fill: none; stroke: var(--text-muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.rc-yl { fill: var(--blue); font-size: 12px; font-weight: 700; font-family: var(--font-body, sans-serif); }
+.rc-scroll { overflow-x: auto; }
+.rc-t { border-collapse: collapse; width: 100%; max-width: 720px; font-size: var(--fs-sm); }
+.rc-t th, .rc-t td { padding: .42rem .55rem; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+.rc-t th:first-child, .rc-t td:first-child { text-align: left; }
+.rc-t td:first-child { white-space: normal; }
+.rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); }
+.rc-t .rc-n { color: var(--text-muted); font-size: var(--fs-xs); }
+.rc-t-wide { max-width: none; }
+.rc-up { color: var(--green); }
+.rc-dn { color: var(--orange); }
+.rc-list { padding-left: 1.15rem; max-width: 46em; }
+.rc-list li { margin: 0 0 .35rem; }
+.rc-cta { margin: 1.8rem 0 .5rem; padding: 1rem 1.1rem; border: 1px solid var(--border-g); border-radius: var(--r-lg); background: var(--surface); max-width: 46em; }
+.rc-cta h2 { margin: 0 0 .35rem; font-size: var(--fs-lg); }
+.rc-cta p { margin: 0 0 .7rem; color: var(--text-dim); }
+.rc-cta .btn { display: inline-block; }
+.rc-cta .rc-fine { margin: .6rem 0 0; }
+.rc-fine { font-size: var(--fs-sm); color: var(--text-muted); max-width: 46em; }
+.rc-faq details { border-bottom: 1px solid var(--border); padding: .55rem 0; max-width: 46em; }
+.rc-faq summary { cursor: pointer; font-weight: 600; }
+.rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
+.rc-next { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
+.rc-next a { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+.rc-next small { color: var(--text-muted); margin-left: .3rem; }
+.rc-states { columns: 3 14em; padding: 0; list-style: none; }
+.rc-states li { break-inside: avoid; padding: .3rem 0; }
+.rc-states small { color: var(--text-muted); }
+.rc-byline { font-size: var(--fs-xs); color: var(--text-muted); margin: 1.8rem 0 0; padding-top: .9rem; border-top: 1px solid var(--border); max-width: 60em; }
+@media (max-width: 560px) {
+  .rc-answer { font-size: 1.06rem; }
+  .rc-figs { grid-template-columns: 1fr 1fr; }
+  .rc-t th, .rc-t td { padding: .38rem .35rem; }
+}
