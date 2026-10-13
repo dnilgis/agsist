@@ -5,6 +5,9 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.17 (2026-10-13): RAIN PRINT BUSINESS MINIMUM 5. kind rain-print-business
+ *   takes quantity 5 to 500 (was 10 to 500), Sig's decision; nothing else
+ *   changes. 4 and under still answer "invalid quantity".
  * v5.16 (2026-10-13): RAIN PRINT GIFT CARDS. New routes only; every existing
  *   route answers exactly as before. No new binding and no new secret: the
  *   records live in the SUBS KV, signed with UNSUB_SECRET, and Sig's routes
@@ -354,7 +357,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.16): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.17): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -711,7 +714,7 @@ const RP_CHOICES = ["digital", "print12x18", "framed12x18"];
 const RP_DELIVER = ["buyer", "recipient"];
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
 const RPB_SHIP = ["one", "each", "not-sure"];
-const RPB_QTY_MIN = 10, RPB_QTY_MAX = 500;   // business orders start at 10 prints
+const RPB_QTY_MIN = 5, RPB_QTY_MAX = 500;    // v5.17: business orders start at 5 prints
 const FORM_MAX_BYTES = 16 * 1024;
 const FORM_RATE_MAX = 8;                 // posts per IP per hour, all kinds together
 const FORM_TTL_S = 365 * 24 * 3600;      // a stored post is dropped after a year
@@ -749,7 +752,7 @@ function formClean(kind, b) {
     } else if (type === "rpdeliver") {
       if (!RP_DELIVER.includes(v)) return { error: "invalid " + f };
     } else if (type === "rpqty") {
-      // a whole number of prints, 10 to 500, stored as its digits ("010" is "10")
+      // a whole number of prints, 5 to 500 (v5.17), stored as its digits ("010" is "10")
       if (!/^\d{1,3}$/.test(v) || +v < RPB_QTY_MIN || +v > RPB_QTY_MAX) return { error: "invalid " + f };
       v = String(+v);
     } else if (type === "rpbproduct") {
