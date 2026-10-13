@@ -235,7 +235,7 @@ test("redeem: once; the order reaches the digest; a second redeem is 409 with th
   assert.match(forms[0], /^form:[a-z-]{2,30}:\d{10,16}:[0-9a-f]{8}$/, "the digest's key shape");
   const post = JSON.parse(store.get(forms[0]));
   assert.equal(post.kind, "rain-print-order");
-  assert.equal(post.gift_card, "RP-…-" + j.last4 + " (No. " + j.no + ")");
+  assert.equal(post.gift_card, "RP-\u2026-" + j.last4 + " (No. " + j.no + ")");
   assert.equal(post.gift_card_paid, "framed12x18");
   assert.equal(post.gift_card_order, "RP-1042");
   assert.equal(post.gift_card_from, "Kate");

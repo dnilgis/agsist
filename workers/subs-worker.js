@@ -896,7 +896,7 @@ function rpgNew() {
 // Forgiving input: any case, spaces, dashes and dots ignored, the RP in front
 // optional, I and L read as 1, O as 0. Answers the code as printed, or "".
 function rpgNorm(v) {
-  let s = String(v == null ? "" : v).toUpperCase().replace(/[\s._‐-―-]/g, "")
+  let s = String(v == null ? "" : v).toUpperCase().replace(/[\s._\u2010-\u2015-]/g, "")
     .replace(/[IL]/g, "1").replace(/O/g, "0");
   if (s.length === 14 && s.startsWith("RP")) s = s.slice(2);
   if (!RPG_RE.test(s) || rpgCheck(s.slice(0, 11)) !== RPS_B32.indexOf(s[11])) return "";
@@ -2116,7 +2116,7 @@ async function handle(req, env) {
       if (!back || back.redeem_key !== mine) return json({ ok: false, error: "This card is being used right now. Try again in two minutes." }, 409, c);
       const ts = Date.now(), up = RPG_RANK[v.rec.choice] > RPG_RANK[rec.product];
       const post = Object.assign({ kind: "rain-print-order", ts, n: 0 }, v.rec, {
-        gift_card: "RP-…-" + rec.last4 + " (No. " + rec.no + ")", gift_card_paid: rec.product,
+        gift_card: "RP-\u2026-" + rec.last4 + " (No. " + rec.no + ")", gift_card_paid: rec.product,
         gift_card_order: rec.order_ref, gift_card_from: rec.from_line || (rec.giver && rec.giver.name) || "" });
       if (up) post.gift_card_upgrade = "yes";
       // One marker per redeem that got this far; a second one means the race
