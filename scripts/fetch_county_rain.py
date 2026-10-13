@@ -173,6 +173,8 @@ def ask_last_year(src, st, sids, as_of_last):
 
 # ---------------------------------------------------------------- one state
 
+REACH_SLACK = 15   # miles past the county outline's farthest corner a station may sit
+
 def build_state(src, st, year, edate, C, fetched):
     rows, period, has_norm = ask_state(src, st, year, edate)
     n = (dt.date.fromisoformat(edate) - dt.date.fromisoformat(f"{year}-01-01")).days + 1
@@ -199,7 +201,9 @@ def build_state(src, st, year, edate, C, fetched):
         # code and the station's place disagree (2026-10-13: WHITESTONE FARMS,
         # near Delta Junction, filed under North Slope Borough, 411 mi out).
         # Leave that station out of this county instead of refusing the state.
-        if c.get("reach") and mi > c["reach"] + 5:
+        # REACH_SLACK covers islands the simplified outline leaves out
+        # (Ocracoke, in Hyde County NC, is 33 mi out; the outline reaches 24).
+        if c.get("reach") and mi > c["reach"] + REACH_SLACK:
             print(f"  {st} {fips}: skipping {meta.get('name')} ({mi:.0f} mi out, the county reaches {c['reach']:.0f})", flush=True)
             continue
         cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals}
@@ -314,7 +318,7 @@ def problems(d, path="", C=None):
                 bad.append(f"{w}: biggest day over the total")
             if c["cum"] and abs(c["cum"][-1][1] - c["total"]) > 0.011:
                 bad.append(f"{w}: running total ends at {c['cum'][-1][1]}, total {c['total']}")
-            if not c["station"]["name"] or c["station"]["mi"] > max(200, (C or {}).get(f, {}).get("reach", 0) + 5):
+            if not c["station"]["name"] or c["station"]["mi"] > max(200, (C or {}).get(f, {}).get("reach", 0) + REACH_SLACK):
                 bad.append(f"{w}: station {c['station']}")
         except (KeyError, TypeError, IndexError) as e:
             bad.append(f"{w}: malformed ({e})")
@@ -447,6 +451,11 @@ def selftest():
                        "AK", 2026, "2026-01-20", _C, "2026-01-21T00:00:00Z")
     ok("02185" not in _out["counties"] and "02090" in _out["counties"],
        f"a station 400 mi outside its county is skipped, not the state: {sorted(_out['counties'])}")
+    # Ocracoke is in Hyde County NC, but the simplified outline leaves the island out
+    _H = {"37095": {"st": "NC", "name": "Hyde County", "slug": "h", "lat": 35.5294, "lon": -76.2645, "reach": 24.2}}
+    _out = build_state(_Src([_row("OCRACOKE", "316349 2", [-75.9872, 35.1075], "37095")]),
+                       "NC", 2026, "2026-01-20", _H, "2026-01-21T00:00:00Z")
+    ok("37095" in _out["counties"], f"an island station just past the county outline is kept: {sorted(_out['counties'])}")
     # a gauge far below every county around it is held; dry country is not
     def _c(p, u): return {"name": "x", "pct": p, "usual": u, "n_ok": 2, "station": {"raw": "GAUGE"}}
     _files = {"AR": {"counties": {"1": _c(24, 25.0), "2": _c(77, 25.0), "3": _c(80, 25.0), "4": _c(70, 25.0),
