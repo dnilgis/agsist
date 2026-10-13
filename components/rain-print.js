@@ -1365,6 +1365,9 @@
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
+      // reprint_fee (null or dollars): shown after "a small fee" in the refund FAQ only when set (Sig, 2026-10-13)
+      var fee = $('rp-reprint-fee');
+      if (fee && typeof j.reprint_fee === 'number' && j.reprint_fee > 0) { fee.textContent = ' (' + money(j.reprint_fee) + ')'; fee.hidden = false; }
       syncCutoffs();
       syncXmas();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
