@@ -25,6 +25,7 @@ import hmac
 import json
 import math
 import os
+import re
 import smtplib
 import ssl
 import sys
@@ -34,6 +35,15 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
+def quoted(s, n=60):
+    """Visitor text in a mail to an address a stranger typed (a label, a
+    place, a company): one line, at most n characters, inside quotation marks,
+    so it reads as something someone typed and never as AGSIST's own words."""
+    s = " ".join(re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]", " ", str(s or "")).split())
+    if len(s) > n:
+        s = s[:n - 1].rstrip() + "\u2026"
+    return "\u201c" + s + "\u201d"
+
 
 from shapely.geometry import Point, shape
 from shapely.geometry.base import BaseMultipartGeometry
@@ -204,13 +214,15 @@ def stop_url(email):
 
 
 def build_email(w, day, band, from_name, from_addr, reply_to):
-    place = w.get("place") or (str(w["lat"]) + ", " + str(w["lon"]))
+    # /alert-subscribe is single opt-in, so the place is whatever a stranger
+    # typed: quoted and short in the body, never in the Subject.
+    place = quoted(w["place"]) if w.get("place") else (str(w["lat"]) + ", " + str(w["lon"]))
     radius = w.get("radius_mi", 5)
     link = MAP + "?swath=" + day
     stop = stop_url(w["email"])
 
     msg = EmailMessage()
-    msg["Subject"] = "Hail alert: radar-estimated hail near " + place + " (" + day + ")"
+    msg["Subject"] = "Hail alert: radar-estimated hail in your watch area (" + day + ")"
     msg["From"] = formataddr((from_name, from_addr))
     msg["To"] = w["email"]
     msg["Message-ID"] = make_msgid(domain=from_addr.split("@", 1)[1])

@@ -15,7 +15,8 @@ const call = (p, m = 'GET', b) => w.fetch(new Request('https://x.dev' + p, { met
 const tok = s => crypto.createHmac('sha256', 'sec').update(s.toLowerCase()).digest('hex').slice(0, 16);
 let n = 0; const A = (c, m) => { if (!c) { console.log('FAIL', m); process.exit(1); } n++; };
 const rec = id => JSON.parse(store.get('sapp:' + id));
-const PNG = 'data:image/png;base64,' + Buffer.from('fakepng').toString('base64');
+// v5.13 checks the logo's magic bytes, so the fixture is a real PNG header (it was the text 'fakepng').
+const PNG = 'data:image/png;base64,' + Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52]).toString('base64');
 const good = { tier: 'page', slot: 'spray', company: 'Smith Seed', contact: 'Al Smith', email: 'Al@Smith.com', phone: '715-555-0100',
   headline: 'Seed that yields', body: 'Local seed, local service.', url: 'smithseed.com', logo: PNG, terms: true };
 

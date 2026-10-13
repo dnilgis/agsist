@@ -30,6 +30,7 @@ import hmac
 import html as H
 import json
 import os
+import re
 import smtplib
 import ssl
 import sys
@@ -39,6 +40,15 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
+def quoted(s, n=60):
+    """Visitor text in a mail to an address a stranger typed (a label, a
+    place, a company): one line, at most n characters, inside quotation marks,
+    so it reads as something someone typed and never as AGSIST's own words."""
+    s = " ".join(re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]", " ", str(s or "")).split())
+    if len(s) > n:
+        s = s[:n - 1].rstrip() + "\u2026"
+    return "\u201c" + s + "\u201d"
+
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
@@ -137,15 +147,18 @@ def html_wrap(title, paras, button=None, foot=""):
 def confirm_email(w, pid, label, base, secret, fn, fa, rt):
     go = link(base, "price-watch-confirm", w, pid, secret, "c")
     stop = link(base, "price-watch-unsubscribe", w, pid, secret, "w1")
-    m = base_msg(w, f"Confirm: price alert for {label}", fn, fa, rt, stop)
-    m.set_content(f"Someone asked to set a price alert on AGSIST for {label} using this address.\n\n"
+    # The label is what the page sent; anyone can type it. It stays out of the
+    # Subject and appears quoted and short in the body.
+    q = quoted(label)
+    m = base_msg(w, "Confirm your AGSIST price alert", fn, fa, rt, stop)
+    m.set_content(f"Someone asked to set a price alert on AGSIST for {q} using this address.\n\n"
                   f"If that was you, confirm here:\n{go}\n\n"
                   "You'll get one email the day it crosses your price, then the alert clears itself.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
                   f"-- \n{ADDRESS}\nNo more emails about this alert: {stop}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
-    m.add_alternative(html_wrap(f"Confirm: price alert for {label}", [
-        f"Someone asked to set a price alert on AGSIST for {label} using this address.",
+    m.add_alternative(html_wrap("Confirm your price alert", [
+        f"Someone asked to set a price alert on AGSIST for {q} using this address.",
         "If that was you, confirm below. You'll get one email the day it crosses your price, then the alert clears itself.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
     return m
@@ -242,6 +255,12 @@ def selftest():
     body = m.get_body(("plain",)).get_content()
     assert "PO Box 243, Chetek, WI 54728" in body and "price-watch-confirm?e=a%40x.com&p=pB&t=" in body
     assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
+    # a stranger's label: never in the Subject, quoted and at most 60 characters in the body
+    mx = confirm_email("a@x.com", "pB", "Reset your account at agsist-help.com\r\nnow " + "x" * 80, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+    bx = mx.get_body(("plain",)).get_content()
+    assert mx["Subject"] == "Confirm your AGSIST price alert" and "agsist-help" not in mx["Subject"]
+    assert "\u201cReset your account at agsist-help.com now xxx" in bx and "x" * 30 not in bx and "\r" not in bx
+    assert len(quoted("y" * 200)) == 62 and quoted("a\nb") == "\u201ca b\u201d"
     m2 = hit_email("a@x.com", "pB", "Corn (new crop) above $4.50", 517.5, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "$5.17" in b2 and "already cleared" in b2 and "PO Box 243" in b2

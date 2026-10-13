@@ -452,6 +452,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
   var r = (new URLSearchParams(location.search).get('r') || '').replace(/[^a-z0-9-]/gi, '');
   if (!r) return die('This page needs the link you were sent.');
+  /* k proves the link came from Sig: the subs worker checks it against r before
+     it takes an approval (worker v5.13). A link without it still opens the
+     page; its approval goes by the written-out email instead. */
+  var K = (new URLSearchParams(location.search).get('k') || '').toLowerCase();
+  if (!/^[0-9a-f]{16}$/.test(K)) K = '';
 
   /* The audience file is site-wide and OPTIONAL. If it is missing or broken the
      page is exactly the page it was before it existed -- the sponsor's own
@@ -557,6 +562,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function sendForm(data, fsf) {
     var send = window.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     data.page = '/sponsor-report';
+    data.r = r;
+    if (K) data.k = K;
     return send('sponsor-feedback', data, fsf);
   }
   function approveSentKey(code) { return 'agsist_approved_' + (code || ''); }

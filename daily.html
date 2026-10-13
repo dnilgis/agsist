@@ -1206,7 +1206,7 @@ if(form){
     var S=window.AgsistSignup;
     /* components/signup-ask.js (loaded by loader.js) owns the success rule: HTTP ok AND data.ok. */
     var req=S?S.subscribe({email:email,source:'daily-briefing-subscribe',zip:zip,zipField:true}):
-      fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+      fetch(form.action,{method:'POST',body:JSON.stringify({email:email,source:'daily-briefing-subscribe',zip:zip,_gotcha:''}),headers:{'Content-Type':'application/json','Accept':'application/json'}})
         .then(function(r){return r.json().catch(function(){return null;}).then(function(d){return{ok:!!(r.ok&&d&&d.ok===true),status:r.status,data:d};});},
               function(){return{ok:false,status:0,data:null};});
     req.then(function(res){
