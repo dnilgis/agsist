@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Elevator desk | AGSIST</title>
+<!-- Sig's desk for the elevator portal (subs worker v5.20). Not linked from
+     anywhere and noindex. Every action needs LIST_TOKEN: it is sent only in
+     the Authorization header, never in an address. It is kept in this
+     browser's localStorage so it is pasted once; "Forget the token" clears
+     it. A manager's link is shown once, when it is made; it is not stored
+     anywhere it can be read back, so a lost link is replaced with "New link".
+     No analytics on this page. -->
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--text:#1E2125;--dim:#5E6475;--line:#d6d9d2;--accent:#2B5C8A;--warn:#A8321E;--ok:#2f6b3a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}}
+:root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin:0 0 .3rem}
+h2{font-size:1.05rem;margin:0 0 .6rem}
+p{margin:.3rem 0;color:var(--dim)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
+label{display:block;font-size:.85rem;font-weight:600;margin:.55rem 0 .15rem}
+input,select{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:40px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0 12px}
+@media(max-width:560px){.row,.row3{grid-template-columns:1fr}}
+button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.quiet{background:none;color:var(--accent)}
+button.small{min-height:34px;margin:.15rem .25rem .15rem 0;padding:0 .6rem;font-size:.85rem}
+:root[data-theme="dark"] button:not(.quiet){color:#10151a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
+.out{margin-top:.7rem;white-space:pre-wrap;word-break:break-word;font-size:.9rem}
+.out.bad{color:var(--warn)}.out.good{color:var(--ok)}
+.out a{color:var(--accent)}
+.link{display:block;font-family:ui-monospace,monospace;font-size:.85rem;padding:.5rem;border:1px dashed var(--line);border-radius:5px;margin:.4rem 0;word-break:break-all;color:var(--text)}
+.tok-row{display:flex;gap:8px;align-items:center}
+.tok-row input{flex:1}
+.tok-row button{margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:.5rem}
+td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}
+th{font-size:.78rem;color:var(--dim);font-weight:600}
+.off{color:var(--warn);font-weight:600}
+.on{color:var(--ok);font-weight:600}
+.dim{color:var(--dim);font-size:.82rem}
+@media(max-width:640px){
+  table,tbody,tr,td{display:block;width:100%}
+  thead{display:none}
+  tr{border-bottom:1px solid var(--line);padding:.5rem 0}
+  td{border:0;padding:2px 0}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Elevator desk</h1>
+  <p>Add an elevator, then send its manager the private link. They keep their own bids, hours and note from that link on their phone.</p>
+
+  <section>
+    <label for="tok">Token (LIST_TOKEN)</label>
+    <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button></div>
+    <p>Paste it once; this browser keeps it. Never put it in a link.</p>
+  </section>
+
+  <section>
+    <h2>Add an elevator</h2>
+    <form id="create" novalidate>
+      <div class="row3">
+        <div><label for="c-name">Name (as farmers know it)</label><input id="c-name" placeholder="Bunge" required maxlength="80"></div>
+        <div><label for="c-town">Town</label><input id="c-town" placeholder="Ladoga" required maxlength="60"></div>
+        <div><label for="c-state">State</label><input id="c-state" placeholder="IN" maxlength="2" style="text-transform:uppercase"></div>
+      </div>
+      <div class="row">
+        <div><label for="c-id">Id (made from name, town and state; lowercase and dashes)</label><input id="c-id" placeholder="bunge-ladoga-in" maxlength="60" spellcheck="false"></div>
+        <div><label for="c-zip">ZIP</label><input id="c-zip" placeholder="47954" maxlength="5" inputmode="numeric"></div>
+      </div>
+      <label for="c-ll">Where the elevator is: paste "lat, lon" from a map (right-click the elevator in Google Maps and click the numbers)</label>
+      <input id="c-ll" placeholder="39.9134, -86.8014" spellcheck="false">
+      <div class="row">
+        <div><label for="c-cname">Manager's name (shown)</label><input id="c-cname" placeholder="Wyatt" maxlength="60"></div>
+        <div><label for="c-cphone">Phone farmers call (shown)</label><input id="c-cphone" type="tel" placeholder="765-555-0100" maxlength="24"></div>
+      </div>
+      <label for="c-email">Manager's email (private, only for Sig)</label>
+      <input id="c-email" type="email" placeholder="wyatt@example.com">
+      <div class="row">
+        <div><label for="c-hours">Regular hours</label><input id="c-hours" placeholder="Mon-Fri 7-5, Sat 7-12" maxlength="80"></div>
+        <div><label for="c-harvest">Harvest hours (optional)</label><input id="c-harvest" placeholder="7am-9pm through Nov 15" maxlength="80"></div>
+      </div>
+      <button type="submit">Add the elevator and make its link</button>
+    </form>
+    <div id="c-out" class="out" role="status"></div>
+  </section>
+
+  <section>
+    <h2>Elevators</h2>
+    <button type="button" id="load" class="small">Load the list</button>
+    <div id="l-out" class="out" role="status"></div>
+    <div id="list"></div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var API = 'https://agsist-subs.dnilgis.workers.dev/elev/admin/';
+  var TOK_KEY = 'agsist-elev-admin-token';
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function show(id, html, kind) { var o = $(id); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
+  try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
+  $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, $('tok').value.trim()); } catch (e) {} });
+  $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} });
+
+  function call(path, body) {
+    var tok = $('tok').value.trim();
+    if (!tok) return Promise.resolve({ ok: false, error: 'Paste the token first.' });
+    try { localStorage.setItem(TOK_KEY, tok); } catch (e) {}
+    return fetch(API + path, { method: body ? 'POST' : 'GET', body: body ? JSON.stringify(body) : undefined, cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok } })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 403) j.error = 'The token was not accepted.'; return j; }); },
+        function () { return { ok: false, error: 'Could not reach the worker.' }; });
+  }
+
+  function slug(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+  var idTouched = false;
+  $('c-id').addEventListener('input', function () { idTouched = !!this.value; });
+  ['c-name', 'c-town', 'c-state'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      if (!idTouched) $('c-id').value = slug([$('c-name').value, $('c-town').value, $('c-state').value].filter(Boolean).join(' ')).slice(0, 60);
+    });
+  });
+
+  function linkBlock(name, link, email) {
+    var text = 'Here is your private AGSIST link for ' + name + '. Post your bids, hours and notes from it, and save it to your home screen: ' + link;
+    return '<b>Link for ' + esc(name) + '</b> (shows only now; copy it before you leave this page)' +
+      '<span class="link">' + esc(link) + '</span>' +
+      '<button type="button" class="small" data-copy="' + esc(link) + '">Copy the link</button>' +
+      '<button type="button" class="small quiet" data-copy="' + esc(text) + '">Copy a text message with it</button>' +
+      (email ? '<a class="small" href="mailto:' + esc(email) + '?subject=' + encodeURIComponent('Your AGSIST bid page') + '&body=' + encodeURIComponent(text) + '">Email it to ' + esc(email) + '</a>' : '');
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-copy]');
+    if (!b) return;
+    var v = b.getAttribute('data-copy'), was = b.textContent;
+    var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = was; }, 2000); };
+    try { navigator.clipboard.writeText(v).then(done, function () { window.prompt('Copy this:', v); }); } catch (err) { window.prompt('Copy this:', v); }
+  });
+
+  $('create').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ll = $('c-ll').value.split(/[,\s]+/).filter(Boolean).map(Number);
+    if (ll.length !== 2 || !isFinite(ll[0]) || !isFinite(ll[1])) return show('c-out', 'Paste the location as two numbers, like 39.9134, -86.8014.', 'bad');
+    var body = { id: $('c-id').value.trim(), name: $('c-name').value.trim(), town: $('c-town').value.trim(), state: $('c-state').value.trim().toUpperCase(),
+      zip: $('c-zip').value.trim(), lat: ll[0], lon: ll[1], contact: { name: $('c-cname').value.trim(), phone: $('c-cphone').value.trim() },
+      email: $('c-email').value.trim(), hours: { text: $('c-hours').value.trim(), harvest: $('c-harvest').value.trim() } };
+    show('c-out', 'Adding...');
+    call('create', body).then(function (j) {
+      if (!j.ok) return show('c-out', 'Not added: ' + esc(j.error || 'unknown error') + '.', 'bad');
+      show('c-out', linkBlock(body.name + ', ' + body.town, j.link, body.email), 'good');
+      $('create').reset(); idTouched = false;
+      load();
+    });
+  });
+
+  function ago(iso) {
+    var t = Date.parse(iso || '');
+    if (!isFinite(t)) return 'never';
+    var h = (Date.now() - t) / 3600000;
+    var d = new Date(t).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    return d + ' (' + (h < 1 ? Math.max(0, Math.round(h * 60)) + ' min' : h < 48 ? Math.round(h) + ' hr' : Math.round(h / 24) + ' days') + ' ago)';
+  }
+  var rows = {};
+  function draw(list) {
+    rows = {};
+    if (!list.length) { $('list').innerHTML = '<p>No elevators yet.</p>'; return; }
+    $('list').innerHTML = '<table><thead><tr><th>Elevator</th><th>Status</th><th>Prices updated</th><th>Bids</th><th></th></tr></thead><tbody>' +
+      list.map(function (r) {
+        rows[r.id] = r;
+        return '<tr><td><b>' + esc(r.name) + '</b>, ' + esc(r.town) + ' ' + esc(r.state) + '<br><span class="dim">' + esc(r.id) +
+          (r.contact && r.contact.name ? ' · ' + esc(r.contact.name) : '') + (r.contact && r.contact.phone ? ' ' + esc(r.contact.phone) : '') +
+          (r.email ? ' · ' + esc(r.email) : '') + '</span><div class="out" id="o-' + esc(r.id) + '"></div></td>' +
+          '<td>' + (r.active ? '<span class="on">On</span>' : '<span class="off">Off</span>') + '</td>' +
+          '<td>' + esc(ago(r.bids_updated_at)) + '<br><span class="dim">info ' + esc(ago(r.info_updated_at)) + '</span></td>' +
+          '<td>' + (r.bids ? r.bids.length : 0) + '</td>' +
+          '<td><button type="button" class="small" data-rekey="' + esc(r.id) + '">New link</button>' +
+          '<button type="button" class="small quiet" data-active="' + esc(r.id) + '">' + (r.active ? 'Turn off' : 'Turn on') + '</button></td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+  function load() {
+    show('l-out', 'Loading...');
+    call('list').then(function (j) {
+      if (!j.ok) return show('l-out', esc(j.error || 'Could not load the list.'), 'bad');
+      show('l-out', j.elevators.length + ' elevator' + (j.elevators.length === 1 ? '' : 's') + '.');
+      draw(j.elevators);
+    });
+  }
+  $('load').addEventListener('click', load);
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var id = b.getAttribute('data-rekey') || b.getAttribute('data-active'), r = rows[id];
+    if (!r) return;
+    if (b.hasAttribute('data-rekey')) {
+      if (!window.confirm('Make a new link for ' + r.name + ', ' + r.town + '? The old link stops working right away.')) return;
+      call('rekey', { id: id }).then(function (j) {
+        if (!j.ok) return show('o-' + id, esc(j.error || 'failed'), 'bad');
+        show('o-' + id, linkBlock(r.name + ', ' + r.town, j.link, r.email), 'good');
+      });
+    } else {
+      var to = !r.active;
+      if (!to && !window.confirm('Turn off ' + r.name + ', ' + r.town + '? Its bids leave the site and its link stops working until you turn it back on.')) return;
+      call('active', { id: id, active: to }).then(function (j) {
+        if (!j.ok) return show('o-' + id, esc(j.error || 'failed'), 'bad');
+        r.active = j.active;
+        b.textContent = r.active ? 'Turn off' : 'Turn on';
+        b.closest('tr').children[1].innerHTML = r.active ? '<span class="on">On</span>' : '<span class="off">Off</span>';
+      });
+    }
+  });
+  if ($('tok').value) load();
+})();
+</script>
+</body>
+</html>
