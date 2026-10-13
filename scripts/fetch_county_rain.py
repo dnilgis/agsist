@@ -519,7 +519,8 @@ def selftest():
     _near = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", False, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", False)]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _near) == "GOOD",
        f"a gauge at 0.00 for 40 days while its neighbors caught rain is left out: {_pick([_g('STUCK', '1 2', [-93.0, 42.0], '19001', True)] + _near)}")
-    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="M")] + _near) == "GOOD",
+    ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="M"),
+              _g("GOOD", "2 2", [-93.05, 42.05], "19001", False, nrm="M", gap=True), _near[1]]) == "GOOD",
        "with no normal of its own, the neighbors' normals say what a usual year would have given")
     _dry = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", True, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", True)]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _dry) == "STUCK",
