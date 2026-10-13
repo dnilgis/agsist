@@ -217,7 +217,7 @@ test("business tiers: Sig's delivered prices, one row per tier, 5 to 100", () =>
   for (const k of ["business_shipping", "business_shipping_one_address_tiers", "business_shipping_tiers"]) assert.ok(!(k in J), "the old per-print shipping is gone: " + k);
   const rows = plain(RP.bizRows(J));
   assert.deepEqual(rows.map((r) => [RP.bizRange(r), r.prices.print12x18, r.prices.framed12x18, r.one.print12x18, r.one.framed12x18, r.retail]), [
-    ["5–9", 45, 89, 42, 83, true],
+    ["5–9", 45, 89, 45, 89, true],
     ["10–24", 40, 79, 37, 73, false],
     ["25–49", 37, 75, 34, 69, false],
     ["50–100", 35, 72, 32, 66, false],
@@ -245,8 +245,9 @@ test("business quote line: price x quantity, one-address discount, minimum 5, ov
   assert.deepEqual(q(49, "framed12x18", "each"), [75, 3675], "49 x $75");
   assert.deepEqual(q(50, "print12x18", "each"), [35, 1750], "50 x $35");
   assert.deepEqual(q(100, "framed12x18", "each"), [72, 7200], "100 x $72");
-  // all to one address: $3 off each print, $6 off each framed
-  assert.deepEqual(q(5, "print12x18", "one"), [42, 210], "5 x ($45 - $3)");
+  // all to one address, from 10: $3 off each print, $6 off each framed
+  assert.deepEqual(q(5, "print12x18", "one"), [45, 225], "5 to 9 is no discount, to one address too");
+  assert.deepEqual(q(9, "framed12x18", "one"), [89, 801], "9 x $89, one address");
   assert.deepEqual(q(12, "framed12x18", "one"), [73, 876], "12 x ($79 - $6)");
   assert.deepEqual(q(30, "print12x18", "one"), [34, 1020], "30 x ($37 - $3)");
   assert.deepEqual(q(100, "framed12x18", "one"), [66, 6600], "100 x ($72 - $6)");

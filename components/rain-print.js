@@ -261,7 +261,8 @@
   }
   /* The table: one row per tier, from its min to the next tier's min less one
      (the last runs to the quote max). Each row: {from, to, retail, prices, one},
-     retail true when both prices are the cards' prices (no discount). */
+     retail true when both prices are the cards' prices: no discount, so no
+     one-address discount on that row either. */
   function bizRows(j) {
     if (!bizPricesOk(j)) return [];
     var tiers = bizTiers(j.business_tiers), max = bizQuoteMax(j, tiers), off = bizOff(j);
@@ -272,6 +273,8 @@
         r.one[id] = cents(Math.max(0, t[id] - off[id]));
         if (t[id] !== j[id]) r.retail = false;
       });
+      // a tier at the card prices is "no discount": no one-address discount either (Sig, 2026-10-13)
+      if (r.retail) r.one = { print12x18: r.prices.print12x18, framed12x18: r.prices.framed12x18 };
       return r;
     });
   }
@@ -1619,12 +1622,13 @@
     var note = typeof j.business_note === 'string' ? cleanText(j.business_note, 300) : '';
     $('rp-biz-note').textContent = note; $('rp-biz-note').hidden = !note;
     var rows = bizRows(j), off = bizOff(j), max = bizQuoteMax(j, bizTiers(j.business_tiers));
+    var firstOff = rows.filter(function (r) { return !r.retail; })[0];
     var offs = [];
     if (off.print12x18) offs.push(money(off.print12x18) + ' off each print');
     if (off.framed12x18) offs.push(money(off.framed12x18) + ' off each framed');
     $('rp-biz-ship').textContent = rows.length
       ? 'Every price is per print, delivered: shipping to US addresses is included, one to each customer or all to one. ' +
-        (offs.length ? 'All to one address: ' + offs.join(', ') + '. ' : '') + 'A digital file is ' + money(j.digital) + ' each, emailed. ' +
+        (offs.length && firstOff ? 'All to one address' + (firstOff.from > rows[0].from ? ', from ' + firstOff.from + ' prints' : '') + ': ' + offs.join(', ') + '. ' : '') + 'A digital file is ' + money(j.digital) + ' each, emailed. ' +
         (max < BIZ_MAX ? 'Over ' + max + ' prints, ask Sig and he quotes it.' : '')
       : 'Sig quotes business orders by email. Shipping to US addresses is included.';
     $('rp-biz-ship').hidden = false;

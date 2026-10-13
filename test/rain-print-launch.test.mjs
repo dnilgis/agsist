@@ -273,7 +273,7 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   // the FAQ's figures are written out, so they must agree with the json
   assert.match(faq, new RegExp("5 to 9 are the regular prices on one invoice"));
   assert.match(faq, new RegExp("10 to 24 are \\$" + T[1].print12x18 + " a print or \\$" + T[1].framed12x18 + " framed; 25 to 49, \\$" + T[2].print12x18 + " or \\$" + T[2].framed12x18 + "; 50 to 100, \\$" + T[3].print12x18 + " or \\$" + T[3].framed12x18));
-  assert.match(faq, new RegExp("\\$" + off.print12x18 + " off each print and \\$" + off.framed12x18 + " off each framed"));
+  assert.match(faq, new RegExp("From 10 prints, all to one address takes \\$" + off.print12x18 + " off each print and \\$" + off.framed12x18 + " off each framed"));
   assert.match(faq, /Over 100, ask Sig/);
   assert.equal(T[0].print12x18, J.print12x18, "5-9 is the card price");
   assert.equal(T[0].framed12x18, J.framed12x18);
