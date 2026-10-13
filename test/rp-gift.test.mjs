@@ -352,3 +352,16 @@ test("the existing routes still answer: /rp-short and /form", async () => {
   const f = await pub(env, "/form", { kind: "rain-print-order", name: "A", email: "a@example.com", choice: "digital", design_url: URL_, design_code: CODE });
   assert.equal(f.status, 200);
 });
+
+test("redeem: a lost race (a stale read at another edge) marks the second order gift_card_twice", async () => {
+  const { env, store } = makeEnv();
+  const j = await issue(env);
+  const key = [...store.keys()].find((k) => /^rpg:[0-9a-f]{16}$/.test(k));
+  const before = store.get(key);
+  assert.equal((await pub(env, "/rp-gift/redeem", order(j.code))).status, 200);
+  store.set(key, before);   // the other edge still reads "issued"
+  assert.equal((await pub(env, "/rp-gift/redeem", order(j.code))).status, 200);
+  const posts = [...store.keys()].filter((k) => k.startsWith("form:")).sort().map((k) => JSON.parse(store.get(k)));
+  assert.equal(posts.length, 2);
+  assert.deepEqual(posts.map((p) => p.gift_card_twice || ""), ["", "yes"]);
+});

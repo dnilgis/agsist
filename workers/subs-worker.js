@@ -49,7 +49,9 @@
  *     form:rain-print-order post with gift_card "RP-...-X2F4 (No. 7)",
  *     gift_card_paid, gift_card_order, gift_card_from (gift_card_upgrade when
  *     the choice is above what was paid; gift_january for a January card),
- *     so the hourly digest mails Sig, then status redeemed. 409 when used
+ *     so the hourly digest mails Sig, then status redeemed. Each redeem also
+ *     writes rpg-used:<record id>:<ts>:<key>; a second one sets
+ *     gift_card_twice "yes" on the order. 409 when used
  *     ("This card was used on Dec 28, 2026."), 410 when void. KV has no
  *     compare-and-swap: two redeems at different edges inside about a minute
  *     could both pass; the digest flags the same card twice and Sig honours
@@ -2117,6 +2119,11 @@ async function handle(req, env) {
         gift_card: "RP-…-" + rec.last4 + " (No. " + rec.no + ")", gift_card_paid: rec.product,
         gift_card_order: rec.order_ref, gift_card_from: rec.from_line || (rec.giver && rec.giver.name) || "" });
       if (up) post.gift_card_upgrade = "yes";
+      // One marker per redeem that got this far; a second one means the race
+      // above was lost, and the digest says so in red.
+      const used = "rpg-used:" + key.slice(4) + ":";
+      await env.SUBS.put(used + ts + ":" + mine, "", { expirationTtl: FORM_TTL_S });
+      try { if ((await env.SUBS.list({ prefix: used, limit: 10 })).keys.length > 1) post.gift_card_twice = "yes"; } catch (e) { /* the digest still compares */ }
       if (rec.ships === "january") { post.gift_january = "yes"; if (rec.to) post.gift_to = rec.to; }
       const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
       const fkey = "form:rain-print-order:" + ts + ":" + rnd;
