@@ -23,7 +23,7 @@
      a page's own code runs" — not every inline caller guards for its
      absence, unlike the two callers above. Left as-is. -->
 <script src="/components/sponsor-ad.js?v=2" defer></script>
-  <script src="/components/util.js?v=18"></script>
+  <script src="/components/util.js?v=19"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -747,7 +747,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       });
     }
     function getPrices(){
-      var p=window.__agsistPricesP||(window.__agsistPricesP=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}));
+      var p=window.__agsistPricesP||(window.__agsistPricesP=AG.json('/data/prices.json').catch(function(){return null;}));
       p.then(paintFut).catch(function(){});
     }
     window.addEventListener('agsist:prices',function(e){paintFut(e&&e.detail);});
@@ -1049,7 +1049,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function bar(pre,f){f=Math.max(0,Math.min(100,f));var a=$(pre+'-fill'),b=$(pre+'-dot');if(a)a.style.width=f+'%';if(b)b.style.left='calc('+f+'% - 5px)';}
     function r5(p){if(p<10)return['Near a 5-yr low','rare territory.'];if(p<25)return['Historically low','below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','above most of the last 5 years.'];return['Near a 5-yr high','rare territory.'];}
     function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
-    function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    function get(u){return AG.json(u).catch(function(){return null;});}
     /* 2026-10-06 EARN: The Read left the homepage (the daily briefing says it); nothing to fill. */
     if(!document.getElementById('f-read'))return;
     Promise.all([(window.__agsistPricesP||(window.__agsistPricesP=get('/data/prices.json'))),get('/data/price-stats.json'),get('/data/cot.json')]).then(function(R){
@@ -1825,14 +1825,14 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   })();
   </script>
 <script src="/components/loader.js?v=18" defer></script>
-<script src="/components/geo.js?v=25" defer></script>
-<script src="/components/bids-homepage.js?v=35" defer></script>
+<script src="/components/geo.js?v=26" defer></script>
+<script src="/components/bids-homepage.js?v=36" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=3" defer></script>
 <script src="/components/homepage-extras.js?v=15" defer></script>
-<script src="/components/home-yield.js?v=1" defer></script>
-<script src="/components/home.js?v=1"></script>
+<script src="/components/home-yield.js?v=2" defer></script>
+<script src="/components/home.js?v=2"></script>
 <script src="/components/home-planting.js?v=1" defer></script>
-<script src="/components/home-season.js?v=2" defer></script>
+<script src="/components/home-season.js?v=3" defer></script>
 </body>
 </html>

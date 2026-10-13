@@ -30,7 +30,16 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const PAGE = [join(HERE, "cash-bids.html"), join(HERE, "..", "cash-bids.html")]
   .find((p) => { try { readFileSync(p); return true; } catch { return false; } });
 if (!PAGE) { console.error("Could not find cash-bids.html next to this script or one level up."); process.exit(1); }
-const h = readFileSync(PAGE, "utf8");
+/* The page script moved out of cash-bids.html into components/cash-bids.js
+   (2026-10-12). Read the page and the script it loads as one text, and
+   insist the page still loads that script, so the functions checked here
+   are the ones the browser runs. */
+const h = (() => {
+  const html = readFileSync(PAGE, "utf8");
+  const m = html.match(/<script src="\/components\/cash-bids\.js\?v=\d+"><\/script>/);
+  if (!m) { console.error("cash-bids.html no longer loads /components/cash-bids.js"); process.exit(1); }
+  return html + "\n" + readFileSync(join(dirname(PAGE), "components", "cash-bids.js"), "utf8");
+})();
 const grab = (name) => {
   const i = h.indexOf("function " + name);
   if (i < 0) throw new Error("no " + name);

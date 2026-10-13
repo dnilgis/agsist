@@ -1116,12 +1116,27 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
 // ─────────────────────────────────────────────────────────────────
 // PRIMARY PRICE SOURCE — data/prices.json
 // ─────────────────────────────────────────────────────────────────
+/* A file the page's other scripts also read comes through AG.json (util.js),
+   which makes one request per file for the page. A page still on an older
+   util.js has no AG.json and fetches as before. */
+function pageJSON(u) {
+  if (window.AG && typeof window.AG.json === 'function') return window.AG.json(u);
+  return fetch(u, { cache: 'no-store' }).then(function(r) {
+    if (!r.ok) throw new Error(u + ' ' + r.status);
+    return r.json();
+  });
+}
+/* The first read shares the page's request; the five-minute poll and a
+   retry ask the server again. */
+var _pricesFirst = true;
 function fetchAllPrices() {
-  fetch('/data/prices.json', { cache: 'no-store' })
+  var first = _pricesFirst;
+  _pricesFirst = false;
+  (first ? pageJSON('/data/prices.json') : fetch('/data/prices.json', { cache: 'no-store' })
     .then(function(r) {
       if (!r.ok) throw new Error('prices.json ' + r.status);
       return r.json();
-    })
+    }))
     .then(function(data) {
       var quotes = data.quotes || {};
       /* True front month. The continuous Yahoo series (ZC=F, ZS=F, LE=F) tracks
@@ -1224,11 +1239,7 @@ function fetchKalshiMarkets() {
   var loading   = document.getElementById('kalshi-loading');
   if (!container) return;
 
-  fetch('/data/markets.json', { cache: 'no-store' })
-    .then(function(r) {
-      if (!r.ok) throw new Error('markets.json ' + r.status);
-      return r.json();
-    })
+  pageJSON('/data/markets.json')
     .then(function(data) {
       if (loading) loading.style.display = 'none';
       container.innerHTML = '';
@@ -1400,11 +1411,7 @@ function buildMarketCard(m, showExtras) {
 // DAILY BRIEFING — v3 schema
 // ─────────────────────────────────────────────────────────────────
 function loadDailyBriefing() {
-  fetch('/data/daily.json', { cache: 'no-store' })
-    .then(function(r) {
-      if (!r.ok) throw new Error('daily.json ' + r.status);
-      return r.json();
-    })
+  pageJSON('/data/daily.json')
     .then(function(d) {
       if (typeof window.hydrateDaily === 'function') {
         window.hydrateDaily(d);

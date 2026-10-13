@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T01:54:25Z",
+ "updated": "2026-10-13T03:09:19Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -530,9 +530,9 @@
  ],
  "skipped": [],
  "backtest": {
-  "computed": "2026-10-10T01:54:25Z",
+  "computed": "2026-10-13T03:09:19Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
-  "source_built": "append 2026-10-06",
+  "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
   "rules_version": "bot-v1.1",
   "rules_tested": 1,

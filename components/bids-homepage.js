@@ -760,8 +760,7 @@
   }
   function pricesOnce(){
     if(!window.__agsistPricesP){
-      window.__agsistPricesP = fetch('/data/prices.json', { cache: 'no-store' })
-        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+      window.__agsistPricesP = AG.json('/data/prices.json').catch(function(){ return null; });
     }
     return window.__agsistPricesP;
   }
@@ -769,8 +768,7 @@
      rule, used by the card (fillRefs) and the hero summary (publishTop). */
   function harvestOnce(){
     if(!window.__agsistHarvestP){
-      window.__agsistHarvestP = fetch('/data/harvest-prices.json', { cache: 'no-store' })
-        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+      window.__agsistHarvestP = AG.json('/data/harvest-prices.json').catch(function(){ return null; });
     }
     return window.__agsistHarvestP;
   }

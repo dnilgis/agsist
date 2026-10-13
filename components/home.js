@@ -162,7 +162,7 @@ try {
      placeholders. */
   /* data/cot-analysis.json carries the one crowding measure (cot_analysis.py
      `crowd`); it is used only when it is for the same week as cot.json. */
-  fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(function(d){
+  AG.json('/data/cot.json').then(function(d){
     if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
   }).then(function(d){return fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){COT_CX=a;return d;});}).then(renderCOT,function(){
     window.AGSIST_COT.failed=true;
@@ -257,8 +257,7 @@ function fmtPct(n){return n==null?'--':n+'%';}
 function fmtChg(cur,prev,suffix){if(cur==null||prev==null)return{txt:'Not loaded yet',cls:'nc'};var d=cur-prev;if(d===0)return{txt:'unch',cls:'nc'};var a=Math.abs(d);return{txt:(d>0?'\u25b2 +':'\u25bc \u2212')+a+(suffix===' points'&&a===1?' point':(suffix||'')),cls:d>0?'up':'dn'};}
 function geClass(v){if(v==null)return'fair';return v>=60?'good':v>=40?'fair':'poor';}
 /* 2026-10-06 EARN: off the homepage; nothing to fill. */
-if(document.getElementById('crop-rows'))fetch('/data/crop-progress.json')
-  .then(function(r){if(!r.ok)throw new Error('no-cp');return r.json();})
+if(document.getElementById('crop-rows'))AG.json('/data/crop-progress.json')
   .then(function(data){
     if(!data||typeof data!=='object'||(!data.corn&&!data.soybeans))throw new Error('cp malformed');
     if(data.report_date){var d=document.getElementById('crop-date');if(d)d.textContent='As of '+fmtDate(data.report_date)+' \u00b7 NASS';}
@@ -501,7 +500,7 @@ function render(list){
     grid.appendChild(a);
   });
 }
-fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(d){
+AG.json('/data/markets.json').catch(function(){return null;}).then(function(d){
   render(d&&Array.isArray(d.markets)?d.markets:[]);
 });
 })();
@@ -1176,7 +1175,7 @@ window.hydrateDaily = function(data) {
   }
 };
 (function(){
-  fetch('/data/daily.json').then(function(r){if(!r.ok)throw new Error('no-daily');return r.json();})
+  AG.json('/data/daily.json')
   .then(function(data){if(typeof window.hydrateDaily==='function')window.hydrateDaily(data);wireShare();})
   .catch(function(){
     // 2026-09-30: this used to overwrite daily-headline with "Daily briefing
@@ -1639,11 +1638,11 @@ function hook(){
 }
 /* WAVE1-C: the whole file, once, shared with the other page scripts. */
 function loadD(){
-  var p=window.__agsistPricesP||(window.__agsistPricesP=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}));
+  var p=window.__agsistPricesP||(window.__agsistPricesP=AG.json('/data/prices.json').catch(function(){return null;}));
   p.then(function(d){if(d&&d.quotes){D=d;schedule();}});
 }
 function fallback(){
-  fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+  AG.json('/data/prices.json').then(function(d){
     if(!d||have)return;var q=d.quotes||{};
     ['corn','beans','wheat','cattle'].forEach(function(c){var nb=q[c+'-nearby'];if(nb&&nb.close!=null)q[c]=nb;if(d.nearby&&d.nearby[c]&&d.nearby[c].label)NB[c]=d.nearby[c].label;});
     Q=q;have=true;renderAll();
@@ -1661,7 +1660,7 @@ var NOT_AG=/\b(nominat\w*|elections?|president\w*|senat\w*|governor|primary|mayo
 function fmtCT(iso,withTime){var d=new Date(iso);if(isNaN(d.getTime()))return null;var o={timeZone:'America/Chicago',month:'short',day:'numeric',year:'numeric'};if(withTime){o.hour='numeric';o.minute='2-digit';}return d.toLocaleString('en-US',o)+(withTime?' CT':'');}
 function odds(){
   var fold=document.querySelector('.m-fold--kalshi'),box=document.getElementById('f-kalshi');if(!fold||!box)return;
-  fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+  AG.json('/data/markets.json').then(function(d){
     if(!d)return;
     var ag=(d.markets||[]).filter(function(m){var t=String(m.title||'');return m.yes!=null&&AG_WORDS.test(t)&&!NOT_AG.test(t);});
     if(!ag.length)return;
@@ -1697,7 +1696,7 @@ try {
 (function(){
   'use strict';
   function $(i){return document.getElementById(i);}
-  function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+  function get(u){return AG.json(u).catch(function(){return null;});}
   function pricesOnce(){
     if(!window.__agsistPricesP){window.__agsistPricesP=get('/data/prices.json');}
     return window.__agsistPricesP;
