@@ -76,6 +76,8 @@
   .rp-cap-l{flex:1 1 180px;min-width:0}
   .rp-view{display:flex;gap:.35rem}
   .rp-view .chip{min-height:var(--btn-h);padding:.3rem .7rem;font-size:var(--fs-xs)}
+  .rp-wall .rp-view .rp-zoom-btn[disabled]{display:none}
+  .rp-wall.rp-can-zoom .rp-art{cursor:zoom-in}
   .rp-wall .rp-view .chip:not([aria-pressed="true"]){background:transparent;border-color:color-mix(in srgb,var(--rp-wall-ink) 40%,transparent);color:var(--rp-wall-ink)}
   .rp-sample-use{font:inherit;font-weight:600;min-height:var(--btn-h);padding:0 .15rem;background:none;border:0;color:var(--link);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
   .rp-side{min-width:0}
@@ -262,6 +264,8 @@
   .rp-proof[data-view="framed"] .rp-proof-frame{background:#131313;padding:24px;box-shadow:0 12px 24px -10px rgba(0,0,0,.5)}
   .rp-proof-art{background:#fff}
   .rp-proof-art svg{display:block;width:100%;height:auto}
+  .rp-proof[data-zoom="close"] .rp-proof-frame{width:max-content}
+  .rp-proof[data-zoom="close"] .rp-proof-art svg{width:12in;max-width:none}
   .rp-proof[data-zoom="full"] .rp-proof-frame{width:max-content}
   .rp-proof[data-zoom="full"] .rp-proof-art svg{width:18in;max-width:none}
   .rp-proof-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.2rem 1rem;margin:.7rem 0 .3rem;font-size:var(--fs-sm)}
@@ -309,6 +313,7 @@
           <span class="rp-view" role="group" aria-label="Show the print">
             <button type="button" class="chip" data-view="framed" aria-pressed="true">Framed</button>
             <button type="button" class="chip" data-view="print" aria-pressed="false">Print only</button>
+            <button type="button" class="chip rp-zoom-btn" id="rp-zoom" disabled>Zoom in</button>
           </span>
         </figcaption>
       </figure>
@@ -574,17 +579,17 @@
 </div>
   <dialog class="rp-proof" id="rp-proof" aria-labelledby="rp-proof-h">
     <div class="rp-proof-top">
-      <h2 id="rp-proof-h">Your proof: this is the print file</h2>
+      <h2 id="rp-proof-h">Your print, up close: this is the print file</h2>
       <button type="button" class="btn btn-secondary rp-proof-x" id="rp-proof-close">Close</button>
     </div>
     <div class="rp-proof-bar">
       <div class="rp-seg" role="group" aria-label="Style"><button type="button" class="chip" data-pstyle="r1">Staircase</button><button type="button" class="chip" data-pstyle="r2">Roots</button></div>
       <div class="rp-seg" role="group" aria-label="Show"><button type="button" class="chip" data-pview="print">Print only</button><button type="button" class="chip" data-pview="framed">Framed</button></div>
-      <div class="rp-seg" role="group" aria-label="Zoom"><button type="button" class="chip" data-pzoom="fit">Fit</button><button type="button" class="chip" data-pzoom="full">Actual size</button></div>
+      <div class="rp-seg" role="group" aria-label="Zoom"><button type="button" class="chip" data-pzoom="fit">Fit</button><button type="button" class="chip" data-pzoom="close">Closer</button><button type="button" class="chip" data-pzoom="full">Actual size</button></div>
     </div>
     <div class="rp-proof-stage" id="rp-proof-stage" tabindex="0" aria-label="The print, scroll to move around"><div class="rp-proof-frame" id="rp-proof-frame"><div class="rp-proof-art" id="rp-proof-art"></div></div></div>
     <dl class="rp-proof-sum" id="rp-proof-sum"></dl>
-    <p class="rp-note">Actual size is 18 x 12 inches; drag or scroll to check every word. The QR in the corner is the maker&rsquo;s mark. Sig&rsquo;s print adds a thin bleed past the edge, trimmed off.</p>
+    <p class="rp-note">Actual size is 18 x 12 inches; on a phone you can also pinch to zoom. Drag or scroll to check every word. The QR in the corner is the maker&rsquo;s mark. Sig&rsquo;s print adds a thin bleed past the edge, trimmed off.</p>
     <label class="rp-check"><input type="checkbox" id="rp-proof-ok"><span>I&rsquo;ve checked the spelling and the dates</span></label>
     <p class="rp-acts"><button type="button" class="btn btn-primary" id="rp-proof-order">Order this print</button></p>
   </dialog>
@@ -594,7 +599,7 @@
   <script src="/components/form-post.js?v=2"></script>
   <script src="/components/rp-short.js?v=1"></script>
   <script src="/components/rain-print-art.js?v=2"></script>
-  <script src="/components/rain-print.js?v=14"></script>
+  <script src="/components/rain-print.js?v=15"></script>
   <script src="/components/rp-gift.js?v=1" defer></script>
 </body>
 </html>

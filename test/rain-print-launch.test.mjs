@@ -239,7 +239,11 @@ test("the proof view and the order summary are on the page", () => {
   for (const id of ["rp-proof", "rp-proof-open", "rp-proof-art", "rp-proof-ok", "ro-summary"]) assert.ok(HTML.includes(`id="${id}"`), id);
   for (const k of ['data-pstyle="r1"', 'data-pstyle="r2"', 'data-pview="framed"', 'data-pview="print"', 'data-pzoom="full"']) assert.ok(HTML.includes(k), k);
   assert.match(HTML, /\.rp-proof\[data-zoom="full"\] \.rp-proof-art svg\{width:18in/, "actual size is 18 in wide");
+  assert.ok(HTML.includes('id="rp-zoom"') && HTML.includes('data-pzoom="close"'), "a zoom button by the preview and a closer level");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /\$\('rp-zoom'\)\.addEventListener\('click', openProof\)/, "zoom opens the full-size view");
+  assert.match(S, /art\.addEventListener\('click'/, "tapping the preview opens it too");
+  assert.match(S, /PROOF_VIEW = \$\('rp-wall'\)\.getAttribute\('data-view'\)/, "it opens framed or print only, as set under the preview");
   assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
   assert.match(S, /What happens next/);
 });

@@ -1045,6 +1045,8 @@
     $('rp-to-buy').classList.toggle('btn-secondary', !on);
     $('rp-dl').disabled = !on || !DATA;
     $('rp-proof-open').disabled = !DATA || !!BLOCKED;
+    $('rp-zoom').disabled = !DATA || !!BLOCKED;
+    $('rp-wall').classList.toggle('rp-can-zoom', !!DATA && !BLOCKED);
     // print files wait for the full year: a preview is never sent to the printer
     doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
     syncGift();
@@ -1459,6 +1461,8 @@
   function openProof() {
     if (!DATA || BLOCKED) return;
     var dlg = $('rp-proof');
+    // open on what the reader is looking at: framed or print only, as set under the preview
+    PROOF_VIEW = $('rp-wall').getAttribute('data-view') === 'print' ? 'print' : 'framed';
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     ga('rain_print_proof', { style: ST.style });
@@ -1889,6 +1893,9 @@
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); });
   $('rp-proof-open').addEventListener('click', openProof);
+  $('rp-zoom').addEventListener('click', openProof);
+  // tap the picture to see it up close (the Zoom in button is the keyboard way in)
+  art.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a,button,input,select')) return; openProof(); });
   $('rp-proof-close').addEventListener('click', function () { $('rp-proof').close(); });
   $('rp-proof-order').addEventListener('click', function () {
     $('rp-proof').close();
