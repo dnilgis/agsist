@@ -46,7 +46,7 @@
         /* r7-bids: dates as "Sep 20, 2026", and say when the ratings week trails the latest Crop Progress week. */
         var _wkTxt=function(s){var d=new Date(s+'T12:00:00');return isNaN(d)?s:d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});};
         wk.innerHTML='Ratings week ending '+_wkTxt(_wkEnd)+' \u00b7 updates Tuesdays'+_age;
-        fetch('/data/crop-progress.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(cp){
+        AG.json('/data/crop-progress.json').catch(function(){return null;}).then(function(cp){
           if(!cp||!/^\d{4}-\d{2}-\d{2}$/.test(String(cp.report_date))||!/^\d{4}-\d{2}-\d{2}$/.test(String(_wkEnd)))return;
           var n=Math.round((new Date(cp.report_date+'T12:00:00')-new Date(_wkEnd+'T12:00:00'))/6048e5);
           if(n>=1)wk.innerHTML='Ratings week ending '+_wkTxt(_wkEnd)+', '+(n===1?'one week':n+' weeks')+' behind Crop Progress ('+_wkTxt(cp.report_date)+')'+_age;
@@ -311,10 +311,12 @@
   function pxLoad(){
   _pxTry++;
   var first=_pxTry===1;
-  fetch('/data/prices.json',{cache:first?'default':'no-store'}).then(function(r){
+  /* The first read shares the page's one request (AG.json); a retry asks the
+     server again. */
+  (first?AG.json('/data/prices.json'):fetch('/data/prices.json',{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('prices.json '+r.status);
     return r.json();
-  }).then(function(data){
+  })).then(function(data){
     if(!data||typeof data!=='object'||!data.quotes||typeof data.quotes!=='object')throw new Error('prices.json malformed');
     return data;
   }).then(function(data){

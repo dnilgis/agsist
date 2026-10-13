@@ -54,8 +54,9 @@
   function NL(){return '<span class="s7-nl">Not loaded yet</span>';}
   var MINUS='−';
   function sgn(v){return v>0?'+':(v<0?MINUS:'');}
-  function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-  function getText(u){return fetch(u).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;});}
+  /* AG.json / AG.text (util.js): one request per file for the whole page. */
+  function get(u){return AG.json(u).catch(function(){return null;});}
+  function getText(u){return AG.text(u).catch(function(){return null;});}
   function tzParts(d,tz,o){try{return new Intl.DateTimeFormat('en-US',Object.assign({timeZone:tz},o)).format(d);}catch(e){return '';}}
   function dateLong(d,tz){return tzParts(d,tz||'America/Chicago',{month:'short',day:'numeric',year:'numeric'});}
   function timeIn(d,tz){return tzParts(d,tz,{hour:'numeric',minute:'2-digit'});}

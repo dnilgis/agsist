@@ -235,7 +235,10 @@ if(typeof module!=='undefined'&&module.exports)module.exports=api;
    first render, the ranked panels are drawn again (cbRankRedraw is the page's). */
 if(typeof fetch==='function'&&typeof document!=='undefined'){
   try{
-    fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;})
+    /* AG.json (util.js) shares the page's one request for the file; a page
+       on an older util.js fetches its own copy. */
+    (root.AG&&typeof root.AG.json==='function'?root.AG.json('/data/prices.json')
+      :fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}))
       .then(function(j){if(!j)return;setFutures(j);api.futuresReady=true;
         if(typeof root.cbRankRedraw==='function')root.cbRankRedraw();})
       .catch(function(){});
