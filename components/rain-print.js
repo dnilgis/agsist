@@ -538,6 +538,16 @@
     return { hit: list[0] };
   }
   function parts0(q) { return String(q).split(',')[0].trim(); }
+  /* A county rain page links here with the station's town, and some station
+     names carry a field or farm name ("Topeka Billard, KS"). When that finds
+     nothing, try the town with its last words dropped, longest first. */
+  function shorterPlaces(q) {
+    var g = geocodeQuery(q);
+    if (g.zip || !g.st) return [];
+    var w = g.town.split(/\s+/).filter(Boolean), out = [];
+    for (var n = w.length - 1; n >= 1; n--) out.push(w.slice(0, n).join(' ') + ', ' + g.st.toUpperCase());
+    return out;
+  }
 
   /* The reader's dates, checked against the year: [{i, msg}] for each date
      that won't print (2026-10-13: a date outside the year was dropped from the
@@ -605,7 +615,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -1362,7 +1372,18 @@
       if (mode === 'future') throw new Error(ST.year + ' hasn\u2019t happened yet. Pick ' + CURRENT_YEAR + ' to give this year as a gift, or an earlier year.');
       ST.gift = mode === 'gift';
       setStatus('Finding ' + ST.place + '…');
-      return geocode(ST.place);
+      // Only a link that names its station (a county rain page) gets the shorter tries.
+      var tries = ST.station ? shorterPlaces(ST.place) : [];
+      return geocode(ST.place).catch(function (first) {
+        if (first && first.pick) throw first;
+        // a shorter try that finds several towns is skipped; the reader sees the first error
+        var next = function () {
+          var q = tries.shift();
+          if (!q) throw first;
+          return geocode(q).then(function (hit) { ST.place = cleanText(placeLabel(hit), LIMITS.place); $('rp-place').value = ST.place; return hit; }, next);
+        };
+        return next();
+      });
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
