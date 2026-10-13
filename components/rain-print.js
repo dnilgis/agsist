@@ -551,6 +551,19 @@
   // label ideas offered under the date boxes; any words of the buyer's own work too
   var LABEL_PRESETS = ['Planted', 'Harvest done', 'Turnout', 'Calving', 'Weaning', 'First cutting', 'Hail', 'Wedding', 'Born', 'Moved in'];
 
+  /* What goes to Stripe as client_reference_id (A-Z a-z 0-9 - _, at most 200):
+     the design code itself when it fits; past that (a long place, name, line
+     and labels) the short-link id the QR already carries, as RPS-<id>, with
+     GIFT- in front for this year's January gift. '' when neither fits, and the
+     page opens the order form instead (2026-10-13: a long design used to have
+     no way to pay). shortLink is 'HTTPS://AGSIST.COM/R?ID' or null. */
+  function checkoutRef(code, gift, shortLink) {
+    code = String(code || '');
+    if (code && code.length <= 200) return code;
+    var m = /\/R\?([0-9A-HJKMNP-TV-Z]{5,8})$/.exec(String(shortLink || ''));
+    return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
+  }
+
   /* Why a share link can't be drawn, in words, or '' when it can (or there is no design in it). */
   function linkProblem(search) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
@@ -587,7 +600,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -1026,6 +1039,7 @@
     $('rp-to-buy').classList.toggle('btn-primary', on);
     $('rp-to-buy').classList.toggle('btn-secondary', !on);
     $('rp-dl').disabled = !on || !DATA;
+    $('rp-proof-open').disabled = !DATA || !!BLOCKED;
     // print files wait for the full year: a preview is never sent to the printer
     doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
     syncGift();
@@ -1144,6 +1158,8 @@
     setDesignRefs();
     showBuy(true);
     sampleLine(!!SAMPLE);
+    if (!$('rp-order').hidden) syncSummary();
+    if ($('rp-proof').open) proofRender();
   }
 
   function blockPrint(msg) {
@@ -1363,10 +1379,10 @@
       statusEl.classList.remove('rp-bad');
       return;
     }
-    var code = encodeCode(ST), link = payLink(id), note = $('rp-buy-note');
-    ga('rain_print_buy', { choice: id, via: link && code.length <= 200 ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
-    // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters; a gift code is GIFT- plus the design code.
-    if (link && code && code.length <= 200) {
+    var code = refFor(), link = payLink(id), note = $('rp-buy-note');
+    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
+    // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
+    if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
       note.innerHTML = ST.gift
@@ -1377,6 +1393,59 @@
     }
     openOrder(id);
   }
+  function shortHit() { return root.AgRpShort ? root.AgRpShort.peek(encodeCode(artDesign())) : null; }
+  function shortRef() { var m = /\/R\?([0-9A-Z]{5,8})$/.exec(shortHit() || ''); return m ? 'RPS-' + m[1] : ''; }
+  function refFor() { return checkoutRef(encodeCode(ST), ST.gift, shortHit()); }
+  // the design code the order form sends: the code itself, or the short-link reference when the code is past the worker's 300
+  function orderCode() { var c = encodeCode(ST); return c.length <= 300 ? c : (checkoutRef(c, ST.gift, shortHit()) || c); }
+  /* The order summary at the top of the order form: what is ordered, the
+     design in words, and exactly what happens next. Payment links are null
+     today, so every order is a request Sig answers by email. */
+  function designRows() {
+    var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
+      ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
+    rows.push(['Dates', ST.markers.length ? ST.markers.map(function (m) { return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : ''); }).join(', ') : '(none)']);
+    if (META) rows.push(['Rain gauge', gaugeWords(META) + ', ' + distText(META)]);
+    rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'the station\u2019s full record' : 'nothing']);
+    return rows;
+  }
+  function syncSummary() {
+    var el = $('ro-summary'), id = $('ro-choice').value, J = PRICES || {};
+    if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
+    var price = typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
+    var jan = januaryGift(), print = id !== 'digital';
+    var steps = jan
+      ? ['Sig emails you within 1 business day with a payment link. Nothing is charged until you pay it.', 'In January, once NOAA\u2019s December numbers are in, he draws the full year and emails you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed once you OK it.']
+      : ['Sig emails you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
+        print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you pay.'];
+    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">check the proof first</a>') + '</p>' +
+      '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
+      '<p><b>What happens next</b></p><ol>' + steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
+    var sp = $('ro-see-proof');
+    if (sp) sp.addEventListener('click', function (ev) { ev.preventDefault(); openProof(); });
+  }
+
+  // ---------- the proof: the exact print file, full size ----------
+  var PROOF_OK = '', PROOF_VIEW = 'print', PROOF_ZOOM = 'fit';
+  function proofRender() {
+    var dlg = $('rp-proof');
+    if (!DATA || BLOCKED) { dlg.close && dlg.open && dlg.close(); return; }
+    $('rp-proof-art').innerHTML = buildSvg({ idPrefix: 'pf', serial: SERIAL });
+    dlg.setAttribute('data-view', PROOF_VIEW); dlg.setAttribute('data-zoom', PROOF_ZOOM);
+    doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pstyle') === ST.style)); });
+    doc.querySelectorAll('[data-pview]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pview') === PROOF_VIEW)); });
+    doc.querySelectorAll('[data-pzoom]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pzoom') === PROOF_ZOOM)); });
+    $('rp-proof-sum').innerHTML = designRows().map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') +
+      (PREVIEW ? '<div><dt>Preview</dt><dd>through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year</dd></div>' : '');
+    $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
+  }
+  function openProof() {
+    if (!DATA || BLOCKED) return;
+    var dlg = $('rp-proof');
+    proofRender();
+    try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
+    ga('rain_print_proof', { style: ST.style });
+  }
   function openOrder(id) {
     var box = $('rp-order');
     box.hidden = false;
@@ -1384,6 +1453,7 @@
     syncAddress();
     $('ro-design').value = designUrl(ST);
     $('ro-out').innerHTML = '';
+    syncSummary();
     try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     try { $('ro-name').focus({ preventScroll: true }); } catch (e) {}
   }
@@ -1451,8 +1521,10 @@
     var x = {
       name: cleanText($('ro-name').value, 80), email: $('ro-email').value.trim(), choice: $('ro-choice').value,
       address: $('ro-address').value.trim().slice(0, 600), notes: $('ro-notes').value.trim().slice(0, 2000),
-      design_url: designUrl(ST), design_code: encodeCode(ST), page: '/rain-print'
+      design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print'
     };
+    // the worker keeps known fields only, so the proof tick rides in the notes
+    x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
     if (x.choice === 'digital') x.address = '';
     var gift = giftMode(), plain = plainGift();
     if (plain) {
@@ -1489,8 +1561,9 @@
           '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. He sends the proof then, and it is delivered in January. He writes to ' + esc(x.email) +
           '; nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p>' +
           '<p><button class="btn btn-secondary" id="ro-card" type="button">Print a gift card</button></p></div>'
-        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email you within a day with a payment link and a proof.</p>' +
-          '<p>He writes to ' + esc(x.email) + '. Nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>';
+        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> Sig will email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
+          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you pay.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
+          ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
       if ($('ro-card')) $('ro-card').addEventListener('click', printCard);
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
@@ -1822,7 +1895,26 @@
   $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
   $('rp-records').addEventListener('change', restyle);
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
-  $('ro-choice').addEventListener('change', syncAddress);
+  $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); });
+  $('rp-proof-open').addEventListener('click', openProof);
+  $('rp-proof-close').addEventListener('click', function () { $('rp-proof').close(); });
+  $('rp-proof-order').addEventListener('click', function () {
+    $('rp-proof').close();
+    if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
+    try { $('rp-buy').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+  });
+  $('rp-proof-ok').addEventListener('change', function () { PROOF_OK = $('rp-proof-ok').checked ? encodeCode(ST) : ''; syncSummary(); });
+  doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.addEventListener('click', function () {
+    radios('rp-style').forEach(function (r) { r.checked = r.value === b.getAttribute('data-pstyle'); }); restyle(); proofRender(); }); });
+  doc.querySelectorAll('[data-pview]').forEach(function (b) { b.addEventListener('click', function () { PROOF_VIEW = b.getAttribute('data-pview'); proofRender(); }); });
+  doc.querySelectorAll('[data-pzoom]').forEach(function (b) { b.addEventListener('click', function () { PROOF_ZOOM = b.getAttribute('data-pzoom'); proofRender(); }); });
+  // drag to move around the actual-size proof
+  (function () {
+    var st = $('rp-proof-stage'), down = null;
+    st.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') return; down = { x: e.clientX, y: e.clientY, l: st.scrollLeft, t: st.scrollTop }; });
+    root.addEventListener('pointermove', function (e) { if (!down) return; st.scrollLeft = down.l - (e.clientX - down.x); st.scrollTop = down.t - (e.clientY - down.y); });
+    root.addEventListener('pointerup', function () { down = null; });
+  })();
   $('ro-deliver').addEventListener('change', syncAddress);
   $('ro-isgift').addEventListener('change', syncAddress);
   $('rp-card').addEventListener('click', printCard);

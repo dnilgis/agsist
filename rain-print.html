@@ -232,6 +232,29 @@
   .rp-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.6rem 0 1rem;font-size:var(--fs-sm)}
   .rp-links a{display:inline-flex;align-items:center;min-height:var(--btn-h);border:1px solid var(--border);border-radius:var(--r-pill);padding:0 .9rem;color:var(--link);text-decoration:none}
 
+  /* the proof: the exact print file, fit or at actual size, framed or not */
+  .rp-proof{width:min(1180px,calc(100vw - 16px));max-width:none;max-height:calc(100dvh - 16px);padding:14px 16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);color:var(--text);box-sizing:border-box}
+  .rp-proof::backdrop{background:rgba(0,0,0,.6)}
+  .rp-proof-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 .5rem}
+  .rp-proof-top h2{margin:0;font-size:var(--fs-lg)}
+  .rp-proof-bar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:0 0 .6rem}
+  .rp-proof-bar .chip{min-height:var(--btn-h);padding:.3rem .8rem;font-size:var(--fs-sm)}
+  .rp-proof-stage{overflow:auto;max-height:62dvh;background:linear-gradient(180deg,var(--rp-wall-a,#3a3630),var(--rp-wall-b,#27241f));border-radius:var(--r-8);padding:16px;cursor:grab;-webkit-overflow-scrolling:touch}
+  .rp-proof-frame{margin:0 auto;background:#fff}
+  .rp-proof[data-zoom="fit"] .rp-proof-frame{max-width:calc((62dvh - 32px) * 1.5 - 48px)}
+  .rp-proof[data-zoom="fit"][data-view="framed"] .rp-proof-frame{max-width:calc((62dvh - 80px) * 1.5 + 48px)}
+  .rp-proof[data-view="framed"] .rp-proof-frame{background:#131313;padding:24px;box-shadow:0 12px 24px -10px rgba(0,0,0,.5)}
+  .rp-proof-art{background:#fff}
+  .rp-proof-art svg{display:block;width:100%;height:auto}
+  .rp-proof[data-zoom="full"] .rp-proof-frame{width:max-content}
+  .rp-proof[data-zoom="full"] .rp-proof-art svg{width:18in;max-width:none}
+  .rp-proof-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.2rem 1rem;margin:.7rem 0 .3rem;font-size:var(--fs-sm)}
+  .rp-proof-sum div{display:flex;gap:.5rem;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0}
+  .rp-proof-sum dt{color:var(--text-muted)}.rp-proof-sum dd{margin:0;text-align:right;color:var(--text);overflow-wrap:anywhere}
+  .rp-sum{margin:.4rem 0 .8rem;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-8);background:var(--bg);font-size:var(--fs-sm);line-height:1.5}
+  .rp-sum p{margin:0 0 .35rem}.rp-sum ol{margin:.2rem 0 0;padding-left:1.3rem}
+  .rp-sum dl{display:grid;grid-template-columns:max-content 1fr;gap:.15rem .8rem;margin:0 0 .5rem}.rp-sum dt{color:var(--text-muted)}.rp-sum dd{margin:0;overflow-wrap:anywhere}
+
   /* the gift card: built into #rp-giftcard and printed alone (letter, one page) */
   #rp-giftcard{display:none}
   @page rpcard{size:letter portrait;margin:.45in}
@@ -324,6 +347,7 @@
         <div class="rp-acts">
           <a class="btn btn-secondary" id="rp-to-buy" href="#rp-buy">Prices and ordering</a>
           <button class="btn btn-secondary" id="rp-copy" type="button">Copy link</button>
+          <button class="btn btn-secondary" id="rp-proof-open" type="button" disabled>See it full size</button>
           <button class="btn btn-secondary" id="rp-dl" type="button" disabled>Download a preview</button>
         </div>
         <p class="rp-note" id="rp-dl-note" aria-live="polite"></p>
@@ -434,6 +458,7 @@
       <div class="rp-order" id="rp-order" hidden>
         <h3>Order request</h3>
         <p class="rp-note" id="ro-order-note">Sig will email you within a day with a payment link and a proof. Nothing is charged until you pay that link.</p>
+        <div class="rp-sum" id="ro-summary"></div>
         <form id="ro-form" novalidate>
           <div class="rp-ogrid">
             <label class="field"><span>Your name</span><input id="ro-name" type="text" maxlength="80" autocomplete="name" required></label>
@@ -548,6 +573,22 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
+  <dialog class="rp-proof" id="rp-proof" aria-labelledby="rp-proof-h">
+    <div class="rp-proof-top">
+      <h2 id="rp-proof-h">Your proof: this is the print file</h2>
+      <button type="button" class="btn btn-secondary rp-proof-x" id="rp-proof-close">Close</button>
+    </div>
+    <div class="rp-proof-bar">
+      <div class="rp-seg" role="group" aria-label="Style"><button type="button" class="chip" data-pstyle="r1">Staircase</button><button type="button" class="chip" data-pstyle="r2">Roots</button></div>
+      <div class="rp-seg" role="group" aria-label="Show"><button type="button" class="chip" data-pview="print">Print only</button><button type="button" class="chip" data-pview="framed">Framed</button></div>
+      <div class="rp-seg" role="group" aria-label="Zoom"><button type="button" class="chip" data-pzoom="fit">Fit</button><button type="button" class="chip" data-pzoom="full">Actual size</button></div>
+    </div>
+    <div class="rp-proof-stage" id="rp-proof-stage" tabindex="0" aria-label="The print, scroll to move around"><div class="rp-proof-frame" id="rp-proof-frame"><div class="rp-proof-art" id="rp-proof-art"></div></div></div>
+    <dl class="rp-proof-sum" id="rp-proof-sum"></dl>
+    <p class="rp-note">Actual size is 18 x 12 inches; drag or scroll to check every word. The QR in the corner is the maker&rsquo;s mark. Sig&rsquo;s print adds a thin bleed past the edge, trimmed off.</p>
+    <label class="rp-check"><input type="checkbox" id="rp-proof-ok"><span>I&rsquo;ve checked the spelling and the dates</span></label>
+    <p class="rp-acts"><button type="button" class="btn btn-primary" id="rp-proof-order">Order this print</button></p>
+  </dialog>
   <div id="rp-giftcard" aria-hidden="true"></div>
   <script src="/components/loader.js?v=18" defer></script>
   <script src="/components/util.js?v=19"></script>

@@ -209,3 +209,31 @@ test("Rain Print stays out of the menus and footer until launch (it is already i
     assert.ok(!/rain-print/.test(t), f + " has no Rain Print link yet");
   }
 });
+
+// ---------- checkout and proof ----------
+test("checkout never dead-ends: a design code over 200 goes to Stripe as its short-link id", () => {
+  const long = { place: "Saint Francisville Twp, WV", station: "USC00471667 6", year: 2025, cmp: "normal", style: "r2", normals: true, records: true,
+    name: "Prairie View Seed and Gr", dedication: "For Grandpa Erling, sixty harvests and counting. Love, all the grandkids".slice(0, 70),
+    markers: [1, 2, 3].map((i) => ({ date: `2025-0${i + 3}-1${i}`, label: "First cutting" })) };
+  const code = RP.encodeCode(long);
+  assert.ok(code.length > 200, "this design's code really is too long for Stripe: " + code.length);
+  assert.equal(RP.checkoutRef(code, false, "HTTPS://AGSIST.COM/R?K7Q2M"), "RPS-K7Q2M");
+  assert.equal(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M"), "GIFT-RPS-K7Q2M");
+  assert.ok(/^[A-Za-z0-9_-]{1,200}$/.test(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M")));
+  assert.equal(RP.checkoutRef(code, false, null), "", "no short id: no Stripe, the order form opens");
+  const short = RP.encodeCode({ place: "Chetek, WI", year: 2025 });
+  assert.equal(RP.checkoutRef(short, false, null), short, "a code that fits goes as it is");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /var code = refFor\(\), link = payLink\(id\)/, "buy() uses the reference");
+  assert.match(S, /openOrder\(id\);\n  \}/, "and falls back to the order form");
+  assert.match(S, /design_code: orderCode\(\)/, "the order form sends a code the worker takes (300 at most)");
+});
+
+test("the proof view and the order summary are on the page", () => {
+  for (const id of ["rp-proof", "rp-proof-open", "rp-proof-art", "rp-proof-ok", "ro-summary"]) assert.ok(HTML.includes(`id="${id}"`), id);
+  for (const k of ['data-pstyle="r1"', 'data-pstyle="r2"', 'data-pview="framed"', 'data-pview="print"', 'data-pzoom="full"']) assert.ok(HTML.includes(k), k);
+  assert.match(HTML, /\.rp-proof\[data-zoom="full"\] \.rp-proof-art svg\{width:18in/, "actual size is 18 in wide");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
+  assert.match(S, /What happens next/);
+});
