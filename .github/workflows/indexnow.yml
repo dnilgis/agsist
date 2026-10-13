@@ -9,8 +9,8 @@ on:
       - 'sitemap*.xml'
       - 'robots.txt'
   schedule:
-    # 14:33 UTC daily = 09:33 CT (after daily briefing has published); off :30, a crowded minute
-    - cron: '33 14 * * *'
+    # The full sitemap once a week, Mondays 14:33 UTC = 09:33 CT; pushes send only what they changed
+    - cron: '33 14 * * 1'
   workflow_dispatch:
     inputs:
       urls:
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: true   # read-only token (permissions: contents: read); lets a push fetch its "before" commit
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -43,16 +43,30 @@ jobs:
       - name: IndexNow selftest (offline)
         run: python scripts/test_indexnow_submit.py
 
-      # Every Sitemap: line in robots.txt (sitemap.xml, atlas, cash-bids,
-      # arc-plc), in batches of at most 10,000 URLs per request.
+      # A push sends only the pages it changed that a sitemap lists. The weekly
+      # run and a manual run with no URLs send every sitemap (robots.txt), in
+      # batches of at most 10,000. If the push's "before" commit can't be read,
+      # the push sends nothing and the weekly run covers it.
       - name: Submit to IndexNow
         env:
           MANUAL_URLS: ${{ github.event.inputs.urls }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
         run: |
           if [ -n "$MANUAL_URLS" ]; then
             # shellcheck disable=SC2086
             URLS=$(echo "$MANUAL_URLS" | tr ',' ' ')
             python scripts/indexnow_submit.py --urls $URLS
+          elif [ "$EVENT" = "push" ]; then
+            if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
+               || ! git fetch --quiet --depth=1 origin "$BEFORE"; then
+              echo "[info] no earlier commit to compare with; the weekly run sends everything"
+              exit 0
+            fi
+            git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- '*.html' > /tmp/changed.txt
+            echo "[info] $(wc -l < /tmp/changed.txt) changed page file(s)"
+            # shellcheck disable=SC2046
+            python scripts/indexnow_submit.py --changed $(cat /tmp/changed.txt)
           else
             python scripts/indexnow_submit.py
           fi
