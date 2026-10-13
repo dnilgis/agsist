@@ -1,0 +1,42 @@
+{
+"_note": "SYNTHETIC TEST FIXTURE for scripts/fetch_prf_outlook.py --selftest and test/prf-outlook*. Shaped like NOAA's map service answer; the boxes and numbers are made up and are NOT a real CPC outlook.",
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-100,
+30.75
+],
+[
+-99.5,
+30.75
+],
+[
+-99.5,
+31.5
+],
+[
+-100,
+31.5
+],
+[
+-100,
+30.75
+]
+]
+]
+},
+"properties": {
+"fcst_date": 1790726400000,
+"valid_seas": "OCT 2026",
+"prob": 40,
+"cat": "Above"
+}
+}
+]
+}
