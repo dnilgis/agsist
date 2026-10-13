@@ -44,29 +44,24 @@ def record_from_env(e=os.environ.get):
     return rec
 
 
-WYATT = """Hey Wyatt,
+WYATT = """Wyatt,
 
-Thanks for reaching out. Happy to get Ladoga's bids up on agsist.com, and I want it to be as easy on you as possible. I can do it whichever way you prefer:
+Thanks for getting back to me. Happy to get your bids up, and I'll do it however is easiest for you.
 
-1. Automatic, if I can swing it. I looked for a way to pull your bids without you doing anything. Bunge shows live bids on some of its own location pages (Decatur, IN for one), but the Haw Creek page doesn't have any posted. I also went on the Bunge website and asked for an account so I can see your bids, but I haven't heard back from anyone yet. If you know who to nudge, or if your web folks can turn on cash bids for the Haw Creek page like Decatur's, agsist.com picks them up every 15 minutes on its own and you'd never have to think about it.
+I tried to find a way to grab them automatically so you wouldn't have to do anything. Bunge has bids up on some of its location pages, but not Haw Creek. I also signed up on the Bunge site to get access to your bids but haven't heard anything back yet. If you know who handles that, or if they can turn on bids for the Haw Creek page, I can pull them from there and you're done.
 
-2. Add me to your bid sheet. If you send out a daily bid sheet by email or text, just add me to the list and I'll take it from there.
+If you already send out a bid sheet by email or text, just add me to it and I'll take care of the rest.
 
-3. Your own admin page. I built a page just for you to post and change your own info on agsist.com:
+Or here's a page I set up for you where you can put in your own basis, hours and notes:
 
 {link}
 
-Punch in your basis and it figures the cash price off futures. If nothing changed that day, tap "No change today" and you're done. You can also post your hours, harvest hours and a quick note like "dump open till 9 tonight". Save it to your phone's home screen and it's one tap. Keep the link to yourself; it's your key to the listing.
+Just type in your basis and it figures the cash price off futures. If nothing changes, hit "No change today." Save it on your phone and it's one tap.
 
-Once it's up, your bids show on the cash bids page, the Ladoga-area town pages, the price alerts farmers set for your area, and the morning AGSIST Daily, listed as {name}. Let me know if you'd rather have a different name on it, and whether you want wheat on there with corn and beans.
-
-Any questions, just call or text me.
+Whatever works best for you. Let me know if you want it listed as something other than {name}, and if you want wheat on there too.
 
 Thanks,
 Sig
-
-Sigurd Lindquist
-agsist.com
 715-797-2428
 """
 
