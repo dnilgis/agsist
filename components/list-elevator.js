@@ -189,15 +189,17 @@
       if (inp && k !== 'crops' && k !== 'how') { if (errs[k]) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); }
     });
   }
+  /* Errors show when Send is pressed. After that a field's line updates as it
+     is typed in, so it clears the moment the field is right. Nothing is checked
+     on blur: a line that appears or goes as focus leaves a field moves the
+     page under the pointer, and the tap meant for the next box misses. */
   Object.keys(RULES).forEach(function (k) {
     var group = k === 'crops' || k === 'how' ? f.querySelectorAll('input[name="' + k + '"]') : [f.elements[k]];
     Array.prototype.forEach.call(group, function (inp) {
       if (!inp) return;
-      inp.addEventListener('change', function () { var e = document.getElementById('le-' + k + '-e'); if (e && e.textContent) mark(check(fields()), k); });
-      inp.addEventListener('blur', function (ev) {
-        if (ev.relatedTarget === btn || k === 'crops' || k === 'how') return;
-        if (v(k) || inp.getAttribute('aria-invalid')) mark(check(fields()), k);
-      });
+      var again = function () { var e = document.getElementById('le-' + k + '-e'); if (e && e.textContent) mark(check(fields()), k); };
+      inp.addEventListener('change', again);
+      inp.addEventListener('input', again);
     });
   });
   var note = f.elements.note, cnt = document.getElementById('le-note-n');
