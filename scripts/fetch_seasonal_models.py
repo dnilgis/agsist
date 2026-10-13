@@ -354,29 +354,32 @@ NO_CLOCK = Clock(10 ** 6)
 
 # ---------------------------------------------------------------- Data Library URLs (selftested)
 def lib_sel_starts(first, last):
-    """the S selection: one November, or every November first..last in one go"""
+    """the S selection: one November, or every November first..last in one go.
+    Ingrid tokens are separated by slashes: (0000 1 Nov 1996)/VALUES, not
+    (0000 1 Nov 1996)VALUES (the second run's probe got "Bad Request" pages).
+    Several Novembers: the range of starts, then every 12th start."""
     if first == last:
-        return "S/(0000 1 Nov %d)VALUES/" % first
-    return "S/(0000 1 Nov %d-%d)VALUES/" % (first, last)
+        return "S/(0000 1 Nov %d)/VALUES/" % first
+    return "S/(0000 1 Nov %d)/(0000 1 Nov %d)/RANGEEDGES/S/12/STEP/" % (first, last)
 
 
 def lib_url(path, first, last, leads, point=None):
     """ensemble mean of .prec for November starts first..last (start years),
     every lead, over the PRF area (or one cell, for a probe), as netCDF"""
     if point:
-        where = "X/(%g)VALUES/Y/(%g)VALUES/" % point
-        lsel = "L/(0.5)VALUES/"
+        where = "X/(%g)/VALUES/Y/(%g)/VALUES/" % point
+        lsel = "L/(0.5)/VALUES/"
     else:
-        where = "X/(%g)(%g)RANGEEDGES/Y/(%g)(%g)RANGEEDGES/" % (AREA["west"] + 360, AREA["east"] + 360, AREA["south"], AREA["north"])
-        lsel = "L/(0.5)(%.1f)RANGE/" % (leads - 0.5)
+        where = "X/(%g)/(%g)/RANGEEDGES/Y/(%g)/(%g)/RANGEEDGES/" % (AREA["west"] + 360, AREA["east"] + 360, AREA["south"], AREA["north"])
+        lsel = "L/(0.5)/(%.1f)/RANGE/" % (leads - 0.5)
     # The Library's dates have spaces in them, "(0000 1 Nov 1990)". Sent raw,
     # Python refuses the URL before it leaves the runner ("URL can't contain
     # control characters"): that, retried with sleeps, was the first run's
     # hour and a half of nothing. They go as %20.
     # Every Data Library entry name starts with a dot: .NMME/.GFDL-SPEAR, not
     # .NMME/GFDL-SPEAR (the first run also dropped that dot).
-    q = "." + path + "/.prec/" + lib_sel_starts(first, last) + lsel + where + "M/average/data.nc"
-    return NMME_BASE + urllib.parse.quote(q, safe="/().-_")
+    q = "." + path + "/.prec/" + lib_sel_starts(first, last) + lsel + where + "[M]average/data.nc"
+    return NMME_BASE + urllib.parse.quote(q, safe="/().-_[]")
 
 
 def cpc_url(name, start_year):
@@ -677,7 +680,7 @@ def probe_one(label, url, headers=None):
         status, blob, hdr = http_get(url, T_PROBE, tries=1, headers=headers)
         size = hdr.get("Content-Range", "").split("/")[-1] or str(len(blob))
         kind = "netCDF" if blob[:3] == b"CDF" or blob[:4] == b"\x89HDF" else "NOT netCDF: " + blob[:60].decode("utf8", "replace").replace("\n", " ")
-        log("  OK   %s  HTTP %d, %s bytes, %s, %.1f s" % (label, status, size, kind, time.monotonic() - t0))
+        log("  %s %s  HTTP %d, %s bytes, %s, %.1f s" % ("OK  " if kind == "netCDF" else "FAIL", label, status, size, kind, time.monotonic() - t0))
         return kind == "netCDF"
     except Exception as e:  # noqa: BLE001
         log("  FAIL %s  %s, %.1f s" % (label, str(e)[:140], time.monotonic() - t0))
@@ -852,9 +855,9 @@ def selftest():
     # the Data Library requests: documented datasets, November starts, every lead, ensemble mean
     u = lib_url("GFDL-SPEAR/.HINDCAST/.MONTHLY", 1991, 2020, 12)
     assert u.startswith("https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/.GFDL-SPEAR/.HINDCAST/.MONTHLY/.prec/"), u
-    assert u == (NMME_BASE + ".GFDL-SPEAR/.HINDCAST/.MONTHLY/.prec/S/(0000%201%20Nov%201991-2020)VALUES/L/(0.5)(11.5)RANGE/"
-                 "X/(230)(294)RANGEEDGES/Y/(20)(50)RANGEEDGES/M/average/data.nc"), u
-    assert "S/(0000%201%20Nov%202005)VALUES/" in lib_url("x", 2005, 2005, 10)
+    assert u == (NMME_BASE + ".GFDL-SPEAR/.HINDCAST/.MONTHLY/.prec/S/(0000%201%20Nov%201991)/(0000%201%20Nov%202020)/RANGEEDGES/S/12/STEP/L/(0.5)/(11.5)/RANGE/"
+                 "X/(230)/(294)/RANGEEDGES/Y/(20)/(50)/RANGEEDGES/[M]average/data.nc"), u
+    assert "S/(0000%201%20Nov%202005)/VALUES/" in lib_url("x", 2005, 2005, 10)
     # every URL can be sent: no spaces or control characters (the first run's failure)
     for k, cfg in NMME.items():
         for e in cfg["paths"]:
@@ -863,7 +866,7 @@ def selftest():
                     assert not any(ch <= " " or ch == "\x7f" for ch in url), url
                     urllib.request.Request(url)       # urllib's own check passes
     pu = lib_url("x", 2005, 2005, 10, point=PROBE_POINT)
-    assert "L/(0.5)VALUES/X/(267)VALUES/Y/(42)VALUES/M/average/data.nc" in pu and "RANGE" not in pu
+    assert "L/(0.5)/VALUES/X/(267)/VALUES/Y/(42)/VALUES/[M]average/data.nc" in pu and "RANGE" not in pu
     assert cpc_url("CFSv2", 2023) == CPC_BASE + "2023110800/CFSv2.prate.202311.ENSMEAN.fcst.nc"
     assert months_since_to_ym(370, "months since 1960-01-01") == (1990, 11)
     assert months_since_to_ym(370.0, "months since 1960-01-01 00:00:00") == (1990, 11)
@@ -925,7 +928,7 @@ def selftest():
         except RuntimeError as e:
             assert "0 November starts" in str(e) and "no path answered" in str(e), e
         assert time.monotonic() - t0 < 5 and len(calls) < 20, len(calls)
-        assert any("1991-2020" in u for u in calls) and not any("Nov 1985" in u for u in calls)
+        assert any("Nov%201991)/(0000%201%20Nov%202020)" in u for u in calls) and not any("Nov%201985" in u for u in calls)
     finally:
         http_get = real_get
     # no key is a skip, not a failure, and the key is never printed
