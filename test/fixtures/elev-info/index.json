@@ -1,0 +1,79 @@
+{
+ "generated": "2026-10-13T17:01:55.469Z",
+ "sources": [
+  {
+   "id": "portal-bunge-ladoga-in",
+   "operator": "Bunge USA Grain, LLC",
+   "location": "Ladoga",
+   "usState": "IN",
+   "labelInFeed": null,
+   "zip": "47954",
+   "lat": 39.9132,
+   "lon": -86.8031,
+   "phone": "765-555-0142",
+   "email": null,
+   "website": null,
+   "inMerge": true,
+   "fails": 0,
+   "attemptedAt": "2026-10-13T17:01:55.469Z",
+   "platform": "agsist-portal",
+   "url": "https://agsist-subs.dnilgis.workers.dev/elev/feed",
+   "provenance": "scraped",
+   "pricedAt": "2026-10-13T12:05:00.000Z",
+   "checkedAt": "2026-10-13T17:01:55.469Z",
+   "rows": 5,
+   "health": "live",
+   "status": "ok",
+   "commodities": [
+    "Corn",
+    "Soybeans",
+    "Wheat"
+   ],
+   "verified": 5,
+   "reason": "price moved",
+   "changed": true,
+   "portal": {
+    "listingId": "bunge-ladoga-in",
+    "name": "Bunge",
+    "contactName": "Wyatt",
+    "hours": "Mon-Fri 7-5, Sat 7-12",
+    "harvestHours": "7am-9pm through Nov 15",
+    "note": "Dump closes at 8:30pm sharp during harvest.",
+    "closedUntil": null,
+    "infoUpdatedAt": "2026-10-10T16:00:00.000Z"
+   }
+  },
+  {
+   "id": "adm-atticain",
+   "operator": "ADM",
+   "location": "Attica",
+   "usState": "IN",
+   "labelInFeed": null,
+   "zip": "47918",
+   "lat": 40.275979,
+   "lon": -87.2578293,
+   "phone": null,
+   "email": null,
+   "website": "https://adm.gradable.com/market/Attica--IN",
+   "inMerge": true,
+   "fails": 0,
+   "attemptedAt": "2026-10-13T17:01:55.469Z",
+   "platform": "gradable",
+   "url": "https://adm.gradable.com/api/commodities/v2/merchandising/instruments/market/331847413?offer_type=public",
+   "provenance": "scraped",
+   "pricedAt": "2026-10-13T17:01:55.469Z",
+   "checkedAt": "2026-10-13T17:01:55.469Z",
+   "rows": 25,
+   "health": "live",
+   "status": "ok",
+   "commodities": [
+    "Corn",
+    "Soybeans",
+    "Wheat (Soft Red Winter)"
+   ],
+   "verified": 25,
+   "reason": "price moved",
+   "changed": true
+  }
+ ]
+}
