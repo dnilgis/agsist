@@ -338,9 +338,13 @@ def hold_outliers(files, new, N):
                     continue
                 why = f"{c['pct']}% of usual, the counties around it {mid:.0f}%"
             else:
+                # and under 40% of every neighbor, not just the middle one: with
+                # no normal, a rain-shadow town next to mountain counties looks
+                # low against the median (Gardnerville NV, 4.11 in, Carson City
+                # 4.36, the Sierra counties 22 to 30)
                 nb = [tot[n] for n in N.get(f, []) if n in tot]
                 mid = _median(nb)
-                if len(nb) < ODD_MIN_NBRS or mid < ODD_MIN_USUAL or not c["total"] < ODD_LOW * mid:
+                if len(nb) < ODD_MIN_NBRS or mid < ODD_MIN_USUAL or not c["total"] < ODD_LOW * min(nb):
                     continue
                 why = f"{c['total']:.2f} in, the counties around it {mid:.1f} in"
             d["none"][f] = {"name": c["name"], "stations": c.get("n_ok") or 1, "held": c["station"]["raw"]}
@@ -637,8 +641,9 @@ def selftest():
     def _t(t): return {"name": "x", "pct": None, "usual": None, "total": t, "n_ok": 1, "station": {"raw": "GAUGE"}}
     _files = {"KY": {"counties": {"1": _t(3.1), "2": _t(37.0), "3": _t(40.2), "4": _t(38.5),
                                   "5": _t(1.2), "6": _t(6.0), "7": _t(7.5), "8": _t(5.0)}, "none": {}}}
-    _held = hold_outliers(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"]})
-    ok(_held == ["1"], f"no-normal gauge far under its neighbors' totals held; dry country kept: {_held}")
+    _files["KY"]["counties"].update({"9": _t(4.11), "10": _t(29.5), "11": _t(23.2), "12": _t(4.36), "13": _t(2.85), "14": _t(22.5)})
+    _held = hold_outliers(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"], "9": ["10", "11", "12", "13", "14"]})
+    ok(_held == ["1"], f"no-normal gauge far under its neighbors' totals held; dry country and a rain shadow kept: {_held}")
     # 0.00 for 60 days or more is refused outright, with or without a normal
     d70 = R.days_of(2026, "2026-01-01", 70)
     s, why = R.summarize(2026, d70, ["0.00"] * 70, None, "2026-03-11")
