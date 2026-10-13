@@ -81,6 +81,7 @@
 
   <!-- Elevator / Cash Bid Coverage -->
   <url><loc>https://agsist.com/elevators</loc><lastmod>2026-10-11</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/list-your-elevator</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
   <!-- Data & Predictions -->
   <url><loc>https://agsist.com/usda-calendar</loc><lastmod>2026-10-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
