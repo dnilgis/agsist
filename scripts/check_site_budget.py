@@ -48,6 +48,13 @@ FOLDER_MB = {
     # the year-by-year record stays in the calculator. No static header or
     # footer copy in the county pages.
     "prf": 75,
+    # rain: 60 (2026-10-13). One page per county with a NOAA station that
+    # reported 90% of the year (at most 3,141) from scripts/build_county_rain.py
+    # at about 16 KB each (the answer, a small chart, the month table, FAQ;
+    # shared stylesheet, no static header or footer copy): about 50 MB if every
+    # county qualified, plus about 50 state pages. Data stays in data/rain/,
+    # one file per state, about 1.5 KB a county.
+    "rain": 60,
 }
 DEFAULT_FOLDER_MB = 25
 

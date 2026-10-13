@@ -92,7 +92,7 @@ def where_words(c):
 def compare(c, year_word="a usual year to date"):
     """'That is 2.1 inches less than a usual year to date (91%).' or the reason there is none."""
     if c["usual"] is None:
-        return "This station has no NOAA normal, so there is no usual year to compare it with."
+        return f"This {'gauge' if c['station']['net'] == 'cocorahs' else 'station'} has no NOAA normal, so there is no usual year to compare it with."
     if c["pct"] is None:
         return "It is too early in the year for a fair comparison with a usual year."
     d = c["total"] - c["usual"]
@@ -121,7 +121,7 @@ def rain_print_href(c, st, year):
 # ---------------------------------------------------------------- the chart
 
 def chart(c, year, county):
-    W, H, L, Rm, T, B = 520, 230, 38, 52, 10, 26
+    W, H, L, Rm, T, B = 420, 210, 30, 50, 10, 26
     n_year = 366 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 365
     pts = c["cum"]
     has_us = c["usual"] is not None and all(p[2] is not None for p in pts)
@@ -163,7 +163,7 @@ def chart(c, year, county):
     out.append("</svg>")
     cap = (f"Inches of rain added up day by day from Jan 1{', solid line' if has_us else ''}"
            + (", against the usual year at this station (dashed), counted on the same days" if has_us else "")
-           + ". Days with no report add nothing to either line.")
+           + f". Days with no report add nothing to {'either line' if has_us else 'the line'}.")
     return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
 
 
@@ -243,7 +243,7 @@ def county_page(ctx):
     if c["pct"] is not None:
         figs.append(("Percent of usual", f"{c['pct']}%"))
     if c.get("last"):
-        figs.append((f"{year - 1} by {short_date(c['last']['through'])}", f"{inch(c['last']['total'])} <small>in</small>"))
+        figs.append((f"{year - 1}" if done else f"{year - 1} by {short_date(c['last']['through'])}", f"{inch(c['last']['total'])} <small>in</small>"))
     figs_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in figs)
     # ---- month table
     has_us = c["usual"] is not None
@@ -297,7 +297,7 @@ def county_page(ctx):
     if c.get("last"):
         L = c["last"]
         d2 = c["total"] - L["total"]
-        facts.append(f"<li><b>{year - 1} by the same date:</b> {inches_word(L['total'])} at the same station, "
+        facts.append(f"<li><b>{year - 1}{', the whole year' if done else ' by the same date'}:</b> {inches_word(L['total'])} at the same station, "
                      + (f"so {year} is {inches_word(abs(d2), 1)} {'ahead' if d2 > 0 else 'behind'}." if abs(d2) >= 0.05 else f"about the same as {year}.") + "</li>")
         faq.append((f"How does {year} compare with {year - 1} in {name}?",
                     f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1} and {inches_word(c['total'])} in {year}."))

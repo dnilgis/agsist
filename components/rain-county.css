@@ -17,14 +17,14 @@
 .rc-figs dd { margin: 0; font-size: 1.3rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text); }
 .rc-figs dd small { font-size: var(--fs-xs); font-weight: 400; color: var(--text-muted); font-family: var(--font-body, inherit); }
 .rc-chart { margin: 0 0 1.2rem; }
-.rc-chart svg { width: 100%; height: auto; display: block; max-width: 760px; }
+.rc-chart svg { width: 100%; height: auto; display: block; max-width: 520px; }
 .rc-chart figcaption { font-size: var(--fs-sm); color: var(--text-muted); margin-top: .3rem; max-width: 46em; }
 .rc-ax { stroke: var(--border-2, var(--border)); stroke-width: 1; }
 .rc-grid { stroke: var(--border); stroke-width: 1; }
-.rc-lab { fill: var(--text-muted); font-size: 16px; font-family: var(--font-body, sans-serif); }
+.rc-lab { fill: var(--text-muted); font-size: 15px; font-family: var(--font-body, sans-serif); }
 .rc-yr { fill: none; stroke: var(--blue); stroke-width: 3; stroke-linejoin: round; }
 .rc-us { fill: none; stroke: var(--text-muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
-.rc-yl { fill: var(--blue); font-size: 16px; font-weight: 700; font-family: var(--font-body, sans-serif); }
+.rc-yl { fill: var(--blue); font-size: 15px; font-weight: 700; font-family: var(--font-body, sans-serif); }
 .rc-scroll { overflow-x: auto; }
 .rc-t { border-collapse: collapse; width: 100%; max-width: 720px; font-size: var(--fs-sm); }
 .rc-t th, .rc-t td { padding: .42rem .55rem; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }

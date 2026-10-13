@@ -452,8 +452,8 @@ def main(argv):
     year, edate = default_year_and_edate(central_today())
     if arg("--year"):
         year = int(arg("--year"))
-        if year != central_today().year:
-            edate = f"{year}-12-31"
+        t = central_today()
+        edate = (t - dt.timedelta(days=1)).isoformat() if year == t.year else f"{year}-12-31"
     if arg("--edate"):
         edate = arg("--edate")
         year = int(edate[:4])
