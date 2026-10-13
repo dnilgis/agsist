@@ -68,6 +68,7 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |
           python scripts/bake_seo.py --selftest
+          python scripts/test_milk_seed.py
           python scripts/seed_static.py --only milk
           python scripts/bake_seo.py --page milk-prices.html
       - name: Commit if changed (race-tolerant)
