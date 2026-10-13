@@ -125,14 +125,23 @@ def build_ctx(today):
 # Each returns (title, description) or None to skip the page. Raising is fine:
 # main() catches, reports and leaves the page alone.
 
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+WASDE_TIME = "noon ET (11 a.m. CT)"      # usda-calendar.html: every WASDE row is 12:00 PM ET
+
+
 def seo_usda_calendar(c):
     w = c["next_wasde"]
     if not w:
-        return None
+        # Past the end of the date table (after the last WASDE of the year,
+        # until usda_dates.py gets next year's dates). Returning None here used
+        # to leave "Next WASDE Dec 10" in the title for weeks after Dec 10.
+        # Say what the page holds and name no date.
+        return ("WASDE & USDA Report Dates: The Full USDA Calendar" + SUFFIX,
+                "Every USDA report date and release time on one calendar: WASDE "
+                f"at {WASDE_TIME}, Crop Production, Grain Stocks, Crop Progress, "
+                "Cattle on Feed.")
     if w < c["today"]:
         raise ValueError(f"next_wasde returned {w}, already in the past")
-    days = (w - c["today"]).days
-    when = "today" if days == 0 else ("tomorrow" if days == 1 else f"in {days} days")
     # RETITLED 2026-10-11 from "Next WASDE: Nov 10, 2026 | USDA Report
     # Calendar". Over Jul 10-Oct 7 that title held position 7.4 on 46,503
     # impressions at 0.20% CTR, and the queries Search Console names are
@@ -142,9 +151,35 @@ def seo_usda_calendar(c):
     # lacked. The next date stays in the title; the year is the WASDE's own.
     # The description names no year: in December the next WASDE is January's
     # while the calendar below may still hold this year's dates.
+    #
+    # 2026-10-13: the description gives the weekday and the release time in
+    # place of "in 28 days". The count was right on the morning it was baked
+    # and wrong every day after until the next bake (none on weekends), and
+    # "wasde report today" (30 impressions) asks for the time, which never
+    # goes stale.
+    when = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
     return (f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}",
-            f"The next WASDE report is {mdY(w)}, {when}. Every USDA report date on "
-            f"one calendar: WASDE, Crop Production, Grain Stocks, Cattle on Feed.")
+            f"The next WASDE report is {when}, {mdY(w)}, at {WASDE_TIME}. Every "
+            f"USDA report date on one calendar: WASDE, Crop Production, Grain Stocks.")
+
+
+def body_usda_calendar(c):
+    """The one visible line under the calendar's heading that answers "next
+    wasde report" and "wasde report dates 2026" without JavaScript. The
+    countdown card beside it is filled by the page script, so a crawler (and a
+    reader whose script failed) saw "NEXT USDA REPORT - - -" and no date.
+    Dates come from usda_dates.WASDE_2026, the table the title already uses."""
+    import usda_dates
+    w = c["next_wasde"]
+    year = sorted(usda_dates.WASDE_2026)
+    lst = (f"{year[0].year} WASDE dates: " +
+           ", ".join(f"{MONTHS[d.month - 1][:3]} {d.day}" for d in year) + ".")
+    if not w:
+        return f"{lst} Each one is out at {WASDE_TIME}."
+    if w < c["today"]:
+        raise ValueError(f"next_wasde returned {w}, already in the past")
+    day = "today" if w == c["today"] else WEEKDAYS[w.weekday()]
+    return (f"<strong>Next WASDE: {day}, {mdY(w)}, at {WASDE_TIME}.</strong> {lst}")
 
 
 def _cot_side(net):
@@ -669,6 +704,13 @@ for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
 PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 
+# Visible lines baked into the page body, between <!--BAKE:name--> and
+# <!--/BAKE-->. Same data, same run and same rails as the head tags above, so
+# the line a reader sees and the snippet Google shows cannot disagree.
+BODY = {
+    "usda-calendar.html": ("next-wasde", body_usda_calendar),
+}
+
 
 # ---------------------------------------------------------------- stamping
 
@@ -730,6 +772,15 @@ def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
     return text, n
 
 
+def bake_body(text, name, inner):
+    """(text, found). Replaces what sits between the markers; found is False
+    when the page has no such markers (markup changed: write nothing)."""
+    pat = re.compile(r"(<!--BAKE:" + re.escape(name) + r"-->)(.*?)(<!--/BAKE-->)", re.S)
+    if not pat.search(text):
+        return text, False
+    return pat.sub(lambda m: m.group(1) + inner + m.group(3), text, count=1), True
+
+
 def expected_tags(owns):
     return sum(1 for _, which in TAGS if which in owns)
 
@@ -763,6 +814,18 @@ def run(today, dry=False, only=None):
             skipped.append((page, f"stamped {n} of {want} tags — markup changed; "
                                   f"refusing to half-update"))
             continue
+        if page in BODY:
+            name, bfn = BODY[page]
+            try:
+                inner = bfn(ctx)
+            except Exception as exc:                      # noqa: BLE001
+                skipped.append((page, f"body builder raised: {exc}")); continue
+            out, found = bake_body(out, name, inner)
+            if not found:
+                skipped.append((page, f"no <!--BAKE:{name}--> markers — markup changed; "
+                                      f"refusing to half-update"))
+                continue
+            print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
         print(f"\n{page}  ({n} tags, owns {'+'.join(sorted(owns))})")
         if title:
             print(f"  title [{len(title):>3}] {title}")
@@ -830,7 +893,44 @@ def selftest():
     t, d = seo_usda_calendar(ctx)
     ck("WASDE title leads with the searched words", t.startswith("WASDE & USDA Report Dates 2026"), t)
     ck("WASDE title names the next date", t.endswith("Next WASDE Sep 11" + SUFFIX), t)
-    ck("WASDE description counts the days", "in 26 days" in d, d)
+    # Changed 2026-10-13 with the copy: the description gives the weekday and
+    # the release time instead of a day count that went stale between bakes.
+    ck("WASDE description gives the weekday, date and release time",
+       "is Friday, Sep 11, 2026, at noon ET (11 a.m. CT)" in d, d)
+    ck("WASDE description names no day count", "days" not in d, d)
+    ck("WASDE description names only reports the page lists", "Cattle on Feed" not in d, d)
+    _rd = seo_usda_calendar(dict(ctx, today=date(2026, 9, 11)))[1]
+    ck("on report day it says today", "is today, Sep 11, 2026" in _rd, _rd)
+    _nt, _nd = seo_usda_calendar(dict(ctx, next_wasde=None))
+    ck("past the date table: no next date is claimed",
+       "Next" not in _nt and "next" not in _nd and not re.search(r"\d{4}", _nt + _nd), _nt + " / " + _nd)
+
+    print("\nusda calendar: the visible next-WASDE line")
+    import usda_dates as _ud
+    b = body_usda_calendar(ctx)
+    ck("the line names the next WASDE with weekday and time",
+       "Next WASDE: Friday, Sep 11, 2026, at noon ET (11 a.m. CT)." in b, b)
+    ck("the line lists every WASDE date in the table",
+       all(f"{MONTHS[x.month - 1][:3]} {x.day}" in b for x in _ud.WASDE_2026), b)
+    b0 = body_usda_calendar(dict(ctx, next_wasde=None))
+    ck("past the table the line claims no next date", "Next" not in b0, b0)
+    try:
+        body_usda_calendar(dict(ctx, next_wasde=date(2026, 1, 1)))
+        ck("a past WASDE in the body line raises", False, "it returned a line")
+    except ValueError:
+        ck("a past WASDE in the body line raises", True)
+    _cal = (REPO / "usda-calendar.html").read_text(encoding="utf-8")
+    ck("usda-calendar.html carries the next-wasde markers",
+       bake_body(_cal, "next-wasde", "x")[1])
+    _page_w = set(re.findall(r"\{date:'(\d{4}-\d\d-\d\d)',name:'WASDE'", _cal))
+    _tbl = {x.isoformat() for x in _ud.WASDE_2026}
+    ck("the page's WASDE rows hold every date the line prints", _tbl <= _page_w,
+       f"missing on the page: {sorted(_tbl - _page_w)}")
+    ck("every page WASDE time is noon ET, as the line says",
+       all("12:00 PM ET" in m for m in re.findall(r"\{date:'2026-[^}]*name:'WASDE'[^}]*\}", _cal)))
+    _bo, _bf = bake_body("<p><!--BAKE:next-wasde-->old<!--/BAKE--></p>", "next-wasde", "new")
+    ck("body bake replaces between the markers", _bf and _bo == "<p><!--BAKE:next-wasde-->new<!--/BAKE--></p>", _bo)
+    ck("body bake reports missing markers", bake_body("<p>x</p>", "next-wasde", "y")[1] is False)
 
     t, d = seo_cot(ctx)
     ck("COT title states the position", "Net Long Corn 126k" in t, t)
