@@ -201,6 +201,58 @@ def tel(p):
     return d if len(d) == 10 else ""
 
 
+def _one_line(v, n):
+    """A plain one-line string of at most n characters, or "" (typed by the elevator)."""
+    if not isinstance(v, str):
+        return ""
+    v = re.sub(r"\s+", " ", re.sub(r"[\x00-\x1f\x7f]+", " ", v)).strip()
+    return v if len(v) <= n else v[:n - 1] + "\u2026"
+
+
+def portal_info(p):
+    """The listing an elevator keeps on agsist.com/post, as the network carries
+    it on its index.json row (`portal`: listingId, name, contactName, hours,
+    harvestHours, note, closedUntil, infoUpdatedAt). None for every other board.
+    Only the fields a town page prints are kept, each one cut to one line."""
+    if not isinstance(p, dict):
+        return None
+    o = {"contact": _one_line(p.get("contactName"), 40), "hours": _one_line(p.get("hours"), 120),
+         "harvest": _one_line(p.get("harvestHours"), 120), "note": _one_line(p.get("note"), 140),
+         "closed_until": parse_ts(p.get("closedUntil")) if isinstance(p.get("closedUntil"), str) else None}
+    return o if any(o.values()) else None
+
+
+def portal_html(pi, snap):
+    """Hours, harvest hours and the note for a portal elevator's section.
+    CLOSED TODAY IS NOT BAKED IN: a static page outlives the day. When the
+    snapshot still has closedUntil ahead, the page carries the time in a hidden
+    line and a few bytes of script show it only while the reader's clock is
+    before it (and hide it again when it passes). Past closedUntil, nothing."""
+    if not pi:
+        return ""
+    out = ""
+    cu = pi.get("closed_until")
+    if cu and snap and cu > snap:
+        iso = cu.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        out += (f'<p class="cbt-closed" data-closed-until="{iso}" hidden style="display:inline-block;margin:4px 0 2px;'
+                'padding:1px 7px;border:1px solid var(--red);border-radius:5px;color:var(--red);font-size:.8rem;'
+                'font-weight:700">Closed today</p>'
+                '<script>(function(e){var u=Date.parse(e.getAttribute("data-closed-until")),n=Date.now();'
+                'if(u>n){e.hidden=false;setTimeout(function(){e.hidden=true},Math.min(u-n,2147483647))}})'
+                '(document.currentScript.previousElementSibling)</script>')
+    lines = []
+    if pi.get("hours"):
+        lines.append(f'<b>Hours</b> {esc(pi["hours"])}')
+    if pi.get("harvest"):
+        lines.append(f'<b>Harvest</b> {esc(pi["harvest"])}')
+    if lines:
+        out += f'<p class="cbt-posted" style="margin:2px 0">{"<br>".join(lines)}</p>'
+    if pi.get("note"):
+        out += (f'<p class="cbt-posted" style="margin:4px 0 6px;color:var(--text);border-left:2px solid var(--gold);'
+                f'padding-left:8px;overflow-wrap:anywhere">{esc(pi["note"])}</p>')
+    return out
+
+
 # ---------------------------------------------------------------- selection
 def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
@@ -247,7 +299,10 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
-            "town": tname, "state": st, "pin": _pin(b)})
+            "town": tname, "state": st, "pin": _pin(b),
+            # hours, contact, note and closed-until of an elevator that posts
+            # its own bids through agsist.com/post; None for every other board
+            "portal": portal_info(src.get("portal"))})
         pt = parse_ts(b.get("pricedAt"))
         if pt and (bd["last_priced"] is None or pt > bd["last_priced"]):
             bd["last_priced"] = pt
@@ -831,8 +886,10 @@ def board_section(bd, snap_ct):
     if (hi - lo).total_seconds() > 3600:
         posted = f"{fmt_posted(lo, snap_ct)} to {fmt_posted(hi, snap_ct)}"
     ph = tel(bd["phone"])
-    call = (f'<a href="tel:+1{ph}">call to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
-            else "call to confirm")
+    pi = bd.get("portal")
+    who = f" {esc(pi['contact'])}" if pi and pi.get("contact") else ""
+    call = (f'<a href="tel:+1{ph}">call{who} to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
+            else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
     loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
     trs = []
@@ -857,6 +914,7 @@ def board_section(bd, snap_ct):
     more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
+            + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
@@ -1892,6 +1950,39 @@ def selftest():
             raise AssertionError("stale snapshot built")
         except SystemExit:
             pass
+    # AN ELEVATOR THAT KEEPS ITS OWN LISTING (agsist.com/post): hours, harvest
+    # hours, contact name and note print escaped; "Closed today" only as a
+    # hidden line the reader's clock shows while closedUntil is ahead; boards
+    # without `portal` print none of it.
+    for closed, want in (("2026-10-08T04:59:59.999Z", True), ("2026-10-07T04:59:59.999Z", False)):
+        pm, pidx = _fixture()
+        for b in pm["bids"]:
+            if b["city"] in PINS:
+                b["lat"], b["lon"] = PINS[b["city"]]
+        for src in pidx["sources"]:
+            if src["id"] == "t-st":
+                src["portal"] = {"listingId": "op-st-hooper-ne", "name": "Op st", "contactName": "Wyatt",
+                                 "hours": "Mon-Fri 7-5, Sat 7-12", "harvestHours": "7am-9pm <b>through</b> Nov 15",
+                                 "note": '<img src=x onerror=alert(1)> Dump closes at 8:30 & "sharp"',
+                                 "closedUntil": closed, "infoUpdatedAt": "2026-10-06T16:00:00Z"}
+        with _tf.TemporaryDirectory() as td:
+            out = os.path.join(td, "cash-bids")
+            build_all(pm, pidx, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
+            ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
+            fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+        assert "<img src=x" not in ho and "<b>through</b>" not in ho, "portal text printed as HTML"
+        assert "&lt;img src=x onerror=alert(1)&gt; Dump closes at 8:30 &amp; &quot;sharp&quot;" in ho
+        assert "<b>Hours</b> Mon-Fri 7-5, Sat 7-12" in ho and "&lt;b&gt;through&lt;/b&gt;" in ho
+        assert "call Wyatt to confirm (402-555-0101)" in ho
+        if want:
+            assert ('<p class="cbt-closed" data-closed-until="2026-10-08T04:59:59Z" hidden' in ho
+                    and "if(u>n){e.hidden=false" in ho), "closed line is hidden and shown only by the clock"
+        else:
+            assert "cbt-closed" not in ho and "Closed today" not in ho, "a past closedUntil prints nothing"
+        for x in ("cbt-closed", "Closed today", "<b>Hours</b>", "Wyatt", "Dump closes"):
+            assert x not in fr, f"portal text on a board without a listing: {x}"
+    assert portal_info(None) is None and portal_info("x") is None and portal_info({"note": "  "}) is None
+    assert portal_info({"note": "a\n<b>" + "x" * 300})["note"] == "a <b>" + "x" * 134 + "\u2026"
     # the bid email box's ZIP: the page's own, else the town's own ZIP nearest
     # its elevators (never one far off), else none and no box
     tz = town_zips({"zips": {"50001": ["Ackworth", "IA"], "50002": ["Ackworth", "IA"], "68025": ["Fremont", "NE"],
