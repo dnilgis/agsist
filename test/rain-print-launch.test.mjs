@@ -263,3 +263,48 @@ test("rp-gift.js reads a locked card's design with this page's decoder", () => {
   assert.equal(G.lock.design.dedication.length, 70, "a 70-letter line survives the card");
   assert.ok(!G.locked.includes("name") && G.locked.includes("place"));
 });
+
+// ---------- Sig's decisions of 2026-10-13 ----------
+test("business copy matches Sig's decisions and the json: min 5, delivered tiers, note card, January, paperwork", () => {
+  const faq = HTML.match(/<details><summary>Can a business order a set\?[\s\S]*?<\/details>/)[0];
+  const T = J.business_tiers, off = J.business_one_address_off;
+  assert.deepEqual(T.map((t) => [t.min, t.print12x18, t.framed12x18]), [[5, 45, 89], [10, 40, 79], [25, 37, 75], [50, 35, 72]]);
+  assert.deepEqual([off.print12x18, off.framed12x18, J.business_quote_max], [3, 6, 100]);
+  // the FAQ's figures are written out, so they must agree with the json
+  assert.match(faq, new RegExp("5 to 9 are the regular prices on one invoice"));
+  assert.match(faq, new RegExp("10 to 24 are \\$" + T[1].print12x18 + " a print or \\$" + T[1].framed12x18 + " framed; 25 to 49, \\$" + T[2].print12x18 + " or \\$" + T[2].framed12x18 + "; 50 to 100, \\$" + T[3].print12x18 + " or \\$" + T[3].framed12x18));
+  assert.match(faq, new RegExp("From 10 prints, all to one address takes \\$" + off.print12x18 + " off each print and \\$" + off.framed12x18 + " off each framed"));
+  assert.match(faq, /Over 100, ask Sig/);
+  assert.equal(T[0].print12x18, J.print12x18, "5-9 is the card price");
+  assert.equal(T[0].framed12x18, J.framed12x18);
+  assert.match(HTML, /How many prints \(5 to 500\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
+  assert.match(HTML, /Business orders start at 5 prints/);
+  assert.match(HTML, /A 2026 print ships in January/);
+  assert.match(HTML, /note card in the box/);
+  assert.match(HTML, /does not go on the print/);
+  assert.match(HTML, /an invoice, net 30, and a W-9 on request/);
+  assert.match(HTML, /one proof sheet/);
+  assert.ok(!/compliments of/i.test(HTML), "no 'Compliments of' line");
+  assert.ok(!/limit to how many|order cap/i.test(HTML), "no order cap");
+});
+
+test("prints ship flat between chipboard, never rolled; no mat is sold", () => {
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  for (const [n, t] of [["page", HTML], ["json", JSON.stringify(J)], ["script", S]]) {
+    assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
+  }
+  assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
+  assert.match(HTML, /black stock frame, no mat/);
+});
+
+test("refund and reprint wording: Sig's terms, still marked as a draft, fee only when set", () => {
+  const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
+  assert.match(faq, /refund you in full/);
+  assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
+  assert.match(faq, /lost in the mail or arrives damaged, send a photo and I&rsquo;ll reprint it for a small fee, with the same serial number/);
+  assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
+  assert.equal(J.reprint_fee, null, "no fee amount invented");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,300}'a small fee,'/);
+  assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
+});

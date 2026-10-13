@@ -172,13 +172,13 @@ rbBefore = rbKeys();
 r = await post(Object.assign({}, biz, { phone: '', notes: '', quantity: 500, product: 'not-sure', ship: 'not-sure' })); A(r.status === 200, 'business: optional fields empty, quantity 500 as a number');
 rec = rbNew(rbBefore); A(rec.quantity === '500' && !('phone' in rec) && !('notes' in rec) && rec.product === 'not-sure', 'business: numeric quantity stored as digits, no empty keys');
 rbBefore = rbKeys();
-r = await post(Object.assign({}, biz, { quantity: '10', product: 'digital', ship: 'one' })); A(r.status === 200 && rbNew(rbBefore).quantity === '10', 'business: quantity 10, the least');
+r = await post(Object.assign({}, biz, { quantity: '5', product: 'digital', ship: 'one' })); A(r.status === 200 && rbNew(rbBefore).quantity === '5', 'business: quantity 5, the least (v5.17)');
 rbBefore = rbKeys();
 r = await post(Object.assign({}, biz, { quantity: '025' })); A(r.status === 200 && rbNew(rbBefore).quantity === '25', 'business: "025" stored as 25');
 for (const [patch, why] of [[{ business: '' }, 'business required'], [{ name: '' }, 'contact name required'], [{ email: '' }, 'email required'],
     [{ email: 'nope' }, 'bad email'], [{ quantity: '' }, 'quantity required'], [{ towns: '  ' }, 'towns required'], [{ product: '' }, 'product required'],
     [{ ship: '' }, 'ship required'], [{ product: 'canvas' }, 'bad product'], [{ product: 'framed12x18' }, 'consumer choice is not a product here'],
-    [{ ship: 'pickup' }, 'bad ship'], [{ ship: 'EACH' }, 'enum is exact'], [{ quantity: '0' }, 'quantity 0'], [{ quantity: '1' }, 'quantity 1'], [{ quantity: '9' }, 'quantity 9, under the business minimum'], [{ quantity: 9 }, 'numeric 9'], [{ quantity: '009' }, '"009"'], [{ quantity: '501' }, 'quantity 501'],
+    [{ ship: 'pickup' }, 'bad ship'], [{ ship: 'EACH' }, 'enum is exact'], [{ quantity: '0' }, 'quantity 0'], [{ quantity: '1' }, 'quantity 1'], [{ quantity: '4' }, 'quantity 4, under the business minimum (v5.17)'], [{ quantity: 4 }, 'numeric 4'], [{ quantity: '004' }, '"004"'], [{ quantity: '501' }, 'quantity 501'],
     [{ quantity: 1000 }, 'quantity 1000'], [{ quantity: '-5' }, 'negative quantity'], [{ quantity: '2.5' }, 'fractional quantity'],
     [{ quantity: 'ten' }, 'quantity words'], [{ quantity: '1e2' }, 'quantity exponent'], [{ towns: 't'.repeat(8001) }, 'towns cap'], [{ note_all: 'n'.repeat(301) }, 'note_all cap'],
     [{ business: 'b'.repeat(121) }, 'business cap'], [{ notes: 'n'.repeat(2001) }, 'notes cap'], [{ phone: '1'.repeat(31) }, 'phone cap']]) {

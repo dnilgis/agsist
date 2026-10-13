@@ -208,77 +208,66 @@ test("the seasonal promo ships off, and shows only with promote on, inside its C
   assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
 });
 
-/* For businesses (2026-10-12): every figure the section prints comes from
-   data/rain-print.json. The expected numbers are worked here from the json's
-   own fields, and the shipped values are pinned too, so a change to either
-   the math or the data shows. */
-test("business tiers: per-print prices come from the json and round to the cent", () => {
+/* For businesses (Sig, 2026-10-13): one price per print, delivered, like the
+   cards: 5-9 at the card prices on one invoice, 10-24 $40/$79, 25-49 $37/$75,
+   50-100 $35/$72; all to one address $3 off each print, $6 off each framed;
+   over 100 Sig quotes it. Every expected figure below is worked by hand. */
+test("business tiers: Sig's delivered prices, one row per tier, 5 to 100", () => {
   const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
-  const cents = (p, pct) => Math.round(Math.round(p * 100) * (100 - pct) / 100) / 100;
+  for (const k of ["business_shipping", "business_shipping_one_address_tiers", "business_shipping_tiers"]) assert.ok(!(k in J), "the old per-print shipping is gone: " + k);
   const rows = plain(RP.bizRows(J));
-  assert.equal(rows.length, J.business_tiers.length, "one row per tier");
-  J.business_tiers.forEach((t, i) => {
-    assert.equal(rows[i].from, t.min);
-    assert.equal(rows[i].pct, t.pct);
-    for (const id of ["print12x18", "framed12x18", "digital"]) assert.equal(rows[i].prices[id], cents(J[id], t.pct), id + " at " + t.min);
-  });
-  assert.equal(rows[0].to, J.business_tiers[1].min - 1);
-  assert.equal(rows.at(-1).to, null, "the last tier runs to 'or more'");
-  assert.equal(RP.bizRange(rows[0]), "10–24");
-  assert.equal(RP.bizRange(rows[1]), "25 or more");
-  // Sig's figures, against the shipped json
-  assert.deepEqual(rows.map((r) => [r.prices.print12x18, r.prices.framed12x18, r.prices.digital]), [[40.5, 80.1, 17.1], [38.25, 75.65, 16.15]]);
-  // rounding: 15% off $89 is 75.65 exactly, never 75.64999...
-  assert.equal(RP.bizPrice(89, 15), 75.65);
-  assert.equal(RP.bizPrice(19.99, 15), 16.99, "16.9915 rounds to 16.99");
-  assert.equal(RP.bizPrice(10.05, 50), 5.03, "half a cent rounds up");
-  // a different json moves every figure with it
-  const alt = { ...J, framed12x18: 100, business_tiers: [{ min: 50, pct: 20 }, { min: 10, pct: 5 }] };
-  assert.deepEqual(plain(RP.bizRows(alt)).map((r) => [r.from, r.to, r.prices.framed12x18]), [[10, 49, 95], [50, null, 80]], "sorted by min, from the json");
+  assert.deepEqual(rows.map((r) => [RP.bizRange(r), r.prices.print12x18, r.prices.framed12x18, r.one.print12x18, r.one.framed12x18, r.retail]), [
+    ["5–9", 45, 89, 45, 89, true],
+    ["10–24", 40, 79, 37, 73, false],
+    ["25–49", 37, 75, 34, 69, false],
+    ["50–100", 35, 72, 32, 66, false],
+  ]);
+  assert.equal(RP.BIZ_MIN, 5, "business orders start at 5");
+  assert.equal(RP.BIZ_MAX, 500, "the form still takes up to 500");
+  assert.equal(RP.bizQuoteMax(J), 100);
+  // no business price is ever above the card price for the same print
+  rows.forEach((r) => { assert.ok(r.prices.print12x18 <= J.print12x18 && r.prices.framed12x18 <= J.framed12x18, RP.bizRange(r)); });
+  // a different json moves every figure with it, sorted by min
+  const alt = { ...J, business_quote_max: null, business_tiers: [{ min: 50, print12x18: 30, framed12x18: 60 }, { min: 5, print12x18: 44, framed12x18: 88 }] };
+  assert.deepEqual(plain(RP.bizRows(alt)).map((r) => [r.from, r.to, r.prices.framed12x18]), [[5, 49, 88], [50, 500, 60]]);
 });
 
-test("business tiers: none set means no table and no discount", () => {
+test("business quote line: price x quantity, one-address discount, minimum 5, over 100 ask Sig", () => {
   const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
-  for (const t of [undefined, null, [], [{ min: 5, pct: 10 }], [{ min: 10, pct: 0 }], [{ min: 10, pct: "10" }]]) {
-    const x = { ...J, business_tiers: t };
-    assert.deepEqual(plain(RP.bizRows(x)), [], JSON.stringify(t));
-    assert.equal(RP.bizQuote(x, 10, "framed12x18", "each").pct, 0, "full price at 10 with no usable tier " + JSON.stringify(t));
-  }
-});
-
-test("business shipping: per print, one-address discount from the json, full price to each customer", () => {
-  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
-  const S = J.business_shipping, OT = J.business_shipping_one_address_tiers;
-  const cents = (p, pct) => Math.round(Math.round(p * 100) * (100 - pct) / 100) / 100;
-  assert.ok(!("business_shipping_tiers" in J), "the old shipping tiers are gone");
-  const rows = plain(RP.bizRows(J));
-  rows.forEach((r) => {
-    const opct = OT.filter((t) => r.from >= t.min).at(-1).pct;
-    for (const id of ["print12x18", "framed12x18"]) {
-      assert.equal(r.one[id], cents(S[id], opct), id + " to one address at " + r.from);
-      assert.equal(r.each[id], S[id], id + " to each customer is full price");
-    }
-    assert.equal(r.one.digital, 0);
-  });
-  assert.deepEqual(rows.map((r) => [r.one.print12x18, r.one.framed12x18, r.each.print12x18, r.each.framed12x18]), [[6.3, 13.3, 9, 19], [5.4, 11.4, 9, 19]]);
-  // the quote line's totals: (price + shipping) x quantity
-  const q1 = RP.bizQuote(J, 10, "framed12x18", "one"), q2 = RP.bizQuote(J, 10, "framed12x18", "each");
-  assert.deepEqual([q1.unit, q1.ship, q1.total], [80.1, 13.3, 934]);
-  assert.deepEqual([q2.unit, q2.ship, q2.total], [80.1, 19, 991]);
-  const q3 = RP.bizQuote(J, 30, "print12x18", "one");
-  assert.equal(q3.total, Math.round((cents(J.print12x18, 15) + cents(S.print12x18, 40)) * 30 * 100) / 100);
-  assert.equal(q3.total, 1309.5);
-  assert.equal(RP.bizQuote(J, 12, "digital", "each").total, 205.2, "a digital file has no shipping");
-  // business orders are 10 to 500 prints
-  assert.equal(RP.BIZ_MIN, 10);
-  assert.equal(RP.bizQuote(J, 9, "framed12x18", "one"), null);
+  const q = (n, id, d) => { const x = RP.bizQuote(J, n, id, d); return x && [x.unit, x.total]; };
+  // each tier's edges, worked by hand
+  assert.deepEqual(q(5, "print12x18", "each"), [45, 225], "5 x $45");
+  assert.deepEqual(q(9, "framed12x18", "each"), [89, 801], "9 x $89");
+  assert.deepEqual(q(10, "print12x18", "each"), [40, 400], "10 x $40");
+  assert.deepEqual(q(24, "framed12x18", "each"), [79, 1896], "24 x $79");
+  assert.deepEqual(q(25, "print12x18", "each"), [37, 925], "25 x $37");
+  assert.deepEqual(q(30, "framed12x18", "each"), [75, 2250], "30 x $75 (the synthesis example)");
+  assert.deepEqual(q(49, "framed12x18", "each"), [75, 3675], "49 x $75");
+  assert.deepEqual(q(50, "print12x18", "each"), [35, 1750], "50 x $35");
+  assert.deepEqual(q(100, "framed12x18", "each"), [72, 7200], "100 x $72");
+  // all to one address, from 10: $3 off each print, $6 off each framed
+  assert.deepEqual(q(5, "print12x18", "one"), [45, 225], "5 to 9 is no discount, to one address too");
+  assert.deepEqual(q(9, "framed12x18", "one"), [89, 801], "9 x $89, one address");
+  assert.deepEqual(q(12, "framed12x18", "one"), [73, 876], "12 x ($79 - $6)");
+  assert.deepEqual(q(30, "print12x18", "one"), [34, 1020], "30 x ($37 - $3)");
+  assert.deepEqual(q(100, "framed12x18", "one"), [66, 6600], "100 x ($72 - $6)");
+  assert.deepEqual(q(12, "framed12x18", "not-sure"), [79, 948], "not sure yet: priced one to each customer");
+  // a digital file is the card price at any quantity, no one-address discount
+  assert.deepEqual(q(12, "digital", "one"), [19, 228], "12 x $19");
+  // minimum 5, over 100 Sig quotes it (null), never past 500
+  assert.equal(RP.bizQuote(J, 4, "framed12x18", "one"), null, "4 is under the minimum");
+  assert.equal(RP.bizQuote(J, 101, "framed12x18", "one"), null, "over 100: ask Sig");
+  assert.equal(RP.bizQuote(J, 101, "digital", "one"), null, "over 100: ask Sig, for files too");
   assert.equal(RP.bizQuote(J, 501, "framed12x18", "one"), null);
   assert.equal(RP.bizQuote(J, 10, "not-sure", "one"), null);
-  // no shipping in the json: no shipping figure, and the table has no shipping columns
-  const noShip = { ...J, business_shipping: null };
-  assert.equal(RP.bizQuote(noShip, 10, "framed12x18", "one").ship, null);
-  assert.equal(RP.bizQuote(noShip, 10, "framed12x18", "one").total, 801);
-  assert.equal(plain(RP.bizRows(noShip))[0].one, null);
+  // no usable tier: no table, no price (Sig quotes it)
+  for (const t of [undefined, null, [], [{ min: 4, print12x18: 45, framed12x18: 89 }], [{ min: 10, print12x18: 0, framed12x18: 79 }], [{ min: 10, print12x18: "40", framed12x18: 79 }]]) {
+    const x = { ...J, business_tiers: t };
+    assert.deepEqual(plain(RP.bizRows(x)), [], JSON.stringify(t));
+    assert.equal(RP.bizQuote(x, 10, "framed12x18", "each"), null, JSON.stringify(t));
+  }
+  // no one-address discount set: the same price either way
+  assert.deepEqual(RP.bizQuote({ ...J, business_one_address_off: null }, 12, "framed12x18", "one").unit, 79);
 });
 
 test("business cutoff line: from the json, a date only while it is ahead", () => {

@@ -65,11 +65,12 @@
  * FOR BUSINESSES (2026-10-12). A quote request for a set of prints (#rb-form,
  * kind rain-print-business, subs worker v5.12): business, contact, how many,
  * product, towns and years, ship to one address or each customer. It needs no
- * drawn design. The cutoff line, the discount table and the per-print price
- * and shipping readout come from business_cutoff, business_note,
- * business_tiers, business_shipping and business_shipping_tiers in
- * data/rain-print.json; with none set the section shows no date and no
- * discount. Consumer orders above it never use them.
+ * drawn design. The cutoff line, the price table and the per-print readout
+ * come from business_cutoff, business_note, business_tiers,
+ * business_one_address_off and business_quote_max in data/rain-print.json.
+ * Since 2026-10-13 (Sig): 5 prints up, one delivered price per print like
+ * the cards, $ off each print shipped all to one address; over the quote max
+ * Sig quotes it. Consumer orders above it never use them.
  *
  * The pure parts (design code, query string, business tiers) run without a document, for
  * test/rain-print.test.mjs.
@@ -222,78 +223,81 @@
     if (!m || +m[2] < 1 || +m[2] > 12 || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || todayIso > cutoffIso) return '';
     return 'For Christmas, send your list by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + '.';
   }
-  /* Business prices and shipping, all from data/rain-print.json:
-     business_tiers [{min, pct}] off the three prices; business_shipping
-     {print12x18, framed12x18, digital} dollars a print, charged in full when
-     each print goes to a different customer; business_shipping_one_address_tiers
-     [{min, pct}] off that shipping when the whole order goes to one address.
-     A business order is BIZ_MIN to BIZ_MAX prints (the worker checks the same).
-     No usable tier: no rows, so the page shows no table and no discount
-     wording. No usable shipping: ship is null and the page says shipping is
-     quoted with the order. Every per-print figure is rounded to the cent. */
+  /* Business prices, all from data/rain-print.json (Sig, 2026-10-13): one
+     price per print, delivered, like the cards. business_tiers
+     [{min, print12x18, framed12x18}] in dollars a print, shipping included;
+     business_one_address_off {print12x18, framed12x18} dollars off each print
+     when the whole order goes to one address; business_quote_max the most
+     prints the table and quote line price (above it Sig quotes it himself).
+     A digital file is the digital price at any quantity. A business order is
+     BIZ_MIN to BIZ_MAX prints (the worker checks the same). No usable tier:
+     no rows, so the page shows no table and the quote line says Sig quotes it.
+     Every figure is rounded to the cent. */
   var BIZ_PRODUCTS = ['print12x18', 'framed12x18', 'digital'];
-  var BIZ_MIN = 10, BIZ_MAX = 500;
-  function bizPrice(price, pct) {
-    return Math.round(Math.round(price * 100) * (100 - pct) / 100) / 100;
-  }
+  var BIZ_SHIPPED = ['print12x18', 'framed12x18'];
+  var BIZ_MIN = 5, BIZ_MAX = 500;
+  function cents(x) { return Math.round(x * 100) / 100; }
   function bizTiers(list) {
     var seen = {};
     return (Array.isArray(list) ? list : []).filter(function (t) {
-      var ok = t && Number.isInteger(t.min) && t.min >= BIZ_MIN && t.min <= BIZ_MAX && typeof t.pct === 'number' && t.pct > 0 && t.pct < 100 && !seen[t.min];
+      var ok = t && Number.isInteger(t.min) && t.min >= BIZ_MIN && t.min <= BIZ_MAX && !seen[t.min] &&
+        BIZ_SHIPPED.every(function (id) { return typeof t[id] === 'number' && t[id] > 0; });
       if (ok) seen[t.min] = 1;
       return ok;
     }).sort(function (a, b) { return a.min - b.min; });
   }
-  function bizPct(tiers, qty) {
-    var p = 0;
-    tiers.forEach(function (t) { if (qty >= t.min) p = t.pct; });
-    return p;
-  }
   function bizPricesOk(j) { return !!j && BIZ_PRODUCTS.every(function (id) { return typeof j[id] === 'number' && j[id] > 0; }); }
-  function bizShip(j) {
-    var s = j && j.business_shipping;
-    if (!s || typeof s !== 'object') return null;
-    var out = {};
-    for (var i = 0; i < BIZ_PRODUCTS.length; i++) {
-      var id = BIZ_PRODUCTS[i], v = id === 'digital' && s[id] == null ? 0 : s[id];
-      if (typeof v !== 'number' || !(v >= 0)) return null;
-      out[id] = v;
-    }
+  /* The most prints the page prices: business_quote_max when it is a whole
+     number from the last tier's min to BIZ_MAX, else BIZ_MAX. */
+  function bizQuoteMax(j, tiers) {
+    var m = j && j.business_quote_max, lo = tiers.length ? tiers[tiers.length - 1].min : BIZ_MIN;
+    return Number.isInteger(m) && m >= lo && m <= BIZ_MAX ? m : BIZ_MAX;
+  }
+  /* Dollars off each print shipped all to one address, per product (0 when unset). */
+  function bizOff(j) {
+    var o = j && j.business_one_address_off, out = {};
+    BIZ_SHIPPED.forEach(function (id) { var v = o && typeof o === 'object' ? o[id] : 0; out[id] = typeof v === 'number' && v >= 0 ? v : 0; });
     return out;
   }
-  /* Shipping a print of product id at qty: dest 'one' (all to one address,
-     the one-address discount) or 'each' (one to each customer, full price). */
-  function bizShipFor(j, id, qty, dest) {
-    var s = bizShip(j);
-    if (!s) return null;
-    return dest === 'one' ? bizPrice(s[id], bizPct(bizTiers(j.business_shipping_one_address_tiers), qty)) : s[id];
-  }
   /* The table: one row per tier, from its min to the next tier's min less one
-     (the last runs to "or more"). Each row: {from, to, pct, prices, one, each}. */
+     (the last runs to the quote max). Each row: {from, to, retail, prices, one},
+     retail true when both prices are the cards' prices: no discount, so no
+     one-address discount on that row either. */
   function bizRows(j) {
     if (!bizPricesOk(j)) return [];
-    var tiers = bizTiers(j.business_tiers), ship = bizShip(j);
-    if (!tiers.length) return [];
-    return tiers.map(function (t, i) {
-      var r = { from: t.min, to: i + 1 < tiers.length ? tiers[i + 1].min - 1 : null, pct: t.pct, prices: {}, one: ship ? {} : null, each: ship ? {} : null };
-      BIZ_PRODUCTS.forEach(function (id) {
-        r.prices[id] = bizPrice(j[id], t.pct);
-        if (ship) { r.one[id] = bizShipFor(j, id, t.min, 'one'); r.each[id] = bizShipFor(j, id, t.min, 'each'); }
+    var tiers = bizTiers(j.business_tiers), max = bizQuoteMax(j, tiers), off = bizOff(j);
+    return tiers.filter(function (t) { return t.min <= max; }).map(function (t, i, all) {
+      var r = { from: t.min, to: i + 1 < all.length ? all[i + 1].min - 1 : max, retail: true, prices: {}, one: {} };
+      BIZ_SHIPPED.forEach(function (id) {
+        r.prices[id] = cents(t[id]);
+        r.one[id] = cents(Math.max(0, t[id] - off[id]));
+        if (t[id] !== j[id]) r.retail = false;
       });
+      // a tier at the card prices is "no discount": no one-address discount either (Sig, 2026-10-13)
+      if (r.retail) r.one = { print12x18: r.prices.print12x18, framed12x18: r.prices.framed12x18 };
       return r;
     });
   }
   function bizRowFor(rows, qty) {
-    for (var i = 0; i < (rows || []).length; i++) if (qty >= rows[i].from && (rows[i].to === null || qty <= rows[i].to)) return rows[i];
+    for (var i = 0; i < (rows || []).length; i++) if (qty >= rows[i].from && qty <= rows[i].to) return rows[i];
     return null;
   }
-  /* One product, one quantity, one destination: {unit, ship, pct, total}.
-     ship is null when business_shipping is not set; total is then the prints
-     alone. total = (unit + ship) x qty, to the cent. null outside BIZ_MIN..BIZ_MAX. */
+  /* One product, one quantity, one destination ('one' all to one address,
+     anything else one to each customer): {unit, total}, delivered;
+     total = unit x qty, to the cent. null outside BIZ_MIN to the quote max,
+     or with no tier for that quantity (Sig quotes it). */
   function bizQuote(j, qty, id, dest) {
     if (!bizPricesOk(j) || BIZ_PRODUCTS.indexOf(id) < 0 || !Number.isInteger(qty) || qty < BIZ_MIN || qty > BIZ_MAX) return null;
-    var pct = bizPct(bizTiers(j.business_tiers), qty), unit = bizPrice(j[id], pct), ship = bizShipFor(j, id, qty, dest);
-    return { unit: unit, ship: ship, pct: pct, total: Math.round((Math.round(unit * 100) + Math.round((ship || 0) * 100)) * qty) / 100 };
+    var unit;
+    if (id === 'digital') {
+      if (qty > bizQuoteMax(j, bizTiers(j.business_tiers))) return null;
+      unit = cents(j.digital);
+    } else {
+      var r = bizRowFor(bizRows(j), qty);
+      if (!r) return null;
+      unit = dest === 'one' ? r.one[id] : r.prices[id];
+    }
+    return { unit: unit, total: Math.round(Math.round(unit * 100) * qty) / 100 };
   }
   function bizRange(r) { return r.to === null ? r.from + ' or more' : r.from === r.to ? String(r.from) : r.from + '\u2013' + r.to; }
   /* Index of the last day that has a recorded value (v not null), or -1. A
@@ -600,7 +604,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
@@ -1364,6 +1368,12 @@
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
+      // reprint_fee (null or dollars): shown after "a small fee" in the refund FAQ only when set (Sig, 2026-10-13)
+      if (typeof j.reprint_fee === 'number' && j.reprint_fee > 0) {
+        Array.prototype.forEach.call(doc.querySelectorAll('details p'), function (p) {
+          if (p.innerHTML.indexOf('a small fee,') >= 0) p.innerHTML = p.innerHTML.replace('a small fee,', 'a small fee (' + money(j.reprint_fee) + '),');
+        });
+      }
       syncCutoffs();
       syncXmas();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
@@ -1597,7 +1607,8 @@
   /* Its own form (#rb-form, kind rain-print-business, worker v5.12). It needs
      no drawn design: the business sends a list of towns and years and Sig
      quotes it. The cutoff line, the table and the per-print readout come only
-     from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above). */
+     from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above).
+     Prices are delivered, shipping included (Sig, 2026-10-13). */
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
   var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed', 'framed'], digital: ['digital file', 'digital files'],
     'not-sure': ['not sure yet', 'not sure yet'] };
@@ -1610,24 +1621,28 @@
     $('rp-biz-cutoff').textContent = cut; $('rp-biz-cutoff').hidden = !cut;
     var note = typeof j.business_note === 'string' ? cleanText(j.business_note, 300) : '';
     $('rp-biz-note').textContent = note; $('rp-biz-note').hidden = !note;
-    var ship = bizShip(j), rows = bizRows(j);
-    $('rp-biz-ship').textContent = ship ? 'Shipping is per print, to US addresses. The digital file is emailed.' : 'Shipping is quoted with your order.';
+    var rows = bizRows(j), off = bizOff(j), max = bizQuoteMax(j, bizTiers(j.business_tiers));
+    var firstOff = rows.filter(function (r) { return !r.retail; })[0];
+    var offs = [];
+    if (off.print12x18) offs.push(money(off.print12x18) + ' off each print');
+    if (off.framed12x18) offs.push(money(off.framed12x18) + ' off each framed');
+    $('rp-biz-ship').textContent = rows.length
+      ? 'Every price is per print, delivered: shipping to US addresses is included, one to each customer or all to one. ' +
+        (offs.length && firstOff ? 'All to one address' + (firstOff.from > rows[0].from ? ', from ' + firstOff.from + ' prints' : '') + ': ' + offs.join(', ') + '. ' : '') + 'A digital file is ' + money(j.digital) + ' each, emailed. ' +
+        (max < BIZ_MAX ? 'Over ' + max + ' prints, ask Sig and he quotes it.' : '')
+      : 'Sig quotes business orders by email. Shipping to US addresses is included.';
     $('rp-biz-ship').hidden = false;
     $('rp-tiers-box').hidden = !rows.length;
     if (rows.length) {
-      var d2 = function (x) { return money(x); };
-      var pair = function (o) { return d2(o.print12x18) + ' / ' + d2(o.framed12x18); };
-      $('rp-tiers-head').innerHTML = ship
-        ? '<tr><th scope="col" rowspan="2" class="rp-l">Quantity</th><th scope="colgroup" colspan="3">Price per print</th><th scope="colgroup" colspan="2" class="rp-sh">Shipping per print (print / framed)</th></tr>' +
-          '<tr><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th><th scope="col" class="rp-sh">To one address</th><th scope="col" class="rp-sh">To each customer</th></tr>'
-        : '<tr><th scope="col" class="rp-l">Quantity</th><th scope="col">Print</th><th scope="col">Framed</th><th scope="col">Digital</th></tr>';
+      var hasOff = !!offs.length;
+      var pair = function (o) { return money(o.print12x18) + ' / ' + money(o.framed12x18); };
+      $('rp-tiers-head').innerHTML = '<tr><th scope="col" class="rp-l">Quantity</th><th scope="col">Print</th><th scope="col">Framed</th>' +
+        (hasOff ? '<th scope="col" class="rp-sh">All to one address (print / framed)</th>' : '') + '</tr>';
       $('rp-tiers-body').innerHTML = rows.map(function (r) {
         // data-label: on a phone each row stacks into a card that names its cells (CSS in the page)
-        var lab = { print12x18: 'Print', framed12x18: 'Framed', digital: 'Digital' };
-        return '<tr><th scope="row" class="rp-l">' + esc(bizRange(r)) + ' <span class="rp-off">' + esc(r.pct + '% off') + '</span></th>' +
-          BIZ_PRODUCTS.map(function (id) { return '<td class="rp-num" data-label="' + lab[id] + '">' + d2(r.prices[id]) + '</td>'; }).join('') +
-          (ship ? '<td class="rp-num rp-sh" data-label="Shipping to one address (print / framed)">' + pair(r.one) + '</td>' +
-            '<td class="rp-num rp-sh" data-label="Shipping to each customer (print / framed)">' + pair(r.each) + '</td>' : '') + '</tr>';
+        return '<tr><th scope="row" class="rp-l">' + esc(bizRange(r)) + (r.retail ? ' <span class="rp-off">one invoice, no discount</span>' : '') + '</th>' +
+          '<td class="rp-num" data-label="Print">' + money(r.prices.print12x18) + '</td><td class="rp-num" data-label="Framed">' + money(r.prices.framed12x18) + '</td>' +
+          (hasOff ? '<td class="rp-num rp-sh" data-label="All to one address (print / framed)">' + pair(r.one) + '</td>' : '') + '</tr>';
       }).join('');
     }
     syncBizTier();
@@ -1652,13 +1667,14 @@
     if (!id) return;
     var what = qty + ' ' + BIZ_WORD[pick][1];
     var one = bizQuote(PRICES, qty, id, 'one'), each = bizQuote(PRICES, qty, id, 'each');
-    if (!one || !each) return;
-    if (one.ship === null) { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' before shipping.'; return; }
-    if (id === 'digital') { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' total.'; return; }
+    if (!one || !each) { out.textContent = 'For ' + qty + ', Sig quotes it himself. Send the request and he writes back.'; return; }
+    if (id === 'digital') { out.textContent = what + ': ' + c(one.unit) + ' each, ' + c(one.total) + ' total, emailed.'; return; }
     var q = dest === 'one' ? one : dest === 'each' ? each : null;
     out.textContent = q
-      ? what + BIZ_DEST[dest] + ': ' + c(q.unit) + ' + ' + c(q.ship) + ' shipping each, ' + c(q.total) + ' total.'
-      : what + ': ' + c(one.unit) + ' + ' + c(one.ship) + ' to ' + c(each.ship) + ' shipping each, ' + c(one.total) + ' to ' + c(each.total) + ' total.';
+      ? what + BIZ_DEST[dest] + ': ' + c(q.unit) + ' each, delivered, ' + c(q.total) + ' total.'
+      : one.unit === each.unit
+        ? what + ': ' + c(each.unit) + ' each, delivered, ' + c(each.total) + ' total.'
+        : what + ': ' + c(each.unit) + ' each, delivered, ' + c(each.total) + ' total. All to one address: ' + c(one.unit) + ' each, ' + c(one.total) + ' total.';
   }
   function bizSubject(x) { return 'Rain Print business quote: ' + x.business + ', ' + x.quantity + ' ' + BIZ_WORD[x.product][x.quantity === '1' ? 0 : 1]; }
   function bizText(x) {
