@@ -79,8 +79,10 @@ def inches_word(x, places=2):
     return f"{v} {'inch' if v in ('1.00', '1.0') else 'inches'}"
 
 
-def done_year(c):
-    return c["as_of"][5:] == "12-31"
+def done_year(d):
+    """The year is over when the fetch ran through Dec 31, whatever day a
+    lagging station last reported (that day stays on the page)."""
+    return str(d.get("edate", "")).endswith("-12-31")
 
 
 def kind_word(c):
@@ -103,11 +105,14 @@ def compare(c, year_word="a usual year to date"):
     return f"That is {inches_word(abs(d), 1)} {'more' if d > 0 else 'less'} than {year_word} ({c['pct']}%)."
 
 
-def answer(c, county, year):
+def answer(c, county, year, done):
     w = where_words(c)
-    if done_year(c):
+    if done and c["as_of"][5:] == "12-31":
         return (f"{inches_word(c['total'])} of rain fell in {year} at {w}, {county}. "
                 + compare(c, "a usual year"))
+    if done:
+        return (f"{inches_word(c['total'])} of rain fell in {year} at {w}, {county}, through {short_date(c['as_of'])}, the last day reported. "
+                + compare(c, f"a usual year through {short_date(c['as_of'])}"))
     return (f"{inches_word(c['total'])} of rain so far in {year} at {w}, {county}, through {short_date(c['as_of'])}. "
             + compare(c))
 
@@ -240,13 +245,14 @@ def county_page(ctx):
     full = f"{name}, {stn}"
     st_slug = R.slug(stn)
     url = f"{ORIGIN}/rain/{st_slug}/{ctx['slug']}"
-    done = done_year(c)
+    done = done_year(d)                         # the year is over (fetched through Dec 31)
     asof = c["as_of"]
-    ans = answer(c, name, year)
+    whole = done and asof[5:] == "12-31"        # and this station reported through Dec 31
+    ans = answer(c, name, year, done)
     title = (f"How Much Rain Did {full} Get in {year}? | AGSIST" if done
              else f"How Much Rain Has {full} Had in {year}? | AGSIST")
     span = f"Jan 1 to {short_date(asof)}"
-    pct_bit = f", {c['pct']}% of a usual year{'' if done else ' to date'}" if c["pct"] is not None else ""
+    pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
     desc = (f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. "
             + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".")
@@ -260,18 +266,18 @@ def county_page(ctx):
     # ---- figures
     figs = [(f"Rain {'in ' + str(year) if done else 'so far'}", f"{inch(c['total'])} <small>in</small>")]
     if c["usual"] is not None:
-        figs.append((f"Usual {'year' if done else 'by ' + short_date(asof)}", f"{inch(c['usual'])} <small>in</small>"))
+        figs.append((f"Usual {'year' if whole else 'by ' + short_date(asof)}", f"{inch(c['usual'])} <small>in</small>"))
     if c["pct"] is not None:
         figs.append(("Percent of usual", f"{c['pct']}%"))
     if c.get("last"):
-        figs.append((f"{year - 1}" if done else f"{year - 1} by {short_date(c['last']['through'])}", f"{inch(c['last']['total'])} <small>in</small>"))
+        figs.append((f"{year - 1}" if whole else f"{year - 1} by {short_date(c['last']['through'])}", f"{inch(c['last']['total'])} <small>in</small>"))
     figs_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in figs)
     # ---- month table
     has_us = c["usual"] is not None
     rows = []
     for i, (t, u, rep, days) in enumerate(c["months"]):
         lab = f'<abbr title="{ML[i]}">{M3[i]}</abbr>'
-        if i == len(c["months"]) - 1 and not done and days < (dt.date(year + (i == 11), (i + 1) % 12 + 1, 1) - dt.date(year, i + 1, 1)).days:
+        if i == len(c["months"]) - 1 and not whole and days < (dt.date(year + (i == 11), (i + 1) % 12 + 1, 1) - dt.date(year, i + 1, 1)).days:
             lab += f' <span class="rc-n">to the {days}{"st" if days in (1, 21, 31) else "nd" if days in (2, 22) else "rd" if days in (3, 23) else "th"}</span>'
         if rep < days:
             miss = days - rep
@@ -298,12 +304,12 @@ def county_page(ctx):
         word = "About usual" if 97 <= p <= 103 else ("Wetter" if p > 103 else "Drier")
         faq.append((f"Is {name} wetter or drier than usual in {year}?",
                     f"{word}{'' if done else ' so far'}. {where_words(c)[0].upper() + where_words(c)[1:]} had {inches_word(c['total'])} "
-                    f"{'in ' + str(year) if done else 'from Jan 1 to ' + short_date(asof)}, {p}% of the usual {inches_word(c['usual'])} for the same days."))
+                    f"{'in ' + str(year) if whole else 'from Jan 1 to ' + short_date(asof)}, {p}% of the usual {inches_word(c['usual'])} for the same days."))
     if c.get("wet_month"):
         m, v = c["wet_month"]
         facts.append(f"<li><b>Wettest month:</b> {ML[m]}, {inches_word(v)}.</li>")
         faq.append((f"What was the wettest month in {name} in {year}?",
-                    f"{ML[m]}, with {inches_word(v)} at {where_words(c)}{'' if done else ', counting the months through ' + short_date(asof)}."))
+                    f"{ML[m]}, with {inches_word(v)} at {where_words(c)}{'' if whole else ', counting the months through ' + short_date(asof)}."))
     if c.get("max_day"):
         # with multi-day reports in the year, a day inside one could have been
         # bigger, so it is the biggest one-day reading, not the most in one day
@@ -312,7 +318,7 @@ def county_page(ctx):
         faq.append((f"What was the biggest rain in {name} in {year}?",
                     f"{inches_word(v)} on {long_date(dd)}, "
                     + ("the biggest one-day reading" if c["acc"] else "the most the gauge caught in one day")
-                    + f"{'' if done else ' this year through ' + short_date(asof)}."
+                    + f"{'' if whole else (' this year' if not done else '') + ' through ' + short_date(asof)}."
                     + (" Reports that cover more than one day are not counted as one day." if c["acc"] else "")))
     if c.get("dry") and c["dry"][0] >= 2:
         n, a, b = c["dry"]
@@ -323,7 +329,7 @@ def county_page(ctx):
         L = c["last"]
         lmiss = L["days"] - L["reported"]
         vs = last_year_words(c, L, year)
-        facts.append(f"<li><b>{year - 1}{', the whole year' if done else ' by the same date'}:</b> {inches_word(L['total'])} at the same station"
+        facts.append(f"<li><b>{year - 1}{', the whole year' if whole else ' by the same date'}:</b> {inches_word(L['total'])} at the same station"
                      + (f" (it missed {days_word(lmiss)})" if lmiss else "") + "." + (" " + vs if vs else "") + "</li>")
         faq.append((f"How does {year} compare with {year - 1} in {name}?",
                     f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1}"
@@ -383,7 +389,7 @@ def county_page(ctx):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/rain">Rain by county</a> &rsaquo; <a href="/rain/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
-    <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if done else 'As of ' + long_date(asof) + ', the last day reported'}</p>
+    <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) if done else 'As of ' + long_date(asof)) + ', the last day reported'}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
     <dl class="rc-figs">{figs_html}</dl>
@@ -427,7 +433,7 @@ def state_page(st, d, pages, none_rows):
     year = d["year"]
     cs = d["counties"]
     asofs = sorted({c["as_of"] for c in cs.values()})
-    done = all(done_year(c) for c in cs.values())
+    done = done_year(d)
     mid = middle(cs)
     title = f"How Much Rain Has {stn} Had in {year}? Every County | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? Every County | AGSIST"
     lede = (f"{len(cs)} {stn} counties have a NOAA or CoCoRaHS station inside the county that reported at least 90% of the days in {year}"
@@ -484,6 +490,7 @@ def hub_page(files, built):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
     yw = str(years[-1]) if len(years) == 1 else "this year"
+    done = len(years) == 1 and all(done_year(d) for d in files.values())   # every state fetched through Dec 31
     total = sum(len(d["counties"]) for d in files.values())
     rows = []
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
@@ -493,8 +500,8 @@ def hub_page(files, built):
         last = max(c["as_of"] for c in d["counties"].values())
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} counties'
                     + (f", middle county {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
-    title = "How Much Rain Has Your County Had This Year? | AGSIST"
-    desc = (f"Rain so far {"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from a NOAA or CoCoRaHS station in each county: inches, percent of a usual year, month by month.")
+    title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
+    desc = (f"Rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from a NOAA or CoCoRaHS station in each county: inches, percent of a usual year, month by month.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
@@ -507,12 +514,12 @@ def hub_page(files, built):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
-    <h1>How much rain has your county had this year?</h1>
-    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain so far {"in " + yw if yw[0].isdigit() else yw} at a NOAA or CoCoRaHS station in that county, against a usual year, month by month.</p>
+    <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
+    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a NOAA or CoCoRaHS station in that county, against a usual year, month by month.</p>
     <ul class="rc-states">{''.join(rows)}</ul>
     <h2>How these numbers are kept honest</h2>
     <ul class="rc-list">
-      <li>One NOAA or CoCoRaHS station per county, inside the county, and only one that reported at least 90% of the days this year. Counties without one are listed on the state page with the nearest county that has one.</li>
+      <li>One NOAA or CoCoRaHS station per county, inside the county, and only one that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
       <li>Every page says the last day reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
@@ -716,6 +723,22 @@ def selftest():
         de = want.get("rain/delaware/kent-county.html", "")
         ok(de and "How Much Rain Did Kent County, Delaware Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
+        # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
+        dd3 = os.path.join(t, "late")
+        os.makedirs(dd3)
+        dj = json.load(open(os.path.join(data, "de.json")))
+        kf = next(f for f, x in dj["counties"].items() if x["name"] == "Kent County")
+        dj["counties"][kf]["as_of"] = "2024-12-29"
+        if dj["counties"][kf].get("last"):
+            dj["counties"][kf]["last"]["through"] = "2023-12-29"
+        json.dump(dj, open(os.path.join(dd3, "de.json"), "w"))
+        w3 = build(dd3)
+        k3 = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", w3["rain/delaware/kent-county.html"]))
+        ok("How Much Rain Did Kent County, Delaware Get in 2024?" in k3 and "ship in January" not in k3, "a lagging station does not reopen a finished year")
+        ok("through Dec 29, the last day reported" in k3 and "Jan 1 to Dec 31" not in k3 and "2023, the whole year" not in k3, f"a finished year still says the last day reported")
+        hub3 = w3["rain.html"]
+        ok("How much rain did your county get in 2024?" in hub3 and "so far" not in S.text_of(hub3), "hub: finished-year wording when every state is done")
+        ok("How much rain has your county had this year?" in want["rain.html"], "hub: this-year wording while a year is running")
         stp = want.get("rain/iowa.html", "")
         ok("Hamilton County <small>nearest: <a href=" in stp, "no-station county listed with the nearest that has one")
         ok('href="/rain/iowa/story-county"' in stp, "state page links each county")
