@@ -79,11 +79,13 @@ def text_of(fragment):
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
-PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=1" defer></script>'
+PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=2" defer></script>'
 
 
 def sponsor_ribbon(name, code, sales, yr):
-    """The unsold offer on /prf/<state>. Price on request, never printed."""
+    """The unsold offer on /prf/<state>. Price on request, never printed.
+    The button goes to /prf-sponsor with this state ticked, where a business
+    sees its own block and asks; the mailto to Sig stays as the second way."""
     subj = f"PRF sponsor: {name}".replace(" ", "%20")
     return (f'<aside class="ag-sponsor-ribbon" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}">'
             f'<span class="ag-sponsor-tag">For businesses: sponsor this page</span> '
@@ -91,7 +93,8 @@ def sponsor_ribbon(name, code, sales, yr):
             f'Own one state or several. '
             f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
             f'<span class="ag-sponsor-price">Price on request</span> '
-            f'<a href="mailto:sig@farmers1st.com?subject={subj}" data-out="prf-sponsor">Advertise on this page &rarr;</a></aside>')
+            f'<a href="/prf-sponsor?state={code}" data-out="prf-sponsor">See your block and ask &rarr;</a> '
+            f'<a class="prf-spon-mail" href="mailto:sig@farmers1st.com?subject={subj}">or email Sig</a></aside>')
 
 
 def page(st, meta, facts, sd, states, BOOT, where=None):
@@ -178,7 +181,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=4">
+  <link rel="stylesheet" href="/components/prf.css?v=5">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -336,7 +339,7 @@ def guide(meta, facts, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=4">
+  <link rel="stylesheet" href="/components/prf.css?v=5">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">

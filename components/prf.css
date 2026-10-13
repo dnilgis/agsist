@@ -463,6 +463,8 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 .prf-spon .prf-spon-ask { display: block; margin-top: .3rem; font-size: .82rem; }
 .prf-spon a[href] { white-space: normal; text-align: center; text-decoration: none; }
 .prf-spon .prf-spon-tel { white-space: nowrap; }
+/* The second way to ask, beside the button on an unsold offer: a plain link, not a second button (2026-10-13). */
+.ag-sponsor-ribbon a.prf-spon-mail[href] { margin-left: 0; background: transparent; border: 0; box-shadow: none; transform: none; color: var(--text-dim) !important; font-weight: 600; text-decoration: underline; padding: .4rem .3rem; }
 .prf-spon-line { font-size: .85rem; color: var(--text-dim); margin: 1rem 0; }
 .prf-spon-line a { color: var(--brand); }
 .prf-spon-county { font-size: .82rem; padding: .6rem .8rem; }
