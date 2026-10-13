@@ -107,6 +107,8 @@
     var w = W(s, o), size = (o && o.size) || 16, a = (o && o.anchor) || 'start';
     return { x: a === 'start' ? x : a === 'end' ? x - w : x - w / 2, y: y - 0.74 * size, w: w, h: 0.96 * size };
   }
+  // every part of the art sits in a group named for what it belongs to (data-rp): a label, its leader and its mark share one
+  var G0 = function (k) { return '<g data-rp="' + k + '">'; }, G1 = '</g>';
   function hit(a, b, p) { p = p || 0; return a.x < b.x + b.w + p && b.x < a.x + a.w + p && a.y < b.y + b.h + p && b.y < a.y + a.h + p; }
   function line(x1, y1, x2, y2, stroke, sw, extra) {
     return '<line x1="' + n2(x1) + '" y1="' + n2(y1) + '" x2="' + n2(x2) + '" y2="' + n2(y2) + '" stroke="' + (stroke || C.ink) + '" stroke-width="' + n2(sw || 0.75 * PT) + '"' + (extra || '') + '/>';
@@ -222,16 +224,16 @@
       d += 'M' + n2(mx0 + c * cell) + ',' + n2(my0 + r * cell) + 'h' + n2((e - c) * cell) + 'v' + n2(cell) + 'h' + n2(-(e - c) * cell) + 'z';
       c = e;
     }
-    var s = '<g aria-hidden="true"><rect x="' + n2(mx0 - quiet) + '" y="' + n2(my0 - quiet) + '" width="' + n2(n * cell + 2 * quiet) + '" height="' + n2(n * cell + 2 * quiet) + '" fill="#FFFFFF"/>' +
+    var s = '<g data-rp="qr"><g aria-hidden="true"><rect x="' + n2(mx0 - quiet) + '" y="' + n2(my0 - quiet) + '" width="' + n2(n * cell + 2 * quiet) + '" height="' + n2(n * cell + 2 * quiet) + '" fill="#FFFFFF"/>' +
       '<path d="' + d + '" fill="' + QR_INK + '" shape-rendering="crispEdges"/></g>';
     if (Q.serial) s += '<text x="' + n2((mx0 + mx1) / 2) + '" y="' + n2(bottom) + '" font-family="' + esc(SANS) + '" font-size="11.5" fill="' + SERIAL_INK + '" text-anchor="middle" letter-spacing="0.3" style="font-variant-numeric:tabular-nums lining-nums">' + esc(Q.serial) + '</text>';
-    return s;
+    return s + '</g>';
   }
 
   // ---------- a preview of this year: a band across the art, and the watermark ----------
   function previewBand(E, y) {
     var t = 'PREVIEW THROUGH ' + fmtDate(E.preview.last).toUpperCase();
-    return '<g aria-hidden="true"><rect x="-40" y="' + (y - 34) + '" width="' + (W0 + 80) + '" height="68" fill="' + C.ink + '" opacity="0.88"/>' +
+    return '<g data-rp="band" aria-hidden="true"><rect x="-40" y="' + (y - 34) + '" width="' + (W0 + 80) + '" height="68" fill="' + C.ink + '" opacity="0.88"/>' +
       T(W0 / 2, y - 4, t, { w: 500, size: 24, ls: 0.12, fill: '#FFFFFF', anchor: 'middle' }) +
       T(W0 / 2, y + 22, 'Your print will show the full year, Jan 1 to Dec 31, ' + E.year, { size: 17, fill: '#FFFFFF', anchor: 'middle' }) + '</g>';
   }
@@ -239,7 +241,7 @@
     var row = '', out = '', i;
     for (i = 0; i < 6; i++) row += 'PREVIEW  ·  AGSIST.COM/RAIN-PRINT  ·  ';
     for (i = -6; i < 14; i++) out += '<text x="' + (-W0) + '" y="' + (i * 140) + '" font-family="' + esc(SANS) + '" font-size="38" font-weight="500" fill="' + C.ink + '" letter-spacing="4">' + row + '</text>';
-    return '<g opacity="0.13" transform="rotate(-24 ' + (W0 / 2) + ' ' + (H0 / 2) + ')" aria-hidden="true">' + out + '</g>';
+    return '<g data-rp="wm" opacity="0.13" transform="rotate(-24 ' + (W0 / 2) + ' ' + (H0 / 2) + ')" aria-hidden="true">' + out + '</g>';
   }
 
   function open(I, E) {
@@ -276,7 +278,7 @@
     if (!parts.length) return '';
     var t = parts.join('  ·  '), st0 = { size: 15, fill: C.mute };
     st0.size = fit(t, st0, maxW, 12);
-    return T(x, 1132, t, st0);
+    return G0('foot') + T(x, 1132, t, st0) + G1;
   }
 
   // ======================================================================= R1
@@ -326,13 +328,15 @@
     var headMask = '<rect x="' + n2(headBox.x) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>';
 
     // grid and y labels
+    o.push(G0('axis'));
     for (var v = 0; v <= dom + 1e-9; v += step) {
       var yy = y(v);
       if (v > 0) o.push(line(X0, yy, X1, yy, C.grid, 0.7));
       o.push(T(X0 - 14, yy + 5, v === dom ? v + ' in' : String(v), { size: 15, fill: C.mute, anchor: 'end' }));
     }
-    o.push(headMask);
-    o.push(header.join(''));
+    o.push(G1);
+    o.push(G0('head') + headMask);
+    o.push(header.join('') + G1);
 
     // the band between the year and a usual year
     if (E.cmp) {
@@ -343,16 +347,17 @@
         if (Math.abs(a - b) < 0.3) return;
         band += '<rect x="' + n2(xs(i)) + '" y="' + n2(Math.min(a, b)) + '" width="' + n2(w + 0.25) + '" height="' + n2(Math.abs(a - b)) + '" fill="' + (a > b ? C.dryBand : C.wetBand) + '"/>';
       });
-      o.push('<g shape-rendering="crispEdges">' + band + '</g>');
+      o.push(G0('data') + '<g shape-rendering="crispEdges">' + band + '</g>');
       var p = 'M' + X0 + ',' + PB;
       days.forEach(function (x, i) { p += 'L' + n2(xs(i + 1)) + ',' + n2(y(E.ncum[i])); });
-      o.push('<path d="' + p + '" fill="none" stroke="' + C.mute + '" stroke-width="1.6" stroke-dasharray="7 5"/>');
+      o.push('<path d="' + p + '" fill="none" stroke="' + C.mute + '" stroke-width="1.6" stroke-dasharray="7 5"/>' + G1);
     }
 
     // axis and month ticks
-    o.push(line(X0, PB, X1, PB, C.ink, 0.9 * PT));
+    o.push(G0('axis') + line(X0, PB, X1, PB, C.ink, 0.9 * PT));
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(xs(b), PB, xs(b), PB + 8, C.ink, 0.75 * PT)); });
-    if (E.preview && E.n < N) o.push(line(xs(E.n), PTOP, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"'));
+    o.push(G1);
+    if (E.preview && E.n < N) o.push(G0('data') + line(xs(E.n), PTOP, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"') + G1);
 
     // the staircase; the pen lifts over a day with no amount of its own
     var d1 = '', prev = 0, pen = false;
@@ -363,6 +368,7 @@
       d1 += 'L' + n2(xs(i)) + ',' + n2(y(c)) + 'L' + n2(xs(i + 1)) + ',' + n2(y(c));
       prev = c;
     });
+    o.push(G0('data'));
     if (d1) o.push('<path d="' + d1 + '" fill="none" stroke="' + C.rain + '" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="butt"/>');
     // steps that came as snow, in ice blue: the riser and the flat after it, up to the next wet day or gap
     if (E.full) {
@@ -375,7 +381,8 @@
       });
       if (sp) o.push('<path d="' + sp + '" fill="none" stroke="' + C.snowLine + '" stroke-width="3.4" stroke-linejoin="round"/>');
     }
-    if (E.wi >= 0) { var c0w = E.cum[E.wi] - E.P[E.wi]; o.push(line(xs(E.wi), y(c0w) + 1.5, xs(E.wi), y(E.cum[E.wi]) - 1.5, C.accent, 4.4)); }
+    o.push(G1);
+    if (E.wi >= 0) { var c0w = E.cum[E.wi] - E.P[E.wi]; o.push(G0('wet') + line(xs(E.wi), y(c0w) + 1.5, xs(E.wi), y(E.cum[E.wi]) - 1.5, C.accent, 4.4) + G1); }
 
     // snow ticks under the axis
     if (E.full) {
@@ -385,12 +392,13 @@
         var h = Math.max(3, x.s / sd * 44);
         snowT += '<rect x="' + n2(xs(i) + w * 0.05) + '" y="' + n2(PB + 3) + '" width="' + n2(w * 0.9) + '" height="' + n2(h) + '"/>';
       });
-      o.push('<g fill="' + C.snowLine + '">' + snowT + '</g>');
-      o.push(T(X0 - 14, PB + 24, 'snow', { size: 15, w: 500, fill: C.snowInk, anchor: 'end' }));
+      o.push(G0('data') + '<g fill="' + C.snowLine + '">' + snowT + '</g>' + G1);
+      o.push(G0('axis') + T(X0 - 14, PB + 24, 'snow', { size: 15, w: 500, fill: C.snowInk, anchor: 'end' }) + G1);
     }
 
     // month labels, and with normals on, each month's total over its normal
     var MY = PB + 74;
+    o.push(G0('months'));
     E.starts.forEach(function (b, m) {
       var cx = (xs(b) + xs(E.ends[m])) / 2;
       o.push(T(cx, MY, MON[m].toUpperCase(), { w: 500, size: 15, ls: 0.16, fill: C.mute, anchor: 'middle' }));
@@ -399,31 +407,32 @@
         o.push(T(cx, MY + 48, (m === 0 ? 'usual ' : '') + f2(E.mN[m]), { size: 15, fill: C.mute, anchor: 'middle' }));
       }
     });
+    o.push(G1);
 
     // the reader's dates and the dry stretch, in one row under the months
     var RY = MY + (showN ? 82 : 34), rowBoxes = [], curveHits = [];
     if (E.dry) {
       var a = xs(E.dry.s), b2 = xs(E.dry.e + 1), dcx = (a + b2) / 2;
       var ds = E.dry.len + ' dry days', dst = { size: 17, fill: C.mute, anchor: 'middle', it: true };
-      o.push('<path d="M' + n2(a) + ',' + (RY - 24) + 'v6H' + n2(b2) + 'v-6" fill="none" stroke="' + C.mute + '" stroke-width="0.9"/>');
+      o.push(G0('dry') + '<path d="M' + n2(a) + ',' + (RY - 24) + 'v6H' + n2(b2) + 'v-6" fill="none" stroke="' + C.mute + '" stroke-width="0.9"/>');
       var bx = box(dcx, RY, ds, dst), lx = dcx;
       if (bx.x < ML) { lx += ML - bx.x; bx = box(lx, RY, ds, dst); }
       if (bx.x + bx.w > X1 + 60) { lx -= bx.x + bx.w - X1 - 60; bx = box(lx, RY, ds, dst); }
-      o.push(T(lx, RY, ds, dst)); rowBoxes.push(bx);
+      o.push(T(lx, RY, ds, dst) + G1); rowBoxes.push(bx);
     }
     var lastCum = function (i) { for (var k = i; k >= 0; k--) if (E.cum[k] !== null) return E.cum[k]; return 0; };
-    E.markers.forEach(function (mk) {
+    E.markers.forEach(function (mk, mi) {
       var x = xs(mk.i + 0.5), yy2 = y(lastCum(mk.i));
-      o.push(line(x, yy2 + 5, x, PB, C.ink, 0.75));
+      o.push(G0('mark:' + mi) + line(x, yy2 + 5, x, PB, C.ink, 0.75));
       o.push('<circle cx="' + n2(x) + '" cy="' + n2(yy2) + '" r="4.6" fill="' + C.ink + '" stroke="#FFFFFF" stroke-width="1.4"/>');
       curveHits.push({ x: x - 6, y: yy2 - 6, w: 12, h: 12 });
-      if (!mk.label) return;
+      if (!mk.label) { o.push(G1); return; }
       var mst = { size: 18, it: true, anchor: 'middle' }, ry2 = RY, mb = box(x, ry2, mk.label, mst), anc = 'middle', mx = x;
       if (mb.x < ML) { anc = 'start'; mx = x - 12; } else if (mb.x + mb.w > X1 + 80) { anc = 'end'; mx = x + 12; }
       mst.anchor = anc; mb = box(mx, ry2, mk.label, mst);
       while (rowBoxes.some(function (q) { return hit(q, mb, 10); })) { ry2 += 24; mb = box(mx, ry2, mk.label, mst); }
       o.push(line(x, PB + 8, x, PB + 14, C.ink, 0.75));
-      o.push(T(mx, ry2, mk.label, mst)); rowBoxes.push(mb);
+      o.push(T(mx, ry2, mk.label, mst) + G1); rowBoxes.push(mb);
     });
 
     // keep labels off the two lines
@@ -451,13 +460,13 @@
       var pick = cands.filter(function (cd) { var bb = box(cd.x, cd.y, s, Object.assign({}, wst, { anchor: cd.a })); return inPlot(bb) && !polyHit(bb); })[0] || cands[0];
       var lb = box(pick.x, pick.y, s, Object.assign({}, wst, { anchor: pick.a }));
       var my = (y(c0) + y(c1)) / 2;
-      o.push('<path d="M' + n2(x + (pick.a === 'start' ? 4 : -4)) + ',' + n2(my) + 'L' + n2(pick.x + (pick.a === 'start' ? -4 : 4)) + ',' + n2(lb.y + lb.h / 2) + '" stroke="' + C.accent + '" stroke-width="1"/>');
-      o.push(T(pick.x, pick.y, s, Object.assign({}, wst, { anchor: pick.a })));
+      o.push(G0('wet') + '<path d="M' + n2(x + (pick.a === 'start' ? 4 : -4)) + ',' + n2(my) + 'L' + n2(pick.x + (pick.a === 'start' ? -4 : 4)) + ',' + n2(lb.y + lb.h / 2) + '" stroke="' + C.accent + '" stroke-width="1"/>');
+      o.push(T(pick.x, pick.y, s, Object.assign({}, wst, { anchor: pick.a })) + G1);
       placed.push(lb);
     }
 
     // remarkable days: a small open ring on the line, a label clear of everything
-    recs.pts.forEach(function (r) {
+    recs.pts.forEach(function (r, ri) {
       var x = xs(r.i + 0.5), yy3 = y(lastCum(r.i)), rst = { size: 16, w: 500, fill: C.rec };
       var cands = [];
       [[14, 30, 'start'], [-14, -18, 'end'], [14, 58, 'start'], [-14, -46, 'end'], [14, 86, 'start'], [-14, 30, 'end'], [14, -18, 'start'], [-14, -74, 'end'], [14, 114, 'start'], [-14, 58, 'end']]
@@ -468,20 +477,22 @@
         if (inPlot(bb) && !polyHit(bb) && !placed.some(function (q) { return hit(q, bb, 8); })) { pick = cands[k]; pb = bb; }
       }
       if (!pick) { skipped.push(r.label); return; }
-      o.push('<circle cx="' + n2(x) + '" cy="' + n2(yy3) + '" r="5" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
+      o.push(G0('rec:' + ri) + '<circle cx="' + n2(x) + '" cy="' + n2(yy3) + '" r="5" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
       o.push('<path d="M' + n2(x) + ',' + n2(yy3) + 'L' + n2(pick.x + (pick.a === 'start' ? -3 : 3)) + ',' + n2(pb.y + pb.h / 2) + '" stroke="' + C.rec + '" stroke-width="0.8" stroke-dasharray="2 2"/>');
-      o.push(T(pick.x, pick.y, r.label, Object.assign({}, rst, { anchor: pick.a })));
+      o.push(T(pick.x, pick.y, r.label, Object.assign({}, rst, { anchor: pick.a })) + G1);
       placed.push(pb); curveHits.push({ x: x - 6, y: yy3 - 6, w: 12, h: 12 });
     });
 
     // title block, bottom left
     // the gift reads first from across the room: the farm name at 48 u (designers' panel, 2026-10-13), the place at 400 weight
     var placeSize = fit(E.place, { fam: SERIF, w: 400, size: 40 }, 1500, 24);
+    o.push(G0('title'));
     o.push(T(ML, 1004, E.place, { fam: SERIF, w: 400, size: placeSize }));
     o.push(T(ML - 3, 1080, String(E.year), { fam: SERIF, w: 600, size: 84 }));
     var yw = W(String(E.year), { fam: SERIF, w: 600, size: 84 }), room = 1560 - (ML + yw + 26) - 40;
     if (E.name) o.push(T(ML + yw + 26, E.dedication ? 1044 : 1066, E.name, { fam: SERIF, w: 400, size: fit(E.name, { fam: SERIF, w: 400, size: 48 }, room, 26) }));
     if (E.dedication) o.push(T(ML + yw + 26, E.name ? 1080 : 1068, E.dedication, { fam: SERIF, it: true, w: 400, size: fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 22 }, room, 14), fill: C.mute }));
+    o.push(G1);
     o.push(smallLine(E, ML, 1500));
 
     o.push(qrMark(I.qr, 1690, 1100));
@@ -514,6 +525,7 @@
     // right: the year's totals
     E.style2 = true;
     var big = { w: 300, size: 68 };
+    o.push(G0('totals'));
     o.push(T(X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)));
     o.push(T(X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }));
     if (E.verdict) o.push(T(X1, 254, E.verdict, { size: 22, anchor: 'end' }));
@@ -524,9 +536,11 @@
       o.push(T(bxs, 140, 'SNOWFALL', { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }));
       rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', { w: 300, size: 44 });
     }
+    o.push(G1);
     // left: name, place and year, dedication; shrunk to stay clear of the totals
     var leftRoom = rightEdge - 50 - ML;
     var py = E.name ? 214 : 190;
+    o.push(G0('title'));
     if (E.name) {
       var nst = { w: 500, size: 32, ls: 0.14 };
       nst.size = fit(E.name.toUpperCase(), nst, leftRoom, 18);
@@ -539,8 +553,10 @@
     o.push(T(ML, py, E.place, ps));
     o.push(T(ML + W(E.place + '  ', ps), py, String(E.year), ys));
     if (E.dedication) o.push(T(ML, py + 44, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, Math.max(400, leftRoom), 14), fill: C.mute }));
+    o.push(G1);
 
     // guides and scales
+    o.push(G0('axis'));
     R.ticks.forEach(function (t) {
       var yy = ry(t);
       o.push(line(X0, yy, X1, yy, C.guide, 0.7));
@@ -557,6 +573,7 @@
     if (days.some(function (x, i) { return E.P[i] > 0 && xs(i) < ML + rtw + 6 && xs(i) > ML - 4 && ry(E.P[i]) > rty - 16; })) rty = RB + 24;
     o.push(T(ML, rty, rainTitle, { size: 15, fill: C.mute }));
     if (E.full) o.push(T(ML, sy(S.dom) - 14, 'snow, in', { size: 15, fill: C.snowInk }));
+    o.push(G1);
 
     // bars: a snow day shows only above the line (its melted water still counts in the total)
     var bw = 0.66 * w, sw = 0.8 * w, bars = '', snows = '', traces = '';
@@ -571,15 +588,18 @@
       if (p > 0 && i !== E.wi) bars += '<rect x="' + n2(cx - bw / 2) + '" y="' + (G + 1.5) + '" width="' + n2(bw) + '" height="' + n2(Math.max(0.8, ry(p) - G)) + '"/>';
       // trace days are not drawn: unexplained dots at the ground line read as data (designers' panel, 2026-10-13)
     });
+    o.push(G0('data'));
     if (snows) o.push('<g fill="' + C.snowFill + '" stroke="' + C.snowEdge + '" stroke-width="0.7">' + snows + '</g>');
-    o.push('<g fill="' + C.bar + '">' + bars + traces + '</g>');
+    o.push('<g fill="' + C.bar + '">' + bars + traces + '</g>' + G1);
     // ground line, broken over unrecorded days
     var seg = null, segs = [];
     days.forEach(function (x, i) { if (E.P[i] !== null) { if (!seg) seg = [i, i]; seg[1] = i; } else if (seg) { segs.push(seg); seg = null; } });
     if (seg) segs.push(seg);
+    o.push(G0('axis'));
     segs.forEach(function (sg) { o.push(line(X0 + sg[0] * w + (sg[0] ? 1 : 0), G, X0 + (sg[1] + 1) * w - (sg[1] < E.n - 1 ? 1 : 0), G, C.ink, 1.1 * PT)); });
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(X0 + b * w, G - 7, X0 + b * w, G + 7, C.ink, 0.75 * PT)); });
-    if (E.preview && E.n < N) o.push(line(X0 + E.n * w, G - SH, X0 + E.n * w, RB, C.mute, 1, ' stroke-dasharray="3 4"'));
+    o.push(G1);
+    if (E.preview && E.n < N) o.push(G0('data') + line(X0 + E.n * w, G - SH, X0 + E.n * w, RB, C.mute, 1, ' stroke-dasharray="3 4"') + G1);
 
     var placed = [];
     var barHit = function (bb) {
@@ -588,12 +608,12 @@
     // the biggest rain, in red, in words
     if (E.wi >= 0) {
       var cx = xs(E.wi), y2 = ry(E.wet.p), wst = { w: 500, size: 24, fill: C.accent };
-      o.push('<rect x="' + n2(cx - 1.9) + '" y="' + (G + 1.5) + '" width="3.8" height="' + n2(y2 - G - 1.5) + '" fill="' + C.accent + '"/>');
+      o.push(G0('wet') + '<rect x="' + n2(cx - 1.9) + '" y="' + (G + 1.5) + '" width="3.8" height="' + n2(y2 - G - 1.5) + '" fill="' + C.accent + '"/>');
       var right = cx + 10 + W(E.wetText, wst) > X1, ty = y2 + 6;
       R.ticks.forEach(function (t) { var gy = ry(t); if (ty > gy - 2 && ty - 14 < gy + 2) ty = gy - 6; });
       if (ty > RB + 30) ty = RB + 30;
       wst.anchor = right ? 'end' : 'start';
-      o.push(T(right ? cx - 10 : cx + 10, ty, E.wetText, wst));
+      o.push(T(right ? cx - 10 : cx + 10, ty, E.wetText, wst) + G1);
       placed.push(box(right ? cx - 10 : cx + 10, ty, E.wetText, wst));
     }
 
@@ -603,11 +623,12 @@
       var da = X0 + E.dry.s * w, db = X0 + (E.dry.e + 1) * w, dcx = (da + db) / 2;
       var ds = E.dry.len + ' dry days', dst = { it: true, size: 15, fill: C.mute, anchor: 'middle' };
       var dbb = box(dcx, G + 30, ds, dst);
-      if (!barHit(dbb) && !placed.some(function (q) { return hit(q, dbb, 6); })) { o.push(T(dcx, G + 30, ds, dst)); dryOnArt = true; placed.push(dbb); }
+      if (!barHit(dbb) && !placed.some(function (q) { return hit(q, dbb, 6); })) { o.push(G0('dry') + T(dcx, G + 30, ds, dst) + G1); dryOnArt = true; placed.push(dbb); }
     }
 
     // month labels and totals; with normals on, each month's normal under its total
     var MY = 316, TY = 345, mBoxes = [];
+    o.push(G0('months'));
     E.starts.forEach(function (b, m) {
       var cx2 = X0 + (b + E.ends[m]) / 2 * w, ms = MON[m].toUpperCase();
       var mst = { w: 500, size: 14, ls: 0.18, fill: C.mute, anchor: 'middle' };
@@ -620,6 +641,7 @@
         o.push(T(cx2, TY + 23, nv, nst2)); mBoxes.push(box(cx2, TY + 23, nv, nst2));
       }
     });
+    o.push(G1);
 
     // the reader's dates: label above the month row, a tick down to the ground
     var LY = 290;
@@ -640,12 +662,14 @@
           return acc;
         }, []);
       });
+      o.push(G0('mark:' + k));
       segs2.forEach(function (pq) { o.push(line(x, pq[0], x, pq[1], C.ink, 0.75)); });
       if (mk.label) o.push(T(lx, yy, mk.label, Object.assign({ anchor: anchor }, mst2)));
+      o.push(G1);
     });
 
     // remarkable days: an open ring on the ground line, the label down in the open soil, clear of every bar
-    recs.pts.forEach(function (r) {
+    recs.pts.forEach(function (r, ri) {
       var x = xs(r.i), rst = { size: 16, w: 500, fill: C.rec }, pick = null, pb = null;
       for (var yy = G + 70; yy <= RB - 4 && !pick; yy += 30) {
         var tries = [{ x: x + 8, a: 'start' }, { x: x - 8, a: 'end' }];
@@ -661,9 +685,9 @@
       }
       if (!pick) { skipped.push(r.label); return; }
       var own = E.P[r.i] > 0 && !(E.full && days[r.i].s > 0) ? ry(E.P[r.i]) + 4 : G + 5;
-      o.push(line(x, own, x, pb.y + pb.h / 2, C.rec, 0.8, ' stroke-dasharray="2 2"'));
+      o.push(G0('rec:' + ri) + line(x, own, x, pb.y + pb.h / 2, C.rec, 0.8, ' stroke-dasharray="2 2"'));
       o.push('<circle cx="' + n2(x) + '" cy="' + G + '" r="4.6" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
-      o.push(T(pick.x, pick.y, r.label, Object.assign({}, rst, { anchor: pick.a })));
+      o.push(T(pick.x, pick.y, r.label, Object.assign({}, rst, { anchor: pick.a })) + G1);
       placed.push(pb);
     });
 
@@ -675,7 +699,7 @@
     else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
     var fst = { size: 17, fill: C.mute };
     fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
-    o.push(T(ML, 1100, foot.join('  ·  '), fst));
+    o.push(G0('foot') + T(ML, 1100, foot.join('  ·  '), fst) + G1);
     o.push(smallLine(E, ML, 1440));
     o.push(qrMark(I.qr, X1, 1100));
     last_skipped = skipped;
