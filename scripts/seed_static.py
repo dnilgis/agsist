@@ -79,17 +79,22 @@ PAGES = {
 DESC_MAX = 160
 
 DESC = {
+    # 2026-10-13: "every 30 min" on corn and wheat said what the prices loop
+    # did before 2026-10-07; the page body and the loop say 15. "Live" is
+    # dropped: the body says these are delayed quotes. Corn and soybeans spell
+    # out Chicago Board of Trade, the words of the named queries ("chicago
+    # board of trade corn price", "cbot soybeans").
     "corn-futures-prices.html": (
-        "Corn {mon} {verb} ${px} ({chg}) {when}. Live CBOT corn futures refreshed every "
-        "30 min in session.",
-        " December new-crop, RP floor, basis-to-cash, daily read."),
+        "Corn {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) corn "
+        "futures, refreshed every 15 min in session.",
+        " December new-crop, basis, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Live CBOT soybean futures refreshed "
-        "every 15 min in session.",
-        " November new-crop, crush spread, cash bids."),
+        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) "
+        "soybean futures, refreshed every 15 min in session.",
+        " Crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} {verb} ${px} ({chg}) {when}. Live Chicago SRW futures refreshed every "
-        "30 min in session{kc}.",
+        "Wheat {mon} {verb} ${px} ({chg}) {when}. Chicago SRW wheat futures, refreshed "
+        "every 15 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
 }
 
