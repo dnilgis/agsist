@@ -1097,7 +1097,7 @@
         if (!open && spans(b)) return 0;
         // the leader runs down the day's own column: it must not cut a bar or a word on the way
         c.L = [x, top0, x, c.a === 'middle' ? b.y - 3 : b.y + b.h / 2];
-        if (!room.clear(c.L, own, 0)) return 0;
+        if (!room.clear(c.L, own, 6)) return 0;   // 6: past the rings of the days beside it
         if (!room.free(b, own, false)) return 0;
         c.b = b;
         return room.free(b, own, true) ? 2 : 1;
