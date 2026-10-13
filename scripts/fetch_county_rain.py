@@ -245,6 +245,34 @@ def build_state(src, st, year, edate, C, fetched):
             "stations_in_counties": seen, "counties": out, "none": none}
 
 
+# A gauge that reads under 40% of what the counties around it read, where a
+# usual year to date is 10 inches or more, is far more likely stuck or
+# clogged than that dry (2026-10-13: Blytheville airport, Mississippi County
+# AR, 7.68 in and 24% of usual with every neighbor near 77%). Dry country is
+# left alone: there one storm can make a county look nothing like the next.
+ODD_LOW, ODD_MIN_USUAL, ODD_MIN_NBRS = 0.40, 10.0, 3
+
+
+def hold_outliers(files, new, N):
+    """Move a county whose gauge reads far below all its neighbors into "none"."""
+    pct = {f: c["pct"] for d in files.values() for f, c in d["counties"].items() if c.get("pct")}
+    held = []
+    for st, d in new.items():
+        for f, c in list(d["counties"].items()):
+            if not c.get("pct") or (c.get("usual") or 0) < ODD_MIN_USUAL:
+                continue
+            nb = sorted(pct[n] for n in N.get(f, []) if n in pct)
+            if len(nb) < ODD_MIN_NBRS:
+                continue
+            mid = nb[len(nb) // 2] if len(nb) % 2 else (nb[len(nb) // 2 - 1] + nb[len(nb) // 2]) / 2
+            if c["pct"] < ODD_LOW * mid:
+                d["none"][f] = {"name": c["name"], "stations": c.get("n_ok") or 1, "held": c["station"]["raw"]}
+                del d["counties"][f]
+                held.append(f)
+                print(f"  {st} {f}: holding {c['station']['raw']} ({c['pct']}% of usual, the counties around it {mid:.0f}%)", flush=True)
+    return held
+
+
 def add_nearest(files, C):
     """For each county with no station, the nearest county (any state) that has one."""
     have = [(f, C[f]["lat"], C[f]["lon"]) for d in files.values() for f in d["counties"] if f in C]
@@ -352,6 +380,7 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
             except ValueError:
                 pass
     allf.update(new)
+    hold_outliers(allf, new, R.neighbors())
     add_nearest(allf, C)
     for st, d in new.items():
         with open(os.path.join(out_dir, st.lower() + ".json"), "w") as fh:
@@ -418,6 +447,14 @@ def selftest():
                        "AK", 2026, "2026-01-20", _C, "2026-01-21T00:00:00Z")
     ok("02185" not in _out["counties"] and "02090" in _out["counties"],
        f"a station 400 mi outside its county is skipped, not the state: {sorted(_out['counties'])}")
+    # a gauge far below every county around it is held; dry country is not
+    def _c(p, u): return {"name": "x", "pct": p, "usual": u, "n_ok": 2, "station": {"raw": "GAUGE"}}
+    _files = {"AR": {"counties": {"1": _c(24, 25.0), "2": _c(77, 25.0), "3": _c(80, 25.0), "4": _c(70, 25.0),
+                                  "5": _c(30, 2.6)}, "none": {}}}
+    _N = {"1": ["2", "3", "4"], "5": ["2", "3", "4"]}
+    _held = hold_outliers(_files, _files, _N)
+    ok(_held == ["1"] and "1" in _files["AR"]["none"] and "5" in _files["AR"]["counties"],
+       f"stuck gauge held, desert county kept: {_held}")
     # trailing S days (the A that ends them has not come in) are not reported yet
     d40 = R.days_of(2026, "2026-01-01", 40)
     s, _ = R.summarize(2026, d40, ["0.10"] * 36 + ["S", "S", "S", "M"], ["0.05"] * 40, "2026-02-09")

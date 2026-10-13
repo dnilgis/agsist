@@ -463,10 +463,13 @@ def state_page(st, d, pages, none_rows):
                     f'<td>{e(R.station_name(c["station"]["raw"]))}</td><td>{short_date(c["as_of"])}</td></tr>')
     none_html = ""
     if none_rows:
-        items = "".join(f"<li>{e(n)} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
-                        for n, nn, h in none_rows)
-        none_html = (f'<h2>Counties where no NOAA or CoCoRaHS station reported enough days</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
-                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest county that has one.</p><ul class="rc-states">{items}</ul>')
+        held = [r for r in none_rows if r[3]]
+        items = "".join(f"<li>{e(n)}{'*' if hd else ''} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
+                        for n, nn, h, hd in none_rows)
+        none_html = (f'<h2>Counties without a page</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
+                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest county that has one.</p><ul class="rc-states">{items}</ul>'
+                     + (f'<p class="rc-fine">* This county&rsquo;s station reported, but its gauge read under 40% of what every county around it read, in a place that usually gets real rain. '
+                        f'That is far more often a stuck or clogged gauge than a dry year, so it is left out rather than shown.</p>' if held else ''))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
@@ -603,9 +606,9 @@ def build(data_dir, C=None, NB=None):
                 nf = x.get("near")
                 if nf and nf in pages:
                     nn = pages[nf][0] + ("" if C[nf]["st"] == st else ", " + C[nf]["st"])
-                    none_rows.append((x["name"], nn, pages[nf][1]))
+                    none_rows.append((x["name"], nn, pages[nf][1], bool(x.get("held"))))
                 else:
-                    none_rows.append((x["name"], None, None))
+                    none_rows.append((x["name"], None, None, bool(x.get("held"))))
             want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows))
             urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", day))
     if pages:
