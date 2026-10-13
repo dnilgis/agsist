@@ -30,6 +30,9 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
+
 REPO = Path(__file__).resolve().parent.parent
 CARDS = REPO / "farmland-atlas" / "data" / "cards.json"
 SITE = "https://agsist.com"
@@ -242,9 +245,9 @@ def main():
     print(f"watchers {len(watchers)}; confirmations {len(confirms)}; changes {len(chg)}; baselines {len(bs)}")
     if dry:
         for x in confirms:
-            print("would confirm", x)
+            print("would confirm", log_safe.mask(x[0]), x[1])
         for x in chg:
-            print("would mail", x[0], x[1], x[2])
+            print("would mail", log_safe.mask(x[0]), x[1], x[2])
         return 0
     for e, f, snapshot, k in bs:                    # silent, no mail
         worker(base, "watch-mark", tok, {"email": e, "fips": f, "k": k, "s": snapshot})
@@ -289,7 +292,13 @@ def main():
                 conn.quit()
             except Exception:
                 pass
-    print(f"sent {sent}; failed {len(failed)}" + (": " + ", ".join(failed[:10]) if failed else ""))
+    # Counts and masked addresses only: the Actions log is public. The full
+    # list goes to Sig by private mail.
+    print(f"sent {sent}; failed {len(failed)}"
+          + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
+    if failed:
+        log_safe.owner_mail(f"AGSIST farmland watch: {len(failed)} send(s) failed",
+                            ["These did not send (they stay unmarked and retry next run):", ""] + failed)
     if len(jobs if (confirms or chg) else []) > cap:
         print(f"cap reached: {len(jobs) - cap} left for the next run")
     return 1 if failed and not sent else 0

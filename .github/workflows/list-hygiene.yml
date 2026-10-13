@@ -3,6 +3,12 @@ name: List cleanup
 # (gmail.comb, gmial.com) on the Daily and hail lists, and email Sig what
 # changed. Mondays it emails a summary even when nothing changed.
 # The log shows counts only; addresses go only into the email.
+#
+# Removing an address by hand: workflow inputs show on the PUBLIC run page,
+# so there is no input for it. Put the addresses (comma separated) in the
+# repo secret LIST_REMOVE (Settings > Secrets and variables > Actions), run
+# this workflow by hand with dry_run off, then clear the secret. Scheduled
+# runs ignore LIST_REMOVE, so a reader who signs up again later stays on.
 on:
   schedule:
     - cron: "23 13 * * *"
@@ -12,10 +18,6 @@ on:
         description: "Report only, change nothing"
         type: boolean
         default: true
-      remove:
-        description: "Addresses to remove from the Daily and hail lists (comma separated). Shows on this public run page."
-        type: string
-        default: ""
 permissions:
   contents: read
 concurrency:
@@ -43,4 +45,4 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
           REPORT_TO: ${{ secrets.REPLY_TO }}
-          REMOVE: ${{ inputs.remove }}
+          REMOVE: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_REMOVE || '' }}

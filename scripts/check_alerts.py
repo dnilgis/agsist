@@ -40,6 +40,9 @@ from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import unary_union
 from shapely.validation import explain_validity, make_valid
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe           # noqa: E402  (no address or watched place in the public log)
+
 REPO = Path(__file__).resolve().parent.parent
 MESH_DIR = REPO / "data" / "hail" / "mesh"
 MAP = "https://agsist.com/hail-map"
@@ -294,8 +297,13 @@ def main():
         if band is not None:
             hits.append((w, band))
     print("hits: " + str(len(hits)))
-    for w, band in hits:
-        print("  " + w["email"] + " · " + str(w.get("place", "")) + " · band " + str(band) + "\u2033")
+    # COUNTS ONLY. The log is public: an address next to the place it watches
+    # (often the reader's own farm town) must never be printed here.
+    by_band = {}
+    for _w, band in hits:
+        by_band[band] = by_band.get(band, 0) + 1
+    for band in sorted(by_band):
+        print("  band " + str(band) + "\u2033: " + str(by_band[band]) + " watcher(s)")
     if dry or not hits:
         print("dry run — nothing sent" if dry else "no watch areas touched — nothing to send")
         return 0
@@ -383,10 +391,16 @@ def main():
     if sent > 0:
         day_flag(day, set_it=True)
     if failed:
-        print("failed: " + ", ".join(failed))
+        # Full addresses go to Sig by private mail; the public log and the
+        # annotation get the count and masked addresses only.
+        mailed = log_safe.owner_mail("AGSIST hail alerts: %d of %d did not send (%s)"
+                                     % (len(failed), len(hits), day),
+                                     ["Send these by hand (the day is flagged, a rerun will not retry):", ""] + failed)
         print("::error::%d of %d hail alerts did not send. The day is flagged, so a "
-              "rerun will NOT retry them — send these by hand: %s"
-              % (len(failed), len(hits), ", ".join(failed)))
+              "rerun will NOT retry them — send these by hand (%s): %s"
+              % (len(failed), len(hits),
+                 "full list mailed to Sig" if mailed else "full list NOT mailed; see the watch list",
+                 ", ".join(log_safe.mask_text(f) for f in failed)))
     return 0 if sent > 0 else 1
 
 

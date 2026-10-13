@@ -40,6 +40,9 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
+
 REPO = Path(__file__).resolve().parent.parent
 PRICES_FILE = REPO / "data" / "prices.json"
 SITE = "https://agsist.com"
@@ -267,9 +270,9 @@ def main():
     print(f"quotes loaded {len(quotes)}; watchers {len(watchers)}; confirmations {len(confirms)}; fires {len(fires)}")
     if dry:
         for x in confirms:
-            print("would confirm", x)
+            print("would confirm", log_safe.mask(x[0]), x[1], x[2])
         for x in fires:
-            print("would fire", x[0], x[1], x[2], "close", x[3])
+            print("would fire", log_safe.mask(x[0]), x[1], x[2], "close", x[3])
         return 0
     fn, fa, rt = env("FROM_NAME", "AGSIST Market Prices"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
     sent, failed = 0, []
@@ -312,7 +315,13 @@ def main():
                 conn.quit()
             except Exception:
                 pass
-    print(f"sent {sent}; failed {len(failed)}" + (": " + ", ".join(failed[:10]) if failed else ""))
+    # Counts and masked addresses only: the Actions log is public. The full
+    # list goes to Sig by private mail.
+    print(f"sent {sent}; failed {len(failed)}"
+          + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
+    if failed:
+        log_safe.owner_mail(f"AGSIST price watch: {len(failed)} send(s) failed",
+                            ["These did not send (they stay unmarked and retry next run):", ""] + failed)
     if jobs and len(jobs) > cap:
         print(f"cap reached: {len(jobs) - cap} left for the next run")
     return 1 if failed and not sent else 0

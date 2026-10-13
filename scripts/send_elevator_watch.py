@@ -91,6 +91,9 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
+
 REPO = Path(__file__).resolve().parent.parent
 BASIS_DIR = REPO / "data" / "basis"
 SITE = "https://agsist.com"
@@ -1051,13 +1054,13 @@ def main():
     print("pending: " + pend_summary(watchers, basis_idx, net_idx, now_ms))
     if dry:
         for x in confirms + oconf:
-            print("would confirm", x)
+            print("would confirm", log_safe.mask(x[0]), x[1], x[2])
         for x in chg:
-            print("would mail", x[0], x[1], x[2], "basis", x[3], "->", x[4]["basis"])
+            print("would mail", log_safe.mask(x[0]), x[1], x[2], "basis", x[3], "->", x[4]["basis"])
         for x in osend:
-            print("would alert", x[0], x[1], x[2], x[3], x[4], "->", x[5]["cash" if x[3] == "cash" else "basis"], "posted", x[5]["pricedAt"])
+            print("would alert", log_safe.mask(x[0]), x[1], x[2], x[3], x[4], "->", x[5]["cash" if x[3] == "cash" else "basis"], "posted", x[5]["pricedAt"])
         for x in oend:
-            print("would end", x[0], x[1], x[2], "now quotes", x[4]["plabel"])
+            print("would end", log_safe.mask(x[0]), x[1], x[2], "now quotes", x[4]["plabel"])
         return 0
     for e, w, label, row in bs:                    # silent, no mail
         worker(base, "elevator-watch-mark", tok, basis_mark(e, w, label, row))
@@ -1109,7 +1112,13 @@ def main():
                 conn.quit()
             except Exception:
                 pass
-    print(f"sent {sent}; failed {len(failed)}" + (": " + ", ".join(failed[:10]) if failed else ""))
+    # Counts and masked addresses only: the Actions log is public. The full
+    # list goes to Sig by private mail.
+    print(f"sent {sent}; failed {len(failed)}"
+          + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
+    if failed:
+        log_safe.owner_mail(f"AGSIST elevator watch: {len(failed)} send(s) failed",
+                            ["These did not send (they stay unmarked and retry next run):", ""] + failed)
     if jobs and len(jobs) > cap:
         print(f"cap reached: {len(jobs) - cap} left for the next run")
     return 1 if failed and not sent else 0
