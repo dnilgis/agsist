@@ -1,0 +1,70 @@
+name: climate indices
+
+# NOAA's PDO (NCEI) and AMO (PSL) monthly series, written to
+# data/prf/climate-indices.json by scripts/fetch_climate_indices.py, then the
+# PRF optimizer's walk-forward test (scripts/prf_opt_backtest.mjs) is re-run so
+# data/prf/opt.json tests the "PDO with ENSO" and "AMO" tilts on the new data.
+# Until this has run once, opt.json lists both as "not tested yet".
+#
+# Monthly on the 9th (NCEI posts the PDO early in the month), off the hour,
+# and by hand. A source that fails keeps the series already published; the
+# step is marked failed and nothing older replaces anything newer.
+on:
+  schedule:
+    - cron: "37 14 9 * *"     # the 9th, 14:37 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: climate-indices
+  cancel-in-progress: false
+
+jobs:
+  indices:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write          # commits the two data files below
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: true   # this job pushes
+
+      - name: Offline first
+        run: python3 scripts/fetch_climate_indices.py --selftest
+
+      - name: Fetch
+        id: fetch
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python3 scripts/fetch_climate_indices.py 2>&1 | tee climate.log
+
+      - name: Re-run the optimizer test with the indices
+        run: |
+          python3 scripts/fetch_climate_indices.py --check
+          node scripts/prf_opt_backtest.mjs --quiet
+          node --test test/prf-optimize.test.mjs
+          python3 scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prf/climate-indices.json data/prf/opt.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          ASOF=$(python3 -c "import json;d=json.load(open('data/prf/climate-indices.json'));print(', '.join('%s to %s'%(k,v['as_of']) for k,v in d['series'].items()))")
+          git commit -q -m "data: climate indices ($ASOF), PRF optimizer test re-run"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
+
+      - name: Say which source failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          grep -E "FAILED|refusing" climate.log || true
+          echo "::warning::A climate index source failed; the published series was kept. See the Fetch step."
