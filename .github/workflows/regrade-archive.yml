@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies
         # rebuild_archive_html imports generate_daily for the page template.
-        run: pip install feedparser requests
+        run: pip install feedparser==6.0.14 requests==2.34.2
 
       - name: Prove the rule before rewriting 185 files with it
         run: |

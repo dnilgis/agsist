@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           sparse-checkout: scripts/cron_gate.py
           sparse-checkout-cone-mode: false
       - id: g

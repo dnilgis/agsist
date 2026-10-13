@@ -666,8 +666,8 @@
     if(strip&&hd&&t){hd.textContent=d.headline;t.textContent=d.teaser||d.subheadline||d.lead||'';strip.style.display='flex';}
   }).catch(function(){});
   var form=document.getElementById('signup-form'),ok=document.getElementById('signup-ok');
-  if(form)form.addEventListener('submit',function(e){e.preventDefault();var data=new FormData(form);
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:data,headers:{'Accept':'application/json'}})
+  if(form)form.addEventListener('submit',function(e){e.preventDefault();var data={};new FormData(form).forEach(function(v,k){data[k]=v;});
+    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
       .then(function(r){if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}}).catch(function(){});
   });
 })();

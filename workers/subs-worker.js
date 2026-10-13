@@ -1,24 +1,69 @@
 /**
+ * UNSUB_SECRET MUST BE SET on this Worker in Cloudflare (Settings -> Variables
+ *   and Secrets), the same value the Actions jobs sign links with. Check it:
+ *   GET /count?token=... answers "secret": true or false (never the value).
+ *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.13 (2026-10-12): RAIN PRINT SHORT LINKS. New routes only; every existing
+ * v5.14 (2026-10-13): RAIN PRINT SHORT LINKS. New routes only; every existing
  *   route answers exactly as before. The print's QR used to carry
  *   agsist.com/rain-print?d=<design code> (QR version 6 to 10); it can now
- *   carry HTTPS://AGSIST.COM/R?<id>, a 5-character id (26 bytes, version 2,
- *   25 x 25 modules at level M). /R (R.html, r.html) looks the id up here.
- *   POST /rp-short  JSON {code}. code is a plain Rain Print design code (the
- *     v1 rules of decodeCode in components/rain-print.js; a GIFT- code is
- *     refused, the QR opens the design itself). Answers {ok:true, id}. The id
- *     is the first 5 characters of Crockford base32 (0-9 A-Z without I L O U)
- *     of SHA-256(code); if that id already holds a different code it grows to
- *     6, 7, then 8 characters. Stored as rps:<id> = code, no expiry (a few
- *     hundred bytes). Idempotent: the same code always gets the same id and a
- *     repeat writes nothing. Origin must be agsist.com, body at most 1 KB, at
- *     most 60 new ids per IP an hour (own counter, so making links never uses
- *     up the 8 form posts; the IP is kept only as an HMAC, for two hours).
- *   GET  /rp-short/<id>  {ok:true, code}, or 404. Lowercase and the Crockford
- *     look-alikes (I L -> 1, O -> 0) are read as the id. CORS for agsist.com.
+ *   carry HTTPS://AGSIST.COM/R?<id>, a 5-character id (26 bytes in byte mode,
+ *   exactly what version 2 holds at level M: 25 x 25 modules). /R (R.html,
+ *   r.html) looks the id up here and opens /rain-print?d=<code>.
+ *   POST /rp-short  JSON {code}. A public POST: publicGate (Origin agsist.com
+ *     or www, Content-Type application/json) and RATE["/rp-short"] (60 new
+ *     ids per address an hour, 200 a day, 600 for everyone a day; a repeat of
+ *     a known code is not counted and writes nothing). code is a plain Rain
+ *     Print design code, checked against the v1 rules of decodeCode in
+ *     components/rain-print.js (base64url, 8 to 400 characters; a GIFT- code
+ *     is refused). Only a design code is stored, never a URL: /R always builds
+ *     /rain-print?d=<code> itself. Body at most 1 KB. Answers {ok:true, id}.
+ *     The id is the first 5 characters of Crockford base32 (0-9 A-Z without
+ *     I L O U) of SHA-256(code); if that id already holds a different code it
+ *     grows to 6, 7, then 8 characters (409 past 8). Stored as rps:<id> =
+ *     code, no expiry. Idempotent: the same code always gets the same id.
+ *   GET  /rp-short/<id>  {ok:true, code} (Cache-Control public, a week,
+ *     immutable), or 404 (not cached). Only rps:<id> keys for a well-formed id
+ *     are ever read. Lowercase and the Crockford look-alikes (I L -> 1, O -> 0)
+ *     are read as the id. CORS for agsist.com. Per isolate, 30 unknown ids
+ *     an hour per address, then 429 (walking the 33.5 million 5-letter ids).
  *   No new binding and no new secret (rps: keys live in the SUBS KV).
+ * v5.13 (2026-10-13): HARDENING. Every existing route answers as before for a
+ *   real AGSIST page and for the jobs. No new binding and no new secret.
+ *   - Public POSTs (/subscribe, /notice, /alert-subscribe, /watch-subscribe,
+ *     /elevator-watch-subscribe, /price-watch-subscribe, /sponsor-apply,
+ *     /form) need Origin https://agsist.com or www and Content-Type
+ *     application/json (403 / 415 otherwise), so another site cannot post
+ *     through its visitors' browsers. /subscribe still takes a form body from
+ *     an AGSIST page (daily.html's no-script form, cached older pages).
+ *   - One rate limit for all of them (RATE): per client IP (IPv6 by /64, kept
+ *     only as an HMAC) an hour and a day, and a daily total per route that
+ *     guards the Gmail sending cap. One KV key per accepted post under
+ *     rlq:<route>:<day>:, counted with one list(); the hourly number is also
+ *     held exactly inside each isolate. 429 when over. /form keeps its v5.8
+ *     counter (8 an hour) as well.
+ *   - /list?format=json and /count read the daily list from KV key metadata
+ *     (written with every sub: record from now on) with get() only for older
+ *     records. &limit= / &cursor= give one page and X-Next-Cursor; without
+ *     them the answer is byte-for-byte what it was.
+ *   - /sponsor-apply counts open applications from sapp-by:<email>, not by
+ *     reading every application; the logo's bytes must be PNG, JPEG or WebP.
+ *     Tier and decision lookups ignore Object.prototype names.
+ *   - Label, place, company and contact lose CR, LF and control characters.
+ *   - Every token check is constant-time; the token may also come as
+ *     "Authorization: Bearer <token>" (?token= still works).
+ *   - No fallback secret: without UNSUB_SECRET a signed link or an IP hash is
+ *     refused with a 503 and a logged reason, never made with a constant.
+ *   - The HTML pages send CSP default-src 'none' (inline styles, form-action
+ *     'self', frame-ancestors 'none'), nosniff, X-Frame-Options DENY,
+ *     Referrer-Policy no-referrer and Cache-Control no-store.
+ *   - /form kind sponsor-feedback: an Approval needs k = hmac16("sponsor-portal|"
+ *     + r) for its portal link r (sponsor-report.html?r=<slug>-<token>&k=...),
+ *     or it is refused (400) and the page falls back to its written email.
+ *     Other requests are kept with verified yes/no and r. The Subject is
+ *     built here. Make k for a link with:
+ *       python3 -c "import hmac,hashlib,sys;print(hmac.new(sys.argv[1].encode(),('sponsor-portal|'+sys.argv[2]).lower().encode(),hashlib.sha256).hexdigest()[:16])" "$UNSUB_SECRET" apex-c1c1e09865171cd1
  * v5.12 (2026-10-12): RAIN PRINT BUSINESS QUOTES AND GIFT NOTES. One new form
  *   kind on POST /form and one new optional field on rain-print-order; every
  *   existing route answers exactly as before. kind rain-print-business (the
@@ -279,7 +324,28 @@ function json(obj, status, extra) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+// v5.13: there is no fallback key. Before, an unset UNSUB_SECRET silently
+// became a public constant: "agsist-form" for the form rate limit, and the
+// word "undefined" (what TextEncoder makes of a missing value) for every
+// unsubscribe and confirm token, so anyone could have made a valid link.
+// Now any operation that needs the secret refuses with a 503 and logs why.
+class NoSecretError extends Error {}
+// v5.13: an unsubscribe must always work. With UNSUB_SECRET set the token is
+// checked against it, exactly as before (tokens are made by the Actions jobs
+// with that same secret; there never was a fallback key for them: before
+// v5.13 a missing secret made every unsubscribe crash). With it unset, the
+// unsubscribe is honoured without a check, and the log says so loudly:
+// removing someone from a list is low harm, a dead stop link is not.
+async function unsubOk(env, msg, t) {
+  if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) {
+    console.error("agsist-subs: UNSUB_SECRET is not set; honouring an unsubscribe WITHOUT checking its token. Set the secret in Cloudflare.");
+    return true;
+  }
+  return safeEq(t, await hmac16(msg, env.UNSUB_SECRET));
+}
 async function hmac16(email, secret) {
+  if (typeof secret !== "string" || !secret)
+    throw new NoSecretError("UNSUB_SECRET is not set on the agsist-subs Worker; refusing to sign or check a token");
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(secret),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -305,6 +371,103 @@ function escHtml(s) {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// v5.13: every token and signature check. The time it takes does not depend
+// on where the first wrong character is (a length mismatch still answers no).
+function safeEq(a, b) {
+  a = String(a == null ? "" : a); b = String(b == null ? "" : b);
+  const n = Math.max(a.length, b.length);
+  let d = a.length ^ b.length;
+  for (let i = 0; i < n; i++) d |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  return d === 0 && a.length > 0;
+}
+
+// v5.13: one line of visitor text (a label, a place, a company or contact
+// name). CR, LF, tabs and every other control character become a space, so
+// nothing a stranger types can start a new line in a mail header or body.
+function oneLine(v, max) {
+  return String(v == null ? "" : v)
+    .replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, " ")
+    .replace(/ {2,}/g, " ").trim().slice(0, max);
+}
+
+// v5.13: the gate in front of every public POST. A browser always sends
+// Origin on a cross-site POST, and a JSON Content-Type forces a CORS
+// preflight, so another website cannot post here through its visitors'
+// browsers. A script can fake both; the rate limit below is for that.
+// /subscribe also takes an ordinary form body (the no-script form on
+// daily.html, and copies of older pages still in a reader's cache), but only
+// from an AGSIST page: the Origin check alone stops the cross-site post.
+const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/watch-subscribe",
+  "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form",
+  "/rp-short"]);   // v5.14
+function publicGate(req, path) {
+  const origin = req.headers.get("Origin") || "";
+  if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
+  const ct = (req.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  if (ct === "application/json") return null;
+  if (path === "/subscribe" && (ct === "application/x-www-form-urlencoded" || ct === "multipart/form-data")) return null;
+  return json({ ok: false, error: "unsupported content type" }, 415, cors(req));
+}
+
+// v5.13: ONE RATE LIMIT FOR EVERY PUBLIC POST. [per address an hour, per
+// address a day, everyone together a day]. "Address" is the client IP (an
+// IPv6 address counts by its /64), kept only as an HMAC. The daily total
+// keeps junk sign-ups from eating AGSIST's Gmail sending cap: every watch
+// subscribe is a confirmation mail, every daily sign-up is a mail a day.
+const RATE = {
+  "/subscribe": [10, 30, 150], "/notice": [10, 30, 150], "/alert-subscribe": [10, 30, 100],
+  "/watch-subscribe": [10, 30, 50], "/elevator-watch-subscribe": [10, 30, 50],
+  "/price-watch-subscribe": [10, 30, 50], "/sponsor-apply": [5, 10, 25], "/form": [8, 24, 500],
+  // v5.14: new Rain Print short links only (a repeat of a known code is free).
+  // No mail; the daily total bounds KV writes (two per new id).
+  "/rp-short": [60, 200, 600],
+};
+// Within one Worker isolate the hourly count is exact (JavaScript runs one
+// request at a time), so a burst that lands before KV has caught up is still
+// held to the hourly number on that isolate.
+const RATE_MEM = new Map();
+function ipBucket(ip) {
+  ip = String(ip || "").trim().toLowerCase();
+  if (!ip.includes(":")) return ip;
+  let [head, tail] = ip.split("::");
+  const h = head ? head.split(":") : [], t = tail !== undefined && tail ? tail.split(":") : [];
+  const groups = tail === undefined ? h : h.concat(Array(Math.max(0, 8 - h.length - t.length)).fill("0"), t);
+  return groups.slice(0, 4).map(g => g.replace(/^0+(?=.)/, "")).join(":") + "::/64";
+}
+async function rateLimit(req, env, path) {
+  const lim = RATE[path];
+  if (!lim) return null;
+  const now = new Date();
+  const day = now.toISOString().slice(0, 10).replace(/-/g, ""), hh = String(now.getUTCHours()).padStart(2, "0");
+  const ip = req.headers.get("CF-Connecting-IP") || "";
+  const who = ip ? await hmac16("rate-ip|" + ipBucket(ip), env.UNSUB_SECRET) : "";
+  const deny = () => json({ ok: false, error: "too many requests; try again later" }, 429, cors(req));
+  if (who) {
+    const mk = path + "|" + who + "|" + day + hh;
+    const n = RATE_MEM.get(mk) || 0;
+    if (n >= lim[0]) return deny();
+    if (RATE_MEM.size > 5000) RATE_MEM.clear();
+    RATE_MEM.set(mk, n + 1);
+  }
+  // One key per accepted request (never a counter read and rewritten, which
+  // loses counts when requests race), all of today's under one prefix: a
+  // single list() gives the total for the day, this address's day and hour.
+  const prefix = "rlq:" + path.slice(1) + ":" + day + ":";
+  try {
+    const page = await env.SUBS.list({ prefix, limit: 1000 });
+    const names = page.keys.map(k => k.name);
+    if (names.length >= lim[2] || !page.list_complete) return deny();
+    if (who) {
+      const mine = names.filter(k => k.startsWith(prefix + who + ":"));
+      if (mine.length >= lim[1]) return deny();
+      if (mine.filter(k => k.startsWith(prefix + who + ":" + hh + ":")).length >= lim[0]) return deny();
+    }
+  } catch (e) { /* KV list failed: let the request through rather than lose a real sign-up */ }
+  const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
+  try { await env.SUBS.put(prefix + (who || "-") + ":" + hh + ":" + rnd, "", { expirationTtl: 2 * 86400 }); } catch (e) { /* as above */ }
+  return null;
+}
+
 // v5.4: the daily list's optional fields. A ZIP is exactly five digits or it
 // is not kept; `reports` is a boolean or one of the words a form sends, and
 // anything else means "not given" (null), so the stored value is left alone.
@@ -322,7 +485,8 @@ function subBool(v) {
 }
 function subRecord(email, raw) {
   let r = null;
-  try { r = raw ? JSON.parse(raw) : null; } catch (e) { r = null; }
+  if (raw && typeof raw === "object") r = raw;
+  else try { r = raw ? JSON.parse(raw) : null; } catch (e) { r = null; }
   if (!r || typeof r !== "object") r = {};
   return {
     email,
@@ -349,7 +513,35 @@ async function putSub(env, email, src, zipIn, repIn) {
   const keepZip = zip || subZip(prev.zip);
   if (keepZip) rec.zip = keepZip;
   rec.reports = reports !== null ? reports : prev.reports !== false;
-  await env.SUBS.put("sub:" + email, JSON.stringify(rec));
+  await env.SUBS.put("sub:" + email, JSON.stringify(rec), { metadata: rec });
+}
+
+// v5.13: the daily list from list() alone. Every write of sub:<email> since
+// v5.13 carries the record as KV key metadata, which list() returns with the
+// key, so a page of up to 1,000 readers is ONE KV operation instead of one per
+// reader. A record written before v5.13 has no metadata and is read with
+// get(), exactly as before; it gains metadata the next time it is written.
+function subMetaOk(m) {
+  return !!m && typeof m === "object" && Number.isFinite(m.ts);
+}
+async function subPage(env, cursor, limit) {
+  const page = await env.SUBS.list({ prefix: "sub:", cursor: cursor || undefined, limit: limit || 1000 });
+  const out = [];
+  for (const k of page.keys) {
+    const email = k.name.slice(4);
+    out.push(subRecord(email, subMetaOk(k.metadata) ? k.metadata : await env.SUBS.get(k.name)));
+  }
+  return { out, cursor: page.list_complete ? "" : (page.cursor || "") };
+}
+async function subAll(env) {
+  const out = [];
+  let cursor = "";
+  do {
+    const p = await subPage(env, cursor);
+    out.push(...p.out);
+    cursor = p.cursor;
+  } while (cursor);
+  return out;
 }
 
 // v5.11: notice topics. rent:<state> is one email when NASS puts out the next
@@ -382,8 +574,18 @@ function htmlPage(msg, extraHtml) {
     "<body style=\"font-family:Georgia,serif;max-width:480px;margin:80px auto;" +
     "padding:0 16px;color:#1a1a1a\"><h2>" + msg + "</h2>" + (extraHtml || "") +
     "<p><a href=\"https://agsist.com\">agsist.com</a></p>",
-    { headers: { "Content-Type": "text/html;charset=utf-8" } });
+    { headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
 }
+// v5.13: the confirm, unsubscribe and sponsor pages carry e= and t= in their
+// address. No script, no framing, no referrer, no caching. Inline style
+// attributes and a POST back to this same address are all these pages need.
+const PAGE_HEADERS = {
+  "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "no-referrer",
+  "Cache-Control": "no-store",
+};
 
 // A confirmation link works for 14 days, as the privacy page says. Before
 // 2026-10-06 the confirm routes only checked that the request existed, so an
@@ -402,6 +604,19 @@ const SAPP_DECISIONS = {
   end:     { from: ["live", "approved"], to: "ending", ask: "End this sponsorship and free the slot", button: "End it", done: "Ending" },
 };
 function sappExpired(r) { return r.status === "pending" && pendExpired(r); }
+// v5.13: what the first bytes of a base64 logo really are: "png", "jpeg",
+// "webp", or "" for anything else.
+function logoKind(b64) {
+  let h = "";
+  try { h = atob(String(b64).slice(0, 24)); } catch (e) { return ""; }
+  if (h.startsWith("\x89PNG\r\n\x1a\n")) return "png";
+  if (h.startsWith("\xff\xd8\xff")) return "jpeg";
+  if (h.length >= 12 && h.slice(0, 4) === "RIFF" && h.slice(8, 12) === "WEBP") return "webp";
+  return "";
+}
+// v5.13: a lookup that never answers for Object.prototype's own names
+// (tier "constructor" or "toString" used to pass as a placement).
+function own(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k) ? obj[k] : undefined; }
 
 // v5.8: the site's own forms (were Formspree). [max length, required, type]
 const FORM_KINDS = {
@@ -509,7 +724,7 @@ async function formRateOk(req, env) {
   const ip = req.headers.get("CF-Connecting-IP") || "";
   if (!ip) return true;
   // Only an HMAC of the address is stored, and only for two hours.
-  const h = await hmac16("form-ip|" + ip, env.UNSUB_SECRET || "agsist-form");
+  const h = await hmac16("form-ip|" + ip, env.UNSUB_SECRET);
   const k = "rl:form:" + h + ":" + Math.floor(Date.now() / 3600e3);
   const n = Number(await env.SUBS.get(k)) || 0;
   if (n >= FORM_RATE_MAX) return false;
@@ -517,10 +732,9 @@ async function formRateOk(req, env) {
   return true;
 }
 
-// v5.13: Rain Print short links. rps:<id> = a plain design code, no expiry.
+// v5.14: Rain Print short links. rps:<id> = a plain design code, no expiry.
 const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at 26 bytes: QR version 2, 25 x 25
 const RPS_MAX_BYTES = 1024;
-const RPS_RATE_MAX = 60;                 // new ids per IP per hour; a repeat of a known code is not counted
 const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
 const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
 // The v1 design-code rules of decodeCode (components/rain-print.js): base64url
@@ -561,15 +775,57 @@ function rpsId(v) {
   const id = String(v == null ? "" : v).trim().toUpperCase().replace(/[IL]/g, "1").replace(/O/g, "0");
   return RPS_ID_RE.test(id) ? id : "";
 }
-async function rpsRateOk(req, env) {
-  const ip = req.headers.get("CF-Connecting-IP") || "";
-  if (!ip) return true;
-  const h = await hmac16("rps-ip|" + ip, env.UNSUB_SECRET || "agsist-form");
-  const k = "rl:rps:" + h + ":" + Math.floor(Date.now() / 3600e3);
-  const n = Number(await env.SUBS.get(k)) || 0;
-  if (n >= RPS_RATE_MAX) return false;
-  await env.SUBS.put(k, String(n + 1), { expirationTtl: 7200 });
+
+// v5.14: a cheap brake that costs no KV: per isolate and client address an
+// hour, at most RPS_MEM_MAX.post POSTs (repeats included, which RATE does not
+// count) and RPS_MEM_MAX.miss GETs of an unknown id (someone walking the id
+// space). Past the miss cap every GET from that address answers 429 until
+// the hour turns, so a hit cannot be found by walking ids either.
+const RPS_MEM_MAX = { post: 240, miss: 30 };
+const RPS_MEM = new Map();
+function rpsMemKey(req, kind) {
+  return "rps|" + kind + "|" + ipBucket(req.headers.get("CF-Connecting-IP") || "") + "|" + Math.floor(Date.now() / 3600e3);
+}
+function rpsMemOk(req, kind) {
+  if (!req.headers.get("CF-Connecting-IP")) return true;
+  if (RPS_MEM.size > 5000) RPS_MEM.clear();
+  if (kind === "get") return (RPS_MEM.get(rpsMemKey(req, "miss")) || 0) < RPS_MEM_MAX.miss;
+  const k = rpsMemKey(req, kind), n = RPS_MEM.get(k) || 0;
+  if (n >= RPS_MEM_MAX[kind]) return false;
+  RPS_MEM.set(k, n + 1);
   return true;
+}
+function rpsMemMiss(req) {
+  if (!req.headers.get("CF-Connecting-IP")) return;
+  const k = rpsMemKey(req, "miss");
+  RPS_MEM.set(k, (RPS_MEM.get(k) || 0) + 1);
+}
+
+// v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code and the portal link's
+// r= are both readable in the public repo, so neither proves who is asking.
+// Sig's portal link now also carries k = hmac16("sponsor-portal|" + r) under
+// UNSUB_SECRET (sponsor-report.html?r=<slug>-<token>&k=<16 hex>), and the page
+// posts r and k with every request. An Approval without a k that matches its
+// r is refused (400), so the page falls back to its written-out email, which
+// comes from the sponsor's own address. Every other request is still taken,
+// marked verified yes/no. The Subject is built here, never taken from the post.
+const SPONSOR_R_RE = /^[a-z0-9][a-z0-9-]{1,79}$/;
+async function sponsorKey(env, r) {
+  return hmac16("sponsor-portal|" + r, env.UNSUB_SECRET);
+}
+async function sponsorFeedback(env, b, rec) {
+  const r = String(b.r == null ? "" : b.r).trim().toLowerCase();
+  const k = String(b.k == null ? "" : b.k).trim().toLowerCase();
+  const verified = !!env.UNSUB_SECRET && SPONSOR_R_RE.test(r) && /^[0-9a-f]{16}$/.test(k) && safeEq(k, await sponsorKey(env, r));
+  const approval = /^approv/i.test(rec.request || "");
+  if (approval && !verified) return { error: "this approval needs the link Sig sent you" };
+  if (SPONSOR_R_RE.test(r)) rec.r = r;
+  rec.verified = verified ? "yes" : "no";
+  const who = oneLine(rec.sponsor || rec.r || "unknown sponsor", 80);
+  rec.subject = approval
+    ? "Approved: " + who + " ad, proof " + oneLine(rec.proof || "-", 40) + " (verified link " + r + ")"
+    : (verified ? "" : "[unverified link] ") + "AGSIST portal: " + oneLine(rec.request, 60) + " (" + who + ")";
+  return {};
 }
 
 async function noticeCounts(env) {
@@ -589,7 +845,26 @@ async function formCounts(env) {
 }
 
 export default {
+  // v5.13: one place that turns a missing UNSUB_SECRET into a clear refusal.
   async fetch(req, env) {
+    try {
+      return await handle(req, env);
+    } catch (e) {
+      if (!(e instanceof NoSecretError)) throw e;
+      console.error("agsist-subs: " + e.message);
+      // The link pages (confirm, unsubscribe, sponsor) answer in HTML; the page
+      // POSTs and the token routes in JSON.
+      const u = new URL(req.url);
+      if (!PUBLIC_POSTS.has(u.pathname) && !u.searchParams.has("token") && !req.headers.get("Authorization"))
+        return new Response("<!doctype html><meta charset=utf-8><title>AGSIST</title><h2>This page is not working right now. Try again later.</h2>",
+          { status: 503, headers: Object.assign({ "Content-Type": "text/html;charset=utf-8" }, PAGE_HEADERS) });
+      return json({ ok: false, error: "temporarily unavailable" }, 503, cors(req));
+    }
+  },
+};
+
+async function handle(req, env) {
+  {
     const url = new URL(req.url);
     const path = url.pathname;
 
@@ -600,10 +875,16 @@ export default {
         status: 204,
         headers: Object.assign({
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Accept",
+          "Access-Control-Allow-Headers": "Content-Type, Accept, Authorization",
           "Access-Control-Max-Age": "86400",
         }, cors(req)),
       });
+    }
+
+    // v5.13: origin and content type, before any public POST reads its body.
+    if (req.method === "POST" && PUBLIC_POSTS.has(path)) {
+      const refused = publicGate(req, path);
+      if (refused) return refused;
     }
 
     // ---------- daily briefing: subscribe ----------
@@ -625,6 +906,8 @@ export default {
       if (trap) return json({ ok: true }, 200, cors(req));
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       await putSub(env, email, src, zipIn, repIn);
       return json({ ok: true }, 200, cors(req));
     }
@@ -649,6 +932,8 @@ export default {
       if (!r || typeof r !== "object" || !r.t || typeof r.t !== "object") r = { ts: Date.now(), t: {} };
       if (!(topic in r.t) && Object.keys(r.t).length >= NOTE_MAX)
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       if (!(topic in r.t)) r.t[topic] = { ts: Date.now(), src };
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
@@ -660,7 +945,7 @@ export default {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
       const one = url.searchParams.get("topic") ? noticeTopic(url.searchParams.get("topic"), true) : "";
-      const valid = EMAIL_RE.test(e) && t === await hmac16(e, env.UNSUB_SECRET);
+      const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       if (!valid || one === null) return htmlPage("That unsubscribe link isn't valid.");
       if (req.method === "GET") {
         const action = path + "?e=" + encodeURIComponent(e) + "&t=" + encodeURIComponent(t) + (one ? "&topic=" + encodeURIComponent(one) : "");
@@ -688,16 +973,19 @@ export default {
     if (path === "/alert-subscribe" && req.method === "POST") {
       let b = {};
       try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
       if (b._gotcha) return json({ ok: true }, 200, cors(req));
       const email = String(b.email || "").trim().toLowerCase();
       const lat = Number(b.lat), lon = Number(b.lon);
       let radius = Number(b.radius_mi) || 5;
       if (![1, 5, 10, 25].includes(radius)) radius = 5;
-      const place = String(b.place || "").slice(0, 120);
+      const place = oneLine(b.place, 120);
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       if (!(lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66))
         return json({ ok: false, error: "pin outside the continental US" }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       await env.SUBS.put("alert:" + email, JSON.stringify(
         { lat: +lat.toFixed(4), lon: +lon.toFixed(4), place, radius_mi: radius, ts: Date.now() }));
       return json({ ok: true }, 200, cors(req));
@@ -711,7 +999,7 @@ export default {
     if (path === "/unsubscribe" || path === "/alert-unsubscribe") {
       const e = (url.searchParams.get("e") || "").trim().toLowerCase();
       const t = url.searchParams.get("t") || "";
-      const valid = EMAIL_RE.test(e) && t === await hmac16(e, env.UNSUB_SECRET);
+      const valid = EMAIL_RE.test(e) && await unsubOk(env, e, t);
       const isAlert = path === "/alert-unsubscribe";
 
       if (!valid) return htmlPage("That unsubscribe link isn't valid.");
@@ -754,6 +1042,7 @@ export default {
     if (path === "/watch-subscribe" && req.method === "POST") {
       let b = {};
       try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
       if (b._gotcha) return json({ ok: true }, 200, cors(req));
       const email = String(b.email || "").trim().toLowerCase();
       const fips = String(b.fips || "").trim();
@@ -761,6 +1050,8 @@ export default {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       if (!/^\d{5}$/.test(fips))
         return json({ ok: false, error: "invalid county" }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       const r = await getWatch(email);
       const now = Date.now();
       for (const f of Object.keys(r.pend)) if (now - r.pend[f].ts > PEND_TTL) delete r.pend[f];
@@ -781,8 +1072,9 @@ export default {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/watch-confirm";
       const fOk = conf ? /^\d{5}$/.test(f) : (f === "" || /^\d{5}$/.test(f));
-      const want = await hmac16(e + (conf ? "|c|" + f : (f ? "|w|" + f : "|w")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && fOk && t === want)) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|c|" + f, env.UNSUB_SECRET)) : await unsubOk(env, e + (f ? "|w|" + f : "|w"), t);
+      if (!(EMAIL_RE.test(e) && fOk && tokOk)) return htmlPage("That link isn't valid.");
       const action = path + "?e=" + encodeURIComponent(e) + (f ? "&f=" + f : "") + "&t=" + encodeURIComponent(t);
       if (req.method === "GET") {
         return htmlPage(
@@ -811,18 +1103,29 @@ export default {
     }
 
     // ---------- authed routes ----------
-    const token = url.searchParams.get("token") || "";
-    const authed = env.LIST_TOKEN && token === env.LIST_TOKEN;
+    // v5.13: the token may also come as "Authorization: Bearer <token>", so the
+    // scripts can stop putting it in the address. ?token= still works.
+    const bearer = /^Bearer\s+(\S+)\s*$/i.exec(req.headers.get("Authorization") || "");
+    const token = bearer ? bearer[1] : (url.searchParams.get("token") || "");
+    const authed = !!env.LIST_TOKEN && safeEq(token, env.LIST_TOKEN);
 
     if (path === "/list" && req.method === "GET") {
       if (!authed) return json({ ok: false }, 403);
-      const keys = await listKeys(env, "sub:");
       if (url.searchParams.get("format") === "json") {
         // v5.4: one record per address, for the per-reader email.
-        const out = [];
-        for (const k of keys) out.push(subRecord(k.slice(4), await env.SUBS.get(k)));
-        return json(out, 200, { "Access-Control-Allow-Origin": "*" });
+        // v5.13: read from key metadata (see subPage). With &limit= (1..1000)
+        // or &cursor=, one page: the same array, and the next page's cursor in
+        // the X-Next-Cursor header ("" on the last page). Without either, the
+        // whole list, exactly as before.
+        const cors_ = { "Access-Control-Allow-Origin": "*", "Access-Control-Expose-Headers": "X-Next-Cursor" };
+        if (url.searchParams.has("limit") || url.searchParams.has("cursor")) {
+          const lim = Math.min(1000, Math.max(1, parseInt(url.searchParams.get("limit"), 10) || 1000));
+          const p = await subPage(env, url.searchParams.get("cursor") || "", lim);
+          return json(p.out, 200, Object.assign({ "X-Next-Cursor": p.cursor }, cors_));
+        }
+        return json(await subAll(env), 200, cors_);
       }
+      const keys = await listKeys(env, "sub:");
       return new Response(keys.map(k => k.slice(4)).join("\n"),
         { headers: { "Content-Type": "text/plain;charset=utf-8",
                      "Access-Control-Allow-Origin": "*" } });
@@ -831,11 +1134,10 @@ export default {
     if (path === "/count" && req.method === "GET") {
       // v5.4: totals for the private dashboard. Counts only, no addresses.
       if (!authed) return json({ ok: false }, 403);
-      const subs = await listKeys(env, "sub:");
+      const subs = await subAll(env);   // v5.13: metadata, as /list
       let withZip = 0;
       const bySource = {};
-      for (const k of subs) {
-        const r = subRecord(k.slice(4), await env.SUBS.get(k));
+      for (const r of subs) {
         if (r.zip) withZip++;
         const s = r.src || "(none)";
         bySource[s] = (bySource[s] || 0) + 1;
@@ -849,6 +1151,8 @@ export default {
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
         by_source: bySource,
+        // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
+        secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
         // v5.8: stored form posts per kind. Counts only.
         forms: await formCounts(env),
         // v5.11: one-time notices: addresses, and sign-ups per topic.
@@ -968,7 +1272,7 @@ export default {
       const ewid = String(b.ewid || "").trim().toLowerCase();
       const crop = String(b.crop || "").trim().toLowerCase();
       const period = String(b.period || "").trim().toLowerCase();
-      const plabel = String(b.plabel || "").trim();
+      const plabel = oneLine(b.plabel, 41);
       if (!/^[a-f0-9]{8,16}$/.test(ewid)) return { error: "invalid elevator id" };
       if (!ECROPS.includes(crop)) return { error: "invalid crop" };
       if (!/^[a-z0-9][a-z0-9\/-]{1,23}$/.test(period)) return { error: "invalid period" };
@@ -1006,10 +1310,11 @@ export default {
     if (path === "/elevator-watch-subscribe" && req.method === "POST") {
       let b = {};
       try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
       if (b._gotcha) return json({ ok: true }, 200, cors(req));
       const email = String(b.email || "").trim().toLowerCase();
       const wid = String(b.wid || "").trim().toLowerCase();
-      const label = String(b.label || "").trim().slice(0, 120);
+      const label = oneLine(b.label, 120);
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       if (!/^[a-f0-9]{8,16}$/.test(wid))
@@ -1018,6 +1323,8 @@ export default {
         return json({ ok: false, error: "invalid label" }, 400, cors(req));
       const ev = eValidate(b);
       if (ev.error) return json({ ok: false, error: ev.error }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       const r = await getEWatch(email);
       const now = Date.now();
       for (const w of Object.keys(r.pend)) if (now - r.pend[w].ts > EPEND_TTL) delete r.pend[w];
@@ -1038,8 +1345,9 @@ export default {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/elevator-watch-confirm";
       const wOk = conf ? /^[a-f0-9]{8,16}$/.test(w) : (w === "" || /^[a-f0-9]{8,16}$/.test(w));
-      const want = await hmac16(e + (conf ? "|ec|" + w : (w ? "|ew|" + w : "|ew")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && wOk && t === want)) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|ec|" + w, env.UNSUB_SECRET)) : await unsubOk(env, e + (w ? "|ew|" + w : "|ew"), t);
+      if (!(EMAIL_RE.test(e) && wOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getEWatch(e);
       const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
       const action = path + "?e=" + encodeURIComponent(e) + (w ? "&w=" + w : "") + "&t=" + encodeURIComponent(t);
@@ -1132,13 +1440,14 @@ export default {
     if (path === "/price-watch-subscribe" && req.method === "POST") {
       let b = {};
       try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
       if (b._gotcha) return json({ ok: true }, 200, cors(req));
       const email = String(b.email || "").trim().toLowerCase();
       const pid = String(b.pid || "").trim().toLowerCase();
       const symbol = String(b.symbol || "").trim().toLowerCase();
       const direction = String(b.direction || "").trim().toLowerCase();
       const target_cents = Number(b.target_cents);
-      const label = String(b.label || "").trim().slice(0, 120);
+      const label = oneLine(b.label, 120);
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       if (!/^[a-f0-9]{8,16}$/.test(pid))
@@ -1151,6 +1460,8 @@ export default {
         return json({ ok: false, error: "invalid target" }, 400, cors(req));
       if (!label)
         return json({ ok: false, error: "invalid label" }, 400, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       const r = await getPWatch(email);
       const now = Date.now();
       for (const p of Object.keys(r.pend)) if (now - r.pend[p].ts > PPEND_TTL) delete r.pend[p];
@@ -1171,8 +1482,9 @@ export default {
       const t = url.searchParams.get("t") || "";
       const conf = path === "/price-watch-confirm";
       const pOk = conf ? /^[a-f0-9]{8,16}$/.test(p) : (p === "" || /^[a-f0-9]{8,16}$/.test(p));
-      const want = await hmac16(e + (conf ? "|pc|" + p : (p ? "|pw|" + p : "|pw")), env.UNSUB_SECRET);
-      if (!(EMAIL_RE.test(e) && pOk && t === want)) return htmlPage("That link isn't valid.");
+      // v5.13: a confirm needs the secret (503 without it); a stop link always works (unsubOk).
+      const tokOk = conf ? safeEq(t, await hmac16(e + "|pc|" + p, env.UNSUB_SECRET)) : await unsubOk(env, e + (p ? "|pw|" + p : "|pw"), t);
+      if (!(EMAIL_RE.test(e) && pOk && tokOk)) return htmlPage("That link isn't valid.");
       const rPeek = await getPWatch(e);
       const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
       const action = path + "?e=" + encodeURIComponent(e) + (p ? "&p=" + p : "") + "&t=" + encodeURIComponent(t);
@@ -1256,7 +1568,8 @@ export default {
       for (const raw of body.split(/[\n,]/)) {
         const e = raw.trim().toLowerCase();
         if (EMAIL_RE.test(e) && e.length <= 254) {
-          await env.SUBS.put("sub:" + e, JSON.stringify({ ts: Date.now(), src: "import" }));
+          const rec = { ts: Date.now(), src: "import" };
+          await env.SUBS.put("sub:" + e, JSON.stringify(rec), { metadata: rec });
           added++;
         } else if (e) skipped++;
       }
@@ -1268,14 +1581,15 @@ export default {
     if (path === "/sponsor-apply" && req.method === "POST") {
       let b = {};
       try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (!b || typeof b !== "object" || Array.isArray(b)) b = {};
       if (b._gotcha) return json({ ok: true }, 200, cors(req));
       const bad = (m) => json({ ok: false, error: m }, 400, cors(req));
-      const str = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+      const str = (v, n) => oneLine(v, n);
       const tier = String(b.tier || "");
-      if (!SAPP_TIERS[tier]) return bad("pick a placement");
+      if (!own(SAPP_TIERS, tier)) return bad("pick a placement");
       let slot = String(b.slot || "").trim().toLowerCase();
       if (tier === "page" && !/^[a-z0-9][a-z0-9-]{1,59}$/.test(slot)) return bad("pick a page");
-      if (tier !== "page") slot = SAPP_TIERS[tier];
+      if (tier !== "page") slot = own(SAPP_TIERS, tier);
       const email = String(b.email || "").trim().toLowerCase();
       if (!EMAIL_RE.test(email) || email.length > 254) return bad("invalid email");
       const company = str(b.company, 80), contact = str(b.contact, 80), phone = str(b.phone, 30);
@@ -1292,22 +1606,38 @@ export default {
         const m = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(b.logo));
         if (!m) return bad("the logo must be a PNG, JPG or WebP image");
         if (Math.floor(m[2].length * 3 / 4) > 250 * 1024) return bad("the logo is over 250 KB");
-        logo = String(b.logo);
+        // v5.13: the bytes must really be a PNG, JPEG or WebP image, whatever
+        // the data URL says. A real image sent under the wrong one of the three
+        // names is relabelled, so the file the job writes gets the right ending.
+        const kind = logoKind(m[2]);
+        if (!kind) return bad("the logo must be a PNG, JPG or WebP image");
+        logo = kind === m[1] ? String(b.logo) : "data:image/" + kind + ";base64," + m[2];
       }
       // At most 3 open applications per address: a typo'd resubmit is fine, a flood is not.
-      let open = 0;
-      for (const k of await listKeys(env, "sapp:")) {
+      // v5.13: counted from a small per-address index (sapp-by:<email>, the
+      // ids this address applied with), not by reading every application on
+      // file. An application made before v5.13 is not in an index; those are
+      // at most 14 days from expiring, so the cap is briefly a little looser.
+      const idxKey = "sapp-by:" + email;
+      let idx = [];
+      try { idx = JSON.parse(await env.SUBS.get(idxKey) || "[]"); } catch (e) { idx = []; }
+      if (!Array.isArray(idx)) idx = [];
+      const openIds = [];
+      for (const oid of idx.filter(x => /^[0-9a-f]{12}$/.test(String(x))).slice(-10)) {
         try {
-          const r = JSON.parse(await env.SUBS.get(k) || "{}");
-          if (r.email === email && (r.status === "pending" || r.status === "confirmed") && !sappExpired(r)) open++;
+          const r = JSON.parse(await env.SUBS.get("sapp:" + oid) || "null");
+          if (r && r.email === email && (r.status === "pending" || r.status === "confirmed") && !sappExpired(r)) openIds.push(oid);
         } catch (e) { /* skip */ }
       }
-      if (open >= 3) return json({ ok: false, error: "you already have 3 open applications; reply to the email you got" }, 429, cors(req));
+      if (openIds.length >= 3) return json({ ok: false, error: "you already have 3 open applications; reply to the email you got" }, 429, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       const id = [...crypto.getRandomValues(new Uint8Array(6))].map(x => x.toString(16).padStart(2, "0")).join("");
       const rec = { id, ts: Date.now(), status: "pending", m: 0, notified: 0, tier, slot, company, contact,
                     email, phone, headline, body, url: link, logo_len: logo.length };
       await env.SUBS.put("sapp:" + id, JSON.stringify(rec));
       if (logo) await env.SUBS.put("sapp-logo:" + id, logo);
+      await env.SUBS.put(idxKey, JSON.stringify(openIds.concat(id)), { expirationTtl: 90 * 86400 });
       return json({ ok: true, id }, 200, cors(req));
     }
 
@@ -1316,14 +1646,14 @@ export default {
       const t = String(url.searchParams.get("t") || "");
       const confirm = path === "/sponsor-confirm";
       const d = confirm ? "" : String(url.searchParams.get("d") || "");
-      if (!/^[0-9a-f]{12}$/.test(id) || (!confirm && !SAPP_DECISIONS[d]) || !env.UNSUB_SECRET)
+      if (!/^[0-9a-f]{12}$/.test(id) || (!confirm && !own(SAPP_DECISIONS, d)) || !env.UNSUB_SECRET)
         return htmlPage("This link isn't valid.");
       const want = await hmac16(id + (confirm ? "|sc" : "|sd|" + d), env.UNSUB_SECRET);
-      if (t !== want) return htmlPage("This link isn't valid.");
+      if (!safeEq(t, want)) return htmlPage("This link isn't valid.");
       const raw = await env.SUBS.get("sapp:" + id);
       const r = raw ? JSON.parse(raw) : null;
       if (!r) return htmlPage("This application is no longer on file.");
-      const what = escHtml(r.company) + " &middot; " + escHtml(SAPP_LABEL[r.tier] || r.tier) +
+      const what = escHtml(r.company) + " &middot; " + escHtml(own(SAPP_LABEL, r.tier) || r.tier) +
                    (r.tier === "page" ? " (" + escHtml(r.slot) + ")" : "");
       if (confirm) {
         if (r.status !== "pending") return htmlPage("Already confirmed. Sig will be in touch.");
@@ -1391,11 +1721,11 @@ export default {
       return json({ ok: true });
     }
 
-    // ---------- v5.13: Rain Print short links ----------
+    // ---------- v5.14: Rain Print short links ----------
+    // publicGate (Origin, JSON) has already run: /rp-short is in PUBLIC_POSTS.
     if (path === "/rp-short" && req.method === "POST") {
       const c = cors(req);
-      const origin = req.headers.get("Origin") || "";
-      if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, c);
+      if (!rpsMemOk(req, "post")) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
       if (Number(req.headers.get("Content-Length") || 0) > RPS_MAX_BYTES)
         return json({ ok: false, error: "too large" }, 413, c);
       let raw = "";
@@ -1411,7 +1741,9 @@ export default {
         const id = full.slice(0, len), have = await env.SUBS.get("rps:" + id);
         if (have === code) return json({ ok: true, id }, 200, c);
         if (have === null) {
-          if (!(await rpsRateOk(req, env))) return json({ ok: false, error: "too many links; try again in an hour" }, 429, c);
+          // Only a new id is counted (RATE["/rp-short"]); a repeat writes nothing.
+          const slow = await rateLimit(req, env, path);
+          if (slow) return slow;
           await env.SUBS.put("rps:" + id, code);
           return json({ ok: true, id }, 200, c);
         }
@@ -1420,20 +1752,26 @@ export default {
     }
 
     if (path.startsWith("/rp-short/") && req.method === "GET") {
-      const c = cors(req);
+      const c = Object.assign({ "Vary": "Origin", "X-Content-Type-Options": "nosniff" }, cors(req));
       let seg = "";
       try { seg = decodeURIComponent(path.slice("/rp-short/".length)); } catch (e) { seg = ""; }
       const id = rpsId(seg);
-      const code = id ? await env.SUBS.get("rps:" + id) : null;
-      if (!code) return json({ ok: false, error: "not found" }, 404, c);
-      return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=86400" }, c));
+      if (!id) return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "public, max-age=86400" }, c));
+      if (!rpsMemOk(req, "get")) return json({ ok: false, error: "too many requests; try again later" }, 429, Object.assign({ "Cache-Control": "no-store" }, c));
+      const code = await env.SUBS.get("rps:" + id);
+      // An id never changes its code once written, so a hit may be cached for
+      // a week; a miss is not cached (the id may be made a moment later).
+      if (typeof code !== "string" || !rpsCodeOk(code)) {
+        rpsMemMiss(req);
+        return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "no-store" }, c));
+      }
+      return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=604800, immutable" }, c));
     }
 
     // ---------- v5.8: the site's own forms ----------
     if (path === "/form" && req.method === "POST") {
       const c = cors(req);
-      const origin = req.headers.get("Origin") || "";
-      if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, c);
+      // v5.13: the Origin check that was here is now publicGate, for every public POST.
       if (Number(req.headers.get("Content-Length") || 0) > FORM_MAX_BYTES)
         return json({ ok: false, error: "too large" }, 413, c);
       let raw = "";
@@ -1447,7 +1785,13 @@ export default {
       if (!Object.prototype.hasOwnProperty.call(FORM_KINDS, kind)) return json({ ok: false, error: "unknown form" }, 400, c);
       const v = formClean(kind, b);
       if (v.error) return json({ ok: false, error: v.error }, 400, c);
+      if (kind === "sponsor-feedback") {
+        const sf = await sponsorFeedback(env, b, v.rec);
+        if (sf.error) return json({ ok: false, error: sf.error }, 400, c);
+      }
       if (!(await formRateOk(req, env))) return json({ ok: false, error: "too many posts; try again in an hour" }, 429, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
       const ts = Date.now();
       const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
       await env.SUBS.put("form:" + kind + ":" + ts + ":" + rnd,
@@ -1495,5 +1839,5 @@ export default {
     }
 
     return json({ ok: false, error: "not found" }, 404);
-  },
-};
+  }
+}

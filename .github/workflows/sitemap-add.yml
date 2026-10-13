@@ -43,11 +43,22 @@ jobs:
           python-version: "3.11"
 
       - name: Add to sitemap
+        env:
+          IN_URLS: ${{ github.event.inputs.urls }}
+          IN_PRIORITY: ${{ github.event.inputs.priority }}
+          IN_CHANGEFREQ: ${{ github.event.inputs.changefreq }}
         run: |
+          read -r -a URLS <<< "$IN_URLS"
+          for u in "${URLS[@]}"; do
+            printf '%s' "$u" | grep -Eq '^https://agsist\.com/[A-Za-z0-9._~/%-]*$' \
+              || { echo "::error::urls must be https://agsist.com/... paths"; exit 1; }
+          done
+          printf '%s' "$IN_PRIORITY" | grep -Eq '^(0(\.[0-9]{1,2})?|1(\.0+)?)$' || { echo "::error::priority must be 0.0-1.0"; exit 1; }
+          printf '%s' "$IN_CHANGEFREQ" | grep -Eq '^(monthly|weekly|daily|yearly|never)$' || { echo "::error::bad changefreq"; exit 1; }
           python scripts/update_sitemap.py \
-            --add ${{ github.event.inputs.urls }} \
-            --priority "${{ github.event.inputs.priority }}" \
-            --changefreq "${{ github.event.inputs.changefreq }}" \
+            --add "${URLS[@]}" \
+            --priority "$IN_PRIORITY" \
+            --changefreq "$IN_CHANGEFREQ" \
             --out /tmp/bumped.txt
 
       - name: Verify XML still parses
@@ -65,12 +76,14 @@ jobs:
           PY
 
       - name: Commit
+        env:
+          IN_URLS: ${{ github.event.inputs.urls }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sitemap.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "sitemap: add ${{ github.event.inputs.urls }}"
+          git commit -m "sitemap: add $IN_URLS"
           git pull --rebase --autostash origin main || true
           git push
 

@@ -26,6 +26,9 @@ on:
         required: false
         default: 'HEAD~1'
 
+permissions:
+  contents: read
+
 jobs:
   preship:
     runs-on: ubuntu-latest
@@ -33,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 2          # HEAD and HEAD~1; the baseline is fetched on its own below
 
       - uses: actions/setup-node@v4
@@ -51,10 +55,16 @@ jobs:
       # plus a few bot commits, render nothing, and pass in 2 seconds.
       - name: Pick the baseline
         id: base
+        env:
+          IN_BASE: ${{ github.event.inputs.base }}
+          PUSH_BEFORE: ${{ github.event.before }}
         run: |
-          B="${{ github.event.inputs.base }}"
-          [ -z "$B" ] && B="${{ github.event.before }}"
+          B="$IN_BASE"
+          [ -z "$B" ] && B="$PUSH_BEFORE"
           if [ -z "$B" ] || [ "$B" = "0000000000000000000000000000000000000000" ]; then B="HEAD~1"; fi
+          if ! printf '%s' "$B" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._/~^-]*$'; then
+            echo "::error::base must be a git ref or sha"; exit 1
+          fi
           if [ "$B" != "HEAD~1" ] && ! git cat-file -e "$B^{commit}" 2>/dev/null; then
             git fetch --no-tags --depth=1 origin "$B" || B="HEAD~1"
           fi
@@ -70,9 +80,11 @@ jobs:
           python3 scripts/site_voice_lint.py --check
 
       - name: Run preship
+        env:
+          BASE_REF: ${{ steps.base.outputs.ref }}
         run: |
           node scripts/preship.mjs \
-            --git-base "${{ steps.base.outputs.ref }}" \
+            --git-base "$BASE_REF" \
             --budget 20 \
             --json preship-report.json
 

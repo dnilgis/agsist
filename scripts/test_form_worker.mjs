@@ -1,8 +1,8 @@
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
-// and the v5.13 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
+// and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-form-test-' + process.pid + '.mjs');
 fs.copyFileSync(src, tmp);
@@ -52,7 +52,10 @@ r = await post(Object.assign({}, claim, { _gotcha: 'x', email: 'bot@x.com' }));
 A(r.status === 200 && forms().length === before, 'honeypot: ok answer, nothing stored');
 
 // sponsor feedback keeps line breaks, email optional
-r = await post({ kind: 'sponsor-feedback', request: 'Approval', sponsor: 'Apex', proof: 'AB12', message: 'Line one\r\nLine two', subject: 'Approved' });
+// v5.13: an approval must carry the portal link's r and its key k = hmac16("sponsor-portal|" + r)
+const skey = (r_) => crypto.createHmac('sha256', 'sec').update(('sponsor-portal|' + r_).toLowerCase()).digest('hex').slice(0, 16);
+const R1 = 'apex-c1c1e09865171cd1';
+r = await post({ kind: 'sponsor-feedback', request: 'Approval', sponsor: 'Apex', proof: 'AB12', message: 'Line one\r\nLine two', subject: 'Approved', r: R1, k: skey(R1) });
 A(r.status === 200, 'sponsor feedback stored');
 rec = JSON.parse(store.get(forms().find(x => x.startsWith('form:sponsor-feedback:'))));
 A(rec.message === 'Line one\nLine two' && !('email' in rec), 'message keeps lines; no email key');
@@ -236,7 +239,82 @@ A(r.status === 200 && j.length === rbCount && j.every(x => x.kind === 'rain-prin
 r = await call('/count?token=tok'); j = await r.json();
 A(j.forms['rain-print-business'] === rbCount && j.forms.claim === 2 && j.forms['sponsor-feedback'] === 1, '/count forms rain-print-business ' + JSON.stringify(j.forms));
 
-// ---------- v5.13: Rain Print short links ----------
+// ───────────── v5.13: the sponsor approval box (M4) ─────────────
+const sfKeys = () => forms().filter(x => x.startsWith('form:sponsor-feedback:'));
+const sfNew = (before) => { const k = sfKeys().filter(x => !before.includes(x)); A(k.length === 1, 'exactly one new sponsor record'); return JSON.parse(store.get(k[0])); };
+const appr = { kind: 'sponsor-feedback', request: 'Approval', sponsor: 'Apex Insurance Group', proof: 'd9f2ad22', message: 'I approve proof d9f2ad22.',
+  subject: 'Approved: Apex Insurance Group ad, proof d9f2ad22' };
+let sfb = sfKeys();
+for (const [patch, why] of [[{}, 'no r and no k (an old link, or a forgery built from the public repo)'], [{ r: R1 }, 'r without k'],
+    [{ r: R1, k: '0000000000000000' }, 'a made-up k'], [{ r: R1, k: skey('other-0000000000000000') }, "another sponsor's k"],
+    [{ r: R1, k: skey(R1).slice(0, 15) }, 'a k one character short'], [{ r: R1, k: skey(R1) + '0' }, 'a k one character long'],
+    [{ r: 'Apex C1!', k: skey('apex c1!') }, 'a junk r'], [{ request: 'approve', r: R1 }, 'lower-case "approve" without k'],
+    [{ request: 'APPROVAL please', k: skey(R1) }, 'k without r']]) {
+  r = await post(Object.assign({}, appr, patch)); j = await r.json();
+  A(r.status === 400 && j.ok === false && /link Sig sent/.test(j.error), 'forged approval refused: ' + why);
+}
+A(sfKeys().length === sfb.length, 'a refused approval stores nothing');
+r = await post(Object.assign({}, appr, { r: R1, k: skey(R1) })); A(r.status === 200, 'an approval from the real link is taken');
+rec = sfNew(sfb);
+A(rec.verified === 'yes' && rec.r === R1 && !('k' in rec), 'stored as verified, with r, without k');
+A(rec.subject === 'Approved: Apex Insurance Group ad, proof d9f2ad22 (verified link ' + R1 + ')', 'the subject is built by the worker ' + rec.subject);
+sfb = sfKeys();
+r = await post(Object.assign({}, appr, { r: R1.toUpperCase(), k: skey(R1).toUpperCase() })); A(r.status === 200 && sfNew(sfb).verified === 'yes', 'r and k are not case-sensitive');
+sfb = sfKeys();
+r = await post({ kind: 'sponsor-feedback', request: 'Send a note', sponsor: 'Apex', message: 'Call me', subject: 'Approved: Apex ad, proof d9f2ad22' });
+A(r.status === 200, 'a note from an old link is still taken');
+rec = sfNew(sfb);
+A(rec.verified === 'no' && rec.subject === '[unverified link] AGSIST portal: Send a note (Apex)', 'a note from an old link is marked unverified, and its own subject is not used ' + rec.subject);
+sfb = sfKeys();
+r = await post({ kind: 'sponsor-feedback', request: 'Cancel', sponsor: 'Apex', message: 'Stop', r: R1, k: skey(R1) });
+rec = sfNew(sfb); A(rec.verified === 'yes' && rec.subject === 'AGSIST portal: Cancel (Apex)', 'a request from the real link is marked verified');
+sfb = sfKeys();
+r = await post({ kind: 'sponsor-feedback', request: 'Cancel\r\nBcc: x', sponsor: 'Apex\r\nInc', message: 'Stop', subject: 'x\r\nBcc: y@evil.example' });
+rec = sfNew(sfb); A(!/[\r\n]/.test(rec.subject) && !rec.subject.includes('evil'), 'the subject never carries a line break or the visitor subject ' + JSON.stringify(rec.subject));
+{
+  const env2 = Object.assign({}, env, { UNSUB_SECRET: '' });
+  const r2 = await w.fetch(new Request('https://x.dev/form', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com' },
+    body: JSON.stringify(Object.assign({}, appr, { r: R1, k: crypto.createHmac('sha256', '').update('x').digest('hex').slice(0, 16) })) }), env2);
+  A(r2.status === 400, 'with no UNSUB_SECRET no approval can verify');
+}
+
+// ───────────── v5.13: gate, shared limit and one-line fields on /form ─────────────
+r = await post(claim, { 'Content-Type': 'text/plain' }); A(r.status === 415, '/form: text/plain refused (it would skip the preflight)');
+r = await post(claim, { Origin: 'https://www.agsist.com' }); A(r.status === 200, '/form: www.agsist.com is an AGSIST page');
+let rbB = rpKeys();
+r = await post(Object.assign({}, rp, { name: 'Jane\r\nBcc: x@evil.example\u0000' })); A(r.status === 200, 'order with a line break in the name');
+A(JSON.parse(store.get(newKey(rbB))).name === 'Jane  Bcc: x@evil.example', 'the name is one line (each control character a space)');
+{
+  // the shared limiter's daily total for /form (500), from any number of addresses
+  const store3 = new Map(), opts3 = new Map();
+  const env3 = Object.assign({}, env, { SUBS: { async get(k) { return store3.has(k) ? store3.get(k) : null; }, async put(k, v, o) { store3.set(k, v); opts3.set(k, o || null); },
+    async delete(k) { store3.delete(k); }, async list({ prefix }) { return { keys: [...store3.keys()].filter(k => k.startsWith(prefix)).sort().map(name => ({ name })), list_complete: true }; } } });
+  const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  for (let i = 0; i < 500; i++) store3.set(`rlq:form:${day}:${String(i).padStart(16, '0')}:00:${String(i).padStart(8, '0')}`, '');
+  const p3 = (h) => w.fetch(new Request('https://x.dev/form', { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json', Origin: 'https://agsist.com' }, h),
+    body: JSON.stringify({ kind: 'atlas-feedback', email: 'cap@farm.com' }) }), env3);
+  r = await p3({ 'CF-Connecting-IP': '203.0.113.50' });
+  A(r.status === 429 && ![...store3.keys()].some(k => k.startsWith('form:')), '/form: the 501st post of the day is refused');
+  store3.clear();
+  r = await p3({ 'CF-Connecting-IP': '203.0.113.51' });
+  const rk = [...store3.keys()].find(k => k.startsWith('rlq:form:'));
+  A(r.status === 200 && rk && opts3.get(rk).expirationTtl === 172800, '/form: a taken post leaves one shared rate key that expires');
+  A([...store3.keys()].some(k => k.startsWith('rl:form:')), '/form: the v5.8 hourly counter still runs beside it');
+}
+{
+  // no UNSUB_SECRET: the IP cannot be hashed, so the post is refused rather than hashed with a public constant
+  const store4 = new Map();
+  const env4 = { LIST_TOKEN: 'tok', SUBS: { async get(k) { return store4.has(k) ? store4.get(k) : null; }, async put(k, v) { store4.set(k, v); },
+    async delete(k) { store4.delete(k); }, async list({ prefix }) { return { keys: [...store4.keys()].filter(k => k.startsWith(prefix)).map(name => ({ name })), list_complete: true }; } } };
+  const errs = []; const ce = console.error; console.error = (m) => errs.push(String(m));
+  r = await w.fetch(new Request('https://x.dev/form', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '203.0.113.60' },
+    body: JSON.stringify({ kind: 'atlas-feedback', email: 'a@farm.com' }) }), env4);
+  console.error = ce;
+  A(r.status === 503 && store4.size === 0, '/form without UNSUB_SECRET: 503, nothing stored');
+  A(errs.some(m => /UNSUB_SECRET is not set/.test(m)), 'and the Worker log says why');
+  A(![...store4.keys()].some(k => k.startsWith('rl:')), 'no counter keyed by a public constant');
+}
+// ---------- v5.14: Rain Print short links ----------
 const b64u = (t) => Buffer.from(t, 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 const { createHash } = await import('node:crypto');
@@ -317,6 +395,55 @@ r = await call('/rp-short'); A(r.status === 404, 'rp-short: GET /rp-short is 404
 r = await w.fetch(new Request('https://x.dev/rp-short', { method: 'OPTIONS', headers: { Origin: 'https://agsist.com' } }), env);
 A(r.status === 204 && r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short: preflight answered');
 r = await call('/count?token=tok'); j = await r.json(); A(!('rps' in j) && !('rp-short' in j.forms), '/count unchanged by short links');
+// v5.14: the shared gate and limiter, the GET's caching and the id-walk brake
+r = await rps({ code: codeB }, { 'Content-Type': 'text/plain' }); A(r.status === 415, 'rp-short: text/plain refused by publicGate');
+{
+  const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const rlq = () => [...store.keys()].filter(k => k.startsWith('rlq:rp-short:' + day + ':'));
+  let before = rlq().length;
+  r = await rps({ code: b64u('1|Rate key town|1|2025|snna|') }); A(r.status === 200 && rlq().length === before + 1, 'rp-short: a new id leaves one shared rate key');
+  const rk = rlq().find(k => opts.get(k)); A(rk && opts.get(rk).expirationTtl === 172800, 'rp-short: the rate key expires');
+  before = rlq().length;
+  r = await rps({ code: codeA }); A(r.status === 200 && rlq().length === before, 'rp-short: a repeat leaves no rate key');
+  // the daily total for everyone (600), from fresh addresses
+  const have = rlq().length;
+  for (let i = have; i < 600; i++) store.set(`rlq:rp-short:${day}:${String(i).padStart(16, '0')}:00:${String(i).padStart(8, '0')}`, '');
+  nk = rpsKeys().length;
+  r = await rps({ code: b64u('1|Day cap town|1|2025|snna|') }, { 'CF-Connecting-IP': '198.51.100.7' });
+  A(r.status === 429 && rpsKeys().length === nk, 'rp-short: the 601st new id of the day is refused, nothing stored');
+  r = await rps({ code: codeA }, { 'CF-Connecting-IP': '198.51.100.8' }); A(r.status === 200, 'rp-short: a known code still answers past the daily total');
+  for (const k of [...store.keys()]) if (k.startsWith('rlq:rp-short:')) store.delete(k);
+}
+{
+  // no UNSUB_SECRET: a new id needs the hashed address, so 503 and nothing stored
+  const env5 = Object.assign({}, env, { UNSUB_SECRET: '' });
+  const errs = []; const ce = console.error; console.error = (m) => errs.push(String(m));
+  nk = rpsKeys().length;
+  r = await w.fetch(new Request('https://x.dev/rp-short', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '198.51.100.9' },
+    body: JSON.stringify({ code: b64u('1|No secret town|1|2025|snna|') }) }), env5);
+  console.error = ce;
+  A(r.status === 503 && rpsKeys().length === nk, 'rp-short without UNSUB_SECRET: 503 for a new id, nothing stored');
+}
+r = await rpsGet(idA); A(r.headers.get('Cache-Control') === 'public, max-age=604800, immutable' && /Origin/.test(r.headers.get('Vary') || ''), 'rp-short GET: a hit is cacheable and varies on Origin');
+r = await rpsGet(unknown); A(r.headers.get('Cache-Control') === 'no-store', 'rp-short GET: a miss is not cached');
+r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short GET: no CORS for a foreign site');
+{
+  // walking ids from one address: 30 misses, then 429 for every GET, known or not
+  const walk = { 'CF-Connecting-IP': '198.51.100.20' };
+  const st = [];
+  for (let i = 0; i < 31; i++) { let id = 'Z' + String(i).padStart(4, '0').replace(/[ILOU]/g, '0'); while (store.has('rps:' + id)) id = 'Y' + id.slice(1); st.push((await rpsGet(id, walk)).status); }
+  A(st.slice(0, 30).every(c => c === 404) && st[30] === 429, 'rp-short GET: 30 unknown ids an hour per address, then 429 ' + st.slice(28));
+  r = await rpsGet(idA, walk); A(r.status === 429, 'rp-short GET: past the miss cap a known id is not answered either');
+  r = await rpsGet(idA, { 'CF-Connecting-IP': '198.51.100.21' }); A(r.status === 200, 'rp-short GET: another address is not held back');
+  r = await rpsGet('ABCD', walk); A(r.status === 404, 'rp-short GET: a malformed id is a 404 without a lookup');
+}
+{
+  // POSTs of any kind from one address: 240 an hour per isolate, then 429
+  const many = { 'CF-Connecting-IP': '198.51.100.30' };
+  let last = 0, okN = 0;
+  for (let i = 0; i < 241; i++) { last = (await rps({ code: codeA }, many)).status; if (last === 200) okN++; }
+  A(okN === 240 && last === 429, 'rp-short: 240 posts an hour per address, then 429');
+}
 
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');

@@ -3,7 +3,7 @@
  * The print's QR used to carry agsist.com/rain-print?d=<design code>, which
  * comes out at QR version 6 to 10. HTTPS://AGSIST.COM/R?<id> with a 5-letter
  * id is 26 bytes: version 2, 25 x 25 modules at level M (components/qr.js).
- * The subs worker (v5.13, POST /rp-short) gives the id; /R looks it up.
+ * The subs worker (v5.14, POST /rp-short) gives the id; /R looks it up.
  *
  *   AgRpShort.getShortLink(code) -> Promise of 'HTTPS://AGSIST.COM/R?ID', or
  *     null on any failure, so the caller keeps the long link. A call with a

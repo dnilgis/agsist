@@ -26,12 +26,17 @@ name: Morning brief — email Sigurd
 on:
   workflow_dispatch:           # manual trigger button in Actions UI
 
+permissions:
+  contents: read
+
 jobs:
   send-brief:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@v5
         with:

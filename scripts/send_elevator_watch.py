@@ -84,12 +84,25 @@ import smtplib
 import ssl
 import sys
 import time
+
+def quoted(s, n=60):
+    """Visitor text in a mail to an address a stranger typed (a label, a
+    place, a company): one line, at most n characters, inside quotation marks,
+    so it reads as something someone typed and never as AGSIST's own words."""
+    s = " ".join(re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]", " ", str(s or "")).split())
+    if len(s) > n:
+        s = s[:n - 1].rstrip() + "\u2026"
+    return "\u201c" + s + "\u201d"
+
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
 
 REPO = Path(__file__).resolve().parent.parent
 BASIS_DIR = REPO / "data" / "basis"
@@ -334,15 +347,18 @@ def html_wrap(title, paras, button=None, foot=""):
 def confirm_email(w, wid, label, base, secret, fn, fa, rt):
     go = link(base, "elevator-watch-confirm", w, wid, secret, "c")
     stop = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w1")
-    m = base_msg(w, f"Confirm: watch {label} on AGSIST", fn, fa, rt, stop)
-    m.set_content(f"Someone asked to watch {label} in AGSIST's cash bids using this address.\n\n"
+    # The label is what the page sent; anyone can type it. It stays out of the
+    # Subject and appears quoted and short in the body.
+    q = quoted(label)
+    m = base_msg(w, "Confirm your AGSIST elevator watch", fn, fa, rt, stop)
+    m.set_content(f"Someone asked to watch {q} in AGSIST's cash bids using this address.\n\n"
                   f"If that was you, confirm here:\n{go}\n\n"
                   "Then you get an email when this elevator's posted basis changes.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
                   f"-- \n{ADDRESS}\nNo more emails about this elevator: {stop}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
-    m.add_alternative(html_wrap(f"Confirm: watch {label}", [
-        f"Someone asked to watch {label} in AGSIST's cash bids using this address.",
+    m.add_alternative(html_wrap("Confirm your elevator watch", [
+        f"Someone asked to watch {q} in AGSIST's cash bids using this address.",
         "If that was you, confirm below. Then you get an email when this elevator's posted basis changes.",
         "If it was not you, ignore this. Nothing starts until you confirm."], ("CONFIRM", go), foot), subtype="html")
     return m
@@ -597,6 +613,7 @@ def opt_confirm_email(w, wid, label, base, secret, fn, fa, rt):
     go = link(base, "elevator-watch-confirm", w, wid, secret, "c")
     stop = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w1")
     m = base_msg(w, "Confirm: cash bid alert on AGSIST", fn, fa, rt, stop)
+    label = quoted(label)
     m.set_content(f"Someone asked for this cash bid alert on AGSIST using this address:\n{label}\n\n"
                   f"If that was you, confirm here:\n{go}\n\n"
                   "It looks only at postings made after you confirm.\n"
@@ -1051,13 +1068,13 @@ def main():
     print("pending: " + pend_summary(watchers, basis_idx, net_idx, now_ms))
     if dry:
         for x in confirms + oconf:
-            print("would confirm", x)
+            print("would confirm", log_safe.mask(x[0]), x[1], x[2])
         for x in chg:
-            print("would mail", x[0], x[1], x[2], "basis", x[3], "->", x[4]["basis"])
+            print("would mail", log_safe.mask(x[0]), x[1], x[2], "basis", x[3], "->", x[4]["basis"])
         for x in osend:
-            print("would alert", x[0], x[1], x[2], x[3], x[4], "->", x[5]["cash" if x[3] == "cash" else "basis"], "posted", x[5]["pricedAt"])
+            print("would alert", log_safe.mask(x[0]), x[1], x[2], x[3], x[4], "->", x[5]["cash" if x[3] == "cash" else "basis"], "posted", x[5]["pricedAt"])
         for x in oend:
-            print("would end", x[0], x[1], x[2], "now quotes", x[4]["plabel"])
+            print("would end", log_safe.mask(x[0]), x[1], x[2], "now quotes", x[4]["plabel"])
         return 0
     for e, w, label, row in bs:                    # silent, no mail
         worker(base, "elevator-watch-mark", tok, basis_mark(e, w, label, row))
@@ -1109,7 +1126,13 @@ def main():
                 conn.quit()
             except Exception:
                 pass
-    print(f"sent {sent}; failed {len(failed)}" + (": " + ", ".join(failed[:10]) if failed else ""))
+    # Counts and masked addresses only: the Actions log is public. The full
+    # list goes to Sig by private mail.
+    print(f"sent {sent}; failed {len(failed)}"
+          + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
+    if failed:
+        log_safe.owner_mail(f"AGSIST elevator watch: {len(failed)} send(s) failed",
+                            ["These did not send (they stay unmarked and retry next run):", ""] + failed)
     if jobs and len(jobs) > cap:
         print(f"cap reached: {len(jobs) - cap} left for the next run")
     return 1 if failed and not sent else 0

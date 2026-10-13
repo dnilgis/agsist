@@ -56,6 +56,9 @@ from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe  # noqa: E402  (no address in the public log)
+
 try:
     from zoneinfo import ZoneInfo
     CT = ZoneInfo("America/Chicago")
@@ -288,6 +291,16 @@ def what(a):
                         else ("rent page " + a["slot"][5:].upper() if a["tier"] == "page" else "footer" if a["tier"] == "supporter" else "briefing"))
 
 
+def quoted(s, n=60):
+    """Visitor text in a mail to an address a stranger typed (a label, a
+    place, a company): one line, at most n characters, inside quotation marks,
+    so it reads as something someone typed and never as AGSIST's own words."""
+    s = " ".join(re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]", " ", str(s or "")).split())
+    if len(s) > n:
+        s = s[:n - 1].rstrip() + "\u2026"
+    return "\u201c" + s + "\u201d"
+
+
 def ad_lines(a):
     return ["Business: %s" % a["company"], "Headline: %s" % (a.get("headline") or "(none)"),
             "Copy: %s" % (a.get("body") or "(none)"), "Link: %s" % a["url"],
@@ -300,8 +313,10 @@ def emails_for(action, a, base, secret, card, today, sig):
     dec = lambda d: "%s/sponsor-decide?i=%s&d=%s&t=%s" % (base, a["id"], d, token(secret, a["id"] + "|sd|" + d))
     if action == "confirm":
         go = "%s/sponsor-confirm?i=%s&t=%s" % (base, a["id"], token(secret, a["id"] + "|sc"))
-        return [(a["email"], dict(subject="Confirm your AGSIST ad: %s" % a["company"], paras=[
-            "Hi %s, thanks for putting %s on AGSIST: %s." % (a.get("contact") or "there", a["company"], what(a)),
+        # The address is unconfirmed, so company and contact are a stranger's
+        # words: kept out of the Subject, quoted and short in the body.
+        return [(a["email"], dict(subject="Confirm your AGSIST ad", paras=[
+            "Hi, thanks for putting %s on AGSIST: %s." % (quoted(a["company"]), what(a)),
             "Click below to confirm it was you. Then it goes to Sig, who reads every ad himself.",
             "The first month is free. After that it's %s a month, invoiced, and you can cancel any time by replying." % price,
             "Didn't ask for this? Ignore this email and nothing happens."], button=("CONFIRM MY AD", go)))]
@@ -452,7 +467,8 @@ def main():
                 mark(a, invoiced=(a.get("invoiced") or 0) + 1)
         except Exception as e:                               # noqa: BLE001
             failed += 1
-            print("%s %s failed: %s" % (action, a.get("id"), e))
+            # mask_text: an SMTPRecipientsRefused message carries the address
+            print("%s %s failed: %s" % (action, a.get("id"), log_safe.mask_text(e)))
     if conn:
         conn.quit()
     return 1 if failed else 0

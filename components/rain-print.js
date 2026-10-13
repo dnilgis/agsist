@@ -853,11 +853,15 @@
     for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (m[r][c]) {
       mods += '<rect x="' + f2(cox + c * cell) + '" y="' + f2(coy + r * cell) + '" width="' + f2(cell + 0.3) + '" height="' + f2(cell + 0.3) + '"/>';
     }
-    // square to the page edges (Sig, 2026-10-11): no tilt
-    return '<g opacity="0.95" aria-hidden="true">' +
-      '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="#F7F6F1"/>' +
-      '<rect x="' + f2(ox + frameW / 2) + '" y="' + f2(oy + frameW / 2) + '" width="' + f2(stampSize - frameW) + '" height="' + f2(stampSize - frameW) + '" fill="none" stroke="#B0231A" stroke-width="' + frameW + '"/>' +
-      '<g fill="#B0231A">' + mods + '</g></g>';
+    // square to the page edges (Sig, 2026-10-11): no tilt.
+    // Muted to nearly blend into the paper (Sig, 2026-10-12): warm gray modules,
+    // no red frame, full opacity so the phone sees one even tone. On the paper
+    // palette the backing is the paper itself; the dark palettes (digital only)
+    // keep a light patch, because phone cameras do not read light-on-dark codes.
+    var light = p.bg === PAL.paper.bg, ink = light ? '#A4A89F' : '#7C8279', back = light ? p.bg : '#ECEDE8';
+    return '<g aria-hidden="true">' +
+      '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="' + back + '"/>' +
+      '<g fill="' + ink + '">' + mods + '</g></g>';
   }
 
   // Waveform: one tick per day, height = that day's precipitation, on a ruled inch scale

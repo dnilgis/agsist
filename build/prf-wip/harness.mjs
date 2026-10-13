@@ -1,7 +1,9 @@
 // Drive /prf in a real browser. usage: node harness.mjs <scenario> [width]
 import { chromium } from 'playwright';
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
-const ROOT = '/home/claude/agsist', OUT = '/home/claude/build/shots'; fs.mkdirSync(OUT, { recursive: true });
+/* the repo this file sits in, and shots beside it; PRF_ROOT and PRF_SHOTS override */
+const ROOT = process.env.PRF_ROOT || path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
+const OUT = process.env.PRF_SHOTS || path.join(ROOT, 'build/shots'); fs.mkdirSync(OUT, { recursive: true });
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg' };
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]); if (p === '/prf') p = '/prf.html'; if (p.endsWith('/')) p += 'index.html';
@@ -10,7 +12,7 @@ const server = http.createServer((req, res) => {
 }).listen(0);
 const PORT = server.address().port, BASE = 'http://localhost:' + PORT;
 export async function open(opts = {}) {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.PRF_CHROMIUM ? { executablePath: process.env.PRF_CHROMIUM } : {});
   const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: opts.width || 1280, height: opts.height || 900 }, deviceScaleFactor: 1, colorScheme: opts.light ? 'light' : 'dark', geolocation: opts.geo, permissions: opts.geo ? ['geolocation'] : [] });
   const page = await ctx.newPage(); const errs = [];
   page.on('pageerror', e => errs.push('pageerror: ' + e.message));
@@ -30,3 +32,5 @@ export async function open(opts = {}) {
 }
 export function done() { server.close(); }
 export const overflow = (page) => page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
+/* On a phone, step 2 (the policy controls) is folded to one line until it is tapped; the productivity factor sits under "Productivity factor". */
+export const openSetup = (page) => page.evaluate(() => { const b = document.getElementById('prf-setup-sum'); if (b && b.offsetParent && b.getAttribute('aria-expanded') !== 'true') b.click(); const m = document.getElementById('prf-more'); if (m) m.open = true; });

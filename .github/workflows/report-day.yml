@@ -73,6 +73,7 @@ jobs:
       # file committed before the release out of git.
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           ref: main
           fetch-depth: 0
           filter: blob:none

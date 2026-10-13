@@ -176,8 +176,14 @@ def run(token, transport, env_site, today, root=REPO, log=print, pause=PAUSE_S, 
     ok = [r for r in results if not r.get("error")]
     if not ok:
         log(f"[index] nothing could be inspected ({len(results)} errors); file left alone")
-        for r in results[:3]:
-            log(f"  {r['url']}: {r['error']}")
+        # Counts only: the Actions log is public, and which page fails how is
+        # part of the private SEO picture.
+        kinds = {}
+        for r in results:
+            k = " ".join(str(r.get("error") or "").split()[:2])   # "HTTP 403", no URL
+            kinds[k] = kinds.get(k, 0) + 1
+        for k, n in sorted(kinds.items(), key=lambda kv: -kv[1])[:3]:
+            log(f"  {n} x {k}")
         return 1, None
     summary = summarize(results)
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()

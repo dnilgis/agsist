@@ -25,6 +25,7 @@ import hmac
 import json
 import math
 import os
+import re
 import smtplib
 import ssl
 import sys
@@ -34,11 +35,23 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
+def quoted(s, n=60):
+    """Visitor text in a mail to an address a stranger typed (a label, a
+    place, a company): one line, at most n characters, inside quotation marks,
+    so it reads as something someone typed and never as AGSIST's own words."""
+    s = " ".join(re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]", " ", str(s or "")).split())
+    if len(s) > n:
+        s = s[:n - 1].rstrip() + "\u2026"
+    return "\u201c" + s + "\u201d"
+
 
 from shapely.geometry import Point, shape
 from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import unary_union
 from shapely.validation import explain_validity, make_valid
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import log_safe           # noqa: E402  (no address or watched place in the public log)
 
 REPO = Path(__file__).resolve().parent.parent
 MESH_DIR = REPO / "data" / "hail" / "mesh"
@@ -201,13 +214,15 @@ def stop_url(email):
 
 
 def build_email(w, day, band, from_name, from_addr, reply_to):
-    place = w.get("place") or (str(w["lat"]) + ", " + str(w["lon"]))
+    # /alert-subscribe is single opt-in, so the place is whatever a stranger
+    # typed: quoted and short in the body, never in the Subject.
+    place = quoted(w["place"]) if w.get("place") else (str(w["lat"]) + ", " + str(w["lon"]))
     radius = w.get("radius_mi", 5)
     link = MAP + "?swath=" + day
     stop = stop_url(w["email"])
 
     msg = EmailMessage()
-    msg["Subject"] = "Hail alert: radar-estimated hail near " + place + " (" + day + ")"
+    msg["Subject"] = "Hail alert: radar-estimated hail in your watch area (" + day + ")"
     msg["From"] = formataddr((from_name, from_addr))
     msg["To"] = w["email"]
     msg["Message-ID"] = make_msgid(domain=from_addr.split("@", 1)[1])
@@ -294,8 +309,13 @@ def main():
         if band is not None:
             hits.append((w, band))
     print("hits: " + str(len(hits)))
-    for w, band in hits:
-        print("  " + w["email"] + " · " + str(w.get("place", "")) + " · band " + str(band) + "\u2033")
+    # COUNTS ONLY. The log is public: an address next to the place it watches
+    # (often the reader's own farm town) must never be printed here.
+    by_band = {}
+    for _w, band in hits:
+        by_band[band] = by_band.get(band, 0) + 1
+    for band in sorted(by_band):
+        print("  band " + str(band) + "\u2033: " + str(by_band[band]) + " watcher(s)")
     if dry or not hits:
         print("dry run — nothing sent" if dry else "no watch areas touched — nothing to send")
         return 0
@@ -383,10 +403,16 @@ def main():
     if sent > 0:
         day_flag(day, set_it=True)
     if failed:
-        print("failed: " + ", ".join(failed))
+        # Full addresses go to Sig by private mail; the public log and the
+        # annotation get the count and masked addresses only.
+        mailed = log_safe.owner_mail("AGSIST hail alerts: %d of %d did not send (%s)"
+                                     % (len(failed), len(hits), day),
+                                     ["Send these by hand (the day is flagged, a rerun will not retry):", ""] + failed)
         print("::error::%d of %d hail alerts did not send. The day is flagged, so a "
-              "rerun will NOT retry them — send these by hand: %s"
-              % (len(failed), len(hits), ", ".join(failed)))
+              "rerun will NOT retry them — send these by hand (%s): %s"
+              % (len(failed), len(hits),
+                 "full list mailed to Sig" if mailed else "full list NOT mailed; see the watch list",
+                 ", ".join(log_safe.mask_text(f) for f in failed)))
     return 0 if sent > 0 else 1
 
 
