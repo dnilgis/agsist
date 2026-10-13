@@ -85,6 +85,26 @@ def place(st_code, fips, adm_name, ATL):
     return n, S.slug(n)
 
 
+def county_urls(meta, ATL=None):
+    """fips -> (name, href, slug, state) for every county with PRF, and the loaded state files.
+    build_prf_states.py uses it to link each county row to its page."""
+    if ATL is None:
+        ATL = atlas_index()
+    where, loaded = {}, {}
+    for st in sorted(meta["states"], key=lambda s: s["name"]):
+        sd = json.load(open(os.path.join(D, "s", st["st"] + ".json")))
+        loaded[st["st"]] = sd
+        used = set()
+        for code, c in sorted(sd["counties"].items()):
+            fips = sd["fips"] + code
+            n, sl = place(st["st"], fips, c["n"], ATL)
+            if sl in used:
+                sl = f"{sl}-{code}"
+            used.add(sl)
+            where[fips] = (n, f"/prf/{S.slug(st['name'])}/{sl}", sl, st)
+    return where, loaded
+
+
 def pct_cell(c):
     if not c:
         return "<td>&mdash;</td>"
@@ -306,19 +326,7 @@ def main():
         NB = json.load(open(p))["counties"]
     states = sorted(meta["states"], key=lambda s: s["name"])
     # every county's name and URL first, for the next-door links
-    where = {}
-    loaded = {}
-    for st in states:
-        sd = json.load(open(os.path.join(D, "s", st["st"] + ".json")))
-        loaded[st["st"]] = sd
-        used = set()
-        for code, c in sorted(sd["counties"].items()):
-            fips = sd["fips"] + code
-            n, sl = place(st["st"], fips, c["n"], ATL)
-            if sl in used:
-                sl = f"{sl}-{code}"
-            used.add(sl)
-            where[fips] = (n, f"/prf/{S.slug(st['name'])}/{sl}", sl, st)
+    where, loaded = county_urls(meta, ATL)
     want = {}
     urls = []
     total = 0
