@@ -3,7 +3,7 @@
 
 WHY
   From harvest through January farmers search how much rain their county had
-  this year. Each county with a NOAA station that reported enough days gets one
+  this year. Each county with a NOAA or CoCoRaHS station that reported enough days gets one
   page that answers it in the first line, in plain HTML, with the month by
   month table, the wettest month, the biggest rain, the longest dry stretch and
   last year by the same date, and a way to put the whole year on a Rain Print.
@@ -83,10 +83,12 @@ def done_year(c):
     return c["as_of"][5:] == "12-31"
 
 
+def kind_word(c):
+    return "CoCoRaHS volunteer gauge" if c["station"]["net"] == "cocorahs" else "NOAA station"
+
+
 def where_words(c):
-    raw, net = c["station"]["raw"], c["station"]["net"]
-    kind = "CoCoRaHS volunteer gauge" if net == "cocorahs" else "NOAA station"
-    return f"the {kind} {R.station_where(raw)}"
+    return f"the {kind_word(c)} {R.station_where(c['station']['raw'])}"
 
 
 def compare(c, year_word="a usual year to date"):
@@ -362,7 +364,7 @@ def county_page(ctx):
          "description": desc, "dateModified": d["fetched"][:10], "inLanguage": "en-US",
          "about": {"@type": "AdministrativeArea", "name": full}, "author": AUTHOR, "publisher": PUBLISHER},
         {"@context": "https://schema.org", "@type": "Dataset", "name": f"Rain in {full}, {year}, Jan 1 to {short_date(asof)}",
-         "description": f"Daily precipitation from NOAA station {stw['raw']} ({stw['sid'].split(' ')[0]}) in {full}, added up by month for {year} through {long_date(asof)}"
+         "description": f"Daily precipitation from the {kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]}) in {full}, added up by month for {year} through {long_date(asof)}"
                         + (", with NOAA daily normals summed over the same days." if c["usual"] is not None else "."),
          "url": url, "temporalCoverage": f"{year}-01-01/{asof}", "isBasedOn": "https://www.rcc-acis.org/",
          "spatialCoverage": {"@type": "Place", "name": full, "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}},
@@ -428,16 +430,16 @@ def state_page(st, d, pages, none_rows):
     done = all(done_year(c) for c in cs.values())
     mid = middle(cs)
     title = f"How Much Rain Has {stn} Had in {year}? Every County | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? Every County | AGSIST"
-    lede = (f"{len(cs)} {stn} counties have a NOAA station inside the county that reported at least 90% of the days in {year}"
+    lede = (f"{len(cs)} {stn} counties have a NOAA or CoCoRaHS station inside the county that reported at least 90% of the days in {year}"
             + ("." if done else f", through {short_date(asofs[-1])}" + (f" (a few stations stop a day or more earlier)." if len(asofs) > 1 else ".")))
     if mid is not None:
         lede += f" The middle county is at {mid}% of a usual year{'' if done else ' to date'}."
     wettest = max(cs.items(), key=lambda kv: kv[1]["total"])
     driest = min(cs.items(), key=lambda kv: kv[1]["total"])
-    desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties, from NOAA stations: inches, percent of usual and the station. "
+    desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties, from NOAA and CoCoRaHS stations: inches, percent of usual and the station. "
             f"Most: {wettest[1]['name']}, {inch(wettest[1]['total'])} in.")
     if len(desc) > 165:
-        desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties from NOAA stations: inches, percent of usual, the station."
+        desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties from NOAA and CoCoRaHS stations: inches, percent of usual, the station."
     rows = []
     for fips, c in sorted(cs.items(), key=lambda kv: kv[1]["name"]):
         href = pages[fips][1]
@@ -448,7 +450,7 @@ def state_page(st, d, pages, none_rows):
     if none_rows:
         items = "".join(f"<li>{e(n)} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
                         for n, nn, h in none_rows)
-        none_html = (f'<h2>Counties where no NOAA station reported enough days</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
+        none_html = (f'<h2>Counties where no NOAA or CoCoRaHS station reported enough days</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
                      f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest county that has one.</p><ul class="rc-states">{items}</ul>')
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
@@ -467,7 +469,7 @@ def state_page(st, d, pages, none_rows):
     <h1>{h1}</h1>
     <p class="rc-answer">{lede}</p>
     <div class="rc-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by county, {e(stn)}</caption>
-    <thead><tr><th scope="col">County</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">NOAA station</th><th scope="col">Through</th></tr></thead>
+    <thead><tr><th scope="col">County</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each county page has the month by month table and how the station was picked.</p>
     {none_html}
@@ -492,7 +494,7 @@ def hub_page(files, built):
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} counties'
                     + (f", middle county {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = "How Much Rain Has Your County Had This Year? | AGSIST"
-    desc = (f"Rain so far {"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from the NOAA station in each county: inches, percent of a usual year, month by month.")
+    desc = (f"Rain so far {"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from a NOAA or CoCoRaHS station in each county: inches, percent of a usual year, month by month.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
@@ -506,11 +508,11 @@ def hub_page(files, built):
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
     <h1>How much rain has your county had this year?</h1>
-    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain so far {"in " + yw if yw[0].isdigit() else yw} at the NOAA station in that county, against a usual year, month by month.</p>
+    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain so far {"in " + yw if yw[0].isdigit() else yw} at a NOAA or CoCoRaHS station in that county, against a usual year, month by month.</p>
     <ul class="rc-states">{''.join(rows)}</ul>
     <h2>How these numbers are kept honest</h2>
     <ul class="rc-list">
-      <li>One NOAA station per county, inside the county, and only one that reported at least 90% of the days this year. Counties without one are listed on the state page with the nearest county that has one.</li>
+      <li>One NOAA or CoCoRaHS station per county, inside the county, and only one that reported at least 90% of the days this year. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
       <li>Every page says the last day reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
@@ -695,6 +697,10 @@ def selftest():
         jef = want.get("rain/iowa/greene-county.html", "")
         ok(jef and "no NOAA normal" in jef and "Percent of usual" not in jef and 'class="rc-us"' not in jef, "no normals: no percent, no usual line")
         ok(jef and "CoCoRaHS volunteer gauge" in jef, "a CoCoRaHS gauge is named as one")
+        ok(jef and "Daily precipitation from the CoCoRaHS volunteer gauge " in jef and "from NOAA station" not in jef, "the Dataset says a CoCoRaHS gauge is one")
+        ok('"description":"Daily precipitation from the NOAA station AMES 8 WSW' in story, "the Dataset names a NOAA station as one")
+        ok("have a NOAA or CoCoRaHS station inside" in want.get("rain/iowa.html", "") and ">NOAA station</th>" not in want.get("rain/iowa.html", ""), "state page does not call every gauge NOAA's")
+        ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
         ok(ks and "read the gauge after more than one day" in ks, "accumulated reports explained")
