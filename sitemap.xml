@@ -66,7 +66,7 @@
   <url><loc>https://agsist.com/prf/west-virginia</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/prf/wisconsin</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/prf/wyoming</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/breakeven</loc><lastmod>2026-10-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/breakeven</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/store-or-sell</loc><lastmod>2026-10-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 
   <!-- Prices & Markets -->
@@ -83,8 +83,8 @@
   <url><loc>https://agsist.com/elevators</loc><lastmod>2026-10-11</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
 
   <!-- Data & Predictions -->
-  <url><loc>https://agsist.com/usda-calendar</loc><lastmod>2026-10-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-10-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/usda-calendar</loc><lastmod>2026-10-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cot</loc><lastmod>2026-10-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/drought-monitor</loc><lastmod>2026-10-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -280,8 +280,8 @@
   <url><loc>https://agsist.com/hail-map/wyoming</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <!-- /HAIL-STATE-PAGES -->
   <!-- HAIL-EVENT-PAGES -->
-  <url><loc>https://agsist.com/hail/</loc><lastmod>2026-10-12</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/hail/2026-10-09</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/</loc><lastmod>2026-10-13</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/hail/2026-10-09</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-09-20</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-09-18</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-09-12</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
