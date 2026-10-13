@@ -24,7 +24,7 @@
   var DIR_ID_RE = /^(known|reg):[^<>"`\\]{1,190}$/;
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats', 'other'];
   var HOW = ['email', 'phone', 'not-sure'];
-  var HOW_TEXT = { email: 'Add bids@agsist.com to our bid email or text', phone: 'A private phone link', 'not-sure': 'Not sure yet' };
+  var HOW_TEXT = { email: 'From the bid sheet we already send', phone: 'A private phone link', 'not-sure': 'Not sure yet' };
   var MAX = { elevator: 120, town: 80, name: 80, role: 80, phone: 30, email: 254, note: 600 };
   var STATES = [['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'], ['CA', 'California'], ['CO', 'Colorado'],
     ['CT', 'Connecticut'], ['DE', 'Delaware'], ['FL', 'Florida'], ['GA', 'Georgia'], ['HI', 'Hawaii'], ['ID', 'Idaho'],
