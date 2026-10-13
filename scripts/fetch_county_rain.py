@@ -442,6 +442,14 @@ def selftest():
     ok(R.station_where("NEW ULM 2 SE") == "2 miles southeast of New Ulm", f"NEW is not a direction: {R.station_where('NEW ULM 2 SE')}")
     ok(R.station_name("NEW HAMPTON") == "New Hampton", f"NEW HAMPTON: {R.station_name('NEW HAMPTON')}")
     ok(R.station_name("OAKES 2 S") == "Oakes, 2 mi S", R.station_name("OAKES 2 S"))
+    # names from the first real Iowa run (2026-10-13)
+    for raw, name, town in (("SALEM1 S", "Salem, 1 mi S", "Salem"), ("MAPLETON NO.2", "Mapleton No. 2", "Mapleton"),
+                            ("REMSEN NO. 2", "Remsen No. 2", "Remsen"), ("BELLEVUE L/D 12", "Bellevue Lock and Dam 12", "Bellevue"),
+                            ("OTTUMWA INDUSTRIAL AP", "Ottumwa Industrial Airport", "Ottumwa"), ("MANCHESTER #2", "Manchester #2", "Manchester"),
+                            ("ANAMOSA 3 SSW", "Anamosa, 3 mi SSW", "Anamosa"), ("MUSCATINE 2N", "Muscatine, 2 mi N", "Muscatine")):
+        ok(R.station_name(raw) == name, f"station_name({raw!r}) = {R.station_name(raw)!r}, want {name!r}")
+        ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")
+    ok(R._title(["A", "1"]).split() == ["A", "1"], "a word is written once")
     ok(R.network(["US1IAST0001 10"]) == "cocorahs" and R.network(["130200 2"]) == "noaa", "network from sid type")
     # the whole pipeline on saved ACIS answers
     C = R.counties()

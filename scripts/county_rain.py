@@ -152,13 +152,15 @@ def neighbors():
 # ---------------------------------------------------------------- stations
 
 STN_WORD = {"AP": "Airport", "MUNI": "Municipal", "INTL": "International", "RGNL": "Regional", "CO": "County",
-            "FLD": "Field", "ARPT": "Airport", "STN": "Station", "EXP": "Experiment", "AG": "Ag"}
-AIR = {"AP", "ARPT", "AIRPORT", "INTL", "MUNI", "RGNL", "FLD", "FIELD", "INTERNATIONAL", "REGIONAL", "MUNICIPAL"}
+            "FLD": "Field", "ARPT": "Airport", "STN": "Station", "EXP": "Experiment", "AG": "Ag",
+            "L/D": "Lock and Dam", "L&D": "Lock and Dam"}
+AIR = {"AP", "ARPT", "AIRPORT", "INTL", "MUNI", "RGNL", "FLD", "FIELD", "INTERNATIONAL", "REGIONAL", "MUNICIPAL", "INDUSTRIAL"}
 DIRS = {"N": "north", "S": "south", "E": "east", "W": "west", "NE": "northeast", "NW": "northwest",
         "SE": "southeast", "SW": "southwest", "NNE": "north-northeast", "ENE": "east-northeast",
         "ESE": "east-southeast", "SSE": "south-southeast", "SSW": "south-southwest", "WSW": "west-southwest",
         "WNW": "west-northwest", "NNW": "north-northwest"}
-OFFSET = re.compile(r"^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$")
+# "AMES 8 WSW", "WAUKON 3NNE", and "SALEM1 S" with the number run into the town
+OFFSET = re.compile(r"^(.*?[A-Za-z.]) ?(\d+(?:\.\d+)?) ?([NSEW]{1,3})$")
 
 
 def _title(words):
@@ -168,10 +170,11 @@ def _title(words):
         after_number = i > 0 and re.search(r"\d", words[i - 1])
         if u in STN_WORD:
             out.append(STN_WORD[u])
+        elif re.fullmatch(r"NO\.?(\d*)", u):         # MAPLETON NO.2, REMSEN NO. 2
+            out.append("No. " + u.lstrip("NO.") if u.lstrip("NO.") else "No.")
         elif (u in DIRS and (len(u) < 3 or after_number)) or re.search(r"\d", w):
             # "NEW ULM" is a town, not north-east-west: only a real compass
             # word stays upper case, and a three-letter one only after a number
-            out.append(u)
             out.append(u)
         else:
             out.append(u[:1] + u[1:].lower())
@@ -194,7 +197,7 @@ def station_name(raw):
 # first of these on is the site, not the town (Rain Print geocodes the town).
 # Only cut after at least one word, so "PLANT CITY" stays a town.
 NOT_TOWN = {"EXP", "EXPT", "EXPER", "EXPERIMENT", "STN", "FARM", "FARMS", "RSCH", "RESEARCH", "RES", "CTR",
-            "UNIV", "UNIVERSITY", "AGRI", "AG", "DAM", "L&D", "WTP", "WWTP", "STP", "PLANT", "LAB", "NWS",
+            "UNIV", "UNIVERSITY", "AGRI", "AG", "DAM", "L&D", "L/D", "WTP", "WWTP", "STP", "PLANT", "LAB", "NWS",
             "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION"}
 
 
@@ -218,7 +221,7 @@ def station_town(raw):
         s = m.group(1)
     ws = s.split(" ")
     cut = next((i for i in range(1, len(ws)) if _cut_here(ws, i)), len(ws))
-    words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?|#\d*", w.upper())]
+    words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?\d*|#\d*", w.upper())]
     return _title(words) if words else _title(s.split(" "))
 
 

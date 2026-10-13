@@ -460,7 +460,7 @@ def state_page(st, d, pages, none_rows):
         href = pages[fips][1]
         rows.append(f'<tr><td><a href="{href}">{e(re.sub(r" County$", "", c["name"]))}</a></td><td>{inch(c["total"])}</td>'
                     f'<td>{inch(c["usual"]) if c["usual"] is not None else "none"}</td><td>{str(c["pct"]) + "%" if c["pct"] is not None else "none"}</td>'
-                    f'<td>{e(c["station"]["name"])}</td><td>{short_date(c["as_of"])}</td></tr>')
+                    f'<td>{e(R.station_name(c["station"]["raw"]))}</td><td>{short_date(c["as_of"])}</td></tr>')
     none_html = ""
     if none_rows:
         items = "".join(f"<li>{e(n)} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
