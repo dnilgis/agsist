@@ -191,14 +191,16 @@ test("the seasonal promo ships off, and shows only with promote on, inside its C
   assert.equal(shipped.promote, false, "data/rain-print.json must ship with the promo off");
   assert.equal(shipped.briefing_line, null);
   assert.equal(shipped.promote_from, "2026-11-01");
-  assert.equal(shipped.promote_until, "2026-12-12");
+  // 2026-10-13: the framed cutoff moved to the last day that still arrives by Dec 24 (Dec 3), and the promo ends with it
+  assert.equal(shipped.framed_christmas_cutoff, "2026-12-03");
+  assert.equal(shipped.promote_until, shipped.framed_christmas_cutoff, "the promo never runs past the date it names");
   assert.equal(P.lineFor(shipped, "", "2026-11-15"), "");
   const on = { ...shipped, promote: true };
-  assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 12.");
+  assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 3.");
   assert.equal(P.lineFor(on, "", "2026-11-01") !== "", true, "the first day counts");
-  assert.equal(P.lineFor(on, "", "2026-12-12") !== "", true, "the last day counts");
+  assert.equal(P.lineFor(on, "", "2026-12-03") !== "", true, "the last day counts");
   assert.equal(P.lineFor(on, "", "2026-10-31"), "");
-  assert.equal(P.lineFor(on, "", "2026-12-13"), "");
+  assert.equal(P.lineFor(on, "", "2026-12-04"), "");
   assert.equal(P.lineFor({ ...on, promote: "true" }, "", "2026-11-15"), "", "only a real true turns it on");
   assert.equal(P.lineFor(on, "briefing", "2026-11-15"), "", "no briefing line unless one is written");
   assert.equal(P.lineFor({ ...on, briefing_line: "One line." }, "briefing", "2026-11-15"), "One line.");

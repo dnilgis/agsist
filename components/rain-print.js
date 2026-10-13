@@ -183,6 +183,36 @@
     if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery.';
     return 'Orders placed now ship after Christmas.';
   }
+  /* CHRISTMAS DATES (2026-10-13). The last day to order and still have it by
+     Dec 24, from the page's own promise in data/rain-print.json: Sig sends the
+     proof within proof_business_days, the buyer OKs it within
+     approve_business_days, the print ships within ship_business_days after
+     that, and the carrier takes transit_business_days[product]. Business days
+     skip weekends and any date in holidays. An order on a weekend starts the
+     clock the next business day. print_christmas_cutoff and
+     framed_christmas_cutoff in the same file must equal what this gives
+     (test/rain-print-launch.test.mjs), so the promo line reads the right date.
+     null when a number is missing. */
+  function isBizDay(iso, hol) { var d = new Date(iso + 'T12:00:00Z').getUTCDay(); return d !== 0 && d !== 6 && (hol || []).indexOf(iso) < 0; }
+  function addBizDays(iso, n, hol) {
+    var t = Date.parse(iso + 'T12:00:00Z'), k = 0, cur = iso;
+    while (k < n) { t += 86400000; cur = new Date(t).toISOString().slice(0, 10); if (isBizDay(cur, hol)) k++; }
+    return cur;
+  }
+  function christmasCutoff(j, id, year) {
+    var tr = j && j.transit_business_days && j.transit_business_days[id];
+    var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
+    if (!parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return null;
+    var n = parts.reduce(function (a, b) { return a + b; }, 0), by = year + '-12-24', hol = Array.isArray(j.holidays) ? j.holidays : [];
+    var t = Date.parse(by + 'T12:00:00Z');
+    for (var i = 0; i < 90; i++, t -= 86400000) {
+      var d = new Date(t).toISOString().slice(0, 10);
+      if (addBizDays(d, n, hol) <= by) return d;
+    }
+    return null;
+  }
+  function shortDate(iso) { var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[1] - 1] + ' ' + (+m[2]) : ''; }
+
   /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
      data/rain-print.json: "For Christmas, send your list by Nov 20." through
      that date; nothing after it, or while it is null. */
@@ -556,7 +586,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
@@ -1029,6 +1059,21 @@
     });
   }
 
+  /* The Christmas box by the town field and the line under the price cards:
+     the order-by dates from data/rain-print.json, and what they allow for. */
+  function syncXmas() {
+    var J = PRICES || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) return;
+    var past = $('rp-xmas-past'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
+    if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') return;
+    past.textContent = late ? 'Past years ordered now ship after Christmas.'
+      : 'Any past year can be there by Christmas: order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.';
+    if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
+      why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
+        (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
+      why.hidden = late;
+    }
+  }
   function distText(m) {
     return milesText(miles(m.km)) + ' from ' + m.city;
   }
@@ -1297,6 +1342,7 @@
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
       syncCutoffs();
+      syncXmas();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
       if (o) o.textContent = giftYearLabel();
       syncBiz();

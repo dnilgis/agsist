@@ -152,3 +152,60 @@ test("two records on one day print as one label", () => {
   assert.equal(two.pts.length, 1);
   assert.match(two.pts[0].label, /Coldest: -20°F; biggest snow: 9\.0 in/);
 });
+
+// ---------- Christmas dates and copy ----------
+const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
+
+test("the Christmas cutoffs are the last order day that still arrives by Dec 24 under the page's own promise", () => {
+  for (const [id, key] of [["print12x18", "print_christmas_cutoff"], ["framed12x18", "framed_christmas_cutoff"]]) {
+    const cut = RP.christmasCutoff(J, id, 2026);
+    assert.equal(J[key], cut, key + " agrees with the ship-time numbers in the same file");
+    const n = J.proof_business_days + J.approve_business_days + J.ship_business_days + J.transit_business_days[id];
+    assert.ok(RP.addBizDays(cut, n, J.holidays) <= "2026-12-24", key + ": an order on the cutoff arrives by Dec 24");
+    const next = new Date(Date.parse(cut + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
+    assert.ok(RP.addBizDays(next, n, J.holidays) > "2026-12-24", key + ": the day after does not");
+  }
+  assert.equal(J.ship_business_days, 7, "the cutoffs use the same 7 business days the page promises");
+  assert.match(J.ships_within, /7 business days/);
+  assert.equal(RP.addBizDays("2026-12-04", 1, []), "2026-12-07", "a Friday plus one business day is Monday");
+  assert.equal(RP.christmasCutoff({ ...J, ship_business_days: null }, "print12x18", 2026), null, "a missing number gives no date, not a guess");
+});
+
+test("shipping included is said plainly; no archival claim; care line; draft policy marked for the owner", () => {
+  assert.match(HTML, /\$45, or \$89 framed, shipping included/, "lede");
+  assert.equal((HTML.match(/<li>Shipping included, US addresses<\/li>/g) || []).length, 2, "both print cards");
+  assert.ok(!/archival/i.test(HTML + readFileSync(ROOT + "components/rain-print.js", "utf8")), "never called archival");
+  assert.equal((HTML.match(/Keep it out of direct sun/g) || []).length, 2);
+  assert.match(HTML, /<!-- DRAFT-POLICY:[^>]*-->\s*<details><summary>What if something/, "the reprint and refund promise is marked as a draft");
+  assert.ok(!/[\u2014]/.test(HTML.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes in the page copy");
+  assert.ok(!/OWNER-SHIPPING|placeholder sentence/i.test(HTML), "no shipping placeholder left");
+});
+
+test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print share image, canonical", () => {
+  assert.match(HTML, /<title>Rain Print: [^<]+ \| AGSIST<\/title>/);
+  assert.match(HTML, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain-print">/);
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const types = ld["@graph"].map((g) => g["@type"]);
+  for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
+  const prod = ld["@graph"].find((g) => g["@type"] === "Product");
+  assert.equal(prod.image, "https://agsist.com/img/og/rain-print.jpg");
+  assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
+  assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
+  for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\""));
+  const img = readFileSync(ROOT + "img/og/rain-print.jpg");
+  assert.ok(img.length < 150000, "share image is small: " + img.length);
+  assert.equal(img[0], 0xff); assert.equal(img[1], 0xd8);
+  // a JPEG's size: find the SOF0/SOF2 marker
+  let i = 2, w = 0, h = 0;
+  while (i < img.length) { const m = img[i + 1], len = img.readUInt16BE(i + 2); if (m === 0xc0 || m === 0xc2) { h = img.readUInt16BE(i + 5); w = img.readUInt16BE(i + 7); break; } i += 2 + len; }
+  assert.deepEqual([w, h], [1200, 630]);
+});
+
+test("Rain Print stays out of the menus and footer until launch (it is already in sitemap.xml from 2026-10-12)", () => {
+  assert.equal(J.promote, false);
+  for (const f of ["components/header.html", "components/footer.html", "components/header-fallback.html", "components/footer-fallback.html"]) {
+    let t = ""; try { t = readFileSync(ROOT + f, "utf8"); } catch (e) { continue; }
+    assert.ok(!/rain-print/.test(t), f + " has no Rain Print link yet");
+  }
+});
