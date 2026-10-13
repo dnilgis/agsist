@@ -7,7 +7,8 @@
      For each sampled grid (one county that offers it, that county's interval
      limits), at 90% and 70% coverage, and for both scores ('net' and 'dry'):
      each year Y from 1981 to the last complete year, pick the split using only
-     the years before Y (and, for the ENSO variant, the Aug-Oct reading of
+     what was known on Dec 1 of Y-1: the years before Y, less Oct-Nov and
+     Nov-Dec of Y-1, which end after the sales closing (and, for the ENSO variant, the Aug-Oct reading of
      Y-1), and score it on Y at 2027 rates and the producer's share. Compare
      with an even spread, the page's default (Apr-May and Jun-Jul, half each)
      and a "two driest months" rule.
@@ -250,7 +251,7 @@ function run(cov, obj) {
 
 const out = {
   v: 2, crop_year: meta.crop_year, built_from: meta.built, last_complete: meta.years.last_complete,
-  what: "Walk-forward test of the PRF interval optimizer (components/prf-optimize.js). Each year from 1981 the split is picked from earlier years only and scored on that year at 2027 rates and the producer's share of premium. Figures are dollars per $100 of protection per year.",
+  what: "Walk-forward test of the PRF interval optimizer (components/prf-optimize.js). Each year from 1981 the split is picked from what a buyer had at the Dec 1 sales closing the fall before (earlier years, less that fall's Oct-Nov and Nov-Dec, which were not final yet) and scored on that year at 2027 rates and the producer's share of premium. Figures are dollars per $100 of protection per year.",
   caveats: [
     "Every year is scored at 2027 rates; RMA set them with the whole record in view. Past rates are not in the data.",
     "USDA's index is percent of a 1951-2025 normal, so early years are measured against a normal that includes later ones. This applies equally to every strategy.",
