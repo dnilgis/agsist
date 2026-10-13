@@ -493,7 +493,8 @@ def seo_breakeven(c):
 # price today" 181 impressions, "chicago board of trade corn price" 153; beans
 # "cbot soybean price" 31 beside "cbot soybeans" 2,248 at position 11. The
 # trailing "Live Prices" said nothing the number did not. extra=None means no
-# tail.
+# tail. Wheat took "Futures Price" too on 2026-10-13 (7,348 impressions, 4
+# clicks, position 14.2 over the same window).
 FUTURES = {
     "corn-futures-prices.html":
         ("CBOT", "Corn", "corn", None),
@@ -587,7 +588,7 @@ def make_futures(page):
         money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
         if extra is None:
             return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
-        return (f"{exch} {crop} Futures: {lab} {money}, {extra}{SUFFIX}", None)
+        return (f"{exch} {crop} Futures Price: {lab} {money}, {extra}{SUFFIX}", None)
 
     build.__name__ = f"seo_{key}_futures"
     return build
@@ -1205,7 +1206,9 @@ def selftest():
             ck(f"crop tour '{label}' within caps", False, str(exc))
 
     print("\nfutures titles carry the exchange the query uses")
-    for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures: Sep '26 $6.74"),
+    # wheat changed 2026-10-13 to "Futures Price", the form corn and beans
+    # took on 2026-10-11; the assertion follows that copy.
+    for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures Price: Sep '26 $6.74"),
                        ("corn-futures-prices.html", "CBOT Corn Futures Price: Sep '26 $4.59"),
                        ("soybean-futures-prices.html", "CBOT Soybean Futures Price: Aug '26 $11.76"),
                        ("cattle-futures-prices.html", "CME Feeder Cattle Futures $341.27")):
