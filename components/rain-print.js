@@ -1206,7 +1206,8 @@
     if (SAMPLE) { $('rp-code-wrap').hidden = true; $('ro-design').value = ''; return; }
     var code = encodeCode(ST);
     $('rp-code').textContent = code;
-    $('rp-code-wrap').hidden = !code;
+    // the code itself shows in the note once checkout opens; a 100-letter code under the prices only puzzles (2026-10-13)
+    $('rp-code-wrap').hidden = true;
     $('ro-design').value = designUrl(ST);
     updateUrl();
   }

@@ -109,7 +109,7 @@
   .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
   @media(max-width:899px){.rp-opts input,.rp-opts select{scroll-margin-top:calc(84px + min(42vw,230px))}}
   @media(min-width:900px){
-    .rp-design-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,380px);gap:0 1.6rem;align-items:start}
+    .rp-design-grid:has(>.rp-mini:not([hidden])){display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,380px);gap:0 1.6rem;align-items:start}
     .rp-design-main{grid-column:1;grid-row:1;min-width:0}
     .rp-mini:not([hidden]){grid-column:2;grid-row:1;top:88px;width:auto;max-width:none;margin:0;padding:3.2%}
     .rp-design .rp-dates{grid-template-columns:1fr}
