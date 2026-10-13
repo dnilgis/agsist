@@ -162,9 +162,11 @@
       wi: wi, wet: wet, wetText: wet ? wetLabel + ': ' + f2(wet.p) + ' in, ' + fmtDate(wet.date) : null,
       daysText: (snowState === 'none' ? 'Days with rain' : 'Days with rain or snow') + ': ' + D.wet,
       snowText: full ? 'Snow: ' + (Math.round(snowTot * 10) / 10).toFixed(1) + ' in' : null,
+      snowKey: full ? 'light blue: snow' : null,
       verdict: verdict, dry: dry, markers: markers, maxP: maxP, maxSnow: maxSnow,
       name: String(I.name || '').trim(), dedication: String(I.dedication || '').trim(), place: String(I.place || ''),
-      showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar
+      showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar,
+      gauge: String(I.gauge || '').trim(), gaps: P.some(function (p) { return p === null; })
     };
   }
 
@@ -181,7 +183,28 @@
       pts.push({ i: Math.round((a + b) / 2), a: a, b: b, label: r.label, span: !!sp });
     });
     pts.sort(function (p, q) { return p.i - q.i; });
-    return { pts: pts, lines: lines };
+    return { pts: mergeSameDay(pts), lines: lines };
+  }
+
+  /* Two records on one day get one label (2026-10-13: "Biggest snow: 8.0 in"
+     and "First snow: 8.0 in" printed twice on the same day). Same amount:
+     "First snow and biggest snow: 8.0 in". Different amounts: both, joined. */
+  function mergeSameDay(pts) {
+    var out = [];
+    pts.forEach(function (p) {
+      var prev = out.length ? out[out.length - 1] : null;
+      if (prev && !p.span && !prev.span && prev.a === p.a) {
+        var A = /^(.*?): (.*)$/.exec(prev.label), B = /^(.*?): (.*)$/.exec(p.label);
+        var first = function (x) { return /^(First|Last) /.test(x[1]) ? 0 : 1; };
+        if (A && B && A[2] === B[2]) {
+          var pair = first(A) <= first(B) ? [A, B] : [B, A];
+          prev.label = pair[0][1] + ' and ' + pair[1][1].charAt(0).toLowerCase() + pair[1][1].slice(1) + ': ' + A[2];
+        } else prev.label = prev.label + '; ' + p.label.charAt(0).toLowerCase() + p.label.slice(1);
+        return;
+      }
+      out.push(p);
+    });
+    return out;
   }
 
   // ---------- the maker's mark: QR, square to the page, serial under it ----------
@@ -242,6 +265,20 @@
     return o.join('');
   }
 
+  /* One small line at the foot of the sheet, both styles: the gauge by name and
+     distance, and, when the year has gaps, what a gap is. 15 u, inside the
+     0.6 in safe margin (baseline 1132), left of the QR. */
+  function smallLine(E, x, maxW, extra) {
+    var parts = [];
+    if (E.gauge) parts.push(E.gauge);
+    if (E.gaps) parts.push(E.style2 ? 'A break in the ground line is a day the station sent no report' : 'A gap in the line is a day the station sent no report');
+    (extra || []).forEach(function (t) { if (t) parts.push(t); });
+    if (!parts.length) return '';
+    var t = parts.join('  ·  '), st0 = { size: 15, fill: C.mute };
+    st0.size = fit(t, st0, maxW, 12);
+    return T(x, 1132, t, st0);
+  }
+
   // ======================================================================= R1
   function r1(I) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
@@ -258,9 +295,10 @@
     // header: verdict and the small facts, upper left inside the plot (the early year sits low there)
     var head = E.verdict || (E.T + ' inches of ' + E.liquid + E.soFar);
     var facts = [];
-    if (E.snowText) facts.push(E.snowText);
+    if (E.snowText) facts.push(E.snowText + ' (' + E.snowKey + ')');
     facts.push(E.daysText);
-    if (E.showN && E.ovNote) facts.push(E.ovNote);   // named only where the normals are shown (Sig)
+    // what "usual" means, wherever the print says "a usual year" (2026-10-13 launch fix; it used to show only with the normals)
+    if (E.cmp && E.ovNote) facts.push(E.ovNote);
     var recs = recordPoints(E, I.records);
     var HX = X0 + 28, HY = PTOP + 62, hs = { fam: SERIF, w: 600, size: 52 }, fs = { size: 21, fill: C.mute };
     var header = [T(HX, HY, head, hs)];
@@ -437,12 +475,14 @@
     });
 
     // title block, bottom left
-    var placeSize = fit(E.place, { fam: SERIF, w: 300, size: 40 }, 1500, 24);
-    o.push(T(ML, 1004, E.place, { fam: SERIF, w: 300, size: placeSize }));
+    // the gift reads first from across the room: the farm name at 48 u (designers' panel, 2026-10-13), the place at 400 weight
+    var placeSize = fit(E.place, { fam: SERIF, w: 400, size: 40 }, 1500, 24);
+    o.push(T(ML, 1004, E.place, { fam: SERIF, w: 400, size: placeSize }));
     o.push(T(ML - 3, 1080, String(E.year), { fam: SERIF, w: 600, size: 84 }));
-    var yw = W(String(E.year), { fam: SERIF, w: 600, size: 84 }), room = 1600 - (ML + yw + 26) - 120;
-    if (E.name) o.push(T(ML + yw + 26, E.dedication ? 1048 : 1068, E.name, { fam: SERIF, w: 400, size: fit(E.name, { fam: SERIF, w: 400, size: 36 }, room, 22) }));
-    if (E.dedication) o.push(T(ML + yw + 26, E.name ? 1080 : 1068, E.dedication, { fam: SERIF, it: true, w: 400, size: fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 21 }, room, 14), fill: C.mute }));
+    var yw = W(String(E.year), { fam: SERIF, w: 600, size: 84 }), room = 1560 - (ML + yw + 26) - 40;
+    if (E.name) o.push(T(ML + yw + 26, E.dedication ? 1044 : 1066, E.name, { fam: SERIF, w: 400, size: fit(E.name, { fam: SERIF, w: 400, size: 48 }, room, 26) }));
+    if (E.dedication) o.push(T(ML + yw + 26, E.name ? 1080 : 1068, E.dedication, { fam: SERIF, it: true, w: 400, size: fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 22 }, room, 14), fill: C.mute }));
+    o.push(smallLine(E, ML, 1500));
 
     o.push(qrMark(I.qr, 1690, 1100));
     last_skipped = skipped;
@@ -472,31 +512,33 @@
     var recs = recordPoints(E, I.records);
 
     // right: the year's totals
-    var big = { w: 300, size: 80 };
+    E.style2 = true;
+    var big = { w: 300, size: 68 };
     o.push(T(X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)));
     o.push(T(X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }));
     if (E.verdict) o.push(T(X1, 254, E.verdict, { size: 22, anchor: 'end' }));
     var rightEdge = X1 - W(E.T + ' in', big);
     if (E.full) {
       var bxs = rightEdge - 70;
-      o.push(T(bxs, 214, E.snowTot.toFixed(1) + ' in', { w: 300, size: 52, fill: C.snowInk, anchor: 'end' }));
+      o.push(T(bxs, 214, E.snowTot.toFixed(1) + ' in', { w: 300, size: 44, fill: C.snowInk, anchor: 'end' }));
       o.push(T(bxs, 140, 'SNOWFALL', { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }));
-      rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', { w: 300, size: 52 });
+      rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', { w: 300, size: 44 });
     }
     // left: name, place and year, dedication; shrunk to stay clear of the totals
     var leftRoom = rightEdge - 50 - ML;
     var py = E.name ? 214 : 190;
     if (E.name) {
-      var nst = { w: 500, size: 30, ls: 0.14 };
+      var nst = { w: 500, size: 32, ls: 0.14 };
       nst.size = fit(E.name.toUpperCase(), nst, leftRoom, 18);
       o.push(T(ML, 150, E.name.toUpperCase(), nst));
     }
-    var ps = { w: 300, size: 50 }, ys = { w: 500, size: 50 }, both = E.place + '  ' + E.year;
-    var psz = fit(both, { w: 400, size: 50 }, leftRoom, 28);
+    // place and year read across the room: 60 u (was 50; designers' panel, 2026-10-13)
+    var ps = { w: 300, size: 60 }, ys = { w: 500, size: 60 }, both = E.place + '  ' + E.year;
+    var psz = fit(both, { w: 400, size: 60 }, leftRoom, 28);
     ps.size = ys.size = psz;
     o.push(T(ML, py, E.place, ps));
     o.push(T(ML + W(E.place + '  ', ps), py, String(E.year), ys));
-    if (E.dedication) o.push(T(ML, py + 40, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, Math.max(400, leftRoom), 14), fill: C.mute }));
+    if (E.dedication) o.push(T(ML, py + 44, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, Math.max(400, leftRoom), 14), fill: C.mute }));
 
     // guides and scales
     R.ticks.forEach(function (t) {
@@ -527,7 +569,7 @@
         return;
       }
       if (p > 0 && i !== E.wi) bars += '<rect x="' + n2(cx - bw / 2) + '" y="' + (G + 1.5) + '" width="' + n2(bw) + '" height="' + n2(Math.max(0.8, ry(p) - G)) + '"/>';
-      else if (p === 0 && x.flag === 'T') traces += '<circle cx="' + n2(cx) + '" cy="' + (G + 5) + '" r="1.3"/>';
+      // trace days are not drawn: unexplained dots at the ground line read as data (designers' panel, 2026-10-13)
     });
     if (snows) o.push('<g fill="' + C.snowFill + '" stroke="' + C.snowEdge + '" stroke-width="0.7">' + snows + '</g>');
     o.push('<g fill="' + C.bar + '">' + bars + traces + '</g>');
@@ -627,12 +669,14 @@
 
     // footer
     var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the footer
-    if (E.showN && E.ovNote) foot.push(E.ovNote);
+    if (E.cmp && E.ovNote) foot.push(E.ovNote);   // whenever the verdict says "usual" (2026-10-13)
+    if (E.snowKey) foot.push('snow and rain are on separate scales');
     if (E.dry && !dryOnArt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
     else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
     var fst = { size: 17, fill: C.mute };
     fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
     o.push(T(ML, 1100, foot.join('  ·  '), fst));
+    o.push(smallLine(E, ML, 1440));
     o.push(qrMark(I.qr, X1, 1100));
     last_skipped = skipped;
     return close(I, E, o, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], placed);

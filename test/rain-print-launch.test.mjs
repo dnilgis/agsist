@@ -69,3 +69,86 @@ test("the page shows no raw station id and no stale design after a failed draw",
   assert.match(S, /failDraw\(err\);/, "every draw error goes through it");
   assert.match(S, /AbortController/, "outside calls time out");
 });
+
+// ---------- buyer text ----------
+const ART = ctx.AgRainArt;
+const DAY = 86400000;
+function year(y, f) {
+  const n = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 366 : 365, days = [];
+  for (let i = 0; i < n; i++) {
+    const dt = new Date(Date.UTC(y, 0, 1) + i * DAY), o = Object.assign({ p: (i % 9 === 0 ? (0.1 + (i % 7) * 0.12).toFixed(2) : "0.00"), s: 0 }, f ? f(i, dt) : {});
+    const pp = RP.parsePcpn(o.p);
+    days.push({ date: dt.toISOString().slice(0, 10), v: pp.v, flag: pp.flag, t: null, s: o.s, m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i });
+  }
+  return days;
+}
+const normalMap = (y) => { const m = new Map(); year(y).forEach((x) => m.set(x.date.slice(5), 0.09)); return m; };
+function input(days, extra = {}) {
+  const D = RP.derive(days), y = +days[0].date.slice(0, 4);
+  return Object.assign({ style: "r1", year: y, place: "Chetek, Wisconsin", name: "The Olson Farm", dedication: "", days, D, showDry: RP.showDry(D),
+    axisLen: days.length, ov: RP.overlayDaily(days, normalMap(y)), ovNote: "Usual = 30-year normal", showNormals: false, markers: [], records: [],
+    qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "" } }, extra);
+}
+const texts = (svg) => [...svg.matchAll(/<text[^>]*font-size="([\d.]+)"[^>]*>([^<]*)<\/text>/g)].map((m) => ({ size: +m[1], t: m[2].replace(/&amp;/g, "&") }));
+
+test("emoji and symbols outside the print's fonts are left out; letters with accents and curly quotes stay", () => {
+  assert.equal(RP.printable("The Johnson Farm 🌽 & Sons"), "The Johnson Farm  & Sons");
+  assert.equal(RP.normalize({ place: "Chetek, WI", year: 2025, name: "The Johnson Farm 🌽" }).name, "The Johnson Farm");
+  assert.equal(RP.printable("Ferme Côté, “Mom’s” – 1952…"), "Ferme Côté, “Mom’s” – 1952…");
+  assert.ok(RP.hasUnprintable("❤️ Dad") && !RP.hasUnprintable("Dad"));
+  assert.equal(RP.normalize({ place: "Chetek, WI", year: 2025, markers: [{ date: "2025-05-01", label: "🐄 Turnout" }] }).markers[0].label, "Turnout");
+});
+
+test("dates outside the year are named, and the label ideas include livestock and hay", () => {
+  const p = RP.dateProblems(2025, ["2024-06-01", "2025-05-01", ""]);
+  assert.equal(p.length, 1);
+  assert.match(p[0].msg, /isn’t in 2025/);
+  assert.match(RP.dateProblems(2025, ["2025-05-01", "2025-05-01"])[0].msg, /same day/);
+  for (const w of ["Planted", "Harvest done", "Turnout", "Calving", "Weaning", "First cutting"]) assert.ok(RP.LABEL_PRESETS.includes(w), w);
+  for (const w of RP.LABEL_PRESETS) assert.ok(w.length <= RP.LIMITS.label, w + " fits the label box");
+  const html = readFileSync(ROOT + "rain-print.html", "utf8");
+  for (const id of ["rp-name-n", "rp-ded-n", "rp-date-msg", "rp-sym-note"]) assert.ok(html.includes(`id="${id}"`), id + " is on the page");
+  assert.match(html, new RegExp(`id="rp-name" type="text" maxlength="${RP.LIMITS.name}"`));
+  assert.match(html, new RegExp(`${RP.LIMITS.dedication} letters`), "the counter states the real limit");
+});
+
+test("the longest dedication (70) prints whole at both styles, at 14 u or more, inside the trim", () => {
+  const ded = "For Grandpa Erling, sixty harvests and counting. Love, all the grandkids".slice(0, 70);
+  assert.equal(ded.length, 70);
+  for (const style of ["r1", "r2"]) {
+    const t = texts(ART.render(input(year(2025), { style, name: "Prairie View Seed and Gr", dedication: ded })));
+    const d = t.find((x) => x.t === ded);
+    assert.ok(d, style + ": printed whole");
+    assert.ok(d.size >= 14, style + ": at " + d.size + " u");
+  }
+});
+
+// ---------- the print's small lines ----------
+test("the print names the gauge and distance, and explains gaps only when there are some, both styles", () => {
+  const gauge = "Rain gauge: Chetek, WI weather station, 0.4 mi from Chetek";
+  for (const style of ["r1", "r2"]) {
+    const full = texts(ART.render(input(year(2025), { style, gauge })));
+    const line = full.find((x) => x.t.startsWith("Rain gauge:"));
+    assert.ok(line && line.size >= 12, style + ": gauge line at production size");
+    assert.ok(!/no report/.test(line.t), style + ": no gap note on a full year");
+    const gappy = texts(ART.render(input(year(2025, (i) => (i === 40 ? { p: "M" } : {})), { style, gauge })));
+    assert.ok(gappy.some((x) => /day the station sent no report/.test(x.t)), style + ": a gap is explained");
+    assert.ok(!gappy.some((x) => /\d+ days? (not reported|with no report)/i.test(x.t)), style + ": with no count (Sig)");
+  }
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /gauge: META \? gaugeLine\(META\) : ''/, "the engine hands the art the gauge line");
+});
+
+test("R2: no unexplained dots at the ground line; R1 says what light blue is", () => {
+  const days = year(2025, (i) => (i % 5 === 1 ? { p: "T" } : i < 60 && i % 9 === 0 ? { s: 4 } : {}));
+  assert.ok(!/r="1\.3"/.test(ART.render(input(days, { style: "r2" }))), "trace dots are gone");
+  assert.ok(texts(ART.render(input(days, { style: "r1" }))).some((x) => /light blue: snow/.test(x.t)));
+});
+
+test("two records on one day print as one label", () => {
+  const rp = ART.recordPoints({ year: 2025, n: 365 }, [{ date: "2025-11-20", label: "Biggest snow: 8.0 in" }, { date: "2025-11-20", label: "First snow: 8.0 in" }, { date: "2025-03-02", label: "Coldest: -20°F" }]);
+  assert.deepEqual(plain(rp.pts.map((p) => p.label)), ["Coldest: -20°F", "First snow and biggest snow: 8.0 in"]);
+  const two = ART.recordPoints({ year: 2025, n: 365 }, [{ date: "2025-01-05", label: "Coldest: -20°F" }, { date: "2025-01-05", label: "Biggest snow: 9.0 in" }]);
+  assert.equal(two.pts.length, 1);
+  assert.match(two.pts[0].label, /Coldest: -20°F; biggest snow: 9\.0 in/);
+});

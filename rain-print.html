@@ -124,6 +124,11 @@
   .rp-check{display:inline-flex;align-items:center;gap:.5rem;min-height:var(--btn-h);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer}
   .rp-check input{width:1.1rem;height:1.1rem;accent-color:var(--brand-fill)}
   .rp-opts-note{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.55;margin:.5rem 0 .7rem;max-width:62ch}
+  .rp-count{font-size:var(--fs-xs);color:var(--text-muted);margin:.25rem 0 0;line-height:1.45}
+  .rp-count.rp-at{color:var(--text);font-weight:600}
+  .rp-dates-n{grid-column:1/-1;margin:0}
+  .rp-presets{display:inline-flex;flex-wrap:wrap;gap:.3rem;vertical-align:middle}
+  .rp-presets button{font:inherit;font-size:var(--fs-xs);min-height:32px;padding:0 .6rem;border:1px solid var(--border-2);border-radius:var(--r-pill);background:var(--bg);color:var(--text-dim);cursor:pointer}
   .rp-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.2rem 1rem;margin:0 0 .6rem}
   .rp-stats div{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px solid var(--border);padding:5px 0;font-size:var(--fs-sm)}
   .rp-stats dt{color:var(--text-muted)} .rp-stats dd{margin:0;font-family:var(--font-mono);text-align:right}
@@ -330,12 +335,16 @@
     <section class="rp-sec" aria-labelledby="rp-design-h">
       <h2 class="sec-h" id="rp-design-h">Add a name and dates</h2>
       <div class="rp-opts">
-        <label class="field rp-wide2"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm"></label>
-        <label class="field rp-wide2"><span>A line under the name (optional)</span><input id="rp-ded" type="text" maxlength="40" placeholder="For Dad, his 40th crop. Love, Kate"></label>
-        <div class="rp-dates" role="group" aria-label="Dates on the print"><p class="rp-dates-h">Up to three dates, marked on the year</p>
-          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m1d" type="date"></label><label class="field"><span>Label</span><input id="rp-m1l" type="text" maxlength="13" placeholder="Planted"></label></div>
-          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m2d" type="date"></label><label class="field"><span>Label</span><input id="rp-m2l" type="text" maxlength="13" placeholder="Wedding"></label></div>
-          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m3d" type="date"></label><label class="field"><span>Label</span><input id="rp-m3l" type="text" maxlength="13" placeholder="Harvest done"></label></div>
+        <div class="rp-wide2"><label class="field"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm" aria-describedby="rp-name-n"></label><p class="rp-count" id="rp-name-n" aria-live="polite">0 of 24 letters</p></div>
+        <div class="rp-wide2"><label class="field"><span>A line under the name (optional)</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count" id="rp-ded-n" aria-live="polite">0 of 70 letters</p></div>
+        <p class="rp-count rp-wide2" id="rp-sym-note" hidden>Emoji and symbols aren&rsquo;t in the print&rsquo;s typeface, so they were left out. Letters, numbers and everyday punctuation print as typed.</p>
+        <div class="rp-dates" role="group" aria-label="Dates on the print"><p class="rp-dates-h">Up to three dates, marked on the year, each with your own words (13 letters)</p>
+          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m1d" type="date"></label><label class="field"><span>Label</span><input id="rp-m1l" type="text" maxlength="13" placeholder="Planted" list="rp-labels"></label></div>
+          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m2d" type="date"></label><label class="field"><span>Label</span><input id="rp-m2l" type="text" maxlength="13" placeholder="Calving" list="rp-labels"></label></div>
+          <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m3d" type="date"></label><label class="field"><span>Label</span><input id="rp-m3l" type="text" maxlength="13" placeholder="Harvest done" list="rp-labels"></label></div>
+          <p class="rp-count rp-dates-n" id="rp-labels-n">Write anything: &ldquo;Hail, Jul 12&rdquo;, &ldquo;Emma born&rdquo;. Or tap one: <span class="rp-presets" id="rp-presets"></span></p>
+          <p class="rp-count rp-bad rp-dates-n" id="rp-date-msg" aria-live="polite" hidden></p>
+          <datalist id="rp-labels"><option value="Planted"><option value="Harvest done"><option value="Turnout"><option value="Calving"><option value="Weaning"><option value="First cutting"><option value="Hail"><option value="Wedding"><option value="Born"><option value="Moved in"></datalist>
         </div>
         <label class="field"><span>Compare with</span><select id="rp-cmp">
           <option value="none">Nothing</option>

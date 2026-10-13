@@ -69,7 +69,7 @@ test("R1 is the default; an old v1 code still opens, as R1, or R2 if it was a Wa
 test("the dedication is cleaned and capped; a typical design with a full dedication still fits Stripe", () => {
   const s = RP.normalize({ ...FULL, dedication: "A|B " + "x".repeat(80) });
   assert.ok(s.dedication.length <= RP.LIMITS.dedication && !s.dedication.includes("|"));
-  assert.equal(RP.LIMITS.dedication, 40);
+  assert.equal(RP.LIMITS.dedication, 70, "70 since 2026-10-13: the longest line was drawn at both styles (test/rain-print-launch.test.mjs)");
   const code = RP.encodeCode({ ...FULL, dedication: "D".repeat(40), markers: [{ date: "2025-05-12", label: "Planted" }, { date: "2025-10-20", label: "Harvest done" }] });
   assert.ok(code.length <= 200, "code is " + code.length);
 });
@@ -122,11 +122,15 @@ test("an unrecorded day is a gap: R1's pen lifts, R2's ground line breaks", () =
   assert.equal(ground.length, 3, "three stretches of ground line around two gaps");
 });
 
-test("the normals: month normals and the note only with the switch on, unrecorded days left out of both totals", () => {
+test("the normals: month normals only with the switch on; what usual means wherever a usual year is printed; unrecorded days left out of both totals", () => {
   const days = year(2025, (i) => (i >= 10 && i < 20 ? { p: "M" } : {}));
   for (const style of ["r1", "r2"]) {
     const off = texts(ART.render(input(days, { style }))), on = texts(ART.render(input(days, { style, showNormals: true })));
-    assert.ok(!off.some((t) => /^usual /.test(t)) && !off.some((t) => t.includes("Usual = 30-year normal")), style + ": off shows no normals");
+    assert.ok(!off.some((t) => /^usual /.test(t)), style + ": off shows no month normals");
+    // 2026-10-13 launch fix: the verdict says "a usual year", so the print says what that is even with the normals off
+    assert.ok(off.some((t) => /usual year/.test(t)) && off.some((t) => t.includes("Usual = 30-year normal")), style + ": a usual year is defined where it is printed");
+    const none = texts(ART.render(input(days, { style, ov: null })));
+    assert.ok(!none.some((t) => /usual/i.test(t)), style + ": no comparison, no usual wording at all");
     assert.ok(on.some((t) => /^usual \d/.test(t)), style + ": on shows the month normals");
     assert.ok(on.some((t) => t.includes("Usual = 30-year normal")), style + ": and names them");
   }

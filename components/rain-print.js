@@ -85,7 +85,12 @@
      components/rain-print-art.js. Layout and palette still round-trip so an old
      link opens; they no longer change the art (an old Waveform link opens as R2). */
   var STYLE = { r1: 1, r2: 2 };
-  var LIMITS = { place: 32, name: 24, label: 13, markers: 3, dedication: 40 };  // at these caps the QR link still fits (qr.js: version 10, level M)
+  var LIMITS = { place: 32, name: 24, label: 13, markers: 3, dedication: 70 };
+  /* The QR carries the short link (rp-short.js), which fits at any length; the
+     long ?d= link it falls back to fits a typical design. The dedication went
+     from 40 to 70 (2026-10-13) after the longest line was drawn at both styles.
+     A code over Stripe's 200 characters goes to checkout as its short-link id
+     (checkoutRef below). */
   var SITE = 'https://agsist.com/rain-print';
 
   function inv(o) { var r = {}; Object.keys(o).forEach(function (k) { r[o[k]] = k; }); return r; }
@@ -95,6 +100,13 @@
   function cleanText(s, n) {
     return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f|]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n).trim();
   }
+  /* Only characters the print's fonts have (Fraunces and IBM Plex Sans, both
+     Latin: ASCII, Latin-1, curly quotes, dashes, the ellipsis, the bullet).
+     Emoji and other symbols would print in a fallback font that differs by
+     machine, so they are left out and the page says so. */
+  var PRINTABLE = /[^\u0020-\u007e\u00a0-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d\u2022\u2026\u0152\u0153]/g;
+  function printable(s) { return String(s == null ? '' : s).replace(/\uFE0F|\u200D/g, '').replace(PRINTABLE, ''); }
+  function hasUnprintable(s) { PRINTABLE.lastIndex = 0; var r = PRINTABLE.test(String(s || '')); PRINTABLE.lastIndex = 0; return r; }
   function cleanSid(s) { return String(s == null ? '' : s).replace(/[^A-Za-z0-9 ]/g, '').trim().slice(0, 16); }
   function isLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
   function dayIndex(year, iso) {
@@ -126,15 +138,15 @@
     if (PALETTE[x.palette]) s.palette = x.palette;
     if (CMP[x.cmp]) s.cmp = x.cmp;
     if (SIZE[x.size]) s.size = x.size;
-    s.name = cleanText(x.name, LIMITS.name);
+    s.name = cleanText(printable(x.name), LIMITS.name);
     (Array.isArray(x.markers) ? x.markers : []).forEach(function (m) {
       if (s.markers.length >= LIMITS.markers || !m || !s.year) return;
       if (dayIndex(s.year, m.date) < 0) return;
-      s.markers.push({ date: m.date, label: cleanText(m.label, LIMITS.label) });
+      s.markers.push({ date: m.date, label: cleanText(printable(m.label), LIMITS.label) });
     });
     s.gift = x.gift === true || x.gift === '1' || x.gift === 1;
     s.style = STYLE[x.style] ? x.style : (x.layout === 'waveform' ? 'r2' : 'r1');
-    s.dedication = cleanText(x.dedication, LIMITS.dedication);
+    s.dedication = cleanText(printable(x.dedication), LIMITS.dedication);
     s.normals = x.normals === true || x.normals === '1' || x.normals === 1;
     s.records = x.records === true || x.records === '1' || x.records === 1;
     return s;
@@ -492,6 +504,23 @@
   }
   function parts0(q) { return String(q).split(',')[0].trim(); }
 
+  /* The reader's dates, checked against the year: [{i, msg}] for each date
+     that won't print (2026-10-13: a date outside the year was dropped from the
+     print with no word). */
+  function dateProblems(year, dates) {
+    var out = [];
+    (dates || []).forEach(function (d, i) {
+      if (!d) return;
+      if (!year) return;
+      if (dayIndex(year, d) < 0) out.push({ i: i, msg: 'Date ' + (i + 1) + ' (' + d + ') isn\u2019t in ' + year + ', so it won\u2019t be on the print. Pick a day in ' + year + '.' });
+    });
+    var seen = {};
+    (dates || []).forEach(function (d, i) { if (d && dayIndex(year, d) >= 0) { if (seen[d] !== undefined) out.push({ i: i, msg: 'Dates ' + (seen[d] + 1) + ' and ' + (i + 1) + ' are the same day. Both labels print, one over the other.' }); else seen[d] = i; } });
+    return out;
+  }
+  // label ideas offered under the date boxes; any words of the buyer's own work too
+  var LABEL_PRESETS = ['Planted', 'Harvest done', 'Turnout', 'Calving', 'Weaning', 'First cutting', 'Hail', 'Wedding', 'Born', 'Moved in'];
+
   /* Why a share link can't be drawn, in words, or '' when it can (or there is no design in it). */
   function linkProblem(search) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
@@ -528,7 +557,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -776,6 +805,7 @@
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d), axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
       records: ST.records ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      gauge: META ? gaugeLine(META) : '',
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
     var svg = root.AgRainArt.render(input);
@@ -905,6 +935,36 @@
       $('rp-m' + i + 'l').value = m ? m.label : '';
     }
     syncMarkerBounds();
+    if ($('rp-name-n')) { syncCounts(); syncDates(); }
+  }
+  /* Counters under the name and the line ("12 of 24 letters"), emoji and
+     symbols taken out as typed, with a note. maxlength stops typing at the
+     limit; the counter says so. */
+  var SYM_SEEN = false;
+  function cleanField(id) {
+    var el = $(id), v = el.value;
+    if (hasUnprintable(v)) {
+      var pos = el.selectionStart, nv = printable(v);
+      el.value = nv;
+      try { el.setSelectionRange(Math.max(0, pos - (v.length - nv.length)), Math.max(0, pos - (v.length - nv.length))); } catch (e) {}
+      SYM_SEEN = true;
+    }
+    $('rp-sym-note').hidden = !SYM_SEEN;
+    syncCounts();
+  }
+  function syncCounts() {
+    [['rp-name', 'rp-name-n', LIMITS.name], ['rp-ded', 'rp-ded-n', LIMITS.dedication]].forEach(function (x) {
+      var n = $(x[0]).value.length, el = $(x[1]);
+      el.textContent = n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
+      el.classList.toggle('rp-at', n >= x[2]);
+    });
+  }
+  function syncDates() {
+    var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return $('rp-m' + i + 'd').value; });
+    var probs = dateProblems(y, ds), el = $('rp-date-msg');
+    [1, 2, 3].forEach(function (i) { $('rp-m' + i + 'd').setAttribute('aria-invalid', String(probs.some(function (p) { return p.i === i - 1 && /isn\u2019t in/.test(p.msg); }))); });
+    el.textContent = probs.map(function (p) { return p.msg; }).join(' ');
+    el.hidden = !probs.length;
   }
   function syncMarkerBounds() {
     var y = parseInt($('rp-year').value, 10);
@@ -1698,8 +1758,18 @@
   });
   $('rp-sample-use').addEventListener('click', useSample);
   doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
-  $('rp-year').addEventListener('input', syncMarkerBounds);
-  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
+  $('rp-year').addEventListener('input', function () { syncMarkerBounds(); syncDates(); });
+  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { cleanField(id); restyle(); }); });
+  ['rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', function () { syncDates(); restyle(); }); });
+  // label ideas as buttons: a tap fills the first empty label (its date box next)
+  LABEL_PRESETS.forEach(function (w) {
+    var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
+    b.addEventListener('click', function () {
+      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) { $('rp-m' + i + 'l').value = w; cleanField('rp-m' + i + 'l'); restyle(); try { $('rp-m' + i + 'd').focus(); } catch (e) {} return; }
+    });
+    $('rp-presets').appendChild(b);
+  });
+  syncCounts();
   radios('rp-style').forEach(function (r) { r.addEventListener('change', restyle); });
   // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
   $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
