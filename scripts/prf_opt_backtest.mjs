@@ -456,7 +456,9 @@ for (const p of O.PREDICTORS) {
     const r = out.results[`${cov}_net`], s = r.predictors[p.id];
     st[cov] = { meanDiff: s.meanDiff, mean: s.mean, base: r.mean.opt, yearsBetter: s.yearsBetter, yearsWorse: s.yearsWorse, years: r.years.n,
                 gridsBetterPct: s.gridsBetterPct, gridsWorsePct: s.gridsWorsePct, gridYearsBetterPct: s.gridYearsBetterPct, gridYearsWorsePct: s.gridYearsWorsePct,
-                pickMovedPct: s.pickMovedPct, readingKnownPct: s.readingKnownPct, p: round4(s.p), adj: round4(adj[`${p.id}@${cov}`]), byRegion: s.byRegion };
+                pickMovedPct: s.pickMovedPct, readingKnownPct: s.readingKnownPct, p: round4(s.p), adj: round4(adj[`${p.id}@${cov}`]) };
+    /* region detail only where the idea passed the family's test: opt.json stays under its 60 KB cap with every model in it */
+    if (adj[`${p.id}@${cov}`] < 0.05) st[cov].byRegion = s.byRegion;
   }
   predictors[p.id] = describe(p.id, p.name, st);
 }
