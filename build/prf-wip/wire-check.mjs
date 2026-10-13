@@ -1,7 +1,7 @@
 // The two panels prf.js feeds: "What the numbers would pick" and the long-range outlook.
 //   PRF_CHROMIUM=/opt/pw-browsers/chromium PRF_SHOTS=<dir> node build/prf-wip/wire-check.mjs
 // ZIP 54728 -> grid 30454, Barron County, WI, at 390 and 1280 wide; then a returning
-// visit with prf-optimize-ui.js arriving late (the race that left the panel empty).
+// visit with prf-optimize-ui.js arriving late (the race that left the panel empty) and the outlook data missing.
 import { open, done, openSetup } from './harness.mjs';
 const geocode = { '54728': { results: [{ name: '54728', latitude: 45.3147, longitude: -91.6510, admin1: 'Wisconsin', admin2: 'Barron' }] } };
 const fails = []; const ok = (c, what) => { if (!c) { fails.push(what); console.log('  FAIL', what); } };
@@ -20,11 +20,11 @@ for (const W of [390, 1280]) {
   ok(await page.$$eval('#prf-optimize .po-iv', e => e.length) >= 2, W + ' pick has intervals');
   ok(await page.$$eval('#prf-optimize ul.po-why li', e => e.length) >= 2, W + ' reasons listed');
   ok(/\$\d/.test(opt) && /You pay a year|YOU PAY A YEAR/i.test(opt), W + ' figures in dollars');
-  // outlook: with no data/prf/outlook.json the panel stays hidden (it only shows once the file loads)
+  // outlook: shows once data/prf/outlook.json loads (the hidden-without-data case is checked on the reload below)
   await openSetup(page); await page.waitForTimeout(150);
   const ol = await page.evaluate(() => { const s = document.getElementById('prf-outlook'); return { vis: !!s.offsetParent, t: s.innerText }; });
   console.log(W, 'OUTLOOK visible', ol.vis, '|', ol.t.replace(/\s+/g, ' ').slice(-140));
-  ok(!ol.vis, W + ' outlook stays hidden without its data');
+  ok(ol.vis && /CPC/.test(ol.t), W + ' outlook shows once its data loads');
   // Use this setup -> calculator's intervals
   const want = await page.$eval('#prf-optimize .po-use', b => b.getAttribute('data-opt-use').split('.').map(Number));
   const before = await page.$eval('.prf-figs', e => e.innerText);
@@ -42,9 +42,12 @@ for (const W of [390, 1280]) {
   await shot(`wire-${W}`, { full: true });
   // returning visit, optimizer UI script late
   await page.route('**/prf-optimize-ui.js*', async r => { await new Promise(s => setTimeout(s, 1500)); r.continue(); });
+  await page.route('**/data/prf/outlook.json*', r => r.fulfill({ status: 404, body: '' }));
   await page.reload(); await page.waitForSelector('.prf-figs');
   await page.waitForSelector('#prf-optimize .po-use', { timeout: 8000 }).catch(() => {});
   ok(!!(await page.$('#prf-optimize .po-use')), W + ' panel fills when its script arrives after the first render');
+  await openSetup(page); await page.waitForTimeout(150);
+  ok(!(await page.evaluate(() => !!document.getElementById('prf-outlook').offsetParent)), W + ' outlook stays hidden when its data fails to load');
   await browser.close();
 }
 done();
