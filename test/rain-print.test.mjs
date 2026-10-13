@@ -370,10 +370,16 @@ test("one dry-spell rule for both layouts: 7 days or more", () => {
   assert.equal(RP.DRY_MIN, 7);
   assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 6), ["0.10"]]))), false, "6 days: not marked");
   assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 7), ["0.10"]]))), true, "7 days: marked");
-  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  const wave = S.slice(S.indexOf("function waveform("), S.indexOf("function staircase(")), stair = S.slice(S.indexOf("function staircase("), S.indexOf("function buildSvg("));
-  for (const [name, src] of [["waveform", wave], ["staircase", stair]]) {
-    assert.match(src, /if \(showDry\(D\)\) ann \+= bracket\(/, name + " uses the shared rule");
-    assert.ok(!/dryMax\.len\s*(>|>=)\s*\d/.test(src), name + " has no threshold of its own");
+  // Since 2026-10-13 both styles (R1, R2) are drawn by components/rain-print-art.js from the engine's call.
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8"), A = readFileSync(ROOT + "components/rain-print-art.js", "utf8");
+  const build = S.slice(S.indexOf("function buildSvg("), S.indexOf("function recordsReady("));
+  assert.match(build, /showDry: showDry\(DATA\.d\)/, "the page hands the art the shared rule");
+  assert.ok(!/dryMax\.len\s*(>|>=)\s*\d/.test(A + build), "the art has no threshold of its own");
+  const ctx2 = {}; ctx2.window = ctx2;
+  vm.runInNewContext(A, ctx2);
+  for (const style of ["r1", "r2"]) for (const [n, want] of [[6, false], [7, true]]) {
+    const days = mkDays([["0.10"], ...rep(["0.00"], n), ["0.10"], ...rep(["0.20"], 20)]), D = RP.derive(days);
+    const svg = ctx2.AgRainArt.render({ style, year: 2025, place: "Chetek, Wisconsin", days, D, showDry: RP.showDry(D), axisLen: 365, markers: [] });
+    assert.equal(new RegExp(n + " dry days|dry stretch", "i").test(svg), want, `${style}: ${n} days ${want ? "marked" : "not marked"}`);
   }
 });

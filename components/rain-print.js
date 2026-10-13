@@ -1,8 +1,15 @@
 /* components/rain-print.js: Rain Print by AGSIST (/rain-print), 2026-10-11.
  *
  * A place and a finished year become a print: every day's precipitation at
- * the nearest NOAA weather station with a usable record, drawn as Staircase
- * (the running total across the year) or Waveform (one tick per day).
+ * the nearest NOAA weather station with a usable record, drawn in one of the
+ * two styles Sig picked (2026-10-13): R1 Staircase (the running total, the
+ * default) or R2 Roots (snow piled above the ground line, rain soaking down
+ * below it). components/rain-print-art.js draws both; this file feeds it.
+ * Optional: a dedication line, NOAA's 30-year normal under each month's total,
+ * and remarkable days (components/rain-print-records.js, loaded on first use).
+ * The QR carries the short link (components/rp-short.js) once there is one.
+ * The serial "No. 0001 · SRL" goes under it on Sig's print files only
+ * (?maker=1&serial=1), never on the digital file or the public page.
  * Ported from Sig's standalone Rain Print Studio (the October last-pass
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
  *
@@ -74,7 +81,11 @@
   var PALETTE = { paper: 'p', night: 'n', blueprint: 'b' };
   var CMP = { none: '0', normal: 'n', station: 's' };
   var SIZE = { '12x18': 'a' };   // one print size since 2026-10-11 (18 x 24 was dropped)
-  var LIMITS = { place: 32, name: 24, label: 13, markers: 3 };  // at these caps the QR link still fits (qr.js: version 10, level M)
+  /* The art (2026-10-13): R1 Staircase (default) or R2 Roots, drawn by
+     components/rain-print-art.js. Layout and palette still round-trip so an old
+     link opens; they no longer change the art (an old Waveform link opens as R2). */
+  var STYLE = { r1: 1, r2: 2 };
+  var LIMITS = { place: 32, name: 24, label: 13, markers: 3, dedication: 40 };  // at these caps the QR link still fits (qr.js: version 10, level M)
   var SITE = 'https://agsist.com/rain-print';
 
   function inv(o) { var r = {}; Object.keys(o).forEach(function (k) { r[o[k]] = k; }); return r; }
@@ -100,7 +111,8 @@
   }
 
   function defaults() {
-    return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false };
+    return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false,
+      style: 'r1', dedication: '', normals: false, records: false };
   }
   /* Whatever came in (URL, code, form), out comes a design with only allowed values. */
   function normalize(x) {
@@ -121,6 +133,10 @@
       s.markers.push({ date: m.date, label: cleanText(m.label, LIMITS.label) });
     });
     s.gift = x.gift === true || x.gift === '1' || x.gift === 1;
+    s.style = STYLE[x.style] ? x.style : (x.layout === 'waveform' ? 'r2' : 'r1');
+    s.dedication = cleanText(x.dedication, LIMITS.dedication);
+    s.normals = x.normals === true || x.normals === '1' || x.normals === 1;
+    s.records = x.records === true || x.records === '1' || x.records === 1;
     return s;
   }
 
@@ -356,21 +372,29 @@
     return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
   }
 
-  /* Design code v1: base64url of "1|place|station|year|LPCS|name|day|label|day|label|day|label"
-     (L P C S = one letter each for layout, palette, comparison, size; day = day of
-     the year in base 36). Only the characters A-Z a-z 0-9 - _ so Stripe takes it
+  /* Design code v2 (2026-10-13): base64url of
+     "2|place|station|year|LPCSX|name|day|label|day|label|day|label|dedication"
+     (L P C S = one letter each for layout, palette, comparison, size; X = a to h,
+     the style and two switches in one letter: +4 for R2, +1 for the 30-year
+     normals shown, +2 for remarkable days; day = day of the year in base 36; the
+     dedication only when there is one, so the field count says whether it is
+     there). Every byte counts: the longest design's link still has to fit the QR
+     stamp when no short link can be had. A v1 code ("1|...|LPCS|name|day|label...")
+     still opens: as R1, or R2 if its layout was Waveform. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
      as a client_reference_id (200 at most).
      A gift order (this year, delivered in January) is the same code with GIFT-
      in front, so Sig sees it in Stripe without decoding anything. A v1 code
      always starts with M (base64 of "1|"), so the prefix cannot be mistaken
      for part of a code. */
-  var GIFT_PREFIX = 'GIFT-';
+  var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh';
   function encodeCode(x) {
     var s = normalize(x);
     if (!s.place || !s.year) return '';
-    var f = ['1', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size], s.name];
+    var x5 = XFLAG[(s.style === 'r2' ? 4 : 0) + (s.normals ? 1 : 0) + (s.records ? 2 : 0)];
+    var f = ['2', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size] + x5, s.name];
     s.markers.forEach(function (m) { f.push(dayIndex(s.year, m.date).toString(36), m.label); });
     while (f.length > 6 && f[f.length - 1] === '' && f[f.length - 2] === '') f.length -= 2;
+    if (s.dedication) f.push(s.dedication);
     return (s.gift ? GIFT_PREFIX : '') + utf8b64url(f.join('|'));
   }
   function decodeCode(code) {
@@ -380,10 +404,13 @@
     if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) return null;
     var raw;
     try { raw = b64urlUtf8(code); } catch (e) { return null; }
-    var f = raw.split('|');
-    if (f[0] !== '1' || f.length < 6 || (f.length - 6) % 2) return null;
-    var k = f[4] || '';
-    if (k.length !== 4 || !LAYOUT_R[k[0]] || !PALETTE_R[k[1]] || !CMP_R[k[2]] || !SIZE_R[k[3]]) return null;
+    var f = raw.split('|'), v2 = f[0] === '2', ded = '';
+    if ((f[0] !== '1' && !v2) || f.length < 6) return null;
+    if (v2 && (f.length - 6) % 2) { ded = f.pop(); if (!ded) return null; }
+    if ((f.length - 6) % 2) return null;
+    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1;
+    if (k.length !== (v2 ? 5 : 4) || !LAYOUT_R[k[0]] || !PALETTE_R[k[1]] || !CMP_R[k[2]] || !SIZE_R[k[3]]) return null;
+    if (v2 && x5 < 0) return null;
     var year = parseInt(f[3], 10);
     if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return null;
     var markers = [];
@@ -394,7 +421,8 @@
       markers.push({ date: iso, label: f[i + 1] });
     }
     var s = normalize({ place: f[1], station: f[2], year: year, layout: LAYOUT_R[k[0]], palette: PALETTE_R[k[1]],
-      cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift });
+      cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift,
+      style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2 });
     return s.place ? s : null;
   }
 
@@ -407,7 +435,11 @@
     q.set('palette', s.palette);
     q.set('size', s.size);
     if (s.cmp !== 'none') q.set('cmp', s.cmp);
+    q.set('style', s.style);
     if (s.name) q.set('name', s.name);
+    if (s.dedication) q.set('dedication', s.dedication);
+    if (s.normals) q.set('normals', '1');
+    if (s.records) q.set('records', '1');
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
     if (s.gift) q.set('gift', '1');
     return q.toString();
@@ -421,13 +453,14 @@
       if (v) markers.push({ date: v.slice(0, 10), label: v.slice(10).trim() });
     }
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
-      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers, gift: q.get('gift') });
+      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers, gift: q.get('gift'),
+      style: q.get('style'), dedication: q.get('dedication'), normals: q.get('normals'), records: q.get('records') });
   }
   function designUrl(x) { return SITE + '?' + toParams(x); }
   function shortUrl(x) { var c = encodeCode(x); return c ? SITE + '?d=' + c : SITE; }
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS,
+    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizPrice: bizPrice, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizShip: bizShip, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
@@ -438,14 +471,9 @@
   var doc = root.document;
   var $ = function (id) { return doc.getElementById(id); };
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var PAL = {
-    paper:     {bg:'#F7F6F1', ink:'#1B2430', mute:'#73798A', rain:'#2E5C86', rule:'#DCDFD8', fill:'rgba(46,92,134,.18)', dryFill:'rgba(179,74,46,.14)', temp:'#B34A2E', grain:true},
-    night:     {bg:'#0E1216', ink:'#ECEDE8', mute:'#8892A0', rain:'#A9CDEC', rule:'#252C34', fill:'rgba(155,193,230,.22)', dryFill:'rgba(224,149,107,.16)', temp:'#E0956B', grain:false},
-    blueprint: {bg:'#1E3F73', ink:'#EEF3FA', mute:'#B0C1DC', rain:'#FFFFFF', rule:'#31548C', fill:'rgba(255,255,255,.20)', dryFill:'rgba(255,217,160,.16)', temp:'#FFD9A0', grain:false}
-  };
-  /* Print sizes, landscape: trim width and height in inches. Art is 1400 units wide. */
+  /* Print sizes, landscape: trim width and height in inches. The art is 1800 x 1200 units, 100 to the inch. */
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
-  var ART_W = 1400, BLEED_IN = 0.125, DPI = 300;
+  var ART_UNITS_IN = 100, BLEED_IN = 0.125, DPI = 300;
   var MISS_BLOCK = 31;   // more than a month unrecorded: no print, the page says why
   var TODAY = chicagoToday();                     // YYYY-MM-DD in Chetek's time zone
   var CURRENT_YEAR = parseInt(TODAY.slice(0, 4), 10);
@@ -473,31 +501,6 @@
 
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
-
-  // ---------- color helpers for the seasonal bar tint (Sig's) ----------
-  function hex2hsl(hex) {
-    var r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
-    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
-    if (mx !== mn) { var d = mx - mn; s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
-      if (mx === r) h = (g - b) / d + (g < b ? 6 : 0); else if (mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h /= 6; }
-    return [h * 360, s, l];
-  }
-  function hsl2hex(h, s, l) {
-    h /= 360; var r, g, b;
-    if (s === 0) { r = g = b = l; } else {
-      var hue2rgb = function (p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 1 / 2) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; };
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1 / 3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1 / 3);
-    }
-    var to255 = function (v) { return Math.round(v * 255).toString(16).padStart(2, '0'); };
-    return '#' + to255(r) + to255(g) + to255(b);
-  }
-  // richer in the wet middle of the year, lighter toward the edges (+-7% lightness, hue untouched)
-  function seasonalColor(base, monthIdx) {
-    var hsl = hex2hsl(base);
-    var phase = Math.cos((monthIdx - 6.2) / 12 * 2 * Math.PI);
-    return hsl2hex(hsl[0], hsl[1], Math.min(0.92, Math.max(0.08, hsl[2] - phase * 0.07)));
-  }
 
   // ---------- data ----------
   var STATE = {wi:'wisconsin',mn:'minnesota',ia:'iowa',il:'illinois',mi:'michigan',nd:'north dakota',sd:'south dakota',ne:'nebraska',ks:'kansas',mo:'missouri',in:'indiana',oh:'ohio',ky:'kentucky',tn:'tennessee',tx:'texas',ok:'oklahoma',co:'colorado',mt:'montana',wy:'wyoming',id:'idaho',wa:'washington',or:'oregon',ca:'california',nv:'nevada',ut:'utah',az:'arizona',nm:'new mexico',ar:'arkansas',la:'louisiana',ms:'mississippi',al:'alabama',ga:'georgia',fl:'florida',sc:'south carolina',nc:'north carolina',va:'virginia',wv:'west virginia',pa:'pennsylvania',ny:'new york',nj:'new jersey',ct:'connecticut',ri:'rhode island',ma:'massachusetts',vt:'vermont',nh:'new hampshire',me:'maine',md:'maryland',de:'delaware',ak:'alaska',hi:'hawaii',dc:'district of columbia',pr:'puerto rico'};
@@ -538,11 +541,12 @@
     });
   }
   function parseTemp(raw) { var s = String(raw).trim(); if (s === 'M' || s === '') return null; var v = parseFloat(s); return isNaN(v) ? null : v; }
-  // pcpn and avgt (daily mean temperature, F) come back as parallel columns from one call
+  // pcpn, avgt (daily mean temperature, F), snow, maxt and mint come back as parallel columns from one
+  // call; the raw rows are kept for the remarkable-days layer (components/rain-print-records.js)
   function daily(sid, year) {
     var key = sid + '|' + year;
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
-    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow', meta: 'name,state,ll' });
+    var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow,maxt,mint', meta: 'name,state,ll' });
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
@@ -556,13 +560,13 @@
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
       if (year === CURRENT_YEAR) days = days.slice(0, lastRecorded(days) + 1);
-      var out = { meta: j.meta || {}, days: days, d: derive(days) };
+      var out = { meta: j.meta || {}, days: days, d: derive(days), raw: j.data };
       DAILY_CACHE.set(key, out);
       return out;
     });
   }
-  // Full period-of-record daily totals: fixes the print scale so every year at a
-  // station shares one scale, and gives the station's own daily average.
+  // Full period-of-record daily totals: the station's own daily average (the
+  // "station" comparison) and the rows the remarkable-days layer ranks against.
   function stationExtremes(sid) {
     if (EXT_CACHE.has(sid)) return Promise.resolve(EXT_CACHE.get(sid));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: 'por', edate: 'por', elems: 'pcpn,avgt' });
@@ -589,7 +593,7 @@
       var avgByDate = new Map();
       sum.forEach(function (s, md) { avgByDate.set(md, s / count.get(md)); });
       var years = yearFrom && yearTo ? (parseInt(yearTo, 10) - parseInt(yearFrom, 10) + 1) : 0;
-      var ext = { maxDaily: maxDaily, maxMonthly: maxMonthly, maxAnnual: maxAnnual, avgByDate: avgByDate, yearFrom: yearFrom, yearTo: yearTo, years: years, maxTemp: maxTemp, minTemp: minTemp };
+      var ext = { maxDaily: maxDaily, maxMonthly: maxMonthly, maxAnnual: maxAnnual, avgByDate: avgByDate, yearFrom: yearFrom, yearTo: yearTo, years: years, maxTemp: maxTemp, minTemp: minTemp, rows: j.data };
       EXT_CACHE.set(sid, ext);
       return ext;
     });
@@ -625,369 +629,107 @@
     o.label = label;
     return o;
   }
-  // one fixed scale per station: its full-record maxima, never smaller than this year needs
-  function domain() {
-    var D = DATA.d, ov = overlaySeries();
-    return {
-      daily: Math.max(EXT ? EXT.maxDaily : 0, D.maxDay, ov ? Math.max.apply(null, ov.normal) : 0, 0.01),
-      annual: Math.max(EXT ? EXT.maxAnnual : 0, D.total, ov ? ov.total : 0, 0.01)
-    };
-  }
-  function tempDomain() {
-    var D = DATA.d;
-    if (D.hot.v === null) return null;
-    var hi = Math.max(EXT && EXT.maxTemp !== null ? EXT.maxTemp : -Infinity, D.hot.v);
-    var lo = Math.min(EXT && EXT.minTemp !== null ? EXT.minTemp : Infinity, D.cold.v);
-    return { hi: hi + 4, lo: lo - 4 };
-  }
-
-  // ---------- svg helpers ----------
+  // ---------- the art (components/rain-print-art.js draws it) ----------
   function fmtDate(iso) { if (!iso) return ''; var p = iso.split('-').map(Number); return MON[p[1] - 1].toUpperCase() + ' ' + p[2]; }
-  function trunc(s, n) { return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; }
-  function wrapMono(text, maxWidth, fontSize) {
-    var charW = fontSize * 0.62, maxChars = Math.max(10, Math.floor(maxWidth / charW));
-    var words = text.split(' '), lines = [], cur = '';
-    words.forEach(function (w) { var t = cur ? cur + ' ' + w : w; if (t.length > maxChars && cur) { lines.push(cur); cur = w; } else cur = t; });
-    if (cur) lines.push(cur);
-    return lines;
-  }
-  function footerText() {
-    var D = DATA.d, m = META;
-    var sub = [f2(D.total) + ' IN PRECIPITATION'];
-    if (D.snow !== null && D.snow !== undefined) sub.push(D.snow.toFixed(1) + ' IN SNOWFALL');
-    sub.push(D.wet + ' WET DAYS', 'LONGEST DRY SPELL ' + D.dryMax.len + ' DAYS');
-    if (PREVIEW) sub.push('PREVIEW THROUGH ' + fmtDate(PREVIEW.last));
-    var mi = miles(m.km);
-    var away = mi < 1 ? '' : ', ' + Math.round(mi) + ' MI AWAY';
-    return {
-      place: m.city + ', ' + m.stateAbbr,
-      year: String(m.year),
-      sub: sub.join('   ·   '),
-      prov: 'RECORDED AT ' + toTitle(m.name) + away + '  ·  NOAA DAILY RECORD VIA RCC-ACIS'
-    };
-  }
-  /* The footer block (place, year, name, totals, source) stacks up from the
-     bottom; the plot ends above it, so a taller print gets a taller plot and
-     nothing overlaps. */
-  function footLayout(W, H) {
-    var F = footerText(), marginX = 60, maxW = W - marginX * 2 - 190;
-    // No source line on the art (Sig, 2026-10-12): the station and NOAA credit stay in the
-    // SVG description and under the print on the page.
-    var subLines = wrapMono(F.sub, maxW, 14);
-    var y = H - 26, prov = [], sub = [], i;
-    for (i = subLines.length - 1; i >= 0; i--) { sub.unshift([subLines[i], y]); y -= 20; }
-    if (ST.name) y -= 22;
-    var persoY = y; y -= 26;
-    var yearY = y; y -= 58;
-    return { F: F, marginX: marginX, prov: prov, sub: sub, persoY: persoY, yearY: yearY, placeY: y, top: y - 26 };
-  }
-  function frame(p, W, H, inner, FL, o) {
-    var F = FL.F, mx = FL.marginX, b = o.bleed || 0;
-    var vb = (-b) + ' ' + (-b) + ' ' + (W + 2 * b) + ' ' + (H + 2 * b);
-    var size = o.px ? ' width="' + o.px[0] + '" height="' + o.px[1] + '"' : '';
-    var grain = p.grain ? '<defs><filter id="paperGrain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0"/></filter></defs><rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W + 2 * b) + '" height="' + (H + 2 * b) + '" filter="url(#paperGrain)"/>' : '';
-    var mono = "'IBM Plex Mono',monospace", serif = "'Fraunces',Georgia,serif";
-    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '"' + size + ' font-family="\'IBM Plex Sans\',system-ui,sans-serif" role="img" aria-labelledby="rpT rpD">' +
-      (o.fontCss ? '<style>' + o.fontCss + '</style>' : '') +
-      '<title id="rpT">' + esc(F.place) + ', ' + esc(F.year) + ', rain print' + (PREVIEW ? ' preview through ' + esc(fmtDate(PREVIEW.last)) : '') + '</title>' +
-      '<desc id="rpD">' + esc(F.sub) + '. ' + esc(F.prov) + '</desc>' +
-      '<rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W + 2 * b) + '" height="' + (H + 2 * b) + '" fill="' + p.bg + '"/>' + grain + inner +
-      '<text x="' + mx + '" y="' + FL.placeY + '" font-family="' + serif + '" font-size="30" font-weight="300" fill="' + p.ink + '">' + esc(F.place) + '</text>' +
-      '<text x="' + mx + '" y="' + FL.yearY + '" font-family="' + serif + '" font-size="60" font-weight="600" fill="' + p.ink + '">' + esc(F.year) + '</text>' +
-      (ST.name ? '<text x="' + (mx + 2) + '" y="' + FL.persoY + '" font-family="' + mono + '" font-size="13" font-weight="500" fill="' + p.ink + '" opacity="0.8" letter-spacing="1.2">' + esc(ST.name.toUpperCase()) + '</text>' : '') +
-      FL.sub.map(function (l) { return '<text x="' + mx + '" y="' + l[1] + '" font-family="' + mono + '" font-size="14" fill="' + p.mute + '" letter-spacing="1">' + esc(l[0]) + '</text>'; }).join('') +
-      FL.prov.map(function (l) { return '<text x="' + mx + '" y="' + l[1] + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" letter-spacing="0.5">' + esc(l[0]) + '</text>'; }).join('') +
-      hankoMark(p, W, H) + (o.watermark ? watermark(p, W, H) : '') + (PREVIEW ? previewBand(p, W, FL) : '') + '</svg>';
-    return s;
-  }
-  /* This year's preview carries a solid band across the art, on screen, in the
-     download and on the gift card, so nobody takes it for the finished print. */
-  function previewBand(p, W, FL) {
-    var y = Math.round(FL.top * 0.42), h = 58, mono = "'IBM Plex Mono',monospace";
-    return '<g aria-hidden="true"><rect x="-40" y="' + (y - h / 2) + '" width="' + (W + 80) + '" height="' + h + '" fill="' + p.ink + '" opacity="0.88"/>' +
-      '<text x="' + (W / 2) + '" y="' + (y - 4) + '" font-family="' + mono + '" font-size="19" font-weight="500" fill="' + p.bg + '" text-anchor="middle" letter-spacing="2.5">PREVIEW THROUGH ' + esc(fmtDate(PREVIEW.last)) + '</text>' +
-      '<text x="' + (W / 2) + '" y="' + (y + 18) + '" font-family="' + mono + '" font-size="13" fill="' + p.bg + '" text-anchor="middle" letter-spacing="1.5">YOUR PRINT WILL SHOW THE FULL YEAR, JAN 1 TO DEC 31, ' + META.year + '</text></g>';
-  }
-  // Month i's first day and length on the x axis. A preview lays out the whole
-  // calendar year, so the months still to come keep their place.
-  function monthSpan(i, days, D) {
-    if (PREVIEW) {
-      var y = META.year, mm = function (k) { return y + '-' + String(k).padStart(2, '0') + '-01'; };
-      var a = dayIndex(y, mm(i + 1)), b = i === 11 ? PREVIEW.yearLen : dayIndex(y, mm(i + 2));
-      return [a, b - a];
-    }
-    var s0 = days.findIndex(function (x) { return x.m === i; });
-    return [s0, s0 < 0 ? 0 : D.mdays[i]];
-  }
-  // where a preview stops: a quiet dashed line at the last recorded day
-  function cutLine(p, X, yTop, yBase) {
-    return PREVIEW ? '<line x1="' + f2(X) + '" y1="' + f2(yTop) + '" x2="' + f2(X) + '" y2="' + f2(yBase) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="3 4" opacity="0.7"/>' : '';
-  }
-  function watermark(p, W, H) {
-    var line = 'PREVIEW  ·  AGSIST.COM/RAIN-PRINT  ·  ', row = '', i, out = '';
-    for (i = 0; i < 6; i++) row += line;
-    for (i = -6; i < 14; i++) {
-      out += '<text x="' + (-W) + '" y="' + (i * 110) + '" font-family="\'IBM Plex Mono\',monospace" font-size="30" font-weight="500" fill="' + p.ink + '" letter-spacing="3">' + row + '</text>';
-    }
-    return '<g opacity="0.16" transform="rotate(-24 ' + (W / 2) + ' ' + (H / 2) + ')" aria-hidden="true">' + out + '</g>';
-  }
-  // minY: the highest a label may climb (the legend row sits above it); a
-  // record day that reaches the top gets its label beside the point instead.
-  function callout(p, x, y, text, anchor, liftPx, minY) {
-    var lift = 26 + (liftPx || 0), labelY = y - lift - 4;
-    if (minY !== undefined && labelY < minY) { labelY = Math.max(minY, y + 14); lift = 0; }
-    return (lift ? '<line x1="' + f2(x) + '" y1="' + f2(y) + '" x2="' + f2(x) + '" y2="' + f2(y - lift) + '" stroke="' + p.mute + '" stroke-width="1"/>' : '') +
-      '<text x="' + f2(x + (anchor === 'end' ? -6 : 6)) + '" y="' + f2(labelY) + '" font-family="\'IBM Plex Mono\',monospace" font-size="12" fill="' + p.ink + '" text-anchor="' + anchor + '" stroke="' + p.bg + '" stroke-width="3" paint-order="stroke">' + esc(text) + '</text>';
-  }
-  // lift the wettest-day callout clear of a nearby hottest/coldest label
-  function calloutLift(maxDoy, D) {
-    var nearest = Infinity;
-    if (D.hot && D.hot.v !== null) nearest = Math.min(nearest, Math.abs(D.hot.doy - maxDoy));
-    if (D.cold && D.cold.v !== null) nearest = Math.min(nearest, Math.abs(D.cold.doy - maxDoy));
-    return nearest < 18 ? 34 : 0;
-  }
-  // "JUN 21 TO 30 · 10 dry days" (or "JUN 24 TO JUL 3 · ..."): the bracket names its first and last day.
-  function dryLabel(D) {
-    var a = DATA.days.filter(function (x) { return x.doy === D.dryMax.startDoy; })[0], b = D.dryMax.end;
-    var len = D.dryMax.len + ' dry days';
-    if (!a || !b) return len;
-    var A = fmtDate(a.date), B = fmtDate(b);
-    if (A.slice(0, 3) === B.slice(0, 3)) B = B.slice(4);
-    return A + ' TO ' + B + '  ·  ' + len;
-  }
-  function bracket(p, xa, xb, y, text) {
-    return '<path d="M' + f2(xa) + ',' + f2(y - 6) + ' L' + f2(xa) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y) + ' L' + f2(xb) + ',' + f2(y - 6) + '" fill="none" stroke="' + p.mute + '" stroke-width="1"/>' +
-      '<text x="' + f2((xa + xb) / 2) + '" y="' + f2(y + 16) + '" font-family="\'IBM Plex Mono\',monospace" font-size="12" fill="' + p.ink + '" text-anchor="middle">' + esc(text) + '</text>';
-  }
-  // band between the year's running total and the comparison: blue where wetter, amber where drier.
-  // One quad per day, drawn opaque and slightly overlapped inside a group that
-  // carries the transparency, so neighbouring quads leave no hairline seams.
-  function rgbaParts(c) { var m = /rgba\(([^,]+),([^,]+),([^,]+),([^)]+)\)/.exec(c); return m ? ['rgb(' + m[1] + ',' + m[2] + ',' + m[3] + ')', +m[4]] : [c, 1]; }
-  function bandFill(p, D, OV, x0, w, y1, k) {
-    var wet = '', dry = '', pAX = x0, pAY = y1, pNX = x0, pNY = y1, ov = 0.35;
-    for (var i = 0; i < D.n; i++) {
-      var AX = x0 + (i + 1) * w, AY = y1 - D.cum[i] * k, NY = y1 - OV.cum[i] * k;
-      var q = '<polygon points="' + f2(pAX - ov) + ',' + f2(pAY) + ' ' + f2(AX) + ',' + f2(AY) + ' ' + f2(AX) + ',' + f2(NY) + ' ' + f2(pNX - ov) + ',' + f2(pNY) + '"/>';
-      if (D.cum[i] >= OV.cum[i]) wet += q; else dry += q;
-      pAX = AX; pAY = AY; pNX = AX; pNY = NY;
-    }
-    var W = rgbaParts(p.fill), Dr = rgbaParts(p.dryFill);
-    return '<g fill="' + W[0] + '" opacity="' + W[1] + '">' + wet + '</g><g fill="' + Dr[0] + '" opacity="' + Dr[1] + '">' + dry + '</g>';
-  }
-  function tempY(t, TD, yTop, yBase) { return yBase - (t - TD.lo) / (TD.hi - TD.lo) * (yBase - yTop); }
-  function tempOverlay(p, D, days, x0, w, yTop, yBase, axisX, labelPos) {
-    var TD = tempDomain();
-    if (!TD) return '';
-    var path = '', started = false;
-    days.forEach(function (x) {
-      if (x.t === null) { started = false; return; }
-      path += (started ? 'L' : 'M') + f2(x0 + x.doy * w + w / 2) + ',' + f2(tempY(x.t, TD, yTop, yBase)) + ' ';
-      started = true;
-    });
-    if (!path) return '';
-    var mono = "'IBM Plex Mono',monospace", ann = '', axis = '';
-    for (var i = 0; i <= 3; i++) {
-      var t = TD.lo + (TD.hi - TD.lo) * i / 3;
-      axis += '<text x="' + f2(axisX + 8) + '" y="' + f2(tempY(t, TD, yTop, yBase) + 4) + '" font-family="' + mono + '" font-size="10" fill="' + p.temp + '" opacity="0.85">' + Math.round(t) + '°</text>';
-    }
-    if (D.hot.v !== null) {
-      var hx = x0 + D.hot.doy * w + w / 2, hy = tempY(D.hot.v, TD, yTop, yBase);
-      ann += '<circle cx="' + f2(hx) + '" cy="' + f2(hy) + '" r="2.5" fill="' + p.temp + '"/><text x="' + f2(hx) + '" y="' + f2(hy + 16) + '" font-family="' + mono + '" font-size="10" fill="' + p.temp + '" text-anchor="middle" stroke="' + p.bg + '" stroke-width="3" paint-order="stroke">' + Math.round(D.hot.v) + '° ' + fmtDate(D.hot.date) + '</text>';
-    }
-    if (D.cold.v !== null && D.cold.doy !== D.hot.doy) {
-      var cx = x0 + D.cold.doy * w + w / 2, cy = tempY(D.cold.v, TD, yTop, yBase);
-      ann += '<circle cx="' + f2(cx) + '" cy="' + f2(cy) + '" r="2.5" fill="' + p.temp + '"/><text x="' + f2(cx) + '" y="' + f2(cy - 10) + '" font-family="' + mono + '" font-size="10" fill="' + p.temp + '" text-anchor="middle" stroke="' + p.bg + '" stroke-width="3" paint-order="stroke">' + Math.round(D.cold.v) + '° ' + fmtDate(D.cold.date) + '</text>';
-    }
-    var label = '<text x="' + f2(labelPos.x) + '" y="' + f2(labelPos.y) + '" font-family="' + mono + '" font-size="11" fill="' + p.temp + '" text-anchor="' + labelPos.anchor + '" font-style="italic">thin line: daily average temperature, °F (right scale)</text>';
-    return '<path d="' + path + '" fill="none" stroke="' + p.temp + '" stroke-width="1" opacity="0.55"/>' + axis + ann + label;
-  }
-  // Pins for the reader's own dates (Staircase only, as Sig designed it):
-  // quieter than the data, pushed clear of the wettest-day callout, stacked
-  // when two fall within two weeks, anchored inward near the edges and
-  // flipped below the line near the top.
-  function lifeMarkers(p, markers, x0, x1, w, yFor, avoidDoy, yTop) {
-    var s = '', lastDoy = -999, tier = 0;
-    markers.slice().sort(function (a, b) { return a.doy - b.doy; }).forEach(function (m) {
-      var X = x0 + (m.doy + 0.5) * w, Y = yFor(m.doy);
-      tier = (m.doy - lastDoy < 14) ? tier + 1 : 0; lastDoy = m.doy;
-      var near = avoidDoy >= 0 && Math.abs(m.doy - avoidDoy) < 16;
-      var labelY = Y - 12 - tier * 14 - (near ? 46 : 0), below = false;
-      if (labelY < yTop + 14) { labelY = Y + 18 + tier * 14; below = true; }
-      var anchor = X > x1 - 110 ? 'end' : (X < x0 + 110 ? 'start' : 'middle');
-      s += '<line x1="' + f2(X) + '" y1="' + f2(Y) + '" x2="' + f2(X) + '" y2="' + f2(below ? labelY - 10 : labelY + 4) + '" stroke="' + p.ink + '" stroke-width="1" stroke-dasharray="1.5 2" opacity="0.55"/>' +
-        '<circle cx="' + f2(X) + '" cy="' + f2(Y) + '" r="2.5" fill="' + p.ink + '" opacity="0.85"/>' +
-        '<text x="' + f2(X) + '" y="' + f2(labelY) + '" font-family="\'IBM Plex Mono\',monospace" font-size="10.5" fill="' + p.ink + '" text-anchor="' + anchor + '" opacity="0.85" stroke="' + p.bg + '" stroke-width="3" paint-order="stroke">' + esc(m.label) + '</text>';
-    });
-    return s;
-  }
   function printMarkers() {
     if (!DATA) return [];
     return ST.markers.map(function (m) {
       var doy = dayIndex(META.year, m.date);
-      return doy >= 0 && doy < DATA.d.n ? { doy: doy, label: m.label || fmtDate(m.date) } : null;
+      var p = m.date.split('-').map(Number);
+      return doy >= 0 && doy < DATA.d.n ? { doy: doy, label: m.label || MON[p[1] - 1] + ' ' + p[2] } : null;
     }).filter(Boolean);
   }
+  // "Chetek, Wisconsin": the state written out on the print
+  function placeLong() {
+    var full = STATE[String(META.stateAbbr || '').toLowerCase()];
+    return META.city + ', ' + (full ? toTitle(full) : (META.stateAbbr || META.state || ''));
+  }
 
-  // The maker's mark: a square vermilion seal in the style of an artist's hanko,
-  // bottom right. It is a real QR code (components/qr.js, level M, quiet zone
-  // kept) that opens this exact design at agsist.com/rain-print?d=<code>.
+  /* The maker's mark: a real QR code (components/qr.js, level M), square to the
+     page, warm gray on the paper. It carries the short link
+     (components/rp-short.js, 25 x 25 modules) once the worker has given one, and
+     the long ?d= link until then or if it never does. */
   var QR_OK = true;
   // The design itself, without the gift marker: what the QR and shared links open.
   function artDesign() { return Object.assign({}, ST, { gift: false }); }
-  function hankoMark(p, W, H) {
-    var url = shortUrl(artDesign());
-    QR_OK = false;
-    if (!root.AgQR || url === SITE) return '';
-    var m;
-    try { m = root.AgQR.matrix(url); } catch (e) { return ''; }
-    QR_OK = true;
-    // About 78 units, 1.0 in on the 18 in print (Sig, 2026-10-12: smaller again).
-    // A 3-module quiet zone inside a thinner frame keeps the modules as large as
-    // the space allows: 0.6 mm for a plain code, 0.4 mm at the longest one.
-    var n = m.length, quiet = 3, cell = Math.min(1.9, 70 / (n + 2 * quiet));
-    var quietBox = n * cell + 2 * quiet * cell, frameGap = 2, frameW = 2;
-    var stampSize = quietBox + 2 * frameGap + 2 * frameW;
-    var ox = W - 60 - stampSize, oy = H - 26 - stampSize;
-    var cox = ox + (stampSize - quietBox) / 2 + quiet * cell, coy = oy + (stampSize - quietBox) / 2 + quiet * cell;
-    var mods = '';
-    for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (m[r][c]) {
-      mods += '<rect x="' + f2(cox + c * cell) + '" y="' + f2(coy + r * cell) + '" width="' + f2(cell + 0.3) + '" height="' + f2(cell + 0.3) + '"/>';
-    }
-    // square to the page edges (Sig, 2026-10-11): no tilt.
-    // Muted to nearly blend into the paper (Sig, 2026-10-12): warm gray modules,
-    // no red frame, full opacity so the phone sees one even tone. On the paper
-    // palette the backing is the paper itself; the dark palettes (digital only)
-    // keep a light patch, because phone cameras do not read light-on-dark codes.
-    var light = p.bg === PAL.paper.bg, ink = light ? '#A4A89F' : '#7C8279', back = light ? p.bg : '#ECEDE8';
-    return '<g aria-hidden="true">' +
-      '<rect x="' + f2(ox) + '" y="' + f2(oy) + '" width="' + f2(stampSize) + '" height="' + f2(stampSize) + '" fill="' + back + '"/>' +
-      '<g fill="' + ink + '">' + mods + '</g></g>';
-  }
-
-  // Waveform: one tick per day, height = that day's precipitation, on a ruled inch scale
-  function waveform(p, W, H, o) {
-    var FL = footLayout(W, H);
-    var x0 = 90, x1 = W - 70, base = FL.top - 76, top = 110, D = DATA.d, days = DATA.days, DOM = domain();
-    var k = (base - top) / DOM.daily, w = (x1 - x0) / (PREVIEW ? PREVIEW.yearLen : D.n), mono = "'IBM Plex Mono',monospace";
-    var bars = '', grid = '';
-    var step = DOM.daily > 4 ? 1 : DOM.daily > 1.5 ? 0.5 : 0.25;
-    for (var r = 0; r <= DOM.daily + 1e-9; r += step) {
-      var Y = base - r * k;
-      grid += '<line x1="' + x0 + '" y1="' + f2(Y) + '" x2="' + x1 + '" y2="' + f2(Y) + '" stroke="' + p.rule + '" stroke-width="' + (r === 0 ? 1.2 : 0.8) + '" opacity="' + (r === 0 ? 1 : 0.55) + '"/>' +
-        '<text x="' + (x0 - 10) + '" y="' + f2(Y + 4) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" text-anchor="end">' + r.toFixed(2).replace(/\.?0+$/, '') + (r === 0 ? ' in' : '') + '</text>';
-    }
-    for (var i = 0; i < 12; i++) {
-      var ms = monthSpan(i, days, D), s0 = ms[0];
-      if (s0 < 0) continue;
-      var X = x0 + s0 * w;
-      grid += '<line x1="' + f2(X) + '" y1="' + top + '" x2="' + f2(X) + '" y2="' + base + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="1 3" opacity="0.4"/>' +
-        '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
-        '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (base + 27) + '" font-size="12.5" font-weight="500" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.8">' + MON[i].toUpperCase() + '</text>';
-    }
-    var yearEndW = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
-    grid += '<line x1="' + f2(yearEndW) + '" y1="' + base + '" x2="' + f2(yearEndW) + '" y2="' + (base + 8) + '" stroke="' + p.mute + '" stroke-width="1"/>';
-    var overlay = '', OV = overlaySeries();
-    if (OV) {
-      overlay = '<polygon points="' + f2(x0) + ',' + f2(base) + ' ' + OV.normal.map(function (v, j) { return f2(x0 + j * w + w / 2) + ',' + f2(base - v * k); }).join(' ') + ' ' + f2(PREVIEW ? x0 + D.n * w : x1) + ',' + f2(base) + '" fill="' + p.fill + '" opacity="0.7"/>';
-    }
-    if (PREVIEW) overlay += cutLine(p, x0 + D.n * w, top, base);
-    days.forEach(function (x) {
-      var X = x0 + x.doy * w + w / 2, isMax = D.max.v > 0 && x.doy === D.max.doy;
-      if (unknownDay(x)) bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + (base - 6) + '" stroke="' + p.mute + '" stroke-width="1" stroke-dasharray="1 1"/>';
-      else if (x.v > 0) {
-        var barTop = base - x.v * k, col = isMax ? p.temp : seasonalColor(p.rain, x.m);
-        bars += '<line x1="' + f2(X) + '" y1="' + base + '" x2="' + f2(X) + '" y2="' + f2(barTop) + '" stroke="' + col + '" stroke-width="' + f2(isMax ? Math.max(2.2, w * 1.1) : Math.max(1.4, w * 0.75)) + '"/>';
-        if (!isMax && (base - barTop) < 3) bars += '<circle cx="' + f2(X) + '" cy="' + f2(barTop) + '" r="1.6" fill="' + col + '"/>';
+  var SHORT_WANT = '';
+  function qrLink() {
+    var d = artDesign(), code = encodeCode(d), hit = null;
+    if (!code) return '';
+    if (root.AgRpShort && !SAMPLE) {
+      hit = root.AgRpShort.peek(code);
+      if (!hit && SHORT_WANT !== code) {
+        SHORT_WANT = code;
+        root.AgRpShort.getShortLink(code).then(function (link) {
+          // redraw only if the design is still the one asked about
+          if (link && DATA && !BLOCKED && encodeCode(artDesign()) === code) render();
+        });
       }
-    });
-    var temp = tempOverlay(p, D, days, x0, w, top, base, x1 + 8, { x: x1, y: top - 30, anchor: 'end' });
-    var ann = '';
-    if (D.max.v > 0 && D.max.doy >= 0) {
-      var mx = x0 + D.max.doy * w + w / 2;
-      ann += callout(p, mx, base - D.max.v * k, fmtDate(D.max.date) + '  ' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), top + 2);
     }
-    if (showDry(D)) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, base + 46, dryLabel(D));
-    var key = '<text x="' + x0 + '" y="' + (top - 30) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '">' + (OV ? 'shaded: ' + esc(OV.label) : "one line per day · height is that day's precipitation") + '</text>';
-    return frame(p, W, H, grid + overlay + bars + temp + ann + key, FL, o);
+    return hit || shortUrl(d);
   }
-
-  // Staircase: the pluviograph trace, the running total across the year
-  function staircase(p, W, H, o) {
-    var FL = footLayout(W, H);
-    var x0 = 90, x1 = W - 90, y0 = 90, y1 = FL.top - 74, D = DATA.d, days = DATA.days, DOM = domain();
-    var k = (y1 - y0) / DOM.annual, w = (x1 - x0) / (PREVIEW ? PREVIEW.yearLen : D.n), mono = "'IBM Plex Mono',monospace";
-    var d = stairPath(days, D.cum, x0, y1, w, k);
-    // the soft wash under the line stays one closed shape, so it runs on under a gap
-    var fillD = 'M' + x0 + ',' + y1;
-    days.forEach(function (x) { fillD += 'L' + f2(x0 + (x.doy + 1) * w) + ',' + f2(y1 - D.cum[x.doy] * k); });
-    var grid = '', step = DOM.annual > 20 ? 5 : DOM.annual > 8 ? 2 : 1;
-    for (var r = 0; r <= DOM.annual; r += step) {
-      var Y = y1 - r * k;
-      grid += '<line x1="' + x0 + '" y1="' + f2(Y) + '" x2="' + x1 + '" y2="' + f2(Y) + '" stroke="' + p.rule + '" stroke-width="0.8" opacity="' + (r === 0 ? 1 : 0.55) + '"/><text x="' + (x0 - 10) + '" y="' + f2(Y + 4) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '" text-anchor="end">' + r + (r === 0 ? ' in' : '') + '</text>';
-    }
-    for (var i = 0; i < 12; i++) {
-      var ms = monthSpan(i, days, D), s0 = ms[0];
-      if (s0 < 0) continue;
-      var X = x0 + s0 * w;
-      // a tick on the date axis where each month starts, so the first and last day of every month read at a glance
-      grid += '<line x1="' + f2(X) + '" y1="' + y0 + '" x2="' + f2(X) + '" y2="' + y1 + '" stroke="' + p.rule + '" stroke-width="0.8" stroke-dasharray="2 4" opacity="0.35"/>' +
-        '<line x1="' + f2(X) + '" y1="' + f2(y1) + '" x2="' + f2(X) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>' +
-        '<text x="' + f2(X + ms[1] * w / 2) + '" y="' + (y1 + 26) + '" font-size="12" fill="' + p.mute + '" text-anchor="middle" letter-spacing="1.5">' + MON[i].toUpperCase() + '</text>';
-    }
-    var yearEndX = x0 + (PREVIEW ? PREVIEW.yearLen : D.n) * w;
-    grid += '<line x1="' + f2(yearEndX) + '" y1="' + f2(y1) + '" x2="' + f2(yearEndX) + '" y2="' + f2(y1 + 10) + '" stroke="' + p.mute + '" stroke-width="1"/>';
-    var endX = x0 + D.n * w, endY = y1 - D.total * k;
-    grid += cutLine(p, endX, y0, y1);
-    var OV = overlaySeries();
-    // the line is the hero: a soft wash under it turns the staircase into a landscape profile
-    var areaFill = OV ? '' : '<defs><linearGradient id="stairFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + p.rain + '" stop-opacity="0.22"/><stop offset="100%" stop-color="' + p.rain + '" stop-opacity="0.02"/></linearGradient></defs><path d="' + fillD + ' L' + f2(PREVIEW ? endX : x1) + ',' + f2(y1) + ' Z" fill="url(#stairFill)"/>';
-    var path = '<path d="' + d + '" fill="none" stroke="' + p.rain + '" stroke-width="2.75" stroke-linejoin="round" stroke-linecap="round"/>';
-    var waypoint = '';
-    var rs = riserSpan(D);
-    if (rs) {
-      var wx = x0 + (D.max.doy + 1) * w, wy = y1 - rs[1] * k;
-      var wx0 = x0 + D.max.doy * w, wy0 = y1 - rs[0] * k;
-      waypoint = '<line x1="' + f2(wx0) + '" y1="' + f2(wy0) + '" x2="' + f2(wx) + '" y2="' + f2(wy) + '" stroke="' + p.temp + '" stroke-width="3.25" stroke-linecap="round"/><circle cx="' + f2(wx) + '" cy="' + f2(wy) + '" r="4" fill="' + p.temp + '"/>';
-    }
-    var overlay = '';
-    if (OV) {
-      var od = 'M' + x0 + ',' + y1;
-      for (var j = 0; j < D.n; j++) od += 'L' + f2(x0 + (j + 1) * w) + ',' + f2(y1 - OV.cum[j] * k);
-      overlay = bandFill(p, D, OV, x0, w, y1, k) + '<path d="' + od + '" fill="none" stroke="' + p.mute + '" stroke-width="1.1" opacity="0.75" stroke-dasharray="5 4"/>';
-    }
-    // No temperature line on Staircase (Sig's panel: it competes with the one clean gesture).
-    var ann = '';
-    if (OV) ann += '<text x="' + f2(x0) + '" y="' + f2(y0 - 14) + '" font-family="' + mono + '" font-size="11" fill="' + p.mute + '">dashed line: ' + esc(OV.label) + '</text>';
-    if (D.max.v > 0 && D.max.doy >= 0) {
-      var mx = x0 + (D.max.doy + 1) * w, my = y1 - D.cum[D.max.doy] * k;
-      ann += callout(p, mx, my, fmtDate(D.max.date) + '  +' + f2(D.max.v) + ' in', mx > (x0 + x1) / 2 ? 'end' : 'start', calloutLift(D.max.doy, D), y0 + 2);
-    }
-    if (showDry(D)) ann += bracket(p, x0 + D.dryMax.startDoy * w, x0 + (D.dryMax.endDoy + 1) * w, y1 + 44, dryLabel(D));
-    // headline: the comparison, computed from the two real running totals, baseline always named
-    // A preview compares the same days: Jan 1 through the last recorded day, on both lines.
-    var pct = OV && OV.total > 0 ? Math.round((D.total - OV.total) / OV.total * 100) : null;
-    var baseline = ST.cmp === 'station' ? 'this station’s full record' : 'the 30-year normal';
-    var insight = pct === null ? '' : pct === 0 ? 'dead on ' + baseline : pct > 0 ? pct + '% wetter than ' + baseline : Math.abs(pct) + '% drier than ' + baseline;
-    if (insight && PREVIEW) insight += ' so far';
-    var thru = PREVIEW ? fmtDate(PREVIEW.last).replace(/^(\w)(\w+)/, function (a, b, c) { return b + c.toLowerCase(); }) : '';
-    ann += '<circle cx="' + f2(endX) + '" cy="' + f2(endY) + '" r="3.5" fill="' + p.ink + '"/>';
-    if (insight) {
-      ann += '<text x="' + f2(x1) + '" y="' + f2(y0 - 34) + '" font-family="\'Fraunces\',Georgia,serif" font-size="30" font-weight="600" fill="' + p.temp + '" text-anchor="end">' + esc(insight) + '</text>' +
-        '<text x="' + f2(x1) + '" y="' + f2(y0 - 10) + '" font-family="' + mono + '" font-size="13" fill="' + p.mute + '" text-anchor="end">' +
-        (PREVIEW ? f2(D.total) + ' in through ' + thru + ' · ' + f2(OV.total) + ' in by then in a typical year' : f2(D.total) + ' in this year · ' + f2(OV.total) + ' in a typical year') + '</text>';
-    } else {
-      ann += '<text x="' + f2(x1) + '" y="' + f2(y0 - 20) + '" font-family="\'Fraunces\',Georgia,serif" font-size="34" font-weight="600" fill="' + p.ink + '" text-anchor="end">' + f2(D.total) + '<tspan font-size="16" font-weight="400" fill="' + p.mute + '">' + (PREVIEW ? ' in, through ' + thru : ' in, by Dec 31') + '</tspan></text>';
-    }
-    var marks = lifeMarkers(p, printMarkers(), x0, x1, w, function (doy) { return y1 - D.cum[Math.min(doy, D.n - 1)] * k; }, D.max.doy, y0);
-    return frame(p, W, H, grid + areaFill + overlay + path + waypoint + marks + ann, FL, o);
+  function qrInfo(serial) {
+    var url = qrLink(), m = null;
+    QR_OK = false;
+    if (!root.AgQR || !url) return null;
+    try { m = root.AgQR.matrix(url); } catch (e) { return null; }
+    QR_OK = true;
+    return { matrix: m, serial: serial || '' };
   }
+  /* The serial goes under the QR on a physical print only: Sig's print files
+     with ?maker=1&serial=N. Never on the digital file, never on the public page. */
+  var SERIAL = (function () {
+    var m = /(?:^|[?&])serial=(\d{1,6})(?:&|$)/.exec(root.location.search);
+    return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') + ' · SRL' : '';
+  })();
 
-  /* o: {bleed (art units), watermark, px [w,h], fontCss}. The art is ART_W wide at the trim. */
+  function cmpNote() {
+    if (ST.cmp === 'normal') return 'Usual = 30-year normal';
+    if (ST.cmp === 'station' && EXT) return 'Usual = this station’s average, ' + EXT.yearFrom + ' to ' + EXT.yearTo;
+    return '';
+  }
+  /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix}. */
   function buildSvg(o) {
     o = o || {};
-    var P = PRINT[ST.size], H = Math.round(ART_W * P.h / P.w * 100) / 100;
-    var fn = ST.layout === 'waveform' ? waveform : staircase;
-    return fn(PAL[ST.palette], ART_W, H, o);
+    var input = {
+      style: ST.style, year: META.year, place: placeLong(), name: ST.name, dedication: ST.dedication,
+      days: DATA.days, D: DATA.d, showDry: showDry(DATA.d), axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
+      ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
+      records: ST.records ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
+    };
+    var svg = root.AgRainArt.render(input);
+    SKIPPED = root.AgRainArt.lastSkipped();
+    return svg;
+  }
+
+  /* Remarkable days (opt-in): components/rain-print-records.js reads the year's
+     daily rows and the period of record this page already downloaded. Loaded on
+     first use. */
+  var SKIPPED = [], RECS_KEY = '', RECS = [], RECS_P = null;
+  function recordsReady() {
+    if (root.AgRainRecords) return Promise.resolve(true);
+    if (RECS_P) return RECS_P;
+    RECS_P = new Promise(function (res) {
+      var sc = doc.createElement('script');
+      sc.src = '/components/rain-print-records.js?v=1';
+      sc.onload = function () { res(!!root.AgRainRecords); };
+      sc.onerror = function () { RECS_P = null; res(false); };
+      doc.head.appendChild(sc);
+    });
+    return RECS_P;
+  }
+  function recordsFor() {
+    if (!root.AgRainRecords || !DATA || !DATA.raw || PREVIEW) return [];
+    var key = META.sid + '|' + META.year + '|' + (EXT && EXT.rows ? EXT.rows.length : 0);
+    if (key !== RECS_KEY) {
+      RECS_KEY = key;
+      try {
+        RECS = root.AgRainRecords.find({ year: META.year, sid: META.sid, daily: DATA.raw, por: EXT && EXT.rows ? EXT.rows : null,
+          dailyElems: ['pcpn', 'avgt', 'snow', 'maxt', 'mint'], porElems: ['pcpn', 'avgt'] }, {});
+      } catch (e) { RECS = []; }
+    }
+    return RECS;
   }
 
   // ---------------------------------------------------------------- UI
@@ -1032,7 +774,7 @@
   function runSample() {
     SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
     art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
-    run(null, normalize({ place: SAMPLE.place, year: SAMPLE.year, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [] }));
+    run(null, normalize({ place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') }));
   }
   function useSample() {
     if (!SAMPLE || !DATA) return;
@@ -1045,16 +787,18 @@
     setStatus('This is the ' + ST.place + ', ' + ST.year + ' design now. Change what you like, or order it below.');
   }
   function radios(name) { return Array.prototype.slice.call(doc.querySelectorAll('input[name="' + name + '"]')); }
+  function pick(n, dflt) { var r = radios(n).find(function (x) { return x.checked; }); return r ? r.value : dflt; }
   function readInputs() {
     var markers = [];
     for (var i = 1; i <= 3; i++) {
       var d = $('rp-m' + i + 'd').value, l = $('rp-m' + i + 'l').value;
       if (d) markers.push({ date: d, label: l });
     }
-    var pick = function (n, dflt) { var r = radios(n).find(function (x) { return x.checked; }); return r ? r.value : dflt; };
+    // layout and palette are not on the page any more; they ride along so an old link keeps its code
     return normalize({ place: $('rp-place').value, year: $('rp-year').value, station: ST.station,
-      layout: pick('rp-layout', 'staircase'), palette: pick('rp-pal', 'paper'), size: '12x18',
-      cmp: $('rp-cmp').value, name: $('rp-name').value, markers: markers });
+      layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
+      cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
+      normals: $('rp-normals').checked, records: $('rp-records').checked });
   }
   // The year list: this year first (a gift, delivered in January), then every finished year.
   function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year}, as a gift (delivered in January)'); }
@@ -1069,10 +813,12 @@
     // a year from a link that is not in the list (next year, or before 1890) still shows, so its message can explain
     if (!sel.querySelector('option[value="' + yr + '"]')) { var o = doc.createElement('option'); o.value = yr; o.textContent = yr; sel.insertBefore(o, sel.firstChild); }
     sel.value = String(yr);
-    radios('rp-layout').forEach(function (r) { r.checked = r.value === s.layout; });
-    radios('rp-pal').forEach(function (r) { r.checked = r.value === s.palette; });
+    radios('rp-style').forEach(function (r) { r.checked = r.value === s.style; });
     $('rp-cmp').value = s.cmp;
     $('rp-name').value = s.name;
+    $('rp-ded').value = s.dedication;
+    $('rp-normals').checked = s.normals;
+    $('rp-records').checked = s.records;
     for (var i = 1; i <= 3; i++) {
       var m = s.markers[i - 1];
       $('rp-m' + i + 'd').value = m ? m.date : '';
@@ -1089,7 +835,7 @@
   }
   function updateUrl() {
     if (SAMPLE) return;   // a sample never goes into the address bar
-    var q = toParams(ST) + (MAKER ? '&maker=1' : '');
+    var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '');
     try { root.history.replaceState(null, '', root.location.pathname + '?' + q); } catch (e) {}
   }
 
@@ -1161,7 +907,8 @@
 
   function render() {
     if (!DATA || BLOCKED) return;
-    art.innerHTML = buildSvg({});
+    // the maker sees the serial on screen; nobody else ever does
+    art.innerHTML = buildSvg({ serial: SERIAL });
     art.classList.remove('rp-empty');
     var D = DATA.d, m = META, OV = overlaySeries();
     var dist = distText(m);
@@ -1173,8 +920,10 @@
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
-      (EXT ? 'Scale set by this station’s record, ' + EXT.yearFrom + ' to ' + EXT.yearTo + '.' : 'The station history didn’t load, so the scale fits this year only.') +
       (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
+      (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
+      (ST.records && !PREVIEW && root.AgRainRecords && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' : '') +
+      (ST.records && SKIPPED.length ? ' No room on the art for: ' + esc(SKIPPED.join('; ')) + '.' : '') +
       (ST.cmp !== 'none' && !OV ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
     var rows = [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
@@ -1284,7 +1033,7 @@
         setStatus('No preview yet, but you can still order it.');
         throw 'noart';
       }
-      DATA = { days: picked.days, d: picked.d }; NOART = '';
+      DATA = { days: picked.days, d: picked.d, raw: picked.raw }; NOART = '';
       PREVIEW = ST.gift ? { last: picked.days[picked.days.length - 1].date, yearLen: isLeap(ST.year) ? 366 : 365 } : null;
       setStatus('Reading the full record at ' + toTitle(META.name) + '…');
       return Promise.all([
@@ -1299,7 +1048,8 @@
         (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : ''));
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
-      else { ga('rain_print_draw', { layout: ST.layout }); if (e) showArt(); }
+      else { ga('rain_print_draw', { style: ST.style }); if (e) showArt(); }
+      if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
     }).catch(function (err) {
       if (err === 'stale') return;
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
@@ -1317,6 +1067,7 @@
     var yearChanged = next.year !== ST.year, placeChanged = next.place !== ST.place;
     if (yearChanged || placeChanged) { syncMarkerBounds(); return; }
     ST = next;
+    if (ST.records && !root.AgRainRecords) recordsReady().then(function (ok) { if (ok) render(); });
     render();
   }
 
@@ -1618,8 +1369,7 @@
      filled from the design on the page: no file per order. */
   function cardSvg() {
     // its own ids, so the copy does not lean on the art above (hidden while printing)
-    return buildSvg({}).replace(/id="(rpT|rpD|paperGrain|stairFill)"/g, 'id="gc$1"').replace(/url\(#(paperGrain|stairFill)\)/g, 'url(#gc$1)')
-      .replace('aria-labelledby="rpT rpD"', 'aria-labelledby="gcrpT gcrpD"');
+    return buildSvg({ idPrefix: 'gc' });
   }
   function cardHtml() {
     var J = PRICES || {}, m = META;
@@ -1650,26 +1400,26 @@
     var done = function () { doc.body.classList.remove('rp-carding'); root.removeEventListener('afterprint', done); };
     root.addEventListener('afterprint', done);
     ga('rain_print_gift_card', { art: DATA ? 1 : 0 });
-    fontsReady().then(function () { try { root.print(); } catch (e) {} });
+    fontsReady(true).then(function () { try { root.print(); } catch (e) {} });
   }
 
   // ---------- downloads ----------
+  // the art's four files (same as the @font-face rules in rain-print.html): Fraunces and IBM Plex Sans, variable, Latin
   var FONT_FILES = [
-    ['Fraunces', '100 900', 'normal', '/fonts/rp-fraunces-var.woff2'],
-    ['IBM Plex Sans', '400', 'normal', '/fonts/rp-plex-sans-400.woff2'],
-    ['IBM Plex Sans', '500', 'normal', '/fonts/rp-plex-sans-500.woff2'],
-    ['IBM Plex Mono', '400', 'normal', '/fonts/rp-plex-mono-400.woff2'],
-    ['IBM Plex Mono', '500', 'normal', '/fonts/rp-plex-mono-500.woff2'],
-    ['IBM Plex Mono', '400', 'italic', '/fonts/rp-plex-mono-400i.woff2']
+    ['Fraunces', '300 600', 'normal', '/fonts/rp-fraunces-opsz.woff2'],
+    ['Fraunces', '400', 'italic', '/fonts/rp-fraunces-opsz-400i.woff2'],
+    ['IBM Plex Sans', '300 600', 'normal', '/fonts/rp-plex-sans-var.woff2'],
+    ['IBM Plex Sans', '400', 'italic', '/fonts/rp-plex-sans-400i.woff2']
   ];
   var fontCssP = null;
-  function fontsReady() {
+  // card: the gift card also sets IBM Plex Mono
+  function fontsReady(card) {
     var fs = doc.fonts;
     if (!fs || !fs.load) return Promise.resolve();
-    return Promise.all([
-      fs.load("300 30px 'Fraunces'"), fs.load("600 60px 'Fraunces'"), fs.load("400 12px 'IBM Plex Sans'"), fs.load("500 12px 'IBM Plex Sans'"),
-      fs.load("400 12px 'IBM Plex Mono'"), fs.load("500 12px 'IBM Plex Mono'"), fs.load("italic 400 12px 'IBM Plex Mono'")
-    ]).then(function () { return fs.ready; }, function () { return fs.ready; });
+    var want = ["300 40px 'Fraunces'", "600 52px 'Fraunces'", "italic 400 21px 'Fraunces'", "300 50px 'IBM Plex Sans'", "400 16px 'IBM Plex Sans'",
+      "500 16px 'IBM Plex Sans'", "italic 400 17px 'IBM Plex Sans'"];
+    if (card) want = want.concat(["400 12px 'IBM Plex Mono'", "500 12px 'IBM Plex Mono'", "italic 400 12px 'IBM Plex Mono'"]);
+    return Promise.all(want.map(function (f) { return fs.load(f); })).then(function () { return fs.ready; }, function () { return fs.ready; });
   }
   // An SVG drawn into a canvas cannot see the page's fonts, so the export carries them inline.
   function fontCss() {
@@ -1684,26 +1434,31 @@
     return fontCssP;
   }
   function slug() {
-    return ('rain-print-' + META.city + '-' + META.stateAbbr + '-' + META.year + '-' + ST.layout).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+    return ('rain-print-' + META.city + '-' + META.stateAbbr + '-' + META.year + '-' + ST.style).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
   }
   function saveBlob(blob, name) {
     var url = URL.createObjectURL(blob), a = doc.createElement('a');
     a.href = url; a.download = name; doc.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
   }
-  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed) or a print size key. */
+  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed),
+     'digital' (the $19 file: 300 dpi at the trim, no bleed, no serial) or a print
+     size key (the printer's file: bleed, and the serial when the link has one). */
   function drawCanvas(kind) {
-    var P = PRINT[kind === 'preview' ? ST.size : kind];
+    var P = PRINT[kind === 'preview' || kind === 'digital' ? ST.size : kind];
     var o = {}, pxW, pxH;
     if (kind === 'preview') {
       pxW = 2000; pxH = Math.round(2000 * P.h / P.w); o.watermark = true;
+    } else if (kind === 'digital') {
+      pxW = P.w * DPI; pxH = P.h * DPI;
     } else {
+      o.serial = SERIAL;
       pxW = Math.round((P.w + 2 * BLEED_IN) * DPI); pxH = Math.round((P.h + 2 * BLEED_IN) * DPI);
-      o.bleed = ART_W / P.w * BLEED_IN;
+      o.bleed = ART_UNITS_IN * BLEED_IN;
     }
     o.px = [pxW, pxH];
     var saved = ST.size;
-    if (kind !== 'preview') ST.size = kind;
+    if (PRINT[kind]) ST.size = kind;
     // The page's own fonts first (document.fonts), then the same files inlined
     // into the SVG, since an SVG drawn into a canvas cannot see page fonts.
     var svgP = fontsReady().then(fontCss).then(function (css) { o.fontCss = css; var s = buildSvg(o); ST.size = saved; return s; });
@@ -1751,7 +1506,7 @@
     if (!DATA || BLOCKED) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
-    var name = slug() + (kind === 'preview' ? '-preview' : '-' + kind + '-300dpi');
+    var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-digital-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
     var job;
     if (fmt === 'svg') {
       job = fontCss().then(function (css) { return new Blob([buildSvg({ fontCss: css })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return 'SVG saved.'; });
@@ -1766,7 +1521,8 @@
         return toBlob(c, 'image/png').then(function (b) {
           saveBlob(b, name + '.png');
           return kind === 'preview' ? 'Preview saved (' + c.width + ' x ' + c.height + ' px, watermarked).'
-            : 'Print file saved: ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.';
+            : kind === 'digital' ? 'Digital file saved: ' + c.width + ' x ' + c.height + ' px, 18 x 12 in at 300 dpi, no serial.'
+            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.';
         });
       });
     }
@@ -1790,9 +1546,12 @@
   $('rp-sample-use').addEventListener('click', useSample);
   doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
   $('rp-year').addEventListener('input', syncMarkerBounds);
-  ['rp-cmp'].forEach(function (id) { $(id).addEventListener('change', restyle); });
-  ['rp-name', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
-  radios('rp-layout').concat(radios('rp-pal')).forEach(function (r) { r.addEventListener('change', restyle); });
+  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l', 'rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', restyle); });
+  radios('rp-style').forEach(function (r) { r.addEventListener('change', restyle); });
+  // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
+  $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
+  $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
+  $('rp-records').addEventListener('change', restyle);
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', syncAddress);
   $('ro-deliver').addEventListener('change', syncAddress);
@@ -1814,6 +1573,8 @@
     else root.prompt('Copy this link', u);
   });
   showBuy(false);
+  // the art measures its labels with these fonts: draw again once they are in
+  fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
   loadPrices();
   if (ST.place && ST.year) run();
   else runSample();
