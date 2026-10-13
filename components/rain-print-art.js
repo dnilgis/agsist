@@ -16,7 +16,7 @@
  *   axisLen: days on the x axis (a preview lays out the whole calendar year),
  *   showDry: RainPrint.showDry(D), whether the longest dry stretch is marked,
  *   ov: the comparison {daily (0 on unrecorded days), total} or null,
- *   ovNote: what "usual" means, printed small ("Usual = 30-year normal"),
+ *   ovNote: what "usual" means, printed small with the normals ("Usual = 30-year normal"),
  *   showNormals: month normals under the month totals,
  *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO} or null,
@@ -256,7 +256,7 @@
     var facts = [];
     if (E.snowText) facts.push(E.snowText);
     facts.push(E.daysText);
-    if (E.cmp && E.ovNote) facts.push(E.ovNote);
+    if (E.showN && E.ovNote) facts.push(E.ovNote);   // named only where the normals are shown (Sig)
     var recs = recordPoints(E, I.records);
     var HX = X0 + 28, HY = PTOP + 62, hs = { fam: SERIF, w: 600, size: 52 }, fs = { size: 21, fill: C.mute };
     var header = [T(HX, HY, head, hs)];
@@ -472,7 +472,6 @@
     o.push(T(X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)));
     o.push(T(X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }));
     if (E.verdict) o.push(T(X1, 254, E.verdict, { size: 22, anchor: 'end' }));
-    recs.lines.forEach(function (t, k) { o.push(T(X1, 254 + (E.verdict ? 28 : 0) + k * 26, t, { size: 18, w: 500, fill: C.rec, anchor: 'end' })); });
     var rightEdge = X1 - W(E.T + ' in', big);
     if (E.full) {
       var bxs = rightEdge - 70;
@@ -623,8 +622,8 @@
     });
 
     // footer
-    var foot = [E.daysText];
-    if (E.cmp && E.ovNote) foot.push(E.ovNote);
+    var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the footer
+    if (E.showN && E.ovNote) foot.push(E.ovNote);
     if (E.dry && !dryOnArt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
     else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
     var fst = { size: 17, fill: C.mute };

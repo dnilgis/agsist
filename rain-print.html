@@ -116,6 +116,8 @@
   .rp-dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
   .rp-dates-h{grid-column:1/-1;margin:0;font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
   .rp-date{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+  .rp-style-pick{border:0;padding:0;margin:.8rem 0 .2rem}
+  .rp-style-pick legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin-bottom:.35rem;padding:0}
   .rp-checks{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem}
   .rp-check{display:inline-flex;align-items:center;gap:.5rem;min-height:var(--btn-h);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer}
   .rp-check input{width:1.1rem;height:1.1rem;accent-color:var(--brand-fill)}
@@ -294,6 +296,10 @@
           <label class="field rp-year"><span>Year</span><select id="rp-year"><option value="2025">2025</option></select></label>
           <button class="btn btn-primary" id="rp-go" type="submit">Draw it</button>
         </form>
+        <fieldset class="rp-style-pick"><legend>Style</legend><div class="rp-seg">
+          <label><input type="radio" name="rp-style" value="r1" checked><span>Staircase</span></label>
+          <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
+        </div></fieldset>
         <p class="rp-gift-hint" id="rp-gift-hint">For Christmas, pick <span class="rp-cy">2026</span>. You print a gift card for under the tree now, and the full-year print comes in January.</p>
         <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
         <p class="rp-preview-line" id="rp-preview-line" hidden></p>
@@ -319,10 +325,6 @@
     <section class="rp-sec" aria-labelledby="rp-design-h">
       <h2 class="sec-h" id="rp-design-h">Add a name and dates</h2>
       <div class="rp-opts">
-        <fieldset class="rp-wide2"><legend>Style</legend><div class="rp-seg">
-          <label><input type="radio" name="rp-style" value="r1" checked><span>Staircase</span></label>
-          <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
-        </div></fieldset>
         <label class="field rp-wide2"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm"></label>
         <label class="field rp-wide2"><span>A line under the name (optional)</span><input id="rp-ded" type="text" maxlength="40" placeholder="For Dad, his 40th crop. Love, Kate"></label>
         <div class="rp-dates" role="group" aria-label="Dates on the print"><p class="rp-dates-h">Up to three dates, marked on the year</p>
