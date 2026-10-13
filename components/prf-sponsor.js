@@ -6,7 +6,8 @@
  *
  * WHERE A SALE LIVES: data/prf-sponsors.json, keyed by state code:
  *   { "IA": { "name": "...", "url": "https://...", "line": "one sentence, 120 characters at most",
- *             "logo": "/img/sponsors/x.webp" (optional), "through": "2026-12-31" } }
+ *             "logo": "/img/sponsors/x.webp" (optional), "phone": "515-555-0100" (optional),
+             "through": "2026-12-31" } }
  * One business may sit under as many states as it bought.
  *
  * WHY THE BROWSER READS IT INSTEAD OF THE GENERATORS BAKING IT IN: the county
@@ -33,6 +34,7 @@
   var URL_RE = /^https?:\/\/[^\s"'<>\\`]+$/i;
   var LOGO_RE = /^\/img\/sponsors\/[a-z0-9._-]+\.(png|jpe?g|webp)$/;
   var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  var PHONE_RE = /^\+?[0-9][0-9 ().-]{6,18}$/;
   var NOT_IN_A_SLOT = /farmers\s*(1st|first)/i;
 
   function esc(x) {
@@ -61,7 +63,8 @@
     var line = typeof sp.line === 'string' ? sp.line.trim() : '';
     if (line.length > LINE_MAX) line = '';
     var logo = typeof sp.logo === 'string' && LOGO_RE.test(sp.logo) ? sp.logo : '';
-    return { st: st, name: name, url: url, line: line, logo: logo, through: sp.through };
+    var phone = typeof sp.phone === 'string' && PHONE_RE.test(sp.phone.trim()) ? sp.phone.trim() : '';
+    return { st: st, name: name, url: url, line: line, logo: logo, phone: phone, through: sp.through };
   }
 
   function ask(n) {
@@ -80,7 +83,7 @@
     var noSay = kind === 'state' ? '' : ' <span class="prf-spon-ask">A sponsor has no say over any figure here.</span>';
     return '<span class="ag-sponsor-tag">Sponsor</span>' + logo +
       '<span class="ag-sponsor-copy"><b>PRF in ' + esc(stName) + ' is sponsored by ' + n + '.</b>' +
-      (sp.line ? ' ' + esc(sp.line) : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
+      (sp.line ? ' ' + esc(sp.line) : '') + (sp.phone ? ' ' + esc(sp.phone) + '.' : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
   }
 
   function show(el, sp, stName, kind) {
