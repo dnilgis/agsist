@@ -47,6 +47,18 @@ PAGES
   cash-bids/_new.txt              (with --print-new) URLs first written this
                                   run, for the IndexNow ping
 
+UNREAD ELEVATORS (2026-10-13)
+  data/directory.json (the bids network's roster) also names elevators it
+  knows but cannot read: status "known", ids known:... (the licensed roster)
+  and reg:... (state and federal warehouse licences). A town page lists the
+  ones in its town under "Also in <town>, bids not read yet", each with a link
+  to /list-your-elevator filled in from the roster, so the elevator can ask to
+  post its own bids. No price, phone or address of theirs is printed. At most
+  KNOWN_MAX per page; the rest are counted with a link to the coverage map.
+  When the roster cannot be read the section is left out and every page is
+  built exactly as before. Styles are inline on that section only, so a town
+  with no unread elevator does not change a byte.
+
 Per-elevator pages were measured and not built: 1,694 places sit in 1,625
 towns (2026-10-07), so an elevator page would repeat its town page almost
 word for word for 96% of elevators.
@@ -61,6 +73,7 @@ Usage:
   python3 scripts/build_cash_bid_pages.py --selftest
 """
 import argparse
+from html import unescape as html_unescape
 import datetime as dt
 import json
 import math
@@ -404,6 +417,73 @@ def town_of(b, src, towns_by_state):
         if k:
             hit = known.get(town_key(" ".join(words[k:])))
     return town_name(hit) if hit else None
+
+
+KNOWN_MAX = 6         # unread elevators named on one town page; the rest are counted
+LISTING_PAGE = "/list-your-elevator"
+DIR_ID_RE = re.compile(r'^(known|reg):[^<>"`\\]{1,190}$')   # the worker's and the form's dir_id rule
+OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|elevator|elevators)\b")
+
+
+def op_key(name):
+    """An operator name with the legal and trade words taken out, for telling
+    an unread roster entry apart from a board already on the page."""
+    return re.sub(r"[^a-z0-9]", "", OP_NOISE.sub(" ", (name or "").lower()))
+
+
+def known_by_town(directory, towns_by_state):
+    """{(ST, town slug): [{id, name, town, state}]} for every roster entry the
+    network knows but does not read, placed in a town the same way a board is
+    (town_of on its location). One entry per operator per town; sorted by name."""
+    out = defaultdict(list)
+    seen = set()
+    for e in (directory or {}).get("elevators") or []:
+        if not isinstance(e, dict) or e.get("status") != "known":
+            continue
+        st = (e.get("state") or "").upper()
+        eid = str(e.get("id") or "")
+        name = re.sub(r"\s+", " ", str(e.get("operator") or "")).strip()
+        if st not in STATE_NAMES or not name or not DIR_ID_RE.match(eid):
+            continue
+        tname = town_of({"state": st, "city": e.get("location") or "", "operator": name}, {}, towns_by_state)
+        if not tname:
+            continue
+        tk = (st, url_slug(tname))
+        k = (tk, op_key(name) or name.lower())
+        if k in seen:
+            continue
+        seen.add(k)
+        out[tk].append({"id": eid, "name": name, "town": tname, "state": st})
+    for v in out.values():
+        v.sort(key=lambda x: x["name"].lower())
+    return out
+
+
+def listing_link(e, z=""):
+    """/list-your-elevator with the form filled in from the roster (components/list-elevator.js prefill)."""
+    from urllib.parse import quote
+    q = f"id={quote(e['id'], safe='')}&name={quote(e['name'], safe='')}&town={quote(e['town'], safe='')}&state={e['state']}"
+    if z and re.fullmatch(r"\d{5}", z):
+        q += f"&zip={z}"
+    return f"{LISTING_PAGE}?{q}"
+
+
+def known_section(t, known, z=""):
+    """'Also in <town>, bids not read yet': the roster's unread elevators in
+    this town that are not already a board on the page. '' when there are none."""
+    ops = {op_key(b["operator"]) for b in t["boards"].values()} - {""}
+    ks = [e for e in known if op_key(e["name"]) not in ops]
+    if not ks:
+        return ""
+    lis = "".join(f'<li>{esc(e["name"])} <a href="{esc(listing_link(e, z))}" style="color:var(--gold);border:0;'
+                  f'font-size:.85rem;white-space:nowrap">Is this your elevator? Post your bids free</a></li>'
+                  for e in ks[:KNOWN_MAX])
+    more = len(ks) - KNOWN_MAX
+    more_html = (f'<li style="color:var(--text-muted)">and {more} more on the '
+                 f'<a href="/elevators#coverage-map">coverage map</a></li>') if more > 0 else ""
+    return (f'<h2>Also in {esc(t["name"])}, bids not read yet</h2>'
+            f'<p class="cbt-sub">AGSIST knows these elevators are here but does not read their bids yet, so no '
+            f'price is shown for them.</p><ul class="cbt-list">{lis}{more_html}</ul>')
 
 
 NEAR_MI = 10          # a place with no town and no usable ZIP goes on a town page this close, or nowhere
@@ -1006,6 +1086,7 @@ def build_town_page(t, ctx):
         quiet_html = (f'<h2>Also in {esc(t["name"])}, no current bid</h2><ul class="cbt-list">'
                       + "".join(quiet_line(b) for b in quiet) + "</ul>"
                       '<p class="cbt-sub">No price is shown for these until their board posts again.</p>')
+    known_html = known_section(t, (ctx.get("known") or {}).get((st, t["slug"]), []), z)
     links = [f'<a href="/cash-bids/{ssl}/">Every {esc(sname)} town</a>',
              f'<a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a>']
     jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb([
@@ -1060,6 +1141,7 @@ def build_town_page(t, ctx):
   {near_html if indexable else ''}
   {ask}
   {quiet_html}
+  {known_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
@@ -1607,9 +1689,11 @@ def write_sitemap(path, entries):
 
 # ---------------------------------------------------------------- build
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None):
+              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
-    go (None = not written). hub: /basis page to bake the state ranking into."""
+    go (None = not written). hub: /basis page to bake the state ranking into.
+    directory: the bids network's data/directory.json, for the unread
+    elevators on each town page (None = that section is left out)."""
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
     if gen is None:
@@ -1650,7 +1734,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     ctx = {"snap_ct": gen.astimezone(CT), "root": root, "chrome": SB.static_chrome(root), "states": states,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns),
-           "town_zips": town_zips(zip_towns)}
+           "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -1996,7 +2080,71 @@ def selftest():
     assert box_zip(dict(tw, boards={}), "", {"town_zips": tz, "zip_coord": cent}) == "50001"
     assert box_zip(dict(tw, name="Nowhere"), "", {"town_zips": tz}) == ""
     assert signup_box(tw, "", "iowa", {"corn"}, {}) == ""
+    _selftest_known()
     print("selftest OK")
+
+
+def _selftest_known():
+    """Unread roster elevators on town pages: placed by town, linked to the
+    request form with the roster's id, escaped, capped, never a board twice,
+    and with no roster every page is byte for byte what it was."""
+    import tempfile as _tf
+    from urllib.parse import parse_qs, urlsplit
+    merged, index = _fixture()
+    ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
+    hostile = 'Sam\'s 12" <b>Co-op</b> & Sons'
+    d = {"elevators": [
+        {"id": "reg:NE|fremontgrain|fremont", "operator": "FREMONT GRAIN CO", "location": "FREMONT", "state": "NE", "status": "known"},
+        {"id": "known:Agrex Inc|Fremont|Fremont|NE", "operator": "Agrex Inc", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "known:Agrex Inc|Agrex-East|Fremont|NE", "operator": "Agrex Inc", "location": "Fremont, NE", "state": "NE", "status": "known"},
+        {"id": "known:9001", "operator": hostile, "location": "Hooper, NE", "state": "NE", "status": "known"},
+        {"id": "known:9002", "operator": "Op n1, Inc.", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "t-n2", "operator": "Read Board", "location": "Fremont", "state": "NE", "status": "read"},
+        {"id": "known:9003", "operator": "Nowhere Feed", "location": "Big River Plant", "state": "NE", "status": "known"},
+        {"id": "known:9004", "operator": "Ontario Grain", "location": "Fremont", "state": "ON", "status": "known"},
+        {"id": "bad:1", "operator": "Bad Id", "location": "Fremont", "state": "NE", "status": "known"},
+        {"id": "known:9005", "operator": "Ackworth Co", "location": "Ackworth", "state": "IA", "status": "known"},
+    ] + [{"id": f"reg:IA|x{i}|ackworth", "operator": f"Extra Elevator {i}", "location": "ACKWORTH", "state": "IA",
+          "status": "known"} for i in range(KNOWN_MAX + 2)]}
+    kb = known_by_town(d, known_towns(ZT))
+    assert [e["name"] for e in kb[("NE", "fremont")]] == ["Agrex Inc", "FREMONT GRAIN CO", "Op n1, Inc."], kb[("NE", "fremont")]
+    assert kb[("NE", "hooper")][0]["id"] == "known:9001" and len(kb[("IA", "ackworth")]) == KNOWN_MAX + 3
+    assert not any(e["name"] in ("Read Board", "Nowhere Feed", "Ontario Grain", "Bad Id") for v in kb.values() for e in v)
+    assert op_key("Op n1, Inc.") == op_key("Op n1") and op_key("FREMONT GRAIN CO") == "fremont"
+    with _tf.TemporaryDirectory() as td:
+        out0 = os.path.join(td, "a")
+        build_all(merged, index, ZT, out_dir=out0, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
+        out1 = os.path.join(td, "b")
+        build_all(merged, index, ZT, out_dir=out1, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"),
+                  directory=d)
+        out2 = os.path.join(td, "c")
+        build_all(merged, index, ZT, out_dir=out2, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"),
+                  directory={"elevators": []})
+        rd = lambda o, *p: open(os.path.join(o, *p), encoding="utf-8").read()  # noqa: E731
+        fr, ho, ak = rd(out1, "nebraska", "fremont.html"), rd(out1, "nebraska", "hooper.html"), rd(out1, "iowa", "ackworth.html")
+        assert "Also in Fremont, bids not read yet" in fr and "no price is shown for them" in fr
+        assert "FREMONT GRAIN CO" in fr and fr.count("Agrex Inc") == 1, "one line per operator in a town"
+        assert "Op n1, Inc." not in fr, "a board already on the page is not listed again"
+        links = re.findall(r'<a href="([^"]+)" style="color:var\(--gold\)[^"]*">Is this your elevator\? Post your bids free</a>', fr)
+        assert len(links) == 2, links
+        q = parse_qs(urlsplit(html_unescape(links[1])).query)
+        assert urlsplit(links[1]).path == LISTING_PAGE
+        assert q == {"id": ["reg:NE|fremontgrain|fremont"], "name": ["FREMONT GRAIN CO"], "town": ["Fremont"],
+                     "state": ["NE"], "zip": ["68025"]}, q
+        # escaping: the name in text and in the link
+        assert hostile not in ho and "Sam&#x27;s 12&quot; &lt;b&gt;Co-op&lt;/b&gt; &amp; Sons" in ho, \
+            re.findall(r"Sam.{0,80}", ho)
+        hl = re.findall(r'<a href="(/list-your-elevator\?[^"]+)"', ho)[0]
+        assert "<" not in hl and '"' not in hl and "'" not in hl, hl
+        assert parse_qs(urlsplit(html_unescape(hl)).query)["name"] == [hostile]
+        assert f"and 3 more on the " in ak and ak.count("Is this your elevator?") == KNOWN_MAX
+        assert "Also in Redfield" not in rd(out1, "iowa", "redfield.html")
+        for o in (out1, out2):
+            for dp, _, fs in os.walk(out0):
+                for fn in fs:
+                    rel = os.path.relpath(os.path.join(dp, fn), out0)
+                    if o == out2 or rel not in ("nebraska/fremont.html", "nebraska/hooper.html", "iowa/ackworth.html"):
+                        assert rd(out0, rel) == rd(o, rel), f"{rel} changed with no unread elevator in its town"
 
 
 def zip_centroids(base):
@@ -2040,9 +2188,15 @@ def main():
     prev = None
     if not a.no_wow and gen:
         prev = SB.load_previous(gen, bids_dir=a.bids_dir, prev_file=a.prev_file, allow_remote=not a.bids_dir)
+    try:
+        directory = SB._net_get_json(base, "data/directory.json")
+    except Exception as e:  # noqa: BLE001
+        print(f"[cash-bid-pages] data/directory.json unreadable ({e}); town pages list no unread elevators")
+        directory = None
     metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
-                                      data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE))
+                                      data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
+                                      directory=directory)
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)
