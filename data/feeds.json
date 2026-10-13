@@ -300,6 +300,7 @@
    "touched_by": [
     "cond-yield",
     "conditions",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch on a fixed schedule at about 8pm Central",
@@ -484,6 +485,7 @@
    ],
    "touched_by": [
     "Fetch Crop Progress",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Feed Manifest"
    ],
@@ -573,6 +575,7 @@
    ],
    "touched_by": [
     "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Feed Manifest"
    ],
    "cadence": "4 launches on a fixed schedule at about 9am, 10am, 4pm Central",
@@ -601,6 +604,7 @@
    ],
    "touched_by": [
     "cash-bid-pages",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7pm Central",
@@ -649,6 +653,7 @@
    ],
    "touched_by": [
     "Coverage map \u2014 the elevator directory, drawn",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7am Central",
@@ -743,6 +748,7 @@
     "MESH radar hail swaths \u2014 daily"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
     "MESH radar hail swaths \u2014 daily"
@@ -1265,6 +1271,7 @@
     "The wire"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire"
    ],
@@ -1389,6 +1396,7 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Prediction bot \u2014 call and grade"
    ],
@@ -1590,6 +1598,7 @@
     "ARC/PLC refresh",
     "cash-bid-pages",
     "Generate Daily Briefing",
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Build Price Stats (5-year percentile)",
@@ -1906,6 +1915,7 @@
     "transport"
    ],
    "touched_by": [
+    "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "transport"
    ],
