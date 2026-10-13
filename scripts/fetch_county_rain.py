@@ -710,6 +710,9 @@ def selftest():
                              ("SPRINGFIELD WSO AP", "at Springfield Airport", "Springfield"),
                              ("WINSTON-SALEM 4.2 NNE", "4.2 miles north-northeast of Winston-Salem", "Winston-Salem"),
                              ("CAMDEN 1.0 NNE", "1 mile north-northeast of Camden", "Camden"),
+                             ("UNIVERSITY", "in University", "University"),
+                             ("UNIVERSITY OF MN ST. PAUL", "University of Mn St. Paul", "University of Mn St. Paul"),
+                             ("GREENUP LOCKS AND DAM", "in Greenup", "Greenup"),
                              ("Eastern Band of Cherokee Indians", "Eastern Band of Cherokee Indians", "Eastern Band of Cherokee Indians")):
         ok(R.station_where(raw) == where, f"station_where({raw!r}) = {R.station_where(raw)!r}, want {where!r}")
         ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")

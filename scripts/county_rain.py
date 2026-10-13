@@ -237,7 +237,7 @@ def _cut_here(words, i):
     u, nxt = words[i].upper(), (words[i + 1].upper() if i + 1 < len(words) else "")
     if u in NOT_TOWN:
         return True
-    if u == "LOCK":                       # LOCK AND DAM 10, LOCK 4; not LOCK HAVEN
+    if u in ("LOCK", "LOCKS"):            # LOCK AND DAM 10, LOCK 4, LOCKS AND DAM; not LOCK HAVEN
         return nxt in ("AND", "&", "DAM") or re.fullmatch(r"\d+", nxt) is not None
     if u == "RANGER":                     # RANGER STN; not the town of Ranger
         return nxt in ("STN", "STATION")
@@ -271,7 +271,7 @@ def station_where(raw):
     ws = s.upper().split(" ")
     if any(w in AIR for w in ws):
         return "at " + station_name(s)
-    if ws[0] == "UNIVERSITY" or any(w in NOT_PLACE for w in ws):
+    if (ws[0] == "UNIVERSITY" and len(ws) > 1) or any(w in NOT_PLACE for w in ws):
         return station_name(s)
     return "in " + station_town(s)
 
