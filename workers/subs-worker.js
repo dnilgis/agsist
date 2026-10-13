@@ -498,8 +498,8 @@ function oneLine(v, max) {
 const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/watch-subscribe",
   "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form",
   "/rp-short",   // v5.14
-  "/rp-gift/check", "/rp-gift/redeem",   // v5.16
-  "/elev/me", "/elev/save"]);   // v5.20
+  "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
+PUBLIC_POSTS.add("/elev/me").add("/elev/save");   // v5.20: the elevator portal
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
