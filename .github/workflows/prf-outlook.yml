@@ -49,9 +49,15 @@ jobs:
       # continue-on-error: a source that is down marks the run, and whatever
       # did come back is still committed below. The script never writes a file
       # that fails its own check.
+      # The script stops every source by itself within about 4 minutes (each
+      # request has a timeout, each source a budget). The step limit is only a
+      # backstop, set so the steps after it still run if it is ever reached.
       - name: Fetch
         id: fetch
         continue-on-error: true
+        timeout-minutes: 8
+        env:
+          PYTHONUNBUFFERED: "1"
         run: |
           set -o pipefail
           python scripts/fetch_prf_outlook.py 2>&1 | tee prf-outlook.log
