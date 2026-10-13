@@ -305,7 +305,7 @@ def summarize(year, dates, vals, norms, edate):
     full = [(m, x) for m, x in enumerate(mlist) if x[3] and x[2] >= MIN_SHARE * x[3]]
     wet = max(full, key=lambda t: t[1][0], default=None)
     usual_r = round(usual, 2) if nv is not None else None
-    pct = round(100 * total / usual) if usual_r is not None and usual >= PCT_MIN_NORMAL else None
+    pct = round(100 * total / usual) if usual_r is not None and usual_r >= PCT_MIN_NORMAL else None
     return {
         "as_of": as_of, "days": n, "reported": reported, "missing": n - reported,
         "trace": trace, "acc": acc, "unsplit": unsplit,
