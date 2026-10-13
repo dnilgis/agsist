@@ -79,6 +79,22 @@
   .rp-wall .rp-view .chip:not([aria-pressed="true"]){background:transparent;border-color:color-mix(in srgb,var(--rp-wall-ink) 40%,transparent);color:var(--rp-wall-ink)}
   .rp-sample-use{font:inherit;font-weight:600;min-height:var(--btn-h);padding:0 .15rem;background:none;border:0;color:var(--link);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
   .rp-side{min-width:0}
+  /* a phone: the town box on the first screen, the art right under it, and a
+     small copy of the art held at the top while the name and dates are typed */
+  .rp-mini{display:none}
+  @media(max-width:899px){
+    .rp-hero{display:flex;flex-direction:column;gap:.8rem}
+    .rp-side{display:contents}
+    .rp-side>*{order:6}
+    #rp-gift-banner{order:0}.rp-side>.rp-kick{order:1}.rp-side>h1{order:2}.rp-form{order:3}
+    #rp-link-note,#rp-status,#rp-pick,#rp-retry-row{order:4}
+    .rp-wall{order:5}
+    .rp-hero>*{margin-top:0;margin-bottom:0}
+    .rp-side>h1{font-size:clamp(1.5rem,6.4vw,2rem)}
+    .rp-mini:not([hidden]){display:block;position:sticky;top:64px;z-index:5;width:62%;margin:0 auto .8rem;padding:4px;background:#131313;border-radius:2px;box-shadow:0 8px 16px -8px rgba(0,0,0,.5)}
+    .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
+    .rp-opts input,.rp-opts select{scroll-margin-top:calc(80px + 42vw)}
+  }
   @media(min-width:900px){
     .rp-hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
     .rp-wall{margin:0;padding:52px 40px 4px;border-radius:var(--r-lg)}
@@ -314,7 +330,7 @@
         </div></fieldset>
         <div class="rp-xmas" id="rp-gift-hint">
           <p><b>For Christmas.</b> <span id="rp-xmas-past">Any past year can be there by Christmas. The order-by dates are on the price cards below.</span></p>
-          <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so it can&rsquo;t be printed until January. Order it now as a gift, print a card for under the tree, and the full-year print follows in January.</p>
+          <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so it can&rsquo;t be printed until January. Order it now as a gift: once you&rsquo;ve paid, Sig emails you a card to print for under the tree, and the full-year print follows in January.</p>
         </div>
         <p class="rp-status rp-bad" id="rp-link-note" hidden></p>
         <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
@@ -343,6 +359,7 @@
 
     <section class="rp-sec" aria-labelledby="rp-design-h">
       <h2 class="sec-h" id="rp-design-h">Add a name and dates</h2>
+      <div class="rp-mini" id="rp-mini" aria-hidden="true" hidden></div>
       <div class="rp-opts">
         <div class="rp-wide2"><label class="field"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm" aria-describedby="rp-name-n"></label><p class="rp-count" id="rp-name-n" aria-live="polite">0 of 24 letters</p></div>
         <div class="rp-wide2"><label class="field"><span>A line under the name (optional)</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count" id="rp-ded-n" aria-live="polite">0 of 70 letters</p></div>
@@ -573,8 +590,8 @@
   <script src="/components/qr.js?v=8"></script>
   <script src="/components/form-post.js?v=2"></script>
   <script src="/components/rp-short.js?v=1"></script>
-  <script src="/components/rain-print-art.js?v=1"></script>
-  <script src="/components/rain-print.js?v=12"></script>
-  <script src="/components/rp-gift.js" defer></script>
+  <script src="/components/rain-print-art.js?v=2"></script>
+  <script src="/components/rain-print.js?v=13"></script>
+  <script src="/components/rp-gift.js?v=1" defer></script>
 </body>
 </html>

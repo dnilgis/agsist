@@ -1132,6 +1132,9 @@
     // the maker sees the serial on screen; nobody else ever does
     art.innerHTML = buildSvg({ serial: SERIAL });
     art.classList.remove('rp-empty');
+    // the phone's small copy, held at the top while typing (CSS shows it under 900 px only)
+    var mini = $('rp-mini');
+    if (mini && root.matchMedia && root.matchMedia('(max-width: 899px)').matches) { mini.innerHTML = buildSvg({ idPrefix: 'mn' }); mini.hidden = false; }
     var D = DATA.d, m = META, OV = overlaySeries();
     var dist = distText(m);
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
@@ -1165,6 +1168,7 @@
   }
 
   function blockPrint(msg) {
+    if ($('rp-mini')) $('rp-mini').hidden = true;
     BLOCKED = msg;
     PREVIEW = null; NOART = '';
     art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station for a fair print.</p>';
@@ -1182,6 +1186,7 @@
      design comes down with it, so nothing stale can be ordered (2026-10-13:
      "Chetk, WI" left Chetek's art and live order buttons up). */
   function failDraw(err) {
+    if ($('rp-mini')) $('rp-mini').hidden = true;
     DATA = null; META = null; PREVIEW = null; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
     art.innerHTML = EMPTY_ART;
