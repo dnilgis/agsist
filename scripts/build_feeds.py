@@ -137,6 +137,9 @@ CURATED = {
     # stamp_rates.py and the sponsor pages. No cadence to keep.
     "data/rate-card.json", "data/sponsor-slots.json",
     "data/page-sponsors.json", "data/supporters.json",
+    # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
+    # sells or renews; each entry lapses on its own "through" date.
+    "data/prf-sponsors.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
     # Rain Print prices, payment links and the seasonal promo switch. Edited by
