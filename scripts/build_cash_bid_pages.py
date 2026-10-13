@@ -422,13 +422,21 @@ def town_of(b, src, towns_by_state):
 KNOWN_MAX = 6         # unread elevators named on one town page; the rest are counted
 LISTING_PAGE = "/list-your-elevator"
 DIR_ID_RE = re.compile(r'^(known|reg):[^<>"`\\]{1,190}$')   # the worker's and the form's dir_id rule
-OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|elevator|elevators)\b")
+OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|"
+                      r"elevator|elevators|farmers)\b")
+TOWN_ALT = {"saint": "st", "mount": "mt", "fort": "ft", "sainte": "ste"}
 
 
-def op_key(name):
-    """An operator name with the legal and trade words taken out, for telling
-    an unread roster entry apart from a board already on the page."""
-    return re.sub(r"[^a-z0-9]", "", OP_NOISE.sub(" ", (name or "").lower()))
+def op_key(name, town=""):
+    """An operator name with the legal and trade words, and the town's own
+    name, taken out: "Bartlett Grain Company- St. Joseph" and "Bartlett Grain
+    Company, LLC" in Saint Joseph are one operator there. For telling an unread
+    roster entry apart from another one, or from a board already on the page."""
+    s = OP_NOISE.sub(" ", (name or "").lower())
+    for w in re.findall(r"[a-z0-9]+", (town or "").lower()):
+        for v in {w, TOWN_ALT.get(w, w)}:
+            s = re.sub(rf"\b{v}\b", " ", s)
+    return re.sub(r"[^a-z0-9]", "", s)
 
 
 def known_by_town(directory, towns_by_state):
@@ -449,7 +457,7 @@ def known_by_town(directory, towns_by_state):
         if not tname:
             continue
         tk = (st, url_slug(tname))
-        k = (tk, op_key(name) or name.lower())
+        k = (tk, op_key(name, tname) or name.lower())
         if k in seen:
             continue
         seen.add(k)
@@ -471,8 +479,8 @@ def listing_link(e, z=""):
 def known_section(t, known, z=""):
     """'Also in <town>, bids not read yet': the roster's unread elevators in
     this town that are not already a board on the page. '' when there are none."""
-    ops = {op_key(b["operator"]) for b in t["boards"].values()} - {""}
-    ks = [e for e in known if op_key(e["name"]) not in ops]
+    ops = {op_key(b["operator"], t["name"]) for b in t["boards"].values()} - {""}
+    ks = [e for e in known if op_key(e["name"], t["name"]) not in ops]
     if not ks:
         return ""
     lis = "".join(f'<li>{esc(e["name"])} <a href="{esc(listing_link(e, z))}" style="color:var(--gold);border:0;'
@@ -2111,6 +2119,9 @@ def _selftest_known():
     assert kb[("NE", "hooper")][0]["id"] == "known:9001" and len(kb[("IA", "ackworth")]) == KNOWN_MAX + 3
     assert not any(e["name"] in ("Read Board", "Nowhere Feed", "Ontario Grain", "Bad Id") for v in kb.values() for e in v)
     assert op_key("Op n1, Inc.") == op_key("Op n1") and op_key("FREMONT GRAIN CO") == "fremont"
+    assert op_key("Bartlett Grain Company- St. Joseph", "Saint Joseph") == op_key("Bartlett Grain Company, LLC", "Saint Joseph")
+    assert op_key("Frenchman Valley Coop", "Pine Bluffs") == op_key("Frenchman Valley Farmers Cooperative, Inc.", "Pine Bluffs")
+    assert op_key("Agrex Inc", "Fremont") != op_key("ADM", "Fremont")
     with _tf.TemporaryDirectory() as td:
         out0 = os.path.join(td, "a")
         build_all(merged, index, ZT, out_dir=out0, root=".", sitemap=None, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
