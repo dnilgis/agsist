@@ -795,8 +795,10 @@ def seo_fertilizer(c):
         return None
     title = None
     for n in range(len(named), 0, -1):
-        bits = [f"{s} ${r['price']:,.0f}" + ("/ton" if i == 0 else "") for i, (s, r) in enumerate(named[:n])]
-        cand = "Fertilizer Prices: " + ", ".join(bits) + SUFFIX
+        # "per Ton" moved up from "/ton" on the first price 2026-10-13: the
+        # page's named queries are "... fertilizer price(s) per ton".
+        bits = [f"{s} ${r['price']:,.0f}" for s, r in named[:n]]
+        cand = "Fertilizer Prices per Ton: " + ", ".join(bits) + SUFFIX
         if len(cand) <= TITLE_MAX:
             title = cand
             break
@@ -1383,7 +1385,8 @@ def selftest():
     ck("a held week is named and Indiana's jumped week is not counted",
        "Aug 7, 2026" in d and "Aug 14 week is held" in d and "Indiana" not in d, d)
     t, d = seo_fertilizer(ctx)
-    ck("fertilizer title names this round's quotes", "Urea $590/ton" in t, t)
+    # string follows the 2026-10-13 copy ("per Ton" leads, was "Urea $590/ton")
+    ck("fertilizer title names this round's quotes", "Prices per Ton: Urea $590, MAP $930" in t, t)
     ck("fertilizer title carries NO date (weekly/monthly data)",
        not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)
     ck("fertilizer description carries the quotes' own as-of date",
