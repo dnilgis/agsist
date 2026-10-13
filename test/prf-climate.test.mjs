@@ -45,7 +45,9 @@ function fakeClimate(edit) {
   return { v: 1, written_by: "scripts/fetch_climate_indices.py", series };
 }
 const CLIMATE = fakeClimate();
-const RUN = O.PREDICTORS.filter((p) => !p.untestable && !p.stub).map((p) => p.id);
+/* the tilts that run on the climate file alone; the forecast models need data/prf/seasonal-fc.json
+   (tested below on a synthetic one) and the coverage pick is not a tilt */
+const RUN = O.PREDICTORS.filter((p) => !p.untestable && !p.stub && !p.structural && p.family !== "forecast").map((p) => p.id);
 
 function assertLegal(split, input, where) {
   const valid = input.min.map((m, i) => m != null && input.rates[i] != null);
@@ -62,7 +64,13 @@ test("the family counts every promised comparison, at both coverages, the stubs 
     assert.ok(O.FAMILY.includes("enso@" + c));
     for (const p of testable) assert.ok(O.FAMILY.includes(`${p.id}@${c}`), p.id);
   }
-  assert.ok(O.predictorById("nmme").stub, "NMME is a stub until its archive is in");
+  const fc = O.PREDICTORS.filter((p) => p.family === "forecast");
+  assert.equal(fc.length, O.FORECAST_MODELS.length + 1, "each model once, and their average");
+  for (const m of O.FORECAST_MODELS) assert.ok(fc.some((p) => p.model === m), m);
+  assert.ok(fc.some((p) => p.id === "fc-mmm" && p.model === "*"));
+  for (const id of ["fc-mmm", "fc-ecmwf", "fc-jma", "pdo-enso-same", "cov-pick"]) for (const c of O.FAMILY_COVERAGES) assert.ok(O.FAMILY.includes(`${id}@${c}`), id);
+  for (const id of ["enso", "recent15", "recent30", "last30", "fall", "pdo-enso", "amo"]) assert.ok(O.FAMILY.includes(`${id}@90`), `earlier member ${id} still counted`);
+  assert.ok(O.predictorById("cov-pick").structural);
   assert.ok(/four months after/.test(O.predictorById("swe").untestable), "April 1 snowpack cannot be known at sign-up");
   assert.ok(!O.FAMILY.some((k) => k.startsWith("swe@")), "an untestable idea is not a comparison");
 });
@@ -176,7 +184,8 @@ test("no climate file: PDO and AMO are skipped cleanly, the rest still run", () 
   assert.match(O.predictorUnavailable("amo", { series: {} }), /no AMO/);
   assert.equal(O.predictorUnavailable("recent30", null), null);
   assert.equal(O.predictorUnavailable("fall", null), null);
-  assert.ok(O.predictorUnavailable("nmme", CLIMATE), "the NMME stub never runs");
+  assert.match(O.predictorUnavailable("fc-ecmwf", CLIMATE), /seasonal-fc\.json has no ecmwf/, "no forecast file, no forecast tilt");
+  assert.match(O.predictorUnavailable("fc-mmm", { series: {}, seasonal: { models: { ecmwf: {} } } }), /two models/);
   const wf = O.walkForward(O.prepare(fxInput(90)), { predictors: RUN, climate: null });
   assert.deepEqual(Array.from(wf.predictors), ["recent15", "recent30", "last30", "fall"]);
   for (const r of wf.rows) assert.ok(!("pdo-enso" in r.tilt) && !("amo" in r.tilt));
@@ -224,7 +233,7 @@ test("the same inputs give the same answer, in any key order", () => {
 /* ------------------------------------------------------------ the panel's side */
 test("only what the published test kept can move the pick", () => {
   assert.deepEqual(Array.from(O.keptPredictors(null)), []);
-  assert.deepEqual(Array.from(O.keptPredictors({ predictors: { recent30: { kept: "yes" }, fall: { kept: false }, nmme: { kept: true }, swe: { kept: true } } })), []);
+  assert.deepEqual(Array.from(O.keptPredictors({ predictors: { recent30: { kept: "yes" }, fall: { kept: false }, swe: { kept: true }, "cov-pick": { kept: true } } })), []);
   assert.deepEqual(Array.from(O.keptPredictors({ predictors: { last30: { kept: true } } })), ["last30"]);
   const plain = O.recommend(fxInput(90), { backtest: false });
   assert.equal(plain.forecast, null);
