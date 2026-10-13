@@ -204,9 +204,35 @@
              move: move, pct: pct, change: change, range: range, cash: cash, basis: basis,
              contract: contract, MINUS: MINUS };
 
+  /* Fetch once per page. Measured 2026-10-12: the homepage asked for
+     prices.json four times and six other files twice each, because every page
+     script fetched its own copy. AG.json(url) starts one request per URL for
+     the life of the page and hands each caller its OWN parsed copy (the text
+     is shared, the object is not), so one script editing what it got cannot
+     change what another script sees. It rejects on a network error, a non-2xx
+     status or bad JSON, like a fetch that checks r.ok; a failure is not kept,
+     so a later call tries again. cache:'no-cache' revalidates with the server
+     every time the page loads, so the copy is never older than a fresh fetch.
+     Not for polling: a refresh that must see a newer file calls fetch(). */
+  var ONCE = {};
+  function text(url) {
+    var k = String(url);
+    if (!ONCE[k]) {
+      var p = fetch(k, { cache: 'no-cache' }).then(function (r) {
+        if (!r.ok) throw new Error(k + ' ' + r.status);
+        return r.text();
+      });
+      ONCE[k] = p;
+      p.catch(function () { if (ONCE[k] === p) delete ONCE[k]; });
+    }
+    return ONCE[k];
+  }
+  function json(url) { return text(url).then(function (t) { return JSON.parse(t); }); }
+
   if (typeof w.esc !== 'function') w.esc = esc;
   if (typeof w.el !== 'function') w.el = el;
   if (typeof w.gaEvent !== 'function') w.gaEvent = gaEvent;
   w.AG = w.AG || {};
   w.AG.esc = esc; w.AG.el = el; w.AG.gaEvent = gaEvent; w.AG.px = px;
+  w.AG.json = json; w.AG.text = text;
 })(window);
