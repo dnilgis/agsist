@@ -1,8 +1,15 @@
 /* components/rain-print.js: Rain Print by AGSIST (/rain-print), 2026-10-11.
  *
  * A place and a finished year become a print: every day's precipitation at
- * the nearest NOAA weather station with a usable record, drawn as Staircase
- * (the running total across the year) or Waveform (one tick per day).
+ * the nearest NOAA weather station with a usable record, drawn in one of the
+ * two styles Sig picked (2026-10-13): R1 Staircase (the running total, the
+ * default) or R2 Roots (snow piled above the ground line, rain soaking down
+ * below it). components/rain-print-art.js draws both; this file feeds it.
+ * Optional: a dedication line, NOAA's 30-year normal under each month's total,
+ * and remarkable days (components/rain-print-records.js, loaded on first use).
+ * The QR carries the short link (components/rp-short.js) once there is one.
+ * The serial "No. 0001 · SRL" goes under it on Sig's print files only
+ * (?maker=1&serial=1), never on the digital file or the public page.
  * Ported from Sig's standalone Rain Print Studio (the October last-pass
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
  *

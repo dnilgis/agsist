@@ -1,5 +1,5 @@
-Fonts used by /rain-print for the print art (rp-*.woff2), latin subsets from Fontsource 5.3.0.
-rp-fraunces-var.woff2: Copyright 2020 The Fraunces Project Authors (github.com/undercasetype/Fraunces)
+Fonts used by /rain-print for the print art (rp-*.woff2). Plex Mono: latin subsets from Fontsource 5.3.0. Fraunces (opsz and wght axes, wght limited to 300-600) and IBM Plex Sans (variable, wght 300-600; italic 400): Google Fonts latin files, 2026-10-13.
+rp-fraunces-opsz*.woff2: Copyright 2020 The Fraunces Project Authors (github.com/undercasetype/Fraunces)
 rp-plex-sans-*.woff2, rp-plex-mono-*.woff2: Copyright 2017-2019 IBM Corp. IBM Plex is a trademark of IBM Corp.
 All are licensed under the SIL Open Font License, Version 1.1, reproduced below.
 
