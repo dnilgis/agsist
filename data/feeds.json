@@ -1636,7 +1636,8 @@
   {
    "path": "data/rain-print.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "rain-print.html"
    ],
    "written_by": [],
    "touched_by": [
