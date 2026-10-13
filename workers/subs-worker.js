@@ -5,6 +5,28 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.20 (2026-10-13): THE ELEVATOR PORTAL. New routes only; every existing
+ *   route answers exactly as before. No new binding and no new secret. An
+ *   elevator keeps its own listing from a private phone link
+ *   https://agsist.com/post?k=<key> (post.html, components/elev-post.js);
+ *   Sig adds elevators from elev-admin.html.
+ *   elev:<id> = {id, name, town, state, zip, lat, lon, active, contact
+ *     {name, phone}, email (private, never in the feed), hours {text,
+ *     harvest}, closed_until, note (140 at most), bids [{crop, period, start,
+ *     end, futures, basis}] (12 rows at most), bids_updated_at,
+ *     info_updated_at, created_at}.
+ *   elevkey:<hmac16(UNSUB_SECRET, "elev|" + key)> = id, with {id} as list()
+ *     metadata. The key (24 random base32 characters) is never stored.
+ *   POST /elev/admin/create, /elev/admin/rekey, /elev/admin/active and
+ *     GET /elev/admin/list take "Authorization: Bearer LIST_TOKEN" only.
+ *     create refuses an id that exists; rekey makes a new link and the old
+ *     one stops working at once.
+ *   POST /elev/me {k} and POST /elev/save {k, bids?, hours?, contact?, note?,
+ *     closed_today?, no_change?} go through publicGate and rateLimit. save
+ *     checks every field before it stores anything; unknown fields are
+ *     ignored. bids_updated_at moves when the bids change or on no_change;
+ *     info_updated_at when hours, contact, note or closed change.
+ *   GET /elev/feed: every listing that is on, minus email, public max-age=60.
  * v5.19 (2026-10-13): GET /where, for the Rain Print page's first print.
  *   Answers with the town Cloudflare already puts on the request (req.cf:
  *   country, region, regionCode, city, latitude, longitude), so the page can
@@ -375,7 +397,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.18): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.20): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -476,7 +498,8 @@ function oneLine(v, max) {
 const PUBLIC_POSTS = new Set(["/subscribe", "/notice", "/alert-subscribe", "/watch-subscribe",
   "/elevator-watch-subscribe", "/price-watch-subscribe", "/sponsor-apply", "/form",
   "/rp-short",   // v5.14
-  "/rp-gift/check", "/rp-gift/redeem"]);   // v5.16
+  "/rp-gift/check", "/rp-gift/redeem",   // v5.16
+  "/elev/me", "/elev/save"]);   // v5.20
 function publicGate(req, path) {
   const origin = req.headers.get("Origin") || "";
   if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, cors(req));
@@ -501,6 +524,9 @@ const RATE = {
   // v5.16: gift cards. Every check counts (hit or miss): 20 an hour, 60 a day
   // per address, so walking 2^55 codes is hopeless; redeem is rarer still.
   "/rp-gift/check": [20, 60, 1000], "/rp-gift/redeem": [5, 10, 100],
+  // v5.20: the elevator portal. A manager opens the page and saves a few
+  // times a day; a 24-character key cannot be walked at 60 tries an hour.
+  "/elev/me": [60, 300, 1000], "/elev/save": [60, 300, 1000],
 };
 // Within one Worker isolate the hourly count is exact (JavaScript runs one
 // request at a time), so a burst that lands before KV has caught up is still
@@ -1036,6 +1062,169 @@ async function rpgIssue(env, f, extra) {
   const k = await rpgCardK(env, code);
   return { ok: true, code, no, last4, key, status: rec.status, ships: rec.ships,
     card_url: RPG_SITE + "/rp-gift?c=" + code + "&k=" + k };
+}
+
+// v5.20: THE ELEVATOR PORTAL. An elevator keeps its own listing (basis by
+// crop and delivery period, hours, contact, a short note) from a private
+// phone link https://agsist.com/post?k=<key>. elev:<id> is the record;
+// elevkey:<hmac16("elev|" + key)> = id points a key at it (the key itself is
+// never stored; the id rides along as list() metadata so a rekey can find
+// and drop the old pointer without reading every one).
+const ELEV_SITE = "https://agsist.com";
+const ELEV_ID_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const ELEV_KEY_RE = /^[a-z2-7]{24}$/;
+const ELEV_B32 = "abcdefghijklmnopqrstuvwxyz234567";
+const ELEV_MAX_BYTES = 16 * 1024;
+const ELEV_MAX_ROWS = 12;
+const ELEV_NOTE_MAX = 140;
+const ELEV_PERIOD_MAX = 16;
+// The board each crop's cash price hangs on, and the months that board lists.
+const ELEV_FUT = { corn: ["ZC", "HKNUZ"], soybeans: ["ZS", "FHKNQUX"], wheat: ["ZW", "HKNUZ"] };
+function elevNewKey() {
+  return [...crypto.getRandomValues(new Uint8Array(24))].map(b => ELEV_B32[b & 31]).join("");
+}
+async function elevKeyName(env, key) { return "elevkey:" + await hmac16("elev|" + key, env.UNSUB_SECRET); }
+function elevPublic(r) {
+  const out = Object.assign({}, r);
+  delete out.email;
+  return out;
+}
+function elevDate(v) {
+  const s = String(v == null ? "" : v);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return "";
+  const y = +m[1], mo = +m[2], d = +m[3];
+  if (y < 2020 || y > 2100) return "";
+  const t = new Date(Date.UTC(y, mo - 1, d));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === mo - 1 && t.getUTCDate() === d ? s : "";
+}
+// The last second of today on Central time, as an ISO time (for "Closed today").
+function elevEndOfDayCT(now) {
+  const f = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" });
+  const parts = (t) => Object.fromEntries(f.formatToParts(new Date(t)).map(p => [p.type, p.value]));
+  const p = parts(now);
+  const y = +p.year, mo = +p.month, d = +p.day;
+  for (const h of [5, 6]) {
+    const t = Date.UTC(y, mo - 1, d + 1, h);
+    const q = parts(t);
+    if (+q.hour === 0 && +q.day === new Date(Date.UTC(y, mo - 1, d + 1)).getUTCDate()) return new Date(t - 1000).toISOString();
+  }
+  return new Date(Date.UTC(y, mo - 1, d + 1, 6) - 1000).toISOString();
+}
+function elevText(v, max, field) {
+  if (v == null) return { v: "" };
+  if (typeof v !== "string") return { error: "invalid " + field };
+  const s = oneLine(v, max + 1);
+  if (s.length > max) return { error: field + " too long (" + max + " at most)" };
+  return { v: s };
+}
+function elevPhone(v) {
+  const t = elevText(v, 24, "phone");
+  if (t.error || !t.v) return t;
+  if (!/^[0-9()+\-. ]+$/.test(t.v) || t.v.replace(/\D/g, "").length < 7) return { error: "invalid phone" };
+  return t;
+}
+function elevContact(c) {
+  if (!c || typeof c !== "object" || Array.isArray(c)) return { error: "invalid contact" };
+  const n = elevText(c.name, 60, "contact name"); if (n.error) return n;
+  const p = elevPhone(c.phone); if (p.error) return p;
+  return { v: { name: n.v, phone: p.v } };
+}
+function elevHours(h) {
+  if (!h || typeof h !== "object" || Array.isArray(h)) return { error: "invalid hours" };
+  const t = elevText(h.text, 80, "hours"); if (t.error) return t;
+  const hv = elevText(h.harvest, 80, "harvest hours"); if (hv.error) return hv;
+  return { v: { text: t.v, harvest: hv.v || null } };
+}
+function elevBids(rows) {
+  if (!Array.isArray(rows)) return { error: "invalid bids" };
+  if (rows.length > ELEV_MAX_ROWS) return { error: "too many bid rows (" + ELEV_MAX_ROWS + " at most)" };
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i], at = " (row " + (i + 1) + ")";
+    if (!r || typeof r !== "object" || Array.isArray(r)) return { error: "invalid bid row" + at };
+    const crop = typeof r.crop === "string" ? r.crop : "";
+    if (!own(ELEV_FUT, crop)) return { error: "invalid crop" + at };
+    const per = elevText(r.period, ELEV_PERIOD_MAX, "delivery period");
+    if (per.error) return { error: per.error + at };
+    if (!per.v) return { error: "delivery period missing" + at };
+    const start = elevDate(r.start), end = elevDate(r.end);
+    if (!start || !end) return { error: "invalid delivery dates" + at };
+    if (end < start) return { error: "delivery ends before it starts" + at };
+    const [root, months] = ELEV_FUT[crop];
+    const fut = typeof r.futures === "string" ? r.futures.trim().toUpperCase() : "";
+    const fm = /^(Z[CSW])([FGHJKMNQUVXZ])(\d{2})$/.exec(fut);
+    if (!fm || fm[1] !== root || !months.includes(fm[2])) return { error: "invalid futures month" + at };
+    const b = typeof r.basis === "number" ? r.basis : (typeof r.basis === "string" && r.basis.trim() !== "" ? Number(r.basis) : NaN);
+    if (!Number.isFinite(b)) return { error: "invalid basis" + at };
+    const basis = Math.round(b * 100) / 100;
+    if (basis < -3 || basis > 2) return { error: "basis out of range (-3.00 to +2.00)" + at };
+    out.push({ crop, period: per.v, start, end, futures: fut, basis: basis === 0 ? 0 : basis });
+  }
+  return { v: out };
+}
+async function elevBody(req) {
+  if (Number(req.headers.get("Content-Length") || 0) > ELEV_MAX_BYTES) return { error: "too large", status: 413 };
+  let raw = "";
+  try { raw = await req.text(); } catch (e) { raw = ""; }
+  if (raw.length > ELEV_MAX_BYTES) return { error: "too large", status: 413 };
+  let b = null;
+  try { b = JSON.parse(raw); } catch (e) { b = null; }
+  if (!b || typeof b !== "object" || Array.isArray(b)) return { error: "bad json", status: 400 };
+  return { b };
+}
+async function elevGet(env, id) {
+  try { const r = JSON.parse(await env.SUBS.get("elev:" + id)); return r && typeof r === "object" ? r : null; } catch (e) { return null; }
+}
+// The key from a post, to the record it opens. {error, status} when it opens none.
+async function elevByKey(env, k) {
+  const key = typeof k === "string" ? k.trim().toLowerCase() : "";
+  if (!ELEV_KEY_RE.test(key)) return { error: "this link is not right", status: 404 };
+  const id = await env.SUBS.get(await elevKeyName(env, key));
+  const rec = id ? await elevGet(env, id) : null;
+  if (!rec) return { error: "this link is not right", status: 404 };
+  if (rec.active !== true) return { error: "this listing is turned off", status: 403 };
+  return { rec };
+}
+async function elevSetKey(env, id) {
+  // Drop every pointer at this id, then make one new key.
+  const page = [];
+  let cursor;
+  do {
+    const p = await env.SUBS.list({ prefix: "elevkey:", cursor });
+    page.push(...p.keys);
+    cursor = p.list_complete ? null : p.cursor;
+  } while (cursor);
+  for (const k of page) {
+    const owner = k.metadata && k.metadata.id ? k.metadata.id : await env.SUBS.get(k.name);
+    if (owner === id) await env.SUBS.delete(k.name);
+  }
+  const key = elevNewKey();
+  await env.SUBS.put(await elevKeyName(env, key), id, { metadata: { id } });
+  return ELEV_SITE + "/post?k=" + key;
+}
+function elevCreateClean(b) {
+  const id = typeof b.id === "string" ? b.id.trim() : "";
+  if (id.length < 3 || id.length > 60 || !ELEV_ID_RE.test(id)) return { error: "invalid id (lowercase letters, digits and dashes)" };
+  const name = elevText(b.name, 80, "name"); if (name.error) return name;
+  if (!name.v) return { error: "name missing" };
+  const town = elevText(b.town, 60, "town"); if (town.error) return town;
+  if (!town.v) return { error: "town missing" };
+  const state = typeof b.state === "string" ? b.state.trim().toUpperCase() : "";
+  if (!/^[A-Z]{2}$/.test(state)) return { error: "invalid state" };
+  const zip = typeof b.zip === "string" ? b.zip.trim() : (typeof b.zip === "number" ? String(b.zip).padStart(5, "0") : "");
+  if (!/^\d{5}$/.test(zip)) return { error: "invalid zip" };
+  const lat = Number(b.lat), lon = Number(b.lon);
+  if (b.lat == null || b.lon == null || b.lat === "" || b.lon === "" || !Number.isFinite(lat) || !Number.isFinite(lon) ||
+      lat < 17 || lat > 72 || lon < -180 || lon > -64) return { error: "invalid lat/lon" };
+  const contact = elevContact(b.contact || {}); if (contact.error) return contact;
+  const email = typeof b.email === "string" ? b.email.trim().toLowerCase() : "";
+  if (email && (!EMAIL_RE.test(email) || email.length > 254)) return { error: "invalid email" };
+  const hours = elevHours(b.hours || {}); if (hours.error) return hours;
+  const now = new Date().toISOString();
+  return { rec: { id, name: name.v, town: town.v, state, zip, lat: Math.round(lat * 1e5) / 1e5, lon: Math.round(lon * 1e5) / 1e5,
+    active: true, contact: contact.v, email, hours: hours.v, closed_until: null, note: null, bids: [],
+    bids_updated_at: null, info_updated_at: now, created_at: now } };
 }
 
 // v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code and the portal link's
@@ -2176,6 +2365,101 @@ async function handle(req, env) {
       rec.status = "redeemed"; rec.redeemed_ts = ts; rec.form_key = fkey; delete rec.pending_ts;
       await env.SUBS.put(key, JSON.stringify(rec));
       return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
+    }
+
+    // ---------- v5.20: the elevator portal ----------
+    // Sig only. Bearer LIST_TOKEN, never ?token= (sig, from the gift card block above).
+    if (path.startsWith("/elev/admin/")) {
+      if (!sig) return json({ ok: false }, 403, ac);
+      if (path === "/elev/admin/list" && req.method === "GET") {
+        const out = [];
+        for (const k of await listKeys(env, "elev:")) {
+          const r = await elevGet(env, k.slice(5));
+          if (r) out.push(r);
+        }
+        out.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+        return json({ ok: true, elevators: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
+      }
+      if (req.method !== "POST") return json({ ok: false, error: "not found" }, 404, ac);
+      const p = await elevBody(req);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, ac);
+      const b = p.b;
+      if (path === "/elev/admin/create") {
+        const v = elevCreateClean(b);
+        if (v.error) return json({ ok: false, error: v.error }, 400, ac);
+        if (await env.SUBS.get("elev:" + v.rec.id) !== null) return json({ ok: false, error: "that id is taken" }, 409, ac);
+        await env.SUBS.put("elev:" + v.rec.id, JSON.stringify(v.rec));
+        const link = await elevSetKey(env, v.rec.id);
+        return json({ ok: true, id: v.rec.id, link }, 200, ac);
+      }
+      const id = typeof b.id === "string" ? b.id.trim() : "";
+      const rec = ELEV_ID_RE.test(id) ? await elevGet(env, id) : null;
+      if (!rec) return json({ ok: false, error: "no such elevator" }, 404, ac);
+      if (path === "/elev/admin/rekey") {
+        const link = await elevSetKey(env, id);
+        return json({ ok: true, id, link }, 200, ac);
+      }
+      if (path === "/elev/admin/active") {
+        if (typeof b.active !== "boolean") return json({ ok: false, error: "active must be true or false" }, 400, ac);
+        rec.active = b.active;
+        await env.SUBS.put("elev:" + id, JSON.stringify(rec));
+        return json({ ok: true, id, active: rec.active }, 200, ac);
+      }
+      return json({ ok: false, error: "not found" }, 404, ac);
+    }
+
+    // The elevator's own page. publicGate (Origin, JSON) has already run.
+    if ((path === "/elev/me" || path === "/elev/save") && req.method === "POST") {
+      const c = Object.assign({ "Cache-Control": "no-store" }, cors(req));
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      const p = await elevBody(req);
+      if (p.error) return json({ ok: false, error: p.error }, p.status, c);
+      const b = p.b;
+      const found = await elevByKey(env, b.k);
+      if (found.error) return json({ ok: false, error: found.error }, found.status, c);
+      const rec = found.rec;
+      if (path === "/elev/me") return json({ ok: true, record: elevPublic(rec) }, 200, c);
+      // Every field is checked before anything is stored.
+      const set = {};
+      if (b.bids !== undefined) { const v = elevBids(b.bids); if (v.error) return json({ ok: false, error: v.error }, 400, c); set.bids = v.v; }
+      if (b.hours !== undefined) { const v = elevHours(b.hours); if (v.error) return json({ ok: false, error: v.error }, 400, c); set.hours = v.v; }
+      if (b.contact !== undefined) { const v = elevContact(b.contact); if (v.error) return json({ ok: false, error: v.error }, 400, c); set.contact = v.v; }
+      if (b.note !== undefined) {
+        if (b.note !== null && typeof b.note !== "string") return json({ ok: false, error: "invalid note" }, 400, c);
+        const t = String(b.note || "").replace(/[\u0000-\u001f\u007f-\u009f  ]/g, " ").replace(/ {2,}/g, " ").trim();
+        if (t.length > ELEV_NOTE_MAX) return json({ ok: false, error: "note too long (" + ELEV_NOTE_MAX + " at most)" }, 400, c);
+        set.note = t || null;
+      }
+      if (b.closed_today !== undefined) {
+        if (typeof b.closed_today !== "boolean") return json({ ok: false, error: "closed_today must be true or false" }, 400, c);
+        set.closed_until = b.closed_today ? elevEndOfDayCT(Date.now()) : null;
+      }
+      const noChange = b.no_change === true;
+      if (!Object.keys(set).length && !noChange) return json({ ok: false, error: "nothing to save" }, 400, c);
+      const now = new Date().toISOString();
+      let bidsMoved = noChange, infoMoved = false;
+      for (const f of Object.keys(set)) {
+        if (JSON.stringify(set[f]) === JSON.stringify(rec[f] === undefined ? null : rec[f])) continue;
+        rec[f] = set[f];
+        if (f === "bids") bidsMoved = true; else infoMoved = true;
+      }
+      if (bidsMoved) rec.bids_updated_at = now;
+      if (infoMoved) rec.info_updated_at = now;
+      if (bidsMoved || infoMoved) await env.SUBS.put("elev:" + rec.id, JSON.stringify(rec));
+      return json({ ok: true, record: elevPublic(rec) }, 200, c);
+    }
+
+    // Public: every listing that is turned on, never an email or a key.
+    if (path === "/elev/feed" && req.method === "GET") {
+      const out = [];
+      for (const k of await listKeys(env, "elev:")) {
+        const r = await elevGet(env, k.slice(5));
+        if (r && r.active === true) out.push(elevPublic(r));
+      }
+      out.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+      return json({ ok: true, generated_at: new Date().toISOString(), elevators: out }, 200,
+        Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req)));
     }
 
     // ---------- v5.8: the site's own forms ----------
