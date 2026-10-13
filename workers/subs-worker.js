@@ -5,6 +5,19 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.22 (2026-10-13): PRF STATE SPONSOR INQUIRIES. One new form kind on
+ *   POST /form; every existing route answers exactly as before. No new
+ *   binding and no new secret.
+ *   kind prf-sponsor (agsist.com/prf-sponsor) takes business (120), name
+ *     (80), email, phone (optional; at least 10 digits when given, 30),
+ *     states (the PRF state codes asked about, at least one, as an array or
+ *     "IA, NE"; known PRF states only, each once, stored A to Z as "IA, NE"),
+ *     line (the one line they tried in the preview, 120, optional), website
+ *     (320, optional, http(s) only), message (1000, keeps line breaks,
+ *     optional) and page. Same publicGate, 16 KB cap, rate limits, honeypot,
+ *     year-long storage and digest as the other kinds; /count forms gains
+ *     prf-sponsor. Nothing is published from an inquiry and no price is
+ *     sent: Sig replies, and a sale is a line in data/prf-sponsors.json.
  * v5.21 (2026-10-13): AN ELEVATOR ASKS TO POST ITS OWN BIDS. One new form
  *   kind on POST /form and two new admin routes; every existing route answers
  *   exactly as before. No new binding and no new secret.
@@ -415,7 +428,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.21): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.22): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -781,7 +794,17 @@ const FORM_KINDS = {
     crops: [120, true, "crops"], how: [10, true, "elhow"], note: [600, false, "text"],
     dir_id: [200, false, "dirid"], page: [60],
   },
+  // v5.22: a business asks about sponsoring PRF in one or more states (prf-sponsor.html). Sig replies with a price.
+  "prf-sponsor": {
+    business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30, false, "phone"],
+    states: [200, true, "prfstates"], line: [120], website: [320, false, "url"], message: [1000, false, "text"], page: [60],
+  },
 };
+// v5.22: the states AGSIST has PRF pages for (data/prf/meta.json; Hawaii is left out).
+// scripts/test_form_worker.mjs fails if this drifts from the data.
+const PRF_STATES = ["AL", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME",
+  "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA",
+  "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 const EL_CROPS = ["corn", "soybeans", "wheat", "sorghum", "oats", "other"];
 const EL_HOW = ["email", "phone", "not-sure"];
 const EL_REQ_STATUS = ["pending", "created", "dismissed"];
@@ -843,6 +866,11 @@ function formClean(kind, b) {
       const got = (Array.isArray(b[f]) ? b[f].map(String) : v.split(/[,;\s]+/)).map(x => x.trim().toLowerCase()).filter(Boolean);
       if (!got.length || got.some(x => !EL_CROPS.includes(x))) return { error: "invalid " + f };
       v = EL_CROPS.filter(x => got.includes(x)).join(", ");
+    } else if (type === "prfstates") {
+      // a list ("IA, NE" or an array): PRF state codes only, each once, A to Z
+      const got = (Array.isArray(b[f]) ? b[f].map(String) : v.split(/[,;\s]+/)).map(x => x.trim().toUpperCase()).filter(Boolean);
+      if (!got.length || got.some(x => !PRF_STATES.includes(x))) return { error: "invalid " + f };
+      v = [...new Set(got)].sort().join(", ");
     } else if (type === "elhow") {
       if (!EL_HOW.includes(v)) return { error: "invalid " + f };
     } else if (type === "dirid") {
