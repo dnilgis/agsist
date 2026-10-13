@@ -42,17 +42,17 @@
     st.id = 'prf-opt-css';
     st.textContent = [
       '#prf-optimize .po-note{color:var(--text-muted);font-size:var(--fs-sm);margin:.2rem 0 .8rem;max-width:46em}',
-      '#prf-optimize .po-verdict{font-size:1.08rem;font-weight:700;line-height:1.45;margin:.6rem 0;max-width:40em;color:var(--text)}',
-      '#prf-optimize .po-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0}',
-      '#prf-optimize .po-tab{min-height:44px;padding:0 .8rem;border:1px solid var(--border-2);border-radius:8px;background:transparent;color:var(--text);font:inherit;cursor:pointer}',
+      '#prf-optimize .po-verdict{font-size:1.02rem;font-weight:700;line-height:1.45;margin:.6rem 0;max-width:40em;color:var(--text)}',
+      '#prf-optimize .po-tabs{display:flex;gap:.4rem;margin:.6rem 0;max-width:30rem}',
+      '#prf-optimize .po-tab{flex:1 1 0;min-height:44px;padding:.25rem .5rem;font-size:var(--fs-sm);line-height:1.25;border:1px solid var(--border-2);border-radius:8px;background:transparent;color:var(--text);font-family:inherit;cursor:pointer}',
       '#prf-optimize .po-tab.is-on{border-color:var(--gold);color:var(--gold);font-weight:600}',
-      '#prf-optimize .po-split{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.2rem,1fr));gap:.4rem;margin:.6rem 0}',
-      '#prf-optimize .po-iv{border:1px solid var(--border-2);border-radius:8px;padding:.45rem .55rem}',
-      '#prf-optimize .po-iv b{display:block;font-size:1.15rem;color:var(--gold)}',
+      '#prf-optimize .po-split{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.6rem,1fr));gap:.4rem;margin:.5rem 0;max-width:40rem}',
+      '#prf-optimize .po-iv{border:1px solid var(--border-2);border-radius:8px;padding:.3rem .5rem}',
+      '#prf-optimize .po-iv b{display:block;font-size:1.1rem;color:var(--gold)}',
       '#prf-optimize .po-iv span{font-size:var(--fs-sm);color:var(--text-muted)}',
       '#prf-optimize .po-use{min-height:44px;padding:.4rem 1rem;border-radius:8px;border:2px solid var(--gold);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer;margin:.3rem 0 .6rem;text-align:left}',
       '#prf-optimize .po-use:focus-visible,#prf-optimize .po-tab:focus-visible,#prf-optimize summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}',
-      '#prf-optimize .po-shown{margin:.2rem 0 .6rem}',
+      '#prf-optimize .po-shown{margin:.4rem 0 .2rem}',
       '#prf-optimize .po-steady{margin:.4rem 0 .1rem}',
       '#prf-optimize table{border-collapse:collapse;width:100%;font-size:var(--fs-sm);margin:.4rem 0}',
       '#prf-optimize th,#prf-optimize td{text-align:right;padding:.35rem .4rem;border-bottom:1px solid var(--border-2);vertical-align:top}',
@@ -73,6 +73,7 @@
       '#prf-optimize .po-sum{font-weight:600}',
       '#prf-optimize .po-hint{color:var(--text-muted);font-size:var(--fs-sm);font-weight:400;line-height:1.4}',
       '#prf-optimize .po-in{padding:0 0 .8rem}',
+      '#prf-optimize .po-in>p+p{margin-top:.5rem}',
       '#prf-optimize .po-in>p:first-child,#prf-optimize .po-in>.po-row:first-child{margin-top:.2rem}',
       '@media (max-width:640px){#prf-optimize table,#prf-optimize tbody,#prf-optimize td{display:block;width:auto}#prf-optimize thead{position:absolute;left:-9999px}#prf-optimize tr{display:grid;grid-template-columns:1fr 1fr;gap:.1rem .8rem;border-bottom:1px solid var(--border-2);padding:.45rem 0}#prf-optimize td{border:0;text-align:left;padding:0}#prf-optimize td:first-child,#prf-optimize td.po-wide{grid-column:1/-1}#prf-optimize td[data-l]::before{content:attr(data-l) ": ";color:var(--text-muted)}}',
       '#prf-optimize .po-fine{color:var(--text-muted);font-size:var(--fs-sm);line-height:1.55;max-width:46em}'
@@ -201,9 +202,6 @@
     h += '<div class="po-tabs" role="group" aria-label="What to make best">'
       + '<button type="button" class="po-tab' + (state.objective === 'net' ? ' is-on' : '') + '" data-opt-obj="net" aria-pressed="' + (state.objective === 'net') + '">Most expected dollars</button>'
       + '<button type="button" class="po-tab' + (state.objective === 'dry' ? ' is-on' : '') + '" data-opt-obj="dry" aria-pressed="' + (state.objective === 'dry') + '">Most in the driest years</button></div>';
-    h += '<p class="po-fine po-shown">Shown: ' + (state.objective === 'net'
-      ? 'the split with the highest expected payment minus your share of the premium, at ' + ctx.cov + '% coverage, from RMA’s 2027 rates and this grid’s record.'
-      : 'the split that would have paid most, after your share of the premium, in the driest fifth of years here (by whole-year precipitation), at ' + ctx.cov + '% coverage.') + '</p>';
 
     var pk = res.forecast || res.rec, sp = pk.split;
     var tiltOnly = res.forecast && !res.forecast.enso && !res.forecast.outlook;
@@ -223,6 +221,10 @@
         + 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
         + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>';
     }
+
+    h += '<p class="po-fine po-shown">Shown: ' + (state.objective === 'net'
+      ? 'the split with the highest expected payment minus your share of the premium, at ' + ctx.cov + '% coverage, from RMA’s 2027 rates and this grid’s record.'
+      : 'the split that would have paid most, after your share of the premium, in the driest fifth of years here (by whole-year precipitation), at ' + ctx.cov + '% coverage.') + '</p>';
 
     /* Compare setups */
     var cmp = '';
@@ -270,12 +272,12 @@
     reasons = reasons.filter(function (t) {
       return !/^The split: /.test(t) && fcNotes.indexOf(t) < 0 && !(btLine && t.indexOf(btLine) === 0);
     });
-    h += det('why', 'Why these months', '', '<ul class="po-why">' + reasons.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>');
+    h += det('why', 'Why these months', '', '<ul class="po-why po-fine">' + reasons.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>');
 
     /* the outlook */
     var om = res.outlookMeta || {};
     var ensoNow = state.enso === 'none' ? 'Left out' : state.enso ? O.PHASE_NAME[state.enso].replace(/^n/, 'N') : (om.enso ? 'From NOAA: ' + O.PHASE_NAME[om.enso] : 'Not set');
-    var ensoIn = '<div class="po-row"><label for="prf-opt-enso">El Niño or La Niña this fall</label><select id="prf-opt-enso">'
+    var ensoIn = '<div class="po-row"><label for="prf-opt-enso">This fall’s reading</label><select id="prf-opt-enso">'
       + [['', om.enso ? 'From NOAA (' + O.PHASE_NAME[om.enso] + ')' : 'Not set'], ['el-nino', 'El Niño'], ['neutral', 'Neutral'], ['la-nina', 'La Niña'], ['none', 'Leave it out']].map(function (o) {
         var on = (state.enso || '') === o[0];
         return '<option value="' + o[0] + '"' + (on ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
