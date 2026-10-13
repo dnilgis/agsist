@@ -16,6 +16,9 @@ on:
       - 'components/prf-math.js'
       - 'components/prf.css'
       - 'components/prf-outlook.js'
+      - 'components/prf-sponsor.js'
+      - 'data/prf-sponsors.json'
+      - 'scripts/build_prf_counties.py'
       - 'scripts/fetch_prf_outlook.py'
       - 'test/fixtures/prf-outlook/**'
       - 'scripts/stamp_prf.py'
@@ -49,7 +52,7 @@ jobs:
           python-version: "3.11"
       - name: Arithmetic, wiring, helpers
         run: |
-          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-outlook.test.mjs
+          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-outlook.test.mjs test/prf-sponsor.test.mjs
           python scripts/fetch_prf_outlook.py --selftest
       - name: The page is what the stamper writes
         run: |
@@ -63,3 +66,4 @@ jobs:
           node --check components/prf.js
           node --check components/prf-math.js
           node --check components/prf-outlook.js
+          node --check components/prf-sponsor.js
