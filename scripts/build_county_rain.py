@@ -135,13 +135,12 @@ def chart(c, year, county):
            + (", against a usual year" if has_us else "") + "</title>"]
     for v in range(0, int(ymax) + 1, step):
         y = Y(v)
-        out.append(f'<line class="{"rc-ax" if v == 0 else "rc-grid"}" x1="{L}" x2="{W - Rm}" y1="{y:.1f}" y2="{y:.1f}"/>'
-                   f'<text class="rc-lab" x="{L - 6}" y="{y + 4:.1f}" text-anchor="end">{v}</text>')
+        out.append(f'<path class="{"rc-ax" if v == 0 else "rc-grid"}" d="M{L} {y:.0f}H{W - Rm}"/>'
+                   f'<text class="rc-lab" x="{L - 6}" y="{y + 4:.0f}" text-anchor="end">{v}</text>')
     for m in range(12):
         doy = (dt.date(year, m + 1, 1) - dt.date(year, 1, 1)).days
         x = X(doy)
-        out.append(f'<line class="rc-grid" x1="{x:.1f}" x2="{x:.1f}" y1="{T + ph}" y2="{T + ph + 4}"/>'
-                   f'<text class="rc-lab" x="{X(doy + 15):.1f}" y="{H - 8}" text-anchor="middle">{M3[m][0]}</text>')
+        out.append(f'<text class="rc-lab" x="{X(doy + 15):.0f}" y="{H - 8}" text-anchor="middle">{M3[m][0]}</text>')
 
     def path(k):
         d = [f"M{X(0):.1f},{Y(0):.1f}"]
@@ -250,9 +249,9 @@ def county_page(ctx):
     has_us = c["usual"] is not None
     rows = []
     for i, (t, u, rep, days) in enumerate(c["months"]):
-        lab = ML[i]
+        lab = f'<abbr title="{ML[i]}">{M3[i]}</abbr>'
         if i == len(c["months"]) - 1 and not done and days < (dt.date(year + (i == 11), (i + 1) % 12 + 1, 1) - dt.date(year, i + 1, 1)).days:
-            lab += f' <span class="rc-n">through the {days}{"st" if days in (1, 21, 31) else "nd" if days in (2, 22) else "rd" if days in (3, 23) else "th"}</span>'
+            lab += f' <span class="rc-n">to the {days}{"st" if days in (1, 21, 31) else "nd" if days in (2, 22) else "rd" if days in (3, 23) else "th"}</span>'
         if rep < days:
             miss = days - rep
             lab += f' <span class="rc-n">{miss} {"day" if miss == 1 else "days"} not reported</span>'
@@ -267,9 +266,9 @@ def county_page(ctx):
     if has_us:
         df = c["total"] - c["usual"]
         tot += f"<td><b>{inch(c['usual'])}</b></td><td><b>{'+' if df > 0.004 else '&minus;' if df < -0.004 else ''}{inch(abs(df))}</b></td>"
-    head_cells = "<th scope=\"col\">Month</th><th scope=\"col\">Rain, in</th>" + ("<th scope=\"col\">Usual, in</th><th scope=\"col\">Difference</th>" if has_us else "")
+    head_cells = "<th scope=\"col\">Month</th><th scope=\"col\">Rain, in</th>" + ("<th scope=\"col\">Usual, in</th><th scope=\"col\">Vs usual</th>" if has_us else "")
     table = (f'<div class="rc-scroll" tabindex="0" role="region" aria-label="Rain by month"><table class="rc-t"><caption class="rc-sr">Rain by month in {e(full)}, {year}</caption>'
-             f"<thead><tr>{head_cells}</tr></thead><tbody>{''.join(rows)}<tr><td><b>{'The year' if done else 'So far'}</b></td>{tot}</tr></tbody></table></div>")
+             f"<thead><tr>{head_cells}</tr></thead><tbody>{''.join(rows)}<tr><td><b>{'Year' if done else 'So far'}</b></td>{tot}</tr></tbody></table></div>")
     # ---- the year in a few lines
     facts = []
     faq = [(f"How much rain {'did' if done else 'has'} {full} {'get' if done else 'had'} in {year}?", ans)]
@@ -308,8 +307,8 @@ def county_page(ctx):
     facts_html = f'<ul class="rc-list">{"".join(facts)}</ul>' if facts else ""
     # ---- station
     miss = c["missing"]
-    station_p = (f"The numbers come from NOAA&rsquo;s daily record for {e(stw['name'])}"
-                 f"{' (a CoCoRaHS volunteer gauge)' if stw['net'] == 'cocorahs' else ''}, {stw['mi']:.0f} miles from the middle of {e(name)}. "
+    station_p = (f"The numbers come from NOAA&rsquo;s daily record for {'the CoCoRaHS volunteer gauge' if stw['net'] == 'cocorahs' else 'the station'} "
+                 f"{e(R.station_where(stw['raw']))} (station {e(stw['raw'])}), {stw['mi']:.0f} miles from the middle of {e(name)}. "
                  f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}"
                  + (f"; {'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry." if miss else ", every one.")
                  + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero.")
@@ -384,6 +383,15 @@ def county_page(ctx):
 
 # ---------------------------------------------------------------- state page
 
+def middle(cs):
+    """The middle county's percent of usual (the median), or None."""
+    p = sorted(c["pct"] for c in cs.values() if c["pct"] is not None)
+    if not p:
+        return None
+    k = len(p) // 2
+    return p[k] if len(p) % 2 else round((p[k - 1] + p[k]) / 2)
+
+
 def state_page(st, d, pages, none_rows):
     stn = R.STATES[st]
     st_slug = R.slug(stn)
@@ -392,8 +400,7 @@ def state_page(st, d, pages, none_rows):
     cs = d["counties"]
     asofs = sorted({c["as_of"] for c in cs.values()})
     done = all(done_year(c) for c in cs.values())
-    pcts = sorted(c["pct"] for c in cs.values() if c["pct"] is not None)
-    mid = pcts[len(pcts) // 2] if len(pcts) % 2 else (round((pcts[len(pcts) // 2 - 1] + pcts[len(pcts) // 2]) / 2) if pcts else None)
+    mid = middle(cs)
     title = f"How Much Rain Has {stn} Had in {year}? Every County | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? Every County | AGSIST"
     lede = (f"{len(cs)} {stn} counties have a NOAA station inside the county that reported at least 90% of the days in {year}"
             + ("." if done else f", through {short_date(asofs[-1])}" + (f" (a few stations stop a day or more earlier)." if len(asofs) > 1 else ".")))
@@ -408,15 +415,15 @@ def state_page(st, d, pages, none_rows):
     rows = []
     for fips, c in sorted(cs.items(), key=lambda kv: kv[1]["name"]):
         href = pages[fips][1]
-        rows.append(f'<tr><td><a href="{href}">{e(c["name"])}</a></td><td>{inch(c["total"])}</td>'
+        rows.append(f'<tr><td><a href="{href}">{e(re.sub(r" County$", "", c["name"]))}</a></td><td>{inch(c["total"])}</td>'
                     f'<td>{inch(c["usual"]) if c["usual"] is not None else "none"}</td><td>{str(c["pct"]) + "%" if c["pct"] is not None else "none"}</td>'
                     f'<td>{e(c["station"]["name"])}</td><td>{short_date(c["as_of"])}</td></tr>')
     none_html = ""
     if none_rows:
-        items = "".join(f"<li>{e(n)}: {('nearest county with one is <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'no county nearby has one either'}</li>"
+        items = "".join(f"<li>{e(n)} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
                         for n, nn, h in none_rows)
         none_html = (f'<h2>Counties where no NOAA station reported enough days</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
-                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low.</p><ul class="rc-list">{items}</ul>')
+                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest county that has one.</p><ul class="rc-states">{items}</ul>')
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
@@ -434,9 +441,9 @@ def state_page(st, d, pages, none_rows):
     <h1>{h1}</h1>
     <p class="rc-answer">{lede}</p>
     <div class="rc-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by county, {e(stn)}</caption>
-    <thead><tr><th scope="col">County</th><th scope="col">Rain, in</th><th scope="col">Usual, in</th><th scope="col">Percent of usual</th><th scope="col">NOAA station</th><th scope="col">Through</th></tr></thead>
+    <thead><tr><th scope="col">County</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">NOAA station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
-    <p class="rc-fine">Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each county page has the month by month table and how the station was picked.</p>
+    <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each county page has the month by month table and how the station was picked.</p>
     {none_html}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt every Monday. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
@@ -448,19 +455,18 @@ def state_page(st, d, pages, none_rows):
 def hub_page(files, built):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
-    yw = str(years[-1]) if len(years) == 1 else f"{years[0]} to {years[-1]}"
+    yw = str(years[-1]) if len(years) == 1 else "this year"
     total = sum(len(d["counties"]) for d in files.values())
     rows = []
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         if not d["counties"]:
             continue
-        pcts = sorted(c["pct"] for c in d["counties"].values() if c["pct"] is not None)
-        mid = pcts[len(pcts) // 2] if pcts else None
+        mid = middle(d["counties"])
         last = max(c["as_of"] for c in d["counties"].values())
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} counties'
                     + (f", middle county {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = "How Much Rain Has Your County Had This Year? | AGSIST"
-    desc = (f"Rain so far in {yw} for {total:,} US counties, from the NOAA station in each county: inches, percent of a usual year, month by month.")
+    desc = (f"Rain so far {"in " + yw if yw[0].isdigit() else yw} for {total:,} US counties, from the NOAA station in each county: inches, percent of a usual year, month by month.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
@@ -474,7 +480,7 @@ def hub_page(files, built):
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
     <h1>How much rain has your county had this year?</h1>
-    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {yw} so far at the NOAA station in that county, against a usual year, month by month.</p>
+    <p class="rc-answer">Pick your state, then your county. Each county page gives the rain so far {"in " + yw if yw[0].isdigit() else yw} at the NOAA station in that county, against a usual year, month by month.</p>
     <ul class="rc-states">{''.join(rows)}</ul>
     <h2>How these numbers are kept honest</h2>
     <ul class="rc-list">
@@ -659,7 +665,7 @@ def selftest():
         ok(de and "How Much Rain Did Kent County, Delaware Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         stp = want.get("rain/iowa.html", "")
-        ok("Hamilton County: nearest county with one is <a href=" in stp, "no-station county listed with the nearest that has one")
+        ok("Hamilton County <small>nearest: <a href=" in stp, "no-station county listed with the nearest that has one")
         ok('href="/rain/iowa/story-county"' in stp, "state page links each county")
         sm = want["sitemap-rain.xml"]
         n_pages = sum(1 for k in want if k.endswith(".html"))
