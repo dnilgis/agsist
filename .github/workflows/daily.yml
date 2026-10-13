@@ -130,8 +130,6 @@ jobs:
         with:
           persist-credentials: false
       - id: g
-        env:
-          IN_HEARTBEAT: ${{ github.event.inputs.heartbeat || 'false' }}
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
           #
@@ -154,7 +152,7 @@ jobs:
           # It arrives every thirty minutes all morning, so it must obey the
           # floor and the published check exactly as the push trigger was meant
           # to. Only a human clicking Run workflow gets to override them.
-          HEARTBEAT="$IN_HEARTBEAT"
+          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"   # boolean input: only true/false can arrive
           [ "$EVENT" = "workflow_dispatch" ] && [ "$HEARTBEAT" = "true" ] && EVENT="heartbeat"
 
           # THE WAIT IS CAPPED AT FORTY MINUTES, DOWN FROM 150. Not a tuning

@@ -91,8 +91,9 @@ with contextlib.redirect_stdout(out):
 log = out.getvalue()
 A(rc == 0, "dry run exits 0: " + log)
 A("confirmations 1; alerts 1; re-armed 0" in log, log)
-A("would confirm f@example.com p1 Any elevator within 25 mi of ZIP 54728, corn, nearest delivery: cash at or above $4.50" in log, log)
-A("would alert f@example.com a1" in log and "top Near Coop $4.55 0 mi" in log, log)
+A("would confirm f***@e***.com p1 Any elevator within 25 mi of ZIP 54728, corn, nearest delivery: cash at or above $4.50" in log, log)
+A("would alert f***@e***.com a1" in log and "top Near Coop $4.55 0 mi" in log, log)
+A("f@example.com" not in log, "the dry-run log is public: no full address in it: " + log)
 A("a2" not in log and " el " not in log, "below the price, and an elevator alert, are not this job's: " + log)
 
 # ---- 2. sends against fakes, run after run ----
