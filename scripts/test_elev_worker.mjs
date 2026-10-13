@@ -1,6 +1,8 @@
 // Runs the v5.20 elevator portal routes of workers/subs-worker.js
 // (/elev/admin/create, /elev/admin/rekey, /elev/admin/active, /elev/admin/list,
-// /elev/me, /elev/save, /elev/feed) against an in-memory KV. No network.
+// /elev/me, /elev/save, /elev/feed) and the v5.21 listing requests (POST /form
+// kind elevator-listing, /elev/admin/requests, /elev/admin/request) against an
+// in-memory KV. No network.
 //     node scripts/test_elev_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
@@ -222,6 +224,74 @@ A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'prefligh
   r = await pub('/elev/me', { k: K3 }, {}, e2); A(r.status === 503, 'no UNSUB_SECRET: me 503');
   r = await admin('/elev/admin/create', Object.assign({}, BUNGE, { id: 'no-secret-in' }), 'tok', e2);
   A(r.status === 503 && (await r.json()).ok === false, 'no UNSUB_SECRET: create 503 json');
+}
+
+// ---- v5.21: an elevator asks to post its own bids ----
+{
+  const reqKeys = () => [...store.keys()].filter(k => k.startsWith('form:elevator-listing:')).sort();
+  const ASK = { kind: 'elevator-listing', elevator: '  Farmers Elevator Co ', town: 'Lingle', state: 'wy', zip: '82223', name: 'Pat Doe',
+    role: 'Manager', phone: '(307) 555-0100', email: 'Pat@Example.COM', crops: ['wheat', 'corn', 'corn'], how: 'phone',
+    note: 'Call after 3.\r\nAsk for Pat.', dir_id: 'reg:WY|westplainsllc|lingle', page: '/list-your-elevator', extra: 'dropped' };
+  r = await pub('/form', ASK); j = await r.json();
+  A(r.status === 200 && j.ok, 'listing request stored');
+  A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'request answer carries CORS');
+  const k0 = reqKeys()[0];
+  A(/^form:elevator-listing:\d{13}:[0-9a-f]{8}$/.test(k0), 'request key shape: ' + k0);
+  let q = JSON.parse(store.get(k0));
+  A(q.kind === 'elevator-listing' && q.n === 0 && q.elevator === 'Farmers Elevator Co' && q.state === 'WY' && q.email === 'pat@example.com', 'request cleaned');
+  A(q.crops === 'corn, wheat', 'crops: known, once each, in order: ' + q.crops);
+  A(q.note === 'Call after 3.\nAsk for Pat.' && q.dir_id === 'reg:WY|westplainsllc|lingle' && !('extra' in q) && !('status' in q), 'note keeps its line break; id kept; unknown field dropped');
+  r = await pub('/form', Object.assign({}, ASK, { crops: 'soybeans,corn' }));
+  A(r.status === 200 && JSON.parse(store.get(reqKeys().find(x => x !== k0))).crops === 'corn, soybeans', 'crops as text');
+  for (const [patch, why] of [[{ elevator: '' }, 'elevator required'], [{ town: '' }, 'town required'], [{ state: 'Wyo' }, 'state'],
+      [{ zip: '8222' }, 'short zip'], [{ zip: '82223-1234' }, 'zip+4'], [{ name: '' }, 'name required'], [{ role: '' }, 'role required'],
+      [{ phone: '' }, 'phone required'], [{ phone: '555-0100' }, 'phone too few digits'], [{ phone: 'call me at 3075550100' }, 'phone with words'],
+      [{ email: 'nope' }, 'email'], [{ crops: [] }, 'no crop'], [{ crops: 'corn, hay' }, 'unknown crop'], [{ how: 'fax' }, 'how'], [{ how: '' }, 'how required'],
+      [{ note: 'n'.repeat(601) }, 'note too long'], [{ dir_id: 'x:1' }, 'dir_id prefix'], [{ dir_id: 'known:<script>' }, 'dir_id markup'],
+      [{ elevator: 'e'.repeat(121) }, 'elevator too long']]) {
+    const before = reqKeys().length;
+    r = await pub('/form', Object.assign({}, ASK, patch));
+    A(r.status === 400 && reqKeys().length === before, 'request rejects ' + why + ' (' + r.status + ')');
+  }
+  const before = reqKeys().length;
+  r = await pub('/form', Object.assign({}, ASK, { _gotcha: 'bot' })); A(r.status === 200 && reqKeys().length === before, 'honeypot: ok, nothing stored');
+  r = await pub('/form', ASK, { Origin: 'https://evil.example' }); A(r.status === 403 && reqKeys().length === before, 'foreign origin refused');
+  r = await pub('/form', 'elevator=x', { 'Content-Type': 'application/x-www-form-urlencoded' }); A(r.status === 415, 'form body refused');
+  { // 8 an hour per address across every form kind
+    const ip = '10.201.0.1'; let last = 0;
+    for (let i = 0; i < 9; i++) last = (await pub('/form', ASK, { 'CF-Connecting-IP': ip })).status;
+    A(last === 429, 'ninth request from one address in an hour refused');
+  }
+  // admin: list
+  r = await admin('/elev/admin/requests', null, 'nope'); A(r.status === 403, 'requests needs the token');
+  r = await w.fetch(new Request(H + '/elev/admin/requests?token=tok', { headers: { Origin: 'https://agsist.com' } }), env); A(r.status === 403, 'requests refuses ?token=');
+  r = await admin('/elev/admin/requests'); j = await r.json();
+  A(r.status === 200 && j.ok && j.requests.length === reqKeys().length && j.requests.every(x => x.key && x.status === 'pending'), 'requests listed, all pending');
+  A(j.requests.every((x, i, a) => i === 0 || a[i - 1].ts >= x.ts), 'newest first');
+  A(r.headers.get('Cache-Control') === 'no-store' && r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'requests: no-store, CORS');
+  // admin: mark
+  r = await admin('/elev/admin/request', { key: k0, status: 'created', id: 'westplains-lingle-wy' }, 'nope'); A(r.status === 403, 'mark needs the token');
+  r = await admin('/elev/admin/request', { key: k0, status: 'created', id: 'westplains-lingle-wy' }); j = await r.json();
+  q = JSON.parse(store.get(k0));
+  A(r.status === 200 && j.ok && q.status === 'created' && q.elev_id === 'westplains-lingle-wy' && q.status_ts > 0, 'marked created with the listing id');
+  A(q.elevator === 'Farmers Elevator Co' && q.n === 0, 'marking keeps the request');
+  r = await admin('/elev/admin/request', { key: k0, status: 'dismissed' }); q = JSON.parse(store.get(k0));
+  A(r.status === 200 && q.status === 'dismissed' && !('elev_id' in q), 'dismissed; id cleared');
+  for (const [body, code, why] of [[{ key: k0, status: 'done' }, 400, 'unknown status'], [{ key: k0, status: 'dismissed', id: 'x-y' }, 400, 'id only with created'],
+      [{ key: k0, status: 'created', id: 'Bad Id' }, 400, 'bad id'], [{ key: 'form:claim:1700000000000:0a1b2c3d', status: 'dismissed' }, 404, 'another kind'],
+      [{ key: 'elev:bunge-ladoga-in', status: 'dismissed' }, 404, 'not a form key'], [{ key: 'form:elevator-listing:1700000000000:00000000', status: 'dismissed' }, 404, 'missing'],
+      [{ status: 'dismissed' }, 404, 'no key']]) {
+    r = await admin('/elev/admin/request', body); A(r.status === code, 'mark refuses ' + why + ' (' + r.status + ')');
+  }
+  // the digest's /form-mark keeps the status
+  r = await w.fetch(new Request(H + '/form-mark', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' }, body: JSON.stringify({ keys: [k0] }) }), env);
+  q = JSON.parse(store.get(k0)); A(q.n === 1 && q.status === 'dismissed', 'form-mark keeps the status');
+  r = await w.fetch(new Request(H + '/form-list?kind=elevator-listing', { headers: { Authorization: 'Bearer tok' } }), env); j = await r.json();
+  A(Array.isArray(j) && j.length === reqKeys().length, 'form-list knows the kind');
+  r = await w.fetch(new Request(H + '/count', { headers: { Authorization: 'Bearer tok' } }), env); j = await r.json();
+  A(j.forms && j.forms['elevator-listing'] === reqKeys().length, '/count forms elevator-listing');
+  // a request never reaches the public feed
+  r = await get('/elev/feed'); A(!(await r.text()).includes('Farmers Elevator Co'), 'requests are not in the feed');
 }
 
 // ---- every existing route still answers ----
