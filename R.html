@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Rain Print | AGSIST</title>
+<!-- The Rain Print QR short link (HTTPS://AGSIST.COM/R?ID). Looks the id up at
+     the subs worker (v5.13, GET /rp-short/<id>) and opens /rain-print?d=<code>.
+     R.html and r.html are the same bytes (GitHub Pages paths are case-sensitive;
+     the QR uses /R, a typed link may use /r). test/rp-short.test.mjs checks that. -->
+<style>
+  :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.7);--link:#7a5a12}
+  @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.7);--link:#d4a23f}}
+  body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:520px;margin:0 auto;padding:4rem 16px}
+  h1{font-size:1.3rem;margin:0 0 .6rem}
+  p{color:var(--muted);margin:.4rem 0}
+  a{color:var(--link)}
+</style>
+</head>
+<body>
+<main>
+<h1 id="msg">Opening the Rain Print design</h1>
+<p id="sub">One moment.</p>
+<p><a href="/rain-print">Go to Rain Print</a></p>
+</main>
+<script>
+(function () {
+  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-short/';
+  function fail() {
+    try {
+      document.getElementById('msg').textContent = 'This Rain Print link did not open';
+      document.getElementById('sub').textContent = 'The design could not be found, or the connection dropped. You can make the print again on the Rain Print page.';
+    } catch (e) {}
+  }
+  var q = String(location.search || '').replace(/^\?/, '');
+  if (q.indexOf('=') >= 0) { var m = /(?:^|&)id=([^&]*)/i.exec(q); q = m ? m[1] : ''; }
+  try { q = decodeURIComponent(q); } catch (e) { q = ''; }
+  var id = q.trim().toUpperCase().replace(/[IL]/g, '1').replace(/O/g, '0');
+  if (!/^[0-9A-HJKMNP-TV-Z]{5,8}$/.test(id) || typeof fetch !== 'function') { fail(); return; }
+  var t = setTimeout(fail, 8000);
+  fetch(API + id).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    var code = j && typeof j.code === 'string' ? j.code : '';
+    if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) { clearTimeout(t); fail(); return; }
+    clearTimeout(t);
+    location.replace('/rain-print?d=' + code);
+  }).catch(function () { clearTimeout(t); fail(); });
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,24 @@
 /**
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.13 (2026-10-12): RAIN PRINT SHORT LINKS. New routes only; every existing
+ *   route answers exactly as before. The print's QR used to carry
+ *   agsist.com/rain-print?d=<design code> (QR version 6 to 10); it can now
+ *   carry HTTPS://AGSIST.COM/R?<id>, a 5-character id (26 bytes, version 2,
+ *   25 x 25 modules at level M). /R (R.html, r.html) looks the id up here.
+ *   POST /rp-short  JSON {code}. code is a plain Rain Print design code (the
+ *     v1 rules of decodeCode in components/rain-print.js; a GIFT- code is
+ *     refused, the QR opens the design itself). Answers {ok:true, id}. The id
+ *     is the first 5 characters of Crockford base32 (0-9 A-Z without I L O U)
+ *     of SHA-256(code); if that id already holds a different code it grows to
+ *     6, 7, then 8 characters. Stored as rps:<id> = code, no expiry (a few
+ *     hundred bytes). Idempotent: the same code always gets the same id and a
+ *     repeat writes nothing. Origin must be agsist.com, body at most 1 KB, at
+ *     most 60 new ids per IP an hour (own counter, so making links never uses
+ *     up the 8 form posts; the IP is kept only as an HMAC, for two hours).
+ *   GET  /rp-short/<id>  {ok:true, code}, or 404. Lowercase and the Crockford
+ *     look-alikes (I L -> 1, O -> 0) are read as the id. CORS for agsist.com.
+ *   No new binding and no new secret (rps: keys live in the SUBS KV).
  * v5.12 (2026-10-12): RAIN PRINT BUSINESS QUOTES AND GIFT NOTES. One new form
  *   kind on POST /form and one new optional field on rain-print-order; every
  *   existing route answers exactly as before. kind rain-print-business (the
@@ -495,6 +513,61 @@ async function formRateOk(req, env) {
   const k = "rl:form:" + h + ":" + Math.floor(Date.now() / 3600e3);
   const n = Number(await env.SUBS.get(k)) || 0;
   if (n >= FORM_RATE_MAX) return false;
+  await env.SUBS.put(k, String(n + 1), { expirationTtl: 7200 });
+  return true;
+}
+
+// v5.13: Rain Print short links. rps:<id> = a plain design code, no expiry.
+const RPS_LEN = 5, RPS_MAX_LEN = 8;      // 5 keeps HTTPS://AGSIST.COM/R?<id> at 26 bytes: QR version 2, 25 x 25
+const RPS_MAX_BYTES = 1024;
+const RPS_RATE_MAX = 60;                 // new ids per IP per hour; a repeat of a known code is not counted
+const RPS_B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford: no I L O U
+const RPS_ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
+// The v1 design-code rules of decodeCode (components/rain-print.js): base64url
+// of "1|place|station|year|LPCS|name[|day|label]...". The letters behind LPCS
+// are the page's to change, so only their shape is checked here.
+function rpsCodeOk(code) {
+  if (typeof code !== "string" || !/^[A-Za-z0-9_-]{8,400}$/.test(code)) return false;
+  let raw;
+  try {
+    let b = code.replace(/-/g, "+").replace(/_/g, "/");
+    while (b.length % 4) b += "=";
+    const bin = atob(b), bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch (e) { return false; }
+  const f = raw.split("|");
+  if (f[0] !== "1" || f.length < 6 || (f.length - 6) % 2) return false;
+  if (!f[1].trim()) return false;
+  if (!/^[a-z0-9]{4}$/.test(f[4])) return false;
+  const year = parseInt(f[3], 10);
+  if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
+  for (let i = 6; i + 1 < f.length; i += 2) {
+    if (!/^[0-9a-z]{1,2}$/.test(f[i]) || parseInt(f[i], 36) > 365) return false;
+  }
+  return true;
+}
+async function rpsHash(code) {
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)));
+  let out = "", acc = 0, bits = 0;
+  for (let i = 0; out.length < RPS_MAX_LEN; i++) {
+    acc = (acc << 8) | d[i]; bits += 8;
+    while (bits >= 5 && out.length < RPS_MAX_LEN) { bits -= 5; out += RPS_B32[(acc >> bits) & 31]; }
+    acc &= (1 << bits) - 1;
+  }
+  return out;
+}
+function rpsId(v) {
+  const id = String(v == null ? "" : v).trim().toUpperCase().replace(/[IL]/g, "1").replace(/O/g, "0");
+  return RPS_ID_RE.test(id) ? id : "";
+}
+async function rpsRateOk(req, env) {
+  const ip = req.headers.get("CF-Connecting-IP") || "";
+  if (!ip) return true;
+  const h = await hmac16("rps-ip|" + ip, env.UNSUB_SECRET || "agsist-form");
+  const k = "rl:rps:" + h + ":" + Math.floor(Date.now() / 3600e3);
+  const n = Number(await env.SUBS.get(k)) || 0;
+  if (n >= RPS_RATE_MAX) return false;
   await env.SUBS.put(k, String(n + 1), { expirationTtl: 7200 });
   return true;
 }
@@ -1316,6 +1389,44 @@ export default {
       if (r.status === "expired" || r.status === "ended") await env.SUBS.delete("sapp-logo:" + id);
       await env.SUBS.put("sapp:" + id, JSON.stringify(r));
       return json({ ok: true });
+    }
+
+    // ---------- v5.13: Rain Print short links ----------
+    if (path === "/rp-short" && req.method === "POST") {
+      const c = cors(req);
+      const origin = req.headers.get("Origin") || "";
+      if (!ALLOWED_ORIGINS.includes(origin)) return json({ ok: false, error: "forbidden" }, 403, c);
+      if (Number(req.headers.get("Content-Length") || 0) > RPS_MAX_BYTES)
+        return json({ ok: false, error: "too large" }, 413, c);
+      let raw = "";
+      try { raw = await req.text(); } catch (e) { raw = ""; }
+      if (raw.length > RPS_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let b = null;
+      try { b = JSON.parse(raw); } catch (e) { b = null; }
+      if (!b || typeof b !== "object" || Array.isArray(b)) return json({ ok: false, error: "bad json" }, 400, c);
+      const code = b.code;
+      if (!rpsCodeOk(code)) return json({ ok: false, error: "invalid code" }, 400, c);
+      const full = await rpsHash(code);
+      for (let len = RPS_LEN; len <= RPS_MAX_LEN; len++) {
+        const id = full.slice(0, len), have = await env.SUBS.get("rps:" + id);
+        if (have === code) return json({ ok: true, id }, 200, c);
+        if (have === null) {
+          if (!(await rpsRateOk(req, env))) return json({ ok: false, error: "too many links; try again in an hour" }, 429, c);
+          await env.SUBS.put("rps:" + id, code);
+          return json({ ok: true, id }, 200, c);
+        }
+      }
+      return json({ ok: false, error: "no free id" }, 409, c);
+    }
+
+    if (path.startsWith("/rp-short/") && req.method === "GET") {
+      const c = cors(req);
+      let seg = "";
+      try { seg = decodeURIComponent(path.slice("/rp-short/".length)); } catch (e) { seg = ""; }
+      const id = rpsId(seg);
+      const code = id ? await env.SUBS.get("rps:" + id) : null;
+      if (!code) return json({ ok: false, error: "not found" }, 404, c);
+      return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=86400" }, c));
     }
 
     // ---------- v5.8: the site's own forms ----------
