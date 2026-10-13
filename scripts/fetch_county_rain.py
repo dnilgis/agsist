@@ -265,6 +265,29 @@ def build_state(src, st, year, edate, C, fetched):
                     k = dates.index(x["summary"]["as_of"]) + 1
                     this = {d[5:]: v for d, v in zip(dates[:k], x["vals"][:k])}
                     last[f] = R.last_year_total(vals, f"{int(year) - 1}-01-01", R.same_date_last_year(x["summary"]["as_of"]), this)
+                    x["last_vals"] = vals
+        # a stuck run last year makes last year's total wrong, and the
+        # comparison with it: the same test as this year, with this year's
+        # normals for those calendar days and the other chosen stations'
+        # last years within 40 mi as the check (2026-10-13: Fort Lauderdale
+        # Executive airport, 7.15 in by Oct 12 of 2025)
+        lg = {}
+        for f, x in picked.items():
+            if last.get(f) and "last_vals" in x:
+                nl = (dt.date.fromisoformat(last[f]["through"]) - dt.date(int(year) - 1, 1, 1)).days + 1
+                ld = R.days_of(int(year) - 1, f"{int(year) - 1}-01-01", nl)
+                md = dict(zip((d[5:] for d in dates), x["gauge"]["nv"] or []))
+                lv = (x["last_vals"] + ["M"] * nl)[:nl]
+                lg[f] = {"sid": x["gauge"]["sid"], "lat": x["gauge"]["lat"], "lon": x["gauge"]["lon"],
+                         "parsed": [R.parse_pcpn(v) for v in lv],
+                         "nv": [md.get(d[5:] if d[5:] != "02-29" else "02-28") for d in ld] if md else None}
+        for f, g in sorted(lg.items()):
+            bad = R.stuck_run(g["parsed"], g["nv"], [(h["parsed"], h["nv"]) for h in nearby(list(lg.values()), g)])
+            if bad:
+                i, j, u, got = bad
+                print(f"  {st} {f}: no {int(year) - 1} comparison ({picked[f]['meta'].get('name')} read 0.00 for {j - i + 1} days "
+                      f"from {R.days_of(0, f'{int(year) - 1}-01-01', i + 1)[-1]}, usual {u:.1f} in)", flush=True)
+                last[f] = None
     out = {}
     for fips, x in sorted(picked.items()):
         m, s = x["meta"], x["summary"]
@@ -325,6 +348,42 @@ def hold_outliers(files, new, N):
             held.append(f)
             print(f"  {st} {f}: holding {c['station']['raw']} ({why})", flush=True)
     return held
+
+
+def hold_last_year(files, new, N):
+    """Drop last year's comparison where last year's rain on the shared days is
+    under 40% of this year's and the counties around did not drop the same way
+    (3 or more of them with a ratio under 40% too). Only where this year has
+    10 inches or more on those days: in dry country one storm swings it.
+    A gauge that was stuck last year reads this way (2026-10-13: Broward FL,
+    7.15 in in 2025 against 49 in 2026, the counties around it near 1 to 1)."""
+    def ratio(c):
+        L = c.get("last")
+        if not L:
+            return None, None
+        tb, lb = (L["this_both"], L["last_both"]) if "both" in L else (c["total"], L["total"])
+        return (lb / tb if tb else None), tb
+    rat = {}
+    for d in files.values():
+        for f, c in d["counties"].items():
+            r, _ = ratio(c)
+            if r is not None:
+                rat[f] = r
+    dropped = []
+    for st, d in new.items():
+        for f, c in d["counties"].items():
+            r, tb = ratio(c)
+            if r is None or tb < ODD_MIN_USUAL or r >= ODD_LOW:
+                continue
+            nb = [rat[n] for n in N.get(f, []) if n in rat]
+            mid = _median(nb)
+            if len(nb) >= ODD_MIN_NBRS and mid < ODD_LOW:
+                continue
+            c["last"] = None
+            dropped.append(f)
+            print(f"  {st} {f}: no last-year comparison ({c['station']['raw']}: last year {100 * r:.0f}% of this year, "
+                  + (f"the counties around it {100 * mid:.0f}%)" if mid is not None else "no counties around to check)"), flush=True)
+    return dropped
 
 
 def add_nearest(files, C):
@@ -434,7 +493,9 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
             except ValueError:
                 pass
     allf.update(new)
-    hold_outliers(allf, new, R.neighbors())
+    NB = R.neighbors()
+    hold_outliers(allf, new, NB)
+    hold_last_year(allf, new, NB)
     add_nearest(allf, C)
     for st, d in new.items():
         with open(os.path.join(out_dir, st.lower() + ".json"), "w") as fh:
@@ -528,6 +589,29 @@ def selftest():
     _des = [_g(x[0], x[1], x[2], x[3], False, nrm="0.01", gap=x[4]) for x in (("GOOD", "2 2", [-93.05, 42.05], "19001", True), ("NEAR", "3 2", [-93.3, 42.0], "19003", False))]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True, nrm="0.01")] + _des) == "STUCK",
        "desert: 40 days at 0.00 is 0.4 in of usual, not a stuck gauge")
+    # last year stuck at 0.00 for 40 days while the station next door caught rain:
+    # no comparison with last year; the same station with a sound last year keeps it
+    class _Src2:
+        def __init__(self, this, last): self.this, self.last = this, last
+        def call(self, q): return {"data": self.this if "state" in q else self.last}
+
+    def _ly(name, sid, ll, fips, dry):
+        return {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips},
+                "data": [[_wet(i, dry)] for i in range(100)]}
+    _this = [_g("A", "1 2", [-93.0, 42.0], "19001", False), _g("B", "3 2", [-93.3, 42.0], "19003", False)]
+    _o = build_state(_Src2(_this, [_ly("A", "1 2", [-93.0, 42.0], "19001", True), _ly("B", "3 2", [-93.3, 42.0], "19003", False)]),
+                     "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
+    ok(_o["counties"]["19001"]["last"] is None and _o["counties"]["19003"]["last"] is not None,
+       f"a stuck run last year withholds last year: {[_o['counties'][f]['last'] and _o['counties'][f]['last']['total'] for f in ('19001', '19003')]}")
+    # last year under 40% of this year on the shared days, the counties around near 1 to 1: withheld
+    def _l(tb, lb): return {"name": "x", "total": tb, "station": {"raw": "G"}, "last": {"both": 280, "this_both": tb, "last_both": lb, "total": lb}}
+    _files = {"FL": {"counties": {"1": _l(49.0, 7.15), "2": _l(48.0, 45.0), "3": _l(50.0, 52.0), "4": _l(47.0, 40.0),
+                                  "5": _l(30.0, 9.0), "6": _l(30.0, 9.5), "7": _l(31.0, 10.0), "8": _l(29.0, 8.0),
+                                  "9": _l(4.0, 1.0)}, "none": {}}}
+    _dropped = hold_last_year(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"], "6": ["5", "7", "8"],
+                                                "7": ["5", "6", "8"], "8": ["5", "6", "7"], "9": ["2", "3", "4"]})
+    ok(_dropped == ["1"] and _files["FL"]["counties"]["1"]["last"] is None and _files["FL"]["counties"]["5"]["last"],
+       f"a last year far under this one is withheld unless the counties around fell the same way; dry country kept: {_dropped}")
     # Ocracoke is in Hyde County NC, but the simplified outline leaves the island out
     _H = {"37095": {"st": "NC", "name": "Hyde County", "slug": "h", "lat": 35.5294, "lon": -76.2645, "reach": 24.2}}
     _out = build_state(_Src([_row("OCRACOKE", "316349 2", [-75.9872, 35.1075], "37095")]),
