@@ -50,19 +50,22 @@
     .ep textarea{min-height:72px;resize:vertical}
     .ep .two{display:grid;grid-template-columns:1fr 1fr;gap:0 .75rem}
     .ep-row{border:1px solid var(--border);border-radius:8px;padding:.75rem;margin:.75rem 0;background:var(--bg2,var(--bg))}
-    .ep-row .top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 .6rem}
+    .ep-row .top{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"crop fut" "per per";gap:0 .6rem}
+    .ep-row .top .crop{grid-area:crop}.ep-row .top .per{grid-area:per}.ep-row .top .fut{grid-area:fut}
     .ep-row .dates{display:grid;grid-template-columns:1fr 1fr;gap:0 .6rem}
-    .ep-row .money{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:end;margin-top:.2rem}
+    .ep-row .top>div,.ep-row .dates>div{min-width:0}
+    .ep-row input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
+    .ep-row .money{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:flex-end;margin-top:.2rem}
     .ep-step{display:flex;align-items:stretch}
     .ep-step button{font:inherit;font-size:1.4rem;font-weight:700;width:48px;min-height:48px;border:1px solid var(--border-2,var(--border));background:var(--surface2,var(--surface));color:var(--text);cursor:pointer}
     .ep-step button:first-child{border-radius:6px 0 0 6px}
     .ep-step button:last-child{border-radius:0 6px 6px 0}
     .ep-step input{width:96px!important;min-height:48px!important;text-align:center;border-radius:0!important;font-family:'JetBrains Mono',monospace;font-size:1.1rem!important}
     .ep-cash{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text);line-height:1.2}
-    .ep-cash small{display:block;font-family:inherit;font-size:.72rem;font-weight:400;color:var(--text-muted)}
+    .ep-cash small{display:block;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:.72rem;font-weight:400;color:var(--text-muted)}
     .ep-row .foot{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem;gap:.5rem}
     .ep-row .fut-px{font-size:.8rem;color:var(--text-muted)}
-    .ep-del{font:inherit;font-size:.85rem;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;min-height:40px;padding:0 .8rem;cursor:pointer}
+    .ep-del{white-space:nowrap;flex:0 0 auto;font:inherit;font-size:.85rem;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;min-height:40px;padding:0 .8rem;cursor:pointer}
     .ep-add{font:inherit;font-weight:600;min-height:48px;width:100%;border:1px dashed var(--border-2,var(--border));border-radius:8px;background:none;color:var(--gold);cursor:pointer;margin-top:.25rem}
     .ep-add[disabled]{opacity:.5;cursor:not-allowed}
     .ep-bad{border-color:var(--red)!important}
@@ -82,10 +85,9 @@
     @media(min-width:700px){
       .ep{padding-top:2rem}
       .ep h1{font-size:2rem}
-      .ep-row .top{grid-template-columns:1.1fr 1fr 1fr}
+      .ep-row .top{grid-template-columns:1fr 1.2fr 1fr;grid-template-areas:"crop per fut"}
       .ep-row .lower{display:grid;grid-template-columns:1.2fr 1fr;gap:0 1rem;align-items:end}
     }
-    @media(max-width:380px){ .ep-row .top{grid-template-columns:1fr 1fr} .ep-row .top .per{grid-column:1/-1} }
   </style>
 </head>
 <body>

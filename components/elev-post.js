@@ -249,9 +249,9 @@
     var id = 'r' + i;
     return '<div class="ep-row" data-i="' + i + '">' +
       '<div class="top">' +
-        '<div><label for="' + id + 'c">Crop</label><select id="' + id + 'c" data-f="crop">' + cropOptions(r.crop) + '</select></div>' +
+        '<div class="crop"><label for="' + id + 'c">Crop</label><select id="' + id + 'c" data-f="crop">' + cropOptions(r.crop) + '</select></div>' +
         '<div class="per"><label for="' + id + 'p">Delivery</label><input id="' + id + 'p" type="text" data-f="period" maxlength="' + PERIOD_MAX + '" value="' + esc(r.period) + '" placeholder="Oct/Nov" autocomplete="off"></div>' +
-        '<div><label for="' + id + 'f">Futures</label><select id="' + id + 'f" data-f="futures">' + futOptions(r.crop, r.futures) + '</select></div>' +
+        '<div class="fut"><label for="' + id + 'f">Futures month</label><select id="' + id + 'f" data-f="futures">' + futOptions(r.crop, r.futures) + '</select></div>' +
       '</div>' +
       '<div class="dates">' +
         '<div><label for="' + id + 's">First day</label><input id="' + id + 's" type="date" data-f="start" value="' + esc(r.start) + '"></div>' +
@@ -264,7 +264,7 @@
           '<button type="button" data-step="1" aria-label="Basis up one cent">+</button></div></div>' +
         '<div class="ep-cash" data-cash aria-live="polite"></div>' +
       '</div>' +
-      '<div class="foot"><span class="fut-px" data-futpx></span><button type="button" class="ep-del" data-del>Remove row</button></div></div>' +
+      '<div class="foot"><span class="fut-px" data-futpx></span><button type="button" class="ep-del" data-del>Remove</button></div></div>' +
       '<div class="ep-err" data-err hidden></div>' +
     '</div>';
   }
@@ -282,8 +282,10 @@
     var est = cashEstimate(r.futures, b, prices);
     var words = isFinite(b) && px ? px.basis(Math.round(b * 10000) / 100, { contract: futuresLabel(r.futures) }) : '';
     if (est) {
-      cashEl.innerHTML = (px ? esc(px.priceDollars(est.cash)) : '$' + est.cash.toFixed(4)) + '<small>cash estimate' + (words ? ', ' + esc(words) : '') + '</small>';
-      futEl.textContent = futuresLabel(r.futures) + ' futures ' + (px ? px.price(est.futures) : '$' + (est.futures / 100).toFixed(4)) + ', delayed' + (asOf() ? ', ' + asOf() : '');
+      cashEl.innerHTML = (px ? esc(px.priceDollars(est.cash)) : '$' + est.cash.toFixed(4)) + '<small>Cash price (estimate)</small>';
+      var bw = px ? px.basis(Math.round(b * 10000) / 100) : basisText(b);
+      futEl.textContent = futuresLabel(r.futures) + ' futures ' + (px ? px.price(est.futures) : '$' + (est.futures / 100).toFixed(4)) +
+        ' (delayed' + (asOf() ? ', ' + asOf() : '') + ') plus ' + bw + ' basis';
     } else {
       cashEl.innerHTML = '<span style="color:var(--text-muted)">--</span><small>' + (isFinite(b) ? 'no futures price on file for ' + esc(futuresLabel(r.futures)) : 'type a basis to see cash') + '</small>';
       futEl.textContent = words || '';

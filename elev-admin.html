@@ -47,11 +47,13 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
 .off{color:var(--warn);font-weight:600}
 .on{color:var(--ok);font-weight:600}
 .dim{color:var(--dim);font-size:.82rem}
+.m{display:none}
 @media(max-width:640px){
   table,tbody,tr,td{display:block;width:100%}
   thead{display:none}
   tr{border-bottom:1px solid var(--line);padding:.5rem 0}
   td{border:0;padding:2px 0}
+  .m{display:inline}
 }
 </style>
 </head>
@@ -183,8 +185,8 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
           (r.contact && r.contact.name ? ' · ' + esc(r.contact.name) : '') + (r.contact && r.contact.phone ? ' ' + esc(r.contact.phone) : '') +
           (r.email ? ' · ' + esc(r.email) : '') + '</span><div class="out" id="o-' + esc(r.id) + '"></div></td>' +
           '<td>' + (r.active ? '<span class="on">On</span>' : '<span class="off">Off</span>') + '</td>' +
-          '<td>' + esc(ago(r.bids_updated_at)) + '<br><span class="dim">info ' + esc(ago(r.info_updated_at)) + '</span></td>' +
-          '<td>' + (r.bids ? r.bids.length : 0) + '</td>' +
+          '<td><span class="m">Prices updated </span>' + esc(ago(r.bids_updated_at)) + '<br><span class="dim">info ' + esc(ago(r.info_updated_at)) + '</span></td>' +
+          '<td>' + (r.bids ? r.bids.length : 0) + ' rows</td>' +
           '<td><button type="button" class="small" data-rekey="' + esc(r.id) + '">New link</button>' +
           '<button type="button" class="small quiet" data-active="' + esc(r.id) + '">' + (r.active ? 'Turn off' : 'Turn on') + '</button></td></tr>';
       }).join('') + '</tbody></table>';
