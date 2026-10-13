@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 80,
- "with_known_cadence": 80,
+ "count": 81,
+ "with_known_cadence": 81,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1406,22 +1406,52 @@
    "why_quiet": null
   },
   {
+   "path": "data/prf/climate-indices.json",
+   "pages": [
+    "prf.html"
+   ],
+   "written_by": [
+    "climate indices",
+    "prf"
+   ],
+   "touched_by": [
+    "climate indices",
+    "prf",
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
+   "curated": false,
+   "planned": true,
+   "external": false,
+   "url": null,
+   "crons": [
+    "37 14 9 * *",
+    "23 10 * * 3"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": "monthly",
+   "why_quiet": "NOAA posts the PDO and AMO once a month, so the climate indices job runs on the 9th and the file moves only when a new month is out."
+  },
+  {
    "path": "data/prf/opt.json",
    "pages": [
     "prf.html"
    ],
    "written_by": [
+    "climate indices",
     "prf"
    ],
    "touched_by": [
+    "climate indices",
     "prf"
    ],
-   "cadence": "1 launch on a fixed schedule at about 5am Central",
+   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "37 14 9 * *",
     "23 10 * * 3"
    ],
    "max_gap_hours": 168.0,
@@ -1446,7 +1476,7 @@
    ],
    "cadence": "3 launches on a fixed schedule at about 5am, 6am, 10am Central",
    "curated": false,
-   "planned": true,
+   "planned": false,
    "external": false,
    "url": null,
    "crons": [
