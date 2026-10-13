@@ -252,7 +252,9 @@ def add_nearest(files, C):
 
 # ---------------------------------------------------------------- checking
 
-def problems(d, path=""):
+def problems(d, path="", C=None):
+    """What is wrong with one state file. C (county_rain.counties()) lets a
+    station sit as far out as its county reaches (Alaska's are huge)."""
     bad = []
     if d.get("schema") != SCHEMA:
         bad.append(f"{path}: schema {d.get('schema')}")
@@ -276,7 +278,7 @@ def problems(d, path=""):
                 bad.append(f"{w}: biggest day over the total")
             if c["cum"] and abs(c["cum"][-1][1] - c["total"]) > 0.011:
                 bad.append(f"{w}: running total ends at {c['cum'][-1][1]}, total {c['total']}")
-            if not c["station"]["name"] or c["station"]["mi"] > 200:
+            if not c["station"]["name"] or c["station"]["mi"] > max(200, (C or {}).get(f, {}).get("reach", 0) + 5):
                 bad.append(f"{w}: station {c['station']}")
         except (KeyError, TypeError, IndexError) as e:
             bad.append(f"{w}: malformed ({e})")
@@ -286,13 +288,14 @@ def problems(d, path=""):
 def check(dirpath=OUT):
     bad = []
     files = sorted(glob.glob(os.path.join(dirpath, "*.json")))
+    C = R.counties() if files else None
     for p in files:
         try:
             d = json.load(open(p))
         except ValueError as e:
             bad.append(f"{p}: {e}")
             continue
-        bad += problems(d, os.path.basename(p))
+        bad += problems(d, os.path.basename(p), C)
     for b in bad[:20]:
         print("BAD", b)
     print(f"{len(files)} state files, {len(bad)} problem(s)")
@@ -323,7 +326,7 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
             print(f"{st}: refusing a thin answer ({len(d['counties'])} counties, published {len(old['counties'])}); kept", flush=True)
             failed.append(st)
             continue
-        bad = problems(d, st)
+        bad = problems(d, st, C)
         if bad:
             print(f"{st}: refusing ({bad[0]}); kept", flush=True)
             failed.append(st)
@@ -438,6 +441,16 @@ def selftest():
     ok(R.network(["US1IAST0001 10"]) == "cocorahs" and R.network(["130200 2"]) == "noaa", "network from sid type")
     # the whole pipeline on saved ACIS answers
     C = R.counties()
+    aw = C.get("02016")
+    ok(aw and aw["lon"] < -160 and 50 < aw["lat"] < 58, f"Aleutians West's middle is in the Aleutians, not Colorado: {aw}")
+    ok(all(c["lon"] < -125 for c in C.values() if c["st"] == "AK"), "every Alaska county's middle is in Alaska")
+    stp = {"schema": SCHEMA, "year": 2026, "counties": {"02016": {
+        "as_of": "2026-10-10", "total": 10, "reported": 280, "missing": 3, "days": 283, "months": [[10, None, 280, 283]],
+        "usual": None, "pct": None, "max_day": None, "cum": [[0, 10, None]],
+        "station": {"name": "St Paul Island Airport", "mi": round(R.miles(aw["lat"], aw["lon"], 57.155, -170.222), 1)}}}}
+    ok(problems(stp, "AK", C) == [], f"St Paul Island, inside Aleutians West, is not refused as too far: {problems(stp, 'AK', C)}")
+    stp["counties"]["19169"] = dict(stp["counties"]["02016"], station={"name": "x", "mi": 330})
+    ok(len(problems(stp, "IA", C)) == 1, "a station 330 miles from an Iowa county's middle is still refused")
     with tempfile.TemporaryDirectory() as d:
         for st, year, ed in (("IA", 2026, "2026-10-12"), ("KS", 2026, "2026-10-12"), ("DE", 2024, "2024-12-31")):
             n2, f2 = run(FixtureSource(fx), [st], year, ed, d, C)

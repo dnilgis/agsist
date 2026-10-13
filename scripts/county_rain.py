@@ -79,6 +79,11 @@ def _ring_centroid(ring):
 def centroid(geom):
     """Area-weighted centroid (lat, lon) of a Polygon or MultiPolygon's outer rings."""
     polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    lons = [p[0] for poly in polys for p in poly[0]]
+    if lons and max(lons) - min(lons) > 180:
+        # the Aleutians cross the 180th meridian: put the east-of-180 islands
+        # at -181 and so on, or the average lands in Colorado
+        polys = [[[[p[0] - 360 if p[0] > 0 else p[0]] + list(p[1:]) for p in poly[0]]] for poly in polys]
     A = X = Y = 0.0
     for poly in polys:
         a, x, y = _ring_centroid(poly[0])
@@ -130,7 +135,12 @@ def counties():
             sl = f"{sl}-{fips[2:]}"
         u.add(sl)
         lat, lon = centroid(f["geometry"])
-        out[fips] = {"st": st, "name": name, "slug": sl, "lat": lat, "lon": lon}
+        g = f["geometry"]
+        ring_pts = [p for poly in ([g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]) for p in poly[0]]
+        # reach: miles from the middle to the farthest corner (a station inside
+        # the county can be this far out; Aleutians West is 580)
+        reach = round(max(miles(lat, lon, p[1], p[0]) for p in ring_pts), 1)
+        out[fips] = {"st": st, "name": name, "slug": sl, "lat": lat, "lon": lon, "reach": reach}
     return out
 
 
