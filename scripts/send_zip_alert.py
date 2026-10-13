@@ -235,6 +235,7 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
     go = sew.link(base, "elevator-watch-confirm", w, wid, secret, "c")
     stop = sew.link(base, "elevator-watch-unsubscribe", w, wid, secret, "w1")
     m = sew.base_msg(w, "Confirm: ZIP cash alert on AGSIST", fn, fa, rt, stop)
+    label = sew.quoted(label)   # typed by whoever asked; quoted and short
     how = ("You get one email when an elevator in range posts at or above your price. "
            "After that, no more emails until every elevator in range is back below it and one crosses again.")
     m.set_content(f"Someone asked for this cash bid alert on AGSIST using this address:\n{label}\n\n"
