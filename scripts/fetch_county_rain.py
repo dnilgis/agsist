@@ -257,23 +257,40 @@ def build_state(src, st, year, edate, C, fetched):
 ODD_LOW, ODD_MIN_USUAL, ODD_MIN_NBRS = 0.40, 10.0, 3
 
 
+def _median(xs):
+    xs = sorted(xs)
+    n = len(xs)
+    return None if not n else xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2
+
+
 def hold_outliers(files, new, N):
-    """Move a county whose gauge reads far below all its neighbors into "none"."""
+    """Move a county whose gauge reads far below all its neighbors into "none".
+    With a percent, percent against the neighbors' percents; a gauge with no
+    NOAA normal has no percent, so its total is held against the neighbors'
+    totals instead, where those reach 10 inches (dry country left alone)."""
     pct = {f: c["pct"] for d in files.values() for f, c in d["counties"].items() if c.get("pct")}
+    tot = {f: c["total"] for d in files.values() for f, c in d["counties"].items() if c.get("total") is not None}
     held = []
     for st, d in new.items():
         for f, c in list(d["counties"].items()):
-            if not c.get("pct") or (c.get("usual") or 0) < ODD_MIN_USUAL:
-                continue
-            nb = sorted(pct[n] for n in N.get(f, []) if n in pct)
-            if len(nb) < ODD_MIN_NBRS:
-                continue
-            mid = nb[len(nb) // 2] if len(nb) % 2 else (nb[len(nb) // 2 - 1] + nb[len(nb) // 2]) / 2
-            if c["pct"] < ODD_LOW * mid:
-                d["none"][f] = {"name": c["name"], "stations": c.get("n_ok") or 1, "held": c["station"]["raw"]}
-                del d["counties"][f]
-                held.append(f)
-                print(f"  {st} {f}: holding {c['station']['raw']} ({c['pct']}% of usual, the counties around it {mid:.0f}%)", flush=True)
+            if c.get("pct"):
+                if (c.get("usual") or 0) < ODD_MIN_USUAL:
+                    continue
+                nb = [pct[n] for n in N.get(f, []) if n in pct]
+                mid = _median(nb)
+                if len(nb) < ODD_MIN_NBRS or not c["pct"] < ODD_LOW * mid:
+                    continue
+                why = f"{c['pct']}% of usual, the counties around it {mid:.0f}%"
+            else:
+                nb = [tot[n] for n in N.get(f, []) if n in tot]
+                mid = _median(nb)
+                if len(nb) < ODD_MIN_NBRS or mid < ODD_MIN_USUAL or not c["total"] < ODD_LOW * mid:
+                    continue
+                why = f"{c['total']:.2f} in, the counties around it {mid:.1f} in"
+            d["none"][f] = {"name": c["name"], "stations": c.get("n_ok") or 1, "held": c["station"]["raw"]}
+            del d["counties"][f]
+            held.append(f)
+            print(f"  {st} {f}: holding {c['station']['raw']} ({why})", flush=True)
     return held
 
 
@@ -464,6 +481,18 @@ def selftest():
     _held = hold_outliers(_files, _files, _N)
     ok(_held == ["1"] and "1" in _files["AR"]["none"] and "5" in _files["AR"]["counties"],
        f"stuck gauge held, desert county kept: {_held}")
+    # a gauge with no normal (no percent) is held on its total; a dry-country one is not
+    def _t(t): return {"name": "x", "pct": None, "usual": None, "total": t, "n_ok": 1, "station": {"raw": "GAUGE"}}
+    _files = {"KY": {"counties": {"1": _t(3.1), "2": _t(37.0), "3": _t(40.2), "4": _t(38.5),
+                                  "5": _t(1.2), "6": _t(6.0), "7": _t(7.5), "8": _t(5.0)}, "none": {}}}
+    _held = hold_outliers(_files, _files, {"1": ["2", "3", "4"], "5": ["6", "7", "8"]})
+    ok(_held == ["1"], f"no-normal gauge far under its neighbors' totals held; dry country kept: {_held}")
+    # 0.00 for 60 days or more is refused outright, with or without a normal
+    d70 = R.days_of(2026, "2026-01-01", 70)
+    s, why = R.summarize(2026, d70, ["0.00"] * 70, None, "2026-03-11")
+    ok(s is None and "0.00" in why, f"a gauge at 0.00 for 70 days is refused: {why}")
+    s, why = R.summarize(2026, d70[:50], ["0.00"] * 50, None, "2026-02-19")
+    ok(s is not None, f"50 days at 0.00 (a desert winter) is not refused by this rule: {why}")
     # trailing S days (the A that ends them has not come in) are not reported yet
     d40 = R.days_of(2026, "2026-01-01", 40)
     s, _ = R.summarize(2026, d40, ["0.10"] * 36 + ["S", "S", "S", "M"], ["0.05"] * 40, "2026-02-09")

@@ -32,6 +32,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MIN_SHARE = 0.90        # a station must report at least this share of the year's days so far
 STALE_DAYS = 10         # a station whose last report is older than this before the fetch's end date is not reporting
+ZERO_YEAR_DAYS = 60     # a gauge that reads 0.00 on every one of this many reported days is not working
 PCT_MIN_NORMAL = 1.0    # below this many inches of usual-to-date a percent is too jumpy to print (early January)
 CUM_STEP = 7            # running-total points: every 7th day of the year, plus the last
 
@@ -395,6 +396,11 @@ def summarize(year, dates, vals, norms, edate):
     # total proves the winner is not the wettest: say nothing rather than that
     if wet and any(x[0] >= wet[1][0] for m, x in enumerate(mlist) if x[3] and x[2] < MIN_SHARE * x[3]):
         wet = None
+    # 0.00 on every day for two months or more is a dead gauge, not a dry
+    # year, even with no normal to say so (2026-10-13: Swain County NC, 285
+    # days at zero; Monticello KY airport, 0.00 while its neighbors had 37 in)
+    if total == 0 and reported >= ZERO_YEAR_DAYS:
+        return None, f"0.00 on all {reported} days reported"
     usual_r = round(usual, 2) if nv is not None else None
     pct = round(100 * total / usual) if usual_r is not None and usual_r >= PCT_MIN_NORMAL else None
     return {
