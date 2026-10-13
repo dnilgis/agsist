@@ -56,9 +56,10 @@
        is in the data. The outlook tilt is shown, never scored.
 
    MORE CLIMATE PREDICTORS (PREDICTORS, tiltFor)
-     Recency weighting, last fall's index on the grid, PDO with ENSO, AMO, and
-     two that cannot be tested yet or at all (NMME forecasts, April 1
-     snowpack). Each reweights past years on top of the rate-led pick, with
+     Recency weighting, last fall's index on the grid, PDO with ENSO (and the
+     two in the same phase), AMO, eleven seasonal forecast models and their
+     average (tested once their archive is in), and April 1 snowpack, which
+     cannot be tested at all. Each reweights past years on top of the rate-led pick, with
      settings fixed before the test. The walk-forward test runs them, counts
      every one (FAMILY) and adjusts; recommend() applies only the ids the
      published test kept (opts.tilts, from keptPredictors(opt.json)).
@@ -178,7 +179,7 @@
       P.push(p); X.push(x); A.push(have ? num / den : null);
     });
     return { years: years, P: P, X: X, annual: A, allowed: allowed, cost: cost, lo: lo, hi: hi,
-             coverage: cov, subsidy: sub, rates: input.rates, avgMm: mm };
+             coverage: cov, subsidy: sub, rates: input.rates, avgMm: mm, grid: input.grid == null ? null : +input.grid };
   }
 
   /* ------------------------------------------------------------ small statistics */
@@ -238,7 +239,11 @@
        * PDO for August to October of Y-1 (NOAA NCEI posts each month early in
          the next), AMO for July to September of Y-1 (NOAA PSL posts with a
          longer lag, so one month earlier to be safe);
-       * NMME forecasts made in early November of Y-1 (not in the data yet);
+       * seasonal forecasts started in November of Y-1 (NMME posts about Nov
+         8-10, Copernicus on the 13th). For years before a model existed the
+         test uses its re-forecasts (hindcasts), run later by a model built
+         with those years in view; that flatters the models and the panel
+         says so;
        * not April 1 snowpack: it is measured four months after sign-up. */
   var PREDICTORS = [
     { id: 'recent15', family: 'trend', recency: { halfLife: 15 },
@@ -253,8 +258,31 @@
       name: 'Pacific Decadal Oscillation phase together with El Niño or La Niña' },
     { id: 'amo', family: 'ocean', needs: ['amo'],
       name: 'Atlantic Multidecadal Oscillation phase, warm or cold' },
-    { id: 'nmme', family: 'forecast', needs: ['nmme'], stub: true,
-      name: 'NOAA’s multi-model seasonal forecasts (NMME), made in November' },
+    { id: 'pdo-enso-same', family: 'ocean', needs: ['pdo'],
+      name: 'El Niño with a warm PDO, or La Niña with a cold PDO (the two pushing the same way)' },
+    /* Seasonal forecast models, November starts. Each tilts only the intervals
+       and places where its own past forecasts tracked the index (SKILL), with
+       the skill worked out from earlier years only. Data: data/prf/seasonal-fc.json
+       (scripts/fetch_seasonal_models.py); NOAA's CFSv2 and Canada's CanSIPS
+       come from the NMME archive, which reaches back further than Copernicus's
+       copies of the same two models, so they are counted once. */
+    { id: 'fc-cfsv2', family: 'forecast', needs: ['seasonal'], model: 'cfsv2', name: 'NOAA’s CFSv2 seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-spear', family: 'forecast', needs: ['seasonal'], model: 'spear', name: 'NOAA GFDL’s SPEAR seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-geos', family: 'forecast', needs: ['seasonal'], model: 'geos', name: 'NASA’s GEOS seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-cesm', family: 'forecast', needs: ['seasonal'], model: 'cesm', name: 'NCAR’s CESM seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-cansips', family: 'forecast', needs: ['seasonal'], model: 'cansips', name: 'Environment Canada’s CanSIPS seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-ecmwf', family: 'forecast', needs: ['seasonal'], model: 'ecmwf', name: 'The European Centre’s (ECMWF) seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-ukmo', family: 'forecast', needs: ['seasonal'], model: 'ukmo', name: 'The UK Met Office seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-meteofrance', family: 'forecast', needs: ['seasonal'], model: 'meteofrance', name: 'Météo-France’s seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-dwd', family: 'forecast', needs: ['seasonal'], model: 'dwd', name: 'Germany’s weather service (DWD) seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-cmcc', family: 'forecast', needs: ['seasonal'], model: 'cmcc', name: 'Italy’s CMCC seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-jma', family: 'forecast', needs: ['seasonal'], model: 'jma', name: 'The Japan Meteorological Agency seasonal forecast, made in November, where it has shown skill' },
+    { id: 'fc-mmm', family: 'forecast', needs: ['seasonal'], model: '*', name: 'All the seasonal forecast models averaged together, made in November, where the average has shown skill' },
+    /* Not a tilt: picks the coverage level each fall (the test in
+       scripts/prf_opt_backtest.mjs, coverageEdge below). At 90 it is scored
+       against always buying 90%, at 70 against always buying 70%. */
+    { id: 'cov-pick', family: 'structure', structural: true,
+      name: 'Picking the coverage level each fall (70 to 90%) for the most expected return on what you pay' },
     { id: 'swe', family: 'snow', untestable: 'April 1 snowpack is measured four months after the Dec 1 sales closing, so no buyer can know it when choosing.',
       name: 'April 1 mountain snowpack' }
   ];
@@ -309,6 +337,14 @@
     if (!p) return 'unknown predictor';
     if (p.untestable) return p.untestable;
     if (p.stub) return 'no archive in the data yet';
+    if (p.structural) return null;
+    if (p.family === 'forecast') {
+      var sea = climate && climate.seasonal, ms = sea && sea.models;
+      var have = ms ? (p.model === '*' ? FORECAST_MODELS.filter(function (m) { return ms[m]; }).length >= SKILL.minModels : !!ms[p.model]) : false;
+      if (!have) return 'data/prf/seasonal-fc.json has no ' + (p.model === '*' ? 'two models' : p.model) + ' forecasts yet';
+      if (!climate.seasonalSkill || !climate.seasonalSkill[id]) return 'no skill table for ' + id;
+      return null;
+    }
     var needs = p.needs || [];
     for (var i = 0; i < needs.length; i++) {
       var s = climate && climate.series && climate.series[needs[i]];
@@ -349,8 +385,31 @@
       opts.analogs = [{ labels: labels, phase: state, boost: 1, intervals: p.intervals }];
       return { opts: opts, state: state, used: used };
     }
+    if (p.family === 'forecast') {
+      /* the forecast for Y (started November of Y-1), standardized on the
+         model's own forecasts for years before Y, on the intervals where the
+         skill table (from years before Y only) clears SKILL.minR here */
+      used.climate.push('seasonal:' + p.model + ':' + (Y - 1) + '-11');
+      var sk = climate.seasonalSkill[id][Y], box = boxOf(G.grid), blk = blockOf(G.grid);
+      if (!sk || !box || !sk[blk]) return { opts: opts, state: null, used: used };
+      var outl = [], any = false;
+      for (var i = 0; i < N; i++) {
+        var r = sk[blk][i];
+        var zs = r != null && r >= SKILL.minR ? zSeries(climate.seasonal, p.model, box, i, Y) : null;
+        if (!zs || zs.now == null) { outl.push(null); continue; }
+        outl.push(outlookFromZ(zs.now, r)); any = true;
+      }
+      if (!any) return { opts: opts, state: null, used: used };
+      opts.outlook = outl;
+      return { opts: opts, state: 'forecast', used: used };
+    }
     var log = used.climate;
     var labelFor = function (y) {   /* the reading a buyer had for policy year y */
+      if (id === 'pdo-enso-same') {
+        /* only when the two push the same way; otherwise no reading, plain pick */
+        var e2 = phaseKnownFor(y), pd2 = signPhase(seasonMean(climate, 'pdo', y - 1, CLIMATE_MONTHS.pdo, log));
+        return (e2 === 'el-nino' && pd2 === 'warm') || (e2 === 'la-nina' && pd2 === 'cold') ? e2 + '/' + pd2 : null;
+      }
       if (id === 'pdo-enso') {
         var e = phaseKnownFor(y), pd = signPhase(seasonMean(climate, 'pdo', y - 1, CLIMATE_MONTHS.pdo, log));
         return e && pd ? e + '/' + pd : null;
@@ -364,13 +423,202 @@
     return { opts: opts, state: state, used: used };
   }
 
+  /* ------------------------------------------------------------ seasonal forecast models */
+  /* data/prf/seasonal-fc.json, written by scripts/fetch_seasonal_models.py:
+       { v, box_deg: 2, models: { <model>: { first, last, intervals: [..],
+         v: { "<row>_<col>": "<two base-36 characters per year and interval>" } } } }
+     Each value is the model's ensemble-mean precipitation over the two months
+     of the interval, whole millimetres, averaged over a 2-degree box (row and
+     col count 2-degree steps from 20N 130W, the PRF grid's own corner), for
+     the policy year (the forecast started in November of the year before).
+     "--" is missing. Settings fixed before the test was run: */
+  var FORECAST_MODELS = ['cfsv2', 'spear', 'geos', 'cesm', 'cansips', 'ecmwf', 'ukmo', 'meteofrance', 'dwd', 'cmcc', 'jma'];
+  var SKILL = {
+    minR: 0.3,        /* a model tilts an interval in a block only where its past forecasts correlated at least this well with the index */
+    minYears: 10,     /* past forecasts needed before a model's forecast counts, and years needed for a skill figure */
+    minModels: 2,     /* the average needs at least two models in a year */
+    boxCells: 8,      /* 8 quarter-degree cells = the 2-degree box of the forecast file */
+    blockRows: 24, blockCols: 32,   /* skill is judged over 6 x 8 degree blocks */
+    maxR: 0.95
+  };
+  function rowCol(grid) {
+    grid = +grid;
+    if (!(grid >= 1) || grid !== Math.floor(grid)) return null;
+    return { row: Math.floor((grid - 1) / 300), col: (grid - 1) % 300 };
+  }
+  function boxOf(grid) { var rc = rowCol(grid); return rc ? Math.floor(rc.row / SKILL.boxCells) + '_' + Math.floor(rc.col / SKILL.boxCells) : null; }
+  function blockOf(grid) { var rc = rowCol(grid); return rc ? Math.floor(rc.row / SKILL.blockRows) + '_' + Math.floor(rc.col / SKILL.blockCols) : null; }
+  function seasonalRaw(sea, model, box, i, Y) {
+    var m = sea && sea.models && sea.models[model];
+    if (!m || Y < m.first || Y > m.last) return null;
+    var j = m.intervals.indexOf(i), s = m.v && m.v[box];
+    if (j < 0 || !s) return null;
+    var at = ((Y - m.first) * m.intervals.length + j) * 2, c = s.substr(at, 2);
+    if (c.length < 2 || c === '--') return null;
+    var v = parseInt(c, 36);
+    return isFinite(v) ? v : null;
+  }
+  function standardize(past, now) {
+    var ks = Object.keys(past);
+    if (ks.length < SKILL.minYears) return null;
+    var mu = 0, sd = 0;
+    ks.forEach(function (t) { mu += past[t]; }); mu /= ks.length;
+    ks.forEach(function (t) { sd += (past[t] - mu) * (past[t] - mu); }); sd = Math.sqrt(sd / (ks.length - 1));
+    if (!(sd > 1e-9)) return null;
+    var z = {};
+    ks.forEach(function (t) { z[t] = (past[t] - mu) / sd; });
+    return { past: z, now: now == null ? null : (now - mu) / sd, n: ks.length };
+  }
+  /* One model's forecasts for box and interval, standardized on its forecasts
+     for years before Y only: { past: { year: z }, now: z for Y or null, n }.
+     model '*': the average of the declared models' z, in years with at least
+     SKILL.minModels of them, standardized again the same way. */
+  function zSeries(sea, model, box, i, Y) {
+    if (model !== '*') {
+      var m = sea && sea.models && sea.models[model];
+      if (!m) return null;
+      var past = {};
+      for (var t = m.first; t < Y && t <= m.last; t++) { var v = seasonalRaw(sea, model, box, i, t); if (v != null) past[t] = v; }
+      return standardize(past, seasonalRaw(sea, model, box, i, Y));
+    }
+    var sum = {}, cnt = {}, nowS = 0, nowN = 0;
+    FORECAST_MODELS.forEach(function (mm) {
+      var zs = zSeries(sea, mm, box, i, Y);
+      if (!zs) return;
+      Object.keys(zs.past).forEach(function (t) { sum[t] = (sum[t] || 0) + zs.past[t]; cnt[t] = (cnt[t] || 0) + 1; });
+      if (zs.now != null) { nowS += zs.now; nowN++; }
+    });
+    var avg = {};
+    Object.keys(sum).forEach(function (t) { if (cnt[t] >= SKILL.minModels) avg[t] = sum[t] / cnt[t]; });
+    return standardize(avg, nowN >= SKILL.minModels ? nowS / nowN : null);
+  }
+  /* the standard normal's cumulative odds (Abramowitz and Stegun 7.1.26, good to 1e-7) */
+  function normCdf(x) {
+    var a = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.3275911 * a);
+    var e = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-a * a);
+    return x >= 0 ? (1 + e) / 2 : (1 - e) / 2;
+  }
+  /* Odds of the dry, middle and wet thirds given a forecast z from a model
+     whose forecasts correlate r with the index: the index, standardized, taken
+     as normal around r z with spread sqrt(1 - r^2). r 0 gives a third each. */
+  var THIRD = 0.4307273;   /* the normal's 2/3 point */
+  function outlookFromZ(z, r) {
+    r = Math.max(0, Math.min(SKILL.maxR, +r || 0));
+    var s = Math.sqrt(1 - r * r), below = normCdf((-THIRD - r * z) / s), above = 1 - normCdf((THIRD - r * z) / s);
+    return { below: below, near: Math.max(0, 1 - below - above), above: above };
+  }
+  /* The skill table for one forecast id and policy year Y: for each 6 x 8
+     degree block and interval, the correlation, pooled over the grids given
+     (obs: prepare() results with .grid set) and the years before Y, between
+     the forecast's z (standardized on years before Y) and the grid's index.
+     null where fewer than SKILL.minYears years pair up. Nothing from Y or
+     later is read: not the forecast, not the index. Oct-Nov and Nov-Dec of
+     Y-1 are left out too (not final by Dec 1), though no November-started
+     forecast reaches them. */
+  function forecastSkill(sea, id, Y, obs) {
+    var p = predictorById(id);
+    if (!p || p.family !== 'forecast') return null;
+    var acc = {}, zc = {};
+    obs.forEach(function (G) {
+      var box = boxOf(G.grid), blk = blockOf(G.grid);
+      if (!box) return;
+      for (var i = 0; i < N; i++) {
+        var key = box + ':' + i;
+        if (!(key in zc)) zc[key] = zSeries(sea, p.model, box, i, Y);
+        var zs = zc[key];
+        if (!zs) continue;
+        var a = (acc[blk] = acc[blk] || []);
+        var c = (a[i] = a[i] || { n: 0, sx: 0, sy: 0, sxx: 0, syy: 0, sxy: 0, yrs: {} });
+        for (var k = 0; k < G.years.length; k++) {
+          var t = G.years[k];
+          if (t >= Y || (t === Y - 1 && i >= FIRST_LATE)) continue;
+          var z = zs.past[t], x = G.X[k][i];
+          if (z == null || x == null) continue;
+          c.n++; c.sx += z; c.sy += x; c.sxx += z * z; c.syy += x * x; c.sxy += z * x; c.yrs[t] = 1;
+        }
+      }
+    });
+    var out = {};
+    Object.keys(acc).forEach(function (blk) {
+      var row = [];
+      for (var i = 0; i < N; i++) {
+        var c = acc[blk][i];
+        if (!c || Object.keys(c.yrs).length < SKILL.minYears) { row.push(null); continue; }
+        var vx = c.sxx - c.sx * c.sx / c.n, vy = c.syy - c.sy * c.sy / c.n, cv = c.sxy - c.sx * c.sy / c.n;
+        row.push(vx > 0 && vy > 0 ? Math.round(1000 * cv / Math.sqrt(vx * vy)) / 1000 : null);
+      }
+      out[blk] = row;
+    });
+    return out;
+  }
+
+  /* ------------------------------------------------------------ structure: coverage, and a steadier spread */
+  /* Expected return on the producer's premium of the rate-led pick, per $1
+     paid: payback / (1 - subsidy) - 1, the same for every split (each
+     interval's value is its rate times payback, less its rate times the
+     producer's share), so the coverage choice comes down to the grid's
+     payback on its rates at each level and USDA's share at that level.
+     Gs: { coverage: prepare() result }. Returns the coverage with the most,
+     ties to the higher coverage, from the years in use and what was known at
+     asOf. Productivity factor does not enter: it scales protection, premium
+     and payments alike, so it changes dollars, not the return per dollar. */
+  function coverageEdge(Gs, use, asOf) {
+    var best = null;
+    Object.keys(Gs).map(Number).sort(function (a, b) { return b - a; }).forEach(function (c) {
+      var G = Gs[c];
+      if (!G || G.allowed.filter(Boolean).length < 2) return;
+      var u = use || allMask(G);
+      var pv = pricedValues(G, weights(G, u, { asOf: asOf }), u, asOf);
+      if (pv.payback == null || !(G.subsidy < 1)) return;
+      var ret = pv.payback / (1 - G.subsidy) - 1;
+      if (!best || ret > best.ret + 1e-12) best = { coverage: c, ret: ret, payback: pv.payback };
+    });
+    return best;
+  }
+  /* A steadier pick at about the same expected dollars: of every allowed set
+     of intervals (each filled the rate-led way, and evenly), the ones within
+     SPREAD_NEAR of the best expected score, the one whose intervals together
+     missed paying in the fewest earlier years; ties to the higher score. Uses
+     what was known at asOf only. Returns { split, score, misses } or null. */
+  var SPREAD_NEAR = 0.05;
+  function spreadPick(G, opts) {
+    opts = opts || {};
+    var use = opts.use || allMask(G);
+    var a = pick(G, { use: use, asOf: opts.asOf, step: opts.step });
+    if (!a) return null;
+    var v = a.values, floor = a.score - SPREAD_NEAR * Math.abs(a.score);
+    var sets = supports(G.allowed.map(function (ok, i) { return ok && v[i] != null; })), best = null;
+    for (var s = 0; s < sets.length; s++) {
+      var S = sets[s], on = [];
+      for (var i = 0; i < N; i++) on.push(S.indexOf(i) >= 0);
+      var cands = [allocate(G, v, S, opts.step), (function () { var sp = fill(G, on); return sp && { split: sp, score: scoreOf(sp, v) }; })()];
+      for (var c = 0; c < cands.length; c++) {
+        var cd = cands[c];
+        if (!cd || cd.score < floor - 1e-12) continue;
+        var miss = 0;
+        for (var k = 0; k < G.years.length; k++) {
+          if (!use[k]) continue;
+          var hit = false, known = true;
+          for (var q = 0; q < S.length; q++) {
+            if (lateUnknown(G, k, S[q], opts.asOf)) { known = false; break; }
+            if (G.P[k][S[q]] > 0) hit = true;
+          }
+          if (known && !hit) miss++;
+        }
+        if (!best || miss < best.misses || (miss === best.misses && cd.score > best.score + 1e-12)) best = { split: cd.split, score: cd.score, misses: miss };
+      }
+    }
+    return best;
+  }
+  function scoreOf(split, v) { var s = 0; for (var i = 0; i < N; i++) if (split[i]) s += split[i] / 100 * v[i]; return s; }
+
   /* The predictors data/prf/opt.json says held up: kept is set by the
      backtest only when the adjusted odds clear 5% and the edge is positive
      at every coverage tested. Anything else, or no file, keeps nothing. */
   function keptPredictors(optJson) {
     var p = optJson && optJson.predictors, out = [];
     if (!p) return out;
-    PREDICTORS.forEach(function (d) { if (p[d.id] && p[d.id].kept === true && !d.untestable && !d.stub) out.push(d.id); });
+    PREDICTORS.forEach(function (d) { if (p[d.id] && p[d.id].kept === true && !d.untestable && !d.stub && !d.structural) out.push(d.id); });
     return out;
   }
 
@@ -527,29 +775,32 @@
   /* The best split for these values. step: whole percents per notch (1).
      Ties go to the first found, in a fixed order, so the answer never depends
      on anything but the inputs. */
-  function solve(G, v, step) {
+  function allocate(G, v, S, step) {
     step = step || 1;
+    var units = Math.round(100 / step), lo = [], hi = [], sumLo = 0, sumHi = 0;
+    for (var t = 0; t < S.length; t++) {
+      var a = Math.ceil(G.lo[S[t]] / step - 1e-9), b = Math.floor(G.hi[S[t]] / step + 1e-9);
+      if (a < 1) a = 1;
+      if (b < a) return null;
+      lo.push(a); hi.push(b); sumLo += a; sumHi += b;
+    }
+    if (sumLo > units || sumHi < units) return null;
+    var alloc = lo.slice(), left = units - sumLo;
+    var order = S.map(function (_, q) { return q; }).sort(function (p, q) { return v[S[q]] - v[S[p]] || S[p] - S[q]; });
+    for (var o = 0; o < order.length && left > 0; o++) {
+      var q = order[o], room = hi[q] - alloc[q], put = Math.min(room, left);
+      alloc[q] += put; left -= put;
+    }
+    var score = 0, split = new Array(N);
+    for (var z = 0; z < N; z++) split[z] = 0;
+    for (var t2 = 0; t2 < S.length; t2++) { split[S[t2]] = alloc[t2] * step; score += alloc[t2] * step / 100 * v[S[t2]]; }
+    return { split: split, score: score };
+  }
+  function solve(G, v, step) {
     var best = null, sets = supports(G.allowed.map(function (a, i) { return a && v[i] != null; }));
-    var units = Math.round(100 / step);
     for (var s = 0; s < sets.length; s++) {
-      var S = sets[s], lo = [], hi = [], sumLo = 0, sumHi = 0, ok = true;
-      for (var t = 0; t < S.length; t++) {
-        var a = Math.ceil(G.lo[S[t]] / step - 1e-9), b = Math.floor(G.hi[S[t]] / step + 1e-9);
-        if (a < 1) a = 1;
-        if (b < a) { ok = false; break; }
-        lo.push(a); hi.push(b); sumLo += a; sumHi += b;
-      }
-      if (!ok || sumLo > units || sumHi < units) continue;
-      var alloc = lo.slice(), left = units - sumLo;
-      var order = S.map(function (_, q) { return q; }).sort(function (p, q) { return v[S[q]] - v[S[p]] || S[p] - S[q]; });
-      for (var o = 0; o < order.length && left > 0; o++) {
-        var q = order[o], room = hi[q] - alloc[q], put = Math.min(room, left);
-        alloc[q] += put; left -= put;
-      }
-      var score = 0, split = new Array(N);
-      for (var z = 0; z < N; z++) split[z] = 0;
-      for (var t2 = 0; t2 < S.length; t2++) { split[S[t2]] = alloc[t2] * step; score += alloc[t2] * step / 100 * v[S[t2]]; }
-      if (!best || score > best.score + 1e-12) best = { split: split, score: score };
+      var c = allocate(G, v, sets[s], step);
+      if (c && (!best || c.score > best.score + 1e-12)) best = c;
     }
     return best;
   }
@@ -671,7 +922,7 @@
     var rows = [];
     /* opts.predictors: ids from PREDICTORS to test alongside; those the data
        cannot support (opts.climate lacks the series) are left out */
-    var preds = (opts.predictors || []).filter(function (id) { return !predictorUnavailable(id, opts.climate); });
+    var preds = (opts.predictors || []).filter(function (id) { var p = predictorById(id); return p && !p.structural && !predictorUnavailable(id, opts.climate); });
     for (var t = 0; t < G.years.length; t++) {
       var Y = G.years[t];
       if (Y < from) continue;
@@ -907,7 +1158,10 @@
     outlookFor: outlookFor, reasons: reasons, recommend: recommend, signTest: signTest, flipTest: flipTest, quantile: quantile,
     PREDICTORS: PREDICTORS, FAMILY: FAMILY, FAMILY_COVERAGES: FAMILY_COVERAGES, CLIMATE_MONTHS: CLIMATE_MONTHS, FALL_INTERVAL: FALL_INTERVAL,
     predictorById: predictorById, predictorUnavailable: predictorUnavailable, recencyWeight: recencyWeight, seasonMean: seasonMean,
-    tiltFor: tiltFor, holm: holm, keptPredictors: keptPredictors
+    tiltFor: tiltFor, holm: holm, keptPredictors: keptPredictors,
+    FORECAST_MODELS: FORECAST_MODELS, SKILL: SKILL, boxOf: boxOf, blockOf: blockOf, seasonalRaw: seasonalRaw, zSeries: zSeries,
+    normCdf: normCdf, outlookFromZ: outlookFromZ, forecastSkill: forecastSkill,
+    coverageEdge: coverageEdge, spreadPick: spreadPick, SPREAD_NEAR: SPREAD_NEAR, allocate: allocate, premiumOf: premiumOf, lateUnknown: lateUnknown
   };
   root.AgPrfOptimize = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
