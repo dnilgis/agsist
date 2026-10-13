@@ -508,6 +508,24 @@ def selftest():
                             ("ANAMOSA 3 SSW", "Anamosa, 3 mi SSW", "Anamosa"), ("MUSCATINE 2N", "Muscatine, 2 mi N", "Muscatine")):
         ok(R.station_name(raw) == name, f"station_name({raw!r}) = {R.station_name(raw)!r}, want {name!r}")
         ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")
+    # names from the first full run (2026-10-13 accuracy review)
+    for raw, where, town in (("EADS .45 E", "less than a mile east of Eads", "Eads"),
+                             ("RED LEVEL 0.5 SW", "less than a mile southwest of Red Level", "Red Level"),
+                             ("(W9DBA)MORGANTOWN", "in Morgantown", "Morgantown"),
+                             ("(W9DBA)MORGANTOWN 6.7 SSE", "6.7 miles south-southeast of Morgantown", "Morgantown"),
+                             ("MISSOULA 6 NW WFO", "6 miles northwest of Missoula", "Missoula"),
+                             ("NORTH LITTLE ROCK WFO", "in North Little Rock", "North Little Rock"),
+                             ("GRANTSBURG 0.6 SW (KWIGRANT1)", "less than a mile southwest of Grantsburg", "Grantsburg"),
+                             ("GLOVERSVILLE 7NW (PECK LAKE)", "7 miles northwest of Gloversville", "Gloversville"),
+                             ("SPRINGFIELD WSO AP", "at Springfield Airport", "Springfield"),
+                             ("WINSTON-SALEM 4.2 NNE", "4.2 miles north-northeast of Winston-Salem", "Winston-Salem"),
+                             ("CAMDEN 1.0 NNE", "1 mile north-northeast of Camden", "Camden"),
+                             ("Eastern Band of Cherokee Indians", "Eastern Band of Cherokee Indians", "Eastern Band of Cherokee Indians")):
+        ok(R.station_where(raw) == where, f"station_where({raw!r}) = {R.station_where(raw)!r}, want {where!r}")
+        ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")
+        ok(" ." not in R.station_name(raw) + R.station_town(raw), f"a stray point in {raw!r}")
+    ok(R.station_name("EADS .45 E") == "Eads, 0.45 mi E", R.station_name("EADS .45 E"))
+    ok(R.station_name("MOSCOW U OF I") == "Moscow U of I", R.station_name("MOSCOW U OF I"))
     ok(R._title(["A", "1"]).split() == ["A", "1"], "a word is written once")
     ok(R.network(["US1IAST0001 10"]) == "cocorahs" and R.network(["130200 2"]) == "noaa", "network from sid type")
     # the whole pipeline on saved ACIS answers

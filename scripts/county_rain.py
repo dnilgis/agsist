@@ -159,8 +159,36 @@ DIRS = {"N": "north", "S": "south", "E": "east", "W": "west", "NE": "northeast",
         "SE": "southeast", "SW": "southwest", "NNE": "north-northeast", "ENE": "east-northeast",
         "ESE": "east-southeast", "SSE": "south-southeast", "SSW": "south-southwest", "WSW": "west-southwest",
         "WNW": "west-northwest", "NNW": "north-northwest"}
-# "AMES 8 WSW", "WAUKON 3NNE", and "SALEM1 S" with the number run into the town
-OFFSET = re.compile(r"^(.*?[A-Za-z.]) ?(\d+(?:\.\d+)?) ?([NSEW]{1,3})$")
+# "AMES 8 WSW", "WAUKON 3NNE", "SALEM1 S" with the number run into the town,
+# and "EADS .45 E" with no 0 before the point (0.45 mile, not 45)
+OFFSET = re.compile(r"^(.*?[A-Za-z.]) ?(\d*\.?\d+) ?([NSEW]{1,3})$")
+# Words that are the weather office or the sensor, not the place:
+# "MISSOULA 6 NW WFO", "TOPEKA ASOS", "SPRINGFIELD WSO AP", "ELKO NWS OFFICE"
+OFFICE = re.compile(r"\b(?:NWS OFFICE|WFO|WSO|NWSO|ASOS|AWOS)\b", re.I)
+# Not a town: the answer says "at the NOAA station Eastern Band of Cherokee
+# Indians", never "in Eastern Band ...". A name that starts with UNIVERSITY is a campus.
+NOT_PLACE = {"INDIANS", "TRIBE", "TRIBAL", "RESERVATION", "NATION", "BAND"}
+SMALL = {"OF", "THE", "AND"}
+
+
+def _clean(raw):
+    """A station name without what is not part of the place: parentheses
+    ("(W9DBA)MORGANTOWN", "GRANTSBURG 0.6 SW (KWIGRANT1)", "BUFFALO (ASOS)")
+    and weather office words. Falls back to the raw name if nothing is left."""
+    s = re.sub(r"\s+", " ", str(raw or "").strip())
+    t = re.sub(r"\([^)]*\)", " ", s)
+    t = OFFICE.sub(" ", t)
+    t = re.sub(r"\s+", " ", t).strip(" -/")
+    return t or s
+
+
+def _offset(s):
+    """(place, miles as text, direction) for "AMES 8 WSW", else None. ".45" -> "0.45"."""
+    m = OFFSET.match(s)
+    if not m:
+        return None
+    n = m.group(2)
+    return m.group(1).rstrip(" ."), ("0" + n if n.startswith(".") else n), m.group(3)
 
 
 def _title(words):
@@ -176,19 +204,22 @@ def _title(words):
             # "NEW ULM" is a town, not north-east-west: only a real compass
             # word stays upper case, and a three-letter one only after a number
             out.append(u)
+        elif u in SMALL and i > 0:
+            out.append(u.lower())            # "Moscow U of I", "Lake of the Woods"
         else:
-            out.append(u[:1] + u[1:].lower())
+            # "Winston-Salem", "Glens Falls/Floyd Bennett", "T.F. Green"
+            out.append(re.sub(r"([-/.])([a-z])", lambda x: x.group(1) + x.group(2).upper(), u[:1] + u[1:].lower()))
     return " ".join(out)
 
 
 def station_name(raw):
     """Plain words for an ACIS station name, as Rain Print's stationName():
     "AMES 8 WSW" -> "Ames, 8 mi WSW", "DES MOINES INTL AP" -> "Des Moines International Airport"."""
-    s = re.sub(r"\s+", " ", str(raw or "").strip())
-    m = OFFSET.match(s)
+    s = _clean(raw)
+    o = _offset(s)
     tail = ""
-    if m:
-        s, tail = m.group(1), f", {m.group(2)} mi {m.group(3)}"
+    if o:
+        s, tail = o[0], f", {o[1]} mi {o[2]}"
     return _title(s.split(" ")) + tail
 
 
@@ -215,10 +246,10 @@ def _cut_here(words, i):
 def station_town(raw):
     """The town a station is named for: offsets, airport words and site words
     (experiment station, dam, plant, #2) dropped."""
-    s = re.sub(r"\s+", " ", str(raw or "").strip())
-    m = OFFSET.match(s)
-    if m:
-        s = m.group(1)
+    s = _clean(raw)
+    o = _offset(s)
+    if o:
+        s = o[0]
     ws = s.split(" ")
     cut = next((i for i in range(1, len(ws)) if _cut_here(ws, i)), len(ws))
     words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?\d*|#\d*", w.upper())]
@@ -228,14 +259,19 @@ def station_town(raw):
 def station_where(raw):
     """Words that place the station: "8 miles west-southwest of Ames",
     "at Des Moines International Airport", "in Ames"."""
-    s = re.sub(r"\s+", " ", str(raw or "").strip())
-    m = OFFSET.match(s)
-    if m and m.group(3) in DIRS:
-        n = m.group(2)
-        unit = "mile" if n in ("1", "1.0") else "miles"
-        return f"{n} {unit} {DIRS[m.group(3)]} of {_title(m.group(1).split(' '))}"
-    if any(w.upper() in AIR for w in s.split(" ")):
+    s = _clean(raw)
+    o = _offset(s)
+    if o and o[2] in DIRS:
+        place, n, d = o
+        x = float(n)
+        # the page's own rule (miles_from): under a mile is "less than a mile"
+        far = "less than a mile" if x < 1 else "1 mile" if x == 1 else f"{n} miles"
+        return f"{far} {DIRS[d]} of {_title(place.split(' '))}"
+    ws = s.upper().split(" ")
+    if any(w in AIR for w in ws):
         return "at " + station_name(s)
+    if ws[0] == "UNIVERSITY" or any(w in NOT_PLACE for w in ws):
+        return station_name(s)
     return "in " + station_town(s)
 
 
