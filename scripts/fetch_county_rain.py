@@ -397,6 +397,18 @@ def selftest():
     ok(R.station_name("AMES 8 WSW") == "Ames, 8 mi WSW", "station name plain words")
     ok(R.station_where("AMES 8 WSW") == "8 miles west-southwest of Ames", R.station_where("AMES 8 WSW"))
     ok(R.station_town("DES MOINES INTL AP") == "Des Moines", "town of an airport station")
+    # the town is what Rain Print geocodes: site words are not part of it
+    for raw, town in (("GARDEN CITY EXP STN", "Garden City"), ("FORT RANDALL DAM", "Fort Randall"),
+                      ("CEDAR RAPIDS NO 1", "Cedar Rapids"), ("WALNUT GROVE #2", "Walnut Grove"),
+                      ("LAKE CITY RSCH CTR", "Lake City"), ("ROSEMOUNT AGRI EXP STN", "Rosemount"),
+                      ("DUBUQUE LOCK AND DAM 11", "Dubuque"), ("GUTTENBERG L&D 10", "Guttenberg"),
+                      ("OTTUMWA WTP", "Ottumwa"), ("ESTES PARK RANGER STN", "Estes Park"),
+                      ("LOCK HAVEN", "Lock Haven"), ("PLANT CITY", "Plant City"), ("RANGER", "Ranger"),
+                      ("COLLEGE STATION", "College Station"), ("NEW ULM 2 SE", "New Ulm")):
+        ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")
+    ok(R.station_where("NEW ULM 2 SE") == "2 miles southeast of New Ulm", f"NEW is not a direction: {R.station_where('NEW ULM 2 SE')}")
+    ok(R.station_name("NEW HAMPTON") == "New Hampton", f"NEW HAMPTON: {R.station_name('NEW HAMPTON')}")
+    ok(R.station_name("OAKES 2 S") == "Oakes, 2 mi S", R.station_name("OAKES 2 S"))
     ok(R.network(["US1IAST0001 10"]) == "cocorahs" and R.network(["130200 2"]) == "noaa", "network from sid type")
     # the whole pipeline on saved ACIS answers
     C = R.counties()

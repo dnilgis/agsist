@@ -112,7 +112,7 @@ def answer(c, county, year):
 
 def rain_print_href(c, st, year):
     town = R.station_town(c["station"]["raw"])
-    place = f"{town}, {st}"[:32]
+    place = f"{town[:32 - len(st) - 2].rstrip()}, {st}"   # shorten the town, never the state
     sid = re.sub(r"[^A-Za-z0-9 ]", "", c["station"]["sid"]).strip()[:16]
     q = urllib.parse.urlencode({"place": place, "year": year, "station": sid})
     return "/rain-print?" + q
@@ -647,6 +647,10 @@ def selftest():
         ok("<title>How Much Rain Has Story County, Iowa Had in 2026? | AGSIST</title>" in story, "title")
         ok(re.search(r'<meta name="description" content="27\.61 inches of rain in Story County, Iowa in 2026', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
+        gc = rain_print_href({"station": {"raw": "GARDEN CITY EXP STN", "sid": "142980 2"}}, "KS", 2026)
+        ok(gc == "/rain-print?place=Garden+City%2C+KS&year=2026&station=142980+2", f"Rain Print link from an experiment station: {gc}")
+        lg = urllib.parse.parse_qs(rain_print_href({"station": {"raw": "SOUTH SAINT FRANCISVILLE HEIGHTS CROSSROADS", "sid": "1 2"}}, "KS", 2026)[12:])["place"][0]
+        ok(lg.endswith(", KS") and len(lg) <= 32, f"a long town is shortened, the state kept: {lg!r}")
         ok("See the whole year on a print you can hang" in story, "Rain Print CTA")
         ok("ship in January" in story, "this year's prints ship in January")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")

@@ -151,11 +151,15 @@ OFFSET = re.compile(r"^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$")
 
 def _title(words):
     out = []
-    for w in words:
+    for i, w in enumerate(words):
         u = w.upper()
+        after_number = i > 0 and re.search(r"\d", words[i - 1])
         if u in STN_WORD:
             out.append(STN_WORD[u])
-        elif re.fullmatch(r"[NSEW]{1,3}", u) or re.search(r"\d", w):
+        elif (u in DIRS and (len(u) < 3 or after_number)) or re.search(r"\d", w):
+            # "NEW ULM" is a town, not north-east-west: only a real compass
+            # word stays upper case, and a three-letter one only after a number
+            out.append(u)
             out.append(u)
         else:
             out.append(u[:1] + u[1:].lower())
@@ -173,13 +177,36 @@ def station_name(raw):
     return _title(s.split(" ")) + tail
 
 
+# Words that end the town part of a station name: "GARDEN CITY EXP STN",
+# "FORT RANDALL DAM", "AMES WTP", "LAKE CITY RSCH CTR". Everything from the
+# first of these on is the site, not the town (Rain Print geocodes the town).
+# Only cut after at least one word, so "PLANT CITY" stays a town.
+NOT_TOWN = {"EXP", "EXPT", "EXPER", "EXPERIMENT", "STN", "FARM", "FARMS", "RSCH", "RESEARCH", "RES", "CTR",
+            "UNIV", "UNIVERSITY", "AGRI", "AG", "DAM", "L&D", "WTP", "WWTP", "STP", "PLANT", "LAB", "NWS",
+            "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION"}
+
+
+def _cut_here(words, i):
+    u, nxt = words[i].upper(), (words[i + 1].upper() if i + 1 < len(words) else "")
+    if u in NOT_TOWN:
+        return True
+    if u == "LOCK":                       # LOCK AND DAM 10, LOCK 4; not LOCK HAVEN
+        return nxt in ("AND", "&", "DAM") or re.fullmatch(r"\d+", nxt) is not None
+    if u == "RANGER":                     # RANGER STN; not the town of Ranger
+        return nxt in ("STN", "STATION")
+    return False
+
+
 def station_town(raw):
-    """The town a station is named for: offsets and airport words dropped."""
+    """The town a station is named for: offsets, airport words and site words
+    (experiment station, dam, plant, #2) dropped."""
     s = re.sub(r"\s+", " ", str(raw or "").strip())
     m = OFFSET.match(s)
     if m:
         s = m.group(1)
-    words = [w for w in s.split(" ") if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?|#\d*", w.upper())]
+    ws = s.split(" ")
+    cut = next((i for i in range(1, len(ws)) if _cut_here(ws, i)), len(ws))
+    words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?|#\d*", w.upper())]
     return _title(words) if words else _title(s.split(" "))
 
 
