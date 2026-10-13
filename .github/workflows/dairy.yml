@@ -1,6 +1,7 @@
 name: Dairy prices
 
-# Writes data/dairy-data.json and data/dairy-history.json for milk-prices.html.
+# Writes data/dairy-data.json and data/dairy-history.json for milk-prices.html,
+# then bakes the page's figures and title from them (see the bake step).
 # Source: USDA AMS "Announcement of Class and Component Prices" (posted about the
 # 5th) plus the NASS all-milk price. No CME, no Barchart.
 #
@@ -57,7 +58,21 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_dairy.py
+      # The page body, title and description carry the newest month from the
+      # file just written (scripts/seed_static.py seed_milk, scripts/bake_seo.py
+      # seo_milk). Until 2026-10-13 they were typed by hand and sat on August
+      # while the file held September. Selftest first: bake_seo refuses to
+      # write a title it cannot fit or source. Freshness runs both again daily,
+      # which is what dashes a class month once the next one is due.
+      - name: Bake milk-prices from the new data
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: |
+          python scripts/bake_seo.py --selftest
+          python scripts/seed_static.py --only milk
+          python scripts/bake_seo.py --page milk-prices.html
       - name: Commit if changed (race-tolerant)
+        env:
+          PROBE: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
@@ -73,6 +88,13 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/dairy/data/. data/
+            # re-bake the page on the fresh checkout rather than copy it over,
+            # so an edit to milk-prices.html pushed meanwhile is kept
+            if [ "$PROBE" != "true" ]; then
+              python scripts/seed_static.py --only milk
+              python scripts/bake_seo.py --page milk-prices.html
+              git add milk-prices.html sitemap.xml
+            fi
             for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update dairy prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
