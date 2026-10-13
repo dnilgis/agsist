@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Rain Print | AGSIST</title>
+<!-- The Rain Print QR short link (HTTPS://AGSIST.COM/R?ID). Looks the id up at
+     the subs worker (v5.14, GET /rp-short/<id>) and opens /rain-print?d=<code>.
+     R.html and r.html are the same bytes (GitHub Pages paths are case-sensitive;
+     the QR uses /R, a typed link may use /r). test/rp-short.test.mjs checks that.
+     The text stays hidden for the first 0.7 s, so a normal scan goes straight
+     to the design without a flash of this page. -->
+<link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
+<style>
+  :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.7);--link:#7a5a12}
+  @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.7);--link:#d4a23f}}
+  html,body{background:var(--bg)}
+  body{margin:0;color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:520px;margin:0 auto;padding:4rem 16px;opacity:0;animation:rp-show 0s .7s forwards}
+  main.now{opacity:1;animation:none}
+  @keyframes rp-show{to{opacity:1}}
+  h1{font-size:1.3rem;margin:0 0 .6rem}
+  p{color:var(--muted);margin:.4rem 0}
+  a{color:var(--link)}
+</style>
+<noscript><style>main{opacity:1;animation:none}</style></noscript>
+</head>
+<body>
+<main id="box">
+<h1 id="msg">Opening the Rain Print design</h1>
+<p id="sub">One moment.</p>
+<p><a href="/rain-print">Go to Rain Print</a></p>
+</main>
+<script>
+(function () {
+  var API = 'https://agsist-subs.dnilgis.workers.dev/rp-short/';
+  var gone = false;
+  function fail(unknown) {
+    if (gone) return;
+    try {
+      document.getElementById('msg').textContent = 'This Rain Print link did not open';
+      document.getElementById('sub').textContent = unknown
+        ? 'This link is not one we know. Check the address, or make the print again on the Rain Print page.'
+        : 'The connection dropped or the link service is busy. Try again in a minute, or make the print again on the Rain Print page.';
+      document.getElementById('box').className = 'now';
+    } catch (e) {}
+  }
+  // ?K7Q2M, ?k7q2m, ?id=K7Q2M, and either with extra parameters an app added (&fbclid=...)
+  var id = '', parts = String(location.search || '').replace(/^\?/, '').split('&');
+  for (var i = 0; i < parts.length && !id; i++) {
+    var p = parts[i];
+    if (/^id=/i.test(p)) p = p.slice(3); else if (p.indexOf('=') >= 0) continue;
+    try { p = decodeURIComponent(p); } catch (e) { p = ''; }
+    id = p.trim().toUpperCase().replace(/[IL]/g, '1').replace(/O/g, '0');
+  }
+  if (!/^[0-9A-HJKMNP-TV-Z]{5,8}$/.test(id)) { fail(true); return; }
+  if (typeof fetch !== 'function') { fail(false); return; }
+  var t = setTimeout(function () { fail(false); }, 8000);
+  fetch(API + id).then(function (r) {
+    if (r.status === 404) return { missing: true };
+    return r.ok ? r.json() : null;
+  }).then(function (j) {
+    clearTimeout(t);
+    var code = j && typeof j.code === 'string' ? j.code : '';
+    if (!/^[A-Za-z0-9_-]{8,400}$/.test(code)) { fail(!!(j && j.missing)); return; }
+    gone = true;
+    location.replace('/rain-print?d=' + code);
+  }).catch(function () { clearTimeout(t); fail(false); });
+})();
+</script>
+</body>
+</html>

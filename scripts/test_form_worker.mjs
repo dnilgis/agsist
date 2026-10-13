@@ -1,4 +1,5 @@
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
+// and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
@@ -312,6 +313,136 @@ A(JSON.parse(store.get(newKey(rbB))).name === 'Jane  Bcc: x@evil.example', 'the 
   A(r.status === 503 && store4.size === 0, '/form without UNSUB_SECRET: 503, nothing stored');
   A(errs.some(m => /UNSUB_SECRET is not set/.test(m)), 'and the Worker log says why');
   A(![...store4.keys()].some(k => k.startsWith('rl:')), 'no counter keyed by a public constant');
+}
+// ---------- v5.14: Rain Print short links ----------
+const b64u = (t) => Buffer.from(t, 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const { createHash } = await import('node:crypto');
+const want = (code) => {   // Crockford base32 of SHA-256(code), worked out apart from the worker
+  const d = createHash('sha256').update(code, 'utf8').digest();
+  let bits = ''; for (const x of d.subarray(0, 5)) bits += x.toString(2).padStart(8, '0');
+  return bits.match(/.{5}/g).map(b => B32[parseInt(b, 2)]).join('');
+};
+const rps = (b, h = {}) => w.fetch(new Request('https://x.dev/rp-short', { method: 'POST',
+  headers: Object.assign({ 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.9.0.' + (++ipN) }, h),
+  body: typeof b === 'string' ? b : JSON.stringify(b) }), env);
+const rpsGet = (id, h = {}) => w.fetch(new Request('https://x.dev/rp-short/' + id, { headers: Object.assign({ Origin: 'https://agsist.com' }, h) }), env);
+const rpsKeys = () => [...store.keys()].filter(k => k.startsWith('rps:'));
+const codeA = b64u('1|Chetek, WI|471667 2|2025|snna|The Olson Farm|3k|Planted|8b|Harvest done');
+const codeB = b64u('1|Ames, IA|130200 2|2024|wpsa|');
+A(rp.design_code.length && b64u('1|Chetek WI|123|2025|sp0a|') === rp.design_code, 'test helper builds the same codes the page does');
+
+r = await rps({ code: codeA }); j = await r.json();
+A(r.status === 200 && j.ok === true && j.id === want(codeA).slice(0, 5), 'rp-short: id is the first 5 of Crockford base32 of SHA-256 ' + j.id);
+A(/^[0-9A-HJKMNP-TV-Z]{5}$/.test(j.id), 'rp-short: id has no I L O U');
+A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short: CORS for agsist.com');
+const idA = j.id;
+A(store.get('rps:' + idA) === codeA && opts.get('rps:' + idA) === null, 'rp-short: stored as rps:<id> with no expiry');
+let nk = rpsKeys().length;
+r = await rps({ code: codeA }); j = await r.json();
+A(r.status === 200 && j.id === idA && rpsKeys().length === nk, 'rp-short: idempotent, same id and nothing new stored');
+r = await rps({ code: codeB }); j = await r.json();
+A(r.status === 200 && j.id === want(codeB).slice(0, 5) && j.id !== idA, 'rp-short: deterministic for a second code');
+// a collision: the 5-letter id already holds a different code, so it grows to 6, then 7
+const codeC = b64u('1|Chetek, WI|471667 2|2023|snna|The Olson Farm'), fullC = want(codeC);
+store.set('rps:' + fullC.slice(0, 5), codeB);
+r = await rps({ code: codeC }); j = await r.json();
+A(r.status === 200 && j.id === fullC.slice(0, 6) && store.get('rps:' + fullC.slice(0, 6)) === codeC, 'rp-short: collision extends to 6 ' + j.id);
+A(store.get('rps:' + fullC.slice(0, 5)) === codeB, 'rp-short: the colliding id keeps its own code');
+r = await rps({ code: codeC }); j = await r.json(); A(j.id === fullC.slice(0, 6), 'rp-short: an extended id is idempotent too');
+const codeD = b64u('1|Chetek, WI|471667 2|2022|snna|'), fullD = want(codeD);
+store.set('rps:' + fullD.slice(0, 5), codeA); store.set('rps:' + fullD.slice(0, 6), codeB);
+r = await rps({ code: codeD }); j = await r.json(); A(r.status === 200 && j.id === fullD.slice(0, 7), 'rp-short: second collision extends to 7');
+const codeE = b64u('1|Chetek, WI|471667 2|2021|snna|'), fullE = want(codeE);
+for (let L = 5; L <= 8; L++) store.set('rps:' + fullE.slice(0, L), codeA);
+r = await rps({ code: codeE }); A(r.status === 409, 'rp-short: all four lengths taken is a 409, nothing overwritten');
+A([5, 6, 7, 8].every(L => store.get('rps:' + fullE.slice(0, L)) === codeA), 'rp-short: no stored id overwritten');
+// bad codes
+nk = rpsKeys().length;
+for (const [code, why] of [[undefined, 'missing'], ['', 'empty'], [123, 'a number'], ['abc def ghi', 'bad characters'], ['short', 'too short'],
+    ['A'.repeat(401), 'too long'], [b64u('2|Chetek|1|2025|snna|'), 'wrong version'], [b64u('1|Chetek|1|2025|snna'), 'too few fields'],
+    [b64u('1|Chetek|1|2025|snna||5'), 'odd marker fields'], [b64u('1|Chetek|1|1700|snna|'), 'year out of range'],
+    [b64u('1|Chetek|1|2025|sn|'), 'bad option letters'], [b64u('1| |1|2025|snna|'), 'no place'], [b64u('1|Chetek|1|2025|snna||zz|x'), 'day past 365'],
+    ['GIFT-' + codeA, 'a gift code'], ['/////////', 'not base64url']]) {
+  r = await rps(code === undefined ? {} : { code }); A(r.status === 400, 'rp-short: rejects ' + why);
+}
+r = await rps('not json'); A(r.status === 400, 'rp-short: rejects bad json');
+r = await rps({ code: codeA, pad: 'x'.repeat(2000) }); A(r.status === 413, 'rp-short: body over 1 KB refused');
+A(rpsKeys().length === nk, 'rp-short: nothing stored for a refused post');
+// origin check
+r = await rps({ code: codeB }, { Origin: 'https://evil.example' }); A(r.status === 403, 'rp-short: foreign origin refused');
+r = await rps({ code: codeB }, { Origin: '' }); A(r.status === 403, 'rp-short: no origin refused');
+r = await rps({ code: codeB }, { Origin: 'https://www.agsist.com' }); A(r.status === 200, 'rp-short: www.agsist.com allowed');
+// rate limit: own counter, new ids only, and it never touches the form posts' 8
+const ip3 = { 'CF-Connecting-IP': '192.0.2.99' };
+codes = [];
+for (let i = 0; i < 61; i++) codes.push((await rps({ code: b64u('1|Town ' + i + '|1|2025|snna|') }, ip3)).status);
+A(codes.slice(0, 60).every(c => c === 200) && codes[60] === 429, 'rp-short: 60 new ids an hour per IP, then 429');
+r = await rps({ code: codeA }, ip3); A(r.status === 200, 'rp-short: a known code still answers past the limit');
+r = await post(claim, ip3); A(r.status === 200, 'rp-short: links do not use up the form limit');
+// GET
+r = await rpsGet(idA); j = await r.json();
+A(r.status === 200 && j.ok === true && j.code === codeA, 'rp-short GET: known id returns its code');
+A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short GET: CORS for agsist.com');
+r = await rpsGet(idA.toLowerCase()); j = await r.json(); A(r.status === 200 && j.code === codeA, 'rp-short GET: lowercase id works');
+r = await rpsGet(fullC.slice(0, 6)); j = await r.json(); A(j.code === codeC, 'rp-short GET: a 6-letter id works');
+let unknown = 'ZZZZZ'; while (store.has('rps:' + unknown)) unknown = 'Z' + unknown;
+r = await rpsGet(unknown); A(r.status === 404, 'rp-short GET: unknown id is 404');
+for (const bad of ['', 'ABCD', 'ABCDEFGHJ', 'AB%2FCD', 'ABCU9', '..%2F..']) { r = await rpsGet(bad); A(r.status === 404, 'rp-short GET: malformed id 404 ' + JSON.stringify(bad)); }
+r = await w.fetch(new Request('https://x.dev/rp-short/' + idA, { method: 'POST', headers: { Origin: 'https://agsist.com' } }), env);
+A(r.status === 404, 'rp-short: POST to /rp-short/<id> is not a route');
+r = await call('/rp-short'); A(r.status === 404, 'rp-short: GET /rp-short is 404');
+r = await w.fetch(new Request('https://x.dev/rp-short', { method: 'OPTIONS', headers: { Origin: 'https://agsist.com' } }), env);
+A(r.status === 204 && r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short: preflight answered');
+r = await call('/count?token=tok'); j = await r.json(); A(!('rps' in j) && !('rp-short' in j.forms), '/count unchanged by short links');
+// v5.14: the shared gate and limiter, the GET's caching and the id-walk brake
+r = await rps({ code: codeB }, { 'Content-Type': 'text/plain' }); A(r.status === 415, 'rp-short: text/plain refused by publicGate');
+{
+  const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const rlq = () => [...store.keys()].filter(k => k.startsWith('rlq:rp-short:' + day + ':'));
+  let before = rlq().length;
+  r = await rps({ code: b64u('1|Rate key town|1|2025|snna|') }); A(r.status === 200 && rlq().length === before + 1, 'rp-short: a new id leaves one shared rate key');
+  const rk = rlq().find(k => opts.get(k)); A(rk && opts.get(rk).expirationTtl === 172800, 'rp-short: the rate key expires');
+  before = rlq().length;
+  r = await rps({ code: codeA }); A(r.status === 200 && rlq().length === before, 'rp-short: a repeat leaves no rate key');
+  // the daily total for everyone (600), from fresh addresses
+  const have = rlq().length;
+  for (let i = have; i < 600; i++) store.set(`rlq:rp-short:${day}:${String(i).padStart(16, '0')}:00:${String(i).padStart(8, '0')}`, '');
+  nk = rpsKeys().length;
+  r = await rps({ code: b64u('1|Day cap town|1|2025|snna|') }, { 'CF-Connecting-IP': '198.51.100.7' });
+  A(r.status === 429 && rpsKeys().length === nk, 'rp-short: the 601st new id of the day is refused, nothing stored');
+  r = await rps({ code: codeA }, { 'CF-Connecting-IP': '198.51.100.8' }); A(r.status === 200, 'rp-short: a known code still answers past the daily total');
+  for (const k of [...store.keys()]) if (k.startsWith('rlq:rp-short:')) store.delete(k);
+}
+{
+  // no UNSUB_SECRET: a new id needs the hashed address, so 503 and nothing stored
+  const env5 = Object.assign({}, env, { UNSUB_SECRET: '' });
+  const errs = []; const ce = console.error; console.error = (m) => errs.push(String(m));
+  nk = rpsKeys().length;
+  r = await w.fetch(new Request('https://x.dev/rp-short', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com', 'CF-Connecting-IP': '198.51.100.9' },
+    body: JSON.stringify({ code: b64u('1|No secret town|1|2025|snna|') }) }), env5);
+  console.error = ce;
+  A(r.status === 503 && rpsKeys().length === nk, 'rp-short without UNSUB_SECRET: 503 for a new id, nothing stored');
+}
+r = await rpsGet(idA); A(r.headers.get('Cache-Control') === 'public, max-age=604800, immutable' && /Origin/.test(r.headers.get('Vary') || ''), 'rp-short GET: a hit is cacheable and varies on Origin');
+r = await rpsGet(unknown); A(r.headers.get('Cache-Control') === 'no-store', 'rp-short GET: a miss is not cached');
+r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-short GET: no CORS for a foreign site');
+{
+  // walking ids from one address: 30 misses, then 429 for every GET, known or not
+  const walk = { 'CF-Connecting-IP': '198.51.100.20' };
+  const st = [];
+  for (let i = 0; i < 31; i++) { let id = 'Z' + String(i).padStart(4, '0').replace(/[ILOU]/g, '0'); while (store.has('rps:' + id)) id = 'Y' + id.slice(1); st.push((await rpsGet(id, walk)).status); }
+  A(st.slice(0, 30).every(c => c === 404) && st[30] === 429, 'rp-short GET: 30 unknown ids an hour per address, then 429 ' + st.slice(28));
+  r = await rpsGet(idA, walk); A(r.status === 429, 'rp-short GET: past the miss cap a known id is not answered either');
+  r = await rpsGet(idA, { 'CF-Connecting-IP': '198.51.100.21' }); A(r.status === 200, 'rp-short GET: another address is not held back');
+  r = await rpsGet('ABCD', walk); A(r.status === 404, 'rp-short GET: a malformed id is a 404 without a lookup');
+}
+{
+  // POSTs of any kind from one address: 240 an hour per isolate, then 429
+  const many = { 'CF-Connecting-IP': '198.51.100.30' };
+  let last = 0, okN = 0;
+  for (let i = 0; i < 241; i++) { last = (await rps({ code: codeA }, many)).status; if (last === 200) okN++; }
+  A(okN === 240 && last === 429, 'rp-short: 240 posts an hour per address, then 429');
 }
 
 // older routes still answer the same
