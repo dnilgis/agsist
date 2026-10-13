@@ -67,6 +67,11 @@ WHEN A FETCH FAILS
   grids with a value) or is older than the one already published keeps the
   published one. The page withholds any section past its own age limit, so a
   dead source shows as withheld, never as a current outlook.
+  Every request has a 60 s socket timeout and at most 3 tries; ArcGIS paging
+  stops at MAX_PAGES or on a page that repeats; the four sources run side by
+  side, each under SOURCE_BUDGET seconds, all under TOTAL_BUDGET, so a source
+  that hangs is reported and skipped and the run ends in about 4 minutes at
+  worst.
 
 USAGE
   python scripts/fetch_prf_outlook.py --selftest     # offline, fixtures in test/fixtures/prf-outlook/
@@ -79,10 +84,12 @@ import datetime as dt
 import glob
 import io
 import json
+import math
 import os
 import re
 import struct
 import sys
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -116,23 +123,70 @@ SEASONS = ["JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND",
 MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 
 
+_log_lock = threading.Lock()
+
+
 def log(*a):
-    print(*a, flush=True)
+    with _log_lock:             # sources log from their own threads
+        print(*a, flush=True)
 
 
 # ------------------------------------------------------------------ fetching
-def get(url, tries=3):
+# The first run on a runner (Oct 2026) was cancelled at the 20-minute job limit
+# with nothing logged. Every request now has a socket timeout, a capped number
+# of tries and a size cap, and runs under its source's deadline; pagination is
+# capped; and each source runs against a budget, so a slow or dead source is
+# skipped (its published section kept) and the others still write.
+TRIES = 3
+MAX_DOWNLOAD = 150_000_000      # bytes, any one response
+MAX_PAGES = 40                  # ArcGIS query pages per layer
+SOURCE_BUDGET = 150             # seconds, any one source, network and mapping
+TOTAL_BUDGET = 240              # seconds, every source together (they run side by side)
+_tl = threading.local()
+
+
+class Timeout(RuntimeError):
+    pass
+
+
+def remaining():
+    d = getattr(_tl, "deadline", None)
+    return None if d is None else d - time.monotonic()
+
+
+def check_deadline(what=""):
+    r = remaining()
+    if r is not None and r <= 0:
+        raise Timeout("out of time for this source%s" % ((" at " + what) if what else ""))
+
+
+def get(url, tries=TRIES):
     last = None
     for i in range(tries):
+        check_deadline(url)
         try:
+            to = TIMEOUT if remaining() is None else max(1, min(TIMEOUT, remaining()))
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-                return r.read()
+            with urllib.request.urlopen(req, timeout=to) as r:
+                buf = bytearray()
+                while True:
+                    check_deadline(url)        # a server that trickles bytes is cut off too
+                    chunk = r.read1(1 << 20)    # what has arrived, not a full MB (read() would wait for it)
+                    if not chunk:
+                        break
+                    buf += chunk
+                    if len(buf) > MAX_DOWNLOAD:
+                        raise RuntimeError("over %d bytes" % MAX_DOWNLOAD)
+                return bytes(buf)
+        except Timeout:
+            raise
         except Exception as e:      # noqa: BLE001 - every failure is retried, then reported
             last = e
-            if getattr(e, "code", None) == 404:
+            if getattr(e, "code", None) == 404 or "over %d bytes" % MAX_DOWNLOAD in str(e):
                 break
-            time.sleep(3 * (i + 1))
+            if i + 1 < tries:
+                r = remaining()
+                time.sleep(min(3 * (i + 1), max(0, r - 1)) if r is not None else 3 * (i + 1))
     raise RuntimeError("%s: %s" % (url, last))
 
 
@@ -141,20 +195,38 @@ def arcgis_layers(svc, fetch=get):
     return [(l["id"], l.get("name", "")) for l in d.get("layers", [])]
 
 
-def arcgis_features(layer_url, fetch=get):
-    out, offset = [], 0
-    while True:
+def feature_key(f):
+    p = f.get("properties") or {}
+    k = f.get("id", prop(p, "objectid", "fid", "oid"))
+    return k if k is not None else json.dumps(p, sort_keys=True)[:200]
+
+
+def arcgis_features(layer_url, fetch=get, max_pages=MAX_PAGES):
+    """Every feature of a layer, paged with resultOffset. Stops with an error
+    on a page that adds nothing new (a server that ignores resultOffset would
+    otherwise answer the same page for ever) or past max_pages."""
+    out, seen, offset = [], set(), 0
+    for page in range(max_pages):
         q = urllib.parse.urlencode({"where": "1=1", "outFields": "*", "returnGeometry": "true",
                                     "outSR": "4326", "f": "geojson", "resultOffset": offset})
         d = json.loads(fetch(layer_url + "/query?" + q))
         if "error" in d:
             raise RuntimeError("%s: %s" % (layer_url, d["error"]))
         feats = d.get("features", [])
+        keys = [feature_key(f) for f in feats]
+        if page and feats and all(k in seen for k in keys):
+            raise RuntimeError("%s: page at offset %d repeats earlier features (resultOffset ignored)" % (layer_url, offset))
+        seen.update(keys)
         out += feats
         more = d.get("exceededTransferLimit") or (d.get("properties") or {}).get("exceededTransferLimit")
         if not more or not feats:
             return out
         offset += len(feats)
+    raise RuntimeError("%s: more than %d pages" % (layer_url, max_pages))
+
+
+def vertex_count(features):
+    return sum(len(r) for f in features for rings in rings_of(f.get("geometry")) for r in rings)
 
 
 # ------------------------------------------------- shapefile, read by hand
@@ -272,17 +344,93 @@ def centre(gid):
     return LON0 + (col + 0.5) * STEP, LAT0 + (row + 0.5) * STEP
 
 
+def raster_rows(rings, row0, row1):
+    """{row: [(first col, last col), ...]} of the grid centres inside one polygon
+    (all its rings, even-odd), for rows row0..row1. A scanline fill on the
+    quarter-degree lattice: every edge is visited once and only the rows it
+    crosses get its crossing, so the cost is the vertices plus the crossings,
+    not grids x vertices. It answers what inside() answers at each centre: the
+    same crossing test and the same arithmetic, so the two agree to the bit."""
+    xs = {}
+    for r in rings:
+        n = len(r)
+        j = n - 1
+        for i in range(n):
+            xi, yi = r[i][0], r[i][1]
+            xj, yj = r[j][0], r[j][1]
+            j = i
+            if yi == yj:
+                continue
+            lo, hi = (yi, yj) if yi < yj else (yj, yi)
+            a = max(row0, int(math.floor((lo - LAT0) / STEP - 0.5)))
+            b = min(row1, int(math.ceil((hi - LAT0) / STEP - 0.5)))
+            for row in range(a, b + 1):
+                y = LAT0 + (row + 0.5) * STEP
+                if (yi > y) != (yj > y):
+                    xs.setdefault(row, []).append((xj - xi) * (y - yi) / (yj - yi) + xi)
+    out = {}
+    for row, cs in xs.items():
+        cs.sort()
+        spans = []
+        for k in range(0, len(cs) - 1, 2):
+            # inside(): odd number of crossings strictly right of x, i.e. cs[k] <= x < cs[k+1]
+            c0 = max(0, int(math.ceil((cs[k] - LON0) / STEP - 0.5)) - 1)
+            c1 = min(COLS - 1, int(math.ceil((cs[k + 1] - LON0) / STEP - 0.5)))
+            while c0 <= c1 and LON0 + (c0 + 0.5) * STEP < cs[k]:
+                c0 += 1
+            while c1 >= c0 and not (LON0 + (c1 + 0.5) * STEP < cs[k + 1]):
+                c1 -= 1
+            if c0 <= c1:
+                spans.append((c0, c1))
+        if spans:
+            out[row] = spans
+    return out
+
+
 def sample(polys, grids, rank, empty):
-    """Value at each grid's centre: the polygon with the highest rank wins."""
+    """Value at each grid's centre: the polygon with the highest rank wins.
+    Each polygon is rasterised to the grid lattice (raster_rows) inside the
+    rows that hold PRF grids; a 13,414-grid read of a detailed map takes
+    seconds where testing every centre against every polygon took minutes."""
+    want = {}
+    for g in grids:
+        want.setdefault((g - 1) // COLS, set()).add((g - 1) % COLS)
+    if not want:
+        return {}
+    rmin, rmax = min(want), max(want)
+    best = {}
+    for (x0, y0, x1, y1), rings, v in polys:
+        rv = rank(v)
+        for row, spans in raster_rows(rings, rmin, rmax).items():
+            cols = want.get(row)
+            if not cols:
+                continue
+            base = row * COLS + 1
+            for c0, c1 in spans:
+                if c1 - c0 + 1 > len(cols):
+                    hit = [c for c in cols if c0 <= c <= c1]
+                else:
+                    hit = [c for c in range(c0, c1 + 1) if c in cols]
+                for c in hit:
+                    g = base + c
+                    b = best.get(g)
+                    if b is None or rv > b[0]:
+                        best[g] = (rv, v)
+    return {g: best[g][1] if g in best else empty for g in grids}
+
+
+def sample_slow(polys, grids, rank, empty):
+    """The plain point-in-polygon read sample() replaced; the selftest checks
+    the two agree."""
     out = {}
     for g in grids:
         x, y = centre(g)
-        best = None
+        found = None
         for (x0, y0, x1, y1), rings, v in polys:
             if x0 <= x <= x1 and y0 <= y <= y1 and inside(rings, x, y):
-                if best is None or rank(v) > rank(best):
-                    best = v
-        out[g] = best if best is not None else empty
+                if found is None or rank(v) > rank(found):
+                    found = v
+        out[g] = found if found is not None else empty
     return out
 
 
@@ -501,10 +649,16 @@ def fetch_seasonal(grids, fetch=get):
         for lid, name in arcgis_layers(SEAS_SVC, fetch):
             lead = lead_of(name, lid)
             if 1 <= lead <= 13:
+                t = time.monotonic()
                 layers[lead] = arcgis_features("%s/%d" % (SEAS_SVC, lid), fetch)
+                log("  seasonal: lead %d, %d features, %d vertices, %.1fs"
+                    % (lead, len(layers[lead]), vertex_count(layers[lead]), time.monotonic() - t))
         if len(layers) < 13:
             raise RuntimeError("only %d of 13 leads in the map service" % len(layers))
-        return build_seasonal(layers, grids, SEAS_SVC)
+        t = time.monotonic()
+        sec = build_seasonal(layers, grids, SEAS_SVC)
+        log("  seasonal: %d leads read at %d grids, %.1fs" % (len(layers), len(grids), time.monotonic() - t))
+        return sec
     except Exception as e:      # noqa: BLE001
         log("  seasonal: map service failed (%s); trying CPC's shapefiles" % e)
     zb, url = newest_zip(r"seas\w*prcp\w*?(\d{6})\.zip", fetch)
@@ -516,7 +670,10 @@ def fetch_seasonal(grids, fetch=get):
 def fetch_monthly(grids, fetch=get):
     try:
         lid = arcgis_layers(MON_SVC, fetch)[0][0]
-        return build_monthly(arcgis_features("%s/%d" % (MON_SVC, lid), fetch), grids, MON_SVC)
+        t = time.monotonic()
+        feats = arcgis_features("%s/%d" % (MON_SVC, lid), fetch)
+        log("  monthly: %d features, %d vertices, %.1fs" % (len(feats), vertex_count(feats), time.monotonic() - t))
+        return build_monthly(feats, grids, MON_SVC)
     except Exception as e:      # noqa: BLE001
         log("  monthly: map service failed (%s); trying CPC's shapefiles" % e)
     zb, url = newest_zip(r"month\w*prcp\w*?(\d{6})\.zip", fetch)
@@ -637,7 +794,10 @@ def fetch_drought(grids, today, fetch=get):
             continue                 # released Thursday; not out yet
         k = d.strftime("%Y%m%d")
         try:
+            t = time.monotonic()
             gj = json.loads(fetch(USDM_JSON.format(d=k)))
+            log("  drought: %s map, %d features, %d vertices, %.1fs"
+                % (k, len(gj.get("features", [])), vertex_count(gj.get("features", [])), time.monotonic() - t))
             return build_drought(gj.get("features", []), grids, d, USDM_JSON.format(d=k))
         except Exception as e:      # noqa: BLE001
             errs.append(str(e))
@@ -725,15 +885,36 @@ def check_doc(doc, grids=None):
     return errs
 
 
-def run(grids, today, now, fetchers, prev):
-    new, failed = {}, {}
-    for k, fn in fetchers.items():
+def run(grids, today, now, fetchers, prev, budget=SOURCE_BUDGET, total=TOTAL_BUDGET):
+    """Every source side by side, each in its own thread under its own deadline
+    (budget seconds); whatever has not answered when total seconds are up is
+    marked failed and left behind, so the published section is kept for it."""
+    new, failed, took = {}, {}, {}
+    t0 = time.monotonic()
+
+    def one(k, fn):
+        _tl.deadline = time.monotonic() + budget
+        t = time.monotonic()
         try:
             new[k] = fn()
-            log("  %s: ok, issued %s" % (k, stamp(new[k])))
+            took[k] = time.monotonic() - t
+            log("  %s: ok, issued %s, %.1fs" % (k, stamp(new[k]), took[k]))
         except Exception as e:      # noqa: BLE001
+            took[k] = time.monotonic() - t
             failed[k] = str(e)
-            log("  %s: FAILED: %s" % (k, e))
+            log("  %s: FAILED after %.1fs: %s" % (k, took[k], e))
+
+    threads = {k: threading.Thread(target=one, args=(k, fn), daemon=True, name="src-" + k) for k, fn in fetchers.items()}
+    for th in threads.values():
+        th.start()
+    for k, th in threads.items():
+        th.join(max(0, total - (time.monotonic() - t0)))
+    for k, th in threads.items():
+        if th.is_alive():
+            failed[k] = "timed out after %ds" % total
+            log("  %s: FAILED: timed out after %ds, left behind" % (k, total))
+    new = {k: new[k] for k in fetchers if k in new and k not in failed}
+    log("  sources done in %.1fs" % (time.monotonic() - t0))
     sections = merge(prev, new, failed)
     return assemble(sections, crop_year(), now), failed
 
@@ -767,6 +948,9 @@ def main(argv):
         "enso": fetch_enso,
         "drought": lambda: fetch_drought(grids, today),
     }, prev)
+    if not any(doc.get(k) for k in ("seasonal", "monthly", "enso", "drought")):
+        log("refusing to write: no section came back and none is published")
+        return 1
     errs = check_doc(doc, grids)
     if errs:
         log("refusing to write: " + "; ".join(errs))
@@ -820,6 +1004,54 @@ def gid(lat, lon):
 
 FIX_KS = [int((38.1 - LAT0) // STEP) * COLS + int((-99.9 + 0.25 * i - LON0) // STEP) + 1 for i in range(8)]
 FIX_TX = [int((31.1 - LAT0) // STEP) * COLS + int((-99.9 + 0.25 * i - LON0) // STEP) + 1 for i in range(8)]
+
+
+def synth_blob(cx, cy, r, n, seed, hole=False):
+    """A closed ring of n vertices round (cx, cy), radius r degrees, with a
+    wavy, noisy edge: the shape of a CPC contour or a USDM area."""
+    import random
+    rng = random.Random(seed)
+    ph = [rng.uniform(0, 6.3) for _ in range(3)]
+    pts = []
+    for i in range(n):
+        t = 2 * math.pi * i / n
+        rr = r * (1 + 0.25 * math.sin(3 * t + ph[0]) + 0.12 * math.sin(7 * t + ph[1])
+                  + 0.05 * math.sin(23 * t + ph[2]) + 0.02 * rng.uniform(-1, 1))
+        pts.append([cx + 1.3 * rr * math.cos(t), cy + rr * math.sin(t)])
+    if hole:
+        pts.reverse()
+    pts.append(pts[0])
+    return pts
+
+
+def synth_cpc_layer(lead, verts=12000):
+    """One CPC lead at real-world size: a below and an above area, each four
+    nested bands (33/40/50/60), about 54,000 vertices in all, as a coast-
+    clipped outlook map draws them."""
+    import random
+    rng = random.Random(lead)
+    feats = []
+    for side, cx, cy in (("Below", -105 + rng.uniform(-5, 5), 35), ("Above", -85 + rng.uniform(-5, 5), 42)):
+        for k, (pr, r) in enumerate(((33, 9), (40, 6), (50, 3.5), (60, 1.8))):
+            feats.append({"properties": {"cat": side, "prob": pr, "fcst_date": 1789603200000,
+                                         "valid_seas": "%s 2026" % SEASONS[(8 + lead) % 12]},
+                          "geometry": {"type": "Polygon", "coordinates": [synth_blob(cx, cy, r, max(400, int(verts * r / 9)), lead * 100 + k)]}})
+    return feats
+
+
+def synth_usdm():
+    """A Drought Monitor map at real-world size: D0 to D4 as multipolygons,
+    large areas with detailed edges and holes, about 360,000 vertices."""
+    import random
+    rng = random.Random(5)
+    feats = []
+    for dm, n, r, v in ((0, 4, 8.0, 40000), (1, 6, 5.0, 15000), (2, 8, 3.0, 6000), (3, 10, 1.5, 2500), (4, 6, 0.8, 1000)):
+        polys = []
+        for i in range(n):
+            cx, cy = rng.uniform(-115, -80), rng.uniform(30, 45)
+            polys.append([synth_blob(cx, cy, r, v, dm * 77 + i), synth_blob(cx, cy, r * 0.2, v // 10, dm * 77 + i + 9, hole=True)])
+        feats.append({"properties": {"DM": dm}, "geometry": {"type": "MultiPolygon", "coordinates": polys}})
+    return feats
 
 
 def fixture_doc():
@@ -969,6 +1201,96 @@ def selftest():
     size = len(dumps({"calls": c2, "rows": r2}).encode())
     log("  size check: %d grids, the worst case (no two neighbours alike) = %d bytes per section" % (len(allg), size))
     ok(size * 3 < MAX_BYTES, "three worst-case sections fit under MAX_BYTES")
+
+    # fast grid read == plain point-in-polygon, on detailed shapes with holes
+    sub = allg[::37]
+    for what, feats, val, rk, empty in (("CPC", synth_cpc_layer(2), cpc_code, code_rank, "E"),
+                                        ("USDM", synth_usdm(), dm_value, lambda v: -1 if v == "N" else v, "N")):
+        pl = prep(feats, val)
+        fast, slow = sample(pl, sub, rk, empty), sample_slow(pl, sub, rk, empty)
+        ok(fast == slow and sum(1 for g in sub if fast[g] != empty) > 50,
+           "%s: raster read agrees with point-in-polygon at %d grids" % (what, len(sub)))
+
+    # full scale timing: 13 seasonal leads, the monthly and a drought map of
+    # real-world complexity read at every PRF grid. The first runner run was
+    # cancelled at 20 minutes; this read took ~7 minutes locally before the
+    # raster read.
+    if len(allg) > 10000:
+        t = time.monotonic()
+        lay = {lead: synth_cpc_layer(lead) for lead in range(1, 14)}
+        ss = build_seasonal(lay, allg, "synthetic")
+        mm = build_monthly(synth_cpc_layer(1), allg, "synthetic")
+        dd = build_drought(synth_usdm(), allg, dt.date(2026, 10, 6), "synthetic")
+        took = time.monotonic() - t
+        nb = len(dumps({"seasonal": ss, "monthly": mm, "drought": dd}).encode())
+        log("  full scale: %d grids, 13 leads + monthly + drought, %d vertices, %.1fs, %d bytes"
+            % (len(allg), sum(vertex_count(f) for f in lay.values()) + vertex_count(synth_cpc_layer(1)) + vertex_count(synth_usdm()), took, nb))
+        ok(took < 45, "full-scale read in under 45 s (took %.1f s)" % took)
+        ok(not check_doc({"v": 1, "seasonal": ss, "monthly": mm, "drought": dd}, allg), "full-scale doc passes check_doc")
+        ok(nb < MAX_BYTES, "full-scale doc under MAX_BYTES")
+
+    # pagination: a server that ignores resultOffset, one that never stops, one that pages properly
+    def pager(mode):
+        def f(url):
+            off = int(urllib.parse.parse_qs(urllib.parse.urlparse(url).query)["resultOffset"][0])
+            base = 0 if mode == "ignores" else off
+            feats = [{"id": base + i, "properties": {}} for i in range(2)]
+            more = mode != "proper" or off < 4
+            return json.dumps({"features": feats, "properties": {"exceededTransferLimit": more}}).encode()
+        return f
+    ok(len(arcgis_features("x", pager("proper"))) == 6, "pagination reads every page")
+    for mode, word in (("ignores", "repeats"), ("endless", "pages")):
+        try:
+            arcgis_features("x", pager(mode), max_pages=5)
+            ok(False, "pagination (%s) must stop" % mode)
+        except RuntimeError as err:
+            ok(word in str(err), "pagination (%s) stops: %s" % (mode, err))
+
+    # a request past its source's deadline is not made
+    _tl.deadline = time.monotonic() - 1
+    try:
+        get("http://127.0.0.1:9/never")
+        ok(False, "get past the deadline must raise")
+    except Timeout:
+        ok(True, "")
+
+    # a server that sends its headers, then a byte now and then, is cut off at the deadline
+    import socket
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(1)
+
+    def trickle():
+        c, _ = srv.accept()
+        c.recv(4096)
+        c.sendall(b"HTTP/1.1 200 OK\r\nContent-Length: 100000\r\n\r\n")
+        try:
+            for _ in range(20):
+                c.sendall(b"x")
+                time.sleep(0.25)
+        except OSError:
+            pass
+        c.close()
+    threading.Thread(target=trickle, daemon=True).start()
+    _tl.deadline = time.monotonic() + 1.5
+    t = time.monotonic()
+    try:
+        get("http://127.0.0.1:%d/" % srv.getsockname()[1])
+        ok(False, "a trickling server must be cut off")
+    except Timeout:
+        ok(time.monotonic() - t < 3, "a trickling server is cut off at the deadline (%.1fs)" % (time.monotonic() - t))
+    _tl.deadline = None
+    srv.close()
+
+    # a source that hangs is left behind; the others still write, the published section is kept
+    t = time.monotonic()
+    doc2, failed2 = run(grids, dt.date(2026, 10, 12), "2026-10-12T15:00:00Z", {
+        "seasonal": lambda: s, "monthly": lambda: m, "enso": lambda: e,
+        "drought": lambda: time.sleep(5) or d,
+    }, {"drought": dict(d, map_date="2026-09-29")}, budget=1, total=1)
+    ok(time.monotonic() - t < 3 and "drought" in failed2 and doc2["drought"]["map_date"] == "2026-09-29"
+       and doc2["seasonal"]["issued"] == "2026-09-17" and doc2["enso"]["issued"] == "2026-10-08",
+       "a hung source is skipped, the rest written, its published section kept")
 
     # the committed page fixture is what the fixtures build today
     fd = dumps(fixture_doc())
