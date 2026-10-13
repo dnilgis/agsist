@@ -133,7 +133,7 @@
         if (asked !== st) return;
         var sp = pick(d, st, today());
         if (sp) show(box, sp, dt.stName || st, 'tool');
-        else { box.hidden = true; box.innerHTML = ''; }
+        else { box.hidden = true; box.innerHTML = ''; box.className = 'prf-spon'; box.removeAttribute('data-sponsor-slot'); }
       });
     });
   }

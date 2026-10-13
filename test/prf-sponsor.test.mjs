@@ -139,7 +139,7 @@ test("the file cannot be read: every offer stays", async () => {
 });
 
 test("/prf: the sponsor of the reader's state beside the result, gone for an unsold state", async () => {
-  const box = el({ hidden: true }); box.hidden = true; box.innerHTML = "";
+  const box = el({}); box.hidden = true; box.innerHTML = ""; box.removeAttribute = function (k) { delete this.attrs[k]; };
   const p = fakePage([], box, LIVE);
   p.fire({ grid: 1, st: "IA", stName: "Iowa" }); await tick(); await tick();
   assert.equal(box.hidden, false);
@@ -148,6 +148,7 @@ test("/prf: the sponsor of the reader's state beside the result, gone for an uns
   p.fire({ grid: 2, st: "KS", stName: "Kansas" }); await tick(); await tick();
   assert.equal(box.hidden, true);
   assert.equal(box.innerHTML, "");
+  assert.equal(box.className, "prf-spon", "an unsold state leaves no sold styling behind");
   p.fire({ grid: 3, st: "NE", stName: "Nebraska" }); await tick(); await tick();
   assert.match(box.innerHTML, /PRF in Nebraska is sponsored by Example Ag Lending/);
 });
@@ -224,7 +225,7 @@ test("/prf: the offer box near the bottom, the sponsor box beside the result, th
   assert.ok(!PRICE.test(offer[0]) && !/founding|left/i.test(offer[0]));
   assert.ok(h.indexOf("prf-spon-offer") > h.indexOf('id="prf-optimize"'), "the offer box sits below the tool");
   assert.ok(h.indexOf("prf-spon-offer") > h.indexOf('id="states"'), "the offer box sits near the bottom");
-  const box = h.indexOf('<aside class="prf-spon prf-o2s" id="prf-spon" hidden></aside>');
+  const box = h.indexOf('<aside class="prf-spon" id="prf-spon" hidden></aside>');
   assert.ok(box > h.indexOf('id="prf-answer"') && box < h.indexOf('id="prf-optimize"'), "the sponsor box sits beside the result, outside the panel");
   assert.ok(h.indexOf("prf-sponsor.js") < h.indexOf("/components/prf.js"), "prf-sponsor.js must listen before prf.js renders");
   assert.ok(!/founding/i.test(h));

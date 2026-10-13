@@ -178,7 +178,7 @@ HTML = f"""<!DOCTYPE html>
             <div class="prf-yrs-p" id="prf-yrs-p"></div>
           </section>
 
-          <aside class="prf-spon prf-o2s" id="prf-spon" hidden></aside>
+          <aside class="prf-spon" id="prf-spon" hidden></aside>
           <section class="prf-block prf-o5" id="prf-cmp-wrap" aria-labelledby="prf-cmp-h" hidden><h3 id="prf-cmp-h">Setup A against setup B</h3><div id="prf-cmp"></div></section>
 
           <section class="prf-o6" aria-labelledby="prf-det-h">

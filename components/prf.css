@@ -456,8 +456,9 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
    ribbon on its state page and in place of the one-line offer on its county
    pages, always labelled Sponsor in ad orange. Never printed. */
 .prf aside.ag-sponsor-ribbon.prf-spon-offer { display: flex !important; margin: 1.6rem 0 1.2rem; }
-.prf-o2s { order: 3; margin: 0; }
-.prf-tool.is-nocounty .prf-o2s { display: none; }
+#prf-spon { order: 3; margin: 0; }
+#prf-spon[hidden] { display: none !important; }
+.prf-tool.is-nocounty #prf-spon { display: none; }
 .prf-spon .ag-sponsor-copy { flex: 1 1 16rem; }
 .prf-spon .prf-spon-ask { display: block; margin-top: .3rem; font-size: .82rem; }
 .prf-spon a[href] { white-space: normal; text-align: center; }
