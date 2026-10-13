@@ -2427,7 +2427,7 @@ async function handle(req, env) {
       if (b.contact !== undefined) { const v = elevContact(b.contact); if (v.error) return json({ ok: false, error: v.error }, 400, c); set.contact = v.v; }
       if (b.note !== undefined) {
         if (b.note !== null && typeof b.note !== "string") return json({ ok: false, error: "invalid note" }, 400, c);
-        const t = String(b.note || "").replace(/[\u0000-\u001f\u007f-\u009f  ]/g, " ").replace(/ {2,}/g, " ").trim();
+        const t = oneLine(b.note || "", ELEV_NOTE_MAX + 1);
         if (t.length > ELEV_NOTE_MAX) return json({ ok: false, error: "note too long (" + ELEV_NOTE_MAX + " at most)" }, 400, c);
         set.note = t || null;
       }
