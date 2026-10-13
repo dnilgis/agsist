@@ -147,6 +147,7 @@
      leader and its mark share one and may touch) and a kind:
        text   words           mark  a dot, ring, bar, pile, the QR, the verdict block
        data   the year's lines (a leader may leave one where it starts, never cut one)
+       usual  the usual year's dashed line: words keep off it, a leader may cross it
        lead   leaders, a date's drop line, ticks, brackets     axis  axis and ground lines
        soft   light grid lines: a label keeps off them when it can */
   var CELL = 50;
@@ -192,7 +193,7 @@
       for (var cy = Math.floor((b.y - pad) / CELL); cy <= Math.floor((b.y + b.h + pad) / CELL); cy++) {
         var list = this.cells[cx + ',' + cy];
         if (!list) continue;
-        for (var i = 0; i < list.length; i++) { var it = list[i]; if (it.seen === m) continue; it.seen = m; if (fn(it)) return true; }
+        for (var i = 0; i < list.length; i++) { var it = list[i]; if (it.seen === m || it.dead) continue; it.seen = m; if (fn(it)) return true; }
       }
     return false;
   };
@@ -211,9 +212,11 @@
     var bb = { x: Math.min(s[0], s[2]), y: Math.min(s[1], s[3]), w: Math.abs(s[2] - s[0]), h: Math.abs(s[3] - s[1]) };
     var far = awayFrom(s, r || 0);
     return !this.each(bb, 8, function (it) {
-      if (it.own === own || it.k === 'soft') return false;
+      if (it.own === own || it.k === 'soft' || it.k === 'usual') return false;
       if (it.k === 'data') return far ? (it.s ? segCross(far, it.s) : segRect(far, it.b, 1)) : false;
       if (it.s) return segCross(s, it.s);
+      // a dot on the very spot the leader starts from (a date on the same day) is not in its way
+      if (r && it.k === 'mark' && Math.hypot(it.b.x + it.b.w / 2 - s[0], it.b.y + it.b.h / 2 - s[1]) < 9) return far ? segRect(far, it.b, 0) : false;
       return segRect(s, it.b, it.k === 'text' ? 3 : 1.5);
     });
   };
@@ -225,11 +228,13 @@
      that moves the words least. ok(item, box, row) says whether the room is
      clear; pair(a, ba, ra, b, bb, rb) whether two placed labels get along.
      Returns [{x (left), row}] or null when no combination fits. */
-  function rowSolve(items, rows, ok, pair, h) {
+  function rowSolve(items, rows, ok, pair, h, bounds) {
     var opts = items.map(function (it) {
       var lo = Math.max(62, Math.max.apply(null, it.xs) + 3 - it.w), hi = Math.min(1738 - it.w, Math.min.apply(null, it.xs) - 3);
       var mid = (Math.min.apply(null, it.xs) + Math.max.apply(null, it.xs)) / 2 - it.w / 2;
-      var pref = Math.max(lo, Math.min(hi, mid)), xsCand = [];
+      // best: centered under its tick, kept inside the style's own margins when it can be (bounds)
+      var pL = Math.max(lo, bounds[0]), pR = Math.min(hi, bounds[1] - it.w);
+      var pref = pL <= pR ? Math.max(pL, Math.min(pR, mid)) : Math.max(lo, Math.min(hi, mid)), xsCand = [];
       if (hi < lo) return [];
       for (var d = 0; d <= hi - lo + 4; d += 4) { [pref - d, pref + d].forEach(function (x) { if (x >= lo - 1e-9 && x <= hi + 1e-9 && xsCand.indexOf(x) < 0) xsCand.push(x); }); }
       [lo, hi].forEach(function (x) { if (xsCand.indexOf(x) < 0) xsCand.push(x); });
@@ -237,7 +242,7 @@
       rows.forEach(function (y, r) {
         xsCand.forEach(function (x) {
           var b = { x: x, y: y - h[0], w: it.w, h: h[0] + h[1] };
-          if (ok(it, b, r)) out.push({ x: x, row: r, b: b, cost: Math.abs(x - mid) + r * 60 });
+          if (ok(it, b, r)) out.push({ x: x, row: r, b: b, cost: Math.abs(x - pref) + r * 60 });
         });
       });
       return out.sort(function (a, b) { return a.cost - b.cost; });
@@ -260,11 +265,11 @@
   }
   /* Dates too close to share a row are drawn as one label: their words in date
      order, joined by a middle dot, over both ticks. Never dropped. */
-  function placeDates(marks, rows, measureW, ok, pair, h) {
+  function placeDates(marks, rows, measureW, ok, pair, h, bounds) {
     var items = marks.filter(function (m) { return m.label; }).map(function (m) { return { xs: [m.x], label: m.label, ids: [m.k] }; });
     for (;;) {
       items.forEach(function (it) { it.w = measureW(it.label); });
-      var sol = items.length ? rowSolve(items, rows, ok, pair, h) : [];
+      var sol = items.length ? rowSolve(items, rows, ok, pair, h, bounds) : [];
       if (sol) return items.map(function (it, k) { return { it: it, x: sol[k].x, row: sol[k].row, y: rows[sol[k].row] }; });
       if (items.length < 2) return items.map(function (it) { return { it: it, x: Math.max(62, Math.min(1738 - it.w, it.xs[0] - it.w / 2)), row: 0, y: rows[0], forced: true }; });
       var bi = 0, bd = Infinity;
@@ -468,20 +473,48 @@
     }
     return loose >= 0 ? cands[loose] : null;
   }
+  /* Remarkable days go in one by one (place(k) -> the items it added, or null).
+     One that finds no room tries again with a placed neighbour lifted out, and
+     keeps that only if the neighbour then finds room too. What still has no
+     room is named in skipped (the page lists it under the preview). */
+  function placeAll(pts, place, skipped, order) {
+    var at = [];
+    (order || pts.map(function (r, k) { return k; })).forEach(function (k) { at[k] = place(k, at); });
+    var lift = function (k) { at[k].forEach(function (it) { it.dead = true; }); at[k] = null; };
+    var keep = function (k, items) { items.forEach(function (it) { it.dead = false; }); at[k] = items; };
+    pts.forEach(function (r, k) {
+      if (at[k]) return;
+      var near = pts.map(function (q, j) { return j; }).filter(function (j) { return at[j]; })
+        .sort(function (a, b) { return Math.abs(pts[a].i - r.i) - Math.abs(pts[b].i - r.i); }).slice(0, 4);
+      for (var n = 0; n < near.length && !at[k]; n++) {
+        var j = near[n], was = at[j];
+        lift(j);
+        at[k] = place(k, at);
+        if (at[k]) { at[j] = place(j, at); if (at[j]) break; lift(k); }
+        keep(j, was);   // as it was
+      }
+    });
+    pts.forEach(function (r, k) { if (!at[k]) skipped.push(r.label); });
+    return at.map(function (a) { return a ? a.pick : null; });
+  }
   // where the preview band goes: the first height that hides no words, mark or leader
-  function bandAt(room, prefer, lo, hi, x0, x1) {
+  function bandAt(room, prefer, lo, hi, x0, x1, alt) {
     var ys = prefer.slice();
     for (var y = lo; y <= hi; y += 8) ys.push(y);
-    var cost = function (y) {
-      var n = 0, bb = { x: x0, y: y - 36, w: x1 - x0, h: 72 };
+    var cost = function (y, a0, a1) {
+      var n = 0, bb = { x: a0, y: y - 36, w: a1 - a0, h: 72 };
       room.each(bb, 0, function (it) {
-        if (it.k === 'text' || (it.k === 'mark' && it.own !== 'data') || (it.k === 'lead' && /^(rec|wet)/.test(it.own))) { if (hit(it.b, bb)) n++; }
+        // words (and the header) weigh most: a band may hide a dot before it hides a word
+        if (it.k === 'text' || it.own === 'head') { if (hit(it.b, bb)) n += 10; }
+        else if ((it.k === 'mark' && it.own !== 'data') || (it.k === 'lead' && /^(rec|wet)/.test(it.own))) { if (hit(it.b, bb)) n++; }
         return false;
       });
       return n;
     };
     var best = ys[0], bc = Infinity;
-    for (var i = 0; i < ys.length; i++) { var c = cost(ys[i]); if (c === 0) { best = ys[i]; break; } if (c < bc) { bc = c; best = ys[i]; } }
+    for (var i = 0; i < ys.length; i++) { var c = cost(ys[i], x0, x1); if (c === 0) return { y: ys[i], x0: x0, x1: x1 }; if (c < bc) { bc = c; best = ys[i]; } }
+    // a preview with no clear height across the chart: the months still to come, if they are wide enough
+    if (alt && alt[1] - alt[0] >= 520) for (var j = 0; j < ys.length; j++) if (cost(ys[j], alt[0], alt[1]) === 0) return { y: ys[j], x0: alt[0], x1: alt[1] };
     return { y: best, x0: x0, x1: x1 };
   }
 
@@ -565,7 +598,7 @@
     var dateRows = [RY, RY + 24, RY + 48];
     var placedDates = placeDates(marks, dateRows, function (s) { return W(s, mst); },
       function (it, b) { return b.y + b.h < 1138 && room.free(b, 'mark:' + it.ids[0], false); },
-      function (A, ba, ra, B, bb) { return !hit(ba, bb, 10); }, [0.77 * 18, 0.27 * 18]);
+      function (A, ba, ra, B, bb) { return !hit(ba, bb, 20); }, [0.77 * 18, 0.27 * 18], [ML, 1738]);
     placedDates.forEach(function (pd) {
       pd.own = 'mark:' + pd.it.ids[0];
       pd.box = box(pd.x, pd.y, pd.it.label, mst);
@@ -586,7 +619,8 @@
       [RY, RY + 24].some(function (ry) {
         return dc.some(function (x) {
           var b = box(x, ry, dry.text, dry.st);
-          if (b.y + b.h < 1138 && room.free(b, 'dry', false)) { dsol = { x: x, y: ry, b: b }; return true; }
+          // a clear gap from the dates' words, so the row never reads as one phrase
+          if (b.y + b.h < 1138 && room.free(b, 'dry', false) && !placedDates.some(function (pd) { return hit(pd.box, b, 24); })) { dsol = { x: x, y: ry, b: b }; return true; }
           return false;
         });
       });
@@ -673,10 +707,10 @@
       room.text(box(X0 - 14, y(v) + 5, v === dom ? v + ' in' : String(v), { size: 15, anchor: 'end' }), 'axis');
     }
     g.stair.forEach(function (s) { room.add({ s: s, sw: 3.4, own: 'data', k: 'data' }); });
-    g.ncum.forEach(function (s) { room.add({ s: s, sw: 1.6, own: 'data', k: 'data' }); });
+    g.ncum.forEach(function (s) { room.add({ s: s, sw: 1.6, own: 'data', k: 'usual' }); });
     // the preview's "so far" line stops under the header rather than run through it
     var pvTop = E.preview && E.n < N && xs(E.n) > headBox.x - 6 && xs(E.n) < headBox.x + headBox.w + 6 ? headBox.y + headBox.h + 6 : PTOP;
-    if (E.preview && E.n < N) room.seg(xs(E.n), pvTop, xs(E.n), PB, 1, 'data', 'data');
+    if (E.preview && E.n < N) room.seg(xs(E.n), pvTop, xs(E.n), PB, 1, 'data', 'usual');
     var wx = -1, wc0 = 0, wc1 = 0;
     if (E.wi >= 0) { wx = xs(E.wi); wc1 = E.cum[E.wi]; wc0 = wc1 - E.wet.p; room.seg(wx, y(wc0), wx, y(wc1), 4.4, 'wet', 'data'); }
     var ringAt = g.rings;
@@ -686,8 +720,8 @@
       mk.y = g.dots[k].y; mk.y0 = mk.y + 5;
       // under its own dot, and under any dot or ring beside it (dates a day or two apart sit almost on each other)
       for (var pass = 0; pass < 3; pass++) {
-        g.dots.forEach(function (d, j) { if (j !== k && Math.abs(d.x - mk.x) < 7 && d.y + 6.5 > mk.y0 && d.y - 6 < mk.y0 + 2) mk.y0 = d.y + 7; });
-        ringAt.forEach(function (rg) { if (Math.abs(rg.x - mk.x) < 7.5 && rg.y + 7 > mk.y0 && rg.y - 6 < mk.y0 + 2) mk.y0 = rg.y + 7.5; });
+        g.dots.forEach(function (d, j) { if (j !== k && Math.abs(d.x - mk.x) < 7 && d.y + 6.5 > mk.y0) mk.y0 = d.y + 7; });
+        ringAt.forEach(function (rg) { if (Math.abs(rg.x - mk.x) < 7.5 && rg.y + 7 > mk.y0) mk.y0 = rg.y + 7.5; });
       }
       room.add({ b: { x: mk.x - 5.3, y: mk.y - 5.3, w: 10.6, h: 10.6 }, own: 'mark:' + k, k: 'mark' });
       if (mk.y0 < PB) room.seg(mk.x, mk.y0, mk.x, PB, 0.75, 'mark:' + k, 'lead');
@@ -717,8 +751,8 @@
     }
 
     // ---- remarkable days: a small open ring on the line, a label clear of everything
-    var recAt = recs.pts.map(function (r, k) {
-      var rg = ringAt[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
+    var recAt = placeAll(recs.pts, function (k) {
+      var r = recs.pts[k], rg = ringAt[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
       var first = [[14, 30, 'start'], [-14, -18, 'end'], [14, 58, 'start'], [-14, -46, 'end'], [14, 86, 'start'], [-14, 30, 'end'], [14, -18, 'start'], [-14, -74, 'end'], [14, 114, 'start'], [-14, 58, 'end']];
       var pick = choose(spots(rg.x, rg.y, first, [14, 44, 90, 150]), function (c) {
         var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
@@ -729,11 +763,12 @@
         c.b = b; c.L = L;
         return room.free(b, own, true) ? 2 : 1;
       });
-      if (!pick) { skipped.push(r.label); return null; }
-      room.text(pick.b, own); room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.8, own, 'lead');
-      return pick;
-    });
-
+      if (!pick) return null;
+      var its = [room.text(pick.b, own), room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.8, own, 'lead')];
+      its.pick = pick;
+      return its;
+    }, skipped);
+    
     // ================= draw, back to front
     o.push(G0('axis'));
     for (var v2 = 0; v2 <= dom + 1e-9; v2 += step) {
@@ -825,7 +860,7 @@
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, 1690, 1100));
     last_skipped = skipped;
-    return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6));
+    return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [xs(E.n) + 12, X1 + 6] : null));
   }
 
   // ======================================================================= R2
@@ -920,7 +955,7 @@
     var mticks = E.starts.concat([isLeap(E.year) ? 366 : 365]).filter(function (b) { return b <= N; }).map(function (b) { return X0 + b * w; });
     mticks.forEach(function (x) { room.seg(x, G - 7, x, G + 7, 0.75 * PT, 'axis', 'axis'); });
     var prevX = E.preview && E.n < N ? X0 + E.n * w : null;
-    if (prevX !== null) room.seg(prevX, G - SH, prevX, RB, 1, 'data', 'data');
+    if (prevX !== null) room.seg(prevX, G - SH, prevX, RB, 1, 'data', 'usual');
     var wcx = -1, wy2 = 0;
     if (E.wi >= 0) { wcx = xs(E.wi); wy2 = ry(E.wet.p); room.add({ b: { x: wcx - 1.9, y: G + 1.5, w: 3.8, h: wy2 - G - 1.5 }, own: 'wet', k: 'mark' }); }
 
@@ -963,13 +998,13 @@
     var placed = placeDates(marks, [LY, LY - 22, LY - 44], function (s) { return W(s, mst2); },
       function (it, b) { return b.y > 62 && room.free(b, 'mark:' + it.ids[0], false); },
       function (A, ba, ra, B, bb, rb) {
-        if (hit(ba, bb, 10)) return false;
+        if (hit(ba, bb, 20)) return false;
         // a higher label's tick runs down past the lower rows: it may not cut a lower label
         var through = function (xsL, b) { return xsL.some(function (x) { return x > b.x - 4 && x < b.x + b.w + 4; }); };
         if (ra > rb && through(A.xs, bb)) return false;
         if (rb > ra && through(B.xs, ba)) return false;
         return true;
-      }, [0.77 * 17, 0.27 * 17]);
+      }, [0.77 * 17, 0.27 * 17], [X0, X1]);
     var labelOf = {}, from = {};
     placed.forEach(function (pd) {
       pd.own = 'mark:' + pd.it.ids[0];
@@ -1040,26 +1075,33 @@
     fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
 
     // ---- remarkable days: an open ring on the ground line, the label down in the open soil, clear of every bar
-    var recAt = recs.pts.map(function (r, k) {
-      var x = rings[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
+    var recAt = placeAll(recs.pts, function (k, at) {
+      var r = recs.pts[k], x = rings[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
       var top0 = E.P[r.i] > 0 && !(E.full && days[r.i].s > 0) ? ry(E.P[r.i]) + 4 : G + 5;
       var cands = [];
-      for (var yy = G + 70; yy <= RB - 4; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' });
-      var pick = choose(cands, function (c) {
+      // beside its leader, or hanging under it (below the bars around it)
+      for (var yy = G + 70; yy <= RB - 4; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
+      // a label that spans another record's column would stand in its leader's way: only if nothing else fits
+      var cols = rings.filter(function (rx, j) { return j !== k && !at[j]; });
+      var spans = function (b) { return cols.some(function (rx) { return rx > b.x - 4 && rx < b.x + b.w + 4; }); };
+      var test = function (open) { return function (c) {
         var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
         if (b.x < X0 || b.x + b.w > X1 || b.y < top0 + 6) return 0;
+        if (!open && spans(b)) return 0;
         // the leader runs down the day's own column: it must not cut a bar or a word on the way
-        c.L = [x, top0, x, b.y + b.h / 2];
+        c.L = [x, top0, x, c.a === 'middle' ? b.y - 3 : b.y + b.h / 2];
         if (!room.clear(c.L, own, 0)) return 0;
         if (!room.free(b, own, false)) return 0;
         c.b = b;
         return room.free(b, own, true) ? 2 : 1;
-      });
-      if (!pick) { skipped.push(r.label); return null; }
-      room.text(pick.b, own); room.seg(x, pick.L[1], x, pick.L[3], 0.8, own, 'lead');
-      return pick;
-    });
-
+      }; };
+      var pick = choose(cands, test(false)) || choose(cands, test(true));
+      if (!pick) return null;
+      var its = [room.text(pick.b, own), room.seg(x, pick.L[1], x, pick.L[3], 0.8, own, 'lead')];
+      its.pick = pick;
+      return its;
+    }, skipped, recs.pts.map(function (r, k) { return k; }).reverse());   // right to left: a label reaching right passes under the leaders it meets
+    
     // ================= draw, back to front
     o.push(G0('totals') + draw(totals) + G1);
     o.push(G0('title') + draw(title) + G1);
@@ -1101,7 +1143,7 @@
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, X1, 1100));
     last_skipped = skipped;
-    return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB - 40, X0 - 6, X1 + 6));
+    return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
   var last_skipped = [];

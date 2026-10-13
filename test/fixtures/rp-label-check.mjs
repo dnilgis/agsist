@@ -8,7 +8,8 @@
  *   text/line   text over a line that is not its own (data, axis, leaders, the preview band)
  *   leader/leader  two leaders (or a leader and another date's drop line) cross
  *   leader/mark    a leader runs through another label's dot or ring
- *   leader/data    a leader cuts the data (staircase, usual line, bars) away from its own start
+ *   leader/data    a leader cuts the data (the year's line, bars, snow) away from its own start
+ *                  (crossing a dashed line, the usual year or the preview's "so far" line, is allowed)
  *   grid        (soft, reported apart) text over a light grid line
  *
  * Ownership comes from the art's data-rp groups: a label, its leader and its
@@ -208,9 +209,15 @@ export function check(svg, opt = {}) {
     if (cross(a.seg, b.seg)) out.push({ kind: "leader/leader", a: a.rp, b: b.rp });
   }
   const dots = prims.filter((p) => p.dot);
-  leads.forEach((l) => dots.forEach((d) => { if (d.owner !== l.owner && segBox(l.seg, d.box, 0)) out.push({ kind: "leader/mark", a: l.rp, b: d.rp }); }));
+  // a leader may leave its ring through a dot on the very same spot (a date on that day), and nowhere else
+  leads.forEach((l) => dots.forEach((d) => {
+    if (d.owner === l.owner || !segBox(l.seg, d.box, 0)) return;
+    const own = dots.find((o) => o.owner === l.owner);
+    if (own && Math.hypot(own.c[0] - d.c[0], own.c[1] - d.c[1]) < 9) { const far = clipSeg(l.seg, own.c, 9); if (!far || !segBox(far, d.box, 0)) return; }
+    out.push({ kind: "leader/mark", a: l.rp, b: d.rp });
+  }));
   // a leader (not a date's own drop line) must not cut the data away from where it starts
-  const data = prims.filter((p) => p.rp === "data" && !p.soft);
+  const data = prims.filter((p) => p.rp === "data" && !p.soft && !p.dashed);
   prims.filter((p) => p.type === "seg" && /^(wet|rec)/.test(p.rp) && p.sw <= 1.5).forEach((l) => {
     const own = dots.find((d) => d.owner === l.owner);
     const start = own ? own.c : [l.seg[0], l.seg[1]];
