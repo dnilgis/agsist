@@ -1154,7 +1154,8 @@
       ? 'Want a card to put under the tree? Order it as a gift with the box above filled in. Once you\u2019ve paid, I email you a gift card to print, with a code they use to see their print.'
       : 'At checkout you can say who it\u2019s for and write a note for the card. Once you\u2019ve paid, I email you a gift card to print for under the tree, with a code they use to see their print.';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
-    $('ro-order-note').textContent = on ? 'I\u2019ll email you within a day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
+    $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
+      : on ? 'I\u2019ll email you within a day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1559,9 +1560,12 @@
   function syncSummary() {
     var el = $('ro-summary'), id = $('ro-choice').value, J = PRICES || {};
     if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
-    var price = typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
+    var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
+    var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift(), print = id !== 'digital';
-    var steps = jan
+    var steps = paid
+      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed once you OK it.']
+      : jan
       ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once NOAA\u2019s December numbers are in, I draw the full year and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed once you OK it.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
         print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you pay.'];
@@ -2118,6 +2122,7 @@
   function useGift() {
     if (!GIFT || !GIFT.usable) return;
     if (!canOrder()) { buy(GIFT.product); return; }
+    syncGift();
     openOrder(GIFT.product);
     $('ro-choice').disabled = true;
     $('ro-submit').textContent = 'Use my gift';
