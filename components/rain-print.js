@@ -2059,7 +2059,8 @@
          refund FAQ. The page says the amount; a different number here replaces it there. */
       if (typeof j.reprint_fee === 'number' && j.reprint_fee > 0) {
         Array.prototype.forEach.call(doc.querySelectorAll('details p'), function (p) {
-          if (/reframe it for \$\d+(\.\d\d)?, with the same serial/.test(p.innerHTML)) p.innerHTML = p.innerHTML.replace(/reframe it for \$\d+(\.\d\d)?, with/, 'reframe it for ' + money(j.reprint_fee) + ', with');
+          if (/reframe it for \$\d+(\.\d\d)?, with the same serial/.test(p.innerHTML)) // a function, not a string: '$15' in a replacement string reads as a backreference
+            p.innerHTML = p.innerHTML.replace(/reframe it for \$\d+(\.\d\d)?, with/, function () { return 'reframe it for ' + money(j.reprint_fee) + ', with'; });
         });
       }
       syncCutoffs();
@@ -2095,7 +2096,7 @@
        that was tapped, with the two ways on, instead of scrolling 2,500 px up
        to section 2. Example words still never go on an order unasked. */
     if (left.length) {
-      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear it to order without it; it clears only the example words listed.' +
+      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear the example to order without it. Only the example words listed are cleared.' +
         '<button type="button" class="btn btn-primary" id="rp-ex-go">Clear the example and order</button>' +
         '<button type="button" class="btn btn-secondary" id="rp-ex-edit">Edit the words</button>' +
         '<button type="button" class="btn btn-secondary" id="rp-ex-mine">These are mine, order as is</button></span>';
@@ -2264,7 +2265,7 @@
     var can = canOrder(), left = can ? exampleLeft(ST) : [], gift = !!(GIFT && GIFT.usable), id = proofChoice(), J = PRICES || {};
     $('rp-proof-go').hidden = !!left.length;
     $('rp-proof-ex').hidden = !left.length;
-    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear it to order without it; it clears only the example words listed.' : '';
+    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear the example to order without it. Only the example words listed are cleared.' : '';
     $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift'
       : (PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed') + (typeof J[id] === 'number' ? ', ' + money(J[id]) : '');
     var first = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'

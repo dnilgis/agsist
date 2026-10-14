@@ -363,7 +363,7 @@ test("P6: a buyer's own date that matches an example date can be ordered as it i
     await settle(page);
     await page.click('.rp-buy-btn[data-choice="print12x18"]');
     await settle(page);
-    assert.match(await page.textContent("#rp-buy-note"), /it clears only the example words listed/);
+    assert.match(await page.textContent("#rp-buy-note"), /Only the example words listed are cleared/);
     assert.deepEqual(await opened(page), []);
     await page.click("#rp-ex-mine");
     await settle(page);
@@ -519,4 +519,14 @@ test("T2: the privacy page is true today: Rain Print links, logos, orders, gift 
   assert.match(P, /keeps what you sent for up to a year/);
   assert.match(W, /rps:<id> = a plain design code, no expiry/);
   assert.ok(!/gauge-lab/.test(P));
+});
+
+test("Sig, 2026-10-14: the page shows $15 to reprint after the prices load (not a backreference's '5')", { skip }, async () => {
+  for (const prices of [null, { reprint_fee: 20 }]) await withPage(async (page, base) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    await settle(page);
+    const faq = await page.evaluate(() => [...document.querySelectorAll("details")].find((d) => /What if something/.test(d.textContent)).textContent);
+    assert.match(faq, prices ? /reframe it for \$20, with the same serial number/ : /reframe it for \$15, with the same serial number/);
+  }, { prices });
 });

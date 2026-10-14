@@ -379,7 +379,7 @@ test("refund and reprint wording: Sig's terms, $15 to reprint a lost or damaged 
   assert.equal(J.reprint_fee, 15, "Sig set $15 (2026-10-14)");
   assert.ok(!/small fee/.test(HTML), "the amount, not 'a small fee'");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,400}'reframe it for ' \+ money\(j\.reprint_fee\) \+ ', with'/);
+  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,600}function \(\) \{ return 'reframe it for ' \+ money\(j\.reprint_fee\) \+ ', with'; \}/);
   assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
 });
 
