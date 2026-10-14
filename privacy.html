@@ -196,13 +196,12 @@
       <h2>Who processes it</h2>
       <p>These services handle part of what the site does. Each one gets only what that feature needs. Every service your browser talks to also sees your IP address, as any website does.</p>
       <ul>
-        <li><strong>GitHub Pages</strong>: hosts the site itself.</li>
+        <li><strong>GitHub Pages</strong>: hosts the site itself, and the cash-bid files the bid pages load from dnilgis.github.io.</li>
         <li><strong>Google Analytics</strong>: the visit counts described above, when analytics is on.</li>
         <li><strong>Gmail (Google)</strong>: sends the AGSIST Daily, the alert and watch emails, and their confirmation emails, so Google handles those messages in transit.</li>
-        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), take the forms above, look up cash bids by ZIP, answer Field Scout requests, and keep Rain Print design links, logos and gift cards. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
+        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), take the forms above, answer Field Scout requests, and keep Rain Print design links, logos and gift cards. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
         <li><strong>Stripe</strong>: takes payment for Rain Print orders. Checkout runs on Stripe&rsquo;s own pages, under Stripe&rsquo;s privacy policy.</li>
         <li><strong>NOAA&rsquo;s Regional Climate Centers (RCC-ACIS, data.rcc-acis.org)</strong>: the Rain Print page and the gift card ask it for the weather stations around a place and their daily rain records. Your browser sends the place&rsquo;s coordinates and the station, nothing about you.</li>
-        <li><strong>Barchart</strong>: the second cash-bid feed. When you look up bids by ZIP, your browser sends the ZIP and search radius to AGSIST&rsquo;s Cloudflare Worker, and the worker asks Barchart for bids near that ZIP. Barchart gets the ZIP from the worker, not from your browser.</li>
         <li><strong>Open-Meteo</strong>: weather. It receives the coordinates of the place you asked about, turns a ZIP into a place on the home page&rsquo;s bid search, and finds the town you type on the Rain Print page.</li>
         <li><strong>OpenStreetMap Nominatim</strong>: turns coordinates into a place name.</li>
         <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong>: the hail map loads live storm warnings and the last 24 hours of storm reports from them. The requests carry no location from you.</li>
