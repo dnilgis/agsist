@@ -146,8 +146,12 @@
       if (!o || !o.ok) return { type: 'broken', at: y, E: E };
       var beat = r2(dir === 'high' ? o.sum - t : t - o.sum);   // > 0: that year was more extreme
       if (o.full) {
+        /* A "full" past year may still miss up to MISS_OK days. For "wettest",
+           what those days could hold (3 times its own daily average each) widens
+           the margin before it counts as drier (2026-10-14, panel 3 D5). */
+        var len = dim(y, 1) === 29 ? 366 : 365, bb = dir === 'high' && o.ok ? b + (len - o.ok) * (o.sum / o.ok) * 3 : b;
         if (beat > b) return { type: 'since', at: y, E: E };
-        if (beat >= -b) return { type: 'broken', at: y, E: E };   // too close to call
+        if (beat >= -bb) return { type: 'broken', at: y, E: E };   // too close to call
         E++; continue;
       }
       // partial year: its recorded sum is only a lower bound on what fell
@@ -252,7 +256,9 @@
     for (var y = first; y <= T; y++) if (H[y] && H[y].full) nFull++;
     if (!o.full) return 'this year is not a full year (' + ((dim(T, 1) === 29 ? 366 : 365) - o.ok) + ' days without a report)';
     if (nFull < MIN_FULL) return 'only ' + nFull + ' full years on record up to ' + T;
-    var c = chain(H, first, T, o.sum, dir, BAND_YEAR), sup = dir === 'high' ? 'Wettest' : 'Driest', cmp = dir === 'high' ? 'Wetter' : 'Drier';
+    // "driest": this year's own missing days could hold rain; the margin grows by what they could (panel 3 D5)
+    var mT = (dim(T, 1) === 29 ? 366 : 365) - o.ok, rate = o.ok ? o.sum / o.ok : 0;
+    var c = chain(H, first, T, o.sum, dir, dir === 'low' ? BAND_YEAR + mT * rate * 3 : BAND_YEAR), sup = dir === 'high' ? 'Wettest' : 'Driest', cmp = dir === 'high' ? 'Wetter' : 'Drier';
     if (c.E < MIN_SETTLED) return 'not remarkable: ' + c.E + ' years settled before ' + (c.type === 'since' ? c.at + ' had ' + (dir === 'high' ? 'more' : 'less') : c.type === 'broken' ? c.at + ' could not be compared' : 'the record starts') + ', ' + MIN_SETTLED + ' needed';
     var label = c.type === 'since' ? sup + ' year since ' + c.at
       : c.type === 'start' && c.E + 1 >= START_MIN ? sup + ' year on record here, back to ' + first
@@ -266,7 +272,9 @@
     for (var m = 0; m < 12; m++) {
       var me = H[T].month[m];
       if (!me[key + 'Full']) continue;
-      var t = me[key], vals = [];
+      var t = me[key], vals = [], bandM = band;
+      // a dry month with days missing could have been wetter by what they hold, at 3 times the year's daily average (panel 3 D5)
+      if (key === 'rain' && dir < 0) { var okM = H[T].mOk[m], missM = dim(T, m) - okM; bandM = band + (H[T].ok ? missM * (H[T].sum / H[T].ok) * 3 : 0); }
       Object.keys(H).forEach(function (k) { var o = H[k].month[m]; if (+k < T && o[key + 'Full']) vals.push(o[key]); });
       var n = vals.length + 1;
       if (n < MIN_FULL) { why = 'fewer than ' + MIN_FULL + ' full ' + MONTH[m] + 's on record'; continue; }
@@ -276,7 +284,7 @@
         if (med < DRY_MEDIAN_MIN) { why = MONTH[m] + ' is usually too dry for a dry record to mean much'; continue; }
       }
       var more = 0, tied = 0;
-      vals.forEach(function (v) { var d = Math.round((dir > 0 ? v - t : t - v) * 1000) / 1000; if (d > band) more++; else if (d >= -band) tied++; });
+      vals.forEach(function (v) { var d = Math.round((dir > 0 ? v - t : t - v) * 1000) / 1000; if (d > bandM) more++; else if (d >= -bandM) tied++; });
       var k = 1 + more, limit = Math.max(1, Math.floor(n / RARE));
       ranked++;
       if (k + tied > limit) continue;

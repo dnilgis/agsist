@@ -302,3 +302,17 @@ test("130 years of history in well under a second", () => {
   R.find(hist(p, 2025), { kinds: ["wetYear", "dryYear", "wetMonth", "dryMonth", "warmMonth", "coldMonth"] });
   assert.ok(Date.now() - t < 1000, Date.now() - t + " ms");
 });
+
+test("D5 (2026-10-14): 'driest' leaves room for what this year's missing days could hold", () => {
+  const over = {};
+  for (let d = 1; d <= 10; d++) over["2025-07-" + String(d).padStart(2, "0")] = "M";
+  // 2025: a dry June and 10 July days missing (26.00 in recorded); 1990: the same dry June, all days in (26.80 in)
+  const p = por({ from: "1950-01-01", to: "2025-12-31", june: (y) => (y === 2025 || y === 1990 ? 0 : 0.08), over });
+  const r = one(hist(p, 2025), "dryYear");
+  assert.ok(r.f, "still remarkable: " + r.why);
+  assert.ok(!/on record/.test(r.f.label), "0.80 in drier than 1990 is inside what 10 missing days could hold: " + r.f.label);
+  assert.equal(r.f.label, "Drier than any year since 1991");
+  // with every day in, the same gap is a record
+  const full = one(hist(por({ from: "1950-01-01", to: "2025-12-31", june: (y) => (y === 2025 ? 0 : y === 1990 ? 0.0267 : 0.08) }), 2025), "dryYear");
+  assert.match(full.f.label, /^Driest year on record here/);
+});
