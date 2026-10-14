@@ -113,7 +113,6 @@
       'a.rp-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +
       '.rp-card-i{position:relative;flex:0 0 auto;width:132px}' +
       '.rp-card img{width:100%;height:auto;aspect-ratio:360/247;border-radius:3px;display:block}' +
-      '.rp-card-s{position:absolute;right:4px;bottom:4px;padding:1px 5px;border-radius:3px;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:rgba(20,20,20,.72)}' +
       '.rp-card-b{min-width:0}' +
       '.rp-card-t{display:block;font-weight:700;font-size:.98rem;line-height:1.3;color:var(--text)}' +
       '.rp-card-x{display:block;margin-top:3px;font-size:.86rem;line-height:1.45;color:var(--text-dim)}' +
@@ -137,7 +136,7 @@
         if (!c) continue;
         css();
         el.innerHTML = '<a class="rp-card" href="' + esc(c.href) + '" data-placement="home-card-' + c.angle + '">' +
-          '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="247" alt="A sample Rain Print, made-up numbers" loading="lazy" decoding="async"><span class="rp-card-s" aria-hidden="true">Sample</span></span>' +
+          '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="247" alt="An example Rain Print: a year of rain stepping up across the months, with a farm name and year" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
           '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
         el.hidden = false;

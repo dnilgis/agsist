@@ -53,6 +53,20 @@ test("a share link that can't be drawn says why", () => {
   assert.equal(RP.linkProblem(""), "", "no design in the link is not a problem");
 });
 
+test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up numbers' share or thumb text", () => {
+  const G = readFileSync(ROOT + "gifts-for-farmers.html", "utf8"), P = readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), C = readFileSync(ROOT + "rp-gift.html", "utf8");
+  assert.match(G, /<li>Digital file <b>\$<span data-gf-price="digital">/);
+  for (const [n, t] of [["rain-print", HTML], ["gifts", G], ["gift card", C]]) assert.ok(!/print files?\b[^.]{0,40}\$19|Print file <b>|print file of the whole year|A print file is/.test(t), n + ": the $19 product is the Digital file");
+  assert.match(HTML, /<li>The digital file, 12 x 18 in at 300 dpi, no watermark<\/li>/);
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const faq = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.map((q) => q.name);
+  const shown = [...HTML.matchAll(/<details><summary>([^<]*)<\/summary>/g)].map((m) => m[1].replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d"));
+  for (const q of faq) { assert.ok(!q.includes("'"), "JSON-LD FAQ title has a straight apostrophe: " + q); assert.ok(shown.includes(q), "visible FAQ title matches word for word: " + q); }
+  assert.ok(!shown.some((q) => q.includes("'")), "no straight apostrophe in a visible FAQ title");
+  for (const [n, t] of [["rain-print", HTML], ["promo", P], ["gifts", G]]) assert.ok(!/made-up numbers/i.test(t), n + ": no 'made-up numbers' alt text");
+  assert.ok(!/rp-card-s/.test(P), "the thumb carries its own Example tag; no second Sample label over it");
+});
+
 test("a Stripe reference RPS-<id> or GIFT-RPS-<id> opens as rain-print?d=, through the short link", () => {
   // checkoutRef sends these for a design past 200 characters; the data file tells Sig to open rain-print?d=<reference>
   const long = RP.encodeCode({ place: "Chetek, WI", year: 2025, name: "The Johnson Family Farm", dedication: "For Dad, his 40th crop on the home place. Love, Kate, Ben and Ole",
