@@ -112,6 +112,28 @@ test("the QR is warm gray on the paper, square to the page; the serial is drawn 
   }
 });
 
+test("the short-link QR prints about 0.85 in with a 4-module quiet zone; the serial fits under it", () => {
+  const m = ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M");
+  assert.equal(m.length, 25);
+  for (const style of ["r1", "r2"]) {
+    const svg = ART.render(input(year(2025), { style, qr: { matrix: m, serial: "No. 0001 · SRL" } }));
+    const g = /<g data-rp="qr"><g aria-hidden="true"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="#FFFFFF"\/><path d="([^"]+)"/.exec(svg);
+    const xs = [...g[5].matchAll(/M([\d.]+),([\d.]+)h([\d.]+)/g)], ys = xs.map((t) => +t[2]);
+    const x0 = Math.min(...xs.map((t) => +t[1])), x1 = Math.max(...xs.map((t) => +t[1] + +t[3]));
+    const size = x1 - x0;
+    assert.ok(Math.abs(size - 83.33) < 0.1, style + ": the mark is " + size + " u");
+    assert.ok(Math.abs(+g[3] - size - 2 * 4 * size / 25) < 0.1, style + ": the white square leaves 4 modules each side");
+    const serial = new RegExp('<text x="[\\d.]+" y="([\\d.]+)"[^>]*>No\\. 0001 · SRL</text>').exec(svg);
+    assert.ok(+serial[1] - 11.5 * 0.77 > Math.max(...ys) + size / 25, style + ": the serial sits under the mark");
+    assert.ok(+serial[1] <= 1140, style + ": inside the 0.6 in margin");
+  }
+  // Roots: a deep December rain (the year's biggest, its bar down to 994) would run under the mark, so the mark moves down to the small line
+  const dec = year(2025, (i) => (i === 350 ? { p: "2.50" } : i % 9 === 0 ? { p: "0.30" } : { p: "0.00" }));
+  const svg = ART.render(input(dec, { style: "r2", qr: { matrix: m, serial: "" } }));
+  const q = /<g data-rp="qr"><g aria-hidden="true"><rect x="([\d.]+)" y="([\d.]+)"/.exec(svg);
+  assert.ok(+q[2] > 994 + 3, "the QR's white square stays below the deepest bar: " + q[2]);
+});
+
 test("an unrecorded day is a gap: R1's pen lifts, R2's ground line breaks", () => {
   const gap = (i) => (i >= 100 && i < 104 ? { p: "M" } : i === 200 ? { p: "S" } : {});
   const days = year(2025, gap);

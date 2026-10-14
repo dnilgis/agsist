@@ -382,12 +382,16 @@
 
   // ---------- the maker's mark: QR, square to the page, serial under it ----------
   var snap = function (v) { return Math.round(v * 3) / 3; };   // whole 300 dpi pixels
+  /* One QR module, in 300 dpi pixels. The short link is 25 modules: 10 px each
+     makes the mark 250 px, about 0.85 in (Sig's size). A long ?d= code falls back
+     to the old rule. The quiet zone is 4 modules, as the QR standard asks. */
+  function qrCell(n) { return n <= 29 ? 10 : Math.max(2, Math.min(7, Math.floor(255 / (n + 6)))); }
   function qrMark(Q, right, bottom) {
     if (!Q || !Q.matrix || !Q.matrix.length) return '';
     var m = Q.matrix, n = m.length;
-    var cellPx = Math.max(2, Math.min(7, Math.floor(255 / (n + 6)))), cell = cellPx / 3;
+    var cell = qrCell(n) / 3;
     var mx1 = snap(right), my1 = snap(bottom - 17);
-    var mx0 = snap(mx1 - n * cell), my0 = snap(my1 - n * cell), quiet = 3 * cell;
+    var mx0 = snap(mx1 - n * cell), my0 = snap(my1 - n * cell), quiet = 4 * cell;
     var d = '';
     for (var r = 0; r < n; r++) for (var c = 0; c < n;) {
       if (!m[r][c]) { c++; continue; }
@@ -460,8 +464,8 @@
   // where the QR and its serial sit (the same arithmetic as qrMark)
   function qrBox(Q, right, bottom) {
     if (!Q || !Q.matrix || !Q.matrix.length) return null;
-    var n = Q.matrix.length, cell = Math.max(2, Math.min(7, Math.floor(255 / (n + 6)))) / 3;
-    var mx1 = snap(right), my1 = snap(bottom - 17), mx0 = snap(mx1 - n * cell), my0 = snap(my1 - n * cell), q = 3 * cell;
+    var n = Q.matrix.length, cell = qrCell(n) / 3;
+    var mx1 = snap(right), my1 = snap(bottom - 17), mx0 = snap(mx1 - n * cell), my0 = snap(my1 - n * cell), q = 4 * cell;
     return { x: mx0 - q, y: my0 - q, w: n * cell + 2 * q, h: (Q.serial ? bottom + 3 : my1 + q) - (my0 - q) };
   }
   /* Candidate spots for a label near (ax, ay), nearest first: the hand-picked
@@ -942,7 +946,7 @@
     if (E.full) S.ticks.forEach(function (t) { room.seg(X0, sy(t), X1, sy(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, sy(t) + 5, String(t), { size: 15, fill: C.snowInk, anchor: 'end' }]); });
 
     // bars: a snow day shows only above the line (its melted water still counts in the total)
-    var bw = 0.66 * w, sw = 0.8 * w, bars = '', snows = '';
+    var bw = 0.66 * w, sw = 0.8 * w, bars = '', snows = '', barBoxes = [];
     days.forEach(function (x, i) {
       var p = E.P[i], cx = xs(i);
       if (p === null) return;
@@ -955,7 +959,7 @@
       if (p > 0 && i !== E.wi) {
         var bb = { x: cx - bw / 2, y: G + 1.5, w: bw, h: Math.max(0.8, ry(p) - G) };
         bars += '<rect x="' + n2(bb.x) + '" y="' + bb.y + '" width="' + n2(bb.w) + '" height="' + n2(bb.h) + '"/>';
-        room.add({ b: bb, own: 'data', k: 'mark' });
+        room.add({ b: bb, own: 'data', k: 'mark' }); barBoxes.push(bb);
       }
       // trace days are not drawn: unexplained dots at the ground line read as data (designers' panel, 2026-10-13)
     });
@@ -970,7 +974,7 @@
     var prevX = E.preview && E.n < N ? X0 + E.n * w : null;
     if (prevX !== null) room.seg(prevX, G - SH, prevX, RB, 1, 'data', 'usual');
     var wcx = -1, wy2 = 0;
-    if (E.wi >= 0) { wcx = xs(E.wi); wy2 = ry(E.wet.p); room.add({ b: { x: wcx - 1.9, y: G + 1.5, w: 3.8, h: wy2 - G - 1.5 }, own: 'wet', k: 'mark' }); }
+    if (E.wi >= 0) { wcx = xs(E.wi); wy2 = ry(E.wet.p); barBoxes.push(room.add({ b: { x: wcx - 1.9, y: G + 1.5, w: 3.8, h: wy2 - G - 1.5 }, own: 'wet', k: 'mark' }).b); }
 
     // the scale's names: rain at the foot of its scale, or under the soil if a bar is in the way
     var rainTitle = E.full ? 'rain, in' : E.liquid + ', in', rtSt = { size: 15, fill: C.mute };
@@ -997,7 +1001,9 @@
     if (E.snowKey) foot.push('Snow and rain use separate scales');
     var small = smallLine(E, ML, 1440);
     if (small) room.text(small.box, 'foot');
-    var qb = qrBox(I.qr, X1, 1100);
+    // the QR sits at the foot's line; a deep December bar under it moves it down to the small line (still inside the margin)
+    var qrBottom = 1100, qb = qrBox(I.qr, X1, qrBottom);
+    if (qb && barBoxes.some(function (bb) { return hit(bb, qb, 3); })) { qrBottom = 1132; qb = qrBox(I.qr, X1, qrBottom); }
     if (qb) room.add({ b: qb, own: 'qr', k: 'mark' });
     var fst = { size: 17, fill: C.mute };
     room.add({ b: { x: ML, y: 1100 - 0.77 * 17, w: 1440, h: 1.04 * 17 }, own: 'foot', k: 'text' });
@@ -1178,7 +1184,7 @@
     });
     o.push(G0('foot') + T(ML, 1100, foot.join('  ·  '), fst) + G1);
     if (small) o.push(small.svg);
-    o.push(qrMark(I.qr, X1, 1100));
+    o.push(qrMark(I.qr, X1, qrBottom));
     last_skipped = skipped;
     return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
