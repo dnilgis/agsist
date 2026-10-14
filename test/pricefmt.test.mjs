@@ -75,6 +75,8 @@ const SURFACES = [
   /* 2026-10-11: homepage scripts moved out of index.html stay under the guard. */
   "components/home-yield.js", "components/home-planting.js", "components/home-season.js",
   "components/home.js",
+  /* 2026-10-14: the /fast-facts page script moved out of fast-facts.html. */
+  "components/fast-facts.js", "components/manure-value.js",
 ];
 /* The tell-tale of a home-made quarter formatter: a fraction lookup table. */
 const COPY = /\[\s*''\s*,\s*'(?:1\/4|\\u00bc|¼)'|f===1\?'(?:1\/4|¼|\\u00bc)'|f===0\.25\?/;
