@@ -7,6 +7,12 @@
    QR code is drawn on the reader's phone: no outside QR service.
 
      AgQR.matrix(text)  -> rows of booleans (true = dark), no quiet zone
+     AgQR.matrix(text, null, 'alnum') -> the same in alphanumeric mode (QR
+       0-9 A-Z space $ % * + - . / : only; it throws on anything else). It
+       packs two letters in 11 bits, so HTTPS://AGSIST.COM/RAIN-PRINT fits
+       version 2 (25 x 25) instead of byte mode's version 3. Added 2026-10-14
+       for the Rain Print standard code; byte mode, and every symbol the
+       county pages print, is unchanged.
      AgQR.svg(text, label) -> '<svg class="qr" ...>' */
 (function (w) {
   'use strict';
@@ -69,12 +75,22 @@
     for (var i = 0; i < s.length; i++) out.push(s.charCodeAt(i));
     return out;
   }
-  function encodeData(data, ver) {
+  var ALNUM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+  function alnumBits(n, ver) { return 4 + (ver <= 9 ? 9 : 11) + 11 * Math.floor(n / 2) + 6 * (n % 2); }
+  function encodeData(data, ver, alnum) {
     var bits = [];
     function put(val, n) { for (var i = n - 1; i >= 0; i--) bits.push((val >> i) & 1); }
-    put(4, 4);
-    put(data.length, ver <= 9 ? 8 : 16);
-    data.forEach(function (b) { put(b, 8); });
+    if (alnum) {
+      put(2, 4);
+      put(data.length, ver <= 9 ? 9 : 11);
+      for (var a = 0; a < data.length; a += 2) {
+        if (a + 1 < data.length) put(data[a] * 45 + data[a + 1], 11); else put(data[a], 6);
+      }
+    } else {
+      put(4, 4);
+      put(data.length, ver <= 9 ? 8 : 16);
+      data.forEach(function (b) { put(b, 8); });
+    }
     var cap = dataCodewords(ver) * 8;
     put(0, Math.min(4, cap - bits.length));
     put(0, ((-bits.length) % 8 + 8) % 8);
@@ -129,9 +145,15 @@
     function (x, y) { return ((x + y) % 2 + x * y % 3) % 2 === 0; }
   ];
 
-  function matrix(text, mask) {
-    var data = utf8(text), ver = null, v, i, j, x, y;
-    for (v = 1; v <= 10; v++) if (data.length + (v <= 9 ? 2 : 3) <= dataCodewords(v)) { ver = v; break; }
+  function matrix(text, mask, mode) {
+    var alnum = mode === 'alnum', data, ver = null, v, i, j, x, y;
+    if (alnum) {
+      data = String(text).split('').map(function (ch) { var k = ALNUM.indexOf(ch); if (k < 0) throw new Error('not a QR alphanumeric character: ' + ch); return k; });
+      for (v = 1; v <= 10; v++) if (alnumBits(data.length, v) <= dataCodewords(v) * 8) { ver = v; break; }
+    } else {
+      data = utf8(text);
+      for (v = 1; v <= 10; v++) if (data.length + (v <= 9 ? 2 : 3) <= dataCodewords(v)) { ver = v; break; }
+    }
     if (ver === null) throw new Error('text too long for a version 10 QR code at level M');
     var size = ver * 4 + 17, mod = [], fn = [];
     for (y = 0; y < size; y++) { mod.push([]); fn.push([]); for (x = 0; x < size; x++) { mod[y].push(false); fn[y].push(false); } }
@@ -167,7 +189,7 @@
       var vb = ver << 12 | rem;
       for (i = 0; i < 18; i++) { var bt = ((vb >> i) & 1) === 1, a = size - 11 + i % 3, b2 = Math.floor(i / 3); setf(a, b2, bt); setf(b2, a, bt); }
     }
-    var cw = interleave(encodeData(data, ver), ver), bi = 0, right = size - 1;
+    var cw = interleave(encodeData(data, ver, alnum), ver), bi = 0, right = size - 1;
     while (right >= 1) {
       if (right === 6) right = 5;
       for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {

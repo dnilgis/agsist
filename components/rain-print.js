@@ -102,6 +102,16 @@
      A code over Stripe's 200 characters goes to checkout as its short-link id
      (checkoutRef below). */
   var SITE = 'https://agsist.com/rain-print';
+  /* The standard code (2026-10-14, Sig: no working QR for a design until
+     someone pays). Every preview, test print and mockup carries this one fixed
+     QR to the Rain Print page; only the files Sig makes after payment carry the
+     print's own short link. Uppercase keeps it in QR alphanumeric mode: version
+     2 at level M, 25 x 25 modules, the same printed size as the short link. */
+  var STANDARD_LINK = 'HTTPS://AGSIST.COM/RAIN-PRINT', STD_M = null;
+  function standardMatrix() {
+    if (!STD_M && root.AgQR) STD_M = root.AgQR.matrix(STANDARD_LINK, null, 'alnum');
+    return STD_M ? STD_M.map(function (r) { return r.slice(); }) : null;
+  }
 
   function inv(o) { var r = {}; Object.keys(o).forEach(function (k) { r[o[k]] = k; }); return r; }
   var LAYOUT_R = inv(LAYOUT), PALETTE_R = inv(PALETTE), CMP_R = inv(CMP), SIZE_R = inv(SIZE);
@@ -1060,7 +1070,7 @@
   }
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
+    designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
@@ -1199,7 +1209,8 @@
     }
     return hit || shortUrl(d);
   }
-  function qrInfo(serial) {
+  function qrInfo(serial, std) {
+    if (std) { var sm = null; try { sm = standardMatrix(); } catch (e) { sm = null; } return sm ? { matrix: sm, serial: serial || '' } : null; }
     var url = qrLink(), m = null;
     QR_OK = false;
     if (!root.AgQR || !url) return null;
@@ -1222,7 +1233,7 @@
       style: ST.style, year: META.year, place: placeLong(), name: ST.name, dedication: ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
-      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.std), preview: PREVIEW ? { last: PREVIEW.last } : null,
       gauge: META ? gaugeLine(META) : '', logo: logoArt(),
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
@@ -2674,15 +2685,16 @@
   /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed),
      'digital' (the $19 file: 300 dpi at the trim, no bleed, no serial) or a print
      size key (the printer's file: bleed, and the serial when the link has one). */
-  function drawCanvas(kind) {
+  function drawCanvas(kind, std) {
     var P = PRINT[kind === 'preview' || kind === 'digital' ? ST.size : kind];
-    var o = {}, pxW, pxH;
+    var o = { std: !!std }, pxW, pxH;
     if (kind === 'preview') {
       pxW = 2000; pxH = Math.round(2000 * P.h / P.w); o.watermark = true;
     } else if (kind === 'digital') {
       pxW = P.w * DPI; pxH = P.h * DPI;
     } else {
       o.serial = SERIAL;
+      if (std) o.serial = '';   // a test print is no numbered print
       pxW = Math.round((P.w + 2 * BLEED_IN) * DPI); pxH = Math.round((P.h + 2 * BLEED_IN) * DPI);
       o.bleed = ART_UNITS_IN * BLEED_IN;
     }
@@ -2755,6 +2767,21 @@
     if (!DATA || BLOCKED) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
+    /* Sig's test print (2026-10-14): the 12 x 18 PDF with the standard code to
+       the Rain Print page, for his own test prints and samples. No short link,
+       no worker call, no serial, so it works when the link service doesn't. */
+    if (btn.getAttribute('data-qr') === 'standard') {
+      var tname = slug() + '-' + kind + '-test-print-standard-code';
+      logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, true); }).then(function (c) {
+        return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), tname + '.pdf');
+          out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.';
+          ga('rain_print_download', { kind: 'test', fmt: 'pdf' });
+        });
+      }).then(null, function (e) { out.textContent = e === 'logo' ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
+        .then(function () { btn.disabled = false; btn.textContent = was; });
+      return;
+    }
     var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-digital-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
     var job, NO_QR = {};
     /* Every file someone pays for, or Sig prints, carries the short-link QR: the
