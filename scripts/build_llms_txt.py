@@ -117,7 +117,7 @@ PAGES = [
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest NOAA weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
-        ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is designing: reads like any gauge, and a QR code lets a phone photo log the reading; no date or price yet, updates by email"),
+        ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: reads like any gauge, and a phone photo of it logs the reading to a rain log by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value"),
