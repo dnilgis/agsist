@@ -379,8 +379,8 @@ r = await rps({ code: codeB }, { Origin: 'https://www.agsist.com' }); A(r.status
 // rate limit: own counter, new ids only, and it never touches the form posts' 8
 const ip3 = { 'CF-Connecting-IP': '192.0.2.99' };
 codes = [];
-for (let i = 0; i < 61; i++) codes.push((await rps({ code: b64u('1|Town ' + i + '|1|2025|snna|') }, ip3)).status);
-A(codes.slice(0, 60).every(c => c === 200) && codes[60] === 429, 'rp-short: 60 new ids an hour per IP, then 429');
+for (let i = 0; i < 201; i++) codes.push((await rps({ code: b64u('1|Town ' + i + '|1|2025|snna|') }, ip3)).status);
+A(codes.slice(0, 200).every(c => c === 200) && codes[200] === 429, 'rp-short: 200 new ids an hour per IP, then 429');
 r = await rps({ code: codeA }, ip3); A(r.status === 200, 'rp-short: a known code still answers past the limit');
 r = await post(claim, ip3); A(r.status === 200, 'rp-short: links do not use up the form limit');
 // GET
