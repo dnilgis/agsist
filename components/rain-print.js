@@ -1070,12 +1070,56 @@
     });
   }
 
+  /* PAID (2026-10-14, Sig: Stripe checkout in the same tab). Each Payment Link
+     sends the buyer back to rain-print?paid=<framed12x18|print12x18|digital>
+     &s={CHECKOUT_SESSION_ID} (the setting is in TODO-SIG.md). paidFromUrl
+     reads it: {choice, session ('' unless it looks like Stripe's cs_ id)}, or
+     null. paidText says what happens next, as paragraphs: o = {choice, today
+     (YYYY-MM-DD, Chicago), prices (data/rain-print.json), saved (the design
+     saved at the press: {choice, place, year, gift, settle}, or null)}. The
+     proof or the file date is the next business day (proof_business_days, the
+     same holidays as the Christmas dates). The order line is left off when the
+     saved design is missing or was for another product. */
+  var PAID_WHAT = { framed12x18: 'framed print', print12x18: '12 x 18 print', digital: 'digital file' };
+  var WEEKDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  function dayWords(iso) { return WEEKDAY[new Date(iso + 'T12:00:00Z').getUTCDay()] + ', ' + shortDate(iso); }
+  function paidFromUrl(search) {
+    var q = new URLSearchParams(String(search || '').replace(/^\?/, '')), c = q.get('paid'), sid = q.get('s') || '';
+    if (!PAID_WHAT[c]) return null;
+    return { choice: c, session: /^cs_[A-Za-z0-9_]{8,250}$/.test(sid) ? sid : '' };
+  }
+  function paidText(o) {
+    var id = o.choice, j = o.prices || {}, hol = Array.isArray(j.holidays) ? j.holidays : [], file = id === 'digital';
+    var sv = o.saved && o.saved.choice === id ? o.saved : null, ship = Number.isInteger(j.ship_business_days) ? j.ship_business_days : 3;
+    var pd = Number.isInteger(j.proof_business_days) ? j.proof_business_days : 1;
+    var by = /^\d{4}-\d{2}-\d{2}$/.test(String(o.today || '')) ? dayWords(addBizDays(o.today, pd, hol)) : '';
+    var what = sv && sv.place && sv.year ? 'Your ' + PAID_WHAT[id] + ' of ' + sv.place + ', ' + sv.year + ' is ordered. ' : '';
+    var out = [];
+    if (sv && sv.gift) {
+      out.push(what + 'Your gift card to print comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. ' +
+        (file ? 'The finished file follows in January, once the full year is in.' : 'The print follows in January, with a proof to you first.'));
+    } else if (sv && sv.settle) {
+      out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the ' + (file ? 'finished file' : 'proof') + ' from sig@farmers1st.com then.' +
+        (file ? ' Want anything changed? Reply and I\u2019ll redo it, no charge.' : ' Reply OK, or tell me what to change. It ships within ' + ship + ' business days after your OK.'));
+    } else if (file) {
+      out.push((what ? what + 'The finished file' : 'The finished file') + ' comes by email' + (by ? ' by ' + by : ' within 1 business day') + '. Want anything changed? Reply and I\u2019ll redo it, no charge.');
+    } else {
+      out.push(what + 'I email you a proof from sig@farmers1st.com' + (by ? ' by ' + by : ' within 1 business day') + '. Reply OK, or tell me what to change.');
+      var cut = j[id === 'framed12x18' ? 'framed_christmas_cutoff' : 'print_christmas_cutoff'], t = String(o.today || ''), xm = '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(cut || '') && t >= cut.slice(0, 4) + '-10-01' && t <= cut.slice(0, 4) + '-12-25')
+        xm = t <= cut ? ', and ordered by ' + shortDate(cut) + ' it arrives by Christmas.' : '. Ordered now, it arrives after Christmas.';
+      out.push('It ships within ' + ship + ' business days after your OK' + (xm || '.'));
+    }
+    out.push(by && !(sv && sv.settle) ? 'Nothing by then? Check spam, or write to me at sig@farmers1st.com.' : 'Questions? Write to me at sig@farmers1st.com.');
+    return out;
+  }
+
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -1092,7 +1136,7 @@
   var ORDER_TO = 'sig@farmers1st.com';
 
   var ST = fromParams(root.location.search);
-  var EXT_WAIT = false, BUY_NOTE_CODE = '', EX_NOTE = false, XMAS_OFF = true;
+  var EXT_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, PRICES_P = null, BLOCKED = '', DRAWING = false;
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
      while a year-to-date preview is drawn. NOART: the plain message shown
@@ -1109,54 +1153,22 @@
      form, and the town field stays empty, until the reader draws their own
      place or clicks "Use this design". Any failure puts the empty box back. */
   var SAMPLE = null;
-  /* THE EXAMPLE (2026-10-13, Sig): a new visitor starts with every option in
-     use, a name, a line, three dates, the normals and remarkable days, so they
-     see a whole print and trim it down. Example words can't be ordered by
-     mistake: exampleLeft() names any still on the print, and ordering waits
-     until they are changed or cleared. A design from a link is never touched. */
+  /* THE EXAMPLE (2026-10-14, Sig: example words are gray hints only, never
+     pre-filled on a buyer's print). The boxes start empty, with the example as
+     their placeholders. Until the reader does something with the page, the
+     print at the top wears the example words, labeled as an example under it
+     (SHOW_EX); the design itself (ST: the URL, the up-close view, the order)
+     never carries them. A word typed, a draw, Up close or the pay button takes
+     them off. A design from a link never shows them. The old guard, the bounce
+     at the Order button and "Clear the example" are gone with the pre-fill. */
   var EXAMPLE = { name: 'The Johnson Farm', dedication: 'For Dad, his 40th crop. Love, Kate',
     markers: [{ md: '05-08', label: 'Planted' }, { md: '07-12', label: 'Hail' }, { md: '10-24', label: 'Harvest done' }] };
-  function withExample(s, year) {
-    s.name = EXAMPLE.name; s.dedication = EXAMPLE.dedication;
-    s.markers = EXAMPLE.markers.map(function (m) { return { date: year + '-' + m.md, label: m.label }; });
-    s.cmp = 'normal'; s.normals = true; s.records = true;
-    return s;
-  }
-  // EX_OK: the design code a buyer said is theirs, example-looking words and all
-  var EX_OK = '';
-  function exampleMarker(d, l) { return EXAMPLE.markers.some(function (m) { return m.label === l && String(d || '').slice(5) === m.md; }); }
-  function exampleLeft(s) {
-    var out = [];
-    if (EX_OK && encodeCode(s) === EX_OK) return out;
-    if (s.name === EXAMPLE.name) out.push('the name');
-    if (s.dedication === EXAMPLE.dedication) out.push('the line under it');
-    var n = (s.markers || []).filter(function (m) { return exampleMarker(m.date, m.label); }).length;
-    if (n) out.push(n === 1 ? 'one of the dates' : n + ' of the dates');
-    return out;
-  }
-  // the example dates follow the year picked, so they stay on the print
-  function reyearExample() {
-    var y = parseInt($('rp-year').value, 10);
-    if (!y) return;
-    for (var i = 1; i <= 3; i++) {
-      var d = $('rp-m' + i + 'd'), l = $('rp-m' + i + 'l');
-      if (exampleMarker(d.value, l.value)) d.value = y + '-' + d.value.slice(5);
-    }
-  }
-  function clearExample() {
-    if ($('rp-name').value === EXAMPLE.name) $('rp-name').value = '';
-    if ($('rp-ded').value === EXAMPLE.dedication) $('rp-ded').value = '';
-    for (var i = 1; i <= 3; i++) {
-      if (exampleMarker($('rp-m' + i + 'd').value, $('rp-m' + i + 'l').value)) { $('rp-m' + i + 'd').value = ''; $('rp-m' + i + 'l').value = ''; }
-    }
-    syncCounts(); syncDates();
-    restyle();
-  }
-  function syncExampleNote() {
-    var left = exampleLeft(readInputs());
-    $('rp-ex-note').hidden = !left.length;
-    // the "example still on the print" note under the prices goes once the example has
-    if (EX_NOTE && !left.length) { $('rp-buy-note').textContent = ''; EX_NOTE = false; }
+  var SHOW_EX = false;
+  function exampleMarkers(year) { return EXAMPLE.markers.map(function (m) { return { date: year + '-' + m.md, label: m.label }; }); }
+  function endExample() {
+    if (!SHOW_EX) return;
+    SHOW_EX = false;
+    if (DATA && !BLOCKED) render(); else sampleLine(!!SAMPLE);
   }
 
   // var EXT_CACHE, NORM_CACHE and DAILY_CACHE live with the data calls above the page, shared with the gift card
@@ -1210,13 +1222,15 @@
   })();
 
   function cmpNote() { return cmpNoteFor(ST.cmp, EXT); }
-  /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix}. */
+  /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix,
+     example (the page's own preview only: the example words in place of the reader's, while SHOW_EX)}. */
   function buildSvg(o) {
     o = o || {};
+    var ex = !!o.example;
     var input = {
-      style: ST.style, year: META.year, place: placeLong(), name: ST.name, dedication: ST.dedication,
+      style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
-      ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
+      ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers(),
       records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
       gauge: META ? gaugeLine(META) : '', logo: logoArt(),
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
@@ -1370,16 +1384,16 @@
   // The line under the frame: what is hanging there.
   function sampleLine(on) {
     $('rp-sample-line').hidden = !on;
-    var t = EMPTY_CAP;
-    if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + '.';
+    var t = EMPTY_CAP, ex = SHOW_EX && DATA && !BLOCKED;
+    if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
+    else if (ex && META) t = 'Example words on ' + (NEAR && ST.place === NEAR ? 'your area, ' : '') + META.place + ', ' + META.year + '. Yours start blank.';
     else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.') +
       (NEAR && ST.place === NEAR ? ' Your area, going by your internet connection. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
-  // Framed or print only: the same art, with or without the CSS frame.
+  // Framed or print only: the same art, with or without the CSS frame. Step 3's pick sets it (setPick).
   function setView(v) {
     $('rp-wall').setAttribute('data-view', v);
-    doc.querySelectorAll('.rp-view .chip[data-view]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
     sampleLine(!!SAMPLE);
   }
   // After the reader's own draw, bring the frame into view if it is above the screen.
@@ -1441,7 +1455,8 @@
   }
   function useSample() {
     if (!SAMPLE || !DATA) return;
-    SAMPLE = null;
+    SAMPLE = null; SHOW_EX = false;
+    render();
     sampleLine(false);
     writeInputs(ST);
     setDesignRefs();
@@ -1451,14 +1466,23 @@
   }
   function radios(name) { return Array.prototype.slice.call(doc.querySelectorAll('input[name="' + name + '"]')); }
   function pick(n, dflt) { var r = radios(n).find(function (x) { return x.checked; }); return r ? r.value : dflt; }
-  function readInputs() {
-    var markers = [];
+  /* A marked day is a month and a day picked from two lists; the year is the
+     print's own (2026-10-14: a date typed with its year, 05022025, landed on
+     the 25th in Chrome and Edge, because the date box's min and max locked its
+     year). rowDate(i, y): 'YYYY-MM-DD', or '' until both are picked. */
+  function rowDate(i, y) {
+    var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value;
+    y = y || parseInt($('rp-year').value, 10);
+    return y && mo && dy ? y + '-' + mo + '-' + dy : '';
+  }
+  function readInputs(year) {
+    var markers = [], y = year || parseInt($('rp-year').value, 10);
     for (var i = 1; i <= 3; i++) {
-      var d = $('rp-m' + i + 'd').value, l = $('rp-m' + i + 'l').value;
+      var d = rowDate(i, y), l = $('rp-m' + i + 'l').value;
       if (d) markers.push({ date: d, label: l });
     }
     // layout and palette are not on the page any more; they ride along so an old link keeps its code
-    return normalize({ place: $('rp-place').value, year: $('rp-year').value, station: ST.station,
+    return normalize({ place: $('rp-place').value, year: y, station: ST.station,
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
       cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
@@ -1486,13 +1510,18 @@
     $('rp-records').checked = s.records;
     for (var i = 1; i <= 3; i++) {
       var m = s.markers[i - 1];
-      $('rp-m' + i + 'd').value = m ? m.date : '';
+      $('rp-m' + i + 'mo').value = m ? m.date.slice(5, 7) : '';
+      syncDayList(i, s.year);
+      $('rp-m' + i + 'dy').value = m ? m.date.slice(8, 10) : '';
       $('rp-m' + i + 'l').value = m ? m.label : '';
     }
-    syncMarkerBounds();
+    syncRows();
+    syncYearNote();
+    // a design that uses the folded options opens them, so nothing on the print is out of sight
+    if (s.records || s.logo || s.cmp === 'station' || (s.cmp === 'none' && s.normals)) $('rp-more').open = true;
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
     if (s === ST) wantLogo();
-    if ($('rp-name-n')) { syncCounts(); syncDates(); syncExampleNote(); }
+    if ($('rp-name-n')) { syncCounts(); syncDates(); }
   }
   /* Counters under the name and the line ("12 of 24 letters"), emoji and
      symbols taken out as typed, with a note. maxlength stops typing at the
@@ -1535,7 +1564,7 @@
   function markLinkCuts(cuts) {
     LINK_CUTS = cuts || [];
     for (var i = 1; i <= 3; i++) {
-      var d = $('rp-m' + i + 'd').value, l = $('rp-m' + i + 'l').value;
+      var d = rowDate(i), l = $('rp-m' + i + 'l').value;
       LINK_CUTS.forEach(function (c) { if (c.date === d && c.label === l) LABEL_CUT['rp-m' + i + 'l'] = { label: c.label, full: c.full }; });
     }
     syncCounts();
@@ -1543,18 +1572,61 @@
   var LINK_CUTS = [];
   function linkCut(m) { return LINK_CUTS.filter(function (c) { return c.date === m.date && c.label === m.label; })[0] || null; }
   function syncDates() {
-    var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return $('rp-m' + i + 'd').value; });
+    var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return rowDate(i, y); });
     var probs = dateProblems(y, ds), el = $('rp-date-msg');
-    [1, 2, 3].forEach(function (i) { $('rp-m' + i + 'd').setAttribute('aria-invalid', String(probs.some(function (p) { return p.i === i - 1 && /isn\u2019t in/.test(p.msg); }))); });
+    // a day half picked, or words with no day: it won't print, so say so
+    [1, 2, 3].forEach(function (i) {
+      var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value, l = $('rp-m' + i + 'l').value.trim();
+      if ((mo || dy || l) && !(mo && dy)) probs.push({ i: i - 1, half: true, msg: 'Day ' + i + (l ? ' (\u201c' + l + '\u201d)' : '') + ' needs a month and a day to go on the print.' });
+    });
+    [1, 2, 3].forEach(function (i) {
+      var bad = String(probs.some(function (p) { return p.i === i - 1 && (p.half || /isn\u2019t in/.test(p.msg)); }));
+      $('rp-m' + i + 'mo').setAttribute('aria-invalid', bad); $('rp-m' + i + 'dy').setAttribute('aria-invalid', bad);
+    });
     el.textContent = probs.map(function (p) { return p.msg; }).join(' ');
     el.hidden = !probs.length;
   }
-  function syncMarkerBounds() {
-    var y = parseInt($('rp-year').value, 10);
+  // the month lists, once; each day list runs to that month's length in the print's year
+  function daysIn(y, mo) { return mo ? new Date(Date.UTC(y || 2001, +mo, 0)).getUTCDate() : 31; }
+  function buildDayLists() {
     for (var i = 1; i <= 3; i++) {
-      var el = $('rp-m' + i + 'd');
-      if (y) { el.min = y + '-01-01'; el.max = y + '-12-31'; }
+      $('rp-m' + i + 'mo').innerHTML = '<option value="">Month</option>' + MON.map(function (m, k) { return '<option value="' + String(k + 1).padStart(2, '0') + '">' + m + '</option>'; }).join('');
+      syncDayList(i);
     }
+  }
+  function syncDayList(i, year) {
+    var y = year || parseInt($('rp-year').value, 10), sel = $('rp-m' + i + 'dy'), was = sel.value, n = daysIn(y, $('rp-m' + i + 'mo').value), h = '<option value="">Day</option>';
+    for (var d = 1; d <= n; d++) h += '<option value="' + String(d).padStart(2, '0') + '">' + d + '</option>';
+    // Feb 29 kept when the year changes to one without it, so the note under the days can say so
+    if (was && +was > n) h += '<option value="' + was + '">' + (+was) + '</option>';
+    sel.innerHTML = h;
+    sel.value = was;
+  }
+  function syncDayLists() { for (var i = 1; i <= 3; i++) syncDayList(i); }
+  // "Mark a day": one row to start; a row in use always shows; "+ Mark another day" opens the next
+  function rowUsed(i) { return !!($('rp-m' + i + 'mo').value || $('rp-m' + i + 'dy').value || $('rp-m' + i + 'l').value); }
+  function syncRows() {
+    var shown = 1;
+    for (var i = 2; i <= 3; i++) {
+      var row = $('rp-m' + i + 'row');
+      if (rowUsed(i)) row.hidden = false;
+      if (!row.hidden) shown = i;
+    }
+    $('rp-add-day').hidden = shown >= 3;
+  }
+  function addDay() {
+    for (var i = 2; i <= 3; i++) {
+      var row = $('rp-m' + i + 'row');
+      if (row.hidden) { row.hidden = false; syncRows(); try { $('rp-m' + i + 'mo').focus(); } catch (e) {} return i; }
+    }
+    return 0;
+  }
+  // this year picked: one line under the Year box, the moment it is picked
+  function syncYearNote() {
+    var y = parseInt($('rp-year').value, 10), el = $('rp-year-note');
+    if (!el) return;
+    el.textContent = y === CURRENT_YEAR ? CURRENT_YEAR + ' isn\u2019t over yet. Order it now and I email you a gift card to print within 1 business day; the print ships in January.' : '';
+    el.hidden = !el.textContent;
   }
   var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
   function updateUrl() {
@@ -1568,7 +1640,7 @@
     // Before anything of the reader's is drawn the buttons stay live and point at the town box; a station with too many gaps turns them off.
     var off = !!BLOCKED || DRAWING;
     $('rp-buy').classList.toggle('rp-off', off);
-    doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.disabled = off; });
+    $('rp-pay').disabled = off; $('rp-bar-go').disabled = off;
     // why the buttons are off, in words, by the buttons
     var why = $('rp-buy-why');
     if (why) {
@@ -1577,19 +1649,14 @@
         : BLOCKED ? 'Ordering is off: this station is missing too many days for a fair print. Pick another station or year above.' : '';
       why.hidden = !why.textContent;
     }
-    $('rp-to-buy').classList.toggle('btn-primary', on);
-    $('rp-to-buy').classList.toggle('btn-secondary', !on);
-    var drawn = !!DATA && !BLOCKED && !SAMPLE;
-    $('rp-to-design').classList.toggle('btn-primary', drawn);
-    $('rp-to-design').classList.toggle('btn-secondary', !drawn);
     $('rp-dl').disabled = !on || !DATA;
-    $('rp-proof-open').disabled = !DATA || !!BLOCKED;
     $('rp-zoom').disabled = !DATA || !!BLOCKED;
     $('rp-wall').classList.toggle('rp-can-zoom', !!DATA && !BLOCKED);
     // print files wait for the full year: a preview is never sent to the printer
     doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW || SETTLE; });
     syncGift();
     if (typeof GIFT !== 'undefined' && GIFT) syncGiftUse();
+    syncPending(); syncBar(); syncStrip();
   }
 
   // ---------- this year, as a gift ----------
@@ -1601,8 +1668,6 @@
   function syncGift() {
     var on = giftMode() && canOrder();
     $('rp-gift').hidden = !on;
-    // the Christmas box above the cards says what this box says, so one at a time
-    $('rp-gift-hint').hidden = XMAS_OFF || on;
     /* The two boxes here go only with the order form. Every product with a
        checkout link asks who it is for and the note at checkout (2026-10-13:
        words typed here never reached Sig), so they show only while some
@@ -1622,31 +1687,40 @@
     syncAddress();
     syncCutoffs();
     syncXmas();
+    syncPick();
   }
-  // Christmas lines on the print and framed cards. This year's gift ships in January anyway, so none show in gift mode.
+  /* Each choice in the picker says when it comes: the Christmas order-by date
+     for a print or framed (a plain date from data/rain-print.json), the file
+     by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
+  var SUB_BASE = { framed12x18: 'Black frame, real glass.', print12x18: '12 x 18, ships flat.' };
   function syncCutoffs() {
-    Object.keys(CUTOFF_KEY).forEach(function (id) {
-      var el = $('rp-cut-' + id);
+    var gift = giftMode() && canOrder(), settle = SETTLE && canOrder();
+    PRODUCTS.forEach(function (id) {
+      var el = $('rp-sub-' + id);
       if (!el) return;
-      var t = giftMode() && canOrder() ? '' : cutoffNote(TODAY, PRICES && PRICES[CUTOFF_KEY[id]]);
-      el.textContent = t;
-      el.hidden = !t;
+      el.textContent = id === 'digital'
+        ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
+          : settle ? 'By email once the full year is in.' : 'By email within 1 business day of paying.')
+        : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
+          : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, PRICES && PRICES[CUTOFF_KEY[id]]))).trim();
     });
   }
 
-  /* The Christmas box by the town field and the line under the price cards:
-     the order-by dates from data/rain-print.json, and what they allow for. */
+  /* The Christmas line at the top and the line under step 3: the order-by
+     dates from data/rain-print.json, and what they allow for. October 1
+     through December 25 only. */
   function syncXmas() {
     var J = PRICES || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) return;
-    var past = $('rp-xmas-past'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
-    if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') return;
+    var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
+    if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
-    past.textContent = late ? 'Past years ordered now ship after Christmas.'
-      : TODAY <= pc && TODAY <= fc ? 'Any past year can be there by Christmas: order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.'
-      : TODAY <= pc ? 'Any past year can be there by Christmas as a print: order by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
-      : 'Any past year can be there by Christmas framed: order by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
+    top.textContent = late ? 'For Christmas: past years ordered now ship after Christmas.'
+      : TODAY <= pc && TODAY <= fc ? 'For Christmas: order framed by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.'
+      : TODAY <= pc ? 'For Christmas: order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
+      : 'For Christmas: order framed by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
+    top.hidden = false;
     if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
@@ -1689,11 +1763,10 @@
   function render() {
     if (!DATA || BLOCKED) return;
     // the maker sees the serial on screen; nobody else ever does
-    art.innerHTML = buildSvg({ serial: SERIAL });
+    art.innerHTML = buildSvg({ serial: SERIAL, example: SHOW_EX });
     art.classList.remove('rp-empty');
-    // the small copy in section 2, kept in view while the name and dates are typed (top of a phone screen, beside the boxes on a wide one)
-    var mini = $('rp-mini');
-    if (mini) { mini.innerHTML = buildSvg({ idPrefix: 'mn' }); mini.hidden = false; }
+    // the slim copy that pins under the menu on a phone is drawn when it shows (syncStrip)
+    MINI_DIRTY = true;
     // a buy note about an earlier design no longer applies
     if (BUY_NOTE_CODE && BUY_NOTE_CODE !== encodeCode(ST)) { $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; }
     var D = DATA.d, m = META, OV = overlaySeries();
@@ -1728,10 +1801,10 @@
     sampleLine(!!SAMPLE);
     if (!$('rp-order').hidden) syncSummary();
     if ($('rp-proof').open) proofRender();
+    syncStrip();
   }
 
   function blockPrint(msg) {
-    if ($('rp-mini')) $('rp-mini').hidden = true;
     BLOCKED = msg;
     PREVIEW = null; SETTLE = false; NOART = '';
     art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station for a fair print.</p>';
@@ -1749,7 +1822,6 @@
      design comes down with it, so nothing stale can be ordered (2026-10-13:
      "Chetk, WI" left Chetek's art and live order buttons up). */
   function failDraw(err) {
-    if ($('rp-mini')) $('rp-mini').hidden = true;
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
     art.innerHTML = EMPTY_ART;
@@ -1822,16 +1894,16 @@
         ST.station = '';
       }
       var fromUrlStation = ST.station;
-      reyearExample();
       next = readInputs();
       if (e && e.type === 'submit' && (next.place !== ST.place || next.year !== ST.year)) next.station = '';
       else next.station = fromUrlStation;
     }
     var my = ++reqToken;
-    if (e) KEEP_URL = false;
+    // the reader's own draw: the example words come off the print at the top
+    if (e) { KEEP_URL = false; SHOW_EX = false; }
     ST = next;
     if (ST.records) recordsReady();
-    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; EX_NOTE = false;
+    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; $('rp-noname').hidden = true;
     // a note about the last draw's station is about that draw only
     if (!$('rp-link-note').classList.contains('rp-bad')) $('rp-link-note').hidden = true;
     var go = $('rp-go'), sel = $('rp-station');
@@ -1991,7 +2063,7 @@
       drawnStatus();
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
-      else { ga('rain_print_draw', { style: ST.style }); if (e) showArt(); }
+      else { ga('rain_print_draw', { style: ST.style }); if (e && !e.auto) showArt(); }
       if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
     }).catch(function (err) {
       if (err === 'stale') return;
@@ -2025,13 +2097,16 @@
   function restyle() {
     var next = readInputs();
     if (SAMPLE) { next.place = ST.place; next.year = ST.year; sampleWords(next); }   // style choices try out on the sample
+    /* The town box changed and isn't drawn yet (or a draw is on its way): the
+       words still go on the print that is up, in its year (2026-10-14: every
+       word typed was ignored until Draw it, panel 4). The line by the print
+       says the new town waits; the order waits for the draw. */
+    else if (next.year !== ST.year || next.place !== ST.place) { next = readInputs(ST.year); next.place = ST.place; next.year = ST.year; }
     next.station = ST.station;
     next.gift = ST.gift;
-    var yearChanged = next.year !== ST.year, placeChanged = next.place !== ST.place;
-    if (yearChanged || placeChanged) { syncMarkerBounds(); return; }
     ST = next;
-    syncExampleNote();
     syncLogoUi();
+    syncPending();
     if (ST.records && !root.AgRainRecords) recordsReady().then(function (ok) { if (ok) render(); });
     render();
   }
@@ -2063,107 +2138,173 @@
       if (o) o.textContent = giftYearLabel();
       syncBiz();
       syncAddress();
-    }).catch(function () {});
+      syncPick();
+      if (PAID) showPaid(PAID, PAID_SAVED, true);
+    }).catch(function () { if (PAID) showPaid(PAID, PAID_SAVED, true); });
   }
   function payLink(id) {
     var l = PRICES && PRICES.payment_links && PRICES.payment_links[id];
     return typeof l === 'string' && /^https:\/\/[^\s"<>]+$/.test(l) ? l : '';
   }
-  function buy(id, opts) {
+  /* THE ORDER (2026-10-14, the approved flow). Step 3 is one picker, framed
+     first, and one button whose words follow the pick ("Check it and pay
+     $89"). With no name on the print it asks once: add one, or check out
+     without. Then it opens "Your print" as the review sheet: the details in
+     words, the same picker, a tick for the spelling and the dates, and the
+     button that pays. Checkout is Stripe in the same tab (Sig): the design is
+     in the address bar and saved for the way back, and Stripe sends the buyer
+     back to rain-print?paid=<product>&s=<session> (PAID below). */
+  var PICK = 'framed12x18', NONAME_OK = false;
+  var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print only', digital: 'Digital file' };
+  function pickPrice(id) { var J = PRICES || {}; return typeof J[id] === 'number' ? money(J[id]) : ''; }
+  function setPick(id) {
+    if (PRODUCTS.indexOf(id) < 0) return;
+    PICK = id;
+    radios('rp-product').forEach(function (r) { r.checked = r.value === id; });
+    radios('rp-pproduct').forEach(function (r) { r.checked = r.value === id; });
+    // the print at the top shows what is picked: framed, or the print alone (the file is the print alone too)
+    setView(id === 'framed12x18' ? 'framed' : 'print');
+    syncPick();
+    if ($('rp-proof').open) proofRender();
+  }
+  function syncPick() {
+    var p = pickPrice(PICK), link = !!payLink(PICK);
+    $('rp-pay').textContent = 'Check it and pay' + (p ? ' ' + p : '');
+    $('rp-bar-what').textContent = PICK_WORD[PICK] + (p ? ' \u00b7 ' + p : '');
+    $('rp-promise').textContent = PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
+      : 'You see a proof before I print. Full refund before I print.';
+    $('rp-gift-line').textContent = !link ? 'It\u2019s a gift? Say so on the order form, with their name and your note.'
+      : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
+      : 'It\u2019s a gift? At checkout you can add their name, a note for a card in the box and their address. The card is free, and no prices go in the box.';
+    $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
+  }
+  // why an order can't go yet, in words, or ''
+  function orderBlock() {
+    if (staleInputs()) return staleWords();
+    // a logo still saving has no id yet, and one that didn't load isn't on the print
+    if (LOGO && LOGO.state === 'saving') return 'The logo is still saving. Tap again in a moment.';
+    if (ST.logo && LOGO && LOGO.state === 'missing') return 'The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then order.';
+    return '';
+  }
+  // the note under the step 3 button
+  function buyNote(t) { var n = $('rp-buy-note'); n.textContent = t || ''; if (t) noteInView(n); return n; }
+  /* "Check it and pay" (step 3, and the bar on a phone). It never pays: it
+     opens the review sheet, whose own button does. */
+  function checkIt() {
+    endExample();
+    $('rp-noname').hidden = true;
     if (!canOrder()) {
       // Nothing of the reader's is drawn yet (the sample, or an empty box): send them to the town box.
       if (BLOCKED) return;
       try { $('rp-form').scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (err) {}
       try { $('rp-place').focus({ preventScroll: true }); } catch (err) {}
-      statusEl.textContent = 'Type the town nearest the farm and press Draw it. The order carries the print you draw.';
+      statusEl.textContent = 'Type the town nearest the farm and press Draw my year. The order carries the print you draw.';
       statusEl.classList.remove('rp-bad');
       return;
     }
-    var left = exampleLeft(ST), note = noteUnder(id);
-    /* The town or year box changed without Draw it (2026-10-14, panel 3): the
-       order would carry the design still drawn, so it waits for the draw. */
-    if (staleInputs()) { EX_NOTE = false; note.textContent = staleWords(); noteInView(note); return; }
-    // a logo still saving has no id yet, and one that didn't load isn't on the print
-    if (LOGO && LOGO.state === 'saving') { EX_NOTE = false; note.textContent = 'The logo is still saving. Tap again in a moment.'; noteInView(note); return; }
-    if (ST.logo && LOGO && LOGO.state === 'missing') { EX_NOTE = false; note.textContent = 'The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then order.'; noteInView(note); return; }
-    /* Example words still on it (2026-10-14): say so right under the button
-       that was tapped, with the two ways on, instead of scrolling 2,500 px up
-       to section 2. Example words still never go on an order unasked. */
-    if (left.length) {
-      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear the example to order without it. Only the example words listed are cleared.' +
-        '<button type="button" class="btn btn-primary" id="rp-ex-go">Clear the example and order</button>' +
-        '<button type="button" class="btn btn-secondary" id="rp-ex-edit">Edit the words</button>' +
-        '<button type="button" class="btn btn-secondary" id="rp-ex-mine">These are mine, order as is</button></span>';
-      EX_NOTE = true;
-      $('rp-ex-go').addEventListener('click', function () {
-        clearExample();
-        note.textContent = ''; EX_NOTE = false;
-        // the town or year box was changed without drawing: the words are in section 2
-        if (exampleLeft(ST).length) { toExample(); return; }
-        buy(id);
-      });
-      $('rp-ex-edit').addEventListener('click', toExample);
-      // a buyer's own words that match the example (planted May 8, "Planted"): theirs to keep
-      $('rp-ex-mine').addEventListener('click', function () {
-        EX_OK = encodeCode(ST);
-        note.textContent = ''; EX_NOTE = false;
-        syncExampleNote();
-        buy(id);
-      });
-      noteInView(note);
-      try { $('rp-ex-go').focus({ preventScroll: true }); } catch (err) {}
+    var why = orderBlock();
+    if (why) { buyNote(why); return; }
+    buyNote('');
+    if (GIFT && GIFT.usable) { useGift(); return; }
+    // no name on it: ask once (2026-10-14: the fastest way to checkout left a gift's name off)
+    if (!ST.name && !NONAME_OK) {
+      $('rp-noname').hidden = false;
+      noteInView($('rp-noname'));
+      try { $('rp-noname-add').focus({ preventScroll: true }); } catch (err) {}
       return;
     }
+    openProof(true);
+  }
+  function goTo(u) { try { root.location.assign(u); } catch (err) { root.location.href = u; } }
+  /* What the buyer ordered, kept in this tab (and this browser) for the page
+     Stripe sends them back to, and for Back. The design is in the address bar
+     too. Nothing leaves the browser. */
+  var SAVE_KEY = 'agsist-rp-checkout';
+  function saveCheckout(id) {
+    var v = JSON.stringify({ code: encodeCode(ST), choice: id, place: META ? META.place : ST.place, year: ST.year, gift: !!ST.gift, settle: !!SETTLE, t: Date.now() });
+    try { root.sessionStorage.setItem(SAVE_KEY, v); } catch (e) {}
+    try { root.localStorage.setItem(SAVE_KEY, v); } catch (e) {}
+  }
+  function savedCheckout() {
+    var v = null;
+    try { v = root.sessionStorage.getItem(SAVE_KEY); } catch (e) {}
+    if (!v) try { v = root.localStorage.getItem(SAVE_KEY); } catch (e) {}
+    try { v = v ? JSON.parse(v) : null; } catch (e) { v = null; }
+    // a week old or more: not this order
+    return v && typeof v.code === 'string' && Date.now() - (v.t || 0) < 7 * 86400000 ? v : null;
+  }
+  /* "Paid. Thank you." at the top of the page Stripe sends the buyer back to:
+     what was ordered, when the proof or the file comes, when it ships, a way to
+     make another. The address bar loses paid= and s= (a reload or a share
+     shows no thank-you), and Analytics gets one purchase per checkout session. */
+  var PAID_FIRED = false;
+  function showPaid(p, sv, fire) {
+    var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
+    box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
+      '<p><a href="/rain-print">Make another</a></p>';
+    box.hidden = false;
+    try { box.focus({ preventScroll: true }); root.scrollTo(0, 0); } catch (e) {}
+    var q = new URLSearchParams(root.location.search); q.delete('paid'); q.delete('s');
+    try { root.history.replaceState(null, '', root.location.pathname + (String(q) ? '?' + q : '')); } catch (e) {}
+    var key = 'agsist-rp-paid-' + p.session, seen = false;
+    try { seen = !!root.localStorage.getItem(key); } catch (e) {}
+    if (fire && p.session && !seen && !PAID_FIRED) {
+      PAID_FIRED = true;
+      try { root.localStorage.setItem(key, '1'); } catch (e) {}
+      var J = PRICES || {}, v = typeof J[p.choice] === 'number' ? J[p.choice] : undefined;
+      try { if (typeof root.gtag === 'function') root.gtag('event', 'purchase', { transaction_id: p.session, currency: 'USD', value: v, items: [{ item_id: p.choice, item_name: 'Rain Print, ' + CHOICE[p.choice], price: v, quantity: 1 }] }); } catch (e) {}
+    }
+  }
+  // the review sheet's message line: a reason, or "Opening checkout"
+  function proofSay(t, go) {
+    var m = $('rp-proof-msg');
+    if (go) m.innerHTML = t; else m.textContent = t || '';
+    m.classList.toggle('rp-go', !!go);
+    m.hidden = !t;
+  }
+  /* The review sheet's button: pays for what is shown, as picked. A design
+     past Stripe's 200 characters goes to checkout as its short-link id
+     (RPS-<id>), made now, at the press, once (never on a redraw). If the link
+     service fails, or a product has no payment link, the order form takes the
+     order with the full design code. */
+  function pay(opts) {
+    var id = PICK;
+    proofSay('');
+    if (!canOrder()) { closeProof(true); checkIt(); return; }
+    var why = orderBlock();
+    if (why) { proofSay(why); return; }
+    if (!$('rp-proof-ok').checked) {
+      proofSay('Tick the box once the spelling and the dates are right.');
+      try { $('rp-proof-ok').focus(); } catch (err) {}
+      return;
+    }
+    if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
     var link = payLink(id);
-    /* A design past Stripe's 200 characters goes to checkout as its short-link
-       id (RPS-<id>). It is made now, at the press, once (never on a redraw);
-       the tab opens first so the wait doesn't trip a popup blocker. If the link
-       service fails, the order form takes the order with the full design code. */
     if (link && !checkoutRef(encodeCode(ST), ST.gift, shortHit()) && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
-      var tab = null;
-      try { tab = root.open('', '_blank'); } catch (err) { tab = null; }
-      note.textContent = 'Opening checkout\u2026';
-      root.AgRpShort.mint(encodeCode(artDesign())).then(function () { buy(id, { minted: true, tab: tab }); });
+      proofSay('Opening checkout\u2026', true);
+      root.AgRpShort.mint(encodeCode(artDesign())).then(function () { pay({ minted: true }); });
       return;
     }
-    var code = refFor(), tab0 = opts && opts.tab;
-    if (tab0 && !(link && code)) { try { tab0.close(); } catch (err) {} }
-    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
+    var code = refFor();
+    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-      var sent = false;
-      if (tab0) { try { tab0.opener = null; tab0.location.href = u; sent = true; } catch (err) { sent = false; } }
-      if (!sent) root.open(u, '_blank', 'noopener');
-      BUY_NOTE_CODE = encodeCode(ST); EX_NOTE = false;
-      /* The page can't tell whether the tab opened (window.open with noopener
-         returns null, and an in-app browser may block it), so the note gives a
-         link to tap. No design code here: it travels with the payment. */
-      var a = '<a href="' + esc(u) + '" target="_blank" rel="noopener">If it didn\u2019t open, tap here</a>.';
-      note.innerHTML = (ST.gift
-        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.'
-        : SETTLE
-        ? 'Checkout should be open in a new tab. ' + a + ' NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then.'
-        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and ' + (id === 'digital' ? 'the finished file comes by email within 1 business day. If you want anything changed, write to me and I\u2019ll redo it, no charge.' : 'I email you a proof before I print.') +
-          (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
-        (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
-      noteInView(note);
+      BUY_NOTE_CODE = encodeCode(ST);
+      saveCheckout(id);
+      updateUrl();
+      // the same tab: a link to tap in case the browser holds it back (an in-app browser); no design code in the words, it travels with the payment
+      proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
+      goTo(u);
       return;
     }
+    closeProof(true);
     openOrder(id);
-  }
-  /* The note about an order sits right under the button that was tapped, so it
-     is on screen (2026-10-14: it sat under the framed card, off screen after a
-     tap on another card). A button that is hidden keeps the note where it is. */
-  function noteUnder(id) {
-    var note = $('rp-buy-note'), b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
-    if (b && b.offsetParent !== null && b.nextSibling !== note) b.parentNode.insertBefore(note, b.nextSibling);
-    return note;
   }
   // the town or year in the boxes is not the one drawn
   function staleInputs() { var n = readInputs(); return !!ST.place && (n.year !== ST.year || n.place !== ST.place); }
   function staleWords() {
-    return 'You changed the ' + (readInputs().year !== ST.year ? 'year' : 'town') + ' but haven\u2019t drawn it. Press Draw it first, so you order what you see.';
+    return 'You changed the ' + (readInputs().year !== ST.year ? 'year' : 'town') + ' but haven\u2019t drawn it. Press Draw my year first, so you order what you see.';
   }
   function noteInView(note) {
     try {
@@ -2171,12 +2312,57 @@
       if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: smooth(), block: 'center' });
     } catch (err) {}
   }
-  // Up to the example note in section 2, its Clear button focused, so the next tap is the fix.
-  function toExample() {
-    var n = $('rp-ex-note'), t = n && !n.hidden ? n : $('rp-design-h');
-    try { t.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (err) {}
-    try { if (t === n) $('rp-ex-clear').focus({ preventScroll: true }); } catch (err) {}
-    if (t === n) { n.classList.remove('rp-flash'); void n.offsetWidth; n.classList.add('rp-flash'); }
+  /* The line by the print while it isn't the one in the boxes: a draw on its
+     way, or a town typed and not drawn (2026-10-14: a changed year or town
+     left the print stale without a word). */
+  function syncPending() {
+    var el = $('rp-pending');
+    if (!el) return;
+    var n = readInputs(), t = '';
+    if (DRAWING && DATA && ST.place && ST.year) t = 'Drawing ' + ST.place + ', ' + ST.year + '\u2026';
+    else if (n.place && ((SAMPLE && n.place) || (!SAMPLE && ST.place && (n.place !== ST.place || n.year !== ST.year)))) t = 'Not drawn yet: ' + n.place + ', ' + (n.year || '') + '. Press Draw my year.';
+    el.textContent = t;
+    el.hidden = !t;
+  }
+  /* PHONE: the bar at the bottom ("Framed · $89 · Check it and pay") once the
+     reader's own print is up, hidden while the step 3 button is on screen, a
+     box has the keyboard, or the review sheet is open. The slim copy of the
+     print pins under the menu once the big one scrolls away, and the page keeps
+     a focused box below it. Laptops have neither (the print and the pay button
+     are sticky in their columns). */
+  var PAY_SEEN = false, TYPING = false, MINI_DIRTY = true;
+  function navBottom() { var n = doc.querySelector('.nav'); var b = n ? n.getBoundingClientRect().bottom : 0; return b > 0 ? b : 0; }
+  function phone() { return (root.innerWidth || 1000) < 900; }
+  function syncBar() {
+    var bar = $('rp-bar');
+    if (!bar) return;
+    var on = phone() && canOrder() && !SHOW_EX && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && GIFT.usable) && $('rp-order').hidden;
+    if (on) $('rp-bar-where').textContent = (META ? META.place : ST.place) + ' ' + ST.year;
+    bar.hidden = !on;
+  }
+  function syncStrip() {
+    var st = $('rp-strip');
+    if (!st) return;
+    var nav = navBottom(), on = false;
+    doc.documentElement.style.setProperty('--rp-nav', Math.round(nav || 64) + 'px');
+    if (phone() && DATA && !BLOCKED && !$('rp-proof').open) {
+      var w = $('rp-wall').getBoundingClientRect(), col = $('rp-stepcol').getBoundingClientRect();
+      on = w.bottom < nav + 8 && col.bottom > nav + 200;
+    }
+    if (on && MINI_DIRTY) { $('rp-mini').innerHTML = buildSvg({ idPrefix: 'mn', example: SHOW_EX }); MINI_DIRTY = false; }
+    if (on) $('rp-strip-t').textContent = (META ? META.place : ST.place) + ', ' + ST.year;
+    if (st.hidden === on) {
+      st.hidden = !on;
+      doc.documentElement.style.scrollPaddingTop = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : '';
+      if (on) keepFocusClear();
+    }
+  }
+  // a box with the keyboard never sits under the pinned copy
+  function keepFocusClear() {
+    var st = $('rp-strip'), a = doc.activeElement;
+    if (!st || st.hidden || !a || !/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) return;
+    var lim = st.getBoundingClientRect().bottom + 8, r = a.getBoundingClientRect();
+    if (r.top < lim) try { root.scrollBy(0, r.top - lim - 4); } catch (e) {}
   }
   function shortHit() { return root.AgRpShort ? root.AgRpShort.peek(encodeCode(artDesign())) : null; }
   function shortRef() { var m = /\/R\?([0-9A-Z]{5,8})$/.exec(shortHit() || ''); return m ? 'RPS-' + m[1] : ''; }
@@ -2235,7 +2421,6 @@
      button, Style and Look, and the details in words. The magnifier toggles Fit
      and actual size; at actual size, drag or scroll to move; Esc goes back to Fit. */
   var PROOF_OK = '', PROOF_VIEW = 'print', PROOF_ZOOM = 'fit', PROOF_FROM = null, PROOF_HANDOFF = false;
-  function proofChoice() { return PROOF_VIEW === 'print' ? 'print12x18' : 'framed12x18'; }
   function proofZoomSync() {
     var dlg = $('rp-proof'), full = PROOF_ZOOM === 'full', z = $('rp-proof-zoom');
     dlg.setAttribute('data-zoom', PROOF_ZOOM);
@@ -2251,12 +2436,12 @@
   function proofRender() {
     var dlg = $('rp-proof');
     if (!DATA || BLOCKED) { dlg.close && dlg.open && dlg.close(); return; }
+    PROOF_VIEW = PICK === 'framed12x18' ? 'framed' : 'print';
     $('rp-proof-art').innerHTML = buildSvg({ idPrefix: 'pf', serial: SERIAL });
     var svg = $('rp-proof-art').querySelector('svg');
     if (svg) svg.setAttribute('aria-hidden', 'true');   // the stage around it carries the words
     dlg.setAttribute('data-view', PROOF_VIEW);
-    doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pstyle') === ST.style)); });
-    doc.querySelectorAll('[data-pview]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pview') === PROOF_VIEW)); });
+    radios('rp-pproduct').forEach(function (r) { r.checked = r.value === PICK; });
     proofZoomSync();
     // the details: label above value, in the order a buyer checks them
     var rows = {}; designRows().forEach(function (r) { rows[r[0]] = r[1]; });
@@ -2264,23 +2449,29 @@
     if (rows['Weather station']) list.push(['Weather station', esc(rows['Weather station'])]);
     list.push(['Name', esc(rows['Name'])], ['Line under it', esc(rows['Line under it'])],
       ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
-      ['Compared with', esc(rows['Compared with'])]);
+      ['Compared with', esc(rows['Compared with'])], ['Style', esc(rows['Style'])]);
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
+    var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
+    if (can) list.push(['You get', esc(gift ? PICK_WORD[PICK] + ', covered by your gift card' : PICK_WORD[PICK] + (p ? ', ' + p : '') + (PICK === 'digital' ? ', by email' : ', shipping included'))], ['When', esc(whenWords(PICK))]);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
-    // the one action: order what is shown, or the example choice in its place
-    var can = canOrder(), left = can ? exampleLeft(ST) : [], gift = !!(GIFT && GIFT.usable), id = proofChoice(), J = PRICES || {};
-    $('rp-proof-go').hidden = !!left.length;
-    $('rp-proof-ex').hidden = !left.length;
-    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear the example to order without it. Only the example words listed are cleared.' : '';
-    $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift'
-      : (PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed') + (typeof J[id] === 'number' ? ', ' + money(J[id]) : '');
-    var first = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
-      : gift && GIFT.product === 'digital' ? 'Your card covers the digital file.' : 'You get a proof before anything prints.';
-    $('rp-proof-first').textContent = first;
+    // the one action: pay for what is shown, as picked
+    $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift' : payLink(PICK) ? 'Pay' + (p ? ' ' + p : '') + ' at checkout' : 'Order it' + (p ? ', ' + p : '');
+    $('rp-proof-first').textContent = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
+      : gift && GIFT.product === 'digital' ? 'Your card covers the digital file.'
+      : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
+      : 'You see a proof before I print. Full refund before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
+  }
+  // when it comes, in words, for the review sheet
+  function whenWords(id) {
+    var file = id === 'digital', J = PRICES || {};
+    if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the ' + (file ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.';
+    if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (file ? 'finished file' : 'proof') + ' then.';
+    if (file) return 'The finished file by email within 1 business day of paying. Want anything changed? Write to me and I\u2019ll redo it, no charge.';
+    return 'A proof by email within 1 business day; nothing prints until you OK it. It ships within ' + (J.ship_business_days || 3) + ' business days after your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
   }
   /* Fit or actual size. Going in, the spot that was clicked (or the middle)
      stays under the pointer; coming out, back to the whole print. */
@@ -2302,35 +2493,23 @@
     if (!DATA || BLOCKED) return;
     var dlg = $('rp-proof');
     if (dlg.open) return;
-    // open on what the reader is looking at: framed or print only, as set under the preview
-    PROOF_VIEW = $('rp-wall').getAttribute('data-view') === 'print' ? 'print' : 'framed';
+    endExample();
+    // one product state: the sheet shows what step 3 has picked (framed, or the print alone)
     PROOF_ZOOM = 'fit';
+    proofSay('');
     PROOF_FROM = doc.activeElement && doc.activeElement !== doc.body ? doc.activeElement : $('rp-zoom');
     PROOF_HANDOFF = false;
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     try { $('rp-proof-stage').scrollTop = 0; $('rp-proof-stage').scrollLeft = 0; dlg.scrollTop = 0; } catch (e) {}
     ga('rain_print_proof', { style: ST.style });
+    syncBar(); syncStrip();
   }
   // close; focus goes back to what opened it, unless an order step takes it on
   function closeProof(handoff) {
     PROOF_HANDOFF = !!handoff;
     var dlg = $('rp-proof');
     if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
-  }
-  // the order the up-close view showed, framed or print only (2026-10-14)
-  function proofOrder() {
-    closeProof(true);
-    if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
-    if (exampleLeft(ST).length) { toExample(); return; }   // example words still on it: change them first
-    if (GIFT && GIFT.usable) { useGift(); return; }
-    /* Straight to the order the proof showed (2026-10-14: it only scrolled to
-       the cards): framed or print only, as picked in the proof, which the
-       preview keeps. The order note lands under that card's button. */
-    var id = proofChoice(), b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
-    setView(PROOF_VIEW);
-    try { b.focus({ preventScroll: true }); } catch (e) {}
-    buy(id);
   }
   function openOrder(id) {
     var box = $('rp-order');
@@ -2406,8 +2585,6 @@
     if (sending) return;
     var out = $('ro-out');
     if (!canOrder()) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
-    var left = exampleLeft(ST);
-    if (left.length) { out.innerHTML = '<p class="rp-msg rp-bad">The example is still on the print (' + esc(left.join(', ')) + '). Change it or clear it under &ldquo;Add a name and dates&rdquo;, then send.</p>'; return; }
     if (staleInputs()) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(staleWords()) + '</p>'; return; }
     if (LOGO && LOGO.state === 'saving') { out.innerHTML = '<p class="rp-msg rp-bad">The logo is still saving. Send again in a moment.</p>'; return; }
     if (ST.logo && LOGO && LOGO.state === 'missing') { out.innerHTML = '<p class="rp-msg rp-bad">The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then send.</p>'; return; }
@@ -2868,25 +3045,44 @@
 
   // ---------- wire up ----------
   buildYears();
-  // a new visitor starts from the example; a design from a link comes in as it was made
-  if (!ST.place) withExample(ST, lastFullYear());
+  buildDayLists();
+  /* Back from Stripe: rain-print?paid=<product>&s=<session> (PAID below). The
+     design saved at the press draws again under the thank-you. */
+  var PAID = paidFromUrl(root.location.search), PAID_SAVED = PAID ? savedCheckout() : null;
+  if (PAID && PAID_SAVED && !ST.place) { var ps = decodeCode(PAID_SAVED.code); if (ps) ST = ps; }
+  /* A new visitor: the boxes start empty (the example is in them as gray
+     hints) and the comparison and the normals are on, remarkable days off
+     (2026-10-14, Sig); the print at the top wears the example words until the
+     reader does something. A design from a link comes in as it was made. */
+  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = false; SHOW_EX = !PAID; }
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
-  // "Giving it for Christmas?" reads right from October 1 through December 25 only
+  // the Christmas lines read right from October 1 through December 25 only
   XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10 || TODAY.slice(5) > '12-25';
-  $('rp-gift-hint').hidden = XMAS_OFF;
   if (MAKER) $('rp-maker').hidden = false;
+  setPick('framed12x18');
+  if (PAID) showPaid(PAID, PAID_SAVED);
   form.addEventListener('submit', run);
   $('rp-station').addEventListener('change', function () {
     ST.station = $('rp-station').value;
     if (SAMPLE) run(null, Object.assign({}, ST)); else run();
   });
   $('rp-sample-use').addEventListener('click', useSample);
-  // Zoom in sits in the same row with no data-view: not a view (2026-10-14, panel 3)
-  doc.querySelectorAll('.rp-view .chip[data-view]').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
-  $('rp-year').addEventListener('input', function () { reyearExample(); syncMarkerBounds(); syncDates(); });
-  $('rp-ex-clear').addEventListener('click', clearExample);
-  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { cleanField(id); restyle(); }); });
+  /* Step 1 draws on its own (2026-10-14): a new year draws the moment it is
+     picked, and a town typed draws when the box is left (or on Enter, or Draw
+     my year). The line by the print says what is on its way. */
+  var noop = function () {};
+  $('rp-year').addEventListener('change', function () {
+    syncDayLists(); syncDates(); syncYearNote();
+    if (GIFT && GIFT.lock) return;
+    if ($('rp-place').value.trim()) run({ type: 'submit', preventDefault: noop, auto: true }); else syncPending();
+  });
+  $('rp-place').addEventListener('input', syncPending);
+  $('rp-place').addEventListener('change', function () {
+    // a tap on Draw my year right after typing is a submit of its own: this waits for it, then draws only if nothing did
+    setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
+  });
+  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
   // words pasted into a label past 13 letters: maxlength cuts them, and the counter says what went
   ['rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) {
     var el = $(id);
@@ -2898,12 +3094,17 @@
       if (full.length > LIMITS.label) setTimeout(function () { LABEL_CUT[id] = { label: el.value, full: full }; syncCounts(); }, 0);
     });
   });
-  ['rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', function () { syncDates(); restyle(); }); });
-  // label ideas as buttons: a tap fills the first empty label (its date box next)
+  [1, 2, 3].forEach(function (i) {
+    $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); });
+    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); });
+  });
+  $('rp-add-day').addEventListener('click', addDay);
+  // label ideas as buttons: a tap fills the first empty label, opening its row if it is closed (its month next)
   LABEL_PRESETS.forEach(function (w) {
     var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
     b.addEventListener('click', function () {
-      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) { $('rp-m' + i + 'l').value = w; cleanField('rp-m' + i + 'l'); restyle(); try { $('rp-m' + i + 'd').focus(); } catch (e) {} return; }
+      endExample();
+      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) { $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; cleanField('rp-m' + i + 'l'); syncRows(); restyle(); syncDates(); try { $('rp-m' + i + ($('rp-m' + i + 'mo').value ? 'dy' : 'mo')).focus(); } catch (e) {} return; }
     });
     $('rp-presets').appendChild(b);
   });
@@ -2921,22 +3122,28 @@
   radios('rp-logo-ink').forEach(function (r) { r.addEventListener('change', restyle); });
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
-  doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
+  // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
+  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); } }); });
+  $('rp-pay').addEventListener('click', checkIt);
+  $('rp-bar-go').addEventListener('click', checkIt);
+  $('rp-noname-add').addEventListener('click', function () {
+    $('rp-noname').hidden = true;
+    try { $('rp-name').scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
+    try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
+  });
+  $('rp-noname-go').addEventListener('click', function () { NONAME_OK = true; $('rp-noname').hidden = true; checkIt(); });
   $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); });
-  $('rp-proof-open').addEventListener('click', openProof);
   $('rp-zoom').addEventListener('click', openProof);
+  $('rp-strip-zoom').addEventListener('click', openProof);
   // tap the picture to see it up close (the Zoom in button is the keyboard way in)
   art.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a,button,input,select')) return; openProof(); });
   $('rp-proof-close').addEventListener('click', function () { closeProof(false); });
-  $('rp-proof-order').addEventListener('click', proofOrder);
-  // example words still on it: clear them here and go on to the order, or go edit them
-  $('rp-proof-ex-go').addEventListener('click', function () {
-    clearExample();
-    // the town or year box was changed without drawing: the words are in section 2
-    if (exampleLeft(ST).length) { closeProof(true); toExample(); return; }
-    proofOrder();
+  $('rp-proof-order').addEventListener('click', function () { pay(); });
+  $('rp-proof-change').addEventListener('click', function () {
+    closeProof(true);
+    try { $('rp-design').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
+    try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
   });
-  $('rp-proof-ex-edit').addEventListener('click', function () { closeProof(true); toExample(); });
   var proofDlg = $('rp-proof');
   // a click on the dimmed page around the dialog closes it
   proofDlg.addEventListener('click', function (e) { if (e.target === proofDlg) closeProof(false); });
@@ -2956,13 +3163,11 @@
     var f = PROOF_FROM; PROOF_FROM = null;
     if (!PROOF_HANDOFF && f && doc.contains(f) && f.offsetParent !== null) { try { f.focus({ preventScroll: true }); } catch (e) {} }
     PROOF_HANDOFF = false;
+    syncBar(); syncStrip();
   });
-  // the small copy in section 2 opens the up-close view too
+  // the slim copy that pins under the menu on a phone opens the up-close view too
   $('rp-mini').addEventListener('click', openProof);
-  $('rp-proof-ok').addEventListener('change', function () { PROOF_OK = $('rp-proof-ok').checked ? encodeCode(ST) : ''; syncSummary(); });
-  doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.addEventListener('click', function () {
-    radios('rp-style').forEach(function (r) { r.checked = r.value === b.getAttribute('data-pstyle'); }); restyle(); proofRender(); }); });
-  doc.querySelectorAll('[data-pview]').forEach(function (b) { b.addEventListener('click', function () { PROOF_VIEW = b.getAttribute('data-pview'); proofRender(); }); });
+  $('rp-proof-ok').addEventListener('change', function () { PROOF_OK = $('rp-proof-ok').checked ? encodeCode(ST) : ''; if (PROOF_OK) proofSay(''); syncSummary(); });
   $('rp-proof-zoom').addEventListener('click', function () { proofZoom(PROOF_ZOOM === 'full' ? 'fit' : 'full'); });
   // click the print to see that spot at actual size; at actual size, drag to move around
   (function () {
@@ -3011,25 +3216,44 @@
   });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;
-    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
+    // the station box is under More options: open it first
+    if (t && t.id === 'rp-chg') { ev.preventDefault(); $('rp-more').open = true; var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
-  /* Three example years by the town box (Sig, 2026-10-14): a drought, a flood
-     and a family year. Each is a plain link (it works with no script); a tap
-     draws it in place, in the reader's chosen style. The family year carries
-     the example's name and dates, so ordering waits until they are changed. */
+  /* Two example years by the town box (Sig, 2026-10-14; the made-up family
+     year went with the example words): a drought and a flood. Each is a plain
+     link (it works with no script); a tap draws it in place, in the reader's
+     chosen style, keeping any words they have typed. */
   doc.querySelectorAll('.rp-story').forEach(function (a) {
     a.addEventListener('click', function (ev) {
       if (GIFT && GIFT.lock) return;
       ev.preventDefault();
-      var s = fromParams(a.getAttribute('href').split('?')[1] || '');
-      if (!s.place || !s.year) return;
-      s.style = pick('rp-style', 'r1');
+      var s0 = fromParams(a.getAttribute('href').split('?')[1] || '');
+      if (!s0.place || !s0.year) return;
+      var s = readInputs(s0.year);
+      s.place = s0.place; s.year = s0.year; s.station = ''; s.cmp = s0.cmp;
       NEAR = '';
       writeInputs(s);
       ga('rain_print_story', { year: s.year });
       run({ type: 'submit', preventDefault: function () {} });
     });
   });
+  // the phone's pinned copy and bottom bar follow the scroll, the screen size and the keyboard
+  (function () {
+    var tick = false;
+    var later = function () { if (tick) return; tick = true; (root.requestAnimationFrame || setTimeout)(function () { tick = false; syncStrip(); syncBar(); }); };
+    root.addEventListener('scroll', later, { passive: true });
+    root.addEventListener('resize', later);
+    if (root.IntersectionObserver) new root.IntersectionObserver(function (es) { PAY_SEEN = es[es.length - 1].isIntersecting; syncBar(); }).observe($('rp-pay-wrap'));
+    var typing = function (el) { return el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !/^(radio|checkbox|button|submit|file)$/i.test(el.type || '') && !$('rp-proof').contains(el); };
+    doc.addEventListener('focusin', function (e) { TYPING = typing(e.target); syncBar(); if (TYPING) setTimeout(keepFocusClear, 60); });
+    doc.addEventListener('focusout', function () { setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 0); });
+  })();
+  // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
+  root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });
+  // the business card opens itself for a link to it
+  function bizHash() { if (root.location.hash === '#rp-biz' || root.location.hash === '#rb-form') $('rp-biz-d').open = true; }
+  root.addEventListener('hashchange', bizHash);
+  bizHash();
   // Came from a county rain page: a way back to it, under the status line
   try {
     var REF = doc.referrer ? new URL(doc.referrer) : null;
@@ -3089,11 +3313,11 @@
      plain order. ?gift=1 is the old January design flag, not a card. */
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
-    dedication: ['rp-ded'], markers: ['rp-m1d', 'rp-m1l', 'rp-m2d', 'rp-m2l', 'rp-m3d', 'rp-m3l'], normals: ['rp-normals'], records: ['rp-records'],
+    dedication: ['rp-ded'], markers: ['rp-m1mo', 'rp-m1dy', 'rp-m1l', 'rp-m2mo', 'rp-m2dy', 'rp-m2l', 'rp-m3mo', 'rp-m3dy', 'rp-m3l', 'rp-add-day'], normals: ['rp-normals'], records: ['rp-records'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
-      if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.disabled = true; }); return; }
+      if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); return; }
       if (id === 'rp-logo-ink') { radios('rp-logo-ink').forEach(function (r) { r.disabled = true; }); return; }
       if (id === 'rp-logo-file') { var pk = $('rp-logo-pick'); if (pk) { pk.setAttribute('aria-disabled', 'true'); pk.style.pointerEvents = 'none'; pk.style.opacity = '.55'; } }
       var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }
@@ -3102,14 +3326,16 @@
   function syncGiftUse() {
     var on = !!(GIFT && GIFT.usable);
     $('rp-gift-use-wrap').hidden = !on;
-    doc.querySelectorAll('.rp-prods, #rp-isgift-wrap').forEach(function (el) { if (on) el.hidden = true; });
+    // a card covers one product: no picker, no price button, the card's own button instead
+    doc.querySelectorAll('#rp-prods, .rp-box-d, #rp-pay-wrap, #rp-gift-line, #rp-isgift-wrap').forEach(function (el) { if (on) el.hidden = true; });
+    syncBar();
     if (!on) return;
     $('rp-gift-use-note').textContent = 'Your card covers ' + root.AgRpGift.product(GIFT.product) + '.' + (canOrder() ? '' : ' Draw the print above first.');
     $('rp-gift-use').disabled = !canOrder();
   }
   function useGift() {
     if (!GIFT || !GIFT.usable) return;
-    if (!canOrder()) { buy(GIFT.product); return; }
+    if (!canOrder()) { checkIt(); return; }
     syncGift();
     openOrder(GIFT.product);
     $('ro-choice').disabled = true;
@@ -3126,8 +3352,8 @@
     if (!g || !g.usable) return;
     GIFT = g;
     if (g.lock && g.lock.design) {
-      // the name box keeps only what the reader typed, never the example's name (2026-10-14, panel 3)
-      var typed = $('rp-name').value, keepName = g.lock.edit === 'name' && typed && typed !== EXAMPLE.name ? typed : null;
+      // the name box keeps what the reader typed (it never holds the example's name: that is a gray hint)
+      var typed = $('rp-name').value, keepName = g.lock.edit === 'name' && typed ? typed : null;
       ST = normalize(g.lock.design);
       // the card's town, not the reader's area: no "your area" line under it
       NEAR = '';
@@ -3141,6 +3367,7 @@
     if (g.lock && g.lock.design) lockInput('logo');
     // a card's design is set: no example years to tap
     if (g.lock && g.lock.design) $('rp-stories').hidden = true;
+    endExample();
     syncGiftUse();
     ga('rain_print_gift_open', { kind: g.kind || '' });
   }
