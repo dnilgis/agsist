@@ -2176,6 +2176,31 @@
     var t = ev.target;
     if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
+  /* Three example years by the town box (Sig, 2026-10-14): a drought, a flood
+     and a family year. Each is a plain link (it works with no script); a tap
+     draws it in place, in the reader's chosen style. The family year carries
+     the example's name and dates, so ordering waits until they are changed. */
+  doc.querySelectorAll('.rp-story').forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      if (GIFT && GIFT.lock) return;
+      ev.preventDefault();
+      var s = fromParams(a.getAttribute('href').split('?')[1] || '');
+      if (!s.place || !s.year) return;
+      s.style = pick('rp-style', 'r1');
+      NEAR = '';
+      writeInputs(s);
+      ga('rain_print_story', { year: s.year });
+      run({ type: 'submit', preventDefault: function () {} });
+    });
+  });
+  // Came from a county rain page: a way back to it, under the status line
+  try {
+    var REF = doc.referrer ? new URL(doc.referrer) : null;
+    if (REF && REF.origin === root.location.origin && /^\/rain\/./.test(REF.pathname)) {
+      $('rp-back').innerHTML = 'Back to the <a href="' + esc(REF.pathname) + '">county rain page</a>';
+      $('rp-back').hidden = false;
+    }
+  } catch (e) {}
   // A share link that can't be drawn says why, over the sample (2026-10-13: it fell back quietly).
   var LINK_WHY = linkProblem(root.location.search);
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
@@ -2239,6 +2264,8 @@
       run();
     }
     (g.locked || []).forEach(lockInput);
+    // a card's design is set: no example years to tap
+    if (g.lock && g.lock.design) $('rp-stories').hidden = true;
     syncGiftUse();
     ga('rain_print_gift_open', { kind: g.kind || '' });
   }

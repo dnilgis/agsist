@@ -93,7 +93,7 @@
   .rp-side>*{order:7}
   #rp-gift-banner{order:0}.rp-side>.rp-kick{order:1}.rp-side>h1{order:2}.rp-side>.rp-lede{order:3}
   .rp-wall{order:4}#rp-draw-h,.rp-form,.rp-side>.rp-style-pick{order:5}
-  #rp-link-note,#rp-status,#rp-pick,#rp-retry-row{order:6}
+  #rp-link-note,#rp-status,#rp-back,#rp-pick,#rp-retry-row,#rp-stories{order:6}
   .rp-hero>*{margin-top:0;margin-bottom:0}
   #main .rp .rp-side>h1{font-size:clamp(1.55rem,4.2vw,2.3rem);text-wrap:balance}
   .rp-side>.rp-lede{max-width:68ch;font-size:var(--fs-sm)}
@@ -326,6 +326,20 @@
   .rp-sum p{margin:0 0 .35rem}.rp-sum ol{margin:.2rem 0 0;padding-left:1.3rem}
   .rp-sum dl{display:grid;grid-template-columns:max-content 1fr;gap:.15rem .8rem;margin:0 0 .5rem}.rp-sum dt{color:var(--text-muted)}.rp-sum dd{margin:0;overflow-wrap:anywhere}
 
+  /* Three example years by the town box (Sig, 2026-10-14) */
+  .rp-stories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.1rem 0 .3rem}
+  .rp-stories-h,.rp-stories>.rp-note{grid-column:1/-1;margin:0}
+  .rp-stories-h{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
+  .rp-story{display:flex;flex-direction:column;justify-content:center;gap:.15rem;min-height:var(--btn-h);padding:8px 12px;border:1px solid var(--border-2);border-radius:var(--r-8);background:var(--surface);color:var(--text);text-decoration:none;font-size:var(--fs-sm);line-height:1.35}
+  .rp-story span{color:var(--text-muted);font-size:var(--fs-xs)}
+  .rp-story:hover{border-color:var(--brand)}
+  .rp-story:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  @media(min-width:900px){.rp-stories{max-width:760px}}
+  @media(max-width:600px){.rp-stories{grid-template-columns:1fr}}
+  /* the framed print is the featured card (no "most popular": there is no count to say so) */
+  .rp-prod-feat{border:2px solid var(--brand);box-shadow:0 10px 22px -14px rgba(0,0,0,.55)}
+  .rp-prod p.rp-proof-first{margin:0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
+  .rp-back a{color:var(--link);text-decoration:underline}
   /* Phone, Fit: the print takes the stage's full width and the stage shrinks
      to it, so "What's on it, in words" gets the rest of the screen. */
   @media(max-width:600px){
@@ -401,8 +415,16 @@
         </div></fieldset>
         <p class="rp-status rp-bad" id="rp-link-note" hidden></p>
         <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
+        <p class="rp-note rp-back" id="rp-back" hidden></p>
         <div class="rp-pick" id="rp-pick" role="group" aria-label="Which town?" hidden></div>
         <p class="rp-retry-row" id="rp-retry-row" hidden><button type="button" class="btn btn-secondary" id="rp-retry">Try again</button></p>
+        <div class="rp-stories" id="rp-stories" role="group" aria-labelledby="rp-stories-h">
+          <p class="rp-stories-h" id="rp-stories-h">Or tap an example, drawn from real NOAA records:</p>
+          <a class="rp-story" href="/rain-print?place=Ames%2C+IA&amp;year=2012&amp;cmp=normal"><b>2012, Ames, Iowa</b><span>The drought year across the Corn Belt</span></a>
+          <a class="rp-story" href="/rain-print?place=Des+Moines%2C+IA&amp;year=1993&amp;cmp=normal"><b>1993, Des Moines, Iowa</b><span>The summer of the big Midwest flood</span></a>
+          <a class="rp-story" data-example="1" href="/rain-print?place=Chetek%2C+WI&amp;year=1998&amp;cmp=normal&amp;normals=1&amp;name=The+Johnson+Farm&amp;dedication=For+Dad%2C+his+40th+crop.+Love%2C+Kate&amp;m1=1998-05-08+Planted&amp;m2=1998-07-12+Hail&amp;m3=1998-10-24+Harvest+done"><b>1998, Chetek, Wisconsin</b><span>A family year, with a made-up name and three days marked</span></a>
+          <p class="rp-note">Each draws from the nearest NOAA weather station with a good record for that year, named under the print.</p>
+        </div>
         <p class="rp-preview-line" id="rp-preview-line" hidden></p>
         <p class="rp-source" id="rp-source"></p>
         <div class="rp-acts rp-acts-hero">
@@ -441,11 +463,11 @@
           <p class="rp-count rp-bad rp-dates-n" id="rp-date-msg" aria-live="polite" hidden></p>
           <datalist id="rp-labels"><option value="Planted"><option value="Harvest done"><option value="Turnout"><option value="Calving"><option value="Weaning"><option value="First cutting"><option value="Hail"><option value="Wedding"><option value="Born"><option value="Moved in"></datalist>
         </div>
-        <label class="field"><span>Compare with</span><select id="rp-cmp">
+        <div><label class="field"><span>Compare with</span><select id="rp-cmp" aria-describedby="rp-cmp-hint">
           <option value="none">Nothing</option>
           <option value="normal">NOAA 30-year normal</option>
           <option value="station">This station&rsquo;s full record</option>
-        </select></label>
+        </select></label><p class="rp-count" id="rp-cmp-hint">Nothing: just your year. NOAA normal: a usual year by NOAA&rsquo;s 30-year normal. Full record: this station&rsquo;s own average over every year it has kept.</p></div>
         <label class="field"><span>Weather station</span><select id="rp-station" disabled><option value="">Nearest with a good record</option></select></label>
         <div class="rp-checks rp-wide2">
           <label class="rp-check"><input type="checkbox" id="rp-normals"><span>Show the 30-year normals</span></label>
@@ -468,7 +490,7 @@
       <h2 class="sec-h rp-step-h" id="rp-buy-h" tabindex="-1"><span class="rp-n" aria-hidden="true">3</span>Prices and ordering</h2>
       <div class="rp-xmas" id="rp-gift-hint">
         <p><b>For Christmas.</b> <span id="rp-xmas-past">Any past year can be there by Christmas. The order-by dates are on the price cards below.</span></p>
-        <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: pick <span class="rp-cy">2026</span> in the <a href="#rp-draw-h" class="rp-inl">Year box up top</a>. Once you&rsquo;ve paid, I email you a card to print for under the tree, and the print follows in January.</p>
+        <p><span class="rp-cy">2026</span> isn&rsquo;t over yet, so I can&rsquo;t print it until January. You can still give it: pick <span class="rp-cy">2026</span> in the <a href="#rp-draw-h" class="rp-inl">Year box up top</a>. Within 1 business day of paying, I email you a card to print for under the tree, and the print follows in January.</p>
       </div>
       <div class="rp-gift" id="rp-gift" hidden>
         <h3>Ordering <span class="rp-cy">2026</span></h3>
@@ -488,15 +510,15 @@
       <div class="rp-prods">
         <div class="rp-prod"><h3>Digital file</h3><div class="rp-price" data-price="digital">$19</div>
           <ul><li>The print files, 12 x 18 in at 300 dpi, no watermark</li><li id="rp-dig-when">A proof first, then the files by email within 1 business day of your OK</li><li>Take them to any print shop</li></ul>
-          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="digital">Order the file</button></div>
+          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="digital">Order the file</button><p class="rp-proof-first">You get a proof before anything prints.</p></div>
         <div class="rp-prod"><h3>12 x 18 print</h3><div class="rp-price" data-price="print12x18">$45</div>
           <ul><li>Shipping included, US addresses</li><li>I print it myself, and you see a proof first</li><li>Matte paper</li><li>Ships flat between chipboard</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul>
           <p class="rp-cut" id="rp-cut-print12x18" hidden></p>
-          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="print12x18">Order the print</button></div>
-        <div class="rp-prod"><h3>12 x 18 framed</h3><div class="rp-price" data-price="framed12x18">$89</div>
+          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="print12x18">Order the print</button><p class="rp-proof-first">You get a proof before anything prints.</p></div>
+        <div class="rp-prod rp-prod-feat"><h3>12 x 18 framed</h3><div class="rp-price" data-price="framed12x18">$89</div>
           <ul><li>Shipping included, US addresses</li><li>The same print in a black stock frame, no mat</li><li>Real glass front, packed with corner guards and foam, double-boxed</li><li>Arrives ready to hang</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul>
           <p class="rp-cut" id="rp-cut-framed12x18" hidden></p>
-          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="framed12x18">Order it framed</button></div>
+          <button class="btn btn-primary rp-buy-btn" type="button" data-choice="framed12x18">Order it framed</button><p class="rp-proof-first">You get a proof before anything prints.</p></div>
       </div>
       <p class="rp-note" id="rp-ships">Prints and framed prints ship within 7 business days after you approve the proof. US addresses only for now.</p>
       <p class="rp-note" id="rp-xmas-why" hidden></p>
