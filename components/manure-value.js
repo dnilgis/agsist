@@ -1,12 +1,13 @@
 /* components/manure-value.js -- what manure is worth at today's fertilizer
- * prices, and what a fair price to a neighbor looks like.
+ * prices: the value of all the N, P2O5 and K2O in it, per 1,000 gallons or
+ * per ton, per acre and for the whole field.
  *
  * ONE COPY. /manure-value and the Manure tab on /fast-facts both load this
  * file. The nutrient table (TYPES), the price math and the calculator live
  * here and nowhere else; test/manure-value.test.mjs fails if a page grows its
  * own copy, or if a page's table or baked numbers drift from this file.
  *
- * Pure parts (TYPES, nutrientPrices, perUnit, deal, bakeValues) run with no
+ * Pure parts (TYPES, nutrientPrices, perUnit, fieldValue, bakeValues) run with no
  * document, so node can test the copy the browser runs. The DOM part mounts
  * a calculator into every [data-mv-calc] and refreshes every [data-mv] number
  * from /data/fertilizer.json on load.
@@ -103,21 +104,19 @@
     return out;
   }
 
-  /* Pounds and dollars in one unit (1 ton solid, 1,000 gal liquid).
-     need: which nutrients count ({n,p,k} booleans; omitted = all). */
-  function perUnit(typeId, timingId, prices, need) {
+  /* Pounds and dollars in one unit (1 ton solid, 1,000 gal liquid). All the
+     N, P2O5 and K2O in it count. */
+  function perUnit(typeId, timingId, prices) {
     var t = type(typeId), tm = timing(timingId);
     if (!t || !tm) return null;
-    need = need || { n: true, p: true, k: true };
     var lb = { n: t.n[tm.i], p: t.p, k: t.k }, usd = {}, total = 0, missing = [];
     ['n', 'p', 'k'].forEach(function (x) {
-      if (!need[x]) { usd[x] = 0; return; }
       if (prices[x] == null) { usd[x] = null; missing.push(x); return; }
       usd[x] = lb[x] * prices[x]; total += usd[x];
     });
     return { unit: t.liquid ? '1000gal' : 'ton', lb: lb, usd: usd, total: missing.length ? null : total, missing: missing };
   }
-  /* Book value (all three nutrients) per ton, any type. Liquids convert at
+  /* Value (all three nutrients) per ton, any type. Liquids convert at
      8.34 lb a gallon. */
   function perTon(typeId, timingId, prices) {
     var u = perUnit(typeId, timingId, prices);
@@ -125,28 +124,25 @@
     return type(typeId).liquid ? u.total / TONS_PER_KGAL : u.total;
   }
 
-  /* A neighbor sale. o: {type, timing, rate (gal or tons an acre), acres,
-     prices, buyerNeeds {n,p,k}, sellerUses {n,p,k}, haul ($ per unit),
-     buyerHauls (bool)}. All money per unit unless named per acre. */
-  function deal(o) {
+  /* The value of all the manure on a field. o: {type, timing, rate (gal or
+     tons an acre), acres, prices}. Pounds and dollars of each nutrient an
+     acre and for the field, and the total per unit, per ton, per acre and
+     for the field. */
+  function fieldValue(o) {
     var t = type(o.type);
     if (!t) return null;
-    var book = perUnit(o.type, o.timing, o.prices);
-    var buyer = perUnit(o.type, o.timing, o.prices, o.buyerNeeds);
-    var seller = perUnit(o.type, o.timing, o.prices, o.sellerUses);
-    if (!book || book.total == null || buyer.total == null || seller.total == null) return { missing: true };
-    var units = t.liquid ? (o.rate || 0) / 1000 : (o.rate || 0);   // units an acre
-    var haul = Math.max(0, o.haul || 0);
-    var ceil = buyer.total - (o.buyerHauls ? haul : 0);
-    var floor = seller.total;
-    var verdict = ceil <= 0 ? 'none' : floor > ceil ? 'keep' : 'range';
+    var u = perUnit(o.type, o.timing, o.prices);
+    if (!u) return null;
+    if (u.total == null) return { missing: true };
+    var units = t.liquid ? Math.max(0, o.rate || 0) / 1000 : Math.max(0, o.rate || 0);   // units an acre
+    var acres = Math.max(0, o.acres || 0);
+    var lbAc = {}, usdAc = {}, usdField = {};
+    ['n', 'p', 'k'].forEach(function (x) { lbAc[x] = u.lb[x] * units; usdAc[x] = u.usd[x] * units; usdField[x] = usdAc[x] * acres; });
     return {
-      unit: book.unit, units: units, lbAc: { n: book.lb.n * units, p: book.lb.p * units, k: book.lb.k * units },
-      book: book.total, bookAc: book.total * units, bookUsd: book.usd,
-      buyer: buyer.total, buyerAc: buyer.total * units,
-      haul: haul, haulAc: haul * units, buyerHauls: !!o.buyerHauls,
-      ceil: ceil, ceilAc: ceil * units, floor: floor, floorAc: floor * units,
-      acres: o.acres || 0, verdict: verdict
+      unit: u.unit, units: units, acres: acres,
+      perUnitUsd: u.usd, perUnit: u.total, perTon: t.liquid ? u.total / TONS_PER_KGAL : u.total,
+      lbAc: lbAc, usdAc: usdAc, usdField: usdField,
+      perAcre: u.total * units, field: u.total * units * acres
     };
   }
 
@@ -162,9 +158,8 @@
     return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : '';
   }
 
-  /* The worked example on /manure-value: a dairy neighbor sale. */
-  var EXAMPLE = { type: 'dairy_liq_4_11', timing: '1to3day', rate: 6000, acres: 80, haul: 15,
-                  buyerNeeds: { n: true, p: true, k: false }, sellerUses: { n: true, p: false, k: false } };
+  /* The worked example on /manure-value: liquid dairy manure on 80 acres. */
+  var EXAMPLE = { type: 'dairy_liq_4_11', timing: '1to3day', rate: 6000, acres: 80 };
 
   /* Every number the pages print from prices, by key. The bake script writes
      these into the HTML; the page rewrites them from live data on load. One
@@ -189,28 +184,27 @@
         v['ton-' + key] = t.liquid ? (u && u.total != null ? money(u.total / TONS_PER_KGAL) : NQ) : v['unit-' + key];
       });
     });
-    var e = deal(Object.assign({ prices: pr, buyerHauls: true }, EXAMPLE));
-    var e2 = deal(Object.assign({ prices: pr, buyerHauls: false }, EXAMPLE));
+    var e = fieldValue(Object.assign({ prices: pr }, EXAMPLE));
+    var EX = ['ex-n-lb', 'ex-p-lb', 'ex-k-lb', 'ex-n-unit', 'ex-p-unit', 'ex-k-unit', 'ex-n-ac', 'ex-p-ac', 'ex-k-ac',
+              'ex-n-field', 'ex-p-field', 'ex-k-field', 'ex-book', 'ex-book-ac', 'ex-book-ton', 'ex-field'];
     if (e && !e.missing) {
-      v['ex-n-lb'] = String(Math.round(e.lbAc.n)); v['ex-p-lb'] = String(Math.round(e.lbAc.p)); v['ex-k-lb'] = String(Math.round(e.lbAc.k));
-      v['ex-n-ac'] = money(e.bookUsd.n * e.units); v['ex-p-ac'] = money(e.bookUsd.p * e.units); v['ex-k-ac'] = money(e.bookUsd.k * e.units);
-      v['ex-book'] = money(e.book); v['ex-book-ac'] = money(e.bookAc); v['ex-book-ton'] = money(e.book / TONS_PER_KGAL);
-      v['ex-buyer'] = money(e.buyer); v['ex-buyer-ac'] = money(e.buyerAc);
-      v['ex-haul-ac'] = money(e.haulAc); v['ex-ceil-hauls'] = money(e.ceil); v['ex-ceil-hauls-ac'] = money(e.ceilAc);
-      v['ex-floor'] = money(e2.floor); v['ex-floor-ac'] = money(e2.floorAc, 0);
-      v['ex-ceil'] = money(e2.ceil); v['ex-ceil-ac'] = money(e2.ceilAc, 0);
-      v['ex-floor-field'] = money(e2.floorAc * EXAMPLE.acres, 0); v['ex-ceil-field'] = money(e2.ceilAc * EXAMPLE.acres, 0);
+      ['n', 'p', 'k'].forEach(function (x) {
+        v['ex-' + x + '-lb'] = String(Math.round(e.lbAc[x]));
+        v['ex-' + x + '-unit'] = money(e.perUnitUsd[x]);
+        v['ex-' + x + '-ac'] = money(e.usdAc[x]);
+        v['ex-' + x + '-field'] = money(e.usdField[x], 0);
+      });
+      v['ex-book'] = money(e.perUnit); v['ex-book-ac'] = money(e.perAcre); v['ex-book-ton'] = money(e.perTon);
+      v['ex-field'] = money(e.field, 0);
     } else {
-      ['ex-n-lb', 'ex-p-lb', 'ex-k-lb', 'ex-n-ac', 'ex-p-ac', 'ex-k-ac', 'ex-book', 'ex-book-ac', 'ex-book-ton', 'ex-buyer', 'ex-buyer-ac',
-       'ex-haul-ac', 'ex-ceil-hauls', 'ex-ceil-hauls-ac', 'ex-floor', 'ex-floor-ac', 'ex-ceil', 'ex-ceil-ac', 'ex-floor-field', 'ex-ceil-field']
-        .forEach(function (k) { v[k] = NQ; });
+      EX.forEach(function (k) { v[k] = NQ; });
     }
     return v;
   }
 
   var API = { TYPES: TYPES, TIMING: TIMING, TONS_PER_KGAL: TONS_PER_KGAL, LB_PER_GAL: LB_PER_GAL, EXAMPLE: EXAMPLE,
               type: type, timing: timing, grade: grade, nutrientPrices: nutrientPrices, perUnit: perUnit,
-              perTon: perTon, deal: deal, money: money, day: day, bakeValues: bakeValues };
+              perTon: perTon, fieldValue: fieldValue, money: money, day: day, bakeValues: bakeValues };
   w.AgManure = API;
 
   /* ───────────── DOM: the calculator and live numbers ───────────── */
@@ -228,29 +222,12 @@
     });
     opts += '</optgroup>';
     var tim = TIMING.map(function (t) { return '<option value="' + t.id + '"' + (t.id === '1to3day' ? ' selected' : '') + '>' + t.label + '</option>'; }).join('');
-    function box(name, x, on, label) {
-      return '<label class="mvc-chk"><input type="checkbox" name="' + name + '" value="' + x + '"' + (on ? ' checked' : '') + '> ' + label + '</label>';
-    }
     return '' +
-      '<div class="mvc-role" role="group" aria-label="Which side of the deal are you on">' +
-        '<button type="button" class="mvc-rb" data-role="sell" aria-pressed="true">I&rsquo;m selling</button>' +
-        '<button type="button" class="mvc-rb" data-role="buy" aria-pressed="false">I&rsquo;m buying</button>' +
-      '</div>' +
       '<div class="mvc-grid">' +
         '<label class="mvc-f mvc-wide"><span>Manure</span><select data-k="type">' + opts + '</select></label>' +
         '<label class="mvc-f mvc-wide"><span>Worked into the soil</span><select data-k="timing">' + tim + '</select></label>' +
         '<label class="mvc-f"><span data-u="rate">Rate, gallons an acre</span><input data-k="rate" type="number" inputmode="decimal" min="0" step="500" value="6000"></label>' +
         '<label class="mvc-f"><span>Acres</span><input data-k="acres" type="number" inputmode="decimal" min="0" step="5" value="80"></label>' +
-      '</div>' +
-      '<fieldset class="mvc-fs"><legend data-l="buyer">Your neighbor&rsquo;s soil test calls for</legend>' +
-        box(id + '-bn', 'n', EXAMPLE.buyerNeeds.n, 'N') + box(id + '-bp', 'p', EXAMPLE.buyerNeeds.p, 'P') + box(id + '-bk', 'k', EXAMPLE.buyerNeeds.k, 'K') +
-        '<p class="mvc-hint">Untick what his soil test says he does not need. P and K on high-testing ground save him nothing this year.</p></fieldset>' +
-      '<fieldset class="mvc-fs"><legend data-l="seller">Your own fields could use</legend>' +
-        box(id + '-sn', 'n', EXAMPLE.sellerUses.n, 'N') + box(id + '-sp', 'p', EXAMPLE.sellerUses.p, 'P') + box(id + '-sk', 'k', EXAMPLE.sellerUses.k, 'K') +
-        '<p class="mvc-hint">What spreading it at home would have saved. That is the least it should sell for.</p></fieldset>' +
-      '<div class="mvc-grid">' +
-        '<label class="mvc-f"><span data-u="haul">Hauling and spreading, $ per 1,000 gal</span><input data-k="haul" type="number" inputmode="decimal" min="0" step="0.5" value="15"></label>' +
-        '<label class="mvc-f"><span>Who pays for it</span><select data-k="who"><option value="seller">The seller</option><option value="buyer">The buyer</option></select></label>' +
       '</div>' +
       '<details class="mvc-prices"><summary>Fertilizer prices used <span data-o="price-sum"></span></summary>' +
         '<div class="mvc-grid">' +
@@ -259,28 +236,24 @@
           '<label class="mvc-f"><span>$ per lb K&#8322;O</span><input data-k="pk" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
         '</div><p class="mvc-hint" data-o="price-src">Loading dealer prices&hellip;</p></details>' +
       '<div class="mvc-out" aria-live="polite">' +
-        '<div class="mvc-big"><span data-o="book-lbl">Book value</span><strong data-o="book">&nbsp;</strong><small data-o="book-sub"></small></div>' +
-        '<table class="mvc-t"><thead><tr><th scope="col">An acre</th><th scope="col">lb</th><th scope="col">$</th></tr></thead><tbody>' +
-          '<tr><th scope="row">N, first year</th><td data-o="n-lb"></td><td data-o="n-usd"></td></tr>' +
-          '<tr><th scope="row">P&#8322;O&#8325;</th><td data-o="p-lb"></td><td data-o="p-usd"></td></tr>' +
-          '<tr><th scope="row">K&#8322;O</th><td data-o="k-lb"></td><td data-o="k-usd"></td></tr>' +
-          '<tr class="mvc-sum"><th scope="row">Book value</th><td></td><td data-o="book-ac"></td></tr>' +
-          '<tr><th scope="row" data-o="buyer-lbl">Worth to the buyer</th><td></td><td data-o="buyer-ac"></td></tr>' +
-          '<tr data-o="haul-row"><th scope="row">Less hauling and spreading</th><td></td><td data-o="haul-ac"></td></tr>' +
+        '<div class="mvc-big"><span>Value of the manure</span><strong data-o="unit">&nbsp;</strong><small data-o="unit-sub"></small></div>' +
+        '<table class="mvc-t"><thead><tr><th scope="col">Nutrient</th><th scope="col">lb an acre</th><th scope="col">$ an acre</th><th scope="col" data-o="field-h">Field</th></tr></thead><tbody>' +
+          '<tr><th scope="row">N, first year</th><td data-o="n-lb"></td><td data-o="n-usd"></td><td data-o="n-field"></td></tr>' +
+          '<tr><th scope="row">P&#8322;O&#8325;</th><td data-o="p-lb"></td><td data-o="p-usd"></td><td data-o="p-field"></td></tr>' +
+          '<tr><th scope="row">K&#8322;O</th><td data-o="k-lb"></td><td data-o="k-usd"></td><td data-o="k-field"></td></tr>' +
+          '<tr class="mvc-sum"><th scope="row">All the manure</th><td></td><td data-o="ac"></td><td data-o="field"></td></tr>' +
         '</tbody></table>' +
-        '<div class="mvc-verdict" data-o="verdict"></div>' +
+        '<p class="mvc-hint">Book values from UW Extension A2809. A test of your own manure gives the real pounds.</p>' +
       '</div>';
   }
 
   function mount(root, live) {
     var id = 'mvc' + (++uid);
     root.innerHTML = calcHTML(id);
-    var role = 'sell';
     function q(sel) { return root.querySelector(sel); }
     function val(k) { var el = q('[data-k="' + k + '"]'); return el ? el.value : ''; }
     function num(k) { var x = parseFloat(val(k)); return isFinite(x) ? x : 0; }
     function set(k, html) { var el = q('[data-o="' + k + '"]'); if (el) el.innerHTML = html; }
-    function checks(pre) { var o = {}; ['n', 'p', 'k'].forEach(function (x) { var c = q('input[name="' + pre + x + '"]'); o[x] = !!(c && c.checked); }); return o; }
     function prices() {
       function pv(k) { var el = q('[data-k="' + k + '"]'), s = el ? el.value : ''; if (s === '') return null;
         if (el.getAttribute('data-full') && el.getAttribute('data-shown') === s) return +el.getAttribute('data-full');  // the dealer price, unrounded
@@ -293,66 +266,34 @@
       if (t && t.id !== lastType) {
         var wasLiquid = lastType ? type(lastType).liquid : true;
         if (wasLiquid !== t.liquid) {
-          var r = q('[data-k="rate"]'), h = q('[data-k="haul"]');
+          var r = q('[data-k="rate"]');
           r.value = t.liquid ? 6000 : 15; r.step = t.liquid ? 500 : 1;
-          h.value = t.liquid ? 15 : 0; h.step = t.liquid ? 0.5 : 0.25;
         }
         lastType = t.id;
       }
       var u = t.liquid ? '1,000 gal' : 'ton';
       q('[data-u="rate"]').textContent = t.liquid ? 'Rate, gallons an acre' : 'Rate, tons an acre';
-      q('[data-u="haul"]').textContent = 'Hauling and spreading, $ per ' + u;
-      var buyerSide = role === 'buy';
-      q('[data-l="buyer"]').textContent = buyerSide ? 'Your soil test calls for' : 'Your neighbor’s soil test calls for';
-      q('[data-l="seller"]').textContent = buyerSide ? 'The seller’s own fields could use' : 'Your own fields could use';
-      var bn = checks(id + '-b'), sn = checks(id + '-s');
-      var res = deal({ type: t.id, timing: val('timing'), rate: num('rate'), acres: num('acres'), prices: prices(),
-                   buyerNeeds: bn, sellerUses: sn, haul: num('haul'), buyerHauls: val('who') === 'buyer' });
+      var res = fieldValue({ type: t.id, timing: val('timing'), rate: num('rate'), acres: num('acres'), prices: prices() });
       if (!res || res.missing) {
-        set('book', 'No price'); set('book-sub', 'Enter a fertilizer price under "Fertilizer prices used" to see a value.');
-        ['n-lb', 'n-usd', 'p-lb', 'p-usd', 'k-lb', 'k-usd', 'book-ac', 'buyer-ac', 'haul-ac', 'verdict'].forEach(function (k) { set(k, ''); });
+        set('unit', 'No price'); set('unit-sub', 'Enter a fertilizer price under "Fertilizer prices used" to see a value.');
+        ['n-lb', 'n-usd', 'n-field', 'p-lb', 'p-usd', 'p-field', 'k-lb', 'k-usd', 'k-field', 'ac', 'field'].forEach(function (k) { set(k, ''); });
         return;
       }
-      set('book', money(res.book) + ' <span>per ' + u + '</span>');
-      set('book-sub', t.liquid ? 'About ' + money(res.book / TONS_PER_KGAL) + ' a ton. ' + money(res.bookAc) + ' an acre at ' + Math.round(num('rate')).toLocaleString('en-US') + ' gallons.'
-                               : money(res.bookAc) + ' an acre at ' + num('rate') + ' tons.');
-      var p = prices();
-      set('n-lb', Math.round(res.lbAc.n)); set('p-lb', Math.round(res.lbAc.p)); set('k-lb', Math.round(res.lbAc.k));
-      set('n-usd', money(res.lbAc.n * p.n)); set('p-usd', money(res.lbAc.p * p.p)); set('k-usd', money(res.lbAc.k * p.k));
-      set('book-ac', money(res.bookAc));
-      set('buyer-lbl', buyerSide ? 'Worth to you (what your soil test needs)' : 'Worth to the buyer (what his soil test needs)');
-      set('buyer-ac', money(res.buyerAc));
-      var hr = q('[data-o="haul-row"]'); hr.hidden = !res.buyerHauls;
-      set('haul-ac', '-' + money(res.haulAc).replace('-', ''));
-      var field = res.acres > 0 ? res.acres : 0;
-      var per = ' per ' + u;
-      var html;
-      if (res.verdict === 'none') {
-        html = '<strong>' + (buyerSide ? 'It saves you nothing' : 'It saves the buyer nothing') + ' after hauling.</strong> ' +
-               'What the buyer needs from it is worth ' + money(res.buyer) + per + ', and hauling and spreading cost ' + money(res.haul) + per + '. ' +
-               'Deals like this go as free manure, or the seller pays to haul it.';
-      } else if (res.verdict === 'keep') {
-        html = '<strong>Worth more on the seller’s own fields.</strong> Spreading it at home saves ' + money(res.floor) + per +
-               ', more than the most the buyer can pay, ' + money(res.ceil) + per + '.';
-      } else {
-        html = '<strong>Fair price: ' + money(res.floor) + ' to ' + money(res.ceil) + per + '</strong>' +
-               '<span>' + money(res.floorAc, 0) + ' to ' + money(res.ceilAc, 0) + ' an acre' +
-               (field ? ', ' + money(res.floorAc * field, 0) + ' to ' + money(res.ceilAc * field, 0) + ' for ' + field + ' acres' : '') + '. ' +
-               (res.buyerHauls ? 'Buyer pays hauling and spreading.' : 'Seller hauls and spreads.') + '</span>' +
-               '<small>The low end is what the seller&rsquo;s own fields would have saved. The high end is what the buyer saves on fertilizer he would have bought' +
-               (res.buyerHauls ? ', less the hauling' : '') + '. A manure test beats book values every time.</small>';
-      }
-      set('verdict', html);
+      var rate = t.liquid ? Math.round(num('rate')).toLocaleString('en-US') + ' gallons' : num('rate') + ' tons';
+      set('unit', money(res.perUnit) + ' <span>per ' + u + '</span>');
+      set('unit-sub', (t.liquid ? 'About ' + money(res.perTon) + ' a ton. ' : '') +
+        money(res.perAcre) + ' an acre at ' + rate + (res.acres ? '. ' + money(res.field, 0) + ' for ' + res.acres.toLocaleString('en-US') + ' acres.' : '.'));
+      set('field-h', res.acres ? res.acres.toLocaleString('en-US') + ' acres' : 'Field');
+      ['n', 'p', 'k'].forEach(function (x) {
+        set(x + '-lb', Math.round(res.lbAc[x]).toLocaleString('en-US'));
+        set(x + '-usd', money(res.usdAc[x]));
+        set(x + '-field', money(res.usdField[x], 0));
+      });
+      set('ac', money(res.perAcre));
+      set('field', money(res.field, 0));
     }
     root.addEventListener('input', run);
     root.addEventListener('change', run);
-    Array.prototype.forEach.call(root.querySelectorAll('.mvc-rb'), function (b) {
-      b.addEventListener('click', function () {
-        role = b.getAttribute('data-role');
-        Array.prototype.forEach.call(root.querySelectorAll('.mvc-rb'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-        run();
-      });
-    });
     function fill(pr) {
       [['pn', pr.n], ['pp', pr.p], ['pk', pr.k]].forEach(function (a) { var el = q('[data-k="' + a[0] + '"]'); if (el && a[1] != null) { el.value = a[1].toFixed(2); el.setAttribute('data-shown', el.value); el.setAttribute('data-full', String(a[1])); } });
       var s = [];

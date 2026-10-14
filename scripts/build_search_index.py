@@ -111,7 +111,7 @@ PAGES = [
     ("/yield-estimator", "Yield estimator", "Ear and pod counts", "yield estimate estimator calculator ear count pods bushels"),
     ("/field-scout", "Field scout", "Draw a field, get its story", "field scout map soil satellite field"),
     ("/fast-facts", "Fast Facts reference tables", "N rates, P and K, manure, stages", "reference tables fast facts n rates p k seeding conversion manure stages thresholds"),
-    ("/manure-value", "Manure value", "What manure is worth, selling to a neighbor", "manure value worth dairy hog swine beef poultry litter price sell neighbor 1000 gallons ton"),
+    ("/manure-value", "Manure value", "What all the N, P and K in manure is worth", "manure value worth dairy hog swine beef poultry litter price sell neighbor 1000 gallons ton"),
     ("/tools", "All tools", "Every calculator and tool", "tools calculators all"),
     ("/news", "The wire", "What just moved", "news wire headlines"),
     ("/daily", "AGSIST Daily", "Morning market briefing", "daily briefing morning report newsletter"),
