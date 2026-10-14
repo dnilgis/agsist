@@ -1002,7 +1002,11 @@ def storage_html(d, today):
     rows.sort(key=lambda x: -x[1]["ratio"])
     short = [st for st, r in rows if r["ratio"] > 1]
     per = sorted({v[1] for _, r in rows for v in r.get("fall", {}).values()})
-    per_txt = ", ".join(p.replace("YEAR - ", "").replace(" FORECAST", " forecast").title().replace("Year", "final")
+    # NASS's annual final for a crop comes the January after harvest, and this
+    # block only ever runs for the current year, so a "YEAR" row here is NASS's
+    # latest estimate, never the final. It printed "(final)" on 2026-10-14.
+    per_txt = ", ".join("latest NASS estimate" if p == "YEAR" else
+                        p.replace("YEAR - ", "").replace(" FORECAST", " forecast").title().replace("Forecast", "forecast")
                         for p in per) or "forecast"
     trs = "".join(
         f"<tr><td>{_e(ST_NAME.get(st, st))}</td><td class=\"num\">{r['ratio']:.2f}&times;</td>"
