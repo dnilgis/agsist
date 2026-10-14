@@ -295,7 +295,8 @@
     var N = Math.max(n, I.axisLen || 0, 1);
     var P = days.map(function (x) { return x.v === null || x.v === undefined || x.flag === 'S' ? null : x.v; });
     var snowMissing = 0, snowTot = 0;
-    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTot += x.s; });
+    // a day with no precipitation report is a gap already (the foot line says so): it doesn't also count against the snow record (2026-10-14, panel 3 D2)
+    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) snowMissing++; else snowTot += x.s; });
     var snowState = snowMissing <= 10 ? (snowTot >= 0.1 ? 'full' : 'none') : 'unknown';
     if (n === 0) snowState = 'unknown';
     var full = snowState === 'full';
@@ -401,7 +402,9 @@
     for (var r = 0; r < n; r++) for (var c = 0; c < n;) {
       if (!m[r][c]) { c++; continue; }
       var e = c; while (e < n && m[r][e]) e++;
-      d += 'M' + n2(mx0 + c * cell) + ',' + n2(my0 + r * cell) + 'h' + n2((e - c) * cell) + 'v' + n2(cell) + 'h' + n2(-(e - c) * cell) + 'z';
+      // absolute, snapped edges, so neighbouring rows share the exact same number and no pale seam shows (cell is fractional; 2026-10-14, panel 3 D7)
+      var x0 = n2(mx0 + c * cell), x1 = n2(mx0 + e * cell), y0 = n2(my0 + r * cell), y1 = n2(my0 + (r + 1) * cell);
+      d += 'M' + x0 + ',' + y0 + 'H' + x1 + 'V' + y1 + 'H' + x0 + 'z';
       c = e;
     }
     var s = '<g data-rp="qr"><g aria-hidden="true"><rect x="' + n2(mx0 - quiet) + '" y="' + n2(my0 - quiet) + '" width="' + n2(n * cell + 2 * quiet) + '" height="' + n2(n * cell + 2 * quiet) + '" fill="#FFFFFF"/>' +

@@ -119,8 +119,9 @@ test("the short-link QR prints about 0.85 in with a 4-module quiet zone; the ser
   for (const style of ["r1", "r2"]) {
     const svg = ART.render(input(year(2025), { style, qr: { matrix: m, serial: "No. 0001 · SRL" } }));
     const g = /<g data-rp="qr"><g aria-hidden="true"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="#FFFFFF"\/><path d="([^"]+)"/.exec(svg);
-    const xs = [...g[5].matchAll(/M([\d.]+),([\d.]+)h([\d.]+)/g)], ys = xs.map((t) => +t[2]);
-    const x0 = Math.min(...xs.map((t) => +t[1])), x1 = Math.max(...xs.map((t) => +t[1] + +t[3]));
+    // runs are drawn from absolute edges since 2026-10-14 (D7): M x0,y H x1 V y1 H x0 z
+    const xs = [...g[5].matchAll(/M([\d.]+),([\d.]+)H([\d.]+)/g)], ys = xs.map((t) => +t[2]);
+    const x0 = Math.min(...xs.map((t) => +t[1])), x1 = Math.max(...xs.map((t) => +t[3]));
     const size = x1 - x0;
     assert.ok(Math.abs(size - 83.33) < 0.1, style + ": the mark is " + size + " u");
     assert.ok(Math.abs(+g[3] - size - 2 * 4 * size / 25) < 0.1, style + ": the white square leaves 4 modules each side");
@@ -385,4 +386,27 @@ test("the page offers the two styles, the dedication and both switches, and load
     assert.ok(readFileSync(ROOT + "fonts/" + f).length > 10000);
   }
   assert.equal(JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8")).promote, true, "launched 2026-10-13: the promo is on");
+});
+
+// ---------- panel 3 (2026-10-14) ----------
+test("D2: a month of unrecorded precipitation doesn't wipe out a whole snow record: snow stays above the line", () => {
+  // 30 days of June with no report at all (pcpn and snow M), a whole winter of snow on record
+  const days = year(2025, (i) => (i >= 152 && i < 182 ? { p: "M", s: null } : i < 60 && i % 6 === 0 ? { p: "0.30", s: 3 } : i === 120 ? { p: "1.20" } : {}));
+  const E = ART.model(input(days));
+  assert.equal(E.snowState, "full", "the gap days are gaps, not missing snow");
+  assert.ok(RP.derive(days).snow > 0, "the page's Snowfall stat keeps the record too");
+  const svg = ART.render(input(days, { style: "r2" }));
+  assert.equal((/<g fill="#AFCBE2"[^>]*>(.*?)<\/g>/.exec(svg)[1].match(/<rect/g) || []).length, 10, "every snow day is a pile above the ground");
+  assert.ok(texts(svg).includes("rain, in"), "the lower scale reads rain, not precipitation");
+});
+
+test("D7: QR rows share exact edges, so no pale seam runs through the mark", () => {
+  for (const style of ["r1", "r2"]) {
+    const svg = ART.render(input(year(2025), { style }));
+    const d = /<g data-rp="qr"><g aria-hidden="true"><rect[^>]*\/><path d="([^"]+)"/.exec(svg)[1];
+    const rows = [...d.matchAll(/M[\d.]+,([\d.]+)H[\d.]+V([\d.]+)H/g)].map((m) => [+m[1], +m[2]]);
+    assert.ok(rows.length > 20, style + ": absolute runs");
+    const tops = new Set(rows.map((r) => r[0])), bottoms = new Set(rows.map((r) => r[1]));
+    for (const b of bottoms) assert.ok(tops.has(b) || b === Math.max(...bottoms), style + ": a row's bottom is the next row's top exactly: " + b);
+  }
 });

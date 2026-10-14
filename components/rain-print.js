@@ -386,7 +386,8 @@
     // Snowfall prints only when the station kept a snowfall record nearly every day
     // (at most MISS_OK days without one) and some snow fell; otherwise it is left off.
     var snowTotal = 0, snowMissing = 0;
-    days.forEach(function (x) { if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
+    // a day with no precipitation report is already a gap; it doesn't also count against snowfall (panel 3 D2)
+    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) snowMissing++; else snowTotal += x.s; });
     var snow = snowMissing <= MISS_OK && snowTotal >= 0.1 ? Math.round(snowTotal * 10) / 10 : null;
     var hot = { v: null, date: '', doy: -1 }, cold = { v: null, date: '', doy: -1 };
     days.forEach(function (x) {
