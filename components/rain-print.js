@@ -939,7 +939,7 @@
     if (RECS_P) return RECS_P;
     RECS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rain-print-records.js?v=1';
+      sc.src = '/components/rain-print-records.js?v=2';
       sc.onload = function () { res(!!root.AgRainRecords); };
       sc.onerror = function () { RECS_P = null; res(false); };
       doc.head.appendChild(sc);
