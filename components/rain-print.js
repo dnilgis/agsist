@@ -3246,8 +3246,16 @@
     root.addEventListener('resize', later);
     if (root.IntersectionObserver) new root.IntersectionObserver(function (es) { PAY_SEEN = es[es.length - 1].isIntersecting; syncBar(); }).observe($('rp-pay-wrap'));
     var typing = function (el) { return el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !/^(radio|checkbox|button|submit|file)$/i.test(el.type || '') && !$('rp-proof').contains(el); };
-    doc.addEventListener('focusin', function (e) { TYPING = typing(e.target); syncBar(); if (TYPING) setTimeout(keepFocusClear, 60); });
-    doc.addEventListener('focusout', function () { setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 0); });
+    /* The bar goes the moment a box has the keyboard and comes back a moment
+       after it leaves, so it never pops up under a finger that is already on
+       its way to a button (2026-10-14: a tap on "Wedding" landed on the bar). */
+    var back = 0;
+    doc.addEventListener('focusin', function (e) {
+      clearTimeout(back);
+      if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(keepFocusClear, 60); }
+      else back = setTimeout(function () { TYPING = false; syncBar(); }, 450);
+    });
+    doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 450); });
   })();
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });

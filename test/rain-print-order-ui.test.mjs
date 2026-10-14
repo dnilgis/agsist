@@ -220,6 +220,11 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await page.focus("#rp-place");
     await settle(page);
     assert.equal(await page.isVisible("#rp-bar"), false, "no bar over a box being typed in");
+    // a tap from a box to a button: the bar comes back after the tap, never under it (2026-10-14: a tap on "Wedding" landed on the bar)
+    await page.evaluate(() => document.getElementById("rp-zoom").focus());
+    assert.equal(await page.isVisible("#rp-bar"), false, "not at once");
+    await settle(page);
+    assert.equal(await page.isVisible("#rp-bar"), true, "a moment later");
     await page.evaluate(() => document.activeElement.blur());
     // not while the step 3 button is on screen
     await page.locator("#rp-pay").scrollIntoViewIfNeeded();
