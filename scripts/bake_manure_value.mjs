@@ -54,7 +54,7 @@ export const FAQ = [
    "Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."],
 ];
 
-const DESC = "At {asof-n} dealer prices, liquid dairy manure is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gal and solid dairy {unit-dairy_solid_gt20-1to3day} a ton: all its N, P and K, with a calculator for your rate and acres.";
+const DESC = "At {asof-n} dealer prices, liquid dairy manure is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gal and solid dairy {unit-dairy_solid_gt20-1to3day} a ton. Calculator for your rate and acres.";
 
 const TIMINGS = ["gt3day", "1to3day", "lt1hr"];
 
