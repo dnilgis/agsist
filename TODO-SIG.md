@@ -2,6 +2,7 @@
 
 The morning report email lists every open item below. To check one off, edit
 this file on GitHub and change `- [ ]` to `- [x]` (or delete the line). To add
+this file is public (it is in the site repo), so keep names and anything private out of it.
 one, add a new `- [ ]` line.
 
 - [ ] Test Stripe with a $19 purchase and refund it
@@ -11,6 +12,6 @@ one, add a new `- [ ]` line.
 - [ ] Submit sitemap-rain.xml (and the other sitemaps) in Google Search Console
 - [ ] Send the Rain Print gift-guide pitches by Oct 31 (the list is in your email)
 - [ ] Ship one framed test print a few states away and write down the real cost (target under $45)
-- [ ] Forward Wyatt's first Bunge morning bid email
+- [ ] Forward the first morning bid email from the new elevator
 - [ ] Set up the bids Gmail and app password, then add the BIDS_IMAP_USER and BIDS_IMAP_PASSWORD secrets in dnilgis/bids
 - [ ] Join Something Special from Wisconsin
