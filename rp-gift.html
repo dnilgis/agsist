@@ -372,7 +372,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     if (!s || C.ships !== 'january' || !window.RainPrint || !window.RainPrint.previewArt) { PV_STATE = 'none'; return Promise.resolve(); }
     PV_STATE = 'loading';
     pvNote('Drawing the print so far from NOAA’s records…', false);
-    return window.RainPrint.previewArt(C.lock.design_code, { idPrefix: 'gc', later: later(s.year) }).then(function (r) {
+    return window.RainPrint.previewArt(C.lock.design_code, { idPrefix: 'gc', later: later(s.year), noQr: true }).then(function (r) {
       PV = r; PV_STATE = 'ok';
       pvNote('', false);
     }, function (err) {

@@ -203,17 +203,30 @@
     INK[k].catch(function () { delete INK[k]; });
     return INK[k];
   }
+  /* A hung upload gives up after UPLOAD_MS (2026-10-14, panel 3 F1): a logo
+     left "saving" for good would keep ordering shut for good. 60 s: a 2 MB
+     PNG on a slow farm uplink takes about half that. */
+  var UPLOAD_MS = 60000;
+  var NOT_SAVED = 'The logo couldn\u2019t be saved just now, so it\u2019s not on the print. Try again in a minute, or email it to me with your order.';
   function upload(blob) {
-    return fetch(BASE + '/rp-logo', { method: 'POST', headers: { 'Content-Type': 'image/png' }, body: blob, credentials: 'omit' }).then(function (r) {
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, root.AgRpLogo && root.AgRpLogo.UPLOAD_MS || UPLOAD_MS);
+    var opts = { method: 'POST', headers: { 'Content-Type': 'image/png' }, body: blob, credentials: 'omit' };
+    if (ctl) opts.signal = ctl.signal;
+    return fetch(BASE + '/rp-logo', opts).then(function (r) {
+      clearTimeout(t);
       return r.json().catch(function () { return {}; }).then(function (j) {
         var id = cleanId(j && j.id);
         if (r.ok && j && j.ok && id) return id;
-        throw err(r.status === 429 ? 'Too many logos from here today. Try again later, or email the logo with your order.'
+        // the worker's cap for everyone that day is not about this reader (F3)
+        throw err(r.status === 429 && j && j.error === 'busy today' ? 'Lots of people are using this today. Try again tomorrow, or email the logo to me with your order.'
+          : r.status === 429 ? 'Too many logos from here today. Try again later, or email the logo with your order.'
           : r.status === 413 ? 'That logo is too big to save. Try a simpler copy.'
-          : 'The logo couldn’t be saved just now, so it’s not on the print. Try again in a minute, or email it to me with your order.');
+          : NOT_SAVED);
       });
     }, function () {
-      throw err('The logo couldn’t be saved just now, so it’s not on the print. Try again in a minute, or email it to me with your order.');
+      clearTimeout(t);
+      throw err(NOT_SAVED);
     });
   }
   /* id -> Promise<{url (data URL), w, h}>: the stored PNG, read as a data URL
@@ -242,7 +255,7 @@
   root.AgRpLogo = {
     kindOf: kindOf, trimBox: trimBox, inkPixels: inkPixels, ppi: ppi, cleanId: cleanId, ID_RE: ID_RE,
     MAX_FILE: MAX_FILE, MAX_SIDE: MAX_SIDE, MAX_PNG: MAX_PNG, NAMES: NAMES, BASE: BASE,
-    process: process, inkUrl: inkUrl, upload: upload, load: load, remember: remember,
+    process: process, inkUrl: inkUrl, upload: upload, load: load, remember: remember, UPLOAD_MS: UPLOAD_MS,
     ACCEPT: 'image/png,image/jpeg,image/webp,image/svg+xml,.png,.jpg,.jpeg,.webp,.svg'
   };
 })(typeof window !== 'undefined' ? window : this);

@@ -212,3 +212,19 @@ test("the page: the upload under the name, its help line, the color switch, the 
   // no em dashes in the new words
   for (const f of ["components/rp-logo.js"]) assert.doesNotMatch(read(f), /—/);
 });
+
+test("F1: an upload that never answers gives up (60 s), so the logo can't stay 'saving' and keep ordering shut", async () => {
+  assert.equal(L.UPLOAD_MS, 60000);
+  const c = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, Map, Promise, Uint8Array, Uint8ClampedArray, setTimeout, clearTimeout, AbortController };
+  c.window = c;
+  let sawSignal = false;
+  c.fetch = (u, o) => new Promise((res, rej) => { if (o && o.signal) { sawSignal = true; o.signal.addEventListener("abort", () => rej(new Error("aborted"))); } });
+  vm.runInNewContext(read("components/rp-logo.js"), c);
+  c.AgRpLogo.UPLOAD_MS = 40;
+  const t0 = Date.now();
+  await assert.rejects(c.AgRpLogo.upload(new Uint8Array(4)), (e) => e.plain && /couldn’t be saved just now/.test(e.message));
+  assert.ok(sawSignal && Date.now() - t0 < 2000);
+  // the worker's cap for everyone is not "from here"
+  c.fetch = () => Promise.resolve({ ok: false, status: 429, json: () => Promise.resolve({ ok: false, error: "busy today" }) });
+  await assert.rejects(c.AgRpLogo.upload(new Uint8Array(4)), (e) => /Lots of people are using this today/.test(e.message));
+});

@@ -415,6 +415,28 @@
   }
   // the same rule on both layouts
   function showDry(D) { return D.dryMax.len >= DRY_MIN; }
+  /* A STUCK GAUGE (2026-10-14, panel 3 D1). STUCK_DAYS or more days in a row
+     reported as 0.00 (not missing, not a trace, no snow), over a stretch whose
+     30-year normal adds up to STUCK_USUAL inches or more, is not a drought a
+     station records: the gauge was likely stuck. The print then makes no claim
+     from it (no dry stretch, no remarkable days) and the page says why. In wet
+     country 60 days of zeros against 4 in of normal doesn't happen; desert and
+     dry-season normals stay under 4 in, so they never trip it.
+     byDate: Map of 'MM-DD' -> normal inches. -> {from, to, n, usual} | null */
+  var STUCK_DAYS = 60, STUCK_USUAL = 4.0;
+  function stuckRun(days, byDate) {
+    if (!byDate || !days || !byDate.size) return null;
+    var zero = function (x) { return x && x.flag === '' && x.v === 0 && !(x.s > 0); };
+    var best = null, i = 0;
+    while (i < days.length) {
+      if (!zero(days[i])) { i++; continue; }
+      var j = i, usual = 0;
+      while (j < days.length && zero(days[j])) { usual += byDate.get(days[j].date.slice(5)) || 0; j++; }
+      if (j - i >= STUCK_DAYS && usual >= STUCK_USUAL && (!best || usual > best.usual)) best = { from: days[i].date, to: days[j - 1].date, n: j - i, usual: Math.round(usual * 100) / 100 };
+      i = j;
+    }
+    return best;
+  }
   /* The comparison's daily amounts, aligned to the year. `normal` is the
      comparison as it is; `daily` (what the running total, band and headline
      use) is 0 on a day the station did not record, since the year's total has
@@ -792,6 +814,9 @@
     var f = fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
       clearTimeout(timer);
       if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; throw e; }
+      // an answer that isn't data (a proxy's or an outage page) says so in words, not as a script error (panel 3 F7)
+      var json = r.json.bind(r);
+      r.json = function () { return json().catch(function () { var e2 = new Error(who + ' sent back something that isn\u2019t data. Try again in a minute.'); e2.retry = true; throw e2; }); };
       return r;
     }, function () {
       clearTimeout(timer);
@@ -897,11 +922,17 @@
   // NOAA's 30-year normal for each date, from ACIS's own normal element (period
   // not verified live, so never printed). A station without a normals product
   // fails here and the comparison says so.
+  /* ACIS's "91" is the 1991-2020 normals, the set the county rain pages use
+     (scripts/fetch_county_rain.py); the older code 1 is asked only when "91"
+     has nothing for the station (2026-10-14, panel 3 D4). */
   function stationNormal(sid, year) {
     var key = sid + '|' + year;
     if (NORM_CACHE.has(key)) return Promise.resolve(NORM_CACHE.get(key));
-    var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'pcpn', normal: 1 }] });
-    return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); }).then(function (j) {
+    var ask = function (code) {
+      var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'pcpn', normal: code }] });
+      return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); });
+    };
+    return ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); }).then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var byDate = new Map();
       j.data.forEach(function (row) { var v = parsePcpn(row[1]).v; if (v !== null) byDate.set(row[0].slice(5), v); });
@@ -998,7 +1029,8 @@
         year: s.year, km: km, city: town.name, sid: chosen.sid };
       var cmp = s.cmp === 'normal' ? stationNormal(chosen.sid, s.year) : s.cmp === 'station' ? stationExtremes(chosen.sid) : null;
       var design = Object.assign({}, s, { gift: false, station: chosen.sid });
-      var short = root.AgRpShort ? Promise.race([root.AgRpShort.getShortLink(encodeCode(design)), new Promise(function (r) { setTimeout(function () { r(null); }, 8000); })]) : null;
+      // opts.noQr: the gift card has its own QR for the card; a second square for the design only confuses (panel 3 D8), and no short id is made
+      var short = !opts.noQr && root.AgRpShort ? Promise.race([root.AgRpShort.getShortLink(encodeCode(design)), new Promise(function (r) { setTimeout(function () { r(null); }, 8000); })]) : null;
       // the design's logo, as the page draws it (a card whose logo doesn't load still draws, without it)
       var logo = s.logo && root.AgRpLogo ? root.AgRpLogo.load(s.logo).then(function (got) {
         if (!s.logoInk) return { href: got.url, w: got.w, h: got.h };
@@ -1012,11 +1044,12 @@
           if (ov) ov.label = s.cmp === 'normal' ? 'NOAA 30-year normal' : ext.yearFrom + ' to ' + ext.yearTo + ' station average (' + ext.years + ' years)';
         }
         var qr = null;
-        try { qr = root.AgQR ? { matrix: root.AgQR.matrix(res[1] || shortUrl(design)), serial: '' } : null; } catch (e) { qr = null; }
+        if (!opts.noQr) try { qr = root.AgQR ? { matrix: root.AgQR.matrix(res[1] || shortUrl(design)), serial: '' } : null; } catch (e) { qr = null; }
+        var stuck = s.cmp === 'normal' && res[0] ? stuckRun(days, res[0]) : null;
         var last = days[days.length - 1].date;
         var svg = root.AgRainArt.render({
           style: s.style, year: s.year, place: placeLongOf(meta), name: s.name, dedication: s.dedication,
-          days: days, D: picked.d, showDry: showDry(picked.d), axisLen: preview ? (isLeap(s.year) ? 366 : 365) : picked.d.n,
+          days: days, D: picked.d, showDry: showDry(picked.d) && !stuck, axisLen: preview ? (isLeap(s.year) ? 366 : 365) : picked.d.n,
           ov: ov, ovNote: cmpNoteFor(s.cmp, ext), showNormals: s.normals, markers: markersOn(s.markers, s.year, picked.d.n),
           records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: gaugeLine(meta), logo: res[2] || null,
           watermark: false, bleed: 0, idPrefix: opts.idPrefix || 'gc'
@@ -1031,7 +1064,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -1057,6 +1090,7 @@
   /* SETTLE: last year, drawn while it is still open (lastYearOpen) and not all
      in, or before full_year_from: ordered now, made once the full year is in. */
   var SETTLE = false;
+  var STUCK = null;   // stuckRun() of the drawn year, once the normal is in
   /* SAMPLE (2026-10-11): with no design in the URL the page draws Chetek, WI
      for the last finished year, through the same geocode and ACIS calls a
      reader's own town takes, so the box is never empty. A sample cannot be
@@ -1186,9 +1220,9 @@
     o = o || {};
     var input = {
       style: ST.style, year: META.year, place: placeLong(), name: ST.name, dedication: ST.dedication,
-      days: DATA.days, D: DATA.d, showDry: showDry(DATA.d), axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
+      days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
-      records: ST.records ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
       gauge: META ? gaugeLine(META) : '', logo: logoArt(),
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
@@ -1675,6 +1709,8 @@
       (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
+      (STUCK ? '<b>' + esc(stationName(m.name)) + ' reported 0.00 for ' + STUCK.n + ' days in a row, ' + esc(longDate(STUCK.from)) + ' to ' + esc(longDate(STUCK.to)) +
+        ', when that stretch usually gets ' + f2(STUCK.usual) + ' in. The gauge may have been stuck, so the print leaves off the dry stretch and the remarkable days.</b> Pick another station under Weather station if there is one. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
       (PREVIEW && !ST.gift ? 'NOAA hasn\u2019t sent the rest of ' + ST.year + ' from this station yet; the print you get shows the full year. ' : '') +
       (usualWords() ? esc(usualWords()) + ' ' : '') +
@@ -1734,6 +1770,7 @@
     sampleLine(false);
     if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?'); return; }
     setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.', true);
+    RETRY_SAMPLE = false;
     $('rp-retry-row').hidden = !(err && err.retry);
   }
   // "Which Springfield?": one button per town, with its county
@@ -1777,7 +1814,7 @@
   }
   var PICKED = null;   // {q, hit}: the town the reader chose from a "which one?" list
   function geocode(q) { return PICKED && PICKED.q === q ? Promise.resolve(PICKED.hit) : geoFind(q); }
-  var reqToken = 0;
+  var reqToken = 0, RETRY_SAMPLE = false;
   function run(e, preset) {
     if (e) e.preventDefault();
     var next;
@@ -1934,7 +1971,7 @@
         setStatus('No preview yet, but you can still order it.');
         throw 'noart';
       }
-      DATA = { days: picked.days, d: picked.d, raw: picked.raw }; NOART = '';
+      DATA = { days: picked.days, d: picked.d, raw: picked.raw }; NOART = ''; STUCK = null;
       var yearLen = isLeap(ST.year) ? 366 : 365, notIn = !ST.gift && lastYearOpen(ST.year) && picked.days.length < yearLen;
       PREVIEW = ST.gift || notIn ? { last: picked.days[picked.days.length - 1].date, yearLen: yearLen } : null;
       SETTLE = notIn || (!ST.gift && settlingByDate(ST.year));
@@ -1956,6 +1993,7 @@
       if (my !== reqToken) throw 'stale';
       if (res[0]) { EXT = res[0]; EXT_WAIT = false; }
       NORM30 = res[1];
+      STUCK = stuckRun(DATA.days, NORM30);
       drawnStatus();
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
@@ -1963,7 +2001,18 @@
       if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
     }).catch(function (err) {
       if (err === 'stale') return;
-      if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
+      if (SAMPLE) {
+        // the sample failed: the empty box, and when NOAA or the town lookup is down, a word and Try again (panel 3 F2)
+        if (my === reqToken) {
+          clearSample();
+          if (err && err.retry) {
+            statusEl.textContent = 'NOAA\u2019s data service isn\u2019t answering right now, so the sample can\u2019t be drawn. Try again in a minute, or type your town.';
+            statusEl.classList.add('rp-bad');
+            RETRY_SAMPLE = true; $('rp-retry-row').hidden = false;
+          }
+        }
+        return;
+      }
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
       // the town came from the reader's connection, not from them: no red error for a town they never typed
@@ -2870,6 +2919,8 @@
     b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
+    // a logo still saving has no id: the link would leave it off (panel 3 F1)
+    if (LOGO && LOGO.state === 'saving') { $('rp-dl-note').textContent = 'The logo is still saving. Copy the link in a moment.'; return; }
     var u = shortUrl(artDesign()), b = $('rp-copy');
     var ok = function () { b.textContent = 'Link copied'; $('rp-dl-note').textContent = 'Link copied.'; setTimeout(function () { b.textContent = 'Copy link'; }, 2000); };
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
@@ -2879,7 +2930,8 @@
   $('rp-retry').addEventListener('click', function () {
     // the button is about to vanish: keep the keyboard on the town box
     try { $('rp-place').focus({ preventScroll: true }); } catch (e) {}
-    $('rp-retry-row').hidden = true; run();
+    $('rp-retry-row').hidden = true;
+    if (RETRY_SAMPLE) { RETRY_SAMPLE = false; statusEl.classList.remove('rp-bad'); runSample(); } else run();
   });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;

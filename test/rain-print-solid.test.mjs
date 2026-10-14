@@ -415,3 +415,89 @@ test("T11, T13, T3, P9: logo rights, a mailto, the lost-or-damaged steps, the ma
   assert.ok(!/lost in the mail[^.]*send a photo/.test(faq), "no photo of a parcel that never came");
   assert.match(S, /save this file with the order/);
 });
+
+// ---------- panel 3, group B lens (data and failure modes) ----------
+// rain-print.js with qr.js and the art in a bare context, fetch answered here
+function engine(answer) {
+  const c = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, Map, Promise, setTimeout, clearTimeout, AbortController, Uint8Array };
+  c.window = c;
+  c.asked = [];
+  c.fetch = (u) => { c.asked.push(String(u)); const a = answer(String(u)); return Promise.resolve(a); };
+  for (const f of ["components/qr.js", "components/rain-print-art.js", "components/rain-print.js"]) vm.runInNewContext(readFileSync(ROOT + f, "utf8"), c);
+  return c;
+}
+const jsonRes = (j) => ({ ok: true, status: 200, json: () => Promise.resolve(j) });
+const textRes = (t) => ({ ok: true, status: 200, json: () => Promise.reject(new SyntaxError("Unexpected token < in JSON")) });
+
+test("D1: a gauge stuck at 0.00 for months against a wet normal is found; a real dry spell in dry country is not", () => {
+  const days = (n, f) => Array.from({ length: n }, (_, i) => { const d = new Date(Date.UTC(2025, 0, 1) + i * 864e5).toISOString().slice(0, 10); return Object.assign({ date: d, v: 0, flag: "", s: 0 }, f(i)); });
+  const wet = new Map(), dry = new Map();
+  for (let i = 0; i < 365; i++) { const md = new Date(Date.UTC(2025, 0, 1) + i * 864e5).toISOString().slice(5, 10); wet.set(md, 0.1); dry.set(md, 0.02); }
+  const stuck = days(365, (i) => (i >= 120 && i < 200 ? {} : i % 4 === 0 ? { v: 0.3 } : {}));
+  const r = RP.stuckRun(stuck, wet);
+  assert.ok(r && r.n >= 80 && r.usual >= 8, JSON.stringify(r));
+  assert.equal(RP.stuckRun(stuck, dry), null, "under 4 in of normal over the run: a dry season, not a stuck gauge");
+  assert.equal(RP.stuckRun(days(365, (i) => (i % 30 === 0 ? { v: 0.5 } : {})), wet), null, "no 60-day run");
+  assert.equal(RP.stuckRun(days(365, (i) => (i >= 120 && i < 200 && i % 10 === 0 ? { flag: "T" } : i % 4 === 0 ? { v: 0.3 } : {})), wet), null, "a trace breaks the run");
+  assert.equal(RP.stuckRun(stuck, null), null, "no normal, no check");
+  const S2 = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S2, /records: ST\.records && !STUCK \? recordsFor\(\) : \[\]/);
+  assert.match(S2, /showDry: showDry\(DATA\.d\) && !STUCK/);
+  assert.match(S2, /The gauge may have been stuck, so the print leaves off the dry stretch and the remarkable days\./);
+});
+
+test("D4: the normal asks ACIS for 1991-2020 ('91') first, and code 1 only when that has nothing", async () => {
+  const c = engine((u) => {
+    const p = JSON.parse(new URL(u).searchParams.get("params"));
+    const code = p.elems[0].normal;
+    if (p.sid === "A" && code === "91") return jsonRes({ data: [["2025-01-01", "0.05"], ["2025-01-02", "0.06"]] });
+    if (p.sid === "B" && code === "91") return jsonRes({ error: "no normals" });
+    return jsonRes({ data: [["2025-01-01", "0.04"]] });
+  });
+  const a = await c.RainPrint.stationNormal("A", 2025);
+  assert.equal(a.get("01-02"), 0.06);
+  assert.equal(c.asked.length, 1, "one call when '91' answers");
+  const b = await c.RainPrint.stationNormal("B", 2025);
+  assert.equal(b.get("01-01"), 0.04);
+  assert.deepEqual(c.asked.slice(1).map((u) => JSON.parse(new URL(u).searchParams.get("params")).elems[0].normal), ["91", 1]);
+});
+
+test("F7: an answer that isn't data says so in words, with Try again", async () => {
+  const c = engine(() => textRes("<html>"));
+  await assert.rejects(c.RainPrint.stationNormal("A", 2025), (e) => e.retry === true && /NOAA’s data service sent back something that isn’t data\. Try again in a minute\./.test(e.message));
+});
+
+test("D8: the gift card's preview carries no QR of its own and makes no short link", async () => {
+  const code = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2026, cmp: "none", name: "For Dad", markers: [] });
+  const c = engine((u) => {
+    const url = new URL(u);
+    if (url.host === "geocoding-api.open-meteo.com") return jsonRes({ results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] });
+    if (url.pathname === "/StnData") return jsonRes({ meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: series(2026, "2026-10-09") });
+    return jsonRes({});
+  });
+  let shortAsked = 0;
+  c.AgRpShort = { getShortLink: () => { shortAsked++; return Promise.resolve("HTTPS://AGSIST.COM/R?K7Q2M"); }, peek: () => null };
+  const withQr = await c.RainPrint.previewArt(code, { idPrefix: "gc" });
+  assert.match(withQr.svg, /data-rp="qr"/, "the page's own preview still has its QR");
+  const before = shortAsked;
+  const card = await c.RainPrint.previewArt(code, { idPrefix: "gc", noQr: true });
+  assert.ok(!/data-rp="qr"/.test(card.svg), "one QR on the card: the card's own");
+  assert.equal(shortAsked, before, "no short link asked for");
+  assert.match(readFileSync(ROOT + "rp-gift.html", "utf8"), /previewArt\(C\.lock\.design_code, \{ idPrefix: 'gc', later: later\(s\.year\), noQr: true \}\)/);
+});
+
+test("F2: NOAA down on the first visit: the sample's empty box says why and offers Try again", { skip }, async () => {
+  const srvOpts = { where: false };
+  await withPage(async (page, base, errors) => {
+    await page.route(/data\.rcc-acis\.org/, (r) => r.fulfill({ status: 503, body: "down" }));
+    await page.goto(base + "/rain-print.html");
+    await page.waitForFunction(() => !document.getElementById("rp-retry-row").hidden, null, { timeout: 30000 });
+    assert.match(await page.textContent("#rp-status"), /NOAA’s data service isn’t answering right now, so the sample can’t be drawn/);
+    // NOAA back: Try again draws the sample
+    await page.unroute(/data\.rcc-acis\.org/);
+    await page.click("#rp-retry");
+    await page.waitForFunction(() => document.querySelector("#rp-art svg"), null, { timeout: 30000 });
+    assert.match(await page.textContent("#rp-sample-txt"), /^Sample: Chetek, WI/);
+    assert.deepEqual(errors, []);
+  }, srvOpts);
+});
