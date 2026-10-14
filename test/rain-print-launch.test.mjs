@@ -45,6 +45,8 @@ test("a ZIP is sent as a postal code, and a miss says to type the town", () => {
 test("a share link that can't be drawn says why", () => {
   assert.match(RP.linkProblem("?d=garbage!!"), /damaged or cut short/);
   assert.match(RP.linkProblem("?place=Chetek&year=1849"), /year \(1849\)/);
+  // 2026-10-14: a bad year draws the last full year, and the note says which
+  assert.equal(RP.linkProblem("?place=Chetek&year=1700", "2026-10-14"), "That link\u2019s year (1700) isn\u2019t one I can draw, so this shows 2025. Pick another year and press Draw it.");
   assert.match(RP.linkProblem("?place=Chetek&year=abc"), /year \(abc\)/);
   assert.match(RP.linkProblem("?year=2020"), /no town/);
   assert.equal(RP.linkProblem("?d=" + RP.encodeCode({ place: "Chetek, WI", year: 2025 })), "");
@@ -58,6 +60,11 @@ test("stations in plain words: no raw ACIS id pair, names out of caps", () => {
   assert.equal(RP.stationName("CAMERON 2 NE"), "Cameron, 2 mi NE");
   assert.equal(RP.stationName("RICE LAKE MUNI AP"), "Rice Lake Municipal Airport");
   assert.equal(RP.milesText(0.43), "0.4 mi");
+  // 2026-10-14: one label everywhere, the offset said once, and CoCoRaHS gauges named as such
+  assert.deepEqual(plain(RP.stationParts("CAMERON 2 NE")), { name: "Cameron", off: "2 mi NE" });
+  assert.equal(RP.stationLabel({ name: "CAMERON 2 NE", state: "WI" }), "Cameron, WI (2 mi NE of Cameron)");
+  assert.equal(RP.stationLabel({ name: "CHETEK", stateAbbr: "WI" }), "Chetek, WI");
+  assert.equal(RP.sidPlain("US1WIBN0004 6"), "CoCoRaHS gauge US1WIBN0004");
   assert.equal(RP.milesText(23.6), "24 mi");
 });
 
@@ -125,10 +132,10 @@ test("the longest dedication (70) prints whole at both styles, at 14 u or more, 
 
 // ---------- the print's small lines ----------
 test("the print names the gauge and distance, and explains gaps only when there are some, both styles", () => {
-  const gauge = "Rain gauge: Chetek, WI weather station, 0.4 mi from Chetek";
+  const gauge = "Weather station: Chetek, WI, 0.4 mi from Chetek";
   for (const style of ["r1", "r2"]) {
     const full = texts(ART.render(input(year(2025), { style, gauge })));
-    const line = full.find((x) => x.t.startsWith("Rain gauge:"));
+    const line = full.find((x) => x.t.startsWith("Weather station:"));
     assert.ok(line && line.size >= 12, style + ": gauge line at production size");
     assert.ok(!/no report/.test(line.t), style + ": no gap note on a full year");
     const gappy = texts(ART.render(input(year(2025, (i) => (i === 40 ? { p: "M" } : {})), { style, gauge })));
@@ -246,7 +253,7 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /else startNear\(\);/, "a new visitor's first print is their own area");
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
-  assert.match(S, /if \(!\(ST\.place && ST\.year\)\) withExample\(ST, lastFullYear\(\)\)/, "the example fills a new visit only, never a design from a link");
+  assert.match(S, /if \(!ST\.place\) withExample\(ST, lastFullYear\(\)\)/, "the example fills a new visit only, never a design from a link");
   assert.match(S, /var left = exampleLeft\(ST\)/, "ordering waits while example words are on the print");
   assert.match(S, /PROOF_VIEW = \$\('rp-wall'\)\.getAttribute\('data-view'\)/, "it opens framed or print only, as set under the preview");
   assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
@@ -286,13 +293,13 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.deepEqual(T.map((t) => [t.min, t.print12x18, t.framed12x18]), [[5, 45, 89], [10, 40, 79], [25, 37, 75], [50, 35, 72]]);
   assert.deepEqual([off.print12x18, off.framed12x18, J.business_quote_max], [3, 6, 100]);
   // the FAQ's figures are written out, so they must agree with the json
-  assert.match(faq, new RegExp("5 to 9 are the regular prices on one invoice"));
+  assert.match(faq, new RegExp("5 to 9 prints cost the regular price, on one invoice"));
   assert.match(faq, new RegExp("10 to 24 are \\$" + T[1].print12x18 + " a print or \\$" + T[1].framed12x18 + " framed; 25 to 49, \\$" + T[2].print12x18 + " or \\$" + T[2].framed12x18 + "; 50 to 100, \\$" + T[3].print12x18 + " or \\$" + T[3].framed12x18));
   assert.match(faq, new RegExp("From 10 prints, all to one address takes \\$" + off.print12x18 + " off each print and \\$" + off.framed12x18 + " off each framed"));
   assert.match(faq, /Over 100, ask me/);
   assert.equal(T[0].print12x18, J.print12x18, "5-9 is the card price");
   assert.equal(T[0].framed12x18, J.framed12x18);
-  assert.match(HTML, /How many prints \(5 to 500\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
+  assert.match(HTML, /How many prints \(5 or more\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
   assert.match(HTML, /Business orders start at 5 prints/);
   assert.match(HTML, /A 2026 print ships in January/);
   assert.match(HTML, /note card in the box/);
@@ -316,10 +323,130 @@ test("refund and reprint wording: Sig's terms, still marked as a draft, fee only
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /refund you in full/);
   assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
-  assert.match(faq, /lost in the mail or arrives damaged, send a photo and I&rsquo;ll reprint it for a small fee, with the same serial number/);
+  assert.match(faq, /lost in the mail or arrives damaged, glass included, send a photo and I&rsquo;ll reprint or reframe it for a small fee, with the same serial number/);
   assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
   assert.equal(J.reprint_fee, null, "no fee amount invented");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,300}'a small fee,'/);
   assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
+});
+
+// ---------- polish pass, group B (2026-10-14) ----------
+const S2 = readFileSync(ROOT + "components/rain-print.js", "utf8");
+const slice = (a, b) => S2.slice(S2.indexOf(a), S2.indexOf(b, S2.indexOf(a) + 1));
+const visible = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
+
+test("Sig's notes: no printer named anywhere, framed prints have real glass, packed well", () => {
+  assert.ok(!/epson|artisan|acrylic/i.test(HTML + S2), "no printer model, no acrylic");
+  assert.match(HTML, /<li>Real glass front, packed with corner guards and foam, double-boxed<\/li>/);
+  assert.match(HTML, /<li>I print it myself, and you see a proof first<\/li>/);
+  assert.match(HTML, /I print it myself, frame it if you ordered the frame, and ship it from Chetek, Wisconsin\./);
+});
+
+test("a link's station draws even when the station list misses it, or the page says why not", () => {
+  const step = slice("STATIONS = list;", "ST.station = chosen.sid;");
+  assert.match(step, /if \(linked\) return daily\(linked, ST\.year\)/, "the linked station is asked for directly");
+  assert.match(step, /STATIONS = \[chosen\]\.concat\(list\)/, "and listed first under Weather station");
+  assert.match(step, /didn\\u2019t answer from NOAA just now, so this print uses the nearest station with a good record/, "a station that fails is named");
+  assert.match(step, /n\.classList\.remove\('rp-bad'\)/, "as a note, not an error");
+  assert.match(step, /return nearest\(linked\)/, "and the nearest pick skips the station that just failed");
+  assert.ok(!/within about 40 miles/.test(S2 + HTML), "no distance the station box doesn't keep");
+  // county links carry the station's own place (?ll=lat,lon): the search centers there, distances stay from the town
+  assert.match(S2, /return stations\(ll \? ll\.lat : g\.latitude, ll \? ll\.lon : g\.longitude, ST\.year\)/);
+  assert.match(S2, /var ll = LINK_LL && LINK_LL\.place === ST\.place && ST\.station \? LINK_LL : null;/, "only on that link's own first town");
+  assert.match(S2, /if \(ll && err !== 'stale'\) return llTown\(ll\);/, "a town the lookup doesn't know still draws its station");
+  assert.match(S2, /if \(m\.approx\) return 'near ' \+ m\.city;/, "and claims no distance it doesn't know");
+});
+
+test("a town with no year, or a bad year, draws the last full year", () => {
+  assert.match(S2, /else if \(ST\.place\) \{ ST\.year = lastFullYear\(\); writeInputs\(ST\); run\(\); \}/);
+});
+
+test("checkout note: a link to tap, no wall of code, no 'gift' for someone buying for himself", () => {
+  const b = slice("function buy(id)", "function toExample");
+  assert.match(b, /If it didn\\u2019t open, tap here/);
+  assert.ok(!/<code>/.test(b), "no design code in the note");
+  assert.ok(!/GIFT at the front|Checkout opened in a new tab/.test(b));
+  assert.match(b, /Your design reference: /);
+  assert.match(HTML, /<h3>Ordering <span class="rp-cy">2026<\/span><\/h3>/);
+  assert.match(S2, /'\{year\} \(ships in January\)'/, "the Year box fallback matches data/rain-print.json");
+});
+
+test("the example warning under the prices goes once the example is gone", () => {
+  assert.match(slice("function syncExampleNote", "var EXT_CACHE"), /if \(EX_NOTE && !left\.length\) \{ \$\('rp-buy-note'\)\.textContent = ''; EX_NOTE = false; \}/);
+  assert.match(slice("function buy(id)", "function toExample"), /EX_NOTE = true;/);
+});
+
+test("one promise for the digital file and the gift card: within 1 business day", () => {
+  assert.match(HTML, /<li id="rp-dig-when">A proof first, then the files by email within 1 business day of your OK<\/li>/);
+  assert.ok(!/within a day|Within a business day|after you pay\./.test(visible), "no looser or older promise on the page");
+  assert.ok(!/emailed once you OK it|within a day with/.test(S2));
+  assert.match(S2, /'A proof and the files in January, once the full year is in'/);
+  assert.ok(!/preview of the year so far|December numbers/.test(HTML + S2), "no promise of a preview on the card");
+  assert.match(HTML, /Within 1 business day of paying, I email you a gift card to print for under the tree/);
+});
+
+test("station words are honest and the same everywhere", () => {
+  assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
+  assert.match(HTML, /this draws every rain the nearest NOAA weather station caught that year/);
+  assert.match(HTML, /A morning reading is filed under the day it was read/);
+  assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
+  assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
+  assert.match(S2, /none\.retry = true/, "no answer from any station offers Try again");
+  assert.match(S2, /The only station near ' \+ g\.name/, "one station is not 'none of the 1'");
+  assert.match(S2, /milesText\(miles\(s\.km\)\) \+ ', ' \+ s\.valid_daterange/, "the station option text is short enough to show whole");
+});
+
+test("the source line and stats read plainly", () => {
+  assert.match(S2, /' Left off the print for space: '/);
+  assert.match(S2, /\['Days with rain or snow', D\.wet\], \['Longest dry stretch'/);
+  assert.match(S2, /not known: a report that covers several days could hold a bigger one/);
+  assert.match(S2, /if \(!e && !preset && NEAR && ST\.place === NEAR\) \{ NEAR = ''; \$\('rp-place'\)\.value = ''; runSample\(\); return; \}/, "a failed draw of the reader's own area goes back to the sample, quietly");
+});
+
+test("type, keyboard and screen reader fixes", () => {
+  assert.match(HTML, /#main \.rp \.rp-side>h1\{font-size:clamp\(2rem,2\.4vw,2\.4rem\)\}/, "the h1 stands above the h2s on a laptop");
+  assert.match(HTML, /<h2 class="sec-h rp-step-h" id="rp-draw-h">/);
+  assert.match(HTML, /\.rp p,\.rp li,\.rp dd,\.rp dt,\.rp summary,\.rp blockquote,\.rp td\{font-variant-numeric:normal\}/, "no spaced hyphens in prose");
+  assert.match(HTML, /<details class="rp-proof-more" open>/);
+  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Date ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for date ${i}"`), "date " + i + " is named");
+  assert.match(HTML, /id="rp-proof-stage" role="group"/);
+  assert.match(HTML, /html\{scroll-padding-top:84px\}/);
+  assert.ok(!/behavior: 'smooth'/.test(S2), "every scroll respects reduced motion");
+  assert.match(S2, /\$\('rp-dl-note'\)\.textContent = 'Link copied\.'/);
+  assert.match(S2, /if \(doc\.activeElement === go\) \{ try \{ \$\('rp-place'\)\.focus/, "focus never drops to the page when Draw turns off");
+  assert.match(S2, /art\.setAttribute\('aria-busy', 'true'\)/);
+});
+
+test("copy batch: size, proof, business words", () => {
+  assert.match(HTML, /Actual size is 12 x 18 inches, hung sideways;/);
+  assert.match(HTML, /you see a proof of yours before I print it\./);
+  assert.match(HTML, /Tick “It&rsquo;s a gift” above the prices/);
+  assert.match(HTML, /Once you OK the proof sheet, I print them/);
+  assert.match(S2, /'Rain Print order'/);
+  assert.match(S2, /framed: \['framed print', 'framed prints'\]/);
+  assert.ok(!/Chetek Co-op/.test(HTML), "no made-up business name in the placeholder");
+  assert.ok(!/It's a gift|Who it's for/.test(visible), "curly apostrophes in the visible copy");
+});
+
+test("outside review, as Sig took it: example years, the framed card featured, the proof by the buttons, what Compare with means", () => {
+  const stories = [...HTML.matchAll(/<a class="rp-story"[^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+  assert.equal(stories.length, 3, "a drought, a flood and a family year");
+  for (const h of stories) {
+    const d = RP.fromParams(h.split("?")[1]);
+    assert.ok(d.place && d.year >= 1890 && d.year <= 2025, "each draws a real finished year: " + h);
+    assert.equal(d.station, "", "and the nearest good station picks itself: " + h);
+  }
+  assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993, 1998]);
+  const fam = RP.fromParams(stories[2].split("?")[1]);
+  assert.equal(fam.name, "The Johnson Farm", "the family year wears the example, so it can't be ordered by mistake");
+  assert.equal(fam.markers.length, 3);
+  assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
+  assert.match(HTML, /<div class="rp-prod rp-prod-feat"><h3>12 x 18 framed<\/h3>/);
+  assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
+  assert.equal((HTML.match(/<\/button><p class="rp-proof-first">You get a proof before anything prints\.<\/p>/g) || []).length, 3, "right under each order button");
+  assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
+  assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
+  assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
+  assert.equal((HTML.match(/name="rp-style"/g) || []).length, 2, "two styles only");
 });

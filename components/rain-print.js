@@ -1214,6 +1214,7 @@
     }
   }
   function distText(m) {
+    if (m.approx) return 'near ' + m.city;   // a county link whose town the lookup didn't know: no distance claimed
     return milesText(miles(m.km)) + ' from ' + m.city;
   }
   // "Cameron, WI (2 mi NE of Cameron)", the same words on the print, the page and the order
@@ -1353,6 +1354,22 @@
     try { box.querySelector('button').focus(); } catch (e) {}
   }
 
+  /* COUNTY LINKS (2026-10-14). A county rain page links here with its
+     station's own place: ?ll=lat,lon. On that link's first draw the station
+     search centers there, so the named station is found even when the town
+     lookup misses or finds another town of that name. Distances still run from
+     the town; when the town can't be found the print says "near" it instead of
+     a distance it doesn't know. */
+  var LINK_LL = (function () {
+    var q = new URLSearchParams(root.location.search), m = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/.exec(q.get('ll') || '');
+    if (!m) return null;
+    var lat = +m[1], lon = +m[2];
+    return lat >= 15 && lat <= 72 && lon >= -180 && lon <= -60 ? { lat: lat, lon: lon, place: ST.place } : null;
+  })();
+  function llTown(ll) {
+    var q = geocodeQuery(ST.place), full = STATE[q.st];
+    return { name: parts0(ST.place), admin1: full ? toTitle(full) : '', latitude: ll.lat, longitude: ll.lon, approx: true };
+  }
   var reqToken = 0;
   function run(e, preset) {
     if (e) e.preventDefault();
@@ -1393,6 +1410,8 @@
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false;
+    // the county page's station location, on the first draw of its own link only
+    var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
@@ -1412,16 +1431,26 @@
           return geocode(q).then(function (hit) { ST.place = cleanText(placeLabel(hit), LIMITS.place); $('rp-place').value = ST.place; return hit; }, next);
         };
         return next();
+      }).then(function (hit) {
+        // a town found far from the linked station is another town of that name
+        return ll && haversine(hit.latitude, hit.longitude, ll.lat, ll.lon) > 60 ? llTown(ll) : hit;
+      }, function (err) {
+        // the county page's station town isn't a town the lookup knows: the station's own place stands in
+        if (ll && err !== 'stale') return llTown(ll);
+        throw err;
       });
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
       // a ZIP or a picked town: the print, the link and the order name the town found
       if (geocodeQuery(ST.place).zip) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
-      setStatus('Looking for NOAA stations near ' + g.name + ', ' + g.admin1 + '…');
-      return stations(g.latitude, g.longitude, ST.year);
+      setStatus('Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
+      // a county link searches around its own station, so that station is in the list
+      return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
+      // distances on the page are from the town, wherever the search was centered
+      if (ll) list = list.map(function (s) { return Object.assign({}, s, { km: haversine(g.latitude, g.longitude, s.ll[1], s.ll[0]) }); }).sort(function (a, b) { return a.km - b.km; });
       STATIONS = list;
       var noStation = function () {
         return new Error(ST.gift ? 'No NOAA station near ' + g.name + ' is reporting for ' + ST.year + ' from January 1 on. Try a bigger town nearby.'
@@ -1480,7 +1509,7 @@
       }).join('');
       sel.value = chosen.sid;
       var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
-      META = { name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
+      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
         blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
@@ -1751,7 +1780,7 @@
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' : '\nGift: yes, a note card in the box, no prices') +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, a note card in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
