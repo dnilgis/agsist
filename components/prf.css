@@ -460,20 +460,18 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
    beside the result on /prf, always labelled Sponsor in ad orange. Never
    printed. On a phone the middle sentence (.prf-spon-x) drops so the band
    stays two short lines. */
-.prf-spon-band { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .6rem; max-width: 60rem; margin: .2rem 0 1.1rem; padding: .45rem .8rem; font-size: .84rem; line-height: 1.5; color: var(--text-dim); background: var(--surface, transparent); border: 1px solid var(--border); border-left: 3px solid var(--ad-orange, #e8743a); border-radius: 8px; }
-.prf-spon-band .prf-spon-tag { font-family: var(--font-mono); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ad-orange-ink, #a8380a); white-space: nowrap; }
+.prf-spon-band { display: block; margin: .2rem 0 1.1rem; padding: .45rem .8rem; font-size: .8rem; line-height: 1.55; color: var(--text-dim); background: var(--surface, transparent); border: 1px solid var(--border); border-left: 3px solid var(--ad-orange, #e8743a); border-radius: 8px; }
+.prf-spon-band .prf-spon-tag { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ad-orange-ink, #a8380a); white-space: nowrap; margin-right: .4rem; }
 html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-orange, #e8743a); }
-.prf-spon-band a[href] { color: var(--brand); font-weight: 600; white-space: nowrap; text-underline-offset: 2px; }
-.prf-spon-band a[href]:hover { text-decoration: underline; }
-/* a taller hit area without a taller band */
-.prf-spon-band a[href] { display: inline-block; padding: .55rem 0; margin: -.55rem 0; }
-@media (max-width: 600px) { .prf-spon-band .prf-spon-x { display: none; } }
+/* the link: a taller hit area (padding, pulled back by the margin) without a taller band */
+.prf-spon-band a[href] { display: inline-block; padding: .55rem 0; margin: -.55rem 0 -.55rem .3rem; color: var(--brand); font-weight: 600; white-space: nowrap; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+@media (max-width: 600px) { .prf-spon-band { padding: .4rem .65rem; } .prf-spon-band .prf-spon-x { display: none; } }
 #prf-spon { order: 3; margin: 0; }
 #prf-spon[hidden] { display: none !important; }
 .prf-tool.is-nocounty #prf-spon { display: none; }
 .prf-spon .ag-sponsor-copy { flex: 1 1 16rem; }
 .prf-spon .prf-spon-ask { display: block; margin-top: .3rem; font-size: .82rem; }
-.prf-spon a[href] { white-space: normal; text-align: center; text-decoration: none; }
+.prf-spon a[href], #main .prf-spon a[href] { white-space: normal; text-align: center; text-decoration: none; }
 .prf-spon .prf-spon-tel { white-space: nowrap; }
 /* A sold state in the upper spot: the same place the band held, a little more air. */
 .prf-st .prf-spon-state, .prf-st .prf-spon-county { margin: .2rem 0 1.2rem; }
