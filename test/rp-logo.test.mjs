@@ -191,7 +191,9 @@ test("exports carry the logo at full resolution: the same data URL, inside the p
 // ---------- the page ----------
 test("the page: the upload under the name, its help line, the color switch, the proof row, orders, quote form", () => {
   const H = read("rain-print.html"), E = read("components/rain-print.js");
-  assert.ok(H.indexOf('id="rp-ded"') < H.indexOf('id="rp-logo"') && H.indexOf('id="rp-logo"') < H.indexOf('class="rp-dates"'), "after the name and the line under it");
+  // 2026-10-14 (the approved flow): the logo is one of the folded options under "More options", after the words
+  assert.ok(H.indexOf('id="rp-ded"') < H.indexOf('class="rp-dates"') && H.indexOf('class="rp-dates"') < H.indexOf('id="rp-more"') && H.indexOf('id="rp-more"') < H.indexOf('id="rp-logo"'), "in More options, after the name, the line and the days");
+  assert.match(H, /<summary>More options: compare, station, normals, remarkable days, logo<\/summary>/);
   assert.match(H, />Add a logo \(optional\)</);
   assert.match(H, /Your farm or business logo\. It prints small, next to the name\. A big, clear file prints best\./);
   assert.match(H, /value="1" checked><span>Ink color<\/span>/);

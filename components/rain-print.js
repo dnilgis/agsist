@@ -1159,8 +1159,8 @@
      print at the top wears the example words, labeled as an example under it
      (SHOW_EX); the design itself (ST: the URL, the up-close view, the order)
      never carries them. A word typed, a draw, Up close or the pay button takes
-     them off. A design from a link never shows them. The old guard, the bounce
-     at the Order button and "Clear the example" are gone with the pre-fill. */
+     them off. A design from a link never shows them. The old guard at the Order button and
+     its clear button went with the pre-fill. */
   var EXAMPLE = { name: 'The Johnson Farm', dedication: 'For Dad, his 40th crop. Love, Kate',
     markers: [{ md: '05-08', label: 'Planted' }, { md: '07-12', label: 'Hail' }, { md: '10-24', label: 'Harvest done' }] };
   var SHOW_EX = false;

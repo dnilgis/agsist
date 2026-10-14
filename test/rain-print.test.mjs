@@ -108,7 +108,8 @@ test("the page's stated prices and Product offers match data/rain-print.json", (
   assert.ok(!("print18x24" in J) && !/18 x 24|18x24|poster/i.test(html), "18 x 24 and poster wording are gone from the page and the data");
   assert.ok(prod.offers.every((o) => o.priceCurrency === J.currency));
   assert.match(html, new RegExp(`\\$${J.digital} file, prints from \\$${J.print12x18}`), "meta description prices");
-  assert.match(html, new RegExp(`A digital file is \\$${J.digital}; a 12 x 18 print is \\$${J.print12x18}, or \\$${J.framed12x18} framed`), "lede prices");
+  // 2026-10-14 (the approved flow): one price line under the lede, framed first
+  assert.match(html, new RegExp(`<p class="rp-prices" id="rp-prices"><span><b data-price="framed12x18">\\$${J.framed12x18}</b> framed</span><span><b data-price="print12x18">\\$${J.print12x18}</b> print</span><span><b data-price="digital">\\$${J.digital}</b> digital file</span><span>Shipping included</span></p>`), "the price line");
   assert.ok(!/yoursite\.example|Yearglass/i.test(html + readFileSync(ROOT + "components/rain-print.js", "utf8")), "no placeholder link, no uncleared brand");
 });
 

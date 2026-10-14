@@ -221,12 +221,12 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
 });
 
 test("shipping included is said plainly; no archival claim; care line; the reprint policy is final (Sig, 2026-10-14)", () => {
-  assert.match(HTML, /\$45, or \$89 framed, shipping included/, "lede");
+  assert.match(HTML, /<b data-price="digital">\$19<\/b> digital file<\/span><span>Shipping included<\/span>/, "the price line under the lede");
   // Sig, 2026-10-14: Alaska and Hawaii are covered, Christmas dates included; Puerto Rico not promised
-  assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both print cards");
+  assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both shipped products, under What comes in the box");
   assert.ok(!/US addresses/.test(HTML + JSON.stringify(J)), "no looser 'US addresses' that would take in Puerto Rico");
   assert.match(HTML, /anywhere in the 50 states, Alaska and Hawaii included/);
-  assert.match(HTML, /To have a past year by Christmas, anywhere in the 50 states, order by the date on the price card/);
+  assert.match(HTML, /To have a past year by Christmas, anywhere in the 50 states, order by the date shown with your choice/);
   assert.ok(!/archival/i.test(HTML + readFileSync(ROOT + "components/rain-print.js", "utf8")), "never called archival");
   assert.equal((HTML.match(/Keep it out of direct sun/g) || []).length, 2);
   assert.ok(!/DRAFT-POLICY/.test(HTML), "the reprint and refund promise is final: no draft marker");
@@ -282,29 +282,38 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
   const short = RP.encodeCode({ place: "Chetek, WI", year: 2025 });
   assert.equal(RP.checkoutRef(short, false, null), short, "a code that fits goes as it is");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so buy() makes one at the press when the code is too long
-  assert.match(S, /if \(link && !checkoutRef\(encodeCode\(ST\), ST\.gift, shortHit\(\)\) && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "buy() makes the short id at the press, once");
-  assert.match(S, /var code = refFor\(\), tab0 = opts && opts\.tab;/, "buy() uses the reference");
-  assert.match(S, /openOrder\(id\);\n  \}/, "and falls back to the order form");
+  // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so pay() makes one at the press when the code is too long
+  const P = S.slice(S.indexOf("function pay(opts)"), S.indexOf("function staleInputs"));
+  assert.match(P, /if \(link && !checkoutRef\(encodeCode\(ST\), ST\.gift, shortHit\(\)\) && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "pay() makes the short id at the press, once");
+  assert.match(P, /var code = refFor\(\);/, "pay() uses the reference");
+  assert.match(P, /closeProof\(true\);\n    openOrder\(id\);\n  \}/, "and falls back to the order form");
+  // 2026-10-14 (Sig): checkout in the same tab, never a second window
+  assert.match(P, /goTo\(u\);/);
+  assert.ok(!/root\.open\(/.test(S), "no window.open anywhere on the page");
   assert.match(S, /design_code: orderCode\(\)/, "the order form sends a code the worker takes (300 at most)");
 });
 
 test("the proof view and the order summary are on the page", () => {
-  for (const id of ["rp-proof", "rp-proof-open", "rp-proof-art", "rp-proof-ok", "ro-summary"]) assert.ok(HTML.includes(`id="${id}"`), id);
-  for (const k of ['data-pstyle="r1"', 'data-pstyle="r2"', 'data-pview="framed"', 'data-pview="print"']) assert.ok(HTML.includes(k), k);
+  for (const id of ["rp-proof", "rp-zoom", "rp-proof-art", "rp-proof-ok", "rp-pay", "ro-summary"]) assert.ok(HTML.includes(`id="${id}"`), id);
+  // 2026-10-14 (the approved flow): the review sheet mirrors step 3's picker; its Style and Look switches are gone (one product state)
+  for (const v of ["framed12x18", "print12x18", "digital"]) { assert.ok(HTML.includes(`name="rp-pproduct" value="${v}"`), v); assert.ok(HTML.includes(`name="rp-product" value="${v}"`), v); }
+  assert.ok(!/data-pstyle|data-pview/.test(HTML), "no second Style or Look state in the sheet");
   assert.match(HTML, /\.rp-proof\[data-zoom="full"\] \.rp-proof-art svg\{width:18in/, "actual size is 18 in wide");
   // 2026-10-14 (Sig): one magnifier on the print toggles Fit and actual size; the in-between "Closer" step is gone
   assert.ok(HTML.includes('id="rp-zoom"') && HTML.includes('id="rp-proof-zoom" aria-pressed="false"'), "a zoom button by the preview and the magnifier on the print");
   assert.ok(!/data-pzoom=/.test(HTML), "no row of zoom pills");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /\$\('rp-zoom'\)\.addEventListener\('click', openProof\)/, "zoom opens the full-size view");
+  assert.match(S, /\$\('rp-zoom'\)\.addEventListener\('click', openProof\)/, "Up close opens the full-size view");
+  assert.match(S, /\$\('rp-pay'\)\.addEventListener\('click', checkIt\)/, "Check it and pay opens it as the review sheet");
   assert.match(S, /art\.addEventListener\('click'/, "tapping the preview opens it too");
   assert.match(S, /else startNear\(\);/, "a new visitor's first print is their own area");
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
-  assert.match(S, /if \(!ST\.place\) withExample\(ST, lastFullYear\(\)\)/, "the example fills a new visit only, never a design from a link");
-  assert.match(S, /var left = exampleLeft\(ST\)/, "ordering waits while example words are on the print");
-  assert.match(S, /PROOF_VIEW = \$\('rp-wall'\)\.getAttribute\('data-view'\)/, "it opens framed or print only, as set under the preview");
+  // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
+  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = false; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days off");
+  assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
+  assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
+  assert.match(S, /PROOF_VIEW = PICK === 'framed12x18' \? 'framed' : 'print';/, "the sheet shows what step 3 picked");
   assert.match(S, /buildSvg\(\{ idPrefix: 'pf', serial: SERIAL \}\)/, "the proof is the same renderer as the print file");
   assert.match(S, /What happens next/);
 });
@@ -417,19 +426,20 @@ test("a town with no year, or a bad year, draws the last full year", () => {
 });
 
 test("checkout note: a link to tap, no wall of code, no 'gift' for someone buying for himself", () => {
-  const b = slice("function buy(id, opts)", "function toExample");
-  assert.match(b, /If it didn\\u2019t open, tap here/);
+  const b = slice("function pay(opts)", "function staleInputs");
+  assert.match(b, /Opening checkout\\u2026 If nothing happens, <a href="' \+ esc\(u\) \+ '">go to checkout<\/a>\./);
   assert.ok(!/<code>/.test(b), "no design code in the note");
-  assert.ok(!/GIFT at the front|Checkout opened in a new tab/.test(b));
+  assert.ok(!/GIFT at the front|new tab/.test(b));
   assert.match(b, /Your design reference: /);
   assert.match(HTML, /<h3>Ordering <span class="rp-cy">2026<\/span><\/h3>/);
   assert.match(S2, /'\{year\} \(ships January \{next\}\)'/, "the Year box fallback matches data/rain-print.json");
   assert.equal(J.gift_year_label, "{year} (ships January {next})");
 });
-
-test("the example warning under the prices goes once the example is gone", () => {
-  assert.match(slice("function syncExampleNote", "var EXT_CACHE"), /if \(EX_NOTE && !left\.length\) \{ \$\('rp-buy-note'\)\.textContent = ''; EX_NOTE = false; \}/);
-  assert.match(slice("function buy(id, opts)", "function toExample"), /EX_NOTE = true;/);
+test("example words are gray hints only: placeholders in the boxes, never values (2026-10-14, Sig)", () => {
+  assert.match(HTML, /id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm"/);
+  assert.match(HTML, /id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop\. Love, Kate"/);
+  assert.ok(!/id="rp-ex-|Clear the example|These are mine/.test(HTML + S2), "no guard, no bounce, no clear button, and none of their words");
+  assert.ok(!/rp-ex-note|data-example/.test(HTML), "no example note or example link on the page");
 });
 
 test("one promise for the digital file and the gift card: within 1 business day", () => {
@@ -449,7 +459,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /this draws every rain the nearest NOAA weather station or CoCoRaHS volunteer gauge caught that year/);
+  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain the nearest NOAA weather station or CoCoRaHS volunteer gauge caught\. Drawing it is free\.<\/p>/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
@@ -466,7 +476,7 @@ test("the source line and stats read plainly", () => {
 });
 
 test("type, keyboard and screen reader fixes", () => {
-  assert.match(HTML, /#main \.rp \.rp-side>h1\{font-size:clamp\(2rem,2\.4vw,2\.4rem\)\}/, "the h1 stands above the h2s on a laptop");
+  assert.match(HTML, /#main \.rp \.rp-top>h1\{font-size:clamp\(2rem,2\.4vw,2\.4rem\)\}/, "the h1 stands above the h2s on a laptop");
   assert.match(HTML, /<h2 class="sec-h rp-step-h" id="rp-draw-h">/);
   assert.match(HTML, /\.rp p,\.rp li,\.rp dd,\.rp dt,\.rp summary,\.rp blockquote,\.rp td,\.rp a,\.rp label,\.rp legend\{font-variant-numeric:normal\}/, "no spaced hyphens in prose");
   // "Your print" (2026-10-14): a labeled Close, the details as a plain list beside the print, no long paragraph
@@ -475,7 +485,7 @@ test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
   assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Date ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for date ${i}"`), "date " + i + " is named");
+  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named");
   assert.match(HTML, /id="rp-proof-stage" role="group"/);
   assert.match(HTML, /html\{scroll-padding-top:84px\}/);
   assert.ok(!/behavior: 'smooth'/.test(S2), "every scroll respects reduced motion");
@@ -489,7 +499,8 @@ test("copy batch: size, proof, business words", () => {
   assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
   assert.match(HTML, /Actual size is 12 x 18 in\./);
   assert.match(HTML, /you see a proof of yours before I print it\./);
-  assert.match(HTML, /Tick “It&rsquo;s a gift” above the prices/);
+  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
+  assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);
   assert.match(S2, /framed: \['framed print', 'framed prints'\]/);
@@ -497,24 +508,26 @@ test("copy batch: size, proof, business words", () => {
   assert.ok(!/It's a gift|Who it's for/.test(visible), "curly apostrophes in the visible copy");
 });
 
-test("outside review, as Sig took it: example years, the framed card featured, the proof by the buttons, what Compare with means", () => {
+test("outside review, as Sig took it: example years, the framed choice first, the proof by the button, what Compare with means", () => {
   const stories = [...HTML.matchAll(/<a class="rp-story"[^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
-  assert.equal(stories.length, 3, "a drought, a flood and a family year");
+  // 2026-10-14 (the approved flow): the made-up family year went with the pre-filled example words
+  assert.equal(stories.length, 2, "a drought and a flood");
   for (const h of stories) {
     const d = RP.fromParams(h.split("?")[1]);
     assert.ok(d.place && d.year >= 1890 && d.year <= 2025, "each draws a real finished year: " + h);
     assert.equal(d.station, "", "and the nearest good station picks itself: " + h);
+    assert.equal(d.name, "", "no made-up words in a link: " + h);
   }
-  assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993, 1998]);
-  const fam = RP.fromParams(stories[2].split("?")[1]);
-  assert.equal(fam.name, "The Johnson Farm", "the family year wears the example, so it can't be ordered by mistake");
-  assert.equal(fam.markers.length, 3);
+  assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993]);
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
-  // The featured framed card may open with its wall picture, which must say it is an example.
-  assert.match(HTML, /<div class="rp-prod rp-prod-feat">(<figure class="rp-onwall">.*?<figcaption>Example\.[^<]*<\/figcaption><\/figure>)?<h3>12 x 18 framed<\/h3>/);
+  // the shop-wall picture, under What comes in the box, says it is an example
+  assert.match(HTML, /<figure class="rp-onwall">.*?<figcaption>Example\.[^<]*<\/figcaption><\/figure>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
-  assert.equal((HTML.match(/<\/button><p class="rp-proof-first">You get a proof before anything prints\.<\/p>/g) || []).length, 2, "right under the print and framed buttons");
-  assert.match(HTML, /data-choice="digital">Order the file<\/button><p class="rp-proof-first">Want a change after\? Write to me and I&rsquo;ll redo it\.<\/p>/, "the file has no proof step (2026-10-14)");
+  // one picker, framed first and picked; the promise sits right under the one button
+  const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
+  assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-promise" id="rp-promise">You see a proof before I print\. Full refund before I print\.<\/p>/);
+  assert.match(S2, /'No proof for the file: it comes finished\. Want a change after\? Write to me and I\\u2019ll redo it\.'/, "the file has no proof step (2026-10-14)");
   assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
   assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
