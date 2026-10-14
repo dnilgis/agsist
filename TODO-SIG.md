@@ -7,8 +7,9 @@ names and anything private out of it.
 
 - [ ] Test Stripe with a $19 purchase and refund it
 - [ ] Check Stripe: gift fields, US-only shipping, "glass" in the descriptions, and the message after payment about the proof
+- [ ] In Stripe, for each of the three Rain Print Payment Links: After payment -> "Don't show confirmation page" -> redirect to https://agsist.com/rain-print?paid=framed12x18&s={CHECKOUT_SESSION_ID} (framed link), https://agsist.com/rain-print?paid=print12x18&s={CHECKOUT_SESSION_ID} (print link), https://agsist.com/rain-print?paid=digital&s={CHECKOUT_SESSION_ID} (digital link). Type {CHECKOUT_SESSION_ID} exactly as written; Stripe fills it in
 - [ ] Take a photo of a framed print on a wall, plus a close-up of the paper
-- [ ] Tap the three Rain Print example years on the live site
+- [ ] Tap the two Rain Print example years on the live site
 - [ ] Submit sitemap-rain.xml (and the other sitemaps) in Google Search Console
 - [ ] Send the Rain Print gift-guide pitches by Oct 31 (the list is in your email)
 - [ ] Ship one framed test print a few states away and write down the real cost (target under $45)
