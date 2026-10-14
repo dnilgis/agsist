@@ -401,7 +401,8 @@ test("T9 (page copy): the station can be a CoCoRaHS volunteer's gauge, not alway
   const PH = "nearest NOAA weather station or CoCoRaHS volunteer gauge";
   for (const re of [/<meta name="description" content="[^"]*/, /og:description"\s+content="[^"]*/, /twitter:description"\s+content="[^"]*/, /"description": "Draws[^"]*/, /<p class="rp-lede">[^<]*/]) {
     const m = HTML.match(re)[0];
-    assert.ok(m.includes(PH) || /NOAA (weather )?station or CoCoRaHS volunteer gauge nearest/.test(m), m);
+    // The short meta description may say "the weather station nearest": true for both kinds, never "NOAA station" alone.
+    assert.ok(m.includes(PH) || /NOAA (weather )?station or CoCoRaHS volunteer gauge nearest/.test(m) || (/the weather station nearest/.test(m) && !/NOAA station/.test(m)), m);
   }
   assert.match(HTML, /<summary>Where does the rain data come from\?<\/summary><p>From the nearest NOAA weather station or CoCoRaHS volunteer gauge/);
   assert.ok(readFileSync(ROOT + "llms.txt", "utf8").includes("one year of daily rain at the " + PH));
