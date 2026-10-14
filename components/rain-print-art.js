@@ -436,13 +436,13 @@
   }
   /* The months still to come on the gift card: a pale wash from the last
      reported day to the end of the year, and preview.later in it (two lines when
-     one won't fit, left off when the strip is too narrow for either). Kept clear
-     of the PREVIEW band. r: the strip {x0, x1, y0, y1}. */
+     one won't fit, left off when the strip is too narrow for either), at 28
+     units so it reads at the card's size. Kept clear of the PREVIEW band. r: the strip {x0, x1, y0, y1}. */
   function laterWash(E, r, band) {
     var words = String(E.preview.later || '').trim(), w = r.x1 - r.x0;
     if (!words || w < 24) return '';
     var o = '<g data-rp="later" aria-hidden="true"><rect x="' + n2(r.x0) + '" y="' + n2(r.y0) + '" width="' + n2(w) + '" height="' + n2(r.y1 - r.y0) + '" fill="' + C.guide + '" opacity="0.42"/>';
-    var ls = { w: 500, size: 17, fill: C.mute, anchor: 'middle' }, lines = [words];
+    var ls = { w: 500, size: 28, fill: C.mute, anchor: 'middle' }, lines = [words];
     if (W(words, ls) > w - 28) {
       var sp = words.split(' '), best = null;
       for (var i = 1; i < sp.length; i++) {
@@ -452,10 +452,10 @@
       lines = best && best.m <= w - 28 ? best.l : [];
     }
     if (lines.length) {
-      var hgt = lines.length * 22, cx = (r.x0 + r.x1) / 2, y = (r.y0 + r.y1) / 2 - hgt / 2 + 16;
+      var hgt = lines.length * 36, cx = (r.x0 + r.x1) / 2, y = (r.y0 + r.y1) / 2 - hgt / 2 + 26;
       var clash = function (yy) { return band && band.x1 > r.x0 && band.x0 < r.x1 && yy - 20 < band.y + 40 && yy + hgt > band.y - 40; };
-      if (clash(y)) y = band.y - r.y0 > r.y1 - band.y ? r.y0 + 40 : r.y1 - hgt - 6;
-      lines.forEach(function (t, k) { o += T(cx, y + k * 22, t, ls); });
+      if (clash(y)) y = band.y - r.y0 > r.y1 - band.y ? r.y0 + 50 : r.y1 - hgt + 16;
+      lines.forEach(function (t, k) { o += T(cx, y + k * 36, t, ls); });
     }
     return o + '</g>';
   }

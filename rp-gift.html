@@ -11,8 +11,16 @@
      emails after payment: /rp-gift?c=RP-XXXX-XXXX-XXXX&k=<16 hex>. k is the
      worker's signature for that code (subs worker v5.16, GET /rp-gift/card), so
      a guessed code shows nothing. No analytics on this page: the address
-     carries the code. Sizes: 5 x 7 card, half letter two up on a letter sheet
-     (front and inside, cut or fold on the middle), full letter.
+     carries the code. Sizes: 8 x 10 card (the default since 2026-10-14), the
+     same 8 x 10 centered on a letter sheet with light cut marks, 5 x 7 card,
+     half letter two up on a letter sheet (front and inside, cut or fold on the
+     middle), full letter.
+     THE PREVIEW (2026-10-14, Sig). On a this-year gift card with its design
+     picked, the 8 x 10 card shows the print so far: RainPrint.previewArt opens
+     the card's design code the way the page does and draws it with the page's
+     own engine and art (the 2026 preview), through the last reported day, the
+     months still to come pale and labeled. If that can't be drawn, the card
+     falls back to the empty month line and the bar says why (screen only).
      The card speaks of Sig in the third person on purpose: the person holding
      it does not know him. The Rain Print page itself is in his own voice. -->
 <link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
@@ -44,6 +52,8 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sizes .go{color:#10151a}}
 #msg{max-width:880px;margin:.6rem auto;padding:0 16px;font-weight:600}
 #msg.bad{color:var(--warn)}
+#pvnote{font-weight:500}
+#pvnote.bad{color:var(--warn);font-weight:600}
 #stage{max-width:880px;margin:0 auto 3rem;padding:8px 16px;box-sizing:border-box;overflow:hidden}
 #fit{transform-origin:top left}
 .sheet{background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.12);position:relative;overflow:hidden;color:var(--ink);
@@ -143,6 +153,44 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 .sz-letter .how p{font-size:10pt}
 .sz-letter .foot{font-size:8pt}
 
+
+/* 8 x 10, the default (2026-10-14, Sig): the preview of the print so far is the hero.
+   .sz-8x10l puts the same card in the middle of a letter sheet with light cut marks. */
+.sz-8x10 .sheet{width:8in;height:10in}
+.sz-8x10l .sheet{width:8.5in;height:11in}
+.sz-8x10l .c8{position:absolute;left:.25in;top:.5in;width:8in;height:10in}
+.c8{position:relative;width:8in;height:10in;box-sizing:border-box}
+.c8:before{content:"";position:absolute;inset:.3in;border:.5pt solid var(--guide);pointer-events:none}
+.c8 .face{padding:.6in .7in .52in}
+.c8 .kick{font-size:7.5pt}
+.c8 .to{font-size:24pt;margin-top:.12in;line-height:1.15}
+.c8 .where{font-size:8.5pt;margin-top:.08in}
+.c8 .title{font-size:24pt;margin-top:.08in;max-width:6.4in}
+.c8 .ded{font-size:12pt;margin-top:.06in}
+.c8 .hero{width:6.6in;margin-top:.2in;line-height:0;background:#fff;box-shadow:0 0 0 .5pt var(--guide)}
+.c8 .hero svg{display:block;width:100%;height:auto}
+.c8 .cap{font-size:8.5pt;color:var(--mute);line-height:1.45;margin-top:.1in;max-width:6.4in}
+.c8 .art{width:6.2in;margin-top:.5in}
+.c8 .lede{font-size:10pt;margin-top:.12in;max-width:5.8in}
+.c8 .low{display:flex;gap:.35in;width:6.6in;margin-top:auto;padding-top:.2in;text-align:left;align-items:flex-start}
+.c8 .low .l{flex:1 1 auto;min-width:0}
+.c8 .low .r{flex:0 0 2.4in;display:flex;flex-direction:column;align-items:center;text-align:center}
+.c8 .msg{font-size:15pt;line-height:1.38}
+.c8 .from{font-size:11.5pt;margin-top:.06in}
+.c8 .coming{font-size:9.5pt;line-height:1.45;color:var(--ink);margin-top:.16in;padding-top:.1in;border-top:.75pt solid var(--guide)}
+.c8 .coming b{font-weight:600}
+.c8 .qrbox{width:1in;padding:2pt;border:1.25pt solid var(--red);background:#fff;line-height:0}
+.c8 .qrbox svg{display:block;width:100%;height:auto}
+.c8 .code{font-size:12.5pt;padding:.05in .12in;margin-top:.1in}
+.c8 .use{font-size:7.5pt;color:var(--mute);line-height:1.4;margin-top:.07in}
+.c8 .use .url{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-size:6.6pt;white-space:nowrap}
+.c8 .never{font-size:6.5pt;margin-top:.05in}
+.c8 .sig{font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:9pt;color:var(--mute);margin-top:.16in!important}
+.c8 .foot{font-size:6.5pt;margin-top:.04in!important}
+.sz-8x10l .mark{position:absolute;background:var(--soft)}
+.sz-8x10l .mark.v{width:.5pt;height:.14in}
+.sz-8x10l .mark.h{height:.5pt;width:.15in}
+
 @media print{
   html,body{background:#fff!important}
   .noprint,#msg{display:none!important}
@@ -151,24 +199,30 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   .sheet{box-shadow:none}
 }
 </style>
-<style id="page-size">@page{size:5in 7in;margin:0}</style>
+<style id="page-size">@page{size:8in 10in;margin:0}</style>
 </head>
-<body class="sz-5x7">
+<body class="sz-8x10">
 <div class="bar noprint">
   <h1>Your Rain Print gift card</h1>
   <p>Pick a size, then print at 100% (Actual size) on card stock or plain paper.</p>
   <div class="sizes" role="group" aria-label="Card size">
-    <button type="button" data-size="5x7" aria-pressed="true">5 x 7 card</button>
+    <button type="button" data-size="8x10" aria-pressed="true">8 x 10 card</button>
+    <button type="button" data-size="8x10l" aria-pressed="false">8 x 10 on letter paper</button>
+    <button type="button" data-size="5x7" aria-pressed="false">5 x 7 card</button>
     <button type="button" data-size="half" aria-pressed="false">Half letter, two up</button>
     <button type="button" data-size="letter" aria-pressed="false">Full letter</button>
     <button type="button" class="go" id="print" disabled>Print the card</button>
   </div>
-  <p id="sizehelp">One 5 x 7 card. Set the printer’s paper size to 5 x 7.</p>
+  <p id="sizehelp">One 8 x 10 card. Set the printer’s paper size to 8 x 10, or pick 8 x 10 on letter paper.</p>
+  <p id="pvnote" hidden></p>
 </div>
 <p id="msg" role="status">Getting your card&hellip;</p>
 <noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@farmers1st.com</p></noscript>
 <div id="stage"><div id="fit"></div></div>
 <script src="/components/qr.js"></script>
+<script src="/components/rp-short.js?v=1"></script>
+<script src="/components/rain-print-art.js?v=6"></script>
+<script src="/components/rain-print.js?v=21"></script>
 <script src="/components/rp-gift.js?v=3"></script>
 <script>
 (function () {
@@ -176,13 +230,17 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   var G = window.AgRpGift, doc = document;
   var $ = function (id) { return doc.getElementById(id); };
   var SIZES = {
+    '8x10': ['8in 10in', 'One 8 x 10 card. Set the printer\u2019s paper size to 8 x 10, or pick 8 x 10 on letter paper.'],
+    '8x10l': ['8.5in 11in', 'The 8 x 10 card in the middle of a letter page. Print at 100% (Actual size), then cut on the light marks.'],
     '5x7': ['5in 7in', 'One 5 x 7 card. Set the printer\u2019s paper size to 5 x 7.'],
     half: ['11in 8.5in', 'Letter paper turned sideways: the front on the left, the inside on the right. Cut on the middle marks for two pieces, or fold there and glue back to back.'],
     letter: ['8.5in 11in', 'One full letter page, the whole card on it.']
   };
   var MONTHS = 'JFMAMJJASOND';
-  var C = null, size = '5x7';
-  try { var s0 = localStorage.getItem('agsist-rpg-size'); if (SIZES[s0]) size = s0; } catch (e) {}
+  // 8 x 10 is the default; the key changed with it (2026-10-14) so an older pick of 5 x 7 doesn't hide it
+  var SIZE_KEY = 'agsist-rpg-size2';
+  var C = null, size = '8x10', PV = null, PV_STATE = 'none';   // PV: {svg, last, year} once the print so far is drawn
+  try { var s0 = localStorage.getItem(SIZE_KEY); if (SIZES[s0]) size = s0; } catch (e) {}
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
   function say(t, bad) { var m = $('msg'); m.textContent = t; m.className = bad ? 'bad' : ''; m.hidden = !t; }
 
@@ -239,13 +297,96 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     if (withFoot) o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
     return o;
   }
+  // ---- the 8 x 10 card ----
+  var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function longDay(iso) { var p = String(iso).split('-').map(Number); return MONTH[p[1] - 1] + ' ' + p[2]; }
+  // what the card is good for, in plain words, and when it comes; never a price
+  var COMING = {
+    print12x18: ['A 12 x 18 print of the whole year, on matte paper.', 'It ships in January, once the full year is in.'],
+    framed12x18: ['A 12 x 18 print of the whole year, framed with glass, ready to hang.', 'It ships in January, once the full year is in.'],
+    digital: ['The 12 x 18 print file of the whole year, to print anywhere.', 'It comes by email in January, once the full year is in.']
+  };
+  function later(year) { return 'The rest of ' + year + ' arrives in January'; }
+  function coming() {
+    var c = COMING[C.product] || ['One Rain Print of the whole year.', 'It comes in January, once the full year is in.'];
+    if (C.ships !== 'january') c = [c[0].replace(' of the whole year', ''), C.product === 'digital' ? 'It comes by email.' : 'Shipping is included.'];
+    return '<p class="coming"><b>What’s coming:</b> ' + esc(c[0]) + ' ' + esc(c[1]) + '</p>';
+  }
+  function card8() {
+    var s = C.lock && G.summary(C.lock.design_code), o = '<p class="kick">A Rain Print from AGSIST</p>';
+    if (C.to) o += '<p class="to">For ' + esc(C.to) + '</p>';
+    if (s && PV) {
+      // the name, the line under it and the dates are on the art itself
+      o += '<p class="where">' + esc(PV.place || s.place) + ' &middot; ' + s.year + '</p>';
+      o += '<div class="hero">' + PV.svg + '</div>';
+      o += '<p class="cap">The print so far: every rain and snow from January 1 through ' + esc(longDay(PV.last)) + ', ' + PV.year +
+        ', at the NOAA weather station nearest ' + esc(s.place.split(',')[0]) + '. ' + esc(later(PV.year)) + ', and the finished print shows it all.</p>';
+    } else if (s) {
+      o += '<p class="title">' + esc(s.name || s.place) + '</p>';
+      o += '<p class="where">' + esc(s.place) + ' &middot; ' + s.year + '</p>';
+      if (s.dedication) o += '<p class="ded">' + esc(s.dedication) + '</p>';
+      o += '<div class="art">' + axis() + '</div>';
+      o += '<p class="lede">Every rain of ' + s.year + ' at the NOAA weather station nearest ' + esc(s.place.split(',')[0]) + ', drawn day by day' + esc(marked(s.dates)) + '.</p>';
+    } else {
+      o += '<p class="title">Any farm, any year on record</p>';
+      o += '<div class="art">' + axis() + '</div>';
+      o += '<p class="lede">Pick the place and the year. Every rain that year at the nearest NOAA weather station, drawn day by day and printed for the wall.</p>';
+    }
+    var url = 'https://agsist.com/rain-print?gift=' + C.code, qr = '';
+    try { qr = window.AgQR ? window.AgQR.svg(url, 'QR code that opens Rain Print with this card') : ''; } catch (e) { qr = ''; }
+    o += '<div class="low"><div class="l">';
+    if (C.message) o += '<p class="msg">' + esc(C.message) + '</p>';
+    if (C.from_line) o += '<p class="from">From ' + esc(C.from_line) + '</p>';
+    o += coming() + '</div><div class="r">';
+    if (qr && C.status !== 'redeemed') o += '<div class="qrbox">' + qr + '</div>';
+    o += '<p class="code" aria-label="Gift card code ' + esc(C.code.split('').join(' ')) + '">' + esc(C.code) + '</p>';
+    o += C.status === 'redeemed' ? '<p class="never">Already set: Sig has the order. Nothing to do.</p>'
+      : '<p class="use">' + (C.lock ? 'To see your print' : 'To pick the farm and the year') + ', scan the square or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span></p><p class="never">Never expires. Use it once.</p>';
+    o += '</div></div>';
+    o += '<p class="sig">' + (C.product === 'digital' ? 'Made' : 'Drawn and printed') + ' by Sig Lindquist, AGSIST, Chetek, Wisconsin</p>';
+    o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
+    return '<div class="c8"><div class="face">' + o + '</div></div>';
+  }
+  /* Light cut marks for the 8 x 10 on a letter sheet: the card's sides are
+     0.25 in from the sheet's, its top and bottom 0.5 in. Every mark keeps
+     0.3 in from the top and bottom edges: the side cuts are marked in the top
+     and bottom margins, the top and bottom cuts by short ticks on the cut line
+     itself, 0.3 in in from the sides (the side margin is only 0.25 in). */
+  function marks() {
+    var o = '';
+    [.25, 8.25].forEach(function (x) {
+      o += '<span class="mark v" style="left:calc(' + x + 'in - .25pt);top:.3in"></span><span class="mark v" style="left:calc(' + x + 'in - .25pt);bottom:.3in"></span>';
+    });
+    [.5, 10.5].forEach(function (y) {
+      o += '<span class="mark h" style="top:calc(' + y + 'in - .25pt);left:.3in"></span><span class="mark h" style="top:calc(' + y + 'in - .25pt);right:.3in"></span>';
+    });
+    return o;
+  }
+  // The print so far, for a this-year gift with its design picked. Print waits until it is drawn or has failed.
+  function loadPreview() {
+    var s = C && C.lock && G.summary(C.lock.design_code);
+    if (!s || C.ships !== 'january' || !window.RainPrint || !window.RainPrint.previewArt) { PV_STATE = 'none'; return Promise.resolve(); }
+    PV_STATE = 'loading';
+    pvNote('Drawing the print so far from NOAA’s records…', false);
+    return window.RainPrint.previewArt(C.lock.design_code, { idPrefix: 'gc', later: later(s.year) }).then(function (r) {
+      PV = r; PV_STATE = 'ok';
+      pvNote('', false);
+    }, function (err) {
+      PV = null; PV_STATE = 'failed';
+      pvNote('The preview of the print so far didn’t draw' + (err && err.message ? ' (' + err.message.replace(/\.$/, '') + ')' : '') +
+        ', so the card shows the empty month line instead. It still prints and works the same. To try again, reload the page.', true);
+    });
+  }
+  function pvNote(t, bad) { var n = $('pvnote'); n.textContent = t; n.hidden = !t; n.className = bad ? 'bad' : ''; }
   function render() {
     doc.body.className = 'sz-' + size;
     $('page-size').textContent = '@page{size:' + SIZES[size][0] + ';margin:0}';
     $('sizehelp').textContent = SIZES[size][1];
     [].forEach.call(doc.querySelectorAll('.sizes [data-size]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-size') === size)); });
     if (!C) return;
-    var html = size === 'half'
+    var html = size === '8x10' ? '<div class="sheet">' + card8() + '</div>'
+      : size === '8x10l' ? '<div class="sheet">' + card8() + marks() + '</div>'
+      : size === 'half'
       ? '<div class="sheet"><div class="face front">' + front() + '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + '</p></div>' +
         '<div class="face inside">' + inside(true) + '</div><span class="cut t"></span><span class="cut b"></span><span class="fold"></span></div>'
       : '<div class="sheet"><div class="face">' + front() + '<hr class="rule" style="margin:' + (size === 'letter' ? '.35in' : '.14in') + ' 0 0">' + inside(true) + '</div></div>';
@@ -264,7 +405,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   [].forEach.call(doc.querySelectorAll('.sizes [data-size]'), function (b) {
     b.addEventListener('click', function () {
       size = b.getAttribute('data-size');
-      try { localStorage.setItem('agsist-rpg-size', size); } catch (e) {}
+      try { localStorage.setItem(SIZE_KEY, size); } catch (e) {}
       render();
     });
   });
@@ -287,8 +428,8 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     if (j.status === 'void') { say('This card was replaced or refunded, so it can\u2019t be printed. If Sig sent you a new link, use that one. Questions: sig@farmers1st.com', true); return; }
     C = j;
     say(j.status === 'redeemed' ? 'This card has been used (' + G.dayText(j.redeemed_on) + '). You can still print it as a keepsake.' : '');
-    $('print').disabled = false;
     render();
+    return loadPreview().then(function () { $('print').disabled = false; render(); });
   });
 })();
 </script>
