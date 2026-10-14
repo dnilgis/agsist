@@ -836,6 +836,13 @@ def selftest():
         swp = sww[sww.find("The numbers come from"):sww.find("Rain here means")]
         ok(swp.count("Eastern Band of Cherokee Indians") == 1 and "station ID 3056" not in sww and "read once a day" not in sww,
            f"a station named for a place that is not a town is named once: {sww[sww.find('The numbers'):sww.find('The numbers') + 160]}")
+        # the pick rule the page states is the one the data file says the fetch used
+        for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last")):
+            dp = {k: v for k, v in d.items() if k != "pick"}
+            if pk:
+                dp["pick"] = pk
+            pg = county_page({"c": dict(c, n_ok=3), "st": "IA", "fips": "19169", "year": 2026, "d": dp, "slug": "story-county", "nbrs": [], "n_ok": 3})
+            ok(words in pg, f"pick rule {pk}: {words}")
         # more days missing than Rain Print allows: the link drops the station and says why
         m32 = county_page({"c": dict(c, missing=32, reported=c["days"] - 32), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         rp32 = re.search(r'href="(/rain-print\?[^"]*)"', m32).group(1)

@@ -592,9 +592,36 @@ def last_year_total(vals, sdate, as_of_last, this=None):
     return out
 
 
+HIGH_FT = 1500   # this far above the county's middle station elevation is a mountain site
+
+
+def snow_site(sids):
+    """A SNOTEL snow site (GHCN USS..., or ACIS sid type 17): high in the
+    mountains, where the rain is not what the farms below get."""
+    return any(str(x).startswith("USS") or str(x).strip().endswith(" 17") for x in (sids or []))
+
+
+def mark_mountain(cands):
+    """Set cand["mountain"] on a county's qualifying stations: a snow site, or
+    a station HIGH_FT or more above the median elevation of the county's other
+    qualifying stations (snow sites left out of that median). 2026-10-13:
+    Pondera MT's Pike Creek SNOTEL read 34.9 in while the plains around it read
+    16; Hood River OR, San Juan CO and Franklin ID picked snow sites too."""
+    def elev(x):
+        v = (x.get("meta") or {}).get("elev")
+        return float(v) if isinstance(v, (int, float)) or (isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v)) else None
+    low = sorted(e for e in (elev(x) for x in cands if not snow_site((x.get("meta") or {}).get("sids"))) if e is not None)
+    mid = (low[len(low) // 2] if len(low) % 2 else (low[len(low) // 2 - 1] + low[len(low) // 2]) / 2) if low else None
+    for x in cands:
+        e = elev(x)
+        x["mountain"] = snow_site((x.get("meta") or {}).get("sids")) or (e is not None and mid is not None and e - mid >= HIGH_FT)
+    return cands
+
+
 def rank_key(cand):
-    """Pick order inside a county: a station with NOAA normals first (the page's
-    answer is "compared with a usual year"), then the most days reported, then
-    nearest the middle of the county."""
+    """Pick order inside a county: mountain sites last (mark_mountain), then a
+    station with NOAA normals first (the page's answer is "compared with a
+    usual year"), then the most days reported, then nearest the middle of the
+    county."""
     s = cand["summary"]
-    return (0 if s["usual"] is not None else 1, -s["reported"], cand["mi"])
+    return (1 if cand.get("mountain") else 0, 0 if s["usual"] is not None else 1, -s["reported"], cand["mi"])

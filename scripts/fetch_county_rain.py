@@ -17,9 +17,10 @@ HOW IT ASKS ACIS (politely: one state at a time, retries with backoff, a total t
 
 WHICH STATION (scripts/county_rain.py has the rules)
   Inside the county (ACIS's county FIPS in the station's meta), reporting at
-  least 90% of the days so far and current within 10 days. Among those: one
-  with NOAA normals first, then the most days reported, then nearest the
-  middle of the county. A county with none is listed as having no NOAA station
+  least 90% of the days so far and current within 10 days. Among those:
+  mountain sites last (SNOTEL, or 1,500 ft above the county's other
+  stations), then one with NOAA normals, then the most days reported, then
+  nearest the middle of the county. A county with none is listed as having no NOAA station
   that reported enough days, with the nearest county that has one.
 
 WHAT IT WILL NOT DO
@@ -147,7 +148,7 @@ def trim(j, params):
 
 def ask_state(src, st, year, edate):
     """(rows, normals period or None, normals used?) for one state."""
-    base = {"state": st, "sdate": f"{year}-01-01", "edate": edate, "meta": "name,state,sids,ll,county"}
+    base = {"state": st, "sdate": f"{year}-01-01", "edate": edate, "meta": "name,state,sids,ll,county,elev"}
     for code, period in NORMALS:
         j = src.call(dict(base, elems=[{"name": "pcpn", "interval": "dly"}, {"name": "pcpn", "interval": "dly", "normal": code}]))
         if "error" not in j and isinstance(j.get("data"), list):
@@ -164,7 +165,7 @@ def ask_last_year(src, st, sids, as_of_last):
         return []
     y = as_of_last[:4]
     j = src.call({"sids": ",".join(sids), "_st": st, "sdate": f"{y}-01-01", "edate": as_of_last,
-                  "elems": [{"name": "pcpn", "interval": "dly"}], "meta": "name,state,sids,ll,county"})
+                  "elems": [{"name": "pcpn", "interval": "dly"}], "meta": "name,state,sids,ll,county,elev"})
     if "error" in j or not isinstance(j.get("data"), list):
         print(f"  {st}: last year not available ({j.get('error')})", flush=True)
         return []
@@ -243,7 +244,7 @@ def build_state(src, st, year, edate, C, fetched):
                 x["summary"], x["why"] = None, f"stuck at 0.00 {dates[i]} to {dates[j]}"
     picked, none = {}, {}
     for fips, c in sorted(mine.items()):
-        ok = sorted((x for x in cands.get(fips, []) if x["summary"]), key=R.rank_key)
+        ok = sorted(R.mark_mountain([x for x in cands.get(fips, []) if x["summary"]]), key=R.rank_key)
         if ok:
             picked[fips] = dict(ok[0], n_ok=len(ok))
         else:
@@ -301,6 +302,7 @@ def build_state(src, st, year, edate, C, fetched):
         out[fips] = rec
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
+            "pick": 2,   # mountain sites ranked last (county_rain.mark_mountain); the pages say so
             "source": "NOAA daily records through RCC-ACIS (MultiStnData)",
             "stations_in_counties": seen, "counties": out, "none": none}
 
@@ -590,6 +592,19 @@ def selftest():
     _dry = [_g("GOOD", "2 2", [-93.05, 42.05], "19001", True, gap=True), _g("NEAR", "3 2", [-93.3, 42.0], "19003", True)]
     ok(_pick([_g("STUCK", "1 2", [-93.0, 42.0], "19001", True)] + _dry) == "STUCK",
        "a dry spell every gauge around shared is real: the most complete gauge still answers")
+    # mountain sites last: a snow site with normals loses to a valley gauge without
+    _snow = _g("SNOW PASS", "USS0013A26S 6", [-93.0, 42.0], "19001", False)
+    _val = _g("VALLEY", "4 2", [-93.2, 42.1], "19001", False, nrm="M")
+    ok(_pick([_snow, _val, _near[1]]) == "VALLEY", f"a SNOTEL site is picked last: {_pick([_snow, _val, _near[1]])}")
+    ok(_pick([_snow, _near[1]]) == "SNOW PASS", "a SNOTEL site still answers when it is the only one")
+    _hi = dict(_g("HIGH CAMP", "5 2", [-93.0, 42.0], "19001", False))
+    _hi["meta"] = dict(_hi["meta"], elev=6400)
+    _lo1, _lo2 = _g("LOW ONE", "6 2", [-93.25, 42.1], "19001", False), _g("LOW TWO", "7 2", [-93.3, 42.1], "19001", False)
+    _lo1["meta"]["elev"], _lo2["meta"]["elev"] = 3100, "3300"
+    ok(_pick([_hi, _lo1, _lo2, _near[1]]) == "LOW ONE", f"a station far above the county's others is picked last: {_pick([_hi, _lo1, _lo2, _near[1]])}")
+    _lo1["meta"]["elev"] = 5900
+    ok(_pick([_hi, _lo1, _near[1]]) == "HIGH CAMP", "a station only a little higher keeps the usual order")
+    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 2, "the data file says which pick rule it used")
     # the gauges around caught little, but on and off (south Florida, Jan-Feb 2026)
     def _sprinkle(name, sid, ll, fips, gap=False):
         return {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips},
