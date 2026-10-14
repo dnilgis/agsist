@@ -1,0 +1,52 @@
+ADM for crop year 2027
+  https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/2027_ADM_YTD.zip: 1208 MB in 31s, last modified Wed, 30 Sep 2026 17:53:55 GMT
+  offers: 232184
+  counties: 3070  grids: 13414  (Hawaii left out: 240 grids)
+  rate keys: 722380 from 11156445 rows; keys with more than one rate id: 0
+reading the ADM
+  read in 84s: crop year 2027, checks {'price_rows_without_an_offer': 0, 'county_use_practice_with_two_base_values': 0, 'rate_keys': 722380, 'rate_keys_with_two_rates': 0, 'grids_missing_any_rate': 755}
+index history: 2026 to 2026 for 13414 grids; whole history for 0 new ones
+  1000 of 13414 grids, 0 failed, 25s
+  2000 of 13414 grids, 0 failed, 43s
+  3000 of 13414 grids, 0 failed, 61s
+  4000 of 13414 grids, 0 failed, 80s
+  5000 of 13414 grids, 0 failed, 102s
+  6000 of 13414 grids, 0 failed, 120s
+  7000 of 13414 grids, 0 failed, 141s
+  8000 of 13414 grids, 0 failed, 162s
+  9000 of 13414 grids, 0 failed, 182s
+  10000 of 13414 grids, 0 failed, 200s
+  11000 of 13414 grids, 0 failed, 220s
+  12000 of 13414 grids, 0 failed, 238s
+  13000 of 13414 grids, 0 failed, 259s
+nothing changed; meta.json left as it was
+agrees       half dollar in the protection: Barron WI, grid 30152, Haying, non-irrigated, 90%, 3 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the premium: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2657 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the subsidy: Barron WI, grid 30152, Haying, non-irrigated, 90%, 82 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity: Barron WI, grid 30152, Haying, non-irrigated, 90%, 4 ac, factor 100, share 100, 1996, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, odd dollar: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, tells the two rules apart: Barron WI, grid 30152, Haying, non-irrigated, 90%, 6 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       random 7: Shoshone ID, grid 32159, Grazing, 90%, 2448 ac, factor 128, share 50, 2011, split [0,0,0,50,0,0,50,0,0,0,0]
+agrees       random 8: Winnebago IL, grid 26563, Haying, non-irrigated, 70%, 3623 ac, factor 115, share 100, 2011, split [0,0,0,0,0,47,0,0,53,0,0]
+agrees       random 9: Huron OH, grid 25090, Grazing, 80%, 3191 ac, factor 102, share 75, 2005, split [25,0,0,0,26,0,0,22,0,27,0]
+agrees       random 10: Carroll GA, grid 16381, Haying, irrigated, 90%, 447 ac, factor 70, share 33, 1991, split [25,0,25,0,0,0,26,0,0,24,0]
+agrees       random 11: Madison OH, grid 24187, Haying, irrigated, transitional organic, 70%, 1196 ac, factor 83, share 50, 1962, split [0,0,0,27,0,0,0,41,0,32,0]
+agrees       random 12: Taylor IA, grid 25042, Haying, non-irrigated, transitional organic, 80%, 3659 ac, factor 130, share 33, 2009, split [0,39,0,0,0,28,0,0,0,33,0]
+agrees       random 13: Nicholas WV, grid 22398, Haying, irrigated, transitional organic, 80%, 61 ac, factor 97, share 50, 2014, split [0,0,34,0,0,42,0,0,0,0,24]
+agrees       random 14: Graham AZ, grid 15981, Haying, irrigated, certified organic, 70%, 436 ac, factor 78, share 75, 2014, split [0,25,0,0,0,19,0,25,0,0,31]
+
+asked 14, reached 14, agreed 14, differ 0
+facts.json written 102729 bytes
+prf.html stamped
+49 state pages written to prf/
+3070 county pages written to prf/<state>/, 61.9 MB, largest 26 KB; 0 stale removed; sitemap-prf.xml 3070 URLs
+wrote /home/runner/work/agsist/agsist/img/og/prf.jpg 76340 bytes
+published size 739.3 MB (warn 850, fail 900, Pages limit 1024)
+  data                   276.8 MB
+  farmland-atlas         153.1 MB
+  arc-plc                132.2 MB
+  prf                     63.6 MB
+  rain                    44.8 MB
+  cash-bids               33.6 MB
+  daily                    8.0 MB
+  (root files)             6.8 MB
