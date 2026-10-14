@@ -165,7 +165,7 @@ DIRS = {"N": "north", "S": "south", "E": "east", "W": "west", "NE": "northeast",
 OFFSET = re.compile(r"^(.*?[A-Za-z.]) ?(\d*\.?\d+) ?([NSEW]{1,3})$")
 # Words that are the weather office or the sensor, not the place:
 # "MISSOULA 6 NW WFO", "TOPEKA ASOS", "SPRINGFIELD WSO AP", "ELKO NWS OFFICE"
-OFFICE = re.compile(r"\b(?:NWS OFFICE|WFO|WSO|NWSO|ASOS|AWOS)\b", re.I)
+OFFICE = re.compile(r"\b(?:NWS OFFICE|WFO|WSO|NWSO|ASOS|AWOS|MESONET)\b", re.I)
 # Not a town: the answer says "at the NOAA station Eastern Band of Cherokee
 # Indians", never "in Eastern Band ...". A name that starts with UNIVERSITY is a campus.
 NOT_PLACE = {"INDIANS", "TRIBE", "TRIBAL", "RESERVATION", "NATION", "BAND"}
@@ -179,6 +179,9 @@ def _clean(raw):
     s = re.sub(r"\s+", " ", str(raw or "").strip())
     t = re.sub(r"\([^)]*\)", " ", s)
     t = OFFICE.sub(" ", t)
+    # "N FK ELK CREEK": a fork of a creek, in words
+    t = re.sub(r"\b([NSEWM]) FK\b", lambda m: {"N": "NORTH", "S": "SOUTH", "E": "EAST", "W": "WEST", "M": "MIDDLE"}[m.group(1)] + " FORK", t)
+    t = re.sub(r"\bFK\b", "FORK", t)
     t = re.sub(r"\s+", " ", t).strip(" -/")
     return t or s
 
@@ -230,12 +233,16 @@ def station_name(raw):
 # Only cut after at least one word, so "PLANT CITY" stays a town.
 NOT_TOWN = {"EXP", "EXPT", "EXPER", "EXPERIMENT", "STN", "FARM", "FARMS", "RSCH", "RESEARCH", "RES", "CTR",
             "UNIV", "UNIVERSITY", "AGRI", "AG", "DAM", "L&D", "L/D", "WTP", "WWTP", "STP", "PLANT", "LAB", "NWS",
-            "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION"}
+            "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION", "STA", "PH", "MESONET", "R.S.", "S.P."}
 
 
 def _cut_here(words, i):
     u, nxt = words[i].upper(), (words[i + 1].upper() if i + 1 < len(words) else "")
-    if u in NOT_TOWN:
+    if u in NOT_TOWN or u.split(".")[0] in NOT_TOWN - {"R", "S"}:   # "BEAUMONT EXP.STATION"
+        return True
+    if re.fullmatch(r"\d*\.?\d+[NSEW]{1,3}", u):   # "SULPHUR 4NNE MESONET": the offset is not the end
+        return True
+    if u == "CENTRAL" and nxt in DIRS:      # "GRAND ISLAND CENTRAL NE REGIONAL AP"
         return True
     if u in ("LOCK", "LOCKS"):            # LOCK AND DAM 10, LOCK 4, LOCKS AND DAM; not LOCK HAVEN
         return nxt in ("AND", "&", "DAM") or re.fullmatch(r"\d+", nxt) is not None
@@ -251,9 +258,19 @@ def station_town(raw):
     o = _offset(s)
     if o:
         s = o[0]
+    # "PHILADELPHIA/MT. HOLLY WFO", "WILKES-BARRE/SCRANTON INTL AP": the first city
+    # (a word of 2+ letters before the slash, so "GUTTENBERG L/D 10" stays whole)
+    m = re.match(r"^(.*?[A-Za-z]{2,})/[A-Za-z]", s)
+    if m:
+        s = m.group(1)
     ws = s.split(" ")
     cut = next((i for i in range(1, len(ws)) if _cut_here(ws, i)), len(ws))
     words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?\d*|#\d*", w.upper())]
+    # a compass word left at the end with no miles before it: "CROOKSTON NW", "EFFINGHAM SE"
+    while len(words) > 1 and words[-1].upper() in DIRS:
+        words.pop()
+    if words and words[-1].endswith(".") and len(words[-1].rstrip(".")) > 2:
+        words[-1] = words[-1].rstrip(".")   # "DERR."; not "ST."
     return _title(words) if words else _title(s.split(" "))
 
 
@@ -302,6 +319,27 @@ def parse_pcpn(raw):
     return v, ("A" if acc else "")
 
 
+def close_s(parsed):
+    """An S run must end in the A value that carries its rain. A run that ends
+    in anything else (a plain value, a trace, a gap) has lost that rain, so its
+    days are gaps (M), not reported days. A run at the very end is left alone:
+    its A has not come in yet (summarize() stops before it)."""
+    out = list(parsed)
+    i = 0
+    while i < len(out):
+        if out[i][1] != "S":
+            i += 1
+            continue
+        j = i
+        while j < len(out) and out[j][1] == "S":
+            j += 1
+        if j < len(out) and out[j][1] != "A":
+            for k in range(i, j):
+                out[k] = (None, "M")
+        i = j
+    return out
+
+
 def days_of(year, sdate, n):
     d0 = dt.date.fromisoformat(sdate)
     return [(d0 + dt.timedelta(days=i)).isoformat() for i in range(n)]
@@ -316,7 +354,7 @@ def summarize(year, dates, vals, norms, edate):
     """Everything a county page needs from one station's year so far, or a
     reason it does not qualify. dates/vals/norms are parallel (norms may be None).
     Returns (summary or None, reason)."""
-    parsed = [parse_pcpn(v) for v in vals]
+    parsed = close_s([parse_pcpn(v) for v in vals])
     # the last day reported; trailing S days wait for the A value that ends them
     last = max((i for i, (v, f) in enumerate(parsed) if v is not None and f != "S"), default=-1)
     if last < 0:
@@ -535,15 +573,17 @@ def last_year_total(vals, sdate, as_of_last, this=None):
     vals = list(vals[:n])
     if len(vals) < n:
         vals += ["M"] * (n - len(vals))
-    parsed = [parse_pcpn(v)[0] for v in vals]
+    parsed = [v for v, _ in close_s([parse_pcpn(v) for v in vals])]
     rep = sum(1 for v in parsed if v is not None)
     if rep < MIN_SHARE * n:
         return None
     out = {"total": round(sum(v for v in parsed if v is not None), 2), "reported": rep, "days": n, "through": as_of_last}
     if this is not None:
+        ks = sorted(this)
+        this_p = dict(zip(ks, (v for v, _ in close_s([parse_pcpn(this[k]) for k in ks]))))
         both = tb = lb = 0
         for d, v in zip(days_of(0, sdate, n), parsed):
-            t = parse_pcpn(this.get(d[5:], "M"))[0]
+            t = this_p.get(d[5:])
             if v is not None and t is not None:
                 both += 1
                 tb += t
@@ -552,9 +592,36 @@ def last_year_total(vals, sdate, as_of_last, this=None):
     return out
 
 
+HIGH_FT = 1500   # this far above the county's middle station elevation is a mountain site
+
+
+def snow_site(sids):
+    """A SNOTEL snow site (GHCN USS..., or ACIS sid type 17): high in the
+    mountains, where the rain is not what the farms below get."""
+    return any(str(x).startswith("USS") or str(x).strip().endswith(" 17") for x in (sids or []))
+
+
+def mark_mountain(cands):
+    """Set cand["mountain"] on a county's qualifying stations: a snow site, or
+    a station HIGH_FT or more above the median elevation of the county's other
+    qualifying stations (snow sites left out of that median). 2026-10-13:
+    Pondera MT's Pike Creek SNOTEL read 34.9 in while the plains around it read
+    16; Hood River OR, San Juan CO and Franklin ID picked snow sites too."""
+    def elev(x):
+        v = (x.get("meta") or {}).get("elev")
+        return float(v) if isinstance(v, (int, float)) or (isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v)) else None
+    low = sorted(e for e in (elev(x) for x in cands if not snow_site((x.get("meta") or {}).get("sids"))) if e is not None)
+    mid = (low[len(low) // 2] if len(low) % 2 else (low[len(low) // 2 - 1] + low[len(low) // 2]) / 2) if low else None
+    for x in cands:
+        e = elev(x)
+        x["mountain"] = snow_site((x.get("meta") or {}).get("sids")) or (e is not None and mid is not None and e - mid >= HIGH_FT)
+    return cands
+
+
 def rank_key(cand):
-    """Pick order inside a county: a station with NOAA normals first (the page's
-    answer is "compared with a usual year"), then the most days reported, then
-    nearest the middle of the county."""
+    """Pick order inside a county: mountain sites last (mark_mountain), then a
+    station with NOAA normals first (the page's answer is "compared with a
+    usual year"), then the most days reported, then nearest the middle of the
+    county."""
     s = cand["summary"]
-    return (0 if s["usual"] is not None else 1, -s["reported"], cand["mi"])
+    return (1 if cand.get("mountain") else 0, 0 if s["usual"] is not None else 1, -s["reported"], cand["mi"])
