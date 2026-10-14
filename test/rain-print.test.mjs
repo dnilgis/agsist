@@ -445,7 +445,7 @@ test("the header comment does not claim a missing-day count on the art", () => {
   assert.match(head, /no count of them is printed on the art/);
 });
 
-test("one dry-spell rule for both layouts: 7 days or more", () => {
+test("one dry-spell rule (7 days or more) from the engine; Staircase marks it on the print from 14", () => {
   assert.equal(RP.DRY_MIN, 7);
   assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 6), ["0.10"]]))), false, "6 days: not marked");
   assert.equal(RP.showDry(RP.derive(mkDays([["0.10"], ...rep(["0.00"], 7), ["0.10"]]))), true, "7 days: marked");
@@ -453,14 +453,22 @@ test("one dry-spell rule for both layouts: 7 days or more", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8"), A = readFileSync(ROOT + "components/rain-print-art.js", "utf8");
   const build = S.slice(S.indexOf("function buildSvg("), S.indexOf("function recordsReady("));
   assert.match(build, /showDry: showDry\(DATA\.d\)/, "the page hands the art the shared rule");
-  assert.ok(!/dryMax\.len\s*(>|>=)\s*\d/.test(A + build), "the art has no threshold of its own");
+  assert.ok(!/dryMax\.len\s*(>|>=)\s*\d/.test(A + build), "the art has no hard-coded threshold: the engine's rule, and the print's named option below");
   const ctx2 = {}; ctx2.window = ctx2;
   vm.runInNewContext(A, ctx2);
-  for (const style of ["r1", "r2"]) for (const [n, want] of [[6, false], [7, true]]) {
+  const draw = (style, n, extra = {}) => {
     const days = mkDays([["0.10"], ...rep(["0.00"], n), ["0.10"], ...rep(["0.20"], 20)]), D = RP.derive(days);
-    const svg = ctx2.AgRainArt.render({ style, year: 2025, place: "Chetek, Wisconsin", days, D, showDry: RP.showDry(D), axisLen: 365, markers: [] });
-    assert.equal(new RegExp(n + " dry days|dry stretch", "i").test(svg), want, `${style}: ${n} days ${want ? "marked" : "not marked"}`);
-  }
+    return ctx2.AgRainArt.render(Object.assign({ style, year: 2025, place: "Chetek, Wisconsin", days, D, showDry: RP.showDry(D), axisLen: 365, markers: [] }, extra));
+  };
+  const marked = (svg, n) => new RegExp(n + " dry days|dry stretch", "i").test(svg);
+  // Roots follows the engine's rule as it is
+  for (const [n, want] of [[6, false], [7, true]]) assert.equal(marked(draw("r2", n), n), want, `r2: ${n} days ${want ? "marked" : "not marked"}`);
+  // Staircase marks a dry stretch on the print from 14 days (panel 4, 2026-10-14), never under the engine's 7
+  for (const [n, want] of [[6, false], [7, false], [13, false], [14, true], [19, true]]) assert.equal(marked(draw("r1", n), n), want, `r1: ${n} days ${want ? "marked" : "not marked"}`);
+  // the page may ask for another print threshold (printDryMin); the engine's showDry still decides there is one at all
+  assert.equal(marked(draw("r1", 7, { printDryMin: 7 }), 7), true, "r1 with printDryMin 7: 7 days marked");
+  assert.equal(marked(draw("r1", 6, { printDryMin: 3 }), 6), false, "r1: under the engine's 7 never marked");
+  assert.equal(marked(draw("r1", 14, { printDryMin: "x" }), 14), true, "a bad option falls back to 14");
 });
 
 test("a saved PNG says 300 dpi and sRGB (a canvas PNG says neither and opens at 72 dpi)", async () => {

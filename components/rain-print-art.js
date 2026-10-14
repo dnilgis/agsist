@@ -2,8 +2,8 @@
  *
  *   R1 "Staircase" (default): the running total across the year, the verdict and
  *      both year totals upper left, the chart full width, a step that came as
- *      snow in ice blue on the line (nothing under the axis), place and year
- *      bottom left.
+ *      snow in ice blue on the line (nothing under the axis), the name (the
+ *      biggest words on the sheet), place and year bottom left.
  *   R2 "Roots": snow piles up above the ground line, rain soaks down below it,
  *      month totals across the top, a quiet depth scale.
  *
@@ -17,7 +17,8 @@
  *   axisLen: days on the x axis (a preview lays out the whole calendar year),
  *   showDry: RainPrint.showDry(D), whether the longest dry stretch is marked,
  *   ov: the comparison {daily (0 on unrecorded days), total} or null,
- *   ovNote: what "usual" means, printed small with the normals ("A usual year: NOAA’s 30-year normal"),
+ *   ovNote: what "usual" means, printed in the foot line ("A usual year: NOAA’s 30-year normal"),
+ *   printDryMin: Staircase marks a dry stretch on the print from this many days (default 14),
  *   showNormals: month normals under the month totals,
  *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO, later (optional words)} or null,
@@ -34,7 +35,8 @@
  * bar, ground line broken), never a dry day; the comparison is 0 on those days,
  * so both totals leave them out; an A total is never the biggest rain, and when
  * the snow record is whole neither is a snow day (D.maxRain, Sig); a dry
- * stretch is marked only when the engine's showDry says so (7 days or more).
+ * stretch is marked only when the engine's showDry says so (7 days or more),
+ * and on Staircase only from printDryMin days (14 unless the page says).
  */
 (function (root) {
   'use strict';
@@ -726,7 +728,8 @@
     facts.push(E.daysText);
     // what "usual" means is in the foot line (panel 4, 2026-10-14)
     var factLine = facts.join('  ·  ');
-    var hs = { fam: SERIF, w: 600, size: 52 }, fs = { size: 21, fill: C.mute };
+    // the headline stays under the name, whatever the name's length (the name is the biggest words on the sheet)
+    var hs = { fam: SERIF, w: 600, size: E.name ? Math.min(52, nameSt.size - 4) : 52 }, fs = { size: 21, fill: C.mute };
     var yN = { fam: SERIF, w: 600, size: 40, fill: C.rain }, yL = { size: 19, w: 500, fill: C.rain };
     var uN = { fam: SERIF, w: 400, size: 32, fill: C.mute }, uL = { size: 19, fill: C.mute };
     var lineSt = { size: 19, w: 500, fill: C.rec };
@@ -1033,16 +1036,19 @@
   }
 
   // ======================================================================= R2
+  /* Both scales are sized to the year itself (panel 4, 2026-10-14): the deepest rain bar reaches the foot of
+     the chart (to the next tenth of an inch), the tallest snow pile the top of the snow band. They used to have
+     floors of 2 in and 8 in, so a dry year was a strip of short bars over blank paper. */
   function niceRain(maxP) {
-    var dom = Math.max(2, Math.ceil(maxP / 0.5 - 1e-9) * 0.5);
-    var ticks = dom <= 4 ? [0.5, 1, 2, 3, 4] : dom <= 8 ? [1, 2, 4, 6, 8] : [2, 4, 8, 12, 16];
+    var dom = Math.max(0.5, Math.ceil(maxP * 10 - 1e-6) / 10);
+    var ticks = dom <= 2 ? [0.5, 1, 1.5, 2] : dom <= 4 ? [0.5, 1, 2, 3, 4] : dom <= 8 ? [1, 2, 4, 6, 8] : [2, 4, 8, 12, 16];
     return { dom: dom, ticks: ticks.filter(function (t) { return t <= dom + 1e-9; }) };
   }
   function niceSnow(maxS) {
-    var dom = Math.max(8, Math.ceil(maxS / 4 - 1e-9) * 4);
     // at most four steps on the short snow scale (a 40 in day once drew eight labels on top of each other)
-    var step = dom <= 8 ? 4 : dom <= 16 ? 8 : dom <= 40 ? 10 : dom <= 80 ? 20 : 50, ticks = [];
-    dom = Math.ceil(dom / step - 1e-9) * step;
+    var m = Math.max(0.5, maxS || 0), steps = [1, 2, 4, 5, 10, 20, 25, 50, 100], step = steps[steps.length - 1], ticks = [];
+    for (var k = 0; k < steps.length; k++) if (Math.ceil(m / steps[k] - 1e-9) <= 4) { step = steps[k]; break; }
+    var dom = Math.ceil(m / step - 1e-9) * step;
     for (var t = step; t <= dom + 1e-9; t += step) ticks.push(t);
     return { dom: dom, ticks: ticks };
   }
@@ -1050,7 +1056,9 @@
     var E = model(I), N = E.N, days = E.days, skipped = [];
     var ML = 120, X0 = 205, X1 = 1690, PW = X1 - X0, w = PW / N;
     var G = 478, SH = 92, RB = 1000, RH = RB - G - 6;
-    var R = niceRain(E.maxP), S = niceSnow(E.maxSnow);
+    // the rain scale reaches the deepest bar drawn below the ground (a snow day is drawn above it only)
+    var maxRain = Math.max.apply(null, [0.01].concat(days.map(function (x, i) { return E.P[i] !== null && !(E.full && x.s > 0) ? E.P[i] : 0; })));
+    var R = niceRain(maxRain), S = niceSnow(E.maxSnow);
     var ry = function (p) { return G + p * RH / R.dom; }, sy = function (s) { return G - s * SH / S.dom; };
     var xs = function (i) { return X0 + (i + 0.5) * w; };
     var o = [open(I, E)], room = new Room();
@@ -1059,43 +1067,58 @@
     var put = function (list, own) { list.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), own); }); };
     var draw = function (list) { return list.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join(''); };
 
-    // right: the year's totals
-    var big = { w: 300, size: 68 }, totals = [];
-    totals.push([X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)]);
-    totals.push([X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }]);
-    var vst = { size: 22, anchor: 'end' };
-    if (E.verdict) totals.push([X1, 254, E.verdict, vst]);
-    var rightEdge = X1 - W(E.T + ' in', big);
-    if (E.full) {
-      var bxs = Math.min(rightEdge - 70, X1 - W(totals[1][2], totals[1][3]) - 40);
-      totals.push([bxs, 214, E.snowTot.toFixed(1) + ' in', { w: 300, size: 44, fill: C.snowInk, anchor: 'end' }]);
-      totals.push([bxs, 140, 'SNOWFALL', { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }]);
-      rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', { w: 300, size: 44 });
-    }
-    // left: name, place and year, dedication; shrunk to stay clear of the totals
-    // a logo goes first, at the left margin, and the words start after it (TX)
+    /* The top: the year's totals at the right; at the left the name, in the Staircase's serif and the biggest
+       words on the sheet (panel 4, 2026-10-14), the place and year under it, the buyer's line under that. With
+       no name, the place and year are the headline. A long name that has to shrink shrinks the totals with it,
+       so the name stays the biggest. A logo goes first, at the left margin, and the words start after it (TX). */
     var lg = logoOf(I, 'r2'), TX = lg ? ML + lg.w + LOGO_GAP : ML;
-    var leftRoom = rightEdge - 50 - TX, title = [];
-    var py = E.name ? 214 : 190;
-    if (E.name) {
-      var nst = { w: 500, size: 32, ls: 0.14 };
-      nst.size = fit(E.name.toUpperCase(), nst, leftRoom, 18);
-      title.push([TX, 150, E.name.toUpperCase(), nst]);
+    var vst = { size: 22, anchor: 'end' }, totals, title, rightEdge, leftRoom, nst = null, big = { w: 300, size: 68 }, snowBig = { w: 300, size: 44 };
+    var NAME_MAX = 78, py = E.name ? 202 : 196;
+    function layTotals() {
+      totals = [];
+      totals.push([X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)]);
+      totals.push([X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }]);
+      if (E.verdict) totals.push([X1, 254, E.verdict, vst]);
+      rightEdge = X1 - W(E.T + ' in', big);
+      if (E.full) {
+        var bxs = Math.min(rightEdge - 70, X1 - W(totals[1][2], totals[1][3]) - 40);
+        totals.push([bxs, 214, E.snowTot.toFixed(1) + ' in', Object.assign({ fill: C.snowInk, anchor: 'end' }, snowBig)]);
+        totals.push([bxs, 140, 'SNOWFALL', { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }]);
+        rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', snowBig);
+      }
+      leftRoom = rightEdge - 50 - TX;
     }
-    // place and year read across the room: 60 u (was 50; designers' panel, 2026-10-13)
-    var ps = { w: 300, size: 60 }, ys = { w: 500, size: 60 }, both = E.place + '  ' + E.year;
-    ps.size = ys.size = fit(both, { w: 400, size: 60 }, leftRoom, 28);
-    title.push([TX, py, E.place, ps]);
-    title.push([TX + W(E.place + '  ', ps), py, String(E.year), ys]);
+    layTotals();
+    if (E.name) {
+      nst = { fam: SERIF, w: 500, size: fit(E.name, { fam: SERIF, w: 500, size: NAME_MAX }, leftRoom, 40) };
+      for (var shrink = 0; shrink < 12 && nst.size < big.size + 6 && big.size > 30; shrink++) {
+        big.size = Math.max(30, nst.size - 8); snowBig.size = Math.round(big.size * 44 / 68);
+        layTotals();
+        nst.size = fit(E.name, { fam: SERIF, w: 500, size: NAME_MAX }, leftRoom, 40);
+      }
+    }
+    title = [];
+    if (E.name) {
+      title.push([TX - 2, 140, E.name, nst]);
+      var ps = { fam: SERIF, w: 400, size: 34 }, ys = { fam: SERIF, w: 600, size: 34 }, yw = W(String(E.year), ys) + 18;
+      ps.size = ys.size = Math.min(34, nst.size - 8, fit(E.place, ps, leftRoom - yw, 22));
+      title.push([TX, py, E.place, ps]);
+      title.push([TX + W(E.place, ps) + 18, py, String(E.year), ys]);
+    } else {
+      var ps = { fam: SERIF, w: 400, size: 60 }, ys = { fam: SERIF, w: 600, size: 60 };
+      ps.size = ys.size = fit(E.place + '  ' + E.year, { fam: SERIF, w: 600, size: 60 }, leftRoom, 28);
+      title.push([TX, py, E.place, ps]);
+      title.push([TX + W(E.place + '  ', ps), py, String(E.year), ys]);
+    }
     // the dedication runs under the totals but stops short of the verdict on its line
     if (E.dedication) {
       var dRoom = (E.verdict ? X1 - W(E.verdict, vst) - 40 : X1) - TX;
-      title.push([TX, py + 44, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, dRoom, 14), fill: C.mute }]);
+      title.push([TX, py + 42, E.dedication, { fam: SERIF, it: true, size: fit(E.dedication, { fam: SERIF, it: true, size: 24 }, dRoom, 14), fill: C.mute }]);
     }
     put(totals, 'totals'); put(title, 'title');
     if (lg) {
       // centred on the name and place: from the name's capitals (or the place's) to the place's baseline
-      var lgTop = E.name ? 150 - asc(E.name.toUpperCase()) * nst.size : py - asc(E.place) * ps.size;
+      var lgTop = E.name ? 140 - asc(E.name) * nst.size : py - asc(E.place) * ps.size;
       lg.x = ML; lg.y = n2(Math.max(64, (lgTop + py) / 2 - lg.h / 2));
       room.add({ b: { x: lg.x, y: lg.y, w: lg.w, h: lg.h }, own: 'logo', k: 'mark' });
     }
@@ -1106,7 +1129,8 @@
     if (E.full) S.ticks.forEach(function (t) { room.seg(X0, sy(t), X1, sy(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, sy(t) + 5, String(t), { size: 15, fill: C.snowInk, anchor: 'end' }]); });
 
     // bars: a snow day shows only above the line (its melted water still counts in the total)
-    var bw = 0.66 * w, sw = 0.8 * w, bars = '', snows = '', barBoxes = [];
+    // bars 0.85 of a day, so a year reads as a texture across the room, not hairlines (panel 4, 2026-10-14; were 0.66)
+    var bw = 0.85 * w, sw = 0.85 * w, bars = '', snows = '', barBoxes = [];
     days.forEach(function (x, i) {
       var p = E.P[i], cx = xs(i);
       if (p === null) return;
@@ -1156,25 +1180,24 @@
     var mBoxes = months.map(function (t) { return box(t[0], t[1], t[2], t[3]); });
 
     // footer
-    var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the footer
+    // one line at the foot (panel 4, 2026-10-14; there were two): what smallLine says, then these
+    var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the foot line
     if (E.cmp && E.ovNote) foot.push(E.ovNote);   // whenever the verdict says "usual" (2026-10-13)
-    if (E.snowKey) foot.push('Snow and rain use separate scales');
-    var small = smallLine(E, ML, 1440);
-    if (small) room.text(small.box, 'foot');
     // the QR sits at the foot's line; a deep December bar under it moves it down to the small line (still inside the margin)
     var qrBottom = 1100, qb = qrBox(I.qr, X1, qrBottom);
     if (qb && barBoxes.some(function (bb) { return hit(bb, qb, 3); })) { qrBottom = 1132; qb = qrBox(I.qr, X1, qrBottom); }
     if (qb) room.add({ b: qb, own: 'qr', k: 'mark' });
-    var fst = { size: 17, fill: C.mute };
-    room.add({ b: { x: ML, y: 1100 - 0.77 * 17, w: 1440, h: 1.04 * 17 }, own: 'foot', k: 'text' });
+    // the foot line is written last (the biggest rain or the dry stretch may land in it): its room, two lines' worth, is kept now
+    room.add({ b: { x: ML, y: FOOT_Y - FOOT_GAP - 0.77 * 15, w: 1440, h: FOOT_GAP + 1.04 * 15 }, own: 'foot', k: 'text' });
 
     // remarkable days' rings on the ground line (placed first so every label keeps off them)
     var rings = recs.pts.map(function (r, k) { var x = xs(r.i); room.add({ b: { x: x - 5.5, y: G - 5.5, w: 11, h: 11 }, own: 'rec:' + k, k: 'mark' }); return x; });
 
     // ---- the reader's dates: words above the month row, a tick down to the ground (or the snow on it)
-    var mst2 = { it: true, size: 17 }, LY = 290;
+    // the reader's dates read clearly: upright, ink, 20 u (panel 4, 2026-10-14; were 17 u italic)
+    var mst2 = { w: 500, size: 20, fill: C.ink }, LY = 290;
     var marks = E.markers.map(function (mk, k) { return { k: k, i: mk.i, x: xs(mk.i), label: mk.label }; });
-    var placed = placeDates(marks, [LY, LY - 22, LY - 44], function (s) { return W(s, mst2); },
+    var placed = placeDates(marks, [LY, LY - 24, LY - 48], function (s) { return W(s, mst2); },
       function (it, b) { return b.y > 62 && room.free(b, 'mark:' + it.ids[0], false); },
       function (A, ba, ra, B, bb, rb) {
         if (hit(ba, bb, ra === rb ? 20 : 2)) return false;
@@ -1183,7 +1206,7 @@
         if (ra > rb && through(A.xs, bb)) return false;
         if (rb > ra && through(B.xs, ba)) return false;
         return true;
-      }, [0.77 * 17, 0.27 * 17], [X0, X1]);
+      }, [0.77 * 20, 0.27 * 20], [X0, X1]);
     var labelOf = {}, from = {};
     placed.forEach(function (pd) {
       pd.own = 'mark:' + pd.it.ids[0];
@@ -1303,7 +1326,7 @@
     }
     if (E.dry && !dryAt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
     else if (E.dry) foot.push(E.dry.len + ' dry days: ' + E.dry.range);
-    fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
+    var small = smallLine(E, ML, 1440, foot);
 
     // ================= draw, back to front
     o.push(G0('totals') + draw(totals) + G1);
@@ -1344,7 +1367,6 @@
       o.push('<circle cx="' + n2(rings[k]) + '" cy="' + G + '" r="4.6" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
       o.push(T(pk.x, pk.y, r.label, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
     });
-    o.push(G0('foot') + T(ML, 1100, foot.join('  ·  '), fst) + G1);
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, X1, qrBottom));
     last_skipped = skipped;
