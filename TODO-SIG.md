@@ -2,8 +2,8 @@
 
 The morning report email lists every open item below. To check one off, edit
 this file on GitHub and change `- [ ]` to `- [x]` (or delete the line). To add
-this file is public (it is in the site repo), so keep names and anything private out of it.
-one, add a new `- [ ]` line.
+one, add a new `- [ ]` line. This file is public (it is in the site repo), so keep
+names and anything private out of it.
 
 - [ ] Test Stripe with a $19 purchase and refund it
 - [ ] Check Stripe: gift fields, US-only shipping, "glass" in the descriptions, and the message after payment about the proof
