@@ -39,7 +39,19 @@ function _ffTrackCalc(e){var el=e.target;if(!el||!el.closest)return;var panel=el
 document.addEventListener('input',_ffTrackCalc,true);
 document.addEventListener('change',_ffTrackCalc,true);
 /* deep-link: open tab from URL hash on load (deferred so all init fns are defined) */
-setTimeout(function(){var h=(location.hash||'').replace('#','');var b=(h&&document.getElementById('tab-btn-'+h))||document.querySelector('.ff-tab.active')||tabs[0];switchTab(b);},0);
+/* Each tab has its own address: /fast-facts#manure, #nitrogen, #pk ... A link
+   to one opens that tab and brings it into view, on load and when the hash
+   changes on the page (the contents list at the top uses plain #links). */
+function tabFromHash(scroll){
+  var h=(location.hash||'').replace('#','');
+  var b=h&&document.getElementById('tab-btn-'+h);
+  if(!b)return false;
+  switchTab(b);
+  if(scroll){var nav=document.querySelector('.ff-tabs');if(nav){var y=nav.getBoundingClientRect().top+window.pageYOffset-8;window.scrollTo(0,Math.max(0,y));}}
+  return true;
+}
+window.addEventListener('hashchange',function(){tabFromHash(true);});
+setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.ff-tab.active')||tabs[0]);}},0);
 
 /* ─── FERTILIZER PRICES ─────────────────────────────────────────────── */
 var PRICES={};
@@ -691,7 +703,7 @@ function initStateStats(){
 /* ─── SOURCE FOOTER ─────────────────────────────────────────────────── */
 var srcEl=document.querySelector('.ff-source');
 if(!srcEl){var s2=document.createElement('div');s2.className='ff-source';
-  s2.innerHTML='Sources: <a href="https://uwex.edu" target="_blank" rel="noopener">UW-Extension A2809</a> &middot; <a href="https://extension.umn.edu" target="_blank" rel="noopener">UMN Extension</a> &middot; <a href="https://nass.usda.gov" target="_blank" rel="noopener">USDA NASS</a> &middot; Live prices from AGSIST data feed &middot; <a href="/">&#x2190; AGSIST Dashboard</a> &middot; <a href="tel:+17157972428">715-797-2428</a>';
+  s2.innerHTML='Sources: <a href="https://cropsandsoils.extension.wisc.edu/nutrient-application-guidelines-for-field-vegetable-and-fruit-crops-in-wisconsin-a2809" target="_blank" rel="noopener">UW-Extension A2809</a> &middot; <a href="https://extension.umn.edu" target="_blank" rel="noopener">UMN Extension</a> &middot; <a href="https://www.nass.usda.gov/" target="_blank" rel="noopener">USDA NASS</a> &middot; Live prices from AGSIST data feed &middot; <a href="/">&#x2190; AGSIST Dashboard</a> &middot; <a href="tel:+17157972428">715-797-2428</a>';
   document.querySelector('.ff-page')&&document.querySelector('.ff-page').appendChild(s2);}
 
 })();
