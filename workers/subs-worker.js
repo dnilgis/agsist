@@ -5,6 +5,8 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.25 (2026-10-14): /rp-short allows 200 new ids an hour and 600 a day per
+ *   address (was 60 and 200); the daily total for everyone stays 600.
  * v5.24 (2026-10-14): THREE SMALL FIXES (panel 3). Every route answers as
  *   before except:
  *   - a public POST over the day's cap for EVERYONE answers 429 with
@@ -592,7 +594,11 @@ const RATE = {
   "/price-watch-subscribe": [10, 30, 50], "/sponsor-apply": [5, 10, 25], "/form": [8, 24, 500],
   // v5.14: new Rain Print short links only (a repeat of a known code is free).
   // No mail; the daily total bounds KV writes (two per new id).
-  "/rp-short": [60, 200, 600],
+  // v5.25: 200 an hour and 600 a day per address. Each redraw while someone
+  // designs makes a new id, so one busy designer (Sig testing his own print)
+  // hit 60 in an hour and lost the QR and the print files. The day's total
+  // for everyone is unchanged and still bounds KV writes.
+  "/rp-short": [200, 600, 600],
   // v5.16: gift cards. Every check counts (hit or miss): 20 an hour, 60 a day
   // per address, so walking 2^55 codes is hopeless; redeem is rarer still.
   "/rp-gift/check": [20, 60, 1000], "/rp-gift/redeem": [5, 10, 100],
