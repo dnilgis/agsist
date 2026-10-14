@@ -722,7 +722,6 @@
   {
    "path": "data/fertilizer.json",
    "pages": [
-    "fast-facts.html",
     "fertilizer.html",
     "index.html",
     "urea.html"
@@ -1611,7 +1610,6 @@
     "breakeven.html",
     "cattle-futures-prices.html",
     "developer.html",
-    "fast-facts.html",
     "fertilizer.html",
     "index.html",
     "markets.html",
@@ -1845,7 +1843,6 @@
   {
    "path": "data/state-stats.json",
    "pages": [
-    "fast-facts.html",
     "usda-quick-stats.html"
    ],
    "written_by": [
