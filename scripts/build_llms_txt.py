@@ -122,7 +122,8 @@ PAGES = [
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
-        ("/fast-facts", "Ag Fast Facts", "on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value"),
+        ("/fast-facts", "Ag Fast Facts", "on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
+        ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at the current Midwest dealer fertilizer prices (P from MAP with its N credited), what a neighbor should pay for it, a worked dairy sale and a calculator"),
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
     ]),
     ("Sell, store or price ahead?", [
