@@ -515,7 +515,8 @@ def state_page(st, d, pages, none_rows):
     done = done_year(d)
     mid = middle(cs)
     u1, un = unit(st)
-    title = f"How Much Rain Has {stn} Had in {year}? County by County | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? County by County | AGSIST"
+    by = {"LA": "Parish by Parish", "AK": "Borough by Borough"}.get(st, "County by County")
+    title = f"How Much Rain Has {stn} Had in {year}? {by} | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? {by} | AGSIST"
     early = sum(1 for c in cs.values() if c["as_of"] < asofs[-1])
     lede = (f"{len(cs)} {stn} {un} have a NOAA or CoCoRaHS station inside the {u1} that reported at least 90% of the days in {year}"
             + ("." if done else f", through {short_date(asofs[-1])}"
@@ -552,7 +553,8 @@ def state_page(st, d, pages, none_rows):
          "dateModified": d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", ORIGIN + "/rain"), (stn, url)]),
     ]
-    h1 = f"How much rain has {e(stn)} had in {year}? County by county" if not done else f"How much rain did {e(stn)} get in {year}? County by county"
+    by = by[0] + by[1:].lower()
+    h1 = f"How much rain has {e(stn)} had in {year}? {by}" if not done else f"How much rain did {e(stn)} get in {year}? {by}"
     return head(title, desc, url, ld) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -566,7 +568,7 @@ def state_page(st, d, pages, none_rows):
     <div class="rc-scroll" tabindex="0" role="region" aria-label="Every {u1}, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by {u1}, {e(stn)}</caption>
     <thead><tr><th scope="col">{UNIT_HEAD.get(st, "County")}</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
-    <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each county page has the month by month table and how the station was picked.</p>
+    <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
     {none_html}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt every Monday. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
@@ -823,7 +825,8 @@ def selftest():
         ok(not re.search(r"Louisiana counties|\d+ counties", S.text_of(la) + S.text_of(lh)), "Louisiana is never counted in counties")
         ok("parishes, typical parish" in lh, "hub row counts parishes")
         ok("caught under 40% of what the parishes around it typically caught" in la and "every county around it" not in la, "held footnote fits both holds")
-        ok("County by County | AGSIST</title>" in la and "Every County" not in la, "state title does not promise every county")
+        ok("Parish by Parish | AGSIST</title>" in la and "Parish by parish</h1>" in la and "Every County" not in la and "Each parish page" in la, "state title does not promise every county, and calls them parishes")
+        ok("County by County | AGSIST</title>" in want["rain/iowa.html"] and "Every County" not in want["rain/iowa.html"], "state title: county by county")
         ok("3 days not reported" not in story and "1 day not reported" in story, "a month with a gap says so")
         jef = want.get("rain/iowa/greene-county.html", "")
         ok(jef and "this station" not in jef and "at this gauge" in jef and "Why this gauge:" in jef, "a CoCoRaHS page calls it a gauge throughout")
