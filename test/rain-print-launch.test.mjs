@@ -407,7 +407,7 @@ test("the source line and stats read plainly", () => {
 test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /#main \.rp \.rp-side>h1\{font-size:clamp\(2rem,2\.4vw,2\.4rem\)\}/, "the h1 stands above the h2s on a laptop");
   assert.match(HTML, /<h2 class="sec-h rp-step-h" id="rp-draw-h">/);
-  assert.match(HTML, /\.rp p,\.rp li,\.rp dd,\.rp dt,\.rp summary,\.rp blockquote,\.rp td\{font-variant-numeric:normal\}/, "no spaced hyphens in prose");
+  assert.match(HTML, /\.rp p,\.rp li,\.rp dd,\.rp dt,\.rp summary,\.rp blockquote,\.rp td,\.rp a,\.rp label,\.rp legend\{font-variant-numeric:normal\}/, "no spaced hyphens in prose");
   assert.match(HTML, /<details class="rp-proof-more" open>/);
   for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Date ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for date ${i}"`), "date " + i + " is named");
   assert.match(HTML, /id="rp-proof-stage" role="group"/);

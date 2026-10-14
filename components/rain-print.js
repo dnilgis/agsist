@@ -1715,6 +1715,8 @@
     var dlg = $('rp-proof');
     // open on what the reader is looking at: framed or print only, as set under the preview
     PROOF_VIEW = $('rp-wall').getAttribute('data-view') === 'print' ? 'print' : 'framed';
+    // the words open under the print, except on a short screen, where the print needs the room
+    try { doc.querySelector('.rp-proof-more').open = (root.innerHeight || 800) >= 560; } catch (e) {}
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     ga('rain_print_proof', { style: ST.style });
