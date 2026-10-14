@@ -214,18 +214,22 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
   assert.match(J.ships_within, /within 3 business days/);
   assert.equal(J.print_christmas_cutoff, "2026-12-10");
   assert.equal(J.framed_christmas_cutoff, "2026-12-09");
-  assert.match(HTML, /<p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof\./);
+  assert.match(HTML, /<p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof, anywhere in the 50 states\./);
   assert.ok(!/7 business days/.test(HTML), "no old shipping promise left on the page or in its structured data");
   assert.equal(RP.addBizDays("2026-12-04", 1, []), "2026-12-07", "a Friday plus one business day is Monday");
   assert.equal(RP.christmasCutoff({ ...J, ship_business_days: null }, "print12x18", 2026), null, "a missing number gives no date, not a guess");
 });
 
-test("shipping included is said plainly; no archival claim; care line; draft policy marked for the owner", () => {
+test("shipping included is said plainly; no archival claim; care line; the reprint policy is final (Sig, 2026-10-14)", () => {
   assert.match(HTML, /\$45, or \$89 framed, shipping included/, "lede");
-  assert.equal((HTML.match(/<li>Shipping included, US addresses<\/li>/g) || []).length, 2, "both print cards");
+  // Sig, 2026-10-14: Alaska and Hawaii are covered, Christmas dates included; Puerto Rico not promised
+  assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both print cards");
+  assert.ok(!/US addresses/.test(HTML + JSON.stringify(J)), "no looser 'US addresses' that would take in Puerto Rico");
+  assert.match(HTML, /anywhere in the 50 states, Alaska and Hawaii included/);
+  assert.match(HTML, /To have a past year by Christmas, anywhere in the 50 states, order by the date on the price card/);
   assert.ok(!/archival/i.test(HTML + readFileSync(ROOT + "components/rain-print.js", "utf8")), "never called archival");
   assert.equal((HTML.match(/Keep it out of direct sun/g) || []).length, 2);
-  assert.match(HTML, /<!-- DRAFT-POLICY:[^>]*-->\s*<details><summary>What if something/, "the reprint and refund promise is marked as a draft");
+  assert.ok(!/DRAFT-POLICY/.test(HTML), "the reprint and refund promise is final: no draft marker");
   assert.ok(!/[\u2014]/.test(HTML.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes in the page copy");
   assert.ok(!/OWNER-SHIPPING|placeholder sentence/i.test(HTML), "no shipping placeholder left");
 });
@@ -347,6 +351,9 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.match(HTML, /A 2026 print ships in January/);
   assert.match(HTML, /note card in the box/);
   assert.match(HTML, /does not go on the print/);
+  // Sig, 2026-10-14: a business logo may go on the print, small, if they upload one
+  assert.match(HTML, /If you want your logo on it, upload one with your request: it prints small, next to the name/);
+  assert.match(HTML, /Your business name stays off the print too; a logo can go on it, small next to the name, if you upload one\./);
   assert.match(HTML, /an invoice, net 30, and a W-9 on request/);
   assert.match(HTML, /one proof sheet/);
   assert.ok(!/compliments of/i.test(HTML), "no 'Compliments of' line");
@@ -362,16 +369,17 @@ test("prints ship flat between chipboard, never rolled; no mat is sold", () => {
   assert.match(HTML, /black stock frame, no mat/);
 });
 
-test("refund and reprint wording: Sig's terms, still marked as a draft, fee only when set", () => {
+test("refund and reprint wording: Sig's terms, $15 to reprint a lost or damaged print", () => {
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /refund you in full/);
   assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
   // 2026-10-14 (panel 3, T3): a photo for damage only; a lost parcel is a tracking matter
-  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it for a small fee, with the same serial number/);
+  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it for \$15, with the same serial number/);
   assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
-  assert.equal(J.reprint_fee, null, "no fee amount invented");
+  assert.equal(J.reprint_fee, 15, "Sig set $15 (2026-10-14)");
+  assert.ok(!/small fee/.test(HTML), "the amount, not 'a small fee'");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,300}'a small fee,'/);
+  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,400}'reframe it for ' \+ money\(j\.reprint_fee\) \+ ', with'/);
   assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
 });
 

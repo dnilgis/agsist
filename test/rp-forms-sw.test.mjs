@@ -107,3 +107,29 @@ test("sw.js: CACHE_VERSION carries a dated note for this change", () => {
   assert.equal(m[1], m[2], "the note starts with the version it describes");
   assert.ok(Number(m[1]) >= 64);
 });
+
+test("form-post.js (panel 3 F11): the Formspree copy after a slow worker says it may repeat, and a hung Formspree gives up after 15 s", async () => {
+  const sent = [];
+  const timers = [];
+  const ctx = {
+    AbortController, JSON, Promise, Object, Error,
+    FormData: class { constructor() { this.f = []; } append(k, v) { this.f.push([k, v]); } },
+    setTimeout(fn, ms) { timers.push({ fn, ms }); return timers.length; },
+    clearTimeout(id) { if (timers[id - 1]) timers[id - 1].cleared = true; },
+    fetch(url, opts) {
+      if (url.includes("formspree")) { sent.push(opts.body.f); return hung(opts); }
+      return hung(opts);
+    },
+  };
+  ctx.window = ctx;
+  vm.runInNewContext(read("components/form-post.js"), ctx);
+  const p = ctx.agsistFormPost("rain-print-order", { name: "Kate" }, { _subject: "Rain Print order", name: "Kate" });
+  await new Promise((r) => setImmediate(r));
+  timers.find((x) => x.ms === 12000).fn();
+  await new Promise((r) => setImmediate(r));
+  assert.ok(sent[0].some(([k, v]) => k === "_subject" && v === "Rain Print order (sent after the site form was slow; may repeat)"), JSON.stringify(sent[0]));
+  const t = timers.find((x) => x.ms === 15000);
+  assert.ok(t, "a 15 second timer on the Formspree post");
+  t.fn();
+  await assert.rejects(within(p, 1000), /not sent/);
+});

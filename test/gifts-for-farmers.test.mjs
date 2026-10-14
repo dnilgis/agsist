@@ -104,3 +104,12 @@ test("plain copy: no store names, no affiliate or outside shop links, no em dash
   assert.deepEqual(outside, [], "no outside links in the article");
   assert.ok(!/\$\d/.test(BODY.replace(/\$<span data-gf-price[^>]*>\d+<\/span>/g, "")), "no dollar figure on the page but the three Rain Print prices");
 });
+
+test("Sig, 2026-10-14: a business logo may go on the print; shipping covers the 50 states", () => {
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const biz = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((q) => /business/.test(q.name)).acceptedAnswer.text;
+  assert.match(biz, /Your business name stays off the print, though a logo can go on it, small next to the name, if you upload one\./);
+  assert.match(BODY, /A logo can go on it, small next to the name, if you upload one\./);
+  assert.ok(!/US addresses/.test(HTML), "no 'US addresses' that would take in Puerto Rico");
+  assert.match(BODY, /Shipping is in the price, anywhere in the 50 states\./);
+});

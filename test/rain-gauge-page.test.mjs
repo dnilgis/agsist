@@ -122,3 +122,9 @@ test("F4, F3: the waitlist button says Sending, gives up after 12 s, and a busy 
   assert.match(page, /if \(ctl\) opts\.signal = ctl\.signal;/);
   assert.match(page, /res\.error === 'busy today' \? 'Lots of people are signing up today\./);
 });
+test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist, said on the card, the form and the FAQ", () => {
+  assert.match(main, /Everyone on the waitlist hears first and gets the first-batch price\./);
+  assert.equal((main.match(/Everyone on the waitlist gets (that|that first-batch) price, even if the first batch runs out before your turn\./g) || []).length, 2);
+  assert.ok(JSON.stringify(ld).includes("Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn."));
+  assert.ok(!/while the first batch lasts/i.test(main));
+});

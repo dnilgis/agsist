@@ -36,7 +36,8 @@
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = null;
     var late = new Promise(function (resolve) {
-      timer = setTimeout(function () { if (ctl) ctl.abort(); resolve('fallback'); }, TIMEOUT_MS);
+      // 'slow': the worker may still have taken it, so the Formspree copy says it may repeat (panel 3 F11)
+      timer = setTimeout(function () { if (ctl) ctl.abort(); resolve('slow'); }, TIMEOUT_MS);
     });
     var sent = fetch(WORKER, {
       method: 'POST', body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined,
@@ -61,24 +62,34 @@
     return Promise.race([sent, late]);
   }
 
-  function toFormspree(fields) {
+  /* Formspree gets FORMSPREE_MS too (2026-10-14, panel 3 F11): a hung backup
+     left the button on "Sending..." for good. */
+  var FORMSPREE_MS = 15000, SLOW_TAG = ' (sent after the site form was slow; may repeat)';
+  function toFormspree(fields, slow) {
     var fd = new FormData();
     Object.keys(fields || {}).forEach(function (k) {
-      if (fields[k] !== undefined && fields[k] !== null) fd.append(k, fields[k]);
+      if (fields[k] !== undefined && fields[k] !== null) fd.append(k, k === '_subject' && slow ? fields[k] + SLOW_TAG : fields[k]);
     });
-    return fetch(FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+    if (slow && !(fields && fields._subject)) fd.append('_subject', 'AGSIST form' + SLOW_TAG);
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, FORMSPREE_MS);
+    var o = { method: 'POST', body: fd, headers: { Accept: 'application/json' } };
+    if (ctl) o.signal = ctl.signal;
+    return fetch(FORMSPREE, o)
       .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
       .then(function (j) {
+        clearTimeout(timer);
         if (!j || j.ok === false || j.errors) throw new Error('not sent');
         return { ok: true, via: 'formspree' };
-      });
+      }, function (e) { clearTimeout(timer); throw e && e.message === 'not sent' ? e : new Error('not sent'); });
   }
 
   function post(kind, data, formspreeFields) {
     return toWorker(kind, data).then(function (x) {
-      return x === 'fallback' ? toFormspree(formspreeFields || data) : x;
+      return x === 'fallback' || x === 'slow' ? toFormspree(formspreeFields || data, x === 'slow') : x;
     });
   }
-  post.worker = toWorker;
+  // the plain-HTML forms only need to know to fall back
+  post.worker = function (kind, data) { return toWorker(kind, data).then(function (x) { return x === 'slow' ? 'fallback' : x; }); };
   window.agsistFormPost = post;
 })();

@@ -2055,10 +2055,11 @@
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
-      // reprint_fee (null or dollars): shown after "a small fee" in the refund FAQ only when set (Sig, 2026-10-13)
+      /* reprint_fee (dollars; $15 since 2026-10-14, Sig): the lost-or-damaged reprint in the
+         refund FAQ. The page says the amount; a different number here replaces it there. */
       if (typeof j.reprint_fee === 'number' && j.reprint_fee > 0) {
         Array.prototype.forEach.call(doc.querySelectorAll('details p'), function (p) {
-          if (p.innerHTML.indexOf('a small fee,') >= 0) p.innerHTML = p.innerHTML.replace('a small fee,', 'a small fee (' + money(j.reprint_fee) + '),');
+          if (/reframe it for \$\d+(\.\d\d)?, with the same serial/.test(p.innerHTML)) p.innerHTML = p.innerHTML.replace(/reframe it for \$\d+(\.\d\d)?, with/, 'reframe it for ' + money(j.reprint_fee) + ', with');
         });
       }
       syncCutoffs();
@@ -2496,10 +2497,10 @@
     if (off.print12x18) offs.push(money(off.print12x18) + ' off each print');
     if (off.framed12x18) offs.push(money(off.framed12x18) + ' off each framed');
     $('rp-biz-ship').textContent = rows.length
-      ? 'Every price is per print, delivered: shipping to US addresses is included, one to each customer or all to one. ' +
+      ? 'Every price is per print, delivered: shipping anywhere in the 50 states is included, one to each customer or all to one. ' +
         (offs.length && firstOff ? 'All to one address' + (firstOff.from > rows[0].from ? ', from ' + firstOff.from + ' prints' : '') + ': ' + offs.join(', ') + '. ' : '') + 'A digital file is ' + money(j.digital) + ' each, emailed. ' +
         (max < BIZ_MAX ? 'Over ' + max + ' prints, ask me for a quote.' : '')
-      : 'I quote business orders by email. Shipping to US addresses is included.';
+      : 'I quote business orders by email. Shipping anywhere in the 50 states is included.';
     $('rp-biz-ship').hidden = false;
     $('rp-tiers-box').hidden = !rows.length;
     if (rows.length) {
