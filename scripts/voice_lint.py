@@ -19,8 +19,9 @@ mouth that a prompt alone does not stop:
               ("The bottom line:"), signposting ("here's what", "let's",
               "when it comes to"), honesty narration ("honestly",
               "frankly"), a hedge stack ("may potentially"),
-              a run of three adjectives, trader slang he does not use, and a
-              Title Case or ALL CAPS headline.
+              a run of three adjectives, trader slang he does not use, a
+              Title Case or ALL CAPS headline, and "X, not Y" used more than
+              once in one issue (the 2026-10-14 issue had four).
 
 One definition, used by three callers:
   generate_daily.py    regenerates once when a draft has any hit, then strips
@@ -249,10 +250,24 @@ def fabricated_hits(b):
     return hits
 
 
+# "Diesel moves with this, not with the grain board." One of these in an
+# issue can be the fact itself ("the move came from the cash side, not a
+# report"). Four in one issue is a machine habit. The first one passes; every
+# later one in the same briefing is a tell.
+_CONTRAST = re.compile(r",\s+not\s+(?!only\b|just\b|yet\b|even\b|necessarily\b|always\b|"
+                       r"much\b|enough\b|to\b|that\b|so\b|since\b|until\b|including\b|counting\b)"
+                       r"[A-Za-z$]", re.I)
+
+
 def tell_hits(b):
     """[(code, loc, snippet)] machine tells, hype, slang and headline case."""
     hits = []
+    seen_contrast = 0
     for loc, text in fields(b):
+        for m in _CONTRAST.finditer(text):
+            seen_contrast += 1
+            if seen_contrast > 1:
+                hits.append(("not-contrast", loc, _snip(text, m.start(), m.end())))
         for code, rx in TELLS:
             for m in rx.finditer(text):
                 hits.append((code, loc, _snip(text, m.start(), m.end())))
@@ -483,6 +498,7 @@ _FAIL_TELL = [
     "Keep in mind the report is Friday.",
     "Honestly, nobody knows.",
     "Cattle may potentially slip.",
+    "Beans led on crush, not exports, and cattle eased on supply, not demand.",
 ]
 _PASS_TELL = [
     "Corn held $5.00 even with heavy stocks.",
@@ -496,6 +512,7 @@ _PASS_TELL = [
     "That would be a short answer to a long question.",
     "Corn may slip if harvest runs fast.",
     "The honest number is in the table.",
+    "Corn held, not yet under $4.80, and the bounce came from the cash side, not a report.",
 ]
 
 
