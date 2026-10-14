@@ -112,3 +112,7 @@ test("phone layout: no badge over the funnel, readable phone screens, a full-wid
 test("a 400 from the worker is not 'try again in a minute'", () => {
   assert.match(page, /res\.status === 400 \? 'That address couldn\\u2019t be added\. Write to me through \/contact/);
 });
+test("the gauge design stays private: the photo reader lab is not published", () => {
+  for (const f of ["gauge-lab.html", "components/gauge-lab.js", "components/gauge-read.js", "data/gauge-strip.json"])
+    assert.ok(!existsSync(ROOT + f), f + " must not be on the site");
+});
