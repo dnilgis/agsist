@@ -5,13 +5,23 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 13 Oct 2026 10:47:48 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 10:47:36 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Crude tops $95 on more tanker threats; grain holds steady</title>
+      <link>https://agsist.com/daily/2026-10-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-14</guid>
+      <pubDate>Wed, 14 Oct 2026 05:00:00 -0600</pubDate>
+      <description>WTI crude is at $95.36 overnight, up 1.3%, after Iran told Reuters its forces plan to intensify strikes on tankers in the Strait of Hormuz. Corn and wheat drifted lower overnight while beans firmed to $12.90½. Diesel costs for fall fieldwork are the thing to watch, not the grain board.
+• Corn and wheat drift, beans firm
+• Crude pushes toward $95 on Hormuz threats
+Read more: https://agsist.com/daily/2026-10-14</description>
+    </item>
     <item>
       <title>Corn and beans drift lower as crop progress looms</title>
       <link>https://agsist.com/daily/2026-10-13</link>
@@ -336,18 +346,6 @@ Action: New-crop beans at $12.95: a settle at or below $12.85 is the sell signal
 • CRUDE RUNS; FED HIKE LOOMS
 • CATTLE FIRMS; HOGS SLIP
 Read more: https://agsist.com/daily/2026-09-14</description>
-    </item>
-    <item>
-      <title>BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD</title>
-      <link>https://agsist.com/daily/2026-09-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-13</guid>
-      <pubDate>Sun, 13 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans closed Friday at $12.99 after shedding 24 cents on the WASDE print, and that level is now the line every unpriced bushel is measured against. Crude held just under $100 as oil traders priced a longer Iran conflict, not a resolution.
-Action: Unpriced new-crop beans: hold above $12.99; a close below $12.85 any day this week is the sale signal, not a reason to watch further.
-• BEANS AND CORN: WASDE HANGOVER
-• CRUDE BELOW $100; IRAN WAR PRICED LONGER
-• CATTLE FIRMS; FEEDERS PUSH HIGHER
-Read more: https://agsist.com/daily/2026-09-13</description>
     </item>
   </channel>
 </rss>
