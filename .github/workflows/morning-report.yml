@@ -1,0 +1,134 @@
+name: Morning report
+
+# One email to Sig at about 6:40 am Central (scripts/morning_report.py): what
+# needs him first, then site health for agsist and dnilgis/bids, signups,
+# orders and requests, traffic and his open to-dos from TODO-SIG.md. Counts
+# only: no reader or customer address goes into the email body or this log.
+#
+# THE CLOCK. GitHub's own schedule drops and delays fires here (see
+# scripts/cron_gate.py), so this also runs after every "Fetch Grain Bids"
+# (cron-job.org, every 15 minutes) and the gate lets the first run after a
+# tick do the work. There are two ticks, 11:40 and 12:40 UTC, because Central
+# time moves: 11:40 UTC is 6:40 am in CDT and 12:40 UTC is 6:40 am in CST.
+# The second gate step (morning_report.py --gate) lets only the tick that is
+# 6:40 am in Chicago through, so it sends once a day either way.
+#
+# Secrets: the ones the forms digest uses -- LIST_URL, LIST_TOKEN, SMTP_USER,
+# SMTP_PASS (or GMAIL_USER, GMAIL_APP_PASS). Optional: SMTP_HOST, SMTP_PORT,
+# FROM_ADDR, FROM_NAME, FORMS_TO / SPONSOR_TO (who gets it), BIDS_READ_TOKEN
+# (only if the bids run list ever needs a token), STRIPE_READ_KEY (a
+# restricted, read-only Stripe key; without it the email points to the
+# dashboard).
+#
+# Signups change vs yesterday and vs 7 days ago come from the counts this job
+# kept on earlier mornings, in the Actions cache (counts only, never an
+# address). The job goes red only when the email cannot be sent.
+
+on:
+  schedule:
+    - cron: '40 11,12 * * *'
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print the email to the log (counts only); send nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: morning-report
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go == '1' && steps.c.outputs.go == '1' && '1' || '0' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            scripts/morning_report.py
+            scripts/form_digest.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow morning-report.yml --max-lag 180
+          --cron "40 11 * * *"
+          --cron "40 12 * * *"
+      - id: c
+        run: python3 scripts/morning_report.py --gate
+
+  report:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+          # The top-level data files (about 7 MB), not the whole site. A
+          # pattern, not file names: build_feeds.py reads a workflow that
+          # names a feed as that feed's writer, and this job only reads.
+          sparse-checkout: |
+            /scripts/
+            /data/*.json
+            /TODO-SIG.md
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/morning_report.py --selftest
+          python3 scripts/form_digest.py --selftest
+      - name: Earlier mornings' counts
+        uses: actions/cache/restore@v4
+        with:
+          path: .morning-report
+          key: morning-report-counts-${{ github.run_id }}
+          restore-keys: morning-report-counts-
+      - name: Build and send
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BIDS_READ_TOKEN: ${{ secrets.BIDS_READ_TOKEN }}
+          STRIPE_READ_KEY: ${{ secrets.STRIPE_READ_KEY }}
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          FORMS_TO: ${{ secrets.FORMS_TO }}
+          SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          SNAPSHOT: .morning-report/counts.json
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/morning_report.py
+      # A dry run reads the counts but does not keep them, so tomorrow's
+      # "since yesterday" still compares against a real morning.
+      - name: Keep today's counts
+        if: always() && inputs.dry_run != true
+        uses: actions/cache/save@v4
+        with:
+          path: .morning-report
+          key: morning-report-counts-${{ github.run_id }}

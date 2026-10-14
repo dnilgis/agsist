@@ -193,8 +193,10 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   const P = pctx.AgsistRainPromo;
   const shipped = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
   assert.equal(shipped.promote, true, "launched 2026-10-13 (Sig): data/rain-print.json ships with the promo on");
-  assert.equal(shipped.briefing_line, null);
-  assert.equal(shipped.promote_from, "2026-11-01");
+  // 2026-10-14 (Sig: give it a fair chance, move fast): Christmas wording from today, and one line in the daily email
+  assert.match(shipped.briefing_line, /^A year of your farm's rain, printed and framed for the wall/);
+  assert.ok(!/\u2014|\u2013/.test(shipped.briefing_line), "no em dash in the email line");
+  assert.equal(shipped.promote_from, "2026-10-14");
   // 2026-10-13: the framed cutoff is the last day that still arrives by Dec 24, and the promo ends with it
   // 2026-10-14: shipping within 3 business days (was 7) moved it from Dec 3 to Dec 9
   assert.equal(shipped.framed_christmas_cutoff, "2026-12-09");
@@ -202,12 +204,12 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   assert.equal(P.lineFor({ ...shipped, promote: false }, "", "2026-11-15"), "", "promote false turns it off");
   const on = { ...shipped, promote: true };
   assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 9.");
-  assert.equal(P.lineFor(on, "", "2026-11-01") !== "", true, "the first day counts");
+  assert.equal(P.lineFor(on, "", "2026-10-14") !== "", true, "the first day counts");
   assert.equal(P.lineFor(on, "", "2026-12-09") !== "", true, "the last day counts");
-  assert.equal(P.lineFor(on, "", "2026-10-31"), "");
+  assert.equal(P.lineFor(on, "", "2026-10-13"), "");
   assert.equal(P.lineFor(on, "", "2026-12-10"), "");
   assert.equal(P.lineFor({ ...on, promote: "true" }, "", "2026-11-15"), "", "only a real true turns it on");
-  assert.equal(P.lineFor(on, "briefing", "2026-11-15"), "", "no briefing line unless one is written");
+  assert.equal(P.lineFor({ ...on, briefing_line: null }, "briefing", "2026-11-15"), "", "no briefing line unless one is written");
   assert.equal(P.lineFor({ ...on, briefing_line: "One line." }, "briefing", "2026-11-15"), "One line.");
   // 04:30 UTC on Nov 1 is still Oct 31 in Chicago (CDT, UTC-5)
   assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
@@ -225,8 +227,8 @@ test("the homepage card's seasonal wording, the see line and the gauge line", ()
   assert.equal(P.cardFor({ ...J, promote: false }, "2026-11-15"), null, "promote false: no card");
   assert.equal(P.cardFor({ ...J, promote: "true" }, "2026-11-15"), null, "only a real true");
   const ang = (d, c = J) => P.cardFor(c, d).angle;
-  assert.equal(ang("2026-10-31"), "evergreen");
-  assert.equal(ang("2026-11-01"), "christmas", "from Nov 1");
+  assert.equal(ang("2026-10-13"), "evergreen");
+  assert.equal(ang("2026-10-14"), "christmas", "from Oct 14 (promote_from)");
   assert.equal(ang("2026-12-09"), "christmas", "through the framed order-by date");
   assert.equal(ang("2026-12-10"), "gift", "then the gift card");
   assert.equal(ang("2026-12-24"), "gift");

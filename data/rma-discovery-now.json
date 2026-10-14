@@ -1,7 +1,7 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-10-13T03:13:15Z",
- "as_of": "2026-10-13",
+ "updated": "2026-10-14T01:23:55Z",
+ "as_of": "2026-10-14",
  "crop_year": 2026,
  "open": [
   {
@@ -47,15 +47,15 @@
     "Wyoming"
    ],
    "n_states": 34,
-   "lo": 4.98,
-   "hi": 4.98,
+   "lo": 4.96,
+   "hi": 4.96,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -75,15 +75,15 @@
     "South Dakota"
    ],
    "n_states": 7,
-   "lo": 6.97,
-   "hi": 6.97,
+   "lo": 6.94,
+   "hi": 6.94,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -118,7 +118,7 @@
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -156,15 +156,15 @@
     "Wisconsin"
    ],
    "n_states": 25,
-   "lo": 4.97,
-   "hi": 4.97,
+   "lo": 4.95,
+   "hi": 4.95,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -194,7 +194,7 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -220,7 +220,7 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -247,7 +247,7 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -269,7 +269,7 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -294,15 +294,15 @@
     "Wisconsin"
    ],
    "n_states": 12,
-   "lo": 0.2141,
-   "hi": 0.2141,
+   "lo": 0.2133,
+   "hi": 0.2133,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -328,7 +328,7 @@
    "contract": [
     "November"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -354,7 +354,7 @@
    "contract": [
     "November"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -403,7 +403,7 @@
    "contract": [
     "November"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -434,7 +434,7 @@
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   },
@@ -465,7 +465,7 @@
    "contract": [
     "December"
    ],
-   "day": 13,
+   "day": 14,
    "span": 31,
    "in_days": null
   }
@@ -494,7 +494,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 19
+   "in_days": 18
   },
   {
    "crop": "Cotton",
@@ -518,7 +518,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 19
+   "in_days": 18
   },
   {
    "crop": "Popcorn",
@@ -540,7 +540,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 19
+   "in_days": 18
   },
   {
    "crop": "Soybeans",
@@ -571,7 +571,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 19
+   "in_days": 18
   }
  ]
 }

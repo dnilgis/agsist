@@ -88,6 +88,7 @@ PAGES = [
         ("/milk-prices", "Milk Prices", "Class III and IV, cheese and butter, and the component formula behind the milk check"),
         ("/markets", "Markets", "grains, livestock, milk, energy and metals in one view"),
         ("/elevators", "For Elevators", "the map of every elevator AGSIST tracks, and how an elevator claims its board"),
+        ("/list-your-elevator", "List Your Elevator", "how an elevator not on AGSIST yet asks to be added, and the ways to send its bids: a bid sheet, the posting page, or a link to its own board"),
     ]),
     ("What will USDA say, and what moves the price?", [
         ("/usda-calendar", "USDA Report Calendar", "every USDA report date"),
@@ -117,7 +118,8 @@ PAGES = [
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest NOAA weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
-        ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: reads like any gauge, and a phone photo of it logs the reading to a rain log by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
+        ("/prf-sponsor", "PRF State Sponsor", "how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request"),
+        ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value"),

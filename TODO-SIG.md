@@ -1,0 +1,17 @@
+# Sig's to-dos
+
+The morning report email lists every open item below. To check one off, edit
+this file on GitHub and change `- [ ]` to `- [x]` (or delete the line). To add
+one, add a new `- [ ]` line. This file is public (it is in the site repo), so keep
+names and anything private out of it.
+
+- [ ] Test Stripe with a $19 purchase and refund it
+- [ ] Check Stripe: gift fields, US-only shipping, "glass" in the descriptions, and the message after payment about the proof
+- [ ] Take a photo of a framed print on a wall, plus a close-up of the paper
+- [ ] Tap the three Rain Print example years on the live site
+- [ ] Submit sitemap-rain.xml (and the other sitemaps) in Google Search Console
+- [ ] Send the Rain Print gift-guide pitches by Oct 31 (the list is in your email)
+- [ ] Ship one framed test print a few states away and write down the real cost (target under $45)
+- [ ] Forward the first morning bid email from the new elevator
+- [ ] Set up the bids Gmail and app password, then add the BIDS_IMAP_USER and BIDS_IMAP_PASSWORD secrets in dnilgis/bids
+- [ ] Join Something Special from Wisconsin

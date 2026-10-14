@@ -59,7 +59,10 @@ const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder",
                /* netPlacesWithin spends its budget through netRankPlaces
                   (2026-10-07): best bids per crop first, then the nearest. */
-               "netRankPlaces"];
+               "netRankPlaces",
+               /* netRowsFrom attaches an elevator's own portal info through
+                  portalInfo() (2026-10-13, the elevator portal). */
+               "portalInfo"];
 const sources = {};
 for (const n of NAMES) {
   sources[n] = lift(n);

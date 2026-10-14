@@ -30,6 +30,14 @@ ones not yet mailed (GET /form-list?new=1), sends Sig ONE email listing them,
 then marks them mailed (POST /form-mark). Mark after send: a failed send leaves
 them unmarked and the next run tries again. Nothing is written to the repo.
 
+Every digest opens with one counts line (2026-10-14, Sig): what came in over
+the last 24 hours by kind, mailed or not, e.g. "Last 24 hours: 2 Rain Print
+order requests, 0 gift card redemptions, ... 5 rain gauge waitlist, ...". It
+reads the whole stored list (GET /form-list, no new=1) and the rain gauge
+waiting list (GET /notice-list?topic=rain-gauge) and counts rows by their ts.
+If either read fails the line says the counts could not be read and the
+digest still goes. scripts/morning_report.py uses the same counter.
+
 The Actions log gets counts only, never a name, address or phone.
 
     python3 scripts/form_digest.py              (needs LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS)
@@ -118,6 +126,64 @@ FIELDS = {
     "prf-sponsor": [("business", "Business"), ("states", "States"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
                     ("website", "Website"), ("line", "Their line"), ("message", "Message")],
 }
+
+
+# The counts line (2026-10-14). (key, one, many), in the order Sig reads them.
+# "gift-card" is a rain-print-order placed with a gift card (it has a
+# gift_card field); "rain-gauge" is the /notice waiting list, not a form.
+TALLY = (("rain-print-order", "Rain Print order request", "Rain Print order requests"),
+         ("gift-card", "gift card redemption", "gift card redemptions"),
+         ("rain-print-business", "business quote request", "business quote requests"),
+         ("rain-gauge", "rain gauge waitlist", "rain gauge waitlist"),
+         ("elevator-listing", "elevator listing", "elevator listing"),
+         ("prf-sponsor", "PRF sponsor", "PRF sponsor"),
+         ("claim", "elevator claim", "elevator claims"),
+         ("sponsor-feedback", "sponsor request", "sponsor requests"),
+         ("atlas-feedback", "Parcel Report waitlist", "Parcel Report waitlist"))
+DAY_MS = 24 * 3600 * 1000
+
+
+def _ms(v):
+    return v if isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 else None
+
+
+def tally(posts, notes=(), since_ms=0, until_ms=None, kinds=TALLY):
+    """Counts by kind of the posts and rain gauge sign-ups whose ts falls in
+    [since_ms, until_ms]. Counts only: nothing else is read from a row."""
+    c = {k[0]: 0 for k in kinds}
+
+    def inside(ts):
+        ts = _ms(ts)
+        return ts is not None and ts >= since_ms and (until_ms is None or ts <= until_ms)
+    for p in posts if isinstance(posts, list) else ():
+        if not isinstance(p, dict) or not inside(p.get("ts")):
+            continue
+        k = p.get("kind")
+        if k == "rain-print-order" and p.get("gift_card"):
+            k = "gift-card"
+        if k in c:
+            c[k] += 1
+    for r in notes if isinstance(notes, list) else ():
+        if isinstance(r, dict) and r.get("topic") == "rain-gauge" and "rain-gauge" in c and inside(r.get("ts")):
+            c["rain-gauge"] += 1
+    return c
+
+
+def tally_text(c, kinds=TALLY):
+    return ", ".join("%d %s" % (c.get(k, 0), one if c.get(k, 0) == 1 else many) for k, one, many in kinds)
+
+
+def last24(base, tok, fetch, now_ms=None):
+    """The counts line for the top of a digest. Never raises."""
+    now_ms = now_ms if now_ms is not None else int(datetime.now(timezone.utc).timestamp() * 1000)
+    try:
+        posts = fetch(base, "form-list", tok)
+        notes = fetch(base, "notice-list", tok, topic="rain-gauge")
+        if not isinstance(posts, list) or not isinstance(notes, list):
+            raise ValueError("not a list")
+    except Exception:                                      # noqa: BLE001
+        return "Last 24 hours: the counts could not be read this time."
+    return "Last 24 hours: %s." % tally_text(tally(posts, notes, now_ms - DAY_MS, now_ms))
 
 
 def env(name, default=None):
@@ -254,7 +320,7 @@ def blocks(posts):
     return out
 
 
-def build(posts, to, fn="AGSIST", fa=""):
+def build(posts, to, fn="AGSIST", fa="", top=""):
     m = EmailMessage()
     m["Subject"] = subject(posts)
     m["From"] = formataddr((fn, fa))
@@ -265,7 +331,7 @@ def build(posts, to, fn="AGSIST", fa=""):
     if len(posts) == 1 and re.fullmatch(r"[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(posts[0].get("email") or "")):
         m["Reply-To"] = posts[0]["email"]
     bl = blocks(posts)
-    text = []
+    text = [top, ""] if top else []
     for head, rows in bl:
         text.append(head)
         text.extend("%s: %s" % (lab, val) for lab, val in rows)
@@ -273,7 +339,7 @@ def build(posts, to, fn="AGSIST", fa=""):
     text.append("Sent from the forms on agsist.com. Nothing on the site changes until you act on it.")
     m.set_content("\n".join(text) + "\n\n-- \n" + ADDRESS + "\n")
     e = H.escape
-    hb = []
+    hb = ['<p style="font-size:14px;line-height:1.5;margin:0 0 12px;color:#1a1a1a">%s</p>' % e(top)] if top else []
     for head, rows in bl:
         hb.append('<h3 style="font-size:15px;margin:18px 0 6px">%s</h3>' % e(head))
         hb.append('<table style="font-size:14px;line-height:1.5;border-collapse:collapse">')
@@ -302,8 +368,10 @@ def worker(base, path, tok, body=None, **q):
         return json.loads(r.read().decode())
 
 
-def run(base, tok, to, dry, send, fetch=worker):
-    """Returns (exit code, log lines). Log lines carry counts only."""
+def run(base, tok, to, dry, send, fetch=worker, top=None):
+    """Returns (exit code, log lines). Log lines carry counts only. `top`,
+    when given, returns the counts line for the top of the email (main passes
+    the last-24-hours reader); it is only asked when there is something new."""
     log = []
     try:
         posts = fetch(base, "form-list", tok, new="1")
@@ -321,10 +389,15 @@ def run(base, tok, to, dry, send, fetch=worker):
         return 1, log
     posts = usable(posts)
     log.append("new form posts: %s" % count_line(counts(posts)))
-    if not posts or dry:
+    if not posts:
+        return 0, log
+    line = top() if top else ""
+    if line:
+        log.append(line)
+    if dry:
         return 0, log
     try:
-        send(build(posts, to))
+        send(build(posts, to, top=line))
     except Exception as e:                                 # noqa: BLE001
         log.append("send failed (%s); left unmarked for the next run" % type(e).__name__)
         return 1, log
@@ -365,7 +438,7 @@ def main():
             except Exception:                              # noqa: BLE001
                 pass
 
-    code, log = run(base, tok, to, dry, send)
+    code, log = run(base, tok, to, dry, send, top=lambda: last24(base, tok, worker))
     for line in log:
         print(line)
     return code
@@ -626,6 +699,52 @@ def selftest():
     finally:
         urllib.request.urlopen = real
     ck("query string is built, not glued", seen == ["https://w.dev/form-list?new=1&token=t+k"], seen)
+
+    print("\nthe last 24 hours line")
+    now = ts + 3600 * 1000
+    old = now - 25 * 3600 * 1000
+    stored = [dict(rp, ts=now - 1000, n=1), dict(rp, key="form:rain-print-order:2:00000002", ts=now - 2000),
+              dict(card, ts=now - 3000), dict(rb, ts=now - 4000), dict(claim, ts=old), dict(claim, ts=now - 5000),
+              dict(el, ts=old), {"kind": "x", "ts": now}, "junk", dict(ps, ts="soon")]
+    gauge = [{"email": "g1@x.com", "topic": "rain-gauge", "ts": now - 10}, {"email": "g2@x.com", "topic": "rain-gauge", "ts": now - 20},
+             {"email": "g3@x.com", "topic": "rain-gauge", "ts": old}, {"email": "g4@x.com", "topic": "rent:wi", "ts": now - 5}]
+    c = tally(stored, gauge, now - DAY_MS, now)
+    ck("counted by kind inside the window, mailed or not",
+       c == {"rain-print-order": 2, "gift-card": 1, "rain-print-business": 1, "rain-gauge": 2, "elevator-listing": 0,
+             "prf-sponsor": 0, "claim": 1, "sponsor-feedback": 0, "atlas-feedback": 0}, c)
+    asked = []
+
+    def lf(base, path, tok, body=None, **q):
+        asked.append((path, q))
+        return stored if path == "form-list" else gauge
+    line = last24("https://w.dev", "t", lf, now)
+    ck("the line reads like Sig's example",
+       line == "Last 24 hours: 2 Rain Print order requests, 1 gift card redemption, 1 business quote request, 2 rain gauge "
+               "waitlist, 0 elevator listing, 0 PRF sponsor, 1 elevator claim, 0 sponsor requests, 0 Parcel Report waitlist.", line)
+    ck("reads every stored post and the rain gauge list", asked == [("form-list", {}), ("notice-list", {"topic": "rain-gauge"})], asked)
+    ck("the line carries no address or name", "@" not in line and "Olson" not in line and "Chetek" not in line, line)
+
+    def lbad(base, path, tok, body=None, **q):
+        if path == "notice-list":
+            raise urllib.error.HTTPError("https://w.dev/notice-list?token=SECRET", 500, "x", {}, None)
+        return stored
+    ck("a failed read says so in one line", last24("https://w.dev", "t", lbad, now) == "Last 24 hours: the counts could not be read this time.")
+    m = build([claim], "s", top=line)
+    t = m.get_body(("plain",)).get_content()
+    h = m.get_body(("html",)).get_content()
+    ck("the line is the first thing in both parts", t.startswith(line + "\n\nElevator claim, ") and h.index("Last 24 hours") < h.index("Elevator claim"), t[:200])
+    ck("no line, no blank top", build([claim], "s").get_body(("plain",)).get_content().startswith("Elevator claim, "))
+    calls.clear(); sent.clear()
+    code, log = run("https://w.dev", "t", "s", False, sent.append, fake([claim]), top=lambda: line)
+    t = sent[0].get_body(("plain",)).get_content() if sent else ""
+    ck("the run puts the line on top and in the log", code == 0 and t.startswith("Last 24 hours: 2 Rain Print") and line in log, log)
+    calls.clear(); sent.clear()
+    code, log = run("https://w.dev", "t", "s", True, sent.append, fake([claim]), top=lambda: line)
+    ck("dry run: the line is logged, nothing sent or marked", code == 0 and not sent and line in log and [c[0] for c in calls] == ["form-list"], log)
+    asked_top = []
+    calls.clear()
+    run("https://w.dev", "t", "s", False, sent.append, fake([]), top=lambda: asked_top.append(1) or line)
+    ck("nothing new: the counts are not even read", not asked_top)
 
     print()
     if fails:

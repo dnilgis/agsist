@@ -8,6 +8,9 @@ name: Site forms digest
 # log prints counts only. Until v5.8 is deployed the worker has no
 # /form-list and the job says so and exits cleanly (the pages send to
 # Formspree meanwhile).
+# Each digest opens with one counts line: what came in over the last 24 hours
+# by kind, mailed or not (2026-10-14). It reads /form-list and the rain gauge
+# list on /notice-list; counts only, in the email and in the log.
 # Secrets: the same ones the sponsor job uses -- LIST_URL, LIST_TOKEN,
 # SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME,
 # FORMS_TO (else SPONSOR_TO, else sig@farmers1st.com).
