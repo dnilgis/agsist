@@ -101,8 +101,8 @@
 
   /* how it would work: four phones */
   .rg-screens{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem .9rem;align-items:start}
-  .rg-step.rg-card{grid-column:1/-1}
-  @media(min-width:700px){.rg-step.rg-card{grid-column:auto}.rg-screens{gap:2rem 1.6rem}}
+  .rg-step-card{grid-column:1/-1}
+  @media(min-width:700px){.rg-step-card{grid-column:auto}.rg-screens{gap:2rem 1.6rem}}
   .rg-step figure{margin:0 0 .8rem}
   .rg-card-fig img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
   .rg-card-fig figcaption,.rg-front figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
@@ -118,6 +118,7 @@
   .rg-split{display:grid;gap:1.4rem;align-items:center}
   @media(min-width:900px){.rg-split{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:2.6rem}.rg-split.rg-flip>figure{order:-1}}
   .rg-split figure{margin:0}
+  .rg-split.rg-top{align-items:start}
   .rg-split img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
   .rg-split figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-why{list-style:none;margin:0;padding:0}
@@ -248,9 +249,10 @@
 
     <section class="rg-sec" aria-labelledby="rg-mount-h">
       <h2 class="sec-h" id="rg-mount-h">Wood post or T-post</h2>
-      <div class="rg-split">
+      <div class="rg-split rg-top">
         <div>
           <p class="rg-p">It screws onto a wood post. On a steel T-post, two hose clamps hold it. Put it on the fence line you already drive past.</p>
+          <p class="rg-p">Like any rain gauge, it reads best out in the open, away from trees and buildings.</p>
         </div>
         <figure>
           <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-t-post.webp" sizes="(min-width: 900px) 480px, 100vw"><img src="/img/rain-gauge/gauge-t-post.jpg" width="1200" height="750" alt="3D render of the prototype rain gauge held to a green steel T-post by two hose clamps, with fence wire and a field behind it." loading="lazy" decoding="async"></picture>
@@ -263,25 +265,25 @@
       <h2 class="sec-h" id="rg-how-h">How it would work</h2>
       <p class="rg-p">It works like any good rain gauge. Walk out after a rain, look at the scale through the tube, read it. The difference is what happens next.</p>
       <ol class="rg-screens">
-        <li class="rg-step rg-card">
+        <li class="rg-step rg-step-card">
           <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-top-code.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-top-code.jpg" width="1200" height="750" alt="3D render of the top of the prototype gauge: a charcoal funnel and, on the collar under it, a square QR code." loading="lazy" decoding="async"></picture>
             <figcaption>Prototype design, 3D render. The code on the collar.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">1</span>Scan the code</h3>
           <p>Each gauge has its own code on the collar, so your phone knows which field it&rsquo;s standing in. No app to install; it opens in the browser.</p>
         </li>
-        <li class="rg-step rg-card">
+        <li class="rg-step rg-step-card">
           <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-reading.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-reading.jpg" width="1200" height="750" alt="Concept screen on a phone: the gauge&rsquo;s scale seen through the camera, an orange line at the water, 0.42 in, and a Save button." loading="lazy" decoding="async"></picture>
             <figcaption>Concept screen: how the phone reading will look. The reader is being adapted to this design.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">2</span>Take a photo of the scale</h3>
           <p>Take a photo through the clear tube. The phone shows you the number, like 0.42 in. If it looks off, nudge it up or down before you save.</p>
         </li>
-        <li class="rg-step rg-phone">
+        <li class="rg-step rg-step-phone">
           <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-3-log.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-3-log.jpg" width="780" height="1688" alt="Phone screen: North 80 rain log, 21.48 in since April 1, with a list of readings. Sample numbers." loading="lazy" decoding="async"></picture></div>
             <figcaption class="sr-only">Concept screen: your rain log for one field, with the season total.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">3</span>It lands in your rain log</h3>
           <p>Every reading is kept by field, with the date and time. Your season total is always up to date.</p>
         </li>
-        <li class="rg-step rg-phone">
+        <li class="rg-step rg-step-phone">
           <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-4-share.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-4-share.jpg" width="780" height="1688" alt="Phone screen: who can see the North 80 rain log, with a landlord and an agronomist added, view only." loading="lazy" decoding="async"></picture></div>
             <figcaption class="sr-only">Concept screen: share a field&rsquo;s rain with your landlord or agronomist.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">4</span>Share it if you want</h3>
