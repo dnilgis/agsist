@@ -1153,6 +1153,10 @@ html { background: var(--bg); }
 /* Every digit the same width, so prices line up in columns and stop
    twitching when a value updates. Inter and JetBrains Mono both carry tnum. */
 body { font-variant-numeric: tabular-nums }
+/* Prose keeps proportional figures: Inter's tnum widens the hyphen and the 1,
+   so "co-op", "W-9" and "11 miles" looked spaced. Tables keep tnum (rule above).
+   Element selectors stay at (0,0,1), so a .num or .price class still wins. */
+:is(p, figcaption, summary, blockquote), .rc-list li, .rp li { font-variant-numeric: normal; }
 
 /* The page title. Not page titles, so left alone: a calculator panel's label
    (breakeven, grain bin), the field-scout map prompt, the hidden homepage h1. */
