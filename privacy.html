@@ -160,11 +160,11 @@
     <div class="legal-page">
 
       <h1>Privacy policy</h1>
-      <p class="updated">Last updated: Oct 11, 2026</p>
+      <p class="updated">Last updated: Oct 14, 2026</p>
 
       <div class="tldr">
         <strong>Summary</strong>
-        AGSIST counts visits with Google Analytics, unless your browser sends Global Privacy Control or you turn it off below. If you give me your email, it is used for what you signed up for and kept until you stop. Some features send what they need, like a ZIP code, to the services named on this page. Nothing is sold.
+        AGSIST counts visits with Google Analytics, unless your browser sends Global Privacy Control or you turn it off below. If you give me your email, it is used for what you signed up for and kept until you stop. Some features send what they need, like a ZIP code or a town, to the services named on this page. Rain Print payments go through Stripe, and I never see your card. Nothing is sold.
       </div>
 
       <h2 id="analytics">Analytics on or off</h2>
@@ -182,12 +182,13 @@
         <li><strong>Settings in your browser.</strong> Your last location and ZIP, calculator inputs, saved Field Scout fields, theme and similar choices are kept in your browser&rsquo;s local storage so the tools remember your work. They stay on your device. The full list is under Cookies and local storage below.</li>
         <li><strong>A location you give.</strong> Your browser&rsquo;s location, if you allow it, or a ZIP code you type. It is sent to the service that answers the question (weather, a place name, nearby cash bids), as listed below.</li>
         <li><strong>Your email, if you sign up.</strong> For the AGSIST Daily, a price alert, an elevator watch, a county watch or a hail alert, together with what you asked to watch. Details are under Alerts and watches below.</li>
-        <li><strong>What you send me.</strong> Emails you write to me, and three forms: the Parcel Report waitlist, the sponsor approval and requests form, and the elevator claim form on the <a href="/elevators">elevators page</a>. They go to AGSIST&rsquo;s own Cloudflare Worker, which keeps what you sent for up to a year and emails it to me. If the worker cannot take it, the form sends it through Formspree instead. The claim form sends the business name, town and state, a contact name and role, a work email, a phone number and bid-page address if you give them, and whether you want to hear about a hosted bid board.</li>
+        <li><strong>What you send me.</strong> Emails you write to me, and the forms on the site: the elevator claim form on the <a href="/elevators">elevators page</a>, the List your elevator form, the sponsor approval and requests form on sponsor proofs, the PRF state sponsor form, the Parcel Report waitlist, and the Rain Print order request and business quote request. Each sends what its boxes ask for. They go to AGSIST&rsquo;s own Cloudflare Worker, which keeps what you sent for up to a year and emails it to me. If the worker cannot take one, the form sends it through Formspree instead. The claim form sends the business name, town and state, a contact name and role, a work email, a phone number and bid-page address if you give them, and whether you want to hear about a hosted bid board. The sponsor application on the sponsor pages goes only to the worker, with its ad and logo, and is kept until I delete it.</li>
+        <li><strong>Rain Print.</strong> What the print page sends and keeps is under <a href="#rain-print">Rain Print</a> below: the design links, logos, orders, gift cards and payments.</li>
       </ul>
 
       <h2>What is not collected</h2>
       <ul>
-        <li>No accounts, no passwords, no payment details.</li>
+        <li>No accounts, no passwords. No payment details: Stripe handles them, and I never see your card number.</li>
         <li>No advertising cookies, no retargeting pixels, no cross-site ad tracking.</li>
         <li>Your data is not sold or rented. Sponsors never get your email, your location or what you watch.</li>
       </ul>
@@ -198,15 +199,17 @@
         <li><strong>GitHub Pages</strong>: hosts the site itself.</li>
         <li><strong>Google Analytics</strong>: the visit counts described above, when analytics is on.</li>
         <li><strong>Gmail (Google)</strong>: sends the AGSIST Daily, the alert and watch emails, and their confirmation emails, so Google handles those messages in transit.</li>
-        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), take the three forms above, look up cash bids by ZIP, and answer Field Scout requests. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
+        <li><strong>Cloudflare</strong>: runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), take the forms above, look up cash bids by ZIP, answer Field Scout requests, and keep Rain Print design links, logos and gift cards. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
+        <li><strong>Stripe</strong>: takes payment for Rain Print orders. Checkout runs on Stripe&rsquo;s own pages, under Stripe&rsquo;s privacy policy.</li>
+        <li><strong>NOAA&rsquo;s Regional Climate Centers (RCC-ACIS, data.rcc-acis.org)</strong>: the Rain Print page and the gift card ask it for the weather stations around a place and their daily rain records. Your browser sends the place&rsquo;s coordinates and the station, nothing about you.</li>
         <li><strong>Barchart</strong>: the second cash-bid feed. When you look up bids by ZIP, your browser sends the ZIP and search radius to AGSIST&rsquo;s Cloudflare Worker, and the worker asks Barchart for bids near that ZIP. Barchart gets the ZIP from the worker, not from your browser.</li>
-        <li><strong>Open-Meteo</strong>: weather. It receives the coordinates of the place you asked about, and turns a ZIP into a place on the home page&rsquo;s bid search.</li>
+        <li><strong>Open-Meteo</strong>: weather. It receives the coordinates of the place you asked about, turns a ZIP into a place on the home page&rsquo;s bid search, and finds the town you type on the Rain Print page.</li>
         <li><strong>OpenStreetMap Nominatim</strong>: turns coordinates into a place name.</li>
         <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong>: the hail map loads live storm warnings and the last 24 hours of storm reports from them. The requests carry no location from you.</li>
         <li><strong>Field Scout services</strong>: a field you draw or look up goes to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history), the FCC (county lookup), the U.S. Drought Monitor, Iowa Environmental Mesonet and Copernicus Sentinel (imagery). Weather history for the field is fetched by your browser from Open-Meteo, using the field&rsquo;s coordinates. Map tiles come from Esri (satellite) and CARTO (base map).</li>
         <li><strong>TradingView</strong>: the price charts on the corn, soybean and wheat futures pages load from TradingView.</li>
         <li><strong>Windy</strong>: the radar map on the home page is a frame from Windy.</li>
-        <li><strong>Formspree</strong>: the backup for the Parcel Report waitlist on the Farmland Atlas, the approval and requests form on sponsor proofs, and the elevator claim form on the elevators page. It gets a form only when AGSIST&rsquo;s worker cannot take it.</li>
+        <li><strong>Formspree</strong>: the backup for the forms above (not the sponsor application). It gets a form only when AGSIST&rsquo;s worker cannot take it.</li>
         <li><strong>Google Fonts</strong>: older Daily archive pages and two Farmland Atlas pages load typefaces from Google. Other pages use fonts served by AGSIST.</li>
         <li><strong>jsDelivr, cdnjs and unpkg</strong>: host map and chart code some pages load.</li>
       </ul>
@@ -225,6 +228,16 @@
       <p>Price alerts, elevator watches and county watches start only after you confirm from a link in an email. An unconfirmed request is not mailed again, and its link stops working after 14 days. Up to five of each per address.</p>
       <p>Everything is kept until you stop it. Every email carries an unsubscribe link: it opens a page with one button, and pressing it removes you right away. Watch and alert emails let you stop one item or all of them. Mail apps that offer a one-click unsubscribe use the same route. You can also email me and I will remove you by hand. Your browser also keeps its own list of elevators you watch (<code>agsist_watching</code>) so the page can mark them; that list never leaves your device.</p>
 
+      <h2 id="rain-print">Rain Print</h2>
+      <ul>
+        <li><strong>Drawing a print.</strong> The town you type goes to Open-Meteo to find it. Your browser then asks NOAA&rsquo;s RCC-ACIS service for the stations near it and their daily records. Those calls carry the place, not who you are.</li>
+        <li><strong>Your area on a first visit.</strong> So the first print is near you, the page asks AGSIST&rsquo;s worker for the rough town Cloudflare works out from your IP address. The worker sends it back and keeps nothing. Not your town? Type yours.</li>
+        <li><strong>Design links.</strong> Each design you draw is saved on AGSIST&rsquo;s worker as a short link, so the QR code on a print opens it: the place, year, station, style, the name, the line under it, the dates and their words, and the logo&rsquo;s id. Anyone with the link can open the design. It is kept with no end date, because a print on someone&rsquo;s wall depends on it. Your browser also remembers the short links it made. Ask me and I will delete one.</li>
+        <li><strong>Logos.</strong> A logo you pick is turned into a picture file in your browser and stored on AGSIST&rsquo;s worker right away, so the print can show it, before you order anything. Anyone with its link can open it. It is kept 400 days, or for good once it is on an order request, a business quote or a gift card. Ask me and I will delete it.</li>
+        <li><strong>Order requests and quotes.</strong> An order request sends your name, email, the shipping address, your notes and the design. A gift order also sends who it is for, how to deliver it, their email if a file goes straight to them, and your message for the card, and the address can be theirs. A business quote sends the business name, your name, email and phone, how many, the towns and years, the note for the cards and the logo if you add one. Like the other forms, they are kept up to a year and emailed to me.</li>
+        <li><strong>Payment.</strong> The order buttons open Stripe&rsquo;s checkout. Stripe takes your card, your email, the shipping address and anything you put in its gift boxes. The page sends Stripe only the design (its code or short-link reference). I see the order details Stripe shows me, never your full card number.</li>
+        <li><strong>Gift cards.</strong> When I issue a gift card, the worker keeps the giver&rsquo;s name and email, who it is for, the message, the order it came from and whether it has been used, with no end date, so the card keeps working. The card&rsquo;s code is not stored as written, only a scrambled form of it. Using a card sends an order like an order request. Your browser keeps the code you typed for that visit only.</li>
+      </ul>
       <h2 id="sponsors">Sponsor impression counting</h2>
       <p>Sponsors pay to be seen, so the site counts when a sponsor slot is seen: at least half of it on screen for one continuous second. When that happens, the page sends one event to Google Analytics with the slot name, the page, and how long the slot was in view. A click on a sponsor link sends a click event the same way.</p>
       <p>It sets no cookie of its own, uses no ID, and stores nothing. Sponsors see totals for their own slots, never anything about one reader. When analytics is off, nothing is counted.</p>
@@ -246,6 +259,7 @@
         <li>Display: <code>agsist-theme</code>, <code>agsist-ticker-paused</code>, <code>agsist-daily-&lt;date&gt;</code>, <code>agsist_visits</code>, <code>agsist_watching</code></li>
         <li>Prompts: <code>agsist_subscribed</code>, <code>agsist_notices</code>, <code>agsist_bar_snooze</code>, <code>agsist_pwa_dismissed</code>, <code>agsist_home_prompt_dismissed_v1</code>, <code>agsist_signup_slim_dismissed</code>, <code>agsist_signup_compact_dismissed</code></li>
         <li>Sponsor proofs: <code>agsist_approved_&lt;code&gt;</code></li>
+        <li>Rain Print: <code>agsist-rps:&lt;design&gt;</code> (the short links this browser made), and <code>agsist-rp-gift</code> (a gift card code, for that visit only, in session storage)</li>
         <li>Privacy: <code>agsist-ga-off</code> (the switch above)</li>
       </ul>
       <p>Clearing your browser data removes all of it. Clearing local storage also resets the theme to dark.</p>
@@ -255,6 +269,9 @@
         <li>Emails and what you watch: until you unsubscribe. A price alert also ends when it fires.</li>
         <li>Browser settings: until you clear them.</li>
         <li>Google Analytics: detailed records for at most 14 months, the longest Google allows for this kind of account.</li>
+        <li>Forms, order requests and quotes: up to a year on AGSIST&rsquo;s worker, and in my mailbox once emailed to me.</li>
+        <li>Rain Print design links: no end date. Logos: 400 days, or for good once on an order, a quote or a gift card. Gift cards: no end date.</li>
+        <li>Payments: Stripe keeps its own records under its own policy.</li>
         <li>Emails you send me: in my mailbox, as with any email.</li>
       </ul>
 

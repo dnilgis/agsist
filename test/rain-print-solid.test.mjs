@@ -501,3 +501,22 @@ test("F2: NOAA down on the first visit: the sample's empty box says why and offe
     assert.deepEqual(errors, []);
   }, srvOpts);
 });
+
+test("T2: the privacy page is true today: Rain Print links, logos, orders, gift cards, Stripe, RCC-ACIS, the area lookup", () => {
+  const P = readFileSync(ROOT + "privacy.html", "utf8");
+  const W = readFileSync(ROOT + "workers/subs-worker.js", "utf8");
+  assert.ok(!/three forms/.test(P), "the forms are not three");
+  assert.match(P, /Last updated: Oct 14, 2026/);
+  assert.ok(!/—|&mdash;/.test(P.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes");
+  for (const want of [/<h2 id="rain-print">Rain Print<\/h2>/, /<strong>Stripe<\/strong>: takes payment for Rain Print orders/, /RCC-ACIS, data\.rcc-acis\.org/,
+    /rough town Cloudflare works out from your IP address\. The worker sends it back and keeps nothing\./, /Anyone with the link can open the design\. It is kept with no end date/,
+    /the Rain Print order request and business quote request/, /who it is for, how to deliver it/, /No payment details: Stripe handles them/,
+    /<code>agsist-rps:&lt;design&gt;<\/code>/, /<code>agsist-rp-gift<\/code>/, /Rain gauge updates/]) assert.match(P, want);
+  // the retention it states is the worker's
+  assert.match(W, /const RPL_TTL_S = 400 \* 24 \* 3600;/);
+  assert.match(P, /It is kept 400 days, or for good once it is on an order request, a business quote or a gift card\./);
+  assert.match(W, /const FORM_TTL_S = 365 \* 24 \* 3600;/);
+  assert.match(P, /keeps what you sent for up to a year/);
+  assert.match(W, /rps:<id> = a plain design code, no expiry/);
+  assert.ok(!/gauge-lab/.test(P));
+});
