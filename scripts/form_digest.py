@@ -15,10 +15,14 @@ own forms (the first three used to go to Formspree).
 
 A gift order (this year's print, ordered before the year is over) says so in
 the subject, "Rain print order (2026 gift, January): ...", and its body tells
-Sig to make it after January 1, once NOAA's December numbers are in. An
+Sig to make it after January 1, once the full year is in. An
 ordinary order given as a gift (gift:true, worker v5.12) says "(gift)" instead,
 and both list who it is for, where it goes and the note for the card. A
 business quote shipped to each customer lists its note for every print.
+
+A digital file order (2026-10-14, Sig) gets a Next line: there is no proof
+step for the file. Sig emails the finished file within 1 business day after
+payment (a January gift: in January), and redoes it free if they ask.
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
@@ -79,7 +83,12 @@ RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 # A business quote's product and shipping choice, spelled out.
 RPB_PRODUCT = {"print": "12 x 18 print", "framed": "12 x 18 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
 RPB_SHIP = {"one": "All to one address", "each": "One to each customer", "not-sure": "Not sure yet"}
-GIFT_NOTE = "Yes: make it after January 1, once the station's December numbers are in"
+GIFT_NOTE = "Yes: make it after January 1, once the full year is in"
+# A digital file has no proof step (2026-10-14, Sig): the finished file goes out after payment.
+RP_FILE_NEXT = ("No proof for the file. Email them the finished file within 1 business day after they pay. "
+                "If they ask for any change, fix it or redo it by hand and send it again, no charge.")
+RP_FILE_NEXT_JAN = ("No proof for the file. Email them the finished file in January, once the full year is in. "
+                    "If they ask for any change, fix it or redo it by hand and send it again, no charge.")
 PLAIN_GIFT_NOTE = "Yes: a note card in the box, no prices"
 CARD_TWICE_NOTE = "THIS GIFT CARD WAS USED MORE THAN ONCE. Honour the first order only."
 CARD_UPGRADE_NOTE = "Yes: they chose more than the card paid for. Email a link for the difference."
@@ -239,6 +248,8 @@ def blocks(posts):
             rows.append(("Next", EL_NEXT))
         if p["kind"] == "prf-sponsor":
             rows.append(("Next", PRF_NEXT))
+        if p["kind"] == "rain-print-order" and p.get("choice") == "digital":
+            rows.append(("Next", RP_FILE_NEXT_JAN if is_january(p) else RP_FILE_NEXT))
         out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
     return out
 
@@ -446,7 +457,7 @@ def selftest():
     m = build([gift], "sig@x.com")
     t = m.get_body(("plain",)).get_content()
     ck("gift order: the January note and every gift field", all(s in t for s in (
-        "Rain print order (2026 gift, January), ", "Gift: Yes: make it after January 1, once the station's December numbers are in",
+        "Rain print order (2026 gift, January), ", "Gift: Yes: make it after January 1, once the full year is in",
         "Gift for: Dad Olson", "Deliver to: The person it is for", "Card message: For every inch\nyou <b>farmed</b>",
         "Ship to: 12 Main St", "Design code: GIFT-MXxDaGV0ZWs")), t)
     ck("gift order: Reply-To is still the buyer", m["Reply-To"] == "jane@farm.com")
@@ -454,6 +465,13 @@ def selftest():
     ck("gift order: card message escaped, lines kept", "For every inch<br>you &lt;b&gt;farmed&lt;/b&gt;" in h, h)
     t = build([dict(gift, choice="digital", gift_email="dad@farm.com", address="")], "s").get_body(("plain",)).get_content()
     ck("gift file: the recipient's email is shown", "Their email: dad@farm.com" in t and "Ship to" not in t, t)
+    ck("gift file: no proof, the file in January, a free redo", "Next: " + RP_FILE_NEXT_JAN in t and "in January" in RP_FILE_NEXT_JAN, t)
+    t = build([dict(rp, choice="digital", address="")], "s").get_body(("plain",)).get_content()
+    ck("file order: no proof, the file within 1 business day of paying, a free redo",
+       "Next: No proof for the file. Email them the finished file within 1 business day after they pay." in t and "no charge" in t, t)
+    t = build([rp], "s").get_body(("plain",)).get_content()
+    ck("a print order has no file line", "Next:" not in t and "No proof" not in t, t)
+    ck("the January note waits for the full year", GIFT_NOTE == "Yes: make it after January 1, once the full year is in" and "December" not in GIFT_NOTE)
     h = build([dict(gift, choice="digital", gift_email="dad@farm.com")], "s").get_body(("html",)).get_content()
     ck("gift file: the recipient's email is a mailto link", '<a href="mailto:dad@farm.com">' in h)
     t = build([dict(rp, gift_to="Dad", gift_message="x")], "s").get_body(("plain",)).get_content()

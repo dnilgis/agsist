@@ -20,7 +20,9 @@
  *   ovNote: what "usual" means, printed small with the normals ("A usual year: NOAA’s 30-year normal"),
  *   showNormals: month normals under the month totals,
  *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
- *   qr: {matrix, serial} or null, preview: {last ISO} or null,
+ *   qr: {matrix, serial} or null, preview: {last ISO, later (optional words)} or null,
+ *     later is for the gift card only (rp-gift.html, 2026-10-14): a pale wash over
+ *     the months still to come with those words in it. The page never sets it.
  *   watermark, bleed (units), px [w, h], fontCss, measure(text, font) -> width
  * }
  * render() also returns what it could not place: AgRainArt.lastSkipped().
@@ -432,8 +434,34 @@
       '<title id="' + id + 'T">' + esc(title) + '</title><desc id="' + id + 'D">' + esc(desc) + '</desc>' +
       '<rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W0 + 2 * b) + '" height="' + (H0 + 2 * b) + '" fill="#FFFFFF"/>';
   }
+  /* The months still to come on the gift card: a pale wash from the last
+     reported day to the end of the year, and preview.later in it (two lines when
+     one won't fit, left off when the strip is too narrow for either), at 28
+     units so it reads at the card's size. Kept clear of the PREVIEW band. r: the strip {x0, x1, y0, y1}. */
+  function laterWash(E, r, band) {
+    var words = String(E.preview.later || '').trim(), w = r.x1 - r.x0;
+    if (!words || w < 24) return '';
+    var o = '<g data-rp="later" aria-hidden="true"><rect x="' + n2(r.x0) + '" y="' + n2(r.y0) + '" width="' + n2(w) + '" height="' + n2(r.y1 - r.y0) + '" fill="' + C.guide + '" opacity="0.42"/>';
+    var ls = { w: 500, size: 28, fill: C.mute, anchor: 'middle' }, lines = [words];
+    if (W(words, ls) > w - 28) {
+      var sp = words.split(' '), best = null;
+      for (var i = 1; i < sp.length; i++) {
+        var a = sp.slice(0, i).join(' '), b = sp.slice(i).join(' '), m = Math.max(W(a, ls), W(b, ls));
+        if (!best || m < best.m) best = { m: m, l: [a, b] };
+      }
+      lines = best && best.m <= w - 28 ? best.l : [];
+    }
+    if (lines.length) {
+      var hgt = lines.length * 36, cx = (r.x0 + r.x1) / 2, y = (r.y0 + r.y1) / 2 - hgt / 2 + 26;
+      var clash = function (yy) { return band && band.x1 > r.x0 && band.x0 < r.x1 && yy - 20 < band.y + 40 && yy + hgt > band.y - 40; };
+      if (clash(y)) y = band.y - r.y0 > r.y1 - band.y ? r.y0 + 50 : r.y1 - hgt + 16;
+      lines.forEach(function (t, k) { o += T(cx, y + k * 36, t, ls); });
+    }
+    return o + '</g>';
+  }
   // bandY: where the preview band goes (bandAt picks a height that hides no label)
   function close(I, E, o, bandY) {
+    if (E.preview && E.preview.later && E.laterBox) o.push(laterWash(E, E.laterBox, bandY));
     if (E.preview) o.push(previewBand(E, bandY));
     if (I.watermark) o.push(watermark());
     o.push('</svg>');
@@ -823,6 +851,7 @@
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(xs(b), PB, xs(b), PB + 8, C.ink, 0.75 * PT)); });
     o.push(G1);
     if (E.preview && E.n < N) o.push(G0('data') + line(xs(E.n), pvTop, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"') + G1);
+    if (E.preview && E.n < N) E.laterBox = { x0: xs(E.n), x1: X1, y0: pvTop, y1: PB };
 
     // the staircase; the pen lifts over a day with no amount of its own
     var d1 = '', prev = 0, pen = false;
@@ -1162,6 +1191,7 @@
     mticks.forEach(function (x) { o.push(line(x, G - 7, x, G + 7, C.ink, 0.75 * PT)); });
     o.push(G1);
     if (prevX !== null) o.push(G0('data') + line(prevX, G - SH, prevX, RB, C.mute, 1, ' stroke-dasharray="3 4"') + G1);
+    if (prevX !== null) E.laterBox = { x0: prevX, x1: X1, y0: G - SH, y1: RB };
     if (E.wi >= 0) {
       o.push(G0('wet') + '<rect x="' + n2(wcx - 1.9) + '" y="' + (G + 1.5) + '" width="3.8" height="' + n2(wy2 - G - 1.5) + '" fill="' + C.accent + '"/>');
       if (wetAt && wetAt.L) o.push('<path d="M' + n2(wetAt.L[0]) + ',' + n2(wetAt.L[1]) + 'L' + n2(wetAt.L[2]) + ',' + n2(wetAt.L[3]) + '" stroke="' + C.accent + '" stroke-width="1"/>');

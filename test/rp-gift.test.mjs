@@ -420,6 +420,12 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.match(now, /I have your order and will email you a proof within 1 business day\./);
   const jan = G.doneHtml({ code: good }, { ships: "january", upgrade: true });
   assert.match(jan, /a proof in January, once the full year is in\./);
+  // 2026-10-14 (Sig): the digital file has no proof step
+  const file = G.doneHtml({ code: good, product: "framed12x18" }, { ships: "now" }, "digital");
+  assert.match(file, /will email you the finished file within 1 business day\. If you want anything changed, write to me and I’ll fix it or redo it by hand and send it again, no charge\./);
+  assert.doesNotMatch(file, /proof/);
+  assert.match(G.doneHtml({ code: good, product: "digital" }, { ships: "january" }), /the finished file in January, once the full year is in\./, "the card's product when no choice is given");
+  assert.match(G.doneHtml({ code: good, product: "digital" }, { ships: "now" }, "print12x18"), /a proof within 1 business day\./, "an upgrade to a print gets the proof");
   assert.match(jan, /so I’ll email you a link for the difference\./);
   for (const t of [now, jan, v]) assert.doesNotMatch(t, /\bSig (has|will)\b|last rain is in|within a day/);
   assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);
@@ -441,10 +447,122 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.match(h, /NOAA weather station nearest/);
   assert.match(h, /nearest NOAA weather station, drawn day by day/);
   assert.doesNotMatch(h, /NOAA gauge|since 1890|last rain is in|print on letter and trim/);
-  assert.equal((h.match(/once the full year is in\./g) || []).length, 2, "both January lines");
-  assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 2, "both feet say Card 0017");
+  assert.equal((h.match(/once the full year is in\./g) || []).length, 6, "both January lines on the small cards, and the 8 x 10's what's-coming lines");
+  assert.match(h, /Your ' \+ s\.year \+ ' print comes in January, once the full year is in\./);
+  assert.match(h, /framed12x18: \['A 12 x 18 print of the whole year, framed with glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /digital: \['The 12 x 18 print file of the whole year, to print anywhere\.', 'It comes by email in January, once the full year is in\.'\]/);
+  assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 3, "every foot says Card 0017 (the small cards' two and the 8 x 10's)");
   assert.doesNotMatch(h, /class="foot">No\. /);
   assert.match(h, /\.sz-half \.cut\.t\{top:\.3in\}\.sz-half \.cut\.b\{bottom:\.3in\}/, "cut marks clear of a printer's unprintable edge");
   assert.match(h, /G\.dayText\(j\.redeemed_on\)/);
   assert.match(h, /<script src="\/components\/rp-gift\.js\?v=\d+"><\/script>/, "the card page loads a versioned script");
+});
+
+/* The 8 x 10 card (2026-10-14, Sig): the default size, on letter with cut marks,
+   and the print so far drawn by the page's own engine and art. */
+test("rp-gift.html: 8 x 10 is the default, and the print sizes are right for 8 x 10 and letter", () => {
+  const h = read("rp-gift.html");
+  assert.match(h, /<style id="page-size">@page\{size:8in 10in;margin:0\}<\/style>/, "the page prints 8 x 10 before anything is picked");
+  assert.match(h, /<body class="sz-8x10">/);
+  assert.match(h, /var C = null, size = '8x10'/, "the script starts on 8 x 10");
+  assert.match(h, /var SIZE_KEY = 'agsist-rpg-size2';/, "an older stored 5 x 7 pick doesn't hide the new default");
+  assert.match(h, /<button type="button" data-size="8x10" aria-pressed="true">8 x 10 card<\/button>/);
+  assert.match(h, /<button type="button" data-size="8x10l" aria-pressed="false">8 x 10 on letter paper<\/button>/);
+  const sizes = {};
+  for (const m of h.matchAll(/'?([0-9a-z]+)'?: \['([0-9.]+in [0-9.]+in)', /g)) sizes[m[1]] = m[2];
+  assert.deepEqual(sizes, { "8x10": "8in 10in", "8x10l": "8.5in 11in", "5x7": "5in 7in", half: "11in 8.5in", letter: "8.5in 11in" }, "every size prints on its own page size");
+  assert.match(h, /\$\('page-size'\)\.textContent = '@page\{size:' \+ SIZES\[size\]\[0\] \+ ';margin:0\}';/);
+  assert.match(h, /\.sz-8x10 \.sheet\{width:8in;height:10in\}/);
+  assert.match(h, /\.sz-8x10l \.sheet\{width:8\.5in;height:11in\}/);
+  assert.match(h, /\.sz-8x10l \.c8\{position:absolute;left:\.25in;top:\.5in;width:8in;height:10in\}/, "the 8 x 10 sits in the middle of the letter sheet");
+  // the cut marks: on the card's edges, never nearer than 0.3 in to the top or bottom of the sheet, nor to the side they run from
+  const marks = h.match(/function marks\(\) \{[\s\S]*?\n  \}/)[0];
+  assert.match(marks, /\[\.25, 8\.25\]\.forEach/);
+  assert.match(marks, /top:\.3in/); assert.match(marks, /bottom:\.3in/);
+  assert.match(marks, /\[\.5, 10\.5\]\.forEach/);
+  assert.match(marks, /left:\.3in/); assert.match(marks, /right:\.3in/);
+  assert.match(h, /size === '8x10l' \? '<div class="sheet">' \+ card8\(\) \+ marks\(\) \+ '<\/div>'/);
+  // the 8 x 10 says what's coming, never a price, and speaks of Sig in the third person
+  const c8 = h.match(/function card8\(\) \{[\s\S]*?\n  \}/)[0];
+  assert.doesNotMatch(c8 + h.match(/var COMING = \{[\s\S]*?\};/)[0], /\$|price/i);
+  assert.match(c8, /'Made' : 'Drawn and printed'\) \+ ' by Sig Lindquist, AGSIST, Chetek, Wisconsin/);
+  assert.match(c8, /<p class="to">For ' \+ esc\(C\.to\)/);
+  assert.match(c8, /C\.message/); assert.match(c8, /C\.code/);
+  assert.match(h, /function later\(year\) \{ return 'The rest of ' \+ year \+ ' arrives in January'; \}/);
+  // print waits for the preview, drawn or failed
+  assert.match(h, /return loadPreview\(\)\.then\(function \(\) \{ \$\('print'\)\.disabled = false; render\(\); \}\);/);
+  assert.match(h, /<script src="\/components\/rain-print-art\.js\?v=\d+"><\/script>\n<script src="\/components\/rain-print\.js\?v=\d+"><\/script>/, "the page's own engine and art, versioned");
+});
+
+// a pretend NOAA for previewArt: a station reporting 2026 through Oct 9, with a few days missing
+function fakeNoaa(opts = {}) {
+  const days = [];
+  for (let t = Date.UTC(2026, 0, 1); t <= Date.UTC(2026, 9, 9); t += 864e5) days.push(new Date(t).toISOString().slice(0, 10));
+  const row = (d, i) => [d, i % 17 === 3 ? "M" : i % 5 === 0 ? (0.1 + (i % 7) * 0.12).toFixed(2) : "0.00", "50", "0.0", "60", "40"];
+  return (url) => {
+    const u = new URL(url);
+    const json = (j) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(j) });
+    if (opts.down) return Promise.reject(new TypeError("Failed to fetch"));
+    if (u.hostname.startsWith("geocoding-api")) return json({ results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] });
+    if (u.searchParams.get("params")) return json({ data: days.concat(["2026-12-31"]).map((d) => [d, "0.08"]) });
+    // NOAA sends what has come in up to the end date asked for (the engine asks through today)
+    if (u.pathname === "/StnData") return json({ meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: days.map(row).filter((x) => x[0] <= (u.searchParams.get("edate") || "9999")) });
+    return json({});
+  };
+}
+function engineAt(todayIso, fetchFn) {
+  const fixed = Date.parse(todayIso + "T18:00:00Z");
+  class FixedDate extends Date { constructor(...a) { super(...(a.length ? a : [fixed])); } static now() { return fixed; } }
+  const c = { TextEncoder, TextDecoder, URLSearchParams, URL, btoa, atob, Intl, Promise, setTimeout, clearTimeout, AbortController, Map, fetch: fetchFn, Date: FixedDate };
+  c.window = c;
+  for (const f of ["components/qr.js", "components/rain-print-art.js", "components/rain-print.js"]) vm.runInNewContext(read(f), c);
+  return c;
+}
+const GIFT_DESIGN = { place: "Chetek, WI", station: "471667 2", year: 2026, style: "r1", name: "The Johnson Farm", cmp: "normal",
+  markers: [{ date: "2026-05-08", label: "Planted" }, { date: "2026-11-20", label: "After" }] };
+
+test("previewArt: the card's print so far, through the last reported day, the months to come marked", async () => {
+  const c = engineAt("2026-10-14", fakeNoaa());
+  const code = c.RainPrint.encodeCode(GIFT_DESIGN);
+  const r = await c.RainPrint.previewArt(code, { idPrefix: "gc", later: "The rest of 2026 arrives in January" });
+  assert.equal(r.last, "2026-10-09", "the last reported day");
+  assert.equal(r.preview, true);
+  assert.equal(r.year, 2026);
+  assert.equal(r.place, "Chetek, Wisconsin");
+  assert.equal(r.days, 282, "January 1 through October 9");
+  assert.match(r.svg, /^<svg /);
+  assert.match(r.svg, /PREVIEW THROUGH OCT 9/, "the page's preview band");
+  assert.match(r.svg, /Your print will show the full year, Jan 1 to Dec 31, 2026/);
+  assert.match(r.svg, /<title id="gcT">Chetek, Wisconsin, 2026, rain print, preview through Oct 9<\/title>/);
+  const later = r.svg.match(/<g data-rp="later" aria-hidden="true"><rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*\/>([\s\S]*?)<\/g>/);
+  assert.ok(later, "the months still to come are washed pale");
+  const x0 = +later[1], x1 = x0 + +later[2];
+  assert.ok(Math.abs(x0 - (196 + 282 * (1680 - 196) / 365)) < 0.01 && Math.abs(x1 - 1680) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
+  assert.match(later[3].replace(/<[^>]+>/g, "|"), /The rest of 2026\|+arrives in January/, "with the words in it");
+  assert.ok(r.svg.indexOf('data-rp="later"') < r.svg.indexOf('data-rp="band"'), "the band stays on top of the wash");
+  assert.match(r.svg, />Planted</, "a date already past is on it");
+  assert.doesNotMatch(r.svg, />After</, "a date still to come is not");
+  // the same engine on the page draws no wash: the page never passes later
+  const page = await c.RainPrint.previewArt(code, { idPrefix: "pg" });
+  assert.doesNotMatch(page.svg, /data-rp="later"/);
+  // a design with no station takes the nearest good one, as the page does
+  const c2 = engineAt("2026-10-14", (url) => /StnMeta/.test(url)
+    ? Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", "2026-10-09"]], state: "WI" }] }) })
+    : fakeNoaa()(url));
+  const r2 = await c2.RainPrint.previewArt(c2.RainPrint.encodeCode({ ...GIFT_DESIGN, station: "", style: "r2" }), { later: "The rest of 2026 arrives in January" });
+  assert.equal(r2.station, "471667 2");
+  assert.match(r2.svg, /data-rp="later"/, "Roots marks the months to come too");
+});
+
+test("previewArt: no fair preview, no art; the card falls back to the empty month line", async () => {
+  const code = engineAt("2026-10-14", fakeNoaa()).RainPrint.encodeCode(GIFT_DESIGN);
+  await assert.rejects(engineAt("2026-10-14", fakeNoaa({ down: true })).RainPrint.previewArt(code), /couldn.t be reached/, "NOAA down");
+  await assert.rejects(engineAt("2026-02-10", fakeNoaa()).RainPrint.previewArt(code), /Only 41 days of 2026 are in so far\./, "too little of the year to draw fairly");
+  await assert.rejects(engineAt("2026-10-14", fakeNoaa()).RainPrint.previewArt("nope"), /doesn.t open/);
+  const h = read("rp-gift.html");
+  assert.match(h, /PV = null; PV_STATE = 'failed';/);
+  assert.match(h, /if \(s && PV\) \{[\s\S]*?\} else if \(s\) \{[\s\S]*?o \+= '<div class="art">' \+ axis\(\) \+ '<\/div>';/, "no preview: the axis-only card");
+  assert.match(h, /so the card shows the empty month line instead\. It still prints and works the same\./, "a plain note for Sig, on screen only");
+  assert.match(h, /<p id="pvnote" hidden><\/p>/);
+  assert.ok(h.indexOf('id="pvnote"') < h.indexOf('id="msg"') && /<div class="bar noprint">[\s\S]*id="pvnote"[\s\S]*?<\/div>/.test(h), "the note is in the bar, which never prints");
 });

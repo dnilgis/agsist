@@ -685,98 +685,16 @@
     return out;
   }
 
-  var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
-    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
-  root.RainPrint = api;
-  if (!root.document || !root.document.getElementById('rp-form')) return;
-
-  // ---------------------------------------------------------------- the page
-  var doc = root.document;
-  var $ = function (id) { return doc.getElementById(id); };
-  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  /* Print sizes, landscape: trim width and height in inches. The art is 1800 x 1200 units, 100 to the inch. */
-  var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
-  var ART_UNITS_IN = 100, BLEED_IN = 0.125, DPI = 300;
+  /* ------------------------------------------------ the data (page and gift card)
+     The NOAA and town calls, shared by the page below and the gift card's
+     preview (previewArt, rp-gift.html). Moved up here 2026-10-14 so the card
+     reads the same records the same way; nothing in them changed. */
   var MISS_BLOCK = 31;   // more than a month unrecorded: no print, the page says why
   var TODAY = chicagoToday();                     // YYYY-MM-DD in Chetek's time zone
   var CURRENT_YEAR = parseInt(TODAY.slice(0, 4), 10);
   var GIFT_MIN_DAYS = 60;  // a gift preview needs the year recorded at least this far (to about March 1); less is too thin to draw fairly
   var STALE_DAYS = 30;     // this year: a station whose record stopped longer ago than this is not reporting, so it cannot make the print
-  var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
-  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
-  var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
-  var ORDER_TO = 'sig@farmers1st.com';
-
-  var ST = fromParams(root.location.search);
-  var EXT_WAIT = false, BUY_NOTE_CODE = '', EX_NOTE = false, XMAS_OFF = true;
-  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '', DRAWING = false;
-  /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
-     while a year-to-date preview is drawn. NOART: the plain message shown
-     instead of art when the year so far is too thin to draw; ordering stays open. */
-  var PREVIEW = null, NOART = '';
-  /* SAMPLE (2026-10-11): with no design in the URL the page draws Chetek, WI
-     for the last finished year, through the same geocode and ACIS calls a
-     reader's own town takes, so the box is never empty. A sample cannot be
-     ordered: the buy buttons stay off, nothing goes into the URL or the order
-     form, and the town field stays empty, until the reader draws their own
-     place or clicks "Use this design". Any failure puts the empty box back. */
-  var SAMPLE = null;
-  /* THE EXAMPLE (2026-10-13, Sig): a new visitor starts with every option in
-     use, a name, a line, three dates, the normals and remarkable days, so they
-     see a whole print and trim it down. Example words can't be ordered by
-     mistake: exampleLeft() names any still on the print, and ordering waits
-     until they are changed or cleared. A design from a link is never touched. */
-  var EXAMPLE = { name: 'The Johnson Farm', dedication: 'For Dad, his 40th crop. Love, Kate',
-    markers: [{ md: '05-08', label: 'Planted' }, { md: '07-12', label: 'Hail' }, { md: '10-24', label: 'Harvest done' }] };
-  function withExample(s, year) {
-    s.name = EXAMPLE.name; s.dedication = EXAMPLE.dedication;
-    s.markers = EXAMPLE.markers.map(function (m) { return { date: year + '-' + m.md, label: m.label }; });
-    s.cmp = 'normal'; s.normals = true; s.records = true;
-    return s;
-  }
-  function exampleMarker(d, l) { return EXAMPLE.markers.some(function (m) { return m.label === l && String(d || '').slice(5) === m.md; }); }
-  function exampleLeft(s) {
-    var out = [];
-    if (s.name === EXAMPLE.name) out.push('the name');
-    if (s.dedication === EXAMPLE.dedication) out.push('the line under it');
-    var n = (s.markers || []).filter(function (m) { return exampleMarker(m.date, m.label); }).length;
-    if (n) out.push(n === 1 ? 'one of the dates' : n + ' of the dates');
-    return out;
-  }
-  // the example dates follow the year picked, so they stay on the print
-  function reyearExample() {
-    var y = parseInt($('rp-year').value, 10);
-    if (!y) return;
-    for (var i = 1; i <= 3; i++) {
-      var d = $('rp-m' + i + 'd'), l = $('rp-m' + i + 'l');
-      if (exampleMarker(d.value, l.value)) d.value = y + '-' + d.value.slice(5);
-    }
-  }
-  function clearExample() {
-    if ($('rp-name').value === EXAMPLE.name) $('rp-name').value = '';
-    if ($('rp-ded').value === EXAMPLE.dedication) $('rp-ded').value = '';
-    for (var i = 1; i <= 3; i++) {
-      if (exampleMarker($('rp-m' + i + 'd').value, $('rp-m' + i + 'l').value)) { $('rp-m' + i + 'd').value = ''; $('rp-m' + i + 'l').value = ''; }
-    }
-    syncCounts(); syncDates();
-    restyle();
-  }
-  function syncExampleNote() {
-    var left = exampleLeft(readInputs());
-    $('rp-ex-note').hidden = !left.length;
-    // the "example still on the print" note under the prices goes once the example has
-    if (EX_NOTE && !left.length) { $('rp-buy-note').textContent = ''; EX_NOTE = false; }
-  }
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
-
-  // smooth scrolling, unless the reader asked for less motion
-  function smooth() { try { return root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch (e) { return 'smooth'; } }
-  function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
-  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
   // ---------- data ----------
   function miles(km) { return km * 0.621371; }
@@ -802,9 +720,8 @@
     });
     return Promise.race([f, race]);
   }
-  var PICKED = null;   // {q, hit}: the town the reader chose from a "which one?" list
-  function geocode(q) {
-    if (PICKED && PICKED.q === q) return Promise.resolve(PICKED.hit);
+  // the town lookup; the page keeps the reader's own pick from a "which one?" list (PICKED) in front of it
+  function geoFind(q) {
     var g = geocodeQuery(q);
     var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
@@ -905,6 +822,206 @@
     });
   }
 
+  // the place on the print, the state written out: "Chetek, Wisconsin"
+  function placeLongOf(m) {
+    var full = STATE[String(m.stateAbbr || '').toLowerCase()];
+    return m.city + ', ' + (full ? toTitle(full) : (m.stateAbbr || m.state || ''));
+  }
+  // the dates that fall on the days drawn (n of them), as the art takes them
+  var MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function markersOn(markers, year, n) {
+    return (markers || []).map(function (m) {
+      var doy = dayIndex(year, m.date);
+      var p = m.date.split('-').map(Number);
+      return doy >= 0 && doy < n ? { doy: doy, label: m.label || MON3[p[1] - 1] + ' ' + p[2] } : null;
+    }).filter(Boolean);
+  }
+  function cmpNoteFor(cmp, ext) {
+    if (cmp === 'normal') return 'A usual year: NOAA’s 30-year normal';
+    if (cmp === 'station' && ext) return 'A usual year: this station’s average, ' + ext.yearFrom + ' to ' + ext.yearTo;
+    return '';
+  }
+  function gaugeWords(m) { return stationLabel(m); }
+  function distText(m) {
+    if (m.approx) return 'near ' + m.city;   // a county link whose town the lookup didn't know: no distance claimed
+    return milesText(miles(m.km)) + ' from ' + m.city;
+  }
+  // the station line on the art itself: name and distance, both styles
+  function gaugeLine(m) { return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m); }
+  function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
+
+  /* THE GIFT CARD'S PREVIEW (2026-10-14, Sig). rp-gift.html shows the print so
+     far on the card Sig emails for a this-year gift. previewArt(code) opens the
+     card's design code the way the page opens ?d=, reads the same town, station
+     record and comparison, and draws with the same art (AgRainArt.render, with
+     the page's preview of this year: Jan 1 through the last reported day on the
+     whole calendar, the PREVIEW band across it). No second drawing.
+       previewArt(code, {idPrefix, later}) -> Promise of {svg, last (ISO), year, place,
+         station, days (recorded so far), preview (true for this year)}
+     It rejects with an Error saying why in plain words when there is nothing
+     fair to draw: the design doesn't open, NOAA didn't answer, the station has
+     more than a month missing, or under GIFT_MIN_DAYS days are in (the page
+     draws no art then either). The station in the design is used; a design
+     without one takes the nearest of three with a near-complete record, as the
+     page does. Remarkable days are left off, as on the page's preview. The QR
+     carries the short link when the worker gives one, else the long ?d= link.
+     later: words for the months still to come, drawn in a pale wash over them
+     (the art's preview.later; the page never sets it). */
+  function previewArt(code, opts) {
+    opts = opts || {};
+    var s = decodeCode(code);
+    if (!s) return Promise.reject(new Error('The design code on this card doesn’t open.'));
+    if (!root.AgRainArt) return Promise.reject(new Error('The drawing script didn’t load.'));
+    var mode = yearMode(s.year, TODAY), g = null, chosen = null, picked = null;
+    if (mode === 'future') return Promise.reject(new Error(s.year + ' hasn’t started yet.'));
+    return geoFind(s.place).then(null, function () { return null; }).then(function (hit) {
+      g = hit;
+      if (s.station) {
+        return daily(s.station, s.year).then(function (d) {
+          if (!d || !d.meta || !Array.isArray(d.meta.ll) || d.meta.ll.length < 2) throw new Error('NOAA didn’t send the station’s place.');
+          picked = d;
+          chosen = { sid: s.station, name: d.meta.name || s.station, state: d.meta.state || '', ll: d.meta.ll };
+        });
+      }
+      if (!g) throw new Error('The town lookup didn’t answer.');
+      return stations(g.latitude, g.longitude, s.year).then(function (list) {
+        var tries = list.slice(0, 3), i = 0, best = null, bestSt = null;
+        if (!tries.length) throw new Error('No NOAA station near ' + g.name + ' is reporting for ' + s.year + '.');
+        var step = function () {
+          if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
+          var st = tries[i++];
+          return daily(st.sid, s.year).then(function (d) {
+            if (!best || d.d.missing < best.d.missing) { best = d; bestSt = st; }
+            if (d.d.missing <= MISS_OK) { picked = d; chosen = st; return null; }
+            return step();
+          }, step);
+        };
+        return step();
+      });
+    }).then(function () {
+      if (!picked) throw new Error('NOAA didn’t send this year’s days.');
+      var preview = mode === 'gift', days = picked.days;
+      if (picked.d.missing > MISS_BLOCK) throw new Error('The station has ' + picked.d.missing + ' unrecorded days so far.');
+      if (preview && days.length < GIFT_MIN_DAYS) throw new Error(days.length ? 'Only ' + days.length + ' days of ' + s.year + ' are in so far.' : 'No days of ' + s.year + ' are in yet.');
+      var town = g || { name: parts0(s.place), admin1: '', approx: true };
+      var stateAbbr = abbrFor(String(town.admin1 || '').toLowerCase()) || picked.meta.state || chosen.state || '';
+      var km = g ? haversine(g.latitude, g.longitude, chosen.ll[1], chosen.ll[0]) : 0;
+      var meta = { approx: !g, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr,
+        year: s.year, km: km, city: town.name, sid: chosen.sid };
+      var cmp = s.cmp === 'normal' ? stationNormal(chosen.sid, s.year) : s.cmp === 'station' ? stationExtremes(chosen.sid) : null;
+      var design = Object.assign({}, s, { gift: false, station: chosen.sid });
+      var short = root.AgRpShort ? Promise.race([root.AgRpShort.getShortLink(encodeCode(design)), new Promise(function (r) { setTimeout(function () { r(null); }, 8000); })]) : null;
+      return Promise.all([cmp ? cmp.then(null, function () { return null; }) : null, short ? short.then(null, function () { return null; }) : null]).then(function (res) {
+        var ov = null, ext = s.cmp === 'station' ? res[0] : null;
+        var byDate = s.cmp === 'normal' ? res[0] : ext && ext.avgByDate && ext.avgByDate.size ? ext.avgByDate : null;
+        if (byDate) {
+          ov = overlayDaily(days, byDate);
+          if (ov) ov.label = s.cmp === 'normal' ? 'NOAA 30-year normal' : ext.yearFrom + ' to ' + ext.yearTo + ' station average (' + ext.years + ' years)';
+        }
+        var qr = null;
+        try { qr = root.AgQR ? { matrix: root.AgQR.matrix(res[1] || shortUrl(design)), serial: '' } : null; } catch (e) { qr = null; }
+        var last = days[days.length - 1].date;
+        var svg = root.AgRainArt.render({
+          style: s.style, year: s.year, place: placeLongOf(meta), name: s.name, dedication: s.dedication,
+          days: days, D: picked.d, showDry: showDry(picked.d), axisLen: preview ? (isLeap(s.year) ? 366 : 365) : picked.d.n,
+          ov: ov, ovNote: cmpNoteFor(s.cmp, ext), showNormals: s.normals, markers: markersOn(s.markers, s.year, picked.d.n),
+          records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: gaugeLine(meta),
+          watermark: false, bleed: 0, idPrefix: opts.idPrefix || 'gc'
+        });
+        return { svg: svg, last: last, year: s.year, place: placeLongOf(meta), station: chosen.sid, days: days.length, preview: preview };
+      });
+    });
+  }
+
+  var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
+    designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
+    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
+    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+  root.RainPrint = api;
+  if (!root.document || !root.document.getElementById('rp-form')) return;
+
+  // ---------------------------------------------------------------- the page
+  var doc = root.document;
+  var $ = function (id) { return doc.getElementById(id); };
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  /* Print sizes, landscape: trim width and height in inches. The art is 1800 x 1200 units, 100 to the inch. */
+  var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
+  var ART_UNITS_IN = 100, BLEED_IN = 0.125, DPI = 300;
+  var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
+  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
+  var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
+  var ORDER_TO = 'sig@farmers1st.com';
+
+  var ST = fromParams(root.location.search);
+  var EXT_WAIT = false, BUY_NOTE_CODE = '', EX_NOTE = false, XMAS_OFF = true;
+  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '', DRAWING = false;
+  /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
+     while a year-to-date preview is drawn. NOART: the plain message shown
+     instead of art when the year so far is too thin to draw; ordering stays open. */
+  var PREVIEW = null, NOART = '';
+  /* SAMPLE (2026-10-11): with no design in the URL the page draws Chetek, WI
+     for the last finished year, through the same geocode and ACIS calls a
+     reader's own town takes, so the box is never empty. A sample cannot be
+     ordered: the buy buttons stay off, nothing goes into the URL or the order
+     form, and the town field stays empty, until the reader draws their own
+     place or clicks "Use this design". Any failure puts the empty box back. */
+  var SAMPLE = null;
+  /* THE EXAMPLE (2026-10-13, Sig): a new visitor starts with every option in
+     use, a name, a line, three dates, the normals and remarkable days, so they
+     see a whole print and trim it down. Example words can't be ordered by
+     mistake: exampleLeft() names any still on the print, and ordering waits
+     until they are changed or cleared. A design from a link is never touched. */
+  var EXAMPLE = { name: 'The Johnson Farm', dedication: 'For Dad, his 40th crop. Love, Kate',
+    markers: [{ md: '05-08', label: 'Planted' }, { md: '07-12', label: 'Hail' }, { md: '10-24', label: 'Harvest done' }] };
+  function withExample(s, year) {
+    s.name = EXAMPLE.name; s.dedication = EXAMPLE.dedication;
+    s.markers = EXAMPLE.markers.map(function (m) { return { date: year + '-' + m.md, label: m.label }; });
+    s.cmp = 'normal'; s.normals = true; s.records = true;
+    return s;
+  }
+  function exampleMarker(d, l) { return EXAMPLE.markers.some(function (m) { return m.label === l && String(d || '').slice(5) === m.md; }); }
+  function exampleLeft(s) {
+    var out = [];
+    if (s.name === EXAMPLE.name) out.push('the name');
+    if (s.dedication === EXAMPLE.dedication) out.push('the line under it');
+    var n = (s.markers || []).filter(function (m) { return exampleMarker(m.date, m.label); }).length;
+    if (n) out.push(n === 1 ? 'one of the dates' : n + ' of the dates');
+    return out;
+  }
+  // the example dates follow the year picked, so they stay on the print
+  function reyearExample() {
+    var y = parseInt($('rp-year').value, 10);
+    if (!y) return;
+    for (var i = 1; i <= 3; i++) {
+      var d = $('rp-m' + i + 'd'), l = $('rp-m' + i + 'l');
+      if (exampleMarker(d.value, l.value)) d.value = y + '-' + d.value.slice(5);
+    }
+  }
+  function clearExample() {
+    if ($('rp-name').value === EXAMPLE.name) $('rp-name').value = '';
+    if ($('rp-ded').value === EXAMPLE.dedication) $('rp-ded').value = '';
+    for (var i = 1; i <= 3; i++) {
+      if (exampleMarker($('rp-m' + i + 'd').value, $('rp-m' + i + 'l').value)) { $('rp-m' + i + 'd').value = ''; $('rp-m' + i + 'l').value = ''; }
+    }
+    syncCounts(); syncDates();
+    restyle();
+  }
+  function syncExampleNote() {
+    var left = exampleLeft(readInputs());
+    $('rp-ex-note').hidden = !left.length;
+    // the "example still on the print" note under the prices goes once the example has
+    if (EX_NOTE && !left.length) { $('rp-buy-note').textContent = ''; EX_NOTE = false; }
+  }
+
+  // var EXT_CACHE, NORM_CACHE and DAILY_CACHE live with the data calls above the page, shared with the gift card
+
+  // smooth scrolling, unless the reader asked for less motion
+  function smooth() { try { return root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch (e) { return 'smooth'; } }
+  function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+
   // ---------- derived ----------
   function overlayKey() { return ST.cmp === 'normal' ? 'normal30' : ST.cmp === 'station' ? 'full' : ''; }
   // The chosen comparison as daily amounts + running total, aligned to the year, or null.
@@ -922,19 +1039,9 @@
   }
   // ---------- the art (components/rain-print-art.js draws it) ----------
   function fmtDate(iso) { if (!iso) return ''; var p = iso.split('-').map(Number); return MON[p[1] - 1].toUpperCase() + ' ' + p[2]; }
-  function printMarkers() {
-    if (!DATA) return [];
-    return ST.markers.map(function (m) {
-      var doy = dayIndex(META.year, m.date);
-      var p = m.date.split('-').map(Number);
-      return doy >= 0 && doy < DATA.d.n ? { doy: doy, label: m.label || MON[p[1] - 1] + ' ' + p[2] } : null;
-    }).filter(Boolean);
-  }
+  function printMarkers() { return DATA ? markersOn(ST.markers, META.year, DATA.d.n) : []; }
   // "Chetek, Wisconsin": the state written out on the print
-  function placeLong() {
-    var full = STATE[String(META.stateAbbr || '').toLowerCase()];
-    return META.city + ', ' + (full ? toTitle(full) : (META.stateAbbr || META.state || ''));
-  }
+  function placeLong() { return placeLongOf(META); }
 
   /* The maker's mark: a real QR code (components/qr.js, level M), square to the
      page, warm gray on the paper. It carries the short link
@@ -974,11 +1081,7 @@
     return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') + ' · SRL' : '';
   })();
 
-  function cmpNote() {
-    if (ST.cmp === 'normal') return 'A usual year: NOAA’s 30-year normal';
-    if (ST.cmp === 'station' && EXT) return 'A usual year: this station’s average, ' + EXT.yearFrom + ' to ' + EXT.yearTo;
-    return '';
-  }
+  function cmpNote() { return cmpNoteFor(ST.cmp, EXT); }
   /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix}. */
   function buildSvg(o) {
     o = o || {};
@@ -1226,7 +1329,6 @@
   function fill(t) { return String(t || '').replace(/\{year\}/g, String(CURRENT_YEAR)).replace(/\{next\}/g, String(CURRENT_YEAR + 1)); }
   function giftMode() { return !!ST.year && yearMode(ST.year, TODAY) === 'gift'; }
   function canOrder() { return !SAMPLE && !BLOCKED && !DRAWING && (!!DATA || !!NOART); }
-  function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
   var ORDER_NOTE = '';
   function syncGift() {
     var on = giftMode() && canOrder();
@@ -1242,11 +1344,11 @@
     $('rp-gift-cardnote').textContent = formOnly
       ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
       : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
-    // the digital file's card: this year's comes in January with the proof
-    $('rp-dig-when').textContent = on ? 'A proof and the files in January, once the full year is in' : 'A proof first, then the files by email within 1 business day of your OK';
+    // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
+    $('rp-dig-when').textContent = on ? 'The finished files by email in January, once the full year is in' : 'The finished files by email within 1 business day of paying';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
-      : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
+      : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1278,19 +1380,11 @@
       why.hidden = late;
     }
   }
-  function distText(m) {
-    if (m.approx) return 'near ' + m.city;   // a county link whose town the lookup didn't know: no distance claimed
-    return milesText(miles(m.km)) + ' from ' + m.city;
-  }
-  // "Cameron, WI (2 mi NE of Cameron)", the same words on the print, the page and the order
-  function gaugeWords(m) { return stationLabel(m); }
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
   function gaugeHtml(m) {
     return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' +
       (STATIONS.length > 1 ? ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
-  // the station line on the art itself: name and distance, both styles
-  function gaugeLine(m) { return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m); }
   function usualWords() {
     if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
     if (ST.cmp === 'station' && EXT) return 'A usual year here means this station\u2019s own average, ' + EXT.yearFrom + ' to ' + EXT.yearTo + ', counted only on the days it reported.';
@@ -1435,6 +1529,8 @@
     var q = geocodeQuery(ST.place), full = STATE[q.st];
     return { name: parts0(ST.place), admin1: full ? toTitle(full) : '', latitude: ll.lat, longitude: ll.lon, approx: true };
   }
+  var PICKED = null;   // {q, hit}: the town the reader chose from a "which one?" list
+  function geocode(q) { return PICKED && PICKED.q === q ? Promise.resolve(PICKED.hit) : geoFind(q); }
   var reqToken = 0;
   function run(e, preset) {
     if (e) e.preventDefault();
@@ -1707,8 +1803,8 @@
          link to tap. No design code here: it travels with the payment. */
       var a = '<a href="' + esc(u) + '" target="_blank" rel="noopener">If it didn\u2019t open, tap here</a>.';
       note.innerHTML = (ST.gift
-        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the proof then.'
-        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and I email you a proof before I print.' +
+        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then.'
+        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and ' + (id === 'digital' ? 'the finished file comes by email within 1 business day. If you want anything changed, write to me and I\u2019ll redo it, no charge.' : 'I email you a proof before I print.') +
           (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
         (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
       return;
@@ -1744,13 +1840,18 @@
     var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift(), print = id !== 'digital';
-    var steps = paid
-      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.']
+    var steps = !print ? (paid
+      ? ['The finished file comes by email within 1 business day.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
       : jan
-      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed within 1 business day after you OK the proof.']
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the finished file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
+      : ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'The finished file comes by email within 1 business day of paying. There\u2019s no proof step for the file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.'])
+      : paid
+      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.']
+      : jan
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK it.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
-        print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.'];
-    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">check the proof first</a>') + '</p>' +
+        'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.'];
+    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">' + (print ? 'check the proof first' : 'check it up close first') + '</a>') + '</p>' +
       '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
       '<p><b>What happens next</b></p><ol>' + steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
     var sp = $('ro-see-proof');
@@ -1900,7 +2001,7 @@
       x.choice = GIFT.product;
       root.AgRpGift.redeem(GIFT, x).then(function (r) {
         ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
-        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
+        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
         if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
         try { out.firstChild.focus(); } catch (err) {}
       }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
@@ -1911,9 +2012,13 @@
       ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
         ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
-          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the proof then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
+          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the ' + (x.choice === 'digital' ? 'finished file' : 'proof') + ' then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
+        : x.choice === 'digital'
+        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a payment link.</p>' +
+          '<p>Nothing is charged until you pay that link. The finished file comes by email within 1 business day of paying. If you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.' +
+          ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>'
         : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
-          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you OK the proof.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
+          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
           ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}

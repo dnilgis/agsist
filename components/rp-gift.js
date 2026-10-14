@@ -28,7 +28,10 @@
  *     upgrade} or {ok:false, error, status}. order is what the page already
  *     posts for an order: name, email, address, notes, design_url, design_code,
  *     and choice (leave it out to take the card's product).
- *   AgRpGift.doneHtml(G, result) -> the thank-you message for the order box.
+ *   AgRpGift.doneHtml(G, result, choice) -> the thank-you message for the order
+ *     box. choice is the product ordered (the card's when left out): a print
+ *     gets a proof first; the digital file comes finished, no proof step, and
+ *     Sig redoes it free on request (2026-10-14).
  *   Smaller pieces: norm(code), product(p) ("one framed 12 x 18 Rain Print"),
  *   dayText(day) ("Dec 26, 2026" from that or from 2026-12-26),
  *   summary(designCode) (place, year, name, dedication, style), LOCKABLE.
@@ -219,10 +222,12 @@
       return { ok: false, error: errorText(j), status: j.status_code };
     });
   }
-  function doneHtml(G, r) {
-    var jan = r && r.ships === 'january';
-    return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> I have your order and will email you a proof' +
-      (jan ? ' in January, once the full year is in' : ' within 1 business day') + '. Nothing prints until you say it looks right.</p>' +
+  function doneHtml(G, r, choice) {
+    var jan = r && r.ships === 'january', when = jan ? ' in January, once the full year is in' : ' within 1 business day';
+    var file = (choice || (G && G.product)) === 'digital';
+    return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> ' + (file
+      ? 'I have your order and will email you the finished file' + when + '. If you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.</p>'
+      : 'I have your order and will email you a proof' + when + '. Nothing prints until you say it looks right.</p>') +
       (r && r.upgrade ? '<p>You picked more than the card covers, so I\u2019ll email you a link for the difference.</p>' : '') +
       '<p>Card ' + esc(G.code) + ' is now used.</p></div>';
   }
