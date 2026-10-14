@@ -14,7 +14,7 @@
 .mvc-fs legend{font-size:.85rem;font-weight:700;color:var(--text);padding:0 .3rem}
 .mvc-chk{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;margin-right:1.1rem;font-weight:700;color:var(--text);cursor:pointer}
 .mvc-chk input{width:22px;height:22px;accent-color:var(--gold)}
-.mvc-hint{font-size:.82rem;color:var(--text-muted);line-height:1.5;margin:.1rem 0 .3rem}
+.mvc .mvc-hint{font-size:.82rem;color:var(--text-muted);line-height:1.5;margin:.1rem 0 .3rem}
 .mvc-prices{margin:0 0 .9rem}
 .mvc-prices summary{cursor:pointer;font-size:.88rem;font-weight:700;color:var(--text-dim);min-height:36px;padding:.4rem 0}
 .mvc-prices summary span{font-weight:400;color:var(--text-muted)}
@@ -22,7 +22,7 @@
 .mvc-out{border-top:1px solid var(--border);padding-top:.9rem}
 .mvc-big span{display:block;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
 .mvc-big strong{display:block;font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:var(--gold);line-height:1.15}
-.mvc-big strong span{display:inline;font-size:.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+.mvc-big strong span{display:inline;font-family:var(--font-body);font-size:.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
 .mvc-big small{display:block;font-size:.88rem;color:var(--text-dim);margin-top:.15rem}
 .mvc-t{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}
 .mvc-t th,.mvc-t td{padding:.4rem .3rem;border-bottom:1px solid var(--border);text-align:right}

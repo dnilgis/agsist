@@ -243,14 +243,14 @@
         '<label class="mvc-f"><span>Acres</span><input data-k="acres" type="number" inputmode="decimal" min="0" step="5" value="80"></label>' +
       '</div>' +
       '<fieldset class="mvc-fs"><legend data-l="buyer">Your neighbor&rsquo;s soil test calls for</legend>' +
-        box(id + '-bn', 'n', true, 'N') + box(id + '-bp', 'p', true, 'P') + box(id + '-bk', 'k', true, 'K') +
+        box(id + '-bn', 'n', EXAMPLE.buyerNeeds.n, 'N') + box(id + '-bp', 'p', EXAMPLE.buyerNeeds.p, 'P') + box(id + '-bk', 'k', EXAMPLE.buyerNeeds.k, 'K') +
         '<p class="mvc-hint">Untick what his soil test says he does not need. P and K on high-testing ground save him nothing this year.</p></fieldset>' +
       '<fieldset class="mvc-fs"><legend data-l="seller">Your own fields could use</legend>' +
-        box(id + '-sn', 'n', false, 'N') + box(id + '-sp', 'p', false, 'P') + box(id + '-sk', 'k', false, 'K') +
+        box(id + '-sn', 'n', EXAMPLE.sellerUses.n, 'N') + box(id + '-sp', 'p', EXAMPLE.sellerUses.p, 'P') + box(id + '-sk', 'k', EXAMPLE.sellerUses.k, 'K') +
         '<p class="mvc-hint">What spreading it at home would have saved. That is the least it should sell for.</p></fieldset>' +
       '<div class="mvc-grid">' +
         '<label class="mvc-f"><span data-u="haul">Hauling and spreading, $ per 1,000 gal</span><input data-k="haul" type="number" inputmode="decimal" min="0" step="0.5" value="15"></label>' +
-        '<label class="mvc-f"><span>Who pays for it</span><select data-k="who"><option value="seller">Seller hauls and spreads</option><option value="buyer">Buyer pays for it</option></select></label>' +
+        '<label class="mvc-f"><span>Who pays for it</span><select data-k="who"><option value="seller">The seller</option><option value="buyer">The buyer</option></select></label>' +
       '</div>' +
       '<details class="mvc-prices"><summary>Fertilizer prices used <span data-o="price-sum"></span></summary>' +
         '<div class="mvc-grid">' +
@@ -282,7 +282,9 @@
     function set(k, html) { var el = q('[data-o="' + k + '"]'); if (el) el.innerHTML = html; }
     function checks(pre) { var o = {}; ['n', 'p', 'k'].forEach(function (x) { var c = q('input[name="' + pre + x + '"]'); o[x] = !!(c && c.checked); }); return o; }
     function prices() {
-      function pv(k) { var s = val(k); if (s === '') return null; var x = parseFloat(s); return isFinite(x) && x >= 0 ? x : null; }
+      function pv(k) { var el = q('[data-k="' + k + '"]'), s = el ? el.value : ''; if (s === '') return null;
+        if (el.getAttribute('data-full') && el.getAttribute('data-shown') === s) return +el.getAttribute('data-full');  // the dealer price, unrounded
+        var x = parseFloat(s); return isFinite(x) && x >= 0 ? x : null; }
       return { n: pv('pn'), p: pv('pp'), k: pv('pk') };
     }
     var lastType = null;
@@ -352,7 +354,7 @@
       });
     });
     function fill(pr) {
-      [['pn', pr.n], ['pp', pr.p], ['pk', pr.k]].forEach(function (a) { var el = q('[data-k="' + a[0] + '"]'); if (el && a[1] != null) el.value = a[1].toFixed(2); });
+      [['pn', pr.n], ['pp', pr.p], ['pk', pr.k]].forEach(function (a) { var el = q('[data-k="' + a[0] + '"]'); if (el && a[1] != null) { el.value = a[1].toFixed(2); el.setAttribute('data-shown', el.value); el.setAttribute('data-full', String(a[1])); } });
       var s = [];
       if (pr.src.n) s.push('N from urea ' + money(pr.src.n.price, 0) + ' a ton (' + day(pr.src.n.as_of) + ')');
       if (pr.src.p) s.push('P&#8322;O&#8325; from MAP 12-40-0-10S ' + money(pr.src.p.price, 0) + ' a ton (' + day(pr.src.p.as_of) + '), with its 240 lb of N credited at the urea price');

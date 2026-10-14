@@ -49,22 +49,22 @@
     .mv li b,.mv p b{color:var(--text)}
     .mv a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .mv-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1rem 1.1rem;margin:0 0 1rem}
-    .mv-answer .num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,8vw,2.6rem);font-weight:800;color:var(--gold);line-height:1.1}
-    .mv-answer .num small{font-size:1rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
+    .mv-answer .mv-num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,8vw,2.6rem);font-weight:800;color:var(--gold);line-height:1.1}
+    .mv-answer .mv-num small{font-size:1rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .mv-answer p{margin:.5rem 0 0;font-size:1rem;color:var(--text)}
     .mv-answer p.fine{font-size:.86rem;color:var(--text-muted)}
-    .mv-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
-    .mv-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
-    .mv-prices b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--text)}
+    .mv .mv-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
+    .mv .mv-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
+    .mv .mv-prices b{display:block;margin:.1rem 0;font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--text)}
     .mv-src{font-size:.84rem!important;color:var(--text-muted)!important}
-    .mv-toc{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0;padding:0;list-style:none}
+    .mv .mv-toc{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0;padding:0;list-style:none}
     .mv-toc li{margin:0}
     .mv-toc a{display:inline-flex;align-items:center;min-height:40px;padding:0 .8rem;border:1px solid var(--border);border-radius:20px;font-size:.88rem;text-decoration:none!important;color:var(--text-dim)!important;background:var(--surface)}
     .mv-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.4rem 0 .8rem;background:var(--surface)}
     .mv-tw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     .mv-t{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
     .mv-t th,.mv-t td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
-    .mv-t thead th{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);white-space:normal;vertical-align:bottom}
+    .mv-t thead th{min-width:6.2rem;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);white-space:normal;vertical-align:bottom}
     .mv-t th[scope="row"],.mv-t td.tl,.mv-t thead th:first-child,.mv-t thead tr:first-child th.tl{text-align:left}
     .mv-t th[scope="row"]{font-weight:600;color:var(--text)}
     .mv-t th[scope="row"] span{display:block;font-size:.76rem;font-weight:400;color:var(--text-muted)}
@@ -85,10 +85,10 @@
     .mv-faq details:last-child{border-bottom:1px solid var(--border)}
     .mv-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem;min-height:28px}
     .mv-faq details p{margin:.6rem 0 .2rem}
-    .mv-related{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:.4rem 0 0;padding:0;list-style:none}
+    .mv .mv-related{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:.4rem 0 0;padding:0;list-style:none}
     .mv-related li{margin:0}
     .mv-fine{font-size:.84rem!important;color:var(--text-muted)!important}
-    @media(max-width:420px){.mv-prices{grid-template-columns:1fr}.mv-prices li{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}.mv-prices b{display:inline}}
+    @media(max-width:420px){.mv .mv-prices li{font-size:.74rem;padding:.45rem .5rem}.mv .mv-prices b{font-size:1rem}}
   </style>
   <script type="application/ld+json" id="mv-ld">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/manure-value#webpage","url":"https://agsist.com/manure-value","name":"How Much Is Manure Worth? Dairy, Hog, Beef and Poultry Manure Value at Today's Fertilizer Prices","description":"At Sep 1, 2026 dealer prices, liquid dairy manure carries about $18.75 of fertilizer per 1,000 gal and solid dairy about $7.13 a ton. What a neighbor should pay, and a calculator.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-14","dateModified":"2026-10-14","isAccessibleForFree":true,"image":"https://agsist.com/img/og/manure-value.jpg"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Fast Facts","item":"https://agsist.com/fast-facts"},{"@type":"ListItem","position":3,"name":"Manure value","item":"https://agsist.com/manure-value"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much is dairy manure worth per 1,000 gallons?","acceptedAnswer":{"@type":"Answer","text":"At Midwest dealer prices from Sep 1, 2026, liquid dairy manure at 4 to 11% dry matter, worked into the soil within 3 days, carries about $18.75 of fertilizer per 1,000 gallons: 10 lb of first-year N, 6 lb of P2O5 and 17 lb of K2O. Injected or worked in within an hour it is about $20.03. Left on top for more than 3 days it is about $16.83. These are book values from UW Extension A2809. A lab test of your own manure is better."}},{"@type":"Question","name":"How much is manure worth per ton?","acceptedAnswer":{"@type":"Answer","text":"At Sep 1, 2026 dealer prices, solid dairy manure over 20% dry matter is worth about $7.13 a ton in fertilizer, beef manure about $12.22, hog manure about $18.54, and chicken litter about $61.24, worked in within 3 days. Liquid dairy manure works out to about $4.50 a ton, since 1,000 gallons weighs a little over 4 tons."}},{"@type":"Question","name":"What should I charge a neighbor for manure?","acceptedAnswer":{"@type":"Answer","text":"Less than the book value. The book value is what the N, P and K would cost to buy, so it is the most a buyer could pay, and only if he needs all three. He saves nothing on P or K his soil test says he does not need, and someone has to pay to haul and spread it. A fair price sits between what the manure would have saved on your own fields and what it saves him after hauling. Liquid manure is usually priced per 1,000 gallons applied, solid manure per ton at the pile or spread."}},{"@type":"Question","name":"Who pays for hauling and spreading manure?","acceptedAnswer":{"@type":"Answer","text":"Either side can, and it changes the price more than anything else. Custom injection of liquid manure has run roughly $13 to $17 per 1,000 gallons in Iowa State University custom rate surveys, close to the whole book value of dairy manure. When the seller has to empty the pit anyway, he often hauls and spreads and the buyer pays for the nutrients. When the buyer pays to haul, there is often little left to pay for the manure itself."}},{"@type":"Question","name":"Why is phosphorus priced from MAP with the nitrogen taken out?","acceptedAnswer":{"@type":"Answer","text":"MAP 12-40-0-10S carries 240 lb of N in every ton along with 800 lb of P2O5. Charging the whole price to phosphorus makes P look about $1.16 a pound. Crediting the N at the urea price, about $154 a ton, puts P2O5 at about $0.97 a pound. The sulfur is not credited, so this still runs a little high."}},{"@type":"Question","name":"How do I get manure tested and what does it cost?","acceptedAnswer":{"@type":"Answer","text":"Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."}}]}]}</script>
 </head>
@@ -102,15 +102,15 @@
       <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
 
       <div class="mv-answer">
-        <span class="num"><span data-mv="unit-dairy_liq_4_11-1to3day">$18.75</span> <small>per 1,000 gallons</small></span>
+        <span class="mv-num"><span data-mv="unit-dairy_liq_4_11-1to3day">$18.75</span> <small>per 1,000 gallons</small></span>
         <p>That is the fertilizer in liquid dairy manure (4 to 11% dry matter, worked in within 3 days), priced at Midwest dealer quotes from <span data-mv="asof-n">Sep 1, 2026</span>. It comes to about <span data-mv="ton-dairy_liq_4_11-1to3day">$4.50</span> a ton, or <span data-mv="ex-book-ac">$112.50</span> an acre at 6,000 gallons.</p>
         <p class="fine">This is the book value: what the same N, P and K would cost as urea, MAP and potash. If a neighbor wants to buy some, he should pay less than this. <a href="#selling">Selling to a neighbor</a> explains why and how much.</p>
       </div>
 
       <ul class="mv-prices" aria-label="Fertilizer prices used">
-        <li>N <b data-mv="price-n">$0.64</b> a lb, urea <span data-mv="ton-n">$590</span>/ton, <span data-mv="asof-n">Sep 1, 2026</span></li>
-        <li>P&#8322;O&#8325; <b data-mv="price-p">$0.97</b> a lb, MAP <span data-mv="ton-p">$930</span>/ton, N credited, <span data-mv="asof-p">Sep 1, 2026</span></li>
-        <li>K&#8322;O <b data-mv="price-k">$0.38</b> a lb, potash <span data-mv="ton-k">$460</span>/ton, <span data-mv="asof-k">Sep 1, 2026</span></li>
+        <li>N a lb<b data-mv="price-n">$0.64</b>urea <span data-mv="ton-n">$590</span>/ton<br><span data-mv="asof-n">Sep 1, 2026</span></li>
+        <li>P&#8322;O&#8325; a lb<b data-mv="price-p">$0.97</b>MAP <span data-mv="ton-p">$930</span>/ton, N credited<br><span data-mv="asof-p">Sep 1, 2026</span></li>
+        <li>K&#8322;O a lb<b data-mv="price-k">$0.38</b>potash <span data-mv="ton-k">$460</span>/ton<br><span data-mv="asof-k">Sep 1, 2026</span></li>
       </ul>
       <p class="mv-src">Midwest dealer quotes, the same ones on <a href="/fertilizer">fertilizer prices</a>. MAP 12-40-0-10S carries 240 lb of N a ton, worth <span data-mv="map-ncredit">$154</span> at the urea price, so that much comes off before the rest is charged to phosphate. Charging it all to P would make P&#8322;O&#8325; <span data-mv="price-p-raw">$1.16</span> a lb. The sulfur is not credited.</p>
 
