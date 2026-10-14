@@ -181,6 +181,7 @@
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "touched_by": [
+    "Morning report",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "1 launch every day at about 6am Central",
@@ -229,7 +230,8 @@
     "Fetch Grain Bids"
    ],
    "touched_by": [
-    "Fetch Grain Bids"
+    "Fetch Grain Bids",
+    "Morning report"
    ],
    "cadence": "about every 60 minutes",
    "curated": false,
@@ -447,6 +449,7 @@
     "Fetch Export Sales",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
+    "Morning report",
     "The wire",
     "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
@@ -547,7 +550,8 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
-    "Morning brief \u2014 email Sigurd"
+    "Morning brief \u2014 email Sigurd",
+    "Morning report"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
@@ -1442,6 +1446,7 @@
    "written_by": [],
    "touched_by": [
     "Site forms digest",
+    "Morning report",
     "Rebuild Feed Manifest"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -1643,6 +1648,7 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
+    "Morning report",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
     "Rebuild Feed Manifest",
