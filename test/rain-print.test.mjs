@@ -459,6 +459,42 @@ test("one dry-spell rule for both layouts: 7 days or more", () => {
   }
 });
 
+test("a saved PNG says 300 dpi and sRGB (a canvas PNG says neither and opens at 72 dpi)", async () => {
+  const { deflateSync, crc32 } = await import("node:zlib");
+  const chunk = (t, d) => { const b = Buffer.alloc(12 + d.length); b.writeUInt32BE(d.length, 0); b.write(t, 4, "latin1"); d.copy(b, 8); b.writeUInt32BE(crc32(b.subarray(4, 8 + d.length)), 8 + d.length); return b; };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(2, 0); ihdr.writeUInt32BE(1, 4); ihdr[8] = 8; ihdr[9] = 2;
+  const png = Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(Buffer.from([0, 255, 0, 0, 0, 0, 255]))), chunk("IEND", Buffer.alloc(0))]);
+  const out = Buffer.from(RP.pngWithDpi(new Uint8Array(png), 300));
+  const chunks = []; for (let i = 8; i < out.length;) { const n = out.readUInt32BE(i), t = out.toString("latin1", i + 4, i + 8); chunks.push({ t, d: out.subarray(i + 8, i + 8 + n), crc: out.readUInt32BE(i + 8 + n), all: out.subarray(i + 4, i + 8 + n) }); i += 12 + n; }
+  assert.deepEqual(chunks.map((c) => c.t), ["IHDR", "pHYs", "sRGB", "IDAT", "IEND"]);
+  for (const c of chunks) assert.equal(c.crc, crc32(c.all), c.t + " CRC");
+  const ph = chunks[1].d;
+  assert.equal(ph.readUInt32BE(0), 11811); assert.equal(ph.readUInt32BE(4), 11811); assert.equal(ph[8], 1);
+  assert.equal(chunks[2].d[0], 0);
+  assert.deepEqual([...RP.pngWithDpi(out, 300)], [...out], "already marked: unchanged");
+  assert.deepEqual([...RP.pngWithDpi(new Uint8Array([1, 2, 3]), 300)], [1, 2, 3], "not a PNG: unchanged");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  const tb = S.slice(S.indexOf("function toBlob("), S.indexOf("function pdfFromJpeg("));
+  assert.match(tb, /pngWithDpi\(new Uint8Array\(buf\), DPI\)/, "toBlob marks every PNG it saves");
+});
+
+test("print and digital files: short-link QR or no file; crop marks in the bleed; full-quality PDF; SVG at its size", () => {
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  const ex = S.slice(S.indexOf("function exportFile("), S.indexOf("// ---------- wire up ----------"));
+  assert.match(ex, /kind === 'preview' \|\| qrReady\(\)/, "only the watermarked preview skips the wait");
+  assert.match(ex, /root\.AgRpShort\.getShortLink\(code\), new Promise\(function \(r\) \{ setTimeout\(r, 8000\); \}\)/, "waits up to 8 s for the short link");
+  assert.match(ex, /if \(kind !== 'preview' && !qrReady\(\)\) throw NO_QR/, "and saves nothing without it");
+  assert.ok(ex.includes("The short link for the QR isn\\u2019t ready (the link service didn\\u2019t answer), so no file was saved. Try again in a minute."));
+  assert.match(ex, /msg \+ ' QR: ' \+ qrLink\(\) \+ '\.'/, "the note names the QR link it used");
+  assert.ok(ex.includes("12 x 18 in at 300 dpi") && !ex.includes("18 x 12 in"), "one way to write the size");
+  assert.match(ex, /toBlob\(c, 'image\/jpeg', 1\)/, "PDF JPEG at quality 1");
+  assert.match(ex, /px: \['18in', '12in'\]/, "the SVG says its physical size");
+  const dc = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
+  assert.match(dc, /if \(o\.bleed\) \{/, "crop marks on print files only");
+  assert.match(dc, /lineWidth = 2/);
+  assert.match(dc, /gap = DPI \/ 16/, "stopping 1/16 in short of the trim corner");
+});
+
 test("county-page links: a station town with a field name falls back to shorter towns", () => {
   assert.deepEqual([...RP.shorterPlaces("Wilmington New Castle County, DE")],
     ["Wilmington New Castle, DE", "Wilmington New, DE", "Wilmington, DE"]);
