@@ -123,7 +123,7 @@ export function markerSet(name, n, wi, r) {
 }
 
 const LONG_PLACE = "Saint Francisville Township, West Virginia";
-const LONG_GAUGE = "Rain gauge: Saint Francisville 2.3 NNE, WV weather station, 12.4 mi from Saint Francisville Township";
+const LONG_GAUGE = "Weather station: Saint Francisville, WV (2.3 mi NNE of Saint Francisville), 12.4 mi from Saint Francisville Township";
 /* spec: {data, seed, style, normals, records (false | mode), cmp, name, dedication, place, gauge, markers (name), preview (doy or 0), qr} */
 export function input(X, spec) {
   const { RP, QR } = X;
@@ -145,7 +145,7 @@ export function input(X, spec) {
     showNormals: !!spec.normals, markers: mk, records: recs,
     qr: spec.qr === false ? null : { matrix: QR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: spec.serial ? "No. 0001 · SRL" : "" },
     preview: spec.preview ? { last: days[days.length - 1].date } : null,
-    gauge: spec.gauge === "long" ? LONG_GAUGE : "Rain gauge: Chetek, WI weather station, 0.4 mi from Chetek",
+    gauge: spec.gauge === "long" ? LONG_GAUGE : "Weather station: Chetek, WI, 0.4 mi from Chetek",
   };
 }
 

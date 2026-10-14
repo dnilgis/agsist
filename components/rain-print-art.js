@@ -446,6 +446,8 @@
   function smallLine(E, x, maxW, extra) {
     var parts = [];
     if (E.gauge) parts.push(E.gauge);
+    // which mark is snow and which is rain, in plain words (Sig, 2026-10-13: tell them apart at a glance)
+    if (E.full) parts.push(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow');
     if (E.gaps) parts.push(E.style2 ? 'A break in the ground line is a day the station sent no report' : 'A gap in the line is a day the station sent no report');
     (extra || []).forEach(function (t) { if (t) parts.push(t); });
     if (!parts.length) return null;

@@ -210,6 +210,12 @@ test("Staircase: snow is drawn above the line only, nothing under the zero axis 
     assert.ok(!texts(svg).includes("snow"), "and no lane name");
     assert.ok(texts(svg).some((t) => /light blue: snow/.test(t)), "the facts line says which color is snow");
   }
+  // one plain sentence on the small line says which mark is which, in both styles
+  const say = { r1: "Dark blue steps are rain, light blue steps are snow", r2: "Light blue above the ground is snow, dark bars below it are rain" };
+  for (const style of ["r1", "r2"]) {
+    assert.ok(texts(ART.render(input(days, { style }))).some((t) => t.includes(say[style])), style + ": " + say[style]);
+    assert.ok(!texts(ART.render(input(year(2025, () => ({ s: null })), { style }))).some((t) => t.includes(say[style])), style + ": not without a snow record");
+  }
 });
 
 test("Staircase with nothing to compare says the total once; no scale number sits beside the headline", () => {
