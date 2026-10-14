@@ -92,3 +92,8 @@ test("the page carries its own dateline, in the text and the JSON-LD", () => {
 test("the warranty says normal use, on the card and in the FAQ", () => {
   assert.equal((main.match(/if your gauge breaks in normal use, I&rsquo;ll fix it or replace it/g) || []).length, 2);
 });
+
+test("the gauge design stays private: the photo reader lab is not published", () => {
+  for (const f of ["gauge-lab.html", "components/gauge-lab.js", "components/gauge-read.js", "data/gauge-strip.json"])
+    assert.ok(!existsSync(ROOT + f), f + " must not be on the site");
+});
