@@ -108,7 +108,7 @@ test("the page's stated prices and Product offers match data/rain-print.json", (
   assert.ok(!("print18x24" in J) && !/18 x 24|18x24|poster/i.test(html), "18 x 24 and poster wording are gone from the page and the data");
   assert.ok(prod.offers.every((o) => o.priceCurrency === J.currency));
   assert.match(html, new RegExp(`\\$${J.digital} file, prints from \\$${J.print12x18}`), "meta description prices");
-  assert.match(html, new RegExp(`A print file is \\$${J.digital}; a 12 x 18 print is \\$${J.print12x18}, or \\$${J.framed12x18} framed`), "lede prices");
+  assert.match(html, new RegExp(`A digital file is \\$${J.digital}; a 12 x 18 print is \\$${J.print12x18}, or \\$${J.framed12x18} framed`), "lede prices");
   assert.ok(!/yoursite\.example|Yearglass/i.test(html + readFileSync(ROOT + "components/rain-print.js", "utf8")), "no placeholder link, no uncleared brand");
 });
 
@@ -181,7 +181,7 @@ test("gift text lives in data/rain-print.json; the FAQ and its structured data s
   const shown = [...html.matchAll(/<details><summary>(.*?)<\/summary><p>(.*?)<\/p><\/details>/g)].map((m) => [dec(m[1]), dec(m[2])]);
   assert.deepEqual(faq.map((q) => [q.name, q.acceptedAnswer.text]), shown, "FAQPage matches the visible FAQ");
   // e6bb20b46 took the year out of this question so it stays right every Christmas; the test still asked for one.
-  assert.ok(faq.some((q) => /give this year's print for Christmas/.test(q.name)), "the Christmas gift question is there");
+  assert.ok(faq.some((q) => /give this year\u2019s print for Christmas/.test(q.name)), "the Christmas gift question is there");
   assert.ok(!faq.some((q) => /Christmas/.test(q.name) && /\d{4}/.test(q.name)), "and names no year");
   assert.ok(faq.some((q) => q.name === "Can you ship it straight to them with a note?" && /No prices go in the box\./.test(q.acceptedAnswer.text)), "the gift note question");
   assert.ok(!/first half of January/i.test(html), "January, not a narrower promise");

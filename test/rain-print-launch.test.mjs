@@ -406,10 +406,10 @@ test("the example warning under the prices goes once the example is gone", () =>
 
 test("one promise for the digital file and the gift card: within 1 business day", () => {
   // 2026-10-14 (Sig): the file has no proof step; it comes finished after paying, and he redoes it free on request
-  assert.match(HTML, /<li id="rp-dig-when">The finished files by email within 1 business day of paying<\/li>/);
+  assert.match(HTML, /<li id="rp-dig-when">The finished file by email within 1 business day of paying<\/li>/);
   assert.ok(!/within a day|Within a business day|after you pay\./.test(visible), "no looser or older promise on the page");
   assert.ok(!/emailed once you OK it|within a day with/.test(S2));
-  assert.match(S2, /'The finished files by email in January, once the full year is in'/);
+  assert.match(S2, /'The finished file by email in January, once the full year is in'/);
   assert.ok(!/files by email within 1 business day of your OK|file comes by email within 1 business day after you OK|The file is emailed within 1 business day after you OK/.test(HTML + S2), "no proof step for the file anywhere");
   assert.match(visible, /The digital file needs no proof: the finished file comes by email within 1 business day of paying\./);
   assert.match(visible, /if you want anything changed, write to me and I&rsquo;ll fix it or redo it by hand and send it again, no charge\./);

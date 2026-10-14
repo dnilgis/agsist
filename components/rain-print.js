@@ -609,6 +609,28 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
+  /* Labels in a link that were longer than a date's 13 letters: normalize cuts
+     them to fit, so the page says so instead of printing "Our wedding d"
+     quietly (2026-10-14). [{date, label: as it is now, full: as the link had it}]. */
+  function cutLabels(search) {
+    var q = new URLSearchParams(String(search || '').replace(/^\?/, '')), raw = [], out = [];
+    var d = q.get('d');
+    if (d) {
+      var s = decodeCode(d), f;
+      if (!s) return out;
+      try { f = b64urlUtf8(d.replace(/^GIFT-/, '')).split('|'); } catch (e) { return out; }
+      if (f[0] === '2' && (f.length - 6) % 2) f.pop();
+      for (var i = 6; i + 1 < f.length; i += 2) raw.push({ date: isoFromDay(s.year, parseInt(f[i], 36)), label: f[i + 1] });
+    } else {
+      for (var j = 1; j <= LIMITS.markers; j++) { var v = q.get('m' + j); if (v) raw.push({ date: v.slice(0, 10), label: v.slice(10) }); }
+    }
+    raw.forEach(function (m) {
+      var full = cleanText(printable(m.label), 200), kept = cleanText(printable(m.label), LIMITS.label);
+      if (full.length > kept.length) out.push({ date: m.date, label: kept, full: full });
+    });
+    return out;
+  }
+
   /* A Stripe reference for a long design is RPS-<id>, or GIFT-RPS-<id> (checkoutRef
      above): the short-link id. rain-print?d=RPS-<id> opens it through the short
      link the way /r?<id> does, and GIFT- keeps the January gift flag (2026-10-14:
@@ -949,7 +971,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -1280,13 +1302,39 @@
     $('rp-sym-note').hidden = !SYM_SEEN;
     syncCounts();
   }
+  /* field id -> {label, full}: a label that was cut to fit, while it still reads that way */
+  var LABEL_CUT = {};
   function syncCounts() {
     [['rp-name', 'rp-name-n', LIMITS.name], ['rp-ded', 'rp-ded-n', LIMITS.dedication]].forEach(function (x) {
       var n = $(x[0]).value.length, el = $(x[1]);
       el.textContent = n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
       el.classList.toggle('rp-at', n >= x[2]);
     });
+    /* The same counter under each date's label (2026-10-14: a label stopped at
+       13 letters with no word). Words pasted or linked past 13 letters say what
+       was cut, until the label is changed. */
+    for (var i = 1; i <= 3; i++) {
+      var f = $('rp-m' + i + 'l'), el = $('rp-m' + i + 'l-n');
+      if (!f || !el) continue;
+      var n = f.value.length, cut = LABEL_CUT[f.id];
+      if (cut && f.value !== cut.label) { delete LABEL_CUT[f.id]; cut = null; }
+      el.textContent = cut ? 'Only ' + LIMITS.label + ' letters fit, so \u201c' + cut.full + '\u201d is cut to \u201c' + cut.label + '\u201d. Try a shorter word.'
+        : n >= LIMITS.label ? n + ' of ' + LIMITS.label + ' letters. That\u2019s the most that fits.' : n + ' of ' + LIMITS.label + ' letters';
+      el.classList.toggle('rp-at', !cut && n >= LIMITS.label);
+      el.classList.toggle('rp-bad', !!cut);
+    }
   }
+  // a design from a link: its cut labels, by field (the proof flags them too)
+  function markLinkCuts(cuts) {
+    LINK_CUTS = cuts || [];
+    for (var i = 1; i <= 3; i++) {
+      var d = $('rp-m' + i + 'd').value, l = $('rp-m' + i + 'l').value;
+      LINK_CUTS.forEach(function (c) { if (c.date === d && c.label === l) LABEL_CUT['rp-m' + i + 'l'] = { label: c.label, full: c.full }; });
+    }
+    syncCounts();
+  }
+  var LINK_CUTS = [];
+  function linkCut(m) { return LINK_CUTS.filter(function (c) { return c.date === m.date && c.label === m.label; })[0] || null; }
   function syncDates() {
     var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return $('rp-m' + i + 'd').value; });
     var probs = dateProblems(y, ds), el = $('rp-date-msg');
@@ -1357,7 +1405,7 @@
       ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
       : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
-    $('rp-dig-when').textContent = on ? 'The finished files by email in January, once the full year is in' : 'The finished files by email within 1 business day of paying';
+    $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in' : 'The finished file by email within 1 business day of paying';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
       : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
@@ -1795,12 +1843,25 @@
       statusEl.classList.remove('rp-bad');
       return;
     }
-    var left = exampleLeft(ST), note = $('rp-buy-note');
+    var left = exampleLeft(ST), note = noteUnder(id);
+    /* Example words still on it (2026-10-14): say so right under the button
+       that was tapped, with the two ways on, instead of scrolling 2,500 px up
+       to section 2. Example words still never go on an order unasked. */
     if (left.length) {
-      note.innerHTML = 'The example is still on the print (' + esc(left.join(', ')) + '). Put in your own words, or clear the example, then order. <button type="button" class="btn btn-secondary" id="rp-ex-clear2">Clear the example</button>';
+      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear it to order without it; your own words stay.' +
+        '<button type="button" class="btn btn-primary" id="rp-ex-go">Clear the example and order</button>' +
+        '<button type="button" class="btn btn-secondary" id="rp-ex-edit">Edit the words</button></span>';
       EX_NOTE = true;
-      $('rp-ex-clear2').addEventListener('click', function () { clearExample(); note.textContent = ''; EX_NOTE = false; });
-      toExample();
+      $('rp-ex-go').addEventListener('click', function () {
+        clearExample();
+        note.textContent = ''; EX_NOTE = false;
+        // the town or year box was changed without drawing: the words are in section 2
+        if (exampleLeft(ST).length) { toExample(); return; }
+        buy(id);
+      });
+      $('rp-ex-edit').addEventListener('click', toExample);
+      noteInView(note);
+      try { $('rp-ex-go').focus({ preventScroll: true }); } catch (err) {}
       return;
     }
     var code = refFor(), link = payLink(id);
@@ -1819,9 +1880,24 @@
         : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and ' + (id === 'digital' ? 'the finished file comes by email within 1 business day. If you want anything changed, write to me and I\u2019ll redo it, no charge.' : 'I email you a proof before I print.') +
           (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
         (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
+      noteInView(note);
       return;
     }
     openOrder(id);
+  }
+  /* The note about an order sits right under the button that was tapped, so it
+     is on screen (2026-10-14: it sat under the framed card, off screen after a
+     tap on another card). A button that is hidden keeps the note where it is. */
+  function noteUnder(id) {
+    var note = $('rp-buy-note'), b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
+    if (b && b.offsetParent !== null && b.nextSibling !== note) b.parentNode.insertBefore(note, b.nextSibling);
+    return note;
+  }
+  function noteInView(note) {
+    try {
+      var r = note.getBoundingClientRect(), h = root.innerHeight || doc.documentElement.clientHeight;
+      if (r.top < 0 || r.bottom > h) note.scrollIntoView({ behavior: smooth(), block: 'center' });
+    } catch (err) {}
   }
   // Up to the example note in section 2, its Clear button focused, so the next tap is the fix.
   function toExample() {
@@ -1841,7 +1917,7 @@
   function designRows() {
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
       ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
-    rows.push(['Dates', ST.markers.length ? ST.markers.map(function (m) { return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : ''); }).join(', ') : '(none)']);
+    rows.push(['Dates', ST.markers.length ? ST.markers.map(function (m) { var c = linkCut(m); return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)' : ''); }).join(', ') : '(none)']);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'the station\u2019s full record' : 'nothing']);
     return rows;
@@ -1886,7 +1962,7 @@
     var left = canOrder() ? exampleLeft(ST) : [], why = $('rp-proof-why');
     why.textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Put in your own words first.' : '';
     why.hidden = !left.length;
-    $('rp-proof-order').textContent = !canOrder() ? 'Draw your own' : left.length ? 'Change the words' : 'Order this print';
+    $('rp-proof-order').textContent = !canOrder() ? 'Draw your own' : left.length ? 'Change the words' : PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed';
   }
   function openProof() {
     if (!DATA || BLOCKED) return;
@@ -2345,6 +2421,17 @@
   $('rp-year').addEventListener('input', function () { reyearExample(); syncMarkerBounds(); syncDates(); });
   $('rp-ex-clear').addEventListener('click', clearExample);
   ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { cleanField(id); restyle(); }); });
+  // words pasted into a label past 13 letters: maxlength cuts them, and the counter says what went
+  ['rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) {
+    var el = $(id);
+    el.addEventListener('paste', function (e) {
+      var t = '';
+      try { t = (e.clipboardData || root.clipboardData).getData('text'); } catch (err) { return; }
+      var a = el.selectionStart || 0, b = el.selectionEnd || 0, v = el.value;
+      var full = cleanText(printable(v.slice(0, a) + t + v.slice(b)), 200);
+      if (full.length > LIMITS.label) setTimeout(function () { LABEL_CUT[id] = { label: el.value, full: full }; syncCounts(); }, 0);
+    });
+  });
   ['rp-m1d', 'rp-m2d', 'rp-m3d'].forEach(function (id) { $(id).addEventListener('input', function () { syncDates(); restyle(); }); });
   // label ideas as buttons: a tap fills the first empty label (its date box next)
   LABEL_PRESETS.forEach(function (w) {
@@ -2371,8 +2458,14 @@
     $('rp-proof').close();
     if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
     if (exampleLeft(ST).length) { toExample(); return; }   // example words still on it: change them first
-    try { $('rp-buy').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
-    try { $('rp-buy-h').focus({ preventScroll: true }); } catch (e) {}
+    if (GIFT && GIFT.usable) { useGift(); return; }
+    /* Straight to the order the proof showed (2026-10-14: it only scrolled to
+       the cards): framed or print only, as picked in the proof, which the
+       preview keeps. The order note lands under that card's button. */
+    var id = PROOF_VIEW === 'print' ? 'print12x18' : 'framed12x18', b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
+    setView(PROOF_VIEW);
+    try { b.focus({ preventScroll: true }); } catch (e) {}
+    buy(id);
   });
   // a click on the dimmed page around the dialog closes it
   $('rp-proof').addEventListener('click', function (e) { if (e.target === $('rp-proof')) $('rp-proof').close(); });
@@ -2463,11 +2556,13 @@
       if (ref.gift) s.gift = true;
       ST = s;
       writeInputs(ST);
+      markLinkCuts(cutLabels('?d=' + r.code));
       run();
     });
   }
   // A share link that can't be drawn says why, over the sample (2026-10-13: it fell back quietly).
   var LINK_WHY = linkProblem(root.location.search);
+  markLinkCuts(cutLabels(root.location.search));
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
   showBuy(false);
   // the art measures its labels with these fonts: draw again once they are in
