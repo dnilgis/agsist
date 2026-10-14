@@ -1,6 +1,7 @@
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // the v5.22 PRF sponsor inquiries (kind prf-sponsor)
 // and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
+// and the v5.23 Rain Print logos (POST /rp-logo, GET /rp-logo/<id>, logo on orders and quotes)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
@@ -12,6 +13,7 @@ fs.unlinkSync(tmp);
 const store = new Map(), opts = new Map();
 const env = { UNSUB_SECRET: 'sec', LIST_TOKEN: 'tok', SUBS: {
   async get(k) { return store.has(k) ? store.get(k) : null; },
+  async getWithMetadata(k) { return store.has(k) ? { value: store.get(k), metadata: (opts.get(k) || {}).metadata || null } : { value: null, metadata: null }; },
   async put(k, v, o) { store.set(k, v); opts.set(k, o || null); },
   async delete(k) { store.delete(k); },
   async list({ prefix }) { return { keys: [...store.keys()].filter(k => k.startsWith(prefix)).sort().map(name => ({ name })), list_complete: true }; } } };
@@ -552,6 +554,84 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   const wsrc = fs.readFileSync(src, 'utf8');
   const listed = JSON.parse(wsrc.match(/const PRF_STATES = (\[[^\]]*\])/)[1]);
   A(JSON.stringify([...listed].sort()) === JSON.stringify(meta.states.map(x => x.st).sort()), 'PRF_STATES matches data/prf/meta.json');
+}
+
+// v5.23: Rain Print logos. The page sends PNG bytes it made in the browser; an SVG is never sent or stored.
+{
+  const zlib = await import('node:zlib');
+  const crc = (buf) => { let c = ~0; for (const x of buf) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xEDB88320 & -(c & 1)); } return (~c) >>> 0; };
+  const chunk = (t, d) => { const len = Buffer.alloc(4); len.writeUInt32BE(d.length); const td = Buffer.concat([Buffer.from(t, 'ascii'), d]); const cr = Buffer.alloc(4); cr.writeUInt32BE(crc(td)); return Buffer.concat([len, td, cr]); };
+  const makePng = (w, h) => {
+    const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 6;
+    const raw = Buffer.alloc((w * 4 + 1) * h);
+    return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
+  };
+  const up = (body, h = {}) => w.fetch(new Request('https://x.dev/rp-logo', { method: 'POST',
+    headers: Object.assign({ 'Content-Type': 'image/png', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.7.0.' + (++ipN) }, h), body }), env);
+  const lg = (id, h = {}) => w.fetch(new Request('https://x.dev/rp-logo/' + id, { headers: Object.assign({ Origin: 'https://agsist.com' }, h) }), env);
+  const rplKeys = () => [...store.keys()].filter(k => k.startsWith('rpl:'));
+  const png = makePng(40, 20);
+  r = await up(png); j = await r.json();
+  A(r.status === 200 && j.ok === true && /^[0-9a-hjkmnp-tv-z]{12}$/.test(j.id) && j.w === 40 && j.h === 20, 'rp-logo: a PNG is stored, id is 12 lowercase Crockford ' + j.id);
+  A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-logo: CORS for agsist.com');
+  const lid = j.id, o = opts.get('rpl:' + lid);
+  A(Buffer.from(store.get('rpl:' + lid)).equals(png), 'rp-logo: the bytes are stored as sent');
+  A(o && o.expirationTtl === 400 * 86400 && o.metadata.w === 40 && o.metadata.h === 20, 'rp-logo: kept 400 days with its size');
+  r = await up(png); j = await r.json(); A(j.id !== lid, 'rp-logo: every upload gets its own random id');
+  // GET
+  r = await lg(lid);
+  A(r.status === 200 && r.headers.get('Content-Type') === 'image/png' && Buffer.from(await r.arrayBuffer()).equals(png), 'rp-logo GET: the PNG comes back');
+  A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com' && r.headers.get('X-Content-Type-Options') === 'nosniff', 'rp-logo GET: CORS for agsist.com, nosniff');
+  A(/max-age=31536000/.test(r.headers.get('Cache-Control')) && /sandbox/.test(r.headers.get('Content-Security-Policy')), 'rp-logo GET: cached a year, sandboxed');
+  r = await lg(lid.toUpperCase()); A(r.status === 200, 'rp-logo GET: any case');
+  r = await lg(lid, { Origin: 'https://evil.example' }); A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'rp-logo GET: no CORS for another site');
+  let miss = 'zzzzzzzzzzzz'; while (store.has('rpl:' + miss)) miss = 'y' + miss.slice(1);
+  r = await lg(miss); A(r.status === 404 && r.headers.get('Cache-Control') === 'no-store', 'rp-logo GET: unknown id 404, not cached');
+  for (const bad of ['', 'abc', 'zzzzzzzzzzzzz', '..%2Fsub%3Aa', 'zzzzzzzzzzzu']) { r = await lg(bad); A(r.status === 404, 'rp-logo GET: malformed id 404 ' + JSON.stringify(bad)); }
+  // refused uploads store nothing
+  const n0 = rplKeys().length;
+  const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><rect width="9" height="9"/></svg>');
+  for (const [body, h, code, why] of [
+    [svg, {}, 400, 'SVG markup with a PNG type'], [svg, { 'Content-Type': 'image/svg+xml' }, 415, 'SVG type'],
+    [Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]), { 'Content-Type': 'image/jpeg' }, 415, 'JPEG type'],
+    [Buffer.from([0xff, 0xd8, 0xff, 0xe0, ...Array(80).fill(0)]), {}, 400, 'JPEG bytes'],
+    [png.subarray(0, png.length - 12), {}, 400, 'cut short (no IEND)'], [Buffer.concat([png, Buffer.from('<script>')]), {}, 400, 'bytes after IEND'],
+    [makePng(1601, 10), {}, 400, '1601 px wide'], [makePng(10, 1601), {}, 400, '1601 px tall'], [Buffer.alloc(0), {}, 400, 'empty'],
+    [png, { Origin: 'https://evil.example' }, 403, 'another site'], [png, { Origin: '' }, 403, 'no origin'],
+    [png, { 'Content-Type': 'application/json' }, 415, 'JSON type'],
+    [Buffer.concat([png.subarray(0, png.length - 12), chunk('tEXt', Buffer.alloc(2 * 1024 * 1024)), png.subarray(png.length - 12)]), {}, 413, 'over 2 MB']]) {
+    r = await up(body, h); A(r.status === code, 'rp-logo refuses ' + why + ' (' + r.status + ')');
+  }
+  A(rplKeys().length === n0, 'rp-logo: nothing stored for a refused upload');
+  r = await up(makePng(1600, 1)); A(r.status === 200, 'rp-logo: 1600 px is the most');
+  r = await up(png, { Origin: 'https://www.agsist.com' }); A(r.status === 200, 'rp-logo: www.agsist.com allowed');
+  r = await w.fetch(new Request('https://x.dev/rp-logo', { method: 'OPTIONS', headers: { Origin: 'https://agsist.com' } }), env);
+  A(r.status === 204 && /Content-Type/.test(r.headers.get('Access-Control-Allow-Headers')), 'rp-logo: preflight answered');
+  // the rate limit: 10 an hour per address
+  { const ip = { 'CF-Connecting-IP': '198.51.100.140' }, st = [];
+    for (let i = 0; i < 11; i++) st.push((await up(png, ip)).status);
+    A(st.slice(0, 10).every(c => c === 200) && st[10] === 429, 'rp-logo: 10 an hour per address, then 429 ' + st.slice(8)); }
+  // the logo rides on an order: from the design code, and kept for good
+  const b64 = (t) => Buffer.from(t, 'utf8').toString('base64url');
+  const code = b64('2|Chetek, WI|471667 2|2025|spnaai' + lid + '|The Olson Farm');
+  r = await rps({ code }); A(r.status === 200, 'rp-short takes a design code with a logo');
+  r = await rps({ code: b64('2|Chetek, WI|471667 2|2025|spnaax' + lid + '|') }); A(r.status === 400, 'rp-short refuses a bad logo mode letter');
+  r = await rps({ code: b64('2|Chetek, WI|471667 2|2025|spnaai' + lid.slice(1) + 'u|') }); A(r.status === 400, 'rp-short refuses a logo id with a u');
+  const ordN = forms().length;
+  r = await post({ kind: 'rain-print-order', name: 'Al', email: 'al@x.com', choice: 'digital', design_code: code,
+    design_url: 'https://agsist.com/rain-print?place=Chetek&year=2025&logo=' + lid + '&logoInk=1', page: '/rain-print' });
+  A(r.status === 200, 'order with a logo design stored');
+  const ord = JSON.parse(store.get(forms().filter(k => k.startsWith('form:rain-print-order:')).sort().pop()));
+  A(forms().length === ordN + 1 && ord.logo === lid, 'the order carries the logo id read from its design code');
+  A(opts.get('rpl:' + lid).expirationTtl === undefined && opts.get('rpl:' + lid).metadata.kept > 0 && Buffer.from(store.get('rpl:' + lid)).equals(png), 'an ordered logo is kept for good, same bytes');
+  r = await up(png); const lid2 = (await r.json()).id;
+  r = await post(Object.assign({}, biz, { logo: lid2.toUpperCase() })); A(r.status === 200, 'business quote with a logo stored');
+  A(JSON.parse(store.get(forms().filter(k => k.startsWith('form:rain-print-business:')).sort().pop())).logo === lid2, 'the quote carries its logo id');
+  A(opts.get('rpl:' + lid2).expirationTtl === undefined, 'a quoted logo is kept for good');
+  for (const bad of ['nope', 'u'.repeat(12), lid2 + 'a']) { r = await post(Object.assign({}, biz, { logo: bad })); A(r.status === 400, 'business quote refuses logo ' + bad); }
+  r = await post({ kind: 'rain-print-order', name: 'Al', email: 'al@x.com', choice: 'digital', design_code: codeB,
+    design_url: 'https://agsist.com/rain-print?place=Ames', page: '/rain-print' });
+  A(r.status === 200 && !('logo' in JSON.parse(store.get(forms().filter(k => k.startsWith('form:rain-print-order:')).sort().pop()))), 'an order without a logo has no logo field');
 }
 
 // older routes still answer the same

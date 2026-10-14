@@ -87,6 +87,9 @@ PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms:
 RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "framed12x18": "12 x 18 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
+# A Rain Print logo (worker v5.23): its id, printed as a link to the PNG the buyer uploaded.
+LOGO_URL = "https://agsist-subs.dnilgis.workers.dev/rp-logo/"
+LOGO_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{12}")
 RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 # A business quote's product and shipping choice, spelled out.
 RPB_PRODUCT = {"print": "12 x 18 print", "framed": "12 x 18 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
@@ -113,13 +116,14 @@ FIELDS = {
     "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("gift", "Gift"), ("name", "Name"), ("email", "Email"),
                          ("gift_to", "Gift for"), ("gift_deliver", "Deliver to"), ("gift_email", "Their email"),
                          ("gift_message", "Card message"), ("address", "Ship to"),
-                         ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design"),
+                         ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design"), ("logo", "Logo"),
                          # worker v5.16: an order placed with a gift card (POST /rp-gift/redeem)
                          ("gift_card_twice", "Warning"), ("gift_card", "Gift card"), ("gift_card_paid", "Card paid for"),
                          ("gift_card_upgrade", "Upgrade"), ("gift_card_order", "Card order"), ("gift_card_from", "Card from")],
     "rain-print-business": [("business", "Business"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
                             ("quantity", "How many"), ("product", "Product"), ("ship", "Ship to"),
-                            ("note_all", "Note for every print"), ("towns", "Towns and years"), ("notes", "Notes")],
+                            ("note_all", "Note for every print"), ("towns", "Towns and years"), ("notes", "Notes"),
+                            ("logo", "Logo")],
     "elevator-listing": [("elevator", "Elevator"), ("town", "Town"), ("state", "State"), ("zip", "ZIP"), ("name", "Contact"),
                          ("role", "Role"), ("phone", "Phone"), ("email", "Email"), ("crops", "Crops"), ("how", "How to post"),
                          ("note", "Note"), ("dir_id", "Directory id")],
@@ -291,6 +295,8 @@ def value(p, f):
         return CARD_TWICE_NOTE
     if f == "gift_card_upgrade":
         return CARD_UPGRADE_NOTE
+    if f == "logo":
+        return LOGO_URL + str(v) if LOGO_ID_RE.fullmatch(str(v)) else "(a logo id that does not look right: %s)" % (v,)
     return str(v)
 
 
@@ -347,6 +353,8 @@ def build(posts, to, fn="AGSIST", fa="", top=""):
             v = e(val).replace("\n", "<br>")
             if lab in MAIL_LABELS:
                 v = '<a href="mailto:%s">%s</a>' % (e(val, quote=True), e(val))
+            elif lab == "Logo" and val.startswith(LOGO_URL) and LOGO_ID_RE.fullmatch(val[len(LOGO_URL):]):
+                v = '<a href="%s">Open the logo they uploaded</a>' % e(val, quote=True)
             elif lab == "Design" and DESIGN_RE.fullmatch(val):
                 # Only the page's own design links are made clickable.
                 v = '<a href="%s">Open this design on agsist.com</a><br><span style="font-size:12px;color:#6b6b6b;word-break:break-all">%s</span>' % (
@@ -747,6 +755,15 @@ def selftest():
     ck("nothing new: the counts are not even read", not asked_top)
 
     print()
+    # worker v5.23: a logo prints as a link to the PNG; a malformed id is never made a link
+    lp = dict(rp, logo="k3j9m2p7q8rs")
+    t = build([lp], "s")
+    ck("a logo is a Logo: line with its link", ("Logo: " + LOGO_URL + "k3j9m2p7q8rs") in t.get_body(("plain",)).get_content())
+    ck("a logo is a link in the html", ('href="' + LOGO_URL + 'k3j9m2p7q8rs"') in t.get_body(("html",)).get_content())
+    bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
+    ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
+    ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())
+
     if fails:
         print("%d FAILED: %s" % (len(fails), "; ".join(fails)))
         return 1
