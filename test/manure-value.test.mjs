@@ -80,21 +80,56 @@ test("per 1,000 gal and per ton, every type and timing", () => {
   assert.equal(v["unit-chicken_solid-1to3day"], "$61.24");   // 27 x .6413 + 35 x .9701 + 26 x .3833 = 17.32 + 33.95 + 9.97
 });
 
-test("the worked example: dairy neighbor sale, 6,000 gal/ac, buyer needs N and P", () => {
+test("the value of all the manure: N + P2O5 (N credited) + K2O, per unit, per ton, per acre and for the field", () => {
+  const p = M.nutrientPrices(SEP1);
+  for (const t of M.TYPES) for (const tm of M.TIMING) {
+    const rate = t.liquid ? 5500 : 12, acres = 37;
+    const r = M.fieldValue({ type: t.id, timing: tm.id, rate, acres, prices: p });
+    const lb = { n: t.n[tm.i], p: t.p, k: t.k };
+    const unit = lb.n * p.n + lb.p * p.p + lb.k * p.k;          // every nutrient counts
+    const units = t.liquid ? rate / 1000 : rate;
+    near(r.perUnit, unit, `${t.id} ${tm.id} per unit`);
+    near(r.perTon, t.liquid ? unit / M.TONS_PER_KGAL : unit, `${t.id} ${tm.id} per ton`);
+    near(r.perAcre, unit * units, `${t.id} ${tm.id} per acre`);
+    near(r.field, unit * units * acres, `${t.id} ${tm.id} field`, 1e-6);
+    for (const x of ["n", "p", "k"]) {
+      near(r.lbAc[x], lb[x] * units, `${t.id} ${x} lb an acre`);
+      near(r.usdAc[x], lb[x] * units * p[x], `${t.id} ${x} $ an acre`);
+      near(r.usdField[x], lb[x] * units * p[x] * acres, `${t.id} ${x} $ field`, 1e-6);
+    }
+    near(r.usdAc.n + r.usdAc.p + r.usdAc.k, r.perAcre, `${t.id} parts add to the acre total`);
+  }
+  // no acres: the field is zero, the acre and unit values stand
+  const z = M.fieldValue({ type: "beef_solid", timing: "lt1hr", rate: 10, acres: 0, prices: p });
+  assert.equal(z.field, 0);
+  near(z.perAcre, 10 * (5 * p.n + 6 * p.p + 10 * p.k), "beef solid an acre");
+  // a missing quote is no value, never a partial one
+  assert.deepEqual({ ...M.fieldValue({ ...M.EXAMPLE, prices: { n: p.n, p: p.p, k: null } }) }, { missing: true });
+  assert.equal(M.deal, undefined, "the neighbor-sale math is gone");
+});
+
+test("the worked example: liquid dairy, worked in within 3 days, 6,000 gal/ac on 80 acres", () => {
+  assert.deepEqual({ ...M.EXAMPLE }, { type: "dairy_liq_4_11", timing: "1to3day", rate: 6000, acres: 80 });
   const v = M.bakeValues(SEP1);
+  // per 1,000 gal: 10 lb N x .6413, 6 lb P2O5 x .9701, 17 lb K2O x .3833
+  assert.deepEqual([v["ex-n-unit"], v["ex-p-unit"], v["ex-k-unit"]], ["$6.41", "$5.82", "$6.52"]);
+  assert.equal(v["ex-book"], "$18.75");
+  assert.equal(v["ex-book-ton"], "$4.50");
   assert.deepEqual([v["ex-n-lb"], v["ex-p-lb"], v["ex-k-lb"]], ["60", "36", "102"]);
-  assert.equal(v["ex-book-ac"], "$112.50");     // 38.48 + 34.92 + 39.10
-  assert.equal(v["ex-buyer-ac"], "$73.40");     // N + P only
-  assert.equal(v["ex-haul-ac"], "$90.00");      // $15 x 6
-  assert.equal(v["ex-ceil-hauls"], "-$2.77");   // 12.23 - 15
-  assert.equal(v["ex-floor"], "$6.41");         // the seller's own fields use only the N
-  assert.equal(v["ex-ceil"], "$12.23");
-  assert.equal(v["ex-floor-field"], "$3,078");
-  assert.equal(v["ex-ceil-field"], "$5,872");
-  const d = M.deal({ ...M.EXAMPLE, prices: M.nutrientPrices(SEP1), buyerHauls: true });
-  assert.equal(d.verdict, "none", "buyer paying $15 hauling saves nothing");
-  const k = M.deal({ ...M.EXAMPLE, prices: M.nutrientPrices(SEP1), buyerHauls: false, sellerUses: { n: true, p: true, k: true } });
-  assert.equal(k.verdict, "keep", "worth more at home than the buyer can pay");
+  assert.deepEqual([v["ex-n-ac"], v["ex-p-ac"], v["ex-k-ac"]], ["$38.48", "$34.92", "$39.10"]);
+  assert.equal(v["ex-book-ac"], "$112.50");                       // 38.48 + 34.92 + 39.10
+  assert.deepEqual([v["ex-n-field"], v["ex-p-field"], v["ex-k-field"]], ["$3,078", "$2,794", "$3,128"]);
+  assert.equal(v["ex-field"], "$9,000");                          // 112.50 x 80
+  for (const k of ["ex-buyer", "ex-ceil", "ex-floor", "ex-haul-ac"]) assert.ok(!(k in v), `${k} is gone`);
+});
+
+test("no buyer-needs discount, fair range or hauling left on the pages or in the calculator", () => {
+  const js = read("components/manure-value.js");
+  assert.ok(!/buyerNeeds|sellerUses|data-role="sell"|soil test calls for|Worth to the buyer|Fair price|data-k="haul"|data-k="who"/.test(js));
+  for (const f of ["manure-value.html", "fast-facts.html", "scripts/bake_manure_value.mjs"]) {
+    const s = read(f);
+    assert.ok(!/fair range|neighbor should pay|Worth to this buyer|saves him nothing|Less than the book value/i.test(s), `${f} still prices a discount`);
+  }
 });
 
 test("the HTML carries today's numbers (bake is current) and the tables come from the one data copy", () => {
