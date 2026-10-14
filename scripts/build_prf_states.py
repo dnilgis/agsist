@@ -79,22 +79,20 @@ def text_of(fragment):
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
-PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=2" defer></script>'
+PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=3" defer></script>'
 
 
-def sponsor_ribbon(name, code, sales, yr):
-    """The unsold offer on /prf/<state>. Price on request, never printed.
-    The button goes to /prf-sponsor with this state ticked, where a business
-    sees its own block and asks; the mailto to Sig stays as the second way."""
-    subj = f"PRF sponsor: {name}".replace(" ", "%20")
-    return (f'<aside class="ag-sponsor-ribbon" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}">'
-            f'<span class="ag-sponsor-tag">For businesses: sponsor this page</span> '
-            f'One business can sponsor PRF in {e(name)}: its name on this page and on every {e(name)} county page, seen by people pricing PRF here before the {sales} sales closing. '
-            f'Own one state or several. '
-            f'Prepaid, with the placement guaranteed through Dec 31, {yr}, and the first say on renewing. '
-            f'<span class="ag-sponsor-price">Price on request</span> '
-            f'<a href="/prf-sponsor?state={code}" data-out="prf-sponsor">See your block and ask &rarr;</a> '
-            f'<a class="prf-spon-mail" href="mailto:sig@farmers1st.com?subject={subj}">or email Sig</a></aside>')
+def sponsor_ribbon(name, code):
+    """The unsold offer on /prf/<state>, one slim band under the opening answer
+    (Sig, 2026-10-14: "the advertise-here CTA needs to be on the upper part of
+    the page"). Price on request, never printed. The link goes to /prf-sponsor
+    with this state ticked, where a business sees its own block and asks (the
+    email to Sig is there too). The part in prf-spon-x drops on a phone so the
+    band stays two short lines."""
+    return (f'<aside class="prf-spon-band" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}" aria-label="For businesses">'
+            f'<span class="prf-spon-tag">For businesses</span> '
+            f'<span class="prf-spon-t">Sponsor PRF in {e(name)}.<span class="prf-spon-x"> Your business here, on this page and every {e(name)} county page.</span></span> '
+            f'<a href="/prf-sponsor?state={code}" data-out="prf-sponsor">See your block and ask &rarr;</a></aside>')
 
 
 def page(st, meta, facts, sd, states, BOOT, where=None):
@@ -171,7 +169,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     # it; a business may own one state or several. A sale is a line in
     # data/prf-sponsors.json, and components/prf-sponsor.js swaps this offer for
     # the sponsor in the browser (data-prf-spon), so no page is rebuilt to sell.
-    ribbon = sponsor_ribbon(name, code, sales, meta["dates"]["sales_closing"][:4])
+    ribbon = sponsor_ribbon(name, code)
     subrow = ", ".join(f"{int(round(sub[c] * 100))}% at {c}%" for c in sorted(sub, key=int))
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -181,7 +179,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=5">
+  <link rel="stylesheet" href="/components/prf.css?v=6">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -214,6 +212,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <h1>PRF insurance in {e(name)}: {cy} county values and rates</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {n_co} {e(name)} {'county' if n_co == 1 else 'counties'}, on {n_grid:,} grids. The policy pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
     <p><a class="btn btn-primary prf-cta" href="/prf?st={code}">Open the PRF calculator for {e(name)}</a></p>
+    {ribbon}
     <dl class="prf-figs prf-st-figs">
       <div><dt>Counties with PRF</dt><dd>{n_co}</dd></div>
       <div><dt>Grids</dt><dd>{n_grid:,}</dd></div>
@@ -234,7 +233,6 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <h2 id="counties">PRF in every {e(name)} county</h2>
     <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. A county&rsquo;s name opens its page with the grids and their record; Open sets acres, months and coverage in the calculator.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF county base values in every {e(name)} county, {cy}</caption><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
-    {ribbon}
 
     <div class="prf-prose">
     <h2 id="dates">PRF dates for {cy}</h2>
@@ -339,7 +337,7 @@ def guide(meta, facts, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=5">
+  <link rel="stylesheet" href="/components/prf.css?v=6">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">

@@ -5,7 +5,8 @@
  * WHY. A sale is one line of JSON that the browser reads, so the rules have to
  * hold in the script and in the shipped data: a sold state shows its sponsor,
  * labelled, on the state page, every county page and beside the result on
- * /prf; an unsold or lapsed state shows the offer; nothing a sponsor types can
+ * /prf; an unsold or lapsed state shows the offer, one per page, in the upper
+ * part of the page (Sig, 2026-10-14), never at the foot; nothing a sponsor types can
  * run script or carry a javascript: link; no price and no "founding" anywhere;
  * Farmers First never in a slot. The mock sponsor below lives only in this file.
  *
@@ -180,26 +181,33 @@ test("the shipped data file is valid and holds no test sponsor", () => {
 
 const STATE_PAGES = meta.states.map((s) => ({ st: s, rel: "prf/" + slug(s.name) + ".html" }));
 
-test("every state page offers its slot: one state or several, price on request, no price", () => {
+const JS_TAG = '<script src="/components/prf-sponsor.js?v=3" defer></script>';
+const BAND_BAD = /founding|sponsor-apply|states? left|slots? left|only \d+|\d+ (states?|slots?) (open|left)/i;
+
+test("every state page offers its slot near the top, once, with no price", () => {
   for (const { st, rel } of STATE_PAGES) {
     const h = readFileSync(ROOT + rel, "utf8");
-    const m = h.match(/<aside class="ag-sponsor-ribbon" id="sponsor"[^>]*>[\s\S]*?<\/aside>/);
-    assert.ok(m, rel + " lacks the sponsor ribbon");
+    const all = h.match(/data-prf-spon=/g) || [];
+    assert.equal(all.length, 1, rel + ": one offer per page, not two");
+    const m = h.match(/<aside class="prf-spon-band" id="sponsor"[^>]*>[\s\S]*?<\/aside>/);
+    assert.ok(m, rel + " lacks the sponsor band");
     const r = m[0];
-    assert.ok(r.includes(`data-prf-spon="state" data-prf-st="${st.st}"`), rel);
-    assert.ok(r.includes("Own one state or several."), rel);
-    assert.ok(r.includes(`every ${st.name} county page`), rel);
-    assert.ok(r.includes("Price on request"), rel);
-    assert.ok(r.includes(`<a href="/prf-sponsor?state=${st.st}" data-out="prf-sponsor">See your block and ask &rarr;</a>`), rel + ": the button goes to /prf-sponsor with the state ticked");
-    assert.ok(r.includes('<a class="prf-spon-mail" href="mailto:sig@farmers1st.com?subject=PRF%20sponsor'), rel + ": email Sig stays as the second way");
-    assert.ok(r.indexOf("/prf-sponsor?state=") < r.indexOf("mailto:"), rel + ": the page first, the email second");
-    assert.ok(!PRICE.test(r) && !/founding|sponsor-apply|states? left|slots? left/i.test(r), rel);
-    assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=2" defer></script>'), rel);
+    assert.ok(r.includes(`data-prf-spon="state" data-prf-st="${st.st}" data-prf-name="${st.name}"`), rel);
+    assert.ok(r.includes('<span class="prf-spon-tag">For businesses</span>'), rel + ": labelled For businesses");
+    assert.ok(r.includes(`Sponsor PRF in ${st.name}.`), rel);
+    assert.ok(r.includes(`Your business here, on this page and every ${st.name} county page.`), rel);
+    assert.ok(r.includes(`<a href="/prf-sponsor?state=${st.st}" data-out="prf-sponsor">See your block and ask &rarr;</a>`), rel + ": the link goes to /prf-sponsor with the state ticked");
+    assert.ok(!PRICE.test(r) && !BAND_BAD.test(r), rel);
+    // the upper part: under the h1 and the opening answer, before the first table
+    const at = h.indexOf(r);
+    assert.ok(at > h.indexOf("<h1>") && at > h.indexOf('class="prf-lede"'), rel + ": under the h1 and the opening answer");
+    assert.ok(at < h.indexOf("<table"), rel + ": before the tables");
+    assert.ok(h.includes(JS_TAG), rel);
     assert.ok(!/founding/i.test(h), rel);
   }
 });
 
-test("every county page carries the one-line offer for its own state, and stays small", () => {
+test("every county page carries the one-line offer for its own state near the top, and stays small", () => {
   let n = 0;
   for (const s of meta.states) {
     const dir = ROOT + "prf/" + slug(s.name);
@@ -208,9 +216,12 @@ test("every county page carries the one-line offer for its own state, and stays 
       if (!f.endsWith(".html")) continue;
       const rel = "prf/" + slug(s.name) + "/" + f;
       const h = readFileSync(ROOT + rel, "utf8");
-      const line = `<p class="prf-spon-line" data-prf-spon="county" data-prf-st="${s.st}" data-prf-name="${s.name}">For businesses: <a href="/prf-sponsor?state=${s.st}">Sponsor PRF in ${s.name}</a></p>`;
-      assert.ok(h.includes(line), rel + " lacks its state's offer line");
-      assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=2" defer></script>'), rel);
+      const line = `<p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="${s.st}" data-prf-name="${s.name}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state=${s.st}">Sponsor PRF in ${s.name} &rarr;</a></p>`;
+      const at = h.indexOf(line);
+      assert.ok(at > 0, rel + " lacks its state's offer line");
+      assert.equal((h.match(/data-prf-spon=/g) || []).length, 1, rel + ": one offer per page, not two");
+      assert.ok(at > h.indexOf('class="prf-lede"') && at < h.indexOf("<table"), rel + ": under the opening answer, before the tables");
+      assert.ok(h.includes(JS_TAG), rel);
       assert.ok(!/founding|price on request/i.test(h), rel);
       assert.ok(statSync(ROOT + rel).size < 40 * 1024, rel + " is over 40 KB");
       n++;
@@ -219,20 +230,25 @@ test("every county page carries the one-line offer for its own state, and stays 
   assert.equal(n, meta.counts.counties);
 });
 
-test("/prf: the offer box near the bottom, the sponsor box beside the result, the script before prf.js", () => {
+test("/prf: the offer band under the intro and above the tool, the sponsor box beside the result, the script before prf.js", () => {
   const h = readFileSync(ROOT + "prf.html", "utf8");
-  const offer = h.match(/<aside class="ag-sponsor-ribbon prf-spon-offer"[\s\S]*?<\/aside>/);
-  assert.ok(offer, "no offer box");
-  assert.ok(offer[0].includes("Sponsor PRF in your states.") && offer[0].includes("One business per state, on the state page and every county page in it.") &&
-    offer[0].includes("Own one state or as many as you like.") && offer[0].includes("Price on request"));
-  assert.ok(offer[0].includes('<a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a>'), "the offer goes to /prf-sponsor");
-  assert.ok(offer[0].includes('<a class="prf-spon-mail" href="mailto:sig@farmers1st.com?subject=PRF%20state%20sponsor">or email Sig</a>'), "email Sig stays as the second way");
-  assert.ok(!PRICE.test(offer[0]) && !/founding|left/i.test(offer[0]));
-  assert.ok(h.indexOf("prf-spon-offer") > h.indexOf('id="prf-optimize"'), "the offer box sits below the tool");
-  assert.ok(h.indexOf("prf-spon-offer") > h.indexOf('id="states"'), "the offer box sits near the bottom");
+  const offers = h.match(/prf-spon-offer/g) || [];
+  assert.equal(offers.length, 1, "one offer on /prf, not two");
+  const offer = h.match(/<aside class="prf-spon-band prf-spon-offer"[\s\S]*?<\/aside>/);
+  assert.ok(offer, "no offer band");
+  const o = offer[0];
+  assert.ok(o.includes('<span class="prf-spon-tag">For businesses</span>'));
+  assert.ok(o.includes("Sponsor PRF in your states.") && o.includes("One business per state, on the state page and every county page in it.") && o.includes("Price on request."));
+  assert.ok(o.includes('<a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a>'), "the offer goes to /prf-sponsor");
+  assert.ok(!PRICE.test(o) && !BAND_BAD.test(o) && !/left/i.test(o));
+  const at = h.indexOf(o);
+  assert.ok(at > h.indexOf('class="prf-lede"'), "the band sits under the intro");
+  assert.ok(at < h.indexOf('id="prf-app"'), "the band sits above the tool");
+  assert.ok(!/ag-sponsor-ribbon prf-spon-offer/.test(h), "the old bottom offer is gone");
   const box = h.indexOf('<aside class="prf-spon" id="prf-spon" hidden></aside>');
   assert.ok(box > h.indexOf('id="prf-answer"') && box < h.indexOf('id="prf-optimize"'), "the sponsor box sits beside the result, outside the panel");
   assert.ok(h.indexOf("prf-sponsor.js") < h.indexOf("/components/prf.js"), "prf-sponsor.js must listen before prf.js renders");
+  assert.ok(h.includes('<script src="/components/prf-sponsor.js?v=3" defer></script>'));
   assert.ok(!/founding/i.test(h));
   assert.ok(readFileSync(ROOT + "components/prf.js", "utf8").includes("st: S.st, stName:"), "prf.js names the state in prf:grid");
 });
@@ -250,7 +266,7 @@ test("/prf: the offer links to /prf-sponsor with the reader's state ticked", asy
   p.fire({ grid: 1, st: "KS", stName: "Kansas" }); await tick(); await tick();
   assert.equal(offerLink.attrs.href, "/prf-sponsor?state=KS");
   p.fire({ grid: 2, st: "IA", stName: "Iowa" }); await tick(); await tick();
-  assert.equal(offerLink.attrs.href, "/prf-sponsor?state=IA", "a sold state still links its offer (the box at the bottom stays)");
+  assert.equal(offerLink.attrs.href, "/prf-sponsor?state=IA", "a sold state still links its offer (the band under the intro stays)");
   p.fire({ grid: 3, st: "x\"><script>", stName: "?" }); await tick(); await tick();
   assert.equal(offerLink.attrs.href, "/prf-sponsor", "anything but a state code is not put in the link");
   offerLink = null;

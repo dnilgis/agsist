@@ -3,6 +3,9 @@
  * One business per state can sponsor PRF there: the state page
  * (prf/<state>.html), every county page in it (prf/<state>/<county>.html) and,
  * on /prf, a box beside the result when a reader's grid is in that state.
+ * On the state and county pages the sponsor takes the place of the unsold
+ * offer band, which sits under the opening answer, near the top (Sig,
+ * 2026-10-14), so a sold block shows in that same upper spot.
  *
  * WHERE A SALE LIVES: data/prf-sponsors.json, keyed by state code:
  *   { "IA": { "name": "...", "url": "https://...", "line": "one sentence, 120 characters at most",
@@ -126,8 +129,8 @@
   }
 
   /* /prf: prf.js says which state the grid's county is in, on every render.
-     The "For businesses" offer near the bottom then links to /prf-sponsor
-     with that state ticked (2026-10-13). */
+     The "For businesses" band under the intro then links to /prf-sponsor
+     with that state ticked (2026-10-13; moved up 2026-10-14). */
   var box = doc.getElementById('prf-spon');
   var offer = doc.querySelector ? doc.querySelector('a[data-prf-offer]') : null;
   if (box) {

@@ -234,7 +234,7 @@ def page(ctx):
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=23">
-  <link rel="stylesheet" href="/components/prf.css?v=5">
+  <link rel="stylesheet" href="/components/prf.css?v=6">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <title>{e(title)}</title>
@@ -262,6 +262,7 @@ def page(ctx):
     <h1>PRF insurance in {e(full)}: {cy} grids, values and record</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {ng} {'grid' if ng == 1 else 'grids'}: {g_list}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
     <p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
+    <p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)} &rarr;</a></p>
     <dl class="prf-figs prf-st-figs">
       <div><dt>Grids</dt><dd>{ng}</dd></div>
       <div><dt>Grazing, county base value per acre</dt><dd>{money2(gz)}</dd></div>
@@ -301,7 +302,6 @@ def page(ctx):
     </div>
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
-    <p class="prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}">For businesses: <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)}</a></p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}
