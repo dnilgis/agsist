@@ -1923,7 +1923,7 @@
       ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
     rows.push(['Dates', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
-    rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'the station\u2019s full record' : 'nothing']);
+    rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
     return rows;
   }
   function syncSummary() {
