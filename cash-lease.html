@@ -411,7 +411,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served.'},
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
-    NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year, in practice by SEPTEMBER 1. Written leases: the lease controls.'},
+    NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year, in practice by SEPTEMBER 1. This comes from court rulings (Moudry v. Parkos, 1984), not a statute. Written leases: the lease controls.'},
     SD:{n:'South Dakota',t:'firm',d:'ORAL leases only (SDCL ch. 43-32): an oral farm lease renews automatically unless written termination notice is given by SEPTEMBER 1, signed and delivered (certified mail or in hand). A written lease runs on its own terms.'},
     IN:{n:'Indiana',t:'firm',d:'Written notice at least 3 MONTHS before the end of the lease (roughly end of November for a Feb-end term).'},
     MN:{n:'Minnesota',t:'cited',d:'Commonly cited: written notice about 3 MONTHS before the lease ends (industry guides reference ~September 30).'},
@@ -432,7 +432,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize here; put the deadline in the lease and confirm with a local attorney.'}
   };
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
-  var TIER_LBL={firm:'Statutory deadline (widely documented)',cited:'Commonly cited: verify the current statute',none:'No single deadline widely cited'};
+  var TIER_LBL={firm:'Deadline set by law (widely documented)',cited:'Commonly cited: verify the current statute',none:'No single deadline widely cited'};
 
   function stateRuleText(ab){
     var r=RULES[ab];
