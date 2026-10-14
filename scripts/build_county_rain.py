@@ -51,7 +51,7 @@ import inject_static_nav as nav  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=2">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=3">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
@@ -94,7 +94,8 @@ def where_words(c):
 
 
 def compare(c, year_word="a usual year to date"):
-    """'That is 2.1 inches less than a usual year to date (91%).' or the reason there is none."""
+    """'That is 2.10 inches less than a usual year to date (91% of usual).' or the reason there is none.
+    Two decimals, like the month table, so the page never shows two numbers for one difference."""
     if c["usual"] is None:
         return f"This {'gauge' if c['station']['net'] == 'cocorahs' else 'station'} has no NOAA normal, so there is no usual year to compare it with."
     if c["pct"] is None:
@@ -102,11 +103,11 @@ def compare(c, year_word="a usual year to date"):
         # later it is a dry place (the desert), not "early"
         if int(c["as_of"][5:7]) < 4:
             return "It is too early in the year for a fair comparison with a usual year."
-        return "The usual rain so far here is under an inch, too little for a fair percent."
+        return "A usual year here has had less than an inch of rain by now, too little for a fair percent."
     d = c["total"] - c["usual"]
     if abs(d) < 0.05:
-        return f"That is about the same as {year_word} ({c['pct']}%)."
-    return f"That is {inches_word(abs(d), 1)} {'more' if d > 0 else 'less'} than {year_word} ({c['pct']}%)."
+        return f"That is about the same as {year_word} ({c['pct']}% of usual)."
+    return f"That is {inches_word(abs(d), 2)} {'more' if d > 0 else 'less'} than {year_word} ({c['pct']}% of usual)."
 
 
 def answer(c, county, year, done):
@@ -117,7 +118,8 @@ def answer(c, county, year, done):
     if done:
         return (f"{inches_word(c['total'])} of rain fell in {year} at {w}, {county}, through {short_date(c['as_of'])}, the last day reported. "
                 + compare(c, f"a usual year through {short_date(c['as_of'])}"))
-    return (f"{inches_word(c['total'])} of rain so far in {year} at {w}, {county}, through {short_date(c['as_of'])}. "
+    amt = inches_word(c["total"])
+    return (f"{amt} of rain {'has' if amt.startswith('1.00 ') else 'have'} fallen so far in {year} at {w}, {county}, through {short_date(c['as_of'])}. "
             + compare(c))
 
 
@@ -139,22 +141,36 @@ def last_year_words(c, L, year):
     d2 = L["this_both"] - L["last_both"]
     every = L["both"] == L["days"] == c["days"]
     pre = "" if every else f"On the {L['both']} days both years reported, "
-    tail = "about the same" if abs(d2) < 0.05 else f"{inches_word(abs(d2), 1)} {'more' if d2 > 0 else 'less'}"
+    tail = f"about the same as {year - 1}" if abs(d2) < 0.05 else f"{inches_word(abs(d2), 2)} {'more' if d2 > 0 else 'less'} than {year - 1}"
     out = f"{pre}{year} had {tail}."
     return out[0].upper() + out[1:]
 
 
+RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
+
+
 def rain_print_href(c, st, year):
+    """The county page's Rain Print link: the town, the year, this station
+    (unless it missed more days than a print allows, so Rain Print picks the
+    nearest fuller record instead of refusing), and the station's lat,lon
+    (ll=) so a town name Rain Print cannot find never blocks the map."""
     town = R.station_town(c["station"]["raw"])
     place = f"{town[:32 - len(st) - 2].rstrip()}, {st}"   # shorten the town, never the state
-    sid = re.sub(r"[^A-Za-z0-9 ]", "", c["station"]["sid"]).strip()[:16]
-    q = urllib.parse.urlencode({"place": place, "year": year, "station": sid})
-    return "/rain-print?" + q
+    q = {"place": place, "year": year}
+    if (c.get("missing") or 0) <= RP_MISS_BLOCK:
+        q["station"] = re.sub(r"[^A-Za-z0-9 ]", "", c["station"]["sid"]).strip()[:16]
+    ll = c["station"].get("ll")
+    if ll:
+        q["ll"] = f"{ll[1]:.4f},{ll[0]:.4f}"
+    return "/rain-print?" + urllib.parse.urlencode(q)
 
 
 # ---------------------------------------------------------------- the chart
 
-def chart(c, year, county):
+LABEL_GAP = 18   # chart end labels at least this far apart (font 15 on phones, 10 on a laptop)
+
+
+def chart(c, year, county, noun="station"):
     W, H, L, Rm, T, B = 420, 210, 30, 50, 10, 26
     n_year = 366 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 365
     pts = c["cum"]
@@ -184,11 +200,20 @@ def chart(c, year, county):
     ly, lu = Y(pts[-1][1]), (Y(pts[-1][2]) if has_us else None)
     if has_us:
         out.append(f'<path class="rc-us" d="{path(2)}"/>')
-        if abs(ly - lu) < 15:
+        if abs(ly - lu) < LABEL_GAP:
             if ly <= lu:
-                ly, lu = ly - (15 - (lu - ly)) / 2, lu + (15 - (lu - ly)) / 2
+                ly, lu = ly - (LABEL_GAP - (lu - ly)) / 2, lu + (LABEL_GAP - (lu - ly)) / 2
             else:
-                lu, ly = lu - (15 - (ly - lu)) / 2, ly + (15 - (ly - lu)) / 2
+                lu, ly = lu - (LABEL_GAP - (ly - lu)) / 2, ly + (LABEL_GAP - (ly - lu)) / 2
+    # keep both labels inside the drawing: the top one's baseline (y+4) at 14
+    # or lower, so its 11-unit cap clears the top edge with room to spare;
+    # the lower one above the month row
+    ys = [ly] + ([lu] if has_us else [])
+    shift = max(0, 10 - min(ys))
+    shift -= max(0, max(ys) + shift - (H - B - 4))
+    ly += shift
+    if has_us:
+        lu += shift
     out.append(f'<path class="rc-yr" d="{path(1)}"/>')
     xe = X(pts[-1][0] + 1) + 5
     out.append(f'<text class="rc-yl" x="{xe:.1f}" y="{ly + 4:.1f}">{year}</text>')
@@ -196,12 +221,27 @@ def chart(c, year, county):
         out.append(f'<text class="rc-lab" x="{xe:.1f}" y="{lu + 4:.1f}">Usual</text>')
     out.append("</svg>")
     cap = (f"Inches of rain added up day by day from Jan 1{', solid line' if has_us else ''}"
-           + (", against the usual year at this station (dashed), counted on the same days" if has_us else "")
+           + (f", against the usual year at this {noun} (dashed), counted on the same days" if has_us else "")
            + f". Days with no report add nothing to {'either line' if has_us else 'the line'}.")
     return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
 
 
 # ---------------------------------------------------------------- county page
+
+ID_TYPES = {"1", "2", "6"}   # ACIS sid types a reader can look up: WBAN, co-op, GHCN (CoCoRaHS, SNOTEL)
+PICK_RULE_1 = ("The pick goes to one with NOAA normals first, then the most days reported, "
+               "then the one nearest the middle of the county.")
+# data/rain/<st>.json says "pick": 2 once fetch_county_rain.py ranked this way
+PICK_RULE_2 = ("Mountain snow sites, and stations far above the rest in the county, come last, "
+               "since their rain is not what the farms below get. Then the pick goes to one with NOAA normals, "
+               "then the most days reported, then the one nearest the middle of the county.")
+
+
+def morning_read(stw):
+    """A co-op station (ACIS sid type 2) or a CoCoRaHS gauge is read once a day,
+    most often in the morning; an airport (type 1) closes its day at midnight."""
+    return stw["net"] == "cocorahs" or stw["sid"].split(" ")[-1] == "2"
+
 
 def head(title, desc, url, ld, og_title=None, extra=""):
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
@@ -252,26 +292,31 @@ def county_page(ctx):
     stn = R.STATES[st]
     name = c["name"]
     full = f"{name}, {stn}"
+    full_c = f"{name}, {stn},"                  # before a verb or "in": "Barron County, Wisconsin, had"
     st_slug = R.slug(stn)
     url = f"{ORIGIN}/rain/{st_slug}/{ctx['slug']}"
     done = done_year(d)                         # the year is over (fetched through Dec 31)
     asof = c["as_of"]
     whole = done and asof[5:] == "12-31"        # and this station reported through Dec 31
     ans = answer(c, name, year, done)
-    title = (f"How Much Rain Did {full} Get in {year}? | AGSIST" if done
-             else f"How Much Rain Has {full} Had in {year}? | AGSIST")
+    title = (f"How Much Rain Did {full_c} Get in {year}? | AGSIST" if done
+             else f"How Much Rain Has {full_c} Had in {year}? | AGSIST")
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
-    desc = (f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. "
+    desc = (f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. "
             + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".")
     if len(desc) > 165:
-        desc = f"{inch(c['total'])} inches of rain in {full} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else ".")
+        desc = f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else ".")
     if len(desc) > 165:
         desc = f"{inch(c['total'])} inches of rain in {full}, {span}, {year}{pct_bit}."
     stw = c["station"]
-    norm_words = ("NOAA&rsquo;s 1991 to 2020 daily normals for this station" if d["normals"] == "1991-2020"
-                  else "NOAA&rsquo;s current 30-year daily normals for this station")
+    noun = "gauge" if stw["net"] == "cocorahs" else "station"     # one word for it on the whole page
+    norm_words = (f"NOAA&rsquo;s 1991 to 2020 daily normals for this {noun}" if d["normals"] == "1991-2020"
+                  else f"NOAA&rsquo;s current 30-year daily normals for this {noun}")
+    # CoCoRaHS began in 1998: the normal is NOAA's estimate, not the gauge's own 30 years
+    norm_note = (" CoCoRaHS began in 1998, so no gauge has 30 years of its own, "
+                 "and NOAA estimates the rest from long-record stations nearby." if stw["net"] == "cocorahs" else "")
     # ---- figures
     figs = [(f"Rain {'in ' + str(year) if done else 'so far'}", f"{inch(c['total'])} <small>in</small>")]
     if c["usual"] is not None:
@@ -297,28 +342,29 @@ def county_page(ctx):
             cls = "rc-up" if df > 0.004 else "rc-dn" if df < -0.004 else ""
             sign = "+" if df > 0.004 else "&minus;" if df < -0.004 else ""
             cells += f"<td>{inch(u)}</td><td{' class=' + chr(34) + cls + chr(34) if cls else ''}>{sign}{inch(abs(df))}</td>"
-        rows.append(f"<tr><td>{lab}</td>{cells}</tr>")
+        rows.append(f'<tr><th scope="row">{lab}</th>{cells}</tr>')
     tot = f"<td><b>{inch(c['total'])}</b></td>"
     if has_us:
         df = c["total"] - c["usual"]
         tot += f"<td><b>{inch(c['usual'])}</b></td><td><b>{'+' if df > 0.004 else '&minus;' if df < -0.004 else ''}{inch(abs(df))}</b></td>"
     head_cells = "<th scope=\"col\">Month</th><th scope=\"col\">Rain, in</th>" + ("<th scope=\"col\">Usual, in</th><th scope=\"col\">Vs usual</th>" if has_us else "")
     table = (f'<div class="rc-scroll" tabindex="0" role="region" aria-label="Rain by month"><table class="rc-t"><caption class="rc-sr">Rain by month in {e(full)}, {year}</caption>'
-             f"<thead><tr>{head_cells}</tr></thead><tbody>{''.join(rows)}<tr><td><b>{'Year' if done else 'So far'}</b></td>{tot}</tr></tbody></table></div>")
+             f"<thead><tr>{head_cells}</tr></thead><tbody>{''.join(rows)}<tr><th scope=\"row\"><b>{'Year' if done else 'So far'}</b></th>{tot}</tr></tbody></table></div>")
     # ---- the year in a few lines
     facts = []
-    faq = [(f"How much rain {'did' if done else 'has'} {full} {'get' if done else 'had'} in {year}?", ans)]
+    faq = [(f"How much rain {'did' if done else 'has'} {full_c} {'get' if done else 'had'} in {year}?", ans)]
     if c["pct"] is not None:
         p = c["pct"]
-        word = "About usual" if 97 <= p <= 103 else ("Wetter" if p > 103 else "Drier")
-        faq.append((f"Is {name} wetter or drier than usual in {year}?",
+        # within 3 points of usual, as Rain Print says it (|pct| < 3)
+        word = "About usual" if abs(p - 100) < 3 else ("Wetter" if p > 100 else "Drier")
+        faq.append((f"Was {name} wetter or drier than usual in {year}?" if done else f"Is {name} wetter or drier than usual in {year}?",
                     f"{word}{'' if done else ' so far'}. {where_words(c)[0].upper() + where_words(c)[1:]} had {inches_word(c['total'])} "
                     f"{'in ' + str(year) if whole else 'from Jan 1 to ' + short_date(asof)}, {p}% of the usual {inches_word(c['usual'])} for the same days."))
     if c.get("wet_month"):
         m, v = c["wet_month"]
         facts.append(f"<li><b>Wettest month:</b> {ML[m]}, {inches_word(v)}.</li>")
         faq.append((f"What was the wettest month in {name} in {year}?",
-                    f"{ML[m]}, with {inches_word(v)} at {where_words(c)}{'' if whole else ', counting the months through ' + short_date(asof)}."))
+                    f"{ML[m]}, with {inches_word(v)} at {where_words(c)}{'' if whole else ', counting Jan 1 through ' + short_date(asof)}."))
     if c.get("max_day"):
         # with multi-day reports in the year, a day inside one could have been
         # bigger, so it is the biggest one-day reading, not the most in one day
@@ -328,17 +374,21 @@ def county_page(ctx):
                     f"{inches_word(v)} on {long_date(dd)}, "
                     + ("the biggest one-day reading" if c["acc"] else "the most the gauge caught in one day")
                     + f"{'' if whole else (' this year' if not done else '') + ' through ' + short_date(asof)}."
-                    + (" Reports that cover more than one day are not counted as one day." if c["acc"] else "")))
+                    + (" A reading that covers more than one day is not counted as a one-day rain." if c["acc"] else "")))
+    elif c["acc"]:
+        # a multi-day report could hide a bigger day: say so instead of a number
+        facts.append(f"<li><b>Biggest single day:</b> not known. {c['acc']} {'report covers' if c['acc'] == 1 else 'reports cover'} more than one day, "
+                     "and the biggest day could be inside one of them.</li>")
     if c.get("dry") and c["dry"][0] >= 2:
         n, a, b = c["dry"]
         still = (b == asof and not done)
         facts.append(f"<li><b>Longest dry stretch:</b> {n} days in a row with the gauge at zero, {short_date(a)} to {short_date(b)}"
-                     + (", still going on the last day reported" if still else "") + ".</li>")
+                     + (f", still going as of {short_date(asof)}" if still else "") + ".</li>")
     if c.get("last"):
         L = c["last"]
         lmiss = L["days"] - L["reported"]
         vs = last_year_words(c, L, year)
-        facts.append(f"<li><b>{year - 1}{', the whole year' if whole else ' by the same date'}:</b> {inches_word(L['total'])} at the same station"
+        facts.append(f"<li><b>{year - 1}{', the whole year' if whole else ' by the same date'}:</b> {inches_word(L['total'])} at the same {noun}"
                      + (f" (it missed {days_word(lmiss)})" if lmiss else "") + "." + (" " + vs if vs else "") + "</li>")
         faq.append((f"How does {year} compare with {year - 1} in {name}?",
                     f"From Jan 1 to {short_date(L['through'])}, {where_words(c)} had {inches_word(L['total'])} in {year - 1}"
@@ -350,30 +400,41 @@ def county_page(ctx):
     facts_html = f'<ul class="rc-list">{"".join(facts)}</ul>' if facts else ""
     # ---- station
     miss = c["missing"]
+    sid, sid_type = stw["sid"].split(" ")[0], stw["sid"].split(" ")[-1]
+    # the ID only where a reader can look it up (WBAN, co-op, GHCN); a station
+    # named for a place that is not a town gets no repeat of its name
+    id_bit = f" ({noun} ID {e(sid)})" if sid_type in ID_TYPES else ""
     station_p = (f"The numbers come from NOAA&rsquo;s daily record for {'the CoCoRaHS volunteer gauge' if stw['net'] == 'cocorahs' else 'the station'} "
-                 f"{e(R.station_where(stw['raw']))} (station {e(stw['raw'])}), {miles_from(stw['mi'])} the middle of {e(name)}. "
-                 f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}"
-                 + (f"; {'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry." if miss else ", every one.")
-                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero.")
-    usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the station reported, so a missing day counts on neither side."
-               if c["usual"] is not None else "This station has no NOAA normal, so this page gives no usual year or percent for it.")
+                 f"{e(R.station_where(stw['raw']))}{id_bit}, {miles_from(stw['mi'])} the middle of {e(name)}. "
+                 + (f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}; "
+                    f"{'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry."
+                    if miss else f"It reported every one of the {c['days']} days from Jan 1 to {short_date(asof)}.")
+                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero."
+                 + (" It is read once a day, usually in the morning, and each reading is filed under the day it was read, "
+                    "so an evening storm can show up on the next day." if morning_read(stw) else ""))
+    usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the {noun} reported, so a missing day counts on neither side.{norm_note}"
+               if c["usual"] is not None else f"This {noun} has no NOAA normal, so this page gives no usual year or percent for it.")
     n_ok = c.get("n_ok", 1)
     if n_ok <= 1:
-        pick_p = (f"Why this station: it is the only one inside {e(name)} that reported at least 90% of the days in {year}. "
-                  "Your own rain gauge can read quite differently a few miles away.")
+        pick_p = (f"Why this {noun}: it is the only one inside {e(name)} that reported at least 90% of the days in {year}. "
+                  "Your own rain gauge can read differently a few miles away.")
     else:
-        pick_p = (f"Why this station: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
-                  "The pick goes to one with NOAA normals first, then the most days reported, then the one nearest the middle of the county. "
-                  "Your own rain gauge can read quite differently a few miles away.")
+        pick_p = (f"Why this {noun}: {n_ok} stations inside {e(name)} reported at least 90% of the days in {year}. "
+                  + (PICK_RULE_2 if d.get("pick") == 2 else PICK_RULE_1)
+                  + " Your own rain gauge can read differently a few miles away.")
     # ---- next door and links
-    nb_html = "".join(f'<li><a href="{h}">{e(n)}<small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
+    nb_html = "".join(f'<li><a class="rc-nb" href="{h}">{e(n)} <small>{v}</small></a></li>' for n, h, v in ctx["nbrs"])
     more = [(f"Rain in {e(stn)}, county by county", f"/rain/{st_slug}")]
     for label, top in (("PRF insurance in", "prf"), ("Farmland Atlas:", "farmland-atlas")):
         if os.path.exists(os.path.join(ROOT, top, st_slug, ctx["slug"] + ".html")):
             more.append((f"{label} {e(name)}", f"/{top}/{st_slug}/{ctx['slug']}"))
     more_html = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in more)
     rp = rain_print_href(c, st, year)
-    ship = "" if done else f" Prints of {year} ship in January, once the whole year is in."
+    ship = "" if done else f" Prints of {year} ship in January, once the full year is in."
+    if miss > RP_MISS_BLOCK:
+        # rain_print_href leaves the station off: say why the print draws another
+        ship += (f" This {noun} missed {miss} days this year, more than a print can show honestly, "
+                 "so Rain Print draws the nearest station with a fuller record.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
          "description": desc, "dateModified": d["fetched"][:10], "inLanguage": "en-US",
@@ -390,7 +451,7 @@ def county_page(ctx):
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", ORIGIN + "/rain"), (stn, f"{ORIGIN}/rain/{st_slug}"), (name, url)]),
     ]
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
-    h1 = (f"How much rain did {e(full)} get in {year}?" if done else f"How much rain has {e(full)} had in {year}?")
+    h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
     return head(title, desc, url, ld) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -398,17 +459,17 @@ def county_page(ctx):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/rain">Rain by county</a> &rsaquo; <a href="/rain/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
-    <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) if done else 'As of ' + long_date(asof)) + ', the last day reported'}</p>
+    <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
     <dl class="rc-figs">{figs_html}</dl>
-    {chart(c, year, name)}
+    {chart(c, year, name, noun)}
     <h2>Month by month</h2>
     {table}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
     <section class="rc-cta" aria-labelledby="rc-cta-h">
       <h2 id="rc-cta-h">See the whole year on a print you can hang</h2>
-      <p>Rain Print draws every day of {year} at this station on a 12 x 18 print: the rains, the dry spells, the dates you want to remember.{ship}</p>
+      <p>Rain Print draws every day of {year} at this {noun} on a 12 x 18 print: the rains, the dry stretches, the dates you want to remember.{ship}</p>
       <a class="btn btn-primary" href="{e(rp)}">Draw the {year} Rain Print</a>
     </section>
     <h2>The station, and what usual means</h2>
@@ -426,8 +487,17 @@ def county_page(ctx):
 
 # ---------------------------------------------------------------- state page
 
+UNIT = {"LA": ("parish", "parishes"), "AK": ("borough or census area", "boroughs and census areas")}
+UNIT_HEAD = {"LA": "Parish", "AK": "Borough"}
+
+
+def unit(st):
+    """(one, many): what a state calls its counties."""
+    return UNIT.get(st, ("county", "counties"))
+
+
 def middle(cs):
-    """The middle county's percent of usual (the median), or None."""
+    """The median county's percent of usual, or None."""
     p = sorted(c["pct"] for c in cs.values() if c["pct"] is not None)
     if not p:
         return None
@@ -444,21 +514,26 @@ def state_page(st, d, pages, none_rows):
     asofs = sorted({c["as_of"] for c in cs.values()})
     done = done_year(d)
     mid = middle(cs)
-    title = f"How Much Rain Has {stn} Had in {year}? Every County | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? Every County | AGSIST"
-    lede = (f"{len(cs)} {stn} counties have a NOAA or CoCoRaHS station inside the county that reported at least 90% of the days in {year}"
-            + ("." if done else f", through {short_date(asofs[-1])}" + (f" (a few stations stop a day or more earlier)." if len(asofs) > 1 else ".")))
+    u1, un = unit(st)
+    by = {"LA": "Parish by Parish", "AK": "Borough by Borough"}.get(st, "County by County")
+    title = f"How Much Rain Has {stn} Had in {year}? {by} | AGSIST" if not done else f"How Much Rain Did {stn} Get in {year}? {by} | AGSIST"
+    early = sum(1 for c in cs.values() if c["as_of"] < asofs[-1])
+    lede = (f"{len(cs)} {stn} {un} have a NOAA or CoCoRaHS station inside the {u1} that reported at least 90% of the days in {year}"
+            + ("." if done else f", through {short_date(asofs[-1])}"
+               + (f" ({early} {'station stops' if early == 1 else 'stations stop'} earlier; each {u1} page gives its own last day)." if early else ".")))
     if mid is not None:
-        lede += f" The middle county is at {mid}% of a usual year{'' if done else ' to date'}."
+        lede += f" Half the {un} are above {mid}% of a usual year{'' if done else ' to date'} and half below."
     wettest = max(cs.items(), key=lambda kv: kv[1]["total"])
     driest = min(cs.items(), key=lambda kv: kv[1]["total"])
-    desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties, from NOAA and CoCoRaHS stations: inches, percent of usual and the station. "
+    desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un}, from NOAA and CoCoRaHS stations: inches, percent of usual and the station. "
             f"Most: {wettest[1]['name']}, {inch(wettest[1]['total'])} in.")
     if len(desc) > 165:
-        desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} counties from NOAA and CoCoRaHS stations: inches, percent of usual, the station."
+        desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un} from NOAA and CoCoRaHS stations: inches, percent of usual, the station."
     rows = []
     for fips, c in sorted(cs.items(), key=lambda kv: kv[1]["name"]):
         href = pages[fips][1]
-        rows.append(f'<tr><td><a href="{href}">{e(re.sub(r" County$", "", c["name"]))}</a></td><td>{inch(c["total"])}</td>'
+        early_bit = "" if c["as_of"] == asofs[-1] else f' <span class="rc-n">to {short_date(c["as_of"])}</span>'
+        rows.append(f'<tr><th scope="row"><a href="{href}">{e(re.sub(r" (County|Parish)$", "", c["name"]))}</a>{early_bit}</th><td>{inch(c["total"])}</td>'
                     f'<td>{inch(c["usual"]) if c["usual"] is not None else "none"}</td><td>{str(c["pct"]) + "%" if c["pct"] is not None else "none"}</td>'
                     f'<td>{e(R.station_name(c["station"]["raw"]))}</td><td>{short_date(c["as_of"])}</td></tr>')
     none_html = ""
@@ -466,16 +541,20 @@ def state_page(st, d, pages, none_rows):
         held = [r for r in none_rows if r[3]]
         items = "".join(f"<li>{e(n)}{'*' if hd else ''} <small>{('nearest: <a href=' + chr(34) + h + chr(34) + '>' + e(nn) + '</a>') if h else 'none nearby either'}</small></li>"
                         for n, nn, h, hd in none_rows)
-        none_html = (f'<h2>Counties without a page</h2><p>These {len(none_rows)} counties have no station inside them that reported at least 90% of the days '
-                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest county that has one.</p><ul class="rc-states">{items}</ul>'
-                     + (f'<p class="rc-fine">* This county&rsquo;s station reported, but its gauge read under 40% of what every county around it read, in a place that usually gets real rain. '
-                        f'That is far more often a stuck or clogged gauge than a dry year, so it is left out rather than shown.</p>' if held else ''))
+        none_html = (f'<h2>{un[0].upper() + un[1:]} without a page</h2><p>These {len(none_rows)} {un if len(none_rows) != 1 else u1} have no station inside them that reported at least 90% of the days '
+                     f'in {year}{"" if done else " so far"}, so they get no page. A missing day is not a dry day, and a total with too many of them would read low. Next to each is the nearest {u1} that has one.</p><ul class="rc-states">{items}</ul>'
+                     # fits both holds in fetch_county_rain.hold_outliers: the
+                     # percent against the neighbors' median, and the total
+                     # (no normal) against every neighbor's
+                     + (f'<p class="rc-fine">* This {u1}&rsquo;s station reported, but it caught under 40% of what the {un} around it typically caught, in a place that usually gets real rain. '
+                        f'That is far more often a stuck or clogged gauge than a dry year, so it is left out.</p>' if held else ''))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", ORIGIN + "/rain"), (stn, url)]),
     ]
-    h1 = f"How much rain has {e(stn)} had in {year}? County by county" if not done else f"How much rain did {e(stn)} get in {year}? County by county"
+    by = by[0] + by[1:].lower()
+    h1 = f"How much rain has {e(stn)} had in {year}? {by}" if not done else f"How much rain did {e(stn)} get in {year}? {by}"
     return head(title, desc, url, ld) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -486,10 +565,10 @@ def state_page(st, d, pages, none_rows):
     <p class="rc-asof">{'All of ' + str(year) if done else 'As of ' + long_date(asofs[-1])}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{lede}</p>
-    <div class="rc-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by county, {e(stn)}</caption>
-    <thead><tr><th scope="col">County</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
+    <div class="rc-scroll" tabindex="0" role="region" aria-label="Every {u1}, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by {u1}, {e(stn)}</caption>
+    <thead><tr><th scope="col">{UNIT_HEAD.get(st, "County")}</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
-    <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each county page has the month by month table and how the station was picked.</p>
+    <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
     {none_html}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt every Monday. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
@@ -510,8 +589,9 @@ def hub_page(files, built):
             continue
         mid = middle(d["counties"])
         last = max(c["as_of"] for c in d["counties"].values())
-        rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} counties'
-                    + (f", middle county {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
+        u1, un = unit(st)
+        rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} {un if len(d["counties"]) != 1 else u1}'
+                    + (f", typical {u1} {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
@@ -531,12 +611,12 @@ def hub_page(files, built):
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a NOAA or CoCoRaHS station in that county, against a usual year, month by month.</p>
     <ul class="rc-states">{''.join(rows)}</ul>
-    <h2>How these numbers are kept honest</h2>
+    <h2>How the numbers are counted</h2>
     <ul class="rc-list">
-      <li>One NOAA or CoCoRaHS station per county, inside the county, and only one that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
+      <li>Each county page uses one NOAA or CoCoRaHS station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
-      <li>Every page says the last day reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
+      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
     </ul>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print</a> draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
@@ -692,11 +772,11 @@ def selftest():
             ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower(), f"{rel}: never says today")
         d = json.load(open(os.path.join(data, "ia.json")))
         c = d["counties"]["19169"]
-        ok(f"{c['total']:.2f} inches of rain so far in 2026 at the NOAA station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
+        ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the NOAA station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
            "the answer comes first, in plain words")
-        ok(f"({c['pct']}%)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
-        ok("<title>How Much Rain Has Story County, Iowa Had in 2026? | AGSIST</title>" in story, "title")
-        ok(re.search(r'<meta name="description" content="27\.61 inches of rain in Story County, Iowa in 2026', story) is not None, "description carries the number")
+        ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
+        ok("<title>How Much Rain Has Story County, Iowa, Had in 2026? | AGSIST</title>" in story, "title")
+        ok(re.search(r'<meta name="description" content="27\.61 inches of rain in Story County, Iowa, in 2026', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
         gc = rain_print_href({"station": {"raw": "GARDEN CITY EXP STN", "sid": "142980 2"}}, "KS", 2026)
         ok(gc == "/rain-print?place=Garden+City%2C+KS&year=2026&station=142980+2", f"Rain Print link from an experiment station: {gc}")
@@ -709,7 +789,7 @@ def selftest():
         lyh = county_page({"c": c0, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         lyw = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", lyh, flags=re.S))
         ok(not re.search(r"2\.8 inches|\bahead\b|\bbehind\b", lyw), "last year's gaps are not counted as rain this year had")
-        ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same." in lyw, "last year's gaps said, and the comparison on common days")
+        ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same as 2025." in lyw, "last year's gaps said, and the comparison on common days")
         ok("ship in January" in story, "this year's prints ship in January")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")
         ok("As of Oct 12, 2026" in story, "as-of date shown")
@@ -724,10 +804,70 @@ def selftest():
         ij["counties"][nf]["as_of"] = "2026-10-02"
         json.dump(ij, open(os.path.join(dn, "ia.json"), "w"))
         sn = build(dn)["rain/iowa/story-county.html"]
-        ok(re.search(r'<a href="/rain/iowa/' + R.slug(ij["counties"][nf]["name"]) + r'">[^<]*<small>[^<]* to Oct 2</small>', sn) is not None, "next-door chip names an older last day")
+        ok(re.search(r'<a class="rc-nb" href="/rain/iowa/' + R.slug(ij["counties"][nf]["name"]) + r'">[^<]* <small>[^<]* to Oct 2</small>', sn) is not None, "next-door chip names an older last day")
         ok(re.search(r"<small>[^<]* to Oct 12</small>", sn) is None, "next-door chip on the same day carries no date")
+        sp = build(dn)["rain/iowa.html"]
+        ok(re.search(r'<th scope="row"><a href="/rain/iowa/' + R.slug(ij["counties"][nf]["name"]) + r'">[^<]*</a> <span class="rc-n">to Oct 2</span></th>', sp) is not None,
+           "state table: a county whose station stops earlier says to which day under its name")
+        ok("1 station stops earlier; each county page gives its own last day" in sp, "state lede counts the stations that stop earlier")
+        # a state that calls its counties parishes, with a held county
+        dl = os.path.join(t, "parish")
+        os.makedirs(dl)
+        lj = json.load(open(os.path.join(data, "ia.json")))
+        lj["state"] = "LA"
+        hf = next(iter(lj["none"]))
+        lj["none"][hf]["held"] = "SOME GAUGE"
+        json.dump(lj, open(os.path.join(dl, "la.json"), "w"))
+        wl = build(dl)
+        la, lh = wl["rain/louisiana.html"], wl["rain.html"]
+        ok(f"{len(lj['counties'])} Louisiana parishes have a NOAA or CoCoRaHS station inside the parish" in la, "Louisiana: parishes in the lede")
+        ok('<th scope="col">Parish</th>' in la and "<h2>Parishes without a page</h2>" in la and "Half the parishes are above" in S.text_of(la), "Louisiana: parish in the table and lists")
+        ok(not re.search(r"Louisiana counties|\d+ counties", S.text_of(la) + S.text_of(lh)), "Louisiana is never counted in counties")
+        ok("parishes, typical parish" in lh, "hub row counts parishes")
+        ok("caught under 40% of what the parishes around it typically caught" in la and "every county around it" not in la, "held footnote fits both holds")
+        ok("Parish by Parish | AGSIST</title>" in la and "Parish by parish</h1>" in la and "Every County" not in la and "Each parish page" in la, "state title does not promise every county, and calls them parishes")
+        ok("County by County | AGSIST</title>" in want["rain/iowa.html"] and "Every County" not in want["rain/iowa.html"], "state title: county by county")
         ok("3 days not reported" not in story and "1 day not reported" in story, "a month with a gap says so")
         jef = want.get("rain/iowa/greene-county.html", "")
+        ok(jef and "this station" not in jef and "at this gauge" in jef and "Why this gauge:" in jef, "a CoCoRaHS page calls it a gauge throughout")
+        ok(jef and "read once a day, usually in the morning" in jef, "a CoCoRaHS gauge says when it is read")
+        ok("(station ID 130203)" in story and "(station AMES" not in story, "station paragraph gives the ID, not the raw name again")
+        ok(re.search(r"It reported (every one of the \d+ days|\d+ of the \d+ days)", story) and ", every one." not in story, "days reported in plain words")
+        sw = county_page({"c": dict(c, station=dict(c["station"], raw="Eastern Band of Cherokee Indians", sid="3056 19")), "st": "NC", "fips": "37173",
+                          "year": 2026, "d": d, "slug": "swain-county", "nbrs": [], "n_ok": 1})
+        sww = S.text_of(re.sub(r"<script.*?</script>", "", sw, flags=re.S))
+        swp = sww[sww.find("The numbers come from"):sww.find("Rain here means")]
+        ok(swp.count("Eastern Band of Cherokee Indians") == 1 and "station ID 3056" not in sww and "read once a day" not in sww,
+           f"a station named for a place that is not a town is named once: {sww[sww.find('The numbers'):sww.find('The numbers') + 160]}")
+        cg = county_page({"c": dict(c, station=dict(c["station"], net="cocorahs", sid="US1IAST0001 6")), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok("daily normals for this gauge, added up over the same" in cg and "no gauge has 30 years of its own, and NOAA estimates the rest from long-record stations nearby." in cg,
+           "a CoCoRaHS gauge's normal is said to be NOAA's estimate")
+        ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
+        # the pick rule the page states is the one the data file says the fetch used
+        for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last")):
+            dp = {k: v for k, v in d.items() if k != "pick"}
+            if pk:
+                dp["pick"] = pk
+            pg = county_page({"c": dict(c, n_ok=3), "st": "IA", "fips": "19169", "year": 2026, "d": dp, "slug": "story-county", "nbrs": [], "n_ok": 3})
+            ok(words in pg, f"pick rule {pk}: {words}")
+        # more days missing than Rain Print allows: the link drops the station and says why
+        m32 = county_page({"c": dict(c, missing=32, reported=c["days"] - 32), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        rp32 = re.search(r'href="(/rain-print\?[^"]*)"', m32).group(1)
+        ok("station=" not in rp32 and "ll=" in rp32, f"over MISS_BLOCK missing: no station in the Rain Print link ({rp32})")
+        ok("This station missed 32 days this year, more than a print can show honestly, so Rain Print draws the nearest station with a fuller record." in m32, "over MISS_BLOCK: the CTA says why")
+        ok("station=130203+2&amp;ll=" in story, "the link carries the station and its lat,lon")
+        # chart end labels: inside the drawing and apart, on every fixture page and at the edges
+        edge = []
+        for top in (0.0, 0.3, c["total"] * 0.999, c["total"] * 1.6):
+            cum = [list(p) for p in c["cum"]]
+            cum[-1][2] = top if top else cum[-1][1]
+            edge.append(chart(dict(c, cum=cum, usual=max(c["usual"] or 1, cum[-1][2])), 2026, "x"))
+        for body in [b for k, b in want.items() if k.count("/") == 2] + edge:
+            yl = re.search(r'class="rc-yl" x="[\d.]+" y="([\d.-]+)"', body)
+            us = re.search(r'class="rc-lab" x="[\d.]+" y="([\d.-]+)">Usual', body)
+            ys = [float(yl.group(1))] + ([float(us.group(1))] if us else [])
+            ok(all(14 - 0.05 <= y <= 184 + 0.05 for y in ys), f"chart label inside the drawing: {ys}")
+            ok(len(ys) == 1 or abs(ys[0] - ys[1]) >= LABEL_GAP - 0.05, f"chart labels at least {LABEL_GAP} apart: {ys}")
         ok(jef and "no NOAA normal" in jef and "Percent of usual" not in jef and 'class="rc-us"' not in jef, "no normals: no percent, no usual line")
         ok(jef and "CoCoRaHS volunteer gauge" in jef, "a CoCoRaHS gauge is named as one")
         ok(jef and "Daily precipitation from the CoCoRaHS volunteer gauge " in jef and "from NOAA station" not in jef, "the Dataset says a CoCoRaHS gauge is one")
@@ -741,19 +881,20 @@ def selftest():
             pg = county_page({"c": dict(c, station=dict(c["station"], mi=mi)), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
             ok(words in pg and " 1 miles" not in pg and " 0 miles" not in pg, f"station distance {mi}: {words}")
         dz = dict(c, usual=0.8, pct=None, as_of="2026-10-12")
-        ok(compare(dz) == "The usual rain so far here is under an inch, too little for a fair percent.", f"a desert in October is not early in the year: {compare(dz)}")
+        ok(compare(dz) == "A usual year here has had less than an inch of rain by now, too little for a fair percent.", f"a desert in October is not early in the year: {compare(dz)}")
         ok("too early" in compare(dict(dz, as_of="2026-02-10")), "February with under an inch usual: too early")
         c1 = dict(c, acc=0, unsplit=3)
         nb = county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         ok("On 0 reports" not in nb, "no multi-day reports: no line about them")
         c1 = dict(c, max_day=None, acc=2)
         nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
-        ok("biggest rain" not in nb and "Biggest single day" not in nb and "Biggest one-day" not in nb, "no biggest day: not claimed anywhere")
+        ok("biggest rain" not in nb and not re.search(r"Biggest single day: *\d", nb) and "Biggest one-day" not in nb, "no biggest day: not claimed anywhere")
+        ok("Biggest single day: not known. 2 reports cover more than one day" in nb, "no biggest day: the page says why")
         c1 = dict(c, acc=2)
         nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
         ok("the most the gauge caught in one day" not in nb and "Biggest one-day reading" in nb, "with multi-day reports: a one-day reading, not the most in one day")
         de = want.get("rain/delaware/kent-county.html", "")
-        ok(de and "How Much Rain Did Kent County, Delaware Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
+        ok(de and "How Much Rain Did Kent County, Delaware, Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
         dd3 = os.path.join(t, "late")
@@ -766,7 +907,7 @@ def selftest():
         json.dump(dj, open(os.path.join(dd3, "de.json"), "w"))
         w3 = build(dd3)
         k3 = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", w3["rain/delaware/kent-county.html"]))
-        ok("How Much Rain Did Kent County, Delaware Get in 2024?" in k3 and "ship in January" not in k3, "a lagging station does not reopen a finished year")
+        ok("How Much Rain Did Kent County, Delaware, Get in 2024?" in k3 and "ship in January" not in k3, "a lagging station does not reopen a finished year")
         ok("through Dec 29, the last day reported" in k3 and "Jan 1 to Dec 31" not in k3 and "2023, the whole year" not in k3, f"a finished year still says the last day reported")
         hub3 = w3["rain.html"]
         ok("How much rain did your county get in 2024?" in hub3 and "so far" not in S.text_of(hub3), "hub: finished-year wording when every state is done")

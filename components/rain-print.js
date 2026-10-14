@@ -37,7 +37,7 @@
  *
  * DOWNLOADS. The public button gives a watermarked preview PNG. /rain-print?maker=1
  * shows Sig's clean 300 dpi print files (12x18 in, 0.125 in bleed, so 12.25 x 18.25 in
- * and fits the 13 x 19 sheets his Epson takes),
+ * and fits a 13 x 19 sheet),
  * a PDF of the same and the SVG. That switch is a convenience, not security:
  * the art is drawn in the reader's browser and anyone can save it.
  *
@@ -555,11 +555,11 @@
   }
   function geoPick(q, results) {
     var g = geocodeQuery(q), list = (results || []).filter(function (x) { return x && typeof x.latitude === 'number' && typeof x.longitude === 'number' && x.name; });
-    if (!list.length) return { error: g.zip ? 'Couldn\u2019t find ZIP ' + g.zip + '. Type the town and state instead, like Chetek, WI.' : 'Couldn\u2019t find "' + q + '". Check the spelling, and type a town and state, like Chetek, WI.' };
+    if (!list.length) return { error: g.zip ? 'Couldn\u2019t find ZIP ' + g.zip + '. Type the town and state instead, like Chetek, WI.' : 'Couldn\u2019t find \u201c' + q + '\u201d. Check the spelling, and type a town and state, like Chetek, WI.' };
     if (g.zip) return { hit: list[0] };
     if (g.st) {
       var inSt = list.filter(function (x) { var a = String(x.admin1 || '').toLowerCase(); return a === STATE[g.st] || a === g.st; });
-      if (!inSt.length) return { error: 'Couldn\u2019t find "' + parts0(q) + '" in ' + (STATE[g.st] ? toTitle(STATE[g.st]) : g.st.toUpperCase()) + '. Check the spelling of the town and the state.' };
+      if (!inSt.length) return { error: 'Couldn\u2019t find \u201c' + parts0(q) + '\u201d in ' + (STATE[g.st] ? toTitle(STATE[g.st]) : g.st.toUpperCase()) + '. Check the spelling of the town and the state.' };
       list = inSt;
     }
     // more than one town of that name, far enough apart to have different gauges: ask
@@ -610,10 +610,11 @@
   }
 
   /* Why a share link can't be drawn, in words, or '' when it can (or there is no design in it). */
-  function linkProblem(search) {
+  function linkProblem(search, todayIso) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+    var shown = parseInt(String(todayIso || chicagoToday()).slice(0, 4), 10) - 1;
     if (q.get('d')) return decodeCode(q.get('d')) ? '' : 'That link\u2019s design code is damaged or cut short, so it can\u2019t be drawn. Ask whoever sent it for the link again, or type the town and press Draw it.';
-    if (q.has('year') && normalize({ year: q.get('year') }).year === null) return 'That link\u2019s year (' + cleanText(q.get('year'), 12) + ') isn\u2019t one we can draw. Pick a year from 1890 on and press Draw it.';
+    if (q.has('year') && normalize({ year: q.get('year') }).year === null) return 'That link\u2019s year (' + cleanText(q.get('year'), 12) + ') isn\u2019t one I can draw, so this shows ' + shown + '. Pick another year and press Draw it.';
     if (q.has('year') && !cleanText(q.get('place'), LIMITS.place)) return 'That link has no town in it. Type the town and press Draw it.';
     return '';
   }
@@ -625,19 +626,28 @@
      "Rice Lake Municipal Airport". */
   function sidPlain(sid) {
     var p = String(sid || '').trim().split(/\s+/);
+    if (/^US1/.test(p[0])) return 'CoCoRaHS gauge ' + p[0];
     return (p[1] === '2' ? 'NOAA co-op station ' : 'NOAA station ') + p[0];
   }
   var STN_WORD = { AP: 'Airport', MUNI: 'Municipal', INTL: 'International', RGNL: 'Regional', CO: 'County', FLD: 'Field', ARPT: 'Airport', STN: 'Station', EXP: 'Experiment', AG: 'Ag' };
-  function stationName(raw) {
+  /* {name, off}: "CAMERON 2 NE" is {name: "Cameron", off: "2 mi NE"}. */
+  function stationParts(raw) {
     var s = String(raw || '').trim().replace(/\s+/g, ' ');
-    var off = /^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$/.exec(s), tail = '';
-    if (off) { s = off[1]; tail = ', ' + off[2] + ' mi ' + off[3]; }
-    return s.split(' ').map(function (w) {
+    var m = /^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$/.exec(s), off = '';
+    if (m) { s = m[1]; off = m[2] + ' mi ' + m[3]; }
+    return { name: s.split(' ').map(function (w) {
       var u = w.toUpperCase();
       if (STN_WORD[u]) return STN_WORD[u];
       if (/^[NSEW]{1,3}$/.test(u) || /\d/.test(w)) return u;
       return u.charAt(0) + u.slice(1).toLowerCase();
-    }).join(' ') + tail;
+    }).join(' '), off: off };
+  }
+  function stationName(raw) { var P = stationParts(raw); return P.name + (P.off ? ', ' + P.off : ''); }
+  /* The station in one set of words, on the print, the page and the order:
+     "Cameron, WI (2 mi NE of Cameron)". m: {name, state or stateAbbr}. */
+  function stationLabel(m) {
+    var P = stationParts(m && m.name), st = (m && (m.state || m.stateAbbr)) || '';
+    return P.name + (st ? ', ' + st : '') + (P.off ? ' (' + P.off + ' of ' + P.name + ')' : '');
   }
   function milesText(mi) { return mi < 0.1 ? 'under 0.1 mi' : (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; }
 
@@ -679,7 +689,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -702,7 +712,7 @@
   var ORDER_TO = 'sig@farmers1st.com';
 
   var ST = fromParams(root.location.search);
-  var EXT_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
+  var EXT_WAIT = false, BUY_NOTE_CODE = '', EX_NOTE = false, XMAS_OFF = true;
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '', DRAWING = false;
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
      while a year-to-date preview is drawn. NOART: the plain message shown
@@ -758,9 +768,13 @@
   function syncExampleNote() {
     var left = exampleLeft(readInputs());
     $('rp-ex-note').hidden = !left.length;
+    // the "example still on the print" note under the prices goes once the example has
+    if (EX_NOTE && !left.length) { $('rp-buy-note').textContent = ''; EX_NOTE = false; }
   }
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
 
+  // smooth scrolling, unless the reader asked for less motion
+  function smooth() { try { return root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch (e) { return 'smooth'; } }
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
@@ -990,7 +1004,7 @@
     if (RECS_P) return RECS_P;
     RECS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rain-print-records.js?v=1';
+      sc.src = '/components/rain-print-records.js?v=2';
       sc.onload = function () { res(!!root.AgRainRecords); };
       sc.onerror = function () { RECS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -1032,7 +1046,7 @@
   // After the reader's own draw, bring the frame into view if it is above the screen.
   function showArt() {
     var w = $('rp-wall');
-    try { if (w.getBoundingClientRect().top < 0) w.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+    try { if (w.getBoundingClientRect().top < 0) w.scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
   }
   // Back to the page as it loads with no design: the empty box and the first instruction.
   function clearSample() {
@@ -1093,7 +1107,7 @@
     setDesignRefs();
     showBuy(true);
     sampleLine(false);
-    setStatus('This is the ' + ST.place + ', ' + ST.year + ' design now. Change what you like, or order it below.');
+    setStatus('This print is yours to change now: ' + ST.place + ', ' + ST.year + '. Change what you like, or order it below.');
   }
   function radios(name) { return Array.prototype.slice.call(doc.querySelectorAll('input[name="' + name + '"]')); }
   function pick(n, dflt) { var r = radios(n).find(function (x) { return x.checked; }); return r ? r.value : dflt; }
@@ -1110,7 +1124,7 @@
       normals: $('rp-normals').checked, records: $('rp-records').checked });
   }
   // The year list: this year first (a gift, delivered in January), then every finished year.
-  function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year}, as a gift (delivered in January)'); }
+  function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year} (ships in January)'); }
   function buildYears() {
     var h = '<option value="' + CURRENT_YEAR + '">' + esc(giftYearLabel()) + '</option>';
     for (var y = CURRENT_YEAR - 1; y >= 1890; y--) h += '<option value="' + y + '">' + y + '</option>';
@@ -1226,11 +1240,13 @@
     var formOnly = PRODUCTS.some(function (id) { return !payLink(id); });
     $('rp-gift-fields').hidden = !formOnly;
     $('rp-gift-cardnote').textContent = formOnly
-      ? 'Want a card to put under the tree? Order it as a gift with the box above filled in. Once you\u2019ve paid, I email you a gift card to print, with a code they use to see their print.'
-      : 'At checkout you can say who it\u2019s for and write a note for the card. Once you\u2019ve paid, I email you a gift card to print for under the tree, with a code they use to see their print.';
+      ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
+      : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
+    // the digital file's card: this year's comes in January with the proof
+    $('rp-dig-when').textContent = on ? 'A proof and the files in January, once the full year is in' : 'A proof first, then the files by email within 1 business day of your OK';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
-      : on ? 'I\u2019ll email you within a day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
+      : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1263,16 +1279,18 @@
     }
   }
   function distText(m) {
+    if (m.approx) return 'near ' + m.city;   // a county link whose town the lookup didn't know: no distance claimed
     return milesText(miles(m.km)) + ' from ' + m.city;
   }
-  // "the Chetek, WI weather station, 0.4 mi from Chetek (NOAA co-op station 471667)"
-  function gaugeWords(m) { return stationName(m.name) + ', ' + (m.state || m.stateAbbr) + ' weather station'; }
+  // "Cameron, WI (2 mi NE of Cameron)", the same words on the print, the page and the order
+  function gaugeWords(m) { return stationLabel(m); }
+  // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
   function gaugeHtml(m) {
     return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' +
       (STATIONS.length > 1 ? ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
   // the station line on the art itself: name and distance, both styles
-  function gaugeLine(m) { return 'Rain gauge: ' + gaugeWords(m) + ', ' + distText(m); }
+  function gaugeLine(m) { return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m); }
   function usualWords() {
     if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
     if (ST.cmp === 'station' && EXT) return 'A usual year here means this station\u2019s own average, ' + EXT.yearFrom + ' to ' + EXT.yearTo + ', counted only on the days it reported.';
@@ -1294,7 +1312,7 @@
     art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
-    $('rp-source').innerHTML = 'The print will come from the ' + gaugeHtml(m) +
+    $('rp-source').innerHTML = 'The print will come from this weather station: ' + gaugeHtml(m) +
       '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
     setDesignRefs();
     showBuy(true);
@@ -1314,7 +1332,7 @@
     var dist = distText(m);
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
-    $('rp-source').innerHTML = 'Rain gauge: the ' + gaugeHtml(m) + '. ' +
+    $('rp-source').innerHTML = 'Weather station: ' + gaugeHtml(m) + '. ' +
       (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
@@ -1324,12 +1342,12 @@
       (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
       (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' : '') +
-      (ST.records && SKIPPED.length ? ' No room on the art for: ' + esc(SKIPPED.join('; ')) + '.' : '') +
+      (ST.records && SKIPPED.length ? ' Left off the print for space: ' + esc(SKIPPED.join(', ')) + '.' : '') +
       (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
     var rows = [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
-      ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Wet days', D.wet], ['Longest dry spell', D.dryMax.len + ' days'],
-      ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : D.wet ? 'not known (rain reported only as multi-day totals)' : 'no measurable rain'],
+      ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
+      ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + f2(D.max.v) + ' in' : D.wet ? 'not known: a report that covers several days could hold a bigger one' : 'no measurable rain'],
       ['Trace days', D.trace], ['Days with no report', D.missing],
       ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
@@ -1390,6 +1408,8 @@
         var q = placeLabel(x);
         PICKED = { q: q, hit: x };
         $('rp-place').value = q;
+        // the button is about to vanish: keep the keyboard on the town box
+        try { $('rp-place').focus({ preventScroll: true }); } catch (err) {}
         box.hidden = true;
         run({ type: 'submit', preventDefault: function () {} });
       });
@@ -1399,6 +1419,22 @@
     try { box.querySelector('button').focus(); } catch (e) {}
   }
 
+  /* COUNTY LINKS (2026-10-14). A county rain page links here with its
+     station's own place: ?ll=lat,lon. On that link's first draw the station
+     search centers there, so the named station is found even when the town
+     lookup misses or finds another town of that name. Distances still run from
+     the town; when the town can't be found the print says "near" it instead of
+     a distance it doesn't know. */
+  var LINK_LL = (function () {
+    var q = new URLSearchParams(root.location.search), m = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/.exec(q.get('ll') || '');
+    if (!m) return null;
+    var lat = +m[1], lon = +m[2];
+    return lat >= 15 && lat <= 72 && lon >= -180 && lon <= -60 ? { lat: lat, lon: lon, place: ST.place } : null;
+  })();
+  function llTown(ll) {
+    var q = geocodeQuery(ST.place), full = STATE[q.st];
+    return { name: parts0(ST.place), admin1: full ? toTitle(full) : '', latitude: ll.lat, longitude: ll.lon, approx: true };
+  }
   var reqToken = 0;
   function run(e, preset) {
     if (e) e.preventDefault();
@@ -1421,15 +1457,27 @@
     var my = ++reqToken;
     ST = next;
     if (ST.records) recordsReady();
-    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = '';
+    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; EX_NOTE = false;
+    // a note about the last draw's station is about that draw only
+    if (!$('rp-link-note').classList.contains('rp-bad')) $('rp-link-note').hidden = true;
     var go = $('rp-go'), sel = $('rp-station');
+    // Draw is about to turn off: keep the keyboard on the town box, not lost on the page
+    if (doc.activeElement === go) { try { $('rp-place').focus({ preventScroll: true }); } catch (err) {} }
     go.disabled = true; sel.disabled = true;
+    // nothing drawn yet: say what is being drawn, and tell a screen reader the box is busy
+    if (!DATA && !SAMPLE && ST.place && ST.year) {
+      art.innerHTML = '<p class="rp-placeholder">Drawing ' + esc(ST.place) + ', ' + ST.year + ' from NOAA records\u2026</p>';
+      art.classList.add('rp-empty');
+    }
+    art.setAttribute('aria-busy', 'true');
     BLOCKED = ''; DRAWING = true;
     $('rp-retry-row').hidden = true;
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false;
-    var done = function () { if (my === reqToken) { DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
+    // the county page's station location, on the first draw of its own link only
+    var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
+    var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
@@ -1448,51 +1496,91 @@
           return geocode(q).then(function (hit) { ST.place = cleanText(placeLabel(hit), LIMITS.place); $('rp-place').value = ST.place; return hit; }, next);
         };
         return next();
+      }).then(function (hit) {
+        // a town found far from the linked station is another town of that name
+        return ll && haversine(hit.latitude, hit.longitude, ll.lat, ll.lon) > 60 ? llTown(ll) : hit;
+      }, function (err) {
+        // the county page's station town isn't a town the lookup knows: the station's own place stands in
+        if (ll && err !== 'stale') return llTown(ll);
+        throw err;
       });
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       g = res;
       // a ZIP or a picked town: the print, the link and the order name the town found
       if (geocodeQuery(ST.place).zip) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
-      setStatus('Looking for NOAA stations near ' + g.name + ', ' + g.admin1 + '…');
-      return stations(g.latitude, g.longitude, ST.year);
+      setStatus('Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
+      // a county link searches around its own station, so that station is in the list
+      return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
+      // distances on the page are from the town, wherever the search was centered
+      if (ll) list = list.map(function (s) { return Object.assign({}, s, { km: haversine(g.latitude, g.longitude, s.ll[1], s.ll[0]) }); }).sort(function (a, b) { return a.km - b.km; });
       STATIONS = list;
-      if (!list.length) throw new Error(ST.gift ? 'No NOAA station within about 40 miles of ' + g.name + ' has a ' + ST.year + ' record from January 1 on. Try a bigger town nearby.'
-        : 'No NOAA station within about 40 miles of ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
-      var want = list.find(function (s) { return s.sid === ST.station; });
-      if (want) { chosen = want; return daily(want.sid, ST.year).then(function (d) { picked = d; }); }
-      // Nearest first; take the first of three with a near-complete year, else the most complete.
-      autoPick = true;
-      var tries = list.slice(0, 3), best = null, bestSt = null, i = 0;
-      var step = function () {
-        if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
-        var s = tries[i++];
-        setStatus('Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
-        return daily(s.sid, ST.year).then(function (d) {
-          if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
-          if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
-          return step();
-        }, function () { return step(); });
+      var noStation = function () {
+        return new Error(ST.gift ? 'No NOAA station near ' + g.name + ' is reporting for ' + ST.year + ' from January 1 on. Try a bigger town nearby.'
+          : 'No NOAA station near ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
       };
-      return step();
+      /* A link that names its station (a county rain page, a shared design)
+         draws that station, even when the station list here missed it (the box
+         around the town, a record that starts after Jan 1, the stale filter).
+         When NOAA won't give it, the nearest good station draws instead and
+         the note under the town box says so (2026-10-14: it was swapped, or
+         stuck, without a word). */
+      var linked = ST.station, want = linked ? list.find(function (s) { return s.sid === linked; }) : null;
+      var instead = function () {
+        if (my !== reqToken) throw 'stale';
+        ST.station = '';
+        var n = $('rp-link-note');
+        n.textContent = 'The station in the link (' + sidPlain(linked) + ') didn\u2019t answer from NOAA just now, so this print uses the nearest station with a good record.';
+        n.classList.remove('rp-bad'); n.hidden = false;
+        return nearest(linked);
+      };
+      if (want) return daily(want.sid, ST.year).then(function (d) { chosen = want; picked = d; }, instead);
+      if (linked) return daily(linked, ST.year).then(function (d) {
+        if (!d || !d.meta || !Array.isArray(d.meta.ll) || d.meta.ll.length < 2) throw new Error('no place for that station');
+        chosen = { sid: linked, name: d.meta.name || linked, state: d.meta.state || '', ll: d.meta.ll, km: haversine(g.latitude, g.longitude, d.meta.ll[1], d.meta.ll[0]),
+          valid_daterange: [[ST.year + '-01-01', lastDayOf(ST.year)]] };
+        STATIONS = [chosen].concat(list);
+        picked = d;
+      }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
+      return nearest('');
+      // Nearest first; take the first of three with a near-complete year, else the most complete. skip: a station that just failed.
+      function nearest(skip) {
+        var pool = list.filter(function (s) { return s.sid !== skip; });
+        if (!pool.length) throw noStation();
+        autoPick = true;
+        var tries = pool.slice(0, 3), best = null, bestSt = null, i = 0;
+        var step = function () {
+          if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
+          var s = tries[i++];
+          setStatus('Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
+          return daily(s.sid, ST.year).then(function (d) {
+            if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
+            if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
+            return step();
+          }, function () { return step(); });
+        };
+        return step();
+      }
     }).then(function () {
       if (my !== reqToken) throw 'stale';
       // This year with nothing back yet: the station is still the one for the print, so ordering stays open.
       if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
-      if (!picked) throw new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.');
+      if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; throw none; }
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
-        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ' away, record ' + s.valid_daterange[0][0].slice(0, 4) + '–' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
       }).join('');
       sel.value = chosen.sid;
       var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
-      META = { name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
+      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
         blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
-          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.' : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has a full ' + ST.year + '. Try another year, or a bigger town nearby.'));
+          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.'
+            : Math.min(3, STATIONS.length) === 1 ? 'The only station near ' + g.name + ' doesn\u2019t have enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'
+            : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'));
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
@@ -1533,6 +1621,8 @@
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
+      // the town came from the reader's connection, not from them: no red error for a town they never typed
+      if (!e && !preset && NEAR && ST.place === NEAR) { NEAR = ''; $('rp-place').value = ''; runSample(); return; }
       failDraw(err);
     }).then(done);
   }
@@ -1540,8 +1630,7 @@
   // the status line once a print is up
   function drawnStatus() {
     if (!DATA || !META) return;
-    var D = DATA.d;
-    setStatus('Drawn from ' + (D.n - D.missing) + ' days of records at ' + stationName(META.name) + '.' +
+    setStatus('Drawn from the records at ' + stationName(META.name) + '.' +
       (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : '') +
       (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : ''));
   }
@@ -1592,7 +1681,7 @@
     if (!canOrder()) {
       // Nothing of the reader's is drawn yet (the sample, or an empty box): send them to the town box.
       if (BLOCKED) return;
-      try { $('rp-form').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
+      try { $('rp-form').scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (err) {}
       try { $('rp-place').focus({ preventScroll: true }); } catch (err) {}
       statusEl.textContent = 'Type the town nearest the farm and press Draw it. The order carries the print you draw.';
       statusEl.classList.remove('rp-bad');
@@ -1601,7 +1690,8 @@
     var left = exampleLeft(ST), note = $('rp-buy-note');
     if (left.length) {
       note.innerHTML = 'The example is still on the print (' + esc(left.join(', ')) + '). Put in your own words, or clear the example, then order. <button type="button" class="btn btn-secondary" id="rp-ex-clear2">Clear the example</button>';
-      $('rp-ex-clear2').addEventListener('click', function () { clearExample(); note.textContent = ''; });
+      EX_NOTE = true;
+      $('rp-ex-clear2').addEventListener('click', function () { clearExample(); note.textContent = ''; EX_NOTE = false; });
       toExample();
       return;
     }
@@ -1611,11 +1701,16 @@
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       root.open(u, '_blank', 'noopener');
-      BUY_NOTE_CODE = encodeCode(ST);
-      note.innerHTML = ST.gift
-        ? 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; GIFT at the front tells me it\u2019s a gift for January. I\u2019ll email you to confirm where it goes, and send the proof once the full year is in.'
-        : 'Checkout opened in a new tab. Your design code is <code>' + esc(code) + '</code>; it travels with the payment, and I email you a proof before I print.' +
-          (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '');
+      BUY_NOTE_CODE = encodeCode(ST); EX_NOTE = false;
+      /* The page can't tell whether the tab opened (window.open with noopener
+         returns null, and an in-app browser may block it), so the note gives a
+         link to tap. No design code here: it travels with the payment. */
+      var a = '<a href="' + esc(u) + '" target="_blank" rel="noopener">If it didn\u2019t open, tap here</a>.';
+      note.innerHTML = (ST.gift
+        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the proof then.'
+        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and I email you a proof before I print.' +
+          (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
+        (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
       return;
     }
     openOrder(id);
@@ -1623,7 +1718,7 @@
   // Up to the example note in section 2, its Clear button focused, so the next tap is the fix.
   function toExample() {
     var n = $('rp-ex-note'), t = n && !n.hidden ? n : $('rp-design-h');
-    try { t.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
+    try { t.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (err) {}
     try { if (t === n) $('rp-ex-clear').focus({ preventScroll: true }); } catch (err) {}
     if (t === n) { n.classList.remove('rp-flash'); void n.offsetWidth; n.classList.add('rp-flash'); }
   }
@@ -1639,7 +1734,7 @@
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
       ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
     rows.push(['Dates', ST.markers.length ? ST.markers.map(function (m) { return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : ''); }).join(', ') : '(none)']);
-    if (META) rows.push(['Rain gauge', gaugeWords(META) + ', ' + distText(META)]);
+    if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'the station\u2019s full record' : 'nothing']);
     return rows;
   }
@@ -1650,11 +1745,11 @@
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift(), print = id !== 'digital';
     var steps = paid
-      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed once you OK it.']
+      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.']
       : jan
-      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once NOAA\u2019s December numbers are in, I draw the full year and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed once you OK it.']
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed within 1 business day after you OK the proof.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
-        print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you pay.'];
+        print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.'];
     el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">check the proof first</a>') + '</p>' +
       '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
       '<p><b>What happens next</b></p><ol>' + steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
@@ -1685,6 +1780,8 @@
     var dlg = $('rp-proof');
     // open on what the reader is looking at: framed or print only, as set under the preview
     PROOF_VIEW = $('rp-wall').getAttribute('data-view') === 'print' ? 'print' : 'framed';
+    // the words open under the print, except on a short screen, where the print needs the room
+    try { doc.querySelector('.rp-proof-more').open = (root.innerHeight || 800) >= 560; } catch (e) {}
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     ga('rain_print_proof', { style: ST.style });
@@ -1697,7 +1794,7 @@
     $('ro-design').value = designUrl(ST);
     $('ro-out').innerHTML = '';
     syncSummary();
-    try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+    try { box.scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
     try { $('ro-name').focus({ preventScroll: true }); } catch (e) {}
   }
   /* "It's a gift" on an ordinary order (2026-10-12), a tick box over the price
@@ -1735,6 +1832,7 @@
     $('ro-gift-line').textContent = print ? 'I print the note on a card and put it in the box. No prices go in.'
       : 'I send the note with the file. No prices go with it.';
     $('ro-deliver-wrap').hidden = !(jan || plain);
+    $('ro-notes').placeholder = jan || giftTicked() ? 'Need it by a certain day? Say so here.' : 'A gift? Need it by a certain day? Say so here.';
     var theirs = (jan || plain) && $('ro-deliver').value === 'recipient';
     $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, state, ZIP; theirs is fine)'
       : plain && theirs ? 'Ship to them (their name, street, town, state, ZIP)' : 'Ship to (name, street, town, state, ZIP)';
@@ -1745,11 +1843,11 @@
   }
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   function orderSubject(x) {
-    return 'Rain print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
+    return 'Rain Print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the December numbers are in' : '\nGift: yes, a note card in the box, no prices') +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, a note card in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
@@ -1788,7 +1886,7 @@
     }
     var bad = !x.name ? ['ro-name', 'Add your name.'] : !EMAIL_RE.test(x.email) ? ['ro-email', 'Add an email address I can reply to.']
       : (x.choice !== 'digital' && x.address.length < 10) ? ['ro-address', 'Add the shipping address for the print.']
-      : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick It\u2019s a gift.']
+      : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick \u201cIt\u2019s a gift\u201d.']
       : ((gift || plain) && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
@@ -1812,12 +1910,10 @@
     send('rain-print-order', data, fs).then(function () {
       ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
-        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within a day with a payment link.</p>' +
-          '<p>Your ' + ST.year + ' print is made once the station\u2019s December numbers are in. I send the proof then, and it\u2019s delivered in January. I\u2019ll write to ' + esc(x.email) +
-          '; nothing is charged until you pay that link. Your design code is <code>' + esc(x.design_code) + '</code>.</p>' +
-          '<p>Once you\u2019ve paid, I email you a gift card to print, with a code that opens their print.</p></div>'
+        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
+          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the proof then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
         : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
-          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you pay.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
+          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you OK the proof.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
           ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
@@ -1838,7 +1934,7 @@
      from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above).
      Prices are delivered, shipping included (Sig, 2026-10-13). */
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
-  var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed', 'framed'], digital: ['digital file', 'digital files'],
+  var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed print', 'framed prints'], digital: ['digital file', 'digital files'],
     'not-sure': ['not sure yet', 'not sure yet'] };
   var BIZ_SHIP = { one: 'All to one address', each: 'One to each customer', 'not-sure': 'Not sure yet' };
   function radioVal(name) { var r = doc.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
@@ -1884,7 +1980,8 @@
   function syncBizTier() {
     var out = $('rb-tier'), raw = String($('rb-qty').value || '').trim(), qty = /^\d{1,4}$/.test(raw) ? +raw : 0;
     var pick = radioVal('rb-product'), dest = radioVal('rb-ship'), id = BIZ_PRODUCT[pick];
-    var c = function (x) { return '$' + x.toFixed(2).replace(/\B(?=(\d{3})+\.)/g, ','); };
+    // the card prices' own style: $40, $1,234.50
+    var c = function (x) { return money(x).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
     out.textContent = '';
     if (!qty || !PRICES) return;
     if (qty < BIZ_MIN) {
@@ -1941,8 +2038,8 @@
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-business', data, fs).then(function () {
       ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' with a quote, then proofs.</p>' +
-        '<p>Nothing is printed or charged until you OK them.</p></div>';
+      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' with a quote, then a proof sheet.</p>' +
+        '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
@@ -2114,7 +2211,7 @@
   // ---------- wire up ----------
   buildYears();
   // a new visitor starts from the example; a design from a link comes in as it was made
-  if (!(ST.place && ST.year)) withExample(ST, lastFullYear());
+  if (!ST.place) withExample(ST, lastFullYear());
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // "Giving it for Christmas?" reads right from October through December only
@@ -2157,7 +2254,7 @@
     $('rp-proof').close();
     if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
     if (exampleLeft(ST).length) { toExample(); return; }   // example words still on it: change them first
-    try { $('rp-buy').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+    try { $('rp-buy').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
     try { $('rp-buy-h').focus({ preventScroll: true }); } catch (e) {}
   });
   // a click on the dimmed page around the dialog closes it
@@ -2189,16 +2286,45 @@
   });
   $('rp-copy').addEventListener('click', function () {
     var u = shortUrl(artDesign()), b = $('rp-copy');
-    var ok = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link'; }, 2000); };
+    var ok = function () { b.textContent = 'Link copied'; $('rp-dl-note').textContent = 'Link copied.'; setTimeout(function () { b.textContent = 'Copy link'; }, 2000); };
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
   $('rp-gift-use').addEventListener('click', function () { useGift(); });
-  $('rp-retry').addEventListener('click', function () { $('rp-retry-row').hidden = true; run(); });
+  $('rp-retry').addEventListener('click', function () {
+    // the button is about to vanish: keep the keyboard on the town box
+    try { $('rp-place').focus({ preventScroll: true }); } catch (e) {}
+    $('rp-retry-row').hidden = true; run();
+  });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;
-    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: 'smooth', block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
+    if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
+  /* Three example years by the town box (Sig, 2026-10-14): a drought, a flood
+     and a family year. Each is a plain link (it works with no script); a tap
+     draws it in place, in the reader's chosen style. The family year carries
+     the example's name and dates, so ordering waits until they are changed. */
+  doc.querySelectorAll('.rp-story').forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      if (GIFT && GIFT.lock) return;
+      ev.preventDefault();
+      var s = fromParams(a.getAttribute('href').split('?')[1] || '');
+      if (!s.place || !s.year) return;
+      s.style = pick('rp-style', 'r1');
+      NEAR = '';
+      writeInputs(s);
+      ga('rain_print_story', { year: s.year });
+      run({ type: 'submit', preventDefault: function () {} });
+    });
+  });
+  // Came from a county rain page: a way back to it, under the status line
+  try {
+    var REF = doc.referrer ? new URL(doc.referrer) : null;
+    if (REF && REF.origin === root.location.origin && /^\/rain\/./.test(REF.pathname)) {
+      $('rp-back').innerHTML = 'Back to the <a href="' + esc(REF.pathname) + '">county rain page</a>';
+      $('rp-back').hidden = false;
+    }
+  } catch (e) {}
   // A share link that can't be drawn says why, over the sample (2026-10-13: it fell back quietly).
   var LINK_WHY = linkProblem(root.location.search);
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
@@ -2206,7 +2332,9 @@
   // the art measures its labels with these fonts: draw again once they are in
   fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
   loadPrices();
+  // a town with no year, or a year that can't be drawn, draws the last full year (linkProblem says so)
   if (ST.place && ST.year) run();
+  else if (ST.place) { ST.year = lastFullYear(); writeInputs(ST); run(); }
   else startNear();
 
   /* THE GIFT CARD (2026-10-13). A card is issued by Sig after payment (worker
@@ -2260,6 +2388,8 @@
       run();
     }
     (g.locked || []).forEach(lockInput);
+    // a card's design is set: no example years to tap
+    if (g.lock && g.lock.design) $('rp-stories').hidden = true;
     syncGiftUse();
     ga('rain_print_gift_open', { kind: g.kind || '' });
   }

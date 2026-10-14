@@ -17,6 +17,7 @@
  *   agsistFormPost.worker(kind, data) -> Promise
  *     resolves {ok:true, via:'worker'} or the string 'fallback'; rejects on a
  *     refusal. For a plain HTML form that falls back by submitting itself.
+ *     A worker that has not answered in 12 seconds counts as 'fallback'.
  */
 (function () {
   'use strict';
@@ -24,11 +25,21 @@
   var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
   var FALLBACK = { 403: 1, 404: 1, 405: 1 };
 
+  // A worker that takes the post but never answers would leave the button on
+  // "Sending..." for good (2026-10-14): after 12 seconds the post is given up
+  // and goes to Formspree like any other worker failure.
+  var TIMEOUT_MS = 12000;
+
   function toWorker(kind, data) {
     var body = { kind: kind };
     Object.keys(data || {}).forEach(function (k) { body[k] = data[k]; });
-    return fetch(WORKER, {
-      method: 'POST', body: JSON.stringify(body),
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = null;
+    var late = new Promise(function (resolve) {
+      timer = setTimeout(function () { if (ctl) ctl.abort(); resolve('fallback'); }, TIMEOUT_MS);
+    });
+    var sent = fetch(WORKER, {
+      method: 'POST', body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
     }).then(function (r) {
       if (FALLBACK[r.status] || r.status >= 500) return 'fallback';
@@ -45,6 +56,9 @@
         throw new Error('refused');
       });
     }, function () { return 'fallback'; });
+    var done = function () { clearTimeout(timer); };
+    sent.then(done, done);
+    return Promise.race([sent, late]);
   }
 
   function toFormspree(fields) {

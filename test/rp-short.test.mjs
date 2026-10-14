@@ -196,10 +196,10 @@ test("/R: an unknown, malformed or unreachable link says so and stays put", asyn
     assert.deepEqual(o.asked, [], "no request for " + JSON.stringify(s));
     assert.equal(o.replaced, null);
     assert.equal(o.els.box.className, "now");
-    assert.match(o.els.sub.textContent, /not one we know/);
+    assert.match(o.els.sub.textContent, /isn’t one the site knows/);
   }
   const cases = [
-    [async () => ({ ok: false, status: 404, json: async () => ({}) }), /not one we know/],
+    [async () => ({ ok: false, status: 404, json: async () => ({}) }), /isn’t one the site knows/],
     [async () => ({ ok: false, status: 503, json: async () => ({}) }), /connection dropped/],
     [async () => ({ ok: false, status: 429, json: async () => ({}) }), /connection dropped/],
     [async () => { throw new Error("offline"); }, /connection dropped/],

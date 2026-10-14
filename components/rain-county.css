@@ -25,11 +25,18 @@
 .rc-yr { fill: none; stroke: var(--blue); stroke-width: 3; stroke-linejoin: round; }
 .rc-us { fill: none; stroke: var(--text-muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
 .rc-yl { fill: var(--blue); font-size: 15px; font-weight: 700; font-family: var(--font-body, sans-serif); }
+/* light mode: the theme blue is 2.64:1 on the page; #2f6690 is 5.71:1 */
+[data-theme="light"] .rc-yr { stroke: #2f6690; }
+[data-theme="light"] .rc-yl { fill: #2f6690; }
+/* a laptop: a wider chart, labels near body size (10 units at 680 px is about 16 px) */
+@media (min-width: 700px) { .rc-chart svg { max-width: 680px; } .rc-lab, .rc-yl { font-size: 10px; } }
 .rc-scroll { overflow-x: auto; }
 .rc-t { border-collapse: collapse; width: 100%; max-width: 720px; font-size: var(--fs-sm); }
 .rc-t th, .rc-t td { padding: .42rem .55rem; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
 .rc-t th:first-child, .rc-t td:first-child { text-align: left; }
 .rc-t td:first-child { white-space: normal; }
+.rc-t tbody th { text-align: left; font-weight: 400; white-space: normal; }
+.rc-t td:first-child .rc-n, .rc-t th:first-child .rc-n { white-space: nowrap; }
 .rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); }
 .rc-t .rc-n { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
 .rc-t abbr { text-decoration: none; }
@@ -49,8 +56,8 @@
 .rc-faq summary { cursor: pointer; font-weight: 600; }
 .rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
 .rc-next { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
-.rc-next a { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
-.rc-next small { color: var(--text-muted); margin-left: .3rem; }
+.rc-next a.rc-nb { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+.rc-next small { color: var(--text-muted); margin-left: .15rem; }
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
@@ -60,4 +67,6 @@
   .rc-figs { grid-template-columns: 1fr 1fr; }
   .rc-t th, .rc-t td { padding: .38rem .3rem; }
   .rc-t-wide td:nth-child(5), .rc-t-wide th:nth-child(5) { display: none; }
+  /* "Through" on phones: the county cell says "to Oct 9" when it differs */
+  .rc-t-wide td:nth-child(6), .rc-t-wide th:nth-child(6) { display: none; }
 }
