@@ -2336,7 +2336,9 @@
   function syncBar() {
     var bar = $('rp-bar');
     if (!bar) return;
-    var on = phone() && canOrder() && !SHOW_EX && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && GIFT.usable) && $('rp-order').hidden;
+    // just paid for this very design: no bar asking to pay for it again (it comes back once anything changes)
+    var paidFor = typeof PAID_SAVED !== 'undefined' && PAID_SAVED && PAID_SAVED.code === encodeCode(ST);
+    var on = phone() && canOrder() && !SHOW_EX && !paidFor && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && GIFT.usable) && $('rp-order').hidden;
     if (on) $('rp-bar-where').textContent = (META ? META.place : ST.place) + ' ' + ST.year;
     bar.hidden = !on;
   }

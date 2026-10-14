@@ -367,6 +367,7 @@ test("Paid, thank you: what was ordered, when the proof comes, Christmas, one pu
     assert.equal(await page.evaluate(() => document.activeElement.id), "rp-paid", "the box takes focus");
     assert.ok(!/paid=|[?&]s=/.test(page.url()), "the address bar loses paid and s: " + page.url());
     assert.equal(await page.inputValue("#rp-name"), "Olson", "the design ordered draws again under it");
+    assert.equal(await page.isVisible("#rp-bar"), false, "no bar asking to pay again for what was just paid for");
     const buys = () => page.evaluate(() => (window.dataLayer || []).filter((a) => a && a[0] === "event" && a[1] === "purchase").map((a) => [a[2].transaction_id, a[2].value, a[2].currency]));
     assert.deepEqual(await buys(), [["cs_test_a1b2c3d4e5f6", J.framed12x18, "USD"]]);
     await shot(page, "paid-390");

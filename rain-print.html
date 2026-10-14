@@ -354,6 +354,7 @@
   .rp-proof-mag:hover{background:rgba(18,20,20,.97)}
   .rp-proof-mag svg{width:18px;height:18px;flex:none}
   .rp-proof-panel{min-height:0;overflow:auto;padding:18px 20px 22px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:18px;overscroll-behavior:contain}
+  .rp-proof-panel>*{flex-shrink:0}   /* a long design scrolls the panel; nothing in it is squeezed */
   .rp-proof-act .btn{width:100%}
   .rp-proof-act>p{margin:.45rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-popts{display:grid;gap:12px}
