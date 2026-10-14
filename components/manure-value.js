@@ -241,7 +241,7 @@
           '<tr><th scope="row">N, first year</th><td data-o="n-lb"></td><td data-o="n-usd"></td><td data-o="n-field"></td></tr>' +
           '<tr><th scope="row">P&#8322;O&#8325;</th><td data-o="p-lb"></td><td data-o="p-usd"></td><td data-o="p-field"></td></tr>' +
           '<tr><th scope="row">K&#8322;O</th><td data-o="k-lb"></td><td data-o="k-usd"></td><td data-o="k-field"></td></tr>' +
-          '<tr class="mvc-sum"><th scope="row">All the manure</th><td></td><td data-o="ac"></td><td data-o="field"></td></tr>' +
+          '<tr class="mvc-sum"><th scope="row">Total</th><td></td><td data-o="ac"></td><td data-o="field"></td></tr>' +
         '</tbody></table>' +
         '<p class="mvc-hint">Book values from UW Extension A2809. A test of your own manure gives the real pounds.</p>' +
       '</div>';

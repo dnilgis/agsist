@@ -18,8 +18,9 @@
 .mvc-big small{display:block;font-size:.88rem;color:var(--text-dim);margin-top:.15rem}
 .mvc-t{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}
 .mvc-t th,.mvc-t td{padding:.4rem .3rem;white-space:nowrap;border-bottom:1px solid var(--border);text-align:right}
-.mvc-t th[scope="row"],.mvc-t thead th:first-child{text-align:left;white-space:normal;font-weight:600;color:var(--text-dim)}
+.mvc-t th[scope="row"],.mvc-t thead th:first-child{text-align:left;font-weight:600;color:var(--text-dim)}
 .mvc-t thead th{white-space:normal;vertical-align:bottom;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
 .mvc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .mvc-t .mvc-sum th,.mvc-t .mvc-sum td{font-weight:800;color:var(--text)}
 @media(min-width:720px){.mvc{padding:1.2rem 1.3rem}.mvc-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.mvc-wide{grid-column:span 2}}
+@media(max-width:420px){.mvc-t{font-size:.86rem}.mvc-t th,.mvc-t td{padding:.4rem .2rem}}
