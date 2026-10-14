@@ -205,10 +205,11 @@ def chart(c, year, county, noun="station"):
                 ly, lu = ly - (LABEL_GAP - (lu - ly)) / 2, lu + (LABEL_GAP - (lu - ly)) / 2
             else:
                 lu, ly = lu - (LABEL_GAP - (ly - lu)) / 2, ly + (LABEL_GAP - (ly - lu)) / 2
-    # keep both labels inside the drawing: the top one's cap (11 units above
-    # its baseline at y+4) under the top edge, the lower one above the month row
+    # keep both labels inside the drawing: the top one's baseline (y+4) at 14
+    # or lower, so its 11-unit cap clears the top edge with room to spare;
+    # the lower one above the month row
     ys = [ly] + ([lu] if has_us else [])
-    shift = max(0, 8 - min(ys))
+    shift = max(0, 10 - min(ys))
     shift -= max(0, max(ys) + shift - (H - B - 4))
     ly += shift
     if has_us:
@@ -313,10 +314,9 @@ def county_page(ctx):
     noun = "gauge" if stw["net"] == "cocorahs" else "station"     # one word for it on the whole page
     norm_words = (f"NOAA&rsquo;s 1991 to 2020 daily normals for this {noun}" if d["normals"] == "1991-2020"
                   else f"NOAA&rsquo;s current 30-year daily normals for this {noun}")
-    if stw["net"] == "cocorahs":
-        # CoCoRaHS began in 1998: the normal is NOAA's estimate, not the gauge's own 30 years
-        norm_words += (". CoCoRaHS began in 1998, so no gauge has 30 years of its own, "
-                       "and NOAA estimates the rest from long-record stations nearby")
+    # CoCoRaHS began in 1998: the normal is NOAA's estimate, not the gauge's own 30 years
+    norm_note = (" CoCoRaHS began in 1998, so no gauge has 30 years of its own, "
+                 "and NOAA estimates the rest from long-record stations nearby." if stw["net"] == "cocorahs" else "")
     # ---- figures
     figs = [(f"Rain {'in ' + str(year) if done else 'so far'}", f"{inch(c['total'])} <small>in</small>")]
     if c["usual"] is not None:
@@ -412,7 +412,7 @@ def county_page(ctx):
                  + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero."
                  + (" It is read once a day, usually in the morning, and each reading is filed under the day it was read, "
                     "so an evening storm can show up on the next day." if morning_read(stw) else ""))
-    usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the {noun} reported, so a missing day counts on neither side."
+    usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the {noun} reported, so a missing day counts on neither side.{norm_note}"
                if c["usual"] is not None else f"This {noun} has no NOAA normal, so this page gives no usual year or percent for it.")
     n_ok = c.get("n_ok", 1)
     if n_ok <= 1:
@@ -836,6 +836,10 @@ def selftest():
         swp = sww[sww.find("The numbers come from"):sww.find("Rain here means")]
         ok(swp.count("Eastern Band of Cherokee Indians") == 1 and "station ID 3056" not in sww and "read once a day" not in sww,
            f"a station named for a place that is not a town is named once: {sww[sww.find('The numbers'):sww.find('The numbers') + 160]}")
+        cg = county_page({"c": dict(c, station=dict(c["station"], net="cocorahs", sid="US1IAST0001 6")), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok("daily normals for this gauge, added up over the same" in cg and "no gauge has 30 years of its own, and NOAA estimates the rest from long-record stations nearby." in cg,
+           "a CoCoRaHS gauge's normal is said to be NOAA's estimate")
+        ok("no gauge has 30 years" not in story, "a co-op station's normal is its own")
         # the pick rule the page states is the one the data file says the fetch used
         for pk, words in ((None, "The pick goes to one with NOAA normals first"), (2, "Mountain snow sites, and stations far above the rest in the county, come last")):
             dp = {k: v for k, v in d.items() if k != "pick"}
@@ -859,7 +863,7 @@ def selftest():
             yl = re.search(r'class="rc-yl" x="[\d.]+" y="([\d.-]+)"', body)
             us = re.search(r'class="rc-lab" x="[\d.]+" y="([\d.-]+)">Usual', body)
             ys = [float(yl.group(1))] + ([float(us.group(1))] if us else [])
-            ok(all(12 - 0.05 <= y <= 184 + 0.05 for y in ys), f"chart label inside the drawing: {ys}")
+            ok(all(14 - 0.05 <= y <= 184 + 0.05 for y in ys), f"chart label inside the drawing: {ys}")
             ok(len(ys) == 1 or abs(ys[0] - ys[1]) >= LABEL_GAP - 0.05, f"chart labels at least {LABEL_GAP} apart: {ys}")
         ok(jef and "no NOAA normal" in jef and "Percent of usual" not in jef and 'class="rc-us"' not in jef, "no normals: no percent, no usual line")
         ok(jef and "CoCoRaHS volunteer gauge" in jef, "a CoCoRaHS gauge is named as one")
