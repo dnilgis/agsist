@@ -165,7 +165,7 @@ DIRS = {"N": "north", "S": "south", "E": "east", "W": "west", "NE": "northeast",
 OFFSET = re.compile(r"^(.*?[A-Za-z.]) ?(\d*\.?\d+) ?([NSEW]{1,3})$")
 # Words that are the weather office or the sensor, not the place:
 # "MISSOULA 6 NW WFO", "TOPEKA ASOS", "SPRINGFIELD WSO AP", "ELKO NWS OFFICE"
-OFFICE = re.compile(r"\b(?:NWS OFFICE|WFO|WSO|NWSO|ASOS|AWOS)\b", re.I)
+OFFICE = re.compile(r"\b(?:NWS OFFICE|WFO|WSO|NWSO|ASOS|AWOS|MESONET)\b", re.I)
 # Not a town: the answer says "at the NOAA station Eastern Band of Cherokee
 # Indians", never "in Eastern Band ...". A name that starts with UNIVERSITY is a campus.
 NOT_PLACE = {"INDIANS", "TRIBE", "TRIBAL", "RESERVATION", "NATION", "BAND"}
@@ -179,6 +179,9 @@ def _clean(raw):
     s = re.sub(r"\s+", " ", str(raw or "").strip())
     t = re.sub(r"\([^)]*\)", " ", s)
     t = OFFICE.sub(" ", t)
+    # "N FK ELK CREEK": a fork of a creek, in words
+    t = re.sub(r"\b([NSEWM]) FK\b", lambda m: {"N": "NORTH", "S": "SOUTH", "E": "EAST", "W": "WEST", "M": "MIDDLE"}[m.group(1)] + " FORK", t)
+    t = re.sub(r"\bFK\b", "FORK", t)
     t = re.sub(r"\s+", " ", t).strip(" -/")
     return t or s
 
@@ -230,12 +233,16 @@ def station_name(raw):
 # Only cut after at least one word, so "PLANT CITY" stays a town.
 NOT_TOWN = {"EXP", "EXPT", "EXPER", "EXPERIMENT", "STN", "FARM", "FARMS", "RSCH", "RESEARCH", "RES", "CTR",
             "UNIV", "UNIVERSITY", "AGRI", "AG", "DAM", "L&D", "L/D", "WTP", "WWTP", "STP", "PLANT", "LAB", "NWS",
-            "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION"}
+            "RADIO", "HQ", "PWR", "SEWAGE", "FILTRATION", "STA", "PH", "MESONET", "R.S.", "S.P."}
 
 
 def _cut_here(words, i):
     u, nxt = words[i].upper(), (words[i + 1].upper() if i + 1 < len(words) else "")
-    if u in NOT_TOWN:
+    if u in NOT_TOWN or u.split(".")[0] in NOT_TOWN - {"R", "S"}:   # "BEAUMONT EXP.STATION"
+        return True
+    if re.fullmatch(r"\d*\.?\d+[NSEW]{1,3}", u):   # "SULPHUR 4NNE MESONET": the offset is not the end
+        return True
+    if u == "CENTRAL" and nxt in DIRS:      # "GRAND ISLAND CENTRAL NE REGIONAL AP"
         return True
     if u in ("LOCK", "LOCKS"):            # LOCK AND DAM 10, LOCK 4, LOCKS AND DAM; not LOCK HAVEN
         return nxt in ("AND", "&", "DAM") or re.fullmatch(r"\d+", nxt) is not None
@@ -251,9 +258,19 @@ def station_town(raw):
     o = _offset(s)
     if o:
         s = o[0]
+    # "PHILADELPHIA/MT. HOLLY WFO", "WILKES-BARRE/SCRANTON INTL AP": the first city
+    # (a word of 2+ letters before the slash, so "GUTTENBERG L/D 10" stays whole)
+    m = re.match(r"^(.*?[A-Za-z]{2,})/[A-Za-z]", s)
+    if m:
+        s = m.group(1)
     ws = s.split(" ")
     cut = next((i for i in range(1, len(ws)) if _cut_here(ws, i)), len(ws))
     words = [w for w in ws[:cut] if w.upper() not in AIR and not re.fullmatch(r"\d+|NO\.?\d*|#\d*", w.upper())]
+    # a compass word left at the end with no miles before it: "CROOKSTON NW", "EFFINGHAM SE"
+    while len(words) > 1 and words[-1].upper() in DIRS:
+        words.pop()
+    if words and words[-1].endswith(".") and len(words[-1].rstrip(".")) > 2:
+        words[-1] = words[-1].rstrip(".")   # "DERR."; not "ST."
     return _title(words) if words else _title(s.split(" "))
 
 

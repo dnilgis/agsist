@@ -691,7 +691,14 @@ def selftest():
                       ("DUBUQUE LOCK AND DAM 11", "Dubuque"), ("GUTTENBERG L&D 10", "Guttenberg"),
                       ("OTTUMWA WTP", "Ottumwa"), ("ESTES PARK RANGER STN", "Estes Park"),
                       ("LOCK HAVEN", "Lock Haven"), ("PLANT CITY", "Plant City"), ("RANGER", "Ranger"),
-                      ("COLLEGE STATION", "College Station"), ("NEW ULM 2 SE", "New Ulm")):
+                      ("COLLEGE STATION", "College Station"), ("NEW ULM 2 SE", "New Ulm"),
+                      # the places left after the first full run (2026-10-13 polish)
+                      ("PHILADELPHIA/MT. HOLLY WFO", "Philadelphia"), ("WILKES-BARRE/SCRANTON INTERNATIONAL AIRPORT", "Wilkes-Barre"),
+                      ("GLENS FALLS/FLOYD BENNETT MEMORIAL AIRPORT", "Glens Falls"), ("GUTTENBERG L/D 10", "Guttenberg"),
+                      ("CROOKSTON NW EXP STA", "Crookston"), ("EFFINGHAM SE", "Effingham"), ("SULPHUR 4NNE MESONET", "Sulphur"),
+                      ("THOMPSON FALLS PH", "Thompson Falls"), ("BEAUMONT EXP.STATION", "Beaumont"),
+                      ("GRAND ISLAND CENTRAL NE REGIONAL AP", "Grand Island"), ("N FK ELK CREEK", "North Fork Elk Creek"),
+                      ("DERR.", "Derr"), ("ST. GEORGE", "St. George"), ("CENTRAL CITY", "Central City"), ("WEST POINT", "West Point")):
         ok(R.station_town(raw) == town, f"station_town({raw!r}) = {R.station_town(raw)!r}, want {town!r}")
     ok(R.station_where("NEW ULM 2 SE") == "2 miles southeast of New Ulm", f"NEW is not a direction: {R.station_where('NEW ULM 2 SE')}")
     ok(R.station_name("NEW HAMPTON") == "New Hampton", f"NEW HAMPTON: {R.station_name('NEW HAMPTON')}")
