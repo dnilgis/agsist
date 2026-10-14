@@ -161,7 +161,7 @@ test("Order with example words left: the reason under that button, Clear the exa
     assert.ok(await onScreen(page, "#rp-ex-go"), "the choice is on screen");
     const note = await page.textContent("#rp-buy-note");
     assert.match(note, /the name, the line under it, 2 of the dates/);
-    assert.match(note, /your own words stay/);
+    assert.match(note, /it clears only the example words listed/);
     assert.deepEqual(await page.evaluate(() => window.__opened), [], "nothing ordered with example words on it");
     await shot(page, "bounce-inline-390-" + theme);
     await page.click("#rp-ex-go");
@@ -356,7 +356,7 @@ test("Your print with example words: the two choices in place of the order butto
     await page.click("#rp-zoom");
     await page.waitForSelector("#rp-proof[open]");
     assert.equal(await page.isHidden("#rp-proof-order"), true, "no order button while the example is on it");
-    assert.match(await page.textContent("#rp-proof-why"), /The example is still on it \(the name, the line under it, 2 of the dates\)\..*your own words stay\./);
+    assert.match(await page.textContent("#rp-proof-why"), /The example is still on it \(the name, the line under it, 2 of the dates\)\..*it clears only the example words listed\./);
     assert.ok(await onScreen(page, "#rp-proof-ex-go"));
     await shot(page, "proof-example-1366-" + theme);
     await page.click('[data-pview="print"]');

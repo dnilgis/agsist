@@ -216,7 +216,7 @@
         if (line) {
           x.textContent = line;
           if (f && /^For Christmas delivery/.test(line)) f.textContent = line;
-        }
+        } else x.hidden = true;   // Dec 26 to Sep 30: no Christmas line to give, so the box goes (2026-10-14)
         var b = /^\d{4}-\d{2}-\d{2}$/.test(cfg.business_cutoff || '') && today <= cfg.business_cutoff && today >= cfg.business_cutoff.slice(0, 4) + '-10-01';
         if (b) {
           var m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], p = cfg.business_cutoff.split('-');

@@ -366,7 +366,8 @@ test("refund and reprint wording: Sig's terms, still marked as a draft, fee only
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /refund you in full/);
   assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
-  assert.match(faq, /lost in the mail or arrives damaged, glass included, send a photo and I&rsquo;ll reprint or reframe it for a small fee, with the same serial number/);
+  // 2026-10-14 (panel 3, T3): a photo for damage only; a lost parcel is a tracking matter
+  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it for a small fee, with the same serial number/);
   assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
   assert.equal(J.reprint_fee, null, "no fee amount invented");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
@@ -412,7 +413,8 @@ test("checkout note: a link to tap, no wall of code, no 'gift' for someone buyin
   assert.ok(!/GIFT at the front|Checkout opened in a new tab/.test(b));
   assert.match(b, /Your design reference: /);
   assert.match(HTML, /<h3>Ordering <span class="rp-cy">2026<\/span><\/h3>/);
-  assert.match(S2, /'\{year\} \(ships in January\)'/, "the Year box fallback matches data/rain-print.json");
+  assert.match(S2, /'\{year\} \(ships January \{next\}\)'/, "the Year box fallback matches data/rain-print.json");
+  assert.equal(J.gift_year_label, "{year} (ships January {next})");
 });
 
 test("the example warning under the prices goes once the example is gone", () => {
@@ -437,7 +439,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /this draws every rain the nearest NOAA weather station caught that year/);
+  assert.match(HTML, /this draws every rain the nearest NOAA weather station or CoCoRaHS volunteer gauge caught that year/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);

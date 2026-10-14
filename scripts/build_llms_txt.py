@@ -116,7 +116,7 @@ PAGES = [
         ("/gdu-calculator", "GDU Calculator", "growing degree units from planting, crop stage and black layer"),
         ("/planting-date", "Planting Date Calculator", "corn and soybean planting windows and final planting dates"),
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
-        ("/rain-print", "Rain Print", "one year of daily rain at the nearest NOAA weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
+        ("/rain-print", "Rain Print", "one year of daily rain at the nearest NOAA weather station or CoCoRaHS volunteer gauge, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
         ("/prf-sponsor", "PRF State Sponsor", "how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request"),
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),

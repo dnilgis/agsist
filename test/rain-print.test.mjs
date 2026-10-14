@@ -177,7 +177,8 @@ test("gift text lives in data/rain-print.json; the FAQ and its structured data s
   const html = readFileSync(ROOT + "rain-print.html", "utf8");
   const ld = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage").mainEntity;
-  const dec = (t) => t.replace(/&rsquo;/g, "’").replace(/&amp;/g, "&");
+  // the visible text, links unwrapped (the FAQ links its email address since 2026-10-14)
+  const dec = (t) => t.replace(/<a href="mailto:[^"]+">([^<]*)<\/a>/g, "$1").replace(/&rsquo;/g, "’").replace(/&amp;/g, "&");
   const shown = [...html.matchAll(/<details><summary>(.*?)<\/summary><p>(.*?)<\/p><\/details>/g)].map((m) => [dec(m[1]), dec(m[2])]);
   assert.deepEqual(faq.map((q) => [q.name, q.acceptedAnswer.text]), shown, "FAQPage matches the visible FAQ");
   // e6bb20b46 took the year out of this question so it stays right every Christmas; the test still asked for one.

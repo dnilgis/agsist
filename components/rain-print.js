@@ -561,7 +561,8 @@
       style: q.get('style'), dedication: q.get('dedication'), normals: q.get('normals'), records: q.get('records'),
       logo: q.get('logo'), logoInk: q.get('logoInk') });
   }
-  function designUrl(x) { return SITE + '?' + toParams(x); }
+  // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
+  function designUrl(x) { return SITE + '?' + String(toParams(x)).replace(/\*/g, '%2A'); }
   function shortUrl(x) { var c = encodeCode(x); return c ? SITE + '?d=' + c : SITE; }
 
   // ---------- places (pure: the tests run these) ----------
@@ -757,6 +758,22 @@
   var GIFT_MIN_DAYS = 60;  // a gift preview needs the year recorded at least this far (to about March 1); less is too thin to draw fairly
   var STALE_DAYS = 30;     // this year: a station whose record stopped longer ago than this is not reporting, so it cannot make the print
   var EXT_CACHE = new Map(), NORM_CACHE = new Map(), DAILY_CACHE = new Map();
+  /* LAST YEAR IN JANUARY (2026-10-14, panel 3). NOAA's daily numbers come in
+     late, by days and at some co-op stations by weeks, so on Jan 1 last year
+     isn't all in yet. While it is "open", last year is read like this year:
+     a station still behind on December stays in the list, the days it hasn't
+     sent from the last STALE_DAYS are left off instead of counted as gaps,
+     the print is drawn as the year so far, and the order says it is made once
+     the full year is in. Open means today is within STALE_DAYS of Dec 31 (a
+     station later than that is not reporting, the same rule as this year's),
+     or before full_year_from (MM-DD) in data/rain-print.json. A year whose
+     December is all in counts as finished from full_year_from on; "01-01",
+     the default, means as soon as it is in. */
+  var FULL_YEAR_FROM = '01-01';
+  function lastYearOpen(year) {
+    return year === CURRENT_YEAR - 1 && (TODAY < CURRENT_YEAR + '-' + FULL_YEAR_FROM || TODAY <= isoMinusDays(year + '-12-31', -STALE_DAYS));
+  }
+  function settlingByDate(year) { return year === CURRENT_YEAR - 1 && TODAY < CURRENT_YEAR + '-' + FULL_YEAR_FROM; }
 
   // ---------- data ----------
   function miles(km) { return km * 0.621371; }
@@ -801,8 +818,10 @@
       bbox: [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(','),
       elems: 'pcpn', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'name,sids,ll,valid_daterange,state'
     });
-    // This year: the record must reach back to Jan 1 and still be current.
-    var y0 = year + '-01-01', y1 = year === CURRENT_YEAR ? isoMinusDays(TODAY, STALE_DAYS) : year + '-12-31';
+    // This year: the record must reach back to Jan 1 and still be current. Last
+    // year while it is open (lastYearOpen): current, up to Dec 31.
+    var late = isoMinusDays(TODAY, STALE_DAYS);
+    var y0 = year + '-01-01', y1 = year === CURRENT_YEAR ? late : lastYearOpen(year) && late < year + '-12-31' ? late : year + '-12-31';
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
       return (j.meta || []).filter(function (m) { return m.ll && m.sids && m.sids[0] && m.valid_daterange && m.valid_daterange[0] && m.valid_daterange[0][0] <= y0 && m.valid_daterange[0][1] >= y1; })
         .map(function (m) { return Object.assign({}, m, { sid: cleanSid(m.sids[0]), km: haversine(lat, lon, m.ll[1], m.ll[0]) }); })
@@ -813,7 +832,7 @@
   // pcpn, avgt (daily mean temperature, F), snow, maxt and mint come back as parallel columns from one
   // call; the raw rows are kept for the remarkable-days layer (components/rain-print-records.js)
   function daily(sid, year) {
-    var key = sid + '|' + year;
+    var open = lastYearOpen(year), key = sid + '|' + year + (open ? '|open' : '');
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow,maxt,mint', meta: 'name,state,ll' });
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
@@ -829,6 +848,12 @@
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
       if (year === CURRENT_YEAR) days = days.slice(0, lastRecorded(days) + 1);
+      // Last year while it is open: the same, for the days of the last STALE_DAYS
+      // only. A day older than that with no report is a gap, as in any year.
+      else if (open) {
+        var lateFrom = isoMinusDays(TODAY, STALE_DAYS), sure = days.filter(function (x) { return x.date <= lateFrom; }).length;
+        days = days.slice(0, Math.max(sure, lastRecorded(days) + 1));
+      }
       days = closeOpenS(days);
       var out = { meta: j.meta || {}, days: days, d: derive(days), raw: j.data };
       DAILY_CACHE.set(key, out);
@@ -962,7 +987,7 @@
       });
     }).then(function () {
       if (!picked) throw new Error('NOAA didn’t send this year’s days.');
-      var preview = mode === 'gift', days = picked.days;
+      var days = picked.days, preview = mode === 'gift' || (lastYearOpen(s.year) && days.length < (isLeap(s.year) ? 366 : 365));
       if (picked.d.missing > MISS_BLOCK) throw new Error('The station has ' + picked.d.missing + ' unrecorded days so far.');
       if (preview && days.length < GIFT_MIN_DAYS) throw new Error(days.length ? 'Only ' + days.length + ' days of ' + s.year + ' are in so far.' : 'No days of ' + s.year + ' are in yet.');
       var town = g || { name: parts0(s.place), admin1: '', approx: true };
@@ -1023,11 +1048,14 @@
 
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, BUY_NOTE_CODE = '', EX_NOTE = false, XMAS_OFF = true;
-  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, BLOCKED = '', DRAWING = false;
+  var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, PRICES_P = null, BLOCKED = '', DRAWING = false;
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
      while a year-to-date preview is drawn. NOART: the plain message shown
      instead of art when the year so far is too thin to draw; ordering stays open. */
   var PREVIEW = null, NOART = '';
+  /* SETTLE: last year, drawn while it is still open (lastYearOpen) and not all
+     in, or before full_year_from: ordered now, made once the full year is in. */
+  var SETTLE = false;
   /* SAMPLE (2026-10-11): with no design in the URL the page draws Chetek, WI
      for the last finished year, through the same geocode and ACIS calls a
      reader's own town takes, so the box is never empty. A sample cannot be
@@ -1048,9 +1076,12 @@
     s.cmp = 'normal'; s.normals = true; s.records = true;
     return s;
   }
+  // EX_OK: the design code a buyer said is theirs, example-looking words and all
+  var EX_OK = '';
   function exampleMarker(d, l) { return EXAMPLE.markers.some(function (m) { return m.label === l && String(d || '').slice(5) === m.md; }); }
   function exampleLeft(s) {
     var out = [];
+    if (EX_OK && encodeCode(s) === EX_OK) return out;
     if (s.name === EXAMPLE.name) out.push('the name');
     if (s.dedication === EXAMPLE.dedication) out.push('the line under it');
     var n = (s.markers || []).filter(function (m) { return exampleMarker(m.date, m.label); }).length;
@@ -1243,7 +1274,7 @@
     if (art) { if (th.getAttribute('src') !== art.href) th.src = art.href; th.hidden = false; } else { th.hidden = true; th.removeAttribute('src'); }
     // Sig's print files page (?maker=1): a link to the file the buyer uploaded (a Stripe order carries only the design)
     var mk = $('rp-maker-logo');
-    if (MAKER && mk) { mk.hidden = !ST.logo; if (ST.logo) mk.innerHTML = 'Logo file: <a href="' + LOGO_LINK + ST.logo + '" rel="noopener">' + LOGO_LINK + ST.logo + '</a> (' + (ST.logoInk ? 'printed in the ink color' : 'printed in its own colors') + ')'; }
+    if (MAKER && mk) { mk.hidden = !ST.logo; if (ST.logo) mk.innerHTML = 'Logo file: <a href="' + LOGO_LINK + ST.logo + '" rel="noopener">' + LOGO_LINK + ST.logo + '</a> (' + (ST.logoInk ? 'printed in the ink color' : 'printed in its own colors') + '); save this file with the order'; }
     if (!LOGO) return;
     if (LOGO.state === 'saving') return logoMsg('Saving the logo\u2026');
     if (LOGO.state === 'loading') return logoMsg('Loading the logo\u2026');
@@ -1318,7 +1349,7 @@
   // Framed or print only: the same art, with or without the CSS frame.
   function setView(v) {
     $('rp-wall').setAttribute('data-view', v);
-    doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    doc.querySelectorAll('.rp-view .chip[data-view]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
     sampleLine(!!SAMPLE);
   }
   // After the reader's own draw, bring the frame into view if it is above the screen.
@@ -1330,7 +1361,7 @@
   function clearSample() {
     if (!SAMPLE) return;
     SAMPLE = null;
-    DATA = null; PREVIEW = null; NOART = ''; BLOCKED = '';
+    DATA = null; PREVIEW = null; SETTLE = false; NOART = ''; BLOCKED = '';
     sampleLine(false);
     art.innerHTML = EMPTY_ART;
     art.classList.add('rp-empty');
@@ -1405,7 +1436,7 @@
       logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0' });
   }
   // The year list: this year first (a gift, delivered in January), then every finished year.
-  function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year} (ships in January)'); }
+  function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year} (ships January {next})'); }
   function buildYears() {
     var h = '<option value="' + CURRENT_YEAR + '">' + esc(giftYearLabel()) + '</option>';
     for (var y = CURRENT_YEAR - 1; y >= 1890; y--) h += '<option value="' + y + '">' + y + '</option>';
@@ -1495,8 +1526,9 @@
       if (y) { el.min = y + '-01-01'; el.max = y + '-12-31'; }
     }
   }
+  var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
   function updateUrl() {
-    if (SAMPLE) return;   // a sample never goes into the address bar
+    if (SAMPLE || KEEP_URL) return;   // a sample never goes into the address bar
     var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '');
     try { root.history.replaceState(null, '', root.location.pathname + '?' + q); } catch (e) {}
   }
@@ -1525,7 +1557,7 @@
     $('rp-zoom').disabled = !DATA || !!BLOCKED;
     $('rp-wall').classList.toggle('rp-can-zoom', !!DATA && !BLOCKED);
     // print files wait for the full year: a preview is never sent to the printer
-    doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW; });
+    doc.querySelectorAll('#rp-maker button').forEach(function (b) { b.disabled = !on || !DATA || !!PREVIEW || SETTLE; });
     syncGift();
     if (typeof GIFT !== 'undefined' && GIFT) syncGiftUse();
   }
@@ -1551,13 +1583,15 @@
       ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
       : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
-    $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in' : 'The finished file by email within 1 business day of paying';
+    $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in'
+      : SETTLE && canOrder() ? 'The finished file by email once the full year is in' : 'The finished file by email within 1 business day of paying';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
       : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
+    syncXmas();
   }
   // Christmas lines on the print and framed cards. This year's gift ships in January anyway, so none show in gift mode.
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
@@ -1578,12 +1612,16 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) return;
     var past = $('rp-xmas-past'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') return;
+    // one product past its date and the other not: say which (2026-10-14, panel 3)
     past.textContent = late ? 'Past years ordered now ship after Christmas.'
-      : 'Any past year can be there by Christmas: order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.';
+      : TODAY <= pc && TODAY <= fc ? 'Any past year can be there by Christmas: order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.'
+      : TODAY <= pc ? 'Any past year can be there by Christmas as a print: order by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
+      : 'Any past year can be there by Christmas framed: order by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
     if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
-      why.hidden = late;
+      // this year's gift ships in January: the Christmas dates aren't about it
+      why.hidden = late || (giftMode() && canOrder());
     }
   }
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
@@ -1637,6 +1675,7 @@
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
       (PREVIEW && OV ? 'The comparison covers the same days. ' : '') +
       (later ? (later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ' : '') +
+      (PREVIEW && !ST.gift ? 'NOAA hasn\u2019t sent the rest of ' + ST.year + ' from this station yet; the print you get shows the full year. ' : '') +
       (usualWords() ? esc(usualWords()) + ' ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
       (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
@@ -1663,7 +1702,7 @@
   function blockPrint(msg) {
     if ($('rp-mini')) $('rp-mini').hidden = true;
     BLOCKED = msg;
-    PREVIEW = null; NOART = '';
+    PREVIEW = null; SETTLE = false; NOART = '';
     art.innerHTML = '<p class="rp-placeholder">Too many days missing at this station for a fair print.</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
@@ -1680,7 +1719,7 @@
      "Chetk, WI" left Chetek's art and live order buttons up). */
   function failDraw(err) {
     if ($('rp-mini')) $('rp-mini').hidden = true;
-    DATA = null; META = null; PREVIEW = null; NOART = ''; EXT = null; NORM30 = null;
+    DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
     art.innerHTML = EMPTY_ART;
     art.classList.add('rp-empty');
@@ -1757,6 +1796,7 @@
       else next.station = fromUrlStation;
     }
     var my = ++reqToken;
+    if (e) KEEP_URL = false;
     ST = next;
     if (ST.records) recordsReady();
     $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; EX_NOTE = false;
@@ -1780,7 +1820,7 @@
     // the county page's station location, on the first draw of its own link only
     var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
-    Promise.resolve().then(function () {
+    Promise.resolve(PRICES_P).then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
       var mode = yearMode(ST.year, TODAY);
@@ -1886,7 +1926,7 @@
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
-        DATA = null; PREVIEW = null;
+        DATA = null; PREVIEW = null; SETTLE = false;
         NOART = (picked.days.length ? 'This station only has ' + ST.year + ' through ' + longDate(picked.days[picked.days.length - 1].date) + ', too little to draw a fair preview. ' : 'No days of ' + ST.year + ' have come in from this station yet. ') +
           'You can still order it as a gift. The full-year print is drawn and sent in January.';
         renderNoArt();
@@ -1894,7 +1934,9 @@
         throw 'noart';
       }
       DATA = { days: picked.days, d: picked.d, raw: picked.raw }; NOART = '';
-      PREVIEW = ST.gift ? { last: picked.days[picked.days.length - 1].date, yearLen: isLeap(ST.year) ? 366 : 365 } : null;
+      var yearLen = isLeap(ST.year) ? 366 : 365, notIn = !ST.gift && lastYearOpen(ST.year) && picked.days.length < yearLen;
+      PREVIEW = ST.gift || notIn ? { last: picked.days[picked.days.length - 1].date, yearLen: yearLen } : null;
+      SETTLE = notIn || (!ST.gift && settlingByDate(ST.year));
       setStatus('Reading the 30-year normal at ' + stationName(META.name) + '…');
       /* The station's full record (every year it has kept) is the big download
          and only the station-average comparison and the year and month records
@@ -1956,6 +1998,7 @@
     return fetch('/data/rain-print.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || typeof j.digital !== 'number') return;
       PRICES = j;
+      if (/^\d{2}-\d{2}$/.test(j.full_year_from || '')) FULL_YEAR_FROM = j.full_year_from;
       PRODUCTS.forEach(function (id) {
         var el = doc.querySelector('[data-price="' + id + '"]');
         if (el && typeof j[id] === 'number') el.textContent = money(j[id]);
@@ -1991,13 +2034,20 @@
       return;
     }
     var left = exampleLeft(ST), note = noteUnder(id);
+    /* The town or year box changed without Draw it (2026-10-14, panel 3): the
+       order would carry the design still drawn, so it waits for the draw. */
+    if (staleInputs()) { EX_NOTE = false; note.textContent = staleWords(); noteInView(note); return; }
+    // a logo still saving has no id yet, and one that didn't load isn't on the print
+    if (LOGO && LOGO.state === 'saving') { EX_NOTE = false; note.textContent = 'The logo is still saving. Tap again in a moment.'; noteInView(note); return; }
+    if (ST.logo && LOGO && LOGO.state === 'missing') { EX_NOTE = false; note.textContent = 'The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then order.'; noteInView(note); return; }
     /* Example words still on it (2026-10-14): say so right under the button
        that was tapped, with the two ways on, instead of scrolling 2,500 px up
        to section 2. Example words still never go on an order unasked. */
     if (left.length) {
-      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear it to order without it; your own words stay.' +
+      note.innerHTML = '<span class="rp-ex-box">The example is still on the print (' + esc(left.join(', ')) + '). Clear it to order without it; it clears only the example words listed.' +
         '<button type="button" class="btn btn-primary" id="rp-ex-go">Clear the example and order</button>' +
-        '<button type="button" class="btn btn-secondary" id="rp-ex-edit">Edit the words</button></span>';
+        '<button type="button" class="btn btn-secondary" id="rp-ex-edit">Edit the words</button>' +
+        '<button type="button" class="btn btn-secondary" id="rp-ex-mine">These are mine, order as is</button></span>';
       EX_NOTE = true;
       $('rp-ex-go').addEventListener('click', function () {
         clearExample();
@@ -2007,6 +2057,13 @@
         buy(id);
       });
       $('rp-ex-edit').addEventListener('click', toExample);
+      // a buyer's own words that match the example (planted May 8, "Planted"): theirs to keep
+      $('rp-ex-mine').addEventListener('click', function () {
+        EX_OK = encodeCode(ST);
+        note.textContent = ''; EX_NOTE = false;
+        syncExampleNote();
+        buy(id);
+      });
       noteInView(note);
       try { $('rp-ex-go').focus({ preventScroll: true }); } catch (err) {}
       return;
@@ -2023,7 +2080,9 @@
          link to tap. No design code here: it travels with the payment. */
       var a = '<a href="' + esc(u) + '" target="_blank" rel="noopener">If it didn\u2019t open, tap here</a>.';
       note.innerHTML = (ST.gift
-        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then.'
+        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.'
+        : SETTLE
+        ? 'Checkout should be open in a new tab. ' + a + ' NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then.'
         : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and ' + (id === 'digital' ? 'the finished file comes by email within 1 business day. If you want anything changed, write to me and I\u2019ll redo it, no charge.' : 'I email you a proof before I print.') +
           (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
         (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
@@ -2039,6 +2098,11 @@
     var note = $('rp-buy-note'), b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
     if (b && b.offsetParent !== null && b.nextSibling !== note) b.parentNode.insertBefore(note, b.nextSibling);
     return note;
+  }
+  // the town or year in the boxes is not the one drawn
+  function staleInputs() { var n = readInputs(); return !!ST.place && (n.year !== ST.year || n.place !== ST.place); }
+  function staleWords() {
+    return 'You changed the ' + (readInputs().year !== ST.year ? 'year' : 'town') + ' but haven\u2019t drawn it. Press Draw it first, so you order what you see.';
   }
   function noteInView(note) {
     try {
@@ -2084,16 +2148,17 @@
     if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
     var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
-    var jan = januaryGift(), print = id !== 'digital';
+    var jan = januaryGift() || (SETTLE && canOrder()), print = id !== 'digital';
+    var whenIn = januaryGift() ? 'In January, once the full year is in' : 'Once the full year is in';
     var steps = !print ? (paid
       ? ['The finished file comes by email within 1 business day.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
       : jan
-      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the finished file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', whenIn + ', I draw it and email you the finished file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
       : ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'The finished file comes by email within 1 business day of paying. There\u2019s no proof step for the file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.'])
       : paid
       ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.']
       : jan
-      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK it.']
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', whenIn + ', I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK it.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
         'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.'];
     el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">' + (print ? 'check the proof first' : 'check it up close first') + '</a>') + '</p>' +
@@ -2148,7 +2213,7 @@
     var can = canOrder(), left = can ? exampleLeft(ST) : [], gift = !!(GIFT && GIFT.usable), id = proofChoice(), J = PRICES || {};
     $('rp-proof-go').hidden = !!left.length;
     $('rp-proof-ex').hidden = !left.length;
-    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear it to order without it; your own words stay.' : '';
+    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear it to order without it; it clears only the example words listed.' : '';
     $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift'
       : (PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed') + (typeof J[id] === 'number' ? ', ' + money(J[id]) : '');
     var first = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
@@ -2282,7 +2347,9 @@
     if (!canOrder()) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
     var left = exampleLeft(ST);
     if (left.length) { out.innerHTML = '<p class="rp-msg rp-bad">The example is still on the print (' + esc(left.join(', ')) + '). Change it or clear it under &ldquo;Add a name and dates&rdquo;, then send.</p>'; return; }
+    if (staleInputs()) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(staleWords()) + '</p>'; return; }
     if (LOGO && LOGO.state === 'saving') { out.innerHTML = '<p class="rp-msg rp-bad">The logo is still saving. Send again in a moment.</p>'; return; }
+    if (ST.logo && LOGO && LOGO.state === 'missing') { out.innerHTML = '<p class="rp-msg rp-bad">The logo didn\u2019t load, so it isn\u2019t on the print. Remove it or choose the file again, then send.</p>'; return; }
     var x = {
       name: cleanText($('ro-name').value, 80), email: $('ro-email').value.trim(), choice: $('ro-choice').value,
       address: $('ro-address').value.trim().slice(0, 600), notes: $('ro-notes').value.trim().slice(0, 2000),
@@ -2290,7 +2357,8 @@
     };
     if (ST.logo) x.logo = ST.logo;
     // the worker keeps known fields only, so the proof tick rides in the notes
-    x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
+    x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') +
+      (SETTLE ? ' NOAA didn\u2019t have all of ' + ST.year + ' in yet: make it once the full year is in.' : '') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
     if (x.choice === 'digital') x.address = '';
     var gift = giftMode(), plain = plainGift();
     if (plain) {
@@ -2678,8 +2746,8 @@
   if (!ST.place) withExample(ST, lastFullYear());
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
-  // "Giving it for Christmas?" reads right from October through December only
-  XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10;
+  // "Giving it for Christmas?" reads right from October 1 through December 25 only
+  XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10 || TODAY.slice(5) > '12-25';
   $('rp-gift-hint').hidden = XMAS_OFF;
   if (MAKER) $('rp-maker').hidden = false;
   form.addEventListener('submit', run);
@@ -2688,7 +2756,8 @@
     if (SAMPLE) run(null, Object.assign({}, ST)); else run();
   });
   $('rp-sample-use').addEventListener('click', useSample);
-  doc.querySelectorAll('.rp-view .chip').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
+  // Zoom in sits in the same row with no data-view: not a view (2026-10-14, panel 3)
+  doc.querySelectorAll('.rp-view .chip[data-view]').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
   $('rp-year').addEventListener('input', function () { reyearExample(); syncMarkerBounds(); syncDates(); });
   $('rp-ex-clear').addEventListener('click', clearExample);
   ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { cleanField(id); restyle(); }); });
@@ -2855,7 +2924,9 @@
         $('rp-link-note').classList.add('rp-bad');
         $('rp-link-note').hidden = false;
         setStatus('');
-        startNear();
+        // Sig's print files page draws nothing in its place; a reader gets their area,
+        // and the reference stays in the address bar until they draw their own
+        if (!MAKER) { KEEP_URL = true; startNear(); }
         return;
       }
       if (ref.gift) s.gift = true;
@@ -2872,7 +2943,7 @@
   showBuy(false);
   // the art measures its labels with these fonts: draw again once they are in
   fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
-  loadPrices();
+  PRICES_P = loadPrices();
   // a town with no year, or a year that can't be drawn, draws the last full year (linkProblem says so)
   var LINK_REF = ST.place ? null : shortRefOf(new URLSearchParams(root.location.search).get('d'));
   if (LINK_REF) openRef(LINK_REF);
@@ -2926,8 +2997,11 @@
     if (!g || !g.usable) return;
     GIFT = g;
     if (g.lock && g.lock.design) {
-      var keepName = g.lock.edit === 'name' && $('rp-name').value ? $('rp-name').value : null;
+      // the name box keeps only what the reader typed, never the example's name (2026-10-14, panel 3)
+      var typed = $('rp-name').value, keepName = g.lock.edit === 'name' && typed && typed !== EXAMPLE.name ? typed : null;
       ST = normalize(g.lock.design);
+      // the card's town, not the reader's area: no "your area" line under it
+      NEAR = '';
       if (keepName) ST.name = cleanText(printable(keepName), LIMITS.name);
       if (SAMPLE) { SAMPLE = null; sampleLine(false); }
       writeInputs(ST);
