@@ -221,3 +221,148 @@ test("the test print PDF carries the standard code and asks the link service for
     assert.deepEqual(errors, []);
   }, { short: "fail" });
 });
+
+// a saved SVG file: its QR group, read the same way as the page's
+async function svgFileQr(page, text) {
+  await page.evaluate((t) => { let d = document.getElementById("__svgfile"); if (!d) { d = document.createElement("div"); d.id = "__svgfile"; d.style.cssText = "position:absolute;left:-9999px;width:900px"; document.body.appendChild(d); } d.innerHTML = t; }, text);
+  return svgQr(page, "#__svgfile");
+}
+const OWN = "HTTPS://AGSIST.COM/R?K7Q2M";
+const LONG = { place: "Chetek, WI", station: "471667 2", year: 2025, style: "r1", cmp: "normal", name: "The Olson Family Farm",
+  dedication: "For Grandpa Erling, sixty harvests on the home place. Love, all of us",
+  markers: [{ date: "2025-05-13", label: "Beans went in" }, { date: "2025-07-04", label: "Hay all in" }, { date: "2025-10-27", label: "Last load in" }] };
+const LONG_CODE = RP.encodeCode(LONG);
+
+test("every preview carries the standard code, and redraws ask the link service for nothing", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    assert.equal(await svgQr(page, "#rp-art"), STD, "the page art");
+    assert.equal(await svgQr(page, "#rp-mini"), STD, "the mini copy");
+    // redraws: a new name, the other style, a dedication
+    await page.fill("#rp-name", "The Lund Farm");
+    await page.waitForTimeout(400);
+    await page.check('input[name="rp-style"][value="r2"]');
+    await page.fill("#rp-ded", "For Dad");
+    await page.waitForTimeout(4000);   // past the old 3 s wait before a short link was asked for
+    assert.equal(await svgQr(page, "#rp-art"), STD, "still the standard code after redraws");
+    await page.click("#rp-zoom");
+    await page.waitForFunction(() => document.querySelector("#rp-proof-art svg"), null, { timeout: 10000 });
+    assert.equal(await svgQr(page, "#rp-proof-art"), STD, "the up-close view");
+    await page.keyboard.press("Escape");
+    const f = await saved(page, () => page.click("#rp-dl"));
+    assert.match(f.name, /-preview\.png$/);
+    assert.equal(await fileQr(page, f.buf, "image/png"), STD, "the watermarked preview PNG");
+    // Copy link makes none either
+    await page.click("#rp-copy").catch(() => {});
+    await page.waitForTimeout(300);
+    assert.equal(log.posts, 0, "no short link made for any preview");
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("the gift card's preview: the standard code with its QR, none with noQr, no short link either way", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    const code = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2025, name: "For Dad", markers: [] });
+    const svgs = await page.evaluate(async (c) => {
+      const a = await window.RainPrint.previewArt(c, { idPrefix: "gc" }), b = await window.RainPrint.previewArt(c, { idPrefix: "gd", noQr: true });
+      return [a.svg, b.svg];
+    }, code);
+    assert.equal(await svgFileQr(page, svgs[0]), STD);
+    assert.ok(!/data-rp="qr"/.test(svgs[1]), "the card itself shows no design QR");
+    await page.waitForTimeout(500);
+    assert.equal(log.posts, 0);
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("the maker's order files make the print's own short link once, at export, and carry it", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE) + "&maker=1&serial=7");
+    await drawn(page);
+    await page.waitForTimeout(4000);
+    assert.equal(log.posts, 0, "nothing on the draw, maker page included");
+    assert.equal(await svgQr(page, "#rp-art"), STD, "the maker's screen shows the standard code too");
+    const png = await saved(page, () => page.click('#rp-maker button[data-size="12x18"][data-fmt="png"]'));
+    assert.equal(log.posts, 1, "exactly one request, at export");
+    assert.match(png.name, /-12x18-300dpi-no-0007\.png$/);
+    assert.equal(await fileQr(page, png.buf, "image/png"), OWN, "the print PNG");
+    assert.match(await page.textContent("#rp-dl-note"), /QR: HTTPS:\/\/AGSIST\.COM\/R\?K7Q2M\./);
+    const pdf = await saved(page, () => page.click('#rp-maker button[data-size="12x18"][data-fmt="pdf"]:not([data-qr])'));
+    assert.equal(await fileQr(page, pdfJpeg(pdf.buf), "image/jpeg"), OWN, "the print PDF");
+    const dig = await saved(page, () => page.click('#rp-maker button[data-size="digital"]'));
+    assert.equal(await fileQr(page, dig.buf, "image/png"), OWN, "the digital file");
+    const svg = await saved(page, () => page.click('#rp-maker button[data-fmt="svg"]'));
+    assert.equal(await svgFileQr(page, svg.buf.toString("utf8")), OWN, "the SVG");
+    assert.equal(log.posts, 1, "one short link for the design, reused by every file");
+    assert.equal(await svgQr(page, "#rp-art"), STD, "the page still shows the standard code after");
+    // the test print, after all that: still the standard code
+    const t = await saved(page, () => page.click('#rp-maker button[data-qr="standard"]'));
+    assert.equal(await fileQr(page, pdfJpeg(t.buf), "image/jpeg"), STD);
+    assert.equal(log.posts, 1);
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("an order file with the link service down: no file, a plain message, Try again works", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    let downloads = 0;
+    page.on("download", () => downloads++);
+    await page.goto(base + "/rain-print.html?" + q(MINE) + "&maker=1");
+    await drawn(page);
+    await page.click('#rp-maker button[data-size="12x18"][data-fmt="pdf"]:not([data-qr])');
+    await page.waitForFunction(() => !document.getElementById("rp-maker-msg").hidden, null, { timeout: 15000 });
+    const msg = await page.textContent("#rp-maker-msg");
+    assert.match(msg, /The link service didn’t give this print its own short link \(it may be busy\), so no file was saved\. An order file never uses the standard code\./);
+    assert.ok(!/—/.test(msg), "no em dash");
+    assert.equal(log.posts, 1);
+    await page.waitForTimeout(500);
+    assert.equal(downloads, 0, "nothing saved, and never with the standard code");
+    const f = await saved(page, () => page.click("#rp-maker-retry"));
+    assert.equal(log.posts, 2, "Try again is one more request");
+    assert.equal(await fileQr(page, pdfJpeg(f.buf), "image/jpeg"), OWN);
+    assert.ok(await page.evaluate(() => document.getElementById("rp-maker-msg").hidden), "the message goes once the file is made");
+    assert.deepEqual(errors, []);
+  }, { short: "down" });
+});
+
+test("checkout: no short link for a design that fits; one, at the press, for a long one; the order form if it fails", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    await page.click('.rp-buy-btn[data-choice="print12x18"]');
+    await page.waitForTimeout(600);
+    let o = await page.evaluate(() => window.__opened);
+    assert.equal(o.length, 1);
+    assert.equal(log.posts, 0, "a code that fits goes to Stripe as it is");
+    assert.equal(RP.decodeCode(new URL(o[0]).searchParams.get("client_reference_id")).name, "The Olson Farm");
+    // a long design
+    assert.ok(LONG_CODE.length > 200);
+    await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
+    await drawn(page);
+    await page.waitForTimeout(4000);
+    assert.equal(log.posts, 0, "nothing on the draw");
+    await page.click('.rp-buy-btn[data-choice="print12x18"]');
+    await page.waitForFunction(() => window.__opened.some((u) => /client_reference_id=/.test(u)), null, { timeout: 10000 }).catch(async (e) => { throw new Error(e.message + " note: " + await page.textContent("#rp-buy-note") + " opened: " + JSON.stringify(await page.evaluate(() => window.__opened)) + " posts " + log.posts); });
+    o = await page.evaluate(() => window.__opened);
+    assert.ok(o[o.length - 1].endsWith("client_reference_id=RPS-K7Q2M"), o.join(" "));
+    assert.equal(log.posts, 1, "one short link, at the press");
+    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
+    await page.waitForTimeout(600);
+    assert.equal(log.posts, 1, "a second press reuses it");
+    assert.deepEqual(errors, []);
+  });
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
+    await drawn(page);
+    await page.click('.rp-buy-btn[data-choice="print12x18"]');
+    await page.waitForFunction(() => document.getElementById("ro-form") && document.getElementById("ro-form").offsetParent !== null, null, { timeout: 15000 });
+    assert.equal(log.posts, 1, "at most one");
+    const o = await page.evaluate(() => window.__opened);
+    assert.ok(!o.some((u) => /stripe/.test(u)), "no checkout without a reference Stripe takes");
+    assert.equal(await page.inputValue("#ro-choice"), "print12x18", "the order form takes the order instead");
+    assert.deepEqual(errors, []);
+  }, { short: "fail" });
+});
