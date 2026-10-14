@@ -70,7 +70,7 @@
   .rp-xmas-top{margin:0;font-size:var(--fs-sm);font-weight:600;color:var(--brand);line-height:1.45}
   /* "Paid, thank you": the page Stripe sends a buyer back to */
   .rp-paid{margin:0 0 1rem;padding:14px 16px;border:1px solid var(--green);border-left-width:4px;border-radius:var(--r-md);background:var(--surface);line-height:1.55}
-  .rp-paid:focus{outline:none}.rp-paid:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .rp-paid:focus{outline:none}
   .rp-paid h2{margin:0 0 .35rem;font-size:var(--fs-xl)}
   .rp-paid p{margin:0 0 .5rem;max-width:66ch}.rp-paid p:last-child{margin:0}
   .rp-paid a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
@@ -178,6 +178,8 @@
   /* a day is a month and a day picked from lists: the year is the print's own (a typed date with its year landed on the wrong day, 2026-10-14) */
   .rp-date{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.75fr) minmax(0,1.6fr);gap:.4rem;align-items:start}
   .rp-date[hidden]{display:none}
+  /* a phone: the month and the day side by side, the words under them at full width, so "Harvest done" shows whole */
+  @media(max-width:599px){.rp-date{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.rp-date .rp-lab{grid-column:1/-1}}
   .rp-date .rp-count{margin:.2rem 0 0}
   /* "Your words" and "More options" */
   .rp-more{margin:.9rem 0 0;border:0;border-top:1px dashed var(--border-2);border-radius:0;padding:0;background:none}
@@ -332,7 +334,7 @@
   .rp-proof-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:var(--r-sm);background:transparent;color:var(--text-dim);cursor:pointer}
   .rp-proof-x:hover{background:var(--surface3);color:var(--text)}
   .rp-proof-x svg{width:20px;height:20px}
-  .rp-proof-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;min-height:0}
+  .rp-proof-body{display:grid;grid-template-columns:minmax(0,1fr) 350px;min-height:0}
   .rp-proof-view{position:relative;min-width:0;min-height:0;background:var(--pv-bg)}
   .rp-proof-stage{position:absolute;inset:0;overflow:auto;container-type:size;padding:var(--sp);box-sizing:border-box;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   .rp-proof-stage:focus-visible,.rp-proof-x:focus-visible,.rp-proof-mag:focus-visible,.rp-pseg button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
@@ -370,7 +372,7 @@
   .rp-pseg3 input:checked+span{background:var(--surface);color:var(--text);font-weight:700;box-shadow:0 0 0 1px var(--border-2),0 1px 3px rgba(0,0,0,.18)}
   [data-theme="dark"] .rp-pseg3 input:checked+span{background:var(--surface3)}
   .rp-pseg3 input:focus-visible+span{outline:2px solid var(--gold);outline-offset:-2px}
-  .rp-proof-msg{margin:.5rem 0 0;padding:.5rem .7rem;border-left:3px solid var(--red);background:var(--surface2);font-size:var(--fs-sm);line-height:1.45;color:var(--text);text-align:left}
+  .rp-proof-act>.rp-proof-msg,.rp-proof-msg{margin:.5rem 0 0;padding:.5rem .7rem;border-left:3px solid var(--red);background:var(--surface2);font-size:var(--fs-sm);line-height:1.45;color:var(--text);text-align:left}
   .rp-proof-msg a{color:var(--link);text-decoration:underline}
   .rp-proof-msg.rp-go{border-left-color:var(--brand)}
   .rp-proof-act .rp-proof-chg{margin:.3rem 0 0}
@@ -381,6 +383,8 @@
   .rp-proof-sum dt{margin:0 0 2px;font-size:var(--fs-xs);color:var(--text-muted)}
   .rp-proof-sum dd{margin:0;font-size:var(--fs-sm);line-height:1.45;color:var(--text);overflow-wrap:anywhere}
   .rp-proof-sum .rp-pd{display:block}
+  /* a wide window: label and value on one line, so the pay button stays in view beside the print */
+  @media(min-width:900px){.rp-proof-sum div{display:grid;grid-template-columns:6.6em minmax(0,1fr);gap:.7rem;padding:6px 0}.rp-proof-sum dt{margin:2px 0 0}.rp-proof-panel{gap:14px;padding-top:14px}}
   .rp-proof-sum .rp-pcut{color:var(--red,#e5484d)}
   .rp-proof-panel .rp-check{align-items:flex-start;min-height:0;font-weight:500;font-size:var(--fs-sm);line-height:1.4}
   .rp-proof-panel .rp-check input{margin-top:1px;flex:none}

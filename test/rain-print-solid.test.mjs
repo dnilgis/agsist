@@ -1,7 +1,8 @@
 /* /rain-print, the confirmed findings of the 2026-10-14 "rock solid" panel
  * (panel 3, group A), in a real browser with NOAA, the town lookup, the subs
  * worker and Stripe answered here and the clock set per case:
- *   - P2: the year or town changed without Draw it: no order of the old design;
+ *   - P2: a town typed and not drawn is never ordered as the old design, and
+ *     a new year draws on its own (2026-10-14, the approved flow);
  *   - P1: a logo still saving, or one that didn't load, keeps checkout shut;
  *   - P3: a locked gift card that lets the name change shows the giver's name,
  *     not the example's, and no "your area" caption;
@@ -9,11 +10,12 @@
  *     December is still listed, the late days are not gaps, the order says it
  *     is made once the full year is in; full_year_from in data/rain-print.json
  *     moves the date a year counts as finished;
- *   - P5: Zoom in leaves the Framed / Print only switch alone;
+ *   - P5: Print only picked in step 3 shows on the print and in Up close;
  *   - P7, P8: the Christmas box from Dec 10 and after Dec 25, the gifts page too;
  *   - P14: gift mode: no Christmas dates line, the card said once, the Stripe
  *     note names the card;
- *   - P6: a buyer's own date that matches an example date can be ordered as is;
+ *   - P6: words that happen to match the example's are the buyer's own and
+ *     order as they are, with no question (the example is a gray hint only);
  *   - P12: a ?d=RPS- link that doesn't open keeps the link, and on the maker
  *     page draws nothing else.
  * Needs Playwright and Chromium; skipped where they are missing.
@@ -28,6 +30,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { deflateSync } from "node:zlib";
 import vm from "node:vm";
+import { checkout, stripePage, refOf } from "./fixtures/rp-checkout.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -104,6 +107,8 @@ async function mocks(ctx, opts, log) {
       if (u.pathname === "/rp-gift/redeem") { log.redeem = JSON.parse(req.postData()); return r.fulfill({ headers: h, json: { ok: true, ships: "january" } }); }
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
+    // Stripe, in the same tab: a stand-in page, and the address it was sent to
+    if (u.host === "buy.stripe.com") return stripePage(r, log.stripe);
     if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", stnEnd]], state: "WI" }] } });
@@ -137,9 +142,8 @@ async function withPage(fn, opts = {}) {
   try {
     const ctx = await browser.newContext({ viewport: { width: opts.width || 1280, height: opts.height || 900 }, serviceWorkers: "block" });
     await ctx.clock.setFixedTime(new Date(opts.time || "2026-10-14T17:00:00Z"));
-    const log = {};
+    const log = { stripe: [] };
     await mocks(ctx, opts, log);
-    await ctx.addInitScript(() => { window.__opened = []; window.open = function (u) { window.__opened.push(String(u)); return null; }; });
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
@@ -151,40 +155,41 @@ const idle = (page) => page.waitForFunction(() => !document.getElementById("rp-g
 const settle = (page) => page.waitForTimeout(700);
 const q = (o) => new URLSearchParams(o).toString();
 const MINE = { place: "Chetek, WI", year: "2025", station: "471667 2", style: "r1", name: "The Olson Farm" };
-const opened = (page) => page.evaluate(() => window.__opened);
-const refOf = (u) => new URL(u).searchParams.get("client_reference_id");
 
 // ---------- P2 ----------
-test("P2: a year or town changed without Draw it is never ordered as the old design", { skip }, async () => {
-  await withPage(async (page, base, errors) => {
+test("P2: a town typed and not drawn is never ordered as the old design; a new year draws on its own", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
+    // the year: picked, drawn, no Draw my year press (2026-10-14: it sat stale until checkout said so)
     await page.selectOption("#rp-year", "2024");
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    assert.deepEqual(await opened(page), [], "no checkout for the 2025 design the reader moved away from");
-    assert.match(await page.textContent("#rp-buy-note"), /You changed the year but haven’t drawn it\. Press Draw it first, so you order what you see\./);
-    // the up-close view's order button says the same
-    await page.click("#rp-zoom");
-    await page.click("#rp-proof-order");
-    await settle(page);
-    assert.deepEqual(await opened(page), []);
-    // drawn: it orders, and the order is 2024
-    await page.click("#rp-go");
     await drawn(page);
     await settle(page);
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    const o = await opened(page);
-    assert.equal(o.length, 1);
-    assert.equal(RP.decodeCode(refOf(o[0])).year, 2024);
-    // the town, too
+    assert.match(await page.textContent("#rp-source"), /days recorded/);
+    let r = await checkout(page, "print12x18");
+    assert.equal(r.stage, "stripe");
+    assert.equal(RP.decodeCode(refOf(r.url)).year, 2024, "the year picked is the year ordered");
+    await page.goBack(); await drawn(page); await settle(page);
+    // the town, typed and not drawn: the line by the print says so, and the order waits
     await page.fill("#rp-place", "Rice Lake, WI");
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    assert.equal((await opened(page)).length, 1);
-    assert.match(await page.textContent("#rp-buy-note"), /You changed the town but haven’t drawn it\./);
+    assert.match(await page.textContent("#rp-pending"), /Not drawn yet: Rice Lake, WI, 2024\. Press Draw my year\./);
+    // words typed now still go on the print that is up (they used to freeze until Draw it)
+    await page.fill("#rp-name", "The Olson Place");
+    assert.match(await page.innerHTML("#rp-art"), /The Olson Place/);
+    await page.evaluate(() => document.getElementById("rp-pay").click());
+    await page.waitForTimeout(150);
+    assert.match(await page.textContent("#rp-buy-note"), /You changed the town but haven’t drawn it\. Press Draw my year first, so you order what you see\./);
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), false, "no review sheet for the old town");
+    assert.equal(log.stripe.length, 1);
+    // leaving the box draws it
+    await page.locator("#rp-place").blur();
+    await page.waitForFunction(() => document.getElementById("rp-pending").hidden && !document.getElementById("rp-go").disabled, null, { timeout: 15000 });
+    await drawn(page); await settle(page);
+    r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "stripe");
+    const d = RP.decodeCode(refOf(r.url));
+    assert.deepEqual([d.place, d.year, d.name], ["Rice Lake, WI", 2024, "The Olson Place"]);
     assert.deepEqual(errors, []);
   });
 });
@@ -196,27 +201,25 @@ test("P1: a logo still saving, or one that didn't load, keeps checkout shut and 
     await drawn(page);
     await page.setInputFiles("#rp-logo-file", { name: "logo.png", mimeType: "image/png", buffer: LOGO_PNG });
     await page.waitForFunction(() => /Saving the logo/.test(document.getElementById("rp-logo-msg").textContent), null, { timeout: 10000 });
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    assert.deepEqual(await opened(page), [], "no checkout without the logo id");
-    assert.match(await page.textContent("#rp-buy-note"), /The logo is still saving\. Tap again in a moment\./);
+    let r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "note", "no checkout without the logo id");
+    assert.match(r.note, /The logo is still saving\. Tap again in a moment\./);
     await page.waitForFunction(() => /Logo added|may print soft/.test(document.getElementById("rp-logo-msg").textContent), null, { timeout: 15000 });
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    const o = await opened(page);
-    assert.equal(o.length, 1, "once saved, it orders");
-    assert.equal(RP.decodeCode(refOf(o[0])).logo, "abcdefghjkmn", "the order carries the logo");
+    r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "stripe", "once saved, it orders");
+    assert.equal(RP.decodeCode(refOf(r.url)).logo, "abcdefghjkmn", "the order carries the logo");
     assert.deepEqual(errors, []);
   }, { logoDelay: 3500 });
   // a design whose logo is gone from the worker
-  await withPage(async (page, base) => {
+  await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + RP.toParams(Object.assign(RP.normalize({ ...MINE, year: 2025 }), { logo: "abcdefghjkmn", logoInk: true })));
     await drawn(page);
     await page.waitForFunction(() => /isn’t on the print/.test(document.getElementById("rp-logo-msg").textContent), null, { timeout: 15000 });
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    assert.deepEqual(await opened(page), []);
-    assert.match(await page.textContent("#rp-buy-note"), /The logo didn’t load, so it isn’t on the print\. Remove it or choose the file again, then order\./);
+    const r = await checkout(page, "print12x18");
+    assert.equal(r.stage, "note");
+    assert.deepEqual(log.stripe, []);
+    assert.match(r.note, /The logo didn’t load, so it isn’t on the print\. Remove it or choose the file again, then order\./);
+    assert.equal(await page.evaluate(() => document.getElementById("rp-more").open), true, "a design with a logo opens More options, so the logo box is in sight");
   }, { logoGone: true });
 });
 
@@ -252,14 +255,20 @@ test("P4: on Jan 4, a station behind on December still draws last year, as a pre
     const src = await page.textContent("#rp-source");
     assert.match(src, /so far, January 1 through December 28/, "drawn as the year so far (" + stnEnd + ")");
     assert.ok(!/no report on/.test(src), "the days NOAA hasn't sent are not gaps: " + src);
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    assert.equal((await opened(page)).length, 1);
-    assert.match(await page.textContent("#rp-buy-note"), /NOAA doesn’t have all of 2026 in yet\. I make this one once the full year is in/);
-    await page.click('.rp-buy-btn[data-choice="digital"]');
-    await settle(page);
-    assert.match(await page.textContent("#rp-buy-note"), /send the finished file then/);
+    assert.match(await page.textContent("#rp-sub-framed12x18"), /Made once NOAA has all of 2026 in, with a proof first\./, "the picker says so before the button");
+    const r = await checkout(page, "framed12x18", { tick: false });
+    assert.equal(r.stage, "sheet");
+    assert.match(await page.textContent("#rp-proof-sum"), /NOAA doesn’t have all of 2026 in yet\. I make this one once the full year is in, and send the proof then\./, "the review sheet says it before paying");
+    await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="digital"])');
+    assert.match(await page.textContent("#rp-proof-sum"), /send the finished file then/);
+    assert.equal(await page.$eval('input[name="rp-product"][value="digital"]', (r) => r.checked), true, "the sheet's picker is step 3's picker");
     assert.match(await page.textContent("#rp-dig-when"), /once the full year is in/);
+    // and the page Stripe sends them back to says it again
+    await page.check("#rp-proof-ok");
+    await Promise.all([page.waitForURL(/buy\.stripe\.com/), page.click("#rp-proof-order")]);
+    await page.goto(base + "/rain-print.html?paid=digital&s=cs_test_settle0001");
+    await page.waitForFunction(() => !document.getElementById("rp-paid").hidden);
+    assert.match(await page.textContent("#rp-paid"), /NOAA doesn’t have all of 2026 in yet\. I make it once the full year is in, and email you the finished file/);
     assert.deepEqual(errors, []);
   }, { time: "2027-01-04T18:00:00Z", upto: "2026-12-28", stnEnd });
 });
@@ -269,9 +278,8 @@ test("P4: past the settling window, a finished year with late days shows them as
     await drawn(page);
     await settle(page);
     assert.match(await page.textContent("#rp-source"), /sent no report on 3 days/);
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    assert.match(await page.textContent("#rp-buy-note"), /I email you a proof before I print/);
+    await checkout(page, "framed12x18", { tick: false });
+    assert.match(await page.textContent("#rp-proof-sum"), /A proof by email within 1 business day; it ships within 3 business days of your OK\./);
   }, { time: "2027-02-15T18:00:00Z", upto: "2026-12-28", stnEnd: "2026-12-31" });
 });
 test("P4: full_year_from in data/rain-print.json sets the day last year counts as finished", { skip }, async () => {
@@ -281,9 +289,8 @@ test("P4: full_year_from in data/rain-print.json sets the day last year counts a
     await page.goto(base + "/rain-print.html?" + q(LAST));
     await drawn(page);
     await settle(page);
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    const note = await page.textContent("#rp-buy-note");
+    await checkout(page, "print12x18", { tick: false });
+    const note = await page.textContent("#rp-proof-sum");
     assert.equal(/once the full year is in/.test(note), waits, note);
   }, { time: "2027-01-20T18:00:00Z", upto: "2026-12-31", prices });
 });
@@ -298,16 +305,18 @@ test("P13: the Year box names the January a gift ships in", { skip }, async () =
 });
 
 // ---------- P5 ----------
-test("P5: Zoom in keeps Print only, and the up-close view opens on it", { skip }, async () => {
+test("P5: Print only picked in step 3 shows on the print and in Up close; Up close is not a choice", { skip }, async () => {
   for (const width of [390, 1280]) await withPage(async (page, base, errors) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
-    await page.click('.rp-view .chip[data-view="print"]');
+    assert.equal(await page.$('.rp-view .chip[data-view]'), null, "no Framed / Print only chips under the print (they looked like a purchase choice)");
+    await page.click('.rp-prod[data-choice="print12x18"]');
+    assert.equal(await page.getAttribute("#rp-wall", "data-view"), "print");
     await page.click("#rp-zoom");
     await settle(page);
     assert.equal(await page.getAttribute("#rp-proof", "data-view"), "print");
     assert.equal(await page.getAttribute("#rp-wall", "data-view"), "print");
-    assert.equal(await page.getAttribute("#rp-zoom", "aria-pressed"), null, "Zoom in is not a view chip");
+    assert.equal(await page.getAttribute("#rp-zoom", "aria-pressed"), null, "Up close is not a view chip");
     assert.deepEqual(errors, []);
   }, { width, height: width < 600 ? 844 : 900 });
 });
@@ -326,13 +335,13 @@ test("P7, P8: the Christmas box on Dec 10 and after Dec 25, and the gifts page a
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
-    assert.equal(await page.textContent("#rp-xmas-past"), "Any past year can be there by Christmas as a print: order by Dec 10. A framed print ordered now ships after Christmas.");
+    assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: order a print by Dec 10. A framed print ordered now ships after Christmas.");
   }, { time: "2026-12-10T18:00:00Z", upto: "2026-12-01" });
   await withPage(async (page, base) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
-    assert.equal(await page.isHidden("#rp-gift-hint"), true, "no 'by Christmas' after Christmas");
+    assert.equal(await page.isHidden("#rp-xmas-top"), true, "no 'for Christmas' line after Christmas");
     await page.goto(base + "/gifts-for-farmers.html");
     await page.waitForTimeout(1500);
     assert.equal(await page.isHidden("#gf-xmas"), true, "the gifts page box goes too");
@@ -349,31 +358,26 @@ test("P14: gift mode: no Christmas dates line, the card said once, and the check
     assert.equal(await page.isHidden("#rp-xmas-why"), true);
     const box = await page.innerText("#rp-gift");
     assert.equal((box.match(/gift card/g) || []).length, 1, box);
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await settle(page);
-    assert.match(await page.textContent("#rp-buy-note"), /Within 1 business day I email you a gift card to print\./);
+    // the gift-card words stay on the picker's rows for this year (2026-10-14)
+    for (const id of ["framed12x18", "print12x18", "digital"]) assert.match(await page.textContent("#rp-sub-" + id), /gift card to print by email within 1 business day/, id);
+    assert.equal(await page.isHidden("#rp-gift-line"), true, "the plain gift line gives way to the Ordering 2026 box");
+    await checkout(page, "framed12x18", { tick: false });
+    assert.match(await page.textContent("#rp-proof-sum"), /Within 1 business day I email you a gift card to print\./);
   }, { time: "2026-10-14T17:00:00Z" });
 });
 
 // ---------- P6 ----------
-test("P6: a buyer's own date that matches an example date can be ordered as it is", { skip }, async () => {
-  await withPage(async (page, base, errors) => {
-    await page.goto(base + "/rain-print.html?" + q({ ...MINE, m1: "2025-05-08 Planted" }));
+test("P6: words that match the example's are the buyer's own: they order as they are, with no question", { skip }, async () => {
+  await withPage(async (page, base, errors, log) => {
+    await page.goto(base + "/rain-print.html?" + q({ ...MINE, name: "The Johnson Farm", m1: "2025-05-08 Planted" }));
     await drawn(page);
     await settle(page);
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    assert.match(await page.textContent("#rp-buy-note"), /Only the example words listed are cleared/);
-    assert.deepEqual(await opened(page), []);
-    await page.click("#rp-ex-mine");
-    await settle(page);
-    const o = await opened(page);
-    assert.equal(o.length, 1, "ordered as is");
-    assert.deepEqual([...RP.decodeCode(refOf(o[0])).markers].map((m) => m.label), ["Planted"]);
-    // and a second tap doesn't ask again
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await settle(page);
-    assert.equal((await opened(page)).length, 2);
+    const r = await checkout(page, "print12x18");
+    assert.equal(r.stage, "stripe", "straight through the review sheet to checkout");
+    const d = RP.decodeCode(refOf(r.url));
+    assert.equal(d.name, "The Johnson Farm");
+    assert.deepEqual([...d.markers].map((m) => m.label), ["Planted"]);
+    assert.equal(log.stripe.length, 1);
     assert.deepEqual(errors, []);
   });
 });

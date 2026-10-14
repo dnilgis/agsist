@@ -2454,7 +2454,8 @@
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
-    if (can) list.push(['You get', esc(gift ? PICK_WORD[PICK] + ', covered by your gift card' : PICK_WORD[PICK] + (p ? ', ' + p : '') + (PICK === 'digital' ? ', by email' : ', shipping included'))], ['When', esc(whenWords(PICK))]);
+    // what the picker above it doesn't say: when it comes (and that a gift card covers it)
+    if (can) list.push(['When', esc((gift ? 'Covered by your gift card. ' : '') + whenWords(PICK))]);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
     // the one action: pay for what is shown, as picked
@@ -2470,8 +2471,8 @@
     var file = id === 'digital', J = PRICES || {};
     if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the ' + (file ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (file ? 'finished file' : 'proof') + ' then.';
-    if (file) return 'The finished file by email within 1 business day of paying. Want anything changed? Write to me and I\u2019ll redo it, no charge.';
-    return 'A proof by email within 1 business day; nothing prints until you OK it. It ships within ' + (J.ship_business_days || 3) + ' business days after your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
+    if (file) return 'The finished file by email within 1 business day of paying.';
+    return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
   }
   /* Fit or actual size. Going in, the spot that was clicked (or the middle)
      stays under the pointer; coming out, back to the whole print. */
