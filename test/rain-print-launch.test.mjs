@@ -173,8 +173,13 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
     const next = new Date(Date.parse(cut + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
     assert.ok(RP.addBizDays(next, n, J.holidays) > "2026-12-24", key + ": the day after does not");
   }
-  assert.equal(J.ship_business_days, 7, "the cutoffs use the same 7 business days the page promises");
-  assert.match(J.ships_within, /7 business days/);
+  // 2026-10-14 (Sig): ships within 3 business days of the OK (was 7)
+  assert.equal(J.ship_business_days, 3, "the cutoffs use the same 3 business days the page promises");
+  assert.match(J.ships_within, /within 3 business days/);
+  assert.equal(J.print_christmas_cutoff, "2026-12-10");
+  assert.equal(J.framed_christmas_cutoff, "2026-12-09");
+  assert.match(HTML, /<p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof\./);
+  assert.ok(!/7 business days/.test(HTML), "no old shipping promise left on the page or in its structured data");
   assert.equal(RP.addBizDays("2026-12-04", 1, []), "2026-12-07", "a Friday plus one business day is Monday");
   assert.equal(RP.christmasCutoff({ ...J, ship_business_days: null }, "print12x18", 2026), null, "a missing number gives no date, not a guess");
 });
@@ -378,11 +383,17 @@ test("the example warning under the prices goes once the example is gone", () =>
 });
 
 test("one promise for the digital file and the gift card: within 1 business day", () => {
-  assert.match(HTML, /<li id="rp-dig-when">A proof first, then the files by email within 1 business day of your OK<\/li>/);
+  // 2026-10-14 (Sig): the file has no proof step; it comes finished after paying, and he redoes it free on request
+  assert.match(HTML, /<li id="rp-dig-when">The finished files by email within 1 business day of paying<\/li>/);
   assert.ok(!/within a day|Within a business day|after you pay\./.test(visible), "no looser or older promise on the page");
   assert.ok(!/emailed once you OK it|within a day with/.test(S2));
-  assert.match(S2, /'A proof and the files in January, once the full year is in'/);
-  assert.ok(!/preview of the year so far|December numbers/.test(HTML + S2), "no promise of a preview on the card");
+  assert.match(S2, /'The finished files by email in January, once the full year is in'/);
+  assert.ok(!/files by email within 1 business day of your OK|file comes by email within 1 business day after you OK|The file is emailed within 1 business day after you OK/.test(HTML + S2), "no proof step for the file anywhere");
+  assert.match(visible, /The digital file needs no proof: the finished file comes by email within 1 business day of paying\./);
+  assert.match(visible, /if you want anything changed, write to me and I&rsquo;ll fix it or redo it by hand and send it again, no charge\./);
+  assert.match(S2, /'The finished file comes by email within 1 business day of paying\. There\\u2019s no proof step for the file\.'/);
+  assert.match(J.gift_delivery, /A print or framed print gets a proof first, as with every order\./);
+  assert.ok(!/December numbers/.test(HTML + S2), "January, once the full year is in");
   assert.match(HTML, /Within 1 business day of paying, I email you a gift card to print for under the tree/);
 });
 
@@ -444,7 +455,8 @@ test("outside review, as Sig took it: example years, the framed card featured, t
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
   assert.match(HTML, /<div class="rp-prod rp-prod-feat"><h3>12 x 18 framed<\/h3>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
-  assert.equal((HTML.match(/<\/button><p class="rp-proof-first">You get a proof before anything prints\.<\/p>/g) || []).length, 3, "right under each order button");
+  assert.equal((HTML.match(/<\/button><p class="rp-proof-first">You get a proof before anything prints\.<\/p>/g) || []).length, 2, "right under the print and framed buttons");
+  assert.match(HTML, /data-choice="digital">Order the file<\/button><p class="rp-proof-first">Want a change after\? Write to me and I&rsquo;ll redo it\.<\/p>/, "the file has no proof step (2026-10-14)");
   assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
   assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");

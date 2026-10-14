@@ -420,6 +420,12 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.match(now, /I have your order and will email you a proof within 1 business day\./);
   const jan = G.doneHtml({ code: good }, { ships: "january", upgrade: true });
   assert.match(jan, /a proof in January, once the full year is in\./);
+  // 2026-10-14 (Sig): the digital file has no proof step
+  const file = G.doneHtml({ code: good, product: "framed12x18" }, { ships: "now" }, "digital");
+  assert.match(file, /will email you the finished file within 1 business day\. If you want anything changed, write to me and I’ll fix it or redo it by hand and send it again, no charge\./);
+  assert.doesNotMatch(file, /proof/);
+  assert.match(G.doneHtml({ code: good, product: "digital" }, { ships: "january" }), /the finished file in January, once the full year is in\./, "the card's product when no choice is given");
+  assert.match(G.doneHtml({ code: good, product: "digital" }, { ships: "now" }, "print12x18"), /a proof within 1 business day\./, "an upgrade to a print gets the proof");
   assert.match(jan, /so I’ll email you a link for the difference\./);
   for (const t of [now, jan, v]) assert.doesNotMatch(t, /\bSig (has|will)\b|last rain is in|within a day/);
   assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);

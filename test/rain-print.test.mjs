@@ -195,16 +195,17 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   assert.equal(shipped.promote, true, "launched 2026-10-13 (Sig): data/rain-print.json ships with the promo on");
   assert.equal(shipped.briefing_line, null);
   assert.equal(shipped.promote_from, "2026-11-01");
-  // 2026-10-13: the framed cutoff moved to the last day that still arrives by Dec 24 (Dec 3), and the promo ends with it
-  assert.equal(shipped.framed_christmas_cutoff, "2026-12-03");
+  // 2026-10-13: the framed cutoff is the last day that still arrives by Dec 24, and the promo ends with it
+  // 2026-10-14: shipping within 3 business days (was 7) moved it from Dec 3 to Dec 9
+  assert.equal(shipped.framed_christmas_cutoff, "2026-12-09");
   assert.equal(shipped.promote_until, shipped.framed_christmas_cutoff, "the promo never runs past the date it names");
   assert.equal(P.lineFor({ ...shipped, promote: false }, "", "2026-11-15"), "", "promote false turns it off");
   const on = { ...shipped, promote: true };
-  assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 3.");
+  assert.equal(P.lineFor(on, "", "2026-11-15"), "A year of your farm's rain, as a gift. Order framed by Dec 9.");
   assert.equal(P.lineFor(on, "", "2026-11-01") !== "", true, "the first day counts");
-  assert.equal(P.lineFor(on, "", "2026-12-03") !== "", true, "the last day counts");
+  assert.equal(P.lineFor(on, "", "2026-12-09") !== "", true, "the last day counts");
   assert.equal(P.lineFor(on, "", "2026-10-31"), "");
-  assert.equal(P.lineFor(on, "", "2026-12-04"), "");
+  assert.equal(P.lineFor(on, "", "2026-12-10"), "");
   assert.equal(P.lineFor({ ...on, promote: "true" }, "", "2026-11-15"), "", "only a real true turns it on");
   assert.equal(P.lineFor(on, "briefing", "2026-11-15"), "", "no briefing line unless one is written");
   assert.equal(P.lineFor({ ...on, briefing_line: "One line." }, "briefing", "2026-11-15"), "One line.");
@@ -226,15 +227,15 @@ test("the homepage card's seasonal wording, the see line and the gauge line", ()
   const ang = (d, c = J) => P.cardFor(c, d).angle;
   assert.equal(ang("2026-10-31"), "evergreen");
   assert.equal(ang("2026-11-01"), "christmas", "from Nov 1");
-  assert.equal(ang("2026-12-03"), "christmas", "through the framed order-by date");
-  assert.equal(ang("2026-12-04"), "gift", "then the gift card");
+  assert.equal(ang("2026-12-09"), "christmas", "through the framed order-by date");
+  assert.equal(ang("2026-12-10"), "gift", "then the gift card");
   assert.equal(ang("2026-12-24"), "gift");
   assert.equal(ang("2026-12-25"), "evergreen");
   assert.equal(ang("2027-01-10"), "evergreen");
   assert.equal(ang("2026-12-10", { ...J, gift_card_title: null }), "evergreen", "no gift flow, no gift wording");
   const xmas = P.cardFor(J, "2026-11-20");
   assert.equal(xmas.title, "A Christmas gift for the farm");
-  assert.match(xmas.text, /Order framed by Dec 3 for Christmas delivery\.$/);
+  assert.match(xmas.text, /Order framed by Dec 9 for Christmas delivery\.$/);
   assert.equal(xmas.price, "Prints from $" + J.print12x18 + ", shipping included.");
   for (const d of ["2026-10-31", "2026-11-20", "2026-12-10"]) {
     const c = P.cardFor(J, d);

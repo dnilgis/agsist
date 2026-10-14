@@ -1242,11 +1242,11 @@
     $('rp-gift-cardnote').textContent = formOnly
       ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
       : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
-    // the digital file's card: this year's comes in January with the proof
-    $('rp-dig-when').textContent = on ? 'A proof and the files in January, once the full year is in' : 'A proof first, then the files by email within 1 business day of your OK';
+    // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
+    $('rp-dig-when').textContent = on ? 'The finished files by email in January, once the full year is in' : 'The finished files by email within 1 business day of paying';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
     $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
-      : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. The proof comes in January, once the full year is in.' : ORDER_NOTE;
+      : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
     syncCutoffs();
@@ -1707,8 +1707,8 @@
          link to tap. No design code here: it travels with the payment. */
       var a = '<a href="' + esc(u) + '" target="_blank" rel="noopener">If it didn\u2019t open, tap here</a>.';
       note.innerHTML = (ST.gift
-        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the proof then.'
-        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and I email you a proof before I print.' +
+        ? 'Checkout should be open in a new tab. ' + a + ' This one is made in January, once the full year is in. I\u2019ll email you to confirm where it goes, and send the ' + (id === 'digital' ? 'finished file' : 'proof') + ' then.'
+        : 'Checkout should be open in a new tab. ' + a + ' Your design travels with the payment, and ' + (id === 'digital' ? 'the finished file comes by email within 1 business day. If you want anything changed, write to me and I\u2019ll redo it, no charge.' : 'I email you a proof before I print.') +
           (giftTicked() ? ' Put their name and your note in the gift boxes there, and their address for shipping if it goes straight to them.' : '')) +
         (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : '');
       return;
@@ -1744,13 +1744,18 @@
     var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift(), print = id !== 'digital';
-    var steps = paid
-      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.']
+    var steps = !print ? (paid
+      ? ['The finished file comes by email within 1 business day.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
       : jan
-      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK it.' : 'The file is emailed within 1 business day after you OK the proof.']
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the finished file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.']
+      : ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'The finished file comes by email within 1 business day of paying. There\u2019s no proof step for the file.', 'Want anything changed? Write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.'])
+      : paid
+      ? ['I email you a proof of this exact design within 1 business day.', 'You OK the proof or ask for changes. Nothing prints before you OK it.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.']
+      : jan
+      ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', 'In January, once the full year is in, I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK it.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
-        print ? 'It ships within ' + (J.ship_business_days || 7) + ' business days after you OK the proof.' : 'The file is emailed within 1 business day after you OK the proof.'];
-    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">check the proof first</a>') + '</p>' +
+        'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.'];
+    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">' + (print ? 'check the proof first' : 'check it up close first') + '</a>') + '</p>' +
       '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
       '<p><b>What happens next</b></p><ol>' + steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
     var sp = $('ro-see-proof');
@@ -1900,7 +1905,7 @@
       x.choice = GIFT.product;
       root.AgRpGift.redeem(GIFT, x).then(function (r) {
         ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
-        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
+        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
         if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
         try { out.firstChild.focus(); } catch (err) {}
       }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
@@ -1911,9 +1916,13 @@
       ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
       out.innerHTML = gift
         ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
-          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the proof then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
+          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the ' + (x.choice === 'digital' ? 'finished file' : 'proof') + ' then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
+        : x.choice === 'digital'
+        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a payment link.</p>' +
+          '<p>Nothing is charged until you pay that link. The finished file comes by email within 1 business day of paying. If you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.' +
+          ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>'
         : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
-          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + (x.choice === 'digital' ? 'The file comes by email within 1 business day after you OK the proof.' : 'It ships within ' + ((PRICES && PRICES.ship_business_days) || 7) + ' business days after you OK the proof.') +
+          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
           ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
       $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
       try { out.firstChild.focus(); } catch (err) {}
