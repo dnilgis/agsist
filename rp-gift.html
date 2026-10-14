@@ -170,7 +170,10 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 .c8 .hero{width:6.6in;margin-top:.2in;line-height:0;background:#fff;box-shadow:0 0 0 .5pt var(--guide)}
 .c8 .hero svg{display:block;width:100%;height:auto}
 .c8 .cap{font-size:8.5pt;color:var(--mute);line-height:1.45;margin-top:.1in;max-width:6.4in}
-.c8 .art{width:6.2in;margin-top:.5in}
+.c8 .art{width:6.4in;margin-top:.5in}
+/* no preview: the empty month line sits lower, so the card doesn't hang from the top */
+.c8 .nopv .kick{margin-top:.55in}
+.c8 .nopv .art{margin-top:.95in}
 .c8 .lede{font-size:10pt;margin-top:.12in;max-width:5.8in}
 .c8 .low{display:flex;gap:.35in;width:6.6in;margin-top:auto;padding-top:.2in;text-align:left;align-items:flex-start}
 .c8 .low .l{flex:1 1 auto;min-width:0}
@@ -345,7 +348,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     o += '</div></div>';
     o += '<p class="sig">' + (C.product === 'digital' ? 'Made' : 'Drawn and printed') + ' by Sig Lindquist, AGSIST, Chetek, Wisconsin</p>';
     o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
-    return '<div class="c8"><div class="face">' + o + '</div></div>';
+    return '<div class="c8"><div class="face' + (s && PV ? '' : ' nopv') + '">' + o + '</div></div>';
   }
   /* Light cut marks for the 8 x 10 on a letter sheet: the card's sides are
      0.25 in from the sheet's, its top and bottom 0.5 in. Every mark keeps
