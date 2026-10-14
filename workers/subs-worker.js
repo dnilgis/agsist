@@ -5,6 +5,36 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.23 (2026-10-14): RAIN PRINT LOGOS. New routes, one new optional field on
+ *   two form kinds, and a longer key field in a design code; every existing
+ *   route answers exactly as before. No new binding and no new secret: the
+ *   logos live in the SUBS KV (a value may be up to 25 MiB; these are 2 MB at
+ *   most).
+ *   POST /rp-logo  body = the PNG bytes the page made (components/rp-logo.js
+ *     reads the buyer's PNG, JPG, WebP or SVG in the browser, trims it, caps
+ *     the longest side at 1600 px and draws it out as a PNG; an SVG is never
+ *     sent or stored, only its pixels). Origin agsist.com or www and
+ *     Content-Type image/png (403 / 415 otherwise), 2 MB at most (413). The
+ *     bytes must be a whole PNG: the signature, an IHDR of 1 to 1600 px each
+ *     way, every chunk inside the body, an IDAT and IEND last (400
+ *     otherwise). RATE["/rp-logo"]: 10 an hour, 20 a day per address, 100 for
+ *     everyone a day. Answers {ok:true, id, w, h}. The id is 12 random
+ *     characters of lowercase Crockford base32 (0-9 a-z without i l o u, 60
+ *     bits from crypto.getRandomValues), so nobody can guess another buyer's.
+ *     Stored as rpl:<id> = the bytes, metadata {w, h, ts}, for 400 days.
+ *   GET  /rp-logo/<id>  the PNG (image/png, nosniff, a sandbox CSP, public,
+ *     a year, immutable; CORS for agsist.com so the page can read it into a
+ *     canvas), or 404. Uppercase and the look-alikes (I L -> 1, O -> 0) read
+ *     as the id. The same per-isolate brake as /rp-short/<id>: 30 unknown ids
+ *     an hour per address, then 429.
+ *   An order keeps its logo for good: kind rain-print-order and
+ *   rain-print-business take logo (the id, optional), rain-print-order also
+ *   reads it from its design code (and so does a gift card redeem), and a
+ *   stored order, quote or locked gift card rewrites rpl:<id> without its
+ *   expiry. The forms digest prints "Logo: <link>".
+ *   /rp-short and the gift card lock take a v2 design code whose key field is
+ *   5 letters, or 18 with a logo: "LPCSX" + i (one ink color) or c (its own
+ *   colors) + the 12-character id.
  * v5.22 (2026-10-13): PRF STATE SPONSOR INQUIRIES. One new form kind on
  *   POST /form; every existing route answers exactly as before. No new
  *   binding and no new secret.
@@ -428,7 +458,7 @@
  *                            for the nightly checker.
  *   GET/POST /alert-unsubscribe?e=&t=   signed, same HMAC as briefing.
  *
- * Bindings/secrets (unchanged through v5.22): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
+ * Bindings/secrets (unchanged through v5.23): KV binding SUBS; secrets LIST_TOKEN, UNSUB_SECRET.
  *
  * CANONICAL SOURCE: workers/subs-worker.js in the agsist repo. Edit there,
  * commit, then paste here — never the other way around.
@@ -555,6 +585,9 @@ const RATE = {
   // v5.16: gift cards. Every check counts (hit or miss): 20 an hour, 60 a day
   // per address, so walking 2^55 codes is hopeless; redeem is rarer still.
   "/rp-gift/check": [20, 60, 1000], "/rp-gift/redeem": [5, 10, 100],
+  // v5.23: Rain Print logos. A buyer uploads one or two; the daily total bounds
+  // what strangers can store (100 a day at 2 MB at most).
+  "/rp-logo": [10, 20, 100],
   // v5.20: the elevator portal. A manager opens the page and saves a few
   // times a day; a 24-character key cannot be walked at 60 tries an hour.
   "/elev/me": [60, 300, 1000], "/elev/save": [60, 300, 1000],
@@ -780,12 +813,15 @@ const FORM_KINDS = {
     gift_email: [254, false, "email"], gift_message: [240, false, "text"],
     // v5.12: an ordinary order given as a gift (note card in the box). Keeps the gift_ fields like gift_january.
     gift: [3, false, "flag"],
+    // v5.23: the logo on the print (an rpl: id); also read from design_code
+    logo: [12, false, "rplogo"],
   },
   // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
   "rain-print-business": {
     business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30],
     quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [8000, true, "text"],
     ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
+    logo: [12, false, "rplogo"],   // v5.23: for the note card or the prints
   },
   // v5.21: an elevator asks to post its own bids (list-your-elevator.html). Sig confirms by phone first.
   "elevator-listing": {
@@ -871,6 +907,9 @@ function formClean(kind, b) {
       const got = (Array.isArray(b[f]) ? b[f].map(String) : v.split(/[,;\s]+/)).map(x => x.trim().toUpperCase()).filter(Boolean);
       if (!got.length || got.some(x => !PRF_STATES.includes(x))) return { error: "invalid " + f };
       v = [...new Set(got)].sort().join(", ");
+    } else if (type === "rplogo") {
+      v = rplId(v);
+      if (!v) return { error: "invalid " + f };
     } else if (type === "elhow") {
       if (!EL_HOW.includes(v)) return { error: "invalid " + f };
     } else if (type === "dirid") {
@@ -884,6 +923,9 @@ function formClean(kind, b) {
     out[f] = v;
   }
   if (kind === "rain-print-order") {
+    // v5.23: the logo the design code carries is the one on the print
+    const lg = rplFromCode(out.design_code);
+    if (lg) out.logo = lg;
     if (out.choice === "digital") delete out.address;
     else if (!out.address) return { error: "address is required for a print" };
     if (out.gift_january !== "yes" && out.gift !== "yes") {
@@ -934,7 +976,7 @@ function rpsCodeOk(code) {
   if (v2 && (f.length - 6) % 2 && !f.pop().trim()) return false;   // the dedication, when there is one
   if ((f.length - 6) % 2) return false;
   if (!f[1].trim()) return false;
-  if (!(v2 ? /^[a-z0-9]{5}$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;
+  if (!(v2 ? /^[a-z0-9]{5}(?:[ic][0-9a-hjkmnp-tv-z]{12})?$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;   // v5.23: + a logo
   const year = parseInt(f[3], 10);
   if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
   for (let i = 6; i + 1 < f.length; i += 2) {
@@ -962,7 +1004,7 @@ function rpsId(v) {
 // count) and RPS_MEM_MAX.miss GETs of an unknown id (someone walking the id
 // space). Past the miss cap every GET from that address answers 429 until
 // the hour turns, so a hit cannot be found by walking ids either.
-const RPS_MEM_MAX = { post: 240, miss: 30 };
+const RPS_MEM_MAX = { post: 240, miss: 30, logo: 60 };   // v5.23: logo uploads, any answer
 const RPS_MEM = new Map();
 function rpsMemKey(req, kind) {
   return "rps|" + kind + "|" + ipBucket(req.headers.get("CF-Connecting-IP") || "") + "|" + Math.floor(Date.now() / 3600e3);
@@ -980,6 +1022,60 @@ function rpsMemMiss(req) {
   if (!req.headers.get("CF-Connecting-IP")) return;
   const k = rpsMemKey(req, "miss");
   RPS_MEM.set(k, (RPS_MEM.get(k) || 0) + 1);
+}
+
+// v5.23: RAIN PRINT LOGOS. rpl:<id> = the PNG bytes the page made.
+const RPL_MAX_BYTES = 2 * 1024 * 1024;
+const RPL_MAX_SIDE = 1600;
+const RPL_TTL_S = 400 * 24 * 3600;      // an order, a quote or a locked gift card keeps it for good (rplKeep)
+const RPL_B32 = "0123456789abcdefghjkmnpqrstvwxyz";   // Crockford, lowercase: no i l o u
+const RPL_ID_RE = /^[0-9a-hjkmnp-tv-z]{12}$/;
+function rplNew() {
+  let s = "";
+  for (const x of crypto.getRandomValues(new Uint8Array(12))) s += RPL_B32[x & 31];
+  return s;
+}
+function rplId(v) {
+  const id = String(v == null ? "" : v).trim().toLowerCase().replace(/[il]/g, "1").replace(/o/g, "0");
+  return RPL_ID_RE.test(id) ? id : "";
+}
+// A whole PNG of 1 to RPL_MAX_SIDE px each way: {w, h}, or why not (a string).
+function rplPng(b) {
+  const sig = [137, 80, 78, 71, 13, 10, 26, 10];
+  if (!(b instanceof Uint8Array) || b.length < 57 || sig.some((v, i) => b[i] !== v)) return "not a PNG";
+  const u32 = (at) => ((b[at] << 24) >>> 0) + (b[at + 1] << 16) + (b[at + 2] << 8) + b[at + 3];
+  const tag = (at) => String.fromCharCode(b[at], b[at + 1], b[at + 2], b[at + 3]);
+  if (u32(8) !== 13 || tag(12) !== "IHDR") return "not a PNG";
+  const w = u32(16), h = u32(20);
+  if (![1, 2, 4, 8, 16].includes(b[24]) || ![0, 2, 3, 4, 6].includes(b[25])) return "not a PNG";
+  let p = 8, idat = false, end = false;
+  while (p + 12 <= b.length) {
+    const len = u32(p), t = tag(p + 4);
+    if (!/^[A-Za-z]{4}$/.test(t) || p + 12 + len > b.length) return "not a PNG";
+    if (t === "IDAT") idat = true;
+    p += 12 + len;
+    if (t === "IEND") { end = true; break; }
+  }
+  if (!end || !idat || p !== b.length) return "not a PNG";
+  if (!w || !h || w > RPL_MAX_SIDE || h > RPL_MAX_SIDE) return "logo must be 1600 px or less each way";
+  return { w, h };
+}
+// The logo id in a v2 design code's key field ("LPCSX" + i|c + id), or "".
+function rplFromCode(code) {
+  const f = rpgFields(code);
+  return f && f[0] === "2" && f[4].length === 18 ? rplId(f[4].slice(6)) : "";
+}
+// An order, a quote or a locked gift card names this logo: keep it for good.
+async function rplKeep(env, id) {
+  id = rplId(id);
+  if (!id) return;
+  try {
+    const got = await env.SUBS.getWithMetadata("rpl:" + id, { type: "arrayBuffer" });
+    if (!got || !got.value) return;
+    const m = got.metadata && typeof got.metadata === "object" ? got.metadata : {};
+    if (m.kept) return;
+    await env.SUBS.put("rpl:" + id, got.value, { metadata: Object.assign({}, m, { kept: Date.now() }) });
+  } catch (e) { /* the order is stored; Sig still has the link until the logo's 400 days run out */ }
 }
 
 // v5.16: RAIN PRINT GIFT CARDS. A card is a code RP-XXXX-XXXX-XXXX: 11
@@ -1128,6 +1224,7 @@ async function rpgIssue(env, f, extra) {
   await env.SUBS.put(key, JSON.stringify(rec));
   await rpgIndex(env, "rpg-ref:" + f.order_ref, key);
   if (f.giver.email) await rpgIndex(env, "rpg-by:" + await hmac16("rp-gift-by|" + f.giver.email, env.UNSUB_SECRET), key);
+  if (f.lock) await rplKeep(env, rplFromCode(f.lock.design_code));   // v5.23: a locked card's logo stays
   const k = await rpgCardK(env, code);
   return { ok: true, code, no, last4, key, status: rec.status, ships: rec.ships,
     card_url: RPG_SITE + "/rp-gift?c=" + code + "&k=" + k };
@@ -2283,6 +2380,46 @@ async function handle(req, env) {
       return json({ ok: true, code }, 200, Object.assign({ "Cache-Control": "public, max-age=604800, immutable" }, c));
     }
 
+    // ---------- v5.23: Rain Print logos ----------
+    // Not in PUBLIC_POSTS: the body is PNG bytes, not JSON, so the gate is here.
+    if (path === "/rp-logo" && req.method === "POST") {
+      const c = cors(req);
+      if (!ALLOWED_ORIGINS.includes(req.headers.get("Origin") || "")) return json({ ok: false, error: "forbidden" }, 403, c);
+      const ct = (req.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+      if (ct !== "image/png") return json({ ok: false, error: "unsupported content type" }, 415, c);
+      if (!rpsMemOk(req, "logo")) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
+      if (Number(req.headers.get("Content-Length") || 0) > RPL_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      let buf = null;
+      try { buf = await req.arrayBuffer(); } catch (e) { buf = null; }
+      if (!buf || !buf.byteLength) return json({ ok: false, error: "not a PNG" }, 400, c);
+      if (buf.byteLength > RPL_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, c);
+      const png = rplPng(new Uint8Array(buf));
+      if (typeof png === "string") return json({ ok: false, error: png }, 400, c);
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      // 60 random bits: two uploads never meet, so nothing is read back first
+      const id = rplNew();
+      await env.SUBS.put("rpl:" + id, buf, { expirationTtl: RPL_TTL_S, metadata: { w: png.w, h: png.h, ts: Date.now() } });
+      return json({ ok: true, id, w: png.w, h: png.h }, 200, c);
+    }
+    if (path.startsWith("/rp-logo/") && req.method === "GET") {
+      const c = Object.assign({ "Vary": "Origin", "X-Content-Type-Options": "nosniff" }, cors(req));
+      let seg = "";
+      try { seg = decodeURIComponent(path.slice("/rp-logo/".length)); } catch (e) { seg = ""; }
+      const id = rplId(seg);
+      if (!id) return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "public, max-age=86400" }, c));
+      if (!rpsMemOk(req, "get")) return json({ ok: false, error: "too many requests; try again later" }, 429, Object.assign({ "Cache-Control": "no-store" }, c));
+      let v = null;
+      try { v = await env.SUBS.get("rpl:" + id, { type: "arrayBuffer" }); } catch (e) { v = null; }
+      if (!v || typeof rplPng(new Uint8Array(v)) === "string") {
+        rpsMemMiss(req);
+        return json({ ok: false, error: "not found" }, 404, Object.assign({ "Cache-Control": "no-store" }, c));
+      }
+      return new Response(v, { status: 200, headers: Object.assign({ "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000, immutable", "Content-Security-Policy": "default-src 'none'; sandbox",
+        "Cross-Origin-Resource-Policy": "cross-origin" }, c) });
+    }
+
     // ---------- v5.16: Rain Print gift cards ----------
     // Sig only: issue, void (and reissue), find. The token must come as
     // "Authorization: Bearer"; ?token= is refused here so it never sits in a URL.
@@ -2431,6 +2568,7 @@ async function handle(req, env) {
       const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
       const fkey = "form:rain-print-order:" + ts + ":" + rnd;
       await env.SUBS.put(fkey, JSON.stringify(post), { expirationTtl: FORM_TTL_S });
+      if (post.logo) await rplKeep(env, post.logo);   // v5.23
       rec.status = "redeemed"; rec.redeemed_ts = ts; rec.form_key = fkey; delete rec.pending_ts;
       await env.SUBS.put(key, JSON.stringify(rec));
       return json({ ok: true, redeemed_on: rpgDay(ts), ships: rec.ships, product: rec.product, choice: v.rec.choice, upgrade: up }, 200, c);
@@ -2592,6 +2730,7 @@ async function handle(req, env) {
       const rnd = [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, "0")).join("");
       await env.SUBS.put("form:" + kind + ":" + ts + ":" + rnd,
         JSON.stringify(Object.assign({ kind, ts, n: 0 }, v.rec)), { expirationTtl: FORM_TTL_S });
+      if (v.rec.logo) await rplKeep(env, v.rec.logo);   // v5.23
       return json({ ok: true }, 200, c);
     }
 
