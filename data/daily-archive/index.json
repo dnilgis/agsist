@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-14",
+      "date_display": "Wednesday, October 14, 2026",
+      "headline": "Crude tops $95 on more tanker threats; grain holds steady",
+      "teaser": "Crude pushes toward $95 on fresh Iran tanker threats while corn and beans sit quiet.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-10-14",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-13",
       "date_display": "Tuesday, October 13, 2026",
       "headline": "Corn and beans drift lower as crop progress looms",
@@ -2459,6 +2470,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-13T10:47:46.452883+00:00",
-  "count": 214
+  "updated": "2026-10-14T10:47:30.542459+00:00",
+  "count": 215
 }
