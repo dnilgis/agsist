@@ -21,6 +21,9 @@
  *   showNormals: month normals under the month totals,
  *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO, later (optional words)} or null,
+ *   logo: {href (a data:image/png URL), w, h (its pixels)} or null: the buyer's
+ *     farm or business logo (2026-10-14), small, beside the name block. The
+ *     engine hands over the stored PNG, or its one-color ink version.
  *     later is for the gift card only (rp-gift.html, 2026-10-14): a pale wash over
  *     the months still to come with those words in it. The page never sets it.
  *   watermark, bleed (units), px [w, h], fontCss, measure(text, font) -> width
@@ -407,6 +410,33 @@
     return s + '</g>';
   }
 
+  // ---------- the buyer's logo (2026-10-14, Sig: "incorporated into the print tastefully") ----------
+  /* Beside the name block, about its height (roughly 0.9 to 1.05 in): R1 left
+     of the place, year and name at the foot, R2 left of the name and place at
+     the top. The words move right to make room and shrink as they always do;
+     the logo itself is never over LOGO_MAX either way (art units, 100 to the
+     inch), keeps its shape, and is a mark the labels keep clear of. Only a
+     PNG data URL is drawn (the engine reads the stored PNG into one, so a
+     canvas making the print file is never tainted and no address is printed). */
+  var LOGO_MAX = { r1: { w: 260, h: 104 }, r2: { w: 240, h: 92 } }, LOGO_GAP = 30;
+  var LOGO_HREF = /^data:image\/png;base64,[A-Za-z0-9+\/]+=*$/;
+  function logoSize(style, aspect) {
+    var M = LOGO_MAX[style === 'r2' ? 'r2' : 'r1'], a = aspect > 0 && isFinite(aspect) ? aspect : 1;
+    var h = M.h, w = h * a;
+    if (w > M.w) { w = M.w; h = w / a; }
+    return { w: n2(w), h: n2(h) };
+  }
+  function logoOf(I, style) {
+    var L = I.logo;
+    if (!L || !LOGO_HREF.test(String(L.href || '')) || !(L.w > 0 && L.h > 0)) return null;
+    var sz = logoSize(style, L.w / L.h);
+    return { href: L.href, w: sz.w, h: sz.h, x: 0, y: 0 };
+  }
+  function logoMark(lg) {
+    return G0('logo') + '<image href="' + lg.href + '" x="' + n2(lg.x) + '" y="' + n2(lg.y) + '" width="' + n2(lg.w) + '" height="' + n2(lg.h) +
+      '" preserveAspectRatio="xMidYMid meet"/>' + G1;
+  }
+
   // ---------- a preview of this year: a band across the art, and the watermark ----------
   // across the chart only (2026-10-13): edge to edge it hid the scale's numbers
   function previewBand(E, b) {
@@ -580,17 +610,18 @@
     var MY = PB + 74, RY = MY + (showN ? 82 : 34);
 
     // ---- the title block, bottom left: the farm name at 48 u (designers' panel, 2026-10-13), the place at 400 weight
-    var title = [];
-    var placeSt = { fam: SERIF, w: 400, size: fit(E.place, { fam: SERIF, w: 400, size: 40 }, 1500, 24) };
-    title.push([ML, 1004, E.place, placeSt]);
+    // a logo goes first, at the left margin, and the words start after it (TX)
+    var title = [], lg = logoOf(I, 'r1'), TX = lg ? ML + lg.w + LOGO_GAP : ML;
+    var placeSt = { fam: SERIF, w: 400, size: fit(E.place, { fam: SERIF, w: 400, size: 40 }, 1500 - (TX - ML), 24) };
+    title.push([TX, 1004, E.place, placeSt]);
     var yearSt = { fam: SERIF, w: 600, size: 84 };
-    title.push([ML - 3, 1080, String(E.year), yearSt]);
-    var nx = ML + W(String(E.year), yearSt) + 26, nroom = 1560 - nx - 40, dedY = E.name ? 1080 : 1068;
+    title.push([TX - 3, 1080, String(E.year), yearSt]);
+    var nx = TX + W(String(E.year), yearSt) + 26, nroom = 1560 - nx - 40, dedY = E.name ? 1080 : 1068;
     var dedSt = E.dedication ? { fam: SERIF, it: true, w: 400, size: fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 22 }, nroom, 14), fill: C.mute } : null;
     if (E.name) {
       var nameSt = { fam: SERIF, w: 400, size: fit(E.name, { fam: SERIF, w: 400, size: 48 }, nroom, 26) }, ny;
       // the name's capitals keep clear of the place's letters above them, its own tails clear of the dedication below
-      var over = tailFrom(E.place, placeSt, nx - ML - 6);
+      var over = tailFrom(E.place, placeSt, nx - TX - 6);
       for (;;) {
         var lo = 1004 + desc(over) * placeSt.size + 4 + asc(E.name) * nameSt.size;
         var hi = E.dedication ? dedY - asc(E.dedication) * dedSt.size - 4 - desc(E.name) * nameSt.size : 1112;
@@ -602,6 +633,12 @@
     }
     if (E.dedication) title.push([nx, dedY, E.dedication, dedSt]);
     title.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'title'); });
+    if (lg) {
+      // centred on the place and year: from the place's capitals to the year's baseline
+      var lgTop = 1004 - asc(E.place) * placeSt.size;
+      lg.x = ML; lg.y = n2((lgTop + 1080) / 2 - lg.h / 2);
+      room.add({ b: { x: lg.x, y: lg.y, w: lg.w, h: lg.h }, own: 'logo', k: 'mark' });
+    }
     var small = smallLine(E, ML, 1500);
     if (small) room.text(small.box, 'foot');
     var qb = qrBox(I.qr, 1690, 1100);
@@ -905,9 +942,11 @@
     });
 
     o.push(G0('title') + title.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + G1);
+    if (lg) o.push(logoMark(lg));
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, 1690, 1100));
     last_skipped = skipped;
+    last_logo = lg ? { x: lg.x, y: lg.y, w: lg.w, h: lg.h } : null;
     return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [xs(E.n) + 12, X1 + 6] : null, 96));
   }
 
@@ -952,24 +991,32 @@
       rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', { w: 300, size: 44 });
     }
     // left: name, place and year, dedication; shrunk to stay clear of the totals
-    var leftRoom = rightEdge - 50 - ML, title = [];
+    // a logo goes first, at the left margin, and the words start after it (TX)
+    var lg = logoOf(I, 'r2'), TX = lg ? ML + lg.w + LOGO_GAP : ML;
+    var leftRoom = rightEdge - 50 - TX, title = [];
     var py = E.name ? 214 : 190;
     if (E.name) {
       var nst = { w: 500, size: 32, ls: 0.14 };
       nst.size = fit(E.name.toUpperCase(), nst, leftRoom, 18);
-      title.push([ML, 150, E.name.toUpperCase(), nst]);
+      title.push([TX, 150, E.name.toUpperCase(), nst]);
     }
     // place and year read across the room: 60 u (was 50; designers' panel, 2026-10-13)
     var ps = { w: 300, size: 60 }, ys = { w: 500, size: 60 }, both = E.place + '  ' + E.year;
     ps.size = ys.size = fit(both, { w: 400, size: 60 }, leftRoom, 28);
-    title.push([ML, py, E.place, ps]);
-    title.push([ML + W(E.place + '  ', ps), py, String(E.year), ys]);
+    title.push([TX, py, E.place, ps]);
+    title.push([TX + W(E.place + '  ', ps), py, String(E.year), ys]);
     // the dedication runs under the totals but stops short of the verdict on its line
     if (E.dedication) {
-      var dRoom = (E.verdict ? X1 - W(E.verdict, vst) - 40 : X1) - ML;
-      title.push([ML, py + 44, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, dRoom, 14), fill: C.mute }]);
+      var dRoom = (E.verdict ? X1 - W(E.verdict, vst) - 40 : X1) - TX;
+      title.push([TX, py + 44, E.dedication, { it: true, size: fit(E.dedication, { it: true, size: 21 }, dRoom, 14), fill: C.mute }]);
     }
     put(totals, 'totals'); put(title, 'title');
+    if (lg) {
+      // centred on the name and place: from the name's capitals (or the place's) to the place's baseline
+      var lgTop = E.name ? 150 - asc(E.name.toUpperCase()) * nst.size : py - asc(E.place) * ps.size;
+      lg.x = ML; lg.y = n2(Math.max(64, (lgTop + py) / 2 - lg.h / 2));
+      room.add({ b: { x: lg.x, y: lg.y, w: lg.w, h: lg.h }, own: 'logo', k: 'mark' });
+    }
 
     // guides and scales
     var axisT = [];
@@ -1179,6 +1226,7 @@
     // ================= draw, back to front
     o.push(G0('totals') + draw(totals) + G1);
     o.push(G0('title') + draw(title) + G1);
+    if (lg) o.push(logoMark(lg));
     o.push(G0('axis'));
     R.ticks.forEach(function (t) { o.push(line(X0, ry(t), X1, ry(t), C.guide, 0.7)); });
     if (E.full) S.ticks.forEach(function (t) { o.push(line(X0, sy(t), X1, sy(t), C.snowGrid, 0.7)); });
@@ -1218,18 +1266,21 @@
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, X1, qrBottom));
     last_skipped = skipped;
+    last_logo = lg ? { x: lg.x, y: lg.y, w: lg.w, h: lg.h } : null;
     return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
-  var last_skipped = [];
+  var last_skipped = [], last_logo = null;
   function render(I) {
     measure = typeof I.measure === 'function' ? I.measure : defaultMeasure;
-    last_skipped = [];
+    last_skipped = []; last_logo = null;
     return I.style === 'r2' ? r2(I) : r1(I);
   }
 
   root.AgRainArt = {
     render: render, model: model, recordPoints: recordPoints, lastSkipped: function () { return last_skipped.slice(); },
+    // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
+    logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
     STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, roughW: roughW
   };
 })(typeof window !== 'undefined' ? window : this);

@@ -181,6 +181,17 @@
   .rp-count{font-size:var(--fs-xs);color:var(--text-muted);margin:.25rem 0 0;line-height:1.45}
   .rp-count.rp-at{color:var(--text);font-weight:600}
   .rp-count.rp-bad{color:var(--red)}
+  /* the buyer's logo (2026-10-14): a file button, a thumbnail on paper, ink or its own colors, remove */
+  .rp-logo-h{display:block;margin:0 0 .35rem;font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
+  .rp-logo-row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem}
+  .rp-logo-in{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+  .rp-logo-in:focus-visible+.rp-logo-pick{outline:2px solid var(--gold);outline-offset:2px}
+  .rp-logo-pick{cursor:pointer}
+  .rp-logo-thumb{display:block;height:48px;width:auto;max-width:150px;padding:6px 8px;background:#fff;border:1px solid var(--border-2);border-radius:var(--r-sm);object-fit:contain}
+  .rp-logo-ink{margin:.55rem 0 0}
+  .rp-logo-ink legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin:0 0 .3rem;padding:0}
+  .rp-logo-msg:empty{display:none}
+  .rp-proof-sum .rp-plogo{display:block;height:40px;width:auto;max-width:140px;margin:.35rem 0 0;padding:4px 6px;background:#fff;border-radius:4px;object-fit:contain}
   .rp-dates-n{grid-column:1/-1;margin:0}
   .rp-presets{display:inline-flex;flex-wrap:wrap;gap:.3rem;vertical-align:middle}
   .rp-presets button{font:inherit;font-size:var(--fs-xs);min-height:36px;padding:0 .6rem;border:1px solid var(--border-2);border-radius:var(--r-pill);background:var(--bg);color:var(--text-dim);cursor:pointer}
@@ -483,6 +494,21 @@
         <div class="rp-wide2"><label class="field"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm" aria-describedby="rp-name-n"></label><p class="rp-count" id="rp-name-n" aria-live="polite">0 of 24 letters</p></div>
         <div class="rp-wide2"><label class="field"><span>A line under the name (optional)</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count" id="rp-ded-n" aria-live="polite">0 of 70 letters</p></div>
         <p class="rp-count rp-wide2" id="rp-sym-note" hidden>Emoji and symbols aren&rsquo;t in the print&rsquo;s typeface, so they were left out. Letters, numbers and everyday punctuation print as typed.</p>
+        <div class="rp-wide2 rp-logo" id="rp-logo" role="group" aria-labelledby="rp-logo-h">
+          <span class="rp-logo-h" id="rp-logo-h">Add a logo (optional)</span>
+          <div class="rp-logo-row">
+            <input class="rp-logo-in" id="rp-logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,.png,.jpg,.jpeg,.webp,.svg" aria-describedby="rp-logo-help rp-logo-msg">
+            <label class="btn btn-secondary rp-logo-pick" for="rp-logo-file" id="rp-logo-pick">Choose a file</label>
+            <img class="rp-logo-thumb" id="rp-logo-thumb" alt="Your logo, as it prints" hidden>
+            <button type="button" class="btn btn-secondary" id="rp-logo-remove" hidden>Remove</button>
+          </div>
+          <p class="rp-count" id="rp-logo-help">Your farm or business logo. It prints small, next to the name. A big, clear file prints best. PNG, JPG, WebP or SVG, up to 10 MB.</p>
+          <fieldset class="rp-logo-ink" id="rp-logo-inks" hidden><legend>Logo color</legend><div class="rp-seg">
+            <label><input type="radio" name="rp-logo-ink" value="1" checked><span>Ink color</span></label>
+            <label><input type="radio" name="rp-logo-ink" value="0"><span>Keep its colors</span></label>
+          </div></fieldset>
+          <p class="rp-count rp-logo-msg" id="rp-logo-msg" aria-live="polite"></p>
+        </div>
         <div class="rp-dates" role="group" aria-label="Dates on the print"><p class="rp-dates-h">Up to three dates, marked on the year, each with your own words (13 letters)</p>
           <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m1d" type="date" aria-label="Date 1" aria-describedby="rp-date-msg"></label><div class="rp-lab"><label class="field"><span>Label</span><input id="rp-m1l" aria-label="Label for date 1" aria-describedby="rp-m1l-n" type="text" maxlength="13" placeholder="Planted" list="rp-labels"></label><p class="rp-count" id="rp-m1l-n" aria-live="polite">0 of 13 letters</p></div></div>
           <div class="rp-date"><label class="field"><span>Date</span><input id="rp-m2d" type="date" aria-label="Date 2" aria-describedby="rp-date-msg"></label><div class="rp-lab"><label class="field"><span>Label</span><input id="rp-m2l" aria-label="Label for date 2" aria-describedby="rp-m2l-n" type="text" maxlength="13" placeholder="Calving" list="rp-labels"></label><p class="rp-count" id="rp-m2l-n" aria-live="polite">0 of 13 letters</p></div></div>
@@ -657,6 +683,17 @@
               <label><input type="radio" name="rb-ship" value="not-sure" checked><span class="chip">Not sure yet</span></label>
             </div></fieldset>
             <label class="field rp-wide" id="rb-note-all-wrap" hidden><span>Note for every print (optional)</span><textarea id="rb-note-all" maxlength="300" rows="2" placeholder="Thanks for another year. From all of us at the elevator."></textarea></label>
+            <div class="rp-wide rp-logo" id="rb-logo" role="group" aria-labelledby="rb-logo-h">
+              <span class="rp-logo-h" id="rb-logo-h">Logo for the note card or prints (optional)</span>
+              <div class="rp-logo-row">
+                <input class="rp-logo-in" id="rb-logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,.png,.jpg,.jpeg,.webp,.svg" aria-describedby="rb-logo-help rb-logo-msg">
+                <label class="btn btn-secondary rp-logo-pick" for="rb-logo-file" id="rb-logo-pick">Choose a file</label>
+                <img class="rp-logo-thumb" id="rb-logo-thumb" alt="Your logo" hidden>
+                <button type="button" class="btn btn-secondary" id="rb-logo-remove" hidden>Remove</button>
+              </div>
+              <p class="rp-count" id="rb-logo-help">On a print it goes small, next to the name, and you see it in the proof sheet first. PNG, JPG, WebP or SVG, up to 10 MB.</p>
+              <p class="rp-count rp-logo-msg" id="rb-logo-msg" aria-live="polite"></p>
+            </div>
             <label class="field rp-wide"><span>Notes (optional)</span><textarea id="rb-notes" maxlength="2000" rows="2" placeholder="A card in each box, your logo on the card, a date you need them by"></textarea></label>
             <label class="rp-hp" aria-hidden="true">Leave empty<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label>
           </div>
@@ -734,8 +771,9 @@
   <script src="/components/qr.js?v=8"></script>
   <script src="/components/form-post.js?v=3"></script>
   <script src="/components/rp-short.js?v=2"></script>
-  <script src="/components/rain-print-art.js?v=6"></script>
-  <script src="/components/rain-print.js?v=23"></script>
+  <script src="/components/rp-logo.js?v=1"></script>
+  <script src="/components/rain-print-art.js?v=7"></script>
+  <script src="/components/rain-print.js?v=24"></script>
   <script src="/components/rp-gift.js?v=3" defer></script>
 </body>
 </html>

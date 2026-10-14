@@ -72,6 +72,14 @@
  * the cards, $ off each print shipped all to one address; over the quote max
  * Sig quotes it. Consumer orders above it never use them.
  *
+ * A LOGO (2026-10-14, Sig: "a real upload button"). Under the name and the
+ * line, a buyer can add a farm or business logo (components/rp-logo.js reads
+ * and trims it in the browser; the subs worker v5.23 keeps the PNG). It prints
+ * small beside the name block, in the print's ink or in its own colors. The
+ * design carries its id and that switch (logo=, logoInk=, and the code's key
+ * field), so the short link, the QR, the checkout reference, the order and the
+ * gift card all draw the same logo.
+ *
  * The pure parts (design code, query string, business tiers) run without a document, for
  * test/rain-print.test.mjs.
  */
@@ -126,7 +134,12 @@
 
   function defaults() {
     return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false,
-      style: 'r1', dedication: '', normals: false, records: false };
+      style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true };
+  }
+  // a stored logo's id (subs worker v5.23): 12 characters of lowercase Crockford base32
+  function cleanLogo(v) {
+    var id = String(v == null ? '' : v).trim().toLowerCase().replace(/[il]/g, '1').replace(/o/g, '0');
+    return /^[0-9a-hjkmnp-tv-z]{12}$/.test(id) ? id : '';
   }
   /* Whatever came in (URL, code, form), out comes a design with only allowed values. */
   function normalize(x) {
@@ -151,6 +164,9 @@
     s.dedication = cleanText(printable(x.dedication), LIMITS.dedication);
     s.normals = x.normals === true || x.normals === '1' || x.normals === 1;
     s.records = x.records === true || x.records === '1' || x.records === 1;
+    s.logo = cleanLogo(x.logo);
+    // ink color unless the design says its own colors
+    s.logoInk = !(x.logoInk === false || x.logoInk === '0' || x.logoInk === 0);
     return s;
   }
 
@@ -457,7 +473,9 @@
      dedication only when there is one, so the field count says whether it is
      there). Every byte counts: the longest design's link still has to fit the QR
      stamp when no short link can be had. A v1 code ("1|...|LPCS|name|day|label...")
-     still opens: as R1, or R2 if its layout was Waveform. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
+     still opens: as R1, or R2 if its layout was Waveform. A logo (2026-10-14)
+     adds 13 letters to the key field: i (the print's ink) or c (its own colors)
+     and the 12-letter id, so LPCSX becomes LPCSXi<id>. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
      as a client_reference_id (200 at most).
      A gift order (this year, delivered in January) is the same code with GIFT-
      in front, so Sig sees it in Stripe without decoding anything. A v1 code
@@ -468,7 +486,8 @@
     var s = normalize(x);
     if (!s.place || !s.year) return '';
     var x5 = XFLAG[(s.style === 'r2' ? 4 : 0) + (s.normals ? 1 : 0) + (s.records ? 2 : 0)];
-    var f = ['2', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size] + x5, s.name];
+    var f = ['2', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size] + x5 +
+      (s.logo ? (s.logoInk ? 'i' : 'c') + s.logo : ''), s.name];
     s.markers.forEach(function (m) { f.push(dayIndex(s.year, m.date).toString(36), m.label); });
     while (f.length > 6 && f[f.length - 1] === '' && f[f.length - 2] === '') f.length -= 2;
     if (s.dedication) f.push(s.dedication);
@@ -485,7 +504,13 @@
     if ((f[0] !== '1' && !v2) || f.length < 6) return null;
     if (v2 && (f.length - 6) % 2) { ded = f.pop(); if (!ded) return null; }
     if ((f.length - 6) % 2) return null;
-    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1;
+    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true;
+    if (v2 && k.length === 18) {
+      logo = cleanLogo(k.slice(6));
+      if (!logo || logo !== k.slice(6) || 'ic'.indexOf(k[5]) < 0) return null;
+      logoInk = k[5] === 'i';
+      k = k.slice(0, 5);
+    }
     if (k.length !== (v2 ? 5 : 4) || !LAYOUT_R[k[0]] || !PALETTE_R[k[1]] || !CMP_R[k[2]] || !SIZE_R[k[3]]) return null;
     if (v2 && x5 < 0) return null;
     var year = parseInt(f[3], 10);
@@ -499,7 +524,8 @@
     }
     var s = normalize({ place: f[1], station: f[2], year: year, layout: LAYOUT_R[k[0]], palette: PALETTE_R[k[1]],
       cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift,
-      style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2 });
+      style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2,
+      logo: logo, logoInk: logoInk });
     return s.place ? s : null;
   }
 
@@ -517,6 +543,7 @@
     if (s.dedication) q.set('dedication', s.dedication);
     if (s.normals) q.set('normals', '1');
     if (s.records) q.set('records', '1');
+    if (s.logo) { q.set('logo', s.logo); q.set('logoInk', s.logoInk ? '1' : '0'); }
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
     if (s.gift) q.set('gift', '1');
     return q.toString();
@@ -531,7 +558,8 @@
     }
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
       palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers, gift: q.get('gift'),
-      style: q.get('style'), dedication: q.get('dedication'), normals: q.get('normals'), records: q.get('records') });
+      style: q.get('style'), dedication: q.get('dedication'), normals: q.get('normals'), records: q.get('records'),
+      logo: q.get('logo'), logoInk: q.get('logoInk') });
   }
   function designUrl(x) { return SITE + '?' + toParams(x); }
   function shortUrl(x) { var c = encodeCode(x); return c ? SITE + '?d=' + c : SITE; }
