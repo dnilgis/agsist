@@ -82,7 +82,8 @@ test("the serial is maker-only: never in the share link, only behind ?maker=1, n
   const draw = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
   assert.equal((draw.match(/o\.serial = SERIAL/g) || []).length, 1, "one place sets it");
   assert.ok(draw.indexOf("o.serial = SERIAL") > draw.indexOf("kind === 'digital'"), "and it is the print branch, after the digital one");
-  const svgExport = S.slice(S.indexOf("if (fmt === 'svg')"), S.indexOf("job = drawCanvas(kind)"));
+  const svgExport = S.slice(S.indexOf("if (fmt === 'svg')"), S.indexOf("job = go(function () { return drawCanvas(kind); })"));
+  assert.ok(svgExport.length > 50 && svgExport.length < 600, "the slice is the SVG branch only");
   assert.ok(!/serial/i.test(svgExport), "the SVG export carries no serial");
 });
 

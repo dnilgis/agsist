@@ -641,12 +641,46 @@
   }
   function milesText(mi) { return mi < 0.1 ? 'under 0.1 mi' : (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; }
 
+  /* A PNG's bytes with pHYs (pixels per inch, so it opens at its print size,
+     not 72 dpi) and sRGB chunks put in right after IHDR. Pure: the tests run it.
+     Returns the bytes unchanged when they are not a PNG or already say so. */
+  var CRC_T = null;
+  function crc32(b, from, to) {
+    if (!CRC_T) { CRC_T = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC_T[n] = c >>> 0; } }
+    var x = 0xFFFFFFFF;
+    for (var i = from; i < to; i++) x = CRC_T[(x ^ b[i]) & 0xFF] ^ (x >>> 8);
+    return (x ^ 0xFFFFFFFF) >>> 0;
+  }
+  function pngChunk(type, data) {
+    var out = new Uint8Array(12 + data.length), i;
+    var u32 = function (at, v) { out[at] = v >>> 24 & 255; out[at + 1] = v >>> 16 & 255; out[at + 2] = v >>> 8 & 255; out[at + 3] = v & 255; };
+    u32(0, data.length);
+    for (i = 0; i < 4; i++) out[4 + i] = type.charCodeAt(i);
+    out.set(data, 8);
+    u32(8 + data.length, crc32(out, 4, 8 + data.length));
+    return out;
+  }
+  function pngWithDpi(bytes, dpi) {
+    var b = bytes, sig = [137, 80, 78, 71, 13, 10, 26, 10];
+    if (!b || b.length < 33 || sig.some(function (v, i) { return b[i] !== v; })) return b;
+    if (String.fromCharCode(b[12], b[13], b[14], b[15]) !== 'IHDR') return b;
+    var end = 8 + 12 + ((b[8] << 24 | b[9] << 16 | b[10] << 8 | b[11]) >>> 0);   // after IHDR
+    var t = String.fromCharCode(b[end + 4], b[end + 5], b[end + 6], b[end + 7]);
+    if (t === 'pHYs' || t === 'sRGB') return b;
+    var ppm = Math.round(dpi / 0.0254);
+    var phys = new Uint8Array([ppm >>> 24 & 255, ppm >>> 16 & 255, ppm >>> 8 & 255, ppm & 255, ppm >>> 24 & 255, ppm >>> 16 & 255, ppm >>> 8 & 255, ppm & 255, 1]);
+    var a = pngChunk('pHYs', phys), c = pngChunk('sRGB', new Uint8Array([0]));
+    var out = new Uint8Array(b.length + a.length + c.length);
+    out.set(b.subarray(0, end), 0); out.set(a, end); out.set(c, end + a.length); out.set(b.subarray(end), end + a.length + c.length);
+    return out;
+  }
+
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, closeOpenS: closeOpenS, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -1991,6 +2025,19 @@
             c.width = pxW; c.height = pxH;
             var cx = c.getContext('2d');
             cx.drawImage(img, 0, 0, pxW, pxH);
+            /* A print file: crop marks in the bleed, on each trim edge carried out
+               to the sheet's edge, stopping 1/16 in short of the trim corner, so
+               they are cut away with the bleed. 2 px (about 0.5 pt), black. */
+            if (o.bleed) {
+              var bx = BLEED_IN * DPI, gap = DPI / 16;
+              cx.save(); cx.strokeStyle = '#000000'; cx.lineWidth = 2; cx.lineCap = 'butt'; cx.beginPath();
+              [[bx, bx, -1, -1], [pxW - bx, bx, 1, -1], [bx, pxH - bx, -1, 1], [pxW - bx, pxH - bx, 1, 1]].forEach(function (k) {
+                var x = k[0], y = k[1];
+                cx.moveTo(k[2] < 0 ? 0 : pxW, y); cx.lineTo(x + k[2] * gap, y);   // along the top or bottom trim edge
+                cx.moveTo(x, k[3] < 0 ? 0 : pxH); cx.lineTo(x, y + k[3] * gap);   // along the left or right trim edge
+              });
+              cx.stroke(); cx.restore();
+            }
             URL.revokeObjectURL(url);
             resolve(c);
           } catch (e) { reject(e); } });
@@ -2000,7 +2047,13 @@
       });
     });
   }
-  function toBlob(c, type, q) { return new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error('too large for this browser')); }, type, q); }); }
+  // a PNG comes back marked 300 dpi and sRGB (a canvas writes neither, so it opened at 72 dpi, 76 x 51 in)
+  function toBlob(c, type, q) {
+    return new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error('too large for this browser')); }, type, q); }).then(function (b) {
+      if (type !== 'image/png' || !b.arrayBuffer) return b;
+      return b.arrayBuffer().then(function (buf) { return new Blob([pngWithDpi(new Uint8Array(buf), DPI)], { type: 'image/png' }); });
+    });
+  }
   /* A one-page PDF around a JPEG: MediaBox = bleed size, TrimBox inset 0.125 in. No library. */
   function pdfFromJpeg(jpeg, pxW, pxH, P) {
     var enc = new TextEncoder(), parts = [], offs = [], len = 0;
@@ -2025,27 +2078,36 @@
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
     var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-digital-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
-    var job;
+    var job, NO_QR = {};
+    /* Every file someone pays for, or Sig prints, carries the short-link QR: the
+       long ?d= link makes modules too small to scan. Wait up to 8 s for it, and
+       save nothing without it. */
+    var code = encodeCode(artDesign());
+    var qrReady = function () { var hit = root.AgRpShort && code ? root.AgRpShort.peek(code) : null; return !!hit && qrLink() === hit; };
+    var gate = kind === 'preview' || qrReady() || !root.AgRpShort || !code ? Promise.resolve()
+      : Promise.race([root.AgRpShort.getShortLink(code), new Promise(function (r) { setTimeout(r, 8000); })]);
+    var qrNote = function (msg) { return kind === 'preview' ? msg : msg + ' QR: ' + qrLink() + '.'; };
+    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !qrReady()) throw NO_QR; return f(); }); };
     if (fmt === 'svg') {
-      job = fontCss().then(function (css) { return new Blob([buildSvg({ fontCss: css })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return 'SVG saved.'; });
+      job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'] })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
-      job = drawCanvas(kind).then(function (c) {
+      job = go(function () { return drawCanvas(kind); }).then(function (c) {
         if (fmt === 'pdf') {
-          return toBlob(c, 'image/jpeg', 0.95).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+          return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
             saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), name + '.pdf');
-            return 'PDF saved: ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.';
+            return qrNote('PDF saved: ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.');
           });
         }
         return toBlob(c, 'image/png').then(function (b) {
           saveBlob(b, name + '.png');
-          return kind === 'preview' ? 'Preview saved (' + c.width + ' x ' + c.height + ' px, watermarked).'
-            : kind === 'digital' ? 'Digital file saved: ' + c.width + ' x ' + c.height + ' px, 18 x 12 in at 300 dpi, no serial.'
-            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.';
+          return qrNote(kind === 'preview' ? 'Preview saved (' + c.width + ' x ' + c.height + ' px, watermarked).'
+            : kind === 'digital' ? 'Digital file saved: ' + c.width + ' x ' + c.height + ' px, 12 x 18 in at 300 dpi, no serial.'
+            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.');
         });
       });
     }
     job.then(function (msg) { out.textContent = msg; ga('rain_print_download', { kind: kind, fmt: fmt }); },
-      function () { out.textContent = 'This browser couldn\u2019t make the file. Try it on a computer.'; })
+      function (e) { out.textContent = e === NO_QR ? 'The short link for the QR isn\u2019t ready (the link service didn\u2019t answer), so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
 
