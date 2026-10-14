@@ -283,7 +283,7 @@
       if (!best || k / n < best.k / best.n) best = { m: m, t: t, k: k, n: n, tied: tied };
     }
     if (!best) return ranked ? 'not remarkable: no month was the record or in the top 2% of its own history' : why;
-    var val = key === 'rain' ? best.t.toFixed(2) + ' in' : best.t.toFixed(1) + DEG;
+    var val = key === 'rain' ? best.t.toFixed(2) + ' in' : best.t.toFixed(1) + DEG + ' average';
     var label = cap((best.tied ? 'tied for ' : '') + (best.k > 1 ? ord(best.k) + ' ' : '') + word + ' ' + MONTH[best.m] + ' of ' + best.n + ' full years: ' + val);
     var mm = ('0' + (best.m + 1)).slice(-2);
     return { date: T + '-' + mm + '-01', span: { from: T + '-' + mm + '-01', to: T + '-' + mm + '-' + dim(T, best.m) }, label: label,
@@ -321,8 +321,8 @@
       if (need && dElems.indexOf(need) < 0) return hold(k, 'no ' + need + ' in the data');
       if (HISTORY[k] && !H) return hold(k, hWhy);
       switch (k) {
-        case 'coldest': r = extreme(days, 'tn', -1, 'Coldest'); break;
-        case 'hottest': r = extreme(days, 'tx', 1, 'Hottest'); break;
+        case 'coldest': r = extreme(days, 'tn', -1, 'Coldest day'); break;
+        case 'hottest': r = extreme(days, 'tx', 1, 'Hottest day'); break;
         case 'lastFrost': r = frost(days, T, true); break;
         case 'firstFrost': r = frost(days, T, false); break;
         case 'snowDay': r = snowDay(days); break;

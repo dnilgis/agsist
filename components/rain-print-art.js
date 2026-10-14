@@ -1,8 +1,9 @@
 /* components/rain-print-art.js: the two Rain Print styles Sig picked (2026-10-13).
  *
  *   R1 "Staircase" (default): the running total across the year, the verdict and
- *      both year totals upper left, the chart full width, snow as ice-blue ticks
- *      under the axis, place and year bottom left.
+ *      both year totals upper left, the chart full width, a step that came as
+ *      snow in ice blue on the line (nothing under the axis), place and year
+ *      bottom left.
  *   R2 "Roots": snow piles up above the ground line, rain soaks down below it,
  *      month totals across the top, a quiet depth scale.
  *
@@ -16,7 +17,7 @@
  *   axisLen: days on the x axis (a preview lays out the whole calendar year),
  *   showDry: RainPrint.showDry(D), whether the longest dry stretch is marked,
  *   ov: the comparison {daily (0 on unrecorded days), total} or null,
- *   ovNote: what "usual" means, printed small with the normals ("Usual = 30-year normal"),
+ *   ovNote: what "usual" means, printed small with the normals ("A usual year: NOAA’s 30-year normal"),
  *   showNormals: month normals under the month totals,
  *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO} or null,
@@ -26,7 +27,8 @@
  *
  * RULES carried from the engine: an unrecorded or S day is a gap (no step, no
  * bar, ground line broken), never a dry day; the comparison is 0 on those days,
- * so both totals leave them out; an A total is never the biggest rain; a dry
+ * so both totals leave them out; an A total is never the biggest rain, and when
+ * the snow record is whole neither is a snow day (D.maxRain, Sig); a dry
  * stretch is marked only when the engine's showDry says so (7 days or more).
  */
 (function (root) {
@@ -306,12 +308,17 @@
     if (ov) days.forEach(function (x, k) { mN[x.m] += ov.daily[k] || 0; });
     var total = D.total, Ts = f2(total);
     var liquid = { full: 'rain and melted snow', none: 'rain', unknown: 'precipitation' }[snowState];
-    var wi = D.max && D.max.v > 0 && D.max.doy >= 0 ? D.max.doy : -1;
-    var wet = wi >= 0 ? { p: D.max.v, date: D.max.date } : null;
-    var wetLabel = wi >= 0 && days[wi].s > 0 ? 'Wettest day' : 'Biggest rain';
-    var pct = ov && ov.total > 0 ? Math.round((total - ov.total) / ov.total * 100) : null;
+    // the red mark is the biggest rain: with a whole snow record, picked from rain days only (Sig, 2026-10-13)
+    var M = full && D.maxRain ? D.maxRain : D.max;
+    var wi = M && M.v > 0 && M.doy >= 0 ? M.doy : -1;
+    var wet = wi >= 0 ? { p: M.v, date: M.date } : null;
+    var wetLabel = full ? 'Biggest rain' : wi >= 0 && days[wi].s > 0 ? 'Wettest day' : 'Biggest rain';
+    // no verdict on a usual year under an inch: a percent of almost nothing says nothing
+    var pct = ov && ov.total >= 1 ? Math.round((total - ov.total) / ov.total * 100) : null;
     var soFar = I.preview ? ' so far' : '';
-    var verdict = pct === null ? null : (Math.abs(pct) < 3 ? 'About a usual year' : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than a usual year') + soFar;
+    var verdict = pct === null ? null : (Math.abs(pct) <= 3 ? 'About a usual year'
+      : pct > 100 ? (1 + pct / 100).toFixed(1) + ' times a usual year'
+      : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than a usual year') + soFar;
     // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
@@ -330,7 +337,9 @@
       verdict: verdict, dry: dry, markers: markers, maxP: maxP, maxSnow: maxSnow,
       name: String(I.name || '').trim(), dedication: String(I.dedication || '').trim(), place: String(I.place || ''),
       showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar,
-      gauge: String(I.gauge || '').trim(), gaps: P.some(function (p) { return p === null; })
+      gauge: String(I.gauge || '').trim(), gaps: P.some(function (p) { return p === null; }),
+      // days the station sent nothing: the usual year leaves them out too, so its number is not NOAA's whole year
+      unrecorded: days.some(function (x) { return x.v === null || x.v === undefined; })
     };
   }
 
@@ -414,7 +423,7 @@
     var desc = E.T + ' in of ' + E.liquid + (E.snowText ? '. ' + E.snowText : '') + '. ' + E.daysText + (E.verdict ? '. ' + E.verdict : '') + '.';
     var id = I.idPrefix || 'rp';
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + (-b) + ' ' + (-b) + ' ' + (W0 + 2 * b) + ' ' + (H0 + 2 * b) + '"' + size +
-      ' font-family="' + esc(SANS) + '" role="img" aria-labelledby="' + id + 'T ' + id + 'D">' +
+      ' font-family="' + esc(SANS) + '" role="img" aria-labelledby="' + id + 'T" aria-describedby="' + id + 'D">' +
       (I.fontCss ? '<style>' + I.fontCss + '</style>' : '') +
       '<title id="' + id + 'T">' + esc(title) + '</title><desc id="' + id + 'D">' + esc(desc) + '</desc>' +
       '<rect x="' + (-b) + '" y="' + (-b) + '" width="' + (W0 + 2 * b) + '" height="' + (H0 + 2 * b) + '" fill="#FFFFFF"/>';
@@ -501,7 +510,8 @@
     return at.map(function (a) { return a ? a.pick : null; });
   }
   // where the preview band goes: the first height that hides no words, mark or leader
-  function bandAt(room, prefer, lo, hi, x0, x1, alt) {
+  // spare: a strip of empty paper (its middle y) for when the chart is full at every height and the months to come are too narrow
+  function bandAt(room, prefer, lo, hi, x0, x1, alt, spare) {
     var ys = prefer.slice();
     for (var y = lo; y <= hi; y += 4) ys.push(y);
     var cost = function (y, a0, a1) {
@@ -518,6 +528,7 @@
     for (var i = 0; i < ys.length; i++) { var c = cost(ys[i], x0, x1); if (c === 0) return { y: ys[i], x0: x0, x1: x1 }; if (c < bc) { bc = c; best = ys[i]; } }
     // a preview with no clear height across the chart: the months still to come, if they are wide enough
     if (alt && alt[1] - alt[0] >= 520) for (var j = 0; j < ys.length; j++) if (cost(ys[j], alt[0], alt[1]) === 0) return { y: ys[j], x0: alt[0], x1: alt[1] };
+    if (spare && cost(spare, x0, x1) === 0) return { y: spare, x0: x0, x1: x1 };
     return { y: best, x0: x0, x1: x1 };
   }
 
@@ -576,17 +587,7 @@
     room.seg(X0, PB, X1, PB, 0.9 * PT, 'axis', 'axis');
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) room.seg(xs(b), PB, xs(b), PB + 8, 0.75 * PT, 'axis', 'axis'); });
 
-    // snow ticks under the axis
-    var snowRects = [];
-    if (E.full) {
-      var sd = Math.max(8, Math.ceil(E.maxSnow / 4) * 4);
-      days.forEach(function (x, i) {
-        if (!(x.s > 0) || E.P[i] === null) return;
-        var r = { x: xs(i) + w * 0.05, y: PB + 3, w: w * 0.9, h: Math.max(3, x.s / sd * 44) };
-        snowRects.push(r); room.add({ b: r, own: 'data', k: 'mark' });
-      });
-      room.text(box(X0 - 14, PB + 24, 'snow', { size: 15, w: 500, anchor: 'end' }), 'axis');
-    }
+    // snow is drawn above the line only (Sig, 2026-10-13): its steps on the staircase, in ice blue; nothing under the axis
 
     // ---- the dry stretch: a bracket under the months, its words under it
     var dry = null, extraLines = [];
@@ -645,17 +646,19 @@
     var uN = { fam: SERIF, w: 400, size: 32, fill: C.mute }, uL = { size: 19, fill: C.mute };
     var lineSt = { size: 19, w: 500, fill: C.rec };
     var yLab = (E.full ? 'your year, rain and melted snow' : E.snowState === 'none' ? 'your year, rain' : 'your year') + E.soFar;
-    var uLab = E.preview ? 'a usual year by then' : 'a usual year';
-    var keyW = 46 + W(E.T + ' in', yN) + 10 + W(yLab, yL) + (E.cmp ? 40 + 46 + W(f2(E.normalRec) + ' in', uN) + 10 + W(uLab, uL) : 0);
+    var uLab = E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year';
+    // the key row keys two lines; with nothing to compare, the headline already says the total, so it goes (no total said twice)
+    var keyW = E.cmp ? 46 + W(E.T + ' in', yN) + 10 + W(yLab, yL) + 40 + 46 + W(f2(E.normalRec) + ' in', uN) + 10 + W(uLab, uL) : 0;
     var hLines = recs.lines.concat(extraLines).concat(wetHead ? [E.wetText] : []);
     var hw = Math.max(W(head, hs), W(factLine, fs), keyW, Math.max.apply(null, [0].concat(hLines.map(function (t) { return W(t, lineSt); }))));
-    var hh = 62 + 62 + 56 + (hLines.length ? 28 + (hLines.length - 1) * 28 : 0) + 4;
+    var keyH = E.cmp ? 62 : 6;   // facts baseline: 102 under the headline with the key row, 46 without
+    var hh = 62 + keyH + 56 + (hLines.length ? 28 + (hLines.length - 1) * 28 : 0) + 4;
     function header(HX, TOP) {
-      var HY = TOP + 62, KY = HY + 62, kx = HX, p = [T(HX, HY, head, hs)];
-      p.push(line(kx, KY - 12, kx + 34, KY - 12, C.rain, 3.2)); kx += 46;
-      p.push(T(kx, KY, E.T + ' in', yN)); kx += W(E.T + ' in', yN) + 10;
-      p.push(T(kx, KY, yLab, yL)); kx += W(yLab, yL);
+      var HY = TOP + 62, KY = HY + keyH, kx = HX, p = [T(HX, HY, head, hs)];
       if (E.cmp) {
+        p.push(line(kx, KY - 12, kx + 34, KY - 12, C.rain, 3.2)); kx += 46;
+        p.push(T(kx, KY, E.T + ' in', yN)); kx += W(E.T + ' in', yN) + 10;
+        p.push(T(kx, KY, yLab, yL)); kx += W(yLab, yL);
         kx += 40;
         p.push('<path d="M' + n2(kx) + ',' + (KY - 12) + 'h34" stroke="' + C.mute + '" stroke-width="1.6" stroke-dasharray="7 5"/>'); kx += 46;
         p.push(T(kx, KY, f2(E.normalRec) + ' in', uN)); kx += W(f2(E.normalRec) + ' in', uN) + 10;
@@ -705,11 +708,20 @@
     var dom = g.dom, y = g.y, headBox = hbox(hp);
     room.add({ b: headBox, own: 'head', k: 'mark' });
 
-    // ---- everything the scale puts on the sheet, into the room
+    /* ---- everything the scale puts on the sheet, into the room. A gridline the
+       header box covers where it leaves the axis has no number either (a number
+       beside the headline reads as part of it); the unit goes on the highest
+       number still drawn. */
+    var tickVals = [];
     for (var v = 0; v <= dom + 1e-9; v += step) {
-      if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft');
-      room.text(box(X0 - 14, y(v) + 5, v === dom ? v + ' in' : String(v), { size: 15, anchor: 'end' }), 'axis');
+      var gy = y(v);
+      if (v > 0 && headBox.x < X0 + 40 && gy >= headBox.y - 8 && gy <= headBox.y + headBox.h + 8) continue;
+      tickVals.push(v);
     }
+    var topTick = tickVals[tickVals.length - 1];
+    var tickText = function (v) { return v === topTick && (v > 0 || tickVals.length === 1) ? v + ' in' : String(v); };
+    for (v = 0; v <= dom + 1e-9; v += step) if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft');
+    tickVals.forEach(function (v) { room.text(box(X0 - 14, y(v) + 5, tickText(v), { size: 15, anchor: 'end' }), 'axis'); });
     g.stair.forEach(function (s) { room.add({ s: s, sw: 3.4, own: 'data', k: 'data' }); });
     g.ncum.forEach(function (s) { room.add({ s: s, sw: 1.6, own: 'data', k: 'usual' }); });
     // the preview's "so far" line stops under the header rather than run through it
@@ -748,7 +760,8 @@
         // the leader leaves the riser from its side, or from its top or foot (a date's drop line may run beside it)
         var sgn = c.a === 'start' ? 1 : -1, ey = b.y + b.h / 2, ex = c.x - 4 * sgn;
         var L = [[wx + 4 * sgn, wmy], [wx, y(wc1) - 7], [wx, y(wc0) + 7]].map(function (p) { return [p[0], p[1], ex, ey]; })
-          .filter(function (l) { return sgn * (l[2] - l[0]) >= 0 && room.clear(l, 'wet', 2); })[0];
+          // and never through a remarkable day's ring or a reader's dot (either can sit at the top of the riser, the same day)
+          .filter(function (l) { return sgn * (l[2] - l[0]) >= 0 && room.clear(l, 'wet', 2) && !ringAt.concat(g.dots).some(function (rg) { return segRect(l, { x: rg.x - 6, y: rg.y - 6, w: 12, h: 12 }, 1); }); })[0];
         if (!L) return 0;
         c.b = b; c.L = L;
         return room.free(b, 'wet', true) ? 2 : 1;
@@ -778,11 +791,8 @@
     
     // ================= draw, back to front
     o.push(G0('axis'));
-    for (var v2 = 0; v2 <= dom + 1e-9; v2 += step) {
-      var yy = y(v2);
-      if (v2 > 0) o.push(line(X0, yy, X1, yy, C.grid, 0.7));
-      o.push(T(X0 - 14, yy + 5, v2 === dom ? v2 + ' in' : String(v2), { size: 15, fill: C.mute, anchor: 'end' }));
-    }
+    for (var v2 = 0; v2 <= dom + 1e-9; v2 += step) if (v2 > 0) o.push(line(X0, y(v2), X1, y(v2), C.grid, 0.7));
+    tickVals.forEach(function (v3) { o.push(T(X0 - 14, y(v3) + 5, tickText(v3), { size: 15, fill: C.mute, anchor: 'end' })); });
     o.push(G1);
     o.push(G0('head') + '<rect x="' + n2(headBox.x) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>');
     o.push(header(hp.x, hp.top) + G1);
@@ -832,10 +842,6 @@
     }
     o.push(G1);
     if (E.wi >= 0) o.push(G0('wet') + line(wx, y(wc0) + 1.5, wx, y(wc1) - 1.5, C.accent, 4.4) + G1);
-    if (E.full) {
-      o.push(G0('data') + '<g fill="' + C.snowLine + '">' + snowRects.map(function (r) { return '<rect x="' + n2(r.x) + '" y="' + n2(r.y) + '" width="' + n2(r.w) + '" height="' + n2(r.h) + '"/>'; }).join('') + '</g>' + G1);
-      o.push(G0('axis') + T(X0 - 14, PB + 24, 'snow', { size: 15, w: 500, fill: C.snowInk, anchor: 'end' }) + G1);
-    }
     o.push(G0('months') + months.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + G1);
     if (dry && dry.at) {
       o.push(G0('dry') + '<path d="M' + n2(dry.a) + ',' + (RY - 24) + 'v6H' + n2(dry.b) + 'v-6" fill="none" stroke="' + C.mute + '" stroke-width="0.9"/>');
@@ -867,7 +873,7 @@
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, 1690, 1100));
     last_skipped = skipped;
-    return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [xs(E.n) + 12, X1 + 6] : null));
+    return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [xs(E.n) + 12, X1 + 6] : null, 96));
   }
 
   // ======================================================================= R2
@@ -988,7 +994,7 @@
     // footer
     var foot = [E.daysText].concat(recs.lines);   // a year record is a sentence, not a day: it goes in the footer
     if (E.cmp && E.ovNote) foot.push(E.ovNote);   // whenever the verdict says "usual" (2026-10-13)
-    if (E.snowKey) foot.push('snow and rain are on separate scales');
+    if (E.snowKey) foot.push('Snow and rain use separate scales');
     var small = smallLine(E, ML, 1440);
     if (small) room.text(small.box, 'foot');
     var qb = qrBox(I.qr, X1, 1100);
@@ -1024,9 +1030,10 @@
       if (E.full) days.forEach(function (dd, i) { if (Math.abs(i - mk.i) <= 1 && dd.s > 0 && E.P[i] !== null) end = Math.min(end, sy(dd.s) - 4); });
       if (rings.some(function (rx) { return Math.abs(rx - x) < 7.5; })) end = Math.min(end, G - 8);
       var segs2 = [[from[mk.k] === undefined ? LY + 6 : from[mk.k], end]];
+      // around every month word and number it passes: 6 clear at the sides, 3 above, 10 below (so it never reads as hanging from a number)
       mBoxes.forEach(function (b) {
         if (!(x > b.x - 6 && x < b.x + b.w + 6)) return;
-        var g0 = b.y - 4, g1 = b.y + b.h + 4;
+        var g0 = b.y - 3, g1 = b.y + b.h + 10;
         segs2 = segs2.reduce(function (acc, pq) {
           if (g1 <= pq[0] || g0 >= pq[1]) acc.push(pq);
           else [[pq[0], g0], [g1, pq[1]]].forEach(function (uv) { if (uv[1] - uv[0] > 8) acc.push(uv); });
@@ -1065,6 +1072,29 @@
       var r = recs.pts[k], x = rings[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
       var top0 = E.P[r.i] > 0 && !(E.full && days[r.i].s > 0) ? ry(E.P[r.i]) + 4 : G + 5;
       var cands = [];
+      /* A snow record tries the snow, above the ground, first: level with its pile
+         and beside it (no leader), else over the pile on a short leader up from it. */
+      if (/snow/i.test(r.label)) {
+        var pileTop = E.full && days[r.i].s > 0 ? G - 2.2 - Math.max(1.4, G - sy(days[r.i].s)) : G - 6;
+        var sup = [];
+        for (var sy0 = G - 8; sy0 >= G - SH - 40; sy0 -= 12) sup.push({ x: x + 9, y: sy0, a: 'start', up: 'side' }, { x: x - 9, y: sy0, a: 'end', up: 'side' });
+        for (var sy1 = pileTop - 10; sy1 >= G - SH - 40; sy1 -= 12) sup.push({ x: x, y: sy1, a: 'middle', up: 'over' });
+        var upPick = choose(sup, function (c) {
+          var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
+          if (b.x < X0 || b.x + b.w > X1 || b.y + b.h > G - 4) return 0;
+          if (c.up === 'side') { if (b.y + b.h < pileTop) return 0; c.L = null; }
+          else { c.L = [x, pileTop - 3, x, b.y + b.h + 3]; if (c.L[3] - c.L[1] > -4 || !room.clear([x, c.L[3], x, c.L[1]], own, 0)) return 0; }
+          if (!room.free(b, own, false)) return 0;
+          c.b = b;
+          return room.free(b, own, true) ? 2 : 1;
+        });
+        if (upPick) {
+          var itsU = [room.text(upPick.b, own)];
+          if (upPick.L) itsU.push(room.seg(x, upPick.L[3], x, upPick.L[1], 0.8, own, 'lead'));
+          itsU.pick = upPick;
+          return itsU;
+        }
+      }
       // beside its leader, or hanging under it (below the bars around it)
       for (var yy = G + 70; yy <= RB + 50; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
       // a label that spans another record's column would stand in its leader's way: only if nothing else fits
@@ -1106,7 +1136,7 @@
       if (dryAt) room.text(dryAt.b, 'dry');
     }
     if (E.dry && !dryAt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
-    else if (E.dry) foot.push('Dry stretch ' + E.dry.range);
+    else if (E.dry) foot.push(E.dry.len + ' dry days: ' + E.dry.range);
     fst.size = fit(foot.join('  ·  '), fst, 1440, 13);
 
     // ================= draw, back to front
@@ -1142,7 +1172,7 @@
     recs.pts.forEach(function (r, k) {
       var pk = recAt[k];
       if (!pk) return;
-      o.push(G0('rec:' + k) + line(rings[k], pk.L[1], rings[k], pk.L[3], C.rec, 0.8, ' stroke-dasharray="2 2"'));
+      o.push(G0('rec:' + k) + (pk.L ? line(rings[k], pk.L[1], rings[k], pk.L[3], C.rec, 0.8, ' stroke-dasharray="2 2"') : ''));
       o.push('<circle cx="' + n2(rings[k]) + '" cy="' + G + '" r="4.6" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
       o.push(T(pk.x, pk.y, r.label, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
     });

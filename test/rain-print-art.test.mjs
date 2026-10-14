@@ -34,7 +34,7 @@ const normalMap = (y) => { const m = new Map(); year(y).forEach((x) => m.set(x.d
 function input(days, extra = {}) {
   const D = RP.derive(days), y = +days[0].date.slice(0, 4);
   return Object.assign({ style: "r1", year: y, place: "Chetek, Wisconsin", name: "The Olson Farm", dedication: "", days, D, showDry: RP.showDry(D),
-    axisLen: days.length, ov: RP.overlayDaily(days, normalMap(y)), ovNote: "Usual = 30-year normal", showNormals: false, markers: [], records: [],
+    axisLen: days.length, ov: RP.overlayDaily(days, normalMap(y)), ovNote: "A usual year: NOAA’s 30-year normal", showNormals: false, markers: [], records: [],
     qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "" } }, extra);
 }
 const texts = (svg) => [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1].replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
@@ -128,11 +128,11 @@ test("the normals: month normals only with the switch on; what usual means where
     const off = texts(ART.render(input(days, { style }))), on = texts(ART.render(input(days, { style, showNormals: true })));
     assert.ok(!off.some((t) => /^usual /.test(t)), style + ": off shows no month normals");
     // 2026-10-13 launch fix: the verdict says "a usual year", so the print says what that is even with the normals off
-    assert.ok(off.some((t) => /usual year/.test(t)) && off.some((t) => t.includes("Usual = 30-year normal")), style + ": a usual year is defined where it is printed");
+    assert.ok(off.some((t) => /usual year/.test(t)) && off.some((t) => t.includes("A usual year: NOAA’s 30-year normal")), style + ": a usual year is defined where it is printed");
     const none = texts(ART.render(input(days, { style, ov: null })));
     assert.ok(!none.some((t) => /usual/i.test(t)), style + ": no comparison, no usual wording at all");
     assert.ok(on.some((t) => /^usual \d/.test(t)), style + ": on shows the month normals");
-    assert.ok(on.some((t) => t.includes("Usual = 30-year normal")), style + ": and names them");
+    assert.ok(on.some((t) => t.includes("A usual year: NOAA’s 30-year normal")), style + ": and names them");
   }
   const t = texts(ART.render(input(days, { style: "r1" })));
   assert.ok(t.includes(((days.length - 10) * 0.09).toFixed(2) + " in"), "a usual year counts only the days the station recorded");
@@ -162,8 +162,8 @@ test("remarkable days: a whole-year record is a line of text, the rest are label
   const recs = [
     { date: "2025-01-01", span: { from: "2025-01-01", to: "2025-12-31" }, label: "Wettest year since 1993", kind: "wetYear" },
     { date: "2025-06-01", span: { from: "2025-06-01", to: "2025-06-30" }, label: "Wettest June of 76 full years: 4.75 in", kind: "wetMonth" },
-    { date: "2025-12-28", label: "Coldest: -15°F", kind: "coldest" },
-    { date: "2025-07-10", label: "Hottest: 97°F", kind: "hottest" },
+    { date: "2025-12-28", label: "Coldest day: -15°F", kind: "coldest" },
+    { date: "2025-07-10", label: "Hottest day: 97°F", kind: "hottest" },
     { date: "2025-04-24", label: "Last frost: 25°F", kind: "lastFrost" },
     { date: "2025-10-07", label: "First frost: 31°F", kind: "firstFrost" },
   ];

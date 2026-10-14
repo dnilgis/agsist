@@ -141,7 +141,7 @@ export function input(X, spec) {
     style: spec.style, year: y, place: spec.place === "long" ? LONG_PLACE : "Chetek, Wisconsin",
     name: spec.name === "long" ? "Prairie View Seed and Gra" .slice(0, 24) : spec.name === "none" ? "" : "The Olson Farm",
     dedication: spec.dedication === "long" ? "For Grandpa Erling, sixty harvests on this ground and still counting rain" .slice(0, 70) : spec.dedication === "none" ? "" : "For Dad, his 40th crop. Love, Kate",
-    days, D, showDry: RP.showDry(D), axisLen, ov: spec.cmp === "none" ? null : RP.overlayDaily(days, nm), ovNote: spec.cmp === "none" ? "" : "Usual = 30-year normal",
+    days, D, showDry: RP.showDry(D), axisLen, ov: spec.cmp === "none" ? null : RP.overlayDaily(days, nm), ovNote: spec.cmp === "none" ? "" : "A usual year: NOAA’s 30-year normal",
     showNormals: !!spec.normals, markers: mk, records: recs,
     qr: spec.qr === false ? null : { matrix: QR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: spec.serial ? "No. 0001 · SRL" : "" },
     preview: spec.preview ? { last: days[days.length - 1].date } : null,

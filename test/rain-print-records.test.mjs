@@ -167,8 +167,8 @@ test("dry month: a month that is usually near zero is never called a record", ()
 
 test("warm and cold month from the station's daily means; months missing 4 days drop out", () => {
   const p = por({ from: "1950-01-01", to: "2025-12-31", temp: (y, m) => (m === 6 && y === 2025 ? 80 : m === 0 && y === 2025 ? 5 : 50 + 10 * h(y, m)) });
-  assert.equal(one(hist(p, 2025), "warmMonth").f.label, "Warmest July of 76 full years: 80.0°F");
-  assert.equal(one(hist(p, 2025), "coldMonth").f.label, "Coldest January of 76 full years: 5.0°F");
+  assert.equal(one(hist(p, 2025), "warmMonth").f.label, "Warmest July of 76 full years: 80.0°F average");
+  assert.equal(one(hist(p, 2025), "coldMonth").f.label, "Coldest January of 76 full years: 5.0°F average");
   for (const d of dates("2025-07-01", "2025-07-04")) p.data.find((r) => r[0] === d)[2] = "M";
   assert.notEqual(one(hist(p, 2025), "warmMonth").f?.date, "2025-07-01");
 });
@@ -185,11 +185,11 @@ test("coldest and hottest on their dates, ties noted, leap day counted", () => {
   assert.equal(d.data.length, 366);
   const c = one({ year: 2024, daily: d }, "coldest").f;
   assert.equal(c.date, "2024-02-29");
-  assert.equal(c.label, "Coldest: -31°F (also Dec 20)");
+  assert.equal(c.label, "Coldest day: -31°F (also Dec 20)");
   assert.deepEqual(c.ties, ["2024-12-20"]);
-  assert.deepEqual(one({ year: 2024, daily: d }, "hottest").f, { date: "2024-07-04", label: "Hottest: 97°F", value: 97, unit: "°F", ties: [], kind: "hottest" });
+  assert.deepEqual(one({ year: 2024, daily: d }, "hottest").f, { date: "2024-07-04", label: "Hottest day: 97°F", value: 97, unit: "°F", ties: [], kind: "hottest" });
   const three = year(2025, (dt) => ({ maxt: ["2025-07-01", "2025-07-02", "2025-08-09"].includes(dt) ? "95" : "80" }));
-  assert.equal(one({ year: 2025, daily: three }, "hottest").f.label, "Hottest: 95°F (on 3 days)");
+  assert.equal(one({ year: 2025, daily: three }, "hottest").f.label, "Hottest day: 95°F (on 3 days)");
 });
 
 test("temperatures withheld past 10 missing days, or when the call has no temperatures", () => {

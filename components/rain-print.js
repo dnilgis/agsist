@@ -865,7 +865,7 @@
     if (!key || !DATA) return null;
     var byDate, label;
     if (key === 'normal30' && NORM30) { byDate = NORM30; label = 'NOAA 30-year normal'; }
-    else if (key === 'full' && EXT && EXT.avgByDate.size) { byDate = EXT.avgByDate; label = EXT.yearFrom + '–' + EXT.yearTo + ' station average (' + EXT.years + ' yrs)'; }
+    else if (key === 'full' && EXT && EXT.avgByDate.size) { byDate = EXT.avgByDate; label = EXT.yearFrom + ' to ' + EXT.yearTo + ' station average (' + EXT.years + ' years)'; }
     else return null;
     var o = overlayDaily(DATA.days, byDate);
     if (!o) return null;
@@ -927,8 +927,8 @@
   })();
 
   function cmpNote() {
-    if (ST.cmp === 'normal') return 'Usual = 30-year normal';
-    if (ST.cmp === 'station' && EXT) return 'Usual = this station’s average, ' + EXT.yearFrom + ' to ' + EXT.yearTo;
+    if (ST.cmp === 'normal') return 'A usual year: NOAA’s 30-year normal';
+    if (ST.cmp === 'station' && EXT) return 'A usual year: this station’s average, ' + EXT.yearFrom + ' to ' + EXT.yearTo;
     return '';
   }
   /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix}. */
