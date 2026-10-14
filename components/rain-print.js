@@ -1914,10 +1914,14 @@
   /* The order summary at the top of the order form: what is ordered, the
      design in words, and exactly what happens next. Payment links are null
      today, so every order is a request Sig answers by email. */
+  function markerWords(m) {
+    var c = linkCut(m);
+    return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)' : '');
+  }
   function designRows() {
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
       ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
-    rows.push(['Dates', ST.markers.length ? ST.markers.map(function (m) { var c = linkCut(m); return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)' : ''); }).join(', ') : '(none)']);
+    rows.push(['Dates', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'the station\u2019s full record' : 'nothing']);
     return rows;
@@ -1946,34 +1950,106 @@
     if (sp) sp.addEventListener('click', function (ev) { ev.preventDefault(); openProof(); });
   }
 
-  // ---------- the proof: the exact print file, full size ----------
-  var PROOF_OK = '', PROOF_VIEW = 'print', PROOF_ZOOM = 'fit';
+  // ---------- "Your print": the exact print file, fitted or at actual size ----------
+  /* Rebuilt 2026-10-14 (Sig: "all scrunched and very hard to see"): the print
+     fills the window, one panel beside it (under it on a phone) holds the order
+     button, Style and Look, and the details in words. The magnifier toggles Fit
+     and actual size; at actual size, drag or scroll to move; Esc goes back to Fit. */
+  var PROOF_OK = '', PROOF_VIEW = 'print', PROOF_ZOOM = 'fit', PROOF_FROM = null, PROOF_HANDOFF = false;
+  function proofChoice() { return PROOF_VIEW === 'print' ? 'print12x18' : 'framed12x18'; }
+  function proofZoomSync() {
+    var dlg = $('rp-proof'), full = PROOF_ZOOM === 'full', z = $('rp-proof-zoom');
+    dlg.setAttribute('data-zoom', PROOF_ZOOM);
+    z.setAttribute('aria-pressed', String(full));
+    z.setAttribute('aria-label', full ? 'Fit the print to the window' : 'See it at actual size');
+    $('rp-proof-zoom-t').textContent = full ? 'Fit' : 'Actual size';
+    $('rp-proof-stage').setAttribute('aria-label', 'The print' + (full ? ', at actual size. Drag or use the arrow keys to move around.' : '. ') + ' ' + proofAlt());
+  }
+  // the print in words, for a screen reader: the same details the panel lists
+  function proofAlt() {
+    return designRows().filter(function (r) { return r[0] !== 'Style'; }).map(function (r) { return r[0] + ': ' + r[1]; }).join('. ') + '.';
+  }
   function proofRender() {
     var dlg = $('rp-proof');
     if (!DATA || BLOCKED) { dlg.close && dlg.open && dlg.close(); return; }
     $('rp-proof-art').innerHTML = buildSvg({ idPrefix: 'pf', serial: SERIAL });
-    dlg.setAttribute('data-view', PROOF_VIEW); dlg.setAttribute('data-zoom', PROOF_ZOOM);
+    var svg = $('rp-proof-art').querySelector('svg');
+    if (svg) svg.setAttribute('aria-hidden', 'true');   // the stage around it carries the words
+    dlg.setAttribute('data-view', PROOF_VIEW);
     doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pstyle') === ST.style)); });
     doc.querySelectorAll('[data-pview]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pview') === PROOF_VIEW)); });
-    doc.querySelectorAll('[data-pzoom]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pzoom') === PROOF_ZOOM)); });
-    $('rp-proof-sum').innerHTML = designRows().map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') +
-      (PREVIEW ? '<div><dt>Preview</dt><dd>through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year</dd></div>' : '');
+    proofZoomSync();
+    // the details: label above value, in the order a buyer checks them
+    var rows = {}; designRows().forEach(function (r) { rows[r[0]] = r[1]; });
+    var list = [['Place and year', esc(rows['Place and year'])]];
+    if (rows['Weather station']) list.push(['Weather station', esc(rows['Weather station'])]);
+    list.push(['Name', esc(rows['Name'])], ['Line under it', esc(rows['Line under it'])],
+      ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
+      ['Compared with', esc(rows['Compared with'])]);
+    if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
+    $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
-    var left = canOrder() ? exampleLeft(ST) : [], why = $('rp-proof-why');
-    why.textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Put in your own words first.' : '';
-    why.hidden = !left.length;
-    $('rp-proof-order').textContent = !canOrder() ? 'Draw your own' : left.length ? 'Change the words' : PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed';
+    // the one action: order what is shown, or the example choice in its place
+    var can = canOrder(), left = can ? exampleLeft(ST) : [], gift = !!(GIFT && GIFT.usable), id = proofChoice(), J = PRICES || {};
+    $('rp-proof-go').hidden = !!left.length;
+    $('rp-proof-ex').hidden = !left.length;
+    $('rp-proof-why').textContent = left.length ? 'The example is still on it (' + left.join(', ') + '). Clear it to order without it; your own words stay.' : '';
+    $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift'
+      : (PROOF_VIEW === 'print' ? 'Order the print' : 'Order it framed') + (typeof J[id] === 'number' ? ', ' + money(J[id]) : '');
+    var first = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
+      : gift && GIFT.product === 'digital' ? 'Your card covers the digital file.' : 'You get a proof before anything prints.';
+    $('rp-proof-first').textContent = first;
+    $('rp-proof-ok-wrap').hidden = !can;
+  }
+  /* Fit or actual size. Going in, the spot that was clicked (or the middle)
+     stays under the pointer; coming out, back to the whole print. */
+  function proofZoom(z, at) {
+    if (z === PROOF_ZOOM) return;
+    var st = $('rp-proof-stage'), art = $('rp-proof-art'), r = art.getBoundingClientRect();
+    var fx = at && r.width ? Math.min(1, Math.max(0, (at.x - r.left) / r.width)) : 0.5,
+      fy = at && r.height ? Math.min(1, Math.max(0, (at.y - r.top) / r.height)) : 0.5;
+    PROOF_ZOOM = z;
+    proofZoomSync();
+    if (z === 'full') {
+      var s = st.getBoundingClientRect(), a = art.getBoundingClientRect();
+      var px = at ? at.x - s.left : s.width / 2, py = at ? at.y - s.top : s.height / 2;
+      st.scrollLeft = a.left - s.left + st.scrollLeft + fx * a.width - px;
+      st.scrollTop = a.top - s.top + st.scrollTop + fy * a.height - py;
+    } else { st.scrollLeft = 0; st.scrollTop = 0; }
   }
   function openProof() {
     if (!DATA || BLOCKED) return;
     var dlg = $('rp-proof');
+    if (dlg.open) return;
     // open on what the reader is looking at: framed or print only, as set under the preview
     PROOF_VIEW = $('rp-wall').getAttribute('data-view') === 'print' ? 'print' : 'framed';
-    // the words open under the print, except on a short screen, where the print needs the room
-    try { doc.querySelector('.rp-proof-more').open = (root.innerHeight || 800) >= 560; } catch (e) {}
+    PROOF_ZOOM = 'fit';
+    PROOF_FROM = doc.activeElement && doc.activeElement !== doc.body ? doc.activeElement : $('rp-zoom');
+    PROOF_HANDOFF = false;
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
+    try { $('rp-proof-stage').scrollTop = 0; $('rp-proof-stage').scrollLeft = 0; dlg.scrollTop = 0; } catch (e) {}
     ga('rain_print_proof', { style: ST.style });
+  }
+  // close; focus goes back to what opened it, unless an order step takes it on
+  function closeProof(handoff) {
+    PROOF_HANDOFF = !!handoff;
+    var dlg = $('rp-proof');
+    if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+  }
+  // the order the up-close view showed, framed or print only (2026-10-14)
+  function proofOrder() {
+    closeProof(true);
+    if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
+    if (exampleLeft(ST).length) { toExample(); return; }   // example words still on it: change them first
+    if (GIFT && GIFT.usable) { useGift(); return; }
+    /* Straight to the order the proof showed (2026-10-14: it only scrolled to
+       the cards): framed or print only, as picked in the proof, which the
+       preview keeps. The order note lands under that card's button. */
+    var id = proofChoice(), b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
+    setView(PROOF_VIEW);
+    try { b.focus({ preventScroll: true }); } catch (e) {}
+    buy(id);
   }
   function openOrder(id) {
     var box = $('rp-order');
@@ -2453,35 +2529,61 @@
   $('rp-zoom').addEventListener('click', openProof);
   // tap the picture to see it up close (the Zoom in button is the keyboard way in)
   art.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a,button,input,select')) return; openProof(); });
-  $('rp-proof-close').addEventListener('click', function () { $('rp-proof').close(); });
-  $('rp-proof-order').addEventListener('click', function () {
-    $('rp-proof').close();
-    if (!canOrder()) { buy('framed12x18'); return; }   // the sample: off to the town box
-    if (exampleLeft(ST).length) { toExample(); return; }   // example words still on it: change them first
-    if (GIFT && GIFT.usable) { useGift(); return; }
-    /* Straight to the order the proof showed (2026-10-14: it only scrolled to
-       the cards): framed or print only, as picked in the proof, which the
-       preview keeps. The order note lands under that card's button. */
-    var id = PROOF_VIEW === 'print' ? 'print12x18' : 'framed12x18', b = doc.querySelector('.rp-buy-btn[data-choice="' + id + '"]');
-    setView(PROOF_VIEW);
-    try { b.focus({ preventScroll: true }); } catch (e) {}
-    buy(id);
+  $('rp-proof-close').addEventListener('click', function () { closeProof(false); });
+  $('rp-proof-order').addEventListener('click', proofOrder);
+  // example words still on it: clear them here and go on to the order, or go edit them
+  $('rp-proof-ex-go').addEventListener('click', function () {
+    clearExample();
+    // the town or year box was changed without drawing: the words are in section 2
+    if (exampleLeft(ST).length) { closeProof(true); toExample(); return; }
+    proofOrder();
   });
+  $('rp-proof-ex-edit').addEventListener('click', function () { closeProof(true); toExample(); });
+  var proofDlg = $('rp-proof');
   // a click on the dimmed page around the dialog closes it
-  $('rp-proof').addEventListener('click', function (e) { if (e.target === $('rp-proof')) $('rp-proof').close(); });
+  proofDlg.addEventListener('click', function (e) { if (e.target === proofDlg) closeProof(false); });
+  // Esc at actual size goes back to Fit; at Fit it closes
+  proofDlg.addEventListener('keydown', function (e) {
+    if ((e.key === 'Escape' || e.key === 'Esc') && PROOF_ZOOM === 'full') { e.preventDefault(); e.stopPropagation(); proofZoom('fit'); try { $('rp-proof-zoom').focus(); } catch (err) {} return; }
+    // Tab wraps inside the dialog, so focus never leaves for the browser's own bar
+    if (e.key !== 'Tab') return;
+    var f = Array.prototype.filter.call(proofDlg.querySelectorAll('button, input, [tabindex="0"]'), function (el) { return !el.disabled && el.offsetParent !== null; });
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1], at = doc.activeElement;
+    if (e.shiftKey && (at === first || !proofDlg.contains(at))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (at === last || !proofDlg.contains(at))) { e.preventDefault(); first.focus(); }
+  });
+  proofDlg.addEventListener('cancel', function (e) { if (PROOF_ZOOM === 'full') { e.preventDefault(); proofZoom('fit'); } });
+  proofDlg.addEventListener('close', function () {
+    var f = PROOF_FROM; PROOF_FROM = null;
+    if (!PROOF_HANDOFF && f && doc.contains(f) && f.offsetParent !== null) { try { f.focus({ preventScroll: true }); } catch (e) {} }
+    PROOF_HANDOFF = false;
+  });
   // the small copy in section 2 opens the up-close view too
   $('rp-mini').addEventListener('click', openProof);
   $('rp-proof-ok').addEventListener('change', function () { PROOF_OK = $('rp-proof-ok').checked ? encodeCode(ST) : ''; syncSummary(); });
   doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.addEventListener('click', function () {
     radios('rp-style').forEach(function (r) { r.checked = r.value === b.getAttribute('data-pstyle'); }); restyle(); proofRender(); }); });
   doc.querySelectorAll('[data-pview]').forEach(function (b) { b.addEventListener('click', function () { PROOF_VIEW = b.getAttribute('data-pview'); proofRender(); }); });
-  doc.querySelectorAll('[data-pzoom]').forEach(function (b) { b.addEventListener('click', function () { PROOF_ZOOM = b.getAttribute('data-pzoom'); proofRender(); }); });
-  // drag to move around the actual-size proof
+  $('rp-proof-zoom').addEventListener('click', function () { proofZoom(PROOF_ZOOM === 'full' ? 'fit' : 'full'); });
+  // click the print to see that spot at actual size; at actual size, drag to move around
   (function () {
-    var st = $('rp-proof-stage'), down = null;
-    st.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') return; down = { x: e.clientX, y: e.clientY, l: st.scrollLeft, t: st.scrollTop }; });
-    root.addEventListener('pointermove', function (e) { if (!down) return; st.scrollLeft = down.l - (e.clientX - down.x); st.scrollTop = down.t - (e.clientY - down.y); });
-    root.addEventListener('pointerup', function () { down = null; });
+    var st = $('rp-proof-stage'), down = null, moved = false;
+    st.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0 || PROOF_ZOOM !== 'full') return;
+      down = { x: e.clientX, y: e.clientY, l: st.scrollLeft, t: st.scrollTop }; moved = false;
+      e.preventDefault();
+    });
+    root.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      if (!moved && Math.abs(e.clientX - down.x) + Math.abs(e.clientY - down.y) > 4) { moved = true; st.classList.add('rp-drag'); }
+      if (moved) { st.scrollLeft = down.l - (e.clientX - down.x); st.scrollTop = down.t - (e.clientY - down.y); }
+    });
+    root.addEventListener('pointerup', function () { down = null; st.classList.remove('rp-drag'); });
+    st.addEventListener('click', function (e) {
+      if (PROOF_ZOOM !== 'fit' || !(e.target.closest && e.target.closest('#rp-proof-frame'))) return;
+      proofZoom('full', { x: e.clientX, y: e.clientY });
+    });
   })();
   $('ro-deliver').addEventListener('change', syncAddress);
   $('ro-isgift').addEventListener('change', syncAddress);

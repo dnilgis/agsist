@@ -285,9 +285,11 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
 
 test("the proof view and the order summary are on the page", () => {
   for (const id of ["rp-proof", "rp-proof-open", "rp-proof-art", "rp-proof-ok", "ro-summary"]) assert.ok(HTML.includes(`id="${id}"`), id);
-  for (const k of ['data-pstyle="r1"', 'data-pstyle="r2"', 'data-pview="framed"', 'data-pview="print"', 'data-pzoom="full"']) assert.ok(HTML.includes(k), k);
+  for (const k of ['data-pstyle="r1"', 'data-pstyle="r2"', 'data-pview="framed"', 'data-pview="print"']) assert.ok(HTML.includes(k), k);
   assert.match(HTML, /\.rp-proof\[data-zoom="full"\] \.rp-proof-art svg\{width:18in/, "actual size is 18 in wide");
-  assert.ok(HTML.includes('id="rp-zoom"') && HTML.includes('data-pzoom="close"'), "a zoom button by the preview and a closer level");
+  // 2026-10-14 (Sig): one magnifier on the print toggles Fit and actual size; the in-between "Closer" step is gone
+  assert.ok(HTML.includes('id="rp-zoom"') && HTML.includes('id="rp-proof-zoom" aria-pressed="false"'), "a zoom button by the preview and the magnifier on the print");
+  assert.ok(!/data-pzoom=/.test(HTML), "no row of zoom pills");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /\$\('rp-zoom'\)\.addEventListener\('click', openProof\)/, "zoom opens the full-size view");
   assert.match(S, /art\.addEventListener\('click'/, "tapping the preview opens it too");
@@ -455,7 +457,12 @@ test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /#main \.rp \.rp-side>h1\{font-size:clamp\(2rem,2\.4vw,2\.4rem\)\}/, "the h1 stands above the h2s on a laptop");
   assert.match(HTML, /<h2 class="sec-h rp-step-h" id="rp-draw-h">/);
   assert.match(HTML, /\.rp p,\.rp li,\.rp dd,\.rp dt,\.rp summary,\.rp blockquote,\.rp td,\.rp a,\.rp label,\.rp legend\{font-variant-numeric:normal\}/, "no spaced hyphens in prose");
-  assert.match(HTML, /<details class="rp-proof-more" open>/);
+  // "Your print" (2026-10-14): a labeled Close, the details as a plain list beside the print, no long paragraph
+  assert.match(HTML, /<button type="button" class="rp-proof-x" id="rp-proof-close" aria-label="Close">/);
+  assert.match(HTML, /<h3>Check the details<\/h3><dl class="rp-proof-sum" id="rp-proof-sum"><\/dl>/);
+  assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
+  assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
+  assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
   for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Date ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for date ${i}"`), "date " + i + " is named");
   assert.match(HTML, /id="rp-proof-stage" role="group"/);
   assert.match(HTML, /html\{scroll-padding-top:84px\}/);
@@ -466,7 +473,9 @@ test("type, keyboard and screen reader fixes", () => {
 });
 
 test("copy batch: size, proof, business words", () => {
-  assert.match(HTML, /Actual size is 12 x 18 inches, hung sideways;/);
+  // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
+  assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
+  assert.match(HTML, /Actual size is 12 x 18 in\./);
   assert.match(HTML, /you see a proof of yours before I print it\./);
   assert.match(HTML, /Tick “It&rsquo;s a gift” above the prices/);
   assert.match(HTML, /Once you OK the proof sheet, I print them/);

@@ -10,6 +10,11 @@
  *     the buyer 2,500 px up);
  *   - the checkout "tap here" note lands under the button that was tapped;
  *   - "Order this print" in the proof orders the framed or print it showed;
+ *   - "Your print" (rebuilt 2026-10-14): the print fills the window and is
+ *     whole at Fit on a laptop and a phone, nothing scrolls sideways, the
+ *     magnifier toggles actual size, Esc goes back to Fit and then closes,
+ *     focus goes back to the button that opened it, and example words get
+ *     the same two choices in place of the order button;
  *   - labels count to 13 letters and say what was cut, never silently, and
  *     run full width on a phone.
  *
@@ -98,11 +103,11 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-async function withPage(fn, { width = 390, theme = "light" } = {}) {
+async function withPage(fn, { width = 390, height = 844, theme = "light" } = {}) {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const ctx = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: "block", colorScheme: theme });
+    const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", colorScheme: theme });
     await mocks(ctx);
     await ctx.addInitScript(() => { window.__opened = []; window.open = function (u) { window.__opened.push(String(u)); return null; }; });
     const page = await ctx.newPage();
@@ -212,9 +217,9 @@ test("Order from the proof: framed or print only as picked there, straight to th
     await drawn(page);
     await page.click("#rp-zoom");
     await page.waitForSelector("#rp-proof[open]");
-    assert.equal(await page.textContent("#rp-proof-order"), "Order it framed");
+    assert.equal(await page.textContent("#rp-proof-order"), "Order it framed, $" + J.framed12x18);
     await page.click('[data-pview="print"]');
-    assert.equal(await page.textContent("#rp-proof-order"), "Order the print");
+    assert.equal(await page.textContent("#rp-proof-order"), "Order the print, $" + J.print12x18);
     await page.click("#rp-proof-order");
     await settle(page);
     assert.equal(await page.$eval("#rp-proof", (d) => d.open), false, "the dialog closes");
@@ -267,4 +272,117 @@ test("labels: a counter to 13 letters, a paste past it says what was cut, a link
     assert.equal(await page.textContent("#rp-m3l-n"), "9 of 13 letters");
     assert.deepEqual(errors, []);
   }, { theme });
+});
+
+// "Your print", rebuilt 2026-10-14 (Sig: "all scrunched and very hard to see")
+const proofBox = (page) => page.evaluate(() => {
+  const f = document.getElementById("rp-proof-frame").getBoundingClientRect(), st = document.getElementById("rp-proof-stage").getBoundingClientRect(), d = document.getElementById("rp-proof");
+  return { inView: f.width > 0 && f.left >= st.left - 1 && f.right <= st.right + 1 && f.top >= st.top - 1 && f.bottom <= st.bottom + 1 && f.bottom <= innerHeight,
+    share: (f.width * f.height) / (innerWidth * innerHeight), w: f.width, vw: innerWidth,
+    sideways: d.scrollWidth > d.clientWidth + 1 || document.documentElement.scrollWidth > innerWidth + 1 };
+});
+
+for (const [width, height] of [[1366, 768], [1890, 870], [390, 844], [360, 740]]) {
+  test(`Your print at ${width} x ${height}: the print is whole and the biggest thing at Fit, nothing scrolls sideways`, { skip }, async () => {
+    await withPage(async (page, base, errors) => {
+      await page.goto(base + "/rain-print.html?" + q({ place: "Chetek, WI", year: "2025", station: "471667 2", name: "Olson", m1: "2025-06-22 Married" }));
+      await drawn(page);
+      await page.click("#rp-zoom");
+      await page.waitForSelector("#rp-proof[open]");
+      for (const view of ["framed", "print"]) {
+        await page.click(`[data-pview="${view}"]`);
+        const b = await proofBox(page);
+        assert.ok(b.inView, view + ": the whole print is in view at Fit");
+        assert.ok(!b.sideways, view + ": nothing scrolls sideways");
+        if (width >= 900) assert.ok(b.share > 0.4, `${view}: the print takes ${Math.round(b.share * 100)}% of the window`);
+        else assert.ok(b.w >= b.vw - 40, `${view}: the print runs the phone's width (${b.w} of ${b.vw})`);
+      }
+      assert.ok(await onScreen(page, "#rp-proof-close"), "Close is on screen");
+      if (width >= 900) assert.ok(await onScreen(page, "#rp-proof-order"), "the order button is on screen beside the print");
+      assert.deepEqual(errors, []);
+    }, { width, height });
+  });
+}
+
+test("Your print: labeled controls, the magnifier, Esc back to Fit then closed, focus back on the opener", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + q({ place: "Chetek, WI", year: "2025", station: "471667 2", name: "Olson", m1: "2025-06-22 Married" }));
+    await drawn(page);
+    await page.focus("#rp-zoom");
+    await page.keyboard.press("Enter");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.equal(await page.getAttribute("#rp-proof-close", "aria-label"), "Close");
+    assert.equal(await page.textContent("#rp-proof-h"), "Your print");
+    assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "it opens at Fit");
+    assert.match(await page.getAttribute("#rp-proof-stage", "aria-label"), /^The print\. +Place and year: Chetek, WI, 2025\. .*Name: Olson\./, "the print has its words");
+    // the details: label above value, in the order a buyer checks them
+    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Dates", "Compared with"]);
+    assert.deepEqual(await page.$$eval(".rp-pseg[role=group]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["Style", "Look"]);
+    // Style redraws in place
+    await page.click('[data-pstyle="r2"]');
+    assert.equal(await page.getAttribute('[data-pstyle="r2"]', "aria-pressed"), "true");
+    assert.ok(await page.$eval('input[name="rp-style"][value="r2"]', (r) => r.checked), "the page's style follows");
+    // the magnifier: actual size, 18 in wide, then Esc back to Fit, with the dialog still open
+    await page.click("#rp-proof-zoom");
+    assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "full");
+    assert.equal(await page.getAttribute("#rp-proof-zoom", "aria-pressed"), "true");
+    assert.equal(await page.textContent("#rp-proof-zoom-t"), "Fit");
+    assert.equal(await page.$eval("#rp-proof-art svg", (s) => Math.round(s.getBoundingClientRect().width)), 18 * 96, "actual size is 18 in");
+    await page.keyboard.press("Escape");
+    assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "Esc goes back to Fit");
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), true, "and leaves it open");
+    // clicking a spot on the print shows that spot at actual size
+    await page.click("#rp-proof-frame", { position: { x: 20, y: 20 } });
+    assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "full");
+    await page.click("#rp-proof-zoom");
+    assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit");
+    // focus stays inside, then Esc closes and focus goes back to the button that opened it
+    for (let i = 0; i < 14; i++) {
+      await page.keyboard.press("Tab");
+      assert.ok(await page.evaluate(() => document.getElementById("rp-proof").contains(document.activeElement)), "focus stays in the dialog");
+    }
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.getElementById("rp-proof").open);
+    assert.equal(await page.evaluate(() => document.activeElement && document.activeElement.id), "rp-zoom", "focus is back on the opener");
+    assert.deepEqual(await page.evaluate(() => window.__opened), [], "nothing ordered");
+    assert.deepEqual(errors, []);
+  }, { width: 1366, height: 768 });
+});
+
+test("Your print with example words: the two choices in place of the order button; Clear the example and order goes on to checkout", { skip }, async () => {
+  for (const theme of ["light", "dark"]) await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + q({ ...EX, m1: "2025-06-22 Our own day" }));
+    await drawn(page);
+    await page.click("#rp-zoom");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.equal(await page.isHidden("#rp-proof-order"), true, "no order button while the example is on it");
+    assert.match(await page.textContent("#rp-proof-why"), /The example is still on it \(the name, the line under it, 2 of the dates\)\..*your own words stay\./);
+    assert.ok(await onScreen(page, "#rp-proof-ex-go"));
+    await shot(page, "proof-example-1366-" + theme);
+    await page.click('[data-pview="print"]');
+    await page.click("#rp-proof-ex-go");
+    await settle(page);
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), false, "the dialog closes");
+    assert.equal(await page.inputValue("#rp-name"), "", "the example name is cleared");
+    assert.equal(await page.inputValue("#rp-m1l"), "Our own day", "the buyer's own date stays");
+    const opened = await page.evaluate(() => window.__opened);
+    assert.equal(opened.length, 1, "checkout opens on the same tap");
+    assert.ok(opened[0].startsWith(J.payment_links.print12x18 + "?"), "the print only it showed: " + opened[0]);
+    assert.equal(await page.evaluate(() => document.activeElement && document.activeElement.getAttribute("data-choice")), "print12x18", "focus goes to that card's button, not back to the opener");
+    assert.deepEqual(errors, []);
+  }, { theme, width: 1366, height: 768 });
+});
+
+test("Your print: Edit the words closes it and goes to section 2; the sample says Draw your own", { skip }, async () => {
+  await withPage(async (page, base) => {
+    await page.goto(base + "/rain-print.html?" + q(EX));
+    await drawn(page);
+    await page.click("#rp-zoom");
+    await page.waitForSelector("#rp-proof[open]");
+    await page.click("#rp-proof-ex-edit");
+    await settle(page);
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), false);
+    assert.ok(await onScreen(page, "#rp-ex-note"), "the example note in section 2 is on screen");
+    assert.deepEqual(await page.evaluate(() => window.__opened), []);
+  });
 });
