@@ -40,15 +40,15 @@ test("no build details, no promises the owner has not made, house style", () => 
   for (const [re, why] of [
     [/—|&mdash;/, "em dash"], [/founding/i, "the word founding"], [/AI[- ]powered|artificial intelligence|\bAI\b/i, "AI claims"],
     [/pre-?order/i, "pre-order"], [/\$\s?\d/, "a price"], [/\d\s?(mm|cm)\b|\d+(\.\d+)?\s?(inch|inches|in\.?)\s+(tall|wide|long|across|diameter)/i, "a dimension"],
-    [/\b(PLA|PETG|ABS|ASA|polycarbonate|acrylic|resin)\b/, "a material"], [/fiducial|aruco|apriltag|threshold|homograph|algorithm|neural|model/i, "how the photo is read"],
+    [/\b(PLA|PETG|ABS|ASA|PVC|polycarbonate|acrylic|resin|nylon)\b/, "a material"], [/\b\d+\s?:\s?1\b|\bratio\b|\bbore\b/i, "a ratio or bore"], [/fiducial|aruco|apriltag|threshold|homograph|algorithm|neural|model/i, "how the photo is read"],
     [/accurate to|within [\d.]+|\d+(\.\d+)?\s?%\s+accura/i, "an accuracy figure"], [/gauge-lab/, "a link to the unlisted lab page"],
     [/capacity|holds up to|part count|\d+ parts/i, "capacity or part count"], [/guarantee|forever/i, "guarantee or forever"],
   ]) assert.ok(!re.test(words), "the page must not carry " + why + ": " + (words.match(re) || [])[0]);
   assert.ok(/before planting 2027/.test(words), "states the plan");
-  assert.ok(/(Concept|Prototype)/.test(words));
+  assert.ok(/Prototype design/.test(words));
 });
 
-test("every picture has a size, alt text and a file behind it, and renders say Concept", () => {
+test("every picture has a size, alt text and a file behind it, and every caption says what it is", () => {
   const imgs = [...main.matchAll(/<img\b[^>]*>/g)].map((m) => m[0]);
   assert.ok(imgs.length >= 8);
   for (const t of imgs) {
@@ -58,7 +58,14 @@ test("every picture has a size, alt text and a file behind it, and renders say C
     assert.ok(existsSync(ROOT + src), "file: " + src);
   }
   for (const m of main.matchAll(/srcset="\/([^"]+)"/g)) assert.ok(existsSync(ROOT + m[1]), "file: " + m[1]);
-  for (const m of main.matchAll(/<figcaption>([^<]*)<\/figcaption>/g)) if (!/Sigurd/.test(m[1])) assert.ok(/^Concept/.test(m[1]), "caption: " + m[1]);
+  const caps = [...main.matchAll(/<figcaption[^>]*>([^<]*)<\/figcaption>/g)].map((m) => m[1]).filter((c) => !/Sigurd/.test(c));
+  assert.ok(caps.length >= 7);
+  for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: )/.test(c), "caption: " + c);
+  // the renders Sig turned down stay off the page and out of the repo
+  for (const old of ["gauge-field-edge", "gauge-phone-scan", "gauge-top-qr", "screen-1-scan", "screen-2-confirm"]) {
+    assert.ok(!page.includes(old), "old concept image on the page: " + old);
+    for (const ext of [".webp", ".jpg"]) assert.ok(!existsSync(ROOT + "img/rain-gauge/" + old + ext), "old concept image in the repo: " + old + ext);
+  }
   assert.ok(/og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-gauge\.jpg"/.test(page) && existsSync(ROOT + "img/og/rain-gauge.jpg"));
 });
 

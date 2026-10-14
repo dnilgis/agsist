@@ -19,7 +19,7 @@
   <meta property="og:image"        content="https://agsist.com/img/og/rain-gauge.jpg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="Concept render of a cream and white rain gauge on a wooden post at the edge of a field.">
+  <meta property="og:image:alt"    content="3D render of the prototype rain gauge on a wooden fence post at the edge of a field.">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:title"       content="A rain gauge that keeps its own log">
@@ -34,7 +34,7 @@
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=23" as="style">
-  <link rel="preload" href="/img/rain-gauge/gauge-field-edge.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="preload" href="/img/rain-gauge/gauge-wood-post.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -100,14 +100,17 @@
   .rg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
   /* how it would work: four phones */
-  .rg-screens{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem .9rem}
-  @media(min-width:900px){.rg-screens{grid-template-columns:repeat(4,minmax(0,1fr));gap:1.4rem}}
-  .rg-screen figure{margin:0 0 .8rem}
+  .rg-screens{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem .9rem;align-items:start}
+  .rg-step.rg-card{grid-column:1/-1}
+  @media(min-width:700px){.rg-step.rg-card{grid-column:auto}.rg-screens{gap:2rem 1.6rem}}
+  .rg-step figure{margin:0 0 .8rem}
+  .rg-card-fig img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
+  .rg-card-fig figcaption,.rg-front figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-phone{max-width:240px;margin:0 auto;padding:5px;border-radius:30px;background:#191c1d;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.25),0 16px 30px -16px rgba(0,0,0,.6)}
   [data-theme="light"] .rg-phone{background:#1d2021}
   .rg-phone img{display:block;width:100%;height:auto;border-radius:25px}
-  #main .rg .rg-screen h3{display:flex;align-items:center;gap:.5rem;margin:0 0 .3rem;font-size:var(--fs-md);line-height:1.3}
-  .rg-screen p{margin:0;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
+  #main .rg .rg-step h3{display:flex;align-items:center;gap:.5rem;margin:0 0 .3rem;font-size:var(--fs-md);line-height:1.3}
+  .rg-step p{margin:0;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
   .rp-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--brand-fill);color:#0a0c0d;font-family:var(--font-mono);font-size:.78em;font-weight:700}
   .rg-made-up{margin:1.2rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);font-style:italic}
 
@@ -120,8 +123,14 @@
   .rg-why{list-style:none;margin:0;padding:0}
   .rg-why li{padding:.75rem 0;border-bottom:1px solid var(--border);color:var(--text-dim);line-height:1.55}
   .rg-why li:first-child{padding-top:0}
+  @media(min-width:760px){.rg-why.rg-2col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 2rem}.rg-why.rg-2col li:nth-child(2){padding-top:0}}
+  .rg-front{display:grid;gap:1.4rem;align-items:start}
+  @media(min-width:760px){.rg-front{grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:2.6rem;align-items:center}}
+  .rg-front figure{margin:0}
+  .rg-front img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
+  @media(max-width:759px){.rg-front figure{max-width:420px;margin:0 auto}}
   .rg-why b{display:block;color:var(--text);font-size:var(--fs-md);margin-bottom:.1rem}
-  .rg-who{list-style:none;margin:0;padding:0}
+  .rg-who{list-style:none;margin:0;padding:0;max-width:760px}
   .rg-who li{position:relative;padding:.6rem 0 .6rem 1.2rem;border-bottom:1px solid var(--border);color:var(--text);line-height:1.5}
   .rg-who li::before{content:"";position:absolute;left:0;top:1.1rem;width:7px;height:7px;border-radius:50%;background:#2E5C86}
   [data-theme="dark"] .rg-who li::before{background:#A9CDEC}
@@ -157,7 +166,7 @@
   .rg-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.4rem 0 0;font-size:var(--fs-sm)}
   .rg-links a{display:inline-flex;align-items:center;min-height:var(--btn-h);border:1px solid var(--border);border-radius:var(--r-pill);padding:0 .9rem;color:var(--link);text-decoration:none}
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/rain-gauge#page","url":"https://agsist.com/rain-gauge","name":"A rain gauge that keeps its own log","description":"A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.","datePublished":"2026-10-14","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://agsist.com/img/og/rain-gauge.jpg","width":1200,"height":630},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Rain gauge","item":"https://agsist.com/rain-gauge"}]}},{"@type":"FAQPage","@id":"https://agsist.com/rain-gauge#faq","mainEntity":[{"@type":"Question","name":"When can I get one?","acceptedAnswer":{"@type":"Answer","text":"I'm getting manufacturing going this winter, and I'm aiming to have the first ones ready before planting 2027. That's my plan, not a promise of a ship date. People on the waitlist hear first."}},{"@type":"Question","name":"What will it cost?","acceptedAnswer":{"@type":"Answer","text":"I haven't set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. People on the waitlist get that first-batch price."}},{"@type":"Question","name":"Does it need a battery?","acceptedAnswer":{"@type":"Answer","text":"No. There is nothing in the gauge to charge or replace. The code on the front is printed, and your phone does the rest."}},{"@type":"Question","name":"Does it work without a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. It's a rain gauge first. You can read it by eye and empty it like any other gauge. The phone part is only there if you want the log."}},{"@type":"Question","name":"Do I need to install an app?","acceptedAnswer":{"@type":"Answer","text":"No. Scanning the code opens a page in your phone's web browser. There's nothing to download."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"I'm not making any claim yet. The prototype hasn't been tested in real rain. Before I say anything about accuracy, it will sit next to a standard gauge for a season, and I'll post what I find, good or bad."}},{"@type":"Question","name":"Who can see my readings?","acceptedAnswer":{"@type":"Answer","text":"Only you, unless you share them. You choose who gets a view-only link, and you can take anyone off at any time. If a rain map is ever added, being on it would be your choice, and it would be off to start."}},{"@type":"Question","name":"What if it breaks?","acceptedAnswer":{"@type":"Answer","text":"As long as I'm alive and the business is running, if your gauge breaks in normal use, I'll fix it or replace it. Send me a photo and tell me what happened."}},{"@type":"Question","name":"Will it work with Rain Print?","acceptedAnswer":{"@type":"Answer","text":"That's the idea. A season of readings from your own gauge could become a Rain Print of your own field, instead of the nearest weather station. Nothing is built for that yet."}},{"@type":"Question","name":"What happens when I join the waitlist?","acceptedAnswer":{"@type":"Answer","text":"You'll hear from me when the first batch is ready, with the first-batch price, before anyone else. Only rain gauge news goes to that address. It does not sign you up for AGSIST Daily."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/rain-gauge#page","url":"https://agsist.com/rain-gauge","name":"A rain gauge that keeps its own log","description":"A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.","datePublished":"2026-10-14","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://agsist.com/img/og/rain-gauge.jpg","width":1200,"height":630},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Rain gauge","item":"https://agsist.com/rain-gauge"}]}},{"@type":"FAQPage","@id":"https://agsist.com/rain-gauge#faq","mainEntity":[{"@type":"Question","name":"When can I get one?","acceptedAnswer":{"@type":"Answer","text":"I'm getting manufacturing going this winter, and I'm aiming to have the first ones ready before planting 2027. That's my plan, not a promise of a ship date. People on the waitlist hear first."}},{"@type":"Question","name":"What will it cost?","acceptedAnswer":{"@type":"Answer","text":"I haven't set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. People on the waitlist get that first-batch price."}},{"@type":"Question","name":"Does it need a battery?","acceptedAnswer":{"@type":"Answer","text":"No. There is nothing in the gauge to charge or replace. The code on the collar is printed, and your phone does the rest."}},{"@type":"Question","name":"Does it work without a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. It's a rain gauge first. You can read it by eye and empty it like any other gauge. The phone part is only there if you want the log."}},{"@type":"Question","name":"How do I empty it?","acceptedAnswer":{"@type":"Answer","text":"Lift the clear tube straight up out of its holder, dump it, and set it back in."}},{"@type":"Question","name":"What does it mount on?","acceptedAnswer":{"@type":"Answer","text":"A wood post or a steel T-post. It screws onto a wood post. On a T-post, two hose clamps hold it."}},{"@type":"Question","name":"Do I need to install an app?","acceptedAnswer":{"@type":"Answer","text":"No. Scanning the code opens a page in your phone's web browser. There's nothing to download."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"I'm not making any claim yet. The prototype hasn't been tested in real rain. Before I say anything about accuracy, it will sit next to a standard gauge for a season, and I'll post what I find, good or bad."}},{"@type":"Question","name":"Who can see my readings?","acceptedAnswer":{"@type":"Answer","text":"Only you, unless you share them. You choose who gets a view-only link, and you can take anyone off at any time. If a rain map is ever added, being on it would be your choice, and it would be off to start."}},{"@type":"Question","name":"What if it breaks?","acceptedAnswer":{"@type":"Answer","text":"As long as I'm alive and the business is running, if your gauge breaks in normal use, I'll fix it or replace it. Send me a photo and tell me what happened."}},{"@type":"Question","name":"Will it work with Rain Print?","acceptedAnswer":{"@type":"Answer","text":"That's the idea. A season of readings from your own gauge could become a Rain Print of your own field, instead of the nearest weather station. Nothing is built for that yet."}},{"@type":"Question","name":"What happens when I join the waitlist?","acceptedAnswer":{"@type":"Answer","text":"You'll hear from me when the first batch is ready, with the first-batch price, before anyone else. Only rain gauge news goes to that address. It does not sign you up for AGSIST Daily."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -186,15 +195,15 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Rain gauge</nav>
 
     <div class="rg-hero">
-      <p class="rg-tag">Concept. Prototype only.</p>
+      <p class="rg-tag">Prototype design</p>
       <h1>A rain gauge that keeps its own log</h1>
       <p class="rg-dateline">First shown here on <time datetime="2026-10-14">October 14, 2026</time>.</p>
       <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.</p>
       <div class="rg-side">
       <figure class="rg-fig">
-        <span class="rg-cbadge" aria-hidden="true">Concept</span>
-        <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-field-edge.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-field-edge.jpg" width="1600" height="1000" alt="Concept render of a cream and white rain gauge on a wooden post at the edge of a harvested field." fetchpriority="high" decoding="async"></picture>
-        <figcaption>Concept render. The gauge on a post at the edge of a field.</figcaption>
+        <span class="rg-cbadge" aria-hidden="true">Prototype design</span>
+        <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-wood-post.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-wood-post.jpg" width="1600" height="1000" alt="3D render of the prototype rain gauge on a wooden fence post at the edge of a field: a charcoal funnel on top, a clear tube in front of a white scale, and a code on the collar." fetchpriority="high" decoding="async"></picture>
+        <figcaption>Prototype design, 3D render. On a wood post at the edge of a field.</figcaption>
       </figure>
       <p class="rg-status"><span><b>Where it stands:</b> a prototype on my bench in Chetek. I&rsquo;m aiming to have the first ones ready before planting 2027.</span></p>
       </div>
@@ -218,76 +227,88 @@
         </form>
     </div>
 
+    <section class="rg-sec" id="what" aria-labelledby="rg-what-h">
+      <h2 class="sec-h" id="rg-what-h">What it is</h2>
+      <div class="rg-front">
+        <figure>
+          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-front.webp" sizes="(min-width: 760px) 420px, 100vw"><img src="/img/rain-gauge/gauge-front.jpg" width="1000" height="1250" alt="3D render of the prototype rain gauge from the front: a clear tube in front of a white scale with numbers on both sides, a charcoal funnel on top and a code on the collar, on a wood post." loading="lazy" decoding="async"></picture>
+          <figcaption>Prototype design, 3D render. Straight on, the way you read it.</figcaption>
+        </figure>
+        <div>
+          <p class="rg-p">This is the prototype I&rsquo;ve designed. The printed parts are charcoal.</p>
+          <ul class="rg-why">
+            <li><b>A clear tube on the outside.</b> It&rsquo;s a store-bought clear tube, so you see the water without opening anything.</li>
+            <li><b>A white scale behind it.</b> A printed back holds the white scale. You read it through the clear tube, with big numbers on both sides.</li>
+            <li><b>A funnel on top, the code on the collar.</b> The top funnel is printed. The QR code sits on the collar just under it.</li>
+            <li><b>Lift it out to empty it.</b> The tube lifts straight up out of its printed holder. Dump it and set it back in.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-mount-h">
+      <h2 class="sec-h" id="rg-mount-h">Wood post or T-post</h2>
+      <div class="rg-split">
+        <div>
+          <p class="rg-p">It screws onto a wood post. On a steel T-post, two hose clamps hold it. Put it on the fence line you already drive past.</p>
+        </div>
+        <figure>
+          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-t-post.webp" sizes="(min-width: 900px) 480px, 100vw"><img src="/img/rain-gauge/gauge-t-post.jpg" width="1200" height="750" alt="3D render of the prototype rain gauge held to a green steel T-post by two hose clamps, with fence wire and a field behind it." loading="lazy" decoding="async"></picture>
+          <figcaption>Prototype design, 3D render. On a steel T-post with two hose clamps.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="rg-sec" id="how" aria-labelledby="rg-how-h">
       <h2 class="sec-h" id="rg-how-h">How it would work</h2>
-      <p class="rg-p">It works like any good rain gauge. Walk out after a rain, look at the tube, read it. The difference is what happens next.</p>
+      <p class="rg-p">It works like any good rain gauge. Walk out after a rain, look at the scale through the tube, read it. The difference is what happens next.</p>
       <ol class="rg-screens">
-        <li class="rg-screen">
-          <figure>
-            <div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-1-scan.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-1-scan.jpg" width="780" height="1688" alt="Phone screen: the camera finds the code and says Gauge found: North 80." loading="lazy" decoding="async"></picture></div>
-            <figcaption class="sr-only">Scan the code on the gauge.</figcaption>
-          </figure>
+        <li class="rg-step rg-card">
+          <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-top-code.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-top-code.jpg" width="1200" height="750" alt="3D render of the top of the prototype gauge: a charcoal funnel and, on the collar under it, a square QR code." loading="lazy" decoding="async"></picture>
+            <figcaption>Prototype design, 3D render. The code on the collar.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">1</span>Scan the code</h3>
-          <p>Each gauge has its own code, so your phone knows which field it is standing in. No app to install; it opens in the browser.</p>
+          <p>Each gauge has its own code on the collar, so your phone knows which field it&rsquo;s standing in. No app to install; it opens in the browser.</p>
         </li>
-        <li class="rg-screen">
-          <figure>
-            <div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-2-confirm.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-2-confirm.jpg" width="780" height="1688" alt="Phone screen: 0.62 in read from your photo, with buttons to nudge it up or down or type it in." loading="lazy" decoding="async"></picture></div>
-            <figcaption class="sr-only">Check the number. Tap to fix it if it is off.</figcaption>
-          </figure>
-          <h3><span class="rp-n" aria-hidden="true">2</span>Take a photo of the tube</h3>
-          <p>The phone reads the water level from the photo and shows you the number, like 0.62 in. If it looks wrong, tap to fix it before you save.</p>
+        <li class="rg-step rg-card">
+          <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-reading.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-reading.jpg" width="1200" height="750" alt="Concept screen on a phone: the gauge&rsquo;s scale seen through the camera, an orange line at the water, 0.42 in, and a Save button." loading="lazy" decoding="async"></picture>
+            <figcaption>Concept screen: how the phone reading will look. The reader is being adapted to this design.</figcaption></figure>
+          <h3><span class="rp-n" aria-hidden="true">2</span>Take a photo of the scale</h3>
+          <p>Take a photo through the clear tube. The phone shows you the number, like 0.42 in. If it looks off, nudge it up or down before you save.</p>
         </li>
-        <li class="rg-screen">
-          <figure>
-            <div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-3-log.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-3-log.jpg" width="780" height="1688" alt="Phone screen: North 80 rain log, 21.48 in since April 1, with a list of readings. Sample numbers." loading="lazy" decoding="async"></picture></div>
-            <figcaption class="sr-only">Your rain log for one field, with the season total.</figcaption>
-          </figure>
+        <li class="rg-step rg-phone">
+          <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-3-log.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-3-log.jpg" width="780" height="1688" alt="Phone screen: North 80 rain log, 21.48 in since April 1, with a list of readings. Sample numbers." loading="lazy" decoding="async"></picture></div>
+            <figcaption class="sr-only">Concept screen: your rain log for one field, with the season total.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">3</span>It lands in your rain log</h3>
           <p>Every reading is kept by field, with the date and time. Your season total is always up to date.</p>
         </li>
-        <li class="rg-screen">
-          <figure>
-            <div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-4-share.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-4-share.jpg" width="780" height="1688" alt="Phone screen: who can see the North 80 rain log, with a landlord and an agronomist added, view only." loading="lazy" decoding="async"></picture></div>
-            <figcaption class="sr-only">Share a field&rsquo;s rain with your landlord or agronomist.</figcaption>
-          </figure>
+        <li class="rg-step rg-phone">
+          <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-4-share.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-4-share.jpg" width="780" height="1688" alt="Phone screen: who can see the North 80 rain log, with a landlord and an agronomist added, view only." loading="lazy" decoding="async"></picture></div>
+            <figcaption class="sr-only">Concept screen: share a field&rsquo;s rain with your landlord or agronomist.</figcaption></figure>
           <h3><span class="rp-n" aria-hidden="true">4</span>Share it if you want</h3>
           <p>Send a view-only link to the landlord or the agronomist. They see the rain for that field and nothing else.</p>
         </li>
       </ol>
-      <p class="rg-made-up">Concept screens. The numbers are made up.</p>
+      <p class="rg-made-up">The phone screens are concept screens. The numbers are made up.</p>
     </section>
 
     <section class="rg-sec" aria-labelledby="rg-why-h">
       <h2 class="sec-h" id="rg-why-h">Why I&rsquo;m building it</h2>
-      <div class="rg-split">
-        <ul class="rg-why">
+        <ul class="rg-why rg-2col">
           <li><b>No notebook.</b> The reading goes from the gauge to the log in the same minute you read it.</li>
           <li><b>No forgetting.</b> You don&rsquo;t have to remember what it said by the time you get back to the house.</li>
           <li><b>A record for every field.</b> One gauge per field means North 80 and the home place each get their own season total, not one number for the whole farm.</li>
           <li><b>It&rsquo;s still a plain gauge.</b> No battery, no phone needed. If you never scan it, you read it with your eyes and empty it, like you always have.</li>
         </ul>
-        <figure>
-          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-phone-scan.webp" sizes="(min-width: 900px) 480px, 100vw"><img src="/img/rain-gauge/gauge-phone-scan.jpg" width="1400" height="1000" alt="Illustration of a hand holding a phone up to scan the code on a rain gauge mounted on a post." loading="lazy" decoding="async"></picture>
-          <figcaption>Concept illustration. Scan the code, then take a photo of the tube.</figcaption>
-        </figure>
-      </div>
     </section>
 
     <section class="rg-sec" aria-labelledby="rg-who-h">
       <h2 class="sec-h" id="rg-who-h">Who it&rsquo;s for</h2>
-      <div class="rg-split rg-flip">
         <ul class="rg-who">
           <li>Farmers who want rain by field, not one number from a station miles away.</li>
           <li>Landlords and tenants who settle up on what actually fell.</li>
           <li>Agronomists and crop consultants who keep notes on a lot of fields.</li>
           <li>Anyone who reads a gauge every morning and is tired of writing it down.</li>
         </ul>
-        <figure>
-          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-top-qr.webp" sizes="(min-width: 900px) 480px, 100vw"><img src="/img/rain-gauge/gauge-top-qr.jpg" width="1400" height="1000" alt="Concept render of the top of the rain gauge with a small square code tag on the front." loading="lazy" decoding="async"></picture>
-          <figcaption>Concept render. Each gauge has its own code for your phone.</figcaption>
-        </figure>
-      </div>
     </section>
 
     <section class="rg-sec" aria-labelledby="rg-batch-h">
@@ -334,8 +355,10 @@
       <h2 class="sec-h" id="rg-faq-h">Questions</h2>
       <details><summary>When can I get one?</summary><p>I&rsquo;m getting manufacturing going this winter, and I&rsquo;m aiming to have the first ones ready before planting 2027. That&rsquo;s my plan, not a promise of a ship date. People on the waitlist hear first.</p></details>
       <details><summary>What will it cost?</summary><p>I haven&rsquo;t set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. People on the waitlist get that first-batch price.</p></details>
-      <details><summary>Does it need a battery?</summary><p>No. There is nothing in the gauge to charge or replace. The code on the front is printed, and your phone does the rest.</p></details>
+      <details><summary>Does it need a battery?</summary><p>No. There is nothing in the gauge to charge or replace. The code on the collar is printed, and your phone does the rest.</p></details>
       <details><summary>Does it work without a phone?</summary><p>Yes. It&rsquo;s a rain gauge first. You can read it by eye and empty it like any other gauge. The phone part is only there if you want the log.</p></details>
+      <details><summary>How do I empty it?</summary><p>Lift the clear tube straight up out of its holder, dump it, and set it back in.</p></details>
+      <details><summary>What does it mount on?</summary><p>A wood post or a steel T-post. It screws onto a wood post. On a T-post, two hose clamps hold it.</p></details>
       <details><summary>Do I need to install an app?</summary><p>No. Scanning the code opens a page in your phone&rsquo;s web browser. There&rsquo;s nothing to download.</p></details>
       <details><summary>How accurate is it?</summary><p>I&rsquo;m not making any claim yet. The prototype hasn&rsquo;t been tested in real rain. Before I say anything about accuracy, it will sit next to a standard gauge for a season, and I&rsquo;ll post what I find, good or bad.</p></details>
       <details><summary>Who can see my readings?</summary><p>Only you, unless you share them. You choose who gets a view-only link, and you can take anyone off at any time. If a rain map is ever added, being on it would be your choice, and it would be off to start.</p></details>
