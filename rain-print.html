@@ -475,13 +475,14 @@
         </div>
         <p class="rp-note" id="rp-dl-note" aria-live="polite"></p>
         <div class="rp-maker" id="rp-maker" hidden>
-          <p><b>Print files for fulfillment.</b> 12 x 18 in at 300 dpi with 0.125 in bleed on every side (12.25 x 18.25 in, fits a 13 x 19 sheet); keep text inside the trim. Add &amp;serial=N to this page&rsquo;s link and the print files carry "No. 000N · SRL" under the QR; the digital file and the SVG never do. The SVG is for viewing in a browser; print from the PNG or PDF. This switch only hides the buttons; it does not protect the files.</p>
+          <p><b>Print files for fulfillment.</b> 12 x 18 in at 300 dpi with 0.125 in bleed on every side (12.25 x 18.25 in, fits a 13 x 19 sheet); keep text inside the trim. Add &amp;serial=N to this page&rsquo;s link and the print files carry "No. 000N · SRL" under the QR; the digital file and the SVG never do. The SVG is for viewing in a browser; print from the PNG or PDF. Test print PDF (standard code) is for your own test prints and samples: its QR opens the Rain Print page, not this design, and it needs no short link. Never send it as an order. This switch only hides the buttons; it does not protect the files.</p>
           <p class="rp-count" id="rp-maker-logo" hidden></p>
           <div class="rp-acts">
             <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="png">12 x 18 print PNG</button>
             <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf">12 x 18 print PDF</button>
             <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="png">Digital file PNG</button>
             <button class="btn btn-secondary" type="button" data-size="vector" data-fmt="svg">SVG</button>
+            <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf" data-qr="standard">Test print PDF (standard code)</button>
           </div>
         </div>
       </div>
@@ -771,12 +772,12 @@
   </dialog>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/util.js?v=19"></script>
-  <script src="/components/qr.js?v=8"></script>
+  <script src="/components/qr.js?v=10"></script>
   <script src="/components/form-post.js?v=4"></script>
   <script src="/components/rp-short.js?v=3"></script>
   <script src="/components/rp-logo.js?v=2"></script>
   <script src="/components/rain-print-art.js?v=8"></script>
-  <script src="/components/rain-print.js?v=25"></script>
+  <script src="/components/rain-print.js?v=26"></script>
   <script src="/components/rp-gift.js?v=3" defer></script>
 </body>
 </html>

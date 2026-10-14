@@ -152,6 +152,7 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
+QR_V = "10"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14)
 CALC_V = "9"   # 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
@@ -2495,7 +2496,7 @@ def sheet_shell(D):
 <script type="application/json" id="sh-data">{js}</script>
 <script src="/components/states.js?v=1"></script>
 <script src="/components/arc-plc-math.js?v={CALC_V}"></script>
-<script src="/components/qr.js?v={CALC_V}"></script>
+<script src="/components/qr.js?v={QR_V}"></script>
 <script src="/components/arc-plc-sheet.js?v={CALC_V}"></script>
 </body>
 </html>
