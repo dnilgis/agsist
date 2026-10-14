@@ -1281,6 +1281,6 @@
     render: render, model: model, recordPoints: recordPoints, lastSkipped: function () { return last_skipped.slice(); },
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
-    STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, roughW: roughW
+    STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW
   };
 })(typeof window !== 'undefined' ? window : this);

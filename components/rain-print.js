@@ -973,7 +973,12 @@
       var cmp = s.cmp === 'normal' ? stationNormal(chosen.sid, s.year) : s.cmp === 'station' ? stationExtremes(chosen.sid) : null;
       var design = Object.assign({}, s, { gift: false, station: chosen.sid });
       var short = root.AgRpShort ? Promise.race([root.AgRpShort.getShortLink(encodeCode(design)), new Promise(function (r) { setTimeout(function () { r(null); }, 8000); })]) : null;
-      return Promise.all([cmp ? cmp.then(null, function () { return null; }) : null, short ? short.then(null, function () { return null; }) : null]).then(function (res) {
+      // the design's logo, as the page draws it (a card whose logo doesn't load still draws, without it)
+      var logo = s.logo && root.AgRpLogo ? root.AgRpLogo.load(s.logo).then(function (got) {
+        if (!s.logoInk) return { href: got.url, w: got.w, h: got.h };
+        return root.AgRpLogo.inkUrl(got.url, root.AgRainArt.INK).then(function (u) { return { href: u, w: got.w, h: got.h }; });
+      }).then(null, function () { return null; }) : null;
+      return Promise.all([cmp ? cmp.then(null, function () { return null; }) : null, short ? short.then(null, function () { return null; }) : null, logo]).then(function (res) {
         var ov = null, ext = s.cmp === 'station' ? res[0] : null;
         var byDate = s.cmp === 'normal' ? res[0] : ext && ext.avgByDate && ext.avgByDate.size ? ext.avgByDate : null;
         if (byDate) {
@@ -987,7 +992,7 @@
           style: s.style, year: s.year, place: placeLongOf(meta), name: s.name, dedication: s.dedication,
           days: days, D: picked.d, showDry: showDry(picked.d), axisLen: preview ? (isLeap(s.year) ? 366 : 365) : picked.d.n,
           ov: ov, ovNote: cmpNoteFor(s.cmp, ext), showNormals: s.normals, markers: markersOn(s.markers, s.year, picked.d.n),
-          records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: gaugeLine(meta),
+          records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: gaugeLine(meta), logo: res[2] || null,
           watermark: false, bleed: 0, idPrefix: opts.idPrefix || 'gc'
         });
         return { svg: svg, last: last, year: s.year, place: placeLongOf(meta), station: chosen.sid, days: days.length, preview: preview };
@@ -1152,7 +1157,7 @@
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d), axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
       records: ST.records ? recordsFor() : [], qr: qrInfo(o.serial), preview: PREVIEW ? { last: PREVIEW.last } : null,
-      gauge: META ? gaugeLine(META) : '',
+      gauge: META ? gaugeLine(META) : '', logo: logoArt(),
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
     var svg = root.AgRainArt.render(input);
@@ -1187,6 +1192,111 @@
       } catch (e) { RECS = []; }
     }
     return RECS;
+  }
+
+  // ---------------------------------------------------------------- the logo
+  /* LOGO: the picture behind ST.logo, or a file just picked while it saves:
+     {id ('' while saving), state 'saving' | 'loading' | 'ready' | 'missing',
+     color: {url (data URL), w, h} | null, ink: data URL of the one-color
+     version | null, msg}. The design (ST.logo, ST.logoInk) carries only the
+     id and the switch; LOGO_ASK drops an answer that came too late. */
+  var LOGO = null, LOGO_ASK = 0, LOGO_PPI = 200;
+  function inkHex() { return (root.AgRainArt && root.AgRainArt.INK) || '#1E2125'; }
+  // what the art draws: the picture in the chosen color, or nothing while it isn't here
+  function logoArt() {
+    if (!LOGO || !LOGO.color) return null;
+    if (LOGO.state !== 'saving' && LOGO.id !== ST.logo) return null;
+    var href = ST.logoInk ? LOGO.ink : LOGO.color.url;
+    return href ? { href: href, w: LOGO.color.w, h: LOGO.color.h } : null;
+  }
+  function logoRedraw() { if (DATA && !BLOCKED) render(); else if (!SAMPLE && ST.place) setDesignRefs(); }
+  function logoInk(my) {
+    return root.AgRpLogo.inkUrl(LOGO.color.url, inkHex()).then(function (u) { if (my === LOGO_ASK && LOGO) LOGO.ink = u; }, function () {});
+  }
+  // the design's logo, read from the worker when the design names one this page hasn't drawn
+  function wantLogo() {
+    var id = ST.logo;
+    if (!id) { if (LOGO && LOGO.state !== 'saving') LOGO = null; syncLogoUi(); return; }
+    if (LOGO && LOGO.id === id) { syncLogoUi(); return; }
+    var my = ++LOGO_ASK;
+    if (!root.AgRpLogo) { LOGO = { id: id, state: 'missing', color: null, ink: null, msg: 'The logo didn\u2019t load.' }; syncLogoUi(); return; }
+    LOGO = { id: id, state: 'loading', color: null, ink: null };
+    syncLogoUi();
+    root.AgRpLogo.load(id).then(function (got) {
+      if (my !== LOGO_ASK) return;
+      LOGO.color = got; LOGO.state = 'ready';
+      return logoInk(my).then(function () { if (my === LOGO_ASK) { syncLogoUi(); logoRedraw(); } });
+    }, function (e) {
+      if (my !== LOGO_ASK) return;
+      LOGO.state = 'missing'; LOGO.msg = e && e.plain ? e.message : 'The logo didn\u2019t load.';
+      syncLogoUi();
+    });
+  }
+  function logoMsg(t, bad) { var el = $('rp-logo-msg'); if (!el) return; el.textContent = t || ''; el.classList.toggle('rp-bad', !!bad); }
+  function syncLogoUi() {
+    if (!$('rp-logo')) return;
+    var has = !!LOGO, art = logoArt(), th = $('rp-logo-thumb');
+    $('rp-logo-pick').textContent = has ? 'Choose another file' : 'Choose a file';
+    $('rp-logo-remove').hidden = !has;
+    $('rp-logo-inks').hidden = !(LOGO && LOGO.color);
+    radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (ST.logoInk ? '1' : '0'); });
+    if (art) { if (th.getAttribute('src') !== art.href) th.src = art.href; th.hidden = false; } else { th.hidden = true; th.removeAttribute('src'); }
+    if (!LOGO) return;
+    if (LOGO.state === 'saving') return logoMsg('Saving the logo\u2026');
+    if (LOGO.state === 'loading') return logoMsg('Loading the logo\u2026');
+    if (LOGO.state === 'missing') return logoMsg((LOGO.msg || 'The logo didn\u2019t load.') + ' It isn\u2019t on the print. Choose the file again, or remove it.', true);
+    // the quality check, in words: under about 200 pixels an inch at its printed size it may print soft
+    var c = LOGO.color, A = root.AgRpLogo, sz = root.AgRainArt.logoSize(ST.style, c.w / c.h);
+    var soft = A && A.ppi(c.w, c.h, sz.w, sz.h) < LOGO_PPI;
+    logoMsg(soft ? 'This logo is small and may print soft. If you have a bigger file, use that; I\u2019ll also check it in your proof.' : 'Logo added. It prints about ' + (sz.h / 100).toFixed(1) + ' in tall, next to the name.', false);
+  }
+  function pickLogo(file) {
+    var A = root.AgRpLogo;
+    if (!A || !file) return;
+    var my = ++LOGO_ASK, kind = '';
+    logoMsg('Reading the logo\u2026');
+    A.process(file).then(function (p) {
+      if (my !== LOGO_ASK) return;
+      kind = p.kind;
+      LOGO = { id: '', state: 'saving', color: { url: p.url, w: p.w, h: p.h }, ink: null };
+      ST.logo = '';
+      syncLogoUi();
+      // drawn right away; the design takes the id once the worker has it
+      return logoInk(my).then(function () {
+        if (my !== LOGO_ASK) return;
+        syncLogoUi(); logoRedraw();
+        return A.upload(p.blob).then(function (id) {
+          if (my !== LOGO_ASK) return;
+          LOGO.id = id; LOGO.state = 'ready';
+          A.remember(id, LOGO.color);
+          ST.logo = id;
+          syncLogoUi(); logoRedraw();
+          ga('rain_print_logo', { result: 'ok', kind: kind });
+        });
+      });
+    }).catch(function (e) {
+      if (my !== LOGO_ASK) return;
+      LOGO = null; ST.logo = '';
+      syncLogoUi(); logoRedraw();
+      logoMsg(e && e.plain ? e.message : 'That logo didn\u2019t work. Try a PNG or JPG copy.', true);
+      ga('rain_print_logo', { result: 'fail', kind: kind });
+    }).then(function () { try { $('rp-logo-file').value = ''; } catch (err) {} });
+  }
+  function removeLogo() {
+    LOGO_ASK++;
+    LOGO = null; ST.logo = '';
+    syncLogoUi(); logoMsg('');
+    logoRedraw();
+    try { $('rp-logo-pick').focus(); } catch (e) {}
+  }
+  /* A file Sig prints or someone pays for waits for the logo (8 s at most);
+     true when it is in, or the design has none. */
+  function logoGate() {
+    if (!ST.logo || logoArt()) return Promise.resolve(true);
+    return new Promise(function (res) {
+      var t0 = Date.now();
+      (function poll() { if (logoArt()) res(true); else if (Date.now() - t0 > 8000 || (LOGO && LOGO.state === 'missing')) res(false); else setTimeout(poll, 200); })();
+    });
   }
 
   // ---------------------------------------------------------------- UI
@@ -1262,6 +1372,7 @@
     var s = { place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') };
     // the sample wears whatever is in the boxes: the example at first, then the reader's own words
     var w = sampleWords(readInputs()); s.name = w.name; s.dedication = w.dedication; s.markers = w.markers; s.cmp = w.cmp; s.normals = w.normals; s.records = w.records;
+    s.logo = w.logo; s.logoInk = w.logoInk;
     run(null, normalize(s));
   }
   function useSample() {
@@ -1286,7 +1397,9 @@
     return normalize({ place: $('rp-place').value, year: $('rp-year').value, station: ST.station,
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
       cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
-      normals: $('rp-normals').checked, records: $('rp-records').checked });
+      normals: $('rp-normals').checked, records: $('rp-records').checked,
+      // the logo is not a box: its id rides along from the design, the color switch is read
+      logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0' });
   }
   // The year list: this year first (a gift, delivered in January), then every finished year.
   function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year} (ships in January)'); }
@@ -1313,6 +1426,8 @@
       $('rp-m' + i + 'l').value = m ? m.label : '';
     }
     syncMarkerBounds();
+    radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
+    if (s === ST) wantLogo();
     if ($('rp-name-n')) { syncCounts(); syncDates(); syncExampleNote(); }
   }
   /* Counters under the name and the line ("12 of 24 letters"), emoji and
@@ -1827,6 +1942,7 @@
     if (yearChanged || placeChanged) { syncMarkerBounds(); return; }
     ST = next;
     syncExampleNote();
+    syncLogoUi();
     if (ST.records && !root.AgRainRecords) recordsReady().then(function (ok) { if (ok) render(); });
     render();
   }
@@ -1950,9 +2066,15 @@
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
       ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
     rows.push(['Dates', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
+    if (ST.logo || (LOGO && LOGO.state === 'saving')) rows.push(['Logo', logoWords()]);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
     return rows;
+  }
+  function logoWords() {
+    if (!LOGO || LOGO.state === 'missing') return 'added, but it didn\u2019t load here; I\u2019ll check it in your proof';
+    if (LOGO.state === 'saving') return 'still saving';
+    return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors');
   }
   function syncSummary() {
     var el = $('ro-summary'), id = $('ro-choice').value, J = PRICES || {};
@@ -2014,6 +2136,8 @@
     list.push(['Name', esc(rows['Name'])], ['Line under it', esc(rows['Line under it'])],
       ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
       ['Compared with', esc(rows['Compared with'])]);
+    // the logo, in words and as it prints
+    if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
@@ -2144,8 +2268,9 @@
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
-      '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + '\n';
+      '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
+  var LOGO_LINK = 'https://agsist-subs.dnilgis.workers.dev/rp-logo/';
   var sending = false;
   function submitOrder(e) {
     e.preventDefault();
@@ -2154,11 +2279,13 @@
     if (!canOrder()) { out.innerHTML = '<p class="rp-msg rp-bad">Draw your print first.</p>'; return; }
     var left = exampleLeft(ST);
     if (left.length) { out.innerHTML = '<p class="rp-msg rp-bad">The example is still on the print (' + esc(left.join(', ')) + '). Change it or clear it under &ldquo;Add a name and dates&rdquo;, then send.</p>'; return; }
+    if (LOGO && LOGO.state === 'saving') { out.innerHTML = '<p class="rp-msg rp-bad">The logo is still saving. Send again in a moment.</p>'; return; }
     var x = {
       name: cleanText($('ro-name').value, 80), email: $('ro-email').value.trim(), choice: $('ro-choice').value,
       address: $('ro-address').value.trim().slice(0, 600), notes: $('ro-notes').value.trim().slice(0, 2000),
       design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print'
     };
+    if (ST.logo) x.logo = ST.logo;
     // the worker keeps known fields only, so the proof tick rides in the notes
     x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
     if (x.choice === 'digital') x.address = '';
@@ -2302,7 +2429,38 @@
   function bizText(x) {
     return bizSubject(x) + '\n\nBusiness: ' + x.business + '\nContact: ' + x.name + '\nEmail: ' + x.email + (x.phone ? '\nPhone: ' + x.phone : '') +
       '\nHow many: ' + x.quantity + '\nProduct: ' + BIZ_WORD[x.product][0] + '\nShip to: ' + BIZ_SHIP[x.ship] +
-      (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') + '\n';
+      (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
+      (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
+  }
+  /* The quote form's logo (for the note card or the prints): the same reading
+     and saving as the print's, no color switch. BIZ_LOGO = {id, url} once saved. */
+  var BIZ_LOGO = null, BIZ_LOGO_ASK = 0;
+  function bizLogoMsg(t, bad) { $('rb-logo-msg').textContent = t || ''; $('rb-logo-msg').classList.toggle('rp-bad', !!bad); }
+  function syncBizLogo() {
+    var th = $('rb-logo-thumb'), has = !!(BIZ_LOGO && BIZ_LOGO.url);
+    th.hidden = !has; if (has) th.src = BIZ_LOGO.url; else th.removeAttribute('src');
+    $('rb-logo-remove').hidden = !BIZ_LOGO;
+    $('rb-logo-pick').textContent = BIZ_LOGO ? 'Choose another file' : 'Choose a file';
+  }
+  function pickBizLogo(file) {
+    var A = root.AgRpLogo;
+    if (!A || !file) return;
+    var my = ++BIZ_LOGO_ASK;
+    bizLogoMsg('Reading the logo\u2026');
+    A.process(file).then(function (p) {
+      if (my !== BIZ_LOGO_ASK) return;
+      BIZ_LOGO = { id: '', url: p.url, saving: true };
+      syncBizLogo(); bizLogoMsg('Saving the logo\u2026');
+      return A.upload(p.blob).then(function (id) {
+        if (my !== BIZ_LOGO_ASK) return;
+        BIZ_LOGO = { id: id, url: p.url };
+        syncBizLogo(); bizLogoMsg('Logo saved. It goes with your request.');
+      });
+    }).catch(function (e) {
+      if (my !== BIZ_LOGO_ASK) return;
+      BIZ_LOGO = null; syncBizLogo();
+      bizLogoMsg(e && e.plain ? e.message : 'That logo didn\u2019t work. Try a PNG or JPG copy.', true);
+    }).then(function () { try { $('rb-logo-file').value = ''; } catch (err) {} });
   }
   var bizSending = false;
   function submitBiz(e) {
@@ -2321,8 +2479,10 @@
       : qn >= 1 && qn < BIZ_MIN ? ['rb-qty', 'Business orders start at ' + BIZ_MIN + '. For fewer, order the regular way above.']
       : !(qn >= BIZ_MIN && qn <= BIZ_MAX) ? ['rb-qty', 'Put how many prints, from ' + BIZ_MIN + ' to ' + BIZ_MAX + '. For more than ' + BIZ_MAX + ', put ' + BIZ_MAX + ' and say how many in the notes.']
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
+    if (!bad && BIZ_LOGO && BIZ_LOGO.saving) bad = ['rb-logo-file', 'The logo is still saving. Send again in a moment.'];
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     x.quantity = String(qn);
+    if (BIZ_LOGO && BIZ_LOGO.id) x.logo = BIZ_LOGO.id;
     // the shared note card goes only to prints shipped one to each customer
     if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
     var hp = doc.querySelector('#rb-form input[name="_gotcha"]');
@@ -2338,6 +2498,7 @@
       out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
+      BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg('');
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function () {
       ga('rain_print_business', { result: 'fail', product: x.product, qty: qn });
@@ -2481,7 +2642,9 @@
     var gate = kind === 'preview' || qrReady() || !root.AgRpShort || !code ? Promise.resolve()
       : Promise.race([root.AgRpShort.getShortLink(code), new Promise(function (r) { setTimeout(r, 8000); })]);
     var qrNote = function (msg) { return kind === 'preview' ? msg : msg + ' QR: ' + qrLink() + '.'; };
-    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !qrReady()) throw NO_QR; return f(); }); };
+    // the logo is drawn from its data URL, so it is in the file at full size; a file waits for it (NO_LOGO when it never comes)
+    var NO_LOGO = {};
+    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !qrReady()) throw NO_QR; return logoGate(); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
     if (fmt === 'svg') {
       job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'] })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
@@ -2501,7 +2664,8 @@
       });
     }
     job.then(function (msg) { out.textContent = msg; ga('rain_print_download', { kind: kind, fmt: fmt }); },
-      function (e) { out.textContent = e === NO_QR ? 'The short link for the QR isn\u2019t ready (the link service didn\u2019t answer), so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
+      function (e) { out.textContent = e === NO_QR ? 'The short link for the QR isn\u2019t ready (the link service didn\u2019t answer), so no file was saved. Try again in a minute.'
+        : e === NO_LOGO ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
 
@@ -2551,6 +2715,14 @@
   $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
   $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
   $('rp-records').addEventListener('change', restyle);
+  // the logo: a file in, the color switch, remove
+  if (root.AgRpLogo) {
+    $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) pickLogo(f[0]); });
+    $('rb-logo-file').addEventListener('change', function () { var f = $('rb-logo-file').files; if (f && f[0]) pickBizLogo(f[0]); });
+  } else { $('rp-logo').hidden = true; $('rb-logo').hidden = true; }
+  radios('rp-logo-ink').forEach(function (r) { r.addEventListener('change', restyle); });
+  $('rp-logo-remove').addEventListener('click', removeLogo);
+  $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   doc.querySelectorAll('.rp-buy-btn').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-choice')); }); });
   $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); });
   $('rp-proof-open').addEventListener('click', openProof);
@@ -2714,10 +2886,13 @@
      plain order. ?gift=1 is the old January design flag, not a card. */
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
-    dedication: ['rp-ded'], markers: ['rp-m1d', 'rp-m1l', 'rp-m2d', 'rp-m2l', 'rp-m3d', 'rp-m3l'], normals: ['rp-normals'], records: ['rp-records'] };
+    dedication: ['rp-ded'], markers: ['rp-m1d', 'rp-m1l', 'rp-m2d', 'rp-m2l', 'rp-m3d', 'rp-m3l'], normals: ['rp-normals'], records: ['rp-records'],
+    logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
       if (id === 'rp-style') { radios('rp-style').forEach(function (r) { r.disabled = true; }); doc.querySelectorAll('[data-pstyle]').forEach(function (b) { b.disabled = true; }); return; }
+      if (id === 'rp-logo-ink') { radios('rp-logo-ink').forEach(function (r) { r.disabled = true; }); return; }
+      if (id === 'rp-logo-file') { var pk = $('rp-logo-pick'); if (pk) { pk.setAttribute('aria-disabled', 'true'); pk.style.pointerEvents = 'none'; pk.style.opacity = '.55'; } }
       var el = $(id); if (el) { el.disabled = true; el.setAttribute('data-gift-lock', '1'); }
     });
   }
@@ -2756,6 +2931,8 @@
       run();
     }
     (g.locked || []).forEach(lockInput);
+    // the giver's design carries its logo, or none: it stays as they made it
+    if (g.lock && g.lock.design) lockInput('logo');
     // a card's design is set: no example years to tap
     if (g.lock && g.lock.design) $('rp-stories').hidden = true;
     syncGiftUse();
