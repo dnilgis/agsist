@@ -1,0 +1,5475 @@
+{
+ "v": 1,
+ "crop_year": 2027,
+ "built_from": "2026-10-12T03:16:13Z",
+ "years": {
+  "first": 1951,
+  "last": 2025,
+  "n": 75
+ },
+ "payback": {
+  "what": "average payment factor over the complete years, divided by the premium rate: dollars back per $1 of full premium",
+  "all": {
+   "n": 722380,
+   "p05": 0.78,
+   "mid": 0.87,
+   "p95": 0.89
+  },
+  "by_coverage": {
+   "70": {
+    "n": 144476,
+    "p05": 0.75,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "75": {
+    "n": 144476,
+    "p05": 0.76,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "80": {
+    "n": 144476,
+    "p05": 0.78,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "85": {
+    "n": 144476,
+    "p05": 0.79,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   "90": {
+    "n": 144476,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   }
+  },
+  "by_interval_at_90": [
+   {
+    "interval": "Jan-Feb",
+    "n": 13414,
+    "p05": 0.82,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Feb-Mar",
+    "n": 13307,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Mar-Apr",
+    "n": 13307,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Apr-May",
+    "n": 13150,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "May-Jun",
+    "n": 12896,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Jun-Jul",
+    "n": 12913,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Jul-Aug",
+    "n": 12809,
+    "p05": 0.81,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Aug-Sep",
+    "n": 12860,
+    "p05": 0.8,
+    "mid": 0.87,
+    "p95": 0.89
+   },
+   {
+    "interval": "Sep-Oct",
+    "n": 13150,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Oct-Nov",
+    "n": 13256,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   },
+   {
+    "interval": "Nov-Dec",
+    "n": 13414,
+    "p05": 0.81,
+    "mid": 0.88,
+    "p95": 0.89
+   }
+  ]
+ },
+ "intervals_at_90": [
+  {
+   "interval": "Jan-Feb",
+   "grids": 13414,
+   "mid_rate_per_100": 17.4,
+   "mid_years_below": 35,
+   "mid_normal_in": 3.08
+  },
+  {
+   "interval": "Feb-Mar",
+   "grids": 13307,
+   "mid_rate_per_100": 16,
+   "mid_years_below": 35,
+   "mid_normal_in": 3.44
+  },
+  {
+   "interval": "Mar-Apr",
+   "grids": 13307,
+   "mid_rate_per_100": 14.64,
+   "mid_years_below": 34,
+   "mid_normal_in": 4.53
+  },
+  {
+   "interval": "Apr-May",
+   "grids": 13150,
+   "mid_rate_per_100": 14.43,
+   "mid_years_below": 34,
+   "mid_normal_in": 5.77
+  },
+  {
+   "interval": "May-Jun",
+   "grids": 12896,
+   "mid_rate_per_100": 13.66,
+   "mid_years_below": 34,
+   "mid_normal_in": 6.57
+  },
+  {
+   "interval": "Jun-Jul",
+   "grids": 12913,
+   "mid_rate_per_100": 13.79,
+   "mid_years_below": 33,
+   "mid_normal_in": 5.98
+  },
+  {
+   "interval": "Jul-Aug",
+   "grids": 12809,
+   "mid_rate_per_100": 13.59,
+   "mid_years_below": 33,
+   "mid_normal_in": 5.42
+  },
+  {
+   "interval": "Aug-Sep",
+   "grids": 12860,
+   "mid_rate_per_100": 15.99,
+   "mid_years_below": 35,
+   "mid_normal_in": 5.15
+  },
+  {
+   "interval": "Sep-Oct",
+   "grids": 13150,
+   "mid_rate_per_100": 19.11,
+   "mid_years_below": 36,
+   "mid_normal_in": 4.93
+  },
+  {
+   "interval": "Oct-Nov",
+   "grids": 13256,
+   "mid_rate_per_100": 18.3,
+   "mid_years_below": 36,
+   "mid_normal_in": 4.22
+  },
+  {
+   "interval": "Nov-Dec",
+   "grids": 13414,
+   "mid_rate_per_100": 18.91,
+   "mid_years_below": 36,
+   "mid_normal_in": 3.63
+  }
+ ],
+ "limits": {
+  "jan_feb_max": {
+   "25": 3067,
+   "50": 3
+  },
+  "jan_feb_not_25": [
+   "Imperial, CA",
+   "Riverside, CA",
+   "San Bernardino, CA"
+  ],
+  "min_pct": [
+   10
+  ],
+  "other_max": [
+   50,
+   60,
+   70
+  ]
+ },
+ "grids_in_more_than_one_county": 9601,
+ "largest_net_in_two_driest": {
+  "what": "grids where the interval with the most (average payment less your share of the premium) per $100 of protection at 90% coverage is one of the two driest intervals on that grid",
+  "grids": 7899,
+  "of": 13307
+ },
+ "native_sod_state_counties": 454,
+ "states": [
+  {
+   "st": "AL",
+   "name": "Alabama",
+   "counties": 67,
+   "grids": 241
+  },
+  {
+   "st": "AZ",
+   "name": "Arizona",
+   "counties": 15,
+   "grids": 499
+  },
+  {
+   "st": "AR",
+   "name": "Arkansas",
+   "counties": 75,
+   "grids": 237
+  },
+  {
+   "st": "CA",
+   "name": "California",
+   "counties": 58,
+   "grids": 750
+  },
+  {
+   "st": "CO",
+   "name": "Colorado",
+   "counties": 63,
+   "grids": 513
+  },
+  {
+   "st": "CT",
+   "name": "Connecticut",
+   "counties": 9,
+   "grids": 36
+  },
+  {
+   "st": "DE",
+   "name": "Delaware",
+   "counties": 3,
+   "grids": 21
+  },
+  {
+   "st": "FL",
+   "name": "Florida",
+   "counties": 67,
+   "grids": 269
+  },
+  {
+   "st": "GA",
+   "name": "Georgia",
+   "counties": 159,
+   "grids": 276
+  },
+  {
+   "st": "ID",
+   "name": "Idaho",
+   "counties": 44,
+   "grids": 461
+  },
+  {
+   "st": "IL",
+   "name": "Illinois",
+   "counties": 102,
+   "grids": 289
+  },
+  {
+   "st": "IN",
+   "name": "Indiana",
+   "counties": 92,
+   "grids": 194
+  },
+  {
+   "st": "IA",
+   "name": "Iowa",
+   "counties": 99,
+   "grids": 299
+  },
+  {
+   "st": "KS",
+   "name": "Kansas",
+   "counties": 105,
+   "grids": 425
+  },
+  {
+   "st": "KY",
+   "name": "Kentucky",
+   "counties": 120,
+   "grids": 215
+  },
+  {
+   "st": "LA",
+   "name": "Louisiana",
+   "counties": 64,
+   "grids": 236
+  },
+  {
+   "st": "ME",
+   "name": "Maine",
+   "counties": 16,
+   "grids": 170
+  },
+  {
+   "st": "MD",
+   "name": "Maryland",
+   "counties": 23,
+   "grids": 72
+  },
+  {
+   "st": "MA",
+   "name": "Massachusetts",
+   "counties": 14,
+   "grids": 57
+  },
+  {
+   "st": "MI",
+   "name": "Michigan",
+   "counties": 83,
+   "grids": 338
+  },
+  {
+   "st": "MN",
+   "name": "Minnesota",
+   "counties": 87,
+   "grids": 448
+  },
+  {
+   "st": "MS",
+   "name": "Mississippi",
+   "counties": 82,
+   "grids": 228
+  },
+  {
+   "st": "MO",
+   "name": "Missouri",
+   "counties": 114,
+   "grids": 363
+  },
+  {
+   "st": "MT",
+   "name": "Montana",
+   "counties": 56,
+   "grids": 769
+  },
+  {
+   "st": "NE",
+   "name": "Nebraska",
+   "counties": 93,
+   "grids": 376
+  },
+  {
+   "st": "NV",
+   "name": "Nevada",
+   "counties": 17,
+   "grids": 513
+  },
+  {
+   "st": "NH",
+   "name": "New Hampshire",
+   "counties": 10,
+   "grids": 61
+  },
+  {
+   "st": "NJ",
+   "name": "New Jersey",
+   "counties": 21,
+   "grids": 54
+  },
+  {
+   "st": "NM",
+   "name": "New Mexico",
+   "counties": 33,
+   "grids": 526
+  },
+  {
+   "st": "NY",
+   "name": "New York",
+   "counties": 62,
+   "grids": 281
+  },
+  {
+   "st": "NC",
+   "name": "North Carolina",
+   "counties": 100,
+   "grids": 269
+  },
+  {
+   "st": "ND",
+   "name": "North Dakota",
+   "counties": 53,
+   "grids": 390
+  },
+  {
+   "st": "OH",
+   "name": "Ohio",
+   "counties": 88,
+   "grids": 211
+  },
+  {
+   "st": "OK",
+   "name": "Oklahoma",
+   "counties": 77,
+   "grids": 340
+  },
+  {
+   "st": "OR",
+   "name": "Oregon",
+   "counties": 36,
+   "grids": 503
+  },
+  {
+   "st": "PA",
+   "name": "Pennsylvania",
+   "counties": 67,
+   "grids": 243
+  },
+  {
+   "st": "RI",
+   "name": "Rhode Island",
+   "counties": 5,
+   "grids": 13
+  },
+  {
+   "st": "SC",
+   "name": "South Carolina",
+   "counties": 46,
+   "grids": 155
+  },
+  {
+   "st": "SD",
+   "name": "South Dakota",
+   "counties": 66,
+   "grids": 413
+  },
+  {
+   "st": "TN",
+   "name": "Tennessee",
+   "counties": 95,
+   "grids": 232
+  },
+  {
+   "st": "TX",
+   "name": "Texas",
+   "counties": 254,
+   "grids": 1120
+  },
+  {
+   "st": "UT",
+   "name": "Utah",
+   "counties": 29,
+   "grids": 399
+  },
+  {
+   "st": "VT",
+   "name": "Vermont",
+   "counties": 14,
+   "grids": 64
+  },
+  {
+   "st": "VA",
+   "name": "Virginia",
+   "counties": 98,
+   "grids": 219
+  },
+  {
+   "st": "WA",
+   "name": "Washington",
+   "counties": 39,
+   "grids": 377
+  },
+  {
+   "st": "WV",
+   "name": "West Virginia",
+   "counties": 55,
+   "grids": 140
+  },
+  {
+   "st": "WI",
+   "name": "Wisconsin",
+   "counties": 72,
+   "grids": 312
+  },
+  {
+   "st": "WY",
+   "name": "Wyoming",
+   "counties": 23,
+   "grids": 501
+  }
+ ],
+ "example_years": {
+  "first": 1951,
+  "last": 2025,
+  "you": 150,
+  "paid": [
+   0,
+   402,
+   0,
+   0,
+   38,
+   389,
+   120,
+   0,
+   0,
+   151,
+   333,
+   413,
+   23,
+   528,
+   0,
+   937,
+   102,
+   0,
+   688,
+   0,
+   44,
+   453,
+   435,
+   448,
+   287,
+   1222,
+   0,
+   0,
+   177,
+   743,
+   0,
+   259,
+   67,
+   0,
+   594,
+   0,
+   699,
+   1656,
+   198,
+   0,
+   92,
+   561,
+   0,
+   71,
+   39,
+   284,
+   764,
+   0,
+   0,
+   3,
+   0,
+   0,
+   0,
+   138,
+   631,
+   1347,
+   316,
+   0,
+   1061,
+   203,
+   0,
+   0,
+   287,
+   0,
+   0,
+   0,
+   0,
+   407,
+   0,
+   0,
+   0,
+   456,
+   1177,
+   0,
+   318
+  ]
+ },
+ "example": {
+  "grid": 30454,
+  "county": "Barron County, Wisconsin",
+  "acres": 100,
+  "coverage": 90,
+  "months": "April to May and June to July, half in each",
+  "grazing": {
+   "use": "Grazing",
+   "cbv": 32.8,
+   "premium": 305,
+   "usda": 155,
+   "you": 150,
+   "per_acre": 1.5,
+   "protection": 2952,
+   "years": 75,
+   "paid_years": 44,
+   "ahead_years": 33,
+   "avg": 261
+  },
+  "hay": {
+   "use": "Haying, non-irrigated",
+   "cbv": 230,
+   "premium": 2136,
+   "usda": 1089,
+   "you": 1047,
+   "per_acre": 10.47,
+   "protection": 20700,
+   "years": 75,
+   "paid_years": 44,
+   "ahead_years": 33,
+   "avg": 1829
+  }
+ },
+ "by_state": {
+  "AL": {
+   "payback_mid_90": 0.85,
+   "payback_n_90": 2651,
+   "grazing": {
+    "n": 67,
+    "low": 45.6,
+    "mid": 50.6,
+    "high": 55.2
+   },
+   "hay_dry": {
+    "n": 67,
+    "low": 211,
+    "mid": 263,
+    "high": 287
+   },
+   "hay_irr": {
+    "n": 67,
+    "low": 159,
+    "mid": 197,
+    "high": 215
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 241,
+     "mid_rate_per_100": 10.29,
+     "mid_years_below": 32,
+     "mid_normal_in": 10.33
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 241,
+     "mid_rate_per_100": 10.66,
+     "mid_years_below": 31,
+     "mid_normal_in": 11.12
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 241,
+     "mid_rate_per_100": 12.5,
+     "mid_years_below": 33,
+     "mid_normal_in": 10.94
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 241,
+     "mid_rate_per_100": 13.9,
+     "mid_years_below": 34,
+     "mid_normal_in": 9.38
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 241,
+     "mid_rate_per_100": 13.55,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.76
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 241,
+     "mid_rate_per_100": 10.93,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.33
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 241,
+     "mid_rate_per_100": 10.01,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.95
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 241,
+     "mid_rate_per_100": 12.98,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.87
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 241,
+     "mid_rate_per_100": 18.19,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.07
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 241,
+     "mid_rate_per_100": 15.66,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.13
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 241,
+     "mid_rate_per_100": 12.97,
+     "mid_years_below": 34,
+     "mid_normal_in": 9.18
+    }
+   ]
+  },
+  "AZ": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 5306,
+   "grazing": {
+    "n": 15,
+    "low": 4.6,
+    "mid": 7.8,
+    "high": 11.9
+   },
+   "hay_dry": null,
+   "hay_irr": {
+    "n": 15,
+    "low": 11,
+    "mid": 29,
+    "high": 45
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 499,
+     "mid_rate_per_100": 27.76,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.86
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 499,
+     "mid_rate_per_100": 28.83,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.8
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 499,
+     "mid_rate_per_100": 28.52,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.36
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 438,
+     "mid_rate_per_100": 32.47,
+     "mid_years_below": 41,
+     "mid_normal_in": 0.78
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 377,
+     "mid_rate_per_100": 34.7,
+     "mid_years_below": 41,
+     "mid_normal_in": 0.63
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 499,
+     "mid_rate_per_100": 21.83,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.74
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 499,
+     "mid_rate_per_100": 17.12,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.29
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 499,
+     "mid_rate_per_100": 17.22,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.86
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 499,
+     "mid_rate_per_100": 25.85,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.02
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 499,
+     "mid_rate_per_100": 30.63,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.64
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 499,
+     "mid_rate_per_100": 30.45,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.71
+    }
+   ]
+  },
+  "AR": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2607,
+   "grazing": {
+    "n": 75,
+    "low": 48.2,
+    "mid": 54.5,
+    "high": 60.4
+   },
+   "hay_dry": {
+    "n": 75,
+    "low": 181,
+    "mid": 205,
+    "high": 228
+   },
+   "hay_irr": {
+    "n": 75,
+    "low": 85,
+    "mid": 99,
+    "high": 111
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 237,
+     "mid_rate_per_100": 13.48,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.84
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 237,
+     "mid_rate_per_100": 12.6,
+     "mid_years_below": 35,
+     "mid_normal_in": 9.06
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 237,
+     "mid_rate_per_100": 12.46,
+     "mid_years_below": 32,
+     "mid_normal_in": 10.26
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 237,
+     "mid_rate_per_100": 13.47,
+     "mid_years_below": 34,
+     "mid_normal_in": 10.62
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 237,
+     "mid_rate_per_100": 13.12,
+     "mid_years_below": 32,
+     "mid_normal_in": 9.21
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 237,
+     "mid_rate_per_100": 12.94,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.83
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 237,
+     "mid_rate_per_100": 13.8,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.19
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 237,
+     "mid_rate_per_100": 16.23,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.94
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 237,
+     "mid_rate_per_100": 17.65,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.44
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 237,
+     "mid_rate_per_100": 17.04,
+     "mid_years_below": 37,
+     "mid_normal_in": 8.29
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 237,
+     "mid_rate_per_100": 16.67,
+     "mid_years_below": 36,
+     "mid_normal_in": 9.32
+    }
+   ]
+  },
+  "CA": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 5351,
+   "grazing": {
+    "n": 58,
+    "low": 8.7,
+    "mid": 17.3,
+    "high": 38.7
+   },
+   "hay_dry": null,
+   "hay_irr": {
+    "n": 58,
+    "low": 13,
+    "mid": 82,
+    "high": 289
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 750,
+     "mid_rate_per_100": 26.15,
+     "mid_years_below": 39,
+     "mid_normal_in": 6.07
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 643,
+     "mid_rate_per_100": 24.35,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.37
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 643,
+     "mid_rate_per_100": 24.77,
+     "mid_years_below": 40,
+     "mid_normal_in": 3.76
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 535,
+     "mid_rate_per_100": 27.19,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.78
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 362,
+     "mid_rate_per_100": 29.56,
+     "mid_years_below": 42,
+     "mid_normal_in": 0.59
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 249,
+     "mid_rate_per_100": 32.47,
+     "mid_years_below": 42,
+     "mid_normal_in": 0.36
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 145,
+     "mid_rate_per_100": 33.15,
+     "mid_years_below": 41,
+     "mid_normal_in": 0.4
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 196,
+     "mid_rate_per_100": 35.45,
+     "mid_years_below": 41,
+     "mid_normal_in": 0.64
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 486,
+     "mid_rate_per_100": 33.91,
+     "mid_years_below": 42,
+     "mid_normal_in": 1.02
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 592,
+     "mid_rate_per_100": 25.48,
+     "mid_years_below": 39,
+     "mid_normal_in": 2.51
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 750,
+     "mid_rate_per_100": 25.52,
+     "mid_years_below": 37,
+     "mid_normal_in": 4.41
+    }
+   ]
+  },
+  "CO": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 5643,
+   "grazing": {
+    "n": 63,
+    "low": 9.8,
+    "mid": 10.1,
+    "high": 13.5
+   },
+   "hay_dry": {
+    "n": 63,
+    "low": 99,
+    "mid": 128,
+    "high": 171
+   },
+   "hay_irr": {
+    "n": 63,
+    "low": 27,
+    "mid": 39,
+    "high": 65
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 513,
+     "mid_rate_per_100": 19.18,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.35
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 513,
+     "mid_rate_per_100": 17.1,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.74
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 513,
+     "mid_rate_per_100": 17,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.48
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 513,
+     "mid_rate_per_100": 17.34,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.56
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 513,
+     "mid_rate_per_100": 17.38,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.44
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 513,
+     "mid_rate_per_100": 13.86,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.56
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 513,
+     "mid_rate_per_100": 12.25,
+     "mid_years_below": 31,
+     "mid_normal_in": 4.17
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 513,
+     "mid_rate_per_100": 14.59,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.3
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 513,
+     "mid_rate_per_100": 19.93,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.44
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 513,
+     "mid_rate_per_100": 20.24,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.93
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 513,
+     "mid_rate_per_100": 19.48,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.5
+    }
+   ]
+  },
+  "CT": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 396,
+   "grazing": {
+    "n": 9,
+    "low": 50.5,
+    "mid": 50.5,
+    "high": 50.5
+   },
+   "hay_dry": {
+    "n": 9,
+    "low": 318,
+    "mid": 318,
+    "high": 318
+   },
+   "hay_irr": {
+    "n": 9,
+    "low": 239,
+    "mid": 239,
+    "high": 239
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 36,
+     "mid_rate_per_100": 10.52,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.87
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 36,
+     "mid_rate_per_100": 9.88,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.36
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 36,
+     "mid_rate_per_100": 10.77,
+     "mid_years_below": 28,
+     "mid_normal_in": 8.39
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 36,
+     "mid_rate_per_100": 10.11,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.13
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 36,
+     "mid_rate_per_100": 12.23,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.86
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 36,
+     "mid_rate_per_100": 12,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.06
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 36,
+     "mid_rate_per_100": 11.37,
+     "mid_years_below": 35,
+     "mid_normal_in": 8.22
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 36,
+     "mid_rate_per_100": 15.15,
+     "mid_years_below": 38,
+     "mid_normal_in": 8.32
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 36,
+     "mid_rate_per_100": 14.78,
+     "mid_years_below": 35,
+     "mid_normal_in": 8.44
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 36,
+     "mid_rate_per_100": 12.14,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.3
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 36,
+     "mid_rate_per_100": 10.42,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.3
+    }
+   ]
+  },
+  "DE": {
+   "payback_mid_90": 0.85,
+   "payback_n_90": 231,
+   "grazing": {
+    "n": 3,
+    "low": 62.2,
+    "mid": 63.7,
+    "high": 95.6
+   },
+   "hay_dry": {
+    "n": 3,
+    "low": 410,
+    "mid": 419,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 3,
+    "low": 230,
+    "mid": 233,
+    "high": 234
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 21,
+     "mid_rate_per_100": 10.02,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.24
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 21,
+     "mid_rate_per_100": 10.49,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.85
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 21,
+     "mid_rate_per_100": 9.9,
+     "mid_years_below": 27,
+     "mid_normal_in": 7.47
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 21,
+     "mid_rate_per_100": 9.87,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.06
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 21,
+     "mid_rate_per_100": 12.28,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.38
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 21,
+     "mid_rate_per_100": 11.73,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.06
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 21,
+     "mid_rate_per_100": 13.54,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.76
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 21,
+     "mid_rate_per_100": 13.86,
+     "mid_years_below": 35,
+     "mid_normal_in": 8.26
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 21,
+     "mid_rate_per_100": 14.85,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.2
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 21,
+     "mid_rate_per_100": 14.22,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.65
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 21,
+     "mid_rate_per_100": 14.03,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.87
+    }
+   ]
+  },
+  "FL": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2959,
+   "grazing": {
+    "n": 67,
+    "low": 26.4,
+    "mid": 41.7,
+    "high": 50.3
+   },
+   "hay_dry": {
+    "n": 67,
+    "low": 295,
+    "mid": 333,
+    "high": 405
+   },
+   "hay_irr": {
+    "n": 67,
+    "low": 217,
+    "mid": 232,
+    "high": 248
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 269,
+     "mid_rate_per_100": 16.79,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.02
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 269,
+     "mid_rate_per_100": 18.43,
+     "mid_years_below": 36,
+     "mid_normal_in": 6.72
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 269,
+     "mid_rate_per_100": 19.65,
+     "mid_years_below": 37,
+     "mid_normal_in": 6.21
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 269,
+     "mid_rate_per_100": 18.49,
+     "mid_years_below": 36,
+     "mid_normal_in": 6.65
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 269,
+     "mid_rate_per_100": 12.11,
+     "mid_years_below": 33,
+     "mid_normal_in": 10.54
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 269,
+     "mid_rate_per_100": 8.09,
+     "mid_years_below": 30,
+     "mid_normal_in": 14.14
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 269,
+     "mid_rate_per_100": 6.51,
+     "mid_years_below": 27,
+     "mid_normal_in": 14.28
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 269,
+     "mid_rate_per_100": 8.85,
+     "mid_years_below": 31,
+     "mid_normal_in": 13.85
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 269,
+     "mid_rate_per_100": 14.09,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.81
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 269,
+     "mid_rate_per_100": 18.47,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.75
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 269,
+     "mid_rate_per_100": 21.66,
+     "mid_years_below": 38,
+     "mid_normal_in": 4.93
+    }
+   ]
+  },
+  "GA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3036,
+   "grazing": {
+    "n": 159,
+    "low": 29.4,
+    "mid": 45.9,
+    "high": 56.3
+   },
+   "hay_dry": {
+    "n": 159,
+    "low": 159,
+    "mid": 247,
+    "high": 303
+   },
+   "hay_irr": {
+    "n": 159,
+    "low": 119,
+    "mid": 185,
+    "high": 227
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 276,
+     "mid_rate_per_100": 12.17,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.92
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 276,
+     "mid_rate_per_100": 11.84,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.28
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 276,
+     "mid_rate_per_100": 14.07,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.58
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 276,
+     "mid_rate_per_100": 15.36,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.26
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 276,
+     "mid_rate_per_100": 11.81,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.3
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 276,
+     "mid_rate_per_100": 10.5,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.56
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 276,
+     "mid_rate_per_100": 9.51,
+     "mid_years_below": 32,
+     "mid_normal_in": 9.67
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 276,
+     "mid_rate_per_100": 10.78,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.37
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 276,
+     "mid_rate_per_100": 17.86,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.67
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 276,
+     "mid_rate_per_100": 19.97,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.54
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 276,
+     "mid_rate_per_100": 15.91,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.07
+    }
+   ]
+  },
+  "ID": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 5071,
+   "grazing": {
+    "n": 44,
+    "low": 13.6,
+    "mid": 17.7,
+    "high": 29.1
+   },
+   "hay_dry": {
+    "n": 44,
+    "low": 80,
+    "mid": 120,
+    "high": 215
+   },
+   "hay_irr": {
+    "n": 44,
+    "low": 23,
+    "mid": 42,
+    "high": 100
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 461,
+     "mid_rate_per_100": 13.39,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.3
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 461,
+     "mid_rate_per_100": 13.3,
+     "mid_years_below": 32,
+     "mid_normal_in": 3.98
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 461,
+     "mid_rate_per_100": 12.94,
+     "mid_years_below": 32,
+     "mid_normal_in": 3.96
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 461,
+     "mid_rate_per_100": 13.6,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.16
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 461,
+     "mid_rate_per_100": 15.79,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.88
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 461,
+     "mid_rate_per_100": 20.01,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.56
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 461,
+     "mid_rate_per_100": 25.66,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.78
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 461,
+     "mid_rate_per_100": 23.23,
+     "mid_years_below": 39,
+     "mid_normal_in": 2.2
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 461,
+     "mid_rate_per_100": 20.09,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.74
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 461,
+     "mid_rate_per_100": 14.73,
+     "mid_years_below": 31,
+     "mid_normal_in": 3.59
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 461,
+     "mid_rate_per_100": 17.04,
+     "mid_years_below": 35,
+     "mid_normal_in": 4.57
+    }
+   ]
+  },
+  "IL": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 3179,
+   "grazing": {
+    "n": 102,
+    "low": 76,
+    "mid": 92.9,
+    "high": 106.8
+   },
+   "hay_dry": {
+    "n": 102,
+    "low": 397,
+    "mid": 485,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 102,
+    "low": 106,
+    "mid": 116,
+    "high": 148
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 289,
+     "mid_rate_per_100": 16.87,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.66
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 289,
+     "mid_rate_per_100": 12.82,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.72
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 289,
+     "mid_rate_per_100": 11.31,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.79
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 289,
+     "mid_rate_per_100": 12.17,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.13
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 289,
+     "mid_rate_per_100": 13.41,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.59
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 289,
+     "mid_rate_per_100": 12.57,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.43
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 289,
+     "mid_rate_per_100": 11.93,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.66
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 289,
+     "mid_rate_per_100": 15.24,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.65
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 289,
+     "mid_rate_per_100": 16.82,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.2
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 289,
+     "mid_rate_per_100": 14.43,
+     "mid_years_below": 33,
+     "mid_normal_in": 5.73
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 289,
+     "mid_rate_per_100": 17.02,
+     "mid_years_below": 36,
+     "mid_normal_in": 5
+    }
+   ]
+  },
+  "IN": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 2134,
+   "grazing": {
+    "n": 92,
+    "low": 62.7,
+    "mid": 83.3,
+    "high": 103.3
+   },
+   "hay_dry": {
+    "n": 92,
+    "low": 372,
+    "mid": 465,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 92,
+    "low": 129,
+    "mid": 154,
+    "high": 176
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 194,
+     "mid_rate_per_100": 14.12,
+     "mid_years_below": 34,
+     "mid_normal_in": 4.72
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 194,
+     "mid_rate_per_100": 12.45,
+     "mid_years_below": 33,
+     "mid_normal_in": 5.55
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 194,
+     "mid_rate_per_100": 10.02,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.33
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 194,
+     "mid_rate_per_100": 9.76,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.35
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 194,
+     "mid_rate_per_100": 11.25,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.71
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 194,
+     "mid_rate_per_100": 10.77,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.7
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 194,
+     "mid_rate_per_100": 9.98,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.87
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 194,
+     "mid_rate_per_100": 13.55,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.6
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 194,
+     "mid_rate_per_100": 15.32,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.11
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 194,
+     "mid_rate_per_100": 13.07,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.19
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 194,
+     "mid_rate_per_100": 13.11,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.1
+    }
+   ]
+  },
+  "IA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3289,
+   "grazing": {
+    "n": 99,
+    "low": 66.6,
+    "mid": 75.6,
+    "high": 80.2
+   },
+   "hay_dry": {
+    "n": 99,
+    "low": 331,
+    "mid": 375,
+    "high": 398
+   },
+   "hay_irr": {
+    "n": 99,
+    "low": 95,
+    "mid": 122,
+    "high": 131
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 299,
+     "mid_rate_per_100": 17.81,
+     "mid_years_below": 34,
+     "mid_normal_in": 1.89
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 299,
+     "mid_rate_per_100": 16.23,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.11
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 299,
+     "mid_rate_per_100": 12.96,
+     "mid_years_below": 31,
+     "mid_normal_in": 5.52
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 299,
+     "mid_rate_per_100": 11.93,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.77
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 299,
+     "mid_rate_per_100": 11.65,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.12
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 299,
+     "mid_rate_per_100": 12.89,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.95
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 299,
+     "mid_rate_per_100": 13.74,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.28
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 299,
+     "mid_rate_per_100": 16.45,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.5
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 299,
+     "mid_rate_per_100": 17.9,
+     "mid_years_below": 35,
+     "mid_normal_in": 5.98
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 299,
+     "mid_rate_per_100": 15.96,
+     "mid_years_below": 35,
+     "mid_normal_in": 4.27
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 299,
+     "mid_rate_per_100": 21.19,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.92
+    }
+   ]
+  },
+  "KS": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 4675,
+   "grazing": {
+    "n": 105,
+    "low": 27,
+    "mid": 43.4,
+    "high": 52.3
+   },
+   "hay_dry": {
+    "n": 105,
+    "low": 138,
+    "mid": 222,
+    "high": 267
+   },
+   "hay_irr": {
+    "n": 105,
+    "low": 69,
+    "mid": 99,
+    "high": 166
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 425,
+     "mid_rate_per_100": 24.21,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.48
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 425,
+     "mid_rate_per_100": 24.16,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.65
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 425,
+     "mid_rate_per_100": 18.91,
+     "mid_years_below": 37,
+     "mid_normal_in": 4.09
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 425,
+     "mid_rate_per_100": 14.08,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.37
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 425,
+     "mid_rate_per_100": 14.32,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.08
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 425,
+     "mid_rate_per_100": 14.67,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.42
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 425,
+     "mid_rate_per_100": 14.61,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.73
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 425,
+     "mid_rate_per_100": 16.2,
+     "mid_years_below": 34,
+     "mid_normal_in": 5.83
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 425,
+     "mid_rate_per_100": 19.64,
+     "mid_years_below": 36,
+     "mid_normal_in": 4.65
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 425,
+     "mid_rate_per_100": 22.73,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.17
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 425,
+     "mid_rate_per_100": 26.59,
+     "mid_years_below": 39,
+     "mid_normal_in": 2
+    }
+   ]
+  },
+  "KY": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 2365,
+   "grazing": {
+    "n": 120,
+    "low": 47.7,
+    "mid": 69.2,
+    "high": 74.8
+   },
+   "hay_dry": {
+    "n": 120,
+    "low": 185,
+    "mid": 290,
+    "high": 395
+   },
+   "hay_irr": {
+    "n": 120,
+    "low": 139,
+    "mid": 217,
+    "high": 296
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 215,
+     "mid_rate_per_100": 12.71,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.54
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 215,
+     "mid_rate_per_100": 11.55,
+     "mid_years_below": 36,
+     "mid_normal_in": 8.47
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 215,
+     "mid_rate_per_100": 10.39,
+     "mid_years_below": 32,
+     "mid_normal_in": 9.2
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 215,
+     "mid_rate_per_100": 11.18,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.34
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 215,
+     "mid_rate_per_100": 10.28,
+     "mid_years_below": 30,
+     "mid_normal_in": 9.11
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 215,
+     "mid_rate_per_100": 8.8,
+     "mid_years_below": 30,
+     "mid_normal_in": 9.07
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 215,
+     "mid_rate_per_100": 10.06,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.41
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 215,
+     "mid_rate_per_100": 13.94,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.1
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 215,
+     "mid_rate_per_100": 15.82,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.57
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 215,
+     "mid_rate_per_100": 13.36,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.88
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 215,
+     "mid_rate_per_100": 12.57,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.06
+    }
+   ]
+  },
+  "LA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2596,
+   "grazing": {
+    "n": 64,
+    "low": 48,
+    "mid": 50.7,
+    "high": 63.6
+   },
+   "hay_dry": {
+    "n": 64,
+    "low": 175,
+    "mid": 260,
+    "high": 326
+   },
+   "hay_irr": {
+    "n": 64,
+    "low": 105,
+    "mid": 127,
+    "high": 140
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 236,
+     "mid_rate_per_100": 14.09,
+     "mid_years_below": 34,
+     "mid_normal_in": 9.96
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 236,
+     "mid_rate_per_100": 12.88,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.65
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 236,
+     "mid_rate_per_100": 14.79,
+     "mid_years_below": 36,
+     "mid_normal_in": 9.76
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 236,
+     "mid_rate_per_100": 18.77,
+     "mid_years_below": 36,
+     "mid_normal_in": 10.3
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 236,
+     "mid_rate_per_100": 16.15,
+     "mid_years_below": 35,
+     "mid_normal_in": 10.13
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 236,
+     "mid_rate_per_100": 11.58,
+     "mid_years_below": 33,
+     "mid_normal_in": 10.04
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 236,
+     "mid_rate_per_100": 12.03,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.66
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 236,
+     "mid_rate_per_100": 15.62,
+     "mid_years_below": 35,
+     "mid_normal_in": 8.98
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 236,
+     "mid_rate_per_100": 19.89,
+     "mid_years_below": 37,
+     "mid_normal_in": 8
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 236,
+     "mid_rate_per_100": 18.94,
+     "mid_years_below": 37,
+     "mid_normal_in": 8.22
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 236,
+     "mid_rate_per_100": 15.03,
+     "mid_years_below": 36,
+     "mid_normal_in": 9.76
+    }
+   ]
+  },
+  "ME": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 1870,
+   "grazing": {
+    "n": 16,
+    "low": 35.1,
+    "mid": 35.1,
+    "high": 43.1
+   },
+   "hay_dry": {
+    "n": 16,
+    "low": 163,
+    "mid": 269,
+    "high": 269
+   },
+   "hay_irr": {
+    "n": 16,
+    "low": 123,
+    "mid": 202,
+    "high": 202
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 170,
+     "mid_rate_per_100": 9.54,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.09
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 170,
+     "mid_rate_per_100": 9.72,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.24
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 170,
+     "mid_rate_per_100": 10.06,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.88
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 170,
+     "mid_rate_per_100": 11.58,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.24
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 170,
+     "mid_rate_per_100": 10.32,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.54
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 170,
+     "mid_rate_per_100": 8.37,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.87
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 170,
+     "mid_rate_per_100": 10.24,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.78
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 170,
+     "mid_rate_per_100": 11.25,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.44
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 170,
+     "mid_rate_per_100": 11.46,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.96
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 170,
+     "mid_rate_per_100": 9.5,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.55
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 170,
+     "mid_rate_per_100": 9,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.37
+    }
+   ]
+  },
+  "MD": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 792,
+   "grazing": {
+    "n": 23,
+    "low": 55.3,
+    "mid": 81.8,
+    "high": 88.3
+   },
+   "hay_dry": {
+    "n": 23,
+    "low": 292,
+    "mid": 483,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 23,
+    "low": 219,
+    "mid": 269,
+    "high": 277
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 72,
+     "mid_rate_per_100": 10.55,
+     "mid_years_below": 30,
+     "mid_normal_in": 5.95
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 72,
+     "mid_rate_per_100": 10.45,
+     "mid_years_below": 28,
+     "mid_normal_in": 6.61
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 72,
+     "mid_rate_per_100": 9.85,
+     "mid_years_below": 27,
+     "mid_normal_in": 7.21
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 72,
+     "mid_rate_per_100": 10.22,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.3
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 72,
+     "mid_rate_per_100": 12.37,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.75
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 72,
+     "mid_rate_per_100": 11.2,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.04
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 72,
+     "mid_rate_per_100": 12.72,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.57
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 72,
+     "mid_rate_per_100": 13.96,
+     "mid_years_below": 36,
+     "mid_normal_in": 8.13
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 72,
+     "mid_rate_per_100": 14.99,
+     "mid_years_below": 38,
+     "mid_normal_in": 7.2
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 72,
+     "mid_rate_per_100": 14.41,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.54
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 72,
+     "mid_rate_per_100": 14.18,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.67
+    }
+   ]
+  },
+  "MA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 627,
+   "grazing": {
+    "n": 14,
+    "low": 46.3,
+    "mid": 46.3,
+    "high": 46.3
+   },
+   "hay_dry": {
+    "n": 14,
+    "low": 293,
+    "mid": 293,
+    "high": 293
+   },
+   "hay_irr": {
+    "n": 14,
+    "low": 220,
+    "mid": 220,
+    "high": 220
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 57,
+     "mid_rate_per_100": 10.08,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.17
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 57,
+     "mid_rate_per_100": 10.32,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.48
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 57,
+     "mid_rate_per_100": 10.38,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.17
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 57,
+     "mid_rate_per_100": 10.45,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.8
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 57,
+     "mid_rate_per_100": 12.64,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.41
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 57,
+     "mid_rate_per_100": 13.7,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.29
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 57,
+     "mid_rate_per_100": 11.69,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.46
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 57,
+     "mid_rate_per_100": 14.57,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.87
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 57,
+     "mid_rate_per_100": 13.68,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.15
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 57,
+     "mid_rate_per_100": 11.3,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.35
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 57,
+     "mid_rate_per_100": 10.36,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.47
+    }
+   ]
+  },
+  "MI": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3718,
+   "grazing": {
+    "n": 83,
+    "low": 31.8,
+    "mid": 46.8,
+    "high": 82.3
+   },
+   "hay_dry": {
+    "n": 83,
+    "low": 232,
+    "mid": 437,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 83,
+    "low": 155,
+    "mid": 174,
+    "high": 207
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 338,
+     "mid_rate_per_100": 13.05,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.42
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 338,
+     "mid_rate_per_100": 13.62,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.55
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 338,
+     "mid_rate_per_100": 10.28,
+     "mid_years_below": 30,
+     "mid_normal_in": 4.78
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 338,
+     "mid_rate_per_100": 9.96,
+     "mid_years_below": 30,
+     "mid_normal_in": 5.91
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 338,
+     "mid_rate_per_100": 10.29,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.42
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 338,
+     "mid_rate_per_100": 9.48,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.46
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 338,
+     "mid_rate_per_100": 9.38,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.54
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 338,
+     "mid_rate_per_100": 11.13,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.73
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 338,
+     "mid_rate_per_100": 12.68,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.45
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 338,
+     "mid_rate_per_100": 11.08,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.61
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 338,
+     "mid_rate_per_100": 10.93,
+     "mid_years_below": 31,
+     "mid_normal_in": 4.76
+    }
+   ]
+  },
+  "MN": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 4928,
+   "grazing": {
+    "n": 87,
+    "low": 22.2,
+    "mid": 37.5,
+    "high": 65.4
+   },
+   "hay_dry": {
+    "n": 87,
+    "low": 127,
+    "mid": 274,
+    "high": 377
+   },
+   "hay_irr": {
+    "n": 87,
+    "low": 74,
+    "mid": 97,
+    "high": 120
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 448,
+     "mid_rate_per_100": 19.18,
+     "mid_years_below": 35,
+     "mid_normal_in": 1.41
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 448,
+     "mid_rate_per_100": 17.45,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.05
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 448,
+     "mid_rate_per_100": 14.16,
+     "mid_years_below": 32,
+     "mid_normal_in": 3.61
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 448,
+     "mid_rate_per_100": 13.47,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.43
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 448,
+     "mid_rate_per_100": 10.81,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.31
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 448,
+     "mid_rate_per_100": 10.34,
+     "mid_years_below": 29,
+     "mid_normal_in": 8
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 448,
+     "mid_rate_per_100": 11.44,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.33
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 448,
+     "mid_rate_per_100": 13.11,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.56
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 448,
+     "mid_rate_per_100": 18.64,
+     "mid_years_below": 35,
+     "mid_normal_in": 5.11
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 448,
+     "mid_rate_per_100": 19.76,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.52
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 448,
+     "mid_rate_per_100": 19.01,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.19
+    }
+   ]
+  },
+  "MS": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 2508,
+   "grazing": {
+    "n": 82,
+    "low": 37.5,
+    "mid": 39.3,
+    "high": 46.3
+   },
+   "hay_dry": {
+    "n": 82,
+    "low": 170,
+    "mid": 193,
+    "high": 227
+   },
+   "hay_irr": {
+    "n": 82,
+    "low": 127,
+    "mid": 145,
+    "high": 159
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 228,
+     "mid_rate_per_100": 12.38,
+     "mid_years_below": 33,
+     "mid_normal_in": 10.46
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 228,
+     "mid_rate_per_100": 11.01,
+     "mid_years_below": 31,
+     "mid_normal_in": 10.98
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 228,
+     "mid_rate_per_100": 12.34,
+     "mid_years_below": 33,
+     "mid_normal_in": 11.31
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 228,
+     "mid_rate_per_100": 13.87,
+     "mid_years_below": 32,
+     "mid_normal_in": 10.47
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 228,
+     "mid_rate_per_100": 14.25,
+     "mid_years_below": 35,
+     "mid_normal_in": 9.17
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 228,
+     "mid_rate_per_100": 11.39,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.78
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 228,
+     "mid_rate_per_100": 11.82,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.49
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 228,
+     "mid_rate_per_100": 14.96,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.31
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 228,
+     "mid_rate_per_100": 19.11,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.95
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 228,
+     "mid_rate_per_100": 17.2,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.78
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 228,
+     "mid_rate_per_100": 13.71,
+     "mid_years_below": 36,
+     "mid_normal_in": 9.98
+    }
+   ]
+  },
+  "MO": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 3993,
+   "grazing": {
+    "n": 114,
+    "low": 37.5,
+    "mid": 47.1,
+    "high": 63.6
+   },
+   "hay_dry": {
+    "n": 114,
+    "low": 148,
+    "mid": 209,
+    "high": 281
+   },
+   "hay_irr": {
+    "n": 114,
+    "low": 62,
+    "mid": 76,
+    "high": 91
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 363,
+     "mid_rate_per_100": 17.84,
+     "mid_years_below": 36,
+     "mid_normal_in": 3.81
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 363,
+     "mid_rate_per_100": 14.11,
+     "mid_years_below": 35,
+     "mid_normal_in": 5.31
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 363,
+     "mid_rate_per_100": 12.59,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.45
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 363,
+     "mid_rate_per_100": 12.37,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.1
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 363,
+     "mid_rate_per_100": 12.83,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.26
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 363,
+     "mid_rate_per_100": 14.36,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.41
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 363,
+     "mid_rate_per_100": 13.66,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.68
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 363,
+     "mid_rate_per_100": 15.25,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.43
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 363,
+     "mid_rate_per_100": 17.14,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.04
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 363,
+     "mid_rate_per_100": 15.7,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.44
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 363,
+     "mid_rate_per_100": 19.88,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.38
+    }
+   ]
+  },
+  "MT": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 8459,
+   "grazing": {
+    "n": 56,
+    "low": 8.1,
+    "mid": 10.3,
+    "high": 15.6
+   },
+   "hay_dry": {
+    "n": 56,
+    "low": 63,
+    "mid": 95,
+    "high": 147
+   },
+   "hay_irr": {
+    "n": 56,
+    "low": 11,
+    "mid": 15,
+    "high": 33
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 769,
+     "mid_rate_per_100": 17.39,
+     "mid_years_below": 35,
+     "mid_normal_in": 1.11
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 769,
+     "mid_rate_per_100": 14.75,
+     "mid_years_below": 33,
+     "mid_normal_in": 1.33
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 769,
+     "mid_rate_per_100": 14.57,
+     "mid_years_below": 34,
+     "mid_normal_in": 2.27
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 769,
+     "mid_rate_per_100": 14.02,
+     "mid_years_below": 34,
+     "mid_normal_in": 4.01
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 769,
+     "mid_rate_per_100": 12.81,
+     "mid_years_below": 33,
+     "mid_normal_in": 5.07
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 769,
+     "mid_rate_per_100": 14.94,
+     "mid_years_below": 34,
+     "mid_normal_in": 4.13
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 769,
+     "mid_rate_per_100": 19.56,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.81
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 769,
+     "mid_rate_per_100": 19.35,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.62
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 769,
+     "mid_rate_per_100": 18.75,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.4
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 769,
+     "mid_rate_per_100": 16.73,
+     "mid_years_below": 34,
+     "mid_normal_in": 1.73
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 769,
+     "mid_rate_per_100": 18.72,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.2
+    }
+   ]
+  },
+  "NE": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 4136,
+   "grazing": {
+    "n": 93,
+    "low": 15.2,
+    "mid": 45.8,
+    "high": 58.9
+   },
+   "hay_dry": {
+    "n": 93,
+    "low": 84,
+    "mid": 190,
+    "high": 251
+   },
+   "hay_irr": {
+    "n": 93,
+    "low": 63,
+    "mid": 111,
+    "high": 149
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 376,
+     "mid_rate_per_100": 20.79,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.09
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 376,
+     "mid_rate_per_100": 21.05,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.97
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 376,
+     "mid_rate_per_100": 16.17,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.67
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 376,
+     "mid_rate_per_100": 13.4,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.14
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 376,
+     "mid_rate_per_100": 11.81,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.49
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 376,
+     "mid_rate_per_100": 13.49,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.98
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 376,
+     "mid_rate_per_100": 13.04,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.94
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 376,
+     "mid_rate_per_100": 15.97,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.69
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 376,
+     "mid_rate_per_100": 20.21,
+     "mid_years_below": 35,
+     "mid_normal_in": 3.5
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 376,
+     "mid_rate_per_100": 22.36,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.31
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 376,
+     "mid_rate_per_100": 23.74,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.35
+    }
+   ]
+  },
+  "NV": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 5615,
+   "grazing": {
+    "n": 17,
+    "low": 5.5,
+    "mid": 8.3,
+    "high": 11.3
+   },
+   "hay_dry": {
+    "n": 17,
+    "low": 92,
+    "mid": 138,
+    "high": 188
+   },
+   "hay_irr": {
+    "n": 17,
+    "low": 9,
+    "mid": 16,
+    "high": 35
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 513,
+     "mid_rate_per_100": 22.35,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.94
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 513,
+     "mid_rate_per_100": 21.82,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.99
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 513,
+     "mid_rate_per_100": 21.62,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.95
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 513,
+     "mid_rate_per_100": 22.86,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.83
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 485,
+     "mid_rate_per_100": 27.27,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.6
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 513,
+     "mid_rate_per_100": 28.75,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.13
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 513,
+     "mid_rate_per_100": 28.72,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.09
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 513,
+     "mid_rate_per_100": 33.3,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.14
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 513,
+     "mid_rate_per_100": 28.94,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.33
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 513,
+     "mid_rate_per_100": 25.08,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.59
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 513,
+     "mid_rate_per_100": 23.86,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.79
+    }
+   ]
+  },
+  "NH": {
+   "payback_mid_90": 0.85,
+   "payback_n_90": 671,
+   "grazing": {
+    "n": 10,
+    "low": 41.1,
+    "mid": 41.1,
+    "high": 41.1
+   },
+   "hay_dry": {
+    "n": 10,
+    "low": 293,
+    "mid": 293,
+    "high": 293
+   },
+   "hay_irr": {
+    "n": 10,
+    "low": 220,
+    "mid": 220,
+    "high": 220
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 61,
+     "mid_rate_per_100": 9.29,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.45
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 61,
+     "mid_rate_per_100": 9.9,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.69
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 61,
+     "mid_rate_per_100": 8.41,
+     "mid_years_below": 28,
+     "mid_normal_in": 7.35
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 61,
+     "mid_rate_per_100": 11.54,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.59
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 61,
+     "mid_rate_per_100": 11.21,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.84
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 61,
+     "mid_rate_per_100": 10.38,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.09
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 61,
+     "mid_rate_per_100": 9.78,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.09
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 61,
+     "mid_rate_per_100": 10.73,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.58
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 61,
+     "mid_rate_per_100": 12.13,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.9
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 61,
+     "mid_rate_per_100": 9.76,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.18
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 61,
+     "mid_rate_per_100": 8.6,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.06
+    }
+   ]
+  },
+  "NJ": {
+   "payback_mid_90": 0.85,
+   "payback_n_90": 594,
+   "grazing": {
+    "n": 21,
+    "low": 51.5,
+    "mid": 52,
+    "high": 56.6
+   },
+   "hay_dry": {
+    "n": 21,
+    "low": 312,
+    "mid": 343,
+    "high": 390
+   },
+   "hay_irr": {
+    "n": 21,
+    "low": 234,
+    "mid": 257,
+    "high": 293
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 54,
+     "mid_rate_per_100": 10.26,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.35
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 54,
+     "mid_rate_per_100": 10.16,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.99
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 54,
+     "mid_rate_per_100": 10.41,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.83
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 54,
+     "mid_rate_per_100": 9.49,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.76
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 54,
+     "mid_rate_per_100": 12.04,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.77
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 54,
+     "mid_rate_per_100": 11.47,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.39
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 54,
+     "mid_rate_per_100": 12.37,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.96
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 54,
+     "mid_rate_per_100": 14.67,
+     "mid_years_below": 36,
+     "mid_normal_in": 8.31
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 54,
+     "mid_rate_per_100": 14,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.44
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 54,
+     "mid_rate_per_100": 13.15,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.17
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 54,
+     "mid_rate_per_100": 13.12,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.44
+    }
+   ]
+  },
+  "NM": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 5786,
+   "grazing": {
+    "n": 33,
+    "low": 7,
+    "mid": 10.1,
+    "high": 11.5
+   },
+   "hay_dry": {
+    "n": 33,
+    "low": 119,
+    "mid": 146,
+    "high": 200
+   },
+   "hay_irr": {
+    "n": 33,
+    "low": 32,
+    "mid": 48,
+    "high": 63
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 526,
+     "mid_rate_per_100": 26.24,
+     "mid_years_below": 39,
+     "mid_normal_in": 0.98
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 526,
+     "mid_rate_per_100": 26.94,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.09
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 526,
+     "mid_rate_per_100": 30.37,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.19
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 526,
+     "mid_rate_per_100": 29.6,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.39
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 526,
+     "mid_rate_per_100": 26.18,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.71
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 526,
+     "mid_rate_per_100": 15.91,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.35
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 526,
+     "mid_rate_per_100": 11.83,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.83
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 526,
+     "mid_rate_per_100": 14.57,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.17
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 526,
+     "mid_rate_per_100": 21.01,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.81
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 526,
+     "mid_rate_per_100": 30.2,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.8
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 526,
+     "mid_rate_per_100": 30.06,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.21
+    }
+   ]
+  },
+  "NY": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3091,
+   "grazing": {
+    "n": 62,
+    "low": 37.7,
+    "mid": 57.5,
+    "high": 67.3
+   },
+   "hay_dry": {
+    "n": 62,
+    "low": 246,
+    "mid": 376,
+    "high": 447
+   },
+   "hay_irr": {
+    "n": 62,
+    "low": 185,
+    "mid": 282,
+    "high": 335
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 281,
+     "mid_rate_per_100": 9.04,
+     "mid_years_below": 29,
+     "mid_normal_in": 5.41
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 281,
+     "mid_rate_per_100": 9.03,
+     "mid_years_below": 29,
+     "mid_normal_in": 5.55
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 281,
+     "mid_rate_per_100": 7.54,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.52
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 281,
+     "mid_rate_per_100": 9.51,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.18
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 281,
+     "mid_rate_per_100": 10.99,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.67
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 281,
+     "mid_rate_per_100": 9.84,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.96
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 281,
+     "mid_rate_per_100": 9.32,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.95
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 281,
+     "mid_rate_per_100": 8.75,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.82
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 281,
+     "mid_rate_per_100": 11.83,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.64
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 281,
+     "mid_rate_per_100": 9.72,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.37
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 281,
+     "mid_rate_per_100": 8.58,
+     "mid_years_below": 28,
+     "mid_normal_in": 7.03
+    }
+   ]
+  },
+  "NC": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2959,
+   "grazing": {
+    "n": 100,
+    "low": 37.2,
+    "mid": 55.9,
+    "high": 68.9
+   },
+   "hay_dry": {
+    "n": 100,
+    "low": 177,
+    "mid": 269,
+    "high": 329
+   },
+   "hay_irr": {
+    "n": 100,
+    "low": 133,
+    "mid": 202,
+    "high": 247
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 269,
+     "mid_rate_per_100": 10.38,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.34
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 269,
+     "mid_rate_per_100": 9.54,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.59
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 269,
+     "mid_rate_per_100": 10.65,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.43
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 269,
+     "mid_rate_per_100": 10.33,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.44
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 269,
+     "mid_rate_per_100": 10.52,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.43
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 269,
+     "mid_rate_per_100": 9.3,
+     "mid_years_below": 30,
+     "mid_normal_in": 9.66
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 269,
+     "mid_rate_per_100": 9.91,
+     "mid_years_below": 30,
+     "mid_normal_in": 10.09
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 269,
+     "mid_rate_per_100": 12.31,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.39
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 269,
+     "mid_rate_per_100": 16.47,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.81
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 269,
+     "mid_rate_per_100": 16.67,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.48
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 269,
+     "mid_rate_per_100": 14.16,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.63
+    }
+   ]
+  },
+  "ND": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 4290,
+   "grazing": {
+    "n": 53,
+    "low": 15.2,
+    "mid": 20.5,
+    "high": 29.8
+   },
+   "hay_dry": {
+    "n": 53,
+    "low": 88,
+    "mid": 160,
+    "high": 226
+   },
+   "hay_irr": {
+    "n": 53,
+    "low": 49,
+    "mid": 60,
+    "high": 75
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 390,
+     "mid_rate_per_100": 20.11,
+     "mid_years_below": 37,
+     "mid_normal_in": 0.87
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 390,
+     "mid_rate_per_100": 21.33,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.11
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 390,
+     "mid_rate_per_100": 19.66,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.07
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 390,
+     "mid_rate_per_100": 17.37,
+     "mid_years_below": 35,
+     "mid_normal_in": 3.91
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 390,
+     "mid_rate_per_100": 12.42,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.9
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 390,
+     "mid_rate_per_100": 11.44,
+     "mid_years_below": 30,
+     "mid_normal_in": 5.89
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 390,
+     "mid_rate_per_100": 13.7,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.67
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 390,
+     "mid_rate_per_100": 16.8,
+     "mid_years_below": 35,
+     "mid_normal_in": 3.79
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 390,
+     "mid_rate_per_100": 23.28,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.89
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 390,
+     "mid_rate_per_100": 26.53,
+     "mid_years_below": 41,
+     "mid_normal_in": 1.77
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 390,
+     "mid_rate_per_100": 22.55,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.08
+    }
+   ]
+  },
+  "OH": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 2321,
+   "grazing": {
+    "n": 88,
+    "low": 54.2,
+    "mid": 79,
+    "high": 89.5
+   },
+   "hay_dry": {
+    "n": 88,
+    "low": 256,
+    "mid": 429,
+    "high": 486
+   },
+   "hay_irr": {
+    "n": 88,
+    "low": 192,
+    "mid": 294,
+    "high": 335
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 211,
+     "mid_rate_per_100": 12.04,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.03
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 211,
+     "mid_rate_per_100": 11.62,
+     "mid_years_below": 34,
+     "mid_normal_in": 5.58
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 211,
+     "mid_rate_per_100": 9.15,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.94
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 211,
+     "mid_rate_per_100": 8.63,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.78
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 211,
+     "mid_rate_per_100": 10.86,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.18
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 211,
+     "mid_rate_per_100": 9.52,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.29
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 211,
+     "mid_rate_per_100": 9.52,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.7
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 211,
+     "mid_rate_per_100": 11.27,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.64
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 211,
+     "mid_rate_per_100": 14.21,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.85
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 211,
+     "mid_rate_per_100": 12.49,
+     "mid_years_below": 31,
+     "mid_normal_in": 5.63
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 211,
+     "mid_rate_per_100": 11.14,
+     "mid_years_below": 31,
+     "mid_normal_in": 5.84
+    }
+   ]
+  },
+  "OK": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3740,
+   "grazing": {
+    "n": 77,
+    "low": 19,
+    "mid": 31.6,
+    "high": 37.4
+   },
+   "hay_dry": {
+    "n": 77,
+    "low": 107,
+    "mid": 172,
+    "high": 204
+   },
+   "hay_irr": {
+    "n": 77,
+    "low": 51,
+    "mid": 112,
+    "high": 138
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 340,
+     "mid_rate_per_100": 22.29,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.69
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 340,
+     "mid_rate_per_100": 18.29,
+     "mid_years_below": 36,
+     "mid_normal_in": 4.02
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 340,
+     "mid_rate_per_100": 17.69,
+     "mid_years_below": 36,
+     "mid_normal_in": 5.81
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 340,
+     "mid_rate_per_100": 15.22,
+     "mid_years_below": 35,
+     "mid_normal_in": 8.48
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 340,
+     "mid_rate_per_100": 15.31,
+     "mid_years_below": 34,
+     "mid_normal_in": 9.45
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 340,
+     "mid_rate_per_100": 16.26,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.07
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 340,
+     "mid_rate_per_100": 17.17,
+     "mid_years_below": 34,
+     "mid_normal_in": 5.7
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 340,
+     "mid_rate_per_100": 17.47,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.24
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 340,
+     "mid_rate_per_100": 19.15,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.7
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 340,
+     "mid_rate_per_100": 21.12,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.31
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 340,
+     "mid_rate_per_100": 23.28,
+     "mid_years_below": 39,
+     "mid_normal_in": 3.62
+    }
+   ]
+  },
+  "OR": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 5533,
+   "grazing": {
+    "n": 36,
+    "low": 11.8,
+    "mid": 29.2,
+    "high": 50.9
+   },
+   "hay_dry": {
+    "n": 36,
+    "low": 81,
+    "mid": 172,
+    "high": 297
+   },
+   "hay_irr": {
+    "n": 36,
+    "low": 23,
+    "mid": 73,
+    "high": 176
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 503,
+     "mid_rate_per_100": 13.67,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.63
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 503,
+     "mid_rate_per_100": 14.55,
+     "mid_years_below": 33,
+     "mid_normal_in": 4.2
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 503,
+     "mid_rate_per_100": 14.04,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.83
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 503,
+     "mid_rate_per_100": 14.84,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.48
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 503,
+     "mid_rate_per_100": 17.48,
+     "mid_years_below": 35,
+     "mid_normal_in": 3.04
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 503,
+     "mid_rate_per_100": 23.95,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.65
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 503,
+     "mid_rate_per_100": 32.23,
+     "mid_years_below": 42,
+     "mid_normal_in": 0.99
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 503,
+     "mid_rate_per_100": 27.14,
+     "mid_years_below": 40,
+     "mid_normal_in": 1.35
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 503,
+     "mid_rate_per_100": 20.45,
+     "mid_years_below": 34,
+     "mid_normal_in": 2.2
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 503,
+     "mid_rate_per_100": 15.52,
+     "mid_years_below": 32,
+     "mid_normal_in": 3.89
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 503,
+     "mid_rate_per_100": 16.35,
+     "mid_years_below": 33,
+     "mid_normal_in": 5.31
+    }
+   ]
+  },
+  "PA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2673,
+   "grazing": {
+    "n": 67,
+    "low": 49.8,
+    "mid": 64,
+    "high": 98.8
+   },
+   "hay_dry": {
+    "n": 67,
+    "low": 282,
+    "mid": 425,
+    "high": 500
+   },
+   "hay_irr": {
+    "n": 67,
+    "low": 211,
+    "mid": 319,
+    "high": 375
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 243,
+     "mid_rate_per_100": 10.73,
+     "mid_years_below": 30,
+     "mid_normal_in": 5.58
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 243,
+     "mid_rate_per_100": 9.36,
+     "mid_years_below": 27,
+     "mid_normal_in": 6.05
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 243,
+     "mid_rate_per_100": 9.35,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.12
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 243,
+     "mid_rate_per_100": 8.66,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.78
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 243,
+     "mid_rate_per_100": 10.54,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.28
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 243,
+     "mid_rate_per_100": 10.04,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.48
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 243,
+     "mid_rate_per_100": 10.27,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.19
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 243,
+     "mid_rate_per_100": 11.98,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.78
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 243,
+     "mid_rate_per_100": 13.3,
+     "mid_years_below": 34,
+     "mid_normal_in": 7.31
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 243,
+     "mid_rate_per_100": 10,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.73
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 243,
+     "mid_rate_per_100": 10.58,
+     "mid_years_below": 28,
+     "mid_normal_in": 6.54
+    }
+   ]
+  },
+  "RI": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 143,
+   "grazing": {
+    "n": 5,
+    "low": 53.4,
+    "mid": 53.4,
+    "high": 53.4
+   },
+   "hay_dry": {
+    "n": 5,
+    "low": 285,
+    "mid": 285,
+    "high": 285
+   },
+   "hay_irr": {
+    "n": 5,
+    "low": 214,
+    "mid": 214,
+    "high": 214
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 13,
+     "mid_rate_per_100": 10.06,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.32
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 13,
+     "mid_rate_per_100": 9.88,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.84
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 13,
+     "mid_rate_per_100": 11.01,
+     "mid_years_below": 28,
+     "mid_normal_in": 8.57
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 13,
+     "mid_rate_per_100": 10.4,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.96
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 13,
+     "mid_rate_per_100": 13.31,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.29
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 13,
+     "mid_rate_per_100": 14.25,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.07
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 13,
+     "mid_rate_per_100": 11.71,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.5
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 13,
+     "mid_rate_per_100": 14.91,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.87
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 13,
+     "mid_rate_per_100": 13.79,
+     "mid_years_below": 34,
+     "mid_normal_in": 8.22
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 13,
+     "mid_rate_per_100": 11.77,
+     "mid_years_below": 33,
+     "mid_normal_in": 8.58
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 13,
+     "mid_rate_per_100": 10.74,
+     "mid_years_below": 28,
+     "mid_normal_in": 8.66
+    }
+   ]
+  },
+  "SC": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 1705,
+   "grazing": {
+    "n": 46,
+    "low": 45.4,
+    "mid": 49.9,
+    "high": 69.6
+   },
+   "hay_dry": {
+    "n": 46,
+    "low": 211,
+    "mid": 231,
+    "high": 323
+   },
+   "hay_irr": {
+    "n": 46,
+    "low": 158,
+    "mid": 173,
+    "high": 224
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 155,
+     "mid_rate_per_100": 11.98,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.39
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 155,
+     "mid_rate_per_100": 11.21,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.68
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 155,
+     "mid_rate_per_100": 12.44,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.2
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 155,
+     "mid_rate_per_100": 12.13,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.87
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 155,
+     "mid_rate_per_100": 10.32,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.47
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 155,
+     "mid_rate_per_100": 10.56,
+     "mid_years_below": 31,
+     "mid_normal_in": 10.04
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 155,
+     "mid_rate_per_100": 10.2,
+     "mid_years_below": 32,
+     "mid_normal_in": 10.38
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 155,
+     "mid_rate_per_100": 10.74,
+     "mid_years_below": 30,
+     "mid_normal_in": 9.2
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 155,
+     "mid_rate_per_100": 16.73,
+     "mid_years_below": 36,
+     "mid_normal_in": 7.28
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 155,
+     "mid_rate_per_100": 20.67,
+     "mid_years_below": 38,
+     "mid_normal_in": 5.96
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 155,
+     "mid_rate_per_100": 15.24,
+     "mid_years_below": 35,
+     "mid_normal_in": 6.31
+    }
+   ]
+  },
+  "SD": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 4543,
+   "grazing": {
+    "n": 66,
+    "low": 12.1,
+    "mid": 38.8,
+    "high": 57.4
+   },
+   "hay_dry": {
+    "n": 66,
+    "low": 107,
+    "mid": 298,
+    "high": 322
+   },
+   "hay_irr": {
+    "n": 66,
+    "low": 44,
+    "mid": 62,
+    "high": 80
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 413,
+     "mid_rate_per_100": 21.22,
+     "mid_years_below": 38,
+     "mid_normal_in": 0.93
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 413,
+     "mid_rate_per_100": 18.98,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.57
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 413,
+     "mid_rate_per_100": 16.2,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.06
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 413,
+     "mid_rate_per_100": 14.98,
+     "mid_years_below": 34,
+     "mid_normal_in": 5.04
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 413,
+     "mid_rate_per_100": 12.62,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.41
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 413,
+     "mid_rate_per_100": 12.43,
+     "mid_years_below": 31,
+     "mid_normal_in": 5.99
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 413,
+     "mid_rate_per_100": 12.9,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.86
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 413,
+     "mid_rate_per_100": 16.12,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.83
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 413,
+     "mid_rate_per_100": 23.05,
+     "mid_years_below": 38,
+     "mid_normal_in": 3
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 413,
+     "mid_rate_per_100": 24.37,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.96
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 413,
+     "mid_rate_per_100": 23.48,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.09
+    }
+   ]
+  },
+  "TN": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 2552,
+   "grazing": {
+    "n": 95,
+    "low": 47.6,
+    "mid": 56.3,
+    "high": 60.5
+   },
+   "hay_dry": {
+    "n": 95,
+    "low": 220,
+    "mid": 261,
+    "high": 281
+   },
+   "hay_irr": {
+    "n": 95,
+    "low": 165,
+    "mid": 196,
+    "high": 210
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 232,
+     "mid_rate_per_100": 11.14,
+     "mid_years_below": 34,
+     "mid_normal_in": 9.42
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 232,
+     "mid_rate_per_100": 10.6,
+     "mid_years_below": 35,
+     "mid_normal_in": 10.19
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 232,
+     "mid_rate_per_100": 10.07,
+     "mid_years_below": 31,
+     "mid_normal_in": 10.34
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 232,
+     "mid_rate_per_100": 10.18,
+     "mid_years_below": 32,
+     "mid_normal_in": 9.79
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 232,
+     "mid_rate_per_100": 10.46,
+     "mid_years_below": 31,
+     "mid_normal_in": 9.17
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 232,
+     "mid_rate_per_100": 9.43,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.64
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 232,
+     "mid_rate_per_100": 10.73,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.25
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 232,
+     "mid_rate_per_100": 12.83,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.34
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 232,
+     "mid_rate_per_100": 15.94,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.01
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 232,
+     "mid_rate_per_100": 13.43,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.67
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 232,
+     "mid_rate_per_100": 11.7,
+     "mid_years_below": 33,
+     "mid_normal_in": 9.51
+    }
+   ]
+  },
+  "TX": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 12320,
+   "grazing": {
+    "n": 254,
+    "low": 8.5,
+    "mid": 23.9,
+    "high": 34.6
+   },
+   "hay_dry": {
+    "n": 254,
+    "low": 67,
+    "mid": 169,
+    "high": 224
+   },
+   "hay_irr": {
+    "n": 254,
+    "low": 50,
+    "mid": 101,
+    "high": 168
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 1120,
+     "mid_rate_per_100": 27.83,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.31
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 1120,
+     "mid_rate_per_100": 26.08,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.56
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 1120,
+     "mid_rate_per_100": 25.33,
+     "mid_years_below": 39,
+     "mid_normal_in": 3.31
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 1120,
+     "mid_rate_per_100": 19.84,
+     "mid_years_below": 36,
+     "mid_normal_in": 5.35
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 1120,
+     "mid_rate_per_100": 18.07,
+     "mid_years_below": 36,
+     "mid_normal_in": 6.53
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 1120,
+     "mid_rate_per_100": 20.53,
+     "mid_years_below": 36,
+     "mid_normal_in": 5.24
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 1120,
+     "mid_rate_per_100": 20.77,
+     "mid_years_below": 36,
+     "mid_normal_in": 4.36
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 1120,
+     "mid_rate_per_100": 20.9,
+     "mid_years_below": 37,
+     "mid_normal_in": 5.24
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 1120,
+     "mid_rate_per_100": 21.68,
+     "mid_years_below": 39,
+     "mid_normal_in": 5.82
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 1120,
+     "mid_rate_per_100": 25.15,
+     "mid_years_below": 39,
+     "mid_normal_in": 4
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 1120,
+     "mid_rate_per_100": 28.24,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.51
+    }
+   ]
+  },
+  "UT": {
+   "payback_mid_90": 0.88,
+   "payback_n_90": 4389,
+   "grazing": {
+    "n": 29,
+    "low": 3.6,
+    "mid": 7.4,
+    "high": 7.4
+   },
+   "hay_dry": null,
+   "hay_irr": {
+    "n": 29,
+    "low": 12,
+    "mid": 17,
+    "high": 28
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 399,
+     "mid_rate_per_100": 21.3,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.85
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 399,
+     "mid_rate_per_100": 19.02,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.01
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 399,
+     "mid_rate_per_100": 17.3,
+     "mid_years_below": 34,
+     "mid_normal_in": 2.18
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 399,
+     "mid_rate_per_100": 20.71,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.11
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 399,
+     "mid_rate_per_100": 24.96,
+     "mid_years_below": 39,
+     "mid_normal_in": 1.68
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 399,
+     "mid_rate_per_100": 23.1,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.54
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 399,
+     "mid_rate_per_100": 19.91,
+     "mid_years_below": 36,
+     "mid_normal_in": 1.9
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 399,
+     "mid_rate_per_100": 20.18,
+     "mid_years_below": 38,
+     "mid_normal_in": 2.11
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 399,
+     "mid_rate_per_100": 22.06,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.16
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 399,
+     "mid_rate_per_100": 21.14,
+     "mid_years_below": 36,
+     "mid_normal_in": 2
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 399,
+     "mid_rate_per_100": 20.76,
+     "mid_years_below": 37,
+     "mid_normal_in": 1.83
+    }
+   ]
+  },
+  "VT": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 704,
+   "grazing": {
+    "n": 14,
+    "low": 40.7,
+    "mid": 40.7,
+    "high": 40.7
+   },
+   "hay_dry": {
+    "n": 14,
+    "low": 264,
+    "mid": 264,
+    "high": 264
+   },
+   "hay_irr": {
+    "n": 14,
+    "low": 198,
+    "mid": 198,
+    "high": 198
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 64,
+     "mid_rate_per_100": 8.93,
+     "mid_years_below": 28,
+     "mid_normal_in": 5.56
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 64,
+     "mid_rate_per_100": 9.4,
+     "mid_years_below": 28,
+     "mid_normal_in": 5.65
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 64,
+     "mid_rate_per_100": 7.13,
+     "mid_years_below": 27,
+     "mid_normal_in": 6.42
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 64,
+     "mid_rate_per_100": 10.21,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.26
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 64,
+     "mid_rate_per_100": 10.48,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.09
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 64,
+     "mid_rate_per_100": 9.43,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.48
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 64,
+     "mid_rate_per_100": 8.24,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.48
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 64,
+     "mid_rate_per_100": 7.96,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.96
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 64,
+     "mid_rate_per_100": 11.47,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.83
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 64,
+     "mid_rate_per_100": 9.26,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.61
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 64,
+     "mid_rate_per_100": 8.15,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.26
+    }
+   ]
+  },
+  "VA": {
+   "payback_mid_90": 0.86,
+   "payback_n_90": 2409,
+   "grazing": {
+    "n": 98,
+    "low": 44,
+    "mid": 72.3,
+    "high": 81
+   },
+   "hay_dry": {
+    "n": 98,
+    "low": 204,
+    "mid": 335,
+    "high": 375
+   },
+   "hay_irr": {
+    "n": 98,
+    "low": 153,
+    "mid": 249,
+    "high": 282
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 219,
+     "mid_rate_per_100": 10.6,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.44
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 219,
+     "mid_rate_per_100": 10.36,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.95
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 219,
+     "mid_rate_per_100": 10.11,
+     "mid_years_below": 29,
+     "mid_normal_in": 7.19
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 219,
+     "mid_rate_per_100": 10.06,
+     "mid_years_below": 31,
+     "mid_normal_in": 7.43
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 219,
+     "mid_rate_per_100": 10.86,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.99
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 219,
+     "mid_rate_per_100": 10.13,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.15
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 219,
+     "mid_rate_per_100": 10.36,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.48
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 219,
+     "mid_rate_per_100": 13.81,
+     "mid_years_below": 35,
+     "mid_normal_in": 7.93
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 219,
+     "mid_rate_per_100": 16.49,
+     "mid_years_below": 37,
+     "mid_normal_in": 7.3
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 219,
+     "mid_rate_per_100": 15.92,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.51
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 219,
+     "mid_rate_per_100": 14.24,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.52
+    }
+   ]
+  },
+  "WA": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 4147,
+   "grazing": {
+    "n": 39,
+    "low": 21.1,
+    "mid": 30.3,
+    "high": 32
+   },
+   "hay_dry": {
+    "n": 39,
+    "low": 116,
+    "mid": 167,
+    "high": 177
+   },
+   "hay_irr": {
+    "n": 39,
+    "low": 23,
+    "mid": 78,
+    "high": 132
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 377,
+     "mid_rate_per_100": 11.97,
+     "mid_years_below": 32,
+     "mid_normal_in": 6.94
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 377,
+     "mid_rate_per_100": 11.68,
+     "mid_years_below": 32,
+     "mid_normal_in": 5.66
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 377,
+     "mid_rate_per_100": 12.04,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.67
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 377,
+     "mid_rate_per_100": 13.16,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.03
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 377,
+     "mid_rate_per_100": 14.12,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.63
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 377,
+     "mid_rate_per_100": 18.61,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.43
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 377,
+     "mid_rate_per_100": 26.81,
+     "mid_years_below": 38,
+     "mid_normal_in": 1.74
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 377,
+     "mid_rate_per_100": 22.7,
+     "mid_years_below": 37,
+     "mid_normal_in": 2.24
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 377,
+     "mid_rate_per_100": 17.92,
+     "mid_years_below": 33,
+     "mid_normal_in": 3.52
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 377,
+     "mid_rate_per_100": 13.77,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.49
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 377,
+     "mid_rate_per_100": 11.33,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.26
+    }
+   ]
+  },
+  "WV": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 1540,
+   "grazing": {
+    "n": 55,
+    "low": 30.7,
+    "mid": 36.5,
+    "high": 38.7
+   },
+   "hay_dry": {
+    "n": 55,
+    "low": 182,
+    "mid": 213,
+    "high": 297
+   },
+   "hay_irr": {
+    "n": 55,
+    "low": 137,
+    "mid": 160,
+    "high": 223
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 140,
+     "mid_rate_per_100": 10.04,
+     "mid_years_below": 30,
+     "mid_normal_in": 6.56
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 140,
+     "mid_rate_per_100": 9.23,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.14
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 140,
+     "mid_rate_per_100": 8.71,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.66
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 140,
+     "mid_rate_per_100": 7.81,
+     "mid_years_below": 28,
+     "mid_normal_in": 8.22
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 140,
+     "mid_rate_per_100": 10.11,
+     "mid_years_below": 29,
+     "mid_normal_in": 8.58
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 140,
+     "mid_rate_per_100": 7.87,
+     "mid_years_below": 28,
+     "mid_normal_in": 8.94
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 140,
+     "mid_rate_per_100": 7.94,
+     "mid_years_below": 30,
+     "mid_normal_in": 8.72
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 140,
+     "mid_rate_per_100": 10.25,
+     "mid_years_below": 32,
+     "mid_normal_in": 7.34
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 140,
+     "mid_rate_per_100": 13.58,
+     "mid_years_below": 34,
+     "mid_normal_in": 6.43
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 140,
+     "mid_rate_per_100": 12.44,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.1
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 140,
+     "mid_rate_per_100": 10.76,
+     "mid_years_below": 29,
+     "mid_normal_in": 6.57
+    }
+   ]
+  },
+  "WI": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 3432,
+   "grazing": {
+    "n": 72,
+    "low": 25.3,
+    "mid": 33.5,
+    "high": 58.9
+   },
+   "hay_dry": {
+    "n": 72,
+    "low": 196,
+    "mid": 235,
+    "high": 424
+   },
+   "hay_irr": {
+    "n": 72,
+    "low": 118,
+    "mid": 128,
+    "high": 139
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 312,
+     "mid_rate_per_100": 17.82,
+     "mid_years_below": 36,
+     "mid_normal_in": 2.09
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 312,
+     "mid_rate_per_100": 16.82,
+     "mid_years_below": 33,
+     "mid_normal_in": 2.92
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 312,
+     "mid_rate_per_100": 11.3,
+     "mid_years_below": 31,
+     "mid_normal_in": 4.86
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 312,
+     "mid_rate_per_100": 10.67,
+     "mid_years_below": 31,
+     "mid_normal_in": 6.52
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 312,
+     "mid_rate_per_100": 10.77,
+     "mid_years_below": 30,
+     "mid_normal_in": 7.91
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 312,
+     "mid_rate_per_100": 10.1,
+     "mid_years_below": 32,
+     "mid_normal_in": 8.34
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 312,
+     "mid_rate_per_100": 9.74,
+     "mid_years_below": 31,
+     "mid_normal_in": 8.13
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 312,
+     "mid_rate_per_100": 12.88,
+     "mid_years_below": 33,
+     "mid_normal_in": 7.7
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 312,
+     "mid_rate_per_100": 15.95,
+     "mid_years_below": 33,
+     "mid_normal_in": 6.21
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 312,
+     "mid_rate_per_100": 13.45,
+     "mid_years_below": 32,
+     "mid_normal_in": 4.65
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 312,
+     "mid_rate_per_100": 16.93,
+     "mid_years_below": 34,
+     "mid_normal_in": 3.45
+    }
+   ]
+  },
+  "WY": {
+   "payback_mid_90": 0.87,
+   "payback_n_90": 5511,
+   "grazing": {
+    "n": 23,
+    "low": 7.3,
+    "mid": 8.4,
+    "high": 9.3
+   },
+   "hay_dry": {
+    "n": 23,
+    "low": 50,
+    "mid": 76,
+    "high": 92
+   },
+   "hay_irr": {
+    "n": 23,
+    "low": 10,
+    "mid": 14,
+    "high": 28
+   },
+   "intervals": [
+    {
+     "interval": "Jan-Feb",
+     "grids": 501,
+     "mid_rate_per_100": 15.81,
+     "mid_years_below": 33,
+     "mid_normal_in": 1.11
+    },
+    {
+     "interval": "Feb-Mar",
+     "grids": 501,
+     "mid_rate_per_100": 13.12,
+     "mid_years_below": 33,
+     "mid_normal_in": 1.47
+    },
+    {
+     "interval": "Mar-Apr",
+     "grids": 501,
+     "mid_rate_per_100": 13.24,
+     "mid_years_below": 33,
+     "mid_normal_in": 2.44
+    },
+    {
+     "interval": "Apr-May",
+     "grids": 501,
+     "mid_rate_per_100": 14.19,
+     "mid_years_below": 34,
+     "mid_normal_in": 4.05
+    },
+    {
+     "interval": "May-Jun",
+     "grids": 501,
+     "mid_rate_per_100": 15.49,
+     "mid_years_below": 34,
+     "mid_normal_in": 4.27
+    },
+    {
+     "interval": "Jun-Jul",
+     "grids": 501,
+     "mid_rate_per_100": 17.25,
+     "mid_years_below": 35,
+     "mid_normal_in": 3.04
+    },
+    {
+     "interval": "Jul-Aug",
+     "grids": 501,
+     "mid_rate_per_100": 16.3,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.33
+    },
+    {
+     "interval": "Aug-Sep",
+     "grids": 501,
+     "mid_rate_per_100": 17.67,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.26
+    },
+    {
+     "interval": "Sep-Oct",
+     "grids": 501,
+     "mid_rate_per_100": 19.21,
+     "mid_years_below": 35,
+     "mid_normal_in": 2.26
+    },
+    {
+     "interval": "Oct-Nov",
+     "grids": 501,
+     "mid_rate_per_100": 15.95,
+     "mid_years_below": 34,
+     "mid_normal_in": 1.75
+    },
+    {
+     "interval": "Nov-Dec",
+     "grids": 501,
+     "mid_rate_per_100": 16.35,
+     "mid_years_below": 35,
+     "mid_normal_in": 1.24
+    }
+   ]
+  }
+ }
+}
