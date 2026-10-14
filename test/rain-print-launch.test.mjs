@@ -282,7 +282,9 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
   const short = RP.encodeCode({ place: "Chetek, WI", year: 2025 });
   assert.equal(RP.checkoutRef(short, false, null), short, "a code that fits goes as it is");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /var code = refFor\(\), link = payLink\(id\)/, "buy() uses the reference");
+  // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so buy() makes one at the press when the code is too long
+  assert.match(S, /if \(link && !checkoutRef\(encodeCode\(ST\), ST\.gift, shortHit\(\)\) && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "buy() makes the short id at the press, once");
+  assert.match(S, /var code = refFor\(\), tab0 = opts && opts\.tab;/, "buy() uses the reference");
   assert.match(S, /openOrder\(id\);\n  \}/, "and falls back to the order form");
   assert.match(S, /design_code: orderCode\(\)/, "the order form sends a code the worker takes (300 at most)");
 });
@@ -415,7 +417,7 @@ test("a town with no year, or a bad year, draws the last full year", () => {
 });
 
 test("checkout note: a link to tap, no wall of code, no 'gift' for someone buying for himself", () => {
-  const b = slice("function buy(id)", "function toExample");
+  const b = slice("function buy(id, opts)", "function toExample");
   assert.match(b, /If it didn\\u2019t open, tap here/);
   assert.ok(!/<code>/.test(b), "no design code in the note");
   assert.ok(!/GIFT at the front|Checkout opened in a new tab/.test(b));
@@ -427,7 +429,7 @@ test("checkout note: a link to tap, no wall of code, no 'gift' for someone buyin
 
 test("the example warning under the prices goes once the example is gone", () => {
   assert.match(slice("function syncExampleNote", "var EXT_CACHE"), /if \(EX_NOTE && !left\.length\) \{ \$\('rp-buy-note'\)\.textContent = ''; EX_NOTE = false; \}/);
-  assert.match(slice("function buy(id)", "function toExample"), /EX_NOTE = true;/);
+  assert.match(slice("function buy(id, opts)", "function toExample"), /EX_NOTE = true;/);
 });
 
 test("one promise for the digital file and the gift card: within 1 business day", () => {

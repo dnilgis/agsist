@@ -7,7 +7,9 @@
  * below it). components/rain-print-art.js draws both; this file feeds it.
  * Optional: a dedication line, NOAA's 30-year normal under each month's total,
  * and remarkable days (components/rain-print-records.js, loaded on first use).
- * The QR carries the short link (components/rp-short.js) once there is one.
+ * The QR on every preview is the standard code to the Rain Print page; only
+ * the files Sig makes after payment carry the print's own short link
+ * (components/rp-short.js), made at the moment of export (2026-10-14).
  * The serial "No. 0001 · SRL" goes under it on Sig's print files only
  * (?maker=1&serial=1), never on the digital file or the public page.
  * Ported from Sig's standalone Rain Print Studio (the October last-pass
@@ -96,8 +98,8 @@
      link opens; they no longer change the art (an old Waveform link opens as R2). */
   var STYLE = { r1: 1, r2: 2 };
   var LIMITS = { place: 32, name: 24, label: 13, markers: 3, dedication: 70 };
-  /* The QR carries the short link (rp-short.js), which fits at any length; the
-     long ?d= link it falls back to fits a typical design. The dedication went
+  /* The order files' QR carries the short link (rp-short.js), which fits at
+     any length; previews carry the standard code below. The dedication went
      from 40 to 70 (2026-10-13) after the longest line was drawn at both styles.
      A code over Stripe's 200 characters goes to checkout as its short-link id
      (checkoutRef below). */
@@ -993,7 +995,8 @@
      draws no art then either). The station in the design is used; a design
      without one takes the nearest of three with a near-complete record, as the
      page does. Remarkable days are left off, as on the page's preview. The QR
-     carries the short link when the worker gives one, else the long ?d= link.
+     is the standard code to the Rain Print page (a preview, never the print's
+     own link), and no short link is asked for.
      later: words for the months still to come, drawn in a pale wash over them
      (the art's preview.later; the page never sets it). */
   function previewArt(code, opts) {
@@ -1038,15 +1041,13 @@
       var meta = { approx: !g, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr,
         year: s.year, km: km, city: town.name, sid: chosen.sid };
       var cmp = s.cmp === 'normal' ? stationNormal(chosen.sid, s.year) : s.cmp === 'station' ? stationExtremes(chosen.sid) : null;
-      var design = Object.assign({}, s, { gift: false, station: chosen.sid });
-      // opts.noQr: the gift card has its own QR for the card; a second square for the design only confuses (panel 3 D8), and no short id is made
-      var short = !opts.noQr && root.AgRpShort ? Promise.race([root.AgRpShort.getShortLink(encodeCode(design)), new Promise(function (r) { setTimeout(function () { r(null); }, 8000); })]) : null;
+      // opts.noQr: the gift card has its own QR for the card; a second square for the design only confuses (panel 3 D8)
       // the design's logo, as the page draws it (a card whose logo doesn't load still draws, without it)
       var logo = s.logo && root.AgRpLogo ? root.AgRpLogo.load(s.logo).then(function (got) {
         if (!s.logoInk) return { href: got.url, w: got.w, h: got.h };
         return root.AgRpLogo.inkUrl(got.url, root.AgRainArt.INK).then(function (u) { return { href: u, w: got.w, h: got.h }; });
       }).then(null, function () { return null; }) : null;
-      return Promise.all([cmp ? cmp.then(null, function () { return null; }) : null, short ? short.then(null, function () { return null; }) : null, logo]).then(function (res) {
+      return Promise.all([cmp ? cmp.then(null, function () { return null; }) : null, null, logo]).then(function (res) {
         var ov = null, ext = s.cmp === 'station' ? res[0] : null;
         var byDate = s.cmp === 'normal' ? res[0] : ext && ext.avgByDate && ext.avgByDate.size ? ext.avgByDate : null;
         if (byDate) {
@@ -1054,7 +1055,7 @@
           if (ov) ov.label = s.cmp === 'normal' ? 'NOAA 30-year normal' : ext.yearFrom + ' to ' + ext.yearTo + ' station average (' + ext.years + ' years)';
         }
         var qr = null;
-        if (!opts.noQr) try { qr = root.AgQR ? { matrix: root.AgQR.matrix(res[1] || shortUrl(design)), serial: '' } : null; } catch (e) { qr = null; }
+        if (!opts.noQr) try { qr = root.AgQR ? { matrix: standardMatrix(), serial: '' } : null; } catch (e) { qr = null; }
         var stuck = s.cmp === 'normal' && res[0] ? stuckRun(days, res[0]) : null;
         var last = days[days.length - 1].date;
         var svg = root.AgRainArt.render({
@@ -1187,36 +1188,19 @@
   function placeLong() { return placeLongOf(META); }
 
   /* The maker's mark: a real QR code (components/qr.js, level M), square to the
-     page, warm gray on the paper. It carries the short link
-     (components/rp-short.js, 25 x 25 modules) once the worker has given one, and
-     the long ?d= link until then or if it never does. */
-  var QR_OK = true;
+     page, warm gray on the paper. On everything a buyer sees before paying (the
+     page, the up-close view, the mini copy, the preview PNG) it is the standard
+     code to the Rain Print page (STANDARD_LINK), and no short link is asked for
+     (2026-10-14, Sig: a working QR only once someone pays; the old mint on every
+     redraw also ran the link service into its hourly limit). The print's own
+     short link (components/rp-short.js, 25 x 25 modules) is made only when Sig
+     saves an order file (exportFile, o.qrMatrix), and that file waits for it. */
   // The design itself, without the gift marker: what the QR and shared links open.
   function artDesign() { return Object.assign({}, ST, { gift: false }); }
-  var SHORT_WANT = '';
-  function qrLink() {
-    var d = artDesign(), code = encodeCode(d), hit = null;
-    if (!code) return '';
-    if (root.AgRpShort && !SAMPLE) {
-      hit = root.AgRpShort.peek(code);
-      if (!hit && SHORT_WANT !== code) {
-        SHORT_WANT = code;
-        root.AgRpShort.getShortLink(code).then(function (link) {
-          // redraw only if the design is still the one asked about
-          if (link && DATA && !BLOCKED && encodeCode(artDesign()) === code) render();
-        });
-      }
-    }
-    return hit || shortUrl(d);
-  }
-  function qrInfo(serial, std) {
-    if (std) { var sm = null; try { sm = standardMatrix(); } catch (e) { sm = null; } return sm ? { matrix: sm, serial: serial || '' } : null; }
-    var url = qrLink(), m = null;
-    QR_OK = false;
-    if (!root.AgQR || !url) return null;
-    try { m = root.AgQR.matrix(url); } catch (e) { return null; }
-    QR_OK = true;
-    return { matrix: m, serial: serial || '' };
+  function qrInfo(serial, own) {
+    var m = own || null;
+    if (!m) try { m = standardMatrix(); } catch (e) { m = null; }
+    return m ? { matrix: m, serial: serial || '' } : null;
   }
   /* The serial goes under the QR on a physical print only: Sig's print files
      with ?maker=1&serial=N. Never on the digital file, never on the public page. */
@@ -1233,7 +1217,7 @@
       style: ST.style, year: META.year, place: placeLong(), name: ST.name, dedication: ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: printMarkers(),
-      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.std), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
       gauge: META ? gaugeLine(META) : '', logo: logoArt(),
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
@@ -1726,7 +1710,6 @@
       (PREVIEW && !ST.gift ? 'NOAA hasn\u2019t sent the rest of ' + ST.year + ' from this station yet; the print you get shows the full year. ' : '') +
       (usualWords() ? esc(usualWords()) + ' ' : '') +
       'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ' +
-      (QR_OK ? '' : ' <b>The name and labels are too long for the QR square, so it’s left off.</b> Shorten them and it comes back.') +
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
       (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' : '') +
       (ST.records && SKIPPED.length ? ' Left off the print for space: ' + esc(SKIPPED.join(', ')) + '.' : '') +
@@ -2086,7 +2069,7 @@
     var l = PRICES && PRICES.payment_links && PRICES.payment_links[id];
     return typeof l === 'string' && /^https:\/\/[^\s"<>]+$/.test(l) ? l : '';
   }
-  function buy(id) {
+  function buy(id, opts) {
     if (!canOrder()) {
       // Nothing of the reader's is drawn yet (the sample, or an empty box): send them to the town box.
       if (BLOCKED) return;
@@ -2131,12 +2114,27 @@
       try { $('rp-ex-go').focus({ preventScroll: true }); } catch (err) {}
       return;
     }
-    var code = refFor(), link = payLink(id);
+    var link = payLink(id);
+    /* A design past Stripe's 200 characters goes to checkout as its short-link
+       id (RPS-<id>). It is made now, at the press, once (never on a redraw);
+       the tab opens first so the wait doesn't trip a popup blocker. If the link
+       service fails, the order form takes the order with the full design code. */
+    if (link && !checkoutRef(encodeCode(ST), ST.gift, shortHit()) && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
+      var tab = null;
+      try { tab = root.open('', '_blank'); } catch (err) { tab = null; }
+      note.textContent = 'Opening checkout\u2026';
+      root.AgRpShort.mint(encodeCode(artDesign())).then(function () { buy(id, { minted: true, tab: tab }); });
+      return;
+    }
+    var code = refFor(), tab0 = opts && opts.tab;
+    if (tab0 && !(link && code)) { try { tab0.close(); } catch (err) {} }
     ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : giftTicked() ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-      root.open(u, '_blank', 'noopener');
+      var sent = false;
+      if (tab0) { try { tab0.opener = null; tab0.location.href = u; sent = true; } catch (err) { sent = false; } }
+      if (!sent) root.open(u, '_blank', 'noopener');
       BUY_NOTE_CODE = encodeCode(ST); EX_NOTE = false;
       /* The page can't tell whether the tab opened (window.open with noopener
          returns null, and an in-app browser may block it), so the note gives a
@@ -2443,46 +2441,62 @@
       : (plain && !x.gift_to) ? ['ro-gift-to', 'Say who the gift is for, or untick \u201cIt\u2019s a gift\u201d.']
       : ((gift || plain) && x.choice === 'digital' && x.gift_deliver === 'recipient' && !EMAIL_RE.test(x.gift_email)) ? ['ro-gift-email', 'Add their email for the file, or choose Me under Deliver to.'] : null;
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
-    var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
-    var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
-    var subj = orderSubject(x);
-    var fs = Object.assign({ _subject: subj, _replyto: x.email, form: 'rain-print-order' }, x);
-    if (hp && hp.value) fs._gotcha = hp.value;
-    var btn = $('ro-submit'), was = btn.textContent;
-    sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
-    if (GIFT && GIFT.usable && root.AgRpGift) {
-      x.choice = GIFT.product;
-      root.AgRpGift.redeem(GIFT, x).then(function (r) {
-        ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
-        out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
-        if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
-        try { out.firstChild.focus(); } catch (err) {}
-      }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+    /* Past the worker's 300 characters the order carries the short-link
+       reference: made now, once, at the press (never on a redraw). If the link
+       service fails, the order still goes, with the full design code. */
+    if (encodeCode(ST).length > 300 && !shortHit() && root.AgRpShort && root.AgRpShort.mint) {
+      var wait = $('ro-submit'), wasW = wait.textContent;
+      sending = true; wait.disabled = true; wait.textContent = 'Sending\u2026';
+      root.AgRpShort.mint(encodeCode(artDesign())).then(function () {
+        sending = false; wait.disabled = false; wait.textContent = wasW;
+        x.design_code = orderCode();
+        sendIt();
+      });
       return;
     }
-    var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
-    send('rain-print-order', data, fs).then(function () {
-      ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
-      out.innerHTML = gift
-        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
-          '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the ' + (x.choice === 'digital' ? 'finished file' : 'proof') + ' then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
-        : x.choice === 'digital'
-        ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a payment link.</p>' +
-          '<p>Nothing is charged until you pay that link. The finished file comes by email within 1 business day of paying. If you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.' +
-          ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>'
-        : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
-          '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
-          ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
-      $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
-      try { out.firstChild.focus(); } catch (err) {}
-    }).catch(function () {
-      ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
-      var body = orderText(x);
-      var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-      out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below.</p>' +
-        '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
-      try { $('ro-mail').focus(); } catch (err) {}
-    }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+    sendIt();
+    function sendIt() {
+      var hp = form && doc.querySelector('#ro-form input[name="_gotcha"]');
+      var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
+      var subj = orderSubject(x);
+      var fs = Object.assign({ _subject: subj, _replyto: x.email, form: 'rain-print-order' }, x);
+      if (hp && hp.value) fs._gotcha = hp.value;
+      var btn = $('ro-submit'), was = btn.textContent;
+      sending = true; btn.disabled = true; btn.textContent = 'Sending…'; out.innerHTML = '';
+      if (GIFT && GIFT.usable && root.AgRpGift) {
+        x.choice = GIFT.product;
+        root.AgRpGift.redeem(GIFT, x).then(function (r) {
+          ga('rain_print_gift_redeem', { result: r.ok ? 'ok' : 'fail' });
+          out.innerHTML = r.ok ? root.AgRpGift.doneHtml(GIFT, r, x.choice || GIFT.product) : '<p class="rp-msg rp-bad">' + esc(r.error || 'That didn\u2019t go through. Try again, or write to ' + ORDER_TO + '.') + '</p>';
+          if (r.ok) { $('ro-form').reset(); syncGiftUse(); $('rp-gift-use-wrap').hidden = true; }
+          try { out.firstChild.focus(); } catch (err) {}
+        }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+        return;
+      }
+      var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
+      send('rain-print-order', data, fs).then(function () {
+        ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
+        out.innerHTML = gift
+          ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
+            '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the ' + (x.choice === 'digital' ? 'finished file' : 'proof') + ' then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
+          : x.choice === 'digital'
+          ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a payment link.</p>' +
+            '<p>Nothing is charged until you pay that link. The finished file comes by email within 1 business day of paying. If you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.' +
+            ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>'
+          : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
+            '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
+            ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
+        $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
+        try { out.firstChild.focus(); } catch (err) {}
+      }).catch(function () {
+        ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
+        var body = orderText(x);
+        var href = 'mailto:' + ORDER_TO + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+        out.innerHTML = '<div class="rp-msg rp-bad"><p><b>That didn\u2019t go through, so nothing was sent.</b></p><p>Email it to ' + ORDER_TO + ' instead. The order is written out below.</p>' +
+          '<p><a class="rp-btn2" id="ro-mail" href="' + esc(href) + '">Email the order</a></p><textarea readonly rows="7" aria-label="Your order, as text">' + esc(body) + '</textarea></div>';
+        try { $('ro-mail').focus(); } catch (err) {}
+      }).then(function () { sending = false; btn.disabled = false; btn.textContent = was; });
+    }
   }
 
   // ---------- for businesses: a quote request for a set of prints ----------
@@ -2685,16 +2699,18 @@
   /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed),
      'digital' (the $19 file: 300 dpi at the trim, no bleed, no serial) or a print
      size key (the printer's file: bleed, and the serial when the link has one). */
-  function drawCanvas(kind, std) {
+  /* own: the QR matrix of the print's own short link (an order file); without
+     it the file carries the standard code. */
+  function drawCanvas(kind, own) {
     var P = PRINT[kind === 'preview' || kind === 'digital' ? ST.size : kind];
-    var o = { std: !!std }, pxW, pxH;
+    var o = { qrMatrix: own || null }, pxW, pxH;
     if (kind === 'preview') {
       pxW = 2000; pxH = Math.round(2000 * P.h / P.w); o.watermark = true;
     } else if (kind === 'digital') {
       pxW = P.w * DPI; pxH = P.h * DPI;
     } else {
       o.serial = SERIAL;
-      if (std) o.serial = '';   // a test print is no numbered print
+      if (!own) o.serial = '';   // a test print is no numbered print
       pxW = Math.round((P.w + 2 * BLEED_IN) * DPI); pxH = Math.round((P.h + 2 * BLEED_IN) * DPI);
       o.bleed = ART_UNITS_IN * BLEED_IN;
     }
@@ -2772,7 +2788,7 @@
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {
       var tname = slug() + '-' + kind + '-test-print-standard-code';
-      logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, true); }).then(function (c) {
+      logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
         return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
           saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), tname + '.pdf');
           out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.';
@@ -2784,21 +2800,31 @@
     }
     var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-digital-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
     var job, NO_QR = {};
-    /* Every file someone pays for, or Sig prints, carries the short-link QR: the
-       long ?d= link makes modules too small to scan. Wait up to 8 s for it, and
-       save nothing without it. */
-    var code = encodeCode(artDesign());
-    var qrReady = function () { var hit = root.AgRpShort && code ? root.AgRpShort.peek(code) : null; return !!hit && qrLink() === hit; };
-    var gate = kind === 'preview' || qrReady() || !root.AgRpShort || !code ? Promise.resolve()
-      : Promise.race([root.AgRpShort.getShortLink(code), new Promise(function (r) { setTimeout(r, 8000); })]);
-    var qrNote = function (msg) { return kind === 'preview' ? msg : msg + ' QR: ' + qrLink() + '.'; };
+    /* Every file someone pays for, or Sig prints, carries the print's own
+       short-link QR: the long ?d= link makes modules too small to scan, and the
+       standard code would send the buyer to the Rain Print page instead of their
+       print. The short link is made now, one request (AgRpShort.mint), and the
+       file waits for it; without it nothing is saved and the maker box says so
+       with a Try again button. It never falls back to the standard code. The
+       watermarked preview carries the standard code and asks for nothing. */
+    var code = encodeCode(artDesign()), qrLink = '', own = null;
+    var gate = kind === 'preview' ? Promise.resolve()
+      : !code || !root.AgRpShort || !root.AgRpShort.mint || !root.AgQR ? Promise.reject(NO_QR)
+      : root.AgRpShort.mint(code).then(function (link) {
+        if (!link) throw NO_QR;
+        try { own = root.AgQR.matrix(link); } catch (e) { own = null; }
+        if (!own) throw NO_QR;
+        qrLink = link;
+      });
+    var qrNote = function (msg) { return kind === 'preview' ? msg : msg + ' QR: ' + qrLink + '.'; };
+    makerMsg('');
     // the logo is drawn from its data URL, so it is in the file at full size; a file waits for it (NO_LOGO when it never comes)
     var NO_LOGO = {};
-    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !qrReady()) throw NO_QR; return logoGate(); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
+    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
     if (fmt === 'svg') {
-      job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'] })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
+      job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {
-      job = go(function () { return drawCanvas(kind); }).then(function (c) {
+      job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
         if (fmt === 'pdf') {
           return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
             saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), name + '.pdf');
@@ -2814,9 +2840,30 @@
       });
     }
     job.then(function (msg) { out.textContent = msg; ga('rain_print_download', { kind: kind, fmt: fmt }); },
-      function (e) { out.textContent = e === NO_QR ? 'The short link for the QR isn\u2019t ready (the link service didn\u2019t answer), so no file was saved. Try again in a minute.'
-        : e === NO_LOGO ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
+      function (e) {
+        if (e === NO_QR) {
+          out.textContent = '';
+          makerMsg('The link service didn\u2019t give this print its own short link (it may be busy), so no file was saved. An order file never uses the standard code. Try again in a minute; for a sample, use Test print PDF (standard code).', btn);
+          return;
+        }
+        out.textContent = e === NO_LOGO ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.';
+      })
       .then(function () { btn.disabled = false; btn.textContent = was; });
+  }
+  /* A plain message in the maker box; with retry (the button that failed) it
+     ends in a Try again button that runs the same export again. */
+  function makerMsg(text, retry) {
+    var m = $('rp-maker-msg');
+    if (!m) return;
+    m.textContent = text;
+    m.hidden = !text;
+    if (retry) {
+      var b = doc.createElement('button');
+      b.type = 'button'; b.className = 'btn btn-secondary'; b.id = 'rp-maker-retry'; b.textContent = 'Try again';
+      b.addEventListener('click', function () { makerMsg(''); exportFile(retry.getAttribute('data-size'), retry.getAttribute('data-fmt'), retry); });
+      m.appendChild(doc.createTextNode(' '));
+      m.appendChild(b);
+    }
   }
 
   // ---------- wire up ----------

@@ -485,11 +485,12 @@ test("a saved PNG says 300 dpi and sRGB (a canvas PNG says neither and opens at 
 test("print and digital files: short-link QR or no file; crop marks in the bleed; full-quality PDF; SVG at its size", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   const ex = S.slice(S.indexOf("function exportFile("), S.indexOf("// ---------- wire up ----------"));
-  assert.match(ex, /kind === 'preview' \|\| qrReady\(\)/, "only the watermarked preview skips the wait");
-  assert.match(ex, /root\.AgRpShort\.getShortLink\(code\), new Promise\(function \(r\) \{ setTimeout\(r, 8000\); \}\)/, "waits up to 8 s for the short link");
-  assert.match(ex, /if \(kind !== 'preview' && !qrReady\(\)\) throw NO_QR/, "and saves nothing without it");
-  assert.ok(ex.includes("The short link for the QR isn\\u2019t ready (the link service didn\\u2019t answer), so no file was saved. Try again in a minute."));
-  assert.match(ex, /msg \+ ' QR: ' \+ qrLink\(\) \+ '\.'/, "the note names the QR link it used");
+  // 2026-10-14 (Sig): the short link is made at export, once, not waited on from a redraw; the preview carries the standard code
+  assert.match(ex, /var gate = kind === 'preview' \? Promise\.resolve\(\)/, "only the watermarked preview skips the short link");
+  assert.match(ex, /root\.AgRpShort\.mint\(code\)\.then\(function \(link\) \{\n\s+if \(!link\) throw NO_QR;/, "makes the short link at export");
+  assert.match(ex, /if \(kind !== 'preview' && !own\) throw NO_QR/, "and saves nothing without it");
+  assert.ok(ex.includes("The link service didn\\u2019t give this print its own short link (it may be busy), so no file was saved. An order file never uses the standard code."));
+  assert.match(ex, /msg \+ ' QR: ' \+ qrLink \+ '\.'/, "the note names the QR link it used");
   assert.ok(ex.includes("12 x 18 in at 300 dpi") && !ex.includes("18 x 12 in"), "one way to write the size");
   assert.match(ex, /toBlob\(c, 'image\/jpeg', 1\)/, "PDF JPEG at quality 1");
   assert.match(ex, /px: \['18in', '12in'\]/, "the SVG says its physical size");

@@ -82,7 +82,7 @@ test("the maker box has the test print button, labeled, and it skips the link se
   assert.ok(i > 0 && j > i);
   const body = S.slice(i, j);
   assert.doesNotMatch(body, /AgRpShort|getShortLink|mint\(/, "no short link on the test print path");
-  assert.match(body, /drawCanvas\(kind, true\)/);
+  assert.match(body, /drawCanvas\(kind, null\)/, "no own matrix: the standard code");
 });
 
 // ---------- in a browser ----------

@@ -10,6 +10,11 @@
  *     new code waits WAIT_MS before posting; a newer call in that time takes
  *     its place and the older one resolves null (the design changed anyway),
  *     so typing a name makes one request, not one per letter.
+ *   AgRpShort.mint(code) -> the same Promise, asked at once with no wait: for
+ *     a press (an order file, checkout, the order form), never a redraw
+ *     (2026-10-14: the page no longer asks on a redraw; previews carry the
+ *     standard code). One request per code: a cached id or one in flight is
+ *     reused.
  *   AgRpShort.peek(code) -> the cached link right now, or null. No request.
  *   AgRpShort.resolve(id) -> Promise of {code, missing}: the design code an
  *     id stands for (GET /rp-short/<id>, as /r does), for ?d=RPS-<id>.
@@ -95,6 +100,19 @@
     }
   }
 
+  function mint(code) {
+    try {
+      code = String(code || '');
+      if (!CODE_RE.test(code) || code.indexOf('GIFT-') === 0) return Promise.resolve(null);
+      var hit = peek(code);
+      if (hit) return Promise.resolve(hit);
+      if (waiting && waiting.code === code) { clearTimeout(waiting.timer); var w = waiting; waiting = null; ask(code).then(w.resolve); return w.promise; }
+      return ask(code);
+    } catch (e) {
+      return Promise.resolve(null);
+    }
+  }
+
   /* The other way: an id to its design code, as /r does (GET /rp-short/<id>),
      for a Stripe reference RPS-<id> opened as rain-print?d=RPS-<id>.
      Promise of {code} (a design code, or null) plus missing: true when the
@@ -120,5 +138,5 @@
     });
   }
 
-  root.AgRpShort = { getShortLink: getShortLink, peek: peek, resolve: resolve, BASE: BASE, WAIT_MS: WAIT_MS };
+  root.AgRpShort = { getShortLink: getShortLink, mint: mint, peek: peek, resolve: resolve, BASE: BASE, WAIT_MS: WAIT_MS };
 })(typeof window !== 'undefined' ? window : this);
