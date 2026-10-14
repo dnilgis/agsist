@@ -300,10 +300,12 @@
     return { unit: unit, total: Math.round(Math.round(unit * 100) * qty) / 100 };
   }
   function bizRange(r) { return r.to === null ? r.from + ' or more' : r.from === r.to ? String(r.from) : r.from + '\u2013' + r.to; }
-  /* Index of the last day that has a recorded value (v not null), or -1. A
-     preview ends there: the days after it are not in yet, not dry. */
+  /* Index of the last day with a reading of its own (v not null and not an S
+     day), or -1. A preview ends there: the days after it are not in yet, not
+     dry. Trailing S days are not in yet either: their catch arrives with a
+     later A total that has not been reported. */
   function lastRecorded(days) {
-    for (var i = (days || []).length - 1; i >= 0; i--) if (days[i] && days[i].v !== null && days[i].v !== undefined) return i;
+    for (var i = (days || []).length - 1; i >= 0; i--) if (days[i] && days[i].v !== null && days[i].v !== undefined && days[i].flag !== 'S') return i;
     return -1;
   }
 
@@ -329,16 +331,22 @@
   function unknownDay(x) { return x.v === null || x.v === undefined || x.flag === 'S'; }
   function derive(days) {
     var n = days.length, month = Array(12).fill(0), mdays = Array(12).fill(0), monthValid = Array(12).fill(0);
-    var total = 0, wet = 0, missing = 0, trace = 0, unsplit = 0, max = { v: 0, date: '', doy: -1 };
+    var total = 0, wet = 0, missing = 0, trace = 0, unsplit = 0, max = { v: 0, date: '', doy: -1 }, maxRain = { v: 0, date: '', doy: -1 };
+    var sRun = 0, accDay = 0;   // S days in a row so far; the smallest biggest day any A total proves
     var dry = 0, dryStart = -1, dryMax = { len: 0, end: '', endDoy: -1, startDoy: -1 }, cum = [], over1 = 0;
     function endDry() { dry = 0; dryStart = -1; }
     days.forEach(function (x) {
       mdays[x.m]++;
       // An unrecorded day ends a dry run: nobody knows whether it rained.
-      if (x.v === null || x.v === undefined) { missing++; endDry(); cum.push(total); return; }
+      if (x.v === null || x.v === undefined) { missing++; sRun = 0; endDry(); cum.push(total); return; }
       monthValid[x.m]++;
       // An S day is the same: its rain was real, but it is counted on the A day.
-      if (x.flag === 'S') { unsplit++; endDry(); cum.push(total); return; }
+      if (x.flag === 'S') { unsplit++; sRun++; endDry(); cum.push(total); return; }
+      /* An A total covers its S days and itself. However it split, one of those
+         days had at least total / days, so a single day that small or smaller
+         cannot be called the year's biggest. */
+      if (x.flag === 'A') accDay = Math.max(accDay, x.v / (sRun + 1));
+      sRun = 0;
       if (x.flag === 'T') { trace++; endDry(); cum.push(total); return; }
       total += x.v; month[x.m] += x.v; cum.push(total);
       if (x.v >= 1) over1++;
@@ -346,10 +354,16 @@
         wet++; endDry();
         // An A value is several days' catch, so it cannot be the wettest single day.
         if (x.flag !== 'A' && x.v > max.v) max = { v: x.v, date: x.date, doy: x.doy };
+        // The biggest rain: a plain reading on a day with no snow (Sig: rain days only).
+        if (x.flag === '' && !(x.s > 0) && x.v > maxRain.v) maxRain = { v: x.v, date: x.date, doy: x.doy };
       }
       else if (x.s > 0) endDry();   // snow fell: not a dry day, whatever the gauge read (Sig)
       else { if (dry === 0) dryStart = x.doy; dry++; if (dry > dryMax.len) dryMax = { len: dry, end: x.date, endDoy: x.doy, startDoy: dryStart }; }
     });
+    // Withheld, not guessed, when an A total proves some day beat it.
+    var accR = Math.round(accDay * 100) / 100, none = function () { return { v: 0, date: '', doy: -1 }; };
+    if (accR > max.v) max = none();
+    if (accR > maxRain.v) maxRain = none();
     var validMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (i) { return monthValid[i] > 0; });
     var maxMonth = validMonths.length ? Math.max.apply(null, validMonths.map(function (i) { return month[i]; })) : 0;
     var maxDay = Math.max.apply(null, [0].concat(days.map(function (x) { return x.v || 0; })));
@@ -364,7 +378,23 @@
       if (hot.v === null || x.t > hot.v) hot = { v: x.t, date: x.date, doy: x.doy };
       if (cold.v === null || x.t < cold.v) cold = { v: x.t, date: x.date, doy: x.doy };
     });
-    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, unsplit: unsplit, trace: trace, max: max, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
+    return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, unsplit: unsplit, trace: trace, max: max, maxRain: maxRain, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
+  }
+  /* A run of S days that no A total closes (the next day is missing, a plain
+     reading, or the year ends) has its catch nowhere in the record, so those
+     days are missing days, not days counted later. Returns a new array. */
+  function closeOpenS(days) {
+    var out = (days || []).map(function (x) { return x; });
+    for (var i = 0; i < out.length; i++) {
+      if (!out[i] || out[i].flag !== 'S') continue;
+      var j = i;
+      while (j < out.length && out[j] && out[j].flag === 'S') j++;
+      if (!(j < out.length && out[j] && out[j].flag === 'A')) {
+        for (var k = i; k < j; k++) out[k] = Object.assign({}, out[k], { v: null, flag: 'M' });
+      }
+      i = j - 1;
+    }
+    return out;
   }
   // the same rule on both layouts
   function showDry(D) { return D.dryMax.len >= DRY_MIN; }
@@ -616,7 +646,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, closeOpenS: closeOpenS, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -772,6 +802,7 @@
       // This year: stop at the last recorded day. The days after it have not
       // come in yet (NOAA's daily numbers lag a few days); they are not gaps.
       if (year === CURRENT_YEAR) days = days.slice(0, lastRecorded(days) + 1);
+      days = closeOpenS(days);
       var out = { meta: j.meta || {}, days: days, d: derive(days), raw: j.data };
       DAILY_CACHE.set(key, out);
       return out;

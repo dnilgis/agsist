@@ -147,6 +147,10 @@ test("a preview ends at the last recorded day; late days are not counted as gaps
   assert.equal(RP.lastRecorded([d(0), d(0.2), d(null), d(0), d(null), d(null)]), 3);
   assert.equal(RP.lastRecorded([d(null), d(null)]), -1);
   assert.equal(RP.lastRecorded([]), -1);
+  // trailing S days wait on an A total that is not in yet: not reported days
+  const p = (raw) => RP.parsePcpn(raw);
+  assert.equal(RP.lastRecorded([p("0.10"), p("0.00"), p("S"), p("S"), p("S")]), 1);
+  assert.equal(RP.lastRecorded([p("0.10"), p("S"), p("0.30A")]), 2);
 });
 
 test("Christmas lines come from the cutoff date: a plain date before, after-Christmas after, nothing out of season", () => {
@@ -358,21 +362,62 @@ test("an S day is not dry and not a measured 0; an A total is never the wettest 
   assert.deepEqual(plain(RP.parsePcpn("S")), { v: 0, flag: "S" });
   assert.deepEqual(plain(RP.parsePcpn("1.20A")), { v: 1.2, flag: "A" });
   // 4 dry, 3 S, 4 dry: without the S days this would be one 11-day spell
-  const days = mkDays([["0.40"], ...rep(["0.00"], 4), ...rep(["S"], 3), ["2.00A"], ...rep(["0.00"], 4)]);
+  // (1.20 over 4 days proves no day above 0.30, so the 0.40 can stand)
+  const days = mkDays([["0.40"], ...rep(["0.00"], 4), ...rep(["S"], 3), ["1.20A"], ...rep(["0.00"], 4)]);
   const D = RP.derive(days);
   assert.equal(D.dryMax.len, 4, "S days end a dry run");
   assert.equal(D.unsplit, 3);
   assert.equal(D.missing, 0, "S days are not unrecorded days");
-  assert.equal(D.total, 2.4, "the accumulated amount stays in the total");
-  assert.equal(D.cum[8] - D.cum[7], 2, "on the day the A total is reported");
-  assert.equal(D.max.v, 0.4, "the 2.00 A total is not the wettest day");
+  assert.equal(Math.round(D.total * 100) / 100, 1.6, "the accumulated amount stays in the total");
+  assert.equal(Math.round((D.cum[8] - D.cum[7]) * 100) / 100, 1.2, "on the day the A total is reported");
+  assert.equal(D.max.v, 0.4, "the 1.20 A total is not the wettest day");
   assert.equal(D.max.date, "2025-01-01");
   const onlyA = RP.derive(mkDays([["S"], ["1.50A"], ["0.00"]]));
   assert.equal(onlyA.max.v, 0);
   assert.equal(onlyA.max.doy, -1);
+  // 3.10 over three days means one of them had at least 1.03: the 0.40 is not the biggest, so none is named
+  const proven = RP.derive(mkDays([["0.40"], ["S"], ["S"], ["3.10A"]]));
+  assert.equal(proven.max.v, 0, "withheld when an A total proves a bigger day");
+  assert.equal(proven.max.doy, -1);
+  assert.equal(proven.maxRain.v, 0);
+  assert.equal(RP.riserSpan(proven), null, "and no red riser");
+  const fair = RP.derive(mkDays([["1.40"], ["S"], ["S"], ["3.10A"]]));
+  assert.equal(fair.max.v, 1.4, "kept when no split of the A total can beat it");
   // and the Staircase lifts its pen across S days too
   const d = RP.stairPath(days, D.cum, 0, 100, 10, 1);
   assert.equal((d.match(/L/g) || []).length, days.length - 3, d);
+});
+
+test("an S run that no A total closes is missing, not counted later", () => {
+  const open = RP.closeOpenS(mkDays([["0.10"], ["S"], ["S"], ["M"]]));
+  const D = RP.derive(open);
+  assert.equal(D.unsplit, 0);
+  assert.equal(D.missing, 3);
+  assert.deepEqual(open.slice(1, 3).map((x) => [x.v, x.flag]), [[null, "M"], [null, "M"]]);
+  const atEnd = RP.closeOpenS(mkDays([["0.10"], ["S"], ["S"]]));
+  assert.equal(RP.derive(atEnd).missing, 2, "a run that reaches the end of the record");
+  const plainNext = RP.closeOpenS(mkDays([["S"], ["0.20"]]));
+  assert.equal(plainNext[0].flag, "M", "a plain reading after it does not hold its catch");
+  const closed = mkDays([["0.10"], ["S"], ["S"], ["0.40A"]]);
+  assert.deepEqual(plain(RP.closeOpenS(closed)), plain(closed), "an S run closed by an A total is unchanged");
+  const D2 = RP.derive(RP.closeOpenS(closed));
+  assert.equal(D2.unsplit, 2);
+  assert.equal(D2.missing, 0);
+  assert.equal(closed[1].flag, "S", "the input is not changed");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  const dl = S.slice(S.indexOf("function daily("), S.indexOf("function stationExtremes("));
+  assert.match(dl, /days = closeOpenS\(days\)/, "the page's daily() runs it on every year it loads");
+});
+
+test("the biggest rain is picked from rain days only: never a snow day or an A total", () => {
+  const D = RP.derive(mkDays([["0.30"], ["1.72", 17], ["0.90"], ["S"], ["S"], ["S"], ["2.40A"], ["T"]]));
+  assert.equal(D.max.v, 1.72, "the wettest day (water) can be a snow day, for the stats row");
+  assert.equal(D.maxRain.v, 0.9);
+  assert.equal(D.maxRain.date, "2025-01-03");
+  assert.equal(D.maxRain.doy, 2);
+  const allSnow = RP.derive(mkDays([["0.50", 4], ["0.00"]]));
+  assert.equal(allSnow.maxRain.v, 0);
+  assert.equal(allSnow.maxRain.doy, -1);
 });
 
 test("a day with snow ends a dry run, whatever the gauge read", () => {
