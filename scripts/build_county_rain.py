@@ -251,7 +251,7 @@ def head(title, desc, url, ld, og_title=None, extra=""):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
   {CSS}
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -276,7 +276,7 @@ AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified 
 PUBLISHER = {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}
 FOOT = """  </main>
   <div id="site-footer"></div>
-  <script src="/components/loader.js?v=18" defer></script>
+  <script src="/components/loader.js?v=19" defer></script>
 </body>
 </html>
 """

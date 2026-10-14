@@ -280,8 +280,8 @@ def head(title, desc, path, jsonld):
        Same files as scripts/inject_static_nav.py FONTS. -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=23" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -673,7 +673,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=18"></script>
+<script src="/components/loader.js?v=19"></script>
 {SORT_JS}
 </body>
 </html>
@@ -876,7 +876,7 @@ def build_hub(states, stats, generated):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=18"></script>
+<script src="/components/loader.js?v=19"></script>
 {SORT_JS}
 </body>
 </html>

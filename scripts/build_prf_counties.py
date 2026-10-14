@@ -233,7 +233,7 @@ def page(ctx):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="stylesheet" href="/components/prf.css?v=6">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -309,7 +309,7 @@ def page(ctx):
   </div>
   </main>
   <div id="site-footer"></div>
-  <script src="/components/loader.js?v=18" defer></script>
+  <script src="/components/loader.js?v=19" defer></script>
   {S.PRF_SPONSOR_JS}
 </body>
 </html>

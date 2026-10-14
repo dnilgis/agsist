@@ -22,8 +22,8 @@ HTML = f"""<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="preload" href="/components/styles.css?v=23" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=23">
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="stylesheet" href="/components/prf.css?v=6">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -307,7 +307,7 @@ payment              = interval protection
   </div>
   </main>
   <div id="site-footer"></div>
-  <script src="/components/loader.js?v=18" defer></script>
+  <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/prf-sponsor.js?v=3" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
   <script src="/components/prf.js?v=5" defer></script>

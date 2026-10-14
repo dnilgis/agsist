@@ -765,7 +765,7 @@ SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 def page_end(ftr, table=False, signup=False):
     return f"""</main>
 {ftr}
-<script src="/components/loader.js?v=18" defer></script>
+<script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
 {TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}</body>
 </html>
