@@ -206,7 +206,7 @@ def build_state(src, st, year, edate, C, fetched):
         vals = [r[0] if r else "M" for r in data]
         norms = [r[1] if len(r) > 1 else "M" for r in data] if has_norm else None
         gauge = {"sid": meta["sids"][0], "lat": meta["ll"][1], "lon": meta["ll"][0],
-                 "parsed": [R.parse_pcpn(v) for v in vals], "nv": R.daily_normals(dates, norms)}
+                 "parsed": R.close_s([R.parse_pcpn(v) for v in vals]), "nv": R.daily_normals(dates, norms)}
         pool.append(gauge)
         fips = str(meta.get("county") or "")
         if fips not in mine:
@@ -279,7 +279,7 @@ def build_state(src, st, year, edate, C, fetched):
                 md = dict(zip((d[5:] for d in dates), x["gauge"]["nv"] or []))
                 lv = (x["last_vals"] + ["M"] * nl)[:nl]
                 lg[f] = {"sid": x["gauge"]["sid"], "lat": x["gauge"]["lat"], "lon": x["gauge"]["lon"],
-                         "parsed": [R.parse_pcpn(v) for v in lv],
+                         "parsed": R.close_s([R.parse_pcpn(v) for v in lv]),
                          "nv": [md.get(d[5:] if d[5:] != "02-29" else "02-28") for d in ld] if md else None}
         for f, g in sorted(lg.items()):
             bad = R.stuck_run(g["parsed"], g["nv"], [(h["parsed"], h["nv"]) for h in nearby(list(lg.values()), g)])
@@ -650,6 +650,14 @@ def selftest():
     ok(s is None and "0.00" in why, f"a gauge at 0.00 for 70 days is refused: {why}")
     s, why = R.summarize(2026, d70[:50], ["0.00"] * 50, None, "2026-02-19")
     ok(s is not None, f"50 days at 0.00 (a desert winter) is not refused by this rule: {why}")
+    # an S run that ends in a plain value, not an A, lost its rain: those days are gaps
+    d40 = R.days_of(2026, "2026-01-01", 40)
+    s, _ = R.summarize(2026, d40[:20], ["0.10"] * 10 + ["S", "S", "0.30"] + ["0.10"] * 7, ["0.05"] * 20, "2026-01-20")
+    ok(s and s["missing"] == 2 and s["unsplit"] == 0 and s["reported"] == 18, f"S run not closed by an A is M: {s and (s['missing'], s['unsplit'])}")
+    s, _ = R.summarize(2026, d40[:30], ["0.10"] * 10 + ["S", "S", "M"] + ["0.10"] * 17, ["0.05"] * 30, "2026-01-30")
+    ok(s and s["missing"] == 3, f"S run ended by a gap is a gap: {s and s['missing']}")
+    s, _ = R.summarize(2026, d40[:20], ["0.10"] * 10 + ["S", "S", "0.90A"] + ["0.10"] * 7, ["0.05"] * 20, "2026-01-20")
+    ok(s and s["missing"] == 0 and s["unsplit"] == 2 and s["acc"] == 1, f"S run closed by its A stays reported: {s and (s['missing'], s['unsplit'])}")
     # trailing S days (the A that ends them has not come in) are not reported yet
     d40 = R.days_of(2026, "2026-01-01", 40)
     s, _ = R.summarize(2026, d40, ["0.10"] * 36 + ["S", "S", "S", "M"], ["0.05"] * 40, "2026-02-09")

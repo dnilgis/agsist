@@ -319,6 +319,27 @@ def parse_pcpn(raw):
     return v, ("A" if acc else "")
 
 
+def close_s(parsed):
+    """An S run must end in the A value that carries its rain. A run that ends
+    in anything else (a plain value, a trace, a gap) has lost that rain, so its
+    days are gaps (M), not reported days. A run at the very end is left alone:
+    its A has not come in yet (summarize() stops before it)."""
+    out = list(parsed)
+    i = 0
+    while i < len(out):
+        if out[i][1] != "S":
+            i += 1
+            continue
+        j = i
+        while j < len(out) and out[j][1] == "S":
+            j += 1
+        if j < len(out) and out[j][1] != "A":
+            for k in range(i, j):
+                out[k] = (None, "M")
+        i = j
+    return out
+
+
 def days_of(year, sdate, n):
     d0 = dt.date.fromisoformat(sdate)
     return [(d0 + dt.timedelta(days=i)).isoformat() for i in range(n)]
@@ -333,7 +354,7 @@ def summarize(year, dates, vals, norms, edate):
     """Everything a county page needs from one station's year so far, or a
     reason it does not qualify. dates/vals/norms are parallel (norms may be None).
     Returns (summary or None, reason)."""
-    parsed = [parse_pcpn(v) for v in vals]
+    parsed = close_s([parse_pcpn(v) for v in vals])
     # the last day reported; trailing S days wait for the A value that ends them
     last = max((i for i, (v, f) in enumerate(parsed) if v is not None and f != "S"), default=-1)
     if last < 0:
@@ -552,15 +573,17 @@ def last_year_total(vals, sdate, as_of_last, this=None):
     vals = list(vals[:n])
     if len(vals) < n:
         vals += ["M"] * (n - len(vals))
-    parsed = [parse_pcpn(v)[0] for v in vals]
+    parsed = [v for v, _ in close_s([parse_pcpn(v) for v in vals])]
     rep = sum(1 for v in parsed if v is not None)
     if rep < MIN_SHARE * n:
         return None
     out = {"total": round(sum(v for v in parsed if v is not None), 2), "reported": rep, "days": n, "through": as_of_last}
     if this is not None:
+        ks = sorted(this)
+        this_p = dict(zip(ks, (v for v, _ in close_s([parse_pcpn(this[k]) for k in ks]))))
         both = tb = lb = 0
         for d, v in zip(days_of(0, sdate, n), parsed):
-            t = parse_pcpn(this.get(d[5:], "M"))[0]
+            t = this_p.get(d[5:])
             if v is not None and t is not None:
                 both += 1
                 tb += t
