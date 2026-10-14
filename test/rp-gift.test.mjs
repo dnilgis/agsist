@@ -425,3 +425,26 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);
   for (const f of ["components/rp-gift.js", "rp-gift.html"]) assert.doesNotMatch(read(f), /—/, f + ": no em dashes");
 });
+
+test("rp-gift.html: the card's words (station, marked days, full year, card number, trim)", () => {
+  const h = read("rp-gift.html");
+  // The marked-days phrase, run from the page's own function.
+  const src = h.match(/function marked\(d\) \{[\s\S]*?\n  \}/);
+  assert.ok(src, "marked() is on the card page");
+  const marked = new Function(src[0] + "; return marked;")();
+  assert.equal(marked([]), "");
+  assert.equal(marked(["Planted"]), ", with one day marked: Planted");
+  assert.equal(marked(["Planted", "Hail"]), ", with two days marked: Planted and Hail");
+  assert.equal(marked(["Planted", "Hail", "Harvest done"]), ", with three days marked: Planted, Hail and Harvest done");
+  assert.match(h, /esc\(marked\(s\.dates\)\)/, "the lede uses it");
+  assert.match(h, /Any farm, any year on record/);
+  assert.match(h, /NOAA weather station nearest/);
+  assert.match(h, /nearest NOAA weather station, drawn day by day/);
+  assert.doesNotMatch(h, /NOAA gauge|since 1890|last rain is in|print on letter and trim/);
+  assert.equal((h.match(/once the full year is in\./g) || []).length, 2, "both January lines");
+  assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 2, "both feet say Card 0017");
+  assert.doesNotMatch(h, /class="foot">No\. /);
+  assert.match(h, /\.sz-half \.cut\.t\{top:\.3in\}\.sz-half \.cut\.b\{bottom:\.3in\}/, "cut marks clear of a printer's unprintable edge");
+  assert.match(h, /G\.dayText\(j\.redeemed_on\)/);
+  assert.match(h, /<script src="\/components\/rp-gift\.js\?v=\d+"><\/script>/, "the card page loads a versioned script");
+});

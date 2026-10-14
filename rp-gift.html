@@ -12,7 +12,9 @@
      worker's signature for that code (subs worker v5.16, GET /rp-gift/card), so
      a guessed code shows nothing. No analytics on this page: the address
      carries the code. Sizes: 5 x 7 card, half letter two up on a letter sheet
-     (front and inside, cut or fold on the middle), full letter. -->
+     (front and inside, cut or fold on the middle), full letter.
+     The card speaks of Sig in the third person on purpose: the person holding
+     it does not know him. The Rain Print page itself is in his own voice. -->
 <link rel="preconnect" href="https://agsist-subs.dnilgis.workers.dev" crossorigin>
 <link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -117,7 +119,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
 .sz-half .how p{font-size:8.5pt}
 .sz-half .foot{font-size:7pt}
 .sz-half .cut{position:absolute;left:5.5in;width:0;border-left:.75pt solid var(--ink);height:.22in}
-.sz-half .cut.t{top:.18in}.sz-half .cut.b{bottom:.18in}
+.sz-half .cut.t{top:.3in}.sz-half .cut.b{bottom:.3in}
 .sz-half .fold{position:absolute;left:5.5in;top:.55in;bottom:.55in;border-left:.5pt dashed var(--guide)}
 .sz-half .cutnote{position:absolute;bottom:.2in;left:5.62in;font:6pt 'IBM Plex Mono',monospace;color:var(--soft)}
 
@@ -161,20 +163,20 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     <button type="button" data-size="letter" aria-pressed="false">Full letter</button>
     <button type="button" class="go" id="print" disabled>Print the card</button>
   </div>
-  <p id="sizehelp">One 5 x 7 card. Set the printer's paper size to 5 x 7, or print on letter and trim.</p>
+  <p id="sizehelp">One 5 x 7 card. Set the printer’s paper size to 5 x 7.</p>
 </div>
 <p id="msg" role="status">Getting your card&hellip;</p>
 <noscript><p style="max-width:880px;margin:1rem auto;padding:0 16px">This page needs JavaScript to draw the card. Questions: sig@farmers1st.com</p></noscript>
 <div id="stage"><div id="fit"></div></div>
 <script src="/components/qr.js"></script>
-<script src="/components/rp-gift.js"></script>
+<script src="/components/rp-gift.js?v=2"></script>
 <script>
 (function () {
   'use strict';
   var G = window.AgRpGift, doc = document;
   var $ = function (id) { return doc.getElementById(id); };
   var SIZES = {
-    '5x7': ['5in 7in', 'One 5 x 7 card. Set the printer\u2019s paper size to 5 x 7, or print on letter and trim.'],
+    '5x7': ['5in 7in', 'One 5 x 7 card. Set the printer\u2019s paper size to 5 x 7.'],
     half: ['11in 8.5in', 'Letter paper turned sideways: the front on the left, the inside on the right. Cut on the middle marks for two pieces, or fold there and glue back to back.'],
     letter: ['8.5in 11in', 'One full letter page, the whole card on it.']
   };
@@ -196,6 +198,12 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     }
     return o + '</svg>';
   }
+  // ", with two days marked: Planted and Hail"
+  function marked(d) {
+    if (!d.length) return '';
+    var n = ['one day', 'two days', 'three days'][d.length - 1] || d.length + ' days';
+    return ', with ' + n + ' marked: ' + (d.length === 1 ? d[0] : d.slice(0, -1).join(', ') + ' and ' + d[d.length - 1]);
+  }
   function front() {
     var s = C.lock && G.summary(C.lock.design_code), o = '<p class="kick">A Rain Print from AGSIST</p>';
     if (C.to) o += '<p class="to">For ' + esc(C.to) + '</p>';
@@ -204,13 +212,13 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
       o += '<p class="where">' + esc(s.place) + ' &middot; ' + s.year + '</p>';
       if (s.dedication) o += '<p class="ded">' + esc(s.dedication) + '</p>';
       o += '<div class="art">' + axis() + '</div>';
-      o += '<p class="lede">Every rain of ' + s.year + ' at the NOAA gauge nearest ' + esc(s.place.split(',')[0]) + ', drawn day by day' + (s.dates.length ? ', with ' + esc(s.dates.join(', ')) : '') + '.</p>';
-      if (C.ships === 'january') o += '<p class="jan">Your ' + s.year + ' print comes in January, once the year\u2019s last rain is in.</p>';
+      o += '<p class="lede">Every rain of ' + s.year + ' at the NOAA weather station nearest ' + esc(s.place.split(',')[0]) + ', drawn day by day' + esc(marked(s.dates)) + '.</p>';
+      if (C.ships === 'january') o += '<p class="jan">Your ' + s.year + ' print comes in January, once the full year is in.</p>';
     } else {
-      o += '<p class="title">Any farm, any year since 1890</p>';
+      o += '<p class="title">Any farm, any year on record</p>';
       o += '<div class="art">' + axis() + '</div>';
-      o += '<p class="lede">Pick the place and the year. Every rain that year at the nearest NOAA gauge, drawn day by day and printed for the wall.</p>';
-      if (C.ships === 'january') o += '<p class="jan">The print comes in January, once the year\u2019s last rain is in.</p>';
+      o += '<p class="lede">Pick the place and the year. Every rain that year at the nearest NOAA weather station, drawn day by day and printed for the wall.</p>';
+      if (C.ships === 'january') o += '<p class="jan">The print comes in January, once the full year is in.</p>';
     }
     return o;
   }
@@ -228,7 +236,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
       o += '<div class="how">' + (qr ? '<div class="qrbox">' + qr + '</div>' : '') + '<p><b>To use it,</b> scan the square, or go to<br><span class="url">agsist.com/rain-print?gift=' + esc(C.code) + '</span><br>' +
         (C.lock ? 'Your design is already picked. Add where it goes and it\u2019s done.' : 'Pick the farm and the year, then press Use my gift.') + '</p></div>';
     }
-    if (withFoot) o += '<p class="foot">No. ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
+    if (withFoot) o += '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + ' &middot; agsist.com/rain-print &middot; questions: sig@farmers1st.com</p>';
     return o;
   }
   function render() {
@@ -238,7 +246,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     [].forEach.call(doc.querySelectorAll('.sizes [data-size]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-size') === size)); });
     if (!C) return;
     var html = size === 'half'
-      ? '<div class="sheet"><div class="face front">' + front() + '<p class="foot">No. ' + String(C.no || 0).padStart(4, '0') + '</p></div>' +
+      ? '<div class="sheet"><div class="face front">' + front() + '<p class="foot">Card ' + String(C.no || 0).padStart(4, '0') + '</p></div>' +
         '<div class="face inside">' + inside(true) + '</div><span class="cut t"></span><span class="cut b"></span><span class="fold"></span></div>'
       : '<div class="sheet"><div class="face">' + front() + '<hr class="rule" style="margin:' + (size === 'letter' ? '.35in' : '.14in') + ' 0 0">' + inside(true) + '</div></div>';
     $('fit').innerHTML = html;
@@ -278,7 +286,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
     }
     if (j.status === 'void') { say('This card was replaced or refunded, so it can\u2019t be printed. If Sig sent you a new link, use that one. Questions: sig@farmers1st.com', true); return; }
     C = j;
-    say(j.status === 'redeemed' ? 'This card has been used (' + j.redeemed_on + '). You can still print it as a keepsake.' : '');
+    say(j.status === 'redeemed' ? 'This card has been used (' + G.dayText(j.redeemed_on) + '). You can still print it as a keepsake.' : '');
     $('print').disabled = false;
     render();
   });
