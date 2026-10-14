@@ -1,12 +1,16 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-14T15:57:13Z",
+ "generated": "2026-10-14T18:06:54Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1709,
-  "towns": 1352
+  "elevators": 1669,
+  "towns": 1322
  },
  "states": {
+  "AL": {
+   "elevators": 1,
+   "towns": 1
+  },
   "AR": {
    "elevators": 13,
    "towns": 13
@@ -20,28 +24,28 @@
    "towns": 1
   },
   "GA": {
-   "elevators": 7,
-   "towns": 7
+   "elevators": 8,
+   "towns": 8
   },
   "IA": {
-   "elevators": 346,
-   "towns": 248
+   "elevators": 319,
+   "towns": 231
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 204,
-   "towns": 146
+   "elevators": 200,
+   "towns": 144
   },
   "IN": {
-   "elevators": 60,
-   "towns": 48
+   "elevators": 63,
+   "towns": 49
   },
   "KS": {
-   "elevators": 245,
-   "towns": 180
+   "elevators": 231,
+   "towns": 168
   },
   "KY": {
    "elevators": 9,
@@ -56,23 +60,23 @@
    "towns": 16
   },
   "MN": {
-   "elevators": 156,
-   "towns": 132
+   "elevators": 150,
+   "towns": 126
   },
   "MO": {
    "elevators": 28,
    "towns": 27
   },
   "MT": {
-   "elevators": 3,
-   "towns": 3
+   "elevators": 8,
+   "towns": 8
   },
   "ND": {
-   "elevators": 47,
-   "towns": 43
+   "elevators": 46,
+   "towns": 42
   },
   "NE": {
-   "elevators": 184,
+   "elevators": 187,
    "towns": 141
   },
   "NY": {
@@ -80,11 +84,11 @@
    "towns": 2
   },
   "OH": {
-   "elevators": 72,
-   "towns": 65
+   "elevators": 75,
+   "towns": 67
   },
   "OK": {
-   "elevators": 77,
+   "elevators": 76,
    "towns": 65
   },
   "OR": {
@@ -100,15 +104,15 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 105,
-   "towns": 90
+   "elevators": 104,
+   "towns": 89
   },
   "TN": {
-   "elevators": 4,
-   "towns": 4
+   "elevators": 3,
+   "towns": 3
   },
   "TX": {
-   "elevators": 18,
+   "elevators": 17,
    "towns": 12
   },
   "WA": {
@@ -125,10 +129,10 @@
   }
  },
  "coverage": {
-  "generated": "2026-10-14T00:16:05.764Z",
-  "read": 1924,
-  "quiet": 131,
+  "generated": "2026-10-14T17:32:49.573Z",
+  "read": 1885,
+  "quiet": 171,
   "known": 6348,
-  "elevators": 8403
+  "elevators": 8404
  }
 }
