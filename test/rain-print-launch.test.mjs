@@ -53,6 +53,28 @@ test("a share link that can't be drawn says why", () => {
   assert.equal(RP.linkProblem(""), "", "no design in the link is not a problem");
 });
 
+test("a Stripe reference RPS-<id> or GIFT-RPS-<id> opens as rain-print?d=, through the short link", () => {
+  // checkoutRef sends these for a design past 200 characters; the data file tells Sig to open rain-print?d=<reference>
+  const long = RP.encodeCode({ place: "Chetek, WI", year: 2025, name: "The Johnson Family Farm", dedication: "For Dad, his 40th crop on the home place. Love, Kate, Ben and Ole",
+    markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-12", label: "Hail storm" }, { date: "2025-10-24", label: "Harvest done" }] });
+  assert.ok(long.length > 200, "this design goes to Stripe as RPS-");
+  for (const gift of [false, true]) {
+    const ref = RP.checkoutRef(long, gift, "HTTPS://AGSIST.COM/R?K7Q2M");
+    assert.equal(RP.linkProblem("?d=" + ref), "", ref + " is not called damaged");
+    assert.deepEqual(plain(RP.shortRefOf(ref)), { id: "K7Q2M", gift });
+  }
+  assert.deepEqual(plain(RP.shortRefOf("gift-rps-k7q2m")), { id: "K7Q2M", gift: true }, "typed in lower case");
+  assert.deepEqual(plain(RP.shortRefOf("RPS-AB1OC")), { id: "AB10C", gift: false }, "O read as 0, as /r reads it");
+  for (const bad of ["RPS-", "RPS-AB1", "RPS-ABCDEFGHJ", "XRPS-AB12C", "RPS-AB12C-", "GIFT-GIFT-RPS-AB12C", "RPS-UUUUU", ""]) assert.equal(RP.shortRefOf(bad), null, bad);
+  assert.match(RP.linkProblem("?d=RPS-AB1"), /damaged or cut short/, "a cut-short reference still says so");
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /var LINK_REF = ST\.place \? null : shortRefOf\(/, "the page looks the reference up when the link has no design of its own");
+  assert.match(S, /root\.AgRpShort\.resolve\(ref\.id\)/);
+  assert.match(S, /if \(ref\.gift\) s\.gift = true;/, "GIFT- keeps the gift flag");
+  const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.match(J._about, /rain-print\?d=RPS-<id> opens it too/, "the data file says how to open one");
+});
+
 test("stations in plain words: no raw ACIS id pair, names out of caps", () => {
   assert.equal(RP.sidPlain("471667 2"), "NOAA co-op station 471667");
   assert.equal(RP.sidPlain("14991 3"), "NOAA station 14991");

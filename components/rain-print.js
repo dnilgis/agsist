@@ -609,11 +609,23 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
+  /* A Stripe reference for a long design is RPS-<id>, or GIFT-RPS-<id> (checkoutRef
+     above): the short-link id. rain-print?d=RPS-<id> opens it through the short
+     link the way /r?<id> does, and GIFT- keeps the January gift flag (2026-10-14:
+     it said the code was damaged). Read the way r.html reads an id: any case, I
+     and L as 1, O as 0. {id, gift}, or null when it isn't one. */
+  function shortRefOf(code) {
+    var m = /^(GIFT-)?RPS-([0-9A-Za-z]{5,8})$/i.exec(String(code || '').trim());
+    if (!m) return null;
+    var id = m[2].toUpperCase().replace(/[IL]/g, '1').replace(/O/g, '0');
+    return /^[0-9A-HJKMNP-TV-Z]{5,8}$/.test(id) ? { id: id, gift: !!m[1] } : null;
+  }
+
   /* Why a share link can't be drawn, in words, or '' when it can (or there is no design in it). */
   function linkProblem(search, todayIso) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
     var shown = parseInt(String(todayIso || chicagoToday()).slice(0, 4), 10) - 1;
-    if (q.get('d')) return decodeCode(q.get('d')) ? '' : 'That link\u2019s design code is damaged or cut short, so it can\u2019t be drawn. Ask whoever sent it for the link again, or type the town and press Draw it.';
+    if (q.get('d')) return decodeCode(q.get('d')) || shortRefOf(q.get('d')) ? '' : 'That link\u2019s design code is damaged or cut short, so it can\u2019t be drawn. Ask whoever sent it for the link again, or type the town and press Draw it.';
     if (q.has('year') && normalize({ year: q.get('year') }).year === null) return 'That link\u2019s year (' + cleanText(q.get('year'), 12) + ') isn\u2019t one I can draw, so this shows ' + shown + '. Pick another year and press Draw it.';
     if (q.has('year') && !cleanText(q.get('place'), LIMITS.place)) return 'That link has no town in it. Type the town and press Draw it.';
     return '';
@@ -937,7 +949,7 @@
     designUrl: designUrl, shortUrl: shortUrl, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -2430,6 +2442,30 @@
       $('rp-back').hidden = false;
     }
   } catch (e) {}
+  /* ?d=RPS-<id>: look the id up the way /r does (rp-short.js), then draw that
+     design. A lookup that fails says so over the reader's own area. */
+  function openRef(ref) {
+    var name = (ref.gift ? GIFT_PREFIX : '') + 'RPS-' + ref.id;
+    setStatus('Opening design ' + name + '\u2026');
+    var look = root.AgRpShort && root.AgRpShort.resolve ? root.AgRpShort.resolve(ref.id) : Promise.resolve({ code: null });
+    look.then(function (r) {
+      var s = r && r.code ? decodeCode(r.code) : null;
+      if (!s) {
+        $('rp-link-note').textContent = 'Design ' + name + (r && r.missing
+          ? ' isn\u2019t one the site knows. Check the reference, or type the town and press Draw it.'
+          : ' didn\u2019t open: the link service didn\u2019t answer. Try again in a minute, or open agsist.com/r?' + ref.id + '.');
+        $('rp-link-note').classList.add('rp-bad');
+        $('rp-link-note').hidden = false;
+        setStatus('');
+        startNear();
+        return;
+      }
+      if (ref.gift) s.gift = true;
+      ST = s;
+      writeInputs(ST);
+      run();
+    });
+  }
   // A share link that can't be drawn says why, over the sample (2026-10-13: it fell back quietly).
   var LINK_WHY = linkProblem(root.location.search);
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
@@ -2438,7 +2474,9 @@
   fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
   loadPrices();
   // a town with no year, or a year that can't be drawn, draws the last full year (linkProblem says so)
-  if (ST.place && ST.year) run();
+  var LINK_REF = ST.place ? null : shortRefOf(new URLSearchParams(root.location.search).get('d'));
+  if (LINK_REF) openRef(LINK_REF);
+  else if (ST.place && ST.year) run();
   else if (ST.place) { ST.year = lastFullYear(); writeInputs(ST); run(); }
   else startNear();
 

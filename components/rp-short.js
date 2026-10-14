@@ -11,6 +11,8 @@
  *     its place and the older one resolves null (the design changed anyway),
  *     so typing a name makes one request, not one per letter.
  *   AgRpShort.peek(code) -> the cached link right now, or null. No request.
+ *   AgRpShort.resolve(id) -> Promise of {code, missing}: the design code an
+ *     id stands for (GET /rp-short/<id>, as /r does), for ?d=RPS-<id>.
  *
  * Kept in memory and in localStorage (an id never changes for a code). Every
  * storage access is in try/catch: a private window or blocked storage only
@@ -92,5 +94,30 @@
     }
   }
 
-  root.AgRpShort = { getShortLink: getShortLink, peek: peek, BASE: BASE };
+  /* The other way: an id to its design code, as /r does (GET /rp-short/<id>),
+     for a Stripe reference RPS-<id> opened as rain-print?d=RPS-<id>.
+     Promise of {code} (a design code, or null) plus missing: true when the
+     worker says it has no such id. Never rejects. */
+  function resolve(id) {
+    return new Promise(function (done) {
+      var over = false, t = null;
+      function end(v) { if (!over) { over = true; if (t) clearTimeout(t); done(v); } }
+      try {
+        id = String(id || '');
+        if (!ID_RE.test(id) || typeof root.fetch !== 'function') return end({ code: null });
+        t = setTimeout(function () { end({ code: null }); }, 8000);
+        root.fetch(WORKER + '/' + id)
+          .then(function (r) { return r.status === 404 ? { missing: true } : r.ok ? r.json() : null; })
+          .then(function (j) {
+            var code = j && typeof j.code === 'string' ? j.code : '';
+            if (!CODE_RE.test(code)) return end({ code: null, missing: !!(j && j.missing) });
+            keep(code, id);
+            end({ code: code });
+          })
+          .catch(function () { end({ code: null }); });
+      } catch (e) { end({ code: null }); }
+    });
+  }
+
+  root.AgRpShort = { getShortLink: getShortLink, peek: peek, resolve: resolve, BASE: BASE };
 })(typeof window !== 'undefined' ? window : this);

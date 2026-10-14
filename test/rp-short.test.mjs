@@ -106,6 +106,19 @@ test("getShortLink: null on every failure, so the caller keeps the long link", a
   assert.equal(await c.AgRpShort.getShortLink("has spaces in it"), null);
 });
 
+test("resolve: an id back to its design code, as /r does, for ?d=RPS-<id>", async () => {
+  const calls = [], st = memStore();
+  const c = client({ storage: st, fetchImpl: async (u) => { calls.push(u); return u.endsWith("/AB12C") ? { ok: true, status: 200, json: async () => ({ ok: true, code: CODE }) } : { ok: false, status: 404, json: async () => ({}) }; } });
+  assert.deepEqual(JSON.parse(JSON.stringify(await c.AgRpShort.resolve("AB12C"))), { code: CODE });
+  assert.equal(calls[0], "https://agsist-subs.dnilgis.workers.dev/rp-short/AB12C");
+  assert.equal(c.AgRpShort.peek(CODE), "HTTPS://AGSIST.COM/R?AB12C", "the pair is kept, so the QR uses the same id");
+  assert.deepEqual(JSON.parse(JSON.stringify(await c.AgRpShort.resolve("ZZ9Q8"))), { code: null, missing: true }, "an id the worker doesn't know");
+  assert.equal((await c.AgRpShort.resolve("bad id")).code, null);
+  assert.equal(calls.length, 2, "a malformed id asks nothing");
+  assert.equal((await client({ storage: memStore(), fetchImpl: async () => { throw new Error("offline"); } }).AgRpShort.resolve("AB12C")).code, null);
+  assert.equal((await client({ storage: memStore() }).AgRpShort.resolve("AB12C")).code, null, "no fetch at all");
+});
+
 test("getShortLink: storage that throws is only a missed cache", async () => {
   const throwing = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); } };
   let n = 0;
