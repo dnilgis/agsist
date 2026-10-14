@@ -1,0 +1,37 @@
+/* The manure value calculator (components/manure-value.js), on /manure-value
+   and the Manure tab of /fast-facts. Phone first. */
+.mvc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0}
+.mvc-role{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.9rem}
+.mvc-rb{min-height:44px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-dim);font:inherit;font-weight:700;font-size:.95rem;cursor:pointer}
+.mvc-rb[aria-pressed="true"]{background:var(--gold-fill,var(--gold));border-color:var(--gold);color:#14110a}
+.mvc-rb:focus-visible,.mvc select:focus-visible,.mvc input:focus-visible,.mvc summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.mvc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:.8rem}
+.mvc-f{display:flex;flex-direction:column;gap:.25rem;min-width:0}
+.mvc-f>span{font-size:.8rem;font-weight:600;color:var(--text-muted);line-height:1.3}
+.mvc-wide{grid-column:1/-1}
+.mvc select,.mvc input[type="number"]{width:100%;box-sizing:border-box;min-height:44px;font-size:16px;font-family:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:.45rem .55rem}
+.mvc-fs{border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem .35rem;margin:0 0 .8rem}
+.mvc-fs legend{font-size:.85rem;font-weight:700;color:var(--text);padding:0 .3rem}
+.mvc-chk{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;margin-right:1.1rem;font-weight:700;color:var(--text);cursor:pointer}
+.mvc-chk input{width:22px;height:22px;accent-color:var(--gold)}
+.mvc-hint{font-size:.82rem;color:var(--text-muted);line-height:1.5;margin:.1rem 0 .3rem}
+.mvc-prices{margin:0 0 .9rem}
+.mvc-prices summary{cursor:pointer;font-size:.88rem;font-weight:700;color:var(--text-dim);min-height:36px;padding:.4rem 0}
+.mvc-prices summary span{font-weight:400;color:var(--text-muted)}
+.mvc-prices .mvc-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:.4rem 0 .4rem}
+.mvc-out{border-top:1px solid var(--border);padding-top:.9rem}
+.mvc-big span{display:block;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.mvc-big strong{display:block;font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:var(--gold);line-height:1.15}
+.mvc-big strong span{display:inline;font-size:.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+.mvc-big small{display:block;font-size:.88rem;color:var(--text-dim);margin-top:.15rem}
+.mvc-t{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}
+.mvc-t th,.mvc-t td{padding:.4rem .3rem;border-bottom:1px solid var(--border);text-align:right}
+.mvc-t th[scope="row"],.mvc-t thead th:first-child{text-align:left;font-weight:600;color:var(--text-dim)}
+.mvc-t thead th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
+.mvc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+.mvc-t .mvc-sum th,.mvc-t .mvc-sum td{font-weight:800;color:var(--text)}
+.mvc-verdict{background:var(--bg);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:.75rem .85rem;font-size:.95rem;line-height:1.55;color:var(--text-dim)}
+.mvc-verdict strong{display:block;color:var(--text);font-size:1.08rem}
+.mvc-verdict span{display:block;margin-top:.15rem}
+.mvc-verdict small{display:block;margin-top:.4rem;font-size:.82rem;color:var(--text-muted)}
+@media(min-width:720px){.mvc{padding:1.2rem 1.3rem}.mvc-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.mvc-wide{grid-column:span 2}}
