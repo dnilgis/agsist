@@ -23,6 +23,7 @@ import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
+import { checkout, stripePage, refOf } from "./fixtures/rp-checkout.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -120,6 +121,7 @@ async function mocks(ctx, opts, log) {
       if (u.pathname === "/rp-gift/check" && opts.gift) return r.fulfill({ headers: h, json: opts.gift });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
+    if (u.host === "buy.stripe.com") return stripePage(r, log.stripe);
     if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", upto]], state: "WI" }] } });
@@ -150,9 +152,8 @@ async function withPage(fn, opts = {}) {
   try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block", acceptDownloads: true });
     await ctx.clock.setFixedTime(new Date("2026-10-14T17:00:00Z"));
-    const log = {};
+    const log = { stripe: [] };
     await mocks(ctx, opts, log);
-    await ctx.addInitScript(() => { window.__opened = []; window.open = function (u) { window.__opened.push(String(u)); return null; }; });
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
@@ -236,7 +237,13 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     assert.equal(await svgQr(page, "#rp-art"), STD, "the page art");
+    // the slim copy that pins under the menu is drawn on a phone, once the print scrolls away
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.evaluate(() => window.scrollTo(0, document.getElementById("rp-design").getBoundingClientRect().top + scrollY));
+    await page.waitForFunction(() => document.querySelector("#rp-mini svg") && !document.getElementById("rp-strip").hidden, null, { timeout: 10000 });
     assert.equal(await svgQr(page, "#rp-mini"), STD, "the mini copy");
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.evaluate(() => window.scrollTo(0, 0));
     // redraws: a new name, the other style, a dedication
     await page.fill("#rp-name", "The Lund Farm");
     await page.waitForTimeout(400);
@@ -248,6 +255,7 @@ test("every preview carries the standard code, and redraws ask the link service 
     await page.waitForFunction(() => document.querySelector("#rp-proof-art svg"), null, { timeout: 10000 });
     assert.equal(await svgQr(page, "#rp-proof-art"), STD, "the up-close view");
     await page.keyboard.press("Escape");
+    await page.click("#rp-more summary");   // Download a preview and Copy link are under More options (2026-10-14)
     const f = await saved(page, () => page.click("#rp-dl"));
     assert.match(f.name, /-preview\.png$/);
     assert.equal(await fileQr(page, f.buf, "image/png"), STD, "the watermarked preview PNG");
@@ -330,36 +338,35 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await page.waitForTimeout(600);
-    let o = await page.evaluate(() => window.__opened);
-    assert.equal(o.length, 1);
+    let r = await checkout(page, "print12x18");
+    assert.equal(r.stage, "stripe");
     assert.equal(log.posts, 0, "a code that fits goes to Stripe as it is");
-    assert.equal(RP.decodeCode(new URL(o[0]).searchParams.get("client_reference_id")).name, "The Olson Farm");
+    assert.equal(RP.decodeCode(refOf(r.url)).name, "The Olson Farm");
     // a long design
     assert.ok(LONG_CODE.length > 200);
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
     await drawn(page);
     await page.waitForTimeout(4000);
     assert.equal(log.posts, 0, "nothing on the draw");
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
-    await page.waitForFunction(() => window.__opened.some((u) => /client_reference_id=/.test(u)), null, { timeout: 10000 }).catch(async (e) => { throw new Error(e.message + " note: " + await page.textContent("#rp-buy-note") + " opened: " + JSON.stringify(await page.evaluate(() => window.__opened)) + " posts " + log.posts); });
-    o = await page.evaluate(() => window.__opened);
-    assert.ok(o[o.length - 1].endsWith("client_reference_id=RPS-K7Q2M"), o.join(" "));
+    r = await checkout(page, "print12x18");
+    assert.equal(r.stage, "stripe", JSON.stringify(r));
+    assert.ok(r.url.endsWith("client_reference_id=RPS-K7Q2M"), r.url);
     assert.equal(log.posts, 1, "one short link, at the press");
-    await page.click('.rp-buy-btn[data-choice="framed12x18"]');
-    await page.waitForTimeout(600);
+    await page.goBack();
+    await drawn(page);
+    r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "stripe");
     assert.equal(log.posts, 1, "a second press reuses it");
     assert.deepEqual(errors, []);
   });
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);
     await drawn(page);
-    await page.click('.rp-buy-btn[data-choice="print12x18"]');
+    const r = await checkout(page, "print12x18", { wait: 4000 });
+    assert.equal(r.stage, "sheet");
     await page.waitForFunction(() => document.getElementById("ro-form") && document.getElementById("ro-form").offsetParent !== null, null, { timeout: 15000 });
     assert.equal(log.posts, 1, "at most one");
-    const o = await page.evaluate(() => window.__opened);
-    assert.ok(!o.some((u) => /stripe/.test(u)), "no checkout without a reference Stripe takes");
+    assert.deepEqual(log.stripe, [], "no checkout without a reference Stripe takes");
     assert.equal(await page.inputValue("#ro-choice"), "print12x18", "the order form takes the order instead");
     assert.deepEqual(errors, []);
   }, { short: "fail" });
