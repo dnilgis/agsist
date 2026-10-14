@@ -92,3 +92,23 @@ test("the page carries its own dateline, in the text and the JSON-LD", () => {
 test("the warranty says normal use, on the card and in the FAQ", () => {
   assert.equal((main.match(/if your gauge breaks in normal use, I&rsquo;ll fix it or replace it/g) || []).length, 2);
 });
+
+// panel 3 (2026-10-14): the fixes that ship without Sig
+test("title says prototype, like the page; share copy matches the share screen", () => {
+  assert.match(page, /<title>Rain gauge prototype: a gauge that keeps its own log \| AGSIST<\/title>/);
+  assert.ok(!/<title>[^<]*concept/i.test(page));
+  assert.ok(main.includes("They see only the fields you share with them."));
+  assert.ok(!main.includes("for that field and nothing else"));
+});
+test("the warranty says where to write, as a link, on the card, in the FAQ and in the JSON-LD", () => {
+  assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\./g) || []).length, 2);
+  assert.ok(JSON.stringify(ld).includes("Write to me at sig@farmers1st.com."));
+});
+test("phone layout: no badge over the funnel, readable phone screens, a full-width email box", () => {
+  assert.match(page, /@media\(max-width:899px\)\{\.rg-cbadge\{display:none\}\}/);
+  assert.match(page, /@media\(max-width:519px\)\{\.rg-step-phone\{grid-column:1\/-1\}\}/);
+  assert.match(page, /@media\(max-width:420px\)\{\.rg-grid\{grid-template-columns:1fr\}\}/);
+});
+test("a 400 from the worker is not 'try again in a minute'", () => {
+  assert.match(page, /res\.status === 400 \? 'That address couldn\\u2019t be added\. Write to me through \/contact/);
+});
