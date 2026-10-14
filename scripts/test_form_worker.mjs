@@ -469,8 +469,13 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   r = await nPost({ email: 'g4@farm.com', topic: 'rent:wi', zip: '54728', note: 'x' });
   g = nrec('g4@farm.com').t['rent:wi'];
   A(!('zip' in g) && !('note' in g), 'other topics keep no ZIP or note, as before');
-  r = await nPost({ email: 'gauge@farm.com', topic: 'rain-gauge', zip: '50010', note: 'changed' });
-  A(nrec('gauge@farm.com').t['rain-gauge'].note === 'Read it from my truck', 'rain-gauge: asking twice keeps the first sign-up');
+  const first = nrec('gauge@farm.com').t['rain-gauge'];
+  r = await nPost({ email: 'gauge@farm.com', topic: 'rain-gauge', source: 'other', zip: '50010', note: 'changed' });
+  g = nrec('gauge@farm.com').t['rain-gauge'];
+  A(r.status === 200 && g.note === 'changed' && g.zip === '50010' && g.ts === first.ts && g.src === 'rain-gauge', 'rain-gauge (v5.24): asked again, the new ZIP and note are kept, the first sign-up time stays');
+  r = await nPost({ email: 'gauge@farm.com', topic: 'rain-gauge' });
+  A(nrec('gauge@farm.com').t['rain-gauge'].note === 'changed', 'rain-gauge: asked again with nothing new keeps what was there');
+  r = await nPost({ email: 'gauge@farm.com', topic: 'rain-gauge', zip: '54728', note: 'Read it from my truck' });
   for (const [b, h, code, why] of [[{ email: 'g5@farm.com', topic: 'rain-gauges' }, {}, 400, 'near-miss topic'],
       [{ email: 'g5@farm.com', topic: 'rain-gauge' }, { Origin: 'https://evil.example' }, 403, 'foreign origin'],
       [{ email: 'nope', topic: 'rain-gauge' }, {}, 400, 'bad email']]) {
@@ -596,7 +601,9 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
     [Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]), { 'Content-Type': 'image/jpeg' }, 415, 'JPEG type'],
     [Buffer.from([0xff, 0xd8, 0xff, 0xe0, ...Array(80).fill(0)]), {}, 400, 'JPEG bytes'],
     [png.subarray(0, png.length - 12), {}, 400, 'cut short (no IEND)'], [Buffer.concat([png, Buffer.from('<script>')]), {}, 400, 'bytes after IEND'],
-    [makePng(1601, 10), {}, 400, '1601 px wide'], [makePng(10, 1601), {}, 400, '1601 px tall'], [Buffer.alloc(0), {}, 400, 'empty'],
+    [makePng(1601, 10), {}, 400, '1601 px wide'],
+    [Buffer.concat([png.subarray(0, 33), chunk('tEXt', Buffer.from('Comment\0hello')), png.subarray(33)]), {}, 400, 'a text chunk (v5.24)'],
+    [Buffer.concat([png.subarray(0, 33), chunk('zzZz', Buffer.alloc(70 * 1024)), png.subarray(33)]), {}, 400, '70 KB of other chunks (v5.24)'], [makePng(10, 1601), {}, 400, '1601 px tall'], [Buffer.alloc(0), {}, 400, 'empty'],
     [png, { Origin: 'https://evil.example' }, 403, 'another site'], [png, { Origin: '' }, 403, 'no origin'],
     [png, { 'Content-Type': 'application/json' }, 415, 'JSON type'],
     [Buffer.concat([png.subarray(0, png.length - 12), chunk('tEXt', Buffer.alloc(2 * 1024 * 1024)), png.subarray(png.length - 12)]), {}, 413, 'over 2 MB']]) {
@@ -632,6 +639,22 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   r = await post({ kind: 'rain-print-order', name: 'Al', email: 'al@x.com', choice: 'digital', design_code: codeB,
     design_url: 'https://agsist.com/rain-print?place=Ames', page: '/rain-print' });
   A(r.status === 200 && !('logo' in JSON.parse(store.get(forms().filter(k => k.startsWith('form:rain-print-order:')).sort().pop()))), 'an order without a logo has no logo field');
+}
+
+// v5.24: an ICC profile still fits; the day's cap for everyone says "busy today"
+{
+  const chunk2 = (t, d) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const c = Buffer.alloc(4); c.writeUInt32BE(crc32(Buffer.concat([Buffer.from(t), d]))); return Buffer.concat([l, Buffer.from(t), d, c]); };
+  function crc32(buf) { let c, crc = 0xffffffff; for (const x of buf) { c = (crc ^ x) & 255; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; crc = (crc >>> 8) ^ c; } return (crc ^ 0xffffffff) >>> 0; }
+  const zl = await import('node:zlib');
+  const ih = Buffer.alloc(13); ih.writeUInt32BE(8, 0); ih.writeUInt32BE(8, 4); ih[8] = 8; ih[9] = 6;
+  const icc = Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk2('IHDR', ih), chunk2('iCCP', Buffer.alloc(60 * 1024, 1)), chunk2('IDAT', zl.deflateSync(Buffer.alloc((8 * 4 + 1) * 8))), chunk2('IEND', Buffer.alloc(0))]);
+  const upl = (h) => w.fetch(new Request('https://x.dev/rp-logo', { method: 'POST', headers: Object.assign({ 'Content-Type': 'image/png', Origin: 'https://agsist.com', 'CF-Connecting-IP': '10.8.0.' + (++ipN) }, h || {}), body: icc }), env);
+  r = await upl(); A(r.status === 200, 'rp-logo v5.24: a 60 KB ICC profile is still a plain PNG');
+  const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  for (let i = 0; i < 100; i++) store.set('rlq:rp-logo:' + day + ':x' + i + ':00:' + i, '');
+  r = await upl(); j = await r.json();
+  A(r.status === 429 && j.error === 'busy today', 'v5.24: over the cap for everyone, 429 "busy today"');
+  for (let i = 0; i < 100; i++) store.delete('rlq:rp-logo:' + day + ':x' + i + ':00:' + i);
 }
 
 // older routes still answer the same

@@ -460,21 +460,30 @@
         var note = noteFor(count, use);
         if (note) body.note = note;
         go.disabled = true;
-        fetch(EP, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
-          .then(function (r) { return r.json().catch(function () { return null; }).then(function (d) { return { ok: !!(r.ok && d && d.ok === true), status: r.status }; }); })
+        // a silent worker gives up after 12 s instead of leaving the button stuck (2026-10-14, panel 3 F4)
+        var was = go.textContent, ctl = typeof AbortController === 'function' ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
+        var finish = function () { clearTimeout(timer); go.textContent = was; };
+        go.textContent = 'Sending\u2026';
+        var opts = { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) };
+        if (ctl) opts.signal = ctl.signal;
+        fetch(EP, opts)
+          .then(function (r) { return r.json().catch(function () { return null; }).then(function (d) { return { ok: !!(r.ok && d && d.ok === true), status: r.status, error: d && d.error }; }); })
           .then(function (res) {
+            finish();
             if (res.ok) {
               done();
               forms.forEach(function (g) { lock(g, g === f ? 'Thanks. You are on the waitlist. You will hear from me when the first batch is ready.' : 'You are on the waitlist.'); });
               try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom' }); } catch (e) {}
             } else {
               go.disabled = false;
-              say(res.status === 429 ? 'Too many tries from here. Try again in an hour.'
+              say(res.status === 429 && res.error === 'busy today' ? 'Lots of people are signing up today. Try again tomorrow, or write to me through /contact.'
+                : res.status === 429 ? 'Too many tries from here. Try again in an hour.'
                 : res.status === 400 ? 'That address couldn\u2019t be added. Write to me through /contact and I\u2019ll add it by hand.'
                 : 'That did not go through. Try again in a minute.', false);
             }
           })
-          .catch(function () { go.disabled = false; say('That did not go through. Check your connection and try again.', false); });
+          .catch(function () { finish(); go.disabled = false; say('That did not go through. Check your connection and try again.', false); });
       });
     });
   })();

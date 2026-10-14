@@ -5,6 +5,17 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.24 (2026-10-14): THREE SMALL FIXES (panel 3). Every route answers as
+ *   before except:
+ *   - a public POST over the day's cap for EVERYONE answers 429 with
+ *     error "busy today" (the per-address caps keep the old body), so a page
+ *     can say "lots of people today" instead of "from here";
+ *   - /notice topic rain-gauge asked again takes the new ZIP and note when
+ *     given (the first ts and src stay);
+ *   - POST /rp-logo refuses a PNG with text chunks (tEXt, zTXt, iTXt) or more
+ *     than 64 KB of chunks other than IHDR, PLTE, IDAT and IEND (an ICC
+ *     profile still fits): 400 "not a plain PNG".
+ *   No new binding and no new secret.
  * v5.23 (2026-10-14): RAIN PRINT LOGOS. New routes, one new optional field on
  *   two form kinds, and a longer key field in a design code; every existing
  *   route answers exactly as before. No new binding and no new secret: the
@@ -626,7 +637,8 @@ async function rateLimit(req, env, path) {
   try {
     const page = await env.SUBS.list({ prefix, limit: 1000 });
     const names = page.keys.map(k => k.name);
-    if (names.length >= lim[2] || !page.list_complete) return deny();
+    // v5.24: the cap for everyone says so; it is not about this address
+    if (names.length >= lim[2] || !page.list_complete) return json({ ok: false, error: "busy today" }, 429, cors(req));
     if (who) {
       const mine = names.filter(k => k.startsWith(prefix + who + ":"));
       if (mine.length >= lim[1]) return deny();
@@ -1048,11 +1060,14 @@ function rplPng(b) {
   if (u32(8) !== 13 || tag(12) !== "IHDR") return "not a PNG";
   const w = u32(16), h = u32(20);
   if (![1, 2, 4, 8, 16].includes(b[24]) || ![0, 2, 3, 4, 6].includes(b[25])) return "not a PNG";
-  let p = 8, idat = false, end = false;
+  let p = 8, idat = false, end = false, extra = 0;
   while (p + 12 <= b.length) {
     const len = u32(p), t = tag(p + 4);
     if (!/^[A-Za-z]{4}$/.test(t) || p + 12 + len > b.length) return "not a PNG";
     if (t === "IDAT") idat = true;
+    // v5.24: pixels only, not a place to keep text or files
+    if (t === "tEXt" || t === "zTXt" || t === "iTXt") return "not a plain PNG";
+    if (t !== "IHDR" && t !== "PLTE" && t !== "IDAT" && t !== "IEND" && (extra += len) > 64 * 1024) return "not a plain PNG";
     p += 12 + len;
     if (t === "IEND") { end = true; break; }
   }
@@ -1535,14 +1550,13 @@ async function handle(req, env) {
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
-      if (!(topic in r.t)) {
-        r.t[topic] = { ts: Date.now(), src };
-        // v5.18: the rain gauge list keeps an optional ZIP and a one-line note
-        if (topic === "rain-gauge") {
-          const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
-          if (z) r.t[topic].zip = z;
-          if (nt) r.t[topic].note = nt;
-        }
+      if (!(topic in r.t)) r.t[topic] = { ts: Date.now(), src };
+      // v5.18: the rain gauge list keeps an optional ZIP and a one-line note;
+      // v5.24: asked again, it takes the new ones (the first ts and src stay)
+      if (topic === "rain-gauge") {
+        const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
+        if (z) r.t[topic].zip = z;
+        if (nt) r.t[topic].note = nt;
       }
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;

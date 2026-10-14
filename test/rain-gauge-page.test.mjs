@@ -116,3 +116,9 @@ test("the gauge design stays private: the photo reader lab is not published", ()
   for (const f of ["gauge-lab.html", "components/gauge-lab.js", "components/gauge-read.js", "data/gauge-strip.json"])
     assert.ok(!existsSync(ROOT + f), f + " must not be on the site");
 });
+test("F4, F3: the waitlist button says Sending, gives up after 12 s, and a busy day is not 'from here'", () => {
+  assert.match(page, /go\.textContent = 'Sending\\u2026';/);
+  assert.match(page, /setTimeout\(function \(\) \{ if \(ctl\) ctl\.abort\(\); \}, 12000\)/);
+  assert.match(page, /if \(ctl\) opts\.signal = ctl\.signal;/);
+  assert.match(page, /res\.error === 'busy today' \? 'Lots of people are signing up today\./);
+});

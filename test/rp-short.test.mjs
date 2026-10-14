@@ -228,3 +228,12 @@ test("/R: an unknown, malformed or unreachable link says so and stays put", asyn
   assert.equal(o.replaced, null, "no fetch at all");
   assert.match(o.els.sub.textContent, /connection dropped/);
 });
+
+test("panel 3 (2026-10-14): r.html offers Try again when the link service is busy; the client waits 3 s before making an id", () => {
+  for (const f of ["r.html", "R.html"]) {
+    const R = read(f);
+    assert.match(R, /<a id="again" href="" hidden>Try again<\/a> <a href="\/rain-print">Go to Rain Print<\/a>/);
+    assert.match(R, /if \(again && !unknown\) again\.hidden = false;/);
+  }
+  assert.equal(client().AgRpShort.WAIT_MS, 3000);
+});

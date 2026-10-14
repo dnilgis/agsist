@@ -25,7 +25,8 @@
   var WORKER = 'https://agsist-subs.dnilgis.workers.dev/rp-short';
   var BASE = 'HTTPS://AGSIST.COM/R?';
   var KEY = 'agsist-rps:';
-  var WAIT_MS = 1200, TIMEOUT_MS = 6000;
+  // 3 s (was 1.2, 2026-10-14 panel 3 F3): a pause while typing a name no longer makes a short id of its own
+  var WAIT_MS = 3000, TIMEOUT_MS = 6000;
   var ID_RE = /^[0-9A-HJKMNP-TV-Z]{5,8}$/;
   var CODE_RE = /^[A-Za-z0-9_-]{8,400}$/;
   var mem = {}, inflight = {}, waiting = null;
@@ -119,5 +120,5 @@
     });
   }
 
-  root.AgRpShort = { getShortLink: getShortLink, peek: peek, resolve: resolve, BASE: BASE };
+  root.AgRpShort = { getShortLink: getShortLink, peek: peek, resolve: resolve, BASE: BASE, WAIT_MS: WAIT_MS };
 })(typeof window !== 'undefined' ? window : this);

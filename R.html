@@ -31,7 +31,7 @@
 <main id="box">
 <h1 id="msg">Opening the Rain Print design</h1>
 <p id="sub">One moment.</p>
-<p><a href="/rain-print">Go to Rain Print</a></p>
+<p><a id="again" href="" hidden>Try again</a> <a href="/rain-print">Go to Rain Print</a></p>
 </main>
 <script>
 (function () {
@@ -44,6 +44,8 @@
       document.getElementById('sub').textContent = unknown
         ? 'This link isn\u2019t one the site knows. Check the address, or make the print again on the Rain Print page.'
         : 'The connection dropped or the link service is busy. Try again in a minute, or make the print again on the Rain Print page.';
+      var again = document.getElementById('again');
+      if (again && !unknown) again.hidden = false;   // a busy link service: one tap to ask again (panel 3 F12)
       document.getElementById('box').className = 'now';
     } catch (e) {}
   }
