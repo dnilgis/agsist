@@ -30,6 +30,7 @@
  *     and choice (leave it out to take the card's product).
  *   AgRpGift.doneHtml(G, result) -> the thank-you message for the order box.
  *   Smaller pieces: norm(code), product(p) ("one framed 12 x 18 Rain Print"),
+ *   dayText(day) ("Dec 26, 2026" from that or from 2026-12-26),
  *   summary(designCode) (place, year, name, dedication, style), LOCKABLE.
  *
  * Nothing here is sent anywhere except the worker, and only the code and the
@@ -45,8 +46,8 @@
   var RE = /^[0-9A-HJKMNP-TV-Z]{12}$/;
   var PRODUCT = {
     digital: ['the digital file of one Rain Print', 'Rain Print digital file'],
-    print12x18: ['one 12 x 18 Rain Print, shipped free', '12 x 18 print'],
-    framed12x18: ['one framed 12 x 18 Rain Print, shipped free', 'Framed 12 x 18 print']
+    print12x18: ['one 12 x 18 Rain Print, shipping included', '12 x 18 print'],
+    framed12x18: ['one framed 12 x 18 Rain Print, shipping included', 'Framed 12 x 18 print']
   };
   // Every design input on rain-print.html a locked card can hold still.
   var LOCKABLE = ['place', 'station', 'year', 'style', 'layout', 'palette', 'size', 'cmp', 'name', 'dedication', 'markers', 'normals', 'records'];
@@ -60,6 +61,15 @@
     return 'RP-' + s.slice(0, 4) + '-' + s.slice(4, 8) + '-' + s.slice(8);
   }
   function product(p, short) { var x = PRODUCT[p]; return x ? x[short ? 1 : 0] : 'one Rain Print'; }
+  // A day as people write it: "Dec 26, 2026". The worker already sends that;
+  // an ISO day (2026-12-26, from an older worker or the admin page) is turned
+  // into it, and anything else is shown as it came.
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function dayText(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v == null ? '' : v));
+    if (!m || +m[2] < 1 || +m[2] > 12) return v == null ? '' : String(v);
+    return MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+  }
 
   // A design code's words, without loading the whole Rain Print page script:
   // base64url of "2|place|station|year|keys|name[|day|label]...[|dedication]".
@@ -103,7 +113,7 @@
   }
   function errorText(j) {
     if (j.status_code === 429) return 'Too many tries from this connection. Wait an hour and try again, or write to sig@farmers1st.com.';
-    if (!j.status_code || j.status_code >= 500) return 'We couldn\u2019t reach the gift card desk just now. Try again in a minute.';
+    if (!j.status_code || j.status_code >= 500) return 'The gift card check didn\u2019t answer. Try again in a minute.';
     return j.error || 'That code didn\u2019t work. Check it against the card.';
   }
 
@@ -120,15 +130,15 @@
     var from = G.from_line ? 'A gift from ' + G.from_line : 'A gift for you';
     var what = product(G.product);
     var yr = G.lock && G.lock.summary ? G.lock.summary.year : '';
-    if (G.status === 'redeemed') G.text = 'This card was used on ' + G.redeemed_on + '. If that wasn\u2019t you, write to sig@farmers1st.com.';
-    else if (G.status === 'void') G.text = 'This card is no longer active. Write to sig@farmers1st.com and Sig will sort it out.';
+    if (G.status === 'redeemed') G.text = 'This card was used on ' + dayText(G.redeemed_on) + '. If that wasn\u2019t you, write to sig@farmers1st.com.';
+    else if (G.status === 'void') G.text = 'This card is no longer active. Write to me at sig@farmers1st.com and I\u2019ll sort it out.';
     else if (G.status === 'pending') G.text = 'This card is being used right now. Try again in two minutes.';
     else {
       G.usable = true;
       G.text = from + ': ' + what + '. ' + (G.lock
         ? 'The design is already chosen' + (G.lock.edit === 'name' ? '; you can change the name line' : '') + '. Add where it goes and press Use my gift.'
         : 'Pick the farm and the year, then press Use my gift.') +
-        (G.ships === 'january' ? ' Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the year\u2019s last rain is in.' : '');
+        (G.ships === 'january' ? ' Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the full year is in.' : '');
     }
     return G;
   }
@@ -211,9 +221,9 @@
   }
   function doneHtml(G, r) {
     var jan = r && r.ships === 'january';
-    return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> Sig has your order and will email you a proof' +
-      (jan ? ' in January, once the year\u2019s last rain is in' : ' within a day') + '. Nothing prints until you say it looks right.</p>' +
-      (r && r.upgrade ? '<p>You picked more than the card covers, so Sig will email a link for the difference.</p>' : '') +
+    return '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Your gift is in.</b> I have your order and will email you a proof' +
+      (jan ? ' in January, once the full year is in' : ' within 1 business day') + '. Nothing prints until you say it looks right.</p>' +
+      (r && r.upgrade ? '<p>You picked more than the card covers, so I\u2019ll email you a link for the difference.</p>' : '') +
       '<p>Card ' + esc(G.code) + ' is now used.</p></div>';
   }
   // For rp-gift.html: the card's own data (needs the k from Sig's link).
@@ -227,5 +237,5 @@
   }
 
   root.AgRpGift = { norm: norm, product: product, summary: summary, fromUrl: fromUrl, open: open, redeem: redeem,
-    doneHtml: doneHtml, card: card, errorText: errorText, LOCKABLE: LOCKABLE, API: API, _state: stateFrom };
+    doneHtml: doneHtml, card: card, errorText: errorText, dayText: dayText, LOCKABLE: LOCKABLE, API: API, _state: stateFrom };
 })(typeof window !== 'undefined' ? window : this);

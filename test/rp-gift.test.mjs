@@ -399,13 +399,29 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.equal(s.place, "Chetek, WI"); assert.equal(s.year, 2025); assert.equal(s.name, "The Olson Farm"); assert.equal(s.style, "Roots");
   const open = G._state({ ok: true, kind: "open", product: "framed12x18", to: "Dad", from_line: "Kate", ships: "now", status: "issued" }, good);
   assert.equal(open.usable, true);
-  assert.match(open.text, /^A gift from Kate: one framed 12 x 18 Rain Print, shipped free\. Pick the farm and the year/);
+  assert.match(open.text, /^A gift from Kate: one framed 12 x 18 Rain Print, shipping included\. Pick the farm and the year/);
   const lk = G._state({ ok: true, kind: "locked", product: "print12x18", lock: { design_code: CODE, edit: "name" }, ships: "january", status: "issued" }, good);
   assert.deepEqual(lk.locked.includes("name"), false);
   assert.ok(lk.locked.includes("year") && lk.locked.includes("place"));
   assert.match(lk.text, /Your 2025 print comes in January/);
   const used = G._state({ ok: true, status: "redeemed", redeemed_on: "Dec 28, 2026" }, good);
   assert.equal(used.usable, false); assert.match(used.text, /used on Dec 28, 2026/);
+  // A redeemed day sent as ISO (an older worker) still reads "Dec 26, 2026".
+  assert.match(G._state({ ok: true, status: "redeemed", redeemed_on: "2026-12-26" }, good).text, /used on Dec 26, 2026\./);
+  assert.equal(G.dayText("2026-01-05"), "Jan 5, 2026");
+  assert.equal(G.dayText("Dec 28, 2026"), "Dec 28, 2026");
+  // Sig speaks for himself on the Rain Print page, and the promises match the page's.
+  const v = G._state({ ok: true, status: "void" }, good).text;
+  assert.equal(v, "This card is no longer active. Write to me at sig@farmers1st.com and I’ll sort it out.");
+  assert.equal(G.errorText({ status_code: 0 }), "The gift card check didn’t answer. Try again in a minute.");
+  assert.equal(G.errorText({ status_code: 503 }), "The gift card check didn’t answer. Try again in a minute.");
+  assert.match(lk.text, /comes in January, once the full year is in\.$/);
+  const now = G.doneHtml({ code: good }, { ships: "now" });
+  assert.match(now, /I have your order and will email you a proof within 1 business day\./);
+  const jan = G.doneHtml({ code: good }, { ships: "january", upgrade: true });
+  assert.match(jan, /a proof in January, once the full year is in\./);
+  assert.match(jan, /so I’ll email you a link for the difference\./);
+  for (const t of [now, jan, v]) assert.doesNotMatch(t, /\bSig (has|will)\b|last rain is in|within a day/);
   assert.equal(G._state({ ok: false, status_code: 429 }, good).usable, false);
   for (const f of ["components/rp-gift.js", "rp-gift.html"]) assert.doesNotMatch(read(f), /—/, f + ": no em dashes");
 });
