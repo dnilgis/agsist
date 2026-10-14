@@ -189,13 +189,11 @@ async function fileQr(page, bytes, mime) {
     const W = im.naturalWidth, Hh = im.naturalHeight, x0 = Math.round(W * 0.84), y0 = Math.round(Hh * 0.76), w = W - x0, h = Hh - y0;
     const c = document.createElement("canvas"); c.width = w; c.height = h;
     c.getContext("2d").drawImage(im, x0, y0, w, h, 0, 0, w, h);
-    return { w, h, d: Array.from(c.getContext("2d").getImageData(0, 0, w, h).data), url: c.toDataURL() };
+    return { w, h, d: Array.from(c.getContext("2d").getImageData(0, 0, w, h).data) };
   }, [Buffer.from(bytes).toString("base64"), mime]);
-  if (process.env.RPQR_DUMP) require("node:fs").writeFileSync(process.env.RPQR_DUMP, Buffer.from(px.url.split(",")[1], "base64"));
   const r = jsQR(inked(px.d), px.w, px.h);
   return r ? r.data : null;
 }
-const require = createRequire(import.meta.url);
 function pdfJpeg(buf) {
   const s = buf.toString("latin1"), i = s.indexOf("/Subtype /Image"), a = s.indexOf("stream\n", i) + 7, b = s.indexOf("\nendstream", a);
   return buf.subarray(a, b);
