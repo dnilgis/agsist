@@ -219,6 +219,7 @@
   .rp-prods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
   .rp-prod{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;display:flex;flex-direction:column;gap:.45rem}
   .rp-prod h3{margin:0;font-size:var(--fs-lg)}
+  .rp-onwall{margin:-6px -6px .35rem}.rp-onwall img{display:block;width:100%;height:auto;border-radius:var(--r-sm,6px)}.rp-onwall figcaption{margin-top:.3rem;font-size:var(--fs-xs,.78rem);color:var(--text-dim)}
   .rp-price{font-size:1.75rem;font-weight:700;font-family:var(--font-mono);color:var(--text);line-height:1.1}
   .rp-prod ul{margin:.1rem 0 .2rem;padding:0 0 0 1.05rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5;flex:1}
   .rp-prod li{margin:.15rem 0}
@@ -572,7 +573,7 @@
           <ul><li>Shipping included, anywhere in the 50 states</li><li>I print it myself, and you see a proof first</li><li>Matte paper</li><li>Ships flat between chipboard</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul>
           <p class="rp-cut" id="rp-cut-print12x18" hidden></p>
           <button class="btn btn-primary rp-buy-btn" type="button" data-choice="print12x18">Order the print</button><p class="rp-proof-first">You get a proof before anything prints.</p></div>
-        <div class="rp-prod rp-prod-feat"><h3>12 x 18 framed</h3><div class="rp-price" data-price="framed12x18">$89</div>
+        <div class="rp-prod rp-prod-feat"><figure class="rp-onwall"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="lazy" decoding="async" alt="A framed 12 x 18 Rain Print in a black frame on the painted steel wall of a farm shop."></picture><figcaption>Example. A 12 x 18 print, framed, on a shop wall.</figcaption></figure><h3>12 x 18 framed</h3><div class="rp-price" data-price="framed12x18">$89</div>
           <ul><li>Shipping included, anywhere in the 50 states</li><li>The same print in a black stock frame, no mat</li><li>Real glass front, packed with corner guards and foam, double-boxed</li><li>Arrives ready to hang</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul>
           <p class="rp-cut" id="rp-cut-framed12x18" hidden></p>
           <button class="btn btn-primary rp-buy-btn" type="button" data-choice="framed12x18">Order it framed</button><p class="rp-proof-first">You get a proof before anything prints.</p></div>

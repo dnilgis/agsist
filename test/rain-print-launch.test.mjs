@@ -508,7 +508,8 @@ test("outside review, as Sig took it: example years, the framed card featured, t
   assert.equal(fam.name, "The Johnson Farm", "the family year wears the example, so it can't be ordered by mistake");
   assert.equal(fam.markers.length, 3);
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
-  assert.match(HTML, /<div class="rp-prod rp-prod-feat"><h3>12 x 18 framed<\/h3>/);
+  // The featured framed card may open with its wall picture, which must say it is an example.
+  assert.match(HTML, /<div class="rp-prod rp-prod-feat">(<figure class="rp-onwall">.*?<figcaption>Example\.[^<]*<\/figcaption><\/figure>)?<h3>12 x 18 framed<\/h3>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
   assert.equal((HTML.match(/<\/button><p class="rp-proof-first">You get a proof before anything prints\.<\/p>/g) || []).length, 2, "right under the print and framed buttons");
   assert.match(HTML, /data-choice="digital">Order the file<\/button><p class="rp-proof-first">Want a change after\? Write to me and I&rsquo;ll redo it\.<\/p>/, "the file has no proof step (2026-10-14)");
