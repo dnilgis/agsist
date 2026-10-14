@@ -96,7 +96,7 @@
      carries. A picture with a transparent background keeps its shape from its
      alpha (near-white bits inside it drop out); an opaque one (a JPG) reads
      its darkness against its lightest tone, so a white background becomes
-     transparent and the darkest part prints solid. -> Uint8ClampedArray. */
+     transparent and anything from a mid color down prints solid. -> Uint8ClampedArray. */
   function inkPixels(px, inkHex) {
     var d = px.data, n = px.width * px.height, out = new Uint8ClampedArray(n * 4), ink = hexRgb(inkHex);
     var clearN = 0, hist = new Array(256).fill(0), solid = 0;
@@ -112,7 +112,8 @@
     for (var j = 0; j < n; j++) {
       var p = j * 4, al = d[p + 3] / 255, L = lum(d, p), c;
       if (hasClear) c = al * (L <= 0.88 ? 1 : L >= 0.97 ? 0 : (0.97 - L) / 0.09);
-      else c = al * Math.min(1, Math.max(0, (hi - 0.04 - L) / span));
+      // a colored part (a red barn, a green field) prints as solid ink, not gray; paper-light stays paper
+      else c = al * Math.min(1, Math.max(0, 1.6 * (hi - 0.04 - L) / span));
       out[p] = ink[0]; out[p + 1] = ink[1]; out[p + 2] = ink[2]; out[p + 3] = Math.round(255 * c);
     }
     return out;

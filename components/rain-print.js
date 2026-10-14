@@ -166,7 +166,7 @@
     s.records = x.records === true || x.records === '1' || x.records === 1;
     s.logo = cleanLogo(x.logo);
     // ink color unless the design says its own colors
-    s.logoInk = !(x.logoInk === false || x.logoInk === '0' || x.logoInk === 0);
+    s.logoInk = !s.logo || !(x.logoInk === false || x.logoInk === '0' || x.logoInk === 0);
     return s;
   }
 
@@ -1241,6 +1241,9 @@
     $('rp-logo-inks').hidden = !(LOGO && LOGO.color);
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (ST.logoInk ? '1' : '0'); });
     if (art) { if (th.getAttribute('src') !== art.href) th.src = art.href; th.hidden = false; } else { th.hidden = true; th.removeAttribute('src'); }
+    // Sig's print files page (?maker=1): a link to the file the buyer uploaded (a Stripe order carries only the design)
+    var mk = $('rp-maker-logo');
+    if (MAKER && mk) { mk.hidden = !ST.logo; if (ST.logo) mk.innerHTML = 'Logo file: <a href="' + LOGO_LINK + ST.logo + '" rel="noopener">' + LOGO_LINK + ST.logo + '</a> (' + (ST.logoInk ? 'printed in the ink color' : 'printed in its own colors') + ')'; }
     if (!LOGO) return;
     if (LOGO.state === 'saving') return logoMsg('Saving the logo\u2026');
     if (LOGO.state === 'loading') return logoMsg('Loading the logo\u2026');
