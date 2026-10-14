@@ -1375,15 +1375,25 @@
     var my = ++reqToken;
     ST = next;
     if (ST.records) recordsReady();
-    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = '';
+    $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; EX_NOTE = false;
+    // a note about the last draw's station is about that draw only
+    if (!$('rp-link-note').classList.contains('rp-bad')) $('rp-link-note').hidden = true;
     var go = $('rp-go'), sel = $('rp-station');
+    // Draw is about to turn off: keep the keyboard on the town box, not lost on the page
+    if (doc.activeElement === go) { try { $('rp-place').focus({ preventScroll: true }); } catch (err) {} }
     go.disabled = true; sel.disabled = true;
+    // nothing drawn yet: say what is being drawn, and tell a screen reader the box is busy
+    if (!DATA && !SAMPLE && ST.place && ST.year) {
+      art.innerHTML = '<p class="rp-placeholder">Drawing ' + esc(ST.place) + ', ' + ST.year + ' from NOAA records\u2026</p>';
+      art.classList.add('rp-empty');
+    }
+    art.setAttribute('aria-busy', 'true');
     BLOCKED = ''; DRAWING = true;
     $('rp-retry-row').hidden = true;
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
     var g, chosen, picked, autoPick = false;
-    var done = function () { if (my === reqToken) { DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
+    var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
     Promise.resolve().then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
@@ -1413,32 +1423,60 @@
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
       STATIONS = list;
-      if (!list.length) throw new Error(ST.gift ? 'No NOAA station within about 40 miles of ' + g.name + ' has a ' + ST.year + ' record from January 1 on. Try a bigger town nearby.'
-        : 'No NOAA station within about 40 miles of ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
-      var want = list.find(function (s) { return s.sid === ST.station; });
-      if (want) { chosen = want; return daily(want.sid, ST.year).then(function (d) { picked = d; }); }
-      // Nearest first; take the first of three with a near-complete year, else the most complete.
-      autoPick = true;
-      var tries = list.slice(0, 3), best = null, bestSt = null, i = 0;
-      var step = function () {
-        if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
-        var s = tries[i++];
-        setStatus('Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
-        return daily(s.sid, ST.year).then(function (d) {
-          if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
-          if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
-          return step();
-        }, function () { return step(); });
+      var noStation = function () {
+        return new Error(ST.gift ? 'No NOAA station near ' + g.name + ' is reporting for ' + ST.year + ' from January 1 on. Try a bigger town nearby.'
+          : 'No NOAA station near ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
       };
-      return step();
+      /* A link that names its station (a county rain page, a shared design)
+         draws that station, even when the station list here missed it (the box
+         around the town, a record that starts after Jan 1, the stale filter).
+         When NOAA won't give it, the nearest good station draws instead and
+         the note under the town box says so (2026-10-14: it was swapped, or
+         stuck, without a word). */
+      var linked = ST.station, want = linked ? list.find(function (s) { return s.sid === linked; }) : null;
+      var instead = function () {
+        if (my !== reqToken) throw 'stale';
+        ST.station = '';
+        var n = $('rp-link-note');
+        n.textContent = 'The station in the link (' + sidPlain(linked) + ') didn\u2019t answer from NOAA just now, so this print uses the nearest station with a good record.';
+        n.classList.remove('rp-bad'); n.hidden = false;
+        return nearest(linked);
+      };
+      if (want) return daily(want.sid, ST.year).then(function (d) { chosen = want; picked = d; }, instead);
+      if (linked) return daily(linked, ST.year).then(function (d) {
+        if (!d || !d.meta || !Array.isArray(d.meta.ll) || d.meta.ll.length < 2) throw new Error('no place for that station');
+        chosen = { sid: linked, name: d.meta.name || linked, state: d.meta.state || '', ll: d.meta.ll, km: haversine(g.latitude, g.longitude, d.meta.ll[1], d.meta.ll[0]),
+          valid_daterange: [[ST.year + '-01-01', lastDayOf(ST.year)]] };
+        STATIONS = [chosen].concat(list);
+        picked = d;
+      }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
+      return nearest('');
+      // Nearest first; take the first of three with a near-complete year, else the most complete. skip: a station that just failed.
+      function nearest(skip) {
+        var pool = list.filter(function (s) { return s.sid !== skip; });
+        if (!pool.length) throw noStation();
+        autoPick = true;
+        var tries = pool.slice(0, 3), best = null, bestSt = null, i = 0;
+        var step = function () {
+          if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
+          var s = tries[i++];
+          setStatus('Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
+          return daily(s.sid, ST.year).then(function (d) {
+            if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
+            if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
+            return step();
+          }, function () { return step(); });
+        };
+        return step();
+      }
     }).then(function () {
       if (my !== reqToken) throw 'stale';
       // This year with nothing back yet: the station is still the one for the print, so ordering stays open.
       if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
-      if (!picked) throw new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.');
+      if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; throw none; }
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
-        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ' away, record ' + s.valid_daterange[0][0].slice(0, 4) + '–' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
       }).join('');
       sel.value = chosen.sid;
       var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
@@ -1446,7 +1484,9 @@
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
         blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
-          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.' : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has a full ' + ST.year + '. Try another year, or a bigger town nearby.'));
+          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.'
+            : Math.min(3, STATIONS.length) === 1 ? 'The only station near ' + g.name + ' doesn\u2019t have enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'
+            : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'));
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
@@ -1487,6 +1527,8 @@
       if (SAMPLE) { if (my === reqToken) clearSample(); return; }   // the sample failed: the empty box, quietly
       if (err === 'blocked' || err === 'noart') return;
       if (my !== reqToken) return;
+      // the town came from the reader's connection, not from them: no red error for a town they never typed
+      if (!e && !preset && NEAR && ST.place === NEAR) { NEAR = ''; $('rp-place').value = ''; runSample(); return; }
       failDraw(err);
     }).then(done);
   }
