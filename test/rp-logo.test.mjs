@@ -200,7 +200,7 @@ test("the page: the upload under the name, its help line, the color switch, the 
   assert.match(H, />Logo for the note card or prints \(optional\)</);
   const i = (s) => H.indexOf(s);
   assert.ok(i("/components/rp-logo.js?v=") > 0 && i("/components/rp-logo.js?v=") < i("/components/rain-print.js?v="), "loaded before the engine");
-  assert.match(read("rp-gift.html"), /\/components\/rp-logo\.js\?v=1/);
+  assert.match(read("rp-gift.html"), /\/components\/rp-logo\.js\?v=2/);
   assert.match(E, /list\.push\(\['Logo', esc\(rows\['Logo'\]\) \+ \(la \? '<img class="rp-plogo"/);
   assert.match(E, /return 'added, ' \+ \(ST\.logoInk/);
   assert.match(E, /if \(ST\.logo\) x\.logo = ST\.logo;/);
