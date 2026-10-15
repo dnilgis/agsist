@@ -295,6 +295,72 @@ button,a,[role="button"] { touch-action: manipulation; }
     <div class="dm-state-grid" id="dm-state-grid"></div>
   </div>
 
+  <section class="dm-card dm-county" aria-labelledby="dm-county-h" style="margin:0 0 1.1rem">
+    <h2 id="dm-county-h" style="font-size:1rem;margin:0 0 .35rem">Your county since 2000</h2>
+    <p style="margin:0 0 .55rem;font-size:.85rem;color:var(--text-dim)">How many weeks at least half your county sat in severe drought (D2) or worse, from the Drought Monitor&rsquo;s county numbers as the <a href="/farmland-atlas#l=dr_share" style="color:var(--gold)">Farmland Atlas</a> keeps them. This week&rsquo;s map is above.</p>
+    <label for="dm-county-q" style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.25rem">County</label>
+    <input id="dm-county-q" type="search" autocomplete="off" placeholder="Type a county, like Story" style="width:100%;max-width:420px;box-sizing:border-box;padding:.55rem .7rem;min-height:44px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:inherit">
+    <div id="dm-county-list" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem"></div>
+    <div id="dm-county-out" aria-live="polite" style="margin-top:.6rem;font-size:.88rem;line-height:1.55"></div>
+  </section>
+  <script>
+  /* County lookup. Data AGSIST already publishes, loaded only when the box is used:
+     the Atlas county list (farmland-atlas/data/counties-index.json, [fips, "Name, ST", atlas path])
+     and one county's Atlas file (data/atlas/counties/<fips>.json, its "drought" block: weeks with
+     at least half the county's area in D2 or worse, per year since 2000). No number is made here. */
+  (function(){
+    var q=document.getElementById('dm-county-q'),list=document.getElementById('dm-county-list'),out=document.getElementById('dm-county-out');
+    if(!q)return;
+    var IDX=null,loading=null;
+    function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    function n(x){return Number(x).toLocaleString('en-US');}
+    function loadIdx(){
+      if(IDX)return Promise.resolve(IDX);
+      if(!loading)loading=fetch('/farmland-atlas/data/counties-index.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(a){IDX=a;return a;});
+      return loading;
+    }
+    function show(){
+      var t=q.value.trim().toLowerCase();list.innerHTML='';
+      if(t.length<2)return;
+      loadIdx().then(function(a){
+        if(q.value.trim().toLowerCase()!==t)return;
+        var hits=[];
+        for(var i=0;i<a.length&&hits.length<8;i++){if(a[i][1].toLowerCase().indexOf(t)===0)hits.push(a[i]);}
+        for(var j=0;j<a.length&&hits.length<8;j++){var nm=a[j][1].toLowerCase();if(nm.indexOf(t)>0&&hits.indexOf(a[j])<0)hits.push(a[j]);}
+        list.innerHTML=hits.length?hits.map(function(h,k){return '<button type="button" data-k="'+k+'" style="min-height:40px;padding:.3rem .65rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font:inherit;font-size:.82rem;cursor:pointer">'+esc(h[1])+'</button>';}).join(''):'<span style="font-size:.82rem;color:var(--text-muted)">No county by that name.</span>';
+        Array.prototype.forEach.call(list.querySelectorAll('button'),function(b){b.addEventListener('click',function(){pick(hits[+b.getAttribute('data-k')]);});});
+      }).catch(function(){list.innerHTML='<span style="font-size:.82rem;color:var(--text-muted)">The county list did not load. Reload the page.</span>';});
+    }
+    function pick(h){
+      list.innerHTML='';q.value=h[1];out.textContent='Loading '+h[1]+'\u2026';
+      fetch('/data/atlas/counties/'+h[0]+'.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(c){
+        var d=c.drought||{},links='<a href="'+esc(h[2])+'" style="color:var(--gold)">Full county record in the Atlas</a>';
+        if(d.status!=='ok'){
+          out.innerHTML='<strong>'+esc(h[1])+'</strong>: withheld in the Atlas ('+esc(String(d.status||'no drought record').replace(/^withheld:\s*/,''))+'). '+links;
+          return;
+        }
+        var py=d.partial_year,last=d.series&&d.series[String(d.last_full_year)],w=d.weeks||{},wy=d.worst_year;
+        var rows=[];
+        if(py)rows.push(py.year+' so far: '+py.d2+' of '+py.maps+' weekly maps');
+        if(last)rows.push(d.last_full_year+': '+last.d2+' of '+last.maps+' weekly maps');
+        if(w.counted)rows.push(d.first_year+'\u2013'+d.last_full_year+': '+n(w.d2)+' of '+n(w.counted)+' weekly maps ('+w.share_d2_pct+'%)'+(w.d3!=null?'; '+n(w.d3)+' of them at D3 or worse':''));
+        if(wy&&wy.d2>0)rows.push('Worst year: '+wy.year+', '+wy.d2+' weeks');
+        var built=c.generated?new Date(c.generated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):'';
+        out.innerHTML='<strong>'+esc(h[1])+'</strong>, weeks with at least half the county in D2 or worse:'
+          +'<ul style="margin:.3rem 0 .4rem;padding-left:1.1rem">'+rows.map(function(r){return '<li>'+esc(r)+'</li>';}).join('')+'</ul>'
+          +'<span style="font-size:.8rem;color:var(--text-muted)">U.S. Drought Monitor county statistics (NDMC), counted by the Atlas'+(built?', built '+esc(built):'')+'. Half the county is the Atlas&rsquo;s line, not an FSA program rule.</span>'
+          +'<div id="dm-county-links" style="margin-top:.4rem">'+links+'</div>';
+        var rain=h[2].replace(/^\/farmland-atlas\//,'/rain/');
+        fetch(rain,{method:'HEAD'}).then(function(r){
+          if(!r.ok)return;var l=document.getElementById('dm-county-links');
+          if(l&&q.value===h[1])l.insertAdjacentHTML('beforeend',' &middot; <a href="'+esc(rain)+'" style="color:var(--gold)">Rain so far this year</a>');
+        }).catch(function(){});
+      }).catch(function(){out.textContent='That county\u2019s record did not load. Try again.';});
+    }
+    q.addEventListener('input',show);
+  })();
+  </script>
+
   <div class="dm-section-label">Crop stress windows: when drought hurts most</div>
   <div class="tblscroll" tabindex="0" role="region" aria-label="Crop drought stress calendar table, scrolls sideways"><table class="dm-stress-table" aria-label="Crop drought stress calendar">
     <thead>
