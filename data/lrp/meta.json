@@ -264,16 +264,13 @@
   "aev_deleted": 0,
   "aev_restated": 399,
   "aev_rows": 729601,
-  "file_errors": {
-   "2025_ADMLivestockLrp_Daily_20260325.zip": "BadZipFile: File is not a zip file"
-  },
   "last_run": {
    "failed": 0,
-   "left": 0,
-   "read": 322,
-   "seconds": 85,
+   "left": 1,
+   "read": 0,
+   "seconds": 2,
    "stopped_for_time": false,
-   "unreadable": 1
+   "unreadable": 0
   },
   "offer_days_written": 3308,
   "offers_restated": 1,
@@ -3738,5 +3735,16 @@
    }
   }
  },
+ "unreadable_files": [
+  {
+   "date": "20260325",
+   "error": "BadZipFile: File is not a zip file",
+   "file": "2025_ADMLivestockLrp_Daily_20260325.zip",
+   "offers_for_that_date_in_history": false,
+   "ry": "2025",
+   "status": "retrying",
+   "tries": 1
+  }
+ ],
  "v": 1
 }
