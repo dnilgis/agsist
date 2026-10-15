@@ -175,7 +175,7 @@ test("a new visit: empty boxes with the example as gray hints; the print at the 
     assert.equal(await page.inputValue("#rp-m1l"), "");
     assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), "What happened (13 letters)");
     assert.match(await page.innerHTML("#rp-art"), /The Johnson Farm/, "the print at the top shows what a print can carry");
-    assert.equal(await page.textContent("#rp-sample-txt"), "Example words on your area, Chetek, WI, 2025. Yours start blank.");
+    assert.equal(await page.textContent("#rp-sample-txt"), "Your area, Chetek, WI, 2025, with example words. Yours start blank.");
     assert.ok(!/name=/.test(page.url()), "the example is never in the design: " + page.url());
     await shot(page, "landing-390-" + theme);
     // straight to checkout with nothing typed: one question about the name, then the reader's own blank print
@@ -224,7 +224,7 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await page.evaluate(() => window.scrollTo(0, 0));
     await settle(page);
     assert.equal(await page.isVisible("#rp-bar"), true, "the phone bar shows after a draw");
-    assert.equal(await page.textContent("#rp-bar-what"), "Print only · $" + J.print12x18);
+    assert.equal(await page.textContent("#rp-bar-what"), "Print · $" + J.print12x18);
     assert.equal(await page.textContent("#rp-bar-go"), "Check it and pay");
     await shot(page, "bar-390-" + theme);
     // not while a box has the keyboard
@@ -664,7 +664,7 @@ test("Your print: labeled controls, the magnifier, Esc back to Fit then closed, 
     assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "it opens at Fit");
     assert.match(await page.getAttribute("#rp-proof-stage", "aria-label"), /^The print\. +Place and year: Chetek, WI, 2025\. .*Name: Olson\./, "the print has its words");
     // the details: label above value, in the order a buyer checks them
-    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Dates", "Compared with", "Style", "When"]);
+    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "When"]);
     // one product state (2026-10-14): the sheet's picker is step 3's, no Style or Look of its own
     assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get"]);
     await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="print12x18"])');
