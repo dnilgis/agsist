@@ -1,25 +1,33 @@
 #!/usr/bin/env node
-/* bake_lrp.mjs: write the LRP record into lrp.html.
+/* bake_lrp.mjs: write the LRP numbers into lrp.html and lrp/record.html.
  *
  * components/lrp.js owns the tables and the formatting; this runs that same
  * file (no second copy) against data/lrp/bt.json, meta.json, today.json and
- * sob-loss.json and writes, between <!--lrp:NAME--> markers in lrp.html:
+ * sob-loss.json and writes, between <!--lrp:NAME--> markers:
  *
- *   answer   the first screen: does a lower coverage level beat 95 to 100%,
- *            the top-level record at today's subsidy, a worked lot, and what
- *            it means
+ * lrp.html (the calculator, /lrp):
  *   when     which sales day the offers are for, posted when, buy by when
  *            (neutral: the page's script says open or closed)
  *   offers0  a small dated summary of that day's offers, for readers with no
  *            JavaScript and for search engines
  *   first    the first reinsurance year of each type offered that day
+ *   back     since July 2020, what each $1 of premium at the top coverage
+ *            paid back, by animal and length (the page shows the reader's
+ *            animal only); hist0 the same in words for readers with no
+ *            JavaScript
+ *   faq      the visible FAQ; jsonld the WebApplication, FAQPage and
+ *            BreadcrumbList JSON-LD, written from the same list word for word
+ *   by       the byline with the date the data was read
+ *
+ * lrp/record.html (how the numbers were checked, /lrp/record):
+ *   answer   does a lower coverage level beat 95 to 100%, the top-level
+ *            record at today's subsidy, a worked lot, and what it means
  *   pick     "What the numbers would pick" (kept tests, else the closest call)
  *   record   the record at the subsidy in force each year, and since July 2020
  *   tested   all tests with their odds and verdicts
  *   method   the data, the method, gaps and the subsidy table by year
- *   faq      the visible FAQ; jsonld the WebApplication, FAQPage and
- *            BreadcrumbList JSON-LD, written from the same list word for word
- *   by       the byline with the date the data was read
+ *   by       the byline; the static header, footer and font blocks are
+ *            copied from lrp.html, so the two pages never drift
  *
  * The lrp workflow runs this after every publish of data/lrp.
  *
@@ -33,6 +41,7 @@ import { subsidy as btSubsidy, BANDS } from "./lrp_backtest.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PAGE = "lrp.html";
+const RECORD = "lrp/record.html";
 
 export function loadModule() {
   const ctx = { window: {}, Intl, Date };
@@ -150,7 +159,7 @@ export function faqList() {
     ["When is the LRP premium due?",
       `Not when you buy. The premium billing date is the first day of the second month after the end date (${HB}, section 21E). RMA set that date from 2026 on (${a(RMA.pm25028, "RMA PM-25-028")}, Apr 30, 2025). Premium can also be taken out of an indemnity (section 22E).`],
     ["How many head can I cover with LRP?",
-      `Feeder cattle and fed cattle: up to 12,000 head on one endorsement and 25,000 head a crop year, July 1 to June 30. Hogs: up to 70,000 head on one endorsement and 750,000 a crop year (${HB}, sections 23B, 24B and 25B).`],
+      `Feeder cattle and fed cattle: up to 12,000 head on one endorsement and 25,000 head a crop year, July 1 to June 30. Hogs: up to 70,000 head on one endorsement and 750,000 a crop year (${HB}, sections 23B, 24B and 25B). The crop year limit is combined across every endorsement you buy, and it counts your share of any farm or company that also buys LRP. Feeder cattle and fed cattle each have their own 25,000.`],
     ["Does LRP cover basis?",
       `No. It pays on the index, not on what you sell for (${HB}, sections 22B and 22D). If your local cash price falls further than the index, LRP does not cover the gap, and if the index falls while your cash price holds, it still pays. Nothing on this page includes basis.`],
     ["How does LRP compare with a put option?",
@@ -191,7 +200,7 @@ function lotLine(bt, today) {
   const r = bt.record[`all/feeder/${bt.method.base}/${LOT.len}`];
   if (!lo || !r || r.years < bt.method.min_years) return "";
   const coverHead = lo.cp * LOT.cwt, netHead = (r.net_now / 100) * coverHead;
-  return `<p class="lot"><b>For a lot:</b> ${LOT.head} steers at ${LOT.cwt} cwt, covered at ${money(lo.cp)} a cwt (that day&rsquo;s top ${LOT.len}-week price for weight 2 steers), is ${money(coverHead, 0)} of coverage a head. On the record&rsquo;s average day at today&rsquo;s subsidy, ${LOT.len} weeks came out ${netHead >= 0 ? "ahead" : "behind"} ${money(Math.abs(netHead))} a head, ${money(Math.abs(netHead * LOT.head), 0)} for the lot, before basis.</p>`;
+  return `<p class="lot"><b>For a lot:</b> ${LOT.head} head of steers at ${(LOT.cwt * 100).toLocaleString("en-US")} lb (${LOT.cwt} cwt), covered at ${money(lo.cp)} a cwt (that day&rsquo;s top ${LOT.len}-week price for weight 2 steers), is ${money(coverHead, 0)} of coverage a head. On the record&rsquo;s average day at today&rsquo;s subsidy, ${LOT.len} weeks came out ${netHead >= 0 ? "ahead" : "behind"} ${money(Math.abs(netHead))} a head, ${money(Math.abs(netHead * LOT.head), 0)} for the lot, before basis.</p>`;
 }
 
 function backLine(bt) {
@@ -208,13 +217,13 @@ export function answerHtml(bt, v, today) {
   if (!bt.kept.length) {
     a1 = `<p class="q">Does a lower LRP coverage level beat 95 to 100% coverage?</p>
         <p class="a">No lower coverage level beat 95 to 100% by more than luck could explain.</p>
-        <p class="jump"><a class="lrp-go" href="#today">Your premium today &darr;</a></p>
+        <p class="jump"><a class="lrp-go" href="/lrp">Your premium today</a></p>
         <p>That is on RMA&rsquo;s own record of every sales day since ${v.first}: ${v.family} tests of lower levels, and of the level with the best record so far, for feeder cattle, fed cattle and hogs. This compares coverage levels. It does not say whether to insure. Here is what the top coverage offered each day (about ${v.top} on average) did, per $100 of coverage, at today&rsquo;s subsidy:</p>`;
   } else {
     const names = bt.kept.map((k) => { const t = bt.tests[k]; return `${L.productName(t.product).toLowerCase()}, ${L.testLabel(t).toLowerCase()}`; });
     a1 = `<p class="q">Does a lower LRP coverage level beat 95 to 100% coverage?</p>
         <p class="a">On RMA&rsquo;s record, ${bt.kept.length} of ${v.family} tests held up: ${esc(names.join("; "))}.</p>
-        <p class="jump"><a class="lrp-go" href="#today">Your premium today &darr;</a></p>
+        <p class="jump"><a class="lrp-go" href="/lrp">Your premium today</a></p>
         <p>See What the numbers would pick below. Here is what the top coverage offered each day (about ${v.top} on average) did, per $100 of coverage, at today&rsquo;s subsidy:</p>`;
   }
   return `${a1}
@@ -356,6 +365,33 @@ export function firstYears(meta, today) {
   return JSON.stringify(out);
 }
 
+/* Since July 2020 (today's subsidy, the premium billed at the end): what
+   each $1 of the producer's premium at the top coverage paid back, by
+   animal and length, with the years behind it. Too few years: no number. */
+export function backJson(bt) {
+  const out = {};
+  for (const p of L.PRODUCTS) {
+    const id = L.ANIMAL_OF[p.comm];
+    out[id] = {};
+    for (const len of L.LENGTHS) {
+      const r = bt.record[`current/${p.id}/${bt.method.base}/${len}`];
+      if (!r) continue;
+      out[id][len] = r.years >= bt.method.min_years && r.cost_now > 0
+        ? { back: Math.round((r.paid / r.cost_now) * 100) / 100, years: r.years, paid: L.per100(r.paid_share) }
+        : { years: r.years };
+    }
+  }
+  out.min_years = bt.method.min_years;
+  return JSON.stringify(out);
+}
+
+/* the same, in words, for readers with no JavaScript: 13 weeks, each animal */
+export function hist0(bt) {
+  const cur = L.backPerDollar(bt, "current", 13, true);
+  if (!cur.length) return "";
+  return `Since July 2020, at the top coverage offered (95 to 100%) for 13 weeks, each $1 of premium the farmer paid got back ${list(cur.map((x) => `${money(x.back)} on ${x.product.name.toLowerCase()}`))}.`;
+}
+
 export function byHtml(v) {
   return `By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. <time datetime="${v.iso}">Record read ${v.asof}</time>.`;
 }
@@ -368,19 +404,43 @@ function put(h, name, body) {
   return h.replace(re, () => `<!--lrp:${name}-->${body}<!--/lrp:${name}-->`);
 }
 
-export function bake(h, bt, meta, today, sob = null) {
+function values(bt, meta, today, sob) {
   const v = bakeValues(bt, meta, today, sob);
   v.iso = `${bt.as_of.slice(0, 4)}-${bt.as_of.slice(4, 6)}-${bt.as_of.slice(6, 8)}`;
+  return v;
+}
+
+/* lrp.html: the calculator */
+export function bake(h, bt, meta, today, sob = null) {
+  const v = values(bt, meta, today, sob);
   h = put(h, "jsonld", jsonld(v));
-  h = put(h, "answer", answerHtml(bt, v, today));
   h = put(h, "when", whenHtml(today));
   h = put(h, "offers0", offersStatic(today));
   h = put(h, "first", firstYears(meta, today));
+  h = put(h, "back", backJson(bt));
+  h = put(h, "hist0", hist0(bt));
+  h = put(h, "faq", faqHtml(v));
+  h = put(h, "by", byHtml(v));
+  return h;
+}
+
+/* copy one static block (<!-- static-nav:NAME ... --> to <!-- /static-nav:NAME -->) from the calculator */
+function copyBlock(h, from, name) {
+  const re = new RegExp(`<!-- static-nav:${name}[\\s\\S]*?<!-- /static-nav:${name} -->`);
+  const m = from.match(re);
+  if (!m || !re.test(h)) throw new Error(`no static-nav:${name} block`);
+  return h.replace(re, () => m[0]);
+}
+
+/* lrp/record.html: how the numbers were checked */
+export function bakeRecord(h, calc, bt, meta, today, sob = null) {
+  const v = values(bt, meta, today, sob);
+  for (const name of ["fonts", "header", "footer"]) h = copyBlock(h, calc, name);
+  h = put(h, "answer", answerHtml(bt, v, today));
   h = put(h, "pick", pickHtml(bt, sob));
   h = put(h, "record", recordHtml(bt, v, sob));
   h = put(h, "tested", testedHtml(bt));
   h = put(h, "method", methodHtml(bt, meta, v));
-  h = put(h, "faq", faqHtml(v));
   h = put(h, "by", byHtml(v));
   return h;
 }
@@ -395,13 +455,19 @@ function main() {
   const { bt, meta, today, sob } = readAll();
   const before = readFileSync(ROOT + PAGE, "utf8");
   const after = bake(before, bt, meta, today, sob);
+  const rBefore = readFileSync(ROOT + RECORD, "utf8");
+  const rAfter = bakeRecord(rBefore, after, bt, meta, today, sob);
   if (check) {
-    if (after !== before) { console.error(`${PAGE} is stale: run node scripts/bake_lrp.mjs`); process.exit(1); }
-    console.log(`${PAGE} matches data/lrp`);
+    let bad = false;
+    if (after !== before) { console.error(`${PAGE} is stale: run node scripts/bake_lrp.mjs`); bad = true; }
+    if (rAfter !== rBefore) { console.error(`${RECORD} is stale: run node scripts/bake_lrp.mjs`); bad = true; }
+    if (bad) process.exit(1);
+    console.log(`${PAGE} and ${RECORD} match data/lrp`);
     return;
   }
   if (after !== before) writeFileSync(ROOT + PAGE, after);
-  console.log(after !== before ? `${PAGE} baked` : `${PAGE} unchanged`);
+  if (rAfter !== rBefore) writeFileSync(ROOT + RECORD, rAfter);
+  console.log(`${PAGE} ${after !== before ? "baked" : "unchanged"}; ${RECORD} ${rAfter !== rBefore ? "baked" : "unchanged"}`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();

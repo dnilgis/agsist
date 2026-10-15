@@ -13,8 +13,8 @@ name: lrp
 #     one file per sales day, about 130 MB once complete;
 #   * main gets data/lrp/ (today's offers, the actual ending values, meta,
 #     and bt.json from scripts/lrp_backtest.mjs), a few hundred KB, inside
-#     data/'s budget, plus lrp.html with the record baked in
-#     (scripts/bake_lrp.mjs).
+#     data/'s budget, plus lrp.html and lrp/record.html with the numbers
+#     baked in (scripts/bake_lrp.mjs).
 #
 # mode watch (every 15 minutes in RMA's posting window, see below): one look
 #   at the open years' folder listings and a HEAD on the newest file, against
@@ -265,6 +265,7 @@ jobs:
             if [ -f lrp.html ]; then
               node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed; lrp.html not rebaked"
               git add lrp.html
+              [ -f lrp/record.html ] && git add lrp/record.html
             fi
             git add -A "$P"
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
