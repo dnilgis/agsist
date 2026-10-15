@@ -13,7 +13,7 @@
    irrigation in the county. Anything else is withheld with its reason.
 
    The yield the calculator starts from is the same figure the Atlas county page
-   and the /rent table print: the county's 15-yr trend (projected to the current
+   and the /rent table print: the county's 14-yr trend (projected to the current
    year), fitted on the same practice as the rent (scripts/county_yield.py).
 
    Mount: AgRentCalc.mount(el, {st:'IA', fips:'19169'})
@@ -135,7 +135,7 @@
     var rk=c.pair&&c.pair.rent, rent=rk?c.rent[rk][latestYear(c.rent[rk])]:null, ry=rk?latestYear(c.rent[rk]):null;
     var t=(c.pair&&c.pair.corn&&c.pair.corn.t)||{}, ty=t.ty||parseInt(String(d.generated||'').slice(0,4),10);
     var seeded=(t.v!=null)?t.v:null;
-    var yh=seeded!=null?('15-yr trend (projected '+ty+'), '+BASIS[t.b]+', '+t.n+' years, R² '+(+t.r2).toFixed(2))
+    var yh=seeded!=null?('14-yr trend (projected '+ty+'), '+BASIS[t.b]+', '+t.n+' years, R² '+(+t.r2).toFixed(2))
       :(t.w?'County trend withheld: '+t.w+'. Type your own yield.':'No county trend. Type your own yield.');
     var bp=boardPrice(prices);
     el.innerHTML='<div class="rc">'
@@ -155,7 +155,7 @@
     function calc(){
       var y=parseFloat($('rc-y').value), p=parseFloat($('rc-p').value), b=parseFloat($('rc-b').value)||0, net=p+b;
       if(!(y>0)||!(p>0)||!(net>0)){ $('rc-v').textContent=''; $('rc-m').textContent=''; $('rc-x').textContent=!(net>0)&&p>0?'Price plus basis is at or below zero. Check the basis.':'Type a yield and a price to run the math.'; return; }
-      var gross=y*net, pct=rent/gross*100, ylab=(seeded!=null&&Math.abs(y-seeded)<0.05)?'15-yr trend, projected '+ty:'your yield';
+      var gross=y*net, pct=rent/gross*100, ylab=(seeded!=null&&Math.abs(y-seeded)<0.05)?'14-yr trend, projected '+ty:'your yield';
       $('rc-v').textContent=pct.toFixed(1)+'%'; $('rc-v').className='rc-v '+(pct>=35?'rc-neg':pct>=30?'rc-warn':'rc-pos');
       $('rc-m').innerHTML=esc(RENT[rk])+' '+ry+' <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(gross)+'</b> gross &rarr; <b>'+pct.toFixed(1)+'%</b>';
       $('rc-x').innerHTML='At '+y.toFixed(0)+' bu ('+esc(ylab)+') the rent is <b>$'+(rent/y).toFixed(2)+' a bushel</b>. At $'+net.toFixed(2)+' the acre grosses '+money(gross)+'; rent takes '+money(rent)+', leaving '+money(gross-rent)+' for everything else and you. Compare the share with this county&rsquo;s own history below, not with a rule of thumb.';

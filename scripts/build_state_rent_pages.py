@@ -418,7 +418,7 @@ def county_table(st, s, aslug=None):
     cols = [(t, TYPE_LABEL[t]) for t in ("nonirr", "irr", "pasture") if t in s["have_types"]]
     thead = "<th>County</th>" + "".join(
         f'<th title="{lab}, $/acre">{TYPE_SHORT[t]} {yr}</th>' for t, lab in cols)
-    thead += ('<th>YoY</th><th title="county corn yield, 15-year least-squares trend projected to %s, fitted on the same '
+    thead += ('<th>YoY</th><th title="county corn yield, 14-year least-squares trend projected to %s, fitted on the same '
               'practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend %s</th>' % (s["ty"], s["ty"]))
     body, seen = [], set()
     for c in sorted(s["counties"], key=lambda c: c["name"]):
@@ -648,7 +648,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h2>Every published county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
-  and drought). Corn trend is the county&rsquo;s 15-yr trend yield (projected {s['ty']}) from NASS county estimates,
+  and drought). Corn trend is the county&rsquo;s 14-yr trend yield (projected {s['ty']}) from NASS county estimates,
   fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
   one its rent share calculator starts from.</p>
   {county_table(st, s, aslug)}

@@ -524,7 +524,7 @@ COLUMNS = [
     ("corn_yield_median_bu_ac", "bu/acre", "NASS county yields", "median published county corn yield"),
     ("corn_yield_years", "years", "NASS county yields", "published years behind that median"),
     ("corn_yield_trend_bu_yr", "bu/acre/yr", "NASS county yields", "least-squares trend over the published years"),
-    ("corn_trend_bu_ac", "bu/acre", "NASS county yields", "15-yr least-squares trend projected to the current year, same practice as the rent (the figure rent per bushel uses)"),
+    ("corn_trend_bu_ac", "bu/acre", "NASS county yields", "14-yr least-squares trend (every published year in the 15 years ending with the current one) projected to the current year, same practice as the rent (the figure rent per bushel uses)"),
     ("corn_trend_year", "year", "NASS county yields", "year that trend is projected to"),
     ("corn_trend_practice", "", "NASS county yields", "dryland, irrigated, or all practices where NASS shows no irrigation"),
     ("claims_per_100_usd", "$", "RMA Summary of Business", "indemnity per $100 of liability, last ten closed crop years"),
@@ -1077,7 +1077,7 @@ def lede(W, f, rec, first_year=None):
     if rec["value_usd_ac"] is not None:
         bits.append("land and buildings %s an acre in the %s census%s" % (money(rec["value_usd_ac"]), rec["value_year"], ", flagged to read with care" if rec["value_flag"] else ""))
     if rec["corn_trend_bu_ac"] is not None:
-        bits.append("corn 15-yr trend %s bu/ac" % f1(rec["corn_trend_bu_ac"]))
+        bits.append("corn 14-yr trend %s bu/ac" % f1(rec["corn_trend_bu_ac"]))
     elif rec["corn_yield_median_bu_ac"] is not None:
         bits.append("corn yield %s bu/ac, %s" % (f1(rec["corn_yield_median_bu_ac"]),
                                                  "median of %s published years" % rec["corn_yield_years"]))
@@ -1173,7 +1173,7 @@ def county_page(W, f, d, stamp):
     irr_low = ok(Wt) and ish is not None and ish < 0.10
     irr_high = ok(Wt) and ish is not None and ish >= 0.10
     ry5 = recent_yield(Y, RL) if ok(Y) else None
-    # THE county corn yield: the 15-yr trend, projected to this year, on the
+    # THE county corn yield: the 14-yr trend, projected to this year, on the
     # same practice as the rent (scripts/county_yield.py). Rent per bushel,
     # the /rent table and the rent-share calculator all use this one figure.
     yt = W.ytrend.get(f) or {}
@@ -1243,10 +1243,10 @@ def county_page(W, f, d, stamp):
     elif ry5:
         keys += key("Corn yield, " + CY.label_avg(ry5["from"], ry5["to"]), f1(ry5["avg"]), " bu/ac",
                     "high and low dropped" + (" · " + ysub[0] if ylast else "") + (" · irrigated and dryland combined" if irr_high else "")
-                    + ((" · trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
+                    + ((" · rent-per-bushel trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
     elif ok(Y) and Y.get("median") is not None and not CY.ends_early(Y.get("last_year"), RL):
         keys += key("Corn yield, " + CY.label_median(Y["first_year"], Y["last_year"]), f1(Y["median"]), " bu/ac",
-                    "%s published years, all practices" % Y.get("n") + ((" · trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
+                    "%s published years, all practices" % Y.get("n") + ((" · rent-per-bushel trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
     else:
         stop = CY.ends_early(Y.get("last_year"), RL) if ok(Y) else None
         keys += key("Corn yield", None, " bu/ac", yt.get("w") or stop or (why(Y) if not ok(Y) else "no recent county yields"), None, f1, st)
@@ -1314,7 +1314,7 @@ def county_page(W, f, d, stamp):
         S1 += fwith("Rent as a share of corn gross", "%s (%s)" % (rr["pw"], rr["pwy"]))
     if rr:
         S1 += ('<p class="note">Share of gross is a past year, all observed: that year\'s rent, that year\'s county corn yield of the same practice and the '
-               'state price received, USDA NASS. Rent per bushel uses this year\'s rent over the 15-yr trend. The calculator below starts from that trend and lets you put in your own yield and price.</p>')
+               'state price received, USDA NASS. Rent per bushel uses this year\'s rent over the 14-yr trend. The calculator below starts from that trend and lets you put in your own yield and price.</p>')
     if f in W.rent_fips:
         S1 += ('<div class="act rcw"><button type="button" id="rc-open" data-st="%s" data-fips="%s" aria-expanded="false">Rent share calculator and history</button></div>'
                '<div id="rc-box" hidden></div>' % (esc(W.rent_st.get(f, st)), esc(f)))
@@ -1349,7 +1349,7 @@ def county_page(W, f, d, stamp):
             S3 += fact(CY.label_trend(yt["ty"]).capitalize(), f1(ytv) + " bu/ac", "%s county yields, %d years, R² %.2f; the figure rent per bushel uses" % (
                 CY.PRACTICE_WORDS.get(yt.get("b"), ""), yt.get("n") or 0, yt.get("r2") or 0))
         elif yt.get("w"):
-            S3 += fwith("15-yr trend", yt["w"])
+            S3 += fwith("Trend for rent per bushel", yt["w"])
         if ylast and ylast[1] is not None:
             S3 += fact(CY.label_year(ylast[0]).capitalize(), f1(ylast[1]) + " bu/ac", "all practices")
         if ry5:
