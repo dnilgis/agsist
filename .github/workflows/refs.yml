@@ -68,7 +68,8 @@ jobs:
 
       - name: Check the input
         run: |
-          if ! printf '%s' "$IN_IDS" | grep -Eq '^[a-z0-9,-]*$'; then
+          # an empty input means every source; grep sees no line at all for "", so test it only when set
+          if [ -n "$IN_IDS" ] && ! printf '%s\n' "$IN_IDS" | grep -Eq '^[a-z0-9,-]+$'; then
             echo "::error::ids must be source ids separated by commas"; exit 1; fi
 
       - name: Check out the references branch
