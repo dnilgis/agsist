@@ -1,0 +1,33 @@
+{
+ "note": "Co-ops that post retail fertilizer prices on their own site. One line per co-op; the layout names the parser in scripts/fetch_coop_fert.py (html-table: a price table on a Barchart/AgriCharts co-op page; pdf-sheet: a dated price sheet PDF). cash_from names the column the co-op itself labels as its cash price. Town is filled only from the co-op's own site. Added by hand after scripts/fetch_coop_fert.py --discover found the page.",
+ "coops": [
+  {
+   "id": "tworivers-ks",
+   "name": "Two Rivers Coop",
+   "town": null,
+   "state": "KS",
+   "url": "https://www.tworiversks.coop/pages/custom.php?id=19995",
+   "layout": "html-table",
+   "cash_from": "cash"
+  },
+  {
+   "id": "mccune-ks",
+   "name": "McCune Farmers Union Coop",
+   "town": "McCune",
+   "state": "KS",
+   "url": "https://www.mccunecoop.com/fertilizer",
+   "layout": "html-table",
+   "cash_from": "discount",
+   "cash_label": "5% cash discount"
+  },
+  {
+   "id": "mulvane-ks",
+   "name": "Mulvane Cooperative Union",
+   "town": "Mulvane",
+   "state": "KS",
+   "url": "https://www.mulvanecoop.com/fertilizer",
+   "layout": "html-table",
+   "cash_from": "cash"
+  }
+ ]
+}

@@ -1,0 +1,92 @@
+name: Fertilizer co-op posted prices
+
+# Writes data/fertilizer-coops.json (and appends price changes to
+# data/fertilizer-coops-history.json) for the "What co-ops are posting" section
+# of fertilizer.html: the retail prices farm co-ops post on their own websites.
+# The co-ops are listed in scripts/coop_fert_sources.json; the reader is
+# scripts/fetch_coop_fert.py (one parser per page layout). The sandbox cannot
+# reach co-op sites; a runner can.
+#
+# Weekdays, morning Central. One request at a time with a pause between, a
+# handful of pages a day. Nothing new, no commit.
+#
+# DISCOVER: dispatch with "discover" ticked to ask every Barchart / AgriCharts
+# co-op site in the dnilgis/bids list whether it posts fertilizer prices. It
+# writes data/fertilizer-coops-discovery.json and commits it to the branch the
+# run is on; the run page lists each site found as a ::notice. A person then
+# adds the confirmed ones to scripts/coop_fert_sources.json.
+
+on:
+  workflow_dispatch:
+    inputs:
+      discover:
+        description: "Discover: ask each co-op site in the bids list for a fertilizer page (slow, about an hour)"
+        type: boolean
+        default: false
+      limit:
+        description: "Discover only: ask this many sites (blank = all)"
+        required: false
+        default: ""
+  schedule:
+    - cron: '41 13 * * 1-5'    # weekdays, morning Central
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fertilizer-coops
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_coop_fert.py --selftest
+      - name: Discover co-ops that post fertilizer prices
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.discover }}
+        env:
+          IN_LIMIT: ${{ inputs.limit }}
+        run: |
+          set -e
+          if [ -n "$IN_LIMIT" ]; then
+            printf '%s' "$IN_LIMIT" | grep -Eq '^[0-9]+$' || { echo "::error::limit must be a whole number"; exit 1; }
+            python scripts/fetch_coop_fert.py --discover --limit="$IN_LIMIT"
+          else
+            python scripts/fetch_coop_fert.py --discover
+          fi
+      - name: Fetch and write data/fertilizer-coops.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.discover) }}
+        run: python scripts/fetch_coop_fert.py
+
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json data/fertilizer-coops-discovery.json"
+          rm -rf /tmp/fcoop && mkdir -p /tmp/fcoop
+          for f in $FILES; do
+            [ -e "$f" ] && cp --parents "$f" /tmp/fcoop/ || true
+          done
+          [ -n "$(ls -A /tmp/fcoop)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/fcoop/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
