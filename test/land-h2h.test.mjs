@@ -100,7 +100,7 @@ test("the lease is called two pages, the FAQ stays word for word, and there is a
   assert.match(LEASE, /rechecked 2026-10-15/);
 });
 
-test("printed on Letter in Chromium, the lease is two pages with the signatures on one", { skip }, async () => {
+test("printed on Letter in Chromium, the lease is two whole pages: the deal and initials, then sections 9-14 and the signatures", { skip }, async () => {
   const srv = await serve();
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -114,6 +114,21 @@ test("printed on Letter in Chromium, the lease is two pages with the signatures 
       assert.equal(pages, 2, `state ${st || "none"}: ${pages} pages`);
       const sig = await pg.$eval(".lease .sig-grid", (e) => getComputedStyle(e).breakInside);
       assert.equal(sig, "avoid");
+      // Two whole halves (Sig, Oct 15): page 1 is sections 1-8 and ends with both initials,
+      // page 2 always starts clean at section 9. With the forced break, 2 pages in all means neither half spills.
+      const halves = await pg.evaluate(() => {
+        const p2 = document.querySelector(".lease .lease-p2");
+        const nums = (root, inP2) => [...document.querySelectorAll(".lease h3")]
+          .filter((h) => p2.contains(h) === inP2).map((h) => parseInt(h.textContent, 10));
+        return { brk: getComputedStyle(p2).breakBefore, one: nums(document, false), two: nums(document, true),
+          foot: getComputedStyle(document.querySelector(".lease-pg-foot")).display,
+          head: p2.firstElementChild.className };
+      });
+      assert.equal(halves.brk, "page");
+      assert.deepEqual(halves.one, [1, 2, 3, 4, 5, 6, 7, 8]);
+      assert.deepEqual(halves.two, [9, 10, 11, 12, 13, 14]);
+      assert.equal(halves.foot, "block", "page 1 ends with the initials line");
+      assert.equal(halves.head, "lease-pg-head", "page 2 opens with its continued line");
       assert.deepEqual(errors, []);
       await ctx.close();
     }

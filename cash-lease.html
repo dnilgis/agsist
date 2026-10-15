@@ -142,8 +142,17 @@
       .lf.lf-sm{width:1.05in}
       .lf.lf-xs{width:.6in}
       .lease .sig-grid,.lease-print-foot{break-inside:avoid;page-break-inside:avoid}
+      /* Page 1 is the deal (sections 1-8, initialed); page 2 always starts clean at section 9 */
+      .lease-p2{break-before:page;page-break-before:always}
+      .lease-pg-foot,.lease-pg-head{display:block !important;font-size:8pt;color:#333;letter-spacing:.04em}
+      .lease-pg-foot{margin-top:18px;text-align:right}
+      .lease-pg-head{margin:0 0 6px;font-weight:700}
+      .lease-p2 h3:first-of-type{margin-top:4px}
+      .lease-p2 .lf-area{min-height:1.6in}
+      /* the light-theme rules below set panel borders with higher specificity; paper gets none */
+      .cl-panel,.lease{border:none !important;box-shadow:none !important;border-radius:0 !important}
     }
-    .lease-print-foot{display:none}
+    .lease-print-foot,.lease-pg-foot,.lease-pg-head{display:none}
     .cl-by{font-size:.8rem;color:var(--text-dim,#8a948f);margin:.6rem 0 0}
     .cl-by a{color:var(--gold);text-decoration:none}
   /* 2026-10-08 light theme: this page was built dark-only, and loader.js now
@@ -340,6 +349,9 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
         <h3>8 &middot; Insurance &amp; liability</h3>
         <p>Each party carries their own liability insurance and insures their own property; neither is responsible for loss or injury caused by the other&rsquo;s negligence. Tenant&rsquo;s crops and inputs are Tenant&rsquo;s to insure.</p>
 
+        <p class="lease-pg-foot">Page 1 of 2 &nbsp;&middot;&nbsp; Owner initials ______ &nbsp;&nbsp; Tenant initials ______</p>
+        <div class="lease-p2">
+        <p class="lease-pg-head">CASH FARM LEASE, continued &nbsp;&middot;&nbsp; page 2 of 2</p>
         <h3>9 &middot; Entry</h3>
         <p>Owner (or Owner&rsquo;s agent) may enter at reasonable times to inspect the land, without interfering with field operations.</p>
 
@@ -372,6 +384,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
           </div>
         </div>
 
+        </div>
         <p class="lease-print-foot">A G S I S T &nbsp;&middot;&nbsp; agsist.com/cash-lease &nbsp;&middot;&nbsp; free tools for working farmers &nbsp;&middot;&nbsp; educational sample, not legal advice; attorney review advised</p>
       </div>
     </div>
