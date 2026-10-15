@@ -14,7 +14,8 @@ import { check, HARD, measure, parse } from "./fixtures/rp-label-check.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const X = engine(ROOT);
-const texts = (svg) => [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
+// a reader's date rides in a <tspan> after its words: read the text whole ("Planted May 21")
+const texts = (svg) => [...svg.matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
 
 function draw(spec, real = true) {
   const I = input(X, spec);
@@ -43,6 +44,14 @@ test("the checker catches what it is for (a green run means something)", () => {
   assert.ok(kinds(T(300, 300, "Planted", "mark:0") + `<g data-rp="rec:0"><line x1="320" y1="250" x2="320" y2="350" stroke="#3F4651" stroke-width="0.8"/></g>`).includes("text/line"));
   assert.ok(kinds(`<g data-rp="rec:0"><line x1="300" y1="250" x2="400" y2="350" stroke="#000" stroke-width="0.8"/></g><g data-rp="rec:1"><line x1="300" y1="350" x2="400" y2="250" stroke="#000" stroke-width="0.8"/></g>`).includes("leader/leader"));
   assert.ok(kinds(T(30, 300, "Planted", "mark:0")).includes("clip"));
+  // a reader's date in a <tspan> counts in its label's width, at its own size: "Planted May 21" reaches past "Planted"
+  const dated = (x) => `<g data-rp="mark:0"><text x="300" y="300" font-family="'IBM Plex Sans'" font-weight="500" font-size="21">Planted<tspan font-size="17" font-weight="400" fill="#5E6475"> May 21</tspan></text></g>` + T(x, 300, "Hail", "mark:1");
+  assert.ok(kinds(dated(410)).includes("text/text"), "the date runs into the next label");
+  assert.deepEqual(kinds(dated(470)), []);
+  const P = parse(dated(470)).texts[0];
+  assert.equal(P.s, "Planted May 21");
+  assert.ok(Math.abs(P.w - (measure("Planted", { fam: "IBM Plex Sans", w: 500, size: 21 }) + measure(" May 21", { fam: "IBM Plex Sans", w: 400, size: 17 }))) < 1e-6, "measured run by run");
+  assert.ok(kinds(`<g data-rp="x"><text x="300" y="300" font-size="16">a<tspan font-size="10">tiny</tspan></text></g>`).includes("small"), "a small tspan is small");
   assert.ok(kinds(T(1700, 300, "Harvest done", "mark:0")).includes("clip"));
   assert.ok(kinds(`<g data-rp="x"><text x="300" y="300" font-size="10">tiny</text></g>`).includes("small"));
   // a comma far from the name above it is not a collision; a letter under the name is
@@ -86,13 +95,13 @@ test("three dates on one day all print: stacked over their tick, or one label in
   // Staircase (panel 4, 2026-10-14): the dates go on the line, so three on Jan 1 each print whole beside the dot, inside the chart
   const r1 = draw({ ...base, style: "r1", place: "long", markers: "jan1x3" }).svg;
   const on = parse(r1).texts.filter((t) => /^mark/.test(t.rp));
-  assert.deepEqual(on.map((t) => t.s).sort(), ["Harvest done", "Planted corn", "Sold the crop"]);
+  assert.deepEqual(on.map((t) => t.s).sort(), ["Harvest done Jan 1", "Planted corn Jan 1", "Sold the crop Jan 1"]);
   for (const t of on) assert.ok(t.x > 198 && t.x < 198 + 160 && t.y + t.h < (base.normals ? 742 : 790), t.s + " sits beside the Jan 1 dot, above the axis");
   assert.deepEqual(HARD(check(r1)), []);
   // Roots keeps the row over the months: crowded at Jan 1 they join in date order over the tick
   const { svg } = draw({ ...base, style: "r2", place: "long", markers: "jan1x3" });
   const rows = parse(svg).texts.filter((t) => /^mark/.test(t.rp));
-  assert.equal(rows.map((t) => t.s).join(" · "), "Planted corn · Sold the crop · Harvest done");
+  assert.equal(rows.map((t) => t.s).join(" · "), "Planted corn Jan 1 · Sold the crop Jan 1 · Harvest done Jan 1");
   for (const t of rows) assert.ok(t.x < 207 && t.x + t.w > 207, t.s + " sits over Jan 1");
   assert.deepEqual(HARD(check(svg)), []);
 });

@@ -95,7 +95,7 @@ export function parse(svg, opt = {}) {
   const re = /<(\/?)([a-zA-Z]+)((?:\s+[\w:-]+="[^"]*")*)\s*(\/?)>|([^<]+)/g;
   let m;
   while ((m = re.exec(svg))) {
-    if (m[5] !== undefined) { if (cur) cur.text += m[5]; continue; }
+    if (m[5] !== undefined) { if (cur) cur.runs.push({ s: m[5], f: cur.fs[cur.fs.length - 1] }); continue; }
     const close = m[1] === "/", tag = m[2], a = attrs(m[3] || ""), self = m[4] === "/";
     if (tag === "g") {
       if (close) { stack.pop(); depth--; }
@@ -104,23 +104,32 @@ export function parse(svg, opt = {}) {
     }
     const own = owner();
     if (own.rp === "wm") continue;   // the preview watermark runs over everything by design
+    // a <tspan> inside a text (a reader's date after its words) is measured in its own size and weight
+    if (tag === "tspan" && cur) {
+      if (close) { if (cur.fs.length > 1) cur.fs.pop(); }
+      else if (!self) { const p = cur.fs[cur.fs.length - 1]; cur.fs.push({ ...p, size: +(a["font-size"] || p.size), w: +(a["font-weight"] || p.w), it: a["font-style"] ? a["font-style"] === "italic" : p.it }); }
+      continue;
+    }
     if (tag === "text") {
       if (close) {
         if (cur) {
-          const s = unesc(cur.text), o = cur.o, size = +o["font-size"];
-          const f = { fam: o["font-family"] || "IBM Plex Sans", w: +(o["font-weight"] || 400), it: o["font-style"] === "italic", size };
+          const runs = cur.runs.map((r) => ({ s: unesc(r.s), f: r.f })), s = runs.map((r) => r.s).join(""), o = cur.o;
+          const size = Math.min(...cur.sizes, ...runs.map((r) => r.f.size));
           const ls = +(o["letter-spacing"] || 0), n = [...s].length;
-          const sum = meas(s, f), adv = sum + ls * n, ink = sum + ls * Math.max(0, n - 1);
+          const sum = runs.reduce((t, r) => t + meas(r.s, r.f), 0), adv = sum + ls * n, ink = sum + ls * Math.max(0, n - 1);
           const anchor = o["text-anchor"] || "start", x = +o.x, y = +o.y;
           const x0 = anchor === "middle" ? x - adv / 2 : anchor === "end" ? x - adv : x;
-          const v = inkV(s, f);
+          const vs = runs.map((r) => inkV(r.s, r.f)), v = { a: Math.max(0, ...vs.map((q) => q.a)), d: Math.max(0, ...vs.map((q) => q.d)) };
           // each glyph's own ink box too, for text that only nearly touches (a comma far from the name above it)
           const glyphs = []; let gx = x0;
-          for (const ch of s) { const gw = meas(ch, f), gv = inkV(ch, f); if (ch !== " ") glyphs.push({ x: gx, y: y - gv.a, w: gw, h: gv.a + gv.d }); gx += gw + ls; }
-          texts.push({ s, size, owner: cur.owner, rp: cur.rp, x: x0, y: y - v.a, w: ink, h: v.a + v.d, glyphs });
+          for (const r of runs) for (const ch of r.s) { const gw = meas(ch, r.f), gv = inkV(ch, r.f); if (ch !== " ") glyphs.push({ x: gx, y: y - gv.a, w: gw, h: gv.a + gv.d }); gx += gw + ls; }
+          texts.push({ s, size, owner: cur.owner, rp: cur.rp, x: x0, y: y - v.a, w: ink, h: v.a + v.d, glyphs, runs: runs.map((r) => ({ s: r.s, size: r.f.size, w: r.f.w })) });
         }
         cur = null;
-      } else cur = { o: a, text: "", owner: own.id, rp: own.rp };
+      } else {
+        const f = { fam: a["font-family"] || "IBM Plex Sans", w: +(a["font-weight"] || 400), it: a["font-style"] === "italic", size: +a["font-size"] };
+        cur = { o: a, runs: [], fs: [f], sizes: [f.size], owner: own.id, rp: own.rp };
+      }
       continue;
     }
     if (close) continue;

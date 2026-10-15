@@ -117,12 +117,37 @@
   }
   var measure = defaultMeasure;
   function st(o) { return { fam: o.fam || SANS, w: o.w || 400, it: !!o.it, size: o.size || 16, ls: o.ls || 0, fill: o.fill || C.ink, anchor: o.anchor || 'start' }; }
+  /* A reader's date rides after its words (panel 5, 2026-10-15: "Planted May 21"): the words carry the
+     date as \u0001May 21\u0002, drawn a size smaller in gray at the normal weight, on the same baseline.
+     Two dates merged into one label keep each date with its own words ("Planted May 2 · Hail May 4"). */
+  var DATE_RE = /\u0001([^\u0001\u0002]*)\u0002/;
+  function runs(s, o) {
+    var out = [], rest = String(s), m;
+    while ((m = DATE_RE.exec(rest))) {
+      if (m.index) out.push({ s: rest.slice(0, m.index), o: o });
+      out.push({ s: ' ' + m[1], o: dateSt(o), date: true });
+      rest = rest.slice(m.index + m[0].length);
+    }
+    if (rest) out.push({ s: rest, o: o });
+    return out;
+  }
+  // 17 u after the 21 u words on Staircase's line, 16 u after Roots' 20 u and the 19 u row under the months
+  function dateSt(o) { o = st(o || {}); return Object.assign({}, o, { size: o.size >= 21 ? 17 : 16, w: 400, fill: C.mute, it: false, ls: 0 }); }
+  function plain(s) { return String(s).replace(/\u0001([^\u0001\u0002]*)\u0002/g, ' $1'); }
   function W(s, o) {
+    if (DATE_RE.test(String(s))) return runs(s, st(o || {})).reduce(function (t, r) { return t + W(r.s, r.o); }, 0);
     o = st(o || {});
     var n = String(s).length;
     return measure(s, o) + o.ls * o.size * Math.max(0, n - 1);
   }
   function T(x, y, s, o) {
+    if (DATE_RE.test(String(s))) {
+      var rr = runs(s, st(o || {}));
+      // the first piece of words opens the line; each date is a tspan, and the words after it go back to the line's own style
+      return T(x, y, rr[0].date ? '' : rr[0].s, o).replace('</text>', rr.slice(rr[0].date ? 0 : 1).map(function (r) {
+        return r.date ? '<tspan font-size="' + n2(r.o.size) + '" font-weight="' + r.o.w + '" fill="' + r.o.fill + '">' + esc(r.s) + '</tspan>' : esc(r.s);
+      }).join('') + '</text>');
+    }
     o = st(o || {});
     var ls = o.ls ? ' letter-spacing="' + n2(o.ls * o.size) + '"' : '';
     var dx = o.ls ? (o.anchor === 'middle' ? o.ls * o.size / 2 : o.anchor === 'end' ? o.ls * o.size : 0) : 0;
@@ -137,8 +162,10 @@
   // the ink box of a line of text (the width from the font, the height from its letters)
   function box(x, y, s, o) {
     s = String(s);
-    var w = W(s, o), size = (o && o.size) || 16, a = (o && o.anchor) || 'start', up = asc(s) * size;
-    return { x: a === 'start' ? x : a === 'end' ? x - w : x - w / 2, y: y - up, w: w, h: up + desc(s) * size };
+    var w = W(s, o), a = (o && o.anchor) || 'start', rr = runs(s, st(o || {}));
+    var up = Math.max.apply(null, rr.map(function (r) { return r.s.trim() ? asc(r.s) * r.o.size : 0; }));
+    var dn = Math.max.apply(null, rr.map(function (r) { return r.s.trim() ? desc(r.s) * r.o.size : 0; }));
+    return { x: a === 'start' ? x : a === 'end' ? x - w : x - w / 2, y: y - up, w: w, h: up + dn };
   }
   function hit(a, b, p) { p = p || 0; return a.x < b.x + b.w + p && b.x < a.x + a.w + p && a.y < b.y + b.h + p && b.y < a.y + a.h + p; }
   function line(x1, y1, x2, y2, stroke, sw, extra) {
@@ -339,7 +366,11 @@
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
     var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, 3)
-      .map(function (mk) { return { i: mk.doy, label: String(mk.label || '') }; }).sort(function (a, b) { return a.i - b.i; });
+      .map(function (mk) {
+        // the words, then the day itself; a day with no words already prints as its date
+        var lb = String(mk.label || '').replace(/[\u0001\u0002]/g, ''), dt = days[mk.doy] && days[mk.doy].date, f = dt ? fmtDate(dt) : '';
+        return { i: mk.doy, label: lb && f && lb !== f ? lb + '\u0001' + f + '\u0002' : lb, words: lb, date: f };
+      }).sort(function (a, b) { return a.i - b.i; });
     var maxP = Math.max.apply(null, [0.01].concat(P.filter(function (p) { return p !== null; })));
     var maxSnow = Math.max.apply(null, [0].concat(days.map(function (x) { return x.s > 0 ? x.s : 0; })));
     return {

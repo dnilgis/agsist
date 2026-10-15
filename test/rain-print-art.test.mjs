@@ -37,7 +37,7 @@ function input(days, extra = {}) {
     axisLen: days.length, ov: RP.overlayDaily(days, normalMap(y)), ovNote: "A usual year: NOAA’s 30-year normal", showNormals: false, markers: [], records: [],
     qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "" } }, extra);
 }
-const texts = (svg) => [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1].replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
+const texts = (svg) => [...svg.matchAll(/<text[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => m[1].replace(/<\/?tspan[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
 
 // ---------- design code and query string ----------
 const FULL = { place: "Chetek, WI", station: "471667 2", year: 2025, cmp: "normal", name: "The Olson Farm",
@@ -414,7 +414,7 @@ test("D7: QR rows share exact edges, so no pale seam runs through the mark", () 
 // ---------- panel 4 (2026-10-14): the print as wall art ----------
 // every <text>, with its size, family and the group it is drawn in
 const sized = (svg) => [...svg.matchAll(/<g data-rp="([^"]+)">((?:(?!<g data-rp=).)*)/g)].flatMap((g) =>
-  [...g[2].matchAll(/<text[^>]*font-family="([^"]*)"[^>]*font-size="([\d.]+)"[^>]*>([^<]*)<\/text>/g)].map((m) => ({ rp: g[1], fam: m[1], size: +m[2], s: m[3] })));
+  [...g[2].matchAll(/<text[^>]*font-family="([^"]*)"[^>]*font-size="([\d.]+)"[^>]*>((?:[^<]|<\/?tspan[^>]*>)*)<\/text>/g)].map((m) => ({ rp: g[1], fam: m[1], size: +m[2], s: m[3].replace(/<\/?tspan[^>]*>/g, "") })));
 
 test("the buyer's name is the biggest words on the sheet, in the serif, in both styles, long or short", () => {
   const days = year(2025, (i) => (i < 60 && i % 5 === 0 ? { p: "0.40", s: 5 } : {}));
@@ -457,7 +457,7 @@ test("the reader's dates read clearly: Staircase on the line beside the dot, Roo
   for (const style of ["r1", "r2"]) {
     const svg = ART.render(input(year(2025), { style, markers }));
     for (const l of ["Planted", "Wedding"]) {
-      const m = new RegExp('<g data-rp="mark:\\d">.*?<text x="[\\d.]+" y="([\\d.]+)"[^>]*font-weight="(\\d+)" font-style="(\\w+)" font-size="([\\d.]+)" fill="([^"]+)"[^>]*>' + l + "</text>").exec(svg);
+      const m = new RegExp('<g data-rp="mark:\\d">.*?<text x="[\\d.]+" y="([\\d.]+)"[^>]*font-weight="(\\d+)" font-style="(\\w+)" font-size="([\\d.]+)" fill="([^"]+)"[^>]*>' + l + "<tspan[^>]*>[^<]*</tspan></text>").exec(svg);
       assert.ok(m, style + ": " + l);
       assert.equal(m[3], "normal", style + ": upright"); assert.equal(m[5], "#1E2125", style + ": in ink"); assert.ok(+m[4] >= 20, style + ": " + m[4] + " u");
       if (style === "r1") assert.ok(+m[1] < 790, "r1: on the chart, above the axis: " + m[1]);
@@ -498,4 +498,40 @@ test("Roots: the rain and snow scales fit the year, bars 0.85 of a day, one foot
   const foot = t.filter((x) => x.rp === "foot");
   assert.equal(foot.length, 1, "one foot line: " + foot.map((x) => x.s).join(" | "));
   assert.ok(foot[0].s.includes("Days with rain or snow") && foot[0].s.includes("A usual year"), "it carries the days and what usual means");
+});
+
+// ---------- panel 5 (2026-10-15): the day itself after the words, small and gray ("Planted May 21") ----------
+const markText = (svg, k) => { const m = new RegExp('<g data-rp="mark:' + k + '">.*?(<text[^>]*>(?:[^<]|</?tspan[^>]*>)*</text>)').exec(svg); return m && m[1]; };
+test("a marked day prints its date after its words: same line, 3-letter month, gray, normal weight, 17 u Staircase / 16 u Roots", () => {
+  const markers = [{ doy: 140, label: "Planted corn" }, { doy: 4, label: "Wedding" }, { doy: 280, label: "First frost" }];
+  for (const [style, size] of [["r1", 17], ["r2", 16]]) {
+    const svg = ART.render(input(year(2025), { style, markers }));
+    const want = { "Planted corn": "May 21", Wedding: "Jan 5", "First frost": "Oct 8" }, sizes = new Set();
+    for (let k = 0; k < 3; k++) {
+      const t = markText(svg, k);
+      assert.ok(t, style + ": mark " + k);
+      const words = /^<text[^>]*>([^<]*)<tspan/.exec(t), tsp = /<tspan font-size="([\d.]+)" font-weight="(\d+)" fill="([^"]+)">([^<]*)<\/tspan><\/text>$/.exec(t);
+      assert.ok(words && tsp, style + ": the date is a tspan in the label's own text (one baseline): " + t);
+      assert.equal(tsp[4], " " + want[words[1]], style + ": " + words[1]);
+      // Staircase's row under the months (19 u words, when the line has no clean spot) takes 16 u too
+      const own = +/font-size="([\d.]+)"/.exec(t)[1];
+      assert.equal(+tsp[1], own === 19 ? 16 : size, style + ": date size after " + own + " u words"); assert.equal(tsp[2], "400"); assert.equal(tsp[3], "#5E6475");
+      if (own !== 19) sizes.add(+tsp[1]);
+    }
+    assert.ok(sizes.has(size), style + ": at least one on the chart at " + size + " u");
+  }
+});
+test("a marked day with no words prints only its date, once", () => {
+  for (const style of ["r1", "r2"]) {
+    const svg = ART.render(input(year(2025), { style, markers: [{ doy: 140, label: "" }, { doy: 200, label: "Jul 20" }] }));
+    assert.ok(!/<tspan/.test(svg), style + ": no second date");
+  }
+});
+test("the date is counted in the label's width, so the placer keeps it clear", () => {
+  const I = input(year(2025), { style: "r2", markers: [{ doy: 140, label: "Planted" }] });
+  const E = ART.model(I);
+  assert.equal(E.markers[0].label, "Planted\u0001May 21\u0002");
+  assert.equal(E.markers[0].words, "Planted"); assert.equal(E.markers[0].date, "May 21");
+  // a typed control character can't fake a date
+  assert.equal(ART.model(input(year(2025), { markers: [{ doy: 140, label: "A\u0001B\u0002" }] })).markers[0].words, "AB");
 });
