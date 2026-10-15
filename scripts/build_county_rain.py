@@ -148,7 +148,7 @@ def last_year_words(c, L, year):
 
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
-PRINT_JS = '<script src="/components/rain-county-print.js?v=2" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=3" defer></script>'
 
 
 def rp_prices():
