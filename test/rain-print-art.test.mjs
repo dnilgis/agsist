@@ -78,7 +78,7 @@ test("the serial is maker-only: never in the share link, only behind ?maker=1, n
   assert.ok(!/serial/.test(RP.toParams({ ...FULL, serial: "12" })));
   assert.ok(!("serial" in RP.normalize({ ...FULL, serial: "12" })));
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /return MAKER && m && \+m\[1\] > 0 \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) \+ ' · SRL'/);
+  assert.match(S, /return MAKER && m && \+m\[1\] > 0 \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
   const draw = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
   assert.equal((draw.match(/o\.serial = SERIAL/g) || []).length, 1, "one place sets it");
   assert.ok(draw.indexOf("o.serial = SERIAL") > draw.indexOf("kind === 'digital'"), "and it is the print branch, after the digital one");
@@ -106,9 +106,10 @@ test("the QR is warm gray on the paper, square to the page; the serial is drawn 
     const plainSvg = ART.render(input(year(2025), { style }));
     assert.match(plainSvg, /fill="#A4A89F" shape-rendering="crispEdges"/);
     assert.ok(!/rotate\(/.test(plainSvg.replace(/<g opacity="0\.13" transform="rotate[^"]*"/, "")), "nothing is tilted");
-    assert.ok(!/SRL/.test(plainSvg), "no serial unless asked");
-    const withSerial = ART.render(input(year(2025), { style, qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "No. 0001 · SRL" } }));
-    assert.ok(texts(withSerial).includes("No. 0001 · SRL"));
+    assert.ok(!/No\. \d{4}/.test(plainSvg), "no serial unless asked");
+    assert.ok(!/SRL/.test(plainSvg), "no printed initials (Sig initials each print by hand)");
+    const withSerial = ART.render(input(year(2025), { style, qr: { matrix: ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M"), serial: "No. 0001" } }));
+    assert.ok(texts(withSerial).includes("No. 0001"));
     assert.ok(!/A4A89F/.test(ART.render(input(year(2025), { style, qr: null }))), "no QR when the link would not fit");
   }
 });
@@ -117,7 +118,7 @@ test("the short-link QR prints about 0.85 in with a 4-module quiet zone; the ser
   const m = ctx.AgQR.matrix("HTTPS://AGSIST.COM/R?K7Q2M");
   assert.equal(m.length, 25);
   for (const style of ["r1", "r2"]) {
-    const svg = ART.render(input(year(2025), { style, qr: { matrix: m, serial: "No. 0001 · SRL" } }));
+    const svg = ART.render(input(year(2025), { style, qr: { matrix: m, serial: "No. 0001" } }));
     const g = /<g data-rp="qr"><g aria-hidden="true"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="#FFFFFF"\/><path d="([^"]+)"/.exec(svg);
     // runs are drawn from absolute edges since 2026-10-14 (D7): M x0,y H x1 V y1 H x0 z
     const xs = [...g[5].matchAll(/M([\d.]+),([\d.]+)H([\d.]+)/g)], ys = xs.map((t) => +t[2]);
@@ -125,7 +126,7 @@ test("the short-link QR prints about 0.85 in with a 4-module quiet zone; the ser
     const size = x1 - x0;
     assert.ok(Math.abs(size - 83.33) < 0.1, style + ": the mark is " + size + " u");
     assert.ok(Math.abs(+g[3] - size - 2 * 4 * size / 25) < 0.1, style + ": the white square leaves 4 modules each side");
-    const serial = new RegExp('<text x="[\\d.]+" y="([\\d.]+)"[^>]*>No\\. 0001 · SRL</text>').exec(svg);
+    const serial = new RegExp('<text x="[\\d.]+" y="([\\d.]+)"[^>]*>No\\. 0001</text>').exec(svg);
     assert.ok(+serial[1] - 11.5 * 0.77 > Math.max(...ys) + size / 25, style + ": the serial sits under the mark");
     assert.ok(+serial[1] <= 1140, style + ": inside the 0.6 in margin");
   }
@@ -380,7 +381,7 @@ test("the page offers the two styles, the dedication and both switches, and load
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=33"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=34"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);

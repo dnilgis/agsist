@@ -10,7 +10,8 @@
  * The QR on every preview is the standard code to the Rain Print page; only
  * the files Sig makes after payment carry the print's own short link
  * (components/rp-short.js), made at the moment of export (2026-10-14).
- * The serial "No. 0001 · SRL" goes under it on Sig's print files only
+ * The serial "No. 0001" goes under it on Sig's print files only; Sig initials each
+ * physical print by hand in pencil beside it (Oct 15), so no printed initials
  * (?maker=1&serial=1), never on the digital file or the public page.
  * Ported from Sig's standalone Rain Print Studio (the October last-pass
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
@@ -1354,7 +1355,7 @@
      with ?maker=1&serial=N. Never on the digital file, never on the public page. */
   var SERIAL = (function () {
     var m = /(?:^|[?&])serial=(\d{1,6})(?:&|$)/.exec(root.location.search);
-    return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') + ' · SRL' : '';
+    return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') : '';
   })();
 
   function cmpNote() { return cmpNoteFor(ST.cmp, EXT); }
