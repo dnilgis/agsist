@@ -298,3 +298,19 @@ test("tariffs: a visible byline and the CCA in the JSON-LD", () => {
   assert.match(T, BYLINE);
   assert.match(T, /"name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser \(CCA\)"/);
 });
+
+/* ---------------- /usda-quick-stats ----------------
+ *   - the query builder lists all 50 states (it queries NASS, which has every
+ *     state; the page's own table already has 42), not 31
+ *   - a visible byline and the author in the JSON-LD
+ */
+test("quick stats: the query builder lists all 50 states, and a byline", () => {
+  const Q = read("usda-quick-stats.html");
+  const sel = Q.slice(Q.indexOf('<select id="qb-state"'), Q.indexOf("</select>", Q.indexOf('<select id="qb-state"')));
+  const codes = [...sel.matchAll(/<option value="([A-Z]{2})">/g)].map((m) => m[1]);
+  assert.equal(codes.length, 50);
+  assert.equal(new Set(codes).size, 50);
+  for (const k of ["DE", "MD", "NY", "NJ", "AK", "HI"]) assert.ok(codes.includes(k), k);
+  assert.match(Q, BYLINE);
+  assert.match(Q, /"author":\{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser \(CCA\)"/);
+});
