@@ -24,7 +24,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=24" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=24">
-  <link rel="stylesheet" href="/components/prf.css?v=6">
+  <link rel="stylesheet" href="/components/prf.css?v=7">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -220,20 +220,22 @@ HTML = f"""<!DOCTYPE html>
     <table class="prf-sub-t"><caption class="prf-sr">USDA&rsquo;s share of the premium by coverage level</caption><thead><tr><th scope="col">Coverage level</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{mk("subsidy_rows")}</tbody></table>
     <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning and veteran farmers and ranchers get a larger share. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
 
-    <h2 id="payback">How payouts compare with the premium</h2>
+    <details class="prf-fold" id="payback-d"><summary><h2 id="payback">How payouts compare with the premium</h2><span class="prf-fold-x">$1 of full premium would have paid back a middle ${mk("lr_mid")}, about the same on every grid and month. Open for the table by month.</span></summary>
     <p>On the full premium, no grid, month or coverage level stands out. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
     <p>You do not pay the full premium: USDA pays 51% to 59% of it, if you qualify. Any average over the record is made of a few big years and many small or empty ones, and it says nothing about next year.</p>
     <p>The months with the highest rates bring the most dollars of USDA&rsquo;s share per $100 of protection. On {mk("dry_two")} grids, the interval that comes out furthest ahead of your share is one of the grid&rsquo;s two driest. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>
     <table class="prf-sub-t prf-iv-t"><caption>Each pair of months across the country, at 90% coverage: the middle grid among those USDA rates for that pair.</caption>
       <thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {mk("nyears")}</th><th scope="col">Grids rated</th></tr></thead>
       <tbody>{mk("iv_rows")}</tbody></table>
+    </details>
 
-    <h2 id="new" data-prf-written-for="2027">New for 2027</h2>
+    <details class="prf-fold" id="new-d"><summary><h2 id="new" data-prf-written-for="2027">New for 2027</h2><span class="prf-fold-x">A new precipitation record, a 25% cap on January to February, and livestock required on grazing acres. Open for the details and RMA&rsquo;s wording.</span></summary>
     <ul>
       <li><b>A new precipitation record.</b> The index now comes from NOAA&rsquo;s National Centers for Environmental Information (NCEI), in place of the Climate Prediction Center (CPC) data used through 2026 (<a href="https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source" rel="noopener">USDA RMA, April 30, 2026</a>). The record starts in {mk("y0")}, not 1948, and each interval is measured against its {mk("y0")} to {mk("y1")} average (<a href="https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf" rel="noopener">RMA&rsquo;s processing note</a>). The grids did not move. Every past year on this page is the figure from that new record.</li>
       <li><b>January to February is capped at 25%.</b> In USDA&rsquo;s {mk("crop_year")} files, {mk("jf_capped")} of the {mk("counties")} counties with PRF limit that interval to 25% of a policy&rsquo;s value. Every interval needs at least 10%, and the others allow up to 50%, 60% or 70%, by county. The calculator applies your county&rsquo;s limits.</li>
       <li><b>Grazing land needs livestock on it.</b> The 2027 Crop Provisions, section 4(j): &ldquo;For the intended use of grazing, you must have an insurable interest in enough livestock grazing the acres that would equate to at least 25% of the stocking rate for the insured acres.&rdquo; RMA&rsquo;s question-and-answer sheet on the rule says: &ldquo;Failure means no indemnity is due and full premium is owed.&rdquo; The livestock can graze the acres at any time in the crop year. Records are asked for on request, not filed, and kept three years. Only natural causes excuse a shortfall. Hay ground is not under this rule. The producer works out the number with the agent, from the FSA National Crop Table or a state or federal lease (<a href="https://www.rma.usda.gov/sites/default/files/2026-10/Pasture%20Rangeland%20Forage%20Stocking%20Rate%20FAQs.pdf" rel="noopener">RMA stocking rate questions</a>).</li>
     </ul>
+    </details>
 
     <h2 id="before">Before you sign</h2>
     <ul>
@@ -310,10 +312,10 @@ payment              = interval protection
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/prf-sponsor.js?v=3" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
-  <script src="/components/prf.js?v=5" defer></script>
+  <script src="/components/prf.js?v=6" defer></script>
   <script src="/components/prf-outlook.js?v=2" defer></script>
   <script src="/components/prf-optimize.js?v=4" defer></script>
-  <script src="/components/prf-optimize-ui.js?v=5" defer></script>
+  <script src="/components/prf-optimize-ui.js?v=6" defer></script>
 </body>
 </html>
 """

@@ -49,6 +49,43 @@ const r2 = (x) => Math.round(x * 100) / 100;
 const r3 = (x) => Math.round(x * 1000) / 1000;
 const span = (v) => (v.length ? { low: Math.min(...v), mid: quantile(v, 0.5), high: Math.max(...v) } : null);
 
+/* The labeled example on each county page: the calculator's own opening
+   policy (100 acres of grazing, 90% coverage, productivity factor 100, April
+   to May and June to July split as evenly as the county allows; components/
+   prf.js fit()) priced on every grid in the county with prf-math.js, rounded
+   the way RMA's tool rounds. The page prints the middle grid by premium
+   (nearest rank, so a real grid) and says which it is. null when the county
+   does not offer both pairs of months for grazing, or no grid has a priced,
+   complete record: the page then prints no example. */
+export const EXAMPLE = { acres: 100, coverage: 90, productivity: 100, use: 0, on: [3, 5] };
+export function countyExample(c, grids, G, subsidy) {
+  const L = c.lim || (c.limc || {})[String(EXAMPLE.use)] || null;
+  if (!L || c.b[EXAMPLE.use] == null) return null;
+  const on = M.LABELS.map((_, i) => EXAMPLE.on.includes(i) && !!L[i]);
+  if (on.filter(Boolean).length !== EXAMPLE.on.length) return null;
+  const min = L.map((p) => (p ? p[0] : null)), max = L.map((p) => (p ? p[1] : null));
+  const split = M.evenSplit(on, min, max);
+  if (!split || !M.checkSplit(split, min, max, L.map(Boolean)).ok) return null;
+  const rows = [];
+  for (const g of grids) {
+    const o = G[g];
+    const bg = c.bg && c.bg[String(g)];
+    const cbv = bg && bg[String(EXAMPLE.use)] != null ? bg[String(EXAMPLE.use)] : c.b[EXAMPLE.use];
+    const pol = M.policy({ cbv, coverage: EXAMPLE.coverage, productivity: EXAMPLE.productivity, acres: EXAMPLE.acres, share: 100,
+                           split, rates: o.rates[EXAMPLE.coverage], subsidy: subsidy[String(EXAMPLE.coverage)] });
+    if (!pol.priced) continue;
+    const sum = M.summarize(M.history(pol, o.index), pol);
+    if (!sum.years || sum.incomplete.length) continue;
+    rows.push({ g, premium: pol.total.premium, usda: pol.total.subsidy, you: pol.total.producer, paid_years: sum.paidYears, years: sum.years,
+                avg: sum.avgIndemnity });
+  }
+  if (!rows.length) return null;
+  rows.sort((a, b) => a.you - b.you || a.g - b.g);
+  const m = rows[Math.min(rows.length - 1, Math.max(0, Math.ceil(0.5 * rows.length) - 1))];
+  return { split, grid: m.g, of: rows.length, premium: m.premium, usda: m.usda, you: m.you, you_acre: r2(m.you / EXAMPLE.acres),
+           paid_years: m.paid_years, years: m.years, avg: r2(m.avg), avg_acre: r2(m.avg / EXAMPLE.acres) };
+}
+
 export function build(dir) {
   const meta = JSON.parse(fs.readFileSync(path.join(dir, 'meta.json'), 'utf8'));
   const first = meta.years.first, last = meta.years.last_complete;
@@ -129,6 +166,7 @@ export function build(dir) {
       })),
       grid_rows: rows,
       recent: hist,
+      example: countyExample(c, grids, G, meta.subsidy),
     };
   }
   return out;

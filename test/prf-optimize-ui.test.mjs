@@ -4,8 +4,10 @@
  *
  * Checks: the disclaimer and the verdict come first; the pick on screen obeys
  * the county's rules; both scores and the ENSO choice redraw; "Use this setup"
- * hands the calculator a legal split; nothing scrolls sideways at phone width;
- * no em dash; no console error; light and dark both render.
+ * hands the calculator a legal split, and is not offered when this grid's own
+ * walk-forward test says the pick would not have beaten an even spread (the
+ * card then leads with that); nothing scrolls sideways at phone width; no em
+ * dash; no console error; light and dark both render.
  *
  * Needs Playwright and Chromium. Where they are missing (CI without a
  * browser), the test is skipped and says so.
@@ -29,9 +31,21 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 const FX = JSON.parse(readFileSync(ROOT + "test/fixtures/prf/opt-grid-30454.json", "utf8"));
+/* a second grid, where the local test does not put the pick behind an even spread */
+const FX2 = JSON.parse(readFileSync(ROOT + "test/fixtures/prf/opt-grid-16014.json", "utf8"));
 const ctxVm = { window: {}, Buffer };
 vm.runInNewContext(readFileSync(ROOT + "components/prf-math.js", "utf8"), ctxVm);
 const M = ctxVm.window.AgPrfMath;
+vm.runInNewContext(readFileSync(ROOT + "components/prf-optimize.js", "utf8"), ctxVm);
+const O = ctxVm.window.AgPrfOptimize;
+/* this grid's own walk-forward verdict, worked out here the way the panel asks for it */
+function localVerdict(objective, fx = FX) {
+  const lim = fx.lim;
+  const res = O.recommend({ index: fx.index, rates: fx.rates[90], coverage: 90, subsidy: fx.subsidy["90"], min: lim.map((p) => (p ? p[0] : null)),
+                            max: lim.map((p) => (p ? p[1] : null)), valid: lim.map(Boolean), avgMm: fx.avgMm, lastComplete: fx.last_complete, grid: fx.grid },
+                          { objective, steadier: !!(OPT.risk && OPT.risk.held) });
+  return res.backtest ? res.backtest.verdict.key : null;
+}
 const OPT = JSON.parse(readFileSync(ROOT + "data/prf/opt.json", "utf8"));
 
 /* the outlook another script will publish; the shape prf-optimize.js reads */
@@ -49,7 +63,7 @@ const PAGE = `<!doctype html><html lang="en" data-theme="THEME"><head><meta char
 <script src="/components/prf-math.js"></script><script src="/components/prf-optimize.js"></script><script src="/components/prf-optimize-ui.js"></script>
 <script>
   window.__applied = [];
-  fetch('/__fixture').then(function (r) { return r.json(); }).then(function (fx) {
+  fetch('/__fixture' + location.search).then(function (r) { return r.json(); }).then(function (fx) {
     var lim = fx.lim;
     window.__ctx = { grid: fx.grid, county: 'Barron County, WI', index: fx.index, rates: fx.rates, avgMm: fx.avgMm,
       limits: { min: lim.map(function (p) { return p ? p[0] : null; }), max: lim.map(function (p) { return p ? p[1] : null; }), valid: lim.map(function (p) { return !!p; }) },
@@ -64,7 +78,7 @@ function serve(withOutlook) {
   const srv = createServer((req, res) => {
     const u = new URL(req.url, "http://x");
     if (u.pathname === "/__page") { res.writeHead(200, { "content-type": "text/html" }); res.end(PAGE.replace("THEME", u.searchParams.get("theme") || "light")); return; }
-    if (u.pathname === "/__fixture") { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(FX)); return; }
+    if (u.pathname === "/__fixture") { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(u.searchParams.get("fx") === "2" ? FX2 : FX)); return; }
     if (u.pathname === "/data/prf/outlook.json") {
       if (!withOutlook) { res.writeHead(404); res.end(); return; }
       res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(OUTLOOK)); return;
@@ -77,21 +91,25 @@ function serve(withOutlook) {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-async function open(browser, port, theme, width) {
+async function open(browser, port, theme, width, fx) {
   const page = await browser.newPage({ viewport: { width, height: 900 } });
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource/.test(m.text())) errors.push(m.text()); });
-  await page.goto(`http://127.0.0.1:${port}/__page?theme=${theme}`);
-  await page.waitForSelector("#prf-optimize .po-use", { timeout: 15000 });
+  await page.goto(`http://127.0.0.1:${port}/__page?theme=${theme}${fx ? "&fx=" + fx : ""}`);
+  await page.waitForSelector("#prf-optimize .po-split", { timeout: 15000 });
   return { page, errors };
 }
 function splitOnScreen(page) {
+  return page.$$eval("#prf-optimize .po-iv", (ds) => ds.map((d) => [d.querySelector("span").textContent, parseInt(d.querySelector("b").textContent, 10)]))
+    .then((pairs) => { const sp = new Array(11).fill(0); for (const [l, v] of pairs) sp[M.LABELS.indexOf(l)] = v; return sp; });
+}
+function buttonSplit(page) {
   return page.$eval("#prf-optimize .po-use", (b) => b.getAttribute("data-opt-use").split(".").map(Number));
 }
-function legal(split) {
-  const min = FX.lim.map((p) => (p ? p[0] : null)), max = FX.lim.map((p) => (p ? p[1] : null));
-  const chk = M.checkSplit(split, min, max, FX.lim.map(Boolean));
+function legal(split, fx = FX) {
+  const min = fx.lim.map((p) => (p ? p[0] : null)), max = fx.lim.map((p) => (p ? p[1] : null));
+  const chk = M.checkSplit(split, min, max, fx.lim.map(Boolean));
   return chk.ok && chk.used >= 2;
 }
 
@@ -104,8 +122,14 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     assert.ok(text.indexOf("not advice") < text.indexOf("The pick"), "the disclaimer comes before the pick");
     const verdict = await page.$eval("#prf-optimize .po-verdict", (p) => p.textContent);
     const r = OPT.results["90_net"];
-    assert.ok(verdict.includes(r.grids.toLocaleString("en-US") + " grids"), verdict);
-    assert.ok(verdict.includes(`${r.yearsAheadOfEven} of ${r.years.n} years`), verdict);
+    const behind = localVerdict("net") === "behind";
+    assert.ok(behind, "the fixture grid is the case the card used to contradict; if it changes, pick a grid where the local test is behind");
+    assert.ok(verdict.startsWith("Picking months this way would not have beaten an even spread on grid " + FX.grid + "."), "the card leads with the local verdict: " + verdict);
+    assert.ok(text.indexOf(verdict.slice(0, 40)) < text.indexOf("The pick"), "the local verdict comes before the pick");
+    assert.ok(text.includes(r.grids.toLocaleString("en-US") + " grids"), "the national line is still shown");
+    assert.ok(text.includes(`${r.yearsAheadOfEven} of ${r.years.n} years`), "the national line is still shown");
+    assert.equal(await page.$$eval("#prf-optimize .po-use", (bs) => bs.length), 0, "no button to copy a pick the local test says would not have beaten an even spread");
+    assert.ok(text.includes("That is why winter and fall months look good on a payback table."), "a pick mostly in winter carries the page's own warning");
     assert.ok(text.includes("Would it have worked here?"), "the grid's own out-of-sample record is shown");
     assert.ok(/not loaded/.test(text), "says the outlook is not loaded");
     assert.ok(text.includes("What we tested"), "the list of what was tried is offered");
@@ -114,8 +138,8 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     assert.ok(!text.includes("—"), "no em dash");
     assert.ok(!/NaN|undefined|\bnull\b/.test(text), "no broken number");
 
-    const a = await splitOnScreen(page);
-    assert.ok(legal(a), `pick on screen breaks a rule: ${a}`);
+    const a0 = await splitOnScreen(page);
+    assert.ok(legal(a0), `pick on screen breaks a rule: ${a0}`);
     const chips = await page.$$eval("#prf-optimize .po-iv b", (bs) => bs.map((b) => parseInt(b.textContent, 10)));
     assert.equal(chips.reduce((x, y) => x + y, 0), 100);
 
@@ -123,9 +147,11 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     assert.equal(await page.getAttribute('[data-opt-obj="dry"]', "aria-pressed"), "true");
     const dryText = await page.$eval("#prf-optimize", (s) => s.innerText);
     assert.ok(dryText.includes("driest fifth of years"), "says which score is shown");
-    assert.ok(legal(await splitOnScreen(page)));
-
-    await page.click('[data-opt-obj="net"]');
+    assert.notEqual(localVerdict("dry"), "behind", "the fixture's dry score is not behind, so its button shows");
+    assert.ok(!(await page.$eval("#prf-optimize .po-verdict", (p) => p.textContent)).startsWith("Picking months this way would not"), "no local lead when the local test is not behind");
+    const a = await splitOnScreen(page);
+    assert.ok(legal(a));
+    assert.deepEqual(await buttonSplit(page), a, "the button carries the split on screen");
     await page.click("#prf-optimize .po-use");
     const applied = await page.evaluate(() => window.__applied);
     assert.equal(applied.length, 1);
@@ -169,22 +195,34 @@ test("the steadier option: shown only when the published test held, labeled, leg
   const srv = await serve(false), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { page, errors } = await open(browser, port, "light", 390);
-    const text = await page.$eval("#prf-optimize", (s) => s.textContent);
     const held = !!(OPT.risk && OPT.risk.held);
+    /* grid 30454: the local test is behind, so the line shows and no button does */
+    let { page, errors } = await open(browser, port, "light", 390);
+    assert.equal(localVerdict("net"), "behind");
+    assert.equal((await page.$eval("#prf-optimize", (s) => s.textContent)).includes("Steadier option:"), held, "the labeled line follows opt.json's verdict");
+    assert.equal(await page.$$eval("#prf-optimize .po-use", (bs) => bs.length), 0, "no copy buttons while the local test is behind");
+    assert.deepEqual(errors, []);
+    await page.close();
+    /* grid 16014: not behind, so both buttons */
+    ({ page, errors } = await open(browser, port, "light", 390, 2));
+    assert.notEqual(localVerdict("net", FX2), "behind");
+    const text = await page.$eval("#prf-optimize", (s) => s.textContent);
+    assert.ok(!text.includes("Picking months this way would not have beaten an even spread on grid"), "no local lead when the local test is not behind");
     assert.equal(text.includes("Steadier option:"), held, "the labeled line follows opt.json's verdict");
     if (OPT.risk) assert.ok(text.includes(OPT.risk.line), "the risk test is listed under what we tested");
     if (OPT.productivity) assert.ok(text.includes(OPT.productivity));
+    const btns = await page.$$eval("#prf-optimize .po-use", (bs) => bs.map((b) => b.getAttribute("data-opt-use").split(".").map(Number)));
+    assert.deepEqual(btns[0], await splitOnScreen(page), "the first button carries the pick on screen");
+    assert.ok(legal(btns[0], FX2));
     if (held) {
-      const btns = await page.$$eval("#prf-optimize .po-use", (bs) => bs.map((b) => b.getAttribute("data-opt-use").split(".").map(Number)));
       assert.equal(btns.length, 2);
-      assert.ok(legal(btns[1]), `steadier split breaks a rule: ${btns[1]}`);
+      assert.ok(legal(btns[1], FX2), `steadier split breaks a rule: ${btns[1]}`);
       assert.notDeepEqual(btns[1], btns[0]);
       await page.click("#prf-optimize .po-use >> nth=1");
       assert.deepEqual((await page.evaluate(() => window.__applied))[0], btns[1]);
       const r = OPT.risk.byCoverage["90"];
       assert.ok(text.includes(`from ${r.noPaymentPct.plain}% to ${r.noPaymentPct.steadier}%`), "the across-grid figures are the 90% ones");
-    }
+    } else assert.equal(btns.length, 1);
     assert.ok(!/NaN|undefined|\bnull\b/.test(text) && !text.includes("—"));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }

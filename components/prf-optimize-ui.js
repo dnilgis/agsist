@@ -36,6 +36,27 @@
   function pOdds(p) { return p < 0.001 ? 'under 1 in 1,000' : p < 0.01 ? 'under 1 in 100' : 'about 1 in ' + Math.max(1, Math.round(1 / p)); }
   function splitWords(sp) { var a = []; for (var i = 0; i < N; i++) if (sp[i]) a.push(LABELS[i] + ' ' + sp[i] + '%'); return a.join(', '); }
 
+  /* The page's own point (prf.html, "How payouts compare with the premium"):
+     the intervals furthest ahead on a payback table are mostly a grid's two
+     driest, and winter. Words for where most of a split sits when it is
+     there, else null. */
+  var WINTER = [10, 0];   /* November to December, January to February */
+  function leansDry(sp, avgMm, valid) {
+    var offered = [];
+    for (var i = 0; i < N; i++) if ((!valid || valid[i]) && avgMm && avgMm[i] != null) offered.push(i);
+    offered.sort(function (a, b) { return avgMm[a] - avgMm[b] || a - b; });
+    var dry = offered.slice(0, 2), inDry = 0, inWinter = 0, inEither = 0;
+    for (var k = 0; k < N; k++) {
+      var p = +sp[k] || 0, d = dry.indexOf(k) >= 0, w = WINTER.indexOf(k) >= 0;
+      if (d) inDry += p; if (w) inWinter += p; if (d || w) inEither += p;
+    }
+    if (inEither <= 50) return null;
+    if (inDry > 50 && inWinter > 50) return 'the grid’s two driest pairs of months and November to February';
+    if (inDry > 50) return 'the grid’s two driest pairs of months';
+    if (inWinter > 50) return 'November to February';
+    return 'the grid’s two driest pairs of months and November to February';
+  }
+
   function css() {
     if (document.getElementById('prf-opt-css')) return;
     var st = document.createElement('style');
@@ -53,6 +74,7 @@
       '#prf-optimize .po-use{min-height:44px;padding:.4rem 1rem;border-radius:8px;border:2px solid var(--gold);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer;margin:.3rem 0 .6rem;text-align:left}',
       '#prf-optimize .po-use:focus-visible,#prf-optimize .po-tab:focus-visible,#prf-optimize summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}',
       '#prf-optimize .po-shown{margin:.4rem 0 .2rem}',
+      '#prf-optimize .po-verdict.po-local{border-left:3px solid var(--gold);padding-left:.7rem}',
       '#prf-optimize .po-steady{margin:.4rem 0 .1rem}',
       '#prf-optimize table{border-collapse:collapse;width:100%;font-size:var(--fs-sm);margin:.4rem 0}',
       '#prf-optimize th,#prf-optimize td{text-align:right;padding:.35rem .4rem;border-bottom:1px solid var(--border-2);vertical-align:top}',
@@ -198,7 +220,13 @@
     if (!res.ok) { b.innerHTML = '<p class="po-fine">' + esc(res.why) + '</p>'; return; }
     var prot = protection(ctx), nat = national(ctx.cov, state.objective), bt = res.backtest;
     var np = nationalParts(nat, state.objective);
-    var h = '<p class="po-verdict">' + esc(np.head) + '</p>';
+    /* When this grid's own walk-forward test says the pick would not have
+       beaten an even spread, the card leads with that and offers no button to
+       copy the pick: the panel must not argue with itself. */
+    var behind = !!(bt && bt.verdict && bt.verdict.key === 'behind');
+    var h = behind ? '<p class="po-verdict po-local">' + esc(bt.verdict.text.replace(/ here\.$/, ' on grid ' + ctx.grid + '.')) + ' The split below is shown so you can see what the record leans on, not to copy.</p>'
+      + '<p class="po-fine">' + esc(np.head) + '</p>'
+      : '<p class="po-verdict">' + esc(np.head) + '</p>';
     h += '<div class="po-tabs" role="group" aria-label="What to make best">'
       + '<button type="button" class="po-tab' + (state.objective === 'net' ? ' is-on' : '') + '" data-opt-obj="net" aria-pressed="' + (state.objective === 'net') + '">Most expected dollars</button>'
       + '<button type="button" class="po-tab' + (state.objective === 'dry' ? ' is-on' : '') + '" data-opt-obj="dry" aria-pressed="' + (state.objective === 'dry') + '">Most in the driest years</button></div>';
@@ -209,14 +237,16 @@
     h += '<div class="po-split">';
     for (var i = 0; i < N; i++) if (sp[i]) h += '<div class="po-iv"><b>' + sp[i] + '%</b><span>' + LABELS[i] + '</span></div>';
     h += '</div>';
-    h += '<button type="button" class="po-use" data-opt-use="' + sp.join('.') + '">Use this setup in the calculator above</button>';
+    var lean = leansDry(sp, ctx.avgMm, (ctx.limits || {}).valid);
+    if (lean) h += '<p class="po-fine po-lean">Most of this pick sits in ' + lean + '. That is why winter and fall months look good on a payback table. It is not a sign they cover the grass you grow.</p>';
+    if (!behind) h += '<button type="button" class="po-use" data-opt-use="' + sp.join('.') + '">Use this setup in the calculator above</button>';
     var steadyMore = '';
     if (res.steadier) {
       var st = res.steadier, rk = state.opt.risk.byCoverage, rr = rk[String(ctx.cov)] || rk[ctx.cov >= 80 ? '90' : '70'];
       var gap = 100 * (res.rec.record.mean - st.record.mean);
       h += '<p class="po-fine po-steady"><b>Steadier option:</b> ' + esc(splitWords(st.split)) + '. Paid in ' + st.record.paidYears + ' of ' + st.record.n
         + ' years here, against ' + res.rec.record.paidYears + ' for the pick. It steadies the check; it does not earn more.</p>'
-        + '<button type="button" class="po-use" data-opt-use="' + st.split.join('.') + '">Use the steadier setup instead</button>';
+        + (behind ? '' : '<button type="button" class="po-use" data-opt-use="' + st.split.join('.') + '">Use the steadier setup instead</button>');
       steadyMore = '<p class="po-fine"><b>About the steadier option.</b> On this grid’s record it averages ' + (gap >= 0 ? per100(gap) + ' less' : per100(-gap) + ' more') + ' a year per $100 of protection than the pick. '
         + 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
         + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>';

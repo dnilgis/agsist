@@ -53,6 +53,10 @@ DESC = ("Free PRF (Pasture, Rangeland, Forage) calculator for every USDA grid: {
         "and what it would have paid each year since {y0}.")
 OGALT = ("PRF insurance calculator, crop year {cy}: {grids} grids in {states} states, every year since {y0}. "
          "Sign-up deadline {sales_long}.")
+# The day prf.html's wording last changed (scripts/make_prf_html.py). The page's
+# dateModified is the later of this and the date of USDA's files; the Dataset
+# block keeps the files' date. Move it in the same commit as a wording change.
+PAGE_REVISED = "2026-10-15"
 LONG_IV = ["January to February", "February to March", "March to April", "April to May", "May to June", "June to July",
            "July to August", "August to September", "September to October", "October to November", "November to December"]
 
@@ -197,7 +201,7 @@ def jsonld(page, v, meta=None):
          "name": "PRF rainfall index calculator: every year on record", "url": URL,
          "applicationCategory": "FinanceApplication", "operatingSystem": "Any",
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "isAccessibleForFree": True, "description": desc,
-         "dateModified": v["_built"], "inLanguage": "en-US",
+         "dateModified": max(v["_built"], PAGE_REVISED), "inLanguage": "en-US",
          "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}},
         {"@context": "https://schema.org", "@type": "FAQPage",

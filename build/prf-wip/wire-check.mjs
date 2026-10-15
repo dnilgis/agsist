@@ -1,9 +1,13 @@
 // The two panels prf.js feeds: "What the numbers would pick" and the long-range outlook.
 //   PRF_CHROMIUM=/opt/pw-browsers/chromium PRF_SHOTS=<dir> node build/prf-wip/wire-check.mjs
-// ZIP 54728 -> grid 30454, Barron County, WI, at 390 and 1280 wide; then a returning
+// ZIP 54728 -> grid 30454, Barron County, WI, at 390 and 1280 wide. There this grid's own walk-forward
+// test says the pick would not have beaten an even spread, so the card leads with that and offers no
+// button. ZIP 79322 -> grid 16014 (Crosby County, TX), where it does not, carries the "Use this setup"
+// checks. Then a returning
 // visit with prf-optimize-ui.js arriving late (the race that left the panel empty) and the outlook data missing.
 import { open, done, openSetup } from './harness.mjs';
-const geocode = { '54728': { results: [{ name: '54728', latitude: 45.3147, longitude: -91.6510, admin1: 'Wisconsin', admin2: 'Barron' }] } };
+const geocode = { '54728': { results: [{ name: '54728', latitude: 45.3147, longitude: -91.6510, admin1: 'Wisconsin', admin2: 'Barron' }] },
+                  '79322': { results: [{ name: '79322', latitude: 33.40, longitude: -101.62, admin1: 'Texas', admin2: 'Crosby' }] } };
 const fails = []; const ok = (c, what) => { if (!c) { fails.push(what); console.log('  FAIL', what); } };
 const clean = (errs) => errs.filter(e => !/net::|504|Failed to load/.test(e));
 for (const W of [390, 1280]) {
@@ -11,9 +15,17 @@ for (const W of [390, 1280]) {
   await page.goto(BASE + '/prf.html'); await page.waitForSelector('#prf-app:not([hidden])');
   await page.fill('#prf-q', '54728'); await page.click('#prf-find button[type=submit]');
   await page.waitForSelector('.prf-figs');
-  await page.waitForSelector('#prf-optimize .po-use', { timeout: 10000 }).catch(() => {});
+  await page.waitForSelector('#prf-optimize .po-split', { timeout: 10000 }).catch(() => {});
   const where = (await page.textContent('#prf-where-h')).replace(/\s+/g, ' ').trim();
   ok(where.startsWith('Grid 30454 · Barron County, Wisconsin'), W + ' zip finds 30454 Barron');
+  const lead = await page.$eval('#prf-optimize .po-verdict', (p) => p.textContent).catch(() => '');
+  ok(lead.startsWith('Picking months this way would not have beaten an even spread on grid 30454.'), W + ' Barron card leads with the local verdict');
+  ok((await page.$$('#prf-optimize .po-use')).length === 0, W + ' Barron card offers no button to copy the pick');
+  await page.locator('#prf-optimize').screenshot({ path: `${process.env.PRF_SHOTS || 'build/shots'}/opt-barron-${W}.png` });
+  // the rest of the panel checks, and the button, on a grid where the local test is not behind
+  await page.fill('#prf-q', '79322'); await page.click('#prf-find button[type=submit]');
+  await page.waitForFunction(() => /^Grid 16014/.test(document.getElementById('prf-where-h').textContent));
+  await page.waitForSelector('#prf-optimize .po-use', { timeout: 10000 }).catch(() => {});
   // the answer first: on a phone the pick and both buttons sit in the panel's first ~750 px, the rest behind disclosure rows
   const top = await page.evaluate(() => { const s = document.getElementById('prf-optimize'), u = s.querySelectorAll('.po-use'); return Math.round(u[u.length - 1].getBoundingClientRect().bottom - s.getBoundingClientRect().top); });
   if (W === 390) ok(top <= 750, W + ' pick and buttons within the panel top (' + top + ' px)');
@@ -22,7 +34,7 @@ for (const W of [390, 1280]) {
   ok(await page.$eval('#prf-optimize details[data-po=compare]', d => d.open), W + ' Compare setups opens');
   const opt = await page.evaluate(() => document.querySelector('#prf-optimize [data-opt-body]').innerText);
   console.log(W, 'OPT body', opt.length, 'chars:', opt.replace(/\s+/g, ' ').slice(0, 220));
-  ok(/The pick for grid 30454/.test(opt), W + ' pick heading');
+  ok(/The pick for grid 16014/.test(opt), W + ' pick heading');
   ok(await page.$$eval('#prf-optimize .po-iv', e => e.length) >= 2, W + ' pick has intervals');
   ok(await page.$$eval('#prf-optimize ul.po-why li', e => e.length) >= 2, W + ' reasons listed');
   ok(/\$\d/.test(opt) && /You pay a year|YOU PAY A YEAR/i.test(opt), W + ' figures in dollars');

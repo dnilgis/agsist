@@ -37,6 +37,19 @@ LONG_IV = ["January to February", "February to March", "March to April", "April 
 SOD = {"IA", "MN", "MT", "NE", "ND", "SD"}
 MAX_KB = 150
 e = html.escape
+# The day the wording of the state and county pages last changed (a new
+# section, a rewritten paragraph). Their dateModified is the later of this and
+# the date of USDA's files, so a page that changed says so. Move it in the
+# same commit as any wording change; a data refresh moves the other date.
+PAGE_REVISED = "2026-10-15"
+# Where each 2027 change is written down at RMA (read 2026-10-15).
+RMA_NCEI = "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
+RMA_PM_26_053 = "https://www.rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-26-053-rainfall-index-crop"
+RMA_STOCKING = "https://www.rma.usda.gov/about-crop-insurance/frequently-asked-questions/pasture-rangeland-forage-stocking-rate"
+
+
+def modified(meta):
+    return max(meta["built"][:10], PAGE_REVISED)
 
 
 def long_date(iso):
@@ -110,6 +123,9 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     jf = sorted({(c.get("lim") or next(iter((c.get("limc") or {}).values()), [None]))[0][1] for _, c in counties
                  if (c.get("lim") or next(iter((c.get("limc") or {}).values()), [None]))[0]})
     jf_txt = (f"{jf[0]}%" if len(jf) == 1 else " or ".join(f"{x}%" for x in jf)) if jf else "not offered"
+    jf25 = sum(1 for _, c in counties if (lambda L: bool(L and L[0] and L[0][1] == 25))(c.get("lim") or next(iter((c.get("limc") or {}).values()), None)))
+    jf_here = (f"all {n_co} {name} counties" if jf25 == n_co and n_co > 1 else f"the one {name} county" if jf25 == n_co
+               else f"{jf25} of the {n_co} {name} counties")
     title = f"PRF Insurance in {name}: {cy} Rates and County Values | AGSIST"
     desc = (f"PRF (Pasture, Rangeland, Forage) insurance in {name} for {cy}: county base values for grazing and hay in all "
             f"{n_co} {'county' if n_co == 1 else 'counties'}, rates by month and a free calculator.")
@@ -137,6 +153,10 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
          f"USDA pays 51% to 59% of the premium. The calculator gives the figure for your grid, acres and months."),
         (f"Is PRF offered in every {name} county?",
          f"USDA&rsquo;s {cy} files list PRF in {n_co} {name} {'county' if n_co == 1 else 'counties'}, across {n_grid:,} grids. Each county row in the table above opens the calculator on that county."),
+        (f"What changed in PRF for {cy}?",
+         f"Three things. The precipitation index now comes from NOAA&rsquo;s National Centers for Environmental Information in place of the Climate Prediction Center, "
+         f"on the same grids, with a record that starts in {y0}. January to February is capped at 25% of a policy&rsquo;s value, in {jf_here}. "
+         f"And grazing acres need livestock you have an interest in, equal to at least 25% of an average stocking rate, or no payment is due and the full premium is still owed."),
         (f"Has PRF paid more than it cost in {name}?",
          f"On the full premium, about the same as everywhere: across {name}&rsquo;s grids at 90% coverage, $1 of premium would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates, close to the national middle of $0.87. "
          f"That average is made of a few big years and many small or empty ones, and none of it says what next year will do."),
@@ -147,7 +167,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
            f'and 50 points less of USDA&rsquo;s share (Crop Provisions, section 4(g)). The values below are for land the rule does not touch.</p>') if code in SOD else ""
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
-         "dateModified": meta["built"][:10], "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
+         "dateModified": modified(meta), "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
          "author": {"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}},
         {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
@@ -236,13 +256,20 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF county base values in every {e(name)} county, {cy}</caption><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
 
     <div class="prf-prose">
+    <h2 id="changes">What changed in PRF for {cy}</h2>
+    <ul>
+      <li><b>A new precipitation record.</b> From the {cy} crop year the index comes from NOAA&rsquo;s National Centers for Environmental Information (NCEI) in place of the Climate Prediction Center. The grids did not move (<a href="{RMA_NCEI}" rel="noopener">USDA RMA, April 30, 2026</a>). USDA&rsquo;s {cy} record starts in {y0}, and every past year on this page and in the calculator is from it.</li>
+      <li><b>January to February is capped at 25%.</b> No more than 25% of a policy&rsquo;s value can go in that interval (<a href="{RMA_PM_26_053}" rel="noopener">RMA bulletin PM-26-053</a>). USDA&rsquo;s {cy} files set that cap in {jf_here}.</li>
+      <li><b>Grazing land needs livestock on it.</b> Acres insured for grazing need livestock you have an insurable interest in, equal to at least 25% of an average stocking rate for those acres, with the records kept three years (PM-26-053). RMA&rsquo;s stocking rate questions: &ldquo;Failure means no indemnity is due and full premium is owed&rdquo; (<a href="{RMA_STOCKING}" rel="noopener">RMA</a>). Hay ground is not under this rule.</li>
+    </ul>
+
     <h2 id="dates">PRF dates for {cy}</h2>
     <ul>
       <li><b>{sales}</b>: sales closing. New policies and changes are due at your agent.</li>
       <li><b>{acre}</b>: acreage report, with any lease signed and in hand.</li>
       <li><b>{bill}</b>: premium billed, no earlier than this. Premium owed comes out of any payment first.</li>
     </ul>
-    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed (2027 Crop Provisions, section 4(j)). USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf/how-prf-works">How PRF works</a> &middot; <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">How payouts compare with the premium</a></p>
+    <p>USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency. PRF pays on a precipitation index for the grid, not on your production. <a href="/prf/how-prf-works">How PRF works</a> &middot; <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#new">New for 2027</a> &middot; <a href="/prf#payback">How payouts compare with the premium</a></p>
 
     <h2 id="faq">PRF questions in {e(name)}</h2>
     <div class="prf-faq">{faq_html}</div>
