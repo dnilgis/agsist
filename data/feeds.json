@@ -82,7 +82,19 @@
     "ARC/PLC refresh"
    ],
    "touched_by": [
-    "ARC/PLC refresh"
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "3 launches on a fixed schedule at about 1am, 5pm Central",
    "curated": false,
@@ -443,12 +455,18 @@
    ],
    "touched_by": [
     "Build Analyst Scorecard",
+    "ARC/PLC refresh",
+    "cash-bid-pages",
     "COT Release Watch",
     "Fetch COT Data",
+    "county rain",
     "Cron health",
     "Fetch Crop Progress",
     "Generate Daily Briefing",
+    "Dairy prices",
     "Fetch Export Sales",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "Morning report",
@@ -456,8 +474,11 @@
     "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
     "Rebuild Call Scorecard",
+    "Share images",
+    "Build State Stats (USDA NASS)",
     "WASDE watch \u2014 grade the report as it lands",
-    "Build What's Priced In"
+    "Build What's Priced In",
+    "yield-panel"
    ],
    "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
    "curated": false,
@@ -489,10 +510,21 @@
     "Fetch Crop Progress"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
     "Fetch Crop Progress",
     "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Rebuild Feed Manifest"
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Rebuild Feed Manifest",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "4 launches on a fixed schedule at about 7am, 3pm, 4pm Central",
    "curated": false,
@@ -580,9 +612,21 @@
     "Dairy prices"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
     "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Rebuild Feed Manifest"
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Rebuild Feed Manifest",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "4 launches on a fixed schedule at about 9am, 10am, 4pm Central",
    "curated": false,
@@ -629,9 +673,20 @@
     "cash-bid-pages"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
     "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
     "Dairy prices",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -732,7 +787,19 @@
     "Fertilizer \u2014 update dealer prices"
    ],
    "touched_by": [
-    "Fertilizer \u2014 update dealer prices"
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "on demand",
    "curated": false,
@@ -836,9 +903,20 @@
    ],
    "touched_by": [
     "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
     "Fetch Prices",
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "1 launch weekdays at about 4pm Central",
    "curated": false,
@@ -1597,7 +1675,19 @@
     "Build Price Stats (5-year percentile)"
    ],
    "touched_by": [
-    "Build Price Stats (5-year percentile)"
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "1 launch weekdays at about 4pm Central",
    "curated": false,
@@ -1856,8 +1946,20 @@
     "Build State Stats (USDA NASS)"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
     "Build State Stats (USDA NASS)",
-    "State yield pages"
+    "State yield pages",
+    "yield-panel"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,
@@ -1998,7 +2100,20 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Rebuild Feed Manifest",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2136,7 +2251,19 @@
     "yield-panel"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
     "cond-yield",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Share images",
+    "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
    "cadence": "1 launch every day at about 11pm Central",
