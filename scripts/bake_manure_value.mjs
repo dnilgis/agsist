@@ -41,20 +41,20 @@ const fill = (tpl, v) => tpl.replace(/\{([a-z0-9_-]+)\}/g, (m, k) => {
    it, so they match word for word. {key} is a value from bakeValues(). */
 export const FAQ = [
   ["How much is dairy manure worth per 1,000 gallons?",
-   "At Midwest dealer prices from {asof-n}, liquid dairy manure at 4 to 11% dry matter, worked into the soil within 3 days, carries about {unit-dairy_liq_4_11-1to3day} of fertilizer per 1,000 gallons: 10 lb of first-year N, 6 lb of P2O5 and 17 lb of K2O. Injected or worked in within an hour it is about {unit-dairy_liq_4_11-lt1hr}. Left on top for more than 3 days it is about {unit-dairy_liq_4_11-gt3day}. These are book values from UW Extension A2809. A lab test of your own manure is better."],
+   "At Midwest dealer prices from {asof-n}, liquid dairy manure at 4 to 11% dry matter, worked into the soil within 3 days, is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gallons in first-year fertilizer: 10 lb of N, 6 lb of P2O5 and 17 lb of K2O that a crop can use the first year, by UW Extension A2809's book values. Injected or worked in within an hour it is about {unit-dairy_liq_4_11-lt1hr}. Left on top for more than 3 days it is about {unit-dairy_liq_4_11-gt3day}. The manure holds more than the first-year pounds, so all of it is worth more. A lab test of your own manure gives the total pounds."],
   ["How much is manure worth per ton?",
-   "At {asof-n} dealer prices, solid dairy manure over 20% dry matter is worth about {unit-dairy_solid_gt20-1to3day} a ton in fertilizer, beef manure about {unit-beef_solid-1to3day}, hog manure about {unit-swine_solid-1to3day}, and chicken litter about {unit-chicken_solid-1to3day}, worked in within 3 days. Liquid dairy manure works out to about {ton-dairy_liq_4_11-1to3day} a ton, since 1,000 gallons weighs a little over 4 tons."],
-  ["What should I charge a neighbor for manure?",
-   "The value of all the manure: all its P2O5 and K2O and the nitrogen a crop can use the first year, priced at what the same nutrients cost as urea, MAP and potash. For liquid dairy manure worked in within 3 days that is about {unit-dairy_liq_4_11-1to3day} per 1,000 gallons at {asof-n} dealer prices. Multiply by the gallons or tons that go on. A test of the manure that is actually going gives the real pounds. Liquid is usually priced per 1,000 gallons applied, solid per ton at the pile; settle up front who hauls and spreads it."],
+   "At {asof-n} dealer prices, worked in within 3 days, the first-year book pounds in solid dairy manure over 20% dry matter are worth about {unit-dairy_solid_gt20-1to3day} a ton, beef manure about {unit-beef_solid-1to3day}, hog manure about {unit-swine_solid-1to3day}, and chicken litter about {unit-chicken_solid-1to3day}. Liquid dairy manure works out to about {ton-dairy_liq_4_11-1to3day} a ton, since 1,000 gallons weighs a little over 4 tons."],
+  ["Is this the value of all the nutrients in the manure?",
+   "No. The book pounds here are UW Extension A2809's estimates of what a crop can use the first year, so the manure holds more N, P2O5 and K2O than this and is worth more. A lab test of your manure gives the total pounds. Type them into the calculator under Use my manure test and it prices every pound at what the same nutrients cost as urea, MAP and potash."],
   ["What is the manure on a whole field worth?",
-   "Liquid dairy manure at 4 to 11% dry matter, worked in within 3 days, at 6,000 gallons an acre puts on {ex-n-lb} lb of first-year N, {ex-p-lb} lb of P2O5 and {ex-k-lb} lb of K2O an acre. At {asof-n} dealer prices that is {ex-n-ac} of N, {ex-p-ac} of P2O5 and {ex-k-ac} of K2O, {ex-book-ac} an acre, or {ex-field} for 80 acres."],
+   "Liquid dairy manure at 4 to 11% dry matter, worked in within 3 days, at 6,000 gallons an acre puts on {ex-n-lb} lb of N, {ex-p-lb} lb of P2O5 and {ex-k-lb} lb of K2O an acre that a crop can use the first year, by UW's book values. At {asof-n} dealer prices that is {ex-n-ac} of N, {ex-p-ac} of P2O5 and {ex-k-ac} of K2O, {ex-book-ac} an acre, or {ex-field} for 80 acres."],
   ["Why is phosphorus priced from MAP with the nitrogen taken out?",
    "MAP 12-40-0-10S carries 240 lb of N in every ton along with 800 lb of P2O5. Charging the whole price to phosphorus makes P look about {price-p-raw} a pound. Crediting the N at the urea price, about {map-ncredit} a ton, puts P2O5 at about {price-p} a pound. The sulfur is not credited, so this still runs a little high."],
   ["How do I get manure tested and what does it cost?",
    "Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."],
 ];
 
-const DESC = "At {asof-n} dealer prices, liquid dairy manure is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gal and solid dairy {unit-dairy_solid_gt20-1to3day} a ton. Calculator for your rate and acres.";
+const DESC = "At {asof-n} dealer prices, liquid dairy manure carries about {unit-dairy_liq_4_11-1to3day} of first-year fertilizer per 1,000 gal. The calculator takes your own manure test.";
 
 const TIMINGS = ["gt3day", "1to3day", "lt1hr"];
 
@@ -84,7 +84,7 @@ function poundsTable(M, cls) {
   }
   return `<div class="${cls.wrap}" tabindex="0" role="region" aria-label="Available nutrients by manure type, scrolls sideways"><table class="${cls.table}">
 <thead>
-  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">N: 1st yr [2nd yr]</th><th rowspan="2">P&#x2082;O&#x2085;</th><th rowspan="2">K&#x2082;O</th></tr>
+  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">N: 1st yr [2nd yr]</th><th rowspan="2">P&#x2082;O&#x2085; 1st yr</th><th rowspan="2">K&#x2082;O 1st yr</th></tr>
   <tr><th>Not in 3 days</th><th>1 hr&ndash;3 days</th><th>Within 1 hr</th></tr>
 </thead>
 <tbody>

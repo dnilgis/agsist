@@ -1,6 +1,8 @@
-/* components/manure-value.js -- what manure is worth at today's fertilizer
- * prices: the value of all the N, P2O5 and K2O in it, per 1,000 gallons or
- * per ton, per acre and for the whole field.
+/* components/manure-value.js -- what manure is worth at dealer fertilizer
+ * prices, per 1,000 gallons or per ton, per acre and for the whole field.
+ * Book pounds are UW's first-year available amounts, not the total in the
+ * manure. A reader's own manure test (total pounds) replaces them, and then
+ * every pound counts.
  *
  * ONE COPY. /manure-value and the Manure tab on /fast-facts both load this
  * file. The nutrient table (TYPES), the price math and the calculator live
@@ -13,7 +15,11 @@
  * from /data/fertilizer.json on load.
  *
  * Nutrient numbers: first-year available N (by days to incorporation), and
- * P2O5 and K2O, per ton (solid) or per 1,000 gallons (liquid). Book values
+ * first-year available P2O5 and K2O, per ton (solid) or per 1,000 gallons
+ * (liquid). These are NOT total content: the 4-11% DM liquid dairy row
+ * (10 N, 6 P2O5, 17 K2O, worked in 1 hr to 3 days) is the row UW's Nutrient
+ * Management Fast Facts and the UW Crop Enterprise Budget Tool guide
+ * (Apr 2026, Table 1) carry as first-year credits. Book values
  * from UW Extension A2809, "Nutrient Application Guidelines for Field,
  * Vegetable, and Fruit Crops in Wisconsin" (Laboski and Peters), manure
  * chapter. The same numbers the Fast Facts table has carried since it was
@@ -104,17 +110,35 @@
     return out;
   }
 
-  /* Pounds and dollars in one unit (1 ton solid, 1,000 gal liquid). All the
-     N, P2O5 and K2O in it count. */
-  function perUnit(typeId, timingId, prices) {
+  /* A reader's manure test: {n, p, k} lb per unit, each a number >= 0 or
+     null. A filled box replaces that nutrient's book value; a blank one
+     leaves the book value. Returns null when no box is filled. */
+  function cleanTest(test) {
+    if (!test) return null;
+    var out = {}, any = false;
+    ['n', 'p', 'k'].forEach(function (x) {
+      var v = test[x];
+      if (v === '' || v == null) { out[x] = null; return; }
+      v = +v;
+      if (isFinite(v) && v >= 0) { out[x] = v; any = true; } else out[x] = null;
+    });
+    return any ? out : null;
+  }
+
+  /* Pounds and dollars in one unit (1 ton solid, 1,000 gal liquid). Every
+     pound given counts. Book pounds are first-year available; test pounds
+     (optional 4th argument) replace them nutrient by nutrient. */
+  function perUnit(typeId, timingId, prices, test) {
     var t = type(typeId), tm = timing(timingId);
     if (!t || !tm) return null;
-    var lb = { n: t.n[tm.i], p: t.p, k: t.k }, usd = {}, total = 0, missing = [];
+    var lb = { n: t.n[tm.i], p: t.p, k: t.k }, usd = {}, total = 0, missing = [], fromTest = {};
+    var ct = cleanTest(test);
+    ['n', 'p', 'k'].forEach(function (x) { fromTest[x] = !!(ct && ct[x] != null); if (fromTest[x]) lb[x] = ct[x]; });
     ['n', 'p', 'k'].forEach(function (x) {
       if (prices[x] == null) { usd[x] = null; missing.push(x); return; }
       usd[x] = lb[x] * prices[x]; total += usd[x];
     });
-    return { unit: t.liquid ? '1000gal' : 'ton', lb: lb, usd: usd, total: missing.length ? null : total, missing: missing };
+    return { unit: t.liquid ? '1000gal' : 'ton', lb: lb, usd: usd, total: missing.length ? null : total, missing: missing, fromTest: fromTest };
   }
   /* Value (all three nutrients) per ton, any type. Liquids convert at
      8.34 lb a gallon. */
@@ -124,14 +148,14 @@
     return type(typeId).liquid ? u.total / TONS_PER_KGAL : u.total;
   }
 
-  /* The value of all the manure on a field. o: {type, timing, rate (gal or
-     tons an acre), acres, prices}. Pounds and dollars of each nutrient an
+  /* The value of the manure on a field. o: {type, timing, rate (gal or
+     tons an acre), acres, prices, test (optional {n, p, k} lb per unit)}. Pounds and dollars of each nutrient an
      acre and for the field, and the total per unit, per ton, per acre and
      for the field. */
   function fieldValue(o) {
     var t = type(o.type);
     if (!t) return null;
-    var u = perUnit(o.type, o.timing, o.prices);
+    var u = perUnit(o.type, o.timing, o.prices, o.test);
     if (!u) return null;
     if (u.total == null) return { missing: true };
     var units = t.liquid ? Math.max(0, o.rate || 0) / 1000 : Math.max(0, o.rate || 0);   // units an acre
@@ -139,7 +163,7 @@
     var lbAc = {}, usdAc = {}, usdField = {};
     ['n', 'p', 'k'].forEach(function (x) { lbAc[x] = u.lb[x] * units; usdAc[x] = u.usd[x] * units; usdField[x] = usdAc[x] * acres; });
     return {
-      unit: u.unit, units: units, acres: acres,
+      unit: u.unit, units: units, acres: acres, fromTest: u.fromTest,
       perUnitUsd: u.usd, perUnit: u.total, perTon: t.liquid ? u.total / TONS_PER_KGAL : u.total,
       lbAc: lbAc, usdAc: usdAc, usdField: usdField,
       perAcre: u.total * units, field: u.total * units * acres
@@ -203,7 +227,7 @@
   }
 
   var API = { TYPES: TYPES, TIMING: TIMING, TONS_PER_KGAL: TONS_PER_KGAL, LB_PER_GAL: LB_PER_GAL, EXAMPLE: EXAMPLE,
-              type: type, timing: timing, grade: grade, nutrientPrices: nutrientPrices, perUnit: perUnit,
+              type: type, timing: timing, grade: grade, cleanTest: cleanTest, nutrientPrices: nutrientPrices, perUnit: perUnit,
               perTon: perTon, fieldValue: fieldValue, money: money, day: day, bakeValues: bakeValues };
   w.AgManure = API;
 
@@ -229,6 +253,13 @@
         '<label class="mvc-f"><span data-u="rate">Rate, gallons an acre</span><input data-k="rate" type="number" inputmode="decimal" min="0" step="500" value="6000"></label>' +
         '<label class="mvc-f"><span>Acres</span><input data-k="acres" type="number" inputmode="decimal" min="0" step="5" value="80"></label>' +
       '</div>' +
+      '<details class="mvc-prices mvc-test"><summary>Use my manure test <span data-o="test-sum"></span></summary>' +
+        '<p class="mvc-hint">Type the pounds from your lab report, <span data-u="test">per 1,000 gallons</span>. Every pound you enter counts. A blank box keeps the book value.</p>' +
+        '<div class="mvc-grid">' +
+          '<label class="mvc-f"><span>lb N</span><input data-k="tn" type="number" inputmode="decimal" min="0" step="0.1"></label>' +
+          '<label class="mvc-f"><span>lb P&#8322;O&#8325;</span><input data-k="tp" type="number" inputmode="decimal" min="0" step="0.1"></label>' +
+          '<label class="mvc-f"><span>lb K&#8322;O</span><input data-k="tk" type="number" inputmode="decimal" min="0" step="0.1"></label>' +
+        '</div></details>' +
       '<details class="mvc-prices"><summary>Fertilizer prices used <span data-o="price-sum"></span></summary>' +
         '<div class="mvc-grid">' +
           '<label class="mvc-f"><span>$ per lb N</span><input data-k="pn" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
@@ -236,14 +267,14 @@
           '<label class="mvc-f"><span>$ per lb K&#8322;O</span><input data-k="pk" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
         '</div><p class="mvc-hint" data-o="price-src">Loading dealer prices&hellip;</p></details>' +
       '<div class="mvc-out" aria-live="polite">' +
-        '<div class="mvc-big"><span>Value of the manure</span><strong data-o="unit">&nbsp;</strong><small data-o="unit-sub"></small></div>' +
+        '<div class="mvc-big"><span data-o="big-h">First-year value, UW book pounds</span><strong data-o="unit">&nbsp;</strong><small data-o="unit-sub"></small></div>' +
         '<table class="mvc-t"><thead><tr><th scope="col">Nutrient</th><th scope="col">lb an acre</th><th scope="col">$ an acre</th><th scope="col" data-o="field-h">Field</th></tr></thead><tbody>' +
-          '<tr><th scope="row">N, first year</th><td data-o="n-lb"></td><td data-o="n-usd"></td><td data-o="n-field"></td></tr>' +
-          '<tr><th scope="row">P&#8322;O&#8325;</th><td data-o="p-lb"></td><td data-o="p-usd"></td><td data-o="p-field"></td></tr>' +
-          '<tr><th scope="row">K&#8322;O</th><td data-o="k-lb"></td><td data-o="k-usd"></td><td data-o="k-field"></td></tr>' +
+          '<tr><th scope="row" data-o="n-h">N, first year</th><td data-o="n-lb"></td><td data-o="n-usd"></td><td data-o="n-field"></td></tr>' +
+          '<tr><th scope="row" data-o="p-h">P&#8322;O&#8325;, first year</th><td data-o="p-lb"></td><td data-o="p-usd"></td><td data-o="p-field"></td></tr>' +
+          '<tr><th scope="row" data-o="k-h">K&#8322;O, first year</th><td data-o="k-lb"></td><td data-o="k-usd"></td><td data-o="k-field"></td></tr>' +
           '<tr class="mvc-sum"><th scope="row">Total</th><td></td><td data-o="ac"></td><td data-o="field"></td></tr>' +
         '</tbody></table>' +
-        '<p class="mvc-hint">Book values from UW Extension A2809. A test of your own manure gives the real pounds.</p>' +
+        '<p class="mvc-hint" data-o="lb-src">Book pounds from UW Extension A2809: what a crop can use the first year, not all that is in the manure. A test of your own manure gives the total pounds.</p>' +
       '</div>';
   }
 
@@ -273,7 +304,17 @@
       }
       var u = t.liquid ? '1,000 gal' : 'ton';
       q('[data-u="rate"]').textContent = t.liquid ? 'Rate, gallons an acre' : 'Rate, tons an acre';
-      var res = fieldValue({ type: t.id, timing: val('timing'), rate: num('rate'), acres: num('acres'), prices: prices() });
+      q('[data-u="test"]').textContent = t.liquid ? 'per 1,000 gallons' : 'per ton';
+      var test = cleanTest({ n: val('tn'), p: val('tp'), k: val('tk') });
+      var res = fieldValue({ type: t.id, timing: val('timing'), rate: num('rate'), acres: num('acres'), prices: prices(), test: test });
+      var NAME = { n: 'N', p: 'P&#8322;O&#8325;', k: 'K&#8322;O' };
+      ['n', 'p', 'k'].forEach(function (x) { set(x + '-h', NAME[x] + (test && test[x] != null ? ', your test' : ', first year')); });
+      var nt = test ? ['n', 'p', 'k'].filter(function (x) { return test[x] != null; }).length : 0;
+      set('test-sum', nt ? '(' + (nt === 3 ? 'all three' : nt + ' of 3') + ' from your test)' : '');
+      set('big-h', nt === 3 ? 'Value of the manure, from your test' : nt ? 'Value of the manure, part from your test' : 'First-year value, UW book pounds');
+      set('lb-src', nt === 3 ? 'All the pounds are from your test, each one priced.' :
+        nt ? 'Pounds marked &ldquo;your test&rdquo; are yours; the rest are UW Extension A2809 first-year book pounds.' :
+        'Book pounds from UW Extension A2809: what a crop can use the first year, not all that is in the manure. A test of your own manure gives the total pounds.');
       if (!res || res.missing) {
         set('unit', 'No price'); set('unit-sub', 'Enter a fertilizer price under "Fertilizer prices used" to see a value.');
         ['n-lb', 'n-usd', 'n-field', 'p-lb', 'p-usd', 'p-field', 'k-lb', 'k-usd', 'k-field', 'ac', 'field'].forEach(function (k) { set(k, ''); });
