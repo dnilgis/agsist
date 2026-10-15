@@ -83,11 +83,17 @@ test("three dates on one day all print: stacked over their tick, or one label in
     for (const l of ["Harvest done", "Sold the crop", "Sprayed beans"]) assert.ok(t.some((x) => x.includes(l)), style + " " + l);
     assert.deepEqual(HARD(check(svg)), [], style);
   }
-  // the dates crowd Jan 1 under a long place name (it takes the third row): two rows, the first joined in date order, each over the tick
-  const { svg } = draw({ ...base, style: "r1", place: "long", markers: "jan1x3" });
+  // Staircase (panel 4, 2026-10-14): the dates go on the line, so three on Jan 1 each print whole beside the dot, inside the chart
+  const r1 = draw({ ...base, style: "r1", place: "long", markers: "jan1x3" }).svg;
+  const on = parse(r1).texts.filter((t) => /^mark/.test(t.rp));
+  assert.deepEqual(on.map((t) => t.s).sort(), ["Harvest done", "Planted corn", "Sold the crop"]);
+  for (const t of on) assert.ok(t.x > 198 && t.x < 198 + 160 && t.y + t.h < (base.normals ? 742 : 790), t.s + " sits beside the Jan 1 dot, above the axis");
+  assert.deepEqual(HARD(check(r1)), []);
+  // Roots keeps the row over the months: crowded at Jan 1 they join in date order over the tick
+  const { svg } = draw({ ...base, style: "r2", place: "long", markers: "jan1x3" });
   const rows = parse(svg).texts.filter((t) => /^mark/.test(t.rp));
-  assert.deepEqual(rows.map((t) => t.s), ["Planted corn · Sold the crop", "Harvest done"]);
-  for (const t of rows) assert.ok(t.x < 198 && t.x + t.w > 198, t.s + " sits over Jan 1");
+  assert.equal(rows.map((t) => t.s).join(" · "), "Planted corn · Sold the crop · Harvest done");
+  for (const t of rows) assert.ok(t.x < 207 && t.x + t.w > 207, t.s + " sits over Jan 1");
   assert.deepEqual(HARD(check(svg)), []);
 });
 
@@ -138,4 +144,17 @@ test("the biggest rain is never dropped: R1 says it in the header, R2 in the foo
 
 test("the stress data sets are synthetic and say so in the fixture", () => {
   assert.ok(Object.keys(DATA).length >= 10);
+});
+
+// ---------- panel 4 (2026-10-14): the name block ----------
+const LOGO = { href: "data:image/png;base64,iVBORw0KGgo=", w: 600, h: 300 };
+test("the longest name, place and line, with and without a logo, draw with nothing overlapping in both styles", () => {
+  for (const style of ["r1", "r2"]) for (const logo of [null, LOGO]) for (const data of ["usual", "wet", "snowWinter"]) for (const markers of ["spread", "adjJan"]) {
+    const I = input(X, { ...base, style, data, markers, place: "long", name: "long", dedication: "long", gauge: "long", records: "few" });
+    I.name = "W".repeat(24); I.logo = logo; I.measure = measure;
+    const svg = X.ART.render(I), id = [style, logo ? "logo" : "no logo", data, markers].join(" ");
+    assert.deepEqual(HARD(check(svg)).map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
+    const t = texts(svg);
+    for (const want of [I.name, I.place, I.dedication]) assert.ok(t.includes(want), id + ": prints " + want);
+  }
 });
