@@ -1,4 +1,13 @@
 {
+ "bad_files": {
+  "2025_ADMLivestockLrp_Daily_20260325.zip": {
+   "error": "BadZipFile: File is not a zip file",
+   "first": "2026-10-15",
+   "last": "2026-10-15",
+   "size": 0,
+   "tries": 1
+  }
+ },
  "files": {
   "2014_ADMLivestockLrp_Daily_20130701.zip": 22149,
   "2014_ADMLivestockLrp_Daily_20130702.zip": 25595,
@@ -7029,16 +7038,13 @@
   "aev_deleted": 0,
   "aev_restated": 399,
   "aev_rows": 729601,
-  "file_errors": {
-   "2025_ADMLivestockLrp_Daily_20260325.zip": "BadZipFile: File is not a zip file"
-  },
   "last_run": {
    "failed": 0,
-   "left": 0,
-   "read": 322,
-   "seconds": 85,
+   "left": 1,
+   "read": 0,
+   "seconds": 2,
    "stopped_for_time": false,
-   "unreadable": 1
+   "unreadable": 0
   },
   "offer_days_written": 3308,
   "offers_restated": 1,
@@ -7049,5 +7055,5 @@
   "rate_price_off": 425998,
   "rate_rows": 2314698
  },
- "updated": "2026-10-15T19:17:50Z"
+ "updated": "2026-10-15T19:21:49Z"
 }
