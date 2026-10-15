@@ -144,12 +144,13 @@
       if (i) poly.push(x + ',' + Y(pts[i - 1].cents).toFixed(1));
       poly.push(x + ',' + yv);
       if (i && (p.con !== pts[i - 1].con || p.dm !== pts[i - 1].dm))
-        s += '<line x1="' + x + '" y1="' + pt + '" x2="' + x + '" y2="' + (h - pb) + '" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,3"/>';
+        s += '<line x1="' + x + '" y1="' + pt + '" x2="' + x + '" y2="' + (h - pb) + '" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>';
     });
     if (endDate > pts[pts.length - 1].date) poly.push(X(endDate).toFixed(1) + ',' + Y(pts[pts.length - 1].cents).toFixed(1));
-    if (lo <= 0 && hi >= 0) s += '<line x1="0" y1="' + Y(0).toFixed(1) + '" x2="' + w + '" y2="' + Y(0).toFixed(1) + '" stroke="var(--border)" stroke-width="1"/>';
-    s += '<polyline points="' + poly.join(' ') + '" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round"/>';
-    pts.forEach(function (p) { s += '<circle cx="' + X(p.date).toFixed(1) + '" cy="' + Y(p.cents).toFixed(1) + '" r="2.6" fill="var(--gold)"/>'; });
+    if (lo <= 0 && hi >= 0) s += '<line x1="0" y1="' + Y(0).toFixed(1) + '" x2="' + w + '" y2="' + Y(0).toFixed(1) + '" stroke="var(--border)" stroke-width="1" vector-effect="non-scaling-stroke"/>';
+    s += '<polyline points="' + poly.join(' ') + '" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+    /* a dot per logged change: a zero-length round-capped line stays round when the chart is stretched to the page's width */
+    pts.forEach(function (p) { var x = X(p.date).toFixed(1), yv = Y(p.cents).toFixed(1); s += '<line x1="' + x + '" y1="' + yv + '" x2="' + x + '" y2="' + yv + '" stroke="var(--gold)" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'; });
     return '<svg class="cbh-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">' + s + '</svg>';
   }
 
@@ -164,7 +165,7 @@
     var rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
       return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n">' + basisText(p.cents) + '</td><td>' + (p.con ? esc(p.con) : '<span class="cbh-mut">not named</span>') + '</td></tr>';
     }).join('');
-    var more = pts.length > TABLE_MAX ? '<p class="cbh-mut">' + (pts.length - TABLE_MAX) + ' earlier changes are in the line above.</p>' : '';
+    var more = pts.length > TABLE_MAX ? '<p class="cbh-mut">' + (pts.length - TABLE_MAX) + ' earlier ' + (pts.length - TABLE_MAX === 1 ? 'change is' : 'changes are') + ' in the line above.</p>' : '';
     return '<div class="cbh-crop">' + head + lead + svg +
       '<div class="cbh-scroll"><table class="cbh-t"><thead><tr><th>Changed</th><th>Delivery</th><th class="n">Basis</th><th>vs futures</th></tr></thead><tbody>' + rows + '</tbody></table></div>' + more + '</div>';
   }

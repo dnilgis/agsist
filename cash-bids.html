@@ -99,6 +99,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .share-btn:hover{border-color:var(--gold);color:var(--gold)}
 .earnings-callout{background:linear-gradient(135deg,rgba(58,139,60,.14) 0%,rgba(58,139,60,.05) 100%);border:2px solid rgba(58,139,60,.38);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:flex-start;gap:.75rem}
 .earnings-callout.muted{display:none}
+.earnings-callout.flat{background:var(--surface);border:1px solid var(--border);padding:.55rem .9rem}.earnings-callout.flat .earnings-icon{display:none}.earnings-callout.flat .earnings-headline{color:var(--text-dim,var(--text-muted));font-size:.9rem;font-weight:600}
 .earnings-icon{font-size:1.4rem;flex-shrink:0;margin-top:.05rem}
 .earnings-text{flex:1;min-width:0}
 .earnings-headline{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--green);margin-bottom:.2rem;line-height:1.25}
@@ -328,7 +329,17 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .bid-chg .bh-when{color:var(--text-muted);opacity:.85}
 .bid-chg.bh-quiet{color:var(--text-muted)}
 [data-theme="light"] .bid-chg .bh-when,[data-theme="light"] .comm-fut-l,[data-theme="light"] .bid-row-labels,[data-theme="light"] .bbc-scroll-hint,[data-theme="light"] .lo-opt{opacity:1}
-.bid-fut-tag{font-family:'JetBrains Mono',monospace;font-size:0.70rem;color:var(--text-muted);opacity:.75;white-space:nowrap;flex:0 0 auto}
+/* THE DELIVERY LABEL NEVER WRAPS; THE CONTRACT TAG GIVES WAY. The tag was
+   flex:0 0 auto and the label could shrink, so a long tag ("Nov '26
+   Soybeans", Wheaton Grain, 2026-10-15) squeezed "Oct 2026" to one letter per
+   line. The label now keeps its width and the tag is cut with an ellipsis
+   (its full text is in its title). */
+.bid-del-fwd,.bid-del-spot{white-space:nowrap;flex:0 0 auto}
+.bid-fut-tag{font-family:'JetBrains Mono',monospace;font-size:0.70rem;color:var(--text-muted);opacity:.75;white-space:nowrap;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* The basis colour key, one line over the cards (components/cash-bids.js basisKey). */
+.cb-basis-key{font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .7rem;line-height:1.5}
+.cb-basis-key .bz-up{color:var(--green);font-weight:700}.cb-basis-key .bz-dn{color:var(--red,#ef4444);font-weight:700}
+[data-theme="light"] .cb-basis-key .bz-dn{color:#a8361f}
 /* The strip is its own block under the commodity header and it WRAPS. It can
    carry six contracts on a wide screen and three lines on a phone, and neither
    costs the price columns a pixel. */
@@ -825,6 +836,6 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=3" defer></script>
 <script src="/components/cb-rank.js?v=2"></script>
-<script src="/components/cash-bids.js?v=2"></script>
+<script src="/components/cash-bids.js?v=3"></script>
 </body>
 </html>
