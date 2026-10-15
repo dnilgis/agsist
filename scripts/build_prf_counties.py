@@ -113,6 +113,25 @@ def pct_cell(c):
     return f"<td{cls}>{c['mid']}</td>"
 
 
+def dollars(x):
+    return f"${x:,.0f}"
+
+
+def example_html(ex, cy, y0, y1, many, ng):
+    """The labeled 100-acre example under the stat tiles (scripts/prf_county_facts.mjs countyExample):
+    the calculator's opening policy, priced on the county's middle grid by premium."""
+    if not ex:
+        return ('<p class="prf-note prf-ex"><b>Example:</b> the calculator opens on April to May and June to July, and this county '
+                'does not offer both for grazing, so no example is priced here. The calculator prices the months it does offer.</p>')
+    where = (f"grid {ex['grid']}, the middle of the county&rsquo;s {ex['of']} grids by premium" if ex["of"] > 1
+             else f"grid {ex['grid']}")
+    return (f'<p class="prf-note prf-ex" id="example"><b>Example, not a recommendation:</b> 100 acres of grazing at 90% coverage, productivity factor 100, '
+            f'half in April to May and half in June to July, on {where}. The full premium is {dollars(ex["premium"])}: USDA pays {dollars(ex["usda"])} '
+            f'and you pay {dollars(ex["you"])}, or ${ex["you_acre"]:.2f} an acre. Run over {y0} to {y1} at {cy} rates, it would have paid in '
+            f'{ex["paid_years"]} of {ex["years"]} years, an average of {dollars(ex["avg"])} a year, or ${ex["avg_acre"]:.2f} an acre. '
+            f'That is the past record, not a forecast, and it leaves out the administrative fee.</p>')
+
+
 def page(ctx):
     meta, cf, st, sd, code, c, fx, name, sl, st_slug, nbrs, links, BOOT = (
         ctx[k] for k in ("meta", "cf", "st", "sd", "code", "c", "fx", "name", "slug", "st_slug", "nbrs", "links", "BOOT"))
@@ -186,6 +205,7 @@ def page(ctx):
     prot = round(gz * 0.9, 2)
     subrow = ", ".join(f"{int(round(sub[k] * 100))}% at {k}%" for k in sorted(sub, key=int))
     mid_word = "the middle grid" if many else "the grid"
+    ex = fx.get("example")
     faq = [
         (f"When is the PRF deadline in {name} for {cy}?",
          f"The sales closing date is {sales}, the same across the country. The acreage report is due {acre}, and the premium is billed no earlier than {bill}."),
@@ -196,7 +216,9 @@ def page(ctx):
          f"It depends on the grid, the months, the coverage level and your productivity factor. USDA&rsquo;s {cy} county base value is {money2(gz)} an acre for grazing"
          f"{', ' + money2(hy) + ' for non-irrigated hay' if hy is not None else ''}. At 90% coverage and a productivity factor of 100, grazing land is protected for "
          f"{money2(prot)} an acre, and the full premium runs {money2(cheap[1]) if cheap else '&mdash;'} to {money2(dear[1]) if dear else '&mdash;'} per $100 of protection "
-         f"depending on the months, on {mid_word}. USDA pays 51% to 59% of the premium. The calculator gives the figure for your acres and months."),
+         f"depending on the months, on {mid_word}. USDA pays 51% to 59% of the premium. "
+         + (f"In the example above, 100 acres of grazing at 90% with half in April to May and half in June to July, you pay ${ex['you_acre']:.2f} an acre on grid {ex['grid']}. " if ex else "")
+         + "The calculator gives the figure for your acres and months."),
         (f"How often has PRF paid in {name}?",
          f"At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over {y0} to {y1}, on {mid_word}, that happened in "
          f"{min(r['below']['mid'] for r in fx['intervals'] if r['below'])} to {max(r['below']['mid'] for r in fx['intervals'] if r['below'])} of {ny} years, depending on the months. "
@@ -225,6 +247,7 @@ def page(ctx):
             {"@type": "ListItem", "position": 4, "name": name, "item": url}]},
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
+    exh = example_html(fx.get("example"), cy, y0, y1, many, ng)
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>
@@ -276,6 +299,7 @@ def page(ctx):
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
     <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.</p>
+    {exh}
     {sod}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>

@@ -73,3 +73,68 @@ test("each state page links every county row to its page", () => {
     assert.equal(n, st.counties, st.name);
   }
 });
+
+/* The labeled 100-acre example under the stat tiles. Worked out again here
+ * from USDA's files with components/prf-math.js, apart from the builder, and
+ * tied to the calculator's own example (data/prf/facts.json, grid 30454 in
+ * Barron County, the figures RMA's tool was matched against): a page that
+ * printed another policy's numbers, or rounded its own way, fails. */
+import vm from "node:vm";
+const mctx = { window: {}, Buffer };
+vm.runInNewContext(readFileSync(ROOT + "components/prf-math.js", "utf8"), mctx);
+const M = mctx.window.AgPrfMath;
+const shardCache = {};
+function gridRec(g) {
+  const k = M.shardKey(g);
+  if (!shardCache[k]) shardCache[k] = JSON.parse(readFileSync(ROOT + "data/prf/g/" + k + ".json", "utf8"));
+  const d = shardCache[k], o = M.openGrid(d.g[String(g)], d.y0, d.y1, null), index = {};
+  for (const y of Object.keys(o.index)) if (+y >= meta.years.first && +y <= meta.years.last_complete) index[y] = o.index[y];
+  return { rates: o.rates, index };
+}
+function examplePolicy(c, g) {
+  const L = c.lim, on = M.LABELS.map((_, i) => (i === 3 || i === 5) && !!L[i]);
+  if (!on[3] || !on[5]) return null;
+  const split = M.evenSplit(on, L.map((p) => (p ? p[0] : null)), L.map((p) => (p ? p[1] : null)));
+  const r = gridRec(g);
+  const pol = M.policy({ cbv: c.b[0], coverage: 90, productivity: 100, acres: 100, share: 100, split, rates: r.rates[90], subsidy: meta.subsidy["90"] });
+  if (!pol.priced) return null;
+  const sum = M.summarize(M.history(pol, r.index), pol);
+  return { g, premium: pol.total.premium, usda: pol.total.subsidy, you: pol.total.producer, paid: sum.paidYears, years: sum.years, avg: sum.avgIndemnity };
+}
+const usd = (x) => "$" + Math.round(x).toLocaleString("en-US");
+
+test("the example's arithmetic is the calculator's: grid 30454, Barron County, matches the main page's example", () => {
+  const f = JSON.parse(readFileSync(ROOT + "data/prf/facts.json", "utf8")).example.grazing;
+  const wi = JSON.parse(readFileSync(ROOT + "data/prf/s/WI.json", "utf8"));
+  const x = examplePolicy(wi.counties["005"], 30454);
+  assert.equal(x.premium, f.premium); assert.equal(x.usda, f.usda); assert.equal(x.you, f.you);
+  assert.equal(x.paid, f.paid_years); assert.equal(x.years, f.years); assert.equal(Math.round(x.avg), f.avg);
+});
+
+test("each county page prints the 100-acre example on its middle grid by premium, labeled, or says why there is none", () => {
+  const sample = pages.filter((_, i) => i % 61 === 0);
+  const byState = {};
+  let priced = 0, none = 0;
+  for (const p of sample) {
+    const h = readFileSync(ROOT + p.rel, "utf8");
+    const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
+    const m = main.match(/<p class="prf-note prf-ex"[^>]*>(.*?)<\/p>/s);
+    assert.ok(m, p.rel + " has no example line");
+    const sd = byState[p.st.st] || (byState[p.st.st] = JSON.parse(readFileSync(ROOT + "data/prf/s/" + p.st.st + ".json", "utf8")));
+    const code = Object.keys(sd.counties).find((k) => main.includes(`/prf?c=${sd.fips}${k}"`));
+    const c = sd.counties[code];
+    const rows = c.g.slice().sort((a, b) => a - b).map((g) => examplePolicy(c, g)).filter((x) => x && x.years === meta.years.last_complete - meta.years.first + 1);
+    if (!rows.length) { none++; assert.match(m[1], /no example is priced here/, p.rel); continue; }
+    priced++;
+    rows.sort((a, b) => a.you - b.you || a.g - b.g);
+    const x = rows[Math.ceil(rows.length / 2) - 1];
+    const t = m[1];
+    assert.ok(t.startsWith("<b>Example, not a recommendation:</b> 100 acres of grazing at 90% coverage"), p.rel + " example is not labeled");
+    assert.ok(t.includes(`on grid ${x.g}`), `${p.rel}: expected grid ${x.g}: ${t}`);
+    assert.ok(t.includes(`The full premium is ${usd(x.premium)}: USDA pays ${usd(x.usda)} and you pay ${usd(x.you)}, or $${(x.you / 100).toFixed(2)} an acre`), `${p.rel}: ${t}`);
+    assert.ok(t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(Math.round(x.avg) / 100).toFixed(2)} an acre`) ||
+              t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(x.avg / 100).toFixed(2)} an acre`), `${p.rel}: ${t}`);
+    assert.ok(/not a forecast/.test(t), p.rel);
+  }
+  assert.ok(priced >= 40, "too few priced examples in the sample: " + priced);
+});
