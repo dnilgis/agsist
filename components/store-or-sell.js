@@ -249,8 +249,8 @@
     var f = state.farther;
     if (f) {
       var inp = inputs(), p = SS.pickPeriod(f.model, inp, null);
-      return ' The nearest elevator we found that does is <b>' + esc(nameOf(f.row)) + '</b>' +
-        (f.row.distance != null ? ', ' + Math.round(f.row.distance) + ' miles away' : '') + ': ' + esc(lineFor(f.model, p, inp)) + '';
+      return ' <span class="sos-far">The nearest elevator we found that does is <b>' + esc(nameOf(f.row)) + '</b>' +
+        (f.row.distance != null ? ', ' + Math.round(f.row.distance) + ' miles away' : '') + ': ' + esc(lineFor(f.model, p, inp)) + '</span>';
     }
     var ds = state.read.map(function (x) { return x.row.distance; }).filter(function (d) { return d != null && isFinite(d); });
     if (!ds.length) return '';
