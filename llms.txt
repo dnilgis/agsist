@@ -78,6 +78,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Break-Even Calculator](https://agsist.com/breakeven): cost per bushel and profit per acre, with what-if tables
 - [Harvest Price Tracker](https://agsist.com/harvest-price-tracker): the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell
 - [Grain Bin Calculator](https://agsist.com/grain-bin-calculator): bushels in a bin and moisture shrink
+- [Grain EMC Calculator](https://agsist.com/grain-emc): when to run aeration fans for corn or wheat: drying wet grain (against its own moisture), cooling (outside air 10 to 15 F under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn and wheat EMC charts from published equations
 
 ## My ground and programs
 
