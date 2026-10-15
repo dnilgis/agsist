@@ -94,3 +94,27 @@ test('the component and product blocks name only the file\'s class month', () =>
     }
   }
 });
+
+// 2026-10-15 head to head: the trap section is written for Class III above
+// Class IV, and the spread line linked it as this month's story while Sep 2026
+// had Class IV $2.90 on top. The copy now follows the sign, baked and live.
+test('the spread line and the trap heading follow which class leads, baked and live alike', () => {
+  if (!(d.class3 > 0 && d.class4 > 0)) return;
+  const s = Math.round((d.class3 - d.class4) * 100) / 100;
+  const fn = (name) => {
+    const i = page.indexOf(`function ${name}(`);
+    assert.ok(i > 0, `${name} is in the page script`);
+    const j = page.indexOf('\n    }\n', i);
+    // eslint-disable-next-line no-new-func
+    return new Function(page.slice(i, j + 6) + `\nreturn ${name};`)();
+  };
+  const why = fn('spreadWhy')(s), now = fn('trapNow')(s, short(ci));
+  assert.ok(seedOf('milkspread').includes(`<span id="dp-spread-why">${why}</span>`), 'baked tail is the script\'s');
+  assert.ok(seedOf('milktrapnow').includes(`>${now}</p>`), 'baked which-way line is the script\'s');
+  if (s < 0) {
+    assert.match(now, /Class IV was \$[\d.]+ above Class III\. That is the reverse of the case below\./);
+    assert.doesNotMatch(why, /when your best milk pays you less/);
+  } else if (s > 0) {
+    assert.match(now, /That is the case below\./);
+  }
+});

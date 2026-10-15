@@ -1524,8 +1524,6 @@ def milk_seeds(d, today):
             seeds["milkprodsrc"] = f"USDA survey averages of what plants sold, {sh}. They feed the formulas. They are not CME spot closes."
         STRIP_TAIL = cells
         # the spread line (spread()); hidden, as the script hides it, when the block is not shown
-        spread_tail = (' How far apart the two classes sit matters for your check. <a class="dp-jump" '
-                       'href="#dp-trap">Why: the trap, when your best milk pays you less</a></p>')
         if _pos(c3) and _pos(c4):
             s = _jr(c3 - c4, 2)
             a = _fixed(abs(s), 2)
@@ -1533,7 +1531,10 @@ def milk_seeds(d, today):
             seeds["milkspread"] = (f'<p class="dp-spread" id="dp-spread"{" hidden" if stale else ""}>'
                                    f"<strong>Class III minus Class IV, {sh}: <span id=\"dp-spread-val\">"
                                    f"{'+' if s > 0 else MINUS if s < 0 else ''}${a}/cwt</span>.</strong> "
-                                   f'<span id="dp-spread-words">{words}</span>' + spread_tail)
+                                   f'<span id="dp-spread-words">{words}</span>'
+                                   f'<span id="dp-spread-why">{milk_spread_why(s)}</span></p>')
+            seeds["milktrapnow"] = (f'<p class="dp-sec-intro dp-trap-now" id="dp-trap-now"{" hidden" if stale else ""}>'
+                                    f"{milk_trap_now(s, sh)}</p>")
         # the waterfall (render(..., true)) and the sandbox's starting point
         sc = d.get("survey_cheese") if _pos(d.get("survey_cheese")) else d.get("cheese")
         sw = d.get("survey_whey") if _pos(d.get("survey_whey")) else d.get("whey")
@@ -1596,6 +1597,29 @@ def milk_seeds(d, today):
     if st:
         seeds["milkstates"] = st
     return seeds, seed_key
+
+
+def milk_spread_why(s):
+    """The spread line's tail, the page script's spreadWhy(). The trap section
+    is written for cheese on top; when Class IV leads, say so instead of
+    pointing at it as this month's story (2026-10-15 head to head: Sep 2026
+    had Class IV $2.90 over Class III under a line that read as the trap)."""
+    if s < 0:
+        return (" The trap below is the reverse case, cheese above butter and powder. With Class IV on top "
+                "the same pooling math works against butter and powder plants instead. "
+                '<a class="dp-jump" href="#dp-trap">See the trap</a>')
+    return (' How far apart the two classes sit matters for your check. <a class="dp-jump" '
+            'href="#dp-trap">Why: the trap, when your best milk pays you less</a>')
+
+
+def milk_trap_now(s, sh):
+    """The line under the trap heading, the page script's trapNow()."""
+    a = _fixed(abs(s), 2)
+    if s < 0:
+        return f"Which way it runs now: in {sh}, Class IV was ${a} above Class III. That is the reverse of the case below."
+    if s > 0:
+        return f"Which way it runs now: in {sh}, Class III was ${a} above Class IV. That is the case below."
+    return f"Which way it runs now: in {sh}, Class III and Class IV were equal."
 
 
 def milk_fall(cheese, whey, fat, c3, month, math=None):
