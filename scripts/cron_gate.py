@@ -24,6 +24,11 @@ anything to do:
   cot    For cot-release-watch.yml: Monday to Friday, 19:00-23:59 UTC, and only
          while this week's report is not yet in data/cot.json.
 
+  lrp    For lrp.yml: Monday to Friday 19:00-23:59 UTC until today's LRP offers
+         are in data/lrp/today.json (RMA posts them 2:17-4:30 pm Central), and
+         one look Tuesday to Saturday 15:00-15:19 UTC (a late posting the
+         evening before, and the 8:35 am CT ending values).
+
 A manual Run workflow, a push and a repository_dispatch always go.
 
 Writes go=0|1 and reason=... to $GITHUB_OUTPUT (stdout when unset).
@@ -31,6 +36,7 @@ Writes go=0|1 and reason=... to $GITHUB_OUTPUT (stdout when unset).
     python3 scripts/cron_gate.py tick --workflow news.yml \\
         --cron "7,22,37,52 12-21 * * 1-5" --max-lag 60
     python3 scripts/cron_gate.py cot --cot-file data/cot.json
+    python3 scripts/cron_gate.py lrp --lrp-file data/lrp/today.json
     python3 scripts/cron_gate.py --selftest
 """
 
@@ -200,6 +206,35 @@ def decide_cot(event, now, cot):
     return 0, "this week's report (%s) is already in; next %s" % (have, nxt or "unknown")
 
 
+# ── the LRP decision ─────────────────────────────────────────────────────────
+def lrp_sales_day(today_json):
+    """The sales day data/lrp/today.json holds, as YYYY-MM-DD, or None."""
+    if not today_json:
+        return None
+    d = today_json.get("sales_day")
+    if d:
+        return d
+    sed = str(today_json.get("sed") or "")
+    return "%s-%s-%s" % (sed[:4], sed[4:6], sed[6:8]) if len(sed) == 8 else None
+
+
+def decide_lrp(event, now, today_json):
+    """(go, reason) for lrp.yml. `today_json` is data/lrp/today.json, or None."""
+    if event in ALWAYS_GO:
+        return 1, "%s always runs" % event
+    wd = now.isoweekday()
+    if 2 <= wd <= 6 and now.hour == 15 and now.minute < 20:
+        return 1, "the morning look (Tue-Sat 15:00-15:19 UTC)"
+    if wd > 5 or now.hour < 19:
+        return 0, "outside Mon-Fri 19:00-23:59 UTC and the morning look"
+    from zoneinfo import ZoneInfo
+    want = now.astimezone(ZoneInfo("America/Chicago")).date().isoformat()
+    have = lrp_sales_day(today_json)
+    if have == want:
+        return 0, "today's offers (%s) are already on the site" % want
+    return 1, "watching for %s's offers; the site has %s" % (want, have or "none")
+
+
 # ── output ───────────────────────────────────────────────────────────────────
 def emit(go, reason):
     print("go=%d (%s)" % (go, reason), file=sys.stderr)
@@ -215,11 +250,12 @@ def emit(go, reason):
 def main(argv):
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("mode", nargs="?", choices=["tick", "cot"])
+    p.add_argument("mode", nargs="?", choices=["tick", "cot", "lrp"])
     p.add_argument("--workflow")
     p.add_argument("--cron", action="append", default=[])
     p.add_argument("--max-lag", type=int, default=120)
     p.add_argument("--cot-file", default="data/cot.json")
+    p.add_argument("--lrp-file", default="data/lrp/today.json")
     p.add_argument("--selftest", action="store_true")
     a = p.parse_args(argv)
     if a.selftest:
@@ -233,6 +269,14 @@ def main(argv):
         except Exception:
             cot = None
         emit(*decide_cot(event, now, cot))
+        return 0
+    if a.mode == "lrp":
+        try:
+            with open(a.lrp_file) as f:
+                today_json = json.load(f)
+        except Exception:
+            today_json = None
+        emit(*decide_lrp(event, now, today_json))
         return 0
     if a.mode != "tick" or not a.workflow or not a.cron:
         p.error("tick needs --workflow and at least one --cron")
@@ -328,6 +372,23 @@ def selftest():
           "COT: next_release day goes")
     check(decide_cot("workflow_run", T("2026-10-09 20:00"), None)[0] == 1, "COT: unreadable file probes")
     check(decide_cot("workflow_dispatch", T("2026-10-10 03:00"), cot)[0] == 1, "COT: manual always goes")
+
+    # LRP
+    have14 = {"sed": "20261014"}
+    have15 = {"sed": "20261015", "sales_day": "2026-10-15"}
+    check(decide_lrp("workflow_run", T("2026-10-15 18:52"), have14)[0] == 0, "LRP: before 19:00 UTC, no")
+    check(decide_lrp("workflow_run", T("2026-10-15 19:07"), have14)[0] == 1, "LRP: Thursday, yesterday's offers, go")
+    check(decide_lrp("workflow_run", T("2026-10-15 23:52"), have14)[0] == 1, "LRP: 23:52 still in window")
+    check(decide_lrp("workflow_run", T("2026-10-15 19:37"), have15)[0] == 0, "LRP: today's offers in, stop")
+    check(decide_lrp("workflow_run", T("2026-10-17 20:07"), have14)[0] == 0, "LRP: Saturday afternoon, no")
+    check(decide_lrp("workflow_run", T("2026-10-17 15:07"), have15)[0] == 1, "LRP: Saturday morning look")
+    check(decide_lrp("workflow_run", T("2026-10-19 15:07"), have15)[0] == 0, "LRP: no Monday morning look")
+    check(decide_lrp("workflow_run", T("2026-10-16 15:22"), have15)[0] == 0, "LRP: morning look is 15:00-15:19")
+    check(decide_lrp("workflow_run", T("2026-10-15 20:07"), None)[0] == 1, "LRP: unreadable file looks anyway")
+    check(decide_lrp("workflow_dispatch", T("2026-10-18 03:00"), have15)[0] == 1, "LRP: manual always goes")
+    # 23:30 UTC in December is still the same Central day (17:30 CST)
+    check(decide_lrp("schedule", T("2026-12-15 23:30"), {"sed": "20261215"})[0] == 0,
+          "LRP: Central date in standard time")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_gate checks passed")
     return 1 if fails else 0
