@@ -797,7 +797,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
       <div class="risk-badge moderate" id="risk-badge"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg> Loading…</div>
       <div class="risk-verdict" id="risk-verdict">Getting your local conditions…</div>
       <div class="risk-location" id="risk-location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Detecting location</div>
-      <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20%, adjusted for your soil pH and residue; an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> Open-Meteo forecast; rain thresholds from Hargrove 1988 and Ferguson et al. 1984 &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
+      <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20% (the forecast amount for today and tomorrow when it is &frac14; inch or more, otherwise the 48-hour chance), adjusted for your soil pH and residue; an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> Open-Meteo forecast; rain thresholds from Hargrove 1988 and Ferguson et al. 1984 &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
     </div>
   </div>
 </section>
@@ -1067,10 +1067,40 @@ function soilTempDesc(tempF){return 'Using your soil-surface probe reading inste
 // Max hourly precipitation chance over the next 48 h (Open-Meteo hourly), from the current hour.
 // Falls back to the current hour's chance when the hourly array is missing.
 function popNext48(d){var h=d&&d.hourly,c=d&&d.current||{};if(h&&h.time&&h.precipitation_probability){var now=String(c.time||'').slice(0,13),start=0;for(var i=0;i<h.time.length;i++){if(String(h.time[i]).slice(0,13)<=now)start=i;else break;}var mx=null;for(var j=start;j<Math.min(h.time.length,start+48);j++){var v=h.precipitation_probability[j];if(v!=null&&(mx==null||v>mx))mx=v;}if(mx!=null)return{pop:mx,h48:true};}return{pop:c.precipitation_probability||0,h48:false};}
+// Postal code for a state name from the geocoder. An unknown name gets no code, never a guess.
+var US_STATE_CODES={'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','District of Columbia':'DC','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY','Puerto Rico':'PR','Guam':'GU','U.S. Virgin Islands':'VI'};
+function stateCode(name){return (name&&US_STATE_CODES[String(name).trim()])||'';}
+// Rain term for the headline score. Uses the forecast AMOUNT for today and tomorrow when one is
+// forecast, with the same bands as the 5-day strip (rainRiskDaily): 0.5 in or more counts as
+// incorporating rain, 0.25 to 0.5 as partial. Below a quarter inch the amount does not say
+// enough, so the 48-hour chance is used as before (rainRisk). Returns {rR, inches, day}.
+function rainNow(){
+  var pop=UREA_POP?UREA_POP.pop:((UREA_CUR&&UREA_CUR.precipitation_probability)||0);
+  var d=UREA_DAILY,best=null;
+  if(d&&d.precipitation_sum){for(var i=0;i<Math.min(2,d.precipitation_sum.length);i++){var mm=d.precipitation_sum[i];if(mm!=null&&(best==null||mm>best.mm))best={mm:mm,i:i};}}
+  if(best&&best.mm/25.4>=0.25){var inches=best.mm/25.4;var dp=d.precipitation_probability_max&&d.precipitation_probability_max[best.i]!=null?d.precipitation_probability_max[best.i]:pop;return {rR:rainRiskDaily(dp,best.mm),inches:inches,day:best.i===0?'today':'tomorrow',pop:pop};}
+  return {rR:rainRisk(pop),inches:null,day:null,pop:pop};
+}
+function rainLine(rn){
+  if(rn.inches==null)return '';
+  var amt=rn.inches.toFixed(2)+' in '+rn.day;
+  return rn.inches>=0.5?' The forecast has '+amt+'; if it comes, that is enough to move urea into the soil, and the score counts it.':' The forecast has '+amt+', a partial incorporation at best, and the score counts it that way.';
+}
+function setRainFactor(rn){
+  var pop=rn.pop,rR=rn.rR;
+  if(rn.inches!=null){
+    var amt=rn.inches.toFixed(2)+' in '+rn.day;
+    setFactor('rain',amt,(rn.inches>=0.5?'Forecast amount for '+rn.day+' is ½ inch or more: enough to incorporate urea, if it comes. Spread before it, not after.':'Forecast amount for '+rn.day+' is ¼ to ½ inch: partial incorporation at best. Some of the urea may stay near the surface.')+' Highest 48-hour chance: '+pop+'%.',rR,rR);
+    return;
+  }
+  var rDesc=(UREA_POP&&UREA_POP.h48?'Highest hourly rain chance over the next 48 hours: chance only, not amount. ':'Rain chance for this hour only, not amount. ')+(pop<20?'Little rain expected: urea faces the full 72-hour volatilization window.':pop<40?'Some rain possible but unlikely. Under ¼" would activate urea without incorporating it, the worst case.':pop<60?'Rain likely, but amount is what matters: ½"+ incorporates, less can accelerate loss. Check the 5-day totals below.':'High rain chance. If it verifies ½"+, urea gets incorporated, good timing. Confirm the total in the 5-day strip.');
+  setFactor('rain',UREA_POP&&UREA_POP.h48?pop+'% max, 48 h':pop+'% this hour',rDesc,rR,rR);
+}
+function appendRainLine(rn){var v=document.getElementById('risk-verdict');var l=rainLine(rn);if(v&&l)v.textContent+=l;}
 function soilTempOverride(airF){var e=document.getElementById('in-soil');if(e&&e.value!==''){var v=parseFloat(e.value);if(!isNaN(v))return Math.round(v);}return airF;}
 function saveFieldInputs(){try{var o={ph:(document.getElementById('in-ph')||{}).value,till:(document.getElementById('in-till')||{}).value,soil:(document.getElementById('in-soil')||{}).value};localStorage.setItem('agsist-urea-field',JSON.stringify(o));}catch(e){}}
 function restoreFieldInputs(){try{var s=localStorage.getItem('agsist-urea-field');if(!s)return;var o=JSON.parse(s);var p=document.getElementById('in-ph');if(p&&o.ph)p.value=o.ph;var t=document.getElementById('in-till');if(t&&o.till)t.value=o.till;var so=document.getElementById('in-soil');if(so&&o.soil!=null)so.value=o.soil;}catch(e){}}
-function renderScore(){if(!UREA_CUR)return;var c=UREA_CUR,airF=Math.round(c.temperature_2m),tempF=soilTempOverride(airF);var tR=tempRisk(tempF),hR=humidRisk(c.relative_humidity_2m),wR=windRisk(Math.round(c.wind_speed_10m)),rR=rainRisk(UREA_POP?UREA_POP.pop:(c.precipitation_probability||0));updateGauge(Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult())),tempF);if(tempF!==airF){setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);}else{setFactor('temp',airF+'°F',tempDesc(airF),tR,tR);}if(UREA_DAILY)buildForecastStrip(UREA_DAILY,phMult(),tillMult());}
+function renderScore(){if(!UREA_CUR)return;var c=UREA_CUR,airF=Math.round(c.temperature_2m),tempF=soilTempOverride(airF);var tR=tempRisk(tempF),hR=humidRisk(c.relative_humidity_2m),wR=windRisk(Math.round(c.wind_speed_10m)),rn=rainNow(),rR=rn.rR;updateGauge(Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult())),tempF);appendRainLine(rn);if(tempF!==airF){setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);}else{setFactor('temp',airF+'°F',tempDesc(airF),tR,tR);}if(UREA_DAILY)buildForecastStrip(UREA_DAILY,phMult(),tillMult());}
 function tempRisk(f){
   if(f<32)return 2;
   if(f<40)return 5;
@@ -1286,19 +1316,18 @@ function loadWeather(lat,lon,label){
     tempF=soilTempOverride(tempF);var tR=tempRisk(tempF);
     var hR=humidRisk(humid);
     var wR=windRisk(wind);
-    var rR=rainRisk(pop);
+    var rn=rainNow(),rR=rn.rR;
     var rawTotal=Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult()));
-    updateGauge(rawTotal,tempF);
+    updateGauge(rawTotal,tempF);appendRainLine(rn);
     if(tempF!==airF)setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);else setFactor('temp',tempF+'°F',tempDesc(tempF),tR,tR);
     var hDesc=humid<30?'Dry air. Urea dissolution slow, but light rain or dew can still activate the enzyme. Watch for moisture events.':humid<50?'Low-moderate humidity. Some slowing from dryness. Monitor.':humid<70?'Moderate humidity. Optimal zone for urease activity. Risk is elevated.':humid<85?'Humid air, surface likely moist. Urease has favorable conditions. Risk is running.':'Saturated air, surface likely wet. Urease stays active; volatilization continues.';
     setFactor('humid',humid+'% RH',hDesc,hR,hR);
     var wDesc=wind<3?'Light or calm. Ammonia gradient building above surface.':wind<5?'Light wind. Ammonia beginning to disperse from surface.':wind<10?'Moderate wind. Continuously removing NH₃ from surface gradient. Volatilization rate elevated.':wind<15?'Significant wind. Rapid ammonia dispersal. Loss rate is high.':'Strong wind. Maximum ammonia dispersal from soil surface. N loss accelerated under all conditions.';
     setFactor('wind',wind+' mph',wDesc,wR,wR);
-    var rDesc=(UREA_POP.h48?'Highest hourly rain chance over the next 48 hours: chance only, not amount. ':'Rain chance for this hour only, not amount. ')+(pop<20?'Little rain expected: urea faces the full 72-hour volatilization window.':pop<40?'Some rain possible but unlikely. Under ¼" would activate urea without incorporating it, the worst case.':pop<60?'Rain likely, but amount is what matters: ½"+ incorporates, less can accelerate loss. Check the 5-day totals below.':'High rain chance. If it verifies ½"+, urea gets incorporated, good timing. Confirm the total in the 5-day strip.');
-    setFactor('rain',UREA_POP.h48?pop+'% max, 48 h':pop+'% this hour',rDesc,rR,rR);
+    setRainFactor(rn);
     buildForecastStrip(d.daily,phMult(),tillMult());
     try{var _o={};try{_o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}')||{};}catch(e){_o={};}_o.lat=lat;_o.lon=lon;_o.label=label||null;localStorage.setItem('agsist-wx-loc',JSON.stringify(_o));}catch(e){}
-    if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json').then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'';var st=geo.address.state_code||'';if(city)document.getElementById('risk-location').innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> '+city+(st?', '+st:'');}).catch(function(){});}
+    if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json').then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'';var st=geo.address.state_code||(/^US-([A-Z]{2})$/.exec(geo.address['ISO3166-2-lvl4']||'')||[])[1]||stateCode(geo.address.state);if(city)document.getElementById('risk-location').innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> '+city+(st?', '+st:'');}).catch(function(){});}
   }).catch(function(){document.getElementById('risk-verdict').textContent='The weather didn’t load. Check your connection and refresh.';});
 }
 
@@ -1313,7 +1342,7 @@ function loadZip(){
   var zip=document.getElementById('urea-zip').value.trim();
   if(zip.length!==5||isNaN(zip)){ureaZipErr('Enter a valid 5-digit ZIP code.');return;}
   ureaZipErr('');
-  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+zip+'&count=1&language=en&format=json&countryCode=US').then(function(r){return r.json();}).then(function(d){if(d.results&&d.results.length){var r=d.results[0];var _isZip=/^\d+$/.test((r.name||'').trim());var _city=_isZip?(r.admin1||r.name):r.name;var _state=_isZip?'':(r.admin1?r.admin1.substring(0,2).toUpperCase():'');var lbl=_city+(_state?', '+_state:'');loadWeather(r.latitude,r.longitude,lbl);}else{ureaZipErr('Couldn’t find that ZIP. Check the digits or try "Use My Location".');}}).catch(function(){ureaZipErr('Couldn’t reach the location service. Check your connection and try again.');});
+  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+zip+'&count=1&language=en&format=json&countryCode=US').then(function(r){return r.json();}).then(function(d){if(d.results&&d.results.length){var r=d.results[0];var _isZip=/^\d+$/.test((r.name||'').trim());var _city=_isZip?(r.admin1||r.name):r.name;var _state=_isZip?'':stateCode(r.admin1);var lbl=_city+(_state?', '+_state:'');loadWeather(r.latitude,r.longitude,lbl);}else{ureaZipErr('Couldn’t find that ZIP. Check the digits or try "Use My Location".');}}).catch(function(){ureaZipErr('Couldn’t reach the location service. Check your connection and try again.');});
 }
 
 document.getElementById('btn-geo').addEventListener('click',requestGeo);
