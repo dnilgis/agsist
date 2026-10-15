@@ -157,6 +157,12 @@ def dated_label_past(row, snap_ct):
     before the snapshot's day. The month key alone would keep it all month."""
     if row.get("periodVia") not in DATED_VIA:
         return False
+    # A month-day-year label on the 1st is a delivery MONTH START, not a deadline:
+    # CDR Farms (AgriCharts) posts "Oct 01, 2026" for October delivery (contract
+    # code V26) and keeps the row up all month, exactly like the "10/01/2026"
+    # us-date rows, which were never treated as dated.
+    if row.get("periodVia") == "month-day-year" and re.search(r"\b0?1,?\s+\d{4}\b", row.get("delivery") or ""):
+        return False
     lab = re.sub(r"\(\d{4}-\d{2}\)", "", row.get("delivery") or "")
     hits = list(DAY_RE.finditer(lab))
     if not hits:
@@ -182,6 +188,10 @@ def delivery_label(row):
     m = re.fullmatch(r"(\d{2})/01/(\d{4})", lab)
     if m and 1 <= int(m.group(1)) <= 12:
         lab = f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}"
+    # "Oct 01, 2026" is the same month start written out (CDR Farms' AgriCharts board)
+    m = re.fullmatch(MON_RE + r"\s+0?1,?\s+(\d{4})", lab, re.I)
+    if m:
+        lab = f"{m.group(1)[:3].title()} {m.groups()[-1]}"
     if not lab:
         lab = "Spot" if row.get("period") == "spot" else str(row.get("period") or "")
     return lab
@@ -2101,6 +2111,14 @@ def selftest():
     assert box_zip(dict(tw, boards={}), "", {"town_zips": tz, "zip_coord": cent}) == "50001"
     assert box_zip(dict(tw, name="Nowhere"), "", {"town_zips": tz}) == ""
     assert signup_box(tw, "", "iowa", {"corn"}, {}) == ""
+    # CDR Farms (AgriCharts) writes October delivery as "Oct 01, 2026": a month start, kept all month
+    import datetime as _dt
+    oct15 = _dt.datetime(2026, 10, 15, 9)
+    cdr = {"periodVia": "month-day-year", "delivery": "Oct 01, 2026", "period": "2026-10"}
+    assert not dated_label_past(cdr, oct15), "a month-start label is not a past deadline"
+    assert delivery_label(cdr) == "Oct 2026", delivery_label(cdr)
+    for d in ("Nov 11, 2026", "Oct 21, 2026"):
+        assert delivery_label(dict(cdr, delivery=d)) != d[:3] + " 2026", d
     _selftest_known()
     print("selftest OK")
 
