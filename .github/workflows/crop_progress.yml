@@ -85,11 +85,19 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_crop_progress.py
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only conditions
+
       - name: Commit data/crop-progress.json
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/crop-progress.json
+          git add data/crop-progress.json conditions.html img/og/conditions.jpg
           git diff --staged --quiet || git commit -m "chore: update crop progress $(date +%F)"
           git pull --rebase origin main
           git push

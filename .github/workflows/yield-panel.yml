@@ -100,11 +100,19 @@ jobs:
           # and the forecast table, model and record are baked into the page
           python scripts/bake_crop_size.py
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only conditions-yield,crop-tour
+
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/yield-panel.json conditions-yield.html
+          git add data/yield-panel.json conditions-yield.html crop-tour.html img/og/conditions-yield.jpg img/og/crop-tour.jpg
           if git diff --cached --quiet; then echo "panel unchanged"; exit 0; fi
           git commit -m "data: yield benchmark panel [skip ci]"
           for i in 1 2 3; do

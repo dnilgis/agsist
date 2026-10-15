@@ -682,6 +682,19 @@ CSS = """
 """
 
 
+def share_tags(h):
+    """One share image for the whole set (img/og/cash-bids.jpg, drawn by
+    build_share_images.py), with an alt that repeats the page's og:title.
+    Idempotent, so it also brings an already-built page up to date."""
+    h = h.replace("/img/og/agsist.jpg", "/img/og/cash-bids.jpg")
+    if 'property="og:image:alt"' not in h:
+        m = re.search(r'<meta property="og:title" content="([^"]*)">', h)
+        tag = '  <meta property="og:image:height" content="630">\n'
+        if m and tag in h:
+            h = h.replace(tag, tag + f'  <meta property="og:image:alt" content="{m.group(1)}">\n', 1)
+    return h
+
+
 def head(title, desc, path, jsonld, indexable, share=None):
     """build_state_basis_pages.head() with this page's CSS in place of its.
     share=(title, desc) replaces the og: and twitter: title and description
@@ -705,7 +718,7 @@ def head(title, desc, path, jsonld, indexable, share=None):
                 a, b = f'<meta {attr} content="{esc(old)}">', f'<meta {attr} content="{esc(new)}">'
                 assert a in h, f"basis head() has no {attr}; update head() here"
                 h = h.replace(a, b)
-    return h
+    return share_tags(h)
 
 
 def fmt_share_time(t):

@@ -76,11 +76,19 @@ jobs:
           python scripts/check_seo.py
           python scripts/check_site_budget.py
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only rain
+
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/rain rain rain.html sitemap-rain.xml 2>/dev/null || true
+          git add -A data/rain rain rain.html sitemap-rain.xml img/og/rain.jpg 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)
           git commit -q -m "data: county rain ($N states)"

@@ -64,11 +64,19 @@ jobs:
       - name: Bake manure values
         run: node scripts/bake_manure_value.mjs
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only manure-value,fertilizer
+
       - name: Commit
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/fertilizer.json data/fertilizer-history.json manure-value.html fast-facts.html
+          git add data/fertilizer.json data/fertilizer-history.json manure-value.html fast-facts.html fertilizer.html img/og
           git diff --cached --quiet && { echo "no change"; exit 0; }
           git commit -m "🧪 Fertilizer prices — $(date -u +'%Y-%m-%d')"
           git pull --rebase --autostash origin main || true

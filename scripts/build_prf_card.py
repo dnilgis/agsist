@@ -34,47 +34,32 @@ def main():
         raise SystemExit("facts.json is from another build of data/prf: run node scripts/prf_facts.mjs")
     y, m, d = meta["dates"]["sales_closing"].split("-")
     deadline = f"{MONTHS[int(m) - 1]} {int(d)}, {y}"
-    W, H, S = 1200, 630, 2
-    im = Image.new("RGB", (W * S, H * S), BG)
-    dr = ImageDraw.Draw(im)
-    sans_b = ["Archivo-Bold.ttf", "Inter-Bold.ttf", "DejaVuSans-Bold.ttf"]
-    sans = ["Inter-Regular.ttf", "DejaVuSans.ttf"]
-    mono = ["JetBrainsMono-Regular.ttf", "DejaVuSansMono.ttf"]
-    mono_b = ["JetBrainsMono-Bold.ttf", "DejaVuSansMono-Bold.ttf"]
-    x0 = 64 * S
-    dr.text((x0, 56 * S), f"PRF INSURANCE CALCULATOR  ·  CROP YEAR {meta['crop_year']}", font=font(mono_b, 22 * S), fill=GOLD)
-    f_h = font(sans_b, 58 * S)
-    dr.text((x0, 100 * S), "What your grid would", font=f_h, fill=TEXT)
-    dr.text((x0, 168 * S), f"have paid, every year", font=f_h, fill=TEXT)
-    dr.text((x0, 236 * S), f"since {meta['years']['first']}", font=f_h, fill=TEXT)
-    stats = f"{meta['counts']['grids']:,} grids  ·  {meta['counts']['states']} states  ·  {facts['years']['n']} years  ·  free"
-    dr.text((x0, 326 * S), stats, font=font(mono, 24 * S), fill=MUTED)
-    dr.text((x0, 364 * S), f"Sign-up deadline {deadline}", font=font(sans_b, 26 * S), fill=TEXT)
-    # the example's years, as bars along the bottom
+    # 2026-10-15: the site's "picture from the data" share card
+    # (scripts/share_cards.py): the example grid's years as bars, the answer in
+    # the green band under them.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import share_cards as SC
     ex = facts.get("example_years")
-    if ex:
-        top, base, left, right = 430 * S, 566 * S, x0, (W - 64) * S
-        mx = max(ex["paid"]) or 1
-        n, bw = len(ex["paid"]), (right - left) / len(ex["paid"])
-        prem = ex["you"]
-        for i, v in enumerate(ex["paid"]):
-            if v > 0:
-                h = max(3 * S, (v / mx) * (base - top))
-                dr.rectangle([left + i * bw + S, base - h, left + (i + 1) * bw - S, base], fill=BAR)
-        py = base - (prem / mx) * (base - top)
-        for xx in range(int(left), int(right), 14 * S):
-            dr.line([xx, py, xx + 8 * S, py], fill=TEXT, width=2 * S)
-        dr.line([left, base, right, base], fill=LINE, width=S)
-        dr.text((left, base + 10 * S), f"{ex['first']}", font=font(mono, 18 * S), fill=MUTED)
-        dr.text((right - 60 * S, base + 10 * S), f"{ex['last']}", font=font(mono, 18 * S), fill=MUTED)
-        cap = f"Example: grid {facts['example']['grid']}, {facts['example']['county']}, 100 acres of grazing. Bars: what it would have paid. Dashes: your premium."
-        size = 17
-        while size > 11 and dr.textlength(cap, font=font(sans, size * S)) > (right - left) - 170 * S:
-            size -= 1
-        dr.text(((left + right) / 2, base + 10 * S), cap, font=font(sans, size * S), fill=MUTED, anchor="ma")
-    dr.text(((W - 64) * S, 58 * S), "agsist.com/prf", font=font(mono_b, 22 * S), fill=TEXT, anchor="ra")
+    if not ex:
+        raise SystemExit("facts.json has no example_years")
+    paid = ex["paid"]
+    pic = ("yearbars", {
+        "values": paid, "line": ex["you"], "line_label": "your premium",
+        "first": ex["first"], "last": ex["last"],
+        "legend": (f"Example: grid {facts['example']['grid']}, {facts['example']['county']}, 100 acres of grazing. "
+                   "Bars: what it would have paid."),
+    })
+    head = [(f"What your PRF grid would have paid, every year since {meta['years']['first']}", False)]
+    meta_line = (f"{meta['counts']['grids']:,} grids  ·  {meta['counts']['states']} states  ·  "
+                 f"sign-up deadline {deadline}  ·  agsist.com/prf")
+    data = SC.card_c(head, meta_line, f"PRF, crop year {meta['crop_year']}", pic)
     out = os.path.join(ROOT, "img/og/prf.jpg")
-    im.resize((W, H), Image.LANCZOS).save(out, "JPEG", quality=88, optimize=True, progressive=True)
+    with open(out, "wb") as f:
+        f.write(data)
+    alt = (f"PRF insurance: what grid {facts['example']['grid']} in {facts['example']['county']} would have paid "
+           f"each year from {ex['first']} to {ex['last']}, with the premium as a dashed line. "
+           f"Sign-up deadline {deadline}.")
+    print("alt:", alt)
     print("wrote", out, os.path.getsize(out), "bytes")
 
 

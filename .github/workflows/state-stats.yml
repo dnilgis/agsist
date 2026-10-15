@@ -59,6 +59,10 @@ jobs:
         run: |
           python scripts/build_state_stats.py --selftest
           python scripts/build_state_stats.py
+      - name: Pillow, for the share image
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
@@ -73,6 +77,8 @@ jobs:
             git reset --hard "origin/$BR"
             cp /tmp/state-stats.json "$FILE"
             git add "$FILE"
+            # the yield-by-state share image reads this file (best effort)
+            if python scripts/build_share_images.py --only usda-quick-stats; then git add usda-quick-stats.html img/og/usda-quick-stats.jpg; fi
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update state stats $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

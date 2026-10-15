@@ -507,7 +507,7 @@ jobs:
       # briefing archive). Guarded: weekend/holiday runs that don't write an
       # archive HTML page add nothing. Idempotent: the Friday post-close
       # regeneration re-run is a no-op for an already-listed URL.
-      # Shareable daily card (data/social/card-<date>.png + card-latest.png).
+      # Shareable daily card (data/social/card-<date>.jpg + card-latest.jpg, 1200x630).
       # Runs only after GATE 2 passed, so a card is never rendered from a blocked
       # briefing. Best-effort by design: a promo image must never be the reason
       # the briefing fails to publish (the script also self-traps to exit 0).

@@ -71,6 +71,10 @@ jobs:
           python scripts/test_milk_seed.py
           python scripts/seed_static.py --only milk
           python scripts/bake_seo.py --page milk-prices.html
+      - name: Pillow, for the share image
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
       - name: Commit if changed (race-tolerant)
         env:
           PROBE: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
@@ -94,7 +98,8 @@ jobs:
             if [ "$PROBE" != "true" ]; then
               python scripts/seed_static.py --only milk
               python scripts/bake_seo.py --page milk-prices.html
-              git add milk-prices.html sitemap.xml
+              python scripts/build_share_images.py --only milk-prices || true
+              git add milk-prices.html sitemap.xml img/og/milk-prices.jpg
             fi
             for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
