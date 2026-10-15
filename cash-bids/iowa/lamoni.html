@@ -118,6 +118,13 @@
     .cbt-nl li a:hover{color:var(--gold)}
     .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
     .cbt-nl .cbt-mut{white-space:nowrap}
+    .cbt-answer{font-size:1.05rem;line-height:1.5;color:var(--text);margin:6px 0 4px}
+    .cbt-cmp{font-size:.88rem;line-height:1.55;color:var(--text-muted);margin:-4px 0 12px}
+    .cbt-cmp a{color:var(--gold);white-space:nowrap}
+    .cbt-faq h3{margin:14px 0 2px}.cbt-faq p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text-muted)}
+    .cbt-hist{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:14px 0}
+    .cbt-hist summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--text);min-height:44px;box-sizing:border-box}
+    .cbt-hist-body{padding:0 14px 12px}
   </style>
 </head>
 <body>
@@ -144,20 +151,24 @@
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/iowa/" style="color:var(--text-muted)">Iowa</a> &rsaquo; <b style="color:var(--text)">Lamoni</b></p>
   <h1>Cash grain bids in Lamoni, IA today</h1>
+  
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Lamoni, IA has a bid we could confirm right now. The nearest ones that do are below.</div>
+  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/missouri/lucerne"><b>Smithfield Grain</b>, Lucerne, MO</a> <span class="cbt-mut">36 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.54 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/winterset"><b>Heartland Co-op</b>, Winterset, IA</a> <span class="cbt-mut">50 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.05 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/indianola"><b>Heartland Co-op</b>, Indianola, IA</a> <span class="cbt-mut">51 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.05 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/earlham"><b>Heartland Co-op</b>, Earlham, IA</a> <span class="cbt-mut">59 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.12 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/earlham"><b>Heartland Co-op</b>, Earlham, IA</a> <span class="cbt-mut">59 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.47 <span class="mut">Nov</span></span></li></ul><p class="cbt-sub">Straight-line miles from the elevators in Lamoni. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   
-  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/missouri/lucerne"><b>Smithfield Grain</b>, Lucerne, MO</a> <span class="cbt-mut">36 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.54 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/winterset"><b>Heartland Co-op</b>, Winterset, IA</a> <span class="cbt-mut">50 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.05 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/indianola"><b>Heartland Co-op</b>, Indianola, IA</a> <span class="cbt-mut">51 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.05 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/earlham"><b>Heartland Co-op</b>, Earlham, IA</a> <span class="cbt-mut">59 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.42 <span class="mut">Nov</span> &middot; Soybeans $12.12 <span class="mut">Nov</span></span></li><li><a href="/cash-bids/iowa/earlham"><b>Heartland Co-op</b>, Earlham, IA</a> <span class="cbt-mut">59 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.47 <span class="mut">Nov</span></span></li></ul><p class="cbt-sub">Straight-line miles from the elevators in Lamoni. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
+  
+  
+  
   <a class="cbt-live" href="/cash-bids">Live bids near Lamoni &rarr;</a>
-  
-  
   <div id="bid-email" data-bid-alerts data-place="Lamoni" data-zip="50140" data-source="town:iowa/lamoni"></div>
   
   
   
-  <h2>Also in Lamoni, no current bid</h2><ul class="cbt-list"><li>NEW Cooperative, Inc.: board not confirmed on the latest read, last read Oct 14, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
+  
+  
+  <h2>Also in Lamoni, no current bid</h2><ul class="cbt-list"><li>NEW Cooperative, Inc.: board not confirmed on the latest read, last read Oct 15, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
-  posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
+  posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="/cash-bids">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.</div>

@@ -118,6 +118,13 @@
     .cbt-nl li a:hover{color:var(--gold)}
     .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
     .cbt-nl .cbt-mut{white-space:nowrap}
+    .cbt-answer{font-size:1.05rem;line-height:1.5;color:var(--text);margin:6px 0 4px}
+    .cbt-cmp{font-size:.88rem;line-height:1.55;color:var(--text-muted);margin:-4px 0 12px}
+    .cbt-cmp a{color:var(--gold);white-space:nowrap}
+    .cbt-faq h3{margin:14px 0 2px}.cbt-faq p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text-muted)}
+    .cbt-hist{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:14px 0}
+    .cbt-hist summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--text);min-height:44px;box-sizing:border-box}
+    .cbt-hist-body{padding:0 14px 12px}
   </style>
 </head>
 <body>
@@ -144,20 +151,24 @@
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/kansas/" style="color:var(--text-muted)">Kansas</a> &rsaquo; <b style="color:var(--text)">Galena</b></p>
   <h1>Cash grain bids in Galena, KS today</h1>
+  
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Galena, KS has a bid we could confirm right now. The nearest ones that do are below.</div>
+  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/kansas/baxter-springs"><b>CoMark Equity Alliance LLC</b>, Baxter Springs, KS</a> <span class="cbt-mut">5 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.50 <span class="mut">Oct</span> &middot; Soybeans $12.29 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/columbus"><b>CoMark Equity Alliance LLC</b>, Columbus, KS</a> <span class="cbt-mut">15 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.50 <span class="mut">Oct</span> &middot; Soybeans $12.29 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/scammon"><b>CoMark Equity Alliance LLC</b>, Scammon, KS</a> <span class="cbt-mut">15 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.50 <span class="mut">Oct</span> &middot; Soybeans $12.29 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/chetopa"><b>CoMark Equity Alliance LLC</b>, Chetopa, KS</a> <span class="cbt-mut">20 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.49 <span class="mut">Oct</span> &middot; Soybeans $12.28 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/missouri/carthage"><b>ADM</b>, Carthage, MO</a> <span class="cbt-mut">21 mi &middot; posted Oct 15</span><br><span class="np">Wheat $6.6875 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 66739. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   
-  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/kansas/baxter-springs"><b>CoMark Equity Alliance LLC</b>, Baxter Springs, KS</a> <span class="cbt-mut">5 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.49 <span class="mut">Oct</span> &middot; Soybeans $12.27 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/columbus"><b>CoMark Equity Alliance LLC</b>, Columbus, KS</a> <span class="cbt-mut">15 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.49 <span class="mut">Oct</span> &middot; Soybeans $12.27 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/scammon"><b>CoMark Equity Alliance LLC</b>, Scammon, KS</a> <span class="cbt-mut">15 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.49 <span class="mut">Oct</span> &middot; Soybeans $12.27 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/kansas/chetopa"><b>CoMark Equity Alliance LLC</b>, Chetopa, KS</a> <span class="cbt-mut">20 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.49 <span class="mut">Oct</span> &middot; Soybeans $12.27 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/missouri/carthage"><b>ADM</b>, Carthage, MO</a> <span class="cbt-mut">21 mi &middot; posted Oct 14</span><br><span class="np">Wheat $6.675 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the center of ZIP 66739. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
+  
+  
+  
   <a class="cbt-live" href="/cash-bids?zip=66739">Live bids near 66739 &rarr;</a>
-  
-  
   <div id="bid-email" data-bid-alerts data-place="Galena" data-zip="66739" data-source="town:kansas/galena"></div>
   
   
   
-  <h2>Also in Galena, no current bid</h2><ul class="cbt-list"><li>Farmers Coop Columbus (Columbus East, Galena, KS 66739): board not confirmed on the latest read, last read Oct 14, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
+  
+  
+  <h2>Also in Galena, no current bid</h2><ul class="cbt-list"><li>Farmers Coop Columbus (Columbus East, Galena, KS 66739): board not confirmed on the latest read, last read Oct 15, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   <h2>Also in Galena, bids not read yet</h2><p class="cbt-sub">AGSIST knows these elevators are here but does not read their bids yet, so no price is shown for them.</p><ul class="cbt-list"><li>CoMark Equity Alliance, LLC <a href="/list-your-elevator?id=reg%3AKS%7Ccomarkequityalliancellc%7Cgalena&amp;name=CoMark%20Equity%20Alliance%2C%20LLC&amp;town=Galena&amp;state=KS&amp;zip=66739" style="color:var(--gold);border:0;font-size:.85rem;white-space:nowrap">Is this your elevator? Post your bids free</a></li><li>Farmers Cooperative Association <a href="/list-your-elevator?id=known%3AFarmers%20Cooperative%20Association%7CCOLUMBUS%20EAST%7CGalena%7CKS&amp;name=Farmers%20Cooperative%20Association&amp;town=Galena&amp;state=KS&amp;zip=66739" style="color:var(--gold);border:0;font-size:.85rem;white-space:nowrap">Is this your elevator? Post your bids free</a></li></ul>
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
-  posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
+  posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="/cash-bids?zip=66739">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it. An elevator whose board names a site rather than a town is listed here when its ZIP belongs to Galena; its card shows the board&rsquo;s own name and the ZIP.</div>
