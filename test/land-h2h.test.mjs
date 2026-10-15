@@ -274,3 +274,27 @@ test("presell: Iowa corn, 200 APH, 80%, 500 ac shows the guarantee at the higher
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---------------- /tariffs ----------------
+ *   - the Jul 6 entry no longer has the US trading away a fentanyl tariff the
+ *     Feb 20 entry says the Supreme Court voided, without saying so, and it
+ *     says the Oct 1 deal had not happened by the Sep 24 and Sep 28 entries
+ *   - Nov 10, 2026 is the truce's original end, not an extension
+ */
+const TAR = JSON.parse(read("data/tariffs.json"));
+const ev = (date) => TAR.timeline.find((t) => t.date === date).event;
+test("tariffs: the timeline no longer contradicts itself", () => {
+  assert.match(ev("2026-02-20"), /fentanyl tariffs are voided/);
+  const jul = ev("2026-07-06");
+  assert.match(jul, /Supreme Court had already voided the IEEPA fentanyl tariffs on Feb 20/);
+  assert.match(jul, /It had not come off by the Sep 24 and Sep 28 entries above/);
+  assert.match(ev("2026-09-24"), /due to end Nov 10/);
+  const busan = ev("2025-10-30");
+  assert.doesNotMatch(busan, /extended through Nov 10, 2026/);
+  assert.match(busan, /set to run one year, to Nov 10, 2026, and is later extended to Jan 10, 2027/);
+});
+test("tariffs: a visible byline and the CCA in the JSON-LD", () => {
+  const T = read("tariffs.html");
+  assert.match(T, BYLINE);
+  assert.match(T, /"name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser \(CCA\)"/);
+});
