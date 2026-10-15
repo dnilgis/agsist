@@ -201,3 +201,57 @@ test("one calculator copy: both pages load components/manure-value.js and nothin
   }
   assert.deepEqual(hits, ["components/manure-value.js"]);
 });
+
+test("Use my manure test: typed pounds replace the book pounds, every pound priced", () => {
+  const p = M.nutrientPrices(SEP1);
+  // A dairy liquid test of 28 lb N, 13 lb P2O5, 25 lb K2O per 1,000 gal:
+  // 28 x .6413 + 13 x .9701 + 25 x .3833 = 17.96 + 12.61 + 9.58 = 40.15
+  const u = M.perUnit("dairy_liq_4_11", "1to3day", p, { n: 28, p: 13, k: 25 });
+  assert.equal(M.money(u.total), "$40.15");
+  assert.deepEqual({ ...u.lb }, { n: 28, p: 13, k: 25 });
+  assert.deepEqual({ ...u.fromTest }, { n: true, p: true, k: true });
+  // 6,000 gal on 80 acres: 40.15 x 6 x 80 = 19,273; a ton is 40.15 / 4.17 = 9.63
+  const f = M.fieldValue({ ...M.EXAMPLE, prices: p, test: { n: "28", p: "13", k: "25" } });
+  assert.equal(M.money(f.field, 0), "$19,273");
+  assert.equal(M.money(f.perTon), "$9.63");
+  // Only K typed: N and P stay on the book (10, 6), K is 20: 6.41 + 5.82 + 7.67 = 19.90
+  const k = M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: null, k: 20 });
+  assert.equal(M.money(k.total), "$19.90");
+  assert.deepEqual({ ...k.fromTest }, { n: false, p: false, k: true });
+  // Blank, junk or negative boxes are no test at all
+  assert.equal(M.cleanTest({ n: "", p: "", k: "" }), null);
+  assert.equal(M.cleanTest({ n: -3, p: "abc", k: null }), null);
+  assert.equal(M.money(M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: "", k: "" }).total), "$18.75");
+  // A zero is a real test result, not a blank
+  assert.equal(M.cleanTest({ n: 0 }).n, 0);
+  // The calculator has the three boxes
+  const js = read("components/manure-value.js");
+  for (const k2 of ["tn", "tp", "tk"]) assert.ok(js.includes(`data-k="${k2}"`), `test box ${k2}`);
+  assert.ok(js.includes("Use my manure test"));
+});
+
+test("the words match the numbers: book pounds are first-year, never called all of it", () => {
+  const mv = read("manure-value.html");
+  const vis = mv.replace(/<!--[\s\S]*?-->/g, " ").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, " ");
+  assert.ok(!/value of all the manure: all its P and K/i.test(mv), "the old 'all of it' claim is back");
+  assert.ok(!/full value of those nutrients at today/i.test(mv));
+  assert.match(vis, /book pounds for what a crop can use the first year, not everything in the manure/);
+  assert.match(vis, /First-year value: <span data-mv="ex-field">/);
+  assert.ok(FAQ.some(([q, a]) => q === "Is this the value of all the nutrients in the manure?" && /^No\./.test(a)));
+  assert.ok(!FAQ.some(([q]) => /charge a neighbor/i.test(q)), "no neighbor-pricing question");
+  assert.ok(!/id="selling"|Selling manure to a neighbor/.test(mv), "the neighbor section is folded into the rules");
+  const ff = read("fast-facts.html");
+  assert.ok(!/value of all the N, P/.test(ff), "fast-facts calls first-year pounds all of it");
+});
+
+test("prices carry their quote date, never 'today's'", () => {
+  for (const f of ["manure-value.html", "fast-facts.html"]) {
+    const s = read(f).replace(/<!--[\s\S]*?-->/g, " ").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, " ");
+    const hit = s.match(/[^.>]{0,30}today(?:&rsquo;|'|’)s (?:fertilizer )?prices[^.<]{0,20}/i);
+    assert.equal(hit, null, `${f}: ${hit && hit[0]}`);
+  }
+  const mv = read("manure-value.html");
+  const data = JSON.parse(read("data/fertilizer.json"));
+  const when = M.day(M.nutrientPrices(data).src.n.as_of);
+  assert.ok(mv.includes(`<h1>What manure is worth at <span data-mv="asof-n">${when}</span> fertilizer prices</h1>`), "the H1 names the quote date");
+});

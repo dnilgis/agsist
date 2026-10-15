@@ -171,7 +171,7 @@ LINES = {
     "usda-calendar": ("USDA calendar", "Every USDA report date on one calendar."),
     "arc-plc": ("ARC or PLC", "Your county's numbers for the ARC or PLC decision."),
     "rain": ("County rain", "Rain so far this year for your county, from a NOAA station."),
-    "manure-value": ("Manure value", "What the N, P and K in manure are worth at today's prices."),
+    "manure-value": ("Manure value", "What the N, P and K in manure are worth at dealer prices."),
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
 }
@@ -244,7 +244,7 @@ def card_manure_value():
     return a_card("manure-value", "Manure value", f"Fertilizer prices of {when}",
                   f"Liquid dairy manure is worth {hero} per 1,000 gallons at {when} fertilizer prices.",
                   big=hero, unit="per 1,000 gal of liquid dairy manure",
-                  ctx="All the N, P and K in it, at Midwest dealer prices.",
+                  ctx="UW first-year book pounds, at Midwest dealer prices.",
                   table=table, table_title="Other manure")
 
 

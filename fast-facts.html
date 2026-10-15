@@ -435,7 +435,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <a href="#pest"><b>Pest &amp; weed</b> insect thresholds, herbicide groups</a>
   <a href="#reference"><b>Reference</b> conversions, crop calendar</a>
   <a href="#statestats"><b>State stats</b> USDA NASS by state</a>
-  <a href="/manure-value"><b>Manure value</b> what all the N, P and K in manure is worth</a>
+  <a href="/manure-value"><b>Manure value</b> what the N, P and K in manure is worth</a>
 </nav>
 
 <!-- ── TODAY'S CALL — computed fresh from live prices each load; hides itself honestly if prices don't load ── -->
@@ -750,7 +750,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!--MV:POUNDS-->
 <div class="ff-tw" tabindex="0" role="region" aria-label="Available nutrients by manure type, scrolls sideways"><table class="ff-t">
 <thead>
-  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">N: 1st yr [2nd yr]</th><th rowspan="2">P&#x2082;O&#x2085;</th><th rowspan="2">K&#x2082;O</th></tr>
+  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">N: 1st yr [2nd yr]</th><th rowspan="2">P&#x2082;O&#x2085; 1st yr</th><th rowspan="2">K&#x2082;O 1st yr</th></tr>
   <tr><th>Not in 3 days</th><th>1 hr&ndash;3 days</th><th>Within 1 hr</th></tr>
 </thead>
 <tbody>
@@ -773,10 +773,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">Solid (lb/ton)</td><td>2 [1]</td><td>3 [1]</td><td class="hi">4 [1]</td><td>5</td><td>6</td></tr>
 </tbody></table></div>
 <!--/MV:POUNDS-->
-<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: the value of all the N, P and K per 1,000 gal and per ton for every type at today&rsquo;s fertilizer prices, and a worked dairy example on 80 acres.</div>
+<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: the first-year N, P and K in dollars per 1,000 gal and per ton for every type at dated dealer prices, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
 
 <div class="ff-h2" id="manure-calc">Manure Value Calculator</div>
-<p class="ff-sub">The value of all the N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at today&rsquo;s fertilizer prices: an acre, per 1,000 gal or ton, and for the field. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
+<p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated dealer prices: an acre, per 1,000 gal or ton, and for the field. Book pounds are first-year; type your own test and every pound counts. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
 <div class="mvc" data-mv-calc><p class="ff-sub">The calculator needs JavaScript.</p></div>
 
 <div class="ff-h2" style="margin-top:1.5rem">Manure Output by Animal</div>
@@ -1139,7 +1139,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/manure-value.js?v=2" defer></script>
+<script src="/components/manure-value.js?v=3" defer></script>
 <script src="/components/fast-facts.js?v=1" defer></script>
 </body>
 </html>
