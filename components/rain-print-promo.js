@@ -136,7 +136,7 @@
         if (!c) continue;
         css();
         el.innerHTML = '<a class="rp-card" href="' + esc(c.href) + '" data-placement="home-card-' + c.angle + '">' +
-          '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="247" alt="An example Rain Print: a year of rain stepping up across the months, with a farm name and year" loading="lazy" decoding="async"></span>' +
+          '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="240" alt="An example Rain Print from Ames, Iowa, a dry year: rain stepping up across the months, well under a usual year" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
           '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
         el.hidden = false;
