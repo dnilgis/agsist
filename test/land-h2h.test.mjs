@@ -1,0 +1,121 @@
+/* Land and policy pages, the 2026-10-15 head-to-head fixes.
+ *
+ * /cash-lease
+ *   - Tennessee: six months before the lease ends, so June 30 for a Dec 31
+ *     lease (Smith v. Holt, 1945, as UT Extension PB1816 and Tennessee Farm
+ *     Bureau summarize it). It used to say "around July 1", a day late.
+ *   - Kentucky and Pennsylvania: no farm statute found, so no guessed date;
+ *     the note says check with an attorney.
+ *   - Iowa: the two 562.6 exceptions (under 40 acres used mainly as an
+ *     animal feeding operation; a tenant in default).
+ *   - The lease prints on two Letter pages, and the page says two, not one.
+ *   - A visible byline.
+ *
+ * The browser checks need Playwright and Chromium and are skipped without them.
+ *
+ *   node --test test/land-h2h.test.mjs
+ */
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { createServer } from "node:http";
+import { extname, join, normalize } from "node:path";
+import vm from "node:vm";
+
+const ROOT = fileURLToPath(new URL("../", import.meta.url));
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let chromium = null;
+try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+const read = (f) => readFileSync(ROOT + f, "utf8");
+const BYLINE = /By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)/;
+
+function serve() {
+  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
+  const srv = createServer((req, res) => {
+    let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    if (!extname(p)) p += ".html";
+    const f = normalize(join(ROOT, p));
+    if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
+    res.end(readFileSync(f));
+  });
+  return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
+}
+async function open(browser, port, path, width = 1280) {
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+  const pg = await ctx.newPage();
+  const errors = [];
+  pg.on("pageerror", (e) => errors.push(String(e)));
+  await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+  await pg.goto(`http://127.0.0.1:${port}${path}`);
+  return { pg, errors, ctx };
+}
+
+/* ---------------- /cash-lease ---------------- */
+const LEASE = read("cash-lease.html");
+const RULES = (() => {
+  const a = LEASE.indexOf("var RULES={");
+  const b = LEASE.indexOf("\n  };", a);
+  assert.ok(a > 0 && b > a, "RULES found");
+  return vm.runInNewContext("(" + LEASE.slice(a + "var RULES=".length, b + 4) + ")");
+})();
+
+test("Tennessee: June 30 for a Dec 31 lease, six months, from Smith v. Holt", () => {
+  const d = RULES.TN.d;
+  assert.doesNotMatch(d, /JULY 1/, "July 1 is a day late");
+  assert.match(d, /6 MONTHS/);
+  assert.match(d, /JUNE 30 for a lease that ends December 31/);
+  assert.match(d, /Smith v\. Holt, 1945/);
+  assert.match(d, /not a statute/);
+  assert.match(d, /attorney/);
+  assert.equal(RULES.TN.t, "cited", "a court rule, not a statute, stays in the verify tier");
+});
+
+test("Kentucky and Pennsylvania: no guessed farm deadline, check with an attorney", () => {
+  for (const k of ["KY", "PA"]) {
+    assert.match(RULES[k].d, /No farm statute found/, k);
+    assert.match(RULES[k].d, /attorney/, k);
+    assert.equal(RULES[k].t, "cited", k);
+  }
+  assert.doesNotMatch(RULES.KY.d, /~late August/);
+  assert.match(RULES.PA.d, /not a farm renewal rule/);
+});
+
+test("Iowa names the 562.6 exceptions as the statute has them since 2013", () => {
+  assert.match(RULES.IA.d, /SEPTEMBER 1/);
+  assert.match(RULES.IA.d, /under 40 acres whose main use is an animal feeding operation/);
+  assert.match(RULES.IA.d, /tenant in default/);
+  assert.match(RULES.IA.d, /Since 2013, other tracts under 40 acres are covered/);
+});
+
+test("the lease is called two pages, the FAQ stays word for word, and there is a byline", () => {
+  assert.doesNotMatch(LEASE, /one-page cash lease/);
+  assert.match(LEASE, /fillable, printable two-page cash lease/);
+  assert.equal((LEASE.match(/A short written lease protects both sides/g) || []).length, 2, "visible FAQ and JSON-LD");
+  assert.doesNotMatch(LEASE, /A one-page written lease/);
+  assert.match(LEASE, BYLINE);
+  assert.match(LEASE, /rechecked 2026-10-15/);
+});
+
+test("printed on Letter in Chromium, the lease is two pages with the signatures on one", { skip }, async () => {
+  const srv = await serve();
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const st of ["IA", "TN", ""]) {
+      const { pg, errors, ctx } = await open(browser, srv.address().port, "/cash-lease");
+      if (st) await pg.selectOption("#cl-state-sel", st);
+      await pg.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+      await pg.emulateMedia({ media: "print" });
+      const pdf = await pg.pdf({ format: "Letter" });
+      const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+      assert.equal(pages, 2, `state ${st || "none"}: ${pages} pages`);
+      const sig = await pg.$eval(".lease .sig-grid", (e) => getComputedStyle(e).breakInside);
+      assert.equal(sig, "avoid");
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});

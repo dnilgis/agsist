@@ -35,7 +35,7 @@
   <meta name="twitter:site" content="@agsist">
 
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a handshake lease legally binding?", "acceptedAnswer": {"@type": "Answer", "text": "Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A one-page written lease protects both sides, especially the friendship."}}, {"@type": "Question", "name": "When do I have to give notice to end a lease?", "acceptedAnswer": {"@type": "Answer", "text": "Entirely state-dependent. In states with a statutory deadline, written notice delivered late means the lease runs another full year whether anyone wanted it to or not. Iowa’s September 1 rule is the best known. Verify your state’s rule with extension or an attorney."}}, {"@type": "Question", "name": "Cash, flex, or share: which pays the owner more?", "acceptedAnswer": {"@type": "Answer", "text": "Over a long run they tend to converge; in any single year they differ exactly by who carried the risk. Straight cash pays the owner the same in a drought and a bumper year; flex and share pay more in the good years because the owner shared the bad ones. Pick by risk appetite, not by last year’s outcome."}}, {"@type": "Question", "name": "What’s a fair rate for my county?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS publishes county cash rent annually. AGSIST cash rent by state shows every published county, its history, and rent as a share of realistic gross, the number that decides whether a lease actually cash-flows."}}, {"@type": "Question", "name": "Why is this lease so short?", "acceptedAnswer": {"@type": "Answer", "text": "Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a handshake lease legally binding?", "acceptedAnswer": {"@type": "Answer", "text": "Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A short written lease protects both sides, especially the friendship."}}, {"@type": "Question", "name": "When do I have to give notice to end a lease?", "acceptedAnswer": {"@type": "Answer", "text": "Entirely state-dependent. In states with a statutory deadline, written notice delivered late means the lease runs another full year whether anyone wanted it to or not. Iowa’s September 1 rule is the best known. Verify your state’s rule with extension or an attorney."}}, {"@type": "Question", "name": "Cash, flex, or share: which pays the owner more?", "acceptedAnswer": {"@type": "Answer", "text": "Over a long run they tend to converge; in any single year they differ exactly by who carried the risk. Straight cash pays the owner the same in a drought and a bumper year; flex and share pay more in the good years because the owner shared the bad ones. Pick by risk appetite, not by last year’s outcome."}}, {"@type": "Question", "name": "What’s a fair rate for my county?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS publishes county cash rent annually. AGSIST cash rent by state shows every published county, its history, and rent as a share of realistic gross, the number that decides whether a lease actually cash-flows."}}, {"@type": "Question", "name": "Why is this lease so short?", "acceptedAnswer": {"@type": "Answer", "text": "Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it."}}]}
   </script>
 
   <style>
@@ -127,8 +127,25 @@
         letter-spacing:.08em;text-align:center;border-top:1px solid #bbb;padding-top:7px;
         font-family:'JetBrains Mono',ui-monospace,monospace}
       #cl-state-rule{display:block !important}
+      /* two Letter pages, the signatures kept together (test/land-h2h.test.mjs prints it) */
+      @page{size:letter;margin:.6in}
+      .lease{font-size:10pt;line-height:1.42}
+      .lease h2{font-size:15pt;margin:0 0 2px}
+      .lease .lease-sub{font-size:9pt;margin:0 0 10px}
+      .lease h3{font-size:8.5pt;margin:12px 0 4px;break-after:avoid;page-break-after:avoid}
+      .lease p{margin:4px 0}
+      .lease ol{margin:3px 0}
+      .lease li{margin:1px 0}
+      .lf{min-width:0}
+      .lf.lf-wide{width:2.7in}
+      .lf.lf-med{width:1.7in}
+      .lf.lf-sm{width:1.05in}
+      .lf.lf-xs{width:.6in}
+      .lease .sig-grid,.lease-print-foot{break-inside:avoid;page-break-inside:avoid}
     }
     .lease-print-foot{display:none}
+    .cl-by{font-size:.8rem;color:var(--text-dim,#8a948f);margin:.6rem 0 0}
+    .cl-by a{color:var(--gold);text-decoration:none}
   /* 2026-10-08 light theme: this page was built dark-only, and loader.js now
    follows the device into light mode. These rules move its hard-coded dark
    panels, text and borders onto the site's light tokens. Dark is untouched.
@@ -211,7 +228,8 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   <header class="cl-hero">
     <p class="cl-kicker page-kicker">Lease paperwork &middot; Keep it simple</p>
     <h1>A farm lease you can actually read</h1>
-    <p class="cl-sub page-lede">Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable one-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
+    <p class="cl-sub page-lede">Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
+    <p class="cl-by">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; state notice rules rechecked Oct 15, 2026</p>
   </header>
 
 
@@ -366,7 +384,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   <section class="cl-panel cl-faq-panel" aria-labelledby="cl-faq-t">
     <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-faq-t">Questions people actually ask</span></div>
     <div class="cl-panel-b cl-faq">
-      <details><summary>Is a handshake lease legally binding?</summary><p>Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A one-page written lease protects both sides, especially the friendship.</p></details>
+      <details><summary>Is a handshake lease legally binding?</summary><p>Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A short written lease protects both sides, especially the friendship.</p></details>
       <details><summary>When do I have to give notice to end a lease?</summary><p>Entirely state-dependent. In states with a statutory deadline, written notice delivered late means the lease runs another full year whether anyone wanted it to or not. Iowa&rsquo;s September&nbsp;1 rule is the best known. Verify your state&rsquo;s rule with extension or an attorney.</p></details>
       <details><summary>Cash, flex, or share: which pays the owner more?</summary><p>Over a long run they tend to converge; in any single year they differ exactly by who carried the risk. Straight cash pays the owner the same in a drought and a bumper year; flex and share pay more in the good years because the owner shared the bad ones. Pick by risk appetite, not by last year&rsquo;s outcome.</p></details>
       <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. <a href="/rent/" style="color:var(--gold)">AGSIST cash rent by state</a> shows every published county, its history, and rent as a share of realistic gross, the number that decides whether a lease actually cash-flows.</p></details>
@@ -401,14 +419,16 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   var KEY='agsist-lease-draft';
 
   /* State termination-notice rules. Compiled 2026-07-18 from industry and
-     extension summaries (Tillable's state guide; National Ag Law Center
+     extension summaries; IA, KY, PA and TN rechecked 2026-10-15 (Iowa Code
+     562.6 and ISU CALT; UT Extension PB1816 and Tennessee Farm Bureau on
+     Smith v. Holt; no farm statute found for KY or PA). First sources: (Tillable's state guide; National Ag Law Center
      framework). Tiers are the honesty system:
        firm  = widely documented statutory deadline
        cited = industry-cited; verify the current statute before relying
        (absent = no farm-specific deadline widely cited)
      Statutes change. This is information, not legal advice. */
   var RULES={
-    IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served.'},
+    IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served. Two exceptions in 562.6: a tenancy under 40 acres whose main use is an animal feeding operation, and a tenant in default. Since 2013, other tracts under 40 acres are covered like any farm.'},
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
     NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year, in practice by SEPTEMBER 1. This comes from court rulings (Moudry v. Parkos, 1984), not a statute. Written leases: the lease controls.'},
@@ -418,14 +438,14 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     MO:{n:'Missouri',t:'cited',d:'Commonly cited: written notice at least 60 DAYS before the end of the lease year, unless the lease sets its own terms.'},
     WI:{n:'Wisconsin',t:'cited',d:'Commonly cited: written notice about 90 DAYS before the lease ends (~September 30 for a year-end term).'},
     AR:{n:'Arkansas',t:'cited',d:'ORAL leases only (Ark. Code 18-16-105, \u201cTermination of oral lease of farmlands\u201d): written notice by JUNE 30, sent certified mail, one of the earliest deadlines anywhere. A written lease runs on its own terms.'},
-    KY:{n:'Kentucky',t:'cited',d:'Commonly cited: written notice about 6 MONTHS before expiration (~late August), certified mail.'},
+    KY:{n:'Kentucky',t:'cited',d:'No farm statute found. Guides commonly cite written notice about 6 MONTHS before the lease ends, sent certified mail, but they disagree on the date (anywhere from July 1 to September 1 for a calendar-year lease). Put the deadline in the lease and check with a Kentucky attorney.'},
     MS:{n:'Mississippi',t:'cited',d:'Commonly cited: written notice about 2 MONTHS before the end of the lease year.'},
     LA:{n:'Louisiana',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
     NC:{n:'North Carolina',t:'cited',d:'Commonly cited: written, signed notice at least 30 DAYS before the end of tenancy.'},
     ND:{n:'North Dakota',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
-    PA:{n:'Pennsylvania',t:'cited',d:'Commonly cited: written notice at least 15 DAYS before the end date: short, but do not cut it close.'},
+    PA:{n:'Pennsylvania',t:'cited',d:'No farm statute found. The 15 DAYS often cited is the general landlord-tenant notice to quit, not a farm renewal rule, and summaries disagree (some say 30 days for a lease over one year). Put the deadline in the lease and check with a Pennsylvania attorney.'},
     NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
-    TN:{n:'Tennessee',t:'cited',d:'Commonly cited: written notice by around JULY 1, one of the earliest deadlines cited anywhere.'},
+    TN:{n:'Tennessee',t:'cited',d:'Written notice at least 6 MONTHS before a year-to-year lease ends: by JUNE 30 for a lease that ends December 31, so mail it well before. This comes from a court ruling (Smith v. Holt, 1945, not a farm case), not a statute, and UT Extension says the rule for oral farm leases is unclear. A written lease that states its end date needs no notice. Check with a Tennessee attorney.'},
     MI:{n:'Michigan',t:'none',d:'No single farm deadline widely cited; the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
     OH:{n:'Ohio',t:'firm',d:'ORC 5301.71: for ANY farm lease, written OR oral, that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
     CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
@@ -449,7 +469,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
       card.hidden=false;
       card.innerHTML='<strong>'+(r?(r.n+', '+TIER_LBL[r.t]):(ab+', no widely-cited farm deadline'))+':</strong> '
         + (r?r.d:'The lease’s own notice terms and general landlord–tenant law control. Confirm locally.')
-        + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18. Statutes change. Not legal advice.</span>';
+        + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18; Iowa, Kentucky, Pennsylvania and Tennessee rechecked 2026-10-15. Statutes change. Not legal advice.</span>';
     }
     if(rp&&rt){ rp.style.display='block'; rt.textContent=stateRuleText(ab); }
     var sf=document.querySelector('[data-k="state"]');
