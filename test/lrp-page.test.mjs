@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
-import { bake, faqList, pickHtml, methodHtml, answerHtml } from "../scripts/bake_lrp.mjs";
+import { bake, faqList, pickHtml, methodHtml, answerHtml, readAll } from "../scripts/bake_lrp.mjs";
 import { subsidy as btSubsidy } from "../scripts/lrp_backtest.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -24,6 +24,7 @@ const near = (a, b, msg, tol = 1e-9) => assert.ok(Math.abs(a - b) < tol, `${msg}
 const BT = JSON.parse(read("data/lrp/bt.json"));
 const META = JSON.parse(read("data/lrp/meta.json"));
 const TODAY = JSON.parse(read("data/lrp/today.json"));
+const SOB = readAll().sob;
 const PAGE = read("lrp.html");
 
 /* a small results file with a known answer */
@@ -101,7 +102,9 @@ test("the record table says too few years instead of a number", () => {
 
 test("nothing kept: the pick panel picks nothing and names the closest call without recommending it", () => {
   const h = pickHtml(fakeBt());
-  assert.match(h, /Nothing\. No coverage choice beat 95 to 100%/);
+  assert.match(h, /No coverage level beat 95 to 100%\./);
+  assert.match(h, /This compares coverage levels\. It does not say whether to insure\./);
+  assert.match(h, /Ahead means it lost less on average because it covered less; in a crash it pays less\./);
   assert.match(h, /Closest call, not proven:<\/b> fed cattle at 85 to 90%/, "smallest Holm odds among positive tests, not the paid test");
   assert.match(h, /90 to 95% did about the same/);
   // six years: the exact sign flip's smallest odds are 2/2^6 = 1 in 32 (bt.json shows p = 0.0313)
@@ -114,7 +117,7 @@ test("something kept: the panel lists it and the answer says so", () => {
   bt.tests["all/fed/band:85-90"] = { ...bt.tests["all/fed/band:85-90"], kept: true, p_holm: 0.01 };
   bt.kept = ["all/fed/band:85-90"];
   assert.match(pickHtml(bt), /1 of 36 tests held up/);
-  assert.match(answerHtml(bt, { family: "36", first: "Jul 1, 2013", asof: "Oct 14, 2026" }), /1 of 36 tests held up: fed cattle/);
+  assert.match(answerHtml(bt, { family: "36", first: "Jul 1, 2013", asof: "Oct 14, 2026", top: "99%" }, TODAY), /1 of 36 tests held up: fed cattle/);
 });
 
 test("the method names the gaps: missing ending values and any file RMA served broken", () => {
@@ -126,7 +129,7 @@ test("the method names the gaps: missing ending values and any file RMA served b
 });
 
 test("lrp.html matches data/lrp (scripts/bake_lrp.mjs --check)", () => {
-  assert.equal(bake(PAGE, BT, META, TODAY), PAGE, "run node scripts/bake_lrp.mjs");
+  assert.equal(bake(PAGE, BT, META, TODAY, SOB), PAGE, "run node scripts/bake_lrp.mjs");
 });
 
 test("FAQ: the JSON-LD answers are the visible answers, word for word", () => {
@@ -146,7 +149,7 @@ test("FAQ: the JSON-LD answers are the visible answers, word for word", () => {
 
 test("every rule in the FAQ cites RMA", () => {
   for (const [q, a] of faqList()) {
-    if (/compare with a put|cover basis/.test(q)) continue;
+    if (/cover basis|worth it/.test(q)) continue;
     assert.match(a, /rma\.usda\.gov/, q);
   }
 });
@@ -164,7 +167,8 @@ test("neutral page: no agent routing, no sales, no sponsor price, no em dashes",
 });
 
 test("the byline sits at the bottom, not in the hero", () => {
-  const by = PAGE.indexOf('<p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA)');
+  // the same byline and disclosure as /prf: an insurance page
+  const by = PAGE.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent.');
   assert.ok(by > PAGE.indexOf('id="questions"'), "byline after the FAQ heading");
   assert.ok(by > PAGE.indexOf('id="method"'));
 });
@@ -212,4 +216,100 @@ test("the page script labels offers with the sales day and says when sales on th
   assert.match(ui, /L\.salesDay\(T\)/);
   assert.match(ui, /Sales on these offers closed at/);
   assert.match(ui, /posted by RMA/);
+});
+
+/* ------------------------------------------------ after the 5-lens audit */
+
+test("ship-blocker: the record's net is paid minus cost, averaged over every sales day", () => {
+  for (const [k, r] of Object.entries(BT.record)) {
+    near(r.net, r.paid - r.cost, `${k}`, 0.0021);
+    near(r.net_now, r.paid - r.cost_now, `${k} at today's subsidy`, 0.0021);
+  }
+  // the reviewers' worked case: feeder 47 weeks since 2013 is about -3.30, not -1.08
+  assert.ok(BT.record["all/feeder/95-100/47"].net < -3, String(BT.record["all/feeder/95-100/47"].net));
+});
+
+test("ship-blocker: pounds typed in the weight box are read as pounds", () => {
+  const w = L.readWeight("850", "0801");
+  near(w.cwt, 8.5, "850 lb");
+  assert.match(w.note, /Read as 850 lb = 8\.50 cwt/);
+  near(L.readWeight("8.5", "0801").cwt, 8.5, "8.5 cwt");
+  near(L.readWeight("1,250", "0802").cwt, 12.5, "with a comma");
+  assert.equal(L.readWeight("", "0801").cwt, null, "the box can be empty");
+  // hogs are typed live and insured lean, x 0.74
+  const h = L.readWeight("270", "0815");
+  near(h.cwt, 2.7 * 0.74, "270 lb live hog");
+  assert.match(h.note, /x 0\.74 = 2\.00 cwt lean/);
+  // and the page script uses it, never parseFloat on the raw box
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /L\.readWeight\(cwtIn\.value, o\.c\)/);
+});
+
+test("outside RMA's weight range or over the head limit, totals are blanked and the page says why", () => {
+  const o = { c: "0801", w: ["6.00", "10.00"] };
+  assert.equal(L.weightProblem(o, 8, 100), "");
+  assert.match(L.weightProblem(o, 85, 100), /6\.00 to 10\.00 cwt/);
+  assert.match(L.weightProblem(o, 8, 12001), /12,000 head/);
+  assert.equal(L.weightProblem({ c: "0815", w: ["1.40", "2.60"] }, 2, 70000), "");
+  assert.match(L.weightProblem({ c: "0815", w: ["1.40", "2.60"] }, 2, 70001), /70,000 head/);
+});
+
+test("the hero says what the record can say, at today's subsidy, and points at the premium", () => {
+  assert.match(PAGE, /No lower coverage level beat 95 to 100% by more than luck could explain\./);
+  assert.match(PAGE, /It does not say whether to insure\./);
+  assert.match(PAGE, /<a class="lrp-go" href="#today">Your premium today/);
+  const hero = PAGE.slice(PAGE.indexOf("<!--lrp:answer-->"), PAGE.indexOf("<!--/lrp:answer-->"));
+  assert.match(hero, /at today&rsquo;s subsidy/);
+  assert.ok(hero.includes(L.money(BT.record["all/feeder/95-100/13"].net_now)), "hero shows today's-subsidy figures");
+  assert.match(hero, /<span>\d+ of 100<\/span>/);
+  assert.match(hero, /600 steers at 8\.5 cwt/);
+  assert.match(hero, /Since July 2020 it paid back/, "hogs never read as paying for themselves without the current regime beside it");
+  assert.match(PAGE, /at the subsidy in force that year/);
+});
+
+test("fed cattle 95 to 100% reads as a clear no, and the closest call says why it was ahead", () => {
+  const t = BT.tests["all/fed/paid"];
+  assert.equal(L.verdict(t), `No: lost money in ${t.years_tested - t.years_positive} of ${t.years_tested} years`);
+  assert.match(PAGE, /lost less on average because it covered less/);
+  assert.match(PAGE, /came in above RMA&rsquo;s expected ending value in \d+ of \d+ insurance years/);
+  assert.match(PAGE, /Even counting only the 12 tests/);
+});
+
+test("the offers are dated with weekdays, a static summary is baked for crawlers, and closed is re-checked", () => {
+  assert.match(PAGE, /Offers for sales on (Mon|Tue|Wed|Thu|Fri) [A-Z][a-z]{2} \d+, \d{4}.*Buy by 8:25 a\.m\. CT (Tue|Wed|Thu|Fri|Sat) /);
+  assert.match(PAGE, /<caption>Top coverage RMA offered for sales on /);
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /setInterval\(tick, 60000\)/);
+  assert.match(ui, /\(closed, for reference\)/);
+  assert.match(ui, /No ' \+ esc\(prod\.name\.toLowerCase\(\)\) \+ ' offers on this sales day/, "a missing animal is said, not switched");
+  assert.match(ui, /RMA posted no offers for this sales day/);
+  assert.ok(L.isStale({ sales_day: "2026-10-12" }, new Date("2026-10-15T23:00:00Z")), "Mon offers on Thu evening");
+  assert.ok(!L.isStale({ sales_day: "2026-10-14" }, new Date("2026-10-15T19:00:00Z")), "Wed offers on Thu afternoon");
+  assert.ok(!L.isStale({ sales_day: "2026-10-16" }, new Date("2026-10-19T15:00:00Z")), "Fri offers on Mon morning");
+});
+
+test("accessibility: one status line, row choice by button, captions, groups", () => {
+  assert.ok(!/id="lrp-out" aria-live/.test(PAGE), "no live region on the whole block");
+  assert.equal((PAGE.match(/role="status"/g) || []).length, 2, "the offers status and the results-file status");
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /class="rowbtn" data-level="' \+ r\.level \+ '" aria-pressed="/);
+  assert.match(ui, /<caption>For sales on /);
+  assert.match(ui, /class="lrp-math" role="group"/);
+  assert.match(L.testsTable(BT), /<tbody><tr class="grp"><th scope="colgroup"/);
+  assert.match(PAGE, /@media print/);
+});
+
+test("FAQ: is it worth it comes first, and the put comparison makes no margin claim", () => {
+  const q = faqList();
+  assert.equal(q[0][0], "Is LRP worth it?");
+  const put = q.find(([x]) => /put option/.test(x))[1];
+  assert.ok(!/margin/i.test(put), "no margin claim");
+  assert.match(put, /no futures account/);
+  assert.match(put, /billed after the end date/);
+});
+
+test("title is short and the menu label is plain", () => {
+  const t = PAGE.match(/<title>(.*?)<\/title>/)[1];
+  assert.equal(t, "LRP Calculator: Today's Rates and Premium per Head | AGSIST");
+  assert.ok(t.length <= 65);
 });

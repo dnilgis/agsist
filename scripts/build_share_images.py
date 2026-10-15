@@ -258,17 +258,17 @@ def card_lrp():
     asof = ymd(b["as_of"])
     rows = []
     for pid, lab in (("feeder", "Feeder cattle"), ("fed", "Fed cattle"), ("swine", "Hogs")):
-        r = b["record"].get(f"all/{pid}/95-100/13")
+        r = b["record"].get(f"current/{pid}/95-100/13")
         if r and r["years"] >= b["method"]["min_years"]:
             v = r["net"]
             rows.append((lab, ("\u2212" if v < -0.005 else "") + f"${abs(v):.2f}", "per $100"))
-    ctx = ("No coverage choice beat 95 to 100%. Today's rates and your premium per head are on the page." if kept == 0
+    ctx = ("No lower coverage level beat 95 to 100% by more than luck. Today's premium per head is on the page." if kept == 0
            else "Today's rates and your premium per head, after the subsidy.")
     return a_card("lrp", "LRP livestock insurance", f"RMA daily files, {md(first)}, {first.year} to {mdy(asof)}",
                   f"{kept} of {n} LRP tests held up on RMA's record since {first.year}."
-                  + (" No coverage choice beat 95 to 100%." if kept == 0 else ""),
+                  + (" No lower coverage level beat 95 to 100% by more than luck." if kept == 0 else ""),
                   big=f"{kept} of {n}", unit="tests held up on RMA's record", ctx=ctx,
-                  table=rows, table_title="95-100%, 13 weeks, net")
+                  table=rows, table_title="Since Jul 2020, top level, 13 wk")
 
 
 def card_fertilizer():

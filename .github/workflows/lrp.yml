@@ -243,7 +243,9 @@ jobs:
         run: |
           python scripts/fetch_lrp.py --publish "$HIST" --out data/lrp
           node scripts/lrp_backtest.mjs --history "$HIST" --out data/lrp/bt.json
-          if [ -f lrp.html ]; then node scripts/bake_lrp.mjs; fi
+          python scripts/lrp_sob_loss.py --history "$HIST" --out data/lrp/sob-loss.json || echo "::warning::lrp_sob_loss.py failed; sob-loss.json not rebuilt"
+          # a failed bake never holds back the data (the commit step bakes again)
+          if [ -f lrp.html ]; then node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed"; fi
           python scripts/check_site_budget.py
 
       - name: Commit to main
