@@ -1,0 +1,105 @@
+name: refs
+
+# Reference library: primary sources (RMA policies and bulletins, extension
+# fact sheets, vendor data sheets) that back numbers on agsist.com.
+#
+# Why Actions: the sandbox we build in cannot open USDA, RMA, extension or
+# vendor sites. GitHub's runners can. So this downloads every source listed in
+# references/sources.json into the `references` branch, which Pages never
+# deploys:
+#   refs/<id>.pdf|html   the original
+#   refs/<id>.txt        readable text (pdftotext -layout, or page text)
+#   index.json           status, bytes, sha256, fetched_utc, pages per source
+# Read one anywhere:
+#   git fetch origin references && git show origin/references:refs/<id>.txt
+#
+# A source that fails is listed (index.json, the run summary, a warning) and
+# keeps its last good copy; the run does not fail over it.
+#
+# Dispatch (all, or a few ids):
+#   gh workflow run refs.yml --ref main
+#   gh workflow run refs.yml --ref main -f ids=rma-pm-20-064,uw-a2809-2026
+#
+# Monthly on the 3rd at 09:23 UTC. Polite: one request at a time, 1.5 s apart.
+on:
+  schedule:
+    - cron: '23 9 3 * *'
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "Comma-separated source ids from references/sources.json (blank = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refs
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONUNBUFFERED: "1"
+      IN_IDS: ${{ inputs.ids || '' }}
+      # outside the checkout, so the site budget never counts it
+      REFS: ${{ github.workspace }}/../references
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/fetch_refs.py
+            references/sources.json
+          sparse-checkout-cone-mode: false
+
+      - name: Install poppler (pdftotext)
+        run: |
+          sudo apt-get update -qq >/dev/null
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          pdftotext -v 2>&1 | head -1
+
+      - name: Selftest
+        run: |
+          python3 scripts/fetch_refs.py --selftest
+          python3 scripts/fetch_refs.py --check
+
+      - name: Check the input
+        run: |
+          if ! printf '%s' "$IN_IDS" | grep -Eq '^[a-z0-9,-]*$'; then
+            echo "::error::ids must be source ids separated by commas"; exit 1; fi
+
+      - name: Check out the references branch
+        run: |
+          git config --global user.name "agsist-bot"
+          git config --global user.email "bot@agsist.com"
+          git fetch -q --depth 1 origin references || { echo "::error::the references branch is missing; push it first"; exit 1; }
+          git worktree add -q -B references "$REFS" FETCH_HEAD
+
+      - name: Fetch the sources
+        run: python3 scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS"
+
+      # Only this workflow writes the branch and runs one at a time, but a
+      # hand edit (the README) can land in between: retry on the newest tip.
+      - name: Commit to references
+        run: |
+          set -e
+          cd "$REFS"
+          mkdir -p refs
+          git add -A
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          rm -rf /tmp/refsout && mkdir -p /tmp/refsout
+          cp -r refs index.json /tmp/refsout/
+          for i in 1 2 3 4 5; do
+            git fetch -q --depth 1 origin references
+            git reset -q --hard FETCH_HEAD
+            rm -rf refs index.json && cp -r /tmp/refsout/refs /tmp/refsout/index.json .
+            git add -A
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "refs $(date -u +%Y-%m-%dT%H:%M:%SZ)${IN_IDS:+: $IN_IDS}"
+            if git push -q origin HEAD:references; then exit 0; fi
+            sleep $((10 * i))
+          done
+          echo "::error::could not push the references branch after 5 tries"; exit 1
