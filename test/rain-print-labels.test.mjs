@@ -29,10 +29,11 @@ function audit(spec, real = true) {
   assert.deepEqual(bad.map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
   for (const m of I.markers) if (m.label) assert.ok(t.some((x) => x.includes(m.label)), id + ": the reader's date \"" + m.label + "\" prints");
   const E = X.ART.model(I);
-  if (E.wetText) assert.ok(t.some((x) => x.includes(E.wetText)), id + ": the biggest rain prints");
-  const recLabels = X.ART.recordPoints(E, I.records).pts.map((p) => p.label);
+  if (E.wetText) assert.ok(t.some((x) => x.includes(X.ART.plain(E.wetText))), id + ": the biggest rain prints, with its date");
+  const recPts = X.ART.recordPoints(E, I.records).pts, recLabels = recPts.map((p) => p.label);
   for (const s of skipped) assert.ok(recLabels.includes(s), id + ": only a remarkable day may be left off, and it is named: " + s);
-  for (const l of recLabels) assert.ok(t.some((x) => x.includes(l)) !== skipped.includes(l), id + ": " + l + " is drawn or named, not both, not neither");
+  // a remarkable day prints with its date (the plotted day, or a stretch's range), counted by the checker above
+  for (const p of recPts) assert.ok(t.some((x) => x.includes(X.ART.plain(p.text))) !== skipped.includes(p.label), id + ": " + p.label + " is drawn or named, not both, not neither");
 }
 
 test("the checker catches what it is for (a green run means something)", () => {
@@ -147,7 +148,7 @@ test("the biggest rain is never dropped: R1 says it in the header, R2 in the foo
   // a wet day with the reader's dates on it and the next day: their drop lines fence the riser in
   const { svg } = draw({ ...base, style: "r1", data: "oneJan", seed: 924, normals: true, cmp: "none", name: "long", dedication: "none", place: "long", markers: "wetDay" });
   const E = X.ART.model(input(X, { ...base, style: "r1", data: "oneJan", seed: 924, cmp: "none", markers: "wetDay" }));
-  assert.ok(parse(svg).texts.some((t) => t.rp === "head" && t.s === E.wetText), "in the header");
+  assert.ok(parse(svg).texts.some((t) => t.rp === "head" && t.s === X.ART.plain(E.wetText)), "in the header");
   assert.equal(X.ART.lastSkipped().length, 0);
 });
 
@@ -165,5 +166,21 @@ test("the longest name, place and line, with and without a logo, draw with nothi
     assert.deepEqual(HARD(check(svg)).map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
     const t = texts(svg);
     for (const want of [I.name, I.place, I.dedication]) assert.ok(t.includes(want), id + ": prints " + want);
+  }
+});
+
+// ---------- remarkable days with their dates (Sig, 2026-10-15) ----------
+test("remarkable days with dates: wet, dry and snowy years, both styles, nothing overlaps and every date prints", () => {
+  for (const style of ["r1", "r2"]) for (const data of ["wet", "dry", "snowWinter"]) for (const records of ["all", "sameMonth", "sameDay"]) for (const real of [true, false]) {
+    const { I, svg, skipped } = draw({ ...base, style, data, records, markers: "spread" }, real), id = [style, data, records, real ? "real" : "table"].join(" ");
+    assert.deepEqual(HARD(check(svg)).map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
+    const t = texts(svg), pts = X.ART.recordPoints(X.ART.model(I), I.records).pts;
+    for (const p of pts) {
+      if (skipped.includes(p.label)) continue;
+      assert.ok(p.text !== p.label || (p.span && p.b - p.a >= 27), id + ": " + p.label + " carries a date unless it is a whole month");
+      assert.ok(t.some((x) => x.includes(X.ART.plain(p.text))), id + ": prints " + X.ART.plain(p.text));
+    }
+    // every record in the layer at once is a stress case: a few may be left off (named on the page), never all
+    assert.ok(skipped.length <= 4 && skipped.length < pts.length, id + ": skipped " + skipped.join("; "));
   }
 });

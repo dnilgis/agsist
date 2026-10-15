@@ -175,16 +175,25 @@ test("the longest dedication (70) prints whole at both styles, at 14 u or more, 
 });
 
 // ---------- the print's small lines ----------
-test("the print names the gauge and distance, and explains gaps only when there are some, both styles", () => {
+test("the print names the gauge and distance, and counts gaps only past 3 missing days, both styles", () => {
   const gauge = "Weather station: Chetek, WI, 0.4 mi from Chetek";
   for (const style of ["r1", "r2"]) {
     const full = texts(ART.render(input(year(2025), { style, gauge })));
     const line = full.find((x) => x.t.startsWith("Weather station:"));
     assert.ok(line && line.size >= 12, style + ": gauge line at production size");
     assert.ok(!/no report/.test(line.t), style + ": no gap note on a full year");
-    const gappy = texts(ART.render(input(year(2025, (i) => (i === 40 ? { p: "M" } : {})), { style, gauge })));
-    assert.ok(gappy.some((x) => /day the station sent no report/.test(x.t)), style + ": a gap is explained");
-    assert.ok(!gappy.some((x) => /\d+ days? (not reported|with no report)/i.test(x.t)), style + ": with no count (Sig)");
+    // Sig, 2026-10-15: the long gap sentence is gone; 3 or fewer missing days say nothing, more say the count, short
+    for (const n of [1, 3]) {
+      const quiet = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 40 + n ? { p: "M" } : {})), { style, gauge })));
+      assert.ok(!quiet.some((x) => /no report|Gaps:/.test(x.t)), style + ": " + n + " missing days: nothing on the print");
+    }
+    const gappy = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 66 ? { p: "M" } : {})), { style, gauge })));
+    assert.ok(gappy.some((x) => /(^|  ·  )Gaps: 26 days with no report($|  ·  )/.test(x.t) && x.size >= 12), style + ": 26 missing days: the short note, with the count");
+    assert.ok(!gappy.some((x) => /sent no report|break in the ground line|gap in the line/.test(x.t)), style + ": the long sentence is gone");
+    const four = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 44 ? { p: "M" } : {})), { style, gauge })));
+    assert.ok(four.some((x) => /Gaps: 4 days with no report/.test(x.t)), style + ": 4 missing days: the note");
+    const sOnly = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 50 ? { p: "S" } : i === 50 ? { p: "1.00A" } : {})), { style, gauge })));
+    assert.ok(!sOnly.some((x) => /Gaps:/.test(x.t)), style + ": days rolled into a later total were reported: no gap note");
   }
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /gauge: META \? gaugeLine\(META\) : ''/, "the engine hands the art the gauge line");
