@@ -22,5 +22,8 @@
 .mvc-t thead th{white-space:normal;vertical-align:bottom;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
 .mvc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .mvc-t .mvc-sum th,.mvc-t .mvc-sum td{font-weight:800;color:var(--text)}
+.mvc .mvc-fy{font-size:.92rem;line-height:1.55;color:var(--text-dim);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin:.2rem 0 .7rem}
+.mvc .mvc-fy:empty{display:none}
+.mvc .mvc-fy b{color:var(--text)}
 @media(min-width:720px){.mvc{padding:1.2rem 1.3rem}.mvc-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.mvc-wide{grid-column:span 2}}
 @media(max-width:420px){.mvc-t{font-size:.86rem}.mvc-t th,.mvc-t td{padding:.4rem .2rem}}

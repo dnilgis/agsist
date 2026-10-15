@@ -42,7 +42,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"How much nitrogen should I apply to corn?","acceptedAnswer":{"@type":"Answer","text":"Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation."}},
-  {"@type":"Question","name":"What is my manure worth in fertilizer value?","acceptedAnswer":{"@type":"Answer","text":"Multiply the first-year available N, and the P2O5 and K2O, in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. The Manure tab has the pounds by manure type and a calculator at live dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}},
+  {"@type":"Question","name":"What is my manure worth in fertilizer value?","acceptedAnswer":{"@type":"Answer","text":"Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}},
   {"@type":"Question","name":"What is the economic threshold for soybean aphid?","acceptedAnswer":{"@type":"Answer","text":"250 aphids per plant on 80% or more of plants, with an increasing population, before R5 growth stage."}},
   {"@type":"Question","name":"How do I calculate growing degree units for corn?","acceptedAnswer":{"@type":"Answer","text":"GDU (base 50\u00b0F) = [(daily max temp, capped at 86\u00b0F) + (daily min temp, floor at 50\u00b0F)] / 2 - 50. Accumulate daily from planting."}}
 ]}
@@ -744,39 +744,39 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 
 <!-- MANURE TAB -->
 <div class="ff-panel" id="tab-manure" role="tabpanel" aria-labelledby="tab-btn-manure" tabindex="0" aria-hidden="true">
-<div class="ff-h2">Available Nutrient Content by Manure Type</div>
-<p class="ff-sub">First-year available N [second-year N in brackets] by time to incorporation, then P&#x2082;O&#x2085; and K&#x2082;O. Solid in lb/ton, liquid in lb/1,000 gal. Book values from UW Extension A2809. Farm manure varies a lot, so a manure test beats this table.</p>
+<div class="ff-h2">Total and Available Nutrient Content by Manure Type</div>
+<p class="ff-sub">Total N, P&#x2082;O&#x2085; and K&#x2082;O in the manure, then what a crop can use the first year: N by time to incorporation [second-year N in brackets], P&#x2082;O&#x2085; and K&#x2082;O. Solid in lb/ton, liquid in lb/1,000 gal. Book values from UW Extension A2809 (R-11-2012), Tables 9.2 and 9.3; the first year counts 80% of the P and K and 25 to 65% of the N (Table 9.1). Farm manure varies a lot, so a manure test beats this table.</p>
 <div class="ff-warn"><strong>Work it in fast.</strong> Manure left on the surface loses N to the air, most in warm, windy weather. The columns show how much.</div>
 <!--MV:POUNDS-->
-<div class="ff-tw" tabindex="0" role="region" aria-label="Available nutrients by manure type, scrolls sideways"><table class="ff-t">
+<div class="ff-tw" tabindex="0" role="region" aria-label="Total and first-year nutrients by manure type, scrolls sideways"><table class="ff-t">
 <thead>
-  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">N: 1st yr [2nd yr]</th><th rowspan="2">P&#x2082;O&#x2085; 1st yr</th><th rowspan="2">K&#x2082;O 1st yr</th></tr>
-  <tr><th>Not in 3 days</th><th>1 hr&ndash;3 days</th><th>Within 1 hr</th></tr>
+  <tr><th class="tl" rowspan="2">Manure type</th><th colspan="3">Total in the manure</th><th colspan="3">N the crop can use, 1st yr [2nd yr]</th><th colspan="2">P and K, 1st yr</th></tr>
+  <tr><th>N</th><th>P&#x2082;O&#x2085;</th><th>K&#x2082;O</th><th>Not in 3 days</th><th>1 hr&ndash;3 days</th><th>Within 1 hr</th><th>P&#x2082;O&#x2085;</th><th>K&#x2082;O</th></tr>
 </thead>
 <tbody>
-  <tr class="tg"><td class="tl" colspan="6">Dairy</td></tr>
-  <tr><td class="tl">Solid, over 20% dry matter (lb/ton)</td><td>2 [1]</td><td>3 [1]</td><td class="hi">3 [1]</td><td>3</td><td>6</td></tr>
-  <tr><td class="tl">Solid, 11 to 20% dry matter (lb/ton)</td><td>2 [1]</td><td>2 [1]</td><td class="hi">3 [1]</td><td>3</td><td>5</td></tr>
-  <tr><td class="tl">Liquid, 4 to 11% dry matter (lb/1,000 gal)</td><td>7 [2]</td><td>10 [2]</td><td class="hi">12 [2]</td><td>6</td><td>17</td></tr>
-  <tr><td class="tl">Liquid, under 4% dry matter (lb/1,000 gal)</td><td>4 [1]</td><td>6 [1]</td><td class="hi">7 [1]</td><td>3</td><td>11</td></tr>
-  <tr class="tg"><td class="tl" colspan="6">Beef</td></tr>
-  <tr><td class="tl">Solid (lb/ton)</td><td>3 [1]</td><td>4 [1]</td><td class="hi">5 [1]</td><td>6</td><td>10</td></tr>
-  <tr><td class="tl">Liquid (lb/1,000 gal)</td><td>5 [2]</td><td>6 [2]</td><td class="hi">8 [2]</td><td>6</td><td>12</td></tr>
-  <tr class="tg"><td class="tl" colspan="6">Hog</td></tr>
-  <tr><td class="tl">Solid (lb/ton)</td><td>7 [2]</td><td>9 [2]</td><td class="hi">12 [2]</td><td>10</td><td>8</td></tr>
-  <tr><td class="tl">Liquid, finishing, indoor pit (lb/1,000 gal)</td><td>17 [4]</td><td>22 [4]</td><td class="hi">28 [4]</td><td>14</td><td>22</td></tr>
-  <tr><td class="tl">Liquid, finishing, outdoor storage (lb/1,000 gal)</td><td>7 [2]</td><td>9 [2]</td><td class="hi">12 [2]</td><td>6</td><td>8</td></tr>
-  <tr class="tg"><td class="tl" colspan="6">Poultry</td></tr>
-  <tr><td class="tl">Chicken, solid (lb/ton)</td><td>24 [5]</td><td>27 [5]</td><td class="hi">29 [5]</td><td>35</td><td>26</td></tr>
-  <tr><td class="tl">Turkey, solid (lb/ton)</td><td>26 [5]</td><td>28 [5]</td><td class="hi">31 [5]</td><td>35</td><td>25</td></tr>
-  <tr class="tg"><td class="tl" colspan="6">Horse</td></tr>
-  <tr><td class="tl">Solid (lb/ton)</td><td>2 [1]</td><td>3 [1]</td><td class="hi">4 [1]</td><td>5</td><td>6</td></tr>
+  <tr class="tg"><td class="tl" colspan="9">Dairy</td></tr>
+  <tr><td class="tl">Solid, over 20% dry matter (lb/ton)</td><td class="hi">9</td><td class="hi">4</td><td class="hi">7</td><td>2 [1]</td><td>3 [1]</td><td>3 [1]</td><td>3</td><td>6</td></tr>
+  <tr><td class="tl">Solid, 11 to 20% dry matter (lb/ton)</td><td class="hi">8</td><td class="hi">4</td><td class="hi">6</td><td>2 [1]</td><td>2 [1]</td><td>3 [1]</td><td>3</td><td>5</td></tr>
+  <tr><td class="tl">Liquid, 4 to 11% dry matter (lb/1,000 gal)</td><td class="hi">24</td><td class="hi">8</td><td class="hi">21</td><td>7 [2]</td><td>10 [2]</td><td>12 [2]</td><td>6</td><td>17</td></tr>
+  <tr><td class="tl">Liquid, under 4% dry matter (lb/1,000 gal)</td><td class="hi">14</td><td class="hi">4</td><td class="hi">14</td><td>4 [1]</td><td>6 [1]</td><td>7 [1]</td><td>3</td><td>11</td></tr>
+  <tr class="tg"><td class="tl" colspan="9">Beef</td></tr>
+  <tr><td class="tl">Solid (lb/ton)</td><td class="hi">13</td><td class="hi">8</td><td class="hi">12</td><td>3 [1]</td><td>4 [1]</td><td>5 [1]</td><td>6</td><td>10</td></tr>
+  <tr><td class="tl">Liquid (lb/1,000 gal)</td><td class="hi">16</td><td class="hi">7</td><td class="hi">15</td><td>5 [2]</td><td>6 [2]</td><td>8 [2]</td><td>6</td><td>12</td></tr>
+  <tr class="tg"><td class="tl" colspan="9">Hog</td></tr>
+  <tr><td class="tl">Solid (lb/ton)</td><td class="hi">18</td><td class="hi">13</td><td class="hi">10</td><td>7 [2]</td><td>9 [2]</td><td>12 [2]</td><td>10</td><td>8</td></tr>
+  <tr><td class="tl">Liquid, finishing, indoor pit (lb/1,000 gal)</td><td class="hi">43</td><td class="hi">18</td><td class="hi">28</td><td>17 [4]</td><td>22 [4]</td><td>28 [4]</td><td>14</td><td>22</td></tr>
+  <tr><td class="tl">Liquid, finishing, outdoor storage (lb/1,000 gal)</td><td class="hi">18</td><td class="hi">7</td><td class="hi">10</td><td>7 [2]</td><td>9 [2]</td><td>12 [2]</td><td>6</td><td>8</td></tr>
+  <tr class="tg"><td class="tl" colspan="9">Poultry</td></tr>
+  <tr><td class="tl">Chicken, solid (lb/ton)</td><td class="hi">49</td><td class="hi">44</td><td class="hi">33</td><td>24 [5]</td><td>27 [5]</td><td>29 [5]</td><td>35</td><td>26</td></tr>
+  <tr><td class="tl">Turkey, solid (lb/ton)</td><td class="hi">51</td><td class="hi">44</td><td class="hi">31</td><td>26 [5]</td><td>28 [5]</td><td>31 [5]</td><td>35</td><td>25</td></tr>
+  <tr class="tg"><td class="tl" colspan="9">Horse</td></tr>
+  <tr><td class="tl">Solid (lb/ton)</td><td class="hi">10</td><td class="hi">6</td><td class="hi">8</td><td>2 [1]</td><td>3 [1]</td><td>4 [1]</td><td>5</td><td>6</td></tr>
 </tbody></table></div>
 <!--/MV:POUNDS-->
-<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: the first-year N, P and K in dollars per 1,000 gal and per ton for every type at dated dealer prices, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
+<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: all the N, P and K in dollars per 1,000 gal and per ton for every type at dated dealer prices, with the first-year part beside it, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
 
 <div class="ff-h2" id="manure-calc">Manure Value Calculator</div>
-<p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated dealer prices: an acre, per 1,000 gal or ton, and for the field. Book pounds are first-year; type your own test and every pound counts. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
+<p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated dealer prices: an acre, per 1,000 gal or ton, and for the field. All the pounds count, with the first-year part under the total; type your own test and it uses your pounds. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
 <div class="mvc" data-mv-calc><p class="ff-sub">The calculator needs JavaScript.</p></div>
 
 <div class="ff-h2" style="margin-top:1.5rem">Manure Output by Animal</div>
@@ -1119,7 +1119,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>How much nitrogen should I apply to corn?</summary><div class="agf-a">Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation.</div></details>
-<details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the first-year available N, and the P2O5 and K2O, in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. The Manure tab has the pounds by manure type and a calculator at live dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
+<details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
 <details><summary>What is the economic threshold for soybean aphid?</summary><div class="agf-a">250 aphids per plant on 80% or more of plants, with an increasing population, before R5 growth stage.</div></details>
 <details><summary>How do I calculate growing degree units for corn?</summary><div class="agf-a">GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting.</div></details>
 </section>
