@@ -154,6 +154,7 @@
       if (S.current == null) lines.push('<b>Type your grain\'s moisture</b> above to see which hours dry it and which wet it.');
       else if (S.current <= target()) lines.push('Your grain is already at or under your ' + fmt(target(), 1) + '% target. Switch to <b>Holding dry grain</b>.');
       else if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air brings ' + gname() + ' to <b>' + emcText(now.emc) + '</b>: ' + callWord(now.call) + ' for grain at ' + fmt(S.current, 1) + '%.');
+      if (now && now.call === 'part' && S.current != null && S.current > target()) lines.push('This air still pulls water out, but it cannot take the grain all the way to ' + fmt(target(), 1) + '%: if the weather stays like this, the bottom of the bin ends above target until drier air comes.');
       if (S.current != null && S.current > target()) lines.push(tonight(rows));
       lines.push('<span class="note">For natural-air drying, NDSU Extension says to run fans around the clock until the drying front comes out the top of the bin, and to shut off only for steady rain, fog or snow. That advice was written for wheat; NDSU adds that running only in the driest hours overdries the bottom and stretches the drying time.</span>');
       E.dryWarnings(rows).forEach(function (w) {
@@ -268,7 +269,7 @@
   function tipFor(i) {
     var r = S.rows && S.rows[i];
     if (!r) return '';
-    if (r.missing) return when(r.t) + ': no forecast reading.';
+    if (r.missing) { var m = when(r.t) + ': no forecast reading.'; return m.charAt(0).toUpperCase() + m.slice(1); }
     var s = when(r.t) + ': ' + fmt(r.tF, 0) + ' F, ' + fmt(r.rh, 0) + '%';
     if (S.fan > 0) s += ' (' + fmt(r.fanTF, 0) + ' F, ' + fmt(r.fanRh, 0) + '% at the fan)';
     if (r.wx) s += ', ' + r.wx;
