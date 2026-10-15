@@ -822,7 +822,7 @@
    ],
    "cadence": "3 launches on a fixed schedule at about 10am, 3pm, 8pm Central",
    "curated": false,
-   "planned": true,
+   "planned": false,
    "external": false,
    "url": null,
    "crons": [
