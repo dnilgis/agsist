@@ -9,7 +9,7 @@
   },
   {
    "cls": "live",
-   "html": "Senate Ag Committee <b>passed S.&nbsp;5526</b> 12&ndash;11 &middot; Sep 16, 2026"
+   "html": "Senate Ag Committee <b>passed S.&nbsp;5526, 12&ndash;11</b> &middot; Sep 16, 2026"
   },
   {
    "cls": "warn",
@@ -295,7 +295,7 @@
    "label": "Cattle and hogs",
    "lines": [
     {
-     "t": "<b>Prop 12:</b> the House bill keeps Sec. 12006, which would bar states from setting rules for how livestock raised in other states is housed. A bipartisan bid to strike it was refused a floor vote, 4&ndash;7.",
+     "t": "<b>Prop 12:</b> the House bill keeps Sec. 12006, which would bar states from setting rules for how livestock raised in other states is housed. The Rules Committee voted 4&ndash;7 against letting a bipartisan amendment to strike it reach the floor.",
      "src": "rules"
     },
     {
@@ -362,7 +362,7 @@
    "tools": []
   }
  },
- "detailNote": "Each title's ten-year mandatory baseline, what it covers, and a headline change. The provisions draw on the House-passed bill and the Senate committee's June 23 discussion draft, which became S.&nbsp;5526 with changes; CRS's newest comparison (R48918, Jul 29, 2026) also covers the June 23 draft, not the reported text. The dollar figures are the shared baseline. Titles V, VI, and VIII run on discretionary appropriations and carry no mandatory baseline of their own.",
+ "detailNote": "The provisions draw on the House-passed bill and the Senate committee's June 23 discussion draft, which became S.&nbsp;5526 with changes; CRS's newest comparison (R48918, Jul 29, 2026) also covers the June 23 draft, not the reported text. The dollar figures are the shared baseline. Titles V, VI, and VIII run on discretionary appropriations and carry no mandatory baseline of their own.",
  "titles": [
   {
    "num": "I",

@@ -143,3 +143,7 @@ test("no em dashes in the page or its data", () => {
   assert.doesNotMatch(body, /—|&mdash;/);
   assert.doesNotMatch(JSON.stringify(data), /—|&mdash;/);
 });
+
+test("the phone compare cards label the Senate side with its bill number", () => {
+  assert.match(html, /\.cmp-row \.cv\.s::before\{content:"Senate · S\. 5526"\}/);
+});
