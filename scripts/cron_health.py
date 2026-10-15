@@ -70,6 +70,8 @@ CHECKS = [
     ("price-stats.yml", None, 60, False, "chained, gated to its own schedule"),
     ("harvest-prices.yml", None, 60, False, "chained, gated to its own schedule"),
     ("freshness.yml", None, 60, False, "chained, gated to its own schedule"),
+    ("lrp.yml", ["7,22,37,52 19-23 * * 1-5"], 30, False,
+     "after every Fetch Grain Bids, Mon-Fri 19:00-23:59 UTC; looks for RMA's LRP offers until today's are in"),
     ("prf.yml", ["23 10 * * 3"], 240, False, "weekly PRF data refresh, Wednesdays; a full run after the August ADM takes about two hours"),
     ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
     ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),

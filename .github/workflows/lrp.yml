@@ -16,22 +16,59 @@ name: lrp
 #     data/'s budget, plus lrp.html with the record baked in
 #     (scripts/bake_lrp.mjs).
 #
+# mode watch (every 15 minutes in RMA's posting window, see below): one look
+#   at the open years' folder listings and a HEAD on the newest file, against
+#   state.json on lrp-history; seconds when nothing is new. Logged in
+#   watch-log.json there. When a file is new, the lrp job reads it (history
+#   for those years only) and publishes.
 # mode history: read every daily zip not yet in the history (the first run
 #   reads about 7,000 files and may need two runs; it stops starting downloads
 #   after `minutes` and the next run carries on), then publish.
 # mode publish: rebuild data/lrp/ from the history only.
+# mode report: HEAD the latest 60 offer files (and 20 old-year ones) and write
+#   their Last-Modified times beside the listing's to probe/post-times.json on
+#   lrp-history. Dispatch:
+#     gh api -X POST repos/dnilgis/agsist/actions/workflows/lrp.yml/dispatches -f ref=main -F 'inputs[mode]=report'
 # The first look at RMA's sources (the probe of 2026-10-15) is kept
 # on the lrp-history branch under probe/; it is not run from here any more, so
 # raw captures never land on main again.
-# No schedule yet: added once the full history is in and checked.
+#
+# WHEN TO LOOK. RMA's folder listing (July 2025 to October 2026, 298 offer
+# files) puts each day's offers up at 2:17 pm Central at the earliest, 86% by
+# 2:30, 95% by 3:00, all by 4:29 (scripts/fetch_lrp.py has the details). The
+# listing's clock does not move with the time of year, so it is a local clock;
+# the 8:35 am files right after the 8:25 am sales close say Central.
+# 19:00-23:59 UTC is 2:00-6:59 pm CDT and 1:00-5:59 pm CST: the whole spread
+# either way. Tuesday to Saturday at 15:00 UTC one more look catches an
+# evening posting and the 8:35 am CT ending values.
+#
+# THE CLOCK IS "Fetch Grain Bids", NOT GITHUB'S SCHEDULER: GitHub delivered
+# 3-10% of this repository's fast cron fires (scripts/cron_gate.py), while
+# cron-job.org starts Fetch Grain Bids every 15 minutes. This runs after each
+# one. The gate job's `if` drops every run outside 15:00-15:19 and
+# 19:00-23:59 UTC without starting a runner; inside, scripts/cron_gate.py lrp
+# stops it on weekends and once today's offers are in data/lrp/today.json.
+# The crons are a thin fallback for a day cron-job.org is down.
+# Nothing here is read by Fetch Grain Bids, and pushes made with GITHUB_TOKEN
+# start no workflows, so nothing loops.
+#
+# Cost: about 21 gate runs a day (most a few seconds, billed a minute each),
+# 3-5 watch runs on a weekday, and one or two full runs (about 4 minutes) when
+# RMA posts: roughly 1,000 runner minutes a month, free on a public repository.
 on:
+  schedule:
+    - cron: '41 19-23 * * 1-5'
+    - cron: '11 15 * * 2-6'
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       mode:
-        description: "history (read new RMA files, then publish) or publish"
+        description: "watch (one look; read anything new), history (read new RMA files, then publish), publish, or report (posting times)"
         type: choice
-        options: [history, publish]
-        default: history
+        options: [watch, history, publish, report]
+        default: watch
       years:
         description: "Reinsurance years to read, e.g. 2014-2018 (blank = all)"
         required: false
@@ -44,19 +81,110 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: lrp
-  cancel-in-progress: false
-
 jobs:
-  lrp:
+  gate:
+    # No runner at all for a Fetch Grain Bids run outside the two windows.
+    if: >-
+      github.event_name == 'schedule' || (github.event_name == 'workflow_run' && (
+        contains(github.event.workflow_run.created_at, 'T15:0') ||
+        contains(github.event.workflow_run.created_at, 'T15:1') ||
+        contains(github.event.workflow_run.created_at, 'T19:') ||
+        contains(github.event.workflow_run.created_at, 'T20:') ||
+        contains(github.event.workflow_run.created_at, 'T21:') ||
+        contains(github.event.workflow_run.created_at, 'T22:') ||
+        contains(github.event.workflow_run.created_at, 'T23:')))
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    permissions:
+      contents: read
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            data/lrp/today.json
+          sparse-checkout-cone-mode: false
+      - id: gate
+        run: python3 scripts/cron_gate.py lrp --lrp-file data/lrp/today.json
+
+  watch:
+    needs: gate
+    if: >-
+      !cancelled() && (needs.gate.outputs.go == '1' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'watch' || inputs.mode == 'report')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: lrp
+      cancel-in-progress: false
+    outputs:
+      new: ${{ steps.look.outputs.new }}
+      years: ${{ steps.look.outputs.years }}
     env:
       PYTHONUNBUFFERED: "1"
-      IN_MODE: ${{ inputs.mode }}
-      IN_YEARS: ${{ inputs.years }}
-      IN_MINUTES: ${{ inputs.minutes }}
+      IN_MODE: ${{ inputs.mode || 'watch' }}
+      HIST: ${{ github.workspace }}/../lrp-history
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/fetch_lrp.py
+            test/fixtures/lrp/
+          sparse-checkout-cone-mode: false
+
+      - name: Selftest
+        run: python3 scripts/fetch_lrp.py --selftest > /dev/null
+
+      # Only state.json and the logs: no offers are downloaded for a look.
+      - name: Check out the history state
+        run: |
+          git config --global user.name "agsist-probe"
+          git config --global user.email "bot@agsist.com"
+          git fetch -q --depth 1 --filter=blob:none origin lrp-history || { echo "::error::the lrp-history branch is missing"; exit 1; }
+          git worktree add -q --no-checkout -B lrp-history "$HIST" FETCH_HEAD
+          cd "$HIST"
+          git sparse-checkout set --no-cone /state.json /watch-log.json /probe/post-times.json
+          git checkout -q lrp-history
+
+      - name: Look at RMA
+        id: look
+        run: |
+          if [ "$IN_MODE" = "report" ]; then python3 scripts/fetch_lrp.py --post-times "$HIST"
+          else python3 scripts/fetch_lrp.py --watch "$HIST"; fi
+
+      # The log is a measurement: a failed push is a warning, never a stop.
+      - name: Commit the log to lrp-history
+        if: ${{ !cancelled() }}
+        run: |
+          cd "$HIST"
+          git add -A
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "lrp $IN_MODE $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do
+            if git push -q origin HEAD:lrp-history; then exit 0; fi
+            sleep $((10 * i))
+          done
+          echo "::warning::could not push the watch log to lrp-history"
+
+  lrp:
+    needs: watch
+    # A manual history or publish run, or a look that found a new file (then
+    # history for the open years only, with a short time limit).
+    if: >-
+      !cancelled() && (needs.watch.outputs.new == '1' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'history' || inputs.mode == 'publish')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    concurrency:
+      group: lrp
+      cancel-in-progress: false
+    env:
+      PYTHONUNBUFFERED: "1"
+      IN_MODE: ${{ (inputs.mode == 'publish' && 'publish') || 'history' }}
+      IN_YEARS: ${{ inputs.years || needs.watch.outputs.years }}
+      IN_MINUTES: ${{ inputs.minutes || '30' }}
       # outside the checkout, so the size budget never counts it
       HIST: ${{ github.workspace }}/../lrp-history
     steps:
@@ -90,7 +218,7 @@ jobs:
       # file fails a check; the last step then fails the run and says where.
       - name: Read new RMA files into the history
         id: history
-        if: ${{ inputs.mode == 'history' }}
+        if: ${{ env.IN_MODE == 'history' }}
         continue-on-error: true
         timeout-minutes: 330
         run: |
@@ -98,7 +226,7 @@ jobs:
           python scripts/fetch_lrp.py --history "$HIST" --years "$IN_YEARS" --minutes "$IN_MINUTES" 2>&1 | tee lrp-history.log
 
       - name: Commit the history to lrp-history
-        if: ${{ inputs.mode == 'history' }}
+        if: ${{ env.IN_MODE == 'history' }}
         run: |
           cd "$HIST"
           git add -A
