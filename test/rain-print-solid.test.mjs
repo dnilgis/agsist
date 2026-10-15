@@ -174,8 +174,9 @@ test("P2: a town typed and not drawn is never ordered as the old design; a new y
     // the town, typed and not drawn: the line by the print says so, and the order waits
     await page.fill("#rp-place", "Rice Lake, WI");
     assert.match(await page.textContent("#rp-pending"), /Not drawn yet: Rice Lake, WI, 2024\. Press Draw my year\./);
-    // words typed now still go on the print that is up (they used to freeze until Draw it)
-    await page.fill("#rp-name", "The Olson Place");
+    // words typed now still go on the print that is up (they used to freeze until Draw it); set without
+    // moving focus, since leaving the town box draws it (the next step)
+    await page.evaluate(() => { const n = document.getElementById("rp-name"); n.value = "The Olson Place"; n.dispatchEvent(new Event("input", { bubbles: true })); });
     assert.match(await page.innerHTML("#rp-art"), /The Olson Place/);
     await page.evaluate(() => document.getElementById("rp-pay").click());
     await page.waitForTimeout(150);
