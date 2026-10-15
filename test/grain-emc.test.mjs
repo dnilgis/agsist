@@ -189,6 +189,9 @@ test("page: title, H1, byline, voice, structured data and the FAQ word for word"
   assert.match(page, /<title>Grain EMC calculator: when to run aeration fans \| AGSIST<\/title>/);
   assert.match(page, /<h1>When to run aeration fans: will they dry your grain or wet it\?<\/h1>/);
   assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  // Sig, Oct 15: no name in the hero; the byline sits at the bottom, after the credit line
+  const h1At = page.indexOf("</h1>"), modeAt = page.indexOf('class="emc-seg emc-mode"'), byAt = page.indexOf('<p class="by">');
+  assert.ok(byAt > page.indexOf('id="emc-credit"') && !page.slice(h1At, modeAt).includes("Sigurd"), "no byline in the hero");
   assert.ok(!/—|&mdash;/.test(page + ui), "no em dashes in the page or what the script writes (B15)");
   const ld = JSON.parse(page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const g = ld["@graph"];
