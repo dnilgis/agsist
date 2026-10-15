@@ -1,9 +1,9 @@
 {
-  "fetched_at": "2026-10-15T17:19:32+00:00",
+  "fetched_at": "2026-10-15T21:44:20+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 234009,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-10-15T12:31:32+00:00",
       "sha256": "c502101618a48f7519240b5134390b38ccfe6c12a43a5fb8241ddc5d4ae0b44e",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_prcp.gif",
@@ -12,7 +12,7 @@
     },
     "noaa_prcp_90day.gif": {
       "bytes": 242821,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-10-15T12:31:31+00:00",
       "sha256": "94228712e6c4c3207e3fa081cd602689c256762a788607f8a0ab99d5b36bd63d",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
@@ -20,7 +20,7 @@
     },
     "noaa_temp_30day.gif": {
       "bytes": 228192,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-10-15T12:31:32+00:00",
       "sha256": "ed208dc21930b8ed4130aaffde9eb0f3c9452bc5a5329af4c9435c1087d83d58",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_temp.gif",
@@ -29,7 +29,7 @@
     },
     "noaa_temp_90day.gif": {
       "bytes": 233702,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-10-15T12:31:31+00:00",
       "sha256": "782ce96f43ed416b148465a84d03ea03088e78e750a368530d98d86c52ae32f1",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
@@ -37,7 +37,7 @@
     },
     "usdm_latest.png": {
       "bytes": 406716,
-      "changed": true,
+      "changed": false,
       "data_valid": "2026-10-13",
       "sha256": "a654c047a74e5958d19b07cac1f9e342e118c83f4b4bc510374047307c2d7865",
       "source": "https://droughtmonitor.unl.edu/data/png/20261013/20261013_usdm.png",
