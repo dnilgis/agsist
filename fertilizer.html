@@ -49,7 +49,7 @@
       "@type":"WebPage",
       "url":"https://agsist.com/fertilizer",
       "name":"Fertilizer Prices Today: Urea, MAP, Potash, AMS & K-Mag | AGSIST",
-      "description":"Current US fertilizer prices for urea, MAP, potash, ammonium sulfate, K-Mag, and pelletized lime. Midwest dealer quotes, collected by hand about once a month.",
+      "description":"US fertilizer prices for urea, MAP, potash, ammonium sulfate, K-Mag, and pelletized lime. Midwest dealer quotes, collected by hand about once a month. Every price carries the date it was quoted, so an old one reads as old.",
       "isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},
       "breadcrumb":{
         "@type":"BreadcrumbList",
@@ -75,7 +75,7 @@
         {
           "@type":"Question",
           "name":"What is the price of urea fertilizer today?",
-          "acceptedAnswer":{"@type":"Answer","text":"Urea prices move with natural gas costs, global supply, and seasonal demand. AGSIST shows Midwest dealer quotes, hand-collected; each row carries the date it was last quoted. Current prices are shown on this page."}
+          "acceptedAnswer":{"@type":"Answer","text":"Urea prices move with natural gas costs, global supply, and seasonal demand. AGSIST shows Midwest dealer quotes, hand-collected; each row carries the date it was last quoted. None of them is a live price, so check the date beside it and call your dealer before you buy."}
         },
         {
           "@type":"Question",
@@ -144,6 +144,9 @@
 .fpc-chg-val.nc{color:var(--text-muted)}
 .fpc-asof{color:var(--gold,#d4a23f);}
 .fpc-loc{font-size:0.757rem;color:var(--text-muted);margin-top:.12rem}
+.fpc-src{display:block;font-size:0.745rem;color:var(--text-muted);font-weight:400;margin-top:.1rem}
+.fert-ams-sub{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .65rem}
+.fert-ams-sub a{color:var(--gold)}
 
 /* Natural gas */
 .natgas-card{
@@ -319,7 +322,7 @@
 
   <div class="fert-verdict" id="fert-verdict" hidden>
     <div class="fv-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Cheapest of the products tracked here</div>
-    <p class="fv-note">Anhydrous ammonia, UAN and DAP are not priced on this page.</p>
+    <p class="fv-note" id="fv-note">Anhydrous ammonia, UAN and DAP are not priced on this page.</p>
     <div class="fv-grid" id="fv-cheapest"></div>
     <div class="fv-afford" id="fv-afford" hidden></div>
   </div>
@@ -328,6 +331,8 @@
   <div class="fert-cards" id="fert-price-cards">
     <div style="grid-column:1/-1;text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Loading prices&hellip;</div>
   </div>
+
+  <section id="fert-ams" aria-labelledby="fert-ams-h" hidden></section>
 
   <h2 class="fert-related-title" style="margin-top:.25rem">Cost per pound of nutrient</h2>
   <div class="fert-nutrient">
@@ -415,7 +420,7 @@
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>What is the price of urea fertilizer today?</summary><div class="agf-a">Urea prices move with natural gas costs, global supply, and seasonal demand. AGSIST shows Midwest dealer quotes, hand-collected; each row carries the date it was last quoted. Current prices are shown on this page.</div></details>
+<details><summary>What is the price of urea fertilizer today?</summary><div class="agf-a">Urea prices move with natural gas costs, global supply, and seasonal demand. AGSIST shows Midwest dealer quotes, hand-collected; each row carries the date it was last quoted. None of them is a live price, so check the date beside it and call your dealer before you buy.</div></details>
 <details><summary>How does natural gas price affect fertilizer costs?</summary><div class="agf-a">Natural gas is the primary feedstock for nitrogen fertilizers including urea and ammonium sulfate. Higher Henry Hub natural gas prices commonly flow through to urea prices over the following weeks to months as production costs pass through the supply chain.</div></details>
 <details><summary>What is the difference between NOLA barge price and Midwest dealer price?</summary><div class="agf-a">NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The Midwest prices on this page are dealer quotes, not barge prices. What you pay is your dealer's delivered price.</div></details>
 <details><summary>When is the best time to buy fertilizer for corn?</summary><div class="agf-a">Historically, fall and early winter (October-December) have offered lower urea and phosphate prices ahead of spring planting demand. However, price timing is difficult: natural gas price direction, global supply disruptions, and tariff policy can override seasonal patterns. Locking in a portion of needs in fall while leaving flexibility for spring is a common approach.</div></details>
@@ -424,8 +429,9 @@
 
   <div class="fert-source">
     Prices are Midwest dealer quotes collected by hand, roughly monthly, a benchmark to argue from,
-    not a licensed feed and not your dealer&rsquo;s bid. For the published series see
-    <a href="https://www.ams.usda.gov/market-news/fertilizers" target="_blank" rel="noopener">USDA AMS</a>.
+    not a licensed feed and not your dealer&rsquo;s bid. The USDA figures are the
+    <a href="https://mymarketnews.ams.usda.gov/viewReport/3195" target="_blank" rel="noopener">USDA AMS Illinois Production Cost Report</a>
+    (biweekly, public), read by a script and shown with the report&rsquo;s own date.
     Not a quote. Verify with your dealer before purchasing. &middot;
     <a href="/">&#x2190; AGSIST Dashboard</a> &middot;
     Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
@@ -448,12 +454,15 @@
 <!-- FIX: defer on all bottom scripts -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
+<script src="/components/fert-sources.js?v=1"></script>
 
 <script>
 (function(){
 'use strict';
 
 function fmtDate(iso){if(!iso)return'-';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}catch(e){return iso;}}
+function shortDate(iso){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||'');if(!m)return '';return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+(+m[3]);}
+/* Source and date on one line ("dealer sheet, Sep 1" / "USDA AMS Illinois avg, Oct 2"), plus its age once over 30 days; rows with no source fall back to ageTag(). Defined below ageDays(). */
 function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
 function money2(n){return '$'+(Math.round(n*100)/100).toFixed(2);}
 function fmtLb(n){return Math.round(n).toLocaleString('en-US');}
@@ -484,7 +493,9 @@ function ageDays(asof){if(!asof)return null;var d=Date.parse(asof+'T12:00:00Z');
 function ageTag(asof){var n=ageDays(asof);if(n==null||n<=30)return '';
   var d=new Date(asof+'T12:00:00Z');
   return ' <span class="fpc-asof">quoted '+d.toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric',year:'numeric'})+', '+n+' days old</span>';}
-function analyze(prices){return prices.map(function(p){var g=parseGrade(p.symbol);var px=p.price;if(typeof px==='string'&&px.trim()!==''&&isFinite(Number(px)))px=Number(px);return{name:p.name,symbol:p.symbol,price:px,as_of:p.as_of,grade:g};});}
+function provTag(p,asof){if(!p||!p.srcLabel)return asof?ageTag(asof):'';var n=ageDays(asof);
+  return '<span class="fpc-src'+(n!=null&&n>30?' fpc-asof':'')+'">'+esc(p.srcLabel)+(n!=null&&n>30?', '+n+' days old':'')+'</span>';}
+function analyze(prices){return prices.map(function(p){var g=parseGrade(p.symbol);var px=p.price;if(typeof px==='string'&&px.trim()!==''&&isFinite(Number(px)))px=Number(px);return{name:p.name,symbol:p.symbol,price:px,as_of:p.as_of,src:p.src,srcLabel:p.srcLabel,grade:g};});}
 /* N may be bought only from a product that is mainly N (N% above P% and K%), so MAP or a P-S blend can never stand in for a nitrogen source. */
 function mainlyN(pr){return !!(pr.grade&&pr.grade.N>0&&pr.grade.N>pr.grade.P&&pr.grade.N>pr.grade.K);}
 function straightN(pr){return !!(pr.grade&&pr.grade.N>0&&!(pr.grade.P>0)&&!(pr.grade.K>0));}
@@ -497,13 +508,13 @@ function pick(nut){var ok=nut==='N'?mainlyN:null;var pri=primary(products,nut,ok
   if(pri&&!validPrice(pri.price)){src=null;unavail=pri;missing.push(pri.name);}
   return{src:src,note:note,unavail:unavail};}
 var P=pick('P'),K=pick('K'),N=pick('N');
-if(Preq>0&&P.src){var pp=P.src.product,tp=Preq/(20*pp.grade.P);var cp=tp*pp.price;cost+=cp;nFromP=tp*20*pp.grade.N;sSupplied+=tp*20*pp.grade.S;mgSupplied+=tp*20*pp.grade.Mg;lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.src.name,lbs:Math.round(tp*2000),cost:cp,note:P.note,asof:pp.as_of});}
+if(Preq>0&&P.src){var pp=P.src.product,tp=Preq/(20*pp.grade.P);var cp=tp*pp.price;cost+=cp;nFromP=tp*20*pp.grade.N;sSupplied+=tp*20*pp.grade.S;mgSupplied+=tp*20*pp.grade.Mg;lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.src.name,lbs:Math.round(tp*2000),cost:cp,note:P.note,asof:pp.as_of,srcLabel:pp.srcLabel});}
 else if(Preq>0&&P.unavail){lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(Preq>0)missing.push('phosphate source');
-if(Kreq>0&&K.src){var kp=K.src.product,tk=Kreq/(20*kp.grade.K);var ck=tk*kp.price;cost+=ck;sSupplied+=tk*20*kp.grade.S;mgSupplied+=tk*20*kp.grade.Mg;lines.push({role:'Potash (K\u2082O)',product:K.src.name,lbs:Math.round(tk*2000),cost:ck,note:K.note,asof:kp.as_of});}
+if(Kreq>0&&K.src){var kp=K.src.product,tk=Kreq/(20*kp.grade.K);var ck=tk*kp.price;cost+=ck;sSupplied+=tk*20*kp.grade.S;mgSupplied+=tk*20*kp.grade.Mg;lines.push({role:'Potash (K\u2082O)',product:K.src.name,lbs:Math.round(tk*2000),cost:ck,note:K.note,asof:kp.as_of,srcLabel:kp.srcLabel});}
 else if(Kreq>0&&K.unavail){lines.push({role:'Potash (K\u2082O)',product:K.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(Kreq>0)missing.push('potash source');
-var remN=Math.max(0,Nreq-nFromP);if(remN>0&&N.src){var np=N.src.product,tn=remN/(20*np.grade.N);var cn=tn*np.price;cost+=cn;sSupplied+=tn*20*np.grade.S;lines.push({role:'Nitrogen (N)',product:N.src.name,lbs:Math.round(tn*2000),cost:cn,note:N.note,asof:np.as_of});}
+var remN=Math.max(0,Nreq-nFromP);if(remN>0&&N.src){var np=N.src.product,tn=remN/(20*np.grade.N);var cn=tn*np.price;cost+=cn;sSupplied+=tn*20*np.grade.S;lines.push({role:'Nitrogen (N)',product:N.src.name,lbs:Math.round(tn*2000),cost:cn,note:N.note,asof:np.as_of,srcLabel:np.srcLabel});}
 else if(remN>0&&N.unavail){lines.push({role:'Nitrogen (N)',product:N.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(remN>0)missing.push('nitrogen source');
 return{crop:c.label,nRate:nr,Nreq:Nreq,Preq:Preq,Kreq:Kreq,lines:lines,missing:missing,costPerAcre:cost,costPerBu:yieldGoal>0?cost/yieldGoal:0,sSupplied:sSupplied,sNeed:c.sNeed,mgSupplied:mgSupplied,fixesN:c.fixesN};}
@@ -530,8 +541,9 @@ function renderCards(data){
   cards.innerHTML=data.prices.map(function(p){
     var hasPrice=p.price!=null;var chg=hasPrice&&p.prev!=null?p.price-p.prev:null;
     var chgCls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';var arrow=chg==null?'':chg>0?'\u25b2':chg<0?'\u25bc':'';
-    var chgStr=chg!=null&&chg!==0?'$'+Math.abs(chg).toFixed(0)+'/ton vs prior':'No change';
-    var chgTxt=chg!=null&&chg!==0?arrow+' $'+Math.abs(chg).toFixed(0):(chg===0?'-':'');
+    var chgStr=chg!=null&&chg!==0?'$'+Math.abs(chg).toFixed(0)+'/ton vs the '+(p.prev_as_of?fmtDate(p.prev_as_of):'prior')+' quote':'No change';
+    var vs=p.prev_as_of?shortDate(p.prev_as_of):'';
+    var chgTxt=chg!=null&&chg!==0?arrow+' $'+Math.abs(chg).toFixed(0)+(vs?' vs '+vs:''):(chg===0?(vs?'unch vs '+vs:'-'):'');
     var priceDisplay=hasPrice?'$'+p.price:'Call';var priceColor=hasPrice?'':'color:var(--text-muted);font-size:1.2rem';
     return '<div class="fert-price-card"><div class="fpc-head"><span class="fpc-name">'+esc(p.name)+'</span><span class="fpc-sym">'+esc(p.symbol)+'</span></div><div class="fpc-price" style="'+priceColor+'">'+priceDisplay+'</div><div class="fpc-unit">'+esc(p.unit)+'</div>'+(chgTxt?'<div class="fpc-chg"><span class="fpc-chg-val '+chgCls+'" title="'+esc(chgStr)+'">'+esc(chgTxt)+'</span></div>':'')+'<div class="fpc-loc">'+esc(p.location)+stale(p,data.updated)+'</div></div>';
   }).join('');
@@ -542,7 +554,7 @@ var NUT=[{k:'N',label:'Nitrogen',unit:'lb N'},{k:'P',label:'Phosphate',unit:'lb 
 function renderVerdict(products){
   var box=document.getElementById('fv-cheapest');if(!box)return;
   box.innerHTML=NUT.map(function(n){var ok=n.k==='N'?mainlyN:null;var c=cheapest(products,n.k,ok);if(!c){var has=products.some(function(pr){return pr.grade&&pr.grade[n.k]>0&&(!ok||ok(pr));});if(!has)return'';return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">no quote</div><div class="fv-chip-val">-<span>/'+n.unit+'</span></div></div>';}
-    return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">'+esc(c.name)+ageTag(c.product.as_of)+'</div><div class="fv-chip-val">$'+c.cost.toFixed(2)+'<span>/'+n.unit+'</span></div></div>';}).join('');
+    return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">'+esc(c.name)+provTag(c.product,c.product.as_of)+'</div><div class="fv-chip-val">$'+c.cost.toFixed(2)+'<span>/'+n.unit+'</span></div></div>';}).join('');
   var v=document.getElementById('fert-verdict');if(v)v.hidden=false;
 }
 function renderAfford(){
@@ -551,7 +563,7 @@ function renderAfford(){
     var nd=STATE.nAsOf?fmtDate(STATE.nAsOf):'date not given';
     var cd=STATE.cornDate?fmtDate(STATE.cornDate):'date not given';
     el.innerHTML='Nitrogen price per lb divided by corn price per bushel: <strong>'+ratio.toFixed(3)+'</strong>. '
-      +'Nitrogen is '+money2(STATE.nCost)+'/lb N ('+esc(STATE.nName)+' quote, quoted '+esc(nd)+'). '
+      +'Nitrogen is '+money2(STATE.nCost)+'/lb N ('+esc(STATE.nName)+', '+esc(STATE.nSrc||'quoted '+nd)+'). '
       +'Corn is '+money2(STATE.cornPx)+'/bu ('+esc(STATE.cornLabel)+', before basis, as of '+esc(cd)+'). '
       +(STATE.nPrice!=null?'A ton of '+esc(STATE.nName)+' (~'+money(STATE.nPrice)+') buys about '+Math.round(STATE.nPrice/STATE.cornPx)+' bushels of corn at '+money2(STATE.cornPx)+'/bu. ':'')
       +'A higher ratio means nitrogen is dear relative to corn.';
@@ -561,7 +573,7 @@ function renderTable(products){
   var t=document.getElementById('fert-nutrient-body');if(!t)return;
   t.innerHTML=products.filter(function(p){return p.grade;}).map(function(p){
     function cell(k){var c=costPerLb(p.price,p.grade[k]);if(c!=null)return '<td>$'+c.toFixed(2)+'</td>';return (!validPrice(p.price)&&p.grade[k]>0)?'<td class="na">no quote</td>':'<td class="na">n/a</td>';}
-    return '<tr><td class="prod">'+esc(p.name)+' <span class="gr">'+esc(p.symbol)+'</span>'+ageTag(p.as_of)+'</td>'+cell('N')+cell('P')+cell('K')+cell('S')+'</tr>';}).join('');
+    return '<tr><td class="prod">'+esc(p.name)+' <span class="gr">'+esc(p.symbol)+'</span>'+provTag(p,p.as_of)+'</td>'+cell('N')+cell('P')+cell('K')+cell('S')+'</tr>';}).join('');
   var amend=products.filter(function(p){return !p.grade;}).map(function(p){return esc(p.name);});
   var note=document.getElementById('fert-nutrient-note');
   if(note)note.innerHTML='Raw cost per pound of nutrient, not crediting co-nutrients. Multi-nutrient products look pricey per single nutrient because you\u2019re also buying sulfur or magnesium; the calculator below credits those.'+(amend.length?' '+amend.join(', ')+' is a pH amendment, not an N-P-K input, so it\u2019s excluded here.':'');
@@ -583,7 +595,7 @@ function runCalc(){
   var prog=buildProgram(STATE.products,crop,y,nr);
   var out=document.getElementById('calc-out');if(!out)return;
   if(y<=0){out.innerHTML='<p class="calc-hint">Enter a yield goal to see your per-acre fertility bill.</p>';return;}
-  var progRows=prog.lines.map(function(l){var prod=esc(l.product)+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+(l.asof?ageTag(l.asof):'');
+  var progRows=prog.lines.map(function(l){var prod=esc(l.product)+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+provTag(l,l.asof);
     if(l.cost==null)return '<tr><td>'+l.role+'</td><td>'+esc(l.product)+'</td><td>n/a</td><td class="r">'+'no quote'+'</td></tr>';
     return '<tr><td>'+l.role+'</td><td>'+prod+'</td><td>'+fmtLb(l.lbs)+' lb</td><td class="r">'+money2(l.cost)+'</td></tr>';}).join('');
   var inc=prog.missing.length>0||prog.lines.some(function(l){return l.cost==null;});
@@ -597,7 +609,7 @@ function runCalc(){
   out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>N budget estimate, not a rate recommendation: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. For a corn rate, use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">MRTN calculator</a>.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
     '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Cheapest source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
     '<div class="calc-headline"><div><span>Fertility cost</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
-    missNote+totalAc+nNote+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':'')+
+    missNote+totalAc+nNote+(prog.lines.some(function(l){return /^anhydrous/i.test(l.product)&&l.cost!=null;})?'<div class="calc-note">Anhydrous is priced as product only. Applying it costs more than spreading urea or spraying UAN, so compare what each costs you on the field.</div>':'')+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':(!inc&&prog.costPerAcre>0&&sAdv?'<div class="calc-note">This program supplies no sulfur.'+sAdv+'</div>':''))+
     '<div class="calc-note muted">Lime is a multi-year pH investment, not an annual nutrient, priced in the table above but kept out of this per-season bill.</div>';
   if(window.gtag)gtag('event','fertilizer_calc',{crop:crop,yieldGoal:y});
 }
@@ -610,10 +622,19 @@ function initCalc(){
   runCalc();
 }
 
+/* The USDA AMS file does not exist until fertilizer-ams.yml has run; a miss is quiet and the page draws nothing for it. */
+var amsP=fetch('/data/fertilizer-ams.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
 fetch('/data/fertilizer.json').then(function(r){if(!r.ok)throw new Error('no-fert');return r.json();}).then(function(data){
+  return amsP.then(function(ams){return {data:data,ams:ams};});
+}).then(function(both){
+  var data=both.data,FS=window.FertSources,ams=FS?FS.validAms(both.ams):null;
   renderCards(data);
-  var prods=analyze(data.prices);STATE.products=prods;
-  var nS=cheapest(prods,'N',straightN);STATE.nCost=nS?nS.cost:null;STATE.nPrice=nS?nS.product.price:null;STATE.nName=nS?nS.name:'urea';STATE.nAsOf=nS?nS.product.as_of||null:null;
+  var box=document.getElementById('fert-ams');
+  if(box&&ams){box.innerHTML=FS.amsBox(ams,Date.now());box.hidden=false;}
+  var fvn=document.getElementById('fv-note');if(fvn&&ams)fvn.textContent=FS.coverNote(ams);
+  var rows=FS?FS.merge(data.prices,ams):data.prices;
+  var prods=analyze(rows);STATE.products=prods;
+  var nS=cheapest(prods,'N',straightN);STATE.nCost=nS?nS.cost:null;STATE.nPrice=nS?nS.product.price:null;STATE.nName=nS?nS.name:'urea';STATE.nAsOf=nS?nS.product.as_of||null:null;STATE.nSrc=nS?nS.product.srcLabel||null:null;
   renderVerdict(prods);renderTable(prods);initCalc();renderAfford();
 }).catch(function(){
   var msg='Price data did not load. Try again.';

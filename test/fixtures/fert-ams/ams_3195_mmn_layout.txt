@@ -1,0 +1,22 @@
+Springfield, IL                                Fri Sep 04, 2026                    USDA Livestock, Poultry, and Grain Market News
+
+                                        Illinois Production Cost Report (Bi-weekly)
+
+Email us with accessibility issues regarding this report.
+
+Production costs items state wide: cash prices bulk, FOB distributor, per ton unless otherwise stated.
+
+Product                    Grade        Price Type    Price Range          Avg Price     Price Unit    Freight
+Anhydrous Ammonia          82-0-0       Ask           901.00 - 999.00         950.10     Per Ton       F.O.B.
+Liquid Nitrogen            28-0-0       Ask           401.00 - 499.00         450.20     Per Ton       F.O.B.
+Liquid Nitrogen            32-0-0       Ask           451.00 - 549.00         500.30     Per Ton       F.O.B.
+Urea                       46-0-0       Ask           601.00 - 699.00         650.40     Per Ton       F.O.B.
+DAP                        18-46-0      Ask           801.00 - 899.00         850.50     Per Ton       F.O.B.
+Potash                     0-0-60       Ask           401.00 - 499.00         450.60     Per Ton       F.O.B.
+10-34-0                    10-34-0      Ask           601.00 - 699.00         650.70     Per Ton       F.O.B.
+Farm Diesel < 1000 gallons              Ask             3.01 - 3.99             3.50     Per Gallon    Delivered
+
+Explanatory Notes:
+Prices are a simple average of the survey responses. (Reconstruction. Numbers made up.)
+
+Source: USDA AMS Livestock, Poultry, and Grain Market News, Springfield, IL
