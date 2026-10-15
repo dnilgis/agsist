@@ -1653,7 +1653,8 @@
   var STRIP_T = null;
   function stripSay(i) {
     var el = $('rp-strip-say'), line = onPrintLine(i);
-    if (!el || !line) return;
+    if (!el) return;
+    if (!line) { el.hidden = true; return; }   // a day not finished (or no such day) says nothing up there
     el.textContent = line; el.hidden = false;
     if (STRIP_T) clearTimeout(STRIP_T);
     STRIP_T = setTimeout(function () { el.hidden = true; }, 4000);
@@ -3192,8 +3193,10 @@
   });
   ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
   [1, 2, 3].forEach(function (i) {
-    $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); });
-    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); });
+    // the chip's "now pick its month and day" has been followed (or the reader moved on): it goes
+    $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); dateSay(''); });
+    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); dateSay(''); });
+    $('rp-m' + i + 'l').addEventListener('input', function () { dateSay(''); });
     $('rp-m' + i + 'l').addEventListener('change', function () { stripSay(i); });
     $('rp-m' + i + 'rm').addEventListener('click', function () { removeDay(i); });
     // a half-picked day says so once the reader leaves its row

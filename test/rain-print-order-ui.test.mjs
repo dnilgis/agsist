@@ -501,6 +501,7 @@ test("Mark a day: numbered rows with Remove, the message under its own row at th
     assert.equal(await page.getAttribute("#rp-date-say", "aria-live"), "polite");
     assert.equal(await page.isHidden("#rp-m2err"), true, "no red right after a chip");
     await page.selectOption("#rp-m2mo", "10"); await page.selectOption("#rp-m2dy", "04");
+    assert.equal(await page.textContent("#rp-date-say"), "", "once its day is picked, the prompt goes");
     await page.click('#rp-presets button:text-is("Anniversary")');
     await page.selectOption("#rp-m3mo", "06"); await page.selectOption("#rp-m3dy", "14");
     // three days: the add link becomes the cap in words, the chips stop and say why
@@ -532,6 +533,11 @@ test("Mark a day: numbered rows with Remove, the message under its own row at th
     await page.selectOption("#rp-m1mo", "05"); await page.selectOption("#rp-m1dy", "21");
     await page.waitForTimeout(300);
     assert.equal(await page.isVisible("#rp-strip"), true, "the strip is pinned");
+    assert.equal(await page.textContent("#rp-strip-say"), "On the print: Planted corn, May 21");
+    // a day not finished says nothing up there (it showed "Jan 31" while February was being picked)
+    await page.selectOption("#rp-m1dy", "31"); await page.selectOption("#rp-m1mo", "02");
+    assert.equal(await page.isVisible("#rp-strip-say"), false);
+    await page.selectOption("#rp-m1mo", "05"); await page.selectOption("#rp-m1dy", "21");
     assert.equal(await page.textContent("#rp-strip-say"), "On the print: Planted corn, May 21");
     assert.equal(await page.isVisible("#rp-strip-say"), true);
     await page.waitForTimeout(4300);
