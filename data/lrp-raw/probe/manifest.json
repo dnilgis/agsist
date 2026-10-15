@@ -1,0 +1,1021 @@
+{
+ "adm_lrp_by_year": {
+  "2014": {
+   "files": 544,
+   "lrp_examples": [
+    "2014_ADMLivestockLrp_Daily_20130701.zip",
+    "2014_ADMLivestockLrp_Daily_20130702.zip",
+    "2014_ADMLivestockLrp_Daily_20130703.zip",
+    "2014_ADMLivestockLrp_Daily_20150602.zip",
+    "2014_ADMLivestockLrp_Daily_20150605.zip",
+    "2014_ADMLivestockLrp_Daily_20150606.zip"
+   ],
+   "lrp_files": 517
+  },
+  "2015": {
+   "files": 526,
+   "lrp_examples": [
+    "2015_ADMLivestockLrp_Daily_20140701.zip",
+    "2015_ADMLivestockLrp_Daily_20140702.zip",
+    "2015_ADMLivestockLrp_Daily_20140703.zip",
+    "2015_ADMLivestockLrp_Daily_20160617.zip",
+    "2015_ADMLivestockLrp_Daily_20160624.zip",
+    "2015_ADMLivestockLrp_Daily_20160701.zip"
+   ],
+   "lrp_files": 504
+  },
+  "2016": {
+   "files": 560,
+   "lrp_examples": [
+    "2016_ADMLivestockLrp_Daily_20150701.zip",
+    "2016_ADMLivestockLrp_Daily_20150702.zip",
+    "2016_ADMLivestockLrp_Daily_20150706.zip",
+    "2016_ADMLivestockLrp_Daily_20170616.zip",
+    "2016_ADMLivestockLrp_Daily_20170623.zip",
+    "2016_ADMLivestockLrp_Daily_20170630.zip"
+   ],
+   "lrp_files": 539
+  },
+  "2017": {
+   "files": 553,
+   "lrp_examples": [
+    "2017_ADMLivestockLrp_Daily_20160701.zip",
+    "2017_ADMLivestockLrp_Daily_20160705.zip",
+    "2017_ADMLivestockLrp_Daily_20160706.zip",
+    "2017_ADMLivestockLrp_Daily_20180525.zip",
+    "2017_ADMLivestockLrp_Daily_20180602.zip",
+    "2017_ADMLivestockLrp_Daily_20180608.zip"
+   ],
+   "lrp_files": 532
+  },
+  "2018": {
+   "files": 525,
+   "lrp_examples": [
+    "2018_ADMLivestockLrp_Daily_20170703.zip",
+    "2018_ADMLivestockLrp_Daily_20170706.zip",
+    "2018_ADMLivestockLrp_Daily_20170707.zip",
+    "2018_ADMLivestockLrp_Daily_20190524.zip",
+    "2018_ADMLivestockLrp_Daily_20190601.zip",
+    "2018_ADMLivestockLrp_Daily_20190607.zip"
+   ],
+   "lrp_files": 503
+  },
+  "2019": {
+   "files": 654,
+   "lrp_examples": [
+    "2019_ADMLivestockLrp_Daily_20180702.zip",
+    "2019_ADMLivestockLrp_Daily_20180703.zip",
+    "2019_ADMLivestockLrp_Daily_20180705.zip",
+    "2019_ADMLivestockLrp_Daily_20200530.zip",
+    "2019_ADMLivestockLrp_Daily_20200605.zip",
+    "2019_ADMLivestockLrp_Daily_20200626.zip"
+   ],
+   "lrp_files": 470
+  },
+  "2020": {
+   "files": 797,
+   "lrp_examples": [
+    "2020_ADMLivestockLrp_Daily_20190701.zip",
+    "2020_ADMLivestockLrp_Daily_20190702.zip",
+    "2020_ADMLivestockLrp_Daily_20190703.zip",
+    "2020_ADMLivestockLrp_Daily_20210521.zip",
+    "2020_ADMLivestockLrp_Daily_20210605.zip",
+    "2020_ADMLivestockLrp_Daily_20210611.zip"
+   ],
+   "lrp_files": 530
+  },
+  "2021": {
+   "files": 864,
+   "lrp_examples": [
+    "2021_ADMLivestockLrp_Daily_20200701.zip",
+    "2021_ADMLivestockLrp_Daily_20200702.zip",
+    "2021_ADMLivestockLrp_Daily_20200706.zip",
+    "2021_ADMLivestockLrp_Daily_20220702.zip",
+    "2021_ADMLivestockLrp_Daily_20220703.zip",
+    "2021_ADMLivestockLrp_Daily_20220704.zip"
+   ],
+   "lrp_files": 585
+  },
+  "2022": {
+   "files": 908,
+   "lrp_examples": [
+    "2022_ADMLivestockLrp_Daily_20210701.zip",
+    "2022_ADMLivestockLrp_Daily_20210702.zip",
+    "2022_ADMLivestockLrp_Daily_20210706.zip",
+    "2022_ADMLivestockLrp_Daily_20230702.zip",
+    "2022_ADMLivestockLrp_Daily_20230703.zip",
+    "2022_ADMLivestockLrp_Daily_20230704.zip"
+   ],
+   "lrp_files": 590
+  },
+  "2023": {
+   "files": 916,
+   "lrp_examples": [
+    "2023_ADMLivestockLrp_Daily_20220701.zip",
+    "2023_ADMLivestockLrp_Daily_20220705.zip",
+    "2023_ADMLivestockLrp_Daily_20220706.zip",
+    "2023_ADMLivestockLrp_Daily_20240705.zip",
+    "2023_ADMLivestockLrp_Daily_20240706.zip",
+    "2023_ADMLivestockLrp_Daily_20240709.zip"
+   ],
+   "lrp_files": 585
+  },
+  "2024": {
+   "files": 901,
+   "lrp_examples": [
+    "2024_ADMLivestockLrp_Daily_20230703.zip",
+    "2024_ADMLivestockLrp_Daily_20230705.zip",
+    "2024_ADMLivestockLrp_Daily_20230706.zip",
+    "2024_ADMLivestockLrp_Daily_20250704.zip",
+    "2024_ADMLivestockLrp_Daily_20250705.zip",
+    "2024_ADMLivestockLrp_Daily_20250708.zip"
+   ],
+   "lrp_files": 571
+  },
+  "2025": {
+   "files": 909,
+   "lrp_examples": [
+    "2025_ADMLivestockLrp_Daily_20240701.zip",
+    "2025_ADMLivestockLrp_Daily_20240702.zip",
+    "2025_ADMLivestockLrp_Daily_20240703.zip",
+    "2025_ADMLivestockLrp_Daily_20260704.zip",
+    "2025_ADMLivestockLrp_Daily_20260707.zip",
+    "2025_ADMLivestockLrp_Daily_20260708.zip"
+   ],
+   "lrp_files": 552
+  },
+  "2026": {
+   "files": 713,
+   "lrp_examples": [
+    "2026_ADMLivestockLrp_Daily_20250701.zip",
+    "2026_ADMLivestockLrp_Daily_20250702.zip",
+    "2026_ADMLivestockLrp_Daily_20250703.zip",
+    "2026_ADMLivestockLrp_Daily_20261013.zip",
+    "2026_ADMLivestockLrp_Daily_20261014.zip",
+    "2026_ADMLivestockLrp_Daily_20261015.zip"
+   ],
+   "lrp_files": 369
+  },
+  "2027": {
+   "files": 171,
+   "lrp_examples": [
+    "2027_ADMLivestockLrp_Daily_20260701.zip",
+    "2027_ADMLivestockLrp_Daily_20260702.zip",
+    "2027_ADMLivestockLrp_Daily_20260706.zip",
+    "2027_ADMLivestockLrp_Daily_20261013.zip",
+    "2027_ADMLivestockLrp_Daily_20261014.zip",
+    "2027_ADMLivestockLrp_Daily_20261015.zip"
+   ],
+   "lrp_files": 76
+  }
+ },
+ "adm_main_2026_livestock_links": [],
+ "adm_main_2027_livestock_links": [],
+ "adm_years": [
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027
+ ],
+ "bytes_saved": 9401764,
+ "finished": "2026-10-15T18:32:39Z",
+ "legacy_lrp_links": [
+  "https://legacy.rma.usda.gov/policies/2010/lrp/10lrpbasicpolicy.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Basic_Policy.pdf",
+  "https://legacy.rma.usda.gov/help/faq/lrplamb.pdf",
+  "https://legacy.rma.usda.gov/handbooks/20000/2008/08_20010_LRP_Handbook.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_feeder_cattle_sce.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_fed_cattle_sce.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_swine_sce.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Feeder_Cattle_Underwriting_Rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Fed_Cattle_Underwriting_Rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Swine_Underwriting_Rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Feeder_Cattle_Premium_Calculation.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Fed_Cattle_Premium_Calculation.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Swine_Premium_Calculation.pdf",
+  "https://legacy.rma.usda.gov/pubs/rme/lrp-feedercattle.pdf",
+  "https://legacy.rma.usda.gov/pubs/rme/lrp-fedcattle.pdf",
+  "https://legacy.rma.usda.gov/pubs/rme/lrp-lamb2.pdf",
+  "https://legacy.rma.usda.gov/pubs/rme/lrp-swine.pdf",
+  "https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambsce.pdf",
+  "https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambunderwriting.pdf",
+  "https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambpremcalc.pdf",
+  "https://legacy.rma.usda.gov/pubs/rme/lrp-lamb.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_lamb_sce.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Lamb_Underwriting_Rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Lamb_Premium_Calculation.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_basic_policy.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_specific_coverage_endorsement.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_underwriting_rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_premium_calculation.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_specific_coverage_endorsement.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_underwriting_rules.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_premium_calculation.pdf",
+  "https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_swine_premium_calculation_worksheet.pdf"
+ ],
+ "notes": [
+  "skipped adm_livestock/files/2027_ADMLivestockLrp_Daily_20260825.zip: probe cap reached",
+  "skipped sob/lrp_2027.zip: probe cap reached",
+  "skipped legacy/files/lrplamb.pdf: probe cap reached",
+  "skipped legacy/files/08_20010_LRP_Handbook.pdf: probe cap reached"
+ ],
+ "requests": [
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/",
+   "length": "1762",
+   "method": "GET",
+   "read": 1762,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/",
+   "length": "72461",
+   "method": "GET",
+   "read": 72461,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/2014_ADMLivestockLrp_Daily_20130701.zip",
+   "length": "22149",
+   "method": "GET",
+   "read": 22149,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/2014_ADMLivestockLrp_Daily_20130701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/2014_ADMLivestockLrp_Daily_20150606.zip",
+   "length": "1611",
+   "method": "GET",
+   "read": 1611,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2014/2014_ADMLivestockLrp_Daily_20150606.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/",
+   "length": "70085",
+   "method": "GET",
+   "read": 70085,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/2015_ADMLivestockLrp_Daily_20140701.zip",
+   "length": "36226",
+   "method": "GET",
+   "read": 36226,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/2015_ADMLivestockLrp_Daily_20140701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/2015_ADMLivestockLrp_Daily_20160701.zip",
+   "length": "1108",
+   "method": "GET",
+   "read": 1108,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2015/2015_ADMLivestockLrp_Daily_20160701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/",
+   "length": "74573",
+   "method": "GET",
+   "read": 74573,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/2016_ADMLivestockLrp_Daily_20150701.zip",
+   "length": "24829",
+   "method": "GET",
+   "read": 24829,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/2016_ADMLivestockLrp_Daily_20150701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/2016_ADMLivestockLrp_Daily_20170630.zip",
+   "length": "868",
+   "method": "GET",
+   "read": 868,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2016/2016_ADMLivestockLrp_Daily_20170630.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/",
+   "length": "73649",
+   "method": "GET",
+   "read": 73649,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/2017_ADMLivestockLrp_Daily_20160701.zip",
+   "length": "26690",
+   "method": "GET",
+   "read": 26690,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/2017_ADMLivestockLrp_Daily_20160701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/2017_ADMLivestockLrp_Daily_20180608.zip",
+   "length": "978",
+   "method": "GET",
+   "read": 978,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2017/2017_ADMLivestockLrp_Daily_20180608.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/",
+   "length": "69953",
+   "method": "GET",
+   "read": 69953,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/2018_ADMLivestockLrp_Daily_20170703.zip",
+   "length": "13950",
+   "method": "GET",
+   "read": 13950,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/2018_ADMLivestockLrp_Daily_20170703.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/2018_ADMLivestockLrp_Daily_20190607.zip",
+   "length": "1094",
+   "method": "GET",
+   "read": 1094,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2018/2018_ADMLivestockLrp_Daily_20190607.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/",
+   "length": "89709",
+   "method": "GET",
+   "read": 89709,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/2019_ADMLivestockLrp_Daily_20180702.zip",
+   "length": "85818",
+   "method": "GET",
+   "read": 85818,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/2019_ADMLivestockLrp_Daily_20180702.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/2019_ADMLivestockLrp_Daily_20200626.zip",
+   "length": "633",
+   "method": "GET",
+   "read": 633,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2019/2019_ADMLivestockLrp_Daily_20200626.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/",
+   "length": "109897",
+   "method": "GET",
+   "read": 109897,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/2020_ADMLivestockLrp_Daily_20190701.zip",
+   "length": "360329",
+   "method": "GET",
+   "read": 360329,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/2020_ADMLivestockLrp_Daily_20190701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/2020_ADMLivestockLrp_Daily_20210611.zip",
+   "length": "1270",
+   "method": "GET",
+   "read": 1270,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2020/2020_ADMLivestockLrp_Daily_20210611.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/",
+   "length": "118851",
+   "method": "GET",
+   "read": 118851,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/2021_ADMLivestockLrp_Daily_20200701.zip",
+   "length": "279075",
+   "method": "GET",
+   "read": 279075,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/2021_ADMLivestockLrp_Daily_20200701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/2021_ADMLivestockLrp_Daily_20220704.zip",
+   "length": "8127",
+   "method": "GET",
+   "read": 8127,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2021/2021_ADMLivestockLrp_Daily_20220704.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/",
+   "length": "124593",
+   "method": "GET",
+   "read": 124593,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/2022_ADMLivestockLrp_Daily_20210701.zip",
+   "length": "549109",
+   "method": "GET",
+   "read": 549109,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/2022_ADMLivestockLrp_Daily_20210701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/2022_ADMLivestockLrp_Daily_20230704.zip",
+   "length": "8005",
+   "method": "GET",
+   "read": 8005,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2022/2022_ADMLivestockLrp_Daily_20230704.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/",
+   "length": "125679",
+   "method": "GET",
+   "read": 125679,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/2023_ADMLivestockLrp_Daily_20220701.zip",
+   "length": "570772",
+   "method": "GET",
+   "read": 570772,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/2023_ADMLivestockLrp_Daily_20220701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/2023_ADMLivestockLrp_Daily_20240709.zip",
+   "length": "19914",
+   "method": "GET",
+   "read": 19914,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2023/2023_ADMLivestockLrp_Daily_20240709.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/",
+   "length": "123697",
+   "method": "GET",
+   "read": 123697,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/2024_ADMLivestockLrp_Daily_20230703.zip",
+   "length": "568924",
+   "method": "GET",
+   "read": 568924,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/2024_ADMLivestockLrp_Daily_20230703.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/2024_ADMLivestockLrp_Daily_20250708.zip",
+   "length": "9642",
+   "method": "GET",
+   "read": 9642,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2024/2024_ADMLivestockLrp_Daily_20250708.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/",
+   "length": "124693",
+   "method": "GET",
+   "read": 124693,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20240701.zip",
+   "length": "789785",
+   "method": "GET",
+   "read": 789785,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20240701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20250611.zip",
+   "length": "1156492",
+   "method": "GET",
+   "read": 1156492,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20250611.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20260708.zip",
+   "length": "13899",
+   "method": "GET",
+   "read": 13899,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2025/2025_ADMLivestockLrp_Daily_20260708.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/",
+   "length": "98661",
+   "method": "GET",
+   "read": 98661,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20250701.zip",
+   "length": "1082578",
+   "method": "GET",
+   "read": 1082578,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20250701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20260221.zip",
+   "length": "12737",
+   "method": "GET",
+   "read": 12737,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20260221.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20261015.zip",
+   "length": "23114",
+   "method": "GET",
+   "read": 23114,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2026/2026_ADMLivestockLrp_Daily_20261015.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/",
+   "length": "24375",
+   "method": "GET",
+   "read": 24375,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20260701.zip",
+   "length": "1432416",
+   "method": "GET",
+   "read": 1432416,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20260701.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20260825.zip",
+   "length": "1031455",
+   "method": "GET",
+   "read": 1031455,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20260825.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20261015.zip",
+   "length": "3747",
+   "method": "GET",
+   "read": 3747,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/2027/2027_ADMLivestockLrp_Daily_20261015.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2026/",
+   "length": "7888",
+   "method": "GET",
+   "read": 7888,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2026/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/",
+   "length": "3320",
+   "method": "GET",
+   "read": 3320,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/",
+   "length": "6206",
+   "method": "GET",
+   "read": 6206,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=UTF-8",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/LRP_Summary_of_Business_All_Years.docx",
+   "length": "27441",
+   "method": "GET",
+   "read": 27441,
+   "status": 200,
+   "truncated": false,
+   "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/LRP_Summary_of_Business_All_Years.docx"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/LRP_Summary_of_Business_All_Years.pdf",
+   "length": "83537",
+   "method": "GET",
+   "read": 83537,
+   "status": 200,
+   "truncated": false,
+   "type": "application/pdf",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/LRP_Summary_of_Business_All_Years.pdf"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/lrp_2027.zip",
+   "length": "453048",
+   "method": "GET",
+   "read": 453048,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/lrp_2027.zip"
+  },
+  {
+   "final_url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/lrp_2003.zip",
+   "length": "18774",
+   "method": "GET",
+   "read": 18774,
+   "status": 200,
+   "truncated": false,
+   "type": "application/zip",
+   "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/lrp_2003.zip"
+  },
+  {
+   "error": "HTTP Error 404: Not Found",
+   "method": "GET",
+   "status": 404,
+   "url": "https://public.rma.usda.gov/livestockreports/main.aspx"
+  },
+  {
+   "final_url": "https://public.rma.usda.gov/livestockreports/LRPReport",
+   "length": null,
+   "method": "GET",
+   "read": 67318,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=utf-8",
+   "url": "https://public.rma.usda.gov/livestockreports/LRPReport"
+  },
+  {
+   "final_url": "https://public.rma.usda.gov/livestockreports/LRPReport",
+   "form": [
+    [
+     "CurrentQuestion",
+     "EffectiveDate"
+    ],
+    [
+     "EffectiveDate",
+     "10/14/2026"
+    ],
+    [
+     "ReportType",
+     "HTML"
+    ],
+    [
+     "buttonType",
+     "Next >>"
+    ],
+    [
+     "__RequestVerificationToken",
+     "CfDJ8N4xfd5g0MJJhSIV1Rm2f5d2EKF_WOPiSa5qHBWNXDTGivyE2-ACguBneWs6jG9b80cQ8jyJaGw3A4bO823A-H5bojtWlPKSCE5Prft_FxOa_Uze0N-5gmkJce-NuJe8EQY1daOr_WGKVsVE6kvEIHo"
+    ]
+   ],
+   "length": null,
+   "method": "POST",
+   "read": 6579,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=utf-8",
+   "url": "https://public.rma.usda.gov/livestockreports/LRPReport"
+  },
+  {
+   "final_url": "https://public.rma.usda.gov/livestockreports/LRPReport",
+   "form": [
+    [
+     "CurrentQuestion",
+     "EffectiveDate"
+    ],
+    [
+     "EffectiveDate",
+     "10/13/2026"
+    ],
+    [
+     "ReportType",
+     "HTML"
+    ],
+    [
+     "buttonType",
+     "Next >>"
+    ],
+    [
+     "__RequestVerificationToken",
+     "CfDJ8N4xfd5g0MJJhSIV1Rm2f5d2EKF_WOPiSa5qHBWNXDTGivyE2-ACguBneWs6jG9b80cQ8jyJaGw3A4bO823A-H5bojtWlPKSCE5Prft_FxOa_Uze0N-5gmkJce-NuJe8EQY1daOr_WGKVsVE6kvEIHo"
+    ]
+   ],
+   "length": null,
+   "method": "POST",
+   "read": 6579,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=utf-8",
+   "url": "https://public.rma.usda.gov/livestockreports/LRPReport"
+  },
+  {
+   "final_url": "https://public.rma.usda.gov/livestockreports/LRPReport",
+   "form": [
+    [
+     "CurrentQuestion",
+     "EffectiveDate"
+    ],
+    [
+     "EffectiveDate",
+     "10/12/2026"
+    ],
+    [
+     "ReportType",
+     "HTML"
+    ],
+    [
+     "buttonType",
+     "Next >>"
+    ],
+    [
+     "__RequestVerificationToken",
+     "CfDJ8N4xfd5g0MJJhSIV1Rm2f5d2EKF_WOPiSa5qHBWNXDTGivyE2-ACguBneWs6jG9b80cQ8jyJaGw3A4bO823A-H5bojtWlPKSCE5Prft_FxOa_Uze0N-5gmkJce-NuJe8EQY1daOr_WGKVsVE6kvEIHo"
+    ]
+   ],
+   "length": null,
+   "method": "POST",
+   "read": 6579,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html; charset=utf-8",
+   "url": "https://public.rma.usda.gov/livestockreports/LRPReport"
+  },
+  {
+   "error": "HTTP Error 404: Not Found",
+   "method": "GET",
+   "status": 404,
+   "url": "https://public.rma.usda.gov/livestockreports/LRPReport.aspx"
+  },
+  {
+   "error": "HTTP Error 404: Not Found",
+   "method": "GET",
+   "status": 404,
+   "url": "https://public-rma.fpac.usda.gov/apps/livestockreports/main.aspx"
+  },
+  {
+   "error": "HTTP Error 404: Not Found",
+   "method": "GET",
+   "status": 404,
+   "url": "https://public-rma.fpac.usda.gov/apps/livestockreports/LRPReport"
+  },
+  {
+   "error": "HTTP Error 404: Not Found",
+   "method": "GET",
+   "status": 404,
+   "url": "https://public-rma.fpac.usda.gov/apps/livestockreports/LRPReport.aspx"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/livestock/archive.html",
+   "length": null,
+   "method": "GET",
+   "read": 27756,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html",
+   "url": "https://legacy.rma.usda.gov/livestock/archive.html"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/tools/livestock.html",
+   "length": null,
+   "method": "GET",
+   "read": 16678,
+   "status": 200,
+   "truncated": false,
+   "type": "text/html",
+   "url": "https://legacy.rma.usda.gov/tools/livestock.html"
+  },
+  {
+   "error": "URLError: <urlopen error timed out>",
+   "method": "GET",
+   "status": null,
+   "url": "https://old.rma.usda.gov/Information-Tools/Livestock-Reports"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/policies/2010/lrp/10lrpbasicpolicy.pdf",
+   "length": "113009",
+   "method": "GET",
+   "read": 113009,
+   "status": 200,
+   "truncated": false,
+   "type": "application/pdf",
+   "url": "https://legacy.rma.usda.gov/policies/2010/lrp/10lrpbasicpolicy.pdf"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Basic_Policy.pdf",
+   "length": "67782",
+   "method": "GET",
+   "read": 67782,
+   "status": 200,
+   "truncated": false,
+   "type": "application/pdf",
+   "url": "https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Basic_Policy.pdf"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/help/faq/lrplamb.pdf",
+   "length": "108069",
+   "method": "GET",
+   "read": 108069,
+   "status": 200,
+   "truncated": false,
+   "type": "application/pdf",
+   "url": "https://legacy.rma.usda.gov/help/faq/lrplamb.pdf"
+  },
+  {
+   "final_url": "https://legacy.rma.usda.gov/handbooks/20000/2008/08_20010_LRP_Handbook.pdf",
+   "length": "67942",
+   "method": "GET",
+   "read": 67942,
+   "status": 200,
+   "truncated": false,
+   "type": "application/pdf",
+   "url": "https://legacy.rma.usda.gov/handbooks/20000/2008/08_20010_LRP_Handbook.pdf"
+  }
+ ],
+ "sob_lrp_files": [
+  "lrp_2003.zip",
+  "lrp_2004.zip",
+  "lrp_2005.zip",
+  "lrp_2006.zip",
+  "lrp_2007.zip",
+  "lrp_2008.zip",
+  "lrp_2009.zip",
+  "lrp_2010.zip",
+  "lrp_2011.zip",
+  "lrp_2012.zip",
+  "lrp_2013.zip",
+  "lrp_2014.zip",
+  "lrp_2015.zip",
+  "lrp_2016.zip",
+  "lrp_2017.zip",
+  "lrp_2018.zip",
+  "lrp_2019.zip",
+  "lrp_2020.zip",
+  "lrp_2021.zip",
+  "lrp_2022.zip",
+  "lrp_2023.zip",
+  "lrp_2024.zip",
+  "lrp_2025.zip",
+  "lrp_2026.zip",
+  "lrp_2027.zip"
+ ],
+ "sob_sizes": {
+  "lrp_2003.zip": 18774,
+  "lrp_2004.zip": 32141,
+  "lrp_2005.zip": 76489,
+  "lrp_2006.zip": 92789,
+  "lrp_2007.zip": 44107,
+  "lrp_2008.zip": 61057,
+  "lrp_2009.zip": 35127,
+  "lrp_2010.zip": 65988,
+  "lrp_2011.zip": 111211,
+  "lrp_2012.zip": 98464,
+  "lrp_2013.zip": 64250,
+  "lrp_2014.zip": 156514,
+  "lrp_2015.zip": 128301,
+  "lrp_2016.zip": 90256,
+  "lrp_2017.zip": 105585,
+  "lrp_2018.zip": 62372,
+  "lrp_2019.zip": 49149,
+  "lrp_2020.zip": 47062,
+  "lrp_2021.zip": 428950,
+  "lrp_2022.zip": 911497,
+  "lrp_2023.zip": 1726836,
+  "lrp_2024.zip": 2480357,
+  "lrp_2025.zip": 3058401,
+  "lrp_2026.zip": 2864805,
+  "lrp_2027.zip": 453048
+ },
+ "started": "2026-10-15T18:27:05Z"
+}

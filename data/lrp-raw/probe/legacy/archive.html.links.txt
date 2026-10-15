@@ -1,0 +1,127 @@
+https://legacy.rma.usda.gov/help/sitemap.html	Site Map
+https://legacy.rma.usda.gov/help/a-z.html	A-Z Index
+https://legacy.rma.usda.gov/help/	Help
+http://search.usda.gov/user_help.html	Search Tips
+https://legacy.rma.usda.gov/	Home
+https://legacy.rma.usda.gov/livestock/	Livestock
+https://legacy.rma.usda.gov/data/m13/	Appendix III/M-13
+https://legacy.rma.usda.gov/handbooks/	Bulletins and Handbooks
+https://legacy.rma.usda.gov/policies/2018policy.html	Crop Policies and Pilots
+https://legacy.rma.usda.gov/fcic/	Federal Crop Insurance Corp
+https://legacy.rma.usda.gov/aboutrma/fields/	Field Offices
+https://legacy.rma.usda.gov/aboutrma/fields/rsos.html	ROs
+https://legacy.rma.usda.gov/aboutrma/fields/cfos.html	COs
+https://legacy.rma.usda.gov/help/faq/index.html	Frequently Asked Questions
+https://legacy.rma.usda.gov/tools/	Information Browser
+https://legacy.rma.usda.gov/regs/lawsregsindex.html	Laws and Regulations
+https://legacy.rma.usda.gov/livestock/	Livestock Policies
+https://legacy.rma.usda.gov/pubs/ra/	Reinsurance Agreements
+https://legacy.rma.usda.gov/aboutrma/who/aboutrme.html	Risk Management Education
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmcattlepolicy.pdf	2010 Policy
+https://legacy.rma.usda.gov/policies/2015/15ineligibility.pdf	15-Ineligibility
+https://legacy.rma.usda.gov/policies/2015/15livestock.pdf	15-Livestock-Farm Bill
+https://legacy.rma.usda.gov/policies/2008/lgm/08lgmcattleundrules.pdf	Underwriting Rules
+https://legacy.rma.usda.gov/handbooks/20000/2008/08lgmcattlehandbook.pdf	Handbook
+https://legacy.rma.usda.gov/policies/2008/lgm/08lgmcattlepremcalc.pdf	Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmcattlecee.pdf	LGM Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmcattleq&a.pdf	Frequently Asked Questions
+https://legacy.rma.usda.gov/policies/2011/lgm/11lgmdairypolicy.pdf	2011 Policy
+https://legacy.rma.usda.gov/policies/2015/15ineligibility.pdf	15-Ineligibility
+https://legacy.rma.usda.gov/policies/2015/15livestock.pdf	15-Livestock-Farm Bill
+https://legacy.rma.usda.gov/policies/2011/lgm/lgmdairyundrules.pdf	2011 Underwriting Rules
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmdairypolicy.pdf	2010 Policy
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmdairypremcalc.pdf	2010 Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmdairycee.pdf	2010 LGM Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2011/lgm/lgmdairyfaq.pdf	PDF
+https://legacy.rma.usda.gov/policies/2012/lgm/12-lgm-swine-policy.pdf	2012 Policy
+https://legacy.rma.usda.gov/policies/2015/15ineligibility.pdf	15-Ineligibility
+https://legacy.rma.usda.gov/policies/2015/15livestock.pdf	15-Livestock-Farm Bill
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmswinepolicy.pdf	2010 Policy
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmswineundrules.pdf	2010 Underwriting Rules
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmswinecee.pdf	2010 LGM Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmswineq&a.pdf	PDF
+https://legacy.rma.usda.gov/help/faq/lgmswine.html	HTML
+https://legacy.rma.usda.gov/policies/2010/lrp/10lrpbasicpolicy.pdf	2010 Policy
+https://legacy.rma.usda.gov/policies/2015/15ineligibility.pdf	15-Ineligibility
+https://legacy.rma.usda.gov/policies/2015/15livestock.pdf	15-Livestock-Farm Bill
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Basic_Policy.pdf	2008 Basic Policy
+https://www3.rma.usda.gov/apps/livestock_reports/	Coverage Prices, Rates and Actual Ending Values
+https://legacy.rma.usda.gov/livestock/notice.html	Chicago Mercantile Exchange (CME) Notice
+https://legacy.rma.usda.gov/help/faq/lrplamb.pdf	2009 LRP-Lamb Frequently Asked Questions
+https://legacy.rma.usda.gov/handbooks/20000/2008/08_20010_LRP_Handbook.pdf	2008 LRP Handbook
+https://legacy.rma.usda.gov/handbooks/20000/2008/20010_slipsheet.pdf	Slipsheet
+https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_feeder_cattle_sce.pdf	Feeder Cattle
+https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_fed_cattle_sce.pdf	Fed Cattle
+https://legacy.rma.usda.gov/policies/2013/lrp/lambspecendorse.pdf	Lamb
+https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_swine_sce.pdf	Swine
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Feeder_Cattle_Underwriting_Rules.pdf	LRP-Feeder Cattle
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Fed_Cattle_Underwriting_Rules.pdf	LRP-Fed Cattle
+https://legacy.rma.usda.gov/policies/2013/lrp/lambewr.pdf	LRP-Lamb
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Swine_Underwriting_Rules.pdf	LRP-Swine
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Feeder_Cattle_Premium_Calculation.pdf	LRP-Feeder Cattle
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Fed_Cattle_Premium_Calculation.pdf	LRP-Fed Cattle
+https://legacy.rma.usda.gov/policies/2013/lrp/lambpremcalc.pdf	LRP-Lamb
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Swine_Premium_Calculation.pdf	LRP-Swine
+https://legacy.rma.usda.gov/pubs/rme/lrp-feedercattle.pdf	LRP Feeder Cattle
+https://legacy.rma.usda.gov/pubs/rme/lrp-fedcattle.pdf	LRP Fed Cattle
+https://legacy.rma.usda.gov/pubs/rme/lrp-lamb2.pdf	LRP Lamb
+https://legacy.rma.usda.gov/pubs/rme/lrp-swine.pdf	LRP Swine
+https://legacy.rma.usda.gov/policies/2015/15ineligibility.pdf	15-Ineligibility
+https://legacy.rma.usda.gov/policies/2015/15livestock.pdf	15-Livestock-Farm Bill
+https://legacy.rma.usda.gov/policies/2010/lgm/10lgmcattlepolicy.pdf	2010 Policy
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmdairypolicy.pdf	2009 Dairy Policy
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmdairycee.pdf	2009 Dairy LGM Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmdairyundrules.pdf	2009 Dairy Underwriting Rules
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmdairypremcalc.pdf	2009 Dairy Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmdairyq&a.pdf	2009 Dairy Frequently Asked Questions
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmswinepolicy.pdf	2009 Swine Policy
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmswinecee.pdf	2009 Swine LGM Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2009/lgm/09lgmcattleq&a.pdf	2009 Swine Frequently Asked Questions
+https://legacy.rma.usda.gov/policies/2008/lgm/08LGMCattlePolicy.pdf	2008 Cattle Policy
+https://legacy.rma.usda.gov/handbooks/20000/2009/09LGM-Dairy-Handbook.pdf	2008 Dairy Handbook
+https://legacy.rma.usda.gov/policies/2008/lgm/08LGMSwinePolicy.pdf	2008 Swine Policy
+https://legacy.rma.usda.gov/policies/2008/lgm/08lgmswineundrules.pdf	2008 Swine Underwriting Rules
+https://legacy.rma.usda.gov/policies/2008/lgm/08lgmswinepremcalc.pdf	2008 Swine Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2007/lgm/pdf/07_cattle.pdf	2007 Policy
+https://legacy.rma.usda.gov/policies/2006/lgm/pdf/06lgm_for_cattle_basics.pdf	2006 Policy
+https://legacy.rma.usda.gov/policies/2006/lgm/pdf/06lgm_undrules.pdf	2006 Underwriting Rules
+https://legacy.rma.usda.gov/policies/2006/lgm/pdf/06-PremCalc-Instructions.pdf	2006 Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2006/lgm/pdf/lgm_commodity_exchange.pdf	2006 Commodity Exchange Endorsement
+https://legacy.rma.usda.gov/policies/2005/lgm/pdf/05lgm_basics.pdf	2005 Policy
+https://legacy.rma.usda.gov/policies/2005/lgm/pdf/05lgm_undrules.pdf	2005 Underwriting Rules
+https://legacy.rma.usda.gov/policies/2005/lgm/pdf/05-PremCalc-Instructions.pdf	2005 Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/policyarchives.html	Earlier Years
+https://legacy.rma.usda.gov/handbooks/20000/index.html#20020	LGM Handbooks
+https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambsce.pdf	2010 Lamb Specific Coverage Endorsements
+https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambunderwriting.pdf	2010 LRP-Lamb Underwriting Rules
+https://legacy.rma.usda.gov/policies/2010/lrp/10lrplambpremcalc.pdf	2010 Lamb Premium Calculation Worksheet
+https://legacy.rma.usda.gov/pubs/rme/lrp-lamb.pdf	2009 LRP Lamb Fact Sheets
+https://legacy.rma.usda.gov/policies/2008/lrp/08_lrp_lamb_sce.pdf	2008 Lamb Specific Coverage Endorsements
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Lamb_Underwriting_Rules.pdf	2008 Lamb Underwriting Rules
+https://legacy.rma.usda.gov/policies/2008/lrp/08_LRP_Lamb_Premium_Calculation.pdf	2008 Lamb Premium Calculation Worksheet
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_basic_policy.pdf	2005 Policy
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_specific_coverage_endorsement.pdf	2005 Fed Cattle Specific Coverage Endorsement
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_underwriting_rules.pdf	2005 Fed Cattle Underwriting Rules
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_fed_cattle_premium_calculation.pdf	2005 Fed Cattle Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_specific_coverage_endorsement.pdf	2005 Feeder Cattle Specific Coverage Endorsement
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_underwriting_rules.pdf	2005 Feeder Cattle Underwriting Rules
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_feeder_cattle_premium_calculation.pdf	2005 Feeder Cattle Premium Calculation Instructions
+https://legacy.rma.usda.gov/policies/2005/lrp/pdf/05_lrp_swine_premium_calculation_worksheet.pdf	2005 Swine Premium Calculation Worksheet
+https://legacy.rma.usda.gov/policies/policyarchives.html	Earlier Years
+https://legacy.rma.usda.gov/handbooks/20000/index.html#20010	LRP Handbooks
+mailto:rma.kc.livestock@rma.usda.gov	Livestock
+https://legacy.rma.usda.gov/	RMA Home
+https://legacy.rma.usda.gov/help/sitemap.html	Site Map
+https://legacy.rma.usda.gov/web/credits.html	Copyright
+https://www.usda.gov/oig/hotline.htm	Reporting Fraud
+https://legacy.rma.usda.gov/aboutrma/opportunities/jobs.html	Careers
+https://legacy.rma.usda.gov/web/	Policies and Links
+https://www.usda.gov/oig/accessibilitystatement.htm	Accessibility Statement
+https://legacy.rma.usda.gov/web/privacy.html	Privacy Policy
+https://legacy.rma.usda.gov/web/nondisclosure.html	Non-Disclosure Agreements Notice
+https://legacy.rma.usda.gov/web/nondiscrim.html	Non-Discrimination Statement
+https://www.usda.gov/nofear	No Fear Act
+https://legacy.rma.usda.gov/aboutrma/qoi/	Information Quality
+https://legacy.rma.usda.gov/aboutrma/foia/foia.html	FOIA
+https://www.usa.gov/	USA.gov
+https://www.whitehouse.gov/	Whitehouse.gov
