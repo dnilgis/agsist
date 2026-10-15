@@ -13,8 +13,8 @@
   <link rel="preload" href="/components/styles.css?v=24" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="stylesheet" href="/components/asof.css?v=1">
-  <link rel="stylesheet" href="/components/arc-plc.css?v=9">
-  <link rel="stylesheet" href="/components/arc-plc-simple.css?v=9">
+  <link rel="stylesheet" href="/components/arc-plc.css?v=10">
+  <link rel="stylesheet" href="/components/arc-plc-simple.css?v=10">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -71,6 +71,15 @@
   <p class="page-kicker">Farm program &middot; 2026 and 2027 crop years</p>
   <h1>ARC or PLC for 2026 and 2027: decision calculator</h1>
   <p class="ap-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA). <time class="asof" data-asof="" data-asof-prefix="Data updated" datetime="2026-10-12">Data updated Oct 12, 2026</time></p>
+  <div class="ap-quick" id="quick-answer">
+    <p class="ap-lead"><b>For 2026, on a typical farm.</b> Corn: leans ARC-CO in 2,521 of 2,967 county and practice combinations. Soybeans: neither program expected to pay at USDA&rsquo;s $12.00, in 2,478 of 2,478. Wheat: close, either one, in 1,400 of 2,463. Your county&rsquo;s own answer is one pick below.</p>
+    <p>By our math from final USDA prices, the 2027 PLC effective reference prices are <b>$4.34</b> for corn,
+    <b>$10.62</b> for soybeans and <b>$6.35</b> for wheat (2026: $4.42,
+    $10.71, $6.35). PLC pays if the national season-average price ends below that.
+    ARC-CO pays when county revenue falls below 90% of its benchmark. The 2026 signup closes Dec 11, 2026; the 2027 signup runs Nov 2, 2026 to Mar 15, 2027.</p>
+    <p><b>For a typical farm, 2026 corn</b>, across 2,967 county and practice combinations: pick ARC-CO 0, leans ARC-CO 2,521, close 446, leans PLC 0, pick PLC 0. Your own PLC yield moves the answer; the calculator below gives yours, with the expected payments. <a href="#method">How this is figured</a>.</p>
+    <p class="ap-small">FSA&rsquo;s official ARC-CO benchmark yields for program year 2026 (FSA file as of Jan 16, 2026) cover 2,772 counties. <time class="asof" data-asof="" data-asof-prefix="Data updated" datetime="2026-10-12">Data updated Oct 12, 2026</time></p>
+  </div>
   <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
   <div class="ap-find" data-arcfind data-nav="/data/arc-plc/nav.json" data-geo="/data/arc-plc/geo/">
     <div class="ap-find-g">
@@ -82,14 +91,6 @@
     
   </div>
   <div class="ap-dead"><ul><li><span class="d">Dec 11</span><span>2026 signup ends Dec 11, 2026.</span></li><li><span class="d">Nov 2 to Mar 15</span><span>2027 signup runs Nov 2, 2026 to Mar 15, 2027.</span></li><li><span class="d">Skip it</span><span>Do nothing for 2026 and that farm gets no 2026 payment.</span></li><li><span class="d">Sign</span><span>Every owner and operator on the farm signs.</span></li><li><span class="d">Bring</span><span>Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.</span></li></ul></div><div data-signup-ask data-deadlines="2026-12-11 2027-03-15"></div>
-  <div class="ap-quick" id="quick-answer">
-    <p><b>Quick answer.</b> By our math from final USDA prices, the 2027 PLC effective reference prices are <b>$4.34</b> for corn,
-    <b>$10.62</b> for soybeans and <b>$6.35</b> for wheat (2026: $4.42,
-    $10.71, $6.35). PLC pays if the national season-average price ends below that.
-    ARC-CO pays when county revenue falls below 90% of its benchmark. The 2026 signup closes Dec 11, 2026; the 2027 signup runs Nov 2, 2026 to Mar 15, 2027.</p>
-    <p><b>For a typical farm, 2026 corn</b>, across 2,967 county and practice combinations: pick ARC-CO 0, leans ARC-CO 2,521, close 446, leans PLC 0, pick PLC 0. Your own PLC yield moves the answer; the calculator below gives yours, with the expected payments. <a href="#method">How this is figured</a>.</p>
-    <p class="ap-small">FSA&rsquo;s official ARC-CO benchmark yields for program year 2026 (FSA file as of Jan 16, 2026) cover 2,772 counties. <time class="asof" data-asof="" data-asof-prefix="Data updated" datetime="2026-10-12">Data updated Oct 12, 2026</time></p>
-  </div>
   <p class="page-lede">Pick the year, crop and county, type your PLC yield, and set a price. The table shows which program pays more per base acre across
   a range of prices and county yields. It does not forecast the price. You set it.</p>
 
@@ -122,6 +123,7 @@
     What it saves is paperwork; the yearly chance to switch programs from 2027 on still applies through the annual election. If the operator, owners or farm records change, it ends and you enroll yearly.
     Some advisers prefer signing each year so nothing is assumed.</li>
     <li><b>If you don&rsquo;t sign:</b> for 2026, a farm with no election by Dec 11, 2026 keeps its 2025 election and gets no 2026 payment.</li>
+    <li><b>How to sign:</b> You can elect and enroll online at <a href="https://www.fsa.usda.gov/resources/programs/arc-plc" rel="noopener">fsa.usda.gov/arc-plc</a> with a Login.gov account linked to your FSA customer record, or at your county office.</li>
     <li><b>When payments come:</b> after Oct 1, 2027 for 2026 crops; after Oct 1, 2028 for 2027 crops.</li>
   </ul>
 
@@ -251,7 +253,7 @@
 </div>
 <script src="/components/asof.js?v=1" defer></script>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/arc-plc-simple.js?v=9" defer></script>
-<script src="/components/arc-plc.js?v=9" defer></script>
+<script src="/components/arc-plc-simple.js?v=10" defer></script>
+<script src="/components/arc-plc.js?v=10" defer></script>
 </body>
 </html>

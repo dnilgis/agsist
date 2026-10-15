@@ -194,15 +194,26 @@ test("every county page's answers equal the calculator's math on the state file:
       const S = states[m0[1]] || (states[m0[1]] = state(m0[1]));
       const cty = S.c.find((c) => c.f === m0[2]);
       pages++;
-      const re = /<div class="ap-lv" data-k="([a-z_]+)" data-e="([a-z]+)(?::([^"]*))?" data-py="([\d.]+)" data-t="([^"]+)" data-lv="(\w+)"(\s+hidden)?>/g;
+      // each card: About the same is in the page (one answer per card); Lower and Higher ride on the card as
+      // data-lower / data-higher = "<PLC yield>;<year:verdict:PLC cents:ARC-CO cents|...>;<words pack>"
+      const re = /<article class="ap-crop" id="crop-[a-z_]+"([^>]*)><h3>[^<]*<\/h3><div class="ap-lv" data-k="([a-z_]+)" data-e="([a-z]+)(?::([^"]*))?" data-py="([\d.]+)" data-t="([^"]+)" data-lv="(\w+)"/g;
       const shown = {};
+      const levels = (attrs, py, tt) => {
+        const out = [["same", py, tt]];
+        for (const lv of ["lower", "higher"]) {
+          const m = new RegExp(` data-${lv}="([\\d.]+);([^;"]+);`).exec(attrs);
+          assert.ok(m, `${f}: card carries ${lv}`);
+          out.push([lv, m[1], m[2]]);
+        }
+        return out;
+      };
       for (const m of html.matchAll(re)) {
-        const [, k, d, sub, py, tt, lv, hid] = m;
-        if (!hid) shown[k] = (shown[k] || 0) + 1;
-        assert.equal(!hid, lv === "same", `${f} ${k}: only About the same shows first`);
+        const [, attrs, k, d, sub, py0, tt0, lv0] = m;
+        shown[k] = (shown[k] || 0) + 1;
+        assert.equal(lv0, "same", `${f} ${k}: About the same shows first`);
         const e = cty.k[k].find((x) => x.d === d && (x.sub || "") === unq(sub || ""));
         assert.ok(e, `${f} ${k} ${d}: entry in the state file`);
-        for (const part of tt.split("|")) {
+        for (const [lv, py, tt] of levels(attrs, py0, tt0)) for (const part of tt.split("|")) {
           const [y, v, pc, ac] = part.split(":");
           const cd = D.years[y].crops[k];
           seen++;

@@ -153,7 +153,7 @@ STYLES_V = "24"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "10"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14)
-CALC_V = "9"   # 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "10"   # 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -234,6 +234,10 @@ SRC = {
 FSA_PAGE = "https://www.fsa.usda.gov/resources/programs/arc-plc"
 FSA_DATA = SRC["FSADATA"][1]
 OFFICE = "https://offices.sc.egov.usda.gov/locator/app"
+# Online election (FSA Kansas State Office newsletter, Sept 24, 2026; USDA release Sept 15, 2026 via DTN, Sept 17;
+# farmers.gov sign-in: a Login.gov account links to the FSA customer record, identity verified online or at a Service Center)
+ONLINE = (f'You can elect and enroll online at <a href="{FSA_PAGE}" rel="noopener">fsa.usda.gov/arc-plc</a> with a Login.gov account '
+          'linked to your FSA customer record, or at your county office.')
 
 PARAMS = {
     "erp_pct": 0.88, "erp_cap_pct": 1.15,
@@ -1689,6 +1693,30 @@ def tally_sentence(D):
             f'moves the answer; the calculator below gives yours, with the expected payments. <a href="#method">How this is figured</a>.</p>')
 
 
+LEAD_WORD = {"plc": "pick PLC", "arc": "pick ARC-CO", "lean_plc": "leans PLC", "lean_arc": "leans ARC-CO", "close": "close, either one",
+             "none": "neither program expected to pay"}
+
+
+def lead_sentence(D):
+    """The main page's first words: for 2026, each main crop's most common typical-farm answer and its count, out of
+    the county and practice combinations that have an answer. Counted from the same verdicts the county pages show."""
+    t = tallies(D)
+    y6 = D["years"]["2026"]["crops"]
+    bits = []
+    for k in CROPS:
+        d_ = t.get(("2026", k), {})
+        n = sum(d_.get(w, 0) for w in LEAD_WORD)
+        if not n:
+            continue
+        w = max(LEAD_WORD, key=lambda x: (d_.get(x, 0), -list(LEAD_WORD).index(x)))
+        cen = (y6[k].get("scen") or {}).get("center")
+        at = f" at USDA&rsquo;s {XC.pf(y6[k], cen)}," if w == "none" and cen else ("," if w == "close" else "")
+        bits.append(f"{y6[k]['label']}: {LEAD_WORD[w]}{at} in {d_[w]:,} of {n:,}" + (" county and practice combinations" if not bits else "") + ".")
+    if not bits:
+        return ""
+    return f'<p class="ap-lead"><b>For 2026, on a typical farm.</b> {" ".join(bits)} Your county&rsquo;s own answer is one pick below.</p>'
+
+
 def dy_source_text(D):
     """Which FSA file each scenario year's county yield comes from (E11)."""
     m = D.get("_dysrc") or {}
@@ -1837,17 +1865,18 @@ def build_main(D, ch):
   <p class="page-kicker">Farm program &middot; 2026 and 2027 crop years</p>
   <h1>ARC or PLC for 2026 and 2027: decision calculator</h1>
   {byline_html(D)}
-  <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
-  {picker_html(D)}
-  {deadlines_html()}
   <div class="ap-quick" id="quick-answer">
-    <p><b>Quick answer.</b> By our math from final USDA prices, the 2027 PLC effective reference prices are <b>{usd(c7['erp']['erp'])}</b> for corn,
+    {lead_sentence(D)}
+    <p>By our math from final USDA prices, the 2027 PLC effective reference prices are <b>{usd(c7['erp']['erp'])}</b> for corn,
     <b>{usd(s7['erp']['erp'])}</b> for soybeans and <b>{usd(w7['erp']['erp'])}</b> for wheat (2026: {usd(y6['corn']['erp']['erp'])},
     {usd(y6['soybeans']['erp']['erp'])}, {usd(y6['wheat']['erp']['erp'])}). PLC pays if the national season-average price ends below that.
     ARC-CO pays when county revenue falls below 90% of its benchmark. {signup_copy(build_date())['quick']}</p>
     {tally_sentence(D)}
     <p class="ap-small">{fsa_line} {asof(D['updated'])}</p>
   </div>
+  <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
+  {picker_html(D)}
+  {deadlines_html()}
   <p class="page-lede">Pick the year, crop and county, type your PLC yield, and set a price. The table shows which program pays more per base acre across
   a range of prices and county yields. It does not forecast the price. You set it.</p>
 
@@ -1862,6 +1891,7 @@ def build_main(D, ch):
     What it saves is paperwork; the yearly chance to switch programs from 2027 on still applies through the annual election. If the operator, owners or farm records change, it ends and you enroll yearly.
     Some advisers prefer signing each year so nothing is assumed.</li>
     <li><b>If you don&rsquo;t sign:</b> for 2026, a farm with no election by Dec 11, 2026 keeps its 2025 election and gets no 2026 payment.</li>
+    <li><b>How to sign:</b> {ONLINE}</li>
     <li><b>When payments come:</b> after Oct 1, 2027 for 2026 crops; after Oct 1, 2028 for 2027 crops.</li>
   </ul>
 
@@ -2435,6 +2465,84 @@ def level_tag(c, k, i, e, LY, OY, nm):
     return f' data-k="{k}" data-e="{e["d"]}{":" + esc(e["sub"]) if e.get("sub") else ""}" data-py="{c["levels"][(k, i, LY)][nm]["py"]}" data-t="{"|".join(parts)}"'
 
 
+def lv_flags(v):
+    """What gap_line decides from the unrounded gap, as bits, so components/arc-plc-simple.js can write the
+    same sentence for the Lower and Higher buttons: 1 borrowed, 2 futures start disagrees, 4 under a dollar
+    (cents()), 8 under MIN_GAP, 16 PLC leads, 32 the other program won no year (Leans)."""
+    w = v["verdict"]
+    if w not in ("plc", "arc", "close") and not w.startswith("lean_"):
+        return 0
+    d_ = v.get("diff") or 0
+    f = (1 if v.get("borrowed") else 0) | (2 if v.get("alt_down") else 0) | (4 if cents(abs(d_)) < 100 else 0)
+    f |= (8 if abs(d_) < MIN_GAP else 0) | (16 if d_ > 0 else 0)
+    if w.startswith("lean_") and (v["arc_wins"] if w[5:] == "plc" else v["plc_wins"]) == 0:
+        f |= 32
+    return f
+
+
+def lv_pack(v, v7, vo):
+    """One PLC-yield button's card, compact: verdict, whole-dollar gap, flags, years run, the other year's
+    verdict, the other practice's verdict ('' when the card has none)."""
+    w = v["verdict"]
+    call = w in ("plc", "arc", "close") or w.startswith("lean_")
+    return ",".join(str(x) for x in (w, whole(v["diff"]) if call else 0, lv_flags(v), v.get("n", 0) if call else 0,
+                                     v7["verdict"], vo["verdict"] if vo else ""))
+
+
+def level_html(c, k, D, LY, OY, nm, mi, oi):
+    """One PLC-yield button's answer: the big word, the gap, what PLC needs, the other practice, the other year.
+    The page carries About the same; components/arc-plc-simple.js writes Lower and Higher from lv_pack()
+    with the same words (test/arc-plc-cards.test.mjs holds the two to each other)."""
+    cd = D["years"][LY]["crops"].get(k) or D["years"]["2026"]["crops"][k]
+    lc = CROP_LC[k]
+    es = c["k"][k]
+    e = es[mi]
+    v = c["levels"][(k, mi, LY)][nm]
+    v7 = c["levels"][(k, mi, OY)][nm]
+    g = gap_line(v, lc, LY, cd)
+    if v["verdict"] == "mismatch" and c["levels"][(k, mi, LY)]["same"]["verdict"] != "mismatch":
+        g = ("A PLC yield that high is above the county benchmark yield, so this page cannot figure it. Ask your FSA office.")
+    oth, vo = "", None
+    if oi is not None and (k, oi, LY) in c["levels"]:
+        vo = c["levels"][(k, oi, LY)][nm]
+        note = " Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher." if es[oi]["d"] == "irr" else ""
+        oth = f'<p class="ap-oth"><b>{DLABEL[es[oi]["d"]]} ground:</b> {low1(short_word(vo)) if vo["verdict"] not in ("mismatch",) else "ask your FSA office"}.{note}</p>'
+    if e["d"] == "irr":
+        oth = '<p class="ap-oth">Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher.</p>' + oth
+    erp = "" if v["verdict"] == "mismatch" else f'<p>{erp_line(cd, lc, LY)}</p>'
+    return (f'<div class="ap-ans"><span class="ap-big">{big_word(v)}</span>{tier_html(v)}</div>'
+            f'<p>{g}</p>{erp}{oth}<p class="ap-y2">{year_line(v7, OY)}</p>'), lv_pack(v, v7, vo)
+
+
+def trigger_yield(cd, by):
+    """The county yield under which ARC-CO starts to pay at the year's price outlook: actual revenue
+    (county yield x the higher of the price and the loan rate) under 90% of benchmark revenue. Floored
+    to a whole unit, so "under N" is always true. (price used, yield, unrounded) or None with no outlook."""
+    cen = (cd.get("scen") or {}).get("center")
+    if not cen or not by:
+        return None
+    p = max(cen, cd["loan"])
+    t = 0.9 * by * cd["bp"]["value"] / p
+    return p, int(math.floor(round(t, 6))), t
+
+
+def trigger_html(cd, e, LY):
+    """One line per card: the county yield that makes ARC-CO pay, from this county's benchmark and the
+    page's own price, with the working beside it. It forecasts nothing: it says where the line is."""
+    r = trigger_yield(cd, e["by"])
+    if not r:
+        return ""
+    p, n, _t = r
+    cen = cd["scen"]["center"]
+    src = ("USDA&rsquo;s price outlook" if (cd.get("scen") or {}).get("kind") != "fut" else "the futures-based price")
+    at = (f"at {src}, {XC.pf(cd, cen)}" if p == cen else f"at the {XC.pf(cd, p)} loan rate ({src} is under it)")
+    u = XC.UNIT[cd["unit"]]["short"]
+    over = (f" That is above the {XC.yf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop." if n >= e["by"] else "")
+    return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{n:,} {u}</b> {at}.{over}</p>'
+            f'<p class="ap-small ap-trig-m">90% of the {XC.yf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
+            f'divided by {XC.pf(cd, p)}.</p>')
+
+
 def crop_card(c, k, D, LY, OY):
     cd = D["years"][LY]["crops"].get(k) or D["years"]["2026"]["crops"][k]
     lab = cd["label"]
@@ -2447,25 +2555,23 @@ def crop_card(c, k, D, LY, OY):
         why = ("FSA has no county average PLC yield for " + esc(lc) + " here, so there is no typical farm to figure. Run your own numbers below.")
         return (f'<article class="ap-crop" id="crop-{k}">{head}<div class="ap-ans"><span class="ap-big">No answer yet</span>{tier_html({"verdict": "withheld"})}</div>'
                 f'<p>{why}</p></article>')
-    blocks = []
-    for nm, f_ in LEVELS:
-        v = c["levels"][(k, mi, LY)][nm]
-        v7 = c["levels"][(k, mi, OY)][nm]
-        g = gap_line(v, lc, LY, cd)
-        if v["verdict"] == "mismatch" and c["levels"][(k, mi, LY)]["same"]["verdict"] != "mismatch":
-            g = ("A PLC yield that high is above the county benchmark yield, so this page cannot figure it. Ask your FSA office.")
-        oth = ""
-        if oi is not None and (k, oi, LY) in c["levels"]:
-            vo = c["levels"][(k, oi, LY)][nm]
-            note = " Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher." if es[oi]["d"] == "irr" else ""
-            oth = f'<p class="ap-oth"><b>{DLABEL[es[oi]["d"]]} ground:</b> {low1(short_word(vo)) if vo["verdict"] not in ("mismatch",) else "ask your FSA office"}.{note}</p>'
-        if e["d"] == "irr":
-            oth = '<p class="ap-oth">Figured with the county&rsquo;s all-practice PLC yield; an irrigated farm&rsquo;s own is often higher.</p>' + oth
-        erp = "" if v["verdict"] == "mismatch" else f'<p>{erp_line(cd, lc, LY)}</p>'
-        blocks.append(f'<div class="ap-lv"{level_tag(c, k, mi, e, LY, OY, nm)} data-lv="{nm}"{"" if nm == "same" else " hidden"}>'
-                      f'<div class="ap-ans"><span class="ap-big">{big_word(v)}</span>{tier_html(v)}</div>'
-                      f'<p>{g}</p>{erp}{oth}<p class="ap-y2">{year_line(v7, OY)}</p></div>')
-    return f'<article class="ap-crop" id="crop-{k}">{head}{"".join(blocks)}</article>'
+    # About the same is in the page; Lower and Higher ride as data and are written on a tap (one answer per card in the HTML)
+    same, sp = level_html(c, k, D, LY, OY, "same", mi, oi)
+    other = {}
+    for nm, _f in LEVELS:
+        if nm == "same":
+            continue
+        _h, pk = level_html(c, k, D, LY, OY, nm, mi, oi)
+        tag = level_tag(c, k, mi, e, LY, OY, nm)
+        tt = re.search(r'data-t="([^"]+)"', tag).group(1)
+        other[nm] = f'{c["levels"][(k, mi, LY)][nm]["py"]};{tt};{pk}'
+    cen = (cd.get("scen") or {}).get("center")
+    attrs = (f' data-lc="{esc(lc)}" data-cen="{XC.pf(cd, cen) if cen else ""}" data-pu="{esc(XC.say_price(cd, cd["erp"]["erp"]))}"'
+             + (f' data-oth="{DLABEL[es[oi]["d"]]}"' if oi is not None and (k, oi, LY) in c["levels"] else "")
+             + "".join(f' data-{nm}="{esc(v)}"' for nm, v in other.items()))
+    return (f'<article class="ap-crop" id="crop-{k}"{attrs}>{head}'
+            f'<div class="ap-lv"{level_tag(c, k, mi, e, LY, OY, "same")} data-lv="same" data-p="{sp}">{same}</div>'
+            f'{trigger_html(cd, e, LY)}</article>')
 
 
 def sheet_shell(D):
@@ -2868,15 +2974,15 @@ def county_page(st, S, c, D, ch):
         smalls = "".join(crop_card(c, k, D, LY, OY) for k in small_k)
         base = (D.get("_plc_base") or {}).get(c["f"], {})
         cap = int(math.ceil(max(base[k] for k in small_k) / 100.0) * 100) if small_k else 0
-        crops_html = (f'<h2 id="crops">{"Your main crops" if small_k else "Your crops"}</h2>{key_html()}<div class="ap-cards2">{cards}</div>'
-                      + (f'<h2 id="smaller">Smaller crops here</h2><p class="ap-small">Each has under {cap:,} enrolled base acres in the whole county (FSA, program year {plc_py}).</p>'
-                         f'<div class="ap-cards2 ap-cards2-s">{smalls}</div>' if small_k else "")) if (main_k or small_k) else (
-            '<p class="ap-need">FSA lists no enrolled base acres here for a crop with a benchmark, so there is no typical farm to figure. Run your own numbers below.</p>')
         tweak = f"""<h2 id="your-plc-yield">Is your farm&rsquo;s PLC yield lower, about the same, or higher than most farms here?</h2>
-  <div class="ap-seg" role="group" aria-label="Your farm&rsquo;s PLC yield compared with the county average">
+  <div class="ap-seg" role="group" aria-label="Your farm&rsquo;s PLC yield compared with the county average" data-ly="{LY}" data-oy="{OY}">
     <button type="button" data-lv="lower" aria-pressed="false">Lower</button><button type="button" data-lv="same" aria-pressed="true">About the same</button><button type="button" data-lv="higher" aria-pressed="false">Higher</button>
   </div>
   <p class="ap-small ap-seg-note" data-same="Your PLC yield is on your farm&rsquo;s FSA-156EZ. Not sure? Leave it on About the same." data-lower="Showing a PLC yield 15% under the county average." data-higher="Showing a PLC yield 15% over the county average.">Your PLC yield is on your farm&rsquo;s FSA-156EZ. Not sure? Leave it on About the same.</p>"""
+        crops_html = (f'<h2 id="crops">{"Your main crops" if small_k else "Your crops"}</h2>{key_html()}<div class="ap-cards2">{cards}</div>{tweak}'
+                      + (f'<h2 id="smaller">Smaller crops here</h2><p class="ap-small">Each has under {cap:,} enrolled base acres in the whole county (FSA, program year {plc_py}).</p>'
+                         f'<div class="ap-cards2 ap-cards2-s">{smalls}</div>' if small_k else "")) if (main_k or small_k) else (
+            '<p class="ap-need">FSA lists no enrolled base acres here for a crop with a benchmark, so there is no typical farm to figure. Run your own numbers below.</p>')
         math_top = ""   # built on open by components/arc-plc-math.js
     else:
         crops_html, tweak, math_top = pending_note(D), "", ""
@@ -2885,13 +2991,13 @@ def county_page(st, S, c, D, ch):
 {hdr}
 <main class="ap-wrap ap-simple" id="main">
   {icon_sprite() if official else ""}{bc_html([("Home", "/"), ("ARC or PLC", "/arc-plc"), (name, f"/arc-plc/{sl}"), (cname, None)])}
-  <p class="page-kicker">{esc(cname)}, {esc(name)}</p>
-  <h1>ARC or PLC: the short answer<span class="sr-only"> for {esc(cname)}, {esc(name)}</span></h1>
+  <p class="page-kicker">Farm program &middot; {LY} and {OY} crop years</p>
+  <h1>{esc(cname)}, {esc(name)}: ARC or PLC</h1>
   {byline_html(D)}
-  <p class="page-lede">What pays more on your base acres for a typical farm here, crop by crop. {sc_['desc']}</p>
-  {picker_html(D, st, c['f'])}
-  {tweak}
   {crops_html}
+  <p class="page-lede">What pays more on your base acres for a typical farm here, crop by crop. {sc_['desc']} {ONLINE}</p>
+  <h2 class="ap-find-h">Another county</h2>
+  {picker_html(D, st, c['f'])}
   <h2 id="deadlines">Deadlines</h2>
   {deadlines_box()}
   {key_numbers_html(c, D, cname) if official else ''}
