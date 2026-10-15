@@ -517,3 +517,27 @@ test("county-page links: a station town with a field name falls back to shorter 
   assert.deepEqual([...RP.shorterPlaces("50010")], []);
   assert.deepEqual([...RP.shorterPlaces("Garden City")], []);
 });
+
+// ---------- up to five marked days (2026-10-15, Sig) ----------
+test("five marked days round-trip through the design code and the query string; a sixth is dropped; an old three-day code still opens", () => {
+  assert.equal(RP.LIMITS.markers, 5);
+  const five = { ...FULL, dedication: "For Dad", markers: [
+    { date: "2025-03-02", label: "Calving" }, { date: "2025-05-12", label: "Planted" }, { date: "2025-07-04", label: "Wedding" },
+    { date: "2025-09-20", label: "First frost" }, { date: "2025-10-20", label: "Harvest done" }] };
+  const back = RP.decodeCode(RP.encodeCode(five));
+  assert.deepEqual(plain(back.markers), five.markers);
+  assert.deepEqual(plain(RP.fromParams(RP.toParams(five)).markers), five.markers);
+  const six = { ...five, markers: five.markers.concat([{ date: "2025-12-01", label: "Sold" }]) };
+  assert.equal(RP.normalize(six).markers.length, 5, "the most is five");
+  assert.equal(RP.decodeCode(RP.encodeCode(six)).markers.length, 5);
+  // made by the page before five days (three marked days, a dedication): opens the same
+  const old = RP.decodeCode("MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3BuYWV8VGhlIE9sc29uIEZhcm18M258UGxhbnRlZHw1NHxXZWRkaW5nfDg0fEhhcnZlc3QgZG9uZXxGb3IgRGFk");
+  assert.deepEqual(plain(old.markers.map((m) => m.date + " " + m.label)), ["2025-05-12 Planted", "2025-07-04 Wedding", "2025-10-20 Harvest done"]);
+  assert.deepEqual([old.name, old.dedication, old.style], ["The Olson Farm", "For Dad", "r2"]);
+  // the longest plain design, five full labels and every box full, still fits the 400 characters a code may have (decodeCode, /R, the worker)
+  const L = RP.LIMITS, longest = { place: "X".repeat(L.place), station: "9999999999999999", year: 2024, cmp: "station", style: "r2", normals: true, records: true,
+    name: "N".repeat(L.name), dedication: "D".repeat(L.dedication), markers: ["01-01", "03-31", "06-30", "09-30", "12-31"].map((d) => ({ date: "2024-" + d, label: "L".repeat(L.label) })) };
+  const code = RP.encodeCode(longest);
+  assert.ok(code.length <= 400, "five days fit a code: " + code.length);
+  assert.equal(RP.decodeCode(code).markers.length, 5);
+});

@@ -493,12 +493,17 @@ test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
   assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
-  // each day its own block: "Day 2" over it and a Remove named for it; no datalist (read as a combobox, a second arrow on Android)
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`<span id="rp-m${i}h">Day ${i}</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m${i}rm" aria-label="Remove day ${i}">Remove</button>`), "day " + i + " has a header and Remove");
+  for (const i of [1, 2, 3, 4, 5]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
+  // each day its own row: "Day 2" at its start and a small x named for it at its end (one line on a laptop, 2026-10-15); no datalist (read as a combobox, a second arrow on Android)
+  for (const i of [1, 2, 3, 4, 5]) {
+    assert.ok(HTML.includes(`<span class="rp-date-n" id="rp-m${i}h">Day ${i}</span>`), "day " + i + " is numbered");
+    assert.ok(HTML.includes(`<button type="button" class="rp-rm" id="rp-m${i}rm" aria-label="Remove day ${i}">&times;</button>`), "day " + i + " has a Remove named for it");
+  }
+  assert.ok(!HTML.includes('id="rp-m6row"'), "five days at most");
   assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
   assert.ok(!/id="rp-m\dl"[^>]*placeholder/.test(HTML), "the label boxes start empty, no gray hint that looks filled in");
-  assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 3\)<\/span>/);
+  assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 5\)<\/span>/);
+  assert.match(HTML, /id="rp-dates-max" hidden>5 days is the most that fits\. Remove one to mark another\.</);
   assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");
   assert.match(HTML, /id="rp-presets" role="group" aria-label="Label ideas"/);
   assert.match(HTML, /id="rp-date-say" aria-live="polite"/);
@@ -514,7 +519,10 @@ test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
   assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
   assert.match(HTML, /Actual size is 12 x 18 in\./);
-  assert.match(HTML, /you see a proof of yours before I print it\./);
+  // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
+  assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
+  assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
+  assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)<\/p>/);
   assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);

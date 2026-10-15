@@ -263,7 +263,7 @@ body{margin:0;color:var(--text);font:16px/1.55 'IBM Plex Sans',system-ui,sans-se
   // ", with two days marked: Planted and Hail"
   function marked(d) {
     if (!d.length) return '';
-    var n = ['one day', 'two days', 'three days'][d.length - 1] || d.length + ' days';
+    var n = ['one day', 'two days', 'three days', 'four days', 'five days'][d.length - 1] || d.length + ' days';
     return ', with ' + n + ' marked: ' + (d.length === 1 ? d[0] : d.slice(0, -1).join(', ') + ' and ' + d[d.length - 1]);
   }
   function front() {

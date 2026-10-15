@@ -34,7 +34,7 @@
  *   the print on the page states how many there were.
  *
  * THE DESIGN IS THE URL. Every choice (place, station, year, layout, palette,
- * size, comparison, name, up to three dates) round-trips through the query
+ * size, comparison, name, up to five dates) round-trips through the query
  * string, and through a short design code (?d=...) that the QR maker's mark,
  * Stripe's client_reference_id and the order form all carry. Open
  * /rain-print?d=<code> and the same print draws again.
@@ -99,7 +99,9 @@
      components/rain-print-art.js. Layout and palette still round-trip so an old
      link opens; they no longer change the art (an old Waveform link opens as R2). */
   var STYLE = { r1: 1, r2: 2 };
-  var LIMITS = { place: 32, name: 24, label: 13, markers: 3, dedication: 70 };
+  /* markers: up to five marked days (Sig, 2026-10-15: "I don't want 100 dates, but if someone had 4 or 5 why not");
+     the art leaves off a day it can't place cleanly and says which (AgRainArt.lastUnplaced) */
+  var LIMITS = { place: 32, name: 24, label: 13, markers: 5, dedication: 70 };
   /* The order files' QR carries the short link (rp-short.js), which fits at
      any length; previews carry the standard code below. The dedication went
      from 40 to 70 (2026-10-13) after the longest line was drawn at both styles.
@@ -1371,8 +1373,26 @@
     };
     var svg = root.AgRainArt.render(input);
     SKIPPED = root.AgRainArt.lastSkipped();
+    UNPLACED = ex ? [] : unplacedRows(input.markers);
     return svg;
   }
+  /* Marked days the art could not place cleanly, as day numbers on the page,
+     so that day's row can say so (2026-10-15, up to five days). The art names
+     them by index into the markers it was given (AgRainArt.lastUnplaced); an
+     art file without that signal draws three at most, so a 4th and 5th count
+     as left off. The k-th marker given is the k-th of ST.markers that falls
+     on the days drawn, and ST.markers come from the rows with a day, in order. */
+  var UNPLACED = [];
+  function unplacedRows(given) {
+    var A = root.AgRainArt, idx = [], src = [], rows = [];
+    if (A && typeof A.lastUnplaced === 'function') idx = A.lastUnplaced() || [];
+    else for (var k = 3; k < (given || []).length; k++) idx.push(k);
+    if (!idx.length || !DATA || !META) return [];
+    ST.markers.forEach(function (m, j) { var doy = dayIndex(META.year, m.date); if (doy >= 0 && doy < DATA.d.n) src.push(j); });
+    dayNums().forEach(function (i) { var d = rowDate(i, ST.year); if (d && dayIndex(ST.year, d) >= 0) rows.push(i); });
+    return idx.map(function (k) { return rows[src[k]]; }).filter(Boolean);
+  }
+  function unplacedWords(i) { return 'Day ' + i + ' is too close to the others to fit; move it or remove one.'; }
 
   /* Remarkable days (opt-in): components/rain-print-records.js reads the year's
      daily rows and the period of record this page already downloaded. Loaded on
@@ -1604,6 +1624,9 @@
      print's own (2026-10-14: a date typed with its year, 05022025, landed on
      the 25th in Chrome and Edge, because the date box's min and max locked its
      year). rowDate(i, y): 'YYYY-MM-DD', or '' until both are picked. */
+  // the marked-day rows on the page: 1 to LIMITS.markers
+  function dayNums() { var a = []; for (var i = 1; i <= LIMITS.markers; i++) a.push(i); return a; }
+  var MAX_WORDS = LIMITS.markers + ' days is the most that fits. Remove one to mark another.';
   function rowDate(i, y) {
     var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value;
     y = y || parseInt($('rp-year').value, 10);
@@ -1611,7 +1634,7 @@
   }
   function readInputs(year) {
     var markers = [], y = year || parseInt($('rp-year').value, 10);
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       var d = rowDate(i, y), l = $('rp-m' + i + 'l').value;
       if (d) markers.push({ date: d, label: l });
     }
@@ -1642,7 +1665,7 @@
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
     $('rp-records').checked = s.records;
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       var m = s.markers[i - 1];
       $('rp-m' + i + 'mo').value = m ? m.date.slice(5, 7) : '';
       syncDayList(i, s.year);
@@ -1680,7 +1703,7 @@
   function typedOver(i) { return typedFull(i).length > LIMITS.label; }
   // a marked day whose typed words were cut to fit: the words as typed, for the review sheet
   function typedCut(m) {
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       var full = typedFull(i);
       if (full.length > LIMITS.label && rowDate(i, ST.year) === m.date && cleanText(full, LIMITS.label) === m.label) return full;
     }
@@ -1691,11 +1714,13 @@
       var n = $(x[0]).value.length, el = $(x[1]);
       el.textContent = n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
       el.classList.toggle('rp-at', n >= x[2]);
+      // the counter shows only within 5 letters of the limit (2026-10-15, Sig: too much dead space)
+      el.classList.toggle('rp-near', n >= x[2] - 5);
     });
     /* The same counter under each date's label (2026-10-14: a label stopped at
        13 letters with no word). Words pasted or linked past 13 letters say what
        was cut, until the label is changed. */
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       var f = $('rp-m' + i + 'l'), el = $('rp-m' + i + 'l-n');
       if (!f || !el) continue;
       var n = f.value.length, cut = LABEL_CUT[f.id], over = !cut && typedOver(i);
@@ -1708,13 +1733,14 @@
         : n >= LIMITS.label ? n + ' of ' + LIMITS.label + ' letters. That\u2019s the most that fits.' : n + ' of ' + LIMITS.label + ' letters';
       el.classList.toggle('rp-at', !cut && !over && n >= LIMITS.label);
       el.classList.toggle('rp-bad', !!cut || over);
+      el.classList.toggle('rp-near', n >= LIMITS.label - 5);
       f.setAttribute('aria-invalid', String(!!cut || over));
     }
   }
   // a design from a link: its cut labels, by field (the proof flags them too)
   function markLinkCuts(cuts) {
     LINK_CUTS = cuts || [];
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       var d = rowDate(i), l = $('rp-m' + i + 'l').value;
       LINK_CUTS.forEach(function (c) { if (c.date === d && c.label === l) LABEL_CUT['rp-m' + i + 'l'] = { label: c.label, full: c.full }; });
     }
@@ -1735,10 +1761,11 @@
     return 'On the print: ' + (w ? w + ', ' : '') + shortDate(d);
   }
   function rowProblems() {
-    var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return rowDate(i, y); });
-    var probs = dateProblems(y, ds), out = { 1: [], 2: [], 3: [] };
+    var y = parseInt($('rp-year').value, 10), ds = dayNums().map(function (i) { return rowDate(i, y); });
+    var probs = dateProblems(y, ds), out = {};
+    dayNums().forEach(function (i) { out[i] = []; });
     probs.forEach(function (p) { out[p.i + 1].push(p); });
-    [1, 2, 3].forEach(function (i) {
+    dayNums().forEach(function (i) {
       var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value, l = $('rp-m' + i + 'l').value.trim();
       if ((mo || dy || l) && !(mo && dy)) out[i].unshift({ kind: 'half', mo: !mo, dy: !dy, msg: 'Day ' + i + (l ? ' (\u201c' + rowWords(i) + '\u201d)' : '') + ' needs a month and a day to go on the print.' });
     });
@@ -1747,12 +1774,12 @@
   // the first day that can't go on the print as it is (a half-picked day, or no such day), or 0
   function badRow() {
     var P = rowProblems();
-    for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'row').hidden && P[i].some(function (p) { return p.kind !== 'same'; })) return i;
+    for (var i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'row').hidden && (P[i].some(function (p) { return p.kind !== 'same'; }) || UNPLACED.indexOf(i) >= 0)) return i;
     return 0;
   }
   function syncDates() {
     var P = rowProblems();
-    [1, 2, 3].forEach(function (i) {
+    dayNums().forEach(function (i) {
       var show = P[i].filter(function (p) { return p.kind !== 'half' || TOUCHED[i]; });
       var moBad = show.some(function (p) { return (p.kind === 'half' && p.mo) || p.kind === 'year'; });
       var dyBad = show.some(function (p) { return (p.kind === 'half' && p.dy) || p.kind === 'day' || p.kind === 'year'; });
@@ -1760,8 +1787,10 @@
       var err = $('rp-m' + i + 'err');
       err.textContent = show.map(function (p) { return p.msg; }).join(' ');
       err.hidden = !show.length;
-      var on = $('rp-m' + i + 'on'), line = P[i].some(function (p) { return p.kind !== 'same'; }) ? '' : onPrintLine(i);
-      on.textContent = line; on.hidden = !line;
+      // under a finished day, what it puts on the print; a day the art had no clean room for says so instead
+      var on = $('rp-m' + i + 'on'), line = P[i].some(function (p) { return p.kind !== 'same'; }) ? '' : onPrintLine(i), off = !!line && UNPLACED.indexOf(i) >= 0;
+      if (off) line = unplacedWords(i);
+      on.textContent = line; on.hidden = !line; on.classList.toggle('rp-bad', off);
     });
     syncRows();
   }
@@ -1779,7 +1808,7 @@
   // the month lists, once; each day list runs to that month's length in the print's year
   function daysIn(y, mo) { return mo ? new Date(Date.UTC(y || 2001, +mo, 0)).getUTCDate() : 31; }
   function buildDayLists() {
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= LIMITS.markers; i++) {
       $('rp-m' + i + 'mo').innerHTML = '<option value="">Month</option>' + MON.map(function (m, k) { return '<option value="' + String(k + 1).padStart(2, '0') + '">' + m + '</option>'; }).join('');
       syncDayList(i);
     }
@@ -1792,23 +1821,23 @@
     sel.innerHTML = h;
     sel.value = was;
   }
-  function syncDayLists() { for (var i = 1; i <= 3; i++) syncDayList(i); }
-  // "Mark a day": one row to start; a row in use always shows; "+ Mark another day" opens the next, up to 3
+  function syncDayLists() { for (var i = 1; i <= LIMITS.markers; i++) syncDayList(i); }
+  // "Mark a day": one row to start; a row in use always shows; "+ Mark another day" opens the next, up to LIMITS.markers (5)
   function rowUsed(i) { return !!($('rp-m' + i + 'mo').value || $('rp-m' + i + 'dy').value || $('rp-m' + i + 'l').value); }
-  function rowsShown() { var shown = 1; for (var i = 2; i <= 3; i++) if (!$('rp-m' + i + 'row').hidden) shown = i; return shown; }
+  function rowsShown() { var shown = 1; for (var i = 2; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'row').hidden) shown = i; return shown; }
   function syncRows() {
-    for (var i = 2; i <= 3; i++) if (rowUsed(i)) $('rp-m' + i + 'row').hidden = false;
-    var shown = rowsShown(), full = shown >= 3;
+    for (var i = 2; i <= LIMITS.markers; i++) if (rowUsed(i)) $('rp-m' + i + 'row').hidden = false;
+    var shown = rowsShown(), full = shown >= LIMITS.markers;
     $('rp-add-day').hidden = full;
     $('rp-dates-max').hidden = !full;
     // a lone empty first day has nothing to remove
     $('rp-m1rm').hidden = shown === 1 && !rowUsed(1);
-    // the label ideas fill the first empty label: with all three labeled there is nowhere to put one
-    var none = [1, 2, 3].every(function (i) { return !!$('rp-m' + i + 'l').value; });
+    // the label ideas fill the first empty label: with every day labeled there is nowhere to put one
+    var none = dayNums().every(function (i) { return !!$('rp-m' + i + 'l').value; });
     doc.querySelectorAll('#rp-presets button').forEach(function (b) { b.setAttribute('aria-disabled', String(none)); });
   }
   function addDay() {
-    for (var i = 2; i <= 3; i++) {
+    for (var i = 2; i <= LIMITS.markers; i++) {
       var row = $('rp-m' + i + 'row');
       if (row.hidden) { row.hidden = false; syncRows(); try { $('rp-m' + i + 'mo').focus(); } catch (e) {} return i; }
     }
@@ -1979,6 +2008,8 @@
     // the maker sees the serial on screen; nobody else ever does
     art.innerHTML = buildSvg({ serial: SERIAL, example: SHOW_EX });
     art.classList.remove('rp-empty');
+    // each day's line under its row follows what the art could place
+    if ($('rp-m1on')) syncDates();
     // the slim copy that pins under the menu on a phone is drawn when it shows (syncStrip)
     MINI_DIRTY = true;
     // a buy note about an earlier design no longer applies
@@ -2417,7 +2448,7 @@
     var why = orderBlock();
     if (why) { buyNote(why); return; }
     // every day's message shows now (each day in use counts as left); a day that can't go on the print as it is stops here, at its row
-    [1, 2, 3].forEach(function (i) { if (rowUsed(i)) TOUCHED[i] = true; }); syncDates();
+    dayNums().forEach(function (i) { if (rowUsed(i)) TOUCHED[i] = true; }); syncDates();
     var br = badRow();
     if (br) {
       buyNote('Day ' + br + ' isn\u2019t ready for the print. Fix it or remove it, then check again.');
@@ -3307,8 +3338,8 @@
     // a tap on Draw my year right after typing is a submit of its own: this waits for it, then draws only if nothing did
     setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
   });
-  ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
-  [1, 2, 3].forEach(function (i) {
+  ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
+  dayNums().forEach(function (i) {
     // the chip's "now pick its month and day" has been followed (or the reader moved on): it goes
     $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); dateSay(''); });
     $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); dateSay(''); });
@@ -3330,7 +3361,7 @@
     var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
     b.addEventListener('click', function () {
       endExample();
-      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) {
+      for (var i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'l').value) {
         $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; TOUCHED[i] = false;
         cleanField('rp-m' + i + 'l'); syncRows(); restyle(); syncDates();
         var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value;
@@ -3339,7 +3370,7 @@
         try { $('rp-m' + i + (mo ? 'dy' : 'mo')).focus(); } catch (e) {}
         return;
       }
-      dateSay('3 days is the most that fits. Remove one to mark another.');
+      dateSay(MAX_WORDS);
     });
     $('rp-presets').appendChild(b);
   });
@@ -3557,7 +3588,7 @@
      plain order. ?gift=1 is the old January design flag, not a card. */
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
-    dedication: ['rp-ded'], markers: ['rp-m1mo', 'rp-m1dy', 'rp-m1l', 'rp-m2mo', 'rp-m2dy', 'rp-m2l', 'rp-m3mo', 'rp-m3dy', 'rp-m3l', 'rp-add-day'], normals: ['rp-normals'], records: ['rp-records'],
+    dedication: ['rp-ded'], markers: [1, 2, 3, 4, 5].reduce(function (a, i) { return a.concat(['rp-m' + i + 'mo', 'rp-m' + i + 'dy', 'rp-m' + i + 'l']); }, []).concat(['rp-add-day']), normals: ['rp-normals'], records: ['rp-records'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {
