@@ -28,6 +28,18 @@
    "url": "https://www.mulvanecoop.com/fertilizer",
    "layout": "html-table",
    "cash_from": "cash"
+  },
+  {
+   "id": "farmerscoop-columbus-ks",
+   "name": "Farmers Coop",
+   "town": "Columbus",
+   "state": "KS",
+   "url": "https://www.farmerscoop.coop/agronomy",
+   "index": "https://www.farmerscoop.coop/agronomy",
+   "pdf": "https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-9-24.pdf",
+   "layout": "pdf-sheet",
+   "cash_from": "cash_pickup",
+   "cash_label": "3% cash pickup"
   }
  ]
 }
