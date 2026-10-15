@@ -72,7 +72,7 @@ function loadFertPrices(){
     var ams   =_find('Amm. Sulfate', function(g){return g.N>0&&g.S>0&&g.P===0&&g.K===0;});
     var kmag  =_find('K-Mag Premium',function(g){return g.K>0&&g.S>0&&g.Mg>0;});
     var lime  =data.prices.find(function(p){return p.name==='Pell Lime';});
-    if(lime&&lime.price)PRICES['LIME']=lime.price;
+    if(lime&&lime.price){PRICES['LIME']=lime.price;PRICES['LIME_ASOF']=lime.as_of||data.updated||'';}
     var wrap=document.getElementById('fert-pills');
     if(!wrap)return;
     wrap.innerHTML='';
@@ -465,17 +465,27 @@ function calcLime(){
   s('lime-note',note);
   var costEl=document.getElementById('lime-cost');
   if(costEl){
-    if(PRICES['LIME']&&agTons>0){
-      costEl.textContent='$'+(agTons*PRICES['LIME']).toFixed(0)+'/ac at $'+PRICES['LIME']+'/ton pelletized';
-      costEl.style.color='var(--gold)';
-    } else if(agTons===0){
+    // The price has to match the product. The dealer quote in fertilizer.json is
+    // pelletized lime (SuperCal 98G); it is only used for the 98% pelletized
+    // option. Ordinary aglime is priced only at the reader's own $/ton.
+    var priceEl=document.getElementById('lime-price');
+    var own=priceEl?parseFloat(priceEl.value):NaN;
+    var pell=cceEl.value==='98';
+    costEl.style.color='var(--gold)';
+    if(agTons===0){
       costEl.textContent='None needed';costEl.style.color='var(--text-muted)';
+    } else if(own>0){
+      costEl.textContent='$'+(agTons*own).toFixed(0)+'/ac at your $'+own+'/ton';
+    } else if(pell&&PRICES['LIME']){
+      var asof='';
+      if(PRICES['LIME_ASOF']){var ld=new Date(PRICES['LIME_ASOF']+'T12:00:00');if(!isNaN(ld))asof=', dealer quote '+ld.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+      costEl.textContent='$'+(agTons*PRICES['LIME']).toFixed(0)+'/ac at $'+PRICES['LIME']+'/ton pelletized'+asof;
     } else {
-      costEl.textContent='-';
+      costEl.textContent='Type your $/ton to see cost';costEl.style.color='var(--text-muted)';
     }
   }
 }
-['lime-buf','lime-target','lime-cce','lime-cce-custom'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcLime);});
+['lime-buf','lime-target','lime-cce','lime-cce-custom','lime-price'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcLime);});
 calcLime();
 
 /* ─── GDU CALCULATOR ────────────────────────────────────────────────── */
