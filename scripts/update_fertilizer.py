@@ -22,6 +22,8 @@ Rules (honest-numbers doctrine):
 Usage:
   python3 scripts/update_fertilizer.py --urea 695 --potash 460
   python3 scripts/update_fertilizer.py --selftest
+  python3 scripts/update_fertilizer.py --sync-history   # record the sheet already in
+                                                        # data/fertilizer.json, change no price
 Flags: --urea --potash --map-s --ams --kmag --lime   (all $/ton, optional)
 """
 import argparse
@@ -69,6 +71,24 @@ def apply(data, changes, force=False, now=None):
     return data, notes
 
 
+HIST_NOTE = "one row per published dealer sheet — appended by update_fertilizer.py, never edited by hand"
+
+
+def history_row(data):
+    """The history row for the sheet in `data`: its date and every price on it."""
+    return {"date": data["updated"], "prices": {p["name"]: p["price"] for p in data["prices"]}}
+
+
+def add_to_history(hist, data):
+    """Pure: the history with this sheet recorded. One row per sheet date
+    (re-running the same day overwrites that row)."""
+    hist = json.loads(json.dumps(hist)) if hist else {"note": HIST_NOTE, "sheets": []}
+    row = history_row(data)
+    hist["sheets"] = sorted([s for s in hist["sheets"] if s["date"] != row["date"]] + [row],
+                            key=lambda s: s["date"])
+    return hist
+
+
 def _selftest():
     base = {"updated": "2026-06-08", "source": "x", "prices": [
         {"name": "Urea", "price": 760, "prev": 830, "as_of": "2026-06-08", "prev_as_of": "2026-05-04"},
@@ -103,6 +123,16 @@ def _selftest():
             chk(True, f"refused {why}")
     d2, _ = apply(json.loads(json.dumps(base)), {"Urea": 200}, force=True, now=T)
     chk(next(p for p in d2["prices"] if p["name"] == "Urea")["price"] == 200, "--force overrides the typo guard")
+    # history: the Sep 1 2026 sheet was uploaded by hand and never reached the
+    # history file; --sync-history records the sheet on file without touching it
+    h = {"note": HIST_NOTE, "sheets": [{"date": "2026-07-20", "prices": {"Urea": 695, "Potash": 460}}]}
+    sheet = {"updated": "2026-09-01", "prices": [{"name": "Urea", "price": 590}, {"name": "Potash", "price": 460}]}
+    h2 = add_to_history(h, sheet)
+    chk([r["date"] for r in h2["sheets"]] == ["2026-07-20", "2026-09-01"] and h2["sheets"][1]["prices"] == {"Urea": 590, "Potash": 460},
+        "a sheet missing from history is appended with every price on it")
+    chk(h["sheets"][-1]["date"] == "2026-07-20", "add_to_history does not change the history it was given")
+    chk(add_to_history(h2, sheet) == h2, "recording the same sheet twice keeps one row")
+    chk(add_to_history(None, sheet)["sheets"] == [history_row(sheet)], "no history file yet: starts one")
     print("SELFTEST " + ("OK" if ok else "FAILED"))
     sys.exit(0 if ok else 1)
 
@@ -113,9 +143,20 @@ def main():
         ap.add_argument("--" + flag.replace("_", "-"), type=float, default=None)
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--sync-history", action="store_true")
     a = ap.parse_args()
     if a.selftest:
         _selftest()
+    if a.sync_history:
+        data = json.load(open("data/fertilizer.json"))
+        try:
+            hist = json.load(open("data/fertilizer-history.json"))
+        except FileNotFoundError:
+            hist = None
+        hist = add_to_history(hist, data)
+        json.dump(hist, open("data/fertilizer-history.json", "w"), indent=1, ensure_ascii=False)
+        print(f"recorded the {data['updated']} sheet in data/fertilizer-history.json ({len(hist['sheets'])} sheets on record)")
+        return
     changes = {FLAG_TO_NAME[f]: getattr(a, f) for f in FLAG_TO_NAME if getattr(a, f) is not None}
     if not changes:
         raise SystemExit("nothing to change — pass at least one price flag (see --help)")
@@ -129,10 +170,8 @@ def main():
     try:
         hist = json.load(open("data/fertilizer-history.json"))
     except FileNotFoundError:
-        hist = {"note": "one row per published dealer sheet — appended by update_fertilizer.py, never edited by hand", "sheets": []}
-    row = {"date": data["updated"], "prices": {p["name"]: p["price"] for p in data["prices"]}}
-    hist["sheets"] = [s for s in hist["sheets"] if s["date"] != row["date"]] + [row]
-    hist["sheets"].sort(key=lambda s: s["date"])
+        hist = None
+    hist = add_to_history(hist, data)
     json.dump(hist, open("data/fertilizer-history.json", "w"), indent=1, ensure_ascii=False)
     print(f"appended sheet to data/fertilizer-history.json ({len(hist['sheets'])} sheets on record)")
 

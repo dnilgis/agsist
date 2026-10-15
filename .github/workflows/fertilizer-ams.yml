@@ -1,0 +1,80 @@
+name: Fertilizer USDA AMS series
+
+# Writes data/fertilizer-ams.json (and its history file) for fertilizer.html:
+# USDA AMS "Illinois Production Cost Report (Bi-weekly)", My Market News
+# report 3195, https://www.ams.usda.gov/mnreports/ams_3195.pdf. Anhydrous,
+# UAN 28 and 32, urea, DAP and potash, each with its own report date. The page
+# reads the file live; until a run writes it, the page shows nothing for USDA.
+#
+# The report comes out every other week, usually on a Friday. This checks
+# Friday afternoon and evening and again Monday, so a late post or a dropped
+# scheduled run is caught. The script is idempotent: nothing new, no commit.
+#
+# FIRST RUN: dispatch once with "probe" ticked. It saves what the AMS server
+# returned to data/fert-ams-raw/ and commits it, so the real PDF layout can be
+# read and added to the selftest fixtures (the parser was written from search
+# snippets; the sandbox could not reach usda.gov). Then dispatch again
+# without probe.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw AMS text to data/fert-ams-raw/ and commit it"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '23 20 * * 5'    # Friday afternoon (Central)
+    - cron: '23 1 * * 6'     # Friday evening (Central)
+    - cron: '23 15 * * 1'    # Monday catch-up
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fertilizer-ams
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_fert_ams.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_fert_ams.py --probe
+      - name: Fetch and write data/fertilizer-ams.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_fert_ams.py
+
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/fert-ams-raw"
+          rm -rf /tmp/fams && mkdir -p /tmp/fams
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/fams/ || true
+          done
+          [ -n "$(ls -A /tmp/fams)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/fams/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Fertilizer USDA AMS series $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
