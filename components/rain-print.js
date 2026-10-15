@@ -1158,6 +1158,8 @@
           if (!d || !d.meta || !Array.isArray(d.meta.ll) || d.meta.ll.length < 2) throw new Error('NOAA didn’t send the station’s place.');
           picked = d;
           chosen = { sid: s.station, name: d.meta.name || s.station, state: d.meta.state || '', ll: d.meta.ll };
+          // a town of that name far from the station is another town: "near" it, as the page says (run())
+          if (g && haversine(g.latitude, g.longitude, +d.meta.ll[1], +d.meta.ll[0]) > 60) g = null;
         });
       }
       if (!g) throw new Error('The town lookup didn’t answer.');
@@ -1873,7 +1875,9 @@
   var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
   function updateUrl() {
     if (SAMPLE || KEEP_URL) return;   // a sample never goes into the address bar
-    var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '');
+    var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '') +
+      // the product picked, so Back and a reload keep it (framed, the default, stays out of the address)
+      (PICK && PICK !== 'framed12x18' ? '&pick=' + PICK : '');
     try { root.history.replaceState(null, '', root.location.pathname + '?' + q); } catch (e) {}
   }
 
@@ -2179,6 +2183,31 @@
       setStatus('Finding ' + ST.place + '…');
       // Only a link that names its station (a county rain page) gets the shorter tries.
       var tries = ST.station ? shorterPlaces(ST.place) : [];
+      /* A design that names its station but carries no ?ll= (a shared code,
+         Sig's ?d=...&maker=1 view of a county-link order): the station's own
+         place from NOAA checks the town, the way ll does on the link itself.
+         A town the lookup can't find, or one more than 60 km from the station,
+         is another town of that name: the print says "near" the town at the
+         station's place, as the buyer saw it (2026-10-15, Rathbun, IA). */
+      var stnLL = !ll && ST.station ? daily(ST.station, ST.year).then(function (d) {
+        var m = d && d.meta && d.meta.ll;
+        return Array.isArray(m) && m.length >= 2 && isFinite(m[0]) && isFinite(m[1]) ? { lat: +m[1], lon: +m[0] } : null;
+      }, function () { return null; }) : null;
+      var byStation = function (hit) {
+        return Promise.resolve(stnLL).then(function (sl) { return sl && haversine(hit.latitude, hit.longitude, sl.lat, sl.lon) > 60 ? llTown(sl) : hit; });
+      };
+      var noTown = function (err) {
+        return Promise.resolve(stnLL).then(function (sl) {
+          if (!sl || err === 'stale') throw err;
+          // several towns of that name: the one by the station, when one is
+          if (err && err.pick) {
+            var near = err.pick.filter(function (x) { return haversine(x.latitude, x.longitude, sl.lat, sl.lon) <= 60; })
+              .sort(function (a, b) { return haversine(a.latitude, a.longitude, sl.lat, sl.lon) - haversine(b.latitude, b.longitude, sl.lat, sl.lon); });
+            if (near.length) return near[0];
+          }
+          return llTown(sl);
+        });
+      };
       return geocode(ST.place).catch(function (first) {
         if (first && first.pick) throw first;
         // a shorter try that finds several towns is skipped; the reader sees the first error
@@ -2190,11 +2219,11 @@
         return next();
       }).then(function (hit) {
         // a town found far from the linked station is another town of that name
-        return ll && haversine(hit.latitude, hit.longitude, ll.lat, ll.lon) > 60 ? llTown(ll) : hit;
+        return ll && haversine(hit.latitude, hit.longitude, ll.lat, ll.lon) > 60 ? llTown(ll) : byStation(hit);
       }, function (err) {
         // the county page's station town isn't a town the lookup knows: the station's own place stands in
         if (ll && err !== 'stale') return llTown(ll);
-        throw err;
+        return noTown(err);
       });
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
@@ -2307,7 +2336,12 @@
       drawnStatus();
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
-      else { ga('rain_print_draw', { style: ST.style }); if (e && !e.auto) showArt(); }
+      else {
+        ga('rain_print_draw', { style: ST.style });
+        // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
+        if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
+        if (e && !e.auto) showArt();
+      }
       if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
     }).catch(function (err) {
       if (err === 'stale') return;
@@ -2609,14 +2643,18 @@
     if (st.hidden === on) {
       st.hidden = !on;
       doc.documentElement.style.scrollPaddingTop = on ? Math.round(nav + st.offsetHeight + 12) + 'px' : '';
-      if (on) keepFocusClear();
     }
   }
-  // a box with the keyboard never sits under the pinned copy
+  /* A box the reader just put the keyboard in never sits under the pinned
+     copy. Only from the focus handler, never from the scroll: the town box
+     keeps focus after Draw, and pulling the page back up to it whenever the
+     pinned copy showed trapped a phone at step 1 (2026-10-15). A box already
+     scrolled past (fully above the pinned copy) is left alone. */
   function keepFocusClear() {
     var st = $('rp-strip'), a = doc.activeElement;
     if (!st || st.hidden || !a || !/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) return;
-    var lim = st.getBoundingClientRect().bottom + 8, r = a.getBoundingClientRect();
+    var sr = st.getBoundingClientRect(), lim = sr.bottom + 8, r = a.getBoundingClientRect();
+    if (r.bottom <= sr.top + 4) return;
     if (r.top < lim) try { root.scrollBy(0, r.top - lim - 4); } catch (e) {}
   }
   function shortHit() { return root.AgRpShort ? root.AgRpShort.peek(encodeCode(artDesign())) : null; }
@@ -3317,7 +3355,23 @@
   // the Christmas lines read right from October 1 through December 25 only
   XMAS_OFF = parseInt(TODAY.slice(5, 7), 10) < 10 || TODAY.slice(5) > '12-25';
   if (MAKER) $('rp-maker').hidden = false;
-  setPick('framed12x18');
+  /* The product picked comes back after Back or a reload (2026-10-15: it
+     always started on Framed, so Print showed $89 on the way back): the
+     address (?pick=), else the pick saved at the press for this same design,
+     else the radio the browser kept, else Framed. */
+  function startPick() {
+    var u = new URLSearchParams(root.location.search).get('pick');
+    if (PRODUCTS.indexOf(u) >= 0) return u;
+    var sv = savedCheckout();
+    if (sv && !PAID && sv.code === encodeCode(ST) && PRODUCTS.indexOf(sv.choice) >= 0) return sv.choice;
+    var r = radios('rp-product').filter(function (x) { return x.checked; })[0];
+    return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
+  }
+  setPick(startPick());
+  root.addEventListener('pageshow', function () {
+    var r = radios('rp-product').filter(function (x) { return x.checked; })[0];
+    if (r && r.value !== PICK) setPick(r.value); else syncPick();
+  });
   if (PAID) showPaid(PAID, PAID_SAVED);
   form.addEventListener('submit', run);
   $('rp-station').addEventListener('change', function () {
@@ -3391,7 +3445,7 @@
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
-  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); } }); });
+  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); if (DATA) updateUrl(); } }); });
   $('rp-pay').addEventListener('click', checkIt);
   $('rp-bar-go').addEventListener('click', checkIt);
   $('rp-noname-add').addEventListener('click', function () {
@@ -3519,7 +3573,7 @@
     var back = 0;
     doc.addEventListener('focusin', function (e) {
       clearTimeout(back);
-      if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(keepFocusClear, 60); }
+      if (typing(e.target)) { TYPING = true; syncBar(); setTimeout(function () { keepFocusClear(); }, 60); }
       else back = setTimeout(function () { TYPING = false; syncBar(); }, 450);
     });
     doc.addEventListener('focusout', function () { clearTimeout(back); back = setTimeout(function () { TYPING = typing(doc.activeElement); syncBar(); }, 450); });
