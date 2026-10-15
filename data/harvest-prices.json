@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-10-14",
+ "updated": "2026-10-15",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -17,7 +17,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 4.93,
+    "running_avg": 4.92,
     "window": "October",
     "series": [
      {
@@ -67,12 +67,17 @@
      },
      {
       "d": "2026-10-14",
-      "s": 4.81,
-      "a": 4.93,
-      "p": true
+      "s": 4.8075,
+      "a": 4.93
+     },
+     {
+      "d": "2026-10-15",
+      "s": 4.7825,
+      "p": true,
+      "a": 4.92
      }
     ],
-    "days_counted": 10,
+    "days_counted": 11,
     "days_total": 22
    }
   },
@@ -90,7 +95,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 12.87,
+    "running_avg": 12.85,
     "window": "October",
     "series": [
      {
@@ -140,12 +145,17 @@
      },
      {
       "d": "2026-10-14",
-      "s": 12.775,
-      "a": 12.87,
-      "p": true
+      "s": 12.7725,
+      "a": 12.87
+     },
+     {
+      "d": "2026-10-15",
+      "s": 12.6425,
+      "p": true,
+      "a": 12.85
      }
     ],
-    "days_counted": 10,
+    "days_counted": 11,
     "days_total": 22
    }
   }
@@ -207,15 +217,20 @@
     },
     {
      "d": "2026-10-14",
-     "s": 4.81,
-     "a": 4.93,
-     "p": true
+     "s": 4.8075,
+     "a": 4.93
+    },
+    {
+     "d": "2026-10-15",
+     "s": 4.7825,
+     "p": true,
+     "a": 4.92
     }
    ],
-   "days_counted": 10,
+   "days_counted": 11,
    "status": "running",
    "price": null,
-   "running_avg": 4.93
+   "running_avg": 4.92
   },
   {
    "key": "ZSX26.CBT|2026-10-01|2026-10-31",
@@ -273,15 +288,20 @@
     },
     {
      "d": "2026-10-14",
-     "s": 12.775,
-     "a": 12.87,
-     "p": true
+     "s": 12.7725,
+     "a": 12.87
+    },
+    {
+     "d": "2026-10-15",
+     "s": 12.6425,
+     "p": true,
+     "a": 12.85
     }
    ],
-   "days_counted": 10,
+   "days_counted": 11,
    "status": "running",
    "price": null,
-   "running_avg": 12.87
+   "running_avg": 12.85
   }
  ]
 }
