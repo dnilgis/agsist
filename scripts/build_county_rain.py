@@ -474,7 +474,7 @@ def county_page(ctx):
     <section class="rc-cta" aria-labelledby="rc-cta-h">
       <h2 id="rc-cta-h">See the whole year on a print you can hang</h2>
       <p>Rain Print draws every day of {year} at this {noun} on a 12 x 18 print: the rains, the dry stretches, the dates you want to remember.{ship}</p>
-      <a class="btn btn-primary" href="{e(rp)}">Draw the {year} Rain Print</a>
+      <a class="btn btn-primary" href="{e(rp)}">Get {e(name)}&rsquo;s {year} rain and snow as a framed print</a>
     </section>
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
@@ -787,6 +787,7 @@ def selftest():
         lg = urllib.parse.parse_qs(rain_print_href({"station": {"raw": "SOUTH SAINT FRANCISVILLE HEIGHTS CROSSROADS", "sid": "1 2"}}, "KS", 2026)[12:])["place"][0]
         ok(lg.endswith(", KS") and len(lg) <= 32, f"a long town is shortened, the state kept: {lg!r}")
         ok("See the whole year on a print you can hang" in story, "Rain Print CTA")
+        ok(">Get Story County&rsquo;s 2026 rain and snow as a framed print</a>" in story, "the Rain Print button names the county in plain words")
         # last year with 28 June days missing: the difference is counted on the days both years reported
         c0 = dict(c, total=28.5, days=285, reported=285, missing=0,
                   last={"total": 25.7, "reported": 257, "days": 285, "through": "2025-10-12", "both": 257, "this_both": 25.7, "last_both": 25.7})
