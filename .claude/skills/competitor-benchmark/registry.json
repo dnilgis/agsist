@@ -1044,6 +1044,573 @@
      "note": "paid; could not see whether a graded record is published; not scored"
     }
    ]
+  },
+  "cash-lease": {
+   "queries": [
+    "free cash farm lease form",
+    "farm lease template printable",
+    "farm lease termination notice deadline <state>",
+    "flex cash rent lease"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 36,
+   "verdict": "close",
+   "report": "results/2026-10-15-cash-lease.md",
+   "competitors": [
+    {
+     "name": "AgLease101.org (NCFMEC)",
+     "url": "https://aglease101.org",
+     "kind": "university",
+     "total": 33,
+     "evidence": "snippets"
+    },
+    {
+     "name": "ISU Ag Decision Maker leasing",
+     "url": "https://www.extension.iastate.edu/agdm/",
+     "kind": "university",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "National Agricultural Law Center, Agricultural Leases overview",
+     "url": "https://nationalaglawcenter.org/overview/agleases/",
+     "kind": "university",
+     "total": 32,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Peoples Company termination deadlines by state",
+     "url": "https://peoplescompany.com/blog/farmland-leasing-termination-deadlines-by-state",
+     "kind": "vendor",
+     "total": 32,
+     "evidence": "snippets"
+    },
+    {
+     "name": "PlatoForms / DocHub fillable farm lease PDFs",
+     "url": "https://templates.platoforms.com/pdf/farm-land-lease-agreement-pdf",
+     "kind": "vendor",
+     "total": 21,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "foreign-land": {
+   "queries": [
+    "foreign owned farmland by county",
+    "how much US farmland does China own",
+    "foreign ownership farmland <state>",
+    "AFIDA map"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 41,
+   "verdict": "close",
+   "report": "results/2026-10-15-foreign-land.md",
+   "competitors": [
+    {
+     "name": "farmdoc daily / TIAA Center foreign-ownership mapping utility",
+     "url": "https://farmdocdaily.illinois.edu/?p=42961",
+     "kind": "university",
+     "total": 39,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Iowa State CARD Foreign Interest Tool",
+     "url": "https://farmland.card.iastate.edu/resource/foreign-interest-tool",
+     "kind": "university",
+     "total": 38,
+     "evidence": "snippets"
+    },
+    {
+     "name": "USDA FSA AFIDA report and ArcGIS map",
+     "url": "https://www.fsa.usda.gov",
+     "kind": "government",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Acres.com foreign-owned land layer",
+     "url": "https://www.acres.com/blog/map-highlight-foreign-owned-agricultural-land-map",
+     "kind": "vendor",
+     "total": 32,
+     "evidence": "snippets"
+    },
+    {
+     "name": "K-State AgManager, foreign holdings of Kansas ag land",
+     "url": "https://agmanager.info/node/37755",
+     "kind": "university",
+     "total": 31,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "land-tenure": {
+   "queries": [
+    "percent of farmland rented by state",
+    "rented vs owned farmland county map",
+    "how much farmland is rented"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 42,
+   "verdict": "yes",
+   "report": "results/2026-10-15-land-tenure.md",
+   "note": "land-tenure.html redirects to /farmland-atlas#l=ten_rent; scored the tenure layer",
+   "competitors": [
+    {
+     "name": "USDA ERS Charts of Note, 2022 rented share",
+     "url": "https://www.ers.usda.gov/data-products/charts-of-note/109182",
+     "kind": "government",
+     "total": 38,
+     "evidence": "snippets"
+    },
+    {
+     "name": "ISU Iowa Farmland Ownership and Tenure survey",
+     "url": "https://www.card.iastate.edu",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets"
+    },
+    {
+     "name": "USDA ERS Farmland Ownership and Tenure topic",
+     "url": "https://ers.usda.gov/topics/farm-economy/land-use-land-value-tenure/farmland-ownership-and-tenure",
+     "kind": "government",
+     "total": 35,
+     "evidence": "snippets"
+    },
+    {
+     "name": "AFBF Market Intel, to own or to rent",
+     "url": "https://www.fb.org/market-intel/agricultural-land-to-own-or-to-rent",
+     "kind": "established",
+     "total": 35,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "tariffs": {
+   "queries": [
+    "China tariff on US soybeans now",
+    "ag tariff tracker",
+    "tariffs corn soybeans 2026",
+    "China soybean purchases 25 million tons"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 36,
+   "verdict": "close",
+   "report": "results/2026-10-15-tariffs.md",
+   "competitors": [
+    {
+     "name": "Farm Policy News (Univ. of Illinois)",
+     "url": "https://farmpolicynews.illinois.edu",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets"
+    },
+    {
+     "name": "NDSU Agricultural Trade Monitor",
+     "url": "https://cdn.brownfieldagnews.com/wp-content/uploads/2026/05/NDSU-Agricultural-Trade-Monitor-2026-05.pdf",
+     "kind": "university",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "AFBF Market Intel",
+     "url": "https://www.fb.org/market-intel",
+     "kind": "established",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Agri-Pulse, Tracking China's soybean purchases",
+     "url": "https://www.agri-pulse.com/articles/23991-tracking-chinas-soybean-purchases",
+     "kind": "established",
+     "total": 33,
+     "evidence": "snippets"
+    },
+    {
+     "name": "NCGA trade updates",
+     "url": "https://corn.org/trade-update-5-22-26/",
+     "kind": "advocacy",
+     "total": 29,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "presell-calculator": {
+   "queries": [
+    "how many bushels should I forward contract",
+    "pre-harvest marketing crop insurance guaranteed bushels",
+    "presell calculator APH coverage"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 35,
+   "verdict": "close",
+   "report": "results/2026-10-15-presell-calculator.md",
+   "note": "presell-calculator.html redirects to /harvest-price-tracker#presell; scored the pre-sell step",
+   "competitors": [
+    {
+     "name": "MSU Extension, how many bushels should I market",
+     "url": "https://www.canr.msu.edu/news/high-grain-prices-how-many-bushels-should-i-market",
+     "kind": "university",
+     "total": 33,
+     "evidence": "snippets"
+    },
+    {
+     "name": "ISU Ag Decision Maker guaranteed-bushels guidance (FM1853)",
+     "url": "https://store.extension.iastate.edu/Product/fm1853-pdf",
+     "kind": "university",
+     "total": 31,
+     "evidence": "snippets"
+    },
+    {
+     "name": "ADM Investor Services crop insurance worksheet",
+     "url": "https://admadvantage.com/wp-content/uploads/2021/04/Crop-Insurance-Worksheet-2021.pdf",
+     "kind": "vendor",
+     "total": 26,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Farm Progress / DTN over-contracting articles",
+     "url": "https://www.farmprogress.com/weeds/falling-short-on-contracted-insurance-bushels-",
+     "kind": "established",
+     "total": 24,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "storage-crunch": {
+   "queries": [
+    "grain storage capacity by state 2026",
+    "storage crunch harvest 2026",
+    "why is basis so wide this fall"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 38,
+   "verdict": "close",
+   "report": "results/2026-10-15-storage-crunch.md",
+   "note": "storage-crunch.html redirects to /basis#storage; scored the storage section",
+   "competitors": [
+    {
+     "name": "farmdoc daily, Enough Room for the Harvest? (Oct 7, 2026)",
+     "url": "https://farmdocdaily.illinois.edu/?p=43062",
+     "kind": "university",
+     "total": 40,
+     "evidence": "snippets"
+    },
+    {
+     "name": "AFBF Market Intel, Grain storage remains tight",
+     "url": "https://www.fb.org/market-intel/grain-storage-remains-tight",
+     "kind": "established",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "High Plains Journal, storage capacity bulging",
+     "url": "https://hpj.com/?p=173509",
+     "kind": "established",
+     "total": 27,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "usda-quick-stats": {
+   "queries": [
+    "corn yield by state 2025",
+    "USDA October 2026 yield by state",
+    "soybean yield by state history",
+    "NASS quick stats corn yield"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 40,
+   "verdict": "yes (state level); close overall",
+   "report": "results/2026-10-15-usda-quick-stats.md",
+   "competitors": [
+    {
+     "name": "USDA NASS Quick Stats",
+     "url": "https://quickstats.nass.usda.gov",
+     "kind": "government",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "farmdoc FAST crop yield database",
+     "url": "https://farmdoc.illinois.edu/fast-tools/crop-yield-database",
+     "kind": "university",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "USDA NASS Charts and Maps",
+     "url": "https://www.nass.usda.gov/Charts_and_Maps/",
+     "kind": "government",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "DTN / Farm Progress USDA report summaries",
+     "url": "https://www.dtnpf.com",
+     "kind": "established",
+     "total": 34,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "gdu-calculator": {
+   "queries": [
+    "GDU calculator corn",
+    "corn growing degree units since planting",
+    "when will my corn reach black layer",
+    "GDD calculator by zip code"
+   ],
+   "ours_total": 36,
+   "verdict": "no (close once black-layer bug fixed)",
+   "report": "results/2026-10-15-gdu-calculator.md",
+   "competitors": [
+    {
+     "name": "U2U / MRCC Corn GDD tool",
+     "kind": "university",
+     "total": 39,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "NC State Climate Office corn GDD dashboard",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Pioneer (Corteva) GDU calculator",
+     "kind": "vendor",
+     "total": 35,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Purdue Nielsen late-planting GDD calculator",
+     "kind": "university",
+     "total": 32,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "urea": {
+   "queries": [
+    "when to apply urea",
+    "urea volatilization risk",
+    "urea volatilization temperature",
+    "is agrotain worth it"
+   ],
+   "ours_total": 40,
+   "verdict": "yes (free tools)",
+   "report": "results/2026-10-15-urea.md",
+   "competitors": [
+    {
+     "name": "Climate FieldView / WinField Nitrogen Advisor",
+     "kind": "vendor",
+     "total": 37,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Montana State Soil Scoop / Fertilizer Facts",
+     "kind": "university",
+     "total": 34,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Corteva Nitrogen Loss Calculator",
+     "kind": "vendor",
+     "total": 31,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Koch Agronomic Services knowledge center",
+     "kind": "vendor",
+     "total": 27,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "planting-date": {
+   "queries": [
+    "when to plant corn in wisconsin",
+    "corn planting date calculator",
+    "soil temperature for planting corn",
+    "soybean planting date yield loss"
+   ],
+   "ours_total": 33,
+   "verdict": "no",
+   "report": "results/2026-10-15-planting-date.md",
+   "competitors": [
+    {
+     "name": "Iowa State / IEM soil temperature tools",
+     "kind": "university",
+     "total": 38,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "UMN Extension planting date pages",
+     "kind": "university",
+     "total": 37,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "NC State Climate Office corn planting guidance",
+     "kind": "university",
+     "total": 35,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "UW-Madison soybean planting date (Conley)",
+     "kind": "university",
+     "total": 35,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "field-scout": {
+   "queries": [
+    "field soil map crop history free",
+    "what was planted on this field",
+    "CSR2 lookup by field",
+    "farm field lookup soil productivity"
+   ],
+   "ours_total": 38,
+   "verdict": "close (provisional; live readout not exercised)",
+   "report": "results/2026-10-15-field-scout.md",
+   "competitors": [
+    {
+     "name": "AcreValue",
+     "kind": "startup",
+     "total": 38,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "FBN AcreVision",
+     "kind": "startup",
+     "total": 36,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "USDA CropScape + NRCS Web Soil Survey",
+     "kind": "government",
+     "total": 33,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "pod-counts": {
+   "queries": [
+    "soybean pod count yield",
+    "pro farmer pod count to yield",
+    "pods per bushel soybeans",
+    "divide pod count by 27"
+   ],
+   "ours_total": 41,
+   "verdict": "yes",
+   "report": "results/2026-10-15-pod-counts.md",
+   "competitors": [
+    {
+     "name": "Extension pod-count yield formulas (Purdue, ISU, OSU)",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Pro Farmer Crop Tour coverage",
+     "kind": "established",
+     "total": 35,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "drought-monitor": {
+   "queries": [
+    "drought monitor",
+    "drought monitor this week",
+    "drought in my county",
+    "corn area in drought"
+   ],
+   "ours_total": 31,
+   "verdict": "no",
+   "report": "results/2026-10-15-drought-monitor.md",
+   "competitors": [
+    {
+     "name": "drought.gov county pages (NIDIS)",
+     "kind": "government",
+     "total": 44,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "droughtmonitor.unl.edu (NDMC)",
+     "kind": "university",
+     "total": 41,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "USDA OCE Agriculture in Drought",
+     "kind": "government",
+     "total": 37,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
+  },
+  "rain-county": {
+   "queries": [
+    "how much rain has my county had this year",
+    "<county> rainfall 2026 year to date",
+    "rainfall totals by zip code year to date",
+    "is it wetter than normal this year <county>"
+   ],
+   "ours_total": 44,
+   "verdict": "yes (county YTD); close vs radar-by-ZIP for one field",
+   "report": "results/2026-10-15-rain-county.md",
+   "competitors": [
+    {
+     "name": "precip.ai",
+     "kind": "startup",
+     "total": 38,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "CoCoRaHS station climatology",
+     "kind": "government",
+     "total": 38,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "NWS climate / NOWData, state climate offices",
+     "kind": "government",
+     "total": 34,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15"
   }
  }
 }
