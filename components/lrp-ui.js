@@ -143,8 +143,8 @@
     h += '<p class="src">RMA&rsquo;s expected ending value for this type: <b>' + money(o.eev / 1000) + ' a cwt</b> on ' + esc(L.wdShort(o.end)) + ', ' + o.end.slice(0, 4) + '.' +
       (o.c === '0801' && +o.paf !== 1 ? ' That already has this type&rsquo;s price adjustment factor of ' + (+o.paf).toFixed(2) + ' in it.' : '') + '</p>';
     var showTot = !problem && cwt != null;
-    h += '<div class="lrp-tw"><table class="lrp-t lrp-off"><caption>For sales on ' + esc(d.dayShort) + (closed ? ' (closed, for reference)' : '') +
-      '. Pick a level to see its math. &ldquo;Tested&rdquo; marks the level the record uses in each subsidy band.</caption><thead><tr><th scope="col">Coverage</th><th scope="col">Coverage price a cwt</th>' +
+    h += '<p class="src">Pick a level to see its math. &ldquo;Tested&rdquo; marks the level the record uses in each subsidy band.</p><p class="lrp-hint">Swipe the table sideways for the per head and total columns.</p>';
+    h += '<div class="lrp-tw"><table class="lrp-t lrp-off"><caption>For sales on ' + esc(d.dayShort) + (closed ? ' (closed, for reference)' : '') + '</caption><thead><tr><th scope="col">Coverage</th><th scope="col">Coverage price a cwt</th>' +
       '<th scope="col">Your premium a cwt</th><th scope="col">Per head</th><th scope="col">' + (head > 0 ? head.toLocaleString('en-US') + ' head' : 'All head') + '</th></tr></thead><tbody>';
     rows.forEach(function (r) {
       var f = L.forHerd(r, showTot ? cwt : 0, head || 1), sel = r.level === pickLevel;
@@ -154,7 +154,7 @@
         '<td>' + money(r.coverage) + '</td><td>' + money(r.yourPerCwt, 3) + '</td>' +
         '<td>' + (showTot && f.premHead != null ? money(f.premHead) : '') + '</td><td>' + (showTot && head > 0 && f.premHead != null ? money(f.premHead * head, 0) : '') + '</td></tr>';
     });
-    h += '</tbody></table></div><p class="lrp-hint">Swipe the table sideways for the per head and total columns.</p>';
+    h += '</tbody></table></div>';
 
     var r = rows.filter(function (x) { return x.level === pickLevel; })[0];
     var fh = showTot ? L.forHerd(r, cwt, head || 1) : null;
