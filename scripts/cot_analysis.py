@@ -877,6 +877,55 @@ def build_the_read(out):
     return None
 
 
+GRAIN_LEAD_KEYS = ("corn", "beans")
+
+
+def build_grain_lines(out):
+    """THE READ LEADS WITH CORN AND SOYBEANS, EVERY WEEK (2026-10-15).
+
+    build_the_read() picks the most newsworthy market, which on Oct 6 2026 was
+    Lean Hogs. Most readers here grow corn and soybeans, so the box now opens
+    with one plain line for each, from the same card and the same one measure
+    the cards print, and the newsworthy pick sits under them. Returns a list of
+    {key, label, text}; a market missing from the report is left out, never
+    filled in."""
+    lines = []
+    for key in GRAIN_LEAD_KEYS:
+        c = out.get(key)
+        k = c and c.get("card")
+        if not k or not isinstance(c.get("net"), (int, float)):
+            continue
+        net, chg = c["net"], k.get("chg")
+        if c.get("side") == "flat":
+            pos = (f"funds are close to flat, net {'long' if net >= 0 else 'short'} "
+                   f"{abs(net):,} contracts")
+        else:
+            pos = f"funds are net {'long' if net > 0 else 'short'} {abs(net):,} contracts"
+        if chg is None:
+            move = ""
+        elif chg == 0:
+            move = ", unchanged from last week"
+        else:
+            # Said toward the side the position is on: a net short that falls has GROWN.
+            grew = (net > 0) == (chg > 0)
+            move = f", {abs(chg):,} {'more' if grew else 'fewer'} than last week"
+        p = (c.get("pctl") or {}).get("net_oi_all")
+        since = (c.get("first_week") or "")[:4]
+        if p is None:
+            rank = " There is no long-run ranking for it yet."
+        elif c.get("is_record_high") and net > 0:
+            rank = f" As a share of open interest, that is the biggest net long of every week since {since}."
+        elif c.get("is_record_low") and net < 0:
+            rank = f" As a share of open interest, that is the biggest net short of every week since {since}."
+        else:
+            cr = c.get("crowded")
+            rank = (f" Against every week since {since}, as a share of open interest, that is the "
+                    f"{ordinal(min(99, max(1, round(p))))} percentile ({crowd_word(p)}, "
+                    f"{'crowded ' + cr if cr else 'not crowded'}).")
+        lines.append({"key": key, "label": c["label"], "text": pos + move + "." + rank})
+    return lines
+
+
 def analyse_commodity(key, block, family):
     d = block["dates"]
     n = len(d)
@@ -1436,6 +1485,7 @@ def main():
                        "crowded_measure": "full-record percentile of managed-money net as a share "
                                           "of open interest, on the side the position is on"},
         "read": build_the_read(out),
+        "grain_lines": build_grain_lines(out),
         "family": {"tests": len(measured), "attempted": len(family),
                    "expected_by_chance": round(len(measured) * ALPHA, 1),
                    "raw_hits": raw_hits, "fdr_survivors": len(survivors)},
@@ -1610,6 +1660,23 @@ def selftest():
     t2 = _divergence_read(fc)
     ckt("a net short with net rising is never 'a long position price has stopped confirming'",
         "long position" not in t2 and "net short" in t2, t2)
+
+    # ── The Read leads with corn and soybeans (2026-10-15) ──
+    corn = {"key": "corn", "label": "Corn", "net": 329839, "side": "long", "crowded": None,
+            "first_week": "2010-01-05", "pctl": {"net_oi_all": 81.4}, "card": {"chg": -51381}}
+    beans = {"key": "beans", "label": "Soybeans", "net": -28830, "side": "short", "crowded": "short",
+             "first_week": "2010-01-05", "pctl": {"net_oi_all": 6.2}, "card": {"chg": -6721}}
+    hogs = {"key": "leanhogs", "label": "Lean Hogs", "net": -5000, "side": "short", "card": {"chg": 9131}}
+    gl = build_grain_lines({"leanhogs": hogs, "beans": beans, "corn": corn})
+    ckt("grain lines: corn first, then soybeans, never hogs",
+        [g["key"] for g in gl] == ["corn", "beans"], gl)
+    want_corn = ("funds are net long 329,839 contracts, 51,381 fewer than last week. Against every week "
+                 "since 2010, as a share of open interest, that is the 81st percentile (high side, not crowded).")
+    ckt("grain line: corn Oct 6 2026", gl[0]["text"] == want_corn, gl[0]["text"])
+    ckt("grain line: a net short that fell has GROWN", "6,721 more than last week" in gl[1]["text"]
+        and "crowded short" in gl[1]["text"], gl[1]["text"])
+    ckt("grain lines: a market missing from the report is left out",
+        [g["key"] for g in build_grain_lines({"corn": corn})] == ["corn"])
 
     # ── one crowding read ──
     ckt("crowd word: 81.4 is the high side", crowd_word(81.4) == "high side")
