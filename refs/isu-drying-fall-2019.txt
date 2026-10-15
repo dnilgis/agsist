@@ -1,0 +1,101 @@
+# Iowa State ICM: grain drying considerations this fall (2019)
+# https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall
+# fetched 2026-10-15T21:08:50Z, sha256 47ff0ae413a16b5be7da3a4cfe01ad2792511cfae8e786d2b2c9821f0e8949b0
+
+Grain Drying Considerations this Fall | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Grain Drying Considerations this Fall
+
+September 11, 2019
+
+Content Author: Kristina TeBockhorst, Shawn Shouse
+
+With delayed planting across the state in 2019, it is important to monitor crop development to determine unique grain drying needs this fall.
+
+Potential challenges
+
+Corn damaged by a freeze before it has reached physiological maturity will create issues of low test-weight, low quality, and high moisture. Even without frost damage, corn that reaches maturity later in the year can still have issues of high moisture with less in-field drying between maturity and harvest. Corn infield drying rate decreases with air temperatures: in September, weekly drying is estimated at 4.5 moisture points per week, and in October, November, and December, this is reduced to 2.5, 1, and 0.5, respectively.
+
+Sell wet corn “as is” or dry it?
+
+Harvesting wet grain leaves you with a decision about drying grain yourself or paying others for drying. Consider your buyer’s moisture discount factor or drying charge and shrink factor, as well as your drying system cost and shrinkage loss when deciding whether to sell wet grain or dry it before selling. Consider an example where a seller has 56,000 pounds (1,000 wet bushels) of 20.5% moisture corn and current corn price is at $3.50 per bushel.
+
+Selling wet grain “as is” with a moisture discount
+
+If the buyer is assessing a moisture price discount of 2.0% for each moisture point above 15%, the discount would be 5.5 moisture points times 2.0% for a total discount of 11%, making the discount $3.50 times 11%, or $0.39 per bushel. In this case, the seller would see a net revenue of $3,110, or $3.11 times 1,000 wet bushels.
+
+Selling wet grain “as is” with a drying charge and shrink factor
+
+The buyer may instead use a combination of drying charge and shrink factor. If the buyer is charging a drying fee of $0.048 per wet bushel per point of moisture removed, the drying charge would be $0.048 times 5.5 moisture points times 1,000 wet bushels, or $264. If the buyer uses a shrinkage factor of 1.4% per point above 15%, this would reduce the seller’s bushels by 77 bushels, or 1.4% times 5.5 moisture points times 1,000 wet bushels, leaving 923 bushels of dry grain. The net revenue would be $2,967, or 923 bushels times $3.50 minus $264.
+
+Drying on-farm before selling
+
+Consider the drying cost per bushel of your system as well as the shrinkage loss from the drying process. Using the Ag Decision Maker spreadsheet Corn Drying and Shrink Comparison (A2-32) and a propane cost of $1.00 per gallon and electricity cost of $0.14 per kilowatt-hour, we can estimate a high temperature drying system cost of $0.030 per bushel per point of moisture removed. The drying cost would be equal to $165 ($0.030 times 5.5 moisture points times 1,000 bushels).
+
+Drying shrinkage loss is mostly due to water loss, but also includes handling (dry matter) weight loss. A 56,000-pound load of 20.5% moisture corn consists of 11,480 pounds of water and 44,520 pounds of dry matter. After drying 5.5 moisture points there will be 52,376 pounds (44,520 pounds divided by 0.85). Handling loss from on-farm drying has been measured between 0.22% to 1.71% of wet bushel weight. Assuming a common handling loss of 1%, handling shrink is 560 pounds. Dry weight to sell is 51,820 pounds, or 925 bushels (52,376 minus 560). Also assume additional transportation costs of $0.01 per bushel per mile, which would be $40 to haul four miles to the on-farm drying system. The net revenue then becomes $3,033 (925 times $3.50 minus $165 minus $40). Also consider additional drying costs if planning to store more than 6 months at a lower moisture content.
+
+This example is for illustration only. Ask your buyer for moisture discounts or drying charges and shrink factors. Use your actual costs for propane and electricity.
+
+Estimate propane needs for a high temperature dryer by using the following equation: 0.018 gallons times bushels dried times moisture points dried. While 0.018 gallons is an average propane usage estimate, this value may range from 0.010 to 0.025 gallons per bushel per moisture point, depending on the drying system and outdoor temperature.
+
+If harvest is delayed later into the fall, consider that the drying cost of a high temperature dryer increases by around 14% with every 20 degree decrease in average outdoor temperature.
+
+Resources
+
+Frost Damage to Corn and Soybeans, PM 1635, Charles R. Hurburgh and Garren O. Benson, 2012.
+
+High Moisture Corn Drying and Storage presentation, Kenneth Hellevang, 2014.
+
+Soybean Drying and Storage, PM 1636, Charles R. Hurburgh, 2008.
+
+Estimating the Cost for Drying Corn, A2-31, William Edwards, 2014.
+
+Corn Drying and Shrink Comparison, A2-32, William Edwards, 2014.
+
+Links to this article are strongly encouraged, and this article may be republished without further permission if published as written and if credit is given to the author, Integrated Crop Management News, and Iowa State University Extension and Outreach. If this article is to be used in any other manner, permission from the author is required. This article was originally published on September 11, 2019. The information contained within may not be the most current and accurate depending on when it is accessed.
+
+Authored by
+
+Kristina TeBockhorst
+
+Shawn Shouse
+
+Crops:
+
+-
+Corn
+
+-
+Soybean
+
+Topic:
+
+-
+Equipment
+
+-
+Grain Storage
+
+Tags:
+
+- grain drying
+
+- grain storage
+
+- grain harvest
+
+- harvest challenges
+
+- moisture discount
+
+- drying charge
+
+- drying shrinkage
+
+- grain moisture

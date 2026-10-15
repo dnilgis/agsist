@@ -1,0 +1,267 @@
+# NDSU: post harvest tips for later maturing corn (Hellevang, 2009)
+# https://www.ndsu.edu/agriculture/sites/default/files/2021-05/Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn%20Oct2009.pdf
+# fetched 2026-10-15T21:08:38Z, sha256 1c109f3e6c065591ba5444c5b21f9174947e659d38350ae31b0e2fb6a77e88a2
+
+October 7, 2009
+
+        2009 Post-Harvest Tips for Later Maturing Corn
+                  Ken Hellevang, Ph.D., PE, Extension Engineer, Professor
+              NDSU Extension Service, Ag & Biosystems Engineering Department
+
+Corn Maturity
+Progression to maturity is very slow in October even if there is not a killing frost. The average
+amount of growing degree-days, GDDs, during the first two weeks of October is about 100. In
+2008 there were about 70-80 GDDs during the first two weeks of October. The average amount
+of growing degree-days for October 11-31 is only about 50 GDDs. If the corn has just reached
+full dent but not full maturity, a small reduction in test weight and yield might be expected for
+the corn this year.
+
+The following table summarizes information from various sources on corn development.
+
+                                                                                Grain
+                  Days to       GDDs until      Yield Loss    Test Weight
+   Stage                                                                       Moisture
+                  Maturity       Mature            (%)         (lbs/bu.)
+                                                                              Content (%)
+  Dough         30-40         600-700             50-60           35-40         60-80
+ Early Dent     20-25         450-550             25-40           45-50         50-55
+ Full Dent      12-17         250-400             10-20           50-53         35-45
+ Half Milk
+                10-15         150-300              5-10           54-55          35-40
+    Line
+  Mature           0             0                  0              56            25-35
+*GDD needed varies with corn RM and hybrid
+
+Field Drying
+The amount of drying in the field depends on parameters such as corn maturity, hybrid, and
+moisture content, air temperature and relative humidity, solar radiation, and wind speed. The
+moisture content to which corn will dry is determined by the corn’s equilibrium moisture
+content, EMC, which is based on air temperature and relative humidity. Corn growing degree-
+days have been used to predict the rate of field drying. Another predictor of the drying rate is
+potential evapotranspiration, PET, which is based on parameters similar to those that affect
+drying. Values for PET calculated by the North Dakota Agricultural Weather Network for 2008
+are shown in the following table. There appears to be a good correlation between PET and field
+drying experience. The table shows these EMC, GDD, PET values and the estimated percentage
+points of field drying for each month.
+“Estimated” Corn Field Drying
+            EMC                         PET       Estimated Drying (%-pt.)
+ Month                    GDD
+             (%)                        (in.)          Month Week
+  Sep         15         250-350        4.0-5.0         18         4.5
+  Oct         16         100-125        2.8-3.5       11-12        2.5
+  Nov         19          20-30         0.8-1.2        4-5          1
+  Dec         20             0          0.5-0.8          2         0.5
+  Jan         21             0          0.5-0.8          2         0.5
+  Feb         21             0          0.5-0.9          3         0.8
+  Mar         19             0          1.3-1.6          5          1
+  Apr         16          50-90         3.2-4.5         16          4
+  May         14         200-300        6.5-8.5         30          7
+PET=Potential Evapotranspiration
+        (NDAWN, Weather, Total PET, Estimate: 1-inch = 4% drying)
+EMC-equilibrium moisture content, GDD-growing degree-days,
+%-pt. - percentage point of moisture reduction, for example from 20% to 15% are 5%-pts.
+
+Standing corn in the field may dry about 0.3 to 0.4 percentage points per day during October,
+assuming normal weather conditions, and 0.15 to 0.2 per day or less during November. Corn at
+35% moisture content on October 11 might be expected to dry to about 27% by November 1 and
+about 22% by December 1. Therefore, corn moisture content at harvest will likely be in the mid-
+20% range again this year.
+
+Immature corn dries more slowly in the field than mature corn. Frosted high moisture corn can
+mold on the stalk.
+
+Field drying is normally more economical until mid to late October and mechanical high
+temperature drying is normally more economical after then.
+
+Field drying is extremely slow during winter months and corn will only dry to about 20%
+moisture content based on the equilibrium moisture content for average monthly air temperature
+and relative humidity conditions. Corn in the field over winter in 2008-2009 dried from 25%-
+30% moisture in November to 17%-20% when harvested in February and early March. Corn
+losses were generally small if the corn stalk was strong in November. There are numerous
+reports of weak corn stalks this year, so field losses might be much greater this year than last
+year. Examine the stalks and push on them to determine stalk condition, before deciding to leave
+corn stand over winter. Accumulated snow and cover on the snow and ground from the corn
+resulted in wet fields in the spring.
+
+Postharvest Management of High Moisture Corn
+Corn at moisture contents exceeding about 23% should not be stored in a grain bin because the
+kernels may freeze together and also may deform and bind together. The corn may not flow from
+the bin for unloading. Corn above this moisture content should be placed so it can be unloaded
+with a front-end loader or something else that can mechanically dislodge the corn.
+
+It is critical to provide aeration to keep the corn cool. Wet corn will deteriorate rapidly unless
+kept cool. Corn will deteriorate even with airflow, but without airflow through the corn it will
+increase in temperature resulting in rapid deterioration.
+
+Condensation and icing occurs on bin vents at temperatures near or below freezing, so leave bin
+covers open to serve as a safety opening when operating fans near or below freezing temperature.
+There were numerous reports last year of bin vents freezing over and the fan pushing the roof up
+and damaging the bin roof.
+
+     "Approximate" Allowable Storage Time (Days) for Cereal Grains
+                                              Temperature ( F)
+   M.C.
+                   30             40             50             60            70             80
+   (%)
+    14               *              *             *              *            200            140
+    15               *              *             *            240            125            701
+    16               *              *           230            120             70             40
+    17               *            280           130             75             45             20
+    18               *            200            90             50             30             15
+    19               *            140            70             35             20             10
+    20               *             90            50             25             14              7
+    22             190             60            30             15              8              3
+    24             130             40            15             10              6              2
+    26              90             35            12              8              5              2
+    28              70             30            10              7              4              2
+    30              60             25             5              5              3              1
+Based on composite of 0.5 percent maximum dry matter loss calculated on the basis of USDA
+research at Iowa State University; Transactions of ASAE 3330337, 1972; and "Unheated Air
+Drying," Manitoba Agriculture Agdex 732-1, rev. 1986.
+
+* Approximate allowable storage time exceeds 300 days.
+
+High Moisture Corn Storage be Ensiling
+Shelled corn should be at 25 to 35% moisture for anaerobic (without oxygen) high moisture
+storage in silos or silo bags. Any tears in the plastic bag must be promptly repaired to minimize
+storage losses. Whole shelled corn can be stored in oxygen-limiting silos, but a medium grind is
+needed for proper packing in horizontal or conventional upright silos. A bunker needs to be air
+tight - covered with plastic on top and sides, sealed at seams, etc. In addition, it needs to be
+managed to seal any punctures in the plastic that occur during the storage period. Exposure to air
+will result in spoilage and loss. Wet grain exerts more pressure on the silo than corn silage, so
+conventional concrete stave silos may require additional hoops or the silo must not be completely
+filled. Corn at moisture contents below 25% will not ensile, so it will need to be dried for
+storage. If oxygen is not adequately removed as the corn ensiles, heating and severe deterioration
+will occur.
+
+Natural Air and Low Temperature Corn Drying
+Corn above 21% moisture should not be dried using natural air and low temperature drying to
+minimize corn spoilage during drying. An airflow rate of 1.0 to 1.25 cfm/bu is recommended to
+reduce drying time. Because the drying capacity is extremely poor at temperatures below 35 to
+40 degrees, little drying may be possible during the fall using a natural air system. Cool the corn
+to 20 to 25 degrees for winter storage and start drying in early April. Adding heat does not
+permit drying wetter corn and only slightly increases drying speed. The primary effect of adding
+heat is to reduce the corn moisture content. Natural air drying in the spring is the most energy
+and cost effective method of drying. Corn depth should be limited to about 20 to 22 feet to obtain
+the desired airflow rate for drying. Turn fans off during extended rain, fog or snow to minimize
+the amount of moisture moved into the bin by the fan.
+
+High Temperature Drying
+Using the maximum drying temperature that will not damage the corn increases the dryer
+capacity and reduces energy consumption. The amount of energy required to remove a pound of
+water is about 20% less using a drying air temperature of 200ºF than at 150ºF. Typical
+recommended drying temperature is about 210 ºF. Be aware that high drying temperatures may
+result in a lower final test weight and increased breakage susceptibility. In addition, as the drying
+time increases with high moisture corn, it becomes more susceptible to browning. Dryer
+temperatures needed to be reduced below 200°F in 2008, to minimize the corn kernel damage.
+
+Housekeeping during drying was critical during 2008 due to condensation occurring on the dryer
+creating a wet surface for debris to accumulate. The debris sometimes reduced airflow through
+the dryer reducing drying capacity and creating a fire hazard.
+
+In-Storage Cooling
+Use in-storage cooling instead of in-dryer cooling to boost capacity of high-temperature dryers.
+Cooling corn slowly in a bin rather than in the high temperature dryer will also reduce the
+potential for stress cracks in the kernels.
+
+In-storage cooling requires a positive-pressure, airflow rate of about 0.20 cfm/bu or 12 cfm/bu-hr
+of fill rate. Cooling should be started immediately when corn is placed in the bin from the dryer.
+Dryer capacity is increased 20 to 40% and about one percentage point of moisture is removed
+during corn cooling. Condensation problems can be reduced by cooling the corn in the dryer to
+about 90 degrees before placing it in storage. There is more condensation at cold outdoor
+temperatures, such as occurred last year, than when outdoor temperatures are warmer.
+
+Dryeration
+Dryeration will increase the dryer capacity about 50 to 75%; reduce energy used by about 25%
+and remove about 2 to 2.5 points of moisture. (0.25% for each 10 degrees the corn is cooled.)
+With dryeration, hot corn from the dryer is placed in a dryeration bin with a perforated floor,
+allowed to steep for 4 to 6 hours without airflow, cooled, and then moved to a storage bin. There
+will be a tremendous amount of condensation during the steeping and cooling process, so the
+corn must be moved to a different bin for storage or spoilage will occur along the bin wall and on
+the top grain surface.
+
+Dryer Energy Efficiency
+A dryer that captures the heat from cooling the dry corn and a portion of the air from the final
+drying portion of the dryer can reduce the energy used to dry the corn by about 20% or more
+depending on outdoor temperature. Newer dryers typically have incorporated features to make
+them more energy efficient than previous dryers.
+
+Estimating High Temperature Drying Cost
+Propane cost for high temperature drying corn can be estimated using the following formula.
+Cost/bu. – pt. = 0.022 x propane price/gal. For example, the drying cost is $0.022/ bu.-pt. if the
+cost of propane is $1.00, 0.022 x $1.00. It will cost about $26.00 for propane to remove 10
+percentage points of moisture from 120 bushels of corn using $1.00 propane.
+
+Estimating Drying Fuel Requirement
+The estimated quantity of propane needed to dry is 0.02 gallons per bushel per point of moisture
+removed. For example, 24 gallons of propane is needed to dry 120 bushels of corn from 25% to
+15%. (0.02 x 120 bu. x 10 pts.) This is based on 0.72 pounds of water being removed per point of
+moisture per bushel, 2,500 Btu of heat required to remove a pound of water in a high temperature
+dryer, and a propane heat content of 91,500 Btu/gallon.
+
+Moisture Shrink
+Moisture shrink is the reduction in weight as the grain is dried. The moisture shrink (%) = [(Mo-
+Mf) / (100-Mf)] x 100. Mo=Original Moisture Content, Mf=Final Moisture Content. The
+moisture shrink drying corn from 25% to 15% is [(25-15)/ (100-15)] x 100 = 11.76%
+
+Moisture shrink factor is the reduction in weight as the grain is dried one percentage point.
+Moisture Shrink Factor = 100 (100 – final moisture content). The shrink factor drying corn to
+15.5% is 1.1834. The moisture shrink drying corn from 20.5 to 15.5 would be 5 x 1.1834 =
+5.92%.
+
+Obtaining an Accurate Moisture Content Measurement
+Moisture meters will not provide accurate readings on corn coming from a high temperature
+dryer. The error will vary depending on the amount of moisture removed and the drying
+temperature, but the meter reading may be about 2% lower than true moisture. Check the
+moisture of a sample, place the sample in a closed container for about 12 hours, and then check
+the moisture content again to determine the amount of error.
+
+Moisture meter errors increase as corn moisture contents increase, so readings above 25% should
+only be considered estimates.
+
+In addition, moisture meters are affected by grain temperature. If the meter does not
+automatically measure the grain temperature and adjust the value, then it must be done manually.
+Even if the meter does it automatically, it is recommended to cool a sample in a sealed container
+to room temperature before measuring the moisture content. Then compare the moisture content
+of the room temperature sample to the initial sample to verify that the adjustment is done
+accurately.
+
+Moisture meters normally are not accurate when grain temperatures are below about 40 degrees.
+Place the corn sample in a plastic bag or other sealed container, warm it to room temperature,
+and then measure the moisture content.
+
+Corn Test Weight
+Normally, corn test weight increases about 0.25 pound for each point of moisture removal during
+high temperature drying. However, the increase in test weight is affected by the amount of
+mechanical damage during harvest and the gentleness of the drying. Due to the high mechanical
+damage involved with harvesting 25% to 30% moisture corn and high drying temperatures used
+in 2008, frequently there was no increase in test weight during drying. There will be little or no
+increase in test weight on immature or frost-damaged corn.
+
+Corn Storage
+More fines are produced when corn is wet, because more aggressive shelling is required, which
+causes more kernel cracking and breaking. There is also more potential for stress cracks in
+kernels during drying, which leads to more breakage potential during handling. In addition,
+immature corn contains more small and shriveled kernels. Fines cause storage problems because
+they spoil faster than whole kernels, they have high airflow resistance, and they accumulate in
+high concentrations under the fill hole unless a spreader or distributor is used. Preferably, the
+corn should be screen-cleaned before binning to remove fine material, cob pieces, and broken
+kernels.
+
+Corn with damage to the seed coat and immature corn has a shorter storage life than mature corn.
+Therefore, cooling the grain in storage to about 20 to 25 degrees for winter storage is more
+important than for mature corn. It is recommended to dry the corn a percentage point lower in
+moisture content. More frequent checking of the storage is also recommended, and immature or
+damaged corn is not recommended for long-term storage.
+
+Safety
+Ice accumulation on fans leads to imbalance and vibration. Fans disintegrated in 2008-09 due to
+this problem. Monitor fans for ice accumulation and remove the ice if it is observed. Bridging of
+corn in a bin transfers more of the load to the bin wall that may lead to bin failure. Follow
+recommended storage management to minimize the potential for crusting or bridging and watch
+for the grain flow when unloading. Never enter a bin while unloading grain. Also, do not enter a
+bin to break up grain bridging. Two people in this region lost their lives in 2008-09 due to grain
+entrapment, and several more narrowly escaped.
+
+For more information do an internet search for NDSU corn drying.
+

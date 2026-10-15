@@ -1,0 +1,704 @@
+# NASS Cash Rents by County (survey guide and release dates)
+# https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/
+# fetched 2026-10-15T21:09:42Z, sha256 abfbbad488287a38314003b90d5613af8b0f2ed188b3d0a7a691502b27e9b28a
+
+USDA - National Agricultural Statistics Service - Surveys - Cash Rents
+
+Skip to Main Content
+
+United States Department of Agriculture
+
+National Agricultural Statistics Service
+
+Subscriptions: National | News
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+- Data & Statistics
+
+Access Quick Stats (searchable database)
+
+The Quick Stats Database is the most comprehensive tool for accessing agricultural data published by NASS. It allows you to customize your query by commodity, location, or time period.
+
+- Quick Stats System Updates
+
+- Download Quick Stats data files
+
+Access Quick Stats Lite
+
+Quick Stats Lite provides a more structured approach to get commonly requested statistics from our online database.
+
+Explore Statistics
+
+-
+
+By State
+
+-
+
+By Subject
+
+- Crops and Plants
+
+- Demographics
+
+- Economic and Prices
+
+- Environmental
+
+- Livestock and Animals
+
+- Research, Science, and Technology
+
+-
+
+Charts and Maps
+
+-
+
+Data Visualization
+
+-
+
+Pre-Defined Queries
+
+-
+
+Special Tabulations and Restricted Microdata
+
+County Level Information
+
+- County Maps
+
+- County and District Geographic Boundaries
+
+- County and District Codes
+
+- Commodity Codes
+
+- Livestock County Estimates
+
+Geospatial Data & Interactive Maps
+
+- CroplandCROS
+
+- Cropland Data Layer
+
+- VegScape
+
+- Crop Condition and Soil Moisture Analytics
+
+- Crop Sequence Boundaries
+
+- Crop Progress & Condition Gridded Layers
+
+- Disaster Analysis
+
+- Land Use Strata for Selected States
+
+- Publications
+
+Today's Reports
+
+Browse NASS Reports
+
+- by Subject
+
+- by Date (Reports Calendar)
+
+- by Title/Release Day
+
+- by Keyword
+
+- Guide to Products and Services
+
+Additional Reports
+
+- Highlights
+
+- 2022 Census of Agriculture
+
+- Surveys and Programs
+
+- Methodology & Quality Measures
+
+- Agricultural Statistics Board Corrections
+
+- Research Reports
+
+Historical Publications
+
+- Archived Ag Census Reports (2002 and prior - published every 5 years)
+
+- Annual Agricultural Statistics
+
+- Statistical Bulletins (final estimates, 1987 to 2012
+
+- Track Records: (crops, livestock, grain stocks)
+
+- Trends 20th century
+
+- Price Reactions (after crop or livestock reports)
+
+Receive Reports by Email:
+
+- National Reports
+
+- NASS News Releases
+
+- Newsroom
+
+News Releases
+
+10/01/26 USDA to Host Virtual Data Users’ Meeting for Public Input on Statistical Programs
+
+09/30/26 US corn ending stocks up 35% from last year, soybean ending stocks down 3%
+
+09/24/26 United States hog inventory down 2%
+
+08/12/26 USDA unlocks the power of producer insights in latest August Crop Production report Data is vital to ag industry’s decision-making
+
+08/12/26 Producers Are Being Called to Help Build Their County Crop Estimates
+
+Read More News
+
+ASB Notices
+
+06/22/26 NASS Adds Additional Counties to the 2025 Cotton County-level Estimates
+
+12/22/25 USDA NASS reschedules reports due to December 24 & 26 government closure
+
+11/19/25 USDA Reschedules Reports Affected by Lapse in Federal Funding
+
+10/31/25 USDA’s National Agricultural Statistics Service (NASS) will release key data in November
+
+08/28/25 NASS discontinues select data collection programs and reports
+
+Read More Notices
+
+Videos
+
+02/13/24 2022 Census of Agriculture Data Highlights
+
+02/13/24 How to Find 2022 Census of Agriculture Data
+
+02/13/24 2022 Census of Agriculture Data Release Event
+
+07/16/21 What is a Farm?
+
+08/05/20 The NASS Mission: We do it for you
+
+View More Videos
+
+ASB Briefings
+
+10/09/26 Crop Production (October 2026)
+
+09/30/26 Small Grains Summary and Grain Stocks (September 2026)
+
+09/24/26 Quarterly Hogs and Pigs (September 2026)
+
+09/11/26 Crop Production (September 2026)
+
+08/12/26 Crop Production (August 2026)
+
+View More Briefings
+
+- Surveys
+
+Respond to Surveys Online
+
+Guide to NASS Surveys and Programs
+
+Understanding Agricultural Statistics
+
+Make Sure I'm Counted
+
+Statistical Programs and Review
+
+- Census
+
+- About NASS
+
+Structure and Organization
+
+- Agency Overview
+
+- NASS Biographies
+
+- Organizational Chart
+
+- Assistance to Other Organizations
+
+- International Programs
+
+- Talking About NASS - A guide for partners and stakeholders
+
+- USDA Strategic Goals
+
+Guiding Principles
+
+- Mission and Core Values
+
+- Keeping Data Safe
+
+- Confidentiality Pledge
+
+- Security Pledge
+
+- Security Statement
+
+- Statement of Commitment to Scientific Integrity
+
+- Regulations Guiding NASS
+
+- Information Quality
+
+- Learning Agenda, Fiscal Year 2024 -2026
+
+Civil Rights
+
+- Anti-Harassment Policy | USDA
+
+- Civil Rights Accountability Policy and Procedures
+
+- No FEAR Act Notice
+
+- No FEAR Act - NASS Data
+
+-
+
+REE Reasonable Accommodations and Personal Assistance Services
+
+- How to File an EEO Complaint
+
+- Accessibility Statement
+
+- Architectural Barriers Act
+
+- And Justice for All posters
+
+Work at NASS
+
+- Career Opportunities
+
+Education and Outreach
+
+- Understanding Ag Statistics
+
+- Data Users' Meetings
+
+- Morris Hansen Lecture
+
+- International Conference on Agricultural Statistics
+
+History and Procedures
+
+- Agricultural Statistics Board and Lockup
+
+- Agricultural Statistics: A Historical Timeline
+
+- The Story of U.S. Agricultural Estimates
+
+- As We Recall: The Growth of Agricultural Estimates, 1933-1961
+
+-
+
+Safeguarding America's Agricultural Statistics Report and Video
+
+- History of Ag Statistics
+
+- Report Procedures
+
+- An Evolving Statistical Service
+
+- Fact Finders for Agriculture
+
+-
+
+Agriculture Counts - The Founding and Evolution of the National Agricultural Statistics Service 1957-2007
+
+- Hall of Fame
+
+- Contact Us
+
+Mailing Address:
+
+USDA-NASS
+
+1400 Independence Ave., SW
+
+Washington, DC 20250
+
+Survey FAQs and Contact Us:
+
+Access FAQs or submit a question.
+
+Data Inquiries:
+
+Hours: 8:00 a.m. - 5:00 p.m. Central Standard Time
+
+Monday - Friday, except federal holidays
+
+Toll-Free: (800) 727-9540
+
+Media Inquiries:
+
+Email: NASS-Media@usda.gov
+
+Other USDA Inquiries:
+
+Hours: Monday to Friday 8 a.m. - 5 p.m. EST
+
+Toll-Free: (833) One-USDA
+
+Email: askusda@usda.gov
+
+Website: https://ask.usda.gov/s/
+
+Translation Services:
+
+Email: NASSLanguages@usda.gov
+
+Regional and State Field Offices:
+
+Find contact information for Regional and State Field Offices
+
+Ask a Specialist:
+
+Have a specific question for one of our subject experts? Contact a specialist.
+
+Web Content Publishing Schedule:
+
+Section 207(f)(2) of the E-Government Act of 2002 requires federal agencies to develop an inventory of information to be published on their Web sites, establish a schedule for publishing information, make those schedules available for public comment, and post the schedules and priorities on the Web site.
+
+- Help
+
+Technical Issues
+
+- RSS Feed
+
+- Contact Us
+
+Search Tips
+
+- Search Tips
+
+For Developers and Data Users
+
+- Application Programming Interfaces (APIs)
+
+Statistics by State
+
+Surveys
+
+Related Topics
+
+- Make sure I'm counted
+
+- Foundation of Surveys
+
+- Methodology and Quality Measures
+
+- Request a Blank Survey Form
+
+Guarding your Privacy
+
+- Confidentiality Pledge
+
+- Security Pledge
+
+- Regulations Guiding NASS
+
+- USDA Privacy Impact Assessment
+
+Independent Reviews
+
+- A Review of the Census of Agriculture
+
+- Agricultural Resource Management:
+
+- NAS Review of the ARMS Program
+
+- ARMS Progress Report
+
+Surveys
+
+Cash Rents
+
+The Cash Rents Survey provides the basis for county estimates of the cash rent paid for irrigated cropland, non-irrigated cropland, and pasture. The 2008 Farm Bill mandated that NASS provide mean rental rates for all counties with 20,000 acres of cropland plus pasture.
+
+NASS conducts the county-level Cash Rents survey every year in all states except Alaska. U.S. and state estimates are released in August every year. All qualifying counties in these states are represented in the sample. The target population is all farms and ranches that have historically rented land on a cash basis for any of the three land use categories. Land rented for a share of the crop, on a fee per head, per pound of gain, by animal unit month (AUM), rented free of charge, or land that includes buildings such as barns are excluded from the survey.
+
+Respond Online
+
+Click here to complete your survey online. Remember, you will need your unique survey code to sign in.
+
+- Get the data
+
+- Visualizations
+
+- Methodology and Quality Measures
+
+- About the Survey
+
+- Report Forms
+
+Get the data from the results of this survey.
+
+Publications:
+
+U.S and State estimates will be published on the USDA-NASS Quick Stats database the first week of August, every year.
+
+County estimates will be published to the Quick Stats database in late August every year.
+
+Access the data in Quick Stats database:
+
+View and download data from the NASS Quick Stats database.
+
+- Choose the detailed database (Quick Stats 2.0).
+
+- In Quick Stats 2.0, under Program, select "Survey."
+
+- Make additional category choices for the data you are looking for.
+
+- Click to read about the Quick Stats Tools
+
+Want to view all reports? Click an option below to visit ESMIS/NAL or to subscribe to our RSS feeds.
+
+National reports
+
+RSS feeds
+
+Data Visualizations:
+
+Expense
+
+(Measured in $/Acre)
+
+Methodology and Quality Measures
+
+October 6, 2026
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 29, 2025
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 2, 2024
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 22, 2023
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 26, 2022
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 6, 2021
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 6, 2020
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 6, 2019
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 9, 2018
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 3, 2017
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 5, 2016
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 5, 2015
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 1, 2014
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 2, 2013
+
+- Methodology and Quality Measures
+
+- Report Form
+
+August 3, 2012
+
+- Methodology and Quality Measures
+
+- Report Form
+
+September 9, 2011
+
+- Methodology and Quality Measures
+
+- Report Form
+
+Program Content
+
+Approximately 280,000 farms and ranches across the United States are contacted for their total acres operated and acres rented for cash for each land use category (irrigated cropland, non-irrigated cropland, and permanent pasture) for the current year. For each land use category with positive acres, respondents are given the option of reporting rent per acre or total dollars paid.
+
+Uses
+
+The Farm Service Agency (FSA) uses cash rent county estimates to determine market-based rates in administering USDA programs, such as the Conservation Reserve Program (CRP). Other state and federal government agencies, universities, and research organizations use these data for other forms of economic analysis. The data provide farmers and ranchers with current information about rental rates in their county and are available for their use in making decisions regarding renting and leasing farmland.
+
+Frequency
+
+The Cash Rents Survey is conducted every other year beginning with the first mail out in mid-February.
+
+Methods
+
+Data collection for the Cash Rents Survey is conducted by mail and telephone. The initial mail-out occurs in mid-February followed by a second mailing in mid-March. Non-response phone follow-up is conducted from April to July from NASS’ Data Collection Centers. Some field follow up is conducted to insure adequate response rates for the survey. Over 35 percent of the survey is collected by mail.
+
+Data are summarized to provide the mean cash rental rate for each land use category in each district and county. District and county mean rates must reconcile to a previously published state mean cash rental rate for each category. State level mean cash rents are estimated from the Cash Rents Survey. Samples for this survey are drawn with a county-level stratified design. An additional indication is also available from the June Area Survey. This is a probability sample of land segments selected from the complete NASS area sampling frame stratified and sampled by intensity of agriculture.
+
+Related Programs
+
+Census of Agriculture
+
+June Area Survey
+
+Report Form and Instructions
+
+- 2024 Cash Rents report forms
+
+Last Modified:
+11/19/2025
+
+~ Providing Timely, Accurate and Useful Statistics in Service to U.S. Agriculture ~
+
+- NASS Home
+
+- |
+
+- USDA.gov
+
+- |
+
+- Data.gov
+
+- |
+
+- USA.gov
+
+- |
+
+- WhiteHouse.gov
+
+- |
+
+- Economics, Statistics and Market Information System (ESMIS)
+
+- |
+
+- No Fear Act - NASS Data
+
+- |
+
+- Accessibility Statement
+
+- |
+
+- FOIA
+
+- Privacy Policy and Assessments
+
+- |
+
+- Security Statement
+
+- |
+
+- Information Quality
+
+- |
+
+- Non-Discrimination Statement
+
+- |
+
+- Guidance Documents
+
+- |
+
+- USDA Policies and Links
+
+- |
+
+- AskUSDA
+
+Feedback

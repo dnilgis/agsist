@@ -1,0 +1,61 @@
+# SDSU Extension: monitor corn rootworm adults (silk clipping, sticky cards)
+# https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk
+# fetched 2026-10-15T21:08:12Z, sha256 e537cccd50291125673042126fdfc776c2caf2b09cbbbf92e6c9c84ff8b8cb0e
+
+Monitor Your Corn for Corn Rootworm Adults To Inform Management for Next Year and To Avoid Substantial Silk FeedingSouth Dakota State University extension logoSouth Dakota State University extension logoFacebook logoX logoYouTube logoInstagram logo
+
+-
+
+Monitor Your Corn for Corn Rootworm Adults to Inform Management for Next Year and to Avoid Substantial Silk Feeding
+
+Written collaboratively by Adam Varenhorst, Philip Rozeboom, Patrick Wagner, and Brad McManus.
+
+Corn rootworm adults are active across South Dakota, and as a reminder, it’s a good time to scout to determine if your fields have a rootworm issue.
+
+Scouting
+
+(Credit: SDSU Extension)
+
+One of the easiest ways to scout for corn rootworm adults is the use of yellow sticky cards. As their name implies, these cards are covered in a gluelike substance that captures insects that are attracted to the yellow-colored paper. For corn rootworms, the presence of two adult rootworms captured within a single week is an indicator that management strategies for that field need to be altered. The yellow sticky cards should be placed in several locations of the field and replaced on a weekly basis. The traps should be attached to the stalk above ear height. This monitoring should continue through August to determine the corn rootworm populations present in the field.
+
+Another method for determining if rootworms are the culprits of lodged corn is to evaluate the roots for injury. Roots should be dug and washed to remove excess soil. Nodes 4, 5, and 6 should be evaluated for the number of roots on the node that are pruned to within 1.5 inches of the stalk. This method of evaluating uses a 0 to 3 injury scale, with 0 indicating that no injury was present. A rating of 3 indicates that all of the roots on the three nodes are pruned. The ratings vary based on the number of roots that are pruned, and a more-comprehensive explanation can be found in our corn rootworm fact sheet. A root rating of 1 indicates average yield loss at approximately 15%, a root rating of 2 indicates approximately 30% yield loss, and a rating of 3 indicates approximately 45% yield loss.
+
+Identification
+
+Adult corn rootworms vary slightly in size and greatly in color between the two species that are pests of corn in South Dakota. The northern corn rootworm (abbreviated as NCR) is typically a solid green color that can vary from light to dark green (Figure 1). Shortly after their emergence, the NCR adults may appear yellow, but their color will change after feeding. The NCR adults are slightly smaller than the western corn rootworm (abbreviated as WCR) adults. The WCR adults are yellow in color and have black markings on their hardened forewings (Figure 2). These markings may appear as three distinct lines to a single dark patch.
+
+Northern Corn Rootworm
+
+Figure 1. Northern corn rootworm adults. (Credit: Adam Varenhorst, SDSU Extension)
+
+Western Corn Rootworm
+
+Figure 2. Western corn rootworm adults. (Credit: Adam Varenhorst, SDSU Extension)
+
+Corn rootworm larvae of both species are wormlike and pale yellow to white in color and not commonly observed after adult emergence. These larvae are very difficult to distinguish between species.
+
+Silk Feeding
+
+Figure 3. Northern corn rootworms adults feeding on corn silks. (Courtesy: Marlin E. Rice)
+
+In addition to the larval injury, adult corn rootworms can cause issues above ground during pollination. Adults will feed on silks which can cause additional yield loss due to poor ear fill (Figure 3).
+
+Adult corn rootworms may also cause issues by feeding on corn leaves, tassels, and developing kernels. Scouting for corn rootworm adults is from midmorning to late afternoon. If corn rootworm adults are observed in a field, scout five random plants from 10 different locations throughout the field. The number of corn rootworm adults present should be recorded. The threshold for corn rootworm adults on corn plants is an average of five or more beetles per plant during the first week of pollen shed. If the threshold is reached, a foliar applied insecticide is recommended to reduce the populations.
+
+For silk clipping, scout five random plants from 10 different locations throughout the field (can be the same plants that were evaluated for adult rootworm populations). For each plant, measure the length of the remaining silk that is protruding from the ear of the selected plant. If the silks are clipped to within ½ inch of the ear tip on 25-50% of the total number of scouted plants, foliar insecticide application is recommended. It is important to remember that yield will not be affected if silk is clipped after pollination has occurred (brown silks present). Other insects such as grasshoppers can also feed on silks and fields with both rootworm and grasshopper activity should be closely monitored. Please visit the current South Dakota Pest Management Guide: Corn for a list of insecticides that are labeled for corn rootworm adult management.
+
+Related Topics
+
+Corn Insects
+
+Steps to Prevent Stored Grain Infestations
+
+As fall harvest is approaching it is important to ensure that grain bins are prepared in the best possible manner to prevent insect infestations.
+
+Small Black Beetles Infesting the Tips of Corn: What you should know
+
+There has been a recent increase in small, black beetles infesting the tips of corn ears and often being found in damaged kernels. There are three species of beetles, often referred to collectively as sap beetles, that can be found feeding on corn.
+
+Aphid Populations Observed in South Dakota Corn Fields
+
+During the last week, we have observed low level aphid populations in corn fields. Although aphid populations can reach high densities in corn, their presence doesn’t indicate guaranteed yield loss.

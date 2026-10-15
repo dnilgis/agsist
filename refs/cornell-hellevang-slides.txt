@@ -1,0 +1,270 @@
+# Cornell-hosted Hellevang grain drying slides (cfm and EMC by month)
+# https://nydairyadmin.cce.cornell.edu/pdf/event/pdf217_pdf.pdf
+# fetched 2026-10-15T21:09:00Z, sha256 06103de414be763d2b010e495b5e1919a9a1cfaa9f3ab73dc9a4f59cebbe697b
+
+Drying Small Grains
+
+      West Winfield, NY
+      February 3, 2015
+
+
+ Kenneth Hellevang, Ph.D., P.E.
+ Extension Engineer & Professor
+Recommended Long-Term Storage
+      Moisture Content
+          EMC @ 70ºF & 60% RH
+        Grain     EMC     Moisture
+ Barley          11.8%      12%
+ Canola           8.0%      8%
+ Corn            12.8%      13%
+ Flaxseed         8.3%      8%
+ Soybeans        10.2%      11%
+ Sunflower
+   Non-Oil        9.6%      10%
+   Oil            7.4%       8%
+ Wheat           13.3%     13.5%
+Natural Air Drying
+                North Dakota
+              Harvest Progression
+
+                   Aug             Sep             Oct        Nov
+Crop          10   20    30   10   20    30   10    20   30   10
+
+Barley        20   49    77   94   99
+Canola        4    15    36   61   81    92   97
+Corn                                2    9    22    43   73   88
+Flaxseed            7    20   40   61    79   90    96
+Soybeans                           15    46   67    83   93   98
+Sunflower                                7    21    49   78   90
+Wheat         13   34    61   83   94    98   99
+Temperature        69              58               47        27
+Climate Comparison, NY v. ND
+ Syracuse, NY      Carrington, ND
+Equilibrium Moisture Content
+ Barley               Air
+
+
+
+                    70°F
+                   70% RH
+
+
+EMC = 13.3%
+Heat Reduces Air Relative Humidity and
+Grain Moisture Content
+
+
+
+                                85ºF
+
+                              38% RH
+   65ºF
+  75% RH                    7.4 lbs. Water
+ 7.4 lbs Water
+
+
+                           EMC = 10.0%
+EMC= 15.8%
+
+
+
+
+10,000 cubic feet of air
+Equilibrium Moisture Content
+ Barley               Air
+
+
+
+                    75°F
+                   60% RH
+
+
+EMC = 11.7%
+      Running Fans at Night
+
+
+
+
+Condition   Temp. (F)   Relative   E.M.C
+                        Humidity
+Afternoon      80         43%      10.7%
+  Night        60         85%      17.9%
+Average        70         60%      13.3%
+Barley Equilibrium Moisture Content
+“Approximate” Allowable Storage Time
+      for Cereal Grains (Days)
+ Moisture         ----- Grain Temperature (°F) -----
+ Content    30º    40º        50º         60º        70º      80º
+
+   (%)            Approximate Allowable Storage Time (Days)
+   14        *        *        *           *         200      140
+   15        *        *        *          240        125      70
+   16        *        *       230         120        70       40
+   17        *     280        130         75         45       20
+   18        *     200         90         50         30       15
+   19        *     140         70         35         20       10
+   20        *     90          50         25         14        7
+   22       190    60          30         15          8        3
+   24       130    40          15         10          6        2
+   26       90     35          12          8          5        2
+   28       70     30          10          7          4        2
+   30       60     25          5           5          3        1
+
+ * Exceeds 300 days
+    Airflow Rates and Drying Times
+                     natural air drying wheat
+air at 69°and 60% relative humidity, average North Dakota condition for August.
+
+      Moisture          Airflow          Fan Time
+      Content          (cfm/bu)       Hours     Days
+       18%               1.25          480       20
+                         1.00          600       25
+        17%              1.00          552       23
+                         0.75          744       31
+        16%              1.00           504         21
+                         0.75           672         28
+                         0.50         1,008         42
+        15%              1.00           480         20
+                         0.75           648         27
+                         0.50           960         40
+        14%              1.00           408         17
+                         0.75           544         23
+                         0.50           816         34
+Horsepower Required Increases with Airflow Rate
+  Cfm/bu.           HP         HP/1,000 bu.    Static
+                                              Pressure
+     0.5             4              0.4          3
+     0.75            9              1.0          5
+     1.0             17             1.8          7
+     1.5             44             4.8         12
+
+27 ft. diameter bin with barley 20 ft. deep
+9,161 bushels
+   Horsepower Required Increases
+         with Grain Depth
+Depth (ft.)            HP            HP/1,000 bu.       Static Pressure
+                                                           (inch H20)
+    15                 3.5                 0.5                   2.6
+    17                 5.3                 0.7                   3.4
+    19                 7.5                 0.9                   4.4
+    21                10.4                 1.1                   5.5
+    23                14.0                 1.3                   6.8
+    25                18.5                 1.6                   8.2
+  27 ft. diameter bin of barley with 0.75 cfm/bu. airflow rate
+             Wheat Drying Time
+       17% initial M.C., 0.75 cfm/bu, +3°F fan
+
+
+                              +3º  +3º
+Month      Temp.     RH                          EMC     Days %
+                              Temp RH
+
+Aug.       69        60%      72       54%       12.6%   26
+
+Sep/       58        65%
+                              61       58%       13.5%   31   20%
+May        56        60%
+Oct/       47        65%
+                              50       58%       13.9%   39   50%
+Apr        42        65%
+Nov/       27        73%
+                              30       63%       15.6%   75   300%
+Mar        24        73%
+            Effect of Supplemental Heat
+                    Drying Wheat
+17% initial M.C., 0.75 cfm/bu, 10,000 bu Bin, $0.06 electric heat, $7.00 Wheat
+
+            Temp    RH (%)   EMC     Drying Time   Shrink Cost   Heat Cost   Overdry
+             (°F)            (%)       (Days)                                 Cost
+Ave Sep      58       65     14.4        --
++3° Fan      61       58     13.5        31
+10° + 3°     71       41     10.8        27          $2,119        $940      $3,059
+
+Ave Oct
+             47       65     15.0        --
+Cold Sep
++3° Fan      50       58     13.9        39
+10° + 3°     60       40     11.0        37          $1,966       $1278      $3,244
+
+Humid Sep    58       75     16.1        --
++3° Fan      61       67     14.6        40
+10° + 3°     71       47     11.6        28          $1505         $968      $2,473
+5° + 3°      66       56     12.9        32           $482         $484       $966
+                Supplemental Heat
+Btu/hr        = cfm x 1.1 x temperature increase
+Btu/hr        =    5,000 x 1.1 x 5
+Btu/hr        =    27,500 Btu
+1 kW          =    3,413 Btu/hr
+              =    8.1 kW
+
+Fan Heat 2-5°F
+ Wheat Rule of Thumb: 1 Kw heats air 5ºF
+Mix Dry Grain with Wet Grain
+
+
+                 16%
+
+
+                           ≠       12%
+                 10%
+
+
+
+
+              Kernel deterioration?
+              Equilibration Important!!!
+              Mechanical damage?
+Axial-flow Fans
+Centrifugal Fans
+In-line Centrifugal Fans
+Fan Type Affects Airflow
+1 x 7.5 hp LSC = 0.92 cfm/bu
+1 x 7.5 hp ILC = 0.97 cfm/bu
+1 x 7.5 hp HSC = 0.86 cfm/bu
+1 x 7.5 hp Axial = 0.70 cfm/bu
+
+2 x 7.5 hp LSC = 1.40 cfm/bu
+2 x 7.5 hp ILC = 1.35 cfm/bu
+2 x 7.5 hp HSC = 1.21 cfm/bu
+2 x 7.5 hp Axial = 0.80 cfm/bu (in parallel)
+2 x 7.5 hp Axial = 1.15 cfm/bu (in series)
+21 ft diameter bin with wheat 17.5 ft deep
+http://webapps.bbe.umn.edu/fans/
+Preferred Duct Spacing
+   Drying                Aeration
+
+
+
+
+                         Grain Depth
+               ½ Depth
+ Fronts Using Air Ducts
+
+
+
+
+Airflow is not uniform!
+Both between and along ducts.
+Perforated Floor Preferred
+Level Bins for Uniform Airflow
+High Temperature Dryer
+
+                Maximum
+                temperature
+                to maintain
+                germination
+                ≈110°F
+     Drying Temperature and
+       Time Affect Quality
+
+
+
+
+Maximum dryer temperature is about 150°F
+for 16% and 130°F for 20% moisture wheat.
+   For More Information
+
+
+
+Internet Search: NDSU Grain Drying & Storage
+

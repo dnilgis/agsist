@@ -1,0 +1,60 @@
+# Iowa State ICM: why use the economic threshold for soybean aphid
+# https://crops.extension.iastate.edu/post/why-use-economic-threshold-soybean-aphid
+# fetched 2026-10-15T21:08:20Z, sha256 4a9c185d108c9bef4e05c979ff2b04de7dd3943a5db1665ed693652c641db2ce
+
+Why use the economic threshold for soybean aphid? | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Why use the economic threshold for soybean aphid?
+
+August 28, 2017
+
+Content Author: Erin Hodgson
+
+The economic threshold of 250 soybean aphids per plant, with more than 80% of plants infested and aphid populations increasing was published in 2007 to prevent populations from reaching the EIL. These values were determined by closely monitoring aphid populations in research plots. It has been nearly a decade since the current threshold was developed and published, and University research continues to support these values. However, some have questioned the continued validity of the original soybean aphid ET that used data from the mid-2000s. Calculations performed using current economic conditions (which are different now), but without regard to biology (which has not changed) may suggest that a lower ET should be used for aphid management. Aphid biology and how the plant reacts to aphids make the exercise meaningless. No significant gain can be found at those lower aphid numbers (remember the ET of 250 aphids per plant is already well below the damage boundary), AND low numbers of aphids often don’t reach the EIL.
+
+The soybean aphid ET is best viewed as a fixed action or treatment threshold, unlike some, more flexible thresholds for other pests. In the case of soybean aphid, raising the threshold reduces lead-time for applications and increases risk of economic loss from rapidly increasing aphid populations. Lowering the threshold may provide a bit more lead-time for insecticide applications, but it also reduces the chances for natural enemies to establish and the sometimes harsh environment of a soybean field to solve the problem for you. Lowering the threshold reduces your ability to treat only those fields facing a reasonably high risk of yield loss. Therefore, a sliding scale that lowers the ET is not recommended.
+
+In my soybean aphid efficacy evaluation, treating below 250 aphids/plant resulted in no observable yield increase, supporting the conclusion that very low thresholds or zero tolerance of aphids are not necessary. View my annual reports here. Again, there are no published, peer-reviewed data that show that soybean aphid injury is likely below the ET. Therefore, only treat fields that have a reasonable chance of reaching economically damaging levels to see a positive return on investment. Lowering the ET below 250 aphids/plant will not protect yield. Instead, it will result in spending money unnecessarily on many more fields that will not experience economic loss. This threshold is conservative in that it allows plenty of time for action on the producer’s part before yield loss could begin. This is particularly true during late soybean growth stages.
+
+Links to this article are strongly encouraged, and this article may be republished without further permission if published as written and if credit is given to the author, Integrated Crop Management News, and Iowa State University Extension and Outreach. If this article is to be used in any other manner, permission from the author is required. This article was originally published on August 28, 2017. The information contained within may not be the most current and accurate depending on when it is accessed.
+
+Authored by
+
+Erin Hodgson
+
+- Professor
+
+- Extension Entomology Specialist
+
+- ANR Crops Team Leader
+
+Dr. Erin Hodgson started working in the Department of Entomology, now the Department of Plant Pathology, Entomology and Microbiology, at Iowa State University in 2009. She is a professor with extension and research responsibilities in corn and soybeans. She has a general background in integrated pest management (IPM) for field crops. Dr. Hodgson's current extension and research programs are focused on improving corn and soybean production by using IPM tactics to protect yield and increase overall farmer profits. Among other projects, she oversees insecticide efficacy evaluations for soybean aphids, Japanese beetles, and aphids in corn. Erin also helps manage emerging field crop pests and invasive species.
+
+Crops:
+
+-
+Soybean
+
+Topics:
+
+-
+Crop Production
+
+-
+Insects
+
+Tags:
+
+- soybeans
+
+- threshold
+
+- scouting
+
+- aphids

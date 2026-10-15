@@ -1,0 +1,219 @@
+# Pack factor measurements for corn in grain storage bins (UKY, open access)
+# https://uknowledge.uky.edu/bae_facpub/77
+# fetched 2026-10-15T21:09:30Z, sha256 b7254e91743dbd857169ca8ff7a70b7191c19c92daa81de6ea87bf169ca3b2eb
+
+"Pack Factor Measurements for Corn in Grain Storage Bins" by Rumela Bhadra, Aaron P. Turner et al.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Skip to main content
+
+University of Kentucky ®
+
+UK Libraries
+
+- Home
+
+- About
+
+- FAQ
+
+- My Account
+
+- < Previous
+
+- Next >
+
+-
+
+UKnowledge
+
+> Martin-Gatton College of Agriculture, Food and Environment
+
+> Biosystems and Agricultural Engineering
+
+> Faculty Publications
+
+> 77
+
+Biosystems and Agricultural Engineering Faculty Publications
+
+Archived
+
+This content is available here for research, reference, and/or recordkeeping.
+
+Pack Factor Measurements for Corn in Grain Storage Bins
+
+Authors
+
+- Rumela Bhadra, Kansas State University
+
+- Aaron P. Turner, University of KentuckyFollow
+
+- Mark E. Casada, USDA Agricultural Research Service
+
+- Michael D. Montross, University of KentuckyFollow
+
+- Sidney A. Thompson, University of Georgia
+
+- Josephine M. Boac, Kansas State University
+
+- Samuel G. McNeill, University of KentuckyFollow
+
+- Ronaldo G. Maghirang, Kansas State University
+
+Abstract
+
+Shelled yellow corn is commonly stored in concrete or corrugated steel bins. Granular materials compact under their own weight, primarily due to particle rearrangement, leading to an increase in bulk density and a change in volume when stored. Reliable grain pack factors are needed to estimate storage capacities and to accurately monitor grain inventories. A science-based model (WPACKING) of pack factors is available that uses the differential form of Janssen's equation and takes into account the variation in density caused by pressure variation with height and moisture content of the grain and accounts for the effects of grain type, test weight, bin geometry, and bin material. However, this model needs to be compared to field data over a wide range of conditions to ensure robust prediction accuracy. The objective of this research was to determine the field pack factors and bin capacities for on-farm and commercial bins used to store corn in the U.S. and compare them to predictions of the WPACKING program. Bin inventory measurements were conducted in concrete bins with depths up to 31.4 m (114.8 ft) and corrugated steel bins with diameters up to 32.8 m (156 ft). These values were also compared to the techniques used by the USDA Risk Management Agency (RMA) and the USDA Farm Service Agency, Warehouse Branch (FSA-W). The differences between predicted and reported mass were -4.54% (maximum underprediction) to +4.53% (maximum overprediction) for WPACKING, -2.69% to 4.97% for the RMA method, and -3.33% to + 5.67% for the FSA-W method. The absolute average difference was lowest for the WPACKING model (0.90%) compared to the RMA and FSA-W methods (1.61% and 1.86%, respectively). WPACKING had less than half as many prediction differences above 1% (13 out of 51 bins) as did the RMA and FSA-W methods, which had 29 out of 51 and 33 out of 51, respectively. The RMA and FSA-W methods do not take into account the variations in pack factor due to bin type and moisture content of the stored grain.
+
+Document Type
+
+Article
+
+Publication Date
+
+2015
+
+Notes/Citation Information
+
+Published in Transactions of the ASABE, v. 58, issue 3, p. 879-890.
+
+The copyright holder has granted the permission for posting the article here.
+
+Digital Object Identifier (DOI)
+
+https://doi.org/10.13031/trans.58.11033
+
+Funding Information
+
+The research was supported by the USDA (CRIS No. 5430-43440-007-00D) and by the Kansas Agricultural Experiment Station (Contribution No. 15-404-J).
+
+Repository Citation
+
+Bhadra, Rumela; Turner, Aaron P.; Casada, Mark E.; Montross, Michael D.; Thompson, Sidney A.; Boac, Josephine M.; McNeill, Samuel G.; and Maghirang, Ronaldo G., "Pack Factor Measurements for Corn in Grain Storage Bins" (2015). Biosystems and Agricultural Engineering Faculty Publications. 77.
+
+https://uknowledge.uky.edu/bae_facpub/77
+
+Download
+
+DOWNLOADS
+
+Since May 29, 2018
+
+Included in
+
+Agriculture Commons,
+
+Agronomy and Crop Sciences Commons,
+
+Bioresource and Agricultural Engineering Commons
+
+Share
+
+COinS
+
+Search
+
+Advanced Search
+
+-
+
+Notify me via email or RSS
+
+Browse by Author
+
+- Collections
+
+- Disciplines
+
+- Authors
+
+Author Corner
+
+- Author Rights/Copyright
+
+-
+
+Author FAQ
+
+-
+
+Submit Research
+
+Connect
+
+-
+
+Librarian-Created Resources
+
+-
+
+Law Library
+
+-
+
+Special Collections
+
+-
+
+Graduate School
+
+-
+
+Scholars@UK
+
+-
+
+-
+
+We’d like your feedback
+
+Elsevier - Digital Commons
+
+Home
+|
+
+About
+|
+
+FAQ
+|
+
+My Account
+|
+
+Accessibility Statement
+
+Privacy
+
+Copyright
+
+University of Kentucky ®
+
+An Equal Opportunity University
+
+Accreditation
+
+Directory
+
+Email
+
+Privacy Policy
+
+Accessibility
+
+Disclosures
+
+© University of Kentucky
+
+Lexington, Kentucky 40506

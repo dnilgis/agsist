@@ -1,0 +1,340 @@
+# FSA ARC/PLC program page (online election with Login.gov)
+# https://www.fsa.usda.gov/resources/programs/arc-plc
+# fetched 2026-10-15T21:10:16Z, sha256 2e48c32b71f49a2d348fb07d180399b12945ca46ad0b4b2700d7514cd62cd2f7
+
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC) | Farm Service AgencyLock
+
+-
+
+-
+
+-
+
+Resources
+
+-
+Find a Program
+
+-
+Loans
+
+-
+Climate-Smart Agriculture and Farm Loan Programs
+
+-
+Emergency Farm Loans
+
+-
+Farm Operating Loans
+
+-
+Farm Ownership Loans
+
+-
+Farm Storage Facility Loan (FSFL) Program
+
+-
+Graze-Out
+
+-
+Guaranteed Farm Loans
+
+-
+Guaranteed Loans - Lender Toolkit
+
+-
+Highly Fractionated Indian Land Loan Program (HFIL)
+
+-
+Indian Tribal Land Acquisition Loan Program
+
+-
+Loan Deficiency Payments (LDP)
+
+-
+Marketing Assistance Loans (MAL)
+
+-
+Operating Microloan
+
+-
+Organic Dairy Marketing Assistance Program (ODMAP 2024)
+
+-
+Youth Loans
+
+-
+Conservation
+
+-
+CRP Grasslands
+
+-
+Conservation Reserve Enhancement Program (CREP)
+
+-
+Conservation Reserve Program (CRP)
+
+-
+Farmable Wetlands Program (FWP)
+
+-
+General CRP
+
+-
+Transition Incentives Program
+
+-
+Water-Saving Commodities (WSC) Program
+
+-
+Disaster Recovery
+
+-
+2023/2024 Supplemental Disaster Assistance
+
+-
+Disaster Set-Aside Program (DSA)
+
+-
+Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish (ELAP)
+
+-
+Emergency Conservation Program (ECP)
+
+-
+Emergency Forest Restoration Program (EFRP)
+
+-
+Emergency Livestock Relief Program (ELRP)
+
+-
+Emergency Relief Program (ERP)
+
+-
+Livestock Forage Disaster Program (LFP)
+
+-
+Livestock Indemnity Program (LIP)
+
+-
+Milk Loss Program (MLP)
+
+-
+Noninsured Disaster Assistance Program (NAP)
+
+-
+On-Farm Stored Commodity Loss Program (OFSCLP)
+
+-
+Supplemental Disaster Relief Program (SDRP)
+
+-
+Tree Assistance Program (TAP)
+
+-
+Income Support
+
+-
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC)
+
+-
+Assistance for Specialty Crop Farmers (ASCF) Program
+
+-
+Dairy Indemnity Payment Program (DIPP)
+
+-
+Dairy Margin Coverage Program (DMC)
+
+-
+Emergency Commodity Assistance Program (ECAP)
+
+-
+Farmer Bridge Assistance (FBA) Program
+
+-
+Marketing Assistance for Specialty Crops (MASC)
+
+-
+Organic Certification Cost Share Program (OCCSP)
+
+-
+Reimbursement Transportation Cost Payment (RTCP)
+
+-
+Strengthening Processing for U.S. Ranchers (SPUR) Program
+
+-
+General Programs
+
+-
+Certified Mediation Program (CMP)
+
+-
+Farm Labor Stabilization and Protection Pilot Grant Program
+
+-
+Food Safety Certification for Specialty Crops (FSCSC) Program
+
+-
+Outreach & Education
+
+-
+About Us
+
+-
+Programs
+
+-
+Partner Organization Resources
+
+-
+State Outreach Coordinators
+
+-
+Price Support
+
+-
+Commodity Loans
+
+-
+Commodity Loan Rates
+
+-
+Facility Loan Programs
+
+-
+Loan Deficiency Payments
+
+-
+Price Support Reports
+
+-
+Posted County Price Rates
+
+-
+Economic and Policy Analysis
+
+-
+EPAD Reports
+
+-
+Commodity Loan Activity Reports
+
+-
+ELS Cotton Reports
+
+-
+Honey Reports
+
+-
+Peanut Reports
+
+-
+Rice Reports
+
+-
+Upland Cotton Reports
+
+-
+Wool and Mohair Reports
+
+-
+Financial Management Information
+
+-
+Initiatives
+
+-
+Acreage Crop Reporting Streamlining Initiative (ACRSI)
+
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC)
+
+What It Is
+
+The Agriculture Risk Coverage (ARC) and Price Loss Coverage (PLC) programs, administered by the Farm Service Agency (FSA), offer financial assistance to agricultural producers. The ARC program provides payments when the actual revenue for a farm is less than a guarantee set based on historical data and market conditions. The PLC program provides payments when the effective price for a covered commodity falls below its effective reference price. These programs aim to protect farmers from significant income losses due to fluctuations in crop prices or revenue shortfalls.
+
+Who Is Eligible
+
+Eligible participants include agricultural producers who have an interest in a commodity grown on a farm with base acres.
+
+Base Allocation Notifications
+
+On July 4, 2025, the Working Families Tax Cuts Act, also known as the One Big Beautiful Bill Act, passed providing an additional 30 million base acres to be added to farms nationwide. The base acre allocation process was in preparation for enrollment in the Agriculture Risk Coverage (ARC) and Price Loss Coverage (PLC) programs for 2026 and future years.
+
+Because eligible acres exceeded the nationwide 30-million-acre cap, USDA’s Farm Service Agency (FSA) applied an across-the-board, prorated reduction of 3.69% to all newly allocated base acres.
+
+Landowners who have a Login.gov account can access their Base Allocation Notification online using the link below. Landowners who do not have a Login.gov account can contact their local Farm Service Agency office for information on how to receive their notification.
+
+Review Base Allocation Notification
+
+Important Dates
+
+- 2026 Election and Enrollment - Sept. 16 through Dec. 11, 2026
+
+- 2027 Election and Enrollment - Nov. 2, 2026, through March 15, 2027
+
+ARC and PLC Election and Enrollment
+
+Producers can now make their 2026 election and enroll in ARC-County (ARC-CO) or PLC, which both provide crop-by-crop protection, or ARC-Individual (ARC-IC), which protects the entire farm.
+
+If producers do not submit their 2026 election by Dec. 11, 2026, their election remains the same as their 2025 election for crops on the farm, and the farm is ineligible for payments for the 2026 program year.
+
+Producers must enroll through a signed contract each year. Previous multi-year contracts ended in 2025, but producers have the option to sign a new multi-year contract for 2026 through 2031.  Landowners cannot enroll in either program unless they have a share interest in the crops on the farm.
+
+How To Apply
+
+Please contact your local FSA office to make Agricultural Risk Coverage and Price Loss Coverage elections and complete the enrollment process.
+
+Find Your FSA Location
+
+How It Works
+
+Program Features
+
+Covered Commodities
+
+- 22 covered commodities including wheat, oats, barley, corn, grain sorghum, long grain rice, medium/short grain rice, temperate japonica rice, seed cotton, dry peas, lentils, large and small chickpeas soybeans, peanuts, sunflower seed, canola, flaxseed, mustard seed, rapeseed, safflower, crambe, and sesame seed.
+
+- Program-specific reference prices and revenue guarantees.
+
+Payment Triggers
+
+- ARC payments are triggered when actual revenue falls below the guaranteed level.
+
+- PLC payments are triggered when market year average prices fall below the effective reference price.
+
+Benefits
+
+- Provides financial support during periods of low prices or revenue shortfalls.
+
+- Helps stabilize income for farmers and ranchers.
+
+- Offers a safety net against market volatility.
+
+Additional Benefits
+
+- Financial Stability: Offers a safety net to manage price and revenue risks.
+
+- Income Support: Helps maintain farm income stability during economic downturns.
+
+- Flexibility: Producers can choose between ARC and PLC based on their individual needs and commodity markets.
+
+Additional Resources
+
+-
+
+Working Families Tax Cuts Act At a Glance
+
+ARC/PLC Fact Sheet 2026-2030
+
+ARC/PLC Base Acre Increase Opportunity News Release - May 26
+
+Agriculture Risk Coverage (ARC) and Price Loss Coverage (PLC) Fact Sheet 2025
+
+Appendix to ARC/PLC Contracts
+
+ARC/PLC Program Data
+
+ARC/PLC Program Payment Maps

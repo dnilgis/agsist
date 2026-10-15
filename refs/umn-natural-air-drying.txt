@@ -1,0 +1,802 @@
+# UMN Extension: natural-air corn drying
+# https://extension.umn.edu/corn-harvest/natural-air-corn-drying
+# fetched 2026-10-15T21:08:24Z, sha256 a471b3113a3ab829774d9276547797f6f99af23a0fb7b6a69737b5f45b1fdc64
+
+Natural-air corn drying | UMN ExtensionPlus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.
+
+-
+Home
+
+-
+Agriculture
+
+-
+Crop production
+
+-
+Corn
+
+-
+Natural-air corn drying
+
+Better understand what natural-air drying is and find answers to common questions, such as about its advantages and disadvantages compared to other types of drying, equipment requirements, management recommendations and expected energy use.
+
+Guidelines are designed for corn producers, educators, consultants and equipment dealers interested in natural-air corn drying in Minnesota and neighboring states.
+
+About natural-air drying
+
+|
+
+Researchers at a number of agricultural experiment stations and thousands of corn producers have successfully used natural-air corn drying for many years.
+
+The process works best under cool (40 to 60 degrees Fahrenheit), dry (55 to 75 percent relative humidity) conditions. Since average fall temperature and humidity are in these ranges in the Upper Midwest, natural-air drying usually works quite well.
+
+Figure 1: Natural-air drying bin equipped with a grain spreader, exhaust vents, fan and full-perforated floor.
+
+Natural-air drying, also called ambient-air drying, near-ambient drying, unheated-air drying or air drying, is an in-storage drying method that uses unheated, outdoor air to dry corn to a safe storage moisture (13 to 15 percent).
+
+Instead of using heat energy from fossil fuels to remove moisture, natural-air drying uses electricity to operate fans, with energy for removing moisture coming primarily from the drying potential of outdoor air.
+
+Natural-air drying of shelled corn is similar in principle to the drying that takes place in cribs of ear corn. However, because the airflow resistance for shelled corn is greater than for ear corn, fans rather than wind pressure move air through the bin.
+
+Natural-air drying is basically a race between drying progress and growth of the fungi, commonly called molds, that cause grain spoilage. The bin is usually filled in a few days, with the fan starting as soon as bin filling begins.
+
+Drying takes place in a one- to two-foot thick drying zone (also called a drying front) that moves slowly up through the bin (Figure 1). Grain below the zone is generally dry enough to be safe from spoilage, while grain above the zone remains at its initial moisture until the zone passes.
+
+Note that positive pressure, or upward airflow, is recommended for natural-air drying so wet grain is at the top of the bin. That way, it’s easier to watch for signs of mold and to move moldy corn out of the bin if necessary.
+
+Drying time depends on initial grain moisture, airflow per bushel provided by the fan and weather.
+
+If you use the corn moistures and airflows recommended in Tables 1 and 2, drying usually takes four to eight weeks depending on the weather. In cool, damp falls, the drying zone doesn't reach the top of the bin before winter and drying is completed in spring.
+
+Table 1: Airflow and moisture recommendations for natural-air corn drying in northern Minnesota, North Dakota and South Dakota.
+
+Airflow, in cubic feet of air per minute per bushel
+Initial corn moisture (percent wet basis)
+
+1.0 cfm/bu
+22.0%
+
+1.25 cfm/bu
+23.0%
+
+1.5 cfm/bu
+23.0%
+
+2.0 cfm/bu
+24.0%
+
+3.0 cfm/bu
+25.5%
+
+Values are for bins filled rapidly (in a day or two) in mid-October. Using these airflows should result in drying without spoilage, or the need to move corn to prevent spoilage, at least 90 percent of the time.
+
+Table 2: Airflow and moisture recommendations for natural-air corn drying in southern Minnesota, Iowa and Wisconsin
+
+Airflow, in cubic feet of air per minute per bushel
+Initial corn moisture (percent wet basis)
+
+1.0 cfm/bu
+21.0%
+
+1.25 cfm/bu
+21.5%
+
+1.5 cfm/bu
+22.5%
+
+2.0 cfm/bu
+23.5%
+
+3.0 cfm/bu
+24.5%
+
+Values are for bins filled rapidly (in a day or two) in mid-October. Using these airflows should result in drying without spoilage, or need to move corn to prevent spoilage, at least 90 percent of the time.
+
+There is some risk of grain spoilage with natural-air drying, but growers can avoid spoilage if they match airflow to grain moisture and closely monitor the bins.
+
+Table 3 shows the allowable storage time for shelled corn.
+
+At temperatures higher than 60 degrees Fahrenheit, corn dries fast, but mold grows faster – especially if corn moisture is higher than 22 percent. Mold growth is very slow at temperatures lower than 40, but drying is also slow.
+
+The best temperatures for natural-air drying are between about 40 and 60. Drying is slow and expensive when fall weather is colder than normal, but the greatest risk of spoilage comes during unusually warm falls.
+
+Table 3 shows the approximate amount of time that corn can be held at different temperatures and moisture contents before there’s enough mold damage to cause price discounts or possible animal feeding problems.
+
+Table 3: Allowable storage time for shelled corn based on grain moisture and temperature
+
+Corn temperature
+16% wet basis
+18% wet basis
+20% wet basis
+22% wet basis
+24% wet basis
+26% wet basis
+
+20 F
+3,820 days
+1,459 days
+722 days
+427 days
+287 days
+212 days
+
+30 F
+1,700 days
+648 days
+321 days
+190 days
+127 days
+94 days
+
+40 F
+756 days
+288 days
+142 days
+84 days
+56 days
+41 days
+
+50 F
+336 days
+128 days
+63 days
+37 days
+25 days
+18 days
+
+60 F
+149 days
+57 days
+28 days
+16 days
+11 days
+8 days
+
+70 F
+83 days
+31 days
+16 days
+9 days
+6 days
+5 days
+
+The key to success is to provide enough airflow to move the drying zone all the way through the bin before any spoilage occurs. Because wet grain spoils faster, it’s important to use more airflow per bushel for wetter corn.
+
+Regardless of airflow, check the condition of grain at the top of the bin every few days during drying. If heating, musty or sour odors or moldy kernels are detected, move some or all of the wet grain out of the bin and feed it, sell it or dry it in another dryer.
+
+Equipment
+
+Natural-air drying requires a fan, a bin and an air distribution system.
+
+Exhaust vents and a grain spreader are desirable. Sometimes grain stirrers, heaters or both are added, but they normally aren't necessary for successful drying.
+
+|
+
+Required fan size depends on corn moisture, corn depth in the bin and the desired probability of success.
+
+Probability of success is the percentage of drying seasons, or number of years out of 100, that the drying zone is expected to move all the way through the bin before spoilage occurs, or before you need to move corn out of the bin to prevent spoilage.
+
+Using larger fans to deliver higher airflows
+
+One way to increase the probability of success for any corn moisture is to use a higher airflow per bushel (Figure 2). Greater airflow means faster drying and less time for spoilage to occur.
+
+Disproportionately larger fans – which draw more electrical power – are necessary to deliver higher airflow, and energy use per bushel increases (Figure 3).
+
+Use Figures 2 and 3 to compare expected probability of success and energy consumption for different airflows and grain moistures. Figures shows the probability for success using different harvest moistures and airflows, based on a mid-October harvest near St. Paul and 16-foot corn depth.
+
+Although Figures 2 and 3 use weather data for St. Paul, the results apply to much of the Upper Midwest.
+
+Information like that in Figure 2 was used to develop Tables 1 and 2. If you follow the moisture and airflow recommendations in Tables 1 and 2, grain should dry without spoilage at least 90 percent of the time. This means that moving grain to prevent spoilage shouldn't be necessary more than about 10 years out of 100.
+
+Figure 2: Probability of success, or percentage of years that corn is expected to dry without spoilage.
+
+Figure 3: Average energy use per bushel for natural-air corn drying.
+
+How to select a fan
+
+-
+
+Use the desired airflow per bushel and the normal drying depth to determine the expected static pressure (Table 4).
+
+-
+
+Multiply airflow per bushel by the number of bushels in the bin to get total airflow, in cubic feet of air per minute (cfm).
+
+-
+
+Use fan manufacturers' catalogs to select a fan that will provide the desired airflow (cfm) at the expected static pressure (inches of water).
+
+Table 4: Static pressure (inches of water) for airflow through shelled corn.*
+
+Corn depth
+1.0 cfm/bushel airflow
+1.25 cfm/bushel airflow
+1.5 cfm/bushel airflow
+2.0 cfm/bushel airflow
+3.0 cfm/bushel airflow
+
+2 ft.
+0.1
+0.1
+0.1
+0.1
+0.1
+
+4 ft.
+0.1
+0.1
+0.2
+0.2
+0.4
+
+6 ft.
+0.3
+0.3
+0.4
+0.6
+1.0
+
+8 ft.
+0.5
+0.6
+0.8
+1.2
+2.1
+
+10 ft.
+0.8
+1.1
+1.4
+2.0
+3.7
+
+12 ft.
+1.2
+1.6
+2.1
+3.2
+5.8
+
+14 ft.
+1.7
+2.3
+3.0
+4.6
+8.5
+
+16 ft.
+2.4
+3.2
+4.2
+6.4
+12.0
+
+18 ft.
+3.1
+4.3
+5.6
+8.7
+16.2
+
+20 ft.
+4.0
+5.6
+7.3
+11.3
+21.3
+
+*Airflow resistance values have been multiplied by 1.5 to give table values. This accounts for fines and packing in the bin. If corn is stirred, airflow resistance is reduced, so divide table values by 1.5.
+
+There are three basic types of grain-drying fans: Axial-flow, centrifugal and in-line centrifugal.
+
+You can use any of the three types, but axial-flow fans are most common for natural-air corn dryers because they’re the least expensive and the most efficient type at the low static pressures encountered in corn drying. Also, the drying air captures any heat given off by the motor.
+
+Table 5 provides a rough estimate of fan power requirements (horsepower, or hp) for different airflows and corn depths.
+
+Power requirements drastically increase as depth and airflow per bushel increase. High-power fans are expensive to install and operate.
+
+Thus, natural-air drying is most economical if corn depth is less than 18 feet and corn moisture is less than 23 percent (full bin airflow is less than 1.25 cfm per bushel). Short, large-diameter bins are more expensive to build than tall, slender ones, but the energy savings for short drying bins makes the extra initial investment worthwhile.
+
+Table 5: Approximate fan power requirements for natural-air corn drying, shown in horsepower (hp) per thousand bushels
+
+Airflow
+12-feet corn depth
+14-feet corn depth
+16-feet corn depth
+18-feet corn depth
+20-feet corn depth
+
+1.0 cfm per bushel
+0.4 hp per 1,000 bushels
+0.5 hp per 1,000 bushels
+0.7 hp per 1,000 bushels
+1.0 hp per 1,000 bushels
+1.3 hp per 1,000 bushels
+
+1.25 cfm per bushel
+0.6 hp per 1,000 bushels
+0.9 hp per 1,000 bushels
+1.3 hp per 1,000 bushels
+1.7 hp per 1,000 bushels
+2.2 hp per 1,000 bushels
+
+1.5 cfm per bushel
+1.0 hp per 1,000 bushels
+1.4 hp per 1,000 bushels
+2.0 hp per 1,000 bushels
+2.7 hp per 1,000 bushels
+3.5 hp per 1,000 bushels
+
+2.0 cfm per bushel
+2.0 hp per 1,000 bushels
+2.9 hp per 1,000 bushels
+4.1 hp per 1,000 bushels
+5.5 hp per 1,000 bushels
+7.1 hp per 1,000 bushels
+
+3.0 cfm per bushel
+5.5 hp per 1,000 bushels
+8.1 hp per 1,000 bushels
+11.3 hp per 1,000 bushels
+15.3 hp per 1,000 bushels
+20.1 hp per 1,000 bushels
+
+For more information on fan selection:
+
+- Read our guide to selecting fans and determining airflow
+
+- View our online fan selection tool.
+
+Install full perforated floors in natural-air drying bins. Drying is much more uniform when air is distributed through a full perforated floor that’s set at least a foot above the concrete pad.
+
+It might be possible to dry relatively low-moisture corn using a duct system to distribute air, but airflow and drying in the grain above the ducts are not uniform – especially at the higher airflows necessary for higher-moisture corn.
+
+An exhaust area of about one square foot (sq. ft.) per 1000 cfm of airflow is needed above the grain to prevent excessive condensation under the bin roof and back pressure that would reduce the fan’s airflow delivery.
+
+Calculate the total area that’s likely to be open when the fan is operating and, if less than 1 sq. ft. per 1000 cfm, install extra exhaust vents. When calculating exhaust area, include openings such as the gap at the eave, which in some cases can provide sizable a exhaust area.
+
+Area of eave gap (square feet) = [gap width (inches) / 12 inches per foot] x 3.14 x bin diameter (feet)
+
+Guidelines for natural-air drying
+
+|
+
+Fines – which are small pieces of broken grain, dirt, chaff and weed seeds – cause problems in drying and storage bins.
+
+They restrict airflow, and are more susceptible to spoilage than whole kernels. Worse, fines tend to concentrate in areas directly under the spout used to fill the bin.
+
+Running corn through a cleaner to remove fines during bin-filling is one of several options for managing fines.
+
+Figure 4: Periodically withdrawing grain during bin-filling to reduce fines from bin center.
+
+Minimize fines during harvest
+
+First, try to minimize the production of fines. Set combines for minimum damage and maximum cleaning.
+
+Gently handle grain by using grain conveyors that are easy on grain – such as bucket elevators and drag conveyors – and by reducing drop heights and the number of times grain is handled.
+
+Augers and pneumatic conveyors have the potential to cause a lot of grain damage. Reduce damage potential by keeping augers full and slowly operating them, and by using gentle curves in tubing and the proper air-to-grain ratio in pneumatic conveyors.
+
+Cleaning grain
+
+Cleaning grain to remove fines before natural-air drying is the best management choice.
+
+Removing fines reduces spoilage risk and drying cost, as it allows the fan to deliver greater airflow. An Iowa State University study indicated it takes more than three times as much fan power to move the airflow needed for natural-air corn drying through non-cleaned vs. cleaned corn.
+
+If a cleaner isn't available, or if cleaning creates too great a bottleneck in grain handling, periodically remove some grain from the bin center during bin-filling to remove fines (Figure 4). If you can't feed or sell fines, or choose not to remove them, then at least use a grain spreader to more uniformly distribute them throughout the bin.
+
+The grain surface should always be leveled after putting grain into or removing it from a bin in which natural-air drying is in progress.
+
+If grain depth over the drying floor is not uniform, airflow will be greater and drying will be faster in areas with shallower grain depths. However, you must keep the fan running until the drying front moves through areas with greater grain depth, which increases drying cost per bushel for the whole bin.
+
+The situation is even worse if grain is peaked under the spoutline. Drying is very slow in grain peaks due to the low airflow caused by the greater grain depth and greater concentration of fines.
+
+Adding heat slightly speeds drying and slightly increases the chance of completing drying in the fall. The main effects of adding heat are increased drying costs and over-drying corn at the bottom of the bin.
+
+Generally, natural-air corn dryers don’t need heat in the Upper Midwest. Most years, corn dries to a safe storage moisture in the fall or following spring without using supplemental heat.
+
+Table 6 gives corn equilibrium moisture values for typical drying season air conditions. Values in the table are moisture contents that corn approaches when exposed to different combinations of temperature and humidity.
+
+Table 6 shows the moisture contents that corn would reach if exposed to the listed combinations of temperature and humidity for very long periods of time.
+
+Table 6: Equilibrium moisture content (percent wet basis) of shelled corn
+
+Temperature
+50% relative humidity
+60% relative humidity
+70% relative humidity
+80% relative humidity
+90% relative humidity
+
+20 F
+14.8% wet basis
+16.1% wet basis
+17.6% wet basis
+19.4% wet basis
+22.2% wet basis
+
+30 F
+13.9% wet basis
+15.2% wet basis
+16.7% wet basis
+18.6% wet basis
+21.1% wet basis
+
+40 F
+13.1% wet basis
+14.5% wet basis
+16% wet basis
+17.9% wet basis
+20.5% wet basis
+
+50 F
+12.5% wet basis
+13.8% wet basis
+15.4% wet basis
+17.3% wet basis
+20.2% wet basis
+
+60 F
+11.9% wet basis
+13.3% wet basis
+14.8% wet basis
+16.8% wet basis
+19.7% wet basis
+
+70 F
+11.4% wet basis
+12.7% wet basis
+14.3% wet basis
+16.3% wet basis
+19.3% wet basis
+
+Because heat increases temperature and decreases the relative humidity of drying air, the effect on final corn moisture is surprisingly large (Table 7).
+
+Even small amounts of heat will almost always dry corn to well under 15 percent moisture. Drying corn to less than 15 percent is expensive, not only because of the extra energy required to get it that dry, but also because the extra water removal reduces the weight of corn available for sale.
+
+Table 7: Example of the effect of supplemental heat on air relative humidity and final corn moisture
+
+Supplemental heat
+Drying air temperature
+Drying air relative humidity
+Corn moisture content
+
+0 F
+45 F
+70%
+15.7%
+
+2* F
+47 F
+66%
+14.9%
+
+5 F
+50 F
+59%
+13.7%
+
+10 F
+55 F
+49%
+12.0%
+
+*Axial-flow drying fans heat the air 2 to 3 degrees Fahrenheit.
+
+Another reason supplemental heat is not usually needed is because heat from the motor and impeller of axial-flow fans increases drying air temperature at least 2 to 3 degrees Fahrenheit, enough to reduce corn moisture about 0.8 percent more than expected based on outdoor air conditions.
+
+Solar collectors
+
+Producers often ask about the practicality of using solar collectors to heat air for grain drying.
+
+Research in the late 1970s and early 1980s showed that properly sized solar collectors had about the same effect as electric or gas heaters. That is, adding solar collectors slightly increased the drying rate, but also increased total drying cost and the amount of overdrying compared with natural-air drying.
+
+Heater size
+
+If the goal is to reduce drying time, a larger fan is usually a better investment than a heater.
+
+But if it’s necessary to add supplemental heat, size the heater to increase the air temperature no more than about 5 degrees Fahrenheit and use a humidistat to turn the heater off during dry weather.
+
+It can be difficult to find gas heaters in this size range. Portable gas space heaters might be an option. Avoid kerosene or fuel-oil heaters because they could leave an oily or smoky odor on the grain. Electric heaters are more common, but they’re expensive to install and operate. Consult your local power supplier before installing an electric heater.
+
+How to calculate heater size
+
+Gas heater (Btu per hour) = 1.1 x (temperature rise in degrees F) x (airflow cfm)
+
+Electric heater (kW) = 1.1 x (temperature rise in degrees F) x (airflow cfm) / 3,412
+
+Grain stirrers are an essential component in some types of heated-air dryers, but the situation is different for natural-air drying and drying where the air is heated less than 10 degrees Fahrenheit.
+
+Stirring grain provides advantages for natural-air drying, although the value is probably not enough to justify the cost of new stirring equipment.
+
+If you have a natural-air dryer that already has stirring equipment, don't continuously operate the stirrers. Stirring too much will sift fines to the floor where they could restrict airflow.
+
+In addition, stirring too frequently will reduce drying efficiency. Natural-air drying is most efficient when there’s a layer of wet grain at the top of the bin and drying air is nearly saturated when it leaves the bin. The drier the top layer is, the less saturated the air and the less efficient the drying process.
+
+How to operate grain stirrers
+
+-
+
+During bin filling, stir to loosen grain and boost airflow provided by the fan. Stop stirring within 24 to 48 hours after the bin is full.
+
+-
+
+If harvest moisture was greater than 20 percent, stir again when the average moisture in the bin is 18 to 20 percent. Stirring blends overdry corn from the bottom of the bin with wet corn at risk of spoilage from the top. This reduces overdrying and spoilage risk, but still leaves wet-enough corn on top to maintain reasonable drying efficiency.
+
+-
+
+Finally, stir again when average moisture in the bin reaches the desired value (usually 14 or 15 percent). Toward the end of drying, the top layer is still wetter than the average bin moisture and the bottom is usually drier than average. Stirring allows you to turn off the fan sooner because it uniformly blends corn, top to bottom, to attain the recommended average moisture.
+
+Leave the fan running if the bin contains corn wetter than about 16 percent and the temperature is warmer than about 40 degrees Fahrenheit. If the corn is warm and wet and the fan is off for a very long time, mold growth might cause the corn to heat.
+
+Also, you need some operation during humid weather to rewet corn at the bottom of the bin that overdried during dry weather. If the fan only operates during the driest weather, corn will be badly overdried. Remember, fan heat reduces air relative humidity and allows corn drying even under fairly humid conditions.
+
+If corn is nearly dry and the temperature is low, there’s little risk of corn spoilage and it’s safe to stop the fan during humid weather. Stopping the fan will save some energy.
+
+Regardless of corn moisture, it’s usually best to stop the fan during heavy snowfall to avoid plugging holes in the perforated drying floor.
+
+Grain at the top of the bin remains near its initial moisture content until the drying zone moves all the way up through the bin (Figure 1). The top grain will finally start to dry when the drying zone reaches the grain surface.
+
+Continue drying until the top grain reaches the desired final moisture content (usually 14 to 15 percent). Check the moisture at several locations on the surface because the movement of the drying front might not be completely uniform due to airflow irregularities. By the time the drying zone reaches the grain surface, corn below the surface has normally dried to a safe storage moisture.
+
+Locate the drying front and check drying progress every week or so. Do this using a sampling probe to pull grain samples from various depths and by measuring the samples’ moisture content.
+
+It’s also possible to locate the drying front by pushing a small diameter rod down into the grain. The rod will push hard through the wet grain above the drying zone, but suddenly push more easily when it reaches dry grain in the drying zone. Watch out for overhead electrical power lines when handling long metal rods at the top of grain bins.
+
+When the condition of the air entering a natural-air drying bin is constant for long periods of time, it might be possible to use temperature measurements to locate the drying zone. Grain cools as it gives up moisture, so a transition from warm to cool grain can indicate the location of the drying zone.
+
+However, because outdoor air temperature changes frequently, drying bins can have warming and cooling zones moving through them in addition to the drying zone. Thus, in practice, it’s difficult to use grain temperature to track drying fronts.
+
+Just turn off the fan, restart it as needed during the winter to keep grain cooled to about 30 degrees Fahrenheit and then resume drying in spring.
+
+It’s not economical to continue natural-air drying in the winter because drying is very slow and the equilibrium moisture is such that corn wouldn't dry any further than about 17 percent moisture anyway. It’s safe to turn the fan off during the winter because mold growth is very slow at temperatures less than 30 degrees.
+
+How to check grain temperature
+
+Use one of the following methods:
+
+-
+
+Use permanently mounted temperature cables that hang from the bin roof.
+
+-
+
+Use thermometers or temperature sensors mounted on the ends of probes.
+
+-
+
+Quickly measure the temperature of grain samples pulled to the surface of bins.
+
+-
+
+Measure the temperature of exhaust air by placing a thermometer about a foot below the grain surface while the fan is running.
+
+When to stop drying in the fall
+
+Use the following criteria to decide when to stop drying in fall:
+
+-
+
+When moisture of corn at the top of the bin is less than 15.5 percent, turn the fan off. Restart the fan to cool the corn to about 30 degrees Fahrenheit as soon as the weather gets cold enough.
+
+-
+
+After Nov. 1, turn off the fan when corn moisture at the top of the bin is less than 17 percent and corn temperature is less than 30 degrees. If the weather forecast calls for a period of warm weather, resume drying until average temperatures drop below 30 degrees again.
+
+-
+
+After Nov. 15, turn off the fan when corn moisture at the top of the bin is less than 18 percent and corn temperature is less than 30 degrees.
+
+-
+
+After Dec. 1, turn off the fan when corn moisture at the top of the bin is less than 19 percent and corn temperature is less than 25 degrees.
+
+-
+
+After Dec. 15, turn off the fan when corn temperature at the top of the bin drops below 25 degrees, regardless of corn moisture.
+
+Producers often refer to operating the fan at air temperatures lower than 32 degrees Fahrenheit as “freezing” corn and ask if it causes problems. Although free water freezes at 32 degrees, corn does not. Drying is quite slow at temperatures lower than 32 degrees, but as long as there’s no condensed water in the bin, running the fan at these temperatures does no harm.
+
+If drying isn't completed in the fall, growers can usually complete drying in the spring if the drying zone is at least halfway through the bin and corn moisture at the top of the bin is less than about 23 percent.
+
+If there’s too much wet corn going into the spring, or if the corn is wetter than 23 percent, spoilage is likely during spring drying. In these cases, feed or sell at least part of the wet corn or dry it in another type of dryer before spring.
+
+Use the following guidance to determine how to manage natural-air dryers in spring:
+
+-
+
+If corn at the top of the bin is wetter than 19 percent, continuously run the fan starting about March 15 until the corn is dry.
+
+-
+
+For corn that’s 17 to 19 percent moisture, continuously run the fan starting about April 1 until the corn is dry.
+
+-
+
+For corn with less than 17 percent moisture that’s to be dried to 14 percent or less, continuously run the fan starting about April 15 until the corn is dry. If you’re shooting for a final moisture of 15 percent, turn the fan off during the warmest, driest weather or the corn will get too dry.
+
+Notice that the wetter the corn at the top of the bin is, the earlier you need to start drying. This is to make sure the drying front reaches the top of the bin before outdoor temperatures get high enough for the corn to mold. Also, corn at the bottom of the bin will be badly overdried (less than 13 percent moisture) if drying continues into late spring.
+
+Some years, weather conditions don’t allow corn to dry in the field to safe levels for full-bin natural-air drying. Plus, some producers have so many acres to harvest, they can't afford to wait until corn dries in the field to safe levels for natural-air drying.
+
+In both cases, layer filling or combination drying allows harvest at corn moistures greater than those recommended for full-bin drying.
+
+Figure 5: Airflow produced by a typical 10 hp axial-flow fan on a 30-foot diameter bin for different depths of corn.
+
+Layer filling
+
+Layer filling refers to slowly filling a natural-air bin over a period of several weeks, instead of in a day or two. This can be done by filling on a regular schedule (for example, one quarter of the bin depth per week), or by putting in a few feet of grain at a time and waiting for the drying zone to reach the top layer before adding more grain. Regardless of filling schedule, make sure the top surface is level after adding each layer to the bin.
+
+Layer filling works because airflow per bushel is much higher in partially full bins. For one thing, the fan’s airflow serves fewer bushels when the bin isn't full. For another, fans, especially axial-flow fans, deliver much greater total airflow when grain depth is shallow.
+
+The fan in Figure 5, for example, delivers about 1 cubic feet of air per minute per bushel (cfm/bu) when the bin contains 18 feet of corn and almost 7 cfm/bu when the bin contains 4 feet of corn. When airflow per bushel is high, drying is fast and reliable, even for corn in the 24 to 26 percent moisture range.
+
+Layer filling works best for producers who have several natural-air drying bins and can conveniently switch filling from one bin to another. It also works well for producers who are not in a big hurry to finish harvest.
+
+Combination drying
+
+Combination drying uses a gas-fired dryer to dry corn to 20 to 22 percent moisture before starting the natural-air drying process.
+
+Almost any kind of gas-fired dryer can be used for the first drying stage, including a bin-type dryer where the burner is simply switched off when corn moisture reaches 20 to 22 percent. Producers manage the natural-air portion of combination drying just like normal natural-air drying.
+
+Advantages of combination drying:
+
+-
+
+Producers can start harvesting corn at any moisture. This allows starting natural-air drying earlier in the season and makes natural-air drying possible in cool, wet falls.
+
+-
+
+Final grain quality is much better, compared to grain completely dried in a gas-fired dryer.
+
+-
+
+Switching to combination drying greatly increases the capacity (bushels per hour) of the gas-fired dryer. If an existing gas-fired dryer can't keep up with the current harvest rate, switching to combination drying might eliminate this harvest bottleneck.
+
+Preservatives or mold inhibitors slow mold growth and allow more time for drying corn.
+
+Propionic acid is an example of a preservative you can use on shelled corn. Producers most commonly use it to temporarily store wet corn for animal feeding when drying is not feasible. It could also be used to reduce mold growth in natural-air dryers that have lower-than-recommended airflow.
+
+However, using propionic acid has disadvantages. This includes the cost of application, corrosion of metal equipment and the fact that treated corn can only be used for animal feed.
+
+Anhydrous ammonia also inhibits mold growth on shelled corn. You can use it in a trickle ammonia process, in which small amounts of ammonia are periodically injected into the drying air downstream from the fan (between the fan and the bin) on natural-air dryers. The ammonia slows mold growth and slightly increases the corn's protein content.
+
+Disadvantages of ammonia include corrosion of electrical components, handling of a potentially hazardous material and treated corn that can only be fed to animals.
+
+Other preservatives or mold inhibitors, either chemical or biological, might become available for use in natural-air corn dryers. Before using any of these products, make sure they’ve been approved for use on corn. Consider cost, safety, corrosion and whether potential buyers will accept treated corn.
+
+Estimating and managing costs
+
+|
+
+When drying cost is mentioned, energy cost usually comes to mind. However, energy is only part of drying cost. Total cost includes labor, equipment (the dryer plus auxiliary holding bins and handling equipment), repairs, maintenance, taxes and insurance.
+
+Electrical energy use for natural-air drying depends on initial grain moisture, weather, airflow per bushel and fan efficiency. Average electrical energy use is about 1 kilowatt hour per bushel of corn dried (kWh/bu) for average weather conditions in the Upper Midwest, mid-October harvest, typical fan and motor efficiency and about 16 feet of 20 to 22 percent moisture corn.
+
+Energy use is lower for earlier harvests, more efficient fans, shallower depths or lower moisture, while it’s higher for later harvests, less efficient fans, deeper bins or higher harvest moisture.
+
+Energy use can easily be 0.5 times the longtime average value in warm, dry years and 1.5 times the average value in cool, wet years. Electric heaters often draw as much power as the fan, so using electric supplemental heat can easily double energy cost.
+
+How to calculate energy costs
+
+To calculate energy cost, multiply energy use – measured in kilowatt-hour per bushel (kWh/bu) – by electricity cost per kilowatt-hour ($/kWh).
+
+To estimate the daily cost of operating a natural-air dryer, multiply the electrical demand of the fan in kilowatts (kW), times 24 hours per day, times the cost of electricity ($/kWh). As a rough approximation, fans draw about 1 kilowatt of electrical power per rated horsepower (kWh/hp).
+
+Cost per day = Fan hp x 1 (kW/hp) x 24 (hours per day) x $/kWh
+
+For comparison, gas-fired dryers use 0.015 to 0.025 gallons of propane per bushel per percentage point of moisture removed. Gas-fired dryers also use some electrical energy per bushel, but this is small compared to the gas cost.
+
+Gas cost for gas-fired dryer (per bushel) = Points of moisture removed x gallon/bushel/point x gas cost per gallon
+
+If you’re going to store grain on the farm anyway, the only extra equipment costs for natural-air drying are a larger fan, drying floor and perhaps a spreader and extra roof vents. Labor requirements during harvest are low, but producers need to check the bins every day or two while the fan is operating.
+
+Equipment for gas-fired drying includes the dryer and perhaps extra holding bins and handling equipment. Labor requirements can be high during drying, but once grain is dried, storage bins only need to be checked every week or two.
+
+Which drying method is cheaper? Because the answer depends on local gas and electricity costs, equipment costs, storage needs and availability of farm labor, producers need to calculate costs for their own situations.
+
+Possible ways to reduce costs include:
+
+-
+
+Plant earlier so corn matures earlier in the fall when the weather is warmer and drying is faster.
+
+-
+
+Plant corn varieties that dry faster in the field. Study trials for varieties that give good yields at low moisture.
+
+-
+
+Consider switching to shorter-season varieties, but keep in mind there might be a yield penalty. Agronomists say producers lose about 1 bushel per acre for each relative maturity unit. For example, on average, 105-day corn would yield about 5 bushels per acre more than 100-day corn.
+
+-
+
+Remove fines. This reduces airflow resistance and provides more air and faster drying from a given fan.
+
+-
+
+Install short, large-diameter bins. This takes less fan power to deliver the same airflow per bushel through shallow grain depths (and thus less electrical energy for drying). This same principle also applies to layer filling. If you slowly fill the bin over several weeks, the bottom layers dry faster and less energy is used.
+
+-
+
+Take advantage of electrical rates that reduce cost per kilowatt-hour for electricity. A few power suppliers offer special rates specifically for grain drying. Some offer off-peak rates for any electrical load. Producers must shut off the fan at times of peak electrical load to take advantage of these rates, but as long as the fan isn't off more than about two hours per day, it doesn’t significantly affect the drying process.
+
+-
+
+Use lower-than-recommended airflow and accept greater risk of spoilage. Careful managers can successfully use lower airflow for natural-air drying – which reduces fan size and energy cost – but corn must be moved more often to prevent spoilage.
+
+-
+
+Feed corn that doesn't dry in the fall during winter months.
+
+-
+
+If using supplemental heat, disconnect the heater or at least install a humidistat that turns the heater off during dry weather.
+
+Safety hazards
+
+Dangers include falls while climbing bins, suffocation in grain and breathing mold spores.
+
+|
+
+Managing natural-air dryers includes frequent (every day or two) climbs to the top of the bin to inspect grain. Install safety cages around ladders and guardrails around the opening into the bin. To make climbing safer and easier, consider installing stairs instead of ladders on bins.
+
+Every year, a number of people die from suffocation in grain bins. This happens when they are pulled under flowing grain, when steep piles of moldy, caked grain collapse on them or when they fall through bridges of moldy grain that sometimes remain at the top of partially emptied bins.
+
+To avoid these hazards, stay out of bins when grain unloading equipment is operating and use long poles to knock down grain piles or bridges from a safe distance.
+
+Mold spores can cause short- and long-term health problems. To work safely around moldy grain, wear a dust mask or respirator capable of filtering mold spores. Single-strap, disposable dust masks will not filter mold spores; at a minimum, tight-fitting, two-strap masks are necessary to be safe.
+
+Determining if natural-air drying is right for you
+
+|
+
+Compared with higher-temperature, gas-fired drying methods, natural-air drying:
+
+- Requires less equipment. Producers only need a bin with a full perforated floor, a properly sized fan and a grain conveyor to fill the bin.
+
+- Requires less labor at harvest. During harvest, the only labor requirement is to fill the bin and turn on the fan. Most of the drying takes place after harvest.
+
+- Doesn't slow harvest, because drying takes place in storage. There’s no need to wait for drying to complete before transferring grain to storage, as with other drying methods. Once corn moisture reduces to the recommended level, you can fill the bins as fast as the corn is harvested.
+
+- Produces better-quality grain. Test weight and germination are higher, and stress cracks and breakage susceptibility are lower than for corn dried at higher temperatures. This does not mean higher nutritional value, but in some cases it means producers can avoid test weight and broken corn and foreign material (BCFM) discounts.
+
+- Uses fewer units of purchased energy per unit of water removed. However, keep in mind the energy for natural-air dryers is electricity, which is more expensive per unit of energy than gas
+
+Natural-air drying has disadvantages that limit its usefulness for some producers.
+
+-
+
+Many years, drying is not complete before winter. This doesn’t cause spoilage problems because grain can be kept cold through winter and drying can be finished in spring, but it does limit fall and winter marketing opportunities.
+
+-
+
+You might have to move some grain from the top of the bin to prevent spoilage in years with unusually warm weather, as this leads to rapid mold growth.
+
+-
+
+Actual drying time and energy use are highly weather dependent and vary greatly from year-to-year. Although it is possible to estimate averages. Drying is fast and energy use is low in dry falls, while drying is slow and energy use is high in cool, wet years.
+
+-
+
+Corn moisture should be less than about 23 percent for safe full-bin drying. Producers can use layer drying and combination drying (described earlier) if harvest moisture is greater than 23 percent, but these might not be acceptable options for all producers.
+
+-
+
+Corn at the bottom of the bin overdries (to less than 15 percent moisture) in dry years. Because corn is usually sold on a 15 percent moisture basis, drying corn to less than 15 percent moisture results in weight and revenue loss.
+
+-
+
+Natural-air drying increases electrical demand, which could result in extra costs for increased electrical demand charges or for upgrading electrical service. Electrical demand for natural-air drying fans is roughly 1 kilowatt (kW) per 1,000 bushels.
+
+William Wilcke, emeritus Extension engineer and R. Vance Morey, emeritus agricultural engineer, College of Food, Agricultural and Natural Resource Sciences
+
+Acknowledgements
+
+Thanks to Extension Plant Pathologist Richard Meronuck, Extension Engineers Fred Bergsrud and John Shutske and Meeker County Extension Educator David Schwartz, for reviewing this content, and Diedre Nagy, John Molstad and Michael White of the Educational Development System for producing it.
+
+Reviewed in
+2018
+
+Page survey

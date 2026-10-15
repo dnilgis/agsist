@@ -1,0 +1,90 @@
+# University of Kentucky: equilibrium moisture content for grains
+# https://engr.uky.edu/sites/default/files/equilibrium%20moisture%20content%20for%20grains.pdf
+# fetched 2026-10-15T21:08:27Z, sha256 712ab6ed3be52b37a84131fc5141caf891f1376b9a83684187dc47d0cfe1eb7b
+
+                             Equilibrium Moisture Content for Grains
+
+Implications for drying:
+
+      Grain will eventually reach the moisture levels shown in the tables when exposed to the
+       corresponding temperature and humidity levels for long periods of time. This can occur
+       in the field or in the top layers of a low-temperature bin dryer.
+
+      Drying time will depend on the airflow rate through grain, which in turn depends on the
+       depth of grain in a bin. The minimum drying rate for natural air drying is 1 cfm/bu, but this
+       can take up to a month to dry the top layer depending on the grain and air conditions--
+       during which time spoilage can occur.
+
+Implications for storage:
+
+      The air space between kernels in a bin of corn will have the humidity indicated at the
+       corresponding moisture and temperature. For example, 15% corn at 60 degrees will
+       generate a relative humidity in the air space between kernels of 70%, but when cooled to
+       45 degrees will have a relative humidity of 65%.
+
+      Mold growth is suppressed during storage when the environment is maintained at a
+       relative humidity level of 65% or lower.
+
+Table 1. Equilibrium moisture content of yellow corn (%wb) at different temperature and relative
+humidity levels.
+
+                                        Relative Humidity (%)
+ Temp.     10   20       30        40        50        60       65              70        80           90
+     F                           Equilibrium moisture content, %wb
+    35    6.5  8.6     10.3      11.8      13.3      14.8     15.7            16.6      18.7      21.7
+    40    6.2  8.3      9.9      11.5      12.9      14.5     15.3            16.2      18.3      21.3
+    50    5.7  7.8      9.4      10.9      12.3      13.8     14.7            15.5      17.6      20.5
+    60    5.3  7.3      8.9      10.3      11.8      13.3     14.1            15.0      17.0      19.9
+    70    4.9  6.9      8.4       9.9      11.3      12.8     13.6            14.4      16.4      19.4
+    80    4.6  6.5      8.0       9.4      10.8      12.3     13.1            14.0      16.0      18.8
+    90    4.2  6.1      7.7       9.1      10.5      11.9     12.7            13.5      15.5      18.4
+Source: ASAE Data D245.4 / Average of two prediction equations.
+
+
+
+Prepared by:
+Sam McNeill, PhD, PE                                 Princeton, KY 42445-0469
+Extension Agricultural Engineer                      Ph: (270) 365 - 7541 x 213
+UK Research and Education Center                     Email: sam.mcneill@uky.edu
+Table 2. Equilibrium moisture content of soybeans (%wb) at different temperature and relative
+humidity levels.
+
+                                     Relative Humidity (%)
+ Temperature   10     20     30      40      50    60     65    70          80     90
+     C     F                  Equilibrium moisture content, %wb
+   1.7    35 4.2     5.3    6.5     7.8     9.4 11.5 12.8 14.4            19.1    28.9
+   4.4    40 4.1     5.3    6.4     7.7     9.3 11.3 12.6 14.2            18.9    28.7
+    10    50 4.0     5.2    6.3     7.6     9.1 11.1 12.4 14.0            18.6    28.2
+    16    60 4.0     5.1    6.2     7.4     8.9 10.9 12.2 13.7            18.3    27.8
+    21    70 3.9     5.0    6.1     7.3     8.8 10.7 11.9 13.5            17.9    27.3
+    25    77 3.8     4.9    6.0     7.2     8.6 10.6 11.8 13.3            17.7    27.0
+    32    90 3.7     4.8    5.8     7.0     8.4 10.3 11.5 13.0            17.3    26.5
+ Source: ASAE Data D245.5 / modified-Halsey equation.
+
+
+Table 3. Equilibrium moisture content of soft red winter wheat (%wb) at different temperature
+and relative humidity levels.
+
+                                     Relative Humidity (%)
+ Temperature    10    20      30     40     50     60     65     70        80     90
+     C     F                  Equilibrium moisture content, %wb
+   1.7    35   7.3   8.9 10.2 11.3 12.3 13.4 14.0 14.7                   16.1    18.2
+   4.4    40   7.1   8.7 10.0 11.1 12.1 13.2 13.8 14.4                   15.9    18.0
+    10    50   6.8   8.4     9.6 10.7 11.8 12.9 13.4 14.1                15.5    17.6
+    16    60   6.5   8.1     9.3 10.4 11.4 12.5 13.1 13.7                15.1    17.2
+    21    70   6.2   7.8     9.0 10.1 11.1 12.2 12.8 13.4                14.8    16.9
+    25    77   6.0   7.5     8.7    9.8 10.9 11.9 12.5 13.1              14.5    16.6
+    32    90   5.8   7.3     8.5    9.6 10.6 11.6 12.2 12.8              14.2    16.3
+ Source: ASAE Data D245.4 / Average of two prediction equations.
+
+
+
+
+Prepared by:
+
+
+Sam McNeill, PhD, PE                               Ph: (270) 365 - 7541 x 213
+Extension Agricultural Engineer                    Email: sam.mcneill@uky.edu
+UK Research and Education Center
+Princeton, KY 42445-0469
+

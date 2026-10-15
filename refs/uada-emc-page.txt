@@ -1,0 +1,34 @@
+# UADA grain management: EMC calculator page
+# https://grainmanagement.uada.edu/pages/emc.html
+# fetched 2026-10-15T21:08:32Z, sha256 5f24c72cf796e0a88cbb5259b48632961fe48ad0c6656a001193f30b23806b49
+
+EMC Calculator
+
+Equilibrium Moisture Content
+
+Input
+
+Select grain type from dropdown list:
+
+Enter air temperature (°F):
+
+(°F)
+
+Enter air relative humidity in %:
+
+%
+
+Result
+
+EMC under the current air-conditions (%):
+
+%
+
+This application was developed by the University of Arkansas Division of Agriculture (UADA)
+to assist public users. This application uses data derived from other
+sources and does not guarantee the accuracy of that data. Sale of this application or use of it for purposes
+other than its intended use is strictly prohibited. Information put forth by this application is intended to
+be used in conjunction with close consultation with the appropriate Extension professional. The UADA is not
+liable for damages resulting from recommendations made by this application and is not a substitute for
+prudent judgment. UADA does not warrant or guarantee the performance of this application nor the service
+offered. User’s utilize this information at their own risk.

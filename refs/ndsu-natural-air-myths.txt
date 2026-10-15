@@ -1,0 +1,77 @@
+# NDSU (Hellevang): natural-air drying concepts and myths
+# https://www.ag.ndsu.edu/news/newsreleases/2020/jan-13-2020/ndsu-extension-explains-natural-air-drying-concepts-busts-myths
+# fetched 2026-10-15T21:08:36Z, sha256 bb92fcb1e78332c6b95a3a0703fd3641e944eed903be28685898b6a8ef0be320
+
+NDSU Extension Explains Natural-air Drying Concepts, Busts Myths — Extension and Ag Research News
+
+-
+
+The moisture content and temperature of grain play a big role in how long that grain can be stored without significant deterioration.
+
+Air drying is one way to reduce the moisture in grain. However, natural-air drying is not effective during the winter, according to Ken Hellevang, North Dakota State University Extension agricultural engineer and grain drying expert. The cold air does not hold enough moisture to accomplish in-bin drying.
+
+For example, 100,000 pounds of air (about 1,280,000 cubic feet) at 47 degrees and 70% relative humidity used for air drying 21% moisture corn in October will pick up about 70 pounds of water while drying the corn to 16% moisture, which is the equilibrium moisture content (EMC) of corn for that air condition.
+
+In January, the same 100,000 pounds of air at 7 degrees and 70% relative humidity will pick up only about 9 pounds of water while drying the corn to only about 19% moisture, which is the EMC of corn at that air condition.
+
+Using an airflow rate of 1 cubic foot per minute per bushel (cfm/bu), drying the corn in October will take about 50 days, and a limited amount of drying in January will take 120 days.
+
+“The general recommendation is to wait until the outdoor air temperature averages about 40 degrees to air-dry corn and soybeans,” Hellevang says. “Keep the stored grain near or below 30 degrees until drying starts.”
+
+Information is circulating that drying occurs at night and not during the day, so fans should be operated at night and not during the daytime. This theory has several inaccuracies, Hellevang says.
+
+At airflow rates used for natural-air drying, the grain temperature rapidly changes and is fluctuating during a 24-hour period. The time required to change the grain temperature can be estimated by dividing 15 by the airflow rate. So, at 1 cfm/bu, changing the temperature of the grain in the bin will take only about 15 hours.
+
+During the daytime, the grain is being warmed. Then as outdoor air temperatures cool during the evening, the grain at the bottom of the bin gradually cools and the air is warmed by the grain. As the air is warmed, the moisture-holding capacity is increased.
+
+During the forenoon, the grain at the bottom of the bin gradually is warmed by the air and the air is cooled. The cooling of the air limits the moisture-holding capacity, but the warming of the grain creates drying potential for later.
+
+Moisture is removed by evaporation, which requires that the grain and air going through the grain be warm enough to evaporate the moisture until moisture equilibrium is reached, based on the EMC of the grain. If the grain was not warmed during the day, the grain would remain at the night temperature, so running the fan the next night would bring cold, damp air in on cold grain and little if any drying would occur.
+
+As an example, a producer is attempting to dry 16% moisture soybeans in April when the average temperature is 42 degrees and 70% relative humidity. The soybeans would be expected to dry to about 13.5% moisture if the fans run 24 hours per day.
+
+Typically, the temperature varies by 20 to 25 degrees during a 24-hour period, and the relative humidity changes as the air temperature changes unless moisture is added or removed from the air. If the fans were operated just at night, the grain would be about 32 degrees, and the air condition would be about 32 degrees and 100% relative humidity.
+
+Based on the soybean EMC, operating the fan just at night would add moisture to the soybeans.
+
+“Unfortunately, there are no new ways to dry grain,” Hellevang
+notes. “The laws of nature continue to apply.”
+
+He recommends starting to natural-air dry corn and soybeans when the
+average air temperature is about 40 degrees. The maximum initial corn moisture for natural-air drying using an airflow rate of at least 1 cfm/bu is 20% this year due to the increased potential for deterioration because of damaged or immature kernels. The expected drying time for corn is about 45 to 50 days using an airflow rate of 1 cfm/bu.
+
+Drying time is proportional to the airflow rate, so at an airflow rate of 1.25 cfm/bu, the drying time is about 35 to 40 days. Adding heat will change the final corn moisture but will change the drying speed only slightly.
+
+Ensure that the fan’s airflow rate is adequate by checking fan charts or estimate airflow by using the fan selection program available at the NDSU grain drying and storage website (https://www.ag.ndsu.edu/graindrying).
+
+If temperatures cool to an average of about 30 degrees, the fans can be stopped. Wait until the temperature again averages at least about 40 degrees before starting the fans. Cool the grain by operating the fans at night or other cool periods before shutting off the fans to extend the storage life of the grain.
+
+Some producers are concerned about shutting fans off because that leaves a drying front in the grain. The drying front is the area in the grain mass where the drying is occurring. The dry air comes in contact with wet grain at the bottom of the drying zone, picks up moisture until it comes into equilibrium with the grain in the drying zone and then carries that moisture through the wet grain above the drying zone and out of the bin.
+
+“There is nothing magical about the drying front or zone,” Hellevang says. “The grain and the drying zone will be in the same condition several days later when the fan is started again.”
+
+Fans should be shut off during rainy days and during fog.
+
+Here are some recommendations by crop:
+
+Soybeans
+
+Use an airflow rate of at least 1 cfm/bu to natural-air dry up to 16% moisture soybeans. The expected drying time with this airflow rate will be about 50 days. The allowable storage time for 18% moisture soybeans is only about 40 days at 50 degrees, so use a minimum airflow rate of 1.5 cfm/bu to natural-air dry 18% moisture soybeans.
+
+Wheat
+
+Normally start drying fans in late April when temperatures are averaging in the upper 40s. The estimated time to dry 17% moisture wheat using an airflow rate of 0.75 cfm/bu is about 40 days at 47 F. Adding supplemental heat that warms the air 3 to 5 degrees permits drying at a higher humidity but will approximately double the cost of drying.
+
+Barley
+
+Malting barley germination will be lost if adequate airflow is not provided so the barley is dried within the allowable storage time. The allowable storage time (or drying time) is related to the grain temperature and moisture content. The allowable storage time, based on germination, for 17% moisture barley is about 140 days at 50 degrees, 65 days at 60 degrees and only 30 days at 70 degrees.
+
+Germination will be lost before mold growth is visible. An allowable storage time chart for malting barley is available at the NDSU grain drying and storage website. Allowable storage time is cumulative, so if the 17% moisture barley was stored for 60 days last fall at 50 degrees before it was cooled for winter storage, the allowable storage time this spring is only about 60 days at 50 degrees before germination is lost.
+
+Drying 17% moisture barley will take about 40 days with an airflow rate of 0.75 cfm/bu at 50 degrees. Therefore, an airflow rate of 0.75 cfm/bu is the minimum recommended airflow rate to dry 17% moisture barley in the spring.
+
+NDSU Agriculture Communication - Jan. 16, 2020
+
+Source: Ken Hellevang, 701-231-7243, kenneth.hellevang@ndsu.edu
+
+Editor: Ellen Crawford, 701-231-5391, ellen.crawford@ndsu.edu

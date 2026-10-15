@@ -1,0 +1,217 @@
+# Stored grain pack factor measurements for soybeans, sorghum, oats, barley and wheat (UKY)
+# https://uknowledge.uky.edu/bae_facpub/221
+# fetched 2026-10-15T21:09:32Z, sha256 e317a51e1ac69e018963af062cd84facf066170879e89233abe2e881ca3fdc50
+
+"Stored Grain Pack Factor Measurements for Soybeans, Grain Sorghum, Oat" by Rumela Bhadra, Mark E. Casada et al.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Skip to main content
+
+University of Kentucky ®
+
+UK Libraries
+
+- Home
+
+- About
+
+- FAQ
+
+- My Account
+
+- < Previous
+
+- Next >
+
+-
+
+UKnowledge
+
+> Martin-Gatton College of Agriculture, Food and Environment
+
+> Biosystems and Agricultural Engineering
+
+> Faculty Publications
+
+> 221
+
+Biosystems and Agricultural Engineering Faculty Publications
+
+Archived
+
+This content is available here for research, reference, and/or recordkeeping.
+
+Stored Grain Pack Factor Measurements for Soybeans, Grain Sorghum, Oats, Barley, and Wheat
+
+Authors
+
+- Rumela Bhadra, Kansas Department of Health and Environment
+
+- Mark E. Casada, USDA Agricultural Research Service
+
+- Aaron P. Turner, University of KentuckyFollow
+
+- Michael D. Montross, University of KentuckyFollow
+
+- Sidney A. Thompson, University of Georgia
+
+- Samuel G. McNeill, University of KentuckyFollow
+
+- Ronaldo G. Maghirang, Kansas State University
+
+- Josephine M. Boac, Kansas State University
+
+Abstract
+
+Grain and oilseed crops stored in bins undergo compaction due to overbearing pressure of the grain inside the structure. Thus, volume measurements of grain in bins need to be combined with the amount of packing (usually called pack factor) in addition to the initial density so that the mass in the structure can be calculated. Multiple pack factor prediction methods are in use in the grain industry, but they have only been validated in the literature and compared with field data for corn and hard red winter wheat. Predictions from WPACKING, the program in ASABE Standard EP413.2, and two standard USDA methods, the USDA Risk Management Agency (RMA) and USDA Farm Service Agency-Warehouse Licensing and Examination Division (FSA-W) methods, were compared to field measurements of 92 bins containing soybeans, grain sorghum, oats, barley, or soft white or durum wheat. The WPACKING predictions had the lowest absolute average error of predicted mass for soybeans, grain sorghum, barley, and wheat, while the FSA-W method had the lowest error for oats. The RMA method gave the largest prediction errors for all five crops and struggled especially with the low-density, high-compaction crops oats and barley, giving average percent absolute errors near or above 10% in both cases. Overall, WPACKING, the RMA method, and the FSA-W method had average percent absolute errors of 2.09%, 5.65%, and 3.62%, respectively, for the 92 bins. These results can be used to improve pack factor predictions for the grain industry.
+
+Document Type
+
+Article
+
+Publication Date
+
+2018
+
+Notes/Citation Information
+
+Published in Transactions of the ASABE, v. 61, issue 2, p. 747-757.
+
+The copyright holder has granted the permission for posting the article here.
+
+Digital Object Identifier (DOI)
+
+https://doi.org/10.13031/trans.12645
+
+Funding Information
+
+The research was supported by the USDA (CRIS No. 5430-43440-008-00D) and by the Kansas Agricultural Experiment Station (Contribution No. 18-360-J).
+
+Repository Citation
+
+Bhadra, Rumela; Casada, Mark E.; Turner, Aaron P.; Montross, Michael D.; Thompson, Sidney A.; McNeill, Samuel G.; Maghirang, Ronaldo G.; and Boac, Josephine M., "Stored Grain Pack Factor Measurements for Soybeans, Grain Sorghum, Oats, Barley, and Wheat" (2018). Biosystems and Agricultural Engineering Faculty Publications. 221.
+
+https://uknowledge.uky.edu/bae_facpub/221
+
+Download
+
+DOWNLOADS
+
+Since October 25, 2018
+
+Included in
+
+Agronomy and Crop Sciences Commons,
+
+Bioresource and Agricultural Engineering Commons
+
+Share
+
+COinS
+
+Search
+
+Advanced Search
+
+-
+
+Notify me via email or RSS
+
+Browse by Author
+
+- Collections
+
+- Disciplines
+
+- Authors
+
+Author Corner
+
+- Author Rights/Copyright
+
+-
+
+Author FAQ
+
+-
+
+Submit Research
+
+Connect
+
+-
+
+Librarian-Created Resources
+
+-
+
+Law Library
+
+-
+
+Special Collections
+
+-
+
+Graduate School
+
+-
+
+Scholars@UK
+
+-
+
+-
+
+We’d like your feedback
+
+Elsevier - Digital Commons
+
+Home
+|
+
+About
+|
+
+FAQ
+|
+
+My Account
+|
+
+Accessibility Statement
+
+Privacy
+
+Copyright
+
+University of Kentucky ®
+
+An Equal Opportunity University
+
+Accreditation
+
+Directory
+
+Email
+
+Privacy Policy
+
+Accessibility
+
+Disclosures
+
+© University of Kentucky
+
+Lexington, Kentucky 40506

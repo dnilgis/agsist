@@ -1,0 +1,268 @@
+# UMN Extension: scouting for soybean aphid
+# https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid
+# fetched 2026-10-15T21:08:19Z, sha256 89cc4b21e0942a0cec65d08a4e864c3e54a5f5aab504f8cb71c7c435b8d50346
+
+Scouting for soybean aphid | UMN ExtensionPlus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.
+
+-
+Home
+
+-
+Agriculture
+
+-
+Crop production
+
+-
+Soybean
+
+-
+Scouting for soybean aphid
+
+Identifying aphids
+
+Soybean aphids, including winged adults and cast nymph skins
+
+Soybean aphids are small (1/16 of an inch or less), soft-bodied insects that use piercing-sucking mouthparts to remove plant sap.
+
+Color and characteristics
+
+- Both winged and wingless forms can occur in the field.
+
+- Their bodies are yellowish-green and pear-shaped, with a pair of dark cornicles (“tailpipes”) at the end of the abdomen.
+
+- Winged aphids have a dark head and thorax.
+
+During soybean pod fill, a small, pale-colored aphid form (referred to as white dwarves) may occur on leaves in the lower and middle canopy.
+
+Sticky waste
+
+While feeding, aphids excrete unneeded plant sugars as waste. Accumulation of this sticky waste, known as honeydew, can make leaves appear shiny.
+
+It also encourages the growth of sooty mold fungus, which creates a black, powdery coating on leaves. As the season progresses, the presence of honeydew and cast aphid skins indicates high soybean aphid populations.
+
+Dead and diseased aphids
+
+Some infestations can cause potassium deficiency symptoms on upper leaves. While inspecting plants for soybean aphids, be on the lookout for dead aphids, which may be indicators of beneficial organisms working to suppress aphid populations.
+
+Aphid mummies are an aphid body’s dried, brown or black remains after tiny parasitic wasps have fed on it from the inside. Diseased aphids are discolored and fuzzy-looking (see Figures 22 and 23).
+
+Presence of lady beetles and ants
+
+The presence of lady beetles or ants on soybeans often indicates aphid infestation and can be particularly useful in finding small, isolated early-season aphid colonies.
+
+When to scout
+
+Severe soybean aphid damage. Note the distorted leaves and sooty mold.
+
+In Minnesota, soybean colonization by aphids can occur as soon as soybean emerges, and aphid populations can persist until soybean leaf drop.
+
+Begin scouting for soybean aphid on soybean in mid to late June and continue until R6.5 (pods and leaves begin to yellow), regardless of calendar date.
+
+If you stop scouting too early, late-season infestations can build to economically damaging levels. Yield loss can occur into early R6 (pod cavity filled by seed).
+
+Because aphid populations can rapidly grow, scout infested fields on a weekly basis.
+
+At-risk fields
+
+Yield-damaging soybean aphid populations can occur in any field. However, some fields tend to have more consistent problems with aphid infestations each year. Several factors increase the likelihood of aphid problems.
+
+Early in the season
+
+In the spring, aphids are often first found in geographic areas with abundant buckthorn. Smaller fields with wooded borders are often the first to develop high populations.
+
+These fields often develop aphid populations sooner:
+
+- Early-planted fields.
+
+- Fields with more coarsely textured soil.
+
+- Fields that test lower in potassium.
+
+Later in the season
+
+Later in the season, full-maturity soybean or late-planted soybean, such as beans following peas, are often reported to have higher populations.
+
+Rigorous and possibly more frequent scouting of high-risk indicator fields can provide valuable information on when an area’s aphid populations are beginning to increase. Increases should trigger scouting of other fields you’re managing.
+
+Scouting methods and thresholds
+
+Scouting requires entering the fields and inspecting plants. By the time you can detect soybean aphid populations from the road, significant yield loss has likely already occurred.
+
+Through timely and thorough field-scouting, you can identify and treat significant soybean aphid populations before economic yield loss occurs.
+
+|
+
+Estimate the number of aphids per plant from a representative number of plants. Select plants throughout the area that’s being scouted. Then, calculate the average number of aphids per plant.
+
+Economic threshold: Through R5
+
+Through R5 (seeds developing, but pod cavity not filled), use the following economic threshold. All three conditions should be true before treating:
+
+- Average of 250 aphids per plant.
+
+- More than 80 percent of plants have aphids.
+
+- Aphid populations increasing.
+
+Count both adults and nymphs, including any white dwarves. However, avoid counting soybean aphid look-alikes, such as potato leafhoppers and whiteflies (Photos 3 and 4), as well as cast soybean aphid skins and dead aphids.
+
+The previously mentioned economic threshold is based on the average of multiple plants selected from throughout the field and not just hotspots or field borders. Avoid making treatment decisions based on field borders.
+
+Small aphid hotspots often collapse from predation, parasitism or emigration. On the other hand, once a high percentage of the field’s plants have aphid colonies, aphid numbers (aphids per plant) can rapidly increase.
+
+Economic threshold: R6
+
+Though an economic threshold hasn’t been developed for R6, infestations in early R6 may require treatment if aphid populations are very large and plants are experiencing other stresses.
+
+Figure 3: Whitefly (left) and aphid (right).
+
+Figure 4: Potato leafhopper.
+
+Figure 5: Ant tending aphids.
+
+Visually estimating aphid populations
+
+Soybean aphid numbers can be deceiving. Economic threshold levels may be present, but not obvious without close inspection. The small dwarves and nymphs, as shown on the leaves in Figure 11, can make accurate estimates difficult.
+
+Fortunately, you don’t need absolute counts of soybean aphid populations to make sound treatment decisions.
+
+Figure 11: Approximate number of aphids on R5 leaves. Several counts were made from the photo, but may not be totally accurate. Aphids with fungal disease symptoms were present, but not counted.
+
+Reproductive growth stage
+Description
+
+R1: Beginning bloom
+Plants have at least one flower on any node.
+
+R2: Full flower
+There’s an open flower at one of the two uppermost nodes.
+
+R3: Beginning pod
+Pods are 3/16 inch (5 millimeters) at one of the four uppermost nodes.
+
+R4: Full pod
+Pods are 3/4 inch (2 centimeters) at one of the four uppermost nodes.
+
+R5: Beginning seed
+Seed is 1/8 inch long (3 millimeters) in the pod at one of the four uppermost nodes on the main stem.
+
+R6: Full seed
+Pod containing a green seed that fills the pod capacity at one of the four uppermost nodes on the main stem.
+
+R7: Beginning maturity
+One normal pod on the main stem has reached its mature pod color.
+
+R8: Full maturity
+95% of the pods have reached their full mature color.
+
+Photo 6: Soybean pod at mid-R5 stage (between beginning and full seed).
+
+Figure 7: Soybean pod at R6 stage (full seed).
+
+This method can save time and is relatively easy to use. However, you get less information about the population’s dynamics and the method can over-recommend treatment.
+
+With this method, you don’t need to estimate the entire number of aphids on each plant. Plants are considered infested if they have 40 or more aphids and uninfested if they have less than 40 aphids.
+
+How to scout
+
+In each 50-acre area of soybean, initially inspect 11 plants in this manner and tally the numbers of infested and un-infested plants. From those results, decide to treat the field, not to treat the field or inspect five additional plants.
+
+When you can’t make a treat or no-treat decision, continue this process up to a maximum of 31 plants. If you can't make a treat or no-treat decision at 31 plants, resample in three to four days.
+
+To account for the tendency to over-recommend treatment, confirm the decision to treat a field by resampling the field in three to four days.
+
+Worksheets for tallying results
+
+Economic threshold
+
+This method is based on the same economic injury data as the 250 aphid per plant threshold used in the whole-plant sampling method. In other words, this is not a new economic threshold of 40 aphids per plant. The time savings with this method may reduce later in the season when aphids are distributed lower in the canopy.
+
+Managing aphids and other considerations
+
+|
+
+Figure 8: Early-season aphid infestation on new growth.
+
+Many of the foliar insecticides labeled for soybean aphid are effective. However, there’s no guarantee of a return on the insecticide investment, because soybean aphid populations may crash at any time.
+
+Aphid density
+
+Using the economic threshold mentioned earlier—250 aphids per plant on 80 percent of the plants, with aphid populations increasing—to trigger insecticide applications should minimize this risk.
+
+Detectable soybean yield loss doesn’t occur at aphid densities below the economic threshold of 250 aphids per plant (for a short period).
+
+Applying insecticide at aphid densities below this threshold, such as 5, 50 or 100 aphids per plant, is unlikely to save yield and may result in treating a large percentage of fields where aphids would never develop into yield-threatening problems.
+
+Treatment below the economic threshold also increases the risk of negatively impacting beneficial insects (predators, pollinators) and the risk of aphids developing resistance to insecticides.
+
+Timing
+
+The longer large soybean aphid populations are allowed to persist on soybean, the greater the chance for an unacceptable yield loss.
+
+Signs of soybean stress (nutrient deficiency symptoms, stunting or puckered leaves) indicate that some yield loss has probably already occurred. It isn’t advisable to wait until symptoms appear in large areas of the field.
+
+Economic injury level
+
+Figure 9: Severe soybean aphid infestation at the R3 stage.
+
+The economic threshold of 250 aphids per plant remains valid despite changes in soybean and input prices. These price changes adjust the economic injury level (EIL), which is the point at which losses are sufficient to justify insecticide application.
+
+However, the economic threshold of 250 aphids per plant is still sufficiently below the EIL to allow several days to make an insecticide application before losses occur. A lower economic threshold for soybean aphid isn’t justified at this time.
+
+Growth stage
+
+Soybean aphid populations can rapidly increase during the late R5 through R6 soybean growth stages, and very high populations can sometimes be seen at the end of the season. Yield loss can occur as late as the early R6 growth stage.
+
+However, regularly scouting fields and using the threshold of 250 aphids per plant through the R5 stage should prevent most, if not all, yield-limiting aphid populations in R6. While the economic injury level for R6 soybean isn’t known, it’s believed to be higher than earlier stages.
+
+Late-season treatment decisions are complicated by the uncertain timing of aphid movement back to buckthorn, which can occur as early as mid-August and as late as soybean leaf drop in October.
+
+Pre-harvest interval (PHI)
+
+Finally, pay particular attention to insecticide pre-harvest intervals (PHI), the amount of time required between pesticide application and harvest as stated on the label. They can remove fields from insecticide consideration.
+
+Over time and soybean growth stages, the position of soybean aphid populations change within the soybean canopy as the aphids track changing nutrient levels in the plants.
+
+Early in the season
+
+Early in the season, aphids tend to be located on new growth in the upper canopy. During this time, examining upper leaves is a quick way to determine the percentage of plants with aphids.
+
+Later in the season
+
+Figure 10: Winged aphids leaving a soybean plant. Inset shows an aphid nymph with wing pads.
+
+As soybeans near the R5 stage, the production of new leaves slows. When vegetative growth at the top of the plant ceases, aphids tend to move down the plant toward pods, stems and lower leaves.
+
+At this later time of year, it’s often easier to find aphids on new leaves on lower canopy branches, non-senescing leaves (especially the undersides), stems and pods. Large numbers of aphids on the stems and pods generally indicate populations approaching, if not exceeding, 250 aphids per plant.
+
+Winged aphids
+
+The presence of winged (alate) aphids may indicate the arrival or departure of aphids. Large numbers of winged aphids can be produced during late R4 and early R5 soybean growth stages, particularly if populations on individual plants are high.
+
+These winged aphids can redistribute within the field or neighboring fields, but they may also move long distances with weather systems. When most of the aphid movement is out of an early-infested field, populations can decline up to 90 percent.
+
+A very high percentage of aphid nymphs with wing pads is an indicator of a potential migration event. If such a field is close to the economic threshold of 250 aphids per plant, sample it again in a couple days to determine if the aphids stayed or left the field.
+
+With typical planting dates and adapted maturity varieties in Minnesota, this migration or redistribution event usually occurs in the last few days of July or early August. As the winged aphids settle in new fields, populations can rapidly increase. Previously uninfested fields can quickly reach the economic threshold. The presence of winged aphids alone or with only small nymphs are signs that aphids are arriving rather than leaving.
+
+Laboratory studies exposing aphids to constant temperatures have shown temperatures above 90 degrees Fahrenheit are stressful to soybean aphids.
+
+However, translating this to aphid population growth in the field is complicated by the facts that temperatures fluctuate throughout the day and temperatures within the soybean canopy may differ from the above-canopy air temperature. Don’t assume high summer temperatures will stop aphid population growth.
+
+Fields planted with aphid-resistant soybean and/or insecticide-treated seed still require scouting because aphid populations can reach economically damaging levels.
+
+In addition, scout fields after applying a foliar insecticide to monitor for resurgence of the aphid population or outbreak of a secondary pest, such as twospotted spider mites. Pay particular attention to two-spotted spider mites under hot, dry conditions and choose insecticides accordingly, as many pyrethroid insecticides can flare mite populations.
+
+If a field must be retreated within a season, consider switching to a different insecticide mode of action. Rotating modes of action will prevent the development of pest resistance to insecticides.
+
+Insecticide resistance management guidance
+
+Authors: Robert Koch, Extension entomologist, and Bruce Potter, integrated pest management specialist, Southwest Research and Outreach Center
+
+Reviewed in
+2023
+
+-
+
+Page survey

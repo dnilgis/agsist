@@ -1,0 +1,468 @@
+# Oklahoma State: aeration and cooling of stored grain
+# https://extension.okstate.edu/fact-sheets/aeration-and-cooling-of-stored-grain.html
+# fetched 2026-10-15T21:09:16Z, sha256 7cd0e5032fc9920f005dd432e30ad28d0146589a1c40f5c9fe61f8fbb9169443
+
+Aeration and Cooling of Stored Grain | Oklahoma State University
+
+-
+
+-
+
+-
+
+-
+
+Aeration and Cooling of Stored Grain
+
+Published Feb. 2017|Id: BAE-1101
+
+By
+Carol Jones, James Hardin
+
+Print-friendly PDF
+
+- Share Fact Sheet
+
+- Facebook
+
+- Twitter
+
+- Pinterest
+
+Jump To:
+- Aeration is an Integral Part of Integrated Pest Management Practices
+
+- Aeration System Design Considerations
+
+- Choosing Airflow Rate
+
+- Time Required for Cooling
+
+- Airflow Direction: Pressure vs. Suction
+
+- Selecting Fans
+
+- Grain Bin Construction and Other Considerations
+
+- Controls for Aeration
+
+- Aeration Procedures
+
+- Aeration costs
+
+- References
+
+Many stored grain problems, such as mold, insects, fungi and spoilage, start with
+or are worsened by improper grain moisture and temperature. Internal air currents
+driven by temperature differentials in the grain cause moisture to migrate to the
+top and center of the grain mass; molds develop, and insects feed and reproduce. Aeration
+is used to cool and maintain uniform temperatures and moisture in masses of stored
+grain. In aeration, a fan is used to pump outside air through grain in a storage facility.
+The grain temperature eventually attains the temperature of air traveling through
+void spaces in the grain mass. Without aeration, stored grain develops wide temperature
+differentials, increasing the chances of mold and insect development.
+
+Each type of grain has different storage requirements for temperature and moisture
+and thus has a unique aeration protocol. In Oklahoma early summer crops such as wheat
+can be cooled during relatively frequent cool nights soon after harvest. Crops harvested
+later in summer may have limited cooling opportunities immediately after harvest.
+Oil seeds generally require cooler and dryer storage conditions than wheat or corn
+to prevent development of rancidity and spoilage.
+
+This document discusses design and operation of aeration systems for grain storage
+structures.
+
+Aeration is an Integral Part of Integrated Pest Management Practices
+
+Stored grain insects thrive at 75 F to 85 F. Aeration systems should be operated immediately
+after binning when nighttime temperatures allow to lower temperature to unfavorable
+levels for insect feeding, growth, and reproduction. Later in September aeration systems
+should be used to lower temperatures to the lower 60s. If the grain will remain in
+storage through the winter into summer, another cooling cycle is needed in mid-winter
+to lower the grain mass to 30 F to 35 F to reduce insect activity and equalize grain
+mass temperatures.
+
+The bin’s doors, unloading auger, under floor spaces, and aeration fan openings should
+be cleaned and sprayed with a residual insecticide. Openings should be sealed before
+harvest to keep insects from inhabiting or entering lower bin areas from the outside,
+to keep cool air from flowing out of the bin, and to keep winds from blowing into
+fan openings. Keep these openings sealed year round, except when aeration fans are
+operating.
+
+Aeration System Design Considerations
+
+The design procedure for an aeration system involves first determining the airflow
+rate and direction needed to achieve specific aeration goals. After the aeration rate
+is determined the air distribution system can be designed and fans selected to deliver
+the required air volume. For specific design information see the following OSU Fact
+Sheets:
+
+BAE-1102 Aeration Systems for Flat-Bottom Round Bins
+
+BAE-1103 Aeration Systems for Cone-Bottom Round Bins
+
+Choosing Airflow Rate
+
+Airflow used for aeration is usually expressed as CFM/bu (cubic feet of air per minute,
+per bushel of stored grain). Aeration rates start at about 0.05 CFM/bu and increase
+as shown in Table 1.
+
+Table 1. Aeration time required to cool wheat and corn versus CFM/bu.
+
+Time (hours)
+Grain Condition
+
+CFM/Bu.
+Clean
+High F.M.
+Classification
+
+0.05
+240
+300-350
+Light
+
+0.1
+120
+150-175
+Light
+
+0.2
+60
+75-85
+Medium
+
+0.3
+40
+50-60
+Medium
+
+0.4
+30
+35-40
+Fast
+
+0.5
+24
+30-35
+Fast
+
+0.6
+20
+25-30
+Fast
+
+0.8
+15
+18-20
+Fast
+
+1
+12
+14-16
+High Speed
+
+2
+6
+42957
+High Speed
+
+3
+4
+42861
+High Speed
+
+5
+2.5
+42798
+High Speed
+
+Light aeration systems, 0.1 CFM/bu or less, require long operation times to lower
+grain temperatures and are best suited to cooler climates.
+
+Medium and Fast aeration systems, 0.2 CFM/bu through 0.8 CFM/bu, are operated periodically
+to lower grain temperature and equalize temperatures in stored grain. Just a few nights
+of operation will lower grain temperature to nighttime air temperature. In Oklahoma
+a minimum 0.2 CFM/bu is recommended.
+For high speed grain cooling, 1 CFM/bu or greater is required. In this case, grain
+can be cooled in one or two nights of fan operation.
+
+Grain cooling should not be confused with natural air grain drying, which requires
+high speed airflows greater than 1 CFM/bu. For natural air grain drying, damp grain
+is placed in a bin and the fan is operated continuously for several weeks until all
+the grain has dried to a safe moisture content. Grain cooling involves an initial
+period of fan operation to cool grain followed by periodic operation to maintain even
+temperatures throughout the grain mass.
+
+The airflow rate should be chosen according to how the aeration system will be used.
+If grain will be stored with safe moisture content and the aeration system will be
+used to prevent moisture migration, a light aeration system may be chosen. When storage
+will be attempted with moisture contents one or two percent above safe moisture levels,
+grain temperature must be controlled more closely and a fast aeration system is desirable.
+In general, if grain must be cooled quickly, a faster airflow should be chosen.
+
+Time Required for Cooling
+
+The time required to cool grain to the approximate temperature of the ambient air
+depends largely on airflow rate, foreign material in the grain, and the amount of
+evaporative cooling (drying) that takes place. For dry grain, where evaporative cooling
+is negligible, approximate cooling times are given in Table 1. Doubling the airflow
+rate will cut cooling time in half.
+
+Many on-farm aeration fans are sized for about 0.1 CFM/ bushel airflow which then
+require about 120 hours (five days) of continuous operation for clean grain or 150
+hours to 175 hours (six to seven days) for grain containing high levels of foreign
+materials (f.m.).
+
+Figure 1 shows temperature data with the number of hours for the months of September
+and October where the air is below 55 F. Cooling grain to 55 F or lower causes insects
+to become dormant or die. It also eliminates grain temperature differentials that
+cause moisture migration, top crusting, and major mold problems.
+
+Figure 1. Hours during September and October where temperature is less than 55 F in Oklahoma
+(30-year weather data).
+
+To take maximum advantage of short duration cool weather in early fall it is advised
+to use automatic aeration controllers and higher capacity fans that deliver at least
+0.2 CFM/bushel to cool grain in less than 60 hours to 85 hours. The additional cost
+may be recovered in one or two seasons from savings in grain damage, moisture losses,
+protectant, and fumigation expenses.
+
+Airflow Direction: Pressure vs. Suction
+
+Pressure (upward) airflow is preferred by many grain storage managers over suction
+(downward) airflow (Figure 2) because: (1) aeration fans are designed to deliver maximum
+airflow against pressure; fans push more mass of cool dense air than warm light air;
+(2) pressure fans develop more uniform airflow through the grain mass than suction
+systems; (3) with pressure airflow, condensation on top of the grain is visible and
+usually dries up by the end of the aeration cycle; the problem is visible and solvable,
+whereas bottom condensation damage caused by suction fans cannot be seen until the
+bin is unloaded; (4) pressure fans eliminate winter bin roof collapse (roof vents
+may freeze over during suction cooling). NOTE: Axial (Propeller) fans can usually
+be reversed simply by turning the fan housing around and rebolting.
+
+Figure 2. Direction of airflow in aeration systems.
+
+Selecting Fans
+
+Aeration fans may be either axial (propeller) type or centrifugal (squirrel-cage)
+type as illustrated in Figure 3. Axial type fans are less expensive and are normally
+used when static pressure will not exceed 4 or 5 inches of water.
+
+Figure 3. Centrifugal fan with backward-inclined blades and an axial fan.
+
+Centrifugal type fans with backward-inclined blades give more consistent air delivery
+over a range of pressures than most axial type fans and, in special designs, can operate
+at 20 or more inches of static pressure.
+
+The power required for aeration increases rapidly as airflow rate and grain depth
+increase. A doubling of airflow rate or grain depth causes about a four-fold increase
+in power required. Different grain types have different resistance to airflow. For
+these reasons aeration fans vary greatly in horsepower. With light aeration systems
+in farm-size storage, fractional horsepower fans are often used. As airflow rates
+increase to 0.5 CFM/bu or more with grain depths of 20 feet or more, the power requirement
+may exceed 1 horsepower for every 1,000 bu of bin capacity. In large bins, multiple
+fans of 20 or 25 horsepower may be required.
+Fans should not be selected by type or by horsepower. Fans for aeration should be
+selected from the manufacturer’s rating tables or curves to deliver the required air
+volume at the expected static pressure.
+
+Grain Bin Construction and Other Considerations
+
+Grain bins with fully perforated drying floors are ideal for aeration, but cleaning
+under the floor can be difficult and erection costs can be higher. Removable floor
+ducts are an alternative to drying floors and can be obtained in large square, cross,
+“Y,” or “U” patterns.
+
+Cross-flow aeration systems can be used to reduce the resistance to airflow encountered
+in aeration of tall grain bins. The lower power requirements reduce operating expense
+and capital costs.
+
+Bins must have adequate roof exhaust vents to minimize roof condensation and maximize
+airflow. There should be a minimum of one square foot of roof vent opening for every
+1500 CFM of airflow. A temporary alternative to installing roof openings during aeration
+fan operation is to open roof fill caps and access doors to allow air to escape. Roof
+vents that are designed to open under pressure or vacuum can remain closed between
+aerations to help reduce insect infiltration.
+
+Aeration fans can suck rain and snow into a grain bin. Rain or snow storms of short
+duration (three hours to six hours) usually do not create a moisture problem. During
+storms of longer duration or continuous foggy weather, stop aeration until weather
+improves.
+
+Controls for Aeration
+
+Aeration fans may be controlled by manual, semiautomatic or automatic controls. Manual
+control requires only a single on-off switch. Controls which can be used with aeration
+fans include time clock or electric eye for night operation, high- or low-limit thermostats
+and high- or low-limit humidistats. Several commercial control packages are available,
+ranging from simple temperature and humidity controls for a single bin to elaborate
+controls for multiple fan operation.
+
+When semiautomatic or automatic controls are used, an elapsed-time clock should be
+placed in the circuit. If the aeration system is not operating long enough to achieve
+temperature equalization within the stored grain, then the control settings should
+be changed to allow longer or more frequent operation. Aeration systems often must
+be operated several times during cooling seasons, each time long enough to equalize
+temperatures throughout the entire grain mass (Table 1).
+
+Small motors can be started and run by temperature and humidity control switches if
+the contacts are rated for these loads. Magnetic motor starters should be used for
+all motors of 0.5 horsepower or larger. Automatic aeration temperature controllers
+using time-delay relays to minimize inrush current and peak power loads can control
+two or more large fan motor starters in sequence. Both thermostats and humidistats
+should be carefully adjusted and maintained according to manufacturer’s recommendations.
+Controls should be cleaned at least once a year and more often if operated in dusty
+surroundings.
+
+An OSU-designed automatic aeration temperature controller for controlling one to three
+small fans costs about $200-500 for component parts and can be assembled and wired
+by a local electrician. This basic design can be adapted to operate any number of
+larger fans.
+
+Aeration Procedures
+
+Filling the Bin and Managing Foreign Material
+
+A level grain surface is an important part of controlling grain temperature and insect
+activity. Temperatures and insects in grain peaks are difficult to control. Level
+grain does not vary as much in temperature as peaked grain, which follows outside
+air temperatures because air blows against grain slopes through roof eave openings.
+
+Grain managers can reduce storage risks from insects and mold by cleaning grain and/or
+using grain spreaders to distribute foreign material (f.m.) and level the grain surface.
+Level surfaces improve temperature uniformity and allow easy bin entry for inspection.
+Grain fines, weed seeds, and other f.m. tend to accumulate in a column under the bin
+fill point. This accumulation of f.m. restricts airflow and increases the problems
+of insect and mold development, resulting in grain heating and spoilage.
+
+Coring is a simple method of leveling a peaked bin and removing part of the center
+column of trash and foreign material. Remove 10 bushels to 20 bushels from each 3-
+to 4-foot layer of grain during bin filling (Figure 4). The peak is then hand leveled
+at the end of filling. An alternate coring plan after a bin is full is to unload 100
+bushels to 200 bushels of grain and fines with the unload auger a week or two after
+harvest, reseal the auger, and hand level the surface. (WARNING!! DO NOT enter grain
+bins while unload augers are running and grain is being unloaded!) Since the removed
+grain contains a high percentage of fines, it may be marketed, fed to livestock, or
+cleaned.
+
+Figure 4. Coring a grain bin to distribute foreign material.
+
+Drying and Rewetting Grain During Aeration
+
+Aeration is used to lower grain temperature and to equalize temperatures in stored
+grain. It is not intended as a drying system; yet minor changes to moisture content
+can occur. The air surrounding stored grain has an equilibrium moisture content (EMC)
+which is the point at which grain and air don’t exchange moisture. The EMC changes
+with temperature and moisture content of grain. If grain is aerated with air having
+relative humidity above the EMC, the grain will slowly gain moisture by absorbing
+water from the air. Conversely is the air’s relative humidity is below the EMC, the
+grain will dry by transferring water to the air.
+
+The amount of drying or rewetting that takes place during aeration depends on how
+dry the grain is when placed in storage, the airflow rate, how long the aeration system
+is operated, and, of course, the air’s humidity. At low airflow, drying is a slow
+process. Light aeration systems (less than 0.1 CFM/bu) will rarely reduce average
+moisture content more than 1.0 percent, even when operated for long periods.
+
+Fast aeration systems can cause greater moisture loss if operated continuously. This
+moisture loss might be desirable if grain moisture content is above safe levels. It
+can also be undesirable if the grain dries below the market standard moisture content
+and the owner suffers additional shrinkage when the grain is sold. If some drying
+is desired, fast aeration systems can be operated continuously while periodically
+sampling grain moisture. If drying is not desired, fast aeration systems can be operated
+at night only as needed for cooling and temperature equalization. Systems with grain
+cooling and grain drying airflows are generally operated at night only when used for
+aeration.
+
+Rewetting of grain by aeration with humid air is a very slow process. Operation of
+light or medium speed aeration systems in humid weather will have little effect on
+moisture content. However, if airflow rates above 0.5 CFM/bu are used for aeration,
+fans should not be operated for more than a few hours when humidity is extremely high.
+Because the higher airflow will cool grain rapidly, it is practical to wait for lower
+humidity before cooling.
+
+Normal aeration rates are much too low for effectively drying grain and can’t keep
+wet grain safe in warm weather. If harvested grain moisture is too high (13 percent
+for wheat), solve the moisture problem before putting it in storage.
+
+Aeration costs
+
+The cost of installing an aeration system varies widely and depends on the specific
+installation. Availability of electricity, existing bin equipment such as a drying
+floor and roof vents, level of automation desired, and bin configuration all affect
+the total capital cost.
+
+Total annual operating costs to aerate three times (summer, fall and winter) at 8
+¢/KWH to 10 ¢/KWH is approximately 0.7¢/bu to 0.9¢/bu, based on minimum aeration times
+from Table 1.
+
+The cost of grain moisture removed by aeration (0.3 to 0.5 Ibs/bu/yr) at $5.00 to
+$5.50/bu wheat price is 2.5 to 4.5 ¢/bu/yr; for $7.00 to $7.50/bu wheat, moisture
+losses would be 3.5 to 6.3 ¢/bu/yr.
+
+Aeration generally costs less than grain fumigants or protectants, or losses from
+mold and insect damage, and maintains grain quality.
+
+References
+
+Noyes, R., Navarro, S. & Armitage, D. (2002). Supplemental Aeration Systems. In The
+Mechanics and Physics of Modern Grain Aeration Management, 413-488 (Eds S. Navarro
+and R. Noyes). Boca Raton, Fl: CRC Press.
+
+Carol Jones
+
+Assistant Professor, Stored Products Engineering
+
+James Hardin
+
+Research Engineer
+
+Print-friendly PDF
+
+- Share Fact Sheet
+
+- Facebook
+
+- Twitter
+
+- Pinterest
+
+Topics:CropsEquipment & Structures for Farms & RanchesEquipment for Farms and RanchesFood ProductsFood Safety, Quality Management & SanitationInsects, Pests, and Diseases
+
+Was this information helpful?
+YESNO
+
+Fact Sheet
+
+Mite Control in Oklahoma Peanut Production
+
+By Ashleigh Faris. Learn more about mite control in peanut production in Oklahoma, specifically Identification and biology, Crop injury, Scouting tips & action threshold.
+
+Insects, Pests, and Diseases
+
+Fact Sheet
+
+How Storage Time and Harvest Season Impact the Success of Planting Bermudagrass and Zoysiagrass Sod
+
+By Mingying Xiang. Learn more about storage time during harvest season, how it impacts the success of planting bermudagrass and zoysiagrass sod, the materials and methods used, internal temperatures and general recommendations for sod producers and consumers.
+
+CropsGrains & OilseedsHarvesting & Storage of Grains
+
+Fact Sheet
+
+Variation in Heat-Sensitive Germination Among Contemporary Hard Winter Wheat Varieties, 2019–2024
+
+The role soil temperature plays in wheat germination and how that effects the plants growth process.
+
+CropsGrains & OilseedsWheat
+
+Fact Sheet
+
+Hydroponics
+
+By Bruce Dunn. An explanation on what hydroponics is, instructions for how to construct a system and guidelines on how to maintain a growing garden.
+
+CropsGardening & Lawn CareGreenhouses & Indoor GardeningHydroponicsOrganic & Sustainable
+
+VIEW ALL

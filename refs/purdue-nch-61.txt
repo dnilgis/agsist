@@ -1,0 +1,379 @@
+# NCH-61 (National Corn Handbook): grain bin capacity
+# https://www.extension.purdue.edu/extmedia/NCH/NCH-61.html
+# fetched 2026-10-15T21:09:33Z, sha256 416652396477bc7e6d59b9eb9c97a011419f5a0521ed38053fa3b8ebe6643931
+
+NCH-61
+
+NCH-61
+
+MARKETING & UTILIZATION
+
+Purdue University
+
+Cooperative Extension Service
+
+West Lafayette, IN 47907
+
+Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying
+
+D.R. Hicks and H.A. Cloud, University of Minnesota
+
+Reviewers
+
+G. Campbell University of Wisconsin R. Nielsen, Purdue University
+B. McKenzie, Purdue University B. Wisner, Iowa State University
+
+Following harvest, a corn grower must usually decide whether to sell
+wet corn "as is" at a moisture-discounted market price or mechanically
+dry the grain (on-farm or by custom drying) at a total cost the grower
+hopes is less than the moisture discount. One of the expenses involved
+in mechanically drying grain is the "cost" of the weight loss that
+occurs during the drying process. This weight loss by drying is
+referred to as "shrink" and is expressed as a percentage of the
+original quantity before it is dried. Growers must calculate shrinkage
+in order to accurately determine the total cost of mechanical
+drying.
+
+Grain buyers use a number of different procedures to calculate how
+much grain they will actually have after the grain they buy is
+dried. The calculation process is called "pencil shrink." Although
+pencil shrink is a somewhat complicated process, corn growers can
+maximize the net sale by understanding pencil shrink and evaluating
+the sale alternatives by obtaining more than one price quote when
+selling their grain.
+
+There is no standard method for pencil shrink. This publication
+describes several popular pencil shrink methods, provides examples of
+their calculations, and discusses the use of shrinkage as a basis
+for evaluating custom drying and grain sale alternatives.
+
+Calculating the Components of Shrink
+
+Water Shrink
+
+By far, the major portion of weight loss by drying is the weight of
+the water that is removed. A good way to understand the basic concept
+of shrink is to consider the ideal situation where all of the weight
+loss is water. Total water shrink is calculated by dividing the weight
+of water lost during drying by the total initial grain weight. The
+result is then multiplied by 100 and expressed as a percentage.
+
+Our first example involves 1,000 lb. of corn at 25% moisture. If the
+grain is 25% water, it will contain 250 lb. of water and 750 lb. of
+dry matter. How much shrinkage occurs, due to water loss alone, if
+the 1,000 lb. of grain is dried to 15.5% moisture? We can calculate
+it.
+
+The dried corn still contains 750 lb. of dry matter, but now the dry
+matter is 84.5% (100% minus 15.5%) of the total weight. Therefore,
+the total weight of the dried grain is 750 lb. divided by 0.845, or
+887.57 lb.
+
+After drying, the grain contains 137.57 lb. of water (887.57
+lb. minus 750 lb.). Therefore, 112.43 lb. of water was removed during
+drying (250 lb. minus 137.57 lb.) Now that the weight of water lost
+has been calculated, the total water shrink percentage in our example
+can be calculated by dividing 112.43 (lb. of water removed) by 1,000
+(total initial grain weight) and multiplying the result by 100. The
+total water shrink is 11.24%.
+
+Total Water Shrink = (lb. water removed divided by
+original weight) times 100
+= (112.43/1,000) x 100 = 11.24%
+
+The grain was dried from 25% to 15.5%--a moisture reduction of 9.5
+percentage points with an 11.24% loss of the original weight. The
+"water shrink factor" is calculated by dividing the percentage weight
+loss by the percentage moisture reduction. In this case, 11.24%
+divided by 9.5% gives a water shrink factor of 1.18% weight loss for
+each point of moisture removed.
+
+The water shrink factor is a constant for a final moisture
+content. As in above, the water shrink is 1.18% for each point of
+moisture removed when the final moisture content is 15.5%. However,
+the water shrink factor will change as the desired final moisture
+content changes. Table 1 gives the water shrink factors for a number
+of final moisture contents. For other final moisture contents, the
+water shrink factor may be calculated by the formula:
+
+Water Shrink Factor = 100 divided by (100 minus
+percent final moisture)
+
+Table 1. Water shrink factors for drying shelled corn to various
+moisture levels.
+
+Final moisture content Water shrink factor
+(%) (% shrink per point)
+--------------------------------------------------
+15.5 1.183
+15 1.176
+14 1.163
+13 1.149
+12 1.136
+11 1.126
+10 1.111
+9 1.099
+8 1.087
+0 1.000
+--------------------------------------------------
+
+Now, let's use the water shrink factor to calculate the amount of
+water shrink when corn is dried from 25% to 12% moisture, a removal of
+13 percentage points of water. The formula for calculating total water
+shrink using the water shrink factor is:
+
+Total Water Shrink = (percentage points removed)
+times (water shrink factor)
+
+The water shrink factor for 12% final moisture is 1.136% (100
+divided by 88). Multiplying 13 by 1.136 equals 14.77% loss in weight
+due to the water removed during drying of 25% moisture corn to 12%
+moisture.
+
+Handling Loss
+
+Remember that, although most of the weight loss during drying is
+water, a small portion is dry matter. This loss is often called
+"invisible shrink," but we prefer to call it "handling loss." Some of
+the handling loss is due to loss of volatile compounds such as oils,
+mechanical losses from broken kernels and foreign material, and
+possibly also due to respiration of the seed itself. Handling loss
+will normally be far less than that due to water.
+
+The actual amount of handling loss will depend on the initial
+physical quality of the corn, the method of drying, and the handling
+processes during drying. Research at Iowa State University determined
+that on-farm handling losses ranged from 0.22 to 1.71%. Losses from
+commercial drying systems ranged from 0.64 to 1.33%. The 3-year
+on-farm average was 0.82% compared to 0.88% for the commercial
+facilities.
+
+Methods of Calculating Total Shrink
+
+Shrink factors used by grain buyers account for both water shrink
+and handling loss. Grain buyers typically use drying tables or a
+constant shrink factor to pencil shrink the grain they buy.
+
+Method 1: Drying Tables
+
+Grain drying tables include water shrink and a constant handling
+loss, usually 0.5% of the initial weight of the grain (see Table 4 in
+NCH-21). Using this method, the formula for calculating total shrink
+is:
+
+Total Shrink = (total water shrink) plus
+(handling loss)
+
+If we were to dry shelled corn from 25% to 15.5% moisture (a removal
+of 9.5 percentage points), the total water shrink would be 9.5
+multiplied by 1.183 (from Table 1), or 11.24% of the original grain
+weight. Add to this the 0.5% handling loss for a total shrink of
+11.74%. Thus, if 1,000 lb. of 25% moisture corn were dried to 15.5%
+moisture, the total weight loss due to water and dry matter removal
+would be 117.4 lb. (1,000 multiplied by 0.1174). The resulting weight
+of the dried grain would equal 882.6 lb. (1,000 minus 117.4) using
+this shrink method.
+
+Method 2: Constant Shrink Factor
+
+Another pencil shrink method uses a constant shrink factor that is
+multiplied by each percentage point of moisture removed. Typical
+constant shrink factors range from 1.2 to 1.5% per point. Using this
+method, the formula for calculating total shrink is:
+
+Total Shrink = (constant shrink factor) times
+(points of moisture removed)
+
+Total shrink calculated by this method contains the same value for
+water shrink as Method 1. The assumed handling loss in Method 2,
+however, will vary depending on the value of the constant shrink
+factor and initial moisture content of the grain.
+
+For example, using a constant shrink factor of 1.3% per point of
+moisture removed, the total shrink for drying 1,000 lb. of 25%
+moisture corn to 15.5% moisture would equal 12.35% (9.5 percentage
+points multiplied by 1.3), compared to 11.74% calculated by Method
+1. The water shrink remains the same and would be 11.24%, as shown in
+the previous example. The handling loss would be 1.11% (total shrink
+of 12.35% minus water shrink of 11.24%), which is greater than the
+0.5% used in Method 1.
+
+As the constant shrink factor is increased, the assumed handling
+loss increases. Table 2 provides handling loss values for various
+constant shrink factors based on 15.5% final corn grain
+moisture. The handling loss is calculated by subtracting the water
+shrink from the total shrink. Some of these values are much less and
+others are much greater than the actual handling losses measured in
+research.
+
+The average handling losses were less than 1.0% in the Iowa State
+research. Sellers can use Table 2 to determine if the shrink factor
+the buyer is using assesses a "reasonable" handling loss (1.0% or
+less). For example, it the seller has 28% corn, a shrink factor of
+1.25 includes a handling loss of 0.83%, which is reasonable from the
+seller's point of view. However, a shrink factor of 1.3% assesses a
+1.46% handling loss, which is substantially greater than a normal
+expected handling loss.
+
+Table 2. Handling for various shrink factors based on 15.5% final corn
+moisture.
+
+Initial Shrink factor (% per point)
+moisture ------------------------------------------------------------------
+content 1.20 1.25 1.30 1.35 1.40 1.45 1.50
+-------------------------------------------------------------------------------------
+(%) Handling loss (%)
+32 0.27 1.10 1.92 2.75 3.57 4.40 5.22
+30 0.24 0.97 1.69 2.42 3.14 3.87 4.59
+28 0.21 0.83 1.46 2.08 2.71 3.33 3.96
+26 0.17 0.70 1.22 1.75 2.27 2.80 3.32
+24 0.14 0.57 0.99 1.42 1.84 2.27 2.69
+22 0.11 0.43 0.76 1.08 1.41 1.73 2.06
+20 0.07 0.30 0.52 0.75 0.97 1.20 1.42
+18 0.04 0.17 0.29 0.42 0.54 0.67 0.79
+-------------------------------------------------------------------------------------
+
+Evaluating Custom Drying Alternatives
+
+When custom drying, growers should seek more than one estimate of
+cost of drying and choose the one that returns the greatest number of
+bushels. The number of bushels after drying can be determined by using
+Tables 3, 4, or 5 if the final moisture content is 15.5, 14, or 13%,
+respectively. If another final moisture content is used, the number
+of dry bushels can be determined with the following formula.
+
+No. of dry bu.= [(100 minus total shrink) divided
+by 100)] times (No. of wet bu.)
+
+For example, consider again 1,000 lb. of corn at 26% moisture and
+two drying quotes. The first quote includes shrinking to 15.5%
+moisture using a shrink factor of 1.4% per point. The total shrink is
+14.7% (10.5 points removed times 1.4%). The number of wet bushels is
+17.86(1,000 lb. divided by 56 lb./bu.). Using the formula above, the
+number of dry bushels remaining is 15.23. Dividing the original weight
+by the wet bushel equivalent from Table 3 gives the same result (1,000
+divided by 65.65). The total shrinkage loss in this example is 2.63
+bu. (17.86 minus 15.23).
+
+Table 3. Initial corn weights required to give 56 pounds of dry
+shelled corn after shrinking wet shelled corn to 15.5% moisture for
+various initial moisture levels and shrink factors.
+
+Initial Shrink factor (% per point)
+moisture ------------------------------------------------------------------
+of grain 1.18 1.20 1.25 1.30 1.35 1.40 1.45 1.50
+-------------------------------------------------------------------------------------
+(%) lb. of wet corn
+32 69.59 69.83 70.55 71.29 72.05 72.82 73.61 74.42
+30 67.60 67.80 68.40 69.01 69.63 70.26 70.91 71.57
+28 65.72 65.88 66.37 66.87 67.37 67.88 68.40 68.92
+26 63.95 64.07 64.46 64.85 65.25 65.65 66.06 66.47
+24 62.26 62.36 62.66 62.96 63.26 63.56 63.87 64.18
+22 60.67 60.74 60.95 61.17 61.39 61.61 61.83 62.05
+20 59.15 59.20 59.34 59.48 59.62 59.77 59.91 60.05
+18 57.71 57.73 57.81 57.88 57.96 58.03 58.11 58.18
+16 56.33 56.34 56.35 56.37 56.38 56.39 56.41 56.42
+15.5 56.00 56.00 56.00 56.00 56.00 56.00 56.00 56.00
+-------------------------------------------------------------------------------------
+
+The second quote includes shrinking the grain to 13% moisture, but
+only uses a shrink factor of 1.2% per point. The total shrink is 15.6%
+(13 points removed times 1.2%). The number of wet bushels is the same
+as above, 17.86. The number of dry bushels remaining would be 15.07, a
+shrinkage loss of 2.79 bu. Thus, even though the second quote involved
+a smaller shrink factor, the lower final moisture content resulted
+in a greater shrinkage loss than the first quote.
+
+Evaluating Grain Sale Alternatives
+
+When selling wet corn, sellers should evaluate their sale
+alternatives by comparing not only per bushel price quotes, but also
+shrink factors and final moisture contents if the grain buyer is
+pencil shrinking the purchase. It is important for the seller to
+determine the assumed handling losses that each buyer is using for
+pencil shrinking the grain. If the handling loss is greater than 1%,
+then the loss is greater than the average loss reported from on-farm
+and commercial surveys.
+
+For example, consider that a grower has 100,000 lb. of 20% corn for
+sale. Buyer #1 quotes a price of $2.50 per dry bu., uses a constant
+shrink factor of 1.25, and shrinks grain to a final moisture content
+of 14%. From Table 4, the wet bushel equivalent is found to be 60.54
+bu. Dividing the 100,000 lb. by 60.54 gives 1651.8 dry bushels of
+corn. Multiplying the 1651.8 bu. by the quoted price of $2.50 per bu.
+results in a net sale of $4,129.50.
+
+Table 4. Initial corn weights required to give 56 pounds of dry
+shelled corn after shrinking wet shelled corn to 14% moisture for
+various initial moisture levels and shrink factors.
+
+Initial Shrink factor (% per point)
+moisture ------------------------------------------------------------------
+of grain 1.16 1.20 1.25 1.30 1.35 1.40 1.45 1.50
+-------------------------------------------------------------------------------------
+(%) lb. of wet corn
+32 70.82 71.43 72.26 73.11 73.98 74.87 75.78 76.71
+30 68.80 69.31 70.00 70.71 71.43 72.16 72.92 73.68
+28 66.89 67.31 67.88 68.46 69.05 69.65 70.26 70.89
+26 65.08 65.42 65.88 66.35 66.83 67.31 67.80 69.29
+24 63.37 63.64 64.00 64.37 64.74 65.12 65.50 65.68
+22 61.74 61.95 62.22 62.50 62.78 63.06 63.35 63.64
+20 60.20 60.34 60.54 60.74 60.94 61.14 61.34 61.54
+18 58.73 58.82 58.95 59.07 59.20 59.32 59.45 59.57
+16 57.33 57.38 57.44 57.49 57.55 57.61 57.67 57.73
+14 56.00 56.00 56.00 56.00 56.00 56.00 56.00 56.00
+-------------------------------------------------------------------------------------
+
+Table 5. Initial corn weights required to give 56 pounds of dry
+shelled corn after shrinking wet shelled corn to 13% moisture for
+various initial moisture levels and shrink factors.
+
+Initial Shrink factor (% per point)
+moisture ------------------------------------------------------------------
+of grain 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50
+-------------------------------------------------------------------------------------
+(%) lb. of wet corn
+32 71.65 72.54 73.44 74.37 75.32 76.29 77.29 78.32
+30 69.60 70.35 71.11 71.89 72.68 73.49 74.32 75.17
+28 67.67 68.29 68.92 69.57 70.22 70.89 71.57 72.26
+26 65.84 66.35 66.87 67.39 67.92 68.46 69.01 69.57
+24 64.11 64.52 64.93 65.34 65.77 66.19 66.63 67.07
+22 62.46 62.78 63.10 63.42 63.75 64.07 64.40 64.74
+20 60.90 61.14 61.37 61.61 61.84 62.08 62.33 62.57
+18 59.41 59.57 59.73 59.89 60.05 60.22 60.38 60.54
+16 58.00 58.09 58.18 58.27 58.36 58.46 58.55 58.64
+14 56.65 56.68 56.71 56.74 56.77 56.80 56.82 56.85
+13 56.00 56.00 56.00 56.00 56.00 56.00 56.00 56.00
+-------------------------------------------------------------------------------------
+
+Buyer #2 quotes a price of $2.55 per dry bu., uses a table with 0.5%
+constant handling loss, and shrinks grain to 13% moisture. Water
+shrink per point moisture loss is 1.149 (from Table 1). Total water
+shrink would therefore be 8.04% (7 points removed times 1.149). Total
+shrink would be 8.54% (8.04% plus 0.5% handling loss). The original
+100,000 lb. of wet corn is equal to 1,785.7 bu. The number of dry
+bushels remaining would equal 1,633.2 (using formula
+above). Multiplying the 1633.2 bu. by the quoted price of $2.55 per
+bu. results in a net sale of $4,164.66.
+
+The quote from Buyer #2 is the better sale alternative, assuming
+the cost for delivering grain is equal.
+
+Summary
+
+Grain weight shrinkage due to mechanical drying includes weight loss
+due to removal of both water and dry matter. Water shrink is by far
+the major component of total shrinkage and the easiest to
+calculate. Calculated dry matter losses tend to be variable due to
+different pencil shrink procedures used within the grain industry. In
+order to accurately compare custom drying quotes or grain sale
+alternatives, the corn grower should determine the shrinkage costs
+associated with each and choose the alternative which either returns
+the greatest number of dry bushels or greatest net sale.
+
+New 6/91
+
+Cooperative Extension work in Agriculture and Home Economics, state of Indiana, Purdue
+University, and U.S. Department of Agriculture Cooperating; H.A. Wadsworth, Director, West
+Lafayette, IN. Issued in furtherance of the acts of May 8 and June 30, 1914. The Cooperative
+Extension Service of Purdue University is an affirmative action/equal opportunity institution.

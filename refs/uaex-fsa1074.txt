@@ -1,0 +1,550 @@
+# Arkansas FSA1074: Grain Drying Tools, EMC Tables and Psychrometric Charts
+# https://www.uaex.uada.edu/farm-ranch/crops-commercial-horticulture/Grain_drying_and_storage/Docs/FSA%201074%20Grain%20Drying%20Tools%20Equilibrium%20Moisture%20Content%20Tables%20and%20Psychrometric%20Charts.pdf
+# fetched 2026-10-15T21:08:29Z, sha256 8ed6b7a577f034617b916d7758ecb950b10cf0e130602b44806d7204e26f0e9a
+
+                                                                     Agriculture and Natural Resources
+                DIVISION OF AGRICULTURE
+                RESEARCH & EXTENSION
+                   University of Arkansas System
+
+                                                                                                                                            FSA1074
+
+
+         Grain Drying Tools: Equilibrium
+          Moisture Content Tables and
+              Psychrometric Charts
+Samy Sadaka                              Introduction
+Assistant Professor ­
+                                                                                                     long­term storage (one year or more)
+
+Extension Engineer
+                                                                                                     may be lower than that required for
+                                              Growers may be particularly                            marketing. The variation of air
+                                         concerned whether they should dry                           temperature and humidity values
+
+Rusty Bautista
+                                         grain or not. In addition, they may                         during the storage period accounts for
+
+Instructor, Biological and
+                                         question whether to use natural air or                      the differences between the long­term
+
+Agricultural Engineering
+                                         heated air in aerating grain in the                         and short­term safe MC values. It
+                                         bins. These two questions are essen­                        should also be mentioned that safe
+                                         tial because of the economic implica­                       storage MC in the warm temperature
+                                         tions associated with them. This fact                       zone is lower than safe short­term
+                                         sheet attempts to provide a strategy                        storage in the cool temperature zone.
+
+                                                                                                     Grain Drying Basics
+                                         that could help with the determina­
+                                         tion of grain drying systems and air
+                                         heating level. The equilibrium
+                                         moisture content (EMC) tables and                               As mentioned earlier, there are
+                                         the psychrometric charts will be used                       instances when a large amount of
+                                         as tools throughout this fact sheet.                        moisture needs to be removed from
+                                                                                                     the grain immediately after harvest to
+                                             Grain contains dry matter as well                       prevent spoilage and to maintain
+                                         as moisture at the time of harvest. In                      milling quality. Grain drying is accom­
+                                         some cases, the grain moisture                              plished through moisture movement
+                                         content (MC) is higher than that                            from the grain to the air if the vapor
+                                         required for safe short­term or long­                       pressure within the kernel is higher
+                                         term storage. As a result, freshly                          than the vapor pressure of the air
+                                         harvested grain must be dried to safe                       surrounding it. In other words, the
+                                         moisture content levels before being                        moisture moves from the kernel to the
+                                         stored or marketed. The safe MC for                         surrounding air and is transported to
+                                         short­term and long­term storage of                         the atmosphere. Accordingly, air is
+                                         different crops is given in Table 1.                        normally used as the agent to dry
+                                         Safe MC for short­term storage or                           grain. Large amounts of natural or
+
+
+                                         Table 1. Safe moisture content for grains in long­ and short­term storage1
+
+                                                                     Long Term                        Short Term (30 to 60 Days)
+                                           Grain Type                (One Year)           Warm Temperatures                     Cool Temperatures
+                                           Corn                         12%                     12%                                    15%
+                                           Sorghum                       12%                         12%                              15%
+Arkansas Is                                Rough Rice                    12%                         12%                              14%
+Our Campus                                 Soybean                        11%                         11%                             14%
+                                           Wheat                         12%                         12%                              14%
+Visit our web site at:                    1http://www.ag.ndsu.edu/extension­aben/documents/ae905.pdf
+http://www.uaex.edu
+
+                           University of Arkansas, United States Department of Agriculture and County Governments Cooperating
+heated air are passed through grain to achieve the       affected. Increasing the air RH from 75% to 85% at
+previously mentioned levels of grain MCs for safe        the same air temperature of 75°F increases the EMC
+storage. The properties of air [temperature and          of corn from 15.7% to 17.9%. As shown in Table A, the
+relative humidity (RH)] and the rate of airflow          lowest attainable corn EMC is 7.1% at air tempera­
+passing through the grain determine the drying rate      ture of 100°F and air RH of 25%. Conversely, the
+of the grain. Therefore, the rate of drying grain is     highest corn EMC of 22.9% is attained at air temper­
+controlled by the volume of air moving over the          ature of 35°F and air RH of 90%. It should be men­
+kernels and the vapor pressure difference between        tioned that drying slows and becomes more difficult
+the air and the grain. Increasing air volume or air      when the drying air RH is near equilibrium.
+
+                                                         Temperatures and Humidity
+temperature will result in a decrease in drying time.
+However, rapid drying, using air with extremely high
+temperature, can produce stress on the kernels and
+form a crack or fissure in the kernel. Hence, special         As mentioned earlier, nearly all grain­drying
+attention should be paid to the temperature and          systems use air as a medium for removing moisture
+relative humidity of the drying air.                     from the grain by evaporation. For moisture evapora­
+                                                         tion to take place, heat energy is required. In general,
+    The following sections will explain the previously   it takes approximately 1,100 BTUs (British thermal
+mentioned terms and concepts as well as provide          units) of heat to evaporate 1 pound of water. This
+examples that may prove useful in the decision­          would be 100% efficient; however, most on­farm or
+making process; i.e., if drying is indeed necessary      commercial drying operations are considerably less
+after harvest and whether to use natural aeration or     efficient. In air­drying systems, heat energy is
+heated air.
+
+Equilibrium Moisture Content
+                                                         supplied by the natural heat content of the air or by
+                                                         supplemental heating. The amount of moisture that
+                                                         air can absorb and transport as it moves through the
+                                                         grain column is dependent on its temperature and
+    For a given air temperature and RH, grain            RH – along with some influences from air velocity,
+moisture will eventually achieve a state of equilib­     presence of fine materials other than grain, the
+rium with the environment. This grain property is        distance the air travels and the MC of the grain.
+called equilibrium moisture content (EMC). Thus,         As the air moves through the grain column, it
+temperature and RH properties of the drying air          absorbs moisture and, thereby, loses some or all of its
+determine the grain MC level. Tables A through E,        drying capabilities.
+
+                                                         Psychrometric Chart and Its Use
+presented at the end of this fact sheet, list the EMC
+of various grains including corn, soybean, sweet
+sorghum, rough rice and wheat in equilibrium with
+air at various temperatures and RHs.                          A psychrometric chart presents physical and
+                                                         thermal properties of air in graphic form. It can be
+    To illustrate the use of the EMC tables, assume      very helpful in grain­drying problems and in deter­
+that air at 75% RH and 75°F temperature is being         mining solutions. To determine air characteristics,
+forced through corn kernels in the bulk. This corn       two values of air characteristics should be known.
+will not dry below 15.7%, according to Table A. If air   Following, the intersection of these two known
+under the same RH (75%) and temperature (75°F) is        characteristics should be obtained on the psychromet­
+being forced through soybean, rice and wheat for a       ric chart. Figure 1 shows a very simple form of the
+long time, these grains will eventually reach the        psychrometric chart. It shows eight air characteris­
+EMC of 15.2%, 15.2% and 14.6%, respectively.
+
+Effects of Air Temperature Changes
+                                                         tics, namely (1) saturation temperature, (2) dew point
+                                                         temperature, (3) enthalpy, (4) relative humidity,
+
+on Equilibrium Moisture Content
+                                                         (5) humidity ratio (moisture content), (6) wet bulb
+                                                         temperature, (7) volume of mixture and (8) dry bulb
+                                                         temperature. The dry bulb temperature, represented
+    In the example given above, adding 10 degrees of
+supplemental heat to the air and keeping the air RH
+at 75% will dry corn to approximately 15.2% MC. In
+other words, increasing air temperature while main­
+taining RH level decreases the EMC value. This
+phenomenon occurs because increasing the air
+temperature increases its capacity to absorb moisture.
+
+Effects of Relative Humidity Changes
+on Equilibrium Moisture Content
+
+                                                            Figure 1. A simple form of a psychrometric chart
+    Equilibrium moisture content of air is also
+affected by RH, thus its drying capacity would be
+                                        Figure 2. A psychrometric chart
+
+                                                          Table 2. Minimum airflow rate2
+                                                              Moisture Content            Minimum airflow rate
+by number 8, is located along the bottom horizontal
+
+                                                               (% wet basis)                  (CFM/bushel)
+axis. The wet bulb temperature, represented by
+number 6, is located along diagonal lines leading to
+                                                                  11 to 13                        0.5
+scale readings at the upper, curved boundary marked
+
+                                                                    13 to 15                        1.0
+as 1. The relative humidity, represented by curve 4, is
+running from left to right up through the chart. The
+                                                                    15 to 18                        2.0
+intersection of the vertical dry bulb line and the
+
+                                                                    18 to 20                        3.0
+diagonal wet bulb line will establish a “state point”
+for the measured air; then the relative humidity can
+                                                                    20 to 22                        4.0
+be determined.
+
+    It should be noticed that increasing the dry bulb             22 and above                      6.0
+                                                          2http://www.uaex.edu/Other_Areas/publications/PDF/
+temperature while keeping the wet bulb temperature
+                                                           MP297/9_storage.pdf
+level would decrease the relative humidity value. For
+
+
+                                                          Suggested Heat Addition
+instance, if the ambient dry bulb temperature is 75°F
+and the wet bulb temperature is 69°F, the RH of the
+
+                                                          Corresponding to Drying Airflow Rate
+air would be 75% (see Figure 2). At this temperature
+and RH, rice could be dried to approximately 15.2%
+MC (Table D). If, however, 10 degrees of heat were
+added to increase the drying air to 85°F, the RH of           When airflow rates are less than 1 CFM per
+the air would decrease to approximately 54%. The          bushel, add little or no heat. A rough guide for
+low humidity air will dry the rice to 11.4% MC, which     temperature increases through the heaters at various
+is below the desired MC for safe storage. To attain       airflow rates is as follows:
+the desired dried MC of 12.5%, the additional heat
+added to the air should only raise the temperature by         •   For an airflow rate of 1 to 2 CFM, limit the
+5 degrees to bring the drying air temperature to                  temperature rise to 6°F.
+about 80°F with 63% RH.                                       •   For an airflow rate of 2 to 3 CFM, limit the
+
+Suggested Airflow Rate Corresponding
+                                                                  temperature rise to 12°F.
+
+
+to Grain Moisture Content
+                                                              •   For airflow rates greater than 3 CFM, a 20°F
+                                                                  temperature rise is permissible. A tempera­
+                                                                  ture rise above 20°F is satisfactory for some
+                                                                  feed grains when drying depths are less than
+     Airflow rates for drying vary from 0.5 CFM per               4 feet or stirring devices are used.
+bushel to more than 50 CFM per bushel for commer­
+cial or batch dryers. Most on­the­farm airflow rates          In most on­farm storage, the grain is subjected to
+for drying vary from 0.5 to 6 CFM per bushel,             modest temperatures for a long period. There must
+depending on the initial MC of the grain and the          always be sufficient airflow to cool the upper portions
+amount of heat added to the drying air. Recom­            of the bin to eliminate the possibility of mold develop­
+mended minimum airflow rates for different moisture       ment in that area. The top layer of grains is the last
+content levels are shown in Table 2.                      segment of the bin to reach safe moisture level.
+Estimation of the Amount of Excess
+Water and Drying Time
+                                                                        Thus, it would take 88.93 hours to remove
+                                                                    5.19 pounds of water from a bushel of rice. To dry any
+                                                                    number of bushels will require 88.93 hours as long as
+     In estimating grain­drying time, the first step is             an airflow rate of 4 CFM per bushel is maintained. It
+to determine the number of pounds of dry grain (at                  should be mentioned that drying time estimates are
+the desired MC) produced from the wet grain (at                     quite dependent on outside air temperature and
+the initial MC). This can be determined from the                    humidity. Thus, they should be used as a rough guide
+following formula:                                                  unless a constant temperature decrease through the
+                                                                    rice is maintained.
+
+
+                                                                    Estimating Air Volume Through Grain
+                                     ïLQLWLDOPRLVWXUH
+Final weight = (initial weight) ×                             (1)
+                                    ïGHVLUHGPRLVWXUH
+
+    As an example, assume that you have 2,000                            As mentioned earlier, air is the medium that
+pounds of rice at MC of 22%, determine the number                   transports moisture from the grain to the atmosphere.
+of pounds of water needed to be removed to get the                  The volume of air moving through a column of grain
+MC to 13%. Note that the weight of rice at final MC                 is controlled by the type and size of fan and the resis­
+of 13% is 45 pounds per bushel.                                     tance to airflow (static pressure) it meets. This static
+                                                                    pressure varies depending on air velocity and the
+     By applying the previous equation using the                    variety, depth, presence of fine materials other than
+initial moisture content of 22%:                                    grain and MC of the grain. Static pressure is usually
+                          ï                                  measured with a manometer (see illustration in
+Final weight = 2,000 ×                                        (2)   Figure 3), which is a clear plastic or glass “U” tube
+                          ï
+Final weight = 1,793 pounds = 1,793/45 = 39.8 bushels
+                                                                    partially filled with colored water. A ruler is placed
+                                                                    between the columns formed by the “U” tube. One
+                                                                    end of the “U” tube is open to the atmosphere. The
+   The second step is to calculate the pounds of
+                                                                    other end is attached to a rubber hose, which is
+water that must be removed.
+                                                                    placed over a small hole in the duct or plenum. Air is
+Pounds of water = 2,000 – 1,793 = 207 pounds                        pressured through the hole in the duct, which will
+                                                                    force the water column in the “U” tube to move so
+   Therefore, the number of pounds of water to be                   that there is a differential between the two levels of
+removed per bushel = 207/39.8 = 5.19 pounds per                     water in the tube. This difference in water levels is a
+bushel.                                                             measurement of the static pressure (inches of water),
+                                                                    thus the reference to fans being capable of moving a
+     The third step is to estimate the drying time. The             certain number of cubic feet of air per minute at
+following formula can be used to estimate drying time:              various inches of static pressure. Static pressure can
+                                                                    also be measured using a Magnehelic differential
+                        (H) × (W)                                   pressure gage. Therefore, the power of a certain type
+Drying time =                                                 (3)
+                (AF) × (1.07) × (Tout ïTin )                       of fan and the static pressure determine the amount
+Where:
+                                                                    of air to be delivered by that fan. Table 3 shows
+   H is the heat required to vaporize 1 pound of water
+                                                                    typical fan performance chart.
+       (1,100 BTU per pound)
+   W is the excess amount of water per bushel to be                                                                       open to
+
+       removed (pound/bushel)
+                                                                                                                        atmosphere
+
+   AF is the airflow rate per bushel (CFM/bushel)
+   Tin is the air temperature entering the drying bin (°F)
+                                                                           connected to the
+
+
+   Tout is the air temperature leaving the drying bin (°F)
+                                                                           system for which
+                                                                           pressure is to be
+                                                                              measured
+                                                                                                                  air
+                                                                                                                             P1R
+    For the previous example, assume that the air                                                air
+temperature entering the rice is 95°F. The air tem­
+                                                                                      P1L               h
+perature leaving the rice at the top of the bin is 80°F.
+The fan is moving 4 cubic feet of air per minute per                                                                    h1
+
+bushel through the rice. Determine the drying time.
+                                                                                                       liquid 1
+                                                                                            h1                           PINT
+     Drying time can be calculated as follows:                                                               h
+
+                                                                                    P2L                                      P2R
+               (1,100) × (5.19 pounds per bushel)
+Drying time =                                                 (4)
+              &)0SHUEXVKHO ð  ð ï
+
+                                                                                          liquid 2
+
+                                                                        Figure 3. A schematic drawing of a manometer
+           (1,100) × (5.19)
+Time =                       = 88.93 hours                    (5)
+         (4) × (1.07) × (15)
+Table 3. Typical centrifugal fan air delivery ratings, cubic feet per minute (CFM)3
+   Fan Motor                                         Static Pressure (inches of water)
+  Horsepower
+      (hp)            0         1.0        2.0        3.0        4.0       5.0        6.0        7.0        8.0          9.0
+       5.0          7,200      7,000      6,700      6,300      5,900     5,500      5,000      4,400      3,800        2,500
+       7.5         10,850     10,500     10,100      9,400      8,950     8,250      7,500      6,650      5,750        3,750
+       10.0        14,500     14,000     13,500     12,500     12,000     11,000     10,000     8,900      7,700        5,000
+       15.0        16,750     16,250     15,750     14,750     14,250     13,250     12,250     11,200    10,050        8,000
+       20.0        19,000     18,500     18,000     17,000     16,500     15,500     14,500     13,500    12,400        11,000
+3Gardisser, D., and J. Langston. “Grain Drying and Psychrometric Chart.” Cooperative Extension Service, University of
+ Arkansas, Little Rock, Arkansas, USA.
+
+
+    Drying fans are rated to move certain volumes               Under these conditions, consequently, the grain depth
+(cubic feet per minute) of air at various static                should be reduced resulting in fewer bushels of grain
+pressures, as shown in Table 3. The lower the static            and a lower static pressure. Attempting to dry at the
+pressure, the larger the volume of air a fan can move.          2 CFM per bushel rate would mean slow drying and
+These characteristics of pressure and volume vary               possible grain deterioration.
+
+                                                                Grain Drying Methodology
+depending on the type of fan. From Table 3, a
+10­horsepower centrifugal fan will move approxi­
+mately 14,500 CFM against zero static pressure;
+whereas, the same fan will deliver 11,000 CFM                       It is imperative to know the parameters that can
+against the static pressure of 5 inches of water or             help determine the need for grain drying after
+5,000 CFM against the static pressure of 9 inches of            harvest and if heated air is required or not. These
+water. The air delivery ratings will vary depending on          parameters include grain type, grain initial MC,
+the design of the fan, but they will be approximately           volume of bulk grain (number of bushels), the power
+close to the figures listed in the table above. As the          of the fan, fan performance specifications (airflow
+static pressure increases, the volume of air decreases.         rate vs. static pressure), the air wet and dry bulb
+Thus, as the depth of the grain increases, the cubic            temperatures and the target final (dried) grain MC.
+feet of air per minute transported through the grain
+will decrease. Therefore, attention should be paid                  The following steps provide a procedure to
+while selecting the drying depth in order to maintain           determine if drying is needed as well as whether or
+the cubic feet per minute of air per bushel necessary           not to use heated air.
+to dry grain safely.
+                                                                     1. Measure the initial moisture content of grain
+                                                                        to be dried.
+     For instance, there are 4,000 bushels of 19% MC
+grain in a bin equipped with a 15­horsepower cen­                    2. Using a sling psychrometer (Figure 4),
+trifugal fan. With the use of a manometer and the                       determine the wet and dry bulb temperatures.
+fan running, the static pressure was determined to be
+5 inches of water. The centrifugal fan chart (Table 3)
+shows that a 15­horsepower fan will deliver 13,250
+CFM of air. Does this fan unit deliver the required
+amount of minimum airflow rate?
+
+     By dividing the volume of air by the number of
+bushels in the bin, it is determined that air is being
+
+                                                                        Figure 4. A photo of a sling psychrometer
+moved through the grain at a rate of approximately
+3.3 CFM per bushel. This air volume meets the
+requirement of a minimum of 3 CFM per bushel for
+19% MC bulk grain (see Table 2). If the bin had been
+equipped with a 7½­horsepower fan, the air volume                    3. Using these temperatures, determine the
+at 5 inches of static pressure would have been 8,250                    relative humidity (RH) from the scales
+CFMs. This volume divided by 4,000 bushels would                        on the sling psychrometer or from a
+have provided approximately 2 CFM of air per bushel.                    psychrometric chart.
+It is determined that the airflow rate of 2 CFM per                  4. Round the relative humidity and dry bulb
+bushel for 19% MC bulk grain is less than the recom­                    temperature values to the nearest 5.
+mended minimum airflow rate as shown in Table 2.
+          5. Determine the equilibrium moisture content          Grain Drying Example
+             (EMC) corresponding to air temperature and
+             the RH from the EMC tables.                             Assume that a producer has 4,000 bushels of
+          6. Determine the volume of air per minute              19% MC corn in a bin equipped with a 15­horsepower
+             (usually in cubic feet per minute or cfm) being     centrifugal fan. The measured static pressure is
+             moved by the fan from the fan performance           5 inches. The wet bulb temperature is 70°F, and the
+             chart corresponding to the static pressure.         dry bulb temperature is 75°F. The producer wants to
+             Refer to fan manufacturer ’s specifications and     reduce the corn MC to 12%.
+             performance curves.
+                                                                    1. Using a psychrometric chart or sling
+          7. Check if the air volume exceeds the minimum               psychrometer, determine the relative humidity.
+             airflow requirements (Table 2) of your grain’s            In this case, it is 78% RH. (See psychrometric
+             initial MC to accomplish drying.                          chart in Figure 2.)
+          8. If the EMC is found to be below the safe               2. From the EMC table, the EMC for corn is
+             storage MC, then no heat will be needed – run             approximately 16.7% when the dry bulb
+             fans with unheated air. If the EMC is found to            temperature is 75°F and the RH is 78%
+             be greater than the safe storage MC, heat will            (rounded to 80 percent; see Table A).
+             be needed to dry the grain to a safe storage           3. Using the fan chart (Table 3), determine the
+             moisture level.                                           volume of air being moved by a 15­horsepower
+          9. Add 5 degrees of heat to the dry bulb temper­             fan at 5 inches static pressure. This should be
+             ature reading, and use psychrometric chart to             13,250 CFM.
+             determine the new RH. Note that the new dry            4. Divide the volume of air (13,250) by the
+             bulb temperature is now 5 degrees greater                 number of bushels (4,000) to determine the
+             than it was originally – the wet bulb                     volume of air being moved per bushel of corn
+             temperature also increases slightly. (See the             (13,250/4,000 = 3.31 CFM/bu). This air unit
+             psychrometric chart in Figure 2.)                         volume meets the minimum requirement of
+       10. Determine the equilibrium moisture content                  3 CFM per bushel for 19% grain. (See
+           of the grain for these new conditions. If the               minimum airflow rates in Table 2.)
+           EMC is equal or slightly less than safe                  5. With air conditions described, the 19% MC
+           storage moisture content, then proceed with                 bulk corn can be dried to 16.7% MC without
+           drying at this temperature. If the EMC is                   heating the air. However, the drying process
+           higher than for safe storage MC, determine                  would be very slow, particularly when the
+           the amount of additional heat needed.                       corn approaches the 17% MC level. Under
+                                                                       these conditions, with warm outside tempera­
+        11. Care should be used when temperatures
+                                                                       tures, corn could develop aflatoxin if drying is
+            exceed 100°F, particularly for rice, soybean
+                                                                       prolonged over a long period. Thus, fast
+            and any grain saved for seeds.
+                                                                       drying is highly recommended.
+
+
+                                       Table A. Corn Equilibrium Moisture Content
+                                                            Relative Humidity (%)
+                         25     30     35     40     45     50    55    60     65     70     75     80     85     90
+                    35   9.3   10.3   11.2   12.1   13.0   13.9 14.8 15.7 16.6       17.6   18.7   19.8   21.2   22.9
+                    40   9.1   10.0   10.9   11.8   12.7   13.5 14.4 15.3 16.2       17.1   18.2   19.3   20.7   22.3
+                    45   8.8    9.8   10.6   11.5   12.3   13.2 14.0 14.9 15.8       16.7   17.7   18.9   20.2   21.8
+                    50   8.6    9.5   10.4   11.2   12.0   12.9 13.7 14.5 15.4       16.3   17.3   18.5   19.8   21.4
+                    55   8.4    9.3   10.1   11.0   11.8   12.6 13.4 14.2 15.1       16.0   17.0   18.1   19.3   20.9
+                    60   8.2    9.1    9.9   10.7   11.5   12.3 13.1 13.9 14.8       15.7   16.6   17.7   18.9   20.5
+Temperature (°F)
+
+
+
+
+                    65   8.0    8.9    9.7   10.5   11.3   12.0 12.8 13.6 14.5       15.3   16.3   17.4   18.6   20.1
+                    70   7.9    8.7    9.5   10.3   11.0   11.8 12.6 13.4 14.2       15.0   16.0   17.0   18.2   19.8
+                    75   7.7    8.5    9.3   10.1   10.8   11.6 12.3 13.1 13.9       14.8   15.7   16.7   17.9   19.4
+                    80   7.6    8.4    9.1    9.9   10.6   11.4 12.1 12.9 13.7       14.5   15.4   16.4   17.6   19.1
+                    85   7.4    8.2    9.0    9.7   10.4   11.2 11.9 12.6 13.4       14.3   15.2   16.2   17.3   18.8
+                    90   7.3    8.1    8.8    9.5   10.3   11.0 11.7 12.4 13.2       14.0   14.9   15.9   17.0   18.5
+                    95   7.2    7.9    8.7    9.4   10.1   10.8 11.5 12.2 13.0       13.8   14.7   15.6   16.8   18.2
+                   100   7.1    7.8    8.5    9.2    9.9   10.6 11.3 12.0 12.8       13.6   14.5   15.4   16.5   17.9
+          6. An option is to consider adding heat to raise            7. From the EMC table, the EMC for corn at these
+             air temperature by 10 degree­points. This will              air conditions (85°F and 60% RH) is approxi­
+             raise the air dry bulb temperature to 85°F.                 mately 12.6%. Thus, the additional heat to raise
+             From the psychrometric chart, the RH is                     the air temperature by 10 degree­points is satis­
+             determined to be approximately 58%.                         factory to dry the corn to a safe storage MC.
+
+
+
+                                       Table B. Soybean Equilibrium Moisture Content
+                                                             Relative Humidity (%)
+                          25     30     35    40     45     50      55    60     65      70     75     80     85     90
+                   35    5.9    6.5     7.1   7.8    8.6    9.4    10.3   11.5   12.8   14.4   16.4   19.1   22.9   28.9
+                   40    5.8    6.4     7.1   7.7    8.5    9.3    10.2   11.3   12.6   14.2   16.2   18.9   22.7   28.7
+                   45    5.8    6.4     7.0   7.7    8.4    9.2    10.1   11.2   12.5   14.1   16.1   18.7   22.5   28.4
+                   50    5.7    6.3     6.9   7.6    8.3    9.1    10.0   11.1   12.4   14.0   16.0   18.6   22.3   28.2
+                   55    5.7    6.2     6.8   7.5    8.2    9.0    10.0   11.0   12.3   13.8   15.8   18.4   22.1   28.0
+                    60   5.6    6.2     6.8   7.4    8.1    8.9     9.9   10.9   12.2   13.7   15.7   18.3   21.9   27.8
+Temperature (°F)
+
+
+
+
+                    65   5.6    6.1     6.7   7.4    8.1    8.9     9.8   10.8   12.1   13.6   15.5   18.1   21.7   27.6
+                    70   5.5    6.1     6.6   7.3    8.0    8.8     9.7   10.7   11.9   13.5   15.4   17.9   21.6   27.3
+                   75    5.4    6.0     6.6   7.2    7.9    8.7     9.6   10.6   11.8   13.3   15.2   17.8   21.4   27.1
+                   80    5.4    5.9     6.5   7.1    7.8    8.6     9.5   10.5   11.7   13.2   15.1   17.6   21.2   26.9
+                   85    5.3    5.9     6.4   7.1    7.7    8.5     9.4   10.4   11.6   13.1   15.0   17.5   21.0   26.7
+                   90    5.3    5.8     6.4   7.0    7.7    8.4     9.3   10.3   11.5   13.0   14.8   17.3   20.8   26.5
+                   95    5.2    5.7     6.3   6.9    7.6    8.3     9.2   10.2   11.4   12.8   14.7   17.1   20.7   26.3
+                   100   5.2    5.7     6.2   6.9    7.5    8.3     9.1   10.1   11.3   12.7   14.5   17.0   20.5   26.1
+
+
+
+
+                                       Table C. Sorghum Equilibrium Moisture Content
+                                                             Relative Humidity (%)
+                          25     30     35    40     45     50      55    60     65      70     75     80     85     90
+                   35    11.5   12.1   12.7   13.3   13.8   14.4   15.0   15.6   16.3   17.0   17.8   18.8   19.9   21.4
+                   40    11.3   11.9   12.5   13.1   13.6   14.2   14.8   15.4   16.1   16.8   17.6   18.6   19.7   21.2
+                   45    11.1   11.7   12.3   12.9   13.4   14.0   14.6   15.3   15.9   16.6   17.5   18.4   19.6   21.1
+                   50    10.9   11.5   12.1   12.7   13.3   13.8   14.4   15.1   15.7   16.5   17.3   18.2   19.4   20.9
+                   55    10.7   11.3   11.9   12.5   13.1   13.7   14.3   14.9   15.6   16.3   17.1   18.1   19.2   20.8
+                    60   10.5   11.2   11.7   12.3   12.9   13.5   14.1   14.7   15.4   16.1   17.0   17.9   19.1   20.6
+Temperature (°F)
+
+
+
+
+                    65   10.4   11.0   11.6   12.2   12.7   13.3   13.9   14.6   15.2   16.0   16.8   17.8   18.9   20.5
+                    70   10.2   10.8   11.4   12.0   12.6   13.2   13.8   14.4   15.1   15.8   16.7   17.6   18.8   20.3
+                    75   10.0   10.6   11.2   11.8   12.4   13.0   13.6   14.3   14.9   15.7   16.5   17.5   18.7   20.2
+                    80    9.9   10.5   11.1   11.7   12.3   12.9   13.5   14.1   14.8   15.6   16.4   17.4   18.5   20.1
+                    85    9.7   10.3   10.9   11.5   12.1   12.7   13.3   14.0   14.7   15.4   16.3   17.2   18.4   20.0
+                   90     9.6   10.2   10.8   11.4   12.0   12.6   13.2   13.8   14.5   15.3   16.1   17.1   18.3   19.8
+                   95     9.4   10.0   10.6   11.2   11.8   12.4   13.1   13.7   14.4   15.2   16.0   17.0   18.2   19.7
+                   100    9.3    9.9   10.5   11.1   11.7   12.3   12.9   13.6   14.3   15.0   15.9   16.9   18.0   19.6
+                                 Table D. Rice Long Grain Equilibrium Moisture Content
+                                                                      Relative Humidity (%)
+                         25     30      35       40       45          50    55    60     65             70       75        80       85        90
+                    35   9.2   10.1    10.9     11.7     12.5        13.3 14.1 14.9 15.7               16.6     17.6      18.6     19.8      21.3
+                    40   9.0    9.9    10.7     11.5     12.3        13.0 13.8 14.6 15.4               16.3     17.2      18.2     19.4      20.9
+                    45   8.8    9.7    10.5     11.2     12.0        12.8 13.5 14.3 15.1               15.9     16.9      17.9     19.0      20.5
+                    50   8.6    9.5    10.3     11.0     11.8        12.5 13.3 14.0 14.8               15.7     16.5      17.5     18.7      20.1
+                    55   8.5    9.3    10.1     10.8     11.5        12.3 13.0 13.8 14.5               15.4     16.3      17.2     18.4      19.8
+                    60   8.3    9.1     9.9     10.6     11.3        12.1 12.8 13.5 14.3               15.1     16.0      16.9     18.1      19.5
+Temperature (°F)
+
+
+
+
+                    65   8.2    8.9     9.7     10.4     11.1        11.9 12.6 13.3 14.1               14.9     15.7      16.7     17.8      19.2
+                    70   8.0    8.8     9.5     10.3     11.0        11.7 12.4 13.1 13.8               14.6     15.5      16.4     17.5      18.9
+                    75   7.9    8.7     9.4     10.1     10.8        11.5 12.2 12.9 13.6               14.4     15.2      16.2     17.2      18.6
+                    80   7.8    8.5     9.2      9.9     10.6        11.3 12.0 12.7 13.4               14.2     15.0      15.9     17.0      18.3
+                    85   7.6    8.4     9.1      9.8     10.5        11.1 11.8 12.5 13.2               14.0     14.8      15.7     16.8      18.1
+                    90   7.5    8.3     9.0      9.6     10.3        11.0 11.6 12.3 13.0               13.8     14.6      15.5     16.5      17.8
+                    95   7.4    8.1     8.8      9.5     10.2        10.8 11.5 12.2 12.9               13.6     14.4      15.3     16.3      17.6
+                   100   7.3    8.0     8.7      9.4     10.0        10.7 11.3 12.0 12.7               13.4     14.2      15.1     16.1      17.4
+
+                                     Table E. Wheat Durum Equilibrium Moisture Content
+                                                                      Relative Humidity (%)
+                         25    30       35       40       45          50    55    60     65             70       75        80       85        90
+                    35   8.3   8.9      9.6     10.2     10.9        11.5 12.2 13.0 13.8               14.7     15.8      17.1     18.8      21.3
+                    40   8.2   8.8      9.5     10.1     10.7        11.4 12.1 12.8 13.7               14.6     15.7      17.0     18.7      21.1
+                    45   8.1   8.8      9.4     10.0     10.6        11.3 12.0 12.7 13.5               14.4     15.5      16.8     18.5      20.9
+                    50   8.0   8.7      9.3      9.9     10.5        11.2 11.9 12.6 13.4               14.3     15.4      16.6     18.3      20.7
+                    55   7.9   8.6      9.2      9.8     10.4        11.1 11.7 12.5 13.3               14.2     15.2      16.5     18.1      20.5
+                    60   7.8   8.5      9.1      9.7     10.3        10.9 11.6 12.3 13.1               14.0     15.1      16.3     18.0      20.4
+Temperature (°F)
+
+
+
+
+                    65   7.8   8.4      9.0      9.6     10.2        10.8 11.5 12.2 13.0               13.9     14.9      16.2     17.8      20.2
+                    70   7.7   8.3      8.9      9.5     10.1        10.7 11.4 12.1 12.8               13.7     14.7      16.0     17.6      20.0
+                    75   7.6   8.2      8.8      9.4     10.0        10.6 11.2 11.9 12.7               13.6     14.6      15.8     17.4      19.8
+                    80   7.5   8.1      8.7      9.3      9.9        10.5 11.1 11.8 12.6               13.4     14.4      15.7     17.3      19.6
+                    85   7.4   8.0      8.6      9.2      9.8        10.4 11.0 11.7 12.4               13.3     14.3      15.5     17.1      19.4
+                    90   7.3   7.9      8.5      9.1      9.6        10.2 10.9 11.5 12.3               13.1     14.1      15.3     16.9      19.2
+                    95   7.2   7.8      8.4      9.0      9.5        10.1 10.7 11.4 12.2               13.0     14.0      15.2     16.7      19.0
+                   100   7.2   7.7      8.3      8.8      9.4        10.0 10.6 11.3 12.0               12.8     13.8      15.0     16.5      18.8
+
+
+  References                                                               http://www.uaex.edu/Other_Areas/publications/PDF/
+                                                                               MP297/9_storage.pdf
+  Bern, C., C. Hurburgh and T. Brumm. 2011. Managing                       Gardisser, D., and J. Langston. “Grain Drying and
+      Grain After Harvest. Agricultural and Biosystems                        Psychrometric Chart.” Cooperative Extension Service,
+      Engineering Department, Iowa State University.                          University of Arkansas, Little Rock, Arkansas, USA.
+  http://www.ag.ndsu.edu/extension­aben/documents
+      /ae905.pdf
+
+                                Printed by University of Arkansas Cooperative Extension Service Printing Services.
+
+  DR. SAMY SADAKA is assistant professor ­ Extension engineer,             Issued in furtherance of Cooperative Extension work, Acts of May 8 and
+  University of Arkansas Division of Agriculture, Little Rock.             June 30, 1914, in cooperation with the U.S. Department of Agriculture,
+  DR. RUSTY BAUTISTA is an instructor in the Department of                 Director, Cooperative Extension Service, University of Arkansas. The
+  Biological and Agricultural Engineering, University of Arkansas,         Arkansas Cooperative Extension Service offers its programs to all eligi­
+  Fayetteville.                                                            ble persons regardless of race, color, national origin, religion, gender,
+                                                                           age, disability, marital or veteran status, or any other legally protected
+                                                    FSA1074­PD­2­14N       status and is an Affirmative Action/Equal Opportunity Employer.
+

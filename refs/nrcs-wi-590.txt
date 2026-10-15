@@ -1,0 +1,141 @@
+# Wisconsin NRCS 590 Nutrient Management standard, summary (DATCP)
+# https://datcp.wi.gov/Documents/NM590Summary2015.pdf
+# fetched 2026-10-15T21:08:09Z, sha256 3d966c1e8ea3746311df48c53171db1db3ea0a6d668cbf524c6a07fe004039ca
+
+ 2015 updates: Wisconsin Nutrient Management 590 Standard
+July 28, 2016
+¾¾ This bullet highlights changes to the 2005 version of the
+                                                                   Applications are prohibited on:
+   NRCS 590 Nutrient Management Standard. Not all of the
+   changes, additions, or deletions made to the 590 Standard       ¾¾ Concentrated flow channels; surface water; saturated
+   are noted in this summary sheet.                                   soils; areas of active snow melt where water is flowing;
+ This bullet notes items that have not changed.                     land where vegetation is not removed — unless needed
+                                                                      for establishment and maintenance of a conservation
+                                                                      practice.
+ REQUIREMENTS FOR SURFACE AND
+                                                                   ¾¾ Direct conduits to groundwater, a potable well, or within 8
+ GROUNDWATER PROTECTION                                               feet of irrigation wells.
+Guidelines for all fields where manure, organic by-                ¾¾ Areas within 50 feet of direct conduits to groundwater,
+                                                                      unless directly deposited by gleaning or pasturing animals
+products, or fertilizer nutrients are applied:
+                                                                      or as starter fertilizer to corn.
+ The source, rate, timing and method of application for all      ¾¾ Areas near public water supplies within 1000 feet of a
+   major nutrients — nitrogen (N), phosphorus (P2O5), and             community potable water well; or areas within 100 feet
+   potassium (K2O)— should be accounted for and should                of a non-community potable water well (church, school,
+   be consistent with UWEX A2809 recommendations.                     and restaurant) unless manure is treated to substantially
+   Applications must not run off the intended application site;       eliminate pathogens.
+   erosion must not be greater than tolerable soil loss (T) over
+                                                                   ¾¾ Areas locally delineated by the Land Conservation
+   the crop rotation; use perennial vegetation to protect areas
+                                                                      Committee or in a conservation plan as areas contributing
+   of concentrated flow resulting in recurring gullies.
+                                                                      runoff to direct conduits to groundwater unless manure
+¾¾ Control ephemeral erosion using reduced tillage, adjust            is substantially buried within 24 hours of application.
+   the crop rotation, or implement other practices such as
+   contouring to control this erosion.                             Nutrients applied within Surface Water Quality
+¾¾ Show adequate acreage and a winter spreading plan for           Management Area (SWQMA) 1,000 feet of lakes/
+   all farms with mechanically applied manure or organic           ponds or 300 feet of rivers use one or more of the
+   by-products.                                                    following:
+¾¾ Where excessive rain has caused crop N deficiency, apply
+   up 46 lb per acre rescue N and document the need for this        1. Install/maintain vegetative buffers or filter strips; 2.
+   additional N using one of the methods listed in Tech Note          Maintain > 30% cover after nutrient application;
+   WI-1. Appendix 3. If more than 46 lb N per acre is applied,        3. Incorporate within 72 hours of application; 4. Establish
+   the documentation must include two of the listed methods.          crops prior to, at, or promptly following application.
+
+¾¾ Estimate available manure nutrients with book values            ¾¾ 5. Have a minimum of 3 consecutive years no-till when
+   or manure samples. If sampling, establish a baseline by            making applications to fields with < 30% residue, such as
+   averaging samples collected for at least 3 consecutive             silage fields, and apply nutrients within 7 days of planting.
+   years. Later samples can be 1 every 4 years unless the          ¾¾ Mechanical applications of unincorporated liquid manure
+   farm’s operation changes.                                          11% or less dry matter within the SWQMA, or where
+¾¾ Account for N and P2O5 deposited by pastured or gleaning           subsurface drainage is present — limit applications to
+   animals. Pasturing is allowed within 50 feet of a well or          12,000 gal/acre and visually monitor accessible tile outlets
+   direct conduit to groundwater, in SWQMA in the winter, and         before, during, and after applications for discharge of liquid
+   on all slopes in the winter.                                       manure or organic by-product.
+
+ If manure or organic by-products are applied during                  If a discharge is observed, stop applications.
+   a crop rotation (8 years or less), use a P management                  Sequential applications may be made to meet the
+   strategy: Phosphorus Index of 6 or less or                             nutrient need. Wait a minimum of 7 days between
+   Soil test P thresholds:                                                sequential applications.
+
+      Greater than 50 ppm soil test P: Balance the total P       A winter spreading plan is required for all farms
+        applications with P removed by crops.                      mechanically applying manure or organic by-
+          ¾¾ Greater than 100 ppm soil test P: Total P             products:
+             applications from all sources shall not exceed
+             guidelines from UWEX A2809. If manure P               ¾¾ Identify quantities of manure spread during winter, or
+             applications above these guidelines are necessary        generated in 14 days, whichever is greater; storage/
+             due to lack of suitable application sites, P             stacking capacity for each manure type applied on the
+             applications shall be 25% less than the cumulative       farm — manure that is ≥ 16% solids without permanent
+             annual crop removal over a maximum rotation              storage, complete an evaluation to determine if stacking
+             length of 8 years.                                       sites consistent with NRCS 313 standard are available.
+ 2015 updates: Wisconsin Nutrient Management 590 Standard
+July 28, 2016
+
+
+When frozen or snow-covered soils prevent                                blended commercial fertilizer materials are needed to
+effective incorporation:                                                 meet UWEX Pub. A2809 guidelines. For these exceptions,
+                                                                         the N application rate shall not exceed 36 lb N per acre, and
+ Do not apply nutrients within the SWQMA or apply N and P              all nutrients must be credited towards the crop requirement.
+   fertilizer, except on grass pastures and winter grains.           ¾¾ In spring or early summer: When commercial N is applied
+¾¾ Do not exceed the P removal of the following growing                 on R, W, and combination soils, do not exceed the crop
+   season’s crop when applying manure. Liquid manure                    N A2809 rates from all sources. On P soils, for full season
+   applications are limited to 7,000 gal/acre. All winter               crops, do not exceed the crop N rate guidelines and apply
+   manure applications are not to exceed 60 lb of P2O5/acre.            one of the following management strategies:
+¾¾ Do not surface apply liquid manure during February and                 A split or delay N application to apply a majority of
+   March on areas depicted on the 590 spreading restriction                 crop N requirement after crop establishment.
+   maps where DNR Well Compensation funds provided                        Use a nitrification inhibitor with ammonium forms of N.
+   replacement water supplies for wells contaminated with
+   livestock manure or where Silurian dolomite is within 60              ¾¾ Use slow and controlled release fertilizers for a majority
+   inches of the soils surface.                                             of the crop N requirement applied near the time of
+                                                                            planting.
+¾¾ Do not apply manure within 300 feet of direct conduits to
+   groundwater. (in version 2005, 200 feet).                         ¾¾ In late summer or fall: When manure and/or organic by-
+                                                                        products are applied, use rates of available N that do not
+¾¾ Do not apply nutrients to fields with slopes greater than            smother the crop; do not exceed UWEX Pub. A2809; do not
+   6% (C,D,E,F) unless the plan documents that no other                 exceed Part III. B.4. Table 2 of the Technical Note WI-1; or do
+   accessible fields are available for winter spreading and two         not exceed the rate listed below, whichever is less:
+   of the following are implemented:
+     ¾¾ 1. Contour buffer strips or contour strip cropping.               Use ≤ 120 lb available N/acre on:
+     ¾¾ 2. Leave all crop residue and no fall tillage.                   P and R soils
+                                                                         ¾¾ Applications > 4.0% dry matter (DM) on all crops,
+     ¾¾ 3. Apply manure in intermittent strips on no more 		
+                                                                             except single annual crops.
+        		 than 50% of field.
+                                                                         ¾¾ Applications ≤ 4.0% DM on all crops, except single
+     ¾¾ 4. Apply manure on no more than 25% of the field 		
+                                                                            annual crops wait until after soil temp. < 50°F or Oct. 1,
+        		 during each application, waiting a minimum of 14
+                                                                            use either a nitrification inhibitor, or surface apply and
+        		 days between applications.
+                                                                            do not incorporate for at least 3 days.
+     ¾¾ 5. Reduce manure application rate to 3,500 gal/acre or
+                                                                         W soils or combination W soils
+        		 30 lb P2O5/acre, whichever is less.
+                                                                         ¾¾ Applications > 4.0% DM on all crops.
+¾¾ Do not apply nutrients to fields where concentrated
+                                                                         ¾¾ Applications ≤ 4.0% DM on all crops use at least one of
+   flow channels are present unless two of the following are
+                                                                            the following practices:
+   implemented:
+                                                                               Use a nitrification inhibitor.
+     ¾¾ Options 1-5 above.
+                                                                               Apply on an established cover crop, an
+     ¾¾ 6. No manure application within 200 feet of all 		                       overwintering annual, or perennial crop.
+        			 concentrated flow channels.
+                                                                               Establish a cover crop within 14 days of application.
+     ¾¾ 7. Fall tillage is on the contour and slopes are lower 		              Surface apply & do not incorporate for at least 3 days.
+        			 than 6%.
+                                                                               Delay application until October 1 or soil
+                                                                                 temperatures are less than 50°F.
+ ADDITIONAL REQUIREMENTS FOR
+ GROUNDWATER PROTECTION                                                  Use ≤ 90 lb available N/acre on:
+
+On N restricted soils that include high permeability soils (P), or       P and R soils (wait until after soil temp. < 50°F or Oct. 1)
+rock soils with less than 20 inches to bedrock (R), or wet soils         ¾¾ Applications > 4.0% DM on single annual crops; or
+with less than 12 inches to apparent water table (W):                    ¾¾ Applications ≤ 4.0% DM on all crops use either a
+                                                                            nitrification inhibitor, or surface apply and do not
+¾¾ In late summer or fall: No commercial N applications                     incorporate for at least 3 days.
+   should be applied on areas identified as having soil depth
+   of 5 feet or less over bedrock, P, R, W soils, areas within           W soils or combination W soils
+   1,000 feet of a community potable water well, except                  ¾¾ Applications ≤ 4.0% DM on all crops.
+   where needed for establishment of fall seeded crops or
+

@@ -1,0 +1,442 @@
+# UMN Extension: managing stored grain with aeration
+# https://extension.umn.edu/corn-harvest/managing-stored-grain-aeration
+# fetched 2026-10-15T21:08:25Z, sha256 f40cd00f05eee92e6442feb4030c3d3725186eda42f8fed35a148987429c1be6
+
+Managing stored grain with aerationPlus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.Plus sign (+) if content is closed, 'X' if content is open.
+
+-
+Home
+
+-
+Agriculture
+
+-
+Crop production
+
+-
+Corn
+
+-
+Managing stored grain with aeration
+
+By moving air through stored grain, growers can reduce the rate of grain deterioration and prevent storage losses.
+
+Called aeration, this practice greatly improves the storability of grain by maintaining a cool, uniform temperature throughout the storage. Aeration reduces mold development and insect activities – both issues that relate to moisture content and temperature – and prevents moisture migration.
+
+Understanding aeration
+
+|
+
+Aeration is necessary to equalize and maintain uniform temperatures throughout the storage.
+
+Without aeration, temperature differences in a bin of stored grain cause moisture to migrate from warmer areas to colder areas. Figure 1 shows moisture migration in a bin when colder weather creates grain temperature differences.
+
+Figure 1: Moisture migration in grain stored without aeration.
+
+The warm air rising in the center of the bin cools when it reaches the cold grain near the surface.
+
+This results in moisture condensation near the surface and leads to rapid spoilage when the weather turns warmer. Crusting on the surface of stored grain is a common symptom of moisture migration.
+
+In addition, moisture can migrate to colder grain near the bin walls during cold winter weather. It’s also possible for moisture to migrate inward if the outside temperature is warmer than the grain. This is usually not as serious as the moisture migration upward and outward during cold winter weather.
+
+Changes in outside temperature while delivering the grain to the bin can cause temperature differences. The temperature of corn delivered to storage from a high-temperature dryer will vary due to temperature changes throughout the day or with weather changes.
+
+How temperature and moisture impacts storability
+
+|
+
+The effect of temperature and moisture content on the allowable storage time of shelled corn is given in Table 1.
+
+Table 1: Maximum storage time in months for shelled corn.*
+
+Corn temperature
+13% corn moisture content
+14% corn moisture content
+15% corn moisture content
+16% corn moisture content
+17% corn moisture content
+18% corn moisture content
+
+40 F
+150 months
+61 months
+29.0 months
+15.0 months
+9.4 months
+6.1 months
+
+50 F
+84 months
+34 months
+16.0 months
+8.9 months
+5.3 months
+3.4 months
+
+60 F
+47 months
+19 months
+9.2 months
+5.0 months
+3.0 months
+1.9 months
+
+70 F
+26 months
+11 months
+5.2 months
+2.8 months
+1.7 months
+1.1 months
+
+80 F
+15 months
+6 months
+2.9 months
+1.6 months
+0.9 months
+0.9 months
+
+*Based on 0.5 percent maximum dry matter loss; calculated on the basis of United States Department of Agriculture (USDA) research at Iowa State University.
+
+The allowable storage times given in Table 1 are based on deterioration of the grain associated with 0.5 percent dry matter loss. As shown, the deterioration rates depend on grain moisture content and grain temperature.
+
+Proper aeration maintains grain temperatures low enough to minimize grain deterioration. To illustrate the importance of proper aeration to the cash corn producer, compare the storability of 15-percent-moisture corn at 50 degrees Fahrenheit (16 months) to that of 15 percent corn at 70 degrees (5.2 months) and to 14-percent moisture-corn at 70 degrees (11 months).
+
+These comparisons show why it’s important to maintain uniformly low temperatures in all stored grain.
+
+Table 2 shows the moisture content of various grains that can be stored in Minnesota for different lengths of time with good storage management.
+
+Table 2: Storage moisture contents for aerated grain for different lengths of storage time
+
+Storage time
+Shelled corn
+Soybeans
+Wheat and barley
+Sunflowers
+
+Short-term*
+15.5% moisture content
+13% moisture content
+14% moisture content
+11% moisture content
+
+One year
+14% moisture content
+12% moisture content
+13% moisture content
+10% moisture content
+
+Long term
+13% moisture content
+11% moisture content
+13% moisture content
+9% moisture content
+
+*Short-term means until the following June.
+
+Hitting the right moisture content
+
+These moisture contents may be too high if the grain is poorly managed in storage. On the other hand, you can store grain at higher moisture contents with exceptionally good management.
+
+If you have been successfully storing corn at 13 percent, do not attempt to increase to 15.5 percent in one step. Increase the moisture content to 14 percent and gain experience in storage management, then gradually work up to the desired level.
+
+Aeration changes the temperature of stored grain in response to seasonal temperature changes and maintains uniform temperatures throughout the storage. Aeration is not a grain-drying system; do not consider it as such.
+
+Moisture content changes
+
+Some changes in grain moisture content occur as a result of aeration. The heat removed during cooling leads to some drying. Each 10-degree drop in grain temperature will reduce grain moisture content by about 1/4 percent.
+
+Little moisture change results from the drying or rewetting capacity of the small amounts of air necessary for changing the grain temperature.
+
+However, moisture content can significantly change if substantially more air moves through the grain than is required for a temperature change. This can happen when using high airflows for extended periods beyond what’s necessary for changing the grain temperature.
+
+Airflow and equipment
+
+|
+
+Because the purpose of aeration is temperature control, the required air quantity depends on the desired rate of temperature change.
+
+An airflow rate of 0.1 cubic feet of air per minute per bushel of grain (cfm/bu) will change the temperature of a bin after operating the fan for 100 to 200 hours. The temperature change occurs as a cooling or warming front moves through the grain and is not done until the front completely passes through the bin.
+
+The required fan time is proportional to the airflow rate. An airflow of 0.05 cfm/bu takes twice as long as 0.1 cfm/bu to change the bin’s temperature. Likewise, an airflow of 0.5 cfm/bu requires only 20 percent as much time to change the temperature as 0.1 cfm/bu.
+
+Although stored grain can and is being aerated with airflow rates as low as 0.03 to 0.02 cfm/bu in commercial storages, a minimum of 0.1 cfm/bu is recommended for on-farm grain storages because it’s an easily attainable airflow level.
+
+Higher airflows allow operators to get the job done faster and therefore do not require as much attention. In fact, producers are increasingly using higher airflow aeration (0.2 to 0.5 cfm/bu) to help manage stored grain – particularly shelled corn – at higher moisture contents (15.5 to 18 percent) for feeding and/or blending.
+
+Remember that increasing the moisture content of stored grain is accompanied by an increase in storage risk. However, well-designed aeration systems and good management allow producers to gain the advantages of storing at higher moisture contents.
+
+The operator must gain experience in how long it takes to change the temperature in the bin by monitoring the temperatures when the fan is operating. Nonuniform airflow and uncertain airflow rates makes this necessary. Inadequate fan time is probably the major source of problems when aerating stored grain.
+
+Figure 2 shows a variety of aeration systems. The round bins are all shown with the duct’s surface flush with the floor. This eases unloading with underfloor and sweep augers. Properly designed above-floor ducts perform as well as flush ducts and are commonly used in storages originally constructed without aeration.
+
+Figure 3 shows possible duct arrangements for flat storages, where proper duct arrangement is generally more of a problem.
+
+Figure 4 gives a guideline for duct spacing that provides good air distribution in flat storages.
+
+Figure 2: Typical grain storage aeration systems
+
+Figure 3 (bottom): Aeration duct arrangements for flat storages. Figure 4 (top): Guideline for duct spacing in flat storages.
+
+Table 3 contains the static pressures to use when selecting fans for aerating wheat and shelled corn with duct systems.
+
+More about how to select fans for grains
+
+Table 3. Static pressures* (inches of water) for fan selection
+
+Grain depth
+Shelled corn: 0.2 cfm per bushel:
+Shelled corn: 0.1 cfm per bushel:
+Wheat: 0.2 cfm per bushel:
+Wheat: 0.1 cfm per bushel:
+
+Up to 20 ft.
+1.0 in.
+1.0 in.
+2.0 in.
+1.5 in.
+
+20 to 30 ft.
+1.5 in.
+1.0 in.
+4.5 in.
+2.5 in.
+
+30 to 40 ft.
+2.5 in.
+1.5 in.
+7.5 in.
+4.0 in.
+
+40 to 50 ft.
+4.0 in.
+2.0 in.
+--
+5.5 in.
+
+*Static pressures are listed in increments of a half inch with a minimum on one inch.
+
+For adequate performance, you need a properly sized duct flow area and perforated surface.
+
+Install enough perforated surface to provide one square foot for each 25 cubic feet of air per minute (cfm). For example, if a fan is selected to move 1,500 cfm, install 60 square feet of perforated surface area (1,500 / 25 = 60).
+
+The ducts carrying the air should have enough cross-sectional area to provide one square foot for each 1,500 to 2,000 cfm. For example, the same fan moving 1,500 cfm would require a duct with one square foot cross section (1,500 / 1,500 = 1).
+
+Managing aeration
+
+|
+
+The purpose of aeration is to maintain a relationship between storage and outside temperatures that will minimize moisture migration and keep grain temperatures low to minimize deterioration rates (consistent with ambient temperatures).
+
+Figure 5 shows the average monthly temperatures in Windom and Hallock.
+
+It might be argued that the ideal grain storage temperature would be the same as the average outside temperature. However, it’s not necessary to cool the grain to the January’s minimum average monthly temperature, nor is it necessary to warm the grain to July’s highest average monthly temperature.
+
+Figure 5. Average monthly temperatures in Windom and Hallock.
+
+Figure 6 shows the temperature levels of stored grain that provide a reasonable schedule that can be maintained with good aeration management. Figure 6 shows four calendar periods:
+
+-
+Cool-down period from September to December.
+
+-
+Winter holding period from December to March.
+
+-
+Spring warm-up period from March to June.
+
+-
+Summer holding period from June to September.
+
+We’ll discuss the aeration management schedule for each of these periods. Proper management requires using these instruments:
+
+-
+Thermometer to measure ambient and bin exhaust temperatures. A thermometer that shows maximum and minimum temperatures will provide additional, desirable information.
+
+-
+Thermometer probe for smaller bins, or temperature cables in large bins (20,000 to 25,000 bushels and up).
+
+-
+Moisture tester that has been checked and calibrated with a known moisture tester (elevator tester, Brown Duvet tester or oven drying).
+
+-
+Deep-bin probe for taking moisture samples from the bin.
+
+Figure 6: Grain storage aeration periods.
+
+During the cool-down period, the objective is to reduce grain temperature below 35 degrees Fahrenheit but not lower than 20 degrees. In southern Minnesota, a range of 25 to 35 degrees would be reasonable. In northern Minnesota, the range could be 20 to 30 degrees.
+
+The fan should be operating when the average weather is capable of cooling. Since the stored grain has a large heat storage capacity, it serves to average the outside temperatures during fan operation. If the 24-hour average outside temperature is 10 degrees or more below the exhaust temperature, the grain is adequately cooling.
+
+A good guideline is to let the fan continuously run night and day when the bin’s exhaust temperature is at or above the maximum daily temperature. The normal day-night temperature variation is about 20 degrees.
+
+When the bin’s exhaust temperature equals the maximum daily temperature (usually afternoon), the average 24-hour temperature will be about 10 degrees lower. This will adequately cool the grain.
+
+Producers often ask how air relative humidity affects fan operation during aeration. Table 4 shows the equilibrium moisture content of grain at several relative humidities for 60 degrees Fahrenheit.
+
+Table 4: Equilibrium moisture contents at several relative humidities at 60 degrees Fahrenheit
+
+Crop
+50% relative humidity
+60% relative humidity
+70% relative humidity
+80% relative humidity
+
+Corn
+11.4%
+12.9%
+14.5%
+16.4%
+
+Wheat
+12.3%
+13.7%
+15.2%
+16.9%
+
+Soybeans
+8.6%
+10.5%
+12.8%
+15.7%
+
+Sunflowers*
+--
+8.0%
+10%
+12%
+
+If the ambient air’s average relative humidity during fan operation is at or below the grain’s equilibrium moisture content, no moisture can be added to the grain. The average 24-hour relative humidity during reasonably fair weather is never high enough to cause a problem.
+
+Operating the fan for a day or two during rainy weather or other high relative humidity periods will do no harm if the fan operates for a day or two of fair weather following these periods. Just avoid extensively operating the fan during rainy, wet weather after the fan has run enough to cool the grain to within 5 to 10 degrees Fahrenheit of the average outside air temperature.
+
+Start aeration as soon as grain is delivered to the bin. Grain out of a high-temperature dryer or grain combined during warm, sunny days will always be cooled by immediately operating the fan. Check cooling progress and run the fan enough to cool the grain to within 5 to 10 degrees of the average outside air temperature.
+
+Avoid extensive fan operation beyond this, particularly in bad weather. You can reduce the grain’s temperature to the desired level in several steps, if necessary.
+
+Cool the bin to 20 to 35 degrees where it will be held during the winter holding period. Be sure all parts of the bin are cooled. The bin’s top center part will cool last with upward airflow, and the bottom center will cool last with downward airflow.
+
+When the fans are off during the winter holding period, cover them with canvas or plywood to prevent the grain near the ducts from getting too cold during severe winter weather. Large temperature differences result in condensation in the cold grain. Spoiled grain over the aeration ducts or perforated floor is a common problem caused by not covering the fan during extended “off” periods.
+
+During the winter holding period, check the grain weekly and periodically run the fan for a day or two during good weather when the outside temperature is near the grain’s temperature.
+
+Many operators do not warm the stored grain in the spring.
+
+If the grain is to be moved out by July and has not been cooled below 30 degrees Fahrenheit, you do not need to warm it. However, if there’s a possibility the grain will be held longer or is colder, warm it to 50 to 60 degrees.
+
+This is best done in several stages by starting early – end of March or first of April – and running the fans night and day in fair weather when the average 24-hour temperature is 10 degrees warmer than the grain. This means continuously operating the fan when the minimum daily temperature is about the same as the bin exhaust temperature.
+
+When the exhaust temperature increases to the new level, wait until the weather warms up another 10 degrees and bring the temperature up another stage. Be sure to bring the entire bin up during each stage.
+
+If you shut off the fan before the entire bin warms up, there may be some condensation in the area between the bin’s cooler and warmer parts. This causes spoilage if left more than several days. The greater the temperature differences, the more severe the condensation.
+
+Be sure all grain warms to 50 to 60 degrees Fahrenheit by mid-June. Again, cover the fan when it’s off during the holding period.
+
+If the grain is between 50 and 60 degrees and the duct or plenum chamber is open, there may be condensation in the cooler grain during warm, high humidity periods during summer. This results in spoilage next to the ducts.
+
+Periodically check the grain and run the fan during cool, fair weather when the outside temperature is close to the grain temperature.
+
+The grain’s top layer warms up due to high temperatures between the grain and bin roof. It’s better to move the air upward to carry this warm air out of the bin, rather than draw it downward through the rest of the grain.
+
+You can accomplish aeration by moving the air up or down through the grain. The air delivery system will move the same amount of air either way. However, there are advantages and disadvantages to each. By understanding them, you can successfully use either direction.
+
+Downward air
+
+The main advantage of moving the air down and exhausting it at the bottom is to minimize roof condensation when aerating warm grain during cold weather.
+
+The main disadvantage of downward air is the uncertainty of knowing when aeration is complete. The grain at the bottom is the most difficult to check.
+
+A thermometer in the exhaust air, preferably on the fan’s suction side, helps check the progress of aeration; however, it will read the average exhaust temperature and may not reflect the higher temperature of the air leaving the bottom center. The operator must check to see if aeration is complete by probing with a thermometer or checking the temperature of some grain unloaded through the center hopper.
+
+Upward air
+
+The main disadvantage of upward airflow is moisture may condense when warm air hits a cold bin roof. This would happen when aerating warm grain during cold weather.
+
+You can minimize the problem by starting aeration early and reducing the grain temperature over a longer period of time. The best way to operate fans—regardless of airflow direction—is to gradually change the grain temperatures in several steps.
+
+Accumulation of fine particles, weed seeds and other foreign material interferes with airflow.
+
+Such accumulations are prime locations for increased mold and insect activity, which result in localized heating and grain deterioration. These accumulations normally occur in or near the center of the bin due to separation as the grain flows toward the walls.
+
+Management practices
+
+Several good management practices can reduce storage risks associated with foreign material.
+
+Screening the grain reduces the amount of foreign material and greatly improves storability. This is a must for long-term storage, unless the grain is delivered in good, clean condition.
+
+Use spreaders to more uniformly distribute the foreign material throughout the storage. This helps provide more uniform airflow during aeration. However, research shows that distributing fine particles throughout the bin increases the resistance to airflow, which reduces airflow.
+
+For bins equipped with center unloading hoppers, a good management practice is to unload grain from the center to remove the accumulated material. Fill the bin so it is peaked, and unload some of the grain – around 300 to 1,000 bushels, depending on bin size.
+
+This removes some of the accumulation and increases airflow in the center if you unload enough grain to allow the center core to fill with clean grain. A better way to accomplish this, if possible, is to periodically unload some grain as you fill the bin.
+
+General guidelines
+
+It’s impossible to provide a single answer to questions related to screening, spreading and unloading the center. All of these practices improve the ability to manage stored grain.
+
+However, the degree of improvement depends on the amount of foreign material, bin size, grain temperature and moisture content, spreader performance and unloading procedures.
+
+Each operator, based on experience and by examining the stored grain, can make reasonable decisions as to the risks of each case. Based on these considerations, decide which bins are the greatest risks and arrange unloading schedules to best meet the situation.
+
+General guidelines include:
+
+-
+Unload higher-moisture grain first.
+
+-
+Move grain dried in high-temperature bin dryers and stored in the same bin first.
+
+-
+Screen grain delivered to bins for long-term storage (more than 10 months to one year).
+
+-
+If you do not use spreaders in storage bins, peak the bins and immediately unload the centers after filling.
+
+-
+If the grain delivered to storage contains large amounts of fine particles, weeds, seeds and other foreign material, and has not been screened, fill to the peak and unload the centers – even if you use spreaders.
+
+-
+If the grain is fed, unload some grain from all bins before completely unloading one.
+
+-
+After filling all bins, properly check the condition of each and arrange the unloading schedule to best manage the situation.
+
+Equipment for monitoring and management
+
+To properly manage stored grain, the operator must be able to obtain samples from the stored grain, determine moisture content, monitor grain temperatures and keep a simple record of both grain and ambient temperatures.
+
+In addition to helping the operator manage the stored grain, the equipment provides information on how the aeration system works and how stored grain responds to treatment.
+
+|
+
+Use a deep bin probe to obtain samples at different locations to determine the moisture content, the level of fine material and general grain conditions. A reasonably accurate moisture tester is needed, and the operator must know its accuracy under all conditions.
+
+Inexpensive electrical testers can give inaccurate readings under many conditions, including on freshly dried grain, warm or hot grain and excessively cold grain. You can calibrate the tester under these conditions by checking readings with the local elevator or other more accurate testers.
+
+Thermocouple cables installed in larger bins (20,000 to 25,000 bushels and up) are valuable when monitoring temperatures in storage to determine aeration progress.
+
+In bins without cables, use thermometer probes to check the temperature at different locations within the bin. This helps monitor aeration progress and locate trouble spots.
+
+For proper fan management, you need one thermometer for measuring exhaust air temperature and another for reading ambient air temperature. Maximum-minimum thermometers are especially helpful because they give operators an indication of temperature changes with time.
+
+Warning
+
+Flowing grain is dangerous! Never enter a grain bin or other grain storage area while the grain is flowing.
+
+Flowing grain will exert forces against the body great enough to pull the average-sized person under the grain in only a few seconds, leading to death by suffocation.
+
+Authors
+
+Harold A. Cloud, Extension agricultural engineer and R. Vance Morey, emeritus agricultural engineer
+
+Acknowledgements
+
+Development of this content was partially supported by the Minnesota Energy Agency under an Energy Policy and Conservation Act (P.L. 94-163) grant. The authors were members of the Department of Agricultural Engineering at the University of Minnesota.
+
+Reviewed in
+2018
+
+-
+
+Page survey

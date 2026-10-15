@@ -1,0 +1,198 @@
+# RMA PM-25-028: LRP, LGM and DRP changes for 2026
+# https://rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-25-028-livestock-risk-protection
+# fetched 2026-10-15T21:01:30Z, sha256 0e77589d57cdbf20496196296d1fa11496a41d45edccdd255bb3fa621a16bfd3
+
+PM-25-028: Livestock Risk Protection, Livestock Gross Margin, and Dairy Revenue Protection - Modifications Effective for 2026 and Succeeding Crop Years | Risk Management AgencyLock
+
+-
+
+-
+
+-
+
+-
+
+Policy & Procedure
+
+-
+Appendix III/M-13 Handbook Index
+
+-
+Bulletins and Memos
+
+-
+Actuarial Releases
+
+-
+Informational Memorandums
+
+-
+Manager's Bulletins
+
+-
+Product Management Bulletins
+
+-
+Crop Loss Adjustment Standards
+
+-
+Crop Policies
+
+-
+Crop Underwriting Standards
+
+-
+Final Agency Determinations
+
+-
+General Handbooks
+
+-
+General Policies
+
+-
+Commodity Exchange Price Provisions
+
+-
+Commodity Exchange Price Provisions Archive
+
+-
+Livestock Insurance Plans
+
+-
+Margin Insurance
+
+-
+Rainfall Index
+
+-
+Pasture, Rangeland, Forage - Hawaii Archive
+
+-
+Whole-Farm Revenue Protection
+
+-
+Reinsurance Agreements
+
+-
+Livestock Price Reinsurance Agreement Archive
+
+-
+Standard Reinsurance Agreement Archive
+
+PM-25-028: Livestock Risk Protection, Livestock Gross Margin, and Dairy Revenue Protection - Modifications Effective for 2026 and Succeeding Crop Years
+
+View PDF
+
+Date
+
+April 30, 2025
+
+To
+
+All Approved Insurance Providers
+
+All Risk Management Agency Field Offices
+
+All Other Interested Parties
+
+From
+
+Richard H. Flournoy, Deputy Administrator /s/ Richard H. Flournoy
+
+Subject
+
+Livestock Risk Protection, Livestock Gross Margin, and Dairy Revenue Protection - Modifications Effective for 2026 and Succeeding Crop Years
+
+BACKGROUND:
+
+The Federal Crop Insurance Corporation (FCIC) Board of Directors (Board) approved revisions to the Livestock Risk Protection (LRP), Livestock Gross Margin (LGM), Dairy Revenue Protection (DRP) plans of insurance under section 508(h) of the Federal Crop Insurance Act. The following revisions are applicable for the 2026 and succeeding crop years:
+
+LRP changes include:
+
+- Modified the termination date to September 30th and the premium billing date to the first day of the second month after the end date.
+
+- Added two new types:
+
+- For Feeder Cattle, Unborn Calves provided coverage for beef or beef/dairy cross calves sold within two weeks after birth; and
+
+- For Fed Cattle, Cull Cows provided coverage for dairy cull cows with a coverage limitation of 13 weeks.
+
+- Allowed coverage based on a forward contract or purchase agreement.
+
+- Additional record requirement includes a copy of the purchase agreement and proof of delivery.
+
+- Added a drought exemption for Feeder Cattle that will be based on the Drought Monitor’s Drought Severity and Coverage Index.
+
+- Updated the correction of errors language in the handbook and added similar language to the policy.
+
+- Added additional record requirements for Feeder Cattle:
+
+- When livestock are purchased and not marketed within 60 days of the end date; and
+
+- The sex of the feeder cattle must be verified in the marketing or purchase records.
+
+- Added language that outlines what is considered subsidy capture and specifies subsidy capture is not allowable.
+
+- Updated the termination/ineligibility language.
+
+- Added single payee changes.
+
+LGM changes include:
+
+- Modified the termination date to August 31st and the premium billing date to the first day of the second month after the SCE ended.
+
+- Updated the correction of errors language in the handbook and added similar language to the policy.
+
+- Added language that outlines what is considered subsidy capture and specifies subsidy capture is not allowable.
+
+- Updated the termination/ineligibility language.
+
+- Added single payee language.
+
+DRP changes include:
+
+- Modified the termination date to January 31st and the premium billing date to the first day of the third month after the end date.
+
+- Updated the correction of errors language in the handbook and added similar language to the policy.
+
+- Added language that outlines what is considered subsidy capture and specifies subsidy capture is not allowable.
+
+- Modified the natural disaster language to include animal disease.
+
+- Increased minimum declarable butterfat test to 4.00 pounds, increased maximum declarable butterfat test to 6.00 pounds and increased minimum declarable protein test to 3.20 pounds.
+
+ACTION:
+
+The following documents will be available by close of business today on the Risk Management Agency (RMA) website via the Livestock Insurance Plans page:
+
+- Livestock Risk Protection Insurance Policy (26-LRP Basic)
+
+- Livestock Risk Protection-Fed Cattle Specific Coverage Endorsement (2026 LRP Fed Cattle)
+
+- Livestock Risk Protection-Feeder Cattle Specific Coverage Endorsement (2026 LRP Feeder Cattle)
+
+- Livestock Risk Protection Handbook (26-LRP-Handbook)
+
+- Livestock Gross Margin for Swine Policy (26-LGM Swine)
+
+- Livestock Gross Margin for Swine Handbook (26-LGM Swine-Handbook)
+
+- Livestock Gross Margin for Dairy Policy (26-LGM Dairy Cattle)
+
+- Livestock Gross Margin for Dairy Handbook (26-LGM Dairy-Handbook)
+
+- Livestock Gross Margin for Cattle Policy (26-LGM Cattle)
+
+- Livestock Gross Margin for Cattle Handbook (26-LGM Cattle-Handbook)
+
+- Dairy Revenue Protection Insurance Policy (26-DRP)
+
+- Dairy Revenue Protection Handbook (26-DRP-Handbook)
+
+Approved insurance providers must notify policyholders of these changes at least 30 days prior to the cancellation date, as required by the policy.
+
+If you have any questions, please contact RMA at rma.kc.livestock@usda.gov.
+
+DISPOSAL DATE:
+December 31, 2025

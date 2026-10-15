@@ -1,0 +1,55 @@
+# Iowa State ICM: cool stored grain now
+# https://crops.extension.iastate.edu/post/cool-stored-grain-now-1
+# fetched 2026-10-15T21:08:47Z, sha256 c360d8c9bbe71472a0eb17118952f95b04d06cad8e2d37f60e15937cbc5f2e88
+
+Cool stored grain now | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Cool stored grain now
+
+October 28, 2021
+
+Content Author: Kristina TeBockhorst
+
+Across Iowa, the forecasted average day/night temperatures are between 30 to 40 degrees F in the coming ten days, so the time is right to cool any grain that went into the bin at higher temperatures. Good harvest conditions and warm weather early this fall mean that there is on-farm grain that likely went into storage too warm. Warm grain in most large bins (over 3,000 bushels) will hold its temperature in the center well and will need to be cooled using aeration before winter.
+
+Tips for cooling grain
+
+A good rule of thumb is to cool grain any time the average air temperature is around 10-20 degrees F cooler than the grain temperature. This cooling cycle should be repeated through the fall until the grain temperature is between 30-40 degrees F for winter storage. This storage temperature minimizes insect activity and mold growth in the stored grain. Cooling grain below 30 degrees F has little added benefit and can cause ice to form in the grain. Air humidity makes little difference when cooling grain since the cooling front moves significantly faster than a wetting front but cooling dry grain can be delayed during periods of rain.
+
+A cooling front makes its way up through the grain as aeration fans push air up through a bin, see Figure 1. This means that the grain temperature at the top where the air exits will stay fairly steady until the cooling front gets there. If the aeration fan is turned off too early, the grain at the top of the bin will still be warm. To confirm that the cooling cycle has finished, check for the temperature to drop with a thermometer 6 to 12 inches into the grain at multiple locations at the top of the grain. The hours required for cooling the whole bin can be estimated as 15 divided by the cubic feet per minute of airflow per bushel of grain in the bin (cfm/bu).
+
+Figure 1. The cooling front moves up through the grain when positive pressure fans push air up through the grain, leaving the grain at the top of the bin to be the last to cool. Source: Kristina Tebockhorst.
+
+If you don’t know how much airflow per bushel your fan provides, you can estimate it using the calculator at https://bbefans.cfans.umn.edu/. Select the crop stored, chose fan(s), and enter bin parameters, then find cfm/bu for the grain depth that you have in the bin. Using the calculator and selecting a 21-ft diameter bin with a full floor filled with shelled corn, we can estimate that a 2-hp Brock 18” axial fan provides 0.55 cfm/bu when filled 20 feet deep and 1.07 cfm/bu when filled 12 feet deep.
+
+For bins set up for drying with at least 1 cfm/bu, a cooling front may pass through the bin in less than one day. Bins with only small aeration fans may require a week or more. For example, if the aeration fan(s) provide 0.15 cfm/bu, then the time for cooling the bin would be 15/0.15 = 100 hours, or about 4 days.
+
+“Core” the bin
+
+It is always a good idea to “core” the grain bin just after filling the bin by removing about half the peak height. This is especially important for overly dry or drought stressed grain, which is more prone to damage and breaking during harvest and handling. Leveling the top of the grain and removing the fines accumulated in the center of the bin will improve aeration and storage quality. Read more on removing the center core of grain here. If the top of the grain does not show signs of an inverted cone after coring, beware of grain bridging and do not enter the bin until the bridging has been corrected. Find more information on grain bridging and other grain storage hazards here https://www.ag.ndsu.edu/publications/crops/caught-in-the-grain.
+
+Monitor grain this winter
+After the final cooling cycle in the fall, remember to cover the fans to prevent warm air, rain, or snow from entering the bottom of the bin. While properly dried and cooled grain should store well through the winter, be sure to check stored grain at least every two weeks through the winter and weekly in the spring. Check for rising carbon dioxide (CO2) levels with a handheld monitor to indicate the onset of spoilage and check for grain warming, especially in common trouble areas like the top of the grain and along the south wall of the bin. Run aeration fans as needed through the winter to keep grain temperatures cool and even. See more grain storage resources in don't be a statistic or contact your Extension Ag Engineer.
+
+Links to this article are strongly encouraged, and this article may be republished without further permission if published as written and if credit is given to the author, Integrated Crop Management News, and Iowa State University Extension and Outreach. If this article is to be used in any other manner, permission from the author is required. This article was originally published on October 28, 2021. The information contained within may not be the most current and accurate depending on when it is accessed.
+
+Authored by
+
+Kristina TeBockhorst
+
+Topics:
+
+-
+Grain Storage
+
+Tags:
+
+- stored grain
+
+- cooling grain

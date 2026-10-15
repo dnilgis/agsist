@@ -1,0 +1,77 @@
+# Nebraska CropWatch: check conditions, aerate stored grain
+# https://cropwatch.unl.edu/check-conditions-aerate-stored-grain
+# fetched 2026-10-15T21:08:52Z, sha256 4f24faaadee57ac3cf099e9ed23a29f9c7ec2a6ae3b943490e657dea4152c47c
+
+Check Conditions, Aerate Stored Grain | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Check Conditions, Aerate Stored Grain
+
+March 20, 2009
+
+Under laboratory conditions:
+
+-
+19% moisture corn held at a constant 30°F with aeration has a shelf-life of nearly 10 months
+
+-
+
+-
+17% moisture held at the same temperature has a shelf-life of almost 22 months
+
+Fossil fuel prices were near historical highs in September and October, while grain prices were dropping rapidly. This put producers in a squeeze between declining grain prices and high drying costs. Many producers with on-farm grain drying capabilities decided not to pay the high prices for propane or natural gas to heat the air stream and reduce drying time. Instead they decided to use natural (unheated) air to dry their corn.
+
+Ambient air properties (temperature and humidity) often were not conducive to drying grain and many producers were still running their fans in late November and into December when the air temperature was well below freezing. Going into winter with a grain temperature between 30°F and 40°F is a sound management practice because it slows mold growth and stops insect activity; however, taking grain well below the freezing point is not recommended.
+
+To reduce convection currents in the grain, uniform grain temperatures need to be maintained throughout the bin and aeration needs to be managed so grain mass temperatures approximate the average air temperatures outside the bin.
+
+Take Advantage of Cool, Dry Days to Push Front Through Stored Grain
+
+The amount of time required for an aeration cooling or warming cycle depends on the airflow rate. The time in hours to cool or warm corn can be estimated by dividing 15 by the airflow rate. For example, 150 hours is needed with an airflow rate of 0.1 cubic feet per minute per bushel (cfm/bu) and 75 hours is needed for 0.2 cfm/bu and if the grain is in the drying bin (1 to 1.25 cfm/bu), a temperature front could take as little as 12 to15 hours to pass through the bin. Check grain temperature at several locations to determine when the temperature front has been pushed completely through the grain.
+
+Stored Grain Temperature Tips
+
+-
+Avoid taking grain below 25°F going into winter. If it went below that point, take advantage of periods when the ambient air is between 25°F and 35°F to bring the grain back to a safer temperature without risking condensation and ice formation.
+
+-
+Keep grain between 30°F and35°F from December through mid March in eastern Nebraska. When conditions are appropriate, push a warming front through to raise the grain temperature to 40°F in April and and 50°F in May. Grain held into the summer should be warmed to 60°F in late May or early June. If you intend to hold grain into the Summer months, it should be dried down to 14% moisture.
+
+-
+When cooling or warming grain, be certain that the temperature front is pushed all the way through the grain mass before discontinuing aeration. A front pushed part way through the grain then discontinued can result in moisture condensation in the zone where the two temperatures meet. This is especially important when the temperature is being raised or lowered more than 20 degrees in one step.
+
+As the air temperature warms in the spring, the grain next to the bin walls will be warmed, but the grain in the middle of the bin is insulated from the outside and stays cold. Air will rise through the warmer grain near the wall and will be replaced by warm, moist springtime air sinking into the grain at the top center of the bin. The moisture in the air that enters the cold grain mass in the center of the bin will condense, forming a wet spot at the top center of the bin. This can lead to crusted, moldy grain in the top center of the bin and increased insect activity.
+
+If you are still holding grain into the warmer spring months and have not warmed it to above 25°F with aeration, you should take advantage of cooler, less humid days to push a warming cycle through the grain. A rule of thumb is air can only hold half as much water when the air temperature is reduced 20 degrees. If you have frozen corn in your bin (e.g. 20°F) and pick a beautiful, warm spring day (e.g., 60°F and 50% relative humidity) to run your aeration fans, the 60°F air will be cooled 40 degrees as it passes through the grain, finally reaching equilibrium with the grain temperature. This will result in air moisture condensing into the grain. When the grain is well below freezing, the condensation could conceivably turn to frost or ice. If enough ice forms, it could prevent air movement through the grain. (This is known as an ice dam in the grain.)
+
+On the other hand, if the ambient air is 35°F with 50% relative humidity, the air temperature will only drop 15°F as it passes through the 20°F corn and condensation should almost be eliminated. Once you have brought the grain temperature up to near or above freezing, you can then aerate with warm humid air. You might get some condensation at first, but it won't create an ice dam.
+
+Tom Dorn
+
+Extension Educator in Lancaster County
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles

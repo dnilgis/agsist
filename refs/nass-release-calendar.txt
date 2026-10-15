@@ -1,0 +1,2037 @@
+# NASS reports by release day
+# https://www.nass.usda.gov/Publications/Reports_By_Release_Day/index.php
+# fetched 2026-10-15T21:09:44Z, sha256 5ac7993f37a302a570a61e2750059c7bdffb64d215d05cfba5bbc7b879debaf2
+
+USDA - National Agricultural Statistics Service - Publications - Reports by Title or Release Day
+
+Skip to Main Content
+
+United States Department of Agriculture
+
+National Agricultural Statistics Service
+
+Subscriptions: National | News
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+- Data & Statistics
+
+Access Quick Stats (searchable database)
+
+The Quick Stats Database is the most comprehensive tool for accessing agricultural data published by NASS. It allows you to customize your query by commodity, location, or time period.
+
+- Quick Stats System Updates
+
+- Download Quick Stats data files
+
+Access Quick Stats Lite
+
+Quick Stats Lite provides a more structured approach to get commonly requested statistics from our online database.
+
+Explore Statistics
+
+-
+
+By State
+
+-
+
+By Subject
+
+- Crops and Plants
+
+- Demographics
+
+- Economic and Prices
+
+- Environmental
+
+- Livestock and Animals
+
+- Research, Science, and Technology
+
+-
+
+Charts and Maps
+
+-
+
+Data Visualization
+
+-
+
+Pre-Defined Queries
+
+-
+
+Special Tabulations and Restricted Microdata
+
+County Level Information
+
+- County Maps
+
+- County and District Geographic Boundaries
+
+- County and District Codes
+
+- Commodity Codes
+
+- Livestock County Estimates
+
+Geospatial Data & Interactive Maps
+
+- CroplandCROS
+
+- Cropland Data Layer
+
+- VegScape
+
+- Crop Condition and Soil Moisture Analytics
+
+- Crop Sequence Boundaries
+
+- Crop Progress & Condition Gridded Layers
+
+- Disaster Analysis
+
+- Land Use Strata for Selected States
+
+- Publications
+
+Today's Reports
+
+Browse NASS Reports
+
+- by Subject
+
+- by Date (Reports Calendar)
+
+- by Title/Release Day
+
+- by Keyword
+
+- Guide to Products and Services
+
+Additional Reports
+
+- Highlights
+
+- 2022 Census of Agriculture
+
+- Surveys and Programs
+
+- Methodology & Quality Measures
+
+- Agricultural Statistics Board Corrections
+
+- Research Reports
+
+Historical Publications
+
+- Archived Ag Census Reports (2002 and prior - published every 5 years)
+
+- Annual Agricultural Statistics
+
+- Statistical Bulletins (final estimates, 1987 to 2012
+
+- Track Records: (crops, livestock, grain stocks)
+
+- Trends 20th century
+
+- Price Reactions (after crop or livestock reports)
+
+Receive Reports by Email:
+
+- National Reports
+
+- NASS News Releases
+
+- Newsroom
+
+News Releases
+
+10/01/26 USDA to Host Virtual Data Users’ Meeting for Public Input on Statistical Programs
+
+09/30/26 US corn ending stocks up 35% from last year, soybean ending stocks down 3%
+
+09/24/26 United States hog inventory down 2%
+
+08/12/26 USDA unlocks the power of producer insights in latest August Crop Production report Data is vital to ag industry’s decision-making
+
+08/12/26 Producers Are Being Called to Help Build Their County Crop Estimates
+
+Read More News
+
+ASB Notices
+
+06/22/26 NASS Adds Additional Counties to the 2025 Cotton County-level Estimates
+
+12/22/25 USDA NASS reschedules reports due to December 24 & 26 government closure
+
+11/19/25 USDA Reschedules Reports Affected by Lapse in Federal Funding
+
+10/31/25 USDA’s National Agricultural Statistics Service (NASS) will release key data in November
+
+08/28/25 NASS discontinues select data collection programs and reports
+
+Read More Notices
+
+Videos
+
+02/13/24 2022 Census of Agriculture Data Highlights
+
+02/13/24 How to Find 2022 Census of Agriculture Data
+
+02/13/24 2022 Census of Agriculture Data Release Event
+
+07/16/21 What is a Farm?
+
+08/05/20 The NASS Mission: We do it for you
+
+View More Videos
+
+ASB Briefings
+
+10/09/26 Crop Production (October 2026)
+
+09/30/26 Small Grains Summary and Grain Stocks (September 2026)
+
+09/24/26 Quarterly Hogs and Pigs (September 2026)
+
+09/11/26 Crop Production (September 2026)
+
+08/12/26 Crop Production (August 2026)
+
+View More Briefings
+
+- Surveys
+
+Respond to Surveys Online
+
+Guide to NASS Surveys and Programs
+
+Understanding Agricultural Statistics
+
+Make Sure I'm Counted
+
+Statistical Programs and Review
+
+- Census
+
+- About NASS
+
+Structure and Organization
+
+- Agency Overview
+
+- NASS Biographies
+
+- Organizational Chart
+
+- Assistance to Other Organizations
+
+- International Programs
+
+- Talking About NASS - A guide for partners and stakeholders
+
+- USDA Strategic Goals
+
+Guiding Principles
+
+- Mission and Core Values
+
+- Keeping Data Safe
+
+- Confidentiality Pledge
+
+- Security Pledge
+
+- Security Statement
+
+- Statement of Commitment to Scientific Integrity
+
+- Regulations Guiding NASS
+
+- Information Quality
+
+- Learning Agenda, Fiscal Year 2024 -2026
+
+Civil Rights
+
+- Anti-Harassment Policy | USDA
+
+- Civil Rights Accountability Policy and Procedures
+
+- No FEAR Act Notice
+
+- No FEAR Act - NASS Data
+
+-
+
+REE Reasonable Accommodations and Personal Assistance Services
+
+- How to File an EEO Complaint
+
+- Accessibility Statement
+
+- Architectural Barriers Act
+
+- And Justice for All posters
+
+Work at NASS
+
+- Career Opportunities
+
+Education and Outreach
+
+- Understanding Ag Statistics
+
+- Data Users' Meetings
+
+- Morris Hansen Lecture
+
+- International Conference on Agricultural Statistics
+
+History and Procedures
+
+- Agricultural Statistics Board and Lockup
+
+- Agricultural Statistics: A Historical Timeline
+
+- The Story of U.S. Agricultural Estimates
+
+- As We Recall: The Growth of Agricultural Estimates, 1933-1961
+
+-
+
+Safeguarding America's Agricultural Statistics Report and Video
+
+- History of Ag Statistics
+
+- Report Procedures
+
+- An Evolving Statistical Service
+
+- Fact Finders for Agriculture
+
+-
+
+Agriculture Counts - The Founding and Evolution of the National Agricultural Statistics Service 1957-2007
+
+- Hall of Fame
+
+- Contact Us
+
+Mailing Address:
+
+USDA-NASS
+
+1400 Independence Ave., SW
+
+Washington, DC 20250
+
+Survey FAQs and Contact Us:
+
+Access FAQs or submit a question.
+
+Data Inquiries:
+
+Hours: 8:00 a.m. - 5:00 p.m. Central Standard Time
+
+Monday - Friday, except federal holidays
+
+Toll-Free: (800) 727-9540
+
+Media Inquiries:
+
+Email: NASS-Media@usda.gov
+
+Other USDA Inquiries:
+
+Hours: Monday to Friday 8 a.m. - 5 p.m. EST
+
+Toll-Free: (833) One-USDA
+
+Email: askusda@usda.gov
+
+Website: https://ask.usda.gov/s/
+
+Translation Services:
+
+Email: NASSLanguages@usda.gov
+
+Regional and State Field Offices:
+
+Find contact information for Regional and State Field Offices
+
+Ask a Specialist:
+
+Have a specific question for one of our subject experts? Contact a specialist.
+
+Web Content Publishing Schedule:
+
+Section 207(f)(2) of the E-Government Act of 2002 requires federal agencies to develop an inventory of information to be published on their Web sites, establish a schedule for publishing information, make those schedules available for public comment, and post the schedules and priorities on the Web site.
+
+- Help
+
+Technical Issues
+
+- RSS Feed
+
+- Contact Us
+
+Search Tips
+
+- Search Tips
+
+For Developers and Data Users
+
+- Application Programming Interfaces (APIs)
+
+Statistics by State
+
+Publications
+
+Find NASS Publications by:
+
+- Statistics by State
+
+- Date
+
+- Subject
+
+- Keyword
+
+- Title/Release Day
+
+- Reports by Year
+
+- Guide to Products and Services
+
+About NASS Estimates
+
+- Understanding Agricultural Estimates
+
+- Methodology and Quality Measures
+
+- Advanced Topics
+
+- Special Tabulations and Restricted Microdata
+
+- Citation Request
+
+Also See
+
+- 2026 ASB Livestream Schedule
+
+- 2026 X Stat Chat Calendar
+
+- Highlights
+
+- Research Reports
+
+- Schedule of Release Dates for Principal Federal Economic Indicators: 2025 | 2026
+
+Publications
+
+NASS Reports by Title or Release Day
+
+A | B | C | D | E | F | G | H | L | M | N | P | R | S | T | U | VW
+
+Census
+
+2022 Census of Agriculture
+
+2022 Census of Agriculture - American Samoa
+
+2022 Census of Agriculture - Guam
+
+2022 Census of Agriculture - Northern Mariana Islands
+
+2022 Census of Agriculture - U.S. Virgin Islands
+
+2024 Census of Horticulture Specialties
++
+
+Release Day:
+
+Thursday, February 26, 2026
+
+A
+
+Acreage
++
+
+Release Day:
+
+Tuesday, June 30, 2026
+
+Agricultural Chemical Usage - Field Crops
++
+
+Release Day:
+
+Friday, May 08, 2026
+
+Agricultural Chemical Usage - Fruits
++
+
+Release Day:
+
+Wednesday, July 15, 2026
+
+Agricultural Chemical Usage - Vegetables
+
+Agricultural Prices
++
+
+Release Day:
+
+Friday, January 30, 2026
+
+Friday, February 27, 2026
+
+Monday, March 30, 2026
+
+Thursday, April 30, 2026
+
+Friday, May 29, 2026
+
+Monday, June 29, 2026
+
+Friday, July 31, 2026
+
+Monday, August 31, 2026
+
+Tuesday, September 29, 2026
+
+Friday, October 30, 2026
+
+Monday, November 30, 2026
+
+Wednesday, December 30, 2026
+
+B
+
+Broiler Hatchery
++
+
+Release Day:
+
+Wednesday, January 07, 2026
+
+Wednesday, January 14, 2026
+
+Wednesday, January 21, 2026
+
+Wednesday, January 28, 2026
+
+Wednesday, February 04, 2026
+
+Wednesday, February 11, 2026
+
+Wednesday, February 18, 2026
+
+Wednesday, February 25, 2026
+
+Wednesday, March 04, 2026
+
+Wednesday, March 11, 2026
+
+Wednesday, March 18, 2026
+
+Wednesday, March 25, 2026
+
+Wednesday, April 01, 2026
+
+Wednesday, April 08, 2026
+
+Wednesday, April 15, 2026
+
+Wednesday, April 22, 2026
+
+Wednesday, April 29, 2026
+
+Wednesday, May 06, 2026
+
+Wednesday, May 13, 2026
+
+Wednesday, May 20, 2026
+
+Wednesday, May 27, 2026
+
+Wednesday, June 03, 2026
+
+Wednesday, June 10, 2026
+
+Wednesday, June 17, 2026
+
+Wednesday, June 24, 2026
+
+Wednesday, July 01, 2026
+
+Wednesday, July 08, 2026
+
+Wednesday, July 15, 2026
+
+Wednesday, July 22, 2026
+
+Wednesday, July 29, 2026
+
+Wednesday, August 05, 2026
+
+Wednesday, August 12, 2026
+
+Wednesday, August 19, 2026
+
+Wednesday, August 26, 2026
+
+Wednesday, September 02, 2026
+
+Wednesday, September 09, 2026
+
+Wednesday, September 16, 2026
+
+Wednesday, September 23, 2026
+
+Wednesday, September 30, 2026
+
+Wednesday, October 07, 2026
+
+Wednesday, October 14, 2026
+
+Wednesday, October 21, 2026
+
+Wednesday, October 28, 2026
+
+Wednesday, November 04, 2026
+
+Thursday, November 12, 2026
+
+Wednesday, November 18, 2026
+
+Wednesday, November 25, 2026
+
+Wednesday, December 02, 2026
+
+Wednesday, December 09, 2026
+
+Wednesday, December 16, 2026
+
+Wednesday, December 23, 2026
+
+Wednesday, December 30, 2026
+
+C
+
+Capacity of Refrigerated Warehouses
++
+
+Release Day:
+
+Monday, February 09, 2026
+
+Cash Rents- State
++
+
+Release Day:
+
+Friday, July 31, 2026
+
+Catfish Production
++
+
+Release Day:
+
+Monday, February 09, 2026
+
+Wednesday, July 15, 2026
+
+Cattle
++
+
+Release Day:
+
+Friday, January 30, 2026
+
+Friday, July 24, 2026
+
+Cattle on Feed
++
+
+Release Day:
+
+Friday, January 23, 2026
+
+Friday, February 20, 2026
+
+Friday, March 20, 2026
+
+Friday, April 17, 2026
+
+Friday, May 22, 2026
+
+Thursday, June 18, 2026
+
+Friday, July 24, 2026
+
+Friday, August 21, 2026
+
+Friday, September 18, 2026
+
+Friday, October 23, 2026
+
+Friday, November 20, 2026
+
+Friday, December 18, 2026
+
+County Estimates Barley, Oats, Winter Wheat, Durum Wheat, Spring Wheat
++
+
+Release Day:
+
+Thursday, March 05, 2026
+
+County Estimates All Rice
++
+
+Release Day:
+
+Friday, May 22, 2026
+
+County Estimates All Rice, Peanuts
++
+
+Release Day:
+
+Friday, May 22, 2026
+
+County Estimates Barley, Oats, Winter Wheat, Durum Wheat, Spring Wheat
++
+
+Release Day:
+
+Friday, December 18, 2026
+
+County Estimates Cash Rents
++
+
+Release Day:
+
+Friday, August 21, 2026
+
+County Estimates Cattle & Sheep
++
+
+Release Day:
+
+Tuesday, May 12, 2026
+
+County Estimates Corn, Soybeans, Sorghum
++
+
+Release Day:
+
+Tuesday, May 05, 2026
+
+County Estimates Cotton
++
+
+Release Day:
+
+Tuesday, May 12, 2026
+
+County Estimates Durum Wheat
++
+
+Release Day:
+
+Thursday, March 05, 2026
+
+Friday, December 18, 2026
+
+County Estimates Oats
++
+
+Release Day:
+
+Thursday, March 05, 2026
+
+Friday, December 18, 2026
+
+County Estimates Spring Wheat
++
+
+Release Day:
+
+Thursday, March 05, 2026
+
+Friday, December 18, 2026
+
+County Estimates Winter Wheat
++
+
+Release Day:
+
+Thursday, March 05, 2026
+
+Friday, December 18, 2026
+
+Chickens and Eggs
++
+
+Release Day:
+
+Tuesday, January 20, 2026
+
+Monday, February 23, 2026
+
+Monday, March 23, 2026
+
+Monday, April 20, 2026
+
+Tuesday, May 19, 2026
+
+Monday, June 22, 2026
+
+Monday, July 20, 2026
+
+Monday, August 24, 2026
+
+Monday, September 21, 2026
+
+Tuesday, October 20, 2026
+
+Monday, November 23, 2026
+
+Monday, December 21, 2026
+
+Chickens and Eggs - Ann.
++
+
+Release Day:
+
+Tuesday, February 17, 2026
+
+Citrus Fruits
++
+
+Release Day:
+
+Thursday, August 27, 2026
+
+Coffee
++
+
+Release Day:
+
+Friday, January 23, 2026
+
+Cold Storage
++
+
+Release Day:
+
+Friday, January 23, 2026
+
+Tuesday, February 24, 2026
+
+Tuesday, March 24, 2026
+
+Friday, April 24, 2026
+
+Friday, May 22, 2026
+
+Thursday, June 25, 2026
+
+Friday, July 24, 2026
+
+Monday, August 24, 2026
+
+Friday, September 25, 2026
+
+Friday, October 23, 2026
+
+Tuesday, November 24, 2026
+
+Wednesday, December 23, 2026
+
+Cold Storage - Ann.
++
+
+Release Day:
+
+Friday, February 27, 2026
+
+Cost of Pollination
++
+
+Release Day:
+
+Friday, February 13, 2026
+
+Friday, December 11, 2026
+
+Cotton Ginnings
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Friday, January 23, 2026
+
+Tuesday, February 10, 2026
+
+Tuesday, March 10, 2026
+
+Wednesday, August 12, 2026
+
+Friday, September 11, 2026
+
+Tuesday, September 22, 2026
+
+Friday, October 09, 2026
+
+Thursday, October 22, 2026
+
+Tuesday, November 10, 2026
+
+Monday, November 23, 2026
+
+Thursday, December 10, 2026
+
+Tuesday, December 22, 2026
+
+Cotton Ginnings - Ann.
++
+
+Release Day:
+
+Tuesday, May 12, 2026
+
+Cotton System
++
+
+Release Day:
+
+Friday, January 02, 2026
+
+Monday, February 02, 2026
+
+Monday, March 02, 2026
+
+Wednesday, April 01, 2026
+
+Friday, May 01, 2026
+
+Monday, June 01, 2026
+
+Wednesday, July 01, 2026
+
+Monday, August 03, 2026
+
+Tuesday, September 01, 2026
+
+Thursday, October 01, 2026
+
+Monday, November 02, 2026
+
+Tuesday, December 01, 2026
+
+Cotton System - Ann.
++
+
+Release Day:
+
+Monday, March 02, 2026
+
+Crop Production
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Tuesday, February 10, 2026
+
+Tuesday, March 10, 2026
+
+Thursday, April 09, 2026
+
+Tuesday, May 12, 2026
+
+Thursday, June 11, 2026
+
+Friday, July 10, 2026
+
+Wednesday, August 12, 2026
+
+Friday, September 11, 2026
+
+Friday, October 09, 2026
+
+Tuesday, November 10, 2026
+
+Thursday, December 10, 2026
+
+Crop Production - Ann.
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Crop Production Historical Track Records
++
+
+Release Day:
+
+Wednesday, April 08, 2026
+
+Crop Progress
++
+
+Release Day:
+
+Monday, April 06, 2026
+
+Monday, April 13, 2026
+
+Monday, April 20, 2026
+
+Monday, April 27, 2026
+
+Monday, May 04, 2026
+
+Monday, May 11, 2026
+
+Monday, May 18, 2026
+
+Tuesday, May 26, 2026
+
+Monday, June 01, 2026
+
+Monday, June 08, 2026
+
+Monday, June 15, 2026
+
+Monday, June 22, 2026
+
+Monday, June 29, 2026
+
+Monday, July 06, 2026
+
+Monday, July 13, 2026
+
+Monday, July 20, 2026
+
+Monday, July 27, 2026
+
+Monday, August 03, 2026
+
+Monday, August 10, 2026
+
+Monday, August 17, 2026
+
+Monday, August 24, 2026
+
+Monday, August 31, 2026
+
+Tuesday, September 08, 2026
+
+Monday, September 14, 2026
+
+Monday, September 21, 2026
+
+Monday, September 28, 2026
+
+Monday, October 05, 2026
+
+Tuesday, October 13, 2026
+
+Monday, October 19, 2026
+
+Monday, October 26, 2026
+
+Monday, November 02, 2026
+
+Monday, November 09, 2026
+
+Monday, November 16, 2026
+
+Monday, November 23, 2026
+
+Monday, November 30, 2026
+
+Crop Values
++
+
+Release Day:
+
+Thursday, February 26, 2026
+
+D
+
+Dairy Products
++
+
+Release Day:
+
+Tuesday, January 06, 2026
+
+Thursday, February 05, 2026
+
+Thursday, March 05, 2026
+
+Thursday, April 02, 2026
+
+Wednesday, May 06, 2026
+
+Thursday, June 04, 2026
+
+Thursday, July 02, 2026
+
+Thursday, August 06, 2026
+
+Thursday, September 03, 2026
+
+Monday, October 05, 2026
+
+Thursday, November 05, 2026
+
+Thursday, December 03, 2026
+
+Dairy Products - Ann.
++
+
+Release Day:
+
+Friday, April 24, 2026
+
+E
+
+Egg Products
++
+
+Release Day:
+
+Friday, January 30, 2026
+
+Friday, February 27, 2026
+
+Friday, March 27, 2026
+
+Wednesday, April 29, 2026
+
+Friday, May 29, 2026
+
+Tuesday, June 30, 2026
+
+Friday, July 31, 2026
+
+Monday, August 31, 2026
+
+Wednesday, September 30, 2026
+
+Friday, October 30, 2026
+
+Monday, November 30, 2026
+
+Wednesday, December 30, 2026
+
+F
+
+Farm Production Expenditures
+
+Farms and Land in Farms
++
+
+Release Day:
+
+Friday, February 13, 2026
+
+Fats & Oils
++
+
+Release Day:
+
+Friday, January 02, 2026
+
+Monday, February 02, 2026
+
+Monday, March 02, 2026
+
+Wednesday, April 01, 2026
+
+Friday, May 01, 2026
+
+Monday, June 01, 2026
+
+Wednesday, July 01, 2026
+
+Monday, August 03, 2026
+
+Tuesday, September 01, 2026
+
+Thursday, October 01, 2026
+
+Monday, November 02, 2026
+
+Tuesday, December 01, 2026
+
+Fats & Oils - Ann.
++
+
+Release Day:
+
+Monday, March 02, 2026
+
+Floriculture Crops
++
+
+Release Day:
+
+Thursday, February 26, 2026
+
+Wednesday, June 17, 2026
+
+Flour Milling
++
+
+Release Day:
+
+Monday, February 02, 2026
+
+Friday, May 01, 2026
+
+Monday, August 03, 2026
+
+Monday, November 02, 2026
+
+Flour Milling - Ann.
++
+
+Release Day:
+
+Friday, May 01, 2026
+
+G
+
+Grain Crushings
++
+
+Release Day:
+
+Friday, January 02, 2026
+
+Monday, February 02, 2026
+
+Monday, March 02, 2026
+
+Wednesday, April 01, 2026
+
+Friday, May 01, 2026
+
+Monday, June 01, 2026
+
+Wednesday, July 01, 2026
+
+Monday, August 03, 2026
+
+Tuesday, September 01, 2026
+
+Thursday, October 01, 2026
+
+Monday, November 02, 2026
+
+Tuesday, December 01, 2026
+
+Grain Crushings - Ann.
++
+
+Release Day:
+
+Tuesday, September 01, 2026
+
+Grain Stocks
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Tuesday, March 31, 2026
+
+Tuesday, June 30, 2026
+
+Wednesday, September 30, 2026
+
+H
+
+Hatchery Production - Ann.
++
+
+Release Day:
+
+Tuesday, April 07, 2026
+
+Hogs and Pigs
++
+
+Release Day:
+
+Thursday, March 26, 2026
+
+Thursday, June 25, 2026
+
+Thursday, September 24, 2026
+
+Wednesday, December 23, 2026
+
+Honey
++
+
+Release Day:
+
+Friday, March 13, 2026
+
+Honey Bee Colonies
++
+
+Release Day:
+
+Monday, August 03, 2026
+
+Hop Stocks
++
+
+Release Day:
+
+Monday, March 16, 2026
+
+Friday, September 18, 2026
+
+L
+
+Land Values
++
+
+Release Day:
+
+Friday, July 31, 2026
+
+Livestock Historical Track Records
++
+
+Release Day:
+
+Monday, September 14, 2026
+
+Livestock Slaughter
++
+
+Release Day:
+
+Thursday, January 22, 2026
+
+Thursday, February 19, 2026
+
+Thursday, March 19, 2026
+
+Thursday, April 23, 2026
+
+Thursday, May 21, 2026
+
+Thursday, June 25, 2026
+
+Thursday, July 23, 2026
+
+Thursday, August 20, 2026
+
+Thursday, September 24, 2026
+
+Thursday, October 22, 2026
+
+Thursday, November 19, 2026
+
+Thursday, December 24, 2026
+
+Livestock Slaughter - Ann.
++
+
+Release Day:
+
+Wednesday, April 22, 2026
+
+M
+
+Meat Animals - PDI
++
+
+Release Day:
+
+Thursday, April 30, 2026
+
+Milk - PDI
++
+
+Release Day:
+
+Thursday, April 30, 2026
+
+Milk Production
++
+
+Release Day:
+
+Friday, January 23, 2026
+
+Friday, February 20, 2026
+
+Friday, March 20, 2026
+
+Wednesday, April 22, 2026
+
+Friday, May 22, 2026
+
+Monday, June 22, 2026
+
+Wednesday, July 22, 2026
+
+Friday, August 21, 2026
+
+Tuesday, September 22, 2026
+
+Thursday, October 22, 2026
+
+Friday, November 20, 2026
+
+Tuesday, December 22, 2026
+
+Mushrooms
++
+
+Release Day:
+
+Wednesday, August 19, 2026
+
+N
+
+National Hemp Report
++
+
+Release Day:
+
+Thursday, April 16, 2026
+
+National Hop Report
++
+
+Release Day:
+
+Friday, December 18, 2026
+
+Noncitrus Fruits and Nuts - Ann.
++
+
+Release Day:
+
+Friday, May 01, 2026
+
+North American Flour Milling Products Summary
++
+
+Release Day:
+
+Wednesday, May 13, 2026
+
+North American Grain and Oilseed Crushings
++
+
+Release Day:
+
+Friday, March 13, 2026
+
+North American Potatoes
++
+
+Release Day:
+
+Friday, February 06, 2026
+
+Friday, December 11, 2026
+
+P
+
+Peanut Prices
++
+
+Release Day:
+
+Friday, January 02, 2026
+
+Friday, January 09, 2026
+
+Friday, January 16, 2026
+
+Friday, January 23, 2026
+
+Friday, January 30, 2026
+
+Friday, February 06, 2026
+
+Friday, February 13, 2026
+
+Friday, February 20, 2026
+
+Friday, February 27, 2026
+
+Friday, March 06, 2026
+
+Friday, March 13, 2026
+
+Friday, March 20, 2026
+
+Friday, March 27, 2026
+
+Thursday, April 02, 2026
+
+Friday, April 10, 2026
+
+Friday, April 17, 2026
+
+Friday, April 24, 2026
+
+Friday, May 01, 2026
+
+Friday, May 08, 2026
+
+Friday, May 15, 2026
+
+Friday, May 22, 2026
+
+Friday, May 29, 2026
+
+Friday, June 05, 2026
+
+Friday, June 12, 2026
+
+Thursday, June 18, 2026
+
+Friday, June 26, 2026
+
+Thursday, July 02, 2026
+
+Friday, July 10, 2026
+
+Friday, July 17, 2026
+
+Friday, July 24, 2026
+
+Friday, July 31, 2026
+
+Friday, August 07, 2026
+
+Friday, August 14, 2026
+
+Friday, August 21, 2026
+
+Friday, August 28, 2026
+
+Friday, September 04, 2026
+
+Friday, September 11, 2026
+
+Friday, September 18, 2026
+
+Friday, September 25, 2026
+
+Friday, October 02, 2026
+
+Friday, October 09, 2026
+
+Friday, October 16, 2026
+
+Friday, October 23, 2026
+
+Friday, October 30, 2026
+
+Friday, November 06, 2026
+
+Friday, November 13, 2026
+
+Friday, November 20, 2026
+
+Friday, November 27, 2026
+
+Friday, December 04, 2026
+
+Friday, December 11, 2026
+
+Friday, December 18, 2026
+
+Thursday, December 24, 2026
+
+Thursday, December 31, 2026
+
+Peanut Stocks and Processing
++
+
+Release Day:
+
+Tuesday, January 27, 2026
+
+Thursday, February 26, 2026
+
+Thursday, March 26, 2026
+
+Monday, April 27, 2026
+
+Thursday, May 28, 2026
+
+Friday, June 26, 2026
+
+Monday, July 27, 2026
+
+Wednesday, August 26, 2026
+
+Friday, September 25, 2026
+
+Tuesday, October 27, 2026
+
+Wednesday, November 25, 2026
+
+Monday, December 28, 2026
+
+Potato Stocks
++
+
+Release Day:
+
+Wednesday, February 18, 2026
+
+Friday, April 17, 2026
+
+Thursday, June 18, 2026
+
+Friday, December 18, 2026
+
+Potatoes
++
+
+Release Day:
+
+Friday, September 25, 2026
+
+Poultry - Production and Value
++
+
+Release Day:
+
+Thursday, April 30, 2026
+
+Poultry Slaughter
++
+
+Release Day:
+
+Friday, January 23, 2026
+
+Friday, February 20, 2026
+
+Friday, March 27, 2026
+
+Friday, April 24, 2026
+
+Friday, May 22, 2026
+
+Friday, June 26, 2026
+
+Friday, July 24, 2026
+
+Tuesday, August 25, 2026
+
+Friday, September 25, 2026
+
+Friday, October 23, 2026
+
+Wednesday, November 25, 2026
+
+Wednesday, December 23, 2026
+
+Poultry Slaughter - Ann.
++
+
+Release Day:
+
+Friday, February 27, 2026
+
+Price Reactions after USDA Crop Reports
++
+
+Release Day:
+
+Wednesday, March 11, 2026
+
+Price Reactions After USDA Livestock Reports
++
+
+Release Day:
+
+Wednesday, March 11, 2026
+
+Prospective Plantings
++
+
+Release Day:
+
+Tuesday, March 31, 2026
+
+R
+
+Rice Stocks
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Tuesday, March 31, 2026
+
+Tuesday, June 30, 2026
+
+Thursday, August 20, 2026
+
+Thursday, October 22, 2026
+
+S
+
+Sheep and Goats
++
+
+Release Day:
+
+Friday, January 30, 2026
+
+Slaughter Weekly
++
+
+Release Day:
+
+Friday, January 02, 2026
+
+Thursday, January 08, 2026
+
+Thursday, January 15, 2026
+
+Thursday, January 22, 2026
+
+Thursday, January 29, 2026
+
+Thursday, February 05, 2026
+
+Thursday, February 12, 2026
+
+Thursday, February 19, 2026
+
+Thursday, February 26, 2026
+
+Thursday, March 05, 2026
+
+Thursday, March 12, 2026
+
+Thursday, March 19, 2026
+
+Thursday, March 26, 2026
+
+Thursday, April 02, 2026
+
+Thursday, April 09, 2026
+
+Thursday, April 16, 2026
+
+Thursday, April 23, 2026
+
+Thursday, April 30, 2026
+
+Thursday, May 07, 2026
+
+Thursday, May 14, 2026
+
+Thursday, May 21, 2026
+
+Thursday, May 28, 2026
+
+Thursday, June 04, 2026
+
+Thursday, June 11, 2026
+
+Thursday, June 18, 2026
+
+Thursday, June 25, 2026
+
+Thursday, July 02, 2026
+
+Thursday, July 09, 2026
+
+Thursday, July 16, 2026
+
+Thursday, July 23, 2026
+
+Thursday, July 30, 2026
+
+Thursday, August 06, 2026
+
+Thursday, August 13, 2026
+
+Thursday, August 20, 2026
+
+Thursday, August 27, 2026
+
+Thursday, September 03, 2026
+
+Thursday, September 10, 2026
+
+Thursday, September 17, 2026
+
+Thursday, September 24, 2026
+
+Thursday, October 01, 2026
+
+Thursday, October 08, 2026
+
+Thursday, October 15, 2026
+
+Thursday, October 22, 2026
+
+Thursday, October 29, 2026
+
+Thursday, November 05, 2026
+
+Thursday, November 12, 2026
+
+Thursday, November 19, 2026
+
+Friday, November 27, 2026
+
+Thursday, December 03, 2026
+
+Thursday, December 10, 2026
+
+Thursday, December 17, 2026
+
+Thursday, December 24, 2026
+
+Thursday, December 31, 2026
+
+Small Grains Summary
++
+
+Release Day:
+
+Wednesday, September 30, 2026
+
+State Stories
++
+
+Release Day:
+
+Wednesday, January 07, 2026
+
+Wednesday, February 04, 2026
+
+Wednesday, March 04, 2026
+
+Wednesday, April 01, 2026
+
+T
+
+Tenure, Ownership, and Transition of Agricultural Land (TOTAL)
++
+
+Release Day:
+
+Thursday, March 12, 2026
+
+Trout Production
++
+
+Release Day:
+
+Friday, February 27, 2026
+
+Turkey Hatchery
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Thursday, February 12, 2026
+
+Friday, March 13, 2026
+
+Monday, April 13, 2026
+
+Tuesday, May 12, 2026
+
+Monday, June 15, 2026
+
+Monday, July 13, 2026
+
+Wednesday, August 12, 2026
+
+Monday, September 14, 2026
+
+Tuesday, October 13, 2026
+
+Friday, November 13, 2026
+
+Monday, December 14, 2026
+
+Turkeys Raised
++
+
+Release Day:
+
+Friday, September 25, 2026
+
+U
+
+U.S. and Canadian Cattle
++
+
+Release Day:
+
+Wednesday, August 26, 2026
+
+Wednesday, March 04, 2026
+
+U.S. and Canadian Hogs
++
+
+Release Day:
+
+Wednesday, March 04, 2026
+
+Wednesday, August 26, 2026
+
+V
+
+Vegetables - Ann.
++
+
+Release Day:
+
+Thursday, February 12, 2026
+
+W
+
+Winter Wheat/Canola Seedings
++
+
+Release Day:
+
+Monday, January 12, 2026
+
+Last Modified:
+11/24/2021
+
+~ Providing Timely, Accurate and Useful Statistics in Service to U.S. Agriculture ~
+
+- NASS Home
+
+- |
+
+- USDA.gov
+
+- |
+
+- Data.gov
+
+- |
+
+- USA.gov
+
+- |
+
+- WhiteHouse.gov
+
+- |
+
+- Economics, Statistics and Market Information System (ESMIS)
+
+- |
+
+- No Fear Act - NASS Data
+
+- |
+
+- Accessibility Statement
+
+- |
+
+- FOIA
+
+- Privacy Policy and Assessments
+
+- |
+
+- Security Statement
+
+- |
+
+- Information Quality
+
+- |
+
+- Non-Discrimination Statement
+
+- |
+
+- Guidance Documents
+
+- |
+
+- USDA Policies and Links
+
+- |
+
+- AskUSDA
+
+Feedback

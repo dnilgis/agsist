@@ -1,0 +1,243 @@
+# UW Crops and Soils: A2809 landing page
+# https://cropsandsoils.extension.wisc.edu/nutrient-application-guidelines-for-field-vegetable-and-fruit-crops-in-wisconsin-a2809
+# fetched 2026-10-15T21:04:31Z, sha256 b0a7f38a7dabd56beebd6ba38f098855b793b4fc3ce4833855935ec9871c3f9e
+
+Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (A2809) – Crops and SoilsShare on FacebookShare on X (Twitter)Share via EmailCopy Link
+
+Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (A2809)
+
+Nutrient application guidelines for field, vegetable, and fruit crops in Wisconsin (A2809)
+
+This online publication describes how to interpret soil test results, provides nutrient application guidelines, and outlines the assumptions underlying the guidelines.
+
+- About
+
+- Introduction
+
+- Sampling Soils for Testing
+
+- Soil Test Procedures
+
+- Soil pH and Lime Requirement
+
+- 2012 Version
+
+- Grain Crops
+
+- Corn
+
+- Soybean
+
+- Winter Wheat
+
+- Barley
+
+- Other Grain Crops
+
+- Forage Crops
+
+- Alfalfa
+
+- Corn Silage
+
+- Pastures
+
+- Other Forage Crops
+
+- Potato and Processing Crops
+
+- Potato
+
+- Snap Bean
+
+- Sweet Corn
+
+- Other Crops
+
+- Nitrogen Crediting
+
+- Manure
+
+- Legumes
+
+- Soil Nitrate Tests
+
+- Appendices
+
+- Appendix A: Methods for Determining N Recommendations
+
+- Appendix B: Methods for Determining P and K Recommendations
+
+The Wisconsin soil testing program and nutrient application guidelines were originally developed in the early 1960s. The guidelines have since been revised several times to reflect research advances, additional correlation and calibration data, and shifts in philosophical viewpoint.
+
+The latest revision incorporates additional research data, including an update to the maximum return to nitrogen (MRTN) philosophy for corn N rate guidelines along with a new approach for defining soil groups and soil yield potential using data from the U.S. Department of Agriculture-Natural Resource Conservation Service (USDA-NRCS) database. The Wisconsin routine farm soils (RFS) computer program, which is used by Wisconsin Department of Agriculture, Trade, and Consumer Protection (WDATCP) certified soil testing laboratories to generate nutrient and lime recommendations, has been updated to reflect the changes here. The guidelines given here have been incorporated into the nutrient management planning software SnapPlus.
+
+This is intended to guide farmers regarding the appropriate amount of nutrients to apply to maximize yield and profitability. Wisconsin Department of Natural Resources (WDNR) and WDATCP, along with USDA-NRCS, reference this in several nutrient management codes and rules.
+
+Our project team is deeply committed to making this information user-friendly, accessible, and you can help us achieve that goal by providing your comments, thoughts, and ideas. If you have questions, please reach out to Dr. Natasha Rayne.
+
+Leave Feedback
+
+Sample Data Page
+
+Receive Email Updates
+
+Appendices
+
+Appendix A: Methods for Determining N Recommendations
+
+Appendix B: Methods for Determining P and K Recommendations
+
+Introduction
+
+Over 200,000 soil samples are analyzed in Wisconsin each year, and the results of these tests guide Wisconsin farmers in the use of lime and nutrient applications. The appropriate use of lime, fertilizer, manure, and other nutrient sources significantly increases Wisconsin farm income. Read more…
+
+Sampling Soils for Testing
+
+- Goals of a soil sampling program
+
+- Selecting a soil sample strategy
+
+- Procedures for taking soil samples
+
+- Tillage system considerations for soil testing
+
+Soil Test Procedures
+
+- What can I test soil for?
+
+- Where can I test soils in Wisconsin?
+
+- How to account for soil test result variability
+
+- Understanding cation exchange capacity (CEC)
+
+Soil pH and Lime Requirement
+
+- Lime requirement calculations
+
+- Plow depth adjustment
+
+- Averaging the lime requirement
+
+- Other factors affecting lime recommendations
+
+- Choosing a liming material
+
+- Lowering soil pH
+
+What We’re Working On
+
+Grain Crops
+
+Corn
+
+Coming soon!
+
+Soybean
+
+New!
+
+Winter Wheat
+
+New!
+
+Other Grains
+
+- Barley – new!
+
+- Small Grains – coming soon!
+
+Forage Crops
+
+Alfalfa and Red Clover
+
+Coming soon!
+
+Corn Silage
+
+Coming soon!
+
+Pastures
+
+Coming soon!
+
+Other Forages
+
+- Grass Forages – coming soon!
+
+- Summer Annual Silage – coming soon!
+
+Potatoes and Processing Crops
+
+Potato
+
+Coming soon!
+
+Snap Bean
+
+Coming soon!
+
+Sweet Corn
+
+Coming soon!
+
+Other Crops
+
+Cover Crops
+
+- Field Pea – coming soon!
+
+- Rye and Triticale – coming soon!
+
+Nitrogen Crediting
+
+Manure
+
+Coming soon!
+
+Legumes
+
+Coming soon!
+
+Soil Nitrate Tests
+
+Coming soon!
+
+Appendix A: Methods for Determining N Recommendations
+
+- Introduction
+
+- Soil Yield Potential
+
+- Soil Drainage Class
+
+- Soil Series
+
+- Field Location
+
+- Download: Codes assigned to Wisconsin soils for soil group and soil yield potential (YP) along with soil properties used to evaluate soil yield potential.
+
+Appendix B: Methods for Determining P and K Recommendations
+
+- Introduction
+
+- Soil Groups
+
+- Crop Information
+
+- Download: Crop codes, typical yield range, moisture content at which yield is reported, phosphorus (P) and potassium (K) crop removal values and demand levels, and target soil pH values for each crop.
+
+Editors
+
+Francisco Arriaga
+
+Hava Blair
+
+Laura Good
+
+John Jones
+
+Natasha Rayne
+
+Matt Ruark

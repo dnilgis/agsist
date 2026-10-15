@@ -1,0 +1,47 @@
+# Mosaic K-Mag Granular data sheet (2025)
+# https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf
+# fetched 2026-10-15T21:08:22Z, sha256 99d2bccb89037cc000064ef4c3efa0921126faeba8a797357d411b1c76725d07
+
+0-0-22
+ Chemical Composition
+ Component                                                 Symbol                             Typical                       Guarantee
+ Potassium Oxide Equivalent                                  K2O                              22.2 %                       22% Minimum
+ Magnesium                                                   Mg                               11.6 %                      10.8% Minimum
+ Sulfur                                                       S                               22.5 %                       22% Minimum
+ Chloride                                                     Cl-                              1.4 %                      2.5% Maximum
+ Moisture                                                    H 2O                             0.12 %
+
+
+
+ Particle Size Distribution Cumulative %
+      Tyler Mesh                    US Mesh                     Opening (mm)                       Typical Range                      Typical
+           4                           4                            4.75                                0-2                              1
+           5                           5                            4.00                               5 - 25                           15
+           6                           6                            3.35                              15 - 50                           30
+           7                           7                            2.80                              30 - 70                           48
+           8                           8                            2.36                              45 - 85                           66
+           9                           10                           2.00                              65 - 95                           82
+          10                           12                           1.70                              85 - 100                          94
+          12                           14                           1.40                              95 - 100                          99
+
+
+
+ Physical Properties                                                             Sizing Characteristics
+ Parameter                                      Typical                          Parameter                                              Typical
+ Bulk Density (Loose)                                                            Size Guide Number (SGN)                                  275
+    - lb/ft3                                     88                              Uniformity Index (UI)                                    40
+    - kg/m3                                     1412
+ Angle of Repose                             34 Degrees
+
+                Please refer to the Safety Data Sheet (SDS #: MOS100042) for additional information (www.mosaicco.com)
+
+The information contained in this data sheet is a representation of the average properties of product analyses as tested on composite samples and typical
+analyses should not be considered a guaranteed specification. Individual shipment and grab sample analyses may fall outside of the above typical values
+Additional handling, transportation, or improper/extended storage may affect product analyses. Mosaic disclaims any responsibility or liability for any
+loss or damage that may occur from any reliance on, or other use of, the above information with respect to the product.
+
+
+
+
+Revised 01/25                                                                            © Copyright 2025. The Mosaic Company. All Rights Reserved.
+

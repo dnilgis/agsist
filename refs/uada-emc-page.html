@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>EMC Calculator</title>
+    <meta name="description"
+          content="Equilibrium Moisture Content Calculator can help calculate the
+          Equilibrium Moisture Content for a given grain in the current air conditions.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="EMC, Equilibrium, Moisture, Moisture Content, Grain, Calculator, Grain Management">
+
+
+    <meta property="og:title" content="EMC Calculator"/>
+    <meta property="og:description"
+          content="Equilibrium Moisture Content Calculator can help calculate the
+          Equilibrium Moisture Content for a given grain in the current air conditions."/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="pages/emc.html"/>
+    <meta property="og:image" content="../img/grain-management-logo.png"/>
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="../css/headfoot.css">
+    <link rel="stylesheet" href="../css/main.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+
+    <script>(function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start':
+
+                new Date().getTime(), event: 'gtm.js'
+        });
+        var f = d.getElementsByTagName(s)[0],
+
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src =
+
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+
+    })(window, document, 'script', 'dataLayer', 'GTM-TJXMC39');</script>
+
+    <!-- End Google Tag Manager -->
+
+    <script type="module" src="../js/calculators/emc.js"></script>
+
+    <!-- favicon stuff -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="mask-icon" href="../safari-pinned-tab.svg" color="#9d2235">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJXMC39"
+            height="0" width="0"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav class="navigation">
+    <div class="nav-contain">
+        <div class="header-logo">
+            <a href="../index.html" rel="noreferrer noopener">
+                <img src="../img/grain-management-logo.svg" class="logo" alt="Grain Management Logo"/>
+            </a>
+        </div>
+        <div class="hidden-logo-mobile">
+            <hr>
+        </div>
+        <div class="header-logo hidden-logo-mobile">
+            <a href="https://uaex.uada.edu/" target="_blank" rel="noreferrer noopener"><img
+                    src="../img/ua-logo-black.svg" class="logo" alt="UADA Logo"/></a>
+        </div>
+        <div class="menu">
+            <input id="menu" class="chkbx" type="checkbox"/>
+            <label for="menu" class="menu-label">Menu</label>
+            <div class="burger">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </div>
+
+
+            <ul class="header-navlinks">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="calculator-header">
+        <h1>Equilibrium Moisture Content</h1>
+    </div>
+    <div class="calculator-flexbox">
+        <div class="calculator-container">
+            <h2>Input</h2>
+            <div class="input-container">
+                <label for="grains">Select grain type from dropdown list:</label>
+                <select name="grains" id="grains" class="user-input">
+                    <option value="Barley">Barley</option>
+                    <option value="Beans, edible">Beans, edible</option>
+                    <option value="Corn, yellow dent">Corn, yellow dent</option>
+                    <option value="Peanuts, kernel">Peanuts, kernel</option>
+                    <option value="Peanuts, pod">Peanuts, pod</option>
+                    <option value="Rice, rough">Rice, rough</option>
+                    <option value="Sorghum">Sorghum</option>
+                    <option value="Soybean">Soybean</option>
+                    <option value="Wheat, durum">Wheat, durum</option>
+                    <option value="Wheat, hard">Wheat, hard</option>
+                    <option value="Wheat, soft">Wheat, soft</option>
+                </select>
+            </div>
+            <div class="input-container">
+                <label for="temperature">Enter air temperature (°F):</label>
+                <div>
+                    <input type="text" id="temperature" class="user-input" name="temperature" maxlength="10">
+                    <span>(°F)</span>
+                </div>
+            </div>
+            <div class="input-container">
+                <label for="humidity">Enter air relative humidity in %:</label>
+                <div>
+                    <input type="text" id="humidity" class="user-input" name="humidity" maxlength="10">
+                    <span>%</span>
+                </div>
+            </div>
+            <span id="error-message"></span>
+            <hr>
+            <h2>Result</h2>
+            <div class="output-container">
+                <span>EMC under the current air-conditions (%):</span>
+                <div>
+                    <span class="output"></span>
+                    <span>%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="disclaimer">
+        <p>This application was developed by the University of Arkansas Division of Agriculture (UADA)
+             to assist public users. This application uses data derived from other
+            sources and does not guarantee the accuracy of that data. Sale of this application or use of it for purposes
+            other than its intended use is strictly prohibited. Information put forth by this application is intended to
+            be used in conjunction with close consultation with the appropriate Extension professional. The UADA is not
+            liable for damages resulting from recommendations made by this application and is not a substitute for
+            prudent judgment. UADA does not warrant or guarantee the performance of this application nor the service
+            offered. User’s utilize this information at their own risk.</p>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-grid-container">
+        <div class="logo-section-grid">
+            <div id="re-ex-logo"><a href="https://uaex.uada.edu" target="_blank" rel="noreferrer noopener"><img
+                    src="../img/ua-logo-white.svg" alt="UADA logo"></a></div>
+        </div>
+        <span class="line-span1"></span>
+        <div class="about-section">
+            <div class="about-links">
+                <ul class="plain-list">
+                    <li class="footer-li">
+                        <a class="a-footer" href="https://uada.edu/equal-access.aspx" target="_blank"
+                           rel="noreferrer noopener">Equal Access</a>
+                    </li>
+                    <li class="footer-li">
+                        <a class="a-footer" href="https://uada.edu/disclaimer.aspx" target="_blank"
+                           rel="noreferrer noopener">Disclaimer</a>
+                    </li>
+                    <li class="footer-li">
+                        <a class="a-footer" href="https://uada.edu/about/privacy-statement.aspx" target="_blank"
+                           rel="noreferrer noopener">Privacy</a>
+                    </li>
+                    <li class="footer-li">
+                        <a class="footer-last-item" href="https://uada.edu/accessibility.aspx" target="_blank"
+                           rel="noreferrer noopener">Accessibility</a>
+                    </li>
+                    <li class="footer-li">
+                        <a class="footer-last-item"
+                           href="https://services.uada.edu/TDClient/33/Portal/Requests/TicketRequests/NewForm?ID=%7eKkhxixHim8_&RequestorType=ServiceOffering" target="_blank"
+                           rel="noreferrer noopener">Report Website
+                            Issue</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <span class="line-span2"></span>
+        <div class="addr-section">
+            <div class="addr">
+                <ul class="plain-list">
+                    <li class="footer-li"><strong>State Office:</strong></li>
+                    <li class="footer-li">2301 S. University Avenue</li>
+                    <li class="footer-li">Little Rock, AR 72204</li>
+                    <li class="footer-li">Phone: 501-671-2000</li>
+                </ul>
+            </div>
+        </div>
+        <div id="copyinfo">
+            <p>
+                Copyright <span id="directedit">&copy;</span> <span id="copyright-date"></span>
+            </p>
+        </div>
+    </div>
+
+</footer>
+
+<script>
+    document.getElementById("copyright-date").innerText = String(new Date().getFullYear());
+</script>
+
+<script type="text/javascript">
+    var allyLoader = document.createElement('script');
+    // Can be flag_small, flag_large or bar_bottom
+    allyLoader.setAttribute('data-ally-af-style', 'flag_small');
+    allyLoader.setAttribute('data-ally-client-id', ' 10223');
+    allyLoader.setAttribute('data-ally-loader', '');
+    allyLoader.setAttribute('data-ally-platform-name', 'web');
+    allyLoader.setAttribute('src', 'https://prod.ally.ac/integration/api/ally.ui.js');
+    document.body.appendChild(allyLoader);
+</script>
+
+</body>
+</html>

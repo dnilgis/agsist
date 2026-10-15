@@ -1,0 +1,39 @@
+# NDSU (Hellevang): aeration key to storing 16 to 20 percent moisture corn
+# https://www.ag.ndsu.edu/news/newsreleases/2010/oct-18-2010/aeration-key-to-storing-16-to-20-percent-moisture-corn
+# fetched 2026-10-15T21:08:35Z, sha256 a36e782dd51a111de4060a0e6cdfbea7d250188c85afef9cca9b55a6cbc5f74e
+
+Aeration Key to Storing 16 to 20 Percent Moisture Corn — Extension and Ag Research News
+
+Corn harvested at moisture contents up to 20 percent can be stored safely during the winter with aeration, North Dakota State University’s grain drying expert says.
+
+Corn at 20 percent moisture has an allowable storage time of about 25 days at 60 degrees, 50 days at 50 degrees, 90 days at 40 degrees and more than 300 days at 30 degrees, according to NDSU Extension Service agricultural engineer Ken Hellevang.
+
+Allowable storage time is based on the kernel temperature and moisture content. It is reduced by about 50 percent for each 10-degree increase in kernel temperature.
+
+The estimated allowable storage time for 19 percent moisture corn is about 35 days at 60 degrees. For 18 percent moisture corn, it is about 50 days, and for 17 percent moisture corn, it is about 75 days at 60 degrees.
+
+Even corn at 16 percent moisture needs to be cooled as soon as possible to enhance storage life, Hellevang says. Corn at 16 percent moisture has an allowable storage time of about 70 days at 70 degrees, 120 days at 60 degrees and 230 days at 50 degrees. Charts showing allowable storage times for corn at these and other moisture contents are available at http://www.ag.ndsu.nodak.edu/abeng/postharvest.htm.
+
+To extend the storage life of the corn, cool it as soon as possible. Corn should be cooled to about 20 to 25 degrees for winter storage.
+
+Running the fan 24 hours per day will cool the corn to roughly the average outdoor air temperature. If the daily high is 60 degrees and the low is 35 degrees, the average is about 48 degrees.
+
+Operating the fan just during the coolest 15 hours of the day will permit cooling the corn to a lower temperature but will take longer. The final temperature if operating the fan from about 7 p.m. until about 10 a.m. might be about 42 degrees, assuming a high of 50 and a low of about 35 degrees during the fan operation.
+
+“Even though this difference seems small, a 10-degree decrease in grain temperature will roughly double the allowable storage time,” Hellevang says.
+
+To estimate the time required to cool the corn, divide 15 by the airflow rate. For example, an airflow rate of 0.2 cubic feet per minute per bushel will cool the corn in about 75 hours (15 divided by 0.2). This cooling could take place during five nights of operating the fan 15 hours per night or during three days of operating the fan 24 hours per day.
+
+Once the corn has been cooled, turn the fan off until the next cooling cycle.
+
+Without aeration, corn should be placed into storage at 60 degrees or cooler and the temperature monitored closely. Respiration heating and solar heat gain on the bin may cause the grain temperature to increase.
+
+Moisture migration will occur when the grain temperature is more than 20 degrees warmer than the outdoor air temperature, so moisture migration is more of a problem in bins without aeration for cooling the grain. Convection currents will flow down the bin wall and up through the center of the bin, causing a moisture increase in the top center of the stored grain.
+
+“Be prepared to move the grain if problems develop,” Hellevang advises.
+
+NDSU Agriculture Communication
+
+Source: Ken Hellevang, (701) 231-7243, kenneth.hellevang@ndsu.edu
+
+Editor: Ellen Crawford, (701) 231-5391, ellen.crawford@ndsu.edu
