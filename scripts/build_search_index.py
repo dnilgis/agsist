@@ -90,6 +90,7 @@ PAGES = [
     ("/arc-plc", "ARC or PLC, 2026 and 2027", "Reference prices and FSA county benchmarks", "arc plc arc-co price loss coverage agriculture risk coverage effective reference price benchmark yield base acres fsa farm program 2026 2027 signup calculator sco"),
     ("/prf", "PRF pasture insurance calculator", "What your grid would have paid, every year", "prf pasture rangeland forage rainfall index insurance calculator grid lookup hay grazing rain drought premium cost deadline sign up signup interval months stocking rate livestock ncei usda rma"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
+    ("/grain-emc", "Grain EMC: fans on or off", "Will aeration fans dry or wet grain now", "emc equilibrium moisture content aeration fans dry wet grain humidity bin corn wheat natural air drying cooling"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
     ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),

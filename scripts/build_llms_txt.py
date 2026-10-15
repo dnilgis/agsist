@@ -132,6 +132,7 @@ PAGES = [
         ("/harvest-price-tracker", "Harvest Price Tracker",
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),
         ("/grain-bin-calculator", "Grain Bin Calculator", "bushels in a bin and moisture shrink"),
+        ("/grain-emc", "Grain EMC Calculator", "whether running aeration fans dries or wets corn or wheat, hour by hour for the next 3 days at your ZIP, from the ASABE equilibrium moisture equations, with a manual check, fan heat and cooling hours"),
     ]),
     ("My ground and programs", [
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),

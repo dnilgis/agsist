@@ -98,7 +98,7 @@
     var best = E.bestWindow(rows, 2);
     var nd = E.count(rows, 'dry'), nc = E.count(rows, 'close'), nw = E.count(rows, 'wet'), nn = rows.length - nd - nc - nw;
     $('emc-best').innerHTML = best
-      ? 'Best window: <b>' + hourLabel(rows[best.start].t, true) + ' to ' + hourLabel(endTime(rows[best.end].t), true) + '</b>, ' + best.len + ' hours, air at or under ' + fmt(best.worst, 1) + '% ' + g().name.toLowerCase() + ' EMC.'
+      ? '<button type="button" class="emc-zw" aria-expanded="false" aria-controls="emc-zwn" title="Named for Zach A., who asked for this tool.">Zach&rsquo;s window</button>: <b>' + hourLabel(rows[best.start].t, true) + ' to ' + hourLabel(endTime(rows[best.end].t), true) + '</b>, ' + best.len + ' hours of drying air, at or under ' + fmt(best.worst, 1) + '% ' + g().name.toLowerCase() + ' EMC.<span id="emc-zwn" class="emc-zwn" hidden>Named for Zach A., who asked for this tool.</span>'
       : 'No run of 2 or more drying hours in the next ' + rows.length + ' hours.';
     $('emc-count').textContent = 'Next ' + rows.length + ' hours: ' + nd + ' drying, ' + nc + ' close, ' + nw + ' wetting' + (nn ? ', ' + nn + ' with no answer (air out of range)' : '') + '.';
     $('emc-asof').textContent = 'Forecast from Open-Meteo for ' + (state.place || 'your spot') + ', pulled ' + state.asof.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) + '. Fan heat: ' + (state.fan > 0 ? state.fan + ' F.' : 'none.');
@@ -106,6 +106,8 @@
     renderCooling();
     renderShare(now);
     $('emc-results').hidden = false;
+    $('emc-hours').hidden = false;
+    $('emc-intro').hidden = true;
   }
   function endTime(iso) { return new Date(new Date(iso).getTime() + 3600e3).toISOString(); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -189,7 +191,7 @@
     var t = target(), best = state.rows ? E.bestWindow(state.rows, 2) : null;
     var s = (now && now.verdict ? WORD[now.verdict] : 'No answer') + ' right now' + (state.place ? ' near ' + state.place : '') + ': ' +
       (now && now.emc.ok ? fmt(now.tF, 0) + ' F, ' + fmt(now.rh, 0) + '% brings ' + g().name.toLowerCase() + ' to ' + emcText(now.emc) + ' (target ' + fmt(t, 1) + '%).' : 'air out of range.') +
-      (best ? ' Best: ' + hourLabel(state.rows[best.start].t, true) + ' to ' + hourLabel(endTime(state.rows[best.end].t), true) + ', ' + best.len + ' h.' : '');
+      (best ? " Zach's window: " + hourLabel(state.rows[best.start].t, true) + ' to ' + hourLabel(endTime(state.rows[best.end].t), true) + ', ' + best.len + ' h.' : '');
     $('emc-line').textContent = s;
   }
   function shareUrl() {
@@ -292,6 +294,12 @@
     $('emc-geo').addEventListener('click', byDevice);
     $('emc-change').addEventListener('click', function () { $('emc-locbox').hidden = false; $('emc-zip').focus(); });
     $('emc-strip').addEventListener('click', tip);
+    $('emc-best').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.emc-zw') : null;
+      if (!b) return;
+      var n = $('emc-zwn');
+      if (n) { n.hidden = !n.hidden; b.setAttribute('aria-expanded', n.hidden ? 'false' : 'true'); }
+    });
     $('emc-strip').addEventListener('mouseover', tip);
     $('emc-copy').addEventListener('click', function () {
       var txt = $('emc-line').textContent + ' ' + shareUrl();
