@@ -41,7 +41,7 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       PYTHONUNBUFFERED: "1"
       IN_IDS: ${{ inputs.ids || '' }}
@@ -72,35 +72,54 @@ jobs:
           if [ -n "$IN_IDS" ] && ! printf '%s\n' "$IN_IDS" | grep -Eq '^[a-z0-9,-]+$'; then
             echo "::error::ids must be source ids separated by commas"; exit 1; fi
 
+      # THE MAIN CHECKOUT IS SPARSE, AND A NEW WORKTREE COPIES ITS SPARSE
+      # PATTERNS (git 2.38+). The first run (2026-10-15) got a references
+      # worktree with nothing checked out, and `git add -A` refused refs/ and
+      # index.json as "outside of your sparse-checkout definition": the
+      # commit step failed with every fetch done. So: add it without a
+      # checkout, turn sparse off for that worktree only, then check out.
+      # (--no-checkout alone would leave an empty index and the commit would
+      # delete README.md; the reset fills it.)
       - name: Check out the references branch
         run: |
           git config --global user.name "agsist-bot"
           git config --global user.email "bot@agsist.com"
           git fetch -q --depth 1 origin references || { echo "::error::the references branch is missing; push it first"; exit 1; }
-          git worktree add -q -B references "$REFS" FETCH_HEAD
+          git worktree add -q --no-checkout -B references "$REFS" FETCH_HEAD
+          git -C "$REFS" sparse-checkout disable
+          git -C "$REFS" reset -q --hard
+          test -f "$REFS/README.md" || { echo "::error::references worktree came out empty (no README.md)"; exit 1; }
 
       - name: Fetch the sources
+        timeout-minutes: 75
         run: python3 scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS"
 
       # Only this workflow writes the branch and runs one at a time, but a
       # hand edit (the README) can land in between: retry on the newest tip.
+      # Every git failure is printed as a ::warning:: with git's own words,
+      # because the job log is not always readable from where we look.
       - name: Commit to references
+        if: ${{ !cancelled() }}
         run: |
-          set -e
+          set -u
+          g() { local out; if out=$(git "$@" 2>&1); then return 0; fi
+                echo "::warning::git $1 failed: $(printf '%s' "$out" | tail -5 | tr '\n' ' ')"; return 1; }
           cd "$REFS"
+          [ -f index.json ] || { echo "::warning::no index.json: the fetch wrote nothing"; exit 1; }
           mkdir -p refs
-          git add -A
+          g add -A || exit 1
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           rm -rf /tmp/refsout && mkdir -p /tmp/refsout
           cp -r refs index.json /tmp/refsout/
           for i in 1 2 3 4 5; do
-            git fetch -q --depth 1 origin references
-            git reset -q --hard FETCH_HEAD
+            g fetch -q --depth 1 origin references || { sleep $((10 * i)); continue; }
+            g reset -q --hard FETCH_HEAD || exit 1
             rm -rf refs index.json && cp -r /tmp/refsout/refs /tmp/refsout/index.json .
-            git add -A
+            test -f README.md || { echo "::warning::README.md missing after reset; not committing"; exit 1; }
+            g add -A || exit 1
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
-            git commit -q -m "refs $(date -u +%Y-%m-%dT%H:%M:%SZ)${IN_IDS:+: $IN_IDS}"
-            if git push -q origin HEAD:references; then exit 0; fi
+            g commit -q -m "refs $(date -u +%Y-%m-%dT%H:%M:%SZ)${IN_IDS:+: $IN_IDS}" || exit 1
+            if g push -q origin HEAD:references; then echo "pushed $(git rev-parse --short HEAD)"; exit 0; fi
             sleep $((10 * i))
           done
-          echo "::error::could not push the references branch after 5 tries"; exit 1
+          echo "::error::could not push the references branch after 5 tries (see the warnings above)"; exit 1

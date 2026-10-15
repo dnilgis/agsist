@@ -38,13 +38,14 @@ import sys
 import tempfile
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = os.path.join(ROOT, "references", "sources.json")
 MAX_BYTES = 30 * 1024 * 1024
 DELAY = 1.5
-TIMEOUT = 60
+TIMEOUT = 90
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,63}$")
@@ -74,6 +75,10 @@ def load_sources(path, allow_http=False):
         seen.add(r.get("id"))
         if r.get("kind") not in KINDS:
             problems.append("%s: kind must be pdf or html" % where)
+        mirrors = r.get("mirrors", [])
+        if not isinstance(mirrors, list) or not all(
+                isinstance(m, str) and m.startswith("https://") for m in mirrors):
+            problems.append("%s: mirrors must be a list of https URLs" % where)
         if not (r.get("url") or "").startswith("http://" if allow_http else "https://") \
                 and not (r.get("url") or "").startswith("https://"):
             problems.append("%s: url must be https" % where)
@@ -177,23 +182,56 @@ def pdf_text(path):
 
 
 # ── one download ────────────────────────────────────────────────────────────
+#
+# WHY THERE ARE FALLBACKS. The first run on GitHub (2026-10-15) timed out on
+# every www.rma.usda.gov source ("The read operation timed out") while
+# extension sites answered. So each source is tried, in order:
+#   1. the URL itself with Python (conditional: ETag / Last-Modified),
+#   2. the same URL with curl over HTTP/1.1 (a different client and TLS stack),
+#   3. any "mirrors" listed for the source in sources.json,
+#   4. the other RMA host name (www.rma.usda.gov <-> rma.usda.gov),
+#   5. the Internet Archive's closest snapshot (archive.org/wayback/available,
+#      then web.archive.org/web/<timestamp>id_/<url> for the original bytes).
+# The row records which one worked ("via", and "archive_timestamp" for a
+# Wayback copy) and every attempt. Later runs always try the live URL first,
+# so an archived copy is replaced as soon as the site answers again.
+# (Sig saw "Bad Gateway" on www.rma.usda.gov from his own browser the same
+# day, so the RMA timeouts were the site, not only GitHub's runners.)
+# Once a host has timed out twice, later sources skip it and go straight to
+# the fallbacks, so one silent host cannot eat the hour.
+
+# The closest snapshot comes from the availability API; the id_ form returns
+# the original bytes without the Wayback toolbar.
+WAYBACK_API = "https://archive.org/wayback/available?url="
+WAYBACK_RAW = "https://web.archive.org/web/{ts}id_/{url}"
+RMA_HOSTS = ("www.rma.usda.gov", "rma.usda.gov")
+ACCEPT = "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8"
+
 
 class Fail(Exception):
     pass
 
 
-def download(url, prev, max_bytes):
-    """Return (status_code, body or None, headers). 304 gives body None."""
-    h = {"User-Agent": UA,
-         "Accept": "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8",
-         "Accept-Language": "en-US,en;q=0.8"}
+class Headers(dict):
+    def get(self, k, d=None):
+        return dict.get(self, k.lower(), d)
+
+
+def _is_timeout(msg):
+    return "timed out" in msg or "timeout" in msg.lower()
+
+
+def download(url, prev, max_bytes, timeout):
+    """Python client. Return (status_code, body or None, headers, final_url).
+    A 304 gives body None."""
+    h = {"User-Agent": UA, "Accept": ACCEPT, "Accept-Language": "en-US,en;q=0.8"}
     if prev.get("etag"):
         h["If-None-Match"] = prev["etag"]
     if prev.get("last_modified"):
         h["If-Modified-Since"] = prev["last_modified"]
     req = urllib.request.Request(url, headers=h)
     try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
             n = r.headers.get("Content-Length")
             if n and n.isdigit() and int(n) > max_bytes:
                 raise Fail("too big: %s bytes (cap %d)" % (n, max_bytes))
@@ -205,10 +243,11 @@ def download(url, prev, max_bytes):
                 buf += chunk
                 if len(buf) > max_bytes:
                     raise Fail("too big: over %d bytes" % max_bytes)
-            return r.status, bytes(buf), r.headers, r.geturl()
+            hd = Headers((k.lower(), v) for k, v in r.headers.items())
+            return r.status, bytes(buf), hd, r.geturl()
     except urllib.error.HTTPError as e:
         if e.code == 304:
-            return 304, None, e.headers, url
+            return 304, None, Headers((k.lower(), v) for k, v in e.headers.items()), url
         raise Fail("HTTP %d" % e.code)
     except urllib.error.URLError as e:
         raise Fail("network: %s" % (e.reason,))
@@ -216,33 +255,155 @@ def download(url, prev, max_bytes):
         raise Fail("network: %s" % e)
 
 
-def fetch_one(src, prev, out, max_bytes, retry_wait=5.0):
+def download_curl(url, max_bytes, timeout):
+    """curl over HTTP/1.1, unconditional. Same return shape as download()."""
+    if not shutil.which("curl"):
+        raise Fail("no curl")
+    with tempfile.TemporaryDirectory(prefix="refs-curl-") as td:
+        body_p, hdr_p = os.path.join(td, "b"), os.path.join(td, "h")
+        cmd = ["curl", "-sS", "-L", "--http1.1", "--compressed",
+               "--connect-timeout", str(min(30, timeout)), "--max-time", str(timeout * 2),
+               "--max-filesize", str(max_bytes), "--max-redirs", "8",
+               "-A", UA, "-H", "Accept: " + ACCEPT, "-H", "Accept-Language: en-US,en;q=0.8",
+               "-o", body_p, "-D", hdr_p, "-w", "%{http_code} %{url_effective}", url]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout * 2 + 30)
+        if r.returncode == 28:
+            raise Fail("network: curl timed out")
+        if r.returncode == 63:
+            raise Fail("too big: over %d bytes" % max_bytes)
+        if r.returncode != 0:
+            raise Fail("network: curl exit %d: %s" % (r.returncode, r.stderr.strip()[:160]))
+        code_s, _, final = r.stdout.strip().partition(" ")
+        code = int(code_s or 0)
+        if code >= 400 or code == 0:
+            raise Fail("HTTP %d" % code)
+        raw = open(hdr_p, encoding="latin-1").read() if os.path.exists(hdr_p) else ""
+        last = re.split(r"\r?\n\r?\n(?=HTTP/)", raw.strip())[-1]
+        hd = Headers()
+        for ln in last.splitlines()[1:]:
+            k, sep, v = ln.partition(":")
+            if sep:
+                hd[k.strip().lower()] = v.strip()
+        body = open(body_p, "rb").read() if os.path.exists(body_p) else b""
+        if len(body) > max_bytes:
+            raise Fail("too big: over %d bytes" % max_bytes)
+        return code, body, hd, final or url
+
+
+def candidates(src):
+    """(url, via) in the order to try them. The Wayback copy is found at run
+    time (wayback_url), so it is listed here as None."""
+    url = src["url"]
+    out = [(url, "direct")]
+    for m in src.get("mirrors") or []:
+        out.append((m, "mirror"))
+    host = urllib.parse.urlsplit(url).hostname or ""
+    if host in RMA_HOSTS:
+        other = RMA_HOSTS[1] if host == RMA_HOSTS[0] else RMA_HOSTS[0]
+        out.append((url.replace("//" + host, "//" + other, 1), "alt-host"))
+    if WAYBACK_API:
+        out.append((None, "wayback"))
+    return out
+
+
+def wayback_url(url, timeout):
+    """Ask the Internet Archive for its closest snapshot of url. Returns
+    (raw-bytes url, timestamp) or raises Fail."""
+    api = WAYBACK_API + urllib.parse.quote(url, safe="")
+    try:
+        req = urllib.request.Request(api, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=min(timeout, 60)) as r:
+            doc = json.loads(r.read(1_000_000).decode("utf-8", "replace"))
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        raise Fail("availability API: %s" % (getattr(e, "reason", None) or e))
+    snap = ((doc or {}).get("archived_snapshots") or {}).get("closest") or {}
+    ts = str(snap.get("timestamp") or "")
+    if not snap.get("available") or not re.match(r"^\d{14}$", ts) or \
+            str(snap.get("status", "200")) != "200":
+        raise Fail("no archived copy")
+    return WAYBACK_RAW.format(ts=ts, url=url), ts
+
+
+def _try(url, via, client, cond, src, max_bytes, timeout):
+    """One request. Returns the download tuple, or raises Fail."""
+    if client == "python":
+        res = download(url, cond, max_bytes, timeout)
+    else:
+        res = download_curl(url, max_bytes, timeout)
+    code, body, hd, final = res
+    if code != 304:
+        if not body:
+            raise Fail("empty body")
+        if src["kind"] == "pdf" and not body[:1024].lstrip().startswith(b"%PDF"):
+            snippet = re.sub(rb"\s+", b" ", body[:100]).decode("utf-8", "replace")
+            raise Fail("expected a PDF, got %s (%d bytes): %s" % (
+                hd.get("Content-Type", "?"), len(body), snippet))
+    return res
+
+
+def acquire(src, prev, max_bytes, timeout, retry_wait, dead):
+    """Try every candidate in turn. Returns
+    (code, body, headers, final, via, archive_ts, attempts); raises Fail
+    listing every attempt when nothing worked. `dead` counts, per host, the
+    times both clients timed out; at 2 the host is skipped for the run."""
+    attempts = []
+    for url, via in candidates(src):
+        ts = None
+        if via == "wayback":
+            try:
+                url, ts = wayback_url(src["url"], timeout)
+            except Fail as e:
+                attempts.append("wayback: %s" % e)
+                continue
+        host = urllib.parse.urlsplit(url).hostname or ""
+        if via != "wayback" and dead.get(host, 0) >= 2:
+            attempts.append("%s: skipped, %s timed out earlier" % (via, host))
+            continue
+        cond = prev if via == "direct" else {}
+        for client, tries in (("python", 2), ("curl", 1)):
+            for n in range(tries):
+                try:
+                    code, body, hd, final = _try(url, via, client, cond, src, max_bytes, timeout)
+                except Fail as e:
+                    msg = str(e)
+                    attempts.append("%s/%s: %s" % (via, client, msg))
+                    if msg.startswith("too big"):
+                        raise Fail("; ".join(attempts))
+                    if _is_timeout(msg) and client == "curl":
+                        dead[host] = dead.get(host, 0) + 1
+                    if n + 1 < tries and not _is_timeout(msg) and \
+                            re.match(r"(network|HTTP (5\d\d|429))", msg):
+                        time.sleep(retry_wait)
+                        continue
+                    break
+                attempts.append("%s/%s: ok %d" % (via, client, code))
+                dead.pop(host, None)
+                return code, body, hd, final, via, ts, attempts
+    raise Fail("; ".join(attempts))
+
+
+def fetch_one(src, prev, out, max_bytes, retry_wait=5.0, timeout=TIMEOUT, dead=None):
     """Fetch one source into out/refs. Returns its index row."""
+    dead = {} if dead is None else dead
     sid = src["id"]
     row = {k: prev.get(k) for k in ("bytes", "sha256", "fetched_utc", "pages",
                                     "etag", "last_modified", "saved_as",
-                                    "final_url", "content_type")}
+                                    "final_url", "content_type", "via",
+                                    "archive_timestamp")}
     row.update(id=sid, url=src["url"], title=src["title"], why=src["why"],
                kind=src["kind"], checked_utc=now_utc(), error=None)
     have = bool(prev.get("saved_as")) and os.path.exists(os.path.join(out, prev["saved_as"]))
     if prev.get("url") != src["url"] or not have:
         prev = {}            # new url or missing file: no conditional request
-    last = None
-    for attempt in (1, 2):
-        try:
-            code, body, hdrs, final = download(src["url"], prev, max_bytes)
-            break
-        except Fail as e:
-            last = str(e)
-            transient = last.startswith("network") or re.match(r"HTTP (5\d\d|429)", last)
-            if attempt == 1 and transient:
-                time.sleep(retry_wait)
-                continue
-            row.update(status="failed", error=last)
-            return row
-    else:
-        row.update(status="failed", error=last)
+    try:
+        code, body, hdrs, final, via, archive_ts, attempts = acquire(
+            src, prev, max_bytes, timeout, retry_wait, dead)
+    except Fail as e:
+        row.update(status="failed", error=str(e))
         return row
+    row["attempts"] = attempts
+    row["via"] = via
+    row["archive_timestamp"] = archive_ts
 
     if code == 304:
         row["status"] = "unchanged"
@@ -262,9 +423,11 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0):
     ext = "pdf" if is_pdf else "html"
     rel = "refs/%s.%s" % (sid, ext)
     sha = hashlib.sha256(body).hexdigest()
-    row.update(etag=hdrs.get("ETag"), last_modified=hdrs.get("Last-Modified"),
+    direct = via == "direct"
+    row.update(etag=hdrs.get("ETag") if direct else None,
+               last_modified=hdrs.get("Last-Modified") if direct else None,
                final_url=final if final != src["url"] else None,
-               content_type=hdrs.get("Content-Type"))
+               content_type=hdrs.get("Content-Type"), via=via)
     if sha == prev.get("sha256") and prev.get("saved_as") == rel:
         row["status"] = "unchanged"
         return row
@@ -295,7 +458,7 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0):
 # ── the run ─────────────────────────────────────────────────────────────────
 
 def run(sources_path, out, ids=None, delay=DELAY, max_bytes=MAX_BYTES,
-        retry_wait=5.0, log=print, allow_http=False):
+        retry_wait=5.0, log=print, allow_http=False, timeout=TIMEOUT):
     rows, problems = load_sources(sources_path, allow_http)
     if problems:
         for p in problems:
@@ -315,13 +478,16 @@ def run(sources_path, out, ids=None, delay=DELAY, max_bytes=MAX_BYTES,
 
     todo = [r for r in rows if not want or r["id"] in want]
     result = dict(old)
+    dead = {}
     for n, src in enumerate(todo):
         if n:
             time.sleep(delay)
-        row = fetch_one(src, old.get(src["id"], {}), out, max_bytes, retry_wait)
+        row = fetch_one(src, old.get(src["id"], {}), out, max_bytes, retry_wait,
+                        timeout, dead)
         result[src["id"]] = row
-        log("%-9s %-34s %s" % (row["status"], src["id"],
-                                row.get("error") or "%s bytes" % row.get("bytes")))
+        log("%-9s %-34s %s" % (row["status"], src["id"], row.get("error") or "%s bytes via %s%s" % (
+            row.get("bytes"), row.get("via"),
+            " " + row["archive_timestamp"] if row.get("archive_timestamp") else "")))
     # sources dropped from the list: forget them and their files
     listed = {r["id"] for r in rows}
     for sid in list(result):
@@ -348,9 +514,37 @@ def summary(done):
     for r in done:
         by.setdefault(r["status"], []).append(r)
     lines = ["Reference fetch: " + ", ".join("%d %s" % (len(v), k) for k, v in sorted(by.items()))]
+    for r in done:
+        if r["status"] != "failed" and r.get("via") not in (None, "direct"):
+            lines.append("NOT LIVE %s  via %s%s  (live URL failed; tried again next run)" % (
+                r["id"], r["via"],
+                " snapshot " + r["archive_timestamp"] if r.get("archive_timestamp") else ""))
     for r in by.get("failed", []):
         lines.append("FAILED %s  %s  (%s)" % (r["id"], r["url"], r["error"]))
     return "\n".join(lines)
+
+
+def annotations(done):
+    """A few ::warning:: lines (GitHub shows only 10 per step), each naming
+    many sources, so nothing is cut off."""
+    out = []
+    failed = [r for r in done if r["status"] == "failed"]
+    if failed:
+        out.append("::warning::%d reference(s) failed, last good copy kept: %s" % (
+            len(failed), ", ".join(r["id"] for r in failed)))
+        seen = {}
+        for r in failed:
+            first = (r.get("error") or "").split("; ")[0]
+            seen.setdefault(first[:160], []).append(r["id"])
+        for err, ids in list(seen.items())[:5]:
+            out.append("::warning::%s -- %s" % (err, ", ".join(ids)))
+    side = [r for r in done if r["status"] != "failed" and r.get("via") not in (None, "direct")]
+    if side:
+        out.append("::warning::%d reference(s) saved from a fallback, not the live URL: %s" % (
+            len(side), ", ".join("%s (%s%s)" % (r["id"], r["via"],
+                                               " " + r["archive_timestamp"] if r.get("archive_timestamp") else "")
+                                 for r in side)))
+    return out[:9]
 
 
 def main(argv=None):
@@ -359,6 +553,7 @@ def main(argv=None):
     ap.add_argument("--ids", default="", help="comma-separated ids (blank = all)")
     ap.add_argument("--sources", default=SOURCES)
     ap.add_argument("--delay", type=float, default=DELAY)
+    ap.add_argument("--timeout", type=int, default=TIMEOUT, help="seconds per request")
     ap.add_argument("--check", action="store_true", help="only validate sources.json")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
@@ -373,7 +568,7 @@ def main(argv=None):
     if not a.out:
         print("--out is required")
         return 2
-    done, code = run(a.sources, a.out, a.ids, a.delay)
+    done, code = run(a.sources, a.out, a.ids, a.delay, timeout=a.timeout)
     if done is None:
         return code
     s = summary(done)
@@ -382,9 +577,8 @@ def main(argv=None):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
             f.write("```\n" + s + "\n```\n")
     if os.environ.get("GITHUB_ACTIONS") == "true":
-        for r in done:
-            if r["status"] == "failed":
-                print("::warning::reference %s failed: %s" % (r["id"], r["error"]))
+        for line in annotations(done):
+            print(line)
     return 0
 
 
@@ -422,8 +616,10 @@ def selftest():
                      + b"<p>" + b"Filler sentence about scouting corn. " * 8 + b"</p>"
                      b"<table><tr><td>A</td><td>1</td></tr></table></main>"
                      b"<footer>Copyright</footer></body></html>",
-             "hits": {}}
+             "hits": {}, "rma_up": False}
     pdf = _tiny_pdf("Coverage price is 95 percent")
+    archived_pdf = _tiny_pdf("Archived copy of the handbook")
+    live_pdf = _tiny_pdf("Live copy of the handbook")
 
     class H(http.server.BaseHTTPRequestHandler):
         def log_message(self, *a):
@@ -456,6 +652,30 @@ def selftest():
                 if state["hits"][p] == 1:
                     return self._send(503, b"busy", "text/plain")
                 return self._send(200, b"<p>ok on retry</p>", "text/html")
+            if p.startswith("/wb/available?url="):
+                # the Internet Archive's availability API
+                asked = urllib.parse.unquote(p.split("=", 1)[1])
+                if "archived" in asked:
+                    doc = {"url": asked, "archived_snapshots": {"closest": {
+                        "status": "200", "available": True, "timestamp": "20260901123456",
+                        "url": "http://web.archive.org/web/20260901123456/" + asked}}}
+                else:
+                    doc = {"url": asked, "archived_snapshots": {}}
+                return self._send(200, json.dumps(doc).encode(), "application/json")
+            if p.startswith("/web/20260901123456id_/"):
+                return self._send(200, archived_pdf, "application/pdf")
+            if p == "/archived-handbook.pdf":
+                if state["rma_up"]:
+                    return self._send(200, live_pdf, "application/pdf")
+                return self._send(502, b"<html>Bad Gateway</html>", "text/html")
+            if p == "/curlonly.html":
+                # turns away the Python client; curl --compressed asks for gzip
+                if "gzip" not in (self.headers.get("Accept-Encoding") or ""):
+                    return self._send(403, b"denied", "text/plain")
+                return self._send(200, b"<p>curl got it</p>", "text/html")
+            if p.startswith("/slow"):
+                time.sleep(2.5)
+                return self._send(200, b"<p>too late</p>", "text/html")
             if p == "/redirect":
                 self.send_response(302)
                 self.send_header("Location", "/noetag.html")
@@ -473,8 +693,19 @@ def selftest():
             self.wfile.write(body)
 
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+    srv.daemon_threads = True
+    srv.handle_error = lambda *a: None     # clients that gave up on /slow
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     base = "http://127.0.0.1:%d" % srv.server_address[1]
+    # "localhost" is a second host name for the same server, for the
+    # timed-out-host test
+    slow_base = "http://localhost:%d" % srv.server_address[1]
+    g = globals()
+    saved = {k: g[k] for k in ("WAYBACK_API", "WAYBACK_RAW")}
+    g["WAYBACK_API"] = base + "/wb/available?url="
+    g["WAYBACK_RAW"] = base + "/web/{ts}id_/{url}"
+    for k in ("no_proxy", "NO_PROXY"):
+        os.environ[k] = "localhost,127.0.0.1," + os.environ.get(k, "")
     tmp = tempfile.mkdtemp(prefix="refs-selftest-")
     fails = []
 
@@ -534,7 +765,9 @@ def selftest():
               "block page for a pdf is a failure: %s" % st["blocked"])
         check(not os.path.exists(os.path.join(out, "refs/blocked.html")), "block page not saved")
         check(st["big"]["status"] == "failed" and "too big" in st["big"]["error"], "size cap")
-        check(st["gone"]["status"] == "failed" and st["gone"]["error"] == "HTTP 404", "404")
+        check(st["gone"]["status"] == "failed"
+              and st["gone"]["error"].startswith("direct/python: HTTP 404")
+              and "wayback: no archived copy" in st["gone"]["error"], "404: %s" % st["gone"])
         check(st["flaky"]["status"] == "new", "retry after 503: %s" % st["flaky"])
         check(st["moved"]["status"] == "new" and st["moved"]["final_url"].endswith("/noetag.html"),
               "redirect followed")
@@ -575,6 +808,57 @@ def selftest():
         run(sp, out, ids="page", **kw)
         check(not os.path.exists(os.path.join(out, "refs/same.html")), "dropped source removed")
 
+        # RMA-style outage: 502 live, the archive has a copy
+        arch = {"id": "handbook", "url": base + "/archived-handbook.pdf", "kind": "pdf",
+                "title": "T handbook", "why": "selftest"}
+        write(srcs + [arch])
+        done, _ = run(sp, out, ids="handbook", **kw)
+        r = done[0]
+        check(r["status"] == "new" and r["via"] == "wayback"
+              and r["archive_timestamp"] == "20260901123456"
+              and "/web/20260901123456id_/" in (r["final_url"] or ""), "archive fallback: %s" % r)
+        check(any(a.startswith("direct/python: HTTP 502") for a in r.get("attempts", []))
+              and any(a.startswith("direct/curl: HTTP 502") for a in r.get("attempts", [])),
+              "live URL tried with both clients first: %s" % r.get("attempts"))
+        if shutil.which("pdftotext"):
+            check("Archived copy" in open(os.path.join(out, "refs/handbook.txt")).read(),
+                  "archived text saved")
+        s1 = summary(done)
+        check("NOT LIVE handbook  via wayback snapshot 20260901123456" in s1, "summary: %s" % s1)
+        check(any("fallback" in a and "handbook (wayback 20260901123456)" in a
+                  for a in annotations(done)), "annotation for archive copy")
+        # the next run tries the live URL again and replaces the archive copy
+        state["rma_up"] = True
+        done, _ = run(sp, out, ids="handbook", **kw)
+        r = done[0]
+        check(r["status"] == "updated" and r["via"] == "direct" and not r["archive_timestamp"],
+              "live again replaces archive: %s" % r)
+        if shutil.which("pdftotext"):
+            check("Live copy" in open(os.path.join(out, "refs/handbook.txt")).read(),
+                  "live text saved")
+
+        # a client the site turns away: curl over HTTP/1.1 gets it
+        cu = {"id": "curlonly", "url": base + "/curlonly.html", "kind": "html",
+              "title": "T curl", "why": "selftest"}
+        write(srcs + [arch, cu])
+        if shutil.which("curl"):
+            done, _ = run(sp, out, ids="curlonly", **kw)
+            check(done[0]["status"] == "new" and (done[0].get("attempts") or [""])[-1] == "direct/curl: ok 200",
+                  "curl fallback: %s" % done[0])
+
+        # a host that never answers: after two sources it is skipped
+        slow = [{"id": "slow%d" % i, "url": slow_base + "/slow%d" % i, "kind": "html",
+                 "title": "T slow", "why": "selftest"} for i in (1, 2, 3)]
+        write(srcs + [arch, cu] + slow)
+        done, _ = run(sp, out, ids="slow1,slow2,slow3", **dict(kw, timeout=1))
+        st = {r["id"]: r for r in done}
+        check(all(st[i]["status"] == "failed" for i in st), "slow host fails")
+        check("timed out" in st["slow1"]["error"], "timeout reported: %s" % st["slow1"]["error"])
+        check("skipped, localhost timed out earlier" in st["slow3"]["error"],
+              "dead host skipped: %s" % st["slow3"]["error"])
+        ann = annotations(done)
+        check(len(ann) <= 9 and "slow1, slow2, slow3" in ann[0], "annotations: %s" % ann)
+
         # bad lists are refused
         write([{"id": "Bad Id", "url": "x", "title": "", "why": "w", "kind": "doc"},
                {"id": "ok-1", "url": base, "title": "t", "why": "w", "kind": "pdf"},
@@ -589,6 +873,7 @@ def selftest():
         done, code = run(sp, out, ids="nope", log=quiet)
         check(done is None and code == 2, "unknown id refused")
     finally:
+        g.update(saved)
         srv.shutdown()
         shutil.rmtree(tmp, ignore_errors=True)
 
