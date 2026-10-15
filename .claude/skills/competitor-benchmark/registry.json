@@ -732,6 +732,318 @@
      "total": 24
     }
    ]
+  },
+  "home": {
+   "queries": [
+    "farm news grain prices today",
+    "cash grain bids near me",
+    "corn price today",
+    "ag markets and weather"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 38,
+   "verdict": "close",
+   "report": "results/2026-10-15-index.md",
+   "competitors": [
+    {
+     "name": "DTN / Progressive Farmer",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.dtnpf.com",
+     "total": 37
+    },
+    {
+     "name": "Barchart Grains",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.barchart.com",
+     "total": 36
+    },
+    {
+     "name": "FBN",
+     "kind": "startup",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.fbn.com",
+     "total": 31
+    },
+    {
+     "name": "Farm Progress",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.farmprogress.com",
+     "total": 29
+    },
+    {
+     "name": "Successful Farming (agriculture.com)",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.agriculture.com",
+     "total": 28
+    },
+    {
+     "name": "AgWeb (Farm Journal)",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.agweb.com",
+     "total": 28
+    }
+   ],
+   "bugs": [
+    "homepage nowcast card labels the 2010-2025 (16-yr) trend 188.7 as '12-year trend' (home-yield.js uses backtest_years) - low/medium"
+   ]
+  },
+  "daily": {
+   "queries": [
+    "daily ag market newsletter",
+    "morning grain market report",
+    "free farm market email"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 37,
+   "verdict": "close",
+   "report": "results/2026-10-15-daily.md",
+   "competitors": [
+    {
+     "name": "Pro Farmer First Thing Today / Ahead of the Open",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.profarmer.com",
+     "total": 35
+    },
+    {
+     "name": "Brownfield Ag News market analysis",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.brownfieldagnews.com",
+     "total": 31
+    },
+    {
+     "name": "Barchart Ag Market Commentary newsletter",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.barchart.com/news/barchart-newsletters/ag-market-commentary",
+     "total": 30
+    },
+    {
+     "name": "Morning Ag Clips",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 28
+    },
+    {
+     "name": "AgWeb daily newsletters",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 27
+    }
+   ]
+  },
+  "tools": {
+   "queries": [
+    "free farm calculators",
+    "corn soybean decision tools",
+    "farm management tools online"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 33,
+   "verdict": "no",
+   "report": "results/2026-10-15-tools.md",
+   "competitors": [
+    {
+     "name": "Purdue Corn/Soybean Field Scout apps",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 36
+    },
+    {
+     "name": "UNL CropWatch Apps and Tools",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://cropwatch.unl.edu/home/apps-tools/",
+     "total": 31
+    },
+    {
+     "name": "Ohio State Farm Office decision aids",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://farmoffice.osu.edu/farm-management-tools/decision-aids",
+     "total": 31
+    },
+    {
+     "name": "Iowa Soybean Association tools",
+     "kind": "advocacy",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 29
+    }
+   ]
+  },
+  "fast-facts": {
+   "queries": [
+    "corn nitrogen rate calculator",
+    "N to corn price ratio",
+    "manure nutrient value table",
+    "soybean aphid threshold",
+    "lime rate SMP buffer"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 34,
+   "verdict": "no (close after the lime and rootworm fixes)",
+   "report": "results/2026-10-15-fast-facts.md",
+   "competitors": [
+    {
+     "name": "Purdue Corn and Soybean Field Guide / Field Scout apps",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 37
+    },
+    {
+     "name": "Iowa State Corn Nitrogen Rate Calculator (MRTN)",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 36
+    },
+    {
+     "name": "Ohio State Corn N Rate Calculator",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 33
+    },
+    {
+     "name": "UW Extension A2809",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 28
+    }
+   ],
+   "bugs": [
+    "lime cost prices 75% CCE aglime tons at the pelletized $285/t price ($646/ac default) - high",
+    "corn rootworm adult threshold 0.75/plant should be about 5/plant - medium",
+    "N:corn result sometimes computed from the $560 HTML default after urea autofill (no calcNC call) - medium-low"
+   ]
+  },
+  "conditions-yield": {
+   "queries": [
+    "2026 corn yield estimate",
+    "USDA corn yield forecast vs private estimates",
+    "do crop ratings predict yield"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 43,
+   "verdict": "yes on substance",
+   "report": "results/2026-10-15-conditions-yield.md",
+   "competitors": [
+    {
+     "name": "USDA NASS Crop Production / WASDE",
+     "kind": "government",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 35
+    },
+    {
+     "name": "Pro Farmer / AgWeb Crop Tour coverage",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.agweb.com/croptour",
+     "total": 32
+    },
+    {
+     "name": "StoneX monthly yield estimate",
+     "kind": "vendor",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 29
+    },
+    {
+     "name": "farmdoc / Irwin forecast-accuracy research",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 29
+    }
+   ]
+  },
+  "crop-tour": {
+   "queries": [
+    "Pro Farmer crop tour 2026 results",
+    "how accurate is the Pro Farmer crop tour",
+    "crop tour vs USDA"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 42,
+   "verdict": "yes",
+   "report": "results/2026-10-15-crop-tour.md",
+   "competitors": [
+    {
+     "name": "AgWeb / Pro Farmer Crop Tour hub",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.agweb.com/croptour",
+     "total": 34
+    },
+    {
+     "name": "Pro Farmer national estimate release",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "url": "https://www.profarmer.com",
+     "total": 34
+    },
+    {
+     "name": "AgroLatam (Knorr USDA August accuracy review)",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 25
+    }
+   ]
+  },
+  "scorecard": {
+   "queries": [
+    "grain market prediction accuracy",
+    "corn price forecast track record",
+    "are grain market calls accurate"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 40,
+   "verdict": "yes (no direct competitor found)",
+   "report": "results/2026-10-15-scorecard.md",
+   "competitors": [
+    {
+     "name": "farmdoc / Irwin forecast-accuracy research",
+     "kind": "university",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "total": 29
+    },
+    {
+     "name": "Pro Farmer Daily Advice Monitor",
+     "kind": "established",
+     "evidence": "snippets",
+     "last_checked": "2026-10-15",
+     "note": "paid; could not see whether a graded record is published; not scored"
+    }
+   ]
   }
  }
 }
