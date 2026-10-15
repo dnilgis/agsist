@@ -105,7 +105,82 @@ def range_settlements(ticker, start, end_excl, today=None):
     out = settled_only(out, today or now.date(), now)
     if not out:
         raise RuntimeError("no settled day yet for " + ticker + f" {year}-{month:02d}")
-    return out
+    return mark_provisional(out, today or now.date())
+
+
+def mark_provisional(rows, today):
+    """Flag today's bar "p": it is Yahoo's close a few hours after the session,
+    which can sit a tick off the exchange settle (Dec corn Oct 13 2026: 482.25
+    at 1:16 p.m. CT, settle 482.75). The next evening's run rebuilds the series
+    and the flag goes. The page calls a flagged day provisional, never a
+    settle (2026-10-15)."""
+    cut = today.isoformat()
+    for r in rows:
+        if r["d"] == cut:
+            r["p"] = True
+        else:
+            r.pop("p", None)
+    return rows
+
+
+def finish_line(leg, projected):
+    """The October arithmetic, not a forecast: what the settles still to come
+    would have to average for the harvest price to finish on the other side of
+    the projected price. None when the window is not running or nothing is
+    left to count. Same math as RMA's average: (sum so far + left x avg) /
+    days_total, less the half cent RMA's rounding takes."""
+    ser = leg.get("series") or []
+    total = leg.get("days_total")
+    if leg.get("status") != "running" or not ser or not total or projected is None:
+        return None
+    left = total - len(ser)
+    if left <= 0:
+        return None
+    below = (leg.get("running_avg") or 0) >= projected
+    # RMA rounds the final average to the cent, halves up: finishing below
+    # $4.62 means a raw average under $4.615, above means $4.625 or more.
+    target = projected - 0.005 if below else projected + 0.005
+    need = (target * total - sum(x["s"] for x in ser)) / left
+    last = ser[-1]
+    return {"left": left, "need": need, "below": below, "last": last["s"],
+            "last_d": last["d"], "last_p": bool(last.get("p"))}
+
+
+def _md(iso):
+    x = date.fromisoformat(iso)
+    return x.strftime("%b ") + str(x.day)
+
+
+def finish_text(f, projected):
+    """Plain words for finish_line. A need under zero cannot happen in a
+    market; it is said as such rather than printed as a price."""
+    if not f:
+        return ""
+    sys.path.insert(0, str(REPO / "scripts"))
+    import pricefmt
+    last = pricefmt.price(f["last"] * 100) + " on " + _md(f["last_d"]) + (", provisional" if f["last_p"] else "")
+
+    def amt(x):
+        c = round(x * 100)
+        return ("$" + f"{c / 100:.2f}") if c >= 100 else (str(c) + "\u00a2")
+    import math
+    # "or less" is floored and "or more" ceiled to the cent, so the printed
+    # figure itself meets the condition (corn Oct 14: 4.3583 prints $4.35)
+    lo = math.floor(f["need"] * 100 + 1e-9) / 100
+    hi = math.ceil(f["need"] * 100 - 1e-9) / 100
+    if f["below"]:
+        if f["need"] <= 0:
+            return ("The harvest price can no longer finish below the $" + f"{projected:.2f}" + " projected price.")
+        gap = f["last"] - lo
+        return ("For the harvest price to finish below the $" + f"{projected:.2f}" + " projected price, the "
+                + str(f["left"]) + " settles left would have to average $" + f"{lo:.2f}"
+                + " or less" + (", " + amt(gap) + " under the latest ("
+                                + last + ")" if gap > 0 else " (latest " + last + ")") + ".")
+    gap = hi - f["last"]
+    return ("For the harvest price to finish above the $" + f"{projected:.2f}" + " projected price, the "
+            + str(f["left"]) + " settles left would have to average $" + f"{hi:.2f}"
+            + " or more" + (", " + amt(gap) + " over the latest ("
+                            + last + ")" if gap > 0 else " (latest " + last + ")") + ".")
 
 
 def with_running_avg(series):
@@ -203,6 +278,44 @@ def selftest():
     oct_ = [5.0225, 4.9775, 4.9725, 5.08, 5.02, 5.0025, 4.805]
     s7 = with_running_avg([{"d": str(i), "s": v} for i, v in enumerate(oct_)])
     assert (len(s7), s7[-1]["a"], s7[-2]["a"]) == (7, 4.98, 5.01), s7
+    # 2026-10-15: the day fetched that evening is provisional, never a settle
+    rows = mark_provisional([{"d": "2026-10-13", "s": 4.8275, "p": True}, {"d": "2026-10-14", "s": 4.81}],
+                            date(2026, 10, 14))
+    assert "p" not in rows[0] and rows[1]["p"] is True, rows
+    # the October arithmetic, hand-worked on the Oct 14 corn file: 10 settles
+    # summing 49.34, 22 days, projected $4.62. Below means a raw average under
+    # 4.615: (4.615 x 22 - 49.34) / 12 = 4.34917, printed floored, $4.34.
+    corn = [5.0225, 4.9775, 4.9725, 5.08, 5.02, 5.0025, 4.7975, 4.83, 4.8275, 4.81]
+    leg = {"status": "running", "days_total": 22, "running_avg": 4.93,
+           "series": [{"d": "2026-10-%02d" % i, "s": v} for i, v in zip((1, 2, 5, 6, 7, 8, 9, 12, 13, 14), corn)]}
+    leg["series"][-1]["p"] = True
+    fl = finish_line(leg, 4.62)
+    assert fl["left"] == 12 and abs(fl["need"] - 4.349166) < 1e-5 and fl["below"], fl
+    tx = finish_text(fl, 4.62)
+    assert tx == ("For the harvest price to finish below the $4.62 projected price, the 12 settles left would "
+                  "have to average $4.34 or less, 47\u00a2 under the latest ($4.81 on Oct 14, provisional)."), tx
+    # check: twelve settles at $4.34 do finish below, at $4.61
+    assert cents((sum(corn) + 12 * 4.34) / 22) == 4.61 and cents((sum(corn) + 12 * 4.35) / 22) == 4.62
+    assert finish_line(dict(leg, status="final"), 4.62) is None
+    up = finish_text(finish_line(dict(leg, running_avg=4.5), 5.00), 5.00)
+    assert up.startswith("For the harvest price to finish above the $5.00 projected price") and "or more" in up, up
+    # the head carries the running number, inside the caps, and goes back after
+    dd = {"crop_year": 2026, "commodities": [
+        {"label": "Corn", "projected": {"price": 4.62}, "harvest": dict(leg)},
+        {"label": "Soybeans", "projected": {"price": 11.09},
+         "harvest": {"status": "running", "running_avg": 12.87, "series": leg["series"]}}]}
+    t, de, h1 = head_text(dd)
+    assert t == "2026 Harvest Price So Far: Corn $4.93, Soybeans $12.87 | AGSIST", t
+    assert len(t) <= 68 and len(de) <= 160 and "through Oct 14" in de and "%" not in t + de, de
+    assert h1 == "2026 harvest price so far: corn $4.93, soybeans $12.87"
+    page = ('<title>x</title><meta name="description" content="y"><meta name="twitter:title" content="z">'
+            '<meta property="og:title" content="w"><h1><!--SEED:hph1-->old<!--/SEED:hph1--></h1>')
+    out = stamp_head(page, dd)
+    assert "<title>2026 Harvest Price So Far" in out and "<!--SEED:hph1-->2026 harvest price so far" in out
+    dd["commodities"][0]["harvest"] = {"status": "pending", "series": []}
+    out = stamp_head(page, dd)
+    assert "<title>2026 Harvest vs Projected Price: Crop Insurance | AGSIST</title>" in out
+    assert "<!--SEED:hph1-->When does your <em>price</em> get set?<!--/SEED:hph1-->" in out
     selftest_windows()
     print("selftest ok")
     return 0
@@ -388,11 +501,18 @@ def card_html(c, crop_year):
         if leg["status"] == "running":
             # the one count: settles in the series (also days_counted). Not the
             # official figure: RMA's is. Same settles, same method, so it is
-            # labeled as a running average with the days it covers.
+            # labeled as a running average with the days it covers. A last day
+            # still flagged provisional is named so, never called a settle.
             ser = leg.get("series") or []
+            prov = bool(ser and ser[-1].get("p"))
+            count = (str(len(ser)) + ' of ' + str(leg.get("days_total", "?"))
+                     + (' days, ' + _md(ser[-1]["d"]) + ' provisional' if prov else ' settles'))
+            math = finish_text(finish_line(leg, (c.get("projected") or {}).get("price")),
+                               (c.get("projected") or {}).get("price"))
             return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' so far: running average, ' + _span(ser)
-                    + ' (' + str(len(ser)) + ' of ' + str(leg.get("days_total", "?")) + ' settles)</span>'
-                    '<span class="hpc-v">$' + f"{leg['running_avg']:.2f}" + '</span></div>')
+                    + ' (' + count + ')</span>'
+                    '<span class="hpc-v">$' + f"{leg['running_avg']:.2f}" + '</span></div>'
+                    + ('<div class="hpc-math">' + math + '</div>' if math else ''))
         return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ')</span>'
                 '<span class="hpc-v hpc-pend">pending: discovery opens '
                 + month_word + ' 1</span></div>')
@@ -403,14 +523,97 @@ def card_html(c, crop_year):
             + '</div>')
 
 
+def seed_note(d):
+    """2026-10-15: this said the running average "can lag RMA's posted figure
+    by a day". On Oct 15 ours ran through Oct 14 and RMA's through Oct 13: we
+    are the one ahead, because we count each evening's close and RMA posts
+    after. Say which days ours covers and let RMA's figure speak for itself."""
+    ser = []
+    for c in d.get("commodities") or []:
+        if (c.get("harvest") or {}).get("status") == "running":
+            ser = c["harvest"].get("series") or []
+            break
+    base = ('The official harvest price is USDA RMA&rsquo;s: the average of the daily settles of the contract '
+            'above across the window, released after it closes. The running average is the same math on the days '
+            'so far, rebuilt each trading evening.')
+    if not ser:
+        return base
+    last = ser[-1]
+    tail = (' Ours counts through ' + _md(last["d"]) + '. RMA posts its own running figure after each day; when '
+            'it covers fewer days than ours the two can differ by a cent or two, and RMA&rsquo;s is the official one.')
+    if last.get("p"):
+        tail += (' ' + _md(last["d"]) + ' is Yahoo Finance&rsquo;s close that afternoon, which can sit a tick off '
+                 'the exchange settle; the next evening&rsquo;s run replaces it with the settle.')
+    return base + tail
+
+
+# The page's title, description and H1 carry the running number while a
+# window runs (2026-10-15: no search for "2026 harvest price" found the page,
+# and its H1 answered when, not what). Rewritten every evening by this script,
+# the only writer of these tags; outside October they go back to the defaults.
+HEAD_DEFAULT = {
+    "title": "2026 Harvest vs Projected Price: Crop Insurance | AGSIST",
+    "desc": ("The 2026 RMA projected and harvest prices for corn and soybeans, what your Revenue Protection "
+             "guarantee is worth, how much to pre-sell, and 15 years of history."),
+    "h1": "When does your <em>price</em> get set?",
+}
+
+
+def head_text(d):
+    """(title, description, h1) for the corn and soybean harvest legs."""
+    cs = {c.get("label"): c for c in d.get("commodities") or []}
+    corn, soy = cs.get("Corn"), cs.get("Soybeans")
+    yr = d.get("crop_year")
+    if not corn or not soy:
+        return None
+    hc, hs = corn["harvest"], soy["harvest"]
+    if hc.get("status") == "running" and hs.get("status") == "running" and hc.get("series"):
+        c, b = hc["running_avg"], hs["running_avg"]
+        thru = _md(hc["series"][-1]["d"])
+        pc, ps = corn["projected"].get("price"), soy["projected"].get("price")
+        title = f"{yr} Harvest Price So Far: Corn ${c:.2f}, Soybeans ${b:.2f} | AGSIST"
+        desc = (f"{yr} harvest price running average through {thru}: corn ${c:.2f} vs ${pc:.2f} projected, "
+                f"soybeans ${b:.2f} vs ${ps:.2f}. Your RP guarantee and pre-sell math.")
+        h1 = f"{yr} harvest price so far: corn ${c:.2f}, soybeans ${b:.2f}"
+        return title, desc, h1
+    if hc.get("status") == "final" and hs.get("status") == "final":
+        c, b = hc["price"], hs["price"]
+        pc, ps = corn["projected"].get("price"), soy["projected"].get("price")
+        title = f"{yr} Harvest Price: Corn ${c:.2f}, Soybeans ${b:.2f} | AGSIST"
+        desc = (f"The {yr} harvest prices, from October settles: corn ${c:.2f} vs ${pc:.2f} projected, soybeans "
+                f"${b:.2f} vs ${ps:.2f}. RMA's posted figure is the official one.")
+        h1 = f"{yr} harvest price: corn ${c:.2f}, soybeans ${b:.2f}"
+        return title, desc, h1
+    return None
+
+
+def stamp_head(src, d):
+    t = head_text(d)
+    yr = str(d.get("crop_year") or 2026)
+    title, desc, h1 = t if t else (HEAD_DEFAULT["title"].replace("2026", yr),
+                                   HEAD_DEFAULT["desc"].replace("2026", yr), HEAD_DEFAULT["h1"])
+    if len(title) > 68 or len(desc) > 160:
+        raise RuntimeError("harvest head text over the caps: %d / %d" % (len(title), len(desc)))
+    import html as _h
+    te, de = _h.escape(title, quote=True), _h.escape(desc, quote=True)
+    src = re.sub(r"<title>[^<]*</title>", lambda m: "<title>" + te + "</title>", src, count=1)
+    src = re.sub(r'(<meta property="og:title" content=")[^"]*(")', lambda m: m.group(1) + te + m.group(2), src, count=1)
+    tw = _h.escape(title.replace(" | AGSIST", ""), quote=True)
+    src = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")', lambda m: m.group(1) + tw + m.group(2), src, count=1)
+    src = re.sub(r'(<meta name="description" content=")[^"]*(")', lambda m: m.group(1) + de + m.group(2), src, count=1)
+    if "<!--SEED:hph1-->" not in src:
+        raise RuntimeError("SEED:hph1 marker missing from page")
+    src = re.sub(r"<!--SEED:hph1-->.*?<!--/SEED:hph1-->",
+                 lambda m: "<!--SEED:hph1-->" + h1 + "<!--/SEED:hph1-->", src, count=1, flags=re.S)
+    return src
+
+
 def seed_page(d, today):
-    src = PAGE.read_text(encoding="utf-8")
+    orig = PAGE.read_text(encoding="utf-8")
+    src = stamp_head(orig, d)
     block = ("<!--SEED:hpcards-->\n      "
              + "\n      ".join(card_html(c, d["crop_year"]) for c in d["commodities"])
-             + '\n      <div class="hp-seed-note">The official harvest price is USDA RMA&rsquo;s: the average of the '
-             'daily settles of the contract above across the window, released after it closes. The running average is '
-             'the same math on the settles so far, updated each trading evening, so it can lag RMA&rsquo;s posted '
-             'figure by a day.</div>'
+             + '\n      <div class="hp-seed-note">' + seed_note(d) + '</div>'
              "\n      <!--/SEED:hpcards-->")
     pat = re.compile(r"<!--SEED:hpcards-->.*?<!--/SEED:hpcards-->", re.S)
     if not pat.search(src):
@@ -418,7 +621,7 @@ def seed_page(d, today):
     out = pat.sub(lambda _: block, src, count=1)
     out = re.sub(r'("dateModified":\s*")(\d{4}-\d{2}-\d{2})(")',
                  lambda m: m.group(1) + today.isoformat() + m.group(3), out)
-    if out != src:
+    if out != orig:
         PAGE.write_text(out, encoding="utf-8")
         return True
     return False
