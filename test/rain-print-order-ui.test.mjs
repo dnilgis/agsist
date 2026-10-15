@@ -318,18 +318,24 @@ test("a marked day is a month and a day from lists: the day picked is the day or
     assert.deepEqual([await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy")], ["05", "02"]);
     assert.equal(await page.isHidden("#rp-m1err"), true);
     assert.equal(await page.textContent("#rp-m1on"), "On the print: Planted, May 2");
-    // two more days
+    // four more days: five is the most (2026-10-15, Sig)
     await page.click("#rp-add-day");
     await page.selectOption("#rp-m2mo", "06"); await page.selectOption("#rp-m2dy", "21"); await page.fill("#rp-m2l", "Hail");
     await page.click("#rp-add-day");
-    assert.equal(await page.isVisible("#rp-add-day"), false, "three is the most");
-    assert.equal(await page.textContent("#rp-dates-max"), "3 days is the most that fits. Remove one to mark another.");
     await page.selectOption("#rp-m3mo", "10"); await page.selectOption("#rp-m3dy", "30"); await page.fill("#rp-m3l", "Combined");
+    assert.equal(await page.isVisible("#rp-add-day"), true, "room for a 4th");
+    await page.click("#rp-add-day");
+    await page.selectOption("#rp-m4mo", "03"); await page.selectOption("#rp-m4dy", "02"); await page.fill("#rp-m4l", "Calving");
+    await page.click("#rp-add-day");
+    assert.equal(await page.isVisible("#rp-add-day"), false, "five is the most");
+    assert.equal(await page.textContent("#rp-dates-max"), "5 days is the most that fits. Remove one to mark another.");
+    await page.selectOption("#rp-m5mo", "12"); await page.selectOption("#rp-m5dy", "24"); await page.fill("#rp-m5l", "Snow");
     assert.equal(await page.$$eval("#rp-m2dy option", (o) => o.length - 1), 30, "June has 30 days");
     await settle(page);
+    for (const i of [1, 2, 3, 4, 5]) assert.match(await page.textContent("#rp-m" + i + "on"), /^On the print: /, "day " + i + " is on the print");
     const r = await checkout(page, "framed12x18");
     assert.equal(r.stage, "stripe");
-    assert.deepEqual(plain(decodeRef(r.url).markers.map((m) => m.date + " " + m.label)), ["2025-05-02 Planted", "2025-06-21 Hail", "2025-10-30 Combined"]);
+    assert.deepEqual(plain(decodeRef(r.url).markers.map((m) => m.date + " " + m.label)), ["2025-05-02 Planted", "2025-06-21 Hail", "2025-10-30 Combined", "2025-03-02 Calving", "2025-12-24 Snow"]);
     // Feb 29 and a year without one: said, not moved
     await page.goto(base + "/rain-print.html?" + q({ ...MINE, year: "2024", m1: "2024-02-29 Leap day" }));
     await drawn(page);
@@ -451,7 +457,7 @@ test("labels: a counter to 13 letters, words typed or pasted past it are said in
 });
 
 // ---------- panel 5 (2026-10-15): Mark a day, each day its own block ----------
-test("Mark a day: numbered rows with Remove, the message under its own row at the right time, the 3-day cap, chips that say what they did", { skip }, async () => {
+test("Mark a day: numbered rows with Remove, the message under its own row at the right time, the 5-day cap, chips that say what they did", { skip }, async () => {
   await withPage(async (page, base, errors, stripe) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
@@ -504,23 +510,29 @@ test("Mark a day: numbered rows with Remove, the message under its own row at th
     assert.equal(await page.textContent("#rp-date-say"), "", "once its day is picked, the prompt goes");
     await page.click('#rp-presets button:text-is("Anniversary")');
     await page.selectOption("#rp-m3mo", "06"); await page.selectOption("#rp-m3dy", "14");
-    // three days: the add link becomes the cap in words, the chips stop and say why
+    assert.equal(await page.isVisible("#rp-add-day"), true, "three days is not the cap any more");
+    await page.click('#rp-presets button:text-is("Hail")');
+    assert.equal(await page.inputValue("#rp-m4l"), "Hail");
+    await page.selectOption("#rp-m4mo", "07"); await page.selectOption("#rp-m4dy", "12");
+    await page.click('#rp-presets button:text-is("Born")');
+    await page.selectOption("#rp-m5mo", "03"); await page.selectOption("#rp-m5dy", "09");
+    // five days: the add link becomes the cap in words, the chips stop and say why
     assert.equal(await page.isVisible("#rp-add-day"), false);
-    assert.equal(await page.textContent("#rp-dates-max"), "3 days is the most that fits. Remove one to mark another.");
+    assert.equal(await page.textContent("#rp-dates-max"), "5 days is the most that fits. Remove one to mark another.");
     assert.ok(await page.$$eval("#rp-presets button", (b) => b.every((x) => x.getAttribute("aria-disabled") === "true")), "the chips are off");
-    await page.click('#rp-presets button:text-is("Hail")', { force: true });   // aria-disabled: still focusable, so it can say why
-    assert.equal(await page.textContent("#rp-date-say"), "3 days is the most that fits. Remove one to mark another.");
-    assert.deepEqual([await page.inputValue("#rp-m1l"), await page.inputValue("#rp-m2l"), await page.inputValue("#rp-m3l")], ["Planted corn", "First frost", "Anniversary"], "a 4th chip changes nothing");
-    // removing day 1 moves the others up: Day 1 and Day 2 in order, the add link back
+    await page.click('#rp-presets button:text-is("Retired")', { force: true });   // aria-disabled: still focusable, so it can say why
+    assert.equal(await page.textContent("#rp-date-say"), "5 days is the most that fits. Remove one to mark another.");
+    assert.deepEqual(await Promise.all([1, 2, 3, 4, 5].map((i) => page.inputValue("#rp-m" + i + "l"))), ["Planted corn", "First frost", "Anniversary", "Hail", "Born"], "a 6th chip changes nothing");
+    // removing day 1 moves the others up: Day 1 to Day 4 in order, the add link back
     await page.getByRole("button", { name: "Remove day 1" }).click();
-    assert.deepEqual([await page.inputValue("#rp-m1l"), await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy"), await page.inputValue("#rp-m2l")], ["First frost", "10", "04", "Anniversary"]);
-    assert.equal(await page.isVisible("#rp-m3row"), false);
+    assert.deepEqual([await page.inputValue("#rp-m1l"), await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy"), await page.inputValue("#rp-m2l"), await page.inputValue("#rp-m4l")], ["First frost", "10", "04", "Anniversary", "Born"]);
+    assert.equal(await page.isVisible("#rp-m5row"), false);
     assert.equal(await page.isVisible("#rp-add-day"), true);
     assert.ok(await page.$$eval("#rp-presets button", (b) => b.every((x) => x.getAttribute("aria-disabled") === "false")), "the chips are back");
     // the review sheet: each day as May 21 "Planted corn"
     await page.click("#rp-pay");
     await page.waitForSelector("#rp-proof[open]");
-    assert.deepEqual(await page.$$eval("#rp-proof-sum .rp-pd", (e) => e.map((x) => x.textContent)), ["Oct 4 “First frost”", "Jun 14 “Anniversary”"], "in day order: Day 1, Day 2");
+    assert.deepEqual(await page.$$eval("#rp-proof-sum .rp-pd", (e) => e.map((x) => x.textContent)), ["Oct 4 “First frost”", "Jun 14 “Anniversary”", "Jul 12 “Hail”", "Mar 9 “Born”"], "in day order: Day 1 to Day 4");
     assert.deepEqual(errors, []);
   }, { width: 1280, height: 900 });
   // phone: the pinned strip says the line for a moment after a change (its print is too small to read)
@@ -542,6 +554,57 @@ test("Mark a day: numbered rows with Remove, the message under its own row at th
     assert.equal(await page.isVisible("#rp-strip-say"), true);
     await page.waitForTimeout(4300);
     assert.equal(await page.isVisible("#rp-strip-say"), false, "only briefly");
+    assert.deepEqual(errors, []);
+  });
+});
+
+// ---------- 2026-10-15 (Sig): Mark a day tightened, up to five days ----------
+test("Mark a day: one line per day on a laptop, stacked on a phone, the count only near the limit, a day the art can't place says so", { skip }, async () => {
+  const FIVE = { ...MINE, m1: "2025-03-02 Calving", m2: "2025-05-12 Planted", m3: "2025-07-04 Wedding", m4: "2025-09-20 First frost", m5: "2025-10-20 Harvest done" };
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + q(FIVE));
+    await drawn(page);
+    await settle(page);
+    for (const i of [1, 2, 3, 4, 5]) {
+      // Day N, month, day, words and the x share one line
+      const tops = await page.$$eval(["#rp-m" + i + "h", "#rp-m" + i + "mo", "#rp-m" + i + "dy", "#rp-m" + i + "l", "#rp-m" + i + "rm"].join(","), (els) => els.map((e) => { const r = e.getBoundingClientRect(); return r.top + r.height / 2; }));
+      assert.ok(Math.max(...tops) - Math.min(...tops) < 4, "day " + i + " is one line: " + tops.map(Math.round));
+      const w = await page.$eval("#rp-m" + i + "l", (el) => [el.scrollWidth, el.clientWidth]);
+      assert.ok(w[0] <= w[1], "day " + i + ": the words show whole");
+      assert.match(await page.textContent("#rp-m" + i + "on"), /^On the print: /);
+    }
+    assert.equal(await page.getAttribute("#rp-m5rm", "aria-label"), "Remove day 5");
+    // the count: hidden while far from the limit, shown within 5 letters of it
+    assert.equal(await page.isVisible("#rp-m1l-n"), false, "Calving, 7 of 13: no count");
+    assert.equal(await page.isVisible("#rp-m5l-n"), true, "Harvest done, 12 of 13: the count shows");
+    assert.equal(await page.isVisible("#rp-name-n"), false, "Olson, 5 of 24: no count");
+    await page.fill("#rp-name", "The Olson Family Farm");
+    assert.equal(await page.isVisible("#rp-name-n"), true, "21 of 24: the count shows");
+    // the art leaves day 5 off (it can only land on top of the others): its row says so, and checkout stops there
+    await page.evaluate(() => { window.AgRainArt.lastUnplaced = () => [4]; });
+    await page.fill("#rp-m5l", "Harvest");
+    await settle(page);
+    assert.equal(await page.textContent("#rp-m5on"), "Day 5 is too close to the others to fit; move it or remove one.");
+    assert.ok(await page.$eval("#rp-m5on", (el) => el.classList.contains("rp-bad")), "in the warning color");
+    assert.match(await page.textContent("#rp-m4on"), /^On the print: First frost/);
+    await page.click("#rp-pay");
+    assert.match(await page.textContent("#rp-buy-note"), /Day 5 isn’t ready for the print\./);
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), false);
+    await page.evaluate(() => { window.AgRainArt.lastUnplaced = () => []; });
+    await page.fill("#rp-m5l", "Harvest done");
+    await settle(page);
+    assert.equal(await page.textContent("#rp-m5on"), "On the print: Harvest done, Oct 20");
+    assert.deepEqual(errors, []);
+  }, { width: 1280, height: 900 });
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + q(FIVE));
+    await drawn(page);
+    // a phone: Day N, month, day and the x on one line, the words under them as wide as the name box
+    const r = await page.evaluate(() => ["rp-m2mo", "rp-m2dy", "rp-m2rm", "rp-m2l", "rp-name"].map((id) => { const b = document.getElementById(id).getBoundingClientRect(); return { top: b.top, bottom: b.bottom, w: b.width }; }));
+    assert.ok(Math.abs(r[0].top - r[1].top) < 4 && r[2].top < r[0].bottom, "month, day and x share a line");
+    assert.ok(r[3].top >= r[0].bottom, "the words go under them");
+    assert.ok(Math.abs(r[3].w - r[4].w) < 2, "full width: " + r[3].w + " vs " + r[4].w);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "nothing scrolls sideways");
     assert.deepEqual(errors, []);
   });
 });

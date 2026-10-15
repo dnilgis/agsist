@@ -159,10 +159,14 @@ test("the worker accepts every code rain-print.js encodes, at the page's limits"
     { place: "Lac qui Parle, MN", station: "214546 2", year: 2024, layout: "waveform", palette: "blueprint", cmp: "station", name: "Ø".repeat(L.name) },
     { place: "X".repeat(L.place), station: "999999 9", year: 1893, palette: "paper", name: "N".repeat(L.name),
       markers: [{ date: "1893-01-01", label: "L".repeat(L.label) }, { date: "1893-06-30", label: "é".repeat(L.label) }, { date: "1893-12-31", label: "Z".repeat(L.label) }] },
+    // five marked days (2026-10-15), every box full
+    { place: "Y".repeat(L.place), station: "999999 9", year: 2024, style: "r2", cmp: "station", normals: true, records: true, name: "N".repeat(L.name), dedication: "D".repeat(L.dedication),
+      markers: ["01-01", "03-31", "06-30", "09-30", "12-31"].map((d) => ({ date: "2024-" + d, label: "L".repeat(L.label) })) },
   ];
   for (const d of designs) {
     const code = RP.encodeCode(d);
     assert.ok(code && RP.decodeCode(code), "page round-trips " + d.place);
+    assert.equal(RP.decodeCode(code).markers.length, (d.markers || []).length, "every marked day rides along");
     const r = await w.fetch(new Request("https://x.dev/rp-short", { method: "POST",
       headers: { "Content-Type": "application/json", Origin: "https://agsist.com" }, body: JSON.stringify({ code }) }), env);
     const j = await r.json();

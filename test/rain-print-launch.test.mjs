@@ -175,16 +175,25 @@ test("the longest dedication (70) prints whole at both styles, at 14 u or more, 
 });
 
 // ---------- the print's small lines ----------
-test("the print names the gauge and distance, and explains gaps only when there are some, both styles", () => {
+test("the print names the gauge and distance, and counts gaps only past 3 missing days, both styles", () => {
   const gauge = "Weather station: Chetek, WI, 0.4 mi from Chetek";
   for (const style of ["r1", "r2"]) {
     const full = texts(ART.render(input(year(2025), { style, gauge })));
     const line = full.find((x) => x.t.startsWith("Weather station:"));
     assert.ok(line && line.size >= 12, style + ": gauge line at production size");
     assert.ok(!/no report/.test(line.t), style + ": no gap note on a full year");
-    const gappy = texts(ART.render(input(year(2025, (i) => (i === 40 ? { p: "M" } : {})), { style, gauge })));
-    assert.ok(gappy.some((x) => /day the station sent no report/.test(x.t)), style + ": a gap is explained");
-    assert.ok(!gappy.some((x) => /\d+ days? (not reported|with no report)/i.test(x.t)), style + ": with no count (Sig)");
+    // Sig, 2026-10-15: the long gap sentence is gone; 3 or fewer missing days say nothing, more say the count, short
+    for (const n of [1, 3]) {
+      const quiet = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 40 + n ? { p: "M" } : {})), { style, gauge })));
+      assert.ok(!quiet.some((x) => /no report|Gaps:/.test(x.t)), style + ": " + n + " missing days: nothing on the print");
+    }
+    const gappy = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 66 ? { p: "M" } : {})), { style, gauge })));
+    assert.ok(gappy.some((x) => /(^|  ·  )Gaps: 26 days with no report($|  ·  )/.test(x.t) && x.size >= 12), style + ": 26 missing days: the short note, with the count");
+    assert.ok(!gappy.some((x) => /sent no report|break in the ground line|gap in the line/.test(x.t)), style + ": the long sentence is gone");
+    const four = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 44 ? { p: "M" } : {})), { style, gauge })));
+    assert.ok(four.some((x) => /Gaps: 4 days with no report/.test(x.t)), style + ": 4 missing days: the note");
+    const sOnly = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 50 ? { p: "S" } : i === 50 ? { p: "1.00A" } : {})), { style, gauge })));
+    assert.ok(!sOnly.some((x) => /Gaps:/.test(x.t)), style + ": days rolled into a later total were reported: no gap note");
   }
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   assert.match(S, /gauge: META \? gaugeLine\(META\) : ''/, "the engine hands the art the gauge line");
@@ -249,10 +258,11 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  // the share card, with the ?v=<hash> scripts/build_share_images.py gives it (the same URL as og:image)
+  // the share card first (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
+  // then the two example prints drawn from real NOAA years (test/rain-print-examples.test.mjs)
   const og = HTML.match(/property="og:image"\s+content="([^"]+)"/)[1];
   assert.match(og, /^https:\/\/agsist\.com\/img\/og\/rain-print\.jpg\?v=[0-9a-f]{8}$/);
-  assert.equal(prod.image, og);
+  assert.deepEqual(prod.image, [og, "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
   assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
   assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
   for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\\?v=[0-9a-f]{8}\""));
@@ -496,12 +506,17 @@ test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
   assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
-  // each day its own block: "Day 2" over it and a Remove named for it; no datalist (read as a combobox, a second arrow on Android)
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`<span id="rp-m${i}h">Day ${i}</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m${i}rm" aria-label="Remove day ${i}">Remove</button>`), "day " + i + " has a header and Remove");
+  for (const i of [1, 2, 3, 4, 5]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
+  // each day its own row: "Day 2" at its start and a small x named for it at its end (one line on a laptop, 2026-10-15); no datalist (read as a combobox, a second arrow on Android)
+  for (const i of [1, 2, 3, 4, 5]) {
+    assert.ok(HTML.includes(`<span class="rp-date-n" id="rp-m${i}h">Day ${i}</span>`), "day " + i + " is numbered");
+    assert.ok(HTML.includes(`<button type="button" class="rp-rm" id="rp-m${i}rm" aria-label="Remove day ${i}">&times;</button>`), "day " + i + " has a Remove named for it");
+  }
+  assert.ok(!HTML.includes('id="rp-m6row"'), "five days at most");
   assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
   assert.ok(!/id="rp-m\dl"[^>]*placeholder/.test(HTML), "the label boxes start empty, no gray hint that looks filled in");
-  assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 3\)<\/span>/);
+  assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 5\)<\/span>/);
+  assert.match(HTML, /id="rp-dates-max" hidden>5 days is the most that fits\. Remove one to mark another\.</);
   assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");
   assert.match(HTML, /id="rp-presets" role="group" aria-label="Label ideas"/);
   assert.match(HTML, /id="rp-date-say" aria-live="polite"/);
@@ -517,7 +532,10 @@ test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
   assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
   assert.match(HTML, /Actual size is 12 x 18 in\./);
-  assert.match(HTML, /you see a proof of yours before I print it\./);
+  // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
+  assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
+  assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
+  assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)<\/p>/);
   assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);

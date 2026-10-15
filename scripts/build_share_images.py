@@ -647,7 +647,7 @@ def card_rain_state(st, d=None):
         big, big_label, line = f"{f['wetter']} of {f['n_pct']}", f"{word} wetter than usual", None
     head = ([("How much rain did", False), (f["state"], True), (f"get in {f['year']}?", False)] if f["done"]
             else [("How much rain has", False), (f["state"], True), (f"had in {f['year']}?", False)])
-    meta = (f"NOAA and CoCoRaHS stations, Jan 1 to {md(f['asof'])}  ·  "
+    meta = (f"Weather stations, Jan 1 to {md(f['asof'])}  ·  "
             f"agsist.com/rain/{R.slug(f['state'])}")
     return {"kind": "RAIN", "args": dict(
         head=head, meta=meta, caption=ycap,
@@ -688,7 +688,7 @@ def card_rain_us(files=None):
     return {"kind": "RAIN", "args": dict(
         head=[(f"How much rain {'did' if done else 'has'}", False), ("your county", True),
               (f"{'get' if done else 'had'} in {year}?", False)],
-        meta=f"NOAA and CoCoRaHS stations, Jan 1 to {md(asof)}  ·  agsist.com/rain",
+        meta=f"Weather stations, Jan 1 to {md(asof)}  ·  agsist.com/rain",
         caption=f"{year} rain{'' if done else ' so far'} vs usual",
         big=f"{n:,}", big_label="US counties, each with its own station",
         line=f"{wet:,} of {len(ps):,} wetter than usual" if ps else None,
