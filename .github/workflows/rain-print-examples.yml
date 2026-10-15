@@ -1,0 +1,51 @@
+name: rain print examples
+
+# The real NOAA answers behind the two example links on /rain-print (2012 Ames,
+# 1993 Des Moines), saved to data/rain-print-examples/<slug>.json so the page's
+# own engine can draw them offline, exactly as it would live.
+#   scripts/fetch_rain_print_examples.mjs  runs components/rain-print.js's own
+#                                          request chain and keeps every answer
+# Past years don't change, so this runs by hand only: once to fill the files,
+# and again if the example links or the engine's requests change.
+# RCC-ACIS cannot be reached from the sandbox this was built in.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rain-print-examples
+  cancel-in-progress: false
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch
+        run: node scripts/fetch_rain_print_examples.mjs
+
+      - name: Check
+        run: |
+          node scripts/fetch_rain_print_examples.mjs --check
+          python3 scripts/check_site_budget.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/rain-print-examples
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "data: rain print examples"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
