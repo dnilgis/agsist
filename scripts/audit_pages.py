@@ -134,12 +134,6 @@ QUOTES_DEFECTS = {"changelog.html"}
 # exists and data/dairy-history.json (written by the same run as the feed) does
 # not. Once history exists, a missing data/dairy-data.json is a real HIGH finding.
 KNOWN = {("milk-prices.html", "missing-data", "/data/dairy-data.json"),
-         # Same rule for the USDA AMS fertilizer series (2026-10-15):
-         # .github/workflows/fertilizer-ams.yml -> scripts/fetch_fert_ams.py
-         # writes it on a GitHub runner; fertilizer.html draws nothing for USDA
-         # until then. Honoured only while data/fertilizer-ams-history.json
-         # (written by the same run) does not exist.
-         ("fertilizer.html", "missing-data", "/data/fertilizer-ams.json"),
          # cash-bids.html never fetches this path locally. netGet() joins it to
          # NET_BASE = 'https://dnilgis.github.io/bids/' before calling fetch(),
          # so the real request is to the dnilgis/bids repo's own GitHub Pages,
@@ -157,9 +151,6 @@ def known_missing(page, path):
     if path == "/data/dairy-data.json":
         return (REPO / ".github/workflows/dairy.yml").exists() and \
                not (REPO / "data/dairy-history.json").exists()
-    if path == "/data/fertilizer-ams.json":
-        return (REPO / ".github/workflows/fertilizer-ams.yml").exists() and \
-               not (REPO / "data/fertilizer-ams-history.json").exists()
     return True
 
 # Future years read and cleared on 2026-08-16. Each is a date fixed in law or a

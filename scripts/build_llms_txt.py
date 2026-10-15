@@ -121,9 +121,9 @@ PAGES = [
         ("/prf-sponsor", "PRF State Sponsor", "how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request"),
         ("/rain-gauge", "Rain Gauge (in the works)", "a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email"),
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
-        ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
+        ("/fertilizer", "Fertilizer Prices", "the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, with the USDA AMS Illinois average where co-ops do not post; every price dated"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
-        ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at the current Midwest dealer fertilizer prices (P from MAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
+        ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at current co-op posted fertilizer prices (P from MAP or DAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
     ]),
     ("Sell, store or price ahead?", [

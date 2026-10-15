@@ -3,7 +3,7 @@
  *
  * components/manure-value.js owns the nutrient table and the price math. This
  * runs that same file (no second copy of the math) against
- * data/fertilizer.json and writes, between markers:
+ * data/fertilizer-prices.json and writes, between markers:
  *
  *   manure-value.html  every [data-mv] number, the value table (all the
  *                      nutrients, and the first-year part), the pounds
@@ -13,8 +13,9 @@
  *
  * so a reader with no JavaScript, and a search engine, see the same numbers
  * the page computes live. The page rewrites the [data-mv] numbers from the
- * live file on load; the fertilizer-update workflow runs this after every
- * price change, so the baked copy and the live copy agree.
+ * live file on load; the two fertilizer price workflows (fertilizer-coops,
+ * fertilizer-ams) run this after every price change, so the baked copy and
+ * the live copy agree.
  *
  *   node scripts/bake_manure_value.mjs           write
  *   node scripts/bake_manure_value.mjs --check   exit 1 if a file is stale
@@ -43,20 +44,20 @@ const fill = (tpl, v) => tpl.replace(/\{([a-z0-9_-]+)\}/g, (m, k) => {
    tot-n|p|k-<type>, a type's A2809 Table 9.2 total pounds. */
 export const FAQ = [
   ["How much is dairy manure worth per 1,000 gallons?",
-   "At Midwest dealer prices from {asof-n}, all the N, P2O5 and K2O in 1,000 gallons of liquid dairy manure at 4 to 11% dry matter is worth about {all-dairy_liq_4_11}. That is {tot-n-dairy_liq_4_11} lb of N, {tot-p-dairy_liq_4_11} lb of P2O5 and {tot-k-dairy_liq_4_11} lb of K2O, the typical totals in UW Extension A2809 (Table 9.2). The part a crop can use the first year is worth about {fy-dairy_liq_4_11-1to3day} if it is worked into the soil within 3 days, {fy-dairy_liq_4_11-lt1hr} injected or worked in within an hour, and {fy-dairy_liq_4_11-gt3day} left on top longer. A lab test of your own manure beats the book."],
+   "At fertilizer prices posted through {asof-n}, all the N, P2O5 and K2O in 1,000 gallons of liquid dairy manure at 4 to 11% dry matter is worth about {all-dairy_liq_4_11}. That is {tot-n-dairy_liq_4_11} lb of N, {tot-p-dairy_liq_4_11} lb of P2O5 and {tot-k-dairy_liq_4_11} lb of K2O, the typical totals in UW Extension A2809 (Table 9.2). The part a crop can use the first year is worth about {fy-dairy_liq_4_11-1to3day} if it is worked into the soil within 3 days, {fy-dairy_liq_4_11-lt1hr} injected or worked in within an hour, and {fy-dairy_liq_4_11-gt3day} left on top longer. A lab test of your own manure beats the book."],
   ["How much is manure worth per ton?",
-   "At {asof-n} dealer prices, all the N, P2O5 and K2O in a ton of solid dairy manure over 20% dry matter is worth about {all-dairy_solid_gt20}, beef manure about {all-beef_solid}, hog manure about {all-swine_solid}, and chicken litter about {all-chicken_solid}, by UW Extension A2809's typical totals. Liquid dairy manure at 4 to 11% dry matter works out to about {all-ton-dairy_liq_4_11} a ton, since 1,000 gallons weighs a little over 4 tons."],
+   "At fertilizer prices posted through {asof-n}, all the N, P2O5 and K2O in a ton of solid dairy manure over 20% dry matter is worth about {all-dairy_solid_gt20}, beef manure about {all-beef_solid}, hog manure about {all-swine_solid}, and chicken litter about {all-chicken_solid}, by UW Extension A2809's typical totals. Liquid dairy manure at 4 to 11% dry matter works out to about {all-ton-dairy_liq_4_11} a ton, since 1,000 gallons weighs a little over 4 tons."],
   ["Is this the value of all the nutrients in the manure?",
    "Yes. The headline numbers price every pound of N, P2O5 and K2O in the manure, using UW Extension A2809's typical totals for Wisconsin manure tested from 1998 to 2012 (Table 9.2). The crop does not get it all the first year. UW counts 80% of the P2O5 and K2O and 25 to 65% of the N, depending on the manure and how fast it is worked in (Table 9.1), so the first-year value is shown beside each total. Your own manure test beats the book: type it into the calculator under Use my manure test."],
   ["What is the manure on a whole field worth?",
-   "Liquid dairy manure at 4 to 11% dry matter, 6,000 gallons an acre, puts on {ex-n-lb} lb of N, {ex-p-lb} lb of P2O5 and {ex-k-lb} lb of K2O an acre by UW's typical totals. At {asof-n} dealer prices that is {ex-n-ac} of N, {ex-p-ac} of P2O5 and {ex-k-ac} of K2O, {ex-all-ac} an acre, or {ex-all-field} for 80 acres. Worked in within 3 days, the part a crop can use the first year is worth {ex-fy-ac} an acre, {ex-fy-field} for the 80 acres."],
-  ["Why is phosphorus priced from MAP with the nitrogen taken out?",
-   "MAP 12-40-0-10S carries 240 lb of N in every ton along with 800 lb of P2O5. Charging the whole price to phosphorus makes P look about {price-p-raw} a pound. Crediting the N at the urea price, about {map-ncredit} a ton, puts P2O5 at about {price-p} a pound. The sulfur is not credited, so this still runs a little high."],
+   "Liquid dairy manure at 4 to 11% dry matter, 6,000 gallons an acre, puts on {ex-n-lb} lb of N, {ex-p-lb} lb of P2O5 and {ex-k-lb} lb of K2O an acre by UW's typical totals. At prices posted through {asof-n} that is {ex-n-ac} of N, {ex-p-ac} of P2O5 and {ex-k-ac} of K2O, {ex-all-ac} an acre, or {ex-all-field} for 80 acres. Worked in within 3 days, the part a crop can use the first year is worth {ex-fy-ac} an acre, {ex-fy-field} for the 80 acres."],
+  ["Why is phosphorus priced with the nitrogen taken out?",
+   "Phosphate here is priced from {p-prod}, which carries {p-nlb} lb of N in every ton along with its P2O5. Charging the whole price to phosphorus makes P2O5 look about {price-p-raw} a pound. Crediting the N at the urea price, about {p-ncredit} a ton, puts P2O5 at about {price-p} a pound. MAP is used when co-ops or USDA price it, DAP when they do not."],
   ["How do I get manure tested and what does it cost?",
    "Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."],
 ];
 
-const DESC = "At {asof-n} dealer prices, all the N, P and K in liquid dairy manure is worth about {all-dairy_liq_4_11} per 1,000 gal; {fy-dairy_liq_4_11-1to3day} of it the crop uses the first year.";
+const DESC = "At fertilizer prices posted through {asof-n}, all the N, P and K in liquid dairy manure is worth about {all-dairy_liq_4_11} per 1,000 gal; {fy-dairy_liq_4_11-1to3day} of it the crop uses the first year.";
 
 const TIMINGS = ["gt3day", "1to3day", "lt1hr"];
 
@@ -146,7 +147,7 @@ export function bakeFastFacts(src, M) {
 function main() {
   const check = process.argv.includes("--check");
   const M = loadModule();
-  const data = JSON.parse(readFileSync(ROOT + "data/fertilizer.json", "utf8"));
+  const data = JSON.parse(readFileSync(ROOT + "data/fertilizer-prices.json", "utf8"));
   let stale = 0;
   for (const [file, fn] of [["manure-value.html", (s) => bakeManurePage(s, M, data)], ["fast-facts.html", (s) => bakeFastFacts(s, M)]]) {
     const src = readFileSync(ROOT + file, "utf8");

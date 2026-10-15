@@ -67,9 +67,9 @@ specific page. Each daily briefing has a permanent dated URL.
 - [PRF State Sponsor](https://agsist.com/prf-sponsor): how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request
 - [Rain Gauge (in the works)](https://agsist.com/rain-gauge): a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email
 - [Field Scout](https://agsist.com/field-scout): draw a field and see its soils, crop history, weather, drought and nearby bids
-- [Fertilizer Prices](https://agsist.com/fertilizer): dealer quotes for urea, MAP, potash and AMS, dated per row
+- [Fertilizer Prices](https://agsist.com/fertilizer): the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, with the USDA AMS Illinois average where co-ops do not post; every price dated
 - [Ag Fast Facts](https://agsist.com/fast-facts): on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link
-- [Manure Value](https://agsist.com/manure-value): what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at the current Midwest dealer fertilizer prices (P from MAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test
+- [Manure Value](https://agsist.com/manure-value): what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at current co-op posted fertilizer prices (P from MAP or DAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test
 - [All Tools](https://agsist.com/tools): every AGSIST calculator on one page
 
 ## Sell, store or price ahead?

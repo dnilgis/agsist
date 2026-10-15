@@ -55,98 +55,96 @@ setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.
 
 /* ─── FERTILIZER PRICES ─────────────────────────────────────────────── */
 var PRICES={};
+/* data/fertilizer-prices.json (scripts/build_fert_prices.py): each product's
+   middle cash price posted by co-ops, or the USDA AMS Illinois average where
+   the co-ops do not cover it. Every row has its source and date, and every
+   $/lb shown here says how it was worked out. Lime and K-Mag have no live
+   source, so they are not priced here (the lime calculator takes your $/ton). */
+function fertShort(p){
+  var d=p&&p.as_of?new Date(p.as_of+'T12:00:00'):null;
+  var when=d&&!isNaN(d)?d.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+  return (p&&p.src==='coop'?'co-ops':'USDA IL')+(when?' '+when:'');
+}
+function fertGrade(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;return {N:n,P:pp,K:k};}
 function loadFertPrices(){
-  fetch('/data/fertilizer.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
+  fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
     if(!data||!data.prices)return;
+    function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
-    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Updated '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      // Honest staleness: dealer sheets older than 30 days get flagged, not passed off as current
-      var ageDays=(Date.now()-d.getTime())/864e5;
-      if(ageDays>30){el.textContent+=', check your dealer for current quotes';el.style.color='var(--gold)';}}
-    // Name-based lookups — fertilizer.json uses product name field, not legacy symbol codes
-    function _pg(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;var g={N:n,P:pp,K:k,S:0,Mg:0};for(var i=3;i<a.length;i++){var m=String(a[i]).match(/([\d.]+)\s*([A-Za-z]+)/);if(m){var u=m[2].toLowerCase();if(u==='s')g.S=parseFloat(m[1]);else if(u==='mg')g.Mg=parseFloat(m[1]);}}return g;}
-    function _find(nm,pred){return data.prices.find(function(p){return p.name===nm;})||data.prices.find(function(p){var g=_pg(p.symbol);return g?pred(g):false;});}
-    var urea  =_find('Urea',         function(g){return g.N>0&&g.P===0&&g.K===0&&g.S===0;});
-    var potash=_find('Potash',       function(g){return g.K>0&&g.N===0&&g.P===0&&g.S===0;});
-    var mapS  =_find('MAP + Sulfur', function(g){return g.P>0&&g.S>0;});
-    var ams   =_find('Amm. Sulfate', function(g){return g.N>0&&g.S>0&&g.P===0&&g.K===0;});
-    var kmag  =_find('K-Mag Premium',function(g){return g.K>0&&g.S>0&&g.Mg>0;});
-    var lime  =data.prices.find(function(p){return p.name==='Pell Lime';});
-    if(lime&&lime.price){PRICES['LIME']=lime.price;PRICES['LIME_ASOF']=lime.as_of||data.updated||'';}
+    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op middle cash prices, else the USDA Illinois average. Call to confirm.';
+      if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
+    var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap');
     var wrap=document.getElementById('fert-pills');
     if(!wrap)return;
     wrap.innerHTML='';
-    // Pill display: N sources + K/P sources for side-by-side $/lb comparison
-    // KEY: MAP+S is 12-40-0-10S = 40% P2O5.  Do NOT use 0.46 (DAP rate) for MAP+S.
     var pillDefs=[
-      {obj:urea,   pct:0.46, ncPct:'46', nutrient:'N',    label:'Urea 46%N'},
-      {obj:ams,    pct:0.21, ncPct:'21', nutrient:'N',    label:'AMS 21%N+S'},
-      {obj:potash, pct:0.60, ncPct:'',   nutrient:'K2O',  label:'Potash 60%K'},
-      {obj:mapS,   pct:0.40, ncPct:'',   nutrient:'P2O5', label:'MAP+S 40%P'},
-      {obj:kmag,   pct:0.22, ncPct:'',   nutrient:'K2O',  label:'K-Mag 22%K'},// 0-0-22: 2025 K-Mag Granular data sheet, guaranteed minimum
+      {obj:urea,   nut:'N', ncPct:'46', label:'N'},
+      {obj:ams,    nut:'N', ncPct:'21', label:'N'},
+      {obj:key('anhydrous'), nut:'N', ncPct:'82', label:'N'},
+      {obj:key('uan28'), nut:'N', ncPct:'28', label:'N'},
+      {obj:key('uan32'), nut:'N', ncPct:'32', label:'N'},
+      {obj:phos,   nut:'P', ncPct:'', label:'P2O5'},
+      {obj:potash, nut:'K', ncPct:'', label:'K2O'}
     ];
-    // A row quoted on a different day from the sheet says its own date, so a
-    // July K-Mag price never reads as part of the September sheet.
-    function ownDate(p){
-      if(!p.as_of||p.as_of===data.updated)return '';
-      var od=new Date(p.as_of+'T12:00:00');if(isNaN(od))return '';
-      return ' \u00b7 '+od.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    }
+    var deriv=[];
     pillDefs.forEach(function(pd){
-      if(!pd.obj||!pd.obj.price)return;
-      var p=pd.obj;
-      var pplb=(p.price/2000/pd.pct).toFixed(3);
+      if(!pd.obj)return;
+      var p=pd.obj, g=fertGrade(p.symbol); if(!g||!(g[pd.nut]>0))return;
+      var pct=g[pd.nut]/100, pplb=(p.price/2000/pct);
+      var price=Math.round(p.price);
+      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+' ('+p.src_label+').');
       var btn=document.createElement('button');
       btn.className='fert-pill';
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
-      btn.setAttribute('aria-label',p.name+' $'+p.price+'/ton: $'+pplb+'/lb '+pd.nutrient);
+      btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+p.src_label+': $'+pplb.toFixed(3)+'/lb '+pd.label);
       btn.innerHTML='<span class="fert-pill-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span>'
         +'<span class="fert-pill-body"><span class="fert-pill-name">'+p.name+'</span>'
-        +'<span class="fert-pill-sym">'+(p.symbol||pd.label)+ownDate(p)+'</span></span>'
-        +'<span class="fert-pill-price">$'+p.price+'</span>';
+        +'<span class="fert-pill-sym">'+p.symbol+' · '+fertShort(p)+'</span></span>'
+        +'<span class="fert-pill-price">$'+price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
         btn.classList.add('active');btn.setAttribute('aria-pressed','true');
-        if(pd.nutrient==='N'&&pd.ncPct){
+        if(pd.nut==='N'&&pd.ncPct){
           var fertSel=document.getElementById('nc-fert');
           if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value===pd.ncPct){fertSel.value=pd.ncPct;break;}}}
-          var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=p.price;
+          var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=price;
           calcNC();
         }
       });
       wrap.appendChild(btn);
     });
+    var dv=document.getElementById('fert-deriv');
+    if(!dv){dv=document.createElement('ul');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
+    dv.innerHTML=deriv.map(function(x){return '<li>'+x.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</li>';}).join('');
     // Auto-fill N:Corn ratio from urea (primary N source)
-    if(urea&&urea.price){
-      var pplb=urea.price/2000/0.46;
-      var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=urea.price;
+    if(urea){
+      var pplbU=urea.price/2000/0.46;
+      var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=Math.round(urea.price);
       var fertSel=document.getElementById('nc-fert');
       if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value==='46'){fertSel.value='46';break;}}}
-      loadNFertPrice(pplb,'Urea 46%',urea.price);
-      calcNC();// the box changed under the calculator; redraw so it never shows the 560 default
+      loadNFertPrice(pplbU,'Urea 46% ('+fertShort(urea)+')',Math.round(urea.price));
+      calcNC();// the box changed under the calculator; redraw with the posted price
     }
-    // P2O5 from MAP+S: 12-40-0-10S = 40% P2O5.  NEVER use 0.46 for this product.
-    // Its 240 lb of N a ton is credited at the urea price (components/manure-value.js,
-    // the one copy of this math, shared with /manure-value).
-    if(mapS&&mapS.price){
+    // P2O5 from MAP or DAP with its N credited at the urea price
+    // (components/manure-value.js, the one copy of this math, shared with /manure-value).
+    if(phos){
       var mvP=window.AgManure?window.AgManure.nutrientPrices(data).p:null;
-      var dpplb=mvP!=null?mvP:mapS.price/2000/0.40;
+      var gp=fertGrade(phos.symbol);
+      var dpplb=mvP!=null?mvP:phos.price/2000/(gp.P/100);
       var ep=document.getElementById('eco-p-pplb');if(ep)ep.value=dpplb.toFixed(2);
-      var dp=document.getElementById('eco-dap-price');if(dp)dp.textContent='$'+mapS.price+' MAP+S';
+      var dp=document.getElementById('eco-dap-price');if(dp)dp.textContent='$'+Math.round(phos.price)+' '+phos.name+' ('+fertShort(phos)+')';
       PRICES['DAP_PPLB']=dpplb;
       updateEcoCosts();
     }
-    // K2O from Potash (0-0-60 = 60% K2O)
-    if(potash&&potash.price){
-      var kpplb=potash.price/2000/0.60;
+    if(potash){
+      var gk=fertGrade(potash.symbol);
+      var kpplb=potash.price/2000/(gk.K/100);
       var ek=document.getElementById('eco-k-pplb');if(ek)ek.value=kpplb.toFixed(2);
-      var mp=document.getElementById('eco-mop-price');if(mp)mp.textContent='$'+potash.price;
+      var mp=document.getElementById('eco-mop-price');if(mp)mp.textContent='$'+Math.round(potash.price)+' ('+fertShort(potash)+')';
       PRICES['MOP_PPLB']=kpplb;
       updateEcoCosts();
     }
-    if(urea&&urea.price){var eup=document.getElementById('eco-urea-price');if(eup)eup.textContent='$'+urea.price;}
-    calcLime();// refresh lime cost with live lime $/ton
   }).catch(function(){});
 }
 function loadNFertPrice(pplb,name,ton){
@@ -192,7 +190,7 @@ loadGrainPrices();
   }
   Promise.all([
     fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
-    fetch('/data/fertilizer.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     var pj=res[0], fj=res[1];
     var q=pj&&pj.quotes?pj.quotes:{};
@@ -201,14 +199,13 @@ loadGrainPrices();
     var corn=q.corn&&q.corn.close?parseFloat(q.corn.close)/100:null;
     var beans=q.beans&&q.beans.close?dollarsBu(q.beans.close):null;
     var wheat=q.wheat&&q.wheat.close?dollarsBu(q.wheat.close):null;
-    var urea=null, fertDate=null, fertStale=false;
+    var urea=null, uRow=null, fertStale=false;
     if(fj&&fj.prices){
-      var u=fj.prices.find(function(p){return p.name==='Urea';});
-      if(u&&u.price) urea=u.price;
-      if(fj.updated){
-        var fd=new Date(fj.updated+'T12:00:00');
-        fertDate=fd.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-        fertStale=(Date.now()-fd.getTime())/864e5>30;
+      uRow=fj.prices.find(function(p){return p.key==='urea'&&p.price>0;})||null;
+      if(uRow){
+        urea=Math.round(uRow.price);
+        var fd=new Date(uRow.as_of+'T12:00:00');
+        fertStale=!isNaN(fd)&&(Date.now()-fd.getTime())/864e5>30;
       }
     }
     // price strip — show it if we got ANY of the four
@@ -216,7 +213,7 @@ loadGrainPrices();
       if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
       if(beans) g('fft-beans').textContent=beans;
       if(wheat) g('fft-wheat').textContent=wheat;
-      if(urea){ g('fft-urea').textContent='$'+urea; var un=g('fft-urea-n'); un.textContent=fertDate?(fertDate+(fertStale?', aging':'')):'dealer'; if(fertStale) un.className='n warn'; }
+      if(urea){ g('fft-urea').textContent='$'+urea; var un=g('fft-urea-n'); un.textContent=fertShort(uRow)+(fertStale?', aging':''); if(fertStale) un.className='n warn'; }
       g('ff-strip').hidden=false;
     }
     // verdict needs both legs
@@ -232,8 +229,8 @@ loadGrainPrices();
       g('ffv-num').className='ff-today-num '+cls;
       g('ffv-word').textContent=word;
       g('ffv-word').className='ff-today-word '+cls;
-      g('ffv-line').innerHTML='Urea at <strong>$'+urea+'/ton</strong> is <strong>$'+pplb.toFixed(2)+' a pound of N</strong> against <strong>$'+corn.toFixed(2)+' corn</strong>: a '+ratio.toFixed(2)+' ratio. That’s '+advice;
-      g('ffv-src').textContent='Corn: CBOT close · urea: dealer sheet'+(fertDate?' '+fertDate:'')+(fertStale?' (aging, check your dealer)':'')+' · same math as the calculator below';
+      g('ffv-line').innerHTML='Urea at <strong>$'+urea+'/ton</strong> / 920 lb of N is <strong>$'+pplb.toFixed(2)+' a pound of N</strong> against <strong>$'+corn.toFixed(2)+' corn</strong>: a '+ratio.toFixed(2)+' ratio. That’s '+advice;
+      g('ffv-src').textContent='Corn: CBOT close · urea: '+uRow.src_label+(fertStale?' (aging, call to confirm)':'')+' · same math as the calculator below';
       g('ff-today').hidden=false;
     }
     // week card — editorial staging guide, hedged to "most of the Corn Belt"
@@ -282,6 +279,12 @@ function calcNC(){
   if(!isFinite(pct)||pct<=0)pct=isCustom?0:46;
   document.getElementById('nc-custom-wrap').style.display=(fertSel.value==='0')?'flex':'none';
   var ton=parseFloat(document.getElementById('nc-fertprice').value)||0;
+  if(!(ton>0)){
+    // No live price loaded and none typed: say so rather than price at a made-up number.
+    document.getElementById('nc-nlb').textContent='-';document.getElementById('nc-ratio').textContent='-';
+    document.getElementById('nc-col').textContent='-';document.getElementById('nc-interp').textContent='Type a fertilizer price per ton (the posted price fills in when it loads).';
+    return;
+  }
   var pplb=pct>0?ton/(2000*pct/100):0;
   var ratio=(corn>0&&pct>0)?pplb/corn:0;
   var col,interp;
@@ -315,6 +318,10 @@ function updateEcoCosts(){
   var rent=parseFloat(document.getElementById('eco-rent').value)||0;
   var other=parseFloat(document.getElementById('eco-other').value)||0;
   var nCost=nRate*nPplb;var pCost=pRate*pPplb;var kCost=kRate*kPplb;
+  // No price is never a zero: say which box is empty instead of a stale number.
+  var miss=[];if(!(nPplb>0))miss.push('N');if(!(pPplb>0))miss.push('P\u2082O\u2085');if(!(kPplb>0))miss.push('K\u2082O');
+  var pn=document.getElementById('eco-price-note');
+  if(pn){pn.hidden=!miss.length;pn.textContent=miss.length?'No live price for '+miss.join(', ')+' right now, so the total leaves it out. Type your own $/lb.':'';}
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent='$'+(v.toFixed(2));}
   s('eco-n-cost',nCost);s('eco-p-cost',pCost);s('eco-k-cost',kCost);
   s('eco-seed-echo',seed);s('eco-chem-echo',chem);s('eco-rent-echo',rent);s('eco-other-echo',other);
@@ -394,8 +401,9 @@ function updateSTCost(prec,krec){
   var pEl=document.getElementById('st-prec');var kEl=document.getElementById('st-krec');
   var p=prec||parseFloat((pEl&&pEl.textContent)||'0');
   var k=krec||parseFloat((kEl&&kEl.textContent)||'0');
-  var pPplb=parseFloat(document.getElementById('eco-p-pplb')&&document.getElementById('eco-p-pplb').value)||0.60;
-  var kPplb=parseFloat(document.getElementById('eco-k-pplb')&&document.getElementById('eco-k-pplb').value)||0.33;
+  // From the live file (or the reader's own entry); no price -> no cost line, never a fallback number.
+  var pPplb=parseFloat(document.getElementById('eco-p-pplb')&&document.getElementById('eco-p-pplb').value)||0;
+  var kPplb=parseFloat(document.getElementById('eco-k-pplb')&&document.getElementById('eco-k-pplb').value)||0;
   var pCost=p*pPplb;var kCost=k*kPplb;
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   s('pk-p-cost','$'+pCost.toFixed(2)+'/ac');
@@ -473,21 +481,15 @@ function calcLime(){
   s('lime-note',note);
   var costEl=document.getElementById('lime-cost');
   if(costEl){
-    // The price has to match the product. The dealer quote in fertilizer.json is
-    // pelletized lime (SuperCal 98G); it is only used for the 98% pelletized
-    // option. Ordinary aglime is priced only at the reader's own $/ton.
+    // Lime has no live price source (the hand-typed dealer sheet that priced
+    // pelletized lime is gone), so lime is priced only at the reader's own $/ton.
     var priceEl=document.getElementById('lime-price');
     var own=priceEl?parseFloat(priceEl.value):NaN;
-    var pell=cceEl.value==='98';
     costEl.style.color='var(--gold)';
     if(agTons===0){
       costEl.textContent='None needed';costEl.style.color='var(--text-muted)';
     } else if(own>0){
       costEl.textContent='$'+(agTons*own).toFixed(0)+'/ac at your $'+own+'/ton';
-    } else if(pell&&PRICES['LIME']){
-      var asof='';
-      if(PRICES['LIME_ASOF']){var ld=new Date(PRICES['LIME_ASOF']+'T12:00:00');if(!isNaN(ld))asof=', dealer quote '+ld.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-      costEl.textContent='$'+(agTons*PRICES['LIME']).toFixed(0)+'/ac at $'+PRICES['LIME']+'/ton pelletized'+asof;
     } else {
       costEl.textContent='Type your $/ton to see cost';costEl.style.color='var(--text-muted)';
     }

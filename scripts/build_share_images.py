@@ -162,7 +162,7 @@ LINES = {
     "yield-estimator": ("Yield estimate", "Bushels per acre from your own ear and pod counts."),
     "usda-quick-stats": ("Yield by state", "Corn, soybean and wheat yields for every state since 2010."),
     "milk-prices": ("Milk prices", "Class prices, all-milk by state and the formula behind your check."),
-    "fertilizer": ("Fertilizer", "Dealer prices and the cost per pound of N, P and K."),
+    "fertilizer": ("Fertilizer", "Co-op posted prices and the cost per pound of N, P and K."),
     "markets": ("Markets", "Grain, livestock and energy futures, free."),
     "cot": ("Commitments of Traders", "What the funds hold in corn, soybeans, wheat and cattle."),
     "conditions": ("Crop conditions", "Every state's crop rating, ranked against the same week since 2000."),
@@ -172,7 +172,7 @@ LINES = {
     "usda-calendar": ("USDA calendar", "Every USDA report date on one calendar."),
     "arc-plc": ("ARC or PLC", "Your county's numbers for the ARC or PLC decision."),
     "rain": ("County rain", "Rain so far this year for your county, from a NOAA station."),
-    "manure-value": ("Manure value", "What the N, P and K in manure are worth at dealer prices."),
+    "manure-value": ("Manure value", "What the N, P and K in manure are worth at posted fertilizer prices."),
     "lrp": ("LRP livestock insurance", "Today's LRP rates for cattle and hogs, and what RMA's record says."),
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
@@ -215,7 +215,7 @@ def a_card(page, kicker, foot, alt, **kw):
 def card_manure_value():
     h = rd("manure-value.html")
     big = re.search(r'class="mv-num"[^>]*>(?:\s*<[^>]+>)*\s*(\$[\d,]+\.\d\d)', h)
-    when = re.search(r"dealer quotes from (\w+ \d+, \d{4})", text(h)).group(1)
+    when = re.search(r"fertilizer prices posted through (\w+ \d+, \d{4})", text(h)).group(1)
     tab = re.search(r"<table.*?</table>", h, re.S).group(0)
     rows, group = {}, None
     for tr in re.findall(r"<tr.*?</tr>", tab, re.S):
@@ -247,7 +247,7 @@ def card_manure_value():
     return a_card("manure-value", "Manure value", f"Fertilizer prices of {when}",
                   f"All the nutrients in liquid dairy manure are worth {hero} per 1,000 gallons at {when} fertilizer prices.",
                   big=hero, unit="per 1,000 gal of liquid dairy manure",
-                  ctx="All the N, P and K, UW typical totals, at Midwest dealer prices.",
+                  ctx="All the N, P and K, UW typical totals, at co-op posted fertilizer prices.",
                   table=table, table_title="Other manure")
 
 
@@ -273,20 +273,21 @@ def card_lrp():
 
 
 def card_fertilizer():
-    d = js("data/fertilizer.json")
-    by = {p["name"]: p for p in d["prices"]}
-    u = by["Urea"]
-    ctx = None
-    if u.get("prev") and u.get("prev_as_of") and u["prev"] != u["price"]:
-        ctx = f"Was ${u['prev']:,.0f} on {md(u['prev_as_of'])}."
+    """data/fertilizer-prices.json (scripts/build_fert_prices.py): co-op middle
+    cash prices, else the USDA AMS Illinois average. Until 2026-10-15 this
+    read the hand-typed dealer sheet."""
+    d = js("data/fertilizer-prices.json")
+    by = {p["key"]: p for p in d["prices"]}
+    u = by["urea"]
+    who = f"middle of {u['n']} co-ops" if u["src"] == "coop" else "USDA Illinois average"
     rows = []
-    for name, lab in (("MAP + Sulfur", "MAP"), ("Potash", "Potash"), ("Amm. Sulfate", "AMS")):
-        if name in by:
-            rows.append((lab, f"${by[name]['price']:,.0f}", "/ton"))
+    for key, lab in (("anhydrous", "Anhydrous"), ("dap", "DAP"), ("potash", "Potash")):
+        if key in by:
+            rows.append((lab, f"${by[key]['price']:,.0f}", "/ton"))
     when = mdy(u["as_of"])
-    return a_card("fertilizer", "Fertilizer prices", f"Midwest dealer quotes, {when}",
-                  f"Urea ${u['price']:,.0f} a ton at Midwest dealers, {when}.",
-                  big=f"${u['price']:,.0f}", unit="a ton of urea, Midwest dealer", ctx=ctx,
+    return a_card("fertilizer", "Fertilizer prices", f"Co-op posted prices through {when}",
+                  f"Urea ${u['price']:,.0f} a ton, {who}, posted through {when}.",
+                  big=f"${u['price']:,.0f}", unit=f"a ton of urea, {who}", ctx="Call the co-op to confirm.",
                   table=rows, table_title="Also a ton")
 
 

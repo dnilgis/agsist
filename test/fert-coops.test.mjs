@@ -49,7 +49,7 @@ test("section: middle price only where the file gives one, every co-op named and
 
 test("dates: the co-ops' own, and an undated price is counted apart", () => {
   const h = FC.section(FEED, AMS);
-  assert.match(h, /posted Sep 24 to Oct 6, 1 with no date shown/, "DAP: Two Rivers 'close out' has no date");
+  assert.match(h, /newest posted Oct 6, oldest Sep 24, 1 with no date shown/, "DAP: Two Rivers 'close out' has no date");
   assert.match(h, /not shown; first seen Oct 15, 2026 \(close out\)/);
   assert.match(h, /21-0-0-24S<\/b>[^<]*<span class="fcp-when">Aug 4, 2026\. 72 days old, not counted/);
 });
@@ -73,8 +73,20 @@ test("a link that is not https is not drawn as a link", () => {
   assert.ok(!FC.section(f, AMS).includes("javascript:"));
 });
 
-test("fertilizer.html loads the component and the file, section hidden until drawn", () => {
+test("fertilizer.html loads the component and the file, sections hidden until drawn, co-op cards first", () => {
   assert.match(HTML, /<section id="fert-coops" aria-labelledby="fert-coops-h" hidden><\/section>/);
+  assert.match(HTML, /<section id="fert-coops-more" aria-labelledby="fert-coops-more-h" hidden><\/section>/);
   assert.match(HTML, /<script src="\/components\/fert-coops\.js\?v=\d+"><\/script>/);
-  assert.match(HTML, /fetch\('\/data\/fertilizer-coops\.json'\)/);
+  assert.ok(HTML.includes("getJ('/data/fertilizer-coops.json')"));
+  assert.match(HTML, /FC\.top\(co\)/);
+  assert.match(HTML, /FC\.bar\(co\)/);
+});
+
+test("the top: hero line names the newest posted date and the co-op count; cards say how many co-ops", () => {
+  assert.match(FC.bar(FEED), /^Co-op prices posted through <strong>Oct 12, 2026<\/strong> &middot; four co-ops in KS &middot; read Oct 15, 2026$/);
+  assert.equal(FC.bar(null), "");
+  const t = FC.top(FEED);
+  assert.match(t, /middle of 4 co-ops/);
+  assert.ok(!t.includes("<table"), "the co-op table and every posted price sit lower down, not in the top");
+  assert.match(FC.more(FEED, AMS), /Where the co-op prices come from/);
 });

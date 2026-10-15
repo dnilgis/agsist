@@ -59,7 +59,7 @@
 
   /* The dates the co-ops show. An undated price is counted, never dated. */
   function dateSpan(p) {
-    var s = !isDate(p.oldest) ? '' : (p.oldest === p.newest ? 'posted ' + shortDate(p.oldest) : 'posted ' + shortDate(p.oldest) + ' to ' + shortDate(p.newest));
+    var s = !isDate(p.newest) ? '' : 'newest posted ' + shortDate(p.newest) + (p.oldest !== p.newest ? ', oldest ' + shortDate(p.oldest) : '');
     var u = p.undated > 0 ? (p.undated === p.n ? (p.n === 1 ? 'no date shown' : 'no dates shown') : p.undated + ' with no date shown') : '';
     return s && u ? s + ', ' + u : (s || u);
   }
@@ -78,13 +78,13 @@
       under = p.n + ' co-ops, same price';
     } else {
       big = money(p.low) + ' to ' + money(p.high);
-      under = p.n + ' co-ops, too few for a middle';
+      under = p.n + ' co-ops, too few for a middle price';
     }
     var range = p.n > 1 && p.median != null
       ? (Math.round(p.low) === Math.round(p.high) ? 'all at ' + money(p.low) : money(p.low) + ' to ' + money(p.high))
       : '';
     return '<div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">' + esc(p.name) +
-      '</span><span class="fpc-sym">' + esc(p.symbol) + '</span></div><div class="fpc-price' + (p.median == null && Math.round(p.low) !== Math.round(p.high) ? ' fcp-range' : '') + '">' + big +
+      '</span>' + (p.symbol !== p.name ? '<span class="fpc-sym">' + esc(p.symbol) + '</span>' : '') + '</div><div class="fpc-price' + (p.median == null && Math.round(p.low) !== Math.round(p.high) ? ' fcp-range' : '') + '">' + big +
       '</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">' + under + '</div>' + (range ? '<div class="fpc-loc">' + range + '</div>' : '') +
       '<div class="fpc-loc">' + dateSpan(p) + '</div></div>';
   }
@@ -153,11 +153,7 @@
   }
 
   /* The whole section. '' when there is nothing real to show. */
-  function section(data, ams) {
-    var d = valid(data);
-    if (!d) return '';
-    var coops = byId(d);
-    var states = Object.keys(d.states || {}).sort();
+  function farNote(d, coops) {
     var far = [];
     d.summary.forEach(function (p) {
       (p.far || []).forEach(function (id) {
@@ -166,23 +162,65 @@
         if (c && r) far.push(esc(c.name) + '&rsquo;s ' + esc(p.name) + ' (' + money(r.cash) + ')');
       });
     });
-    var names = d.coops.map(function (c) {
+    return far.length ? '<p class="fert-coop-ams">Far from the other co-ops: ' + far.join('; ') +
+      '. Counted, but the middle price is shown so one sheet does not pull the figure.</p>' : '';
+  }
+
+  function credits(d) {
+    return list(d.coops.map(function (c) {
       var u = safeUrl(c.url);
       return u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : esc(c.name);
-    });
+    }));
+  }
+
+  /* The newest date any summarized co-op price shows, or null. */
+  function newest(d) {
+    var n = null;
+    d.summary.forEach(function (p) { if (isDate(p.newest) && (!n || p.newest > n)) n = p.newest; });
+    return n;
+  }
+
+  /* The line under the hero: newest posted date and the co-op count. */
+  function bar(data) {
+    var d = valid(data);
+    if (!d) return '';
+    var n = newest(d);
+    var states = Object.keys(d.states || {}).sort();
+    return (n ? 'Co-op prices posted through <strong>' + esc(shortDate(n, true)) + '</strong> &middot; ' : '') +
+      count(d.coops_current, 'co-op', 'co-ops') + (states.length ? ' in ' + esc(list(states)) : '') +
+      ' &middot; read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true));
+  }
+
+  /* The top of the page: the co-op price cards. '' when there is nothing real. */
+  function top(data) {
+    var d = valid(data);
+    if (!d) return '';
+    var coops = byId(d);
     return '<h2 class="fert-related-title" id="fert-coops-h">What co-ops are posting</h2>' +
-      '<p class="fert-ams-sub">Retail prices ' + count(d.coops_current, 'co-op', 'co-ops') + (states.length ? ' in ' + esc(list(states)) : '') +
-      ' post on their own websites, read each weekday. The cash price is each co-op&rsquo;s own (cash, cash discount or cash pickup). ' +
-      'Prices are what the co-op posts. Call to confirm before you buy.</p>' +
+      '<p class="fert-ams-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
       '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops); }).join('') + '</div>' +
-      (far.length ? '<p class="fert-coop-ams">Far from the other co-ops: ' + far.join('; ') + '. Counted, but the middle price is shown so one sheet does not pull the figure.</p>' : '') +
+      farNote(d, coops) +
+      '<p class="fert-coop-ams">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';
+  }
+
+  /* Lower down: the USDA line, the co-op table, every posted price. */
+  function more(data, ams) {
+    var d = valid(data);
+    if (!d) return '';
+    return '<h2 class="fert-related-title" id="fert-coops-more-h">Where the co-op prices come from</h2>' +
       amsLine(d, ams) +
       coopTable(d) +
-      '<p class="fert-coop-ams">Prices from ' + list(names) + '. Rows over ' + esc(d.stale_days) + ' days old are listed below but not counted.</p>' +
+      '<p class="fert-coop-ams">Rows over ' + esc(d.stale_days) + ' days old are listed below but not counted.</p>' +
       detail(d);
   }
 
-  var api = { valid: valid, section: section, amsLine: amsLine, card: card, posted: posted, shortDate: shortDate };
+  function section(data, ams) {
+    var t = top(data);
+    return t ? t + more(data, ams) : '';
+  }
+
+  var api = { valid: valid, section: section, top: top, more: more, bar: bar, newest: newest,
+    amsLine: amsLine, card: card, posted: posted, shortDate: shortDate };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.FertCoops = api;
 })(typeof window !== 'undefined' ? window : this);

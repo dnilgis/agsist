@@ -42,7 +42,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"How much nitrogen should I apply to corn?","acceptedAnswer":{"@type":"Answer","text":"Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation."}},
-  {"@type":"Question","name":"What is my manure worth in fertilizer value?","acceptedAnswer":{"@type":"Answer","text":"Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}},
+  {"@type":"Question","name":"What is my manure worth in fertilizer value?","acceptedAnswer":{"@type":"Answer","text":"Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}},
   {"@type":"Question","name":"What is the economic threshold for soybean aphid?","acceptedAnswer":{"@type":"Answer","text":"250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6."}},
   {"@type":"Question","name":"How do I calculate growing degree units for corn?","acceptedAnswer":{"@type":"Answer","text":"GDU (base 50\u00b0F) = [(daily max temp, capped at 86\u00b0F) + (daily min temp, floor at 50\u00b0F)] / 2 - 50. Accumulate daily from planting."}}
 ]}
@@ -164,6 +164,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-banner-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
 .fert-banner-date{font-size:0.755rem;color:var(--text-muted);}
 .fert-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
+.fert-deriv{list-style:none;margin:.6rem 0 0;padding:0;font-size:.78rem;color:var(--text-muted);line-height:1.5}.fert-deriv li{margin:.15rem 0}
 /* FIX: fert-pill min-height:44px — reliable touch target in the field */
 .fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
 .fert-pill:hover{border-color:var(--gold);}
@@ -451,7 +452,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT, delayed</div></div>
   <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT, delayed</div></div>
   <div class="ff-tile"><div class="k">Wheat</div><div class="v" id="fft-wheat">-</div><div class="n">CBOT, delayed</div></div>
-  <div class="ff-tile"><div class="k">Urea 46-0-0</div><div class="v gold" id="fft-urea">-</div><div class="n" id="fft-urea-n">dealer</div></div>
+  <div class="ff-tile"><div class="k">Urea 46-0-0</div><div class="v gold" id="fft-urea">-</div><div class="n" id="fft-urea-n">-</div></div>
 </div>
 <div class="ff-week" id="ff-week" hidden><span class="wk" id="ffw-num"></span><p id="ffw-txt"></p></div>
 <nav class="ff-tabs" role="tablist" aria-label="Fast Facts sections">
@@ -490,7 +491,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
       </select>
     </div>
     <div class="ff-cf" id="nc-custom-wrap" style="display:none"><label class="ff-cl" for="nc-custom-pct">Custom % N</label><input class="ff-ci" id="nc-custom-pct" type="number" value="46" step="1" min="1" max="100"></div>
-    <div class="ff-cf"><label class="ff-cl" for="nc-fertprice">Fertilizer ($/ton)</label><input class="ff-ci" id="nc-fertprice" type="number" value="560" step="5" min="50" max="3000"></div>
+    <div class="ff-cf"><label class="ff-cl" for="nc-fertprice">Fertilizer ($/ton)</label><input class="ff-ci" id="nc-fertprice" type="number" value="" placeholder="loading" step="5" min="50" max="3000"></div>
   </div>
   <div class="ff-res" id="nc-res">
     <div class="ff-ri"><div class="ff-ril">$/lb N</div><div class="ff-riv" id="nc-nlb">-</div></div>
@@ -575,17 +576,18 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="eco-price-card"><div class="eco-price-label">Corn</div><div class="eco-price-val" id="eco-corn-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
   <div class="eco-price-card"><div class="eco-price-label">Soybeans</div><div class="eco-price-val" id="eco-bean-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
   <div class="eco-price-card"><div class="eco-price-label">Wheat</div><div class="eco-price-val" id="eco-wheat-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">Urea N</div><div class="eco-price-val" id="eco-urea-price">-</div><div class="eco-price-unit">$/ton dealer</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">Urea N</div><div class="eco-price-val" id="eco-urea-price">-</div><div class="eco-price-unit">$/ton posted</div></div>
   <div class="eco-price-card"><div class="eco-price-label">P Source</div><div class="eco-price-val" id="eco-dap-price">-</div><div class="eco-price-unit">$/ton MAP+S</div></div>
   <div class="eco-price-card"><div class="eco-price-label">MOP (K)</div><div class="eco-price-val" id="eco-mop-price">-</div><div class="eco-price-unit">$/ton</div></div>
 </div>
 <div class="ff-h2">Input Cost Builder</div>
-<p class="ff-sub">Build your projected cost per acre. N $/lb fills in from our dealer price sheet; edit to match your dealer.</p>
+<p class="ff-sub">Build your projected cost per acre. N $/lb fills in from co-op posted prices (USDA where co-ops do not post); edit to match your own.</p>
 <div class="eco-section">
   <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn: Cost Per Acre</div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="0.61" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;): MAP, its N credited</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="75" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="0.60" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">-</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O): MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="60" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="0.33" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;): MAP or DAP, its N credited</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="75" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O): MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="60" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">-</span></div></div>
+  <p class="ff-cn" id="eco-price-note" hidden></p>
   <div class="eco-cost-row"><span class="eco-cost-label">Seed</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-seed" type="number" value="105" step="5" min="0" max="500" aria-label="Seed $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-seed-echo">-</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Herbicide / Chemical</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-chem" type="number" value="55" step="5" min="0" max="300" aria-label="Chem $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-chem-echo">-</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Land Rent</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-rent" type="number" value="150" step="10" min="0" max="1000" aria-label="Rent $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-rent-echo">-</span></div></div>
@@ -775,10 +777,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">Solid (lb/ton)</td><td class="hi">10</td><td class="hi">6</td><td class="hi">8</td><td>2 [1]</td><td>3 [1]</td><td>4 [1]</td><td>5</td><td>6</td></tr>
 </tbody></table></div>
 <!--/MV:POUNDS-->
-<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: all the N, P and K in dollars per 1,000 gal and per ton for every type at dated dealer prices, with the first-year part beside it, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
+<div class="ff-note ff-mvlink"><strong>What is it worth in dollars?</strong> <a href="/manure-value">Full manure value page</a>: all the N, P and K in dollars per 1,000 gal and per ton for every type at dated posted prices, with the first-year part beside it, a worked dairy example on 80 acres, and a calculator that takes your own manure test.</div>
 
 <div class="ff-h2" id="manure-calc">Manure Value Calculator</div>
-<p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated dealer prices: an acre, per 1,000 gal or ton, and for the field. All the pounds count, with the first-year part under the total; type your own test and it uses your pounds. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
+<p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated posted prices: an acre, per 1,000 gal or ton, and for the field. All the pounds count, with the first-year part under the total; type your own test and it uses your pounds. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
 <div class="mvc" data-mv-calc><p class="ff-sub">The calculator needs JavaScript.</p></div>
 
 <div class="ff-h2" style="margin-top:1.5rem">Manure Output by Animal</div>
@@ -856,7 +858,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">-</div></div>
     <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">-</div></div>
   </div>
-  <div class="ff-cn">Cost uses the price you type, for the lime you picked. Aglime prices swing with haul distance, so I don't guess one. With the 98% pelletized option and no price typed, it uses our dealer quote for pelletized lime. Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
+  <div class="ff-cn">Cost uses the price you type, for the lime you picked. Aglime prices swing with haul distance, so I don't guess one. Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
 </div>
 <div class="ff-h2">Micronutrient Reference: Upper Midwest</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Micronutrient Reference: Upper Midwest table, scrolls sideways"><table class="ff-t">
@@ -1122,7 +1124,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>How much nitrogen should I apply to corn?</summary><div class="agf-a">Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation.</div></details>
-<details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
+<details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated posted prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
 <details><summary>What is the economic threshold for soybean aphid?</summary><div class="agf-a">250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6.</div></details>
 <details><summary>How do I calculate growing degree units for corn?</summary><div class="agf-a">GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting.</div></details>
 </section>
@@ -1143,7 +1145,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/manure-value.js?v=4" defer></script>
-<script src="/components/fast-facts.js?v=4" defer></script>
+<script src="/components/manure-value.js?v=5" defer></script>
+<script src="/components/fast-facts.js?v=5" defer></script>
 </body>
 </html>

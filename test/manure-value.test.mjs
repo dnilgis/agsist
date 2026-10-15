@@ -20,40 +20,60 @@ const M = ctx.window.AgManure;
 const near = (a, b, msg, tol = 1e-9) => assert.ok(Math.abs(a - b) < tol, `${msg}: ${a} vs ${b}`);
 const read = (f) => readFileSync(ROOT + f, "utf8");
 
-/* The 2026-09-01 dealer sheet, fixed here so the hand-worked answers below
-   do not move when prices do. */
+/* A made-up price list in the shape of data/fertilizer-prices.json
+   (scripts/build_fert_prices.py), fixed here so the hand-worked answers below
+   do not move when prices do. Not a real price. (Until 2026-10-15 this was
+   the Sep 1 dealer sheet, with MAP + sulfur 12-40-0-10S for P; that sheet is
+   gone, and P now comes from MAP 11-52-0 or, when MAP has no price, DAP.) */
 const SEP1 = { updated: "2026-09-01", prices: [
-  { name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01" },
-  { name: "Potash", symbol: "0-0-60", price: 460, as_of: "2026-09-01" },
-  { name: "MAP + Sulfur", symbol: "12-40-0-10S", price: 930, as_of: "2026-09-01" },
-  { name: "Amm. Sulfate", symbol: "21-0-0-24S", price: 460, as_of: "2026-09-01" },
+  { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01", src: "coop", src_label: "middle cash price of 4 co-ops, posted Sep 1, 2026" },
+  { key: "dap", name: "DAP", symbol: "18-46-0", price: 900, as_of: "2026-08-28", src: "coop", src_label: "middle cash price of 3 co-ops, posted Aug 28, 2026" },
+  { key: "potash", name: "Potash", symbol: "0-0-60", price: 460, as_of: "2026-09-01", src: "ams", src_label: "USDA AMS Illinois average, report of Sep 1, 2026" },
 ] };
 
 test("N, P2O5 and K2O $/lb, by hand", () => {
   const p = M.nutrientPrices(SEP1);
   near(p.n, 590 / 920, "N = urea / (2000 x 0.46)");                 // 0.6413
   near(p.k, 460 / 1200, "K2O = potash / (2000 x 0.60)");            // 0.3833
-  near(p.pRaw, 930 / 800, "raw P2O5 = MAP / 800 lb");                // 1.1625
-  near(p.mapNcredit, 240 * 590 / 920, "MAP N credit = 240 lb x N $/lb"); // 153.91
-  near(p.p, (930 - 240 * 590 / 920) / 800, "P2O5 = (MAP - N credit) / 800"); // 0.9701
-  assert.equal(M.money(p.p), "$0.97");
-  assert.equal(M.money(p.pRaw), "$1.16");
+  near(p.pRaw, 900 / 920, "raw P2O5 = DAP / 920 lb");                // 0.9783
+  near(p.pNcredit, 360 * 590 / 920, "DAP N credit = 360 lb x N $/lb"); // 230.87
+  near(p.p, (900 - 360 * 590 / 920) / 920, "P2O5 = (DAP - N credit) / 920"); // 0.7273
+  assert.equal(M.money(p.p), "$0.73");
+  assert.equal(M.money(p.pRaw), "$0.98");
+  // MAP 11-52-0 is used when it has a price: 220 lb N, 1,040 lb P2O5 a ton
+  const withMap = { prices: SEP1.prices.concat([{ key: "map", name: "MAP", symbol: "11-52-0", price: 980, as_of: "2026-09-01" }]) };
+  const q = M.nutrientPrices(withMap);
+  near(q.p, (980 - 220 * 590 / 920) / 1040, "P2O5 from MAP when MAP has a price");
+  // every price says how it was worked out, with its source and date
+  const dv = M.derivation(p);
+  assert.equal(dv.n, "Urea 46-0-0 at $590.00 a ton (middle cash price of 4 co-ops, posted Sep 1, 2026) / (2,000 lb x 46% N) = $0.64 a lb of N.");
+  assert.equal(dv.p, "DAP 18-46-0 at $900.00 a ton (middle cash price of 3 co-ops, posted Aug 28, 2026), less its 360 lb of N at the urea price ($231), / 920 lb of P2O5 = $0.73 a lb of P2O5.");
+  assert.equal(dv.k, "Potash 0-0-60 at $460.00 a ton (USDA AMS Illinois average, report of Sep 1, 2026) / (2,000 lb x 60% K2O) = $0.38 a lb of K2O.");
 });
 
-test("the live file: P credits MAP's N at the live urea price, K from potash", () => {
-  const d = JSON.parse(read("data/fertilizer.json"));
-  const by = (n) => d.prices.find((x) => x.name === n);
+test("the live file: P credits MAP's or DAP's N at the live urea price, K from potash, and agrees with the pipeline", () => {
+  const d = JSON.parse(read("data/fertilizer-prices.json"));
+  const by = (k) => d.prices.find((x) => x.key === k);
   const p = M.nutrientPrices(d);
-  const n = by("Urea").price / 920;
-  near(p.n, n, "N");
-  near(p.p, (by("MAP + Sulfur").price - 240 * n) / 800, "P2O5 with N credit");
-  near(p.k, by("Potash").price / 1200, "K2O");
-  assert.ok(p.p < p.pRaw, "crediting N must lower the P price");
-  assert.equal(p.src.n.as_of, by("Urea").as_of, "each price carries its own date");
+  const g = (sym) => sym.split("-").map(Number);
+  if (by("urea")) near(p.n, by("urea").price / (2000 * g(by("urea").symbol)[0] / 100), "N");
+  const ph = by("map") || by("dap");
+  if (ph && by("urea")) {
+    const [pn, pp] = g(ph.symbol);
+    near(p.p, (ph.price - 2000 * pn / 100 * p.n) / (2000 * pp / 100), "P2O5 with N credit");
+    assert.ok(p.p < p.pRaw, "crediting N must lower the P price");
+  }
+  if (by("potash")) near(p.k, by("potash").price / (2000 * g(by("potash").symbol)[2] / 100), "K2O");
+  if (by("urea")) assert.equal(p.src.n.as_of, by("urea").as_of, "each price carries its own date");
+  // scripts/build_fert_prices.py writes its own $/lb (per_lb) into the file: the two copies must agree
+  for (const x of ["n", "p", "k"]) {
+    if (d.per_lb && d.per_lb[x]) near(p[x], d.per_lb[x].usd, `pipeline and page agree on ${x}`, 1e-4);
+    else assert.equal(p[x], null, `no ${x} price in the pipeline, none on the page`);
+  }
 });
 
 test("a missing quote is no price, never zero", () => {
-  const p = M.nutrientPrices({ prices: [{ name: "MAP + Sulfur", symbol: "12-40-0-10S", price: 930 }] });
+  const p = M.nutrientPrices({ prices: [{ key: "dap", name: "DAP", symbol: "18-46-0", price: 900 }] });
   assert.equal(p.n, null);
   assert.equal(p.p, null, "no urea price, no N credit, so no P price rather than a guess");
   assert.equal(p.k, null);
@@ -61,9 +81,10 @@ test("a missing quote is no price, never zero", () => {
   assert.equal(u.total, null);
   assert.equal(u.fy.total, null);
   const v = M.bakeValues({ prices: [] });
-  assert.equal(v["all-dairy_liq_4_11"], "no quote");
-  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "no quote");
-  assert.equal(v["ex-all-field"], "no quote");
+  assert.equal(v["all-dairy_liq_4_11"], "no price");
+  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "no price");
+  assert.equal(v["ex-all-field"], "no price");
+  assert.equal(v["deriv-n"], "no price");
 });
 
 /* UW Extension A2809 (R-11-2012; the copy UW posted March 2026), chapter 9,
@@ -118,22 +139,23 @@ test("per 1,000 gal and per ton, every type and timing: all the nutrients, and t
     near(M.perTon(t.id, tm, p), t.liquid ? all / 4.17 : all, `${t.id} ${tm} per ton`);
   }
   const v = M.bakeValues(SEP1);
-  // dairy liquid 4-11% DM, all of it: 24 x .641304 + 8 x .970109 + 21 x .383333 = 15.391 + 7.761 + 8.050 = 31.20
-  assert.equal(v["all-dairy_liq_4_11"], "$31.20");
-  assert.equal(v["all-ton-dairy_liq_4_11"], "$7.48");             // 31.202 / 4.17
-  // the first-year part: 10 N, 6 P2O5, 17 K2O worked in 1 hr to 3 days
-  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "$18.75");
-  assert.equal(v["fy-ton-dairy_liq_4_11-1to3day"], "$4.50");
-  assert.equal(v["fy-dairy_liq_4_11-lt1hr"], "$20.03");
-  assert.equal(v["fy-dairy_liq_4_11-gt3day"], "$16.83");
-  // chicken: 49 x .641304 + 44 x .970109 + 33 x .383333 = 31.42 + 42.68 + 12.65
-  assert.equal(v["all-chicken_solid"], "$86.76");
-  assert.equal(v["fy-chicken_solid-1to3day"], "$61.24");          // 27 N, 35 P2O5, 26 K2O
-  // hog finishing indoor pit: 43 x .641304 + 18 x .970109 + 28 x .383333 = 27.58 + 17.46 + 10.73
-  assert.equal(v["all-swine_liq_fin_in"], "$55.77");
-  // solid dairy over 20% DM: 9 x .641304 + 4 x .970109 + 7 x .383333 = 5.77 + 3.88 + 2.68
-  assert.equal(v["all-dairy_solid_gt20"], "$12.34");
-  assert.equal(v["all-ton-dairy_solid_gt20"], "$12.34", "solid is already per ton");
+  // N .641304, P2O5 .727316 (DAP with its N credited), K2O .383333
+  // dairy liquid 4-11% DM, all of it: 24 x .641304 + 8 x .727316 + 21 x .383333 = 15.391 + 5.819 + 8.050 = 29.26
+  assert.equal(v["all-dairy_liq_4_11"], "$29.26");
+  assert.equal(v["all-ton-dairy_liq_4_11"], "$7.02");             // 29.260 / 4.17
+  // the first-year part: 10 N, 6 P2O5, 17 K2O worked in 1 hr to 3 days = 6.413 + 4.364 + 6.517
+  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "$17.29");
+  assert.equal(v["fy-ton-dairy_liq_4_11-1to3day"], "$4.15");
+  assert.equal(v["fy-dairy_liq_4_11-lt1hr"], "$18.58");            // 12 N
+  assert.equal(v["fy-dairy_liq_4_11-gt3day"], "$15.37");           // 7 N
+  // chicken: 49 x .641304 + 44 x .727316 + 33 x .383333 = 31.42 + 32.00 + 12.65
+  assert.equal(v["all-chicken_solid"], "$76.08");
+  assert.equal(v["fy-chicken_solid-1to3day"], "$52.74");          // 27 N, 35 P2O5, 26 K2O
+  // hog finishing indoor pit: 43 x .641304 + 18 x .727316 + 28 x .383333 = 27.58 + 13.09 + 10.73
+  assert.equal(v["all-swine_liq_fin_in"], "$51.40");
+  // solid dairy over 20% DM: 9 x .641304 + 4 x .727316 + 7 x .383333 = 5.77 + 2.91 + 2.68
+  assert.equal(v["all-dairy_solid_gt20"], "$11.36");
+  assert.equal(v["all-ton-dairy_solid_gt20"], "$11.36", "solid is already per ton");
 });
 
 test("the value of all the manure: N + P2O5 (N credited) + K2O, per unit, per ton, per acre and for the field", () => {
@@ -174,20 +196,20 @@ test("the value of all the manure: N + P2O5 (N credited) + K2O, per unit, per to
 test("the worked example: liquid dairy, 6,000 gal/ac on 80 acres, all of it and the first-year part", () => {
   assert.deepEqual({ ...M.EXAMPLE }, { type: "dairy_liq_4_11", timing: "1to3day", rate: 6000, acres: 80 });
   const v = M.bakeValues(SEP1);
-  // per 1,000 gal: 24 lb N x .641304, 8 lb P2O5 x .970109, 21 lb K2O x .383333
-  assert.deepEqual([v["ex-n-unit"], v["ex-p-unit"], v["ex-k-unit"]], ["$15.39", "$7.76", "$8.05"]);
-  assert.equal(v["ex-all"], "$31.20");
-  assert.equal(v["ex-all-ton"], "$7.48");
+  // per 1,000 gal: 24 lb N x .641304, 8 lb P2O5 x .727316, 21 lb K2O x .383333
+  assert.deepEqual([v["ex-n-unit"], v["ex-p-unit"], v["ex-k-unit"]], ["$15.39", "$5.82", "$8.05"]);
+  assert.equal(v["ex-all"], "$29.26");
+  assert.equal(v["ex-all-ton"], "$7.02");
   assert.deepEqual([v["ex-n-lb"], v["ex-p-lb"], v["ex-k-lb"]], ["144", "48", "126"]);   // x 6
-  assert.deepEqual([v["ex-n-ac"], v["ex-p-ac"], v["ex-k-ac"]], ["$92.35", "$46.57", "$48.30"]);
-  assert.equal(v["ex-all-ac"], "$187.21");                         // 31.2022 x 6
-  assert.deepEqual([v["ex-n-field"], v["ex-p-field"], v["ex-k-field"]], ["$7,388", "$3,725", "$3,864"]);
-  assert.equal(v["ex-all-field"], "$14,977");                      // 187.213 x 80
+  assert.deepEqual([v["ex-n-ac"], v["ex-p-ac"], v["ex-k-ac"]], ["$92.35", "$34.91", "$48.30"]);
+  assert.equal(v["ex-all-ac"], "$175.56");                         // 29.2598 x 6
+  assert.deepEqual([v["ex-n-field"], v["ex-p-field"], v["ex-k-field"]], ["$7,388", "$2,793", "$3,864"]);
+  assert.equal(v["ex-all-field"], "$14,045");                      // 175.559 x 80
   // first year, worked in 1 hr to 3 days: 10 N, 6 P2O5, 17 K2O per 1,000 gal
   assert.deepEqual([v["ex-fy-n-lb"], v["ex-fy-p-lb"], v["ex-fy-k-lb"]], ["60", "36", "102"]);
-  assert.equal(v["ex-fy"], "$18.75");
-  assert.equal(v["ex-fy-ac"], "$112.50");
-  assert.equal(v["ex-fy-field"], "$9,000");
+  assert.equal(v["ex-fy"], "$17.29");
+  assert.equal(v["ex-fy-ac"], "$103.76");                           // 17.2936 x 6
+  assert.equal(v["ex-fy-field"], "$8,301");
   for (const k of ["ex-buyer", "ex-ceil", "ex-floor", "ex-haul-ac", "ex-book"]) assert.ok(!(k in v), `${k} is gone`);
 });
 
@@ -201,7 +223,7 @@ test("no buyer-needs discount, fair range or hauling left on the pages or in the
 });
 
 test("the HTML carries today's numbers (bake is current) and the tables come from the one data copy", () => {
-  const data = JSON.parse(read("data/fertilizer.json"));
+  const data = JSON.parse(read("data/fertilizer-prices.json"));
   const mv = read("manure-value.html");
   assert.equal(bakeManurePage(mv, M, data), mv, "manure-value.html is stale: node scripts/bake_manure_value.mjs");
   const ff = read("fast-facts.html");
@@ -286,29 +308,29 @@ test("one calculator copy: both pages load components/manure-value.js and nothin
 test("Use my manure test: typed total pounds replace the book pounds, every pound priced", () => {
   const p = M.nutrientPrices(SEP1);
   // A dairy liquid test of 28 lb N, 13 lb P2O5, 25 lb K2O per 1,000 gal:
-  // 28 x .6413 + 13 x .9701 + 25 x .3833 = 17.96 + 12.61 + 9.58 = 40.15
+  // 28 x .6413 + 13 x .7273 + 25 x .3833 = 17.96 + 9.46 + 9.58 = 36.99
   const u = M.perUnit("dairy_liq_4_11", "1to3day", p, { n: 28, p: 13, k: 25 });
-  assert.equal(M.money(u.total), "$40.15");
+  assert.equal(M.money(u.total), "$36.99");
   assert.deepEqual({ ...u.lb }, { n: 28, p: 13, k: 25 });
   assert.deepEqual({ ...u.fromTest }, { n: true, p: true, k: true });
   // First year from a test is the test times A2809 Table 9.1: dairy liquid N 40% (1 hr to 3 days), P and K 80%
-  // 11.2 x .6413 + 10.4 x .9701 + 20 x .3833 = 7.18 + 10.09 + 7.67 = 24.94
+  // 11.2 x .6413 + 10.4 x .7273 + 20 x .3833 = 7.18 + 7.56 + 7.67 = 22.41
   assert.deepEqual({ ...u.fy.lb }, { n: 28 * 0.4, p: 13 * 0.8, k: 25 * 0.8 });
-  assert.equal(M.money(u.fy.total), "$24.94");
-  // 6,000 gal on 80 acres: 40.15 x 6 x 80 = 19,273; a ton is 40.15 / 4.17 = 9.63
+  assert.equal(M.money(u.fy.total), "$22.41");
+  // 6,000 gal on 80 acres: 36.996 x 6 x 80 = 17,758; a ton is 36.996 / 4.17 = 8.87
   const f = M.fieldValue({ ...M.EXAMPLE, prices: p, test: { n: "28", p: "13", k: "25" } });
-  assert.equal(M.money(f.field, 0), "$19,273");
-  assert.equal(M.money(f.perTon), "$9.63");
-  assert.equal(M.money(f.fy.field, 0), "$11,970");                  // 24.938 x 6 x 80 = 11,970.4
-  // Only K typed: N and P stay on the book totals (24, 8), K is 20: 15.39 + 7.76 + 7.67 = 30.82
+  assert.equal(M.money(f.field, 0), "$17,758");
+  assert.equal(M.money(f.perTon), "$8.87");
+  assert.equal(M.money(f.fy.field, 0), "$10,758");                  // 22.413 x 6 x 80
+  // Only K typed: N and P stay on the book totals (24, 8), K is 20: 15.39 + 5.82 + 7.67 = 28.88
   const k = M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: null, k: 20 });
-  assert.equal(M.money(k.total), "$30.82");
+  assert.equal(M.money(k.total), "$28.88");
   assert.deepEqual({ ...k.fromTest }, { n: false, p: false, k: true });
   assert.deepEqual({ ...k.fy.lb }, { n: 10, p: 6, k: 16 }, "book first-year N and P, test K x 80%");
   // Blank, junk or negative boxes are no test at all
   assert.equal(M.cleanTest({ n: "", p: "", k: "" }), null);
   assert.equal(M.cleanTest({ n: -3, p: "abc", k: null }), null);
-  assert.equal(M.money(M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: "", k: "" }).total), "$31.20");
+  assert.equal(M.money(M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: "", k: "" }).total), "$29.26");
   // A zero is a real test result, not a blank
   assert.equal(M.cleanTest({ n: 0 }).n, 0);
   // The calculator has the three boxes and asks for total pounds
@@ -352,7 +374,7 @@ test("prices carry their quote date, never 'today's'", () => {
     assert.equal(hit, null, `${f}: ${hit && hit[0]}`);
   }
   const mv = read("manure-value.html");
-  const data = JSON.parse(read("data/fertilizer.json"));
+  const data = JSON.parse(read("data/fertilizer-prices.json"));
   const when = M.day(M.nutrientPrices(data).src.n.as_of);
   assert.ok(mv.includes(`<h1>What manure is worth at <span data-mv="asof-n">${when}</span> fertilizer prices</h1>`), "the H1 names the quote date");
 });

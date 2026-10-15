@@ -223,12 +223,6 @@ PLANNED = {
     # run is on a GitHub runner: NOAA and the Drought Monitor cannot be reached
     # from the sandbox the panel was built in. components/prf-outlook.js says
     # "did not load" and the calculator is untouched until then.
-    # Written by fertilizer-ams.yml (scripts/fetch_fert_ams.py) on a GitHub
-    # runner: usda.gov cannot be reached from the sandbox the series was built
-    # in. fertilizer.html draws nothing for USDA until the file exists.
-    "data/fertilizer-ams.json": ("planned",
-        "The USDA AMS fertilizer job has not made its first run yet. "
-        "/fertilizer shows only the dealer sheet until it does."),
     "data/prf/outlook.json": ("planned",
         "The PRF outlook job has not made its first run yet. The outlook panel "
         "on /prf says its file did not load until it does; the calculator does not need it."),

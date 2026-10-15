@@ -59,7 +59,10 @@ jobs:
           command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
           pip install pypdf==6.20.1
       - name: Selftest
-        run: python scripts/fetch_coop_fert.py --selftest
+        run: |
+          python scripts/fetch_coop_fert.py --selftest
+          python scripts/build_fert_prices.py --selftest
+          python scripts/bake_fert_defaults.py --selftest
       - name: Discover co-ops that post fertilizer prices
         if: ${{ (github.event_name == 'workflow_dispatch' && inputs.discover) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[discover]')) }}
         env:
@@ -76,12 +79,22 @@ jobs:
         if: ${{ !((github.event_name == 'workflow_dispatch' && inputs.discover) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[discover]'))) }}
         run: python scripts/fetch_coop_fert.py
 
+      # Share cards for /fertilizer and /manure-value (scripts/fert_after_prices.sh).
+      - name: Install pillow for the share cards
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
+      # The commit loop re-runs scripts/fert_after_prices.sh after every reset,
+      # so data/fertilizer-prices.json and the baked pages (fertilizer,
+      # breakeven, manure-value, fast-facts) always match both source files on
+      # the branch being pushed, whichever fertilizer workflow pushed last.
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json data/fertilizer-coops-discovery.json"
+          BAKED="data/fertilizer-prices.json fertilizer.html breakeven.html manure-value.html fast-facts.html img/og"
           rm -rf /tmp/fcoop && mkdir -p /tmp/fcoop
           for f in $FILES; do
             [ -e "$f" ] && cp --parents "$f" /tmp/fcoop/ || true
@@ -92,7 +105,8 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/fcoop/data/. data/
-            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            bash scripts/fert_after_prices.sh
+            for f in $FILES $BAKED; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

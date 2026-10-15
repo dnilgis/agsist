@@ -2,7 +2,7 @@ name: Share images
 
 # Every page's share image (og:image) is drawn from its own data by
 # scripts/build_share_images.py. The data workflows redraw the cards their data
-# feeds (fertilizer-update, farm-bill, cash-bid-pages, cot, crop_progress,
+# feeds (fertilizer-coops, fertilizer-ams, farm-bill, cash-bid-pages, cot, crop_progress,
 # yield-panel, dairy, harvest-prices, arc-plc-refresh, county-rain,
 # price-stats, state-stats; daily.yml draws the daily card). This workflow is
 # the catch-all and the guard:
