@@ -9,7 +9,8 @@
  *    ASABE D245.6 (2007), from Chen and Morey (1989):
  *      RH = exp( -A / (T + C) * exp(-B * M) )    A 374.34, B 0.18662, C 31.696
  *  Corn, second: the classic Henderson corn fit, which reproduces the
- *    University of Kentucky table within 0.2 point:
+ *    University of Kentucky corn table within 0.3 point at 40-70% RH and
+ *    0.6 point at 30-90% RH, 35 to 90 F:
  *      1 - RH = exp( -K * (T + C) * M^N )        K 8.6541e-5, N 1.8634, C 49.81
  *    It reads wetter than Chung-Pfost. Any "wets" or "over target" call for
  *    corn uses the WETTER of the two; a "dries" call needs Chung-Pfost a full
@@ -17,7 +18,8 @@
  *  Wheat: Modified Henderson, ASAE D245.5 wheat constants:
  *      K 2.3007e-5, N 2.2857, C 55.815
  *    Reproduces University of Minnesota Extension's wheat table at 60 F
- *    (7.9, 11.0, 13.7, 16.9% at 20, 40, 60, 80% RH) within 0.05 point.
+ *    (Managing stored grain with aeration, Table 4: 12.3, 13.7, 15.2, 16.9%
+ *    at 50, 60, 70, 80% RH) within 0.05 point.
  *  RH decimal, T deg C, M percent DRY basis; readers see WET basis,
  *  wb = 100 M / (100 + M). Soybeans are off: their D245 constants could not
  *  be read at a source.
@@ -48,9 +50,9 @@
   };
   var LIMITS = { tMinF: 20, tMaxF: 100, rhMin: 20, rhMax: 90, targetMin: 10, targetMax: 20, fanMax: 15 };
   var MARGIN = 1.0;      // "dries to target" needs the main fit this far under target
-  var COOL_GAP_F = 10;   // NDSU: cool when outside air averages 10 to 15 F under the grain
+  var COOL_GAP_F = 10;   // UMN aeration: 24-h average 10 F or more under the grain cools it (Iowa State: 10-20 F)
   var COLD_AVG_F = 40;   // NDSU: natural air does little until air averages about 40 F
-  var HUMID_AVG = 70;    // NDSU (wheat): add a little heat if average RH is over 70%
+  var HUMID_AVG = 75;    // UMN natural-air drying: works best at 55-75% RH
 
   function num(x) { return typeof x === 'number' && isFinite(x); }
   function fToC(f) { return (f - 32) * 5 / 9; }
@@ -238,7 +240,7 @@
   }
 
   /* Drying-mode warnings from the forecast: cold (24 h mean under 40 F) and
-   * humid (whole-forecast mean RH over 70%). */
+   * humid (whole-forecast mean RH over 75%). */
   function dryWarnings(rows) {
     var w = [];
     var cold = avg(rows, 'tF', 0, 24);

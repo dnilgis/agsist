@@ -56,6 +56,18 @@ const TABLES = [
   ["KY", 50, 50, 12.3], ["KY", 50, 60, 13.8], ["KY", 50, 70, 15.5],
   ["KY", 70, 50, 11.3], ["KY", 70, 60, 12.8], ["KY", 70, 70, 14.4],
   ["AR", 60, 70, 15.7], ["AR", 75, 75, 15.7], ["AR", 75, 85, 17.9],
+  // Read in full Oct 15, 2026 (references branch): UMN Natural-air corn
+  // drying Table 6 (20-70 F), Kentucky Table 1 corn (35-90 F), Arkansas
+  // FSA1074 Table A cells the page prints.
+  ...[[20, [14.8, 16.1, 17.6, 19.4, 22.2]], [30, [13.9, 15.2, 16.7, 18.6, 21.1]], [40, [13.1, 14.5, 16.0, 17.9, 20.5]],
+      [50, [12.5, 13.8, 15.4, 17.3, 20.2]], [60, [11.9, 13.3, 14.8, 16.8, 19.7]], [70, [11.4, 12.7, 14.3, 16.3, 19.3]]]
+    .flatMap(([t, row]) => row.map((v, i) => ["UMN", t, 50 + 10 * i, v])),
+  ...[[35, [10.3, 11.8, 13.3, 14.8, 15.7, 16.6, 18.7, 21.7]], [40, [9.9, 11.5, 12.9, 14.5, 15.3, 16.2, 18.3, 21.3]],
+      [50, [9.4, 10.9, 12.3, 13.8, 14.7, 15.5, 17.6, 20.5]], [60, [8.9, 10.3, 11.8, 13.3, 14.1, 15.0, 17.0, 19.9]],
+      [70, [8.4, 9.9, 11.3, 12.8, 13.6, 14.4, 16.4, 19.4]], [80, [8.0, 9.4, 10.8, 12.3, 13.1, 14.0, 16.0, 18.8]],
+      [90, [7.7, 9.1, 10.5, 11.9, 12.7, 13.5, 15.5, 18.4]]]
+    .flatMap(([t, row]) => row.map((v, i) => ["KY", t, [30, 40, 50, 60, 65, 70, 80, 90][i], v])),
+  ["AR", 40, 70, 17.1], ["AR", 50, 60, 14.5],
 ];
 
 test("corn 'dries to target' is safe against every published table cell, for every target the box allows", () => {
@@ -72,7 +84,10 @@ test("corn 'dries to target' is safe against every published table cell, for eve
     }
   }
   // Arkansas runs wetter than both fits (e.g. 15.7 at 60 F/70%); the page prints that gap.
-  assert.match(page, /<th scope="row">60 F, 70%<\/th><td>14\.2 to 15\.1%<\/td><td>14\.5%<\/td><td>no row<\/td><td>15\.7%<\/td>/);
+  assert.match(page, /<th scope="row">60 F, 70%<\/th><td>14\.2 to 15\.1%<\/td><td>14\.5 \/ 14\.8%<\/td><td>15\.0%<\/td><td>15\.7%<\/td>/);
+  assert.match(page, /<th scope="row">40 F, 70%<\/th><td>15\.3 to 16\.4%<\/td><td>16\.0%<\/td><td>16\.2%<\/td><td>17\.1%<\/td>/);
+  assert.match(page, /<th scope="row">50 F, 60%<\/th><td>13\.3 to 13\.9%<\/td><td>13\.8%<\/td><td>13\.8%<\/td><td>14\.5%<\/td>/);
+  assert.ok(!/no row/.test(page), "every table has a row for the air shown (Oct 15 read of the full documents)");
 });
 
 test("the spread table prints what the equations give", () => {
@@ -421,4 +436,47 @@ test("the chart QR code reads back as the plain page link", { skip: process.env.
   m.forEach((row, y) => row.forEach((v, x) => { if (!v) return; for (let dy = 0; dy < s; dy++) for (let dx = 0; dx < s; dx++) { const o = (((y + 4) * s + dy) * W + (x + 4) * s + dx) * 4; px[o] = px[o + 1] = px[o + 2] = 0; } }));
   assert.equal(jsQR(px, W, W).data, "https://agsist.com/grain-emc");
   assert.ok(page.includes(q.AgQR.svg("https://agsist.com/grain-emc", "QR code: agsist.com/grain-emc")), "the baked QR is this symbol");
+});
+
+/* Source sweep, Oct 15, 2026: every extension fact on the page against the
+ * documents themselves (references branch), not search snippets. */
+test("extension facts match the documents they cite", () => {
+  // Henderson against Kentucky Table 1: 0.3 point at 40-70% RH, 0.6 at 30-90%, 35-90 F (was "0.2", true only from 40 F up)
+  const KY = { 35: [10.3, 11.8, 13.3, 14.8, 15.7, 16.6, 18.7, 21.7], 60: [8.9, 10.3, 11.8, 13.3, 14.1, 15.0, 17.0, 19.9], 90: [7.7, 9.1, 10.5, 11.9, 12.7, 13.5, 15.5, 18.4] };
+  const KRH = [30, 40, 50, 60, 65, 70, 80, 90];
+  for (const [t, row] of Object.entries(KY)) row.forEach((v, i) => {
+    const he = E.emc("corn", +t, KRH[i]).wet;
+    near(he, v, KRH[i] >= 40 && KRH[i] <= 70 ? 0.3 : 0.6, `Henderson vs Kentucky ${t} F ${KRH[i]}%`);
+  });
+  assert.match(page, /University of Kentucky corn table within 0\.3 point from 40 to 70% humidity and within 0\.6 point from 30 to 90%, at 35 to 90 F/);
+  // wheat: UMN aeration Table 4 at 60 F
+  for (const [rh, pub] of [[50, 12.3], [60, 13.7], [70, 15.2], [80, 16.9]]) near(E.emc("wheat", 60, rh).wb, pub, 0.06, `wheat 60 F ${rh}%`);
+  assert.match(page, /12\.3, 13\.7, 15\.2 and 16\.9% at 50, 60, 70 and 80% humidity, Table 4/);
+  // soft red winter: Kentucky Table 3, 13.7% at 60 F/70% (Arkansas FSA1074 lists durum, not soft red)
+  assert.match(page, /Kentucky&#x27;s soft red winter table lists 13\.7% at 60 F and 70% humidity, where this equation says 15\.2%/);
+  assert.ok(!/Arkansas Extension lists 13\.9%/.test(page));
+  // soybeans at 60 F/70%: Kentucky Table 2 and Arkansas Table B 13.7, UMN aeration Table 4 12.8; NDSU 13.0 was a snippet
+  assert.match(page, /Kentucky and Arkansas list 13\.7% and Minnesota lists 12\.8%/);
+  assert.ok(!/NDSU lists 13\.0%/.test(page));
+  // tables cover more than 40-70 F
+  assert.match(page, /cover 20 to 70 F \(Minnesota\), 35 to 90 F \(Kentucky\) and 35 to 100 F \(Arkansas\)/);
+  assert.match(page, /run up to about 2 points apart/);
+  // winter: NDSU 20-25 F (2009, 2010), UMN 20-30 north / 25-35 south, ISU 30-40
+  assert.match(page, /NDSU says to cool corn to 20 to 25 F; Minnesota says 20 to 30 F in the north of the state and 25 to 35 F in the south; Iowa State says 30 to 40 F/);
+  // cooling: UMN 10 F or more, ISU 10-20 F; the NDSU 10-15 F, 4-5 F at 6 in., 10-point and over-70% lines had no document
+  for (const src of [page, ui]) {
+    assert.ok(!/10 to 15 F/.test(src), "NDSU 10 to 15 F is not in any NDSU document read");
+    assert.ok(!/4 to 5 F at about 6/.test(src));
+    assert.ok(!/lowers humidity about 10 points/.test(src));
+    assert.ok(!/NDSU \(wheat\)|written for wheat|writing about wheat/.test(src));
+  }
+  assert.match(ui, /Minnesota Extension says grain is cooling when the 24-hour average is 10 F or more under it; Iowa State says 10 to 20 F\./);
+  assert.equal(E.COOL_GAP_F, 10);
+  assert.equal(E.HUMID_AVG, 75, "UMN: natural-air drying works best at 55 to 75% RH");
+  assert.match(page, /air at 45 F and 70% humidity warmed 5 F comes in at 50 F and 59%/);
+  // our vapor-pressure math on Minnesota's Table 7 example: 45 F, 70%, +5 F -> 59% (we get about 58)
+  near(E.warm(45, 70, 5).rh, 59, 1.2, "UMN Table 7 example");
+  // 15 / cfm: 150 h at 0.1, inside UMN's 100-200 h
+  assert.equal(Math.round(E.coolingHours(0.1)), 150);
+  assert.ok(!/Cornell Cooperative Extension&#x27;s figure/.test(page), "the 2-5 F slide is Hellevang's (NDSU), only hosted by Cornell");
 });
