@@ -100,7 +100,7 @@ test("stations in plain words: no raw ACIS id pair, names out of caps", () => {
   assert.deepEqual(plain(RP.stationParts("CAMERON 2 NE")), { name: "Cameron", off: "2 mi NE" });
   assert.equal(RP.stationLabel({ name: "CAMERON 2 NE", state: "WI" }), "Cameron, WI (2 mi NE of Cameron)");
   assert.equal(RP.stationLabel({ name: "CHETEK", stateAbbr: "WI" }), "Chetek, WI");
-  assert.equal(RP.sidPlain("US1WIBN0004 6"), "CoCoRaHS gauge US1WIBN0004");
+  assert.equal(RP.sidPlain("US1WIBN0004 6"), "volunteer gauge US1WIBN0004");
   assert.equal(RP.milesText(23.6), "24 mi");
 });
 
@@ -476,7 +476,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain the nearest NOAA weather station or CoCoRaHS volunteer gauge caught\. Drawing it is free\.<\/p>/);
+  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain the nearest weather station caught\. Drawing it is free\.<\/p>/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
