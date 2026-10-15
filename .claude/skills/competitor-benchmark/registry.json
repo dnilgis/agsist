@@ -1,15 +1,244 @@
 {
-  "about": "Competitor benchmark registry (see SKILL.md). Scores are 1-5 per rubric item, total /50. 'evidence' says how a competitor was read: 'opened' or 'snippets' (search results only).",
-  "rubric": ["first_screen_answer", "current", "accurate_sourced", "local_personal", "clear_concise", "depth_on_demand", "phone", "trust", "speed_clutter", "unique_value"],
-  "pages": {
-    "farm-bill": {"queries": ["farm bill 2026 what it means for farmers", "farm bill status", "farm bill extension"], "last_run": "2026-10-15", "ours_total": 42, "verdict": "close", "report": "results/2026-10-15-farmbill.md",
-      "competitors": [{"name": "National Agricultural Law Center", "kind": "university", "total": 36, "evidence": "snippets"}, {"name": "Congressional Research Service (R48918)", "kind": "government", "total": 31, "evidence": "snippets"}, {"name": "Senate Agriculture Committee", "kind": "government", "total": 28, "evidence": "snippets"}, {"name": "farmdoc daily", "kind": "university", "evidence": "snippets"}, {"name": "AFBF Market Intel", "kind": "established", "evidence": "snippets"}, {"name": "NSAC", "kind": "advocacy", "evidence": "snippets"}, {"name": "Agri-Pulse", "kind": "established", "evidence": "snippets"}, {"name": "Farm Policy News", "kind": "university", "evidence": "snippets"}]},
-    "prf": {"queries": ["PRF insurance calculator", "pasture rangeland forage insurance <state>"], "last_run": "2026-10-15", "verdict": "yes on substance; not yet found in search", "report": "results/2026-10-15-prf.md",
-      "competitors": [{"name": "USDA RMA PRF Decision Support Tool", "kind": "government", "evidence": "snippets"}, {"name": "ProAg", "kind": "vendor", "evidence": "snippets"}, {"name": "Farmers Mutual Hail", "kind": "vendor", "evidence": "snippets"}, {"name": "Redd Summit", "kind": "vendor", "evidence": "snippets"}, {"name": "farmdoc daily", "kind": "university", "evidence": "snippets"}, {"name": "OSU, UNL, K-State extension", "kind": "university", "evidence": "snippets"}]},
-    "arc-plc": {"queries": ["ARC or PLC 2026", "ARC PLC decision tool"], "last_run": "2026-10-15", "ours_total": 44, "verdict": "close", "report": "results/2026-10-15-arcplc.md",
-      "competitors": [{"name": "Texas A&M AFPC decision aid", "kind": "university", "total": 40, "evidence": "snippets"}, {"name": "farmdoc", "kind": "university", "total": 37, "evidence": "snippets"}, {"name": "Michigan State (Oct 9 article)", "kind": "university", "total": 36, "evidence": "snippets"}, {"name": "USDA FSA ARC/PLC", "kind": "government", "total": 34, "evidence": "snippets"}, {"name": "K-State", "kind": "university", "total": 33, "evidence": "snippets"}, {"name": "Iowa State Ag Decision Maker", "kind": "university", "total": 30, "evidence": "snippets"}]},
-    "cash-bids": {"queries": ["cash grain bids near me", "<town> corn price today"], "last_run": "2026-10-15", "verdict": "close (coverage: 1,923 of 8,404 known elevators read)", "report": "results/2026-10-15-cashbids.md",
-      "competitors": [{"name": "Barchart cash bids", "kind": "established", "evidence": "snippets"}, {"name": "DTN / Progressive Farmer", "kind": "established", "evidence": "snippets"}, {"name": "FBN", "kind": "startup", "evidence": "snippets"}, {"name": "Iowa Farm Bureau basis", "kind": "established", "evidence": "snippets"}, {"name": "Elevator chains' own pages (ADM, Cargill, CHS, Bunge)", "kind": "vendor", "evidence": "snippets"}]},
-    "grain-bin-calculator": {"queries": ["grain bin calculator", "bushels in a grain bin"], "last_run": null, "competitors": []}
+ "about": "Competitor benchmark registry (see SKILL.md). Scores are 1-5 per rubric item, total /50. 'evidence' says how a competitor was read: 'opened' or 'snippets' (search results only).",
+ "rubric": [
+  "first_screen_answer",
+  "current",
+  "accurate_sourced",
+  "local_personal",
+  "clear_concise",
+  "depth_on_demand",
+  "phone",
+  "trust",
+  "speed_clutter",
+  "unique_value"
+ ],
+ "pages": {
+  "farm-bill": {
+   "queries": [
+    "farm bill 2026 what it means for farmers",
+    "farm bill status",
+    "farm bill extension"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 42,
+   "verdict": "close",
+   "report": "results/2026-10-15-farmbill.md",
+   "competitors": [
+    {
+     "name": "National Agricultural Law Center",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Congressional Research Service (R48918)",
+     "kind": "government",
+     "total": 31,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Senate Agriculture Committee",
+     "kind": "government",
+     "total": 28,
+     "evidence": "snippets"
+    },
+    {
+     "name": "farmdoc daily",
+     "kind": "university",
+     "evidence": "snippets"
+    },
+    {
+     "name": "AFBF Market Intel",
+     "kind": "established",
+     "evidence": "snippets"
+    },
+    {
+     "name": "NSAC",
+     "kind": "advocacy",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Agri-Pulse",
+     "kind": "established",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Farm Policy News",
+     "kind": "university",
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "prf": {
+   "queries": [
+    "PRF insurance calculator",
+    "pasture rangeland forage insurance <state>"
+   ],
+   "last_run": "2026-10-15",
+   "verdict": "yes on substance; not yet found in search",
+   "report": "results/2026-10-15-prf.md",
+   "competitors": [
+    {
+     "name": "USDA RMA PRF Decision Support Tool",
+     "kind": "government",
+     "evidence": "snippets"
+    },
+    {
+     "name": "ProAg",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Farmers Mutual Hail",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Redd Summit",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "farmdoc daily",
+     "kind": "university",
+     "evidence": "snippets"
+    },
+    {
+     "name": "OSU, UNL, K-State extension",
+     "kind": "university",
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "arc-plc": {
+   "queries": [
+    "ARC or PLC 2026",
+    "ARC PLC decision tool"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 44,
+   "verdict": "close",
+   "report": "results/2026-10-15-arcplc.md",
+   "competitors": [
+    {
+     "name": "Texas A&M AFPC decision aid",
+     "kind": "university",
+     "total": 40,
+     "evidence": "snippets"
+    },
+    {
+     "name": "farmdoc",
+     "kind": "university",
+     "total": 37,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Michigan State (Oct 9 article)",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets"
+    },
+    {
+     "name": "USDA FSA ARC/PLC",
+     "kind": "government",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "K-State",
+     "kind": "university",
+     "total": 33,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Iowa State Ag Decision Maker",
+     "kind": "university",
+     "total": 30,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "cash-bids": {
+   "queries": [
+    "cash grain bids near me",
+    "<town> corn price today"
+   ],
+   "last_run": "2026-10-15",
+   "verdict": "close (coverage: 1,923 of 8,404 known elevators read)",
+   "report": "results/2026-10-15-cashbids.md",
+   "competitors": [
+    {
+     "name": "Barchart cash bids",
+     "kind": "established",
+     "evidence": "snippets"
+    },
+    {
+     "name": "DTN / Progressive Farmer",
+     "kind": "established",
+     "evidence": "snippets"
+    },
+    {
+     "name": "FBN",
+     "kind": "startup",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Iowa Farm Bureau basis",
+     "kind": "established",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Elevator chains' own pages (ADM, Cargill, CHS, Bunge)",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Bloomer WI elevators Sig named: Rooney Grain, River Country Co-op, CDR Farms (coverage check)",
+     "kind": "coverage",
+     "evidence": "owner"
+    }
+   ]
+  },
+  "grain-bin-calculator": {
+   "queries": [
+    "grain bin calculator",
+    "bushels in a grain bin"
+   ],
+   "last_run": "2026-10-15",
+   "verdict": "close; reads 5-6.5% under dealer charts (25 deg, no pack vs ASABE 28 deg + ~6% pack)",
+   "report": "results/2026-10-15-grainbin.md",
+   "competitors": [
+    {
+     "name": "GSI 40-Series capacity table",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Brock BR-2286",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Sukup spec sheet",
+     "kind": "vendor",
+     "evidence": "snippets"
+    },
+    {
+     "name": "UNL CropWatch",
+     "kind": "university",
+     "evidence": "snippets"
+    },
+    {
+     "name": "Omni Calculator",
+     "kind": "startup",
+     "evidence": "snippets"
+    },
+    {
+     "name": "ToolGrit",
+     "kind": "startup",
+     "evidence": "snippets"
+    }
+   ]
   }
+ }
 }
