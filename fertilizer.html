@@ -147,6 +147,27 @@
 .fpc-src{display:block;font-size:0.745rem;color:var(--text-muted);font-weight:400;margin-top:.1rem}
 .fert-ams-sub{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .65rem}
 .fert-ams-sub a{color:var(--gold)}
+/* What co-ops are posting (components/fert-coops.js) */
+#fert-coops{margin-bottom:1.25rem}
+.fcp-range{font-size:1.35rem}
+.fert-coop-card .fpc-sym{white-space:nowrap;font-size:.7rem}
+.fert-coop-card .fpc-name{min-width:0}
+.fert-coop-card .fpc-head{flex-wrap:wrap;gap:.25rem}
+.fert-coop-ams{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem}
+.fert-coop-ams a,.fert-coop-src a,.fert-coop-table a{color:var(--gold)}
+.fert-coop-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 .75rem}
+.fert-coop-table td{font-size:.8rem;vertical-align:top}
+.fert-coop-table td.prod{font-weight:600}
+.fcp-town{display:block;font-weight:400;font-size:.74rem;color:var(--text-muted)}
+.fert-coop-math{margin:.25rem 0 0;font-size:.85rem;color:var(--text-dim)}
+.fert-coop-math summary{cursor:pointer;color:var(--gold);padding:.4rem 0;font-weight:600}
+.fert-coop-rows{list-style:none;margin:0 0 .5rem;padding:0}
+.fert-coop-rows li{padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.82rem;line-height:1.45;color:var(--text)}
+.fert-coop-rows b{font-weight:700;margin-right:.3rem}
+.fcp-when{display:block;font-size:.76rem;color:var(--text-muted)}
+.fert-coop-h3{font-size:.9rem;margin:.9rem 0 .2rem;color:var(--text)}
+.fert-coop-src{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin:0 0 .4rem}
+@media(max-width:560px){.fert-coop-table td,.fert-coop-table th{padding:.4rem .3rem}.fert-coop-table td{font-size:.76rem}}
 
 /* Natural gas */
 .natgas-card{
@@ -334,6 +355,8 @@
 
   <section id="fert-ams" aria-labelledby="fert-ams-h" hidden></section>
 
+  <section id="fert-coops" aria-labelledby="fert-coops-h" hidden></section>
+
   <h2 class="fert-related-title" style="margin-top:.25rem">Cost per pound of nutrient</h2>
   <div class="fert-nutrient">
     <table class="fert-nutrient-table">
@@ -432,6 +455,7 @@
     not a licensed feed and not your dealer&rsquo;s bid. The USDA figures are the
     <a href="https://mymarketnews.ams.usda.gov/viewReport/3195" target="_blank" rel="noopener">USDA AMS Illinois Production Cost Report</a>
     (biweekly, public), read by a script and shown with the report&rsquo;s own date.
+    Co-op prices are read each weekday from the co-ops&rsquo; own websites; each co-op is named and linked in that section.
     Not a quote. Verify with your dealer before purchasing. &middot;
     <a href="/">&#x2190; AGSIST Dashboard</a> &middot;
     Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
@@ -455,6 +479,7 @@
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
 <script src="/components/fert-sources.js?v=2"></script>
+<script src="/components/fert-coops.js?v=1"></script>
 
 <script>
 (function(){
@@ -623,6 +648,8 @@ function initCalc(){
 }
 
 /* The USDA AMS file does not exist until fertilizer-ams.yml has run; a miss is quiet and the page draws nothing for it. */
+/* Co-op posted prices, scripts/fetch_coop_fert.py; same rule: no file, nothing drawn. */
+var coopsP=fetch('/data/fertilizer-coops.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
 var amsP=fetch('/data/fertilizer-ams.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
 fetch('/data/fertilizer.json').then(function(r){if(!r.ok)throw new Error('no-fert');return r.json();}).then(function(data){
   return amsP.then(function(ams){return {data:data,ams:ams};});
@@ -631,6 +658,7 @@ fetch('/data/fertilizer.json').then(function(r){if(!r.ok)throw new Error('no-fer
   renderCards(data);
   var box=document.getElementById('fert-ams');
   if(box&&ams){box.innerHTML=FS.amsBox(ams,Date.now());box.hidden=false;}
+  coopsP.then(function(co){var FC=window.FertCoops,cb=document.getElementById('fert-coops'),h=FC?FC.section(co,ams):'';if(cb&&h){cb.innerHTML=h;cb.hidden=false;}});
   var fvn=document.getElementById('fv-note');if(fvn&&ams)fvn.textContent=FS.coverNote(ams);
   var rows=FS?FS.merge(data.prices,ams):data.prices;
   var prods=analyze(rows);STATE.products=prods;

@@ -12,6 +12,7 @@ exists so that cannot happen quietly again. It fails when:
 
   * the published total passes FAIL_MB (warns at WARN_MB),
   * any top-level folder passes its budget (FOLDER_MB, or DEFAULT_FOLDER_MB),
+  * a file named in FILE_KB passes its cap,
   * a page inside a generated set (a folder tree with SET_MIN or more .html
     files) is bigger than SET_PAGE_KB. One fat template times 2,800 counties
     is how a folder triples overnight.
@@ -57,6 +58,15 @@ FOLDER_MB = {
     "rain": 60,
 }
 DEFAULT_FOLDER_MB = 25
+
+# Single files that grow by appending, in KB. A history file that grows a row
+# a day is fine for years; one that grows without a cap is how a folder fills.
+# fertilizer-coops-history: 1024 (2026-10-15). scripts/fetch_coop_fert.py
+# appends a row only when a co-op's price or date changes (about 60 bytes a
+# row) and stops appending at its own HIST_MAX_KB, the same number.
+FILE_KB = {
+    "data/fertilizer-coops-history.json": 1024,
+}
 
 SET_MIN = 20          # this many .html files under one top-level folder = a generated set
 SET_PAGE_KB = 150     # cap for any one page in a generated set
@@ -104,6 +114,10 @@ def measure(root=ROOT):
         cap = FOLDER_MB.get(top, DEFAULT_FOLDER_MB)
         if n > cap * 1048576:
             over.append(f"{top}/ is {mb(n)} MB, budget {cap} MB")
+    for rel, cap in FILE_KB.items():
+        p = os.path.join(root, rel)
+        if os.path.exists(p) and os.path.getsize(p) > cap * 1024:
+            over.append(f"{rel} is {round(os.path.getsize(p) / 1024)} KB, cap {cap} KB")
     fat = []
     excused = []
     for top, pages in html.items():
@@ -164,8 +178,16 @@ def selftest():
             ok(any(o.startswith("gen/ is") for o in measure(d)["over"]), "folder budget enforced")
             DEFAULT_FOLDER_MB, FAIL_MB = 25, 0
             ok(any("published total" in o for o in measure(d)["over"]), "total budget enforced")
+            FAIL_MB = saved[0]
+            with open(os.path.join(d, "gen", "hist.json"), "w") as f:
+                f.write("x" * 3000)
+            FILE_KB["gen/hist.json"] = 2
+            ok(any(o.startswith("gen/hist.json is") for o in measure(d)["over"]), "file cap enforced")
+            FILE_KB["gen/hist.json"] = 4
+            ok(not any("hist.json" in o for o in measure(d)["over"]), "file under its cap passes")
     finally:
         FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB = saved
+        FILE_KB.pop("gen/hist.json", None)
     for f in fails:
         print("FAIL", f)
     print("site budget selftest:", "ok" if not fails else f"{len(fails)} failure(s)")

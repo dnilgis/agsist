@@ -87,9 +87,9 @@ PRODUCTS = {
     "dap":       ("DAP", (18, 46, 0, 0), (400, 1600)),
     "map":       ("MAP", (11, 52, 0, 0), (400, 1700)),
     "potash":    ("Potash", (0, 0, 60, 0), (250, 1100)),
-    "ams":       ("Ammonium sulfate (AMS)", (21, 0, 0, 24), (250, 1000)),
+    "ams":       ("AMS", (21, 0, 0, 24), (250, 1000)),
     "10-34-0":   ("10-34-0", (10, 34, 0, 0), (300, 1300)),
-    "thiosul":   ("Thio-Sul (ATS)", (12, 0, 0, 26), (200, 900)),
+    "thiosul":   ("Thio-Sul", (12, 0, 0, 26), (200, 900)),
     "other":     ("Other", None, (50, 3000)),
 }
 ORDER = [k for k in PRODUCTS if k != "other"]
@@ -443,7 +443,8 @@ def check_row(row, key, cash_from):
             dropped.append("%s %s $%.2f/ton is outside %d to %d for %s" % (row["raw"], BASIS_LABEL[b], v, lo, hi, key))
             del row["prices"][b]
     if not row["prices"]:
-        return None, dropped, flags
+        # nothing priced per ton (a per-gallon row): kept to show, never counted
+        return (None if dropped else row), dropped, flags
     tons = list(row["prices"].values())
     if row["per_unit"] is not None:
         grade = grade_of(row["raw"]) or PRODUCTS[key][1]
@@ -538,10 +539,12 @@ def summarize(coops):
                 if others and abs(r["cash"] - others) / others > FAR_FROM_OTHERS:
                     r["far_from_others"] = True
                     far.append(c["id"])
-        dates = sorted(r["date"] or r["first_seen"] for _, r in picks)
+        # dates the co-ops show; an undated price is counted apart, never given a date
+        dates = sorted(r["date"] for _, r in picks if r["date"])
         out.append({"key": key, "name": PRODUCTS[key][0], "symbol": SYMBOL[key], "n": len(vals),
                     "median": med, "low": min(vals), "high": max(vals),
-                    "oldest": dates[0], "newest": dates[-1], "coops": [c["id"] for c, _ in picks], "far": far})
+                    "oldest": dates[0] if dates else None, "newest": dates[-1] if dates else None,
+                    "undated": len(vals) - len(dates), "coops": [c["id"] for c, _ in picks], "far": far})
     return out
 
 
@@ -833,6 +836,29 @@ def discover(root, now=None, fetcher=None, sources=None, limit=None):
     return 0
 
 
+# ---------------------------------------------------------------- fixture feed
+def fixture_doc(now=None):
+    """The feed as a run on the saved fixtures would write it (the three co-op
+    pages plus the price sheet as a fourth, test-only co-op). Used by the
+    selftest and by test/fert-coops.test.mjs."""
+    now = now or datetime.datetime(2026, 10, 15, 14, tzinfo=datetime.timezone.utc)
+    today = now.date()
+    fx = ROOT / FIX_DIR
+    cfgs = read_json(ROOT / CONFIG)["coops"] + [
+        {"id": "sheet", "name": "Test sheet co-op", "state": "KS", "url": "https://example.com/2026-9-24.pdf",
+         "layout": "pdf-sheet", "cash_from": "cash_pickup", "cash_label": "3% cash pickup"}]
+    pages = {"tworivers-ks": "tworivers-ks_2026-10-15.html", "mccune-ks": "mccune_2026-10-15.html",
+             "mulvane-ks": "mulvane_2026-10-15.html"}
+    results = {}
+    for c in cfgs:
+        if c["id"] in pages:
+            rws, txt, pr = html_rows((fx / pages[c["id"]]).read_text(), today)
+            results[c["id"]] = ({"rows": rws, "page_date": one_date(txt, today), "problems": pr, "source_url": c["url"]}, None)
+    rws, d, pr = pdf_rows((fx / "agricharts-1041_2026-9-24.txt").read_text(), today)
+    results["sheet"] = ({"rows": rws, "page_date": d, "problems": pr, "source_url": cfgs[-1]["url"]}, None)
+    return compose(cfgs, results, None, now)
+
+
 # ---------------------------------------------------------------- selftest
 def selftest():
     fails = []
@@ -922,8 +948,9 @@ def selftest():
     doc = compose(allc, results, None, now)
     co = {c["id"]: c for c in doc["coops"]}
     trr = {r["raw"]: r for r in co["tworivers-ks"]["rows"]}
-    ck("stale: 9-24-3 dated 2022 is gone (no $/ton) and Pel Lime 2023 is stale",
-       "9-24-3" not in trr and trr["Pel Lime"]["stale"] is True)
+    ck("stale: 9-24-3 dated 2022 is kept, stale, with no $/ton and no cash; Pel Lime 2023 is stale",
+       trr["9-24-3"]["stale"] is True and trr["9-24-3"]["cash"] is None and trr["9-24-3"]["prices"] == {}
+       and trr["Pel Lime"]["stale"] is True)
     ck("stale: AMS 21-0-0-24S dated Aug 4 (72 days) is stale, out of the summary",
        trr["21-0-0-24S"]["stale"] is True and trr["21-0-0-24S"]["age_days"] == 72)
     ck("first seen: DAP 'close out' has no date and first_seen today",
@@ -948,7 +975,9 @@ def selftest():
     ck("summary: under %d co-ops, no middle price" % MIN_MEDIAN, summ["map"]["n"] == 2 and summ["map"]["median"] is None
        and summ["uan32"]["median"] is None)
     ck("summary: 'other' products never summarized", "other" not in summ)
-    ck("summary: dates span 2026-09-24 to 2026-10-15", summ["urea"]["oldest"] == "2026-09-24" and summ["urea"]["newest"] == "2026-10-06")
+    ck("summary: dates span 2026-09-24 to 2026-10-06", summ["urea"]["oldest"] == "2026-09-24" and summ["urea"]["newest"] == "2026-10-06")
+    ck("summary: the undated DAP is counted as undated, not given today's date",
+       summ["dap"]["undated"] == 1 and summ["dap"]["newest"] == "2026-10-06" and summ["urea"]["undated"] == 0)
     ck("states counted", doc["states"] == {"KS": 4} and doc["coops_current"] == 4)
 
     # a bad per-unit figure keeps the row out of the summary
@@ -1013,6 +1042,9 @@ def selftest():
     ck("discovery: agricharts hosts only, marketplace left out, states joined",
        list(hs) == ["mulvanecoop.com"] and hs["mulvanecoop.com"]["states"] == {"KS"})
 
+    import check_site_budget
+    ck("history cap matches scripts/check_site_budget.py FILE_KB", check_site_budget.FILE_KB.get(HIST) == HIST_MAX_KB)
+
     if fails:
         print("selftest FAILED: %d" % len(fails))
         return 1
@@ -1023,6 +1055,9 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
+    if "--fixture-feed" in argv:
+        print(json.dumps(fixture_doc()))
+        return 0
     if "--discover" in argv:
         lim = None
         for a in argv:
