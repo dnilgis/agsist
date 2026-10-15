@@ -133,6 +133,9 @@ test('the family is 36 tests and a flat record keeps nothing', () => {
   const paid = r.tests['all/feeder/paid'];
   assert.equal(paid.trials, 60);
   assert.ok(paid.windows >= 4 && paid.nEff <= paid.windows);
+  // two reinsurance years only: not run, counted as p = 1
+  assert.equal(paid.p, null);
+  assert.match(paid.not_run, /fewer than 5 reinsurance years/);
   // the current regime (RY2021 on) has no trials here: nothing to test, p counted as 1
   assert.equal(r.tests['current/feeder/paid'].trials, 0);
   assert.equal(r.tests['current/feeder/paid'].p_holm, 1);
@@ -145,4 +148,41 @@ test('the subsidy table against what producers were given', () => {
   });
   assert.deepEqual(c['2003'], { rows: 2, agree: 2, above: 0, below: 0, agree_share: 1 });
   assert.deepEqual(c['2022'], { rows: 12, agree: 10, above: 1, below: 1, agree_share: 0.8333 });
+});
+
+test('exact sign flip over yearly blocks', () => {
+  close(B.signFlip([1, 2, 3]), 0.25, 1e-12);       // only all-plus and all-minus reach |6|
+  close(B.signFlip([1, -1]), 1, 1e-12);
+  close(B.signFlip([2, 1, 1, 1, 1]), 2 / 32, 1e-12);
+  // six years all the same sign: 1 in 32, never under 0.05 / 36
+  close(B.signFlip([1, 2, 3, 4, 5, 6]), 2 / 64, 1e-12);
+  const pts = [];
+  for (let ry = 2014; ry <= 2020; ry++) {
+    for (let i = 0; i < 30; i++) pts.push({ d: B.dayNum(`${ry - 1}0801`) + i * 7, ry, len: 13, x: ry === 2016 ? -0.5 : 1 });
+  }
+  const r = B.testSeries(pts);
+  assert.equal(r.years_tested, 7);
+  assert.equal(r.years_positive, 6);
+  // 7 yearly means 1,1,-0.5,1,1,1,1 (sum 5.5): patterns at least that far out
+  let hit = 0;
+  const xs = [1, 1, -0.5, 1, 1, 1, 1];
+  for (let m = 0; m < 128; m++) { let s = 0; for (let i = 0; i < 7; i++) s += (m >> i) & 1 ? -xs[i] : xs[i]; if (Math.abs(s) >= 5.5 - 1e-12) hit++; }
+  close(r.p, hit / 128, 1e-3);
+});
+
+test('"did best so far" picks among the bands that have a record', () => {
+  const trials = [];
+  for (let i = 0; i < B.MIN_SETTLED; i++) {
+    trials.push(mk('20151001', '20160101', '95-100', 0, 1, 2016));
+    trials.push(mk('20151001', '20160101', '90-95', 5, 1, 2016));
+  }
+  trials.push(mk('20160201', '20160501', '95-100', 0, 1, 2016));
+  trials.push(mk('20160201', '20160501', '90-95', 0, 1, 2016));
+  const pick = B.pastBest(trials);
+  assert.equal(pick.get('feeder|13|20160201'), '90-95');
+  // without the base band in the record there is no pick
+  const t2 = [];
+  for (let i = 0; i < B.MIN_SETTLED; i++) { t2.push(mk('20151001', '20160101', '90-95', 5, 1, 2016)); t2.push(mk('20151001', '20160101', '85-90', 1, 1, 2016)); }
+  t2.push(mk('20160201', '20160501', '90-95', 0, 1, 2016));
+  assert.equal(B.pastBest(t2).get('feeder|13|20160201'), null);
 });

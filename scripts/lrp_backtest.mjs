@@ -44,14 +44,20 @@
      36 tests. A result is "kept" only if its Holm-adjusted odds are under
      0.05, its effect is positive, and it is positive at every length with
      enough data. The rest are listed as tested and not kept.
+     "Best so far" picks among the bands with MIN_SETTLED settled trials,
+     and only when the 95-100 band is one of them.
 
    OVERLAP
      Trials overlap: a 52-week endorsement bought each day shares most of its
-     price path with the next day's. Each test averages trials into 13-week
-     purchase windows and uses a Newey-West (Bartlett) standard error with lags
-     covering the longest endorsement (3 windows), and Student's t on the
-     window count. The file states trials, windows, and the effective number of
-     independent windows (windows x plain variance / long-run variance).
+     price path with the next day's, and a cattle rally lasts years. So the
+     test treats a reinsurance year of purchases as one block: the exact
+     sign-flip odds over the yearly means, run only with MIN_YEARS years or
+     more (otherwise "not enough history" and p = 1 in the family). With 13
+     years the smallest possible odds are 1 in 4,096; with the six years since
+     RY2021, 1 in 32, which can never pass Holm over 36 tests. That is the
+     honest size of the current regime's record. The file also gives 13-week
+     windows with a Newey-West error (3 lags) and the effective number of
+     independent windows, for the record, not for the verdict.
 
    node scripts/lrp_backtest.mjs --history DIR [--out data/lrp/bt.json] */
 import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
@@ -77,6 +83,8 @@ export const HAC_LAGS = 3;
 export const MIN_SETTLED = 60;
 export const SETTLE_LAG_DAYS = 14;
 export const MIN_WINDOWS_PER_LENGTH = 4;
+export const MIN_YEARS = 5;
+export const MIN_TRIALS_PER_YEAR = 20;
 const EPOCH = Date.UTC(2013, 6, 1);
 
 export function subsidy(ry, level) {
@@ -270,8 +278,12 @@ export function pastBest(trials) {
         const s = sums[byEnd[i].band]; s.n++; s.paid += byEnd[i].paid; s.cost += byEnd[i].cost; i++;
       }
       let best = null, bestNet = -Infinity;
-      if (BANDS.every((b) => sums[b.id].n >= MIN_SETTLED)) {
-        for (const b of BANDS) {
+      /* the bands with a record: before RY2025 RMA's dollar steps rarely
+         reached the low bands, so the pick is among those that had one, and
+         only when the base band is one of them */
+      const cands = BANDS.filter((b) => sums[b.id].n >= MIN_SETTLED);
+      if (cands.length >= 2 && cands.some((b) => b.id === BASE)) {
+        for (const b of cands) {
           const s = sums[b.id], sub = subsidy(ryOf.get(sed), (b.lo + Math.min(b.hi, 1)) / 2);
           const net = (s.paid - s.cost * (1 - sub)) / s.n;
           if (net > bestNet + 1e-12) { bestNet = net; best = b.id; }
@@ -286,9 +298,32 @@ export function pastBest(trials) {
 const windowOf = (d) => Math.floor((d * 864e5 - EPOCH) / (WINDOW_DAYS * 864e5));
 
 /* a list of {d, len, x} -> the HAC test on 13-week window means, plus per length */
+/* exact two-sided sign-flip odds for the mean of xs: the share of all 2^n
+   sign patterns whose mean is at least as far from zero */
+export function signFlip(xs) {
+  const n = xs.length;
+  if (!n) return null;
+  if (n > 22) throw new Error("signFlip: too many blocks to enumerate");
+  const obs = Math.abs(xs.reduce((a, b) => a + b, 0)) - 1e-12;
+  let hit = 0;
+  for (let m = 0; m < 1 << n; m++) {
+    let s = 0;
+    for (let i = 0; i < n; i++) s += (m >> i) & 1 ? -xs[i] : xs[i];
+    if (Math.abs(s) >= obs) hit++;
+  }
+  return hit / (1 << n);
+}
+
+/* a list of {d, ry, len, x} -> the test. THE test is the exact sign flip over
+   reinsurance-year means: a year of purchases is the block, so a trend that
+   lasts a year counts once, not fifty times. It needs MIN_YEARS years with at
+   least MIN_TRIALS_PER_YEAR trials, or it is not run (counted as p = 1).
+   The 13-week windows with a Newey-West error are reported beside it. */
 export function testSeries(points) {
-  const win = new Map(), perLen = new Map();
+  const win = new Map(), perLen = new Map(), perYear = new Map();
   for (const p of points) {
+    if (!perYear.has(p.ry)) perYear.set(p.ry, []);
+    perYear.get(p.ry).push(p.x);
     const w = windowOf(p.d);
     if (!win.has(w)) win.set(w, []);
     win.get(w).push(p.x);
@@ -301,13 +336,21 @@ export function testSeries(points) {
   const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
   const ws = [...win.keys()].sort((a, b) => a - b).map((w) => mean(win.get(w)));
   const h = hac(ws);
+  const years = {};
+  for (const [ry, xs] of [...perYear].sort((a, b) => a[0] - b[0])) years[ry] = { trials: xs.length, mean: round(mean(xs), 3) };
+  const yx = Object.values(years).filter((y) => y.trials >= MIN_TRIALS_PER_YEAR).map((y) => y.mean);
+  const enough = yx.length >= MIN_YEARS;
+  const p = enough ? signFlip(yx) : null;
   const lengths = {};
   for (const [len, m] of [...perLen].sort((a, b) => a[0] - b[0])) {
     const xs = [...m.keys()].sort((a, b) => a - b).map((w) => mean(m.get(w)));
     lengths[len] = { windows: xs.length, mean: round(mean(xs), 3) };
   }
-  return { trials: points.length, windows: h.n, nEff: round(h.nEff, 1), mean: round(h.mean, 3), se: round(h.se, 3),
-    p: h.p == null ? null : +h.p.toPrecision(3), lengths };
+  return { trials: points.length, years_tested: yx.length, p: p == null ? null : +p.toPrecision(3),
+    not_run: enough ? null : `fewer than ${MIN_YEARS} reinsurance years with ${MIN_TRIALS_PER_YEAR} or more trials`,
+    years_positive: yx.filter((v) => v > 0).length,
+    windows: h.n, nEff: round(h.nEff, 1), mean: round(h.mean, 3), se: round(h.se, 3),
+    hac_p: h.p == null ? null : +h.p.toPrecision(3), years, lengths };
 }
 
 export function round(x, k) {
@@ -330,13 +373,13 @@ export function runBacktest(trials) {
         family.push(key);
         tests[key] = { regime: rg.id, product: p.id, test: id, what, ...testSeries(points) };
       };
-      add("paid", `the ${BASE} band paid more than it cost`, base.map((t) => ({ d: t.d, len: t.len, x: t.net })));
+      add("paid", `the ${BASE} band paid more than it cost`, base.map((t) => ({ d: t.d, ry: t.ry, len: t.len, x: t.net })));
       for (const b of BANDS) {
         if (b.id === BASE) continue;
         const pts = [];
         for (const t of base) {
           const o = idx.get(`${t.pid}|${t.len}|${t.sed}|${b.id}`);
-          if (o) pts.push({ d: t.d, len: t.len, x: o.net - t.net });
+          if (o) pts.push({ d: t.d, ry: t.ry, len: t.len, x: o.net - t.net });
         }
         add(`band:${b.id}`, `the ${b.id} band instead of ${BASE}`, pts);
       }
@@ -346,7 +389,7 @@ export function runBacktest(trials) {
         const b = best.get(`${t.pid}|${t.len}|${t.sed}`);
         if (!b) { noPick++; continue; }
         const o = idx.get(`${t.pid}|${t.len}|${t.sed}|${b}`);
-        if (o) pts.push({ d: t.d, len: t.len, x: o.net - t.net });
+        if (o) pts.push({ d: t.d, ry: t.ry, len: t.len, x: o.net - t.net });
       }
       add("best", `the band that did best so far instead of ${BASE}`, pts);
       tests[`${rg.id}/${p.id}/best`].no_pick_trials = noPick;
@@ -374,9 +417,9 @@ export function summarize(trials) {
         const lens = [...new Set(ts.map((t) => t.len))].sort((a, c) => a - c);
         for (const len of lens) {
           const xs = ts.filter((t) => t.len === len);
-          const s = testSeries(xs.map((t) => ({ d: t.d, len, x: t.net })));
+          const s = testSeries(xs.map((t) => ({ d: t.d, ry: t.ry, len, x: t.net })));
           out[`${rg.id}/${p.id}/${b.id}/${len}`] = {
-            trials: xs.length, windows: s.windows, nEff: s.nEff,
+            trials: xs.length, windows: s.windows, nEff: s.nEff, years: Object.keys(s.years).length,
             net: s.mean, paid_share: round(xs.filter((t) => t.paid > 0).length / xs.length, 3),
             paid: round(xs.reduce((a, t) => a + t.paid, 0) / xs.length, 3),
             cost: round(xs.reduce((a, t) => a + t.cost * (1 - subsidy(t.ry, t.level)), 0) / xs.length, 3),
@@ -430,6 +473,7 @@ function main() {
   const res = {
     v: 1, as_of: asOf, method: {
       per: "dollars per $100 of coverage, to the producer, after subsidy",
+      test: "exact sign flip over reinsurance-year means", min_years: MIN_YEARS, min_trials_per_year: MIN_TRIALS_PER_YEAR,
       bands: BANDS.map((b) => b.id), base: BASE, window_days: WINDOW_DAYS, hac_lags: HAC_LAGS,
       min_settled: MIN_SETTLED, settle_lag_days: SETTLE_LAG_DAYS, min_windows_per_length: MIN_WINDOWS_PER_LENGTH,
       regimes: REGIMES, products: PRODUCTS,
