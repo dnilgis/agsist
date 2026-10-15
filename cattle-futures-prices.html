@@ -697,7 +697,11 @@
     var lp=one('le',le),fp=one('gf',gf),parts=[];
     if(le&&le.net!=null&&lp!=null)parts.push('Funds are <strong>net '+(le.net>=0?'long':'short')+' live cattle</strong> at '+lp+'% of the way up the 52-week range');
     if(gf&&gf.net!=null&&fp!=null)parts.push((parts.length?'and ':'Funds are ')+'<strong>'+(fp<=20?'near the 52-week low':fp>=80?'near the 52-week high':'mid-range')+'</strong> on feeders ('+fp+'% of the range)');
-    var t=parts.join(' ')+'. High net-long positioning can amplify the downside if funds liquidate; a low reading leaves room for them to add. This is positioning, not a price forecast.';
+    /* 2026-10-15: the fixed sentence warned about "high net-long positioning"
+       while live cattle sat at 3% of its range. The second sentence follows the
+       live cattle reading now. */
+    var why=(lp==null)?'':(lp>=80?' Positioning that high can amplify a drop if funds sell out.':(lp<=20?' A reading that low leaves room for funds to buy back in.':''));
+    var t=parts.join(' ')+'.'+why+' This is positioning, not a price forecast.';
     if($('cot-interp'))$('cot-interp').innerHTML=t;
   }).catch(function(){});
 })();

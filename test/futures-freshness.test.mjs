@@ -64,3 +64,16 @@ test('the freshness workflow retries a rejected push and has an evening run', ()
   assert.match(y, /cron: '35 23 \* \* 1-5'/);
   assert.match(y, /--cron "35 23 \* \* 1-5"/);
 });
+
+test('the RP card names the harvest price so far and writes a dollar-plus gap in dollars', () => {
+  const js = read('components/futures.js');
+  assert.match(js, /Harvest price so far: <strong>'\+AG\.px\.priceDollars\(sc\.rp\.running\)/);
+  assert.match(js, /running:\(hs==='running'&&row\.harvest\.running_avg!=null/);
+  assert.match(js, /Math\.abs\(g\)>=1\?AG\.px\.priceDollars\(Math\.abs\(g\)\):AG\.px\.move\(Math\.abs\(g\)\*100\)/);
+});
+
+test('the cattle COT sentence follows its own number', () => {
+  const html = read('cattle-futures-prices.html');
+  assert.doesNotMatch(html, /High net-long positioning can amplify the downside if funds liquidate; a low reading leaves room/);
+  assert.match(html, /lp>=80\?' Positioning that high can amplify a drop if funds sell out\.':\(lp<=20\?' A reading that low leaves room for funds to buy back in\.'/);
+});
