@@ -52,6 +52,9 @@ export const RMA = {
   sob: "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/livestock_and_dairy_participation/index.html",
   usu: "https://farmanalysis.usu.edu/lrp/",
   unl: "https://agecon.unl.edu/lrp-feeder-cattle-insurance-recent-enhancement-and-performance-history/",
+  /* read in full Oct 15, 2026 (references branch): from 2026 on, billing the first day of the second
+     month after the end date, Sep 30 termination, unborn calves and cull cows types */
+  pm25028: "https://rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-25-028-livestock-risk-protection",
 };
 /* the 2027 LRP handbook, read in full on the references branch (manual/rma-lrp-handbook-2027.txt) */
 const HB = "RMA LRP Handbook 2027 (FCIC-20010)";
@@ -145,7 +148,7 @@ export function faqList() {
     ["When can I buy LRP, and when do sales close?",
       `Sales open when RMA posts the day&rsquo;s coverage prices and rates and close at 8:25 a.m. Central the following calendar day, so a Friday&rsquo;s close Saturday (${HB}, Exhibit 2 and section 22B). There are no sales for cattle on the days USDA releases the Cattle and Cattle on Feed reports, none for hogs on Hogs and Pigs report days, none on days the CME livestock markets are closed, none after a limit move in the futures, and none if RMA has not posted the offers by 4:30 p.m. Central (section 22B). RMA&rsquo;s files have landed between about 2:15 and 4:30 p.m. Central; this page picks them up within about an hour.`],
     ["When is the LRP premium due?",
-      `Not when you buy. The premium billing date is the first day of the second month after the end date (${HB}, section 21E). Premium can also be taken out of an indemnity (section 22E).`],
+      `Not when you buy. The premium billing date is the first day of the second month after the end date (${HB}, section 21E). RMA set that date from 2026 on (${a(RMA.pm25028, "RMA PM-25-028")}, Apr 30, 2025). Premium can also be taken out of an indemnity (section 22E).`],
     ["How many head can I cover with LRP?",
       `Feeder cattle and fed cattle: up to 12,000 head on one endorsement and 25,000 head a crop year, July 1 to June 30. Hogs: up to 70,000 head on one endorsement and 750,000 a crop year (${HB}, sections 23B, 24B and 25B).`],
     ["Does LRP cover basis?",
@@ -312,7 +315,7 @@ export function methodHtml(bt, meta, v) {
   const restated = bt.counts.aev_restated;
   return `<ul class="plain">
         <li><b>The data.</b> ${v.files} of RMA&rsquo;s daily LRP files (${a(RMA.adm, "ADM livestock")}), every sales day from ${v.first} to ${v.last}: the coverage prices, rates and cost per cwt RMA posted that day, and the actual ending values it posted later. Nothing is estimated or modeled. ${bt.counts.offers.toLocaleString("en-US")} offers, ${bt.counts.trials.toLocaleString("en-US")} entries once each coverage band is counted.</li>
-        <li><b>What is tested.</b> Feeder cattle steers, weight 2 (RMA type ${bt.method.products[0].type}), fed cattle steers and heifers (type ${bt.method.products[1].type}) and hogs (type ${bt.method.products[2].type}). Other feeder types settle on the same index times their factor, so per $100 of coverage they come out the same. Not tested: unborn hogs, and the types RMA added from insurance year 2026 on (unborn calves, cull cows, weight-2 unborn feeders), which are too new.</li>
+        <li><b>What is tested.</b> Feeder cattle steers, weight 2 (RMA type ${bt.method.products[0].type}), fed cattle steers and heifers (type ${bt.method.products[1].type}) and hogs (type ${bt.method.products[2].type}). Other feeder types settle on the same index times their factor, so per $100 of coverage they come out the same. Not tested: unborn hogs, and the types RMA added from insurance year 2026 on (unborn calves and cull cows, ${a(RMA.pm25028, "RMA PM-25-028")}; weight-2 unborn feeders), which are too new.</li>
         <li><b>One entry.</b> One animal, one sales day, one length, one coverage band. Per $100 of coverage: paid = coverage price minus actual ending value, when that is above zero; your premium = RMA&rsquo;s cost per cwt less the subsidy; net = paid minus your premium. In each band the entry takes the highest level offered that day, so the 95 to 100% record is about ${v.top} coverage on average. The record above is the plain average over every sales day.</li>
         <li><b>Walk-forward &ldquo;best so far.&rdquo;</b> On each sales day it ranks the bands by their record among policies of the same length that had already ended at least ${bt.method.settle_lag_days} days before, so the ending value was out, once a band had ${bt.method.min_settled} such entries, and takes the best-ranked band RMA offered that day. It uses RMA&rsquo;s latest posted ending values; RMA restated ${restated == null ? "some" : restated.toLocaleString("en-US")} of them after first posting them.</li>
         <li><b>The odds.</b> Daily entries overlap, so each insurance year counts once: the test flips the sign of each year&rsquo;s average every possible way (exact sign flip) and asks how often that does as well as the real record. It runs only with ${bt.method.min_years} or more years of ${bt.method.min_trials_per_year}+ sales days. All ${bt.family_size} tests are adjusted together (Holm); kept means adjusted odds under 0.05, ahead on average, and ahead at every length with enough years.</li>
