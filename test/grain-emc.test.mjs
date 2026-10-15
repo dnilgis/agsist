@@ -330,6 +330,7 @@ test("browser: missing hours say 'no reading', DST hours label right, current fa
     await pg.keyboard.press("ArrowRight");
     assert.match(await pg.textContent("#emc-tip"), /^Tonight 9 pm: no forecast reading\./);
     await pg.click("#emc-table summary");
+    await pg.waitForSelector("#emc-tbl tbody th");   // the table is built when the fold opens; under load that lands a beat later
     const hours = await pg.$$eval("#emc-tbl tbody th", (t) => t.map((x) => x.textContent));
     assert.equal(hours.filter((x) => x === "tonight 1 am").length, 2, "both 1 am hours of the fall-back night, in Chicago time");
     assert.equal(hours.filter((x) => x === "tonight 2 am").length, 1);
