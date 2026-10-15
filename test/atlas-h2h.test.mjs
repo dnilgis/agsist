@@ -74,3 +74,27 @@ print(B.state_survey(W, "WI", 2022))`);
   assert.doesNotMatch(out, /Story|county value/i);
   assert.match(out, /\nNone\nNone$/);              // census year not older: nothing; no state row: nothing
 });
+
+// 4. The hub's 16 layer groups sit under four kinds, so the first look is four choices.
+test("every hub layer group sits under exactly one of four kinds, land first", () => {
+  const h = read("farmland-atlas.html");
+  const groups = new Set([...h.matchAll(/\{key:'[a-z0-9_]+',grp:'([^']+)'/g)].map((m) => m[1]));
+  assert.ok(groups.size >= 16, `found ${groups.size} groups`);
+  const m = /var FAMILIES=(\[[\s\S]*?\]\]\]);/.exec(h);
+  assert.ok(m, "FAMILIES list missing");
+  const fams = JSON.parse(m[1].replace(/'/g, '"'));
+  assert.equal(fams.length, 4);
+  assert.deepEqual(fams.map((f) => f[0]), ["Land & rent", "Yield & insurance", "Weather & water", "Farm & programs"]);
+  const seen = new Map();
+  for (const [fam, gs] of fams) for (const g of gs) {
+    assert.ok(!seen.has(g), `${g} is in two kinds`);
+    assert.ok(groups.has(g), `${g} is listed but no layer uses it`);
+    seen.set(g, fam);
+  }
+  for (const g of groups) assert.ok(seen.has(g), `${g} has no kind`);
+  assert.equal(seen.get("Land value"), "Land & rent");
+  assert.match(h, /var CUR='val';/);          // the map still opens on land value
+  // yield layers are under yield, not under rent
+  assert.match(h, /\{key:'yield_slope',grp:'Corn yield'/);
+  assert.match(h, /<div class="fa-fams" id="fa-fams" role="group"/);
+});
