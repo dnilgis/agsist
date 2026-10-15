@@ -1561,7 +1561,8 @@
     // the reader typed a town and pressed Draw while this was waiting: theirs wins
     var mine = function () { return DATA || DRAWING || $('rp-place').value.trim(); };
     var done = false, fall = function () { if (!done) { done = true; if (!mine()) runSample(); } };
-    art.innerHTML = '<p class="rp-placeholder">Drawing a year of rain near you\u2026</p>';
+    // the example print in the page's HTML (a real NOAA year) stays up until a live draw replaces it
+    if (!art.querySelector('.rp-ex')) art.innerHTML = '<p class="rp-placeholder">Drawing a year of rain near you\u2026</p>';
     setTimeout(fall, WHERE_MS);
     try {
       fetch('https://agsist-subs.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1580,7 +1581,7 @@
   function sampleWords(w) { w.markers = w.markers.map(function (m) { return { date: SAMPLE.year + '-' + m.date.slice(5), label: m.label }; }); return w; }
   function runSample() {
     SAMPLE = { place: 'Chetek, WI', year: lastFullYear() };
-    art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
+    if (!art.querySelector('.rp-ex')) art.innerHTML = '<p class="rp-placeholder">Drawing a sample from NOAA records…</p>';
     var s = { place: SAMPLE.place, year: SAMPLE.year, size: '12x18', cmp: 'normal', name: '', markers: [], style: pick('rp-style', 'r1') };
     // the sample wears whatever is in the boxes: the example at first, then the reader's own words
     var w = sampleWords(readInputs()); s.name = w.name; s.dedication = w.dedication; s.markers = w.markers; s.cmp = w.cmp; s.normals = w.normals; s.records = w.records;
@@ -2125,7 +2126,7 @@
     if (doc.activeElement === go) { try { $('rp-place').focus({ preventScroll: true }); } catch (err) {} }
     go.disabled = true; sel.disabled = true;
     // nothing drawn yet: say what is being drawn, and tell a screen reader the box is busy
-    if (!DATA && !SAMPLE && ST.place && ST.year) {
+    if (!DATA && !SAMPLE && ST.place && ST.year && !art.querySelector('.rp-ex')) {
       art.innerHTML = '<p class="rp-placeholder">Drawing ' + esc(ST.place) + ', ' + ST.year + ' from NOAA records\u2026</p>';
       art.classList.add('rp-empty');
     }

@@ -258,7 +258,8 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  assert.equal(prod.image, "https://agsist.com/img/og/rain-print.jpg");
+  // the share card first, then the two example prints drawn from real NOAA years (test/rain-print-examples.test.mjs)
+  assert.deepEqual(prod.image, ["https://agsist.com/img/og/rain-print.jpg", "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
   assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
   assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
   for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\""));
