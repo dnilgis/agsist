@@ -394,7 +394,169 @@
     return bt.tests[regime + '/' + t.product + '/' + t.test] || null;
   }
 
+  /* ---------------------------------------------------------------- the calculator's state */
+
+  /* The animal buttons, as they go in the URL (?a=fed). */
+  var ANIMALS = { feeder: '0801', fed: '0802', hogs: '0815' };
+  var ANIMAL_OF = { '0801': 'feeder', '0802': 'fed', '0815': 'hogs' };
+
+  /* Classes the reader picks under "More types"; the weight picks the type
+     inside a class (RMA LRP Handbook 2027, FCIC-20010, section 23A(3): steers
+     1.00 to 5.99 cwt and 6.00 to 10.00 cwt, and so on). RY2027 type codes,
+     the same year as TYPE_NAMES; each pair was checked against the price
+     adjustment factors in RMA's daily file (an unborn class carries the factor
+     of its born class, unborn bulls and heifers the average of steers and
+     heifers). An unknown year falls back to choosing by weight alone. */
+  var CLASSES = {
+    '2027': {
+      '0801': [
+        { id: 'steers', name: 'Steers', types: ['809', '810'] },
+        { id: 'heifers', name: 'Heifers', types: ['811', '812'] },
+        { id: 'brahman', name: 'Mostly Brahman', types: ['813', '814'] },
+        { id: 'dairy', name: 'Mostly dairy', types: ['815', '816'] },
+        { id: 'unborn', name: 'Unborn bulls and heifers', types: ['817', '820'] },
+        { id: 'unbrahman', name: 'Unborn, mostly Brahman', types: ['818', '821'] },
+        { id: 'undairy', name: 'Unborn, mostly dairy', types: ['819', '822'] },
+        { id: 'calves', name: 'Unborn calves, sold in their first two weeks', types: ['823'] }
+      ],
+      '0802': [
+        { id: 'fed', name: 'Steers and heifers', types: ['820'] },
+        { id: 'cull', name: 'Cull dairy cows', types: ['821'] }
+      ],
+      '0815': [
+        { id: 'hogs', name: 'Market hogs', types: ['997'] },
+        { id: 'unborn', name: 'Unborn hogs', types: ['821'] }
+      ]
+    }
+  };
+
+  function classesFor(comm, ry) {
+    var y = CLASSES[String(ry)];
+    return (y && y[comm]) || [];
+  }
+
+  /* The type for an animal, a class and a weight (cwt as RMA insures it, so
+     lean for hogs): the type in the class whose weight range holds the
+     weight, else the nearest range. With no weight, the heavier type (the
+     usual one). offers: that sales day's offers. */
+  function inferType(offers, comm, cls, cwt, ry) {
+    var list = classesFor(comm, ry), want = null, i;
+    for (i = 0; i < list.length; i++) if (list[i].id === cls) want = list[i];
+    if (!want && list.length) want = list[0];
+    var ranges = {};
+    offers.forEach(function (o) {
+      if (o.c !== comm) return;
+      if (want && want.types.indexOf(o.t) < 0) return;
+      if (!want && !o.tested) return;
+      ranges[o.t] = [+o.w[0], +o.w[1]];
+    });
+    var ts = Object.keys(ranges).sort(function (a, b) { return ranges[a][0] - ranges[b][0]; });
+    if (!ts.length) return null;
+    if (cwt == null || !(cwt > 0)) return ts[ts.length - 1];
+    var best = ts[0], gap = Infinity;
+    ts.forEach(function (t) {
+      var r = ranges[t], g = cwt < r[0] ? r[0] - cwt : cwt > r[1] ? cwt - r[1] : 0;
+      if (g < gap - 1e-9) { gap = g; best = t; }
+    });
+    return best;
+  }
+
+  /* weight range of a class, cwt, over the types offered that day */
+  function classRange(offers, comm, cls, ry) {
+    var list = classesFor(comm, ry), want = null, lo = Infinity, hi = -Infinity;
+    for (var i = 0; i < list.length; i++) if (list[i].id === cls) want = list[i];
+    offers.forEach(function (o) {
+      if (o.c !== comm || (want && want.types.indexOf(o.t) < 0)) return;
+      lo = Math.min(lo, +o.w[0]); hi = Math.max(hi, +o.w[1]);
+    });
+    return lo <= hi ? [lo, hi] : null;
+  }
+
+  /* Changing the animal keeps the head and the typed weight; only the class
+     and the length go back to that animal's usual ones. */
+  function switchAnimal(s, a) {
+    return { a: a, h: s.h, w: s.w, k: null, l: s.l };
+  }
+
+  /* ?a=fed&h=120&w=1400&l=13 (and k=heifers for a class other than the usual) */
+  function parseQuery(search) {
+    var s = {}, q = String(search || '').replace(/^\?/, '');
+    q.split('&').forEach(function (kv) {
+      if (!kv) return;
+      var i = kv.indexOf('='), k = decodeURIComponent(i < 0 ? kv : kv.slice(0, i)), v = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' '));
+      if (k === 'a' && ANIMALS[v]) s.a = v;
+      else if (k === 'h' && /^\d[\d,]*$/.test(v)) s.h = v.replace(/,/g, '');
+      else if (k === 'w' && /^\d[\d,]*(\.\d+)?$/.test(v)) s.w = v.replace(/,/g, '');
+      else if (k === 'l' && /^\d{1,2}$/.test(v)) s.l = +v;
+      else if (k === 'k' && /^[a-z]{2,12}$/.test(v)) s.k = v;
+    });
+    return s;
+  }
+  function toQuery(s) {
+    var p = [];
+    if (s.a) p.push('a=' + s.a);
+    if (s.h) p.push('h=' + encodeURIComponent(String(s.h).replace(/,/g, '')));
+    if (s.w) p.push('w=' + encodeURIComponent(String(s.w).replace(/,/g, '')));
+    if (s.l) p.push('l=' + s.l);
+    if (s.k) p.push('k=' + s.k);
+    return p.length ? '?' + p.join('&') : '';
+  }
+
+  /* the floor net of the premium, a cwt */
+  function netFloor(row) { return row.yourPerCwt == null ? null : row.coverage - row.yourPerCwt; }
+
+  /* What LRP pays a cwt if the actual ending value comes in `drop` under the
+     expected ending value: the coverage price minus the ending value, when
+     that is above zero (RMA LRP Handbook 2027, section 22D). */
+  function payAt(row, eev, drop) { return Math.max(0, row.coverage - (eev - drop)); }
+
+  /* Premium billing date: the first day of the second month after the end
+     date (RMA LRP Handbook 2027, FCIC-20010, section 21E). */
+  function billDate(end) {
+    var y = +end.slice(0, 4), m = +end.slice(4, 6) + 2;
+    if (m > 12) { m -= 12; y += 1; }
+    return y + String(m).padStart(2, '0') + '01';
+  }
+
+  /* A hog weight typed in pounds that looks like a carcass weight: market hogs
+     sell at about 250 to 300 lb live, and RMA's lean factor (0.74) is about
+     what a carcass yields, so carcass / 0.74 is about the live weight. */
+  function carcassHint(raw, comm) {
+    if (comm !== '0815') return null;
+    var v = parseFloat(String(raw == null ? '' : raw).replace(/,/g, ''));
+    if (!(v >= 100 && v < 240)) return null;
+    return { typed: Math.round(v), live: Math.round(v / LEAN / 5) * 5 };
+  }
+
+  /* The futures contract for an end date, from data/prices.json: the first
+     month that expires on or after the end date. Expiry, roughly: live
+     cattle the last business day of the month, feeder cattle the last
+     Thursday (never before the 22nd), lean hogs the 10th business day (never
+     before the 14th); the day used is the earliest it can be, so a contract
+     is never named after it has expired. */
+  var FUT = {
+    '0802': { key: 'cattle', name: 'live cattle', day: 28, months: [2, 4, 6, 8, 10, 12] },
+    '0801': { key: 'feeders', name: 'feeder cattle', day: 22, months: [1, 3, 4, 5, 8, 9, 10, 11] },
+    '0815': { key: 'hogs', name: 'lean hog', day: 14, months: [2, 4, 5, 6, 7, 8, 10, 12] }
+  };
+  var MKEY = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  /* the CME contract month (listed months only); null when data/prices.json
+     has no close for that one month: never a later month in its place */
+  function futuresFor(prices, comm, end) {
+    var f = FUT[comm], q = prices && prices.quotes;
+    if (!f || !q) return null;
+    var y = +end.slice(0, 4), m = +end.slice(4, 6), d = +end.slice(6, 8);
+    if (d > f.day) { m += 1; if (m > 12) { m = 1; y += 1; } }
+    while (f.months.indexOf(m) < 0) { m += 1; if (m > 12) { m = 1; y += 1; } }
+    var k = f.key + '-' + MKEY[m - 1] + String(y).slice(2), x = q[k];
+    if (!x || !isFinite(x.close) || !x.close_date) return null;
+    return { key: k, name: MON[m - 1] + ' ' + y + ' ' + f.name + ' futures', close: +x.close, date: String(x.close_date).replace(/-/g, '') };
+  }
+
   root.AgLrp = {
+    ANIMALS: ANIMALS, ANIMAL_OF: ANIMAL_OF, CLASSES: CLASSES, classesFor: classesFor, inferType: inferType, classRange: classRange,
+    switchAnimal: switchAnimal, parseQuery: parseQuery, toQuery: toQuery, netFloor: netFloor, payAt: payAt, billDate: billDate,
+    carcassHint: carcassHint, futuresFor: futuresFor,
     LENGTHS: LENGTHS, PRODUCTS: PRODUCTS, BAND_IDS: BAND_IDS, SUBSIDY_NOW: SUBSIDY_NOW, TYPE_NAMES: TYPE_NAMES,
     bandOf: bandOf, subsidyNow: subsidyNow, productOf: productOf, typeName: typeName,
     ymdLong: ymdLong, addDays: addDays, money: money, pct: pct, levelPct: levelPct, odds: odds, esc: esc,
