@@ -234,10 +234,15 @@ SRC = {
 FSA_PAGE = "https://www.fsa.usda.gov/resources/programs/arc-plc"
 FSA_DATA = SRC["FSADATA"][1]
 OFFICE = "https://offices.sc.egov.usda.gov/locator/app"
-# Online election (FSA Kansas State Office newsletter, Sept 24, 2026; USDA release Sept 15, 2026 via DTN, Sept 17;
-# farmers.gov sign-in: a Login.gov account links to the FSA customer record, identity verified online or at a Service Center)
-ONLINE = (f'You can elect and enroll online at <a href="{FSA_PAGE}" rel="noopener">fsa.usda.gov/arc-plc</a> with a Login.gov account '
-          'linked to your FSA customer record, or at your county office.')
+# How to sign, from FSA's own pages read in full Oct 15, 2026 (references branch: fsa-arc-plc and
+# fsa-arc-plc-2026-release, the Sept 15, 2026 USDA release). "How To Apply: Please contact your local FSA
+# office to make ... elections and complete the enrollment process"; "Producers can make an appointment with
+# their local FSA office to complete ARC and PLC elections and enrollment." Login.gov is named only for
+# landowners to see their Base Allocation Notification online. The old line ("elect and enroll online ...
+# with a Login.gov account") rested on a Kansas FSA newsletter and a DTN write-up seen as snippets; the
+# release itself does not say it.
+ONLINE = (f'Sign up at your county FSA office; FSA says to make an appointment there to elect and enroll. Landowners can see '
+          f'their base allocation notice online at <a href="{FSA_PAGE}" rel="noopener">fsa.usda.gov/arc-plc</a> with a Login.gov account.')
 
 PARAMS = {
     "erp_pct": 0.88, "erp_cap_pct": 1.15,

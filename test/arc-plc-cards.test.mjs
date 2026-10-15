@@ -174,3 +174,24 @@ test("county pages: the county is in the H1 and the crop answers sit right under
   }
   assert.ok(n >= 2700, `${n} pages`);
 });
+
+/* Source sweep, Oct 15, 2026: FSA's ARC/PLC page and its Sept 15, 2026 release,
+ * read in full, send elections and enrollment to the county office ("Please
+ * contact your local FSA office to make ... elections and complete the
+ * enrollment process") and name Login.gov only for landowners viewing their
+ * base allocation notice. No page says you can elect online. */
+test("how to sign follows FSA's own pages", () => {
+  const line = "Sign up at your county FSA office; FSA says to make an appointment there to elect and enroll. Landowners can see their base allocation notice online at";
+  const main = readFileSync(ROOT + "arc-plc.html", "utf8");
+  assert.ok(main.includes(line));
+  let n = 0;
+  for (const p of countyPages()) {
+    const html = readFileSync(ROOT + "arc-plc/" + p, "utf8");
+    if (!html.includes('id="crops"')) continue;
+    assert.ok(html.includes(line), `${p}: signing line`);
+    assert.ok(!/elect and enroll online/.test(html), `${p}: no online election claim`);
+    n++;
+  }
+  assert.ok(n >= 2700);
+  assert.ok(!/elect and enroll online/.test(main));
+});
