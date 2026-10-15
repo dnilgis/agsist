@@ -99,14 +99,14 @@
    "kb":1.4
   },
   "ND":{
-   "rows":5602,
+   "rows":5603,
    "facilities":114,
    "kb":238.2
   },
   "NE":{
-   "rows":9470,
+   "rows":9463,
    "facilities":328,
-   "kb":420.3
+   "kb":419.9
   },
   "NY":{
    "rows":10,
@@ -114,12 +114,12 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4171,
+   "rows":4174,
    "facilities":198,
-   "kb":178.8
+   "kb":178.9
   },
   "OK":{
-   "rows":2278,
+   "rows":2279,
    "facilities":90,
    "kb":98.7
   },
