@@ -4,9 +4,10 @@
  * data/rain-print-examples/ (scripts/fetch_rain_print_examples.mjs).
  *
  * Opens rain-print.html in Chromium with every outside call answered from
- * the saved file (the station's full history, which these links don't use,
- * is answered with an error, as when NOAA doesn't send it), lets the shipped
- * engine pick the station and draw the year in Staircase, exactly as a
+ * the saved file (the station's full history unpacked as NOAA sent it; a
+ * request with no saved answer fails the run), lets the shipped engine pick
+ * the station and draw the year in Staircase with the 30-year normals and the
+ * remarkable days on, as a story link opens (2026-10-15), exactly as a
  * reader's browser would, and saves the drawn print at W x H as
  * img/rain-print-example-<slug>.webp and .jpg, each at most MAX_KB.
  * It prints the numbers the alt text uses (test/rain-print-examples.test.mjs
@@ -21,6 +22,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
+import { answerOf } from "./rain_print_examples_pack.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -47,7 +49,7 @@ const browser = await chromium.launch({ executablePath: CHROME });
 try {
   for (const f of files) {
     const ex = JSON.parse(readFileSync(ROOT + "data/rain-print-examples/" + f, "utf8"));
-    const answers = new Map(ex.requests.map((q) => [q.url, q.body]));
+    const answers = new Map(ex.requests.map((q) => [q.url, answerOf(q)]));
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
     const missed = [];
     await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
@@ -63,11 +65,20 @@ try {
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
     await page.goto(base + ex.link.replace("/rain-print?", "/rain-print.html?"));
-    await page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && /days recorded/.test(document.getElementById("rp-source").textContent), null, { timeout: 30000 });
+    // drawn, the normal in, the full record read and the remarkable days loaded
+    await page.waitForFunction(() => {
+      const st = document.getElementById("rp-status").textContent;
+      return document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && /days recorded/.test(document.getElementById("rp-source").textContent) &&
+        window.AgRainRecords && /^Drawn from the records/.test(st) && !/Still reading|Adding the 30-year normal/.test(st);
+    }, null, { timeout: 60000 });
+    await page.waitForTimeout(500);
     await page.evaluate(() => document.fonts.ready);
     if (errors.length) throw new Error(ex.slug + ": page errors: " + errors.join("; "));
-    const bad = missed.filter((u) => !/sdate=por/.test(u));
-    if (bad.length) throw new Error(ex.slug + ": the page asked for something not saved: " + bad.join(", "));
+    if (missed.length) throw new Error(ex.slug + ": the page asked for something not saved: " + missed.join(", "));
+    const boxes = await page.evaluate(() => ({ normals: document.getElementById("rp-normals").checked, records: document.getElementById("rp-records").checked, cmp: document.getElementById("rp-cmp").value }));
+    if (!boxes.normals || !boxes.records || boxes.cmp !== "normal") throw new Error(ex.slug + ": the story link didn't open with the normals and remarkable days on: " + JSON.stringify(boxes));
+    const src = await page.textContent("#rp-source");
+    if (/didn.t load/.test(src)) throw new Error(ex.slug + ": " + src.trim());
     const station = await page.inputValue("#rp-station");
     if (station !== ex.station) throw new Error(ex.slug + ": the page picked " + station + ", the saved run picked " + ex.station);
     const svg = await page.$eval("#rp-art svg", (s) => s.outerHTML);

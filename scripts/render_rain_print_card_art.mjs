@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { answerOf } from "./rain_print_examples_pack.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -57,7 +58,7 @@ try {
     if (url === base + "/__card.html") return route.continue();
     const a = answers.get(url);
     if (!a) { missed.push(url); return route.fulfill({ status: 599, body: "" }); }
-    return route.fulfill({ status: a.status, contentType: "application/json", body: JSON.stringify(a.body) });
+    return route.fulfill({ status: a.status, contentType: "application/json", body: JSON.stringify(answerOf(a)) });
   });
   await page.route(base + "/__card.html", (route) => route.fulfill({ status: 200, contentType: "text/html", body: harness }));
   await page.goto(base + "/__card.html");

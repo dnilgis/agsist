@@ -6,7 +6,8 @@ name: rain print examples
 #   scripts/fetch_rain_print_examples.mjs  runs components/rain-print.js's own
 #                                          request chain and keeps every answer
 # Past years don't change, so this runs by hand only: once to fill the files,
-# and again if the example links or the engine's requests change.
+# and again if the example links or the engine's requests change. It commits to
+# the branch it was run on (main, or a branch being tested before it merges).
 # RCC-ACIS cannot be reached from the sandbox this was built in.
 on:
   workflow_dispatch:
@@ -45,7 +46,7 @@ jobs:
           git commit -q -m "data: rain print examples"
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true
-            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            if git pull -q --rebase --autostash origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
             sleep $((20 * i))
           done
           echo "push failed after 5 attempts"; exit 1
