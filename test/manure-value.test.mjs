@@ -59,25 +59,81 @@ test("a missing quote is no price, never zero", () => {
   assert.equal(p.k, null);
   const u = M.perUnit("dairy_liq_4_11", "1to3day", p);
   assert.equal(u.total, null);
-  assert.equal(M.bakeValues({ prices: [] })["unit-dairy_liq_4_11-1to3day"], "no quote");
+  assert.equal(u.fy.total, null);
+  const v = M.bakeValues({ prices: [] });
+  assert.equal(v["all-dairy_liq_4_11"], "no quote");
+  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "no quote");
+  assert.equal(v["ex-all-field"], "no quote");
 });
 
-test("per 1,000 gal and per ton, every type and timing", () => {
+/* UW Extension A2809 (R-11-2012; the copy UW posted March 2026), chapter 9,
+   copied by hand from the table text (pdftotext -layout and -raw agree row
+   for row). [Table 9.2 total N, P2O5, K2O], [Table 9.3 first-year N by
+   timing], 9.3 P2O5, 9.3 K2O, [Table 9.1 first-year N %]. */
+const A2809 = {
+  dairy_solid_gt20:  ["Dairy: solid (> 20.0% DM)",          [9, 4, 7],    [2, 3, 3],    3,  6,  [25, 30, 35]],
+  dairy_solid_11_20: ["Dairy: semi-solid (11.1-20.0% DM)",  [8, 4, 6],    [2, 2, 3],    3,  5,  [25, 30, 35]],
+  dairy_liq_4_11:    ["Dairy: slurry (4.1-11.0% DM)",       [24, 8, 21],  [7, 10, 12],  6,  17, [30, 40, 50]],
+  dairy_liq_lt4:     ["Dairy: liquid (< 4.0% DM)",          [14, 4, 14],  [4, 6, 7],    3,  11, [30, 40, 50]],
+  beef_solid:        ["Beef, solid",                        [13, 8, 12],  [3, 4, 5],    6,  10, [25, 30, 35]],
+  beef_liq:          ["Beef, liquid",                       [16, 7, 15],  [5, 6, 8],    6,  12, [30, 40, 50]],
+  swine_solid:       ["Swine, solid",                       [18, 13, 10], [7, 9, 12],   10, 8,  [40, 50, 65]],
+  swine_liq_fin_in:  ["Swine: finish (indoor pit)",         [43, 18, 28], [17, 22, 28], 14, 22, [40, 50, 65]],
+  swine_liq_fin_out: ["Swine: finish (outdoor pit)",        [18, 7, 10],  [7, 9, 12],   6,  8,  [40, 50, 65]],
+  chicken_solid:     ["Poultry: chicken",                   [49, 44, 33], [24, 27, 29], 35, 26, [50, 55, 60]],
+  turkey_solid:      ["Poultry: turkey",                    [51, 44, 31], [26, 28, 31], 35, 25, [50, 55, 60]],
+  horse_solid:       ["Horse",                              [10, 6, 8],   [2, 3, 4],    5,  6,  [25, 30, 35]],
+};
+
+test("every type's pounds match A2809 Tables 9.1, 9.2 and 9.3, and 9.3 is 9.2 times 9.1", () => {
+  assert.deepEqual([...M.TYPES.map((t) => t.id)].sort(), Object.keys(A2809).sort(), "the 12 types");
+  assert.equal(M.PK_PCT, 80, "Table 9.1: P2O5 and K2O are 80% available the first year, every species (not 60%)");
+  for (const t of M.TYPES) {
+    const [, tot, n, p, k, pct] = A2809[t.id];
+    assert.deepEqual([...t.tot], tot, `${t.id} Table 9.2 total`);
+    assert.deepEqual([...t.n], n, `${t.id} Table 9.3 first-year N`);
+    assert.equal(t.p, p, `${t.id} Table 9.3 P2O5`);
+    assert.equal(t.k, k, `${t.id} Table 9.3 K2O`);
+    assert.deepEqual([...t.nPct], pct, `${t.id} Table 9.1 N %`);
+    // UW built 9.3 as 9.2 x 9.1 and rounded; every cell is within half a pound
+    t.nPct.forEach((x, i) => assert.ok(Math.abs(t.tot[0] * x / 100 - t.n[i]) <= 0.5, `${t.id} N ${i}: ${t.tot[0]} x ${x}% vs ${t.n[i]}`));
+    assert.ok(Math.abs(t.tot[1] * 0.8 - t.p) <= 0.5, `${t.id} P: ${t.tot[1]} x 80% vs ${t.p}`);
+    assert.ok(Math.abs(t.tot[2] * 0.8 - t.k) <= 0.5, `${t.id} K: ${t.tot[2]} x 80% vs ${t.k}`);
+    assert.equal(t.n2, Math.round(t.tot[0] * 0.10), `${t.id} second-year N is 10% of total`);
+    assert.ok(t.tot.every((x, i) => x >= [t.n[2], t.p, t.k][i]), `${t.id} total is never below first year`);
+  }
+});
+
+test("per 1,000 gal and per ton, every type and timing: all the nutrients, and the first-year part", () => {
   const p = M.nutrientPrices(SEP1);
   const COL = { gt3day: 0, "1to3day": 1, lt1hr: 2 };
   for (const t of M.TYPES) for (const [tm, i] of Object.entries(COL)) {
-    const want = t.n[i] * p.n + t.p * p.p + t.k * p.k;
+    const all = t.tot[0] * p.n + t.tot[1] * p.p + t.tot[2] * p.k;
+    const fy = t.n[i] * p.n + t.p * p.p + t.k * p.k;
     const u = M.perUnit(t.id, tm, p);
-    near(u.total, want, `${t.id} ${tm}`);
+    near(u.total, all, `${t.id} ${tm} all`);
+    near(u.fy.total, fy, `${t.id} ${tm} first year`);
+    assert.ok(u.total > u.fy.total, `${t.id} ${tm}: all of it is worth more than the first-year part`);
     assert.equal(u.unit, t.liquid ? "1000gal" : "ton");
-    near(M.perTon(t.id, tm, p), t.liquid ? want / 4.17 : want, `${t.id} ${tm} per ton`);
+    near(M.perTon(t.id, tm, p), t.liquid ? all / 4.17 : all, `${t.id} ${tm} per ton`);
   }
-  // dairy liquid 4-11% DM, worked in 1 hr to 3 days: 10 N, 6 P2O5, 17 K2O
   const v = M.bakeValues(SEP1);
-  assert.equal(v["unit-dairy_liq_4_11-1to3day"], "$18.75");
-  assert.equal(v["ton-dairy_liq_4_11-1to3day"], "$4.50");
-  assert.equal(v["unit-dairy_liq_4_11-lt1hr"], "$20.03");
-  assert.equal(v["unit-chicken_solid-1to3day"], "$61.24");   // 27 x .6413 + 35 x .9701 + 26 x .3833 = 17.32 + 33.95 + 9.97
+  // dairy liquid 4-11% DM, all of it: 24 x .641304 + 8 x .970109 + 21 x .383333 = 15.391 + 7.761 + 8.050 = 31.20
+  assert.equal(v["all-dairy_liq_4_11"], "$31.20");
+  assert.equal(v["all-ton-dairy_liq_4_11"], "$7.48");             // 31.202 / 4.17
+  // the first-year part: 10 N, 6 P2O5, 17 K2O worked in 1 hr to 3 days
+  assert.equal(v["fy-dairy_liq_4_11-1to3day"], "$18.75");
+  assert.equal(v["fy-ton-dairy_liq_4_11-1to3day"], "$4.50");
+  assert.equal(v["fy-dairy_liq_4_11-lt1hr"], "$20.03");
+  assert.equal(v["fy-dairy_liq_4_11-gt3day"], "$16.83");
+  // chicken: 49 x .641304 + 44 x .970109 + 33 x .383333 = 31.42 + 42.68 + 12.65
+  assert.equal(v["all-chicken_solid"], "$86.76");
+  assert.equal(v["fy-chicken_solid-1to3day"], "$61.24");          // 27 N, 35 P2O5, 26 K2O
+  // hog finishing indoor pit: 43 x .641304 + 18 x .970109 + 28 x .383333 = 27.58 + 17.46 + 10.73
+  assert.equal(v["all-swine_liq_fin_in"], "$55.77");
+  // solid dairy over 20% DM: 9 x .641304 + 4 x .970109 + 7 x .383333 = 5.77 + 3.88 + 2.68
+  assert.equal(v["all-dairy_solid_gt20"], "$12.34");
+  assert.equal(v["all-ton-dairy_solid_gt20"], "$12.34", "solid is already per ton");
 });
 
 test("the value of all the manure: N + P2O5 (N credited) + K2O, per unit, per ton, per acre and for the field", () => {
@@ -85,42 +141,54 @@ test("the value of all the manure: N + P2O5 (N credited) + K2O, per unit, per to
   for (const t of M.TYPES) for (const tm of M.TIMING) {
     const rate = t.liquid ? 5500 : 12, acres = 37;
     const r = M.fieldValue({ type: t.id, timing: tm.id, rate, acres, prices: p });
-    const lb = { n: t.n[tm.i], p: t.p, k: t.k };
-    const unit = lb.n * p.n + lb.p * p.p + lb.k * p.k;          // every nutrient counts
     const units = t.liquid ? rate / 1000 : rate;
-    near(r.perUnit, unit, `${t.id} ${tm.id} per unit`);
-    near(r.perTon, t.liquid ? unit / M.TONS_PER_KGAL : unit, `${t.id} ${tm.id} per ton`);
-    near(r.perAcre, unit * units, `${t.id} ${tm.id} per acre`);
-    near(r.field, unit * units * acres, `${t.id} ${tm.id} field`, 1e-6);
-    for (const x of ["n", "p", "k"]) {
-      near(r.lbAc[x], lb[x] * units, `${t.id} ${x} lb an acre`);
-      near(r.usdAc[x], lb[x] * units * p[x], `${t.id} ${x} $ an acre`);
-      near(r.usdField[x], lb[x] * units * p[x] * acres, `${t.id} ${x} $ field`, 1e-6);
+    for (const [part, lb] of [[r, { n: t.tot[0], p: t.tot[1], k: t.tot[2] }], [r.fy, { n: t.n[tm.i], p: t.p, k: t.k }]]) {
+      const unit = lb.n * p.n + lb.p * p.p + lb.k * p.k;          // every nutrient counts
+      const tag = `${t.id} ${tm.id} ${part === r ? "all" : "fy"}`;
+      near(part.perUnit, unit, `${tag} per unit`);
+      near(part.perTon, t.liquid ? unit / M.TONS_PER_KGAL : unit, `${tag} per ton`);
+      near(part.perAcre, unit * units, `${tag} per acre`);
+      near(part.field, unit * units * acres, `${tag} field`, 1e-6);
+      for (const x of ["n", "p", "k"]) {
+        near(part.lbAc[x], lb[x] * units, `${tag} ${x} lb an acre`);
+        near(part.usdAc[x], lb[x] * units * p[x], `${tag} ${x} $ an acre`);
+        near(part.usdField[x], lb[x] * units * p[x] * acres, `${tag} ${x} $ field`, 1e-6);
+      }
+      near(part.usdAc.n + part.usdAc.p + part.usdAc.k, part.perAcre, `${tag} parts add to the acre total`);
     }
-    near(r.usdAc.n + r.usdAc.p + r.usdAc.k, r.perAcre, `${t.id} parts add to the acre total`);
   }
   // no acres: the field is zero, the acre and unit values stand
   const z = M.fieldValue({ type: "beef_solid", timing: "lt1hr", rate: 10, acres: 0, prices: p });
   assert.equal(z.field, 0);
-  near(z.perAcre, 10 * (5 * p.n + 6 * p.p + 10 * p.k), "beef solid an acre");
+  near(z.perAcre, 10 * (13 * p.n + 8 * p.p + 12 * p.k), "beef solid an acre, all of it");
+  near(z.fy.perAcre, 10 * (5 * p.n + 6 * p.p + 10 * p.k), "beef solid an acre, first year");
+  // the total does not depend on how fast it is worked in; the first-year part does
+  const a = M.fieldValue({ ...M.EXAMPLE, timing: "gt3day", prices: p }), b = M.fieldValue({ ...M.EXAMPLE, timing: "lt1hr", prices: p });
+  near(a.perUnit, b.perUnit, "all of it, any timing");
+  assert.ok(b.fy.perUnit > a.fy.perUnit, "worked in fast, the crop gets more N");
   // a missing quote is no value, never a partial one
   assert.deepEqual({ ...M.fieldValue({ ...M.EXAMPLE, prices: { n: p.n, p: p.p, k: null } }) }, { missing: true });
   assert.equal(M.deal, undefined, "the neighbor-sale math is gone");
 });
 
-test("the worked example: liquid dairy, worked in within 3 days, 6,000 gal/ac on 80 acres", () => {
+test("the worked example: liquid dairy, 6,000 gal/ac on 80 acres, all of it and the first-year part", () => {
   assert.deepEqual({ ...M.EXAMPLE }, { type: "dairy_liq_4_11", timing: "1to3day", rate: 6000, acres: 80 });
   const v = M.bakeValues(SEP1);
-  // per 1,000 gal: 10 lb N x .6413, 6 lb P2O5 x .9701, 17 lb K2O x .3833
-  assert.deepEqual([v["ex-n-unit"], v["ex-p-unit"], v["ex-k-unit"]], ["$6.41", "$5.82", "$6.52"]);
-  assert.equal(v["ex-book"], "$18.75");
-  assert.equal(v["ex-book-ton"], "$4.50");
-  assert.deepEqual([v["ex-n-lb"], v["ex-p-lb"], v["ex-k-lb"]], ["60", "36", "102"]);
-  assert.deepEqual([v["ex-n-ac"], v["ex-p-ac"], v["ex-k-ac"]], ["$38.48", "$34.92", "$39.10"]);
-  assert.equal(v["ex-book-ac"], "$112.50");                       // 38.48 + 34.92 + 39.10
-  assert.deepEqual([v["ex-n-field"], v["ex-p-field"], v["ex-k-field"]], ["$3,078", "$2,794", "$3,128"]);
-  assert.equal(v["ex-field"], "$9,000");                          // 112.50 x 80
-  for (const k of ["ex-buyer", "ex-ceil", "ex-floor", "ex-haul-ac"]) assert.ok(!(k in v), `${k} is gone`);
+  // per 1,000 gal: 24 lb N x .641304, 8 lb P2O5 x .970109, 21 lb K2O x .383333
+  assert.deepEqual([v["ex-n-unit"], v["ex-p-unit"], v["ex-k-unit"]], ["$15.39", "$7.76", "$8.05"]);
+  assert.equal(v["ex-all"], "$31.20");
+  assert.equal(v["ex-all-ton"], "$7.48");
+  assert.deepEqual([v["ex-n-lb"], v["ex-p-lb"], v["ex-k-lb"]], ["144", "48", "126"]);   // x 6
+  assert.deepEqual([v["ex-n-ac"], v["ex-p-ac"], v["ex-k-ac"]], ["$92.35", "$46.57", "$48.30"]);
+  assert.equal(v["ex-all-ac"], "$187.21");                         // 31.2022 x 6
+  assert.deepEqual([v["ex-n-field"], v["ex-p-field"], v["ex-k-field"]], ["$7,388", "$3,725", "$3,864"]);
+  assert.equal(v["ex-all-field"], "$14,977");                      // 187.213 x 80
+  // first year, worked in 1 hr to 3 days: 10 N, 6 P2O5, 17 K2O per 1,000 gal
+  assert.deepEqual([v["ex-fy-n-lb"], v["ex-fy-p-lb"], v["ex-fy-k-lb"]], ["60", "36", "102"]);
+  assert.equal(v["ex-fy"], "$18.75");
+  assert.equal(v["ex-fy-ac"], "$112.50");
+  assert.equal(v["ex-fy-field"], "$9,000");
+  for (const k of ["ex-buyer", "ex-ceil", "ex-floor", "ex-haul-ac", "ex-book"]) assert.ok(!(k in v), `${k} is gone`);
 });
 
 test("no buyer-needs discount, fair range or hauling left on the pages or in the calculator", () => {
@@ -139,7 +207,20 @@ test("the HTML carries today's numbers (bake is current) and the tables come fro
   const ff = read("fast-facts.html");
   assert.equal(bakeFastFacts(ff, M), ff, "fast-facts.html manure table is stale: node scripts/bake_manure_value.mjs");
   const live = M.bakeValues(data);
-  assert.ok(mv.includes(`data-mv="unit-dairy_liq_4_11-1to3day">${live["unit-dairy_liq_4_11-1to3day"]}<`));
+  assert.ok(mv.includes(`data-mv="all-dairy_liq_4_11">${live["all-dairy_liq_4_11"]}<`));
+  assert.ok(mv.includes(`data-mv="fy-dairy_liq_4_11-1to3day">${live["fy-dairy_liq_4_11-1to3day"]}<`));
+  // Both pounds tables (this page and Fast Facts) carry every type's totals and first-year pounds
+  for (const [f, s] of [["manure-value.html", mv], ["fast-facts.html", ff]]) {
+    for (const t of M.TYPES) {
+      const unit = t.liquid ? "lb/1,000 gal" : "lb/ton";
+      const row = `<td class="tl">${t.label} (${unit})</td>` + t.tot.map((x) => `<td class="hi">${x}</td>`).join("") +
+        t.n.map((n) => `<td>${n} [${t.n2}]</td>`).join("") + `<td>${t.p}</td><td>${t.k}</td>`;
+      assert.ok(s.includes(row), `${f}: pounds row for ${t.id}`);
+    }
+  }
+  // The hero's pounds are the dairy slurry row of Table 9.2
+  const d = M.type("dairy_liq_4_11");
+  assert.ok(mv.includes(`(${d.tot[0]} lb N, ${d.tot[1]} lb P&#8322;O&#8325; and ${d.tot[2]} lb K&#8322;O per 1,000 gallons, Table 9.2)`));
 });
 
 function faqCheck(file) {
@@ -202,7 +283,7 @@ test("one calculator copy: both pages load components/manure-value.js and nothin
   assert.deepEqual(hits, ["components/manure-value.js"]);
 });
 
-test("Use my manure test: typed pounds replace the book pounds, every pound priced", () => {
+test("Use my manure test: typed total pounds replace the book pounds, every pound priced", () => {
   const p = M.nutrientPrices(SEP1);
   // A dairy liquid test of 28 lb N, 13 lb P2O5, 25 lb K2O per 1,000 gal:
   // 28 x .6413 + 13 x .9701 + 25 x .3833 = 17.96 + 12.61 + 9.58 = 40.15
@@ -210,38 +291,58 @@ test("Use my manure test: typed pounds replace the book pounds, every pound pric
   assert.equal(M.money(u.total), "$40.15");
   assert.deepEqual({ ...u.lb }, { n: 28, p: 13, k: 25 });
   assert.deepEqual({ ...u.fromTest }, { n: true, p: true, k: true });
+  // First year from a test is the test times A2809 Table 9.1: dairy liquid N 40% (1 hr to 3 days), P and K 80%
+  // 11.2 x .6413 + 10.4 x .9701 + 20 x .3833 = 7.18 + 10.09 + 7.67 = 24.94
+  assert.deepEqual({ ...u.fy.lb }, { n: 28 * 0.4, p: 13 * 0.8, k: 25 * 0.8 });
+  assert.equal(M.money(u.fy.total), "$24.94");
   // 6,000 gal on 80 acres: 40.15 x 6 x 80 = 19,273; a ton is 40.15 / 4.17 = 9.63
   const f = M.fieldValue({ ...M.EXAMPLE, prices: p, test: { n: "28", p: "13", k: "25" } });
   assert.equal(M.money(f.field, 0), "$19,273");
   assert.equal(M.money(f.perTon), "$9.63");
-  // Only K typed: N and P stay on the book (10, 6), K is 20: 6.41 + 5.82 + 7.67 = 19.90
+  assert.equal(M.money(f.fy.field, 0), "$11,970");                  // 24.938 x 6 x 80 = 11,970.4
+  // Only K typed: N and P stay on the book totals (24, 8), K is 20: 15.39 + 7.76 + 7.67 = 30.82
   const k = M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: null, k: 20 });
-  assert.equal(M.money(k.total), "$19.90");
+  assert.equal(M.money(k.total), "$30.82");
   assert.deepEqual({ ...k.fromTest }, { n: false, p: false, k: true });
+  assert.deepEqual({ ...k.fy.lb }, { n: 10, p: 6, k: 16 }, "book first-year N and P, test K x 80%");
   // Blank, junk or negative boxes are no test at all
   assert.equal(M.cleanTest({ n: "", p: "", k: "" }), null);
   assert.equal(M.cleanTest({ n: -3, p: "abc", k: null }), null);
-  assert.equal(M.money(M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: "", k: "" }).total), "$18.75");
+  assert.equal(M.money(M.perUnit("dairy_liq_4_11", "1to3day", p, { n: "", p: "", k: "" }).total), "$31.20");
   // A zero is a real test result, not a blank
   assert.equal(M.cleanTest({ n: 0 }).n, 0);
-  // The calculator has the three boxes
+  // The calculator has the three boxes and asks for total pounds
   const js = read("components/manure-value.js");
   for (const k2 of ["tn", "tp", "tk"]) assert.ok(js.includes(`data-k="${k2}"`), `test box ${k2}`);
   assert.ok(js.includes("Use my manure test"));
+  assert.ok(js.includes("Type the total pounds from your lab report"));
 });
 
-test("the words match the numbers: book pounds are first-year, never called all of it", () => {
+test("the words match the numbers: the headline is all the nutrients, the first-year part beside it", () => {
   const mv = read("manure-value.html");
   const vis = mv.replace(/<!--[\s\S]*?-->/g, " ").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, " ");
-  assert.ok(!/value of all the manure: all its P and K/i.test(mv), "the old 'all of it' claim is back");
-  assert.ok(!/full value of those nutrients at today/i.test(mv));
-  assert.match(vis, /book pounds for what a crop can use the first year, not everything in the manure/);
-  assert.match(vis, /First-year value: <span data-mv="ex-field">/);
-  assert.ok(FAQ.some(([q, a]) => q === "Is this the value of all the nutrients in the manure?" && /^No\./.test(a)));
+  // The big number is the value of all of it, the first-year number beside it
+  assert.match(mv, /<span class="mv-k">All the nutrients<\/span><span class="mv-num"><span data-mv="all-dairy_liq_4_11">/);
+  assert.match(mv, /<span class="mv-k">What the crop can use the first year<\/span><span class="mv-num2"><span data-mv="fy-dairy_liq_4_11-1to3day">/);
+  assert.match(vis, /All the nutrients: <span data-mv="ex-all-field">/);
+  assert.match(vis, /Table 9\.2/);
+  assert.match(vis, /R-11-2012/);
+  assert.ok(!/not everything in the manure|so all of it is worth more|First-year value, UW book pounds/.test(mv + read("components/manure-value.js")),
+    "old first-year-only headline words are back");
+  assert.ok(FAQ.some(([q, a]) => q === "Is this the value of all the nutrients in the manure?" && /^Yes\./.test(a)));
   assert.ok(!FAQ.some(([q]) => /charge a neighbor/i.test(q)), "no neighbor-pricing question");
   assert.ok(!/id="selling"|Selling manure to a neighbor/.test(mv), "the neighbor section is folded into the rules");
+  // meta description leads with all of it
+  const desc = mv.match(/<meta name="description" content="([^"]*)"/)[1];
+  assert.match(desc, /all the N, P and K in liquid dairy manure is worth about \$[\d.]+ per 1,000 gal/);
+  assert.ok(desc.length <= 170, `description ${desc.length} chars`);
+  // The share card says the same number
+  assert.match(mv, /og:image:alt"\s+content="All the nutrients in liquid dairy manure are worth \$[\d.]+ per 1,000 gallons/);
+  // Fast Facts: the tab table and its FAQ count all of it
   const ff = read("fast-facts.html");
-  assert.ok(!/value of all the N, P/.test(ff), "fast-facts calls first-year pounds all of it");
+  assert.ok(!/Multiply the first-year available N/.test(ff), "fast-facts FAQ still prices first-year pounds only");
+  assert.ok(ff.includes("Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons"));
+  assert.ok(ff.includes("Total and Available Nutrient Content by Manure Type"));
 });
 
 test("prices carry their quote date, never 'today's'", () => {

@@ -123,7 +123,7 @@ PAGES = [
         ("/field-scout", "Field Scout", "draw a field and see its soils, crop history, weather, drought and nearby bids"),
         ("/fertilizer", "Fertilizer Prices", "dealer quotes for urea, MAP, potash and AMS, dated per row"),
         ("/fast-facts", "Ag Fast Facts", "on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link"),
-        ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at the current Midwest dealer fertilizer prices (P from MAP with its N credited), first-year book values an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
+        ("/manure-value", "Manure Value", "what dairy, hog, beef, poultry and horse manure is worth per 1,000 gallons and per ton at the current Midwest dealer fertilizer prices (P from MAP with its N credited): the value of all the N, P and K by UW A2809's typical totals, with the part a crop can use the first year beside it, an acre and for a whole field, a worked dairy example and a calculator that takes your own manure test"),
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
     ]),
     ("Sell, store or price ahead?", [

@@ -223,11 +223,12 @@ def card_manure_value():
         if len(cells) == 1:
             group = cells[0]
             continue
-        if len(cells) >= 4 and cells[1].startswith("$") and cells[2].startswith("$"):
+        if len(cells) >= 5 and cells[1].startswith("$"):
+            cells[1] = re.match(r"\$[\d,]+\.\d\d", cells[1]).group(0)   # "$31.20" from "$31.20$7.48 a ton"
             name = cells[0]
             if group and not name.startswith(group):
                 name = f"{group}, {name}"
-            rows[name] = (cells[0], cells[2])     # name with its unit, "worked in 1 hour to 3 days"
+            rows[name] = (cells[0], cells[1])     # name with its unit, "all the nutrients"
     hero_key = next(k for k in rows if k.startswith("Dairy") and "4 to 11%" in k)
     hero = rows[hero_key][1]
     if big and big.group(1) != hero:
@@ -244,9 +245,9 @@ def card_manure_value():
         v, u = pick(pre, has)
         table.append((lab, v, u))
     return a_card("manure-value", "Manure value", f"Fertilizer prices of {when}",
-                  f"Liquid dairy manure is worth {hero} per 1,000 gallons at {when} fertilizer prices.",
+                  f"All the nutrients in liquid dairy manure are worth {hero} per 1,000 gallons at {when} fertilizer prices.",
                   big=hero, unit="per 1,000 gal of liquid dairy manure",
-                  ctx="UW first-year book pounds, at Midwest dealer prices.",
+                  ctx="All the N, P and K, UW typical totals, at Midwest dealer prices.",
                   table=table, table_title="Other manure")
 
 
