@@ -374,7 +374,10 @@ def main():
         # data/prf/outlook.json). Still only scripts the page itself loads, so
         # the feed joins the manifest the day prf.html adds the script tag,
         # and feeds-guard asks for the rebuild in that commit.
-        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf)(?:-[\w-]+)?|cash-bids)\.js)""", text))):
+        # 2026-10-15: /cot's two page scripts moved to components/cot-page.js and
+        # components/cot-analysis.js (cot.html reads cot.json and cot-history.json
+        # through them).
+        for js in sorted(set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))):
             if os.path.exists(js):
                 text += "\n" + read(js)
         for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
