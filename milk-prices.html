@@ -506,7 +506,7 @@
           <tbody id="dp-fut-body"></tbody>
         </table>
       </div>
-      <p class="dp-note-src" id="dp-fut-cap">Cash-settled CME Class III futures, delayed about 15 minutes. Each contract settles to the Class III price USDA announces for its month. This is the market&rsquo;s price, not a forecast the site is making. <span id="dp-fut-asof"></span></p>
+      <p class="dp-note-src" id="dp-fut-cap">Cash-settled CME Class III futures, each at its last finished session (Yahoo Finance, delayed, not official CME settlements). Each contract settles to the Class III price USDA announces for its month. This is the market&rsquo;s price, not a forecast the site is making. <span id="dp-fut-asof"></span></p>
     </div>
 
     <h3 class="dp-sub dp-sub-tight" id="dp-h-comp">Component prices</h3>
@@ -1291,6 +1291,33 @@
       if(pos(shown.c3)&&isFinite(shown.idx)){ref.hidden=false;ref.innerHTML='For reference, USDA announced Class III for '+idxLong(shown.idx)+': <strong>'+cwt(shown.c3)+'/cwt</strong>.';}
       else ref.hidden=true;
     }
+    // A contract's newest FINISHED session (the same rule as seed_static.py
+    // quote_state for cattle). Yahoo keeps the last trade in a day's bar until
+    // about 11 p.m. CT, when the settle replaces it, and it opens the next
+    // day's bar right after. On Oct 15 2026 the 00:31 CT file held Nov Class III
+    // at 17.07 dated Oct 15 next to Oct and Dec dated Oct 14; the Oct 14 close
+    // was 16.87. A bar dated today, or dated after the fetch, is a trade: the
+    // finished session is the previous close (close - change), on prev_date,
+    // with no change of its own.
+    /*settled:start*/
+    function ctParts(ms){
+      try{
+        var f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'});
+        var o={}; f.formatToParts(new Date(ms)).forEach(function(x){o[x.type]=x.value;});
+        return {day:o.year+'-'+o.month+'-'+o.day,hour:+o.hour};
+      }catch(e){ return null; }
+    }
+    function settledQuote(o,fetchedMs){
+      if(!o||typeof o.close!=='number'||!isFinite(o.close)||o.close<=0) return null;
+      var cd=o.close_date; if(!/^\d{4}-\d{2}-\d{2}$/.test(cd||'')) return null;
+      var ct=ctParts(fetchedMs); if(!ct) return null;
+      if(cd<ct.day||(cd===ct.day&&ct.hour>=23)) return {close:o.close,date:cd,chg:(typeof o.netChange==='number'&&isFinite(o.netChange))?o.netChange:null};
+      if(typeof o.netChange!=='number'||!isFinite(o.netChange)||!/^\d{4}-\d{2}-\d{2}$/.test(o.prev_date||'')||o.roll) return null;
+      var px=Math.round((o.close-o.netChange)*10000)/10000;
+      return px>0?{close:px,date:o.prev_date,chg:null}:null;
+    }
+    /*settled:end*/
+    function dayLabel(d){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return m?MONS[+m[2]-1]+' '+(+m[3]):d;}
     function futures(p){
       if(!p||typeof p!=='object'){ fut('Futures not shown: the price file could not be loaded.'); return; }
       var q=(p.quotes&&typeof p.quotes==='object')?p.quotes:p;
@@ -1304,11 +1331,15 @@
         var m=/^milk-([a-z]{3})(\d{2})$/.exec(k); if(!m||bad[k]) return;
         var mi=MONS.map(function(s){return s.toLowerCase();}).indexOf(m[1]); if(mi<0) return;
         var idx=(2000+ +m[2])*12+mi; if(idx<nowIdx) return;
-        var o=q[k]; if(!o||!pos(o.close)) return;
-        rows.push({idx:idx,label:MONS[mi]+' '+(2000+ +m[2]),close:o.close,chg:o.netChange});
+        var s=settledQuote(q[k],f); if(!s) return;
+        rows.push({idx:idx,label:MONS[mi]+' '+(2000+ +m[2]),close:s.close,chg:s.chg,date:s.date});
       });
       rows.sort(function(a,b){return a.idx-b.idx;}); rows=rows.slice(0,6);
-      var fd=new Date(f), asof='Price file fetched '+MONS[fd.getUTCMonth()]+' '+fd.getUTCDate()+', '+('0'+fd.getUTCHours()).slice(-2)+':'+('0'+fd.getUTCMinutes()).slice(-2)+' UTC.';
+      // one date for the table when the rows agree; each row dated when they do not
+      var dates={}; rows.forEach(function(r){dates[r.date]=1;});
+      var dl=Object.keys(dates).sort(), asof='';
+      if(dl.length===1) asof='Closes from '+dayLabel(dl[0])+'.';
+      else if(dl.length>1){ rows.forEach(function(r){r.label+=' ('+dayLabel(r.date)+')';}); asof='Contracts closed on different days; each row shows its own.'; }
       fut('Futures not shown: no current Class III contracts in the price file.',rows,asof);
     }
   })();
