@@ -245,6 +245,58 @@
      "evidence": "snippets"
     }
    ]
+  },
+  "rain-print": {
+   "queries": [
+    "rainfall poster",
+    "custom weather print",
+    "gift for farmer",
+    "weather on our wedding day print",
+    "how much rain did we get in <year>",
+    "<town> rainfall <year>"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 46,
+   "verdict": "only product of its kind; not yet findable in search",
+   "report": "results/2026-10-15-rainprint.md",
+   "competitors": [
+    {
+     "name": "Show Your Stripes",
+     "kind": "university",
+     "total": 44,
+     "evidence": "snippets"
+    },
+    {
+     "name": "temperature-blanket.com",
+     "kind": "startup",
+     "total": 35,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Extreme Weather Watch",
+     "kind": "established",
+     "total": 34,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Weathered Moments (Etsy)",
+     "kind": "vendor",
+     "total": 33,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Day-you-were-born prints",
+     "kind": "vendor",
+     "total": 29,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Weather Radials",
+     "kind": "vendor",
+     "total": 28,
+     "evidence": "snippets"
+    }
+   ]
   }
  }
 }
