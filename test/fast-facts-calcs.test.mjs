@@ -116,3 +116,30 @@ test("N:corn ratio redraws when the urea price fills the box, even when the shee
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+/* Small wrong words from the Oct 15 review. Futures here are delayed quotes,
+ * never "live"; Sonalan is ethalfluralin, not trifluralin; a fertilizer row
+ * quoted on another day than the sheet carries its own date. */
+test("Fast Facts never calls delayed futures live, names Sonalan's active right", () => {
+  const html = readFileSync(join(ROOT, "fast-facts.html"), "utf8");
+  assert.ok(!/CBOT &middot; live/.test(html), "price tiles say live");
+  assert.equal((html.match(/CBOT, delayed/g) || []).length, 3);
+  assert.ok(!/Live corn price|Live Market Prices|with live prices/.test(html));
+  assert.ok(!/Sonalan \(trifluralin\)/.test(html));
+  assert.ok(html.includes("Treflan (trifluralin), Sonalan (ethalfluralin)"));
+});
+
+test("a fertilizer pill quoted on another day than the sheet shows its own date", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const fert = { updated: "2026-09-01", prices: [
+      { name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01" },
+      { name: "K-Mag Premium", symbol: "0-0-20-22S-11Mg", price: 650, as_of: "2026-07-20" } ] };
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
+    await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
+    const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
+    assert.deepEqual(syms, ["46-0-0", "0-0-20-22S-11Mg · Jul 20"]);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});

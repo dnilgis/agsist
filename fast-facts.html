@@ -419,14 +419,14 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style></style>
 <main id="main" tabindex="-1" class="ff-page">
 <div class="ff-hero">
-  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free reference tables, with live prices</div>
+  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free reference tables, with current prices</div>
   <h1>Fast Facts: farm reference tables</h1>
   <p class="page-lede">The numbers to check before you spend money: corn N rates, P&amp;K by soil test, what manure is worth, crop stages, pest thresholds and conversions.</p>
   <div class="ff-meta">Rates calibrated to <strong>UW A2809</strong> (Upper Midwest), confirm with your state extension &middot; maintained by <strong>Sigurd Lindquist</strong> &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; related: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even</a> &middot; <a href="/gdu-calculator">GDU History</a></div>
 </div>
 <nav class="ff-toc" aria-label="Contents">
   <a href="#nitrogen"><b>Nitrogen</b> corn N rates, N:corn ratio, legume credits</a>
-  <a href="#economics"><b>Economics</b> live prices, cost per acre</a>
+  <a href="#economics"><b>Economics</b> current prices, cost per acre</a>
   <a href="#pk"><b>P &amp; K</b> soil test to lb/ac</a>
   <a href="#removal"><b>Crop removal</b> P&#x2082;O&#x2085; and K&#x2082;O hauled off per bu or ton</a>
   <a href="#manure"><b>Manure</b> nutrients and value</a>
@@ -447,9 +447,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </section>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the reference tables. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <div class="ff-strip" id="ff-strip" hidden>
-  <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT &middot; live</div></div>
-  <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT &middot; live</div></div>
-  <div class="ff-tile"><div class="k">Wheat</div><div class="v" id="fft-wheat">-</div><div class="n">CBOT &middot; live</div></div>
+  <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT, delayed</div></div>
+  <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT, delayed</div></div>
+  <div class="ff-tile"><div class="k">Wheat</div><div class="v" id="fft-wheat">-</div><div class="n">CBOT, delayed</div></div>
   <div class="ff-tile"><div class="k">Urea 46-0-0</div><div class="v gold" id="fft-urea">-</div><div class="n" id="fft-urea-n">dealer</div></div>
 </div>
 <div class="ff-week" id="ff-week" hidden><span class="wk" id="ffw-num"></span><p id="ffw-txt"></p></div>
@@ -475,7 +475,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <div class="fert-pills" id="fert-pills"><span style="font-size:0.78rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
 </div>
-<div class="ff-h2">N:Corn Price Ratio Calculator <span id="nc-live-badge" class="live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live corn price</span></div>
+<div class="ff-h2">N:Corn Price Ratio Calculator <span id="nc-live-badge" class="live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Delayed corn price</span></div>
 <p class="ff-sub">Enter your corn price and N fertilizer cost. The ratio determines which MRTN table column to use. <strong id="nc-highlight-note" style="color:var(--gold)"></strong></p>
 <div class="ff-calc">
   <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> N:Corn Price Ratio: Live Calculator</div>
@@ -568,7 +568,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 
 <!-- ECONOMICS TAB -->
 <div class="ff-panel" id="tab-economics" role="tabpanel" aria-labelledby="tab-btn-economics" tabindex="0" aria-hidden="true">
-<div class="ff-h2">Live Market Prices <span class="live-badge" id="eco-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live</span></div>
+<div class="ff-h2">Market Prices <span class="live-badge" id="eco-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Delayed</span></div>
 <div class="eco-price-grid">
   <div class="eco-price-card"><div class="eco-price-label">Corn</div><div class="eco-price-val" id="eco-corn-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
   <div class="eco-price-card"><div class="eco-price-label">Soybeans</div><div class="eco-price-val" id="eco-bean-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
@@ -578,7 +578,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="eco-price-card"><div class="eco-price-label">MOP (K)</div><div class="eco-price-val" id="eco-mop-price">-</div><div class="eco-price-unit">$/ton</div></div>
 </div>
 <div class="ff-h2">Input Cost Builder</div>
-<p class="ff-sub">Build your projected cost per acre. N $/lb auto-fills from live fertilizer prices; edit to match your dealer.</p>
+<p class="ff-sub">Build your projected cost per acre. N $/lb fills in from our dealer price sheet; edit to match your dealer.</p>
 <div class="eco-section">
   <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn: Cost Per Acre</div>
   <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="0.61" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>
@@ -995,7 +995,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl"><span class="moa-badge moa-14">Group 14</span></td><td class="tl">PPO inhibitor</td><td class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td class="tl">Soybean, corn (Authority)</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Increasing waterhemp resistance: rotate with other MOAs</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine, Aatrex, metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state. Check your label and state rules</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:0.775rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan, Sonalan (trifluralin)</td><td class="tl">Soybean, corn</td><td class="tl" style="font-size:0.775rem">Pre-emergent only. Incorporate into soil.</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan (trifluralin), Sonalan (ethalfluralin)</td><td class="tl">Soybean, corn</td><td class="tl" style="font-size:0.775rem">Pre-emergent only. Incorporate into soil.</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-4">Group 4</span></td><td class="tl">Synthetic auxin</td><td class="tl">2,4-D, dicamba, MCPA</td><td class="tl">Corn, small grains; Xtend soybeans</td><td class="tl" style="font-size:0.775rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-other">Group 27</span></td><td class="tl">HPPD inhibitor</td><td class="tl">Callisto, Laudis, Impact, Balance</td><td class="tl">Corn</td><td class="tl" style="font-size:0.775rem">Excellent waterhemp activity. Rotate with Group 2 avoided fields.</td></tr>
 </tbody></table></div>
@@ -1141,6 +1141,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/manure-value.js?v=3" defer></script>
-<script src="/components/fast-facts.js?v=2" defer></script>
+<script src="/components/fast-facts.js?v=3" defer></script>
 </body>
 </html>
