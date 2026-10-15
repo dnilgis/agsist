@@ -2,6 +2,7 @@
 // the v5.22 PRF sponsor inquiries (kind prf-sponsor)
 // and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
 // and the v5.23 Rain Print logos (POST /rp-logo, GET /rp-logo/<id>, logo on orders and quotes)
+// and the v5.26 gift card order_ref (Stripe ids)
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
@@ -655,6 +656,14 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   r = await upl(); j = await r.json();
   A(r.status === 429 && j.error === 'busy today', 'v5.24: over the cap for everyone, 429 "busy today"');
   for (let i = 0; i < 100; i++) store.delete('rlq:rp-logo:' + day + ':x' + i + ':00:' + i);
+}
+
+// v5.26: a gift card's order_ref takes a Stripe id (pi_..., cs_..., up to 80)
+{
+  const adm = (p, b) => w.fetch(new Request('https://x.dev' + p, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' }, body: JSON.stringify(b) }), env);
+  r = await adm('/rp-gift/issue', { product: 'digital', order_ref: 'cs_live_a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ0123456789abcdefghij' }); j = await r.json();
+  A(r.status === 200 && j.ok, 'v5.26: order_ref with underscores, 63 long');
+  r = await adm('/rp-gift/issue', { product: 'digital', order_ref: 'x'.repeat(81) }); A(r.status === 400, 'v5.26: order_ref past 80 refused');
 }
 
 // older routes still answer the same

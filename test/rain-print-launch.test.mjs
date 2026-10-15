@@ -100,6 +100,16 @@ test("stations in plain words: no raw ACIS id pair, names out of caps", () => {
   assert.deepEqual(plain(RP.stationParts("CAMERON 2 NE")), { name: "Cameron", off: "2 mi NE" });
   assert.equal(RP.stationLabel({ name: "CAMERON 2 NE", state: "WI" }), "Cameron, WI (2 mi NE of Cameron)");
   assert.equal(RP.stationLabel({ name: "CHETEK", stateAbbr: "WI" }), "Chetek, WI");
+  // the station named for the buyer's own town: one distance, from the town (2026-10-15)
+  assert.equal(RP.stationLabel({ name: "AMES 2.6 NNW", state: "IA", city: "Ames" }), "Ames, IA");
+  assert.equal(RP.stationLabel({ name: "AMES 2.6 NNW", state: "IA", city: "Nevada" }), "Ames, IA (2.6 mi NNW of Ames)");
+  // a town and state typed with no comma (2026-10-15)
+  for (const [q, town, st] of [["Ames Iowa", "Ames", "ia"], ["Ames IA", "Ames", "ia"], ["Springfield IL", "Springfield", "il"], ["Sioux Falls South Dakota", "Sioux Falls", "sd"], ["Missouri Valley IA", "Missouri Valley", "ia"], ["Des Moines", "Des Moines", ""], ["Indiana", "Indiana", ""], ["Chetek, WI", "Chetek", "wi"]]) {
+    const g = RP.geocodeQuery(q);
+    assert.deepEqual([g.town, g.st], [town, st], q);
+  }
+  const two = [{ name: "Springfield", admin1: "Illinois", latitude: 39.8, longitude: -89.6 }, { name: "Springfield", admin1: "Missouri", latitude: 37.2, longitude: -93.3 }];
+  assert.equal(RP.geoPick("Springfield IL", two).hit.admin1, "Illinois", "no 'which one?' when the state was typed without a comma");
   assert.equal(RP.sidPlain("US1WIBN0004 6"), "volunteer gauge US1WIBN0004");
   assert.equal(RP.milesText(23.6), "24 mi");
 });
@@ -305,9 +315,12 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so pay() makes one at the press when the code is too long
   const P = S.slice(S.indexOf("function pay(opts)"), S.indexOf("function staleInputs"));
-  assert.match(P, /if \(link && !checkoutRef\(encodeCode\(ST\), ST\.gift, shortHit\(\)\) && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "pay() makes the short id at the press, once");
-  assert.match(P, /var code = refFor\(\);/, "pay() uses the reference");
-  assert.match(P, /closeProof\(true\);\n    openOrder\(id\);\n  \}/, "and falls back to the order form");
+  assert.match(P, /if \(link && long && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "pay() makes the short id at the press, once");
+  // 2026-10-15: asked of the worker at every press (never a kept id alone); a failed ask goes to the order form, not to Stripe with a kept id
+  assert.match(P, /root\.AgRpShort\.mint\(encodeCode\(artDesign\(\)\), \{ fresh: true \}\)/);
+  assert.match(P, /var code = link && long && !\(opts && opts\.ok\) \? '' : refFor\(\);/);
+  assert.match(P, /: refFor\(\);/, "pay() uses the reference");
+  assert.match(P, /closeProof\(true\);[\s\S]{0,140}openOrder\(id, link \? 'Checkout couldn\\u2019t open just now, so send this and I\\u2019ll email you a payment link\.' : ''\);\n  \}/, "and falls back to the order form, saying why");
   // 2026-10-14 (Sig): checkout in the same tab, never a second window
   assert.match(P, /goTo\(u\);/);
   assert.ok(!/root\.open\(/.test(S), "no window.open anywhere on the page");
@@ -342,7 +355,7 @@ test("the proof view and the order summary are on the page", () => {
 // ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
 test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
   const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=3" defer><\/script>/);
+  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=4" defer><\/script>/);
   assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
   for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
   assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
@@ -398,7 +411,11 @@ test("prints ship flat between chipboard, never rolled; no mat is sold", () => {
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /black stock frame, no mat/);
+  assert.match(HTML, /black frame, no mat/);
+  assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
+  // the box picture is a render of an older layout: it says so, and it keeps its shape
+  assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
+  assert.match(HTML, /\.rp-onwall img\{display:block;width:100%;height:auto\}/);
 });
 
 test("refund and reprint wording: Sig's terms, $15 to reprint a lost or damaged print", () => {
@@ -514,7 +531,9 @@ test("type, keyboard and screen reader fixes", () => {
   }
   assert.ok(!HTML.includes('id="rp-m6row"'), "five days at most");
   assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
-  assert.ok(!/id="rp-m\dl"[^>]*placeholder/.test(HTML), "the label boxes start empty, no gray hint that looks filled in");
+  // the label boxes start empty; the only hint says what goes there and how much fits, never example words (2026-10-15)
+  assert.equal((HTML.match(/id="rp-m\dl"[^>]*maxlength="13" placeholder="What happened \(13 letters\)"/g) || []).length, 5);
+  assert.ok(!/id="rp-m\dl"[^>]*placeholder="(?!What happened \(13 letters\))/.test(HTML), "no other hint that looks filled in");
   assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 5\)<\/span>/);
   assert.match(HTML, /id="rp-dates-max" hidden>5 days is the most that fits\. Remove one to mark another\.</);
   assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");
@@ -557,8 +576,8 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   }
   assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993]);
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
-  // the shop-wall picture, under What comes in the box, says it is an example
-  assert.match(HTML, /<figure class="rp-onwall">.*?<figcaption>Example\.[^<]*<\/figcaption><\/figure>/);
+  // the shop-wall picture, under What comes in the box, says it is a mockup, not a photo of a real print (2026-10-15)
+  assert.match(HTML, /<figure class="rp-onwall">.*?<figcaption>Mockup of a framed print\.[^<]*<\/figcaption><\/figure>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
   // one picker, framed first and picked; the promise sits right under the one button
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));

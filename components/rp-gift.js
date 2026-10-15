@@ -214,7 +214,8 @@
   function redeem(G, order) {
     if (!G || !G.usable) return Promise.resolve({ ok: false, error: 'This card can\u2019t be used.' });
     var body = { code: G.code };
-    ['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page'].forEach(function (k) {
+    // the logo goes too: a long design is sent as its RPS- reference, which carries no logo (2026-10-15)
+    ['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page', 'logo'].forEach(function (k) {
       if (order && order[k] != null && order[k] !== '') body[k] = order[k];
     });
     return post('redeem', body).then(function (j) {

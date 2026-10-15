@@ -5,6 +5,13 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.26 (2026-10-15): RAIN PRINT GIFT CARDS. POST /rp-gift/redeem compares a
+ *   locked card's design with the design the buyer sends after expanding an
+ *   RPS-<id> reference (a design past 300 letters goes as its short id) from
+ *   its rps:<id> record; before, every long design was refused as "not the
+ *   giver's design". The order also takes the logo from that full code.
+ *   order_ref (issue) takes underscores and up to 80 characters, so a Stripe
+ *   id (pi_..., cs_...) fits. Every other route answers as before.
  * v5.25 (2026-10-14): /rp-short allows 200 new ids an hour and 600 a day per
  *   address (was 60 and 200); the daily total for everyone stays 600.
  * v5.24 (2026-10-14): THREE SMALL FIXES (panel 3). Every route answers as
@@ -1110,7 +1117,7 @@ async function rplKeep(env, id) {
 // KV listing gives nothing a stranger could type.
 const RPG_RE = /^[0-9A-HJKMNP-TV-Z]{12}$/;
 const RPG_KEY_RE = /^rpg:[0-9a-f]{16}$/;
-const RPG_REF_RE = /^[A-Za-z0-9][A-Za-z0-9-]{0,39}$/;
+const RPG_REF_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/;   // v5.26: _ and 80 (Stripe's pi_..., cs_...)
 const RPG_RANK = { digital: 0, print12x18: 1, framed12x18: 2 };
 const RPG_MAX_BYTES = 1024, RPG_REDEEM_MAX_BYTES = 8 * 1024, RPG_ADMIN_MAX_BYTES = 8 * 1024;
 const RPG_PENDING_MS = 120e3;   // a redeem that died half way frees the card after 2 minutes
@@ -1189,7 +1196,7 @@ function rpgIssueClean(b) {
   const product = String(b.product || "");
   if (!RP_CHOICES.includes(product)) return { error: "product must be one of " + RP_CHOICES.join(", ") };
   const order_ref = String(b.order_ref == null ? "" : b.order_ref).trim();
-  if (!RPG_REF_RE.test(order_ref)) return { error: "order_ref is required (letters, digits, dashes; 40 at most)" };
+  if (!RPG_REF_RE.test(order_ref)) return { error: "order_ref is required (letters, digits, dashes, underscores; 80 at most)" };
   const g = b.giver && typeof b.giver === "object" ? b.giver : {};
   const email = String(g.email == null ? "" : g.email).trim().toLowerCase();
   if (email && !EMAIL_RE.test(email)) return { error: "invalid giver email" };
@@ -2566,7 +2573,14 @@ async function handle(req, env) {
       const choice = b.choice == null || b.choice === "" ? rec.product : b.choice;
       const v = formClean("rain-print-order", Object.assign({}, b, { choice, gift: "", gift_january: "" }));
       if (v.error) return json({ ok: false, error: v.error }, 400, c);
-      if (rec.lock && !rpgLockOk(rec.lock, v.rec.design_code))
+      // v5.26: an RPS-<id> reference stands for its full design code
+      let fullCode = v.rec.design_code || "";
+      const rpsRef = /^(?:GIFT-)?RPS-([0-9A-Za-z]{5,8})$/.exec(fullCode);
+      if (rpsRef) {
+        const id = rpsId(rpsRef[1]), got = id ? await env.SUBS.get("rps:" + id) : null;
+        fullCode = typeof got === "string" && rpsCodeOk(got) ? got : "";
+      }
+      if (rec.lock && !rpgLockOk(rec.lock, fullCode))
         return json({ ok: false, error: rec.lock.edit === "name" ? "This card is for the design the giver chose; only the name line can change." : "This card is for the design the giver chose." }, 400, c);
       const mine = [...crypto.getRandomValues(new Uint8Array(8))].map(x => x.toString(16).padStart(2, "0")).join("");
       rec.status = "pending"; rec.pending_ts = Date.now(); rec.redeem_key = mine;
@@ -2579,6 +2593,7 @@ async function handle(req, env) {
         gift_card: "RP-\u2026-" + rec.last4 + " (No. " + rec.no + ")", gift_card_paid: rec.product,
         gift_card_order: rec.order_ref, gift_card_from: rec.from_line || (rec.giver && rec.giver.name) || "" });
       if (up) post.gift_card_upgrade = "yes";
+      if (!post.logo && rpsRef && fullCode) { const lg = rplFromCode(fullCode); if (lg) post.logo = lg; }   // v5.26
       // One marker per redeem that got this far; a second one means the race
       // above was lost, and the digest says so in red.
       const used = "rpg-used:" + key.slice(4) + ":";
