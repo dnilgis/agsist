@@ -497,3 +497,304 @@ def _pic_number(c, p):
                     break
             c.text(x0, base, lab, fl, INK)
             c.rect(x0, base + 22, x1, base + 23, RULE)
+
+
+# ------------------------------------------------------------------ product cards
+
+from PIL import ImageFilter  # noqa: E402
+
+WALL_TOP = (238, 233, 223)
+WALL_BOT = (224, 216, 202)
+
+
+def _wall(c, x0=0, y0=0, x1=W, y1=H):
+    """A soft warm wall: a top-to-bottom wash, drawn into the canvas."""
+    h = int((y1 - y0) * S)
+    for i in range(h):
+        t = i / max(1, h - 1)
+        col = tuple(round(WALL_TOP[k] + (WALL_BOT[k] - WALL_TOP[k]) * t) for k in range(3))
+        c.d.line([(x0 * S, y0 * S + i), (x1 * S - 1, y0 * S + i)], fill=col)
+
+
+def _framed(art, outer_w, frame=13, mat=0):
+    """The print in a black frame (optionally matted), as RGBA, at drawing scale."""
+    fw, mw = frame * S, mat * S
+    iw = int(outer_w * S - 2 * fw - 2 * mw)
+    ih = round(iw * art.height / art.width)
+    out = Image.new("RGB", (iw + 2 * fw + 2 * mw, ih + 2 * fw + 2 * mw), (20, 20, 20))
+    d = ImageDraw.Draw(out)
+    # a hint of light on the frame's top and left edges
+    d.rectangle([0, 0, out.width - 1, S * 2], fill=(52, 52, 52))
+    d.rectangle([0, 0, S * 2, out.height - 1], fill=(40, 40, 40))
+    if mw:
+        d.rectangle([fw, fw, out.width - fw - 1, out.height - fw - 1], fill=(251, 250, 247))
+    out.paste(art.resize((iw, ih), Image.LANCZOS), (fw + mw, fw + mw))
+    # the glass's inner shadow along the top
+    sh = Image.new("L", (iw, 3 * S), 0)
+    for i in range(3 * S):
+        ImageDraw.Draw(sh).line([(0, i), (iw, i)], fill=int(60 * (1 - i / (3 * S))))
+    out.paste((0, 0, 0), (fw + mw, fw + mw, fw + mw + iw, fw + mw + 3 * S), sh)
+    return out
+
+
+def _paste_shadowed(c, im, x, y, blur=14, dy=10, alpha=95):
+    """Paste im (drawing scale) at x, y (1x px) with a soft drop shadow."""
+    pad = blur * 3 * S
+    sh = Image.new("L", (im.width + 2 * pad, im.height + 2 * pad), 0)
+    ImageDraw.Draw(sh).rectangle([pad, pad, pad + im.width, pad + im.height], fill=alpha)
+    sh = sh.filter(ImageFilter.GaussianBlur(blur * S))
+    px, py = int(x * S), int(y * S)
+    c.im.paste((40, 30, 20), (px - pad, py - pad + dy * S), sh)
+    c.im.paste(im, (px, py))
+
+
+def card_print(art_path, head, sub, note, path, layout="side"):
+    """A framed product picture on a warm wall, with a short selling band.
+
+    art_path  the flat print (scripts/cardart/*.jpg), drawn by the product's own engine
+    head      the selling line; sub, the price line; note, the small example label.
+    layout    'side' (print left, words right), 'band' (print above a green
+              band) or 'big' (print as large as it goes, words in a strip).
+    """
+    art = Image.open(art_path).convert("RGB")
+    c = Canvas(PAPER)
+    if layout == "side":
+        _wall(c)
+        fr = _framed(art, 728, frame=14, mat=0)
+        y = (H - 40 - fr.height / S) / 2
+        _paste_shadowed(c, fr, 36, y)
+        c.text(40, y + fr.height / S + 34, note, font("inter", 22, 500), MUTED)
+        x0, maxw = 806, W - 806 - 40
+        c.paste_logo("light", x0, 56, 54)
+        fh, sz, lines = c.fit(head, "inter", 800, [58, 54, 50, 46, 42], maxw, 4)
+        yy = 200 + sz
+        for ln in lines:
+            c.text(x0, yy, ln, fh, GREEN)
+            yy += sz * 1.1
+        c.text(x0, yy + 40, sub, font("inter", 40, 800), GOLD)
+        c.text(x0, H - 46, "agsist.com" + path, font("inter", 24, 700), GREEN2)
+    elif layout == "band":
+        _wall(c, 0, 0, W, 452)
+        fr = _framed(art, 600, frame=12)
+        x = (W - fr.width / S) / 2
+        _paste_shadowed(c, fr, x, 30, blur=12, dy=8)
+        c.text(W - 40, 438, note, font("inter", 20, 500), MUTED, anchor="rs")
+        c.rect(0, 452, W, H, GREEN)
+        fh = font("inter", 46, 800)
+        c.text(60, 520, head, fh, CREAM)
+        c.text(60, 582, sub, font("inter", 34, 700), GOLD_LT)
+        c.paste_logo("dark", W - 58, 590, 58, anchor="rb")
+    else:  # big
+        _wall(c)
+        fr = _framed(art, 760, frame=15)
+        _paste_shadowed(c, fr, 30, 40)
+        fy = 40 + fr.height / S
+        c.text(34, fy + 34, note, font("inter", 22, 500), MUTED)
+        x0, maxw = 830, W - 830 - 40
+        c.paste_logo("light", x0, 48, 50)
+        fh, sz, lines = c.fit(head, "inter", 800, [50, 46, 42, 40, 38], maxw, 5)
+        yy = 190 + sz
+        for ln in lines:
+            c.text(x0, yy, ln, fh, GREEN)
+            yy += sz * 1.12
+        c.text(x0, yy + 34, sub, font("inter", 34, 800), GOLD)
+        c.text(x0, H - 46, "agsist.com" + path, font("inter", 23, 700), GREEN2)
+    return c.jpg()
+
+
+def card_photo(photo_path, head, sub, path, focus=0.5, zoom=1.0):
+    """A product photo or render filling the left of the card, the answer on the right."""
+    ph = Image.open(photo_path).convert("RGB")
+    c = Canvas(PAPER)
+    pw = 470
+    tw, th = pw * S, H * S
+    sc = max(tw / ph.width, th / ph.height) * zoom
+    im = ph.resize((round(ph.width * sc), round(ph.height * sc)), Image.LANCZOS)
+    left = int((im.width - tw) * focus)
+    top = int((im.height - th) * 0.5)
+    c.im.paste(im.crop((left, top, left + tw, top + th)), (0, 0))
+    x0, maxw = pw + 64, W - pw - 64 - 60
+    c.paste_logo("light", x0, 56, 58)
+    fh, sz, lines = c.fit(head, "inter", 800, [64, 60, 56, 52, 48], maxw, 4)
+    yy = 214 + sz
+    for ln in lines:
+        c.text(x0, yy, ln, fh, GREEN)
+        yy += sz * 1.08
+    fs = font("inter", 32, 700)
+    for i, ln in enumerate(c.wrap(sub, fs, maxw)[:2]):
+        c.text(x0, yy + 36 + i * 42, ln, fs, GOLD)
+    c.rect(pw, 566, W, H, GREEN)
+    c.text(W - 60, 607, "agsist.com" + path, font("inter", 24, 700), GOLD_LT, anchor="rs")
+    return c.jpg()
+
+
+# ------------------------------------------------------------------ rain maps
+
+RAIN_STOPS = [(50, (122, 74, 30)), (75, (196, 150, 90)), (100, (250, 247, 236)),
+              (125, (126, 166, 200)), (150, (37, 86, 140))]
+NO_DATA = (236, 234, 228)
+HATCH = (196, 194, 186)
+
+
+def rain_color(pct):
+    """Percent of a usual year to a fill: brown dry, sand usual, blue wet;
+    None (no station, or no usual to compare) is hatched by draw_map."""
+    if pct is None:
+        return None
+    p = max(RAIN_STOPS[0][0], min(RAIN_STOPS[-1][0], pct))
+    for (a, ca), (b, cb) in zip(RAIN_STOPS, RAIN_STOPS[1:]):
+        if p <= b:
+            t = (p - a) / (b - a)
+            return tuple(round(ca[i] + (cb[i] - ca[i]) * t) for i in range(3))
+    return RAIN_STOPS[-1][1]
+
+
+def _rings(geom, shift_east=False):
+    polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    out = []
+    for poly in polys:
+        ring = poly[0]
+        if shift_east:
+            ring = [(x - 360 if x > 0 else x, y) for x, y in ring]
+        out.append(ring)
+    return out
+
+
+def albers(lat1, lat2, lat0, lon0):
+    """An Albers equal-area projection (unit sphere) as a function (lon, lat) -> (x, y), y down."""
+    import math
+    r = math.radians
+    n = (math.sin(r(lat1)) + math.sin(r(lat2))) / 2
+    C = math.cos(r(lat1)) ** 2 + 2 * n * math.sin(r(lat1))
+    rho0 = math.sqrt(C - 2 * n * math.sin(r(lat0))) / n
+
+    def f(lon, lat):
+        rho = math.sqrt(max(0.0, C - 2 * n * math.sin(r(lat)))) / n
+        th = n * r(lon - lon0)
+        return rho * math.sin(th), -(rho0 - rho * math.cos(th))
+    return f
+
+
+def fit_rings(items, box, proj):
+    """items: [(rings in lon/lat, payload)]; box (x0, y0, x1, y1) in 1x px.
+    Returns ([(rings in px, payload)], (x0, y0, x1, y1) actually used)."""
+    pr = [([[proj(x, y) for x, y in ring] for ring in rings], pl) for rings, pl in items]
+    xs = [p[0] for rings, _ in pr for ring in rings for p in ring]
+    ys = [p[1] for rings, _ in pr for ring in rings for p in ring]
+    minx, maxx, miny, maxy = min(xs), max(xs), min(ys), max(ys)
+    bx0, by0, bx1, by1 = box
+    k = min((bx1 - bx0) / (maxx - minx), (by1 - by0) / (maxy - miny))
+    ox = bx0 + ((bx1 - bx0) - (maxx - minx) * k) / 2
+    oy = by0 + ((by1 - by0) - (maxy - miny) * k) / 2
+    out = [([[(ox + (x - minx) * k, oy + (y - miny) * k) for x, y in ring] for ring in rings], pl) for rings, pl in pr]
+    return out, (ox, oy, ox + (maxx - minx) * k, oy + (maxy - miny) * k)
+
+
+def _poly_area(ring):
+    a = 0.0
+    for (x1, y1), (x2, y2) in zip(ring, ring[1:] + ring[:1]):
+        a += x1 * y2 - x2 * y1
+    return abs(a) / 2
+
+
+def _hatch(w, h):
+    """Grey with fine diagonal lines: a county with no number to shade."""
+    im = Image.new("RGB", (w, h), NO_DATA)
+    d = ImageDraw.Draw(im)
+    step = 5 * S
+    for k in range(-h, w, step):
+        d.line([(k, h), (k + h, 0)], fill=HATCH, width=max(1, S))
+    return im
+
+
+def draw_map(c, shapes, outlines=(), edge=PAPER, edge_w=0.7, outline=(70, 74, 70), outline_w=1.6):
+    """shapes: [(rings px, fill)]; drawn biggest first so a county inside
+    another (an independent city) lands on top. fill None is hatched (no
+    number). outlines: [rings px]."""
+    flat = [(ring, fill) for rings, fill in shapes for ring in rings if len(ring) > 2]
+    flat.sort(key=lambda rf: -_poly_area(rf[0]))
+    mask = None
+    for ring, fill in flat:
+        pts = [(x * S, y * S) for x, y in ring]
+        if fill is None:
+            if mask is None:
+                mask = Image.new("L", c.im.size, 0)
+                md = ImageDraw.Draw(mask)
+            md.polygon(pts, fill=255)
+        else:
+            if mask is not None:
+                md.polygon(pts, fill=0)
+            c.d.polygon(pts, fill=fill)
+    if mask is not None:
+        c.im.paste(_hatch(*c.im.size), (0, 0), mask)
+    if edge_w:
+        for ring, fill in flat:
+            pts = [(x * S, y * S) for x, y in ring]
+            c.d.line(pts + pts[:1], fill=edge, width=max(1, int(edge_w * S)))
+    for rings in outlines:
+        for ring in rings:
+            pts = [(x * S, y * S) for x, y in ring]
+            c.d.line(pts + pts[:1], fill=outline, width=max(1, int(outline_w * S)), joint="curve")
+
+
+def _legend_ramp(c, x, y, w, h=16):
+    lo, hi = RAIN_STOPS[0][0], RAIN_STOPS[-1][0]
+    ww = w - 70
+    for i in range(int(ww * S)):
+        p = lo + (hi - lo) * i / (ww * S - 1)
+        c.d.line([(x * S + i, y * S), (x * S + i, (y + h) * S - 1)], fill=rain_color(p))
+    f = font("inter", 20, 500)
+    for p, lab, a in ((lo, "50%", "ls"), (100, "usual", "ms"), (hi, "150%", "rs")):
+        xx = x + (p - lo) / (hi - lo) * ww
+        c.rect(xx - 1, y + h, xx + 1, y + h + 6, INK)
+        c.text(xx, y + h + 28, lab, f, BODY, anchor=a)
+    hx = x + ww + 22
+    c.im.paste(_hatch(int(48 * S), int(h * S)), (int(hx * S), int(y * S)))
+    c.text(hx + 24, y + h + 28, "none", f, BODY, anchor="ms")
+
+
+def card_rain_map(head, meta, caption, big, big_label, line, shapes, outlines=(), edge_w=0.7,
+                  box=(500, 34, 1150, 410), insets=()):
+    """C-style card: the left third says the number, the map fills the right,
+    the question sits in the green band.
+
+    head        [(text, highlight)] for the band.
+    big         the headline number ("112%") or None; big_label, up to 2 lines under it.
+    line        one more short line (a count), or None.
+    shapes      [(rings px, fill)] already fitted to box (fit_rings).
+    insets      extra [(shapes, outlines)] drawn the same way (Alaska, Hawaii).
+    """
+    c = Canvas(PAPER)
+    c.rect(0, 430, W, H, GREEN)
+    c.text(60, 58, caption.upper(), font("mono", 20, 700), GOLD, track=2.2)
+    draw_map(c, shapes, outlines, edge_w=edge_w)
+    for sh, ol in insets:
+        draw_map(c, sh, ol, edge_w=edge_w)
+    fl, fb = font("inter", 26, 500), font("inter", 26, 700)
+    y = 82
+    if big:
+        c.text(56, y + 96, big, font("inter", 100, 800), GREEN)
+        y += 100
+        for ln in c.wrap(big_label, fl, 410)[:2]:
+            y += 34
+            c.text(60, y, ln, fl, INK)
+    if line:
+        y += 14
+        for ln in c.wrap(line, fb, 410)[:2]:
+            y += 36
+            c.text(60, y, ln, fb, INK)
+    _legend_ramp(c, 60, max(y + 26, 330), 380)
+    segs = [(t, GOLD_LT if hi else CREAM) for t, hi in head]
+    # one line when it fits left of the logo, else two
+    for sz, maxw, n in ((56, 910, 1), (52, 910, 1), (48, 910, 1), (52, 900, 2), (48, 900, 2), (44, 900, 2), (40, 900, 2)):
+        f = font("inter", sz, 800)
+        if _rich_fits(c, segs, f, maxw, n):
+            y0 = 430 + (52 if n == 1 else 30) + sz * 0.95
+            c.rich(60, y0, segs, f, maxw, n, sz * 1.08)
+            break
+    fm = font("inter", 22, 400)
+    while c.width(meta, fm) > 860 and "  ·  " in meta:
+        meta = meta.rsplit("  ·  ", 1)[0]
+    c.text(60, 604, meta, fm, (205, 211, 204))
+    c.paste_logo("dark", W - 58, 598, 60, anchor="rb")
+    return c.jpg()

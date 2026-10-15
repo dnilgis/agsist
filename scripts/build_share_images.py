@@ -10,9 +10,12 @@ What a link looks like when someone texts it: Sig picked the looks on
      line of what it gives.
   C, picture from the data, where the data makes a real picture: /cash-bids
      (elevators by state), /farm-bill (where the money goes) and the futures
-     pages (a year of weekly closes). The homepage and the daily briefing use
-     C through scripts/build_social_card.py, /prf through
-     scripts/build_prf_card.py.
+     pages (a year of weekly closes), and the county rain maps. The homepage
+     and the daily briefing use C through scripts/build_social_card.py, /prf
+     through scripts/build_prf_card.py.
+  Product cards: /rain-print shows a real Rain Print (drawn by the page's own
+     engine from saved NOAA answers, scripts/render_rain_print_card_art.mjs)
+     framed on a wall; /rain-gauge shows the gauge render beside its line.
 
 Writes img/og/<page>.jpg (1200 x 630, under 120 KB) and sets og:image,
 og:image:width/height/alt, twitter:card and twitter:image on the page. The
@@ -23,7 +26,9 @@ change, so a run with no new data commits nothing.
 Generated sets share ONE image per set, never one per page (CLAUDE.md): the
 set's builder writes the URL into every page; this script draws the image.
   arc-plc/*   -> img/og/arc-plc.jpg   (scripts/build_arc_plc.py)
-  rain/*      -> img/og/rain.jpg      (scripts/build_county_rain.py)
+  rain.html   -> img/og/rain.jpg      (scripts/build_county_rain.py; a US county map)
+  rain/<state>.html, rain/<state>/* -> img/og/rain-<st>.jpg, one per state (50),
+                                      the state's county map, shaded by percent of usual
   cash-bids/* -> img/og/cash-bids.jpg (scripts/build_cash_bid_pages.py)
   hail-map/*, hail/* -> img/og/hail-map.jpg (generate_hail_*.py)
   rent/*      -> img/og/rent.jpg      (scripts/build_state_rent_pages.py)
@@ -171,11 +176,9 @@ LINES = {
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
 }
 
-# Pages whose share image is a real picture of the product; kept as they are.
+# Pages that borrow another page's card (drawn first, then pointed at).
 KEEP = {
-    "rain-print": "img/og/rain-print.jpg",
     "gifts-for-farmers": "img/og/rain-print.jpg",
-    "rain-gauge": "img/og/rain-gauge.jpg",
 }
 # Pages whose meta tags their own builder writes (its --check compares the
 # whole file): this script draws the image, the builder points at it.
@@ -439,20 +442,6 @@ def card_quick_stats():
                   table=rows, table_title="Other states")
 
 
-def card_rain():
-    h = rd("rain.html")
-    m = re.search(r"Rain so far in (\d{4}) for ([\d,]+) US counties", h)
-    when = re.search(r'"dateModified":\s*"(\d{4}-\d\d-\d\d)', h)
-    title = h1_of(h)
-    if not m:
-        return title_card("rain")
-    foot = f"NOAA and CoCoRaHS, updated {mdy(when.group(1))}" if when else "NOAA and CoCoRaHS stations"
-    return a_card("rain", "County rain", foot,
-                  f"Rain so far in {m.group(1)} for {m.group(2)} US counties, month by month.",
-                  big=m.group(2), unit=f"US counties with their {m.group(1)} rain so far",
-                  ctx="Inches, percent of a usual year, month by month.")
-
-
 def card_markets():
     d = js("data/price-stats.json")
     rows = []
@@ -557,6 +546,156 @@ def state_names():
             "SD": "South Dakota", "ND": "North Dakota", "OH": "Ohio", "IN": "Indiana", "WI": "Wisconsin"}
 
 
+# ------------------------------------------------------------------ product cards
+
+RP_ART = "scripts/cardart/rain-print-2012-ames-ia.jpg"   # scripts/render_rain_print_card_art.mjs
+
+
+def card_rain_print():
+    """A real Rain Print, drawn by components/rain-print-art.js from the saved
+    NOAA answers for Ames, Iowa, 2012 (data/rain-print-examples), framed on a
+    wall. The price is the unframed print's, from data/rain-print.json."""
+    price = js("data/rain-print.json")["print12x18"]
+    sub = "Prints from $" + f"{float(price):,.2f}".replace(".00", "")
+    return {"kind": "PRINT", "args": dict(
+        art_path=os.path.join(ROOT, RP_ART), head="A year of rain on your farm, framed.", sub=sub,
+        note="Example: Ames, Iowa, 2012", path="/rain-print", layout="side"),
+        "alt": f"An example Rain Print in a black frame: every rain and snow of 2012 at Ames, Iowa, from NOAA "
+               f"records, stepping up across the months below a usual year. A year of rain on your farm, framed. {sub}."}
+
+
+def card_rain_gauge():
+    return {"kind": "PHOTO", "args": dict(
+        photo_path=os.path.join(ROOT, "img/rain-gauge/gauge-front.jpg"), head="A rain gauge that keeps its own log.",
+        sub="Prototype, waitlist open", path="/rain-gauge", focus=0.5, zoom=1.25),
+        "alt": "3D render of the prototype rain gauge, charcoal cap and clear tube, on a fence post at the edge of a field. "
+               "A rain gauge that keeps its own log. Prototype, waitlist open."}
+
+
+# ------------------------------------------------------------------ rain maps (county rain pages)
+# One card per state, img/og/rain-<st>.jpg, for rain/<state>.html and every
+# county page in it, and one national card, img/og/rain.jpg, for /rain. 50 + 1
+# images, never one per county (CLAUDE.md). scripts/build_county_rain.py
+# points the pages at them (with ?v=<hash of the image>).
+
+_GEO = {}
+
+
+def _geo():
+    if not _GEO:
+        g = js("data/atlas/counties.geo.json")
+        _GEO["counties"] = {f["id"]: f for f in g["features"]}
+        s = js("data/us-states.geo.json")
+        _GEO["states"] = {f["properties"].get("postal"): f for f in s["features"]
+                          if f["properties"].get("iso_a2") == "US"}
+    return _GEO
+
+
+def _rain_files():
+    import county_rain as R
+    out = {}
+    d = os.path.join(ROOT, "data", "rain")
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if f.endswith(".json"):
+            j = js("data/rain/" + f)
+            if j.get("state") in R.STATES:
+                out[j["state"]] = j
+    return out
+
+
+def _county_items(st, d, shift=False):
+    G = _geo()["counties"]
+    items = []
+    for fips, f in G.items():
+        if f["properties"]["st"] != st:
+            continue
+        c = d["counties"].get(fips) if d else None
+        items.append((SC._rings(f["geometry"], shift), SC.rain_color(c["pct"] if c else None)))
+    return items
+
+
+OUTLINE = "outline"   # payload for a state border in fit_rings
+
+
+def card_rain_state(st, d=None):
+    import county_rain as R
+    d = d or js(f"data/rain/{st.lower()}.json")
+    f = R.share_facts(d)
+    if not f["n"]:
+        raise ValueError(f"rain {st}: no counties")
+    u1, un = f["unit"]
+    shift = st == "AK"
+    items = _county_items(st, d, shift)
+    lat = [p[1] for rings, _ in items for ring in rings for p in ring]
+    lon = [p[0] for rings, _ in items for ring in rings for p in ring]
+    lo, hi = min(lat), max(lat)
+    proj = SC.albers(lo + (hi - lo) / 6, hi - (hi - lo) / 6, (lo + hi) / 2, (min(lon) + max(lon)) / 2)
+    stf = _geo()["states"].get(st)
+    allitems = items + ([(SC._rings(stf["geometry"], shift), OUTLINE)] if stf else [])
+    fitted, _ = SC.fit_rings(allitems, (500, 34, 1150, 410), proj)
+    shapes = [x for x in fitted if x[1] is not OUTLINE]
+    outlines = [r for r, pl in fitted if pl is OUTLINE]
+    n_county = len(shapes)
+    edge = 0.8 if n_county < 120 else 0.6
+    ycap = f"{f['year']} rain{'' if f['done'] else ' so far'} vs usual"
+    word = un if f["n_pct"] != 1 else u1
+    line = f"{f['wetter']} of {f['n_pct']} {word} wetter than usual" if f["n_pct"] else None
+    big = f"{f['typical']}%" if f["typical"] is not None else None
+    big_label = f"of a usual year, the typical {f['state']} {u1}" if big else ""
+    if big is None and f["n_pct"]:
+        # too few counties for a typical one: the count is the number
+        big, big_label, line = f"{f['wetter']} of {f['n_pct']}", f"{word} wetter than usual", None
+    head = ([("How much rain did", False), (f["state"], True), (f"get in {f['year']}?", False)] if f["done"]
+            else [("How much rain has", False), (f["state"], True), (f"had in {f['year']}?", False)])
+    meta = (f"Weather stations, Jan 1 to {md(f['asof'])}  ·  "
+            f"agsist.com/rain/{R.slug(f['state'])}")
+    return {"kind": "RAIN", "args": dict(
+        head=head, meta=meta, caption=ycap,
+        big=big, big_label=big_label,
+        line=line, shapes=shapes, outlines=outlines, edge_w=edge),
+        "alt": R.share_alt(d)}
+
+
+def card_rain_us(files=None):
+    import county_rain as R
+    files = files if files is not None else _rain_files()
+    if not files:
+        raise ValueError("no data/rain files")
+    G = _geo()
+    lower = [st for st in R.STATES if st not in ("AK", "HI")]
+    proj = SC.albers(29.5, 45.5, 37.5, -96)
+    items, outl = [], []
+    for st in lower:
+        items += _county_items(st, files.get(st))
+        if st in G["states"]:
+            outl.append((SC._rings(G["states"][st]["geometry"]), OUTLINE))
+    fitted, used = SC.fit_rings(items + outl, (480, 30, 1160, 405), proj)
+    shapes = [x for x in fitted if x[1] is not OUTLINE]
+    outlines = [r for r, pl in fitted if pl is OUTLINE]
+    insets = []
+    for st, box, p in (("AK", (480, 300, 610, 405), SC.albers(55, 65, 50, -154)),
+                       ("HI", (615, 350, 700, 405), SC.albers(8, 18, 13, -157))):
+        it = _county_items(st, files.get(st), shift=(st == "AK"))
+        ol = [(SC._rings(G["states"][st]["geometry"], st == "AK"), OUTLINE)] if st in G["states"] else []
+        fi, _ = SC.fit_rings(it + ol, box, p)
+        insets.append(([x for x in fi if x[1] is not OUTLINE], [r for r, pl in fi if pl is OUTLINE]))
+    n = sum(len(d["counties"]) for d in files.values())
+    ps = [c["pct"] for d in files.values() for c in d["counties"].values() if c["pct"] is not None]
+    wet = sum(1 for p in ps if p > 100)
+    asof = max(c["as_of"] for d in files.values() for c in d["counties"].values())
+    year = max(d["year"] for d in files.values())
+    done = all(str(d.get("edate", "")).endswith("-12-31") for d in files.values())
+    return {"kind": "RAIN", "args": dict(
+        head=[(f"How much rain {'did' if done else 'has'}", False), ("your county", True),
+              (f"{'get' if done else 'had'} in {year}?", False)],
+        meta=f"Weather stations, Jan 1 to {md(asof)}  ·  agsist.com/rain",
+        caption=f"{year} rain{'' if done else ' so far'} vs usual",
+        big=f"{n:,}", big_label="US counties, each with its own station",
+        line=f"{wet:,} of {len(ps):,} wetter than usual" if ps else None,
+        shapes=shapes, outlines=outlines, edge_w=0, insets=insets),
+        "alt": R.share_alt_us(files)}
+
+
 # ------------------------------------------------------------------ registry
 
 CARDS = {
@@ -571,7 +710,9 @@ CARDS = {
     "arc-plc": card_arc_plc,
     "usda-calendar": card_usda_calendar,
     "usda-quick-stats": card_quick_stats,
-    "rain": card_rain,
+    "rain": lambda: card_rain_us(),
+    "rain-print": lambda: card_rain_print(),
+    "rain-gauge": lambda: card_rain_gauge(),
     "markets": card_markets,
     "cash-bids": card_cash_bids,
     "farm-bill": card_farm_bill,
@@ -600,10 +741,31 @@ SETS = {
 SET_SOURCES = {"agsist": None, "rent": None, "yield": None}
 
 
+def rain_state_sets():
+    """rain-<st>: one card per state with a data/rain file (rain/<state>.html
+    and its county pages; scripts/build_county_rain.py points them here)."""
+    d = os.path.join(ROOT, "data", "rain")
+    out = {}
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if re.fullmatch(r"[a-z]{2}\.json", f):
+            st = f[:2].upper()
+            out["rain-" + f[:2]] = (lambda st=st: card_rain_state(st))
+    return out
+
+
+SETS.update(rain_state_sets())
+
+
 def render(spec):
     a = spec["args"]
     if spec["kind"] == "A":
         return SC.card_a(**a)
+    if spec["kind"] == "RAIN":
+        return SC.card_rain_map(**a)
+    if spec["kind"] == "PRINT":
+        return SC.card_print(**a)
+    if spec["kind"] == "PHOTO":
+        return SC.card_photo(**a)
     return SC.card_c(**a)
 
 
@@ -666,6 +828,16 @@ def patch_meta(h, url, alt):
     return h
 
 
+def patch_ld_image(h, img_rel, url):
+    """The same card named in the page's structured data (a Product's image,
+    alone or first in a list) follows the new ?v=, and nothing else there moves."""
+    pat = re.compile(re.escape(f"{SITE}/{img_rel}") + r'(?:\?v=[0-9a-f]+)?"')
+
+    def fix(m):
+        return pat.sub(lambda _: url + '"', m.group(0))
+    return re.sub(r'<script type="application/ld\+json">.*?</script>', fix, h, flags=re.S)
+
+
 def clean_alt(s):
     s = s.replace("—", ", ").replace("–", "-").replace('"', "'")
     return re.sub(r"\s+", " ", s).strip()[:300]
@@ -694,14 +866,18 @@ def build(only=None, strict=False):
             pages.append(p)
     names = set(pages) | set(SETS)
     if only:
-        names &= set(only)
-    for name in sorted(names):
+        only = set(only)
+        if "rain" in only:      # the county rain workflow: the national card and every state's
+            only |= {n for n in SETS if n.startswith("rain-") and len(n) == 7}
+        names &= only
+    # pages that borrow a card go last, so they point at the card just drawn
+    for name in sorted(names, key=lambda n: (n in KEEP, n)):
         if name in KEEP:
             img_rel = KEEP[name]
             h = rd(name + ".html")
             alt = (re.search(r'og:image:alt"\s+content="([^"]*)"', h) or [None, None])[1] or h1_of(h) or name
             data = open(os.path.join(ROOT, img_rel), "rb").read()
-            _write_page(name, img_rel, data, htmlmod.unescape(alt), changed, version=False)
+            _write_page(name, img_rel, data, htmlmod.unescape(alt), changed)
             continue
         fn = CARDS.get(name) or SETS.get(name)
         try:
@@ -724,15 +900,14 @@ def build(only=None, strict=False):
 
 
 def _write_page(name, img_rel, data, alt, changed, version=True):
-    """version: add ?v=<hash> so a changed card gets fetched again. The kept
-    product pictures (KEEP) change by hand, with a new name if need be."""
+    """version: add ?v=<hash> so a changed card gets fetched again."""
     url = f"{SITE}/{img_rel}"
     if version:
         url += "?v=" + hashlib.sha1(data).hexdigest()[:8]
     fp = os.path.join(ROOT, name + ".html")
     with open(fp, encoding="utf-8") as f:
         h = f.read()
-    new = patch_meta(h, url, alt)
+    new = patch_ld_image(patch_meta(h, url, alt), img_rel, url)
     if new != h:
         with open(fp, "w", encoding="utf-8") as f:
             f.write(new)

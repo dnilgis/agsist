@@ -279,7 +279,32 @@ def morning_read(stw):
     return stw["net"] == "cocorahs" or stw["sid"].split(" ")[-1] == "2"
 
 
-def head(title, desc, url, ld, og_title=None, extra=""):
+IMG_ROOT = ROOT   # where the share images are read from (to put their hash in the URL)
+
+
+def share_img(st, alt):
+    """(image URL, alt) for a state's pages (st) or the hub (None): the card
+    scripts/build_share_images.py draws, img/og/rain-<st>.jpg or img/og/rain.jpg,
+    with ?v=<hash> so Messages and Facebook fetch a new one when the data
+    changes. A state card not drawn yet falls back to the hub's card."""
+    import hashlib
+    for rel in ([R.share_image(st)] if st else []) + [R.share_image(None)]:
+        p = os.path.join(IMG_ROOT, rel)
+        if p not in _HASH:
+            _HASH[p] = None
+            if os.path.exists(p):
+                with open(p, "rb") as f:
+                    _HASH[p] = hashlib.sha1(f.read()).hexdigest()[:8]
+        if _HASH[p]:
+            return f"{ORIGIN}/{rel}?v={_HASH[p]}", (alt if rel == R.share_image(st) or not st else None)
+    return f"{ORIGIN}/{R.share_image(None)}", None
+
+
+_HASH = {}
+
+
+def head(title, desc, url, ld, og_title=None, extra="", img=None):
+    img_url, img_alt = img or (f"{ORIGIN}/{R.share_image(None)}", None)
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -301,12 +326,12 @@ def head(title, desc, url, ld, og_title=None, extra=""):
   <meta property="og:title" content="{e(og_title or title.replace(' | AGSIST', ''))}">
   <meta property="og:description" content="{e(desc)}">
   <meta property="og:url" content="{url}">
-  <meta property="og:image" content="https://agsist.com/img/og/rain.jpg">
+  <meta property="og:image" content="{e(img_url)}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="{e(og_title or title.replace(' | AGSIST', ''))}">
+  <meta property="og:image:alt" content="{e(img_alt or og_title or title.replace(' | AGSIST', ''))}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/rain.jpg">
+  <meta name="twitter:image" content="{e(img_url)}">
   {BOOT}
   {ldh}{extra}
 </head>"""
@@ -508,7 +533,7 @@ def county_page(ctx):
     ]
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
     h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
-    return head(title, desc, url, ld) + f"""
+    return head(title, desc, url, ld, img=share_img(st, ctx.get("alt") or R.share_alt(d))) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -539,7 +564,7 @@ def county_page(ctx):
 
 # ---------------------------------------------------------------- state page
 
-UNIT = {"LA": ("parish", "parishes"), "AK": ("borough or census area", "boroughs and census areas")}
+UNIT = R.UNIT
 UNIT_HEAD = {"LA": "Parish", "AK": "Borough"}
 
 
@@ -607,7 +632,7 @@ def state_page(st, d, pages, none_rows):
     ]
     by = by[0] + by[1:].lower()
     h1 = f"How much rain has {e(stn)} had in {year}? {by}" if not done else f"How much rain did {e(stn)} get in {year}? {by}"
-    return head(title, desc, url, ld) + f"""
+    return head(title, desc, url, ld, img=share_img(st, R.share_alt(d))) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -653,7 +678,7 @@ def hub_page(files, built):
          "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", url)]),
     ]
-    page = head(title, desc, url, ld) + f"""
+    page = head(title, desc, url, ld, img=share_img(None, R.share_alt_us(files))) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
@@ -712,9 +737,12 @@ def load_daily(data_dir, files):
     return out
 
 
-def build(data_dir, C=None, NB=None):
-    """{relative path: text} for everything this build owns."""
-    global BOOT
+def build(data_dir, C=None, NB=None, img_root=None):
+    """{relative path: text} for everything this build owns. img_root: where
+    the share images are (default the site), for the hash in their URLs."""
+    global BOOT, IMG_ROOT
+    IMG_ROOT = img_root or ROOT
+    _HASH.clear()
     if BOOT is None:
         BOOT = S.boot()
     C = C or R.counties()
@@ -731,6 +759,7 @@ def build(data_dir, C=None, NB=None):
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         st_slug = R.slug(R.STATES[st])
         day = d["fetched"][:10]
+        alt = R.share_alt(d)
         for fips, c in sorted(d["counties"].items()):
             if fips not in C:
                 continue
@@ -740,7 +769,8 @@ def build(data_dir, C=None, NB=None):
             nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
-                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "day": daily.get(st, {}).get(fips)})
+                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
+                                "day": daily.get(st, {}).get(fips)})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:
@@ -1025,7 +1055,7 @@ def main(argv):
         return selftest()
     data = arg("--data") or os.path.join(ROOT, "data", "rain")
     root = arg("--root") or ROOT
-    want = build(data)
+    want = build(data, img_root=root)
     if "--check" in argv:
         bad = write_or_check(want, root, True)
         if bad:

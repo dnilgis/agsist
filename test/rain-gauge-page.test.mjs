@@ -66,7 +66,7 @@ test("every picture has a size, alt text and a file behind it, and every caption
     assert.ok(!page.includes(old), "old concept image on the page: " + old);
     for (const ext of [".webp", ".jpg"]) assert.ok(!existsSync(ROOT + "img/rain-gauge/" + old + ext), "old concept image in the repo: " + old + ext);
   }
-  assert.ok(/og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-gauge\.jpg"/.test(page) && existsSync(ROOT + "img/og/rain-gauge.jpg"));
+  assert.ok(/og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-gauge\.jpg\?v=[0-9a-f]{8}"/.test(page) && existsSync(ROOT + "img/og/rain-gauge.jpg"));
 });
 
 test("two waitlist forms, same worker and topic as before, extras folded into the note", () => {

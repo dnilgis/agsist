@@ -1775,7 +1775,20 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Fertilizer \u2014 update dealer prices",
+    "Harvest price tracker",
+    "Build Price Stats (5-year percentile)",
+    "Rebuild Feed Manifest",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
