@@ -111,7 +111,7 @@
   var CHECK_BINS = [
     { name: 'GSI 30 ft, 9 rings', maker: 'GSI 40-Series chart', d: 30, eaveIn: 24 * 12 + 2, floorIn: 12, chart: 15337 },
     { name: 'GSI 36 ft, 12 rings', maker: 'GSI 40-Series chart', d: 36, eaveIn: 32 * 12 + 2, floorIn: 12, chart: 29404 },
-    { name: 'Brock 48 ft, 8 rings', maker: 'Brock farm bin chart', d: 48, eaveIn: 21 * 12 + 6, floorIn: 0, chart: 39053 }
+    { name: 'Brock 48 ft, 8 rings (unverified)', maker: 'Brock farm bin chart (search copy; the chart itself was not opened)', d: 48, eaveIn: 21 * 12 + 6, floorIn: 0, chart: 39053 }
   ];
   function checkBin(b) {
     var gH = (b.eaveIn - b.floorIn) / 12;
