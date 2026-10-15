@@ -1,0 +1,727 @@
+{
+ "source": "Posted retail fertilizer prices on co-op websites",
+ "generated": "2026-10-15T23:50:20Z",
+ "stale_days": 60,
+ "min_median": 3,
+ "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price only from 3 co-ops.",
+ "coops_total": 3,
+ "coops_current": 3,
+ "states": {
+  "KS": 3
+ },
+ "summary": [
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "n": 3,
+   "median": 830.0,
+   "low": 817.0,
+   "high": 965.0,
+   "oldest": "2026-10-01",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "n": 3,
+   "median": 630.0,
+   "low": 608.0,
+   "high": 840.0,
+   "oldest": "2026-10-01",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks"
+   ],
+   "far": [
+    "mulvane-ks"
+   ]
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "n": 3,
+   "median": 427.5,
+   "low": 400.0,
+   "high": 490.0,
+   "oldest": "2026-10-01",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "n": 3,
+   "median": 921.5,
+   "low": 820.0,
+   "high": 970.0,
+   "oldest": "2026-10-06",
+   "newest": "2026-10-06",
+   "undated": 1,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "map",
+   "name": "MAP",
+   "symbol": "11-52-0",
+   "n": 2,
+   "median": null,
+   "low": 980.0,
+   "high": 980.0,
+   "oldest": "2026-10-06",
+   "newest": "2026-10-12",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-60",
+   "n": 3,
+   "median": 465.5,
+   "low": 460.0,
+   "high": 500.0,
+   "oldest": "2026-10-01",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "10-34-0",
+   "name": "10-34-0",
+   "symbol": "10-34-0",
+   "n": 1,
+   "median": null,
+   "low": 640.0,
+   "high": 640.0,
+   "oldest": "2026-10-06",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "thiosul",
+   "name": "Thio-Sul",
+   "symbol": "12-0-0-26S",
+   "n": 2,
+   "median": null,
+   "low": 390.0,
+   "high": 450.0,
+   "oldest": "2026-09-10",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  }
+ ],
+ "coops": [
+  {
+   "id": "tworivers-ks",
+   "name": "Two Rivers Coop",
+   "town": null,
+   "state": "KS",
+   "url": "https://www.tworiversks.coop/pages/custom.php?id=19995",
+   "source_url": "https://www.tworiversks.coop/pages/custom.php?id=19995",
+   "layout": "html-table",
+   "cash_label": "cash",
+   "posted": null,
+   "rows": [
+    {
+     "product": "urea",
+     "raw": "46-0-0",
+     "prices": {
+      "charge": 640.0,
+      "cash": 630.0
+     },
+     "cash": 630.0,
+     "cash_basis": "cash",
+     "per_unit": 0.685,
+     "cwt": 31.5,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 14,
+     "stale": false
+    },
+    {
+     "product": "uan28",
+     "raw": "28-0-0",
+     "prices": {
+      "charge": 410.0,
+      "cash": 400.0
+     },
+     "cash": 400.0,
+     "cash_basis": "cash",
+     "per_unit": 0.714,
+     "cwt": 20.0,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 14,
+     "stale": false
+    },
+    {
+     "product": "thiosul",
+     "raw": "12-0-0-26",
+     "prices": {
+      "charge": 460.0,
+      "cash": 450.0
+     },
+     "cash": 450.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": 22.5,
+     "date": "2026-09-10",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 35,
+     "stale": false
+    },
+    {
+     "product": "anhydrous",
+     "raw": "NH3",
+     "prices": {
+      "charge": 840.0,
+      "cash": 830.0
+     },
+     "cash": 830.0,
+     "cash_basis": "cash",
+     "per_unit": 0.506,
+     "cwt": 41.5,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 14,
+     "stale": false
+    },
+    {
+     "product": "dap",
+     "raw": "18-46-0",
+     "prices": {
+      "charge": 830.0,
+      "cash": 820.0
+     },
+     "cash": 820.0,
+     "cash_basis": "cash",
+     "per_unit": 0.891,
+     "cwt": 41.0,
+     "date": null,
+     "date_from": null,
+     "date_text": "close out",
+     "notes": [],
+     "flags": [],
+     "first_seen": "2026-10-15",
+     "age_days": 0,
+     "stale": false
+    },
+    {
+     "product": "map",
+     "raw": "11-52-0",
+     "prices": {
+      "charge": 990.0,
+      "cash": 980.0
+     },
+     "cash": 980.0,
+     "cash_basis": "cash",
+     "per_unit": 0.942,
+     "cwt": 49.0,
+     "date": "2026-10-12",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 3,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "Mesz 12-40-0-10s",
+     "prices": {
+      "charge": 1005.0,
+      "cash": 995.0
+     },
+     "cash": 995.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": 49.75,
+     "date": "2026-10-05",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 10,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "9-24-3",
+     "prices": {},
+     "cash": null,
+     "cash_basis": null,
+     "per_unit": null,
+     "cwt": null,
+     "date": "2022-06-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [
+      "charge: priced per gallon or pound, not per ton (5.85/gal)",
+      "cash: priced per gallon or pound, not per ton (5.75/gal)"
+     ],
+     "flags": [],
+     "age_days": 1597,
+     "stale": true
+    },
+    {
+     "product": "potash",
+     "raw": "0-0-60",
+     "prices": {
+      "charge": 510.0,
+      "cash": 500.0
+     },
+     "cash": 500.0,
+     "cash_basis": "cash",
+     "per_unit": 0.417,
+     "cwt": 25.0,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 14,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "Pel Lime",
+     "prices": {
+      "charge": 290.0,
+      "cash": 280.0
+     },
+     "cash": 280.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": 14.0,
+     "date": "2023-09-22",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 1119,
+     "stale": true
+    },
+    {
+     "product": "other",
+     "raw": "Dry Sulfur",
+     "prices": {},
+     "cash": null,
+     "cash_basis": null,
+     "per_unit": null,
+     "cwt": null,
+     "date": "2022-05-24",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [
+      "charge: priced per gallon or pound, not per ton (.62/lb)",
+      "cash: priced per gallon or pound, not per ton (.60lb)"
+     ],
+     "flags": [],
+     "age_days": 1605,
+     "stale": true
+    },
+    {
+     "product": "ams",
+     "raw": "21-0-0-24S",
+     "prices": {
+      "charge": 510.0,
+      "cash": 500.0
+     },
+     "cash": 500.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": 25.0,
+     "date": "2026-08-04",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 72,
+     "stale": true
+    },
+    {
+     "product": "other",
+     "raw": "LCBF Boost 4-0-2-2S",
+     "prices": {},
+     "cash": null,
+     "cash_basis": null,
+     "per_unit": null,
+     "cwt": null,
+     "date": "2025-07-23",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [
+      "charge: priced per gallon or pound, not per ton (4.20/gal)",
+      "cash: priced per gallon or pound, not per ton (4.00/gal)"
+     ],
+     "flags": [],
+     "age_days": 449,
+     "stale": true
+    }
+   ],
+   "dropped": [],
+   "problems": [],
+   "fetched": "2026-10-15T23:50:20Z",
+   "ok": true,
+   "note": null
+  },
+  {
+   "id": "mccune-ks",
+   "name": "McCune Farmers Union Coop",
+   "town": "McCune",
+   "state": "KS",
+   "url": "https://www.mccunecoop.com/fertilizer",
+   "source_url": "https://www.mccunecoop.com/fertilizer",
+   "layout": "html-table",
+   "cash_label": "5% cash discount",
+   "posted": "2026-10-06",
+   "rows": [
+    {
+     "product": "dap",
+     "raw": "18-46-00 (DAP)",
+     "prices": {
+      "list": 970.0,
+      "discount": 921.5
+     },
+     "cash": 921.5,
+     "cash_basis": "discount",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "urea",
+     "raw": "46-00-00 (UREA)",
+     "prices": {
+      "list": 640.0,
+      "discount": 608.0
+     },
+     "cash": 608.0,
+     "cash_basis": "discount",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "potash",
+     "raw": "00-00-60 (POTASH)",
+     "prices": {
+      "list": 490.0,
+      "discount": 465.5
+     },
+     "cash": 465.5,
+     "cash_basis": "discount",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "anhydrous",
+     "raw": "82-00-00 (ANHYDROUS)",
+     "prices": {
+      "list": 860.0,
+      "discount": 817.0
+     },
+     "cash": 817.0,
+     "cash_basis": "discount",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "uan28",
+     "raw": "28-00-00 (UAN)",
+     "prices": {
+      "list": 450.0,
+      "discount": 427.5
+     },
+     "cash": 427.5,
+     "cash_basis": "discount",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    }
+   ],
+   "dropped": [],
+   "problems": [],
+   "fetched": "2026-10-15T23:50:20Z",
+   "ok": true,
+   "note": null
+  },
+  {
+   "id": "mulvane-ks",
+   "name": "Mulvane Cooperative Union",
+   "town": "Mulvane",
+   "state": "KS",
+   "url": "https://www.mulvanecoop.com/fertilizer",
+   "source_url": "https://www.mulvanecoop.com/fertilizer",
+   "layout": "html-table",
+   "cash_label": "cash",
+   "posted": "2026-10-06",
+   "rows": [
+    {
+     "product": "anhydrous",
+     "raw": "82-0-0 Own Tank",
+     "prices": {
+      "charge": 975.0,
+      "cash": 965.0
+     },
+     "cash": 965.0,
+     "cash_basis": "cash",
+     "per_unit": 0.595,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "anhydrous",
+     "raw": "82-0-0 Coop Tank",
+     "prices": {
+      "charge": 980.0,
+      "cash": 970.0
+     },
+     "cash": 970.0,
+     "cash_basis": "cash",
+     "per_unit": 0.598,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "dap",
+     "raw": "18-46-0",
+     "prices": {
+      "charge": 980.0,
+      "cash": 970.0
+     },
+     "cash": 970.0,
+     "cash_basis": "cash",
+     "per_unit": 1.065,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "map",
+     "raw": "11-52-0",
+     "prices": {
+      "charge": 990.0,
+      "cash": 980.0
+     },
+     "cash": 980.0,
+     "cash_basis": "cash",
+     "per_unit": 0.952,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "urea",
+     "raw": "46-0-0",
+     "prices": {
+      "charge": 850.0,
+      "cash": 840.0
+     },
+     "cash": 840.0,
+     "cash_basis": "cash",
+     "per_unit": 0.924,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false,
+     "far_from_others": true
+    },
+    {
+     "product": "potash",
+     "raw": "0-0-60",
+     "prices": {
+      "charge": 470.0,
+      "cash": 460.0
+     },
+     "cash": 460.0,
+     "cash_basis": "cash",
+     "per_unit": 0.392,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "uan28",
+     "raw": "28-0-0",
+     "prices": {
+      "charge": 500.0,
+      "cash": 490.0
+     },
+     "cash": 490.0,
+     "cash_basis": "cash",
+     "per_unit": 0.893,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "10-34-0",
+     "raw": "10-34-0",
+     "prices": {
+      "charge": 650.0,
+      "cash": 640.0
+     },
+     "cash": 640.0,
+     "cash_basis": "cash",
+     "per_unit": 0.956,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    },
+    {
+     "product": "thiosul",
+     "raw": "12-0-0+26S Thio-Sul",
+     "prices": {
+      "charge": 400.0,
+      "cash": 390.0
+     },
+     "cash": 390.0,
+     "cash_basis": "cash",
+     "per_unit": 0.769,
+     "cwt": null,
+     "date": "2026-10-06",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 9,
+     "stale": false
+    }
+   ],
+   "dropped": [],
+   "problems": [],
+   "fetched": "2026-10-15T23:50:20Z",
+   "ok": true,
+   "note": null
+  }
+ ]
+}

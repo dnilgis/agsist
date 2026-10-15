@@ -1,0 +1,137 @@
+{
+ "note": "Built by scripts/build_fert_prices.py from data/fertilizer-coops.json (co-op middle cash price, 3 or more co-ops) and, where the co-ops do not cover a product, data/fertilizer-ams.json (USDA AMS Illinois average, report no older than 60 days). Nothing typed by hand.",
+ "updated": "2026-10-06",
+ "prices": [
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "price": 630.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 3,
+   "low": 608.0,
+   "high": 840.0,
+   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "price": 830.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 3,
+   "low": 817.0,
+   "high": 965.0,
+   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "price": 427.5,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 3,
+   "low": 400.0,
+   "high": 490.0,
+   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "price": 530.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-02",
+   "src": "ams",
+   "low": 530.0,
+   "high": 530.0,
+   "src_label": "USDA AMS Illinois average, report of Oct 2, 2026",
+   "url": "https://mymarketnews.ams.usda.gov/viewReport/3195"
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "price": 921.5,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 3,
+   "low": 820.0,
+   "high": 970.0,
+   "src_label": "middle cash price of 3 co-ops, posted Oct 6, 2026",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-60",
+   "price": 465.5,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 3,
+   "low": 460.0,
+   "high": 500.0,
+   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  }
+ ],
+ "per_lb": {
+  "n": {
+   "usd": 0.6848,
+   "from": "urea",
+   "as_of": "2026-10-06",
+   "how": "urea $630.00 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026)"
+  },
+  "p": {
+   "usd": 0.7337,
+   "from": "dap",
+   "as_of": "2026-10-06",
+   "how": "DAP $921.50 a ton, less 360 lb of N at the urea price ($247), / 920 lb of P2O5 = $0.73 a lb of P2O5 (middle cash price of 3 co-ops, posted Oct 6, 2026)"
+  },
+  "k": {
+   "usd": 0.3879,
+   "from": "potash",
+   "as_of": "2026-10-06",
+   "how": "potash $465.50 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026)"
+  }
+ },
+ "programs": {
+  "corn": {
+   "yield": 180,
+   "n_lb": 162,
+   "p_lb": 67,
+   "k_lb": 43,
+   "per_acre": 177,
+   "as_of": "2026-10-06"
+  },
+  "soybeans": {
+   "yield": 55,
+   "n_lb": 0,
+   "p_lb": 44,
+   "k_lb": 72,
+   "per_acre": 60,
+   "as_of": "2026-10-06"
+  },
+  "wheat": {
+   "yield": 70,
+   "n_lb": 84,
+   "p_lb": 35,
+   "k_lb": 21,
+   "per_acre": 91,
+   "as_of": "2026-10-06"
+  }
+ },
+ "notes": [],
+ "generated": "2026-10-15T23:50:29Z"
+}
