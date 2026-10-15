@@ -13,21 +13,25 @@
  * Open-Meteo town lookup, the two StnMeta station lists (rain, snowfall),
  * pickStation() with the snow-aware rule reading StnData for each station it
  * tries, and the 30-year normal ("91", then the older code only when "91" has
- * nothing). That is the same chain, in the same order with the same URLs, the
- * page runs for a story link (place, year, cmp=normal, no station, no
- * remarkable days). fetch() is wrapped so every request and its answer are
+ * nothing), then the station's full period of record (StnData por) through
+ * the engine's own stationExtremes(). That is the same chain, with the same
+ * URLs, the page runs for a story link, which opens with the 30-year normal
+ * and the remarkable days on (2026-10-15): the remarkable days read the year's
+ * temperatures (already in the year's StnData call) and rank the year against
+ * the full record. fetch() is wrapped so every request and its answer are
  * kept as they came back.
  *
- * Left out on purpose: the station's full period of record (StnData por). The
- * page asks for it too, but only the station-average comparison and the
- * remarkable-days layer use it; neither is on for these links, and it is a
- * few megabytes per station.
+ * The full record is often 50,000 days, so it is saved packed
+ * (scripts/rain_print_examples_pack.mjs: each column gzipped, about 3 bytes a
+ * day) and given back exactly as NOAA sent it.
  *
  * Writes data/rain-print-examples/<slug>.json:
  *   { slug, link, place, year, cmp, fetched (YYYY-MM-DD, UTC), fetched_at,
  *     source, station (the sid the engine picked), days (recorded days),
- *     requests: [{ url, status, body }] }   body: the parsed JSON answer
- * A replay serves requests[i].body for requests[i].url.
+ *     por_days (days in the station's full record),
+ *     requests: [{ url, status, body } or { url, status, pack }] }
+ *   body: the parsed JSON answer; pack: the full record, packed
+ * A replay serves answerOf(requests[i]) for requests[i].url.
  *
  * WHAT A RUN SAYS. The job log can't always be read, so every result is also
  * a GitHub annotation: one ::notice per example listing each request it made
@@ -45,6 +49,7 @@
 import { readFileSync, writeFileSync, writeSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { pack, answerOf } from "./rain_print_examples_pack.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const OUT_DIR = ROOT + "data/rain-print-examples/";
@@ -107,6 +112,7 @@ function engine(log) {
 }
 
 const isGeo = (u) => u.startsWith("https://geocoding-api.open-meteo.com/");
+const isPor = (u) => u.startsWith("https://data.rcc-acis.org/StnData?") && new URL(u).searchParams.get("sdate") === "por";
 function reqLine(q) {
   let s = q.status + " " + q.url;
   if (q.error) s += " (network: " + q.error + ")";
@@ -147,6 +153,9 @@ async function tryOne(ex) {
     const code = RP.encodeCode(s);
     const got = await RP.previewArt(code, { noQr: true });
     if (got.preview) throw new Error("drew as a preview (the year isn't complete at the station), not a finished year: " + got.days + " days");
+    // the remarkable days rank the year against the station's full record, which the page asks for next
+    const ext = await RP.stationExtremes(got.station);
+    if (!ext || !Array.isArray(ext.rows) || !ext.rows.length) throw new Error("NOAA sent no full record for " + got.station);
     // every answer must be a real answer, or a replay could pick another station than a live visit
     for (const q of log) if (q.status !== 200 || q.body === null) throw new Error("a request had no usable answer");
     const now = new Date();
@@ -154,7 +163,11 @@ async function tryOne(ex) {
       slug: ex.slug, link: ex.link, place: ex.place, year: ex.year, cmp: ex.cmp,
       fetched: now.toISOString().slice(0, 10), fetched_at: now.toISOString(),
       source: "NOAA RCC-ACIS (data.rcc-acis.org) and Open-Meteo geocoding, asked by components/rain-print.js previewArt()",
-      station: got.station, days: got.days, requests: log.map((q) => ({ url: q.url, status: q.status, body: q.body })),
+      station: got.station, days: got.days, por_days: ext.rows.length,
+      requests: log.map((q) => {
+        const p = isPor(q.url) ? pack(q.body) : null;
+        return p ? { url: q.url, status: q.status, pack: p } : { url: q.url, status: q.status, body: q.body };
+      }),
     } };
   } catch (e) {
     return { ok: false, log, why: RP ? diagnose(RP, ex, log, e) : errMsg(e) };
@@ -169,13 +182,19 @@ function check(file, ex) {
   if (j.slug !== ex.slug || j.year !== ex.year || j.place !== ex.place) bad("doesn't match the page's link " + ex.link);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(j.fetched || "")) bad("no fetch date");
   if (!Array.isArray(j.requests) || !j.requests.length) bad("no requests");
-  for (const q of j.requests) if (q.status !== 200 || q.body === null) bad(q.url + " has no answer (" + q.status + ")");
+  for (const q of j.requests) if (q.status !== 200 || (q.body === null && !q.pack)) bad(q.url + " has no answer (" + q.status + ")");
   const sidOf = (u) => new URL(u).searchParams.get("sid");
-  const usable = (q) => !!q && !q.body.error && (Array.isArray(q.body.data) || Array.isArray(q.body.meta) || Array.isArray(q.body.results));
+  const usable = (q) => { const b = q && answerOf(q); return !!b && !b.error && (Array.isArray(b.data) || Array.isArray(b.meta) || Array.isArray(b.results)); };
   const last = (f) => j.requests.filter(f).pop();
   if (!usable(last((q) => isGeo(q.url)))) bad("the town lookup found nothing");
   if (j.requests.filter((q) => q.url.startsWith("https://data.rcc-acis.org/StnMeta?")).length !== 2) bad("expected the two station lists");
-  if (!usable(last((q) => q.url.includes("StnData?sid=") && sidOf(q.url) === j.station))) bad("no days for the picked station " + j.station);
+  if (!usable(last((q) => q.url.includes("StnData?sid=") && !isPor(q.url) && sidOf(q.url) === j.station))) bad("no days for the picked station " + j.station);
+  // the remarkable days need the station's full record, reaching the example's year
+  const por = last((q) => isPor(q.url) && sidOf(q.url) === j.station);
+  if (!usable(por)) bad("no full record for the picked station " + j.station);
+  const rows = answerOf(por).data;
+  if (rows.length !== j.por_days) bad("the full record has " + rows.length + " days, the file says " + j.por_days);
+  if (String(rows[rows.length - 1][0]).slice(0, 4) < String(j.year)) bad("the full record ends before " + j.year);
   // no normal is not a fault: the page draws without one too, and says so
   const norm = last((q) => q.url.includes("StnData?params=") && decodeURIComponent(q.url).includes('"sid":"' + j.station + '"'));
   if (!norm) warn.push(ex.slug + ": no 30-year normal was asked for " + j.station);
@@ -193,7 +212,7 @@ async function main() {
         if (!existsSync(f)) throw new Error("missing data/rain-print-examples/" + ex.slug + ".json");
         const { j, warn } = check(f, ex);
         warn.forEach((w) => annotate("warning", w));
-        out(ex.slug + ": ok, station " + j.station + ", " + j.days + " days, " + j.requests.length + " requests, fetched " + j.fetched);
+        out(ex.slug + ": ok, station " + j.station + ", " + j.days + " days, full record " + j.por_days + " days, " + j.requests.length + " requests, fetched " + j.fetched);
       } catch (e) { failed++; annotate("error", "check: " + errMsg(e)); }
     }
     return failed;
