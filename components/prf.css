@@ -478,3 +478,14 @@ html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-or
 .prf-spon-county { font-size: .82rem; padding: .6rem .8rem; }
 .prf-spon-county a[href] { min-height: 40px; }
 @media print { .prf-spon, .prf-spon-band { display: none !important; } }
+
+/* Two long sections on /prf folded to one line each (phones open them on a tap; prf.js opens them on wide screens and when a link points inside) */
+.prf details.prf-fold { border-top: 1px solid var(--border-2); border-bottom: 1px solid var(--border-2); margin: 1.6rem 0; }
+.prf details.prf-fold > summary { cursor: pointer; list-style: none; padding: .5rem 2rem .7rem 0; position: relative; min-height: 44px; }
+.prf details.prf-fold > summary::-webkit-details-marker { display: none; }
+.prf details.prf-fold > summary h2 { margin: .4rem 0 .25rem; }
+.prf details.prf-fold > summary::after { content: ""; position: absolute; right: .5rem; top: 1.1rem; width: .55em; height: .55em; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
+.prf details.prf-fold[open] > summary::after { transform: rotate(-135deg); top: 1.35rem; }
+.prf details.prf-fold > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.prf-fold-x { display: block; color: var(--text-muted); font-size: var(--fs-sm); line-height: 1.5; }
+.prf details.prf-fold[open] .prf-fold-x { display: none; }

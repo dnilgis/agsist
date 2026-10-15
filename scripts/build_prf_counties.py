@@ -234,7 +234,7 @@ def page(ctx):
             if stc in RAIN_STATES else "")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
-         "dateModified": meta["built"][:10], "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
+         "dateModified": S.modified(meta), "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
          "about": {"@type": "AdministrativeArea", "name": full},
          "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}},

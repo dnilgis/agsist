@@ -94,9 +94,30 @@
      Resolves to a five-digit county code, or null when the point is within a
      cell of a county line, off the map, or the file did not load. null means
      ASK THE READER. It never means "take the first county listed". */
+  function cellFile(key) {
+    return cells[key] ? Promise.resolve(cells[key]) : getJSON(SRC + 'c/' + key + '.json', true).then(function (d) { cells[key] = d || { g: {} }; return cells[key]; });
+  }
+  /* A grid opened with no point and no county (a link with only ?g=, a grid ID
+     typed in): the county that holds the most of the grid's cells, so the
+     page opens on figures and says how it chose. null on a tie, a county with
+     no PRF offers, or a file that did not load: then the page asks. */
+  function countyMost(id, offered) {
+    return cellFile(M.shardKey(id)).then(function (d) {
+      var rec = d.g && d.g[String(id)];
+      if (!rec || !rec.m) return null;
+      var n = {}, best = null, second = 0;
+      rec.m.replace(/([a-z?\-])(\d+)/g, function (_, ch, k) { if (ch !== '?' && ch !== '-') n[ch] = (n[ch] || 0) + +k; return ''; });
+      Object.keys(n).forEach(function (ch) {
+        if (!best || n[ch] > n[best]) { if (best) second = Math.max(second, n[best]); best = ch; } else second = Math.max(second, n[ch]);
+      });
+      if (!best || n[best] === second) return null;
+      var code = rec.c[best.charCodeAt(0) - 97];
+      return code && offered.indexOf(code) >= 0 ? code : null;
+    }).catch(function () { return null; });
+  }
   function countyAtPoint(id, lat, lon) {
     var key = M.shardKey(id);
-    var got = cells[key] ? Promise.resolve(cells[key]) : getJSON(SRC + 'c/' + key + '.json', true).then(function (d) { cells[key] = d || { g: {} }; return cells[key]; });
+    var got = cellFile(key);
     return got.then(function (d) {
       var rec = d.g && d.g[String(id)], n = d.n, b = M.gridBounds(id);
       if (!rec || !n || !b) return null;
@@ -112,7 +133,7 @@
   function blank() { var a = []; for (var i = 0; i < N; i++) a.push(0); return a; }
   /* touched: the reader has changed the policy. Until then the card says it is showing the page's example.
      win: 0 for every complete year, else the last 30, 20 or 10. alt: a five-digit entry that is also a grid ID. */
-  var S = { grid: null, st: null, co: null, pt: null, use: 0, acres: 100, share: 100, win: 0, touched: false, alt: null,
+  var S = { grid: null, st: null, co: null, pt: null, use: 0, acres: 100, share: 100, win: 0, touched: false, alt: null, lost: false,
             A: { cov: 90, pf: 100, split: blank(), even: true }, B: null, on: 'A' };
   var WINDOWS = [0, 30, 20, 10];
   function cur() { return S[S.on] || S.A; }
@@ -209,6 +230,13 @@
   }
 
   /* ---------------------------------------------------------------- choosing a grid */
+  /* A search that found nothing leaves the last grid's figures on screen: say whose they are, here and on the pinned line. */
+  function stillNote() { var c = county(); return S.grid && c && !$('prf-tool').hidden ? ' The figures below are still for grid ' + S.grid + ', ' + c.n + ' County, ' + S.st + '.' : ''; }
+  function missed(msg, html) {
+    var note = stillNote();
+    if (html != null) sayHtml(html + esc(note), true); else say(msg + note, true);
+    if (note) { S.lost = true; drawBar(lastR); }
+  }
   function say(msg, bad) { var el = $('prf-find-msg'); el.textContent = msg || ''; el.classList.toggle('is-bad', !!bad); }
   function sayHtml(html, bad) { var el = $('prf-find-msg'); el.innerHTML = html; el.classList.toggle('is-bad', !!bad); }
   function norm(s) {
@@ -257,7 +285,13 @@
             });
           }
           if (!pick && offered.length === 1) { pick = offered[0]; how = 'only'; }
-          S.grid = id; S.codes = offered; S.coHow = how; $('prf-tool').classList.remove('is-stale');
+          /* no point to place: open on the county with the most of the grid, and say so. A point
+             near a county line still asks, because there the reader's land settles it. */
+          var most = !pick && !want.pt ? countyMost(id, offered) : Promise.resolve(null);
+          return most.then(function (m) {
+          if (my !== ticket) return false;
+          if (!pick && m) { pick = m; how = 'most'; }
+          S.grid = id; S.lost = false; S.codes = offered; S.coHow = how; $('prf-tool').classList.remove('is-stale');
           S.st = stateByFips((pick || offered[0]).slice(0, 2)).st;
           S.co = pick ? pick.slice(2) : null;
           if (!keep) S.pt = want.pt || null;
@@ -265,6 +299,7 @@
           afterGrid();
           say('');
           return true;
+          });
         });
       });
     }).catch(function () { if (my === ticket) say('The data for that grid did not load. Check the connection and try again.', true); return false; });
@@ -347,14 +382,14 @@
         if (my !== ticket) return false;
         var r = res[0];
         if (!r) {
-          sayHtml('The place lookup has no ZIP ' + esc(q) + '. Type the nearest town and state, or coordinates.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''), true);
+          missed(null, 'The place lookup has no ZIP ' + esc(q) + '. Type the nearest town and state, or coordinates.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''));
           return false;
         }
         var town = r.name + (r.admin1 ? ', ' + r.admin1 : '');
         return atPoint(r.latitude, r.longitude, town, { countyName: r.admin2, stateName: r.admin1, alt: asGrid }, q);
       }).catch(function () {
         if (my !== ticket) return false;
-        sayHtml('The place lookup did not answer. Type coordinates, or pick by state and county below.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''), true);
+        missed(null, 'The place lookup did not answer. Type coordinates, or pick by state and county below.' + (asGrid ? ' ' + gridButton(asGrid, 'Open grid ID ' + q) : ''));
         return false;
       });
     }
@@ -366,7 +401,7 @@
       var seen = {}, uniq = [];
       res.forEach(function (r) { var k = norm(r.admin1) + '|' + norm(r.admin2); if (!seen[k]) { seen[k] = 1; uniq.push(r); } });
       if (!uniq.length) {
-        say(parts.st ? 'No place called “' + parts.name + '” found in ' + parts.st.name + '. Try a ZIP, or coordinates.' : 'No place found for “' + q + '”. Try a town with its state, a ZIP, or coordinates.', true);
+        missed(parts.st ? 'No place called “' + parts.name + '” found in ' + parts.st.name + '. Try a ZIP, or coordinates.' : 'No place found for “' + q + '”. Try a town with its state, a ZIP, or coordinates.');
         return false;
       }
       function go(r) { return atPoint(r.latitude, r.longitude, r.name + (r.admin1 ? ', ' + r.admin1 : ''), { countyName: r.admin2, stateName: r.admin1 }); }
@@ -380,7 +415,7 @@
       return false;
     }).catch(function () {
       if (my !== ticket) return false;
-      say('The place lookup did not answer. Type coordinates, or pick by state and county below.', true);
+      missed('The place lookup did not answer. Type coordinates, or pick by state and county below.');
       return false;
     });
   }
@@ -460,7 +495,8 @@
     $('prf-co-why').hidden = !!c && !!S.coHow && S.coHow !== 'named';
     $('prf-co-how').textContent = !c ? 'This page could not tell which one the point is in.'
       : S.coHow === 'point' ? 'The point is in ' + c.n + ' County, by the Census Bureau’s county lines.'
-      : S.coHow === 'lookup' ? c.n + ' County is the place lookup’s county for that town.' : '';
+      : S.coHow === 'lookup' ? c.n + ' County is the place lookup’s county for that town.'
+      : S.coHow === 'most' ? 'Opened on ' + c.n + ' County, which holds the largest part of this grid. If your land is in another county, pick it here.' : '';
     /* the browse boxes follow */
     if (c) {
       if ($('prf-b-st').value !== S.st) { $('prf-b-st').value = S.st; fillBrowseCounties().then(function () { $('prf-b-co').value = S.co; fillBrowseGrids(); }); }
@@ -997,7 +1033,7 @@
     if (R) {
       bar.setAttribute('data-ok', R.ok ? '1' : '0');
       bar.innerHTML = R.ok
-        ? (S.touched ? '' : 'Example: ') + S.acres.toLocaleString('en-US') + ' ac · you pay <b>' + usd(R.pol.total.producer) + '</b> · paid <b>' + R.sum.paidYears + ' of ' + R.sum.years + '</b> yrs · avg <b>' + usd(R.sum.avgIndemnity) + '</b>'
+        ? (S.lost ? 'Still grid ' + S.grid + ', ' + esc(county().n) + ' ' + S.st + ': ' : S.touched ? '' : 'Example: ') + S.acres.toLocaleString('en-US') + ' ac · you pay <b>' + usd(R.pol.total.producer) + '</b> · paid <b>' + R.sum.paidYears + ' of ' + R.sum.years + '</b> yrs · avg <b>' + usd(R.sum.avgIndemnity) + '</b>'
         : esc(R.why);
     }
     var nav = document.querySelector('.nav');
@@ -1075,7 +1111,7 @@
       say('Asking the browser for your location…');
       track('prf_find', { by: 'location' });
       navigator.geolocation.getCurrentPosition(function (p) { if (my === ticket) atPoint(p.coords.latitude, p.coords.longitude, 'your location', {}); },
-        function () { if (my === ticket) say('The browser did not share a location. Type a ZIP, or pick by state and county.', true); }, { timeout: 12000, maximumAge: 600000 });
+        function () { if (my === ticket) missed('The browser did not share a location. Type a ZIP, or pick by state and county.'); }, { timeout: 12000, maximumAge: 600000 });
     });
     $('prf-eg').addEventListener('click', function () { S.touched = false; goGrid(30454, { county: '55005' }); track('prf_find', { by: 'example' }); });
     $('prf-b-st').addEventListener('change', fillBrowseCounties);
@@ -1111,7 +1147,7 @@
       var v = this.value; if (!v) return;
       S.st = stateByFips(v.slice(0, 2)).st; S.co = v.slice(2); S.coHow = 'named'; afterGrid();
     });
-    function touch() { S.touched = true; }
+    function touch() { S.touched = true; S.lost = false; }
     $('prf-use').addEventListener('change', function () { S.use = +this.value; touch(); ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); }); render(); });
     /* a number box that is tapped is about to be replaced, not added to: 100 then "3000" must not read 1003000 */
     /* select on focus, and keep the mouseup or tap that focused it from undoing the selection */
@@ -1191,8 +1227,22 @@
     });
   }
 
+  /* The two folded sections of the page (details.prf-fold): open on a wide
+     screen, and whenever the address points at or inside one (/prf#new). */
+  function openFolds() {
+    var wide = false, h = (location.hash || '').slice(1);
+    try { wide = window.matchMedia('(min-width: 980px)').matches; } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll('details.prf-fold'), function (d) {
+      var inside = false;
+      try { inside = !!h && (d.id === h || !!d.querySelector('#' + CSS.escape(h))); } catch (e) {}
+      if (wide || inside) d.open = true;
+    });
+  }
+  window.addEventListener('hashchange', openFolds);
+
   function start() {
     var st = $('prf-status'), o = saved();
+    openFolds();
     st.textContent = 'Loading the rain record…';
     /* a link or a return visit is about to draw the whole tool: hold the room for it so the page below does not jump */
     if (o && o.g) $('prf-app').style.minHeight = '100vh';
