@@ -1,276 +1,169 @@
 #!/usr/bin/env python3
-"""build_social_card.py — render the day's briefing as a shareable PNG.
+"""build_social_card.py: the day's briefing as a share image.
 
-Reads  : data/daily.json  (headline, one_number, meta.market_mood, date)
-         data/predictions.json (the prediction bot's live record; v2026-10-03,
-                                replacing the retired call scorecard)
-Writes : data/social/card-YYYY-MM-DD.png   (dated, permanent)
-         data/social/card-latest.png       (stable URL for og:image later)
+Reads  : data/daily.json  (headline, one_number, date, locked_prices/changes)
+         data/predictions.json (the prediction bot's live record)
+Writes : data/social/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
+                                            and the homepage point at it)
+         data/social/card-latest.jpg
 
 Runs AFTER GATE 2 in daily.yml, so a card is only ever rendered from a
 briefing that passed every gate. If the briefing was blocked, no card.
 
-Design: approved mockup 2026-07-18 (Sig). 1200x675 layout rendered at 2x
-(2400x1350) for retina. Terminal-dark palette lifted from the site:
-bg #0a0c0d, panel #101415, text #e6ebe9, muted #8a948f, gold #d4a23f,
-green #5fc28a, red #e0685f. DejaVu Sans / DejaVu Sans Mono — present on
-GitHub ubuntu runners (fonts-dejavu-core) and close cousins of the site's
-Inter / JetBrains Mono pairing.
+Design (2026-10-15, Sig): the "picture from the data" share card drawn by
+scripts/share_cards.py, 1200 x 630 JPG under 120 KB. The top shows the
+briefing's number and the grain quotes the briefing was written on; the green
+band carries the headline. It replaced the dark 2400 x 1350 PNG card.
 
-Deliberately dependency-light: Pillow only. No browser, no webfonts, no
-network. A social card must never be the reason the briefing fails to
-publish — so main() traps everything and exits 0 with a loud message;
-daily.yml treats it as best-effort (continue-on-error as belt+braces).
+A share card must never be the reason the briefing fails to publish: main()
+traps everything and exits 0 with a loud message; daily.yml also runs it with
+continue-on-error.
 
 Failure honesty: if the bot's record can't be read, or is below its own
-minimum sample, the footer prints no number rather than inventing a record. Same doctrine as everything else here: no number
-appears unless it was measured.
+minimum sample, the card prints no record rather than inventing one.
+
+  python3 scripts/build_social_card.py                    # today's card + homepage tags
+  python3 scripts/build_social_card.py --date 2026-09-15  # one archive day's card
+  python3 scripts/build_social_card.py --backfill         # redraw every dated card that exists
 """
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 
-# ---------------------------------------------------------------- palette
-BG      = (10, 12, 13)      # #0a0c0d
-PANEL   = (16, 20, 21)      # #101415
-BORDER  = (26, 31, 32)      # #1a1f20
-TEXT    = (230, 235, 233)   # #e6ebe9
-MUTED   = (138, 148, 143)   # #8a948f
-GOLD    = (212, 162, 63)    # #d4a23f
-GREEN   = (95, 194, 138)    # #5fc28a
-RED     = (224, 104, 95)    # #e0685f
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-MOOD_COLOR = {"BULLISH": GREEN, "BEARISH": RED, "MIXED": GOLD,
-              "CAUTIOUS": GOLD, "VOLATILE": RED}
-
-# 2x canvas — all pixel values below are already doubled from the 1200x675 comp.
-W, H = 2400, 1350
-MARGIN = 112                      # 56px @1x
-
-FONT_DIRS = (
-    "/usr/share/fonts/truetype/dejavu",          # ubuntu runner + most distros
-    "/usr/share/fonts/dejavu",                    # some minimal images
-    os.path.join(os.path.dirname(__file__), "fonts"),  # last-resort repo bundle
-)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT_DIR = os.path.join(ROOT, "data", "social")
+SITE = "https://agsist.com"
+QUOTES = (("corn-dec", "corn", "Dec corn"), ("beans-nov", "beans", "Nov beans"), ("wheat", None, "Wheat"))
 
 
-def _font(name, size):
-    from PIL import ImageFont
-    for d in FONT_DIRS:
-        p = os.path.join(d, name)
-        if os.path.exists(p):
-            return ImageFont.truetype(p, size)
-    raise FileNotFoundError(
-        "%s not found — install fonts-dejavu-core (apt) or add scripts/fonts/" % name)
+def _quarters(v):
+    c = round(v * 400) / 4
+    whole = int(c)
+    frac = {0.25: " 1/4", 0.5: " 1/2", 0.75: " 3/4"}.get(round(c - whole, 2), "")
+    return f"${whole / 100:.2f}{frac}"
 
 
-def _wrap(draw, text, font, max_w):
-    """Greedy word-wrap to max_w pixels; returns list of lines."""
-    lines, cur = [], ""
-    for word in text.split():
-        trial = (cur + " " + word).strip()
-        if draw.textlength(trial, font=font) <= max_w or not cur:
-            cur = trial
-        else:
-            lines.append(cur)
-            cur = word
-    if cur:
-        lines.append(cur)
-    return lines
-
-
-def _tracked(draw, xy, text, font, fill, tracking):
-    """Draw text with letter-spacing (Pillow has none natively)."""
-    x, y = xy
-    for ch in text:
-        draw.text((x, y), ch, font=font, fill=fill)
-        x += draw.textlength(ch, font=font) + tracking
-    return x - tracking  # right edge
-
-
-def build(daily_path="data/daily.json", predictions_path="data/predictions.json",
-          out_dir="data/social"):
-    from PIL import Image, ImageDraw
-
-    daily = json.load(open(daily_path, encoding="utf-8"))
-    headline = (daily.get("headline") or "").strip() or "AGSIST DAILY BRIEFING"
-    one = daily.get("one_number") or {}
-    num_val = str(one.get("value", "")).strip()
-    num_unit = str(one.get("unit", "")).strip()
-    date_str = (daily.get("date") or datetime.now(timezone.utc).strftime("%A, %B %d, %Y")).upper()
-    mood = str(((daily.get("meta") or {}).get("market_mood")) or "").upper().strip()
-
-    # Public record: the prediction bot's LIVE record, only once it clears the
-    # bot's own minimum sample (gate_ok). The backtest is never printed here,
-    # so history cannot stand in for calls made in public.
-    score_line = "A STATISTICAL BOT CALLS THE GRAINS ONCE A WEEK. EVERY CALL GRADED BY CODE, IN PUBLIC."
-    score_bold = None
+def record_line(predictions_path):
+    """The prediction bot's LIVE record, only once it clears its own minimum
+    sample (gate_ok). The backtest is never printed here."""
     try:
         pr = json.load(open(predictions_path, encoding="utf-8"))
         live = pr["live"]["records"]["all"]
         if live.get("gate_ok") and int(live["graded"]) > 0:
-            score_line = "PREDICTION BOT, LIVE: "
-            score_bold = "%d of %d" % (int(live["hits"]), int(live["graded"]))
+            return "Prediction bot, live: %d of %d calls right" % (int(live["hits"]), int(live["graded"]))
     except Exception:
         pass
+    return None
 
-    img = Image.new("RGB", (W, H), BG)
-    d = ImageDraw.Draw(img)
 
-    # gold top rule
-    d.rectangle([0, 0, W, 12], fill=GOLD)
-
-    mono_b_52 = _font("DejaVuSansMono-Bold.ttf", 52)
-    mono_40   = _font("DejaVuSansMono.ttf", 40)
-    mono_34   = _font("DejaVuSansMono.ttf", 34)
-    mono_32   = _font("DejaVuSansMono-Bold.ttf", 32)
-    mono_b152 = _font("DejaVuSansMono-Bold.ttf", 152)
-    sans_46   = _font("DejaVuSans.ttf", 46)
-    sans_38   = _font("DejaVuSans.ttf", 38)
-    sans_b38  = _font("DejaVuSans-Bold.ttf", 38)
-    sans_42   = _font("DejaVuSans.ttf", 42)
-
-    # ---- top bar: brand left, date + mood chip right
-    top_y = 80
-    _tracked(d, (MARGIN, top_y), "AGSIST DAILY", mono_b_52, GOLD, 12)
-
-    right = W - MARGIN
-    if mood:
-        chip_font = mono_32
-        chip_w = d.textlength(" ".join(mood), font=chip_font) + 56  # approx tracked width
-        chip_h = 66
-        cx0 = right - chip_w
-        cy0 = top_y - 6
-        col = MOOD_COLOR.get(mood, MUTED)
-        d.rounded_rectangle([cx0, cy0, right, cy0 + chip_h], radius=8,
-                            outline=col, width=3)
-        _tracked(d, (cx0 + 28, cy0 + 16), mood, chip_font, col, 8)
-        right = cx0 - 36
-    date_track = 4
-    date_w = sum(d.textlength(c, font=mono_40) + date_track for c in date_str) - date_track
-    _tracked(d, (right - date_w, top_y + 8), date_str, mono_40, MUTED, date_track)
-
-    # ---- headline: uppercase, up to 3 lines, shrink-to-fit
-    head = headline.upper()
-    max_w = W - 2 * MARGIN
-    size = 128
-    while size >= 72:
-        f = _font("DejaVuSans-Bold.ttf", size)
-        lines = _wrap(d, head, f, max_w)
-        if len(lines) <= (2 if size > 96 else 3):
-            break
-        size -= 8
-    hy = 220
-    for ln in lines:
-        d.text((MARGIN, hy), ln, font=f, fill=TEXT)
-        hy += int(size * 1.12)
-
-    # ---- THE NUMBER panel (height fits its content — unit never kisses the edge)
-    py0 = max(hy + 70, 560)
-    vf = mono_b152
-    if d.textlength(num_val, font=vf) > (W - 2 * MARGIN - 140):
-        vf = _font("DejaVuSansMono-Bold.ttf", 110)
-    v_h = 152 if vf is mono_b152 else 110
-    unit_lines = _wrap(d, num_unit, sans_46, W - 2 * MARGIN - 160)[:2]
-    ph = 96 + v_h + 40 + 58 * len(unit_lines) + 48
-
-    d.rectangle([MARGIN, py0, W - MARGIN, py0 + ph], fill=PANEL)
-    d.rectangle([MARGIN, py0, W - MARGIN, py0 + ph], outline=BORDER, width=2)
-    d.rectangle([MARGIN, py0, MARGIN + 8, py0 + ph], fill=GOLD)
-
-    ix = MARGIN + 68
-    _tracked(d, (ix, py0 + 44), "THE NUMBER", mono_32, GOLD, 14)
-    d.text((ix - 8, py0 + 96), num_val, font=vf, fill=TEXT)
-    uy = py0 + 96 + v_h + 40
-    for ln in unit_lines:
-        d.text((ix, uy), ln, font=sans_46, fill=MUTED)
-        uy += 58
-
-    # ---- footer: flowing mixed-weight text, wrapped clear of the site mark
-    fy = H - 170
-    d.line([0, fy, W, fy], fill=BORDER, width=2)
-
-    site = "agsist.com · FREE"
-    site_w = d.textlength(site, font=sans_42)
-
-    if score_bold:
-        segs = [(score_line, sans_38, MUTED), (score_bold, sans_b38, TEXT),
-                (" calls right, graded by code against Yahoo daily closes.",
-                 sans_38, MUTED)]
+def card_bytes(daily, record=None):
+    import share_cards as SC
+    headline = (daily.get("headline") or "").strip() or "AGSIST Daily briefing"
+    one = daily.get("one_number") or {}
+    num_val = str(one.get("value", "")).strip()
+    num_unit = str(one.get("unit", "")).strip()
+    date_str = (daily.get("date") or "").strip()
+    rows = []
+    lp, lc = daily.get("locked_prices") or {}, daily.get("locked_changes") or {}
+    for key, alt, name in QUOTES:
+        k = key if key in lp else alt
+        if not k or lp.get(k) is None:
+            continue
+        pct = (lc.get(k) or {}).get("pct")
+        chg = None if pct is None else ("%+.1f%%" % pct)
+        up = None if pct is None or abs(pct) < 0.05 else pct > 0
+        rows.append((name, _quarters(float(lp[k])), chg, up))
+    if num_val:
+        pic = ("number", {"big": num_val, "unit": num_unit, "table": rows, "table_title": "Futures in the briefing"})
+        caption = "AGSIST Daily  ·  " + date_str + "  ·  the number"
     else:
-        segs = [(score_line, sans_38, MUTED)]
-
-    # word-level flow across segments, max 2 lines, never under the site mark
-    flow_max = W - 2 * MARGIN - site_w - 100
-    words = []
-    for text, font, color in segs:
-        parts = text.split(" ")
-        for i, p in enumerate(parts):
-            if p == "":
-                continue
-            words.append((p, font, color))
-    x, ty, line = MARGIN, fy + 34, 0
-    space = d.textlength(" ", font=sans_38)
-    for wtext, font, color in words:
-        wlen = d.textlength(wtext, font=font)
-        if x + wlen > MARGIN + flow_max and line == 0:
-            x, ty, line = MARGIN, ty + 52, 1
-        d.text((x, ty), wtext, font=font, fill=color)
-        x += wlen + space
-
-    d.text((W - MARGIN - site_w, fy + 56), site, font=sans_42, fill=GOLD)
-
-    # ---- write outputs
-    os.makedirs(out_dir, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    dated = os.path.join(out_dir, "card-%s.png" % stamp)
-    latest = os.path.join(out_dir, "card-latest.png")
-    img.save(dated, optimize=True)
-    img.save(latest, optimize=True)
-    print("[social-card] wrote %s and card-latest.png (%dx%d)" % (dated, W, H))
-    return dated
+        pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": "Dec corn" if rows else "",
+                          "table": rows[1:], "table_title": "Futures in the briefing"})
+        caption = "AGSIST Daily  ·  " + date_str
+    meta = record or "Grain markets before the open, free every weekday"
+    meta += "  ·  agsist.com/daily"
+    head = [(headline.rstrip("."), False)]
+    alt = f"AGSIST Daily, {date_str}: {headline}."
+    if num_val:
+        alt += f" The number: {num_val} {num_unit}."
+    return SC.card_c(head, meta, caption, pic), alt.replace('"', "'")
 
 
-def update_homepage_og(index_path="index.html", dated_url=None):
-    """Point the homepage's share-preview image at today's dated card.
-
-    Dated URL on purpose: FB/X scrapers cache og images BY URL, so a stable
-    card-latest.png would show yesterday's card for days. A new URL every day
-    forces a fresh scrape. Every substitution is scope-proofed (count must be
-    exactly 1) — if the homepage's head ever changes shape, we leave the file
-    untouched and say so, rather than splice blind.
-    """
-    import re
-    src = open(index_path, encoding="utf-8").read()
-    subs = [
-        (r'(<meta property="og:image"\s+content=")[^"]+(">)', dated_url),
-        (r'(<meta property="og:image:width"\s+content=")[^"]+(">)', "2400"),
-        (r'(<meta property="og:image:height"\s+content=")[^"]+(">)', "1350"),
-        (r'(<meta name="twitter:image"\s+content=")[^"]+(">)', dated_url),
-    ]
-    out = src
-    for pat, val in subs:
-        out, n = re.subn(pat, lambda m, v=val: m.group(1) + v + m.group(2), out)
-        if n != 1:
-            print("[social-card] homepage og splice ABORTED — pattern %r matched %d times, "
-                  "expected exactly 1; index.html left untouched" % (pat, n), file=sys.stderr)
-            return False
-    open(index_path, "w", encoding="utf-8").write(out)
-    print("[social-card] homepage og:image -> %s" % dated_url)
-    return True
+def build(daily_path="data/daily.json", predictions_path="data/predictions.json", stamp=None):
+    daily = json.load(open(os.path.join(ROOT, daily_path), encoding="utf-8"))
+    data, alt = card_bytes(daily, record_line(os.path.join(ROOT, predictions_path)))
+    os.makedirs(OUT_DIR, exist_ok=True)
+    stamp = stamp or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    dated = os.path.join(OUT_DIR, "card-%s.jpg" % stamp)
+    for p in (dated, os.path.join(OUT_DIR, "card-latest.jpg")):
+        with open(p, "wb") as f:
+            f.write(data)
+    print("[social-card] wrote %s and card-latest.jpg (%d KB)" % (os.path.relpath(dated, ROOT), len(data) // 1024))
+    return dated, alt
 
 
-def main():
-    try:
-        dated = build()
-        url = "https://agsist.com/" + dated.replace(os.sep, "/")
-        update_homepage_og(dated_url=url)
+def update_page_og(page_path, dated_url, alt):
+    """Point a page's share image at the dated card.
+
+    Dated URL on purpose: Messages, Facebook and X cache share images BY URL,
+    so a stable card-latest would show yesterday's card for days. Uses the
+    same tag writer as every other page (build_share_images.patch_meta)."""
+    import build_share_images as B
+    src = open(page_path, encoding="utf-8").read()
+    out = B.patch_meta(src, dated_url, alt)
+    if out != src:
+        open(page_path, "w", encoding="utf-8").write(out)
+    print("[social-card] %s og:image -> %s" % (os.path.relpath(page_path, ROOT), dated_url))
+
+
+def backfill():
+    """Redraw every dated card that already exists, from its archived
+    briefing. A day with no archive file keeps no card."""
+    n = 0
+    for f in sorted(os.listdir(OUT_DIR)):
+        m = re.match(r"card-(\d{4}-\d\d-\d\d)\.(png|jpg)$", f)
+        if not m:
+            continue
+        day = m.group(1)
+        arch = os.path.join(ROOT, "data", "daily-archive", day + ".json")
+        if not os.path.exists(arch):
+            print("[social-card] %s: no archived briefing, card left as is" % day, file=sys.stderr)
+            continue
+        daily = json.load(open(arch, encoding="utf-8"))
+        data, _ = card_bytes(daily)  # no live record on an old card: it would be today's
+        with open(os.path.join(OUT_DIR, "card-%s.jpg" % day), "wb") as fh:
+            fh.write(data)
+        if m.group(2) == "png":
+            os.remove(os.path.join(OUT_DIR, f))
+        n += 1
+    for old in ("card-latest.png",):
+        p = os.path.join(OUT_DIR, old)
+        if os.path.exists(p):
+            os.remove(p)
+    print("[social-card] backfilled %d cards" % n)
+
+
+def main(argv):
+    if "--backfill" in argv:
+        backfill()
         return 0
-    except Exception as e:  # never block the briefing over a promo image
-        print("[social-card] SKIPPED — %s: %s" % (type(e).__name__, e), file=sys.stderr)
+    try:
+        if "--date" in argv:
+            day = argv[argv.index("--date") + 1]
+            build("data/daily-archive/%s.json" % day, stamp=day)
+            return 0
+        dated, alt = build()
+        url = SITE + "/" + os.path.relpath(dated, ROOT).replace(os.sep, "/")
+        update_page_og(os.path.join(ROOT, "index.html"), url, alt)
+        return 0
+    except Exception as e:  # never block the briefing over a share image
+        print("[social-card] SKIPPED: %s: %s" % (type(e).__name__, e), file=sys.stderr)
         return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

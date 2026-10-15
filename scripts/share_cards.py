@@ -484,8 +484,14 @@ def _pic_number(c, p):
         c.text(x0, 104, p.get("table_title", "").upper(), font("inter", 22, 700), MUTED, track=1.5)
         for i, (lab, val, chg, up) in enumerate(rows[:4]):
             base = 104 + 70 * (i + 1) - 10
-            c.text(x0, base, lab, font("inter", 29, 500), INK)
-            c.text(x1, base, chg or "", font("mono", 24, 700), UP if up else (RED if up is False else MUTED), anchor="rs")
-            vx = x1 - 118
-            c.text(vx, base, val, font("mono", 29, 700), INK, anchor="rs")
+            c.text(x1, base, chg or "", font("mono", 23, 700), UP if up else (RED if up is False else MUTED), anchor="rs")
+            vx = x1 - 104
+            fv = font("mono", 27, 700)
+            c.text(vx, base, val, fv, INK, anchor="rs")
+            room = vx - c.width(val, fv) - 14 - x0
+            for sz in (28, 26, 24, 22):
+                fl = font("inter", sz, 500)
+                if c.width(lab, fl) <= room:
+                    break
+            c.text(x0, base, lab, fl, INK)
             c.rect(x0, base + 22, x1, base + 23, RULE)

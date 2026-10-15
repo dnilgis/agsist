@@ -2676,9 +2676,9 @@ def og_image_for(date_iso, require_file=False):
     """
     if not OG_IMAGE_BASE:
         return OG_IMAGE_FALLBACK
-    if require_file and not (SOCIAL_CARD_DIR / f"card-{date_iso}.png").exists():
+    if require_file and not (SOCIAL_CARD_DIR / f"card-{date_iso}.jpg").exists():
         return OG_IMAGE_FALLBACK
-    return f"{OG_IMAGE_BASE}{date_iso}.png"
+    return f"{OG_IMAGE_BASE}{date_iso}.jpg"
 
 
 
@@ -3422,8 +3422,9 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     # hardcoded to the dated card's 2400x1350; when the fallback is served that
     # declared a size the file does not have, which is how a scraper crops the
     # wrong region or refuses the image outright.
-    og_image_w, og_image_h = (("1200", "630") if og_image_url == OG_IMAGE_FALLBACK
-                              else ("2400", "1350"))
+    # Since 2026-10-15 the dated card is 1200x630 too (build_social_card.py),
+    # the same size as the fallback.
+    og_image_w, og_image_h = ("1200", "630")
     # 2026-10-06 SEO: one title and one description for <title>, meta, og and
     # twitter, built by daily_page_title / daily_page_description (see there).
     page_title = html_esc(daily_page_title(briefing, date_iso))
