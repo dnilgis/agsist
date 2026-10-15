@@ -1,0 +1,18 @@
+{
+ "month": "March 2026",
+ "month_key": "2026-03",
+ "value": 18.84,
+ "prev_month_change": null,
+ "year_ago_change": -2.62,
+ "history": {
+  "2026-03": 18.84
+ },
+ "source": "USDA AMS Mailbox Milk Price Report (MMN 3357)",
+ "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
+ "updated": "2026-10-15T00:00:00Z",
+ "status": {
+  "ok": true,
+  "note": "March 2026 carried over from the figure typed on milk-prices.html; scripts/fetch_mailbox.py replaces it with the newest AMS report.",
+  "checked": "2026-10-15T00:00:00Z"
+ }
+}

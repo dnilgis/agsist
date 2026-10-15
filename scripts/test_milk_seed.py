@@ -94,6 +94,33 @@ def main():
     ck("Nov 1: the state table ships hidden behind the dash line",
        'id="dp-states" hidden' in sd["milkstates"] and "are too old" in sd["milkstates"])
 
+    print("mailbox price")
+    MB = {"month": "June 2026", "month_key": "2026-06", "value": 20.18, "year_ago_change": -1.05}
+    m1 = S.milk_mailbox_seeds(MB, "2026-10-15")
+    ck("four months back is the newest there is: the cell shows it, dated",
+       'id="mb-val">$20.18' in m1["milkmbcell"] and "USDA AMS · June 2026" in m1["milkmbcell"]
+       and "▼ −$1.05 vs Jun 2025" in m1["milkmbcell"], m1["milkmbcell"])
+    ck("...the list line names the month and when AMS posts",
+       "Mailbox price, June 2026" in m1["milkmbli"] and "about three months after it ends" in m1["milkmbli"]
+       and "Older figure" not in m1["milkmbli"], m1["milkmbli"])
+    m2 = S.milk_mailbox_seeds(dict(MB, month="March 2026", month_key="2026-03", value=18.84, year_ago_change=-2.62),
+                              "2026-10-15")
+    ck("seven months back: the cell is a dash with the month held",
+       'id="mb-val">-' in m2["milkmbcell"] and "Newest loaded: March 2026." in m2["milkmbcell"], m2["milkmbcell"])
+    ck("...the list keeps the figure, labeled older, dated, with the AMS link",
+       m2["milkmbli"].count("March 2026") == 1 and "Older figure" in m2["milkmbli"] and "$18.84" in m2["milkmbli"]
+       and "viewReport/3357" in m2["milkmbli"], m2["milkmbli"])
+    ck("...the check section says it is an older month",
+       "In March 2026 the federal-order mailbox average was $18.84/cwt, down $2.62 from a year earlier (an older month"
+       in m2["milkmbrow"], m2["milkmbrow"])
+    ck("no year-ago change in the file: none printed",
+       "year earlier" not in S.milk_mailbox_seeds(dict(MB, year_ago_change=None), "2026-10-15")["milkmbli"])
+    ck("a month not over, a zero or no file seeds nothing",
+       S.milk_mailbox_seeds(dict(MB, month_key="2026-10"), "2026-10-15") == {}
+       and S.milk_mailbox_seeds(dict(MB, value=0), "2026-10-15") == {}
+       and S.milk_mailbox_seeds(None, "2026-10-15") == {})
+    ck("no em dash in the mailbox seeds", not any("—" in v for v in list(m1.values()) + list(m2.values())))
+
     print("bad files")
     fut = copy.deepcopy(SEP)
     fut["class_month_key"] = "2026-12"

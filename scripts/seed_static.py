@@ -1599,6 +1599,54 @@ def milk_seeds(d, today):
     return seeds, seed_key
 
 
+MILK_MB_DATA = "data/dairy-mailbox.json"
+MILK_MB_LINK = '<a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>'
+
+
+def milk_mailbox_seeds(mb, today):
+    """The mailbox price, dated, from data/dairy-mailbox.json (scripts/
+    fetch_mailbox.py). AMS posts each month about three months after it ends,
+    so a month up to four back is the newest there is. Five or more back means
+    newer months are out and not loaded: the strip cell becomes a dash with the
+    reason and the dated figure stays only in the list, labeled older.
+    Until 2026-10-15 March 2026 was typed by hand, labeled "not current", with
+    no way to pick up a newer month."""
+    if not isinstance(mb, dict) or not _pos(mb.get("value")):
+        return {}
+    idx = _mkey(mb.get("month_key"))
+    now_idx, _ = _milk_now(today)
+    if idx is None or idx >= now_idx:
+        return {}
+    v, ml, sh = mb["value"], _ilong(idx), MON3[idx % 12]
+    yc = mb.get("year_ago_change")
+    behind = now_idx - idx >= 5
+    yr = ""
+    if _fin(yc):
+        r = float(_fixed(yc, 2))
+        yr = (", unchanged from a year earlier" if r == 0 else
+              f", {'up' if r > 0 else 'down'} ${_fixed(abs(r), 2)} from a year earlier")
+    lag = "AMS posts each month about three months after it ends."
+    if behind:
+        li_txt = (f"Older figure: the newest mailbox month loaded here is {ml}. Federal-order average "
+                  f"<strong>{_cwt(v)}/cwt</strong>{yr}. {lag} Newer months should be out; see the {MILK_MB_LINK}.")
+        cell = _cell("mb", "Mailbox price", "-", "", "", "dp-flat",
+                     f"Newest loaded: {ml}. Newer AMS months not loaded yet.")
+    else:
+        li_txt = (f"Mailbox price, {ml}: federal-order average <strong>{_cwt(v)}/cwt</strong>{yr}. "
+                  f"{lag} Source: {MILK_MB_LINK}.")
+        chg, cls = "", "dp-flat"
+        if _fin(yc):
+            chg, cls = f"{_arr(yc)} {_sg(yc, 2)} vs {_ishort(idx - 12)}", _cl(yc)
+        cell = _cell("mb", "Mailbox price", _cwt(v), "/cwt", chg, cls, f"USDA AMS · {ml}")
+    row = (f'<div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Your mailbox price</div>'
+           f'<div class="dp-row-desc">What actually landed. In {ml} the federal-order mailbox average was {_cwt(v)}/cwt{yr}'
+           f'{" (an older month: newer AMS figures are out and not loaded here yet)" if behind else ""}. '
+           "This is the only number that pays your bills, and it's the one the market reports never lead with.</div></div>"
+           f'<div class="dp-row-val">{_cwt(v)}<span class="u">/cwt</span></div></div>')
+    return {"milkmbli": f'<li><span class="n">{sh}</span><span id="dp-v-mb">{li_txt}</span></li>',
+            "milkmbcell": cell, "milkmbrow": row}
+
+
 def milk_spread_why(s):
     """The spread line's tail, the page script's spreadWhy(). The trap section
     is written for cheese on top; when Class IV leads, say so instead of
@@ -1770,6 +1818,7 @@ def seed_milk(today):
         return False
     seeds, key = milk_seeds(d, today)
     js = seeds.pop("__js", None)
+    seeds.update(milk_mailbox_seeds(_load_json(MILK_MB_DATA), today))
 
     def extra(t):
         if key:
