@@ -1,0 +1,105 @@
+# McCune Farmers Union Co-op: fertilizer page
+# https://www.mccunecoop.com/fertilizer
+# fetched 2026-10-15T22:01:00Z, sha256 fa90c84c55680a8aa453b48800f74b2b352f679f7c6a9752243c06163bd77729
+
+McCune Farmers Union Coop Association - Fertilizer Prices
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Home
+
+-
+
+Cash Bids
+
+-
+
+Newswire
+
+-
+
+Market Data
+
+-
+
+Options
+
+-
+
+Weather
+
+-
+Resources
+
+-
+Futures 101
+
+-
+Commodity Symbols
+
+Fertilizer Prices
+
+BIDS ARE SUBJECT TO CHANGE WITHOUT NOTICE--CALL FOR CURRENT PRICES
+5% CASH
+
+BULK FERTILIZER
+
+TON PRICE
+DISCOUNT PRICE
+
+18-46-00 (DAP)
+
+$970.00
+
+$921.50
+
+46-00-00 (UREA)
+
+$640.00
+
+$608.00
+
+00-00-60 (POTASH)
+
+$490.00
+
+$465.50
+
+82-00-00 (ANHYDROUS)
+
+$860.00
+
+$817.00
+
+28-00-00 (UAN)
+$450.00
+
+$427.50
+
+Discount price available to accounts in good standing with NO Past Due balances, payment received within 10 days of billing.....Prices last updated-effective: October 6th , 2026
+
+© 2026 Barchart.com, Inc. All market data is hosted and powered by Barchart.
+
+Information presented is provided 'as-is' and solely for informational purposes, not for trading purposes or advice, and is delayed. No representations are made by Barchart as to its informational accuracy or completeness.
+
+-
+Terms of Use
+
+-
+Privacy Policy
+
+-
+Do Not Sell My Personal Information
+
+-
+Exchange Delays

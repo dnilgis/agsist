@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-15T21:10:18Z",
+ "run_utc": "2026-10-15T22:01:02Z",
  "sources": [
   {
    "bytes": null,
@@ -1532,6 +1532,81 @@
    ],
    "status": "new",
    "text_chars": 5094
+  },
+  {
+   "bytes": 26049,
+   "sha256": "2f9ce032c3fe5f1dd1bb9dd088c7632dd13d4946fbf841da08d987540b1a8e66",
+   "fetched_utc": "2026-10-15T22:00:57Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/coop-tworivers-ks-fert.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "coop-tworivers-ks-fert",
+   "url": "https://www.tworiversks.coop/pages/custom.php?id=19995",
+   "title": "Two Rivers Co-op (Kansas): posted page sent by Sig",
+   "why": "/fertilizer: candidate co-op posted retail fertilizer prices",
+   "kind": "html",
+   "checked_utc": "2026-10-15T22:00:57Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1632
+  },
+  {
+   "bytes": 32675,
+   "sha256": "fa90c84c55680a8aa453b48800f74b2b352f679f7c6a9752243c06163bd77729",
+   "fetched_utc": "2026-10-15T22:01:00Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/coop-mccune-fert.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "coop-mccune-fert",
+   "url": "https://www.mccunecoop.com/fertilizer",
+   "title": "McCune Farmers Union Co-op: fertilizer page",
+   "why": "/fertilizer: candidate co-op posted retail fertilizer prices",
+   "kind": "html",
+   "checked_utc": "2026-10-15T22:00:59Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1088
+  },
+  {
+   "bytes": 28572,
+   "sha256": "95f3a823d37ba3d298c0c2986d0ed8063e58f58c931f8fb28840604708d25825",
+   "fetched_utc": "2026-10-15T22:01:02Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/coop-mulvane-fert.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "coop-mulvane-fert",
+   "url": "https://www.mulvanecoop.com/fertilizer",
+   "title": "Mulvane Co-op: fertilizer page",
+   "why": "/fertilizer: candidate co-op posted retail fertilizer prices",
+   "kind": "html",
+   "checked_utc": "2026-10-15T22:01:01Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1296
   }
  ]
 }
