@@ -71,7 +71,7 @@
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:var(--bs-txt)}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:var(--bs-hi)}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
-    .bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
+    .bm-svg{width:100%;height:auto;display:block;margin:6px 0 4px;--bm-mid:var(--bs-dim)}.bm-svg .bm-st{stroke:var(--bs-bg);stroke-width:1.2;vector-effect:non-scaling-stroke}.bm-svg .bm-st:not(.bm-has){stroke:var(--bs-faint);stroke-width:.6}.bm-svg .bm-a:hover .bm-st,.bm-svg .bm-a:focus .bm-st{stroke:var(--bs-hi);stroke-width:2}.bm-lab{font:700 13px 'JetBrains Mono',monospace;fill:var(--bs-hi);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bs-bg);stroke-width:3px;pointer-events:none}.bm-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--bs-txt);margin:6px 0}.bm-key{display:inline-flex;align-items:center;gap:6px}.bm-key i{width:14px;height:10px;border-radius:2px;display:inline-block}#map{--bm-mid:var(--bs-dim)}.bm-key i.bm-none{border:1px solid var(--bs-faint)}.bm-tip{font-size:13.4px;color:var(--bs-txt);margin:6px 0 0;min-height:1.5em}.bm-foot{font-size:12.5px;color:var(--bs-dim);margin:4px 0 0}@media(max-width:620px){.bm-lab{display:none}}.bs-pick-l .bs-norm{display:block;font-size:13px;color:var(--bs-txt);margin-top:3px;line-height:1.5}.bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
     .bs-spark{height:30px;width:100%;max-width:280px;min-width:170px;display:block}
     .bs-bars{display:grid;gap:10px}
     .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
@@ -118,6 +118,7 @@
 #bs-pick{min-height:7.5rem}
 .bs-pick-l{list-style:none;padding:0;margin:0 0 8px}
 .bs-pick-l li{font-size:1.15rem;line-height:1.6;color:var(--bs-hi)}
+.bs-pick-l li+li{margin-top:10px}
 .bs-pick-l li .mut,#bs-rank .mut{display:inline-block;font-size:.82rem;color:var(--bs-dim)}
 .bs-seed a,.bs-why a{color:var(--gold)}
 #bs-rank td a{color:var(--bs-hi);border-bottom:1px dotted var(--bs-tabbd);text-decoration:none}
@@ -195,13 +196,22 @@
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">Where the money goes between the farm and the Gulf</span></div>
     <div class="bs-panel-b">
       <div class="bs-walk" id="bs-walk" aria-busy="true"><span class="sr-only">Loading</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span></div>
-      <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0" id="bs-walk-note"></p>
+      <p style="font-size:13.4px;color:var(--bs-txt);margin:12px 0 0" id="bs-walk-week"></p>
+      <p style="font-size:13.4px;color:var(--bs-dim);margin:6px 0 0" id="bs-walk-note"></p>
     </div>
   </section>
 
   <details class="bs-panel bs-why" id="storage">
     <summary>Why basis is wide this fall: more grain than bins</summary>
     <div class="bs-panel-b"><!--SEED:storage--><p>Basis has to pay for space. When the grain that has to be held this fall is more than the bins can take, elevators bid less to slow it down or pay to ship it out, and that comes out of your basis.</p><p>This fall, <strong>8 of 11</strong> states with full NASS figures have more grain to hold than bin space: September 1 stocks plus the 2026 corn, soybean and sorghum crop (latest NASS estimate), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p><div class="tblscroll"><table class="bs-tbl"><caption>Million bushels &middot; most crowded first</caption><tr><th>State</th><th style="text-align:right">Grain vs bins</th><th style="text-align:right">Sept 1 stocks</th><th style="text-align:right">2026 fall crop</th><th style="text-align:right">Capacity</th></tr><tr><td>Missouri</td><td class="num">1.17&times;</td><td class="num">99</td><td class="num">910</td><td class="num">860</td></tr><tr><td>South Dakota</td><td class="num">1.14&times;</td><td class="num">243</td><td class="num">1,120</td><td class="num">1,200</td></tr><tr><td>Nebraska</td><td class="num">1.13&times;</td><td class="num">315</td><td class="num">2,133</td><td class="num">2,170</td></tr><tr><td>Ohio</td><td class="num">1.10&times;</td><td class="num">185</td><td class="num">952</td><td class="num">1,035</td></tr><tr><td>Indiana</td><td class="num">1.09&times;</td><td class="num">150</td><td class="num">1,387</td><td class="num">1,410</td></tr><tr><td>Iowa</td><td class="num">1.08&times;</td><td class="num">477</td><td class="num">3,416</td><td class="num">3,590</td></tr><tr><td>Illinois</td><td class="num">1.05&times;</td><td class="num">348</td><td class="num">2,987</td><td class="num">3,170</td></tr><tr><td>Michigan</td><td class="num">1.05&times;</td><td class="num">103</td><td class="num">463</td><td class="num">540</td></tr><tr><td>Minnesota</td><td class="num">0.99&times;</td><td class="num">374</td><td class="num">1,978</td><td class="num">2,370</td></tr><tr><td>Kansas</td><td class="num">0.97&times;</td><td class="num">431</td><td class="num">1,133</td><td class="num">1,605</td></tr><tr><td>North Dakota</td><td class="num">0.86&times;</td><td class="num">396</td><td class="num">805</td><td class="num">1,390</td></tr></table></div><p>No ratio where NASS has no state figure for a crop the state grows: Alabama, Arkansas, California, Colorado, Delaware, Florida, Georgia, Idaho, Kentucky, Louisiana, Maryland, Mississippi, Montana, New Jersey, New York, North Carolina, Oklahoma, Oregon, Pennsylvania, South Carolina, Tennessee, Texas, Virginia, Washington, Wisconsin.</p><p>Same measure as farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the Corn Belt,&rdquo; Oct 7, 2026). Wheat, barley and oats are harvested by September 1, so they count once, in the stocks. Source: USDA NASS Quick Stats, Grain Stocks and Crop Production.</p><!--/SEED--></div>
+  </details>
+
+  <details class="bs-panel bs-why" id="map">
+    <summary>Show the basis map</summary>
+    <div class="bs-panel-b">
+      <div class="bs-tabs" role="group" aria-label="Crop" id="bm-crop"><button type="button" class="bs-tab on" data-c="corn" aria-pressed="true">Corn</button><button type="button" class="bs-tab" data-c="soybeans" aria-pressed="false">Soybeans</button></div>
+      <div id="bm-host"></div>
+    </div>
   </details>
 
   <section class="bs-panel" id="by-state" aria-labelledby="bs-rank-t">
@@ -354,6 +364,20 @@
     if(window.AgAsOf&&journey.generated)$('bs-fresh2').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(journey.generated,'usda'));
   }
 
+  /* WHICH USDA WEEK THE BOX USES (2026-10-15). The spreads are a different
+     USDA dataset from the basis table and are not cut back with it, so the box
+     can be a week newer than the table. Say which week, and whether the
+     origin's own basis that week passed the jump check the table uses. */
+  function walkWeek(s,p,b){
+    if(!s||!s.date) return '';
+    var w=b&&b.weeks&&b.weeks[p[0]+'|Elevator Bid'], key=p[0]+'|'+p[1]+'|Elevator Bid';
+    var t='These are USDA bids for the week of '+shortDate(s.date)+', '+s.date.slice(0,4)+'.';
+    if(!w||!w.week||w.week===s.date) return t+(w&&w.week===s.date?' The same week as the regional table above.':'');
+    if((w.held||[]).indexOf(key)>=0) return t+' The table above holds that week back, and USDA\u2019s '+p[1]+' '+p[0].toLowerCase()+' basis was one of the jumps it held, so read this box with care.';
+    if(s.date===w.newest&&(w.held||[]).length) return t+' That is a week newer than the table above, which holds it back because '+w.held.length+' region'+(w.held.length===1?'':'s')+' jumped. USDA\u2019s '+p[1]+' '+p[0].toLowerCase()+' basis was not one of them; it passed the jump check that week.';
+    return t+' The regional table above shows the week of '+shortDate(w.week)+'.';
+  }
+
   function renderWalk(){
     // pick the Illinois -> Gulf corn spread as the canonical worked example
     var key=Object.keys(journey.spreads).find(function(k){return k.indexOf('Corn|Illinois|Gulf')===0;})
@@ -365,12 +389,14 @@
       +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
       +'<div class="bs-walkstep"><div class="bs-walk-l">Freight and handling</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
     var ci=journey.cost_index||{};
+    $('bs-walk-week').textContent=walkWeek(s,p,basis);
     $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'-')+' · shuttle train '+(ci.shuttle_train||'-')+' · barge '+(ci.barge||'-')+' · Gulf vessel '+(ci.gulf_vessel||'-')+'. Spread data: '+s.date+'.';
   }
 
   function load(){
   Promise.all([
-    fetch('/data/transport/basis.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+    /* shared with "Your state today" below, which prints USDA's state normal */
+    (window.bsBasisP=fetch('/data/transport/basis.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})),
     fetch('/data/transport/journey.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     basis=res[0]; journey=res[1];
@@ -402,13 +428,30 @@
   function money(v){ return AG.px.basis(v*100); }   /* −65¢, +5¢, even (components/util.js) */
   function cents(v){ return v===0?'0¢':(v>0?'+':'−')+Math.abs(v)+'¢'; }
   function day(iso){ var d=new Date(iso); if(isNaN(d)) return ''; return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear(); }
-  var LAB={corn:'Corn',soybeans:'Soybeans'};
+  var LAB={corn:'Corn',soybeans:'Soybeans'}, USDA=null;
+  /* USDA'S NORMAL BESIDE THE STATE NUMBER (2026-10-15). Where USDA tracks the
+     state, its 5-year normal for the same week sits next to our number, with
+     the gap, so nobody has to put two boxes together. It is USDA's regional
+     series (data/transport/basis.json), for the newest week the table above
+     prints, never a week the jump check held back; our number is today's. */
+  function usdaNormal(name,g,c,b){
+    if(!b||!b.series||!c||c.median==null) return '';
+    var crop=g==='corn'?'Corn':'Soybeans', s=b.series[crop+'|'+name+'|Elevator Bid'];
+    if(!s||s.avg5==null||s.latest==null||!s.date) return '';
+    var wk=((b.weeks||{})[crop+'|Elevator Bid']||{}).week;
+    if(wk&&s.date!==wk) return '';
+    var ours=Math.round(c.median*100), norm=Math.round(s.avg5*100), usda=Math.round(s.latest*100);
+    function vs(x,what){ return x===0?'right at '+what:Math.abs(x)+'\u00a2 '+(x<0?'weaker':'stronger')+' than '+what; }
+    return '<span class="bs-norm">USDA normal for '+esc(name)+', week of '+day(s.date)+': <b>'+AG.px.basis(norm)+'</b> (5-year average'
+      +(s.avg5_n?', n = '+s.avg5_n+' yrs':'')+'). Ours today is <b>'+vs(ours-norm,'that')+'</b>. USDA\u2019s own '+esc(name)
+      +' bid that week was '+AG.px.basis(usda)+', '+vs(usda-norm,'its normal')+'.</span>';
+  }
   function render(st){
     var v=doc&&doc.states[st]; if(!v) return;
     var li=[];
     ['corn','soybeans'].forEach(function(g){ var c=v.crops[g]; if(!c||c.median==null) return;
       li.push('<li><b>'+LAB[g]+'</b> '+money(c.median)+' vs '+esc(c.label)+' <span class="mut">n = '+c.n+' elevator'+(c.n===1?'':'s')
-        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span></li>'); });
+        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span>'+usdaNormal(v.name,g,c,USDA)+'</li>'); });
     box.innerHTML=li.length
       ? '<ul class="bs-pick-l">'+li.join('')+'</ul><p class="bs-seed">Middle bid of '+esc(v.name)+' elevators in the AGSIST network, snapshot of '+day(doc.generated)+'. <a href="'+esc(v.path)+'">'+esc(v.name)+' bids and basis by elevator &rarr;</a></p>'
       : '<p class="bs-seed">Too few '+esc(v.name)+' elevators on one futures month for a middle number today. <a href="'+esc(v.path)+'">Every '+esc(v.name)+' elevator we read &rarr;</a></p>';
@@ -424,9 +467,39 @@
     sel.innerHTML=ab.map(function(a){return '<option value="'+a+'"'+(a===pick?' selected':'')+'>'+esc(j.states[a].name)+'</option>';}).join('');
     document.getElementById('bs-st-geo').textContent=note;
     if(pick!=='IA') render(pick);
+    /* then USDA's normal beside it, once the regional file is in */
+    var bp=window.bsBasisP||fetch('/data/transport/basis.json').then(function(r){return r.ok?r.json():null;});
+    bp.then(function(b){ if(b&&b.series){ USDA=b; render(sel.value||pick); } }).catch(function(){});
   }).catch(function(){});
   function openStorage(){ if(location.hash==='#storage'){ var d=document.getElementById('storage'); if(d) d.open=true; } }
   openStorage(); window.addEventListener('hashchange',openStorage);
+})();
+</script>
+<script>
+/* The basis map (components/basis-map.js): its code, the outlines and the
+   numbers load the first time it is opened, never with the page. /basis-map
+   sends readers here with #map, which opens it. */
+(function(){
+  var det=document.getElementById('map'), host=document.getElementById('bm-host'), tabs=document.getElementById('bm-crop');
+  if(!det||!host) return;
+  var crop='corn', loading=false;
+  function go(){
+    if(window.BasisMap){ window.BasisMap.open(host,crop); return; }
+    if(loading) return; loading=true;
+    var s=document.createElement('script'); s.src='/components/basis-map.js?v=1';
+    s.onload=function(){ loading=false; if(window.BasisMap) window.BasisMap.open(host,crop); };
+    s.onerror=function(){ loading=false; host.innerHTML='<p class="bm-tip">The map did not load. The state table below has the same numbers.</p>'; };
+    document.head.appendChild(s);
+  }
+  det.addEventListener('toggle',function(){ if(det.open){ go(); try{gaEvent('basis_map_open',{});}catch(e){} } });
+  if(tabs) tabs.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('button[data-c]'); if(!b) return;
+    crop=b.getAttribute('data-c');
+    Array.prototype.forEach.call(tabs.children,function(x){ var on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-pressed',String(on)); });
+    go();
+  });
+  function openMap(){ if(location.hash==='#map'){ det.open=true; go(); } }
+  openMap(); window.addEventListener('hashchange',openMap);
 })();
 </script>
 </body>
