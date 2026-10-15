@@ -268,7 +268,7 @@ test("browser: Chetek 2025 draws from Rice Lake, says why by the station line, a
     // Change station still takes any of them; a station the buyer picks is drawn with no reason given
     await page.evaluate(() => { document.getElementById("rp-more").open = true; });
     await page.selectOption("#rp-station", "US1WIBR0002 6");
-    await page.waitForFunction(() => /CoCoRaHS gauge US1WIBR0002/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
+    await page.waitForFunction(() => /volunteer gauge US1WIBR0002/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
     assert.ok(!/Picked over/.test(await page.textContent("#rp-source")));
     assert.deepEqual(errors, []);
   }, { width, height: width < 600 ? 844 : 900 });
@@ -279,11 +279,11 @@ test("browser: a link, a short link or a saved design that names the gauge keeps
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&station=US1WIBR0002+6&style=r2");
     await drawn(page);
     assert.equal(await page.inputValue("#rp-station"), "US1WIBR0002 6");
-    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI \(1\.9 mi SSW of Chetek\), 1\.9 mi from Chetek \(CoCoRaHS gauge US1WIBR0002\) Change station\./);
+    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI \(1\.9 mi SSW of Chetek\), 1\.9 mi from Chetek \(volunteer gauge US1WIBR0002\) Change station\./);
     assert.ok(!log.some((s) => /^4771/.test(s)), "Rice Lake's year is never read");
     await page.goto(base + "/rain-print.html?d=RPS-SN0W1");
     await drawn(page);
-    assert.match(await page.textContent("#rp-source"), /CoCoRaHS gauge US1WIBR0002/, "the short link keeps its station");
+    assert.match(await page.textContent("#rp-source"), /volunteer gauge US1WIBR0002/, "the short link keeps its station");
     assert.ok(!/Picked over/.test(await page.textContent("#rp-source")));
     assert.deepEqual(errors, []);
   });
@@ -294,7 +294,7 @@ test("browser: no snow station inside the slack: the gauge draws and the line sa
   await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025");
     await drawn(page);
-    assert.match(await page.textContent("#rp-source"), /CoCoRaHS gauge US1WIBR0002\)\. None of the stations within 12 mi kept a full snowfall record for 2025, so the print draws no snow\. Change station\./);
+    assert.match(await page.textContent("#rp-source"), /volunteer gauge US1WIBR0002\)\. None of the stations within 12 mi kept a full snowfall record for 2025, so the print draws no snow\. Change station\./);
     assert.deepEqual(log, ["US1WIBR0002 6"], "nothing past the slack is read");
     assert.deepEqual(errors, []);
   }, { meta: far });

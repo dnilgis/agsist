@@ -744,7 +744,7 @@
      "Rice Lake Municipal Airport". */
   function sidPlain(sid) {
     var p = String(sid || '').trim().split(/\s+/);
-    if (/^US1/.test(p[0])) return 'CoCoRaHS gauge ' + p[0];
+    if (/^US1/.test(p[0])) return 'volunteer gauge ' + p[0];
     return (p[1] === '2' ? 'NOAA co-op station ' : 'NOAA station ') + p[0];
   }
   var STN_WORD = { AP: 'Airport', MUNI: 'Municipal', INTL: 'International', RGNL: 'Regional', CO: 'County', FLD: 'Field', ARPT: 'Airport', STN: 'Station', EXP: 'Experiment', AG: 'Ag' };

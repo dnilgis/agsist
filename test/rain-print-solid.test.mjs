@@ -402,15 +402,14 @@ test("P12: a ?d=RPS- link that doesn't open keeps the link, and the maker page d
 // ---------- copy and small code (no browser) ----------
 const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
 const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-test("T9 (page copy): the station can be a CoCoRaHS volunteer's gauge, not always NOAA's own", () => {
-  const PH = "nearest NOAA weather station or CoCoRaHS volunteer gauge";
+test("T9 (page copy): plain words: the nearest weather station, never NOAA's own for every station and never the program name (Sig, 2026-10-15)", () => {
   for (const re of [/<meta name="description" content="[^"]*/, /og:description"\s+content="[^"]*/, /twitter:description"\s+content="[^"]*/, /"description": "Draws[^"]*/, /<p class="rp-lede">[^<]*/]) {
     const m = HTML.match(re)[0];
-    // The short meta description may say "the weather station nearest": true for both kinds, never "NOAA station" alone.
-    assert.ok(m.includes(PH) || /NOAA (weather )?station or CoCoRaHS volunteer gauge nearest/.test(m) || (/the weather station nearest/.test(m) && !/NOAA station/.test(m)), m);
+    assert.ok(/weather station/.test(m) && !/NOAA (weather )?station/.test(m) && !/CoCoRaHS/.test(m), m);
   }
-  assert.match(HTML, /<summary>Where does the rain data come from\?<\/summary><p>From the nearest NOAA weather station or CoCoRaHS volunteer gauge/);
-  assert.ok(readFileSync(ROOT + "llms.txt", "utf8").includes("one year of daily rain at the " + PH));
+  assert.match(HTML, /<summary>Where does the rain data come from\?<\/summary><p>From the nearest weather station with a good record for that year, from NOAA&rsquo;s daily records\. Some are National Weather Service stations, some are rain gauges kept by volunteers/);
+  assert.ok(!/CoCoRaHS/.test(HTML), "no program name on the page");
+  assert.ok(readFileSync(ROOT + "llms.txt", "utf8").includes("one year of daily rain at the nearest weather station"));
 });
 test("T11, T13, T3, P9: logo rights, a mailto, the lost-or-damaged steps, the maker's logo note", () => {
   for (const id of ["rp-logo-help", "rb-logo-help"]) assert.match(HTML.match(new RegExp('id="' + id + '">[^<]*'))[0], /Only a logo you own or have permission to use\./);
