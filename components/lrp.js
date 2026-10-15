@@ -170,23 +170,40 @@
      older file has only sed, so the close falls back to the RMA rule.
      closed(now) is true from the close on: those offers are never today's. */
   function salesDay(T) {
+    /* ONE source for every date on the page: the sales day. RMA's file for
+       day D carries sales date D, and sales on it close at 8:25 a.m. CT on
+       D + 1 (a Friday's on Saturday). The caption, the posted line, the
+       buy-by line and the closed banner all come from here. The file's own
+       sales_close_ct is only checked against the rule (closeAgrees). */
     var day = T.sales_day ? String(T.sales_day).replace(/-/g, '') : String(T.sed || '');
-    var closeCt = T.sales_close_ct ? String(T.sales_close_ct).replace(/[-T:]/g, '') : salesClose(day);
-    var closeMs = T.sales_close_utc ? Date.parse(T.sales_close_utc) : NaN;
-    var posted = T.posted_utc ? centralClock(T.posted_utc) : '';
-    var h = +closeCt.slice(8, 10), mi = closeCt.slice(10, 12);
-    var hm = (h % 12 || 12) + ':' + mi + (h < 12 ? ' a.m.' : ' p.m.') + ' CT';
-    var clock = hm + ' on ' + ymdLong(closeCt.slice(0, 8));
+    var closeCt = salesClose(day);
+    var fileClose = T.sales_close_ct ? String(T.sales_close_ct).replace(/[-T:]/g, '') : null;
+    var hm = '8:25 a.m. CT';
     var postedDay = T.posted_utc ? centralNow(new Date(T.posted_utc)).slice(0, 8) : '';
+    var clock = T.posted_utc ? centralClock(T.posted_utc).replace(/^[A-Z][a-z]{2} \d+, /, '') : '';
     return {
-      day: day, dayText: ymdLong(day), dayShort: wdShort(day), posted: posted, closeCt: closeCt, closeText: clock,
-      postedDay: postedDay, buyBy: hm + ' ' + wdShort(closeCt.slice(0, 8)),
-      postedClock: T.posted_utc ? posted.replace(/^[A-Z][a-z]{2} \d+, /, '') : '',
-      closed: function (now) {
-        now = now || new Date();
-        return isFinite(closeMs) ? now.getTime() >= closeMs : centralNow(now) >= closeCt;
-      }
+      day: day, dayText: ymdLong(day), dayShort: wdShort(day), closeCt: closeCt,
+      closeText: hm + ' on ' + wdShort(closeCt.slice(0, 8)) + ', ' + closeCt.slice(0, 4),
+      buyBy: hm + ' ' + wdShort(closeCt.slice(0, 8)),
+      postedDay: postedDay,
+      /* the posting time; the date too when RMA posted on another day than the sales day */
+      postedClock: clock ? (postedDay && postedDay !== day ? wdShort(postedDay) + ', ' : '') + clock : '',
+      posted: clock,
+      closeAgrees: fileClose == null || fileClose === closeCt,
+      closed: function (now) { return centralNow(now || new Date()) >= closeCt; }
     };
+  }
+
+  /* The four places a date shows, all from salesDay(T). */
+  function whenText(T) {
+    var d = salesDay(T);
+    return 'Offers for sales on ' + d.dayShort + ', ' + d.day.slice(0, 4) + (d.postedClock ? ', posted by RMA ' + d.postedClock : '') + '. Buy by ' + d.buyBy + '.';
+  }
+  function closedText(T) {
+    return 'Sales on these offers closed at ' + salesDay(T).closeText + '. They can no longer be bought. RMA posts the next offers between about 2:15 and 4:30 p.m. CT on a sales day, and this page shows them within about an hour.';
+  }
+  function captionText(T, closed) {
+    return 'For sales on ' + salesDay(T).dayShort + (closed ? ' (closed, for reference)' : '');
   }
 
   /* ---------------------------------------------------------------- dates */
@@ -382,7 +399,7 @@
     bandOf: bandOf, subsidyNow: subsidyNow, productOf: productOf, typeName: typeName,
     ymdLong: ymdLong, addDays: addDays, money: money, pct: pct, levelPct: levelPct, odds: odds, esc: esc,
     bandLabel: bandLabel, offerRow: offerRow, forHerd: forHerd, salesClose: salesClose, centralNow: centralNow,
-    centralClock: centralClock, salesDay: salesDay, weekday: weekday, wdShort: wdShort, expectedSalesDay: expectedSalesDay,
+    centralClock: centralClock, salesDay: salesDay, whenText: whenText, closedText: closedText, captionText: captionText, weekday: weekday, wdShort: wdShort, expectedSalesDay: expectedSalesDay,
     isStale: isStale, readWeight: readWeight, weightProblem: weightProblem, HEAD_LIMIT: HEAD_LIMIT, LEAN: LEAN,
     per100: per100, topLevel: topLevel, recordTable: recordTable, backPerDollar: backPerDollar, productName: productName,
     testLabel: testLabel, verdict: verdict, regimeName: regimeName, testsTable: testsTable, closestCall: closestCall,

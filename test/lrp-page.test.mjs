@@ -192,13 +192,13 @@ test("LRP is in the menu, the phone drawer, the footer and the static fallbacks"
   assert.match(read("cattle-futures-prices.html"), /href="\/lrp" class="ra"/);
 });
 
-test("offers are dated by the file's sales day and posting time, and closed from sales_close_utc on", () => {
+test("offers are dated by the file's sales day and posting time, and closed at 8:25 a.m. CT the next day", () => {
   const T = { sed: "20261015", sales_day: "2026-10-15", posted_utc: "2026-10-15T19:22:12Z",
     sales_close_ct: "2026-10-16T08:25", sales_close_utc: "2026-10-16T13:25:00Z" };
   const d = L.salesDay(T);
   assert.equal(d.dayText, "Oct 15, 2026");
-  assert.equal(d.posted, "Oct 15, 2:22 p.m. CT");
-  assert.equal(d.closeText, "8:25 a.m. CT on Oct 16, 2026");
+  assert.equal(d.postedClock, "2:22 p.m. CT", "posted on the sales day: the time only");
+  assert.equal(d.closeText, "8:25 a.m. CT on Fri Oct 16, 2026");
   assert.equal(d.closed(new Date("2026-10-16T13:24:59Z")), false);
   assert.equal(d.closed(new Date("2026-10-16T13:25:00Z")), true, "never today's after the close");
   // posted_utc not known yet: no posting time, nothing broken
@@ -206,7 +206,7 @@ test("offers are dated by the file's sales day and posting time, and closed from
   assert.equal(n.posted, "");
   // an older file with only sed: RMA's rule, 8:25 a.m. CT the next day
   const o = L.salesDay({ sed: "20261014" });
-  assert.equal(o.closeText, "8:25 a.m. CT on Oct 15, 2026");
+  assert.equal(o.closeText, "8:25 a.m. CT on Thu Oct 15, 2026");
   assert.equal(o.closed(new Date("2026-10-15T13:30:00Z")), true);
   assert.equal(o.closed(new Date("2026-10-15T13:20:00Z")), false);
 });
@@ -214,8 +214,8 @@ test("offers are dated by the file's sales day and posting time, and closed from
 test("the page script labels offers with the sales day and says when sales on them closed", () => {
   const ui = read("components/lrp-ui.js");
   assert.match(ui, /L\.salesDay\(T\)/);
-  assert.match(ui, /Sales on these offers closed at/);
-  assert.match(ui, /posted by RMA/);
+  assert.match(ui, /L\.closedText\(T\)/);
+  assert.match(read("components/lrp.js"), /posted by RMA/);
 });
 
 /* ------------------------------------------------ after the 5-lens audit */
@@ -280,7 +280,7 @@ test("the offers are dated with weekdays, a static summary is baked for crawlers
   assert.match(PAGE, /<caption>Top coverage RMA offered for sales on /);
   const ui = read("components/lrp-ui.js");
   assert.match(ui, /setInterval\(tick, 60000\)/);
-  assert.match(ui, /\(closed, for reference\)/);
+  assert.match(read("components/lrp.js"), /\(closed, for reference\)/);
   assert.match(ui, /No ' \+ esc\(prod\.name\.toLowerCase\(\)\) \+ ' offers on this sales day/, "a missing animal is said, not switched");
   assert.match(ui, /RMA posted no offers for this sales day/);
   assert.ok(L.isStale({ sales_day: "2026-10-12" }, new Date("2026-10-15T23:00:00Z")), "Mon offers on Thu evening");
@@ -293,7 +293,7 @@ test("accessibility: one status line, row choice by button, captions, groups", (
   assert.equal((PAGE.match(/role="status"/g) || []).length, 2, "the offers status and the results-file status");
   const ui = read("components/lrp-ui.js");
   assert.match(ui, /class="rowbtn" data-level="' \+ r\.level \+ '" aria-pressed="/);
-  assert.match(ui, /<caption>For sales on /);
+  assert.match(ui, /<caption>' \+ esc\(L\.captionText\(T, closed\)\) \+ '<\/caption>/);
   assert.match(ui, /class="lrp-math" role="group"/);
   assert.match(L.testsTable(BT), /<tbody><tr class="grp"><th scope="colgroup"/);
   assert.match(PAGE, /@media print/);
@@ -312,4 +312,41 @@ test("title is short and the menu label is plain", () => {
   const t = PAGE.match(/<title>(.*?)<\/title>/)[1];
   assert.equal(t, "LRP Calculator: Today's Rates and Premium per Head | AGSIST");
   assert.ok(t.length <= 65);
+});
+
+test("the caption, the posted line, the buy-by line and the closed banner all name the same sales day", () => {
+  const nextWd = (ymd) => L.wdShort(L.addDays(ymd, 1));
+  const cases = [
+    TODAY,
+    { sales_day: "2026-10-15", posted_utc: "2026-10-15T19:29:15Z", sales_close_ct: "2026-10-16T08:25", sales_close_utc: "2026-10-16T13:25:00Z" },
+    { sales_day: "2026-10-16", posted_utc: "2026-10-16T19:30:00Z" },                     // a Friday: closes Saturday
+    { sed: "20261014" },                                                                // an older file
+    { sales_day: "2026-10-14", posted_utc: "2026-10-15T02:10:00Z" },                     // RMA late, posted the next calendar day
+    // a file whose own close disagrees with RMA's rule: the rule wins, and it is flagged
+    { sales_day: "2026-10-15", sales_close_ct: "2026-10-15T08:25", sales_close_utc: "2026-10-15T13:25:00Z" },
+  ];
+  for (const T of cases) {
+    const d = L.salesDay(T), day = d.day;
+    const when = L.whenText(T), banner = L.closedText(T);
+    assert.ok(when.startsWith(`Offers for sales on ${L.wdShort(day)}, ${day.slice(0, 4)}`), when);
+    assert.ok(when.endsWith(`Buy by 8:25 a.m. CT ${nextWd(day)}.`), when);
+    assert.ok(banner.includes(`closed at 8:25 a.m. CT on ${nextWd(day)}, `), banner);
+    assert.equal(L.captionText(T, true), `For sales on ${L.wdShort(day)} (closed, for reference)`);
+    assert.equal(L.captionText(T, false), `For sales on ${L.wdShort(day)}`);
+    if (d.postedDay && d.postedDay !== day) assert.ok(when.includes(`posted by RMA ${L.wdShort(d.postedDay)}, `), "a posting on another day names its day");
+    // closed exactly from 8:25 a.m. CT the next day (CDT in October: 13:25 UTC)
+    const nd = L.addDays(day, 1);
+    const iso = `${nd.slice(0, 4)}-${nd.slice(4, 6)}-${nd.slice(6, 8)}`;
+    assert.equal(d.closed(new Date(`${iso}T13:24:00Z`)), false, `${day} still open at 8:24`);
+    assert.equal(d.closed(new Date(`${iso}T13:25:00Z`)), true, `${day} closed at 8:25`);
+  }
+  assert.equal(L.salesDay(cases[5]).closeAgrees, false, "the mismatched file is flagged");
+  assert.equal(L.salesDay(cases[1]).closeAgrees, true);
+  // the page and its script take every date from these helpers only
+  const ui = read("components/lrp-ui.js");
+  assert.ok(!/sales_close|\.sed\b/.test(ui), "the script never reads the file's close or sed directly");
+  assert.match(ui, /L\.whenText\(T\)/);
+  assert.match(ui, /L\.captionText\(T, closed\)/);
+  assert.ok(PAGE.includes(`<!--lrp:when-->${L.whenText(TODAY).replace(/'/g, "&rsquo;")}<!--/lrp:when-->`));
+  assert.match(PAGE, new RegExp(`Top coverage RMA offered for sales on ${L.wdShort(L.salesDay(TODAY).day)}, `));
 });

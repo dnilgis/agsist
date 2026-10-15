@@ -144,7 +144,7 @@
       (o.c === '0801' && +o.paf !== 1 ? ' That already has this type&rsquo;s price adjustment factor of ' + (+o.paf).toFixed(2) + ' in it.' : '') + '</p>';
     var showTot = !problem && cwt != null;
     h += '<p class="src">Pick a level to see its math. &ldquo;Tested&rdquo; marks the level the record uses in each subsidy band.</p><p class="lrp-hint">Swipe the table sideways for the per head and total columns.</p>';
-    h += '<div class="lrp-tw"><table class="lrp-t lrp-off"><caption>For sales on ' + esc(d.dayShort) + (closed ? ' (closed, for reference)' : '') + '</caption><thead><tr><th scope="col">Coverage</th><th scope="col">Coverage price a cwt</th>' +
+    h += '<div class="lrp-tw"><table class="lrp-t lrp-off"><caption>' + esc(L.captionText(T, closed)) + '</caption><thead><tr><th scope="col">Coverage</th><th scope="col">Coverage price a cwt</th>' +
       '<th scope="col">Your premium a cwt</th><th scope="col">Per head</th><th scope="col">' + (head > 0 ? head.toLocaleString('en-US') + ' head' : 'All head') + '</th></tr></thead><tbody>';
     rows.forEach(function (r) {
       var f = L.forHerd(r, showTot ? cwt : 0, head || 1), sel = r.level === pickLevel;
@@ -175,11 +175,8 @@
 
   function when() {
     var el = $('lrp-when'), cl = $('lrp-closed'), d = L.salesDay(T), now = new Date();
-    el.textContent = 'Offers for sales on ' + d.dayShort + ', ' + d.day.slice(0, 4) + (d.posted ? ', posted by RMA ' + d.postedClock : '') + '. Buy by ' + d.buyBy + '.';
-    var msg = '';
-    if (d.closed(now)) {
-      msg = 'Sales on these offers closed at ' + d.closeText + '. They can no longer be bought. RMA posts the next offers between about 2:15 and 4:30 p.m. CT on a sales day, and this page shows them within about an hour.';
-    }
+    el.textContent = L.whenText(T);
+    var msg = d.closed(now) ? L.closedText(T) : '';
     if (L.isStale(T, now)) msg += (msg ? ' ' : '') + 'These are older than the last sales day: RMA may not have posted since (a holiday or report day), or this page’s update is late.';
     cl.textContent = msg;
     cl.hidden = !msg;

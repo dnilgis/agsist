@@ -323,8 +323,7 @@ export function methodHtml(bt, meta, v) {
 }
 
 export function whenHtml(today) {
-  const d = L.salesDay(today);
-  return `Offers for sales on ${d.dayShort}, ${d.day.slice(0, 4)}${d.posted ? `, posted by RMA ${d.postedClock}` : ""}. Buy by ${d.buyBy}.`;
+  return esc(L.whenText(today)).replace(/'/g, "&rsquo;");
 }
 
 /* a short dated table of that day's top offers, for no-JavaScript readers and crawlers */
