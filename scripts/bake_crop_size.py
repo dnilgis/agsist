@@ -109,13 +109,29 @@ def panel(d):
 
 
 # ── our model ──────────────────────────────────────────────────────────────
+# USDA's own 2026 trend, printed beside ours so "below trend" says whose trend.
+# Corn 183.0 bu/ac: the Feb 19, 2026 Outlook Forum (Grains and Oilseeds
+# Outlook) and the May 2026 WASDE, which calls it a weather-adjusted trend.
+# No soybean figure here until one is checked at the source.
+USDA_TREND = {"Corn": 183.0}
+
+
+def _vs(diff, whose):
+    if diff > 0.4:
+        return f'<span style="color:#5fc28a;font-weight:700">&#9650; {abs(diff):.1f} above {whose}</span>'
+    if diff < -0.4:
+        return f'<span style="color:#e0685f;font-weight:700">&#9660; {abs(diff):.1f} below {whose}</span>'
+    return f'<span style="color:#b9c2bd;font-weight:700">&asymp; on {whose}</span>'
+
+
 def cell(label, c):
     if not c or c.get("nowcast") is None:
         return '<div style="font-size:0.9rem;color:#8a948f">Nowcast data did not build</div>'
     diff = c["nowcast"] - c["trend"]
-    vs = (f'<span style="color:#5fc28a;font-weight:700">&#9650; {abs(diff):.1f} above trend</span>' if diff > 0.4 else
-          f'<span style="color:#e0685f;font-weight:700">&#9660; {abs(diff):.1f} below trend</span>' if diff < -0.4 else
-          '<span style="color:#b9c2bd;font-weight:700">&asymp; on trend</span>')
+    vs = _vs(diff, "our trend")
+    ut = USDA_TREND.get(label.split(":")[0])
+    if ut is not None:
+        vs += " &middot; " + _vs(c["nowcast"] - ut, f"USDA&rsquo;s {ut:.1f} trend")
     tw = f' ({c["trend_window"].replace("-", "&ndash;")} finals)' if c.get("trend_window") else ""
     bw = ""
     if c.get("band_method") == "expanding-window":
@@ -124,9 +140,12 @@ def cell(label, c):
     return (f'<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">{label}</div>'
             f"<div style=\"font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1\">{c['nowcast']:.1f} "
             '<span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div>'
-            f"<div style=\"font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px\">80% band &plusmn;{c['band80']:.1f} &middot; trend {c['trend']:.1f}{tw}</div>"
+            f"<div style=\"font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px\">80% band &plusmn;{c['band80']:.1f} &middot; our straight-line trend {c['trend']:.1f}{tw}</div>"
             f'<div style="font-size:0.787rem;margin-top:5px">{vs}</div>'
-            f'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number{bw}: '
+            + (f'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">Two trends: ours is a straight line through '
+               f'USDA&rsquo;s national yields{tw}. USDA&rsquo;s {ut:.1f} is its weather-adjusted 2026 trend (Feb 2026 '
+               f'Outlook Forum, kept in the May WASDE).</div>' if ut is not None else "")
+            + f'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number{bw}: '
             f'MAE {c["mae"]:.1f} vs {c["trend_mae"]:.1f} trend-only{skill}, n={c["backtest_years"]} yrs, {c["states"]} states</div>')
 
 
@@ -243,7 +262,12 @@ def selftest():
     c = cell("Corn", {"nowcast": 180.6, "band80": 6.9, "trend": 188.7, "trend_window": "2010-2025", "mae": 4.2,
                       "trend_mae": 5.5, "skill_pct": 24, "backtest_years": 12, "states": 18,
                       "band_method": "expanding-window", "backtest_window": "2011-2024"})
-    ck("180.6 " in c and "8.1 below trend" in c and "(24% better)" in c, "the model cell")
+    ck("180.6 " in c and "8.1 below our trend" in c and "(24% better)" in c, "the model cell")
+    ck("our straight-line trend 188.7" in c, "our trend is labeled as ours")
+    ck("2.4 below USDA&rsquo;s 183.0 trend" in c and "weather-adjusted" in c, "USDA's own 2026 trend beside ours")
+    b = cell("Soybeans", {"nowcast": 53.5, "band80": 2, "trend": 53.9, "mae": 1, "trend_mae": 1,
+                          "backtest_years": 12, "states": 18})
+    ck("USDA&rsquo;s" not in b, "no USDA soybean trend printed until one is checked")
     src = ("<!-- CS:panel -->x<!-- /CS:panel --><!-- CS:week --><!-- /CS:week --><!-- CS:corn --><!-- /CS:corn -->"
            "<!-- CS:beans --><!-- /CS:beans --><!-- CS:record --><!-- /CS:record -->")
     once = bake(src, pd, {"crops": {"corn": {"nowcast": 1, "band80": 1, "trend": 1, "mae": 1, "trend_mae": 1,

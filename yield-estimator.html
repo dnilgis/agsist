@@ -40,10 +40,10 @@
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for a field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 85, for a 1/1000-acre sample. The 85 is 85,000 kernels per bushel: Purdue's Bob Nielsen suggests 80,000 to 85,000 for today's hybrids, and 90,000 was the method's original figure. Kernel weight varies, so the estimator also shows a range across 65,000–95,000 kernels per bushel. Count at least 5 sites and the estimator averages them. Enter these counts in the AGSIST Yield Estimator for a field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method).","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
+{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method).","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Average of up to 5 sample sites per field","Kernels-per-bushel choice: 80,000, 85,000 or 90,000"]}
 </script>
 
 <style>
@@ -63,6 +63,16 @@
 .ye-more{margin-top:.35rem;font-size:.9rem;color:var(--text-dim);line-height:1.55;max-width:640px}
 .ye-more summary{cursor:pointer;color:var(--gold);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center}
 .ye-more p{margin:.2rem 0 .5rem}
+.ye-top{margin:0 0 .8rem}
+.ye-top+.ye-plain{margin:0 0 .9rem}
+.ye-sites{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:0 0 .9rem}
+.ye-site{min-height:44px;padding:.35rem .8rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;cursor:pointer}
+.ye-site.on{border-color:var(--gold);color:var(--gold);background:rgba(230,176,66,.08)}
+.ye-site.add{border-style:dashed}
+.ye-site.rm{color:var(--text-muted);font-weight:400}
+.ye-site-note{font-size:.85rem;color:var(--text-muted);flex-basis:100%}
+.ye-pods{font-size:.92rem;line-height:1.55;color:var(--text-dim);margin:.9rem 0 0}
+.ye-pods a{color:var(--gold);font-weight:600}
 .ye-start{margin:0 0 .7rem;font-size:.9rem;color:var(--text-muted);line-height:1.45}
 @media(max-width:600px){.ye-eyebrow{display:none}.ye-panel-head .badge{display:none}.ye-method{padding:.9rem .85rem}.ye-tabs{margin-bottom:1rem}.ye-panel-head{margin-bottom:.7rem}}
 .ye-tab .ic-sp{margin-right:.4em}
@@ -187,8 +197,8 @@
     <h1>Soybean and corn<br>yield calculator</h1>
     <p class="page-lede">Corn and soybean bushels per acre from your own field counts: ear counts for corn, pod counts for soybeans.</p>
     <details class="ye-more"><summary>When to count, and how accurate it is</summary>
-      <p>Count corn from the milk stage (R3) on and soybeans at R6 to R7, the same ear-count and kernel-count math crop tour scouts run in August. Sample at least 5 locations per field, 10 ears or plants each.</p>
-      <p><strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample). <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac, the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6. Not a substitute for yield monitor or combine data.</p>
+      <p>Count corn from the milk stage (R3) on and soybeans at R6 to R7, the same ear-count and kernel-count math crop tour scouts run in August. Sample at least 5 locations per field, 10 ears or plants each. The calculator averages up to 5 sites.</p>
+      <p><strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 85, for a 1/1000-acre sample; 85,000 kernels per bushel is what Purdue&rsquo;s Bob Nielsen suggests for today&rsquo;s hybrids, where 90,000 was the original figure). <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac, the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6. Not a substitute for yield monitor or combine data.</p>
       <p>Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     </details>
   </div>
@@ -207,7 +217,31 @@
     <div class="ye-panel-body">
 
       <div class="ye-method">
+        <div class="result-bar ye-top" id="c-result" aria-live="polite">
+          <div class="result-item">
+            <div class="result-label" id="c-yield-lab">Est. Yield</div>
+            <div class="result-value" id="c-yield-val">-</div>
+            <div class="result-sub" id="c-yield-sub">bu / acre</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Ears / Acre</div>
+            <div class="result-value green" id="c-pop-val">-</div>
+            <div class="result-sub">from ear count</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Kernels / Ear</div>
+            <div class="result-value green" id="c-kpe-val">-</div>
+            <div class="result-sub">rows &times; per row</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Yield Range</div>
+            <div class="result-value dim" id="c-range-val">-</div>
+            <div class="result-sub">if 65k&ndash;95k kernels/bu</div>
+          </div>
+        </div>
+        <p class="ye-plain" id="c-plain" aria-live="polite"></p>
         <p class="ye-start">The boxes start with example counts. Type your own. Test weight does not enter this method.</p>
+        <div class="ye-sites" id="c-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count ears</div>
         <div class="field-row">
           <div class="field-group">
@@ -240,45 +274,31 @@
             <input class="field-input" id="c-kernels-row" type="number" value="32" step="1" min="10" max="55">
             <span class="field-note">Count from base to tip</span>
           </div>
+          <div class="field-group">
+            <label class="field-label" for="c-kpb">Kernels per bushel</label>
+            <select class="field-input wide" id="c-kpb" style="font-size:1rem">
+              <option value="80000">80,000</option>
+              <option value="85000" selected>85,000</option>
+              <option value="90000">90,000</option>
+            </select>
+            <span class="field-note">Purdue suggests 80,000&ndash;85,000 for today&rsquo;s hybrids; 90,000 was the original rule. Use a higher number after a stressed grain fill (lighter kernels).</span>
+          </div>
         </div>
 
-        <div class="result-bar" id="c-result" aria-live="polite">
-          <div class="result-item">
-            <div class="result-label">Est. Yield</div>
-            <div class="result-value" id="c-yield-val">-</div>
-            <div class="result-sub" id="c-yield-sub">bu / acre</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Ears / Acre</div>
-            <div class="result-value green" id="c-pop-val">-</div>
-            <div class="result-sub">from ear count</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Kernels / Ear</div>
-            <div class="result-value green" id="c-kpe-val">-</div>
-            <div class="result-sub">rows &times; per row</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Yield Range</div>
-            <div class="result-value dim" id="c-range-val">-</div>
-            <div class="result-sub">if 65k&ndash;95k kernels/bu</div>
-          </div>
-        </div>
-        <p class="ye-plain" id="c-plain" aria-live="polite"></p>
         <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try a typical scenario</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
-          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
-          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
+          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
+          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
+          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>
           <div class="ye-math-body">
-            Yield (bu/ac) = (ears &times; kernel rows &times; kernels/row) &divide; 90<br>
-            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State). Some extension guides use a lower figure for modern hybrids, so the yield range shows what changes if a bushel holds 65,000 to 95,000 kernels instead of 90,000. That range is not the field error. Valid from the milk (R3) stage on. Test weight is not part of the formula. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
+            Yield (bu/ac) = (ears &times; kernel rows &times; kernels/row) &divide; 85<br>
+            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 85 stands for 85,000 kernels in a 56-lb bushel. The method started with 90,000; kernels have gotten bigger as hybrids improved, and Purdue&rsquo;s Bob Nielsen now suggests 80,000 to 85,000. The yield range shows what changes if a bushel holds 65,000 to 95,000 kernels. That range is not the field error. Valid from the milk (R3) stage on. Test weight is not part of the formula. With several sites, each site&rsquo;s yield is worked out and the field number is their plain average. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 85 = 211 bu/ac.</span>
           </div>
         </details>
-        <p class="method-note"><b>Method:</b> ears times kernel rows times kernels per row, divided by 90, for a 1/1000-acre sample; the range sweeps 65,000 to 95,000 kernels per bushel; field error is about &plusmn;20 bu/ac &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
+        <p class="method-note"><b>Method:</b> ears times kernel rows times kernels per row, divided by 85 (or the kernels per bushel you pick, in thousands), for a 1/1000-acre sample; the range sweeps 65,000 to 95,000 kernels per bushel; field error is about &plusmn;20 bu/ac &middot; <b>Sources:</b> <a href="https://www.agry.purdue.edu/ext/corn/news/timeless/YldEstMethod.html" rel="noopener">Purdue</a> (Nielsen, &ldquo;Estimating Corn Grain Yield Prior to Harvest&rdquo;), Iowa State, Ohio State and Penn State Extension &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
       </div>
 
       <div class="ye-method">
@@ -306,7 +326,31 @@
     </div>
     <div class="ye-panel-body">
       <div class="ye-method">
+        <div class="result-bar ye-top" id="b-result" aria-live="polite">
+          <div class="result-item">
+            <div class="result-label" id="b-yield-lab">Est. Yield</div>
+            <div class="result-value" id="b-yield-val">-</div>
+            <div class="result-sub" id="b-yield-sub">bu / acre</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Plants / Acre</div>
+            <div class="result-value green" id="b-pop-val">-</div>
+            <div class="result-sub">from plant count</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Seeds / Plant</div>
+            <div class="result-value green" id="b-spp-val">-</div>
+            <div class="result-sub">pods &times; seeds/pod</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Yield Range</div>
+            <div class="result-value dim" id="b-range-val">-</div>
+            <div class="result-sub">seeds/lb &plusmn;500</div>
+          </div>
+        </div>
+        <p class="ye-plain" id="b-plain" aria-live="polite"></p>
         <p class="ye-start">The boxes start with example counts, not an average. Type your own.</p>
+        <div class="ye-sites" id="b-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count plants</div>
         <div class="field-row">
           <div class="field-group">
@@ -344,34 +388,11 @@
           </div>
         </div>
 
-        <div class="result-bar" id="b-result" aria-live="polite">
-          <div class="result-item">
-            <div class="result-label">Est. Yield</div>
-            <div class="result-value" id="b-yield-val">-</div>
-            <div class="result-sub" id="b-yield-sub">bu / acre</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Plants / Acre</div>
-            <div class="result-value green" id="b-pop-val">-</div>
-            <div class="result-sub">from plant count</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Seeds / Plant</div>
-            <div class="result-value green" id="b-spp-val">-</div>
-            <div class="result-sub">pods &times; seeds/pod</div>
-          </div>
-          <div class="result-item">
-            <div class="result-label">Yield Range</div>
-            <div class="result-value dim" id="b-range-val">-</div>
-            <div class="result-sub">seeds/lb &plusmn;500</div>
-          </div>
-        </div>
-        <p class="ye-plain" id="b-plain" aria-live="polite"></p>
         <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try an example stand</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="Example: ~54 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~54 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="Example: ~43 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Typical stand ~43 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="Example: ~32 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~32 bu</button>
+          <button class="qf-btn" id="qf-bean-high" title="Example: 130k plants, 36 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Strong stand ~65 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="Example: 132k plants, 30 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~55 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="Example: 120k plants, 25 pods, 2.4 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~40 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>
@@ -380,7 +401,8 @@
             <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,500&ndash;3,500 (3,000 average) &middot; Plant count &times; 1000 = plants/acre</span>
           </div>
         </details>
-        <p class="method-note"><b>Method:</b> plants per acre times pods per plant times seeds per pod, divided by seeds per pound times 60; the range moves seed size 500 per pound either side of your entry &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State for soybean accuracy (&plusmn;25% or worse before R6) &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
+        <p class="ye-pods">Do pod counts predict yield at all? We checked 28 state-years of crop tour pod counts against USDA&rsquo;s final yields: <a href="/pod-counts">what pod counts actually predict</a>.</p>
+        <p class="method-note"><b>Method:</b> plants per acre times pods per plant times seeds per pod, divided by seeds per pound times 60; with several sites, the plain average of each site&rsquo;s yield; the range moves seed size 500 per pound either side of your entry &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State for soybean accuracy (&plusmn;25% or worse before R6) &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
       </div>
     </div>
   </div>
@@ -403,7 +425,7 @@
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>How do I estimate corn yield before harvest?</summary><div class="agf-a">The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for a field estimate.</div></details>
+<details><summary>How do I estimate corn yield before harvest?</summary><div class="agf-a">The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 85, for a 1/1000-acre sample. The 85 is 85,000 kernels per bushel: Purdue's Bob Nielsen suggests 80,000 to 85,000 for today's hybrids, and 90,000 was the method's original figure. Kernel weight varies, so the estimator also shows a range across 65,000–95,000 kernels per bushel. Count at least 5 sites and the estimator averages them. Enter these counts in the AGSIST Yield Estimator for a field estimate.</div></details>
 <details><summary>How accurate is the pre-harvest yield estimate?</summary><div class="agf-a">The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel.</div></details>
 <details><summary>How do I estimate soybean yield before harvest?</summary><div class="agf-a">Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically.</div></details>
 </section>
@@ -437,9 +459,11 @@
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 
+<script src="/components/yield-est.js?v=1"></script>
 <script>
 (function(){
 'use strict';
+var Y=window.AgYield;
 
 /* TAB SYSTEM */
 var tabs=document.querySelectorAll('.ye-tab');
@@ -499,96 +523,143 @@ function gate(specs){
   return blank?'enter all counts':null;
 }
 
+/* SAMPLE SITES (2026-10-15). Every extension guide says count 5 or more
+   sites and average them; the tool took one. Each crop keeps up to 5 sites.
+   The boxes always show the selected site; field-wide settings (row width,
+   kernels per bushel, seeds per pound) apply to every site. */
+var SITE_FIELDS={corn:['c-ear-count','c-kernel-rows','c-kernels-row'],bean:['b-plant-count','b-pods-plant','b-seeds-pod']};
+var sites={corn:[{}],bean:[{}]}, cur={corn:0,bean:0};
+function readSite(crop){var o={};SITE_FIELDS[crop].forEach(function(id){o[id]=document.getElementById(id).value;});return o;}
+function loadSite(crop){var o=sites[crop][cur[crop]];SITE_FIELDS[crop].forEach(function(id){if(o[id]!=null)document.getElementById(id).value=o[id];});}
+function siteBar(crop){
+  var el=document.getElementById(crop==='corn'?'c-sites':'b-sites'); if(!el)return;
+  var n=sites[crop].length, h='';
+  for(var i=0;i<n;i++)h+='<button type="button" class="ye-site'+(i===cur[crop]?' on':'')+'" data-crop="'+crop+'" data-site="'+i+'" aria-pressed="'+(i===cur[crop])+'">Site '+(i+1)+'</button>';
+  if(n<Y.MAX_SITES)h+='<button type="button" class="ye-site add" data-crop="'+crop+'" data-site="add">+ Add a site</button>';
+  if(n>1)h+='<button type="button" class="ye-site rm" data-crop="'+crop+'" data-site="rm" aria-label="Remove site '+(cur[crop]+1)+'">Remove site '+(cur[crop]+1)+'</button>';
+  h+='<span class="ye-site-note">'+(n<2?'Count at least 5 sites across the field; add each one here and the yield above becomes the field average.':'Showing site '+(cur[crop]+1)+' of '+n+'. The yield above is the average of every complete site.')+'</span>';
+  el.innerHTML=h;
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('.ye-site[data-site]'); if(!b)return;
+  var crop=b.dataset.crop, s=b.dataset.site;
+  sites[crop][cur[crop]]=readSite(crop);
+  if(s==='add'){ if(sites[crop].length>=Y.MAX_SITES)return; sites[crop].push({}); cur[crop]=sites[crop].length-1;
+    SITE_FIELDS[crop].forEach(function(id){document.getElementById(id).value='';}); }
+  else if(s==='rm'){ sites[crop].splice(cur[crop],1); cur[crop]=Math.max(0,cur[crop]-1); loadSite(crop); }
+  else { cur[crop]=+s; loadSite(crop); }
+  siteBar(crop);
+  (crop==='corn'?calcCorn:calcBean)();
+  var f=document.getElementById(SITE_FIELDS[crop][0]); if(f&&s==='add')f.focus();
+});
+function val(o,id){var raw=String(o[id]==null?'':o[id]).trim();if(raw==='')return null;var v=parseFloat(raw);return isFinite(v)?v:null;}
+function inRange(o,id){var v=val(o,id),el=document.getElementById(id);if(v==null)return false;var lo=parseFloat(el.min),hi=parseFloat(el.max);return !((isFinite(lo)&&v<lo)||(isFinite(hi)&&v>hi));}
+
 /* CORN YIELD CALCULATOR
-   Formula: (ears x kernel rows x kernels per row) / 90, for a 1/1000-acre
-   sample. Test weight is not part of the method. */
+   Formula: (ears x kernel rows x kernels per row) / 85, for a 1/1000-acre
+   sample (components/yield-est.js). Test weight is not part of the method. */
 function calcCorn(){
   var rowW=parseFloat(document.getElementById('c-row-width').value)||30;
-  var ears=fld('c-ear-count');
-  var kr=fld('c-kernel-rows');
-  var kpr=fld('c-kernels-row');
+  var kpb=parseFloat(document.getElementById('c-kpb').value)||Y.KPB_DEFAULT;
   var rl=document.getElementById('c-row-length-note');
   if(rl)rl.textContent='Row length: '+getRowLen(rowW)+' · typical 28–36 ears';
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  sites.corn[cur.corn]=readSite('corn');
+  var n=sites.corn.length;
+  s('c-yield-lab',n>1?'Field average':'Est. Yield');
   var why=gate([['c-ear-count','Ears'],['c-kernel-rows','Kernel rows'],['c-kernels-row','Kernels per row']]);
-  if(why){
+  var ys=sites.corn.map(function(o){
+    if(!SITE_FIELDS.corn.every(function(id){return inRange(o,id);}))return null;
+    return Y.cornYield(val(o,'c-ear-count'),val(o,'c-kernel-rows'),val(o,'c-kernels-row'),kpb);
+  });
+  var av=Y.average(ys);
+  if(!av){
     ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'-');});
-    s('c-yield-sub',why);
+    s('c-yield-sub',why||'enter all counts');
     s('c-plain','Enter all three counts to see a yield.');
     return;
   }
-  s('c-yield-sub','bu / acre');
-  var pop=ears*1000;
-  var kpe=kr*kpr;
-  var kernels=pop*kpe;
-  var yield_bu=kernels/90000;
-  s('c-yield-val',yield_bu.toFixed(0));
-  s('c-pop-val',(pop/1000).toFixed(0)+'k');
-  s('c-kpe-val',kpe.toFixed(0));
-  // Range is only the kernels-per-bushel sweep (65k-95k) around the 90k headline
+  var lo=av.mean*kpb/Y.KPB_HI, hi=av.mean*kpb/Y.KPB_LO;
+  s('c-yield-val',av.mean.toFixed(0));
+  s('c-yield-sub',n>1?('bu / acre · '+av.n+' of '+n+' sites'):'bu / acre');
+  var ears=fld('c-ear-count'),kr=fld('c-kernel-rows'),kpr=fld('c-kernels-row');
+  s('c-pop-val',why?'-':(ears*1000/1000).toFixed(0)+'k');
+  s('c-kpe-val',why?'-':(kr*kpr).toFixed(0));
+  // Range is only the kernels-per-bushel sweep (65k-95k) around the headline
   // basis. It is not the field error.
-  s('c-range-val',Math.round(kernels/95000)+'–'+Math.round(kernels/65000));
-  s('c-plain','About '+yield_bu.toFixed(0)+' bushels per acre at 90,000 kernels per bushel. Heavier or lighter kernels move it to '+Math.round(kernels/95000)+' to '+Math.round(kernels/65000)+'. Field error is about ±20 bu/ac.');
+  s('c-range-val',Math.round(lo)+'–'+Math.round(hi));
+  var k=Math.round(kpb).toLocaleString('en-US');
+  var txt=(n>1?(av.n>1?'Average of '+av.n+' sites: about '+av.mean.toFixed(0)+' bushels per acre at '+k+' kernels per bushel; the sites run '+Math.round(av.lo)+' to '+Math.round(av.hi)+'.':'One complete site so far: about '+av.mean.toFixed(0)+' bushels per acre at '+k+' kernels per bushel.')+(av.skipped?' '+av.skipped+' site'+(av.skipped>1?'s are':' is')+' not complete and left out.':''):'About '+av.mean.toFixed(0)+' bushels per acre at '+k+' kernels per bushel.')
+    +' Heavier or lighter kernels move it to '+Math.round(lo)+' to '+Math.round(hi)+'. Field error is about ±20 bu/ac.';
+  s('c-plain',txt);
   activeCrop='corn';
 }
-['c-row-width','c-ear-count','c-kernel-rows','c-kernels-row'].forEach(function(id){
-  var el=document.getElementById(id);if(el)el.addEventListener('input',calcCorn);
+['c-row-width','c-ear-count','c-kernel-rows','c-kernels-row','c-kpb'].forEach(function(id){
+  var el=document.getElementById(id);if(el){el.addEventListener('input',calcCorn);el.addEventListener('change',calcCorn);}
 });
 
-/* Corn quick-fills */
+/* Corn quick-fills fill the selected site */
 function cornFill(ears,kr,kpr){
   document.getElementById('c-ear-count').value=ears;
   document.getElementById('c-kernel-rows').value=kr;
   document.getElementById('c-kernels-row').value=kpr;
   calcCorn();
 }
-/* High ~220 bu: 34 ears × 16 rows × 36 kernels = 217.6 bu */
-document.getElementById('qf-corn-high').addEventListener('click',function(){cornFill(34,16,36);});
-/* Avg  ~180 bu: 32 ears × 16 rows × 32 kernels = 182.0 bu */
-document.getElementById('qf-corn-avg').addEventListener('click',function(){cornFill(32,16,32);});
-/* Low  ~130 bu: 28 ears × 14 rows × 30 kernels = 130.7 bu */
-document.getElementById('qf-corn-low').addEventListener('click',function(){cornFill(28,14,30);});
+/* At 85,000 kernels per bushel:
+   High ~220 bu: 34 ears × 16 rows × 34 kernels = 217.6 bu
+   Avg  ~180 bu: 30 ears × 16 rows × 32 kernels = 180.7 bu
+   Low  ~130 bu: 28 ears × 14 rows × 28 kernels = 129.1 bu */
+document.getElementById('qf-corn-high').addEventListener('click',function(){cornFill(34,16,34);});
+document.getElementById('qf-corn-avg').addEventListener('click',function(){cornFill(30,16,32);});
+document.getElementById('qf-corn-low').addEventListener('click',function(){cornFill(28,14,28);});
 
+siteBar('corn');
 calcCorn();
 
 /* BEAN YIELD CALCULATOR
    Formula: (plants/ac × pods/plant × seeds/pod) / (seeds/lb × 60) */
 function calcBean(){
   var rowW=parseFloat(document.getElementById('b-row-width').value)||30;
-  var plants=fld('b-plant-count');
-  var ppp=fld('b-pods-plant');
-  var spod=fld('b-seeds-pod');
-  var slb=fld('b-seeds-lb');
   var rl=document.getElementById('b-row-length-note');
   if(rl)rl.textContent=getRowLen(rowW)+' row for '+rowW+'" · typical 110–150 plants';
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  sites.bean[cur.bean]=readSite('bean');
+  var n=sites.bean.length;
+  s('b-yield-lab',n>1?'Field average':'Est. Yield');
   var why=gate([['b-plant-count','Plants'],['b-pods-plant','Pods per plant'],['b-seeds-pod','Seeds per pod'],['b-seeds-lb','Seeds per pound']]);
-  if(why){
+  var slb=fld('b-seeds-lb'), slbOk=slb!=null&&inRange({'b-seeds-lb':slb},'b-seeds-lb');
+  var ys=sites.bean.map(function(o){
+    if(!slbOk||!SITE_FIELDS.bean.every(function(id){return inRange(o,id);}))return null;
+    return Y.beanYield(val(o,'b-plant-count'),val(o,'b-pods-plant'),val(o,'b-seeds-pod'),slb);
+  });
+  var av=Y.average(ys);
+  if(!av){
     ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'-');});
-    s('b-yield-sub',why);
+    s('b-yield-sub',why||'enter all counts');
     s('b-plain','Enter all four counts to see a yield.');
     return;
   }
-  s('b-yield-sub','bu / acre');
-  var pop=plants*1000;
-  var spp=ppp*spod;
-  var yield_bu=(pop*spp)/(slb*60);
-  s('b-yield-val',yield_bu.toFixed(0));
-  s('b-pop-val',(pop/1000).toFixed(0)+'k');
-  s('b-spp-val',spp.toFixed(0));
+  s('b-yield-val',av.mean.toFixed(0));
+  s('b-yield-sub',n>1?('bu / acre · '+av.n+' of '+n+' sites'):'bu / acre');
+  var plants=fld('b-plant-count'),ppp=fld('b-pods-plant'),spod=fld('b-seeds-pod');
+  s('b-pop-val',why?'-':(plants).toFixed(0)+'k');
+  s('b-spp-val',why?'-':(ppp*spod).toFixed(0));
   // Sweep seed size 500 seeds/lb either side of the entry, so the headline always sits
   // inside the range (a fixed 2,500-3,500 sweep left an entry of 2,300 outside it).
   var slbLo=Math.max(1000,slb-500),slbHi=slb+500;
-  var yLo=Math.round((pop*spp)/(slbHi*60)),yHi=Math.round((pop*spp)/(slbLo*60));
+  var yLo=Math.round(av.mean*slb/slbHi),yHi=Math.round(av.mean*slb/slbLo);
   s('b-range-val',yLo+'–'+yHi);
-  s('b-plain','About '+yield_bu.toFixed(0)+' bushels per acre at '+Math.round(slb).toLocaleString('en-US')+' seeds per pound. Seed size from '+Math.round(slbLo).toLocaleString('en-US')+' to '+Math.round(slbHi).toLocaleString('en-US')+' per pound moves it to '+yLo+' to '+yHi+'.');
+  var k=Math.round(slb).toLocaleString('en-US');
+  s('b-plain',(n>1?(av.n>1?'Average of '+av.n+' sites: about '+av.mean.toFixed(0)+' bushels per acre at '+k+' seeds per pound; the sites run '+Math.round(av.lo)+' to '+Math.round(av.hi)+'.':'One complete site so far: about '+av.mean.toFixed(0)+' bushels per acre at '+k+' seeds per pound.')+(av.skipped?' '+av.skipped+' site'+(av.skipped>1?'s are':' is')+' not complete and left out.':''):'About '+av.mean.toFixed(0)+' bushels per acre at '+k+' seeds per pound.')
+    +' Seed size from '+Math.round(slbLo).toLocaleString('en-US')+' to '+Math.round(slbHi).toLocaleString('en-US')+' per pound moves it to '+yLo+' to '+yHi+'.');
   activeCrop='bean';
 }
 ['b-row-width','b-plant-count','b-pods-plant','b-seeds-pod','b-seeds-lb'].forEach(function(id){
   var el=document.getElementById(id);if(el)el.addEventListener('input',calcBean);
 });
 
-/* Soybean quick-fills — realistic plant counts (110–130) and realistic pod counts (22–30) */
+/* Soybean examples, filling the selected site (2026-10-15: the old "Typical ~43"
+   sat ten bushels under recent national yields) */
 function beanFill(plants,ppp,spod,slb){
   document.getElementById('b-plant-count').value=plants;
   document.getElementById('b-pods-plant').value=ppp;
@@ -596,13 +667,14 @@ function beanFill(plants,ppp,spod,slb){
   document.getElementById('b-seeds-lb').value=slb||3000;
   calcBean();
 }
-/* High ~54 bu: 130k plants x 30 pods x 2.5 seeds / (3,000 x 60) = 54.2 bu */
-document.getElementById('qf-bean-high').addEventListener('click',function(){beanFill(130,30,2.5,3000);});
-/* Avg  ~43 bu: 125k plants x 25 pods x 2.5 seeds / (3,000 x 60) = 43.4 bu */
-document.getElementById('qf-bean-avg').addEventListener('click',function(){beanFill(125,25,2.5,3000);});
-/* Low  ~32 bu: 110k plants x 22 pods x 2.4 seeds / (3,000 x 60) = 32.3 bu */
-document.getElementById('qf-bean-low').addEventListener('click',function(){beanFill(110,22,2.4,3000);});
+/* Strong ~65 bu: 130k plants x 36 pods x 2.5 seeds / (3,000 x 60) = 65.0 bu */
+document.getElementById('qf-bean-high').addEventListener('click',function(){beanFill(130,36,2.5,3000);});
+/* Good   ~55 bu: 132k plants x 30 pods x 2.5 seeds / (3,000 x 60) = 55.0 bu */
+document.getElementById('qf-bean-avg').addEventListener('click',function(){beanFill(132,30,2.5,3000);});
+/* Stressed ~40 bu: 120k plants x 25 pods x 2.4 seeds / (3,000 x 60) = 40.0 bu */
+document.getElementById('qf-bean-low').addEventListener('click',function(){beanFill(120,25,2.4,3000);});
 
+siteBar('bean');
 calcBean();
 
 })();

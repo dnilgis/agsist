@@ -20,15 +20,15 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST</title>
-  <meta name="description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+  <title>USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST</title>
+  <meta name="description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
   <link rel="canonical" href="https://agsist.com/conditions">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
-  <meta property="og:title" content="USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST">
-  <meta property="og:description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
-<meta name="twitter:title"       content="USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST">
-<meta name="twitter:description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+  <meta property="og:title" content="USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST">
+  <meta property="og:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+<meta name="twitter:title"       content="USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST">
+<meta name="twitter:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
   <meta property="og:url" content="https://agsist.com/conditions">
   <meta property="og:image" content="https://agsist.com/img/og/conditions.jpg?v=f1519b38">
   <meta property="og:image:alt" content="US corn is 56% good to excellent, week ending Oct 11, 2026.">
@@ -58,6 +58,15 @@
     .cd-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .cd-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:#8a948f}
     .cd-panel-b{padding:18px}
+    .cd-week{font-size:.95rem;line-height:1.6;color:#c9d1cd;margin:0 0 12px}
+    .cd-week b{color:#e6ebe9}
+    .cd-vmiss{font-size:.85rem;color:#8a948f;margin-top:6px}
+    .cd-tbl th[data-k]{cursor:pointer}
+    #cd-h-table caption{text-align:left;caption-side:top;font-size:.85rem;color:#8a948f;padding:0 0 6px}
+    .tblscroll table#cd-h-table{min-width:0}
+    #cd-h-table th{letter-spacing:.04em;padding:8px 6px;white-space:nowrap}
+    #cd-h-table td{padding:7px 6px}
+    @media (max-width:480px){#cd-h-table th{letter-spacing:0;padding:8px 4px;font-size:.7rem}#cd-h-table td{padding:7px 4px}}
     .cd-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:0 0 6px}
     .cd-tabs{display:flex;gap:8px;margin:0 0 14px}
     .cd-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
@@ -125,6 +134,9 @@ html[data-theme="light"] .cd-panel{background:var(--card,var(--surface));border:
 html[data-theme="light"] .cd-panel-hd{border-bottom:1px solid var(--border)}
 html[data-theme="light"] .cd-fresh{color:var(--text-muted)}
 html[data-theme="light"] .cd-seed{color:var(--text-muted)}
+html[data-theme="light"] .cd-week{color:var(--text-dim)}
+html[data-theme="light"] .cd-week b{color:var(--text)}
+html[data-theme="light"] .cd-vmiss{color:var(--text-muted)}
 html[data-theme="light"] .cd-tab{border:1px solid var(--border-2);color:var(--text-muted)}
 html[data-theme="light"] .cd-tbl th{border-bottom:1px solid var(--border)}
 html[data-theme="light"] .cd-tbl td{color:var(--text-dim)}
@@ -201,8 +213,10 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
   <header class="cd-hero">
     <p class="cd-kicker page-kicker">USDA Crop Progress &middot; every Monday &middot; ranked against 2000&ndash;present</p>
     <h1>Crop conditions ranked against every year since 2000</h1>
-    <p class="cd-sub page-lede">Every drought summer the coffee shop decides the crop is &ldquo;the worst ever.&rdquo; Sometimes it is. Usually it isn&rsquo;t. Below: each state&rsquo;s <strong>Good+Excellent share this week</strong>, ranked against <strong>the same week of every year since 2000</strong>, so &ldquo;how bad&rdquo; gets a number.</p>
+    <p class="cd-sub page-lede">Every drought summer the coffee shop decides the crop is &ldquo;the worst ever.&rdquo; Sometimes it is. Usually it isn&rsquo;t. Below: each state&rsquo;s <strong>Good+Excellent share this week</strong>, ranked against <strong>the same week of every year USDA rated it since 2000</strong>, so &ldquo;how bad&rdquo; gets a number.</p>
   </header>
+
+  <p class="cd-week" id="cd-week"><!--SEED:condweek-->Week ending Oct 11, 2026 (USDA NASS): US corn <b>56%</b> good-to-excellent, soybeans <b>57%</b>. Harvested: corn 33% (avg 39%), soybeans 46% (avg 50%).<!--/SEED--></p>
 
   <section class="cd-ver" aria-live="polite">
     <div>
@@ -212,7 +226,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     <div class="cd-vbig" id="cd-vbig">&hellip;</div>
     <div>
       <div class="cd-vword" id="cd-vword"></div>
-      <div class="cd-vsent" id="cd-vsent"><!--SEED:condvsent-->US corn is rated <b>54% good or better</b> for the week ending Oct 4, 2026 (USDA NASS). Pick a state for its rank against the same week since 2000.<!--/SEED--></div>
+      <div class="cd-vsent" id="cd-vsent"><!--SEED:condvsent-->US corn is rated <b>56% good or better</b> for the week ending Oct 11, 2026 (USDA NASS). Pick a state for its rank against the same week in past years.<!--/SEED--></div>
     </div>
   </section>
 
@@ -230,12 +244,22 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the crop condition rankings. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=conditions&amp;utm_source=conditions&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <section class="cd-panel" aria-labelledby="cd-t">
-    <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-t">The full table: every state, worst first</span><span class="cd-fresh" id="cd-fresh"><!--SEED:condfresh-->week ending 2026-10-04<!--/SEED--></span></div>
+    <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-t">The full table: every state, worst first</span><span class="cd-fresh" id="cd-fresh"><!--SEED:condfresh-->week ending 2026-10-11<!--/SEED--></span></div>
     <div class="cd-panel-b">
-      <p class="cd-seed"><!--SEED:condstats-->USDA Crop Progress, week ending Oct 4, 2026: US corn <strong>54%</strong> good-to-excellent (57% the week before); soybeans <strong>57%</strong> (58%). Corn harvest 23% done vs a 27% five-year average. 32 corn states rated for the week ending Oct 4, 2026, each ranked against the same week of every year 2000&ndash;present (rank 1 = worst on record).<!--/SEED--></p>
+      <p class="cd-seed"><!--SEED:condstats-->USDA Crop Progress, week ending Oct 11, 2026: US corn <strong>56%</strong> good-to-excellent (54% the week before); soybeans <strong>57%</strong> (57%). Corn harvest 33% done vs a 39% five-year average. 26 corn states rated for the week ending Oct 11, 2026, each ranked against the same week of every year USDA rated it, 2001&ndash;present (rank 1 = worst on record). No state has a rating at this week in 2000, 2012 or 2025 in the USDA file, so those years are not in the comparison.<!--/SEED--></p>
       <div class="cd-tabs" role="tablist" id="cd-tabs"></div>
-      <div class="tblscroll"><table class="cd-tbl" id="cd-table"><!--SEED:condtable--><caption>Corn, week ending Oct 4, 2026 &middot; worst first</caption><tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">Own avg</th><th style="text-align:right">Rank (1 = worst)</th></tr><tr><td>WY</td><td class="num">32%</td><td class="num">83%</td><td class="num">1 of 13</td></tr><tr><td>NC</td><td class="num">14%</td><td class="num">53%</td><td class="num">2 of 27</td></tr><tr><td>ND</td><td class="num">27%</td><td class="num">61%</td><td class="num">2 of 27</td></tr><tr><td>SD</td><td class="num">35%</td><td class="num">59%</td><td class="num">4 of 27</td></tr><tr><td>NE</td><td class="num">46%</td><td class="num">64%</td><td class="num">5 of 27</td></tr><tr><td>TX</td><td class="num">35%</td><td class="num">50%</td><td class="num">5 of 26</td></tr><tr><td>UT</td><td class="num">73%</td><td class="num">83%</td><td class="num">3 of 13</td></tr><tr><td>CO</td><td class="num">41%</td><td class="num">57%</td><td class="num">6 of 27</td></tr><tr><td>NM</td><td class="num">61%</td><td class="num">66%</td><td class="num">3 of 13</td></tr><tr><td>VT</td><td class="num">88%</td><td class="num">92%</td><td class="num">4 of 13</td></tr><tr><td>WI</td><td class="num">59%</td><td class="num">65%</td><td class="num">8 of 27</td></tr><tr><td>MD</td><td class="num">56%</td><td class="num">67%</td><td class="num">4 of 13</td></tr><tr><td>KS</td><td class="num">40%</td><td class="num">46%</td><td class="num">9 of 27</td></tr><tr><td>IL</td><td class="num">58%</td><td class="num">62%</td><td class="num">9 of 27</td></tr><tr><td>MN</td><td class="num">60%</td><td class="num">64%</td><td class="num">10 of 27</td></tr><tr><td>DE</td><td class="num">49%</td><td class="num">57%</td><td class="num">6 of 13</td></tr><tr><td>ME</td><td class="num">60%</td><td class="num">69%</td><td class="num">5 of 13</td></tr><tr><td>MI</td><td class="num">56%</td><td class="num">56%</td><td class="num">14 of 27</td></tr><tr><td>WV</td><td class="num">55%</td><td class="num">50%</td><td class="num">7 of 13</td></tr><tr><td>IN</td><td class="num">61%</td><td class="num">58%</td><td class="num">13 of 27</td></tr><tr><td>OH</td><td class="num">65%</td><td class="num">56%</td><td class="num">16 of 27</td></tr><tr><td>KY</td><td class="num">79%</td><td class="num">67%</td><td class="num">17 of 27</td></tr><tr><td>IA</td><td class="num">72%</td><td class="num">63%</td><td class="num">19 of 27</td></tr><tr><td>MO</td><td class="num">66%</td><td class="num">53%</td><td class="num">20 of 27</td></tr><tr><td>PA</td><td class="num">79%</td><td class="num">65%</td><td class="num">19 of 27</td></tr><tr><td>TN</td><td class="num">81%</td><td class="num">64%</td><td class="num">20 of 27</td></tr><tr><td>NY</td><td class="num">78%</td><td class="num">68%</td><td class="num">9 of 13</td></tr><tr><td>RI</td><td class="num">90%</td><td class="num">77%</td><td class="num">9 of 13</td></tr><tr><td>MT</td><td class="num">70%</td><td class="num">59%</td><td class="num">11 of 13</td></tr><tr><td>CT</td><td class="num">90%</td><td class="num">62%</td><td class="num">11 of 13</td></tr><tr><td>MA</td><td class="num">90%</td><td class="num">70%</td><td class="num">11 of 13</td></tr><tr><td>NJ</td><td class="num">96%</td><td class="num">64%</td><td class="num">13 of 13</td></tr><!--/SEED--></table></div>
+      <div class="tblscroll"><table class="cd-tbl" id="cd-table"><!--SEED:condtable--><caption>Corn, week ending Oct 11, 2026 &middot; worst first</caption><tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">Own avg</th><th style="text-align:right">Rank (1 = worst)</th></tr><tr><td>WY</td><td class="num">31%</td><td class="num">81%</td><td class="num">1 of 12</td></tr><tr><td>NC</td><td class="num">14%</td><td class="num">51%</td><td class="num">2 of 24</td></tr><tr><td>ND</td><td class="num">30%</td><td class="num">60%</td><td class="num">2 of 24</td></tr><tr><td>NE</td><td class="num">48%</td><td class="num">67%</td><td class="num">3 of 24</td></tr><tr><td>SD</td><td class="num">35%</td><td class="num">61%</td><td class="num">3 of 24</td></tr><tr><td>UT</td><td class="num">72%</td><td class="num">82%</td><td class="num">1 of 12</td></tr><tr><td>CO</td><td class="num">36%</td><td class="num">59%</td><td class="num">5 of 24</td></tr><tr><td>TX</td><td class="num">35%</td><td class="num">49%</td><td class="num">5 of 23</td></tr><tr><td>MI</td><td class="num">51%</td><td class="num">58%</td><td class="num">6 of 24</td></tr><tr><td>WI</td><td class="num">58%</td><td class="num">65%</td><td class="num">6 of 24</td></tr><tr><td>KS</td><td class="num">40%</td><td class="num">48%</td><td class="num">7 of 24</td></tr><tr><td>NM</td><td class="num">59%</td><td class="num">67%</td><td class="num">4 of 12</td></tr><tr><td>IL</td><td class="num">60%</td><td class="num">64%</td><td class="num">9 of 24</td></tr><tr><td>MN</td><td class="num">61%</td><td class="num">64%</td><td class="num">9 of 24</td></tr><tr><td>DE</td><td class="num">51%</td><td class="num">56%</td><td class="num">6 of 11</td></tr><tr><td>IN</td><td class="num">64%</td><td class="num">60%</td><td class="num">15 of 24</td></tr><tr><td>KY</td><td class="num">79%</td><td class="num">70%</td><td class="num">14 of 24</td></tr><tr><td>OH</td><td class="num">69%</td><td class="num">59%</td><td class="num">15 of 24</td></tr><tr><td>WV</td><td class="num">63%</td><td class="num">53%</td><td class="num">8 of 12</td></tr><tr><td>IA</td><td class="num">71%</td><td class="num">66%</td><td class="num">16 of 24</td></tr><tr><td>TN</td><td class="num">81%</td><td class="num">67%</td><td class="num">16 of 24</td></tr><tr><td>PA</td><td class="num">78%</td><td class="num">66%</td><td class="num">17 of 24</td></tr><tr><td>MT</td><td class="num">68%</td><td class="num">60%</td><td class="num">8 of 12</td></tr><tr><td>MO</td><td class="num">66%</td><td class="num">53%</td><td class="num">18 of 24</td></tr><tr><td>NJ</td><td class="num">91%</td><td class="num">64%</td><td class="num">11 of 12</td></tr><tr><td>NY</td><td class="num">87%</td><td class="num">70%</td><td class="num">11 of 11</td></tr><!--/SEED--></table></div>
       <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of N = the lowest G+E this week has ever seen in that state’s record. The denominator is per state: most go back to 2000, but USDA only began reporting some states in 2014, so their comparison starts there. The average column is each state’s own, over the years it actually has. The bar shows how far this week sits from that state&rsquo;s own average for the same week, in G+E percentage points: red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
+    </div>
+  </section>
+
+  <section class="cd-panel" aria-labelledby="cd-h-t" id="harvest">
+    <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-h-t">Harvest progress by state</span><span class="cd-fresh" id="cd-h-fresh"></span></div>
+    <div class="cd-panel-b">
+      <p class="cd-seed" id="cd-h-line"><!--SEED:condharvline-->US, week ending Oct 11, 2026: Corn <strong>33%</strong> harvested vs a 39% five-year average; Soybeans <strong>46%</strong> harvested vs a 50% five-year average. 31 corn states reported this week.<!--/SEED--></p>
+      <div class="cd-tabs" role="tablist" id="cd-h-tabs"></div>
+      <div class="tblscroll"><table class="cd-tbl" id="cd-h-table"><!--SEED:condharvtable--><caption>Corn harvested, week ending Oct 11, 2026 &middot; furthest behind first</caption><tr><th>State</th><th style="text-align:right">Harvested</th><th style="text-align:right">5-yr avg</th><th style="text-align:right">vs avg</th></tr><tr><td>Iowa</td><td class="num">14%</td><td class="num">34%</td><td class="num">&minus;20 pts</td></tr><tr><td>Michigan</td><td class="num">4%</td><td class="num">22%</td><td class="num">&minus;18 pts</td></tr><tr><td>South Dakota</td><td class="num">15%</td><td class="num">31%</td><td class="num">&minus;16 pts</td></tr><tr><td>New Jersey</td><td class="num">20%</td><td class="num">33%</td><td class="num">&minus;13 pts</td></tr><tr><td>Ohio</td><td class="num">11%</td><td class="num">22%</td><td class="num">&minus;11 pts</td></tr><tr><td>New York</td><td class="num">1%</td><td class="num">10%</td><td class="num">&minus;9 pts</td></tr><tr><td>Nebraska</td><td class="num">27%</td><td class="num">35%</td><td class="num">&minus;8 pts</td></tr><tr><td>Minnesota</td><td class="num">25%</td><td class="num">32%</td><td class="num">&minus;7 pts</td></tr><tr><td>Montana</td><td class="num">28%</td><td class="num">34%</td><td class="num">&minus;6 pts</td></tr><tr><td>Colorado</td><td class="num">25%</td><td class="num">27%</td><td class="num">&minus;2 pts</td></tr><tr><td>North Carolina</td><td class="num">87%</td><td class="num">89%</td><td class="num">&minus;2 pts</td></tr><tr><td>Pennsylvania</td><td class="num">14%</td><td class="num">16%</td><td class="num">&minus;2 pts</td></tr><tr><td>Wisconsin</td><td class="num">16%</td><td class="num">18%</td><td class="num">&minus;2 pts</td></tr><tr><td>Delaware</td><td class="num">66%</td><td class="num">67%</td><td class="num">&minus;1 pts</td></tr><tr><td>Kansas</td><td class="num">63%</td><td class="num">64%</td><td class="num">&minus;1 pts</td></tr><tr><td>Indiana</td><td class="num">34%</td><td class="num">34%</td><td class="num">+0 pts</td></tr><tr><td>Texas</td><td class="num">89%</td><td class="num">88%</td><td class="num">+1 pts</td></tr><tr><td>Arkansas</td><td class="num">100%</td><td class="num">98%</td><td class="num">+2 pts</td></tr><tr><td>North Dakota</td><td class="num">23%</td><td class="num">21%</td><td class="num">+2 pts</td></tr><tr><td>Maryland</td><td class="num">59%</td><td class="num">56%</td><td class="num">+3 pts</td></tr><tr><td>Missouri</td><td class="num">64%</td><td class="num">61%</td><td class="num">+3 pts</td></tr><tr><td>West Virginia</td><td class="num">16%</td><td class="num">13%</td><td class="num">+3 pts</td></tr><tr><td>Illinois</td><td class="num">51%</td><td class="num">44%</td><td class="num">+7 pts</td></tr><tr><td>Oklahoma</td><td class="num">72%</td><td class="num">63%</td><td class="num">+9 pts</td></tr><tr><td>Kentucky</td><td class="num">80%</td><td class="num">67%</td><td class="num">+13 pts</td></tr><tr><td>Tennessee</td><td class="num">91%</td><td class="num">78%</td><td class="num">+13 pts</td></tr><tr><td>New Mexico</td><td class="num">27%</td><td class="num">8%</td><td class="num">+19 pts</td></tr><tr><td>Alabama</td><td class="num">95%</td><td class="num"></td><td class="num"></td></tr><tr><td>Utah</td><td class="num">16%</td><td class="num"></td><td class="num"></td></tr><tr><td>Virginia</td><td class="num">81%</td><td class="num"></td><td class="num"></td></tr><tr><td>Wyoming</td><td class="num">2%</td><td class="num"></td><td class="num"></td></tr><!--/SEED--></table></div>
+      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Percent of the crop harvested, from the same USDA Crop Progress report as the ratings. Only states USDA reported this week are listed. The five-year average is our arithmetic on USDA&rsquo;s weekly series (each of the five prior years read at the same calendar date), so it can differ from the average USDA prints by a point. A last-year column appears when USDA has a report for the same week a year earlier; it published none in October 2025, during the federal shutdown. Tap a column to sort.</p>
     </div>
   </section>
 
@@ -336,6 +360,20 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     }catch(e){}
     return states.IA?'IA':Object.keys(states)[0];
   }
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function niceDate(iso){ var p=String(iso||'').split('-'); return p.length===3?MON[+p[1]-1]+' '+(+p[2])+', '+p[0]:String(iso||''); }
+  // Which years this state's comparison leaves out, from its own history:
+  // 2012 has no mid-October rating in USDA's file and 2025 none at all
+  // (shutdown). Said on the card so "worst on record" is read with them.
+  function missNote(st, we){
+    var have={}, first=null, cur=+String(we).slice(0,4), miss=[];
+    (st.hist||[]).forEach(function(h){ have[h[0]]=1; if(first===null||h[0]<first)first=h[0]; });
+    if(first===null)return '';
+    for(var y=first;y<cur;y++){ if(!have[y])miss.push(y); }
+    var s='USDA\u2019s record for this state at this week starts in '+first;
+    if(miss.length) s+='; it has no rating at this week in '+(miss.length===1?miss[0]:miss.slice(0,-1).join(', ')+' or '+miss[miss.length-1])+', so '+(miss.length===1?'that year is':'those years are')+' not in the comparison';
+    return s+'.';
+  }
   function renderVerdict(){
     var pkg=data.crops[crop]; if(!pkg)return;
     var states=pkg.states;
@@ -349,7 +387,8 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     $('cd-vword').textContent=vv[0];
     $('cd-vword').style.color=vv[1];
     var beats=st.rank_from_worst-1, yrs=st.of-1;
-    $('cd-vsent').innerHTML=pickedState+' '+cname+' is rated <b style="color:'+vv[1]+'">'+Math.round(st.ge)+'% good or better</b> this week: a better mid-season rating than <b style="color:'+vv[1]+'">'+beats+' of the last '+yrs+' years</b> at this same week. Average for this week: '+Math.round(st.avg)+'%. Worst ever: '+Math.round(st.worst)+'%. Best: '+Math.round(st.best)+'%.';
+    $('cd-vsent').innerHTML=pickedState+' '+cname+' is rated <b style="color:'+vv[1]+'">'+Math.round(st.ge)+'% good or better</b> for the week ending '+niceDate(pkg.week_ending)+': a better rating than <b style="color:'+vv[1]+'">'+beats+' of the last '+yrs+' years</b> at this same week. Average for this week: '+Math.round(st.avg)+'%. Worst on record for this week: '+Math.round(st.worst)+'%. Best: '+Math.round(st.best)+'%.'
+      +'<div class="cd-vmiss">'+missNote(st, pkg.week_ending)+'</div>';
     var g=$('cd-grid'), h='';
     Object.keys(TILE).forEach(function(ab){
       var t=TILE[ab], st2=states[ab];
@@ -399,6 +438,64 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
       b.addEventListener('click',function(){ crop=this.dataset.c; tabs(); render(); gaEvent('conditions_crop',{crop:crop}); });
     });
   }
+
+  // Harvest progress by state, from the same Crop Progress file the summary
+  // above is baked from. The baked table stays if the fetch fails.
+  var HN={"AL":"Alabama","AR":"Arkansas","AZ":"Arizona","CA":"California","CO":"Colorado","DE":"Delaware","FL":"Florida","GA":"Georgia","IA":"Iowa","ID":"Idaho","IL":"Illinois","IN":"Indiana","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","MD":"Maryland","MI":"Michigan","MN":"Minnesota","MO":"Missouri","MS":"Mississippi","MT":"Montana","NC":"North Carolina","ND":"North Dakota","NE":"Nebraska","NJ":"New Jersey","NM":"New Mexico","NY":"New York","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VA":"Virginia","WA":"Washington","WI":"Wisconsin","WV":"West Virginia","WY":"Wyoming"};
+  var hv={cp:null, crop:'corn', key:'gap', dir:1};
+  var HK={corn:'corn_harvested',soybeans:'soybeans_harvested'};
+  function pc(v){ return v==null?'':v+'%'; }
+  function hRows(){
+    var cp=hv.cp, k=HK[hv.crop], rd=cp.report_date, out=[];
+    Object.keys(cp.states||{}).forEach(function(st){
+      var s=(cp.states[st]||{})[k];
+      if(!s||s.pct==null||s.date!==rd)return;
+      out.push({st:st, name:HN[st]||st, pct:s.pct, pw:s.prev_week, py:s.prev_year, avg:s.avg5, gap:s.avg5==null?null:s.pct-s.avg5});
+    });
+    var key=hv.key, dir=hv.dir;
+    out.sort(function(a,b){
+      var x=a[key], y=b[key];
+      if(key==='name')return dir*(x<y?-1:x>y?1:0);
+      if(x==null&&y==null)return a.name<b.name?-1:1;
+      if(x==null)return 1; if(y==null)return -1;
+      return dir*(x-y)||(a.name<b.name?-1:1);
+    });
+    return out;
+  }
+  function renderHarvest(){
+    var cp=hv.cp; if(!cp||!cp.states)return;
+    var rows=hRows(), rd=cp.report_date, cname=hv.crop==='corn'?'Corn':'Soybeans';
+    $('cd-h-tabs').innerHTML=['corn','soybeans'].map(function(c){return '<button class="cd-tab'+(c===hv.crop?' on':'')+'" role="tab" data-hc="'+c+'">'+(c==='corn'?'Corn':'Soybeans')+'</button>';}).join('');
+    $('cd-h-fresh').textContent='week ending '+rd;
+    if(!rows.length){ $('cd-h-table').innerHTML='<tr><td style="color:#8a948f">No state harvest numbers for the week ending '+niceDate(rd)+'</td></tr>'; return; }
+    var lw=rows.some(function(r){return r.pw!=null;}), ly=rows.some(function(r){return r.py!=null;});
+    var cols=[['name','State',0],['pct','Harvested',1]];
+    if(lw)cols.push(['pw','Week before',1]);
+    if(ly)cols.push(['py','Last year',1]);
+    cols.push(['avg','5-yr avg',1],['gap','vs avg',1]);
+    var h='<caption>'+cname+' harvested, week ending '+niceDate(rd)+'</caption><tr>'+cols.map(function(c){
+      var on=c[0]===hv.key;
+      return '<th data-k="'+c[0]+'"'+(c[2]?' style="text-align:right"':'')+' aria-sort="'+(on?(hv.dir>0?'ascending':'descending'):'none')+'">'+c[1]+(on?(hv.dir>0?' \u25b4':' \u25be'):'')+'</th>';}).join('')+'</tr>';
+    rows.forEach(function(r){
+      var cls=r.gap==null?'':(r.gap<=-10?' lo':(r.gap>=10?' hi':''));
+      h+='<tr><td>'+r.name+'</td><td class="num">'+pc(r.pct)+'</td>'
+        +(lw?'<td class="num">'+pc(r.pw)+'</td>':'')
+        +(ly?'<td class="num">'+pc(r.py)+'</td>':'')
+        +'<td class="num" style="color:#8a948f">'+pc(r.avg)+'</td>'
+        +'<td class="num'+cls+'">'+(r.gap==null?'':(r.gap>0?'+':r.gap<0?'\u2212':'')+Math.abs(r.gap)+' pts')+'</td></tr>';
+    });
+    $('cd-h-table').innerHTML=h;
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-hc]');
+    if(b){ hv.crop=b.dataset.hc; renderHarvest(); return; }
+    var th=e.target.closest('#cd-h-table th[data-k]');
+    if(th){ var k=th.dataset.k; if(hv.key===k)hv.dir=-hv.dir; else { hv.key=k; hv.dir=(k==='name'||k==='gap')?1:-1; } renderHarvest(); }
+  });
+  fetch('/data/crop-progress.json',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){ if(d&&d.in_season&&d.states){ hv.cp=d; renderHarvest(); } })
+    .catch(function(){});
 
   fetch('/data/conditions/conditions.json',{cache:'no-store'})
     .then(function(r){return r.ok?r.json():null;})

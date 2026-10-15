@@ -314,7 +314,11 @@ def summarize(series: dict):
     cur = max(series)
     prev = same_week_prev([{"week_ending": d.strftime("%Y-%m-%d"), "Value": str(v)}
                            for d, v in series.items()], cur.strftime("%Y-%m-%d"))
-    return {"date": cur.strftime("%Y-%m-%d"), "pct": series[cur],
+    # the week before: the published week 5-10 days earlier, else None (a
+    # gap is a gap; no carrying a two-week-old number forward as last week's)
+    before = [d for d in series if 5 <= (cur - d).days <= 10]
+    pw = series[max(before)] if before else None
+    return {"date": cur.strftime("%Y-%m-%d"), "pct": series[cur], "prev_week": pw,
             "prev_year": prev, "avg5": five_year_avg(series, cur)}
 
 
@@ -563,6 +567,12 @@ def selftest():
         half[D(f"{2026-k}-10-04")] = 1
     check(five_year_avg(half, D("2026-09-27")) == 1, "0.5 rounds up to 1 (half up, not banker's)",
           five_year_avg(half, D("2026-09-27")))
+
+    print("\nTHE WEEK BEFORE")
+    wb = summarize({D("2026-10-11"): 33, D("2026-10-04"): 23, D("2026-09-27"): 15})
+    check(wb["prev_week"] == 23, "week before = the published week 7 days earlier", wb)
+    wb = summarize({D("2026-10-11"): 33, D("2026-09-27"): 15})
+    check(wb["prev_week"] is None, "a skipped week leaves the week before blank, not two weeks back", wb)
 
     print("\nSERIES CLEANING")
     rows = [

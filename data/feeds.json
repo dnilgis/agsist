@@ -315,6 +315,7 @@
    "touched_by": [
     "cond-yield",
     "conditions",
+    "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
@@ -504,6 +505,7 @@
   {
    "path": "data/crop-progress.json",
    "pages": [
+    "conditions.html",
     "index.html"
    ],
    "written_by": [
@@ -512,6 +514,7 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "conditions",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
@@ -614,6 +617,7 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "conditions",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
@@ -675,6 +679,7 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "conditions",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
@@ -733,7 +738,9 @@
     "Coverage map \u2014 the elevator directory, drawn"
    ],
    "touched_by": [
+    "conditions",
     "Coverage map \u2014 the elevator directory, drawn",
+    "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
@@ -821,6 +828,8 @@
     "MESH radar hail swaths \u2014 daily"
    ],
    "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
@@ -1355,6 +1364,8 @@
     "The wire"
    ],
    "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire"
@@ -1482,6 +1493,8 @@
     "Prediction bot \u2014 call and grade"
    ],
    "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
     "Generate Daily Briefing",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
@@ -1720,6 +1733,8 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "conditions",
+    "Fetch Crop Progress",
     "Generate Daily Briefing",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
@@ -2065,6 +2080,8 @@
     "transport"
    ],
    "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "transport"

@@ -85,6 +85,18 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_crop_progress.py
 
+      # Re-bake /conditions from the file just written: the title, summary,
+      # first-screen week line, stats line, table caption and harvest table
+      # all come from data/crop-progress.json and data/conditions/conditions.json.
+      # Until 2026-10-15 only the freshness job did this, and the page showed
+      # "Corn 54%, week ending Oct 4" over a table for Oct 11.
+      # test/conditions-week.test.mjs holds every line to one week.
+      - name: Re-bake conditions.html from the data
+        run: |
+          python scripts/bake_seo.py --selftest
+          python scripts/seed_static.py --only conditions
+          python scripts/bake_seo.py --page conditions.html
+
       # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
       # Best effort: a share card must never block the data commit.
       - name: Share image
