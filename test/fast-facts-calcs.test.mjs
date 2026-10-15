@@ -97,3 +97,49 @@ test("lime cost never prices aglime at the pelletized lime quote", { skip }, asy
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+/* N:Corn ratio: the urea auto-fill wrote the dealer price into the box but did
+ * not redraw, so when the fertilizer sheet landed after the first draw the
+ * result kept the 560 default ($0.61/lb N). Hand math at $590 urea:
+ * 590 / (2000 x 0.46) = $0.641/lb N; at $4.25 corn the ratio is 0.151. */
+test("N:corn ratio redraws when the urea price fills the box, even when the sheet arrives late", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fertDelay: 1500 });
+    await pg.waitForFunction(() => document.querySelector(".fert-pill"), null, { timeout: 15000 });
+    assert.equal(await pg.inputValue("#nc-fertprice"), "590");
+    assert.equal(await pg.textContent("#nc-nlb"), "$0.64");
+    const corn = parseFloat(await pg.inputValue("#nc-corn"));
+    const want = (590 / 920 / corn).toFixed(3);
+    assert.equal(await pg.textContent("#nc-ratio"), want);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* Small wrong words from the Oct 15 review. Futures here are delayed quotes,
+ * never "live"; Sonalan is ethalfluralin, not trifluralin; a fertilizer row
+ * quoted on another day than the sheet carries its own date. */
+test("Fast Facts never calls delayed futures live, names Sonalan's active right", () => {
+  const html = readFileSync(join(ROOT, "fast-facts.html"), "utf8");
+  assert.ok(!/CBOT &middot; live/.test(html), "price tiles say live");
+  assert.equal((html.match(/CBOT, delayed/g) || []).length, 3);
+  assert.ok(!/Live corn price|Live Market Prices|with live prices/.test(html));
+  assert.ok(!/Sonalan \(trifluralin\)/.test(html));
+  assert.ok(html.includes("Treflan (trifluralin), Sonalan (ethalfluralin)"));
+});
+
+test("a fertilizer pill quoted on another day than the sheet shows its own date", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const fert = { updated: "2026-09-01", prices: [
+      { name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01" },
+      { name: "K-Mag Premium", symbol: "0-0-20-22S-11Mg", price: 650, as_of: "2026-07-20" } ] };
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
+    await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
+    const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
+    assert.deepEqual(syms, ["46-0-0", "0-0-20-22S-11Mg · Jul 20"]);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});

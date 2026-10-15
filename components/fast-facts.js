@@ -85,6 +85,13 @@ function loadFertPrices(){
       {obj:mapS,   pct:0.40, ncPct:'',   nutrient:'P2O5', label:'MAP+S 40%P'},
       {obj:kmag,   pct:0.20, ncPct:'',   nutrient:'K2O',  label:'K-Mag 20%K'},
     ];
+    // A row quoted on a different day from the sheet says its own date, so a
+    // July K-Mag price never reads as part of the September sheet.
+    function ownDate(p){
+      if(!p.as_of||p.as_of===data.updated)return '';
+      var od=new Date(p.as_of+'T12:00:00');if(isNaN(od))return '';
+      return ' \u00b7 '+od.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    }
     pillDefs.forEach(function(pd){
       if(!pd.obj||!pd.obj.price)return;
       var p=pd.obj;
@@ -96,7 +103,7 @@ function loadFertPrices(){
       btn.setAttribute('aria-label',p.name+' $'+p.price+'/ton: $'+pplb+'/lb '+pd.nutrient);
       btn.innerHTML='<span class="fert-pill-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span>'
         +'<span class="fert-pill-body"><span class="fert-pill-name">'+p.name+'</span>'
-        +'<span class="fert-pill-sym">'+(p.symbol||pd.label)+'</span></span>'
+        +'<span class="fert-pill-sym">'+(p.symbol||pd.label)+ownDate(p)+'</span></span>'
         +'<span class="fert-pill-price">$'+p.price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
@@ -117,6 +124,7 @@ function loadFertPrices(){
       var fertSel=document.getElementById('nc-fert');
       if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value==='46'){fertSel.value='46';break;}}}
       loadNFertPrice(pplb,'Urea 46%',urea.price);
+      calcNC();// the box changed under the calculator; redraw so it never shows the 560 default
     }
     // P2O5 from MAP+S: 12-40-0-10S = 40% P2O5.  NEVER use 0.46 for this product.
     // Its 240 lb of N a ton is credited at the urea price (components/manure-value.js,

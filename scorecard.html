@@ -75,6 +75,8 @@
     .pb-hit{color:var(--green);font-weight:700}
     .pb-miss{color:var(--red);font-weight:700}
     .pb-open{color:var(--text-muted)}
+    .pb-plain{font-size:1.05rem;line-height:1.55;color:var(--text);margin:.2rem 0 .8rem;max-width:62ch}
+    .pb-plain:empty{display:none}
     .pb-math{border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;margin:.8rem 0;background:var(--surface)}
     .pb-math summary{cursor:pointer;font-weight:700;color:var(--text);min-height:44px;display:flex;align-items:center}
     .pb-math dl{margin:.4rem 0 0}
@@ -115,6 +117,7 @@
     <div class="pb-page">
       <nav class="pb-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> › Prediction bot scorecard</nav>
       <h1>Prediction bot scorecard</h1>
+      <p class="pb-plain" id="pb-plain"><!--SEED:pb:pb-plain-->In plain words: replayed on history since 2013, the bot&rsquo;s rule was right 47.6% of the time, no better than a coin flip. I publish its calls anyway, graded by code, so you can hold any market call to the same test. The 4 open calls are not graded until Nov 2, 2026, on that day&rsquo;s close only.<!--/SEED--></p>
       <p class="pb-sub page-lede">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks out, one call per crop after each weekly CFTC report. Code grades every call against Yahoo Finance daily closes, and nobody picks which calls count. The timing rules, and why the four Oct 5 entry prices were set by hand, are under How the arithmetic works.</p>
 
       <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
@@ -239,10 +242,23 @@
         line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four non-overlapping groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
         luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+'; at least this badly: '+luck(r.p_worse)+' ('+luck(r.p_worse_adjusted)+' after adjusting for the records tested at once).'};
     }
+    /* The plain sentence at the top. Same words as pb_plain() in scripts/seed_static.py. */
+    var PLAIN_COIN={coin_flip:'no better than a coin flip',worse_than_coin:'worse than a coin flip',held_up:'better than a coin flip on this page\u2019s test'};
+    function plainLine(d){
+      var ba=((d.backtest||{}).records||{}).all||{},out=[];
+      if(ba.hit_rate!=null&&ba.first){var coin=PLAIN_COIN[ba.verdict];
+        out.push('In plain words: replayed on history since '+String(ba.first).slice(0,4)+', the bot\u2019s rule was right '+rate(ba.hit_rate)+' of the time'+(coin?', '+coin+'.':'.'));
+        out.push('I publish its calls anyway, graded by code, so you can hold any market call to the same test.');}
+      var opn=(d.calls||[]).filter(function(c){return c.status==='open'&&c.exit_day;});
+      if(opn.length){var days=opn.map(function(c){return c.exit_day;}).sort(),uniq=days.filter(function(x,i){return days.indexOf(x)===i;});
+        out.push((opn.length===1?'The open call is':'The '+n(opn.length)+' open calls are')+' not graded until '+fdate(uniq[0])+(uniq.length===1?'':' or later')+', on that day\u2019s close only.');}
+      return out.join(' ');
+    }
     function loadRec(){
     fetch('/data/predictions.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var R=d.rules||{};
+      $('pb-plain').textContent=plainLine(d);
       document.querySelectorAll('[data-rule]').forEach(function(el){var k=el.getAttribute('data-rule');if(R[k]!=null)el.textContent=R[k];});
       if(R.registered)$('pb-reg').textContent=R.registered;
       if(R.version)$('pb-ver').textContent=R.version;

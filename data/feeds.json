@@ -1941,7 +1941,8 @@
   {
    "path": "data/site-usage.json",
    "pages": [
-    "sponsor-kit.html"
+    "sponsor-kit.html",
+    "tools.html"
    ],
    "written_by": [
     "Site usage (GA4 + Search Console, 90 days)"

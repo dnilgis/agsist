@@ -1000,6 +1000,31 @@ def _pb_verdict(r, label, R):
     return v, line, luck
 
 
+PB_PLAIN_COIN = {"coin_flip": "no better than a coin flip", "worse_than_coin": "worse than a coin flip",
+                 "held_up": "better than a coin flip on this page's test"}
+
+
+def pb_plain(d):
+    """One plain sentence for the top of /scorecard: what the backtest says, why
+    the page exists anyway, and when the open calls get graded. The same words
+    as plainLine() in scorecard.html."""
+    ba = ((d.get("backtest") or {}).get("records") or {}).get("all") or {}
+    out = []
+    first = _iso_date(ba.get("first"))
+    if ba.get("hit_rate") is not None and first:
+        coin = PB_PLAIN_COIN.get(ba.get("verdict"))
+        out.append(f"In plain words: replayed on history since {first.year}, the bot&rsquo;s rule was right "
+                   f"{_pb_rate(ba.get('hit_rate'))} of the time" + (f", {coin}." if coin else "."))
+        out.append("I publish its calls anyway, graded by code, so you can hold any market call to the same test.")
+    opn = [c for c in d.get("calls") or [] if c.get("status") == "open" and c.get("exit_day")]
+    if opn:
+        days = sorted({c["exit_day"] for c in opn})
+        n = len(opn)
+        out.append(f"{'The open call is' if n == 1 else f'The {_pb_n(n)} open calls are'} not graded until "
+                   f"{_pb_date(days[0])}" + ("" if len(days) == 1 else " or later") + ", on that day&rsquo;s close only.")
+    return " ".join(out)
+
+
 def seed_scorecard(today):
     d = _load_json("data/predictions.json")
     upd = _iso_date((d or {}).get("updated"))
@@ -1014,9 +1039,11 @@ def seed_scorecard(today):
         seeds["pb:latest"] = f'<tr><td colspan="6">{why}.</td></tr>'
         seeds["pb:bycrop"] = f'<tr><td colspan="6">{why}.</td></tr>'
         seeds["pb:pb-updated"] = "-"
+        seeds["pb:pb-plain"] = ""
         return _write_seeds("scorecard.html", seeds)
     labels = {c["key"]: c["label"] for c in d.get("crops") or []}
     R = d.get("rules") or {}
+    seeds["pb:pb-plain"] = pb_plain(d)
     u = str(d.get("updated"))
     seeds["pb:pb-updated"] = u.replace("T", " ").replace("Z", " UTC")
     live = ((d.get("live") or {}).get("records") or {}).get("all")

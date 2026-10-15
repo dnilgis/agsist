@@ -1,6 +1,11 @@
 /* Homepage: the yield nowcast, the futures cards' 52-week ranges and their trading-hours labels. Moved out of index.html (2026-10-11) so the page is lighter and this caches between visits; loaded as a plain script in the same place, so it runs in the same order as before. */
 (function() {
   'use strict';
+  /* USDA's weather-adjusted 2026 corn trend, 183.0 bu/ac: Feb 19, 2026 Outlook
+     Forum, kept in the May 2026 WASDE. The same figure and source as
+     USDA_TREND in scripts/bake_crop_size.py (/conditions-yield); change both.
+     No soybean figure until one is checked at the source. */
+  var USDA_TREND={corn:183.0};
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
@@ -23,7 +28,13 @@
         if(vs){vs.textContent='USDA estimate not loaded yet';vs.style.color='var(--text-muted)';
           var tl=document.getElementById(map[crop]+'-trend');
           if(!tl){tl=document.createElement('div');tl.id=map[crop]+'-trend';tl.className='r7-nc-usda';vs.parentNode.insertBefore(tl,vs.nextSibling);}
-          tl.textContent='Our '+(c.backtest_years||'')+'-year trend: '+c.trend.toFixed(1)+(typeof c.mae==='number'?' \u00b7 backtest miss averages '+c.mae.toFixed(1)+' bu':'');}
+          /* The line is fit on trend_window (2010-2025, 16 finals), not on the
+             backtest years, so it is labeled by its window, as on
+             /conditions-yield. USDA's own trend sits beside it where we have
+             one checked at the source (USDA_TREND below). */
+          var tw=c.trend_window?' ('+String(c.trend_window).replace('-','\u2013')+' finals)':'';
+          var ut=USDA_TREND[crop];
+          tl.textContent='Our straight-line trend: '+c.trend.toFixed(1)+tw+(typeof ut==='number'?' \u00b7 USDA\u2019s trend: '+ut.toFixed(1):'')+(typeof c.mae==='number'?' \u00b7 backtest miss averages '+c.mae.toFixed(1)+' bu':'');}
       });
       var v=document.getElementById('nc-verdict');
       if(v){v.className='ratio-verdict neutral';v.textContent='USDA not loaded yet';}
