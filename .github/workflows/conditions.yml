@@ -34,11 +34,23 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_conditions.py
+      # Re-bake /conditions from the file just written: the title, summary,
+      # first-screen week line, stats line, table caption and harvest table
+      # all come from data/crop-progress.json and data/conditions/conditions.json.
+      # Until 2026-10-15 only the freshness job did this, and the page showed
+      # "Corn 54%, week ending Oct 4" over a table for Oct 11.
+      # test/conditions-week.test.mjs holds every line to one week.
+      - name: Re-bake conditions.html from the data
+        run: |
+          python scripts/bake_seo.py --selftest
+          python scripts/seed_static.py --only conditions
+          python scripts/bake_seo.py --page conditions.html
+
       - name: Commit
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/conditions/
+          git add data/conditions/ conditions.html
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: crop condition percentiles $(date -u +%F)"
           git pull --rebase --autostash origin main || true

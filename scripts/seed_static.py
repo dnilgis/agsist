@@ -675,6 +675,74 @@ def seed_news(today):
 
 
 # --- /conditions ---------------------------------------------------------------
+# 2026-10-15: the page showed two weeks at once (title "Corn 54%" and the
+# summary on Oct 4 while the data and the live table were on Oct 11) because
+# these seeds were only re-baked by the freshness job. The two data workflows
+# (crop_progress.yml, conditions.yml) now run `seed_static.py --only
+# conditions` and `bake_seo.py --page conditions.html` right after each fetch,
+# and test/conditions-week.test.mjs fails if any line names another week.
+STATE_NAMES = {"AL": "Alabama", "AR": "Arkansas", "AZ": "Arizona", "CA": "California", "CO": "Colorado",
+               "DE": "Delaware", "FL": "Florida", "GA": "Georgia", "IA": "Iowa", "ID": "Idaho",
+               "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana",
+               "MD": "Maryland", "MI": "Michigan", "MN": "Minnesota", "MO": "Missouri", "MS": "Mississippi",
+               "MT": "Montana", "NC": "North Carolina", "ND": "North Dakota", "NE": "Nebraska",
+               "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "OH": "Ohio", "OK": "Oklahoma",
+               "OR": "Oregon", "PA": "Pennsylvania", "SC": "South Carolina", "SD": "South Dakota",
+               "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VA": "Virginia", "WA": "Washington",
+               "WI": "Wisconsin", "WV": "West Virginia", "WY": "Wyoming"}
+
+
+def missing_years(pkg, first=2000):
+    """Years before the current one that NO state in the package has a rating
+    for at this week (2000 and 2012 at mid-October, 2025 for the shutdown).
+    -> (first year any state has, [missing years])"""
+    yrs = {y for s in (pkg or {}).get("states", {}).values() for y, _ in s.get("hist", [])}
+    if not yrs:
+        return None, []
+    cur = int(str(pkg.get("week_ending", "0000"))[:4]) or max(yrs) + 1
+    return min(yrs), [y for y in range(first, cur) if y not in yrs]
+
+
+def _years_txt(ys):
+    ys = [str(y) for y in ys]
+    return ys[0] if len(ys) == 1 else (", ".join(ys[:-1]) + " or " + ys[-1])
+
+
+def harvest_rows(cp, key, rd):
+    """State harvest rows for one crop from crop-progress.json, only states on
+    the national report week. -> [(ST, pct, prev_week, avg5)] most behind first."""
+    out = []
+    for st, d in sorted(((cp or {}).get("states") or {}).items()):
+        s = (d or {}).get(key)
+        if not s or s.get("pct") is None or _iso_date(s.get("date")) != rd:
+            continue
+        out.append((st, s["pct"], s.get("prev_week"), s.get("avg5"), s.get("prev_year")))
+    out.sort(key=lambda r: ((r[1] - r[3]) if r[3] is not None else 999, r[0]))
+    return out
+
+
+def harvest_table(cp, key, crop, rd):
+    rows = harvest_rows(cp, key, rd)
+    if not rows:
+        return ""
+    lw = any(r[2] is not None for r in rows)
+    ly = any(r[4] is not None for r in rows)
+    pc = lambda v: "" if v is None else f"{v:g}%"
+    h = [f"<caption>{crop} harvested, week ending {_mdy(rd)} &middot; furthest behind first</caption>"
+         "<tr><th>State</th><th style=\"text-align:right\">Harvested</th>"
+         + ("<th style=\"text-align:right\">Week before</th>" if lw else "")
+         + ("<th style=\"text-align:right\">Last year</th>" if ly else "")
+         + "<th style=\"text-align:right\">5-yr avg</th><th style=\"text-align:right\">vs avg</th></tr>"]
+    for st, pct, pw, av, py in rows:
+        gap = "" if av is None else (f"{pct - av:+g}".replace("-", "&minus;") + " pts")
+        h.append(f"<tr><td>{_e(STATE_NAMES.get(st, st))}</td><td class=\"num\">{pct:g}%</td>"
+                 + (f"<td class=\"num\">{pc(pw)}</td>" if lw else "")
+                 + (f"<td class=\"num\">{pc(py)}</td>" if ly else "")
+                 + f"<td class=\"num\">{pc(av)}</td>"
+                 f"<td class=\"num\">{gap}</td></tr>")
+    return "".join(h)
+
+
 def seed_conditions(today):
     cp = _load_json("data/crop-progress.json")
     cj = _load_json("data/conditions/conditions.json")
@@ -683,7 +751,10 @@ def seed_conditions(today):
     rd = _iso_date((cp or {}).get("corn", {}).get("report_date") or (cp or {}).get("report_date"))
     corn = (cp or {}).get("corn") or {}
     soy = (cp or {}).get("soybeans") or {}
-    if cp and cp.get("in_season") and corn.get("good_excellent") is not None and not _stale(rd, today, "conditions"):
+    prog = (cp or {}).get("progress") or {}
+    live = bool(cp and cp.get("in_season") and corn.get("good_excellent") is not None
+                and not _stale(rd, today, "conditions"))
+    if live:
         ge = corn["good_excellent"]
         line = f"USDA Crop Progress, week ending {_mdy(rd)}: US corn <strong>{ge:g}%</strong> good-to-excellent"
         if corn.get("good_excellent_prev_week") is not None:
@@ -701,19 +772,58 @@ def seed_conditions(today):
                 line += f" vs a {corn['harvest_5yr_avg']:g}% five-year average"
             line += "."
         vsent = (f"US corn is rated <b>{ge:g}% good or better</b> for the week ending {_mdy(rd)} "
-                 f"(USDA NASS). Pick a state for its rank against the same week since 2000.")
+                 f"(USDA NASS). Pick a state for its rank against the same week in past years.")
+        # first-screen line: the week and the national numbers, before any state
+        wk = f"Week ending {_mdy(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
+        if soy.get("good_excellent") is not None and sd == rd:
+            wk += f", soybeans <b>{soy['good_excellent']:g}%</b>"
+        bits = []
+        for k, nm in (("corn_harvested", "corn"), ("soybeans_harvested", "soybeans")):
+            p = prog.get(k) or {}
+            if p.get("pct") is not None and _iso_date(p.get("date")) == rd:
+                b = f"{nm} {p['pct']:g}%"
+                if p.get("avg5") is not None:
+                    b += f" (avg {p['avg5']:g}%)"
+                bits.append(b)
+        if bits:
+            wk += ". Harvested: " + ", ".join(bits)
+        wk += "."
+        # harvest by state
+        hl = []
+        for k, nm in (("corn_harvested", "Corn"), ("soybeans_harvested", "Soybeans")):
+            p = prog.get(k) or {}
+            if p.get("pct") is not None and _iso_date(p.get("date")) == rd:
+                s = f"{nm} <strong>{p['pct']:g}%</strong> harvested"
+                if p.get("avg5") is not None:
+                    s += f" vs a {p['avg5']:g}% five-year average"
+                hl.append(s)
+        hline = (f"US, week ending {_mdy(rd)}: " + "; ".join(hl) + ".") if hl else \
+            f"No national harvest figure for the week ending {_mdy(rd)}."
+        htab = harvest_table(cp, "corn_harvested", "Corn", rd)
+        nst = len(harvest_rows(cp, "corn_harvested", rd))
+        if nst:
+            hline += f" {nst} corn states reported this week."
+        seeds["condharvline"] = hline
+        seeds["condharvtable"] = htab or f'<tr><td style="color:#8a948f">No state harvest numbers for the week ending {_mdy(rd)}</td></tr>'
     else:
         why = ("USDA is between seasons" if cp and not cp.get("in_season") else
                (f"the latest national report on file is the week ending {_mdy(rd)}" if rd else "the national file is missing"))
         line = f"No current national rating: {why}."
         vsent = f"No current rating: {why}."
+        wk = f"No current national rating: {why}."
+        seeds["condharvline"] = f"No current harvest numbers: {why}."
+        seeds["condharvtable"] = f'<tr><td style="color:#8a948f">No current harvest numbers: {why}</td></tr>'
     # state table: the page script's table, corn tab, worst first
     pkg = ((cj or {}).get("crops") or {}).get("corn")
     we = _iso_date((pkg or {}).get("week_ending"))
     if pkg and pkg.get("states") and not _stale(we, today, "conditions"):
         rows = sorted(pkg["states"].items(), key=lambda kv: kv[1].get("pctile", 0))
+        fy, miss = missing_years(pkg)
         line += (f" {len(pkg['states'])} corn states rated for the week ending {_mdy(we)}, each ranked "
-                 f"against the same week of every year 2000&ndash;present (rank 1 = worst on record).")
+                 f"against the same week of every year USDA rated it, {fy}&ndash;present (rank 1 = worst on record).")
+        if miss:
+            line += (f" No state has a rating at this week in {_years_txt(miss)} in the USDA file, so those "
+                     f"years are not in the comparison.")
         h = [f"<caption>Corn, week ending {_mdy(we)} &middot; worst first</caption>"
              "<tr><th>State</th><th style=\"text-align:right\">G+E now</th>"
              "<th style=\"text-align:right\">Own avg</th><th style=\"text-align:right\">Rank (1 = worst)</th></tr>"]
@@ -723,12 +833,18 @@ def seed_conditions(today):
                      f"<td class=\"num\">{s['rank_from_worst']} of {s['of']}</td></tr>")
         seeds["condtable"] = "".join(h)
         seeds["condfresh"] = f"week ending {we.isoformat()}"
+        if live and we != rd:
+            # the two files are fetched by different jobs; say so rather than
+            # let a reader take two weeks for one
+            line += (f" The state ranks are still on the week ending {_mdy(we)}; the ranking job has not "
+                     f"caught up to USDA's {_mdy(rd)} report yet.")
     else:
         why = (f"latest state file is the week ending {_mdy(we)}" if we else "state file missing or off-season")
         seeds["condtable"] = f'<tr><td style="color:#8a948f">No current state ratings: {why}</td></tr>'
         seeds["condfresh"] = "-"
     seeds["condstats"] = line
     seeds["condvsent"] = vsent
+    seeds["condweek"] = wk
     return _write_seeds("conditions.html", seeds)
 
 
@@ -1882,6 +1998,11 @@ def main():
     # fetch, without touching the price pages it has no business committing
     if sys.argv[1:] == ["--only", "milk"]:
         print("CHANGED" if seed_milk(today) else "NO-CHANGE")
+        return
+    # --only conditions: the two crop-data workflows re-bake /conditions from
+    # the files they just wrote, so its summary never trails its own data
+    if sys.argv[1:] == ["--only", "conditions"]:
+        print("CHANGED" if seed_conditions(today) else "NO-CHANGE")
         return
 
     try:
