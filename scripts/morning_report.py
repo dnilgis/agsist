@@ -17,7 +17,11 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      data/audience.json email.subscribers as the fallback.
   Orders, requests   last 24 h and month to date by kind (/form-list,
                      /notice-list?topic=rain-gauge, /sponsor-apps). Stripe
-                     only with a STRIPE_READ_KEY secret (restricted, read-only).
+                     only with a STRIPE_READ_KEY secret (restricted, read-only),
+                     and then each paid Rain Print of the last 48 h: product,
+                     amount, the design reference (client_reference_id) and the
+                     maker link agsist.com/rain-print?d=<ref>&maker=1. Never
+                     the buyer's email, name or address.
   Traffic            data/audience.json: the latest day it has, the last 7
                      days, the top 3 pages.
   To-dos             the unchecked lines of TODO-SIG.md.
@@ -532,6 +536,7 @@ def sec_orders(src, now, rep):
     except Exception as e:                                 # noqa: BLE001
         lines.append("Elevator listing requests: could not be read (%s)." % why(e))
     lines.append(stripe_line(src, now))
+    lines.extend(rain_print_paid(src, now))
     rep.add("Orders and requests", lines)
 
 
@@ -565,6 +570,46 @@ def stripe_line(src, now):
     s = "Stripe: last 24 hours %s, %s; month to date %s, %s" % (plural(len(day), "paid", "paid"), money(day),
                                                                plural(len(paid), "paid", "paid"), money(paid))
     return s + ("; %s refunded (net of refunds)." % refunded if refunded else ".")
+
+
+RP_PRODUCT = {1900: "Digital file", 4500: "Print", 8900: "Framed"}
+RP_REF_RE = re.compile(r"^[A-Za-z0-9_-]{1,200}$")
+
+
+def rain_print_paid(src, now):
+    """Each paid Rain Print checkout of the last 48 hours, one line each:
+    product, amount, the design reference and the maker link Sig opens to make
+    it. Read from /v1/checkout/sessions?status=complete. Only those four
+    things are taken from a session; never an email, a name or an address."""
+    if not src.stripe_key:
+        return []
+    since = int(now.timestamp()) - 2 * 86400
+    try:
+        rows, after = [], None
+        for _ in range(5):
+            p = {"limit": 100, "status": "complete", "created[gte]": since}
+            if after:
+                p["starting_after"] = after
+            d = src.stripe("checkout/sessions", p) or {}
+            got = [x for x in d.get("data") or [] if isinstance(x, dict)]
+            rows.extend(got)
+            if not d.get("has_more") or not got:
+                break
+            after = got[-1].get("id")
+    except Exception as e:                                 # noqa: BLE001
+        return ["Rain Print orders: could not be read from Stripe (%s)." % why(e)]
+    out = []
+    for x in sorted(rows, key=lambda r: int(r.get("created") or 0)):
+        ref = str(x.get("client_reference_id") or "")
+        if x.get("payment_status") not in (None, "paid") or not RP_REF_RE.match(ref):
+            continue
+        cents = int(x.get("amount_total") or 0)
+        what = RP_PRODUCT.get(cents, "Rain Print")
+        out.append("Rain Print paid: %s, $%s, ref %s, make it at https://agsist.com/rain-print?d=%s&maker=1"
+                   % (what, "{:,.2f}".format(cents / 100), ref, urllib.parse.quote(ref, safe="-_")))
+    if not out:
+        return ["Rain Print orders, last 48 hours: none paid."]
+    return [scrub(line) for line in out]
 
 
 def sec_traffic(src, now, rep):
@@ -1081,6 +1126,28 @@ def selftest():
     ck("paid counts and dollars, net of refunds", s == "Stripe: last 24 hours 1 paid, $19.00; month to date 2 paid, $19.00; 1 refunded (net of refunds).", s)
     ck("no buyer details", "@" not in s and "Buyer" not in s)
     ck("a bad key is one line", stripe_line(Fake(stripe=ch, stripe_key="rk", broken={"stripe"}), now) == "Stripe: could not be read (HTTP 401).")
+
+    print("\nRain Print orders from Stripe")
+    t0 = int(now.timestamp())
+    ses = {"data": [
+        {"id": "cs_1", "created": t0 - 3600, "status": "complete", "payment_status": "paid", "amount_total": 8900,
+         "client_reference_id": "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8", "customer_details": {"email": "buyer@x.com", "name": "Ray Buyer",
+         "address": {"line1": "123 Farm Rd", "city": "Chetek"}}, "shipping_details": {"name": "Ray Buyer", "address": {"line1": "123 Farm Rd"}}},
+        {"id": "cs_2", "created": t0 - 7200, "status": "complete", "payment_status": "paid", "amount_total": 1900, "client_reference_id": "RPS-K7Q2M",
+         "customer_details": {"email": "kate@x.com"}},
+        {"id": "cs_3", "created": t0 - 600, "status": "complete", "payment_status": "unpaid", "amount_total": 4500, "client_reference_id": "RPS-ZZZZZ"},
+        {"id": "cs_4", "created": t0 - 900, "status": "complete", "payment_status": "paid", "amount_total": 4500, "client_reference_id": None}],
+        "has_more": False}
+    f = Fake(stripe=ses, stripe_key="rk")
+    got = rain_print_paid(f, now)
+    ck("one line per paid Rain Print, oldest first", got == [
+        "Rain Print paid: Digital file, $19.00, ref RPS-K7Q2M, make it at https://agsist.com/rain-print?d=RPS-K7Q2M&maker=1",
+        "Rain Print paid: Framed, $89.00, ref MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8, make it at https://agsist.com/rain-print?d=MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8&maker=1"], got)
+    ck("asked of checkout/sessions", ("stripe", "checkout/sessions") in f.asked, f.asked)
+    ck("no buyer email, name or address", not any(("@" in x or "Buyer" in x or "Farm Rd" in x or "kate" in x) for x in got), got)
+    ck("none paid is one line", rain_print_paid(Fake(stripe={"data": [], "has_more": False}, stripe_key="rk"), now) == ["Rain Print orders, last 48 hours: none paid."])
+    ck("no key: nothing", rain_print_paid(Fake(stripe=ses), now) == [])
+    ck("a bad key is one line", rain_print_paid(Fake(stripe=ses, stripe_key="rk", broken={"stripe"}), now) == ["Rain Print orders: could not be read from Stripe (HTTP 401)."])
 
     print("\nthe 6:40 am gate")
     ck("CDT: 11:40 UTC is 6:40 am", chicago_tick_ok(datetime(2026, 10, 14, 11, 50, tzinfo=UTC)))

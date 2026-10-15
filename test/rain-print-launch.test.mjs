@@ -57,7 +57,7 @@ test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up
   const G = readFileSync(ROOT + "gifts-for-farmers.html", "utf8"), P = readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), C = readFileSync(ROOT + "rp-gift.html", "utf8");
   assert.match(G, /<li>Digital file <b>\$<span data-gf-price="digital">/);
   for (const [n, t] of [["rain-print", HTML], ["gifts", G], ["gift card", C]]) assert.ok(!/print files?\b[^.]{0,40}\$19|Print file <b>|print file of the whole year|A print file is/.test(t), n + ": the $19 product is the Digital file");
-  assert.match(HTML, /<li>The digital file, 12 x 18 in at 300 dpi, no watermark<\/li>/);
+  assert.match(HTML, /<li>A PNG and a PDF, 12 x 18 in at 300 dpi, no watermark<\/li>/, "the file says its types (2026-10-15)");
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const faq = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.map((q) => q.name);
   const shown = [...HTML.matchAll(/<details><summary>([^<]*)<\/summary>/g)].map((m) => m[1].replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d"));
@@ -250,12 +250,12 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
 test("shipping included is said plainly; no archival claim; care line; the reprint policy is final (Sig, 2026-10-14)", () => {
   assert.match(HTML, /<b data-price="digital">\$19<\/b> digital file<\/span><span>Shipping included<\/span>/, "the price line under the lede");
   // Sig, 2026-10-14: Alaska and Hawaii are covered, Christmas dates included; Puerto Rico not promised
-  assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both shipped products, under What comes in the box");
+  assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both shipped products, under What you get");
   assert.ok(!/US addresses/.test(HTML + JSON.stringify(J)), "no looser 'US addresses' that would take in Puerto Rico");
   assert.match(HTML, /anywhere in the 50 states, Alaska and Hawaii included/);
   assert.match(HTML, /To have a past year by Christmas, anywhere in the 50 states, order by the date shown with your choice/);
   assert.ok(!/archival/i.test(HTML + readFileSync(ROOT + "components/rain-print.js", "utf8")), "never called archival");
-  assert.equal((HTML.match(/Keep it out of direct sun/g) || []).length, 2);
+  assert.equal((HTML.match(/Keep a print out of direct sun; the inks fade in strong light\./g) || []).length, 1, "the care line once, for both (2026-10-15)");
   assert.ok(!/DRAFT-POLICY/.test(HTML), "the reprint and refund promise is final: no draft marker");
   assert.ok(!/[\u2014]/.test(HTML.replace(/<script[\s\S]*?<\/script>/g, "")), "no em dashes in the page copy");
   assert.ok(!/OWNER-SHIPPING|placeholder sentence/i.test(HTML), "no shipping placeholder left");
@@ -469,7 +469,7 @@ test("checkout note: a link to tap, no wall of code, no 'gift' for someone buyin
   assert.ok(!/<code>/.test(b), "no design code in the note");
   assert.ok(!/GIFT at the front|new tab/.test(b));
   assert.match(b, /Your design reference: /);
-  assert.match(HTML, /<h3>Ordering <span class="rp-cy">2026<\/span><\/h3>/);
+  assert.match(HTML, /<h3>A <span class="rp-cy">2026<\/span> print for Christmas<\/h3>/, "the gift heading says what it is (2026-10-15)");
   assert.match(S2, /'\{year\} \(ships January \{next\}\)'/, "the Year box fallback matches data/rain-print.json");
   assert.equal(J.gift_year_label, "{year} (ships January {next})");
 });
@@ -576,16 +576,44 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   }
   assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993]);
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
-  // the shop-wall picture, under What comes in the box, says it is a mockup, not a photo of a real print (2026-10-15)
+  // the shop-wall picture, under What you get, says it is a mockup, not a photo of a real print (2026-10-15)
   assert.match(HTML, /<figure class="rp-onwall">.*?<figcaption>Mockup of a framed print\.[^<]*<\/figcaption><\/figure>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
   // one picker, framed first and picked; the promise sits right under the one button
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
   assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
-  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-promise" id="rp-promise">You see a proof before I print\. Full refund before I print\.<\/p>/);
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print\.<\/p>\s*<p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin\. Your proof comes from sig@farmers1st\.com, your receipt from Stripe\.<\/p>/);
   assert.match(S2, /'No proof for the file: it comes finished\. Want a change after\? Write to me and I\\u2019ll redo it\.'/, "the file has no proof step (2026-10-14)");
   assert.match(HTML, /<select id="rp-cmp" aria-describedby="rp-cmp-hint">/);
   assert.match(HTML, /id="rp-cmp-hint">Nothing: just your year\. NOAA normal: [^<]+Full record: /);
   assert.ok(HTML.indexOf('id="rp-biz"') > HTML.indexOf('id="rp-buy"'), "the business section stays below the personal flow");
   assert.equal((HTML.match(/name="rp-style"/g) || []).length, 2, "two styles only");
+});
+
+test("one name per thing, one sun note, the file's types, and the file's return policy in the structured data (2026-10-15)", () => {
+  const titles = [...HTML.matchAll(/<span class="rp-prod-t">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(titles, ["Framed", "Print", "Digital file"]);
+  const seg = [...HTML.matchAll(/name="rp-pproduct" value="[a-z0-9]+"><span>([A-Za-z ]+) <b/g)].map((m) => m[1]);
+  assert.deepEqual(seg, ["Framed", "Print", "Digital file"], "the review sheet uses the same names");
+  const box = [...HTML.matchAll(/<div><h3>([^<]+)<\/h3><ul>/g)].map((m) => m[1]);
+  assert.deepEqual(box, ["Framed", "Print", "Digital file"]);
+  assert.match(HTML, /<summary>What you get<\/summary>/);
+  assert.equal((HTML.match(/direct sun/g) || []).length, 1, "the sun note once");
+  assert.match(HTML, /id="rp-sub-digital">A PNG and a PDF by email within 1 business day of paying\.</);
+  assert.match(HTML, /<li><b>For a print, I email you a proof\.<\/b>/);
+  const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
+  assert.match(S, /var PICK_WORD = \{ framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' \};/);
+  assert.match(S, /\['Marked days', ST\.markers\.length/, "the sheet's row has step 2's name");
+  assert.ok(!/internet connection/.test(S), "near you, not 'going by your internet connection'");
+  assert.match(S, /\$\('rp-ships'\)\.hidden = PICK === 'digital';/);
+  assert.match(S, /why\.hidden = late \|\| \(giftMode\(\) && canOrder\(\)\) \|\| PICK === 'digital';/);
+  const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const offers = ld["@graph"].find((g) => g.offers).offers;
+  const dig = offers.find((o) => o.sku === "rp-digital");
+  assert.equal(dig.hasMerchantReturnPolicy.returnPolicyCategory, "https://schema.org/MerchantReturnNotPermitted");
+  assert.equal(dig.hasMerchantReturnPolicy.applicableCountry, "US");
+  // word for word what the visible FAQ says about the file
+  const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0].replace(/&rsquo;/g, "\u2019");
+  assert.ok(faq.includes("The digital file comes finished; if you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge."), "the FAQ says it");
+  assert.equal(dig.hasMerchantReturnPolicy.description, "The digital file comes finished; if you want anything changed, write to me and I\u2019ll fix it or redo it by hand and send it again, no charge.");
 });

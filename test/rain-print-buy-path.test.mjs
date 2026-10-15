@@ -60,7 +60,8 @@ async function mocks(ctx, opts) {
     if (opts.log) opts.log.push(u.host + u.pathname + "?" + u.search.slice(0, 160));
     if (u.host === "agsist-subs.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
-      if (u.pathname === "/rp-short") return r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
+      if (u.pathname === "/rp-short") return opts.shortFail ? r.fulfill({ status: 503, headers: h, body: "x" }) : r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
+      if (u.pathname === "/form") return r.fulfill({ status: 200, headers: h, json: { ok: true } });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
     if (u.host === "buy.stripe.com") return r.fulfill({ status: 200, contentType: "text/html", body: "<!doctype html><p>stripe</p>" });
@@ -382,5 +383,78 @@ test("the thank-you names the print only when it knows which one was paid for", 
     await page.waitForTimeout(500);
     assert.equal(await page.isVisible("#rp-paid-hint"), false, "another design: no word");
     assert.deepEqual(errors, []);
+  });
+});
+
+test("an order request that went: \"Sent.\" stays, even when the form is opened again for the same design", { skip }, async () => {
+  const LONG = { place: "Chetek, WI", station: "471667 2", year: 2025, style: "r1", cmp: "normal", name: "The Olson Family Farm",
+    dedication: "For Grandpa Erling, sixty harvests on the home place. Love, all of us",
+    markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-04", label: "Hay all in" }, { date: "2025-10-24", label: "Harvest done" }] };
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?d=" + RP.encodeCode(LONG));
+    await idle(page);
+    await openSheet(page);
+    await page.check("#rp-proof-ok");
+    await page.click("#rp-proof-order");
+    await page.waitForFunction(() => !document.getElementById("rp-order").hidden, null, { timeout: 15000 });
+    await page.fill("#ro-name", "Ray"); await page.fill("#ro-email", "ray@example.com"); await page.fill("#ro-address", "123 Farm Rd, Chetek WI 54728");
+    await page.click("#ro-submit");
+    await page.waitForFunction(() => /^Sent\./.test(document.getElementById("ro-out").textContent), null, { timeout: 15000 });
+    // Check it and pay again, the same design: the checkout can't open, the form comes back, and "Sent." is still there
+    await page.click("#rp-pay");
+    await page.waitForSelector("#rp-proof[open]");
+    await page.check("#rp-proof-ok");
+    await page.click("#rp-proof-order");
+    await page.waitForFunction(() => !document.getElementById("rp-order").hidden, null, { timeout: 15000 });
+    await page.waitForTimeout(300);
+    assert.match(await page.textContent("#ro-out"), /^Sent\. I’ll email ray@example\.com/);
+    assert.equal(await page.isVisible("#ro-out"), true);
+    assert.deepEqual(errors, []);
+  }, { shortFail: true });
+});
+
+test("Digital file picked: no shipping or Christmas-proof lines, the file's types and who it comes from", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await drawChetek(page, base);
+    assert.equal(await page.isVisible("#rp-ships"), true, "a print says how it ships");
+    assert.equal(await page.textContent("#rp-sub-digital"), "A PNG and a PDF by email within 1 business day of paying.", "the file's line says its types once prices are in");
+    await page.locator('.rp-prod[data-choice="digital"]').click();
+    await page.waitForTimeout(300);
+    assert.equal(await page.isVisible("#rp-ships"), false);
+    assert.equal(await page.isVisible("#rp-xmas-why"), false);
+    assert.equal(await page.textContent("#rp-madeby"), "Made by Sig Lindquist in Chetek, Wisconsin. Your file comes from sig@farmers1st.com, your receipt from Stripe.");
+    await page.fill("#rp-name", "Olson");
+    await openSheet(page);
+    const when = await page.textContent("#rp-proof-sum");
+    assert.match(when, /WhenA PNG and a PDF by email within 1 business day of paying\. Made by Sig Lindquist in Chetek, Wisconsin\./);
+    assert.ok(!/ship/i.test(when.slice(when.indexOf("When"))), "no shipping words for the file");
+    assert.deepEqual(errors, []);
+  }, { width: 1280, height: 900 });
+});
+
+test("this year's gift: a marked day past the preview says it is on the January print", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + new URLSearchParams({ place: "Chetek, WI", year: "2026", station: "471667 2", name: "Olson", m1: "2026-12-01 First snow", m2: "2026-05-08 Planted" }));
+    await idle(page);
+    await page.waitForTimeout(500);
+    assert.match(await page.textContent("#rp-m1on"), /^On the January print: First snow, Dec 1\. The preview stops at Oct \d+\.$/);
+    assert.equal(await page.textContent("#rp-m2on"), "On the print: Planted, May 8");
+    assert.deepEqual(errors, []);
+  }, { width: 1280, height: 900 });
+});
+
+test("small things: 24 px sample links, a vh height before every dvh one, the favicon comes with the page", { skip }, async () => {
+  const H = readFileSync(ROOT + "rain-print.html", "utf8");
+  for (const m of H.matchAll(/height:([^;{}]*)dvh([^;{}]*)/g)) {
+    const before = H.slice(Math.max(0, m.index - 60), m.index);
+    assert.match(before, /height:[^;{}]*\dvh[^;{}]*;$/, "a vh fallback right before " + m[0]);
+  }
+  assert.ok(!/<link rel="icon" type="image\/png"[^>]*href="\/img\//.test(H), "the PNG icons are in the page, so a replaceState never fetches one again");
+  assert.match(H, /<link rel="icon" type="image\/png" sizes="32x32" href="data:image\/png;base64,/);
+  await withPage(async (page, base) => {
+    await page.goto(base + "/rain-print.html");
+    await page.waitForTimeout(800);
+    const hs = await page.$$eval(".rp-story", (a) => a.map((e) => e.getBoundingClientRect().height));
+    assert.ok(hs.length >= 2 && hs.every((h) => h >= 24), "sample links at least 24 px tall: " + hs);
   });
 });

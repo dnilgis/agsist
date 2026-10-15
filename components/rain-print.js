@@ -1597,9 +1597,9 @@
     $('rp-sample-line').hidden = !on;
     var t = EMPTY_CAP, ex = SHOW_EX && DATA && !BLOCKED;
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
-    else if (ex && META) t = 'Example words on ' + (NEAR && ST.place === NEAR ? 'your area, ' : '') + META.place + ', ' + META.year + '. Yours start blank.';
+    else if (ex && META) t = (NEAR && ST.place === NEAR ? 'Your area, ' : '') + META.place + ', ' + META.year + ', with example words. Yours start blank.';
     else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.') +
-      (NEAR && ST.place === NEAR ? ' Your area, going by your internet connection. Not your town? Type it below.' : '');
+      (NEAR && ST.place === NEAR ? ' Your area, near you. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
   // Framed or print only: the same art, with or without the CSS frame. Step 3's pick sets it (setPick).
@@ -1844,6 +1844,8 @@
   function onPrintLine(i, y) {
     var d = rowDate(i, y || parseInt($('rp-year').value, 10)), yy = parseInt(d, 10), w = rowWords(i);
     if (!d || dayIndex(yy, d) < 0) return '';
+    // this year's gift: a day past the preview isn't drawn yet, and it is on the print made in January (2026-10-15)
+    if (PREVIEW && ST.gift && yy === ST.year && d > PREVIEW.last) return 'On the January print: ' + (w ? w + ', ' : '') + shortDate(d) + '. The preview stops at ' + shortDate(PREVIEW.last) + '.';
     return 'On the print: ' + (w ? w + ', ' : '') + shortDate(d);
   }
   function rowProblems() {
@@ -2047,7 +2049,7 @@
       if (!el) return;
       el.textContent = id === 'digital'
         ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
-          : settle ? 'By email once the full year is in.' : 'By email within 1 business day of paying.')
+          : settle ? 'A PNG and a PDF by email once the full year is in.' : 'A PNG and a PDF by email within 1 business day of paying.')
         : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
           : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, PRICES && PRICES[CUTOFF_KEY[id]]))).trim();
     });
@@ -2071,7 +2073,7 @@
       why.textContent = 'The Christmas dates allow ' + (J.proof_business_days === 1 ? 'a business day' : J.proof_business_days + ' business days') + ' for the proof, ' +
         (J.approve_business_days === 1 ? 'one' : J.approve_business_days) + ' for you to OK it, ' + J.ship_business_days + ' to ship and the time in the mail, to arrive by Dec 24.';
       // this year's gift ships in January: the Christmas dates aren't about it
-      why.hidden = late || (giftMode() && canOrder());
+      why.hidden = late || (giftMode() && canOrder()) || PICK === 'digital';
     }
   }
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
@@ -2297,8 +2299,9 @@
       SETTLE: SETTLE, STUCK: STUCK, EXT_WAIT: EXT_WAIT, NORM_WAIT: NORM_WAIT, sel: $('rp-station').innerHTML } : null;
     abortLive();
     var my = ++reqToken;
-    // the reader's own draw: the example words come off the print at the top
+    // the reader's own draw: the example words come off the print at the top, and the town is theirs now, not a guess from where they are
     if (e) { KEEP_URL = false; SHOW_EX = false; }
+    if (e && e.type === 'submit' && !preset) NEAR = '';
     ST = next;
     if (ST.records) recordsReady();
     $('rp-buy-note').textContent = ''; BUY_NOTE_CODE = ''; $('rp-noname').hidden = true;
@@ -2617,7 +2620,7 @@
      in the address bar and saved for the way back, and Stripe sends the buyer
      back to rain-print?paid=<product>&s=<session> (PAID below). */
   var PICK = 'framed12x18', NONAME_OK = false;
-  var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print only', digital: 'Digital file' };
+  var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' };
   function pickPrice(id) { var J = PRICES || {}; return typeof J[id] === 'number' ? money(J[id]) : ''; }
   function setPick(id) {
     if (PRODUCTS.indexOf(id) < 0) return;
@@ -2634,12 +2637,18 @@
     $('rp-pay').textContent = 'Check it and pay' + (p ? ' ' + p : '');
     $('rp-bar-what').textContent = PICK_WORD[PICK] + (p ? ' \u00b7 ' + p : '');
     $('rp-promise').textContent = PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
-      : 'You see a proof before I print. Full refund before I print.';
+      : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-gift-line').textContent = !link ? 'It\u2019s a gift? Say so on the order form, with their name and your note.'
       : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
       : 'It\u2019s a gift? At checkout you can add their name, a note for a card in the box and their address. The card is free, and no prices go in the box.';
     $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
+    // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
+    $('rp-ships').hidden = PICK === 'digital';
+    $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
+    syncXmas();
   }
+  var MADE_BY = { print: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.',
+    file: 'Made by Sig Lindquist in Chetek, Wisconsin. Your file comes from sig@farmers1st.com, your receipt from Stripe.' };
   // why an order can't go yet, in words, or ''
   function orderBlock() {
     if (staleInputs()) return staleWords();
@@ -2901,7 +2910,7 @@
   function designRows() {
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
       ['Name', (ST.name || '(none)') + cutWords('rp-name', LIMITS.name)], ['Line under it', (ST.dedication || '(none)') + cutWords('rp-ded', LIMITS.dedication)]];
-    rows.push(['Dates', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
+    rows.push(['Marked days', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
     if (ST.logo || (LOGO && LOGO.state === 'saving')) rows.push(['Logo', logoWords()]);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
@@ -2971,14 +2980,14 @@
     if (rows['Weather station']) list.push(['Weather station', esc(rows['Weather station'])]);
     var cutSpan = function (id, v) { return textCut(id) ? '<span class="rp-pd rp-pcut">' + esc(v) + '</span>' : esc(v); };
     list.push(['Name', cutSpan('rp-name', rows['Name'])], ['Line under it', cutSpan('rp-ded', rows['Line under it'])],
-      ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) || typedCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
+      ['Marked days', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) || typedCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
       ['Compared with', esc(rows['Compared with'])], ['Style', esc(rows['Style'])]);
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
     // what the picker above it doesn't say: when it comes (and that a gift card covers it)
-    if (can) list.push(['When', esc((gift ? 'Covered by your gift card. ' : '') + whenWords(PICK))]);
+    if (can) list.push(['When', esc((gift ? 'Covered by your gift card. ' : '') + whenWords(PICK) + ' ' + MADE_BY[PICK === 'digital' ? 'file' : 'print'])]);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
     // the one action: pay for what is shown, as picked
@@ -2986,7 +2995,7 @@
     $('rp-proof-first').textContent = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
       : gift && GIFT.product === 'digital' ? 'Your card covers the digital file.'
       : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
-      : 'You see a proof before I print. Full refund before I print.';
+      : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
   }
   // when it comes, in words, for the review sheet
@@ -2994,7 +3003,7 @@
     var file = id === 'digital', J = PRICES || {};
     if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the ' + (file ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (file ? 'finished file' : 'proof') + ' then.';
-    if (file) return 'The finished file by email within 1 business day of paying.';
+    if (file) return 'A PNG and a PDF by email within 1 business day of paying.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
   }
   /* Fit or actual size. Going in, the spot that was clicked (or the middle)
@@ -3036,7 +3045,7 @@
     var dlg = $('rp-proof');
     if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
   }
-  var ORDER_NOTE_0 = '';
+  var ORDER_NOTE_0 = '', SENT_CODE = '';
   function openOrder(id, why) {
     flushRedraw();
     var box = $('rp-order'), note = $('ro-order-note');
@@ -3048,7 +3057,8 @@
     $('ro-choice').value = id;
     syncAddress();
     $('ro-design').value = designUrl(ST);
-    $('ro-out').innerHTML = '';
+    // "Sent." stays for the design it was sent for: opening the form again for that design doesn't wipe it (2026-10-15)
+    if (SENT_CODE !== encodeCode(ST)) { $('ro-out').innerHTML = ''; SENT_CODE = ''; }
     syncSummary();
     try { box.scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
     try { $('ro-name').focus({ preventScroll: true }); } catch (e) {}
@@ -3194,6 +3204,7 @@
           : '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a proof of this design and a payment link.</p>' +
             '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
             ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
+        SENT_CODE = encodeCode(ST);
         $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
         try { out.firstChild.focus(); } catch (err) {}
       }).catch(function () {
