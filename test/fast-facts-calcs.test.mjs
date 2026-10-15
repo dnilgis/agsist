@@ -143,3 +143,20 @@ test("a fertilizer pill quoted on another day than the sheet shows its own date"
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+/* K-Mag is 0-0-22 (22% K2O guaranteed minimum, 2025 K-Mag Granular data
+ * sheet). The pill used to divide by 20%, which priced its potash 10% high:
+ * $650/ton read $1.625/lb K2O instead of $1.477. */
+test("the K-Mag pill prices potash at 22% K2O", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const fert = { updated: "2026-09-01", prices: [
+      { name: "K-Mag Premium", symbol: "0-0-22-22S-10.8Mg", price: 650, as_of: "2026-09-01" } ] };
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
+    await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 1);
+    const label = await pg.$eval(".fert-pill", (e) => e.getAttribute("aria-label"));
+    assert.equal(label, "K-Mag Premium $650/ton: $1.477/lb K2O");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
