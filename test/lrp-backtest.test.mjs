@@ -113,9 +113,9 @@ test('"did best so far" sees only endorsements that had settled 14 days before',
   // a later day whose own, unsettled outcome would favour 95-100 must not change the pick
   for (const b of bands) trials.push(mk('20220120', '20220420', b, b === '95-100' ? 1e6 : 0, 1));
   const pick = B.pastBest(trials);
-  assert.equal(pick.get('feeder|13|20220110'), null);
-  assert.equal(pick.get('feeder|13|20220115'), '70-80');
-  assert.equal(pick.get('feeder|13|20220120'), '70-80');
+  assert.equal(pick.get('feeder|13|20220110'), null);  // no ranking yet
+  assert.equal(pick.get('feeder|13|20220115')[0], '70-80');
+  assert.equal(pick.get('feeder|13|20220120')[0], '70-80');
 });
 
 test('the family is 36 tests and a flat record keeps nothing', () => {
@@ -182,7 +182,7 @@ test('"did best so far" picks among the bands that have a record', () => {
   trials.push(mk('20160201', '20160501', '95-100', 0, 1, 2016));
   trials.push(mk('20160201', '20160501', '90-95', 0, 1, 2016));
   const pick = B.pastBest(trials);
-  assert.equal(pick.get('feeder|13|20160201'), '90-95');
+  assert.equal(pick.get('feeder|13|20160201')[0], '90-95');
   // without the base band in the record there is no pick
   const t2 = [];
   for (let i = 0; i < B.MIN_SETTLED; i++) { t2.push(mk('20151001', '20160101', '90-95', 5, 1, 2016)); t2.push(mk('20151001', '20160101', '85-90', 1, 1, 2016)); }
@@ -216,4 +216,59 @@ test('the subsidy table matches what RMA\'s Summary of Business rows got, RY2014
   }
   const c = B.subsidyCheck(sob);
   assert.ok(c['2020'].agree_share > 0.95, `RY2020 agreement ${c['2020'].agree_share}`);
+});
+
+test('a missing ending value counts the offer once, not once per band, and is put down to a broken file near it', () => {
+  const rows = [[1000000, 300000, 1, 6000], [900000, 270000, 1, 3000], [850000, 255000, 1, 2000]];
+  const offers = [{ pid: 'fed', comm: '0802', type: '820', ry: 2025, sed: '20251201', len: 13, end: '20260323', rows },
+    { pid: 'fed', comm: '0802', type: '820', ry: 2025, sed: '20251001', len: 13, end: '20260105', rows }];
+  const r = B.buildTrials(offers, {}, '20261010');
+  assert.deepEqual(r.missing, { fed: 2 });
+  const d = B.missingDetail(r.missingEnds, [{ ry: '2025', date: '20260325', file: '2025_ADMLivestockLrp_Daily_20260325.zip' }]);
+  assert.deepEqual(d.by_file, { '2025_ADMLivestockLrp_Daily_20260325.zip': { fed: 1 } });
+  assert.deepEqual(d.other, { fed: 1 });
+});
+
+test('the record is the plain average of paid minus cost over every sales day', () => {
+  // two sales days a year apart, one paid 10, one paid 0; cost 2 before a 35% subsidy
+  const mkT = (sed, paid, ry) => ({ pid: 'feeder', ry, sed, d: B.dayNum(sed), endD: B.dayNum(sed) + 91, len: 47, band: '95-100',
+    level: 1, paid, cost: 2, net: paid - 2 * 0.65, netNow: paid - 2 * 0.65 });
+  const ts = [];
+  for (let i = 0; i < 30; i++) ts.push(mkT('20220101', 10, 2022));
+  for (let i = 0; i < 90; i++) ts.push(mkT('20230301', 0, 2023));
+  const r = B.summarize(ts)['all/feeder/95-100/47'];
+  close(r.net, (30 * 10 + 90 * 0) / 120 - 1.3, 1e-9, 'trial mean, not a window or year mean');
+  close(r.net, r.paid - r.cost, 1e-3);
+  assert.equal(r.years, 2);
+});
+
+test('the test reports the average of the yearly averages, the number the sign flip tests', () => {
+  const pts = [];
+  for (let ry = 2014; ry <= 2018; ry++) for (let i = 0; i < (ry === 2014 ? 200 : 20); i++) pts.push({ d: B.dayNum(`${ry - 1}0801`) + i, ry, len: 13, x: ry === 2014 ? 5 : 1 });
+  const r = B.testSeries(pts);
+  close(r.mean, (5 + 1 + 1 + 1 + 1) / 5, 1e-9);
+  close(r.trial_mean, (200 * 5 + 80) / 280, 1e-3);
+});
+
+test('band differences are per $100 of expected ending value', () => {
+  // 85% band: coverage 255 on an expected value of 300; nets per $100 of each band's coverage
+  close(B.diffPerEev({ net: 2, level: 0.85 }, { net: 1, level: 1 }), 2 * 0.85 - 1, 1e-12);
+});
+
+test('"did best so far" takes the best-ranked band offered that day, down the ranking', () => {
+  const trials = [];
+  for (let i = 0; i < B.MIN_SETTLED; i++) {
+    trials.push(mk('20151001', '20160101', '95-100', 0, 1, 2016));
+    trials.push(mk('20151001', '20160101', '90-95', 1, 1, 2016));
+    trials.push(mk('20151001', '20160101', '85-90', 5, 1, 2016));
+  }
+  // on 2016-02-01 RMA offered 95-100 and 90-95 but not 85-90
+  const a = mk('20160201', '20160501', '95-100', 0, 1, 2016), b = mk('20160201', '20160501', '90-95', 0, 1, 2016);
+  a.net = 1; b.net = 2;
+  const { tests } = B.runBacktest([...trials, a, b]);
+  const t = tests['all/feeder/best'];
+  assert.equal(t.fell_back_trials, 1);
+  assert.equal(t.no_pick_trials, B.MIN_SETTLED, 'the first days had no record yet');
+  assert.equal(t.trials, 1, 'the Feb 1 day counts, at 90-95');
+  close(t.trial_mean, 2 * 0.9 - 1, 1e-9);
 });

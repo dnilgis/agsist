@@ -90,6 +90,9 @@ export const SETTLE_LAG_DAYS = 14;
 export const MIN_WINDOWS_PER_LENGTH = 4;
 export const MIN_YEARS = 5;
 export const MIN_TRIALS_PER_YEAR = 20;
+/* "today's subsidy": the schedule in force from RY2021 on */
+export const TODAY_RY = 2027;
+export const MISSING_FILE_DAYS = 10;
 const EPOCH = Date.UTC(2013, 6, 1);
 
 export function subsidy(ry, level) {
@@ -241,27 +244,36 @@ export function loadHistory(dir) {
    yet, so it counts as open, not missing. */
 export function buildTrials(offers, aevStore, asOf) {
   const look = aevLookup(aevStore);
-  const trials = [], missing = {}, open = {};
+  const trials = [], missing = {}, open = {}, missingEnds = {};
   for (const o of offers) {
     const bands = pickBands(o.rows);
+    if (!Object.keys(bands).length) continue;
     const a = look(String(o.ry), o.comm, o.type, o.end, o.sed);
-    for (const [band, row] of Object.entries(bands)) {
-      if (a == null) {
-        const bucket = dayNum(o.end) > dayNum(asOf) - SETTLE_LAG_DAYS ? open : missing;
-        bucket[o.pid] = (bucket[o.pid] || 0) + 1;
-        continue;
+    if (a == null) {
+      /* one offer (one product, sales day and length) counts once, not once per band */
+      const isOpen = dayNum(o.end) > dayNum(asOf) - SETTLE_LAG_DAYS;
+      const bucket = isOpen ? open : missing;
+      bucket[o.pid] = (bucket[o.pid] || 0) + 1;
+      if (!isOpen) {
+        const k = `${o.pid}|${o.ry}|${o.end}`;
+        missingEnds[k] = (missingEnds[k] || 0) + 1;
       }
+      continue;
+    }
+    for (const [band, row] of Object.entries(bands)) {
       const t = trialParts(row, a);
+      const eev = row[1] / 1000 / t.level;
       trials.push({ pid: o.pid, ry: o.ry, sed: o.sed, d: dayNum(o.sed), endD: dayNum(o.end), len: o.len, band,
-        level: t.level, paid: t.paid, cost: t.cost, net: netOf(t, subsidy(o.ry, t.level)) });
+        level: t.level, paid: t.paid, cost: t.cost, net: netOf(t, subsidy(o.ry, t.level)),
+        netNow: netOf(t, subsidy(TODAY_RY, t.level)), aevRatio: a / 1000 / eev });
     }
   }
-  return { trials, missing, open };
+  return { trials, missing, open, missingEnds };
 }
 
 /* "the band that did best so far": for each trial day, the band whose
    settled record (end at least SETTLE_LAG_DAYS before the day) is best at that
-   day's subsidy. Returns Map("pid|len|sed" -> band or null). */
+   day's subsidy. Returns Map("pid|len|sed" -> [bands, best first] or null). */
 export function pastBest(trials) {
   const byKey = new Map();
   for (const t of trials) {
@@ -282,19 +294,19 @@ export function pastBest(trials) {
       while (i < byEnd.length && byEnd[i].endD <= d - SETTLE_LAG_DAYS) {
         const s = sums[byEnd[i].band]; s.n++; s.paid += byEnd[i].paid; s.cost += byEnd[i].cost; i++;
       }
-      let best = null, bestNet = -Infinity;
       /* the bands with a record: before RY2025 RMA's dollar steps rarely
-         reached the low bands, so the pick is among those that had one, and
-         only when the base band is one of them */
+         reached the low bands, so the ranking is of those that had one, and
+         only when the base band is one of them. Best first; ties keep the
+         higher band. */
       const cands = BANDS.filter((b) => sums[b.id].n >= MIN_SETTLED);
+      let rank = null;
       if (cands.length >= 2 && cands.some((b) => b.id === BASE)) {
-        for (const b of cands) {
+        rank = cands.map((b, i) => {
           const s = sums[b.id], sub = subsidy(ryOf.get(sed), (b.lo + Math.min(b.hi, 1)) / 2);
-          const net = (s.paid - s.cost * (1 - sub)) / s.n;
-          if (net > bestNet + 1e-12) { bestNet = net; best = b.id; }
-        }
+          return { id: b.id, i, net: (s.paid - s.cost * (1 - sub)) / s.n };
+        }).sort((x, y) => (y.net - x.net) || (x.i - y.i)).map((x) => x.id);
       }
-      pick.set(`${k}|${sed}`, best);
+      pick.set(`${k}|${sed}`, rank);
     }
   }
   return pick;
@@ -346,15 +358,26 @@ export function testSeries(points) {
   const yx = Object.values(years).filter((y) => y.trials >= MIN_TRIALS_PER_YEAR).map((y) => y.mean);
   const enough = yx.length >= MIN_YEARS;
   const p = enough ? signFlip(yx) : null;
+  /* per length, the same statistic: the mean of the yearly means over years
+     with MIN_TRIALS_PER_YEAR trials at that length */
   const lengths = {};
+  const byLenYear = new Map();
+  for (const p of points) {
+    const k = `${p.len}|${p.ry}`;
+    if (!byLenYear.has(k)) byLenYear.set(k, []);
+    byLenYear.get(k).push(p.x);
+  }
   for (const [len, m] of [...perLen].sort((a, b) => a[0] - b[0])) {
-    const xs = [...m.keys()].sort((a, b) => a - b).map((w) => mean(m.get(w)));
-    lengths[len] = { windows: xs.length, mean: round(mean(xs), 3) };
+    const ym = [...byLenYear].filter(([k, xs]) => +k.split("|")[0] === len && xs.length >= MIN_TRIALS_PER_YEAR).map(([, xs]) => mean(xs));
+    lengths[len] = { windows: m.size, years: ym.length, mean: ym.length ? round(mean(ym), 3) : null };
   }
   return { trials: points.length, years_tested: yx.length, p: p == null ? null : +p.toPrecision(3),
     not_run: enough ? null : `fewer than ${MIN_YEARS} reinsurance years with ${MIN_TRIALS_PER_YEAR} or more trials`,
     years_positive: yx.filter((v) => v > 0).length,
-    windows: h.n, nEff: round(h.nEff, 1), mean: round(h.mean, 3), se: round(h.se, 3),
+    /* mean: the average of the yearly averages, the number the sign flip tests and the verdict gates on */
+    mean: yx.length ? round(mean(yx), 3) : null,
+    trial_mean: points.length ? round(mean(points.map((q) => q.x)), 3) : null,
+    windows: h.n, nEff: round(h.nEff, 1), window_mean: round(h.mean, 3), se: round(h.se, 3),
     hac_p: h.p == null ? null : +h.p.toPrecision(3), years, lengths };
 }
 
@@ -384,31 +407,51 @@ export function runBacktest(trials) {
         const pts = [];
         for (const t of base) {
           const o = idx.get(`${t.pid}|${t.len}|${t.sed}|${b.id}`);
-          if (o) pts.push({ d: t.d, ry: t.ry, len: t.len, x: o.net - t.net });
+          if (o) pts.push({ d: t.d, ry: t.ry, len: t.len, x: diffPerEev(o, t) });
         }
         add(`band:${b.id}`, `the ${b.id} band instead of ${BASE}`, pts);
       }
       const pts = [];
-      let noPick = 0;
+      let noPick = 0, fellBack = 0;
       for (const t of base) {
-        const b = best.get(`${t.pid}|${t.len}|${t.sed}`);
-        if (!b) { noPick++; continue; }
-        const o = idx.get(`${t.pid}|${t.len}|${t.sed}|${b}`);
-        if (o) pts.push({ d: t.d, ry: t.ry, len: t.len, x: o.net - t.net });
+        const rank = best.get(`${t.pid}|${t.len}|${t.sed}`);
+        if (!rank) { noPick++; continue; }
+        /* the best-ranked band RMA offered that day, down the ranking */
+        let o = null;
+        for (let i = 0; i < rank.length && !o; i++) {
+          o = idx.get(`${t.pid}|${t.len}|${t.sed}|${rank[i]}`) || null;
+          if (o && i > 0) fellBack++;
+        }
+        pts.push({ d: t.d, ry: t.ry, len: t.len, x: diffPerEev(o, t) });
       }
       add("best", `the band that did best so far instead of ${BASE}`, pts);
       tests[`${rg.id}/${p.id}/best`].no_pick_trials = noPick;
+      tests[`${rg.id}/${p.id}/best`].fell_back_trials = fellBack;
     }
   }
   const adj = holm(Object.fromEntries(family.map((k) => [k, tests[k].p])));
   for (const k of family) {
     const t = tests[k];
     t.p_holm = +adj[k].toPrecision(3);
-    const lens = Object.values(t.lengths).filter((l) => l.windows >= MIN_WINDOWS_PER_LENGTH);
+    const lens = Object.values(t.lengths).filter((l) => l.years >= MIN_YEARS && l.mean != null);
     t.positive_every_length = lens.length > 0 && lens.every((l) => l.mean > 0);
     t.kept = t.p_holm < 0.05 && t.mean > 0 && t.positive_every_length;
   }
-  return { family, tests };
+  /* sensitivity, reported, not used: Holm over only the tests that ran and
+     ask "beat 95-100" since RY2014 (the family stays the declared 36) */
+  const sub12 = family.filter((k) => tests[k].regime === "all" && tests[k].test !== "paid" && tests[k].p != null);
+  const adj12 = holm(Object.fromEntries(sub12.map((k) => [k, tests[k].p])));
+  const minKey = sub12.reduce((a, k) => (a == null || adj12[k] < adj12[a] ? k : a), null);
+  const sensitivity = { tests: sub12.length, min_p_holm: minKey ? +adj12[minKey].toPrecision(3) : null, min_test: minKey };
+  return { family, tests, sensitivity };
+}
+
+/* a band against the 95-100 band on the same day and length, per $100 of
+   RMA's expected ending value (the same base for both: coverage price =
+   expected ending value x level), so a lower band is not flattered by its
+   smaller coverage */
+export function diffPerEev(o, t) {
+  return o.net * o.level - t.net * t.level;
 }
 
 /* the plain record: per product, regime, band and length, what an endorsement
@@ -423,11 +466,17 @@ export function summarize(trials) {
         for (const len of lens) {
           const xs = ts.filter((t) => t.len === len);
           const s = testSeries(xs.map((t) => ({ d: t.d, ry: t.ry, len, x: t.net })));
+          const avg = (f) => xs.reduce((a, t) => a + f(t), 0) / xs.length;
+          const paid = avg((t) => t.paid), cost = avg((t) => t.cost * (1 - subsidy(t.ry, t.level)));
+          const costNow = avg((t) => t.cost * (1 - subsidy(TODAY_RY, t.level)));
+          const big = Object.entries(s.years).filter(([, y]) => y.trials >= MIN_TRIALS_PER_YEAR);
           out[`${rg.id}/${p.id}/${b.id}/${len}`] = {
-            trials: xs.length, windows: s.windows, nEff: s.nEff, years: Object.keys(s.years).length,
-            net: s.mean, paid_share: round(xs.filter((t) => t.paid > 0).length / xs.length, 3),
-            paid: round(xs.reduce((a, t) => a + t.paid, 0) / xs.length, 3),
-            cost: round(xs.reduce((a, t) => a + t.cost * (1 - subsidy(t.ry, t.level)), 0) / xs.length, 3),
+            trials: xs.length, windows: s.windows, nEff: s.nEff, years: big.length,
+            /* the plain average over every sales day: what it paid minus what it cost */
+            net: round(paid - cost, 3), net_now: round(paid - costNow, 3),
+            paid_share: round(xs.filter((t) => t.paid > 0).length / xs.length, 3),
+            paid: round(paid, 3), cost: round(cost, 3), cost_now: round(costNow, 3),
+            best_year: big.length ? big.reduce((a, y) => (y[1].mean > a[1].mean ? y : a))[0] : null,
             level: round(xs.reduce((a, t) => a + t.level, 0) / xs.length, 4),
             first: xs.reduce((a, t) => (t.sed < a ? t.sed : a), "99999999"),
             last: xs.reduce((a, t) => (t.sed > a ? t.sed : a), "00000000"),
@@ -435,6 +484,39 @@ export function summarize(trials) {
         }
       }
     }
+  }
+  return out;
+}
+
+/* RMA's actual ending value against its expected ending value on the sales
+   day, base band, every length: per product and reinsurance year, the mean
+   of (actual / expected - 1) and the share of sales days it came in above. */
+export function endingVsExpected(trials) {
+  const out = {};
+  for (const t of trials) {
+    if (t.band !== BASE) continue;
+    const p = (out[t.pid] ||= {}), y = (p[t.ry] ||= { n: 0, sum: 0, above: 0 });
+    y.n++; y.sum += t.aevRatio - 1; if (t.aevRatio > 1) y.above++;
+  }
+  for (const p of Object.values(out)) for (const [ry, y] of Object.entries(p)) {
+    p[ry] = { n: y.n, mean_pct: round((y.sum / y.n) * 100, 2), above_share: round(y.above / y.n, 3) };
+  }
+  return out;
+}
+
+/* missing ending values: per product, and which of them RMA would have
+   posted in a file that would not open (meta.json unreadable_files): an
+   ending value comes out in a daily file of its reinsurance year after its
+   end date (fed cattle's from a weekly USDA report, so up to about a week
+   later), so a missing one whose end date falls in the 10 days before a
+   broken file of the same reinsurance year is put down to that file. */
+export function missingDetail(missingEnds, unreadable) {
+  const out = { by_file: {}, other: {} };
+  for (const [k, n] of Object.entries(missingEnds)) {
+    const [pid, ry, end] = k.split("|");
+    const f = (unreadable || []).find((u) => String(u.ry) === String(ry) && dayNum(u.date) - dayNum(end) >= 0 && dayNum(u.date) - dayNum(end) <= MISSING_FILE_DAYS);
+    if (f) { const b = (out.by_file[f.file] ||= {}); b[pid] = (b[pid] || 0) + n; }
+    else out.other[pid] = (out.other[pid] || 0) + n;
   }
   return out;
 }
@@ -473,17 +555,23 @@ function main() {
   const t0 = Date.now();
   const { offers, aev } = loadHistory(dir);
   const asOf = offers.reduce((a, o) => (o.sed > a ? o.sed : a), "00000000");
-  const { trials, missing, open } = buildTrials(offers, aev, asOf);
-  const { family, tests } = runBacktest(trials);
+  const { trials, missing, open, missingEnds } = buildTrials(offers, aev, asOf);
+  const { family, tests, sensitivity } = runBacktest(trials);
   const res = {
     v: 1, as_of: asOf, method: {
-      per: "dollars per $100 of coverage, to the producer, after subsidy",
+      per: "record: dollars per $100 of coverage, to the producer, after subsidy, averaged over every sales day; " +
+        "tests: the average of the reinsurance-year averages, band differences per $100 of RMA's expected ending value",
+      today_ry: TODAY_RY,
       test: "exact sign flip over reinsurance-year means", min_years: MIN_YEARS, min_trials_per_year: MIN_TRIALS_PER_YEAR,
       bands: BANDS.map((b) => b.id), base: BASE, window_days: WINDOW_DAYS, hac_lags: HAC_LAGS,
       min_settled: MIN_SETTLED, settle_lag_days: SETTLE_LAG_DAYS, min_windows_per_length: MIN_WINDOWS_PER_LENGTH,
       regimes: REGIMES, products: PRODUCTS,
     },
-    counts: { offers: offers.length, trials: trials.length, aev_missing: missing, still_open: open },
+    counts: { offers: offers.length, trials: trials.length, aev_missing: missing, still_open: open,
+      aev_missing_detail: missingDetail(missingEnds, meta.unreadable_files),
+      aev_restated: meta.checks ? meta.checks.aev_restated : null },
+    holm_sensitivity: sensitivity,
+    ending_vs_expected: endingVsExpected(trials),
     family_size: family.length, kept: family.filter((k) => tests[k].kept),
     subsidy_check: subsidyCheck(meta.sob_subsidy),
     tests, record: summarize(trials),
