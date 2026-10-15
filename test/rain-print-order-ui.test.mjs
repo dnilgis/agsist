@@ -159,10 +159,13 @@ test("a new visit: empty boxes with the example as gray hints; the print at the 
     await page.goto(base + "/rain-print.html");
     await drawn(page);
     await settle(page);
-    for (const [id, ph] of [["rp-name", "The Johnson Farm"], ["rp-ded", "For Dad, his 40th crop. Love, Kate"], ["rp-m1l", "Planted"]]) {
+    for (const [id, ph] of [["rp-name", "The Johnson Farm"], ["rp-ded", "For Dad, his 40th crop. Love, Kate"]]) {
       assert.equal(await page.inputValue("#" + id), "", id + " starts empty");
       assert.equal(await page.getAttribute("#" + id, "placeholder"), ph, id + " shows the example as a gray hint");
     }
+    // a day's words box is empty with no gray hint: "Planted" in gray looked filled in on a phone (panel 5, 2026-10-15)
+    assert.equal(await page.inputValue("#rp-m1l"), "");
+    assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), null);
     assert.match(await page.innerHTML("#rp-art"), /The Johnson Farm/, "the print at the top shows what a print can carry");
     assert.equal(await page.textContent("#rp-sample-txt"), "Example words on your area, Chetek, WI, 2025. Yours start blank.");
     assert.ok(!/name=/.test(page.url()), "the example is never in the design: " + page.url());
@@ -305,19 +308,22 @@ test("a marked day is a month and a day from lists: the day picked is the day or
     await page.click('#rp-presets button:text-is("Planted")');
     assert.equal(await page.inputValue("#rp-m1l"), "Planted");
     assert.equal(await page.evaluate(() => document.activeElement.id), "rp-m1mo");
-    assert.match(await page.textContent("#rp-date-msg"), /Day 1 \(“Planted”\) needs a month and a day to go on the print\./, "a half-picked day says it won't print");
+    assert.equal(await page.isHidden("#rp-m1err"), true, "no red before the reader has had a chance to pick a date");
+    assert.equal(await page.textContent("#rp-date-say"), "Planted is day 1. Now pick its month and day.", "the chip says what it did");
     // keyboard, the way a 60-year-old fills it: focus the month, type, tab, type
     await page.keyboard.type("May");
     await page.keyboard.press("Tab");
     await page.keyboard.type("2");
     await settle(page);
     assert.deepEqual([await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy")], ["05", "02"]);
-    assert.equal(await page.isHidden("#rp-date-msg"), true);
+    assert.equal(await page.isHidden("#rp-m1err"), true);
+    assert.equal(await page.textContent("#rp-m1on"), "On the print: Planted, May 2");
     // two more days
     await page.click("#rp-add-day");
     await page.selectOption("#rp-m2mo", "06"); await page.selectOption("#rp-m2dy", "21"); await page.fill("#rp-m2l", "Hail");
     await page.click("#rp-add-day");
     assert.equal(await page.isVisible("#rp-add-day"), false, "three is the most");
+    assert.equal(await page.textContent("#rp-dates-max"), "3 days is the most that fits. Remove one to mark another.");
     await page.selectOption("#rp-m3mo", "10"); await page.selectOption("#rp-m3dy", "30"); await page.fill("#rp-m3l", "Combined");
     assert.equal(await page.$$eval("#rp-m2dy option", (o) => o.length - 1), 30, "June has 30 days");
     await settle(page);
@@ -330,7 +336,8 @@ test("a marked day is a month and a day from lists: the day picked is the day or
     assert.deepEqual([await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy")], ["02", "29"]);
     await page.selectOption("#rp-year", "2025");
     await drawn(page);
-    assert.match(await page.textContent("#rp-date-msg"), /isn’t in 2025, so it won’t be on the print/);
+    assert.equal(await page.textContent("#rp-m1err"), "2025 has no February 29. Pick Feb 28 or Mar 1.", "said in words under its own row, never 2025-02-29");
+    assert.equal(await page.getAttribute("#rp-m1dy", "aria-invalid"), "true");
     assert.deepEqual(errors, []);
   });
 });
@@ -395,7 +402,7 @@ test("the business section folds to one card, and a link to it opens it", { skip
   });
 });
 
-test("labels: a counter to 13 letters, a paste past it says what was cut, a linked cut label is flagged on the proof, full width on a phone", { skip }, async () => {
+test("labels: a counter to 13 letters, words typed or pasted past it are said in red and flagged, a linked cut label is flagged on the proof, full width on a phone", { skip }, async () => {
   for (const theme of ["light", "dark"]) await withPage(async (page, base, errors) => {
     await page.goto(base + "/rain-print.html?" + q({ place: "Chetek, WI", year: "2025", station: "471667 2", name: "Olson", m1: "2025-06-22 Our wedding day", m2: "2025-10-24 Harvest done" }));
     await drawn(page);
@@ -413,28 +420,124 @@ test("labels: a counter to 13 letters, a paste past it says what was cut, a link
     await page.waitForSelector("#rp-proof[open]");
     assert.match(await page.textContent("#rp-proof-sum"), /“Our wedding d” \(cut off: only 13 letters fit, the link had “Our wedding day”\)/);
     await page.click("#rp-proof-close");
-    // typing: the box stops at 13, and the counter says that's the most (a third day is one tap away)
+    // typing: 13 letters is the most; the counter says so at 13
     await page.click("#rp-add-day");
     await page.fill("#rp-m3l", "");
-    await page.type("#rp-m3l", "Sold the cows today");
-    assert.equal(await page.inputValue("#rp-m3l"), "Sold the cows");
+    await page.type("#rp-m3l", "Sold the cows");
     assert.equal(await page.textContent("#rp-m3l-n"), "13 of 13 letters. That’s the most that fits.");
-    // a paste past the limit is cut by the box, and the counter names it
+    // past 13 the box keeps the words and says in red what the print can't take, never a silent cut (panel 5, 2026-10-15)
     await page.fill("#rp-m3l", "");
-    await page.focus("#rp-m3l");
-    await page.evaluate(() => {
-      const el = document.getElementById("rp-m3l"), dt = new DataTransfer();
-      dt.setData("text/plain", "Dad's last crop");
-      el.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
-      el.value = "Dad's last crop".slice(0, 13); el.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    await page.waitForTimeout(50);
-    assert.match(await page.textContent("#rp-m3l-n"), /“Dad's last crop” is cut to “Dad's last cr”/);
+    await page.type("#rp-m3l", "Dad's last crop");
+    assert.equal(await page.inputValue("#rp-m3l"), "Dad's last crop");
+    assert.equal(await page.textContent("#rp-m3l-n"), "That’s 13 letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.");
+    assert.ok(await page.$eval("#rp-m3l-n", (el) => el.classList.contains("rp-bad")), "in the warning color");
+    // pasted the same way: the words stay in the box, the warning shows
+    await page.fill("#rp-m3l", "Our anniversary");
+    assert.equal(await page.textContent("#rp-m3l-n"), "That’s 13 letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.");
+    // and the review sheet flags it
+    await page.selectOption("#rp-m3mo", "06"); await page.selectOption("#rp-m3dy", "14");
+    await settle(page);
+    assert.equal(await page.textContent("#rp-m3on"), "On the print: Our anniversa, Jun 14", "the line under the row shows what prints");
+    await page.click("#rp-zoom");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.match(await page.textContent("#rp-proof-sum"), /Jun 14 “Our anniversa” \(cut off: only 13 letters fit, you typed “Our anniversary”\)/);
+    assert.equal(await page.$$eval("#rp-proof-sum .rp-pcut", (e) => e.length), 2, "both cut labels are marked");
+    await page.click("#rp-proof-close");
     // changing the label clears it
     await page.fill("#rp-m3l", "Last crop");
     assert.equal(await page.textContent("#rp-m3l-n"), "9 of 13 letters");
     assert.deepEqual(errors, []);
   }, { theme });
+});
+
+// ---------- panel 5 (2026-10-15): Mark a day, each day its own block ----------
+test("Mark a day: numbered rows with Remove, the message under its own row at the right time, the 3-day cap, chips that say what they did", { skip }, async () => {
+  await withPage(async (page, base, errors, stripe) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    assert.equal(await page.textContent("#rp-m1h"), "Day 1");
+    assert.equal(await page.isVisible("#rp-m1rm"), false, "a lone empty day has nothing to remove");
+    assert.equal(await page.$("datalist"), null, "no datalist");
+    assert.equal(await page.getAttribute("#rp-m1l", "list"), null);
+    // words first, no date: nothing red while the reader is still in the row
+    await page.fill("#rp-m1l", "Planted corn");
+    await settle(page);
+    assert.equal(await page.isHidden("#rp-m1err"), true, "not while typing");
+    // leaving the row: the message, under this row, and the lists get a red border
+    await page.click("#rp-name");
+    assert.equal(await page.textContent("#rp-m1err"), "Day 1 (“Planted corn”) needs a month and a day to go on the print.");
+    assert.equal(await page.getAttribute("#rp-m1mo", "aria-invalid"), "true");
+    await page.waitForTimeout(300);   // the box's border eases over .15s
+    const border = await page.$eval("#rp-m1mo", (el) => getComputedStyle(el).borderTopColor), plainBorder = await page.$eval("#rp-name", (el) => getComputedStyle(el).borderTopColor);
+    assert.notEqual(border, plainBorder, "a red border on the bad list");
+    const below = await page.evaluate(() => { const r = document.getElementById("rp-m1row").getBoundingClientRect(), e = document.getElementById("rp-m1err").getBoundingClientRect(); return e.top >= r.top && e.bottom <= r.bottom + 1; });
+    assert.ok(below, "the message sits inside its own row");
+    await page.selectOption("#rp-m1mo", "05"); await page.selectOption("#rp-m1dy", "21");
+    assert.equal(await page.isHidden("#rp-m1err"), true);
+    assert.equal(await page.textContent("#rp-m1on"), "On the print: Planted corn, May 21");
+    // a second day: Feb 31 is said in plain words, at once, never as 2025-02-31
+    await page.click("#rp-add-day");
+    assert.equal(await page.textContent("#rp-m2h"), "Day 2");
+    await page.selectOption("#rp-m2mo", "01"); await page.selectOption("#rp-m2dy", "31"); await page.selectOption("#rp-m2mo", "02");
+    // the day list is rebuilt for February; the 31 stays picked so the message can say why
+    assert.equal(await page.inputValue("#rp-m2dy"), "31");
+    assert.equal(await page.textContent("#rp-m2err"), "February has 28 days in 2025. Pick a day from 1 to 28.");
+    assert.ok(!/2025-02-31/.test(await page.textContent(".rp-dates")), "no machine date anywhere");
+    // Check it and pay shows every message and stops at the bad day
+    await page.click("#rp-pay");
+    assert.equal(await page.evaluate(() => document.activeElement.id), "rp-m2dy", "focus goes to the bad day");
+    assert.equal(await page.$eval("#rp-proof", (d) => d.open), false, "the review sheet waits");
+    assert.match(await page.textContent("#rp-buy-note"), /Day 2 isn’t ready for the print\. Fix it or remove it, then check again\./);
+    // Remove, named for its day: the row goes, focus goes to + Mark another day
+    assert.equal(await page.getAttribute("#rp-m2rm", "aria-label"), "Remove day 2");
+    await page.getByRole("button", { name: "Remove day 2" }).click();
+    assert.equal(await page.isVisible("#rp-m2row"), false);
+    assert.equal(await page.evaluate(() => document.activeElement.id), "rp-add-day");
+    // chips: a tap opens the next day and says so, visibly and to a screen reader
+    assert.equal(await page.getAttribute("#rp-presets", "role"), "group");
+    await page.click('#rp-presets button:text-is("First frost")');
+    assert.equal(await page.inputValue("#rp-m2l"), "First frost");
+    assert.equal(await page.textContent("#rp-date-say"), "First frost is day 2. Now pick its month and day.");
+    assert.equal(await page.getAttribute("#rp-date-say", "aria-live"), "polite");
+    assert.equal(await page.isHidden("#rp-m2err"), true, "no red right after a chip");
+    await page.selectOption("#rp-m2mo", "10"); await page.selectOption("#rp-m2dy", "04");
+    await page.click('#rp-presets button:text-is("Anniversary")');
+    await page.selectOption("#rp-m3mo", "06"); await page.selectOption("#rp-m3dy", "14");
+    // three days: the add link becomes the cap in words, the chips stop and say why
+    assert.equal(await page.isVisible("#rp-add-day"), false);
+    assert.equal(await page.textContent("#rp-dates-max"), "3 days is the most that fits. Remove one to mark another.");
+    assert.ok(await page.$$eval("#rp-presets button", (b) => b.every((x) => x.getAttribute("aria-disabled") === "true")), "the chips are off");
+    await page.click('#rp-presets button:text-is("Hail")', { force: true });   // aria-disabled: still focusable, so it can say why
+    assert.equal(await page.textContent("#rp-date-say"), "3 days is the most that fits. Remove one to mark another.");
+    assert.deepEqual([await page.inputValue("#rp-m1l"), await page.inputValue("#rp-m2l"), await page.inputValue("#rp-m3l")], ["Planted corn", "First frost", "Anniversary"], "a 4th chip changes nothing");
+    // removing day 1 moves the others up: Day 1 and Day 2 in order, the add link back
+    await page.getByRole("button", { name: "Remove day 1" }).click();
+    assert.deepEqual([await page.inputValue("#rp-m1l"), await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy"), await page.inputValue("#rp-m2l")], ["First frost", "10", "04", "Anniversary"]);
+    assert.equal(await page.isVisible("#rp-m3row"), false);
+    assert.equal(await page.isVisible("#rp-add-day"), true);
+    assert.ok(await page.$$eval("#rp-presets button", (b) => b.every((x) => x.getAttribute("aria-disabled") === "false")), "the chips are back");
+    // the review sheet: each day as May 21 "Planted corn"
+    await page.click("#rp-pay");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.deepEqual(await page.$$eval("#rp-proof-sum .rp-pd", (e) => e.map((x) => x.textContent)), ["Oct 4 “First frost”", "Jun 14 “Anniversary”"], "in day order: Day 1, Day 2");
+    assert.deepEqual(errors, []);
+  }, { width: 1280, height: 900 });
+  // phone: the pinned strip says the line for a moment after a change (its print is too small to read)
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?" + q(MINE));
+    await drawn(page);
+    await page.locator("#rp-m1mo").scrollIntoViewIfNeeded();
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.fill("#rp-m1l", "Planted corn");
+    await page.selectOption("#rp-m1mo", "05"); await page.selectOption("#rp-m1dy", "21");
+    await page.waitForTimeout(300);
+    assert.equal(await page.isVisible("#rp-strip"), true, "the strip is pinned");
+    assert.equal(await page.textContent("#rp-strip-say"), "On the print: Planted corn, May 21");
+    assert.equal(await page.isVisible("#rp-strip-say"), true);
+    await page.waitForTimeout(4300);
+    assert.equal(await page.isVisible("#rp-strip-say"), false, "only briefly");
+    assert.deepEqual(errors, []);
+  });
 });
 
 // "Your print", rebuilt 2026-10-14 (Sig: "all scrunched and very hard to see")

@@ -1611,7 +1611,7 @@
      never while they type; a day that isn't in the month says so at once,
      in words ("February has 28 days in 2025"). Under a finished day, the
      line it puts on the print: "On the print: Planted corn, May 21". */
-  var TOUCHED = {}, DATE_ERRS_ALL = false;
+  var TOUCHED = {};
   function rowWords(i) { return cleanText(printable($('rp-m' + i + 'l').value), LIMITS.label); }
   function onPrintLine(i, y) {
     var d = rowDate(i, y || parseInt($('rp-year').value, 10)), yy = parseInt(d, 10), w = rowWords(i);
@@ -1637,7 +1637,7 @@
   function syncDates() {
     var P = rowProblems();
     [1, 2, 3].forEach(function (i) {
-      var show = P[i].filter(function (p) { return p.kind !== 'half' || TOUCHED[i] || DATE_ERRS_ALL; });
+      var show = P[i].filter(function (p) { return p.kind !== 'half' || TOUCHED[i]; });
       var moBad = show.some(function (p) { return (p.kind === 'half' && p.mo) || p.kind === 'year'; });
       var dyBad = show.some(function (p) { return (p.kind === 'half' && p.dy) || p.kind === 'day' || p.kind === 'year'; });
       $('rp-m' + i + 'mo').setAttribute('aria-invalid', String(moBad)); $('rp-m' + i + 'dy').setAttribute('aria-invalid', String(dyBad));
@@ -2299,8 +2299,8 @@
     }
     var why = orderBlock();
     if (why) { buyNote(why); return; }
-    // every day's message shows now; a day that can't go on the print as it is stops here, at its row
-    DATE_ERRS_ALL = true; syncDates();
+    // every day's message shows now (each day in use counts as left); a day that can't go on the print as it is stops here, at its row
+    [1, 2, 3].forEach(function (i) { if (rowUsed(i)) TOUCHED[i] = true; }); syncDates();
     var br = badRow();
     if (br) {
       buyNote('Day ' + br + ' isn\u2019t ready for the print. Fix it or remove it, then check again.');
