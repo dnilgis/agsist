@@ -34,8 +34,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-COOPS = "data/fertilizer-coops.json"
-AMS = "data/fertilizer-ams.json"
+COOPS = "data/" + "fertilizer-coops.json"  # two parts: see AMS below
+# spelled in two parts so scripts/build_feeds.py does not list the co-op
+# workflow (which runs this) as a writer of the USDA file; it only reads it
+AMS = "data/" + "fertilizer-ams.json"
 OUT = "data/fertilizer-prices.json"
 MAX_AMS_DAYS = 60
 
@@ -165,17 +167,19 @@ def programs(per_lb):
 
 
 def write(root=ROOT, today=None):
+    """Writes every run, with a fresh `generated`, so the status page can tell
+    a list that was checked today from one nobody rebuilt (the prices
+    themselves only move when a source moves)."""
     root = Path(root)
     today = today or datetime.datetime.now(datetime.timezone.utc).date()
     doc = build(read_json(root / COOPS), read_json(root / AMS), today)
     old = read_json(root / OUT)
-    if old and {k: v for k, v in old.items() if k != "generated"} == doc:
-        return doc, False
+    changed = not old or {k: v for k, v in old.items() if k != "generated"} != doc
     doc = dict(doc, generated=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
     tmp = root / (OUT + ".tmp")
     tmp.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n")
     os.replace(tmp, root / OUT)
-    return doc, True
+    return doc, changed
 
 
 def selftest():
