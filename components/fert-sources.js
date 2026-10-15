@@ -111,14 +111,15 @@
     var cards = a.products.map(function (p) {
       return '<div class="fert-price-card fert-ams-card"><div class="fpc-head"><span class="fpc-name">' + esc(p.name) +
         '</span><span class="fpc-sym">' + esc(p.symbol) + '</span></div><div class="fpc-price">$' + Math.round(p.avg).toLocaleString('en-US') +
-        '</div><div class="fpc-unit">$/ton, average</div><div class="fpc-loc">range $' + Math.round(p.low).toLocaleString('en-US') +
-        ' to $' + Math.round(p.high).toLocaleString('en-US') + '</div></div>';
+        '</div><div class="fpc-unit">$/ton, average</div><div class="fpc-loc">' + (Math.round(p.low) === Math.round(p.high)
+          ? 'one price reported'
+          : 'range $' + Math.round(p.low).toLocaleString('en-US') + ' to $' + Math.round(p.high).toLocaleString('en-US')) + '</div></div>';
     }).join('');
     return '<h2 class="fert-related-title" id="fert-ams-h">USDA Illinois average, ' + esc(shortDate(a.report_date, true)) + '</h2>' +
       '<p class="fert-ams-sub">From the <a href="' + esc(a.page || a.url) + '" target="_blank" rel="noopener">USDA AMS Illinois Production Cost Report</a> ' +
       '(<a href="' + esc(a.url) + '" target="_blank" rel="noopener">PDF</a>), which comes out every other week. Report dated ' + esc(shortDate(a.report_date, true)) +
       (days != null && days > 21 ? ', ' + days + ' days ago' : '') + '.' +
-      (a.terms ? ' The report says: &ldquo;' + esc(a.terms) + '&rdquo;' : '') + '</p>' +
+      (a.terms ? ' Its prices are labeled &ldquo;' + esc(a.terms) + '&rdquo;.' : '') + '</p>' +
       '<div class="fert-cards">' + cards + '</div>';
   }
 

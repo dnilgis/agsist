@@ -90,6 +90,13 @@ test("the USDA box quotes the report: its date, its link, average and range, no 
   assert.doesNotMatch(box, /days ago/, "13 days old is not flagged");
   assert.match(FS.amsBox(AMS, Date.parse("2026-11-20T12:00:00Z")), /49 days ago/);
   assert.doesNotMatch(box, /UAN 32%/, "a product the report did not give is not shown");
+  // The real Oct 2 report gives UAN 32 one price (530 to 530): say so instead of "range $530 to $530".
+  const one = clone(AMS); one.products = one.products.map((p) => p.key === "dap" ? { ...p, low: 930, high: 930, avg: 930 } : p);
+  one.terms = "Distributor (Dollars Per Ton)";
+  const oneBox = FS.amsBox(one, Date.parse("2026-10-15T12:00:00Z"));
+  assert.match(oneBox, /one price reported/);
+  assert.doesNotMatch(oneBox, /range \$930 to \$930/);
+  assert.match(oneBox, /Its prices are labeled &ldquo;Distributor \(Dollars Per Ton\)&rdquo;\./);
   assert.equal(FS.coverNote(AMS),
     "Anhydrous ammonia, UAN and DAP come from the USDA AMS Illinois report of Oct 2, 2026. Each price names its source and date.");
   const noDap = clone(AMS); noDap.products = noDap.products.filter((p) => p.key !== "dap");
