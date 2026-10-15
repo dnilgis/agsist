@@ -86,5 +86,5 @@
 @media (min-width: 700px) { .rc-print-styles .rc-zoom { display: none; } }
 .rc-sell { margin: 0 0 1.4rem; max-width: 46em; }
 .rc-sell p { margin: 0 0 .4rem; }
-.rc-sell .btn { display: inline-block; margin-left: .3rem; vertical-align: middle; }
+.rc-sell .btn { display: inline-block; margin: .3rem .3rem 0 0; vertical-align: middle; }
 .rc-sell .rc-fine { margin: .5rem 0 0; }
