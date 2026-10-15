@@ -1,18 +1,19 @@
 {
- "month": "March 2026",
- "month_key": "2026-03",
- "value": 18.84,
- "prev_month_change": null,
- "year_ago_change": -2.62,
+ "month": "June 2026",
+ "month_key": "2026-06",
+ "value": 20.18,
+ "prev_month_change": -0.25,
+ "year_ago_change": -0.37,
  "history": {
-  "2026-03": 18.84
+  "2026-03": 18.84,
+  "2026-06": 20.18
  },
  "source": "USDA AMS Mailbox Milk Price Report (MMN 3357)",
  "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
- "updated": "2026-10-15T00:00:00Z",
+ "updated": "2026-10-15T07:09:45Z",
  "status": {
-  "ok": false,
-  "note": "AMS mailbox fetch failed: HTTPError: HTTP Error 403: Forbidden",
-  "checked": "2026-10-15T07:08:53Z"
+  "ok": true,
+  "note": "",
+  "checked": "2026-10-15T07:09:45Z"
  }
 }
