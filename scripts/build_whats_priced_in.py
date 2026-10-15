@@ -49,6 +49,7 @@ HIST_PATH = "data/wpi-history.json"
 OUT_PATH  = "data/whats-priced-in.json"
 COT_PATH  = "data/cot.json"
 WASDE_PATH = "data/wasde.json"
+HARVEST_PATH = "data/harvest-prices.json"
 # The bands moved to scripts/report_bands.py on 2026-09-10, unchanged, so the
 # scorecard could apply the same ones. The 2026-08-11 reasoning for why a yield
 # gets a tighter band than a stocks figure is in that file's header.
@@ -62,7 +63,7 @@ UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation
                    # the JSON cannot tell a placeholder from the real thing.
                    "positioning", "from_calendar"]
 HISTORY_FIELDS  = ["date", "report", "metric", "expected", "actual", "unit",
-                   "surprise", "reaction"]
+                   "surprise", "reaction", "reaction_from"]
 
 
 def load_book(path=None):
@@ -364,9 +365,17 @@ def build_upcoming(reports, today, cot=None, released=()):
     # `positioning_commodities` says which series to show, independently of what
     # the bar is measuring. Absent, it falls back to `commodity`, so every
     # report that does not set it behaves exactly as before.
+    #
+    # A CARD BUILT FROM THE CALENDAR HAS NO `commodity` (2026-10-15). The
+    # November WASDE card said "No Commitments of Traders file could be read"
+    # while data/cot.json sat there a week old, because there was no word to
+    # match. A WASDE, Crop Production or Grain Stocks report is about corn,
+    # soybeans and wheat, so with nothing else said those three are shown.
+    pc = r.get("positioning_commodities") or out.get("commodity")
+    if not pc and re.search(r"WASDE|Crop Production|Grain Stocks", str(out.get("report") or ""), re.I):
+        pc = "corn, soybeans, wheat"
     if not out.get("positioning"):
-        out["positioning"] = cot_positioning(
-            r.get("positioning_commodities") or out.get("commodity"), cot)
+        out["positioning"] = cot_positioning(pc, cot)
 
     # ── AND WHAT IS MISSING SAYS SO ──────────────────────────────────────
     #
@@ -394,9 +403,16 @@ def build_upcoming(reports, today, cot=None, released=()):
         out["withheld"]["thresholds"] = (
             "The thresholds are the ends of the trade range, so they arrive with it.")
     if not out.get("positioning"):
-        out["withheld"]["positioning"] = (
-            "No Commitments of Traders file covering this report's commodities "
-            "could be read.")
+        # the reason that is true, not the first one that comes to mind
+        if not cot:
+            why = "No Commitments of Traders file could be read."
+        elif not pc:
+            why = ("This report names no commodity, so there is no fund position "
+                   "to match it to.")
+        else:
+            why = ("The Commitments of Traders file on hand has no managed money "
+                   "position for this report's commodities.")
+        out["withheld"]["positioning"] = why
     return out
 
 
@@ -428,6 +444,43 @@ def survey_ranges(path=None):
     return out
 
 
+# HOW THE MARKET TOOK IT, FROM SETTLES ALREADY ON FILE (2026-10-15).
+# The track record promised "which way price moved" and most new rows said
+# "No note written". data/harvest-prices.json carries every CBOT settle of
+# Dec corn and Nov soybeans through the February and October windows, so a
+# report inside one of those windows gets its day's move, in plain words. The
+# move only: nothing here says why. A day is used only when the series has a
+# later day too, so a provisional last value is never printed as a settle.
+MOVE_CROPS = (("corn", "Corn"), ("soybean", "Soybeans"))
+
+
+def settle_moves(path=None):
+    """{(date, crop): sentence} for each settle that has the settle before it
+    and one after it in the same window."""
+    try:
+        with open(path or HARVEST_PATH) as f:
+            hp = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    import pricefmt
+    out = {}
+    for w in hp.get("windows") or []:
+        ser = sorted((x for x in (w.get("series") or [])
+                      if x.get("d") and isinstance(x.get("s"), (int, float))),
+                     key=lambda x: x["d"])
+        for i in range(1, len(ser) - 1):
+            a, b = ser[i - 1], ser[i]
+            c0, c1 = round(a["s"] * 100, 4), round(b["s"] * 100, 4)
+            mv = c1 - c0
+            q = pricefmt.quarters(mv)
+            what = ("settled unchanged" if q == 0 else
+                    "settled %s %s that day" % (pricefmt.move(abs(mv)), "higher" if q > 0 else "lower"))
+            out[(b["d"], w.get("crop"))] = "%s %s %s, %s to %s (CBOT settles)." % (
+                w.get("contract") or "", str(w.get("crop") or "").lower(), what,
+                pricefmt.price(c0), pricefmt.price(c1))
+    return out
+
+
 def plain_dashes(text):
     """A typed reaction's em dashes become commas. The report-day email and the
     page both print this text, and the house style has no em dashes."""
@@ -436,14 +489,22 @@ def plain_dashes(text):
     return re.sub(r"\s*\u2014\s*", ", ", text).strip(", ")
 
 
-def build_history(rows, ranges=None, meta=None):
+def build_history(rows, ranges=None, meta=None, moves=None):
     ranges = ranges or {}
     meta = meta or {}
+    moves = moves or {}
     out = []
     for r in rows:
         row = {k: r.get(k) for k in HISTORY_FIELDS}
         row["reaction"] = plain_dashes(row.get("reaction"))
         label = r.get("metric") or r.get("label") or ""
+        row["reaction_from"] = "typed" if row["reaction"] else None
+        if not row["reaction"]:
+            for word, crop in MOVE_CROPS:
+                if word in label.lower() and (r.get("date"), crop) in moves:
+                    row["reaction"] = moves[(r.get("date"), crop)]
+                    row["reaction_from"] = "settles"
+                    break
         lo, hi = ranges.get((r.get("date"), label), (None, None))
         row["low"], row["high"] = lo, hi
         mt = meta.get((r.get("date"), label)) or {}
@@ -530,7 +591,7 @@ def main():
             wasde = json.load(open(WASDE_PATH))
         except Exception as ex:
             print("[whats-priced-in] could not read %s (%s)" % (WASDE_PATH, type(ex).__name__))
-    history = build_history(hist_rows, survey_ranges(), book_meta(book))
+    history = build_history(hist_rows, survey_ranges(), book_meta(book), settle_moves())
     latest_result = build_latest_result(history)
     upcoming = build_upcoming(reports, today, cot, released_dates(history, wasde))
     if upcoming:
@@ -766,8 +827,8 @@ def _selftest():
         paths[name] = _os.path.join(d, name)
         with open(paths[name], "w") as f:
             json.dump(blob, f)
-    global ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH
-    keep = (ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH)
+    global ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH, HARVEST_PATH
+    keep = (ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH, HARVEST_PATH)
     try:
         ANALYST_PATH = paths["analyst-estimates.json"]
         HIST_PATH = paths["wpi-history.json"]
@@ -775,10 +836,11 @@ def _selftest():
         OUT_PATH = _os.path.join(d, "out.json")
         COT_PATH = _os.path.join(d, "no-cot.json")
         WASDE_PATH = _os.path.join(d, "no-wasde.json")
+        HARVEST_PATH = _os.path.join(d, "no-harvest.json")
         main()
         built = json.load(open(OUT_PATH))
     finally:
-        ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH = keep
+        ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH, HARVEST_PATH = keep
 
     lr = built["latest_result"]
     assert lr and lr["date"] == "2026-09-11"
@@ -810,6 +872,57 @@ def _selftest():
     assert released_dates([], {"release": "2026-10-09"}) == {"2026-10-09"}
     # a row with no USDA figure is not a release
     assert released_dates([{"date": "2026-11-10", "actual": None}]) == set()
+
+    # ── A CALENDAR CARD STILL GETS THE FUND POSITIONS (2026-10-15) ──────────
+    cot = {"report_date": "Oct 6, 2026", "corn": {"net": 120000, "prev": 110000},
+           "beans": {"net": -5000, "prev": -5000}, "wheat": {"net": -60000, "prev": -61000}}
+    u = build_upcoming([], "2026-10-15", cot, released={"2026-10-09"})
+    assert u["from_calendar"] and u["commodity"] is None, u
+    assert u["positioning"] and "Corn net long 120,000" in u["positioning"] \
+        and "Soybeans net short 5,000" in u["positioning"] and "Wheat" in u["positioning"], u
+    assert "positioning" not in u["withheld"], u["withheld"]
+    # and when it cannot fill, the reason given is the true one
+    assert build_upcoming([], "2026-10-15", None)["withheld"]["positioning"] \
+        == "No Commitments of Traders file could be read."
+    u = build_upcoming([{"report": "Cattle on Feed", "date": "2026-10-20"}], "2026-10-15", cot)
+    assert "names no commodity" in u["withheld"]["positioning"], u["withheld"]
+    u = build_upcoming([{"report": "Hogs and Pigs", "date": "2026-10-20",
+                         "commodity": "Hogs"}], "2026-10-15", cot)
+    assert "has no managed money position" in u["withheld"]["positioning"], u["withheld"]
+
+    # ── HOW THE MARKET TOOK IT, FROM SETTLES ON FILE (2026-10-15) ───────────
+    hp = {"windows": [
+        {"crop": "Corn", "contract": "Dec '26", "series": [
+            {"d": "2026-10-08", "s": 5.0025}, {"d": "2026-10-09", "s": 4.7975},
+            {"d": "2026-10-12", "s": 4.83}, {"d": "2026-10-13", "s": 4.8275}]},
+        {"crop": "Soybeans", "contract": "Nov '26", "series": [
+            {"d": "2026-10-08", "s": 12.875}, {"d": "2026-10-09", "s": 12.92},
+            {"d": "2026-10-13", "s": 12.92}, {"d": "2026-10-14", "s": 12.775}]}]}
+    fd, hpp = tempfile.mkstemp(suffix=".json"); _os.close(fd)
+    json.dump(hp, open(hpp, "w"))
+    mv = settle_moves(hpp)
+    assert mv[("2026-10-09", "Corn")] == \
+        "Dec '26 corn settled 20\u00bd\u00a2 lower that day, $5.00\u00bc to $4.79\u00be (CBOT settles).", mv
+    assert mv[("2026-10-09", "Soybeans")].startswith("Nov '26 soybeans settled 4\u00bd\u00a2 higher"), mv
+    assert mv[("2026-10-13", "Soybeans")] == \
+        "Nov '26 soybeans settled unchanged, $12.92 to $12.92 (CBOT settles).", mv
+    # the newest settle can still be a provisional last trade: never printed
+    assert ("2026-10-13", "Corn") not in mv and ("2026-10-08", "Corn") not in mv, mv
+    rows = build_history([
+        {"date": "2026-10-09", "report": "October WASDE", "metric": "2026/27 corn ending stocks",
+         "expected": 1.677, "actual": 1.849},
+        {"date": "2026-10-09", "report": "October WASDE", "metric": "2026/27 soybean yield",
+         "expected": 52.9, "actual": 53.1, "reaction": "Typed by hand."},
+        {"date": "2026-10-09", "report": "October WASDE", "metric": "2026/27 wheat ending stocks",
+         "expected": 722, "actual": 740}], moves=mv)
+    by = {r["metric"]: r for r in rows}
+    assert by["2026/27 corn ending stocks"]["reaction"].startswith("Dec '26 corn settled 20")
+    assert by["2026/27 corn ending stocks"]["reaction_from"] == "settles"
+    assert by["2026/27 soybean yield"]["reaction"] == "Typed by hand."   # a typed note wins
+    assert by["2026/27 soybean yield"]["reaction_from"] == "typed"
+    assert not by["2026/27 wheat ending stocks"]["reaction"]           # no wheat settles on file
+    assert build_latest_result(rows)["biggest_surprise"]["reaction"].startswith("Dec '26 corn")
+    _os.remove(hpp)
 
     # ── THE LOCK STOPS THE BUILD ────────────────────────────────────────────
     bad = {"reports": [{"report": "November WASDE", "date": "2026-11-10", "metrics": [

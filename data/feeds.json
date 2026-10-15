@@ -913,6 +913,7 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "COT Release Watch",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
@@ -925,6 +926,8 @@
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In",
     "yield-panel"
    ],
    "cadence": "1 launch weekdays at about 4pm Central",

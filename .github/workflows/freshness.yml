@@ -12,6 +12,11 @@ on:
   schedule:
     - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
     - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
+    # 23:35 UTC: Yahoo's close moves to the settle in the evening (Dec corn
+    # Oct 13: 482.25 at 18:16 UTC, 482.75 by 00:01). This run picks that up
+    # before the grain overnight opens (7 p.m. CT); a run that lands in the
+    # overnight leaves titles and descriptions alone (seed_static.settled_close).
+    - cron: '35 23 * * 1-5'
   # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
   # drops and delays the schedule above. The gate job below lets the first run
   # after each tick of the schedule do the work; see scripts/cron_gate.py.
@@ -48,6 +53,7 @@ jobs:
           python3 scripts/cron_gate.py tick --workflow freshness.yml --max-lag 120
           --cron "35 13 * * 1-5"
           --cron "35 20 * * 1-5"
+          --cron "35 23 * * 1-5"
 
   seed:
     needs: gate
@@ -96,15 +102,34 @@ jobs:
           python scripts/bake_faq.py --selftest
           python scripts/bake_faq.py
 
+      # Push with retries. 2026-10-14 20:38 UTC: the post-close run's push was
+      # rejected ("cannot lock ref") by another workflow's push in the same
+      # second; the gate then counted the tick as served, and the 8:31 a.m.
+      # quotes stood in the titles until the next morning. A conflict on retry
+      # throws the rebase away and bakes again on top of the new main.
       - name: Commit if changed
         run: |
           git config user.name  "agsist-bot"
           git config user.email "actions@users.noreply.github.com"
           if git diff --quiet; then
             echo "No changes — nothing to commit."
-          else
-            git add -A
-            git commit -m "freshness: seed static prices, answer-first titles, dateModified, sitemap lastmod"
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+          MSG="freshness: seed static prices, answer-first titles, dateModified, sitemap lastmod"
+          git add -A
+          git commit -q -m "$MSG"
+          for i in 1 2 3 4; do
+            if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
+            echo "push failed (attempt $i), baking again on the newest main"
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            python scripts/seed_static.py
+            python scripts/bake_seo.py
+            python scripts/bake_faq.py
+            if git diff --quiet; then echo "nothing left to commit"; exit 0; fi
+            git add -A
+            git commit -q -m "$MSG"
+            sleep $((i * 7))
+          done
+          exit 1

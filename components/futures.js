@@ -935,9 +935,12 @@ function renderScorecard(){
       var bq=(sc.priceCents!=null)?sc.priceCents/100:null;
       var L='<strong>RP projected price:</strong> <strong>'+AG.px.priceDollars(sc.rp.floor)+'</strong>'+(sc.rp.contract?' ('+AG.px.contract(sc.rp.contract)+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
       /* the board is a futures price, printed to the quarter cent like the hero; it is not "the cash market" */
-      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+(AG.px.quarters(g*100)===0?', level with the board.':', <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+AG.px.move(Math.abs(g)*100)+'</span> '+(g>0?'above':'below')+' the board.');}
+      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+(AG.px.quarters(g*100)===0?', level with the board.':', <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+(Math.abs(g)>=1?AG.px.priceDollars(Math.abs(g)):AG.px.move(Math.abs(g)*100))+'</span> '+(g>0?'above':'below')+' the board.');}
       L+=' Your revenue guarantee is your APH yield times your coverage level times the higher of the projected and harvest prices.';
-      if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+'</span>';}
+      /* 2026-10-15: "still setting" while harvest-prices.json already held the
+         running average (corn $4.93, 10 of 22 days). Say it, and where it is tracked. */
+      if(sc.rp.running!=null){L+=' Harvest price so far: <strong>'+AG.px.priceDollars(sc.rp.running)+'</strong>, the running average of '+sc.rp.days+(sc.rp.daysTotal?' of '+sc.rp.daysTotal:'')+' October trading days (<a href="/harvest-price-tracker">harvest price tracker</a>).';}
+      else if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+'</span>';}
       rpEl.innerHTML=L; rpEl.style.display='block';
       try{if(typeof gaEvent==='function')gaEvent('rp_floor_shown',{crop:CROP_KEY});else if(window.gtag)gtag('event','rp_floor_shown',{crop:CROP_KEY});}catch(e){}
     } else { rpEl.style.display='none'; }
@@ -1797,13 +1800,13 @@ AG.json('/data/prices.json')
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
-      /* The baked note and the table's nearby row are the no-script copy of
-         this hero. Once the live quote is up they showed a second, older
-         price for the same contract ($4.81½ under a $4.82¾ hero). */
+      /* The baked note and table are the no-script copy of these cards. Once
+         the live quotes are up they showed a second, older price for the same
+         contract ($4.81½ under a $4.82¾ hero). Hiding only the Nearby row left
+         wheat's Mar '27 and KC rows at the 8:31 a.m. bake under live cards
+         that said otherwise (2026-10-15), so the whole table goes. */
       var __sn=document.querySelector('.px-seed-note');if(__sn)__sn.style.display='none';
-      var __st=document.querySelector('.seed-tbl-wrap'),__rows=__st?__st.querySelectorAll('tbody tr'):[];
-      for(var __i=0;__i<__rows.length;__i++){var __td=__rows[__i].cells[0];if(__td&&/^Nearby/.test(__td.textContent))__rows[__i].style.display='none';}
-      if(__st&&![].some.call(__rows,function(r){return r.style.display!=='none';}))__st.style.display='none';
+      var __st=document.querySelector('.seed-tbl-wrap');if(__st)__st.style.display='none';
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){
@@ -1915,7 +1918,9 @@ loadPrices();
     if(floor==null)return;
     var hs=row.harvest&&row.harvest.status;
     window.__agsistMR=window.__agsistMR||{};
-    window.__agsistMR.rpCtx={floor:floor,projected:pj,harvest:hv,contract:row.contract||null,window:(row.projected&&row.projected.window)||null,harvestPending:(hv==null&&(hs==='pending'||hs==='running')),cropYear:d.crop_year||null};
+    window.__agsistMR.rpCtx={floor:floor,projected:pj,harvest:hv,contract:row.contract||null,window:(row.projected&&row.projected.window)||null,harvestPending:(hv==null&&(hs==='pending'||hs==='running')),cropYear:d.crop_year||null,
+      running:(hs==='running'&&row.harvest.running_avg!=null&&row.harvest.series&&row.harvest.series.length)?Number(row.harvest.running_avg):null,
+      days:(row.harvest&&row.harvest.series)?row.harvest.series.length:null,daysTotal:(row.harvest&&row.harvest.days_total)||null};
     try{renderScorecard();}catch(e){}
     try{renderMarketRead();}catch(e){}
   }).catch(function(){});

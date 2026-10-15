@@ -125,7 +125,7 @@ test("before the print, both say so and neither grades anything", () => {
   const waiting = ROWS.map(r => ({ ...r, actual: null, surprise: "", why: "not printed yet" }));
   const js = jsStrip(waiting);
   assert.equal(pyStrip(waiting), js);
-  assert.match(js, /USDA prints at 12:00 PM ET\. This fills in on its own\./);
+  assert.match(js, /USDA prints at 11:00 a\.m\. CT\. This fills in on its own\./);
   assert.match(js, /<th>USDA now<\/th>/);
   assert.doesNotMatch(js, /class="v (bull|bear|flat)"/);
 });
