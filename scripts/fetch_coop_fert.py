@@ -785,6 +785,9 @@ def discover(root, now=None, fetcher=None, sources=None, limit=None):
         asked += 1
         base = "https://www.%s/" % h if h.count(".") == 1 else "https://%s/" % h
         raw, err = fetcher(base)
+        if raw is None and base != "https://%s/" % h:
+            base = "https://%s/" % h
+            raw, err = fetcher(base)
         if raw is None:
             failed += 1
             continue
@@ -1043,6 +1046,30 @@ def selftest():
                     {"elevators": [{"website": "https://mulvanecoop.com/", "operator": "Mulvane", "state": "KS"}]})
     ck("discovery: agricharts hosts only, marketplace left out, states joined",
        list(hs) == ["mulvanecoop.com"] and hs["mulvanecoop.com"]["states"] == {"KS"})
+
+    # discovery end to end, offline: a site whose menu links its fertilizer page
+    import contextlib
+    import io
+    import tempfile
+    asked = []
+
+    def fake(u):
+        asked.append(u)
+        if "mulvanecoop.com" in u:
+            return mu.encode(), None
+        return None, "HTTP 404"
+    with tempfile.TemporaryDirectory() as tdir:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            discover(tdir, now=now, fetcher=fake, sources={
+                "mulvanecoop.com": {"operators": {"Mulvane Cooperative Union"}, "states": {"KS"}},
+                "gone.example": {"operators": set(), "states": {"NE"}}})
+        rep = read_json(Path(tdir) / DISC)
+        ck("discover: finds the price table, counts by state, logs the dead site",
+           rep["posting"] == 1 and rep["by_state"] == {"KS": 1} and rep["unreachable"] == 1
+           and rep["found"][0]["pages"][0]["layout"] == "html-table" and rep["found"][0]["pages"][0]["date"] == "2026-10-06")
+        ck("discover: one request at a time, the bare host tried after www",
+           "https://www.gone.example/" in asked and "https://gone.example/" in asked)
 
     import check_site_budget
     ck("history cap matches scripts/check_site_budget.py FILE_KB", check_site_budget.FILE_KB.get(HIST) == HIST_MAX_KB)
