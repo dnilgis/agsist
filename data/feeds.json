@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 85,
- "with_known_cadence": 85,
+ "count": 86,
+ "with_known_cadence": 86,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -277,6 +277,30 @@
     "20 14 * * 3"
    ],
    "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cattle-cash.json",
+   "pages": [
+    "cattle-futures-prices.html"
+   ],
+   "written_by": [
+    "Cattle cash prices"
+   ],
+   "touched_by": [
+    "Cattle cash prices"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 10am, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "43 21 * * 1-5",
+    "17 15 * * 1,2"
+   ],
+   "max_gap_hours": 65.6,
    "quiet": null,
    "why_quiet": null
   },
@@ -632,7 +656,7 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "4 launches on a fixed schedule at about 9am, 10am, 4pm Central",
+   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -641,7 +665,8 @@
     "37 15 1-9 * *",
     "37 21 1-9 * *",
     "37 15 28-31 * *",
-    "11 14 * * 2"
+    "11 14 * * 2",
+    "23 16 15-27 * *"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -1756,12 +1781,14 @@
     "status.html"
    ],
    "written_by": [
+    "Cattle cash prices",
     "Generate Daily Briefing",
     "Fetch Prices"
    ],
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "Cattle cash prices",
     "conditions",
     "Fetch Crop Progress",
     "Generate Daily Briefing",
@@ -1780,6 +1807,8 @@
    "external": false,
    "url": null,
    "crons": [
+    "43 21 * * 1-5",
+    "17 15 * * 1,2",
     "19 10 * * *",
     "41 11 * * *",
     "23 13 * * *",
