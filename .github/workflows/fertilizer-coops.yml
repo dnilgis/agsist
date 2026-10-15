@@ -27,6 +27,12 @@ on:
         description: "Discover only: ask this many sites (blank = all)"
         required: false
         default: ""
+  # TEMPORARY, branch only: a push to fx/coop-fert runs it there (a dispatch
+  # needs the file on main first). "[discover]" in the commit message runs
+  # discovery. Remove before merging.
+  push:
+    branches: ['fx/coop-fert']
+    paths: ['scripts/fetch_coop_fert.py', 'scripts/coop_fert_sources.json', '.github/workflows/fertilizer-coops.yml']
   schedule:
     - cron: '41 13 * * 1-5'    # weekdays, morning Central
 
@@ -51,7 +57,7 @@ jobs:
       - name: Selftest
         run: python scripts/fetch_coop_fert.py --selftest
       - name: Discover co-ops that post fertilizer prices
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.discover }}
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.discover) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[discover]')) }}
         env:
           IN_LIMIT: ${{ inputs.limit }}
         run: |
@@ -63,7 +69,7 @@ jobs:
             python scripts/fetch_coop_fert.py --discover
           fi
       - name: Fetch and write data/fertilizer-coops.json
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.discover) }}
+        if: ${{ !((github.event_name == 'workflow_dispatch' && inputs.discover) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[discover]'))) }}
         run: python scripts/fetch_coop_fert.py
 
       - name: Commit if changed (race-tolerant)
