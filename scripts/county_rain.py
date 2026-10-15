@@ -625,3 +625,69 @@ def rank_key(cand):
     county."""
     s = cand["summary"]
     return (1 if cand.get("mountain") else 0, 0 if s["usual"] is not None else 1, -s["reported"], cand["mi"])
+
+
+# ---------------------------------------------------------------- share images
+# One share image per state (img/og/rain-<st>.jpg, drawn by
+# scripts/build_share_images.py) and one for /rain (img/og/rain.jpg). These
+# give both the drawing and the page builder the same words, so the picture
+# and its alt text can't say different things.
+
+UNIT = {"LA": ("parish", "parishes"), "AK": ("borough or census area", "boroughs and census areas")}
+TYPICAL_MIN = 5          # fewer counties with a percent than this: no "typical county" figure
+
+
+def share_image(st=None):
+    """Path of the share image for a state's pages (st) or for /rain (None)."""
+    return f"img/og/rain-{st.lower()}.jpg" if st else "img/og/rain.jpg"
+
+
+def _median_pct(ps):
+    p = sorted(ps)
+    if not p:
+        return None
+    k = len(p) // 2
+    return p[k] if len(p) % 2 else round((p[k - 1] + p[k]) / 2)
+
+
+def share_facts(d):
+    """What a state's share card says, from its data file."""
+    cs = d["counties"]
+    ps = [c["pct"] for c in cs.values() if c["pct"] is not None]
+    st = d["state"]
+    return {
+        "st": st, "state": STATES[st], "year": d["year"],
+        "done": str(d.get("edate", "")).endswith("-12-31"),
+        "asof": max(c["as_of"] for c in cs.values()) if cs else None,
+        "n": len(cs), "n_pct": len(ps),
+        "wetter": sum(1 for p in ps if p > 100), "drier": sum(1 for p in ps if p < 100),
+        "typical": _median_pct(ps) if len(ps) >= TYPICAL_MIN else None,
+        "unit": UNIT.get(st, ("county", "counties")),
+    }
+
+
+def _md(iso):
+    y, m, dd = iso.split("-")
+    return f"{MONTHS[int(m) - 1]} {int(dd)}, {y}"
+
+
+def share_alt(d):
+    f = share_facts(d)
+    if not f["n"]:
+        return f"Rain by county in {f['state']}, from NOAA and CoCoRaHS stations."
+    u1, un = f["unit"]
+    s = (f"Map of {f['state']} by {u1}, shaded by rain {'in' if f['done'] else 'so far in'} {f['year']} "
+         f"as a percent of a usual year, through {_md(f['asof'])}.")
+    if f["n_pct"]:
+        s += f" {f['wetter']} of {f['n_pct']} {un if f['n_pct'] != 1 else u1} are wetter than usual"
+        s += f", and the typical {u1} is at {f['typical']}%." if f["typical"] is not None else "."
+    return s
+
+
+def share_alt_us(files):
+    n = sum(len(d["counties"]) for d in files.values())
+    years = sorted({d["year"] for d in files.values()}) or ["this year"]
+    asof = max((c["as_of"] for d in files.values() for c in d["counties"].values()), default=None)
+    done = bool(files) and all(str(d.get("edate", "")).endswith("-12-31") for d in files.values())
+    return (f"Map of the US by county, shaded by rain {'in' if done else 'so far in'} {years[-1]} as a percent of a usual year"
+            + (f", through {_md(asof)}" if asof else "") + f": {n:,} counties with a NOAA or CoCoRaHS station.")

@@ -249,10 +249,13 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  assert.equal(prod.image, "https://agsist.com/img/og/rain-print.jpg");
+  // the share card, with the ?v=<hash> scripts/build_share_images.py gives it (the same URL as og:image)
+  const og = HTML.match(/property="og:image"\s+content="([^"]+)"/)[1];
+  assert.match(og, /^https:\/\/agsist\.com\/img\/og\/rain-print\.jpg\?v=[0-9a-f]{8}$/);
+  assert.equal(prod.image, og);
   assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
   assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
-  for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\""));
+  for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\\?v=[0-9a-f]{8}\""));
   const img = readFileSync(ROOT + "img/og/rain-print.jpg");
   assert.ok(img.length < 150000, "share image is small: " + img.length);
   assert.equal(img[0], 0xff); assert.equal(img[1], 0xd8);
