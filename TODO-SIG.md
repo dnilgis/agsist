@@ -6,8 +6,7 @@ one, add a new `- [ ]` line. This file is public (it is in the site repo), so ke
 names and anything private out of it.
 
 - [ ] Test Stripe with a $19 purchase and refund it
-- [ ] Check Stripe: gift fields, US-only shipping, "glass" in the descriptions, and the message after payment about the proof
-- [ ] In Stripe, for each of the three Rain Print Payment Links: After payment -> "Don't show confirmation page" -> redirect to https://agsist.com/rain-print?paid=framed12x18&s={CHECKOUT_SESSION_ID} (framed link), https://agsist.com/rain-print?paid=print12x18&s={CHECKOUT_SESSION_ID} (print link), https://agsist.com/rain-print?paid=digital&s={CHECKOUT_SESSION_ID} (digital link). Type {CHECKOUT_SESSION_ID} exactly as written; Stripe fills it in
+- [ ] Stripe read-only key: Developers -> API keys -> Create restricted key ("agsist morning report"), Read on Charges and Checkout Sessions only; add it as the STRIPE_READ_KEY Actions secret in dnilgis/agsist so the morning email counts paid orders
 - [ ] Take a photo of a framed print on a wall, plus a close-up of the paper
 - [ ] Tap the two Rain Print example years on the live site
 - [ ] Submit sitemap-rain.xml (and the other sitemaps) in Google Search Console
