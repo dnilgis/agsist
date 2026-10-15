@@ -34,5 +34,23 @@ test('raw captures and the history stay off the published tree', () => {
   assert.match(wf, /git push -q origin HEAD:lrp-history/);
   assert.match(wf, /P=data\/lrp; /, 'main only gets data/lrp');
   assert.doesNotMatch(wf, /--probe/, 'the probe is not run from the workflow');
-  assert.doesNotMatch(wf, /^\s+schedule:/m, 'no schedule until the history is checked');
+});
+
+// The schedule came once the full history was in (6,922 files, every check
+// passed, 2026-10-15). What runs on it is only the watch: a look at the
+// listings, and the incremental read of the open years when a file is new.
+test('the scheduled path only watches, and reads only the open years', () => {
+  const wf = fs.readFileSync(path.join(root, '.github/workflows/lrp.yml'), 'utf8');
+  assert.match(wf, /workflow_run:\s*\n\s*workflows: \["Fetch Grain Bids"\]/, 'clocked by Fetch Grain Bids');
+  assert.match(wf, /scripts\/cron_gate\.py lrp --lrp-file data\/lrp\/today\.json/, 'gated on today\'s offers');
+  const watch = wf.slice(wf.indexOf('\n  watch:'), wf.indexOf('\n  lrp:'));
+  assert.ok(watch.length > 100, 'a watch job');
+  assert.match(watch, /--watch "\$HIST"/);
+  assert.doesNotMatch(watch, /--history|--publish/, 'a look never reads or publishes');
+  assert.match(watch, /--filter=blob:none/, 'a look fetches no offer files from lrp-history');
+  assert.match(wf, /IN_YEARS: \$\{\{ inputs\.years \|\| needs\.watch\.outputs\.years \}\}/,
+    'a scheduled read covers only the years with a new file');
+  for (const cron of wf.matchAll(/cron: '(\S+) (\S+) /g)) {
+    assert.ok(!['0', '30'].includes(cron[1]), `cron off :00 and :30 (${cron[0]})`);
+  }
 });

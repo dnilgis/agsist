@@ -35,12 +35,25 @@ USAGE
   python scripts/fetch_lrp.py --selftest
   python scripts/fetch_lrp.py --history DIR [--years 2014-2016] [--minutes 300]
   python scripts/fetch_lrp.py --publish DIR --out data/lrp
+  python scripts/fetch_lrp.py --watch DIR      # has RMA posted a new file? (seconds; see run_watch)
+  python scripts/fetch_lrp.py --post-times DIR # when did the last ~60 files go up? (see run_post_times)
   python scripts/fetch_lrp.py --probe          # the first look; writes data/lrp-raw/probe/
+
+WHEN RMA POSTS (the folder listings of 2026-10-15, 298 offer files from July
+2025 to October 2026; the listing prints Central time, see run_post_times)
+  * Each sales day's offers go up the same afternoon, in a file named for that
+    day: 45% by 2:20 pm CT, 86% by 2:30, 95% by 3:00, all by 4:29 pm.
+    Sales on those offers close 8:25 am CT the next calendar day.
+  * At 8:35 am CT RMA posts a small file under the same day's name (the
+    ending values; in the current year's folder a stub with no offers), which
+    the afternoon file then replaces. Old-year folders get only the 8:35 file.
+  * Cattle on Feed days get a small afternoon file with no offers.
 """
 
 import argparse
 import collections
 import concurrent.futures
+import email.utils
 import gzip
 import html.parser
 import io
@@ -567,6 +580,7 @@ PRODUCT_NAMES = {"0801": "Feeder Cattle", "0802": "Fed Cattle", "0815": "Swine",
 CORRUPT = (zipfile.BadZipFile, zlib.error, EOFError)
 CORRUPT_TRIES = 3
 ANNOTATE = True
+LISTED_KEEP = 400
 
 
 def _today():
@@ -782,15 +796,32 @@ def listed_size(row_text, name):
     return int(m.group(1)) if m else None
 
 
-def adm_files(links, base):
-    """[(name, url, listed size)] for the LRP daily zips in one year folder."""
+def listed_time(row_text):
+    """'10/14/2026 03:31 PM 1451122 x.zip' -> '2026-10-14T15:31': the time
+    RMA's folder listing prints, a Central wall clock (see run_post_times)."""
+    m = re.search(r"(\d\d)/(\d\d)/(\d{4})\s+(\d\d):(\d\d)\s*(AM|PM)", row_text or "", re.I)
+    if not m:
+        return None
+    mo, d, y, h, mi, ap = m.groups()
+    h = int(h) % 12 + (12 if ap.upper() == "PM" else 0)
+    return f"{y}-{mo}-{d}T{h:02d}:{mi}"
+
+
+def adm_rows(links, base):
+    """[(name, url, listed size, listed time)] for the LRP daily zips in one
+    year folder."""
     out = []
     for l in links:
         u = l["url"]
         name = u.rsplit("/", 1)[-1]
         if u.startswith(base) and is_lrp_name(name) and daily_date(name) and name.lower().endswith(".zip"):
-            out.append((name, u, listed_size(l["row"], name)))
-    return sorted(set(out))
+            out.append((name, u, listed_size(l["row"], name), listed_time(l["row"])))
+    return sorted(set(out), key=lambda r: (r[0], r[1], r[2] or 0, r[3] or ""))
+
+
+def adm_files(links, base):
+    """[(name, url, listed size)] for the LRP daily zips in one year folder."""
+    return [r[:3] for r in adm_rows(links, base)]
 
 
 def http_get(url, tries=4, timeout=120):
@@ -890,6 +921,17 @@ class History:
                 if member not in st["other_members"] and len(st["other_members"]) < 50:
                     st["other_members"].append(member)
 
+    def note_listed(self, name, when):
+        """When RMA's listing says the file read went up (Central), for the
+        newest LISTED_KEEP files: today.json says when its offers were posted."""
+        if not when:
+            return
+        d = self.state.setdefault("listed", {})
+        d[name] = when
+        if len(d) > LISTED_KEEP:
+            for k in sorted(d, key=lambda n: (daily_date(n), n))[:len(d) - LISTED_KEEP]:
+                del d[k]
+
     def save(self):
         for ry in sorted(self.dirty_aev):
             write_json(os.path.join(self.root, "aev", f"{ry}.json"), compact_aev(self.aev[ry]))
@@ -922,6 +964,7 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
     years = year_folders(parse_links(raw.decode("utf-8", "replace"), ADM_LIVE), ADM_LIVE)
     years = parse_years(years_spec, years)
     todo = []
+    listed = {}
     for y in years:
         base = f"{ADM_LIVE}{y}/"
         _, _, raw = p.get(base, keep_cap=8 * 1024 * 1024)
@@ -929,10 +972,13 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
             log(f"year {y}: listing failed")
             st["listing_failed"] = sorted(set(st.get("listing_failed", [])) | {y})
             continue
-        files = adm_files(parse_links(raw.decode("utf-8", "replace"), base), base)
-        for name, url, size in files:
+        files = adm_rows(parse_links(raw.decode("utf-8", "replace"), base), base)
+        for name, url, size, when in files:
             if h.state["files"].get(name) != size or size is None:
                 todo.append((daily_date(name), name, url, size))
+                listed[name] = when
+            elif when and name not in h.state.get("listed", {}) and y >= current_ry(_today()) - 1:
+                h.note_listed(name, when)       # read before posting times were kept
         log(f"year {y}: {len(files)} LRP daily files")
     # Process in date order (and rate files before the AEVs that follow them
     # does not matter: each lands in its own place).
@@ -1034,6 +1080,7 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
                     st.get("file_errors", {}).pop(name, None)
                     st.get("file_errors", {}).pop(name, None)
                     h.state["files"][name] = size if size is not None else len(res)
+                    h.note_listed(name, listed.get(name))
                     done += 1
                     if done % 100 == 0:
                         h.save()
@@ -1097,6 +1144,243 @@ def fetch_sob(p, h, today=None):
         seen[name] = {"size": size if size is not None else len(body), "fetched": today.isoformat()}
         got += 1
     log(f"Summary of Business: {got} files fetched")
+
+
+# ---------------------------------------------------------------- watch
+#
+# RMA posts each sales day's offers once, mid-afternoon Central (see the top
+# of this file). The watch is what the lrp workflow runs every 15 minutes in
+# that window: it reads only the folder listings of the open reinsurance years,
+# HEADs the newest file, and says whether anything is new against state.json.
+# Only then does the workflow run the normal incremental --history and
+# --publish. Every look is logged in watch-log.json on lrp-history, so the
+# posting time is measured from our side too, not only taken from RMA's clock.
+
+WATCH_LOG = "watch-log.json"
+WATCH_CHECKS_KEEP = 3000          # about five months of looks
+WATCH_SEEN_KEEP = 400
+CENTRAL = "America/Chicago"
+SALES_CLOSE_CT = (8, 25)          # 8:25 am CT the next calendar day (RULES.md)
+OFFER_FILE_MIN = 500_000          # a day's offers zip is about 1.4 MB; stubs are under 120 KB
+POST_TIMES_FILES = 60
+
+
+def central():
+    from zoneinfo import ZoneInfo
+    return ZoneInfo(CENTRAL)
+
+
+def iso_utc(dt):
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def central_to_utc(when):
+    """'2026-10-14T15:31' (Central wall clock) -> '2026-10-14T20:31:00Z'."""
+    return iso_utc(datetime.strptime(when, "%Y-%m-%dT%H:%M").replace(tzinfo=central()))
+
+
+def utc_to_central(iso):
+    return datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).astimezone(
+        central()).strftime("%Y-%m-%dT%H:%M")
+
+
+def http_head(url, timeout=60):
+    """(status, Last-Modified as UTC ISO or None, Content-Length or None).
+    Never raises."""
+    try:
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            lm = r.headers.get("Last-Modified")
+            n = r.headers.get("Content-Length")
+            try:
+                lm = iso_utc(email.utils.parsedate_to_datetime(lm)) if lm else None
+            except (TypeError, ValueError):
+                lm = None
+            return r.status, lm, int(n) if n and n.isdigit() else None
+    except urllib.error.HTTPError as e:
+        return e.code, None, None
+    except Exception:  # noqa: BLE001
+        return None, None, None
+
+
+def current_ry(today):
+    """Reinsurance year N runs July 1 of N-1 to June 30 of N."""
+    return today.year + (1 if today.month >= 7 else 0)
+
+
+def open_year_files(p, today):
+    """The LRP daily zips in the open reinsurance-year folders (this one, the
+    one before, whose ending values are still coming, and the next one if RMA
+    has opened it). Returns (years, [entry], years whose listing failed)."""
+    ry = current_ry(today)
+    _, _, raw = p.get(ADM_LIVE, keep_cap=2 * 1024 * 1024)
+    have = year_folders(parse_links(raw.decode("utf-8", "replace"), ADM_LIVE), ADM_LIVE) if raw else []
+    years = [y for y in have if y >= ry - 1] or [ry - 1, ry]
+    out, failed = [], []
+    for y in years:
+        base = f"{ADM_LIVE}{y}/"
+        _, _, raw = p.get(base, keep_cap=8 * 1024 * 1024)
+        if raw is None:
+            failed.append(y)
+            continue
+        for name, url, size, when in adm_rows(parse_links(raw.decode("utf-8", "replace"), base), base):
+            out.append({"name": name, "url": url, "size": size, "listed": when, "ry": y})
+    return years, out, failed
+
+
+def watch_is_new(e, state, today):
+    """True when --history would read this file: not read yet, or listed at a
+    new size. A broken zip already retried today waits for tomorrow."""
+    have = state.get("files", {}).get(e["name"])
+    if e["size"] is None:
+        return e["name"] not in state.get("files", {})
+    if have == e["size"]:
+        return False
+    b = state.get("bad_files", {}).get(e["name"])
+    if b and b.get("size") == e["size"] and b.get("last") == today.isoformat():
+        return False
+    return True
+
+
+def gh_output(**kv):
+    text = "".join(f"{k}={v}\n" for k, v in kv.items())
+    out = os.environ.get("GITHUB_OUTPUT")
+    if out:
+        with open(out, "a") as f:
+            f.write(text)
+    else:
+        sys.stdout.write(text)
+
+
+def save_watch_log(path, wl):
+    """One look per line, so the branch's diffs stay one line a look."""
+    wl["checks"] = wl["checks"][-WATCH_CHECKS_KEEP:]
+    seen = wl["seen"]
+    if len(seen) > WATCH_SEEN_KEEP:
+        for k in sorted(seen, key=lambda n: (daily_date(n), n))[:len(seen) - WATCH_SEEN_KEEP]:
+            del seen[k]
+    lines = ",\n".join(json.dumps(c, sort_keys=True, separators=(",", ":")) for c in wl["checks"])
+    text = ('{"v":1,\n"seen":' + json.dumps(seen, sort_keys=True, indent=1) +
+            ',\n"checks":[\n' + lines + "\n]}\n")
+    return write_if_changed(path, text)
+
+
+def run_watch(root, now=None):
+    """One look at RMA. Writes new=1|0, years=<lo>-<hi> and newest=<file> to
+    $GITHUB_OUTPUT and appends the look to watch-log.json. Never downloads a
+    zip; a quiet look is three listings and one HEAD."""
+    now = now or datetime.now(timezone.utc)
+    today = now.astimezone(central()).date()
+    state = load_json(os.path.join(root, "state.json"), {"files": {}, "stats": {}})
+    path = os.path.join(root, WATCH_LOG)
+    wl = load_json(path, {})
+    wl.setdefault("checks", [])
+    wl.setdefault("seen", {})
+    p = Probe("/nonexistent")
+    years, entries, failed = open_year_files(p, today)
+    look = {"t": iso_utc(now)}
+    if failed:
+        look["listing_failed"] = failed
+    if not entries:
+        look["error"] = "no listing answered"
+        wl["checks"].append(look)
+        save_watch_log(path, wl)
+        gh_output(new=0, years="", newest="")
+        log("watch: RMA's folders did not answer")
+        return 1
+    new = [e for e in entries if watch_is_new(e, state, now.date())]   # bad_files days are UTC, as _today()
+    newest = max(entries, key=lambda e: (daily_date(e["name"]), e["ry"], e["listed"] or ""))
+    status, lm, length = http_head(newest["url"])
+    look.update(newest=newest["name"], size=newest["size"], listed=newest["listed"], lm=lm, head_size=length,
+                new=len(new))
+    if status != 200:
+        look["head_status"] = status
+    if new:
+        look["names"] = [e["name"] for e in new[:5]]
+    for e in new + [newest]:
+        s = wl["seen"].get(e["name"])
+        if not s or s.get("size") != e["size"]:
+            s = wl["seen"][e["name"]] = {"size": e["size"], "listed": e["listed"], "first_seen": iso_utc(now)}
+        if e is newest and lm and (length is None or length == e["size"]):
+            s["lm"] = lm
+    wl["checks"].append(look)
+    save_watch_log(path, wl)
+    rys = sorted({e["ry"] for e in new})
+    gh_output(new=1 if new else 0, years=f"{rys[0]}-{rys[-1]}" if rys else "", newest=newest["name"])
+    log(f"watch: newest {newest['name']} ({newest['size']} bytes, listed {newest['listed']} CT, "
+        f"Last-Modified {lm}); {len(new)} new: {', '.join(e['name'] for e in new[:5]) or 'nothing'}")
+    return 0
+
+
+def pct(sorted_vals, q):
+    return sorted_vals[min(len(sorted_vals) - 1, int(q * (len(sorted_vals) - 1) + 0.5))]
+
+
+def run_post_times(root, now=None, n=POST_TIMES_FILES):
+    """When RMA posted its last `n` offer files (and the old year's last 20
+    ending-value files), from each file's Last-Modified header, beside the time
+    the folder listing prints. The difference between the two says which clock
+    the listing keeps. Writes probe/post-times.json on the history branch."""
+    now = now or datetime.now(timezone.utc)
+    today = now.astimezone(central()).date()
+    p = Probe("/nonexistent")
+    years, entries, failed = open_year_files(p, today)
+    if not entries:
+        log("post-times: RMA's folders did not answer")
+        return 1
+    top = max(e["ry"] for e in entries if e["size"] and e["size"] >= OFFER_FILE_MIN) if any(
+        e["size"] and e["size"] >= OFFER_FILE_MIN for e in entries) else max(e["ry"] for e in entries)
+    key = lambda e: (daily_date(e["name"]), e["name"])  # noqa: E731
+    offers = sorted((e for e in entries if e["ry"] == top), key=key)[-n:]
+    older = sorted((e for e in entries if e["ry"] < top), key=key)[-20:]
+    rows, offsets, times = [], collections.Counter(), []
+    for e in offers + older:
+        status, lm, length = http_head(e["url"])
+        row = {"file": e["name"], "folder": e["ry"], "listed": e["listed"], "listed_size": e["size"],
+               "status": status, "last_modified_utc": lm, "head_size": length}
+        if lm:
+            row["last_modified_ct"] = utc_to_central(lm)
+            if e["listed"]:
+                lm_naive = datetime.strptime(lm, "%Y-%m-%dT%H:%M:%SZ")
+                off = round((datetime.strptime(e["listed"], "%Y-%m-%dT%H:%M") - lm_naive).total_seconds() / 60)
+                row["listed_minus_utc_min"] = off
+                offsets[off] += 1
+            day = daily_date(e["name"])
+            if (e["ry"] == top and (length or e["size"] or 0) >= OFFER_FILE_MIN
+                    and row["last_modified_ct"][:10].replace("-", "") == day):
+                times.append(row["last_modified_ct"][11:16])
+        rows.append(row)
+    times.sort()
+    summary = {"offer_files_timed": len(times), "listing_minus_utc_minutes": dict(offsets.most_common())}
+    if times:
+        within = lambda hhmm: round(sum(1 for t in times if t <= hhmm) / len(times), 3)  # noqa: E731
+        summary.update(first_ct=times[0], median_ct=pct(times, 0.5), p90_ct=pct(times, 0.9), last_ct=times[-1],
+                       share_by_ct={t: within(t) for t in ("14:20", "14:30", "14:45", "15:00", "15:30", "16:00",
+                                                          "17:00")})
+    out = {"checked_utc": iso_utc(now), "years": years, "listing_failed": failed, "summary": summary,
+           "files": rows}
+    write_json(os.path.join(root, "probe", "post-times.json"), out, pretty=True)
+    log(f"post-times: {json.dumps(summary, sort_keys=True)}")
+    return 0
+
+
+def sales_info(day, state, wl):
+    """Which sales day today.json holds, when RMA posted it and when its sales
+    close, so the page never shows a closed day's offers as open."""
+    sed = day["sed"]
+    d = date(int(sed[:4]), int(sed[4:6]), int(sed[6:8]))
+    nxt = d + timedelta(days=1)
+    close = datetime(nxt.year, nxt.month, nxt.day, *SALES_CLOSE_CT, tzinfo=central())
+    src = day.get("src")
+    seen = (wl.get("seen") or {}).get(src) or {}
+    listed = (state.get("listed") or {}).get(src) or seen.get("listed")
+    posted, how = None, None
+    if seen.get("lm"):
+        posted, how = seen["lm"], "Last-Modified header"
+    elif listed:
+        posted, how = central_to_utc(listed), "RMA folder listing (Central)"
+    return {"sales_day": d.isoformat(), "file": src, "posted_utc": posted, "posted_from": how,
+            "sales_close_ct": close.strftime("%Y-%m-%dT%H:%M"), "sales_close_utc": iso_utc(close)}
 
 
 # ---------------------------------------------------------------- publish
@@ -1245,6 +1529,7 @@ def run_publish(root, out):
     today = build_today(day)
     aev = build_aev(root)
     state = load_json(os.path.join(root, "state.json"), {"files": {}, "stats": {}})
+    today.update(sales_info(day, state, load_json(os.path.join(root, WATCH_LOG), {})))
     days_by_ry = {ry_: len(os.listdir(os.path.join(root, "offers", ry_)))
                   for ry_ in sorted(os.listdir(os.path.join(root, "offers")))}
     first = min(f[:8] for ry_ in days_by_ry for f in os.listdir(os.path.join(root, "offers", ry_)))
@@ -1450,6 +1735,10 @@ def selftest_history():
         assert run_publish(hist, out) == 0
         today = load_json(os.path.join(out, "today.json"), {})
         assert today["sed"] == "20260701" and today["ry"] == "2027"
+        # Which sales day this is and when its sales close (8:25 am CT the next day).
+        assert today["sales_day"] == "2026-07-01" and today["sales_close_ct"] == "2026-07-02T08:25", today
+        assert today["sales_close_utc"] == "2026-07-02T13:25:00Z" and today["posted_utc"] is None, today
+        assert today["file"] == "2027_ADMLivestockLrp_Daily_20260701.zip"
         tested = {(o["c"], o["t"]): o["tested"] for o in today["offers"]}
         assert tested == {("0801", "809"): True, ("0801", "823"): False, ("0802", "820"): True,
                           ("0815", "997"): True}, tested
@@ -1464,6 +1753,7 @@ def selftest_history():
         assert '"0804"' not in json.dumps(today["offers"])
 
     selftest_run_history()
+    selftest_watch()
 
     # The Summary of Business subsidy tally, on real 2003 rows (13% then).
     with tempfile.TemporaryDirectory() as td:
@@ -1544,6 +1834,7 @@ def selftest_run_history():
             assert sob_fetched == ["lrp_2025.zip", "lrp_2026.zip"], sob_fetched
             st = load_json(os.path.join(td, "state.json"), {})
             assert st["files"] == {n: len(b) for n, b in files.items()}, st["files"]
+            assert st["listed"] == {n: "2026-01-01T08:00" for n in files}, st["listed"]
             fetched.clear()
             assert run_history(td) == 0 and fetched == []                   # nothing new
             files["2026_ADMLivestockLrp_Daily_20261015.zip"] += b""          # same size: still nothing
@@ -1615,6 +1906,149 @@ def selftest_run_history():
         Probe.get, globals()["http_get"] = real_get, real_http
 
 
+def selftest_watch():
+    """run_watch and run_post_times against a fake RMA folder: the afternoon
+    file that replaces the 8:35 am stub, a broken zip already tried today, a
+    dead listing, the log's cap; and the sales day today.json reports."""
+    import tempfile
+    assert listed_time("10/14/2026 03:31 PM 1451122 x.zip") == "2026-10-14T15:31"
+    assert listed_time("10/10/2026 12:05 AM 797 x.zip") == "2026-10-10T00:05"
+    assert listed_time("10/10/2026 12:30 PM 797 x.zip") == "2026-10-10T12:30" and listed_time("x") is None
+    assert current_ry(date(2026, 6, 30)) == 2026 and current_ry(date(2026, 7, 1)) == 2027
+    assert central_to_utc("2026-10-15T14:22") == "2026-10-15T19:22:00Z"      # CDT
+    assert central_to_utc("2026-12-15T14:22") == "2026-12-15T20:22:00Z"      # CST
+    assert utc_to_central("2026-10-15T19:22:05Z") == "2026-10-15T14:22"
+
+    o27, a26 = "2027_ADMLivestockLrp_Daily_", "2026_ADMLivestockLrp_Daily_"
+    folders = {
+        2026: [("10/15/2026 08:35 AM", 23114, a26 + "20261015.zip"),
+               ("10/14/2026 03:31 PM", 32333, a26 + "20261014.zip")],
+        2027: [("10/14/2026 03:31 PM", 1451122, o27 + "20261014.zip"),
+               ("10/15/2026 08:35 AM", 3747, o27 + "20261015.zip"),
+               ("10/15/2026 08:35 AM", 0, "2027_ADMLivestockLgm_Daily_20261015.zip")],
+    }
+    dead = set()
+    heads = []
+
+    def fake_get(self, url, **kw):
+        if url in dead:
+            return None, {}, None
+        if url == ADM_LIVE:
+            return 200, {}, b'<a href="2025/">2025</a><a href="2026/">2026</a><a href="2027/">2027</a>'
+        y = int(url[len(ADM_LIVE):len(ADM_LIVE) + 4])
+        return 200, {}, "".join(f'<tr><td>{t} {n} <a href="{f}">{f}</a></td></tr>'
+                                for t, n, f in folders.get(y, [])).encode()
+
+    def fake_head(url, **kw):
+        name = url.rsplit("/", 1)[-1]
+        heads.append(name)
+        for rows in folders.values():
+            for t, n, f in rows:
+                if f == name:
+                    when = listed_time(t)
+                    return 200, central_to_utc(when)[:-3] + "12Z", n
+        return 404, None, None
+
+    real_get, real_head = Probe.get, globals()["http_head"]
+    Probe.get = fake_get
+    globals()["http_head"] = fake_head
+    real_env = os.environ.get("GITHUB_OUTPUT")
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            out = os.path.join(td, "gh_output")
+            os.environ["GITHUB_OUTPUT"] = out
+
+            def outputs():
+                with open(out) as f:
+                    d = dict(line.strip().split("=", 1) for line in f if "=" in line)
+                os.remove(out)
+                return d
+
+            state = {"files": {f: n for rows in folders.values() for _, n, f in rows if "Lrp" in f}, "stats": {}}
+            write_json(os.path.join(td, "state.json"), state, pretty=True)
+            now = datetime(2026, 10, 15, 19, 7, tzinfo=timezone.utc)
+            # Morning stub already read: nothing new. The look is logged; the
+            # old folder (2025) is not listed, the newest file is HEADed.
+            assert run_watch(td, now=now) == 0
+            assert outputs() == {"new": "0", "years": "", "newest": o27 + "20261015.zip"}
+            wl = load_json(os.path.join(td, WATCH_LOG), {})
+            c = wl["checks"][-1]
+            assert c == {"t": "2026-10-15T19:07:00Z", "newest": o27 + "20261015.zip", "size": 3747,
+                         "listed": "2026-10-15T08:35", "lm": "2026-10-15T13:35:12Z", "head_size": 3747, "new": 0}, c
+            assert heads == [o27 + "20261015.zip"], heads
+            assert wl["seen"][o27 + "20261015.zip"]["lm"] == "2026-10-15T13:35:12Z"
+            # 2:22 pm CT: the afternoon file replaces the stub under the same name.
+            folders[2027][1] = ("10/15/2026 02:22 PM", 1450000, o27 + "20261015.zip")
+            now2 = datetime(2026, 10, 15, 19, 22, tzinfo=timezone.utc)
+            assert run_watch(td, now=now2) == 0
+            assert outputs() == {"new": "1", "years": "2027-2027", "newest": o27 + "20261015.zip"}
+            wl = load_json(os.path.join(td, WATCH_LOG), {})
+            assert wl["checks"][-1]["new"] == 1 and wl["checks"][-1]["names"] == [o27 + "20261015.zip"]
+            s = wl["seen"][o27 + "20261015.zip"]
+            assert s == {"size": 1450000, "listed": "2026-10-15T14:22", "first_seen": "2026-10-15T19:22:00Z",
+                         "lm": "2026-10-15T19:22:12Z"}, s
+            # today.json for that day, once read: posted from the header, closes 8:25 am CT the 16th.
+            info = sales_info({"sed": "20261015", "src": o27 + "20261015.zip"}, {}, wl)
+            assert info == {"sales_day": "2026-10-15", "file": o27 + "20261015.zip",
+                            "posted_utc": "2026-10-15T19:22:12Z", "posted_from": "Last-Modified header",
+                            "sales_close_ct": "2026-10-16T08:25", "sales_close_utc": "2026-10-16T13:25:00Z"}, info
+            # Without a watch record, the listing's Central time; a Friday closes Saturday; CST in winter.
+            info = sales_info({"sed": "20261016", "src": "x"}, {"listed": {"x": "2026-10-16T14:20"}}, {})
+            assert info["posted_utc"] == "2026-10-16T19:20:00Z" and info["sales_close_ct"] == "2026-10-17T08:25"
+            assert sales_info({"sed": "20261215", "src": "y"}, {}, {})["sales_close_utc"] == "2026-12-16T14:25:00Z"
+            assert sales_info({"sed": "20261215", "src": "y"}, {}, {})["posted_utc"] is None
+            # A zip that came back broken and was already tried today waits for tomorrow.
+            state["bad_files"] = {o27 + "20261015.zip": {"size": 1450000, "tries": 1, "last": "2026-10-15"}}
+            write_json(os.path.join(td, "state.json"), state, pretty=True)
+            assert run_watch(td, now=now2) == 0 and outputs()["new"] == "0"
+            assert run_watch(td, now=datetime(2026, 10, 16, 15, 7, tzinfo=timezone.utc)) == 0
+            assert outputs()["new"] == "1"
+            # A new old-year ending-value file names its own folder.
+            del state["bad_files"]
+            state["files"][o27 + "20261015.zip"] = 1450000
+            write_json(os.path.join(td, "state.json"), state, pretty=True)
+            folders[2026].append(("10/16/2026 08:35 AM", 23000, a26 + "20261016.zip"))
+            assert run_watch(td, now=datetime(2026, 10, 16, 15, 8, tzinfo=timezone.utc)) == 0
+            assert outputs() == {"new": "1", "years": "2026-2026", "newest": a26 + "20261016.zip"}
+            # One folder down: the other still counts and the gap is logged.
+            dead.add(ADM_LIVE + "2026/")
+            assert run_watch(td, now=now2) == 0 and outputs()["new"] == "0"
+            assert load_json(os.path.join(td, WATCH_LOG), {})["checks"][-1]["listing_failed"] == [2026]
+            # Every folder down: logged, nothing new, the step fails.
+            dead.update({ADM_LIVE, ADM_LIVE + "2027/"})
+            assert run_watch(td, now=now2) == 1 and outputs()["new"] == "0"
+            wl = load_json(os.path.join(td, WATCH_LOG), {})
+            assert wl["checks"][-1]["error"] == "no listing answered" and len(wl["checks"]) == 7
+            dead.clear()
+            # The log keeps the newest looks only.
+            real_keep = WATCH_CHECKS_KEEP
+            try:
+                globals()["WATCH_CHECKS_KEEP"] = 3
+                assert run_watch(td, now=now2) == 0 and outputs()
+                wl = load_json(os.path.join(td, WATCH_LOG), {})
+                assert len(wl["checks"]) == 3 and wl["checks"][-1]["t"] == "2026-10-15T19:22:00Z"
+            finally:
+                globals()["WATCH_CHECKS_KEEP"] = real_keep
+
+            # Posting times: Last-Modified beside the listing's clock (5 hours
+            # behind UTC in October, so the listing is Central).
+            heads.clear()
+            assert run_post_times(td, now=now2, n=2) == 0
+            pt = load_json(os.path.join(td, "probe", "post-times.json"), {})
+            assert [r["file"] for r in pt["files"]] == [o27 + "20261014.zip", o27 + "20261015.zip",
+                                                        a26 + "20261014.zip", a26 + "20261015.zip",
+                                                        a26 + "20261016.zip"], pt["files"]
+            assert pt["summary"]["listing_minus_utc_minutes"] == {"-300": 5}, pt["summary"]
+            assert pt["summary"]["offer_files_timed"] == 2 and pt["summary"]["median_ct"] == "15:31", pt["summary"]
+            assert pt["summary"]["first_ct"] == "14:22" and pt["summary"]["share_by_ct"]["15:00"] == 0.5
+    finally:
+        Probe.get, globals()["http_head"] = real_get, real_head
+        if real_env is None:
+            os.environ.pop("GITHUB_OUTPUT", None)
+        else:
+            os.environ["GITHUB_OUTPUT"] = real_env
+
+
 def main():
     ap = argparse.ArgumentParser(description="RMA LRP data")
     ap.add_argument("--selftest", action="store_true")
@@ -1625,6 +2059,8 @@ def main():
     ap.add_argument("--minutes", type=int, default=300, help="stop starting downloads after this long")
     ap.add_argument("--max-files", type=int)
     ap.add_argument("--publish", metavar="DIR", help="write data/lrp/ from this history checkout")
+    ap.add_argument("--watch", metavar="DIR", help="one look for new RMA files against this history's state")
+    ap.add_argument("--post-times", metavar="DIR", help="HEAD the latest files; write probe/post-times.json here")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
@@ -1632,9 +2068,13 @@ def main():
         return run_probe(a.out)
     if a.history:
         return run_history(a.history, a.years, a.minutes, a.max_files)
+    if a.watch:
+        return run_watch(a.watch)
+    if a.post_times:
+        return run_post_times(a.post_times)
     if a.publish:
         return run_publish(a.publish, a.out if a.out != PROBE_DIR else PUBLISH_DIR)
-    log("nothing to do: pass --history DIR, --publish DIR, --probe or --selftest")
+    log("nothing to do: pass --history DIR, --publish DIR, --watch DIR, --post-times DIR, --probe or --selftest")
     return 2
 
 
