@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-15T20:07:22Z",
+ "generated": "2026-10-15T22:00:21Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1817,
-  "towns": 1438
+  "elevators": 1679,
+  "towns": 1322
  },
  "states": {
   "AL": {
@@ -28,24 +28,24 @@
    "towns": 8
   },
   "IA": {
-   "elevators": 402,
-   "towns": 300
+   "elevators": 289,
+   "towns": 199
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 209,
-   "towns": 150
+   "elevators": 208,
+   "towns": 149
   },
   "IN": {
    "elevators": 64,
    "towns": 49
   },
   "KS": {
-   "elevators": 245,
-   "towns": 179
+   "elevators": 246,
+   "towns": 180
   },
   "KY": {
    "elevators": 9,
@@ -60,24 +60,24 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 156,
-   "towns": 131
+   "elevators": 153,
+   "towns": 129
   },
   "MO": {
    "elevators": 28,
    "towns": 27
   },
   "MT": {
-   "elevators": 8,
-   "towns": 8
+   "elevators": 6,
+   "towns": 6
   },
   "ND": {
    "elevators": 48,
    "towns": 44
   },
   "NE": {
-   "elevators": 200,
-   "towns": 150
+   "elevators": 185,
+   "towns": 141
   },
   "NY": {
    "elevators": 2,
@@ -88,7 +88,7 @@
    "towns": 69
   },
   "OK": {
-   "elevators": 77,
+   "elevators": 76,
    "towns": 65
   },
   "OR": {
@@ -108,11 +108,11 @@
    "towns": 91
   },
   "TN": {
-   "elevators": 4,
-   "towns": 4
+   "elevators": 3,
+   "towns": 3
   },
   "TX": {
-   "elevators": 18,
+   "elevators": 17,
    "towns": 12
   },
   "WA": {
@@ -120,8 +120,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 78,
-   "towns": 70
+   "elevators": 76,
+   "towns": 69
   },
   "WY": {
    "elevators": 1,
@@ -129,9 +129,9 @@
   }
  },
  "coverage": {
-  "generated": "2026-10-15T17:18:08.024Z",
-  "read": 1868,
-  "quiet": 199,
+  "generated": "2026-10-15T21:10:22.755Z",
+  "read": 1836,
+  "quiet": 231,
   "known": 6336,
   "elevators": 8403
  }
