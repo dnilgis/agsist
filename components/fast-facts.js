@@ -117,6 +117,7 @@ function loadFertPrices(){
       var fertSel=document.getElementById('nc-fert');
       if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value==='46'){fertSel.value='46';break;}}}
       loadNFertPrice(pplb,'Urea 46%',urea.price);
+      calcNC();// the box changed under the calculator; redraw so it never shows the 560 default
     }
     // P2O5 from MAP+S: 12-40-0-10S = 40% P2O5.  NEVER use 0.46 for this product.
     // Its 240 lb of N a ton is credited at the urea price (components/manure-value.js,
