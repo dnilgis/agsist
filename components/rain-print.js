@@ -1373,20 +1373,19 @@
     };
     var svg = root.AgRainArt.render(input);
     SKIPPED = root.AgRainArt.lastSkipped();
-    UNPLACED = ex ? [] : unplacedRows(input.markers);
+    UNPLACED = ex ? [] : unplacedRows();
     return svg;
   }
   /* Marked days the art could not place cleanly, as day numbers on the page,
      so that day's row can say so (2026-10-15, up to five days). The art names
-     them by index into the markers it was given (AgRainArt.lastUnplaced); an
-     art file without that signal draws three at most, so a 4th and 5th count
-     as left off. The k-th marker given is the k-th of ST.markers that falls
+     them by index into the markers it was given (AgRainArt.lastUnplaced, art
+     v11: the first three always draw; a 4th or 5th that can only land on top
+     of the others is left off). The k-th marker given is the k-th of ST.markers that falls
      on the days drawn, and ST.markers come from the rows with a day, in order. */
   var UNPLACED = [];
-  function unplacedRows(given) {
+  function unplacedRows() {
     var A = root.AgRainArt, idx = [], src = [], rows = [];
     if (A && typeof A.lastUnplaced === 'function') idx = A.lastUnplaced() || [];
-    else for (var k = 3; k < (given || []).length; k++) idx.push(k);
     if (!idx.length || !DATA || !META) return [];
     ST.markers.forEach(function (m, j) { var doy = dayIndex(META.year, m.date); if (doy >= 0 && doy < DATA.d.n) src.push(j); });
     dayNums().forEach(function (i) { var d = rowDate(i, ST.year); if (d && dayIndex(ST.year, d) >= 0) rows.push(i); });
