@@ -18,7 +18,9 @@
  * WHERE THE NUMBERS COME FROM (nothing here is invented or filled in)
  *   place     Open-Meteo geocoding (geocoding-api.open-meteo.com)
  *   stations  RCC-ACIS StnMeta, stations within about 0.6 degrees whose
- *             precipitation record spans the whole year
+ *             precipitation record spans the whole year, each marked for
+ *             whether its snowfall record does too (pickStation prefers one
+ *             that does, a few miles farther, where snow is normal)
  *   days      RCC-ACIS StnData pcpn + avgt for that station and year
  *   scale     the station's full period of record (same scale every year)
  *   compare   ACIS's own NOAA 30-year normal (normal:1; which 30 years ACIS
@@ -868,21 +870,143 @@
   }
   function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
   function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
+  /* THE STATION LIST (2026-10-15: snowfall too). Two StnMeta asks over the
+     same box: precipitation (the list, as before) and snowfall, so each
+     station knows before any drawing whether its snowfall record spans the
+     year (snowOk). Two asks, not one with elems=pcpn,snow, because ACIS
+     doesn't say whether a two-element ask drops stations that keep only one
+     of them; a rain-only gauge must stay in the list. A snowfall answer that
+     fails leaves snowOk null (not known), never false. */
+  function spans(r, y0, y1) { return !!(r && r[0] && r[1] && r[0] <= y0 && r[1] >= y1); }
   function stations(lat, lon, year) {
     var d = 0.6;
+    var box = [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(',');
     var u = 'https://data.rcc-acis.org/StnMeta?' + new URLSearchParams({
-      bbox: [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(','),
-      elems: 'pcpn', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'name,sids,ll,valid_daterange,state'
+      bbox: box,
+      elems: 'pcpn', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'name,sids,ll,valid_daterange,state,elev'
     });
+    var us = 'https://data.rcc-acis.org/StnMeta?' + new URLSearchParams({ bbox: box, elems: 'snow', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'sids,valid_daterange' });
     // This year: the record must reach back to Jan 1 and still be current. Last
     // year while it is open (lastYearOpen): current, up to Dec 31.
     var late = isoMinusDays(TODAY, STALE_DAYS);
     var y0 = year + '-01-01', y1 = year === CURRENT_YEAR ? late : lastYearOpen(year) && late < year + '-12-31' ? late : year + '-12-31';
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    var snowP = safeFetch(us).then(function (r) { return r.json(); }).then(function (j) {
+      var by = {};
+      (j && j.meta || []).forEach(function (m) { if (m.sids && m.sids[0]) by[cleanSid(m.sids[0])] = m.valid_daterange && m.valid_daterange[0]; });
+      return by;
+    }).then(null, function () { return null; });
+    return Promise.all([safeFetch(u).then(function (r) { return r.json(); }), snowP]).then(function (res) {
+      var j = res[0], snow = res[1];
       return (j.meta || []).filter(function (m) { return m.ll && m.sids && m.sids[0] && m.valid_daterange && m.valid_daterange[0] && m.valid_daterange[0][0] <= y0 && m.valid_daterange[0][1] >= y1; })
-        .map(function (m) { return Object.assign({}, m, { sid: cleanSid(m.sids[0]), km: haversine(lat, lon, m.ll[1], m.ll[0]) }); })
+        .map(function (m) {
+          var sid = cleanSid(m.sids[0]);
+          return Object.assign({}, m, { sid: sid, km: haversine(lat, lon, m.ll[1], m.ll[0]), snowOk: snow ? spans(snow[sid], y0, y1) : null });
+        })
         .sort(function (a, b) { return a.km - b.km; });
     });
+  }
+
+  /* THE AUTO PICK (2026-10-15, Sig: "find the nearest station with a full set
+     of data, in my case that includes snow and rain"). Chetek 2025 took a
+     CoCoRaHS gauge 1.9 mi away that keeps no snowfall, so the print drew no
+     snow, while Rice Lake's co-op station 9 mi away keeps both.
+       1. Rain, as before: the first of the nearest three with at most MISS_OK
+          unrecorded days, else the most complete of them.
+       2. Snow: where snow is normal (snowCountry), when that station's year
+          draws no snow (snowStateOf is 'unknown', the art's own test), the
+          nearest station whose snowfall record spans the year (snowOk from
+          StnMeta) and lies within max(10 mi farther, twice as far) is read
+          (up to SNOW_TRIES of them, nearest first). The first with a usable
+          rain year AND a usable snowfall year (by its real days, not the
+          metadata) is taken; else the rain pick stays and the page says so.
+     Only for a design with no station of its own: a short link, an RPS
+     reference, a gift card or any saved design keeps its station exactly.
+       pickStation(list, year, read(sid, year) -> Promise of daily(), o)
+         o: {lat (the town's), snowy (overrides snowCountry), onTry(station, 'rain'|'snow')}
+         -> Promise of {chosen, picked, why, seen}
+       why: null, {over: {sid, name, km}} (picked over that nearer one) or
+         {none: true, km, sure} (no snow station within km; sure: every
+         station there was read or ruled out, none failed to answer); seen: {sid: snow state}. */
+  var SNOW_SLACK_MI = 10, SNOW_TRIES = 3;
+  function snowStateOf(days) {
+    days = days || [];
+    if (!days.length) return 'unknown';
+    var miss = 0, tot = 0;
+    days.forEach(function (x) { if (x.v === null || x.v === undefined) return; if (x.s === null || x.s === undefined) miss++; else tot += x.s; });
+    return miss <= MISS_OK ? (tot >= 0.1 ? 'full' : 'none') : 'unknown';
+  }
+  /* Where snow is not normal (a normal under about 2 in a year), a station
+     farther off is never taken for its snowfall record. A plain map test,
+     not a normals lookup: island states and territories, Florida, anywhere
+     south of 31 N (south Texas, the Gulf coast), the low Gulf and South
+     Atlantic coast up to 33 N, low Texas and New Mexico south of 33 N, and
+     the low deserts and valleys of California, Arizona and Nevada (under
+     3,000 ft; a station of unknown height there counts as low). Mountains
+     there (Flagstaff, Reno, the Sierra) keep snow. elev: feet, as ACIS sends it. */
+  function snowCountry(o) {
+    var st = String(o && o.state || '').toUpperCase(), lat = +(o && o.lat), elev = o && typeof o.elev === 'number' ? o.elev : null;
+    if (/^(HI|PR|VI|GU|AS|MP|FL)$/.test(st)) return false;
+    if (!isFinite(lat)) return true;
+    if (lat < 31) return false;
+    var low = function (ft) { return elev === null || elev < ft; };
+    if (/^(LA|MS|AL|GA|SC)$/.test(st) && lat < 33 && low(500)) return false;
+    if (/^(TX|NM)$/.test(st) && lat < 33 && low(3000)) return false;
+    if (/^(CA|AZ|NV)$/.test(st) && low(3000)) return false;
+    return true;
+  }
+  function snowLimitKm(km) { return Math.max(km + SNOW_SLACK_MI / 0.621371, 2 * km); }
+  function pickStation(list, year, read, o) {
+    o = o || {};
+    var pool = (list || []).slice(), seen = {}, tried = {};
+    var tries = pool.slice(0, 3), best = null, bestSt = null, chosen = null, picked = null, i = 0;
+    var rainStep = function () {
+      if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
+      var s = tries[i++];
+      if (o.onTry) o.onTry(s, 'rain');
+      return read(s.sid, year).then(function (d) {
+        tried[s.sid] = d.d.missing; seen[s.sid] = snowStateOf(d.days);
+        if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
+        if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
+        return rainStep();
+      }, function () { tried[s.sid] = Infinity; return rainStep(); });
+    };
+    var done = function (why) { return { chosen: chosen, picked: picked, why: why || null, seen: seen }; };
+    return Promise.resolve(rainStep()).then(function () {
+      if (!picked) return done(null);
+      var snowy = o.snowy !== undefined ? !!o.snowy : snowCountry({ lat: o.lat !== undefined ? o.lat : chosen.ll && chosen.ll[1], state: chosen.state, elev: chosen.elev });
+      if (!snowy || seen[chosen.sid] !== 'unknown') return done(null);
+      var limit = snowLimitKm(chosen.km), first = chosen, j = 0;
+      var all = pool.filter(function (s) {
+        return s.sid !== first.sid && s.snowOk !== false && s.km <= limit && !(tried[s.sid] > MISS_OK) && seen[s.sid] !== 'unknown';
+      }), cands = all.slice(0, SNOW_TRIES), sure = all.length <= SNOW_TRIES;
+      var snowStep = function () {
+        if (j >= cands.length) return done({ none: true, km: limit, sure: sure });
+        var s = cands[j++];
+        if (o.onTry) o.onTry(s, 'snow');
+        return read(s.sid, year).then(function (d) {
+          var st = seen[s.sid] = snowStateOf(d.days);
+          if (d.d.missing > MISS_OK || st === 'unknown') return snowStep();
+          chosen = s; picked = d;
+          return done({ over: { sid: first.sid, name: first.name, km: first.km } });
+        }, function () { sure = false; return snowStep(); });
+      };
+      return snowStep();
+    });
+  }
+  /* The sentence by the station line that says why this station: "Picked over
+     a gauge 1.9 mi away because it records snowfall too." */
+  function pickWhy(why, year) {
+    if (!why) return '';
+    if (why.over) return 'Picked over a ' + (/^US1/.test(String(why.over.sid)) ? 'gauge' : 'station') + ' ' + milesText(miles(why.over.km)) + ' away because it records snowfall too.';
+    if (why.none) return why.sure ? 'None of the stations within ' + Math.round(miles(why.km)) + ' mi kept a full snowfall record for ' + year + ', so the print draws no snow.'
+      : 'The nearest stations that keep snowfall didn\u2019t send a full ' + year + ' of it, so the print draws no snow.';
+    return '';
+  }
+  // the station list's word for each: by its real days once read, else by NOAA's list
+  function snowWord(s, seen) {
+    var st = seen && seen[s.sid];
+    if (st) return st === 'unknown' ? 'rain only' : 'rain and snow';
+    return s.snowOk === true ? 'rain and snow' : s.snowOk === false ? 'rain only' : '';
   }
   function parseTemp(raw) { var s = String(raw).trim(); if (s === 'M' || s === '') return null; var v = parseFloat(s); return isNaN(v) ? null : v; }
   // pcpn, avgt (daily mean temperature, F), snow, maxt and mint come back as parallel columns from one
@@ -1011,8 +1135,8 @@
      fair to draw: the design doesn't open, NOAA didn't answer, the station has
      more than a month missing, or under GIFT_MIN_DAYS days are in (the page
      draws no art then either). The station in the design is used; a design
-     without one takes the nearest of three with a near-complete record, as the
-     page does. Remarkable days are left off, as on the page's preview. The QR
+     without one takes the page's own pick (pickStation: the nearest good rain
+     record, traded for a snowfall record within the slack where snow is normal). Remarkable days are left off, as on the page's preview. The QR
      is the standard code to the Rain Print page (a preview, never the print's
      own link), and no short link is asked for.
      later: words for the months still to come, drawn in a pale wash over them
@@ -1035,18 +1159,9 @@
       }
       if (!g) throw new Error('The town lookup didn’t answer.');
       return stations(g.latitude, g.longitude, s.year).then(function (list) {
-        var tries = list.slice(0, 3), i = 0, best = null, bestSt = null;
-        if (!tries.length) throw new Error('No NOAA station near ' + g.name + ' is reporting for ' + s.year + '.');
-        var step = function () {
-          if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
-          var st = tries[i++];
-          return daily(st.sid, s.year).then(function (d) {
-            if (!best || d.d.missing < best.d.missing) { best = d; bestSt = st; }
-            if (d.d.missing <= MISS_OK) { picked = d; chosen = st; return null; }
-            return step();
-          }, step);
-        };
-        return step();
+        if (!list.length) throw new Error('No NOAA station near ' + g.name + ' is reporting for ' + s.year + '.');
+        // the page's own pick, snowfall rule and all (a design with a station never gets here)
+        return pickStation(list, s.year, daily, { lat: g.latitude }).then(function (r) { picked = r.picked; chosen = r.chosen; });
       });
     }).then(function () {
       if (!picked) throw new Error('NOAA didn’t send this year’s days.');
@@ -1137,7 +1252,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -1156,6 +1271,7 @@
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, PRICES_P = null, BLOCKED = '', DRAWING = false;
+  var SNOW_SEEN = {};   // {year: {sid: 'full'|'none'|'unknown'}}: each station's snowfall year once its days are read (the station list's words)
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
      while a year-to-date preview is drawn. NOART: the plain message shown
      instead of art when the year so far is too thin to draw; ordering stays open. */
@@ -1825,9 +1941,11 @@
     }
   }
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
+  // and, when the pick traded miles for a snowfall record (or looked and found none): "Picked over a gauge 1.9 mi away because it records snowfall too."
   function gaugeHtml(m) {
-    return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' +
-      (STATIONS.length > 1 ? ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
+    var w = pickWhy(m.why, m.year);
+    return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
+      (STATIONS.length > 1 ? (w ? '.' : '') + ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
   function usualWords() {
     if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
@@ -2016,7 +2134,7 @@
     $('rp-retry-row').hidden = true;
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
-    var g, chosen, picked, autoPick = false;
+    var g, chosen, picked, autoPick = false, why = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
     // the county page's station location, on the first draw of its own link only
     var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
@@ -2078,32 +2196,29 @@
         n.classList.remove('rp-bad'); n.hidden = false;
         return nearest(linked);
       };
-      if (want) return daily(want.sid, ST.year).then(function (d) { chosen = want; picked = d; }, instead);
+      if (want) return daily(want.sid, ST.year).then(function (d) { chosen = want; picked = d; seen[want.sid] = snowStateOf(d.days); }, instead);
       if (linked) return daily(linked, ST.year).then(function (d) {
         if (!d || !d.meta || !Array.isArray(d.meta.ll) || d.meta.ll.length < 2) throw new Error('no place for that station');
         chosen = { sid: linked, name: d.meta.name || linked, state: d.meta.state || '', ll: d.meta.ll, km: haversine(g.latitude, g.longitude, d.meta.ll[1], d.meta.ll[0]),
           valid_daterange: [[ST.year + '-01-01', lastDayOf(ST.year)]] };
         STATIONS = [chosen].concat(list);
-        picked = d;
+        picked = d; seen[linked] = snowStateOf(d.days);
       }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
       return nearest('');
-      // Nearest first; take the first of three with a near-complete year, else the most complete. skip: a station that just failed.
+      /* Nearest first; take the first of three with a near-complete year, else the most complete,
+         then trade a few miles for a snowfall record where snow is normal (pickStation). skip: a station that just failed.
+         Only a design without its own station gets here: a link's, a gift card's or a saved station is never re-picked. */
       function nearest(skip) {
         var pool = list.filter(function (s) { return s.sid !== skip; });
         if (!pool.length) throw noStation();
         autoPick = true;
-        var tries = pool.slice(0, 3), best = null, bestSt = null, i = 0;
-        var step = function () {
-          if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
-          var s = tries[i++];
-          setStatus('Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
-          return daily(s.sid, ST.year).then(function (d) {
-            if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
-            if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
-            return step();
-          }, function () { return step(); });
-        };
-        return step();
+        return pickStation(pool, ST.year, daily, { lat: g.latitude, onTry: function (s, kind) {
+          setStatus(kind === 'snow' ? 'Checking ' + stationName(s.name) + ', which records snowfall too…' : 'Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
+        } }).then(function (r) {
+          if (my !== reqToken) throw 'stale';
+          picked = r.picked; chosen = r.chosen; why = r.why;
+          Object.keys(r.seen).forEach(function (k) { seen[k] = r.seen[k]; });
+        });
       }
     }).then(function () {
       if (my !== reqToken) throw 'stale';
@@ -2112,11 +2227,12 @@
       if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; throw none; }
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
-        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) + '</option>';
+        var w = snowWord(s, seen);
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) + (w ? ', ' + w : '') + '</option>';
       }).join('');
       sel.value = chosen.sid;
       var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
-      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid };
+      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null };
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
         blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +

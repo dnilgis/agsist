@@ -556,7 +556,7 @@
                 <option value="normal">NOAA 30-year normal</option>
                 <option value="station">This station&rsquo;s full record</option>
               </select></label><p class="rp-count" id="rp-cmp-hint">Nothing: just your year. NOAA normal: a usual year by NOAA&rsquo;s 30-year normal. Full record: this station&rsquo;s own average over every year it has kept.</p></div>
-              <label class="field"><span>Weather station</span><select id="rp-station" disabled><option value="">Nearest with a good record</option></select></label>
+              <div class="rp-wide2"><label class="field"><span>Weather station</span><select id="rp-station" disabled aria-describedby="rp-station-hint"><option value="">Nearest with a good record</option></select></label><p class="rp-count" id="rp-station-hint">Rain and snow: it keeps a snowfall record too, so snow can show on the print. Rain only: no snow on the print. Any station here can make it.</p></div>
               <div class="rp-checks rp-wide2">
                 <label class="rp-check"><input type="checkbox" id="rp-normals"><span>Show the 30-year normals</span></label>
                 <label class="rp-check"><input type="checkbox" id="rp-records"><span>Show remarkable days</span></label>
@@ -839,7 +839,7 @@
   <script src="/components/rp-short.js?v=4"></script>
   <script src="/components/rp-logo.js?v=2"></script>
   <script src="/components/rain-print-art.js?v=10"></script>
-  <script src="/components/rain-print.js?v=29"></script>
+  <script src="/components/rain-print.js?v=30"></script>
   <script src="/components/rp-gift.js?v=3" defer></script>
 </body>
 </html>
