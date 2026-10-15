@@ -1,0 +1,70 @@
+name: lrp
+
+# USDA RMA Livestock Risk Protection data for /lrp (scripts/fetch_lrp.py).
+#
+# PHASE 1, probe only. The sandbox the script is written in cannot reach
+# USDA, so this captures what RMA serves, raw, and commits it to
+# data/lrp-raw/probe/ (capped at 9 MB; data/ is near its folder budget):
+#   * the ADM livestock year folders and a few LRP daily zips per year
+#   * the LRP Summary of Business folder and two of its yearly zips
+#   * the Livestock Reports app criteria page, its form, and a few submissions
+#   * RMA's legacy livestock pages
+# A manifest.json lists every request with its status and size.
+#
+# No schedule yet: the parser and the history build come once the probe is read.
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe: save RMA's raw LRP sources to data/lrp-raw/probe/ and commit them"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lrp
+  cancel-in-progress: false
+
+jobs:
+  lrp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selftest
+        run: python scripts/fetch_lrp.py --selftest
+
+      - name: Probe
+        if: ${{ inputs.probe }}
+        timeout-minutes: 30
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python scripts/fetch_lrp.py --probe
+
+      - name: Inside the size budget
+        run: python scripts/check_site_budget.py
+
+      - name: Commit the probe
+        if: ${{ inputs.probe }}
+        run: |
+          set -e
+          git config user.name "agsist-probe"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/lrp && mkdir -p /tmp/lrp && cp -r data/lrp-raw /tmp/lrp/
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            mkdir -p data && rm -rf data/lrp-raw/probe && cp -r /tmp/lrp/lrp-raw data/
+            git add -A data/lrp-raw/probe
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "data: lrp probe $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            if git push -q origin HEAD:main; then exit 0; fi
+            sleep $((15 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
