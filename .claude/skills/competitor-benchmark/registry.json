@@ -1611,6 +1611,108 @@
     }
    ],
    "last_run": "2026-10-15"
+  },
+  "grain-emc": {
+   "queries": [
+    "equilibrium moisture content chart",
+    "equilibrium moisture content corn chart",
+    "grain EMC calculator",
+    "grain EMC chart printable",
+    "grain bin fan humidity",
+    "when to run aeration fans",
+    "will my fans dry corn tonight"
+   ],
+   "ours_total": 45,
+   "verdict": "yes for corn and wheat (no soybeans yet)",
+   "report": "results/2026-10-15-grain-emc.md",
+   "competitors": [
+    {
+     "name": "Grain Aeration & Storage App (INTA + Iowa State, iOS)",
+     "kind": "university",
+     "total": 39,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "In-bin controllers (IntelliFarms BinManager, AGI/GSI, CTB/Brock, OPI)",
+     "kind": "vendor",
+     "total": 39,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Clemson EMC Calculator",
+     "url": "https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "University of Minnesota Extension EMC tables",
+     "url": "https://extension.umn.edu/corn-harvest/managing-stored-grain-aeration",
+     "kind": "university",
+     "total": 32,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Oklahoma State BAE-1116 Knowing When to Run Aeration Fans",
+     "url": "https://extension.okstate.edu/fact-sheets/print-publications/bae/aeration-management-knowing-when-to-run-aeration-fans-bae-1116.pdf",
+     "kind": "university",
+     "total": 31,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "University of Kentucky EMC tables for grains",
+     "url": "https://engr.uky.edu/sites/default/files/equilibrium%20moisture%20content%20for%20grains.pdf",
+     "kind": "university",
+     "total": 30,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "University of Arkansas EMC web calculator, spreadsheet and app",
+     "url": "https://grainmanagement.uada.edu/pages/emc.html",
+     "kind": "university",
+     "total": 31,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "PAMI EMC charts",
+     "url": "https://pami.ca/equilibrium-moisture-content-charts-grain-storage/",
+     "kind": "university",
+     "total": 26,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "OPI Systems EMC calculator",
+     "url": "https://opisystems.com/opi-emc-calculator/",
+     "kind": "vendor",
+     "total": 26,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "Multi-Grain EMC Calculator (FBN forum post)",
+     "kind": "startup",
+     "total": 25,
+     "evidence": "snippets",
+     "last_checked": "2026-10-15"
+    },
+    {
+     "name": "BINcast (weathercentral.ca)",
+     "kind": "startup",
+     "total": null,
+     "evidence": "snippets; 2010-2014 coverage, status unknown",
+     "last_checked": "2026-10-15"
+    }
+   ],
+   "last_run": "2026-10-15",
+   "note": "rebuilt after the audit panel (first build about 42); competitor scores from search snippets"
   }
  }
 }
