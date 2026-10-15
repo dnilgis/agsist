@@ -115,7 +115,7 @@
     <div class="pb-page">
       <nav class="pb-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> › Prediction bot scorecard</nav>
       <h1>Prediction bot scorecard</h1>
-      <p class="pb-sub page-lede">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks from now. It makes one call per crop for each weekly CFTC report, at the close of the first business day after the report comes out that is not a federal holiday, and grades it at the same point four reports later. Code grades every call against daily closing prices from Yahoo Finance (not the exchange&rsquo;s settlement file). Nobody picks which calls count. The four Oct 5, 2026 entry prices were set by hand before any grading, because the bot&rsquo;s run read a bar that already held evening trades; each call&rsquo;s note says how.</p>
+      <p class="pb-sub page-lede">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks out, one call per crop after each weekly CFTC report. Code grades every call against Yahoo Finance daily closes, and nobody picks which calls count. The timing rules, and why the four Oct 5 entry prices were set by hand, are under How the arithmetic works.</p>
 
       <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
 
