@@ -177,6 +177,12 @@ KEEP = {
     "gifts-for-farmers": "img/og/rain-print.jpg",
     "rain-gauge": "img/og/rain-gauge.jpg",
 }
+# Pages whose meta tags their own builder writes (its --check compares the
+# whole file): this script draws the image, the builder points at it.
+IMAGE_ONLY = {
+    "arc-plc": "scripts/build_arc_plc.py",
+    "rain": "scripts/build_county_rain.py",
+}
 # Pages whose image and meta tags another builder owns.
 OWNED = {
     "index": "scripts/build_social_card.py (the daily card)",
@@ -710,7 +716,7 @@ def build(only=None, strict=False):
         img_rel = f"img/og/{name}.jpg"
         if write_if_changed(os.path.join(ROOT, img_rel), data):
             changed.append(img_rel)
-        if name in SETS:
+        if name in SETS or name in IMAGE_ONLY:
             continue
         _write_page(name, img_rel, data, clean_alt(spec["alt"]), changed)
     print(f"[share] {len(names)} cards, {len(changed)} files changed" + (f", {len(failed)} fell back: {failed}" if failed else ""))

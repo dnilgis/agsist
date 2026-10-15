@@ -690,6 +690,8 @@ def head(title, desc, path, jsonld, indexable, share=None):
     h = SB.head(title, desc, path, jsonld, indexable)
     h = h.replace(f"<style>{SB.CSS}  </style>", f"<style>{CSS}  </style>")
     h = h.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">')
+    # one share image for the whole set, drawn by build_share_images.py
+    h = h.replace("/img/og/agsist.jpg", "/img/og/cash-bids.jpg")
     assert CSS in h, "basis head() changed shape; update head() here"
     m = re.search(r'  <link rel="stylesheet" href="/components/styles\.css\?v=\d+">\n', h)
     assert m, "basis head() changed shape; update head() here"

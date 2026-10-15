@@ -265,8 +265,12 @@ def head(title, desc, url, ld, og_title=None, extra=""):
   <meta property="og:title" content="{e(og_title or title.replace(' | AGSIST', ''))}">
   <meta property="og:description" content="{e(desc)}">
   <meta property="og:url" content="{url}">
-  <meta property="og:image" content="https://agsist.com/img/og/rain-print.jpg">
+  <meta property="og:image" content="https://agsist.com/img/og/rain.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{e(og_title or title.replace(' | AGSIST', ''))}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/rain.jpg">
   {BOOT}
   {ldh}{extra}
 </head>"""

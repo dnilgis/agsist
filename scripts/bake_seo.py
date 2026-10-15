@@ -882,12 +882,14 @@ PAGES = {
     # Added 2026-09-13. Both pages carried a HAND-TYPED number in their search
     # snippet: conditions-yield quoted an R-squared that had already drifted
     # from the file it describes, conditions quoted nothing current at all.
-    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc", "alt"})),
-    "conditions.html":       (seo_conditions,    frozenset({"title", "desc", "alt"})),
+    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc"})),
+    "conditions.html":       (seo_conditions,    frozenset({"title", "desc"})),
     # Added 2026-10-06. markets and fertilizer keep their descriptive
-    # og:image:alt; basis repeated its old title there, so it follows the new.
+    # og:image:alt. Since 2026-10-15 no page here owns its alt: the share
+    # image is drawn from the page's data (build_share_images.py) and that
+    # script writes an alt describing the image, so the two cannot disagree.
     "markets.html":          (seo_markets,       frozenset({"title", "desc"})),
-    "basis.html":            (seo_basis,         frozenset({"title", "desc", "alt"})),
+    "basis.html":            (seo_basis,         frozenset({"title", "desc"})),
     "fertilizer.html":       (seo_fertilizer,    frozenset({"title", "desc"})),
     MILK_PAGE:               (seo_milk,          frozenset({"title", "desc"})),
 }

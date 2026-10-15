@@ -1477,7 +1477,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
   <meta property="og:title" content="{esc(ogt)}">
   <meta property="og:description" content="{esc(ogd)}">
   <meta property="og:url" content="{SITE}{path}">
-  <meta property="og:image" content="{SITE}/img/og/agsist.jpg">
+  <meta property="og:image" content="{SITE}/img/og/arc-plc.jpg">
   <meta property="og:image:alt" content="{esc(ogt)}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1485,7 +1485,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:title" content="{esc(ogt)}">
   <meta name="twitter:description" content="{esc(ogd)}">
-  <meta name="twitter:image" content="{SITE}/img/og/agsist.jpg">
+  <meta name="twitter:image" content="{SITE}/img/og/arc-plc.jpg">
 {ld}
 </head>"""
 
