@@ -119,3 +119,68 @@ test("printed on Letter in Chromium, the lease is two pages with the signatures 
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---------------- /basis#storage ----------------
+ *   - farmdoc's own Oct 7, 2026 conclusion (a crunch is unlikely in 2026),
+ *     next to the ratios that cite its method
+ *   - a state missing a NASS figure whose published grain already tops its
+ *     bins shows as a floor, cut not rounded: Wisconsin "at least 1.03x"
+ *     (808.5 / 780 = 1.0366), instead of being dropped
+ *   - on a phone the input columns fold into a line under the state
+ */
+import { execFileSync } from "node:child_process";
+const storageHtml = (crunch, today = "2026-10-15") => execFileSync("python3", ["-c",
+  "import sys,json;sys.path.insert(0,'scripts');import seed_static as s;print(s.storage_html(json.loads(sys.stdin.read()),sys.argv[1]))", today],
+  { cwd: ROOT, input: JSON.stringify(crunch), encoding: "utf8" });
+const STORE = JSON.parse(read("data/storage/storage.json"));
+
+test("storage: farmdoc's conclusion is printed beside the ratios", () => {
+  const h = storageHtml(STORE);
+  assert.match(h, /a storage crunch is unlikely in 2026/);
+  assert.match(h, /cleared the pressure from September to December in past years/);
+  assert.match(h, /fdd100726\.pdf/);
+  // the farmdoc line is about 2026 only; another year does not carry it
+  const next = JSON.parse(JSON.stringify(STORE)); next.crunch.year = 2027;
+  assert.doesNotMatch(storageHtml(next, "2027-10-15"), /unlikely in 2026/);
+});
+
+test("storage: Wisconsin is a floor, at least 1.03x, cut not rounded", () => {
+  const h = storageHtml(STORE);
+  assert.match(h, /Wisconsin <span class="st-note">no figure for wheat<\/span><span class="st-in">124 stocks \+ 684 crop, 780 bins<\/span><\/td><td class="num">at least 1\.03&times;/);
+  assert.doesNotMatch(h, /at least 1\.04/);
+  const noRatio = h.match(/No ratio where NASS has no state figure[^<]*/)[0];
+  assert.doesNotMatch(noRatio, /Wisconsin/);
+  assert.match(noRatio, /Colorado/, "a state whose floor is under 1.00x stays in the no-ratio list");
+  // a made-up state: missing stocks, 90 + 0 over 100 = 0.9, no floor shown
+  const fx = { crunch: { year: 2026, states: {
+    IA: { stocks: { CORN: 100e6 }, fall: { CORN: [1000e6, "YEAR"] }, cap: 1000e6, ratio: 1.1 },
+    WI: { stocks: {}, fall: { CORN: [90e6, "YEAR"] }, cap: 100e6, why: "NASS has no state figure for corn" },
+    MS: { stocks: {}, fall: { CORN: [101e6, "YEAR"] }, cap: 100e6, why: "NASS has no state figure for corn" },
+    CA: { stocks: {}, fall: {}, why: "no on-farm plus off-farm capacity figure" } } } };
+  const f = storageHtml(fx);
+  assert.match(f, /Mississippi.*at least 1\.01&times;/);
+  assert.doesNotMatch(f, /Wisconsin[^,]*at least/);
+  assert.match(f, /grows: California, Wisconsin\./);
+});
+
+test("storage: the seeded basis page carries the new table and the phone fold", () => {
+  const B = read("basis.html");
+  assert.match(B, /<table class="bs-tbl bs-st">/);
+  assert.match(B, /at least 1\.03&times;/);
+  assert.match(B, /@media \(max-width:600px\)\{\n  \.tblscroll table\.bs-st\{min-width:0\}\n  \.bs-st \.st-c\{display:none\}\n  \.bs-st \.st-in\{display:block/);
+});
+
+test("storage: at 390 px the table fits with no sideways scroll", { skip }, async () => {
+  const srv = await serve();
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, ctx } = await open(browser, srv.address().port, "/basis#storage", 390);
+    await pg.waitForFunction(() => document.getElementById("storage").open);
+    const r = await pg.$eval("#storage .tblscroll", (e) => ({ sw: e.scrollWidth, cw: e.clientWidth,
+      hidden: getComputedStyle(e.querySelector("td.st-c")).display, line: getComputedStyle(e.querySelector(".st-in")).display }));
+    assert.ok(r.sw <= r.cw + 1, `table scrolls sideways: ${r.sw} > ${r.cw}`);
+    assert.equal(r.hidden, "none");
+    assert.equal(r.line, "block");
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
