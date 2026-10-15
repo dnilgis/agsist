@@ -11,9 +11,10 @@ name: lrp
 # Two places, on purpose:
 #   * the lrp-history branch (never deployed by Pages) holds the full history,
 #     one file per sales day, about 130 MB once complete;
-#   * main gets only data/lrp/ (today's offers, the actual ending values, meta,
+#   * main gets data/lrp/ (today's offers, the actual ending values, meta,
 #     and bt.json from scripts/lrp_backtest.mjs), a few hundred KB, inside
-#     data/'s budget.
+#     data/'s budget, plus lrp.html with the record baked in
+#     (scripts/bake_lrp.mjs).
 #
 # mode history: read every daily zip not yet in the history (the first run
 #   reads about 7,000 files and may need two runs; it stops starting downloads
@@ -114,6 +115,7 @@ jobs:
         run: |
           python scripts/fetch_lrp.py --publish "$HIST" --out data/lrp
           node scripts/lrp_backtest.mjs --history "$HIST" --out data/lrp/bt.json
+          node scripts/bake_lrp.mjs
           python scripts/check_site_budget.py
 
       - name: Commit to main
@@ -126,7 +128,9 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             rm -rf "$P" && mkdir -p "$(dirname "$P")" && cp -r /tmp/lrpout/out "$P"
-            git add -A "$P"
+            # /lrp carries the record baked in (scripts/bake_lrp.mjs), so it moves with the data
+            node scripts/bake_lrp.mjs
+            git add -A "$P" lrp.html
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             git commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push -q origin HEAD:main; then exit 0; fi

@@ -146,6 +146,8 @@ PAGES = [
         ("@machine", "arc-crops"),
         ("/prf", "PRF Rainfall Insurance Calculator",
          "Pasture, Rangeland, Forage rainfall index insurance: pick a grid, acres and two-month intervals and see the premium, USDA's share, and what the policy would have paid in every year since 1951 at this year's rates, for every grid in the 48 contiguous states; one page per state at /prf/<state> with every county's USDA base values, one page per county at /prf/<state>/<county> (e.g. /prf/texas/anderson-county) naming its grids with their month-by-month rates, how often each pair of months came in under 90% of normal since 1951 and the last five years, and a plain-words explainer at /prf/how-prf-works"),
+        ("/lrp", "LRP Calculator (Livestock Risk Protection)",
+         "today's RMA LRP offers for feeder cattle, fed cattle and hogs by type and length, with the producer premium per cwt and per head after the subsidy; the 95-100% coverage record per $100 of coverage on every RMA sales day since July 2013; 36 walk-forward tests of lower coverage levels and a best-so-far rule under one Holm family, none kept; FAQ on how LRP pays, subsidy, sales hours, premium due date, head limits and basis"),
         ("/farm-bill", "Farm Bill", "what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes"),
         ("/cash-lease", "Cash Farm Lease", "a fillable, printable plain-English cash lease with state termination notes"),
         ("/foreign-land", "Foreign-Owned Farmland", "USDA AFIDA disclosures mapped by county"),

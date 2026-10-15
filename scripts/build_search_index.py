@@ -89,6 +89,7 @@ PAGES = [
     ("/store-or-sell", "Store or sell?", "Carry after storage and interest", "store sell storage carry hold bin interest shrink later bid"),
     ("/arc-plc", "ARC or PLC, 2026 and 2027", "Reference prices and FSA county benchmarks", "arc plc arc-co price loss coverage agriculture risk coverage effective reference price benchmark yield base acres fsa farm program 2026 2027 signup calculator sco"),
     ("/prf", "PRF pasture insurance calculator", "What your grid would have paid, every year", "prf pasture rangeland forage rainfall index insurance calculator grid lookup hay grazing rain drought premium cost deadline sign up signup interval months stocking rate livestock ncei usda rma"),
+    ("/lrp", "LRP calculator: livestock price insurance", "Today's LRP rates and the record", "lrp livestock risk protection insurance feeder cattle fed cattle live cattle hogs swine pigs lean hog price floor put option premium subsidy coverage level endorsement rma rates calculator"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/grain-emc", "Grain EMC: fans on or off", "When to run aeration fans, EMC charts", "emc equilibrium moisture content chart aeration fans dry wet grain humidity bin corn wheat natural air drying cooling"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
