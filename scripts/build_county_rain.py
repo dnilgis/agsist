@@ -51,7 +51,7 @@ import inject_static_nav as nav  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=3">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=4">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
@@ -147,6 +147,25 @@ def last_year_words(c, L, year):
 
 
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
+RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
+PRINT_JS = '<script src="/components/rain-county-print.js?v=1" defer></script>'
+
+
+def rp_prices():
+    """(framed, print) dollars from data/rain-print.json, the file /rain-print reads."""
+    try:
+        j = json.load(open(os.path.join(ROOT, "data", "rain-print.json"), encoding="utf-8"))
+        return int(j["framed12x18"]), int(j["print12x18"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def print_ready(c, day):
+    """The county page draws its year as a Rain Print (components/rain-county-print.js)
+    when the state's daily file has this county's days and the engine would draw them."""
+    if not day or not day.get("p"):
+        return False
+    return (c.get("missing") or 0) <= RP_MISS_BLOCK and c["days"] >= RP_MIN_DAYS and len(R.unpack_days(day["p"])) == c["days"]
 
 
 def rain_print_href(c, st, year):
@@ -170,7 +189,11 @@ def rain_print_href(c, st, year):
 LABEL_GAP = 18   # chart end labels at least this far apart (font 15 on phones, 10 on a laptop)
 
 
-def chart(c, year, county, noun="station"):
+def chart(c, year, county, noun="station", ready=None):
+    """The plain running total. With ready (st, fips, place, gauge words), the
+    same chart is the placeholder and no-JS fallback for the county's Rain
+    Print, which components/rain-county-print.js draws over it when the figure
+    scrolls near (the days come from data/rain/daily/<st>.json, not the page)."""
     W, H, L, Rm, T, B = 420, 210, 30, 50, 10, 26
     n_year = 366 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 365
     pts = c["cum"]
@@ -223,7 +246,20 @@ def chart(c, year, county, noun="station"):
     cap = (f"Inches of rain added up day by day from Jan 1{', solid line' if has_us else ''}"
            + (f", against the usual year at this {noun} (dashed), counted on the same days" if has_us else "")
            + f". Days with no report add nothing to {'either line' if has_us else 'the line'}.")
-    return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
+    if not ready:
+        return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
+    st, fips, place, gauge, done, snow = ready
+    pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
+            + ("Light blue is snow. " if snow else f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
+            + "A gap is a day with no report." + ("" if done else " The empty months are still to come."))
+    styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
+              '<button type="button" data-style="r1" aria-pressed="true">Staircase</button>'
+              '<button type="button" data-style="r2" aria-pressed="false">Roots</button>'
+              '<button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>')
+    return (f'<figure class="rc-chart rc-print" id="rc-print" data-st="{st.lower()}" data-fips="{fips}" data-year="{year}" '
+            f'data-days="{c["days"]}" data-total="{c["total"]:.2f}" data-place="{e(place)}" data-gauge="{e(gauge)}">'
+            f'{styles}<div class="rc-print-art">{"".join(out)}</div>'
+            f'<figcaption><span class="rc-cap-chart">{cap}</span><span class="rc-cap-print" hidden>{pcap}</span></figcaption></figure>')
 
 
 # ---------------------------------------------------------------- county page
@@ -434,11 +470,27 @@ def county_page(ctx):
             more.append((f"{label} {e(name)}", f"/{top}/{st_slug}/{ctx['slug']}"))
     more_html = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in more)
     rp = rain_print_href(c, st, year)
-    ship = "" if done else f" Prints of {year} ship in January, once the full year is in."
+    ship = "" if done else f"Prints of {year} ship in January, once the full year is in."
+    miss_note = ""
     if miss > RP_MISS_BLOCK:
         # rain_print_href leaves the station off: say why the print draws another
-        ship += (f" This {noun} missed {miss} days this year, more than a print can show honestly, "
-                 "so Rain Print draws the nearest station with a fuller record.")
+        miss_note = (f"This {noun} missed {miss} days this year, more than a print can show honestly, "
+                     "so Rain Print draws the nearest station with a fuller record.")
+    # ---- the county's year as a Rain Print, and the one line that sells it (one promo a page)
+    ready = None
+    if print_ready(c, ctx.get("day")):
+        gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
+        ready = (st, fips, f"{name}, {stn}", gauge, done, bool(ctx["day"].get("s")))
+    pr = rp_prices()
+    price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
+    so_far = "" if done else " so far"
+    lead_print = (f'<span id="rc-sell-lead" hidden>This is {e(name)}&rsquo;s {year}{so_far}, drawn as a Rain Print. '
+                  f'Put your name and dates on it{price}.</span>') if ready else ""
+    lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {year} rain and snow drawn as a Rain Print, '
+                  f'with your name and dates{price}.</span>')
+    sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain} <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
+            + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "") + "</div>"
+            + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
          "description": desc, "dateModified": d["fetched"][:10], "inLanguage": "en-US",
@@ -467,15 +519,11 @@ def county_page(ctx):
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
     <dl class="rc-figs">{figs_html}</dl>
-    {chart(c, year, name, noun)}
+    {chart(c, year, name, noun, ready)}
+    {sell}
     <h2>Month by month</h2>
     {table}
     {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
-    <section class="rc-cta" aria-labelledby="rc-cta-h">
-      <h2 id="rc-cta-h">See the whole year on a print you can hang</h2>
-      <p>Rain Print draws every day of {year} at this {noun} on a 12 x 18 print: the rains, the dry stretches, the dates you want to remember.{ship}</p>
-      <a class="btn btn-primary" href="{e(rp)}">Get {e(name)}&rsquo;s {year} rain and snow as a framed print</a>
-    </section>
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
     <p>{usual_p}</p>
@@ -650,6 +698,20 @@ def load(data_dir):
     return files
 
 
+def load_daily(data_dir, files):
+    """{st: {fips: packed days}} from data/rain/daily/<st>.json, for states whose
+    daily file is from the same fetch as the state file (same year and fetch time)."""
+    out = {}
+    for st, d in files.items():
+        p = os.path.join(data_dir, "daily", st.lower() + ".json")
+        if not os.path.exists(p):
+            continue
+        dd = json.load(open(p, encoding="utf-8"))
+        if dd.get("state") == st and dd.get("year") == d["year"] and dd.get("fetched") == d["fetched"]:
+            out[st] = dd.get("counties") or {}
+    return out
+
+
 def build(data_dir, C=None, NB=None):
     """{relative path: text} for everything this build owns."""
     global BOOT
@@ -658,6 +720,7 @@ def build(data_dir, C=None, NB=None):
     C = C or R.counties()
     NB = NB if NB is not None else R.neighbors()
     files = load(data_dir)
+    daily = load_daily(data_dir, files)
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
         for fips, c in d["counties"].items():
@@ -677,7 +740,7 @@ def build(data_dir, C=None, NB=None):
             nbrs = [(pages[f][0] + ("" if C[f]["st"] == st else ", " + C[f]["st"]), pages[f][1],
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
-                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1)})
+                                "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "day": daily.get(st, {}).get(fips)})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:
@@ -786,8 +849,24 @@ def selftest():
         ok(gc == "/rain-print?place=Garden+City%2C+KS&year=2026&station=142980+2", f"Rain Print link from an experiment station: {gc}")
         lg = urllib.parse.parse_qs(rain_print_href({"station": {"raw": "SOUTH SAINT FRANCISVILLE HEIGHTS CROSSROADS", "sid": "1 2"}}, "KS", 2026)[12:])["place"][0]
         ok(lg.endswith(", KS") and len(lg) <= 32, f"a long town is shortened, the state kept: {lg!r}")
-        ok("See the whole year on a print you can hang" in story, "Rain Print CTA")
-        ok(">Get Story County&rsquo;s 2026 rain and snow as a framed print</a>" in story, "the Rain Print button names the county in plain words")
+        # the county's year as a Rain Print, drawn in the browser over the plain chart, and one line under it
+        ok('id="rc-print"' in story and 'data-st="ia" data-fips="19169" data-year="2026"' in story and PRINT_JS in story,
+           "Story County's days are in the daily file: the page carries the Rain Print placeholder and its script")
+        ok(f'data-days="{c["days"]}" data-total="{c["total"]:.2f}"' in story, "the print is checked against the page's own days and total")
+        ok('class="rc-us"' in story.split('id="rc-print"')[1].split("</figure>")[0], "the plain chart stays inside it as the fallback")
+        pr = rp_prices()
+        ok(pr and f"This is Story County&rsquo;s 2026 so far, drawn as a Rain Print. Put your name and dates on it: framed ${pr[0]}, print ${pr[1]}." in story,
+           "the cross-sell line under the print names the county and the prices from data/rain-print.json")
+        ok("Get Story County&rsquo;s 2026 rain and snow drawn as a Rain Print" in story and '>Make yours</a>' in story, "the plain line and button, for no JS")
+        ok(story.index('id="rc-print"') < story.index('class="rc-sell"') < story.index("<h2>Month by month</h2>"), "the line sits right under the print")
+        ok("rc-cta" not in story and story.count('href="/rain-print?') == 1, "one Rain Print promo on the page")
+        # no daily file for the state: the plain chart, the plain line, no script
+        nod = county_page({"c": c, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
+        ok('id="rc-print"' not in nod and "rain-county-print.js" not in nod and "rc-sell-lead" not in nod and ">Make yours</a>" in nod,
+           "without the county's days: the plain chart and the plain line only")
+        short = county_page({"c": dict(c, days=45), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1,
+                             "day": {"p": R.pack_days(["0.10"] * 45)}})
+        ok('id="rc-print"' not in short, "under 60 days in: no print, as /rain-print draws none")
         # last year with 28 June days missing: the difference is counted on the days both years reported
         c0 = dict(c, total=28.5, days=285, reported=285, missing=0,
                   last={"total": 25.7, "reported": 257, "days": 285, "through": "2025-10-12", "both": 257, "this_both": 25.7, "last_both": 25.7})

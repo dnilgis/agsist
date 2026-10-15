@@ -70,3 +70,21 @@
   /* "Through" on phones: the county cell says "to Oct 9" when it differs */
   .rc-t-wide td:nth-child(6), .rc-t-wide th:nth-child(6) { display: none; }
 }
+/* the county's year as a Rain Print (components/rain-county-print.js draws it
+   over the plain chart once the figure scrolls near). The sheet is white in
+   both themes, like the print. */
+.rc-print-styles { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .5rem; }
+.rc-print-styles[hidden] { display: none; }
+.rc-print-styles button { font: inherit; font-size: var(--fs-sm); min-height: 40px; padding: .3rem .85rem; border-radius: var(--r-pill); border: 1px solid var(--border-g); background: var(--surface); color: var(--text); cursor: pointer; }
+.rc-print-styles button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.rc-print-styles .rc-zoom { margin-left: auto; }
+.rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.18); overflow: hidden; }
+.rc-print-on .rc-print-art svg { max-width: none; width: 100%; }
+/* a phone: the whole sheet fits; "Up close" shows it three times bigger to swipe across */
+.rc-print-zoom .rc-print-art { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rc-print-zoom .rc-print-art svg { width: 1100px; }
+@media (min-width: 700px) { .rc-print-styles .rc-zoom { display: none; } }
+.rc-sell { margin: 0 0 1.4rem; max-width: 46em; }
+.rc-sell p { margin: 0 0 .4rem; }
+.rc-sell .btn { display: inline-block; margin-left: .3rem; vertical-align: middle; }
+.rc-sell .rc-fine { margin: .5rem 0 0; }
