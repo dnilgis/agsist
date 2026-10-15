@@ -224,39 +224,18 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <p class="page-lede">Free calculators and maps for corn, soybean and wheat farmers. No login.</p>
     </div>
 
-    <!-- Advisory Tools -->
-    <div class="cat-label">Spray, nitrogen and fertilizer</div>
+    <!-- Groups and cards in order of 90-day page views (data/site-usage.json, Oct 10, 2026).
+         The homepage is left out of the Markets total (its views are arrivals, not tool use).
+         Pages too new to have a count go last in their group. -->
+    <!-- Money -->
+    <div class="cat-label">Selling, costs and programs</div>
     <div class="tools-grid">
-      <a href="/spray" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-spray-can"></use></svg></div>
-        <div class="name">Spray Timing Advisor</div>
-        <div class="desc">Wind, temperature, humidity and inversion risk for your location, hour by hour.</div>
-        <span class="tag">Weather + Conditions</span>
+      <a href="/cash-bids" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-banknote"></use></svg></div>
+        <div class="name">Cash Bids</div>
+        <div class="desc">Today&rsquo;s local cash bids from elevators near you, each with how long ago it was posted. Compare basis across locations.</div>
+        <span class="tag">Local bids</span>
       </a>
-      <a href="/urea" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-flask-conical"></use></svg></div>
-        <div class="name">Urea Volatilization Risk</div>
-        <div class="desc">Daily risk index for nitrogen loss from surface-applied urea. Based on temp, moisture, and soil conditions.</div>
-        <span class="tag">Nitrogen Management</span>
-      </a>
-      <a href="/fertilizer" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
-        <div class="name">Fertilizer Prices &amp; Fertility Bill</div>
-        <div class="desc">Dealer N-P-K-S prices, each with the date it was quoted, a $/lb-nutrient comparison, and a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
-        <span class="tag">Inputs · Per-Acre Cost</span>
-      </a>
-      <a href="/manure-value" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
-        <div class="name">Manure Value</div>
-        <div class="desc">What dairy, hog, beef and poultry manure is worth in N, P and K at the latest dealer fertilizer prices, for your rate and acres.</div>
-        <span class="tag">Nutrient value</span>
-      </a>
-    </div>
-  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name on the page that lists every tool. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=tools&amp;utm_source=tools&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-
-    <!-- Financial Calculators -->
-    <div class="cat-label">Money</div>
-    <div class="tools-grid">
       <a href="/breakeven" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
         <div class="name">Break-Even Calculator</div>
@@ -275,68 +254,29 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
         <div class="desc">Pick your grid, acres and months. See the premium, USDA&rsquo;s share, and what the policy would have paid in every year since 1951. Compare two setups side by side.</div>
         <span class="tag">Pasture · Hay</span>
       </a>
-      <a href="/cash-bids" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-banknote"></use></svg></div>
-        <div class="name">Cash Bids</div>
-        <div class="desc">Live local cash bid prices from elevators near you. Compare basis across locations.</div>
-        <span class="tag">Live Prices</span>
-      </a>
-    </div>
-
-    <!-- Storage Calculators -->
-    <div class="cat-label">Grain storage</div>
-    <div class="tools-grid">
-      <a href="/grain-bin-calculator" class="tool-card">
+      <a href="/store-or-sell" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
-        <div class="name">Grain Bin Calculator</div>
-        <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round, hopper, and flat-floor bins.</div>
-        <span class="tag">Capacity + Shrink + Value</span>
+        <div class="name">Sell now or store?</div>
+        <div class="desc">Your elevator&rsquo;s own later bids, minus storage, interest and shrink, in cents a bushel.</div>
+        <span class="tag">Corn · Soybeans · Wheat</span>
       </a>
     </div>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name on the page that lists every tool. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=tools&amp;utm_source=tools&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
-    <!-- Reference & Data -->
-    <div class="cat-label">Reference and data</div>
-    <div class="tools-grid">
-      <a href="/fast-facts" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-book-open"></use></svg></div>
-        <div class="name">Fast Facts Reference Tables</div>
-        <div class="desc">Corn N rates, P and K by soil test, manure value, crop removal, growth stages, pest thresholds, herbicide groups, lime and conversions, with quick calculators.</div>
-        <span class="tag">Reference tables · Calculators</span>
-      </a>
-      <a href="/yield-estimator" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
-        <div class="name">Crop Yield Estimator</div>
-        <div class="desc">Count ears and kernels, enter 3 numbers, get estimated bu/acre. The yield component method, sized for a phone in the field.</div>
-        <span class="tag">Corn · Soybeans</span>
-      </a>
-      <a href="/data-sources" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-database"></use></svg></div>
-        <div class="name">Data Sources</div>
-        <div class="desc">Where each number on AGSIST comes from: Yahoo Finance, Open-Meteo, NOAA, USDA and the rest.</div>
-        <span class="tag">Sources</span>
-      </a>
-      <a href="/usda-quick-stats" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
-        <div class="name">USDA Data Explorer</div>
-        <div class="desc">Pull NASS crop yields, planted acres, and prices received by state. Pre-loaded tables plus a query builder that opens custom pulls on USDA Quick Stats.</div>
-        <span class="tag">NASS · By State</span>
-      </a>
-    </div>
-
-    <!-- Crop Tracking -->
+    <!-- Crop tracking -->
     <div class="cat-label">Crop tracking</div>
     <div class="tools-grid">
+      <a href="/hail-map" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
+        <div class="name">Hail Map</div>
+        <div class="desc">Five years of severe-hail storm reports on one national map, with reported stone sizes near your fields.</div>
+        <span class="tag">Storm History</span>
+      </a>
       <a href="/gdu-calculator" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-thermometer"></use></svg></div>
         <div class="name">GDU Tracker</div>
         <div class="desc">Track growing degree units for corn and soybeans. Wisconsin 30-year normals shown as a reference.</div>
         <span class="tag">Growing Degrees</span>
-      </a>
-      <a href="/planting-date" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar"></use></svg></div>
-        <div class="name">Planting Date Optimizer</div>
-        <div class="desc">Optimal corn and soybean planting windows by county, with yield drag estimates for late planting.</div>
-        <span class="tag">Decision Support</span>
       </a>
       <a href="/field-scout" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
@@ -344,23 +284,17 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
         <div class="desc">Tap any US field: soil types, 10-year crop rotation, county rent, basis, weather, hail history, and a printable field report.</div>
         <span class="tag">Field Data</span>
       </a>
-      <a href="/hail-map" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
-        <div class="name">Hail Map</div>
-        <div class="desc">Five years of severe-hail storm reports on one national map, with reported stone sizes near your fields.</div>
-        <span class="tag">Storm History</span>
+      <a href="/planting-date" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar"></use></svg></div>
+        <div class="name">Planting Date Optimizer</div>
+        <div class="desc">Optimal corn and soybean planting windows by county, with yield drag estimates for late planting.</div>
+        <span class="tag">Decision Support</span>
       </a>
     </div>
 
-    <!-- Market Data -->
+    <!-- Markets -->
     <div class="cat-label">Markets</div>
     <div class="tools-grid">
-      <a href="/" class="tool-card">
-        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-trending-up"></use></svg></div>
-        <div class="name">Dashboard</div>
-        <div class="desc">Live corn, soybean and wheat futures and local weather on one page.</div>
-        <span class="tag">Live Prices + Weather</span>
-      </a>
       <a href="/usda-calendar" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar-days"></use></svg></div>
         <div class="name">USDA Report Calendar</div>
@@ -372,6 +306,81 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
         <div class="name">Ag Tariff Tracker</div>
         <div class="desc">Tariff rates on US corn, soybean, wheat and pork exports, by destination market.</div>
         <span class="tag">Trade Policy</span>
+      </a>
+      <a href="/" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-trending-up"></use></svg></div>
+        <div class="name">Dashboard</div>
+        <div class="desc">Corn, soybean and wheat futures (delayed) and local weather on one page.</div>
+        <span class="tag">Futures + Weather</span>
+      </a>
+    </div>
+
+    <!-- Reference -->
+    <div class="cat-label">Reference and data</div>
+    <div class="tools-grid">
+      <a href="/usda-quick-stats" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
+        <div class="name">USDA Data Explorer</div>
+        <div class="desc">Pull NASS crop yields, planted acres, and prices received by state. Pre-loaded tables plus a query builder that opens custom pulls on USDA Quick Stats.</div>
+        <span class="tag">NASS · By State</span>
+      </a>
+      <a href="/yield-estimator" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
+        <div class="name">Crop Yield Estimator</div>
+        <div class="desc">Count ears and kernels, enter 3 numbers, get estimated bu/acre. The yield component method, sized for a phone in the field.</div>
+        <span class="tag">Corn · Soybeans</span>
+      </a>
+      <a href="/fast-facts" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-book-open"></use></svg></div>
+        <div class="name">Fast Facts Reference Tables</div>
+        <div class="desc">Corn N rates, P and K by soil test, manure value, crop removal, growth stages, pest thresholds, herbicide groups, lime and conversions, with quick calculators.</div>
+        <span class="tag">Reference tables · Calculators</span>
+      </a>
+      <a href="/data-sources" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-database"></use></svg></div>
+        <div class="name">Data Sources</div>
+        <div class="desc">Where each number on AGSIST comes from: Yahoo Finance, Open-Meteo, NOAA, USDA and the rest.</div>
+        <span class="tag">Sources</span>
+      </a>
+    </div>
+
+    <!-- Advisory -->
+    <div class="cat-label">Spray, nitrogen and fertilizer</div>
+    <div class="tools-grid">
+      <a href="/spray" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-spray-can"></use></svg></div>
+        <div class="name">Spray Timing Advisor</div>
+        <div class="desc">Wind, temperature, humidity and inversion risk for your location, hour by hour.</div>
+        <span class="tag">Weather + Conditions</span>
+      </a>
+      <a href="/fertilizer" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
+        <div class="name">Fertilizer Prices &amp; Fertility Bill</div>
+        <div class="desc">Dealer N-P-K-S prices, each with the date it was quoted, a $/lb-nutrient comparison, and a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
+        <span class="tag">Inputs · Per-Acre Cost</span>
+      </a>
+      <a href="/urea" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-flask-conical"></use></svg></div>
+        <div class="name">Urea Volatilization Risk</div>
+        <div class="desc">Daily risk index for nitrogen loss from surface-applied urea. Based on temp, moisture, and soil conditions.</div>
+        <span class="tag">Nitrogen Management</span>
+      </a>
+      <a href="/manure-value" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
+        <div class="name">Manure Value</div>
+        <div class="desc">What dairy, hog, beef and poultry manure is worth in N, P and K at the latest dealer fertilizer prices, for your rate and acres.</div>
+        <span class="tag">Nutrient value</span>
+      </a>
+    </div>
+
+    <!-- Storage -->
+    <div class="cat-label">Grain storage</div>
+    <div class="tools-grid">
+      <a href="/grain-bin-calculator" class="tool-card">
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
+        <div class="name">Grain Bin Calculator</div>
+        <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round, hopper, and flat-floor bins.</div>
+        <span class="tag">Capacity + Shrink + Value</span>
       </a>
     </div>
 
