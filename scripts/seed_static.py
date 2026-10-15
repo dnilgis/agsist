@@ -84,16 +84,20 @@ DESC = {
     # dropped: the body says these are delayed quotes. Corn and soybeans spell
     # out Chicago Board of Trade, the words of the named queries ("chicago
     # board of trade corn price", "cbot soybeans").
+    # 2026-10-15: only a finished session goes in (settled_close): {px} is a
+    # close, {date} its own day, {chg} its cents change or nothing. No
+    # percent, no clock time; a snippet can sit in search for a day and this
+    # wording is still true when it is read.
     "corn-futures-prices.html": (
-        "Corn {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) corn "
+        "Corn {mon} closed ${px}{chg} on {date}. Chicago Board of Trade (CBOT) corn "
         "futures, refreshed every 15 min in session.",
         " December new-crop, basis, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Chicago Board of Trade (CBOT) "
+        "Soybeans {mon} closed ${px}{chg} on {date}. Chicago Board of Trade (CBOT) "
         "soybean futures, refreshed every 15 min in session.",
         " Crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} {verb} ${px} ({chg}) {when}. Chicago SRW wheat futures, refreshed "
+        "Wheat {mon} closed ${px}{chg} on {date}. Chicago SRW wheat futures, refreshed "
         "every 15 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
 }
@@ -209,6 +213,14 @@ def _chg_cents(q):
 CLOSE_CT = {"grain": (13, 20), "cattle": (13, 5)}
 
 
+def _grain_overnight(fc, cdd, market):
+    """True when a fetch at CT time fc is in the grain overnight session and
+    the quote's bar (dated cdd) is still the day that closed before it."""
+    return market == "grain" and cdd <= fc.date() and (
+        (fc.hour >= 19 and fc.weekday() in (6, 0, 1, 2, 3)) or
+        (fc.hour < 2 and fc.weekday() < 5 and cdd < fc.date()))
+
+
 def quote_state(q, fetched, market="grain"):
     """How to word a quote: (in_session, label).
 
@@ -236,11 +248,77 @@ def quote_state(q, fetched, market="grain"):
     fc = fu.astimezone(CT)
     hm = CLOSE_CT.get(market, CLOSE_CT["grain"])
     before_close = fc.weekday() < 5 and (fc.hour, fc.minute) < hm
-    if cdd > fc.date() or (cdd == fc.date() and before_close):
+    # Grain overnight session (CBOT reopens 7 p.m. CT, Sunday to Thursday).
+    # Yahoo folds those trades into the bar of the day that just closed, under
+    # that day's date: data/prices.json at 03:16 UTC Oct 15 2026 called Dec
+    # corn "478.75, close_date Oct 14" while the Oct 14 close (18:46 UTC and
+    # 00:01 UTC fetches) was 481.0. That is a trade, not a close.
+    # Just after midnight the bar still carries yesterday's date (it moved
+    # to the new day between 23:01 and 00:31 CT on Oct 13-14).
+    if _grain_overnight(fc, cdd, market) or cdd > fc.date() or (cdd == fc.date() and before_close):
         h12 = fc.hour % 12 or 12
         ampm = "a.m." if fc.hour < 12 else "p.m."
         return True, f"{md(fc)}, {h12}:{fc.minute:02d} {ampm} CT"
     return False, md(cdd)
+
+
+def settled_close(q, fetched, market="grain"):
+    """The newest FINISHED session in a quote, for text that has to stay true
+    after it is baked (titles and meta descriptions).
+
+    Returns {"px", "date" (YYYY-MM-DD), "label" ("Oct 13"), "net", "pct"} or
+    None. A quote taken after the close is that close, with its change. A
+    quote taken in the day session is a trade that will move; the finished
+    session is then the previous close, close - netChange on prev_date, and
+    its own change is not in the file, so net and pct are None. In the grain
+    overnight, and with no timing in the file, there is nothing safe to say:
+    None, and the page keeps what the post-close run baked.
+
+    2026-10-15: the 8:31 a.m. CT Oct 14 quote was baked into the soybean
+    description as "$12.88¼ (+0.35%)" and stood overnight, because the
+    post-close run's push was rejected. Beans finished the day lower."""
+    if not q:
+        return None
+    st, _ = quote_state(q, fetched, market)
+    close = q.get("close")
+    if not isinstance(close, (int, float)) or st is None:
+        return None
+    if st is True:
+        # In the overnight the newest finished session is the day that just
+        # closed, and its close is already buried under overnight trades;
+        # the previous close would step a good bake back a day. Say nothing.
+        try:
+            fc = datetime.strptime(fetched, "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=timezone.utc).astimezone(CT)
+            if _grain_overnight(fc, datetime.strptime(q.get("close_date"), "%Y-%m-%d").date(), market):
+                return None
+        except Exception:
+            return None
+        net, pd = q.get("netChange"), q.get("prev_date")
+        if not isinstance(net, (int, float)) or not pd or q.get("roll"):
+            return None
+        px, d, net, pct = round(close - net, 4), pd, None, None
+    else:
+        px, d = float(close), q.get("close_date")
+        net, pct = q.get("netChange"), q.get("pctChange")
+        if q.get("roll"):
+            net = pct = None
+    try:
+        dd = datetime.strptime(d, "%Y-%m-%d").date()
+    except Exception:
+        return None
+    return {"px": px, "date": d, "label": dd.strftime("%b ") + str(dd.day),
+            "net": net, "pct": pct}
+
+
+def desc_change(sc):
+    """' (-1¾¢)' for a close with its change in the file, ' (unch)' for a flat
+    one, '' when the change is not known (a previous close)."""
+    net = (sc or {}).get("net")
+    if not isinstance(net, (int, float)):
+        return ""
+    mv = pricefmt.move(net, sign=True)
+    return " (" + (mv if pricefmt.quarters(net) else "unch") + ")"
 
 
 def state_words(in_session):
@@ -1806,15 +1884,17 @@ def seed_futures_pages(prices, today):
                 t, c4 = seed_between(t, "pxtable", tbl)
                 changed = changed or c4
 
-            # freshly-priced meta description
+            # meta description: the newest finished session only
             tmpl = DESC.get(page)
-            if tmpl:
-                kc_usd = grain_dollars(quotes.get("kcwheat"))
+            sc = settled_close(fq, fetched, "grain")
+            if tmpl and sc is None:
+                print(f"  {page}: no finished session in the file — description left as-is")
+            if tmpl and sc:
+                kc = settled_close(quotes.get("kcwheat"), fetched, "grain")
+                kc_usd = grain_dollars({"close": kc["px"]}) if kc and kc["date"] == sc["date"] else None
                 desc, dnote = render_desc(
-                    tmpl, px=f_usd, chg=_chg(fq) or "flat", mon=mon or "front month",
-                    verb=verb,
-                    when=(("at " + flabel.split(", ", 1)[1] + " " + flabel.split(", ", 1)[0])
-                          if live is True else ("on " + flabel)),
+                    tmpl, px=grain_dollars({"close": sc["px"]}), mon=mon or "front month",
+                    chg=desc_change(sc), date=sc["label"],
                     kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
                 if desc is None:
                     print(f"  {page}: description {dnote}")

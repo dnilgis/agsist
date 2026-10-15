@@ -1797,13 +1797,13 @@ AG.json('/data/prices.json')
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
-      /* The baked note and the table's nearby row are the no-script copy of
-         this hero. Once the live quote is up they showed a second, older
-         price for the same contract ($4.81½ under a $4.82¾ hero). */
+      /* The baked note and table are the no-script copy of these cards. Once
+         the live quotes are up they showed a second, older price for the same
+         contract ($4.81½ under a $4.82¾ hero). Hiding only the Nearby row left
+         wheat's Mar '27 and KC rows at the 8:31 a.m. bake under live cards
+         that said otherwise (2026-10-15), so the whole table goes. */
       var __sn=document.querySelector('.px-seed-note');if(__sn)__sn.style.display='none';
-      var __st=document.querySelector('.seed-tbl-wrap'),__rows=__st?__st.querySelectorAll('tbody tr'):[];
-      for(var __i=0;__i<__rows.length;__i++){var __td=__rows[__i].cells[0];if(__td&&/^Nearby/.test(__td.textContent))__rows[__i].style.display='none';}
-      if(__st&&![].some.call(__rows,function(r){return r.style.display!=='none';}))__st.style.display='none';
+      var __st=document.querySelector('.seed-tbl-wrap');if(__st)__st.style.display='none';
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
       if(front.wk52_lo!=null&&front.wk52_hi!=null){
