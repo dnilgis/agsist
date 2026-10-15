@@ -228,3 +228,49 @@ test("foreign-land: the label follows the last five years in a made-up state", (
 test("foreign-land: a visible byline", () => {
   assert.match(FL, BYLINE);
 });
+
+/* ---------------- /harvest-price-tracker#presell ----------------
+ *   - no "floor of $4.62": RP is a revenue guarantee figured at the higher of
+ *     the projected and harvest price, and the line gives that guarantee
+ *   - a cautious 75%-of-APH mark beside the full number, only when it is lower
+ */
+const HPT = read("harvest-price-tracker.html");
+test("presell: the copy says revenue guarantee, not floor; FAQ word for word", () => {
+  assert.doesNotMatch(HPT, /inside your floor/);
+  assert.doesNotMatch(HPT, /revenue floor under/);
+  assert.doesNotMatch(HPT, /What price does the floor use/);
+  assert.equal((HPT.match(/What price does the guarantee use\?/g) || []).length, 2);
+  assert.equal((HPT.match(/those are the bushels your revenue guarantee is figured on\./g) || []).length, 2);
+});
+
+test("presell: Iowa corn, 200 APH, 80%, 500 ac shows the guarantee at the higher price and a cautious mark", { skip }, async () => {
+  const srv = await serve();
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, errors, ctx } = await open(browser, srv.address().port, "/harvest-price-tracker#presell", 390);
+    await pg.waitForFunction(() => document.querySelector("#pd-state option[value=IA]"));
+    await pg.selectOption("#pd-state", "IA");
+    await pg.waitForFunction(() => !document.getElementById("pd-crop").disabled);
+    const crop = await pg.$eval("#pd-crop", (s) => [...s.options].find((o) => /^Corn/.test(o.textContent)).value);
+    await pg.selectOption("#pd-crop", crop);
+    await pg.fill("#pd-aph", "200"); await pg.dispatchEvent("#pd-aph", "input");
+    await pg.selectOption("#pd-cov", "0.80");
+    await pg.fill("#pd-acres", "500"); await pg.dispatchEvent("#pd-acres", "input");
+    const out = await pg.$eval("#pd-psout", (e) => e.textContent);
+    const sub = await pg.$eval("#pd-pssub", (e) => e.textContent);
+    assert.equal(out, "160 bu/ac (80,000 bu)");
+    assert.doesNotMatch(sub, /floor/);
+    const p = Number(sub.match(/projected price \(\$(\d+\.\d+)\)/)[1]);
+    const h = sub.match(/harvest price, now (?:running at )?\$(\d+\.\d+)/);
+    const price = h ? Math.max(p, Number(h[1])) : p;
+    const want = Math.round(160 * price).toLocaleString("en-US");
+    assert.match(sub, new RegExp(`inside your revenue guarantee of \\$${want} /ac\\.`));
+    assert.match(sub, /It is a guarantee on revenue, not a price for each bushel\./);
+    assert.match(sub, /A more cautious mark: 150 bu\/ac \(75,000 bu\), 75% of your APH\./);
+    // at 75% coverage the cautious mark equals the full number, so it is left off
+    await pg.selectOption("#pd-cov", "0.75");
+    assert.doesNotMatch(await pg.$eval("#pd-pssub", (e) => e.textContent), /cautious/);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
