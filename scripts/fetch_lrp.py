@@ -53,6 +53,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
+import zlib
 from datetime import date, datetime, timedelta, timezone
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
@@ -563,6 +564,22 @@ BACKTEST_TYPES = {"0801": [str(t) for t in range(809, 820)], "0802": ["820"], "0
 PRODUCT_NAMES = {"0801": "Feeder Cattle", "0802": "Fed Cattle", "0815": "Swine", "0804": "Lamb"}
 
 
+CORRUPT = (zipfile.BadZipFile, zlib.error, EOFError)
+CORRUPT_TRIES = 3
+ANNOTATE = True
+
+
+def _today():
+    return datetime.now(timezone.utc).date()
+
+
+def annotate(level, title, msg):
+    """A GitHub annotation, except inside the selftest (whose made-up files
+    must never read as real ones)."""
+    if ANNOTATE:
+        print(f"::{level} title={title}::{msg}", flush=True)
+
+
 class LrpCheckError(Exception):
     """A structural check failed: the history is not written for this file."""
 
@@ -927,6 +944,7 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
     stopped = False
     st.pop("stopped_on", None)
     st.pop("crashed", None)
+    st.pop("file_errors", None)     # found again this run if still there
     # Anything unexpected still saves what was read since the last
     # checkpoint, so the history never loses a finished file.
     try:
@@ -968,22 +986,52 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
                         log(f"  FAILED {name}: {res}")
                         continue
                     try:
-                        h.apply(name, res)
+                        try:
+                            h.apply(name, res)
+                        except CORRUPT:
+                            # RMA served a broken zip: fetch it once more now.
+                            res = http_get(url)
+                            h.apply(name, res)
                     except LrpCheckError as e:
                         log(f"CHECK FAILED in {name}: {e}")
-                        log(f"::error title=lrp check failed::{name}: {e}")
+                        annotate("error", "lrp check failed", f"{name}: {e}")
                         st["stopped_on"] = f"{name}: {e}"
                         h.save()
                         return 3
+                    except CORRUPT as e:
+                        # Still broken. Tried again on each run; after
+                        # CORRUPT_TRIES runs it is a known gap, listed in
+                        # meta.json, and stops failing the run.
+                        msg = f"{type(e).__name__}: {e}"[:300]
+                        today = _today().isoformat()
+                        bad = h.state.setdefault("bad_files", {})
+                        b = bad.get(name)
+                        if not b or b.get("size") != size:
+                            b = bad[name] = {"size": size, "tries": 0, "first": today}
+                        if b.get("last") != today or b["tries"] == 0:
+                            b["tries"] += 1
+                        b.update(last=today, error=msg)
+                        if b["tries"] >= CORRUPT_TRIES:
+                            h.state["files"][name] = size
+                            h.state.setdefault("unreadable", {})[name] = dict(b)
+                            del bad[name]
+                            log(f"KNOWN UNREADABLE {name}: {msg} ({b['tries']} runs)")
+                            annotate("warning", "lrp file unreadable, now a known gap", f"{name}: {msg}")
+                        else:
+                            log(f"CORRUPT {name}: {msg} (run {b['tries']} of {CORRUPT_TRIES})")
+                            annotate("warning", "lrp file corrupt, will retry", f"{name}: {msg}")
+                        continue
                     except Exception as e:  # noqa: BLE001 - a file the parser cannot read
                         # Not marked read, so the next run tries it again; the run
                         # goes on with the other files and ends as failed.
                         msg = f"{type(e).__name__}: {e}"[:300]
                         log(f"UNREADABLE {name}: {msg}")
-                        log(f"::error title=lrp file unreadable::{name}: {msg}")
+                        annotate("error", "lrp file unreadable", f"{name}: {msg}")
                         st.setdefault("file_errors", {})[name] = msg
                         errors += 1
                         continue
+                    h.state.get("bad_files", {}).pop(name, None)
+                    st.get("file_errors", {}).pop(name, None)
                     st.get("file_errors", {}).pop(name, None)
                     h.state["files"][name] = size if size is not None else len(res)
                     done += 1
@@ -1171,6 +1219,22 @@ def sob_subsidy(root, first_ry=FIRST_ADM_RY):
     return out
 
 
+def unreadable_report(root, state):
+    """Daily zips RMA served broken: the known gaps (tried on CORRUPT_TRIES
+    runs) and the ones still being retried, each with whether its date's
+    offers reached the history from another file anyway (a Monday file
+    carries Friday's offers; the AEVs in a file are often repeated)."""
+    out = []
+    for kind, d in (("known gap", state.get("unreadable", {})), ("retrying", state.get("bad_files", {}))):
+        for name, b in sorted(d.items()):
+            ry, day = name[:4], daily_date(name)
+            out.append({"file": name, "status": kind, "ry": ry, "date": day, "tries": b.get("tries"),
+                        "error": b.get("error"),
+                        "offers_for_that_date_in_history": os.path.exists(
+                            os.path.join(root, "offers", ry, f"{day}.json"))})
+    return out
+
+
 def run_publish(root, out):
     last = latest_offer_day(root)
     if last is None:
@@ -1192,7 +1256,8 @@ def run_publish(root, out):
             "products": PRODUCT_NAMES, "backtest_types": BACKTEST_TYPES,
             "checks": {k: v for k, v in state.get("stats", {}).items() if k != "other_members"},
             "files_read": len(state.get("files", {})),
-            "sob_subsidy": sob_subsidy(root)}
+            "sob_subsidy": sob_subsidy(root),
+            "unreadable_files": unreadable_report(root, state)}
     changed = [p for p, o in (("today.json", today), ("aev.json", aev), ("meta.json", meta))
                if write_json(os.path.join(out, p), o, pretty=(p == "meta.json"))]
     log(f"publish: latest sales date {sed}; changed {changed or 'nothing'}")
@@ -1202,6 +1267,8 @@ def run_publish(root, out):
 # ---------------------------------------------------------------- selftest
 
 def selftest():
+    global ANNOTATE
+    ANNOTATE = False
     listing_html = """<html><body><h1>Directory Tree - pub/References/adm_livestock/2018/</h1>
     <table><tr><td><a href="../index.html">Parent</a></td></tr>
     <tr><td><a href="2018_ADMLivestockLgm_Daily_20170728.zip">2018_ADMLivestockLgm_Daily_20170728.zip</a></td><td>12 KB</td></tr>
@@ -1498,25 +1565,40 @@ def selftest_run_history():
             assert "2027_ADMLivestockLrp_Daily_20260702.zip" not in st["files"]
             assert "differs between states" in st["stats"]["stopped_on"]
             del files["2027_ADMLivestockLrp_Daily_20260702.zip"]
-            # A file the parser cannot read (here not a zip at all) is logged,
-            # left unread for the next run, and the run goes on and fails.
-            files["2027_ADMLivestockLrp_Daily_20260703.zip"] = b"<html>Service Unavailable</html>"
+            # RMA serves a broken zip: fetched twice in the run, logged, left
+            # unread, and the run goes on without failing. After
+            # CORRUPT_TRIES runs on different days it is a known gap.
+            bad_name = "2027_ADMLivestockLrp_Daily_20260703.zip"
+            files[bad_name] = b"<html>Service Unavailable</html>"
             files["2027_ADMLivestockLrp_Daily_20260706.zip"] = zip_of({"x_A00630_y.txt": fixture(
                 "2027_A00630_LrpRate_Daily_20260701.txt").replace("|20260701|", "|20260706|")})
-            fetched.clear()
-            assert run_history(td) == 3
-            st = load_json(os.path.join(td, "state.json"), {})
-            assert "BadZipFile" in st["stats"]["file_errors"]["2027_ADMLivestockLrp_Daily_20260703.zip"]
-            assert "2027_ADMLivestockLrp_Daily_20260703.zip" not in st["files"]
+            real_today = globals()["_today"]
+            try:
+                for i, day in enumerate(["2026-10-16", "2026-10-16", "2026-10-17", "2026-10-18"]):
+                    globals()["_today"] = lambda day=day: date.fromisoformat(day)
+                    fetched.clear()
+                    assert run_history(td) == 0
+                    st = load_json(os.path.join(td, "state.json"), {})
+                    if i < 3:
+                        assert fetched.count(bad_name) == 2, fetched      # tried twice in the run
+                    if i < 3 and day != "2026-10-18":
+                        assert st["bad_files"][bad_name]["tries"] == (1 if i < 2 else 2), st["bad_files"]
+                        assert bad_name not in st["files"]
+                assert bad_name in st["files"] and bad_name not in st.get("bad_files", {})
+                assert st["unreadable"][bad_name]["tries"] == 3 and "BadZipFile" in st["unreadable"][bad_name]["error"]
+                fetched.clear()
+                assert run_history(td) == 0 and bad_name not in fetched          # a known gap is not fetched again
+            finally:
+                globals()["_today"] = real_today
             assert "2027_ADMLivestockLrp_Daily_20260706.zip" in st["files"]
-            assert st["stats"]["last_run"]["unreadable"] == 1
             assert os.path.exists(os.path.join(td, "offers", "2027", "20260706.json"))
-            # Fixed upstream: the next run reads it and clears the error.
-            files["2027_ADMLivestockLrp_Daily_20260703.zip"] = zip_of({"x_A00630_y.txt": fixture(
+            # Re-posted at a new size: read again, and the gap closes.
+            files[bad_name] = zip_of({"x_A00630_y.txt": fixture(
                 "2027_A00630_LrpRate_Daily_20260701.txt").replace("|20260701|", "|20260703|")})
             assert run_history(td) == 0
             st = load_json(os.path.join(td, "state.json"), {})
-            assert not st["stats"].get("file_errors") and "2027_ADMLivestockLrp_Daily_20260703.zip" in st["files"]
+            assert st["files"][bad_name] == len(files[bad_name])
+            assert os.path.exists(os.path.join(td, "offers", "2027", "20260703.json"))
             # RMA posts a day again with other numbers: the later posting is
             # kept and the change is logged with both file names.
             files["2027_ADMLivestockLrp_Daily_20260707.zip"] = zip_of({"x_A00630_y.txt": fixture(
