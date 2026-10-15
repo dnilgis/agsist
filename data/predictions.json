@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13T03:09:19Z",
+ "updated": "2026-10-15T22:40:46Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -528,9 +528,34 @@
    "entry_final": true
   }
  ],
- "skipped": [],
+ "skipped": [
+  {
+   "crop": "corn",
+   "report": "2026-10-06",
+   "date": "2026-10-15",
+   "reason": "missed: no run at its entry close on 2026-10-13; never made late"
+  },
+  {
+   "crop": "beans",
+   "report": "2026-10-06",
+   "date": "2026-10-15",
+   "reason": "missed: no run at its entry close on 2026-10-13; never made late"
+  },
+  {
+   "crop": "wheat",
+   "report": "2026-10-06",
+   "date": "2026-10-15",
+   "reason": "missed: no run at its entry close on 2026-10-13; never made late"
+  },
+  {
+   "crop": "kcwheat",
+   "report": "2026-10-06",
+   "date": "2026-10-15",
+   "reason": "missed: no run at its entry close on 2026-10-13; never made late"
+  }
+ ],
  "backtest": {
-  "computed": "2026-10-13T03:09:19Z",
+  "computed": "2026-10-15T22:40:46Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
