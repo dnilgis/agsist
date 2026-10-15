@@ -426,6 +426,37 @@ def render_lede_board(data, sst):
             f'<div class="ct-hs-grid">{"".join(cards)}</div></div>')
 
 
+_ORD = {1: "", 2: "second-", 3: "third-", 4: "fourth-", 5: "fifth-"}
+
+
+def if_usda_holds(tour, usda, st):
+    """The October line: where this year's tour miss would rank in the record
+    if USDA's current number turned out to be the final. Conditional, and it
+    says so: the final is January's. Misses are compared at the one decimal
+    the table prints, so the rank matches what a reader counts in it."""
+    gap = round(tour - usda, 1)
+    rows = st.get("rows") or []
+    if not rows:
+        return None
+    first = st["first"]
+    head = f"If USDA's {usda:.1f} holds to January, "
+    if gap == 0:
+        return head + f"the tour would be dead on, as it was in {sum(1 for r in rows if round(r['tour_err'], 1) == 0)} of {st['n']} years since {first}."
+    low = gap < 0
+    side = [r for r in rows if (round(r["tour_err"], 1) < 0) == low and round(r["tour_err"], 1) != 0]
+    bigger = sorted((r for r in side if abs(round(r["tour_err"], 1)) > abs(gap)),
+                    key=lambda r: -abs(r["tour_err"]))
+    rank = len(bigger) + 1
+    word = "low" if low else "high"
+    nth = _ORD.get(rank, f"{rank}th-")
+    out = head + f"the tour's {abs(gap):.1f} {word} would be its {nth}biggest {word} miss since {first}"
+    if bigger:
+        r = bigger[-1] if rank > 1 else None
+        if r:
+            out += f" ({r['year']} was {abs(round(r['tour_err'], 1)):.1f} {word})"
+    return out + "."
+
+
 def render_hero(data, st, ph, today, sst=None):
     t = data["tour"]
     n, first, last = st["n"], st["first"], st["last"]
@@ -456,12 +487,13 @@ def render_hero(data, st, ph, today, sst=None):
         # are read from data (USDA's from data/wasde.json, see main()).
         tb = data["benchmarks"].get("tour") or {}
         ub = data["benchmarks"].get("usda") or {}
+        verdict = "Its record against the final crop is below"
         if tb.get("corn") is not None and tb.get("as_of") and ub.get("corn") is not None and ub.get("as_of"):
             kicker = (f"Tour said {float(tb['corn']):.1f} ({short(tb['as_of'])}). "
                       f"USDA now {float(ub['corn']):.1f} ({short(ub['as_of'])}).")
+            verdict = if_usda_holds(float(tb["corn"]), float(ub["corn"]), st) or verdict
         else:
             kicker = "Tour number is in"
-        verdict = "Its record against the final crop is below"
 
     # "the last N tours (first-last)" is only true if nothing inside that span
     # was dropped for want of a figure. stats() counts what it skipped.
@@ -1373,10 +1405,15 @@ def render_faq_answer(st):
     return txt
 
 
-def render_sources(data):
+def render_sources(data, st=None):
+    """The Pro Farmer line names the years the record table actually runs.
+    It read "(2021-2025)" under a table that starts in 2015."""
     out = []
     for s in data["sources"]:
-        out.append(f'<li><a href="{esc(s["url"])}" target="_blank" rel="noopener">{esc(s["name"])}</a></li>')
+        name = s["name"]
+        if st and name.startswith("Pro Farmer national estimates"):
+            name = re.sub(r"\(\d{4}-\d{4}\)", f"({st['first']}-{st['last']})", name)
+        out.append(f'<li><a href="{esc(s["url"])}" target="_blank" rel="noopener">{esc(name)}</a></li>')
     return "".join(out)
 
 
@@ -2245,6 +2282,19 @@ def selftest():
     _h = render_hero(_s, t, "scored", date(2026, 10, 10))
     ck("scored hero: 'Tour said 173.2 (Aug 21). USDA now 181.2 (Oct 9).'",
        "Tour said 173.2 (Aug 21). USDA now 181.2 (Oct 9)." in _h)
+    # 173.2 - 181.2 = -8.0. The real record's biggest low (tour minus final)
+    # is 2017, 167.1 - 176.6 = -9.5; the next is -5.3. So -8.0 ranks second.
+    _real = stats(json.loads((Path(__file__).resolve().parent.parent / "data" / "crop-tour.json")
+                             .read_text(encoding="utf-8"))["history"])
+    _hr = render_hero(_s, _real, "scored", date(2026, 10, 10))
+    ck("scored hero ranks the miss if USDA holds: second-biggest low, behind 2017's 9.5",
+       "If USDA's 181.2 holds to January, the tour's 8.0 low would be its second-biggest low miss since 2015 (2017 was 9.5 low)." in _hr)
+    ck("a miss past the record is the biggest", if_usda_holds(170.0, 181.2, _real).endswith("its biggest low miss since 2015."))
+    ck("a high miss ranks among the highs", "its biggest high miss" in if_usda_holds(190.0, 181.2, _real))
+    ck("a smaller miss ranks lower", "its sixth-biggest" in if_usda_holds(177.0, 181.2, _real) or "its 6th-biggest" in if_usda_holds(177.0, 181.2, _real))
+    ck("stamp takes USDA's newer date", latest_update({"updated": "2026-08-21", "benchmarks": {"usda": {"corn": 181.2, "as_of": "2026-10-09"}}}) == "2026-10-09")
+    ck("sources name the years the table runs",
+       "Pro Farmer national estimates (2015-2025)" in render_sources({"sources": [{"name": "Pro Farmer national estimates (2021-2025)", "url": "u"}]}, _real))
     _s2 = {**_s, "benchmarks": {"tour": {"corn": 173.2, "as_of": "2026-08-21"}, "usda": {"corn": None}}}
     ck("no USDA figure: the banner does not invent one",
        "USDA now" not in render_hero(_s2, t, "scored", date(2026, 10, 10)))
@@ -2368,6 +2418,13 @@ def _region_diff(was, now, limit=6):
     return out
 
 
+def latest_update(data):
+    """The newest of the tour data's own date and USDA's figure on the page."""
+    ub = (data.get("benchmarks") or {}).get("usda") or {}
+    dates = [data["updated"]] + ([ub["as_of"]] if ub.get("as_of") and ub.get("corn") is not None else [])
+    return max(dates)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
@@ -2420,15 +2477,18 @@ def main():
     baked = splice(baked, "soytbl", render_soy_table(st))
     baked = splice(baked, "band", render_band(data))
     baked = splice(baked, "benchnote", render_benchnote(data))
-    baked = splice(baked, "sources", render_sources(data))
+    baked = splice(baked, "sources", render_sources(data, st))
     # The FAQ answer restates the headline statistics. It used to be hand-typed
     # in the head, which meant adding a tour year would leave a stale claim in
     # the structured data that nobody would notice. Bake it from the same stats.
     baked = bake_faq(baked, st)
-    baked = splice(baked, "stamp", f"Record updated {pretty(data['updated'])} &middot; "
+    # The stamp is the newest date on the page. It said "Record updated August
+    # 21" under a hero quoting USDA's October 9 number.
+    upd = latest_update(data)
+    baked = splice(baked, "stamp", f"Updated {pretty(upd)} &middot; "
                                    f"{st['n']} tours scored")
     baked, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")',
-                       r"\g<1>" + data["updated"] + r"\g<2>", baked)
+                       r"\g<1>" + upd + r"\g<2>", baked)
     # This page carries two: the WebPage node and the Dataset node. Both should
     # move together. Zero means the JSON-LD block was renamed or lost.
     assert n >= 1, "no dateModified found in the JSON-LD — head block changed?"
