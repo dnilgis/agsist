@@ -30,15 +30,15 @@ WHAT THIS FILE WILL NOT DO
   * On failure it leaves the last good feed alone and only updates `status`.
     If no feed exists yet, it writes nothing, so the page shows nothing.
 
-REAL-WORLD ASSUMPTIONS ONLY A LIVE RUN CAN CONFIRM
-  * The sandbox that wrote this could not reach any usda.gov host. The two
-    fixtures are reconstructions from search-result text of the report (product,
-    grade, price range, average, "Per Ton", F.O.B.), with made-up numbers.
-    Passing the selftest proves the parser copes with those shapes, not that it
-    reads the real file. Dispatch the workflow once with probe ticked and read
-    data/fert-ams-raw/ams_3195.txt.
-  * Whether GitHub runner IPs can reach www.ams.usda.gov (the dairy workflow
-    reads a PDF from the same host).
+CHECKED AGAINST THE LIVE REPORT
+  * Run 38692414508 (probe, 2026-10-15) reached www.ams.usda.gov from a GitHub
+    runner and committed the PDF and its text to data/fert-ams-raw/ (commit
+    ae5f057978). The report dated Fri Oct 2, 2026 is the main selftest
+    fixture, test/fixtures/fert-ams/ams_3195_real_2026-10-02.txt. Its text has
+    one cell per line under "Distributor (Dollars Per Ton)", product names
+    sometimes wrapped over two lines; cell_rows() reads that. The two older
+    fixtures are reconstructions with made-up numbers and stay as a second
+    layout.
 
 Stdlib only, plus pdftotext (poppler) or pypdf for the PDF text.
 """
@@ -169,10 +169,80 @@ def parse_terms(text):
     return None
 
 
+SALE_RE = re.compile(r"^(ask|bid|offer|asking|sale|trade)$", re.I)
+UNIT_RE = re.compile(r"\(dollars per (\w+)\)", re.I)
+FREIGHT_RE = re.compile(r"^(f\.?o\.?b\.?|dlvd\.?|delivered)$", re.I)
+CHANGE_RE = re.compile(r"^(\(?-?\d{1,3}(?:,\d{3})*\.\d{2}\)?|unch\.?|-+)$", re.I)
+CELL_HEADERS = {"class", "sale type", "package", "price range", "average", "avg price", "change",
+                "freight", "delivery period", "price unit", "product", "grade"}
+PERIOD_WORDS = {"current", "prompt", "spot", "forward"}
+
+
+def _num(s):
+    m = re.fullmatch(NUM, s.strip())
+    return float(m.group(1).replace(",", "")) if m else None
+
+
+def cell_rows(text):
+    """The real My Market News PDF (pdftotext, Oct 2026) puts every cell on its
+    own line: name (sometimes wrapped over two lines), sale type, "low - high"
+    (or one price), average, change, freight, delivery period. Each table sits
+    under a header such as "Distributor (Dollars Per Ton)".
+    -> (rows, terms, problems); a row is dict(name, low, high, avg, unit, freight)."""
+    lines = [norm(x) for x in text.splitlines()]
+    lines = [x for x in lines if x]
+    rows, problems, terms = [], [], None
+    unit, buf, i = None, [], 0
+    while i < len(lines):
+        line = lines[i]
+        low = line.lower()
+        m = UNIT_RE.search(line)
+        if m:
+            unit, buf = m.group(1).lower(), []
+            if unit == "ton" and terms is None:
+                terms = line
+            i += 1
+            continue
+        if SALE_RE.match(line) and buf:
+            name = re.sub(r"(\d)\s*-\s*(\d)", r"\1-\2", " ".join(buf))
+            buf = []
+            rng = lines[i + 1] if i + 1 < len(lines) else ""
+            avg = _num(lines[i + 2]) if i + 2 < len(lines) else None
+            m = re.fullmatch(NUM + r"\s*-\s*" + NUM, rng)
+            lo, hi = (_num(m.group(1)), _num(m.group(2))) if m else (_num(rng), _num(rng))
+            if lo is None or avg is None:
+                problems.append("%s: price cells not read (%r)" % (name, lines[i + 1:i + 3]))
+                i += 1
+                continue
+            j = i + 3
+            if j < len(lines) and CHANGE_RE.match(lines[j]):
+                j += 1
+            freight = None
+            if j < len(lines) and FREIGHT_RE.match(lines[j]):
+                freight = lines[j]
+                j += 1
+                if j < len(lines) and lines[j].lower() in PERIOD_WORDS:
+                    j += 1
+            rows.append({"name": name, "low": lo, "high": hi, "avg": avg, "unit": unit, "freight": freight})
+            i = j
+            continue
+        if (low in CELL_HEADERS or low in PERIOD_WORDS or FREIGHT_RE.match(line)
+                or CHANGE_RE.match(line) or re.match(r"^[\d$(]", line)):
+            buf = []
+        else:
+            buf = (buf + [line])[-3:]
+        i += 1
+    return rows, terms, problems
+
+
 def parse_report(text, today):
-    """-> dict(date, terms, products{key: {...}}, problems[])."""
+    """-> dict(date, terms, products{key: {...}}, problems[]).
+    Reads both layouts: one row per line (the old text style and the fixtures)
+    and one cell per line (the real PDF). A product is checked the same way
+    whichever layout it came from."""
     problems = []
     found = {}
+    cands = []
     for raw in text.splitlines():
         line = norm(raw)
         if not line:
@@ -183,7 +253,18 @@ def parse_report(text, today):
         px = line_prices(line)
         if not px:
             continue
-        lo, hi, avg = px
+        cands.append((key, grade) + px + (None,))
+    rows, cell_terms, cell_problems = cell_rows(text)
+    problems += cell_problems
+    for r in rows:
+        key, grade = product_key(r["name"])
+        if not key:
+            continue
+        if r["unit"] != "ton":
+            problems.append("%s: listed under dollars per %s, not per ton; left out" % (r["name"], r["unit"]))
+            continue
+        cands.append((key, grade, r["low"], r["high"], r["avg"], r["freight"]))
+    for key, grade, lo, hi, avg, freight in cands:
         band = PRODUCTS[key][2]
         if not (0 < lo <= avg <= hi):
             problems.append("%s: average %s outside its range %s-%s" % (key, avg, lo, hi))
@@ -191,17 +272,19 @@ def parse_report(text, today):
         if not (band[0] <= avg <= band[1]):
             problems.append("%s: %s $/ton is outside %s-%s" % (key, avg, band[0], band[1]))
             continue
-        found.setdefault(key, []).append({"low": lo, "high": hi, "avg": avg, "grade": grade})
+        found.setdefault(key, []).append({"low": lo, "high": hi, "avg": avg, "grade": grade, "freight": freight})
     products = {}
-    for key, rows in found.items():
-        if len({(r["low"], r["high"], r["avg"]) for r in rows}) > 1:
-            problems.append("%s: %d different prices on different lines; left out" % (key, len(rows)))
+    for key, rows_ in found.items():
+        if len({(r["low"], r["high"], r["avg"]) for r in rows_}) > 1:
+            problems.append("%s: %d different prices on different lines; left out" % (key, len(rows_)))
             continue
-        r = rows[0]
+        r = rows_[0]
         name, sym, _ = PRODUCTS[key]
         products[key] = {"key": key, "name": name, "symbol": r["grade"] or sym,
                          "low": r["low"], "high": r["high"], "avg": r["avg"], "unit": "$/ton"}
-    return {"date": parse_date(text, today), "terms": parse_terms(text),
+        if r["freight"]:
+            products[key]["freight"] = r["freight"]
+    return {"date": parse_date(text, today), "terms": parse_terms(text) or cell_terms,
             "products": products, "problems": problems}
 
 
@@ -295,28 +378,45 @@ def fetch(opener=None, sleep=time.sleep):
     return raw, txt, None
 
 
-def probe(root, now=None):
+def probe(root, now=None, fetched=None):
+    """Save what AMS returned and say what happened as workflow annotations
+    (::notice / ::warning), so the run page shows it without opening the log."""
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     rd = root / RAW_DIR
     rd.mkdir(parents=True, exist_ok=True)
-    raw, text, err = fetch()
+    raw, text, err = fetched if fetched is not None else fetch()
     print("AMS  %s" % AMS_URL)
     if raw is not None:
         (rd / "ams_3195.raw").write_bytes(raw)
-        print("  got %d bytes (%s)" % (len(raw), "PDF" if raw[:5] == b"%PDF-" else "not a PDF"))
+        kind = "PDF" if raw[:5] == b"%PDF-" else "not a PDF"
+        print("::notice::fert probe: got %d bytes (%s) -> %s/ams_3195.raw" % (len(raw), kind, RAW_DIR))
+    else:
+        print("::warning::fert probe: nothing came back from %s; nothing saved" % AMS_URL)
     if err:
-        print("  ERROR:", err)
-    if text is not None:
-        (rd / "ams_3195.txt").write_text(text)
-        p = parse_report(text, now.date())
-        print("  text: %d chars -> %s/ams_3195.txt" % (len(text), RAW_DIR))
-        print("  report date:", p["date"] or "NOT FOUND")
-        print("  terms:", p["terms"] or "NOT FOUND")
-        for k in ORDER:
-            print("  %-10s %s" % (k, p["products"].get(k) or "NOT READ"))
-        for x in p["problems"]:
-            print("  note:", x)
+        print("::warning::fert probe: %s" % err)
+    if text is None:
+        return 0
+    (rd / "ams_3195.txt").write_text(text)
+    p = parse_report(text, now.date())
+    print("::notice::fert probe: text %d chars -> %s/ams_3195.txt" % (len(text), RAW_DIR))
+    print("  report date:", p["date"] or "NOT FOUND")
+    print("  terms:", p["terms"] or "NOT FOUND")
+    for k in ORDER:
+        print("  %-10s %s" % (k, p["products"].get(k) or "NOT READ"))
+    for x in p["problems"]:
+        print("  note:", x)
+    read = [k for k in ORDER if k in p["products"]]
+    missing = [k for k in ORDER if k not in p["products"]]
+    summary = "report date %s; read %d of %d (%s)" % (
+        p["date"] or "NOT FOUND", len(read), len(ORDER),
+        ", ".join("%s %.2f" % (k, p["products"][k]["avg"]) for k in read) or "none")
+    if p["date"] and not missing:
+        print("::notice::fert probe: %s" % summary)
+    else:
+        print("::warning::fert probe: %s; not read: %s%s" % (
+            summary, ", ".join(missing) or "none",
+            ("; " + "; ".join(p["problems"])) if p["problems"] else ""))
     return 0
 
 
@@ -331,8 +431,43 @@ def selftest():
 
     fx = ROOT / FIX_DIR
     today = datetime.date(2026, 10, 15)
+    real = (fx / "ams_3195_real_2026-10-02.txt").read_text()
     mmn = (fx / "ams_3195_mmn_layout.txt").read_text()
     flat = (fx / "ams_3195_flat.txt").read_text()
+
+    # The real report: pdftotext of ams_3195.pdf dated Fri Oct 2, 2026, saved by
+    # the probe run of 2026-10-15. Every number below was checked by hand
+    # against that text.
+    rp = parse_report(real, today)
+    ck("real report: date Fri Oct 2, 2026", rp["date"] == datetime.date(2026, 10, 2))
+    ck("real report: all six products read", sorted(rp["products"]) == sorted(ORDER))
+    want = {"anhydrous": (835.0, 1050.0, 945.0), "uan28": (400.0, 550.0, 466.67), "uan32": (530.0, 530.0, 530.0),
+            "urea": (650.0, 890.0, 770.0), "dap": (840.0, 995.0, 929.29), "potash": (480.0, 550.0, 516.36)}
+    for k, v in want.items():
+        g = rp["products"].get(k) or {}
+        ck("real report: %s low/high/avg %s" % (k, v), (g.get("low"), g.get("high"), g.get("avg")) == v)
+    ck("real report: DAP name wrapped over two lines keeps grade 18-46-0", rp["products"]["dap"]["symbol"] == "18-46-0")
+    ck("real report: potash grade from the report (White 0-0-62)", rp["products"]["potash"]["symbol"] == "0-0-62")
+    ck("real report: MAP 11-52-0 and the diesel/biodiesel rows are not taken",
+       all(v["avg"] not in (936.0, 5.63, 5.52) for v in rp["products"].values()))
+    ck("real report: freight F.O.B. on every product", all(v.get("freight") == "F.O.B." for v in rp["products"].values()))
+    ck("real report: the table header is quoted as the terms", rp["terms"] == "Distributor (Dollars Per Ton)")
+    ck("real report: no problems noted", rp["problems"] == [])
+    rbad = real.replace("650.00 - 890.00\n770.00", "650.00 - 890.00\n970.00")
+    ck("real layout: urea average outside its range is refused", "urea" not in parse_report(rbad, today)["products"])
+    rgal = real.replace("Distributor (Dollars Per Ton)", "Distributor (Dollars Per Gallon)")
+    ck("real layout: a table not priced per ton gives nothing", parse_report(rgal, today)["products"] == {})
+    rdup = real.replace("Urea (46-0-0)\nAsk\n650.00 - 890.00\n770.00",
+                        "Urea (46-0-0)\nAsk\n650.00 - 890.00\n770.00\n48.00\nF.O.B.\nCurrent\n"
+                        "Urea (46-0-0)\nAsk\n660.00 - 880.00\n772.00")
+    ck("real layout: urea on two rows at different prices is left out",
+       "urea" not in parse_report(rdup, today)["products"] and len(parse_report(rdup, today)["products"]) == 5)
+    rcut = real.replace("945.00\n37.50", "n/a\n37.50")
+    ck("real layout: an unreadable average leaves anhydrous out and says so",
+       "anhydrous" not in parse_report(rcut, today)["products"]
+       and any("Anhydrous" in x for x in parse_report(rcut, today)["problems"]))
+    dr, why = compose(None, rp, None, "2026-10-15T15:00:00Z")
+    ck("real report composes", dr is not None and dr["report_date"] == "2026-10-02" and len(dr["products"]) == 6)
 
     p = parse_report(mmn, today)
     ck("MMN layout: report date from the header", p["date"] == datetime.date(2026, 9, 4))
@@ -425,6 +560,29 @@ def selftest():
         return lambda req, timeout=30: R()
     raw, text, err = fetch(opener=opener_for(b"<!DOCTYPE html><title>Access Denied</title>"), sleep=lambda s: None)
     ck("fetch: a web page instead of the PDF is an error", text is None and "web page" in err)
+
+    # probe(): says what happened as annotations, saves the raw text
+    import contextlib
+    import io
+    with tempfile.TemporaryDirectory() as tdir:
+        T = datetime.datetime(2026, 10, 15, 6, 26, tzinfo=datetime.timezone.utc)
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            probe(tdir, now=T, fetched=(b"%PDF-1.7 x", real, None))
+        out = buf.getvalue()
+        ck("probe: notice with the byte count and the six averages",
+           "::notice::fert probe: got 10 bytes (PDF)" in out and "read 6 of 6" in out and "dap 929.29" in out)
+        ck("probe: raw text saved", (Path(tdir) / RAW_DIR / "ams_3195.txt").read_text() == real)
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            probe(tdir, now=T, fetched=(None, None, "AMS fetch failed: HTTP 403"))
+        ck("probe: a failed fetch is a warning that names the error",
+           "::warning::fert probe: AMS fetch failed: HTTP 403" in buf.getvalue())
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            probe(tdir, now=T, fetched=(b"%PDF-", rcut, None))
+        ck("probe: a product not read is a warning naming it",
+           "::warning::fert probe:" in buf.getvalue() and "not read: anhydrous" in buf.getvalue())
 
     if fails:
         print("selftest FAILED: %d" % len(fails))

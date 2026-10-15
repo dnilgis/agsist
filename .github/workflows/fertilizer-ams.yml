@@ -14,7 +14,10 @@ name: Fertilizer USDA AMS series
 # returned to data/fert-ams-raw/ and commits it, so the real PDF layout can be
 # read and added to the selftest fixtures (the parser was written from search
 # snippets; the sandbox could not reach usda.gov). Then dispatch again
-# without probe.
+# without probe. The probe run of 2026-10-15 (38692414508) did this; the real
+# text is now the main selftest fixture. The probe step reports what it got
+# (bytes, report date, each average, anything not read) as ::notice /
+# ::warning annotations, so the run page says what happened without the log.
 
 on:
   workflow_dispatch:

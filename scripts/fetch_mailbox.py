@@ -13,7 +13,7 @@ What is read: the report's summary sentence, which reads like
      Federal milk orders averaged $17.45 per cwt, up $0.72 from the January
      2026 average and down $5.87 per cwt from the February 2025 average."
 The all-area average and the two changes come from that sentence. The
-reporting-area table is not parsed.
+"All Federal Order Areas" row of the first table is used only to check it.
 
 Modes:
   (default)   fetch, validate, write. Keep-last-good on any failure.
@@ -28,12 +28,12 @@ WHAT THIS FILE WILL NOT DO
     month before as held here (by more than a cent).
   * On failure it leaves the last good file alone and only updates `status`.
 
-ONLY A LIVE RUN CAN CONFIRM
-  * The summary sentence wording in the live PDF. The fixtures below are built
-    from the wording quoted in search results for the February and March 2026
-    reports, not from captures of the PDF. Run --probe on the first live run.
-  * That ams_3357.pdf is the latest-issue alias, as dymclassprices.pdf is for
-    the class prices.
+CHECKED AGAINST THE LIVE REPORT
+  * The probe run of 2026-10-15 saved the live ams_3357.pdf (MMPR-0626,
+    released Sep 23 2026, June 2026 $20.18) to data/dairy-raw/ams-mailbox.*;
+    a copy is the main selftest fixture, test/fixtures/mailbox/mmpr-0626.txt.
+    The sentence wording matched; ams_3357.pdf is the latest issue. Only the
+    newest month (the sentence) is taken; the by-month tables are not.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy.pdf_to_text.
 """
@@ -117,6 +117,22 @@ def parse(text, today):
             out["prev_month_change"] = 0.0
         elif ck == kidx(key) - 12:
             out["year_ago_change"] = 0.0
+    # The real report (MMPR-0626, Sep 23 2026) follows the sentence with a
+    # table headed "Mailbox Milk Prices, June 2026" whose "All Federal Order
+    # Areas" row is year ago, last month, this month. Where that table is
+    # there, it must name the same month and agree with the sentence. The
+    # by-month tables further down (Jan to Jun, the annual average) are never read.
+    tb = re.search(r"mailbox milk prices,\s+" + MON_RE + r",?\s+(\d{4})\b(.*?)all federal order areas\s*\*?\s*"
+                   r"(\d{1,2}\.\d{2})\s+(\d{1,2}\.\d{2})\s+(\d{1,2}\.\d{2})\b", t, re.I)
+    if tb:
+        if mkey(tb.group(1), tb.group(2)) != key:
+            return None, "summary says %s but the table is headed %s %s" % (key, tb.group(1), tb.group(2))
+        yago, last, cur = float(tb.group(4)), float(tb.group(5)), float(tb.group(6))
+        if abs(cur - value) > 0.001:
+            return None, "summary average $%.2f disagrees with the table's All Federal Order Areas $%.2f" % (value, cur)
+        for fld, base in (("prev_month_change", last), ("year_ago_change", yago)):
+            if out[fld] is not None and abs((value - base) - out[fld]) > 0.011:
+                return None, "%s %+.2f disagrees with the table (%.2f vs %.2f)" % (fld, out[fld], value, base)
     return out, None
 
 
@@ -220,6 +236,26 @@ def selftest():
         print(("  ok   " if ok else "  FAIL ") + name + (f"  ({detail})" if not ok and detail else ""))
         if not ok:
             fails.append(name)
+
+    # the real report: MMPR-0626, released Sep 23 2026, covering June 2026
+    # (probe of 2026-10-15); every number checked by hand
+    real = (ROOT / "test/fixtures/mailbox/mmpr-0626.txt").read_text()
+    r, why = parse(real, datetime.date(2026, 10, 15))
+    ck("real report: June 2026 $20.18, down $0.25 from May, down $0.37 from June 2025",
+       r == {"month": "June 2026", "month_key": "2026-06", "value": 20.18,
+             "prev_month_change": -0.25, "year_ago_change": -0.37}, r or why)
+    ck("real report: the table's month and its All Federal Order Areas row agree",
+       parse(real.replace("All Federal Order Areas *\n20.55\n20.43\n20.18", "All Federal Order Areas *\n20.55\n20.43\n20.28"),
+             datetime.date(2026, 10, 15))[0] is None)
+    ck("real report: a change that disagrees with the table is refused",
+       parse(real.replace("down $0.25 from the May", "down $0.35 from the May"), datetime.date(2026, 10, 15))[0] is None)
+    ck("real report: a table headed with another month is refused",
+       parse(real.replace("Mailbox Milk Prices, June 2026", "Mailbox Milk Prices, May 2026"), datetime.date(2026, 10, 15))[0] is None)
+    held_mar = {"month": "March 2026", "month_key": "2026-03", "value": 18.84, "history": {"2026-03": 18.84}}
+    doc, wrote, note = compose(held_mar, r, None, "2026-10-15T16:23:00Z")
+    ck("real report over the held March figure: June written, only the newest month added to history",
+       wrote and doc["month_key"] == "2026-06" and doc["value"] == 20.18
+       and doc["history"] == {"2026-03": 18.84, "2026-06": 20.18} and doc["status"]["ok"], doc)
 
     today = datetime.date(2026, 6, 1)
     p, why = parse(FEB, today)
