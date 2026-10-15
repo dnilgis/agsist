@@ -5,12 +5,17 @@ build_farmbill.py  —  AGSIST farm-bill page baker.
 Reads farm-bill.json and bakes the dynamic regions (status pills, TL;DR cells,
 House-vs-Senate rows, status tracker, the "updated" stamp, and the two head
 modified-dates) directly into farm-bill.html, in place, between stable marker
-comments. The values land in STATIC HTML — no client-side fetch — so JS-blind
+comments, plus the dated "next 90 days" strip. The values land in STATIC HTML — no client-side fetch — so JS-blind
 AI crawlers see them. That's the whole point: this is the citation surface.
+
+Not baked, on purpose: byOperation (the "what this means for my operation"
+picker), titles, ledger and their notes. components/farm-bill.js fetches
+data/farm-bill.json and renders those only when a reader clicks, so the page
+stays light (CLAUDE.md: depth on demand).
 
 Update flow:
     1. edit farm-bill.json
-    2. run:  python3 build_farmbill.py
+    2. run:  python3 scripts/build_farmbill.py
        (or just push — the GitHub Action runs this for you)
 
 Idempotent: running it twice with the same JSON produces a byte-identical file.
@@ -60,6 +65,23 @@ def render_compare(data):
     return "\n".join(out)
 
 
+def render_next90(data):
+    out = []
+    for n in data["next90"]:
+        out.append(
+            f'        <li><time datetime="{n["iso"]}">{n["date"]}</time>'
+            f'<b>{n["what"]}</b><span>{n["means"]}</span></li>'
+        )
+    return "\n".join(out)
+
+
+def render_next90_outcomes(data):
+    out = []
+    for o in data["next90_outcomes"]:
+        out.append(f'        <p class="n90-o"><b>{o["k"]}:</b> {o["v"]}</p>')
+    return "\n".join(out)
+
+
 def render_tracker(data):
     out = []
     for s in data["tracker"]:
@@ -75,6 +97,8 @@ def render_tracker(data):
 BLOCK_REGIONS = {
     "pills":   (render_pills,   "      "),
     "tldr":    (render_tldr,    "      "),
+    "next90":  (render_next90,  "        "),
+    "next90out": (render_next90_outcomes, "        "),
     "compare": (render_compare, "      "),
     "tracker": (render_tracker, "      "),
 }
@@ -168,7 +192,7 @@ def bake(html, data):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--html", default="farm-bill.html")
-    ap.add_argument("--json", default="farm-bill.json")
+    ap.add_argument("--json", default="data/farm-bill.json")
     ap.add_argument("--check", action="store_true",
                     help="verify the baked output matches the file on disk; write nothing")
     args = ap.parse_args()
