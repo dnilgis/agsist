@@ -142,10 +142,20 @@ test("verdict first: the main page's quick answer comes before the deadlines and
   const lead = /<div class="ap-quick" id="quick-answer">\s*<p class="ap-lead"><b>For 2026, on a typical farm\.<\/b> Corn: (.*?)<\/p>/.exec(main);
   assert.ok(lead, "quick answer opens with the 2026 counts");
   // the counts are the build's own verdicts, so they add up to the tally sentence below them
-  const m = /([\d,]+) of ([\d,]+) county and practice combinations/.exec(lead[1]);
+  const m = /(?:([\d,]+) of|all) ([\d,]+) county and practice combinations/.exec(lead[1]);
+  assert.ok(!/in ([\d,]+) of \1\b/.test(lead[1]), "no 'N of N'");
   const tally = /across ([\d,]+) county and practice combinations/.exec(main);
   assert.equal(m[2], tally[1], "same denominator as the corn tally");
   assert.ok(main.indexOf("Login.gov") > 0, "online election line");
+  // the crop pages (scripts/arc_plc_crops.py) lead the same way
+  let crops = 0;
+  for (const f of readdirSync(ROOT + "arc-plc").filter((x) => x.endsWith(".html"))) {
+    const h = readFileSync(ROOT + "arc-plc/" + f, "utf8");
+    if (!h.includes('id="quick-answer"') || !h.includes('class="ap-dead"')) continue;
+    assert.ok(h.indexOf('id="quick-answer"') < h.indexOf("data-arcfind") && h.indexOf('id="quick-answer"') < h.indexOf('class="ap-dead"'), `${f}: quick answer first`);
+    crops++;
+  }
+  assert.ok(crops >= 5, `${crops} crop pages`);
 });
 
 test("county pages: the county is in the H1 and the crop answers sit right under it, above the picker", () => {

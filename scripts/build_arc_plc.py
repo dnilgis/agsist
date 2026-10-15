@@ -1711,7 +1711,8 @@ def lead_sentence(D):
         w = max(LEAD_WORD, key=lambda x: (d_.get(x, 0), -list(LEAD_WORD).index(x)))
         cen = (y6[k].get("scen") or {}).get("center")
         at = f" at USDA&rsquo;s {XC.pf(y6[k], cen)}," if w == "none" and cen else ("," if w == "close" else "")
-        bits.append(f"{y6[k]['label']}: {LEAD_WORD[w]}{at} in {d_[w]:,} of {n:,}" + (" county and practice combinations" if not bits else "") + ".")
+        cnt = f"all {n:,}" if d_[w] == n else f"{d_[w]:,} of {n:,}"
+        bits.append(f"{y6[k]['label']}: {LEAD_WORD[w]}{at} in {cnt}" + (" county and practice combinations" if not bits else "") + ".")
     if not bits:
         return ""
     return f'<p class="ap-lead"><b>For 2026, on a typical farm.</b> {" ".join(bits)} Your county&rsquo;s own answer is one pick below.</p>'
