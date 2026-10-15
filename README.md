@@ -25,6 +25,12 @@ and is not published, so nothing here counts toward the 1 GB site limit.
       gh workflow run refs.yml --ref main
       gh workflow run refs.yml --ref main -f ids=rma-pm-20-064,uw-a2809-2026
 
+Each row also says where the copy came from: `via` is `direct` (the live URL),
+`mirror`, `alt-host` (rma.usda.gov with or without www) or `wayback` (the
+Internet Archive's closest snapshot, date in `archive_timestamp`). A copy that
+did not come from the live URL is not proof the live page still says the same
+thing; every run tries the live URL first again.
+
 A failed source keeps its last good copy and is marked `failed` in
 `index.json`. Do not edit `refs/` or `index.json` by hand; the workflow
 rewrites them.
