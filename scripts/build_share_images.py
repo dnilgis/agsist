@@ -701,7 +701,7 @@ def build(only=None, strict=False):
             h = rd(name + ".html")
             alt = (re.search(r'og:image:alt"\s+content="([^"]*)"', h) or [None, None])[1] or h1_of(h) or name
             data = open(os.path.join(ROOT, img_rel), "rb").read()
-            _write_page(name, img_rel, data, htmlmod.unescape(alt), changed)
+            _write_page(name, img_rel, data, htmlmod.unescape(alt), changed, version=False)
             continue
         fn = CARDS.get(name) or SETS.get(name)
         try:
@@ -723,9 +723,12 @@ def build(only=None, strict=False):
     return changed, failed
 
 
-def _write_page(name, img_rel, data, alt, changed):
-    v = hashlib.sha1(data).hexdigest()[:8]
-    url = f"{SITE}/{img_rel}?v={v}"
+def _write_page(name, img_rel, data, alt, changed, version=True):
+    """version: add ?v=<hash> so a changed card gets fetched again. The kept
+    product pictures (KEEP) change by hand, with a new name if need be."""
+    url = f"{SITE}/{img_rel}"
+    if version:
+        url += "?v=" + hashlib.sha1(data).hexdigest()[:8]
     fp = os.path.join(ROOT, name + ".html")
     with open(fp, encoding="utf-8") as f:
         h = f.read()
