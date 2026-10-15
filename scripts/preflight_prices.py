@@ -251,6 +251,11 @@ def run(data, today=None, repair=False):
                 cont.update({"close":f["close"],"open":f.get("open"),
                              "netChange":f.get("netChange"),"pctChange":f.get("pctChange"),
                              "repaired_from":fk,"repair_reason":"continuous-roll-contamination","_orig":orig})
+                # The evening-trade split (fetch_prices.split_settle) belongs to
+                # the close it came with, so it travels with the repaired close.
+                for _sk in ("settled","last","last_time","last_date","last_net","settle_pending"):
+                    if _sk in f: cont[_sk]=f[_sk]
+                    else: cont.pop(_sk,None)
                 old = _carry_dates(cont, f, data, commodity)
                 REPAIR("contamination",msg+"  -> repaired to track "+fk
                        +("  (source settle %s is older than the session: marked stale)"%f.get("close_date") if old else ""))
