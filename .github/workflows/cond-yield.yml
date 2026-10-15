@@ -6,6 +6,10 @@ name: cond-yield
 on:
   schedule:
     - cron: "18 3 * * 2"       # Tuesdays 03:18 UTC
+    # Holiday catch-up: after a Monday federal holiday NASS releases Tuesday,
+    # so this second pass (after conditions.yml's Wednesday run) picks it up.
+    # Lock and grade never duplicate a row, so a normal week is a no-op.
+    - cron: "18 3 * * 3"       # Wednesdays 03:18 UTC
   workflow_dispatch:
 
 permissions:

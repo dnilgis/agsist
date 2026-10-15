@@ -38,6 +38,7 @@ published.
 
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 try:
@@ -511,7 +512,14 @@ def tidy(items):
     for i in out:
         p = str(i.get("id", "")).split(":")
         if len(p) == 4 and p[0] == "px" and p[3] == "move":
-            by.setdefault((p[1], p[2].split("-")[0], i.get("detail")), []).append(i)
+            # Keyed on the move in the headline ("down 3.9%"), not the detail:
+            # on 9 October 2026 corn filed as "Settled $4.80, -19.75 cents"
+            # (the old wording) and December corn as "Closed $4.80 1/2,
+            # -19 3/4" (the new one), so the detail no longer matched and the
+            # wire carried the same move twice.
+            mv = re.search(r"\b(up|down) \d+(?:\.\d+)?%", str(i.get("headline", "")))
+            by.setdefault((p[1], p[2].split("-")[0], mv.group(0) if mv else i.get("detail")),
+                          []).append(i)
     drop = set()
     for group in by.values():
         if len(group) > 1:
@@ -929,6 +937,12 @@ def _selftest():
     check([i["id"] for i in _t] == ["px:2026-10-01:corn-dec:move", "px:2026-10-01:wheat:move"],
           "one contract's move under two names keeps the named one")
     check(len(tidy(_t)) == 2, "tidy is idempotent")
+    # THE 9 OCTOBER 2026 DUPLICATE: the same move in the old and new wording.
+    _dup9 = [_it("px:2026-10-09:corn-dec:move", "December corn down 3.9% on the day",
+                 "Closed $4.80\u00bd, \u221219\u00be\u00a2 on the session."),
+             _it("px:2026-10-09:corn:move", "Corn down 3.9% on the day", "Settled $4.80, -19.75 cents on the session.")]
+    check([i["id"] for i in tidy(_dup9)] == ["px:2026-10-09:corn-dec:move"],
+          "the same move in two wordings keeps the named contract")
 
     # THE USDA ITEM FOLLOWS THE GRADES. The real Oct 9 shape: the Wire wrote
     # "All 2 scored figures" when two were graded; the page then graded seven,

@@ -45,7 +45,7 @@ export const FAQ = [
   ["How much is manure worth per ton?",
    "At {asof-n} dealer prices, solid dairy manure over 20% dry matter is worth about {unit-dairy_solid_gt20-1to3day} a ton in fertilizer, beef manure about {unit-beef_solid-1to3day}, hog manure about {unit-swine_solid-1to3day}, and chicken litter about {unit-chicken_solid-1to3day}, worked in within 3 days. Liquid dairy manure works out to about {ton-dairy_liq_4_11-1to3day} a ton, since 1,000 gallons weighs a little over 4 tons."],
   ["What should I charge a neighbor for manure?",
-   "The value of all the manure: every pound of N, P2O5 and K2O in it, priced at what the same nutrients cost as urea, MAP and potash. For liquid dairy manure worked in within 3 days that is about {unit-dairy_liq_4_11-1to3day} per 1,000 gallons at {asof-n} dealer prices. Multiply by the gallons or tons that go on. A test of the manure that is actually going gives the real pounds. Liquid is usually priced per 1,000 gallons applied, solid per ton at the pile; settle up front who hauls and spreads it."],
+   "The value of all the manure: all its P2O5 and K2O and the nitrogen a crop can use the first year, priced at what the same nutrients cost as urea, MAP and potash. For liquid dairy manure worked in within 3 days that is about {unit-dairy_liq_4_11-1to3day} per 1,000 gallons at {asof-n} dealer prices. Multiply by the gallons or tons that go on. A test of the manure that is actually going gives the real pounds. Liquid is usually priced per 1,000 gallons applied, solid per ton at the pile; settle up front who hauls and spreads it."],
   ["What is the manure on a whole field worth?",
    "Liquid dairy manure at 4 to 11% dry matter, worked in within 3 days, at 6,000 gallons an acre puts on {ex-n-lb} lb of first-year N, {ex-p-lb} lb of P2O5 and {ex-k-lb} lb of K2O an acre. At {asof-n} dealer prices that is {ex-n-ac} of N, {ex-p-ac} of P2O5 and {ex-k-ac} of K2O, {ex-book-ac} an acre, or {ex-field} for 80 acres."],
   ["Why is phosphorus priced from MAP with the nitrogen taken out?",
@@ -54,7 +54,7 @@ export const FAQ = [
    "Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."],
 ];
 
-const DESC = "At {asof-n} dealer prices, liquid dairy manure is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gal and solid dairy {unit-dairy_solid_gt20-1to3day} a ton: all its N, P and K, with a calculator for your rate and acres.";
+const DESC = "At {asof-n} dealer prices, liquid dairy manure is worth about {unit-dairy_liq_4_11-1to3day} per 1,000 gal and solid dairy {unit-dairy_solid_gt20-1to3day} a ton. Calculator for your rate and acres.";
 
 const TIMINGS = ["gt3day", "1to3day", "lt1hr"];
 

@@ -81,6 +81,7 @@ MUST_FAIL_TELL = [
     ("A rich tapestry of factors moved grain.", "tapestry"),
     ("Basis is yelling and carry's working.", "slang"),
     ("Soy oil had a massive day.", "hype"),
+    ("Beans led on crush, not exports, and cattle eased on supply, not demand.", "not-contrast"),
 ]
 
 for s in MUST_FAIL_FABRICATED:

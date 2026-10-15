@@ -1,7 +1,24 @@
 {
- "updated": "2026-10-12",
+ "updated": "2026-10-14",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-14",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/conditions",
+     "name": "Crop Progress after a Monday holiday",
+     "text": "When a federal holiday moves USDA's Crop Progress to Tuesday, the site now picks it up Tuesday evening. On October 13, the Tuesday after Columbus Day, it did not, and the homepage and conditions page kept showing the week ending October 4."
+    },
+    {
+     "tag": "fixed",
+     "page": "/news",
+     "name": "One corn move on the Wire twice",
+     "text": "On October 9 the Wire posted December corn's 3.9% drop twice, once as December corn and once as corn, worded two different ways. It now keeps one."
+    }
+   ]
+  },
   {
    "date": "2026-10-12",
    "items": [
@@ -10,6 +27,17 @@
      "page": "/prf",
      "name": "PRF rainfall insurance calculator",
      "text": "Pick your grid, acres and two-month intervals for Pasture, Rangeland, Forage insurance and see the premium, USDA's share of it, and what the policy would have paid in each year from 1951 to 2025 at 2027 rates. It covers all 13,414 grids in the 48 contiguous states, works out which county a point is in, applies your county's interval limits, shows each interval's normal precipitation in inches, compares two setups and all five coverage levels, and prints a one-page sheet. Each state has its own page with every county's USDA values, at /prf/<state>."
+    }
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/cash-bids",
+     "name": "Cash bids come only from elevator boards",
+     "text": "Every cash bid on the site is now read from the elevator's own bid board. The licensed feed that used to fill gaps is off, so an elevator we don't read shows no bid. The elevators page shows which ones we read."
     }
    ]
   },

@@ -15,13 +15,20 @@ name: Prediction bot — call and grade
 # one GitHub delivers), both before the 7 PM CT evening reopen: after it,
 # Yahoo's daily bar holds overnight trades and the bot refuses to call or grade.
 # Calls are keyed by crop and report, so a second run makes no new call.
+#   19:41 UTC Mon-Fri = 2:41 PM CDT / 1:41 PM CST (after the 1:20 PM close and the 2:30 PM COT release)
+#   20:41 UTC Mon-Fri = 3:41 PM CDT / 2:41 PM CST
 #   22:41 UTC Mon-Fri = 5:41 PM CDT / 4:41 PM CST
-#   23:41 UTC Mon-Fri = 6:41 PM CDT / 5:41 PM CST (retry)
+#   23:41 UTC Mon-Fri = 6:41 PM CDT / 5:41 PM CST (last chance)
+# Four fires since 2026-10-15: on Oct 13 GitHub started both evening fires
+# 2.5 hours late (8:21 and 9:08 PM CDT), past the 6:55 PM cutoff, and the bot
+# made no call that week. The early fires leave room for that kind of delay.
 
 on:
   schedule:
+    - cron: '41 19 * * 1-5'
+    - cron: '41 20 * * 1-5'
     - cron: '41 22 * * 1-5'
-    - cron: '41 23 * * 1-5'   # retry, before the 7 PM CT reopen in both seasons
+    - cron: '41 23 * * 1-5'   # last chance, before the 7 PM CT reopen in both seasons
   workflow_dispatch:
 
 permissions:
