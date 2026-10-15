@@ -689,6 +689,13 @@ CSS = """
     .cbt-nl li a:hover{color:var(--gold)}
     .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
     .cbt-nl .cbt-mut{white-space:nowrap}
+    .cbt-answer{font-size:1.05rem;line-height:1.5;color:var(--text);margin:6px 0 4px}
+    .cbt-cmp{font-size:.88rem;line-height:1.55;color:var(--text-muted);margin:-4px 0 12px}
+    .cbt-cmp a{color:var(--gold);white-space:nowrap}
+    .cbt-faq h3{margin:14px 0 2px}.cbt-faq p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text-muted)}
+    .cbt-hist{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:14px 0}
+    .cbt-hist summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--text);min-height:44px;box-sizing:border-box}
+    .cbt-hist-body{padding:0 14px 12px}
 """
 
 
@@ -785,12 +792,12 @@ SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
 SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
-def page_end(ftr, table=False, signup=False):
+def page_end(ftr, table=False, signup=False, hist=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}</body>
 </html>
 """
 
@@ -936,20 +943,32 @@ def _mon(dm, snap_ct):
     return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" &rsquo;{y % 100:02d}")
 
 
-def nearby_section(t, center, live_all, snap_ct, has_own):
-    """The nearest other elevators with a current bid, or "" when none qualify."""
+def nearby_pick(t, center, live_all, has_own):
+    """[(miles, board)] of the nearest other elevators with a current bid: within
+    NEARBY_MI for a town with bids of its own, else the nearest NEAREST_N within
+    NEAREST_MAX_MI. [] when there is no center or none qualify."""
     if not center or not live_all:
-        return ""
-    lat, lon, what = center
+        return []
+    lat, lon, _ = center
     tk = (t["state"], t["slug"])
     cand = sorted(((miles(lat, lon, b["pin"][0], b["pin"][1]), b) for b in live_all if b["town_key"] != tk),
                   key=lambda x: (x[0], x[1]["name"]))
     if has_own:
-        pick = [x for x in cand if x[0] <= NEARBY_MI][:NEARBY_MAX]
-        h2 = f"Other elevators within {NEARBY_MI} miles"
-    else:
-        pick = [x for x in cand if x[0] <= NEAREST_MAX_MI][:NEAREST_N]
-        h2 = "Nearest elevators with a current bid"
+        return [x for x in cand if x[0] <= NEARBY_MI][:NEARBY_MAX]
+    return [x for x in cand if x[0] <= NEAREST_MAX_MI][:NEAREST_N]
+
+
+def dist_text(d):
+    return "under 1 mi" if d < 1 else f"{d:.0f} mi"
+
+
+def nearby_section(t, center, live_all, snap_ct, has_own):
+    """The nearest other elevators with a current bid, or "" when none qualify."""
+    if not center or not live_all:
+        return ""
+    what = center[2]
+    pick = nearby_pick(t, center, live_all, has_own)
+    h2 = f"Other elevators within {NEARBY_MI} miles" if has_own else "Nearest elevators with a current bid"
     if not pick:
         if has_own:
             return ""
@@ -962,7 +981,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
         prices = " &middot; ".join(f'{CROP_LABEL[c]} {pricefmt.cash(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
                                    for c in cs)
         p = b["posted"].astimezone(CT)
-        dist = "under 1 mi" if d < 1 else f"{d:.0f} mi"
+        dist = dist_text(d)
         lis.append(f'<li><a href="{b["path"]}"><b>{esc(b["name"])}</b>, {esc(b["town"])}, {b["state"]}</a> '
                    f'<span class="cbt-mut">{dist} &middot; posted {MONTH_ABBR[p.month - 1]} {p.day}</span><br>'
                    f'<span class="np">{prices}</span></li>')
@@ -1050,6 +1069,287 @@ def quiet_line(bd):
     return f"<li>{esc(name)}: {esc(why)}{seen}</li>"
 
 
+# ---------------------------------------------------------------- the answer first (2026-10-15)
+# A town page used to open with the store-or-sell box; the price table sat
+# below the fold on a phone. It now opens with one sentence that answers
+# "what is grain paying here" from the same rows the table prints, then the
+# table, then a line putting the basis beside the state's middle basis (the
+# one method, scripts/basis_method.py, from this same snapshot), then the
+# hold box. The same sentence is the meta description, so search shows the
+# answer; it carries its posted date and is rewritten on every build.
+ANSWER_CROPS = 2              # crops named in the answer sentence
+DESC_MAX = 160
+HIST_NOTE = (" &ldquo;Basis since June&rdquo; reads AGSIST&rsquo;s daily basis log, which keeps the day each "
+             "elevator&rsquo;s basis changed; until Oct 11, 2026 that log also drew on a licensed bid feed.")
+HIST_JS = '<script src="/components/cb-basis-hist.js?v=1" defer></script>\n'
+
+
+def answer_picks(boards):
+    """{crop: (row, elevator name)}: per elevator the commodity it posts most
+    (a non-GMO premium is never the headline corn price), its nearest delivery
+    month and the highest cash there; then across elevators the nearest month
+    and the highest cash in it. On a tie the newer posting, then the name."""
+    out = {}
+    for c in CROPS:
+        cands = []
+        for bd in boards:
+            rs = [r for r in bd["rows"] if r["crop"] == c]
+            if not rs:
+                continue
+            com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
+            rs = [r for r in rs if r["commodity"].lower() == com]
+            m = min(r["dm"] for r in rs)
+            best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
+            cands.append((best, bd["operator"] or bd["city"]))
+        if cands:
+            m = min(r["dm"] for r, _ in cands)
+            cands = sorted((x for x in cands if x[0]["dm"] == m), key=lambda x: x[1].lower())
+            out[c] = max(cands, key=lambda x: (x[0]["cash"], x[0]["priced"]))
+    return out
+
+
+def _mon_word(dm, snap_ct):
+    y, m = int(dm[:4]), int(dm[5:7])
+    return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" {y}")
+
+
+def _basis_plain(r, vs=True):
+    if r["basis"] is None:
+        return ""
+    b = pricefmt.basis(r["basis"] * 100)
+    return b + (f" vs {contract_label(r['contract'])}" if vs and r["contract"] else "")
+
+
+def _posted_days(rows):
+    ds = sorted({(r["priced"].astimezone(CT).month, r["priced"].astimezone(CT).day) for r in rows})
+    a = f"{MONTH_ABBR[ds[0][0] - 1]} {ds[0][1]}"
+    if len(ds) == 1:
+        return a
+    b = ds[-1]
+    return f"{a} to {MONTH_ABBR[b[0] - 1] + ' ' if b[0] != ds[0][0] else ''}{b[1]}"
+
+
+def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
+    """"Top bid: corn $4.14 at CDR Farms LLC for Oct delivery (basis -65c) and
+    soybeans $12.04 for Oct (basis -70c), posted Oct 14." Every number is a
+    posted one that prints in the table below it."""
+    cs = [c for c in CROPS if c in picks][:n]
+    if not cs:
+        return ""
+    parts, prev = [], None
+    for i, c in enumerate(cs):
+        r, name = picks[c]
+        p = f"{CROP_LABEL[c].lower()} {pricefmt.cash(r['cash'])}"
+        if name != prev:
+            p += f" at {name}"
+        p += f" for {_mon_word(r['dm'], snap_ct)}" + (" delivery" if i == 0 else "")
+        if basis and r["basis"] is not None:
+            p += f" (basis {_basis_plain(r)})"
+        parts.append(p)
+        prev = name
+    return (f"Top {'bids' if len(cs) > 1 else 'bid'}: " + " and ".join(parts)
+            + f", posted {_posted_days([picks[c][0] for c in cs])}.")
+
+
+def answer_and_desc(picks, snap_ct, place):
+    """(sentence, meta description): the fullest sentence whose description
+    fits DESC_MAX, the description being "<place> cash bids. <sentence> Call to
+    confirm." -> ("", "") when no variant fits (the caller keeps its old text)."""
+    for n, basis in ((ANSWER_CROPS, True), (ANSWER_CROPS, False), (1, True), (1, False)):
+        a = answer_sentence(picks, snap_ct, n, basis)
+        if not a:
+            return "", ""
+        for d in (f"{place} cash bids. {a} Call to confirm.", f"{place} cash bids. {a}"):
+            if len(d) <= DESC_MAX:
+                return a, d
+    return "", ""
+
+
+ADJ = {"corn": "corn", "soybeans": "soybean", "wheat": "wheat", "sorghum": "sorghum", "oats": "oat"}
+
+
+def state_compare(picks, summ, sname):
+    """[{crop, line, faq}] putting this town's headline basis beside the state's
+    middle basis for the same futures contract, corn and soybeans only. line is
+    the sentence under the table, faq the shorter one the FAQ adds after its
+    own basis sentence. Nothing is compared across contracts: a board quoting
+    no month, or one the state has too few bids on, is said so."""
+    out = []
+    for c in ("corn", "soybeans"):
+        g = (summ or {}).get(c)
+        stats = [x for x in (g or {}).get("contracts", []) if "median" in x]
+        if c not in picks or not stats or picks[c][0]["basis"] is None:
+            continue
+        r, name = picks[c]
+        same = next((x for x in stats if r["contract"] and x["contract"] == r["contract"]), None)
+        if same is None:
+            head = stats[0]
+            mid = f"{pricefmt.basis(head['median'] * 100)} vs {contract_label(head['contract'])}, {head['n']} elevators"
+            why = ("posts no futures month with its basis" if not r["contract"] else
+                   f"quotes basis vs {contract_label(r['contract'])}, a month too few {sname} elevators use")
+            out.append({"crop": c, "name": name, "why": why, "mid": mid,
+                        "faq": f"It is not compared with the {sname} middle ({mid}): {name} {why}."})
+            continue
+        d = round((r["basis"] - same["median"]) * 400) / 4      # to the quarter cent boards post in
+        rel = "even with" if abs(d) < 0.25 else (pricefmt.basis(abs(d)).lstrip("+") + (" stronger than" if d > 0 else " weaker than"))
+        smid = f"{pricefmt.basis(same['median'] * 100)}, {same['n']} elevators"
+        out.append({"crop": c, "line": f"{ADJ[c].capitalize()} basis at {name}, {_basis_plain(r)}, is {rel} the {sname} "
+                                        f"middle ({smid}).",
+                    "faq": f"That is {rel} the {sname} middle ({smid})."})
+    # one sentence for the crops not compared for the same reason
+    lines, done = [], set()
+    for x in out:
+        if "line" in x:
+            lines.append(x["line"])
+        elif (x["name"], x["why"]) not in done:
+            grp = [y for y in out if "line" not in y and (y["name"], y["why"]) == (x["name"], x["why"])]
+            done.add((x["name"], x["why"]))
+            mids = "; ".join(f"{ADJ[y['crop']]} {y['mid']}" for y in grp)
+            lines.append(f"{x['name']} {x['why']}, so it is not compared with the {sname} middle ({mids}).")
+    return out, lines
+
+
+def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
+    """Three questions answered from this page's own numbers, as plain text: the
+    visible FAQ and the FAQPage JSON-LD are built from these same strings."""
+    town, place = t["name"], f"{t['name']}, {t['state']}"
+    cs = [c for c in CROPS if c in picks]
+    if not cs:
+        return []
+    c = cs[0]
+    crop = CROP_LABEL[c].lower()
+    r, name = picks[c]
+    qs = []
+    a1 = (f"The top {crop} bid we read in {place} is {pricefmt.cash(r['cash'])} a bushel at {name} for "
+          f"{_mon_word(r['dm'], snap_ct)} delivery, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
+    qs.append((f"What is {crop} paying in {town} today?", a1))
+    if r["basis"] is not None:
+        a2 = f"{name} posts {crop} basis of {_basis_plain(r)} for {_mon_word(r['dm'], snap_ct)} delivery."
+        a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
+    else:
+        a2 = f"{name} does not post a basis with its {crop} bid, only the cash price."
+    qs.append((f"What is the {ADJ[c]} basis in {town}?", a2))
+    if near:
+        d, b = near[0]
+        g = b["glance"]
+        pc = [x for x in ("corn", "soybeans") if x in g] or [x for x in CROPS if x in g][:1]
+        prices = " and ".join(f"{CROP_LABEL[x].lower()} {pricefmt.cash(g[x][0])}" for x in pc)
+        p = b["posted"].astimezone(CT)
+        a3 = (f"The nearest other elevator with a current bid is {b['name']} in {b['town']}, {b['state']}, "
+              f"{dist_text(d).replace('mi', 'miles')} straight-line from {center[2]}. It posted {prices} on "
+              f"{MONTH_ABBR[p.month - 1]} {p.day}.")
+    else:
+        a3 = (f"No other elevator the AGSIST network reads has a current bid within {NEARBY_MI} miles of {town}. "
+              f"The live page can search farther.")
+    qs.append((f"How far is the next elevator from {town}?", a3))
+    return qs
+
+
+def faq_html(qs, town):
+    if not qs:
+        return ""
+    return (f'<h2 id="faq">Questions about {esc(town)} bids</h2><div class="cbt-faq">'
+            + "".join(f"<h3>{esc(q)}</h3><p>{esc(a)}</p>" for q, a in qs) + "</div>")
+
+
+def faq_jsonld(qs):
+    return {"@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qs]}
+
+
+FAC_TAIL = {"LLC", "LC", "INC", "INCORPORATED", "CO", "CORP", "CORPORATION", "LTD", "LIMITED", "LP", "LLP",
+            "COMPANY", "COOP", "COOPERATIVE", "ASSN", "ASSOCIATION"}
+
+
+def norm_fac(s):
+    """Twin of normFac() in components/cb-basis-hist.js (and homepage-extras.js):
+    "CDR FARMS, LLC" and "CDR Farms LLC" are one elevator."""
+    t = re.sub(r"\bCO[\s.-]*OP\b", "COOP", str(s or "").upper().replace("&", " AND "))
+    t = [x for x in re.sub(r"[^A-Z0-9]+", " ", t).strip().split(" ") if x]
+    while len(t) > 1 and t[-1] in FAC_TAIL:
+        t.pop()
+    return "".join(t)
+
+
+def norm_town(s):
+    """Twin of normKey() in components/cb-basis-hist.js: "St. Ansgar" and
+    "SAINT ANSGAR" are one town."""
+    t = re.sub(r"^(ST|STE)\b\.?", lambda m: "SAINT" if m.group(1) == "ST" else "SAINTE", str(s or "").upper().strip())
+    t = re.sub(r"^FT\b\.?", "FORT", t)
+    return re.sub(r"[^A-Z0-9]", "", t)
+
+
+MM = [m.upper() for m in MONTH_ABBR]
+_HIST_MON = re.compile(r"\b(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\b")
+
+
+def parse_dm(s, date):
+    """Twin of parseDm() in components/cb-basis-hist.js: the basis log's
+    delivery-month field -> 'YYYY-MM', or None when it names no month.
+    date is the 'YYYY-MM-DD' it was logged, for a month written with no year."""
+    t = re.sub(r"\([^)]*\)", " ", str(s or "").upper()).strip()
+    m = re.match(r"^(\d{1,2})/\d{1,2}/(\d{4})\b", t)
+    if m:
+        mi = int(m.group(1)) - 1
+        return f"{m.group(2)}-{mi + 1:02d}" if 0 <= mi < 12 else None
+    m = re.fullmatch(r"([A-Z]{3})(\d{2})", t)
+    if m and m.group(1) in MM:
+        return f"20{m.group(2)}-{MM.index(m.group(1)) + 1:02d}"
+    m = _HIST_MON.search(t)
+    if not m:
+        return None
+    mi = MM.index(m.group(1))
+    rest = t[m.end():]
+    y = re.search(r"\b(20\d{2})\b", rest)
+    if y:
+        return f"{y.group(1)}-{mi + 1:02d}"
+    y = re.search(r"(?:^|[\s'-])(\d{2})\b(?!\s*,)", rest)
+    if y and not re.match(r"^\s*\d{1,2}\s*,", rest):
+        return f"20{y.group(1)}-{mi + 1:02d}"
+    yr, dmon = int(date[:4]), int(date[5:7]) - 1
+    return f"{yr + (1 if mi < dmon - 2 else 0)}-{mi + 1:02d}"
+
+
+def history_index(path):
+    """{(norm_fac, norm_town)} with at least one logged basis change in one
+    state's data/basis-sparklines/<ST>.json; empty when it cannot be read."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            series = (json.load(f) or {}).get("series") or {}
+    except (OSError, ValueError):
+        return set()
+    out = set()
+    for k, pts in series.items():
+        p = k.split("|")
+        if len(p) >= 6 and p[3] in ("corn", "soybeans", "wheat") and pts and isinstance(pts[0], dict) \
+                and parse_dm(p[5], str(pts[0].get("date") or "")) is not None:
+            out.add((norm_fac(p[1]), norm_town(p[2])))
+    return out
+
+
+def history_box(t, boards, logged):
+    """"Basis since June": a closed box naming this page's elevators that have
+    a logged basis change (logged: history_index() of the state). Nothing of
+    the history is in the page: components/cb-basis-hist.js fetches
+    data/basis-sparklines/<ST>.json the first time the box is opened and draws
+    each elevator's nearest-delivery basis from its logged changes. No box
+    when none of them has one."""
+    names = []
+    for bd in boards:
+        n = bd["operator"] or bd["city"]
+        cities = sorted({x for x in (bd["city"], t["name"]) if x})
+        if not n or not any((norm_fac(n), norm_town(c)) in logged for c in cities):
+            continue
+        if (n, cities) not in names:
+            names.append((n, cities))
+    if not names:
+        return ""
+    data = json.dumps([[n, c] for n, c in names], separators=(",", ":"), ensure_ascii=False)
+    return (f'<details class="cbt-hist" data-basis-hist="{t["state"]}" data-boards="{esc(data)}">'
+            f'<summary>Basis since June</summary><div class="cbt-hist-body">'
+            f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
+
+
 def build_town_page(t, ctx):
     st, sname = t["state"], STATE_NAMES[t["state"]]
     ssl = url_slug(sname)
@@ -1094,6 +1394,10 @@ def build_town_page(t, ctx):
             desc = (f"Cash grain bids at {n} elevator{'s' if n != 1 else ''} {where}, posted {fmt_day(latest)}: "
                     f"cash price and basis by delivery month. Call to confirm.")
         desc = desc[:160]
+        picks = answer_picks(live_b)
+        answer, adesc = answer_and_desc(picks, snap_ct, place)
+        if adesc:
+            desc = adesc
         tops = top_nearby(shown)
         txt, when = share_prices(tops)
         share = (f"{place} cash bids",
@@ -1109,7 +1413,7 @@ def build_town_page(t, ctx):
     else:
         desc = (f"Cash grain bids in {place}: no current bid from the elevators the AGSIST network reads here. "
                 f"The nearest elevators with a current bid are listed.")[:160]
-        tops, share = {}, None
+        tops, share, picks, answer = {}, None, {}, ""
         intro = (f'<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in '
                  f'{esc(place)} has a bid we could confirm right now. The nearest ones that do are below.</div>')
     quiet_html = ""
@@ -1135,11 +1439,23 @@ def build_town_page(t, ctx):
     hold_note = ""
     ss = "/store-or-sell" + (f"?zip={z}" if z else "")
     top_html = top_holds(held_all, ss)
-    near_html = nearby_section(t, town_center(t, z, ctx.get("zip_coord")), ctx.get("live_all"), snap_ct, indexable)
+    center = town_center(t, z, ctx.get("zip_coord"))
+    near_html = nearby_section(t, center, ctx.get("live_all"), snap_ct, indexable)
+    cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname)
+    cmp_html = ""
+    if cmp_text:
+        cmp_html = ('<p class="cbt-cmp">' + " ".join(esc(x) for x in cmp_text)
+                    + f' <a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a></p>')
+    qs = faq_pairs(t, picks, cmp_lines, nearby_pick(t, center, ctx.get("live_all"), True), center, snap_ct) \
+        if indexable else []
+    hist_html = history_box(t, live_b, ctx["hist"](st)) if indexable and ctx.get("hist") else ""
+    answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
     if any_hold:
         hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
+    if qs:
+        jsonld["@graph"].append(faq_jsonld(qs))
     hdr, ftr = ctx["chrome"]
     # The bid email box sits right under the first elevator's table (or under
     # the intro when no elevator here has a current bid), so a phone reaches it
@@ -1161,23 +1477,27 @@ def build_town_page(t, ctx):
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
+  {answer_html}
   {intro}
-  {top_html}
   {'' if indexable else near_html}
-  <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {jump}
   {''.join(secs[:1])}
+  {cmp_html}
+  {top_html}
+  <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {box}
   {''.join(secs[1:])}
+  {hist_html}
   {near_html if indexable else ''}
+  {faq_html(qs, t['name'])}
   {ask}
   {quiet_html}
   {known_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
-  posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
+  posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
-  has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}</div>
+  has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -1189,7 +1509,7 @@ def build_town_page(t, ctx):
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
-    return h + body + page_end(ftr, signup=bool(box)), meta
+    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -1719,12 +2039,24 @@ def write_sitemap(path, entries):
 
 
 # ---------------------------------------------------------------- build
+def _hist_lookup(hist_dir):
+    memo = {}
+
+    def get(st):
+        if st not in memo:
+            memo[st] = history_index(os.path.join(hist_dir, f"{st}.json"))
+        return memo[st]
+    return get
+
+
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None):
+              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
     go (None = not written). hub: /basis page to bake the state ranking into.
     directory: the bids network's data/directory.json, for the unread
-    elevators on each town page (None = that section is left out)."""
+    elevators on each town page (None = that section is left out).
+    hist_dir: data/basis-sparklines, to know which elevators have a logged
+    basis change for the "Basis since June" box (None = no box)."""
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
     if gen is None:
@@ -1764,7 +2096,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                      | boards_st) & set(STATE_NAMES), key=lambda s: STATE_NAMES[s])
     ctx = {"snap_ct": gen.astimezone(CT), "root": root, "chrome": SB.static_chrome(root), "states": states,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
-           "counts": state_counts(towns, near), "zip_coord": zip_coord, "live_all": live_board_list(towns),
+           "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
+           "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
     before = set()
     if os.path.isdir(out_dir):
@@ -2238,7 +2571,7 @@ def main():
     metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
                                       data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
-                                      directory=directory)
+                                      directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"))
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)
