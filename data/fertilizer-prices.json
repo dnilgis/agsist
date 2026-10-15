@@ -6,42 +6,42 @@
    "key": "urea",
    "name": "Urea",
    "symbol": "46-0-0",
-   "price": 630.0,
+   "price": 622.98,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 3,
+   "n": 4,
    "low": 608.0,
    "high": 840.0,
-   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "src_label": "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "anhydrous",
    "name": "Anhydrous ammonia",
    "symbol": "82-0-0",
-   "price": 830.0,
+   "price": 832.1,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 3,
+   "n": 4,
    "low": 817.0,
    "high": 965.0,
-   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "src_label": "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "uan28",
    "name": "UAN 28%",
    "symbol": "28-0-0",
-   "price": 427.5,
+   "price": 415.33,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 3,
+   "n": 4,
    "low": 400.0,
    "high": 490.0,
-   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "src_label": "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
@@ -61,49 +61,49 @@
    "key": "dap",
    "name": "DAP",
    "symbol": "18-46-0",
-   "price": 921.5,
+   "price": 928.77,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 3,
+   "n": 4,
    "low": 820.0,
    "high": 970.0,
-   "src_label": "middle cash price of 3 co-ops, posted Oct 6, 2026",
+   "src_label": "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "potash",
    "name": "Potash",
    "symbol": "0-0-60",
-   "price": 465.5,
+   "price": 470.4,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 3,
+   "n": 4,
    "low": 460.0,
    "high": 500.0,
-   "src_label": "middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026",
+   "src_label": "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   }
  ],
  "per_lb": {
   "n": {
-   "usd": 0.6848,
+   "usd": 0.6772,
    "from": "urea",
    "as_of": "2026-10-06",
-   "how": "urea $630.00 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026)"
+   "how": "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026)"
   },
   "p": {
-   "usd": 0.7337,
+   "usd": 0.7445,
    "from": "dap",
    "as_of": "2026-10-06",
-   "how": "DAP $921.50 a ton, less 360 lb of N at the urea price ($247), / 920 lb of P2O5 = $0.73 a lb of P2O5 (middle cash price of 3 co-ops, posted Oct 6, 2026)"
+   "how": "DAP $928.77 a ton, less 360 lb of N at the urea price ($244), / 920 lb of P2O5 = $0.74 a lb of P2O5 (middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026)"
   },
   "k": {
-   "usd": 0.3879,
+   "usd": 0.392,
    "from": "potash",
    "as_of": "2026-10-06",
-   "how": "potash $465.50 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (middle cash price of 3 co-ops, posted Oct 1, 2026 to Oct 6, 2026)"
+   "how": "potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026)"
   }
  },
  "programs": {
@@ -112,7 +112,7 @@
    "n_lb": 162,
    "p_lb": 67,
    "k_lb": 43,
-   "per_acre": 177,
+   "per_acre": 176,
    "as_of": "2026-10-06"
   },
   "soybeans": {
@@ -120,7 +120,7 @@
    "n_lb": 0,
    "p_lb": 44,
    "k_lb": 72,
-   "per_acre": 60,
+   "per_acre": 61,
    "as_of": "2026-10-06"
   },
   "wheat": {
@@ -133,5 +133,5 @@
   }
  },
  "notes": [],
- "generated": "2026-10-15T23:50:29Z"
+ "generated": "2026-10-15T23:52:53Z"
 }

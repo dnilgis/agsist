@@ -1,30 +1,31 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-10-15T23:50:20Z",
+ "generated": "2026-10-15T23:52:14Z",
  "stale_days": 60,
  "min_median": 3,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price only from 3 co-ops.",
- "coops_total": 3,
- "coops_current": 3,
+ "coops_total": 4,
+ "coops_current": 4,
  "states": {
-  "KS": 3
+  "KS": 4
  },
  "summary": [
   {
    "key": "anhydrous",
    "name": "Anhydrous ammonia",
    "symbol": "82-0-0",
-   "n": 3,
-   "median": 830.0,
+   "n": 4,
+   "median": 832.1,
    "low": 817.0,
    "high": 965.0,
-   "oldest": "2026-10-01",
+   "oldest": "2026-09-24",
    "newest": "2026-10-06",
    "undated": 0,
    "coops": [
     "tworivers-ks",
     "mccune-ks",
-    "mulvane-ks"
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
    ],
    "far": []
   },
@@ -32,17 +33,18 @@
    "key": "urea",
    "name": "Urea",
    "symbol": "46-0-0",
-   "n": 3,
-   "median": 630.0,
+   "n": 4,
+   "median": 622.98,
    "low": 608.0,
    "high": 840.0,
-   "oldest": "2026-10-01",
+   "oldest": "2026-09-24",
    "newest": "2026-10-06",
    "undated": 0,
    "coops": [
     "tworivers-ks",
     "mccune-ks",
-    "mulvane-ks"
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
    ],
    "far": [
     "mulvane-ks"
@@ -52,17 +54,34 @@
    "key": "uan28",
    "name": "UAN 28%",
    "symbol": "28-0-0",
-   "n": 3,
-   "median": 427.5,
+   "n": 4,
+   "median": 415.33,
    "low": 400.0,
    "high": 490.0,
-   "oldest": "2026-10-01",
+   "oldest": "2026-09-24",
    "newest": "2026-10-06",
    "undated": 0,
    "coops": [
     "tworivers-ks",
     "mccune-ks",
-    "mulvane-ks"
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "n": 1,
+   "median": null,
+   "low": 451.05,
+   "high": 451.05,
+   "oldest": "2026-09-24",
+   "newest": "2026-09-24",
+   "undated": 0,
+   "coops": [
+    "farmerscoop-columbus-ks"
    ],
    "far": []
   },
@@ -70,17 +89,18 @@
    "key": "dap",
    "name": "DAP",
    "symbol": "18-46-0",
-   "n": 3,
-   "median": 921.5,
+   "n": 4,
+   "median": 928.77,
    "low": 820.0,
    "high": 970.0,
-   "oldest": "2026-10-06",
+   "oldest": "2026-09-24",
    "newest": "2026-10-06",
    "undated": 1,
    "coops": [
     "tworivers-ks",
     "mccune-ks",
-    "mulvane-ks"
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
    ],
    "far": []
   },
@@ -105,17 +125,34 @@
    "key": "potash",
    "name": "Potash",
    "symbol": "0-0-60",
-   "n": 3,
-   "median": 465.5,
+   "n": 4,
+   "median": 470.4,
    "low": 460.0,
    "high": 500.0,
-   "oldest": "2026-10-01",
+   "oldest": "2026-09-24",
    "newest": "2026-10-06",
    "undated": 0,
    "coops": [
     "tworivers-ks",
     "mccune-ks",
-    "mulvane-ks"
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "ams",
+   "name": "AMS",
+   "symbol": "21-0-0-24S",
+   "n": 1,
+   "median": null,
+   "low": 509.25,
+   "high": 509.25,
+   "oldest": "2026-09-24",
+   "newest": "2026-09-24",
+   "undated": 0,
+   "coops": [
+    "farmerscoop-columbus-ks"
    ],
    "far": []
   },
@@ -416,7 +453,7 @@
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-15T23:50:20Z",
+   "fetched": "2026-10-15T23:52:14Z",
    "ok": true,
    "note": null
   },
@@ -529,7 +566,7 @@
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-15T23:50:20Z",
+   "fetched": "2026-10-15T23:52:14Z",
    "ok": true,
    "note": null
   },
@@ -719,7 +756,255 @@
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-15T23:50:20Z",
+   "fetched": "2026-10-15T23:52:14Z",
+   "ok": true,
+   "note": null
+  },
+  {
+   "id": "farmerscoop-columbus-ks",
+   "name": "Farmers Coop",
+   "town": "Columbus",
+   "state": "KS",
+   "url": "https://www.farmerscoop.coop/agronomy",
+   "source_url": "https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-9-24.pdf",
+   "layout": "pdf-sheet",
+   "cash_label": "3% cash pickup",
+   "posted": "2026-09-24",
+   "rows": [
+    {
+     "product": "dap",
+     "raw": "DAP",
+     "prices": {
+      "list": 965.0,
+      "cash_pickup": 936.05
+     },
+     "cash": 936.05,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 48.25,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "urea",
+     "raw": "UREA",
+     "prices": {
+      "list": 635.0,
+      "cash_pickup": 615.95
+     },
+     "cash": 615.95,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.69,
+     "cwt": 31.75,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "potash",
+     "raw": "POTASH",
+     "prices": {
+      "list": 490.0,
+      "cash_pickup": 475.3
+     },
+     "cash": 475.3,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 24.5,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "9-23-30",
+     "prices": {
+      "list": 727.5,
+      "cash_pickup": 705.68
+     },
+     "cash": 705.68,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 36.38,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "KMAG",
+     "prices": {
+      "list": 575.0,
+      "cash_pickup": 557.75
+     },
+     "cash": 557.75,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 28.75,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "POLY 4",
+     "prices": {
+      "list": 450.0,
+      "cash_pickup": 436.5
+     },
+     "cash": 436.5,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 22.5,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "ams",
+     "raw": "AMS 21-0-0-24",
+     "prices": {
+      "list": 525.0,
+      "cash_pickup": 509.25
+     },
+     "cash": 509.25,
+     "cash_basis": "cash_pickup",
+     "per_unit": null,
+     "cwt": 26.25,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "anhydrous",
+     "raw": "ANHYDROUS",
+     "prices": {
+      "list": 860.0,
+      "cash_pickup": 834.2
+     },
+     "cash": 834.2,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.52,
+     "cwt": 43.0,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "uan28",
+     "raw": "28%",
+     "prices": {
+      "list": 415.63,
+      "cash_pickup": 403.16
+     },
+     "cash": 403.16,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.74,
+     "cwt": 20.78,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "uan32",
+     "raw": "32%",
+     "prices": {
+      "list": 465.0,
+      "cash_pickup": 451.05
+     },
+     "cash": 451.05,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.73,
+     "cwt": 23.25,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "28-0-0-5",
+     "prices": {
+      "list": 470.0,
+      "cash_pickup": 455.9
+     },
+     "cash": 455.9,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.84,
+     "cwt": 23.5,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 21,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "SUPERU",
+     "prices": {
+      "list": 800.0,
+      "cash_pickup": 776.0
+     },
+     "cash": 776.0,
+     "cash_basis": "cash_pickup",
+     "per_unit": 0.87,
+     "cwt": 40.0,
+     "date": "2026-09-24",
+     "date_from": "page",
+     "date_text": null,
+     "notes": [],
+     "flags": [
+      "per-unit figure 0.870 does not match any ton price"
+     ],
+     "age_days": 21,
+     "stale": false
+    }
+   ],
+   "dropped": [],
+   "problems": [],
+   "fetched": "2026-10-15T23:52:14Z",
    "ok": true,
    "note": null
   }
