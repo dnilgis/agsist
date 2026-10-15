@@ -184,3 +184,47 @@ test("storage: at 390 px the table fits with no sideways scroll", { skip }, asyn
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---------------- /foreign-land ----------------
+ *   - the state label reads the last five filing years, not since 2010:
+ *     Iowa peaked at 554,032 ac in 2020 and is 509,583 in 2024, so it is not
+ *     "GROWING FAST" even though it is +193% since 2010
+ *   - the card says AFIDA counts 10+ year leases (wind among them) and that
+ *     the filings do not split owned from leased; Iowa says most is leases
+ */
+const FL = read("foreign-land.html");
+const verdicts = (() => {
+  const a = FL.indexOf("  var LEASE_NOTE");
+  const b = FL.indexOf("  fetch('/data/afida/county.json'");
+  assert.ok(a > 0 && b > a, "LEASE_NOTE and buildVerdicts found");
+  const A2F = { IA: "Iowa", TX: "Texas", ND: "North Dakota", ME: "Maine", WI: "Wisconsin" };
+  return new Function("__A2F", FL.slice(a, b) + "; return buildVerdicts;")(A2F);
+})();
+const plain = (h) => h.replace(/<[^>]+>/g, "");
+
+test("foreign-land: Iowa is labeled on recent years, with its 2020 peak and the since-2010 number", () => {
+  const v = verdicts(JSON.parse(read("data/afida/county.json")));
+  assert.equal(v.IA.word, "HOLDING STEADY SINCE 2020");
+  const s = plain(v.IA.sent);
+  assert.match(s, /510k acres/);
+  assert.match(s, /down 8% from its 2020 peak/);
+  assert.match(s, /up 193% since 2010/);
+  assert.match(s, /long-term leases, mostly for wind turbines/);
+  assert.match(plain(v.TX.sent), /AFIDA counts leases of 10 years or more \(wind turbine leases among them\) as holdings; these filings do not split owned from leased\./);
+});
+
+test("foreign-land: the label follows the last five years in a made-up state", () => {
+  const c = (y) => ({ "1": { st: "Wisconsin", y } });
+  // doubled since 2010, flat since 2020: steady, not growing fast
+  assert.equal(verdicts(c({ 2010: 100, 2020: 200, 2022: 205, 2024: 210 })).WI.word, "HOLDING STEADY SINCE 2020");
+  // up 60% in the window: growing fast
+  assert.equal(verdicts(c({ 2010: 100, 2020: 100, 2024: 160 })).WI.word, "GROWING FAST SINCE 2020");
+  // the window starts at the first year it has: 2021 missing, 2022 used
+  assert.equal(verdicts(c({ 2010: 100, 2022: 100, 2024: 80 })).WI.word, "SHRINKING SINCE 2022");
+  // a peak outside the window is named
+  assert.match(plain(verdicts(c({ 2010: 100, 2018: 400, 2020: 200, 2024: 200 })).WI.sent), /down 50% from its 2018 peak/);
+});
+
+test("foreign-land: a visible byline", () => {
+  assert.match(FL, BYLINE);
+});
