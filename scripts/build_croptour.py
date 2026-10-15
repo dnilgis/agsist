@@ -1349,7 +1349,14 @@ def bake_faq(html, st):
     assert "accurate" in q["name"].lower(), "first FAQ is not the accuracy question"
     q["acceptedAnswer"]["text"] = render_faq_answer(st)
     body = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    return html[:m.start()] + m.group(1) + body + m.group(3) + html[m.end():]
+    html = html[:m.start()] + m.group(1) + body + m.group(3) + html[m.end():]
+    # The visible answer gets the same text. It used to be left to hand edits,
+    # and one edit to the page copy (not the JSON-LD) put the two out of step,
+    # which is exactly what render_faq_html.py --check catches.
+    vis = re.compile(r'(<summary>' + re.escape(q["name"]) + r'</summary><div class="agf-a">)'
+                     r'(.*?)(</div>)', re.S)
+    assert len(vis.findall(html)) == 1, "visible accuracy FAQ answer missing or doubled"
+    return vis.sub(lambda v: v.group(1) + esc(q["acceptedAnswer"]["text"]) + v.group(3), html)
 
 
 def render_faq_answer(st):
