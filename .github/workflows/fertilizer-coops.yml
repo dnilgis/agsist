@@ -52,8 +52,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install pypdf (fallback if pdftotext is missing)
-        run: pip install pypdf==6.20.1
+      # The price sheet parser reads pdftotext -layout columns; pypdf is the
+      # fallback only.
+      - name: Install pdftotext and pypdf
+        run: |
+          command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
+          pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_coop_fert.py --selftest
       - name: Discover co-ops that post fertilizer prices

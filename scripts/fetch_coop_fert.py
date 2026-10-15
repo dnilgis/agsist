@@ -838,7 +838,7 @@ def selftest():
     fails = []
 
     def ck(name, cond):
-        print(("  ok   " if cond else "  FAIL ") + name)
+        print(("  ok   " if cond else "::error::coop-fert selftest FAIL ") + name)
         if not cond:
             fails.append(name)
 
