@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 86,
- "with_known_cadence": 86,
+ "count": 87,
+ "with_known_cadence": 87,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -834,6 +834,29 @@
    "max_gap_hours": 101.0,
    "quiet": "weekly",
    "why_quiet": "USDA AMS posts the Illinois Production Cost Report every other week, usually on a Friday. Its workflow checks Friday and Monday."
+  },
+  {
+   "path": "data/fertilizer-coops.json",
+   "pages": [
+    "fertilizer.html"
+   ],
+   "written_by": [
+    "Fertilizer co-op posted prices"
+   ],
+   "touched_by": [
+    "Fertilizer co-op posted prices"
+   ],
+   "cadence": "1 launch weekdays at about 8am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 13 * * 1-5"
+   ],
+   "max_gap_hours": 72.0,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/fertilizer.json",

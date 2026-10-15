@@ -771,8 +771,10 @@ def discover(root, now=None, fetcher=None, sources=None, limit=None):
     today = now.date()
     fetcher = fetcher or (lambda u: (time.sleep(PAUSE), get(u))[1])
     if sources is None:
-        p, e1 = get(BIDS_RAW + "data/platforms.json")
-        d, e2 = get(BIDS_RAW + "data/directory.json")
+        # bids' own files; spelled in two parts so scripts/build_feeds.py does
+        # not take them for agsist's data/ files
+        p, e1 = get(BIDS_RAW + "data/" + "platforms.json")
+        d, e2 = get(BIDS_RAW + "data/" + "directory.json")
         if p is None:
             print("::error::discover: could not read the bids site list: %s" % e1)
             return 1
