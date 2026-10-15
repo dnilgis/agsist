@@ -24,7 +24,9 @@
   var ALIAS = { soybean: 'soybeans', beans: 'soybeans', soy: 'soybeans' };
   var CROP_WORD = { corn: 'corn', soybeans: 'soybeans', wheat: 'wheat' };
   var MAX_TRY = 6;          // elevators read for their later months, nearest first
-  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, noWindow: false, pick: null };
+  var MAX_MORE = 6;         // read further out when none of those posts one
+  var FAR_MILES = 150;      // how far out that second look goes
+  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, noWindow: false, pick: null, farther: null, read: [] };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -99,27 +101,47 @@
   /* Nearest first, one row per elevator for this crop. An elevator whose
      best posted bid sits in a later period than its nearest one is read
      first: it is known to post a later month. */
-  function candidates(snap, crop) {
+  function candidates(snap, crop, skip, max) {
     var seen = {}, out = [];
     (snap && snap.bids || []).forEach(function (r) {
-      if (r.crop !== crop || !r.place || seen[r.place]) return;
+      if (r.crop !== crop || !r.place || seen[r.place] || (skip && skip[r.place])) return;
       seen[r.place] = 1;
       out.push(r);
     });
     var later = out.filter(function (r) { return r.bestPeriod && r.period && String(r.bestPeriod).slice(0, 7) > String(r.period).slice(0, 7); });
     var rest = out.filter(function (r) { return later.indexOf(r) < 0; });
-    return later.concat(rest).slice(0, MAX_TRY).sort(function (a, b) { return (a.distance || 0) - (b.distance || 0); });
+    return later.concat(rest).slice(0, max || MAX_TRY).sort(function (a, b) { return (a.distance || 0) - (b.distance || 0); });
   }
+  function hasLater(x) { return !!(x && x.model && !x.model.failed && x.model.later && x.model.later.length); }
+  function readModels(cs) {
+    return Promise.all(cs.map(function (r) {
+      return SS.modelFor({ place: r.place, crop: state.crop, commodity: r.commodity, cropName: CROP_WORD[state.crop] })
+        .then(function (m) { return { row: r, model: m }; }, function () { return { row: r, model: { failed: true } }; });
+    }));
+  }
+  /* The nearest boards first (within the network's 75-mile hauling radius).
+     When none of them posts a later month, look out to FAR_MILES and read
+     the nearest few not yet read, those known to post a later month first,
+     so the page can name the nearest elevator that does and how far off it
+     is, or say how far out it looked. -> {list, farther, read} */
   function loadElevators(seq) {
-    if (!state.zip || !NET || !SS.modelFor) return Promise.resolve([]);
+    if (!state.zip || !NET || !SS.modelFor) return Promise.resolve({ list: [], farther: null, read: [] });
     return NET.snapshotForZip(state.zip).then(function (snap) {
       if (seq !== state.seq) return null;
       var cs = candidates(snap, state.crop);
-      return Promise.all(cs.map(function (r) {
-        return SS.modelFor({ place: r.place, crop: state.crop, commodity: r.commodity, cropName: CROP_WORD[state.crop] })
-          .then(function (m) { return { row: r, model: m }; }, function () { return { row: r, model: { failed: true } }; });
-      }));
-    }).catch(function () { return []; });
+      return readModels(cs).then(function (ms) {
+        if (seq !== state.seq) return null;
+        if (ms.some(hasLater) || !cs.length) return { list: ms, farther: null, read: ms };
+        var skip = {};
+        cs.forEach(function (r) { skip[r.place] = 1; });
+        return NET.snapshotForZip(state.zip, { radiusMi: FAR_MILES }).then(function (far) {
+          return readModels(candidates(far || snap, state.crop, skip, MAX_MORE));
+        }).then(function (more) {
+          var f = more.filter(hasLater).sort(function (a, b) { return (a.row.distance || 0) - (b.row.distance || 0); })[0] || null;
+          return { list: ms, farther: f, read: ms.concat(more) };
+        });
+      });
+    }).catch(function () { return { list: [], farther: null, read: [] }; });
   }
 
   /* ── the board ─────────────────────────────────────────────────────── */
@@ -133,15 +155,15 @@
   /* The storage window comes from the contracts on file (storesell.js
      carryWindow): null when fewer than two of this crop year's contracts
      still trade, e.g. corn from mid-May to mid-July. */
+  /* Storage and interest count from this month once the crop is in the
+     bin (storesell.js boardHold), the way the elevator mode counts from its
+     spot month; the carry is still contract to contract. */
   function futuresModel(prices, crop) {
-    var q = prices && prices.quotes || {}, w = SS.carryWindow(crop, q);
-    if (!w) return null;
-    var a = q[w[0]], b = q[w[1]];
-    if (!a || !b || a.close == null || b.close == null) return null;
-    var fa = SS.futuresMonth(a.ticker), fb = SS.futuresMonth(b.ticker);
-    if (!fa || !fb) return null;
-    return { from: fa, to: fb, spot: a.close / 100, carry: (b.close - a.close) / 100,
-             months: SS.monthsApart(fa.key, fb.key), date: a.close_date || '' };
+    return SS.boardHold(crop, prices && prices.quotes || {});
+  }
+  /* "Oct '26 to Jul '27, 9 months" for the storage count. */
+  function spanText(fm) {
+    return fm.startLabel + ' to ' + fm.to.label + ', ' + fm.months + ' month' + (fm.months === 1 ? '' : 's');
   }
 
   /* ── drawing ───────────────────────────────────────────────────────── */
@@ -166,7 +188,8 @@
       where.innerHTML = 'At <b>' + esc(nameOf(top.row)) + '</b>' + (top.row.distance != null ? (top.row.distance < 1 ? ', under a mile from ' : ', ' + Math.round(top.row.distance) + ' miles from ') + esc(state.zip) : '') +
         ': its ' + esc(SS.shortMon(m.spot.start)) + ' bid is ' + esc(SS.cashQ(m.spot.cash)) + ' and its ' + esc(SS.shortMon(p.key)) + ' bid is ' + esc(SS.cashQ(p.cash)) + '.' +
         (m.posted ? ' Posted ' + esc(ctTime(m.posted)) + '.' : '');
-      note.textContent = 'Net = the later posted bid minus the nearest one, less ' + SS.costNote(inp, p.months, m.spot.cash).replace(/\.$/, '') + '. Call the elevator before you count on a bid.';
+      var lk = SS.lockNote('posted', n, SS.shortMon(p.key));
+      note.textContent = 'Net = the later posted bid minus the nearest one, less ' + SS.costNote(inp, p.months, m.spot.cash).replace(/\.$/, '') + '. ' + (lk ? lk + ' ' : '') + 'Call the elevator before you count on a bid.';
       drawTable(m, p, inp);
       drawOthers(list.slice(1), inp);
       drawMath(m.spot.cash, p.carry, p.months, inp, SS.shortMon(m.spot.start) + ' bid', SS.shortMon(p.key) + ' bid');
@@ -177,11 +200,15 @@
         var nf = SS.carryNet(fm.spot, fm.carry, fm.months, inp).net;
         ans.textContent = SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp });
         ans.className = 'sos-line ' + tone(nf);
-        where.textContent = (state.zip ? (state.models === null ? 'Reading the elevators near ' + state.zip + '… ' : 'No elevator we read near ' + state.zip + ' posts a later ' + CROP_WORD[state.crop] + ' bid right now, so this is the board. ') : 'Enter your ZIP for your elevator’s own posted bids. Until then, this is the board. ') +
-          fm.from.label + ' to ' + fm.to.label + ' ' + CROP_WORD[state.crop] + ' futures, ' + (fm.date ? 'closes of ' + fm.date : 'latest closes') + '.';
+        where.innerHTML = esc(state.zip ? (state.models === null ? 'Reading the elevators near ' + state.zip + '… ' : noLaterText()) : 'Enter your ZIP for your elevator’s own posted bids. Until then, this is the board. ') +
+          esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + CROP_WORD[state.crop] + ' futures, ' + (fm.date ? 'closes of ' + fm.date : 'latest closes') + '. ') +
+          esc(fm.fromToday ? 'Storage and interest from now: ' + spanText(fm) + '. A bid for delivery now is priced off ' + fm.from.label + ', so the months until then earn no carry but still cost you.'
+                           : 'Storage and interest ' + spanText(fm) + '.') +
+          fartherText();
         note.textContent = 'This assumes your basis stays where it is today, so the cash carry equals the futures spread. An elevator\u2019s posted carry can be more or less than the board\u2019s. ' +
-          'Interest is figured on the ' + fm.from.label + ' futures price, ' + SS.cashQ(fm.spot) + '; on a lower cash price it would be a little less.';
-        drawMath(fm.spot, fm.carry, fm.months, inp, fm.from.label + ' futures', fm.to.label + ' futures');
+          'Interest is figured on the ' + fm.from.label + ' futures price, ' + SS.cashQ(fm.spot) + '; on a lower cash price it would be a little less.' +
+          (SS.lockNote('futures', nf, fm.to.label) ? ' ' + SS.lockNote('futures', nf, fm.to.label) : '');
+        drawMath(fm.spot, fm.carry, fm.months, inp, fm.from.label + ' futures', fm.to.label + ' futures', spanText(fm));
       } else {
         ans.textContent = state.zip && state.models === null ? 'Reading the elevators near ' + state.zip + '…' : state.noWindow ? noWindowText() : 'Prices did not load. Try again in a minute.';
         ans.className = 'sos-line';
@@ -215,6 +242,26 @@
         '<br><span class="' + tone(n) + '">' + esc(lineFor(m, p, inp)) + '</span> <span class="sos-mo">' + esc(SS.shortMon(m.spot.start)) + ' ' + esc(SS.cashQ(m.spot.cash)) + ' → ' + esc(SS.shortMon(p.key)) + ' ' + esc(SS.cashQ(p.cash)) + '</span></li>';
     }).join('');
   }
+  /* After "no elevator we read posts a later bid": the nearest one further
+     out that does, or how far out the page looked. HTML, escaped. */
+  function fartherText() {
+    if (!state.zip || state.models === null) return '';
+    var f = state.farther;
+    if (f) {
+      var inp = inputs(), p = SS.pickPeriod(f.model, inp, null);
+      return ' <span class="sos-far">The nearest elevator we found that does is <b>' + esc(nameOf(f.row)) + '</b>' +
+        (f.row.distance != null ? ', ' + Math.round(f.row.distance) + ' miles away' : '') + ': ' + esc(lineFor(f.model, p, inp)) + '</span>';
+    }
+    var ds = state.read.map(function (x) { return x.row.distance; }).filter(function (d) { return d != null && isFinite(d); });
+    if (!ds.length) return '';
+    return esc(' We read the boards of the ' + state.read.length + ' nearest elevator' + (state.read.length === 1 ? '' : 's') + ', out to ' + Math.round(Math.max.apply(null, ds)) + ' miles.');
+  }
+  function noLaterText() {
+    var n = state.models ? state.models.length : 0, what = ' a later ' + CROP_WORD[state.crop] + ' bid right now, so this is the board. ';
+    if (state.farther && n > 1) return 'None of the ' + n + ' elevators nearest ' + state.zip + ' posts' + what;
+    if (state.farther && n === 1) return 'The elevator nearest ' + state.zip + ' does not post' + what;
+    return 'No elevator we read near ' + state.zip + ' posts' + what;
+  }
   function noWindowText(short) {
     return 'No board carry to show right now: fewer than two ' + CROP_WORD[state.crop] + ' contracts in this crop year still trade.' +
       (state.zip || short ? '' : ' Enter your ZIP for your elevator’s own posted bids.');
@@ -223,18 +270,18 @@
     var el = $('sos-futures');
     if (!fm) { el.textContent = state.noWindow ? noWindowText(true) : 'Futures prices did not load.'; return; }
     el.innerHTML = '<b>' + esc(SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp })) + '</b> ' +
-      esc(fm.from.label + ' ' + SS.cashQ(fm.spot) + ' to ' + fm.to.label + ' ' + SS.cashQ(fm.spot + fm.carry) + ', ' + fm.months + ' months. ') +
+      esc(fm.from.label + ' ' + SS.cashQ(fm.spot) + ' to ' + fm.to.label + ' ' + SS.cashQ(fm.spot + fm.carry) + '; storage and interest ' + spanText(fm) + '. ') +
       'Futures carry assumes your basis does not change; your elevator’s posted later bids are what it actually pays. ' +
       '<a href="/' + (state.crop === 'soybeans' ? 'soybean' : state.crop) + '-futures-prices">' + esc(CROP_WORD[state.crop].replace(/^./, function (c) { return c.toUpperCase(); })) + ' futures →</a>';
   }
   function money(v) { return '$' + Math.abs(v).toFixed(4).replace(/(\.\d\d)00$/, '$1'); }
-  function drawMath(spot, carry, months, inp, a, b) {
+  function drawMath(spot, carry, months, inp, a, b, span) {
     var el = $('sos-math');
     if (spot == null) { el.textContent = ''; return; }
     var n = SS.carryNet(spot, carry, months, inp);
     el.textContent = [
       'Carry (' + b + ' minus ' + a + ')        ' + (carry < 0 ? '−' : '+') + money(carry),
-      '− storage ' + money(inp.cost) + ' × ' + months + ' mo          −' + money(n.storage),
+      '− storage ' + money(inp.cost) + ' × ' + months + ' mo' + (span ? ' (' + span.replace(/, \d+ months?$/, '') + ')' : '') + '          −' + money(n.storage),
       '− interest ' + money(spot) + ' × ' + inp.rate + '% × ' + months + '/12   −' + money(n.interest),
       '− shrink ' + inp.shrink + '% × ' + money(spot + carry) + '        −' + money(n.shrink),
       '= ' + (n.net < 0 ? '−' : '+') + money(n.net) + ' a bushel, rounded to ' + SS.netText(n.net)
@@ -250,12 +297,17 @@
   function run() {
     var seq = ++state.seq;
     state.models = state.zip ? null : [];
+    state.farther = null; state.read = [];
     state.pick = null;
     pushUrl();
     loadFutures().then(function (p) { if (seq !== state.seq) return; state.futures = futuresModel(p, state.crop);
       state.noWindow = !!(p && p.quotes) && !SS.carryWindow(state.crop, p.quotes); render(); });
     if (!state.zip) return;
-    loadElevators(seq).then(function (ms) { if (seq !== state.seq || ms === null) return; state.models = ms || []; render(); });
+    loadElevators(seq).then(function (res) {
+      if (seq !== state.seq || res === null) return;
+      state.models = res.list || []; state.farther = res.farther || null; state.read = res.read || [];
+      render();
+    });
   }
   function init() {
     if (!SS || !$('sos-answer')) return;
