@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Grain EMC calculator: will running fans dry or wet your grain right now | AGSIST</title>
+  <meta name="description" content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/grain-emc">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Will running fans dry or wet your grain right now?">
+  <meta property="og:description"  content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+  <meta property="og:url"          content="https://agsist.com/grain-emc">
+  <meta name="twitter:title"       content="Will running fans dry or wet your grain right now?">
+  <meta name="twitter:description" content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preconnect" href="https://api.open-meteo.com">
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .emc{max-width:760px;margin:0 auto;padding:1rem 1rem 4rem}
+    .emc .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .emc h1{font-size:clamp(1.4rem,4.4vw,2rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .emc .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .8rem}
+    .emc h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
+    .emc p,.emc li{font-size:.98rem;line-height:1.65;color:var(--text-dim)}
+    .emc p{margin:0 0 1rem}
+    .emc a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .emc b{color:var(--text)}
+    .emc-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;margin:0 0 .7rem}
+    .emc-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .emc-seg button{min-height:42px;padding:0 1rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-weight:700;cursor:pointer}
+    .emc-seg button+button{border-left:1px solid var(--border)}
+    .emc-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .emc-num{display:inline-flex;align-items:center;gap:.35rem;font-size:.86rem;color:var(--text-muted)}
+    .emc-num input,.emc-in input{width:4.6rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .emc-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .8rem}
+    .emc-answer.v-dry{border-left-color:var(--green)}
+    .emc-answer.v-close{border-left-color:var(--gold)}
+    .emc-answer.v-wet{border-left-color:var(--red)}
+    .emc-v{display:block;font-size:clamp(1.7rem,7.4vw,2.3rem);font-weight:800;line-height:1.1;color:var(--text);margin:0 0 .35rem}
+    .v-dry .emc-v{color:var(--green)} .v-close .emc-v{color:var(--gold)} .v-wet .emc-v{color:var(--red)}
+    .emc-answer p{margin:.3rem 0 0;font-size:.95rem;line-height:1.5;color:var(--text)}
+    .emc-answer p.fine{font-size:.82rem;color:var(--text-muted)}
+    .emc-loc{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.2rem 0 0}
+    .emc-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+    .emc-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .emc-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .emc-link{background:none;border:0;padding:0;color:var(--link,var(--brand));text-decoration:underline;font:inherit;font-size:.85rem;cursor:pointer;min-height:32px}
+    .emc-status{font-size:.86rem;color:var(--text-muted);margin:.4rem 0 0;min-height:1.2em}
+    .emc-status.err{color:var(--red)}
+    .emc-strip{list-style:none;display:flex;gap:1px;margin:1.3rem 0 .3rem;padding:0;height:34px;position:relative}
+    .emc-strip li{flex:1 1 0;min-width:0;background:var(--border);border-radius:2px;position:relative;cursor:pointer;margin:0}
+    .emc-strip li.v-dry{background:var(--green)} .emc-strip li.v-close{background:var(--gold)} .emc-strip li.v-wet{background:var(--red);opacity:.75}
+    .emc-strip li.day{margin-left:3px}
+    .emc-strip li.best::after{content:"";position:absolute;left:0;right:-1px;bottom:-7px;height:3px;background:var(--text)}
+    .emc-strip li.cool::before{content:"";position:absolute;left:50%;top:-6px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#4aa3ff}
+    .emc-strip .dl{position:absolute;top:-1.15rem;left:0;font-size:.68rem;font-weight:700;color:var(--text-muted);white-space:nowrap}
+    .emc-key{display:flex;flex-wrap:wrap;gap:.25rem .9rem;margin:.7rem 0 .2rem;font-size:.78rem;color:var(--text-muted)}
+    .emc-key i{display:inline-block;width:.75rem;height:.75rem;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
+    .emc-tip{font-size:.86rem;color:var(--text);min-height:2.6em;margin:.2rem 0 0}
+    .emc-share{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0 0}
+    .emc-share p{flex:1 1 100%;margin:0;font-size:.86rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+    .emc details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .emc details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+    .emc details.box[open]>summary{margin-bottom:.3rem}
+    .emc-in{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin:.3rem 0 .7rem}
+    .emc-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
+    .emc-mout{border-left:4px solid var(--border);padding:.5rem .8rem;margin:0 0 .8rem;font-size:.95rem;color:var(--text);background:var(--bg);border-radius:0 8px 8px 0}
+    .emc-mout.v-dry{border-left-color:var(--green)} .emc-mout.v-close{border-left-color:var(--gold)} .emc-mout.v-wet{border-left-color:var(--red)}
+    .emc-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .8rem}
+    .emc-t th,.emc-t td{padding:.45rem .55rem;border-bottom:1px solid var(--border);text-align:right}
+    .emc-t th:first-child{text-align:left}
+    .emc-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .emc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .emc .eq{display:block;overflow-x:auto;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text);white-space:pre}
+    .emc .src{font-size:.84rem;color:var(--text-muted)}
+    .emc-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .emc-faq details:last-child{border-bottom:1px solid var(--border)}
+    .emc-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .emc-faq details p{margin:.6rem 0 .2rem}
+    .emc .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
+    @media print{#site-header,#site-footer,.emc-ctl,.emc-loc,.emc-share button,.breadcrumb,.emc-faq,.emc-rel,details.box:not([open]){display:none!important}.emc-answer{break-inside:avoid}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/grain-emc#app","name":"Grain EMC calculator","url":"https://agsist.com/grain-emc","description":"Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-15","dateModified":"2026-10-15","inLanguage":"en-US","image":"https://agsist.com/img/og/grain-emc.jpg"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain EMC","item":"https://agsist.com/grain-emc"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is grain equilibrium moisture content (EMC)?","acceptedAnswer":{"@type":"Answer","text":"It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3% by the ASABE equation this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in."}},{"@type":"Question","name":"When should I run aeration fans?","acceptedAnswer":{"@type":"Answer","text":"To dry, run them when the air's EMC is under your target moisture. On this page those are the green hours. To cool, run them when outside air is 10 to 15 F cooler than the grain, which is NDSU Extension's rule, and skip hours that would wet it. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain."}},{"@type":"Question","name":"What humidity is too high to run fans on corn?","acceptedAnswer":{"@type":"Answer","text":"It depends on the temperature. For corn with a 15.5% target, air dries it to 14.5% or lower while humidity stays under about 64% at 40 F, 68% at 50 F and 71% at 60 F. Above about 71% at 40 F, 74% at 50 F and 77% at 60 F, the air pushes corn over 15.5%. The table on this page gives the limit at every 10 degrees for your own target."}},{"@type":"Question","name":"Does fan heat help dry grain?","acceptedAnswer":{"@type":"Answer","text":"Some. The fan warms the air on its way into the bin, and warmer air with the same water in it has a lower relative humidity. I do not know your fan, so the page starts at 0 F. If you know your plenum runs a few degrees over outside air, type that in and the page works out the new humidity: RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature."}},{"@type":"Question","name":"How accurate is the EMC number?","acceptedAnswer":{"@type":"Answer","text":"The equations are published ASABE fits, but grain varies by hybrid and history, and published tables for the same air do not agree. For corn at 60 F and 70% humidity this page says 14.2%, Minnesota Extension's table says 14.5% and Arkansas Extension's says 15.7%. That is why I only call an hour a drying hour when the EMC is at least 1 point under your target."}},{"@type":"Question","name":"Why are soybeans not on the calculator?","acceptedAnswer":{"@type":"Answer","text":"I could not read the soybean constants in the ASABE standard at a source I trust, and a guessed constant would give you a confident wrong answer. Corn and wheat are here because I checked their equations against the standard and against extension tables. Soybeans go on when I can check theirs."}},{"@type":"Question","name":"Which wheat does the wheat answer fit?","acceptedAnswer":{"@type":"Answer","text":"The constants are the ASAE wheat set, and they match the University of Minnesota Extension wheat table to within a tenth of a point. Soft red winter wheat runs drier: Arkansas Extension lists 13.9% at 60 F and 70% humidity, where this equation says 15.2%. If you grow soft red, the page will call some hours wetting that would actually dry your wheat a little."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="emc">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Grain EMC</nav>
+      <h1>Will running fans dry your grain right now, or wet it?</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+
+      <div class="emc-ctl">
+        <span class="emc-seg" role="group" aria-label="Grain"><button type="button" data-grain="corn" aria-pressed="true">Corn</button><button type="button" data-grain="wheat" aria-pressed="false">Wheat</button></span>
+        <label class="emc-num">Target <input id="emc-target" type="number" inputmode="decimal" step="0.5" min="8" max="25" value="15.5" aria-label="Target moisture, percent wet basis">%</label>
+        <label class="emc-num">Fan adds <input id="emc-fan" type="number" inputmode="decimal" step="1" min="0" max="30" value="0" aria-label="Degrees the fan warms the air, F">F</label>
+      </div>
+
+      <div id="emc-answer" class="emc-answer" aria-live="polite">
+        <span id="emc-verdict" class="emc-v">Where are your bins?</span>
+        <div id="emc-results" hidden>
+          <p id="emc-now"></p>
+          <p id="emc-best"></p>
+          <p id="emc-inv"></p>
+        </div>
+        <div id="emc-locbox" class="emc-loc">
+          <input id="emc-zip" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="ZIP code" aria-label="ZIP code">
+          <button type="button" id="emc-zipgo" class="emc-btn go">Check</button>
+          <button type="button" id="emc-geo" class="emc-btn">Use my location</button>
+        </div>
+        <p class="fine"><span id="emc-place"></span> <button type="button" id="emc-change" class="emc-link" hidden>Change location</button></p>
+        <p id="emc-status" class="emc-status" role="status"></p>
+        <noscript><p>The forecast check needs JavaScript. The equations and limits are under How the numbers are worked.</p></noscript>
+      </div>
+
+      <div id="emc-hours">
+        <ul id="emc-strip" class="emc-strip" aria-label="Next 72 hours, one bar an hour"></ul>
+        <div class="emc-key"><span><i style="background:var(--green)"></i>Dries</span><span><i style="background:var(--gold)"></i>Close call</span><span><i style="background:var(--red)"></i>Wets</span><span><i style="background:var(--border)"></i>No answer</span><span><i style="background:var(--text);height:3px;vertical-align:2px"></i>Best window</span></div>
+        <p id="emc-tip" class="emc-tip"></p>
+        <p id="emc-count" class="src"></p>
+        <p id="emc-asof" class="src"></p>
+        <div class="emc-share"><p id="emc-line"></p><button type="button" id="emc-copy" class="emc-btn">Copy the answer</button><button type="button" id="emc-print" class="emc-btn">Print</button></div>
+      </div>
+
+      <details class="box" id="emc-manual">
+        <summary>Type your own reading (plenum air, or your own gauge)</summary>
+        <div class="emc-in">
+          <label>Air temperature, F<input id="emc-mt" type="number" inputmode="decimal" step="1" placeholder="50"></label>
+          <label>Relative humidity, %<input id="emc-mrh" type="number" inputmode="decimal" step="1" placeholder="60"></label>
+        </div>
+        <p id="emc-mout" class="emc-mout"></p>
+        <p class="src">Uses the grain, target and fan heat set at the top. Works with no signal once the page has loaded. If you read the air in the plenum, leave fan heat at 0, since the fan's heat is already in the reading.</p>
+      </details>
+
+      <details class="box">
+        <summary>Highest humidity that still dries, by temperature</summary>
+        <p>For your <span data-gname>corn</span> target. Read your hygrometer against it: under the number, the fans help.</p>
+        <table class="emc-t"><thead><tr><th scope="col">Air</th><th scope="col">Holds at <span id="emc-rhcap1">15.5</span>%</th><th scope="col">Dries to <span id="emc-rhcap2">14.5</span>%</th></tr></thead><tbody id="emc-rhtab"></tbody></table>
+        <p class="src">"Holds" is the humidity where grain neither gains nor loses. The right column is a point under target, the margin I use to call an hour drying.</p>
+      </details>
+
+      <details class="box">
+        <summary>Cooling grain for storage</summary>
+        <p>To cool, run fans when outside air is 10 to 15 F cooler than the grain (NDSU Extension), and not on hours that wet it. For winter, NDSU says cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north of the state and 25 to 35 F in the south; Iowa State says 30 to 40 F; Nebraska says near or under 30 F in northern states and 40 F in southern ones.</p>
+        <div class="emc-in">
+          <label>Grain temperature now, F<input id="emc-gt" type="number" inputmode="decimal" step="1" placeholder="55"></label>
+          <label>Airflow, cfm per bushel<input id="emc-cfm" type="number" inputmode="decimal" step="0.05" placeholder="0.2"></label>
+        </div>
+        <p id="emc-cout" class="emc-mout"></p>
+        <p class="src">Fan hours for one cooling front: 15 divided by cfm per bushel, the rule of thumb Cornell Cooperative Extension gives. Doubling the airflow halves the time. A front is not done until it has come out the top of the grain, so check the top before you shut off.</p>
+      </details>
+
+      <details class="box">
+        <summary>How the numbers are worked</summary>
+        <p><b>Corn</b>: Modified Chung-Pfost equation with the shelled corn constants in ASABE Standard D245.6, <i>Moisture Relationships of Plant-based Agricultural Products</i> (2007), from Chen and Morey (1989). USDA-ARS uses the same constants for corn storage monitoring.</p>
+        <code class="eq">RH = exp( -A / (T + C) x exp(-B x M) )
+A = 374.34   B = 0.18662   C = 31.696</code>
+        <p><b>Wheat</b>: Modified Henderson equation with the ASAE D245.5 wheat constants. They reproduce the University of Minnesota Extension wheat table at 60 F (7.9, 11.0, 13.7 and 16.9% at 20, 40, 60 and 80% humidity) to within a tenth of a point.</p>
+        <code class="eq">1 - RH = exp( -K x (T + C) x M^N )
+K = 0.000023007   N = 2.2857   C = 55.815</code>
+        <p>RH is relative humidity as a decimal, T is air temperature in &deg;C, M is grain moisture in percent dry basis. The page shows wet basis, the number your moisture tester reads: wet = 100 x M / (100 + M).</p>
+        <p><b>Fan heat</b>: warming air does not add water, so its vapor pressure stays put and</p>
+        <code class="eq">RH at fan = RH outside x es(T outside) / es(T fan)
+es(T) = 6.1094 x exp( 17.625 x T / (T + 243.04) )   hPa, T in &deg;C</code>
+        <p class="src">Saturation vapor pressure from Alduchov and Eskridge (1996), <i>Journal of Applied Meteorology</i> 35:601. Example: 50 F at 80%, warmed 5 F, comes in at 55 F and 67%.</p>
+        <p><b>Limits</b>: I show numbers for air from 20 to 100 F and 20 to 90% humidity. Over 90% the page says the EMC is "over" the 90% value, which already wets any grain at a normal target; under 20% it says "under". Outside 20 to 100 F it shows nothing.</p>
+        <p><b>How sure</b>: published tables for the same corn air do not agree. Against this page:</p>
+        <table class="emc-t"><thead><tr><th scope="col">Corn, air</th><th scope="col">This page</th><th scope="col">Minnesota</th><th scope="col">Kentucky</th><th scope="col">Arkansas</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">40 F, 70%</th><td>15.3%</td><td>16.0%</td><td>16.2%</td><td>no row</td></tr>
+          <tr><th scope="row">50 F, 60%</th><td>13.3%</td><td>13.8%</td><td>13.8%</td><td>no row</td></tr>
+          <tr><th scope="row">60 F, 70%</th><td>14.2%</td><td>14.5%</td><td>no row</td><td>15.7%</td></tr>
+        </tbody></table>
+        <p class="src">The extension tables run wetter than the ASABE corn equation. So an hour counts as drying only when its EMC is at least 1 point under your target, and anything closer is a close call. "No row" means that table does not list that air. Sources: University of Minnesota Extension, <i>Managing stored grain with aeration</i> and <i>Natural-air corn drying</i>; University of Kentucky, <i>Equilibrium moisture content for grains</i>; University of Arkansas, FSA1074 and the Arkansas Corn Production Handbook.</p>
+        <p class="src">Weather: Open-Meteo hourly forecast of 2 m temperature and relative humidity for your point, fetched when you open the page. It is a forecast, so check a gauge before you commit a night of fan time.</p>
+      </details>
+
+      <h2 id="questions">Questions</h2>
+      <div class="emc-faq">
+        <details><summary>What is grain equilibrium moisture content (EMC)?</summary><p>It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3% by the ASABE equation this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in.</p></details>
+        <details><summary>When should I run aeration fans?</summary><p>To dry, run them when the air&#x27;s EMC is under your target moisture. On this page those are the green hours. To cool, run them when outside air is 10 to 15 F cooler than the grain, which is NDSU Extension&#x27;s rule, and skip hours that would wet it. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain.</p></details>
+        <details><summary>What humidity is too high to run fans on corn?</summary><p>It depends on the temperature. For corn with a 15.5% target, air dries it to 14.5% or lower while humidity stays under about 64% at 40 F, 68% at 50 F and 71% at 60 F. Above about 71% at 40 F, 74% at 50 F and 77% at 60 F, the air pushes corn over 15.5%. The table on this page gives the limit at every 10 degrees for your own target.</p></details>
+        <details><summary>Does fan heat help dry grain?</summary><p>Some. The fan warms the air on its way into the bin, and warmer air with the same water in it has a lower relative humidity. I do not know your fan, so the page starts at 0 F. If you know your plenum runs a few degrees over outside air, type that in and the page works out the new humidity: RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature.</p></details>
+        <details><summary>How accurate is the EMC number?</summary><p>The equations are published ASABE fits, but grain varies by hybrid and history, and published tables for the same air do not agree. For corn at 60 F and 70% humidity this page says 14.2%, Minnesota Extension&#x27;s table says 14.5% and Arkansas Extension&#x27;s says 15.7%. That is why I only call an hour a drying hour when the EMC is at least 1 point under your target.</p></details>
+        <details><summary>Why are soybeans not on the calculator?</summary><p>I could not read the soybean constants in the ASABE standard at a source I trust, and a guessed constant would give you a confident wrong answer. Corn and wheat are here because I checked their equations against the standard and against extension tables. Soybeans go on when I can check theirs.</p></details>
+        <details><summary>Which wheat does the wheat answer fit?</summary><p>The constants are the ASAE wheat set, and they match the University of Minnesota Extension wheat table to within a tenth of a point. Soft red winter wheat runs drier: Arkansas Extension lists 13.9% at 60 F and 70% humidity, where this equation says 15.2%. If you grow soft red, the page will call some hours wetting that would actually dry your wheat a little.</p></details>
+      </div>
+
+      <h2>Related</h2>
+      <ul class="rel emc-rel">
+        <li><a href="/grain-bin-calculator">Grain bin calculator: bushels, shrink and value</a></li>
+        <li><a href="/store-or-sell">Sell now or store?</a></li>
+        <li><a href="/spray">Spray advisory</a></li>
+        <li><a href="/fast-facts">Fast Facts reference tables</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/grain-emc.js?v=1" defer></script>
+  <script src="/components/grain-emc-ui.js?v=1" defer></script>
+</body>
+</html>
