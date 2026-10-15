@@ -261,11 +261,20 @@ def elapsed_years(years, end_iso):
         return max(1, len(years))
 
 
+# The 50 states, DC and the territories the NWS reports for. Anything else in
+# the state column is a malformed row (2026-10: "IT" with county "MS", "PL"
+# with county "Ka") and is dropped rather than shown as a state.
+VALID_ST = set("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY "
+               "NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR VI GU AS MP".split())
+
+
 def finalize_counties(acc, years, per_state=12, end_iso=None):
     """Turn the accumulator into {ST: [ranked county rows]} for the page."""
     n_years = elapsed_years(years, end_iso or datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     by_state = {}
     for (st, county), rec in acc.items():
+        if st not in VALID_ST:
+            continue
         peak_i = 0
         for i in range(1, 13):
             if rec["months"][i] > rec["months"][peak_i]:
