@@ -70,17 +70,17 @@ function faqValues(M, v) {
 function valueTable(M, v) {
   let g = "", rows = "";
   for (const t of M.TYPES) {
-    if (t.group !== g) { rows += `  <tr class="mv-g"><th colspan="6" scope="colgroup">${t.group}</th></tr>\n`; g = t.group; }
+    if (t.group !== g) { rows += `  <tr class="mv-g"><th colspan="5" scope="colgroup">${t.group}</th></tr>\n`; g = t.group; }
     const unit = t.liquid ? "1,000 gal" : "ton";
-    const all = `<td class="hi" data-mv="all-${t.id}">${v[`all-${t.id}`]}</td>`;
-    const ton = t.liquid ? `<td data-mv="all-ton-${t.id}">${v[`all-ton-${t.id}`]}</td>` : `<td class="mv-same">same</td>`;
+    const ton = t.liquid ? `<small><span data-mv="all-ton-${t.id}">${v[`all-ton-${t.id}`]}</span> a ton</small>` : "";
+    const all = `<td class="hi"><span data-mv="all-${t.id}">${v[`all-${t.id}`]}</span>${ton}</td>`;
     const cells = TIMINGS.map((x) => `<td data-mv="fy-${t.id}-${x}">${v[`fy-${t.id}-${x}`]}</td>`).join("");
-    rows += `  <tr><th scope="row">${esc(t.label)} <span>per ${unit}</span></th>${all}${ton}${cells}</tr>\n`;
+    rows += `  <tr><th scope="row">${esc(t.label)} <span>per ${unit}</span></th>${all}${cells}</tr>\n`;
   }
   return `<div class="mv-tw" tabindex="0" role="region" aria-label="Manure value table, scrolls sideways"><table class="mv-t mv-val">
 <thead>
-  <tr><th class="tl" rowspan="2" scope="col">Manure</th><th colspan="2" scope="colgroup">All the nutrients</th><th colspan="3" scope="colgroup">What the crop can use the first year</th></tr>
-  <tr><th scope="col">Per unit</th><th scope="col">A ton</th><th scope="col">Not worked in for 3+ days</th><th scope="col">Worked in, 1 hour to 3 days</th><th scope="col">Within 1 hour</th></tr>
+  <tr><th class="tl" rowspan="2" scope="col">Manure</th><th rowspan="2" scope="col">All the nutrients</th><th colspan="3" scope="colgroup" class="mv-cg">What the crop can use the first year</th></tr>
+  <tr><th scope="col">Left on top 3+ days</th><th scope="col">Worked in, 1 hr to 3 days</th><th scope="col">Within 1 hr</th></tr>
 </thead>
 <tbody>
 ${rows}</tbody></table></div>`;

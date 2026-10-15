@@ -35,7 +35,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=24" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=24">
-  <link rel="stylesheet" href="/components/manure-value.css?v=2">
+  <link rel="stylesheet" href="/components/manure-value.css?v=3">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -82,7 +82,11 @@
     .mv-t td.mv-same{font-family:var(--font-body);color:var(--text-muted);font-size:.8rem}
     .mv-t tr.mv-g th,.mv-t tr.mv-g td{background:var(--bg);text-align:left;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-family:var(--font-body)}
     .mv-lb{min-width:680px}
-    .mv-val{min-width:640px}
+    .mv-val{min-width:470px}
+    .mv-val th[scope="row"]{white-space:normal;min-width:8.5rem}
+    .mv-val thead th{min-width:0}
+    .mv-t thead th.mv-cg{text-align:center;border-bottom:1px solid var(--border)}
+    .mv-val td.hi small{display:block;font-size:.74rem;font-weight:400;color:var(--text-muted)}
     .mv-ex{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:1rem 0}
     .mv-ex h3{margin-top:0}
     .mv-ex ol{margin-bottom:.4rem}
@@ -159,27 +163,27 @@
 <!--MV:VALUES-->
 <div class="mv-tw" tabindex="0" role="region" aria-label="Manure value table, scrolls sideways"><table class="mv-t mv-val">
 <thead>
-  <tr><th class="tl" rowspan="2" scope="col">Manure</th><th colspan="2" scope="colgroup">All the nutrients</th><th colspan="3" scope="colgroup">What the crop can use the first year</th></tr>
-  <tr><th scope="col">Per unit</th><th scope="col">A ton</th><th scope="col">Not worked in for 3+ days</th><th scope="col">Worked in, 1 hour to 3 days</th><th scope="col">Within 1 hour</th></tr>
+  <tr><th class="tl" rowspan="2" scope="col">Manure</th><th rowspan="2" scope="col">All the nutrients</th><th colspan="3" scope="colgroup" class="mv-cg">What the crop can use the first year</th></tr>
+  <tr><th scope="col">Left on top 3+ days</th><th scope="col">Worked in, 1 hr to 3 days</th><th scope="col">Within 1 hr</th></tr>
 </thead>
 <tbody>
-  <tr class="mv-g"><th colspan="6" scope="colgroup">Dairy</th></tr>
-  <tr><th scope="row">Solid, over 20% dry matter <span>per ton</span></th><td class="hi" data-mv="all-dairy_solid_gt20">$12.34</td><td class="mv-same">same</td><td data-mv="fy-dairy_solid_gt20-gt3day">$6.49</td><td data-mv="fy-dairy_solid_gt20-1to3day">$7.13</td><td data-mv="fy-dairy_solid_gt20-lt1hr">$7.13</td></tr>
-  <tr><th scope="row">Solid, 11 to 20% dry matter <span>per ton</span></th><td class="hi" data-mv="all-dairy_solid_11_20">$11.31</td><td class="mv-same">same</td><td data-mv="fy-dairy_solid_11_20-gt3day">$6.11</td><td data-mv="fy-dairy_solid_11_20-1to3day">$6.11</td><td data-mv="fy-dairy_solid_11_20-lt1hr">$6.75</td></tr>
-  <tr><th scope="row">Liquid, 4 to 11% dry matter <span>per 1,000 gal</span></th><td class="hi" data-mv="all-dairy_liq_4_11">$31.20</td><td data-mv="all-ton-dairy_liq_4_11">$7.48</td><td data-mv="fy-dairy_liq_4_11-gt3day">$16.83</td><td data-mv="fy-dairy_liq_4_11-1to3day">$18.75</td><td data-mv="fy-dairy_liq_4_11-lt1hr">$20.03</td></tr>
-  <tr><th scope="row">Liquid, under 4% dry matter <span>per 1,000 gal</span></th><td class="hi" data-mv="all-dairy_liq_lt4">$18.23</td><td data-mv="all-ton-dairy_liq_lt4">$4.37</td><td data-mv="fy-dairy_liq_lt4-gt3day">$9.69</td><td data-mv="fy-dairy_liq_lt4-1to3day">$10.97</td><td data-mv="fy-dairy_liq_lt4-lt1hr">$11.62</td></tr>
-  <tr class="mv-g"><th colspan="6" scope="colgroup">Beef</th></tr>
-  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi" data-mv="all-beef_solid">$20.70</td><td class="mv-same">same</td><td data-mv="fy-beef_solid-gt3day">$11.58</td><td data-mv="fy-beef_solid-1to3day">$12.22</td><td data-mv="fy-beef_solid-lt1hr">$12.86</td></tr>
-  <tr><th scope="row">Liquid <span>per 1,000 gal</span></th><td class="hi" data-mv="all-beef_liq">$22.80</td><td data-mv="all-ton-beef_liq">$5.47</td><td data-mv="fy-beef_liq-gt3day">$13.63</td><td data-mv="fy-beef_liq-1to3day">$14.27</td><td data-mv="fy-beef_liq-lt1hr">$15.55</td></tr>
-  <tr class="mv-g"><th colspan="6" scope="colgroup">Hog</th></tr>
-  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi" data-mv="all-swine_solid">$27.99</td><td class="mv-same">same</td><td data-mv="fy-swine_solid-gt3day">$17.26</td><td data-mv="fy-swine_solid-1to3day">$18.54</td><td data-mv="fy-swine_solid-lt1hr">$20.46</td></tr>
-  <tr><th scope="row">Liquid, finishing, indoor pit <span>per 1,000 gal</span></th><td class="hi" data-mv="all-swine_liq_fin_in">$55.77</td><td data-mv="all-ton-swine_liq_fin_in">$13.37</td><td data-mv="fy-swine_liq_fin_in-gt3day">$32.92</td><td data-mv="fy-swine_liq_fin_in-1to3day">$36.12</td><td data-mv="fy-swine_liq_fin_in-lt1hr">$39.97</td></tr>
-  <tr><th scope="row">Liquid, finishing, outdoor storage <span>per 1,000 gal</span></th><td class="hi" data-mv="all-swine_liq_fin_out">$22.17</td><td data-mv="all-ton-swine_liq_fin_out">$5.32</td><td data-mv="fy-swine_liq_fin_out-gt3day">$13.38</td><td data-mv="fy-swine_liq_fin_out-1to3day">$14.66</td><td data-mv="fy-swine_liq_fin_out-lt1hr">$16.58</td></tr>
-  <tr class="mv-g"><th colspan="6" scope="colgroup">Poultry</th></tr>
-  <tr><th scope="row">Chicken, solid <span>per ton</span></th><td class="hi" data-mv="all-chicken_solid">$86.76</td><td class="mv-same">same</td><td data-mv="fy-chicken_solid-gt3day">$59.31</td><td data-mv="fy-chicken_solid-1to3day">$61.24</td><td data-mv="fy-chicken_solid-lt1hr">$62.52</td></tr>
-  <tr><th scope="row">Turkey, solid <span>per ton</span></th><td class="hi" data-mv="all-turkey_solid">$87.27</td><td class="mv-same">same</td><td data-mv="fy-turkey_solid-gt3day">$60.21</td><td data-mv="fy-turkey_solid-1to3day">$61.49</td><td data-mv="fy-turkey_solid-lt1hr">$63.42</td></tr>
-  <tr class="mv-g"><th colspan="6" scope="colgroup">Horse</th></tr>
-  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi" data-mv="all-horse_solid">$15.30</td><td class="mv-same">same</td><td data-mv="fy-horse_solid-gt3day">$8.43</td><td data-mv="fy-horse_solid-1to3day">$9.07</td><td data-mv="fy-horse_solid-lt1hr">$9.72</td></tr>
+  <tr class="mv-g"><th colspan="5" scope="colgroup">Dairy</th></tr>
+  <tr><th scope="row">Solid, over 20% dry matter <span>per ton</span></th><td class="hi"><span data-mv="all-dairy_solid_gt20">$12.34</span></td><td data-mv="fy-dairy_solid_gt20-gt3day">$6.49</td><td data-mv="fy-dairy_solid_gt20-1to3day">$7.13</td><td data-mv="fy-dairy_solid_gt20-lt1hr">$7.13</td></tr>
+  <tr><th scope="row">Solid, 11 to 20% dry matter <span>per ton</span></th><td class="hi"><span data-mv="all-dairy_solid_11_20">$11.31</span></td><td data-mv="fy-dairy_solid_11_20-gt3day">$6.11</td><td data-mv="fy-dairy_solid_11_20-1to3day">$6.11</td><td data-mv="fy-dairy_solid_11_20-lt1hr">$6.75</td></tr>
+  <tr><th scope="row">Liquid, 4 to 11% dry matter <span>per 1,000 gal</span></th><td class="hi"><span data-mv="all-dairy_liq_4_11">$31.20</span><small><span data-mv="all-ton-dairy_liq_4_11">$7.48</span> a ton</small></td><td data-mv="fy-dairy_liq_4_11-gt3day">$16.83</td><td data-mv="fy-dairy_liq_4_11-1to3day">$18.75</td><td data-mv="fy-dairy_liq_4_11-lt1hr">$20.03</td></tr>
+  <tr><th scope="row">Liquid, under 4% dry matter <span>per 1,000 gal</span></th><td class="hi"><span data-mv="all-dairy_liq_lt4">$18.23</span><small><span data-mv="all-ton-dairy_liq_lt4">$4.37</span> a ton</small></td><td data-mv="fy-dairy_liq_lt4-gt3day">$9.69</td><td data-mv="fy-dairy_liq_lt4-1to3day">$10.97</td><td data-mv="fy-dairy_liq_lt4-lt1hr">$11.62</td></tr>
+  <tr class="mv-g"><th colspan="5" scope="colgroup">Beef</th></tr>
+  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi"><span data-mv="all-beef_solid">$20.70</span></td><td data-mv="fy-beef_solid-gt3day">$11.58</td><td data-mv="fy-beef_solid-1to3day">$12.22</td><td data-mv="fy-beef_solid-lt1hr">$12.86</td></tr>
+  <tr><th scope="row">Liquid <span>per 1,000 gal</span></th><td class="hi"><span data-mv="all-beef_liq">$22.80</span><small><span data-mv="all-ton-beef_liq">$5.47</span> a ton</small></td><td data-mv="fy-beef_liq-gt3day">$13.63</td><td data-mv="fy-beef_liq-1to3day">$14.27</td><td data-mv="fy-beef_liq-lt1hr">$15.55</td></tr>
+  <tr class="mv-g"><th colspan="5" scope="colgroup">Hog</th></tr>
+  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi"><span data-mv="all-swine_solid">$27.99</span></td><td data-mv="fy-swine_solid-gt3day">$17.26</td><td data-mv="fy-swine_solid-1to3day">$18.54</td><td data-mv="fy-swine_solid-lt1hr">$20.46</td></tr>
+  <tr><th scope="row">Liquid, finishing, indoor pit <span>per 1,000 gal</span></th><td class="hi"><span data-mv="all-swine_liq_fin_in">$55.77</span><small><span data-mv="all-ton-swine_liq_fin_in">$13.37</span> a ton</small></td><td data-mv="fy-swine_liq_fin_in-gt3day">$32.92</td><td data-mv="fy-swine_liq_fin_in-1to3day">$36.12</td><td data-mv="fy-swine_liq_fin_in-lt1hr">$39.97</td></tr>
+  <tr><th scope="row">Liquid, finishing, outdoor storage <span>per 1,000 gal</span></th><td class="hi"><span data-mv="all-swine_liq_fin_out">$22.17</span><small><span data-mv="all-ton-swine_liq_fin_out">$5.32</span> a ton</small></td><td data-mv="fy-swine_liq_fin_out-gt3day">$13.38</td><td data-mv="fy-swine_liq_fin_out-1to3day">$14.66</td><td data-mv="fy-swine_liq_fin_out-lt1hr">$16.58</td></tr>
+  <tr class="mv-g"><th colspan="5" scope="colgroup">Poultry</th></tr>
+  <tr><th scope="row">Chicken, solid <span>per ton</span></th><td class="hi"><span data-mv="all-chicken_solid">$86.76</span></td><td data-mv="fy-chicken_solid-gt3day">$59.31</td><td data-mv="fy-chicken_solid-1to3day">$61.24</td><td data-mv="fy-chicken_solid-lt1hr">$62.52</td></tr>
+  <tr><th scope="row">Turkey, solid <span>per ton</span></th><td class="hi"><span data-mv="all-turkey_solid">$87.27</span></td><td data-mv="fy-turkey_solid-gt3day">$60.21</td><td data-mv="fy-turkey_solid-1to3day">$61.49</td><td data-mv="fy-turkey_solid-lt1hr">$63.42</td></tr>
+  <tr class="mv-g"><th colspan="5" scope="colgroup">Horse</th></tr>
+  <tr><th scope="row">Solid <span>per ton</span></th><td class="hi"><span data-mv="all-horse_solid">$15.30</span></td><td data-mv="fy-horse_solid-gt3day">$8.43</td><td data-mv="fy-horse_solid-1to3day">$9.07</td><td data-mv="fy-horse_solid-lt1hr">$9.72</td></tr>
 </tbody></table></div>
 <!--/MV:VALUES-->
       <p class="mv-src">Pounds from UW Extension A2809, <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf"><i>Nutrient Application Guidelines for Field, Vegetable, and Fruit Crops in Wisconsin</i></a> (Laboski and Peters, edition R-11-2012, the copy UW posted in March 2026), chapter 9: Table 9.2 for the typical total in manure tested in Wisconsin from 1998 to 2012, Table 9.3 for the first-year part. Table 9.3 is Table 9.2 times the first-year shares in Table 9.1: 80% of the P&#8322;O&#8325; and K&#8322;O for every kind of manure, 25 to 65% of the N. A ton of liquid is figured at 8.34 lb a gallon. Farm manure varies a lot from these averages, so a test of your own is worth more than this table.</p>
@@ -288,6 +292,6 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/manure-value.js?v=3" defer></script>
+  <script src="/components/manure-value.js?v=4" defer></script>
 </body>
 </html>

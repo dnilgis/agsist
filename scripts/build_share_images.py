@@ -224,6 +224,7 @@ def card_manure_value():
             group = cells[0]
             continue
         if len(cells) >= 5 and cells[1].startswith("$"):
+            cells[1] = re.match(r"\$[\d,]+\.\d\d", cells[1]).group(0)   # "$31.20" from "$31.20$7.48 a ton"
             name = cells[0]
             if group and not name.startswith(group):
                 name = f"{group}, {name}"
