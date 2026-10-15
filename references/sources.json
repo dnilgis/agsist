@@ -256,6 +256,18 @@
     {"id": "fsa-arc-plc-2026-release", "kind": "html",
      "url": "https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net",
      "title": "FSA news release: 2026 and 2027 ARC/PLC enrollment (Sep 15, 2026)",
-     "why": "/arc-plc: Sep 16 to Dec 11, 2026 window, 2027 enrollment from Nov 2, base acre proration"}
+     "why": "/arc-plc: Sep 16 to Dec 11, 2026 window, 2027 enrollment from Nov 2, base acre proration"},
+    {"id": "coop-tworivers-ks-fert", "kind": "html",
+     "url": "https://www.tworiversks.coop/pages/custom.php?id=19995",
+     "title": "Two Rivers Co-op (Kansas): posted page sent by Sig",
+     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"},
+    {"id": "coop-mccune-fert", "kind": "html",
+     "url": "https://www.mccunecoop.com/fertilizer",
+     "title": "McCune Farmers Union Co-op: fertilizer page",
+     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"},
+    {"id": "coop-mulvane-fert", "kind": "html",
+     "url": "https://www.mulvanecoop.com/fertilizer",
+     "title": "Mulvane Co-op: fertilizer page",
+     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"}
   ]
 }
