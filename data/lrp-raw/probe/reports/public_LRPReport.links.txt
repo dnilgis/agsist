@@ -1,5 +1,0 @@
-https://public.rma.usda.gov/livestockreports/LRPReport#main-content	Skip to content
-https://public.rma.usda.gov/livestockreports/	Main Menu
-javascript:print();	Print
-https://public.rma.usda.gov/livestockreports/	Main Menu
-javascript:print();	Print

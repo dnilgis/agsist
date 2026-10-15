@@ -2,23 +2,42 @@ name: lrp
 
 # USDA RMA Livestock Risk Protection data for /lrp (scripts/fetch_lrp.py).
 #
-# PHASE 1, probe only. The sandbox the script is written in cannot reach
-# USDA, so this captures what RMA serves, raw, and commits it to
-# data/lrp-raw/probe/ (capped at 9 MB; data/ is near its folder budget):
-#   * the ADM livestock year folders and a few LRP daily zips per year
-#   * the LRP Summary of Business folder and two of its yearly zips
-#   * the Livestock Reports app criteria page, its form, and a few submissions
-#   * RMA's legacy livestock pages
-# A manifest.json lists every request with its status and size.
+# Source: RMA's ADM livestock daily zips,
+#   https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/<RY>/<RY>_ADMLivestockLrp_Daily_<YYYYMMDD>.zip
+# every day's LRP offers (coverage prices, rates, cost per cwt, expected ending
+# values, per product, type, length and level) from July 1 2013, and every
+# actual ending value.
 #
-# No schedule yet: the parser and the history build come once the probe is read.
+# Two places, on purpose:
+#   * the lrp-history branch (never deployed by Pages) holds the full history,
+#     one file per sales day, about 130 MB once complete;
+#   * main gets only data/lrp/ (today's offers, the actual ending values, meta),
+#     a few hundred KB, inside data/'s budget.
+#
+# mode history: read every daily zip not yet in the history (the first run
+#   reads about 7,000 files and may need two runs; it stops starting downloads
+#   after `minutes` and the next run carries on), then publish.
+# mode publish: rebuild data/lrp/ from the history only.
+# The first look at RMA's sources (the probe of 2026-10-15) is kept
+# on the lrp-history branch under probe/; it is not run from here any more, so
+# raw captures never land on main again.
+# No schedule yet: added once the full history is in and checked.
 on:
   workflow_dispatch:
     inputs:
-      probe:
-        description: "Probe: save RMA's raw LRP sources to data/lrp-raw/probe/ and commit them"
-        type: boolean
-        default: true
+      mode:
+        description: "history (read new RMA files, then publish) or publish"
+        type: choice
+        options: [history, publish]
+        default: history
+      years:
+        description: "Reinsurance years to read, e.g. 2014-2018 (blank = all)"
+        required: false
+        default: ""
+      minutes:
+        description: "Stop starting downloads after this many minutes"
+        required: false
+        default: "300"
 
 permissions:
   contents: write
@@ -30,7 +49,14 @@ concurrency:
 jobs:
   lrp:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 350
+    env:
+      PYTHONUNBUFFERED: "1"
+      IN_MODE: ${{ inputs.mode }}
+      IN_YEARS: ${{ inputs.years }}
+      IN_MINUTES: ${{ inputs.minutes }}
+      # outside the checkout, so the size budget never counts it
+      HIST: ${{ github.workspace }}/../lrp-history
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,33 +64,73 @@ jobs:
           python-version: "3.12"
 
       - name: Selftest
-        run: python scripts/fetch_lrp.py --selftest
+        run: |
+          git config --global user.name "agsist-probe"
+          git config --global user.email "bot@agsist.com"
+          python scripts/fetch_lrp.py --selftest
 
-      - name: Probe
-        if: ${{ inputs.probe }}
-        timeout-minutes: 30
-        env:
-          PYTHONUNBUFFERED: "1"
-        run: python scripts/fetch_lrp.py --probe
+      - name: Check the inputs
+        run: |
+          if [ -n "$IN_YEARS" ] && ! printf '%s' "$IN_YEARS" | grep -Eq '^[0-9]{4}(-[0-9]{4})?$'; then
+            echo "::error::years must look like 2014 or 2014-2018"; exit 1; fi
+          printf '%s' "$IN_MINUTES" | grep -Eq '^[0-9]+$' || { echo "::error::minutes must be a number"; exit 1; }
 
-      - name: Inside the size budget
-        run: python scripts/check_site_budget.py
+      - name: Check out the history branch
+        run: |
+          git fetch -q --depth 1 origin lrp-history || { echo "::error::the lrp-history branch is missing; push it first"; exit 1; }
+          git worktree add -q -B lrp-history "$HIST" FETCH_HEAD
 
-      - name: Commit the probe
-        if: ${{ inputs.probe }}
+      # continue-on-error: whatever was read is committed below even if a
+      # file fails a check; the last step then fails the run and says where.
+      - name: Read new RMA files into the history
+        id: history
+        if: ${{ inputs.mode == 'history' }}
+        continue-on-error: true
+        timeout-minutes: 330
+        run: |
+          set -o pipefail
+          python scripts/fetch_lrp.py --history "$HIST" --years "$IN_YEARS" --minutes "$IN_MINUTES" 2>&1 | tee lrp-history.log
+
+      - name: Commit the history to lrp-history
+        if: ${{ inputs.mode == 'history' }}
+        run: |
+          cd "$HIST"
+          git add -A
+          if git diff --cached --quiet; then echo "history: no change"; exit 0; fi
+          N=$(git diff --cached --name-only | grep -c '^offers/' || true)
+          git commit -q -m "lrp history $(date -u +%Y-%m-%dT%H:%M:%SZ): $N offer days"
+          for i in 1 2 3; do
+            if git push -q origin HEAD:lrp-history; then exit 0; fi
+            sleep $((15 * i))
+          done
+          echo "::error::could not push lrp-history (only this workflow writes it; was it changed by hand?)"; exit 1
+
+      - name: Publish data/lrp
+        run: |
+          python scripts/fetch_lrp.py --publish "$HIST" --out data/lrp
+          python scripts/check_site_budget.py
+
+      - name: Commit to main
         run: |
           set -e
-          git config user.name "agsist-probe"
-          git config user.email "bot@agsist.com"
-          rm -rf /tmp/lrp && mkdir -p /tmp/lrp && cp -r data/lrp-raw /tmp/lrp/
+          P=data/lrp; MSG="data: lrp"
+          [ -d "$P" ] || { echo "nothing written"; exit 0; }
+          rm -rf /tmp/lrpout && mkdir -p /tmp/lrpout && cp -r "$P" /tmp/lrpout/out
           for i in 1 2 3 4 5; do
             git fetch -q origin main
             git reset -q --hard origin/main
-            mkdir -p data && rm -rf data/lrp-raw/probe && cp -r /tmp/lrp/lrp-raw data/
-            git add -A data/lrp-raw/probe
+            rm -rf "$P" && mkdir -p "$(dirname "$P")" && cp -r /tmp/lrpout/out "$P"
+            git add -A "$P"
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
-            git commit -q -m "data: lrp probe $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push -q origin HEAD:main; then exit 0; fi
             sleep $((15 * i))
           done
           echo "push failed after 5 attempts"; exit 1
+
+      - name: Say if the history run failed
+        if: ${{ steps.history.outcome == 'failure' }}
+        run: |
+          grep -E "CHECK FAILED|FAILED|did not answer|listing failed" lrp-history.log | head -40 || true
+          echo "::error::The history run failed; what was read before it is committed. See the step log."
+          exit 1
