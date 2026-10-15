@@ -433,7 +433,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="mat-grid">
         <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">-</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
         <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">-</div><div class="mat-card-sub">remaining</div></div>
-        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub">at Wisconsin rates</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub" id="r-days-left-sub">at Wisconsin rates</div></div>
       </div>
       <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">-</span></div>
       <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. black layer, Wisconsin rates</span><span class="r-val green" id="r-mat-date">-</span></div>
@@ -542,7 +542,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <p>Real GDU fetch uses the <strong>Open-Meteo weather archive API</strong>: no API key required. Historical data is ERA5-based, validated against NOAA station data. Accuracy: typically &plusmn;2 GDU/day vs. on-farm weather stations.</p>
     </div>
   </div>
-  <p class="method-note"><b>Method:</b> daily 86/50 GDUs from the Open-Meteo archive; stage GDUs scaled to your hybrid&rsquo;s target; dates projected at Wisconsin monthly rates and withheld outside the Upper Midwest; VT shown as 1,135&ndash;1,350 because sources differ &middot; <b>Sources:</b> <a href="https://www.extension.purdue.edu/extmedia/nch/nch-40.html" target="_blank" rel="noopener">Purdue NCH-40</a> and UKY AGR-202 (Neild &amp; Newman corn stages), UW-Madison (tassel to silk 1&ndash;3 days), <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a>, K-State and Purdue maturity anchors, Wisconsin 30-year monthly GDU normals &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
+  <p class="method-note"><b>Method:</b> daily 86/50 GDUs from the Open-Meteo archive; stage GDUs scaled to your hybrid&rsquo;s target; after a fetch, the rest of the season is projected from that spot&rsquo;s average daily GDU for 1991&ndash;2020 (same archive), through Oct 31; without one, at Wisconsin monthly rates and withheld outside the Upper Midwest; VT shown as 1,135&ndash;1,350 because sources differ &middot; <b>Sources:</b> <a href="https://www.extension.purdue.edu/extmedia/nch/nch-40.html" target="_blank" rel="noopener">Purdue NCH-40</a> and UKY AGR-202 (Neild &amp; Newman corn stages), UW-Madison (tassel to silk 1&ndash;3 days), <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a>, K-State and Purdue maturity anchors, Wisconsin 30-year monthly GDU normals &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
 </div>
 
 <!-- ── RELATED TOOLS ─────────────────────────────────────────────────── -->
@@ -676,9 +676,14 @@ var realAccum=null; // set when fetch succeeds
 var realDays=null;  // actual measured days from the archive (excludes pending/missing)
 var realThrough=null; // last date with real data
 var realSeries=null; // [[ISO date, GDU], ...] for each real day, so a crop past the target gets the day it crossed
+// Local normal: average daily GDU for each calendar day at the fetched point, 1991-2020, from the same
+// Open-Meteo ERA5 archive. {'MM-DD': GDU}. When it loads, the rest of the season is projected from it
+// instead of the Wisconsin table, so Iowa runs at Iowa's own pace and October counts.
+var localNorm=null, localNormKey=null;
+var NORM_FROM=1991, NORM_TO=2020, NORM_END_MO=9, NORM_END_D=31; // project through Oct 31 at most
 var userLat=null, userLon=null;
-// State of the fetched location (from the geocoder). The maturity projection walks forward at
-// Wisconsin monthly rates, so outside the Upper Midwest the date is withheld.
+// State of the fetched location (from the geocoder). If the local normal fails to load, the
+// projection falls back to Wisconsin monthly rates, and outside the Upper Midwest the date is withheld.
 var userState=null;
 var UPPER_MW=['Minnesota','Wisconsin','Iowa','Illinois','Michigan','North Dakota','South Dakota'];
 var zipTouched=false; // true once the user has typed in the ZIP box
@@ -814,7 +819,10 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
       +'&daily=temperature_2m_max,temperature_2m_min'
       +'&temperature_unit=fahrenheit'
       +'&timezone=auto';
-    return fetch(url).then(function(r){if(!r.ok)throw new Error('Weather API error');return r.json();});
+    return Promise.all([
+      fetch(url).then(function(r){if(!r.ok)throw new Error('Weather API error');return r.json();}),
+      loadLocalNorm(loc.lat,loc.lon)
+    ]).then(function(a){return a[0];});
   }).then(function(data){
     if(!data.daily||!data.daily.temperature_2m_max){throw new Error('Unexpected data format');}
     var maxArr=data.daily.temperature_2m_max;
@@ -839,7 +847,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     if(lastValid){ pending=Math.round((new Date(todayStr+'T00:00:00')-new Date(lastValid+'T00:00:00'))/86400000); }
     var thru=lastValid?new Date(lastValid+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
     var msg='\u2713 Real data through '+thru+', '+days+' days, '+accum.toFixed(0)+' GDUs';
-    if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive (projected at the monthly rate)'; }
+    if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive (projected at '+(localNorm?'this spot\u2019s '+NORM_FROM+'\u2013'+NORM_TO+' average':'the monthly rate')+')'; }
     if(gaps>0){ msg+=' \u00b7 '+gaps+' day'+(gaps>1?'s':'')+' missing inside the range, no GDU counted for '+(gaps>1?'them':'it'); }
     setStatus(msg,'ok');
     document.getElementById('r-source').textContent='Open-Meteo ERA5: through '+(thru||'n/a');
@@ -851,6 +859,40 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data';
   });
 });
+
+/* ─── LOCAL NORMAL FOR THE PROJECTION ───────────────────────────────── */
+// Average of each day's 86/50 GDU, 1991-2020, at the fetched point (ERA5 via the Open-Meteo archive).
+// Averaging daily GDUs, not temperatures, so the 50/86 caps act the way they do in a real season.
+// A failed or thin download leaves localNorm null and the page falls back to the Wisconsin table.
+function mmdd(d){var m=d.getMonth()+1,dd=d.getDate();return (m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
+function normFrom(data){
+  var dd=data&&data.daily;if(!dd||!dd.time||!dd.temperature_2m_max)return null;
+  var sum={},n={};
+  for(var i=0;i<dd.time.length;i++){
+    var hi=dd.temperature_2m_max[i],lo=dd.temperature_2m_min[i];if(hi==null||lo==null)continue;
+    var k=String(dd.time[i]).slice(5,10);if(k==='02-29')continue;
+    sum[k]=(sum[k]||0)+gduDay(hi,lo);n[k]=(n[k]||0)+1;
+  }
+  var out={},need=Math.round((NORM_TO-NORM_FROM+1)*0.8),d=new Date(2001,3,1);
+  // Every day from Apr 1 to Oct 31 needs at least 80% of the years, or the normal is not used.
+  while(d<=new Date(2001,NORM_END_MO,NORM_END_D)){var k2=mmdd(d);if(!(n[k2]>=need))return null;out[k2]=sum[k2]/n[k2];d.setDate(d.getDate()+1);}
+  return out;
+}
+function loadLocalNorm(lat,lon){
+  var key=(+lat).toFixed(2)+','+(+lon).toFixed(2);
+  if(localNorm&&localNormKey===key)return Promise.resolve(localNorm);
+  localNorm=null;localNormKey=null;
+  // 30 years is a big download, so the 214 averages are kept per spot in this browser.
+  try{var c=JSON.parse(localStorage.getItem('agsist-gdu-norm')||'null');if(c&&c.key===key&&c.v===1&&c.norm&&c.norm['10-31']!=null){localNorm=c.norm;localNormKey=key;return Promise.resolve(localNorm);}}catch(e){}
+  var url='https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lon
+    +'&start_date='+NORM_FROM+'-01-01&end_date='+NORM_TO+'-12-31'
+    +'&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto';
+  return fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    var nm=normFrom(d);
+    if(nm){localNorm=nm;localNormKey=key;try{localStorage.setItem('agsist-gdu-norm',JSON.stringify({v:1,key:key,norm:nm}));}catch(e){}}
+    return nm;
+  }).catch(function(){return null;});
+}
 
 /* ─── MAIN CALCULATION ──────────────────────────────────────────────── */
 // Inputs that INVALIDATE real weather data (dates force refetch)
@@ -964,7 +1006,9 @@ function calcGDU(){
 
   var gduRemaining=gduTarget!=null?Math.max(0,gduTarget-accumGDU):null;
   var pctDone=gduTarget!=null?Math.min(100,(accumGDU/gduTarget)*100):null;
-  // Projection: walk forward day by day using the monthly rates in WI_HIST (July runs ~21
+  // Projection with fetched weather and the local normal loaded: walk forward day by day at this
+  // spot's 1991-2020 average GDU for each calendar day, through Oct 31 (useNorm below).
+  // Otherwise (the fallback): walk forward day by day using the monthly rates in WI_HIST (July runs ~21
   // GDU/day, September ~10, October 0 in this table), not the season average. With fetched
   // data it starts from the last day the archive actually has (realThrough), so days still
   // pending in the archive are projected at the monthly rate instead of counting as zero.
@@ -972,16 +1016,18 @@ function calcGDU(){
   // does not finish by then gets no date (null) instead of an October date.
   var projStart=(realAccum!=null&&realThrough)?new Date(realThrough+'T00:00:00'):new Date(todayD);
   var daysLeft=null,matDate=null,reached=false;
+  var useNorm=!!(realAccum!=null&&localNorm);
   if(gduTarget!=null){
     // Already past the target: find the day it crossed, never the end date. The freeze verdict
     // compares with that day. A typed GDU total has no day-by-day record, so no date (null).
     if(gduRemaining<=0){daysLeft=0;reached=true;matDate=crossingDate(gduTarget,gduPerDay,plantD,todayD);}
     else{
-      var proj=accumGDU,pd=new Date(projStart),endD=new Date(projStart.getFullYear(),8,30);
+      var proj=accumGDU,pd=new Date(projStart);
+      var endD=useNorm?new Date(projStart.getFullYear(),NORM_END_MO,NORM_END_D):new Date(projStart.getFullYear(),8,30);
       while(pd<endD){
         pd.setDate(pd.getDate()+1);
-        var pm2=pd.getMonth()-4;
-        if(pm2>=0&&pm2<5)proj+=WI_HIST[pm2];
+        if(useNorm){proj+=localNorm[mmdd(pd)]||0;}
+        else{var pm2=pd.getMonth()-4;if(pm2>=0&&pm2<5)proj+=WI_HIST[pm2];}
         if(proj>=gduTarget){matDate=new Date(pd);break;}
       }
       if(matDate)daysLeft=Math.max(0,Math.round((matDate-todayD)/86400000));
@@ -989,7 +1035,9 @@ function calcGDU(){
   }
   // Fetched weather from outside the Upper Midwest: the GDUs so far are real, but the Wisconsin
   // rates the projection uses do not fit there, so no date (and no frost verdict) is shown.
-  var outsideUM=(realAccum!=null&&userState&&UPPER_MW.indexOf(userState)<0)?userState:null;
+  // With the local normal loaded the Wisconsin table is not used, so nothing is withheld.
+  var outsideUM=(realAccum!=null&&!useNorm&&userState&&UPPER_MW.indexOf(userState)<0)?userState:null;
+  var rateTxt=useNorm?'local '+NORM_FROM+'\u2013'+NORM_TO+' average':'Wisconsin rates';
   if(outsideUM&&gduRemaining>0){matDate=null;daysLeft=null;}
   var matTxt=matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):null;
   var thruTxt=(realAccum!=null&&realThrough)?new Date(realThrough+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):null;
@@ -1021,7 +1069,8 @@ function calcGDU(){
   s('r-days-left',daysLeft!=null?daysLeft+' days':'-');
   s('r-pct',pctDone!=null?pctDone.toFixed(1)+'% complete':'-');
   s('r-mat-date',matTxt||'-');
-  s('r-mat-lbl',reached?(crop==='corn'?'Reached black layer about':'Reached full maturity (R8) about'):(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', Wisconsin rates');
+  s('r-mat-lbl',reached?(crop==='corn'?'Reached black layer about':'Reached full maturity (R8) about'):(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', '+rateTxt);
+  var dlSub=document.getElementById('r-days-left-sub');if(dlSub)dlSub.textContent=reached?'done':'at '+rateTxt;
   // Frost-risk verdict: optional user frost date vs projected maturity
   var frostStr=document.getElementById('g-frost')?document.getElementById('g-frost').value:'';
   var fv=document.getElementById('r-frost-verdict');
@@ -1041,7 +1090,9 @@ function calcGDU(){
   else if(outsideUM&&pctDone<100){note='No maturity date for '+outsideUM+'. The projection walks forward at Wisconsin monthly GDU rates, which do not fit there. The GDUs so far come from your own weather.';}
   else if(pctDone>=100){note=(matTxt?'The crop passed '+gduTarget.toLocaleString()+' GDUs on about '+matTxt.replace(/, \d{4}$/,'')+(realAccum!=null?' in your weather':'')+', so it reached '+(crop==='corn'?'black layer':'R8')+' then.':'Your GDU total is past the target, so the crop has reached '+(crop==='corn'?'black layer':'R8')+'. A typed total has no day-by-day record, so the day it got there is not shown.')+' Monitor for harvest timing.';}
   else if(daysLeft!=null&&daysLeft<14){note='Approaching maturity. Scout for stalk integrity and harvest timing.';}
+  else if(daysLeft!=null&&useNorm){note='Projection uses this spot\u2019s average GDU for each calendar day, '+NORM_FROM+'\u2013'+NORM_TO+' (same Open-Meteo ERA5 archive), from '+(thruTxt?'the day after '+thruTxt+', the last day in the weather archive,':'the day after the end date')+' on. A normal year, not a forecast. Weather changes it.'+(crop==='corn'?'':' Soybean target: NDSU soybean GDD model, MG 00.8\u20131.1.');}
   else if(daysLeft!=null){note='Projection uses the Wisconsin monthly average GDU per day from '+(thruTxt?'the day after '+thruTxt+', the last day in the weather archive,':'the day after the end date')+' on (the September rate is about half of July). Weather changes it.'+(crop==='corn'?'':' Soybean target: NDSU soybean GDD model, MG 00.8\u20131.1.');}
+  else if(useNorm){note='Not reached by Oct 31 at this spot\u2019s '+NORM_FROM+'\u2013'+NORM_TO+' average, so no maturity date is shown. Frost will likely come first.';}
   else{note='Not reached by Sep 30 at the Wisconsin monthly average rates, so no maturity date is shown. Frost may come first.';}
   s('r-mat-note',note);
 
