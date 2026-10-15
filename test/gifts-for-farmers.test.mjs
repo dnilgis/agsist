@@ -113,3 +113,16 @@ test("Sig, 2026-10-14: a business logo may go on the print; shipping covers the 
   assert.ok(!/US addresses/.test(HTML), "no 'US addresses' that would take in Puerto Rico");
   assert.match(BODY, /Shipping is in the price, anywhere in the 50 states\./);
 });
+
+test("the Rain Print section links the page in words people search for and says only what is true of the example (2026-10-15)", () => {
+  const sec = HTML.slice(HTML.indexOf('<section class="gf-rp"'), HTML.indexOf("</section>", HTML.indexOf('<section class="gf-rp"')));
+  assert.match(sec, /<a href="\/rain-print">a custom rainfall print of that year<\/a>/, "a plain-text link with the search words");
+  // the thumbnail is the real 2012 Ames example (img/rain-print-thumb.jpg), so the caption cannot call it made up; no year in the article (the Christmas test)
+  assert.ok(!/made up/i.test(sec), "the example is real NOAA data");
+  assert.match(sec, /<figcaption>An example: Ames, Iowa, in the drought year, from NOAA records\.<\/figcaption>/);
+  // the page marks up to five days (rain-print.html, Mark a day)
+  assert.match(readFileSync(ROOT + "rain-print.html", "utf8"), /You can mark up to 5 days/);
+  assert.match(sec, /mark up to five days/);
+  assert.ok(!/three days/.test(sec));
+  assert.ok(!/NOAA weather station|CoCoRaHS|archival|poster|—/i.test(sec), "plain words: the weather station");
+});

@@ -480,7 +480,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain the nearest weather station caught\. Drawing it is free\.<\/p>/);
+  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain and snow the nearest weather station caught\. A gift for a farmer, or for the year you married or a child was born\. Drawing it is free\.<\/p>/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);

@@ -352,6 +352,11 @@ def crumbs_ld(items):
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
 
 
+# One plain link to /rain-print itself, inside the same promo block (still one promo a page), so the 2,700 county
+# pages also point at the bare page with the words people search for (head to head, 2026-10-15).
+RP_ANY_YEAR = 'Want another year, like the drought or the year you married? <a href="/rain-print">Rainfall art of any town and year</a>.'
+
+
 def county_page(ctx):
     c, st, fips, year, d = ctx["c"], ctx["st"], ctx["fips"], ctx["year"], ctx["d"]
     stn = R.STATES[st]
@@ -514,7 +519,8 @@ def county_page(ctx):
     lead_plain = (f'<span class="rc-sell-plain">Get {e(name)}&rsquo;s {year} rain and snow drawn as a Rain Print, '
                   f'with your name and dates{price}.</span>')
     sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain} <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
-            + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "") + "</div>"
+            + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
+            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>"
             + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
@@ -695,7 +701,7 @@ def hub_page(files, built):
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
       <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
     </ul>
-    <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print</a> draws it from the same NOAA records.</p>
+    <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
   </div>
 {FOOT}"""
@@ -890,10 +896,14 @@ def selftest():
         ok("Get Story County&rsquo;s 2026 rain and snow drawn as a Rain Print" in story and '>Make yours</a>' in story, "the plain line and button, for no JS")
         ok(story.index('id="rc-print"') < story.index('class="rc-sell"') < story.index("<h2>Month by month</h2>"), "the line sits right under the print")
         ok("rc-cta" not in story and story.count('href="/rain-print?') == 1, "one Rain Print promo on the page")
+        sell_blk = story.split('class="rc-sell"')[1].split("</div>")[0]
+        ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in sell_blk and story.count('href="/rain-print"') == 1,
+           "one plain link to the bare /rain-print, inside the same promo block")
         # no daily file for the state: the plain chart, the plain line, no script
         nod = county_page({"c": c, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1})
         ok('id="rc-print"' not in nod and "rain-county-print.js" not in nod and "rc-sell-lead" not in nod and ">Make yours</a>" in nod,
            "without the county's days: the plain chart and the plain line only")
+        ok(f'<p class="rc-fine">{RP_ANY_YEAR}</p>' in nod, "the plain link is there without the county's days too")
         short = county_page({"c": dict(c, days=45), "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1,
                              "day": {"p": R.pack_days(["0.10"] * 45)}})
         ok('id="rc-print"' not in short, "under 60 days in: no print, as /rain-print draws none")

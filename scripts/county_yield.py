@@ -21,7 +21,7 @@ THE WITHHOLDING RULE (trend):
     Adams NE dryland corn, which yields about 150).
 
 THE NAMES (every yield a page prints carries one of these):
-  label_trend(2026)        "15-yr trend (projected 2026)"
+  label_trend(2026)        "14-yr trend (projected 2026)"
   label_year(2025)         "2025 county yield"
   label_avg(2021, 2025)    "2021-25 average"
   LABEL_ARC                "FSA ARC-CO benchmark"
@@ -34,7 +34,13 @@ Pure python, no numpy: the workflow needs none and the math is readable here.
 import math
 import sys
 
-TREND_WINDOW = 15     # years of yield history behind the trend
+TREND_WINDOW = 15     # calendar years in the fit window, ending with the projected year
+# The projected year itself never has a published county yield when the fit
+# runs: NASS county corn yields come out the February after harvest, and the
+# fit projects to the current calendar year. So the most any fit holds is
+# TREND_WINDOW - 1 published years (n=14 in data/cash-rent, Oct 2026), and the
+# label says that. It said fifteen years until 2026-10-15.
+TREND_YEARS = TREND_WINDOW - 1
 MIN_TREND_N = 6       # fewer published years than this in the window: no trend
 MAX_TREND_GAP = 3     # a trend is not projected more than this many years past its last year
 
@@ -125,8 +131,8 @@ def recent_avg(hist, last_year=None, years=5, min_n=4):
     return {"from": last - years + 1, "to": last, "n": len(ys), "avg": sum(vals) / len(vals)}
 
 
-def label_trend(year, window=TREND_WINDOW):
-    return f"{window}-yr trend (projected {year})"
+def label_trend(year, years=TREND_YEARS):
+    return f"{years}-yr trend (projected {year})"
 
 
 def label_year(year):
@@ -173,7 +179,10 @@ def selftest():
     r = recent_avg({"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230})
     assert r == {"from": 2021, "to": 2025, "n": 5, "avg": 210.0}, r
     assert recent_avg({"2023": 1, "2024": 2, "2025": 3}) is None
-    assert label_trend(2026) == "15-yr trend (projected 2026)"
+    assert label_trend(2026) == "14-yr trend (projected 2026)"
+    # a full record up to last year fills exactly the years the label names
+    t = trend([(y, 100.0 + y - 2000) for y in range(2000, 2026)], 2026)
+    assert t["n"] == TREND_YEARS, t
     assert label_year(2025) == "2025 county yield" and label_avg(2021, 2025) == "2021-25 average"
     print("county_yield selftest OK")
 

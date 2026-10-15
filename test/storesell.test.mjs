@@ -274,3 +274,56 @@ test("forwardCurve: live contracts on file, labels, idx, new crop and old crop",
   assert.ok(!rows.some((r) => r.key === "corn-dec28"), "Flash Grain's far Dec '28 stays off the chart");
   assert.ok(!rows.some((r) => r.key === "corn-dec" || r.key === "corn-nearby"), "aliases are not curve points");
 });
+
+/* Head-to-head fix 2026-10-15: the board case counts storage and interest
+   from today once the crop is in the bin, not from the first contract. */
+const BOARD = {
+  "corn-dec26": { ticker: "ZCZ26.CBT", close: 478.75, close_date: "2026-10-14" },
+  "corn-mar27": { ticker: "ZCH27.CBT", close: 492.75 },
+  "corn-may27": { ticker: "ZCK27.CBT", close: 499.75 },
+  "corn-jul27": { ticker: "ZCN27.CBT", close: 505.75 },
+};
+test("boardHold on 2026-10-15: Dec to Jul carry, 9 months of storage and interest from October", () => {
+  const b = S.boardHold("corn", BOARD, "2026-10-15");
+  assert.equal(b.from.label, "Dec '26");
+  assert.equal(b.to.label, "Jul '27");
+  near(b.carry, 0.27, "carry");
+  assert.equal(b.carryMonths, 7);
+  assert.equal(b.months, 9);
+  assert.equal(b.start, "2026-10");
+  assert.equal(b.startLabel, "Oct '26");
+  assert.equal(b.fromToday, true);
+  assert.equal(b.date, "2026-10-14");
+  /* hand-worked: 27 - 3.5 x 9 - 478.75 x 7% x 9/12 = 27 - 31.5 - 25.134 = -29.63c */
+  const n = S.carryNet(b.spot, b.carry, b.months, S.withDefaults({}));
+  near(n.net, 0.27 - 0.315 - 4.7875 * 0.07 * 9 / 12, "net");
+  assert.equal(S.netText(n.net), "−30¢");
+});
+test("boardHold before the crop is in counts contract to contract, and rolls with the window", () => {
+  const sep = S.boardHold("corn", BOARD, "2026-09-20");
+  assert.equal(sep.months, 7, "September: no corn in the bin yet");
+  assert.equal(sep.fromToday, false);
+  assert.equal(sep.startLabel, "Dec '26");
+  const dec = S.boardHold("corn", BOARD, "2026-12-15");
+  assert.equal(dec.from.label, "Mar '27", "Dec '26 is dead from the 15th");
+  assert.equal(dec.carryMonths, 4);
+  assert.equal(dec.months, 7, "Dec '26 to Jul '27");
+  const jan = S.boardHold("corn", BOARD, "2027-01-04");
+  assert.equal(jan.months, 6);
+  assert.equal(S.boardHold("corn", {}, "2026-10-15"), null);
+  const wq = { "wheat-dec26": { ticker: "ZWZ26.CBT", close: 540 }, "wheat-mar27": { ticker: "ZWH27.CBT", close: 555 },
+               "wheat-may27": { ticker: "ZWK27.CBT", close: 562 }, "wheat-jul27": { ticker: "ZWN27.CBT", close: 570 },
+               "wheat-dec27": { ticker: "ZWZ27.CBT", close: 590 } };
+  assert.equal(S.boardHold("wheat", wq, "2026-10-15").months, 7, "winter wheat is in the bin by October: Oct '26 to May '27");
+  const may = S.boardHold("wheat", wq, "2027-05-20");
+  assert.equal(may.fromToday, false, "May '27: next year's wheat is not cut yet");
+  assert.equal(may.months, 5, "Jul '27 to Dec '27");
+});
+test("lockNote: only for a net above zero, futures leaves the basis open, posted fixes both", () => {
+  assert.equal(S.lockNote("futures", -0.17, "Jul '27"), "");
+  assert.equal(S.lockNote("posted", 0.004, "Jul '27"), "", "rounds to 0c: nothing to lock");
+  assert.equal(S.lockNote("futures", 0.05, "Jul '27"),
+    "You can lock this carry today by selling Jul '27 futures or taking a hedge-to-arrive contract for Jul '27. That takes out the futures risk, not the basis risk.");
+  assert.equal(S.lockNote("posted", 0.05, "Jul '27"),
+    "You can lock this today with a forward contract for Jul '27 delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms.");
+});

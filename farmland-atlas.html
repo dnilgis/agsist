@@ -164,6 +164,11 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-bar button{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.8rem;font-weight:600;cursor:pointer;min-height:44px}
 .fa-bar button:hover{border-color:var(--gold);color:var(--text)}
 .fa-bar .fa-note{flex-basis:100%}
+.fa-fams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;margin:0 0 .55rem}
+.fa-fam{padding:.5rem .4rem;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.82rem;font-weight:700;cursor:pointer;min-height:40px}
+.fa-fam:hover{border-color:var(--gold);color:var(--text)}
+.fa-fam[aria-pressed=true]{color:var(--gold);border-color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold)}
+@media (max-width:560px){.fa-fams{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .fa-gtabs{position:relative;display:flex;flex-wrap:wrap;gap:.3rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding:0 0 .45rem;margin:0 0 .45rem;border-bottom:1px solid var(--border)}
 .fa-gtab{flex:0 0 auto;padding:.42rem .62rem;border-radius:8px 8px 0 0;border:1px solid transparent;background:none;color:var(--text-dim);font-size:.8rem;font-weight:700;cursor:pointer;min-height:38px;white-space:nowrap}
 .fa-gtab:hover{color:var(--text);background:var(--surface)}
@@ -522,6 +527,7 @@ details.fa-arith .body a{color:var(--gold)}
       <span class="fa-note" id="fa-q-status" role="status"></span>
     </div>
 
+    <div class="fa-fams" id="fa-fams" role="group" aria-label="Kind of layer"></div>
     <div class="fa-gtabs" id="fa-groups" role="group" aria-label="Layer group"></div>
     <div class="fa-subs" id="fa-layers" role="group" aria-label="Map layer"></div>
     <p class="fa-note" id="fa-layers-note" hidden style="margin:-.3rem 0 .8rem">Dimmed layers are not yet measured. They fill in after the first data run.</p>
@@ -849,17 +855,17 @@ var LAYERS=[
   v:function(c){return get(c,'loss','share_all','wet');},title:'Share of indemnities since 1989 caused by excess moisture and flood'},
  {key:'loss_irr',grp:'Loss record',label:'Irrigation failure',ramp:'loss',unit:'$',money:true,k:0,needs:'loss',
   v:function(c){var v=get(c,'loss','irrigation_failure_indemnity'); return v==null?null:Math.max(0,v);},title:'Indemnities paid for irrigation failure, all years (a net reversal reads as $0)'},
- {key:'rent',grp:'Rent and yield',label:'Non-irrigated rent',ramp:'gold',unit:'$/acre',money:true,k:0,needs:'rent',
+ {key:'rent',grp:'Rent',label:'Non-irrigated rent',ramp:'gold',unit:'$/acre',money:true,k:0,needs:'rent',
   v:function(c){return METRICS.rent(c);},title:'Non-irrigated cropland cash rent, latest published year (counties last surveyed more than three years before the newest survey are left grey)'},
- {key:'rent_irr',grp:'Rent and yield',label:'Irrigated rent',ramp:'water',unit:'$/acre',money:true,k:0,needs:'rent',
+ {key:'rent_irr',grp:'Rent',label:'Irrigated rent',ramp:'water',unit:'$/acre',money:true,k:0,needs:'rent',
   v:function(c){return METRICS.irr(c);},title:'Irrigated cropland cash rent, latest published year (counties last surveyed more than three years before the newest survey are left grey)'},
- {key:'rent_change',grp:'Rent and yield',label:'Rent, ≈10-yr change',div:true,unit:'%',k:0,needs:'rent',
+ {key:'rent_change',grp:'Rent',label:'Rent, ≈10-yr change',div:true,unit:'%',k:0,needs:'rent',
   v:function(c){return METRICS.rent(c)==null?null:get(c,'rent','nonirr_change10','pct');},title:'Change in non-irrigated cash rent over about ten years, nominal dollars'},
- {key:'rent_rev',grp:'Rent and yield',label:'Rent ÷ corn gross',ramp:'gold',unit:'%',k:1,fixed:true,side:'rentrev',
+ {key:'rent_rev',grp:'Rent',label:'Rent ÷ corn gross',ramp:'gold',unit:'%',k:1,fixed:true,side:'rentrev',
   v:function(c,f){var r=rrev(f); return r&&r.p!=null&&r.py>=RREV_LATEST-3?r.p:null;},title:'Cash rent as a share of corn gross: rent ÷ (county corn yield of the same practice × state price received), each county\'s latest year with all three'},
- {key:'yield_slope',grp:'Rent and yield',label:'Corn yield trend',div:true,unit:'bu/ac/yr',k:1,needs:'yield',
+ {key:'yield_slope',grp:'Corn yield',label:'Corn yield trend',div:true,unit:'bu/ac/yr',k:1,needs:'yield',
   v:function(c){var y=c['yield']; return ok(y)&&y.slope!=null?y.slope:null;},title:'County corn yield trend, bushels per acre per year, fitted on every published year since 2008'},
- {key:'yield_worst',grp:'Rent and yield',label:'Worst year vs median',ramp:'gold',unit:'%',pct:true,k:0,needs:'yield',
+ {key:'yield_worst',grp:'Corn yield',label:'Worst year vs median',ramp:'gold',unit:'%',pct:true,k:0,needs:'yield',
   v:function(c){var y=c['yield']; return ok(y)?y.worst.share_of_median:null;},title:'Lowest published county corn yield as a share of the county median'},
  {key:'sob_cost',grp:'Loss ratio',label:'Claims per $100 of coverage',ramp:'loss',unit:'$',k:2,cost:true,needs:'sob',
   v:function(c){var x=get(c,'sob','loss_cost_last10'); return x==null?null:x*100;},title:'Crop insurance claims paid per $100 of coverage (liability), a year, last ten closed crop years'},
@@ -1313,12 +1319,31 @@ function pageLink(fips){
 }
 function layerOff(l){ if(l.side) return false; var st=get(ATLAS,'layers',l.needs,'status'); if(!st) return l.needs==='practices'; return st!=='ok'; }   // a layer the data file does not know yet is dimmed, not drawn empty
 function layerOf(k){ return LAYERS.filter(function(l){return l.key===k;})[0]; }
-var GROUPS=[], LAST_IN={};
-// short labels; 16 groups wrap to two rows at desktop width, two scrolling rows on a phone
-var GLABEL={'Rain and heat':'Weather','Season':'Frost & GDD','Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Rent and yield':'Rent & yield','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
+var GROUPS=[], LAST_IN={}, LAST_FAM={};
+// Four kinds on top, so a first look is four choices, not sixteen. Every layer is still here.
+// Order is the order on screen; a group missing from this list falls into the last kind.
+var FAMILIES=[['Land & rent',['Land value','Rent','Who farms it']],
+  ['Yield & insurance',['Corn yield','Loss ratio','Loss record']],
+  ['Weather & water',['Rain and heat','Night heat','Drought','Season','Storms','Water','Wells and rights']],
+  ['Farm & programs',['CRP','Tile and tillage','Livestock','Solar and wind']]];
+function famOf(g){ for(var i=0;i<FAMILIES.length;i++) if(FAMILIES[i][1].indexOf(g)>=0) return FAMILIES[i][0]; return FAMILIES[FAMILIES.length-1][0]; }
+// short labels for the group row under the four kinds
+var GLABEL={'Rain and heat':'Weather','Season':'Frost & GDD','Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
 function buildLayerButtons(){
   var gbox=$('fa-groups'), seen={};
+  FAMILIES.forEach(function(F){ F[1].forEach(function(g){ if(!seen[g]&&LAYERS.some(function(l){return l.grp===g;})){ seen[g]=1; GROUPS.push(g); } }); });
   LAYERS.forEach(function(l){ if(!seen[l.grp]){ seen[l.grp]=1; GROUPS.push(l.grp); } });
+  var fbox=$('fa-fams');
+  FAMILIES.forEach(function(F){
+    var gs=GROUPS.filter(function(g){return famOf(g)===F[0];}); if(!gs.length) return;
+    var b=document.createElement('button'); b.type='button'; b.className='fa-fam'; b.textContent=F[0]; b.setAttribute('data-fam',F[0]);
+    b.addEventListener('click',function(){
+      var k=LAST_FAM[F[0]]; if(k&&layerOf(k)&&!layerOff(layerOf(k))){ setLayer(k,true); return; }
+      for(var i=0;i<gs.length;i++){ var live=LAYERS.filter(function(l){return l.grp===gs[i]&&!layerOff(l);}); if(live.length){ setLayer(LAST_IN[gs[i]]||live[0].key,true); return; } }
+      drawSubs(gs[0]);
+    });
+    fbox.appendChild(b);
+  });
   var gt=$('fa-groups'); if(gt&&!gt._s){ gt._s=1; var ends=function(){ gt.classList.toggle('at-end', gt.scrollLeft+gt.clientWidth>=gt.scrollWidth-4); }; gt.addEventListener('scroll',ends,{passive:true}); window.addEventListener('resize',ends); setTimeout(ends,0); }
   GROUPS.forEach(function(g){
     var b=document.createElement('button'); b.type='button'; b.className='fa-gtab'; b.textContent=GLABEL[g]||g; b.setAttribute('data-grp',g);
@@ -1333,7 +1358,9 @@ function buildLayerButtons(){
 function drawSubs(show){
   // show: a group whose layers are all unmeasured, drawn dimmed without changing the map
   var L=layerOf(CUR), g=show||L.grp, box=$('fa-layers'), had=box.contains(document.activeElement)?document.activeElement.getAttribute('data-layer'):null; box.innerHTML='';
-  document.querySelectorAll('#fa-groups .fa-gtab').forEach(function(b){ var on=b.getAttribute('data-grp')===g; b.setAttribute('aria-pressed',on?'true':'false'); });
+  var fam=famOf(g);
+  document.querySelectorAll('#fa-fams .fa-fam').forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-fam')===fam?'true':'false'); });
+  document.querySelectorAll('#fa-groups .fa-gtab').forEach(function(b){ var gg=b.getAttribute('data-grp'), on=gg===g; b.setAttribute('aria-pressed',on?'true':'false'); b.hidden=famOf(gg)!==fam; });
   centerTab();
   var dim=false;
   LAYERS.filter(function(l){return l.grp===g;}).forEach(function(l){
@@ -1350,7 +1377,7 @@ function drawSubs(show){
 function centerTab(){ var b=document.querySelector('#fa-groups [aria-pressed=true]'); if(!b) return; var p=b.parentNode; if(p.scrollWidth>p.clientWidth) p.scrollLeft=Math.max(0,b.offsetLeft-p.clientWidth/2+b.offsetWidth/2); }
 function setLayer(k,user){
   var l=layerOf(k); if(!l||layerOff(l)) return;
-  CUR=k; LAST_IN[l.grp]=k;
+  CUR=k; LAST_IN[l.grp]=k; LAST_FAM[famOf(l.grp)]=k;
   if(!l.slider){ for(var f in PATHS){ PATHS[f].classList.remove('line'); } }
   drawSubs(); paint();
   if(user) gaEvent('atlas_layer',{layer:k});

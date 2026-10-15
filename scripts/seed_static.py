@@ -242,6 +242,10 @@ def quote_state(q, fetched, market="grain"):
         cdd = datetime.strptime(cd, "%Y-%m-%d").date() if cd else None
     except Exception:
         cdd = None
+    if (q or {}).get("settled") and cdd:
+        # fetch_prices.split_settle already moved the evening trade to `last`;
+        # close is that session's finished close (2026-10-15).
+        return False, md(cdd)
     if fu is None or cdd is None or CT is None:
         lab = md(cdd) if cdd else (md(fu) if fu else "")
         return None, lab

@@ -83,3 +83,12 @@ test("the four buyer questions are on the page and in FAQPage word for word, and
   assert.ok(!/[—]/.test(faq.flat().join(" ")), "no em dashes");
   assert.ok(!/\d{1,2}(st|nd|rd|th)?,? 20\d\d|Dec \d/.test(faq.find((q) => /farmer who has everything/.test(q[0]))[1]), "no hard-coded Christmas date: the order cards carry it");
 });
+
+test("the first screen says what people search for: rain and snow in the title line, a gift, a wedding or birth year, free to draw", () => {
+  const h1 = HTML.match(/<h1>([^<]*)<\/h1>/)[1];
+  assert.match(h1, /rain and snow/, "the H1 names snow too: " + h1);
+  assert.match(h1, /printed for the wall/, "Sig's line stays");
+  const lede = HTML.match(/<p class="rp-lede">([^<]*)<\/p>/)[1];
+  for (const w of [/rain and snow/, /weather station/, /gift for a farmer/, /married/, /child was born/, /free/]) assert.match(lede, w);
+  assert.ok(!/[—]|CoCoRaHS|archival|poster/i.test(h1 + lede), "no em dash, no program name, no archival, no poster");
+});

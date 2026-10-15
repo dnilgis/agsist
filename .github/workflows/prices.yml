@@ -89,6 +89,7 @@ jobs:
           python scripts/test_preflight_limits.py
           python scripts/test_class_spreads.py
           python scripts/test_prev_close.py
+          python scripts/test_overnight_settle.py
           python scripts/test_grain_symbols.py
 
       - name: Fetch once
