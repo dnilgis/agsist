@@ -675,6 +675,7 @@ var crop='corn';
 var realAccum=null; // set when fetch succeeds
 var realDays=null;  // actual measured days from the archive (excludes pending/missing)
 var realThrough=null; // last date with real data
+var realSeries=null; // [[ISO date, GDU], ...] for each real day, so a crop past the target gets the day it crossed
 var userLat=null, userLon=null;
 // State of the fetched location (from the geocoder). The maturity projection walks forward at
 // Wisconsin monthly rates, so outside the Upper Midwest the date is withheld.
@@ -819,11 +820,12 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     var maxArr=data.daily.temperature_2m_max;
     var minArr=data.daily.temperature_2m_min;
     var timeArr=data.daily.time||[];
-    var accum=0,days=0,lastValid=null,lastIdx=-1;
+    var accum=0,days=0,lastValid=null,lastIdx=-1,series=[];
     for(var i=0;i<maxArr.length;i++){
       if(maxArr[i]==null||minArr[i]==null)continue;
-      accum+=gduDay(maxArr[i],minArr[i]);days++;lastIdx=i;
-      if(timeArr[i])lastValid=timeArr[i];
+      var g1=gduDay(maxArr[i],minArr[i]);
+      accum+=g1;days++;lastIdx=i;
+      if(timeArr[i]){lastValid=timeArr[i];series.push([timeArr[i],g1]);}
     }
     if(days===0){throw new Error('No usable weather days returned for that range');}
     // Days with no data BEFORE the last real day are missing heat, not zero-GDU days. They
@@ -831,7 +833,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     // archive lag; the projection starts from the last real day, so those are projected.
     var gaps=0;
     for(var j=0;j<lastIdx;j++){if(maxArr[j]==null||minArr[j]==null)gaps++;}
-    realAccum=accum;realDays=days;realThrough=lastValid;
+    realAccum=accum;realDays=days;realThrough=lastValid;realSeries=series;
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='inline-flex';
     var pending=0;
     if(lastValid){ pending=Math.round((new Date(todayStr+'T00:00:00')-new Date(lastValid+'T00:00:00'))/86400000); }
@@ -855,7 +857,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
 ['g-plant','g-today'].forEach(function(id){
   var el=document.getElementById(id);
   if(el)el.addEventListener('input',function(){
-    realAccum=null;realDays=null;realThrough=null;
+    realAccum=null;realDays=null;realThrough=null;realSeries=null;
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
     calcGDU();
   });
@@ -865,7 +867,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
 document.getElementById('g-zip').addEventListener('input',function(){
   zipTouched=true;
   userLat=null;userLon=null;userState=null;
-  realAccum=null;realDays=null;realThrough=null;
+  realAccum=null;realDays=null;realThrough=null;realSeries=null;
   var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
   document.getElementById('g-loc-display').textContent='Your location appears here after fetching';
   calcGDU();
@@ -969,9 +971,11 @@ function calcGDU(){
   // Otherwise it starts from the end date. Nothing is counted after Sep 30, so a crop that
   // does not finish by then gets no date (null) instead of an October date.
   var projStart=(realAccum!=null&&realThrough)?new Date(realThrough+'T00:00:00'):new Date(todayD);
-  var daysLeft=null,matDate=null;
+  var daysLeft=null,matDate=null,reached=false;
   if(gduTarget!=null){
-    if(gduRemaining<=0){daysLeft=0;matDate=new Date(todayD);}
+    // Already past the target: find the day it crossed, never the end date. The freeze verdict
+    // compares with that day. A typed GDU total has no day-by-day record, so no date (null).
+    if(gduRemaining<=0){daysLeft=0;reached=true;matDate=crossingDate(gduTarget,gduPerDay,plantD,todayD);}
     else{
       var proj=accumGDU,pd=new Date(projStart),endD=new Date(projStart.getFullYear(),8,30);
       while(pd<endD){
@@ -987,6 +991,7 @@ function calcGDU(){
   // rates the projection uses do not fit there, so no date (and no frost verdict) is shown.
   var outsideUM=(realAccum!=null&&userState&&UPPER_MW.indexOf(userState)<0)?userState:null;
   if(outsideUM&&gduRemaining>0){matDate=null;daysLeft=null;}
+  var matTxt=matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):null;
   var thruTxt=(realAccum!=null&&realThrough)?new Date(realThrough+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):null;
 
   // Physiological maturity = black layer (R6) = the hybrid GDU target. Same event; no separate hardcoded value.
@@ -1015,14 +1020,15 @@ function calcGDU(){
   s('r-remaining',gduRemaining!=null?(crop==='corn'?'~'+(Math.round(gduRemaining/50)*50).toLocaleString():Math.round(gduRemaining).toLocaleString()):'-');
   s('r-days-left',daysLeft!=null?daysLeft+' days':'-');
   s('r-pct',pctDone!=null?pctDone.toFixed(1)+'% complete':'-');
-  s('r-mat-date',matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'-');
-  s('r-mat-lbl',(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', Wisconsin rates');
+  s('r-mat-date',matTxt||'-');
+  s('r-mat-lbl',reached?(crop==='corn'?'Reached black layer about':'Reached full maturity (R8) about'):(crop==='corn'?'Est. black layer':'Est. full maturity (R8)')+', Wisconsin rates');
   // Frost-risk verdict: optional user frost date vs projected maturity
   var frostStr=document.getElementById('g-frost')?document.getElementById('g-frost').value:'';
   var fv=document.getElementById('r-frost-verdict');
   if(fv){
     if(gduTarget==null||(outsideUM&&!matDate)){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
     else if(!frostStr){ fv.textContent='Add freeze date'; fv.style.color='var(--text-muted)'; }
+    else if(!matDate&&reached&&new Date(frostStr+'T00:00:00')>todayD){ fv.textContent='\u2713 Reached before the freeze'; fv.style.color='var(--green)'; }
     else if(!matDate){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
     else { var frostD=new Date(frostStr+'T00:00:00'); var margin=Math.round((frostD-matDate)/86400000);
       if(margin>=7){ fv.textContent='\u2713 '+margin+' days to spare'; fv.style.color='var(--green)'; }
@@ -1033,7 +1039,7 @@ function calcGDU(){
   var note='';
   if(gduTarget==null){note=beanNoTarget(rm)+' Stage shown from this page\u2019s soybean reference table, unscaled.';}
   else if(outsideUM&&pctDone<100){note='No maturity date for '+outsideUM+'. The projection walks forward at Wisconsin monthly GDU rates, which do not fit there. The GDUs so far come from your own weather.';}
-  else if(pctDone>=100){note='Crop has reached physiological maturity. Monitor for harvest timing.';}
+  else if(pctDone>=100){note=(matTxt?'The crop passed '+gduTarget.toLocaleString()+' GDUs on about '+matTxt.replace(/, \d{4}$/,'')+(realAccum!=null?' in your weather':'')+', so it reached '+(crop==='corn'?'black layer':'R8')+' then.':'Your GDU total is past the target, so the crop has reached '+(crop==='corn'?'black layer':'R8')+'. A typed total has no day-by-day record, so the day it got there is not shown.')+' Monitor for harvest timing.';}
   else if(daysLeft!=null&&daysLeft<14){note='Approaching maturity. Scout for stalk integrity and harvest timing.';}
   else if(daysLeft!=null){note='Projection uses the Wisconsin monthly average GDU per day from '+(thruTxt?'the day after '+thruTxt+', the last day in the weather archive,':'the day after the end date')+' on (the September rate is about half of July). Weather changes it.'+(crop==='corn'?'':' Soybean target: NDSU soybean GDD model, MG 00.8\u20131.1.');}
   else{note='Not reached by Sep 30 at the Wisconsin monthly average rates, so no maturity date is shown. Frost may come first.';}
@@ -1054,6 +1060,33 @@ function calcGDU(){
 
   renderMilestones(scaledStages,accumGDU);
   saveState();
+}
+
+/* ─── DAY THE TARGET WAS PASSED ─────────────────────────────────────── */
+// Fetched weather: walk the real days in order (missing days add nothing) and take the first day
+// the running total reaches the target. Example temperatures: the same daily GDU every day after
+// planting, so the n-th day after planting where n = target / daily GDU rounded up (the page counts
+// days since planting the same way). Wisconsin table: walk the table from the planting day, as the
+// total does. A typed total: no daily record, so null.
+function crossingDate(target,perDay,plantD,todayD){
+  if(realAccum!=null){
+    if(!realSeries||!realSeries.length)return null;
+    var run=0;
+    for(var i=0;i<realSeries.length;i++){run+=realSeries[i][1];if(run>=target)return new Date(realSeries[i][0]+'T00:00:00');}
+    return null;
+  }
+  var m=document.getElementById('g-method').value;
+  if(m==='avg'){
+    if(!(perDay>0))return null;
+    var d=new Date(plantD);d.setDate(d.getDate()+Math.ceil(target/perDay-1e-9));
+    return d<=todayD?d:null;
+  }
+  if(m==='wi_hist'){
+    var w=new Date(plantD),acc=0;
+    while(w<=todayD){var mo=w.getMonth()-4;if(mo>=0&&mo<5)acc+=WI_HIST[mo];if(acc>=target)return new Date(w);w.setDate(w.getDate()+1);}
+    return null;
+  }
+  return null;
 }
 
 /* ─── PROGRESS-BAR LABELS ───────────────────────────────────────────── */
