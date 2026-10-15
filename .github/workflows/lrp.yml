@@ -11,9 +11,10 @@ name: lrp
 # Two places, on purpose:
 #   * the lrp-history branch (never deployed by Pages) holds the full history,
 #     one file per sales day, about 130 MB once complete;
-#   * main gets only data/lrp/ (today's offers, the actual ending values, meta,
+#   * main gets data/lrp/ (today's offers, the actual ending values, meta,
 #     and bt.json from scripts/lrp_backtest.mjs), a few hundred KB, inside
-#     data/'s budget.
+#     data/'s budget, plus lrp.html with the record baked in
+#     (scripts/bake_lrp.mjs).
 #
 # mode watch (every 15 minutes in RMA's posting window, see below): one look
 #   at the open years' folder listings and a HEAD on the newest file, against
@@ -242,6 +243,9 @@ jobs:
         run: |
           python scripts/fetch_lrp.py --publish "$HIST" --out data/lrp
           node scripts/lrp_backtest.mjs --history "$HIST" --out data/lrp/bt.json
+          python scripts/lrp_sob_loss.py --history "$HIST" --out data/lrp/sob-loss.json || echo "::warning::lrp_sob_loss.py failed; sob-loss.json not rebuilt"
+          # a failed bake never holds back the data (the commit step bakes again)
+          if [ -f lrp.html ]; then node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed"; fi
           python scripts/check_site_budget.py
 
       - name: Commit to main
@@ -254,6 +258,14 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             rm -rf "$P" && mkdir -p "$(dirname "$P")" && cp -r /tmp/lrpout/out "$P"
+            # /lrp carries the offers' sales day, the record and the tests baked in
+            # (scripts/bake_lrp.mjs), so it moves with every today.json, watch or
+            # history. A failed bake never holds back the data; the page's own
+            # script still reads today.json live.
+            if [ -f lrp.html ]; then
+              node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed; lrp.html not rebaked"
+              git add lrp.html
+            fi
             git add -A "$P"
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             git commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ)"

@@ -173,6 +173,7 @@ LINES = {
     "arc-plc": ("ARC or PLC", "Your county's numbers for the ARC or PLC decision."),
     "rain": ("County rain", "Rain so far this year for your county, from a NOAA station."),
     "manure-value": ("Manure value", "What the N, P and K in manure are worth at dealer prices."),
+    "lrp": ("LRP livestock insurance", "Today's LRP rates for cattle and hogs, and what RMA's record says."),
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
 }
@@ -247,6 +248,27 @@ def card_manure_value():
                   big=hero, unit="per 1,000 gal of liquid dairy manure",
                   ctx="UW first-year book pounds, at Midwest dealer prices.",
                   table=table, table_title="Other manure")
+
+
+def card_lrp():
+    b = js("data/lrp/bt.json")
+    n, kept = b["family_size"], len(b["kept"])
+    ymd = lambda x: date(int(x[:4]), int(x[4:6]), int(x[6:8]))
+    first = ymd(b["record"]["all/feeder/95-100/13"]["first"])
+    asof = ymd(b["as_of"])
+    rows = []
+    for pid, lab in (("feeder", "Feeder cattle"), ("fed", "Fed cattle"), ("swine", "Hogs")):
+        r = b["record"].get(f"current/{pid}/95-100/13")
+        if r and r["years"] >= b["method"]["min_years"]:
+            v = r["net"]
+            rows.append((lab, ("\u2212" if v < -0.005 else "") + f"${abs(v):.2f}", "per $100"))
+    ctx = ("No lower coverage level beat 95 to 100% by more than luck. Today's premium per head is on the page." if kept == 0
+           else "Today's rates and your premium per head, after the subsidy.")
+    return a_card("lrp", "LRP livestock insurance", f"RMA daily files, {md(first)}, {first.year} to {mdy(asof)}",
+                  f"{kept} of {n} LRP tests held up on RMA's record since {first.year}."
+                  + (" No lower coverage level beat 95 to 100% by more than luck." if kept == 0 else ""),
+                  big=f"{kept} of {n}", unit="tests held up on RMA's record", ctx=ctx,
+                  table=rows, table_title="Since Jul 2020, top level, 13 wk")
 
 
 def card_fertilizer():
@@ -701,6 +723,7 @@ def card_rain_us(files=None):
 
 CARDS = {
     "manure-value": card_manure_value,
+    "lrp": card_lrp,
     "fertilizer": card_fertilizer,
     "milk-prices": card_milk,
     "cot": card_cot,

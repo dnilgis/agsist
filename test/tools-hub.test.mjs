@@ -28,7 +28,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
   // 9,872 (cash bids 9,493), crop tracking 3,100, markets 2,114 without the
   // homepage, reference 1,773, spray and fertilizer 1,200, bins 422.
   assert.deepEqual(groups().map((g) => g.hrefs), [
-    ["/cash-bids", "/breakeven", "/arc-plc", "/prf", "/store-or-sell"],
+    ["/cash-bids", "/breakeven", "/arc-plc", "/prf", "/store-or-sell", "/lrp"],
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
     ["/usda-calendar", "/tariffs", "/"],
     ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/data-sources"],

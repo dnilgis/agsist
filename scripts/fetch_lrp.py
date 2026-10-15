@@ -961,8 +961,14 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
     if raw is None:
         log("the ADM livestock folder did not answer")
         return 1
-    years = year_folders(parse_links(raw.decode("utf-8", "replace"), ADM_LIVE), ADM_LIVE)
-    years = parse_years(years_spec, years)
+    all_years = year_folders(parse_links(raw.decode("utf-8", "replace"), ADM_LIVE), ADM_LIVE)
+    years = parse_years(years_spec, all_years)
+    # A broken file in an older year is tried again on every run, not only on
+    # a full one: a watch-started run reads the open years plus these.
+    retry = {int(n[:4]) for n in h.state.get("bad_files", {}) if n[:4].isdigit()} & set(all_years)
+    if retry - set(years):
+        log(f"also reading {sorted(retry - set(years))} for broken files to retry")
+    years = sorted(set(years) | retry)
     todo = []
     listed = {}
     for y in years:
@@ -1056,7 +1062,7 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
                             b = bad[name] = {"size": size, "tries": 0, "first": today}
                         if b.get("last") != today or b["tries"] == 0:
                             b["tries"] += 1
-                        b.update(last=today, error=msg)
+                        b.update(last=today, last_utc=iso_utc(datetime.now(timezone.utc)), error=msg)
                         if b["tries"] >= CORRUPT_TRIES:
                             h.state["files"][name] = size
                             h.state.setdefault("unreadable", {})[name] = dict(b)
@@ -1228,17 +1234,26 @@ def open_year_files(p, today):
     return years, out, failed
 
 
-def watch_is_new(e, state, today):
+BAD_RETRY_MINUTES = 30
+
+
+def watch_is_new(e, state, today, now=None):
     """True when --history would read this file: not read yet, or listed at a
-    new size. A broken zip already retried today waits for tomorrow."""
+    new size. A broken zip is tried again BAD_RETRY_MINUTES after the last try,
+    the same day (RMA often fixes a bad post within the hour); an entry with
+    no time (written before times were kept) waits for the next day."""
     have = state.get("files", {}).get(e["name"])
     if e["size"] is None:
         return e["name"] not in state.get("files", {})
     if have == e["size"]:
         return False
     b = state.get("bad_files", {}).get(e["name"])
-    if b and b.get("size") == e["size"] and b.get("last") == today.isoformat():
-        return False
+    if b and b.get("size") == e["size"]:
+        if b.get("last_utc") and now is not None:
+            last = datetime.strptime(b["last_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+            return (now - last).total_seconds() >= BAD_RETRY_MINUTES * 60
+        if b.get("last") == today.isoformat():
+            return False
     return True
 
 
@@ -1288,7 +1303,7 @@ def run_watch(root, now=None):
         gh_output(new=0, years="", newest="")
         log("watch: RMA's folders did not answer")
         return 1
-    new = [e for e in entries if watch_is_new(e, state, now.date())]   # bad_files days are UTC, as _today()
+    new = [e for e in entries if watch_is_new(e, state, now.date(), now)]   # bad_files days are UTC, as _today()
     newest = max(entries, key=lambda e: (daily_date(e["name"]), e["ry"], e["listed"] or ""))
     status, lm, length = http_head(newest["url"])
     look.update(newest=newest["name"], size=newest["size"], listed=newest["listed"], lm=lm, head_size=length,
@@ -1868,7 +1883,9 @@ def selftest_run_history():
                 for i, day in enumerate(["2026-10-16", "2026-10-16", "2026-10-17", "2026-10-18"]):
                     globals()["_today"] = lambda day=day: date.fromisoformat(day)
                     fetched.clear()
-                    assert run_history(td) == 0
+                    # the third run is a watch-style run of another year only:
+                    # the broken file's own year is read too, so it is retried
+                    assert run_history(td, years_spec="2026" if i == 2 else None) == 0
                     st = load_json(os.path.join(td, "state.json"), {})
                     if i < 3:
                         assert fetched.count(bad_name) == 2, fetched      # tried twice in the run
@@ -1997,12 +2014,19 @@ def selftest_watch():
             assert info["posted_utc"] == "2026-10-16T19:20:00Z" and info["sales_close_ct"] == "2026-10-17T08:25"
             assert sales_info({"sed": "20261215", "src": "y"}, {}, {})["sales_close_utc"] == "2026-12-16T14:25:00Z"
             assert sales_info({"sed": "20261215", "src": "y"}, {}, {})["posted_utc"] is None
-            # A zip that came back broken and was already tried today waits for tomorrow.
+            # A zip that came back broken and was already tried today waits for tomorrow
+            # (an entry with no time) ...
             state["bad_files"] = {o27 + "20261015.zip": {"size": 1450000, "tries": 1, "last": "2026-10-15"}}
             write_json(os.path.join(td, "state.json"), state, pretty=True)
             assert run_watch(td, now=now2) == 0 and outputs()["new"] == "0"
             assert run_watch(td, now=datetime(2026, 10, 16, 15, 7, tzinfo=timezone.utc)) == 0
             assert outputs()["new"] == "1"
+            # ... and with a time, 30 minutes after the last try, the same day.
+            last = now2 - timedelta(minutes=20)
+            state["bad_files"][o27 + "20261015.zip"]["last_utc"] = iso_utc(last)
+            write_json(os.path.join(td, "state.json"), state, pretty=True)
+            assert run_watch(td, now=now2) == 0 and outputs()["new"] == "0", "20 minutes: not yet"
+            assert run_watch(td, now=last + timedelta(minutes=31)) == 0 and outputs()["new"] == "1", "31 minutes: again"
             # A new old-year ending-value file names its own folder.
             del state["bad_files"]
             state["files"][o27 + "20261015.zip"] = 1450000
@@ -2018,7 +2042,7 @@ def selftest_watch():
             dead.update({ADM_LIVE, ADM_LIVE + "2027/"})
             assert run_watch(td, now=now2) == 1 and outputs()["new"] == "0"
             wl = load_json(os.path.join(td, WATCH_LOG), {})
-            assert wl["checks"][-1]["error"] == "no listing answered" and len(wl["checks"]) == 7
+            assert wl["checks"][-1]["error"] == "no listing answered" and len(wl["checks"]) == 9   # two more looks for the 30-minute retry
             dead.clear()
             # The log keeps the newest looks only.
             real_keep = WATCH_CHECKS_KEEP

@@ -297,6 +297,7 @@ payment              = interval protection
     <ul class="prf-states">{mk("state_list")}</ul>
 
     <nav class="prf-links" aria-label="Related tools">
+      <a href="/lrp">LRP: price insurance for cattle and hogs</a>
       <a href="/drought-monitor">Drought Monitor</a>
       <a href="/hail-map">Hail map</a>
       <a href="/farmland-atlas">Farmland Atlas</a>
