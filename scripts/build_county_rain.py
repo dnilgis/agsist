@@ -148,6 +148,7 @@ def last_year_words(c, L, year):
 
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
+RP_SNOW_MISS_OK = 10 # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
 PRINT_JS = '<script src="/components/rain-county-print.js?v=3" defer></script>'
 
 
@@ -166,6 +167,43 @@ def print_ready(c, day):
     if not day or not day.get("p"):
         return False
     return (c.get("missing") or 0) <= RP_MISS_BLOCK and c["days"] >= RP_MIN_DAYS and len(R.unpack_days(day["p"])) == c["days"]
+
+
+def print_snow(day):
+    """Does the print on the county page draw snow? The engine's rule, step for step
+    (components/rain-county-print.js daysOf, then rain-print.js lastRecorded, closeOpenS
+    and derive): counted over reported days, at most RP_SNOW_MISS_OK of them may lack a
+    snowfall value, and at least 0.1 in of snow must have fallen. Returns "drawn",
+    "none" (no snowfall record), "gaps" (record too patchy) or "little" (under 0.1 in)."""
+    if not day or not day.get("s"):
+        return "none"
+    pp = [R.parse_pcpn(x) for x in R.unpack_days(day.get("p"))]
+    sv = [R.parse_pcpn(x)[0] for x in R.unpack_days(day["s"])]
+    last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
+    pp = pp[:last + 1]
+    i = 0
+    while i < len(pp):                     # an S run not closed by an A day is missing days
+        if pp[i][1] != "S":
+            i += 1
+            continue
+        j = i
+        while j < len(pp) and pp[j][1] == "S":
+            j += 1
+        if not (j < len(pp) and pp[j][1] == "A"):
+            pp[i:j] = [(None, "M")] * (j - i)
+        i = j
+    miss, tot = 0, 0.0
+    for k, (v, _f) in enumerate(pp):
+        if v is None:
+            continue
+        x = sv[k] if k < len(sv) else None
+        if x is None:
+            miss += 1
+        else:
+            tot += x
+    if miss > RP_SNOW_MISS_OK:
+        return "gaps"
+    return "drawn" if tot >= 0.1 else "little"
 
 
 def rain_print_href(c, st, year):
@@ -250,7 +288,10 @@ def chart(c, year, county, noun="station", ready=None):
         return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
     st, fips, place, gauge, done, snow = ready
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
-            + ("Light blue is snow. " if snow else f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
+            + {"drawn": "Light blue is snow. ",
+               "gaps": "Its snowfall record has gaps, so no snow is drawn. ",
+               "little": "Under 0.1 in of snow, so none is drawn. "}.get(
+                  snow, f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
             + "A gap is a day with no report." + ("" if done else " The empty months are still to come."))
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
               '<button type="button" data-style="r1" aria-pressed="true">Staircase</button>'
@@ -510,7 +551,7 @@ def county_page(ctx):
     ready = None
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, bool(ctx["day"].get("s")))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, print_snow(ctx["day"]))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"
@@ -563,7 +604,7 @@ def county_page(ctx):
     <div class="rc-faq">{faq_html}</div>
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
     <p class="rc-fine">{more_html}</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; this page is rebuilt every Monday. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt weekly. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.</p>
   </div>
 {FOOT}"""
 
@@ -653,7 +694,7 @@ def state_page(st, d, pages, none_rows):
     <tbody>{''.join(rows)}</tbody></table></div>
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
     {none_html}
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt every Monday. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt weekly. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
 {FOOT}"""
 
@@ -699,7 +740,7 @@ def hub_page(files, built):
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
       <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
-      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt every Monday.</li>
+      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, and the pages are rebuilt about once a week.</li>
     </ul>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
