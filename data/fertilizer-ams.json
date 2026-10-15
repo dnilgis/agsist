@@ -1,0 +1,76 @@
+{
+ "source": "USDA AMS Illinois Production Cost Report (Bi-weekly)",
+ "report_id": "3195",
+ "url": "https://www.ams.usda.gov/mnreports/ams_3195.pdf",
+ "page": "https://mymarketnews.ams.usda.gov/viewReport/3195",
+ "report_date": "2026-10-02",
+ "terms": "Distributor (Dollars Per Ton)",
+ "fetched": "2026-10-15T07:08:45Z",
+ "products": [
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "low": 835.0,
+   "high": 1050.0,
+   "avg": 945.0,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "low": 400.0,
+   "high": 550.0,
+   "avg": 466.67,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "low": 530.0,
+   "high": 530.0,
+   "avg": 530.0,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  },
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "low": 650.0,
+   "high": 890.0,
+   "avg": 770.0,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "low": 840.0,
+   "high": 995.0,
+   "avg": 929.29,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-62",
+   "low": 480.0,
+   "high": 550.0,
+   "avg": 516.36,
+   "unit": "$/ton",
+   "freight": "F.O.B."
+  }
+ ],
+ "status": {
+  "ok": true,
+  "checked": "2026-10-15T07:08:45Z",
+  "note": null
+ }
+}

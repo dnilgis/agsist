@@ -1,0 +1,16 @@
+{
+ "note": "one row per USDA AMS report 3195 date, appended by scripts/fetch_fert_ams.py",
+ "reports": [
+  {
+   "date": "2026-10-02",
+   "avg": {
+    "anhydrous": 945.0,
+    "uan28": 466.67,
+    "uan32": 530.0,
+    "urea": 770.0,
+    "dap": 929.29,
+    "potash": 516.36
+   }
+  }
+ ]
+}
