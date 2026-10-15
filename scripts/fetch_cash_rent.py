@@ -471,6 +471,32 @@ def collect_prices(key, state):
     return out
 
 
+def collect_state_avg(key, state, getter=None):
+    """NASS's own statewide cash rent, by land type and year.
+
+    Same survey, same short_desc as the county rents, at agg_level_desc=STATE
+    (NASS puts the state figures out in its summer state release, ahead of the
+    county estimates). The rent pages print it beside the middle county,
+    because "the average rent in Iowa" usually means this number, and a median
+    of county rates is a different measure. Missing stays missing: no state
+    row, no field, and the page says the figure is not shown.
+    """
+    getter = getter or api_get_safe
+    out = {}
+    for kind, sd in RENT_KINDS.items():
+        for rec in getter(key, sd, state, {"agg_level_desc": "STATE"}):
+            if (rec.get("agg_level_desc") or "").strip().upper() != "STATE":
+                continue                      # never trust the filter alone
+            v = parse_value(rec.get("Value"))
+            year = int(rec.get("year", 0) or 0)
+            # no NO_SURVEY_YEARS filter here: those were years with no COUNTY
+            # survey; a state row NASS did publish is a real number
+            if v is None or not year:
+                continue
+            out.setdefault(kind, {})[str(year)] = round(v, 2)
+    return out
+
+
 def prelim_price_years(prices):
     """Marketing years that are not final yet.
 
@@ -484,7 +510,7 @@ def prelim_price_years(prices):
     return sorted(y for y in yrs if y >= cur - 1)
 
 
-def write_state(state, counties, prices):
+def write_state(state, counties, prices, state_avg=None):
     os.makedirs(OUTDIR, exist_ok=True)
     years = sorted({int(y) for c in counties.values()
                     for kind in c["rent"].values() for y in kind})
@@ -504,6 +530,10 @@ def write_state(state, counties, prices):
                       "year is withheld with its reason. Basis per point: nonirr | irr | all."),
         "counties": [counties[f] for f in sorted(counties)],
     }
+    if state_avg:
+        doc["state_avg"] = state_avg
+        doc["state_avg_note"] = ("USDA NASS statewide cash rent ($/acre), agg_level_desc=STATE, same survey and "
+                                 "land types as the county rents. Not a median of the counties.")
     path = os.path.join(OUTDIR, f"{state}.json")
     with open(path, "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
@@ -883,6 +913,21 @@ def selftest():
       g = practice_series_guard(st0["rows"], ["KS"])
       assert set(g["fatal"]) == {"corn_nonirr", "corn_irr"}, g
       log("  empty practice series in a canary state REFUSES the run (wrong short_desc reads as HTTP 400 = 'no rows')")
+    # --- NASS's statewide rent: STATE rows only, suppression and no-survey years dropped ----
+    seen_extra = []
+    def _sg(key, sd, state, extra=None):
+        seen_extra.append(dict(extra or {}))
+        if sd != RENT_KINDS["nonirr"]:
+            return []
+        return [{"agg_level_desc": "STATE", "year": "2026", "Value": "270"},
+                {"agg_level_desc": "STATE", "year": "2025", "Value": "(D)"},
+                {"agg_level_desc": "STATE", "year": "2018", "Value": "250"},
+                {"agg_level_desc": "COUNTY", "year": "2024", "Value": "999"}]
+    sa = collect_state_avg("x", "IA", getter=_sg)
+    assert sa == {"nonirr": {"2026": 270.0, "2018": 250.0}}, sa
+    assert all(e.get("agg_level_desc") == "STATE" for e in seen_extra), seen_extra
+    assert collect_state_avg("x", "IA", getter=lambda *a, **k: []) == {}, "no rows must mean no field"
+    log("  statewide average: STATE rows only, (D) dropped, empty stays empty")
     # AND IT LEAVES THE REPOSITORY EXACTLY AS IT FOUND IT. The fault this
     # file just carried was not a wrong number, it was a selftest writing into
     # the directory it was measuring. Checking that directly is cheaper than
@@ -926,7 +971,7 @@ def main():
             log(f"[{i}/{len(states)}] {st}: no county rent published — skipped")
             continue
         prices = collect_prices(key, st)
-        _, n = write_state(st, counties, prices)
+        _, n = write_state(st, counties, prices, collect_state_avg(key, st))
         index.append({"state": st, "counties": n,
                       "with_corn_trend": stats["with_corn_trend"]})
         for k in totals:
