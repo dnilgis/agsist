@@ -297,6 +297,170 @@
      "evidence": "snippets"
     }
    ]
+  },
+  "futures": {
+   "queries": [
+    "corn futures price",
+    "soybean futures today",
+    "wheat futures",
+    "live cattle futures"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 43,
+   "verdict": "close (markets.html 38: no)",
+   "report": "results/2026-10-15-futures.md",
+   "competitors": [
+    {
+     "name": "FBN app",
+     "kind": "startup",
+     "total": 40,
+     "evidence": "snippets"
+    },
+    {
+     "name": "Barchart",
+     "kind": "established",
+     "total": 37,
+     "evidence": "snippets"
+    },
+    {
+     "name": "TradingView",
+     "kind": "established",
+     "total": 35,
+     "evidence": "snippets"
+    },
+    {
+     "name": "DTN",
+     "kind": "established",
+     "total": 35,
+     "evidence": "snippets"
+    },
+    {
+     "name": "CME Group",
+     "kind": "established",
+     "total": 33,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "whats-priced-in": {
+   "queries": [
+    "WASDE trade estimates",
+    "USDA report expectations"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-15-whats-priced-in.md",
+   "competitors": [
+    {
+     "name": "DTN Preview/Review",
+     "kind": "established",
+     "total": 37,
+     "evidence": "snippets"
+    },
+    {
+     "name": "farmdoc daily",
+     "kind": "university",
+     "total": 37,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "harvest-price-tracker": {
+   "queries": [
+    "crop insurance harvest price 2026",
+    "projected vs harvest price"
+   ],
+   "last_run": "2026-10-15",
+   "ours_total": 45,
+   "verdict": "yes",
+   "report": "results/2026-10-15-harvest-price-tracker.md",
+   "competitors": [
+    {
+     "name": "farmdoc",
+     "kind": "university",
+     "total": 36,
+     "evidence": "snippets"
+    },
+    {
+     "name": "USDA RMA price discovery",
+     "kind": "government",
+     "total": 35,
+     "evidence": "snippets"
+    }
+   ]
+  },
+  "manure-value": {
+   "last_run": "2026-10-15",
+   "ours_total": 41,
+   "verdict": "close",
+   "report": "results/2026-10-15-manure-value.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "breakeven": {
+   "last_run": "2026-10-15",
+   "ours_total": 36,
+   "verdict": "close",
+   "report": "results/2026-10-15-breakeven.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "store-or-sell": {
+   "last_run": "2026-10-15",
+   "ours_total": 44,
+   "verdict": "yes, narrowly",
+   "report": "results/2026-10-15-store-or-sell.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "cash-rent": {
+   "last_run": "2026-10-15",
+   "ours_total": 44,
+   "verdict": "yes (county rent any state)",
+   "report": "results/2026-10-15-cash-rent.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "farmland-atlas": {
+   "last_run": "2026-10-15",
+   "ours_total": 46,
+   "verdict": "yes for county record (hub 41); no for current land value",
+   "report": "results/2026-10-15-farmland-atlas.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "conditions": {
+   "last_run": "2026-10-15",
+   "ours_total": 40,
+   "verdict": "close",
+   "report": "results/2026-10-15-conditions.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "hail-map": {
+   "last_run": "2026-10-15",
+   "ours_total": 43,
+   "verdict": "yes for free use; close vs paid",
+   "report": "results/2026-10-15-hail-map.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "spray": {
+   "last_run": "2026-10-15",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-15-spray.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "yield-estimator": {
+   "last_run": "2026-10-15",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-15-yield-estimator.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
   }
  }
 }
