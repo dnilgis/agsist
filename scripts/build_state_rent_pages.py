@@ -750,7 +750,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>
-      <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out. The {yr + 1} rents usually come out in August {yr + 1}.</div>
+      <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. The {yr + 1} rents usually come out in August {yr + 1}.</div>
     </div>
   </div>
   {atlas_line(atlas_state_href(st))}{arc_line(st)}
@@ -1111,7 +1111,8 @@ def selftest():
         for st_, s_ in stats.items():
             pg = open(os.path.join(td, f"{slug(STATE_NAMES[st_])}.html")).read()
             assert ('id="your-ground"' in pg) == (len(s_["ground"]) >= GROUND_MIN), f"{st_}: panel shown without data, or missing"
-            assert f"These are the {s_['yr']} county rents, the newest NASS has put out." in pg, f"{st_}: release line missing"
+            rel_ = f" (released {COUNTY_RENT_RELEASED[s_['yr']]})" if s_['yr'] in COUNTY_RENT_RELEASED else ""
+            assert f"These are the {s_['yr']} county rents, the newest NASS has put out{rel_}." in pg, f"{st_}: release line missing"
         # the "average" answer: middle county, and NASS's state figure first only when the data has it
         assert "The middle Iowa county pays " + money(s["median"]) in ia and "not shown here" in ia
         d_ia = json.loads(json.dumps(load_states()["IA"]))
@@ -1130,6 +1131,13 @@ def selftest():
             assert TYPE_LABEL[stats["AZ"]["primary"]].split()[0] in az
         print(f"SELFTEST OK — {len(urls)} URLs; IA baked stats, FAQ, notice, gap honesty, "
               f"county rows, link cloud, hub all verified")
+
+
+# Release day of each county cash rent estimate, from the NASS "Reports by
+# Release Day" calendar ("County Estimates Cash Rents", read Oct 15, 2026 from
+# the references branch copy). That calendar lists 2026 only; add the next
+# year when NASS posts it. The hero prints the date only for a year listed here.
+COUNTY_RENT_RELEASED = {2026: "Aug 21, 2026"}
 
 
 def main():

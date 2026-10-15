@@ -43,7 +43,7 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"How much nitrogen should I apply to corn?","acceptedAnswer":{"@type":"Answer","text":"Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation."}},
   {"@type":"Question","name":"What is my manure worth in fertilizer value?","acceptedAnswer":{"@type":"Answer","text":"Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field."}},
-  {"@type":"Question","name":"What is the economic threshold for soybean aphid?","acceptedAnswer":{"@type":"Answer","text":"250 aphids per plant on 80% or more of plants, with an increasing population, before R5 growth stage."}},
+  {"@type":"Question","name":"What is the economic threshold for soybean aphid?","acceptedAnswer":{"@type":"Answer","text":"250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6."}},
   {"@type":"Question","name":"How do I calculate growing degree units for corn?","acceptedAnswer":{"@type":"Answer","text":"GDU (base 50\u00b0F) = [(daily max temp, capped at 86\u00b0F) + (daily min temp, floor at 50\u00b0F)] / 2 - 50. Accumulate daily from planting."}}
 ]}
 </script>
@@ -152,6 +152,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-cn{font-size:0.78rem;color:var(--text-dim);margin-top:.5rem;line-height:1.5;}
 .ff-note{background:rgba(58,139,60,.08);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:1rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-note strong{color:var(--text);}
+.ff-note a{color:var(--text);text-decoration:underline;text-underline-offset:2px;}
 .ff-warn{background:rgba(230,176,66,.08);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-warn strong{color:var(--gold);}
 .ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
@@ -560,9 +561,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr class="tg"><td class="tl" colspan="6">Potassium Sources</td></tr>
   <tr><td class="tl">MOP (Muriate of Potash)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">60&ndash;62</td><td>n/a</td><td>n/a</td></tr>
   <tr><td class="tl">SOP (Potassium Sulfate)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">50</td><td>18% S</td><td>n/a</td></tr>
-  <tr><td class="tl">K-Mag</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 11% Mg</td><td>n/a</td></tr>
+  <tr><td class="tl">K-Mag (0-0-22)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 10.8% Mg</td><td>n/a</td></tr>
   <tr><td class="tl">9-18-9 starter liquid</td><td>9</td><td>18</td><td>9</td><td>n/a</td><td>11.1</td></tr>
 </tbody></table></div>
+<div class="ff-note"><strong>K-Mag:</strong> 22% K&#x2082;O, 22% S and 10.8% Mg are the guaranteed minimums on the maker's <a href="https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf">2025 K-Mag Granular data sheet</a> (revised Jan 2025, read Oct 15, 2026).</div>
 <div class="ff-note"><strong>Liquid weights:</strong> 1 gal water = 8.34 lb &middot; UAN 28% = 10.6 lb/gal &middot; UAN 32% = 11.1 lb/gal &middot; 10-34-0 = 11.6 lb/gal</div>
 </div><!-- /tab-nitrogen -->
 
@@ -975,17 +977,18 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <tbody>
   <tr class="tg"><td class="tl" colspan="5">Corn Pests</td></tr>
   <tr><td class="tl">Black Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-high">3 or more cut plants per 100</span></td><td class="tl">V1&ndash;V5</td><td class="tl" style="font-size:0.775rem">Monitor after adult flights. Cut plants at/below growing point = dead plant.</td></tr>
-  <tr><td class="tl">Corn Rootworm (adult)</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">0.75 beetles per plant + silk clipping &lt;1/2"</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">Silk clipping at pollination is the critical damage window.</td></tr>
+  <tr><td class="tl">Corn Rootworm (adult)</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">5 or more beetles per plant in the first week of pollen shed, or silks clipped to 1/2" on 25&ndash;50% of plants</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">No yield hit once silks are brown (SDSU). Iowa State: 5+ beetles per ear with silks under 1", up to 15 per ear with good moisture. The 0.75 beetles per plant number is for next year: counted mid-August to mid-September, it says corn on corn needs rootworm protection (UW L023). It is not a spray trigger.</td></tr>
   <tr><td class="tl">European Corn Borer</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">~20% whorl infestation with live borers: non-Bt only</span></td><td class="tl">V8&ndash;VT</td><td class="tl" style="font-size:0.775rem">Non-Bt hybrids: treat at ~20% infested plants with live borers (UW A3646). Bt hybrids provide good control; scout refuge strips only.</td></tr>
   <tr><td class="tl">Western Bean Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">8% egg mass infestation</span></td><td class="tl">Pre-tassel</td><td class="tl" style="font-size:0.775rem">Targets ear tip and kernels. WBC maps at extension sites.</td></tr>
-  <tr><td class="tl">Japanese Beetle</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">3+ beetles/ear, silk &lt;1/2" with poor pollination</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">Treat only during active pollination (4&ndash;5 days).</td></tr>
+  <tr><td class="tl">Japanese Beetle</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">3+ beetles/ear, silks clipped under 1", pollination not done</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">Treat only during active pollination (4&ndash;5 days).</td></tr>
   <tr class="tg"><td class="tl" colspan="5">Soybean Pests</td></tr>
-  <tr><td class="tl">Soybean Aphid</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">250 aphids/plant on &ge;80% of plants, increasing</span></td><td class="tl">V4&ndash;R5</td><td class="tl" style="font-size:0.775rem">Count 20 plants per field. Only treat if population increasing &amp; before R5.</td></tr>
+  <tr><td class="tl">Soybean Aphid</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">250 aphids/plant average, on more than 80% of plants, increasing</span></td><td class="tl">Through R5</td><td class="tl" style="font-size:0.775rem">Scout weekly from mid to late June until R6.5. Average plants from across the field, not the edges. No threshold is set for R6 (UMN).</td></tr>
   <tr><td class="tl">Bean Leaf Beetle</td><td class="tl">Soybean</td><td class="tl"><span class="sev-low">20&ndash;30% defoliation</span></td><td class="tl">V stages</td><td class="tl" style="font-size:0.775rem">Pod feeding at R3&ndash;R5 can warrant action at lower thresholds.</td></tr>
   <tr><td class="tl">Japanese Beetle (soybean)</td><td class="tl">Soybean</td><td class="tl"><span class="sev-med">20% defoliation before bloom; 15% during/after</span></td><td class="tl">V&ndash;R6</td><td class="tl" style="font-size:0.775rem">Canopy closure reduces access; focus on field edges.</td></tr>
   <tr><td class="tl">Soybean Gall Midge</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">Any presence, no established ET</span></td><td class="tl">V1&ndash;R2</td><td class="tl" style="font-size:0.775rem">Emerging pest in the upper Corn Belt. Orange larvae at stem base. Scout field edges.</td></tr>
   <tr><td class="tl">Two-Spotted Spider Mite</td><td class="tl">Both</td><td class="tl"><span class="sev-med">25&ndash;50% leaf stippling, mites present, hot &amp; dry</span></td><td class="tl">R1&ndash;R5</td><td class="tl" style="font-size:0.775rem">Hot dry conditions favor rapid buildup. Check field edges first.</td></tr>
 </tbody></table></div>
+<div class="ff-note" id="pest-sources"><strong>Where the rootworm and aphid numbers come from</strong> (read Oct 15, 2026): SDSU Extension, <a href="https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk">Monitor Your Corn for Corn Rootworm Adults</a>, silk feeding section; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/watch-out-these-silk-feeding-insects">Watch out for these silk feeding insects</a>, Jul 9, 2024 (also the Japanese beetle row); University of Wisconsin, <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a>, corn rootworm worksheet, root protection for the following year; University of Minnesota Extension, <a href="https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid">Scouting for soybean aphid</a>, economic threshold through R5; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/why-use-economic-threshold-soybean-aphid">Why use the economic threshold for soybean aphid?</a>, Aug 28, 2017.</div>
 <div class="ff-h2">Herbicide MOA Reference: Common Classes</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Herbicide MOA Reference: Common Classes table, scrolls sideways"><table class="ff-t">
 <thead><tr><th class="tl">MOA Group</th><th class="tl">Site of Action</th><th class="tl">Common AI / Products</th><th class="tl">Crops</th><th class="tl">Resistance Notes</th></tr></thead>
@@ -1120,7 +1123,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>How much nitrogen should I apply to corn?</summary><div class="agf-a">Corn N rates depend on soil type, previous crop, and N:corn price ratio. Corn after corn needs more nitrogen than corn after soybeans, and a high N:corn price ratio points to the low end of the range. Enter your prices in the N:corn ratio calculator and read the MRTN rate tables on this page for your soil and rotation.</div></details>
 <details><summary>What is my manure worth in fertilizer value?</summary><div class="agf-a">Multiply the total N, P2O5 and K2O in each ton or 1,000 gallons by what those nutrients cost as urea, MAP and potash. That is the value of all of it. A crop can use 80% of the P2O5 and K2O and 25 to 65% of the N the first year, by UW Extension A2809. The Manure tab has the pounds by manure type and a calculator at dated dealer prices. The manure value page at agsist.com/manure-value prices every manure type, an acre and for a whole field.</div></details>
-<details><summary>What is the economic threshold for soybean aphid?</summary><div class="agf-a">250 aphids per plant on 80% or more of plants, with an increasing population, before R5 growth stage.</div></details>
+<details><summary>What is the economic threshold for soybean aphid?</summary><div class="agf-a">250 aphids per plant on average, aphids on more than 80% of plants, and the population rising. That threshold runs through R5. University of Minnesota Extension sets no threshold for R6.</div></details>
 <details><summary>How do I calculate growing degree units for corn?</summary><div class="agf-a">GDU (base 50°F) = [(daily max temp, capped at 86°F) + (daily min temp, floor at 50°F)] / 2 - 50. Accumulate daily from planting.</div></details>
 </section>
 <!--FAQ:END-->
@@ -1141,6 +1144,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/manure-value.js?v=4" defer></script>
-<script src="/components/fast-facts.js?v=3" defer></script>
+<script src="/components/fast-facts.js?v=4" defer></script>
 </body>
 </html>

@@ -202,3 +202,20 @@ test("a byline under the H1, the author in the JSON-LD, and no sideways scroll o
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+/* Source sweep, Oct 15, 2026: the 2027 university line uses farmdoc's own
+ * numbers ("Illinois Crop Budgets for 2027", farmdoc daily (16):157, Sep 1,
+ * 2026): corn total-cost break-even just below $5 north/central, $5.39 south;
+ * soybeans $11.10 to $11.28 north/central, nearly $12 south. Purdue's 2027
+ * guide page prints no break-even, so it is not quoted. */
+test("2027 university break-even line is farmdoc's own figures, cited and dated", async () => {
+  const { readFileSync } = await import("node:fs");
+  const html = readFileSync(new URL("../breakeven.html", import.meta.url), "utf8");
+  const line = html.match(/<span id="be-univ">([\s\S]*?)<\/span>/)[1];
+  assert.match(line, /University budgets put 2027 corn break-even at about \$5 a bushel/);
+  assert.match(line, /just under \$5 in northern and central Illinois and \$5\.39 in southern Illinois/);
+  assert.match(line, /\$11\.10 to \$11\.28 in the north and center and nearly \$12 in the south/);
+  assert.match(line, /href="https:\/\/farmdocdaily\.illinois\.edu\/2026\/09\/illinois-crop-budgets-for-2027\.html"/);
+  assert.match(line, /\(Sep 1, 2026\)/);
+  assert.doesNotMatch(line, /Purdue/, "no Purdue number until its guide is read");
+});

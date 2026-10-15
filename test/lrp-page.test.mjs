@@ -370,3 +370,13 @@ test("rule facts cite RMA's 2027 LRP handbook (FCIC-20010) by section, with the 
   assert.match(read("components/lrp-ui.js"), /live weight x 0\.74.*section 25A/);
   assert.ok(!/Handbook%202026/.test(read("scripts/bake_lrp.mjs")), "no 2026 handbook link from a search snippet");
 });
+
+/* Source sweep, Oct 15, 2026: RMA PM-25-028 (Apr 30, 2025), read in full,
+ * sets for 2026 on the billing date (first day of the second month after the
+ * end date) and adds the Unborn Calves (feeder) and Cull Cows (fed) types. */
+test("PM-25-028 backs the billing date and the 2026 types", () => {
+  const html = readFileSync(new URL("../lrp.html", import.meta.url), "utf8");
+  const url = "https://rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-25-028-livestock-risk-protection";
+  assert.ok(html.includes(`RMA set that date from 2026 on (<a href="${url}" rel="noopener">RMA PM-25-028</a>, Apr 30, 2025)`));
+  assert.ok(html.includes(`(unborn calves and cull cows, <a href="${url}" rel="noopener">RMA PM-25-028</a>; weight-2 unborn feeders)`));
+});

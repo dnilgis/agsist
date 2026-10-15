@@ -114,7 +114,8 @@ test("the 'average rent' answer says it is the middle county, not NASS's state a
 });
 
 test("the hero says these are the newest NASS rents and when the next come", () => {
-  assert.match(IA, /These are the 2026 county rents, the newest NASS has put out\. The 2027 rents usually come out in August 2027\./);
+  // release day from the NASS release calendar: County Estimates Cash Rents, Friday, August 21, 2026
+  assert.match(IA, /These are the 2026 county rents, the newest NASS has put out \(released Aug 21, 2026\)\. The 2027 rents usually come out in August 2027\./);
 });
 
 test("every rent page stays under the 150 KB cap for a generated set", () => {

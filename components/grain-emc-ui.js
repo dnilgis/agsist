@@ -162,16 +162,16 @@
       else if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air brings ' + gname() + ' to <b>' + emcText(now.emc) + '</b>: ' + callWord(now.call) + ' for your ' + fmt(S.current, 1) + '% ' + gname() + '.');
       if (now && now.call === 'part' && S.current != null && S.current > target()) lines.push('This air still pulls water out, but it cannot take the grain all the way to ' + fmt(target(), 1) + '%: if the weather stays like this, the bottom of the bin ends above target until drier air comes.');
       if (S.current != null && S.current > target()) lines.push(tonight(rows));
-      lines.push('<span class="note">For natural-air drying, NDSU Extension says to run fans around the clock until the drying front comes out the top of the bin, and to shut off only for steady rain, fog or snow. That advice was written for wheat; NDSU adds that running only in the driest hours overdries the bottom and stretches the drying time.</span>');
+      lines.push('<span class="note">For natural-air drying of wet corn, Minnesota Extension says to leave the fan running while corn is wetter than about 16% and warmer than about 40 F; running only in the driest weather badly overdries the bottom. NDSU says to turn fans off during extended rain, fog or snow.</span>');
       E.dryWarnings(rows).forEach(function (w) {
         if (w.kind === 'cold') lines.push('<b>Cold:</b> the next 24 hours average ' + fmt(w.avg, 0) + ' F. NDSU says natural-air drying does little until outside air averages about 40 F.');
-        if (w.kind === 'humid') lines.push('<b>Humid:</b> humidity averages ' + fmt(w.avg, 0) + '% over the forecast. NDSU (wheat) says to add a little heat when average humidity runs over 70%.');
+        if (w.kind === 'humid') lines.push('<b>Humid:</b> humidity averages ' + fmt(w.avg, 0) + '% over the forecast, above the 55 to 75% Minnesota Extension says natural-air drying works best in. If you add heat, it says to warm the air no more than about 5 F.');
       });
       if (S.cfm != null && S.cfm < 1) lines.push('<b>Airflow:</b> at ' + S.cfm + ' cfm per bushel the fans cool more than they dry. Aeration fans at 0.1 to 0.2 cfm per bushel do not dry grain safely; drying corn takes about 1 cfm per bushel or more.');
       var dryAvg = E.avg(rows.map(function (r) { return { x: r.emc && r.emc.ok ? r.emc.wb : null }; }), 'x');
       if (dryAvg && dryAvg.avg <= target() - 2) lines.push('<b>Overdrying:</b> this air averages ' + fmt(dryAvg.avg, 1) + '% ' + gname() + ' EMC, well under your target. The bottom of the bin will end drier than ' + fmt(target(), 1) + '%, which is weight you sell for nothing.');
     } else if (S.mode === 'cool') {
-      if (S.grainF == null) { head = 'How warm is the grain?'; lines.push('Type the grain temperature (from cables or a probe) above. NDSU Extension says to cool when outside air averages 10 to 15 F under the grain.'); }
+      if (S.grainF == null) { head = 'How warm is the grain?'; lines.push('Type the grain temperature (from cables or a probe) above. Minnesota Extension says grain is cooling when the 24-hour average is 10 F or more under it; Iowa State says 10 to 20 F.'); }
       else {
         var a24 = E.avg(rows.map(function (r) { return { x: r.fanTF }; }), 'x', 0, 24);
         if (!a24) head = 'No forecast temperatures';
@@ -180,7 +180,7 @@
           if (gap >= E.COOL_GAP_F) { head = 'Cool now'; cls = 'dry'; }
           else if (gap > 0) { head = 'Cools slowly'; cls = 'close'; }
           else { head = 'Too warm to cool'; cls = 'wet'; }
-          lines.push('The next 24 hours average <b>' + fmt(a24.avg, 0) + ' F</b>' + (S.fan > 0 ? ' at the fan' : '') + ', ' + (gap > 0 ? fmt(gap, 0) + ' F under' : fmt(-gap, 0) + ' F over') + ' your ' + fmt(S.grainF, 0) + ' F grain. NDSU Extension says to cool when outside air averages 10 to 15 F under the grain.');
+          lines.push('The next 24 hours average <b>' + fmt(a24.avg, 0) + ' F</b>' + (S.fan > 0 ? ' at the fan' : '') + ', ' + (gap > 0 ? fmt(gap, 0) + ' F under' : fmt(-gap, 0) + ' F over') + ' your ' + fmt(S.grainF, 0) + ' F grain. Minnesota Extension says grain is cooling when the 24-hour average is 10 F or more under it; Iowa State says 10 to 20 F.');
           lines.push(dayAverages(rows));
           var bw = E.bestWindow(rows, 'cool', 3);
           if (bw) lines.push(zach() + ' <b>' + span(rows[bw.start].t, rows[bw.end].t + 3600e3) + '</b>, ' + bw.len + ' hours of air 10 F or more under the grain.' + zachNote());

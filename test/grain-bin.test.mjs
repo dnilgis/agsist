@@ -195,3 +195,25 @@ test("byline, date and sources are on the page", () => {
   const visible = PAGE.replace(/<!--[\s\S]*?-->/g, "").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, "");
   assert.doesNotMatch(visible, /—|&mdash;/, "no em dashes in what a reader sees");
 });
+
+/* Source sweep, Oct 15, 2026: the GSI brochure, NCH-61 and the two Bhadra
+ * papers read in full (references branch). The GSI model 4002 table prints
+ * 30 ft/9 rings 15,337 bu at 24'2" and 36 ft/12 rings 29,404 bu at 32'2", a
+ * 12" plenum, "28 degree angle of repose and 6% compaction factor", and 32 in
+ * rings (2'8" per ring). Brock's chart was not in the saved copy (home page
+ * only), so its row says unverified. NCH-61 gives 1.2 to 1.5 per point. */
+test("dealer rows and shrink range match the documents", () => {
+  assert.match(PAGE, /model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in/);
+  assert.match(PAGE, /<tr><td>GSI 30 ft, 9 rings<\/td><td>24 ft 2 in, 12 in floor<\/td><td>15,337<\/td>/);
+  assert.match(PAGE, /<tr><td>GSI 36 ft, 12 rings<\/td><td>32 ft 2 in, 12 in floor<\/td><td>29,404<\/td>/);
+  assert.match(PAGE, /&ldquo;28 degree angle of repose and 6% compaction factor&rdquo;/);
+  assert.equal(G.DEALER.peakDeg, 28); assert.equal(G.DEALER.packPct, 6);
+  assert.equal((24 * 12 + 2) - (21 * 12 + 6), 32, "GSI chart: 8 to 9 rings adds 32 in");
+  assert.match(PAGE, /<tr><td>Brock 48 ft, 8 rings \(unverified\)<\/td>/);
+  assert.match(PAGE, /so the Brock row is unverified/);
+  assert.doesNotMatch(PAGE, /GSI and Brock bins <a/);
+  const faqs = PAGE.split("Buyers commonly figure 1.2 to 1.5 per point (Purdue NCH-61)").length - 1;
+  assert.equal(faqs, 2, "FAQ and its JSON-LD say 1.2 to 1.5, as NCH-61 does");
+  assert.doesNotMatch(PAGE, /1\.2 to 1\.4 per point/);
+  assert.match(PAGE, /doi\.org\/10\.13031\/trans\.12645/);
+});

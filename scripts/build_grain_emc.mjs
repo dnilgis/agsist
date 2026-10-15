@@ -39,14 +39,14 @@ const COPY = {
     title: "Corn EMC chart: equilibrium moisture content, % wet basis",
     howto: "Find the air temperature down the side and the relative humidity across the top. The cell is the moisture corn ends up at in that air, % wet basis. Each cell gives two published fits, low over high; plan on the high one.",
     eq: "Low: Modified Chung-Pfost, ASABE D245.6 shelled corn, RH = exp(-374.34/(T+31.696) &middot; exp(-0.18662&middot;M)). High: the classic Henderson corn fit, 1-RH = exp(-8.6541e-5&middot;(T+49.81)&middot;M^1.8634). T &deg;C, M % dry basis.",
-    note: "Extension tables for the same air (Minnesota, Kentucky, Arkansas) run up to about 1.5 points apart. Grain drying down settles a little wetter than grain taking on water in the same air. Bold: within half a point of a 15.5% target.",
+    note: "Extension tables for the same air (Minnesota, Kentucky, Arkansas) run up to about 2 points apart. Grain drying down settles a little wetter than grain taking on water in the same air. Bold: within half a point of a 15.5% target.",
     target: 15.5,
   },
   wheat: {
     title: "Wheat EMC chart: equilibrium moisture content, % wet basis",
     howto: "Find the air temperature down the side and the relative humidity across the top. The cell is the moisture wheat ends up at in that air, % wet basis.",
     eq: "Modified Henderson, ASAE D245.5 wheat: 1-RH = exp(-2.3007e-5&middot;(T+55.815)&middot;M^2.2857). T &deg;C, M % dry basis.",
-    note: "Matches the University of Minnesota Extension wheat table at 60 F within a tenth of a point. Soft red winter wheat runs about a point drier. Bold: within half a point of a 13.5% target.",
+    note: "Matches the University of Minnesota Extension wheat table at 60 F within a tenth of a point. Kentucky&#x27;s soft red winter wheat table runs 1 to 2 points drier from 50 to 90% humidity. Bold: within half a point of a 13.5% target.",
     target: 13.5,
   },
 };
