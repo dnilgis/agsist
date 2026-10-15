@@ -11,8 +11,8 @@
  "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
  "updated": "2026-10-15T00:00:00Z",
  "status": {
-  "ok": true,
-  "note": "March 2026 carried over from the figure typed on milk-prices.html; scripts/fetch_mailbox.py replaces it with the newest AMS report.",
-  "checked": "2026-10-15T00:00:00Z"
+  "ok": false,
+  "note": "AMS mailbox fetch failed: HTTPError: HTTP Error 403: Forbidden",
+  "checked": "2026-10-15T07:08:53Z"
  }
 }
