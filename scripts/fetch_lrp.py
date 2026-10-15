@@ -534,6 +534,7 @@ def run_probe(out):
 #   state.json                  every daily zip read: name -> listed size, plus run stats
 #   offers/<RY>/<YYYYMMDD>.json one sales effective date: every offer, one state
 #   aev/<RY>.json               actual ending values released in that reinsurance year
+#   sob/lrp_<YYYY>.zip          Summary of Business, raw (what was bought; checks the subsidy)
 #   probe/                      the first probe's raw capture, kept for reference
 #
 # One offers file per day so a day, once written, is never rewritten (the
@@ -946,6 +947,11 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
                     log(f"  {done} read, {failed} failed, {int(time.time() - t0)} s")
             if not running and pos < len(order) and order[pos] not in pending:
                 break   # stopped launching (time limit); the rest waits for the next run
+    try:
+        fetch_sob(p, h)
+    except Exception as e:  # noqa: BLE001 - the offers matter more; say so and go on
+        log(f"Summary of Business: {type(e).__name__}: {e}")
+        st["sob_failed"] = str(e)[:200]
     st["last_run"] = {"read": done, "failed": failed, "left": len(todo) - done - failed,
                       "stopped_for_time": stopped, "seconds": int(time.time() - t0)}
     h.save()
@@ -953,6 +959,44 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
     if todo and failed > max(3, MAX_FAIL_SHARE * len(todo)):
         return 1
     return 0
+
+
+SOB_REFRESH_DAYS = 28
+
+
+def fetch_sob(p, h, today=None):
+    """The Summary of Business lrp_<YYYY>.zip files, raw, into sob/ on the
+    history branch: what producers actually bought and the subsidy they got,
+    used to check the subsidy table the backtest applies. A missing year is
+    fetched; a year still open (this one or later) at most every
+    SOB_REFRESH_DAYS, so the branch does not take a 3 MB zip every day."""
+    today = today or datetime.now(timezone.utc).date()
+    _, _, raw = p.get(SOB, keep_cap=2 * 1024 * 1024)
+    if raw is None:
+        raise RuntimeError("the Summary of Business folder did not answer")
+    seen = h.state.setdefault("sob", {})
+    got = 0
+    for l in parse_links(raw.decode("utf-8", "replace"), SOB):
+        m = re.search(r"/(lrp_(\d{4})\.zip)$", l["url"], re.I)
+        if not m:
+            continue
+        name, year = m.group(1), int(m.group(2))
+        size = listed_size(l["row"], name)
+        prev = seen.get(name)
+        path = os.path.join(h.root, "sob", name)
+        if prev and os.path.exists(path):
+            if prev.get("size") == size:
+                continue
+            age = (today - date.fromisoformat(prev["fetched"])).days
+            if year >= today.year and age < SOB_REFRESH_DAYS:
+                continue
+        body = http_get(l["url"])
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(body)
+        seen[name] = {"size": size if size is not None else len(body), "fetched": today.isoformat()}
+        got += 1
+    log(f"Summary of Business: {got} files fetched")
 
 
 # ---------------------------------------------------------------- publish
@@ -1276,7 +1320,12 @@ def selftest_run_history():
                        for n, b in files.items() if n.startswith(year))
         return f"<table>{rows}</table>".encode()
 
+    sob = {"lrp_2025.zip": b"x" * 10, "lrp_2026.zip": b"y" * 20}
+
     def fake_get(self, url, **kw):
+        if url == SOB:
+            return 200, {}, "".join(f'<tr><td>01/01/2026 08:00 AM {len(b)} <a href="{n}">{n}</a></td></tr>'
+                                    for n, b in sob.items()).encode()
         if url == ADM_LIVE:
             return 200, {}, b'<a href="2026/">2026</a><a href="2027/">2027</a>'
         return 200, {}, listing_html(url[len(ADM_LIVE):len(ADM_LIVE) + 4])
@@ -1284,8 +1333,14 @@ def selftest_run_history():
     fetched = []
 
     def fake_http(url, **kw):
-        fetched.append(url.rsplit("/", 1)[-1])
-        return files[url.rsplit("/", 1)[-1]]
+        name = url.rsplit("/", 1)[-1]
+        if name in sob:
+            sob_fetched.append(name)
+            return sob[name]
+        fetched.append(name)
+        return files[name]
+
+    sob_fetched = []
 
     real_get, real_http = Probe.get, globals()["http_get"]
     Probe.get = fake_get
@@ -1296,6 +1351,19 @@ def selftest_run_history():
             assert load_json(os.path.join(td, "state.json"), {})["stats"]["last_run"]["left"] == 2
             assert run_history(td) == 0
             assert sorted(fetched) == sorted(files), fetched
+            assert sorted(sob_fetched) == ["lrp_2025.zip", "lrp_2026.zip"]
+            with open(os.path.join(td, "sob", "lrp_2026.zip"), "rb") as f:
+                assert f.read() == sob["lrp_2026.zip"]
+            # A closed year is fetched again only when its size changes; an
+            # open one (this year or later) at most every SOB_REFRESH_DAYS.
+            sob["lrp_2025.zip"] = b"z" * 11
+            sob["lrp_2026.zip"] = b"w" * 21
+            sob_fetched.clear()
+            h = History(td)
+            fetch_sob(Probe("/nonexistent"), h, today=date(2026, 10, 20))
+            assert sob_fetched == ["lrp_2025.zip"], sob_fetched
+            fetch_sob(Probe("/nonexistent"), h, today=date(2026, 12, 1))
+            assert sob_fetched == ["lrp_2025.zip", "lrp_2026.zip"], sob_fetched
             st = load_json(os.path.join(td, "state.json"), {})
             assert st["files"] == {n: len(b) for n, b in files.items()}, st["files"]
             fetched.clear()
