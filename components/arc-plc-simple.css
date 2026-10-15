@@ -44,6 +44,9 @@
 .ap-oth{font-size:var(--fs-sm)}
 .ap-y2{margin-top:.55rem!important;padding-top:.5rem;border-top:1px solid var(--border);font-size:var(--fs-sm);color:var(--text-muted)!important}
 .ap-y2 b{color:var(--text)}
+.ap-trig{margin-top:.55rem!important;padding-top:.5rem;border-top:1px solid var(--border);font-size:var(--fs-sm)}
+.ap-trig b{color:var(--text)}
+.ap-crop .ap-trig-m{margin-top:.1rem;font-size:var(--fs-xs);color:var(--text-muted)}
 
 /* deadlines */
 .ap-dead{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:.8rem 1rem}

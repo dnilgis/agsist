@@ -2,8 +2,12 @@
    (scripts/build_arc_plc.py writes them with every answer already in the HTML).
 
    - Lower / About the same / Higher: shows the answer the build figured for a
-     PLC yield 15% under, at, or 15% over the county average. Nothing is
-     computed here; the three answers are in the page.
+     PLC yield 15% under, at, or 15% over the county average. The page carries
+     About the same; Lower and Higher ride on each card as the build's verdict,
+     gap and flags (data-lower, data-higher; lv_pack in the build), and
+     AgArcCard.level writes them with the build's own words (level_html).
+     Nothing is figured here. test/arc-plc-cards.test.mjs holds the words to the
+     build's on every card.
    - State and county pickers go to that county's page. A county or state
      page carries only its own state and county in the lists; the rest come
      from data/arc-plc/nav.json after the page loads (or on first touch).
@@ -52,20 +56,101 @@
     return null;
   }
   w.AgArcFind = { inRing: inRing, candidates: candidates, locate: locate };
+  /* ---------------------------------------------------------- one card's answer (mirrors level_html, gap_line,
+     big_word, short_word, year_line, tier_html and erp_line in scripts/build_arc_plc.py) */
+  var WORD = { plc: 'PLC', arc: 'ARC-CO' };
+  var TIER = { pick: 'Clear pick', lean: 'Leans', close: 'Close', ask: 'No answer yet' };
+  var RS = '&rsquo;';
+  var IRR_NOTE = 'Figured with the county' + RS + 's all-practice PLC yield; an irrigated farm' + RS + 's own is often higher.';
+  function unpackLv(p) {
+    var a = String(p).split(',');
+    return { w: a[0], whole: +a[1], f: +a[2], n: +a[3], w7: a[4], wo: a[5] || '' };
+  }
+  function shapeOf(w) { return w === 'plc' || w === 'arc' ? 'pick' : w.indexOf('lean_') === 0 ? 'lean' : w === 'close' || w === 'none' ? 'close' : 'ask'; }
+  function bigWord(w) {
+    if (w === 'plc' || w === 'arc') return WORD[w];
+    if (w.indexOf('lean_') === 0) return WORD[w.slice(5)];
+    return { close: 'Either one', none: 'Neither expected to pay', mismatch: 'Ask FSA' }[w] || 'No answer yet';
+  }
+  function shortWord(w) {
+    if (w === 'plc' || w === 'arc') return WORD[w];
+    if (w.indexOf('lean_') === 0) return 'Leans ' + WORD[w.slice(5)];
+    return { close: 'Either one', none: 'Neither pays', mismatch: 'Ask FSA', pending: 'Wait for USDA', noprice: 'No 2027 price yet', withheld: 'Not enough history' }[w];
+  }
+  function low1(t) { return /^(ARC|PLC)/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); }
+  function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
+  function gapLine(v, c) {
+    var w = v.w, lc = c.lc, y = c.ly, pl = /s$/.test(lc);
+    if (w === 'plc' || w === 'arc') return WORD[w] + ' comes out about $' + v.whole + ' more per base acre.';
+    if (w.indexOf('lean_') === 0) {
+      var side = w.slice(5), other = side === 'plc' ? 'arc' : 'plc';
+      var t = WORD[side] + ' comes out about $' + v.whole + ' more per base acre, but that swings from year to year.';
+      if (v.f & 32) t += ' ' + WORD[other] + ' did not come out ahead in any of the ' + v.n + ' price years we ran.';
+      if (v.f & 1) t += ' ' + lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'borrow' : 'borrows') + ' corn' + RS + 's price swings, so ' + (pl ? 'they stop' : 'it stops') + ' at Leans.';
+      if (v.f & 2) t += ' A futures-based price start gives a different answer, so it stops at Leans.';
+      return t;
+    }
+    if (w === 'close') {
+      if (v.f & 4) return 'They come out less than $1 apart per base acre.';
+      if (v.f & 8) return 'They come out about $' + v.whole + ' apart per base acre. Too small to matter.';
+      return WORD[v.f & 16 ? 'plc' : 'arc'] + ' comes out about $' + v.whole + ' more per base acre, but it swings more than that from year to year.';
+    }
+    if (w === 'none') return 'Neither one is likely to pay on ' + lc + ' for ' + y + ' at USDA' + RS + 's price outlook' + (c.cen ? ' (' + c.cen + ')' : '') + '.';
+    if (w === 'mismatch') return 'FSA' + RS + 's county average PLC yield is above the county benchmark yield, so there is no typical-farm answer. Ask your FSA office.';
+    if (w === 'noprice') return 'There is no ' + y + ' price outlook for ' + lc + ' we can check against past years, so no ' + y + ' answer yet.';
+    if (w === 'pending') return 'Waiting on USDA' + RS + 's closing 2025 price, which sets the 2027 reference price.';
+    return 'Not enough years of price and county yield history to call it.';
+  }
+  function yearLine(w, y) {
+    var t = { mismatch: 'ask your FSA office', pending: 'waiting on USDA' + RS + 's closing 2025 price', noprice: 'no ' + y + ' price yet',
+      withheld: 'not enough history to say', none: 'neither expected to pay', close: 'close, either one' }[w];
+    return '<b>' + y + ':</b> ' + (t || low1(shortWord(w)));
+  }
+  /* c: {lc, cen, pu, oth, irr, ly, oy}; p: the packed answer; sameW: the card's About-the-same verdict */
+  function level(c, p, sameW) {
+    var v = unpackLv(p), w = v.w;
+    var g = w === 'mismatch' && sameW !== 'mismatch' ? 'A PLC yield that high is above the county benchmark yield, so this page cannot figure it. Ask your FSA office.' : gapLine(v, c);
+    var oth = '';
+    if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : 'ask your FSA office') + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';
+    if (c.irr) oth = '<p class="ap-oth">' + IRR_NOTE + '</p>' + oth;
+    var erp = w === 'mismatch' ? '' : '<p>PLC only pays if ' + c.lc + ' ' + (/s$/.test(c.lc) ? 'average' : 'averages') + ' under ' + c.pu + ' for ' + c.ly + '.</p>';
+    return '<div class="ap-ans"><span class="ap-big">' + bigWord(w) + '</span>' + tier(w) + '</div><p>' + g + '</p>' + erp + oth + '<p class="ap-y2">' + yearLine(v.w7, c.oy) + '</p>';
+  }
+  /* a card element -> what level() needs (the attributes the build writes) */
+  function cardOf(art, seg) {
+    var lv = art.querySelector('.ap-lv');
+    return { lc: art.getAttribute('data-lc'), cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
+      oth: art.getAttribute('data-oth') || '', irr: /^irr(:|$)/.test(lv.getAttribute('data-e') || ''),
+      ly: seg.getAttribute('data-ly'), oy: seg.getAttribute('data-oy') };
+  }
+  w.AgArcCard = { level: level, unpack: unpackLv };
+
   if (!d || !d.querySelector) return;
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function getJSON(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
 
+
   function levels() {
     var seg = d.querySelector('.ap-seg');
     if (!seg) return;
+    var keep = [];   /* each card's About-the-same answer as the build wrote it */
     seg.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('button[data-lv]');
       if (!b) return;
-      var lv = b.getAttribute('data-lv'), bs = seg.querySelectorAll('button'), ls = d.querySelectorAll('.ap-lv'), i;
+      var lv = b.getAttribute('data-lv'), bs = seg.querySelectorAll('button'), arts = d.querySelectorAll('.ap-crop[data-lower]'), i;
       for (i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i] === b ? 'true' : 'false');
-      for (i = 0; i < ls.length; i++) ls[i].hidden = ls[i].getAttribute('data-lv') !== lv;
+      for (i = 0; i < arts.length; i++) {
+        var box = arts[i].querySelector('.ap-lv');
+        if (!box) continue;
+        if (keep[i] == null) keep[i] = box.innerHTML;
+        if (lv === 'same') { box.innerHTML = keep[i]; box.setAttribute('data-lv', 'same'); continue; }
+        var raw = arts[i].getAttribute('data-' + lv);
+        if (!raw) continue;
+        var sameW = (box.getAttribute('data-p') || '').split(',')[0];
+        box.innerHTML = level(cardOf(arts[i], seg), raw.split(';')[2], sameW);
+        box.setAttribute('data-lv', lv);
+      }
       var note = d.querySelector('.ap-seg-note');
       if (note && note.getAttribute('data-' + lv)) note.textContent = note.getAttribute('data-' + lv);
     });

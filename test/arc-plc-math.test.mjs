@@ -144,7 +144,7 @@ test("every county page: its math file renders, and the page's FAQ and cards say
       faqs++;
     }
     // the card's About-the-same answer for each crop (its data-t, both years) equals the math file's verdict for that practice
-    for (const c of html.matchAll(/<div class="ap-lv" data-k="([a-z_]+)" data-e="([a-z]+)(?::[^"]*)?" data-py="[\d.]+" data-t="([^"]+)" data-lv="same">/g)) {
+    for (const c of html.matchAll(/<div class="ap-lv" data-k="([a-z_]+)" data-e="([a-z]+)(?::[^"]*)?" data-py="[\d.]+" data-t="([^"]+)" data-lv="same" data-p="[^"]*">/g)) {
       const [, k, d, t] = c;
       const i = rec.ci[k];
       assert.equal(rec.e[k][i].d, d, `${f} ${k}: card practice`);

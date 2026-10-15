@@ -633,10 +633,10 @@ def hub_page(B, D, k, ch):
   <p class="page-kicker">Farm program &middot; {esc(x['lc'])}</p>
   <h1>{esc(x['label'])}: ARC or PLC for 2026 and 2027</h1>
   {B.byline_html(D)}
+  {quick}
   <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
   {B.picker_html(D)}
   {B.deadlines_html()}
-  {quick}
   <p><a class="btn btn-secondary" href="/arc-plc?crop={k}#calculator">Run {esc(x['lc'])} in the calculator</a></p>
   <h2 id="erp">How the {esc(x['lc'])} prices are figured</h2>
   <p>The effective reference price is the lesser of 115% of the statutory price, or the greater of the statutory price and 88% of the Olympic average
