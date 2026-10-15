@@ -846,6 +846,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
       </select>
     </div>
     <div class="ff-cf" id="lime-cce-wrap" style="display:none"><label class="ff-cl" for="lime-cce-custom">Custom CCE %</label><input class="ff-ci" id="lime-cce-custom" type="number" value="75" step="1" min="20" max="100"></div>
+    <div class="ff-cf"><label class="ff-cl" for="lime-price">Your lime $/ton, spread</label><input class="ff-ci" id="lime-price" type="number" step="1" min="0" max="1000" placeholder="your price"></div>
   </div>
   <div class="ff-res" id="lime-res">
     <div class="ff-ri"><div class="ff-ril">Tons Pure CaCO&#x2083;/ac</div><div class="ff-riv" id="lime-pure">-</div></div>
@@ -853,7 +854,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">-</div></div>
     <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">-</div></div>
   </div>
-  <div class="ff-cn">Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
+  <div class="ff-cn">Cost uses the price you type, for the lime you picked. Aglime prices swing with haul distance, so I don't guess one. With the 98% pelletized option and no price typed, it uses our dealer quote for pelletized lime. Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
 </div>
 <div class="ff-h2">Micronutrient Reference: Upper Midwest</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Micronutrient Reference: Upper Midwest table, scrolls sideways"><table class="ff-t">
@@ -1140,6 +1141,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/manure-value.js?v=3" defer></script>
-<script src="/components/fast-facts.js?v=1" defer></script>
+<script src="/components/fast-facts.js?v=2" defer></script>
 </body>
 </html>
