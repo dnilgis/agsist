@@ -48,3 +48,29 @@ test("a withheld rent-per-bushel trend is named as that, not as the yield trend"
   assert.match(b, /Trend for rent per bushel<\/span>/);
   assert.ok(!/14-yr trend<\/span><span class="r">—/.test(b));
 });
+
+// 3. The newest public land value (NASS state survey) beside the 2022 census.
+test("the state land value fetcher is wired into the monthly atlas run", () => {
+  const wf = read(".github/workflows/farmland-atlas.yml");
+  assert.match(wf, /python fetch_atlas_state_value\.py --selftest/);
+  assert.match(wf, /NASS_API_KEY: \$\{\{ secrets\.NASS_API_KEY \}\}\n\s+run: python scripts\/fetch_atlas_state_value\.py/);
+  assert.match(wf, /git add -A data\/atlas/);   // where the fetcher writes
+  const src = read("scripts/fetch_atlas_state_value.py");
+  assert.match(src, /OUT = "data\/atlas\/state-value\.json"/);
+  assert.match(read("scripts/build_atlas_pages.py"), /DATA, "state-value\.json"/);
+});
+
+test("a county page names the survey value as the state's, and only when it is newer", () => {
+  const out = py(`
+import build_atlas_pages as B
+class W: svalue = {"IA": {"cropland": {"2025": 10400.0, "2026": 10700.0}}}
+s = B.state_survey(W, "IA", 2022)
+print(B.survey_facts(s, "Iowa"))
+print(B.state_survey(W, "IA", 2026))
+print(B.state_survey(W, "WI", 2022))`);
+  assert.match(out, /Iowa cropland, 2026 state survey/);
+  assert.match(out, /\$10,700\/ac/);
+  assert.match(out, /\+2\.9% from 2025/);          // 10,700 / 10,400 = +2.88%
+  assert.doesNotMatch(out, /Story|county value/i);
+  assert.match(out, /\nNone\nNone$/);              // census year not older: nothing; no state row: nothing
+});

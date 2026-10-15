@@ -7,6 +7,7 @@ name: farmland-atlas
 #   loss    USDA RMA cause of loss, 1989 onward              (no key; first run ~38 zips, later 2)
 #   sob     USDA RMA Summary of Business county premium      (no key; first run ~38 zips, later 2)
 #   value   USDA Census land value per acre, 2012/17/22      (NASS_API_KEY)
+#           + NASS Land Values state survey, newest year     (same key)
 #   crp     FSA CRP enrolment and contract expirations       (no key, two xlsx)
 #   drought U.S. Drought Monitor weeks in D2+/D3+ by year    (no key; first run ~1,450 calls)
 #   energy  EIA-860 solar, wind and battery by county        (no key, one zip)
@@ -98,6 +99,7 @@ jobs:
           python fetch_atlas_loss.py --selftest
           python fetch_atlas_sob.py --selftest
           python fetch_atlas_value.py --selftest
+          python fetch_atlas_state_value.py --selftest
           python fetch_atlas_practices.py --selftest
           python fetch_atlas_crp.py --selftest
           python fetch_atlas_drought.py --selftest
@@ -193,6 +195,15 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_atlas_value.py
+
+      # The newest state land value (NASS Land Values, every summer), printed
+      # beside the 2022 census value on every county page. Rides with value.
+      - name: Fetch state land values (NASS survey)
+        if: steps.which.outputs.value == '1'
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_atlas_state_value.py
 
       - name: Fetch tile drainage and tillage (NASS census)
         if: steps.which.outputs.practices == '1'

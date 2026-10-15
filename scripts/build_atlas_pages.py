@@ -291,6 +291,53 @@ def load_yield_trends(root="."):
     return out
 
 
+def load_state_values(root="."):
+    """{ST: {item: {"YYYY": $/ac}}} from data/atlas/state-value.json
+    (scripts/fetch_atlas_state_value.py: NASS Land Values, state level). {} when
+    the file is absent: the pages then print the census value alone, as before."""
+    try:
+        d = json.load(open(os.path.join(root, DATA, "state-value.json"), encoding="utf-8"))
+    except Exception:
+        return {}
+    return d.get("states") or {}
+
+
+def state_survey(W, st, census_year):
+    """The newest NASS state land value, printed beside the county's census
+    value. Only when the survey year is newer than the census year (otherwise
+    the census is the newer figure and the survey adds nothing). The change is
+    from the year before as Quick Stats serves it now (prior years are revised).
+    -> {"year", "cropland", "prev"?, "pct"?, "real_estate"?, "pasture"?} or None."""
+    S = (W.svalue or {}).get(st) or {}
+    cr = S.get("cropland") or {}
+    ys = sorted(int(y) for y, v in cr.items() if v)
+    if not ys:
+        return None
+    y = ys[-1]
+    if census_year is not None and y <= int(census_year):
+        return None
+    out = {"year": y, "cropland": cr[str(y)]}
+    p_ = cr.get(str(y - 1))
+    if p_:
+        out["prev"], out["pct"] = p_, (cr[str(y)] / p_ - 1) * 100
+    for k in ("real_estate", "pasture"):
+        v = (S.get(k) or {}).get(str(y))
+        if v:
+            out[k] = v
+    return out
+
+
+def survey_facts(ss, stn):
+    """Fact rows for the state survey: always named as the state's, never the county's."""
+    h = fact("%s cropland, %d state survey" % (stn, ss["year"]), money(ss["cropland"]) + "/ac",
+             ("%s%% from %d · " % (sgn(ss["pct"], 1), ss["year"] - 1) if ss.get("pct") is not None else "") + "USDA NASS Land Values, state average")
+    if ss.get("real_estate"):
+        h += fact("%s farm real estate, %d" % (stn, ss["year"]), money(ss["real_estate"]) + "/ac", "land and buildings, state average")
+    if ss.get("pasture"):
+        h += fact("%s pasture, %d" % (stn, ss["year"]), money(ss["pasture"]) + "/ac", "state average")
+    return h
+
+
 class World:
     """Everything the pages share. Built once."""
 
@@ -348,6 +395,7 @@ class World:
                     self.rent_st[c_["fips"]] = rd_["state"]
         self.rrev = load_rent_revenue(root)
         self.ytrend = load_yield_trends(root)
+        self.svalue = load_state_values(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -1221,7 +1269,9 @@ def county_page(W, f, d, stamp):
                 (str(rv["year"]) + " county average") if rv else ("no dry rent published" if ri else why(R)), st_rent, money, st)
     if ri:
         keys += key("Cash rent, irrigated", money(ri["value"]), "/ac", "%s county average" % ri["year"], st_irr, money, st)
-    keys += key("Land and buildings", money(V["latest"]) if ok(V) and V.get("latest") is not None else None, "/ac", val_sub(), st_val, money, st)
+    ss = state_survey(W, st, V.get("latest_year") if ok(V) else get(W.atlas, "national", "value", "year"))
+    vsub = val_sub() + ((" · %s cropland %d: %s (state survey)" % (st, ss["year"], money(ss["cropland"]))) if ss else "")
+    keys += key("Land and buildings", money(V["latest"]) if ok(V) and V.get("latest") is not None else None, "/ac", vsub, st_val, money, st)
     rtv = get(V, "rent_to_value", "pct")
     if not ri:
         if rtv is None and rpb is not None:
@@ -1339,6 +1389,11 @@ def county_page(W, f, d, stamp):
                 S2 += fwith("Dry rent ÷ census value", why(V["rent_to_value"]))
     else:
         S2 += fwith("Land value", why(V))
+    if ss:
+        S2 += survey_facts(ss, stn)
+        S2 += ('<p class="note">The census value is this county\'s, from %s. The survey figures are the %s average for %d, from the USDA NASS Land Values report. '
+               'NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p>'
+               % (V.get("latest_year") if ok(V) else "the census", esc(stn), ss["year"]))
 
     S3 = "<h2>Corn yield</h2>"
     if ok(Y):
@@ -1668,6 +1723,9 @@ def state_page(W, st):
         else:
             sub_ = "median of %d counties with 10,000+ farm acres%s" % (n, why_)
         facts += fact(label, fm(m) if m is not None else "n/a", sub_ if m is not None else "too few counties to give a median")
+    ss = state_survey(W, st, get(W.atlas, "national", "value", "year"))
+    if ss:
+        facts += survey_facts(ss, stn)
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
     title = next((t for t in (f"{stn} Farmland Values by County: Land Value, Yield & Risk",
@@ -1996,6 +2054,16 @@ def selftest():
     check("read gate: flagged land value", not read_ok("against a census land value of $3,293 per acre", d0, {"dir": "rose"}) and read_ok("against a census land value of $3,293 per acre", d0, None))
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")
     check("recent yield", recent_yield({"last_year": 2025, "hist": {"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230}}, 2026)["avg"] == 210.0)
+    # state survey beside the census: newer only, named as the state's, change hand worked
+    class _W:
+        svalue = {"IA": {"cropland": {"2025": 10400.0, "2026": 10700.0}, "real_estate": {"2026": 10100.0}},
+                  "RI": {"cropland": {"2022": 30000.0}}}
+    ss_ = state_survey(_W, "IA", 2022)
+    check("state survey newest year", ss_["year"] == 2026 and ss_["cropland"] == 10700.0 and ss_["real_estate"] == 10100.0 and "pasture" not in ss_)
+    check("state survey change", sgn(ss_["pct"], 1) == "+2.9")      # 10,700 / 10,400 - 1 = 2.88%
+    check("state survey not newer than census: none", state_survey(_W, "RI", 2022) is None and state_survey(_W, "IL", 2022) is None)
+    sf_ = survey_facts(ss_, "Iowa")
+    check("state survey facts", "Iowa cropland, 2026 state survey" in sf_ and "$10,700/ac" in sf_ and "+2.9% from 2025" in sf_ and "USDA NASS Land Values, state average" in sf_ and "Iowa farm real estate, 2026" in sf_)
     check("recent yield stale", recent_yield({"last_year": 2020, "hist": {str(y): 1 for y in range(2016, 2021)}}, 2026) is None)
     # bars: a gap year is a gap, not a zero
     svg = bars_svg({2000: 5, 2001: 6, 2003: 7}, "t", lambda v: str(v))
