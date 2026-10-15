@@ -118,6 +118,13 @@
     .cbt-nl li a:hover{color:var(--gold)}
     .cbt-nl .np{font-family:'JetBrains Mono',monospace;font-size:.86rem}
     .cbt-nl .cbt-mut{white-space:nowrap}
+    .cbt-answer{font-size:1.05rem;line-height:1.5;color:var(--text);margin:6px 0 4px}
+    .cbt-cmp{font-size:.88rem;line-height:1.55;color:var(--text-muted);margin:-4px 0 12px}
+    .cbt-cmp a{color:var(--gold);white-space:nowrap}
+    .cbt-faq h3{margin:14px 0 2px}.cbt-faq p{margin:0;font-size:.92rem;line-height:1.6;color:var(--text-muted)}
+    .cbt-hist{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:14px 0}
+    .cbt-hist summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--text);min-height:44px;box-sizing:border-box}
+    .cbt-hist-body{padding:0 14px 12px}
   </style>
 </head>
 <body>
@@ -144,20 +151,24 @@
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/iowa/" style="color:var(--text-muted)">Iowa</a> &rsaquo; <b style="color:var(--text)">Britt</b></p>
   <h1>Cash grain bids in Britt, IA today</h1>
+  
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Britt, IA has a bid we could confirm right now. The nearest ones that do are below.</div>
+  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/iowa/klemme"><b>Five Star Cooperative</b>, Klemme, IA</a> <span class="cbt-mut">11 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.50 <span class="mut">Dec</span></span></li><li><a href="/cash-bids/iowa/ventura"><b>Five Star Cooperative</b>, Ventura, IA</a> <span class="cbt-mut">15 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.45 <span class="mut">Dec</span> &middot; Soybeans $12.12 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/clear-lake"><b>North Iowa Cooperative</b>, Clear Lake, IA</a> <span class="cbt-mut">20 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.35 <span class="mut">Oct</span> &middot; Soybeans $12.04 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/thornton"><b>North Iowa Cooperative</b>, Thornton, IA</a> <span class="cbt-mut">21 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.35 <span class="mut">Oct</span> &middot; Soybeans $12.04 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/hanlontown"><b>Five Star Cooperative</b>, Hanlontown, IA</a> <span class="cbt-mut">24 mi &middot; posted Oct 15</span><br><span class="np">Corn $4.47 <span class="mut">Dec</span> &middot; Soybeans $12.03 <span class="mut">Oct</span></span></li></ul><p class="cbt-sub">Straight-line miles from the elevators in Britt. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
   
-  <h2 id="nearby">Nearest elevators with a current bid</h2><ul class="cbt-nl"><li><a href="/cash-bids/iowa/klemme"><b>Five Star Cooperative</b>, Klemme, IA</a> <span class="cbt-mut">11 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.50 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/ventura"><b>Five Star Cooperative</b>, Ventura, IA</a> <span class="cbt-mut">15 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.38 <span class="mut">Oct</span> &middot; Soybeans $12.29 <span class="mut">Jan &rsquo;27</span></span></li><li><a href="/cash-bids/iowa/clear-lake"><b>North Iowa Cooperative</b>, Clear Lake, IA</a> <span class="cbt-mut">20 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.34 <span class="mut">Oct</span> &middot; Soybeans $12.02 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/thornton"><b>North Iowa Cooperative</b>, Thornton, IA</a> <span class="cbt-mut">21 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.34 <span class="mut">Oct</span> &middot; Soybeans $12.02 <span class="mut">Oct</span></span></li><li><a href="/cash-bids/iowa/hanlontown"><b>Five Star Cooperative</b>, Hanlontown, IA</a> <span class="cbt-mut">24 mi &middot; posted Oct 14</span><br><span class="np">Corn $4.36 <span class="mut">Oct</span> &middot; Soybeans $12.25 <span class="mut">Jan &rsquo;27</span></span></li></ul><p class="cbt-sub">Straight-line miles from the elevators in Britt. Each price is that elevator&rsquo;s highest posted cash for its nearest delivery month, posted in the last 72 hours. Call to confirm before you haul.</p>
+  
+  
+  
   <a class="cbt-live" href="/cash-bids">Live bids near Britt &rarr;</a>
-  
-  
   <div id="bid-email" data-bid-alerts data-place="Britt" data-zip="50423" data-source="town:iowa/britt"></div>
   
   
   
-  <h2>Also in Britt, no current bid</h2><ul class="cbt-list"><li>Landus Cooperative: board not confirmed on the latest read, last read Oct 14, 2026</li><li>NEW Cooperative, Inc.: board not confirmed on the latest read, last read Oct 14, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
+  
+  
+  <h2>Also in Britt, no current bid</h2><ul class="cbt-list"><li>Landus Cooperative: board not confirmed on the latest read, last read Oct 14, 2026</li><li>NEW Cooperative, Inc.: board not confirmed on the latest read, last read Oct 15, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
-  posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
+  posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="/cash-bids">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.</div>
