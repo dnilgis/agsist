@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
-import { bake, faqList, pickHtml, methodHtml, answerHtml, readAll } from "../scripts/bake_lrp.mjs";
+import { bake, bakeRecord, backJson, faqList, pickHtml, methodHtml, answerHtml, readAll } from "../scripts/bake_lrp.mjs";
 import { subsidy as btSubsidy } from "../scripts/lrp_backtest.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -26,6 +26,8 @@ const META = JSON.parse(read("data/lrp/meta.json"));
 const TODAY = JSON.parse(read("data/lrp/today.json"));
 const SOB = readAll().sob;
 const PAGE = read("lrp.html");
+/* the record, the tests and the method moved to /lrp/record (Oct 15 redesign) */
+const RECORD = read("lrp/record.html");
 
 /* a small results file with a known answer */
 function fakeBt(over = {}) {
@@ -130,6 +132,7 @@ test("the method names the gaps: missing ending values and any file RMA served b
 
 test("lrp.html matches data/lrp (scripts/bake_lrp.mjs --check)", () => {
   assert.equal(bake(PAGE, BT, META, TODAY, SOB), PAGE, "run node scripts/bake_lrp.mjs");
+  assert.equal(bakeRecord(RECORD, PAGE, BT, META, TODAY, SOB), RECORD, "run node scripts/bake_lrp.mjs (lrp/record.html)");
 });
 
 test("FAQ: the JSON-LD answers are the visible answers, word for word", () => {
@@ -155,26 +158,30 @@ test("every rule in the FAQ cites RMA", () => {
 });
 
 test("neutral page: no agent routing, no sales, no sponsor price, no em dashes", () => {
-  const files = ["lrp.html", "components/lrp.js", "components/lrp-ui.js", "scripts/bake_lrp.mjs"];
+  const files = ["lrp.html", "lrp/record.html", "components/lrp.js", "components/lrp-ui.js", "components/lrp.css", "scripts/bake_lrp.mjs"];
   for (const f of files) {
     const s = read(f);
     assert.ok(!s.includes("—") && !s.includes("&mdash;"), `${f} has an em dash`);
   }
-  assert.ok(!/agent-locator|find an agent|contact an agent|buy now|sign up for lrp/i.test(PAGE));
-  assert.ok(!/ag-sponsor|\$\d+\/mo/.test(PAGE), "no sponsor ribbon or price");
-  assert.match(PAGE, /What the numbers would pick/);
-  assert.match(PAGE, /History only, not advice/);
+  for (const page of [PAGE, RECORD]) {
+    assert.ok(!/agent-locator|find an agent|contact an agent|buy now|sign up for lrp/i.test(page));
+    assert.ok(!/ag-sponsor|\$\d+\/mo/.test(page), "no sponsor ribbon or price");
+  }
+  assert.match(RECORD, /What the numbers would pick/);
+  assert.match(RECORD, /History only, not advice/);
 });
 
 test("the byline sits at the bottom, not in the hero", () => {
   // the same byline and disclosure as /prf: an insurance page
   const by = PAGE.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent.');
   assert.ok(by > PAGE.indexOf('id="questions"'), "byline after the FAQ heading");
-  assert.ok(by > PAGE.indexOf('id="method"'));
+  const rby = RECORD.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>');
+  assert.ok(RECORD.indexOf('id="method"') > 0 && rby > RECORD.indexOf('id="method"'), "the record page's byline after its method");
 });
 
 test("one hand-written page, small; the bulky detail loads on demand", () => {
   assert.ok(statSync(ROOT + "lrp.html").size < 150 * 1024, "lrp.html under 150 KB");
+  assert.ok(statSync(ROOT + "lrp/record.html").size < 150 * 1024, "lrp/record.html under 150 KB");
   const ui = read("components/lrp-ui.js");
   assert.match(ui, /load\('today\.json'\)/);
   assert.match(ui, /load\('bt\.json'\)/);
@@ -242,7 +249,7 @@ test("ship-blocker: pounds typed in the weight box are read as pounds", () => {
   assert.match(h.note, /x 0\.74 = 2\.00 cwt lean/);
   // and the page script uses it, never parseFloat on the raw box
   const ui = read("components/lrp-ui.js");
-  assert.match(ui, /L\.readWeight\(cwtIn\.value, o\.c\)/);
+  assert.match(ui, /L\.readWeight\(cwtIn\.value, comm\)/);
 });
 
 test("outside RMA's weight range or over the head limit, totals are blanked and the page says why", () => {
@@ -254,25 +261,40 @@ test("outside RMA's weight range or over the head limit, totals are blanked and 
   assert.match(L.weightProblem({ c: "0815", w: ["1.40", "2.60"] }, 2, 70001), /70,000 head/);
 });
 
-test("the hero says what the record can say, at today's subsidy, and points at the premium", () => {
-  assert.match(PAGE, /No lower coverage level beat 95 to 100% by more than luck could explain\./);
-  assert.match(PAGE, /It does not say whether to insure\./);
-  assert.match(PAGE, /<a class="lrp-go" href="#today">Your premium today/);
-  const hero = PAGE.slice(PAGE.indexOf("<!--lrp:answer-->"), PAGE.indexOf("<!--/lrp:answer-->"));
+test("the record page says what the record can say, at today's subsidy, and points back at the premium", () => {
+  assert.match(RECORD, /No lower coverage level beat 95 to 100% by more than luck could explain\./);
+  assert.match(RECORD, /It does not say whether to insure\./);
+  assert.match(RECORD, /<a class="lrp-go" href="\/lrp">Your premium today/);
+  const hero = RECORD.slice(RECORD.indexOf("<!--lrp:answer-->"), RECORD.indexOf("<!--/lrp:answer-->"));
   assert.match(hero, /at today&rsquo;s subsidy/);
   assert.ok(hero.includes(L.money(BT.record["all/feeder/95-100/13"].net_now)), "hero shows today's-subsidy figures");
   assert.match(hero, /<span>\d+ of 100<\/span>/);
-  assert.match(hero, /600 steers at 8\.5 cwt/);
+  assert.match(hero, /600 head of steers at 850 lb \(8\.5 cwt\)/, "600 head, not 600-lb steers (the rancher's misread)");
   assert.match(hero, /Since July 2020 it paid back/, "hogs never read as paying for themselves without the current regime beside it");
-  assert.match(PAGE, /at the subsidy in force that year/);
+  assert.match(RECORD, /at the subsidy in force that year/);
+  assert.match(RECORD, /<link rel="canonical" href="https:\/\/agsist\.com\/lrp\/record">/);
+});
+
+test("the calculator leads: definition, then the inputs, then one answer; the record is one link away", () => {
+  const at = (s) => { const i = PAGE.indexOf(s); assert.ok(i > 0, s); return i; };
+  const def = at('<p class="lrp-def"><b>LRP</b> (Livestock Risk Protection) is a price floor on cattle or hogs you sell later. It is USDA insurance, sold through crop insurance agents, and the premium is billed after the end date.</p>');
+  assert.ok(at("<h1>") < def && def < at('class="lrp-animal"') && at('class="lrp-animal"') < at('id="lrp-head"'));
+  assert.ok(at('id="lrp-cwt"') < at('id="lrp-len"') && at('id="lrp-len"') < at('<div id="lrp-out">'));
+  assert.ok(at('<div id="lrp-out">') < at("LRP or a put?") && at("LRP or a put?") < at('id="lrp-hist"'));
+  assert.ok(at('id="lrp-hist"') < at('id="lrp-all"') && at('id="lrp-all"') < at('id="questions"'), "full offer table, then the FAQ, lower down");
+  assert.match(PAGE, /<details class="box" id="lrp-all">/, "every coverage level stays closed until opened");
+  assert.match(PAGE, /<a href="\/lrp\/record">How these numbers were checked/);
+  for (const gone of ["Holm", "What the numbers would pick", "sign flip", 'class="rec">tested']) assert.ok(!PAGE.includes(gone), gone);
+  assert.ok(!read("components/lrp-ui.js").includes('class="rec">tested'), "no tested pills");
+  assert.match(read("components/lrp.css"), /\.lrp \[id\]\{scroll-margin-top:\d+px\}/, "anchors clear the sticky header");
 });
 
 test("fed cattle 95 to 100% reads as a clear no, and the closest call says why it was ahead", () => {
   const t = BT.tests["all/fed/paid"];
   assert.equal(L.verdict(t), `No: lost money in ${t.years_tested - t.years_positive} of ${t.years_tested} years`);
-  assert.match(PAGE, /lost less on average because it covered less/);
-  assert.match(PAGE, /came in above RMA&rsquo;s expected ending value in \d+ of \d+ insurance years/);
-  assert.match(PAGE, /Even counting only the 12 tests/);
+  assert.match(RECORD, /lost less on average because it covered less/);
+  assert.match(RECORD, /came in above RMA&rsquo;s expected ending value in \d+ of \d+ insurance years/);
+  assert.match(RECORD, /Even counting only the 12 tests/);
 });
 
 test("the offers are dated with weekdays, a static summary is baked for crawlers, and closed is re-checked", () => {
@@ -290,13 +312,16 @@ test("the offers are dated with weekdays, a static summary is baked for crawlers
 
 test("accessibility: one status line, row choice by button, captions, groups", () => {
   assert.ok(!/id="lrp-out" aria-live/.test(PAGE), "no live region on the whole block");
-  assert.equal((PAGE.match(/role="status"/g) || []).length, 2, "the offers status and the results-file status");
+  assert.equal((PAGE.match(/role="status"/g) || []).length, 1, "the offers status");
+  assert.equal((RECORD.match(/role="status"/g) || []).length, 1, "the results-file status, on /lrp/record");
   const ui = read("components/lrp-ui.js");
   assert.match(ui, /class="rowbtn" data-level="' \+ r\.level \+ '" aria-pressed="/);
   assert.match(ui, /<caption>' \+ esc\(L\.captionText\(T, closed\)\) \+ '<\/caption>/);
   assert.match(ui, /class="lrp-math" role="group"/);
   assert.match(L.testsTable(BT), /<tbody><tr class="grp"><th scope="colgroup"/);
-  assert.match(PAGE, /@media print/);
+  assert.match(read("components/lrp.css"), /@media print/);
+  assert.match(PAGE, /<div class="lrp-animal" role="group" aria-label="Animal">/);
+  assert.match(read("components/lrp-ui.js"), /data-drop="' \+ i \+ '" aria-pressed="/);
 });
 
 test("FAQ: is it worth it comes first, and the put comparison makes no margin claim", () => {
@@ -376,7 +401,153 @@ test("rule facts cite RMA's 2027 LRP handbook (FCIC-20010) by section, with the 
  * end date) and adds the Unborn Calves (feeder) and Cull Cows (fed) types. */
 test("PM-25-028 backs the billing date and the 2026 types", () => {
   const html = readFileSync(new URL("../lrp.html", import.meta.url), "utf8");
+  const record = readFileSync(new URL("../lrp/record.html", import.meta.url), "utf8");
   const url = "https://rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-25-028-livestock-risk-protection";
   assert.ok(html.includes(`RMA set that date from 2026 on (<a href="${url}" rel="noopener">RMA PM-25-028</a>, Apr 30, 2025)`));
-  assert.ok(html.includes(`(unborn calves and cull cows, <a href="${url}" rel="noopener">RMA PM-25-028</a>; weight-2 unborn feeders)`));
+  assert.ok(record.includes(`(unborn calves and cull cows, <a href="${url}" rel="noopener">RMA PM-25-028</a>; weight-2 unborn feeders)`));
+});
+
+/* ------------------------------------------------ the Oct 15 redesign: the calculator's state */
+
+test("changing the animal keeps the typed weight and head (it used to reset to 800 lb)", () => {
+  const s = { a: "fed", h: "120", w: "1400", l: 26, k: "cull" };
+  const t = L.switchAnimal(s, "feeder");
+  assert.equal(t.a, "feeder");
+  assert.equal(t.w, "1400", "the weight the reader typed stays");
+  assert.equal(t.h, "120");
+  assert.equal(t.l, 26, "the end date asked for stays; the page takes the nearest one offered");
+  assert.equal(t.k, null, "the class goes back to that animal's usual one");
+  // and the page script changes animal only through it, and never puts a default weight in the box
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /S = L\.switchAnimal\(S, b\.getAttribute\('data-a'\)\)/);
+  assert.ok(!/weightDefault/.test(ui), "no per-type default weight");
+  assert.ok(!/\$\('lrp-cwt'\)\.value = (?!S\.w)/.test(ui), "the weight box is only ever set from what the reader typed or chose");
+});
+
+test("the weight picks RMA's weight class (handbook section 23A(3))", () => {
+  const off = TODAY.offers;
+  const ry = TODAY.ry;
+  // feeder steers: under 600 lb is weight 1 (809), 600 to 1,000 lb weight 2 (810)
+  assert.equal(L.inferType(off, "0801", "steers", 5.5, ry), "809");
+  assert.equal(L.inferType(off, "0801", "steers", 5.99, ry), "809");
+  assert.equal(L.inferType(off, "0801", "steers", 6.0, ry), "810");
+  assert.equal(L.inferType(off, "0801", "steers", 8.5, ry), "810");
+  assert.equal(L.inferType(off, "0801", "heifers", 4, ry), "811");
+  assert.equal(L.inferType(off, "0801", "heifers", 7, ry), "812");
+  assert.equal(L.inferType(off, "0801", "dairy", 7, ry), "816");
+  assert.equal(L.inferType(off, "0801", "unborn", 7, ry), "820", "unborn weight 2 is 6.00 to 9.00 cwt");
+  // over the class's range: the nearest type, and the page says the range (no totals)
+  assert.equal(L.inferType(off, "0801", "steers", 14, ry), "810");
+  assert.deepEqual([...L.classRange(off, "0801", "steers", ry)], [1, 10]);
+  // no weight yet: the heavier, usual type
+  assert.equal(L.inferType(off, "0801", "steers", null, ry), "810");
+  assert.equal(L.inferType(off, "0802", "fed", 14, ry), "820");
+  assert.equal(L.inferType(off, "0802", "cull", 12, ry), "821");
+  assert.equal(L.inferType(off, "0815", "hogs", L.readWeight("280", "0815").cwt, ry), "997");
+  // every class names types RMA offered that day, with the weight ranges the handbook gives
+  const w = (c, t) => off.find((o) => o.c === c && o.t === t).w.map(Number);
+  assert.deepEqual(w("0801", "809"), [1, 5.99]);
+  assert.deepEqual(w("0801", "810"), [6, 10]);
+  assert.deepEqual(w("0801", "820"), [6, 9], "unborn weight 2");
+  assert.deepEqual(w("0801", "823"), [0.6, 0.99], "unborn calves");
+  assert.deepEqual(w("0802", "820"), [10, 18], "fed steers and heifers 10 to 18 cwt (section 24A(5))");
+  assert.deepEqual(w("0802", "821"), [8, 17], "cull cows 8 to 17 cwt");
+  for (const [c, ks] of Object.entries(L.CLASSES[ry])) for (const k of ks) for (const t of k.types) {
+    assert.ok(off.some((o) => o.c === c && o.t === t), `${c}/${t} (${k.name}) offered`);
+  }
+  // the unborn classes carry their born class's price adjustment factor (unborn bulls and heifers: the average of steers and heifers)
+  const paf = (t) => +off.find((o) => o.c === "0801" && o.t === t && o.len === 30).paf;
+  near(paf("817"), (paf("809") + paf("811")) / 2, "unborn bulls and heifers, weight 1", 0.006);
+  near(paf("818"), paf("813"), "unborn Brahman, weight 1", 0.006);
+  near(paf("819"), paf("815"), "unborn dairy, weight 1", 0.006);
+  // an unknown year: choose by weight among the tested types, nothing breaks
+  assert.equal(L.inferType(off, "0801", "steers", 5, "2031"), "809");
+});
+
+test("the inputs round-trip through the URL", () => {
+  const s = { a: "fed", h: "120", w: "1400", l: 13 };
+  const q = L.toQuery(s);
+  assert.equal(q, "?a=fed&h=120&w=1400&l=13");
+  assert.deepEqual({ ...L.parseQuery(q) }, s);
+  assert.deepEqual({ ...L.parseQuery("?a=hogs&h=1,000&w=280&k=unborn") }, { a: "hogs", h: "1000", w: "280", k: "unborn" });
+  assert.deepEqual({ ...L.parseQuery(L.toQuery({ a: "feeder", h: "200", w: "5.5", l: 26, k: "heifers" })) }, { a: "feeder", h: "200", w: "5.5", l: 26, k: "heifers" });
+  // junk is dropped, not passed on
+  assert.deepEqual({ ...L.parseQuery("?a=goats&h=-4&w=abc&l=999&k=<script>") }, {});
+  assert.equal(L.toQuery({}), "");
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /L\.parseQuery\(location\.search\)/, "restored from the URL");
+  assert.match(ui, /history\.replaceState\(null, '', location\.pathname \+ q \+ location\.hash\)/, "written to the URL");
+  assert.ok(!/function history\b/.test(ui), "nothing in the page script shadows window.history");
+});
+
+test("net floor, what a drop pays, and the billing date", () => {
+  const r = L.offerRow([1000000, 229692, 31991, 7348]);   // fed cattle 13 weeks at 100%, Oct 15, 2026
+  near(L.netFloor(r), 229.692 - 7.348 * 0.65, "net floor = coverage price - premium after subsidy");
+  near(L.netFloor(L.offerRow([950000, 218207, 1, 3398])), 218.207 - 3.398 * 0.65, "95%");
+  // a $20 drop from RMA's expected ending value: pays the coverage price minus the ending value
+  near(L.payAt(r, 229.692, 20), 20, "100% of EEV pays the whole drop");
+  near(L.payAt(L.offerRow([950000, 218207, 1, 1]), 229.692, 20), 218.207 - 209.692, "95%");
+  assert.equal(L.payAt(L.offerRow([900000, 206723, 1, 1]), 229.692, 20), 0, "90% pays nothing on a $20 drop");
+  // premium billing date: first day of the second month after the end date (section 21E)
+  assert.equal(L.billDate("20270114"), "20270301");
+  assert.equal(L.billDate("20271014"), "20271201");
+  assert.equal(L.billDate("20271114"), "20280101");
+  assert.equal(L.billDate("20271231"), "20280201");
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /L\.netFloor\(r\)/);
+  assert.match(ui, /<th scope="col">Net floor a cwt<\/th>/, "the full table has a net floor column");
+  assert.match(ui, /L\.billDate\(o\.end\)/);
+});
+
+test("a hog weight that looks like a carcass weight is flagged, with the live weight to use", () => {
+  assert.deepEqual({ ...L.carcassHint("207", "0815") }, { typed: 207, live: 280 });
+  assert.equal(L.carcassHint("280", "0815"), null);
+  assert.equal(L.carcassHint("2.8", "0815"), null, "cwt is not pounds");
+  assert.equal(L.carcassHint("207", "0801"), null, "hogs only");
+  // RMA: 1.40 to 2.60 cwt lean is about 189 to 351 lb live (handbook section 25A(2))
+  near(1.4 / L.LEAN * 100, 189, "lower bound", 0.5);
+  near(2.6 / L.LEAN * 100, 351, "upper bound", 0.5);
+});
+
+test("the futures line names the first contract after the end date, or nothing", () => {
+  const P = { quotes: {
+    "cattle-feb27": { close: 229.625, close_date: "2026-10-15" },
+    "feeders-jan27": { close: 338.15, close_date: "2026-10-15" },
+    "hogs-feb27": { close: 68.4, close_date: "2026-10-15" },
+    "hogs-dec26": { close: 66.6, close_date: "2026-10-15" },
+  } };
+  assert.equal(L.futuresFor(P, "0802", "20270114").key, "cattle-feb27");
+  assert.equal(L.futuresFor(P, "0801", "20270114").key, "feeders-jan27", "Jan feeders expire late January");
+  assert.equal(L.futuresFor(P, "0815", "20270114").key, "hogs-feb27", "no Jan hogs");
+  const noFeb = { quotes: { "hogs-dec26": P.quotes["hogs-dec26"] } };
+  assert.equal(L.futuresFor(noFeb, "0815", "20261215"), null, "Dec hogs have expired by the 15th: Feb, which is missing here, never Dec");
+  assert.equal(L.futuresFor(noFeb, "0815", "20261210").key, "hogs-dec26");
+  assert.equal(L.futuresFor(P, "0802", "20270415"), null, "missing month: nothing, never a later month");
+});
+
+test("the history line is the reader's animal and length, since July 2020, and withholds when too short", () => {
+  const b = JSON.parse(backJson(BT));
+  for (const id of ["feeder", "fed", "hogs"]) assert.ok(b[id] && b[id][13], id);
+  const r = BT.record["current/fed/95-100/13"];
+  near(b.fed[13].back, Math.round((r.paid / r.cost_now) * 100) / 100, "fed 13 weeks");
+  assert.equal(b.fed[13].years, r.years);
+  for (const id of ["feeder", "fed", "hogs"]) for (const x of Object.values(b[id])) {
+    if (x.years < BT.method.min_years) assert.equal(x.back, undefined, "too few years: no number");
+  }
+  assert.ok(PAGE.includes(`<!--lrp:back-->${backJson(BT)}<!--/lrp:back-->`));
+});
+
+test("the head limit: 25,000 a crop year counts every endorsement together (handbook 23B, 24B)", () => {
+  const faq = Object.fromEntries(faqList())["How many head can I cover with LRP?"];
+  assert.match(faq, /combined across every endorsement you buy/);
+  assert.match(faq, /Feeder cattle and fed cattle each have their own 25,000/);
+});
+
+test("/lrp/record is in the sitemap and llms.txt list, and its header and footer match /lrp", () => {
+  assert.match(read("sitemap.xml"), /<loc>https:\/\/agsist\.com\/lrp\/record<\/loc>/);
+  assert.match(read("scripts/build_llms_txt.py"), /"\/lrp\/record"/);
+  for (const name of ["header", "footer"]) {
+    const re = new RegExp(`<!-- static-nav:${name}[\\s\\S]*?<!-- /static-nav:${name} -->`);
+    assert.equal(RECORD.match(re)[0], PAGE.match(re)[0], name);
+  }
 });
