@@ -39,6 +39,25 @@ STATE_NAME = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"
 MONTH_FULL = {"Jan":"January","Feb":"February","Mar":"March","Apr":"April","May":"May","Jun":"June","Jul":"July","Aug":"August","Sep":"September","Oct":"October","Nov":"November","Dec":"December"}
 
 
+def inch(x):
+    """1.0 -> "1", 1.5 -> "1.5": a threshold reads the way people say it."""
+    x = float(x)
+    return str(int(x)) if x == int(x) else ("%g" % x)
+
+
+def size_line(dmg_in):
+    """Severe means 1 inch, the NWS severe size, everywhere on the site. A
+    state-counties.json built before the switch carries another threshold
+    (1.5 until 2026-10); name that size plainly and never call it severe."""
+    if float(dmg_in) == 1.0:
+        return "1\u2033 or larger, the National Weather Service severe size"
+    return inch(dmg_in) + "\u2033 or larger (the National Weather Service severe size is 1\u2033)"
+
+
+def share_word(dmg_in):
+    return "severe-hail share" if float(dmg_in) == 1.0 else "large-hail share"
+
+
 def slug(name):
     return re.sub(r"[^a-z]+", "-", name.lower()).strip("-")
 
@@ -182,9 +201,11 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
          ("Reported hail in " + name + " peaks around " + peak_full + "," if peak_full else
           "Hail in " + name + " follows the severe-thunderstorm season,") +
          " with most activity in the spring-through-midsummer window. Any single year can break the pattern."),
-        ("How much of " + name + "'s hail is damaging?",
-         "On this page, damaging means reported stones of " + str(dmg_in) +
-         "\u2033 or larger, the National Weather Service severe size, which dents roofs and vehicles. Crops can be hurt by smaller hail, especially with wind, and the loss depends on growth stage. The per-county severe share is in the table; statewide, hail of any size totaled " +
+        ("How much of " + name + "'s hail is severe?",
+         "Severe hail is 1\u2033 or larger, the National Weather Service severe size, which dents roofs and vehicles. Crops can be hurt by smaller hail, especially with wind, and the loss depends on growth stage. " +
+         ("The per-county severe share is in the table" if float(dmg_in) == 1.0 else
+          "The table\u2019s share column counts stones " + size_line(dmg_in)) +
+         "; statewide, hail of any size totaled " +
          f"{total:,}" + " reports over " + str(n_yrs) + " years."),
     ]
     faq_ld = ",".join(
@@ -215,7 +236,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     if peak_full:
         figs.append("Reported hail in " + name + " peaks in " + peak_full + ".")
     if total:
-        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + str(dmg_in) + "\u2033 or larger, the National Weather Service severe size.")
+        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + size_line(dmg_in) + ".")
     key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures: " + esc(name) + " hail at a glance</h2><ul>"
         + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
         "<p class=\"hs-cite\">To cite these figures: <em>AGSIST National Hail Map, "
@@ -228,7 +249,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         "<a href=\"mailto:sig@farmers1st.com\">sig@farmers1st.com</a>.</p>\n")
 
     dataset_ld = ("{\"@type\":\"Dataset\",\"name\":\"" + esc(name) + " hail reports by county\","
-        "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and severe-hail share.\","
+        "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and " + share_word(dmg_in) + ".\","
         "\"url\":\"" + canonical + "\",\"temporalCoverage\":\"" + str(years[0]) + "/" + str(years[-1]) + "\","
         "\"spatialCoverage\":\"" + esc(name) + ", United States\","
         "\"isBasedOn\":\"NWS Local Storm Reports via Iowa Environmental Mesonet\","
@@ -238,7 +259,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>Hail Map " + esc(name) + ": Worst Hail Counties &amp; Hail Season | AGSIST</title>\n"
-        "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and severe-hail share, with an interactive map and address lookup.\">\n"
+        "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and " + share_word(dmg_in) + ", with an interactive map and address lookup.\">\n"
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
         "<meta property=\"og:title\" content=\"Hail Map " + esc(name) + ": Worst Hail Counties | AGSIST\">\n"
         "<meta property=\"og:description\" content=\"" + str(n_yrs) + " years of hail reports across " + esc(name) + ", county by county.\">\n"
@@ -293,9 +314,9 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
         + intro +
         "\n<a class=\"hs-cta\" href=\"/hail-map?state=" + abbr + "\">Open the interactive map on " + esc(name) + " \u2192</a>\n"
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
-        "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + str(dmg_in) + "\u2033</th></tr></thead>"
+        "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + inch(dmg_in) + "\u2033</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table></div>\n"
-        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + str(dmg_in) + "\u2033 is the share of its reports with stones " + str(dmg_in) + "\u2033 or larger, the National Weather Service severe size. Crops can be hurt by smaller hail; the loss depends on growth stage.</p>\n"
+        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + inch(dmg_in) + "\u2033 is the share of its reports with stones " + size_line(dmg_in) + ". Crops can be hurt by smaller hail; the loss depends on growth stage.</p>\n"
         + key_figs
         + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
@@ -393,6 +414,9 @@ def selftest():
     rows = [{"county": "Dane", "total": 190, "avg": 38.0, "peak": "Apr", "dmg_pct": 39}]
     html = page_html("WI", "Wisconsin", rows, [2022, 2023, 2024, 2025, 2026], 1.0, "2026-10-10", 4.75, [])
     ok('<td class="num">40.0</td>' in html, "avg = 190 / 4.75 = 40.0")
+    ok("1\u2033 or larger, the National Weather Service severe size" in html and "1.0\u2033" not in html, "1 inch is the NWS severe size, printed as 1")
+    h15 = page_html("WI", "Wisconsin", rows, [2022, 2023, 2024, 2025, 2026], 1.5, "2026-10-10", 4.75, [])
+    ok("1.5\u2033 or larger, the National Weather Service severe size" not in h15 and "severe-hail share" not in h15, "1.5 inches is never called severe")
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))
         sys.exit(1)
