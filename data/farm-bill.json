@@ -1,7 +1,7 @@
 {
- "_comment": "AGSIST farm-bill page data. Edit this, then run build_farmbill.py (or push — the GitHub Action bakes it). Values are baked into static HTML so AI crawlers see them. HTML entities allowed in text fields. Keep <b> for emphasis.",
- "updated": "2026-10-14",
- "updated_display": "Oct 14, 2026",
+ "_comment": "AGSIST farm-bill page data. Edit this, then run scripts/build_farmbill.py --json data/farm-bill.json (or push; the GitHub Action bakes it). pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis.",
+ "updated": "2026-10-15",
+ "updated_display": "Oct 15, 2026",
  "pills": [
   {
    "cls": "live",
@@ -9,7 +9,7 @@
   },
   {
    "cls": "live",
-   "html": "Senate Ag Committee <b>passed 12&ndash;11</b> &middot; Sep 16, 2026"
+   "html": "Senate Ag Committee <b>passed S.&nbsp;5526</b> 12&ndash;11 &middot; Sep 16, 2026"
   },
   {
    "cls": "warn",
@@ -19,7 +19,7 @@
  "tldr": [
   {
    "k": "Status",
-   "v": "The House passed <b>H.R. 7567</b> (224&ndash;200). The Senate Ag Committee <b>passed</b> its <b>Agricultural Act of 2026</b> 12&ndash;11 on Sep 16. The Senate left for the midterms on Sep 30 without a floor vote. <b>Neither bill is law.</b>"
+   "v": "The House passed <b>H.R. 7567</b> (224&ndash;200). The Senate Ag Committee <b>passed</b> its <b>Agricultural Act of 2026</b> 12&ndash;11 on Sep 16; it was reported as <b>S.&nbsp;5526</b> on Sep 24. The Senate left for the midterms on Sep 30 without a floor vote. <b>Neither bill is law.</b>"
   },
   {
    "k": "The money",
@@ -39,24 +39,24 @@
   },
   {
    "k": "Not in either bill",
-   "v": "The <span class=\"num\">$15&ndash;17B</span> in near-term economic aid producers are pushing for sits outside both farm bills."
+   "v": "The <span class=\"num\">$15&ndash;17B</span> in extra economic aid lawmakers proposed this year (January figures; $17.3B by June, per DTN) sits outside both farm bills. We have not seen it pass as of Oct 15."
   }
  ],
  "compare": [
   {
    "k": "Status &amp; length",
    "h": "Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.",
-   "s": "Draft Jun 23; revised text Aug 1; committee markup failed Aug 6, then <b>passed 12&ndash;11 on Sep 16</b> along party lines; not yet CBO-scored; no Senate floor vote before the Sep 30 recess."
+   "s": "Draft Jun 23; revised text Aug 1; committee markup failed Aug 6, then <b>passed 12&ndash;11 on Sep 16</b> along party lines; reported Sep 24 as <b>S.&nbsp;5526</b> (Senate calendar); no CBO score found as of Oct 15; no Senate floor vote before the Sep 30 recess."
   },
   {
    "k": "Overall cost",
    "h": "<b>Budget-neutral</b> by CBO (+$162M over 6 yr, $0 over 11 yr).",
-   "s": "Described as <b>budget-neutral</b>; awaiting a detailed CBO score."
+   "s": "Described as <b>budget-neutral</b>; no detailed CBO score found as of Oct 15."
   },
   {
    "k": "Conservation",
    "h": "Cuts <b>EQIP &minus;$786M</b> and redistributes to other conservation programs.",
-   "s": "Raises easement cost-share (50&rarr;60%); new Forest Conservation Easement and State Conservation Assistance programs."
+   "s": "Raises easement cost-share (50&rarr;60%); new Forest Conservation Easement and State Conservation Assistance ($50M/yr) programs. <b>Pays for part of that by cutting EQIP and CSP funding</b> (CRS, on the Jun 23 draft)."
   },
   {
    "k": "Farm loan limits",
@@ -75,13 +75,13 @@
   },
   {
    "k": "Contentious riders",
-   "h": "Pesticide-labeling and E15 fights nearly derailed floor passage.",
-   "s": "The revised text <b>includes year-round E15</b> and replaces small-refinery exemptions after 2027. Amendments on Food for Peace, specialty crops, and fertilizer passed Aug 6 before the main vote failed; hemp and animal-confinement stay out."
+   "h": "The floor <b>struck the pesticide-labeling preemption</b> sections, 280&ndash;142 (Luna amendment, Apr 30). It <b>kept the Prop 12 fix</b> (Sec. 12006, barring state rules on how out-of-state livestock is raised); a bid to strike it was not allowed a floor vote.",
+   "s": "The revised text <b>includes year-round E15</b> and replaces small-refinery exemptions after 2027. Amendments on Food for Peace, specialty crops, and fertilizer passed Aug 6 before the main vote failed; hemp and state animal-confinement laws (Prop 12) stay out."
   },
   {
    "k": "Economic aid",
    "h": "Not included.",
-   "s": "Not included. A separate $15&ndash;17B aid push is moving outside the bill."
+   "s": "Not included. The $15&ndash;17B aid proposals (January; $17.3B by June) are separate."
   }
  ],
  "tracker": [
@@ -117,7 +117,7 @@
   },
   {
    "stage": "Senate revote",
-   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16: Sen. McConnell returned to cast the deciding Republican vote",
+   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16: Sen. McConnell returned to cast the deciding Republican vote. Reported to the Senate as S.&nbsp;5526 on Sep 24",
    "mk": "done",
    "label": "passed"
   },
@@ -145,5 +145,371 @@
    "mk": "miss",
    "label": "lapsed"
   }
- ]
+ ],
+ "next90": [
+  {
+   "date": "Nov 3",
+   "iso": "2026-11-03",
+   "what": "Election day",
+   "means": "Nothing changes on your farm. It decides who closes the deal. Any bill not passed by early January dies with this Congress and starts over."
+  },
+  {
+   "date": "Nov 9",
+   "iso": "2026-11-09",
+   "what": "Senate back",
+   "means": "First chance for a Senate floor vote on S.&nbsp;5526 (60 votes) and a House-Senate deal."
+  },
+  {
+   "date": "Dec 11",
+   "iso": "2026-12-11",
+   "what": "Stopgap funding ends",
+   "means": "Congress has to pass funding again. An extension could ride on that bill. The one that runs to Dec 11 carried none."
+  },
+  {
+   "date": "Jan 1, 2027",
+   "iso": "2027-01-01",
+   "what": "Permanent law, dairy first",
+   "means": "If nothing passes, the 1949 Act starts with milk: USDA would have to support it at parity, which CRS put at 252% of the market price in July 2025."
+  }
+ ],
+ "next90_outcomes": [
+  {
+   "k": "A bill passes",
+   "v": "Five more years of rules. CRP reopens and the Jan 1 problem goes away (both bills extend the permanent-law suspension through 2031)."
+  },
+  {
+   "k": "A short extension",
+   "v": "Depends on what it carries. It fixes Jan 1 only if it extends the permanent-law suspension."
+  },
+  {
+   "k": "Nothing",
+   "v": "Insurance, ARC and PLC keep running. CRP stays shut to new acres. Dairy hits permanent law Jan 1, wheat Jun 1, corn Oct 1."
+  }
+ ],
+ "byOperation": {
+  "_sources": {
+   "pl21": "P.L. 119&ndash;21 (Jul 4, 2025)",
+   "crs75": "CRS R48775",
+   "fsa_dmc": "<a href=\"https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment\" rel=\"noopener\">FSA, Sep 30, 2026</a>",
+   "fpn": "<a href=\"https://farmpolicynews.illinois.edu/2026/10/farm-bill-expires-again-as-lawmakers-continue-negotiations/\" rel=\"noopener\">Farm Policy News, Oct 2026</a>",
+   "dtn_crp": "<a href=\"https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/01/crp-enrollment-paused-farm-bill\" rel=\"noopener\">DTN, Oct 1, 2026</a>",
+   "rules": "<a href=\"https://rules.house.gov/bill/119/hr-7567\" rel=\"noopener\">House Rules Committee, record vote 291</a>",
+   "roll148": "<a href=\"https://clerk.house.gov/Votes/2026148\" rel=\"noopener\">House roll call 148, Apr 30, 2026</a>",
+   "crs18": "<a href=\"https://www.congress.gov/crs-product/R48918\" rel=\"noopener\">CRS R48918, Jul 29, 2026</a>",
+   "senate": "Senate Ag Committee summary, Jun 23, 2026",
+   "profarmer": "Pro Farmer, Aug 1, 2026"
+  },
+  "corn-soy": {
+   "label": "Corn and soybeans",
+   "lines": [
+    {
+     "t": "Your reference prices are law: <b>$4.10 corn, $10.00 soybeans</b> for 2025 through 2030, rising 0.5% a year from 2031. ARC and PLC run through the 2031 crop. Neither bill reopens them.",
+     "src": "pl21"
+    },
+    {
+     "t": "Crop insurance runs on permanent law. Your policy, premium support and guarantee do not hang on this fight.",
+     "src": "crs75"
+    },
+    {
+     "t": "If Congress does nothing at all, permanent law reaches corn on <b>Oct 1, 2027</b>. That is the corn date to watch, not Sep 30 and not Jan 1.",
+     "src": "crs75"
+    },
+    {
+     "t": "The House struck the pesticide-labeling preemption from its bill, 280&ndash;142, so state label rules stand in its version.",
+     "src": "roll148"
+    },
+    {
+     "t": "The $15&ndash;17B aid talk has no rules and no signup. Anyone quoting your payment is guessing."
+    }
+   ],
+   "tools": [
+    [
+     "/arc-plc",
+     "ARC or PLC for your county"
+    ],
+    [
+     "/breakeven",
+     "Your break-even per acre"
+    ]
+   ]
+  },
+  "wheat": {
+   "label": "Wheat",
+   "lines": [
+    {
+     "t": "Your reference price is law: <b>$6.35</b> a bushel for 2025 through 2030, rising 0.5% a year from 2031. ARC and PLC run through the 2031 crop.",
+     "src": "pl21"
+    },
+    {
+     "t": "Wheat is second in line for permanent law: <b>Jun 1, 2027</b> if Congress passes nothing. Dairy goes first, on Jan 1.",
+     "src": "crs75"
+    },
+    {
+     "t": "Crop insurance runs on permanent law. Your winter wheat policy is not affected by the lapse.",
+     "src": "crs75"
+    },
+    {
+     "t": "The Senate bill more than doubles Market Access Program and Foreign Market Development money export-promotion money.",
+     "src": "senate"
+    }
+   ],
+   "tools": [
+    [
+     "/arc-plc",
+     "ARC or PLC for your county"
+    ],
+    [
+     "/wheat-futures-prices",
+     "Wheat prices"
+    ]
+   ]
+  },
+  "dairy": {
+   "label": "Dairy",
+   "lines": [
+    {
+     "t": "<b>Dairy Margin Coverage runs through 2031.</b> The 2025 law renewed it, raised Tier 1 to 6 million pounds and offers 25% off premiums if you lock in through 2031.",
+     "src": "fsa_dmc"
+    },
+    {
+     "t": "<b>2027 DMC signup is open Oct 5 to Dec 18, 2026</b> at your FSA office. The lapse does not stop it.",
+     "src": "fsa_dmc"
+    },
+    {
+     "t": "Dairy Forward Pricing and the Dairy Indemnity Payment Program are paused since Oct 1. Both bills would make forward pricing permanent.",
+     "src": "fpn"
+    },
+    {
+     "t": "<b>Jan 1, 2027 is your date.</b> Milk is first to fall back to permanent law if nothing passes. CRS put the parity support price at 252% of the market price in July 2025. Both bills fix it; neither is law.",
+     "src": "crs75"
+    }
+   ],
+   "tools": [
+    [
+     "/milk-prices",
+     "Milk prices"
+    ]
+   ]
+  },
+  "livestock": {
+   "label": "Cattle and hogs",
+   "lines": [
+    {
+     "t": "<b>Prop 12:</b> the House bill keeps Sec. 12006, which would bar states from setting rules for how livestock raised in other states is housed. A bipartisan bid to strike it was refused a floor vote, 4&ndash;7.",
+     "src": "rules"
+    },
+    {
+     "t": "The Senate committee bill leaves state animal-confinement laws out. That gap is for a conference to settle.",
+     "src": "profarmer"
+    },
+    {
+     "t": "Animal Disease Prevention and Management money (the animal vaccine bank and disease-lab network) is one of six programs that stopped Oct 1 for lack of a budget baseline.",
+     "src": "crs75"
+    },
+    {
+     "t": "Livestock Risk Protection is crop insurance and runs on permanent law. The Senate draft expands livestock indemnity and ELAP for disasters.",
+     "src": "senate"
+    }
+   ],
+   "tools": [
+    [
+     "/cattle-futures-prices",
+     "Cattle prices"
+    ]
+   ]
+  },
+  "crp": {
+   "label": "CRP landowner",
+   "lines": [
+    {
+     "t": "FSA's authority to approve CRP contracts ran through <b>Sep 30, 2026</b>. New and re-enrollment offers wait until Congress renews it; FSA says a new notice will follow.",
+     "src": "dtn_crp"
+    },
+    {
+     "t": "Contract already approved? In the 2024 lapse FSA kept paying contracts approved by Sep 30. We have not seen a 2026 notice that says the same; ask your county office."
+    },
+    {
+     "t": "Contract expired Sep 30 and no new one approved? That ground is out of CRP until authority comes back."
+    },
+    {
+     "t": "Both bills reauthorize CRP at a 27 million acre cap through FY2031.",
+     "src": "crs18"
+    }
+   ],
+   "tools": [
+    [
+     "/cash-rent",
+     "Cash rent by county"
+    ]
+   ]
+  },
+  "specialty": {
+   "label": "Specialty crops and organic",
+   "lines": [
+    {
+     "t": "Specialty Crop Block Grants, the Local Agriculture Market Program and Organic Agriculture Research and Extension <b>stopped Oct 1</b>: they have no budget baseline. They need money written into a bill or extension.",
+     "src": "crs75"
+    },
+    {
+     "t": "Both bills keep the block grants with no new cost-share. The Senate draft adds a specialty-crop assistance framework and a Specialty Crop Advisory Committee for crop insurance.",
+     "src": "senate"
+    },
+    {
+     "t": "The House struck the pesticide-labeling preemption, 280&ndash;142, so state label rules stand in its bill.",
+     "src": "roll148"
+    }
+   ],
+   "tools": []
+  }
+ },
+ "detailNote": "Each title's ten-year mandatory baseline, what it covers, and a headline change. The provisions draw on the House-passed bill and the Senate committee's June 23 discussion draft, which became S.&nbsp;5526 with changes; CRS's newest comparison (R48918, Jul 29, 2026) also covers the June 23 draft, not the reported text. The dollar figures are the shared baseline. Titles V, VI, and VIII run on discretionary appropriations and carry no mandatory baseline of their own.",
+ "titles": [
+  {
+   "num": "I",
+   "name": "Commodities",
+   "cover": "PLC, ARC, marketing loans, dairy, disaster (Tree Assistance)",
+   "change": "<b>Narrower than usual</b>: most commodity programs were already reauthorized in the 2025 reconciliation law. Both bills extend the suspension of 1930s/40s \"permanent law\" through crop year 2031 and make Dairy Forward Pricing permanent. The Senate draft expands disaster programs (livestock indemnity, ELAP, tree assistance), adds a specialty-crop assistance framework and block-grant disaster authority, and lets producers use storage-facility loans for propane and fertilizer.",
+   "amt": "$142.6B",
+   "share": "10.4%",
+   "bar": 14.5
+  },
+  {
+   "num": "II",
+   "name": "Conservation",
+   "cover": "CRP, EQIP, CSP, easements (ACEP), partnerships (RCPP)",
+   "change": "<b>Where the bill's real money moves.</b> Both bills reauthorize CRP at 27M acres through FY2031. The House bill cuts EQIP by $786M and redistributes it to other conservation programs, the most contested change in its debate. The Senate draft raises easement cost-share rates and creates two new authorities: a Forest Conservation Easement Program and a State Conservation Assistance Program ($50M/yr), paid for in part by cutting EQIP and CSP funding (CRS R48918).",
+   "amt": "$73.0B",
+   "share": "5.3%",
+   "bar": 7.4
+  },
+  {
+   "num": "III",
+   "name": "Trade",
+   "cover": "Export promotion (MAP/FMD), international food aid (Food for Peace)",
+   "change": "Both bills lean on export promotion. The Senate draft more than doubles funding for the <b>Market Access Program and Foreign Market Development Program</b> using 2025 reconciliation investments, directs USDA and USTR to defend common food names abroad, and reauthorizes the Bill Emerson Humanitarian Trust and McGovern-Dole food-aid programs.",
+   "amt": "$8.3B",
+   "share": "0.6%",
+   "bar": 0.8
+  },
+  {
+   "num": "IV",
+   "name": "Nutrition",
+   "cover": "SNAP and food distribution programs, the largest title by far",
+   "change": "The largest title. Both bills mainly <b>extend</b> SNAP and related programs (through Sep 30, 2031) rather than overhaul them. The major SNAP cost and eligibility changes came earlier, in the 2025 reconciliation law. The Senate draft adds staffing flexibility for states, makes SNAP online purchasing permanent, and strengthens Buy American rules for school meals. Nutrition is where Senate Democrats have signaled the sharpest objections.",
+   "amt": "$985.4B",
+   "share": "71.7%",
+   "bar": 100.0
+  },
+  {
+   "num": "V",
+   "name": "Credit",
+   "cover": "USDA farm loans, direct and guaranteed",
+   "change": "Modernizes USDA farm loan limits (a top Senate priority) raising guaranteed operating loans to $3M and ownership loans to $3.5M, with direct limits and microloans also increased and indexed to inflation. Adds precision-ag eligibility, a distressed-borrower refinance pathway, and credit for commercial fishing. <b>Discretionary</b>: no mandatory baseline.",
+   "amt": "-",
+   "share": "disc. only",
+   "disc": "~$405M outlays"
+  },
+  {
+   "num": "VI",
+   "name": "Rural Development",
+   "cover": "Broadband, water &amp; waste infrastructure, rural health",
+   "change": "Writes the <b>ReConnect</b> broadband program into law and sets a 100/20 Mbps build standard; expands rural water, wastewater, and drinking-water assistance; and prioritizes rural health and childcare, including behavioral, maternal, and mental-health projects. <b>Discretionary</b>: ~$4.7B authorized over ten years.",
+   "amt": "-",
+   "share": "disc. only",
+   "disc": "~$4.7B auth"
+  },
+  {
+   "num": "VII",
+   "name": "Research &amp; Extension",
+   "cover": "Ag research, extension, land-grant universities",
+   "change": "Funds a new specialty-crop mechanization and automation research program, raises support for 1890 (HBCU) land-grant institutions, and reauthorizes flagship competitive-grant programs (AFRI, AgARDA). Increases the Farm and Ranch Stress Assistance Network for rural mental health. Small mandatory baseline plus ~$8.4B in discretionary authorizations.",
+   "amt": "$3.5B",
+   "share": "0.3%",
+   "bar": 0.4
+  },
+  {
+   "num": "VIII",
+   "name": "Forestry",
+   "cover": "Forest management, assistance to nonfederal forest owners",
+   "change": "Speeds up environmental reviews for forest-health and wildfire work, updates Good Neighbor Authority, promotes wood and mass-timber markets, and focuses federal effort on white oak. Modernizes the Tribal Forest Protection Act. <b>Discretionary</b>: ~$4.2B authorized over ten years.",
+   "amt": "-",
+   "share": "disc. only",
+   "disc": "~$4.2B auth"
+  },
+  {
+   "num": "IX",
+   "name": "Energy",
+   "cover": "REAP, bioenergy, biobased markets",
+   "change": "Adds sustainable aviation fuel to the advanced-biofuel definition, strengthens the BioPreferred program, and improves the Rural Energy for America Program with a rebate pilot, larger eligible projects, and a simpler process for small applications. The House score offsets a Biobased Markets increase with a Biorefinery Assistance rescission.",
+   "amt": "$0.5B",
+   "share": "0.04%",
+   "bar": 0.1
+  },
+  {
+   "num": "X",
+   "name": "Horticulture",
+   "cover": "Specialty crops, organic, local/regional food",
+   "change": "Reauthorizes specialty-crop, organic, and local-food programs and preserves the Specialty Crop Block Grant Program with no new cost-share requirement. Creates a regulatory pathway for <b>plant biostimulants</b> and a USDA Office of Biotechnology Policy, both highlighted across the bills.",
+   "amt": "$2.4B",
+   "share": "0.2%",
+   "bar": 0.25
+  },
+  {
+   "num": "XI",
+   "name": "Crop Insurance",
+   "cover": "Federal Crop Insurance Program, premium subsidies, products",
+   "change": "Brings more specialty crops into crop insurance: a new Specialty Crop Advisory Committee and coordinator, a reconstituted FCIC board, and research on organic, wine-grape smoke, mushroom, blueberry, and pecan policies. Both bills extend <b>enhanced premium support to veteran farmers and ranchers</b> and clarify FCIC yield and revenue authority.",
+   "amt": "$155.5B",
+   "share": "11.3%",
+   "bar": 15.8
+  },
+  {
+   "num": "XII",
+   "name": "Miscellaneous",
+   "cover": "Livestock &amp; animal health, USDA reorganization, national security",
+   "change": "A catch-all: strengthens animal-health programs and disease traceability, establishes a USDA Office of Seafood, and tightens foreign-ownership disclosure for U.S. agricultural land (AFIDA). The Senate draft also creates a <b>Crop inputs economist</b> to track fertilizer and input costs and reauthorizes the U.S. Drought Monitor.",
+   "amt": "$2.2B",
+   "share": "0.2%",
+   "bar": 0.23
+  }
+ ],
+ "ledger": [
+  {
+   "what": "EQIP reduced, redistributed",
+   "detail": "Environmental Quality Incentives Program cut; funds moved to other conservation programs. The largest single change, and the most contested in House debate.",
+   "cls": "neg",
+   "amt": "&minus;$786M"
+  },
+  {
+   "what": "Agricultural Conservation Easement Program",
+   "detail": "Increased, including an adjusted-gross-income provision.",
+   "cls": "pos",
+   "amt": "+$216M"
+  },
+  {
+   "what": "Forest Conservation Easement Program",
+   "detail": "New / expanded easement authority.",
+   "cls": "pos",
+   "amt": "+$227M"
+  },
+  {
+   "what": "Regional Conservation Partnership Program",
+   "detail": "Increased over the window.",
+   "cls": "pos",
+   "amt": "+$110M"
+  },
+  {
+   "what": "Bill Emerson Humanitarian Trust",
+   "detail": "Trade title; replenishment authority extended, offset from trade-promotion restructuring.",
+   "cls": "pos",
+   "amt": "+$70M"
+  },
+  {
+   "what": "Net mandatory change, 11-year window",
+   "detail": "Increases and cuts offset to zero: the bill is scored budget-neutral. The rows above are the largest line items, not the full ledger; they do not sum to the net on their own.",
+   "cls": "flat",
+   "amt": "$0"
+  }
+ ],
+ "ledgerNote": "Separately, H.R. 7567 authorizes <b>$22.5B</b> in discretionary spending over ten years (with ~$21.4B in estimated outlays), money that only flows if future appropriations bills provide it. Commodities and Crop Insurance carry no specific discretionary authorizations. We have not found a CBO score for the Senate bill (S.&nbsp;5526) as of Oct 15; the table reflects the House bill only."
 }
