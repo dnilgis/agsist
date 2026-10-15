@@ -6,6 +6,11 @@
  *      a day; a 108-day hybrid needs 2,650, reached on day 116 = Aug 24, which
  *      is 42 days before an Oct 5 freeze. The page used to say "Oct 14" and
  *      "9 days short".
+ *   2. With fetched weather, the rest of the season is projected from that
+ *      spot's own 1991-2020 average daily GDU (same Open-Meteo archive), not
+ *      the Wisconsin table: Iowa and Nebraska get their own pace and a date,
+ *      and October counts. If the normal does not load, the old Wisconsin
+ *      fallback (and its withholding outside the Upper Midwest) still applies.
  *
  * Weather and the geocoder are mocked so the arithmetic is exact.
  * Needs Playwright and Chromium; skipped where they are missing.
@@ -41,7 +46,7 @@ function serve() {
 
 const CORS = { "access-control-allow-origin": "*" };
 /* weather(dateISO) -> [hi, lo] or null for a missing day. */
-async function open(browser, port, { weather = () => [84, 62], state = "Iowa", width = 1280 } = {}) {
+async function open(browser, port, { weather = () => [84, 62], state = "Iowa", width = 1280, normals = "ok" } = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   const pg = await ctx.newPage();
   const errors = [], calls = [];
@@ -62,6 +67,7 @@ async function open(browser, port, { weather = () => [84, 62], state = "Iowa", w
         const iso = d.toISOString().slice(0, 10), w = weather(iso, u);
         t.push(iso); mx.push(w ? w[0] : null); mn.push(w ? w[1] : null);
       }
+      if (/start_date=1991/.test(u) && normals === "fail") return r.fulfill({ status: 500, headers: CORS, body: "" });
       return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
         body: JSON.stringify({ daily: { time: t, temperature_2m_max: mx, temperature_2m_min: mn } }) });
     }
@@ -148,5 +154,75 @@ test("a typed GDU total past the target does not invent a date", { skip }, async
     await type(pg, "#g-cumgdu", 3000);
     assert.equal(await txt(pg, "#r-mat-date"), "-");
     assert.doesNotMatch(await txt(pg, "#r-frost-verdict"), /short/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+const isNorm = (u) => /start_date=1991/.test(u);
+
+test("mid-season Iowa projects at its own normal, not Wisconsin's", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, calls, errors } = await open(browser, port);
+    await setup(pg, { plant: "2026-05-01", end: "2026-08-01", frost: "2026-09-20" });
+    await fetchWeather(pg);
+    // 93 days x 23 = 2,139; 511 left at the local 23 a day = 22.2, so the 23rd day after Aug 1.
+    // The Wisconsin table (19.5 in August) gave Aug 28.
+    assert.ok(calls.some(isNorm), "the 1991-2020 normal was requested");
+    assert.match(await txt(pg, "#r-mat-date"), /^August 24, 2026$/);
+    assert.match(await txt(pg, "#r-mat-lbl"), /1991.2020/);
+    assert.doesNotMatch(await txt(pg, "#r-mat-lbl"), /Wisconsin/);
+    assert.match(await txt(pg, "#r-mat-note"), /1991.2020/);
+    assert.match(await txt(pg, "#r-frost-verdict"), /27 days/);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("outside the Upper Midwest the local normal gives a date instead of withholding it", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port, { state: "Nebraska" });
+    await setup(pg, { plant: "2026-05-01", end: "2026-08-01", frost: "2026-09-20" });
+    await fetchWeather(pg);
+    assert.match(await txt(pg, "#r-mat-date"), /^August 24, 2026$/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("October counts at the local normal", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    // Real season 84/62 (23 a day); the normal is 80/50 (15 a day) every day.
+    const { pg } = await open(browser, port, { weather: (d, u) => (isNorm(u) ? [80, 50] : [84, 62]) });
+    // 100 RM: 2,450. Jun 10 to Aug 1 is 53 days x 23 = 1,219. 1,231 left / 15 = 82.07, so day 83: Oct 23.
+    await setup(pg, { plant: "2026-06-10", end: "2026-08-01", rm: 100 });
+    await fetchWeather(pg);
+    assert.match(await txt(pg, "#r-mat-date"), /^October 23, 2026$/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("past Oct 31 at the local normal there is no date", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port, { weather: (d, u) => (isNorm(u) ? [70, 50] : [84, 62]) });
+    await setup(pg, { plant: "2026-06-10", end: "2026-08-01", rm: 100 });
+    await fetchWeather(pg);
+    assert.equal(await txt(pg, "#r-mat-date"), "-");
+    assert.match(await txt(pg, "#r-mat-note"), /Oct 31/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("if the normal does not load, the Wisconsin fallback still applies", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port, { normals: "fail" });
+    await setup(pg, { plant: "2026-05-01", end: "2026-08-01", frost: "2026-09-20" });
+    await fetchWeather(pg);
+    assert.match(await txt(pg, "#r-fetch-status, #g-fetch-status"), /Real data/);
+    assert.match(await txt(pg, "#r-mat-date"), /^August 28, 2026$/);
+    assert.match(await txt(pg, "#r-mat-lbl"), /Wisconsin/);
   } finally { await browser.close(); srv.close(); }
 });
