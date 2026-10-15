@@ -356,7 +356,8 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
     await drawn(page);
     r = await checkout(page, "framed12x18");
     assert.equal(r.stage, "stripe");
-    assert.equal(log.posts, 1, "a second press reuses it");
+    assert.ok(r.url.endsWith("client_reference_id=RPS-K7Q2M"), "the same id: " + r.url);
+    assert.equal(log.posts, 2, "a second press asks the worker again (2026-10-15: never a kept id alone), and gets the same id");
     assert.deepEqual(errors, []);
   });
   await withPage(async (page, base, errors, log) => {
@@ -368,6 +369,13 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
     assert.equal(log.posts, 1, "at most one");
     assert.deepEqual(log.stripe, [], "no checkout without a reference Stripe takes");
     assert.equal(await page.inputValue("#ro-choice"), "print12x18", "the order form takes the order instead");
+    // and says why, with a way back to checkout (2026-10-15)
+    assert.equal(await page.textContent("#ro-order-note"), "Checkout couldn’t open just now, so send this and I’ll email you a payment link.");
+    assert.equal(await page.isVisible("#ro-retry-go"), true);
+    assert.equal(await page.textContent("#ro-retry-go"), "Try checkout again");
+    await page.click("#ro-retry-go");
+    await page.waitForTimeout(800);
+    assert.equal(log.posts, 2, "Try checkout again asks the worker again");
     assert.deepEqual(errors, []);
   }, { short: "fail" });
 });

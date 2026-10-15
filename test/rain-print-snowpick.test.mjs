@@ -74,7 +74,8 @@ test("Chetek 2025: a station 9 mi off that records snowfall wins over the gauge 
   assert.notEqual(RP.snowStateOf(got.picked.days), "unknown", "and its year draws snow");
   assert.equal(got.why.over.sid, GAUGE.sid, "picked over the gauge");
   assert.equal(RP.pickWhy(got.why, 2025), "Picked over a gauge 1.9 mi away because it records snowfall too.");
-  assert.deepEqual(plain(R.asked), [GAUGE.sid, RICE.sid], "the gauge's year is read first, then the nearest snow station; nothing farther");
+  // the nearest three are read at once (2026-10-15, for speed), each once; the answers are judged nearest first
+  assert.deepEqual(plain(R.asked), [GAUGE.sid, RICE.sid, CAMERON.sid], "the three nearest, read at once, none twice");
   assert.equal(got.seen[GAUGE.sid], "unknown");
   assert.equal(RP.snowWord(GAUGE, got.seen), "rain only");
   assert.equal(RP.snowWord(RICE, got.seen), "rain and snow");
@@ -91,7 +92,7 @@ test("the slack is the larger of 10 mi farther and twice as far; past it the rai
   const R = reader({ [GAUGE.sid]: { snow: "none" }, [FAR.sid]: { snow: "full" } });
   const got = await RP.pickStation([GAUGE, FAR], 2025, R.read, { lat: 45.3141 });
   assert.equal(got.chosen.sid, GAUGE.sid, "12.5 mi is past 11.9: the gauge stays");
-  assert.deepEqual(plain(R.asked), [GAUGE.sid], "and the far one is never read");
+  assert.deepEqual(plain(R.asked), [GAUGE.sid, FAR.sid], "both read at once with the rain candidates, once each; the far one still isn't taken");
   assert.equal(got.why.none, true);
   assert.equal(RP.pickWhy(got.why, 2025), "None of the stations within 12 mi kept a full snowfall record for 2025, so the print draws no snow.");
   // twice as far: rain 15 mi, snow 28 mi is inside 30
@@ -114,7 +115,7 @@ test("where snow isn't normal, no miles are traded for a snowfall record", async
   const got = await RP.pickStation([FLG, FLC], 2025, R.read, { lat: 27.9 });
   assert.equal(got.chosen.sid, FLG.sid, "Tampa keeps the nearest rain record");
   assert.equal(got.why, null, "and says nothing about snow");
-  assert.deepEqual(plain(R.asked), [FLG.sid]);
+  assert.deepEqual(plain(R.asked), [FLG.sid, FLC.sid], "read at once with the rain candidates; the farther one isn't taken for its snow");
 });
 
 test("a station NOAA lists for snowfall whose year comes back 'unknown' is passed for the next one", async () => {
@@ -145,7 +146,7 @@ test("a nearest station that draws snow is kept, with no extra reads and nothing
   const got = await RP.pickStation([CHETEK, GAUGE, RICE], 2025, R.read, { lat: 45.3141 });
   assert.equal(got.chosen.sid, CHETEK.sid);
   assert.equal(got.why, null);
-  assert.deepEqual(plain(R.asked), [CHETEK.sid]);
+  assert.deepEqual(plain(R.asked), [CHETEK.sid, GAUGE.sid, RICE.sid], "the nearest three at once, nothing more");
   // a station that records snowfall but had no snow is 'none', not 'unknown': kept
   assert.equal(RP.snowStateOf(dailyOf(acisRows(2025, { snow: "full" }).map((r) => [r[0], r[1], r[2], "0.0", r[4], r[5]])).days), "none");
   // the rain rule is today's: the nearest three, the first with a near-complete year
@@ -155,12 +156,24 @@ test("a nearest station that draws snow is kept, with no extra reads and nothing
   assert.equal(got2.why, null, "picked for its rain record, nothing traded");
 });
 
+test("the candidates are read in parallel: all three asks are out before the first answer, and the pick is the same as one at a time", async () => {
+  const asked = [], wait = [];
+  const read = (sid, year) => { asked.push(sid); return new Promise((ok) => wait.push(() => ok(dailyOf(acisRows(year, { snow: sid === GAUGE.sid ? "none" : "full" }))))); };
+  const p = RP.pickStation([GAUGE, RICE, CAMERON], 2025, read, { lat: 45.3141 });
+  await new Promise((r) => setTimeout(r, 0));
+  assert.deepEqual(plain(asked), [GAUGE.sid, RICE.sid, CAMERON.sid], "three asks out at once");
+  wait.reverse().forEach((f) => f());   // answers come back farthest first
+  const got = await p;
+  assert.equal(got.chosen.sid, RICE.sid, "judged nearest first all the same: Rice Lake, for its snowfall");
+  assert.equal(got.why.over.sid, GAUGE.sid);
+});
+
 test("the page wiring: only a design without its own station is picked; a link, a code or a gift card keeps it", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   const run = S.slice(S.indexOf("STATIONS = list;"), S.indexOf("ST.station = chosen.sid;"));
   assert.match(run, /if \(want\) return daily\(want\.sid, ST\.year\)\.then\(function \(d\) \{ chosen = want; picked = d;/, "a named station draws as it is");
   assert.equal((run.match(/pickStation\(/g) || []).length, 1, "the pick runs in nearest() only");
-  assert.match(run, /function nearest\(skip\) \{[\s\S]*?return pickStation\(pool, ST\.year, daily,/);
+  assert.match(run, /function nearest\(skip\) \{[\s\S]*?var readNow = function \(sid, y\) \{ return my === reqToken \? daily\(sid, y\)[\s\S]*?: Promise\.reject\('stale'\); \};\s*return pickStation\(pool, ST\.year, readNow,/, "daily(), stopping once a newer draw starts");
   assert.match(S, /why: autoPick \? why : null/, "the why sentence only for an auto pick");
   const card = S.slice(S.indexOf("function previewArt(code, opts)"), S.indexOf("function paidFromUrl"));
   assert.match(card, /if \(s\.station\) \{\s*return daily\(s\.station, s\.year\)/, "the gift card keeps its station");
@@ -279,7 +292,8 @@ test("browser: a link, a short link or a saved design that names the gauge keeps
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&station=US1WIBR0002+6&style=r2");
     await drawn(page);
     assert.equal(await page.inputValue("#rp-station"), "US1WIBR0002 6");
-    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI \(1\.9 mi SSW of Chetek\), 1\.9 mi from Chetek \(volunteer gauge US1WIBR0002\) Change station\./);
+    // a station named for the buyer's own town: one distance only, from the town (2026-10-15; it said "(1.9 mi SSW of Chetek), 1.9 mi from Chetek")
+    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI, 1\.9 mi from Chetek \(volunteer gauge US1WIBR0002\) Change station\./);
     assert.ok(!log.some((s) => /^4771/.test(s)), "Rice Lake's year is never read");
     await page.goto(base + "/rain-print.html?d=RPS-SN0W1");
     await drawn(page);
@@ -295,7 +309,7 @@ test("browser: no snow station inside the slack: the gauge draws and the line sa
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025");
     await drawn(page);
     assert.match(await page.textContent("#rp-source"), /volunteer gauge US1WIBR0002\)\. None of the stations within 12 mi kept a full snowfall record for 2025, so the print draws no snow\. Change station\./);
-    assert.deepEqual(log, ["US1WIBR0002 6"], "nothing past the slack is read");
+    assert.deepEqual(log, ["US1WIBR0002 6", "477113 2", "471205 2"], "the nearest three read at once, each once; none past the slack is taken");
     assert.deepEqual(errors, []);
   }, { meta: far });
 });

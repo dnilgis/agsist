@@ -126,6 +126,14 @@ async function withPage(fn, { width = 390, height = 844, theme = "light", where 
 const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
 const onScreen = (page, sel) => page.$eval(sel, (el) => { const r = el.getBoundingClientRect(); return r.height > 0 && r.top >= 0 && r.bottom <= innerHeight; });
 const settle = (page) => page.waitForTimeout(900);
+// a real paste (Ctrl+V from the clipboard), so the box's maxlength cuts it the way a phone's paste does
+async function paste(page, sel, text) {
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.evaluate((t) => navigator.clipboard.writeText(t), text);
+  await page.focus(sel);
+  await page.keyboard.press("ControlOrMeta+V");
+  await page.waitForTimeout(150);
+}
 const shot = async (page, name) => { if (SHOTS) { mkdirSync(SHOTS, { recursive: true }); await page.screenshot({ path: SHOTS + "/" + name + ".png" }); } };
 const q = (o) => new URLSearchParams(o).toString();
 const plain = (x) => JSON.parse(JSON.stringify(x));
@@ -163,9 +171,9 @@ test("a new visit: empty boxes with the example as gray hints; the print at the 
       assert.equal(await page.inputValue("#" + id), "", id + " starts empty");
       assert.equal(await page.getAttribute("#" + id, "placeholder"), ph, id + " shows the example as a gray hint");
     }
-    // a day's words box is empty with no gray hint: "Planted" in gray looked filled in on a phone (panel 5, 2026-10-15)
+    // a day's words box is empty; its hint says what goes there, never an example that looks filled in (panel 5; the 13-letter hint, 2026-10-15)
     assert.equal(await page.inputValue("#rp-m1l"), "");
-    assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), null);
+    assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), "What happened (13 letters)");
     assert.match(await page.innerHTML("#rp-art"), /The Johnson Farm/, "the print at the top shows what a print can carry");
     assert.equal(await page.textContent("#rp-sample-txt"), "Example words on your area, Chetek, WI, 2025. Yours start blank.");
     assert.ok(!/name=/.test(page.url()), "the example is never in the design: " + page.url());
@@ -431,15 +439,19 @@ test("labels: a counter to 13 letters, words typed or pasted past it are said in
     await page.fill("#rp-m3l", "");
     await page.type("#rp-m3l", "Sold the cows");
     assert.equal(await page.textContent("#rp-m3l-n"), "13 of 13 letters. That’s the most that fits.");
-    // past 13 the box keeps the words and says in red what the print can't take, never a silent cut (panel 5, 2026-10-15)
+    // 2026-10-15 (lead's buy-path brief): the box takes 13 letters (maxlength), with "What happened (13 letters)" as its hint;
+    // typing stops at 13, and a paste past it is never a silent cut: the counter says in red what was cut
+    assert.equal(await page.getAttribute("#rp-m3l", "maxlength"), "13");
+    assert.equal(await page.getAttribute("#rp-m3l", "placeholder"), "What happened (13 letters)");
     await page.fill("#rp-m3l", "");
     await page.type("#rp-m3l", "Dad's last crop");
-    assert.equal(await page.inputValue("#rp-m3l"), "Dad's last crop");
-    assert.equal(await page.textContent("#rp-m3l-n"), "That’s 13 letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.");
+    assert.equal(await page.inputValue("#rp-m3l"), "Dad's last cr", "typing stops at 13");
+    assert.equal(await page.textContent("#rp-m3l-n"), "13 of 13 letters. That’s the most that fits.");
+    await page.fill("#rp-m3l", "");
+    await paste(page, "#rp-m3l", "Our anniversary");
+    assert.equal(await page.inputValue("#rp-m3l"), "Our anniversa");
+    assert.equal(await page.textContent("#rp-m3l-n"), "Only 13 letters fit, so “Our anniversary” is cut to “Our anniversa”. Try a shorter word.");
     assert.ok(await page.$eval("#rp-m3l-n", (el) => el.classList.contains("rp-bad")), "in the warning color");
-    // pasted the same way: the words stay in the box, the warning shows
-    await page.fill("#rp-m3l", "Our anniversary");
-    assert.equal(await page.textContent("#rp-m3l-n"), "That’s 13 letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.");
     // and the review sheet flags it
     await page.selectOption("#rp-m3mo", "06"); await page.selectOption("#rp-m3dy", "14");
     await settle(page);

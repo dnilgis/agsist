@@ -137,21 +137,36 @@ td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertic
     if (!b) return;
     try { navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () { b.textContent = 'Copied'; }); } catch (err) {}
   });
+  /* An RPS-<id> reference (a long design, as Stripe and the order carry it)
+     is looked up for its full design code first: a card locks to the design
+     itself, not the reference (2026-10-15). Resolves '' when it isn't found. */
+  function fullCode(dc) {
+    var m = /^(?:GIFT-)?RPS-([0-9A-Za-z]{5,8})$/.exec(dc);
+    if (!m) return Promise.resolve(dc);
+    return fetch('https://agsist-subs.dnilgis.workers.dev/rp-short/' + encodeURIComponent(m[1].toUpperCase()), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { return j && j.ok && typeof j.code === 'string' ? j.code : ''; }, function () { return ''; });
+  }
   $('issue').addEventListener('submit', function (e) {
     e.preventDefault();
-    var dc = designCode($('i-design').value);
+    var raw = designCode($('i-design').value);
+    show('i-out', 'Issuing...');
+    fullCode(raw).then(function (dc) {
+      if (raw && !dc) return show('i-out', esc(raw + ' wasn\u2019t found as a short link. Paste the full design link instead.'), 'bad');
+      issueWith(dc);
+    });
+  });
+  function issueWith(dc) {
     var body = { product: $('i-product').value, order_ref: $('i-ref').value.trim(),
       giver: { name: $('i-gname').value.trim(), email: $('i-gmail').value.trim() },
       to: $('i-to').value.trim(), from_line: $('i-from').value.trim(), message: $('i-msg').value.trim() };
     if (dc) body.lock = { design_code: dc, edit: $('i-editname').checked ? 'name' : 'none' };
     if ($('i-ships').value) body.ships = $('i-ships').value;
     if ($('i-done').checked) body.already_redeemed = true;
-    show('i-out', 'Issuing...');
     call('issue', body).then(function (j) {
       if (!j.ok) return show('i-out', esc(j.error || 'Not issued.'), 'bad');
       show('i-out', cardLines(j), 'good');
     });
-  });
+  }
   $('find').addEventListener('submit', function (e) {
     e.preventDefault();
     var q = $('f-q').value.trim();

@@ -15,6 +15,8 @@
  *     (2026-10-14: the page no longer asks on a redraw; previews carry the
  *     standard code). One request per code: a cached id or one in flight is
  *     reused.
+ *   AgRpShort.mint(code, {fresh: true}) -> the same, but always asks the
+ *     worker (a kept id is not trusted alone): the checkout press.
  *   AgRpShort.peek(code) -> the cached link right now, or null. No request.
  *   AgRpShort.resolve(id) -> Promise of {code, missing}: the design code an
  *     id stands for (GET /rp-short/<id>, as /r does), for ?d=RPS-<id>.
@@ -100,11 +102,12 @@
     }
   }
 
-  function mint(code) {
+  function mint(code, opts) {
     try {
       code = String(code || '');
       if (!CODE_RE.test(code) || code.indexOf('GIFT-') === 0) return Promise.resolve(null);
-      var hit = peek(code);
+      // opts.fresh: ask the worker even with an id kept here, so the id Stripe gets is one the worker has (checkout, 2026-10-15)
+      var hit = opts && opts.fresh ? null : peek(code);
       if (hit) return Promise.resolve(hit);
       if (waiting && waiting.code === code) { clearTimeout(waiting.timer); var w = waiting; waiting = null; ask(code).then(w.resolve); return w.promise; }
       return ask(code);

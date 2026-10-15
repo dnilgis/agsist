@@ -567,3 +567,42 @@ test("previewArt: no fair preview, no art; the card falls back to the empty mont
   assert.match(h, /<p id="pvnote" hidden><\/p>/);
   assert.ok(h.indexOf('id="pvnote"') < h.indexOf('id="msg"') && /<div class="bar noprint">[\s\S]*id="pvnote"[\s\S]*?<\/div>/.test(h), "the note is in the bar, which never prints");
 });
+
+// ---------- 2026-10-15: long designs, Stripe ids, the logo ----------
+test("v5.26 redeem: a locked card takes its long design sent as RPS-<id>, expanded from the short link before comparing", async () => {
+  const { env, store } = makeEnv();
+  const LONG = Object.assign({}, DESIGN, { name: "The Olson Family Farm", dedication: "For Grandpa Erling, sixty harvests on the home place. Love, all of us",
+    markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-04", label: "Hay all in" }, { date: "2025-10-24", label: "Harvest done" }] });
+  const long = RP.encodeCode(LONG);
+  assert.ok(long.length > 200, "a design past Stripe's 200 letters");
+  store.set("rps:K7Q2M", long);
+  const j = await issue(env, { lock: { design_code: long } });
+  const other = RP.encodeCode(Object.assign({}, LONG, { year: 2012 }));
+  store.set("rps:Z9Z9Z", other);
+  assert.equal((await pub(env, "/rp-gift/redeem", order(j.code, { design_code: "RPS-Z9Z9Z" }))).status, 400, "another design's short link is still refused");
+  assert.equal((await pub(env, "/rp-gift/redeem", order(j.code, { design_code: "RPS-NOPE1" }))).status, 400, "an unknown id is refused");
+  const r = await pub(env, "/rp-gift/redeem", order(j.code, { design_code: "RPS-K7Q2M" }));
+  assert.equal(r.status, 200, JSON.stringify(await r.clone().json()));
+  const post = [...store.keys()].filter((k) => k.startsWith("form:rain-print-order:")).map((k) => JSON.parse(store.get(k))).pop();
+  assert.equal(post.design_code, "RPS-K7Q2M", "the order keeps the reference Sig opens");
+});
+
+test("v5.26 issue: order_ref takes Stripe's ids (underscores, up to 80)", async () => {
+  const { env } = makeEnv();
+  for (const ref of ["pi_3QxYzAbCdEfGhIjK0aBcDeF", "cs_live_a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ0123456789abcdefghijABCDEFGH"]) {
+    assert.ok(ref.length <= 80);
+    const j = await issue(env, { order_ref: ref });
+    assert.equal(j.ok, true, ref);
+  }
+  assert.equal((await admin(env, "/rp-gift/issue", { product: "digital", order_ref: "_starts_with_underscore" })).status, 400);
+  assert.equal((await admin(env, "/rp-gift/issue", { product: "digital", order_ref: "A".repeat(81) })).status, 400);
+});
+
+test("the page sends the logo with a redeem; the admin page looks up an RPS- design before locking a card", () => {
+  const G = read("components/rp-gift.js");
+  assert.match(G, /\['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page', 'logo'\]/);
+  const A = read("rp-gift-admin.html");
+  assert.match(A, /function fullCode\(dc\)[\s\S]*?\/rp-short\/' \+ encodeURIComponent/);
+  assert.match(A, /fullCode\(raw\)\.then/);
+  assert.match(read("components/rain-print.js"), /if \(GIFT && GIFT\.lock && GIFT\.lock\.design\) \{\s*var gl = new Error\('NOAA didn\\u2019t send the station on your gift card/, "a gift card's station is never quietly swapped");
+});

@@ -57,6 +57,7 @@ async function mocks(ctx, opts) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     const u = new URL(r.request().url());
+    if (opts.log) opts.log.push(u.host + u.pathname + "?" + u.search.slice(0, 160));
     if (u.host === "agsist-subs.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       if (u.pathname === "/rp-short") return r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
@@ -72,6 +73,7 @@ async function mocks(ctx, opts) {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [stn] } });
       let sdate = u.searchParams.get("sdate"), normal = false;
       if (u.searchParams.get("params")) { sdate = JSON.parse(u.searchParams.get("params")).sdate; normal = true; }
+      if (opts.failYear && String(sdate).startsWith(String(opts.failYear))) return r.fulfill({ status: 503, body: "<html>503</html>" });
       if (normal) return r.fulfill({ json: { data: yearDays(+String(sdate).slice(0, 4)).map((d) => [d, "0.08"]) } });
       if (sdate === "por") { let data = []; for (let y = 1995; y <= 2025; y++) data = data.concat(series(y).map((x) => x.slice(0, 3))); return r.fulfill({ json: { data } }); }
       return r.fulfill({ json: { meta: { name: stn.name, state: stn.state, ll: stn.ll }, data: series(+String(sdate).slice(0, 4)) } });
@@ -194,6 +196,191 @@ test("Print picked, then away and back (and a reload): $45 everywhere, Print sti
     await Promise.all([page.waitForURL(/buy\.stripe\.com/), page.click("#rp-proof-order")]);
     await page.goBack();
     await check("back from Stripe");
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("a redraw NOAA can't answer keeps the print that was up and says so; the same inputs ask nothing again", { skip }, async () => {
+  const log = [];
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html");
+    await idle(page);
+    await page.fill("#rp-place", "Chetek, WI");
+    await page.selectOption("#rp-year", "2012");
+    await page.press("#rp-place", "Enter");
+    await page.waitForTimeout(300);
+    await idle(page);
+    await page.fill("#rp-name", "The Olson Place");
+    await page.waitForTimeout(600);
+    const before = await page.innerHTML("#rp-art");
+    assert.match(before, /The Olson Place/);
+    // 2011: NOAA answers 503
+    await page.selectOption("#rp-year", "2011");
+    await page.waitForTimeout(300);
+    await idle(page);
+    await page.waitForTimeout(300);
+    assert.equal(await page.textContent("#rp-status"), "Couldn\u2019t draw 2011 just now (NOAA error 503). Your 2012 print is still here.");
+    assert.equal(await page.isVisible("#rp-retry-row"), true, "Try again is there");
+    const art = await page.innerHTML("#rp-art");
+    assert.match(art, /The Olson Place/, "the print is still up");
+    assert.match(art, /2012/);
+    assert.equal(await page.$eval("#rp-pay", (b) => b.disabled), false);
+    // back to 2012: the town and the station list come from memory, no new asks for them
+    const n0 = log.length;
+    await page.selectOption("#rp-year", "2012");
+    await page.waitForTimeout(300);
+    await idle(page);
+    const asked = log.slice(n0);
+    assert.ok(!asked.some((x) => /open-meteo|StnMeta/.test(x)), "no town lookup and no station list asked again: " + asked.join(" | "));
+    // Draw again with nothing changed: nothing is asked at all
+    const n1 = log.length;
+    await page.click("#rp-go");
+    await page.waitForTimeout(600);
+    assert.deepEqual(log.slice(n1).filter((x) => !/workers\.dev/.test(x)), [], "nothing asked for the same print");
+    assert.deepEqual(errors, []);
+  }, { failYear: 2011, log });
+});
+
+test("typing a name redraws a few times, not once a letter, and the address bar is written after the typing stops", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&station=471667+2");
+    await idle(page);
+    await page.waitForTimeout(800);
+    await page.evaluate(() => {
+      window.__rs = 0; window.__draws = 0;
+      const rs = history.replaceState.bind(history); history.replaceState = (...a) => { window.__rs++; return rs(...a); };
+      new MutationObserver(() => window.__draws++).observe(document.getElementById("rp-art"), { childList: true });
+    });
+    await page.click("#rp-name");
+    await page.keyboard.type("The Olson Family Farm", { delay: 40 });
+    const mid = await page.evaluate(() => [window.__rs, window.__draws]);
+    await page.waitForTimeout(900);
+    const [rs, draws] = await page.evaluate(() => [window.__rs, window.__draws]);
+    assert.ok(mid[1] <= 4 && draws <= 5, "21 letters, at most a handful of redraws: " + draws);
+    assert.ok(rs >= 1 && rs <= 2, "the address written once the typing stopped: " + rs);
+    assert.match(page.url(), /name=The\+Olson\+Family\+Farm/);
+    assert.match(await page.innerHTML("#rp-art"), /The Olson Family Farm/);
+    // straight to checkout after typing: the review sheet shows every letter
+    await page.fill("#rp-name", "The Olson Family Farms");
+    await page.click("#rp-pay");
+    await page.waitForSelector("#rp-proof[open]");
+    assert.match(await page.innerHTML("#rp-proof-art"), /The Olson Family Farms/);
+    assert.deepEqual(errors, []);
+  });
+});
+
+const CHETEK_OFF = { ...CHETEK, name: "CHETEK 2.6 NNW" };
+async function drawChetek(page, base, place = "Chetek, WI") {
+  await page.goto(base + "/rain-print.html");
+  await idle(page);
+  await page.fill("#rp-place", place);
+  await page.selectOption("#rp-year", "2025");
+  await page.press("#rp-place", "Enter");
+  await page.waitForTimeout(300);
+  await idle(page);
+  await page.waitForTimeout(300);
+}
+async function openSheet(page) {
+  await page.click("#rp-pay");
+  await page.waitForTimeout(300);
+  if (await page.isVisible("#rp-noname")) { await page.click("#rp-noname-go"); await page.waitForTimeout(300); }
+  await page.waitForSelector("#rp-proof[open]");
+  await page.waitForTimeout(200);
+}
+
+test("the review sheet keeps the tick and Pay on the bottom edge, on a phone and a laptop", { skip }, async () => {
+  for (const [width, height] of [[390, 844], [1280, 720]]) await withPage(async (page, base, errors) => {
+    await drawChetek(page, base);
+    await page.fill("#rp-name", "The Olson Farm");
+    await openSheet(page);
+    for (const where of ["top", "bottom"]) {
+      await page.evaluate((w) => { const d = document.getElementById("rp-proof"), p = document.querySelector(".rp-proof-panel"); for (const el of [d, p]) el.scrollTop = w === "top" ? 0 : el.scrollHeight; }, where);
+      await page.waitForTimeout(200);
+      const r = await page.evaluate(() => { const b = document.getElementById("rp-proof-order").getBoundingClientRect(), t = document.getElementById("rp-proof-ok").getBoundingClientRect(); return { b: [b.top, b.bottom], t: [t.top, t.bottom], h: innerHeight }; });
+      assert.ok(r.b[0] >= 0 && r.b[1] <= r.h && r.t[0] >= 0 && r.t[1] <= r.h, `${width}, scrolled to the ${where}: tick and Pay on screen ${JSON.stringify(r)}`);
+      assert.ok(r.b[1] > r.h - 140, `${width}: Pay sits at the bottom edge ${JSON.stringify(r)}`);
+    }
+    assert.deepEqual(errors, []);
+  }, { width, height });
+});
+
+test("a station named for the buyer's own town: one distance, on the print, the source line and the review sheet", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await drawChetek(page, base);
+    const art = await page.evaluate(() => document.querySelector("#rp-art svg").textContent);
+    assert.match(art, /Weather station: Chetek, WI, [\d.]+ mi from Chetek/);
+    assert.ok(!/NNW of Chetek/.test(art), "no second distance on the print");
+    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI, [\d.]+ mi from Chetek \(/);
+    await openSheet(page);
+    assert.match(await page.textContent("#rp-proof-sum"), /Weather stationChetek, WI, [\d.]+ mi from Chetek/);
+    assert.ok(!/NNW of/.test(await page.textContent("#rp-proof-sum")));
+    assert.deepEqual(errors, []);
+  }, { stn: CHETEK_OFF });
+});
+
+test("a town and state typed with no comma draws, and the box says it the usual way", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await drawChetek(page, base, "Chetek WI");
+    assert.equal(await page.inputValue("#rp-place"), "Chetek, WI");
+    assert.match(await page.evaluate(() => document.querySelector("#rp-art svg").textContent), /Chetek, Wisconsin/);
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("a name pasted past 24 letters is said in red, by the box and in the review sheet", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await drawChetek(page, base);
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.evaluate(() => navigator.clipboard.writeText("The Olson Family Farm and Ranch"));
+    await page.focus("#rp-name");
+    await page.keyboard.press("ControlOrMeta+V");
+    await page.waitForTimeout(500);
+    assert.equal(await page.inputValue("#rp-name"), "The Olson Family Farm an");
+    assert.equal(await page.textContent("#rp-name-n"), "Only 24 letters fit, so what you pasted is cut to “The Olson Family Farm an”.");
+    await openSheet(page);
+    assert.match(await page.textContent("#rp-proof-sum"), /NameThe Olson Family Farm an \(cut off: only 24 letters fit, you typed “The Olson Family Farm and Ranch”\)/);
+    assert.equal(await page.$$eval("#rp-proof-sum .rp-pcut", (e) => e.length), 1);
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("the thank-you names the print only when it knows which one was paid for", { skip }, async () => {
+  const code = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2025, style: "r1", cmp: "normal", name: "Olson" });
+  const press = (choice, t, place = "Chetek, WI") => ({ code, choice, place, year: 2025, gift: false, settle: false, t });
+  const cases = [
+    ["this tab's own press", { session: press("print12x18", 0) }, "print12x18", true],
+    ["the one recent press in this browser", { presses: [press("print12x18", 0)] }, "print12x18", true],
+    ["two recent presses, no tab press", { presses: [press("print12x18", 0), press("print12x18", 0, "Rice Lake, WI")] }, "print12x18", false],
+    ["the saved product isn't the one paid", { session: press("framed12x18", 0) }, "print12x18", false],
+  ];
+  for (const [name, saved, paid, named] of cases) await withPage(async (page, base, errors) => {
+    await page.goto(base + "/about.html");
+    await page.evaluate((s) => {
+      const now = Date.now(), fix = (x) => ({ ...x, t: now - 60000 });
+      if (s.session) sessionStorage.setItem("agsist-rp-checkout", JSON.stringify(fix(s.session)));
+      if (s.presses) localStorage.setItem("agsist-rp-presses", JSON.stringify(s.presses.map(fix)));
+    }, saved);
+    await page.goto(base + "/rain-print.html?paid=" + paid + "&s=cs_test_a1b2c3d4e5f6");
+    await page.waitForSelector("#rp-paid:not([hidden])");
+    await page.waitForTimeout(800);
+    const txt = await page.textContent("#rp-paid");
+    if (named) assert.match(txt, /Your 12 x 18 print of Chetek, WI, 2025 is ordered\./, name);
+    else assert.ok(!/Your .* is ordered/.test(txt) && !/Rice Lake/.test(txt), name + ": " + txt);
+    if (!named) assert.equal(await page.inputValue("#rp-place"), "", name + ": no design drawn under it");
+    assert.deepEqual(errors, []);
+  });
+  // no way back from Stripe, the same design again within the hour: a word about the receipt
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/about.html");
+    await page.evaluate((c) => localStorage.setItem("agsist-rp-presses", JSON.stringify([{ code: c, choice: "print12x18", place: "Chetek, WI", year: 2025, t: Date.now() - 600000 }])), code);
+    await page.goto(base + "/rain-print.html?d=" + code);
+    await idle(page);
+    await page.waitForTimeout(500);
+    assert.equal(await page.textContent("#rp-paid-hint"), "Already paid? Check your email for the Stripe receipt.");
+    assert.equal(await page.isVisible("#rp-paid-hint"), true);
+    await page.fill("#rp-name", "Someone else");
+    await page.waitForTimeout(500);
+    assert.equal(await page.isVisible("#rp-paid-hint"), false, "another design: no word");
     assert.deepEqual(errors, []);
   });
 });

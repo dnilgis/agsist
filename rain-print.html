@@ -9,10 +9,6 @@
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=24" as="style">
-  <link rel="preload" href="/fonts/rp-fraunces-opsz.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/rp-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/rp-fraunces-opsz-400i.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/rp-plex-sans-400i.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -280,6 +276,9 @@
   .rp-prod-s{font-size:var(--fs-xs);color:var(--text-dim);line-height:1.4}
   .rp .rp-prod .rp-price{font-size:1.2rem}
   .rp-box-d{margin:0 0 .8rem}
+  .rp-onwall{margin:0 0 .4rem}
+  .rp-onwall img{display:block;width:100%;height:auto}
+  .rp-onwall figcaption{margin:.3rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
   .rp-box{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem 1rem;padding:0 0 .6rem}
   .rp-box h3{margin:.3rem 0 .1rem;font-size:var(--fs-sm)}
   .rp-box ul{margin:0;padding:0 0 0 1.05rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
@@ -391,9 +390,14 @@
   .rp-proof-mag{position:absolute;right:16px;bottom:16px;z-index:1;display:inline-flex;align-items:center;gap:.45rem;min-height:40px;padding:0 14px 0 11px;border:1px solid rgba(255,255,255,.22);border-radius:var(--r-pill);background:rgba(18,20,20,.86);color:#f2f2ef;font-family:var(--font-body);font-size:var(--fs-sm);font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:background .12s}
   .rp-proof-mag:hover{background:rgba(18,20,20,.97)}
   .rp-proof-mag svg{width:18px;height:18px;flex:none}
-  .rp-proof-panel{min-height:0;overflow:auto;padding:18px 20px 22px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:18px;overscroll-behavior:contain}
+  .rp-proof-panel{min-height:0;overflow:auto;padding:18px 20px 0;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:18px;overscroll-behavior:contain}
   .rp-proof-panel>*{flex-shrink:0}   /* a long design scrolls the panel; nothing in it is squeezed */
-  .rp-proof-act .btn{width:100%}
+  .rp-proof-act .btn,.rp-proof-pin .btn{width:100%}
+  /* the tick and Pay stay at the bottom of the sheet while the details scroll (2026-10-15) */
+  .rp-proof-pin{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:10px;margin:0 -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -8px 14px -10px rgba(0,0,0,.35)}
+  .rp-proof-pin .rp-proof-msg{margin:0}
+  .rp-proof-pin{margin-top:auto}
+  .rp-proof-first{margin:0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-proof-act>p{margin:.45rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-popts{display:grid;gap:12px}
   .rp-popt-l{display:block;margin:0 0 5px;font-size:var(--fs-xs);font-weight:600;color:var(--text-muted)}
@@ -441,7 +445,9 @@
     .rp-proof[data-zoom="full"] .rp-proof-stage{height:min(64dvh,560px)}
     .rp-proof-view{display:flex;flex-direction:column}
     .rp-proof-mag{position:static;align-self:flex-end;margin:0 12px 12px;box-shadow:none}
-    .rp-proof-panel{overflow:visible;border-left:0;padding:16px 16px 28px}
+    .rp-proof-panel{overflow:visible;border-left:0;padding:16px 16px calc(200px + env(safe-area-inset-bottom,0px))}
+    /* a phone: the tick and Pay sit on the bottom edge of the screen the whole time the sheet is open */
+    .rp-proof-pin{position:fixed;left:0;right:0;bottom:0;margin:0;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
   }
   @media(prefers-reduced-motion:reduce){.rp-proof *{transition:none!important}}
   .rp-sum{margin:.4rem 0 .8rem;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-8);background:var(--bg);font-size:var(--fs-sm);line-height:1.5}
@@ -564,11 +570,11 @@
             <div class="rp-wide2"><label class="field"><span>A line under the name</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count rp-len" id="rp-ded-n">0 of 70 letters</p></div>
             <p class="rp-count rp-wide2" id="rp-sym-note" hidden>Emoji and symbols aren&rsquo;t in the print&rsquo;s typeface, so they were left out. Letters, numbers and everyday punctuation print as typed.</p>
             <div class="rp-dates" role="group" aria-labelledby="rp-dates-h"><p class="rp-dates-h" id="rp-dates-h">Mark a day <span class="rp-step-opt">(up to 5)</span></p>
-              <div class="rp-date" id="rp-m1row" role="group" aria-labelledby="rp-m1h"><span class="rp-date-n" id="rp-m1h">Day 1</span><select class="field rp-mo" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-m1err"></select><select class="field rp-dy" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-m1err"></select><input class="field rp-lab" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="40" autocomplete="off"><button type="button" class="rp-rm" id="rp-m1rm" aria-label="Remove day 1">&times;</button><p class="rp-count rp-len" id="rp-m1l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m1err" hidden></p><p class="rp-count rp-date-on" id="rp-m1on" hidden></p></div>
-              <div class="rp-date" id="rp-m2row" role="group" aria-labelledby="rp-m2h" hidden><span class="rp-date-n" id="rp-m2h">Day 2</span><select class="field rp-mo" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-m2err"></select><select class="field rp-dy" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-m2err"></select><input class="field rp-lab" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="40" autocomplete="off"><button type="button" class="rp-rm" id="rp-m2rm" aria-label="Remove day 2">&times;</button><p class="rp-count rp-len" id="rp-m2l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m2err" hidden></p><p class="rp-count rp-date-on" id="rp-m2on" hidden></p></div>
-              <div class="rp-date" id="rp-m3row" role="group" aria-labelledby="rp-m3h" hidden><span class="rp-date-n" id="rp-m3h">Day 3</span><select class="field rp-mo" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-m3err"></select><select class="field rp-dy" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-m3err"></select><input class="field rp-lab" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="40" autocomplete="off"><button type="button" class="rp-rm" id="rp-m3rm" aria-label="Remove day 3">&times;</button><p class="rp-count rp-len" id="rp-m3l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m3err" hidden></p><p class="rp-count rp-date-on" id="rp-m3on" hidden></p></div>
-              <div class="rp-date" id="rp-m4row" role="group" aria-labelledby="rp-m4h" hidden><span class="rp-date-n" id="rp-m4h">Day 4</span><select class="field rp-mo" id="rp-m4mo" aria-label="Month for day 4" aria-describedby="rp-m4err"></select><select class="field rp-dy" id="rp-m4dy" aria-label="Day for day 4" aria-describedby="rp-m4err"></select><input class="field rp-lab" id="rp-m4l" aria-label="Label for day 4" aria-describedby="rp-m4l-n" type="text" maxlength="40" autocomplete="off"><button type="button" class="rp-rm" id="rp-m4rm" aria-label="Remove day 4">&times;</button><p class="rp-count rp-len" id="rp-m4l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m4err" hidden></p><p class="rp-count rp-date-on" id="rp-m4on" hidden></p></div>
-              <div class="rp-date" id="rp-m5row" role="group" aria-labelledby="rp-m5h" hidden><span class="rp-date-n" id="rp-m5h">Day 5</span><select class="field rp-mo" id="rp-m5mo" aria-label="Month for day 5" aria-describedby="rp-m5err"></select><select class="field rp-dy" id="rp-m5dy" aria-label="Day for day 5" aria-describedby="rp-m5err"></select><input class="field rp-lab" id="rp-m5l" aria-label="Label for day 5" aria-describedby="rp-m5l-n" type="text" maxlength="40" autocomplete="off"><button type="button" class="rp-rm" id="rp-m5rm" aria-label="Remove day 5">&times;</button><p class="rp-count rp-len" id="rp-m5l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m5err" hidden></p><p class="rp-count rp-date-on" id="rp-m5on" hidden></p></div>
+              <div class="rp-date" id="rp-m1row" role="group" aria-labelledby="rp-m1h"><span class="rp-date-n" id="rp-m1h">Day 1</span><select class="field rp-mo" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-m1err"></select><select class="field rp-dy" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-m1err"></select><input class="field rp-lab" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m1rm" aria-label="Remove day 1">&times;</button><p class="rp-count rp-len" id="rp-m1l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m1err" hidden></p><p class="rp-count rp-date-on" id="rp-m1on" hidden></p></div>
+              <div class="rp-date" id="rp-m2row" role="group" aria-labelledby="rp-m2h" hidden><span class="rp-date-n" id="rp-m2h">Day 2</span><select class="field rp-mo" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-m2err"></select><select class="field rp-dy" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-m2err"></select><input class="field rp-lab" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m2rm" aria-label="Remove day 2">&times;</button><p class="rp-count rp-len" id="rp-m2l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m2err" hidden></p><p class="rp-count rp-date-on" id="rp-m2on" hidden></p></div>
+              <div class="rp-date" id="rp-m3row" role="group" aria-labelledby="rp-m3h" hidden><span class="rp-date-n" id="rp-m3h">Day 3</span><select class="field rp-mo" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-m3err"></select><select class="field rp-dy" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-m3err"></select><input class="field rp-lab" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m3rm" aria-label="Remove day 3">&times;</button><p class="rp-count rp-len" id="rp-m3l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m3err" hidden></p><p class="rp-count rp-date-on" id="rp-m3on" hidden></p></div>
+              <div class="rp-date" id="rp-m4row" role="group" aria-labelledby="rp-m4h" hidden><span class="rp-date-n" id="rp-m4h">Day 4</span><select class="field rp-mo" id="rp-m4mo" aria-label="Month for day 4" aria-describedby="rp-m4err"></select><select class="field rp-dy" id="rp-m4dy" aria-label="Day for day 4" aria-describedby="rp-m4err"></select><input class="field rp-lab" id="rp-m4l" aria-label="Label for day 4" aria-describedby="rp-m4l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m4rm" aria-label="Remove day 4">&times;</button><p class="rp-count rp-len" id="rp-m4l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m4err" hidden></p><p class="rp-count rp-date-on" id="rp-m4on" hidden></p></div>
+              <div class="rp-date" id="rp-m5row" role="group" aria-labelledby="rp-m5h" hidden><span class="rp-date-n" id="rp-m5h">Day 5</span><select class="field rp-mo" id="rp-m5mo" aria-label="Month for day 5" aria-describedby="rp-m5err"></select><select class="field rp-dy" id="rp-m5dy" aria-label="Day for day 5" aria-describedby="rp-m5err"></select><input class="field rp-lab" id="rp-m5l" aria-label="Label for day 5" aria-describedby="rp-m5l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m5rm" aria-label="Remove day 5">&times;</button><p class="rp-count rp-len" id="rp-m5l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m5err" hidden></p><p class="rp-count rp-date-on" id="rp-m5on" hidden></p></div>
               <p class="rp-dates-n rp-add-row"><button type="button" class="rp-linkbtn" id="rp-add-day">+ Mark another day</button><span class="rp-count rp-dates-max" id="rp-dates-max" hidden>5 days is the most that fits. Remove one to mark another.</span></p>
               <p class="rp-count rp-dates-n" id="rp-labels-n">Or tap one: <span class="rp-presets" id="rp-presets" role="group" aria-label="Label ideas"></span></p>
               <p class="rp-count rp-dates-n rp-date-say" id="rp-date-say" aria-live="polite"></p>
@@ -634,8 +640,8 @@
           </fieldset>
           <details class="rp-box-d"><summary>What comes in the box</summary>
             <div class="rp-box">
-              <figure class="rp-onwall"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="lazy" decoding="async" alt="A framed 12 x 18 Rain Print in a black frame on the painted steel wall of a farm shop."></picture><figcaption>Example. A 12 x 18 print, framed, on a shop wall.</figcaption></figure>
-              <div><h3>Framed</h3><ul><li>Shipping included, anywhere in the 50 states</li><li>The same print in a black stock frame, no mat</li><li>Real glass front, packed with corner guards and foam, double-boxed</li><li>Numbered, and initialed by hand in pencil</li><li>Arrives ready to hang</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul></div>
+              <figure class="rp-onwall"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="lazy" decoding="async" alt="Mockup: a framed 12 x 18 Rain Print in a black frame on the painted steel wall of a farm shop."></picture><figcaption>Mockup of a framed print. Photos of real prints coming soon.</figcaption></figure>
+              <div><h3>Framed</h3><ul><li>Shipping included, anywhere in the 50 states</li><li>The same print in a black frame, no mat</li><li>Real glass front, packed with corner guards and foam, double-boxed</li><li>Numbered, and initialed by hand in pencil</li><li>Arrives ready to hang</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul></div>
               <div><h3>Print only</h3><ul><li>Shipping included, anywhere in the 50 states</li><li>I print it myself, and you see a proof first</li><li>Numbered, and initialed by hand in pencil</li><li>Matte paper</li><li>Ships flat between chipboard</li><li>Keep it out of direct sun; the inks fade in strong light</li></ul></div>
               <div><h3>Digital file</h3><ul><li>The digital file, 12 x 18 in at 300 dpi, no watermark</li><li id="rp-dig-when">The finished file by email within 1 business day of paying</li><li>Take it to any print shop</li><li>Want a change after? Write to me and I&rsquo;ll redo it.</li></ul></div>
             </div>
@@ -644,6 +650,7 @@
           <div class="rp-pay-wrap" id="rp-pay-wrap">
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
             <p class="rp-promise" id="rp-promise">You see a proof before I print. Full refund before I print.</p>
+            <p class="rp-note" id="rp-paid-hint" hidden></p>
             <div class="rp-noname" id="rp-noname" hidden><p>There&rsquo;s no name on it yet.</p><div class="rp-acts"><button class="btn btn-secondary" type="button" id="rp-noname-add">Add a name</button><button class="btn btn-secondary" type="button" id="rp-noname-go">Check out without a name</button></div></div>
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
@@ -655,6 +662,7 @@
           <div class="rp-order" id="rp-order" hidden>
             <h3>Order request</h3>
             <p class="rp-note" id="ro-order-note">I&rsquo;ll email you within 1 business day with a payment link, and a proof first for a print. Nothing&rsquo;s charged until you pay it.</p>
+            <p class="rp-acts" id="ro-retry" hidden><button class="btn btn-secondary" type="button" id="ro-retry-go">Try checkout again</button></p>
             <div class="rp-sum" id="ro-summary"></div>
             <form id="ro-form" novalidate>
               <div class="rp-ogrid">
@@ -848,14 +856,16 @@
           <label><input type="radio" name="rp-pproduct" value="digital"><span>File <b data-price="digital">$19</b></span></label>
         </div></div>
         <div><h3>Check the details</h3><dl class="rp-proof-sum" id="rp-proof-sum"></dl></div>
-        <label class="rp-check" id="rp-proof-ok-wrap"><input type="checkbox" id="rp-proof-ok"><span>The spelling and the dates are right</span></label>
         <div class="rp-proof-act" id="rp-proof-go">
-          <button type="button" class="btn btn-primary" id="rp-proof-order">Pay $89 at checkout</button>
-          <p id="rp-proof-first">You see a proof before I print. Full refund before I print.</p>
-          <p class="rp-proof-msg" id="rp-proof-msg" role="alert" hidden></p>
           <p class="rp-proof-chg"><button type="button" class="rp-linkbtn" id="rp-proof-change">Change something</button></p>
         </div>
         <p class="rp-proof-help">Use the magnifier to check every word. Actual size is 12 x 18 in.</p>
+        <div class="rp-proof-pin" id="rp-proof-pin">
+          <label class="rp-check" id="rp-proof-ok-wrap"><input type="checkbox" id="rp-proof-ok"><span>The spelling and the dates are right</span></label>
+          <button type="button" class="btn btn-primary" id="rp-proof-order">Pay $89 at checkout</button>
+          <p class="rp-proof-first" id="rp-proof-first">You see a proof before I print. Full refund before I print.</p>
+          <p class="rp-proof-msg" id="rp-proof-msg" role="alert" hidden></p>
+        </div>
       </div>
     </div>
   </dialog>
@@ -863,10 +873,10 @@
   <script src="/components/util.js?v=19"></script>
   <script src="/components/qr.js?v=10"></script>
   <script src="/components/form-post.js?v=4"></script>
-  <script src="/components/rp-short.js?v=4"></script>
+  <script src="/components/rp-short.js?v=5"></script>
   <script src="/components/rp-logo.js?v=2"></script>
   <script src="/components/rain-print-art.js?v=11"></script>
-  <script src="/components/rain-print.js?v=35"></script>
-  <script src="/components/rp-gift.js?v=3" defer></script>
+  <script src="/components/rain-print.js?v=36"></script>
+  <script src="/components/rp-gift.js?v=4" defer></script>
 </body>
 </html>

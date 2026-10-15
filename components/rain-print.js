@@ -618,9 +618,21 @@
      print and the order then name. */
   function placeLabel(x) { return x.name + ', ' + (abbrFor(String(x.admin1 || '').toLowerCase()) || x.admin1 || ''); }
   function geocodeQuery(q) {
+    q = String(q || '');
     var zip = /^\s*(\d{5})(?:-\d{4})?\s*$/.exec(q);
     var parts = q.split(','), town = zip ? zip[1] : parts[0].trim(), st = zip ? '' : (parts[1] || '').trim().toLowerCase();
+    // no comma: a trailing state name or postal code is the state ("Ames Iowa", "Ames IA", "Springfield IL", 2026-10-15)
+    if (!zip && parts.length === 1) { var t = trailingState(town); if (t) { town = t.town; st = t.st; } }
     return { zip: zip ? zip[1] : '', town: town, st: st };
+  }
+  function trailingState(s) {
+    var w = String(s).trim().split(/\s+/);
+    for (var n = Math.min(3, w.length - 1); n >= 1; n--) {
+      var tail = w.slice(w.length - n).join(' ').toLowerCase().replace(/\.$/, ''), head = w.slice(0, w.length - n).join(' ');
+      if (n === 1 && /^[a-z]{2}$/.test(tail) && STATE[tail]) return { town: head, st: tail };
+      for (var k in STATE) if (STATE[k] === tail) return { town: head, st: k };
+    }
+    return null;
   }
   function geoPick(q, results) {
     var g = geocodeQuery(q), list = (results || []).filter(function (x) { return x && typeof x.latitude === 'number' && typeof x.longitude === 'number' && x.name; });
@@ -628,7 +640,7 @@
     if (g.zip) return { hit: list[0] };
     if (g.st) {
       var inSt = list.filter(function (x) { var a = String(x.admin1 || '').toLowerCase(); return a === STATE[g.st] || a === g.st; });
-      if (!inSt.length) return { error: 'Couldn\u2019t find \u201c' + parts0(q) + '\u201d in ' + (STATE[g.st] ? toTitle(STATE[g.st]) : g.st.toUpperCase()) + '. Check the spelling of the town and the state.' };
+      if (!inSt.length) return { error: 'Couldn\u2019t find \u201c' + g.town + '\u201d in ' + (STATE[g.st] ? toTitle(STATE[g.st]) : g.st.toUpperCase()) + '. Check the spelling of the town and the state.' };
       list = inSt;
     }
     // more than one town of that name, far enough apart to have different gauges: ask
@@ -768,7 +780,11 @@
      "Cameron, WI (2 mi NE of Cameron)". m: {name, state or stateAbbr}. */
   function stationLabel(m) {
     var P = stationParts(m && m.name), st = (m && (m.state || m.stateAbbr)) || '';
-    return P.name + (st ? ', ' + st : '') + (P.off ? ' (' + P.off + ' of ' + P.name + ')' : '');
+    /* The station named for the buyer's own town: one distance only, the one
+       from the town (2026-10-15: "Ames, IA (2.6 mi NNW of Ames), 2.0 mi from
+       Ames" read as two answers). m.city: the buyer's town, when known. */
+    var same = m && m.city && P.name.toLowerCase() === String(m.city).trim().toLowerCase();
+    return P.name + (st ? ', ' + st : '') + (P.off && !same ? ' (' + P.off + ' of ' + P.name + ')' : '');
   }
   function milesText(mi) { return mi < 0.1 ? 'under 0.1 mi' : (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; }
 
@@ -840,28 +856,48 @@
      "Looking for NOAA stations" up for good with Draw turned off). The error
      says who was slow; the status line then offers a Try again button. */
   var FETCH_MS = 15000;
+  /* The asks still out for the draw on its way. A new draw stops them (the
+     town lookup, the station list, a year's days); the station's full record
+     (sdate=por), the big one, is left to finish, since a redraw of the same
+     station uses it (2026-10-15). */
+  var LIVE = [];
+  function abortLive() {
+    var keep = [];
+    LIVE.forEach(function (x) { if (/sdate=por/.test(x.url)) keep.push(x); else { x.stopped = true; try { x.ctl.abort(); } catch (e) {} } });
+    LIVE = keep;
+  }
   function safeFetch(url) {
     var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
     var ctl = typeof AbortController === 'function' ? new AbortController() : null, timedOut = false;
+    var live = ctl ? { ctl: ctl, url: url, stopped: false } : null;
+    if (live) LIVE.push(live);
+    var gone = function () { if (live) LIVE = LIVE.filter(function (x) { return x !== live; }); };
     var timer = setTimeout(function () { timedOut = true; if (ctl) ctl.abort(); }, FETCH_MS);
     var slow = function () { var e = new Error(who + ' is slow right now and didn\u2019t answer in ' + (FETCH_MS / 1000) + ' seconds. Try again in a minute.'); e.retry = true; return e; };
     var race = new Promise(function (res, rej) { setTimeout(function () { if (!ctl) rej(slow()); }, FETCH_MS + 50); });
     var f = fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
-      clearTimeout(timer);
-      if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; throw e; }
+      clearTimeout(timer); gone();
+      if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; e.status = r.status; throw e; }
       // an answer that isn't data (a proxy's or an outage page) says so in words, not as a script error (panel 3 F7)
       var json = r.json.bind(r);
       r.json = function () { return json().catch(function () { var e2 = new Error(who + ' sent back something that isn\u2019t data. Try again in a minute.'); e2.retry = true; throw e2; }); };
       return r;
     }, function () {
-      clearTimeout(timer);
+      clearTimeout(timer); gone();
+      if (live && live.stopped) throw 'stale';
       if (timedOut) throw slow();
       var e = new Error(who + ' couldn\u2019t be reached. Check the connection and try again.'); e.retry = true; throw e;
     });
     return Promise.race([f, race]);
   }
   // the town lookup; the page keeps the reader's own pick from a "which one?" list (PICKED) in front of it
+  var GEO_CACHE = new Map();   // query -> the town found (a redraw doesn't ask again)
   function geoFind(q) {
+    var key = String(q).trim().toLowerCase();
+    if (GEO_CACHE.has(key)) return Promise.resolve(GEO_CACHE.get(key));
+    return geoAsk(q).then(function (hit) { GEO_CACHE.set(key, hit); return hit; });
+  }
+  function geoAsk(q) {
     var g = geocodeQuery(q);
     var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
@@ -881,7 +917,13 @@
      of them; a rain-only gauge must stay in the list. A snowfall answer that
      fails leaves snowOk null (not known), never false. */
   function spans(r, y0, y1) { return !!(r && r[0] && r[1] && r[0] <= y0 && r[1] >= y1); }
+  var STN_CACHE = new Map();   // lat|lon|year -> the station list
   function stations(lat, lon, year) {
+    var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year;
+    if (STN_CACHE.has(key)) return Promise.resolve(STN_CACHE.get(key));
+    return stationsAsk(lat, lon, year).then(function (list) { STN_CACHE.set(key, list); return list; });
+  }
+  function stationsAsk(lat, lon, year) {
     var d = 0.6;
     var box = [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(',');
     var u = 'https://data.rcc-acis.org/StnMeta?' + new URLSearchParams({
@@ -961,17 +1003,31 @@
   function pickStation(list, year, read, o) {
     o = o || {};
     var pool = (list || []).slice(), seen = {}, tried = {};
-    var tries = pool.slice(0, 3), best = null, bestSt = null, chosen = null, picked = null, i = 0;
+    var tries = pool.slice(0, 3), best = null, bestSt = null, chosen = null, picked = null, i = 0, got = {};
+    /* The candidates are read at once, in parallel (2026-10-15: one after
+       another cost a phone several seconds), and their answers are judged
+       nearest first by the same rules as before: the result is the same. */
+    var readAll = function (list, kind) {
+      if (list.length && o.onTry) o.onTry(list[0], kind);
+      return Promise.all(list.map(function (s) {
+        // a station already read for its rain is not asked again for its snow
+        if (got[s.sid]) return got[s.sid];
+        return (got[s.sid] = read(s.sid, year).then(function (d) { return { d: d }; }, function () { return { fail: true }; }));
+      }));
+    };
     var rainStep = function () {
-      if (i >= tries.length) { picked = best; chosen = bestSt; return null; }
-      var s = tries[i++];
-      if (o.onTry) o.onTry(s, 'rain');
-      return read(s.sid, year).then(function (d) {
-        tried[s.sid] = d.d.missing; seen[s.sid] = snowStateOf(d.days);
-        if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
-        if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
-        return rainStep();
-      }, function () { tried[s.sid] = Infinity; return rainStep(); });
+      return readAll(tries, 'rain').then(function (ans) {
+        for (i = 0; i < tries.length; i++) {
+          var s = tries[i], a = ans[i];
+          if (a.fail) { tried[s.sid] = Infinity; continue; }
+          var d = a.d;
+          tried[s.sid] = d.d.missing; seen[s.sid] = snowStateOf(d.days);
+          if (!best || d.d.missing < best.d.missing) { best = d; bestSt = s; }
+          if (d.d.missing <= MISS_OK) { picked = d; chosen = s; return null; }
+        }
+        picked = best; chosen = bestSt;
+        return null;
+      });
     };
     var done = function (why) { return { chosen: chosen, picked: picked, why: why || null, seen: seen }; };
     return Promise.resolve(rainStep()).then(function () {
@@ -982,18 +1038,17 @@
       var all = pool.filter(function (s) {
         return s.sid !== first.sid && s.snowOk !== false && s.km <= limit && !(tried[s.sid] > MISS_OK) && seen[s.sid] !== 'unknown';
       }), cands = all.slice(0, SNOW_TRIES), sure = all.length <= SNOW_TRIES;
-      var snowStep = function () {
-        if (j >= cands.length) return done({ none: true, km: limit, sure: sure });
-        var s = cands[j++];
-        if (o.onTry) o.onTry(s, 'snow');
-        return read(s.sid, year).then(function (d) {
-          var st = seen[s.sid] = snowStateOf(d.days);
-          if (d.d.missing > MISS_OK || st === 'unknown') return snowStep();
-          chosen = s; picked = d;
+      return readAll(cands, 'snow').then(function (ans) {
+        for (j = 0; j < cands.length; j++) {
+          var s = cands[j], a = ans[j];
+          if (a.fail) { sure = false; continue; }
+          var st = seen[s.sid] = snowStateOf(a.d.days);
+          if (a.d.d.missing > MISS_OK || st === 'unknown') continue;
+          chosen = s; picked = a.d;
           return done({ over: { sid: first.sid, name: first.name, km: first.km } });
-        }, function () { sure = false; return snowStep(); });
-      };
-      return snowStep();
+        }
+        return done({ none: true, km: limit, sure: sure });
+      });
     });
   }
   /* The sentence by the station line that says why this station: "Picked over
@@ -1274,7 +1329,7 @@
   var ORDER_TO = 'sig@farmers1st.com';
 
   var ST = fromParams(root.location.search);
-  var EXT_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
+  var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
   var DATA = null, META = null, EXT = null, NORM30 = null, STATIONS = [], PRICES = null, PRICES_P = null, BLOCKED = '', DRAWING = false;
   var SNOW_SEEN = {};   // {year: {sid: 'full'|'none'|'unknown'}}: each station's snowfall year once its days are read (the station list's words)
   /* This year only. PREVIEW: {last: ISO date of the last recorded day, yearLen}
@@ -1700,6 +1755,29 @@
   }
   /* field id -> {label, full}: a label that was cut to fit, while it still reads that way */
   var LABEL_CUT = {};
+  /* Pasted past a box's limit (the boxes take only what fits, maxlength):
+     the paste as it was, so the counter and the review sheet say what was cut
+     instead of cutting it silently (2026-10-15). TEXT_CUT: the name and the
+     line under it; a label's goes in LABEL_CUT, beside a link's. */
+  var TEXT_CUT = {};
+  function catchPaste(el) {
+    el.addEventListener('paste', function (e) {
+      var t = '';
+      try { t = (e.clipboardData || root.clipboardData).getData('text'); } catch (err) { t = ''; }
+      if (!t) return;
+      var v = el.value, a = el.selectionStart || 0, b = el.selectionEnd || a;
+      var full = cleanText(printable(v.slice(0, a) + t + v.slice(b)), 400), max = +el.getAttribute('maxlength') || 0;
+      if (!max || full.length <= max) return;
+      setTimeout(function () {
+        if (/^rp-m\dl$/.test(el.id)) LABEL_CUT[el.id] = { label: el.value, full: full, pasted: true };
+        else TEXT_CUT[el.id] = { kept: el.value, full: full };
+        syncCounts(); restyle(); syncDates();
+        if ($('rp-proof').open) proofRender();
+      }, 0);
+    });
+  }
+  function textCut(id) { var c = TEXT_CUT[id]; if (c && $(id).value !== c.kept) { delete TEXT_CUT[id]; c = null; } return c; }
+  function cutWords(id, lim) { var c = textCut(id); return c ? ' (cut off: only ' + lim + ' letters fit, you typed \u201c' + c.full + '\u201d)' : ''; }
   var CUT_WORDS = 'That\u2019s ' + LIMITS.label + ' letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.';
   // the words typed in day i, whole, when they run past what the print takes
   function typedFull(i) { var f = $('rp-m' + i + 'l'); return f ? cleanText(printable(f.value), 200) : ''; }
@@ -1707,6 +1785,9 @@
   // a marked day whose typed words were cut to fit: the words as typed, for the review sheet
   function typedCut(m) {
     for (var i = 1; i <= LIMITS.markers; i++) {
+      // pasted past the 13 letters the box takes (maxlength): the paste, whole
+      var pc = LABEL_CUT['rp-m' + i + 'l'];
+      if (pc && pc.pasted && rowDate(i, ST.year) === m.date && pc.label === m.label) return pc.full;
       var full = typedFull(i);
       if (full.length > LIMITS.label && rowDate(i, ST.year) === m.date && cleanText(full, LIMITS.label) === m.label) return full;
     }
@@ -1714,9 +1795,11 @@
   }
   function syncCounts() {
     [['rp-name', 'rp-name-n', LIMITS.name], ['rp-ded', 'rp-ded-n', LIMITS.dedication]].forEach(function (x) {
-      var n = $(x[0]).value.length, el = $(x[1]);
-      el.textContent = n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
-      el.classList.toggle('rp-at', n >= x[2]);
+      var n = $(x[0]).value.length, el = $(x[1]), c = textCut(x[0]);
+      el.textContent = c ? 'Only ' + x[2] + ' letters fit, so what you pasted is cut to \u201c' + c.kept + '\u201d.'
+        : n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
+      el.classList.toggle('rp-at', !c && n >= x[2]);
+      el.classList.toggle('rp-bad', !!c);
       // the counter shows only within 5 letters of the limit (2026-10-15, Sig: too much dead space)
       el.classList.toggle('rp-near', n >= x[2] - 5);
     });
@@ -1873,12 +1956,29 @@
     el.hidden = !el.textContent;
   }
   var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
+  /* The address follows the design, a moment after the typing stops (400 ms),
+     never once per letter: Safari refuses past 100 replaceState calls in 30
+     seconds (2026-10-15). updateUrlNow writes it at once (checkout, leaving). */
+  var URL_T = 0, URL_LOG = [], URL_LAZY = false;
   function updateUrl() {
+    // a draw writes it at once; typing (URL_LAZY, the redraw after a pause) waits for the pause
+    if (!URL_LAZY && !URL_T) { updateUrlNow(); return; }
+    clearTimeout(URL_T);
+    URL_T = setTimeout(updateUrlNow, 400);
+  }
+  function updateUrlNow() {
+    clearTimeout(URL_T); URL_T = 0;
     if (SAMPLE || KEEP_URL) return;   // a sample never goes into the address bar
+    var now = Date.now();
+    URL_LOG = URL_LOG.filter(function (t) { return now - t < 30000; });
+    if (URL_LOG.length >= 60) { URL_T = setTimeout(updateUrlNow, 30000 - (now - URL_LOG[0]) + 50); return; }
+    URL_LOG.push(now);
     var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') : '') +
       // the product picked, so Back and a reload keep it (framed, the default, stays out of the address)
       (PICK && PICK !== 'framed12x18' ? '&pick=' + PICK : '');
-    try { root.history.replaceState(null, '', root.location.pathname + '?' + q); } catch (e) {}
+    var to = root.location.pathname + '?' + q;
+    if (root.location.pathname + root.location.search === to) return;
+    try { root.history.replaceState(null, '', to); } catch (e) {}
   }
 
   function showBuy(on) {
@@ -2036,7 +2136,7 @@
       (ST.records && PREVIEW ? ' Remarkable days are marked once the year is over.' : '') +
       (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? ' The station history didn’t load, so the year and month records are left off.' : '') +
       (ST.records && SKIPPED.length ? ' Left off the print for space: ' + esc(SKIPPED.join(', ')) + '.' : '') +
-      (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
+      (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') && !(NORM_WAIT && ST.cmp === 'normal') ? ' <b>' + (ST.cmp === 'normal' ? 'This station has no NOAA normal, so there’s no comparison line.' : 'The station history didn’t load, so there’s no comparison line.') + '</b>' : '');
     var rows = [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', f2(D.total) + ' in (rain and melted snow)'],
       ['Snowfall', D.snow !== null && D.snow !== undefined ? D.snow.toFixed(1) + ' in' : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
@@ -2049,6 +2149,7 @@
     setDesignRefs();
     showBuy(true);
     sampleLine(!!SAMPLE);
+    syncPaidHint();
     if (!$('rp-order').hidden) syncSummary();
     if ($('rp-proof').open) proofRender();
     syncStrip();
@@ -2071,6 +2172,39 @@
   /* A draw that failed (a misspelled town, a slow NOAA, no station): the old
      design comes down with it, so nothing stale can be ordered (2026-10-13:
      "Chetk, WI" left Chetek's art and live order buttons up). */
+  /* A redraw failed with a print up: that print comes back, and the line by
+     the town box says what didn't draw and that the print is still the one
+     before. The boxes keep what the reader typed, so Try again (or Draw)
+     tries it again; ordering waits until they match the print (staleInputs). */
+  function keepWords(want, had, err) {
+    var what = (want.place && want.place !== had.place ? want.place + ', ' : '') + want.year, msg = String(err && err.message || '');
+    var keep = ' Your ' + (want.place && want.place !== had.place ? had.place + ', ' : '') + had.year + ' print is still here.';
+    if (err && err.retry) {
+      var code = err.status ? [0, err.status] : /error (\d{3})/.exec(msg), who = /town lookup/.test(msg) ? 'the town lookup' : 'NOAA';
+      return 'Couldn\u2019t draw ' + what + ' just now (' + (code ? who + ' error ' + code[1] : /slow/.test(msg) ? who + ' is slow' : who + ' didn\u2019t answer') + ').' + keep;
+    }
+    return (msg || 'Couldn\u2019t draw ' + what + '.') + keep;
+  }
+  function keepDrawn(snap, err) {
+    var want = ST;
+    ST = snap.ST; DATA = snap.DATA; META = snap.META; STATIONS = snap.STATIONS; EXT = snap.EXT; NORM30 = snap.NORM30;
+    PREVIEW = snap.PREVIEW; SETTLE = snap.SETTLE; STUCK = snap.STUCK; EXT_WAIT = snap.EXT_WAIT; NORM_WAIT = snap.NORM_WAIT; NOART = ''; BLOCKED = '';
+    // the print put back was still waiting for its normal: ask again
+    if (NORM_WAIT) {
+      var back = reqToken;
+      stationNormal(META.sid, ST.year).catch(function () { return null; }).then(function (n) {
+        if (back !== reqToken || !DATA) return;
+        NORM30 = n; NORM_WAIT = false; STUCK = stuckRun(DATA.days, NORM30); render();
+      });
+    }
+    $('rp-station').innerHTML = snap.sel; $('rp-station').value = ST.station;
+    art.classList.remove('rp-empty');
+    render();
+    if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?' + ' Your ' + ST.year + ' print is still here.'); return; }
+    setStatus(keepWords(want, ST, err), true);
+    RETRY_SAMPLE = false;
+    $('rp-retry-row').hidden = !(err && err.retry);
+  }
   function failDraw(err) {
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
@@ -2148,6 +2282,20 @@
       if (e && e.type === 'submit' && (next.place !== ST.place || next.year !== ST.year)) next.station = '';
       else next.station = fromUrlStation;
     }
+    /* Nothing changed since the print that is up (Draw pressed again, the
+       same year picked again): nothing to do. */
+    if (!preset && e && DATA && META && !SAMPLE && !BLOCKED && !DRAWING && next.station === META.sid &&
+        next.place === ST.place && next.year === ST.year && encodeCode(next) === encodeCode(ST)) {
+      // the print is already this one: on a phone the keyboard still goes, as after a draw
+      if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
+      return;
+    }
+    /* The print that is up, kept until the next one is in: a redraw that
+       fails (NOAA down, a town not found) puts it back instead of leaving an
+       empty frame (2026-10-15). */
+    var snap = DATA && META && !SAMPLE && !BLOCKED ? { ST: ST, DATA: DATA, META: META, STATIONS: STATIONS, EXT: EXT, NORM30: NORM30, PREVIEW: PREVIEW,
+      SETTLE: SETTLE, STUCK: STUCK, EXT_WAIT: EXT_WAIT, NORM_WAIT: NORM_WAIT, sel: $('rp-station').innerHTML } : null;
+    abortLive();
     var my = ++reqToken;
     // the reader's own draw: the example words come off the print at the top
     if (e) { KEEP_URL = false; SHOW_EX = false; }
@@ -2170,10 +2318,12 @@
     $('rp-retry-row').hidden = true;
     if (!preset) $('rp-pick').hidden = true;
     showBuy(!!DATA);
-    var g, chosen, picked, autoPick = false, why = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
+    var g, chosen, picked, autoPick = false, why = null, artShown = false, readErr = null, seen = SNOW_SEEN[ST.year] = SNOW_SEEN[ST.year] || {};
     // the county page's station location, on the first draw of its own link only
     var ll = LINK_LL && LINK_LL.place === ST.place && ST.station ? LINK_LL : null;
     var done = function () { if (my === reqToken) { art.removeAttribute('aria-busy'); DRAWING = false; go.disabled = go.hasAttribute('data-gift-lock'); sel.disabled = STATIONS.length < 2 || sel.hasAttribute('data-gift-lock'); showBuy(canOrder()); } };
+    // the town lookup starts now, beside rain-print.json, not after it (2026-10-15)
+    var geoEarly = ST.place ? geocode(ST.place).then(function (h) { return { h: h }; }, function (x) { return { x: x }; }) : null;
     Promise.resolve(PRICES_P).then(function () {
       if (!ST.place) throw new Error('Type a town and state, like Chetek, WI.');
       if (!ST.year) throw new Error('Pick a year.');
@@ -2208,7 +2358,8 @@
           return llTown(sl);
         });
       };
-      return geocode(ST.place).catch(function (first) {
+      var geoP = geoEarly ? geoEarly.then(function (r) { if ('x' in r) throw r.x; return r.h; }) : geocode(ST.place);
+      return geoP.catch(function (first) {
         if (first && first.pick) throw first;
         // a shorter try that finds several towns is skipped; the reader sees the first error
         var next = function () {
@@ -2229,7 +2380,8 @@
       if (my !== reqToken) throw 'stale';
       g = res;
       // a ZIP or a picked town: the print, the link and the order name the town found
-      if (geocodeQuery(ST.place).zip) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
+      // "Ames IA" with no comma: the box and the order say "Ames, IA" once the town is found
+      if (geocodeQuery(ST.place).zip || (ST.place.indexOf(',') < 0 && !g.approx && geocodeQuery(ST.place).st)) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
       setStatus('Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
       // a county link searches around its own station, so that station is in the list
       return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year);
@@ -2251,6 +2403,12 @@
       var linked = ST.station, want = linked ? list.find(function (s) { return s.sid === linked; }) : null;
       var instead = function () {
         if (my !== reqToken) throw 'stale';
+        /* A gift card's locked design keeps its station: no quiet re-pick,
+           the reader tries again instead (2026-10-15). */
+        if (GIFT && GIFT.lock && GIFT.lock.design) {
+          var gl = new Error('NOAA didn\u2019t send the station on your gift card (' + sidPlain(linked) + ') just now. Try again in a minute.');
+          gl.retry = true; throw gl;
+        }
         ST.station = '';
         var n = $('rp-link-note');
         n.textContent = 'The station in the link (' + sidPlain(linked) + ') didn\u2019t answer from NOAA just now, so this print uses the nearest station with a good record.';
@@ -2273,7 +2431,8 @@
         var pool = list.filter(function (s) { return s.sid !== skip; });
         if (!pool.length) throw noStation();
         autoPick = true;
-        return pickStation(pool, ST.year, daily, { lat: g.latitude, onTry: function (s, kind) {
+        var readNow = function (sid, y) { return my === reqToken ? daily(sid, y).catch(function (er) { readErr = er; throw er; }) : Promise.reject('stale'); };
+        return pickStation(pool, ST.year, readNow, { lat: g.latitude, onTry: function (s, kind) {
           setStatus(kind === 'snow' ? 'Checking ' + stationName(s.name) + ', which records snowfall too…' : 'Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
         } }).then(function (r) {
           if (my !== reqToken) throw 'stale';
@@ -2285,7 +2444,7 @@
       if (my !== reqToken) throw 'stale';
       // This year with nothing back yet: the station is still the one for the print, so ordering stays open.
       if (!picked && ST.gift) { chosen = STATIONS[0]; picked = { meta: {}, days: [], d: derive([]) }; }
-      if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; throw none; }
+      if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; none.status = readErr && readErr.status; throw none; }
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
         var w = snowWord(s, seen);
@@ -2327,11 +2486,21 @@
         EXT = x; EXT_WAIT = false;
         if (DATA && !BLOCKED) { render(); drawnStatus(); }
       });
-      return Promise.all([ST.cmp === 'station' ? por : null, stationNormal(chosen.sid, ST.year).catch(function () { return null; })]);
+      /* The print draws the moment the year's days are in; the 30-year normal
+         line joins it when it comes (2026-10-15: the frame stayed empty for
+         another NOAA ask). The station-average comparison still waits for the
+         full record. */
+      var normP = stationNormal(chosen.sid, ST.year).catch(function () { return null; });
+      if (ST.cmp !== 'station' && !NORM_CACHE.has(chosen.sid + '|' + ST.year)) {
+        NORM30 = null; STUCK = null; NORM_WAIT = true;
+        render();
+        if (!SAMPLE) { setStatus('Drawn. Adding the 30-year normal from ' + stationName(META.name) + '\u2026'); if (e && !e.auto) { showArt(); artShown = true; } }
+      }
+      return Promise.all([ST.cmp === 'station' ? por : null, normP]);
     }).then(function (res) {
       if (my !== reqToken) throw 'stale';
       if (res[0]) { EXT = res[0]; EXT_WAIT = false; }
-      NORM30 = res[1];
+      NORM30 = res[1]; NORM_WAIT = false;
       STUCK = stuckRun(DATA.days, NORM30);
       drawnStatus();
       render();
@@ -2340,7 +2509,7 @@
         ga('rain_print_draw', { style: ST.style });
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
-        if (e && !e.auto) showArt();
+        if (e && !e.auto && !artShown) showArt();
       }
       if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
     }).catch(function (err) {
@@ -2361,6 +2530,7 @@
       if (my !== reqToken) return;
       // the town came from the reader's connection, not from them: no red error for a town they never typed
       if (!e && !preset && NEAR && ST.place === NEAR) { NEAR = ''; $('rp-place').value = ''; runSample(); return; }
+      if (snap) { keepDrawn(snap, err); return; }
       failDraw(err);
     }).then(done);
   }
@@ -2372,7 +2542,7 @@
       (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : '') +
       (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : ''));
   }
-  function restyle() {
+  function restyle(soon) {
     var next = readInputs();
     if (SAMPLE) { next.place = ST.place; next.year = ST.year; sampleWords(next); }   // style choices try out on the sample
     /* The town box changed and isn't drawn yet (or a draw is on its way): the
@@ -2386,7 +2556,21 @@
     syncLogoUi();
     syncPending();
     if (ST.records && !root.AgRainRecords) recordsReady().then(function (ok) { if (ok) render(); });
-    render();
+    if (soon) redrawSoon(); else { flushRedraw(true); render(); }
+  }
+  /* Typing: the design takes each letter at once (ST above), the drawing
+     follows a frame and about 150 ms of quiet later, not on every key
+     (2026-10-15: a phone redrew the whole print per letter). Anything that
+     reads the drawing (checkout, the review sheet, the order form) flushes it. */
+  var REDRAW_T = 0;
+  function redrawSoon() {
+    clearTimeout(REDRAW_T);
+    REDRAW_T = setTimeout(function () { (root.requestAnimationFrame || setTimeout)(function () { if (REDRAW_T) { REDRAW_T = 0; URL_LAZY = true; try { render(); } finally { URL_LAZY = false; } } }); }, 150);
+  }
+  function flushRedraw(drop) {
+    if (!REDRAW_T) return;
+    clearTimeout(REDRAW_T); REDRAW_T = 0;
+    if (!drop) render();
   }
 
   // ---------- prices and buying ----------
@@ -2469,6 +2653,7 @@
   /* "Check it and pay" (step 3, and the bar on a phone). It never pays: it
      opens the review sheet, whose own button does. */
   function checkIt() {
+    flushRedraw();
     endExample();
     $('rp-noname').hidden = true;
     if (!canOrder()) {
@@ -2507,10 +2692,40 @@
      Stripe sends them back to, and for Back. The design is in the address bar
      too. Nothing leaves the browser. */
   var SAVE_KEY = 'agsist-rp-checkout';
+  /* Every press is kept in this browser too (PRESS_KEY, the last ten in a
+     week), so the page Stripe sends back to can tell whether it knows which
+     design was paid for: this tab's own press, or the only recent one. */
+  var PRESS_KEY = 'agsist-rp-presses', RECENT_MS = 2 * 3600000;
   function saveCheckout(id) {
-    var v = JSON.stringify({ code: encodeCode(ST), choice: id, place: META ? META.place : ST.place, year: ST.year, gift: !!ST.gift, settle: !!SETTLE, t: Date.now() });
+    var o = { code: encodeCode(ST), choice: id, place: META ? META.place : ST.place, year: ST.year, gift: !!ST.gift, settle: !!SETTLE, t: Date.now() }, v = JSON.stringify(o);
     try { root.sessionStorage.setItem(SAVE_KEY, v); } catch (e) {}
     try { root.localStorage.setItem(SAVE_KEY, v); } catch (e) {}
+    try { root.localStorage.setItem(PRESS_KEY, JSON.stringify(presses().concat([o]).slice(-10))); } catch (e) {}
+  }
+  function presses() {
+    var a = null;
+    try { a = JSON.parse(root.localStorage.getItem(PRESS_KEY) || '[]'); } catch (e) { a = []; }
+    return (Array.isArray(a) ? a : []).filter(function (x) { return x && typeof x.code === 'string' && Date.now() - (x.t || 0) < 7 * 86400000; });
+  }
+  /* The design a paid= visit is about, or null when the page can't be sure:
+     this tab's own press (sessionStorage), else the one press in this browser
+     in the last two hours, when there is exactly one (2026-10-15: another
+     tab's design was named on the thank-you). */
+  function paidSaved() {
+    var v = null;
+    try { v = JSON.parse(root.sessionStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { v = null; }
+    if (v && typeof v.code === 'string' && Date.now() - (v.t || 0) < 7 * 86400000) return v;
+    var recent = presses().filter(function (x) { return Date.now() - x.t < RECENT_MS; });
+    return recent.length === 1 ? recent[0] : null;
+  }
+  // a press for this very design within the hour, and no thank-you seen: maybe the way back from Stripe was lost
+  function syncPaidHint() {
+    var el = $('rp-paid-hint');
+    if (!el) return;
+    var code = DATA && !SAMPLE ? encodeCode(ST) : '';
+    var hit = !PAID && code && presses().some(function (x) { return x.code === code && Date.now() - x.t < 3600000; });
+    el.textContent = hit ? 'Already paid? Check your email for the Stripe receipt.' : '';
+    el.hidden = !hit;
   }
   function savedCheckout() {
     var v = null;
@@ -2566,27 +2781,33 @@
       return;
     }
     if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
-    var link = payLink(id);
-    if (link && !checkoutRef(encodeCode(ST), ST.gift, shortHit()) && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
+    var link = payLink(id), long = encodeCode(ST).length > 200;
+    /* A design past Stripe's 200 letters goes as its short-link id, and the
+       id is asked of the worker at this press every time, never taken from
+       this browser's memory alone: an id the worker doesn't have would leave
+       Sig an order he can't open (2026-10-15). */
+    if (link && long && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
       proofSay('Opening checkout\u2026', true);
-      root.AgRpShort.mint(encodeCode(artDesign())).then(function () { pay({ minted: true }); });
+      root.AgRpShort.mint(encodeCode(artDesign()), { fresh: true }).then(function (hit) { pay({ minted: true, ok: !!hit }); });
       return;
     }
-    var code = refFor();
+    var code = link && long && !(opts && opts.ok) ? '' : refFor();
     ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
       BUY_NOTE_CODE = encodeCode(ST);
       saveCheckout(id);
-      updateUrl();
+      flushRedraw();
+      updateUrlNow();
       // the same tab: a link to tap in case the browser holds it back (an in-app browser); no design code in the words, it travels with the payment
       proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
       goTo(u);
       return;
     }
     closeProof(true);
-    openOrder(id);
+    // a checkout link that couldn't open (the short link didn't answer): say so, and offer it again
+    openOrder(id, link ? 'Checkout couldn\u2019t open just now, so send this and I\u2019ll email you a payment link.' : '');
   }
   // the town or year in the boxes is not the one drawn
   function staleInputs() { var n = readInputs(); return !!ST.place && (n.year !== ST.year || n.place !== ST.place); }
@@ -2629,6 +2850,13 @@
     if (on) $('rp-bar-where').textContent = (META ? META.place : ST.place) + ' ' + ST.year;
     bar.hidden = !on;
   }
+  // the pinned copy is redrawn only while it shows, when the page is idle
+  var MINI_T = 0;
+  function miniSoon() {
+    if (MINI_T) return;
+    var go = function () { MINI_T = 0; if (!MINI_DIRTY || $('rp-strip').hidden || !DATA) return; $('rp-mini').innerHTML = buildSvg({ idPrefix: 'mn', example: SHOW_EX }); MINI_DIRTY = false; };
+    MINI_T = root.requestIdleCallback ? root.requestIdleCallback(go, { timeout: 600 }) : setTimeout(go, 200);
+  }
   function syncStrip() {
     var st = $('rp-strip');
     if (!st) return;
@@ -2638,7 +2866,7 @@
       var w = $('rp-wall').getBoundingClientRect(), col = $('rp-stepcol').getBoundingClientRect();
       on = w.bottom < nav + 8 && col.bottom > nav + 200;
     }
-    if (on && MINI_DIRTY) { $('rp-mini').innerHTML = buildSvg({ idPrefix: 'mn', example: SHOW_EX }); MINI_DIRTY = false; }
+    if (on && MINI_DIRTY) miniSoon();
     if (on) $('rp-strip-t').textContent = (META ? META.place : ST.place) + ', ' + ST.year;
     if (st.hidden === on) {
       st.hidden = !on;
@@ -2672,7 +2900,7 @@
   }
   function designRows() {
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
-      ['Name', ST.name || '(none)'], ['Line under it', ST.dedication || '(none)']];
+      ['Name', (ST.name || '(none)') + cutWords('rp-name', LIMITS.name)], ['Line under it', (ST.dedication || '(none)') + cutWords('rp-ded', LIMITS.dedication)]];
     rows.push(['Dates', ST.markers.length ? ST.markers.map(markerWords).join(', ') : '(none)']);
     if (ST.logo || (LOGO && LOGO.state === 'saving')) rows.push(['Logo', logoWords()]);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
@@ -2741,7 +2969,8 @@
     var rows = {}; designRows().forEach(function (r) { rows[r[0]] = r[1]; });
     var list = [['Place and year', esc(rows['Place and year'])]];
     if (rows['Weather station']) list.push(['Weather station', esc(rows['Weather station'])]);
-    list.push(['Name', esc(rows['Name'])], ['Line under it', esc(rows['Line under it'])],
+    var cutSpan = function (id, v) { return textCut(id) ? '<span class="rp-pd rp-pcut">' + esc(v) + '</span>' : esc(v); };
+    list.push(['Name', cutSpan('rp-name', rows['Name'])], ['Line under it', cutSpan('rp-ded', rows['Line under it'])],
       ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) || typedCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
       ['Compared with', esc(rows['Compared with'])], ['Style', esc(rows['Style'])]);
     // the logo, in words and as it prints
@@ -2785,6 +3014,7 @@
     } else { st.scrollLeft = 0; st.scrollTop = 0; }
   }
   function openProof() {
+    flushRedraw();
     if (!DATA || BLOCKED) return;
     var dlg = $('rp-proof');
     if (dlg.open) return;
@@ -2806,8 +3036,14 @@
     var dlg = $('rp-proof');
     if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
   }
-  function openOrder(id) {
-    var box = $('rp-order');
+  var ORDER_NOTE_0 = '';
+  function openOrder(id, why) {
+    flushRedraw();
+    var box = $('rp-order'), note = $('ro-order-note');
+    if (!ORDER_NOTE_0) ORDER_NOTE_0 = note.innerHTML;
+    if (why) note.textContent = why; else note.innerHTML = ORDER_NOTE_0;
+    note.classList.toggle('rp-bad', !!why);
+    $('ro-retry').hidden = !why;
     box.hidden = false;
     $('ro-choice').value = id;
     syncAddress();
@@ -3343,7 +3579,9 @@
   buildDayLists();
   /* Back from Stripe: rain-print?paid=<product>&s=<session> (PAID below). The
      design saved at the press draws again under the thank-you. */
-  var PAID = paidFromUrl(root.location.search), PAID_SAVED = PAID ? savedCheckout() : null;
+  var PAID = paidFromUrl(root.location.search), PAID_SAVED = PAID ? paidSaved() : null;
+  // the print is named and drawn again only for the design this payment is for (the same product); otherwise the thank-you stays general
+  if (PAID_SAVED && PAID_SAVED.choice !== PAID.choice) PAID_SAVED = null;
   if (PAID && PAID_SAVED && !ST.place) { var ps = decodeCode(PAID_SAVED.code); if (ps) ST = ps; }
   /* A new visitor: the boxes start empty (the example is in them as gray
      hints) and the comparison and the normals are on, remarkable days off
@@ -3368,6 +3606,7 @@
     return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
   }
   setPick(startPick());
+  root.addEventListener('pagehide', function () { if (URL_T) updateUrlNow(); });
   root.addEventListener('pageshow', function () {
     var r = radios('rp-product').filter(function (x) { return x.checked; })[0];
     if (r && r.value !== PICK) setPick(r.value); else syncPick();
@@ -3379,6 +3618,8 @@
     if (SAMPLE) run(null, Object.assign({}, ST)); else run();
   });
   $('rp-sample-use').addEventListener('click', useSample);
+  // the order form opened because checkout didn't: try checkout again, from the review sheet
+  $('ro-retry-go').addEventListener('click', function () { $('rp-order').hidden = true; $('ro-retry').hidden = true; openProof(); pay(); });
   /* Step 1 draws on its own (2026-10-14): a new year draws the moment it is
      picked, and a town typed draws when the box is left (or on Enter, or Draw
      my year). The line by the print says what is on its way. */
@@ -3393,7 +3634,8 @@
     // a tap on Draw my year right after typing is a submit of its own: this waits for it, then draws only if nothing did
     setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
   });
-  ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
+  ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { catchPaste($(id)); });
+  ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(true); syncDates(); }); });
   dayNums().forEach(function (i) {
     // the chip's "now pick its month and day" has been followed (or the reader moved on): it goes
     $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); dateSay(''); });
@@ -3431,17 +3673,17 @@
   });
   syncRows();
   syncCounts();
-  radios('rp-style').forEach(function (r) { r.addEventListener('change', restyle); });
+  radios('rp-style').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
   $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
   $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
-  $('rp-records').addEventListener('change', restyle);
+  $('rp-records').addEventListener('change', function () { restyle(); });
   // the logo: a file in, the color switch, remove
   if (root.AgRpLogo) {
     $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) pickLogo(f[0]); });
     $('rb-logo-file').addEventListener('change', function () { var f = $('rb-logo-file').files; if (f && f[0]) pickBizLogo(f[0]); });
   } else { $('rp-logo').hidden = true; $('rb-logo').hidden = true; }
-  radios('rp-logo-ink').forEach(function (r) { r.addEventListener('change', restyle); });
+  radios('rp-logo-ink').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
