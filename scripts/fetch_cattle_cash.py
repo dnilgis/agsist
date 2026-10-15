@@ -29,12 +29,13 @@ WHAT THIS FILE WILL NOT DO
   * Keep a cutout where Select is above Choice, or a fed steer price more than
     25% away from the nearby live cattle futures in data/prices.json.
 
-ONLY A LIVE RUN CAN CONFIRM
-  * The text layout of either PDF. The fixtures below are RECONSTRUCTIONS from
-    the figures quoted in search results (Oct 12 2026 cutout: Choice 375.56,
-    Select 354.13; week ending Sep 28 2025: steers live FOB, total all grades
-    17,153 head at 232.65). They are not captures. Dispatch the cattle-cash
-    workflow once with "probe" ticked, read data/cattle-cash-raw/, and adjust.
+LAYOUT
+  * The probe run of 2026-10-15 saved the real PDFs and their text to
+    data/cattle-cash-raw/; copies are the main selftest fixtures in
+    test/fixtures/cattle-cash/. pdftotext puts each cell on its own line, so
+    the parsers read the text with its lines joined. The row-per-line
+    reconstructions below (CUTOUT_FIX, STEER_FIX, numbers from search
+    snippets) stay as a second layout.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy.pdf_to_text.
 """
@@ -89,6 +90,17 @@ def find_date(s):
     return None
 
 
+def joined(text):
+    """All lines run together with single spaces. The real PDFs (probe of
+    2026-10-15) put every cell on its own line; a row-per-line layout reads
+    the same way once joined."""
+    return " ".join(ln for ln in norm_lines(text) if ln)
+
+
+INT = r"(\d{1,3}(?:,\d{3})*)"
+PX = r"(\d{3}\.\d{2})"
+
+
 def parse_cutout(text):
     """({"date", "choice", "select"}, None) or (None, reason)."""
     lines = norm_lines(text)
@@ -99,44 +111,64 @@ def parse_cutout(text):
             break
     if not date:
         return None, "no report date in the first lines"
-    for ln in lines:
-        m = re.match(r"^current cutout values:?\s+(\d{3}\.\d{2})\s+(\d{3}\.\d{2})\b", ln, re.I)
-        if m:
-            ch, se = float(m.group(1)), float(m.group(2))
-            if not (CUTOUT_RANGE[0] <= se <= CUTOUT_RANGE[1] and CUTOUT_RANGE[0] <= ch <= CUTOUT_RANGE[1]):
-                return None, "cutout %.2f/%.2f outside %s" % (ch, se, CUTOUT_RANGE)
-            if se > ch:
-                return None, "Select %.2f above Choice %.2f: columns misread" % (se, ch)
-            return {"date": date, "choice": ch, "select": se}, None
-    return None, "no 'Current Cutout Values' line"
+    j = joined(text)
+    m = re.search(r"current cutout values:?\s+" + PX + r"\s+" + PX + r"\b", j, re.I)
+    if not m:
+        return None, "no 'Current Cutout Values' line"
+    ch, se = float(m.group(1)), float(m.group(2))
+    if not (CUTOUT_RANGE[0] <= se <= CUTOUT_RANGE[1] and CUTOUT_RANGE[0] <= ch <= CUTOUT_RANGE[1]):
+        return None, "cutout %.2f/%.2f outside %s" % (ch, se, CUTOUT_RANGE)
+    if se > ch:
+        return None, "Select %.2f above Choice %.2f: columns misread" % (se, ch)
+    sp = re.search(r"choice/select spread:?\s+(-?\d{1,3}\.\d{2})\b", j, re.I)
+    if sp and abs((ch - se) - float(sp.group(1))) > 0.011:
+        return None, "Choice %.2f - Select %.2f does not match the report's spread %s: misread" % (ch, se, sp.group(1))
+    return {"date": date, "choice": ch, "select": se}, None
+
+
+BLOCK_RE = re.compile(r"(?:\b(?:steers?|heifers?|mixed steer/heifers?)\s*:\s*(?:live|dressed)\b"
+                      r"|\ball beef type\b|\bweekly weighted averages\b)", re.I)
 
 
 def parse_fed_steer(text):
-    """({"week_ending", "price", "head"}, None) or (None, reason)."""
-    lines = norm_lines(text)
+    """({"week_ending", "price", "head"}, None) or (None, reason).
+    Read from the STEERS: LIVE FOB block's "Total all grades" row: head count
+    first, weighted average price last. Where the report also prints its
+    WEEKLY WEIGHTED AVERAGES table, its "Live FOB Steer" row must agree."""
+    head_txt = joined("\n".join(norm_lines(text)[:40]))
     week = None
-    for ln in lines[:40]:
-        if re.search(r"week\s+ending", ln, re.I):
-            week = find_date(ln)
-            if week:
-                break
+    m = re.search(r"week\s+ending\b(.{0,40})", head_txt, re.I)
+    if m:
+        week = find_date(m.group(1))
     if not week:
         return None, "no week-ending date"
-    start = next((i for i, ln in enumerate(lines) if re.match(r"^steers?:?\s+live\s+fob\b", ln, re.I)), None)
-    if start is None:
+    j = joined(text)
+    m = re.search(r"(?<![/\w])steers?\s*:\s*live\s+fob\b", j, re.I)
+    if not m:
         return None, "no STEERS: LIVE FOB block"
-    for ln in lines[start + 1: start + 25]:
-        if re.match(r"^(heifers?|steers?|mixed)\b.*:", ln, re.I):
-            break
-        m = re.match(r"^total\s+all\s+grades\s+(\d{1,3}(?:,\d{3})*)\b.*?(\d{3}\.\d{2})\s*$", ln, re.I)
-        if m:
-            head, price = int(m.group(1).replace(",", "")), float(m.group(2))
-            if head <= 0:
-                return None, "no head"
-            if not STEER_RANGE[0] <= price <= STEER_RANGE[1]:
-                return None, "steer price %.2f outside %s" % (price, STEER_RANGE)
-            return {"week_ending": week, "price": price, "head": head}, None
-    return None, "no 'Total all grades' line in the STEERS: LIVE FOB block"
+    nxt = BLOCK_RE.search(j, m.end())
+    block = j[m.end(): nxt.start() if nxt else len(j)]
+    t = re.search(r"\btotal\s+all\s+grades\b(.*)$", block, re.I)
+    if not t:
+        return None, "no 'Total all grades' line in the STEERS: LIVE FOB block"
+    row = t.group(1)
+    hm = re.match(r"\s*" + INT + r"\b", row)
+    prices = re.findall(PX, row)
+    if not hm or not prices:
+        return None, "the STEERS: LIVE FOB total row has no head count or price"
+    head, price = int(hm.group(1).replace(",", "")), float(prices[-1])
+    if head <= 0:
+        return None, "no head"
+    if not STEER_RANGE[0] <= price <= STEER_RANGE[1]:
+        return None, "steer price %.2f outside %s" % (price, STEER_RANGE)
+    rng = re.search(PX + r"\s*-\s*" + PX, row)
+    if rng and not float(rng.group(1)) <= price <= float(rng.group(2)):
+        return None, "weighted average %.2f outside its own range %s-%s: misread" % (price, rng.group(1), rng.group(2))
+    w = re.search(r"weekly weighted averages\b.*?\blive fob steer\s+" + INT + r"\s+" + INT + r"\s+" + PX, j, re.I)
+    if w and (int(w.group(1).replace(",", "")) != head or float(w.group(3)) != price):
+        return None, "total all grades %d hd at %.2f disagrees with the weekly weighted average row %s hd at %s" % (
+            head, price, w.group(1), w.group(3))
+    return {"week_ending": week, "price": price, "head": head}, None
 
 
 def nearby_live(prices):
@@ -262,6 +294,31 @@ def selftest():
         print(("  ok   " if ok else "  FAIL ") + name + (f"  ({detail})" if not ok and detail else ""))
         if not ok:
             fails.append(name)
+
+    fx = ROOT / "test/fixtures/cattle-cash"
+    rc = (fx / "lm_xb403_2026-10-14.txt").read_text()
+    rs = (fx / "lm_ct150_2026-10-11.txt").read_text()
+    # the real reports (probe of 2026-10-15), every number checked by hand
+    c, why = parse_cutout(rc)
+    ck("real cutout: Oct 14 2026, Choice 376.50, Select 358.47",
+       c == {"date": "2026-10-14", "choice": 376.5, "select": 358.47}, c or why)
+    ck("real cutout: a Choice value that breaks the report's own spread is refused",
+       parse_cutout(rc.replace("Current Cutout Values: \n376.50", "Current Cutout Values: \n377.50"))[0] is None)
+    ck("real cutout: Select above Choice is refused",
+       parse_cutout(rc.replace("376.50\n358.47", "358.47\n376.50"))[0] is None)
+    ck("real cutout: without the values line, nothing (the 5-day table is never used)",
+       parse_cutout(rc.replace("Current Cutout Values:", "x"))[0] is None)
+    f, why = parse_fed_steer(rs)
+    ck("real 5-area: week ending 10/11/2026, steers live FOB 19,561 head at 220.14",
+       f == {"week_ending": "2026-10-11", "price": 220.14, "head": 19561}, f or why)
+    ck("real 5-area: a total that disagrees with the weekly weighted average row is refused",
+       parse_fed_steer(rs.replace("1,606\n220.14\nSTEERS: LIVE DELIVERED", "1,606\n221.14\nSTEERS: LIVE DELIVERED"))[0] is None)
+    ck("real 5-area: an average outside its own price range is refused",
+       parse_fed_steer(rs.replace("1,606\n220.14\nSTEERS: LIVE DELIVERED", "1,606\n229.14\nSTEERS: LIVE DELIVERED")
+                       .replace("Live FOB Steer\n19,561\n1,606\n220.14", "Live FOB Steer\n19,561\n1,606\n229.14"))[0] is None)
+    nolive = rs.replace("Total all grades\n19,561", "Totals\n19,561")
+    ck("real 5-area: no live FOB steer total, nothing (never the delivered, dressed or heifer rows)",
+       parse_fed_steer(nolive)[0] is None)
 
     p, why = parse_cutout(CUTOUT_FIX)
     ck("cutout: date, Choice and Select", p == {"date": "2026-10-12", "choice": 375.56, "select": 354.13}, p or why)
