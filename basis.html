@@ -71,7 +71,7 @@
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:var(--bs-txt)}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:var(--bs-hi)}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
-    .bs-pick-l .bs-norm{display:block;font-size:13px;color:var(--bs-txt);margin-top:3px;line-height:1.5}.bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
+    .bm-svg{width:100%;height:auto;display:block;margin:6px 0 4px;--bm-mid:var(--bs-dim)}.bm-svg .bm-st{stroke:var(--bs-bg);stroke-width:1.2;vector-effect:non-scaling-stroke}.bm-svg .bm-st:not(.bm-has){stroke:var(--bs-faint);stroke-width:.6}.bm-svg .bm-a:hover .bm-st,.bm-svg .bm-a:focus .bm-st{stroke:var(--bs-hi);stroke-width:2}.bm-lab{font:700 13px 'JetBrains Mono',monospace;fill:var(--bs-hi);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bs-bg);stroke-width:3px;pointer-events:none}.bm-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--bs-txt);margin:6px 0}.bm-key{display:inline-flex;align-items:center;gap:6px}.bm-key i{width:14px;height:10px;border-radius:2px;display:inline-block}#map{--bm-mid:var(--bs-dim)}.bm-key i.bm-none{border:1px solid var(--bs-faint)}.bm-tip{font-size:13.4px;color:var(--bs-txt);margin:6px 0 0;min-height:1.5em}.bm-foot{font-size:12.5px;color:var(--bs-dim);margin:4px 0 0}@media(max-width:620px){.bm-lab{display:none}}.bs-pick-l .bs-norm{display:block;font-size:13px;color:var(--bs-txt);margin-top:3px;line-height:1.5}.bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
     .bs-spark{height:30px;width:100%;max-width:280px;min-width:170px;display:block}
     .bs-bars{display:grid;gap:10px}
     .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
@@ -204,6 +204,14 @@
   <details class="bs-panel bs-why" id="storage">
     <summary>Why basis is wide this fall: more grain than bins</summary>
     <div class="bs-panel-b"><!--SEED:storage--><p>Basis has to pay for space. When the grain that has to be held this fall is more than the bins can take, elevators bid less to slow it down or pay to ship it out, and that comes out of your basis.</p><p>This fall, <strong>8 of 11</strong> states with full NASS figures have more grain to hold than bin space: September 1 stocks plus the 2026 corn, soybean and sorghum crop (latest NASS estimate), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p><div class="tblscroll"><table class="bs-tbl"><caption>Million bushels &middot; most crowded first</caption><tr><th>State</th><th style="text-align:right">Grain vs bins</th><th style="text-align:right">Sept 1 stocks</th><th style="text-align:right">2026 fall crop</th><th style="text-align:right">Capacity</th></tr><tr><td>Missouri</td><td class="num">1.17&times;</td><td class="num">99</td><td class="num">910</td><td class="num">860</td></tr><tr><td>South Dakota</td><td class="num">1.14&times;</td><td class="num">243</td><td class="num">1,120</td><td class="num">1,200</td></tr><tr><td>Nebraska</td><td class="num">1.13&times;</td><td class="num">315</td><td class="num">2,133</td><td class="num">2,170</td></tr><tr><td>Ohio</td><td class="num">1.10&times;</td><td class="num">185</td><td class="num">952</td><td class="num">1,035</td></tr><tr><td>Indiana</td><td class="num">1.09&times;</td><td class="num">150</td><td class="num">1,387</td><td class="num">1,410</td></tr><tr><td>Iowa</td><td class="num">1.08&times;</td><td class="num">477</td><td class="num">3,416</td><td class="num">3,590</td></tr><tr><td>Illinois</td><td class="num">1.05&times;</td><td class="num">348</td><td class="num">2,987</td><td class="num">3,170</td></tr><tr><td>Michigan</td><td class="num">1.05&times;</td><td class="num">103</td><td class="num">463</td><td class="num">540</td></tr><tr><td>Minnesota</td><td class="num">0.99&times;</td><td class="num">374</td><td class="num">1,978</td><td class="num">2,370</td></tr><tr><td>Kansas</td><td class="num">0.97&times;</td><td class="num">431</td><td class="num">1,133</td><td class="num">1,605</td></tr><tr><td>North Dakota</td><td class="num">0.86&times;</td><td class="num">396</td><td class="num">805</td><td class="num">1,390</td></tr></table></div><p>No ratio where NASS has no state figure for a crop the state grows: Alabama, Arkansas, California, Colorado, Delaware, Florida, Georgia, Idaho, Kentucky, Louisiana, Maryland, Mississippi, Montana, New Jersey, New York, North Carolina, Oklahoma, Oregon, Pennsylvania, South Carolina, Tennessee, Texas, Virginia, Washington, Wisconsin.</p><p>Same measure as farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the Corn Belt,&rdquo; Oct 7, 2026). Wheat, barley and oats are harvested by September 1, so they count once, in the stocks. Source: USDA NASS Quick Stats, Grain Stocks and Crop Production.</p><!--/SEED--></div>
+  </details>
+
+  <details class="bs-panel bs-why" id="map">
+    <summary>Show the basis map</summary>
+    <div class="bs-panel-b">
+      <div class="bs-tabs" role="group" aria-label="Crop" id="bm-crop"><button type="button" class="bs-tab on" data-c="corn" aria-pressed="true">Corn</button><button type="button" class="bs-tab" data-c="soybeans" aria-pressed="false">Soybeans</button></div>
+      <div id="bm-host"></div>
+    </div>
   </details>
 
   <section class="bs-panel" id="by-state" aria-labelledby="bs-rank-t">
@@ -465,6 +473,33 @@
   }).catch(function(){});
   function openStorage(){ if(location.hash==='#storage'){ var d=document.getElementById('storage'); if(d) d.open=true; } }
   openStorage(); window.addEventListener('hashchange',openStorage);
+})();
+</script>
+<script>
+/* The basis map (components/basis-map.js): its code, the outlines and the
+   numbers load the first time it is opened, never with the page. /basis-map
+   sends readers here with #map, which opens it. */
+(function(){
+  var det=document.getElementById('map'), host=document.getElementById('bm-host'), tabs=document.getElementById('bm-crop');
+  if(!det||!host) return;
+  var crop='corn', loading=false;
+  function go(){
+    if(window.BasisMap){ window.BasisMap.open(host,crop); return; }
+    if(loading) return; loading=true;
+    var s=document.createElement('script'); s.src='/components/basis-map.js?v=1';
+    s.onload=function(){ loading=false; if(window.BasisMap) window.BasisMap.open(host,crop); };
+    s.onerror=function(){ loading=false; host.innerHTML='<p class="bm-tip">The map did not load. The state table below has the same numbers.</p>'; };
+    document.head.appendChild(s);
+  }
+  det.addEventListener('toggle',function(){ if(det.open){ go(); try{gaEvent('basis_map_open',{});}catch(e){} } });
+  if(tabs) tabs.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('button[data-c]'); if(!b) return;
+    crop=b.getAttribute('data-c');
+    Array.prototype.forEach.call(tabs.children,function(x){ var on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-pressed',String(on)); });
+    go();
+  });
+  function openMap(){ if(location.hash==='#map'){ det.open=true; go(); } }
+  openMap(); window.addEventListener('hashchange',openMap);
 })();
 </script>
 </body>
