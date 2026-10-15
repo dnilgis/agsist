@@ -128,6 +128,8 @@
      at the bottom carries the pick, its price and the button */
   .rp-strip{position:fixed;left:0;right:0;top:var(--rp-nav,64px);z-index:250;display:flex;align-items:center;gap:.8rem;padding:6px 16px;background:linear-gradient(180deg,var(--rp-wall-a),var(--rp-wall-b));box-shadow:0 6px 14px -8px rgba(0,0,0,.55)}
   .rp-strip[hidden],.rp-bar[hidden]{display:none}
+  .rp-strip-say{font-weight:600}
+  .rp-strip-say[hidden]{display:none}
   .rp-mini{flex:0 0 auto;width:min(44vw,200px);padding:3px;background:#131313;border-radius:2px;cursor:zoom-in}
   .rp-mini svg{display:block;width:100%;height:auto;background:#fff}
   .rp-strip-r{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;font-size:var(--fs-xs);line-height:1.35;color:var(--rp-wall-ink)}
@@ -182,6 +184,19 @@
   /* a phone: the month and the day side by side, the words under them at full width, so "Harvest done" shows whole */
   @media(max-width:599px){.rp-date{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.rp-date .rp-lab{grid-column:1/-1}}
   .rp-date .rp-count{margin:.2rem 0 0}
+  /* each day its own block (panel 5, 2026-10-15): "Day 2" and Remove over it, a thin rule between days, its own message under it */
+  .rp-date-h,.rp-date-err,.rp-date-on{grid-column:1/-1}
+  .rp-date-h{display:flex;align-items:center;justify-content:space-between;gap:.6rem;font-size:var(--fs-xs);font-weight:600;color:var(--text-dim)}
+  .rp-date-h .rp-rm{min-height:36px;font-size:var(--fs-xs)}
+  .rp-date+.rp-date{border-top:1px solid var(--border);padding-top:.45rem}
+  .rp-date [aria-invalid="true"]{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+  .rp-date-err[hidden],.rp-date-on[hidden],.rp-dates-max[hidden]{display:none}
+  .rp-date .rp-date-err{margin:0}
+  .rp-date .rp-date-on{margin:0;color:var(--text-dim)}
+  .rp-date-say:empty{display:none}
+  .rp-dates-max{display:inline-block;padding:.5rem 0}
+  .rp-presets button[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+  @media(pointer:coarse){.rp-date-h .rp-rm{min-height:44px}}
   /* "Your words" and "More options" */
   .rp-more{margin:.9rem 0 0;border:0;border-top:1px dashed var(--border-2);border-radius:0;padding:0;background:none}
   .rp-more>summary{min-height:var(--btn-h);font-size:var(--fs-sm)}
@@ -525,14 +540,13 @@
             <div class="rp-wide2"><label class="field"><span>Name on the print</span><input id="rp-name" type="text" maxlength="24" placeholder="The Johnson Farm" aria-describedby="rp-name-n"></label><p class="rp-count" id="rp-name-n">0 of 24 letters</p></div>
             <div class="rp-wide2"><label class="field"><span>A line under the name</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count" id="rp-ded-n">0 of 70 letters</p></div>
             <p class="rp-count rp-wide2" id="rp-sym-note" hidden>Emoji and symbols aren&rsquo;t in the print&rsquo;s typeface, so they were left out. Letters, numbers and everyday punctuation print as typed.</p>
-            <div class="rp-dates" role="group" aria-labelledby="rp-dates-h"><p class="rp-dates-h" id="rp-dates-h">Mark a day <span class="rp-step-opt">(up to 3, each with your own words, 13 letters)</span></p>
-              <div class="rp-date" id="rp-m1row"><select class="field" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-date-msg"></select><select class="field" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-date-msg"></select><div class="rp-lab"><input class="field" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="13" placeholder="Planted" list="rp-labels"><p class="rp-count" id="rp-m1l-n">0 of 13 letters</p></div></div>
-              <div class="rp-date" id="rp-m2row" hidden><select class="field" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-date-msg"></select><select class="field" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-date-msg"></select><div class="rp-lab"><input class="field" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="13" placeholder="Hail" list="rp-labels"><p class="rp-count" id="rp-m2l-n">0 of 13 letters</p></div></div>
-              <div class="rp-date" id="rp-m3row" hidden><select class="field" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-date-msg"></select><select class="field" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-date-msg"></select><div class="rp-lab"><input class="field" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="13" placeholder="Harvest done" list="rp-labels"><p class="rp-count" id="rp-m3l-n">0 of 13 letters</p></div></div>
-              <p class="rp-count rp-dates-n" id="rp-labels-n">Or tap one: <span class="rp-presets" id="rp-presets"></span></p>
-              <p class="rp-dates-n"><button type="button" class="rp-linkbtn" id="rp-add-day">+ Mark another day</button></p>
-              <p class="rp-count rp-bad rp-dates-n" id="rp-date-msg" aria-live="polite" hidden></p>
-              <datalist id="rp-labels"><option value="Planted"><option value="Harvest done"><option value="Turnout"><option value="Calving"><option value="Weaning"><option value="First cutting"><option value="Hail"><option value="Wedding"><option value="Born"><option value="Moved in"></datalist>
+            <div class="rp-dates" role="group" aria-labelledby="rp-dates-h"><p class="rp-dates-h" id="rp-dates-h">Mark a day <span class="rp-step-opt">(up to 3)</span></p>
+              <div class="rp-date" id="rp-m1row" role="group" aria-labelledby="rp-m1h"><div class="rp-date-h"><span id="rp-m1h">Day 1</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m1rm" aria-label="Remove day 1">Remove</button></div><select class="field" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-m1err"></select><select class="field" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-m1err"></select><div class="rp-lab"><input class="field" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="40" autocomplete="off"><p class="rp-count" id="rp-m1l-n">0 of 13 letters</p></div><p class="rp-count rp-bad rp-date-err" id="rp-m1err" hidden></p><p class="rp-count rp-date-on" id="rp-m1on" hidden></p></div>
+              <div class="rp-date" id="rp-m2row" role="group" aria-labelledby="rp-m2h" hidden><div class="rp-date-h"><span id="rp-m2h">Day 2</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m2rm" aria-label="Remove day 2">Remove</button></div><select class="field" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-m2err"></select><select class="field" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-m2err"></select><div class="rp-lab"><input class="field" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="40" autocomplete="off"><p class="rp-count" id="rp-m2l-n">0 of 13 letters</p></div><p class="rp-count rp-bad rp-date-err" id="rp-m2err" hidden></p><p class="rp-count rp-date-on" id="rp-m2on" hidden></p></div>
+              <div class="rp-date" id="rp-m3row" role="group" aria-labelledby="rp-m3h" hidden><div class="rp-date-h"><span id="rp-m3h">Day 3</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m3rm" aria-label="Remove day 3">Remove</button></div><select class="field" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-m3err"></select><select class="field" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-m3err"></select><div class="rp-lab"><input class="field" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="40" autocomplete="off"><p class="rp-count" id="rp-m3l-n">0 of 13 letters</p></div><p class="rp-count rp-bad rp-date-err" id="rp-m3err" hidden></p><p class="rp-count rp-date-on" id="rp-m3on" hidden></p></div>
+              <p class="rp-count rp-dates-n" id="rp-labels-n">Or tap one: <span class="rp-presets" id="rp-presets" role="group" aria-label="Label ideas"></span></p>
+              <p class="rp-count rp-dates-n rp-date-say" id="rp-date-say" aria-live="polite"></p>
+              <p class="rp-dates-n"><button type="button" class="rp-linkbtn" id="rp-add-day">+ Mark another day</button><span class="rp-count rp-dates-max" id="rp-dates-max" hidden>3 days is the most that fits. Remove one to mark another.</span></p>
             </div>
           </div>
           <details class="rp-more" id="rp-more"><summary>More options: compare, station, normals, remarkable days, logo</summary>
@@ -770,7 +784,7 @@
     <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">Also in the works: <a href="/rain-gauge" style="color:var(--brand)">a better rain gauge</a>.</p>
     <div class="rp-strip" id="rp-strip" hidden>
       <div class="rp-mini" id="rp-mini" aria-hidden="true"></div>
-      <div class="rp-strip-r"><span id="rp-strip-t"></span><button type="button" class="chip" id="rp-strip-zoom">Up close</button></div>
+      <div class="rp-strip-r"><span id="rp-strip-t"></span><span class="rp-strip-say" id="rp-strip-say" hidden></span><button type="button" class="chip" id="rp-strip-zoom">Up close</button></div>
     </div>
     <div class="rp-bar" id="rp-bar" hidden>
       <div class="rp-bar-t"><b id="rp-bar-what">Framed &middot; $89</b><span id="rp-bar-where"></span></div>

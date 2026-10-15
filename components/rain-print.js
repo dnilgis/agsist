@@ -643,22 +643,40 @@
     return out;
   }
 
-  /* The reader's dates, checked against the year: [{i, msg}] for each date
+  /* The reader's dates, checked against the year: [{i, kind, msg}] for each date
      that won't print (2026-10-13: a date outside the year was dropped from the
-     print with no word). */
+     print with no word). Plain words, never a machine date (panel 5,
+     2026-10-15: "Date 2 (2025-02-31) isn't in 2025" blamed the year).
+     kind: 'day' (no such day in that month), 'year' (another year's date),
+     'same' (two days on one date: both print, one over the other). */
+  var MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function monthDays(year, mo) { return new Date(Date.UTC(year || 2001, +mo, 0)).getUTCDate(); }
+  // "February has 28 days in 2025. Pick a day from 1 to 28." or '' when the day is in the month
+  function dayProblem(year, mo, dy) {
+    mo = +mo; dy = +dy;
+    if (!year || !mo || !dy) return '';
+    var n = monthDays(year, mo);
+    if (dy <= n) return '';
+    if (mo === 2 && dy === 29) return year + ' has no February 29. Pick Feb 28 or Mar 1.';
+    return MONTH_NAMES[mo - 1] + ' has ' + n + ' days' + (mo === 2 ? ' in ' + year : '') + '. Pick a day from 1 to ' + n + '.';
+  }
   function dateProblems(year, dates) {
     var out = [];
     (dates || []).forEach(function (d, i) {
-      if (!d) return;
-      if (!year) return;
-      if (dayIndex(year, d) < 0) out.push({ i: i, msg: 'Date ' + (i + 1) + ' (' + d + ') isn\u2019t in ' + year + ', so it won\u2019t be on the print. Pick a day in ' + year + '.' });
+      if (!d || !year) return;
+      if (dayIndex(year, d) >= 0) return;
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d));
+      if (!m) return;
+      var bad = dayProblem(+m[1], m[2], m[3]);
+      if (bad) out.push({ i: i, kind: 'day', msg: bad });
+      else out.push({ i: i, kind: 'year', msg: shortDate(d) + ', ' + m[1] + ' isn\u2019t in ' + year + ', so it won\u2019t be on the print. Pick a day in ' + year + '.' });
     });
     var seen = {};
-    (dates || []).forEach(function (d, i) { if (d && dayIndex(year, d) >= 0) { if (seen[d] !== undefined) out.push({ i: i, msg: 'Dates ' + (seen[d] + 1) + ' and ' + (i + 1) + ' are the same day. Both labels print, one over the other.' }); else seen[d] = i; } });
+    (dates || []).forEach(function (d, i) { if (d && dayIndex(year, d) >= 0) { if (seen[d] !== undefined) out.push({ i: i, kind: 'same', msg: 'Days ' + (seen[d] + 1) + ' and ' + (i + 1) + ' are both ' + shortDate(d) + '. Pick another day for one of them.' }); else seen[d] = i; } });
     return out;
   }
   // label ideas offered under the date boxes; any words of the buyer's own work too
-  var LABEL_PRESETS = ['Planted', 'Harvest done', 'Turnout', 'Calving', 'Weaning', 'First cutting', 'Hail', 'Wedding', 'Born', 'Moved in'];
+  var LABEL_PRESETS = ['Planted', 'Harvest done', 'Turnout', 'Calving', 'Weaning', 'First cutting', 'Hail', 'Wedding', 'Born', 'Moved in', 'First frost', 'Anniversary', 'Retired'];
 
   /* What goes to Stripe as client_reference_id (A-Z a-z 0-9 - _, at most 200):
      the design code itself when it fits; past that (a long place, name, line
@@ -1118,7 +1136,7 @@
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -1540,6 +1558,18 @@
   }
   /* field id -> {label, full}: a label that was cut to fit, while it still reads that way */
   var LABEL_CUT = {};
+  var CUT_WORDS = 'That\u2019s ' + LIMITS.label + ' letters, the most that fits. Try a shorter word: Anniversary, Our 25th, Retired.';
+  // the words typed in day i, whole, when they run past what the print takes
+  function typedFull(i) { var f = $('rp-m' + i + 'l'); return f ? cleanText(printable(f.value), 200) : ''; }
+  function typedOver(i) { return typedFull(i).length > LIMITS.label; }
+  // a marked day whose typed words were cut to fit: the words as typed, for the review sheet
+  function typedCut(m) {
+    for (var i = 1; i <= 3; i++) {
+      var full = typedFull(i);
+      if (full.length > LIMITS.label && rowDate(i, ST.year) === m.date && cleanText(full, LIMITS.label) === m.label) return full;
+    }
+    return null;
+  }
   function syncCounts() {
     [['rp-name', 'rp-name-n', LIMITS.name], ['rp-ded', 'rp-ded-n', LIMITS.dedication]].forEach(function (x) {
       var n = $(x[0]).value.length, el = $(x[1]);
@@ -1552,12 +1582,17 @@
     for (var i = 1; i <= 3; i++) {
       var f = $('rp-m' + i + 'l'), el = $('rp-m' + i + 'l-n');
       if (!f || !el) continue;
-      var n = f.value.length, cut = LABEL_CUT[f.id];
-      if (cut && f.value !== cut.label) { delete LABEL_CUT[f.id]; cut = null; }
+      var n = f.value.length, cut = LABEL_CUT[f.id], over = !cut && typedOver(i);
+      if (cut && f.value !== cut.label) { delete LABEL_CUT[f.id]; cut = null; over = typedOver(i); }
+      /* Typing past 13 letters (panel 5, 2026-10-15: "Our anniversary" printed as
+         "Our anniversa" with only a gray counter): the box takes the words, the
+         print takes 13 letters, and this says so in red until they fit. */
       el.textContent = cut ? 'Only ' + LIMITS.label + ' letters fit, so \u201c' + cut.full + '\u201d is cut to \u201c' + cut.label + '\u201d. Try a shorter word.'
+        : over ? CUT_WORDS
         : n >= LIMITS.label ? n + ' of ' + LIMITS.label + ' letters. That\u2019s the most that fits.' : n + ' of ' + LIMITS.label + ' letters';
-      el.classList.toggle('rp-at', !cut && n >= LIMITS.label);
-      el.classList.toggle('rp-bad', !!cut);
+      el.classList.toggle('rp-at', !cut && !over && n >= LIMITS.label);
+      el.classList.toggle('rp-bad', !!cut || over);
+      f.setAttribute('aria-invalid', String(!!cut || over));
     }
   }
   // a design from a link: its cut labels, by field (the proof flags them too)
@@ -1571,21 +1606,59 @@
   }
   var LINK_CUTS = [];
   function linkCut(m) { return LINK_CUTS.filter(function (c) { return c.date === m.date && c.label === m.label; })[0] || null; }
-  function syncDates() {
+  /* Each day's own message under its row (panel 5, 2026-10-15). A day half
+     picked says so once the reader leaves its row, or at Check it and pay,
+     never while they type; a day that isn't in the month says so at once,
+     in words ("February has 28 days in 2025"). Under a finished day, the
+     line it puts on the print: "On the print: Planted corn, May 21". */
+  var TOUCHED = {}, DATE_ERRS_ALL = false;
+  function rowWords(i) { return cleanText(printable($('rp-m' + i + 'l').value), LIMITS.label); }
+  function onPrintLine(i, y) {
+    var d = rowDate(i, y || parseInt($('rp-year').value, 10)), yy = parseInt(d, 10), w = rowWords(i);
+    if (!d || dayIndex(yy, d) < 0) return '';
+    return 'On the print: ' + (w ? w + ', ' : '') + shortDate(d);
+  }
+  function rowProblems() {
     var y = parseInt($('rp-year').value, 10), ds = [1, 2, 3].map(function (i) { return rowDate(i, y); });
-    var probs = dateProblems(y, ds), el = $('rp-date-msg');
-    // a day half picked, or words with no day: it won't print, so say so
+    var probs = dateProblems(y, ds), out = { 1: [], 2: [], 3: [] };
+    probs.forEach(function (p) { out[p.i + 1].push(p); });
     [1, 2, 3].forEach(function (i) {
       var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value, l = $('rp-m' + i + 'l').value.trim();
-      if ((mo || dy || l) && !(mo && dy)) probs.push({ i: i - 1, half: true, msg: 'Day ' + i + (l ? ' (\u201c' + l + '\u201d)' : '') + ' needs a month and a day to go on the print.' });
+      if ((mo || dy || l) && !(mo && dy)) out[i].unshift({ kind: 'half', mo: !mo, dy: !dy, msg: 'Day ' + i + (l ? ' (\u201c' + rowWords(i) + '\u201d)' : '') + ' needs a month and a day to go on the print.' });
     });
-    [1, 2, 3].forEach(function (i) {
-      var bad = String(probs.some(function (p) { return p.i === i - 1 && (p.half || /isn\u2019t in/.test(p.msg)); }));
-      $('rp-m' + i + 'mo').setAttribute('aria-invalid', bad); $('rp-m' + i + 'dy').setAttribute('aria-invalid', bad);
-    });
-    el.textContent = probs.map(function (p) { return p.msg; }).join(' ');
-    el.hidden = !probs.length;
+    return out;
   }
+  // the first day that can't go on the print as it is (a half-picked day, or no such day), or 0
+  function badRow() {
+    var P = rowProblems();
+    for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'row').hidden && P[i].some(function (p) { return p.kind !== 'same'; })) return i;
+    return 0;
+  }
+  function syncDates() {
+    var P = rowProblems();
+    [1, 2, 3].forEach(function (i) {
+      var show = P[i].filter(function (p) { return p.kind !== 'half' || TOUCHED[i] || DATE_ERRS_ALL; });
+      var moBad = show.some(function (p) { return (p.kind === 'half' && p.mo) || p.kind === 'year'; });
+      var dyBad = show.some(function (p) { return (p.kind === 'half' && p.dy) || p.kind === 'day' || p.kind === 'year'; });
+      $('rp-m' + i + 'mo').setAttribute('aria-invalid', String(moBad)); $('rp-m' + i + 'dy').setAttribute('aria-invalid', String(dyBad));
+      var err = $('rp-m' + i + 'err');
+      err.textContent = show.map(function (p) { return p.msg; }).join(' ');
+      err.hidden = !show.length;
+      var on = $('rp-m' + i + 'on'), line = P[i].some(function (p) { return p.kind !== 'same'; }) ? '' : onPrintLine(i);
+      on.textContent = line; on.hidden = !line;
+    });
+    syncRows();
+  }
+  // the phone's pinned strip says the line for a moment after a change: the print in it is too small to read
+  var STRIP_T = null;
+  function stripSay(i) {
+    var el = $('rp-strip-say'), line = onPrintLine(i);
+    if (!el || !line) return;
+    el.textContent = line; el.hidden = false;
+    if (STRIP_T) clearTimeout(STRIP_T);
+    STRIP_T = setTimeout(function () { el.hidden = true; }, 4000);
+  }
+  function dateSay(t) { var el = $('rp-date-say'); if (el) el.textContent = t || ''; }
   // the month lists, once; each day list runs to that month's length in the print's year
   function daysIn(y, mo) { return mo ? new Date(Date.UTC(y || 2001, +mo, 0)).getUTCDate() : 31; }
   function buildDayLists() {
@@ -1603,16 +1676,19 @@
     sel.value = was;
   }
   function syncDayLists() { for (var i = 1; i <= 3; i++) syncDayList(i); }
-  // "Mark a day": one row to start; a row in use always shows; "+ Mark another day" opens the next
+  // "Mark a day": one row to start; a row in use always shows; "+ Mark another day" opens the next, up to 3
   function rowUsed(i) { return !!($('rp-m' + i + 'mo').value || $('rp-m' + i + 'dy').value || $('rp-m' + i + 'l').value); }
+  function rowsShown() { var shown = 1; for (var i = 2; i <= 3; i++) if (!$('rp-m' + i + 'row').hidden) shown = i; return shown; }
   function syncRows() {
-    var shown = 1;
-    for (var i = 2; i <= 3; i++) {
-      var row = $('rp-m' + i + 'row');
-      if (rowUsed(i)) row.hidden = false;
-      if (!row.hidden) shown = i;
-    }
-    $('rp-add-day').hidden = shown >= 3;
+    for (var i = 2; i <= 3; i++) if (rowUsed(i)) $('rp-m' + i + 'row').hidden = false;
+    var shown = rowsShown(), full = shown >= 3;
+    $('rp-add-day').hidden = full;
+    $('rp-dates-max').hidden = !full;
+    // a lone empty first day has nothing to remove
+    $('rp-m1rm').hidden = shown === 1 && !rowUsed(1);
+    // the label ideas fill the first empty label: with all three labeled there is nowhere to put one
+    var none = [1, 2, 3].every(function (i) { return !!$('rp-m' + i + 'l').value; });
+    doc.querySelectorAll('#rp-presets button').forEach(function (b) { b.setAttribute('aria-disabled', String(none)); });
   }
   function addDay() {
     for (var i = 2; i <= 3; i++) {
@@ -1620,6 +1696,25 @@
       if (row.hidden) { row.hidden = false; syncRows(); try { $('rp-m' + i + 'mo').focus(); } catch (e) {} return i; }
     }
     return 0;
+  }
+  function setRow(i, mo, dy, l) {
+    $('rp-m' + i + 'mo').value = mo; syncDayList(i); $('rp-m' + i + 'dy').value = dy; $('rp-m' + i + 'l').value = l;
+  }
+  /* Remove day i: the days after it move up (so the rows stay Day 1, 2, 3 in
+     order), the last row closes, and focus goes to "+ Mark another day". */
+  function removeDay(i) {
+    endExample();
+    var shown = rowsShown();
+    for (var j = i; j < shown; j++) {
+      setRow(j, $('rp-m' + (j + 1) + 'mo').value, $('rp-m' + (j + 1) + 'dy').value, $('rp-m' + (j + 1) + 'l').value);
+      TOUCHED[j] = TOUCHED[j + 1];
+      var c = LABEL_CUT['rp-m' + (j + 1) + 'l']; if (c) LABEL_CUT['rp-m' + j + 'l'] = c; else delete LABEL_CUT['rp-m' + j + 'l'];
+    }
+    setRow(shown, '', '', ''); TOUCHED[shown] = false; delete LABEL_CUT['rp-m' + shown + 'l'];
+    if (shown > 1) $('rp-m' + shown + 'row').hidden = true;
+    syncCounts(); syncDates(); restyle();
+    dateSay('Day ' + i + ' removed.');
+    try { $('rp-add-day').focus(); } catch (e) {}
   }
   // this year picked: one line under the Year box, the moment it is picked
   function syncYearNote() {
@@ -2204,6 +2299,15 @@
     }
     var why = orderBlock();
     if (why) { buyNote(why); return; }
+    // every day's message shows now; a day that can't go on the print as it is stops here, at its row
+    DATE_ERRS_ALL = true; syncDates();
+    var br = badRow();
+    if (br) {
+      buyNote('Day ' + br + ' isn\u2019t ready for the print. Fix it or remove it, then check again.');
+      var f = $('rp-m' + br + 'mo').getAttribute('aria-invalid') === 'true' ? 'mo' : 'dy';
+      try { $('rp-m' + br + f).focus(); } catch (err) {}
+      return;
+    }
     buyNote('');
     if (GIFT && GIFT.usable) { useGift(); return; }
     // no name on it: ask once (2026-10-14: the fastest way to checkout left a gift's name off)
@@ -2375,8 +2479,9 @@
      design in words, and exactly what happens next. Payment links are null
      today, so every order is a request Sig answers by email. */
   function markerWords(m) {
-    var c = linkCut(m);
-    return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)' : '');
+    var c = linkCut(m), t = c ? null : typedCut(m);
+    return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)'
+      : t ? ' (cut off: only ' + LIMITS.label + ' letters fit, you typed \u201c' + t + '\u201d)' : '');
   }
   function designRows() {
     var rows = [['Place and year', (META ? META.place : ST.place) + ', ' + ST.year], ['Style', ST.style === 'r2' ? 'Roots' : 'Staircase'],
@@ -2450,7 +2555,7 @@
     var list = [['Place and year', esc(rows['Place and year'])]];
     if (rows['Weather station']) list.push(['Weather station', esc(rows['Weather station'])]);
     list.push(['Name', esc(rows['Name'])], ['Line under it', esc(rows['Line under it'])],
-      ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
+      ['Dates', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) || typedCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
       ['Compared with', esc(rows['Compared with'])], ['Style', esc(rows['Style'])]);
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
@@ -3086,31 +3191,40 @@
     setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
   });
   ['rp-name', 'rp-ded', 'rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(); syncDates(); }); });
-  // words pasted into a label past 13 letters: maxlength cuts them, and the counter says what went
-  ['rp-m1l', 'rp-m2l', 'rp-m3l'].forEach(function (id) {
-    var el = $(id);
-    el.addEventListener('paste', function (e) {
-      var t = '';
-      try { t = (e.clipboardData || root.clipboardData).getData('text'); } catch (err) { return; }
-      var a = el.selectionStart || 0, b = el.selectionEnd || 0, v = el.value;
-      var full = cleanText(printable(v.slice(0, a) + t + v.slice(b)), 200);
-      if (full.length > LIMITS.label) setTimeout(function () { LABEL_CUT[id] = { label: el.value, full: full }; syncCounts(); }, 0);
+  [1, 2, 3].forEach(function (i) {
+    $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); });
+    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); });
+    $('rp-m' + i + 'l').addEventListener('change', function () { stripSay(i); });
+    $('rp-m' + i + 'rm').addEventListener('click', function () { removeDay(i); });
+    // a half-picked day says so once the reader leaves its row
+    $('rp-m' + i + 'row').addEventListener('focusout', function (e) {
+      var row = $('rp-m' + i + 'row');
+      if (e.relatedTarget && row.contains(e.relatedTarget)) return;
+      if (rowUsed(i)) { TOUCHED[i] = true; syncDates(); }
     });
   });
-  [1, 2, 3].forEach(function (i) {
-    $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); });
-    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); });
-  });
   $('rp-add-day').addEventListener('click', addDay);
-  // label ideas as buttons: a tap fills the first empty label, opening its row if it is closed (its month next)
+  /* label ideas as buttons: a tap fills the first empty label, opening its row
+     if it is closed (its month next), and says so (panel 5, 2026-10-15: a tap
+     did nothing visible on a phone, and a 4th did nothing at all) */
   LABEL_PRESETS.forEach(function (w) {
     var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
     b.addEventListener('click', function () {
       endExample();
-      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) { $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; cleanField('rp-m' + i + 'l'); syncRows(); restyle(); syncDates(); try { $('rp-m' + i + ($('rp-m' + i + 'mo').value ? 'dy' : 'mo')).focus(); } catch (e) {} return; }
+      for (var i = 1; i <= 3; i++) if (!$('rp-m' + i + 'l').value) {
+        $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; TOUCHED[i] = false;
+        cleanField('rp-m' + i + 'l'); syncRows(); restyle(); syncDates();
+        var mo = $('rp-m' + i + 'mo').value, dy = $('rp-m' + i + 'dy').value;
+        dateSay(w + ' is day ' + i + (mo && dy ? ', ' + shortDate(rowDate(i)) + '.' : mo ? '. Now pick its day.' : '. Now pick its month and day.'));
+        stripSay(i);
+        try { $('rp-m' + i + (mo ? 'dy' : 'mo')).focus(); } catch (e) {}
+        return;
+      }
+      dateSay('3 days is the most that fits. Remove one to mark another.');
     });
     $('rp-presets').appendChild(b);
   });
+  syncRows();
   syncCounts();
   radios('rp-style').forEach(function (r) { r.addEventListener('change', restyle); });
   // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off

@@ -146,11 +146,19 @@ test("dates outside the year are named, and the label ideas include livestock an
   const p = RP.dateProblems(2025, ["2024-06-01", "2025-05-01", ""]);
   assert.equal(p.length, 1);
   assert.match(p[0].msg, /isn’t in 2025/);
-  assert.match(RP.dateProblems(2025, ["2025-05-01", "2025-05-01"])[0].msg, /same day/);
+  assert.equal(RP.dateProblems(2025, ["2025-05-01", "2025-05-01"])[0].msg, "Days 1 and 2 are both May 1. Pick another day for one of them.");
+  // plain words, never a machine date like 2025-02-31 (panel 5, 2026-10-15)
+  assert.deepEqual([...RP.dateProblems(2025, ["2025-02-31"]).map((x) => x.msg)], ["February has 28 days in 2025. Pick a day from 1 to 28."]);
+  assert.deepEqual([...RP.dateProblems(2023, ["2023-02-29"]).map((x) => x.msg)], ["2023 has no February 29. Pick Feb 28 or Mar 1."]);
+  assert.equal(RP.dayProblem(2024, "02", "30"), "February has 29 days in 2024. Pick a day from 1 to 29.");
+  assert.equal(RP.dayProblem(2025, "04", "31"), "April has 30 days. Pick a day from 1 to 30.");
+  assert.equal(RP.dayProblem(2024, "02", "29"), "");
+  for (const x of RP.dateProblems(2025, ["2024-06-01", "2025-02-31", "2025-11-31", "2025-05-01", "2025-05-01"])) assert.ok(!/\d{4}-\d{2}-\d{2}/.test(x.msg), x.msg);
+  for (const w of ["First frost", "Anniversary", "Retired"]) assert.ok(RP.LABEL_PRESETS.includes(w), w);
   for (const w of ["Planted", "Harvest done", "Turnout", "Calving", "Weaning", "First cutting"]) assert.ok(RP.LABEL_PRESETS.includes(w), w);
   for (const w of RP.LABEL_PRESETS) assert.ok(w.length <= RP.LIMITS.label, w + " fits the label box");
   const html = readFileSync(ROOT + "rain-print.html", "utf8");
-  for (const id of ["rp-name-n", "rp-ded-n", "rp-date-msg", "rp-sym-note"]) assert.ok(html.includes(`id="${id}"`), id + " is on the page");
+  for (const id of ["rp-name-n", "rp-ded-n", "rp-m1err", "rp-m2err", "rp-m3err", "rp-date-say", "rp-sym-note"]) assert.ok(html.includes(`id="${id}"`), id + " is on the page");
   assert.match(html, new RegExp(`id="rp-name" type="text" maxlength="${RP.LIMITS.name}"`));
   assert.match(html, new RegExp(`${RP.LIMITS.dedication} letters`), "the counter states the real limit");
 });
@@ -485,7 +493,15 @@ test("type, keyboard and screen reader fixes", () => {
   assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
   assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
-  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-date-msg"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named");
+  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
+  // each day its own block: "Day 2" over it and a Remove named for it; no datalist (read as a combobox, a second arrow on Android)
+  for (const i of [1, 2, 3]) assert.ok(HTML.includes(`<span id="rp-m${i}h">Day ${i}</span><button type="button" class="rp-linkbtn rp-rm" id="rp-m${i}rm" aria-label="Remove day ${i}">Remove</button>`), "day " + i + " has a header and Remove");
+  assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
+  assert.ok(!/id="rp-m\dl"[^>]*placeholder/.test(HTML), "the label boxes start empty, no gray hint that looks filled in");
+  assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 3\)<\/span>/);
+  assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");
+  assert.match(HTML, /id="rp-presets" role="group" aria-label="Label ideas"/);
+  assert.match(HTML, /id="rp-date-say" aria-live="polite"/);
   assert.match(HTML, /id="rp-proof-stage" role="group"/);
   assert.match(HTML, /html\{scroll-padding-top:84px\}/);
   assert.ok(!/behavior: 'smooth'/.test(S2), "every scroll respects reduced motion");
