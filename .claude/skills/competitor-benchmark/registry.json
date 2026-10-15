@@ -191,11 +191,17 @@
      "name": "Elevator chains' own pages (ADM, Cargill, CHS, Bunge)",
      "kind": "vendor",
      "evidence": "snippets"
-    },
+    }
+   ],
+   "coverage_checks": [
     {
-     "name": "Bloomer WI elevators Sig named: Rooney Grain, River Country Co-op, CDR Farms (coverage check)",
-     "kind": "coverage",
-     "evidence": "owner"
+     "town": "Bloomer, WI",
+     "named_by_sig": [
+      "Rooney Grain",
+      "River Country Co-op",
+      "CDR Farms"
+     ],
+     "date": "2026-10-15"
     }
    ]
   },
