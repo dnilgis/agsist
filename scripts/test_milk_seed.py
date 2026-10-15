@@ -106,7 +106,7 @@ def main():
     m2 = S.milk_mailbox_seeds(dict(MB, month="March 2026", month_key="2026-03", value=18.84, year_ago_change=-2.62),
                               "2026-10-15")
     ck("seven months back: the cell is a dash with the month held",
-       'id="mb-val">-' in m2["milkmbcell"] and "Newest loaded: March 2026." in m2["milkmbcell"], m2["milkmbcell"])
+       'data-mb="none">-</span>' in m2["milkmbcell"] and 'id="mb-val"' not in m2["milkmbcell"] and "Newest loaded: March 2026." in m2["milkmbcell"], m2["milkmbcell"])
     ck("...the list keeps the figure, labeled older, dated, with the AMS link",
        m2["milkmbli"].count("March 2026") == 1 and "Older figure" in m2["milkmbli"] and "$18.84" in m2["milkmbli"]
        and "viewReport/3357" in m2["milkmbli"], m2["milkmbli"])

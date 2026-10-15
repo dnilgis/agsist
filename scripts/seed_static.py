@@ -1629,8 +1629,10 @@ def milk_mailbox_seeds(mb, today):
     if behind:
         li_txt = (f"Older figure: the newest mailbox month loaded here is {ml}. Federal-order average "
                   f"<strong>{_cwt(v)}/cwt</strong>{yr}. {lag} Newer months should be out; see the {MILK_MB_LINK}.")
+        # no id on the dash: components/loader.js shimmers an id'd dash for 6 s
+        # waiting for a fill that never comes here (nothing fills it live)
         cell = _cell("mb", "Mailbox price", "-", "", "", "dp-flat",
-                     f"Newest loaded: {ml}. Newer AMS months not loaded yet.")
+                     f"Newest loaded: {ml}. Newer AMS months not loaded yet.").replace(' id="mb-val">', ' data-mb="none">')
     else:
         li_txt = (f"Mailbox price, {ml}: federal-order average <strong>{_cwt(v)}/cwt</strong>{yr}. "
                   f"{lag} Source: {MILK_MB_LINK}.")

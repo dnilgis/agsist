@@ -130,7 +130,7 @@ test('the mailbox price on the page is the file\'s, with its month', () => {
   assert.ok(li.includes(long(i)) && li.includes(`<strong>${cwt(mb.value)}/cwt</strong>`), li);
   assert.ok(li.includes('https://mymarketnews.ams.usda.gov/viewReport/3357'), 'links the AMS report');
   assert.ok(row.includes(`In ${long(i)} the federal-order mailbox average was ${cwt(mb.value)}/cwt`), row);
-  const val = /id="mb-val">([^<]*)/.exec(cell)[1];
+  const val = /(?:id="mb-val"|data-mb="none")>([^<]*)/.exec(cell)[1];
   if (val === '-') {
     assert.ok(cell.includes(`Newest loaded: ${long(i)}.`), cell);
     assert.ok(li.startsWith(`<li><span class="n">${MONS[i % 12]}</span>`) && li.includes('Older figure'), li);
