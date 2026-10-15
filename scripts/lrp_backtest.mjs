@@ -391,10 +391,36 @@ export function summarize(trials) {
   return out;
 }
 
+/* The table above against what producers were actually given (Summary of
+   Business rows, tallied by fetch_lrp.py into meta.json "sob_subsidy":
+   {ry: {level percent: {subsidy percent: rows}}}). Per reinsurance year:
+   rows at the table's share, above it (beginning and veteran producers get
+   more), and below it. */
+export function subsidyCheck(sob) {
+  const out = {};
+  for (const [ry, levels] of Object.entries(sob || {})) {
+    const r = { rows: 0, agree: 0, above: 0, below: 0 };
+    for (const [lv, pcts] of Object.entries(levels)) {
+      const want = subsidy(+ry, +lv / 100);
+      if (want == null) continue;
+      for (const [pct, n] of Object.entries(pcts)) {
+        r.rows += n;
+        const d = +pct - Math.round(want * 100);
+        if (d === 0) r.agree += n; else if (d > 0) r.above += n; else r.below += n;
+      }
+    }
+    r.agree_share = r.rows ? round(r.agree / r.rows, 4) : null;
+    out[ry] = r;
+  }
+  return out;
+}
+
 function main() {
   const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
   const ROOT = fileURLToPath(new URL("../", import.meta.url));
   const dir = arg("--history", null), out = arg("--out", ROOT + "data/lrp/bt.json");
+  const metaPath = arg("--meta", dirname(out) + "/meta.json");
+  const meta = existsSync(metaPath) ? JSON.parse(readFileSync(metaPath, "utf8")) : {};
   if (!dir) { console.error("pass --history DIR (a checkout of the lrp-history branch)"); process.exit(2); }
   const t0 = Date.now();
   const { offers, aev } = loadHistory(dir);
@@ -410,6 +436,7 @@ function main() {
     },
     counts: { offers: offers.length, trials: trials.length, aev_missing: missing, still_open: open },
     family_size: family.length, kept: family.filter((k) => tests[k].kept),
+    subsidy_check: subsidyCheck(meta.sob_subsidy),
     tests, record: summarize(trials),
   };
   mkdirSync(dirname(out), { recursive: true });

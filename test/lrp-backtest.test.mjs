@@ -137,3 +137,12 @@ test('the family is 36 tests and a flat record keeps nothing', () => {
   assert.equal(r.tests['current/feeder/paid'].trials, 0);
   assert.equal(r.tests['current/feeder/paid'].p_holm, 1);
 });
+
+test('the subsidy table against what producers were given', () => {
+  const c = B.subsidyCheck({
+    2003: { 94: { 13: 2 } },                              // before RY2014: 13%, agrees
+    2022: { 99: { 35: 5, 45: 1 }, 92: { 40: 3, 30: 1 }, 75: { 55: 2 } },
+  });
+  assert.deepEqual(c['2003'], { rows: 2, agree: 2, above: 0, below: 0, agree_share: 1 });
+  assert.deepEqual(c['2022'], { rows: 12, agree: 10, above: 1, below: 1, agree_share: 0.8333 });
+});

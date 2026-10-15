@@ -1084,6 +1084,41 @@ def type_book(root):
     return book
 
 
+def sob_subsidy(root, first_ry=FIRST_ADM_RY):
+    """From the Summary of Business rows (what was bought): for each
+    reinsurance year and whole coverage-level percent (floor of level x 100),
+    how many rows got each subsidy share (subsidy / total premium, rounded to
+    a whole percent). scripts/lrp_backtest.mjs compares that with the table it
+    applies. Beginning and veteran producers show up as higher shares."""
+    out = {}
+    sd = os.path.join(root, "sob")
+    for f in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
+        m = re.match(r"lrp_(\d{4})\.zip$", f, re.I)
+        if not m or int(m.group(1)) < first_ry:
+            continue
+        with open(os.path.join(sd, f), "rb") as fh:
+            members = read_zip_members(fh.read())
+        for text in members.values():
+            for line in text.splitlines():
+                r = line.split("|")
+                if len(r) < 29 or not r[0].strip().isdigit():
+                    continue
+                try:
+                    ry = r[0].strip()
+                    cp, eev = float(r[16] or 0), float(r[17] or 0)
+                    level = float(r[18]) if r[18].strip() else (cp / eev if eev else 0)
+                    sub, prem = float(r[26] or 0), float(r[27] or 0)
+                except ValueError:
+                    continue
+                if prem <= 0:
+                    continue
+                lv = str(int(level * 100 + 1e-9))
+                pct = str(int(round(sub / prem * 100)))
+                b = out.setdefault(ry, {}).setdefault(lv, {})
+                b[pct] = b.get(pct, 0) + 1
+    return out
+
+
 def run_publish(root, out):
     last = latest_offer_day(root)
     if last is None:
@@ -1104,7 +1139,8 @@ def run_publish(root, out):
             "types_by_reinsurance_year": type_book(root),
             "products": PRODUCT_NAMES, "backtest_types": BACKTEST_TYPES,
             "checks": {k: v for k, v in state.get("stats", {}).items() if k != "other_members"},
-            "files_read": len(state.get("files", {}))}
+            "files_read": len(state.get("files", {})),
+            "sob_subsidy": sob_subsidy(root)}
     changed = [p for p, o in (("today.json", today), ("aev.json", aev), ("meta.json", meta))
                if write_json(os.path.join(out, p), o, pretty=(p == "meta.json"))]
     log(f"publish: latest sales date {sed}; changed {changed or 'nothing'}")
@@ -1301,6 +1337,21 @@ def selftest_history():
         assert '"0804"' not in json.dumps(today["offers"])
 
     selftest_run_history()
+
+    # The Summary of Business subsidy tally, on real 2003 rows (13% then).
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "sob"))
+        rows = ("2003|2003|99|XX|999|All Other Counties|0801|FEEDER CATTLE|81|LRP|810|STEERS|997|NO PRACTICE|"
+                "2003-06-12|21|79.900|84.675||.018060|1.443|2003-11-06|1|0|32|256.00|48|369|321|20454|0\n"
+                "2003|2003|99|XX|999|All Other Counties|0801|FEEDER CATTLE|81|LRP|810|STEERS|997|NO PRACTICE|"
+                "2003-06-11|26|78.820|84.916||.014311|1.128|2003-12-10|1|0|50|400.00|59|451|392|31528|0\n"
+                "2003|2003|99|XX|999|x|0801|F|81|LRP|810|S|997|N|2003-06-11|26|78.820|84.916|0.950000|.01|1|"
+                "2003-12-10|1|0|50|400.00|0|0|0|0|0\n")
+        with open(os.path.join(td, "sob", "lrp_2003.zip"), "wb") as f:
+            f.write(zip_of({"lrp_2003.txt": rows}))
+        # levels 79.9/84.675 = 0.9436 and 78.82/84.916 = 0.9282; the zero-premium row is left out
+        assert sob_subsidy(td, first_ry=2003) == {"2003": {"94": {"13": 1}, "92": {"13": 1}}}, sob_subsidy(td, 2003)
+        assert sob_subsidy(td) == {}
 
 
 def selftest_run_history():
