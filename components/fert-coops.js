@@ -64,7 +64,7 @@
     return s && u ? s + ', ' + u : (s || u);
   }
 
-  function card(p, coops) {
+  function card(p, coops, amsBy) {
     var big, under;
     if (p.median != null) {
       big = money(p.median);
@@ -86,7 +86,9 @@
     return '<div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">' + esc(p.name) +
       '</span>' + (p.symbol !== p.name ? '<span class="fpc-sym">' + esc(p.symbol) + '</span>' : '') + '</div><div class="fpc-price' + (p.median == null && Math.round(p.low) !== Math.round(p.high) ? ' fcp-range' : '') + '">' + big +
       '</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">' + under + '</div>' + (range ? '<div class="fpc-loc">' + range + '</div>' : '') +
-      '<div class="fpc-loc">' + dateSpan(p) + '</div></div>';
+      '<div class="fpc-loc">' + dateSpan(p) + '</div>' +
+      (amsBy && amsBy[p.key] ? '<div class="fpc-loc fcp-other">USDA Illinois avg ' + money(amsBy[p.key].avg) + ', ' + esc(shortDate(amsBy._date)) + '</div>' : '') +
+      '</div>';
   }
 
   /* One plain line against the USDA Illinois figure already on the page. */
@@ -181,24 +183,35 @@
   }
 
   /* The line under the hero: newest posted date and the co-op count. */
-  function bar(data) {
+  var STATE = { KS: 'Kansas', NE: 'Nebraska', OK: 'Oklahoma', IA: 'Iowa', MO: 'Missouri', IL: 'Illinois', CO: 'Colorado', TX: 'Texas', SD: 'South Dakota', ND: 'North Dakota', MN: 'Minnesota' };
+  function regionOf(d) { return list(Object.keys(d.states || {}).sort().map(function (s) { return STATE[s] || s; })); }
+
+  /* The line under the hero: which region each number is from, the newest
+     posted date and the co-op count. */
+  function bar(data, ams) {
     var d = valid(data);
     if (!d) return '';
-    var n = newest(d);
-    var states = Object.keys(d.states || {}).sort();
-    return (n ? 'Co-op prices posted through <strong>' + esc(shortDate(n, true)) + '</strong> &middot; ' : '') +
-      count(d.coops_current, 'co-op', 'co-ops') + (states.length ? ' in ' + esc(list(states)) : '') +
-      ' &middot; read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true));
+    var n = newest(d), reg = regionOf(d);
+    var a = ams && /^\d{4}-\d{2}-\d{2}$/.test(ams.report_date || '') ? shortDate(ams.report_date, true) : null;
+    return 'Cards below: <strong>' + esc(reg || 'co-op') + '</strong> co-ops&rsquo; middle cash price, ' + count(d.coops_current, 'co-op', 'co-ops') +
+      (n ? ', posted through <strong>' + esc(shortDate(n, true)) + '</strong>' : '') + '.' +
+      (a ? ' USDA figures are the <strong>Illinois</strong> average, report of ' + esc(a) + '.' : '') +
+      ' Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
   }
 
   /* The top of the page: the co-op price cards. '' when there is nothing real. */
-  function top(data) {
+  function top(data, ams) {
     var d = valid(data);
     if (!d) return '';
-    var coops = byId(d);
-    return '<h2 class="fert-related-title" id="fert-coops-h">What co-ops are posting</h2>' +
+    var coops = byId(d), reg = regionOf(d);
+    var amsBy = null;
+    if (ams && Array.isArray(ams.products) && /^\d{4}-\d{2}-\d{2}$/.test(ams.report_date || '')) {
+      amsBy = { _date: ams.report_date };
+      ams.products.forEach(function (x) { if (x && x.key && good(x.avg)) amsBy[x.key] = x; });
+    }
+    return '<h2 class="fert-related-title" id="fert-coops-h">What ' + esc(reg || '') + (reg ? ' ' : '') + 'co-ops are posting</h2>' +
       '<p class="fert-ams-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
-      '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops); }).join('') + '</div>' +
+      '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops, amsBy); }).join('') + '</div>' +
       farNote(d, coops) +
       '<p class="fert-coop-ams">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';
   }
@@ -215,7 +228,7 @@
   }
 
   function section(data, ams) {
-    var t = top(data);
+    var t = top(data, ams);
     return t ? t + more(data, ams) : '';
   }
 

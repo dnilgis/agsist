@@ -279,7 +279,7 @@ def card_fertilizer():
     d = js("data/fertilizer-prices.json")
     by = {p["key"]: p for p in d["prices"]}
     u = by["urea"]
-    who = f"middle of {u['n']} co-ops" if u["src"] == "coop" else "USDA Illinois average"
+    who = f"middle of {u['n']} {u.get('region', '')} co-ops".replace("  ", " ") if u["src"] == "coop" else "USDA Illinois average"
     rows = []
     for key, lab in (("anhydrous", "Anhydrous"), ("dap", "DAP"), ("potash", "Potash")):
         if key in by:

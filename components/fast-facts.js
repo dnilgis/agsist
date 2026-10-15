@@ -60,10 +60,12 @@ var PRICES={};
    the co-ops do not cover it. Every row has its source and date, and every
    $/lb shown here says how it was worked out. Lime and K-Mag have no live
    source, so they are not priced here (the lime calculator takes your $/ton). */
+/* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". */
 function fertShort(p){
+  if(p&&p.short_label)return p.short_label;
   var d=p&&p.as_of?new Date(p.as_of+'T12:00:00'):null;
   var when=d&&!isNaN(d)?d.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-  return (p&&p.src==='coop'?'co-ops':'USDA IL')+(when?' '+when:'');
+  return (p&&p.src==='coop'?(p.region?p.region+' co-ops':'co-ops'):'USDA Illinois')+(when?', '+when:'');
 }
 function fertGrade(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;return {N:n,P:pp,K:k};}
 function loadFertPrices(){

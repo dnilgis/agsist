@@ -832,7 +832,9 @@ def seo_fertilizer(c):
         if r.get("src") == "ams":
             bit += " (USDA IL avg)"
         parts.append(bit)
-    lead = f"Co-op posted cash prices through {mdY(newest)}: "
+    regs = sorted({r.get("region") for _, r in named if r.get("src") == "coop" and r.get("region")})
+    lead = (f"{' and '.join(regs)} co-op cash prices through {mdY(newest)}: " if regs
+            else f"Fertilizer prices through {mdY(newest)}: ")
     head = lead + ", ".join(parts) + "."
     tail = " Cost per lb of N, P and K."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
@@ -1096,8 +1098,8 @@ def selftest():
                "Soybeans|Iowa|Elevator Bid": {"latest": -0.47, "date": "2026-08-14", "avg5": -0.6, "delta": 0.13}}},
            # data/fertilizer-prices.json shape (scripts/build_fert_prices.py)
            "fertilizer": {"prices": [
-               {"key": "urea", "name": "Urea", "price": 622.98, "as_of": "2026-08-01", "src": "coop"},
-               {"key": "anhydrous", "name": "Anhydrous ammonia", "price": 832.1, "as_of": "2026-08-01", "src": "coop"},
+               {"key": "urea", "name": "Urea", "price": 622.98, "as_of": "2026-08-01", "src": "coop", "region": "Kansas"},
+               {"key": "anhydrous", "name": "Anhydrous ammonia", "price": 832.1, "as_of": "2026-08-01", "src": "coop", "region": "Kansas"},
                {"key": "uan32", "name": "UAN 32%", "price": 530.0, "as_of": "2026-07-28", "src": "ams"},
                {"key": "dap", "name": "DAP", "price": 650.0, "as_of": "2026-06-20", "src": "coop"},
                {"key": "potash", "name": "Potash", "price": 470.4, "as_of": "2026-07-28", "src": "ams"}]},
@@ -1530,6 +1532,7 @@ def selftest():
     # the co-op posted price list (2026-10-15; was the hand-typed dealer sheet)
     ck("fertilizer title names this round's prices", "Prices per Ton: Urea $623, Anhydrous $832" in t, t)
     ck("fertilizer description says which price is the USDA average", "potash $470 (USDA IL avg)" in d, d)
+    ck("fertilizer description names the co-ops' region", d.startswith("Kansas co-op cash prices through"), d)
     ck("fertilizer title carries NO date (weekly/monthly data)",
        not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)
     ck("fertilizer description carries the quotes' own as-of date",

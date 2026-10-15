@@ -150,6 +150,7 @@
 /* What co-ops are posting (components/fert-coops.js) */
 #fert-coops{margin-bottom:1.25rem}
 .fcp-range{font-size:1.35rem}
+.fcp-other{border-top:1px dashed var(--border);padding-top:.3rem;margin-top:.3rem}
 .fert-coop-card .fpc-sym{white-space:nowrap;font-size:.7rem}
 .fert-coop-card .fpc-name{min-width:0}
 .fert-coop-card .fpc-head{flex-wrap:wrap;gap:.25rem}
@@ -326,7 +327,7 @@
   <div class="fert-hero">
     <div class="fert-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Input costs &middot; Co-op posted prices, read each weekday</div>
     <h1 class="fert-page-title">Fertilizer Prices</h1>
-    <p class="fert-page-sub page-lede">The middle cash price per ton that farm co-ops post for each product, with the USDA Illinois average where co-ops do not post. Every price shows its source and date.</p>
+    <p class="fert-page-sub page-lede">The middle cash price per ton that farm co-ops post for each product, beside the USDA Illinois average. Every price names its region and date.</p>
   </div>
 
   <div class="fert-updated-bar">
@@ -471,8 +472,8 @@
 <!-- FIX: defer on all bottom scripts -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
-<script src="/components/fert-sources.js?v=3"></script>
-<script src="/components/fert-coops.js?v=1"></script>
+<script src="/components/fert-sources.js?v=4"></script>
+<script src="/components/fert-coops.js?v=2"></script>
 
 <script>
 (function(){
@@ -607,9 +608,9 @@ function initCalc(){
 function getJ(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-ams.json'),getJ('/data/fertilizer-prices.json')]).then(function(res){
   var co=res[0],FS=window.FertSources,FC=window.FertCoops,ams=FS?FS.validAms(res[1]):null,prices=res[2];
-  var bar=document.getElementById('fert-coop-bar'),bh=FC?FC.bar(co):'';
+  var bar=document.getElementById('fert-coop-bar'),bh=FC?FC.bar(co,res[1]):'';
   if(bar)bar.innerHTML=bh||'Co-op prices did not load. The USDA figures and the calculator below still work where they have a price.';
-  var top=document.getElementById('fert-coops'),th=FC?FC.top(co):'';if(top&&th){top.innerHTML=th;top.hidden=false;}
+  var top=document.getElementById('fert-coops'),th=FC?FC.top(co,res[1]):'';if(top&&th){top.innerHTML=th;top.hidden=false;}
   var box=document.getElementById('fert-ams');
   if(box&&ams){box.innerHTML=FS.amsBox(ams,Date.now());box.hidden=false;}
   var more=document.getElementById('fert-coops-more'),mh=FC?FC.more(co,res[1]):'';if(more&&mh){more.innerHTML=mh;more.hidden=false;}

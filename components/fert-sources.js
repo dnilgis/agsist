@@ -53,8 +53,9 @@
     return ((prices && prices.prices) || []).filter(function (p) {
       return p && p.name && p.symbol && good(p.price) && isDate(p.as_of);
     }).map(function (p) {
-      return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of, src: p.src,
-        srcLabel: p.src_label || (p.src === 'ams' ? 'USDA AMS Illinois avg, ' + shortDate(p.as_of) : shortDate(p.as_of)) };
+      return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of, src: p.src, region: p.region || null,
+        other: p.other || null,
+        srcLabel: p.src_label || (p.src === 'ams' ? 'USDA Illinois average, ' + shortDate(p.as_of) : shortDate(p.as_of)) };
     });
   }
 
@@ -62,13 +63,15 @@
   function coverNote(prices) {
     var r = rows(prices);
     if (!r.length) return 'No product has a live price right now.';
-    var co = r.filter(function (x) { return x.src === 'coop'; }).map(function (x) { return x.name; });
-    var us = r.filter(function (x) { return x.src === 'ams'; }).map(function (x) { return x.name; });
     function list(xs) { return xs.length < 3 ? xs.join(' and ') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]; }
-    var s = '';
-    if (co.length) s += list(co) + ': co-op middle cash price. ';
-    if (us.length) s += list(us) + ': USDA AMS Illinois average, where co-ops do not post enough. ';
-    return s + 'Each price names its source and date.';
+    var groups = {}, order = [];
+    r.forEach(function (x) {
+      var g = x.src === 'coop' ? (x.region || 'Co-op') + ' co-ops&rsquo; middle cash price' : 'USDA ' + (x.region || 'Illinois') + ' average';
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(x.name);
+    });
+    return order.map(function (g) { return list(groups[g]) + ': ' + g + '.'; }).join(' ') +
+      ' Each product uses whichever source posted more recently; each price names its region and date.';
   }
 
   /* The USDA box. '' when there is nothing real to show. */

@@ -72,15 +72,40 @@ def read_json(path):
         return None
 
 
+STATE_NAMES = {"AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "IA": "Iowa", "IL": "Illinois", "IN": "Indiana",
+               "KS": "Kansas", "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota", "MO": "Missouri", "MT": "Montana",
+               "ND": "North Dakota", "NE": "Nebraska", "OH": "Ohio", "OK": "Oklahoma", "SD": "South Dakota",
+               "TN": "Tennessee", "TX": "Texas", "WI": "Wisconsin"}
+MAX_COOP_DAYS = 60
+
+
+def region(states):
+    names = [STATE_NAMES.get(s, s) for s in sorted(set(states))]
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
 def build(coops, ams, today):
-    rows, notes = {}, []
+    """Per product, two candidates, each only if live: the co-op middle cash
+    price (MIN co-ops from the co-op file, newest posted date within
+    MAX_COOP_DAYS) and the USDA AMS Illinois average (report within
+    MAX_AMS_DAYS). The NEWER one is used; on a tie, USDA (the wider survey).
+    Every label names its region, and the other source rides along in
+    `other`, so pages can show it beside the price."""
+    cand, notes = {}, []
+    state_of = {c["id"]: c.get("state") for c in (coops or {}).get("coops") or []}
     for p in (coops or {}).get("summary") or []:
         if p.get("key") in NAMES and p.get("median") and p.get("newest"):
+            age = (today - datetime.date.fromisoformat(p["newest"])).days
+            if age > MAX_COOP_DAYS:
+                notes.append("co-op %s newest posted %s is %d days old; not used" % (p["key"], p["newest"], age))
+                continue
             span = short(p["newest"]) if p.get("oldest") in (None, p["newest"]) else "%s to %s" % (short(p["oldest"]), short(p["newest"]))
-            rows[p["key"]] = {
+            reg = region([state_of.get(c) or "?" for c in p.get("coops") or []])
+            cand.setdefault(p["key"], {})["coop"] = {
                 "key": p["key"], "name": NAMES[p["key"]], "symbol": p["symbol"], "price": p["median"], "unit": "$/ton",
-                "as_of": p["newest"], "src": "coop", "n": p["n"], "low": p["low"], "high": p["high"],
-                "src_label": "middle cash price of %d co-ops, posted %s" % (p["n"], span),
+                "as_of": p["newest"], "src": "coop", "n": p["n"], "low": p["low"], "high": p["high"], "region": reg,
+                "src_label": "%s co-ops, middle cash price of %d, posted %s" % (reg, p["n"], span),
+                "short_label": "%s co-ops, %s" % (reg, short(p["newest"])[:-6]),
                 "url": "https://agsist.com/fertilizer#fert-coops-more-h",
             }
     rd = (ams or {}).get("report_date")
@@ -91,13 +116,22 @@ def build(coops, ams, today):
         else:
             for p in ams.get("products") or []:
                 k = p.get("key")
-                if k in NAMES and k not in rows and p.get("avg"):
-                    rows[k] = {
+                if k in NAMES and p.get("avg"):
+                    cand.setdefault(k, {})["ams"] = {
                         "key": k, "name": NAMES[k], "symbol": p.get("symbol"), "price": p["avg"], "unit": "$/ton",
-                        "as_of": rd, "src": "ams", "low": p.get("low"), "high": p.get("high"),
-                        "src_label": "USDA AMS Illinois average, report of %s" % short(rd),
+                        "as_of": rd, "src": "ams", "low": p.get("low"), "high": p.get("high"), "region": "Illinois",
+                        "src_label": "USDA Illinois average, report of %s" % short(rd),
+                        "short_label": "USDA Illinois, %s" % short(rd)[:-6],
                         "url": ams.get("page") or ams.get("url"),
                     }
+    rows = {}
+    for k, c in cand.items():
+        co, us = c.get("coop"), c.get("ams")
+        pick, other = (co, us) if co and (not us or co["as_of"] > us["as_of"]) else (us, co)
+        row = dict(pick)
+        if other:
+            row["other"] = {x: other[x] for x in ("src", "price", "as_of", "region", "src_label", "short_label", "symbol")}
+        rows[k] = row
     prices = [rows[k] for k in NAMES if k in rows]
     per_lb = nutrient_prices(rows)
     return {
@@ -201,14 +235,24 @@ def selftest():
     today = datetime.date(2026, 10, 15)
     d = build(coops, ams, today)
     by = {r["key"]: r for r in d["prices"]}
-    ck("urea from the co-ops (middle of 4), not USDA", by["urea"]["src"] == "coop" and by["urea"]["price"] == 622.98 and by["urea"]["n"] == 4)
+    ck("urea: the co-op middle (Oct 6) is newer than USDA (Oct 2), so co-ops", by["urea"]["src"] == "coop" and by["urea"]["price"] == 622.98 and by["urea"]["n"] == 4)
     ck("urea dated by the newest co-op date", by["urea"]["as_of"] == "2026-10-06")
+    ck("urea carries USDA beside it", by["urea"]["other"]["src"] == "ams" and by["urea"]["other"]["price"] == 770.0
+       and by["urea"]["other"]["src_label"] == "USDA Illinois average, report of Oct 2, 2026")
+    newer = dict(ams, report_date="2026-10-09")
+    nb = {r["key"]: r for r in build(coops, newer, today)["prices"]}
+    ck("a newer USDA report wins, with the co-op price beside it", nb["urea"]["src"] == "ams" and nb["urea"]["price"] == 770.0
+       and nb["urea"]["other"]["src"] == "coop" and nb["urea"]["other"]["price"] == 622.98)
+    tie = {r["key"]: r for r in build(coops, dict(ams, report_date="2026-10-06"), today)["prices"]}
+    ck("a tie goes to USDA, the wider survey", tie["urea"]["src"] == "ams")
+    late = {r["key"]: r for r in build(coops, None, datetime.date(2026, 12, 20))["prices"]}
+    ck("co-op prices over 60 days old are not used", late == {})
     ck("UAN 32: one co-op is not enough, so USDA", by["uan32"]["src"] == "ams" and by["uan32"]["price"] == 530.0 and by["uan32"]["as_of"] == "2026-10-02")
     ck("MAP: two co-ops, no USDA figure: not listed", "map" not in by)
     ck("AMS: one current co-op, no USDA figure: not listed", "ams" not in by)
     ck("no lime, K-Mag or MAP + sulfur", not any(k in by for k in ("lime", "kmag", "map_s")))
-    ck("labels say the source and the date", by["urea"]["src_label"] == "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026"
-       and by["uan32"]["src_label"] == "USDA AMS Illinois average, report of Oct 2, 2026")
+    ck("labels name the region, the source and the date", by["urea"]["src_label"] == "Kansas co-ops, middle cash price of 4, posted Sep 24, 2026 to Oct 6, 2026"
+       and by["uan32"]["src_label"] == "USDA Illinois average, report of Oct 2, 2026" and by["urea"]["short_label"] == "Kansas co-ops, Oct 6")
     ck("page order", [r["key"] for r in d["prices"]] == [k for k in NAMES if k in by])
     ck("updated is the newest as_of", d["updated"] == "2026-10-06")
     old = build(coops, ams, datetime.date(2026, 12, 20))
