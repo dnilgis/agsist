@@ -291,6 +291,7 @@ def head(title, desc, path, jsonld, indexable, fonts):
   <meta property="og:image" content="{SITE}/img/og/yield.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{esc(title)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:title" content="{esc(title)}">

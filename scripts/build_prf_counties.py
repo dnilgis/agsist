@@ -248,7 +248,11 @@ def page(ctx):
   <meta property="og:description" content="{e(desc)}">
   <meta property="og:url" content="{url}">
   <meta property="og:image" content="https://agsist.com/img/og/prf.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{e(title.replace(' | AGSIST', ''))}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/prf.jpg">
   {BOOT}
   {ldh}
 </head>
