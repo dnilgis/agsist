@@ -91,7 +91,7 @@
      "name": "What is the average cash rent per acre in Missouri for 2026?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "The median USDA NASS county cash rent for non-irrigated cropland in Missouri is $117 per acre across the 109 counties with a published 2026 rate. Rents vary widely by county: highest Atchison ($247), Lafayette ($226), Holt ($217); lowest Camden ($16), Carter ($19), Dent ($20). The county mean is a survey reference point, not a rate card."
+      "text": "The middle Missouri county pays $117 per acre for non-irrigated cropland: half of the 109 counties with a published 2026 USDA NASS rate are above it and half below. NASS also puts out its own statewide average, a separate figure that is not shown here. Rents vary widely by county: highest Atchison ($247), Lafayette ($226), Holt ($217); lowest Camden ($16), Carter ($19), Dent ($20). The county mean is a survey reference point, not a rate card."
      }
     },
     {
@@ -203,6 +203,20 @@
     @media(max-width:640px){.rs-faq summary{padding:.45rem 0}}
     .rs-faq p{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}
     /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
+    .rs-rel{font-size:.8rem;color:#8a948f;margin-top:6px}
+    .rs-gr{border:1px solid var(--border-2);border-radius:10px;padding:12px 16px;margin:14px 0}
+    .rs-gr h2{margin:2px 0 6px}
+    .rs-gr label{display:inline-flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--text-muted);margin:4px 12px 4px 0}
+    .rs-gr select,.rs-gr input{font:inherit;font-size:1rem;padding:7px 9px;border-radius:7px;border:1px solid var(--border-2);background:var(--bg);color:var(--text);min-height:40px}
+    .rs-gr input{width:7.5em}
+    .rs-gr select{max-width:16em}
+    .rs-gr-out{font-size:1.02rem;line-height:1.6;color:var(--text);margin:8px 0 4px}
+    .rs-gr-out b{color:var(--gold)}
+    .rs-gr .sub{font-size:.84rem}
+    .rs-gr details{margin-top:6px}
+    .rs-gr summary{cursor:pointer;color:var(--text);font-size:.92rem;padding:6px 0}
+    .rs-gr .m{margin:10px 0;padding-top:8px;border-top:1px solid var(--border)}
+    .rs-gr .m p{margin:4px 0}
     .rs-atlas{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:10px 0 4px;font-size:.95rem;line-height:1.6;color:var(--text-dim)}
     .rs-atlas a{color:var(--gold);font-weight:700}
     :root[data-theme="light"] .rs-atlas a{color:#6f5209}
@@ -221,6 +235,7 @@
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:#5fc28a">RENT FELL</div>
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median Missouri county paid <b style="color:#5fc28a">$117 an acre</b> for non-irrigated cropland in 2026, <b style='color:#5fc28a'>-5.2&#37; vs 2025</b> across the same 106 counties. Highest county: Atchison at $247. Every county is in the table below.</div>
+      <div class="rs-rel">These are the 2026 county rents, the newest NASS has put out. The 2027 rents usually come out in August 2027.</div>
     </div>
   </div>
   <p class="rs-atlas">Part of the <a href="/farmland-atlas/missouri/">Farmland Atlas</a>: land values, rent and risk for every county.</p>
@@ -234,6 +249,34 @@
   <div class="rs-hero"><div class="rs-stat"><div class="v">$227</div><div class="l">irrigated median &middot; 2026</div><div class="s">irrigated cropland, 5 counties, shown apart</div></div><div class="rs-stat"><div class="v">$39.75</div><div class="l">pasture median &middot; 2026</div><div class="s">permanent pasture, 104 counties, shown apart</div></div></div>
   <p class="sub">Insuring pasture or hay ground? See <a href="/prf/missouri" style="color:var(--gold)">PRF rainfall insurance in Missouri</a>: county values, what each pair of months costs, and every year since 1951.</p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside Missouri county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=rent-mo&amp;utm_source=rent-missouri&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <section class="rs-gr" id="your-ground">
+  <h2>Rent for your ground, not the county average</h2>
+  <p class="sub">The county number doesn&rsquo;t know your ground. This scales the county&rsquo;s 2026 rent by your own corn yield.</p>
+  <label>County <select id="gr-co"></select></label>
+  <label>Your corn yield, bu/ac <input id="gr-y" type="number" inputmode="decimal" min="1" max="400" step="1"></label>
+  <p class="rs-gr-out" id="gr-out" aria-live="polite">Pick a county and type your yield.</p>
+  <p class="sub" id="gr-math" style="color:var(--text)"></p>
+  <p class="sub">Derived by AGSIST, not a NASS number: the county&rsquo;s 2026 NASS dryland rent divided by its 2026 corn
+  trend yield (our 15-year fit, same practice as the rent), times your yield. It assumes rent moves in step with yield,
+  which real leases only roughly do. Use your APH or a typical year, not your best one. 64 of 109 Missouri
+  counties have both numbers; for the rest the Corn trend column below says why there is none.</p>
+  <details><summary>Two more ways to figure a fair rent</summary>
+  <div class="m"><p><b>Share of gross.</b> Your bushels times a price, and the share of that the rent takes. The share starts at the
+  county&rsquo;s own: its 2026 rent as a share of its trend-yield gross at this price.</p>
+  <label>Corn price, $/bu <input id="gr-p" type="number" inputmode="decimal" min="0" step="0.05" value="4.15"></label>
+  <label>Share of gross, % <input id="gr-s" type="number" inputmode="decimal" min="0" max="99" step="0.5"></label>
+  <p class="sub">Default: Missouri&rsquo;s 2025 average price received for corn (USDA NASS, preliminary).</p>
+  <p class="rs-gr-out" id="gr-sg"></p></div>
+  <div class="m"><p><b>Return on land value.</b> What the land is worth times the return an owner wants on it.</p>
+  <label>Land value, $/ac <input id="gr-v" type="number" inputmode="decimal" min="0" step="100"></label>
+  <label>Return, % <input id="gr-r" type="number" inputmode="decimal" min="0" max="99" step="0.1"></label>
+  <p class="rs-gr-out" id="gr-lv"></p></div>
+  <div class="m"><p><b>Cost-based.</b> What is left of your gross after your own costs and pay for your work. That needs
+  your budget, so this page doesn&rsquo;t guess one.</p></div>
+  <p class="sub">For rent as a share of gross year by year since 2008, open <a id="gr-atlas" style="color:var(--gold)">the Farmland Atlas</a> and its rent share calculator.</p>
+  </details>
+  <script type="application/json" id="gr-data">{"st":"MO","unit":"County","mid":"Perry","c":[["Andrew",175.0,211.0,0.83,"missouri/andrew-county"],["Barry",45.0,122.3,0.37,"missouri/barry-county"],["Bates",155.0,146.9,1.06,"missouri/bates-county"],["Bollinger",68.0,167.4,0.41,"missouri/bollinger-county"],["Boone",143.0,188.4,0.76,"missouri/boone-county"],["Buchanan",164.0,200.9,0.82,"missouri/buchanan-county"],["Caldwell",158.0,184.1,0.86,"missouri/caldwell-county"],["Callaway",131.0,186.3,0.7,"missouri/callaway-county"],["Carroll",192.0,200.7,0.96,"missouri/carroll-county"],["Cass",130.0,166.7,0.78,"missouri/cass-county"],["Cedar",52.5,181.9,0.29,"missouri/cedar-county"],["Chariton",156.0,231.1,0.68,"missouri/chariton-county"],["Clay",175.0,208.4,0.84,"missouri/clay-county"],["Clinton",200.0,202.2,0.99,"missouri/clinton-county"],["Cole",83.5,165.4,0.5,"missouri/cole-county"],["Cooper",144.0,159.7,0.9,"missouri/cooper-county"],["Dade",66.0,131.4,0.5,"missouri/dade-county"],["Dallas",31.5,111.4,0.28,"missouri/dallas-county"],["Daviess",175.0,154.2,1.13,"missouri/daviess-county"],["De Kalb",156.0,208.0,0.75,"missouri/dekalb-county"],["Franklin",70.0,163.4,0.43,"missouri/franklin-county"],["Gasconade",38.0,137.7,0.28,"missouri/gasconade-county"],["Grundy",165.0,191.3,0.86,"missouri/grundy-county"],["Harrison",136.0,189.9,0.72,"missouri/harrison-county"],["Henry",96.5,158.8,0.61,"missouri/henry-county"],["Hickory",57.5,99.4,0.58,"missouri/hickory-county"],["Jackson",158.0,184.8,0.85,"missouri/jackson-county"],["Jasper",95.5,143.8,0.66,"missouri/jasper-county"],["Jefferson",52.0,159.0,0.33,"missouri/jefferson-county"],["Johnson",105.0,165.7,0.63,"missouri/johnson-county"],["Knox",173.0,181.6,0.95,"missouri/knox-county"],["Laclede",38.5,169.0,0.23,"missouri/laclede-county"],["Lafayette",226.0,215.1,1.05,"missouri/lafayette-county"],["Lawrence",68.0,119.2,0.57,"missouri/lawrence-county"],["Lewis",176.0,191.9,0.92,"missouri/lewis-county"],["Lincoln",149.0,187.7,0.79,"missouri/lincoln-county"],["Linn",134.0,192.4,0.7,"missouri/linn-county"],["Livingston",185.0,205.8,0.9,"missouri/livingston-county"],["Maries",47.0,109.4,0.43,"missouri/maries-county"],["Miller",55.0,144.5,0.38,"missouri/miller-county"],["Moniteau",84.5,156.3,0.54,"missouri/moniteau-county"],["Monroe",171.0,162.2,1.05,"missouri/monroe-county"],["Montgomery",119.0,182.2,0.65,"missouri/montgomery-county"],["Newton",59.5,120.7,0.49,"missouri/newton-county"],["Osage",68.5,154.0,0.44,"missouri/osage-county"],["Perry",116.0,170.6,0.68,"missouri/perry-county"],["Pettis",149.0,168.1,0.89,"missouri/pettis-county"],["Pike",148.0,183.9,0.8,"missouri/pike-county"],["Platte",168.0,199.1,0.84,"missouri/platte-county"],["Polk",47.5,161.3,0.29,"missouri/polk-county"],["Ralls",165.0,191.0,0.86,"missouri/ralls-county"],["Randolph",144.0,189.5,0.76,"missouri/randolph-county"],["Ray",187.0,190.5,0.98,"missouri/ray-county"],["Saline",196.0,223.6,0.88,"missouri/saline-county"],["Scotland",175.0,193.9,0.9,"missouri/scotland-county"],["Shelby",177.0,198.7,0.89,"missouri/shelby-county"],["St Charles",157.0,199.7,0.79,"missouri/st-charles-county"],["St Clair",109.0,139.8,0.78,"missouri/st-clair-county"],["St Francois",63.0,185.1,0.34,"missouri/st-francois-county"],["Ste Genevieve",104.0,180.5,0.58,"missouri/ste-genevieve-county"],["Sullivan",123.0,178.1,0.69,"missouri/sullivan-county"],["Vernon",115.0,107.2,1.07,"missouri/vernon-county"],["Warren",107.0,169.0,0.63,"missouri/warren-county"],["Worth",188.0,189.9,0.99,"missouri/worth-county"]]}</script>
+  </section>
   <h2>Every published county, 2026</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where 2026
   wasn&rsquo;t published. Columns cover non-irrigated cropland, irrigated cropland, permanent pasture; state stats above use non-irrigated cropland, the rent this site means by “rent”. Each county name opens its Farmland Atlas record (land value, yield, insurance
@@ -254,7 +297,7 @@
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st=MO">printable Missouri cash lease</a> &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
   <h2 id="faq">Questions</h2>
-  <details class="rs-faq"><summary>What is the average cash rent per acre in Missouri for 2026?</summary><p>The median USDA NASS county cash rent for non-irrigated cropland in Missouri is $117 per acre across the 109 counties with a published 2026 rate. Rents vary widely by county: highest Atchison ($247), Lafayette ($226), Holt ($217); lowest Camden ($16), Carter ($19), Dent ($20). The county mean is a survey reference point, not a rate card.</p></details><details class="rs-faq"><summary>How much does pasture rent for per acre in Missouri?</summary><p>The median USDA NASS county cash rent for permanent pasture in Missouri is $39.75 per acre across the 104 counties with a published 2026 pasture rate. Highest Nodaway ($65.50), Atchison ($62.50), Knox ($60); lowest Shannon ($12), Reynolds ($13), Camden ($14). Each county&#x27;s pasture rate is in its own column in the county table below.</p></details><details class="rs-faq"><summary>How much did Missouri cash rent change from 2025 to 2026?</summary><p>Comparing the same 106 counties published in both years, the median non-irrigated cropland rent moved -5.2% year over year.</p></details><details class="rs-faq"><summary>Why is my Missouri county not listed?</summary><p>USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, NASS did not publish a rate for it.</p></details><details class="rs-faq"><summary>When is county cash rent data released?</summary><p>USDA NASS releases county cash rent estimates each August for the current crop year. This page rebuilds automatically when new data lands.</p></details>
+  <details class="rs-faq"><summary>What is the average cash rent per acre in Missouri for 2026?</summary><p>The middle Missouri county pays $117 per acre for non-irrigated cropland: half of the 109 counties with a published 2026 USDA NASS rate are above it and half below. NASS also puts out its own statewide average, a separate figure that is not shown here. Rents vary widely by county: highest Atchison ($247), Lafayette ($226), Holt ($217); lowest Camden ($16), Carter ($19), Dent ($20). The county mean is a survey reference point, not a rate card.</p></details><details class="rs-faq"><summary>How much does pasture rent for per acre in Missouri?</summary><p>The median USDA NASS county cash rent for permanent pasture in Missouri is $39.75 per acre across the 104 counties with a published 2026 pasture rate. Highest Nodaway ($65.50), Atchison ($62.50), Knox ($60); lowest Shannon ($12), Reynolds ($13), Camden ($14). Each county&#x27;s pasture rate is in its own column in the county table below.</p></details><details class="rs-faq"><summary>How much did Missouri cash rent change from 2025 to 2026?</summary><p>Comparing the same 106 counties published in both years, the median non-irrigated cropland rent moved -5.2% year over year.</p></details><details class="rs-faq"><summary>Why is my Missouri county not listed?</summary><p>USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, NASS did not publish a rate for it.</p></details><details class="rs-faq"><summary>When is county cash rent data released?</summary><p>USDA NASS releases county cash rent estimates each August for the current crop year. This page rebuilds automatically when new data lands.</p></details>
   <h2>Other states</h2>
   <p class="rs-cloud"><a href="/rent/alabama">Alabama</a> &middot; <a href="/rent/arizona">Arizona</a> &middot; <a href="/rent/arkansas">Arkansas</a> &middot; <a href="/rent/california">California</a> &middot; <a href="/rent/colorado">Colorado</a> &middot; <a href="/rent/connecticut">Connecticut</a> &middot; <a href="/rent/delaware">Delaware</a> &middot; <a href="/rent/florida">Florida</a> &middot; <a href="/rent/georgia">Georgia</a> &middot; <a href="/rent/idaho">Idaho</a> &middot; <a href="/rent/illinois">Illinois</a> &middot; <a href="/rent/indiana">Indiana</a> &middot; <a href="/rent/iowa">Iowa</a> &middot; <a href="/rent/kansas">Kansas</a> &middot; <a href="/rent/kentucky">Kentucky</a> &middot; <a href="/rent/louisiana">Louisiana</a> &middot; <a href="/rent/maine">Maine</a> &middot; <a href="/rent/maryland">Maryland</a> &middot; <a href="/rent/massachusetts">Massachusetts</a> &middot; <a href="/rent/michigan">Michigan</a> &middot; <a href="/rent/minnesota">Minnesota</a> &middot; <a href="/rent/mississippi">Mississippi</a> &middot; <a href="/rent/montana">Montana</a> &middot; <a href="/rent/nebraska">Nebraska</a> &middot; <a href="/rent/nevada">Nevada</a> &middot; <a href="/rent/new-hampshire">New Hampshire</a> &middot; <a href="/rent/new-jersey">New Jersey</a> &middot; <a href="/rent/new-mexico">New Mexico</a> &middot; <a href="/rent/new-york">New York</a> &middot; <a href="/rent/north-carolina">North Carolina</a> &middot; <a href="/rent/north-dakota">North Dakota</a> &middot; <a href="/rent/ohio">Ohio</a> &middot; <a href="/rent/oklahoma">Oklahoma</a> &middot; <a href="/rent/oregon">Oregon</a> &middot; <a href="/rent/pennsylvania">Pennsylvania</a> &middot; <a href="/rent/south-carolina">South Carolina</a> &middot; <a href="/rent/south-dakota">South Dakota</a> &middot; <a href="/rent/tennessee">Tennessee</a> &middot; <a href="/rent/texas">Texas</a> &middot; <a href="/rent/utah">Utah</a> &middot; <a href="/rent/vermont">Vermont</a> &middot; <a href="/rent/virginia">Virginia</a> &middot; <a href="/rent/washington">Washington</a> &middot; <a href="/rent/west-virginia">West Virginia</a> &middot; <a href="/rent/wisconsin">Wisconsin</a> &middot; <a href="/rent/wyoming">Wyoming</a></p>
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats, Cash Rents Survey county
@@ -277,6 +320,36 @@ for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
  rows.forEach(function(r){t.tBodies[0].appendChild(r);});
  gaEvent('rent_state_sort',{col:ths[i].textContent});
 });})();
+</script><script>
+(function(){var el=document.getElementById('gr-data');if(!el)return;var D=JSON.parse(el.textContent);
+var $=function(i){return document.getElementById(i);},sel=$('gr-co'),y=$('gr-y'),pr=$('gr-p'),sh=$('gr-s'),lv=$('gr-v'),rr=$('gr-r');
+var shDirty=false,sent=false;
+D.c.forEach(function(c,i){var o=document.createElement('option');o.value=i;o.textContent=c[0];if(c[0]===D.mid)o.selected=true;sel.appendChild(o);});
+function cur(){return D.c[+sel.value];}
+function usd(v){return '$'+Math.round(v).toLocaleString('en-US');}
+function num(e){var v=parseFloat(String(e.value).replace(/[$,%\s]/g,''));return isFinite(v)?v:NaN;}
+function cname(c){return c[0]+' '+D.unit;}
+function ownShare(c,p){return p>0?Math.round(1000*c[1]/(c[2]*p))/10:NaN;}
+function draw(){var c=cur(),Y=num(y),p=num(pr);
+ if(!shDirty){var s0=ownShare(c,p);sh.value=isFinite(s0)?s0:'';}
+ var S=num(sh);
+ if(!(Y>=1&&Y<=400)){$('gr-out').textContent='Type a yield between 1 and 400 bushels.';$('gr-math').textContent='';}
+ else{var est=c[1]*Y/c[2];
+  $('gr-out').innerHTML='At <b>'+Y+' bu</b> ground in '+cname(c)+', the '+D.unit.toLowerCase()+'&rsquo;s rent per bushel says about <b>'+usd(est)+' an acre</b>.';
+  $('gr-math').textContent=cname(c)+': '+usd(c[1])+' rent ÷ '+c[2]+' bu trend = $'+c[3].toFixed(2)+' a bushel. '+usd(c[1])+' × '+Y+' ÷ '+c[2]+' = '+usd(est)+'.';}
+ if(Y>=1&&Y<=400&&p>0&&S>0&&S<100){var g=Y*p;$('gr-sg').textContent=Y+' bu × $'+p.toFixed(2)+' = '+usd(g)+' gross. '+S+'% of that is '+usd(g*S/100)+' an acre.';}
+ else $('gr-sg').textContent='Type a yield, a price and a share to see it.';
+ var V=num(lv),R=num(rr);
+ if(V>0&&R>0&&R<100)$('gr-lv').textContent=usd(V)+' × '+R+'% = '+usd(V*R/100)+' an acre.';
+ else $('gr-lv').textContent='Type your land value and the return you want on it.';
+ var a=$('gr-atlas');if(a){if(c[4]){a.href='/farmland-atlas/'+c[4];a.textContent=cname(c)+' on the Farmland Atlas';}else{a.removeAttribute('href');a.textContent=cname(c)+' (no Atlas page yet)';}}
+ if(!sent&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.rs-gr')){sent=true;gaEvent('rent_ground',{st:D.st});}
+}
+sel.addEventListener('change',function(){y.value=Math.round(cur()[2]);draw();});
+sh.addEventListener('input',function(){shDirty=sh.value!=='';draw();});
+[y,pr,lv,rr].forEach(function(e){e.addEventListener('input',draw);});
+y.value=Math.round(cur()[2]);draw();
+})();
 </script>
 </body>
 </html>
