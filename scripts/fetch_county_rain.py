@@ -52,6 +52,8 @@ ROOT = R.ROOT
 OUT = os.path.join(ROOT, "data", "rain")
 URL = "https://data.rcc-acis.org/MultiStnData"
 SCHEMA = "agsist-county-rain/1"
+DAILY_SCHEMA = "agsist-county-rain-daily/1"
+DAILY_DIR = "daily"    # data/rain/daily/<st>.json: the chosen stations' days, for the county pages' Rain Print
 TIMEOUT_S = 180
 BACKOFF_S = (15, 45, 120)
 MAX_MINUTES = 40
@@ -146,18 +148,27 @@ def trim(j, params):
     return {"data": out}
 
 
+SNOW = {"name": "snow", "interval": "dly"}
+
+
 def ask_state(src, st, year, edate):
-    """(rows, normals period or None, normals used?) for one state."""
+    """(rows, normals period or None, normals used?, snowfall column or None)
+    for one state. Snowfall rides along for the county pages' Rain Print
+    (data/rain/daily); if ACIS refuses it, the rain still comes."""
     base = {"state": st, "sdate": f"{year}-01-01", "edate": edate, "meta": "name,state,sids,ll,county,elev"}
+    pcpn = {"name": "pcpn", "interval": "dly"}
     for code, period in NORMALS:
-        j = src.call(dict(base, elems=[{"name": "pcpn", "interval": "dly"}, {"name": "pcpn", "interval": "dly", "normal": code}]))
+        for snow in (True, False):
+            elems = [pcpn, {"name": "pcpn", "interval": "dly", "normal": code}] + ([SNOW] if snow else [])
+            j = src.call(dict(base, elems=elems))
+            if "error" not in j and isinstance(j.get("data"), list):
+                return j["data"], period, True, (2 if snow else None)
+            print(f"  {st}: normals '{code}'{' with snowfall' if snow else ''} refused ({j.get('error')})", flush=True)
+    for snow in (True, False):
+        j = src.call(dict(base, elems=[pcpn] + ([SNOW] if snow else [])))
         if "error" not in j and isinstance(j.get("data"), list):
-            return j["data"], period, True
-        print(f"  {st}: normals '{code}' refused ({j.get('error')})", flush=True)
-    j = src.call(dict(base, elems=[{"name": "pcpn", "interval": "dly"}]))
-    if "error" in j or not isinstance(j.get("data"), list):
-        raise RuntimeError(f"{st}: {j.get('error') or 'no data'}")
-    return j["data"], None, False
+            return j["data"], None, False, (1 if snow else None)
+    raise RuntimeError(f"{st}: {j.get('error') or 'no data'}")
 
 
 def ask_last_year(src, st, sids, as_of_last):
@@ -187,10 +198,20 @@ def nearby(pool, g, mi=None):
     return out
 
 
+def daily_rec(vals, snows):
+    """One county's days for data/rain/daily/<st>.json: the rain (p) and, when
+    the station kept a snowfall record at all, the snowfall (s), packed
+    (county_rain.pack_days). Jan 1 to the county's as-of day."""
+    r = {"p": R.pack_days(vals)}
+    if any(R.parse_pcpn(v)[0] is not None for v in snows):
+        r["s"] = R.pack_days(snows)
+    return r
+
+
 REACH_SLACK = 15   # miles past the county outline's farthest corner a station may sit
 
 def build_state(src, st, year, edate, C, fetched):
-    rows, period, has_norm = ask_state(src, st, year, edate)
+    rows, period, has_norm, snow_col = ask_state(src, st, year, edate)
     n = (dt.date.fromisoformat(edate) - dt.date.fromisoformat(f"{year}-01-01")).days + 1
     dates = R.days_of(year, f"{year}-01-01", n)
     mine = {f: c for f, c in C.items() if c["st"] == st}
@@ -205,6 +226,7 @@ def build_state(src, st, year, edate, C, fetched):
         if len(data) < n:
             data += [["M", "M"]] * (n - len(data))
         vals = [r[0] if r else "M" for r in data]
+        snows = [r[snow_col] if snow_col and len(r) > snow_col else "M" for r in data]
         norms = [r[1] if len(r) > 1 else "M" for r in data] if has_norm else None
         gauge = {"sid": meta["sids"][0], "lat": meta["ll"][1], "lon": meta["ll"][0],
                  "parsed": R.close_s([R.parse_pcpn(v) for v in vals]), "nv": R.daily_normals(dates, norms)}
@@ -226,7 +248,7 @@ def build_state(src, st, year, edate, C, fetched):
         if c.get("reach") and mi > c["reach"] + REACH_SLACK:
             print(f"  {st} {fips}: skipping {meta.get('name')} ({mi:.0f} mi out, the county reaches {c['reach']:.0f})", flush=True)
             continue
-        cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals, "gauge": gauge}
+        cand = {"meta": meta, "summary": summ, "why": why, "mi": mi, "vals": vals, "snows": snows, "gauge": gauge}
         cands.setdefault(fips, []).append(cand)
     # a run of zeros the gauges around it did not have: leave that gauge out
     # so the next one in the county can answer
@@ -289,7 +311,7 @@ def build_state(src, st, year, edate, C, fetched):
                 print(f"  {st} {f}: no {int(year) - 1} comparison ({picked[f]['meta'].get('name')} read 0.00 for {j - i + 1} days "
                       f"from {R.days_of(0, f'{int(year) - 1}-01-01', i + 1)[-1]}, usual {u:.1f} in)", flush=True)
                 last[f] = None
-    out = {}
+    out, daily = {}, {}
     for fips, x in sorted(picked.items()):
         m, s = x["meta"], x["summary"]
         rec = {"name": mine[fips]["name"],
@@ -300,11 +322,12 @@ def build_state(src, st, year, edate, C, fetched):
         rec["n_ok"] = x["n_ok"]
         rec["last"] = last.get(fips)
         out[fips] = rec
+        daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
             "pick": 2,   # mountain sites ranked last (county_rain.mark_mountain); the pages say so
             "source": "NOAA daily records through RCC-ACIS (MultiStnData)",
-            "stations_in_counties": seen, "counties": out, "none": none}
+            "stations_in_counties": seen, "counties": out, "none": none, "_daily": daily}
 
 
 # A gauge that reads under 40% of what the counties around it read, where a
@@ -440,6 +463,30 @@ def problems(d, path="", C=None):
     return bad
 
 
+def daily_problems(dd, d, path=""):
+    """What is wrong with one daily file against its state file: every county's
+    days run Jan 1 to its as-of day and add up to its total."""
+    bad = []
+    if dd.get("schema") != DAILY_SCHEMA or dd.get("state") != d.get("state") or dd.get("year") != d.get("year"):
+        return [f"{path}: schema, state or year differs from the state file"]
+    for f, x in (dd.get("counties") or {}).items():
+        c = (d.get("counties") or {}).get(f)
+        if not c:
+            bad.append(f"{path} {f}: no such county in the state file")
+            continue
+        try:
+            p = R.close_s([R.parse_pcpn(v) for v in R.unpack_days(x["p"])])
+            if len(p) != c["days"]:
+                bad.append(f"{path} {f}: {len(p)} days, the state file says {c['days']}")
+            elif abs(sum(v for v, _ in p if v is not None) - c["total"]) > 0.011:
+                bad.append(f"{path} {f}: days add to {sum(v for v, _ in p if v is not None):.2f}, total {c['total']}")
+            if "s" in x and len(R.unpack_days(x["s"])) != c["days"]:
+                bad.append(f"{path} {f}: snowfall has {len(R.unpack_days(x['s']))} days")
+        except (KeyError, TypeError, ValueError) as e:
+            bad.append(f"{path} {f}: malformed ({e})")
+    return bad
+
+
 def check(dirpath=OUT):
     bad = []
     files = sorted(glob.glob(os.path.join(dirpath, "*.json")))
@@ -451,6 +498,12 @@ def check(dirpath=OUT):
             bad.append(f"{p}: {e}")
             continue
         bad += problems(d, os.path.basename(p), C)
+        dp = os.path.join(dirpath, DAILY_DIR, os.path.basename(p))
+        if os.path.exists(dp):
+            try:
+                bad += daily_problems(json.load(open(dp)), d, DAILY_DIR + "/" + os.path.basename(p))
+            except ValueError as e:
+                bad.append(f"{dp}: {e}")
     for b in bad[:20]:
         print("BAD", b)
     print(f"{len(files)} state files, {len(bad)} problem(s)")
@@ -504,8 +557,17 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
     hold_last_year(allf, new, NB)
     add_nearest(allf, C)
     for st, d in new.items():
+        daily = d.pop("_daily", None) or {}
         with open(os.path.join(out_dir, st.lower() + ".json"), "w") as fh:
             json.dump(d, fh, separators=(",", ":"), sort_keys=True)
+            fh.write("\n")
+        # the days behind each county still in the file (a held county's go too)
+        dd = os.path.join(out_dir, DAILY_DIR)
+        os.makedirs(dd, exist_ok=True)
+        with open(os.path.join(dd, st.lower() + ".json"), "w") as fh:
+            json.dump({"schema": DAILY_SCHEMA, "state": st, "year": d["year"], "edate": d["edate"], "fetched": d["fetched"],
+                       "counties": {f: daily[f] for f in sorted(d["counties"]) if f in daily}},
+                      fh, separators=(",", ":"), sort_keys=True)
             fh.write("\n")
     return new, failed
 
@@ -605,6 +667,15 @@ def selftest():
     _lo1["meta"]["elev"] = 5900
     ok(_pick([_hi, _lo1, _near[1]]) == "HIGH CAMP", "a station only a little higher keeps the usual order")
     ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 2, "the data file says which pick rule it used")
+    # snowfall comes in the third column and is packed beside the rain
+    _sn = {"meta": _val["meta"], "data": [[r[0], r[1], "1.5" if i == 3 else "T" if i == 4 else "0.0"] for i, r in enumerate(_val["data"])]}
+    _o = build_state(_Src([_sn]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
+    _dl = _o["_daily"]["19001"]
+    ok(R.unpack_days(_dl.get("s", ""))[3:5] == ["1.50", "T"] and len(R.unpack_days(_dl["p"])) == _o["counties"]["19001"]["days"],
+       f"snowfall packed beside the rain, day for day: {_dl}")
+    for _v in (["0.00"] * 5 + ["T", "1.25", "S", "S", "2.50A", "M", "M", "0.10", "0.10", "0.00"], [], ["M"], ["0.004", "12.30"]):
+        ok(R.unpack_days(R.pack_days(_v)) == [x if x in ("M", "T", "S") else f"{round(float(x.rstrip('A')) * 100) / 100:.2f}" + ("A" if x.endswith("A") else "") for x in _v],
+           f"pack and unpack round trip: {_v}")
     # the gauges around caught little, but on and off (south Florida, Jan-Feb 2026)
     def _sprinkle(name, sid, ll, fips, gap=False):
         return {"meta": {"name": name, "sids": [sid], "ll": ll, "county": fips},
@@ -790,6 +861,22 @@ def selftest():
         dc = next(iter(de["counties"].values()), None)
         ok(dc and dc["days"] == 366 and dc["as_of"] == "2024-12-31", f"leap year has 366 days: {dc and dc['days']}")
         ok(check(d) == 0, "fixture output passes --check")
+        # the days behind each county, for the county page's Rain Print
+        iad = json.load(open(os.path.join(d, DAILY_DIR, "ia.json")))
+        ok(iad["schema"] == DAILY_SCHEMA and sorted(iad["counties"]) == sorted(ia["counties"]),
+           f"a daily file with every county in the state file: {len(iad['counties'])} of {len(ia['counties'])}")
+        if st:
+            sd = R.unpack_days(iad["counties"]["19169"]["p"])
+            ok(len(sd) == st["days"] and "M" in sd, f"Story's days run Jan 1 to its as-of day, gaps kept: {len(sd)} of {st['days']}")
+            ok("s" not in iad["counties"]["19169"], "no snowfall record, no snowfall in the daily file")
+        kd = json.load(open(os.path.join(d, DAILY_DIR, "ks.json")))
+        ok(any("S" in R.unpack_days(x["p"]) for x in kd["counties"].values()), "S days are kept as S, not as 0")
+        bad = json.loads(json.dumps(iad))
+        f0 = sorted(bad["counties"])[0]
+        bad["counties"][f0]["p"] = R.pack_days(R.unpack_days(bad["counties"][f0]["p"])[:-1])
+        ok(daily_problems(bad, ia, "x"), "a daily file a day short of its county is refused")
+        bad["counties"][f0]["p"] = R.pack_days(["9.99"] + R.unpack_days(iad["counties"][f0]["p"])[1:])
+        ok(daily_problems(bad, ia, "x"), "a daily file that does not add to the county's total is refused")
         # a thin answer is refused and the published file kept
         p = os.path.join(d, "ia.json")
         fat = json.load(open(p))

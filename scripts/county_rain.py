@@ -319,6 +319,55 @@ def parse_pcpn(raw):
     return v, ("A" if acc else "")
 
 
+# ---------------------------------------------------------------- daily values, packed
+# data/rain/daily/<st>.json carries each chosen station's days (Jan 1 to its
+# as-of day) for the Rain Print drawn on the county page
+# (components/rain-county-print.js unpacks it). One token a day, ACIS's own
+# reading kept: M, T, S, or the amount in hundredths of an inch with A when it
+# covers several days ("125A" is 1.25A). A token repeated 3 or more times in a
+# row is written once with *count ("0*12"). Tokens are joined with commas.
+
+def _tok(raw):
+    s = str(raw if raw is not None else "M").strip()
+    if s in ("M", "", "T", "S"):
+        return s or "M"
+    a = s.endswith("A")
+    try:
+        v = float(s.rstrip("A"))
+    except ValueError:
+        return "M"
+    if v < 0 or v != v:
+        return "M"
+    return str(int(round(v * 100))) + ("A" if a else "")
+
+
+def pack_days(vals):
+    """ACIS daily values -> the packed string."""
+    out, i, toks = [], 0, [_tok(v) for v in vals]
+    while i < len(toks):
+        j = i
+        while j < len(toks) and toks[j] == toks[i]:
+            j += 1
+        out.append(toks[i] + (f"*{j - i}" if j - i >= 3 else ("," + toks[i] if j - i == 2 else "")))
+        i = j
+    return ",".join(out)
+
+
+def unpack_days(s):
+    """The packed string -> ACIS-style values ("1.25", "1.50A", "T", "S", "M")."""
+    out = []
+    for t in (s.split(",") if s else []):
+        k = 1
+        if "*" in t:
+            t, k = t.split("*")
+            k = int(k)
+        if t not in ("M", "T", "S"):
+            a = t.endswith("A")
+            t = f"{int(t.rstrip('A')) / 100:.2f}" + ("A" if a else "")
+        out.extend([t] * k)
+    return out
+
+
 def close_s(parsed):
     """An S run must end in the A value that carries its rain. A run that ends
     in anything else (a plain value, a trace, a gap) has lost that rain, so its
