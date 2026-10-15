@@ -361,7 +361,8 @@ test("redeem: a lost race (a stale read at another edge) marks the second order 
   assert.equal((await pub(env, "/rp-gift/redeem", order(j.code))).status, 200);
   store.set(key, before);   // the other edge still reads "issued"
   assert.equal((await pub(env, "/rp-gift/redeem", order(j.code))).status, 200);
-  const posts = [...store.keys()].filter((k) => k.startsWith("form:")).sort().map((k) => JSON.parse(store.get(k)));
+  // Map order is write order; sorting the keys would let two posts in the same millisecond swap on their random suffix.
+  const posts = [...store.keys()].filter((k) => k.startsWith("form:")).map((k) => JSON.parse(store.get(k)));
   assert.equal(posts.length, 2);
   assert.deepEqual(posts.map((p) => p.gift_card_twice || ""), ["", "yes"]);
 });
