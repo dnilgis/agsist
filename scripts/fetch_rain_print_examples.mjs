@@ -29,115 +29,206 @@
  *     requests: [{ url, status, body }] }   body: the parsed JSON answer
  * A replay serves requests[i].body for requests[i].url.
  *
+ * WHAT A RUN SAYS. The job log can't always be read, so every result is also
+ * a GitHub annotation: one ::notice per example listing each request it made
+ * (status and URL; one notice, not one per request, because GitHub keeps only
+ * 10 notices a step), and an ::error with the exact reason, URL and status for
+ * anything that fails. A failed example is tried 3 times with a fresh engine.
+ * The only things changed from a browser's requests are a User-Agent header
+ * naming agsist.com and a longer wait: the engine's 15 s give-up timer is
+ * stretched to 60 s here, since a runner far from NOAA can be slower than a
+ * reader. Neither changes a URL or an answer.
+ *
  *   node scripts/fetch_rain_print_examples.mjs           fetch both, write files
  *   node scripts/fetch_rain_print_examples.mjs --check   check the saved files (offline)
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, writeSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const OUT_DIR = ROOT + "data/rain-print-examples/";
+const UA = "agsist.com rain print examples (https://agsist.com/rain-print; by hand)";
+const TRIES = 3;
+const WAIT_MS = Number(process.env.RPEX_WAIT_MS) || 20000;   // pause before a retry, times the try number
+
+// Output goes out synchronously, so nothing is lost when the process exits.
+const out = (line) => writeSync(1, line + "\n");
+const esc = (s) => String(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+const annotate = (kind, msg) => out("::" + kind + " title=rain print examples::" + esc(msg));
+const errMsg = (e) => (e && (e.message || String(e))) + (e && e.cause ? " (cause: " + (e.cause.code || e.cause.message || e.cause) + ")" : "");
 
 // The example links, read from the page itself so they can't drift apart.
 function examples() {
   const html = readFileSync(ROOT + "rain-print.html", "utf8");
-  const out = [];
+  const list = [];
   for (const m of html.matchAll(/<a class="rp-story" href="([^"]+)"/g)) {
     const link = m[1].replace(/&amp;/g, "&");
     const q = new URLSearchParams(link.split("?")[1] || "");
     const place = q.get("place"), year = parseInt(q.get("year"), 10), cmp = q.get("cmp") || "";
     if (!place || !year) throw new Error("example link without a place or year: " + link);
     const slug = (year + "-" + place).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    out.push({ slug, link, place, year, cmp, query: link.split("?")[1] || "" });
+    list.push({ slug, link, place, year, cmp, query: link.split("?")[1] || "" });
   }
-  if (out.length < 2) throw new Error("expected the two example links in rain-print.html, found " + out.length);
-  return out;
+  if (list.length < 2) throw new Error("expected the two example links in rain-print.html, found " + list.length);
+  return list;
 }
 
 // The shipped engine in a sandbox whose fetch keeps every answer.
 function engine(log) {
   const recFetch = async (url, opts) => {
-    const r = await fetch(url, opts);
-    const text = await r.text();
+    url = String(url);
+    const o = Object.assign({}, opts || {}, { headers: { "User-Agent": UA, Accept: "application/json" } });
+    let r, text;
+    try {
+      r = await fetch(url, o);
+      text = await r.text();
+    } catch (e) {
+      log.push({ url, status: 0, body: null, error: errMsg(e) });
+      throw e;
+    }
     let body = null;
     try { body = JSON.parse(text); } catch (e) { body = null; }
-    log.push({ url: String(url), status: r.status, body });
+    const row = { url, status: r.status, body };
+    if (body === null) row.snippet = text.slice(0, 200);
+    log.push(row);
     return new Response(text, { status: r.status, headers: { "content-type": "application/json" } });
   };
-  const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, fetch: recFetch, Response,
-    AbortController, setTimeout, clearTimeout, console };
+  // the engine gives up on a request after 15 s; a runner gets 60 s
+  const slowTimeout = (fn, ms, ...a) => setTimeout(fn, ms >= 15000 ? ms * 4 : ms, ...a);
+  const ctx = { TextEncoder, TextDecoder, URLSearchParams, URL, btoa, atob, fetch: recFetch, Response,
+    AbortController, setTimeout: slowTimeout, clearTimeout, console, Intl };
   ctx.window = ctx;
   vm.runInNewContext(readFileSync(ROOT + "components/rain-print.js", "utf8"), ctx);
-  if (!ctx.RainPrint || typeof ctx.RainPrint.previewArt !== "function") throw new Error("components/rain-print.js has no previewArt");
+  if (!ctx.RainPrint || typeof ctx.RainPrint.previewArt !== "function") throw new Error("components/rain-print.js loaded without RainPrint.previewArt");
   // previewArt only checks the drawing script is there; no art is made here.
   ctx.AgRainArt = { render: () => "", INK: "#000" };
   return ctx.RainPrint;
 }
 
-async function fetchOne(ex) {
-  const log = [];
-  const RP = engine(log);
-  const s = RP.fromParams(ex.query);
-  s.station = "";
-  const code = RP.encodeCode(s);
-  const got = await RP.previewArt(code, { noQr: true });
-  if (got.preview) throw new Error(ex.slug + ": drew as a preview, not a finished year");
-  for (const q of log) if (q.status !== 200 || q.body === null) throw new Error(ex.slug + ": " + q.url + " answered " + q.status + (q.body === null ? " (not JSON)" : ""));
-  const now = new Date();
-  return {
-    slug: ex.slug, link: ex.link, place: ex.place, year: ex.year, cmp: ex.cmp,
-    fetched: now.toISOString().slice(0, 10), fetched_at: now.toISOString(),
-    source: "NOAA RCC-ACIS (data.rcc-acis.org) and Open-Meteo geocoding, asked by components/rain-print.js previewArt()",
-    station: got.station, days: got.days, requests: log,
-  };
+const isGeo = (u) => u.startsWith("https://geocoding-api.open-meteo.com/");
+function reqLine(q) {
+  let s = q.status + " " + q.url;
+  if (q.error) s += " (network: " + q.error + ")";
+  else if (q.body === null) s += " (not JSON: " + JSON.stringify(q.snippet || "") + ")";
+  else if (q.body.error) s += " (answer error: " + JSON.stringify(q.body.error) + ")";
+  else if (q.body.reason) s += " (reason: " + JSON.stringify(q.body.reason) + ")";
+  else if (Array.isArray(q.body.data)) s += " (" + q.body.data.length + " rows)";
+  else if (Array.isArray(q.body.meta)) s += " (" + q.body.meta.length + " stations)";
+  else if (isGeo(q.url)) s += " (" + (Array.isArray(q.body.results) ? q.body.results.length : 0) + " places)";
+  return s;
 }
 
+// Why a run failed, in words: the engine's own message, plus what the answers show.
+function diagnose(RP, ex, log, e) {
+  const why = [errMsg(e)];
+  const geo = log.filter((q) => isGeo(q.url)).pop();
+  if (!geo) why.push("no town lookup was made");
+  else if (geo.status === 200 && geo.body) {
+    const res = Array.isArray(geo.body.results) ? geo.body.results : [];
+    const g = RP.geoPick(ex.place, res);
+    const where = (x) => x.name + ", " + (x.admin1 || "?") + " (" + x.latitude + ", " + x.longitude + ")";
+    if (g.error) why.push("town lookup: " + g.error + " Places sent: " + (res.map(where).join("; ") || "none"));
+    else if (g.pick) why.push("town lookup: more than one " + ex.place + " far apart, so the page would ask which: " + g.pick.map(where).join("; "));
+  }
+  for (const q of log) if (q.status !== 200 || q.body === null || q.body.error) why.push("bad answer: " + reqLine(q));
+  return why.join(" | ");
+}
+
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function tryOne(ex) {
+  const log = [];
+  let RP = null;
+  try {
+    RP = engine(log);
+    const s = RP.fromParams(ex.query);
+    s.station = "";
+    const code = RP.encodeCode(s);
+    const got = await RP.previewArt(code, { noQr: true });
+    if (got.preview) throw new Error("drew as a preview (the year isn't complete at the station), not a finished year: " + got.days + " days");
+    // every answer must be a real answer, or a replay could pick another station than a live visit
+    for (const q of log) if (q.status !== 200 || q.body === null) throw new Error("a request had no usable answer");
+    const now = new Date();
+    return { ok: true, log, j: {
+      slug: ex.slug, link: ex.link, place: ex.place, year: ex.year, cmp: ex.cmp,
+      fetched: now.toISOString().slice(0, 10), fetched_at: now.toISOString(),
+      source: "NOAA RCC-ACIS (data.rcc-acis.org) and Open-Meteo geocoding, asked by components/rain-print.js previewArt()",
+      station: got.station, days: got.days, requests: log.map((q) => ({ url: q.url, status: q.status, body: q.body })),
+    } };
+  } catch (e) {
+    return { ok: false, log, why: RP ? diagnose(RP, ex, log, e) : errMsg(e) };
+  }
+}
+
+// Offline check of a saved file. Returns a list of warnings; throws on a fault.
 function check(file, ex) {
   const j = JSON.parse(readFileSync(file, "utf8"));
-  const bad = (w) => { throw new Error(file + ": " + w); };
+  const bad = (w) => { throw new Error(file.replace(ROOT, "") + ": " + w); };
+  const warn = [];
   if (j.slug !== ex.slug || j.year !== ex.year || j.place !== ex.place) bad("doesn't match the page's link " + ex.link);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(j.fetched || "")) bad("no fetch date");
   if (!Array.isArray(j.requests) || !j.requests.length) bad("no requests");
-  const urls = j.requests.map((q) => q.url);
-  if (!urls.some((u) => u.startsWith("https://geocoding-api.open-meteo.com/"))) bad("no town lookup");
-  if (urls.filter((u) => u.startsWith("https://data.rcc-acis.org/StnMeta?")).length !== 2) bad("expected the two station lists");
+  for (const q of j.requests) if (q.status !== 200 || q.body === null) bad(q.url + " has no answer (" + q.status + ")");
   const sidOf = (u) => new URL(u).searchParams.get("sid");
-  if (!urls.some((u) => u.includes("StnData?sid=") && sidOf(u) === j.station)) bad("no daily record for the picked station " + j.station);
-  if (!urls.some((u) => u.includes("StnData?params=") && decodeURIComponent(u).includes('"sid":"' + j.station + '"'))) bad("no normal for the picked station");
-  for (const q of j.requests) if (q.status !== 200 || q.body === null) bad(q.url + " has no answer");
-  // what the print is drawn from must be real data (a "91" normal with nothing is followed by the older code)
-  const usable = (q) => q && !q.body.error && (Array.isArray(q.body.data) || Array.isArray(q.body.meta) || Array.isArray(q.body.results));
+  const usable = (q) => !!q && !q.body.error && (Array.isArray(q.body.data) || Array.isArray(q.body.meta) || Array.isArray(q.body.results));
   const last = (f) => j.requests.filter(f).pop();
-  if (!usable(last((q) => q.url.startsWith("https://geocoding-api.open-meteo.com/")))) bad("the town lookup found nothing");
-  if (!usable(last((q) => q.url.includes("StnData?sid=") && sidOf(q.url) === j.station))) bad("no days for " + j.station);
-  if (!usable(last((q) => q.url.includes("StnData?params=")))) bad("no 30-year normal for " + j.station);
-  return j;
+  if (!usable(last((q) => isGeo(q.url)))) bad("the town lookup found nothing");
+  if (j.requests.filter((q) => q.url.startsWith("https://data.rcc-acis.org/StnMeta?")).length !== 2) bad("expected the two station lists");
+  if (!usable(last((q) => q.url.includes("StnData?sid=") && sidOf(q.url) === j.station))) bad("no days for the picked station " + j.station);
+  // no normal is not a fault: the page draws without one too, and says so
+  const norm = last((q) => q.url.includes("StnData?params=") && decodeURIComponent(q.url).includes('"sid":"' + j.station + '"'));
+  if (!norm) warn.push(ex.slug + ": no 30-year normal was asked for " + j.station);
+  else if (!usable(norm)) warn.push(ex.slug + ": NOAA has no 30-year normal for " + j.station + ", so the example draws without one, as the page would");
+  return { j, warn };
 }
 
-const exs = examples();
-if (process.argv.includes("--check")) {
-  for (const ex of exs) {
-    const f = OUT_DIR + ex.slug + ".json";
-    if (!existsSync(f)) { console.log("missing " + f); process.exitCode = 1; continue; }
-    const j = check(f, ex);
-    console.log(ex.slug + ": ok, station " + j.station + ", " + j.days + " days, " + j.requests.length + " requests, fetched " + j.fetched);
+async function main() {
+  const exs = examples();
+  if (process.argv.includes("--check")) {
+    let failed = 0;
+    for (const ex of exs) {
+      const f = OUT_DIR + ex.slug + ".json";
+      try {
+        if (!existsSync(f)) throw new Error("missing data/rain-print-examples/" + ex.slug + ".json");
+        const { j, warn } = check(f, ex);
+        warn.forEach((w) => annotate("warning", w));
+        out(ex.slug + ": ok, station " + j.station + ", " + j.days + " days, " + j.requests.length + " requests, fetched " + j.fetched);
+      } catch (e) { failed++; annotate("error", "check: " + errMsg(e)); }
+    }
+    return failed;
   }
-} else {
   mkdirSync(OUT_DIR, { recursive: true });
   let failed = 0;
   for (const ex of exs) {
-    try {
-      const j = await fetchOne(ex);
-      const f = OUT_DIR + ex.slug + ".json";
-      writeFileSync(f, JSON.stringify(j) + "\n");
-      check(f, ex);
-      console.log(ex.slug + ": station " + j.station + ", " + j.days + " days, " + j.requests.length + " requests");
-    } catch (e) {
-      failed++;
-      console.log(ex.slug + ": FAILED " + (e && e.message || e));
+    let done = false;
+    for (let t = 1; t <= TRIES && !done; t++) {
+      const r = await tryOne(ex);
+      const lines = r.log.map(reqLine);
+      out(ex.slug + " try " + t + ":\n  " + (lines.join("\n  ") || "(no requests)"));
+      if (r.ok) {
+        try {
+          const f = OUT_DIR + ex.slug + ".json";
+          writeFileSync(f, JSON.stringify(r.j) + "\n");
+          const { warn } = check(f, ex);
+          warn.forEach((w) => annotate("warning", w));
+          annotate("notice", ex.slug + " (try " + t + "): station " + r.j.station + ", " + r.j.days + " days, " + lines.length + " requests\n" + lines.join("\n"));
+          done = true;
+        } catch (e) { r.ok = false; r.why = "saved file failed its check: " + errMsg(e); }
+      }
+      if (!r.ok) {
+        const final = t === TRIES;
+        annotate(final ? "error" : "warning", ex.slug + " try " + t + " of " + TRIES + " failed: " + r.why + "\nRequests:\n" + (lines.join("\n") || "(none)"));
+        if (!final) await wait(WAIT_MS * t);
+      }
     }
+    if (!done) failed++;
   }
-  // the engine's own timeout timers would hold the process open for 15 s
-  process.exit(failed ? 1 : 0);
+  return failed;
 }
+
+let code = 1;
+try { code = (await main()) ? 1 : 0; }
+catch (e) { annotate("error", "stopped: " + errMsg(e) + (e && e.stack ? "\n" + e.stack.split("\n").slice(1, 4).join("\n") : "")); }
+// the engine's own timeout timers would hold the process open
+process.exit(code);
