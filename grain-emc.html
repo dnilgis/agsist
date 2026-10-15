@@ -4,28 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
-  <title>Grain EMC calculator: will running fans dry or wet your grain right now | AGSIST</title>
-  <meta name="description" content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+  <title>Grain EMC calculator: when to run aeration fans | AGSIST</title>
+  <meta name="description" content="Grain EMC calculator for corn and wheat: when to run aeration fans to dry, cool or hold grain, hour by hour for 3 days at your ZIP, plus printable EMC charts.">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/grain-emc">
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="Will running fans dry or wet your grain right now?">
-  <meta property="og:description"  content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+  <meta property="og:title"        content="When to run aeration fans: will they dry your grain or wet it?">
+  <meta property="og:description"  content="Grain EMC calculator for corn and wheat: when to run aeration fans to dry, cool or hold grain, hour by hour for 3 days at your ZIP, plus printable EMC charts.">
   <meta property="og:url"          content="https://agsist.com/grain-emc">
-  <meta property="og:image" content="https://agsist.com/img/og/grain-emc.jpg?v=1056f4b6">
+  <meta property="og:image" content="https://agsist.com/img/og/grain-emc.jpg?v=07394f95">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Will running fans dry your grain right now, or wet it? Whether running fans dries or wets your corn or wheat, hour by hour where you are.">
+  <meta property="og:image:alt" content="When to run aeration fans: will they dry your grain or wet it? Whether running fans dries or wets your corn or wheat, hour by hour where you are.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/grain-emc.jpg?v=1056f4b6">
-  <meta name="twitter:title"       content="Will running fans dry or wet your grain right now?">
-  <meta name="twitter:description" content="Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.">
+  <meta name="twitter:image" content="https://agsist.com/img/og/grain-emc.jpg?v=07394f95">
+  <meta name="twitter:title"       content="When to run aeration fans: will they dry your grain or wet it?">
+  <meta name="twitter:description" content="Grain EMC calculator for corn and wheat: when to run aeration fans to dry, cool or hold grain, hour by hour for 3 days at your ZIP, plus printable EMC charts.">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+  <script>/* the reader's last job and grain, before first paint, so the right inputs show without a jump */try{var _e=JSON.parse(localStorage.getItem('agsist-emc')||'null');if(_e&&/^(dry|cool|hold)$/.test(_e.mode))document.documentElement.setAttribute('data-emc-mode',_e.mode);}catch(e){}</script>
 
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -38,33 +39,39 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <style>
-    .emc{max-width:760px;margin:0 auto;padding:1rem 1rem 4rem}
+    .emc{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
     .emc .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
-    .emc h1{font-size:clamp(1.4rem,4.4vw,2rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .emc h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
     .emc .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .35rem}
-    .emc .emc-stamp{display:inline-block;font-size:.76rem;line-height:1.35;color:var(--text-dim);border:1px dashed var(--gold);border-radius:6px;padding:.2rem .5rem;margin:0 0 .8rem;transform:rotate(-.6deg)}
-    .emc-zw{background:none;border:0;padding:0;font:inherit;font-weight:800;color:var(--gold);cursor:help;text-decoration:underline dotted;text-underline-offset:3px}
-    .emc-zwn{display:block;font-size:.8rem;color:var(--text-muted);margin:.15rem 0 0}
+    .emc .emc-stamp{display:inline-block;font-size:.76rem;line-height:1.35;color:var(--text-dim);border:1px dashed var(--gold);border-radius:6px;padding:.2rem .5rem;margin:0 0 .75rem;transform:rotate(-.6deg)}
     .emc h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
-    .emc p,.emc li{font-size:.98rem;line-height:1.65;color:var(--text-dim)}
+    .emc p,.emc li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
     .emc p{margin:0 0 1rem}
     .emc a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .emc b{color:var(--text)}
-    .emc-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;margin:0 0 .7rem}
-    .emc-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
-    .emc-seg button{min-height:42px;padding:0 1rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-weight:700;cursor:pointer}
+    .emc-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%}
+    .emc-seg button{min-height:42px;padding:0 .8rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .emc-seg button+button{border-left:1px solid var(--border)}
     .emc-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
-    .emc-num{display:inline-flex;align-items:center;gap:.35rem;font-size:.86rem;color:var(--text-muted)}
-    .emc-num input,.emc-in input{width:4.6rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
-    .emc-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .8rem}
-    .emc-answer.v-dry{border-left-color:var(--green)}
-    .emc-answer.v-close{border-left-color:var(--gold)}
-    .emc-answer.v-wet{border-left-color:var(--red)}
-    .emc-v{display:block;font-size:clamp(1.7rem,7.4vw,2.3rem);font-weight:800;line-height:1.1;color:var(--text);margin:0 0 .35rem}
+    .emc-mode{display:flex;width:100%;margin:0 0 .55rem}
+    .emc-mode button{flex:1 1 0;padding:.35rem .4rem;line-height:1.2}
+    .emc-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;margin:0 0 .3rem}
+    .emc-num{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem;color:var(--text-muted)}
+    .emc-num input,.emc-in input[type=number]{width:4.4rem;min-height:42px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .emc-chk{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--text-muted);min-height:42px}
+    .emc-chk input{width:20px;height:20px}
+    .emc-soy{font-size:.76rem!important;line-height:1.4!important;color:var(--text-muted)!important;margin:.1rem 0 .6rem!important}
+    .emc-fanhint{font-size:.78rem!important;color:var(--text-muted)!important;margin:-.1rem 0 .7rem!important}
+    html:not([data-emc-mode="dry"]) .m-dry,html:not([data-emc-mode="cool"]) .m-cool,html[data-emc-mode="cool"] .m-notcool{display:none!important}
+    .emc-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.8rem 1rem .85rem;margin:0 0 .6rem}
+    .emc-answer.v-dry{border-left-color:var(--green)} .emc-answer.v-close{border-left-color:var(--gold)} .emc-answer.v-wet{border-left-color:var(--red)}
+    .emc h2.emc-v,.emc-v{display:block;font-size:clamp(1.55rem,7vw,2.15rem);font-weight:800;line-height:1.12;color:var(--text);margin:0 0 .35rem;outline:none}
     .v-dry .emc-v{color:var(--green)} .v-close .emc-v{color:var(--gold)} .v-wet .emc-v{color:var(--red)}
-    .emc-answer p{margin:.3rem 0 0;font-size:.95rem;line-height:1.5;color:var(--text)}
+    .emc-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
+    .emc-answer p.note{font-size:.84rem;color:var(--text-dim)}
     .emc-answer p.fine{font-size:.82rem;color:var(--text-muted)}
+    .emc-zw{background:none;border:0;padding:0;font:inherit;font-weight:800;color:var(--gold);cursor:help;text-decoration:underline dotted;text-underline-offset:3px}
+    .emc-zwn{display:block;font-size:.8rem;color:var(--text-muted);margin:.15rem 0 0}
     .emc-loc{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.2rem 0 0}
     .emc-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
     .emc-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
@@ -72,44 +79,93 @@
     .emc-link{background:none;border:0;padding:0;color:var(--link,var(--brand));text-decoration:underline;font:inherit;font-size:.85rem;cursor:pointer;min-height:32px}
     .emc-status{font-size:.86rem;color:var(--text-muted);margin:.4rem 0 0}
     .emc-status.err{color:var(--red)}
-    .emc-status:empty,.emc-answer p.fine:has(#emc-change[hidden]):has(#emc-place:empty){display:none}
-    .emc-strip{list-style:none;display:flex;gap:1px;margin:1.3rem 0 .3rem;padding:0;height:34px;position:relative}
-    .emc-strip li{flex:1 1 0;min-width:0;background:var(--border);border-radius:2px;position:relative;cursor:pointer;margin:0}
-    .emc-strip li.v-dry{background:var(--green)} .emc-strip li.v-close{background:var(--gold)} .emc-strip li.v-wet{background:var(--red);opacity:.75}
-    .emc-strip li.day{margin-left:3px}
-    .emc-strip li.best::after{content:"";position:absolute;left:0;right:-1px;bottom:-7px;height:3px;background:var(--text)}
-    .emc-strip li.cool::before{content:"";position:absolute;left:50%;top:-6px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#4aa3ff}
-    .emc-strip .dl{position:absolute;top:-1.15rem;left:0;font-size:.68rem;font-weight:700;color:var(--text-muted);white-space:nowrap}
-    .emc-key{display:flex;flex-wrap:wrap;gap:.25rem .9rem;margin:.7rem 0 .2rem;font-size:.78rem;color:var(--text-muted)}
-    .emc-key i{display:inline-block;width:.75rem;height:.75rem;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
-    .emc-tip{font-size:.86rem;color:var(--text);min-height:1.5em;margin:.2rem 0 .4rem}
+    .emc-status:empty{display:none}
+    .emc-strip{position:relative;height:58px;margin:1.5rem 0 1.4rem;border-radius:4px;outline-offset:4px}
+    .emc-strip .mid{position:absolute;left:0;right:0;top:29px;height:1px;background:var(--text-muted);opacity:.5}
+    .emc-strip .b{position:absolute;box-sizing:border-box;border-right:1px solid var(--bg)}
+    .emc-strip .s-up{top:5px;height:24px;background:var(--green)}
+    .emc-strip .s-mid{top:17px;height:12px;background:var(--gold)}
+    .emc-strip .s-down{top:30px;height:24px;background:var(--red);background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 5px)}
+    .emc-strip .s-skip{top:30px;height:10px;background:transparent;border:1px dashed var(--text-muted)}
+    .emc-strip .s-none,.emc-strip .s-miss{top:24px;height:11px;background:transparent;border:1px solid var(--text-muted)}
+    .emc-strip .s-miss{border-style:dotted}
+    .emc-strip .b.sel{box-shadow:0 0 0 2px var(--text)}
+    .emc-strip .tk{position:absolute;top:56px;width:1px;height:5px;background:var(--text-muted)}
+    .emc-strip .dl{position:absolute;top:-1.2rem;font-size:.7rem;font-weight:700;color:var(--text-muted);white-space:nowrap;border-left:1px solid var(--text-muted);padding-left:2px}
+    .emc-strip .hl{position:absolute;top:61px;font-size:.62rem;color:var(--text-muted);transform:translateX(-50%);white-space:nowrap}
+    .emc-key{display:flex;flex-wrap:wrap;gap:.25rem .85rem;margin:.2rem 0 .2rem;font-size:.78rem;color:var(--text-muted)}
+    .emc-key i{display:inline-block;width:.8rem;height:.8rem;border-radius:2px;margin-right:.3rem;vertical-align:-1px;box-sizing:border-box}
+    .emc-key i.k-up{background:var(--green)} .emc-key i.k-mid{background:var(--gold);height:.45rem;vertical-align:1px}
+    .emc-key i.k-down{background:var(--red);background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 5px)}
+    .emc-key i.k-none{border:1px solid var(--text-muted)} .emc-key i.k-skip{border:1px dashed var(--text-muted)}
+    html:not([data-emc-mode="cool"]) .emc-key .kc,html[data-emc-mode="cool"] .emc-key .kh,html:not([data-emc-mode="dry"]) .emc-key .kd,html[data-emc-mode="dry"] .emc-key .kho{display:none}
+    .emc-tip{font-size:.88rem;color:var(--text);min-height:1.5em;margin:.3rem 0 .4rem}
     .emc #emc-count,.emc #emc-asof{margin:0 0 .3rem}
     .emc-share{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0 0}
-    .emc-share p{flex:1 1 100%;margin:0;font-size:.86rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+    .emc-share p{flex:1 1 100%;margin:0;font-size:.84rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+    .emc-share textarea{flex:1 1 100%;min-height:4.5rem;font-size:.85rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px}
     .emc details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
     .emc details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
-    .emc details.box[open]>summary{margin-bottom:.3rem}
-    .emc-in{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin:.3rem 0 .7rem}
+    .emc-in{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin:.3rem 0 .7rem;align-items:flex-end}
     .emc-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
+    .emc-in label.emc-chk{flex-direction:row}
     .emc-mout{border-left:4px solid var(--border);padding:.5rem .8rem;margin:0 0 .8rem;font-size:.95rem;color:var(--text);background:var(--bg);border-radius:0 8px 8px 0}
-    .emc-mout.v-dry{border-left-color:var(--green)} .emc-mout.v-close{border-left-color:var(--gold)} .emc-mout.v-wet{border-left-color:var(--red)}
+    .emc-mout.v-dry{border-left-color:var(--green)} .emc-mout.v-close,.emc-mout.v-part{border-left-color:var(--gold)} .emc-mout.v-wet{border-left-color:var(--red)}
     .emc-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .8rem}
     .emc-t th,.emc-t td{padding:.45rem .55rem;border-bottom:1px solid var(--border);text-align:right}
     .emc-t th:first-child{text-align:left;white-space:nowrap}
-    .emc-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .emc-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
     .emc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
-    .emc .eq{display:block;overflow-x:auto;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .emc-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .emc .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .emc .src{font-size:.84rem;color:var(--text-muted)}
+    .emc-grid{border-collapse:collapse;width:100%;font-family:'JetBrains Mono',monospace;font-size:.84rem;margin:.3rem 0 .6rem}
+    .emc-grid th,.emc-grid td{border:1px solid var(--border);padding:.32rem .2rem;text-align:center}
+    .emc-grid thead th{font-size:.74rem;color:var(--text-muted)}
+    .emc-grid th[scope=row]{white-space:nowrap;color:var(--text-dim);font-size:.78rem}
+    .emc-grid td span{display:block;line-height:1.15}
+    .emc-grid td span.hi{font-size:.85em;opacity:.85}
+    .emc-grid td.near{font-weight:800}
+    .emc-grid td{color:#111}
+    .emc-grid .sh0{background:#f4f4f4}.emc-grid .sh1{background:#e2e2e2}.emc-grid .sh2{background:#cfcfcf}.emc-grid .sh3{background:#b9b9b9}
+    .emc-grid .sh4{background:#9a9a9a}.emc-grid .sh5{background:#6f6f6f;color:#fff}.emc-grid .sh6{background:#4a4a4a;color:#fff}
+    .emc-ptitle,.emc-pfoot{display:none}
+    .emc-howto,.emc-eq,.emc-cnote{font-size:.86rem!important}
+    .emc-eq{font-family:'JetBrains Mono',monospace;color:var(--text-muted)!important;word-break:break-word}
+    .emc-chart-act{margin:.2rem 0 0}
     .emc-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .emc-faq details:last-child{border-bottom:1px solid var(--border)}
     .emc-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
     .emc-faq details p{margin:.6rem 0 .2rem}
     .emc .emc-credit{margin:2rem 0 0;padding:.8rem 1rem;border:1px dashed var(--border);border-radius:10px;font-size:.95rem;color:var(--text-dim)}
     .emc .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
-    @media print{#site-header,#site-footer,.emc-ctl,.emc-loc,.emc-share button,.breadcrumb,.emc-faq,.emc-rel,details.box:not([open]){display:none!important}.emc-answer{break-inside:avoid}}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    @media(max-width:420px){.emc-seg button{font-size:.84rem;padding:0 .55rem}.emc-mode button{padding:.3rem .3rem}.emc-grid{font-size:.74rem}.emc-grid th,.emc-grid td{padding:.28rem .1rem}}
+    @page chart{size:letter landscape;margin:.45in}
+    @media print{
+      #site-header,#site-footer,#topnav,#drawer,#draw-ov,.footer,.skip,.breadcrumb,.emc-mode,.emc-ctl,.emc-soy,.emc-fanhint,.emc-loc,.emc-share button,.emc-faq,.emc-rel,.emc-credit,details.box:not([open]),.emc-chart-act,#emc-intro,[hidden]{display:none!important}
+      html,body,main{background:#fff!important;color:#000!important}
+      .emc{max-width:none;padding:0}
+      .emc-strip,.emc-strip *,.emc-key i,.emc-grid td,.emc-grid th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .emc-answer{break-inside:avoid;background:#fff;border-color:#999}
+      .emc-answer p,.emc p,.emc li,.emc b,.emc-v{color:#000!important}
+      html.print-chart .emc>*{display:none!important}
+      html.print-corn #corn-emc-chart,html.print-wheat #wheat-emc-chart{display:block!important;page:chart;break-inside:avoid}
+      html.print-chart .emc-chart h2,html.print-chart .emc-chart-act{display:none!important}
+      html.print-chart .emc-ptitle{display:block!important;font-size:18pt;font-weight:800;margin:0 0 4pt;color:#000}
+      html.print-chart .emc-howto{font-size:10.5pt!important;margin:0 0 6pt;color:#000!important}
+      html.print-chart .emc-tw{overflow:visible}
+      html.print-chart .emc-grid{font-size:15pt;margin:0 0 6pt}
+      html.print-chart .emc-grid th,html.print-chart .emc-grid td{padding:6pt 3pt;border:1px solid #555}
+      html.print-chart .emc-grid thead th,html.print-chart .emc-grid th[scope=row]{font-size:11.5pt;color:#000;background:#fff}
+      html.print-chart .emc-grid td span.hi{font-size:12pt;opacity:1}
+      html.print-chart .emc-eq,html.print-chart .emc-cnote{font-size:8.5pt!important;margin:0 0 3pt;color:#222!important}
+      html.print-chart .emc-pfoot{display:flex!important;align-items:center;gap:10pt;margin-top:6pt;border-top:1px solid #bbb;padding-top:5pt}
+      html.print-chart .emc-qr svg{width:.75in;height:.75in;display:block}
+      html.print-chart .emc-print-foot{flex:1;margin:0;font-size:7.5pt;color:#666!important;letter-spacing:.08em;text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace}
+    }
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/grain-emc#app","name":"Grain EMC calculator","url":"https://agsist.com/grain-emc","description":"Free grain EMC calculator for corn and wheat. Hour by hour for the next 3 days at your ZIP: whether aeration fans dry or wet the grain, from the ASABE equations.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-15","dateModified":"2026-10-15","inLanguage":"en-US","image":"https://agsist.com/img/og/grain-emc.jpg?v=1056f4b6"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain EMC","item":"https://agsist.com/grain-emc"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is grain equilibrium moisture content (EMC)?","acceptedAnswer":{"@type":"Answer","text":"It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3% by the ASABE equation this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in."}},{"@type":"Question","name":"When should I run aeration fans?","acceptedAnswer":{"@type":"Answer","text":"To dry, run them when the air's EMC is under your target moisture. On this page those are the green hours. To cool, run them when outside air is 10 to 15 F cooler than the grain, which is NDSU Extension's rule, and skip hours that would wet it. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain."}},{"@type":"Question","name":"What humidity is too high to run fans on corn?","acceptedAnswer":{"@type":"Answer","text":"It depends on the temperature. For corn with a 15.5% target, air dries it to 14.5% or lower while humidity stays under about 64% at 40 F, 68% at 50 F and 71% at 60 F. Above about 71% at 40 F, 74% at 50 F and 77% at 60 F, the air pushes corn over 15.5%. The table on this page gives the limit at every 10 degrees for your own target."}},{"@type":"Question","name":"Does fan heat help dry grain?","acceptedAnswer":{"@type":"Answer","text":"Some. The fan warms the air on its way into the bin, and warmer air with the same water in it has a lower relative humidity. I do not know your fan, so the page starts at 0 F. If you know your plenum runs a few degrees over outside air, type that in and the page works out the new humidity: RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature."}},{"@type":"Question","name":"How accurate is the EMC number?","acceptedAnswer":{"@type":"Answer","text":"The equations are published ASABE fits, but grain varies by hybrid and history, and published tables for the same air do not agree. For corn at 60 F and 70% humidity this page says 14.2%, Minnesota Extension's table says 14.5% and Arkansas Extension's says 15.7%. That is why I only call an hour a drying hour when the EMC is at least 1 point under your target."}},{"@type":"Question","name":"Why are soybeans not on the calculator?","acceptedAnswer":{"@type":"Answer","text":"I could not read the soybean constants in the ASABE standard at a source I trust, and a guessed constant would give you a confident wrong answer. Corn and wheat are here because I checked their equations against the standard and against extension tables. Soybeans go on when I can check theirs."}},{"@type":"Question","name":"Which wheat does the wheat answer fit?","acceptedAnswer":{"@type":"Answer","text":"The constants are the ASAE wheat set, and they match the University of Minnesota Extension wheat table to within a tenth of a point. Soft red winter wheat runs drier: Arkansas Extension lists 13.9% at 60 F and 70% humidity, where this equation says 15.2%. If you grow soft red, the page will call some hours wetting that would actually dry your wheat a little."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/grain-emc#app","name":"Grain EMC calculator","url":"https://agsist.com/grain-emc","description":"Grain EMC calculator for corn and wheat: when to run aeration fans to dry, cool or hold grain, hour by hour for 3 days at your ZIP, plus printable EMC charts.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-15","dateModified":"2026-10-15","inLanguage":"en-US","image":"https://agsist.com/img/og/grain-emc.jpg?v=07394f95"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain EMC","item":"https://agsist.com/grain-emc"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is grain equilibrium moisture content (EMC)?","acceptedAnswer":{"@type":"Answer","text":"It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3 to 13.9%, by the two published corn equations this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in."}},{"@type":"Question","name":"When should I run aeration fans?","acceptedAnswer":{"@type":"Answer","text":"It depends on the job. For natural-air drying of wet grain, NDSU Extension says to run the fans around the clock until the drying front comes out the top of the bin, and to shut them off only for steady rain, fog or snow; that advice was written for wheat. For cooling, run them when outside air averages 10 to 15 F under the grain temperature, which is also NDSU's rule. For dry grain in storage, run them on hours when the air's EMC is not over the moisture the grain is stored at. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north of the state and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain."}},{"@type":"Question","name":"What humidity is too high to run fans on corn?","acceptedAnswer":{"@type":"Answer","text":"It depends on the temperature and on which published corn equation you trust. Corn held at 15.5% stays there in air of about 65 to 71% humidity at 40 F, 69 to 74% at 50 F and 72 to 77% at 60 F; wetter air than that pushes it over 15.5%. To dry corn toward a 15.5% target with a safety margin, keep the outside humidity under about 64% at 40 F, 68% at 50 F and 71% at 60 F."}},{"@type":"Question","name":"Should I shut drying fans off when it is humid or at night?","acceptedAnswer":{"@type":"Answer","text":"Not for natural-air drying. NDSU Extension says to keep the fans running, and that running them only in the warmest, driest hours overdries the bottom of the bin and stretches the drying time. The exceptions it gives are rain that lasts more than a few hours, fog, and long snow. When average humidity runs over 70% for days, NDSU (writing about wheat) says to add a little heat rather than shut off."}},{"@type":"Question","name":"Does fan heat help dry grain?","acceptedAnswer":{"@type":"Answer","text":"Some. Fans warm the air typically 2 to 5 F, by Cornell Cooperative Extension's figure, and NDSU puts it at 4 to 5 F at about 6 inches of static pressure. Warmer air with the same water in it has a lower relative humidity: NDSU says 5 F of warming lowers humidity about 10 points. The math is RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature."}},{"@type":"Question","name":"How much airflow does it take to dry grain?","acceptedAnswer":{"@type":"Answer","text":"Aeration fans at 0.1 to 0.2 cfm per bushel cool grain but do not dry it safely; the top can spoil before a drying front gets there. Drying corn with natural air takes about 1 cfm per bushel or more. For cooling, NDSU, Iowa State and Nebraska Extension give about 15 divided by the cfm per bushel as the fan hours for one cooling front: at 0.1 cfm per bushel that is about 150 hours, within the 100 to 200 hours the guides give."}},{"@type":"Question","name":"How accurate is the EMC number?","acceptedAnswer":{"@type":"Answer","text":"Published tables for the same air do not agree, so the page shows corn as a range from two published fits. For corn at 60 F and 70% humidity the page gives 14.2 to 15.1%, Minnesota Extension's table says 14.5% and Arkansas Extension's says 15.7%. An hour counts as drying to target only when the lower fit is a full point under the target and the higher fit is under it too, and any wetting call uses the higher fit."}},{"@type":"Question","name":"Why are soybeans not on the calculator?","acceptedAnswer":{"@type":"Answer","text":"I could not read the soybean constants in the ASABE standard at a source I trust, and corn numbers do not fit beans. Published soybean tables also disagree: Arkansas lists 13.7% at 60 F and 70% humidity, where NDSU lists 13.0%. Soybeans go on when I can check their equation."}},{"@type":"Question","name":"Which wheat does the wheat answer fit?","acceptedAnswer":{"@type":"Answer","text":"The constants are the ASAE wheat set, and they match the University of Minnesota Extension wheat table to within a tenth of a point. Soft red winter wheat runs drier: Arkansas Extension lists 13.9% at 60 F and 70% humidity, where this equation says 15.2%. If you grow soft red, the page will call some hours wetting that would actually dry your wheat a little."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -136,41 +192,50 @@
   <main id="main" tabindex="-1">
     <article class="emc">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Grain EMC</nav>
-      <h1>Will running fans dry your grain right now, or wet it?</h1>
+      <h1>When to run aeration fans: will they dry your grain or wet it?</h1>
       <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
       <p id="emc-idea" class="emc-stamp">Idea by Zach A., a farmer who emailed and asked for it. Thanks, Zach.</p>
 
+      <div class="emc-seg emc-mode" role="group" aria-label="What are you doing with the grain?"><button type="button" data-mode="dry" aria-pressed="false">Drying wet grain</button><button type="button" data-mode="cool" aria-pressed="false">Cooling it down</button><button type="button" data-mode="hold" aria-pressed="true">Holding dry grain</button></div>
       <div class="emc-ctl">
         <span class="emc-seg" role="group" aria-label="Grain"><button type="button" data-grain="corn" aria-pressed="true">Corn</button><button type="button" data-grain="wheat" aria-pressed="false">Wheat</button></span>
-        <label class="emc-num">Target <input id="emc-target" type="number" inputmode="decimal" step="0.5" min="8" max="25" value="15.5" aria-label="Target moisture, percent wet basis">%</label>
-        <label class="emc-num">Fan adds <input id="emc-fan" type="number" inputmode="decimal" step="1" min="0" max="30" value="0" aria-label="Degrees the fan warms the air, F">F</label>
+        <label class="emc-num m-notcool">Target <input id="emc-target" type="number" inputmode="decimal" step="0.5" min="10" max="20" value="15.5" aria-label="Target moisture, percent wet basis">%</label>
+        <label class="emc-num m-dry">Grain is at <input id="emc-cur" type="number" inputmode="decimal" step="0.5" min="10" max="35" placeholder="20" aria-label="Grain moisture now, percent wet basis">%</label>
+        <label class="emc-num m-cool">Grain <input id="emc-gt" type="number" inputmode="decimal" step="1" placeholder="55" aria-label="Grain temperature now, F">F</label>
+        <label class="emc-chk m-cool"><input id="emc-gdry" type="checkbox" checked> Grain is already dry</label>
+        <label class="emc-num">Fan adds <input id="emc-fan" type="number" inputmode="decimal" step="1" min="0" max="15" value="0" aria-label="Degrees the fan warms the air, F">F</label>
       </div>
+      <p class="emc-soy">Soybeans: not yet. Corn numbers do not fit beans. Fan heat is typically 2 to 5 F (Cornell; NDSU says 4 to 5 F at about 6 in. of static pressure): read the plenum and the outside air once and enter the difference.</p>
 
-      <div id="emc-answer" class="emc-answer" aria-live="polite">
-        <span id="emc-verdict" class="emc-v">Where are your bins?</span>
-        <div id="emc-results" hidden>
-          <p id="emc-now"></p>
-          <p id="emc-best"></p>
-          <p id="emc-inv"></p>
+      <div id="emc-answer" class="emc-answer">
+        <div id="emc-live" aria-live="polite" aria-atomic="true">
+          <h2 id="emc-verdict" class="emc-v" style="margin-top:0">Where are your bins?</h2>
+          <div id="emc-results" hidden><div id="emc-now"></div></div>
         </div>
         <div id="emc-locbox" class="emc-loc">
-          <input id="emc-zip" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="ZIP code" aria-label="ZIP code">
+          <input id="emc-zip" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="ZIP code" aria-label="ZIP code">
           <button type="button" id="emc-zipgo" class="emc-btn go">Check</button>
           <button type="button" id="emc-geo" class="emc-btn">Use my location</button>
         </div>
-        <p id="emc-intro" class="fine">I check the next 72 hours of air where you are against your target moisture. No location? <a href="#emc-manual" onclick="document.getElementById('emc-manual').open=true">Type your own reading.</a></p>
+        <p id="emc-intro" class="fine">I check the next 72 hours of air where you are. No location? <a href="#emc-manual" onclick="document.getElementById('emc-manual').open=true">Type your own reading.</a></p>
         <p class="fine"><span id="emc-place"></span> <button type="button" id="emc-change" class="emc-link" hidden>Change location</button></p>
         <p id="emc-status" class="emc-status" role="status"></p>
-        <noscript><p>The forecast check needs JavaScript. The equations and limits are under How the numbers are worked.</p></noscript>
+        <noscript><p>The forecast check needs JavaScript. The EMC charts below work without it.</p></noscript>
       </div>
 
       <div id="emc-hours" hidden>
-        <ul id="emc-strip" class="emc-strip" aria-label="Next 72 hours, one bar an hour"></ul>
-        <div class="emc-key"><span><i style="background:var(--green)"></i>Dries</span><span><i style="background:var(--gold)"></i>Close call</span><span><i style="background:var(--red)"></i>Wets</span><span><i style="background:var(--border)"></i>No answer</span><span><i style="background:var(--text);height:3px;vertical-align:2px"></i>Zach&rsquo;s window, the best run</span></div>
-        <p id="emc-tip" class="emc-tip"></p>
+        <div id="emc-strip" class="emc-strip" role="group" tabindex="0" aria-label="Next 72 hours, one bar an hour"></div>
+        <div class="emc-key">
+          <span class="kh kho"><i class="k-up"></i>Dries</span><span class="kh kho"><i class="k-mid"></i>Close call</span><span class="kh kho"><i class="k-down"></i>Wets</span>
+          <span class="kh kd"><i class="k-up"></i>Dries to target</span><span class="kh kd"><i class="k-mid"></i>Dries, not to target</span><span class="kh kd"><i class="k-down"></i>Wets, or rain, fog, snow</span>
+          <span class="kc"><i class="k-up"></i>10 F+ under grain</span><span class="kc"><i class="k-mid"></i>Under, by less</span><span class="kc"><i class="k-down"></i>Warmer than grain</span><span class="kc"><i class="k-skip"></i>Rain or fog, dry grain</span>
+          <span><i class="k-none"></i>No answer</span>
+        </div>
+        <p id="emc-tip" class="emc-tip" aria-live="polite">Tap or use the arrow keys on the strip to read each hour.</p>
         <p id="emc-count" class="src"></p>
         <p id="emc-asof" class="src"></p>
-        <div class="emc-share"><p id="emc-line"></p><button type="button" id="emc-copy" class="emc-btn">Copy the answer</button><button type="button" id="emc-print" class="emc-btn">Print</button></div>
+        <details class="box" id="emc-table"><summary>Show hour by hour</summary><div class="emc-tw"><table class="emc-t" id="emc-tbl"></table></div></details>
+        <div class="emc-share"><p id="emc-line"></p><textarea id="emc-copybox" hidden aria-label="Answer to copy"></textarea><button type="button" id="emc-copy" class="emc-btn">Copy the answer</button><button type="button" id="emc-print" class="emc-btn">Print</button><span id="emc-copymsg" class="src" role="status"></span></div>
       </div>
 
       <details class="box" id="emc-manual">
@@ -178,64 +243,111 @@
         <div class="emc-in">
           <label>Air temperature, F<input id="emc-mt" type="number" inputmode="decimal" step="1" placeholder="50"></label>
           <label>Relative humidity, %<input id="emc-mrh" type="number" inputmode="decimal" step="1" placeholder="60"></label>
+          <label class="emc-chk"><input id="emc-plenum" type="checkbox"> Reading is from the plenum</label>
         </div>
         <p id="emc-mout" class="emc-mout"></p>
-        <p class="src">Uses the grain, target and fan heat set at the top. Works with no signal once the page has loaded. If you read the air in the plenum, leave fan heat at 0, since the fan's heat is already in the reading.</p>
+        <p class="src">Uses the job, grain, target and fan heat set at the top. A plenum reading already has the fan's heat in it, so the box ignores fan heat when you tick it. Works with no signal once the page has loaded.</p>
       </details>
 
       <details class="box">
-        <summary>Highest humidity that still dries, by temperature</summary>
-        <p>For your <span data-gname>corn</span> target. Read your hygrometer against it: under the number, the fans help.</p>
-        <table class="emc-t"><thead><tr><th scope="col">Air</th><th scope="col">Holds at <span id="emc-rhcap1">15.5</span>%</th><th scope="col">Dries to <span id="emc-rhcap2">14.5</span>%</th></tr></thead><tbody id="emc-rhtab"></tbody></table>
-        <p class="src">"Holds" is the humidity where grain neither gains nor loses. The right column is a point under target, the margin I use to call an hour drying.</p>
+        <summary>Highest humidity that still works, by temperature</summary>
+        <p>Outside air, for your <span data-gname>corn</span> target. Read your hygrometer against it.</p>
+        <div class="emc-tw"><table class="emc-t"><thead><tr><th scope="col">Outside air</th><th scope="col">Holds at <span id="emc-rhcap1">15.5</span>%</th><th scope="col">Dries toward <span id="emc-rhcap2">15.5</span>%</th><th scope="col" id="emc-rhfan" hidden></th></tr></thead><tbody id="emc-rhtab"><!--EMC:LIMITS--><tr><th scope="row">30 F</th><td>61%</td><td>59%</td></tr><tr><th scope="row">40 F</th><td>65%</td><td>64%</td></tr><tr><th scope="row">50 F</th><td>68%</td><td>68%</td></tr><tr><th scope="row">60 F</th><td>72%</td><td>71%</td></tr><tr><th scope="row">70 F</th><td>75%</td><td>74%</td></tr><tr><th scope="row">80 F</th><td>77%</td><td>76%</td></tr><tr><th scope="row">90 F</th><td>79%</td><td>78%</td></tr><!--/EMC:LIMITS--></tbody></table></div>
+        <p class="src">"Holds" is the humidity where grain neither gains nor loses on the wetter of the published fits. "Dries toward" keeps a full point of margin on the main fit and stays under target on the other. The baked table is corn at 15.5%; change the grain or target above and it follows.</p>
       </details>
 
       <details class="box">
-        <summary>Cooling grain for storage</summary>
-        <p>To cool, run fans when outside air is 10 to 15 F cooler than the grain (NDSU Extension), and not on hours that wet it. For winter, NDSU says cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north of the state and 25 to 35 F in the south; Iowa State says 30 to 40 F; Nebraska says near or under 30 F in northern states and 40 F in southern ones.</p>
-        <div class="emc-in">
-          <label>Grain temperature now, F<input id="emc-gt" type="number" inputmode="decimal" step="1" placeholder="55"></label>
-          <label>Airflow, cfm per bushel<input id="emc-cfm" type="number" inputmode="decimal" step="0.05" placeholder="0.2"></label>
-        </div>
+        <summary>Airflow and the cooling front</summary>
+        <div class="emc-in"><label>Airflow, cfm per bushel<input id="emc-cfm" type="number" inputmode="decimal" step="0.05" placeholder="0.2"></label></div>
         <p id="emc-cout" class="emc-mout"></p>
-        <p class="src">Fan hours for one cooling front: 15 divided by cfm per bushel, the rule of thumb Cornell Cooperative Extension gives. Doubling the airflow halves the time. A front is not done until it has come out the top of the grain, so check the top before you shut off.</p>
+        <p class="src">Fan hours for one cooling front: about 15 divided by cfm per bushel (NDSU, Iowa State and Nebraska Extension); at 0.1 cfm per bushel that is about 150 hours, within the 100 to 200 hours the guides give. A front is not done until it comes out the top of the grain, so check the top before you shut off. Aeration fans at 0.1 to 0.2 cfm per bushel cool grain; they do not dry it safely. Drying corn takes about 1 cfm per bushel or more.</p>
       </details>
 
       <details class="box">
         <summary>How the numbers are worked</summary>
-        <p><b>Corn</b>: Modified Chung-Pfost equation with the shelled corn constants in ASABE Standard D245.6, <i>Moisture Relationships of Plant-based Agricultural Products</i> (2007), from Chen and Morey (1989). USDA-ARS uses the same constants for corn storage monitoring.</p>
+        <p><b>Corn</b> is shown as a range from two published fits. The low one is the Modified Chung-Pfost equation with the shelled corn constants credited to ASABE Standard D245.6, <i>Moisture Relationships of Plant-based Agricultural Products</i> (2007), from Chen and Morey (1989); USDA-ARS uses the same constants for corn storage monitoring.</p>
         <code class="eq">RH = exp( -A / (T + C) x exp(-B x M) )
 A = 374.34   B = 0.18662   C = 31.696</code>
+        <p>The high one is the classic Henderson corn fit, which reproduces the University of Kentucky table within 0.2 point.</p>
+        <code class="eq">1 - RH = exp( -K x (T + C) x M^N )
+K = 0.000086541   N = 1.8634   C = 49.81</code>
+        <p>An hour "dries to target" only when the low fit is a full point under your target and the high fit is under it too. Any "wets" or "over target" call uses the high fit.</p>
         <p><b>Wheat</b>: Modified Henderson equation with the ASAE D245.5 wheat constants. They reproduce the University of Minnesota Extension wheat table at 60 F (7.9, 11.0, 13.7 and 16.9% at 20, 40, 60 and 80% humidity) to within a tenth of a point.</p>
         <code class="eq">1 - RH = exp( -K x (T + C) x M^N )
 K = 0.000023007   N = 2.2857   C = 55.815</code>
-        <p>RH is relative humidity as a decimal, T is air temperature in &deg;C, M is grain moisture in percent dry basis. The page shows wet basis, the number your moisture tester reads: wet = 100 x M / (100 + M).</p>
+        <p>RH is relative humidity as a decimal, T is air temperature in &deg;C, M is grain moisture in percent dry basis. The page shows wet basis, the number your moisture tester reads: wet = 100 x M / (100 + M). Grain drying down settles a little wetter than grain taking on water in the same air (hysteresis), one more reason published tables differ.</p>
         <p><b>Fan heat</b>: warming air does not add water, so its vapor pressure stays put and</p>
         <code class="eq">RH at fan = RH outside x es(T outside) / es(T fan)
 es(T) = 6.1094 x exp( 17.625 x T / (T + 243.04) )   hPa, T in &deg;C</code>
         <p class="src">Saturation vapor pressure from Alduchov and Eskridge (1996), <i>Journal of Applied Meteorology</i> 35:601. Example: 50 F at 80%, warmed 5 F, comes in at 55 F and 67%.</p>
-        <p><b>Limits</b>: I show numbers for air from 20 to 100 F and 20 to 90% humidity. Over 90% the page says the EMC is "over" the 90% value, which already wets any grain at a normal target; under 20% it says "under". Outside 20 to 100 F it shows nothing.</p>
+        <p><b>Limits</b>: I show numbers for air from 20 to 100 F and 20 to 90% humidity. Over 90% the page shows the 90% value as a floor ("over"), and still calls the hour wet when the air at its real humidity would push grain past your number; under 20% it says "under". Outside 20 to 100 F it shows no number. The published tables I could check cover 40 to 70 F; outside that, the two corn fits are the only check.</p>
         <p><b>How sure</b>: published tables for the same corn air do not agree. Against this page:</p>
         <div class="emc-tw"><table class="emc-t"><thead><tr><th scope="col">Corn, air</th><th scope="col">This page</th><th scope="col">Minnesota</th><th scope="col">Kentucky</th><th scope="col">Arkansas</th></tr></thead>
         <tbody>
-          <tr><th scope="row">40 F, 70%</th><td>15.3%</td><td>16.0%</td><td>16.2%</td><td>no row</td></tr>
-          <tr><th scope="row">50 F, 60%</th><td>13.3%</td><td>13.8%</td><td>13.8%</td><td>no row</td></tr>
-          <tr><th scope="row">60 F, 70%</th><td>14.2%</td><td>14.5%</td><td>no row</td><td>15.7%</td></tr>
+          <tr><th scope="row">40 F, 70%</th><td>15.3 to 16.4%</td><td>16.0%</td><td>16.2%</td><td>no row</td></tr>
+          <tr><th scope="row">50 F, 60%</th><td>13.3 to 13.9%</td><td>13.8%</td><td>13.8%</td><td>no row</td></tr>
+          <tr><th scope="row">60 F, 70%</th><td>14.2 to 15.1%</td><td>14.5%</td><td>no row</td><td>15.7%</td></tr>
         </tbody></table></div>
-        <p class="src">The extension tables run wetter than the ASABE corn equation. So an hour counts as drying only when its EMC is at least 1 point under your target, and anything closer is a close call. "No row" means that table does not list that air. Sources: University of Minnesota Extension, <i>Managing stored grain with aeration</i> and <i>Natural-air corn drying</i>; University of Kentucky, <i>Equilibrium moisture content for grains</i>; University of Arkansas, FSA1074 and the Arkansas Corn Production Handbook.</p>
-        <p class="src">Weather: Open-Meteo hourly forecast of 2 m temperature and relative humidity for your point, fetched when you open the page. It is a forecast, so check a gauge before you commit a night of fan time.</p>
+        <p class="src">"No row" means that table does not list that air. Sources: University of Minnesota Extension, <i>Managing stored grain with aeration</i> and <i>Natural-air corn drying</i>; University of Kentucky, <i>Equilibrium moisture content for grains</i>; University of Arkansas, FSA1074 and the Arkansas Corn Production Handbook. Fan rules: NDSU Extension (natural-air drying, cooling, fan heat), Iowa State Extension (cooling and humidity), Cornell Cooperative Extension (fan heat).</p>
+        <p class="src">Weather: Open-Meteo hourly forecast of 2 m temperature, relative humidity and weather (rain, fog, snow) for your point, fetched when you open the page and again when you come back to it after half an hour. It is a forecast, so check a gauge before you commit a night of fan time.</p>
       </details>
+
+      <!--EMC:CHART:corn--><section class="emc-chart" id="corn-emc-chart" aria-labelledby="corn-chart">
+        <h2 id="corn-chart">Corn EMC chart</h2>
+        <p class="emc-ptitle">Corn EMC chart: equilibrium moisture content, % wet basis</p>
+        <p class="emc-howto">Find the air temperature down the side and the relative humidity across the top. The cell is the moisture corn ends up at in that air, % wet basis. Each cell gives two published fits, low over high; plan on the high one.</p>
+        <div class="emc-tw" tabindex="0" role="region" aria-label="Corn EMC chart, scrolls sideways"><table class="emc-grid">
+<caption class="sr-only">Corn EMC chart: equilibrium moisture content, % wet basis</caption>
+<thead><tr><th scope="col" class="cr">Air</th><th scope="col">30%</th><th scope="col">40%</th><th scope="col">50%</th><th scope="col">60%</th><th scope="col">70%</th><th scope="col">80%</th><th scope="col">90%</th></tr></thead>
+<tbody>
+<tr><th scope="row">30 F</th><td class="sh2">11.1</td><td class="sh2">12.2</td><td class="sh3"><span>13.3</span><span class="hi">13.4</span></td><td class="sh4 near"><span>14.5</span><span class="hi">15.2</span></td><td class="sh5 near"><span>15.9</span><span class="hi">17.2</span></td><td class="sh6"><span>17.7</span><span class="hi">19.5</span></td><td class="sh6"><span>20.3</span><span class="hi">22.7</span></td></tr>
+<tr><th scope="row">40 F</th><td class="sh1">10.3</td><td class="sh2">11.5</td><td class="sh2">12.7</td><td class="sh3"><span>13.9</span><span class="hi">14.5</span></td><td class="sh4 near"><span>15.3</span><span class="hi">16.4</span></td><td class="sh5"><span>17.1</span><span class="hi">18.7</span></td><td class="sh6"><span>19.7</span><span class="hi">21.7</span></td></tr>
+<tr><th scope="row">50 F</th><td class="sh1">9.7</td><td class="sh1">10.9</td><td class="sh2"><span>12.1</span><span class="hi">12.2</span></td><td class="sh3"><span>13.3</span><span class="hi">13.9</span></td><td class="sh4 near"><span>14.7</span><span class="hi">15.7</span></td><td class="sh5"><span>16.5</span><span class="hi">17.9</span></td><td class="sh6"><span>19.2</span><span class="hi">20.9</span></td></tr>
+<tr><th scope="row">60 F</th><td class="sh1">9.2</td><td class="sh1">10.4</td><td class="sh2"><span>11.5</span><span class="hi">11.7</span></td><td class="sh3"><span>12.8</span><span class="hi">13.3</span></td><td class="sh4 near"><span>14.2</span><span class="hi">15.1</span></td><td class="sh5"><span>16.1</span><span class="hi">17.2</span></td><td class="sh6"><span>18.8</span><span class="hi">20.1</span></td></tr>
+<tr><th scope="row">70 F</th><td class="sh0">8.7</td><td class="sh1">9.9</td><td class="sh2"><span>11.1</span><span class="hi">11.2</span></td><td class="sh2"><span>12.4</span><span class="hi">12.8</span></td><td class="sh3"><span>13.8</span><span class="hi">14.5</span></td><td class="sh4 near"><span>15.6</span><span class="hi">16.6</span></td><td class="sh6"><span>18.4</span><span class="hi">19.4</span></td></tr>
+<tr><th scope="row">80 F</th><td class="sh0">8.2</td><td class="sh1">9.4</td><td class="sh1"><span>10.7</span><span class="hi">10.8</span></td><td class="sh2"><span>11.9</span><span class="hi">12.4</span></td><td class="sh3"><span>13.4</span><span class="hi">14.0</span></td><td class="sh4 near"><span>15.3</span><span class="hi">16.0</span></td><td class="sh5"><span>18.0</span><span class="hi">18.8</span></td></tr>
+<tr><th scope="row">90 F</th><td class="sh0">7.8</td><td class="sh1">9.0</td><td class="sh1"><span>10.3</span><span class="hi">10.5</span></td><td class="sh2"><span>11.6</span><span class="hi">12.0</span></td><td class="sh3"><span>13.0</span><span class="hi">13.6</span></td><td class="sh4 near"><span>14.9</span><span class="hi">15.5</span></td><td class="sh5"><span>17.7</span><span class="hi">18.2</span></td></tr>
+</tbody></table></div>
+        <p class="emc-eq">Low: Modified Chung-Pfost, ASABE D245.6 shelled corn, RH = exp(-374.34/(T+31.696) &middot; exp(-0.18662&middot;M)). High: the classic Henderson corn fit, 1-RH = exp(-8.6541e-5&middot;(T+49.81)&middot;M^1.8634). T &deg;C, M % dry basis.</p>
+        <p class="emc-cnote">Extension tables for the same air (Minnesota, Kentucky, Arkansas) run up to about 1.5 points apart. Grain drying down settles a little wetter than grain taking on water in the same air. Bold: within half a point of a 15.5% target.</p>
+        <div class="emc-pfoot"><span class="emc-qr"><svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" role="img" aria-label="QR code: agsist.com/grain-emc" shape-rendering="crispEdges"><rect width="37" height="37" fill="#fff"/><path fill="#000" d="M4,4h1v1h-1zM5,4h1v1h-1zM6,4h1v1h-1zM7,4h1v1h-1zM8,4h1v1h-1zM9,4h1v1h-1zM10,4h1v1h-1zM12,4h1v1h-1zM13,4h1v1h-1zM14,4h1v1h-1zM16,4h1v1h-1zM17,4h1v1h-1zM18,4h1v1h-1zM19,4h1v1h-1zM21,4h1v1h-1zM22,4h1v1h-1zM23,4h1v1h-1zM24,4h1v1h-1zM26,4h1v1h-1zM27,4h1v1h-1zM28,4h1v1h-1zM29,4h1v1h-1zM30,4h1v1h-1zM31,4h1v1h-1zM32,4h1v1h-1zM4,5h1v1h-1zM10,5h1v1h-1zM12,5h1v1h-1zM15,5h1v1h-1zM16,5h1v1h-1zM17,5h1v1h-1zM20,5h1v1h-1zM21,5h1v1h-1zM26,5h1v1h-1zM32,5h1v1h-1zM4,6h1v1h-1zM6,6h1v1h-1zM7,6h1v1h-1zM8,6h1v1h-1zM10,6h1v1h-1zM13,6h1v1h-1zM20,6h1v1h-1zM22,6h1v1h-1zM23,6h1v1h-1zM26,6h1v1h-1zM28,6h1v1h-1zM29,6h1v1h-1zM30,6h1v1h-1zM32,6h1v1h-1zM4,7h1v1h-1zM6,7h1v1h-1zM7,7h1v1h-1zM8,7h1v1h-1zM10,7h1v1h-1zM12,7h1v1h-1zM13,7h1v1h-1zM14,7h1v1h-1zM18,7h1v1h-1zM19,7h1v1h-1zM21,7h1v1h-1zM26,7h1v1h-1zM28,7h1v1h-1zM29,7h1v1h-1zM30,7h1v1h-1zM32,7h1v1h-1zM4,8h1v1h-1zM6,8h1v1h-1zM7,8h1v1h-1zM8,8h1v1h-1zM10,8h1v1h-1zM18,8h1v1h-1zM20,8h1v1h-1zM23,8h1v1h-1zM26,8h1v1h-1zM28,8h1v1h-1zM29,8h1v1h-1zM30,8h1v1h-1zM32,8h1v1h-1zM4,9h1v1h-1zM10,9h1v1h-1zM14,9h1v1h-1zM15,9h1v1h-1zM17,9h1v1h-1zM19,9h1v1h-1zM20,9h1v1h-1zM21,9h1v1h-1zM22,9h1v1h-1zM23,9h1v1h-1zM26,9h1v1h-1zM32,9h1v1h-1zM4,10h1v1h-1zM5,10h1v1h-1zM6,10h1v1h-1zM7,10h1v1h-1zM8,10h1v1h-1zM9,10h1v1h-1zM10,10h1v1h-1zM12,10h1v1h-1zM14,10h1v1h-1zM16,10h1v1h-1zM18,10h1v1h-1zM20,10h1v1h-1zM22,10h1v1h-1zM24,10h1v1h-1zM26,10h1v1h-1zM27,10h1v1h-1zM28,10h1v1h-1zM29,10h1v1h-1zM30,10h1v1h-1zM31,10h1v1h-1zM32,10h1v1h-1zM12,11h1v1h-1zM13,11h1v1h-1zM14,11h1v1h-1zM16,11h1v1h-1zM19,11h1v1h-1zM20,11h1v1h-1zM21,11h1v1h-1zM23,11h1v1h-1zM24,11h1v1h-1zM4,12h1v1h-1zM6,12h1v1h-1zM7,12h1v1h-1zM9,12h1v1h-1zM10,12h1v1h-1zM11,12h1v1h-1zM14,12h1v1h-1zM17,12h1v1h-1zM19,12h1v1h-1zM21,12h1v1h-1zM23,12h1v1h-1zM24,12h1v1h-1zM26,12h1v1h-1zM29,12h1v1h-1zM31,12h1v1h-1zM32,12h1v1h-1zM8,13h1v1h-1zM9,13h1v1h-1zM12,13h1v1h-1zM17,13h1v1h-1zM18,13h1v1h-1zM19,13h1v1h-1zM21,13h1v1h-1zM22,13h1v1h-1zM23,13h1v1h-1zM24,13h1v1h-1zM26,13h1v1h-1zM27,13h1v1h-1zM28,13h1v1h-1zM32,13h1v1h-1zM5,14h1v1h-1zM7,14h1v1h-1zM8,14h1v1h-1zM10,14h1v1h-1zM14,14h1v1h-1zM16,14h1v1h-1zM17,14h1v1h-1zM20,14h1v1h-1zM21,14h1v1h-1zM22,14h1v1h-1zM30,14h1v1h-1zM31,14h1v1h-1zM5,15h1v1h-1zM6,15h1v1h-1zM7,15h1v1h-1zM12,15h1v1h-1zM14,15h1v1h-1zM16,15h1v1h-1zM20,15h1v1h-1zM22,15h1v1h-1zM24,15h1v1h-1zM25,15h1v1h-1zM28,15h1v1h-1zM32,15h1v1h-1zM4,16h1v1h-1zM6,16h1v1h-1zM7,16h1v1h-1zM9,16h1v1h-1zM10,16h1v1h-1zM13,16h1v1h-1zM16,16h1v1h-1zM18,16h1v1h-1zM19,16h1v1h-1zM21,16h1v1h-1zM29,16h1v1h-1zM30,16h1v1h-1zM4,17h1v1h-1zM6,17h1v1h-1zM12,17h1v1h-1zM13,17h1v1h-1zM16,17h1v1h-1zM18,17h1v1h-1zM20,17h1v1h-1zM21,17h1v1h-1zM23,17h1v1h-1zM25,17h1v1h-1zM26,17h1v1h-1zM30,17h1v1h-1zM31,17h1v1h-1zM32,17h1v1h-1zM6,18h1v1h-1zM10,18h1v1h-1zM12,18h1v1h-1zM15,18h1v1h-1zM17,18h1v1h-1zM19,18h1v1h-1zM20,18h1v1h-1zM22,18h1v1h-1zM23,18h1v1h-1zM24,18h1v1h-1zM25,18h1v1h-1zM26,18h1v1h-1zM27,18h1v1h-1zM28,18h1v1h-1zM30,18h1v1h-1zM31,18h1v1h-1zM32,18h1v1h-1zM5,19h1v1h-1zM7,19h1v1h-1zM9,19h1v1h-1zM11,19h1v1h-1zM13,19h1v1h-1zM14,19h1v1h-1zM15,19h1v1h-1zM18,19h1v1h-1zM20,19h1v1h-1zM23,19h1v1h-1zM24,19h1v1h-1zM25,19h1v1h-1zM28,19h1v1h-1zM31,19h1v1h-1zM4,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM14,20h1v1h-1zM15,20h1v1h-1zM18,20h1v1h-1zM19,20h1v1h-1zM20,20h1v1h-1zM22,20h1v1h-1zM23,20h1v1h-1zM24,20h1v1h-1zM28,20h1v1h-1zM29,20h1v1h-1zM31,20h1v1h-1zM5,21h1v1h-1zM6,21h1v1h-1zM8,21h1v1h-1zM11,21h1v1h-1zM13,21h1v1h-1zM18,21h1v1h-1zM20,21h1v1h-1zM21,21h1v1h-1zM27,21h1v1h-1zM29,21h1v1h-1zM30,21h1v1h-1zM31,21h1v1h-1zM4,22h1v1h-1zM6,22h1v1h-1zM7,22h1v1h-1zM8,22h1v1h-1zM10,22h1v1h-1zM11,22h1v1h-1zM12,22h1v1h-1zM14,22h1v1h-1zM15,22h1v1h-1zM17,22h1v1h-1zM18,22h1v1h-1zM19,22h1v1h-1zM20,22h1v1h-1zM24,22h1v1h-1zM26,22h1v1h-1zM27,22h1v1h-1zM30,22h1v1h-1zM7,23h1v1h-1zM11,23h1v1h-1zM13,23h1v1h-1zM15,23h1v1h-1zM16,23h1v1h-1zM17,23h1v1h-1zM18,23h1v1h-1zM21,23h1v1h-1zM22,23h1v1h-1zM26,23h1v1h-1zM30,23h1v1h-1zM5,24h1v1h-1zM6,24h1v1h-1zM7,24h1v1h-1zM9,24h1v1h-1zM10,24h1v1h-1zM12,24h1v1h-1zM13,24h1v1h-1zM15,24h1v1h-1zM16,24h1v1h-1zM17,24h1v1h-1zM18,24h1v1h-1zM20,24h1v1h-1zM21,24h1v1h-1zM22,24h1v1h-1zM24,24h1v1h-1zM25,24h1v1h-1zM26,24h1v1h-1zM27,24h1v1h-1zM28,24h1v1h-1zM29,24h1v1h-1zM30,24h1v1h-1zM12,25h1v1h-1zM15,25h1v1h-1zM16,25h1v1h-1zM19,25h1v1h-1zM20,25h1v1h-1zM22,25h1v1h-1zM24,25h1v1h-1zM28,25h1v1h-1zM29,25h1v1h-1zM30,25h1v1h-1zM31,25h1v1h-1zM32,25h1v1h-1zM4,26h1v1h-1zM5,26h1v1h-1zM6,26h1v1h-1zM7,26h1v1h-1zM8,26h1v1h-1zM9,26h1v1h-1zM10,26h1v1h-1zM12,26h1v1h-1zM13,26h1v1h-1zM18,26h1v1h-1zM19,26h1v1h-1zM23,26h1v1h-1zM24,26h1v1h-1zM26,26h1v1h-1zM28,26h1v1h-1zM29,26h1v1h-1zM31,26h1v1h-1zM4,27h1v1h-1zM10,27h1v1h-1zM12,27h1v1h-1zM13,27h1v1h-1zM15,27h1v1h-1zM16,27h1v1h-1zM17,27h1v1h-1zM18,27h1v1h-1zM19,27h1v1h-1zM22,27h1v1h-1zM24,27h1v1h-1zM28,27h1v1h-1zM29,27h1v1h-1zM32,27h1v1h-1zM4,28h1v1h-1zM6,28h1v1h-1zM7,28h1v1h-1zM8,28h1v1h-1zM10,28h1v1h-1zM14,28h1v1h-1zM15,28h1v1h-1zM20,28h1v1h-1zM22,28h1v1h-1zM24,28h1v1h-1zM25,28h1v1h-1zM26,28h1v1h-1zM27,28h1v1h-1zM28,28h1v1h-1zM30,28h1v1h-1zM32,28h1v1h-1zM4,29h1v1h-1zM6,29h1v1h-1zM7,29h1v1h-1zM8,29h1v1h-1zM10,29h1v1h-1zM12,29h1v1h-1zM14,29h1v1h-1zM16,29h1v1h-1zM23,29h1v1h-1zM25,29h1v1h-1zM27,29h1v1h-1zM28,29h1v1h-1zM29,29h1v1h-1zM31,29h1v1h-1zM4,30h1v1h-1zM6,30h1v1h-1zM7,30h1v1h-1zM8,30h1v1h-1zM10,30h1v1h-1zM12,30h1v1h-1zM13,30h1v1h-1zM15,30h1v1h-1zM18,30h1v1h-1zM21,30h1v1h-1zM22,30h1v1h-1zM24,30h1v1h-1zM27,30h1v1h-1zM30,30h1v1h-1zM32,30h1v1h-1zM4,31h1v1h-1zM10,31h1v1h-1zM14,31h1v1h-1zM15,31h1v1h-1zM17,31h1v1h-1zM18,31h1v1h-1zM19,31h1v1h-1zM21,31h1v1h-1zM22,31h1v1h-1zM24,31h1v1h-1zM25,31h1v1h-1zM27,31h1v1h-1zM28,31h1v1h-1zM29,31h1v1h-1zM31,31h1v1h-1zM4,32h1v1h-1zM5,32h1v1h-1zM6,32h1v1h-1zM7,32h1v1h-1zM8,32h1v1h-1zM9,32h1v1h-1zM10,32h1v1h-1zM12,32h1v1h-1zM13,32h1v1h-1zM21,32h1v1h-1zM22,32h1v1h-1zM23,32h1v1h-1zM24,32h1v1h-1zM25,32h1v1h-1zM26,32h1v1h-1zM27,32h1v1h-1zM31,32h1v1h-1z"/></svg></span><p class="emc-print-foot">A G S I S T &nbsp;&middot;&nbsp; agsist.com/grain-emc &nbsp;&middot;&nbsp; free tools for working farmers</p></div>
+        <p class="emc-chart-act"><button type="button" class="emc-btn" data-print-chart="corn">Print this chart</button></p>
+      </section><!--/EMC:CHART:corn-->
+
+      <!--EMC:CHART:wheat--><section class="emc-chart" id="wheat-emc-chart" aria-labelledby="wheat-chart">
+        <h2 id="wheat-chart">Wheat EMC chart</h2>
+        <p class="emc-ptitle">Wheat EMC chart: equilibrium moisture content, % wet basis</p>
+        <p class="emc-howto">Find the air temperature down the side and the relative humidity across the top. The cell is the moisture wheat ends up at in that air, % wet basis.</p>
+        <div class="emc-tw" tabindex="0" role="region" aria-label="Wheat EMC chart, scrolls sideways"><table class="emc-grid">
+<caption class="sr-only">Wheat EMC chart: equilibrium moisture content, % wet basis</caption>
+<thead><tr><th scope="col" class="cr">Air</th><th scope="col">30%</th><th scope="col">40%</th><th scope="col">50%</th><th scope="col">60%</th><th scope="col">70%</th><th scope="col">80%</th><th scope="col">90%</th></tr></thead>
+<tbody>
+<tr><th scope="row">30 F</th><td class="sh1">10.6</td><td class="sh2">12.2</td><td class="sh3 near">13.7</td><td class="sh4">15.2</td><td class="sh4">16.8</td><td class="sh5">18.6</td><td class="sh6">21.1</td></tr>
+<tr><th scope="row">40 F</th><td class="sh1">10.2</td><td class="sh2">11.7</td><td class="sh3 near">13.2</td><td class="sh3">14.6</td><td class="sh4">16.2</td><td class="sh5">18.0</td><td class="sh6">20.4</td></tr>
+<tr><th scope="row">50 F</th><td class="sh1">9.8</td><td class="sh2">11.3</td><td class="sh2">12.7</td><td class="sh3">14.2</td><td class="sh4">15.7</td><td class="sh5">17.4</td><td class="sh6">19.8</td></tr>
+<tr><th scope="row">60 F</th><td class="sh1">9.5</td><td class="sh1">11.0</td><td class="sh2">12.3</td><td class="sh3 near">13.7</td><td class="sh4">15.2</td><td class="sh4">16.9</td><td class="sh6">19.2</td></tr>
+<tr><th scope="row">70 F</th><td class="sh1">9.2</td><td class="sh1">10.7</td><td class="sh2">12.0</td><td class="sh3 near">13.3</td><td class="sh3">14.8</td><td class="sh4">16.5</td><td class="sh5">18.7</td></tr>
+<tr><th scope="row">80 F</th><td class="sh0">9.0</td><td class="sh1">10.4</td><td class="sh2">11.7</td><td class="sh2">13.0</td><td class="sh3">14.4</td><td class="sh4">16.0</td><td class="sh5">18.3</td></tr>
+<tr><th scope="row">90 F</th><td class="sh0">8.8</td><td class="sh1">10.1</td><td class="sh2">11.4</td><td class="sh2">12.7</td><td class="sh3">14.1</td><td class="sh4">15.7</td><td class="sh5">17.8</td></tr>
+</tbody></table></div>
+        <p class="emc-eq">Modified Henderson, ASAE D245.5 wheat: 1-RH = exp(-2.3007e-5&middot;(T+55.815)&middot;M^2.2857). T &deg;C, M % dry basis.</p>
+        <p class="emc-cnote">Matches the University of Minnesota Extension wheat table at 60 F within a tenth of a point. Soft red winter wheat runs about a point drier. Bold: within half a point of a 13.5% target.</p>
+        <div class="emc-pfoot"><span class="emc-qr"><svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" role="img" aria-label="QR code: agsist.com/grain-emc" shape-rendering="crispEdges"><rect width="37" height="37" fill="#fff"/><path fill="#000" d="M4,4h1v1h-1zM5,4h1v1h-1zM6,4h1v1h-1zM7,4h1v1h-1zM8,4h1v1h-1zM9,4h1v1h-1zM10,4h1v1h-1zM12,4h1v1h-1zM13,4h1v1h-1zM14,4h1v1h-1zM16,4h1v1h-1zM17,4h1v1h-1zM18,4h1v1h-1zM19,4h1v1h-1zM21,4h1v1h-1zM22,4h1v1h-1zM23,4h1v1h-1zM24,4h1v1h-1zM26,4h1v1h-1zM27,4h1v1h-1zM28,4h1v1h-1zM29,4h1v1h-1zM30,4h1v1h-1zM31,4h1v1h-1zM32,4h1v1h-1zM4,5h1v1h-1zM10,5h1v1h-1zM12,5h1v1h-1zM15,5h1v1h-1zM16,5h1v1h-1zM17,5h1v1h-1zM20,5h1v1h-1zM21,5h1v1h-1zM26,5h1v1h-1zM32,5h1v1h-1zM4,6h1v1h-1zM6,6h1v1h-1zM7,6h1v1h-1zM8,6h1v1h-1zM10,6h1v1h-1zM13,6h1v1h-1zM20,6h1v1h-1zM22,6h1v1h-1zM23,6h1v1h-1zM26,6h1v1h-1zM28,6h1v1h-1zM29,6h1v1h-1zM30,6h1v1h-1zM32,6h1v1h-1zM4,7h1v1h-1zM6,7h1v1h-1zM7,7h1v1h-1zM8,7h1v1h-1zM10,7h1v1h-1zM12,7h1v1h-1zM13,7h1v1h-1zM14,7h1v1h-1zM18,7h1v1h-1zM19,7h1v1h-1zM21,7h1v1h-1zM26,7h1v1h-1zM28,7h1v1h-1zM29,7h1v1h-1zM30,7h1v1h-1zM32,7h1v1h-1zM4,8h1v1h-1zM6,8h1v1h-1zM7,8h1v1h-1zM8,8h1v1h-1zM10,8h1v1h-1zM18,8h1v1h-1zM20,8h1v1h-1zM23,8h1v1h-1zM26,8h1v1h-1zM28,8h1v1h-1zM29,8h1v1h-1zM30,8h1v1h-1zM32,8h1v1h-1zM4,9h1v1h-1zM10,9h1v1h-1zM14,9h1v1h-1zM15,9h1v1h-1zM17,9h1v1h-1zM19,9h1v1h-1zM20,9h1v1h-1zM21,9h1v1h-1zM22,9h1v1h-1zM23,9h1v1h-1zM26,9h1v1h-1zM32,9h1v1h-1zM4,10h1v1h-1zM5,10h1v1h-1zM6,10h1v1h-1zM7,10h1v1h-1zM8,10h1v1h-1zM9,10h1v1h-1zM10,10h1v1h-1zM12,10h1v1h-1zM14,10h1v1h-1zM16,10h1v1h-1zM18,10h1v1h-1zM20,10h1v1h-1zM22,10h1v1h-1zM24,10h1v1h-1zM26,10h1v1h-1zM27,10h1v1h-1zM28,10h1v1h-1zM29,10h1v1h-1zM30,10h1v1h-1zM31,10h1v1h-1zM32,10h1v1h-1zM12,11h1v1h-1zM13,11h1v1h-1zM14,11h1v1h-1zM16,11h1v1h-1zM19,11h1v1h-1zM20,11h1v1h-1zM21,11h1v1h-1zM23,11h1v1h-1zM24,11h1v1h-1zM4,12h1v1h-1zM6,12h1v1h-1zM7,12h1v1h-1zM9,12h1v1h-1zM10,12h1v1h-1zM11,12h1v1h-1zM14,12h1v1h-1zM17,12h1v1h-1zM19,12h1v1h-1zM21,12h1v1h-1zM23,12h1v1h-1zM24,12h1v1h-1zM26,12h1v1h-1zM29,12h1v1h-1zM31,12h1v1h-1zM32,12h1v1h-1zM8,13h1v1h-1zM9,13h1v1h-1zM12,13h1v1h-1zM17,13h1v1h-1zM18,13h1v1h-1zM19,13h1v1h-1zM21,13h1v1h-1zM22,13h1v1h-1zM23,13h1v1h-1zM24,13h1v1h-1zM26,13h1v1h-1zM27,13h1v1h-1zM28,13h1v1h-1zM32,13h1v1h-1zM5,14h1v1h-1zM7,14h1v1h-1zM8,14h1v1h-1zM10,14h1v1h-1zM14,14h1v1h-1zM16,14h1v1h-1zM17,14h1v1h-1zM20,14h1v1h-1zM21,14h1v1h-1zM22,14h1v1h-1zM30,14h1v1h-1zM31,14h1v1h-1zM5,15h1v1h-1zM6,15h1v1h-1zM7,15h1v1h-1zM12,15h1v1h-1zM14,15h1v1h-1zM16,15h1v1h-1zM20,15h1v1h-1zM22,15h1v1h-1zM24,15h1v1h-1zM25,15h1v1h-1zM28,15h1v1h-1zM32,15h1v1h-1zM4,16h1v1h-1zM6,16h1v1h-1zM7,16h1v1h-1zM9,16h1v1h-1zM10,16h1v1h-1zM13,16h1v1h-1zM16,16h1v1h-1zM18,16h1v1h-1zM19,16h1v1h-1zM21,16h1v1h-1zM29,16h1v1h-1zM30,16h1v1h-1zM4,17h1v1h-1zM6,17h1v1h-1zM12,17h1v1h-1zM13,17h1v1h-1zM16,17h1v1h-1zM18,17h1v1h-1zM20,17h1v1h-1zM21,17h1v1h-1zM23,17h1v1h-1zM25,17h1v1h-1zM26,17h1v1h-1zM30,17h1v1h-1zM31,17h1v1h-1zM32,17h1v1h-1zM6,18h1v1h-1zM10,18h1v1h-1zM12,18h1v1h-1zM15,18h1v1h-1zM17,18h1v1h-1zM19,18h1v1h-1zM20,18h1v1h-1zM22,18h1v1h-1zM23,18h1v1h-1zM24,18h1v1h-1zM25,18h1v1h-1zM26,18h1v1h-1zM27,18h1v1h-1zM28,18h1v1h-1zM30,18h1v1h-1zM31,18h1v1h-1zM32,18h1v1h-1zM5,19h1v1h-1zM7,19h1v1h-1zM9,19h1v1h-1zM11,19h1v1h-1zM13,19h1v1h-1zM14,19h1v1h-1zM15,19h1v1h-1zM18,19h1v1h-1zM20,19h1v1h-1zM23,19h1v1h-1zM24,19h1v1h-1zM25,19h1v1h-1zM28,19h1v1h-1zM31,19h1v1h-1zM4,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM14,20h1v1h-1zM15,20h1v1h-1zM18,20h1v1h-1zM19,20h1v1h-1zM20,20h1v1h-1zM22,20h1v1h-1zM23,20h1v1h-1zM24,20h1v1h-1zM28,20h1v1h-1zM29,20h1v1h-1zM31,20h1v1h-1zM5,21h1v1h-1zM6,21h1v1h-1zM8,21h1v1h-1zM11,21h1v1h-1zM13,21h1v1h-1zM18,21h1v1h-1zM20,21h1v1h-1zM21,21h1v1h-1zM27,21h1v1h-1zM29,21h1v1h-1zM30,21h1v1h-1zM31,21h1v1h-1zM4,22h1v1h-1zM6,22h1v1h-1zM7,22h1v1h-1zM8,22h1v1h-1zM10,22h1v1h-1zM11,22h1v1h-1zM12,22h1v1h-1zM14,22h1v1h-1zM15,22h1v1h-1zM17,22h1v1h-1zM18,22h1v1h-1zM19,22h1v1h-1zM20,22h1v1h-1zM24,22h1v1h-1zM26,22h1v1h-1zM27,22h1v1h-1zM30,22h1v1h-1zM7,23h1v1h-1zM11,23h1v1h-1zM13,23h1v1h-1zM15,23h1v1h-1zM16,23h1v1h-1zM17,23h1v1h-1zM18,23h1v1h-1zM21,23h1v1h-1zM22,23h1v1h-1zM26,23h1v1h-1zM30,23h1v1h-1zM5,24h1v1h-1zM6,24h1v1h-1zM7,24h1v1h-1zM9,24h1v1h-1zM10,24h1v1h-1zM12,24h1v1h-1zM13,24h1v1h-1zM15,24h1v1h-1zM16,24h1v1h-1zM17,24h1v1h-1zM18,24h1v1h-1zM20,24h1v1h-1zM21,24h1v1h-1zM22,24h1v1h-1zM24,24h1v1h-1zM25,24h1v1h-1zM26,24h1v1h-1zM27,24h1v1h-1zM28,24h1v1h-1zM29,24h1v1h-1zM30,24h1v1h-1zM12,25h1v1h-1zM15,25h1v1h-1zM16,25h1v1h-1zM19,25h1v1h-1zM20,25h1v1h-1zM22,25h1v1h-1zM24,25h1v1h-1zM28,25h1v1h-1zM29,25h1v1h-1zM30,25h1v1h-1zM31,25h1v1h-1zM32,25h1v1h-1zM4,26h1v1h-1zM5,26h1v1h-1zM6,26h1v1h-1zM7,26h1v1h-1zM8,26h1v1h-1zM9,26h1v1h-1zM10,26h1v1h-1zM12,26h1v1h-1zM13,26h1v1h-1zM18,26h1v1h-1zM19,26h1v1h-1zM23,26h1v1h-1zM24,26h1v1h-1zM26,26h1v1h-1zM28,26h1v1h-1zM29,26h1v1h-1zM31,26h1v1h-1zM4,27h1v1h-1zM10,27h1v1h-1zM12,27h1v1h-1zM13,27h1v1h-1zM15,27h1v1h-1zM16,27h1v1h-1zM17,27h1v1h-1zM18,27h1v1h-1zM19,27h1v1h-1zM22,27h1v1h-1zM24,27h1v1h-1zM28,27h1v1h-1zM29,27h1v1h-1zM32,27h1v1h-1zM4,28h1v1h-1zM6,28h1v1h-1zM7,28h1v1h-1zM8,28h1v1h-1zM10,28h1v1h-1zM14,28h1v1h-1zM15,28h1v1h-1zM20,28h1v1h-1zM22,28h1v1h-1zM24,28h1v1h-1zM25,28h1v1h-1zM26,28h1v1h-1zM27,28h1v1h-1zM28,28h1v1h-1zM30,28h1v1h-1zM32,28h1v1h-1zM4,29h1v1h-1zM6,29h1v1h-1zM7,29h1v1h-1zM8,29h1v1h-1zM10,29h1v1h-1zM12,29h1v1h-1zM14,29h1v1h-1zM16,29h1v1h-1zM23,29h1v1h-1zM25,29h1v1h-1zM27,29h1v1h-1zM28,29h1v1h-1zM29,29h1v1h-1zM31,29h1v1h-1zM4,30h1v1h-1zM6,30h1v1h-1zM7,30h1v1h-1zM8,30h1v1h-1zM10,30h1v1h-1zM12,30h1v1h-1zM13,30h1v1h-1zM15,30h1v1h-1zM18,30h1v1h-1zM21,30h1v1h-1zM22,30h1v1h-1zM24,30h1v1h-1zM27,30h1v1h-1zM30,30h1v1h-1zM32,30h1v1h-1zM4,31h1v1h-1zM10,31h1v1h-1zM14,31h1v1h-1zM15,31h1v1h-1zM17,31h1v1h-1zM18,31h1v1h-1zM19,31h1v1h-1zM21,31h1v1h-1zM22,31h1v1h-1zM24,31h1v1h-1zM25,31h1v1h-1zM27,31h1v1h-1zM28,31h1v1h-1zM29,31h1v1h-1zM31,31h1v1h-1zM4,32h1v1h-1zM5,32h1v1h-1zM6,32h1v1h-1zM7,32h1v1h-1zM8,32h1v1h-1zM9,32h1v1h-1zM10,32h1v1h-1zM12,32h1v1h-1zM13,32h1v1h-1zM21,32h1v1h-1zM22,32h1v1h-1zM23,32h1v1h-1zM24,32h1v1h-1zM25,32h1v1h-1zM26,32h1v1h-1zM27,32h1v1h-1zM31,32h1v1h-1z"/></svg></span><p class="emc-print-foot">A G S I S T &nbsp;&middot;&nbsp; agsist.com/grain-emc &nbsp;&middot;&nbsp; free tools for working farmers</p></div>
+        <p class="emc-chart-act"><button type="button" class="emc-btn" data-print-chart="wheat">Print this chart</button></p>
+      </section><!--/EMC:CHART:wheat-->
 
       <p id="emc-credit" class="emc-credit">This tool exists because Zach A. emailed and asked for it. Have an idea for a tool? <a href="/contact">Tell me.</a></p>
 
       <h2 id="questions">Questions</h2>
       <div class="emc-faq">
-        <details><summary>What is grain equilibrium moisture content (EMC)?</summary><p>It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3% by the ASABE equation this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in.</p></details>
-        <details><summary>When should I run aeration fans?</summary><p>To dry, run them when the air&#x27;s EMC is under your target moisture. On this page those are the green hours. To cool, run them when outside air is 10 to 15 F cooler than the grain, which is NDSU Extension&#x27;s rule, and skip hours that would wet it. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain.</p></details>
-        <details><summary>What humidity is too high to run fans on corn?</summary><p>It depends on the temperature. For corn with a 15.5% target, air dries it to 14.5% or lower while humidity stays under about 64% at 40 F, 68% at 50 F and 71% at 60 F. Above about 71% at 40 F, 74% at 50 F and 77% at 60 F, the air pushes corn over 15.5%. The table on this page gives the limit at every 10 degrees for your own target.</p></details>
-        <details><summary>Does fan heat help dry grain?</summary><p>Some. The fan warms the air on its way into the bin, and warmer air with the same water in it has a lower relative humidity. I do not know your fan, so the page starts at 0 F. If you know your plenum runs a few degrees over outside air, type that in and the page works out the new humidity: RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature.</p></details>
-        <details><summary>How accurate is the EMC number?</summary><p>The equations are published ASABE fits, but grain varies by hybrid and history, and published tables for the same air do not agree. For corn at 60 F and 70% humidity this page says 14.2%, Minnesota Extension&#x27;s table says 14.5% and Arkansas Extension&#x27;s says 15.7%. That is why I only call an hour a drying hour when the EMC is at least 1 point under your target.</p></details>
-        <details><summary>Why are soybeans not on the calculator?</summary><p>I could not read the soybean constants in the ASABE standard at a source I trust, and a guessed constant would give you a confident wrong answer. Corn and wheat are here because I checked their equations against the standard and against extension tables. Soybeans go on when I can check theirs.</p></details>
+        <details><summary>What is grain equilibrium moisture content (EMC)?</summary><p>It is the moisture grain ends up at if it sits in the same air long enough. Air at 50 F and 60% humidity brings corn to about 13.3 to 13.9%, by the two published corn equations this page uses. If that is under the moisture you want, running fans on that air dries the grain. If it is over, the fans put water back in.</p></details>
+        <details><summary>When should I run aeration fans?</summary><p>It depends on the job. For natural-air drying of wet grain, NDSU Extension says to run the fans around the clock until the drying front comes out the top of the bin, and to shut them off only for steady rain, fog or snow; that advice was written for wheat. For cooling, run them when outside air averages 10 to 15 F under the grain temperature, which is also NDSU&#x27;s rule. For dry grain in storage, run them on hours when the air&#x27;s EMC is not over the moisture the grain is stored at. For winter, NDSU says to cool grain to 20 to 30 F; Minnesota says 20 to 30 F in the north of the state and 25 to 35 F in the south; Iowa State says 30 to 40 F and warns that going much under 30 F adds little and can form ice in the grain.</p></details>
+        <details><summary>What humidity is too high to run fans on corn?</summary><p>It depends on the temperature and on which published corn equation you trust. Corn held at 15.5% stays there in air of about 65 to 71% humidity at 40 F, 69 to 74% at 50 F and 72 to 77% at 60 F; wetter air than that pushes it over 15.5%. To dry corn toward a 15.5% target with a safety margin, keep the outside humidity under about 64% at 40 F, 68% at 50 F and 71% at 60 F.</p></details>
+        <details><summary>Should I shut drying fans off when it is humid or at night?</summary><p>Not for natural-air drying. NDSU Extension says to keep the fans running, and that running them only in the warmest, driest hours overdries the bottom of the bin and stretches the drying time. The exceptions it gives are rain that lasts more than a few hours, fog, and long snow. When average humidity runs over 70% for days, NDSU (writing about wheat) says to add a little heat rather than shut off.</p></details>
+        <details><summary>Does fan heat help dry grain?</summary><p>Some. Fans warm the air typically 2 to 5 F, by Cornell Cooperative Extension&#x27;s figure, and NDSU puts it at 4 to 5 F at about 6 inches of static pressure. Warmer air with the same water in it has a lower relative humidity: NDSU says 5 F of warming lowers humidity about 10 points. The math is RH at the fan equals RH outside times the saturation vapor pressure at the outside temperature, divided by the saturation vapor pressure at the fan temperature.</p></details>
+        <details><summary>How much airflow does it take to dry grain?</summary><p>Aeration fans at 0.1 to 0.2 cfm per bushel cool grain but do not dry it safely; the top can spoil before a drying front gets there. Drying corn with natural air takes about 1 cfm per bushel or more. For cooling, NDSU, Iowa State and Nebraska Extension give about 15 divided by the cfm per bushel as the fan hours for one cooling front: at 0.1 cfm per bushel that is about 150 hours, within the 100 to 200 hours the guides give.</p></details>
+        <details><summary>How accurate is the EMC number?</summary><p>Published tables for the same air do not agree, so the page shows corn as a range from two published fits. For corn at 60 F and 70% humidity the page gives 14.2 to 15.1%, Minnesota Extension&#x27;s table says 14.5% and Arkansas Extension&#x27;s says 15.7%. An hour counts as drying to target only when the lower fit is a full point under the target and the higher fit is under it too, and any wetting call uses the higher fit.</p></details>
+        <details><summary>Why are soybeans not on the calculator?</summary><p>I could not read the soybean constants in the ASABE standard at a source I trust, and corn numbers do not fit beans. Published soybean tables also disagree: Arkansas lists 13.7% at 60 F and 70% humidity, where NDSU lists 13.0%. Soybeans go on when I can check their equation.</p></details>
         <details><summary>Which wheat does the wheat answer fit?</summary><p>The constants are the ASAE wheat set, and they match the University of Minnesota Extension wheat table to within a tenth of a point. Soft red winter wheat runs drier: Arkansas Extension lists 13.9% at 60 F and 70% humidity, where this equation says 15.2%. If you grow soft red, the page will call some hours wetting that would actually dry your wheat a little.</p></details>
       </div>
 
@@ -261,7 +373,8 @@ es(T) = 6.1094 x exp( 17.625 x T / (T + 243.04) )   hPa, T in &deg;C</code>
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/grain-emc.js?v=1" defer></script>
-  <script src="/components/grain-emc-ui.js?v=1" defer></script>
+  <script src="/components/grain-emc.js?v=2" defer></script>
+  <script src="/components/grain-emc-ui.js?v=2" defer></script>
+  <script>/* Print this chart: only that chart, on one landscape Letter page */document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-print-chart]');if(!b)return;var h=document.documentElement,k=b.getAttribute('data-print-chart');h.classList.add('print-chart','print-'+k);var done=function(){h.classList.remove('print-chart','print-corn','print-wheat');window.removeEventListener('afterprint',done);};window.addEventListener('afterprint',done);window.print();});</script>
 </body>
 </html>
