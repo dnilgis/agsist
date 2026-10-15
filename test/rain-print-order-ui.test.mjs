@@ -189,7 +189,7 @@ test("a new visit: empty boxes with the example as gray hints; the print at the 
     await page.check("#rp-proof-ok");
     await Promise.all([page.waitForURL(/buy\.stripe\.com/), page.click("#rp-proof-order")]);
     const d = decodeRef(stripe[0]);
-    assert.deepEqual([d.name, d.dedication, d.markers.length, d.records], ["", "", 0, false], "no example words, remarkable days off");
+    assert.deepEqual([d.name, d.dedication, d.markers.length, d.records], ["", "", 0, true], "no example words, remarkable days on by default");
     assert.deepEqual(errors, []);
   }, { theme, where: true });
   // the Chetek sample (no answer from /where): the same rule, and typing takes the example off

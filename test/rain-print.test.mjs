@@ -53,6 +53,52 @@ test("query string round-trips, and ?d= resolves to the same design", () => {
   assert.equal(RP.shortUrl(FULL), "https://agsist.com/rain-print?d=" + RP.encodeCode(FULL));
 });
 
+test("a hand-written link (no style=) opens as a new visitor: the 30-year normal, its normals and the remarkable days on (2026-10-15)", () => {
+  const html = readFileSync(ROOT + "rain-print.html", "utf8");
+  const stories = [...html.matchAll(/<a class="rp-story"[^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+  assert.equal(stories.length, 2);
+  // the story links, a county rain page's link (scripts/build_county_rain.py rain_print_href), an email's plain link
+  const hand = stories.map((h) => h.split("?")[1]).concat([
+    "place=Ames%2C+IA&year=2026&station=130203+2&ll=42.0200,-93.7700",
+    "?place=Chetek%2C+WI&year=2024",
+  ]);
+  for (const q of hand) {
+    const d = RP.fromParams(q);
+    assert.ok(d.place && d.year, q);
+    assert.equal(d.cmp, "normal", "compared with the 30-year normal: " + q);
+    assert.equal(d.normals, true, "the normals shown: " + q);
+    assert.equal(d.records, true, "the remarkable days on: " + q);
+  }
+  // what the hand link says still wins
+  const off = RP.fromParams("place=Ames%2C+IA&year=2012&normals=0&records=0");
+  assert.equal(off.cmp, "normal");
+  assert.equal(off.normals, false, "normals=0 keeps them off");
+  assert.equal(off.records, false, "records=0 keeps them off");
+  // the normals go with the 30-year comparison, as the boxes do: another comparison leaves them off unless asked
+  const st = RP.fromParams("place=Ames%2C+IA&year=2012&cmp=station");
+  assert.deepEqual([st.cmp, st.normals, st.records], ["station", false, true]);
+  const none = RP.fromParams("place=Ames%2C+IA&year=2012&cmp=none");
+  assert.deepEqual([none.cmp, none.normals, none.records], ["none", false, true]);
+  assert.equal(RP.fromParams("place=Ames%2C+IA&year=2012&cmp=none&normals=1").normals, true, "cmp=none&normals=1 shows them");
+  // no place at all is still the page's own new-visitor path (rain-print.js: if (!ST.place) ...)
+  assert.equal(RP.fromParams("").place, "");
+});
+
+test("a link the tool made (style= always) and a d= design code come in exactly as made, switches off included", () => {
+  for (const sw of [{ normals: false, records: false }, { normals: true, records: false }, { normals: false, records: true }, { normals: true, records: true }])
+    for (const cmp of ["none", "normal", "station"]) for (const style of ["r1", "r2"]) {
+      const s = { ...FULL, cmp, style, ...sw };
+      const q = RP.toParams(s);
+      assert.match(q, /(^|&)style=r[12](&|$)/, "every tool-made link carries style=");
+      assert.deepEqual(plain(RP.fromParams("?" + q)), plain(RP.normalize(s)), "long link: " + JSON.stringify({ cmp, style, ...sw }));
+      assert.deepEqual(plain(RP.fromParams("?d=" + RP.encodeCode(s))), plain(RP.normalize(s)), "d= code: " + JSON.stringify({ cmp, style, ...sw }));
+    }
+  // a d= code with the normals off stays off even with nothing else in the link
+  const offCode = RP.encodeCode({ ...FULL, cmp: "none", normals: false, records: false });
+  const d = RP.fromParams("d=" + offCode);
+  assert.deepEqual([d.cmp, d.normals, d.records], ["none", false, false]);
+});
+
 test("leap day and Dec 31 dates survive; dates outside the year are dropped", () => {
   const s = { ...FULL, year: 2024, markers: [{ date: "2024-02-29", label: "Leap" }, { date: "2024-12-31", label: "End" }, { date: "2023-06-01", label: "Wrong year" }] };
   const back = RP.decodeCode(RP.encodeCode(s));

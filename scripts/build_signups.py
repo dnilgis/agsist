@@ -127,6 +127,12 @@ def main():
     print("signups: %d subscribers (%s list), %d sources, %d with ZIP, last 7 days %d"
           % (out["subscribers"], how, len(out["bySource"]), out["withZip"],
              sum(b["last7"] for b in out["bySource"])))
+    # counts only, as annotations so they can be read without the log (page names and numbers, never an address)
+    print("::notice title=signups by page::" + "; ".join("%s %d (7d %d)" % (b["src"], b["total"], b["last7"]) for b in out["bySource"][:25]))
+    for t in out.get("notices") or []:
+        print("::notice title=notice list %s::%d total, %d last 7 days, %d sent%s" % (
+            t["topic"], t["total"], t["last7"], t["sent"],
+            (", " + ", ".join("%s %d" % kv for kv in sorted(t["detail"].items(), key=lambda kv: -kv[1])[:10])) if t["detail"] else ""))
     return 0
 
 
