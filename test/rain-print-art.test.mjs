@@ -185,20 +185,20 @@ test("the biggest rain is a rain day: a bigger snow day is never the red mark, i
   const I = input(days);
   const E = ART.model(I);
   assert.equal(E.wi, 100);
-  assert.equal(E.wetText, "Biggest rain: 0.80 in, Apr 11");
+  assert.equal(E.wetText, "Biggest rain: 0.80 in\u0001Apr 11\u0002", "the day rides after the amount, in gray (2026-10-15)");
   assert.equal(I.D.max.doy, 40, "the page's Wettest day stat still names the snow day (it is the most water)");
   for (const [style, x0, x1, half] of [["r1", 196, 1680, 0], ["r2", 205, 1690, 0.5]]) {
     const svg = ART.render(input(days, { style })), w = (x1 - x0) / 365, xs = redXs(svg);
     assert.ok(xs.length >= 1, style + ": the red mark is drawn");
     assert.ok(!xs.some((x) => Math.abs(x - (x0 + (40 + half) * w)) < w * 1.5), style + ": nothing red on the snow day: " + xs.join(","));
     assert.ok(xs.some((x) => Math.abs(x - (x0 + (100 + half) * w)) < w), style + ": red on the biggest rain");
-    assert.ok(texts(svg).some((t) => t.includes("Biggest rain: 0.80 in, Apr 11")), style + ": and it is named");
+    assert.ok(texts(svg).some((t) => t.includes("Biggest rain: 0.80 in Apr 11")), style + ": and it is named");
   }
   // without a whole snow record the old rule stands: the wettest day, named for what it is
   const noRecord = year(2025, (i) => (i === 40 ? { p: "1.50", s: 15 } : i === 100 ? { p: "0.80" } : i < 30 ? { p: "0.00", s: null } : { p: "0.00" }));
   const E2 = ART.model(input(noRecord));
   assert.equal(E2.snowState, "unknown");
-  assert.equal(E2.wetText, "Wettest day: 1.50 in, Feb 10");
+  assert.equal(E2.wetText, "Wettest day: 1.50 in\u0001Feb 10\u0002");
 });
 
 test("Staircase: snow is drawn above the line only, nothing under the zero axis (Sig, 2026-10-13)", () => {
@@ -269,8 +269,8 @@ test("Roots: a snow record's label sits up in the snow; marker lines keep clear 
   const recs = [{ date: "2025-11-17", label: "Biggest snow: 17.0 in", kind: "bigSnow" }];
   const markers = [{ doy: 131, label: "Planted" }, { doy: 139, label: "Sidedress" }, { doy: 292, label: "Harvest done" }];
   const svg = ART.render(input(days, { style: "r2", records: recs, markers, showNormals: true }));
-  const rec = /<g data-rp="rec:0">.*?<text x="[\d.]+" y="([\d.]+)"[^>]*>Biggest snow: 17\.0 in<\/text>/.exec(svg);
-  assert.ok(rec, "the snow record is drawn");
+  const rec = /<g data-rp="rec:0">.*?<text x="[\d.]+" y="([\d.]+)"[^>]*>Biggest snow: 17\.0 in(?:<tspan[^>]*fill="#5E6475"> Nov 17<\/tspan><\/text>|<\/text><text [^>]*fill="#5E6475"[^>]*>Nov 17<\/text>)/.exec(svg);
+  assert.ok(rec, "the snow record is drawn, with its date in gray after it or (beside a tall pile) under it");
   assert.ok(+rec[1] < 478, "above the ground line (478): " + rec[1]);
   // every marker line, against every month word and number (16 u boxes around their baselines)
   const months = [...svg.matchAll(/<g data-rp="months">(.*?)<\/g>/g)][0][1];
@@ -335,7 +335,8 @@ test("remarkable days from the records layer itself (fixture station history) dr
   assert.ok(found.length >= 3, "the fixture gives several: " + found.map((f) => f.label).join("; "));
   const days = daily.data.map((r, i) => { const p = RP.parsePcpn(r[1]), dt = new Date(r[0] + "T00:00:00Z"); return { date: r[0], v: p.v, flag: p.flag, t: null, s: 0, m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i }; });
   for (const style of ["r1", "r2"]) {
-    const svg = ART.render(input(days, { style, records: found })), t = texts(svg).join(" | ");
+    // the words, read without the gray dates (a tie note sits after the date)
+    const svg = ART.render(input(days, { style, records: found })), t = texts(svg.replace(/<tspan[^>]*>[^<]*<\/tspan>/g, "")).join(" | ");
     for (const f of found) assert.ok(t.includes(f.label) || ART.lastSkipped().includes(f.label), style + ": " + f.label);
   }
 });
@@ -524,7 +525,8 @@ test("a marked day prints its date after its words: same line, 3-letter month, g
 test("a marked day with no words prints only its date, once", () => {
   for (const style of ["r1", "r2"]) {
     const svg = ART.render(input(year(2025), { style, markers: [{ doy: 140, label: "" }, { doy: 200, label: "Jul 20" }] }));
-    assert.ok(!/<tspan/.test(svg), style + ": no second date");
+    const marks = [...svg.matchAll(/<g data-rp="mark:\d">(.*?)<\/g>/g)].map((m) => m[1]).join("");
+    assert.ok(marks.includes("Jul 20") && !/<tspan/.test(marks), style + ": no second date");
   }
 });
 test("the date is counted in the label's width, so the placer keeps it clear", () => {
@@ -534,4 +536,64 @@ test("the date is counted in the label's width, so the placer keeps it clear", (
   assert.equal(E.markers[0].words, "Planted"); assert.equal(E.markers[0].date, "May 21");
   // a typed control character can't fake a date
   assert.equal(ART.model(input(year(2025), { markers: [{ doy: 140, label: "A\u0001B\u0002" }] })).markers[0].words, "AB");
+});
+
+// ---------- remarkable days carry their dates (Sig, 2026-10-15) ----------
+test("a remarkable day prints its date after its words: a day, a stretch's range, none for a whole month or year", () => {
+  const E = ART.model(input(year(2025)));
+  const one = (r) => ART.recordPoints(E, [r]);
+  const txt = (r) => one(r).pts[0].text;
+  // one day: one space, the 3-letter month, no leading zero
+  assert.equal(txt({ kind: "snowDay", date: "2025-02-03", label: "Biggest snow: 8.0 in" }), "Biggest snow: 8.0 in\u0001Feb 3\u0002");
+  assert.equal(ART.plain(txt({ kind: "snowDay", date: "2025-02-03", label: "Biggest snow: 8.0 in" })), "Biggest snow: 8.0 in Feb 3");
+  assert.equal(txt({ kind: "firstFrost", date: "2025-10-04", label: "First frost: 28°F" }), "First frost: 28°F\u0001Oct 4\u0002");
+  assert.equal(txt({ kind: "lastFrost", date: "2025-04-24", label: "Last frost: 25°F" }), "Last frost: 25°F\u0001Apr 24\u0002");
+  assert.equal(txt({ kind: "lastSnow", date: "2025-04-11", label: "Last snow: 1.2 in" }), "Last snow: 1.2 in\u0001Apr 11\u0002");
+  assert.equal(txt({ kind: "firstSnow", date: "2025-11-02", label: "First snow: 0.5 in" }), "First snow: 0.5 in\u0001Nov 2\u0002");
+  assert.equal(txt({ kind: "hottest", date: "2025-07-10", label: "Hottest day: 98°F" }), "Hottest day: 98°F\u0001Jul 10\u0002");
+  assert.equal(txt({ kind: "coldest", date: "2025-12-28", label: "Coldest day: -15°F" }), "Coldest day: -15°F\u0001Dec 28\u0002");
+  // a tie keeps its note, after the date of the day drawn
+  assert.equal(txt({ kind: "coldest", date: "2025-01-05", label: "Coldest day: -20°F (also Jan 21)", ties: ["2025-01-21"] }), "Coldest day: -20°F\u0001Jan 5\u0002 (also Jan 21)");
+  assert.equal(txt({ kind: "hottest", date: "2025-07-03", label: "Hottest day: 97°F (on 3 days)" }), "Hottest day: 97°F\u0001Jul 3\u0002 (on 3 days)");
+  // a stretch: its range, in one month or across two
+  assert.equal(txt({ kind: "wetWeek", date: "2025-05-03", span: { from: "2025-05-03", to: "2025-05-09" }, label: "Wettest week: 3.10 in" }), "Wettest week: 3.10 in\u0001May 3 to 9\u0002");
+  assert.equal(txt({ kind: "wetWeek", date: "2025-04-28", span: { from: "2025-04-28", to: "2025-05-04" }, label: "Wettest week: 3.10 in" }), "Wettest week: 3.10 in\u0001Apr 28 to May 4\u0002");
+  assert.equal(txt({ kind: "wetWeek", date: "2025-06-10", span: { from: "2025-06-10", to: "2025-06-10" }, label: "Wettest week: 2.00 in" }), "Wettest week: 2.00 in\u0001Jun 10\u0002", "a week whose rain fell on one day");
+  // a whole month (February too) or a whole year is its own date
+  for (const [from, to] of [["2025-06-01", "2025-06-30"], ["2025-02-01", "2025-02-28"], ["2025-12-01", "2025-12-31"]]) {
+    const r = { kind: "wetMonth", date: from, span: { from, to }, label: "Wettest month of 76 full years: 9.00 in" };
+    assert.equal(txt(r), r.label, from + ": no date");
+  }
+  assert.deepEqual(plain(one({ kind: "wetYear", date: "2025-01-01", span: { from: "2025-01-01", to: "2025-12-31" }, label: "Wettest year since 1993" }).lines), ["Wettest year since 1993"]);
+  // words alone stay in .label (what the page names when a day is left off)
+  assert.equal(one({ kind: "snowDay", date: "2025-02-03", label: "Biggest snow: 8.0 in" }).pts[0].label, "Biggest snow: 8.0 in");
+  // two on one day: one date for a shared amount; different amounts keep each date with its own words when a tie note would split them
+  const same = ART.recordPoints(E, [{ date: "2025-11-20", label: "Biggest snow: 8.0 in" }, { date: "2025-11-20", label: "First snow: 8.0 in" }]).pts;
+  assert.deepEqual(plain(same.map((p) => p.text)), ["First snow and biggest snow: 8.0 in\u0001Nov 20\u0002"]);
+  const both = ART.recordPoints(E, [{ date: "2025-01-05", label: "Coldest day: -20°F (also Jan 21)" }, { date: "2025-01-05", label: "Biggest snow: 9.0 in" }]).pts;
+  assert.deepEqual(plain(both.map((p) => p.text)), ["Coldest day: -20°F\u0001Jan 5\u0002 (also Jan 21); biggest snow: 9.0 in\u0001Jan 5\u0002"]);
+  const bare = ART.recordPoints(E, [{ date: "2025-01-05", label: "Coldest day: -20°F" }, { date: "2025-01-05", label: "Biggest snow: 9.0 in" }, { date: "2025-01-05", label: "Hottest day: 40°F (on 3 days)" }]).pts;
+  assert.deepEqual(plain(bare.map((p) => p.text)), ["Coldest day: -20°F; biggest snow: 9.0 in; hottest day: 40°F\u0001Jan 5\u0002 (on 3 days)"], "the day's date once, at the end, when no tie note comes before it");
+  // a typed control character can't fake a date
+  assert.equal(txt({ date: "2025-02-03", label: "A\u0001B\u0002" }), "AB\u0001Feb 3\u0002");
+});
+
+test("a remarkable day's date and the biggest rain's date print gray, after the words, in both styles", () => {
+  const days = year(2025, (i) => (i === 33 ? { p: "0.80", s: 8 } : i === 176 ? { p: "2.24" } : i % 9 === 0 ? { p: "0.10" } : { p: "0.00" }));
+  const recs = [{ kind: "snowDay", date: "2025-02-03", label: "Biggest snow: 8.0 in" },
+    { kind: "wetWeek", date: "2025-04-28", span: { from: "2025-04-28", to: "2025-05-04" }, label: "Wettest week: 3.10 in" },
+    { kind: "firstFrost", date: "2025-10-04", label: "First frost: 28°F" }];
+  for (const style of ["r1", "r2"]) {
+    const svg = ART.render(input(days, { style, records: recs })), t = texts(svg), skipped = ART.lastSkipped();
+    for (const [words, date] of [["Biggest snow: 8.0 in", "Feb 3"], ["Wettest week: 3.10 in", "Apr 28 to May 4"], ["First frost: 28°F", "Oct 4"]]) {
+      if (skipped.includes(words)) continue;
+      const esc = words.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const m = new RegExp(">" + esc + '<tspan font-size="([\\d.]+)" font-weight="400" fill="#5E6475"> ' + date + "</tspan></text>").exec(svg);
+      assert.ok(m, style + ": " + words + " then the gray " + date);
+      assert.ok(+m[1] >= 11, style + ": the date at production size");
+    }
+    assert.ok(skipped.length <= 1, style + ": skipped " + skipped.join("; "));
+    assert.ok(/>Biggest rain: 2\.24 in<tspan[^>]*font-weight="400" fill="#5E6475"> Jun 26<\/tspan><\/text>/.test(svg), style + ": the biggest rain's day in the same gray");
+    assert.ok(t.some((x) => x.includes("Biggest rain: 2.24 in Jun 26")) && !t.some((x) => x.includes("in, Jun 26")), style + ": no comma");
+  }
 });
