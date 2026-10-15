@@ -44,8 +44,9 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function open(browser, port, path, routes = {}, width = 1280) {
+async function open(browser, port, path, routes = {}, width = 1280, init = null) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+  if (init) await ctx.addInitScript(init);
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
@@ -74,5 +75,36 @@ test("homepage nowcast labels our trend by its fit window and shows USDA's corn 
     assert.equal(beans, "Our straight-line trend: 53.9 (2010–2025 finals) · backtest miss averages 1.3 bu");
     assert.equal(await pg.textContent("#nc-years"), "12");
     assert.match(await pg.textContent("#tip-nowcast"), /12 past years, each estimated from earlier years only/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* With no ZIP and no location the "Today" cell in the first band sat as a gray
+ * bar, then read "Weather didn't load", when the reason was no ZIP. It now
+ * says "Set ZIP" and a tap opens the ZIP box. */
+test("homepage Today cell asks for a ZIP when there is no location, and a tap opens the ZIP box", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port, "/", {}, 390);
+    // Headless Chromium leaves the location prompt hanging, as a reader who
+    // ignores it does: no ZIP saved, "Detecting location..." below.
+    await pg.waitForFunction(() => document.getElementById("hb-wx-v").textContent.trim() === "Set ZIP", null, { timeout: 15000 });
+    assert.equal((await pg.textContent("#hb-wx-v")).trim(), "Set ZIP");
+    assert.equal((await pg.textContent("#hb-wx-s")).trim(), "for weather and spray days");
+    await pg.waitForTimeout(10500);
+    assert.ok(!/didn/.test(await pg.textContent("#hb-wx-s")), "after 10 s it still says why, not didn't load");
+    await pg.click("#hb-wx");
+    assert.equal(await pg.$eval("#hb-zip-form", (f) => f.classList.contains("is-open")), true);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("with a ZIP saved the Today cell never asks for one", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const init = () => { try { localStorage.setItem("agsist-wx-loc", JSON.stringify({ zip: "50010", lat: 42.03, lon: -93.62, label: "Ames, IA", ts: Date.now() })); } catch (e) {} };
+    const { pg } = await open(browser, port, "/", {}, 390, init);
+    await pg.waitForTimeout(11000);
+    assert.notEqual((await pg.textContent("#hb-wx-v")).trim(), "Set ZIP");
   } finally { await browser.close(); srv.close(); }
 });

@@ -763,6 +763,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         s=rain+'<span class="hb-spray hb-'+spray.s+'">'+esc(spray.long)+'</span>'+(spray.s!=='go'&&spray.short?SEP+esc(spray.short):'');
       }
       else if(sprayDone)s='Spray read: '+DASH+' forecast didn’t load';
+      if(v||s){var c=$('hb-wx');if(c&&c.dataset.state==='nozip')c.dataset.state='';}
       if(v)set('hb-wx-v',v);
       if(s)set('hb-wx-s',s);
     }
@@ -774,7 +775,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchTemp);else watchTemp();
     window.addEventListener('agsist:spray',function(e){spray=e&&e.detail||null;sprayDone=true;paintWx();});
     if(window.__agsistSprayToday!==undefined){spray=window.__agsistSprayToday;sprayDone=true;paintWx();}
+    /* No weather yet and no ZIP saved (.hb-nozip), or Local Conditions has
+       given up on location and shows its "Set your ZIP" box (geo.js
+       showZipEntry): the cell says "Set ZIP" and a tap opens the ZIP box,
+       rather than a gray bar that later reads "didn't load". A location the
+       browser grants later paints over it (paintWx). */
+    function wxNoLoc(){if(temp!=null||spray)return false;var ze=$('wx-zip-entry'),hb=$('hero-band');
+      return !!(ze&&ze.style.display==='block')||!!(hb&&hb.classList.contains('hb-nozip'));}
+    function paintNoLoc(){if(!wxNoLoc())return false;var c=$('hb-wx');if(c)c.dataset.state='nozip';
+      set('hb-wx-v','<span class="hb-setzip" style="font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--gold);text-decoration:underline;text-underline-offset:3px">Set ZIP</span>');set('hb-wx-s','for weather and spray days');return true;}
+    (function(){var ze=$('wx-zip-entry'),c=$('hb-wx');
+      if(ze&&window.MutationObserver)new MutationObserver(function(){if(!paintNoLoc()&&c&&c.dataset.state==='nozip'&&ze.style.display!=='block'){c.dataset.state='';set('hb-wx-v','<span class="hb-skel" aria-hidden="true"></span>');set('hb-wx-s','');}}).observe(ze,{attributes:true,attributeFilter:['style']});
+      paintNoLoc();
+      if(c)c.addEventListener('click',function(ev){if(c.dataset.state==='nozip'){ev.preventDefault();openZip();}});})();
     setTimeout(function(){
+      if(paintNoLoc())return;
       if(temp==null)set('hb-wx-v',DASH);
       if(!spray){sprayDone=true;}
       if(temp==null&&!spray)set('hb-wx-s','Weather didn’t load');else paintWx();
