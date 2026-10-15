@@ -20,7 +20,7 @@
  *   ovNote: what "usual" means, printed in the foot line ("A usual year: NOAA’s 30-year normal"),
  *   printDryMin: Staircase marks a dry stretch on the print from this many days (default 14),
  *   showNormals: month normals under the month totals,
- *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
+ *   markers: [{doy, label}] (up to 5; see lastUnplaced), records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO, later (optional words)} or null,
  *   logo: {href (a data:image/png URL), w, h (its pixels)} or null: the buyer's
  *     farm or business logo (2026-10-14), small, beside the name block. The
@@ -310,7 +310,7 @@
       items.forEach(function (it) { it.w = measureW(it.label); });
       var sol = items.length ? rowSolve(items, rows, ok, pair, h, bounds) : [];
       if (sol) return items.map(function (it, k) { return { it: it, x: sol[k].x, row: sol[k].row, y: rows[sol[k].row] }; });
-      if (items.length < 2) return items.map(function (it) { return { it: it, x: Math.max(62, Math.min(1738 - it.w, it.xs[0] - it.w / 2)), row: 0, y: rows[0], forced: true }; });
+      if (items.length < 2) { last_forced = true; return items.map(function (it) { return { it: it, x: Math.max(62, Math.min(1738 - it.w, it.xs[0] - it.w / 2)), row: 0, y: rows[0], forced: true }; }); }
       var bi = 0, bd = Infinity;
       for (var i = 0; i + 1 < items.length; i++) { var d = Math.min.apply(null, items[i + 1].xs) - Math.max.apply(null, items[i].xs); if (d < bd) { bd = d; bi = i; } }
       var A = items[bi], B = items[bi + 1];
@@ -365,7 +365,7 @@
     // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
-    var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, 3)
+    var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, MAX_MARKS)
       .map(function (mk) {
         // the words, then the day itself; a day with no words already prints as its date
         var lb = String(mk.label || '').replace(/[\u0001\u0002]/g, ''), dt = days[mk.doy] && days[mk.doy].date, f = dt ? fmtDate(dt) : '';
@@ -1457,15 +1457,32 @@
     return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
-  var last_skipped = [], last_logo = null;
+  /* Up to five marked days (Sig, 2026-10-15: "as long as everything still fits"). The first three are always
+     drawn, as before. Past three, a set whose labels can only be drawn on top of each other (even merged into
+     one) loses its last-added day, then the one before, until it fits; those days are not drawn at all, and
+     lastUnplaced() names them (indexes into I.markers) so the page can tell the buyer. */
+  var MAX_MARKS = 5, KEEP_MARKS = 3;
+  var last_skipped = [], last_logo = null, last_forced = false, last_unplaced = [];
   function render(I) {
     measure = typeof I.measure === 'function' ? I.measure : defaultMeasure;
-    last_skipped = []; last_logo = null;
-    return I.style === 'r2' ? r2(I) : r1(I);
+    var all = (I.markers || []).map(function (mk, k) { return { mk: mk, k: k }; }), n = (I.days || []).length;
+    var live = all.filter(function (m) { return m.mk && m.mk.doy >= 0 && m.mk.doy < n; }).slice(0, MAX_MARKS), out = [], svg;
+    for (;;) {
+      last_skipped = []; last_logo = null; last_forced = false;
+      var J = I.markers ? Object.assign({}, I, { markers: live.map(function (m) { return m.mk; }) }) : I;
+      svg = J.style === 'r2' ? r2(J) : r1(J);
+      if (!last_forced || live.length <= KEEP_MARKS) break;
+      out.push(live.reduce(function (a, b) { return b.k > a.k ? b : a; }).k);
+      live = live.filter(function (m) { return m.k !== out[out.length - 1]; });
+    }
+    last_unplaced = out.sort(function (a, b) { return a - b; });
+    return svg;
   }
 
   root.AgRainArt = {
     render: render, model: model, recordPoints: recordPoints, plain: plain, lastSkipped: function () { return last_skipped.slice(); },
+    // marked days (indexes into the input's markers) the last render left off because they could not fit cleanly
+    lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
     STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW

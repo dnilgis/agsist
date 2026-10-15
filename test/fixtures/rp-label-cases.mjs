@@ -110,6 +110,11 @@ export function markerSet(name, n, wi, r) {
     sameMid: [[200, "Harvest done"], [200, "Sold the crop"], [200, "Sprayed beans"]],
     unlabeled: [[0, ""], [n - 1, ""], [W, ""]],
     two: [[40, "Sold the crop"], [41, "Harvest done"]],
+    // up to five (2026-10-15): spread out, three in one week, all five in one week, all five on one day
+    five: [[62, "First calf"], [127, "Planted"], [192, "Hail"], [250, "Cut hay"], [296, "Harvest done"]],
+    bunch3: [[60, "First calf"], [127, "Planted"], [129, "Hail"], [133, "Sprayed beans"], [296, "Harvest done"]],
+    week5: [[150, "Planted corn"], [151, "Hail"], [153, "Sprayed beans"], [155, "Cut hay"], [156, "Sold the crop"]],
+    day5: [[200, "Harvest done"], [200, "Sold the crop"], [200, "Sprayed beans"], [200, "Planted corn"], [200, "First calf"]],
   };
   if (name === "random") {
     const k = 1 + Math.floor(r() * 3), out = [];
