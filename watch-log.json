@@ -1,0 +1,12 @@
+{"v":1,
+"seen":{
+ "2027_ADMLivestockLrp_Daily_20261015.zip": {
+  "first_seen": "2026-10-15T20:07:59Z",
+  "listed": "2026-10-15T14:29",
+  "lm": "2026-10-15T19:29:15Z",
+  "size": 1454991
+ }
+},
+"checks":[
+{"head_size":1454991,"listed":"2026-10-15T14:29","lm":"2026-10-15T19:29:15Z","names":["2027_ADMLivestockLrp_Daily_20261015.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261015.zip","size":1454991,"t":"2026-10-15T20:07:59Z"}
+]}
