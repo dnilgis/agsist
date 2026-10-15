@@ -105,7 +105,7 @@
 
   function levelPct(level) {
     var p = level * 100;
-    return (Math.abs(p - Math.round(p)) < 1e-6 ? String(Math.round(p)) : p.toFixed(2)) + '%';
+    return (Math.abs(p - Math.round(p)) < 1e-6 ? String(Math.round(p)) : p.toFixed(2).replace(/0+$/, '')) + '%';
   }
 
   function odds(p) {
@@ -231,16 +231,17 @@
     bt.method.regimes.forEach(function (rg) {
       h += '<h3>' + esc(regimeName(bt, rg.id)) + '</h3><div class="lrp-tw"><table class="lrp-t lrp-tests"><thead><tr>' +
         '<th scope="col">What was tested</th><th scope="col">Years ahead</th><th scope="col">Per $100</th>' +
-        '<th scope="col">Odds</th><th scope="col">After Holm</th><th scope="col">Verdict</th></tr></thead><tbody>';
+        '<th scope="col" class="c-odds">Odds</th><th scope="col">After Holm</th><th scope="col">Verdict</th></tr></thead><tbody>';
       PRODUCTS.forEach(function (p) {
+        h += '<tr class="grp"><th scope="rowgroup" colspan="6">' + esc(p.name) + '</th></tr>';
         Object.keys(bt.tests).forEach(function (k) {
           var t = bt.tests[k];
           if (t.regime !== rg.id || t.product !== p.id) return;
           var cls = t.kept ? 'kept' : t.not_run ? 'nr' : 'no';
-          h += '<tr class="' + cls + '"><th scope="row">' + esc(p.name) + ': ' + esc(testLabel(t)) + '</th>' +
+          h += '<tr class="' + cls + '"><th scope="row">' + esc(testLabel(t)) + '</th>' +
             '<td>' + t.years_positive + ' of ' + t.years_tested + '</td>' +
             '<td>' + (t.mean == null ? '' : money(t.mean)) + '</td>' +
-            '<td>' + (t.not_run ? '' : odds(t.p)) + '</td>' +
+            '<td class="c-odds">' + (t.not_run ? '' : odds(t.p)) + '</td>' +
             '<td>' + (t.not_run ? '' : odds(t.p_holm)) + '</td>' +
             '<td>' + verdict(t) + '</td></tr>';
         });

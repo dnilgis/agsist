@@ -150,7 +150,7 @@ function backLine(bt) {
   if (!b.length) return "";
   const parts = b.map((x) => `${money(x.back)} on ${x.product.name.toLowerCase()}`);
   const list = parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts[0];
-  return `<p class="means"><b>What this means:</b> LRP is protection against a price drop, not a way to make money. Over RMA&rsquo;s record, each $1 of premium a producer paid after the subsidy, at 95 to 100% and 13 weeks, paid back ${list}. At 13 weeks it paid anything on ${pct(Math.min(...b.map((x) => x.rec.paid_share)))} to ${pct(Math.max(...b.map((x) => x.rec.paid_share)))} of sales days.</p>`;
+  return `<p class="means"><b>What this means:</b> LRP is protection against a price drop. Over RMA&rsquo;s record, each $1 of premium a producer paid after the subsidy, at 95 to 100% and 13 weeks, paid back ${list}. At 13 weeks it paid anything on ${pct(Math.min(...b.map((x) => x.rec.paid_share)))} to ${pct(Math.max(...b.map((x) => x.rec.paid_share)))} of sales days.</p>`;
 }
 
 export function answerHtml(bt, v) {
@@ -191,7 +191,7 @@ export function pickHtml(bt) {
     const sib = sibs.length ? ` ${sibs.map((t) => L.bandLabel(t.test.slice(5))).join(" and ")} did about the same (ahead in ${sibs[0].years_positive} of ${sibs[0].years_tested} years).` : "";
     let nowLine = "";
     if (nowT && !nowT.not_run) {
-      nowLine = ` Since July 2020 it was ahead in ${nowT.years_positive} of ${nowT.years_tested} years. With ${nowT.years_tested} years, the smallest odds the test can give are 1 in ${2 ** nowT.years_tested}, which cannot clear the bar across ${bt.family_size} tests.`;
+      nowLine = ` Since July 2020 it was ahead in ${nowT.years_positive} of ${nowT.years_tested} years. With ${nowT.years_tested} years, the smallest odds the test can give are 1 in ${(2 ** (nowT.years_tested - 1)).toLocaleString("en-US")}, which cannot clear the bar across ${bt.family_size} tests.`;
     }
     close = `<p><b>Closest call, not proven:</b> ${esc(L.productName(c.product).toLowerCase())} at ${esc(L.testLabel(c).replace(" instead of", ", instead of"))}. Since July 2013 it came out ahead in ${c.years_positive} of ${c.years_tested} reinsurance years, about ${money(c.mean)} per $100 of coverage.${sib}${nowLine} After allowing for all ${bt.family_size} tests, the odds it was luck are ${L.odds(c.p_holm)}, far from the 0.05 bar.</p>
         <p>I am not recommending it. Lower coverage pays less often and costs less; on this record that trade did not clearly win.</p>`;
@@ -204,8 +204,9 @@ export function pickHtml(bt) {
 export function recordHtml(bt, v) {
   const cur = bt.method.regimes.find((r) => r.id === "current");
   const b = L.backPerDollar(bt, "current", 13);
-  const line = b.length ? `At 13 weeks, each $1 of premium after the subsidy paid back ${b.map((x) => `${money(x.back)} on ${x.product.name.toLowerCase()}`).join(", ")}.` : "";
-  return `<p>The same table for sales days from July 1, 2020 (RY${cur.fromRY}) on, when today&rsquo;s subsidy and the premium billed at the end began. It is the regime you buy in today, and it is short: six years, much of it a rising cattle market. ${line}</p>
+  const parts = b.map((x) => `${money(x.back)} on ${x.product.name.toLowerCase()}`);
+  const line = parts.length ? `At 13 weeks, each $1 of premium after the subsidy paid back ${parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts[0]}.` : "";
+  return `<p>The same table for sales days from July 1, 2020 (RY${cur.fromRY}) on, when today&rsquo;s subsidy and the premium billed at the end began. It is the regime you buy in today, and it is short. ${line}</p>
       <div class="lrp-tw">${L.recordTable(bt, "current")}</div>
       <p class="src">Per $100 of coverage, after the subsidy; share of sales days it paid anything. Every sales day is one entry, and most are not independent of the next: a cattle rally lasts years, so the record is closer to one outcome per reinsurance year than to the ${bt.counts.trials.toLocaleString("en-US")} sales-day entries behind it.</p>`;
 }
@@ -224,7 +225,7 @@ function subsidyTable(bt) {
   h += "</tbody></table></div>";
   const chk = Object.entries(bt.subsidy_check).map(([ry, c]) => `RY${ry} ${pct(c.agree_share)}`).join(", ");
   const bad = Object.entries(bt.subsidy_check).filter(([, c]) => c.agree_share < 0.9).map(([ry]) => `RY${ry}`);
-  const note = bad.length ? ` In ${bad.join(" and ")} RMA&rsquo;s rows mostly show a smaller subsidy than this table, so those years read a little better here than producers saw.` : "";
+  const note = bad.length ? ` In ${bad.join(" and ")} RMA&rsquo;s rows mostly show a smaller subsidy than this table, so ${bad.length > 1 ? "those years read" : "that year reads"} a little better here than producers saw.` : "";
   return `${h}<p class="src">Share of RMA&rsquo;s Summary of Business rows that got the subsidy in this table: ${chk}.${note} RMA applied the RY2021 table back to July 1, 2020, so that is what those producers paid (${a(RMA.pm2064, "RMA PM-20-064")}).</p>`;
 }
 
@@ -233,10 +234,9 @@ export function methodHtml(bt, meta, v) {
   const missN = Object.values(miss).reduce((s, x) => s + x, 0);
   const unread = (meta.unreadable_files || []).map((f) =>
     `RMA&rsquo;s file for ${ymdLong(f.date)} (${esc(f.file)}) would not open (${esc(String(f.error).split(":")[0])}); ${f.offers_for_that_date_in_history ? "the offers for that day came from another copy" : "that day&rsquo;s offers are not in the record"}, and the reader tries it again on later runs.`).join(" ");
-  const prods = bt.method.products.map((p) => `${p.name.toLowerCase()} (type ${p.type})`).join(", ");
   return `<ul class="plain">
         <li><b>The data.</b> ${v.files} of RMA&rsquo;s daily LRP files (${a(RMA.adm, "ADM livestock")}), every sales day from ${v.first} to ${v.last}: the coverage prices, rates and cost per cwt RMA posted that day, and the actual ending values it posted later. Nothing is estimated or modeled. ${bt.counts.offers.toLocaleString("en-US")} offers, ${bt.counts.trials.toLocaleString("en-US")} entries once each coverage band is counted.</li>
-        <li><b>What is tested.</b> ${esc(prods)}. Other feeder types settle on the same index times their factor, so per $100 of coverage they come out the same. Not tested: unborn hogs, and the types RMA added from RY2026 on (unborn calves, cull cows, weight-2 unborn feeders), which are too new.</li>
+        <li><b>What is tested.</b> Feeder cattle steers, weight 2 (RMA type ${bt.method.products[0].type}), fed cattle steers and heifers (type ${bt.method.products[1].type}) and hogs (type ${bt.method.products[2].type}). Other feeder types settle on the same index times their factor, so per $100 of coverage they come out the same. Not tested: unborn hogs, and the types RMA added from RY2026 on (unborn calves, cull cows, weight-2 unborn feeders), which are too new.</li>
         <li><b>One entry.</b> One animal, one sales day, one length, one coverage band. Per $100 of coverage: paid = coverage price minus actual ending value, when that is above zero; your premium = RMA&rsquo;s cost per cwt less the subsidy of that policy&rsquo;s year; net = paid minus your premium. In each band the entry takes the highest level offered that day, the most protection at that band&rsquo;s subsidy.</li>
         <li><b>Walk-forward &ldquo;best so far.&rdquo;</b> On each sales day it picks the band with the best record among endorsements of the same length that had already ended at least ${bt.method.settle_lag_days} days before, so the ending value was out, and only once a band had ${bt.method.min_settled} such entries. Nothing a buyer could not have known that day.</li>
         <li><b>The odds.</b> Daily entries overlap, so each reinsurance year counts once: the test flips the sign of each year&rsquo;s average every possible way (exact sign flip) and asks how often that does as well as the real record. It runs only with ${bt.method.min_years} or more years of ${bt.method.min_trials_per_year}+ sales days. All ${bt.family_size} tests are adjusted together (Holm); kept means adjusted odds under 0.05, ahead on average, and ahead at every length with enough data.</li>

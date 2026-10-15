@@ -31,7 +31,7 @@
   /* ---------------------------------------------------------------- offers */
 
   var T = null, first = {}, pickLevel = null;
-  try { first = JSON.parse($('lrp-offers').getAttribute('data-first') || '{}'); } catch (e) { first = {}; }
+  try { first = JSON.parse(($('lrp-first').textContent || '{}').replace(/<!--\/?lrp:first-->/g, '')); } catch (e) { first = {}; }
 
   function offersFor(c, t) {
     return T.offers.filter(function (o) { return o.c === c && o.t === t; }).sort(function (a, b) { return a.len - b.len; });
@@ -56,7 +56,7 @@
 
   function fillTypes(s) {
     var c = $('lrp-prod').value, seen = {}, h = '', any = false;
-    T.offers.forEach(function (o) {
+    T.offers.slice().sort(function (a, b) { return (b.tested - a.tested) || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0); }).forEach(function (o) {
       if (o.c !== c || seen[o.t]) return;
       seen[o.t] = 1;
       var n = typeNote(o);
@@ -74,7 +74,7 @@
   function fillLengths(s) {
     var list = offersFor($('lrp-prod').value, $('lrp-type').value), h = '', any = false;
     list.forEach(function (o) {
-      h += opt(String(o.len), o.len + ' weeks, ends ' + L.ymdLong(o.end), +s.len === o.len);
+      h += opt(String(o.len), o.len + ' wk, to ' + L.ymdLong(o.end).replace(/, \d{4}$/, ''), +s.len === o.len);
       if (+s.len === o.len) any = true;
     });
     $('lrp-len').innerHTML = h;
@@ -114,7 +114,7 @@
     var h = '';
     var note = typeNote(o);
     if (note === 'too new to test') h += '<p class="lrp-new">RMA first offered this type in RY' + esc(first[wkey]) + '. It is too new to test: the record below does not cover it.</p>';
-    else if (note) h += '<p class="lrp-new">The record below does not cover this type; it tests ' + esc(prod.name.toLowerCase()) + ' of the main type.</p>';
+    else if (note) h += '<p class="lrp-new">The record below does not cover this type. For ' + esc(prod.name.toLowerCase()) + ' it tests ' + esc(L.typeName(o.c, { '0801': '810', '0802': '820', '0815': '997' }[o.c], T.ry).toLowerCase()) + '.</p>';
     var lo = +o.w[0], hi = +o.w[1];
     if (cwt > 0 && (cwt < lo - 1e-9 || cwt > hi + 1e-9)) {
       h += '<p class="lrp-new">RMA&rsquo;s target weight for this type is ' + lo.toFixed(2) + ' to ' + hi.toFixed(2) + ' cwt a head' + (swine ? ' (lean)' : '') + '.</p>';
@@ -137,9 +137,9 @@
     if (cwt > 0) m.push('Weight: ' + fmtCwt(cwt) + ' cwt a head (' + Math.round(cwt * 100).toLocaleString('en-US') + ' lb' + (swine ? ' lean' : '') + ')');
     m.push('Coverage at ' + L.levelPct(r.level) + ': ' + money(r.coverage) + ' a cwt' + (cwt > 0 ? ' x ' + fmtCwt(cwt) + ' cwt = ' + money(f.coverHead) + ' a head' : ''));
     m.push('Premium: RMA cost ' + money(r.fullPerCwt, 3) + ' a cwt, less ' + L.pct(r.subsidy) + ' subsidy = ' + money(r.yourPerCwt, 3) + ' a cwt');
-    if (f.premHead != null) m.push('         ' + money(r.yourPerCwt, 3) + ' x ' + fmtCwt(cwt) + ' cwt = ' + money(f.premHead) + ' a head; x ' + head.toLocaleString('en-US') + ' head = ' + money(f.premAll));
+    if (f.premHead != null) m.push('Your premium: ' + money(r.yourPerCwt, 3) + ' x ' + fmtCwt(cwt) + ' cwt = ' + money(f.premHead) + ' a head; x ' + head.toLocaleString('en-US') + ' head = ' + money(f.premAll));
     var idx = '';
-    if (o.c === '0801') idx = ' (CME Feeder Cattle Index under ' + money(r.coverage / paf) + ', with the factor of ' + paf.toFixed(2) + ')';
+    if (o.c === '0801') idx = paf && paf !== 1 ? ' (CME Feeder Cattle Index under ' + money(r.coverage / paf) + ', with the factor of ' + paf.toFixed(2) + ')' : ' (the CME Feeder Cattle Index)';
     m.push('Pays if the ending value on ' + L.ymdLong(o.end) + ' is under ' + money(r.coverage) + ' a cwt' + idx + ',');
     m.push('the difference a cwt x ' + (cwt > 0 ? fmtCwt(cwt) + ' cwt' : 'the weight') + (head > 0 ? ' x ' + head.toLocaleString('en-US') + ' head' : '') + '.');
     h += '<div class="lrp-math" aria-label="The math for the row picked">' + esc(m.join('\n')) + '</div>';
