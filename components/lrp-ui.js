@@ -168,7 +168,7 @@
     m.push('Pays if, on the end date, ' + INDEX[o.c] + ' is under ' + money(r.coverage) + ' a cwt' + idx + ': the difference a cwt x the weight x the head.');
     m.push('It pays on the index, not on your sale barn or packer price.');
     h += '<div class="lrp-math" role="group" aria-label="The math for ' + L.levelPct(r.level) + ' coverage">' + esc(m.join('\n')) + '</div>';
-    if (swine) h += '<p class="src">Hogs are insured at lean weight: RMA&rsquo;s worked example takes a 2.50 cwt live hog as 1.85 cwt lean (live x 0.74).</p>';
+    if (swine) h += '<p class="src">Hogs are insured at lean weight, 1.40 to 2.60 cwt: live weight x 0.74, so a 2.50 cwt live hog is 1.85 cwt lean (RMA LRP Handbook 2027, FCIC-20010, section 25A).</p>';
     out.innerHTML = h;
     $('lrp-status').textContent = rows.length + ' coverage levels for ' + L.typeName(o.c, o.t, T.ry, o.w).toLowerCase() + ', ' + o.len + ' weeks' + (closed ? '; sales on these offers have closed' : '') + '.';
   }

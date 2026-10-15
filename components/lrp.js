@@ -236,8 +236,8 @@
 
   /* ---------------------------------------------------------------- weight */
 
-  var LEAN = 0.74;          /* RMA's swine example: live weight x 0.74 = lean (Swine Underwriting Rules) */
-  var HEAD_LIMIT = { '0801': 12000, '0802': 12000, '0815': 70000 };   /* per endorsement, RMA PM-22-029 */
+  var LEAN = 0.74;          /* live weight x 0.74 = lean: RMA LRP Handbook 2027 (FCIC-20010), section 25A(2) */
+  var HEAD_LIMIT = { '0801': 12000, '0802': 12000, '0815': 70000 };   /* per endorsement: RMA LRP Handbook 2027 (FCIC-20010), sections 23B, 24B, 25B */
 
   /* what was typed in the weight box -> cwt a head, and how it was read.
      Over 30 is pounds (no animal LRP covers weighs 30 cwt). Hogs are typed
@@ -260,7 +260,7 @@
     if (cwt != null && (cwt < lo - 1e-9 || cwt > hi + 1e-9)) {
       return 'RMA insures this type at ' + lo.toFixed(2) + ' to ' + hi.toFixed(2) + ' cwt a head' + (o.c === '0815' ? ' lean' : '') + ', so no totals.';
     }
-    if (head > lim) return 'One endorsement covers up to ' + group3(String(lim)) + ' head (RMA), so no totals.';
+    if (head > lim) return 'One endorsement covers up to ' + group3(String(lim)) + ' head (RMA LRP Handbook 2027, sections 23B to 25B), so no totals.';
     return '';
   }
 

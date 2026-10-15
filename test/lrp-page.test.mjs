@@ -149,8 +149,8 @@ test("FAQ: the JSON-LD answers are the visible answers, word for word", () => {
 
 test("every rule in the FAQ cites RMA", () => {
   for (const [q, a] of faqList()) {
-    if (/cover basis|worth it/.test(q)) continue;
-    assert.match(a, /rma\.usda\.gov/, q);
+    if (/worth it/.test(q)) continue;
+    assert.match(a, /rma\.usda\.gov|RMA LRP Handbook 2027 \(FCIC-20010\)/, q);
   }
 });
 
@@ -349,4 +349,24 @@ test("the caption, the posted line, the buy-by line and the closed banner all na
   assert.match(ui, /L\.captionText\(T, closed\)/);
   assert.ok(PAGE.includes(`<!--lrp:when-->${L.whenText(TODAY).replace(/'/g, "&rsquo;")}<!--/lrp:when-->`));
   assert.match(PAGE, new RegExp(`Top coverage RMA offered for sales on ${L.wdShort(L.salesDay(TODAY).day)}, `));
+});
+
+test("rule facts cite RMA's 2027 LRP handbook (FCIC-20010) by section, with the claim mechanics", () => {
+  const faq = Object.fromEntries(faqList());
+  const hb = "RMA LRP Handbook 2027 (FCIC-20010)";
+  assert.match(faq["How many head can I cover with LRP?"], /12,000 head on one endorsement and 25,000.*70,000.*750,000/);
+  assert.ok(faq["How many head can I cover with LRP?"].includes(`${hb}, sections 23B, 24B and 25B`));
+  assert.ok(faq["When is the LRP premium due?"].includes(`first day of the second month after the end date (${hb}, section 21E)`));
+  const pay = faq["How does an LRP payment work?"];
+  assert.match(pay, /more than 60 days before the end date ends coverage on them, and the premium is still owed \(section 21C\(3\)\)/);
+  assert.match(pay, /no later than 60 days after the end date \(30 days for unborn calves\)/);
+  assert.match(pay, /slaughtered on or near the end date \(section 24A\)/);
+  assert.match(pay, /within 60 days of getting it, and payment comes within 30 days of the form \(section 21G\)/);
+  const when = faq["When can I buy LRP, and when do sales close?"];
+  assert.match(when, /8:25 a\.m\. Central the following calendar day/);
+  assert.match(when, /Cattle and Cattle on Feed reports/);
+  assert.match(when, /4:30 p\.m\. Central \(section 22B\)/);
+  assert.ok(!/federal or CME holidays/.test(when), "the handbook says days the CME livestock markets are closed");
+  assert.match(read("components/lrp-ui.js"), /live weight x 0\.74.*section 25A/);
+  assert.ok(!/Handbook%202026/.test(read("scripts/bake_lrp.mjs")), "no 2026 handbook link from a search snippet");
 });
