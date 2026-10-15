@@ -344,7 +344,7 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
   // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
-  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = false; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days off");
+  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days on (Sig, 2026-10-15)");
   assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
   assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
   assert.match(S, /PROOF_VIEW = PICK === 'framed12x18' \? 'framed' : 'print';/, "the sheet shows what step 3 picked");

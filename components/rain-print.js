@@ -3595,10 +3595,12 @@
   if (PAID_SAVED && PAID_SAVED.choice !== PAID.choice) PAID_SAVED = null;
   if (PAID && PAID_SAVED && !ST.place) { var ps = decodeCode(PAID_SAVED.code); if (ps) ST = ps; }
   /* A new visitor: the boxes start empty (the example is in them as gray
-     hints) and the comparison and the normals are on, remarkable days off
-     (2026-10-14, Sig); the print at the top wears the example words until the
-     reader does something. A design from a link comes in as it was made. */
-  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = false; SHOW_EX = !PAID; }
+     hints) and the comparison, the normals and the remarkable days are on
+     (2026-10-14, Sig; remarkable days on from 2026-10-15, Sig: "default the rain
+     print to display the remarkable days on page load"); the print at the top
+     wears the example words until the reader does something. A design from a
+     link comes in as it was made. */
+  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; SHOW_EX = !PAID; }
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // the Christmas lines read right from October 1 through December 25 only
