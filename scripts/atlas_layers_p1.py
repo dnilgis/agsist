@@ -260,7 +260,8 @@ def drought_layer(d, half=50.0, ran=False, this_year=None):
     if not d:
         return {"status": "withheld: no Drought Monitor rows for this county"} if ran else {"status": NOT_YET}
     years = {int(k): v for k, v in d.items()}
-    full = {y: v for y, v in years.items() if v.get("maps", 0) >= FULL_YEAR_MAPS}
+    # the year still running is never full, however many maps it already has (by October it has 40)
+    full = {y: v for y, v in years.items() if v.get("maps", 0) >= FULL_YEAR_MAPS and (this_year is None or y < this_year)}
     if not full:
         return {"status": f"withheld: no year with {FULL_YEAR_MAPS} weekly maps"}
     out = {"status": "ok", "half_pct": half, "first_year": min(full), "last_full_year": max(full),
@@ -380,7 +381,7 @@ def national_p1(counties, this_fy=None):
             continue
         n_d += 1
         for y, v in d["series"].items():
-            if v["maps"] >= FULL_YEAR_MAPS:
+            if v["maps"] >= FULL_YEAR_MAPS and int(y) <= d["last_full_year"]:
                 cw[y] = cw.get(y, 0) + v["d2"]
         lf = d["last_full_year"]
         latest_full = lf if latest_full is None else max(latest_full, lf)
@@ -575,6 +576,9 @@ def selftest():
     assert D["worst_year"] == {"year": 2012, "d2": 30, "d3": 10} and D["years_half_or_more"] == [2012] and D["last_full_year"] == 2013
     assert D["partial_year"] == {"year": 2026, "maps": 20, "d2": 5, "d3": 0} and D["last5"]["d2"] == 30
     assert drought_layer({"2026": {"maps": 20, "d2": 5, "d3": 0}}, ran=True)["status"].startswith("withheld")
+    # October: the running year has 41 maps, past the full-year gate, and still is not a full year
+    Do = drought_layer({"2025": {"maps": 52, "d2": 0, "d3": 0}, "2026": {"maps": 41, "d2": 30, "d3": 5}}, ran=True, this_year=2026)
+    assert Do["last_full_year"] == 2025 and Do["worst_year"]["year"] == 2025 and Do["partial_year"]["year"] == 2026, Do
     # energy: absent after a run is zero, not a hole
     E = energy_layer(None, ran=True, year=2025)
     assert E["status"] == "ok" and E["none_reported"] and E["operable"]["solar"] == 0.0

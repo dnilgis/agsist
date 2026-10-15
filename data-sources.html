@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
   <title>Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST</title>
-  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for prices, Open-Meteo for weather, USDA NASS for reports, our elevator network and a licensed feed for cash bids.">
+  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for prices, Open-Meteo for weather, USDA NASS for reports, our own elevator network for cash bids.">
   <meta name="keywords"    content="AGSIST data sources, agricultural data transparency, grain price data source, farm weather data, yfinance commodity prices">
   <meta name="author"      content="Sigurd Lindquist, Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -15,7 +15,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST">
-  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, our elevator network plus a licensed feed for cash bids, Polymarket.">
+  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, our own elevator network for cash bids, Polymarket.">
   <meta property="og:url"          content="https://agsist.com/data-sources">
   <meta property="og:image"        content="https://agsist.com/img/og/data-sources.jpg?v=e57967e0">
   <meta property="og:image:width"  content="1200">
@@ -125,13 +125,13 @@
   <main id="main" tabindex="-1">
     <div class="info-page">
       <h1>Data sources</h1>
-      <p class="sub page-lede">Where the numbers on AGSIST come from. Last reviewed September 26, 2026. Whether each feed is current right now is on the <a href="/status">status page</a>.</p>
+      <p class="sub page-lede">Where the numbers on AGSIST come from. Last reviewed October 14, 2026. Whether each feed is current right now is on the <a href="/status">status page</a>.</p>
 
       <h2>Commodity prices</h2>
       <div class="info-card" id="yahoo">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Yahoo Finance (via yfinance)</h3>
         <p class="ds-status"><a href="/status#st-prices">Live status of this feed &rarr;</a></p>
-        <p><strong>Used for:</strong> Corn, soybean, wheat, live cattle, lean hog, crude oil, natural gas, gold, silver, Dollar Index, and 10-yr Treasury futures.</p>
+        <p><strong>Used for:</strong> Grain, oilseed, livestock, Class III milk, cotton and rice futures; crude oil, natural gas, gold and silver; the Dollar Index, 10-yr Treasury and S&amp;P 500.</p>
         <p><strong>Delay:</strong> 15 minutes minimum during market hours.</p>
         <p><strong>Update frequency:</strong> About every 15 minutes while futures markets trade, Sunday evening to Friday afternoon.</p>
         <p><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com</a>: market data via the yfinance Python library.</p>
@@ -243,9 +243,9 @@
 
       <h2>Cash bids</h2>
       <div class="info-card" id="cash-bids">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> AGSIST elevator network + licensed feed</h3>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> AGSIST elevator network</h3>
         <p class="ds-status"><a href="/status#st-bids">Live status of this feed &rarr;</a></p>
-        <p>Cash bids come from AGSIST&rsquo;s own elevator network (bid boards read directly from each elevator) plus a licensed cash-bid feed for elevators AGSIST does not read itself.</p>
+        <p>Cash bids come from AGSIST&rsquo;s own elevator network: bid boards read directly from each elevator. There is no second feed filling gaps, so an elevator the network does not read shows no bid.</p>
       </div>
 
       <p>See a number that looks wrong? <a href="/contact">Tell me</a>.</p>

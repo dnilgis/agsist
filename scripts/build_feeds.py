@@ -54,8 +54,10 @@ OUT = os.path.join(ROOT, "data", "feeds.json")
 QUIET = {
     "data/harvest-prices.json": (
         "seasonal",
-        "Harvest price discovery is October; the file's own harvest.status is "
-        "\"pending\" until then. The projected price was final in February."),
+        "Harvest prices are averaged only inside RMA's discovery windows "
+        "(October for corn and soybeans in most states; the file's own windows "
+        "list names each one). Between windows the file sits still. The "
+        "projected price was final in February."),
     "data/rma-prices.json": (
         "seasonal",
         "RMA price discovery runs in defined windows; outside them there is "
@@ -175,10 +177,9 @@ EXTERNAL = {
         "published by dnilgis/bids, refreshed with the boards",
         "The elevator bid network. dnilgis/bids reads ~650 boards and publishes "
         "this index and its shards to dnilgis.github.io/bids on its own "
-        "schedule. cash-bids.html fetches it and falls back to the licensed "
-        "feed alone "
-        "if it is unreachable, so a stale or missing feed costs coverage and "
-        "never breaks the page."),
+        "schedule. cash-bids.html fetches it. The licensed feed that used to "
+        "fill in is off (October 11, 2026), so a stale or missing index means "
+        "fewer bids or none, though the page itself still loads."),
     "data/directory.json": (
         "published by dnilgis/bids, rebuilt with the elevator roster",
         "Every elevator the bid network knows, read or not. The town page "

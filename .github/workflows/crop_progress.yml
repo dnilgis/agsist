@@ -15,10 +15,15 @@ on:
     # queue is most crowded.)
     # 21:33 stays as the second attempt in both; Tuesday midday is the
     # catch-all. Each is a no-op when the data has not moved.
-    - cron: '17 20 * * 1'
-    - cron: '17 21 * * 1'
-    - cron: '33 21 * * 1'
-    - cron: '33 12 * * 2'
+    # 2026-10-14: after a Monday federal holiday NASS releases on TUESDAY at
+    # 4pm ET (Columbus Day: Oct 13, 2026). Nothing ran Tuesday afternoon, so
+    # the site showed the week ending Oct 4 until the next Monday. The three
+    # afternoon fires now run Monday and Tuesday, and Wednesday midday is the
+    # catch-all for a holiday week.
+    - cron: '17 20 * * 1,2'
+    - cron: '17 21 * * 1,2'
+    - cron: '33 21 * * 1,2'
+    - cron: '33 12 * * 2,3'
   # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
   # drops and delays the schedule above. The gate job below lets the first run
   # after each tick of the schedule do the work; see scripts/cron_gate.py.
@@ -51,10 +56,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python3 scripts/cron_gate.py tick --workflow crop_progress.yml --max-lag 120
-          --cron "17 20 * * 1"
-          --cron "17 21 * * 1"
-          --cron "33 21 * * 1"
-          --cron "33 12 * * 2"
+          --cron "17 20 * * 1,2"
+          --cron "17 21 * * 1,2"
+          --cron "33 21 * * 1,2"
+          --cron "33 12 * * 2,3"
 
   fetch-crop-progress:
     needs: gate

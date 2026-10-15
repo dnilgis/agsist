@@ -175,7 +175,7 @@ ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "ignited" / "caught fire" / "torched": drama
   - "bloodbath" / "carnage" / "meltdown" / "rout": never appropriate
   - "vaulted" / "leaped" (in price context): drama
-  - the contrast formula: "It isn't X. It's Y.", "less X, more Y", "not just X but Y", a sentence that sets something up only to knock it down. "X, not Y" passes only when the contrast is itself the fact.
+  - the contrast formula: "It isn't X. It's Y.", "less X, more Y", "not just X but Y", a sentence that sets something up only to knock it down. "X, not Y" passes only when the contrast is itself the fact, and only once per issue; voice_lint lists every later one as `not-contrast`.
   - rule of three: three short sentences or fragments in a row for rhythm ("Quiet. Steady. Waiting."), or three items listed when two are true
   - colon reveals: "The bottom line:", "Here's the thing:", "Why it matters:", "The short answer:", "The takeaway:", "Translation:"
   - signposting: "here's what", "here's why", "let's", "when it comes to", "at the end of the day", "it's important to", "keep in mind", "whether you're X or Y"

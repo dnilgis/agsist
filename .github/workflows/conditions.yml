@@ -6,6 +6,10 @@ name: conditions
 on:
   schedule:
     - cron: '12 1 * * 2'    # Tuesdays 01:12 UTC = Monday evening CT
+    # After a Monday federal holiday (Columbus Day, Labor Day) NASS releases on
+    # Tuesday, and the Monday-night run finds nothing new. This catch-up run
+    # picks it up; on a normal week it finds no change and commits nothing.
+    - cron: '12 1 * * 3'    # Wednesdays 01:12 UTC = Tuesday evening CT
   workflow_dispatch:
 
 permissions:

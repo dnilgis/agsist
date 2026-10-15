@@ -76,12 +76,12 @@ TYPE_LABEL = {"nonirr": "non-irrigated cropland", "irr": "irrigated cropland",
 TYPE_SHORT = {"nonirr": "Non-irrigated", "irr": "Irrigated", "pasture": "Pasture"}
 # Statutory termination-notice facts, same tier-1 set cash-lease.html cites.
 NOTICE = {
-    "IA": "September 1 before the lease year ends (Iowa Code &sect;562.7)",
+    "IA": "September 1 before the lease year ends (Iowa Code &sect;562.6)",
     "IL": "4 months before the end of the lease year (735 ILCS 5/9-206)",
     "IN": "3 months before the end of the lease year (Ind. Code &sect;32-31-1-3)",
     "KS": "30 days before March 1 (K.S.A. &sect;58-2506)",
-    "NE": "September 1 for oral/holdover leases (Neb. Rev. Stat. &sect;76-1445)",
-    "SD": "September 1 before the new lease year (SDCL &sect;43-32-13)",
+    "NE": "September 1 for oral year-to-year leases (Nebraska case law, Moudry v. Parkos, 1984)",
+    "SD": "September 1 before the new lease year (SDCL &sect;43-32-22.1, oral leases)",
 }
 
 
@@ -576,7 +576,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
                              + "Each county's pasture rate is in its own column in the county table below.")})
     if st in NOTICE:
         faq.append({"q": f"When must I give notice to terminate {article(name)} {name} farm lease?",
-                    "a": f"{name} statute sets the deadline at {NOTICE[st].replace('&sect;', 'section ')}. "
+                    "a": f"{name} law sets the deadline at {NOTICE[st].replace('&sect;', 'section ')}. "
                          f"Miss it and the lease typically continues another year on the same terms. "
                          f"See the AGSIST cash farm lease for the details and a printable lease."})
     jsonld = {"@context": "https://schema.org", "@graph": [
@@ -646,7 +646,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h2>Every published county, {yr}</h2>
-  <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
+  <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
   and drought). Corn trend is the county&rsquo;s 15-yr trend yield (projected {s['ty']}) from NASS county estimates,
   fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
@@ -791,7 +791,7 @@ def build_hub(states, stats, generated):
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + (', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ': no dryland rent published, so the tile shows irrigated cropland and is colored only against itself' if any(s2["primary"] != "nonirr" for s2 in stats.values()) else '') + '</div>'
+        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ', so the tile shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ', not colored against the rest' if any(s2["primary"] != "nonirr" for s2 in stats.values()) else '') + '</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
