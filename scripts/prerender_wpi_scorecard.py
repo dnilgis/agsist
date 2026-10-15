@@ -216,7 +216,7 @@ def numbers_el(rows):
             'less is bullish. The survey\u2019s low-high range is shown beside the grade and '
             'does not change it.</div>') if src else ""
     waiting = all(r.get("actual") is None for r in rows)
-    head = ("USDA prints at 12:00 PM ET. This fills in on its own." if waiting
+    head = ("USDA prints at 11:00 a.m. CT. This fills in on its own." if waiting
             else "Graded against the pre-report survey.")
     return ('<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
             + head + '</span></div><table><thead><tr><th>Number</th><th>Trade expects</th>'
@@ -289,7 +289,9 @@ def next_card(n, skip_nums=False):
         if n.get("commodity") else ""
     )
     expectation = f'<div class="wp-exp">{esc(n["expectation"])}</div>' if n.get("expectation") else ""
-    time_part = f' · {n["time"]}' if n.get("time") else ""
+    # one time zone on the page, Central like the rest of the site (2026-10-15)
+    time_part = (f' · {n["time"].replace("12:00 PM ET", "11:00 a.m. CT")}'
+                 if n.get("time") else "")
     return (
         f'<div class="wp-card"><div class="hd"><span class="rpt">{esc(n["report"])}</span>'
         f'<span class="cd">{esc(n["date"])}{time_part} · {cd}</span></div>'
@@ -298,12 +300,46 @@ def next_card(n, skip_nums=False):
     )
 
 
+def last_line(lr):
+    """The last report in one line, for the weeks between reports. Twin of
+    lastLine() in whats-priced-in.html, byte for byte (test/wpi-last-line.test.mjs).
+    2026-10-15: after the five-day banner the result was folded into the track
+    record and the first screen answered nothing until the next report."""
+    b = lr.get("biggest_surprise") or {}
+    y, m, d = (int(x) for x in lr["date"].split("-"))
+    md = f"{MON3[m - 1]} {d}"
+
+    def n_(v, u):
+        return "-" if v is None else (f"{_sig(v)} {u}" if u else _sig(v))
+    if not lr.get("metric_count"):
+        body = "No figure had a trade estimate to grade it against."
+    elif lr.get("all_in_line") or not b.get("metric"):
+        body = "Every graded figure landed in line with the trade."
+    else:
+        gp = ""
+        if b.get("gap_pct") is not None:
+            gp = f'{"+" if b["gap_pct"] > 0 else ""}{_sig(b["gap_pct"])}%, '
+        body = (f'{lr.get("in_line_count")} of {lr.get("metric_count")} graded figures landed in line. '
+                f'Biggest miss, {_esc4(b["metric"])}: {n_(b.get("actual"), b.get("unit"))} vs '
+                f'{n_(b.get("expected"), b.get("unit"))} expected '
+                f'({gp}{b.get("surprise") or "no trade estimate"}).')
+    re_ = (f' {_esc4(b["reaction"])}' if b.get("reaction") and b.get("reaction_from") == "settles"
+           and not lr.get("all_in_line") else "")
+    return (f'<div class="wp-last"><b>Last report, the {_esc4(lr.get("report"))} ({md}):</b> '
+            f'{body}{re_} <a href="#track-record">Every figure</a></div>')
+
+
+MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
 def result_banner(lr):
     if not lr or not lr.get("date"):
         return ""
     age = (datetime.now().date() - datetime.strptime(lr["date"], "%Y-%m-%d").date()).days
-    if age < 0 or age > 5:
-        return ""  # mirrors the JS: banner only lives ~5 days, then history has it
+    if age < 0 or age > 45:
+        return ""
+    if age > 5:
+        return last_line(lr)   # between reports: one line (mirrors lastLine() in the page)
     b = lr.get("biggest_surprise") or {}
     sc = "bull" if b.get("surprise") == "bullish" else ("bear" if b.get("surprise") == "bearish" else "flat")
     # metric_count is the GRADED count; a figure with no trade estimate is
