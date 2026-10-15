@@ -129,6 +129,9 @@
     .tag-supply  {background:rgba(248,113,113,.12);color:#f87171;}
     .tag-outlook {background:rgba(34,211,238,.12); color:#22d3ee;}
     .tag-export  {background:rgba(74,222,128,.12); color:#4ade80;}
+    .tag-livestock{background:rgba(251,146,60,.13);color:#fb923c;}
+    [data-theme="light"] .tag-livestock{color:#9a3c0b;}
+    .cal-jan-note{color:var(--text-dim);font-size:.85rem;line-height:1.6;padding:.7rem .9rem;border:1px dashed var(--border);border-radius:var(--r6);margin:.2rem 0 .4rem;}
     /* light theme: the dark-theme pastels fail contrast on white (1.5-2.4:1); darker inks of the same hues */
     [data-theme="light"] .tag-wasde,[data-theme="light"] .tag-supply,[data-theme="light"] .imp-lbl.extreme{color:#a3231b;}
     [data-theme="light"] .tag-intl,[data-theme="light"] .tag-census{color:#5b32b8;}
@@ -287,6 +290,7 @@
         <button class="cal-filter" onclick="filterReports('plantings',this)">Plantings &amp; Acreage</button>
         <button class="cal-filter" onclick="filterReports('stocks',this)">Grain Stocks</button>
         <button class="cal-filter" onclick="filterReports('outlook',this)">Outlook</button>
+        <button class="cal-filter" onclick="filterReports('livestock',this)">Livestock &amp; Dairy</button>
         <button class="cal-filter" onclick="filterReports('intl',this)">International</button>
         <button class="cal-filter" onclick="filterReports('fsa',this)">FSA Signup</button>
         <button class="cal-filter active" id="toggle-past" onclick="togglePast(this)" aria-pressed="true">Show Past</button>
@@ -300,6 +304,7 @@
         <div class="leg-item"><div class="leg-dot" style="background:#06b6d4"></div>Outlook Forum</div>
         <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>International (CONAB / StatCan)</div>
         <div class="leg-item"><div class="leg-dot" style="background:#f472b6"></div>FSA Signup</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#fb923c"></div>Livestock &amp; Dairy</div>
       </div>
 
       <!-- 2026-10-11: the report-day email (scripts/send_report_day.py) goes to AGSIST Daily readers with reports on, the afternoon a WASDE, Crop Production or Grain Stocks report lands. components/signup-ask.js draws this. -->
@@ -377,7 +382,7 @@
       <div class="cal-foot">
         Release times are approximate. USDA may shift dates around holidays.
         Always verify at <a href="https://www.usda.gov/media/agency-reports" target="_blank" rel="noopener">usda.gov</a>.
-        All times Eastern unless noted.<br>Sources: <a href="https://www.usda.gov/oce/commodity-markets/wasde" target="_blank" rel="noopener">USDA WASDE</a> &middot; <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" rel="noopener">NASS</a> &middot; <a href="https://www.gov.br/conab" target="_blank" rel="noopener">CONAB</a> &middot; <a href="https://www150.statcan.gc.ca/n1/dai-quo/cal1-eng.htm" target="_blank" rel="noopener">StatCan</a>.
+        All times Eastern unless noted.<br>Sources: <a href="https://www.usda.gov/oce/commodity-markets/wasde" target="_blank" rel="noopener">USDA WASDE</a> &middot; <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" rel="noopener">NASS</a> &middot; <a href="https://esmis.nal.usda.gov/release-calendar" target="_blank" rel="noopener">USDA ESMIS release calendar</a> &middot; <a href="https://www.gov.br/conab" target="_blank" rel="noopener">CONAB</a> &middot; <a href="https://www150.statcan.gc.ca/n1/dai-quo/cal1-eng.htm" target="_blank" rel="noopener">StatCan</a>.
       </div>
     </div>
   </main>
@@ -449,6 +454,19 @@
     {date:'2026-09-15',name:'CONAB Grain Survey (Brazil)',type:'intl',time:'All Day',desc:'Final 2025/26 Brazilian grain estimate, corn & soybeans, CONAB'},
     {date:'2026-10-15',name:'CONAB Grain Survey (Brazil)',type:'intl',time:'All Day',desc:'First monthly 2026/27 Brazil crop survey from CONAB, soybeans and corn (a preliminary projection came out Sep 15)'},
     {date:'2026-12-04',name:'StatCan Crop Production (Canada)',type:'intl',time:'8:30 AM ET',desc:'Final 2026 Canadian production (wheat, canola, barley) Statistics Canada'},
+    /* Livestock and dairy (NASS), added 2026-10-15. Dates and times from the "Upcoming releases"
+       on each report's USDA ESMIS page (esmis.nal.usda.gov/publication/cattle-feed, milk-production,
+       cold-storage, hogs-and-pigs), read 2026-10-15. NASS posts these at 3:00 PM ET. */
+    {date:'2026-10-22',name:'Milk Production',type:'livestock',tag:'Dairy',time:'3:00 PM ET',desc:'Monthly milk cows, milk per cow and total milk output, NASS',link:'/milk-prices',linkText:'Milk prices'},
+    {date:'2026-10-23',name:'Cattle on Feed',type:'livestock',time:'3:00 PM ET',desc:'Cattle in feedlots, placements and marketings, NASS',link:'/cattle-futures-prices',linkText:'Cattle futures'},
+    {date:'2026-10-23',name:'Cold Storage',type:'livestock',time:'3:00 PM ET',desc:'Month-end stocks of beef, pork, poultry, butter and cheese in cold storage, NASS',link:'/milk-prices',linkText:'Milk prices'},
+    {date:'2026-11-20',name:'Cattle on Feed',type:'livestock',time:'3:00 PM ET',desc:'Cattle in feedlots, placements and marketings, NASS',link:'/cattle-futures-prices',linkText:'Cattle futures'},
+    {date:'2026-11-20',name:'Milk Production',type:'livestock',tag:'Dairy',time:'3:00 PM ET',desc:'Monthly milk cows, milk per cow and total milk output, NASS',link:'/milk-prices',linkText:'Milk prices'},
+    {date:'2026-11-24',name:'Cold Storage',type:'livestock',time:'3:00 PM ET',desc:'Month-end stocks of beef, pork, poultry, butter and cheese in cold storage, NASS',link:'/milk-prices',linkText:'Milk prices'},
+    {date:'2026-12-18',name:'Cattle on Feed',type:'livestock',time:'3:00 PM ET',desc:'Cattle in feedlots, placements and marketings, NASS',link:'/cattle-futures-prices',linkText:'Cattle futures'},
+    {date:'2026-12-22',name:'Milk Production',type:'livestock',tag:'Dairy',time:'3:00 PM ET',desc:'Monthly milk cows, milk per cow and total milk output, NASS',link:'/milk-prices',linkText:'Milk prices'},
+    {date:'2026-12-23',name:'Quarterly Hogs and Pigs',type:'livestock',time:'3:00 PM ET',desc:'December 1 hog inventory, breeding herd and pig crop, NASS. One of four a year.',link:'/cattle-futures-prices',linkText:'Livestock futures'},
+    {date:'2026-12-23',name:'Cold Storage',type:'livestock',time:'3:00 PM ET',desc:'Month-end stocks of beef, pork, poultry, butter and cheese in cold storage, NASS',link:'/milk-prices',linkText:'Milk prices'},
     /* FSA signup dates, not market reports: USDA notice of Sept 15, 2026 (FSA_SRC). */
     {date:'2026-11-02',name:'2027 ARC/PLC signup opens',type:'fsa',time:'All Day',desc:'FSA signup for the 2027 crop year opens. It runs to Mar 15, 2027.',link:'/arc-plc'},
     {date:'2026-12-11',name:'2026 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2026 ARC or PLC at your FSA office. No election means you keep your 2025 choice but get no 2026 payment.',link:'/arc-plc'},
@@ -528,13 +546,16 @@
     stocks:'How much corn, soybeans and wheat is in storage. Can move prices sharply on the day.',
     plantings:'What farmers plan to plant. Sets the acreage view for the year and can move prices sharply.',
     export:'Weekly export sales of corn, soybeans and wheat. Large buys can move soybeans and corn.',
-    outlook:'USDA\u2019s first look at next year: acres, yields and prices.'
+    outlook:'USDA\u2019s first look at next year: acres, yields and prices.',
+    livestock:'A livestock or dairy report. It moves cattle, hog or milk futures, rarely corn or soybeans.'
   };
   function getImpact(r){
     if(r.name.includes('Acreage'))        return{level:'extreme',score:5,label:'EXTREME'};
     if(r.name.includes('Prospective'))    return{level:'extreme',score:5,label:'EXTREME'};
     if(r.type==='supply'&&r.date.slice(5,7)==='08') return{level:'extreme',score:5,label:'EXTREME'};
     if(r.type==='stocks'&&r.date.slice(5,7)==='09') return{level:'extreme',score:5,label:'EXTREME'};
+    /* for cattle and hog futures these two are the scheduled movers; for grain they are not */
+    if(r.name==='Cattle on Feed'||r.name==='Quarterly Hogs and Pigs') return{level:'moderate',score:3,label:'MODERATE'};
     const MAP={
       wasde:    {level:'high',    score:4,label:'HIGH'},
       supply:   {level:'high',    score:4,label:'HIGH'},
@@ -545,6 +566,7 @@
       outlook:  {level:'low',     score:2,label:'LOW-MOD'},
       intl:     {level:'high',    score:4,label:'HIGH'},
       fsa:      {level:'low',     score:1,label:'LOW'},
+      livestock:{level:'low',     score:2,label:'LOW-MOD'},
       census:   {level:'low',     score:1,label:'LOW'},
     };
     return MAP[r.type]||{level:'moderate',score:3,label:'MOD'};
@@ -611,10 +633,20 @@
       var nm=document.getElementById('next-num'); if(nm)nm.textContent='-';
     }
 
-    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International',fsa:'FSA Signup'};
+    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International',fsa:'FSA Signup',livestock:'Livestock'};
+    const JAN_KEY='2027-01', JAN_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===JAN_KEY)&&['all','wasde','supply','stocks'].indexOf(activeFilter)>=0;
     let html='';
-    Object.keys(groups).sort().forEach(key=>{
+    /* JANUARY 2027 IS NOT POSTED YET (checked 2026-10-15). Say so in its place
+       rather than jump from December to March, and never guess the dates. */
+    const monthKeys=Object.keys(groups);
+    if(JAN_PENDING&&monthKeys.indexOf(JAN_KEY)<0)monthKeys.push(JAN_KEY);
+    monthKeys.sort().forEach(key=>{
       const[yr,mo]=key.split('-').map(Number);
+      if(key===JAN_KEY&&!groups[key]){
+        html+=`<div class="cal-month" data-month="${key}"><div class="cal-month-head"><span class="cal-mname">${MONTHS[mo-1]} ${yr}</span><span class="cal-mcount">DATES NOT POSTED</span></div>`
+          +'<p class="cal-jan-note" id="cal-jan-note">USDA has not posted its 2027 report dates yet. January is usually the biggest report day of the winter: the January WASDE, the annual Crop Production summary and the Dec 1 Grain Stocks. The dates go here once USDA posts them.</p></div>';
+        return;
+      }
       const reps=groups[key].sort((a,b)=>a.date.localeCompare(b.date));
       const isPastMonth=new Date(yr,mo,0)<today;
       if(!showPast&&isPastMonth)return;
@@ -638,7 +670,7 @@
   <div class="cal-info">
     <div class="cal-name-row">
       <span class="cal-rname">${r.name}</span>
-      <span class="cal-tag tag-${r.type}">${tagLabels[r.type]||r.type}</span>${isNext?'<span class="cal-next-pill">&#9656; NEXT</span>':''}
+      <span class="cal-tag tag-${r.type}">${r.tag||tagLabels[r.type]||r.type}</span>${isNext?'<span class="cal-next-pill">&#9656; NEXT</span>':''}
     </div>
     <div class="cal-meta-row">
       <span class="cal-time"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg> ${r.time}</span>
@@ -648,7 +680,8 @@
       </div>
     </div>
     ${showDesc?`<div class="cal-desc">${r.desc}</div>`:''}
-    ${r.link?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> ARC or PLC calculator &rarr;</a> <a href="${FSA_SRC}" rel="noopener">FSA notice</a></div>`:''}
+    ${r.link&&r.type==='fsa'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> ARC or PLC calculator &rarr;</a> <a href="${FSA_SRC}" rel="noopener">FSA notice</a></div>`:''}
+    ${r.link&&r.type==='livestock'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> ${r.linkText} &rarr;</a></div>`:''}
     ${r.type==='wasde'?`<div class="cal-links"><a href="/whats-priced-in" onclick="calEvent('calendar_link',{to:'/whats-priced-in',report:'${r.name}'})"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> What's priced in &rarr;</a></div>`:''}
   </div>
 </div>`;
