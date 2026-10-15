@@ -2297,8 +2297,41 @@ def selftest():
         assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
         for v in re.findall(r"\$(\d+\.\d\d)", share):
             assert f"${v}</td>" in fr, f"share price {v} is not on the page"
-        for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S):
-            assert {g["@type"] for g in json.loads(blk)["@graph"]} == {"BreadcrumbList"}
+        # THE ANSWER FIRST (2026-10-15): one sentence from the table's own numbers,
+        # the same sentence in the meta description, then the table, then the
+        # state line, then the hold box
+        ans = ("Top bids: corn $3.95 at Op kept for Oct delivery (basis \u221225\u00a2 vs Dec &#x27;26) and "
+               "soybeans $9.85 at Op n0 for Oct (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
+        short = ("Top bids: corn $3.95 at Op kept for Oct delivery and soybeans $9.85 at Op n0 for Oct, posted Oct 7.")
+        a_html = re.search(r'<p class="cbt-answer">(.*?)</p>', fr).group(1)
+        assert a_html in (ans, short), a_html
+        dsc = re.search(r'<meta name="description" content="([^"]*)">', fr).group(1)
+        assert dsc.startswith("Fremont, NE cash bids. ") and a_html in dsc and len(html_unescape(dsc)) <= DESC_MAX, dsc
+        for v in re.findall(r"\$(\d+\.\d\d)", a_html):
+            assert f"${v}</td>" in fr, f"answer price {v} is not in the table"
+        assert fr.index('class="cbt-answer"') < fr.index("<table") < fr.index('class="cbt-cmp"') \
+            < fr.index('<div class="cbt-top">'), "answer, table, state line, then the hold box"
+        cmp_ = re.search(r'<p class="cbt-cmp">(.*?)</p>', fr).group(1)
+        assert cmp_.startswith("Corn basis at Op kept, \u221225\u00a2 vs Dec &#x27;26, is 6\u00bd\u00a2 stronger than the "
+                               "Nebraska middle (\u221231\u00bd\u00a2, 6 elevators)."), cmp_
+        assert "Soybean basis" not in cmp_, "fewer than three soybean bids on Nov '26: no middle, no comparison"
+        # three questions answered from the page's own numbers; the visible FAQ and
+        # the FAQPage JSON-LD say the same words
+        blks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S)]
+        assert [sorted(g["@type"] for g in b["@graph"]) for b in blks] == [["BreadcrumbList", "FAQPage"]], blks
+        faq = next(g for g in blks[0]["@graph"] if g["@type"] == "FAQPage")["mainEntity"]
+        assert [q["name"] for q in faq] == ["What is corn paying in Fremont today?", "What is the corn basis in Fremont?",
+                                           "How far is the next elevator from Fremont?"]
+        vis = re.search(r'<div class="cbt-faq">(.*?)</div>', fr).group(1)
+        assert re.findall(r"<h3>(.*?)</h3><p>(.*?)</p>", vis) == [(esc(q["name"]), esc(q["acceptedAnswer"]["text"]))
+                                                                   for q in faq], "FAQ and JSON-LD word for word"
+        assert faq[0]["acceptedAnswer"]["text"].startswith("The top corn bid we read in Fremont, NE is $3.95 a bushel at Op kept")
+        assert "That is 6\u00bd\u00a2 stronger than the Nebraska middle" in faq[1]["acceptedAnswer"]["text"]
+        assert faq[2]["acceptedAnswer"]["text"] == ("The nearest other elevator with a current bid is Op st in Hooper, NE, "
+                                                    "13 miles straight-line from the elevators in Fremont. It posted "
+                                                    "soybeans $9.70 on Oct 7.")
+        assert "cbt-hist" not in fr.split("</style>")[1] and "cb-basis-hist.js" not in fr, \
+            "no basis log given: no history box, no script"
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
         assert "1.16" not in ho and "1.17" not in ho and "$9.70" in ho
         assert "Op old: no price posted in the last 72 hours" in ho, "a quiet board must be named, unpriced"
@@ -2308,8 +2341,11 @@ def selftest():
         assert "Soybeans $9.70" in near_fr and "13 mi" in near_fr and "posted Oct 7" in near_fr, near_fr[:900]
         assert "1.16" not in near_fr and "Redfield" not in near_fr, "only gated rows, only within 40 mi"
         assert "Op n0" not in near_fr, "a town's own elevators are not repeated as its neighbours"
-        # the store-or-sell line is read first, above the cards
-        assert fr.index('<div class="cbt-top"><p><b>Corn, Op n0:</b> Hold to Nov?') < fr.index('class="cbt-el"')
+        # the store-or-sell line comes after the first table (2026-10-15: the price
+        # leads), and still before the other cards and the email box
+        top_i = fr.index('<div class="cbt-top"><p><b>Corn, Op n0:</b> Hold to Nov?')
+        assert fr.index("</table>") < top_i < fr.index('id="bid-email"')
+        assert top_i < [m.start() for m in re.finditer('class="cbt-el"', fr)][1]
         # a town whose only boards are quiet is written noindex and left out of the sitemap
         lone = json.loads(json.dumps(merged))
         lone["bids"] = [x for x in lone["bids"] if x["source"] != "t-st"]
@@ -2319,6 +2355,7 @@ def selftest():
         # no dead end: the nearest elevators that do have a bid, above the cards
         assert "Nearest elevators with a current bid" in ho2 and 'href="/cash-bids/nebraska/fremont"' in ho2
         assert "Corn $3.95" in ho2 and "1.17" not in ho2
+        assert "cbt-answer" not in ho2.split("</style>")[1] and "FAQPage" not in ho2, "no bid, no answer and no FAQ"
         assert "Top bids" not in ho2 and '<meta property="og:title" content="Cash Grain Bids in Hooper, NE Today' in ho2
         assert os.path.exists(os.path.join(out, "iowa", "redfield.html"))
         assert not os.path.exists(os.path.join(out, "iowa", "lincolnway-energy.html"))
@@ -2453,7 +2490,79 @@ def selftest():
     for d in ("Nov 11, 2026", "Oct 21, 2026"):
         assert delivery_label(dict(cdr, delivery=d)) != d[:3] + " 2026", d
     _selftest_known()
+    _selftest_answer()
     print("selftest OK")
+
+
+def _selftest_answer():
+    """The answer sentence, the state line and the "Basis since June" box."""
+    import tempfile as _tf
+    snap = parse_ts("2026-10-07T18:00:00Z").astimezone(CT)
+    t1, t2 = parse_ts("2026-10-07T17:00:00Z"), parse_ts("2026-10-06T15:00:00Z")
+    dec, nov = ("ZC", 11, 2026), ("ZS", 10, 2026)
+
+    def row(crop, cash, basis, con, dm="2026-10", com=None, pt=t1):
+        return {"crop": crop, "commodity": com or crop.title(), "dm": dm, "cash": cash, "basis": basis,
+                "contract": con, "priced": pt, "label": "Oct 2026", "period": dm}
+    a = {"operator": "Alpha Grain", "city": "Town", "rows": [
+        row("corn", 4.10, -0.60, dec), row("corn", 4.90, -0.10, dec, com="Non-GMO Corn"),
+        row("corn", 4.20, -0.50, dec, dm="2026-11")]}
+    b = {"operator": "Beta Co-op", "city": "Town", "rows": [row("corn", 4.12, -0.58, dec, pt=t2),
+                                                          row("soybeans", 10.01, -0.70, None, pt=t2)]}
+    pk = answer_picks([a, b])
+    assert pk["corn"][0]["cash"] == 4.12 and pk["corn"][1] == "Beta Co-op", \
+        "the nearest month's best regular bid: never the non-GMO premium, never a later month"
+    assert answer_sentence(pk, snap) == ("Top bids: corn $4.12 at Beta Co-op for Oct delivery (basis \u221258\u00a2 vs "
+                                         "Dec '26) and soybeans $10.01 for Oct (basis \u221270\u00a2), posted Oct 6."), \
+        answer_sentence(pk, snap)
+    pk2 = dict(pk, corn=(dict(pk["corn"][0], priced=t1), "Alpha Grain"))
+    assert answer_sentence(pk2, snap).endswith("posted Oct 6 to 7."), answer_sentence(pk2, snap)
+    sen, dsc = answer_and_desc(pk, snap, "Longname Township Junction, WI")
+    assert dsc == f"Longname Township Junction, WI cash bids. {sen} Call to confirm." or dsc.endswith(sen)
+    assert len(dsc) <= DESC_MAX and sen in dsc
+    summ = {"corn": {"contracts": [{"contract": dec, "n": 9, "median": -0.55}]},
+            "soybeans": {"contracts": [{"contract": nov, "n": 4, "median": -0.80}]}}
+    out, lines = state_compare(pk, summ, "Wisconsin")
+    assert lines == ["Corn basis at Beta Co-op, \u221258\u00a2 vs Dec '26, is 3\u00a2 weaker than the Wisconsin middle "
+                     "(\u221255\u00a2, 9 elevators).",
+                     "Beta Co-op posts no futures month with its basis, so it is not compared with the Wisconsin middle "
+                     "(soybean \u221280\u00a2 vs Nov '26, 4 elevators)."], lines
+    pk3 = dict(pk, corn=(dict(pk["corn"][0], contract=("ZC", 2, 2027)), "Beta Co-op"))
+    assert "a month too few Wisconsin elevators use" in state_compare(pk3, summ, "Wisconsin")[1][0]
+    assert state_compare(pk, {"corn": {"contracts": [{"contract": dec, "n": 2}]}}, "Wisconsin") == ([], []), \
+        "fewer than three bids: no middle to compare with"
+    pk4 = dict(pk, corn=(dict(pk["corn"][0], basis=-0.551), "Beta Co-op"))
+    assert "is even with the Wisconsin middle" in state_compare(pk4, summ, "Wisconsin")[1][0]
+    # the basis log's months: twin of components/cb-basis-hist.js parseDm (test/cash-bids-h2h.test.mjs)
+    for raw, d, want in (("JUN26", "2026-06-01", "2026-06"), ("OCT 01, 2026", "2026-09-30", "2026-10"),
+                         ("NOVEMBER", "2026-09-30", "2026-11"), ("JANUARY", "2026-12-02", "2027-01"),
+                         ("10/01/2026", "2026-09-01", "2026-10"), ("OCTOBER (2026-12)", "2026-10-01", "2026-10"),
+                         ("HARVEST 26", "2026-09-01", None), ("IN STORE", "2026-09-01", None)):
+        assert parse_dm(raw, d) == want, (raw, parse_dm(raw, d))
+    assert norm_fac("CDR FARMS, LLC") == norm_fac("CDR Farms LLC") and norm_town("St. Ansgar") == norm_town("SAINT ANSGAR")
+    # "Basis since June": only elevators with a logged change get the box, and the
+    # page carries their names, never the history itself
+    merged, index = _fixture()
+    ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
+    with _tf.TemporaryDirectory() as td:
+        hd = os.path.join(td, "spark")
+        os.makedirs(hd)
+        with open(os.path.join(hd, "NE.json"), "w") as f:
+            json.dump({"series": {"NE|OP N0|FREMONT|corn|ZCZ26|OCT26": [{"date": "2026-09-01", "cents": -31}],
+                                  "NE|OP N1|FREMONT|corn|ZCZ26|HARVEST 26": [{"date": "2026-09-01", "cents": -33}],
+                                  "NE|OP ST|HOOPER|soybeans|ZSX26|NOV26": [{"date": "2026-09-01", "cents": -55}]}}, f)
+        out = os.path.join(td, "cb")
+        build_all(merged, index, ZT, out_dir=out, min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"), hist_dir=hd)
+        fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+        ia = open(os.path.join(out, "iowa", "redfield.html")).read()
+    box = re.search(r'<details class="cbt-hist" data-basis-hist="NE" data-boards="([^"]*)">', fr)
+    assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
+        "Op n1's only key names no month it can draw, so it is not offered"
+    assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
+    assert fr.count('/components/cb-basis-hist.js?v=1') == 1 and "&ldquo;Basis since June&rdquo; reads" in fr
+    assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
+    assert "cb-basis-hist.js" not in ia and "Basis since June" not in ia, "no logged change in the state: no box"
+
 
 
 def _selftest_known():
