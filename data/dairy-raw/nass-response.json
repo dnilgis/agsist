@@ -1,0 +1,194 @@
+{
+ "query": {
+  "key": "***",
+  "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+  "agg_level_desc": "NATIONAL",
+  "source_desc": "SURVEY",
+  "freq_desc": "MONTHLY",
+  "format": "JSON",
+  "year__GE": "2025"
+ },
+ "row_count": 20,
+ "last_rows": [
+  {
+   "year": 2025,
+   "reference_period_desc": "APR",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "21.1"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "AUG",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "20.9"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "DEC",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "19"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "FEB",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "23.6"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "JAN",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "24.1"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "JUL",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "20.8"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "JUN",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "21.3"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "MAR",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "22"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "MAY",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "21.4"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "NOV",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "19.6"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "OCT",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "19.9"
+  },
+  {
+   "year": 2025,
+   "reference_period_desc": "SEP",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "20.4"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "APR",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "20.8"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "AUG",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "19.8"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "FEB",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "18.3"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "JAN",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "17.5"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "JUL",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "20.3"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "JUN",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "21.1"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "MAR",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "19.7"
+  },
+  {
+   "year": 2026,
+   "reference_period_desc": "MAY",
+   "freq_desc": "MONTHLY",
+   "class_desc": "ALL CLASSES",
+   "agg_level_desc": "NATIONAL",
+   "short_desc": "MILK - PRICE RECEIVED, MEASURED IN $ / CWT",
+   "Value": "21.3"
+  }
+ ]
+}
