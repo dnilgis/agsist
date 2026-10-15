@@ -18,7 +18,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
 <title>Planting Date Calculator: Corn &amp; Soybean Windows | AGSIST</title>
-<meta name="description" content="Free corn and soybean planting date tool for US growers: live soil temps at your location, last-frost odds, yield penalty by week, GDU projection.">
+<meta name="description" content="Free corn and soybean planting date tool for Wisconsin and Minnesota growers: live soil temps at your location, last-frost odds, yield penalty by week, GDU projection.">
 <meta name="keywords" content="corn planting date calculator, soybean planting date, optimal planting window Wisconsin, Minnesota planting date, soil temperature planting, last frost date Wisconsin, yield penalty late planting, corn planting GDU, best planting date corn WI MN">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -175,7 +175,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 /* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
 :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AGSIST Corn & Soybean Planting Date Calculator","url":"https://agsist.com/planting-date","applicationCategory":"Agricultural planting date calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Free corn and soybean planting date tool for US growers: live soil temperatures at your location, last-frost odds, yield penalty by planting week, and GDU accumulation by planting date.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Live soil temperature at your location","Last spring frost probability by zone","Yield penalty by planting date","GDU accumulation by planting date","Soil temperature planting guide"]},{"@type":"BreadcrumbList","@id":"https://agsist.com/planting-date#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Planting Date Calculator","item":"https://agsist.com/planting-date"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AGSIST Corn & Soybean Planting Date Calculator","url":"https://agsist.com/planting-date","applicationCategory":"Agricultural planting date calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Free corn and soybean planting date tool for Wisconsin and Minnesota growers: live soil temperatures at your location, last-frost odds, yield penalty by planting week, and GDU accumulation by planting date.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Live soil temperature at your location","Last spring frost probability by zone","Yield penalty by planting date","GDU accumulation by planting date","Soil temperature planting guide"]},{"@type":"BreadcrumbList","@id":"https://agsist.com/planting-date#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Planting Date Calculator","item":"https://agsist.com/planting-date"}]}]}</script>
 </head>
 
 <body>
@@ -318,6 +318,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
       <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU accumulation by planting date: central WI average</div>
       <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation from each planting date to the zone's 50% first-fall-frost date, for four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
       <div class="cmp-grid" id="cmp-grid"></div>
+      <p id="cmp-verdict" style="font-size:0.85rem;color:var(--text);line-height:1.5;margin:.75rem 0 0;font-weight:600"></p>
       <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
     </div>
   </div>
@@ -700,6 +701,28 @@ function renderGDUCompare(){
       +'</div>';
   }).join('');
 
+  // Verdict for the hybrid in the box, on the page's own numbers: which planting dates get its
+  // target before the zone's 50% first-fall-frost date. Says plainly when none do.
+  var vEl = document.getElementById('cmp-verdict');
+  if(vEl){
+    var vtxt = '';
+    if(gduTarget!==null){
+      var stage = crop==='corn' ? 'black layer' : 'R8';
+      var who = crop==='corn' ? 'A '+rm+'-day hybrid' : 'An MG '+rm+' variety';
+      var ok = dates.filter(function(x){ return x.gdu >= gduTarget; });
+      var short = dates.filter(function(x){ return x.gdu < gduTarget; });
+      if(ok.length===0){
+        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs and does not reach '+stage+' before '+fz.fall50+' from any of these dates on these numbers. May 1 planting gets about '+dates[0].gdu.toLocaleString()+', '+(gduTarget-dates[0].gdu).toLocaleString()+' short.';
+      } else if(short.length===0){
+        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs and reaches '+stage+' before '+fz.fall50+' from every planting date here on these numbers.';
+      } else {
+        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs. On these numbers it reaches '+stage+' before '+fz.fall50+' if planted by '+ok[ok.length-1].d+'; '+short.map(function(x){return x.d+' is '+(gduTarget-x.gdu).toLocaleString()+' short';}).join(', ')+'.';
+      }
+    }
+    vEl.textContent = vtxt;
+    vEl.hidden = !vtxt;
+  }
+
   var noteEl = document.getElementById('cmp-note');
   if(noteEl){
     var tgt;
@@ -707,8 +730,8 @@ function renderGDUCompare(){
       if(rm===null) tgt = crop==='corn' ? 'Enter a corn relative maturity from 70 to 135.' : 'Enter a soybean maturity group from 0 to 6.';
       else tgt = 'Soybean GDU target: n/a \u00b7 no published GDD-to-maturity figure for MG '+rm+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';
     }
-    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day &asymp; 2,670 and Purdue 112-day &asymp; 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).'); }
-    noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. '+tgt;
+    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day \u2248 2,670 and Purdue 112-day \u2248 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).'); }
+    noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. The zone frost dates are approximate: the spring ones run about 13 days earlier than the Madison station median, and the fall ones have not been checked against a station, so a short or thin margin is a reason to check your nearest station, not a final answer. '+tgt;
   }
 
   var titleEl = document.getElementById('cmp-title');
