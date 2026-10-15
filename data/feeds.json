@@ -1377,16 +1377,18 @@
    "touched_by": [
     "Prediction bot \u2014 call and grade"
    ],
-   "cadence": "2 launches weekdays at about 5pm, 6pm Central",
+   "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "41 19 * * 1-5",
+    "41 20 * * 1-5",
     "41 22 * * 1-5",
     "41 23 * * 1-5"
    ],
-   "max_gap_hours": 71.0,
+   "max_gap_hours": 68.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1404,16 +1406,18 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Prediction bot \u2014 call and grade"
    ],
-   "cadence": "2 launches weekdays at about 5pm, 6pm Central",
+   "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "41 19 * * 1-5",
+    "41 20 * * 1-5",
     "41 22 * * 1-5",
     "41 23 * * 1-5"
    ],
-   "max_gap_hours": 71.0,
+   "max_gap_hours": 68.0,
    "quiet": null,
    "why_quiet": null
   },
