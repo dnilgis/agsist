@@ -429,6 +429,38 @@
    "report": "results/2026-10-15-farmland-atlas.md",
    "competitors": [],
    "note": "competitor scores from search snippets; see report"
+  },
+  "conditions": {
+   "last_run": "2026-10-15",
+   "ours_total": 40,
+   "verdict": "close",
+   "report": "results/2026-10-15-conditions.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "hail-map": {
+   "last_run": "2026-10-15",
+   "ours_total": 43,
+   "verdict": "yes for free use; close vs paid",
+   "report": "results/2026-10-15-hail-map.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "spray": {
+   "last_run": "2026-10-15",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-15-spray.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "yield-estimator": {
+   "last_run": "2026-10-15",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-15-yield-estimator.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
   }
  }
 }
