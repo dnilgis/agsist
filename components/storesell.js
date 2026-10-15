@@ -220,9 +220,9 @@
   var MON3 = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
   var EXPIRY_DAY = 15;
   var CROPS = {
-    corn:     { root: 'corn',  first: [12],       later: [3, 5, 7], harvest: 12 },
-    soybeans: { root: 'beans', first: [11],       later: [1, 3, 5, 7], harvest: 11 },
-    wheat:    { root: 'wheat', first: [7, 9, 12], later: [3, 5], harvest: 12 }
+    corn:     { root: 'corn',  first: [12],       later: [3, 5, 7], harvest: 12, binFrom: 10 },
+    soybeans: { root: 'beans', first: [11],       later: [1, 3, 5, 7], harvest: 11, binFrom: 10 },
+    wheat:    { root: 'wheat', first: [7, 9, 12], later: [3, 5], harvest: 12, binFrom: 7 }
   };
   CROPS.soybean = CROPS.beans = CROPS.soybeans;
   /* Today's date in Chicago as y*10000+m*100+d. `now` may be a Date or
@@ -311,12 +311,55 @@
     return { key: y + '-' + (mo < 10 ? '0' : '') + mo, label: MON[mo - 1] + ' \'' + m[2] };
   }
 
+  /* THE BOARD CASE COUNTS FROM TODAY (2026-10-15). The board carry runs
+     contract to contract (Dec '26 to Jul '27 corn), but a farmer deciding on
+     Oct 15 whether to sell now or hold to July pays storage and interest
+     from October. A bid for delivery now is priced off the nearest contract,
+     so the months before it earn no futures carry and still cost money. The
+     elevator mode already counts from its spot month; this makes the board
+     case do the same.
+     The count starts at this month once the crop year's grain is in the bin
+     (binFrom: October for corn and soybeans, July for winter wheat, in the
+     crop year the window belongs to). Before that, as in September for corn
+     or May for wheat, there is no grain to hold yet and the count stays
+     contract to contract, as it was.
+     Returns {from, to, spot, carry, months, carryMonths, start, startLabel,
+     fromToday, date} or null when there is no window. */
+  function boardHold(crop, quotes, now){
+    var c = CROPS[crop], q = quotes || {}, w = carryWindow(crop, q, now);
+    if(!c || !w) return null;
+    var a = q[w[0]], b = q[w[1]];
+    if(!hasClose(a) || !hasClose(b)) return null;
+    var fa = futuresMonth(a.ticker), fb = futuresMonth(b.ticker);
+    if(!fa || !fb) return null;
+    var today = dayNum(now), y = cropYear(c, today);
+    var cur = Math.floor(today / 10000) + '-' + ('0' + Math.floor(today / 100) % 100).slice(-2);
+    var bin = y + '-' + ('0' + c.binFrom).slice(-2);
+    var carryMonths = monthsApart(fa.key, fb.key);
+    var fromToday = cur >= bin && cur < fa.key;
+    var start = fromToday ? cur : fa.key;
+    return { from: fa, to: fb, spot: a.close / 100, carry: (b.close - a.close) / 100,
+             months: monthsApart(start, fb.key), carryMonths: carryMonths,
+             start: start, startLabel: shortMon(start), fromToday: fromToday,
+             date: a.close_date || '' };
+  }
+
+  /* How the carry can be locked today, when it nets above zero. Plain
+     education, not advice: a posted later bid is a forward contract price;
+     a board carry can be locked with the later futures or a hedge-to-arrive,
+     which leaves the basis open. '' when the net is zero or below. */
+  function lockNote(kind, net, to){
+    if(net == null || netCents(net) <= 0) return '';
+    if(kind === 'futures') return 'You can lock this carry today by selling ' + to + ' futures or taking a hedge-to-arrive contract for ' + to + '. That takes out the futures risk, not the basis risk.';
+    return 'You can lock this today with a forward contract for ' + to + ' delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms.';
+  }
+
   var core = { buildPeriods: buildPeriods, netFor: netFor, pickPeriod: pickPeriod, headline: headline,
                newCropFrom: newCropFrom, monthsApart: monthsApart, carryText: carryText, netText: netText,
                shortMon: shortMon, longMon: longMon, cashQ: cashQ,
                DEFAULTS: DEFAULTS, withDefaults: withDefaults, carryNet: carryNet, holdLine: holdLine,
                costNote: costNote, centsWord: centsWord, carryWindow: carryWindow, forwardCurve: forwardCurve,
-               futuresMonth: futuresMonth };
+               futuresMonth: futuresMonth, boardHold: boardHold, lockNote: lockNote };
   root.AgsistStoreSell = core;
   if(typeof document === 'undefined') return;
 
