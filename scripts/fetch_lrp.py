@@ -54,7 +54,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 from datetime import date, datetime, timedelta, timezone
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
 UA = "AGSIST-automation/1.0 (+https://agsist.com/lrp)"
 PUBFS = "https://pubfs-rma.fpac.usda.gov/pub/"
@@ -573,7 +573,10 @@ def milli(s, scale=1000):
     s = (s or "").strip()
     if not s:
         return None
-    d = Decimal(s) * scale
+    try:
+        d = Decimal(s) * scale
+    except InvalidOperation:
+        raise LrpCheckError(f"{s!r} is not a number") from None
     if d != d.to_integral_value():
         raise LrpCheckError(f"{s} has more precision than 1/{scale}")
     return int(d)
@@ -644,12 +647,14 @@ def reduce_rates(text, ry):
         "Livestock Coverage Level Percent"])
     get = lambda r, n: r[c[n]].strip() if n in c else ""  # noqa: E731
     days = {}
-    st = {"rows": len(rows), "deleted": deleted, "cost_off": 0, "price_off": 0}
+    st = {"rows": len(rows), "deleted": deleted, "cost_off": 0, "price_off": 0, "blank": 0, "blank_examples": []}
     for r in rows:
         sed = get(r, "Sales Effective Date")
         day = days.setdefault(sed, {"sed": sed, "ry": ry, "o": {}, "states": nstates})
-        key = "/".join([get(r, "Commodity Code"), get(r, "Type Code"), get(r, "Practice Code"),
-                        str(int(get(r, "Endorsement Length Count")))])
+        length = get(r, "Endorsement Length Count")
+        if not length.isdigit():
+            raise LrpCheckError(f"offers {sed}: endorsement length {length!r}")
+        key = "/".join([get(r, "Commodity Code"), get(r, "Type Code"), get(r, "Practice Code"), str(int(length))])
         head_vals = {"end": get(r, "End Date"), "eev": milli(get(r, "Expected Ending Value Amount")),
                      "paf": get(r, "Price Adjustment Factor") or None,
                      "w": [get(r, "Target Low Weight"), get(r, "Target High Weight")],
@@ -662,12 +667,22 @@ def reduce_rates(text, ry):
         cp, lvl = get(r, "Coverage Price"), get(r, "Livestock Coverage Level Percent")
         rate, cost = get(r, "Livestock Rate"), get(r, "Cost Per Cwt Amount")
         row = [milli(lvl, 10 ** 6), milli(cp), milli(rate, 10 ** 6), milli(cost)]
+        if None in row:
+            # An offer row with a blank level, price, rate or cost: not an
+            # offer anyone could buy at a known price. Left out and logged.
+            st["blank"] += 1
+            if len(st["blank_examples"]) < 5:
+                st["blank_examples"].append(f"{sed} {key} level={lvl!r} price={cp!r} rate={rate!r} cost={cost!r}")
+            continue
         e["r"].append(row)
         if round_half_up(Decimal(cp) * Decimal(rate), 3) != Decimal(cost):
             st["cost_off"] += 1
-        if round_half_up(Decimal(get(r, "Expected Ending Value Amount")) * Decimal(lvl), 2) != Decimal(cp):
+        eev = get(r, "Expected Ending Value Amount")
+        if eev and round_half_up(Decimal(eev) * Decimal(lvl), 2) != Decimal(cp):
             st["price_off"] += 1
     for day in days.values():
+        for key in [k for k, e in day["o"].items() if not e["r"]]:
+            del day["o"][key]
         for key, e in day["o"].items():
             e["r"].sort()
             seen = {}
@@ -689,8 +704,13 @@ def reduce_aev(text):
     if not rows:
         return {}, None, {"rows": 0}
     c = {h: i for i, h in enumerate(head)}
-    deleted = sum(1 for r in rows if r[c["Deleted Date"]].strip())
-    rows = [r for r in rows if not r[c["Deleted Date"]].strip()]
+    miss = [n for n in ("State Code", "Commodity Code", "Type Code", "End Date", "Actual Ending Value Amount")
+            if n not in c]
+    if miss:
+        raise LrpCheckError(f"ending value file has no {miss}")
+    di = c.get("Deleted Date")
+    deleted = sum(1 for r in rows if di is not None and r[di].strip())
+    rows = [r for r in rows if di is None or not r[di].strip()]
     rows, nstates = same_in_every_state(head, rows, "actual ending values", [
         "Commodity Code", "Type Code", "Practice Code", "End Date", "Sales Effective Date"])
     out = {}
@@ -704,7 +724,7 @@ def reduce_aev(text):
         if d.get(sed, v) != v:
             raise LrpCheckError(f"aev {key} {sed}: two values in one file")
         d[sed] = v
-        released.add(g("Released Date"))
+        released.add(g("Released Date") if "Released Date" in c else "")
     return out, max(released) if released else None, {"rows": len(rows), "deleted": deleted}
 
 
@@ -827,10 +847,20 @@ class History:
                     if os.path.exists(path):
                         old = load_json(path, {})
                         if old.get("o") != day["o"]:
+                            # RMA posted this sales day again with other
+                            # numbers: the later posting is kept, and logged.
                             st["offers_restated"] = st.get("offers_restated", 0) + 1
+                            note = f"{ry}/{sed}: {old.get('src')} -> {name}"
+                            lst = st.setdefault("offers_restated_days", [])
+                            if note not in lst and len(lst) < 200:
+                                lst.append(note)
                     write_json(path, day)
-                for k in ("rows", "deleted", "cost_off", "price_off"):
+                for k in ("rows", "deleted", "cost_off", "price_off", "blank"):
                     st["rate_" + k] = st.get("rate_" + k, 0) + s.get(k, 0)
+                ex = st.setdefault("rate_blank_examples", [])
+                for x in s.get("blank_examples", []):
+                    if len(ex) < 20:
+                        ex.append(f"{name}: {x}")
                 st["offer_days_written"] = st.get("offer_days_written", 0) + len(days)
             elif AEV_TAG in member:
                 new, _, s = reduce_aev(text)
@@ -893,69 +923,91 @@ def run_history(root, years_spec=None, minutes=300, max_files=None):
     if max_files:
         todo = todo[:max_files]
     log(f"{len(todo)} files to read")
-    done = failed = 0
+    done = failed = errors = 0
     stopped = False
-    with concurrent.futures.ThreadPoolExecutor(WORKERS) as ex:
-        it = iter(todo)
-        running = {}
+    st.pop("stopped_on", None)
+    st.pop("crashed", None)
+    # Anything unexpected still saves what was read since the last
+    # checkpoint, so the history never loses a finished file.
+    try:
+        with concurrent.futures.ThreadPoolExecutor(WORKERS) as ex:
+            it = iter(todo)
+            running = {}
 
-        def launch():
-            nonlocal stopped
-            while len(running) < WORKERS * 2:
-                if time.time() - t0 > minutes * 60:
-                    stopped = True
-                    return
-                nxt = next(it, None)
-                if nxt is None:
-                    return
-                running[ex.submit(http_get, nxt[2])] = nxt
-        launch()
-        # Results are applied in the order they were listed, so a restated
-        # file always lands after the one it restates.
-        pending = {}
-        order = [t[1] for t in todo]
-        pos = 0
-        while running or pending:
-            if running:
-                fin, _ = concurrent.futures.wait(list(running), return_when=concurrent.futures.FIRST_COMPLETED)
-                for f in fin:
-                    item = running.pop(f)
+            def launch():
+                nonlocal stopped
+                while len(running) < WORKERS * 2:
+                    if time.time() - t0 > minutes * 60:
+                        stopped = True
+                        return
+                    nxt = next(it, None)
+                    if nxt is None:
+                        return
+                    running[ex.submit(http_get, nxt[2])] = nxt
+            launch()
+            # Results are applied in the order they were listed, so a restated
+            # file always lands after the one it restates.
+            pending = {}
+            order = [t[1] for t in todo]
+            pos = 0
+            while running or pending:
+                if running:
+                    fin, _ = concurrent.futures.wait(list(running), return_when=concurrent.futures.FIRST_COMPLETED)
+                    for f in fin:
+                        item = running.pop(f)
+                        try:
+                            pending[item[1]] = (item, f.result())
+                        except Exception as e:  # noqa: BLE001
+                            pending[item[1]] = (item, e)
+                    launch()
+                while pos < len(order) and order[pos] in pending:
+                    (sd, name, url, size), res = pending.pop(order[pos])
+                    pos += 1
+                    if isinstance(res, Exception):
+                        failed += 1
+                        log(f"  FAILED {name}: {res}")
+                        continue
                     try:
-                        pending[item[1]] = (item, f.result())
-                    except Exception as e:  # noqa: BLE001
-                        pending[item[1]] = (item, e)
-                launch()
-            while pos < len(order) and order[pos] in pending:
-                (sd, name, url, size), res = pending.pop(order[pos])
-                pos += 1
-                if isinstance(res, Exception):
-                    failed += 1
-                    log(f"  FAILED {name}: {res}")
-                    continue
-                try:
-                    h.apply(name, res)
-                except LrpCheckError as e:
-                    h.save()
-                    log(f"CHECK FAILED in {name}: {e}")
-                    st["stopped_on"] = f"{name}: {e}"
-                    h.save()
-                    return 3
-                h.state["files"][name] = size if size is not None else len(res)
-                done += 1
-                if done % 100 == 0:
-                    h.save()
-                    log(f"  {done} read, {failed} failed, {int(time.time() - t0)} s")
-            if not running and pos < len(order) and order[pos] not in pending:
-                break   # stopped launching (time limit); the rest waits for the next run
+                        h.apply(name, res)
+                    except LrpCheckError as e:
+                        log(f"CHECK FAILED in {name}: {e}")
+                        log(f"::error title=lrp check failed::{name}: {e}")
+                        st["stopped_on"] = f"{name}: {e}"
+                        h.save()
+                        return 3
+                    except Exception as e:  # noqa: BLE001 - a file the parser cannot read
+                        # Not marked read, so the next run tries it again; the run
+                        # goes on with the other files and ends as failed.
+                        msg = f"{type(e).__name__}: {e}"[:300]
+                        log(f"UNREADABLE {name}: {msg}")
+                        log(f"::error title=lrp file unreadable::{name}: {msg}")
+                        st.setdefault("file_errors", {})[name] = msg
+                        errors += 1
+                        continue
+                    st.get("file_errors", {}).pop(name, None)
+                    h.state["files"][name] = size if size is not None else len(res)
+                    done += 1
+                    if done % 100 == 0:
+                        h.save()
+                        log(f"  {done} read, {failed} failed, {int(time.time() - t0)} s")
+                if not running and pos < len(order) and order[pos] not in pending:
+                    break   # stopped launching (time limit); the rest waits for the next run
+    except BaseException as e:
+        st["crashed"] = f"{type(e).__name__}: {e}"[:300]
+        h.save()
+        raise
     try:
         fetch_sob(p, h)
     except Exception as e:  # noqa: BLE001 - the offers matter more; say so and go on
         log(f"Summary of Business: {type(e).__name__}: {e}")
         st["sob_failed"] = str(e)[:200]
-    st["last_run"] = {"read": done, "failed": failed, "left": len(todo) - done - failed,
+    st["last_run"] = {"read": done, "failed": failed, "unreadable": errors, "left": len(todo) - done - failed - errors,
                       "stopped_for_time": stopped, "seconds": int(time.time() - t0)}
     h.save()
-    log(f"history: {done} read, {failed} failed, {len(todo) - done - failed} left")
+    log(f"history: {done} read, {failed} failed to download, {errors} unreadable, "
+        f"{len(todo) - done - failed - errors} left")
+    if errors:
+        return 3
     if todo and failed > max(3, MAX_FAIL_SHARE * len(todo)):
         return 1
     return 0
@@ -1265,6 +1317,14 @@ def selftest_history():
     dup = [l for l in lines if "|31|998|809|206|20260701|52|282.480|" in l][0].replace("|282.480|", "|282.470|")
     expect_check_error(lambda: reduce_rates("\n".join(lines + [dup]), "2027"), "differs between states 31 and 31")
 
+    # A blank price is left out and logged; a word where a number goes stops the file.
+    blank = r27.replace("|31|998|809|206|20260701|52|282.480|", "|31|998|809|206|20260701|52||", 1).replace(
+        "|48|998|809|206|20260701|52|282.480|", "|48|998|809|206|20260701|52||", 1)
+    days, st = reduce_rates(blank, "2027")
+    assert st["blank"] == 1 and "price=''" in st["blank_examples"][0], st
+    assert [x[0] for x in days["20260701"]["o"]["0801/809/206/52"]["r"]] == [950000, 1000000]
+    expect_check_error(lambda: reduce_rates(r27.replace("|282.480|", "|N/A|"), "2027"), "is not a number")
+
     # CY2014 offers: the old layout (no factor, levels set by coverage price);
     # lamb offered in Arizona only is fine, and is kept with its state list.
     days, st = reduce_rates(fixture("2014_A00630_LrpRate_Daily_20130701.txt"), "2014")
@@ -1437,6 +1497,38 @@ def selftest_run_history():
             st = load_json(os.path.join(td, "state.json"), {})
             assert "2027_ADMLivestockLrp_Daily_20260702.zip" not in st["files"]
             assert "differs between states" in st["stats"]["stopped_on"]
+            del files["2027_ADMLivestockLrp_Daily_20260702.zip"]
+            # A file the parser cannot read (here not a zip at all) is logged,
+            # left unread for the next run, and the run goes on and fails.
+            files["2027_ADMLivestockLrp_Daily_20260703.zip"] = b"<html>Service Unavailable</html>"
+            files["2027_ADMLivestockLrp_Daily_20260706.zip"] = zip_of({"x_A00630_y.txt": fixture(
+                "2027_A00630_LrpRate_Daily_20260701.txt").replace("|20260701|", "|20260706|")})
+            fetched.clear()
+            assert run_history(td) == 3
+            st = load_json(os.path.join(td, "state.json"), {})
+            assert "BadZipFile" in st["stats"]["file_errors"]["2027_ADMLivestockLrp_Daily_20260703.zip"]
+            assert "2027_ADMLivestockLrp_Daily_20260703.zip" not in st["files"]
+            assert "2027_ADMLivestockLrp_Daily_20260706.zip" in st["files"]
+            assert st["stats"]["last_run"]["unreadable"] == 1
+            assert os.path.exists(os.path.join(td, "offers", "2027", "20260706.json"))
+            # Fixed upstream: the next run reads it and clears the error.
+            files["2027_ADMLivestockLrp_Daily_20260703.zip"] = zip_of({"x_A00630_y.txt": fixture(
+                "2027_A00630_LrpRate_Daily_20260701.txt").replace("|20260701|", "|20260703|")})
+            assert run_history(td) == 0
+            st = load_json(os.path.join(td, "state.json"), {})
+            assert not st["stats"].get("file_errors") and "2027_ADMLivestockLrp_Daily_20260703.zip" in st["files"]
+            # RMA posts a day again with other numbers: the later posting is
+            # kept and the change is logged with both file names.
+            files["2027_ADMLivestockLrp_Daily_20260707.zip"] = zip_of({"x_A00630_y.txt": fixture(
+                "2027_A00630_LrpRate_Daily_20260701.txt").replace("|20260701|", "|20260706|").replace(
+                "|282.480|", "|282.470|")})
+            assert run_history(td) == 0
+            st = load_json(os.path.join(td, "state.json"), {})
+            assert st["stats"]["offers_restated_days"] == [
+                "2027/20260706: 2027_ADMLivestockLrp_Daily_20260706.zip -> 2027_ADMLivestockLrp_Daily_20260707.zip"]
+            day = load_json(os.path.join(td, "offers", "2027", "20260706.json"), {})
+            assert day["src"] == "2027_ADMLivestockLrp_Daily_20260707.zip"
+            assert day["o"]["0801/809/206/52"]["r"][0][1] == 282470
     finally:
         Probe.get, globals()["http_get"] = real_get, real_http
 

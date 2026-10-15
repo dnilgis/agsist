@@ -137,6 +137,8 @@ jobs:
       - name: Say if the history run failed
         if: ${{ steps.history.outcome == 'failure' }}
         run: |
-          grep -E "CHECK FAILED|FAILED|did not answer|listing failed" lrp-history.log | head -40 || true
+          grep -E "CHECK FAILED|FAILED|UNREADABLE|Traceback|Error|did not answer|listing failed" lrp-history.log | head -40 || true
+          tail -30 lrp-history.log || true
+          echo "The same is in state.json on lrp-history: stats.stopped_on, stats.file_errors, stats.crashed."
           echo "::error::The history run failed; what was read before it is committed. See the step log."
           exit 1
