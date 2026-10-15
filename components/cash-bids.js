@@ -1136,11 +1136,27 @@ window.cbRankRedraw=function(){
 
 // Blank falls back to the field's own default; a typed 0 (or any real number) is honoured.
 function _num(el,dflt){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v:dflt;}
+/* THE BEST AFTER THE DRIVE, AS ONE LINE UNDER THE BEST-PRICE CARDS. win:
+   {name, net, crop} when an elevator past the closest one nets more than
+   EARN_MIN on the load after round-trip fuel, else null. compared: the crops
+   with two or more same-day boards to weigh. With no winner and something
+   compared the line says the closest one is as good, within EARN_MIN; with
+   nothing compared there is no line (''). */
+var EARN_MIN=50;
+var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
+function earningsLine(win,compared,bu,money){
+  var load=Number(bu).toLocaleString('en-US')+' bu';
+  if(win)return 'Best after the drive on '+load+' of '+win.crop+': '+win.name+', '+money(win.net)+' more than your closest elevator.';
+  if(!compared||!compared.length)return '';
+  var cs=compared.map(function(c){return EARN_CROP[c]||c;});
+  var list=cs.length>1?cs.slice(0,-1).join(', ')+' or '+cs[cs.length-1]:cs[0];
+  return 'Best after the drive on '+load+': your closest elevator. No other nets '+money(EARN_MIN)+' more on '+list+' after round-trip fuel.';
+}
 function renderEarnings(){
   // A farmer who owns his truck types 0 here on purpose. 0 is falsy, so this used to
   // charge him $1.75/mi anyway and flip the haul recommendation, with 1.75 shown nowhere.
   var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75);
-  var best=null;
+  var best=null,compared=[];
   ['corn','soybeans','wheat'].forEach(function(cat){
     /* THE BANNER NAMES ONLY BOARDS READ TODAY OR RE-MARKED TO TODAY'S FUTURES.
        An elevator whose board was not reached is kept off it entirely, as the
@@ -1154,6 +1170,7 @@ function renderEarnings(){
     Object.keys(groups).forEach(function(cls){
       var elevRows=groups[cls].map(function(x){return{elev:x.elev,bid:x.bid,rk:x.rk,dist:x.dist,p:x.rk.price};});
       if(elevRows.length<2)return;
+      if(compared.indexOf(cat)<0)compared.push(cat);
       /* distance is never null here, and 0 is a distance: `||999` sent the
          elevator AT the reader's ZIP to the back of this list (68025, Scoular
          at 0 mi was compared against a co-op 29 mi out). */
@@ -1181,22 +1198,34 @@ function renderEarnings(){
       var top=win.r;
       if(top.elev.key===closest.elev.key)return;
       var gross=(top.p-closest.p)*bu;
-      if(win.net>50&&(!best||win.net>best.net))best={cat:cat,cls:cls,top:top,close:closest,gross:gross,net:win.net,extraMi:win.extraMi};
+      if(win.net>EARN_MIN&&(!best||win.net>best.net))best={cat:cat,cls:cls,top:top,close:closest,gross:gross,net:win.net,extraMi:win.extraMi};
     });
   });
-  if(!best){earningsCallout.classList.add('muted');return;}
-  earningsCallout.classList.remove('muted');
-  var lab={corn:'corn',soybeans:'soybean',wheat:'wheat'};
-  var crop=best.cat==='wheat'?(best.cls?clsName(best.cls)+' wheat':'wheat (class not stated)'):lab[best.cat];
+  var crop=best?(best.cat==='wheat'?(best.cls?clsName(best.cls)+' wheat':'wheat (class not stated)'):EARN_CROP[best.cat]):'';
+  var line=earningsLine(best?{name:truncName(best.top.elev.facility,24),net:best.net,crop:crop}:null,compared,bu,fmtMoney);
+  earningsCallout.classList.toggle('muted',!line);
+  earningsCallout.classList.toggle('flat',!!line&&!best);
+  if(!line)return;
+  earningsHead.textContent=line;
+  if(!best){earningsDetail.innerHTML='';return;}
   /* A re-marked price says so where it is printed. */
   function priceHtml(r){
     var s=(window.cbRank?cbRank.priceText(r.rk,fmtPx):'$'+fmtPx(r.p))+'/bu';
     var n=window.cbRank?cbRank.note(r.rk,fmtPx):'';
     return s+(n?' ('+escH(n)+')':'');
   }
-  earningsHead.textContent='Driving to '+truncName(best.top.elev.facility,24)+' could net you '+fmtMoney(best.net)+' more on this '+crop+' load';
   earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu: '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>.';
   gaEvent('earnings_shown',{commodity:best.cat,net_gain:Math.round(best.net)});
+}
+
+/* THE BASIS COLOURS GET A KEY ON THE PAGE, not only behind the BASIS button.
+   Green and red are not the sign of the basis: cb-glance.js toneFn colours a
+   basis against the middle of the boards in this search for the same crop and
+   month. One line, drawn only when a card on screen is coloured. */
+function basisKey(html){
+  if(!/bid-basis[^"]*\bbz-(up|dn)\b/.test(html))return '';
+  var band=window.CBGlance&&CBGlance.TONE_BAND_CENTS!=null?CBGlance.TONE_BAND_CENTS:2;
+  return '<p class="cb-basis-key">Basis color: <span class="bz-up">green</span> is stronger than the middle of the elevators in this search for the same crop and month, <span class="bz-dn">red</span> is weaker, grey is within '+band+'\u00a2 of it or too few to compare.</p>';
 }
 
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
@@ -1704,7 +1733,9 @@ function renderBids(bids,keepLimit){
            reader -- a December delivery against December corn needs no note. */
         var ctag='';
         if(bid.symbol&&futuresOf(bid)!=null){
-          var cl=contractLabel(bid);
+          /* "Nov '26 Soybeans" under the Soybeans heading says the crop twice;
+             the crop word goes (a wheat class, "KCBT Red Wheat", stays). */
+          var cl=contractLabel(bid).replace(/\s+(corn|soybeans?|beans)$/i,'');
           if(cl&&cl.toLowerCase()!==String(del).toLowerCase())ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
         }
         var bhi='';
@@ -1722,7 +1753,7 @@ function renderBids(bids,keepLimit){
   if(pool.length>shown.length){
     html+='<div class="cb-more-wrap"><button class="cb-more-btn" id="cb-more-btn">Show '+Math.min(CB_PAGE_STEP,pool.length-shown.length)+' more elevators <span class="cb-more-n">('+shown.length+' of '+pool.length+' shown · sorted by '+(currentSort==='best-cash'?'best cash price':currentSort==='best-basis'?'best basis':currentSort==='name'?'name':'distance')+')</span></button></div>';
   }
-  results.innerHTML=html;
+  results.innerHTML=basisKey(html)+html;
   portalExpire(document);
   results.querySelectorAll('.bid-more').forEach(function(btn){btn.addEventListener('click',function(){var box=btn.closest('.bid-rows');var open=box.classList.toggle('bids-open');btn.setAttribute('aria-expanded',open?'true':'false');btn.innerHTML=open?'Show fewer &#9652;':btn.getAttribute('data-label')||btn.innerHTML;if(open)btn.setAttribute('data-label',btn.innerHTML);});});
   var moreBtn=document.getElementById('cb-more-btn');
