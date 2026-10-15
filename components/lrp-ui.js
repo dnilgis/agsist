@@ -148,16 +148,14 @@
   }
 
   function when() {
-    var el = $('lrp-when');
-    var posted = T.posted || T.posted_utc || T.posted_at || null;
-    var close = L.salesClose(T.sed);
-    var txt = 'Offers for sales on ' + L.ymdLong(T.sed) + (posted ? ', posted by RMA ' + L.centralClock(posted) : '') + '.';
-    if (L.centralNow() >= close) {
+    var el = $('lrp-when'), d = L.salesDay(T);
+    var txt = 'Offers for sales on ' + d.dayText + (d.posted ? ', posted by RMA ' + d.posted : '') + '.';
+    if (d.closed()) {
       el.className = 'lrp-when closed';
-      txt += ' That sales window closed at 8:25 a.m. CT on ' + L.ymdLong(close.slice(0, 8)) + '. These prices can no longer be bought; this page shows the next ones once RMA posts them.';
+      txt += ' Sales on these offers closed at ' + d.closeText + '. They can no longer be bought. RMA usually posts the next offers by about 2:30 p.m. CT on a sales day, and this page shows them once they land.';
     } else {
       el.className = 'lrp-when';
-      txt += ' Sales close at 8:25 a.m. CT on ' + L.ymdLong(close.slice(0, 8)) + '.';
+      txt += ' Sales on them close at ' + d.closeText + '.';
     }
     el.textContent = txt;
   }

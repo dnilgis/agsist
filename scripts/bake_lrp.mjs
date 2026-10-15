@@ -248,8 +248,8 @@ export function methodHtml(bt, meta, v) {
 }
 
 export function whenHtml(today) {
-  const close = L.salesClose(today.sed);
-  return `Offers for sales on ${ymdLong(today.sed)}, from RMA&rsquo;s daily file. RMA&rsquo;s rule: those sales close at 8:25 a.m. CT on ${ymdLong(close.slice(0, 8))}.`;
+  const d = L.salesDay(today);
+  return `Offers for sales on ${d.dayText}${d.posted ? `, posted by RMA ${d.posted}` : ""}, from RMA&rsquo;s daily file. Sales on them close at ${d.closeText}.`;
 }
 
 export function firstYears(meta, today) {

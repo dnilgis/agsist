@@ -164,6 +164,27 @@
       hour: 'numeric', minute: '2-digit' }).format(d).replace(' AM', ' a.m.').replace(' PM', ' p.m.') + ' CT';
   }
 
+  /* Which sales day a today.json holds, when RMA posted it and when sales on
+     it close. Uses the file's own sales_day, posted_utc and sales_close_utc
+     (scripts/fetch_lrp.py) when present; posted_utc can be null, and an
+     older file has only sed, so the close falls back to the RMA rule.
+     closed(now) is true from the close on: those offers are never today's. */
+  function salesDay(T) {
+    var day = T.sales_day ? String(T.sales_day).replace(/-/g, '') : String(T.sed || '');
+    var closeCt = T.sales_close_ct ? String(T.sales_close_ct).replace(/[-T:]/g, '') : salesClose(day);
+    var closeMs = T.sales_close_utc ? Date.parse(T.sales_close_utc) : NaN;
+    var posted = T.posted_utc ? centralClock(T.posted_utc) : '';
+    var h = +closeCt.slice(8, 10), mi = closeCt.slice(10, 12);
+    var clock = (h % 12 || 12) + ':' + mi + (h < 12 ? ' a.m.' : ' p.m.') + ' CT on ' + ymdLong(closeCt.slice(0, 8));
+    return {
+      day: day, dayText: ymdLong(day), posted: posted, closeCt: closeCt, closeText: clock,
+      closed: function (now) {
+        now = now || new Date();
+        return isFinite(closeMs) ? now.getTime() >= closeMs : centralNow(now) >= closeCt;
+      }
+    };
+  }
+
   /* ---------------------------------------------------------------- record */
 
   function recordCell(rec, minYears) {
@@ -272,7 +293,7 @@
     bandOf: bandOf, subsidyNow: subsidyNow, productOf: productOf, typeName: typeName,
     ymdLong: ymdLong, addDays: addDays, money: money, pct: pct, levelPct: levelPct, odds: odds, esc: esc,
     bandLabel: bandLabel, offerRow: offerRow, forHerd: forHerd, salesClose: salesClose, centralNow: centralNow,
-    centralClock: centralClock, recordTable: recordTable, backPerDollar: backPerDollar, productName: productName,
+    centralClock: centralClock, salesDay: salesDay, recordTable: recordTable, backPerDollar: backPerDollar, productName: productName,
     testLabel: testLabel, verdict: verdict, regimeName: regimeName, testsTable: testsTable, closestCall: closestCall,
     twin: twin
   };

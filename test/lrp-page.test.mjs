@@ -187,3 +187,29 @@ test("LRP is in the menu, the phone drawer, the footer and the static fallbacks"
   assert.match(read("prf.html"), /href="\/lrp"/);
   assert.match(read("cattle-futures-prices.html"), /href="\/lrp" class="ra"/);
 });
+
+test("offers are dated by the file's sales day and posting time, and closed from sales_close_utc on", () => {
+  const T = { sed: "20261015", sales_day: "2026-10-15", posted_utc: "2026-10-15T19:22:12Z",
+    sales_close_ct: "2026-10-16T08:25", sales_close_utc: "2026-10-16T13:25:00Z" };
+  const d = L.salesDay(T);
+  assert.equal(d.dayText, "Oct 15, 2026");
+  assert.equal(d.posted, "Oct 15, 2:22 p.m. CT");
+  assert.equal(d.closeText, "8:25 a.m. CT on Oct 16, 2026");
+  assert.equal(d.closed(new Date("2026-10-16T13:24:59Z")), false);
+  assert.equal(d.closed(new Date("2026-10-16T13:25:00Z")), true, "never today's after the close");
+  // posted_utc not known yet: no posting time, nothing broken
+  const n = L.salesDay({ ...T, posted_utc: null });
+  assert.equal(n.posted, "");
+  // an older file with only sed: RMA's rule, 8:25 a.m. CT the next day
+  const o = L.salesDay({ sed: "20261014" });
+  assert.equal(o.closeText, "8:25 a.m. CT on Oct 15, 2026");
+  assert.equal(o.closed(new Date("2026-10-15T13:30:00Z")), true);
+  assert.equal(o.closed(new Date("2026-10-15T13:20:00Z")), false);
+});
+
+test("the page script labels offers with the sales day and says when sales on them closed", () => {
+  const ui = read("components/lrp-ui.js");
+  assert.match(ui, /L\.salesDay\(T\)/);
+  assert.match(ui, /Sales on these offers closed at/);
+  assert.match(ui, /posted by RMA/);
+});
