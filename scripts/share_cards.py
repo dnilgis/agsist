@@ -448,13 +448,15 @@ def _pic_tiles(c, p):
 def _pic_yearbars(c, p):
     """p: years [int], values [float], line (float or None), line_label, first, last"""
     vals = p["values"]
-    x, y, w, h = 60, 120, 1080, 260
+    x, y, w, h = 60, 128, 1080, 252
     mx = max(vals + [p.get("line") or 0]) or 1
     n = len(vals)
     bw = w / n
     for i, v in enumerate(vals):
         bh = v / mx * h
-        c.rect(x + i * bw + 1, y + h - bh, x + (i + 1) * bw - 2, y + h, GREEN2 if v < (p.get("line") or 0) else GOLD2)
+        if bh < 1:
+            continue
+        c.rect(x + i * bw + 1, y + h - bh, x + (i + 1) * bw - 2, y + h, GREEN2)
     c.rect(x, y + h, x + w, y + h + 2, GREY)
     if p.get("line"):
         ly = y + h - p["line"] / mx * h
@@ -466,7 +468,7 @@ def _pic_yearbars(c, p):
     c.text(x, 418, str(p["first"]), font("inter", 22, 400), MUTED)
     c.text(x + w, 418, str(p["last"]), font("inter", 22, 400), MUTED, anchor="rs")
     if p.get("legend"):
-        c.text(W - 60, 50, p["legend"], font("inter", 22, 400), MUTED, anchor="rs")
+        c.text(60, 86, p["legend"], font("inter", 23, 400), BODY)
 
 
 def _pic_number(c, p):
