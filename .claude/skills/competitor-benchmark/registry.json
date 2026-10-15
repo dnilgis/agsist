@@ -389,6 +389,46 @@
      "evidence": "snippets"
     }
    ]
+  },
+  "manure-value": {
+   "last_run": "2026-10-15",
+   "ours_total": 41,
+   "verdict": "close",
+   "report": "results/2026-10-15-manure-value.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "breakeven": {
+   "last_run": "2026-10-15",
+   "ours_total": 36,
+   "verdict": "close",
+   "report": "results/2026-10-15-breakeven.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "store-or-sell": {
+   "last_run": "2026-10-15",
+   "ours_total": 44,
+   "verdict": "yes, narrowly",
+   "report": "results/2026-10-15-store-or-sell.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "cash-rent": {
+   "last_run": "2026-10-15",
+   "ours_total": 44,
+   "verdict": "yes (county rent any state)",
+   "report": "results/2026-10-15-cash-rent.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
+  },
+  "farmland-atlas": {
+   "last_run": "2026-10-15",
+   "ours_total": 46,
+   "verdict": "yes for county record (hub 41); no for current land value",
+   "report": "results/2026-10-15-farmland-atlas.md",
+   "competitors": [],
+   "note": "competitor scores from search snippets; see report"
   }
  }
 }
