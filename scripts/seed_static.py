@@ -211,6 +211,14 @@ def _chg_cents(q):
 # for a price that is a delayed last trade, not a close. Yahoo quotes are never
 # CME settlements either way, so the words used are "closed" and "last trade".
 CLOSE_CT = {"grain": (13, 20), "cattle": (13, 5)}
+# When Yahoo's bar for the day becomes the settlement, Central time. Until then
+# the day's "close" is the last trade before the bell, not the settle. Live
+# cattle Oct 14 2026: 223.95 in every fetch from 18:16 UTC (1:16 p.m. CT) to
+# 03:46 UTC, then 223.90 from 04:01 UTC (11:01 p.m. CT) on. Oct 8, 12 and 13
+# turned over at the same 04:01 UTC fetch. Titles baked in that window said
+# "closed $223.95". A cattle bar counts as finished only from 11 p.m. CT on its
+# own date (a fetch before that reads the previous close).
+SETTLE_CT = {"cattle": 23}
 
 
 def _grain_overnight(fc, cdd, market):
@@ -255,7 +263,8 @@ def quote_state(q, fetched, market="grain"):
     # 00:01 UTC fetches) was 481.0. That is a trade, not a close.
     # Just after midnight the bar still carries yesterday's date (it moved
     # to the new day between 23:01 and 00:31 CT on Oct 13-14).
-    if _grain_overnight(fc, cdd, market) or cdd > fc.date() or (cdd == fc.date() and before_close):
+    unsettled = market in SETTLE_CT and cdd == fc.date() and fc.hour < SETTLE_CT[market]
+    if _grain_overnight(fc, cdd, market) or cdd > fc.date() or (cdd == fc.date() and before_close) or unsettled:
         h12 = fc.hour % 12 or 12
         ampm = "a.m." if fc.hour < 12 else "p.m."
         return True, f"{md(fc)}, {h12}:{fc.minute:02d} {ampm} CT"

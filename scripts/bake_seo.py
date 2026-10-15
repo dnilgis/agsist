@@ -1086,8 +1086,9 @@ def selftest():
                {"name": "MAP + Sulfur", "price": 930, "prev": 930, "as_of": "2026-08-01"},
                {"name": "Amm. Sulfate", "price": 460, "as_of": "2026-08-01"},
                {"name": "K-Mag Premium", "price": 650, "as_of": "2026-06-20"}]},
-           "prices": {"fetched": "2026-08-14T20:05:00Z",
+           "prices": {"fetched": "2026-08-15T04:35:00Z",
                       # every quote is dated: titles take finished sessions only
+                      # (11:35 p.m. CT Friday: past the cattle settle, see SETTLE_CT)
                       "quotes": {"corn": {"close": 459.25, "close_date": "2026-08-14"},
                                  "beans": {"close": 1176.25, "close_date": "2026-08-14"},
                                  "wheat": {"close": 674.0, "close_date": "2026-08-14"},
@@ -1423,8 +1424,11 @@ def selftest():
     ck("an in-session cattle quote is not baked; the previous close is, dated",
        "341.27" not in t_in + d_in and "$340.02" in d_in and "$224.25" in d_in
        and "on Oct 5." in d_in and "a.m." not in d_in, d_in)
-    t_cl, d_cl = _cat("2026-10-06T20:35:00Z", "2026-10-06")
-    ck("an after-close cattle quote says closed, with its day",
+    t_pm, d_pm = _cat("2026-10-06T20:35:00Z", "2026-10-06")
+    ck("after the bell but before the settle is posted, the previous close is baked",
+       "341.27" not in t_pm + d_pm and "$340.02" in d_pm and "on Oct 5." in d_pm, d_pm)
+    t_cl, d_cl = _cat("2026-10-07T04:35:00Z", "2026-10-06")
+    ck("a cattle quote fetched after 11 p.m. CT says closed, with its day",
        "Feeder cattle closed $341.27" in d_cl and "on Oct 6." in d_cl, d_cl)
     d_wk = _cat("2026-10-10T13:35:00Z", "2026-10-09")[1]
     ck("a Saturday run on Friday's quote says closed", "closed" in d_wk and "Oct 9" in d_wk, d_wk)
@@ -1456,9 +1460,17 @@ def selftest():
        sc and sc["px"] == 481.0 and sc["date"] == "2026-10-14" and sc["net"] == -1.75, sc)
     ck("no timing in the file means nothing is baked",
        settled_close({"close": 481.0}, "", "grain") is None)
-    ck("cattle has no overnight: an evening run reads the day's close",
-       settled_close({"close": 223.95, "close_date": "2026-10-14", "netChange": -0.7,
-                      "prev_date": "2026-10-13"}, "2026-10-15T03:16:15Z", "cattle")["px"] == 223.95)
+    # Oct 15 03:16 UTC (10:16 p.m. CT Oct 14): Yahoo still carried the last
+    # trade, 223.95. The settle, 223.90, arrived at the 04:01 UTC fetch. The
+    # finished session at 03:16 UTC is Oct 13 (223.95 - (-0.725) = 224.675).
+    lc_eve = {"close": 223.95, "close_date": "2026-10-14", "netChange": -0.725,
+              "prev_date": "2026-10-13"}
+    sc = settled_close(lc_eve, "2026-10-15T03:16:15Z", "cattle")
+    ck("an evening cattle run does not call the last trade the close",
+       sc and sc["px"] == 224.675 and sc["date"] == "2026-10-13" and sc["net"] is None, sc)
+    sc = settled_close(dict(lc_eve, close=223.9), "2026-10-15T05:31:30Z", "cattle")
+    ck("after 11 p.m. CT the cattle bar is the day's settle",
+       sc and sc["px"] == 223.9 and sc["date"] == "2026-10-14", sc)
     mk = seo_markets(dict(ctx, today=date(2026, 10, 14), prices={
         "fetched": "2026-10-14T13:31:00Z",
         "quotes": {"corn": {"close": 481.25, "netChange": -1.5, "close_date": "2026-10-14",
