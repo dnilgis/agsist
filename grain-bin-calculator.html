@@ -124,7 +124,8 @@
     .content-section h2 { font-family:var(--font-display); font-size: 1.1rem; color: var(--text); margin-bottom: 8px; font-weight: 600; }
     .content-section p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 14px; }
     .content-section a { color: var(--green); }
-    .gb-byline { font-size: 0.8rem; color: var(--text-dim); margin: -4px 0 12px; }
+    #pack:disabled { opacity: .55; cursor: not-allowed; }
+    .gb-byline { font-size: 0.8rem; color: var(--text-dim); max-width: 1100px; margin: -4px auto 12px; }
     .gb-byline a { color: var(--text-dim); }
     .gb-check { margin: 0 0 18px; }
     .gb-check summary { cursor: pointer; font-weight: 600; color: var(--text); font-size: 0.9rem; padding: 6px 0 10px; }
@@ -368,7 +369,7 @@
               <path id="svg-surface" d="" fill="none" stroke="#daa520" stroke-width="2" opacity="0.8" clip-path="url(#bin-clip)"/>
               <path id="svg-above" d="" fill="url(#grain-tex)" opacity="0.85"/>
               <path id="svg-above-line" d="" fill="none" stroke="#daa520" stroke-width="2" opacity="0.8"/>
-              <g font-family="'JetBrains Mono',monospace" font-size="10" fill="#8a8a82">
+              <g id="dim-d-g" font-family="'JetBrains Mono',monospace" font-size="10" fill="#8a8a82">
                 <line x1="55" y1="258" x2="225" y2="258" stroke="#6a6a62" stroke-width="1"/>
                 <line x1="55" y1="254" x2="55" y2="262" stroke="#6a6a62" stroke-width="1"/>
                 <line x1="225" y1="254" x2="225" y2="262" stroke="#6a6a62" stroke-width="1"/>
@@ -895,6 +896,10 @@
     $('cap-unit').setAttribute('y',tY+17);
     $('cap-num').textContent=isFinite(bu)?fN(bu):NA;   // same figure as the headline, 0 included
     var shown=fillR>0.12||(sh==='hopper'&&bu>0);
+    // White reads on grain; off the grain (low fill, or only the hopper full) use the label gray
+    $('cap-num').setAttribute('fill',fillR>0.25?'#fff':'#8a8a82');
+    // the hopper hangs below the walls, so the diameter line moves under it
+    $('dim-d-g').setAttribute('transform',sh==='hopper'?'translate(0,26)':'');
     $('cap-num').setAttribute('opacity',shown?'0.9':'0.35');
     $('cap-unit').setAttribute('opacity',shown?'0.7':'0.25');
   }
