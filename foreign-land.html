@@ -117,6 +117,8 @@
       .vp-tile:hover{transform:none}
       .vp-ver{display:block;padding:16px 18px}
       .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
+      .fl-by{font-size:.8rem;color:var(--text-dim,#8a948f);margin:.6rem 0 0}
+      .fl-by a{color:var(--gold);text-decoration:none}
       .vp-word{font-size:1.02rem;display:inline-block;vertical-align:middle}
       .vp-sent{font-size:.9rem;margin-top:10px}
       .vp-ver select{margin-bottom:10px}
@@ -208,6 +210,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     <p class="fl-kicker page-kicker">USDA AFIDA disclosures &middot; 2010&ndash;2024 &middot; county by county</p>
     <h1>Who owns American farmland from abroad</h1>
     <p class="fl-sub page-lede">USDA counts <strong>46.3 million acres</strong> of U.S. agricultural land held by foreign investors at the end of 2024, 3.6% of privately held agricultural land, and nearly double 2010, spread across <strong>2,559 counties</strong>. The biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s disclosure files.</p>
+    <p class="fl-by">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; USDA AFIDA filings through Dec 31, 2024</p>
   </header>
 
   <section class="vp-ver" aria-live="polite">
@@ -547,6 +550,11 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
   document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
     if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
   document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
+  // AFIDA counts leases of 10 years or more as holdings, and this file does not
+  // split owned from leased. Iowa: Iowa State CARD (2025, on 2023 filings) finds
+  // most foreign interest there is long-term leases, mostly for wind turbines.
+  var LEASE_NOTE={_:'AFIDA counts leases of 10 years or more (wind turbine leases among them) as holdings; these filings do not split owned from leased.',
+    IA:'Most of it is not ownership: Iowa State\u2019s CARD finds most foreign interest in Iowa land is long-term leases, mostly for wind turbines (2023 filings). AFIDA counts leases of 10 years or more as holdings.'};
   function buildVerdicts(j){
     var by={}, out={};
     var N2A={}; Object.keys(__A2F).forEach(function(a){ N2A[__A2F[a].toLowerCase()]=a; });
@@ -565,17 +573,29 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     function q(v){ var i=0; while(i<vals.length&&vals[i]<v)i++; return i/vals.length; }
     Object.keys(by).forEach(function(st){
       if(!__A2F[st])return;
-      var cur=by[st][latestYr]||0, base=by[st]['2015']||by[st][Object.keys(by[st]).sort()[0]]||0;
-      var ch=base?100*(cur-base)/base:null;
+      // The label reads the last five years, not since 2010: Iowa is +193%
+      // since 2010 but peaked in 2020 and sits 8% under that peak in 2024.
+      var yrs=Object.keys(by[st]).filter(function(y){return by[st][y]>0;}).sort();
+      var cur=by[st][latestYr]||0, y0=yrs[0], first=y0?by[st][y0]:0;
+      var ry=yrs.filter(function(y){return +y>=latestYr-4&&+y<latestYr;})[0];
+      var rbase=ry?by[st][ry]:0;
+      var ch=rbase?100*(cur-rbase)/rbase:null, chAll=first&&y0!=String(latestYr)?100*(cur-first)/first:null;
+      var pk=yrs.reduce(function(m,y){return by[st][y]>by[st][m]?y:m;},yrs[0]||String(latestYr));
       var word,c;
       if(ch!=null&&ch>=50){word='GROWING FAST';c='#e0685f';}
       else if(ch!=null&&ch>=10){word='GROWING';c='#d4a23f';}
       else if(ch!=null&&ch>-10){word='HOLDING STEADY';c='#8a948f';}
-      else {word='SHRINKING';c='#5fc28a';}
+      else if(ch!=null){word='SHRINKING';c='#5fc28a';}
+      else {word='TOO NEW TO CALL';c='#8a948f';}
       var qq=q(cur), t=qq>=0.8?'#af3a32':(qq>=0.6?'#9c4b3d':(qq>=0.4?'#a8823c':(qq>=0.2?'#3a4144':'#396d4f')));
       var lab=cur>=1e6?(cur/1e6).toFixed(1)+'M':Math.round(cur/1e3)+'k';
-      out[st]={big:lab,word:word,col:c,tile:t,tval:lab,
-        sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(ch!=null?(', '+(ch>=0?'up ':'down ')+Math.abs(ch).toFixed(0)+'\u0025 since '+(by[st]['2015']?'2015':'the earliest filing')):'')+'. Tap the county map below to see exactly where, and whose.'};
+      var pct=function(x){return (x>=0?'up ':'down ')+Math.abs(x).toFixed(0)+'\u0025';};
+      var trend=[];
+      if(ch!=null) trend.push(pct(ch)+(pk===ry&&cur<rbase?' from its '+ry+' peak':' since '+ry));
+      if(pk!==String(latestYr)&&cur<by[st][pk]*0.95&&pk!==ry) trend.push(pct(100*(cur-by[st][pk])/by[st][pk])+' from its '+pk+' peak');
+      if(chAll!=null&&y0!==ry) trend.push(pct(chAll)+' since '+y0);
+      out[st]={big:lab,word:word+(ry?' SINCE '+ry:''),col:c,tile:t,tval:lab,
+        sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(trend.length?', '+trend.join(', '):'')+'. '+(LEASE_NOTE[st]||LEASE_NOTE._)+' Tap the county map below to see exactly where, and whose.'};
     });
     return out;
   }

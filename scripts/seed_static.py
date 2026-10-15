@@ -1235,6 +1235,19 @@ def storage_html(d, today):
     rows = [(st, r) for st, r in cr["states"].items() if r.get("ratio") is not None]
     rows.sort(key=lambda x: -x[1]["ratio"])
     short = [st for st, r in rows if r["ratio"] > 1]
+    # A state missing one NASS figure still has a floor: the grain NASS did
+    # publish over the bins. A missing crop can only push it up, so when the
+    # floor is already over 1.00x it is shown as "at least" instead of dropped.
+    # A floor is cut, not rounded: Wisconsin 2026 is 808.5 / 780 = 1.0366 with
+    # no wheat stocks figure, so "at least 1.03x" (rounding would print 1.04).
+    floors = []
+    for st, r in cr["states"].items():
+        if r.get("ratio") is not None or not r.get("cap") or not str(r.get("why", "")).startswith("NASS has no state figure for "):
+            continue
+        held = sum((r.get("stocks") or {}).values()) + sum(v[0] for v in (r.get("fall") or {}).values())
+        if held / r["cap"] > 1:
+            floors.append((st, r, held))
+    floors.sort(key=lambda x: -x[2] / x[1]["cap"])
     per = sorted({v[1] for _, r in rows for v in r.get("fall", {}).values()})
     # NASS's annual final for a crop comes the January after harvest, and this
     # block only ever runs for the current year, so a "YEAR" row here is NASS's
@@ -1242,19 +1255,40 @@ def storage_html(d, today):
     per_txt = ", ".join("latest NASS estimate" if p == "YEAR" else
                         p.replace("YEAR - ", "").replace(" FORECAST", " forecast").title().replace("Forecast", "forecast")
                         for p in per) or "forecast"
-    trs = "".join(
-        f"<tr><td>{_e(ST_NAME.get(st, st))}</td><td class=\"num\">{r['ratio']:.2f}&times;</td>"
-        f"<td class=\"num\">{_commas(round(sum(r['stocks'].values()) / 1e6))}</td>"
-        f"<td class=\"num\">{_commas(round(sum(v[0] for v in r['fall'].values()) / 1e6))}</td>"
-        f"<td class=\"num\">{_commas(round(r['cap'] / 1e6))}</td></tr>" for st, r in rows)
-    none = sorted(ST_NAME.get(st, st) for st, r in cr["states"].items() if r.get("ratio") is None and r.get("why"))
+    mb = lambda x: _commas(round(x / 1e6)) if x else "-"
+    floor2 = lambda x: int(x * 100) / 100
+
+    def tr(st, ratio_txt, stocks, fall, cap, note=""):
+        # on a phone the three input columns fold into one line under the state
+        name = _e(ST_NAME.get(st, st)) + (f" <span class=\"st-note\">{note}</span>" if note else "")
+        held_txt = (f"{mb(stocks)} stocks + " if stocks else "") + f"{mb(fall)} crop"
+        return (f"<tr><td>{name}<span class=\"st-in\">{held_txt}, {mb(cap)} bins</span></td>"
+                f"<td class=\"num\">{ratio_txt}</td><td class=\"num st-c\">{mb(stocks)}</td>"
+                f"<td class=\"num st-c\">{mb(fall)}</td><td class=\"num st-c\">{mb(cap)}</td></tr>")
+    trs = "".join(tr(st, f"{r['ratio']:.2f}&times;", sum(r['stocks'].values()),
+                     sum(v[0] for v in r['fall'].values()), r['cap']) for st, r in rows)
+    if floors:
+        trs += ("<tr class=\"st-sub\"><td colspan=\"5\">Missing a NASS figure, so a floor: the grain NASS did "
+                "publish is already more than the bins</td></tr>")
+        trs += "".join(tr(st, f"at least {floor2(held / r['cap']):.2f}&times;", sum((r.get('stocks') or {}).values()),
+                          sum(v[0] for v in (r.get('fall') or {}).values()), r['cap'],
+                          _e(r["why"].replace("NASS has no state figure for ", "no figure for ")))
+                       for st, r, held in floors)
+    none = sorted(ST_NAME.get(st, st) for st, r in cr["states"].items()
+                  if r.get("ratio") is None and r.get("why") and st not in {f[0] for f in floors})
     out = (lead + f"<p>This fall, <strong>{len(short)} of {len(rows)}</strong> states with full NASS figures have "
            f"more grain to hold than bin space: September 1 stocks plus the {yr} corn, soybean and sorghum crop "
-           f"({_e(per_txt)}), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p>"
-           f"<div class=\"tblscroll\"><table class=\"bs-tbl\"><caption>Million bushels &middot; most crowded first"
-           f"</caption><tr><th>State</th><th style=\"text-align:right\">Grain vs bins</th>"
-           f"<th style=\"text-align:right\">Sept 1 stocks</th><th style=\"text-align:right\">{yr} fall crop</th>"
-           f"<th style=\"text-align:right\">Capacity</th></tr>{trs}</table></div>")
+           f"({_e(per_txt)}), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p>")
+    if yr == 2026:
+        # farmdoc's own conclusion, read 2026-10-15; it is about this year only
+        out += (f"<p>That does not mean the bins run out. {FARMDOC} looked at how fast each state has cleared the "
+                f"pressure from September to December in past years and concluded that, on current production "
+                f"expectations, a storage crunch is unlikely in 2026. It can still pinch in some places, because bins, "
+                f"stocks and crops are spread unevenly. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>")
+    out += (f"<div class=\"tblscroll\"><table class=\"bs-tbl bs-st\"><caption>Million bushels &middot; most crowded first"
+            f"</caption><tr><th>State</th><th style=\"text-align:right\">Grain vs bins</th>"
+            f"<th class=\"st-c\" style=\"text-align:right\">Sept 1 stocks</th><th class=\"st-c\" style=\"text-align:right\">{yr} fall crop</th>"
+            f"<th class=\"st-c\" style=\"text-align:right\">Capacity</th></tr>{trs}</table></div>")
     if none:
         out += f"<p>No ratio where NASS has no state figure for a crop the state grows: {_e(', '.join(none))}.</p>"
     out += (f"<p>Same measure as {FARMDOC}. Wheat, barley and oats are harvested by September 1, so they count once, "
