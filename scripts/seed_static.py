@@ -211,6 +211,14 @@ def _chg_cents(q):
 # for a price that is a delayed last trade, not a close. Yahoo quotes are never
 # CME settlements either way, so the words used are "closed" and "last trade".
 CLOSE_CT = {"grain": (13, 20), "cattle": (13, 5)}
+# When Yahoo's bar for the day becomes the settlement, Central time. Until then
+# the day's "close" is the last trade before the bell, not the settle. Live
+# cattle Oct 14 2026: 223.95 in every fetch from 18:16 UTC (1:16 p.m. CT) to
+# 03:46 UTC, then 223.90 from 04:01 UTC (11:01 p.m. CT) on. Oct 8, 12 and 13
+# turned over at the same 04:01 UTC fetch. Titles baked in that window said
+# "closed $223.95". A cattle bar counts as finished only from 11 p.m. CT on its
+# own date (a fetch before that reads the previous close).
+SETTLE_CT = {"cattle": 23}
 
 
 def _grain_overnight(fc, cdd, market):
@@ -259,7 +267,8 @@ def quote_state(q, fetched, market="grain"):
     # 00:01 UTC fetches) was 481.0. That is a trade, not a close.
     # Just after midnight the bar still carries yesterday's date (it moved
     # to the new day between 23:01 and 00:31 CT on Oct 13-14).
-    if _grain_overnight(fc, cdd, market) or cdd > fc.date() or (cdd == fc.date() and before_close):
+    unsettled = market in SETTLE_CT and cdd == fc.date() and fc.hour < SETTLE_CT[market]
+    if _grain_overnight(fc, cdd, market) or cdd > fc.date() or (cdd == fc.date() and before_close) or unsettled:
         h12 = fc.hour % 12 or 12
         ampm = "a.m." if fc.hour < 12 else "p.m."
         return True, f"{md(fc)}, {h12}:{fc.minute:02d} {ampm} CT"
@@ -1519,8 +1528,6 @@ def milk_seeds(d, today):
             seeds["milkprodsrc"] = f"USDA survey averages of what plants sold, {sh}. They feed the formulas. They are not CME spot closes."
         STRIP_TAIL = cells
         # the spread line (spread()); hidden, as the script hides it, when the block is not shown
-        spread_tail = (' How far apart the two classes sit matters for your check. <a class="dp-jump" '
-                       'href="#dp-trap">Why: the trap, when your best milk pays you less</a></p>')
         if _pos(c3) and _pos(c4):
             s = _jr(c3 - c4, 2)
             a = _fixed(abs(s), 2)
@@ -1528,7 +1535,10 @@ def milk_seeds(d, today):
             seeds["milkspread"] = (f'<p class="dp-spread" id="dp-spread"{" hidden" if stale else ""}>'
                                    f"<strong>Class III minus Class IV, {sh}: <span id=\"dp-spread-val\">"
                                    f"{'+' if s > 0 else MINUS if s < 0 else ''}${a}/cwt</span>.</strong> "
-                                   f'<span id="dp-spread-words">{words}</span>' + spread_tail)
+                                   f'<span id="dp-spread-words">{words}</span>'
+                                   f'<span id="dp-spread-why">{milk_spread_why(s)}</span></p>')
+            seeds["milktrapnow"] = (f'<p class="dp-sec-intro dp-trap-now" id="dp-trap-now"{" hidden" if stale else ""}>'
+                                    f"{milk_trap_now(s, sh)}</p>")
         # the waterfall (render(..., true)) and the sandbox's starting point
         sc = d.get("survey_cheese") if _pos(d.get("survey_cheese")) else d.get("cheese")
         sw = d.get("survey_whey") if _pos(d.get("survey_whey")) else d.get("whey")
@@ -1591,6 +1601,79 @@ def milk_seeds(d, today):
     if st:
         seeds["milkstates"] = st
     return seeds, seed_key
+
+
+MILK_MB_DATA = "data/dairy-mailbox.json"
+MILK_MB_LINK = '<a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>'
+
+
+def milk_mailbox_seeds(mb, today):
+    """The mailbox price, dated, from data/dairy-mailbox.json (scripts/
+    fetch_mailbox.py). AMS posts each month about three months after it ends,
+    so a month up to four back is the newest there is. Five or more back means
+    newer months are out and not loaded: the strip cell becomes a dash with the
+    reason and the dated figure stays only in the list, labeled older.
+    Until 2026-10-15 March 2026 was typed by hand, labeled "not current", with
+    no way to pick up a newer month."""
+    if not isinstance(mb, dict) or not _pos(mb.get("value")):
+        return {}
+    idx = _mkey(mb.get("month_key"))
+    now_idx, _ = _milk_now(today)
+    if idx is None or idx >= now_idx:
+        return {}
+    v, ml, sh = mb["value"], _ilong(idx), MON3[idx % 12]
+    yc = mb.get("year_ago_change")
+    behind = now_idx - idx >= 5
+    yr = ""
+    if _fin(yc):
+        r = float(_fixed(yc, 2))
+        yr = (", unchanged from a year earlier" if r == 0 else
+              f", {'up' if r > 0 else 'down'} ${_fixed(abs(r), 2)} from a year earlier")
+    lag = "AMS posts each month about three months after it ends."
+    if behind:
+        li_txt = (f"Older figure: the newest mailbox month loaded here is {ml}. Federal-order average "
+                  f"<strong>{_cwt(v)}/cwt</strong>{yr}. {lag} Newer months should be out; see the {MILK_MB_LINK}.")
+        # no id on the dash: components/loader.js shimmers an id'd dash for 6 s
+        # waiting for a fill that never comes here (nothing fills it live)
+        cell = _cell("mb", "Mailbox price", "-", "", "", "dp-flat",
+                     f"Newest loaded: {ml}. Newer AMS months not loaded yet.").replace(' id="mb-val">', ' data-mb="none">')
+    else:
+        li_txt = (f"Mailbox price, {ml}: federal-order average <strong>{_cwt(v)}/cwt</strong>{yr}. "
+                  f"{lag} Source: {MILK_MB_LINK}.")
+        chg, cls = "", "dp-flat"
+        if _fin(yc):
+            chg, cls = f"{_arr(yc)} {_sg(yc, 2)} vs {_ishort(idx - 12)}", _cl(yc)
+        cell = _cell("mb", "Mailbox price", _cwt(v), "/cwt", chg, cls, f"USDA AMS · {ml}")
+    row = (f'<div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Your mailbox price</div>'
+           f'<div class="dp-row-desc">What actually landed. In {ml} the federal-order mailbox average was {_cwt(v)}/cwt{yr}'
+           f'{" (an older month: newer AMS figures are out and not loaded here yet)" if behind else ""}. '
+           "This is the only number that pays your bills, and it's the one the market reports never lead with.</div></div>"
+           f'<div class="dp-row-val">{_cwt(v)}<span class="u">/cwt</span></div></div>')
+    return {"milkmbli": f'<li><span class="n">{sh}</span><span id="dp-v-mb">{li_txt}</span></li>',
+            "milkmbcell": cell, "milkmbrow": row}
+
+
+def milk_spread_why(s):
+    """The spread line's tail, the page script's spreadWhy(). The trap section
+    is written for cheese on top; when Class IV leads, say so instead of
+    pointing at it as this month's story (2026-10-15 head to head: Sep 2026
+    had Class IV $2.90 over Class III under a line that read as the trap)."""
+    if s < 0:
+        return (" The trap below is the reverse case, cheese above butter and powder. With Class IV on top "
+                "the same pooling math works against butter and powder plants instead. "
+                '<a class="dp-jump" href="#dp-trap">See the trap</a>')
+    return (' How far apart the two classes sit matters for your check. <a class="dp-jump" '
+            'href="#dp-trap">Why: the trap, when your best milk pays you less</a>')
+
+
+def milk_trap_now(s, sh):
+    """The line under the trap heading, the page script's trapNow()."""
+    a = _fixed(abs(s), 2)
+    if s < 0:
+        return f"Which way it runs now: in {sh}, Class IV was ${a} above Class III. That is the reverse of the case below."
+    if s > 0:
+        return f"Which way it runs now: in {sh}, Class III was ${a} above Class IV. That is the case below."
+    return f"Which way it runs now: in {sh}, Class III and Class IV were equal."
 
 
 def milk_fall(cheese, whey, fat, c3, month, math=None):
@@ -1741,6 +1824,7 @@ def seed_milk(today):
         return False
     seeds, key = milk_seeds(d, today)
     js = seeds.pop("__js", None)
+    seeds.update(milk_mailbox_seeds(_load_json(MILK_MB_DATA), today))
 
     def extra(t):
         if key:

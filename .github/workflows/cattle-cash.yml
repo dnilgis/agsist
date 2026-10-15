@@ -1,0 +1,71 @@
+name: Cattle cash prices
+
+# Writes data/cattle-cash.json for the cash block on cattle-futures-prices.html:
+# the boxed beef cutout (USDA AMS LM_XB403, each trading day) and the 5-area
+# weekly fed steer price (USDA AMS LM_CT150, weekly). Public AMS PDFs, read by
+# scripts/fetch_cattle_cash.py. The page shows nothing until this file exists.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves what AMS returned
+# to data/cattle-cash-raw/ and commits it, so the real PDF layout can be checked
+# against the parser before trusting a number.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw AMS PDFs and text to data/cattle-cash-raw/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '43 21 * * 1-5'   # after the PM cutout
+    - cron: '17 15 * * 1,2'   # the weekly 5-area report, early in the week
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cattle-cash
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_cattle_cash.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_cattle_cash.py --probe
+      - name: Fetch and write data/cattle-cash.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_cattle_cash.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/cattle-cash.json data/cattle-cash-raw"
+          rm -rf /tmp/cc && mkdir -p /tmp/cc
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/cc/ || true
+          done
+          [ -n "$(ls -A /tmp/cc)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/cc/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update cattle cash prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

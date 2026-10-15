@@ -94,3 +94,49 @@ test('the component and product blocks name only the file\'s class month', () =>
     }
   }
 });
+
+// 2026-10-15 head to head: the trap section is written for Class III above
+// Class IV, and the spread line linked it as this month's story while Sep 2026
+// had Class IV $2.90 on top. The copy now follows the sign, baked and live.
+test('the spread line and the trap heading follow which class leads, baked and live alike', () => {
+  if (!(d.class3 > 0 && d.class4 > 0)) return;
+  const s = Math.round((d.class3 - d.class4) * 100) / 100;
+  const fn = (name) => {
+    const i = page.indexOf(`function ${name}(`);
+    assert.ok(i > 0, `${name} is in the page script`);
+    const j = page.indexOf('\n    }\n', i);
+    // eslint-disable-next-line no-new-func
+    return new Function(page.slice(i, j + 6) + `\nreturn ${name};`)();
+  };
+  const why = fn('spreadWhy')(s), now = fn('trapNow')(s, short(ci));
+  assert.ok(seedOf('milkspread').includes(`<span id="dp-spread-why">${why}</span>`), 'baked tail is the script\'s');
+  assert.ok(seedOf('milktrapnow').includes(`>${now}</p>`), 'baked which-way line is the script\'s');
+  if (s < 0) {
+    assert.match(now, /Class IV was \$[\d.]+ above Class III\. That is the reverse of the case below\./);
+    assert.doesNotMatch(why, /when your best milk pays you less/);
+  } else if (s > 0) {
+    assert.match(now, /That is the case below\./);
+  }
+});
+
+// 2026-10-15 head to head: the mailbox price was March 2026, typed by hand.
+// It now comes from data/dairy-mailbox.json (scripts/fetch_mailbox.py, the
+// dairy workflow) and the page names the month it is from wherever it shows.
+test('the mailbox price on the page is the file\'s, with its month', () => {
+  const mb = JSON.parse(fs.readFileSync(new URL('../data/dairy-mailbox.json', import.meta.url), 'utf8'));
+  const i = idx(mb.month_key);
+  assert.ok(Number.isFinite(i) && mb.value > 0, 'the file names a month and a price');
+  const li = seedOf('milkmbli'), cell = seedOf('milkmbcell'), row = seedOf('milkmbrow');
+  assert.ok(li.includes(long(i)) && li.includes(`<strong>${cwt(mb.value)}/cwt</strong>`), li);
+  assert.ok(li.includes('https://mymarketnews.ams.usda.gov/viewReport/3357'), 'links the AMS report');
+  assert.ok(row.includes(`In ${long(i)} the federal-order mailbox average was ${cwt(mb.value)}/cwt`), row);
+  const val = /(?:id="mb-val"|data-mb="none")>([^<]*)/.exec(cell)[1];
+  if (val === '-') {
+    assert.ok(cell.includes(`Newest loaded: ${long(i)}.`), cell);
+    assert.ok(li.startsWith(`<li><span class="n">${MONS[i % 12]}</span>`) && li.includes('Older figure'), li);
+  } else {
+    assert.equal(val, cwt(mb.value));
+    assert.ok(cell.includes(`USDA AMS · ${long(i)}`), cell);
+  }
+  assert.doesNotMatch(page, /Not in a public machine-readable feed/);
+});
