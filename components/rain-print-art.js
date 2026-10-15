@@ -20,7 +20,7 @@
  *   ovNote: what "usual" means, printed in the foot line ("A usual year: NOAA’s 30-year normal"),
  *   printDryMin: Staircase marks a dry stretch on the print from this many days (default 14),
  *   showNormals: month normals under the month totals,
- *   markers: [{doy, label}], records: AgRainRecords.find() output or [],
+ *   markers: [{doy, label}] (up to 5; see lastUnplaced), records: AgRainRecords.find() output or [],
  *   qr: {matrix, serial} or null, preview: {last ISO, later (optional words)} or null,
  *   logo: {href (a data:image/png URL), w, h (its pixels)} or null: the buyer's
  *     farm or business logo (2026-10-14), small, beside the name block. The
@@ -310,7 +310,7 @@
       items.forEach(function (it) { it.w = measureW(it.label); });
       var sol = items.length ? rowSolve(items, rows, ok, pair, h, bounds) : [];
       if (sol) return items.map(function (it, k) { return { it: it, x: sol[k].x, row: sol[k].row, y: rows[sol[k].row] }; });
-      if (items.length < 2) return items.map(function (it) { return { it: it, x: Math.max(62, Math.min(1738 - it.w, it.xs[0] - it.w / 2)), row: 0, y: rows[0], forced: true }; });
+      if (items.length < 2) { last_forced = true; return items.map(function (it) { return { it: it, x: Math.max(62, Math.min(1738 - it.w, it.xs[0] - it.w / 2)), row: 0, y: rows[0], forced: true }; }); }
       var bi = 0, bd = Infinity;
       for (var i = 0; i + 1 < items.length; i++) { var d = Math.min.apply(null, items[i + 1].xs) - Math.max.apply(null, items[i].xs); if (d < bd) { bd = d; bi = i; } }
       var A = items[bi], B = items[bi + 1];
@@ -365,7 +365,7 @@
     // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
-    var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, 3)
+    var markers = (I.markers || []).filter(function (mk) { return mk.doy >= 0 && mk.doy < n; }).slice(0, MAX_MARKS)
       .map(function (mk) {
         // the words, then the day itself; a day with no words already prints as its date
         var lb = String(mk.label || '').replace(/[\u0001\u0002]/g, ''), dt = days[mk.doy] && days[mk.doy].date, f = dt ? fmtDate(dt) : '';
@@ -377,7 +377,8 @@
       year: year, N: N, n: n, days: days, P: P, cum: cum, ncum: ncum, cmp: !!ov, ov: ov, normalRec: ov ? ov.total : null,
       starts: starts, ends: ends, monthHas: monthHas, month: D.month || Array(12).fill(0), mN: mN,
       total: total, T: Ts, liquid: liquid, full: full, snowState: snowState, snowNote: snowNote, snowTot: Math.round(snowTot * 10) / 10,
-      wi: wi, wet: wet, wetText: wet ? wetLabel + ': ' + f2(wet.p) + ' in, ' + fmtDate(wet.date) : null,
+      wi: wi, wet: wet, // the day in gray after the amount, like every other date on the print (2026-10-15)
+      wetText: wet ? wetLabel + ': ' + f2(wet.p) + ' in\u0001' + fmtDate(wet.date) + '\u0002' : null,
       daysText: (snowState === 'none' ? 'Days with rain' : 'Days with rain or snow') + ': ' + D.wet,
       snowText: full ? 'Snow: ' + (Math.round(snowTot * 10) / 10).toFixed(1) + ' in' : null,
       snowKey: full ? 'light blue: snow' : null,
@@ -385,22 +386,55 @@
       name: String(I.name || '').trim(), dedication: String(I.dedication || '').trim(), place: String(I.place || ''),
       showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar,
       gauge: String(I.gauge || '').trim(), gaps: P.some(function (p) { return p === null; }),
+      // days the station sent nothing at all (an S day rolled into a later total is not one)
+      missing: days.filter(function (x) { return x.v === null || x.v === undefined; }).length,
       // days the station sent nothing: the usual year leaves them out too, so its number is not NOAA's whole year
       unrecorded: days.some(function (x) { return x.v === null || x.v === undefined; })
     };
   }
 
   // ---------- records: which ones draw as a point, which as a line of text ----------
+  /* A remarkable day prints its date after its words, the way a reader's date does (Sig, 2026-10-15: "Biggest snow:
+     8.0 in Feb 3", the date in gray). A week or other stretch prints its range ("Wettest week: 3.10 in May 3 to 9");
+     a whole month or year is its own date and gets none. A tie note stays after the date: the date is the day drawn.
+     pt.label is the words alone (what the layer said); pt.text is what is drawn and measured. */
+  var TIE_RE = / \((?:also [^)]*|on \d+ days)\)$/;
+  function recDate(E, r, sp) {
+    if (sp) {
+      var f = String(sp.from), t = String(sp.to), y = +f.slice(0, 4), m = +f.slice(5, 7);
+      if (f.slice(8) === '01' && t.slice(0, 7) === f.slice(0, 7) && +t.slice(8) === new Date(Date.UTC(y, m, 0)).getUTCDate()) return '';
+      return f === t ? fmtDate(f) : fmtRange(f, t);
+    }
+    return fmtDate(r.date);
+  }
+  function dated(words, d) {
+    var m = TIE_RE.exec(words), head = m ? words.slice(0, m.index) : words;
+    return d ? head + '\u0001' + d + '\u0002' + (m ? m[0] : '') : words;
+  }
+  // a label with one date, as two lines: the words, then the date (and any tie note) under them
+  var TWO_DY = 19;
+  function splitDate(s) {
+    s = String(s);
+    var m = DATE_RE.exec(s);
+    if (!m || DATE_RE.test(s.slice(m.index + m[0].length))) return null;
+    return [s.slice(0, m.index), plain(s.slice(m.index)).trim()];
+  }
+  function twoBox(x, y, two, o, a) {
+    var b1 = box(x, y, two[0], Object.assign({}, o, { anchor: a })), b2 = box(x, y + TWO_DY, two[1], Object.assign(dateSt(o), { anchor: a }));
+    var x0 = Math.min(b1.x, b2.x), y0 = Math.min(b1.y, b2.y);
+    return { x: x0, y: y0, w: Math.max(b1.x + b1.w, b2.x + b2.w) - x0, h: Math.max(b1.y + b1.h, b2.y + b2.h) - y0 };
+  }
   function recordPoints(E, recs) {
     var pts = [], lines = [];
     (recs || []).forEach(function (r) {
       if (!r || !r.label) return;
-      var sp = r.span;
-      if (sp && sp.from && sp.to && sp.from.slice(5) === '01-01' && sp.to.slice(5) === '12-31') { lines.push(r.label); return; }
+      var sp = r.span && r.span.from && r.span.to ? r.span : null;
+      if (sp && sp.from.slice(5) === '01-01' && sp.to.slice(5) === '12-31') { lines.push(r.label); return; }
       var a = doyOf(E.year, sp ? sp.from : r.date), b = sp ? doyOf(E.year, sp.to) : a;
       if (a < 0 || a >= E.n) return;
-      if (b < a || b >= E.n) b = a;
-      pts.push({ i: Math.round((a + b) / 2), a: a, b: b, label: r.label, span: !!sp });
+      if (b < a || b >= E.n) { b = a; sp = sp ? { from: sp.from, to: sp.from } : null; }
+      var words = String(r.label).replace(/[\u0001\u0002]/g, '');
+      pts.push({ i: Math.round((a + b) / 2), a: a, b: b, label: words, text: dated(words, recDate(E, r, sp)), span: !!r.span });
     });
     pts.sort(function (p, q) { return p.i - q.i; });
     return { pts: mergeSameDay(pts), lines: lines };
@@ -408,7 +442,9 @@
 
   /* Two records on one day get one label (2026-10-13: "Biggest snow: 8.0 in"
      and "First snow: 8.0 in" printed twice on the same day). Same amount:
-     "First snow and biggest snow: 8.0 in". Different amounts: both, joined. */
+     "First snow and biggest snow: 8.0 in Nov 20". Different amounts: both,
+     joined, the day's date once at the end ("Coldest: -20°F; biggest snow: 9.0 in Jan 5"), or after
+     each part when a tie note sits in the middle ("Coldest: -20°F Jan 5 (also Jan 21); biggest snow: 9.0 in Jan 5"). */
   function mergeSameDay(pts) {
     var out = [];
     pts.forEach(function (p) {
@@ -416,10 +452,19 @@
       if (prev && !p.span && !prev.span && prev.a === p.a) {
         var A = /^(.*?): (.*)$/.exec(prev.label), B = /^(.*?): (.*)$/.exec(p.label);
         var first = function (x) { return /^(First|Last) /.test(x[1]) ? 0 : 1; };
+        var lc = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
+        var d = DATE_RE.exec(p.text);
         if (A && B && A[2] === B[2]) {
           var pair = first(A) <= first(B) ? [A, B] : [B, A];
-          prev.label = pair[0][1] + ' and ' + pair[1][1].charAt(0).toLowerCase() + pair[1][1].slice(1) + ': ' + A[2];
-        } else prev.label = prev.label + '; ' + p.label.charAt(0).toLowerCase() + p.label.slice(1);
+          prev.label = pair[0][1] + ' and ' + lc(pair[1][1]) + ': ' + A[2];
+          prev.text = dated(prev.label, d ? d[1] : '');
+        } else {
+          // one date at the end; a tie note before the last part keeps each date beside its own words, so no date reads as another's
+          prev.parts = (prev.parts || [{ label: prev.label, text: prev.text }]).concat([{ label: p.label, text: p.text }]);
+          prev.label = prev.parts.map(function (q, n) { return n ? lc(q.label) : q.label; }).join('; ');
+          prev.text = prev.parts.slice(0, -1).some(function (q) { return TIE_RE.test(q.label); })
+            ? prev.parts.map(function (q, n) { return n ? lc(q.text) : q.text; }).join('; ') : dated(prev.label, d ? d[1] : '');
+        }
         return;
       }
       out.push(p);
@@ -548,14 +593,16 @@
      15 u, down to 12 to stay one line; only past that does it take a second
      line above (never under 12 u). Inside the 0.6 in safe margin (last
      baseline 1132), left of the QR. */
-  var FOOT_Y = 1132, FOOT_GAP = 22;
+  var FOOT_Y = 1132, FOOT_GAP = 22, GAP_QUIET = 3;
   function smallLine(E, x, maxW, extra) {
     var parts = [];
     if (E.gauge) parts.push(E.gauge);
     // which mark is snow and which is rain, in plain words (Sig, 2026-10-13: tell them apart at a glance)
     if (E.full) parts.push(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow');
     if (E.snowNote) parts.push(E.snowNote);
-    if (E.gaps) parts.push(E.style2 ? 'A break in the ground line is a day the station sent no report' : 'A gap in the line is a day the station sent no report');
+    /* Gaps, said short (Sig, 2026-10-15: the full sentence was too long for the foot line; the page's station line
+       explains them in full). Three or fewer missing days say nothing on the print; more give the count. */
+    if (E.missing > GAP_QUIET) parts.push('Gaps: ' + E.missing + ' days with no report');
     (extra || []).forEach(function (t) { if (t) parts.push(t); });
     if (!parts.length) return null;
     var SEP = '  ·  ', st0 = { size: 15, fill: C.mute }, lines = [parts.join(SEP)];
@@ -955,7 +1002,7 @@
       var r = recs.pts[k], rg = ringAt[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
       var first = [[14, 30, 'start'], [-14, -18, 'end'], [14, 58, 'start'], [-14, -46, 'end'], [14, 86, 'start'], [-14, 30, 'end'], [14, -18, 'start'], [-14, -74, 'end'], [14, 114, 'start'], [-14, 58, 'end']];
       var pick = choose(spots(rg.x, rg.y, first, [14, 44, 90, 150]), function (c) {
-        var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
+        var b = box(c.x, c.y, r.text, Object.assign({}, rst, { anchor: c.a }));
         if (!inPlot(b)) return 0;
         var L = [rg.x, rg.y, c.x + (c.a === 'start' ? -3 : 3), b.y + b.h / 2];
         if (!room.clear(L, own, 8)) return 0;
@@ -1041,7 +1088,7 @@
       if (!pk) return;
       o.push(G0('rec:' + k) + '<circle cx="' + n2(rg.x) + '" cy="' + n2(rg.y) + '" r="5" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
       o.push('<path d="M' + n2(pk.L[0]) + ',' + n2(pk.L[1]) + 'L' + n2(pk.L[2]) + ',' + n2(pk.L[3]) + '" stroke="' + C.rec + '" stroke-width="0.8" stroke-dasharray="2 2"/>');
-      o.push(T(pk.x, pk.y, r.label, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
+      o.push(T(pk.x, pk.y, r.text, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
     });
     // the reader's dates
     marks.forEach(function (mk, k) {
@@ -1284,7 +1331,7 @@
         return room.free(b, 'wet', true) ? 2 : 1;
       });
       if (wetAt) { room.text(wetAt.b, 'wet'); if (wetAt.L) room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 1, 'wet', 'lead'); }
-      else foot.push(E.wetText);   // no clean spot under the ground: it is said in the footer
+      else foot.push(plain(E.wetText));   // no clean spot under the ground: it is said in the footer
     }
 
     // ---- remarkable days: an open ring on the ground line, the label down in the open soil, clear of every bar
@@ -1298,16 +1345,20 @@
         var pileTop = E.full && days[r.i].s > 0 ? G - 2.2 - Math.max(1.4, G - sy(days[r.i].s)) : G - 6;
         var sup = [];
         for (var sy0 = G - 8; sy0 >= G - SH - 40; sy0 -= 12) sup.push({ x: x + 9, y: sy0, a: 'start', up: 'side' }, { x: x - 9, y: sy0, a: 'end', up: 'side' });
-        for (var sy1 = pileTop - 10; sy1 >= G - SH - 40; sy1 -= 12) sup.push({ x: x, y: sy1, a: 'middle', up: 'over' });
-        var upPick = choose(sup, function (c) {
-          var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
+        // over the pile: centred, or (a long label with its date) reaching to one side, its leader still under its words
+        for (var sy1 = pileTop - 10; sy1 >= G - SH - 40; sy1 -= 12) sup.push({ x: x, y: sy1, a: 'middle', up: 'over' }, { x: x + 24, y: sy1, a: 'end', up: 'over' }, { x: x - 24, y: sy1, a: 'start', up: 'over' });
+        /* With its date a label can run too long to sit beside a tall pile: then the date goes on a second line
+           under the words, same side, same gray (2026-10-15), before the label leaves the snow for the soil. */
+        var two = splitDate(r.text), upTest = function (c) {
+          var b = c.two ? twoBox(c.x, c.y, two, rst, c.a) : box(c.x, c.y, r.text, Object.assign({}, rst, { anchor: c.a }));
           if (b.x < X0 || b.x + b.w > X1 || b.y + b.h > G - 4) return 0;
           if (c.up === 'side') { if (b.y + b.h < pileTop) return 0; c.L = null; }
           else { c.L = [x, pileTop - 3, x, b.y + b.h + 3]; if (c.L[3] - c.L[1] > -4 || !room.clear([x, c.L[3], x, c.L[1]], own, 0)) return 0; }
           if (!room.free(b, own, false)) return 0;
           c.b = b;
           return room.free(b, own, true) ? 2 : 1;
-        });
+        };
+        var upPick = choose(sup, upTest) || (two ? choose(sup.map(function (c) { return Object.assign({}, c, { two: two }); }), upTest) : null);
         if (upPick) {
           var itsU = [room.text(upPick.b, own)];
           if (upPick.L) itsU.push(room.seg(x, upPick.L[3], x, upPick.L[1], 0.8, own, 'lead'));
@@ -1321,7 +1372,7 @@
       var cols = rings.filter(function (rx, j) { return j !== k && !at[j]; });
       var spans = function (b) { return cols.some(function (rx) { return rx > b.x - 4 && rx < b.x + b.w + 4; }); };
       var test = function (open) { return function (c) {
-        var b = box(c.x, c.y, r.label, Object.assign({}, rst, { anchor: c.a }));
+        var b = box(c.x, c.y, r.text, Object.assign({}, rst, { anchor: c.a }));
         if (b.x < X0 || b.x + b.w > X1 || b.y < top0 + 6) return 0;
         if (!open && spans(b)) return 0;
         // the leader runs down the day's own column: it must not cut a bar or a word on the way
@@ -1396,7 +1447,8 @@
       if (!pk) return;
       o.push(G0('rec:' + k) + (pk.L ? line(rings[k], pk.L[1], rings[k], pk.L[3], C.rec, 0.8, ' stroke-dasharray="2 2"') : ''));
       o.push('<circle cx="' + n2(rings[k]) + '" cy="' + G + '" r="4.6" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
-      o.push(T(pk.x, pk.y, r.label, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
+      var rst2 = { size: 16, w: 500, fill: C.rec, anchor: pk.a };
+      o.push((pk.two ? T(pk.x, pk.y, pk.two[0], rst2) + T(pk.x, pk.y + TWO_DY, pk.two[1], Object.assign(dateSt(rst2), { anchor: pk.a })) : T(pk.x, pk.y, r.text, rst2)) + G1);
     });
     if (small) o.push(small.svg);
     o.push(qrMark(I.qr, X1, qrBottom));
@@ -1405,15 +1457,32 @@
     return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
-  var last_skipped = [], last_logo = null;
+  /* Up to five marked days (Sig, 2026-10-15: "as long as everything still fits"). The first three are always
+     drawn, as before. Past three, a set whose labels can only be drawn on top of each other (even merged into
+     one) loses its last-added day, then the one before, until it fits; those days are not drawn at all, and
+     lastUnplaced() names them (indexes into I.markers) so the page can tell the buyer. */
+  var MAX_MARKS = 5, KEEP_MARKS = 3;
+  var last_skipped = [], last_logo = null, last_forced = false, last_unplaced = [];
   function render(I) {
     measure = typeof I.measure === 'function' ? I.measure : defaultMeasure;
-    last_skipped = []; last_logo = null;
-    return I.style === 'r2' ? r2(I) : r1(I);
+    var all = (I.markers || []).map(function (mk, k) { return { mk: mk, k: k }; }), n = (I.days || []).length;
+    var live = all.filter(function (m) { return m.mk && m.mk.doy >= 0 && m.mk.doy < n; }).slice(0, MAX_MARKS), out = [], svg;
+    for (;;) {
+      last_skipped = []; last_logo = null; last_forced = false;
+      var J = I.markers ? Object.assign({}, I, { markers: live.map(function (m) { return m.mk; }) }) : I;
+      svg = J.style === 'r2' ? r2(J) : r1(J);
+      if (!last_forced || live.length <= KEEP_MARKS) break;
+      out.push(live.reduce(function (a, b) { return b.k > a.k ? b : a; }).k);
+      live = live.filter(function (m) { return m.k !== out[out.length - 1]; });
+    }
+    last_unplaced = out.sort(function (a, b) { return a - b; });
+    return svg;
   }
 
   root.AgRainArt = {
-    render: render, model: model, recordPoints: recordPoints, lastSkipped: function () { return last_skipped.slice(); },
+    render: render, model: model, recordPoints: recordPoints, plain: plain, lastSkipped: function () { return last_skipped.slice(); },
+    // marked days (indexes into the input's markers) the last render left off because they could not fit cleanly
+    lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
     STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW

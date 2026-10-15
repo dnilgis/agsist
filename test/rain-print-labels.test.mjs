@@ -27,12 +27,17 @@ function audit(spec, real = true) {
   const { I, svg, skipped } = draw(spec, real), t = texts(svg), id = caseId(spec) + (real ? "" : " (fallback widths)");
   const bad = HARD(check(svg));
   assert.deepEqual(bad.map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
-  for (const m of I.markers) if (m.label) assert.ok(t.some((x) => x.includes(m.label)), id + ": the reader's date \"" + m.label + "\" prints");
+  const unplaced = X.ART.lastUnplaced();
+  assert.ok(unplaced.every((k) => k >= 3), id + ": the first three marked days are always drawn: " + unplaced);
+  I.markers.forEach((m, k) => { if (m.label && !unplaced.includes(k)) assert.ok(t.some((x) => x.includes(m.label)), id + ": the reader's date \"" + m.label + "\" prints"); });
   const E = X.ART.model(I);
-  if (E.wetText) assert.ok(t.some((x) => x.includes(E.wetText)), id + ": the biggest rain prints");
-  const recLabels = X.ART.recordPoints(E, I.records).pts.map((p) => p.label);
+  if (E.wetText) assert.ok(t.some((x) => x.includes(X.ART.plain(E.wetText))), id + ": the biggest rain prints, with its date");
+  const recPts = X.ART.recordPoints(E, I.records).pts, recLabels = recPts.map((p) => p.label);
   for (const s of skipped) assert.ok(recLabels.includes(s), id + ": only a remarkable day may be left off, and it is named: " + s);
-  for (const l of recLabels) assert.ok(t.some((x) => x.includes(l)) !== skipped.includes(l), id + ": " + l + " is drawn or named, not both, not neither");
+  // a remarkable day prints with its date (the plotted day, or a stretch's range), counted by the checker above
+  // (beside a tall snow pile in Roots the date may sit on its own line under the words)
+  const drawn = (p) => { const [head, rest = ""] = p.text.split("\u0001"); return t.some((x) => x.includes(X.ART.plain(p.text))) || (rest !== "" && t.includes(head) && t.includes(X.ART.plain("\u0001" + rest).trim())); };
+  for (const p of recPts) assert.ok(drawn(p) !== skipped.includes(p.label), id + ": " + p.label + " is drawn or named, not both, not neither");
 }
 
 test("the checker catches what it is for (a green run means something)", () => {
@@ -147,7 +152,7 @@ test("the biggest rain is never dropped: R1 says it in the header, R2 in the foo
   // a wet day with the reader's dates on it and the next day: their drop lines fence the riser in
   const { svg } = draw({ ...base, style: "r1", data: "oneJan", seed: 924, normals: true, cmp: "none", name: "long", dedication: "none", place: "long", markers: "wetDay" });
   const E = X.ART.model(input(X, { ...base, style: "r1", data: "oneJan", seed: 924, cmp: "none", markers: "wetDay" }));
-  assert.ok(parse(svg).texts.some((t) => t.rp === "head" && t.s === E.wetText), "in the header");
+  assert.ok(parse(svg).texts.some((t) => t.rp === "head" && t.s === X.ART.plain(E.wetText)), "in the header");
   assert.equal(X.ART.lastSkipped().length, 0);
 });
 
@@ -166,4 +171,63 @@ test("the longest name, place and line, with and without a logo, draw with nothi
     const t = texts(svg);
     for (const want of [I.name, I.place, I.dedication]) assert.ok(t.includes(want), id + ": prints " + want);
   }
+});
+
+// ---------- remarkable days with their dates (Sig, 2026-10-15) ----------
+test("remarkable days with dates: wet, dry and snowy years, both styles, nothing overlaps and every date prints", () => {
+  for (const style of ["r1", "r2"]) for (const data of ["wet", "dry", "snowWinter"]) for (const records of ["all", "sameMonth", "sameDay"]) for (const real of [true, false]) {
+    const { I, svg, skipped } = draw({ ...base, style, data, records, markers: "spread" }, real), id = [style, data, records, real ? "real" : "table"].join(" ");
+    assert.deepEqual(HARD(check(svg)).map((b) => b.kind + ": " + b.a + " / " + b.b), [], id);
+    const t = texts(svg), pts = X.ART.recordPoints(X.ART.model(I), I.records).pts;
+    for (const p of pts) {
+      if (skipped.includes(p.label)) continue;
+      assert.ok(p.text !== p.label || (p.span && p.b - p.a >= 27), id + ": " + p.label + " carries a date unless it is a whole month");
+      const [head, rest = ""] = p.text.split("\u0001");
+      assert.ok(t.some((x) => x.includes(X.ART.plain(p.text))) || (rest !== "" && t.includes(head) && t.includes(X.ART.plain("\u0001" + rest).trim())), id + ": prints " + X.ART.plain(p.text));
+    }
+    // every record in the layer at once is a stress case: a few may be left off (named on the page), never all
+    assert.ok(skipped.length <= 4 && skipped.length < pts.length, id + ": skipped " + skipped.join("; "));
+  }
+});
+
+// ---------- up to five marked days (Sig, 2026-10-15: "as long as everything still fits") ----------
+test("five marked days: spread out and three in one week all fit, both styles; nothing overlaps", () => {
+  for (const style of ["r1", "r2"]) for (const data of ["usual", "wet", "dry", "snowWinter"]) for (const markers of ["five", "bunch3"]) for (const records of [false, "all"]) {
+    const spec = { ...base, style, data, markers, records };
+    audit(spec);
+    const { I, svg } = draw(spec), id = caseId(spec);
+    assert.equal(I.markers.length, 5, id);
+    assert.deepEqual([...X.ART.lastUnplaced()], [], id + ": all five drawn");
+    const t = texts(svg);
+    for (const m of I.markers) assert.ok(t.some((x) => x.includes(m.label + " ")), id + ": " + m.label + " prints with its date");
+    const dots = [...svg.matchAll(/<g data-rp="mark:(\d)">/g)].map((g) => +g[1]);
+    assert.ok(new Set(dots).size === 5, id + ": five marks drawn: " + [...new Set(dots)]);
+  }
+});
+
+test("five marked days crowded into one week or one day: still no overlap; what cannot fit is named, never the first three", () => {
+  for (const style of ["r1", "r2"]) for (const data of ["usual", "wet", "snowWinter"]) for (const markers of ["week5", "day5"]) for (const real of [true, false]) {
+    const spec = { ...base, style, data, markers, place: "long", name: "long", dedication: "long" };
+    audit(spec, real);
+    const { I, svg } = draw(spec, real), un = X.ART.lastUnplaced(), id = caseId(spec) + (real ? "" : " table");
+    for (const k of un) assert.ok(!texts(svg).some((x) => x.includes(I.markers[k].label)), id + ": a day left off is not drawn: " + I.markers[k].label);
+    assert.ok(un.length <= 2, id);
+  }
+});
+
+test("the art reports a day it left off, and more than five are cut to five", () => {
+  const spec = { ...base, style: "r2", data: "usual", markers: "five" };
+  const I = input(X, spec);
+  I.markers = I.markers.concat([{ doy: 320, label: "Sixth" }]);
+  X.ART.render(I);
+  assert.equal(X.ART.model(I).markers.length, 5, "five at most");
+  assert.ok(!texts(X.ART.render(I)).some((x) => x.includes("Sixth")));
+  // a label that can never fit (a whole row of words) on days 4 and 5 is left off and named; days 1 to 3 stay
+  const J = input(X, spec);
+  J.markers = J.markers.map((m, k) => (k >= 3 ? { doy: 130 + k, label: "W".repeat(24) } : m));
+  J.measure = measure;
+  const svg = X.ART.render(J), un = X.ART.lastUnplaced();
+  assert.deepEqual(HARD(check(svg)).map((b) => b.kind), [], "still clean");
+  for (const k of un) assert.ok(k >= 3, "only days past the third are left off");
+  assert.equal(typeof X.ART.MAX_MARKS, "number");
 });
