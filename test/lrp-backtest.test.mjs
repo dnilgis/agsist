@@ -10,8 +10,11 @@ const close = (a, b, tol, msg) => assert.ok(Math.abs(a - b) <= tol, `${msg || ''
 test('subsidy by reinsurance year and band (RULES.md table)', () => {
   assert.equal(B.subsidy(2019, 0.99), 0.13);
   assert.equal(B.subsidy(2014, 0.72), 0.13);
-  assert.equal(B.subsidy(2020, 0.99), 0.25);
-  assert.equal(B.subsidy(2020, 0.92), 0.30);
+  // RY2020 from RMA's own Summary of Business rows (see the next test), not RULES.md's snippet table
+  assert.equal(B.subsidy(2020, 0.99), 0.20);
+  assert.equal(B.subsidy(2020, 0.92), 0.25);
+  assert.equal(B.subsidy(2020, 0.87), 0.30);
+  assert.equal(B.subsidy(2020, 0.82), 0.30);
   assert.equal(B.subsidy(2020, 0.75), 0.35);
   assert.equal(B.subsidy(2021, 1.0), 0.35);
   assert.equal(B.subsidy(2027, 0.95), 0.35);
@@ -185,4 +188,32 @@ test('"did best so far" picks among the bands that have a record', () => {
   for (let i = 0; i < B.MIN_SETTLED; i++) { t2.push(mk('20151001', '20160101', '90-95', 5, 1, 2016)); t2.push(mk('20151001', '20160101', '85-90', 1, 1, 2016)); }
   t2.push(mk('20160201', '20160501', '90-95', 0, 1, 2016));
   assert.equal(B.pastBest(t2).get('feeder|13|20160201'), null);
+});
+
+test('the subsidy table matches what RMA\'s Summary of Business rows got, RY2014 to RY2021', async () => {
+  // data/lrp/meta.json sob_subsidy: {ry: {level %: {subsidy %: rows}}}. Per band, the
+  // subsidy most rows got must be the table's, and it must be most of the rows.
+  const { readFileSync } = await import('node:fs');
+  const sob = JSON.parse(readFileSync(new URL('../data/lrp/meta.json', import.meta.url), 'utf8')).sob_subsidy;
+  const want = { 2020: { '95-100': 20, '90-95': 25, '85-90': 30, '80-85': 30, '70-80': 35 } };
+  for (const ry of ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']) {
+    const by = {};
+    for (const [lv, d] of Object.entries(sob[ry])) {
+      const b = B.bandOf(+lv / 100);
+      if (!b) continue;
+      by[b] = by[b] || {};
+      for (const [s, n] of Object.entries(d)) by[b][s] = (by[b][s] || 0) + n;
+    }
+    for (const [b, d] of Object.entries(by)) {
+      const total = Object.values(d).reduce((x, y) => x + y, 0);
+      const [top, n] = Object.entries(d).sort((x, y) => y[1] - x[1])[0];
+      const lo = { '95-100': 0.975, '90-95': 0.925, '85-90': 0.875, '80-85': 0.825, '70-80': 0.75 }[b];
+      assert.equal(+top, Math.round(B.subsidy(+ry, lo) * 100), `RY${ry} ${b}`);
+      if (want[ry]) assert.equal(+top, want[ry][b], `RY${ry} ${b} pinned`);
+      // the rest are mostly beginning-farmer (+10 points) and zero-subsidy rows
+      if (total >= 10) assert.ok(n / total > 0.85, `RY${ry} ${b}: ${n} of ${total}`);
+    }
+  }
+  const c = B.subsidyCheck(sob);
+  assert.ok(c['2020'].agree_share > 0.95, `RY2020 agreement ${c['2020'].agree_share}`);
 });

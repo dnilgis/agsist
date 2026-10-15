@@ -243,7 +243,7 @@ jobs:
         run: |
           python scripts/fetch_lrp.py --publish "$HIST" --out data/lrp
           node scripts/lrp_backtest.mjs --history "$HIST" --out data/lrp/bt.json
-          node scripts/bake_lrp.mjs
+          if [ -f lrp.html ]; then node scripts/bake_lrp.mjs; fi
           python scripts/check_site_budget.py
 
       - name: Commit to main
@@ -256,9 +256,15 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             rm -rf "$P" && mkdir -p "$(dirname "$P")" && cp -r /tmp/lrpout/out "$P"
-            # /lrp carries the record baked in (scripts/bake_lrp.mjs), so it moves with the data
-            node scripts/bake_lrp.mjs
-            git add -A "$P" lrp.html
+            # /lrp carries the offers' sales day, the record and the tests baked in
+            # (scripts/bake_lrp.mjs), so it moves with every today.json, watch or
+            # history. A failed bake never holds back the data; the page's own
+            # script still reads today.json live.
+            if [ -f lrp.html ]; then
+              node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed; lrp.html not rebaked"
+              git add lrp.html
+            fi
+            git add -A "$P"
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             git commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push -q origin HEAD:main; then exit 0; fi

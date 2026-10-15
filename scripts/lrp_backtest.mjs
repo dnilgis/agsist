@@ -18,7 +18,12 @@
        net   = (paid - cost) / coverage price x 100
      Subsidy by the policy's reinsurance year (RMA applied the RY2021 table
      retroactively to July 1 2020, so that is what producers paid):
-       RY2014-2019 13% at every level; RY2020 25 / 30 / 35 / 35 / 35;
+       RY2014-2019 13% at every level; RY2020 20 / 25 / 30 / 30 / 35 (what
+       RMA's Summary of Business rows for RY2020 show: 823 of 843 rows at
+       95-100% got 20%, 141 of 146 at 90-95% 25%, 85 of 88 at 85-90% 30%,
+       16 of 16 at 80-85% 30%, 13 of 13 at 70-80% 35%; RULES.md's
+       25 / 30 / 35 / 35 / 35 came from a snippet and is the CY2020 bulletin
+       read one year late);
        RY2021 on 35 / 40 / 45 / 50 / 55 (95-100, 90-95, 85-90, 80-85, 70-80).
      Beginning and veteran producers get more; the page models the standard one.
      Products: feeder cattle steers weight 2 (type 810, factor 1.00), fed
@@ -91,7 +96,7 @@ export function subsidy(ry, level) {
   const b = bandOf(level);
   if (!b) return null;
   if (ry <= 2019) return 0.13;
-  if (ry === 2020) return { "95-100": 0.25, "90-95": 0.30, "85-90": 0.35, "80-85": 0.35, "70-80": 0.35 }[b];
+  if (ry === 2020) return { "95-100": 0.20, "90-95": 0.25, "85-90": 0.30, "80-85": 0.30, "70-80": 0.35 }[b];
   return { "95-100": 0.35, "90-95": 0.40, "85-90": 0.45, "80-85": 0.50, "70-80": 0.55 }[b];
 }
 
