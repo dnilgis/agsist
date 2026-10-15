@@ -54,11 +54,10 @@
 
   /* hero: words and the form on the left, the render on the right; on a phone
      the render sits between the lede and the status line */
-  .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "date" "lede" "side" "form"}
-  .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h1{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}.rg-hero>.rg-dateline{grid-area:date}
+  .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "lede" "side" "form"}
+  .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h1{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}
   .rg-hero>.rg-side{grid-area:side;min-width:0}.rg-hero>.rg-form{grid-area:form}
   #main .rg .rg-hero>h1{font-size:clamp(1.9rem,6.6vw,2.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
-  .rg-dateline{margin:0 0 .6rem;font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--text-muted)}
   .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.1rem;max-width:46ch}
   .rg-fig{margin:0 -16px 0;position:relative}
   .rg-fig img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover}
@@ -69,7 +68,7 @@
   .rg-status{display:flex;gap:.7rem;align-items:flex-start;margin:1.1rem 0 1rem;padding:.75rem .9rem;border:1px solid var(--border);border-left:3px solid var(--brand-fill);border-radius:var(--r-8);background:var(--surface);line-height:1.5;font-size:var(--fs-sm);color:var(--text-dim)}
   .rg-status b{color:var(--text)}
   @media(min-width:900px){
-    .rg-hero{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"tag side" "h1 side" "date side" "lede side" "form side";grid-template-rows:auto auto auto auto 1fr;align-items:start;margin-top:.6rem}
+    .rg-hero{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"tag side" "h1 side" "lede side" "form side";grid-template-rows:auto auto auto 1fr;align-items:start;margin-top:.6rem}
     .rg-fig{margin:0}
     .rg-fig img{border-radius:var(--r-lg);aspect-ratio:auto;box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
     .rg-fig figcaption{padding:.55rem 2px 0}
@@ -202,7 +201,6 @@
     <div class="rg-hero">
       <p class="rg-tag">Prototype design</p>
       <h1>A rain gauge that keeps its own log</h1>
-      <p class="rg-dateline">First shown here on <time datetime="2026-10-14">October 14, 2026</time>.</p>
       <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.</p>
       <div class="rg-side">
       <figure class="rg-fig">

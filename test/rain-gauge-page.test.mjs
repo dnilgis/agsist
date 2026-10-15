@@ -83,10 +83,11 @@ test("two waitlist forms, same worker and topic as before, extras folded into th
   assert.ok(!/body\.(count|use)\b/.test(page), "no new worker fields");
 });
 
-test("the page carries its own dateline, in the text and the JSON-LD", () => {
+test("the publish date stays in the JSON-LD, with no \"First shown here\" line on the page (Sig, Oct 15)", () => {
   const wp = ld.flatMap((o) => o["@graph"] || [o]).find((o) => o["@type"] === "WebPage");
   assert.equal(wp.datePublished, "2026-10-14");
-  assert.ok(/First shown here on <time datetime="2026-10-14">October 14, 2026<\/time>\./.test(main));
+  assert.ok(!/First shown here/i.test(page));
+  assert.ok(!/rg-dateline|"date side"/.test(page), "no empty grid row left behind");
 });
 
 test("the warranty says normal use, on the card and in the FAQ", () => {
