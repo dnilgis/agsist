@@ -596,9 +596,15 @@
       var v = q.get('m' + i);
       if (v) markers.push({ date: v.slice(0, 10), label: v.slice(10).trim() });
     }
+    /* A link the tool made always carries style= (toParams) and comes in as it was
+       made. A link written by hand (the story links, county rain pages, an email)
+       has no style= and gets a new visitor's defaults: compared with the 30-year
+       normal, the normals shown and the remarkable days on (Sig, 2026-10-15),
+       unless the link says cmp=, normals=0 or records=0. */
+    var hand = !q.get('style'), dflt = function (k) { var v = q.get(k); return v === null ? (hand ? '1' : null) : v; };
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
-      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp'), name: q.get('name'), markers: markers, gift: q.get('gift'),
-      style: q.get('style'), dedication: q.get('dedication'), normals: q.get('normals'), records: q.get('records'),
+      palette: q.get('palette'), size: q.get('size'), cmp: q.get('cmp') || (hand ? 'normal' : null), name: q.get('name'), markers: markers, gift: q.get('gift'),
+      style: q.get('style'), dedication: q.get('dedication'), normals: dflt('normals'), records: dflt('records'),
       logo: q.get('logo'), logoInk: q.get('logoInk') });
   }
   // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
