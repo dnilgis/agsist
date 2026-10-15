@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-15",
+      "date_display": "Thursday, October 15, 2026",
+      "headline": "Grain holds steady overnight ahead of export sales report",
+      "teaser": "Corn and beans sit near flat overnight with export sales due at 7:30 a.m. CT.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-10-15",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-14",
       "date_display": "Wednesday, October 14, 2026",
       "headline": "Crude tops $95 on more tanker threats; grain holds steady",
@@ -2470,6 +2481,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-14T10:47:30.542459+00:00",
-  "count": 215
+  "updated": "2026-10-15T10:47:49.164014+00:00",
+  "count": 216
 }

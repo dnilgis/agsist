@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 15 Oct 2026 06:26:34 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 15 Oct 2026 10:47:50 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Grain holds steady overnight ahead of export sales report</title>
+      <link>https://agsist.com/daily/2026-10-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-15</guid>
+      <pubDate>Thu, 15 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn is trading at $4.80 overnight, barely off Wednesday's $4.80¾ settle. Beans sit at $12.73¼, down 4 cents, with weekly export sales due Thursday at 7:30 a.m. CT. Nothing has moved yet, so the board is sitting right where harvest left it.
+• Corn and beans wait on export sales
+• Cattle and hogs ease back slightly
+• Crude slips as Trump weighs easing tanker sanctions
+Read more: https://agsist.com/daily/2026-10-15</description>
+    </item>
     <item>
       <title>Crude tops $95 on more tanker threats; grain holds steady</title>
       <link>https://agsist.com/daily/2026-10-14</link>
@@ -334,18 +345,6 @@ Action: Fall calves unpriced: feeders at $343.70 and rising; a close above $345.
 • BEANS RECOVER; CORN FLAT
 • CRUDE HOLDS $102; SAUDI PIPELINE OUT WEEKS
 Read more: https://agsist.com/daily/2026-09-15</description>
-    </item>
-    <item>
-      <title>CRUDE BACK AT $102; BEANS CRACK, CORN FIRMS</title>
-      <link>https://agsist.com/daily/2026-09-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-14</guid>
-      <pubDate>Mon, 14 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Saudi East-West pipeline offline + Brent at $108 this morning handed corn a tailwind and charged beans a toll: WTI settled $102.38, November beans cracked to $12.95, and the corn-bean spread is the widest it has been since the August WASDE. Input costs just got repriced for fall fieldwork.
-Action: New-crop beans at $12.95: a settle at or below $12.85 is the sell signal the Sep 12 brief flagged. Do not wait for $12.70.
-• CORN FIRMS; BEANS CRACK
-• CRUDE RUNS; FED HIKE LOOMS
-• CATTLE FIRMS; HOGS SLIP
-Read more: https://agsist.com/daily/2026-09-14</description>
     </item>
   </channel>
 </rss>
