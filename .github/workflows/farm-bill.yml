@@ -60,13 +60,21 @@ jobs:
             --html "${{ steps.find.outputs.html }}" \
             --json "${{ steps.find.outputs.json }}"
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only farm-bill
+
       - name: Commit if changed
         run: |
           HTML="${{ steps.find.outputs.html }}"
-          if [ -n "$(git status --porcelain "$HTML")" ]; then
+          if [ -n "$(git status --porcelain "$HTML" img/og)" ]; then
             git config user.name  "agsist-bot"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add "$HTML"
+            git add "$HTML" img/og
             git commit -m "chore: bake farm-bill.html from farm-bill.json [skip ci]"
             git pull --rebase --autostash origin main || true
             git push

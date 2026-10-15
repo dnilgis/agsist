@@ -63,11 +63,19 @@ jobs:
       - name: Update discovery prices
         run: python3 scripts/fetch_harvest_prices.py
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only harvest-price-tracker
+
       - name: Commit and push (rebase armor, 3 tries)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/harvest-prices.json harvest-price-tracker.html
+          git add data/harvest-prices.json harvest-price-tracker.html img/og/harvest-price-tracker.jpg
           if git diff --cached --quiet; then
             echo "no discovery activity — nothing to commit"
             exit 0

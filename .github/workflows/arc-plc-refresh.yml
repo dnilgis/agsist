@@ -87,6 +87,10 @@ jobs:
       # The build rewrites thousands of files. On a push race it does not
       # rebase them; it resets to the new main and builds again, so a
       # conflict on a shared file (llms.txt) cannot wedge the run.
+      - name: Pillow, for the share image
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
       - name: Build and commit
         env:
           SNAP: ${{ needs.gate.outputs.snap }}
@@ -96,8 +100,10 @@ jobs:
           git config user.email "bot@agsist.com"
           for i in 1 2 3 4 5; do
             if [ "$SNAP" = "1" ]; then python scripts/build_arc_plc.py --snapshot-prices; else python scripts/build_arc_plc.py; fi
+            # the set's one share image, from the numbers just built (best effort)
+            python scripts/build_share_images.py --only arc-plc || true
             git add -A -- arc-plc.html arc-plc data/arc-plc.json data/arc-plc data/arc-plc-prices.json \
-                          embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js
+                          embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
             if git push; then echo "Pushed on attempt $i."; exit 0; fi

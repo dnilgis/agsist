@@ -188,6 +188,14 @@ jobs:
           PY
           trap - ERR
 
+      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
+      # Best effort: a share card must never block the data commit.
+      - name: Share image
+        continue-on-error: true
+        run: |
+          pip install --quiet pillow==12.3.0
+          python3 scripts/build_share_images.py --only cot
+
       - name: Commit COT data
         id: commit
         run: |
@@ -201,6 +209,7 @@ jobs:
           cp data/cot.json          /tmp/cot.json
           cp data/cot-history.json  /tmp/cot-history.json
           cp cot.html               /tmp/cot.html
+          cp img/og/cot.jpg         /tmp/cot-og.jpg        2>/dev/null || true
           cp data/cot-deep.json     /tmp/cot-deep.json     2>/dev/null || true
           cp data/cot-analysis.json /tmp/cot-analysis.json 2>/dev/null || true
           for i in 1 2 3 4 5; do
@@ -209,9 +218,10 @@ jobs:
             cp /tmp/cot.json         data/cot.json
             cp /tmp/cot-history.json data/cot-history.json
             cp /tmp/cot.html         cot.html
+            [ -f /tmp/cot-og.jpg ]        && cp /tmp/cot-og.jpg        img/og/cot.jpg
             [ -f /tmp/cot-deep.json ]     && cp /tmp/cot-deep.json     data/cot-deep.json
             [ -f /tmp/cot-analysis.json ] && cp /tmp/cot-analysis.json data/cot-analysis.json
-            git add data/cot.json data/cot-history.json cot.html
+            git add data/cot.json data/cot-history.json cot.html img/og/cot.jpg
             git add data/cot-deep.json data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "No COT changes today — nothing to commit (expected ~6 days/week)."
