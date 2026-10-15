@@ -58,6 +58,12 @@
     return p.wd;
   }
   function when(ms) { var h = parts(ms).h, w = dayWord(ms); if (h === 0) return w === 'tonight' ? 'midnight' : w + ' midnight'; return w + ' ' + clock(h); }
+  /* "tomorrow 9 am to 10 pm": the second day word only when it differs from the first */
+  function span(a, b) {
+    var wa = dayWord(a), wb = dayWord(b), hb = parts(b).h;
+    if (wa === wb || (wa === 'today' && wb === 'tonight')) return when(a) + ' to ' + (hb === 0 ? 'midnight' : clock(hb));
+    return when(a) + ' to ' + when(b);
+  }
   function hourOnly(ms) { var w = dayWord(ms); return (w === 'today' || w === 'tonight' ? '' : w + ' ') + clock(parts(ms).h); }
   function dayName(ms) { var p = parts(ms); return p.date === parts(Date.now()).date ? 'today' : p.wd; }
 
@@ -153,7 +159,7 @@
       else { head = 'Keep fans running'; cls = 'dry'; }
       if (S.current == null) lines.push('<b>Type your grain\'s moisture</b> above to see which hours dry it and which wet it.');
       else if (S.current <= target()) lines.push('Your grain is already at or under your ' + fmt(target(), 1) + '% target. Switch to <b>Holding dry grain</b>.');
-      else if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air brings ' + gname() + ' to <b>' + emcText(now.emc) + '</b>: ' + callWord(now.call) + ' for grain at ' + fmt(S.current, 1) + '%.');
+      else if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air brings ' + gname() + ' to <b>' + emcText(now.emc) + '</b>: ' + callWord(now.call) + ' for your ' + fmt(S.current, 1) + '% ' + gname() + '.');
       if (now && now.call === 'part' && S.current != null && S.current > target()) lines.push('This air still pulls water out, but it cannot take the grain all the way to ' + fmt(target(), 1) + '%: if the weather stays like this, the bottom of the bin ends above target until drier air comes.');
       if (S.current != null && S.current > target()) lines.push(tonight(rows));
       lines.push('<span class="note">For natural-air drying, NDSU Extension says to run fans around the clock until the drying front comes out the top of the bin, and to shut off only for steady rain, fog or snow. That advice was written for wheat; NDSU adds that running only in the driest hours overdries the bottom and stretches the drying time.</span>');
@@ -177,7 +183,7 @@
           lines.push('The next 24 hours average <b>' + fmt(a24.avg, 0) + ' F</b>' + (S.fan > 0 ? ' at the fan' : '') + ', ' + (gap > 0 ? fmt(gap, 0) + ' F under' : fmt(-gap, 0) + ' F over') + ' your ' + fmt(S.grainF, 0) + ' F grain. NDSU Extension says to cool when outside air averages 10 to 15 F under the grain.');
           lines.push(dayAverages(rows));
           var bw = E.bestWindow(rows, 'cool', 3);
-          if (bw) lines.push(zach() + ' <b>' + when(rows[bw.start].t) + ' to ' + when(rows[bw.end].t + 3600e3) + '</b>, ' + bw.len + ' hours of air 10 F or more under the grain.' + zachNote());
+          if (bw) lines.push(zach() + ' <b>' + span(rows[bw.start].t, rows[bw.end].t + 3600e3) + '</b>, ' + bw.len + ' hours of air 10 F or more under the grain.' + zachNote());
           lines.push('Humidity matters little for cooling: the cooling front moves much faster than the moisture front (Iowa State). ' + (S.grainDry ? 'For grain that is already dry, skip hours of rain or fog.' : 'For warm or wet grain, keep fans running through humid air.') + ' Check the top of the bin for condensation and crusting.');
         }
       }
@@ -189,7 +195,7 @@
       if (now && now.call === 'close') lines.push('<b>Close call:</b> published tables disagree about air like this. For grain that is already dry, run only if you need to cool it; this air will not move much moisture either way.');
       lines.push(tonight(rows));
       var best = E.bestWindow(rows, 'dry', 2);
-      lines.push(best ? zach() + ' <b>' + when(rows[best.start].t) + ' to ' + when(rows[best.end].t + 3600e3) + '</b>, ' + best.len + ' hours of drying air, at or under ' + fmt(best.worst, 1) + '% ' + gname() + ' EMC.' + zachNote()
+      lines.push(best ? zach() + ' <b>' + span(rows[best.start].t, rows[best.end].t + 3600e3) + '</b>, ' + best.len + ' hours of drying air, at or under ' + fmt(best.worst, 1) + '% ' + gname() + ' EMC.' + zachNote()
                       : 'No run of 2 or more drying hours in the next ' + rows.length + ' hours.');
       if (now && E.num(now.fanTF)) {
         var inv = E.rhDries(S.grain, now.fanTF, target());
