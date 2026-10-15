@@ -1,0 +1,2762 @@
+                         LIVESTOCK
+                         RISK PROTECTION
+                         (LRP) INSURANCE
+United States
+Department of
+Agriculture
+
+
+                         STANDARDS
+                         HANDBOOK
+Federal Crop
+Insurance
+Corporation
+
+FCIC-20010 (06-2026)
+                         2027 and Succeeding Crop Years
+Private Product 508(h)
+                               UNITED STATES DEPARTMENT OF AGRICULTURE
+                                 FARM PRODUCTION AND CONSERVATION
+                                       RISK MANAGEMENT AGENCY
+
+ TITLE: LIVESTOCK RISK PROTECTION (LRP)                  NUMBER: FCIC-20010
+ INSURANCE STANDARDS HANDBOOK                            OPI: Product Administration & Standards Division
+ EFFECTIVE DATE: 2027 and Succeeding Crop Years          ISSUE DATE: June 17, 2026
+ SUBJECT:                                                APPROVED:
+
+ Provides the procedures and instructions for            /s/ John W. Underwood for
+ administering the Livestock Risk Protection (LRP)
+ Plan of Insurance.                                      Deputy Administrator for Product Management
+
+REASON FOR ISSUANCE
+This handbook is being issued to provide procedures and instructions for administering the Livestock Risk
+Protection Plan of Insurance for the 2027 and succeeding crop years. This handbook replaces FCIC-20010,
+Livestock Risk Protection (LRP) Handbook, dated April 30, 2026. This handbook is effective upon approval for
+the 2027 and succeeding crop years until obsoleted.
+
+SUMMARY OF CHANGES
+
+Listed below are the changes to the 2027 FCIC-20010 Livestock Risk Protection Insurance Standards Handbook
+with significant content change. All changes and additions are highlighted. Minor changes and corrections are
+not included in this listing. *** used throughout the handbook indicate where major deletions occurred.
+
+   Reference                                           Description of Change
+                  Technical correction issued on June 17, 2026.
+                  Corrected language in 21(C)(2)(b) regarding other insurance.
+                  Added inadvertently omitted language in the Note to Exhibit 3(B)(17).
+ Para. 21A        Applications and policy transfers or cancellations must be processed in PASS within 30
+                  days.
+ Para. 21 C       Other insurance is prohibited only if obtained from another insurance provider.
+ Para. 21(D)      AIP must cancel any policy with no premium earned for three consecutive crop years.
+ Para. 22 B (8)   Feeder and fed cattle sales are suspended on days when USDA NASS releases the Cattle
+                  report.
+ Para. 23(A)      Modified maximum allowed target weight for unborn types.
+ Para. 23(C)(1)   Modified information on price adjustment factors for dairy types and unborn types.
+ Para. 24(A)      Maximum allowed target weight for steers and heifers is increased to 18 cwt.
+                  Endorsement length for cull dairy cows is no longer limited to 13 weeks only.
+ Para. 27         Modified guidance regarding access to off-exchange contract records in case USDA
+                  initiates a review related to potential violation of prohibition of subsidy capture.
+ Para. 52 A&B     Added DSSH reference to anti-rebating certification; removed references to GSH and DSSH
+                  language that are now contained in those handbooks.
+ Para. 28         Drought hardship exemption is renamed to forage disaster exemption. Additional
+                  eligibility criteria added to cover cases when grazing is prevented due to fire or persistent
+                  drought.
+
+
+
+June 2026                                         FCIC-20010                                                 TC 1
+                 LIVESTOCK RISK PROTECTION (LRP) INSURANCE STANDARDS HANDBOOK
+
+
+SUMMARY OF CHANGES (Continued)
+
+ Exhibit 2       Added definitions: brokerage record, cancellation, FAA, off-exchange contract,
+                 termination. Modified definitions: beginning farmer or rancher, cancellation date.
+ Exhibit 3 and   Included line items to identify whether a forward contract or other similar form of a
+ Exhibit 5       purchase agreement was used to purchase or market the livestock.
+
+
+
+
+June 2026                                        FCIC-20010                                              TC 2
+                          LIVESTOCK RISK PROTECTION (LRP) INSURANCE STANDARDS HANDBOOK
+
+                                                                  TABLE OF CONTENTS
+
+
+PART 1: GENERAL INFORMATION AND RESPONSIBILITIES ..............................................................................1
+
+          1          General Information ......................................................................................................................1
+          2          Responsibilities..............................................................................................................................2
+          3-20       Reserved........................................................................................................................................2
+
+PART 2: INSURABILITY ....................................................................................................................................3
+
+          21    LRP Insurability Requirements ......................................................................................................3
+          22    LRP SCE Underwriting Rules ........................................................................................................13
+          23    LRP Feeder Cattle Underwriting Rules.........................................................................................18
+          24    LRP Fed Cattle Underwriting Rules ..............................................................................................23
+          25    LRP Swine Underwriting Rules.....................................................................................................26
+          26    Determining Number of Marketable Livestock ...........................................................................29
+          27    Prohibition of Subsidy Capture ....................................................................................................32
+          28    Forage Disaster Exemption..........................................................................................................32
+          29-50 Reserved......................................................................................................................................36
+
+PART 3: FORM STANDARD INSTRUCTIONS AND RELATED HANDBOOKS ....................................................... 37
+
+          51    Form Standard Instructions .........................................................................................................37
+          52    DSSH and GSH Applicability .........................................................................................................38
+          53-99 Reserved......................................................................................................................................40
+
+EXHIBITS ....................................................................................................................................................... 41
+
+          Exhibit 1        Acronyms and Abbreviations ................................................................................................41
+          Exhibit 2        Definitions ............................................................................................................................42
+          Exhibit 3        Specific Coverage Endorsement............................................................................................48
+          Exhibit 4        Transfer of Coverage and Right to an Indemnity ..................................................................52
+          Exhibit 5        Notice of Probable Loss Form ...............................................................................................55
+          Exhibit 6        LRP Liability and Premium Computation...............................................................................59
+
+
+
+
+June 2026                                                                FCIC-20010                                                                            TC 3
+                   PART 1: GENERAL INFORMATION AND RESPONSIBILITIES
+1     General Information
+
+      A.    Purpose and Objective
+
+            This handbook provides procedures for administering the LRP plan of insurance in accordance
+            with the LRP Insurance Policy.
+
+            If there is a conflict between this handbook and the GSH or other FCIC approved handbook, this
+            handbook controls. If there is a conflict between this handbook and the policy, the policy
+            controls.
+
+      B.    Source of Authority
+
+            The LRP is a privately developed product submitted and approved by the FCIC Board of
+            Directors in accordance with sections 508(h) and 523(b) of the Act.
+
+      C.    Title VI of the Civil Rights Act of 1964
+
+            The USDA prohibits discrimination against its customers. Title VI of the Civil Rights Act of 1964
+            provides that “No person in the United States shall, on the ground of race, color, or national
+            origin, be excluded from participation in, be denied the benefits of, or be subjected to
+            discrimination under any program or activity receiving Federal financial assistance.” Therefore,
+            programs and activities that receive Federal financial assistance must operate in a non-
+            discriminatory manner. Also, a recipient of RMA funding may not retaliate against any person
+            because they opposed an unlawful practice or policy, or made charges, testified, or participated
+            in a complaint under Title VI.
+
+            It is the AIPs’ responsibility to ensure that standards, procedures, methods, and instructions, as
+            authorized by FCIC in the sale and service of crop insurance contracts, are implemented in a
+            manner compliant with Title VI. Information regarding Title VI of the Civil Rights Act of 1964
+            and the program discrimination complaint process is available on the USDA public website at
+            www.usda.gov/oascr. For more information on the RMA Non-Discrimination Statement, see
+            the DSSH.
+
+      D.    AIP Option to Offer
+
+            In accordance with Section II. (a)(3) of the LPRA, AIPs are not required to offer LRP to
+            producers. Accordingly, each AIP must determine whether it will offer the LRP in the approved
+            area. AIPs that elect to offer the LRP must offer all LRP products to all eligible producers in the
+            approved area and must administer the program according to the policies approved and issued
+            by FCIC, procedures in this handbook, and the provisions of Section II. (a)(3) of the LPRA.
+
+
+
+
+June 2026                                        FCIC-20010                                                   1
+1      General Information (Continued)
+
+       E.     Related Handbooks
+
+              The following table provides handbooks related to this handbook.
+
+               Handbook                                   Relation/Purpose
+               DSSH     This handbook provides the official FCIC-approved form standards and
+                        procedures for use in the sale and service of any eligible Federal crop insurance
+                        policy; required statements and disclosures; and the standards for submission
+                        and review of non-reinsured supplemental policies in accordance with the SRA.
+               GSH      This handbook provides the official FCIC-approved standards for policies
+                        administered by AIPs under the General Administrative Regulations; CCIP-BP,
+                        including the Catastrophic Risk Protection Endorsement; the ARPI-BP; STAX; RI;
+                        and WFRP.
+               ITS      This handbook provides the official FCIC-approved standards and instructions for
+                        use in reporting, administering, and maintaining the Ineligible Tracking System,
+                        identifying and notifying ineligible persons, and implementing RMA and AIP
+                        reinstatement.
+
+2      Responsibilities
+
+       A.     Insured’s Responsibilities
+
+              To be eligible for LRP, the insured must comply with all terms and conditions of the Livestock
+              Risk Protection Insurance Policy.
+
+       B.     AIP Responsibilities
+
+              AIPs must use standards, procedures, methods, and instructions as authorized by FCIC in the
+              sale and service of livestock insurance contracts. Each AIP is responsible for using FCIC-
+              approved procedure. AIPs should report any program issues or concerns to RMA’s Product
+              Administration and Standards Division.
+
+3-20   Reserved
+
+
+
+
+June 2026                                        FCIC-20010                                                    2
+                                       PART 2: INSURABILITY
+21    LRP Insurability Requirements
+
+      A.    Application
+
+            (1)    LRP is a continuous policy and will remain in effect for each crop year following the
+                   acceptance of the original application until canceled by the insured or AIP in accordance
+                   with the terms of the policy.
+
+            (2)    The original application can be submitted at any time during the crop year. It must be
+                   completed by the insured and received by the agent not later than the SCD for which
+                   coverage is requested under an SCE.
+
+            (3)    An application is required to purchase LRP coverage on an SCE.
+
+                   (a)    The application establishes eligibility.
+
+                   (b)    An SSN and EIN Reporting Form showing those with an SBI shall be attached to
+                          the application. This form shows the SSNs, EINs, and share of those with a 10
+                          percent interest or more in the insured person. The SBI Form is used to establish
+                          eligibility and to account for insurance limits.
+
+                   (c)    No insurance coverage attaches to the application until the producer submits an
+                          SCE.
+
+                   (d)    Additional applications are necessary for each different SBI arrangement and for
+                          each State where insurance is written.
+
+            (4)    The producer must complete the initial application before electing coverage on the SCE
+                   to ensure the producer is eligible to participate in the crop insurance program. No
+                   insurance coverage attaches until information on the SCE is provided in conjunction
+                   with an accepted application.
+
+            (5)    Early completion of an application confirms whether the producer is compliant with the
+                   conservation provisions and, if applicable, qualifies as a beginning farmer or rancher or
+                   veteran farmer or rancher (BFR/VFR). These determinations may impact the producer’s
+                   coverage decisions. According to GSH paragraph 303, if the BFR/VFR application is
+                   received and accepted before any SCEs are purchased, then the BFR/VFR benefits would
+                   be applicable for all SCEs for the entire crop year. If the BFR/VFR application is received
+                   during a crop year after SCEs are purchased, then the BFR/VFR benefits would not be
+                   applicable to any SCEs purchased before the BFR/VFR application is received but would
+                   apply for any SCEs purchased after the BFR/VFR application is received and accepted.
+
+            (6)    To ensure timely administration, all applications and policy transfers or cancellations
+                   must be processed in PASS within 30 days.
+
+
+
+
+June 2026                                      FCIC-20010                                                    3
+21    LRP Insurability Requirements (Continued)
+
+      A.    Application (Continued)
+
+            (7)    Instructions for commodity information to be entered on the application:
+
+                   (a)    Crop year is the twelve-month period beginning July 1 and ending the following
+                          June 30 and designated by the calendar year in which the period ends. The crop
+                          year in which the effective date falls will determine the crop year for an SCE.
+
+                   (b)    State and county where the livestock are located. Only one application is
+                          required per State and all the insurable livestock within a State is covered under
+                          this policy provided the SBI are the same. A separate application is required to
+                          insure livestock located in another State.
+
+                   (c)    Covered livestock are Fed Cattle (0802), Feeder Cattle (0801), Swine (0815), or
+                          any other livestock covered by an SCE.
+
+                   (d)    Plan of insurance is LRP (81).
+
+            (8)    To obtain coverage on a specific livestock class, an insured must submit an SCE during
+                   the sales period that identifies the class, the effective date of coverage, the number of
+                   covered livestock, the State and county where the livestock are located, the target
+                   weight at the end date, the end date, the coverage level, percent of the insured’s
+                   insured share and other substantial elements required in exhibit 3. Any SCE submitted
+                   without these elements or outside of the sales period cannot be accepted.
+
+      B.    Insurance Period
+
+            (1)    The insured should determine the date the livestock are to be ready for market and/or
+                   reach the target weight and count the number of weeks until that date.
+
+            (2)    The insured must choose an insurance period, which should end within 60 days of the
+                   date that the livestock are to be marketed or will reach the desired weight.
+
+            (3)    Based on the selected insurance period, determine the end date of the SCE. The end
+                   date is the final coverage day of the SCE and is calculated by counting the weeks of the
+                   SCE length from the effective date. The end date is always the same day of the week as
+                   the effective date.
+
+            (4)    The available insurance periods are contained in the SCE.
+
+      C.    Coverage and Limitations
+
+            (1)    The policy only covers livestock in which the insured has an ownership interest during
+                   the insurance period under the applicable SCE, and which are marketable by the end
+                   date. Such ownership interest may include:
+
+                   (a)    Livestock owned and raised by the insured.
+
+
+June 2026                                      FCIC-20010                                                      4
+21    LRP Insurability Requirements (Continued)
+
+      C.    Coverage and Limitations (Continued)
+
+                   (b)    Unborn livestock, provided the insured has:
+
+                          (i)     an ownership interest in pregnant cows or sows to which the unborn
+                                  livestock will be born.
+
+                          (ii)    (for swine only) an ownership interest, or holders of SBI in the insured,
+                                  have an ownership interest, in the entity that owns the pregnant sows.
+                                  The insured may insure the number of unborn swine in proportion to
+                                  ownership interest in the pregnant sows. For example, if an SBI holder in
+                                  the insured has a 20 percent ownership interest in a sow breeding entity,
+                                  then the insured can insure up to 20 percent of the unborn swine
+                                  produced by sow breeding entity.
+
+                   (c)    Livestock purchased by the insured under a valid livestock purchase agreement
+                          entered before the start of the insurance period, provided that such livestock
+                          will be in the insured’s possession during the insurance period of the applicable
+                          SCE, and the last day of the delivery period specified in the livestock purchase
+                          agreement is at least 90 days prior to the applicable SCE end date.
+
+                          (i)     Contracts where the pricing formula only fixes the price differential
+                                  versus a national or a regional price index do not qualify as livestock
+                                  purchase agreements for the purpose of demonstrating insurable interest
+                                  or determining the date when the insured sold their covered livestock.
+
+                          (ii)    Contracts where one of the parties has the option to fix the price at a
+                                  later point in time based on some publicly available pricing index qualify
+                                  as livestock purchase agreements from the date when such option is
+                                  exercised and the selling price is fixed.
+
+            (2)    To receive an indemnity, the insured must provide:
+
+                   (a)    For Fed Cattle and Swine (including covered unborn swine), or sold Feeder
+                          Cattle, documents verifying the sale of covered livestock during the insurance
+                          period or no later than 60 days (30 days for the unborn calves type) after the end
+                          date, that show:
+
+                          (i)     the insured as seller;
+
+                          (ii)    the purchaser;
+
+                          (iii)   the date sold;
+
+                          (iv)    the sex of the livestock (for sex-specific feeder cattle types only);
+
+                          (v)     the number of livestock sold; and
+
+
+June 2026                                      FCIC-20010                                                      5
+21    LRP Insurability Requirements (Continued)
+
+      C.    Coverage and Limitations (Continued)
+
+                          (vi)   the average weight of the livestock sold (not required for the unborn
+                                 calves type, but if weight is provided on documentation, it should be
+                                 within an appropriate range for calves sold within two weeks of birth).
+
+                   (b)    For covered feeder cattle not sold by 60 days after the end date, provided the
+                          insured does not have any feeder or fed cattle covered under another plan of
+                          insurance with the same or later insurance period end date, instead of
+                          documents verifying the sale, the insured may provide:
+
+                          (i)    documents verifying ownership of their share of the livestock insured
+                                 under the SCE, in accordance with the section 12(c) of the LRP Basic
+                                 Provisions; and
+
+                          (ii)   a certified statement signed by the insured attesting that the covered
+                                 livestock were not sold prior to the end date, and the covered livestock
+                                 was marketable at the end date.
+
+                   (c)    For covered unborn livestock, in addition to marketing records or documents
+                          verifying ownership and marketability on the end date in accordance with
+                          sections 6(2)(i) and (ii) of the LRP Basic Provisions, the insured must also provide
+                          the proof of ownership interest in cows or sows to which covered livestock were
+                          born, in accordance with section 12(c) of the LRP Basic Provisions.
+
+                   (d)    When ownership interest in covered livestock is claimed under section 6(a)(1)(iii)
+                          of the LRP Basic Provisions, the insured must also provide:
+
+                          (i)    a valid livestock purchase agreement, entered into before the start of the
+                                 insurance period; and
+
+                          (ii)   a delivery receipt, trucking records reflecting the weight of livestock
+                                 hauled, or a document from the seller of the livestock or auction service
+                                 that states the date the livestock were delivered to verify you have taken
+                                 possession of covered livestock no later than 90 days prior to the
+                                 applicable SCE end date.
+
+                   (e)    For livestock purchased by the insured and not sold within 60 days of the SCE
+                          end date, livestock purchase agreements or bills of sale, entered into on or
+                          before the SCE effective date and specifying the insured as the buyer.
+
+
+
+
+June 2026                                      FCIC-20010                                                    6
+21    LRP Insurability Requirements (Continued)
+
+      C.    Coverage and Limitations (Continued)
+
+                   (f)    For covered unborn livestock or feeder cattle raised by you (that you have not
+                          purchased or otherwise obtained by other means), and not sold within 60 days
+                          of the SCE end date, financing and credit documents secured by the covered
+                          livestock, other documents that are related to covered livestock (such as
+                          purchase records for cows that covered livestock are born to, or tax records from
+                          the previous years, etc.), or certified written statements from disinterested third
+                          parties such as feed suppliers or veterinarians who have visited the farm or
+                          ranch, who visually identified the livestock listed on the SCE (or cows that
+                          covered livestock are born to) and can attest to your ownership of the identified
+                          livestock prior to the end date.
+
+                   (g)    When ownership interest in unborn swine is claimed under section 6(a)(1)(ii)(B)
+                          of the LRP Basic Provisions, the insured must also provide documentation
+                          establishing:
+
+                          (i)     the insured’s ownership interest, or the ownership interest of the person
+                                  with a substantial interest in the insured, in the sow breeding entity;
+
+                          (ii)    the percentage of ownership interest in the sow breeding entity;
+
+                          (iii)   the number of sows and offspring produced and sold annually from the
+                                  sow breeding entity; and
+
+                          (iv)    livestock purchase agreement with delivery or pick-up date within the
+                                  insurance period.
+
+            (3)    If the insured disposes of or sells covered livestock more than 60 days prior to the SCE
+                   end date, the insured will not be considered to have an ownership interest in the
+                   disposed of or sold livestock and will not be able to receive an indemnity, but premium
+                   will still be due.
+
+            (4)    During each crop year where a policy is in effect, the insured may obtain coverage for as
+                   many head of livestock, under as many different SCEs, as the insured is eligible for,
+                   subject to the following restrictions:
+
+                   (a)    The insured may not insure the same class of livestock with the same end date
+                          under more than one SCE during the same sales period.
+
+
+
+
+June 2026                                     FCIC-20010                                                      7
+21    LRP Insurability Requirements (Continued)
+
+      C.    Coverage and Limitations (Continued)
+
+                   (b)    The insured may not cover the same covered livestock under more than one SCE
+                          simultaneously. For example, an insured owns 1,000 head of feeder cattle and
+                          has covered all 1,000 head as Steers Weight 1. Until the SCE on which these
+                          head are covered has ended, the insured may not cover the same 1,000 head
+                          again as Steers Weight 1 with the same end month (e.g., if available coverage
+                          price has increased), as Steers Weight 2 with a later end month, or as Fed Cattle
+                          with a later end month. Once the original Steers Weight 1 SCE ends, if the
+                          insured has retained some or all of the original 1,000 head, the insured may then
+                          choose to purchase a new endorsement to cover the cattle at a new weight with
+                          a new end month.
+
+                   (c)    The insured may not obtain from another insurance provider any other FCIC
+                          reinsured livestock policy insuring the same class of livestock with the same end
+                          month or have any other FCIC reinsured livestock policy covering the same
+                          covered livestock at the same time.
+
+            (5)    The number of covered livestock insured under an SCE must be adjusted if:
+
+                   (a)    the insured disposes of his or her share or sell the covered livestock more than
+                          60 days prior to the end date, unless that portion of his or her share is properly
+                          transferred, on the AIP’s form, to an eligible transferee under the policy.
+
+                   (b)    at any time during the insurance period the insured’s covered livestock are
+                          seized, quarantined, or destroyed by order of any governmental authority, or the
+                          covered livestock are not deliverable due to death or disease, and the insured
+                          has not provided the AIP with written notice of such circumstance within 72
+                          hours after the insured’s knowledge of the livestock’s death. This exemption
+                          does not apply to livestock that the insured purchased under a livestock
+                          purchase agreement and that is not yet delivered to the insured. For unborn
+                          feeder cattle or swine born to females owned by the insured:
+
+                          (i)     written notice of death needs to include either evidence of pregnancy, or
+                                  records of number of born livestock in one of the prior three years.
+
+                          (ii)    if records for prior years are used in place of evidence of pregnancy, then
+                                  the number of livestock born in a prior year must be higher than the
+                                  number of insured unborn livestock.
+
+                          (iii)   valid records include, but are not limited to, veterinary reports, or supply
+                                  or sales contracts.
+
+                   (c)    the insured fails to provide sales or ownership records for any covered livestock,
+                          as required in section 6(a)(2) of the LRP Basic Provisions.
+
+
+
+June 2026                                      FCIC-20010                                                      8
+21    LRP Insurability Requirements (Continued)
+
+      C.    Coverage and Limitations (Continued)
+
+                   (d)    the total weight of the covered livestock at the end date is less than the number
+                          of covered livestock multiplied by the minimum allowed target weight, unless
+                          the insured can establish that extraordinary circumstances caused the livestock
+                          to weigh less than the minimum allowed target weight, such as drought causing
+                          a lack of feed. If the covered livestock do not meet the minimum allowed target
+                          weight, the number of covered livestock will be adjusted in accordance with
+                          paragraph 26.
+
+                   (e)    livestock meeting the conditions in (a) through (d) will no longer be covered and
+                          will be adjusted as follows:
+
+                          (i)     The number of covered livestock insured under the SCE will be reduced
+                                  by the applicable number of livestock.
+
+                          (ii)    No indemnity will be paid for any livestock no longer covered under the
+                                  SCE.
+
+                          (iii)   Because no indemnity is due because of a breach of this policy, the
+                                  insured will still be responsible to pay the full premium owed in
+                                  accordance with section 5 of the LRP Basic Provisions.
+
+      D.    Termination and Cancellation
+
+            (1)    The termination and cancellation dates are contained in the AD.
+
+            (2)    The insured may cancel the policy after the initial crop year by providing written notice
+                   to the AIP on or before June 30. AIP may cancel the policy with express written consent
+                   from FCIC, unless provided differently in the Basic Provisions.
+
+            (3)    A delinquent debt for any policy will make the insured ineligible to obtain an LRP policy
+                   for any subsequent crop year and result in termination of their LRP policy in accordance
+                   with section 2(i)(2) of Basic Provisions. Delinquent debt on the LRP policy will make the
+                   insured ineligible to obtain crop insurance authorized under the Act for any subsequent
+                   crop year. Termination will be effective:
+
+
+
+
+June 2026                                     FCIC-20010                                                    9
+21    LRP Insurability Requirements (Continued)
+
+      D.    Termination and Cancellation (Continued)
+
+                   (a)    For an LRP policy with unpaid premiums, such policy will terminate for the
+                          current crop year even if insurance attached prior to the: termination date.
+                          Such termination will be considered effective as of the prior crop year’s
+                          cancellation date and no insurance will be considered to have attached for the
+                          current crop year and no indemnity will be owed.
+
+                          Example:      For the 2026 crop year, an insured purchased an LRP Insurance
+                                        Policy with a termination date of September 30, 2027, and they
+                                        do not pay the premium by the termination date. Their LRP policy
+                                        will terminate for the current crop year (2028) retroactive to the
+                                        cancellation date of the prior crop year (2027), June 30, 2027,
+                                        even if insurance has already attached for the current crop year.
+                                        The effective date of ineligibility would be June 30, 2027.
+
+                   (b)    For an LRP policy with other amounts due, cancellation date immediately
+                          following the date the insured has a delinquent debt;
+
+                          Example:      Insured owes reimbursement of an overpaid indemnity on an SCE
+                                        purchased on June 30, 2026 (crop year 2026), with SCE end date
+                                        in June 2027. The endorsement had a claim that was paid on
+                                        August 15, 2027. In January 2028, the AIP discovered they have
+                                        overpaid for the indemnity and have sent a notice to the insured
+                                        to repay the overpaid amount by March 1, 2028. The insured
+                                        failed to pay the amount due and is determined ineligible as of
+                                        March 1, 2028. The insured will not be allowed to buy any new
+                                        SCEs on their LRP policy after March 1, 2028. The debt remained
+                                        delinquent at the next cancellation date, June 30, 2028. The
+                                        policy is not renewed for crop year 2029.
+
+                   (c)    For delinquent debt on any other policy that is issued under the authority of the
+                          Act, this policy will terminate on the cancellation date that coincides with the
+                          ineligibility date for the policy with the delinquent debt or, if there is no
+                          coincidental cancellation date, the cancellation date immediately following the
+                          date the insured becomes ineligible. No new SCEs will be approved for the LRP
+                          policy after the ineligibility date.
+
+
+
+
+June 2026                                     FCIC-20010                                                   10
+21    LRP Insurability Requirements (Continued)
+
+      D.    Termination and Cancellation (Continued)
+
+                           Example:       Insured purchased a Federally reinsured corn policy on March 15,
+                                          2025, but failed to pay the premium due by the crop year 2025
+                                          termination date, March 15, 2026. The insured is ineligible for
+                                          crop insurance as of March 15, 2026. The insured also purchased
+                                          an SCE on their LRP policy on July 3, 2025, with end date in April
+                                          2026. The LRP cancellation date does not coincide with the
+                                          ineligibility date, so the LRP policy will be terminated on the
+                                          cancellation date immediately following March 15, 2026 (i.e., June
+                                          30, 2026), if the debt on the corn policy remains delinquent. The
+                                          insured will not be allowed to buy any new SCEs on their 2026 LRP
+                                          policy after March 15, 2026. If any indemnity is owed to the
+                                          insured on SCEs purchased before March 15, 2026, it will remain
+                                          owed.
+
+                           Note:          For termination for other policies issued by the AIP which issued
+                                          the LRP policy with delinquent debt, refer to termination
+                                          provisions in Basic Provisions for those respective policies.
+
+                   (d)     For an LRP policy with a written payment agreement and failure to make any
+                           scheduled payment, the policy is terminated effective on the cancellation date
+                           for the crop year prior to the crop year in which the insured failed to make the
+                           scheduled payment.
+
+                           Example:       Insured executed a written payment agreement for crop year
+                                          2026 before the termination date of September 30, 2027, to pay
+                                          the premium by December 15, 2028. Insured fails to make the
+                                          scheduled payment by December 15, 2028. The crop year in
+                                          which they failed to make the scheduled payment is 2029. Their
+                                          crop year 2029 policy is terminated effective June 30, 2028, the
+                                          cancellation date for the crop year 2028 policy.
+
+            (4)    AIP must cancel any policy, without the need for advanced notification, at the end of the
+                   third consecutive crop year in which no premium was earned on the policy.
+
+                   Note:           Mandatory cancellation for lack of earned premium over three
+                                   consecutive crop years will first be applied if no premium is earned in
+                                   crop years 2025, 2026, and 2027.
+
+      E.    Premium
+
+            The premium billing date is the first day of the second month following the end date for the SCE
+            and is specified in the AD.
+
+
+
+
+June 2026                                       FCIC-20010                                                    11
+21    LRP Insurability Requirements (Continued)
+
+      F.    Crop Year
+
+            The LRP crop year runs from July 1 to June 30. The crop year is determined for the individual
+            SCEs based on the effective date.
+
+      G.    Claims
+
+            (1)      To be eligible for an indemnity, the insured must provide proof of ownership for all
+                     covered livestock.
+
+            (2)      If the actual ending value, as specified in the SCE, is below the coverage price, the claims
+                     form must be completed and sent to the AIP within 60 days from the date the AIP
+                     provides the insured with the form.
+
+            (3)      An indemnity payment will be made within 30 days of receipt of the claim form.
+
+      H.    Continuous Policy
+
+            If the policy is not cancelled in writing by the Cancellation Date, the policy (but not any SCEs)
+            will automatically renew.
+
+      I.    LRP Policy Documents
+
+            The following are applicable to the LRP policy:
+
+            (1)      LRP Insurance Policy-Basic Provisions.
+
+            (2)      Application Form.
+
+            (3)      SSN and EIN Reporting Form.
+
+            (4)      Premium Calculation Instructions - This worksheet can be used to calculate the LRP
+                     premium once the Coverage Price and Rate information is obtained from the website on
+                     the date of sale.
+
+            (5)      SCE - The part of the policy that describes coverage of feeder cattle, fed cattle, or swine.
+
+            (6)      SCE Form - This form is filled out to attach coverage to the policy.
+
+            (7)      Assignment of Indemnity Form - This form is used for assigning any indemnity to a third
+                     party, if applicable.
+
+
+
+
+June 2026                                        FCIC-20010                                                     12
+21    LRP Insurability Requirements (Continued)
+
+      I.    LRP Policy Documents (Continued)
+
+            (8)     Transfer of Right to Indemnity Form - This form is used if the feeder cattle are sold prior
+                    to the end of insurance period to transfer any indemnity to the new owner (providing
+                    the new owner meets eligibility requirements), if applicable.
+
+            (9)     Note of Probable Loss Form.
+
+            (10)    SP and AD may be obtained from the RMA website (www.rma.usda.gov) and are part of
+                    the policy materials.
+
+      J.    Insured Area
+
+            LRP is offered in all counties in all States.
+
+22    LRP SCE Underwriting Rules
+
+      A.    LRP SCE Basic Principles
+
+            Daily AD: Coverage prices, rates, and coverage levels are available on the daily AD posted on
+            the RMA website for the LRP program. Coverage prices and rates change daily and must be
+            referred to at the time of sale for each endorsement.
+
+      B.    LRP SCE Coverage
+
+            (1)     Protection Offered: LRP insurance protects against a decline in prices below the
+                    established coverage price.
+
+            (2)     Coverage Prices: The price provided for the insured livestock, determined by the chosen
+                    coverage level. Prices offered at each coverage level change daily and must be obtained
+                    from the RMA website.
+
+            (3)     Coverage Levels: Authorized coverage levels are 75%, 80%, 85%, 87.5%, 90%, 92.5%,
+                    95%, 96%, 97%, 98%, 99%, and 100%.
+
+            (4)     Availability of Coverage: Coverage information is found exclusively on the daily AD and
+                    is applicable only for the effective date.
+
+            (5)     To obtain coverage, an insured must submit an SCE to the AIP during the sales period.
+
+                    (a)     Any properly executed SCE provided to an agent before the sales period will not
+                            be considered submitted until the sales period has begun.
+
+
+
+
+June 2026                                         FCIC-20010                                                 13
+22    LRP SCE Underwriting Rules (Continued)
+
+      B.    LRP SCE Coverage (Continued)
+
+                   (b)    The insured may revise or withdraw the SCE at any time up to 1:30 PM Central
+                          Time on the effective date. Withdrawal must be documented in writing.
+                          Revisions must be documented by completing a new SCE and writing in the
+                          remarks “This SCE replaces the SCE signed on mm/dd/year.”
+
+                   (c)    After the start of the sales period, the SCE may not be revised and will be
+                          presumed to be the election of the insured.
+
+                   (d)    The insured’s signature can be obtained up to 14 calendar days prior to the end
+                          of the sales period of the effective date provided all the substantive items
+                          regarding the insured’s information, commodity information and required
+                          statements are completed on the SCE. The date must be the calendar date when
+                          the form is signed by the insured.
+
+                   (e)    Before the insured’s signature can be obtained, the SCE must contain the
+                          livestock class and type, the effective date of coverage, the end date, the State
+                          and county where livestock is located on the effective date, the number of
+                          covered livestock, the target weight at the end date, the coverage level, and the
+                          insured share.
+
+                   (f)    The agent’s signature can be obtained up to 14 calendar days prior to the end of
+                          the sales period of the effective date provided all other substantive items are
+                          completed on the SCE. The date must be the calendar date when the form is
+                          signed by the agent.
+
+            (6)    The SCE must be received by the AIP’s information technology system by 8:25 AM
+                   Central Time, the end of the sales period.
+
+                   (a)    The AIP will accept a signed SCE if received by the AIP’s information technology
+                          system after the end of the sales period provided:
+
+                          (i)     the SCE was signed by the agent and the insured during the sales period,
+                                  and proof of time of signature is provided;
+
+                          (ii)    the information from the SCE was keyed into the AIP’s information
+                                  technology system and that SCE’s data received at the AIP by the end of
+                                  the sales period; and
+
+                          (iii)   the AIP receives a copy of the completed, signed SCE no later than 10:30
+                                  AM Central Time immediately following the end of the sales period.
+
+                   (b)    The AIP may accept the SCE if received by the AIP’s information technology
+                          system after 10:30 AM Central Time immediately following the end of the sales
+                          period provided:
+
+                          (i)     all criteria in 6(a)(i) and 6(a)(ii) are met;
+June 2026                                       FCIC-20010                                               14
+22    LRP SCE Underwriting Rules (Continued)
+
+      B.    LRP SCE Coverage (Continued)
+
+                          (ii)    the AIP receives a copy of the completed, signed SCE no later than 12:00
+                                  PM (Noon) Central Time immediately following the end of the sales
+                                  period; and
+
+                          (iii)   the AIP can document a valid reason for the delay.
+
+                   (c)    Beyond 12:00 PM (Noon) Central Time, no exceptions are allowed.
+
+            (7)    SCEs will not be approved:
+
+                   (a)    if the coverage level indicated on the SCE is not available for purchase;
+
+                   (b)    unless such SCE is accepted by RMA;
+
+                   (c)    if the RMA website or premium calculator are not operational; or
+
+                   (d)    if the SCE is signed after the time when LRP sales are halted by FCIC under
+                          section 4 of the LRP Basic Provisions due to an extraordinary event that results in
+                          market conditions significantly different than those used to issue the rates.
+
+            (8)    The coverage will not be available for purchase:
+
+                   (a)    for feeder cattle and fed cattle, on the days on which USDA releases the Cattle,
+                          and Cattle on Feed report;
+
+                   (b)    for swine, on the days on which USDA releases the Hogs and Pigs report;
+
+                   (c)    for affected offers, in the event of a limit movement in any relevant livestock
+                          futures;
+
+                   (d)    on dates the CME livestock complex is closed. If a holiday falls on a Saturday,
+                          CME livestock complex will be closed on the preceding Friday. If a holiday falls
+                          on a Sunday, CME livestock complex will be closed on the following Monday.
+                          CME holiday schedule for a specific year can be found here:
+                          www.cmegroup.com/tools-information/holiday-calendar.html. Observed
+                          holidays are:
+
+                          (i)     New Year’s Day;
+
+                          (ii)    Birthday of Martin Luther King, Jr.;
+
+                          (iii)   Washington’s Birthday;
+
+                          (iv)    Good Friday;
+
+                          (v)     Memorial Day;
+
+June 2026                                       FCIC-20010                                                   15
+22    LRP SCE Underwriting Rules (Continued)
+
+      B.    LRP SCE Coverage (Continued)
+
+                           (vi)     Juneteenth National Independence Day;
+
+                           (vii)    Independence Day;
+
+                           (viii)   Labor Day;
+
+                           (ix)     Thanksgiving Day; and
+
+                           (x)      Christmas Day.
+
+                   (e)     if for any reason offers are not published in the AD by 4:30 PM Central Time on
+                           the effective date.
+
+            (9)    Neither the coverage offered nor the cost of coverage will not be changed in response
+                   to any revisions to the information used in determining coverage prices or rates.
+
+      C.    LRP Premium Calculation
+
+            The premium is calculated by multiplying the number of insured livestock times the target
+            weight, times the coverage price, times any PAFs, if applicable, times the insured’s share, and
+            times the premium rate contained in the AD for the insurance period. See Exhibit 8 for Liability
+            and Premium Computation Illustration.
+
+      D.    Indemnity Calculation
+
+            (1)    An indemnity is payable if the actual ending value is less than the coverage price
+                   (otherwise the indemnity is zero). Unless the number of insured livestock require
+                   adjustment in accordance with paragraph 21(C)(6), the indemnity is calculated by:
+
+                   (a)     multiplying the number of covered livestock times the target weight;
+
+                   (b)     subtracting the actual ending value from the coverage price;
+
+                   (c)     multiplying the results of (a) and (b); and
+
+                   (d)     multiplying the result of (c) by the insured share.
+
+            (2)    If adjustment of the number of insured livestock are required, the number of insured
+                   livestock will be calculated in accordance with paragraph 26.
+
+      E.    Offset of Premium from Indemnities
+
+            If the insured is entitled to an indemnity under the LRP policy or any other agricultural
+            commodity policy insured with the AIP and it is:
+
+
+
+June 2026                                        FCIC-20010                                               16
+22    LRP SCE Underwriting Rules (Continued)
+
+      E.    Offset of Premium from Indemnities (Continued)
+
+            (1)    prior to the premium billing date or for any endorsement that has not ended, the
+                   insured may request the premium and administrative fees to be offset from any
+                   indemnity or prevented planting payment due the insured; or
+
+            (2)    on or after the premium billing date, or for any endorsement that has ended, the
+                   insured’s premium and administrative fees will be offset from any indemnity or
+                   prevented planting payment due to the insured. If there are multiple endorsements
+                   with amounts due past the premium billing date, then the indemnity must be credited
+                   first to endorsements with earliest premium billing dates.
+
+      F.    Correction of Errors
+
+            (1)    Any correction to insured’s elections on the SCE that affects the premium, liability or
+                   record requirements, such as changes to the type, target weight, or number of covered
+                   livestock, must be made within 14 calendar days after the effective date, and the
+                   request must be accompanied by the timely signed SCE and supporting documentation,
+                   dated before the end of the SCE sales period, that demonstrates a clear and inadvertent
+                   error was made.
+
+            (2)    Correction of transmission errors made by the AIP may be submitted to RMA at any
+                   time the transmission error is discovered and must be accompanied by the timely signed
+                   SCE matching the correction requested.
+
+            (3)    If RMA is notified there has been a clear and obvious error made in any offers of
+                   insurance, such as but not limited to premiums announced that are significantly lower
+                   than those for any previous offer, and the error is discovered after acceptance of the
+                   SCE endorsement by the RMA system:
+
+                   (a)    Within five business days, AIPs must inform insureds who have properly and
+                          timely executed SCEs affected by the error. If notice is not provided by
+                          electronic means, the date the notice is mailed must be within five business days
+                          of the date when AIP was notified by RMA of the error.
+
+                   (b)    The insured must notify the AIP within five business days after receiving the
+                          notice and confirm they wish to maintain coverage under corrected terms. If the
+                          correction does not affect any information presented on the SCE, AIP may accept
+                          any communication from the insured as sufficient notice that the insured wishes
+                          to retain previously purchased coverage. For example, the AIP SCE form
+                          contains expected prices, but not premium. If originally issued actuarial records
+                          result in incorrect premium, but expected prices are unaffected by the error,
+                          then the SCE form, as originally signed by the insured, does not contain any
+                          errors, and does not need to be executed again. If any information presented on
+                          the SCE is affected by the error, then SCE must be executed again with corrected
+                          information within five business days after the insured received the notice of the
+                          error, even if the information affected is not a substantive field on the SCE form.
+
+June 2026                                      FCIC-20010                                                   17
+23    LRP Feeder Cattle Underwriting Rules
+
+      A.    Feeder Cattle Basic Principles
+
+            (1)    Insurance Period: LRP-Feeder Cattle insurance is offered for 13, 17, 21, 26, 30, 34, 39,
+                   43, 47, and 52-week periods. For unborn livestock with target weight at 6.00 cwt or
+                   more, insurance is offered for 30, 34, 39, 43, 47, and 52-week periods.
+
+            (2)    SCE: The SCE is used to initiate LRP coverage for a specified group of feeder cattle by
+                   type.
+
+            (3)    Target Weight: The target weight for the covered feeder cattle should fall within the
+                   following ranges:
+
+                   (a)    Steer feeder cattle; categorized in the two weight ranges of 1.0 - 5.99 cwt (for
+                          steers and bulls) and 6.0 - 10.0 cwt (steers only).
+
+                   (b)    Heifer feeder cattle; categorized in the two weight ranges of 1.0 - 5.99 cwt and
+                          6.0 - 10.0 cwt.
+
+                   (c)    Predominantly Brahman feeder cattle; categorized in the two weight ranges of
+                          1.0 - 5.99 cwt (for heifers, steers and bulls) and 6.0 - 10.0 cwt (for heifers and
+                          steers).
+
+                   (d)    Predominantly Dairy feeder cattle; categorized in the two weight ranges of 1.0 -
+                          5.99 cwt (for heifers, steers and bulls) and 6.0 - 10.0 cwt (for heifers and steers).
+
+                   (e)    Unborn bulls and heifers, i.e., bulls and heifers unborn on the SCD, to be
+                          marketed as bulls, steers or heifers; categorized in the two weight ranges of 1.0 -
+                          5.99 cwt and 6.0 - 9.0 cwt.
+
+                   (f)    Unborn predominantly Brahman feeder cattle; i.e., predominantly Brahman bulls
+                          and heifers unborn on the effective date, to be marketed as bulls, steers, or
+                          heifers; categorized in the two weight ranges of 1.0 - 5.99 cwt and 6.0 - 9.0 cwt.
+
+                   (g)    Unborn predominantly Dairy feeder cattle; i.e., predominantly dairy bulls and
+                          heifers unborn on the effective date, to be marketed as bulls, steers, or heifers;
+                          categorized in the two weight ranges of 1.0 - 5.99 cwt and 6.0 - 9.0 cwt.
+
+                   (h)    Unborn calves; with target weight of 0.6 - 0.99 cwt, for calves sold within the
+                          first two weeks after birth. Insurable calves include beef calves and beef-on-
+                          dairy crossbred calves produced by crossing dairy cows (including, but not
+                          limited to Holstein, Jersey, Brown Swiss, Ayrshire, Guernsey, or Milking
+                          Shorthorn) with beef bulls (including, but not limited to Angus, Hereford,
+                          Simmental, Charolais, Limousin, Wagyu). Dairy-on-dairy calves (such as when
+                          the bull semen is Holstein, Jersey, etc.) cannot be insured under the unborn
+                          calves type and must be insured under unborn predominantly dairy type.
+
+
+
+
+June 2026                                      FCIC-20010                                                      18
+23    LRP Feeder Cattle Underwriting Rules (Continued)
+
+      B.    Feeder Cattle Limitations
+
+            (1)    The maximum number of feeder cattle that may be insured under any one SCE shall be
+                   12,000 head, and during any crop year shall be 25,000 head. For the purposes of
+                   determining whether the number of the insured’s covered feeder cattle has reached the
+                   maximum allowed for the crop year, the AIP will sum the values in items (a) and (b)
+                   below:
+
+                   (a)    All feeder cattle insured under any SCE insured under this policy; and
+
+                   (b)    All feeder cattle insured under any other LRP policy in which the insured, or any
+                          person who has an SBI in the insured, have an SBI, in proportion to the
+                          percentage of SBI.
+
+            (2)    If the number of covered feeder cattle calculated per 23B(1) has reached the maximum
+                   allowed number of head for the crop year, no further endorsements will be accepted.
+
+                   Example:       ABC Farms has 1,000 head of feeder cattle insured under LRP. Producer
+                                  A has an SBI in ABC Farms and has 90 percent interest (1,000 × .90 = 900
+                                  head). Producer A also has cattle under their own name and wants to
+                                  insure 200 head. The total cattle insured by Producer A are: 900 + 200 =
+                                  1,100 head which is below the crop year limit of 25,000 head.
+
+            (3)    If covered steers or heifers are sold within 60 days of the end date:
+
+                   (a)    in addition to requirements of section 6(a)(2)(i) of the Basic Provisions, the
+                          marketing records must also specify the sex of sold livestock; and
+
+                   (b)    if marketing records indicate that any of the sold covered livestock are of the sex
+                          different than the sex indicated on the SCE, the number of such animals is
+                          adjusted by multiplying by 0.90 and rounded to the closest whole number.
+
+            (4)    To receive an indemnity for covered unborn calves:
+
+                   (a)    in addition to requirements of section 6(a)(2)(i) of the Basic Provisions, you must
+                          provide documents verifying the sales of covered unborn calves not earlier than
+                          30 days before the SCE end date and no later than 30 days after the SCE end
+                          date; and
+
+                   (b)    in lieu of the requirements of section 6(a)(2)(i)(D) of the Basic Provisions,
+                          marketing records do not need to show the weight of the livestock sold. If
+                          marketing records do show weight, the weight must be consistent with sale
+                          occurring within two weeks after birth. Any animals with weight in excess of 135
+                          pounds must not be counted as sold covered livestock, unless the insured can
+                          demonstrate such weight is consistent with the sale occurring within two weeks
+                          after birth.
+
+
+June 2026                                      FCIC-20010                                                  19
+23    LRP Feeder Cattle Underwriting Rules (Continued)
+
+      B.    Feeder Cattle Limitations (Continued)
+
+            (5)    Sales of all affected feeder cattle SCEs will be suspended in the event of a limit
+                   movement in any relevant CME Feeder Cattle futures. As of June 2023, the daily price
+                   limit for CME Feeder Cattle futures is set by the CME to $0.0825/lb. ($8.25/cwt), and the
+                   expanded price limit is set to $0.1225/lb. ($12.25/cwt). The daily price limit and the
+                   expanded price limit are subject to change, and the latest values can be found at
+                   www.cmegroup.com/company/livestock-market-enhancements.html and
+                   www.cmegroup.com/trading/price-limits.html.
+
+            (6)    Sales of all feeder cattle SCEs will be suspended on the calendar days on which USDA
+                   releases the Cattle, and Cattle on Feed report.
+
+      C.    Feeder Cattle Coverage
+
+            (1)    PAFs: LRP Feeder Cattle insurance coverage prices and rates are based on the CME’s
+                   Feeder Cattle Contract, which is cash settled to the CME Feeder Cattle Index.
+
+                   (a)    The CME Feeder Cattle Contract and the CME Feeder Cattle Index are only based
+                          on the price series for steers weighing 700 to 899 pounds, excluding
+                          predominantly Brahman or dairy breeds.
+
+                   (b)    Because the CME Feeder Cattle futures prices are for steers of a certain type and
+                          weight, the LRP insurance plan for Feeder Cattle uses PAFs to calculate expected
+                          ending values, coverage prices, and actual ending values to adjust for select
+                          types and weights of feeder cattle, particularly for heifer, predominately
+                          Brahman and predominately dairy feeder cattle.
+
+                   (c)    PAFs were designed to account for the differences between steer prices and
+                          prices of other types and weights of cattle.
+
+                   (d)    PAFs are applied to the expected ending values, coverage prices and actual
+                          ending values prior to publishing. Therefore, coverage prices and actual ending
+                          values are presented by type and weight of cattle on the RMA website, and no
+                          further calculations are needed by agents or insureds.
+
+                   (e)    PAFs are included in the SCE, for the convenience of insureds, to provide
+                          information as to how coverage prices and actual ending values (liability,
+                          premium, and indemnity) will differ from the CME for certain types and weights
+                          of cattle and to allow the insured to calculate or estimate the actual ending value
+                          prior to its being published.
+
+                   (f)    Prices for feeder cattle types and weights covered under this endorsement are
+                          adjusted by multiplying the daily LRP expected ending value or actual ending
+                          value, as appropriate for the type of feeder cattle, times the appropriate PAF.
+                          The coverage prices determined with these factors will be posted in the actuarial
+                          document on RMA’s website at www.rma.usda.gov/.
+
+June 2026                                     FCIC-20010                                                  20
+23    LRP Feeder Cattle Underwriting Rules (Continued)
+
+      C.    Feeder Cattle Coverage (Continued)
+
+                   (g)    PAFs are published in the AD. ***
+
+            (2)    To receive indemnity for feeder cattle not sold by the end date, the insured must
+                   provide the following:
+
+                   (a)    A certified statement that feeder cattle were marketable as of the end date.
+
+                   (b)    A document to support verification of ownership. Allowable documents include,
+                          but are not limited to: livestock purchase agreements, bills of sale; financing and
+                          credit documents secured by the covered livestock; or certified written
+                          statements from third parties such as feed suppliers or veterinarians who have
+                          visited the farm or ranch, who visually identified the livestock listed on the SCE
+                          and can attest to your ownership of the identified livestock. If livestock purchase
+                          agreements are provided to verify ownership, they must have a date of delivery
+                          or pickup before the start of the insurance period. Bills of sale are valid proof of
+                          ownership only if the date on the bill of sale is not later than 60 days after the
+                          end date.
+
+            (3)    Unborn Feeder Cattle: Unborn feeder cattle may be insured if the insured has an
+                   ownership interest in pregnant cattle at the time coverage is established.
+
+                   (a)    When unborn feeder cattle are insured, the location of the pregnant cattle must
+                          be provided on the SCE.
+
+                   (b)    The SCE must list the unborn feeder cattle type: Unborn Steers & Heifers,
+                          Unborn Brahman, or Unborn Dairy.
+
+                   (c)    The insureds must provide documentation to verify the number of pregnant
+                          cattle, thereby verifying the number of unborn feeder cattle allowed on an SCE.
+                          The insured’s verifying documents must show that under normal circumstances,
+                          the number of pregnant cattle must be capable of producing the number of
+                          unborn feeder cattle insured. Valid records include veterinary reports or sales
+                          contracts from previous years.
+
+                          ***
+
+
+
+
+June 2026                                     FCIC-20010                                                   21
+23    LRP Feeder Cattle Underwriting Rules (Continued)
+
+      D.    Feeder Cattle Premium Calculation Example
+
+            An operation has 100 head of heifer feeder cattle and expects to market the feeder cattle at a
+            target weight of 8.0 cwt each. The PAF is 90%. The insured share is 100 percent. The expected
+            ending value for steers weighing between 6.0 and 10.0 cwt is $345.44. The expected ending
+            value for heifer feeder cattle is $310.90 dollars per live cwt (90% PAF multiplied by $345.44)
+            and the insured selects a coverage price of $310.90 per live cwt. For this coverage price the
+            rate is 0.043235. The example premium subsidy is 35 percent. The Premium is calculated by:
+
+            (1)    100 head times 8.0 cwt equals 800 cwt.
+
+            (2)    800 cwt times the coverage price of $310.90 equals $248,720.
+
+            (3)    $248,720 times the insured share of 1.00 equals an insured value of $248,720.
+
+            (4)    $248,720 times the rate of 0.043235 equals $10,753 total premium.
+
+            (5)    $10,753 times the producer premium subsidy percentage of .35 equals $3,764.
+
+            (7)    $10,753 minus $3,764 equals the producer premium of $6,989.
+
+      E.    Feeder Cattle Indemnity Calculation Example
+
+            (1)    If the operation has 100 head of heifer feeder cattle, a target weight of 8.0 cwt, a PAF of
+                   90%, an insured share of 100 percent, and a coverage price of $310.90 per live cwt, the
+                   actual ending value is equal to $297.00 per live cwt (.90 times $330.70 actual ending
+                   value for all feeder steers weighing between 6.0 and 10.0 cwt). Since $297.00 is less
+                   than the coverage price of $310.90, an indemnity is due. Indemnity is calculated as
+                   follows:
+
+                   (a)    Multiplying 100 head by 8.00 cwt target weight equals 800 cwt.
+
+                   (b)    Subtracting the actual ending value of $297.00 from the coverage price of
+                          $310.90 equals $13.90/cwt.
+
+                   (c)    Multiplying 800 cwt by $13.90/cwt equals $11,120.
+
+                   (d)    Multiplying $11,120 by the insured share of 1.00 equals an indemnity payment
+                          of $11,120.
+
+            (2)    If the insured fails to notify the AIP that five feeder cattle have died, the number of
+                   insured head is reduced to 95 head so the indemnity would be determined as follows:
+
+                   (a)    Multiplying 95 head by 8.0 cwt target weight equals 760 cwt.
+
+                   (b)    Multiplying 760 cwt by $13.90/cwt equals $10,564.
+
+
+
+June 2026                                      FCIC-20010                                                    22
+23    LRP Feeder Cattle Underwriting Rules (Continued)
+
+      E.    Feeder Cattle Indemnity Calculation Example (Continued)
+
+                   (c)     Multiplying $10,564.00 by the insured share of 1.00 equals an indemnity
+                           payment of $10,564.00 .
+
+24    LRP Fed Cattle Underwriting Rules
+
+      A.    Fed Cattle Basic Principles
+
+            (1)    Covered types:
+
+                   (a)     Steers and Heifers: Cattle raised for meat production, expected to grade select
+                           or higher, that are marketable by the end date. Quality grade and yield grade
+                           are defined by the USDA “Official United States Standards for Grades of
+                           Slaughter Cattle” and the “Official United States Standards for Grades of Carcass
+                           Beef.”
+
+                   (b)     Cull cows: Dairy cows removed from the herd and marketed for beef, whether
+                           sold directly for slaughter or placed on feed prior to slaughter, and expected to
+                           grade USDA Standard or lower. Replacement cows, breeding stock, beef cows,
+                           and dairy cows sold at herd dispersal auctions are not eligible for coverage under
+                           LRP-Fed Cattle endorsement.
+
+            (2)    Insurance Period: LRP-Fed Cattle insurance is offered for 13, 17, 21, 26, 30, 34, 39, 43,
+                   47, and 52-week periods. The insurance period should be within 60 days of the number
+                   of days that the livestock are to be marketed or reach the desired weight. ***
+
+            (3)    SCE: The SCE is used to initiate LRP coverage for a specified group of fed cattle to be
+                   slaughtered on or near the end date of the SCE.
+
+            (4)    Unborn fed cattle are not insurable under the SCE.
+
+            (5)    Target weight: The Target Weight for the covered steers and heifers should fall within
+                   the range of 10 - 18 cwt. Target weight for cull cows must fall within the range of 8 - 17
+                   cwt.
+
+            (6)    If sales records do not contain live weight, then live weight may be imputed by dividing
+                   the hanging weight by 0.6325 for steers and heifers and 0.55 for cull cows.
+
+
+
+
+June 2026                                      FCIC-20010                                                    23
+24    LRP Fed Cattle Underwriting Rules (Continued)
+
+      B.    Fed Cattle Limitations
+
+            (1)    The maximum number of fed cattle that may be insured under any one SCE shall be
+                   12,000 head, and during any crop year shall be 25,000 head. For the purposes of
+                   determining whether the number of an individual’s insured fed cattle has reached the
+                   maximum allowed for the crop year, sum the values in items (a) and (b) below:
+
+                   (a)    All fed cattle insured under any SCE issued under this policy; and
+
+                   (b)    All fed cattle insured under any other LRP policy in which the insured, or any
+                          person who has an SBI in the insured, have an SBI, in proportion to the
+                          percentage of SBI.
+
+            (2)    If the number of covered fed cattle calculated per 24B(1) has reached the maximum
+                   allowed number of head for the crop year, no further endorsements will be accepted.
+
+                                 Example:       ABC Farms has 2,000 head of fed cattle insured under LRP.
+                                 Producer A has an SBI in ABC Farms and has 90 percent interest (2,000 ×
+                                 .90 = 1,800 head). Producer A also has cattle under their own name and
+                                 wants to insure 1,000 head. The total cattle insured by Producer A are:
+                                 1,800 + 1,000 = 2,800 head which is below the crop year limit of 25,000
+                                 head.
+
+            (3)    Suspension of Sales:
+
+                   (a)    Sales of all affected fed cattle SCEs will be suspended in the event of a limit
+                          movement in any relevant CME Live Cattle futures. As of June 2023, the daily
+                          price limit for Live Cattle futures is set by the CME to $0.0675/lb. ($6.75/cwt)
+                          and the expanded price limit is set to $0.1000/lb. ($10.00/cwt). The daily price
+                          limit and the expanded price limit are subject to rule change, and the latest
+                          values can be found at www.cmegroup.com/company/livestock-market-
+                          enhancements.html and www.cmegroup.com/trading/price-limits.html.
+
+                   (b)    Sales of all fed cattle SCEs will be suspended on the calendar days on which
+                          USDA releases the Cattle, and Cattle on Feed report.
+
+
+
+
+June 2026                                     FCIC-20010                                                   24
+24    LRP Fed Cattle Underwriting Rules (Continued)
+
+      C.    Fed Cattle Coverage Premium Calculation Example
+
+            An operation has 70 head of fed cattle and expects to market the fed cattle at a target weight
+            of 15 cwt each. The insured share is 100 percent. The expected ending value is $232.75 per
+            live cwt, and the insured selects a coverage price of $230.42 per live cwt. For this coverage
+            price the rate is 0.040118. The example premium subsidy is 35 percent. The premium is
+            calculated as follows:
+
+            (1)    70 head times 15 cwt equals 1,050 cwt.
+
+            (2)    1,050 cwt times the coverage price of $230.42 equals $241,941.
+
+            (3)    $241,941 times the insured share of 1.00 equals an insured value of $241,941.
+
+            (4)    $241,941 times the rate of 0.040118 equals $9,706 total premium.
+
+            (5)    $9,706 times the producer premium subsidy percentage of .35 equals $3,397.
+
+            (6)    $9,706 minus $3,397 equals the producer premium of $6,309.
+
+      D.    Fed Cattle Indemnity Calculation Example
+
+            (1)    For the above operation with 70 head of fed cattle, a target weight of 15 cwt, an insured
+                   share of 100 percent, and a coverage price of $230.42 per live cwt, the actual ending
+                   value is equal to $222.00 per live cwt. Since $222.00 is less than the coverage price of
+                   $230.42, an indemnity is due. Indemnity is calculated as follows:
+
+                   (a)    70 head times the 15-cwt target weight equals 1,050 cwt.
+
+                   (b)    Subtracting the actual ending value of $220.00 from the coverage price of $230.42
+                          equals $10.42/cwt.
+
+                   (c)    Multiplying 1,050 cwt by $10.42/cwt equals $10,941.
+
+                   (d)    Multiplying $10,941 by the insured share of 1.00 equals an indemnity payment of
+                          $10,941.
+
+            (2)    If the insured fails to properly notify the AIP that five fed cattle have died, the number
+                   of insured head is reduced to 65 head so the indemnity would be calculated as follows:
+
+                   (a)    65 head times the 15-cwt target weight equals 975 cwt.
+
+                   (b)    Subtracting the actual ending value of $220.00 from the coverage price of
+                          $230.42 equals $10.42/cwt.
+
+                   (c)    Multiplying 975 cwt by $10.42/cwt equals $10,159.50.
+
+
+
+June 2026                                      FCIC-20010                                                   25
+24    LRP Fed Cattle Underwriting Rules (Continued)
+
+      D.    Fed Cattle Indemnity Calculation Example (Continued)
+
+                   (d)    Multiplying $10,159.50 by the insured share of 1.00 equals an indemnity
+                          payment of $10,159.50.
+
+25    LRP Swine Underwriting Rules
+
+      A.    Swine Basic Principles
+
+            (1)    Insurance Period: LRP-Swine insurance for:
+
+                   (a)    swine born before the SCE effective date is offered for 13, 17, 21, 26, and 30-
+                          week periods.
+
+                   (b)    unborn swine before the SCE effective date is offered for 30, 34, 39, 43, 47, and
+                          52-week periods. The time closest to the time the swine will be marketed should
+                          be chosen.
+
+            (2)    Target Weight: The Target Weight must fall within the range of 1.40 and 2.60 cwt lean
+                   weight (this equates to a head weighing from about 189 to 351 pounds on a live basis).
+                   To convert live weight to lean weight, multiply the live weight by the lean weight
+                   conversion factor of .74. For example, a 2.50 cwt per head live weight is equal to 1.85
+                   cwt lean weight.
+
+      B.    Swine Limitations
+
+            (1)    The maximum number of swine that may be insured under any one SCE shall be 70,000
+                   head, and during any crop year shall be 750,000 head. For the purposes of determining
+                   whether the number of an individual’s insured swine has reached the maximum allowed
+                   for the crop year, sum the values determined in items (a) and (b) below:
+
+                   (a)    All swine insured under any SCE insured under this policy; and
+
+                   (b)    All swine insured under any other LRP policy in which the insured, or any person
+                          who has an SBI in the insured, have an SBI, in proportion to the percentage of
+                          SBI.
+
+            (2)    If the number of covered swine calculated per 25B(1) has reached the maximum
+                   allowed number of head for the crop year, no further endorsements will be accepted.
+
+                   Example:      ABC Farms has 20,000 head of swine insured under LRP. Producer A has
+                                 an SBI in ABC Farms and has 90 percent interest (20,000 × .90 = 18,000
+                                 head). Producer A also has hogs under their own name and wants to
+                                 insure 10,000 head. The total hogs insured by Producer A are: 18,000 +
+                                 10,000 = 28,000 head which is below the crop year limit of 750,000 head.
+
+
+
+
+June 2026                                     FCIC-20010                                                    26
+25    LRP Swine Underwriting Rules (Continued)
+
+      B.    Swine Limitations (Continued)
+
+            (3)    Suspension of Sales:
+
+                   (a)    Sales of all affected swine SCEs will be suspended in the event of a limit
+                          movement in any relevant CME Lean Hog futures. As of September 2023, the
+                          daily price limit for CME Lean Hog futures is set by the CME to $0.0375/lb.
+                          ($3.75/cwt) and the expanded price limit is set to $0.055/lb. ($5.50/cwt). The
+                          daily price limit and the expanded price limit are subject to rule change, and the
+                          latest values can be found at www.cmegroup.com/company/livestock-market-
+                          enhancements.html and www.cmegroup.com/trading/price-limits.html.
+
+                   (b)    Sales of all swine SCEs will be suspended on the calendar days on which USDA
+                          releases the Hogs and Pigs report.
+
+            (4)    Unborn swine: Unborn swine may be insured if the insured has an ownership interest in
+                   pregnant swine at the time coverage is established, or as otherwise authorized by the
+                   policy.
+
+                   (a)    When unborn swine are insured, the location of the pregnant swine must be
+                          provided on the SCE.
+
+                   (b)    The SCE must list the unborn swine.
+
+                   (c)    If the sows are owned, the insureds must provide documentation to verify the
+                          number of pregnant swine, thereby verifying the number of unborn swine
+                          allowed on an SCE. The insured’s verifying documents must show that under
+                          normal circumstances, the number of pregnant swine must be capable of
+                          producing the number of unborn swine insured. Valid records include veterinary
+                          reports or sales contracts from previous years.
+
+                   (d)    Unborn swine must have a target weight of at least 1.40 cwt at the end date of
+                          the SCE to be insured.
+
+
+
+
+June 2026                                     FCIC-20010                                                  27
+25    LRP Swine Underwriting Rules (Continued)
+
+      C.    Swine Premium Calculation Example
+
+            An operation has 1,000 head of hogs and expects to market the hogs at 2.85 cwt each.
+            Therefore, the target weight is 2.85 times the lean weight conversion factor of .74, which is
+            2.11 cwt. The insured share is 100 percent. The expected ending value is $95.00 dollars per
+            cwt, and the insured selects a coverage price of $94.05 per cwt (on a lean cwt basis). For this
+            coverage price the rate is 0.045195. The example premium subsidy is 35 percent. The
+            premium is calculated as follows:
+
+            (1)    1000 head times 2.11 equals 2,110 cwt.
+
+            (2)    2,110 cwt times the coverage price of $94.05 equals $198,446.
+
+            (3)    $198,446 times the insured share of 1.00 equals an insured value of $198,446.
+
+            (4)    $198,446 times the rate of .0.45195 equals $8,969 total premium.
+
+            (5)    $8,969 times the producer premium subsidy percentage of .35 equals $3,139.
+
+            (6)    $8,969 minus $3,139 equals the producer premium of $5,830.
+
+      D.    Swine Indemnity Calculation Example
+
+            For the above operation with 1,000 head of hogs, a target weight of 2.11 cwt, an insured share
+            of 100 percent, and a coverage price of $94.05 per cwt, the actual ending value is equal to
+            $85.20 per cwt. Since $85.20 is less than the coverage price of $94.05, an indemnity is due.
+            Indemnity is calculated as follows:
+
+            (1)    1,000 head times the 2.11 target weight equals 2,110 cwt.
+
+            (2)    Subtracting the actual ending value of $82.20 from the coverage price of $94.05 equals
+                   $8.85/cwt.
+
+            (3)    Multiplying 2,110 cwt by $8.85/cwt equals $18,674.
+
+            (4)    Multiplying $18,674 by the insured share of 1.00 equals an indemnity payment of
+                   $18,674.
+
+
+
+
+June 2026                                      FCIC-20010                                                     28
+26    Determining Number of Marketable Livestock
+
+      A.    Livestock physically delivered to the buyer
+
+            For livestock physically delivered to the buyer no later than 60 days after the SCE end date, the
+            bill of sale must contain the number of livestock delivered, sex (for sex-specific feeder cattle
+            types only), and weight of delivered livestock.
+
+            (1)    If the number of delivered livestock is less than the number of covered livestock, the
+                   marketable number of livestock is reduced to the number of delivered livestock.
+
+                   Example:       100 steers insured at 700-pound target weight. Sales records provided
+                                  indicate 95 head with an average weight of 705 pounds. The marketable
+                                  number of livestock is 95 head.
+
+            (2)    For sex-specific feeder cattle types only, if marketing records indicate that any of the
+                   sold covered livestock are of the sex different than the sex indicated on the SCE, the
+                   number of such misidentified animals is adjusted by multiplying by 0.90 and rounding to
+                   the closest whole number.
+
+                   Example:       100 steers insured at 700-pound target weight. Sales records provided
+                                  indicate 100 head, 65 steers and 35 heifers, with an average weight of
+                                  705 pounds. The marketable number of livestock is 65 + 35 × 0.90 = 97.
+
+            (3)    If the total weight of the covered livestock at the end date is less than the number of
+                   covered livestock multiplied by the minimum allowed target weight (i.e., total actual
+                   weight), unless the insured qualifies for Drought Hardship Exemption or can otherwise
+                   establish that extraordinary circumstances caused the livestock to weigh less than the
+                   minimum allowed target weight, the number of marketable livestock is adjusted as
+                   follows:
+
+                   (a)     Calculate the minimum allowed total weight, by multiplying the number of
+                           covered livestock (adjusted per 26(A)(1) and 26(A)(2) if necessary) by the
+                           minimum allowed target weight for the selected type.
+
+                   (b)     Calculate the actual total weight, by multiplying the number of covered livestock
+                           (adjusted per 26(A)(1) and 26(A)(2) if necessary) by the average weight of sold
+                           livestock. Note: the insured is only required to provide sales records for covered
+                           livestock, not all sold livestock.
+
+                   (c)     Subtract actual total weight from the minimum allowed total weight.
+
+                   (d)     Divide the difference calculated in (b) by the declared target weight, and round
+                           to the nearest whole number.
+
+                   (e)     Subtract the number of head calculated in (c) from the total declared number of
+                           livestock.
+
+
+
+June 2026                                      FCIC-20010                                                   29
+26    Determining Number of Marketable Livestock (Continued)
+
+      A.    Livestock physically delivered to the buyer (Continued)
+
+                   Example:      100 livestock insured at 700-pound target weight, for a total weight of
+                                 70,000 pounds. Sales records provided indicate 100 head with an
+                                 average weight of 525 pounds. Insured is not able to establish that
+                                 extraordinary circumstances caused the livestock to weigh less than the
+                                 minimum weight, such as drought causing a lack of feed. Therefore, an
+                                 adjustment to the marketable number of head is necessary. ***
+
+                                 (A)     100 times 600 pounds (minimum allowed target weight for the
+                                         selected type) equals 60,000 pounds.
+
+                                 (B)     100 times 525 pounds equals 52,500 pounds.
+
+                                 (C)     60,000 minus 52,500 equals 7,500 pounds below target weight.
+
+                                 (D)     7,500 divided by 700 equals 11 head (rounded to the nearest
+                                         head).
+
+                                 (E)     100 head minus 11 head equals the marketable number of
+                                         livestock of 89 head.
+
+                                 Note:          By signing the SCE, the insured is attesting that they
+                                                expect the covered livestock to reach target weight by the
+                                                end date. Declaring target weight that intentionally
+                                                exceeds expected livestock weight at the end date (such as
+                                                target weight that is either not biologically achievable
+                                                given the endorsement length and livestock type, or not
+                                                supported by the insured’s existing farming practices) is a
+                                                willful and intentional provision of false and inaccurate
+                                                information to the AIP and the FCIC, and subject to
+                                                penalties as provided in Basic Provisions, Section 16(e),
+                                                including disqualification from crop insurance and any
+                                                other Federal assistance for crop loss or a decline in the
+                                                prices of agricultural commodities.
+
+      B.    Retained livestock and livestock sold under a livestock purchase agreement
+
+            For retained livestock, and livestock sold under a livestock purchase agreement with delivery
+            period ending more than 60 days after the SCE end date, the number of marketable livestock is
+            determined based on the certified statement by the insured, livestock purchase agreements
+            and bills of sale.
+
+            (1)    If the number of livestock delivered to the insured not later than 90 days before the end
+                   date is less than the number of covered livestock, the marketable number of livestock is
+                   reduced to the number of livestock delivered to the insured.
+
+
+June 2026                                     FCIC-20010                                                 30
+26    Determining Number of Marketable Livestock (Continued)
+
+      B.     Retained livestock and livestock sold under a livestock purchase agreement (Continued)
+
+                    Example:       100 steers insured at 700-pound target weight. Bill of sale specifying
+                                   insured as the buyer indicates 95 head were delivered to the insured.
+                                   The marketable number of livestock is 95 head.
+
+             (2)    If the number of livestock sold on the livestock purchase agreement (insured as a seller)
+                    is less than the number of covered livestock, the marketable number of livestock is
+                    reduced to the number of sold livestock.
+
+                    Example:       100 steers insured at 700-pound target weight. Livestock purchase
+                                   agreement (insured as a seller) lists 95 head. The marketable number of
+                                   livestock is 95 head.
+
+             (3)    For sex-specific feeder cattle types only, if either bills of sale (insured as a buyer) or
+                    livestock purchase agreement (insured as a seller) indicate that any of the sold covered
+                    livestock are of the sex different than the sex indicated on the SCE, the number of such
+                    animals is adjusted by multiplying by 0.90, and rounded to the closest whole number.
+
+                    Example:       100 steers insured at 700-pound target weight. Livestock purchase
+                                   agreement (insured as a seller) indicates 100 head, 65 steers and 35
+                                   heifers, with an average weight of 705 pounds. The marketable number
+                                   of livestock is 65 + 35 × 0.90 = 97.
+
+      C.     Impact on SCE Premium and Indemnity
+
+             If the number of marketable livestock must be reduced for any of the reasons enumerated in
+             Section 26:
+
+             (1)    Indemnity payments will be based on the reduced number of livestock.
+
+             (2)    No adjustments are made to the SCE. The insured is still responsible for the full
+                    premium owed on the SCE.
+
+27    Prohibition of Subsidy Capture
+
+      A.     Abusive Subsidy Capture Practices
+
+             (1)    Any activity by the insured to derive financial gain through subsidy capture is considered
+                    abuse of the program.
+
+             (2)    Section 25 of LRP Basic Provisions provides a list of activities which will be considered to
+                    be conducted for the purpose of subsidy capture. Other activities may be determined
+                    by USDA to be subsidy capture if a compliance investigation conclusively determines the
+                    insured exploited the difference between premium owed by the insured and the cost of
+                    an off-exchange contract for the primary purpose of deriving the financial gain to the
+                    insured.
+
+June 2026                                       FCIC-20010                                                   31
+27    Prohibition of Subsidy Capture (Continued)
+
+      B.     Request for Brokerage Records
+
+             Regarding requesting brokerage records or off-exchange contracts, the AIP must:
+
+             (1)    Not request brokerage records nor off-exchange contracts unless expressly requested to
+                    do so by the RMA.
+
+             (2)    Provide the insured an option to submit the brokerage records and off-exchange
+                    contracts in such a way that the agent serving the policy does not have access to those
+                    brokerage records or names of the insured’s brokers or other applicable persons.
+
+             (3)    Assist the RMA in obtaining brokerage records and off-exchange contracts, as specified
+                    by the RMA, for the insured and their SBI holders, and any entity in which those SBIs
+                    have a substantial beneficial interest. ***
+
+             (4)    Inform the RMA if the insured has refused to provide names of their brokers or
+                    applicable persons, or has otherwise failed to cooperate with providing the brokerage
+                    records. If the RMA determines and informs the AIP that the insured has failed to
+                    cooperate with the review, the AIP must deny indemnity to the insured for all SCEs for
+                    which the notice of probable loss would be sent after the date the RMA determination is
+                    made.
+
+28    Forage Disaster Exemption
+
+      A.     Criteria for Forage Disaster Exemption
+
+             (1)    Drought Severity and Coverage Index (DSCI) is the index reported weekly by the
+                    National Drought Mitigation Center, National Oceanic and Atmospheric Administration,
+                    and USDA. DSCI is used for converting drought levels from the U.S. Drought Monitor
+                    map to a single value for an area, such as a State or a county. Possible values of the
+                    DSCI are from 0 to 500. Zero means that none of the area is abnormally dry or in
+                    drought, and 500 means that all of the area is in D4, exceptional drought. DSCI values
+                    are available at https://droughtmonitor.unl.edu/DmData/DataDownload/DSCI.aspx
+
+             (2)    Insured may qualify for a forage disaster exemption for their covered feeder cattle if for
+                    the county where livestock is located (as declared on the SCE):
+
+                    (a)    DSCI substantially increased during the coverage period:
+
+                           (i)     DSCI measured not earlier than 30 days before the date covered feeder
+                                   cattle are sold equals or exceeds 200; and
+
+                           (ii)    the change (increase) in DSCI exceeds 150 points within the grazing
+                                   period between the effective date and the date covered feeder cattle are
+                                   sold.
+
+                           (iii)   a change in DSCI shall be determined as follows:
+
+June 2026                                       FCIC-20010                                                  32
+28    Forage Disaster Exemption (Continued)
+
+      A.    Criteria for Forage Disaster Exemption (Continued)
+
+                                  (A)    Initial DSCI is equal to DSCI for the county and State indicated on
+                                         the SCE, as last published on or before the effective date.
+
+                                  (B)    Final DSCI is equal to the highest published DSCI for the county
+                                         and State indicated on the SCE, with a publication date after the
+                                         initial DSCI and no earlier than the start of the grazing period. The
+                                         final DSCI value must be a value published not earlier than 30 days
+                                         before the date covered feeder cattle are sold, and not later than
+                                         the date covered feeder cattle are sold, as verified by the
+                                         marketing records.
+
+                                  (C)    The change in DSCI is equal to the final DSCI minus the initial DSCI.
+
+                   (b)    High DSCI persisted during the grazing period:
+
+                          (i)     DSCI exceeded 200 for eight consecutive weeks after the effective date
+                                  while covered livestock is in your physical possession; or
+
+                          (ii)    DSCI exceeded 300 for four consecutive weeks after the effective date
+                                  while covered livestock is in your physical possession.
+
+                          (iii)   Grazing period for each State is provided in Special Provisions.
+
+                   (c)    Covered livestock is prevented from grazing due to a fire or natural disaster,
+                          provided:
+
+                          (i)     The grazing land is located in a county or area subject to a Federal, State,
+                                  or local declaration, designation, order, advisory, or closure relating to a
+                                  fire or natural disaster that occurs or materially worsens during the
+                                  coverage period;
+
+                          (ii)    The insured certifies that the declared event or ordered action, or the
+                                  conditions giving rise to it, prevented grazing or made grazing not
+                                  reasonably possible on the grazing land where the covered livestock were
+                                  located or intended to be located. Insured’s certification must state the
+                                  approximate dates during which grazing was prevented.
+
+            (3)    To qualify, the insured must provide the AIP with valid marketing records, and
+                   information on initial and final DSCI, in addition to all other documentation otherwise
+                   required.
+
+            (4)    Swine and fed cattle are not eligible for the forage disaster exemption.
+
+
+
+
+June 2026                                      FCIC-20010                                                    33
+28    Forage Disaster Exemption (Continued)
+
+      B.    Determining Forage Disaster Exemption Eligibility – Examples
+
+            While the rules described in this section only apply for SCEs purchased in crop year 2027 or
+            later, to illustrate with data values that can be replicated, examples are presented as-if the
+            forage disaster exemption applied for crop year 2025.
+
+            (1)    Insured buys a feeder cattle SCE on March 7, 2024, with an end date of January 2, 2025,
+                   and the livestock location reported on the SCE is Garfield County, Oklahoma.
+
+                   (a)     To calculate the initial DSCI, data is downloaded from
+                           https://droughtmonitor.unl.edu/DmData/DataDownload/DSCI.aspx with the
+                           following settings: Dates: 03/07/2024 to 03/07/2024; Area type: County (by
+                           State); Output format: CSV; Location: Oklahoma. In the downloaded CSV file,
+                           find the entry for Garfield County. The value is 0.
+
+
+
+
+                   (b)     The insured sold the covered livestock on September 1, 2024. To calculate the
+                           final DSCI, data is downloaded from
+                           https://droughtmonitor.unl.edu/DmData/DataDownload/DSCI.aspx with the
+                           following settings: Dates: 08/01/2024 to 09/01/2024; Area type: County (by
+                           State); Output format: CSV; Location: Oklahoma. The final DSCI is the highest
+                           value published in the 30 days prior to (and including) the day when the covered
+                           livestock were sold. In the downloaded dataset, the highest DSCI value for
+                           Garfield County is 252, observed on August 27, 2024.
+
+June 2026                                       FCIC-20010                                                   34
+28    Forage Disaster Exemption (Continued)
+
+      B.    Determining Forage Disaster Exemption Eligibility – Examples (Continued)
+
+
+
+
+                   (c)    The change in DSCI is equal to 252 minus 0, which equals 252.
+
+                   (d)    The change is higher than 150 points, and the final value is higher than 200.
+                          Therefore, the insured is granted drought hardship exemption.
+
+            (2)    An insured may also qualify for a forage disaster exemption when the DSCI persists for
+                   an extended period of time during the grazing period.
+
+                   Example:      If the insured purchased an SCE when the county was already in drought,
+                                 they would only be eligible for drought hardship exemption if drought
+                                 sufficiently worsened, as measured by an increase in DSCI by more than
+                                 150 points, or if DSCI remains above 200 for eight consecutive weeks, or
+                                 above 300 for four consecutive weeks.
+
+                                 Consider an example where the insured buys a feeder cattle SCE on April
+                                 30, 2024, with an end date of January 28, 2025, and the livestock location
+                                 reported on the SCE is Garfield County, Oklahoma. The initial DSCI,
+                                 measured on April 30, 2024, is 260. If the insured had sold the covered
+                                 livestock on September 1, 2024, as in the previous example, they would
+                                 not be eligible for the exemption. The final DSCI would be 252, observed
+                                 on August 27, 2024, as described in the previous example. The DSCI
+                                 would not have increased by more than 150 points between the sales
+                                 effective date and the date when covered livestock is sold. Because the
+                                 livestock was sold more than 60 days prior to the SCE end date, per LRP
+                                 Basic Provisions section 6(a)(3), the insured would not be considered to
+                                 have had an ownership interest in the covered livestock, and no
+                                 indemnity would have been due.
+
+                                 However, in that county, the DSCI remained above 200 for eight
+                                 consecutive weeks starting with August 20, 2024, so the insured would
+                                 have been eligible for the exemption if they had sold their livestock at
+                                 any point after October 8, 2024.
+
+
+
+
+June 2026                                     FCIC-20010                                                    35
+28    Forage Disaster Exemption (Continued)
+
+      B.    Determining Forage Disaster Exemption Eligibility – Examples (Continued)
+
+                   Example:      An insured in Shannon County, South Dakota, buys a 47-week unborn
+                                 feeder cattle SCE on October 13, 2025, and at the time the DSCI is 351.
+                                 The grazing period for South Dakota is April 15 to October 31. During the
+                                 2025/2026 winter, very little precipitation is received and the DSCI
+                                 increases slightly to 386 by March 1. However, the month of March
+                                 results in above-average precipitation and the DSCI score drops by April
+                                 21, 2026, to 255. At this time, the insured would not qualify for the
+                                 forage disaster exemption due to the persistent DSCI score being outside
+                                 of the grazing period for South Dakota.
+
+                                 After April 21, 2026, the weather again turns dry and the DSCI score
+                                 increases to 302 by June 30, 2026. The insured is out of grass and
+                                 decides to market their covered livestock before the 60 days. The
+                                 insured could receive indemnities on the covered livestock in this
+                                 example due to the DSCI score exceeding 200 for eight consecutive
+                                 weeks during the grazing period.
+
+
+29-50 Reserved
+
+
+
+
+June 2026                                     FCIC-20010                                                36
+            PART 3: FORM STANDARD INSTRUCTIONS AND RELATED HANDBOOKS
+51    Form Standard Instructions
+
+      A.    Forms
+
+            The following forms will be necessary for sales of the LRP Plan of Insurance:
+
+            (1)     Application - Information necessary to apply for eligibility to purchase LRP insurance.
+                    The application may be completed prior to completing an SCE. However, no insurance
+                    coverage attaches until information on the SCE is provided in conjunction with an
+                    accepted application. One application is filled out for each operation, as long as the SBIs
+                    are the same. AIPs can use existing application-related forms for LRP. The elements
+                    required on application related forms for LRP are similar to the elements on such forms
+                    for other policies. The required elements on the application for LRP are effective crop
+                    year, State, county, crop, and plan of insurance. Coverage level, price, etc., are not
+                    required on the LRP application, as these elements are part of the SCE form. The duties
+                    and responsibilities identified on the DSSH and GSH apply to LRP except as otherwise
+                    noted in this handbook.
+
+            (2)     Refer to Exhibit 23 of the DSSH for form standards of Social Security Number and
+                    Employer Identification Number Reporting - The information needed for each person
+                    with a 10 percent interest or more in the insured person and must accompany the
+                    application are: social security number or employer identification number, entity type,
+                    and share. The SBI is used to establish eligibility and to account for insurance limits.
+
+            (3)     SCE Form - Information needed to attach coverage to the policy. Multiple SCEs, for
+                    multiple classes of livestock or livestock products, may be written under one application
+                    when the SBIs are the same.
+
+            (4)     Assignment of Indemnity - Information necessary to assign any indemnity to a third
+                    party.
+
+            (5)     Transfer of Coverage and Right to an Indemnity - Information necessary if the livestock
+                    or livestock product is sold prior to the end of the insurance period to transfer any
+                    coverage indemnity to the new owner (providing the new owner meets eligibility
+                    requirements).
+
+            (6)     Notice of Probable Loss - If the ending price, as specified in the SCE, is below the
+                    coverage price level, this form is used to notify the insured of a probable loss. Insured
+                    must complete the form and send it to the company within 60 days from the day the AIP
+                    provides the insured with the claim form. An indemnity payment will be made within 30
+                    days of receipt of the claim form.
+
+
+
+
+June 2026                                       FCIC-20010                                                  37
+51    Form Instructions (Continued)
+
+      B.     Required Items and Statements
+
+             (1)    The entry items are the minimum form requirements. Form standards provided are
+                    considered “Substantive” (i.e., they are required) unless otherwise noted as Non-
+                    Substantive.
+
+             (2)    The completion instructions for the required entry items on the various forms in the
+                    following subsections are “Substantive” (i.e., they are required).
+
+             (3)    The Privacy Act and Nondiscrimination statements are required statements that must
+                    be printed on the form or provided as a separate document. These statements are not
+                    shown in the illustrations in this handbook. (If these statements are provided as
+                    separate documents, one set must be signed by the insured and kept by the agent, and
+                    one must be provided to the insured.)
+
+             (4)    The current Privacy Act and Nondiscrimination Statement can be found in the applicable
+                    DSSH, see Para. 501 and 503, respectively, for the statements and specific instructions.
+
+             (5)    A certification statement is required by the DSSH, Para 502, and must be included on
+                    the form directly above the insured’s signature block. When the certification statement
+                    is required, it will be shown in the instructions for the form.
+
+             (6)    Refer to the DSSH for other crop insurance form requirements (e.g., point size of font,
+                    etc.).
+
+52    DSSH and GSH Applicability
+
+      Changes to the DDSH and GSH for the LRP program are described in this part. For the purposes of the
+      LRP, references to crop or commodity are interchangeable and have the same meaning.
+
+      A.     DSSH Applicability
+
+             (1)    The duties and responsibilities identified in the DSSH apply to the LRP for applicable
+                    forms and procedures except as otherwise noted in Exhibit 3, Exhibit 4, Exhibit 5, and
+                    Exhibit 6.
+
+             (2)    See DSSH, Exhibit 6 for Anti-Rebating Certification form standards.
+
+             (3)    See DSSH, Exhibit 16 for application form standards.
+
+             (4)    See DSSH, Exhibit 19 for BFR and VFR application form standards.
+
+             (5)    See DSSH, Exhibit 20 for policy cancellation form standards.
+
+             (6)    See DSSH, Exhibit 21 for policy transfer/application form standards.
+
+             (7)    See DSSH, Exhibit 22 for policy change form standards.
+
+
+June 2026                                      FCIC-20010                                                     38
+52    DSSH and GSH Applicability (Continued)
+
+      A.    DSSH Applicability (Continued)
+
+            (8)    See DSSH, Exhibit 23 for social security number and employer identification number
+                   reporting form standards.
+
+            (9)    See DSSH, Exhibit 26 for policy confirmation (policy declaration) form standards.
+
+            (10)   See DSSH, Exhibit 27 for power of attorney form standards.
+
+            (11)   See DSSH, Exhibit 28 for assignment of indemnity form standards.
+
+                   ***
+
+            (12)   For the purpose of LRP only, the GSH Para. 852 and DSSH Exhibit 28, Assignment of
+                   Indemnity is amended as follows:
+
+                   The second sentence in opening paragraph “The assignment(s) applies for all acreage of
+                   the crop covered by the policy” is replaced with “The assignment(s) applies for all
+                   liability remaining on the livestock covered by the policy at the time the assignment is
+                   accepted by the AIP and any additional liability added for the crop year. An assignment
+                   cannot be executed for a single, specific SCE.”
+
+      B.    GSH Applicability
+
+            (1)    The duties and responsibilities identified in the GSH apply to LRP except as otherwise
+                   noted Exhibit 3, Exhibit 4, Exhibit 5, and Exhibit 6.
+
+            (2)    The duties and responsibilities identified for Landlord-Tenant are not applicable to LRP.
+
+            (3)    The GSH Para. 853 Transfer of Coverage and Right to an Indemnity is amended as
+                   follows:
+
+                   If the insured fails to submit the executed transfer form to the AIP within 30 days of the
+                   transfer of the insured’s share, or by the end of the quarterly insurance period,
+                   whichever is later, transfer of coverage will be denied, and the insured will still be
+                   responsible for any premiums owed.
+
+                   If the transferee is not eligible for livestock insurance for any reason, the AIP’s approval
+                   for transfer of coverage will be rescinded. The insured’s coverage rights and obligations
+                   under this policy, including eligibility for indemnity and liability for premium, will
+                   continue as if no transfer had been approved.
+
+            (4)    The GSH Part 6: Mediation, Arbitration, and Judicial Reviews of AIP Determinations is
+                   not applicable to LRP. See LRP Basic Provisions Section 11 Mediation, Arbitration,
+                   Appeal, Reconsideration, and Administrative and Judicial Review.
+
+                   ***
+
+
+June 2026                                      FCIC-20010                                                    39
+53-99 Reserved
+
+
+
+
+June 2026        FCIC-20010   40
+                                                EXHIBITS
+Exhibit 1     Acronyms and Abbreviations
+
+       The following table provides approved acronyms and abbreviations used in this handbook.
+
+                Approved                                            Term
+          Acronym/Abbreviation
+        ACT                        The Federal Crop Insurance Act (7 U.S.C. 1501 et seq.)
+        AD                         Actuarial Documents
+        AIP                        Approved Insurance Provider
+        CME                        Chicago Mercantile Exchange Group
+        CWT                        Hundredweight
+        DSCI                       Drought Severity and Coverage Index
+        DSSH                       Document and Supplemental Standards Handbook
+        FCIC                       Federal Crop Insurance Corporation
+        GSH                        General Standards Handbook
+        ITS                        Ineligible Tracking System Handbook
+        LPRA                       Livestock Price Reinsurance Agreement
+        LRP                        Livestock Risk Protection
+        PAF                        Price Adjustment Factor
+        PASD                       Product Administration and Standards Division
+        RMA                        Risk Management Agency
+        SBI                        Substantial Beneficial Interest
+        SCD                        Sales Closing Date
+        SCE                        Specific Coverage Endorsement
+        SP                         Special Provisions
+        USDA                       United States Department of Agriculture
+
+
+
+
+June 2026                                      FCIC-20010                                        41
+Exhibit 2      Definitions
+
+The following are definitions of terms used in this handbook. Definitions in the SCE may be different and
+control.
+
+Actual ending value: The price at the end of the insurance period as defined in each SCE.
+
+Actuarial documents: The information for the crop year, available for public inspection in the insured’s
+agent’s office or on the RMA website, which shows the dates, coverage prices, rates, coverage levels,
+practices, insurable class, and other related information regarding LRP coverage in the State. ***
+
+AMS: Agricultural Marketing Service of the USDA or a successor agency.
+
+Application: The form required to be completed by the insured and approved by the AIP in writing before
+insurance coverage will begin. The Application form will identify the insured and the classes of livestock to be
+insured.
+
+Assignment of indemnity: A transfer of policy rights, requested on our form, and effective when approved by
+the AIP in writing, whereby the insured assigns their right to an indemnity payment only to creditors or other
+persons to whom the insured has a financial debt or other pecuniary obligation.
+
+Beginning farmer or rancher: An individual who has not actively operated and managed a farm or ranch in
+any State, with an insurable interest in a crop or livestock as an owner-operator, landlord, tenant, or
+sharecropper for more than 10 crop years. An individual’s insurable interest in any crop year may be excluded
+at the request of the individual if the interest was held by the individual while: (1) under the age of 18; (2) in
+full-time military service of the United States; or (3) in post-secondary education. A person other than an
+individual may be eligible for beginning farmer or rancher benefits if there is at least one individual substantial
+beneficial interest holder and all individual substantial beneficial interest holders qualify as a beginning farmer
+or rancher.
+
+Bill of sale: Documentation that verifies the transfer of ownership of a specified number of livestock to a
+buyer, including the price, average weight and the date of transaction.
+
+Brokerage record: Any document, statement, confirmation, or electronic record maintained by or obtained
+from a broker or other registered intermediary, that reflects transactions in commodity futures or options
+contracts, including but not limited to trade confirmations, account statements, position reports, and order
+records, for any account in which the insured or any person with a substantial beneficial interest in the insured
+holds a direct or beneficial interest.
+
+Cancellation: When the policy is no longer in effect as of the cancellation date.
+
+Cancellation date: The calendar date specified in the AD on which coverage will automatically renew unless
+canceled in writing by either the insured or the AIP or terminated or voided in accordance with the policy
+terms.
+
+Class: The same species of livestock that shares common traits or characteristics, including type, and can be
+insured under an SCE.
+
+June 2026                                          FCIC-20010                                                   42
+Exhibit 2      Definitions (Continued)
+
+Consent: Approval in writing by the AIP allowing the insured to take a specific action.
+
+Contract change date: The calendar date by which the AIP makes policy changes that will be effective for the
+following crop year available for inspection in the agent’s office or on RMA’s website in accordance with
+section 3 of the LRP Basic Provisions.
+
+Coverage: The insurance provided by this policy insures against a decline in price as specified in the SCE.
+
+Coverage level: The percent of the expected ending value, chosen by the insured, that is the coverage
+provided by the policy.
+
+Coverage price: The level of protection provided by the policy on a dollar per cwt basis as published each day
+on RMA’s website.
+
+Covered livestock: The livestock insured under an SCE.
+
+Crop year: The twelve-month period beginning on July 1 and ending on the following June 30 and designated
+by the calendar year in which the period ends. The crop year in which the effective date falls will determine
+the crop year for an SCE.
+
+Days: Calendar days unless otherwise specified.
+
+Deductible: The amount determined by subtracting the coverage level from 100 percent. For example, if the
+insured elected an 85 percent coverage level, their deductible would be 15 percent (100% - 85% = 15%).
+
+Delinquent debt: Has the same meaning as the term defined in 7 CFR part 400, subpart U.
+
+Disinterested third party: A person who does not have any familial relationship (parents, brothers, sisters,
+children, spouse, grandchildren, aunts, uncles, nieces, nephews, 1st cousins, or grandparents, related by
+blood, adoption or marriage, are considered to have a familial relationship) with the insured or who will not
+benefit financially from the sale of covered livestock.
+
+Effective date: The date associated with the beginning of insurance for an SCE. This is the date that coverage
+begins. The effective date will always be the date the rates were published on the RMA website. If the SCE
+was purchased and we approved it on the day following the date the rates were published on the RMA
+website, the effective date is still the date that the rates were published on the RMA website.
+
+End date: The date selected by the insured, and stated in the SCE, on which coverage under an SCE ends.
+
+Ending period: The period specified by the SCE, ending on the end date, over which the actual ending value is
+determined.
+
+Expected ending value: The expected value of the livestock at the end of the insurance period, as published
+on the RMA website.
+
+FAA: The Federal Arbitration Act found at 9 U.S.C. § 1 et seq.
+June 2026                                        FCIC-20010                                                     43
+Exhibit 2      Definitions (Continued)
+
+Federal Crop Insurance Corporation: A wholly owned Government Corporation administered by RMA within
+USDA.
+Insurance period: The period of time coverage is provided as specified in section 8 of the LRP Basic Provisions.
+
+Insured: The named person(s) shown on the application approved by the AIP. This term does not extend to
+any other person having a share or interest in the covered livestock.
+
+Insured share: The insured’s percentage of ownership interest in the covered livestock at the time coverage
+attaches.
+
+Lean weight: Lean weight is a measure of animal carcass weight, presented in cwt to convert live weight to
+lean weight, multiply the live weight by the factor specified in the SCE. For example, for hogs, a 2.50 cwt per
+head live weight multiplied by .74 is equal to 1.85 cwt lean weight.
+
+Liability: The total dollar amount of coverage calculated by multiplying the number of livestock insured under
+the Specific Coverage Endorsement by the target weight (as shown in the Specific Coverage Endorsement), by
+the coverage price (in dollars per cwt), and by the insured share.
+
+Limit movement: The maximum price change based on the CME group current daily price limit for commodity
+futures.
+
+Limited resource farmer or rancher: Has the same meaning as the term defined by USDA at
+lrftool.sc.egov.usda.gov/LRP_Definition.aspx or successor website.
+
+Live weight: Measure of the live animal’s weight, stated in cwt.
+
+Livestock: A species of domestic animals sharing the same traits or characteristics which are insurable under
+an SCE.
+
+Livestock purchase agreement: A legal contract to purchase a set number of livestock at an agreed-upon
+price or pricing formula, specifying the weight or weight range, sex (for sex-specific feeder cattle types only)
+and designating a delivery or pick-up date period.
+
+Marketable: The covered livestock is considered marketable if the average actual livestock weight on the
+earlier of the date when the buyer takes possession of the livestock or the SCE end date meets or exceeds the
+minimum allowed target weight as stated in the SCE. Livestock that does not meet the minimum weight may
+be considered marketable if the insured can establish that extraordinary circumstances caused the livestock to
+weigh less than the minimum weight, such as drought causing a lack of feed.
+
+
+
+
+June 2026                                          FCIC-20010                                                      44
+Exhibit 2      Definitions (Continued)
+
+Off-Exchange Contract: Any bilateral agreement, whether written or oral, between the insured or any person
+with a substantial beneficial interest in the insured and a counterparty, that is not executed on or cleared
+through a regulated commodity exchange, under which one or more payments are contingent upon or derived
+from the price of insured or related commodities, the value of commodity futures or options, or the amount of
+any potential or realized indemnity under this policy. The term includes, but is not limited to, over-the-
+counter put or call options, forward contracts with embedded optionality, swap agreements, and any
+arrangement that replicates or approximates the payoff structure of an exchange-traded option.
+
+Offset: The act of deducting one amount from another amount.
+
+Ownership interest: The insured’s insurable interest as an owner in the covered livestock during the
+insurance period.
+
+Person: An individual or an association, corporation, estate, partnership, trust, or other legal entity, and,
+where applicable, a State or a political subdivision or agency of a State. “Person” does not include the United
+States Government or any government agency.
+
+Policy: The agreement between the insured and the AIP consisting of the application approved by the AIP in
+writing, these Basic Provisions, the SCE, the SP, other applicable endorsements, and the AD for the covered
+livestock.
+
+Premium billing date: If applicable, the earliest date upon which the insured will be billed for the SCE. The
+premium billing date is the 1st day of the 2nd month following the end date for the SCE and is contained in the
+AD.
+
+Producer premium: Total premium minus the premium subsidy paid by FCIC.
+
+Risk Management Agency: The Risk Management Agency, which operates the Federal crop insurance
+program on behalf of FCIC.
+RMA’s website: A website hosted by RMA and located at www.rma.usda.gov or a successor website.
+
+Sales closing date: The effective date of the SCE.
+
+Sales period: The period of time that begins when the coverage price and rates are posted and ends at 8:25
+AM Central Time the following calendar day or as otherwise specified in each SCE. Sales will not be available
+for purchase on any sales period that would have an effective date of a Federal or a market holiday or as
+otherwise specified in each SCE.
+
+Sold: Livestock transferred to another person through a valid bill of sale or through a livestock purchase
+agreement. Livestock is considered sold: (1) for livestock born to cows or sows in which you have an
+ownership interest, at your option, on the date when you enter into a livestock purchase agreement as a
+seller, or the date the buyer takes possession of the livestock; and (2) for previously purchased livestock, on
+the date the buyer takes possession of the livestock, or, if earlier, when you enter into a livestock purchase
+agreement as a seller.
+
+
+June 2026                                            FCIC-20010                                                   45
+Exhibit 2      Definitions (Continued)
+
+Special Provisions (SP): The part of the policy that contains specific provisions of insurance for each insured
+class and may vary by geographic area.
+
+Specific Coverage Endorsement (SCE): An endorsement to the policy necessary to provide coverage that
+includes information about the class to be insured.
+
+Subsidy Capture: The practice of exploiting the differences between premium owed by the insured for an
+SCE, and the cost of a privately traded livestock contract such as a put option, for the purpose of deriving
+financial gain.
+
+Substantial beneficial interest (SBI): An interest held by any person of at least 10 percent in the insured (e.g.,
+there are two partnerships that each have a 50 percent interest in the insured and each partnership is made
+up of two individuals, each with a 50 percent share in the partnership. In this case, each individual would be
+considered to have a 25 percent interest in the insured, and both the partnerships and the individuals would
+have a substantial beneficial interest in the insured. The spouses of the individuals would not be considered
+to have a substantial beneficial interest unless the spouse was one of the individuals that made up the
+partnership. However, if each partnership is made up of six individuals with equal interests, then each would
+only have an 8.33 percent interest in you and although the partnership would still have a substantial beneficial
+interest in you, the individuals would not for the purposes of reporting in section 2). The spouse of any
+individual applicant or individual insured will be presumed to have a substantial beneficial interest in the
+applicant or insured unless the spouses can prove they are legally separated or otherwise legally separate
+under the applicable State dissolution of marriage laws. Any child of an individual applicant or individual
+insured will not be considered to have a substantial beneficial interest in the applicant or insured unless the
+child has a separate legal interest in such person.
+
+Target weight: The anticipated weight at the end date as specified in the SCE.
+
+Termination: When the policy is no longer in effect as of the date specified in the policy.
+
+Termination date: The calendar date contained in the AD upon which the insured’s insurance ceases to be in
+effect because of nonpayment of any amount due the AIP under the policy, including premium if applicable.
+
+Unborn livestock: Livestock not born on the effective date but expected to be marketable before the end
+date.
+
+
+
+
+June 2026                                          FCIC-20010                                                     46
+Exhibit 2     Definitions (Continued)
+
+Veteran farmer or rancher:
+(1)   An individual who has served active duty in the United States Armed Forces, including the Air Force,
+      Army, Coast Guard, Marine Corps, Navy, Space Force, and their reserve components; was discharged
+      or released under conditions other than dishonorable; and:
+
+       (a)    Has not operated a farm or ranch;
+
+       (b)    Has not operated a farm or ranch for not more than five years; or
+
+       (c)    First obtained status as a veteran during the most recent five-year period.
+
+(2)    A person, other than an individual, may be eligible for veteran farmer or rancher benefits if all SBI
+       holders qualify as a veteran farmer or rancher. A spouse’s veteran status does not impact whether an
+       individual is considered a veteran farmer or rancher in accordance with the first paragraph of this
+       definition; except in cases in which there is only a married couple, then a veteran or non-veteran
+       spouse are considered a veteran farmer or rancher.
+
+
+Void: When the policy or SCE is considered not to have existed for a crop year.
+
+
+
+
+June 2026                                         FCIC-20010                                                 47
+Exhibit 3      Specific Coverage Endorsement
+
+The AIP may create form to allow multiple types of livestock or multiple SCEs to be purchased on a given sales
+date and require only one signature.
+
+A.     Insured Information
+
+        Item                                     Element                                      Substantive/
+           #                                                                                 Non-Substantive
+           1   “Insured’s Name”                                                                Substantive
+           2   “Farm or Business Name”                                                       Non-Substantive
+           3   “Street and/or Mailing Address”                                                 Substantive
+           4   “City and State”                                                                Substantive
+           5   “Zip Code”                                                                      Substantive
+           6   “Phone Number”                                                                  Substantive
+           7   “Email”                                                                       Non-Substantive
+           8   “Fax”                                                                         Non-Substantive
+           9   “Policy Number”                                                                 Substantive
+          10   “Identification Number”                                                         Substantive
+          11   “Identification Number Type”                                                    Substantive
+          12   “Person Type”                                                                   Substantive
+          13   “Spouse’s Name”                                                                 Substantive
+          14   “Spouse’s Identification Number”                                                Substantive
+
+B.     Crop Information
+
+        Item                                     Element                                      Substantive/
+           #                                                                                 Non-Substantive
+           1   “State”                                                                         Substantive
+           2   “County”                                                                        Substantive
+           3   “Crop Year”                                                                     Substantive
+           4   “Commodity”                                                                     Substantive
+           5   “Type”                                                                          Substantive
+           6   “Practice”                                                                      Substantive
+           7   “Effective Date”                                                                Substantive
+           8   “End Date”                                                                      Substantive
+           9   “Number of Head Covered”                                                        Substantive
+          10   “Insured Share %”                                                               Substantive
+          11   “Target Weight (Cwt Per Head)”                                                  Substantive
+          12   “Coverage Level”                                                                Substantive
+          13   “Coverage Price”                                                              Non-Substantive
+          14   “Liability”                                                                   Non-Substantive
+          15   “Rate”                                                                        Non-Substantive
+          16   “Total Premium”                                                               Non-Substantive
+
+
+
+
+June 2026                                         FCIC-20010                                                 48
+Exhibit 3        Specific Coverage Endorsement (Continued)
+
+B.     Crop Information (Continued)
+
+            17   “If the covered livestock were purchased using a forward contract or a         Substantive
+                 similar livestock purchase agreement with the insured as a buyer, please
+                 indicate the last day of the delivery period specified in the livestock
+                 purchase agreement.”
+
+                     Note: Information must be provided only if covered livestock is to be
+                           delivered to the insured after the SCE effective date. The AIP
+                           will verify the delivery date if there is an indemnity, and the
+                           number of covered livestock will be adjusted to exclude any
+                           livestock purchased (i.e., priced) using a forward contract or
+                           similar instruments if such livestock was delivered less than 90
+                           days prior to the End Date.
+
+C.     Required Signatures
+
+        Item                                 Element                                           Substantive/
+          #                                                                                   Non-Substantive
+          1  “Insured’s Printed Name, Signature, and Date”                                      Substantive
+                    Note: Proof of time of signature is substantive for SCE received
+                           by the AIP after the end of the sales period.
+            2    “Agent’s Printed Name, Signature, Code Number, and Date”                       Substantive
+                     Note: Proof of time of signature is substantive for SCE received
+                           by the AIP after the end of the sales period.
+
+
+
+
+June 2026                                          FCIC-20010                                                 49
+Exhibit 3       Specific Coverage Endorsement (Continued)
+
+D.     Required Statements
+
+        Item                                      Element                                       Substantive/
+          #                                                                                    Non-Substantive
+          1  Conditions Statement.                                                               Substantive
+
+                “SCE Conditions of Acceptance
+                (a) I certify that I have a share in the livestock or livestock product
+                    identified in this Specific Coverage Endorsement to the extent of the
+                    percentage insured share that I have stated. I will provide
+                    documentation to affirm ownership of my share of the livestock or
+                    livestock product to the company, its authorized agent, or any
+                    designated employee of USDA upon request.
+                (b) I do not have any other insurance authorized under the Federal Crop
+                    Insurance Act on livestock covered under this SCE.
+                (c) I agree to on-site inspections by the Company’s representative and any
+                    designated employee of USDA to verify my ownership and share in the
+                    covered livestock or livestock product.”
+
+            2   Certification Statement.                                                         Substantive
+                    Note: See DSSH, Para. 502.
+            3   Privacy Act Statement.                                                           Substantive
+                   Note: See DSSH, Para. 501.
+            4   Non-Discrimination Policy Statement                                              Substantive
+                    Note: See DSSH, Para. 503.
+            5   Insured’s Certification Against Subsidy Capture.                                 Substantive
+
+                “I certify that I will not offset any insurance provided under this specific
+                coverage endorsement through livestock contracts traded on commodity
+                exchanges or with other means for the purpose of subsidy capture, and I
+                acknowledge that if I violate this certification, I may be subject to
+                administrative, civil or criminal sanctions.”
+
+
+
+
+June 2026                                          FCIC-20010                                                  50
+Exhibit 3     Specific Coverage Endorsement (Continued)
+
+D.     Required Signatures (Continued)
+
+        Item Element                                                                         Substantive/
+          #                                                                                 Non-Substantive
+          6  Agent’s Certification Against Subsidy Capture.                                   Substantive
+
+              “I certify that I have not advised or assisted in any way with the purchase
+              of any livestock contracts to offset insurance provided under this specific
+              coverage endorsement for the purpose of subsidy capture, and I
+              acknowledge that if I violate this certification, I may be subject to
+              administrative, civil or criminal sanctions.”
+
+
+
+
+June 2026                                        FCIC-20010                                               51
+Exhibit 4       Transfer of Coverage and Right to an Indemnity
+
+Use a Transfer of Coverage and Right to an Indemnity to transfer insurance coverage and the right to any
+subsequent indemnity from one insured person to another person. The transfer is used when a transfer of
+part or all the ownership/share of the insured livestock commodity occurs before the end of the insurance
+period. A transfer is allowed at an individual SCE level. If the insured failed to submit the executed transfer
+form to the AIP within 30 days of the transfer of their insured share, the transfer may only be approved for
+those SCEs with end dates not earlier than the date when the executed transfer form was submitted to the
+AIP. See the GSH for additional coverage transfer procedural details.
+
+A.     Transferor Information
+        Item                                      Element                                       Substantive/
+          #                                                                                    Non-Substantive
+          1     “Transferor’s Name”                                                              Substantive
+          2     “Transferor’s Street and/or Mailing Address”                                     Substantive
+          3     “City and State”                                                                 Substantive
+          4     “Zip Code”                                                                       Substantive
+          5     “Policy Number”                                                                  Substantive
+
+B.     Crop Information
+
+        Item                                      Element                                       Substantive/
+          #                                                                                    Non-Substantive
+          1     “Crop(s)”                                                                        Substantive
+          2     “Crop Year”                                                                      Substantive
+          3     “Endorsement Number”                                                           Non-Substantive
+          4     “Type”                                                                           Substantive
+          5     “Practice”                                                                       Substantive
+          6     “Effective Date”                                                                 Substantive
+          7     “Is the entire insured livestock commodity and the entire insured share on       Substantive
+                the listed type and practice being transferred? Yes □ No □”
+            8   Statement (a) below may be used alone. If both statements are used the            Substantive
+                form should indicate “Choose one of the boxes.”
+
+                (a)    “□ Make check payable jointly to insured and transferee(s). Check
+                       will be mailed to the insured’s address (unless an assignment of
+                       indemnity is on file)”; or
+
+                (b)    “□ Make checks payable to transferee(s) only. Check will be
+                       mailed to address shown for the transferee.”
+
+C.     Transferee Information
+
+        Item                                  Element                                           Substantive/
+          #                                                                                    Non-Substantive
+          1  “Transferee’s Name”                                                                 Substantive
+          2  “Transferee’s Street and/or Mailing Address”                                        Substantive
+
+June 2026                                          FCIC-20010                                                     52
+Exhibit 4       Transfer of Coverage and Right to an Indemnity (Continued)
+
+C.     Transferee Information (Continued)
+
+        Item                                     Element                                       Substantive/
+           #                                                                                   Non-Substantive
+           3    “City and State”                                                                 Substantive
+           4    “Zip Code”                                                                       Substantive
+           5    “Policy Number”                                                                  Substantive
+           6    “Transferee’s Identification Number”                                             Substantive
+           7    “Transferee’s Identification Number Type”                                        Substantive
+           8    “Person Type”                                                                    Substantive
+           9    “Share Transferred”                                                              Substantive
+          10    “Effective Date of Transfer”                                                     Substantive
+          11    “Nature of Transfer”                                                             Substantive
+
+D.     Terms and Conditions
+
+        Item                                    Element                                         Substantive/
+          #                                                                                    Non-Substantive
+          1  “Acceptance by the Approved Insurance Provider of the above-described               Substantive
+             transfer shall transfer the insured’s right to an indemnity to the above-
+             named transferee subject to:”
+
+                (a) “Receipt by the Approved Insurance Provider of satisfactory evidence
+                    that said transfer occurred before the end of the calendar date for the
+                    end of insurance period for the type and practice being transferred, as
+                    determined by the Approved Insurance Provider.”
+
+                (b) “The terms of the above-identified insurance contract, including any
+                    outstanding assignment of indemnity made by the transferor prior to
+                    the date of transfer.”
+            2   “The Approved Insurance Provider shall not be liable for any more                Substantive
+                indemnity than existed before the transfer occurred.”
+            3   “The insurance policy of the transferor covers the share hereby                  Substantive
+                transferred only to the end of the insurance period for the current crop
+                year.”
+            4   “The “Transferee” and the “Transferor” shall be jointly and severally liable     Substantive
+                for any unpaid premium earned for the current crop year on the livestock
+                commodity and share transferred.”
+            5   “$_____ Total premium on this type and practice”                                 Substantive
+            6   “$_____ Premium on type and practice transferred”                                Substantive
+            7   “$_____ Premium on retained type and practice”                                   Substantive
+            8   “$_____ Premium paid with transfer”                                              Substantive
+
+
+
+
+June 2026                                          FCIC-20010                                                  53
+Exhibit 4       Transfer of Coverage and Right to an Indemnity (Continued)
+
+C.     Required Statements
+
+        Item                                Element                                              Substantive/
+          #                                                                                     Non-Substantive
+          1  This statement must appear above the signature line:                                 Substantive
+
+                “I, [INSERT TRANSFEREE’S NAME], the Transferee, understand that all
+                billing statements will only be issued to [INSERT TRANSFEROR’S NAME],
+                the Transferor. Due process/Ineligibility notification letters will be issued
+                to both the transferee and transferor. Any unpaid premium on the
+                termination date of the policy will make both the transferee and the
+                transferor ineligible for the crop insurance program.”
+            2   Certification Statement                                                           Substantive
+                    Note: See DSSH, Para. 502.
+            3   Privacy Act Statement                                                             Substantive
+                   Note: See DSSH, Para. 501.
+            4   Nondiscrimination Policy Statement                                                Substantive
+                    Note: See DSSH, Para. 503.
+
+D.     Required Signatures
+
+        Item                                 Element                                             Substantive/
+          #                                                                                     Non-Substantive
+          1  “Transferor’s Printed Name, Signature, and Date”                                     Substantive
+          2  “Transferee’s Printed Name, Signature, and Date”                                     Substantive
+          3  “Agent’s Printed Name, Signature, Code Number, and Date”                             Substantive
+
+
+
+
+June 2026                                          FCIC-20010                                                   54
+Exhibit 5        Notice of Probable Loss Form
+
+The Notice of Probable Loss Form is used to notify the insured of a probable loss after all LRP data necessary
+to calculate the indemnity for the selected type, practice and end date are released by RMA. The insured
+should return the notice of probable loss to the AIP with the sales records. These forms may include multiple
+SCEs in effect for the same practice.
+
+A.     General Information
+
+        Item                                   Element                                        Substantive/
+          #                                                                                  Non-Substantive
+          1  “According to our records, you may be entitled to an indemnity under the          Substantive
+             above policy endorsement based on the information presented below.
+             Please contact your agent if the information shown in sections 1, 2, or 3 is
+             not correct. The calculation of the indemnity is shown in section 4 below.
+             In order to receive an indemnity, your signature is required to certify that
+             the terms and conditions of the policy have been met as stated in section
+             5 below.”
+                     Note: This paragraph may be revised by the AIP to reflect their
+                            procedures.
+             2   “Insured”                                                                     Substantive
+             3   “Insured Name”                                                                Substantive
+             4   “Name of Farm/Ranch or Business”                                            Non-Substantive
+             5   “Street and/or Mailing Address”                                               Substantive
+             6   “City and State”                                                              Substantive
+             7   “Zip Code”                                                                    Substantive
+             8   “Phone Number”                                                                Substantive
+             9   “Fax”                                                                       Non-Substantive
+            10   “Email”                                                                     Non-Substantive
+            11   “SSN/EIN”                                                                     Substantive
+            12   “Plan of Insurance”                                                           Substantive
+            13   “Policy Number”                                                               Substantive
+            14   “County”                                                                      Substantive
+            15   “Commodity”                                                                   Substantive
+            16   “Type”                                                                      Non-Substantive
+            17   “Effective Date”                                                            Non-Substantive
+            18   “Claim Number”                                                              Non-Substantive
+            19   “Endorsement Number”                                                        Non-Substantive
+            20   “Assignment of Indemnity Yes □ No □”                                          Substantive
+            21   “Transfer of Coverage and Right to an Indemnity Yes □ No □”                   Substantive
+
+
+
+
+June 2026                                         FCIC-20010                                                 55
+Exhibit 5        Notice of Probable Loss Form (Continued)
+
+A.     General Information (Continued)
+
+        Item                                   Element                                            Substantive/
+           #                                                                                     Non-Substantive
+          22 “Were the covered livestock sold using a forward contract or a similar                Substantive
+             livestock purchase agreement with the insured as a seller? Yes □ No □”
+             If yes, please indicate the date when the contract was entered into.
+                 Note: If applicable, the number of covered livestock will be adjusted to
+                         exclude any livestock sold (i.e., priced) using a forward contract or
+                         similar instruments if such contract was entered into more than 60
+                         days prior to the End Date. Refer to the definition of Sold and
+                         section 6(a)(2) of the Basic Provisions.
+            23   “Insurance Agency”                                                                Substantive
+            24   “Insurance Agency Name”                                                           Substantive
+            25   “Agency Code”                                                                     Substantive
+            26   “Insurance Agent’s Name”                                                          Substantive
+            27   “Agent’s Code”                                                                    Substantive
+            28   “Street and/or Mailing Address”                                                   Substantive
+            29   “City and State”                                                                  Substantive
+            29   “Zip Code”                                                                        Substantive
+            30   “Phone Number”                                                                    Substantive
+            31   “Fax”                                                                           Non-Substantive
+            32   “Email Address”                                                                 Non-Substantive
+
+B.     Assignment of Indemnity
+
+        Item                                       Element                                        Substantive/
+          #                                                                                      Non-Substantive
+          1      “Assignment Of Indemnity”                                                         Substantive
+          2      “Assignee’s Name”                                                                 Substantive
+          3      “Assignee’s SSN/EIN (circle one and enter)”                                       Substantive
+          4      “Street or Mailing Address”                                                       Substantive
+          5      “City and State”                                                                  Substantive
+          6      “Zip Code”                                                                        Substantive
+          7      “Phone”                                                                           Substantive
+          8      “Fax”                                                                             Substantive
+                 “End Date”                                                                      Non-Substantive
+                 “Coverage Price”                                                                  Substantive
+            9    “Actual Ending Value”                                                             Substantive
+                 “If the actual ending value is less than the coverage price, an indemnity is      Substantive
+                 due.”
+
+
+
+
+June 2026                                           FCIC-20010                                                56
+Exhibit 5     Notice of Probable Loss Form (Continued)
+
+C.     Indemnity Calculation
+
+        Item                                     Element                                         Substantive/
+          #                                                                                     Non-Substantive
+          1  “Indemnity Calculation”                                                              Substantive
+          2  “If the actual ending value is less than the coverage price, an indemnity is         Substantive
+             due. The indemnity is equal to the number of head multiplied by the
+             target weight (in cwt as defined in the Specific Coverage Endorsement)
+             multiplied by the difference between the coverage price and the actual
+             ending value (in $ per cwt) and then multiplied by the ownership share (in
+             percent).”
+          3  “Number of Head”                                                                     Substantive
+          4  “Target Weight At End Date (Cwt Per Head)”                                           Substantive
+          5  “Coverage Price Minus Actual Ending Value”                                           Substantive
+          6  “Insured Share %”                                                                    Substantive
+          7  “Indemnity”                                                                          Substantive
+
+D.     Required Statements
+
+        Item                                    Element                                          Substantive/
+          #                                                                                     Non-Substantive
+          1  Certifications for Indemnity Statement.                                              Substantive
+             “You must truthfully attest to all of the following certification statements
+             in order to be eligible for an indemnity:
+
+               (a)    I owned the percentage share of the covered livestock stated on
+                      the Specific Coverage Endorsement during the term of this
+                      endorsement.
+
+               (b)    I did not sell or transfer ownership of the livestock identified in the
+                      Specific Coverage Endorsement prior to 60 days before the end
+                      date specified on the Specific Coverage Endorsement.
+
+               (c)    For covered feeder cattle not sold by the end date, I will provide
+                      records of ownership and certify that the livestock not sold by the
+                      end date were marketable at the end date.
+
+               If you cannot truthfully attest to all of the above certification statements,
+               then you are not eligible for an indemnity payment and should not sign or
+               return this form. If you can truthfully attest to all of the above
+               certification statements, please sign this form and return it to the
+               Company in the enclosed envelope within sixty (60) days from the date we
+               provide you with the claim form. An indemnity payment will be made
+               within 30 days of receipt of this form by the Company.”
+
+
+
+June 2026                                         FCIC-20010                                                    57
+Exhibit 5       Notice of Probable Loss Form (Continued)
+
+D.     Required Statements
+
+
+            2   I certify that the information provided above, to the best of my               Substantive
+                knowledge, to be true and complete and that it will be used to determine
+                my loss, if any, to my insured livestock. I understand that this claim form
+                and supporting papers are subject to audit and approval by the company.
+                I understand that this livestock insurance is subsidized and reinsured by
+                the Federal Crop Insurance Corporation, an agency of the United States. I
+                understand that any false or inaccurate information on this form may
+                result in the sanctions outlined in my policy and administrative, civil, and
+                criminal sanctions under 18 U.S.C. §1001, §1006, and §1014, 7 U.S.C.
+                §1515, 31 U.S.C. §3729 and §3730, and any other applicable Federal
+                statutes.
+            3   Privacy Act Statement.                                                         Substantive
+                   Note: See DSSH, Para. 501.
+            4   Non-Discrimination Policy Statement                                            Substantive
+                    Note: See DSSH, Para. 503.
+
+
+
+
+June 2026                                          FCIC-20010                                                58
+Exhibit 6     LRP Liability and Premium Computation
+
+       A.     Liability = Number of Head multiplied by the Target Weight (live weight, in cwt) multiplied by
+              the Coverage Price multiplied by Ownership Share. Liability is rounded to the nearest whole
+              dollar.
+
+                                                                     Coverage
+                                    Target Weight At                 Price (as         Insured
+        Number of Head                                                                                Liability
+                       ×            End Date (Cwt Per       ×       shown on     ×      Share     =
+        (Whole number)                                                                                (Dollar)
+                                         Head)                       Actuarial         (x.xxxx)
+                                                                    Document)
+
+                            ×                               ×                    ×                =
+
+       B.     The Total Premium = Liability multiplied by the Rate. Total Premium is rounded to the
+              nearest whole dollar.
+
+            Liability       ×              Rate         =       Rounded Total Premium
+            (Dollar)                    (.xxxxxx)                      (Dollar)
+                            ×                           =
+
+       C.     The Subsidy = Total Premium multiplied by the Subsidy Rate. The Subsidy Rate varies by the
+              coverage level. Subsidy is rounded to the nearest whole dollar.
+
+              Rounded               ×       Subsidy         =        Rounded Subsidy
+            Total Premium                  (Percent)                     (Dollar)
+
+                                    ×                       =
+
+
+       D.     The Producer Premium = Total Premium minus the Subsidy. Producer Premium will always
+              be a whole number.
+
+             Rounded            −          Rounded              =     Producer Premium
+               Total                       Subsidy                         (Dollar)
+             Premium
+
+                                −                               =
+
+
+
+
+June 2026                                              FCIC-20010                                                 59
+
