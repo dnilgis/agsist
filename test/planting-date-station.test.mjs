@@ -244,3 +244,31 @@ test("phone, 390 wide: no sideways scroll with everything loaded, both crops", {
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+// UMN Extension's table (references branch: umn-corn-planting-date), two studies per row:
+// May 20 92% and 95%, May 30 82% and 89%, Jun 9 69% and 79%, Apr 30 100% and 100%.
+test("corn table is UMN's two studies, printed as ranges", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port);
+    const rows = await pg.$$eval("#penalty-section tbody tr", (trs) => trs.map((tr) => [...tr.cells].map((c) => c.textContent.trim())));
+    const row = (d) => rows.find((r) => r[0] === d);
+    assert.deepEqual(row("May 20").slice(0, 4), ["May 20", "~92–95%", "-5 to -8%", "~184–190 bu/ac"]);
+    assert.deepEqual(row("May 30").slice(0, 4), ["May 30", "~82–89%", "-11 to -18%", "~164–178 bu/ac"]);
+    assert.deepEqual(row("Jun 9").slice(0, 4), ["Jun 9", "~69–79%", "-21 to -31%", "~138–158 bu/ac"]);
+    assert.deepEqual(row("Apr 30").slice(0, 2), ["Apr 30", "100%"]);
+    assert.ok(!rows.some((r) => r[0] === "Jun 1" || r[0] === "Apr 15"), "no rows without a source");
+  } finally { await browser.close(); srv.close(); }
+});
+
+// The UW video says 2.1 bu/a a week past roughly Apr 10 in southern WI (references branch:
+// uw-soy-pivot-mid-may); it does not say 0.4 bu/a a day past May 1, so the page must not either.
+test("the soybean rate is attributed to UW as UW said it", () => {
+  for (const f of ["planting-date.html", "components/planting-date.js"]) {
+    const s = readFileSync(join(ROOT, f), "utf8");
+    assert.doesNotMatch(s, /0\.4 bu\/a per day of planting delay past May 1 \(UW/);
+    assert.doesNotMatch(s, /UW-Madison; 0\.2.{1,10}0\.5 bu\/a\/day after Apr 25/);
+  }
+  assert.match(readFileSync(join(ROOT, "planting-date.html"), "utf8"), /2\.1 bu\/a \(UW-Madison\)/);
+});

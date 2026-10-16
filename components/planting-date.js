@@ -60,30 +60,34 @@ function parseMD(str){
 }
 
 /* ─── YIELD TABLES ───────────────────────────────────────────────────── */
-// Corn planting date yield response (% of maximum yield), UW and UMN Extension guidance.
+// Corn planting date yield response, % of maximum yield: UMN Extension's table, two studies,
+// Lamberton 1988-2003 (Potter and Quiring) and Lamberton, Morris and Waseca 2009-2011. Each row
+// prints both as a range (lo-hi); pct is the midpoint, used only for row colour.
+// https://extension.umn.edu/corn-planting/planting-date-considerations-corn (saved on the
+// references branch as umn-corn-planting-date, read Oct 16, 2026).
 var CORN_PENALTY = [
-  {label:'Apr 15', pct:97, note:'Early: cold soil injury possible'},
-  {label:'Apr 20', pct:98, note:'Good if soil is 50°F or warmer'},
-  {label:'Apr 25', pct:100,note:'Peak window'},
-  {label:'May 1',  pct:100,note:'Peak window'},
-  {label:'May 5',  pct:99, note:'Still excellent'},
-  {label:'May 10', pct:98, note:'Small drag'},
-  {label:'May 15', pct:97, note:'Good'},
-  {label:'May 20', pct:95, note:'Loss starts to add up'},
-  {label:'May 25', pct:90, note:'About 1% a day now'},
-  {label:'Jun 1',  pct:83, note:'About 1% a day the week before'},
-  // UMN Extension, % of max yield for a Jun 9 planting: 69 (Lamberton 1988-2003) and 79
-  // (Lamberton, Morris, Waseca 2009-11). 74 is only the midpoint for row colouring; the row
-  // prints the range. https://extension.umn.edu/corn-planting/planting-date-considerations-corn
-  // No Jun 15 row: no cited source for it.
-  {label:'Jun 10', pct:74, lo:69, hi:79, note:'UMN trials, Jun 9 planting: 69% (Lamberton 1988–2003) and 79% (Lamberton, Morris, Waseca 2009–11). Roughly 1 to 1.5 points a day in early June'}
-];
+  {label:'Before Apr 18', lo:82, hi:100, pct:94, note:'Lamberton, 10 plantings before Apr 18: 82 to 100%, average 94%'},
+  {label:'Apr 20', lo:98, hi:99, note:'Lamberton 99%, later study 98%'},
+  {label:'Apr 25', lo:99, hi:100, note:'Within 1% of the best'},
+  {label:'Apr 30', pct:100, note:'Best in both studies'},
+  {label:'May 5',  lo:99, hi:100, note:'Within 1% of the best'},
+  {label:'May 10', lo:98, hi:99, note:'End of the Apr 25 to May 10 window (2009-11 study)'},
+  {label:'May 15', lo:95, hi:98, note:'Loss starts to add up'},
+  {label:'May 20', lo:92, hi:95, note:'5 to 8 points down'},
+  {label:'May 25', lo:87, hi:92, note:'About 1 point a day'},
+  {label:'May 30', lo:82, hi:89, note:'Near the May 25 or 31 final planting dates'},
+  {label:'Jun 4',  lo:76, hi:84, note:'Late planting period'},
+  {label:'Jun 9',  lo:69, hi:79, note:'Roughly 1 to 1.4 points a day in early June'}
+].map(function(r){ if(r.pct==null) r.pct = Math.round((r.lo+r.hi)/2); return r; });
 
 // Soybean planting date yield response. APPROXIMATION, computed, not a trial table:
-// the 55 bu/a base minus 0.2-0.5 bu/a per day of planting delay past May 1 (UW-Madison, Conley:
-// about 0.4 bu/a/day past May 1; 0.2-0.5 bu/a/day after Apr 25). Straight line, no loss
-// counted before May 1. The 0.4 was not re-read at the source for this page, so every row
-// prints the 0.2-0.5 range and keeps 0.4 only as the midpoint for colour and the middle estimate.
+// a 55 bu/a base minus 0.2-0.5 bu/a per day of planting delay past May 1, straight line, no loss
+// counted before May 1. What the UW source actually says (Conley, Badger Crop Connect, May 2026,
+// saved on the references branch as uw-soy-pivot-mid-may): in southern Wisconsin, "past roughly
+// April 10th, we're losing 2.1 bushels per acre per week" (0.3 bu/a a day), and no penalty to
+// speak of for an Apr 20 planting. 0.3 sits inside the 0.2-0.5 band this table prints; the band
+// itself and the May 1 start are this page's, not UW's, and the page says so. 0.4 is only the
+// band's middle, used for row colour.
 // https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/
 var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.4, BEAN_LOSS_LO = 0.2, BEAN_LOSS_HI = 0.5;
 var BEAN_PENALTY = [
@@ -190,12 +194,12 @@ function renderWindowBars(){
   var t = $('win-title'); if(t) t.textContent = (isCorn ? 'Corn' : 'Soybean') + ' planting window: Wisconsin and Minnesota';
   var windows = isCorn ? [
     {label:'Best',       dates:'Apr 25 to May 10', pct:100, cls:'green', tip:'98% or more of peak yield on the table below, once soil holds 50°F.'},
-    {label:'Good',       dates:'May 10 to May 20', pct:75,  cls:'gold',  tip:'Down 2 to 5% by May 20.'},
-    {label:'Late',       dates:'May 20 to Jun 1',  pct:50,  cls:'gold',  tip:'About 1% a day. A shorter hybrid may fit better.'},
-    {label:'Very late',  dates:'After Jun 1',      pct:25,  cls:'red',   tip:'Big losses; final planting dates are May 25 or 31.'}
+    {label:'Good',       dates:'May 10 to May 20', pct:75,  cls:'gold',  tip:'Down 5 to 8 points by May 20 (UMN).'},
+    {label:'Late',       dates:'May 20 to Jun 1',  pct:50,  cls:'gold',  tip:'About 1 point a day; May 30 is 82 to 89% of the maximum (UMN).'},
+    {label:'Very late',  dates:'After Jun 1',      pct:25,  cls:'red',   tip:'Jun 9 is 69 to 79% (UMN). Final planting dates are May 25 or 31.'}
   ] : [
     {label:'Best',       dates:'Apr 25 to May 1',  pct:100, cls:'green', tip:'Plant when the field is fit and soil is 50°F.'},
-    {label:'Good',       dates:'May 1 to May 15',  pct:70,  cls:'gold',  tip:'About 1 to 7 bu/a below May 1 by May 15 (0.2 to 0.5 bu/a a day).'},
+    {label:'Good',       dates:'May 1 to May 15',  pct:70,  cls:'gold',  tip:'About 3 to 7 bu/a below May 1 by May 15 at 0.2 to 0.5 bu/a a day; UW counts about 0.3 a day.'},
     {label:'Late',       dates:'May 15 to Jun 1',  pct:45,  cls:'gold',  tip:'About 3 to 16 bu/a below May 1 on a 55 bu base.'},
     {label:'Very late',  dates:'After Jun 1',      pct:20,  cls:'red',   tip:'More than 6 to 16 bu/a down. Final planting dates are Jun 10 or 15.'}
   ];
@@ -235,8 +239,8 @@ function renderPenaltyTable(){
       +'<td class="mono">~'+estYield+' bu/ac</td><td class="pen-note">'+d.note+'</td></tr>';
   }).join('');
   var foot = isCorn
-    ? 'Est. yield on a 200 bu/ac base. Actual varies by hybrid, field and year. Source: UW and UMN Extension guidance. Jun 10 row: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a> trials, % of maximum yield for a Jun 9 planting: 69% (Lamberton 1988&ndash;2003) and 79% (Lamberton, Morris, Waseca 2009&ndash;11); optimum roughly Apr 21&ndash;May 10.'
-    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day past May 1, a straight line; the row colour uses the 0.4 middle. Rates from <a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison (Conley)</a>: about 0.4 bu/a a day past May 1, 0.2&ndash;0.5 after Apr 25. Actual loss varies by year, variety and field.';
+    ? 'Each range is the two <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a> planting date studies, % of maximum yield: Lamberton 1988&ndash;2003 and Lamberton, Morris and Waseca 2009&ndash;11. UMN: Apr 21 to May 6 was within 1% of the maximum in the first, Apr 25 to May 10 best on average in the second. Est. yield on a 200 bu/ac base; your field, hybrid and year will differ.'
+    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day past May 1, a straight line; the row colour uses the 0.4 middle. The band is this page&rsquo;s. <a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison (Conley, 2026)</a> puts southern Wisconsin at about 2.1 bu/a a week (0.3 a day) past roughly Apr 10, so losses before May 1 are left out here. Actual loss varies by year, variety and field.';
   $('penalty-section').innerHTML = '<div class="pd-card"><h2 class="pd-card-title">'+(isCorn?'Corn':'Soybean')+' Yield Penalty by Planting Date</h2>'
     +'<div class="pen-wrap"><table class="pen-table">'
     +'<thead><tr><th>Planted</th><th>% max</th><th>Loss</th><th>Est. yield</th><th class="pen-note">Notes</th></tr></thead>'
