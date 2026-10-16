@@ -5,6 +5,8 @@
  * bakes the static EMC charts into the page.
  *
  * EQUATIONS (checked 2026-10-15; see the page's method note)
+ *  fits[0] is the main (low) fit: a "dries" call needs it a full point under
+ *  target. Every fit must be under target too, and wet calls use the wettest.
  *  Corn, main: Modified Chung-Pfost, the shelled corn constants credited to
  *    ASABE D245.6 (2007), from Chen and Morey (1989):
  *      RH = exp( -A / (T + C) * exp(-B * M) )    A 374.34, B 0.18662, C 31.696
@@ -20,9 +22,27 @@
  *    Reproduces University of Minnesota Extension's wheat table at 60 F
  *    (Managing stored grain with aeration, Table 4: 12.3, 13.7, 15.2, 16.9%
  *    at 50, 60, 70, 80% RH) within 0.05 point.
+ *  Soybeans (checked 2026-10-16), shown as a range like corn:
+ *    Low: Modified Henderson soybean constants long carried in ASAE D245:
+ *      1 - RH = exp( -K * (T + C) * M^N )        K 30.5327e-5, N 1.2164, C 134.136
+ *    They reproduce University of Minnesota Extension's soybean row at 60 F
+ *    (Managing stored grain with aeration, Table 4: 8.6, 10.5, 12.8, 15.7% at
+ *    50, 60, 70, 80% RH) within 0.05 point, and NDSU's (Hellevang) published
+ *    soybean numbers: 10.2% at 70 F and 60% (long-term storage slide) and
+ *    about 13.5% at 42 F and 70% (Jan 2020 release).
+ *    High: Modified Halsey, the form University of Kentucky labels "ASAE Data
+ *    D245.5 / modified-Halsey equation" on its soybean table:
+ *      RH = exp( -exp(A + B * T) / M^C )         A 2.87, B -0.0054, C 1.38
+ *    Those three constants reproduce every printed soybean cell, rounded to
+ *    0.1, of Kentucky Table 2 (70 cells, 10-90% RH, 35-90 F) and Arkansas
+ *    FSA1074 Table B (196 cells, 25-90% RH, 35-100 F): 266 of 266. The
+ *    standard itself could not be read; the constants are the ones those
+ *    tables were printed from, recovered and checked cell by cell.
+ *    Halsey reads wetter from 25 F up (up to 1.1 points at 40-70% RH, 2 to
+ *    8 points at 80-90%; at 20 to 25 F the two meet within 0.06 point), so
+ *    it carries the wet calls and Henderson is the main (low) fit.
  *  RH decimal, T deg C, M percent DRY basis; readers see WET basis,
- *  wb = 100 M / (100 + M). Soybeans are off: their D245 constants could not
- *  be read at a source.
+ *  wb = 100 M / (100 + M).
  *
  * FAN HEAT: RH2 = RH1 * es(T1) / es(T2); es(T) = 6.1094 exp(17.625 T / (T + 243.04))
  *  hPa (Alduchov and Eskridge 1996).
@@ -46,6 +66,13 @@
     wheat: {
       key: 'wheat', name: 'Wheat', target: 13.5,
       fits: [{ model: 'henderson', K: 2.3007e-5, N: 2.2857, C: 55.815 }]
+    },
+    soybeans: {
+      key: 'soybeans', name: 'Soybeans', target: 13,
+      fits: [
+        { model: 'henderson', K: 30.5327e-5, N: 1.2164, C: 134.136 },
+        { model: 'halsey', A: 2.87, B: -0.0054, C: 1.38 }
+      ]
     }
   };
   var LIMITS = { tMinF: 20, tMaxF: 100, rhMin: 20, rhMax: 90, targetMin: 10, targetMax: 20, fanMax: 15 };
@@ -64,10 +91,12 @@
 
   function fitDb(f, tC, rh) {
     if (f.model === 'chung-pfost') return -Math.log(-Math.log(rh) * (tC + f.C) / f.A) / f.B;
+    if (f.model === 'halsey') return Math.pow(Math.exp(f.A + f.B * tC) / -Math.log(rh), 1 / f.C);
     return Math.pow(-Math.log(1 - rh) / (f.K * (tC + f.C)), 1 / f.N);
   }
   function fitRh(f, tC, mDb) {
     if (f.model === 'chung-pfost') return Math.exp(-f.A / (tC + f.C) * Math.exp(-f.B * mDb));
+    if (f.model === 'halsey') return Math.exp(-Math.exp(f.A + f.B * tC) / Math.pow(mDb, f.C));
     return 1 - Math.exp(-f.K * (tC + f.C) * Math.pow(mDb, f.N));
   }
   /* Wet-basis EMC from every fit of a grain at tF, rh (0..1, exclusive). */
