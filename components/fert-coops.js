@@ -11,8 +11,9 @@
  *     summarized product: no box, no placeholder, no "coming soon".
  *   * A middle price shows only when the file gives one (enough co-ops).
  *     Otherwise the card shows the co-op count and the range in words.
- *   * Every co-op is named and linked to its own page. Prices are what the
- *     co-op posts; the copy says to call and confirm.
+ *   * Every co-op is named, and linked to its own page when it has one we
+ *     checked (a co-op with no url is named with no link). Prices are what
+ *     the co-op posts; the copy says to call and confirm.
  *   * Only the co-ops' own prices. No other source is drawn or blended in
  *     (Sig, 2026-10-15 and 16).
  */
@@ -129,9 +130,12 @@
           (why ? '. ' + esc(why) : '') + '</span></li>';
       }).join('');
       var u = safeUrl(c.source_url || c.url);
-      return '<h3 class="fert-coop-h3">' + esc(c.name) + ', ' + esc(c.state) + '</h3><p class="fert-coop-src">Read from ' +
-        (u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https:\/\/(www\.)?/, '')) + '</a>' : 'its site') +
-        (c.fetched ? ' on ' + esc(shortDate(c.fetched.slice(0, 10), true)) : '') + '. Cash price used: ' + esc(c.cash_label || 'cash') + '.</p>' +
+      var from = u
+        ? 'Read from <a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https:\/\/(www\.)?/, '')) + '</a>' +
+          (c.fetched ? ' on ' + esc(shortDate(c.fetched.slice(0, 10), true)) : '')
+        : 'The co-op&rsquo;s own prices' + (isDate(c.posted) ? ', dated ' + esc(shortDate(c.posted, true)) : '');
+      return '<h3 class="fert-coop-h3">' + esc(c.name) + ', ' + esc(c.state) + '</h3><p class="fert-coop-src">' + from +
+        '. Cash price used: ' + esc(c.cash_label || 'cash') + '.</p>' +
         '<ul class="fert-coop-rows">' + trs + '</ul>';
     }).join('');
     return '<details class="fert-coop-math"><summary>Every posted price and how the figures are made</summary>' +
@@ -149,7 +153,7 @@
       });
     });
     return far.length ? '<p class="fert-coop-note">Far from the other co-ops: ' + far.join('; ') +
-      '. Counted, but the middle price is shown so one sheet does not pull the figure.</p>' : '';
+      '. Counted, but the middle price is shown so one co-op does not pull the figure.</p>' : '';
   }
 
   function credits(d) {
@@ -167,7 +171,7 @@
   }
 
   /* The line under the hero: newest posted date and the co-op count. */
-  var STATE = { KS: 'Kansas', NE: 'Nebraska', OK: 'Oklahoma', IA: 'Iowa', MO: 'Missouri', IL: 'Illinois', CO: 'Colorado', TX: 'Texas', SD: 'South Dakota', ND: 'North Dakota', MN: 'Minnesota' };
+  var STATE = { KS: 'Kansas', NE: 'Nebraska', OK: 'Oklahoma', IA: 'Iowa', MO: 'Missouri', IL: 'Illinois', CO: 'Colorado', TX: 'Texas', SD: 'South Dakota', ND: 'North Dakota', MN: 'Minnesota', WI: 'Wisconsin' };
   function regionOf(d) { return list(Object.keys(d.states || {}).sort().map(function (s) { return STATE[s] || s; })); }
 
   /* The line under the hero: which region each number is from, the newest
@@ -187,7 +191,7 @@
     if (!d) return '';
     var coops = byId(d), reg = regionOf(d);
     return '<h2 class="fert-related-title" id="fert-coops-h">What ' + esc(reg || '') + (reg ? ' ' : '') + 'co-ops are posting</h2>' +
-      '<p class="fert-coops-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
+      '<p class="fert-coops-sub">Each co-op&rsquo;s own posted prices. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
       '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops); }).join('') + '</div>' +
       farNote(d, coops) +
       '<p class="fert-coop-note">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';

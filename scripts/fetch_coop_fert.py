@@ -769,10 +769,11 @@ def run(root, now=None, fetcher=None, sheets_only=False):
 
 
 # ---------------------------------------------------------------- fixture feed
-def fixture_doc(now=None):
+def fixture_doc(now=None, sheets=False):
     """The feed as a run on the saved fixtures would write it (the three co-op
     pages plus the price sheet as a fourth, test-only co-op). Used by the
-    selftest and by test/fert-coops.test.mjs."""
+    selftest and by test/fert-coops.test.mjs. sheets=True adds the config's
+    "sheet" co-ops (Synergy) as a run would (test/fert-synergy.test.mjs)."""
     now = now or datetime.datetime(2026, 10, 15, 14, tzinfo=datetime.timezone.utc)
     today = now.date()
     fx = ROOT / FIX_DIR
@@ -788,6 +789,10 @@ def fixture_doc(now=None):
             results[c["id"]] = ({"rows": rws, "page_date": one_date(txt, today), "problems": pr, "source_url": c["url"]}, None)
     rws, d, pr = pdf_rows((fx / "agricharts-1041_2026-9-24.txt").read_text(), today)
     results["sheet"] = ({"rows": rws, "page_date": d, "problems": pr, "source_url": cfgs[-1]["url"]}, None)
+    if sheets:
+        for c in cfgs:
+            if c["layout"] == "sheet":
+                results[c["id"]] = read_coop(c, today, None)
     return compose(cfgs, results, None, now)
 
 
@@ -1041,7 +1046,7 @@ def main(argv):
     if "--selftest" in argv:
         return selftest()
     if "--fixture-feed" in argv:
-        print(json.dumps(fixture_doc()))
+        print(json.dumps(fixture_doc(sheets="--with-sheets" in argv)))
         return 0
     info = run(ROOT, sheets_only="--sheets-only" in argv)
     for cid, (parsed, err) in info["results"].items():

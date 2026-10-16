@@ -24,15 +24,10 @@ middle of 4, posted Oct 6, 2026"), short_label and the link. Also per_lb
 (the $/lb of N, P2O5 and K2O, with the arithmetic in words) and programs
 (fertilizer $/acre for the break-even defaults, rates stated).
 
-PRICE SHEETS BY EMAIL (Sig, 2026-10-16): a co-op price sheet Sig receives by
-email (Synergy Cooperative's spring 2027 dry fertilizer list) is entered from
-the sheet into data/fert-sheets/<id>.json and copied here into a separate
-"sheets" list. A sheet is a booking/prepay price for a coming season, not
-today's price, so it NEVER feeds prices, per_lb or programs: those stay the
-co-op posted middle. A sheet drops off after its season ends or 120 days
-after its sheet date, whichever comes first. A row the sheet prints as n/a
-stays null (not priced), never 0. A sheet whose numbers fail a check is left
-out with a note, never patched.
+A co-op that sends Sig its prices rather than posting them (Synergy
+Cooperative, Wisconsin; Sig, 2026-10-16) is one more co-op in
+scripts/coop_fert_sources.json (layout "sheet") and arrives here through
+data/fertilizer-coops.json like the rest.
 
 Run by .github/workflows/fertilizer-coops.yml after the reader, and again
 inside its commit loop (scripts/fert_after_prices.sh).
@@ -49,11 +44,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 COOPS = "data/fertilizer-coops.json"
 OUT = "data/fertilizer-prices.json"
-SHEETS = "data/fert-sheets"
-SHEET_MAX_DAYS = 120
-# A sanity range per ton for any priced sheet row; outside it the sheet is
-# refused (a typo like 61 or 6100), not shown.
-SHEET_RANGE = (150, 2500)
 
 # key -> page name; the order pages list them in
 NAMES = {
@@ -73,7 +63,8 @@ PROGRAMS = {
 }
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "MN": "Minnesota", "MO": "Missouri",
-               "ND": "North Dakota", "NE": "Nebraska", "OK": "Oklahoma", "SD": "South Dakota", "TX": "Texas", "CO": "Colorado"}
+               "ND": "North Dakota", "NE": "Nebraska", "OK": "Oklahoma", "SD": "South Dakota", "TX": "Texas", "CO": "Colorado",
+               "WI": "Wisconsin"}
 
 
 def short(iso):
@@ -93,7 +84,7 @@ def region(states):
     return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
 
 
-def build(coops, today, sheets=None):
+def build(coops, today=None):
     coops = coops or {}
     by_id = {c["id"]: c for c in coops.get("coops") or []}
     rows, notes = {}, []
@@ -123,8 +114,6 @@ def build(coops, today, sheets=None):
                    "url": "https://agsist.com/fertilizer#fert-coops-more-h"}
     prices = [rows[k] for k in NAMES if k in rows]
     per_lb = nutrient_prices(rows)
-    sheet_list, sheet_notes = build_sheets(sheets or [], rows, today)
-    notes += sheet_notes
     return {
         "note": "Built by scripts/build_fert_prices.py from data/fertilizer-coops.json only: the middle cash price of "
                 "the co-ops that post each product (two co-ops: their average; one: that co-op, named). "
@@ -133,98 +122,8 @@ def build(coops, today, sheets=None):
         "prices": prices,
         "per_lb": per_lb,
         "programs": programs(per_lb),
-        "sheets": sheet_list,
         "notes": notes,
     }
-
-
-def check_sheet(sh):
-    """The reasons a sheet cannot be shown ([] when it can)."""
-    bad = []
-    for f in ("id", "coop", "region", "how_received", "sheet_date", "season", "season_end"):
-        if not isinstance(sh.get(f), str) or not sh.get(f):
-            bad.append("no %s" % f)
-    for f in ("sheet_date", "season_end"):
-        try:
-            datetime.date.fromisoformat(sh.get(f) or "")
-        except (TypeError, ValueError):
-            bad.append("%s is not a date" % f)
-    rws = sh.get("rows")
-    if not isinstance(rws, list) or not rws:
-        return bad + ["no rows"]
-    priced = 0
-    for r in rws:
-        lab = str(r.get("raw") or "?")
-        if not r.get("raw"):
-            bad.append("a row with no label")
-        for b in ("cash", "charge"):
-            v = r.get(b)
-            if v is None:
-                continue
-            if isinstance(v, bool) or not isinstance(v, (int, float)) or not (SHEET_RANGE[0] <= v <= SHEET_RANGE[1]):
-                bad.append("%s %s %r is outside $%d to $%d a ton" % (lab, b, v, SHEET_RANGE[0], SHEET_RANGE[1]))
-        if isinstance(r.get("cash"), (int, float)) and isinstance(r.get("charge"), (int, float)) and r["charge"] < r["cash"]:
-            bad.append("%s charge is below cash" % lab)
-        if r.get("cash") is not None or r.get("charge") is not None:
-            priced += 1
-    if not priced:
-        bad.append("no priced row")
-    return bad
-
-
-def build_sheets(sheets, rows, today):
-    """The "sheets" list: each current sheet as entered, plus $/lb of N for a
-    priced straight-N row and today's co-op middle for the same product, side
-    by side and never blended. Newest sheet first."""
-    out, notes = [], []
-    for sh in sheets:
-        sid = sh.get("id") or "?"
-        bad = check_sheet(sh)
-        if bad:
-            notes.append("price sheet %s left out: %s" % (sid, "; ".join(bad)))
-            continue
-        d = datetime.date.fromisoformat(sh["sheet_date"])
-        end = datetime.date.fromisoformat(sh["season_end"])
-        until = min(end, d + datetime.timedelta(days=SHEET_MAX_DAYS))
-        if today > until:
-            notes.append("price sheet %s dropped off: past %s" % (sid, until.isoformat()))
-            continue
-        if d > today:
-            notes.append("price sheet %s left out: dated after today" % sid)
-            continue
-        srows = []
-        for r in sh["rows"]:
-            x = {"key": r.get("key"), "raw": r["raw"], "symbol": r.get("symbol"),
-                 "cash": r.get("cash"), "charge": r.get("charge"), "changed": bool(r.get("changed"))}
-            x["priced"] = x["cash"] is not None or x["charge"] is not None
-            g = grade(x["symbol"])
-            if x["priced"] and g and g[0] > 0 and g[1] == 0 and g[2] == 0:
-                lb = 2000 * g[0] / 100
-                x["per_lb_n"] = {b: round(x[b] / lb, 4) for b in ("cash", "charge") if x[b] is not None}
-                x["per_lb_n"]["lb_n_per_ton"] = round(lb, 1)
-            today_row = rows.get(x["key"]) if x["key"] else None
-            if x["priced"] and today_row:
-                x["today"] = {"name": today_row["name"], "price": today_row["price"], "as_of": today_row["as_of"],
-                              "src_label": today_row["src_label"], "short_label": today_row["short_label"],
-                              "region": today_row["region"]}
-            srows.append(x)
-        label = "%s, %s, %s price sheet dated %s (%s)" % (sh["coop"], sh["region"], sh["season"], short(sh["sheet_date"]), sh["how_received"])
-        out.append({"id": sid, "coop": sh["coop"], "region": sh["region"], "state": sh.get("state"),
-                    "how_received": sh["how_received"], "title": sh.get("title"), "sheet_date": sh["sheet_date"],
-                    "season": sh["season"], "season_end": sh["season_end"], "show_until": until.isoformat(),
-                    "applies": sh.get("applies"), "unit": "$/ton", "rows": srows,
-                    "star_note": sh.get("star_note"), "notes": list(sh.get("notes") or []),
-                    "label": label, "src": "price-sheet"})
-    out.sort(key=lambda x: x["sheet_date"], reverse=True)
-    return out, notes
-
-
-def read_sheets(root):
-    out = []
-    for f in sorted((Path(root) / SHEETS).glob("*.json")):
-        d = read_json(f)
-        out.append(d if isinstance(d, dict) else {"id": f.stem, "rows": None})
-    return out
 
 
 def grade(sym):
@@ -287,7 +186,7 @@ def write(root=ROOT, today=None):
     themselves only move when a co-op moves)."""
     root = Path(root)
     today = today or datetime.datetime.now(datetime.timezone.utc).date()
-    doc = build(read_json(root / COOPS), today, read_sheets(root))
+    doc = build(read_json(root / COOPS), today)
     old = read_json(root / OUT)
     changed = not old or {k: v for k, v in old.items() if k != "generated"} != doc
     doc = dict(doc, generated=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
@@ -338,45 +237,19 @@ def selftest():
     ck("no potash price: no K $/lb and no crop program, never a guess", "k" not in nop["per_lb"] and nop["programs"]["corn"] is None)
     none = build(None, today)
     ck("no co-op file: an empty list, never a typed number", none["prices"] == [] and none["updated"] is None)
-    # price sheets by email: shown apart, never in prices / per_lb / programs
-    sh = json.loads((ROOT / SHEETS / "synergy-2026-10-01.json").read_text())
-    ws = build(coops, today, [sh])
-    ck("a sheet never changes today's prices, per_lb or programs",
-       all(ws[k] == d[k] for k in ("prices", "per_lb", "programs", "updated")))
-    ck("no sheet: an empty sheets list", d["sheets"] == [])
-    s0 = ws["sheets"][0] if ws["sheets"] else {}
-    sr = {r["raw"]: r for r in s0.get("rows", [])}
-    ck("Synergy sheet shown with its date, season and how it came",
-       s0.get("label") == "Synergy Cooperative, Northwest Wisconsin, Spring 2027 booking price sheet dated Oct 1, 2026 (received by email)")
-    ck("urea 46-0-0: cash 610, charge 628, marked changed",
-       (sr["46-0-0"]["cash"], sr["46-0-0"]["charge"], sr["46-0-0"]["changed"]) == (610, 628, True))
-    ck("urea $/lb N: 610 / 920 and 628 / 920",
-       sr["46-0-0"]["per_lb_n"]["cash"] == round(610 / 920, 4) and sr["46-0-0"]["per_lb_n"]["charge"] == round(628 / 920, 4))
-    ck("ESN-type 44-0-0 $/lb N: 800 / 880 and 824 / 880",
-       sr["N-EDGE EZ (~ESN 44-0-0)"]["per_lb_n"]["cash"] == round(800 / 880, 4) and sr["N-EDGE EZ (~ESN 44-0-0)"]["per_lb_n"]["lb_n_per_ton"] == 880)
-    ck("n/a rows stay null and not priced, never 0",
-       all(r["cash"] is None and r["charge"] is None and not r["priced"] for k, r in sr.items() if k not in ("46-0-0", "N-EDGE EZ (~ESN 44-0-0)")))
-    ck("urea set beside today's co-op middle, not blended",
-       sr["46-0-0"]["today"]["price"] == 622.98 and sr["46-0-0"]["cash"] == 610)
-    ck("no today line for an unpriced row or a product the co-ops do not post",
-       "today" not in sr["0-0-60"] and "today" not in sr["N-EDGE EZ (~ESN 44-0-0)"])
-    ck("drops off 120 days after the sheet date (before the season end)", s0.get("show_until") == "2027-01-29")
-    ck("still shown on its last day", len(build(coops, datetime.date(2027, 1, 29), [sh])["sheets"]) == 1)
-    late = build(coops, datetime.date(2027, 1, 30), [sh])
-    ck("gone the day after, with a note", late["sheets"] == [] and any("dropped off" in n for n in late["notes"]))
-    ck("gone after a season end that comes first",
-       build(coops, datetime.date(2026, 11, 2), [dict(sh, season_end="2026-11-01")])["sheets"] == [])
-    typo = json.loads(json.dumps(sh))
-    typo["rows"][2]["cash"] = 61
-    tb = build(coops, today, [typo])
-    ck("a typo price is refused, the sheet left out with a note", tb["sheets"] == [] and any("outside" in n for n in tb["notes"]))
-    zero = json.loads(json.dumps(sh))
-    zero["rows"][0]["cash"] = 0
-    ck("an n/a typed as 0 is refused", build(coops, today, [zero])["sheets"] == [])
-    flip = json.loads(json.dumps(sh))
-    flip["rows"][2]["charge"] = 600
-    ck("charge below cash is refused", build(coops, today, [flip])["sheets"] == [])
-    ck("a sheet dated after today is left out", build(coops, datetime.date(2026, 9, 30), [sh])["sheets"] == [])
+    # a co-op from the sheet layout counts like any co-op (Synergy, WI)
+    syn = {"id": "synergy-wi", "name": "Synergy Cooperative", "state": "WI", "url": None, "layout": "sheet", "cash_from": "cash",
+           "rows": [{"raw": "46-0-0", "cash": 610, "charge": 628, "date": "2026-10-01"}]}
+    sp, _ = fetch_coop_fert.read_coop(syn, today, None)
+    cfgs = [{"id": c["id"], "layout": c["layout"]} for c in coops["coops"]] + [syn]
+    with5 = fetch_coop_fert.compose(cfgs, {"synergy-wi": (sp, None)}, coops,
+                                    datetime.datetime(2026, 10, 15, 14, tzinfo=datetime.timezone.utc), carry=True)
+    w5 = build(with5, today)
+    u5 = {r["key"]: r for r in w5["prices"]}["urea"]
+    ck("Synergy urea 610 enters the middle: 608, 610, 615.95, 630, 840 -> 615.95", u5["price"] == 615.95 and u5["n"] == 5)
+    ck("two states named in the label", u5["src_label"] == "Kansas and Wisconsin co-ops, middle of 5, posted Oct 6, 2026")
+    ck("N $/lb follows: 615.95 / 920", abs(w5["per_lb"]["n"]["usd"] - 615.95 / 920) < 1e-4)
+    ck("no separate sheets list", "sheets" not in d and "sheets" not in w5)
     src = (ROOT / "scripts/build_fert_prices.py").read_text()
     ck("no other source is read", "fertilizer-" + "ams" not in src)
     if fails:

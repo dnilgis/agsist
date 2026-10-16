@@ -6,22 +6,23 @@
    "key": "urea",
    "name": "Urea",
    "symbol": "46-0-0",
-   "price": 622.98,
+   "price": 615.95,
    "unit": "$/ton",
    "as_of": "2026-10-06",
    "src": "coop",
-   "n": 4,
+   "n": 5,
    "low": 608.0,
    "high": 840.0,
-   "region": "Kansas",
+   "region": "Kansas and Wisconsin",
    "coops": [
     "tworivers-ks",
     "mccune-ks",
     "mulvane-ks",
-    "farmerscoop-columbus-ks"
+    "farmerscoop-columbus-ks",
+    "synergy-wi"
    ],
-   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
-   "short_label": "Kansas co-ops, Oct 6",
+   "src_label": "Kansas and Wisconsin co-ops, middle of 5, posted Oct 6, 2026",
+   "short_label": "Kansas and Wisconsin co-ops, Oct 6",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
@@ -212,16 +213,16 @@
  ],
  "per_lb": {
   "n": {
-   "usd": 0.6772,
+   "usd": 0.6695,
    "from": "urea",
    "as_of": "2026-10-06",
-   "how": "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026)"
+   "how": "urea $615.95 a ton / (2,000 lb x 46% N) = $0.67 a lb of N (Kansas and Wisconsin co-ops, middle of 5, posted Oct 6, 2026)"
   },
   "p": {
-   "usd": 0.7991,
+   "usd": 0.8007,
    "from": "map",
    "as_of": "2026-10-12",
-   "how": "MAP $980.00 a ton, less 220 lb of N at the urea price ($149), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 12, 2026)"
+   "how": "MAP $980.00 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 12, 2026)"
   },
   "k": {
    "usd": 0.392,
@@ -236,7 +237,7 @@
    "n_lb": 162,
    "p_lb": 67,
    "k_lb": 43,
-   "per_acre": 180,
+   "per_acre": 179,
    "as_of": "2026-10-12"
   },
   "soybeans": {
@@ -252,135 +253,10 @@
    "n_lb": 84,
    "p_lb": 35,
    "k_lb": 21,
-   "per_acre": 93,
+   "per_acre": 92,
    "as_of": "2026-10-12"
   }
  },
- "sheets": [
-  {
-   "id": "synergy-2026-10-01",
-   "coop": "Synergy Cooperative",
-   "region": "Northwest Wisconsin",
-   "state": "WI",
-   "how_received": "received by email",
-   "title": "Dry Fertilizer Price List - Spring 2027",
-   "sheet_date": "2026-10-01",
-   "season": "Spring 2027 booking",
-   "season_end": "2027-04-30",
-   "show_until": "2027-01-29",
-   "applies": "Excluding Ashland",
-   "unit": "$/ton",
-   "rows": [
-    {
-     "key": "potash",
-     "raw": "0-0-60",
-     "symbol": "0-0-60",
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": null,
-     "raw": "S10 (12-40-0-10S)",
-     "symbol": "12-40-0-10S",
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": "urea",
-     "raw": "46-0-0",
-     "symbol": "46-0-0",
-     "cash": 610,
-     "charge": 628,
-     "changed": true,
-     "priced": true,
-     "per_lb_n": {
-      "cash": 0.663,
-      "charge": 0.6826,
-      "lb_n_per_ton": 920.0
-     },
-     "today": {
-      "name": "Urea",
-      "price": 622.98,
-      "as_of": "2026-10-06",
-      "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
-      "short_label": "Kansas co-ops, Oct 6",
-      "region": "Kansas"
-     }
-    },
-    {
-     "key": "ams",
-     "raw": "21-0-0-24S",
-     "symbol": "21-0-0-24S",
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": null,
-     "raw": "K-MAG PREMIUM (0-0-20-22S-11Mg)",
-     "symbol": "0-0-20-22S-11Mg",
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": null,
-     "raw": "PEL LIME (SuperCal 98G)",
-     "symbol": null,
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": null,
-     "raw": "CAL-SOL (SuperCal SO4)",
-     "symbol": null,
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": null,
-     "raw": "Aspire (0-0-58-0.5B)",
-     "symbol": "0-0-58-0.5B",
-     "cash": null,
-     "charge": null,
-     "changed": false,
-     "priced": false
-    },
-    {
-     "key": "esn",
-     "raw": "N-EDGE EZ (~ESN 44-0-0)",
-     "symbol": "44-0-0",
-     "cash": 800,
-     "charge": 824,
-     "changed": true,
-     "priced": true,
-     "per_lb_n": {
-      "cash": 0.9091,
-      "charge": 0.9364,
-      "lb_n_per_ton": 880.0
-     }
-    }
-   ],
-   "star_note": "* Indicates Price Change from Previous Price Sheet",
-   "notes": [
-    "Prices subject to change at any time.",
-    "For Spring Deferred Payment, Add $10/Ton for 25% down, 75% due March 31, 2027",
-    "Volume Discounts may be applied thru April 30th, 2027 on Spring Prepay Only"
-   ],
-   "label": "Synergy Cooperative, Northwest Wisconsin, Spring 2027 booking price sheet dated Oct 1, 2026 (received by email)",
-   "src": "price-sheet"
-  }
- ],
  "notes": [],
- "generated": "2026-10-16T17:59:13Z"
+ "generated": "2026-10-16T20:02:38Z"
 }

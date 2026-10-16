@@ -18,8 +18,8 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST</title>
-<meta name="description" content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<title>Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST</title>
+<meta name="description" content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
 <meta name="keywords" content="fertilizer prices today, urea price per ton, anhydrous ammonia price, UAN price, DAP price, potash price, co-op fertilizer prices, nitrogen fertilizer cost, phosphate price, farm input prices, US fertilizer prices">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -27,19 +27,19 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST">
-<meta property="og:description"  content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta property="og:title"        content="Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST">
+<meta property="og:description"  content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
 <meta property="og:url"          content="https://agsist.com/fertilizer">
-<meta property="og:image"        content="https://agsist.com/img/og/fertilizer.jpg?v=a876a101">
+<meta property="og:image"        content="https://agsist.com/img/og/fertilizer.jpg?v=59f62671">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt"    content="Urea $623 a ton, Kansas co-ops, middle of 4, posted through Oct 6, 2026.">
+<meta property="og:image:alt"    content="Urea $616 a ton, Kansas and Wisconsin co-ops, middle of 5, posted through Oct 6, 2026.">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST">
-<meta name="twitter:description" content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
-<meta name="twitter:image"       content="https://agsist.com/img/og/fertilizer.jpg?v=a876a101">
+<meta name="twitter:title"       content="Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST">
+<meta name="twitter:description" content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta name="twitter:image"       content="https://agsist.com/img/og/fertilizer.jpg?v=59f62671">
 
 <script type="application/ld+json">
 {
@@ -168,12 +168,6 @@
 .fert-coop-h3{font-size:.9rem;margin:.9rem 0 .2rem;color:var(--text)}
 .fert-coop-src{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin:0 0 .4rem}
 @media(max-width:560px){.fert-coop-table td,.fert-coop-table th{padding:.4rem .3rem}.fert-coop-table td{font-size:.76rem}}
-/* Booking prices from emailed price sheets (components/fert-sheets.js) */
-#fert-sheets{margin:0 0 1.25rem}
-.fsh-sheet{border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem .25rem;margin:0 0 .75rem}
-.fsh-sheet .fert-coop-h3{margin-top:0}
-.fsh-na{color:var(--text-muted);font-style:italic}
-.fsh-star{color:var(--gold);font-weight:700}
 
 /* Natural gas */
 .natgas-card{
@@ -348,7 +342,6 @@
     <div class="fv-grid" id="fv-cheapest"></div>
     <div class="fv-afford" id="fv-afford" hidden></div>
   </div>
-  <section id="fert-sheets" aria-labelledby="fert-sheets-h" hidden></section>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the fertilizer prices. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fertilizer&amp;utm_source=fertilizer&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
 
@@ -470,8 +463,7 @@
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
 <script src="/components/fert-sources.js?v=5"></script>
-<script src="/components/fert-coops.js?v=3"></script>
-<script src="/components/fert-sheets.js?v=1"></script>
+<script src="/components/fert-coops.js?v=4"></script>
 
 <script>
 (function(){
@@ -624,7 +616,6 @@ Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.j
   if(bar)bar.innerHTML=bh||'Co-op prices did not load, so this page has no fertilizer price right now.';
   var top=document.getElementById('fert-coops'),th=FC?FC.top(co):'';if(top&&th){top.innerHTML=th;top.hidden=false;}
   var more=document.getElementById('fert-coops-more'),mh=FC?FC.more(co):'';if(more&&mh){more.innerHTML=mh;more.hidden=false;}
-  var sh=document.getElementById('fert-sheets'),shh=window.FertSheets?window.FertSheets.section(prices):'';if(sh&&shh){sh.innerHTML=shh;sh.hidden=false;}
   if(!prices||!prices.prices)throw new Error('no-prices');
   var lw=document.getElementById('fert-lede-when'),lt=ledeWhen(prices);if(lw&&lt)lw.textContent=' '+lt;
   var fvn=document.getElementById('fv-note');if(fvn)fvn.textContent=FS.coverNote(prices);

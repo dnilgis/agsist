@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
   <title>Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST</title>
-  <meta name="description" content="Example: $910 an acre at 180 bu/ac is a $5.06 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="description" content="Example: $909 an acre at 180 bu/ac is a $5.05 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
   <meta name="author" content="Sigurd Lindquist">
   <meta name="keywords"    content="farm break even calculator, farmer corn break even calculator, soybean break even price, cost per bushel calculator, crop profit calculator, farm cost analysis, break-even price corn">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -25,7 +25,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta property="og:description"  content="Example: $910 an acre at 180 bu/ac is a $5.06 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta property="og:description"  content="Example: $909 an acre at 180 bu/ac is a $5.05 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
   <meta property="og:url"          content="https://agsist.com/breakeven">
   <meta property="og:image"        content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <meta property="og:image:width"  content="1200">
@@ -35,7 +35,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta name="twitter:description" content="Example: $910 an acre at 180 bu/ac is a $5.06 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="twitter:description" content="Example: $909 an acre at 180 bu/ac is a $5.05 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -214,7 +214,7 @@
   </div>
   <main id="main" class="main" tabindex="-1">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Break-Even Calculator</nav>
-    <div class="calc-title"><h1>Break-even price calculator</h1><p class="be-by">Sigurd Lindquist, CCA &middot; page updated Oct 15, 2026</p><p class="be-example"><!--BAKE:be-example--><strong>Example with this page's default costs:</strong> corn at $910 an acre and 180 bu/ac breaks even at $5.06 a bushel; soybeans at $668 and 55 bu/ac at $12.15. Change any line below to get yours.<!--/BAKE--></p></div>
+    <div class="calc-title"><h1>Break-even price calculator</h1><p class="be-by">Sigurd Lindquist, CCA &middot; page updated Oct 15, 2026</p><p class="be-example"><!--BAKE:be-example--><strong>Example with this page's default costs:</strong> corn at $909 an acre and 180 bu/ac breaks even at $5.05 a bushel; soybeans at $668 and 55 bu/ac at $12.15. Change any line below to get yours.<!--/BAKE--></p></div>
     <div class="grid-2">
       <div class="panel">
         <div class="panel-head"><h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> YOUR CROP AND COSTS</h2></div>
@@ -247,11 +247,11 @@
             <h2 class="sec-label" style="margin:0 0 8px">INPUT COSTS ($/ac)</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
               <div class="input-wrap"><label style="font-size:0.787rem" for="seed">Seed <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="seed" min="0" value="125" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Base seed cost per bag</li><li>Seed treatment</li><li>Technology / trait fees</li><li>Replant seed reserve</li><li>Inoculant (soybeans)</li></ul></div></div>
-              <div class="input-wrap"><label style="font-size:0.787rem" for="fertilizer">Fertilizer <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="fertilizer" min="0" value="180" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Nitrogen (anhydrous, urea, UAN)</li><li>Phosphorus (MAP/DAP)</li><li>Potash (K2O)</li><li>Lime (amortized)</li><li>Sulfur &amp; micros</li><li>Application fees</li></ul><div class="hint-note">Soil test recommendations should drive rates.</div></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem" for="fertilizer">Fertilizer <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="fertilizer" min="0" value="179" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Nitrogen (anhydrous, urea, UAN)</li><li>Phosphorus (MAP/DAP)</li><li>Potash (K2O)</li><li>Lime (amortized)</li><li>Sulfur &amp; micros</li><li>Application fees</li></ul><div class="hint-note">Soil test recommendations should drive rates.</div></div></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="chemicals">Chemicals <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="chemicals" min="0" value="65" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Pre-emerge herbicides</li><li>Post-emerge herbicides</li><li>Fungicide</li><li>Insecticide</li><li>Adjuvants &amp; surfactants</li><li>Custom application fees</li></ul></div></div>
               <div class="input-wrap"><label style="font-size:0.787rem" for="insurance">Crop Insurance <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="insurance" min="0" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Net premium (after subsidy)</li><li>Hail / wind endorsement</li><li>Replant provision</li><li>SCO or ECO add-on</li><li>Private hail policy</li></ul><div class="hint-note">Ask your agent about SCO and ECO. Premium support improved for 2026.</div></div></div>
             </div>
-            <p class="be-fert-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0"><!--FERT:SRC-->Fertilizer default, corn: $180 an acre = 162 lb N, 67 lb P&#8322;O&#8325; and 43 lb K&#8322;O for 180 bu (0.90, 0.37 and 0.24 lb a bushel), at prices posted through Oct 12, 2026. Soybeans and wheat use their own rates. Your soil test and rates beat this. How each price per lb is worked out: urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026); MAP $980.00 a ton, less 220 lb of N at the urea price ($149), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 12, 2026); potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 6, 2026). <a href="/fertilizer">Fertilizer prices</a>.<!--/FERT:SRC--></p>
+            <p class="be-fert-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0"><!--FERT:SRC-->Fertilizer default, corn: $179 an acre = 162 lb N, 67 lb P&#8322;O&#8325; and 43 lb K&#8322;O for 180 bu (0.90, 0.37 and 0.24 lb a bushel), at prices posted through Oct 12, 2026. Soybeans and wheat use their own rates. Your soil test and rates beat this. How each price per lb is worked out: urea $615.95 a ton / (2,000 lb x 46% N) = $0.67 a lb of N (Kansas and Wisconsin co-ops, middle of 5, posted Oct 6, 2026); MAP $980.00 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 12, 2026); potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 6, 2026). <a href="/fertilizer">Fertilizer prices</a>.<!--/FERT:SRC--></p>
           </div>
           <div style="margin-bottom:20px">
             <h2 class="sec-label" style="margin:0 0 8px">OPERATING COSTS ($/ac)</h2>
@@ -287,11 +287,11 @@
         <div class="panel-body">
           <p style="font-size:0.78rem;color:var(--text-dim);margin:0 0 10px;line-height:1.5">Estimates computed from the inputs at left. Defaults are a representative Upper Midwest example, not your farm. Break-even here is a <b>cash</b> price; the futures line adjusts it by your basis.</p>
           <div id="calc-status" role="status" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div>
-          <div class="result-row"><span class="result-label">Total Cost/Acre</span><span class="result-value" id="totalCost"><!--BAKE:be-total-->$910/ac<!--/BAKE--></span></div>
-          <div class="result-row"><span class="result-label">Cost/Bushel</span><span class="result-value" id="costPerBu"><!--BAKE:be-cpb-->$5.06/bu<!--/BAKE--></span></div>
-          <div class="result-row be-row"><span class="result-label">Break-Even Price</span><span class="result-value be-highlight highlight" id="breakeven"><!--BAKE:be-cpb-->$5.06/bu<!--/BAKE--></span></div>
+          <div class="result-row"><span class="result-label">Total Cost/Acre</span><span class="result-value" id="totalCost"><!--BAKE:be-total-->$909/ac<!--/BAKE--></span></div>
+          <div class="result-row"><span class="result-label">Cost/Bushel</span><span class="result-value" id="costPerBu"><!--BAKE:be-cpb-->$5.05/bu<!--/BAKE--></span></div>
+          <div class="result-row be-row"><span class="result-label">Break-Even Price</span><span class="result-value be-highlight highlight" id="breakeven"><!--BAKE:be-cpb-->$5.05/bu<!--/BAKE--></span></div>
           <p id="be-sub" hidden class="be-sub"></p>
-          <div class="result-row"><span class="result-label">Futures needed at your basis</span><span class="result-value" id="futNeeded"><!--BAKE:be-cpb-->$5.06/bu<!--/BAKE--></span></div>
+          <div class="result-row"><span class="result-label">Futures needed at your basis</span><span class="result-value" id="futNeeded"><!--BAKE:be-cpb-->$5.05/bu<!--/BAKE--></span></div>
           <p id="split-note" hidden style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;margin:.35rem 0 .2rem;border-left:2px solid var(--gold);padding-left:.6rem"></p>
           <div class="result-row"><span class="result-label">Gross Revenue/Acre</span><span class="result-value" id="revenue">- &middot; enter a price</span></div>
           <div class="result-row"><span class="result-label">Net Profit/Loss</span><span class="result-value" id="profit">- &middot; enter a price</span></div>
@@ -323,7 +323,7 @@
   </main>
 
   <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem">
-    <p style="font-size:.9rem;color:var(--text-dim);line-height:1.7;margin:1.2rem 0 .4rem"><!--BAKE:be-faq-->With the default example costs ($910/acre, 180 bu corn), the break-even works out to about $5.06 per bushel cash.<!--/BAKE--> Those defaults are an example, not your farm; your state&rsquo;s extension crop budget lists each line for your area. Rent and yield move the number most: run your own lines above, then check what selling looks like against it. <span id="be-univ">University budgets put 2027 corn break-even at about $5 a bushel: farmdoc&rsquo;s <a href="https://farmdocdaily.illinois.edu/2026/09/illinois-crop-budgets-for-2027.html" style="color:var(--gold,#d4a23f)">Illinois Crop Budgets for 2027</a> (Sep 1, 2026) cover total costs, cash rent included, at just under $5 in northern and central Illinois and $5.39 in southern Illinois. Their soybean figure is $11.10 to $11.28 in the north and center and nearly $12 in the south.</span></p>
+    <p style="font-size:.9rem;color:var(--text-dim);line-height:1.7;margin:1.2rem 0 .4rem"><!--BAKE:be-faq-->With the default example costs ($909/acre, 180 bu corn), the break-even works out to about $5.05 per bushel cash.<!--/BAKE--> Those defaults are an example, not your farm; your state&rsquo;s extension crop budget lists each line for your area. Rent and yield move the number most: run your own lines above, then check what selling looks like against it. <span id="be-univ">University budgets put 2027 corn break-even at about $5 a bushel: farmdoc&rsquo;s <a href="https://farmdocdaily.illinois.edu/2026/09/illinois-crop-budgets-for-2027.html" style="color:var(--gold,#d4a23f)">Illinois Crop Budgets for 2027</a> (Sep 1, 2026) cover total costs, cash rent included, at just under $5 in northern and central Illinois and $5.39 in southern Illinois. Their soybean figure is $11.10 to $11.28 in the north and center and nearly $12 in the south.</span></p>
     <nav aria-label="Related tools" style="display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem;font-size:.85rem">
       <a href="/harvest-price-tracker#presell" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">Safe pre-sell calculator</a>
       <a href="/harvest-price-tracker" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">Insurance price floor</a>
@@ -358,7 +358,7 @@
     </div>
   </div>
 
-  <div id="mini-bar" aria-hidden="true"><span>Break-even <b id="mb-be"><!--BAKE:be-cpb-->$5.06/bu<!--/BAKE--></b></span><span id="mb-profit">- &middot; enter a price</span></div>
+  <div id="mini-bar" aria-hidden="true"><span>Break-even <b id="mb-be"><!--BAKE:be-cpb-->$5.05/bu<!--/BAKE--></b></span><span id="mb-profit">- &middot; enter a price</span></div>
   <div class="print-footer">Generated by AGSIST &middot; agsist.com &middot; Free farm tools &middot; For informational purposes only. Not financial advice. Verify all inputs with your local data.</div>
   <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
@@ -371,7 +371,7 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script>
-  var CROP_DEFAULTS={corn:{yield:180,price:'',basis:0,seed:125,fertilizer:180,chemicals:65,insurance:35,machinery:145,labor:35,land:250,overhead:75},soybeans:{yield:55,price:'',basis:0,seed:75,fertilizer:63,chemicals:55,insurance:30,machinery:110,labor:30,land:250,overhead:55},wheat:{yield:70,price:'',basis:0,seed:40,fertilizer:93,chemicals:50,insurance:25,machinery:90,labor:30,land:200,overhead:45}};
+  var CROP_DEFAULTS={corn:{yield:180,price:'',basis:0,seed:125,fertilizer:179,chemicals:65,insurance:35,machinery:145,labor:35,land:250,overhead:75},soybeans:{yield:55,price:'',basis:0,seed:75,fertilizer:63,chemicals:55,insurance:30,machinery:110,labor:30,land:250,overhead:55},wheat:{yield:70,price:'',basis:0,seed:40,fertilizer:92,chemicals:50,insurance:25,machinery:90,labor:30,land:200,overhead:45}};
   var CROP_PRICE_KEY={corn:'corn-dec',soybeans:'beans-nov',wheat:'wheat'};
   var CROP_CONTRACT={corn:'Dec corn',soybeans:'Nov soybeans',wheat:'Wheat (Chicago SRW nearby, not your class)'};
   var CROP_NAMES={corn:'Corn',soybeans:'Soybeans',wheat:'Wheat'};
