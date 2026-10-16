@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 87,
- "with_known_cadence": 87,
+ "count": 88,
+ "with_known_cadence": 88,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -691,6 +691,30 @@
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and Sig's elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
+  },
+  {
+   "path": "data/drought/county-week.json",
+   "pages": [
+    "drought-monitor.html"
+   ],
+   "written_by": [
+    "Drought county week"
+   ],
+   "touched_by": [
+    "Drought county week"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 8am, 9am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "52 13 * * 4",
+    "37 14 * * 5"
+   ],
+   "max_gap_hours": 143.2,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/elevator-counts.json",
