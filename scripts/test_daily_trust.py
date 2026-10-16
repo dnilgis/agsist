@@ -144,13 +144,13 @@ for f, needle in (("index.html", "data.otp_week_ahead?'WEEK AHEAD IN AG'"),
           f"{f} reads otp_week_ahead, not market_closed")
 
 print("\n3. The byline\n")
-BY = "Sigurd Lindquist</strong>, Certified Crop Adviser (CCA)"
+BY = "Sigurd Lindquist</strong>, CCA"
 check(BY in g.render_byline_block_html(), "archive byline", g.render_byline_block_html())
 for f in ("daily.html", "index.html"):
     src = open(os.path.join(HERE, "..", f), encoding="utf-8").read()
     check(BY in src and "Lindquist</strong>, founder" not in src, f"{f} byline")
 src = open(os.path.join(HERE, "send_morning_brief.py"), encoding="utf-8").read()
-check("Written by Sigurd Lindquist, Certified Crop Adviser (CCA)." in src and "Lindquist, founder" not in src,
+check("Written by Sigurd Lindquist, CCA." in src and "Lindquist, founder" not in src,
       "send_morning_brief.py byline (source text only; not run)")
 check("insurance" not in g.render_byline_block_html().lower(), "the byline never calls him a crop insurance agent")
 

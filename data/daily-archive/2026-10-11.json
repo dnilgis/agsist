@@ -309,5 +309,11 @@
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
-  "market_status_reason": "weekend"
+  "market_status_reason": "weekend",
+  "corrections": [
+    {
+      "date": "2026-10-15",
+      "text": "An earlier version understated corn's drop on WASDE day. December corn settled at $5.00¼ on Oct 8 and $4.79¾ on Oct 9, WASDE day, down 4.1%."
+    }
+  ]
 }

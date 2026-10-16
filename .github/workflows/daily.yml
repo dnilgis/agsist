@@ -520,7 +520,8 @@ jobs:
         run: |
           d=$(date -u +%Y-%m-%d)
           if [ -f "daily/${d}.html" ]; then
-            python scripts/update_sitemap.py --add "https://agsist.com/daily/${d}"
+            # /archive too: its baked list of every issue changes with each publish.
+            python scripts/update_sitemap.py --add "https://agsist.com/daily/${d}" "https://agsist.com/archive"
           else
             echo "no daily/${d}.html — skipping sitemap add"
           fi
@@ -535,7 +536,7 @@ jobs:
           # file kept shipping the contaminated continuous quotes.
           # archive.html + daily.html: the crawlable briefing link lists that
           # generate_daily.save_archive() rebakes between their SEED markers.
-          git add data/daily.json data/daily-archive/ daily/ archive.html daily.html feed.xml sitemap.xml index.html data/social/ whats-priced-in.html cot.html data/prices.json
+          git add data/daily.json data/daily-archive/ daily/ archive.html daily.html feed.xml sitemap.xml sitemap-news.xml index.html data/social/ whats-priced-in.html cot.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           # AUDIT 2026-08-11: three attempts — this is the repo's highest-
           # stakes push (a rejection here silently skips the daily email for
@@ -667,3 +668,30 @@ jobs:
           GMAIL_USER:     ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
         run: python scripts/send_morning_brief.py
+
+      # IndexNow (Bing, Yandex, Seznam, Naver and others share one ping).
+      # indexnow.yml runs on push, but this job pushes with GITHUB_TOKEN and
+      # GitHub starts no workflow from a GITHUB_TOKEN push, so before
+      # 2026-10-16 a new issue reached IndexNow only in Monday's full-sitemap
+      # run. Last step on purpose: it waits for Pages to serve today's page
+      # (a ping before the deploy invites a 404), and nothing it does may
+      # delay the email. !cancelled(): it still runs when a send step failed,
+      # because the page is live either way. It can never fail the run:
+      # continue-on-error, a 12-minute cap, 30-second request timeouts.
+      - name: Ping IndexNow with today's issue
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        timeout-minutes: 12
+        run: |
+          d=$(date +%Y-%m-%d)
+          u="https://agsist.com/daily/${d}"
+          [ -f "daily/${d}.html" ] || { echo "no daily/${d}.html, nothing to ping"; exit 0; }
+          for i in $(seq 1 20); do
+            if curl -fsS -o /dev/null --max-time 20 "$u"; then
+              python scripts/indexnow_submit.py --urls "$u" https://agsist.com/daily https://agsist.com/archive \
+                || echo "IndexNow ping failed; the weekly run covers it"
+              exit 0
+            fi
+            echo "page not live yet (try $i of 20)"; sleep 30
+          done
+          echo "page never came up in 10 minutes; no ping sent, the weekly run covers it"

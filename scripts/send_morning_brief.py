@@ -436,7 +436,7 @@ def section_footer(today):
         f"Full archive  → {SITE}/daily\n"
         f"Live charts   → {SITE}\n"
         f"\n"
-        f"Written by Sigurd Lindquist, Certified Crop Adviser (CCA).\n"
+        f"Written by Sigurd Lindquist, CCA.\n"
         f"Reply at sig@farmers1st.com — I read everything.\n"
         f"\n"
         f"Reply STOP to opt out."

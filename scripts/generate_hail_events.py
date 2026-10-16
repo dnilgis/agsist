@@ -452,7 +452,7 @@ def method_html(fig, has_swath):
         "coordinates; severe means 1\u2033 or larger (NWS) &middot; <b>Sources:</b> NWS Local Storm Reports via the Iowa "
         "Environmental Mesonet, NOAA MRMS MESH, US Census county boundaries, "
         "<a href=\"https://www.extension.purdue.edu/extmedia/nch/nch-1.html\" target=\"_blank\" rel=\"noopener\">Assessing Hail Damage to Corn (NCH-1)</a> "
-        "&middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p></details>\n")
+        "&middot; Reviewed by Sigurd Lindquist, CCA</p></details>\n")
 
 
 def page_html(date, rec, has_swath, mesh_max, today, counties=None):

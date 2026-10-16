@@ -29,7 +29,7 @@ test("indexable page with its own canonical, byline, share image and structured 
   assert.match(HTML, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain-print-business">/);
   assert.match(HTML, /<title>[^<]+ \| AGSIST<\/title>/);
   assert.match(HTML, /og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-print-business\.jpg/);
-  assert.match(MAIN, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(MAIN, /Sigurd Lindquist, CCA/);
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["WebPage", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);

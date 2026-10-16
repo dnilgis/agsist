@@ -17,3 +17,4 @@ Sitemap: https://agsist.com/sitemap-cash-bids.xml
 Sitemap: https://agsist.com/sitemap-arc-plc.xml
 Sitemap: https://agsist.com/sitemap-prf.xml
 Sitemap: https://agsist.com/sitemap-rain.xml
+Sitemap: https://agsist.com/sitemap-news.xml

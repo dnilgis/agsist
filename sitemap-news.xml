@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AGSIST Daily issues from the last two days, for Google News. Written by scripts/generate_daily.py on every publish; an empty list is normal on a quiet weekend. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url><loc>https://agsist.com/daily/2026-10-16</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-16T05:47:49-05:00</news:publication_date><news:title>Corn and beans ease back as harvest pressure builds</news:title></news:news></url>
+  <url><loc>https://agsist.com/daily/2026-10-15</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-15T05:47:41-05:00</news:publication_date><news:title>Grain holds steady overnight ahead of export sales report</news:title></news:news></url>
+</urlset>

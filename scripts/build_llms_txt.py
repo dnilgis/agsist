@@ -118,6 +118,7 @@ PAGES = [
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
+        ("/editorial-standards", "Editorial Standards", "How the AGSIST Daily is made, where the numbers come from, sponsors, and how corrections work"),
         ("/rain-print-business", "Rain Print for Businesses", "Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30"),
         ("/farmer-retirement-gifts", "Farmer Retirement Gifts", "Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links"),
         ("/farm-anniversary-gifts", "Farm Anniversary Gifts", "Gift ideas for a farm anniversary or a farmer who has everything, with a Rain Print of the founding or a remembered year as one option"),

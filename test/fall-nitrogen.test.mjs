@@ -45,7 +45,7 @@ test('head, byline and structured data', () => {
   assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county \| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/fall-nitrogen">/);
   assert.match(page, /<h1>Is it cold enough for fall anhydrous\?<\/h1>/);
-  assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /Sigurd Lindquist, CCA/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(page)[1]);
   const types = ld['@graph'].map((g) => g['@type']);
   for (const t of ['WebPage', 'Dataset', 'BreadcrumbList', 'FAQPage']) assert.ok(types.includes(t), t);

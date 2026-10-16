@@ -42,7 +42,7 @@ test('head, byline and structured data', () => {
   assert.match(page, /<title>Hay prices by state[^<]*\| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/hay-prices">/);
   assert.match(page, /<h1>Hay prices by state<\/h1>/);
-  assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /Sigurd Lindquist, CCA/);
   assert.match(page, /og:image" content="https:\/\/agsist\.com\/img\/og\/hay-prices\.jpg/);
   const blocks = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   assert.ok(blocks.length >= 1);

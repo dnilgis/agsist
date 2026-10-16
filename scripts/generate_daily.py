@@ -1858,6 +1858,8 @@ HEADLINE examples (sentence case, a plain statement of what happened, 6-10 words
 - "Corn holds $5 even with heavy grain stocks"
 - "Crude up 5% after another tanker hit; soy oil down 3%"
 - "Cattle and feeders up about 2% overnight; corn slips"
+- "Corn slips 2¾ cents to $4.75½ as funds sell into harvest"
+The headline is what search engines show as news, so it must say WHAT moved, BY HOW MUCH, and WHY, with at least one number (a price, cents, bushels or a percent). "Corn and beans ease back as harvest pressure builds" is too vague: no number, and it could run any day in October. The number must be one already in this briefing; never round a move into something bigger than it was.
 
 LEAD example (report day, from the 2026-10-06 issue):
 "Corn is at $5.00 overnight, up 3 cents from Monday's $4.97¼ settle. That's after USDA put old-crop corn stocks at 2.10 billion bushels, 35% more than a year ago. The big number was no surprise, and corn is still sitting on $5."
@@ -2781,10 +2783,52 @@ def render_forward_block_html(date_iso):
 
 
 def render_byline_block_html():
+    # "By", not "Written by" (2026-10-16): the draft is written by software
+    # from the morning's feeds under Sig's rules and checked by code before it
+    # posts. /editorial-standards#how-the-daily-is-made says so in plain words,
+    # and Google asks that automation be evident to the reader.
     return ('<div class="dv3-byline">'
-            'Written by <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA). Reply at '
-            '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
+            'By <strong>Sigurd Lindquist</strong>, CCA. '
+            '<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>. '
+            'Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
             '</div>')
+
+
+def render_dateline_html(briefing, date_iso):
+    """Byline and published time under the headline, the way news readers
+    and Google expect to find them. 'Updated' only when the issue was
+    rewritten 10 minutes or more after it first went up."""
+    pub_iso = published_at(briefing)
+    pub_dt, mod_dt = _ct_dt(pub_iso), _ct_dt(briefing.get("generated_at"))
+    parts = ['By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA']
+    if pub_dt:
+        parts.append(f'Published <time datetime="{iso_ct(pub_iso)}">{html_esc(human_ct(pub_iso))}</time>')
+    else:
+        parts.append(f'Published <time datetime="{html_esc(date_iso)}">{html_esc(_short_date(date_iso))}</time>')
+    if pub_dt and mod_dt and (mod_dt - pub_dt).total_seconds() >= 600:
+        g = briefing.get("generated_at")
+        parts.append(f'Updated <time datetime="{iso_ct(g)}">{html_esc(human_ct(g))}</time>')
+    return '<p class="dv3-dateline">' + " &middot; ".join(parts) + '</p>'
+
+
+def render_corrections_html(corrections):
+    """Dated correction notes, newest last, from the archive JSON's
+    'corrections' list [{date: YYYY-MM-DD, text}]. Added by hand when a
+    published issue had something wrong (/editorial-standards#corrections);
+    the generator never writes one."""
+    items = []
+    for c in corrections or []:
+        if not isinstance(c, dict) or not str(c.get("text") or "").strip():
+            continue
+        d = str(c.get("date") or "")
+        label = f"Correction, {_short_date(d)}" if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) else "Correction"
+        items.append(f'<p class="dv3-correction"><strong>{html_esc(label)}:</strong> {html_esc(c["text"])}</p>')
+    return ('<aside class="dv3-corrections" aria-label="Corrections">' + "".join(items) + '</aside>') if items else ""
+
+
+def render_transparency_links_html():
+    links = " &middot; ".join(f'<a href="{h}">{t}</a>' for h, t in TRANSPARENCY_LINKS)
+    return f'<nav class="dv3-trust" aria-label="About this briefing">{links}</nav>'
 
 
 def render_sponsor_attribution_html(sponsor, surface="archive"):
@@ -3040,7 +3084,8 @@ def _nav_date_label(d):
 # head a page was published with and the head a backfill writes cannot drift.
 DAILY_TITLE_MAX = 66
 DAILY_DESC_MIN, DAILY_DESC_MAX = 120, 160
-DAILY_AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about"}
+DAILY_AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)",
+                "url": "https://agsist.com/about"}
 
 _HL_ACRONYMS = {
     "USDA", "WASDE", "CBOT", "CME", "COT", "COF", "CT", "ET", "PM", "AM", "US", "U.S.",
@@ -3201,17 +3246,20 @@ def _trim_words(text, limit, ellipsis="…"):
 
 def daily_page_title(briefing, date_iso):
     """'Corn holds $5 as grain stocks come in heavy | Oct 6, 2026 | AGSIST'.
-    Plain text (escape it for HTML). Never longer than DAILY_TITLE_MAX."""
-    hl = sentence_case_headline(briefing.get("headline") or "") or "Daily ag market briefing"
-    hl = hl.rstrip(" .;:,")
+    Plain text (escape it for HTML). The brand goes first when the whole
+    thing would pass DAILY_TITLE_MAX; the headline is never trimmed."""
+    hl = news_headline(briefing)
     dated = f" | {_short_date(date_iso)}"
     brand = " | AGSIST"
     # Headline first; the brand is the first thing to give way (Google shows
     # the site name above the result anyway), the headline the last.
     if len(hl) + len(dated) + len(brand) <= DAILY_TITLE_MAX:
         return hl + dated + brand
-    if len(hl) + len(dated) > DAILY_TITLE_MAX:
-        hl = _trim_words(hl, DAILY_TITLE_MAX - len(dated))
+    # 2026-10-16: the headline is never cut. Google News and Top stories
+    # compare the <title> with the H1 and the NewsArticle headline; a title
+    # that stops mid-headline reads as a different story. A long title is
+    # shortened by Google on screen, not here. The date stays: two issues
+    # with the same headline must not share a title.
     return hl + dated
 
 
@@ -3262,19 +3310,103 @@ def _jsonld(obj):
     return json.dumps(obj, ensure_ascii=False, indent=2).replace("</", "<\\/")
 
 
+# ── News surfaces (2026-10-16) ──────────────────────────────────────────────
+# Google News and Top stories read the issue page itself: NewsArticle markup,
+# a visible byline and published time, dates with a time zone, and the
+# publisher's transparency pages one click away. Every date below is the
+# Central-time moment the issue was first written (first_published_at, kept
+# by save_archive across the critic re-save and the Friday regeneration) or
+# last rewritten (generated_at). Never a bare date: Google reads a bare date
+# as midnight UTC, which is the evening BEFORE the issue in Wisconsin.
+DAILY_HEADLINE_MAX = 110        # Google's NewsArticle headline limit
+NEWS_PUBLICATION = "AGSIST"
+NEWS_SITEMAP_PATH = REPO_ROOT / "sitemap-news.xml"
+NEWS_WINDOW_HOURS = 48          # Google: only articles from the last two days
+PUBLISHER = {
+    "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/",
+    "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/logo-agsist.png", "width": 634, "height": 296},
+    "publishingPrinciples": "https://agsist.com/editorial-standards",
+    "correctionsPolicy": "https://agsist.com/editorial-standards#corrections",
+    "ownershipFundingInfo": "https://agsist.com/about",
+}
+TRANSPARENCY_LINKS = (
+    ("/editorial-standards#how-the-daily-is-made", "How this briefing is made"),
+    ("/editorial-standards", "Editorial standards"),
+    ("/editorial-standards#corrections", "Corrections"),
+    ("/about", "About AGSIST"),
+    ("/contact", "Contact"),
+)
+
+
+def _ct_dt(iso_utc):
+    """An aware Central-time datetime from an ISO stamp; None when unparseable."""
+    try:
+        from zoneinfo import ZoneInfo
+        dt = datetime.fromisoformat(str(iso_utc).replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            return None
+        return dt.astimezone(ZoneInfo("America/Chicago"))
+    except Exception:
+        return None
+
+
+def iso_ct(iso_utc, fallback=""):
+    """'2026-10-16T05:47:49-05:00' (to the second, with the offset)."""
+    dt = _ct_dt(iso_utc)
+    return dt.replace(microsecond=0).isoformat() if dt else fallback
+
+
+def human_ct(iso_utc):
+    """'5:47 AM CT Oct 16, 2026'; '' when unparseable."""
+    dt = _ct_dt(iso_utc)
+    if not dt:
+        return ""
+    return (dt.strftime("%I:%M %p").lstrip("0") + " CT "
+            + f"{_MON_ABBR[dt.month - 1]} {dt.day}, {dt.year}")
+
+
+def published_at(briefing):
+    """When the issue first went up: first_published_at, else generated_at."""
+    return briefing.get("first_published_at") or briefing.get("generated_at") or ""
+
+
+def news_headline(briefing):
+    """The one headline: H1, <title> (plus the date), og:title, NewsArticle
+    and the news sitemap all start from this string."""
+    hl = sentence_case_headline(briefing.get("headline") or "") or "AGSIST Daily briefing"
+    hl = re.sub(r"\s*\u2014\s*", ", ", hl).rstrip(" .;:,")
+    return _trim_words(hl, DAILY_HEADLINE_MAX) if len(hl) > DAILY_HEADLINE_MAX else hl
+
+
+def news_image(og_image_url):
+    """The share card as an ImageObject with its real size (1200x630 for both
+    the dated card and the fallback; see og_image_for). One image only: a
+    second 16x9 copy per issue would add about 36 MB a year to data/, which
+    sits within 10 MB of its 300 MB budget (scripts/check_site_budget.py).
+    1200 wide and 756,000 pixels already meets Google's large-image floor."""
+    return [{"@type": "ImageObject", "url": og_image_url, "width": 1200, "height": 630}]
+
+
 def daily_page_jsonld(briefing, date_iso, description, og_image_url):
     url = f"https://agsist.com/daily/{date_iso}"
-    hl = sentence_case_headline(briefing.get("headline") or "") or "AGSIST Daily briefing"
+    pub = iso_ct(published_at(briefing), date_iso)
+    mod = iso_ct(briefing.get("generated_at"), pub)
+    if mod < pub:
+        mod = pub
     article = {
         "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": hl[:110],
-        "datePublished": date_iso,
-        "dateModified": briefing.get("generated_at") or date_iso,
+        "@type": "NewsArticle",
+        "headline": news_headline(briefing),
+        "datePublished": pub,
+        "dateModified": mod,
         "description": description,
-        "image": og_image_url,
-        "author": DAILY_AUTHOR,
-        "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
+        "image": news_image(og_image_url),
+        "author": [DAILY_AUTHOR],
+        "publisher": PUBLISHER,
+        "isAccessibleForFree": True,
+        "inLanguage": "en-US",
+        "articleSection": "Markets",
+        "url": url,
         "mainEntityOfPage": {"@type": "WebPage", "@id": url},
     }
     crumbs = {
@@ -3405,7 +3537,9 @@ def refresh_archive_link_lists():
 def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
                          og_require_file=False):
     date_display = briefing.get("date", date_iso)
-    headline = html_esc(briefing.get("headline", "AGSIST Daily Briefing"))
+    # One headline everywhere (2026-10-16): H1 = <title> (plus the date) =
+    # og:title = NewsArticle headline = news sitemap title.
+    headline = html_esc(news_headline(briefing))
     subheadline = html_esc(briefing.get("subheadline", ""))
     lead = html_esc(briefing.get("lead", ""))
     meta = briefing.get("meta", {})
@@ -3431,7 +3565,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     page_desc_raw = daily_page_description(briefing)
     og_description = html_esc(page_desc_raw)
     desc_escaped = og_description
-    headline_sc = html_esc(sentence_case_headline(briefing.get("headline", "")) or "AGSIST Daily Briefing")
+    headline_sc = headline
     # 2026-10-11: no issue number on the page (Sig: it dates the project).
     issue_suffix = ""
 
@@ -3647,8 +3781,10 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta property="og:image:width" content="{og_image_w}">
 <meta property="og:image:height" content="{og_image_h}">
 <meta property="og:image:alt" content="AGSIST Daily: {headline_sc}">
-<meta property="article:published_time" content="{date_iso}">
-<meta property="article:modified_time" content="{gen_at}">
+<meta property="article:published_time" content="{iso_ct(published_at(briefing), date_iso)}">
+<meta property="article:modified_time" content="{iso_ct(gen_at, date_iso)}">
+<meta property="article:section" content="Markets">
+<link rel="alternate" type="application/rss+xml" title="AGSIST Daily" href="https://agsist.com/feed.xml">
 <meta property="article:author" content="Sigurd Lindquist">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agsist">
@@ -3828,6 +3964,15 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-byline strong{{color:var(--text);font-weight:700}}
 .dv3-byline a{{color:var(--gold);text-decoration:none;display:inline-block;padding:.75rem 0;margin:-.75rem 0}}
 .dv3-byline a:hover{{text-decoration:underline}}
+.dv3-dateline{{font-size:.82rem;color:var(--text-muted);line-height:1.6;margin:0 0 .85rem}}
+.dv3-dateline a{{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}}
+.dv3-dateline time{{white-space:nowrap}}
+.dv3-corrections{{margin:-1rem 0 1.5rem;padding:.75rem 1rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;background:var(--surface)}}
+.dv3-correction{{margin:.2rem 0;font-size:.84rem;line-height:1.55;color:var(--text-dim)}}
+.dv3-correction strong{{color:var(--text)}}
+.dv3-trust{{text-align:center;font-size:.74rem;line-height:1.4;color:var(--text-muted);margin:-1.25rem 0 2rem}}
+.dv3-trust a{{color:var(--text-muted);display:inline-block;padding:.6rem .15rem}}
+.dv3-trust a:hover{{color:var(--gold)}}
 @media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-forward{{flex-direction:column;align-items:flex-start;gap:.7rem}}.dv3-forward-cta{{width:100%;justify-content:center}}}}
 @media(max-width:380px){{.dv3-headline{{font-size:1.6rem}}.dv3-one-number-val{{font-size:2rem}}.dv3-sec-action{{display:none}}}}
 @media(max-width:500px){{.dv3-watch-item{{flex-direction:column;gap:.15rem}}.dv3-watch-time{{min-width:0;white-space:normal}}.dv3-sec-title{{min-width:70%}}.dv3-sec--heat.dv3-sec--surprise{{padding-top:2.35rem}}.dv3-sec--heat.dv3-sec--surprise::before{{top:.9rem;left:.75rem;right:auto}}}}
@@ -3849,6 +3994,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
       </div>
       {top_attr_html}
       <h1 class="dv3-headline">{headline}</h1>
+      {render_dateline_html(briefing, date_iso)}
       {"<p class='dv3-subheadline'>" + subheadline + "</p>" if subheadline else ""}
       {thread_html}
       {surprise_html}
@@ -3870,6 +4016,8 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {share_html}
     {archive_nav_html}
     <div class="dv3-source">{source}{compiled_html}</div>
+    {render_corrections_html(briefing.get("corrections"))}
+    {render_transparency_links_html()}
   </article>
   <div class="dv3-after">
     <a class="dv3-todaylink" href="/daily">Today's briefing &rarr;</a>
@@ -3964,6 +4112,7 @@ def save_archive(briefing):
     ARCHIVE_JSON_DIR.mkdir(parents=True, exist_ok=True)
     ARCHIVE_HTML_DIR.mkdir(parents=True, exist_ok=True)
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
+    keep_first_published(briefing, json_path)
     with open(json_path, "w") as f:
         json.dump(briefing, f, indent=2, ensure_ascii=False)
     print(f"  Archive JSON: {json_path}")
@@ -3990,6 +4139,87 @@ def save_archive(briefing):
         refresh_archive_link_lists()
     except Exception as e:
         print(f"  [warn] archive link lists not refreshed: {e}")
+    # Google News sitemap: rebuilt on every save so the critic's re-save and
+    # the Friday regeneration keep it current. Never blocks the publish.
+    try:
+        n = write_news_sitemap()
+        print(f"  sitemap-news.xml: {n} issue(s) from the last {NEWS_WINDOW_HOURS} hours")
+    except Exception as e:
+        print(f"  [warn] sitemap-news.xml not written: {e}")
+
+
+def keep_first_published(briefing, json_path):
+    """Set briefing['first_published_at'] to the moment this date's issue
+    first went up. A re-save of the same date (critic rewrite, Friday
+    post-close regeneration) keeps the earlier stamp; the first save uses
+    generated_at. Mutates and returns briefing."""
+    first = None
+    try:
+        with open(json_path) as f:
+            old = json.load(f)
+        first = old.get("first_published_at") or old.get("generated_at")
+    except Exception:
+        pass
+    mine = briefing.get("first_published_at") or briefing.get("generated_at")
+    day = Path(json_path).stem
+    # Only stamps from this issue's own Central-time day count, so a field
+    # carried over from another day can never back-date the issue.
+    cands = [x for x in (first, mine) if _ct_dt(x) and _ct_dt(x).strftime("%Y-%m-%d") == day]
+    if cands:
+        briefing["first_published_at"] = min(cands, key=lambda x: _ct_dt(x))
+    elif briefing.get("generated_at"):
+        briefing["first_published_at"] = briefing["generated_at"]
+    return briefing
+
+
+def _xml_esc(s):
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace('"', "&quot;").replace("'", "&apos;"))
+
+
+def news_sitemap_xml(now=None, json_dir=None, html_dir=None):
+    """The Google News sitemap: every issue whose page exists and that first
+    went up within NEWS_WINDOW_HOURS of `now`, newest first, at most 1,000.
+    An empty <urlset> is valid (Google: an empty file is fine)."""
+    json_dir = Path(json_dir or ARCHIVE_JSON_DIR)
+    html_dir = Path(html_dir or ARCHIVE_HTML_DIR)
+    now = now or datetime.now(timezone.utc)
+    rows = []
+    for jp in sorted(json_dir.glob("*.json"), reverse=True)[:10]:
+        d = jp.stem
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) or not (html_dir / f"{d}.html").exists():
+            continue
+        try:
+            with open(jp) as f:
+                b = json.load(f)
+        except Exception:
+            continue
+        pub = _ct_dt(published_at(b))
+        if not pub:
+            continue
+        age_h = (now - pub).total_seconds() / 3600
+        if not (-1 <= age_h <= NEWS_WINDOW_HOURS):
+            continue
+        rows.append((pub, d, news_headline(b)))
+    rows.sort(reverse=True)
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<!-- AGSIST Daily issues from the last two days, for Google News. Written by '
+           'scripts/generate_daily.py on every publish; an empty list is normal on a quiet weekend. -->',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+           'xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">']
+    for pub, d, hl in rows[:1000]:
+        out.append(f"  <url><loc>https://agsist.com/daily/{d}</loc><news:news>"
+                   f"<news:publication><news:name>{NEWS_PUBLICATION}</news:name><news:language>en</news:language></news:publication>"
+                   f"<news:publication_date>{pub.replace(microsecond=0).isoformat()}</news:publication_date>"
+                   f"<news:title>{_xml_esc(hl)}</news:title></news:news></url>")
+    out.append("</urlset>")
+    return "\n".join(out) + "\n", len(rows[:1000])
+
+
+def write_news_sitemap(now=None, path=None):
+    xml, n = news_sitemap_xml(now)
+    Path(path or NEWS_SITEMAP_PATH).write_text(xml, encoding="utf-8")
+    return n
 
 
 def sanitize_em_dashes(briefing):

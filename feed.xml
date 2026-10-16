@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
+    <title>AGSIST Daily</title>
     <link>https://agsist.com/daily</link>
-    <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
+    <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Oct 2026 10:48:07 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 16 Oct 2026 18:37:14 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
-      <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
+      <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
     <item>
       <title>Corn and beans ease back as harvest pressure builds</title>
       <link>https://agsist.com/daily/2026-10-16</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-16</guid>
-      <pubDate>Fri, 16 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Fri, 16 Oct 2026 10:47:49 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn is at $4.75½ overnight, down 2¾ cents from Thursday's $4.78¼ settle, and beans are off 6 cents at $12.58¼. Fund selling has picked up as combines roll and bushels keep piling into the bins. Basis stays at seasonal lows with harvest in full swing.
 • Grain slips on fund selling
 • Cattle and feeders firm overnight
@@ -27,7 +28,8 @@ Read more: https://agsist.com/daily/2026-10-16</description>
       <title>Grain holds steady overnight ahead of export sales report</title>
       <link>https://agsist.com/daily/2026-10-15</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-15</guid>
-      <pubDate>Thu, 15 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Thu, 15 Oct 2026 10:47:41 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn is trading at $4.80 overnight, barely off Wednesday's $4.80¾ settle. Beans sit at $12.73¼, down 4 cents, with weekly export sales due Thursday at 7:30 a.m. CT. Nothing has moved yet, so the board is sitting right where harvest left it.
 • Corn and beans wait on export sales
 • Cattle and hogs ease back slightly
@@ -38,7 +40,8 @@ Read more: https://agsist.com/daily/2026-10-15</description>
       <title>Crude tops $95 on more tanker threats; grain holds steady</title>
       <link>https://agsist.com/daily/2026-10-14</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-14</guid>
-      <pubDate>Wed, 14 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Wed, 14 Oct 2026 10:47:30 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>WTI crude is at $95.36 overnight, up 1.3%, after Iran told Reuters its forces plan to intensify strikes on tankers in the Strait of Hormuz. Corn and wheat drifted lower overnight while beans firmed to $12.90½. Diesel costs for fall fieldwork are the thing to watch, not the grain board.
 • Corn and wheat drift, beans firm
 • Crude pushes toward $95 on Hormuz threats
@@ -48,7 +51,8 @@ Read more: https://agsist.com/daily/2026-10-14</description>
       <title>Corn and beans drift lower as crop progress looms</title>
       <link>https://agsist.com/daily/2026-10-13</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-13</guid>
-      <pubDate>Tue, 13 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Tue, 13 Oct 2026 10:47:39 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat because USDA's record crop numbers are already priced in, not because anyone expects news today.
 • Grain finds its footing
 • Cattle and hogs mixed overnight
@@ -59,7 +63,8 @@ Read more: https://agsist.com/daily/2026-10-13</description>
       <title>Corn steadies near $4.81 after Friday's WASDE hit</title>
       <link>https://agsist.com/daily/2026-10-12</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-12</guid>
-      <pubDate>Mon, 12 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Mon, 12 Oct 2026 10:47:45 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn is at $4.81 overnight, up 1¼¢ from Friday's $4.79¾ settle, a small bounce after Friday's near 4% drop on USDA's yield number. Soybean meal gained 2.2% to $368.70 while beans slipped to $12.83. Monday's quiet bounce doesn't undo Friday's loss on unpriced corn.
 • Corn finds its feet after WASDE
 • Cattle and feeders keep climbing
@@ -70,7 +75,8 @@ Read more: https://agsist.com/daily/2026-10-12</description>
       <title>Corn's 4.1% WASDE drop closes out a mixed week</title>
       <link>https://agsist.com/daily/2026-10-11</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-11</guid>
-      <pubDate>Sun, 11 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sun, 11 Oct 2026 10:54:40 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn settled Friday at $4.80, down 4.1% after WASDE came in heavier than the trade wanted. Cattle shrugged it off, closing the week at $224.60, up 1.2%, with feeders up 1.7% to $343.90. Every bushel of old-crop corn sitting in the bin is worth about 19 cents less than it was Thursday.
 • Corn takes the brunt of wasde
 • Cattle and feeders close the week firm
@@ -81,7 +87,8 @@ Read more: https://agsist.com/daily/2026-10-11</description>
       <title>Corn drops 4.1% Friday on WASDE; cattle hold the gains</title>
       <link>https://agsist.com/daily/2026-10-10</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-10</guid>
-      <pubDate>Sat, 10 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sat, 10 Oct 2026 10:54:37 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn settled at $4.80 Friday, down almost 20 cents, after WASDE numbers came in heavier than the trade wanted. Cattle didn't blink, closing at $224.60, up 1.2% on the week. Every bushel still in the bin is worth less than it was Thursday morning.
 • Corn takes the WASDE hit
 • Cattle and feeders close the week strong
@@ -91,7 +98,8 @@ Read more: https://agsist.com/daily/2026-10-10</description>
       <title>Crude pulls back from the Hormuz run as grains sit quiet</title>
       <link>https://agsist.com/daily/2026-10-09</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-09</guid>
-      <pubDate>Fri, 09 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Fri, 09 Oct 2026 10:47:29 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn is at $5.01 overnight, basically flat, holding the line it has worked to defend since getting back over $5 on Monday. Crude eased 1.0% to $90.60 after a 4.9% run Wednesday, with Brent still above $100 on Hormuz tanker disruptions, ongoing since July and flaring again this week.
 • Corn holds the round number again
 • Beans firm, meal leads the complex
@@ -99,10 +107,11 @@ Read more: https://agsist.com/daily/2026-10-10</description>
 Read more: https://agsist.com/daily/2026-10-09</description>
     </item>
     <item>
-      <title>CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD</title>
+      <title>Crude runs 5% on Hormuz, soy oil breaks hard</title>
       <link>https://agsist.com/daily/2026-10-08</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-08</guid>
-      <pubDate>Thu, 08 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Thu, 08 Oct 2026 10:47:19 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>WTI's at $92.61 overnight, up 4.9% after another tanker took fire off Qatar, the first deep-Gulf hit since fighting flared there back in September. Soybean oil got hit the other way, down 3.1% as meal took over the complex's weight. That split already moved crush margins before a single export sales number hit the tape.
 • Crude Runs On Fresh Tanker Hit
 • Soy Oil Breaks, Meal Takes Over
@@ -110,20 +119,22 @@ Read more: https://agsist.com/daily/2026-10-09</description>
 Read more: https://agsist.com/daily/2026-10-08</description>
     </item>
     <item>
-      <title>CATTLE JUMP ON FEEDER STRENGTH AS CORN SLIPS BACK</title>
+      <title>Cattle jump on feeder strength as corn slips back</title>
       <link>https://agsist.com/daily/2026-10-07</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-07</guid>
-      <pubDate>Wed, 07 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Wed, 07 Oct 2026 11:08:35 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Live cattle are trading at $221.23 overnight, up 1.8%, with feeders up 2.0% to $340.50, both printing well above Tuesday's settle with no fresh Cattle on Feed data behind it. Corn slipped back to $5.04, giving up the round number it just reclaimed Monday as rain-stalled harvest meets heavy Grain Stocks.
 • Cattle And Feeders Both Jump
 • Corn Slips Back Under $5.08
 Read more: https://agsist.com/daily/2026-10-07</description>
     </item>
     <item>
-      <title>CORN HOLDS $5 AS GRAIN STOCKS COME IN HEAVY</title>
+      <title>Corn holds $5 as grain stocks come in heavy</title>
       <link>https://agsist.com/daily/2026-10-06</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-06</guid>
-      <pubDate>Tue, 06 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Tue, 06 Oct 2026 10:57:28 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn traded at $5.00 overnight, up 3 cents from Monday's $4.97¼ settle, even after USDA's Grain Stocks report put old-crop corn bushels at 2.10 billion, up 35% from a year ago. Soybeans added a nickel to $12.86 on a 3% stocks draw the other direction.
 • Corn Shrugs Off Heavy Stocks
 • Beans Firm On Tighter Stocks
@@ -131,10 +142,11 @@ Read more: https://agsist.com/daily/2026-10-07</description>
 Read more: https://agsist.com/daily/2026-10-06</description>
     </item>
     <item>
-      <title>CORN BACK ABOVE $5 AS RAIN KEEPS COMBINES PARKED</title>
+      <title>Corn back above $5 as rain keeps combines parked</title>
       <link>https://agsist.com/daily/2026-10-05</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-05</guid>
-      <pubDate>Mon, 05 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Mon, 05 Oct 2026 10:57:13 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn closed $5.00, up 4 and a quarter cents, clawing back the round number it lost Friday while El Nino rain keeps the Belt's combines sitting in the shed. Soybean oil ran 2.7% on the back of soymeal's firm tone, the two products pulling in the same direction for once.
 • Corn Reclaims The Round Number
 • Soy Complex Leads On Products
@@ -142,20 +154,22 @@ Read more: https://agsist.com/daily/2026-10-06</description>
 Read more: https://agsist.com/daily/2026-10-05</description>
     </item>
     <item>
-      <title>CORN CLOSES UNDER $5 WITH HARVEST STUCK IN THE RAIN</title>
+      <title>Corn closes under $5 with harvest stuck in the rain</title>
       <link>https://agsist.com/daily/2026-10-04</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-04</guid>
-      <pubDate>Sun, 04 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sun, 04 Oct 2026 15:26:55 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn settled Friday at $4.97, soybeans at $12.77, both down 20 to 40 cents on the week by the wire's own math. Record El Nino rain has stalled harvest across the Corn Belt at the exact moment farmers need combines rolling and bins filling.
 • Grains Grind Lower Into Harvest
 • Cattle Soft, Hogs Firm
 Read more: https://agsist.com/daily/2026-10-04</description>
     </item>
     <item>
-      <title>CRUDE SPLITS FROM DIESEL AS HARVEST STALLS IN THE RAIN</title>
+      <title>Crude splits from diesel as harvest stalls in the rain</title>
       <link>https://agsist.com/daily/2026-10-03</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-03</guid>
-      <pubDate>Sat, 03 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sat, 03 Oct 2026 14:46:19 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>WTI settled $91.26 Friday, down 1.5%, while Dated Brent physical barrels reportedly cleared $120 the same day as Hormuz tanker strikes (ongoing since the Iran war began) widen the crude-diesel split. That spread is why your diesel bill isn't following the crude headline down.
 Action: Diesel buyers: lock the next 30 days of on-farm fuel now; WTI at $91.26 says cheap, physical diesel markets say otherwise.
 • Crude Down, Diesel Up, Same Barrel
@@ -163,10 +177,11 @@ Action: Diesel buyers: lock the next 30 days of on-farm fuel now; WTI at $91.26 
 Read more: https://agsist.com/daily/2026-10-03</description>
     </item>
     <item>
-      <title>CRUDE DROPS 3.5% AS GRAINS GRIND HIGHER ON NO NEWS</title>
+      <title>Crude drops 3.5% as grains grind higher on no news</title>
       <link>https://agsist.com/daily/2026-10-02</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-02</guid>
-      <pubDate>Fri, 02 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Fri, 02 Oct 2026 10:58:01 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn held $5.00 flat, beans ticked up to $12.77, and crude fell 3.5% to $89.37 on Gulf export flow that's actually working this time. That's the real story today: oil giving back the fear premium while grains just sit there, unbothered.
 Action: Crude under $89.37 and falling: lock any diesel needs now, this Gulf-flow story isn't done unwinding.
 • Crude Gives Back More Ground
@@ -175,10 +190,11 @@ Action: Crude under $89.37 and falling: lock any diesel needs now, this Gulf-flo
 Read more: https://agsist.com/daily/2026-10-02</description>
     </item>
     <item>
-      <title>CORN RUNS 1.1% AHEAD OF STOCKS, CRUDE UP ON GULF FLOWS</title>
+      <title>Corn runs 1.1% ahead of stocks, crude up on Gulf flows</title>
       <link>https://agsist.com/daily/2026-10-01</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-01</guid>
-      <pubDate>Thu, 01 Oct 2026 05:00:00 -0600</pubDate>
+      <pubDate>Thu, 01 Oct 2026 11:23:02 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn's up 5 cents to $5.04, Chicago wheat added 8 cents to $6.80, and crude ran 3.3% to $92.08, all three moving before Quarterly Stocks even prints at 11 CT. That's not reaction, that's positioning, and positioning ahead of a Stocks report is a bet, not a read.
 Action: Unpriced corn in the bin: a close above $5.09 says the Stocks positioning was real, price another 10% there.
 • Grains Run Ahead Of Stocks
@@ -186,10 +202,11 @@ Action: Unpriced corn in the bin: a close above $5.09 says the Stocks positionin
 Read more: https://agsist.com/daily/2026-10-01</description>
     </item>
     <item>
-      <title>GRAINS TICK HIGHER AHEAD OF STOCKS DATA AT 11 CT</title>
+      <title>Grains tick higher ahead of stocks data at 11 CT</title>
       <link>https://agsist.com/daily/2026-09-30</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-30</guid>
-      <pubDate>Wed, 30 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Wed, 30 Sep 2026 11:00:20 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn's up a quarter-cent shy of $5.25, beans up a nickel-plus to $13.03, and none of it means much with Quarterly Grain Stocks landing at 11 CT. Nobody's positioning hard into a report that could move old-crop supply pictures either way. Every bushel priced this morning got priced without knowing what USDA knows.
 Action: Nothing to do at $5.25 corn ahead of Grain Stocks; a settle above $5.29 on the data is the first reason to move.
 • Grains Wait On Stocks
@@ -198,10 +215,11 @@ Action: Nothing to do at $5.25 corn ahead of Grain Stocks; a settle above $5.29 
 Read more: https://agsist.com/daily/2026-09-30</description>
     </item>
     <item>
-      <title>CRUDE PULLS BACK 2.1% AS YANBU REOPENS</title>
+      <title>Crude pulls back 2.1% as Yanbu reopens</title>
       <link>https://agsist.com/daily/2026-09-29</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-29</guid>
-      <pubDate>Tue, 29 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Tue, 29 Sep 2026 10:56:47 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>WTI settled $92.12, down 2.1%, the first real give-back after two days running toward $96 on Iran-Hormuz fear. Saudi Arabia just restarted loadings at Yanbu on the Red Sea after the East-West pipeline came back partial, and that's a supply story beating a fear story today.
 Action: Diesel buyers: WTI at **$92.12** is the cheapest print in three sessions; lock the next fuel load now before any bounce back to $94.
 • Crude Gives Back The Fear Premium
@@ -209,10 +227,11 @@ Action: Diesel buyers: WTI at **$92.12** is the cheapest print in three sessions
 Read more: https://agsist.com/daily/2026-09-29</description>
     </item>
     <item>
-      <title>CRUDE RUNS TO $96 AS BEANS SLIP AGAIN</title>
+      <title>Crude runs to $96 as beans slip again</title>
       <link>https://agsist.com/daily/2026-09-28</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-28</guid>
-      <pubDate>Mon, 28 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Mon, 28 Sep 2026 11:11:27 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Crude added 2.3% to $96.13 on Iran war-fear headlines out of the UN General Assembly, the same Hormuz cycle that's flared and cooled twice since April, and diesel-hungry harvest crews are the ones who pay for it.
 Action: Diesel-dependent harvest budgets: crude above $96.13 and running, lock fuel needs now rather than wait for a pullback that may not come.
 • Crude Runs On Iran Fear
@@ -220,10 +239,11 @@ Action: Diesel-dependent harvest budgets: crude above $96.13 and running, lock f
 Read more: https://agsist.com/daily/2026-09-28</description>
     </item>
     <item>
-      <title>GRAINS CLIMB FRIDAY, CATTLE STALL BEFORE COF WEEK</title>
+      <title>Grains climb Friday, cattle stall before COF week</title>
       <link>https://agsist.com/daily/2026-09-26</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-26</guid>
-      <pubDate>Sat, 26 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sat, 26 Sep 2026 14:34:23 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn closed Friday at $5.29, up 1.7% on the week's last session, and wheat gained 1.8% to $7.04 on nothing more than a bearish China trade story running out of sellers. Cattle held flat at $218.85 with a Cattle on Feed report still ahead.
 Action: Nothing to do at $5.29 corn; a close back below $5.20 confirms Friday's bounce was just short-covering.
 • Grains Bounce On Empty News
@@ -231,10 +251,11 @@ Action: Nothing to do at $5.29 corn; a close back below $5.20 confirms Friday's 
 Read more: https://agsist.com/daily/2026-09-26</description>
     </item>
     <item>
-      <title>GRAINS SIT STILL, CATTLE SLIP AGAIN BEFORE COF</title>
+      <title>Grains sit still, cattle slip again before COF</title>
       <link>https://agsist.com/daily/2026-09-25</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-25</guid>
-      <pubDate>Fri, 25 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Fri, 25 Sep 2026 11:16:16 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn eased to $5.17, beans barely moved at $13.04, and neither market gave you a reason to do anything today. Cattle is the real story: down 0.8% to $218.95, a second straight session lower with USDA's Cattle on Feed still hours away at 2:00 PM CT.
 Action: Live cattle at $218.95: nothing to do ahead of Cattle on Feed at 2:00 PM CT, but a close under $216.50 is the next sell.
 • Cattle Slips Again, Report Looms
@@ -242,10 +263,11 @@ Action: Live cattle at $218.95: nothing to do ahead of Cattle on Feed at 2:00 PM
 Read more: https://agsist.com/daily/2026-09-25</description>
     </item>
     <item>
-      <title>CRUDE RUNS TO $93 AS HORMUZ TRAFFIC STAYS THIN</title>
+      <title>Crude runs to $93 as Hormuz traffic stays thin</title>
       <link>https://agsist.com/daily/2026-09-24</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-24</guid>
-      <pubDate>Thu, 24 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Thu, 24 Sep 2026 11:08:49 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Crude added 2.1% to $93.19 and it isn't demand talking, it's one vessel crossing the Strait of Hormuz Wednesday, stuck below the 10-day average with the Iran-Hormuz cycle still refusing to fully unwind.
 Action: Lock diesel needs now; a close above $6.55 on the rack price is the next reason to pre-buy fall fuel, not wait.
 • Crude Runs On Thin Hormuz Traffic
@@ -254,10 +276,11 @@ Action: Lock diesel needs now; a close above $6.55 on the rack price is the next
 Read more: https://agsist.com/daily/2026-09-24</description>
     </item>
     <item>
-      <title>GRAINS GIVE BACK THE CHINA POP AHEAD OF XI SUMMIT</title>
+      <title>Grains give back the China pop ahead of Xi summit</title>
       <link>https://agsist.com/daily/2026-09-23</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-23</guid>
-      <pubDate>Wed, 23 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Wed, 23 Sep 2026 11:15:19 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn settled $5.29, down 3½ cents, wheat down a penny and three-quarters, both giving back Monday's China-hope pop before Thursday's Trump-Xi summit even opens. Cattle fell 0.8% to $219.35 the day after a 2.4% jump on record-low placements, that's real profit-taking, not a reversal of the placements story.
 Action: Corn: no action above $5.29, but a settle below $5.27 says the China pop is fully unwound, price the next 10%.
 • Grains Fade The Summit Pop
@@ -265,10 +288,11 @@ Action: Corn: no action above $5.29, but a settle below $5.27 says the China pop
 Read more: https://agsist.com/daily/2026-09-23</description>
     </item>
     <item>
-      <title>CORN RALLIES ON CHINA HOPES; CATTLE JUMP 2.4%</title>
+      <title>Corn rallies on China hopes; cattle jump 2.4%</title>
       <link>https://agsist.com/daily/2026-09-22</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-22</guid>
-      <pubDate>Tue, 22 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Tue, 22 Sep 2026 11:13:34 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Corn ran 15 cents to three-week highs and beans gained 24 cents overnight on fresh hope for a US-China trade deal, but both gave it back into the close, corn settling $5.38 and beans $13.19, both down on the day. Cattle didn't fade: $221.15, up 2.4% on record low placements.
 Action: Live cattle at $221.15: nothing to sell into a 2.4% up day off record low placements, hold for $222 confirmation.
 • Grains Fade The China Pop
@@ -277,10 +301,11 @@ Action: Live cattle at $221.15: nothing to sell into a 2.4% up day off record lo
 Read more: https://agsist.com/daily/2026-09-22</description>
     </item>
     <item>
-      <title>BEANS FLAT, DIESEL AT $6.50, CRUDE BREAKS ON IRAN THAW</title>
+      <title>Beans flat, diesel at $6.50, crude breaks on Iran thaw</title>
       <link>https://agsist.com/daily/2026-09-21</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-21</guid>
-      <pubDate>Mon, 21 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Mon, 21 Sep 2026 10:57:51 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Soybeans sit at $13.10, off a penny and a half, still waiting on Xi. Meanwhile diesel crossed $6.50 a gallon this weekend, a record, while crude fell to $92.97 on Iran diplomacy hopes: two energy stories moving in opposite directions on the same headline.
 Action: Diesel at $6.50/gallon: lock harvest fuel needs now, don't wait for crude's Iran-talk dip to reach the pump.
 • Diesel Record, Crude Breaks
@@ -288,10 +313,11 @@ Action: Diesel at $6.50/gallon: lock harvest fuel needs now, don't wait for crud
 Read more: https://agsist.com/daily/2026-09-21</description>
     </item>
     <item>
-      <title>BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS</title>
+      <title>Beans sank Friday; summit week opens with crossed signals</title>
       <link>https://agsist.com/daily/2026-09-20</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-20</guid>
-      <pubDate>Sun, 20 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sun, 20 Sep 2026 14:17:22 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Soybeans closed Friday at $13.03, down 16 cents on the week's last session as funds took profits ahead of the Trump-Xi summit set for Sep 24. Crude broke 5.6% the same day, its biggest single-session drop in weeks, while diesel stayed near record highs regardless.
 Action: Nothing to do at $13.03 beans over the weekend; a Monday close below $12.90 says the summit trade is unwinding, not building.
 • BEANS PRICE THE SUMMIT, NOT THE CROP
@@ -300,10 +326,11 @@ Action: Nothing to do at $13.03 beans over the weekend; a Monday close below $12
 Read more: https://agsist.com/daily/2026-09-20</description>
     </item>
     <item>
-      <title>CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS</title>
+      <title>Crude retreats; Trump-Xi summit hangs over beans</title>
       <link>https://agsist.com/daily/2026-09-19</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-19</guid>
-      <pubDate>Sat, 19 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Sat, 19 Sep 2026 13:58:17 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Soybeans closed Friday at $13.03, down 7½ cents, and the fund liquidation was straightforward: nobody wanted to hold a long position into a weekend with the Trump-Xi summit on September 24 still unresolved. Wheat led the grain complex lower at $7.13, off 11½ cents.
 Action: Unpriced new-crop beans: a Sept 24 Trump-Xi outcome below expectations is the sell signal; hold until then, not past it.
 • GRAINS SELL INTO THE WEEKEND
@@ -312,10 +339,11 @@ Action: Unpriced new-crop beans: a Sept 24 Trump-Xi outcome below expectations i
 Read more: https://agsist.com/daily/2026-09-19</description>
     </item>
     <item>
-      <title>CRUDE BREAKS 5.6%; BEANS WAIT FOR XI</title>
+      <title>Crude breaks 5.6%; beans wait for Xi</title>
       <link>https://agsist.com/daily/2026-09-18</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-18</guid>
-      <pubDate>Fri, 18 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Fri, 18 Sep 2026 10:55:22 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Saudi Aramco's Gulf reroute -- started this week after the East-West pipeline shifted 60 million barrels back through the Persian Gulf -- knocked crude down 5.6% to **$95.47**, its biggest single-session drop in months. Relief, not shortage, is what the market priced Friday. Diesel harvest risk hasn't left; it just got cheaper to ignore.
 Action: Unpriced new-crop beans: hold through the weekend. A Monday settle above $13.10 is the first reason to price anything before the Xi summit.
 • CRUDE BREAKS; ENERGY LEADS LOWER
@@ -324,10 +352,11 @@ Action: Unpriced new-crop beans: hold through the weekend. A Monday settle above
 Read more: https://agsist.com/daily/2026-09-18</description>
     </item>
     <item>
-      <title>FARM BILL MOVES; EXPORT SALES PRINT AT 7:30</title>
+      <title>Farm bill moves; export sales print at 7:30</title>
       <link>https://agsist.com/daily/2026-09-17</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-17</guid>
-      <pubDate>Thu, 17 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Thu, 17 Sep 2026 11:08:41 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>The Senate Ag Committee broke its August deadlock Wednesday, advancing Farm Bill 2.0 on a 12-11 vote -- the first real legislative movement since the Aug 6 party-line failure. Beans settled at $13.26, off 3.5 cents, leaving the Nov contract a dime short of the level that would have triggered new-crop pricing for most operations.
 Action: New-crop beans: if Export Sales top 600K MT and Nov '26 closes above $13.42, price the first 10%.
 • EXPORT SALES IN FOCUS
@@ -335,10 +364,11 @@ Action: New-crop beans: if Export Sales top 600K MT and Nov '26 closes above $13
 Read more: https://agsist.com/daily/2026-09-17</description>
     </item>
     <item>
-      <title>BEANS LEAD; SAUDI PIPELINE CRISIS KEEPS CRUDE BID</title>
+      <title>Beans lead; Saudi pipeline crisis keeps crude bid</title>
       <link>https://agsist.com/daily/2026-09-16</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-09-16</guid>
-      <pubDate>Wed, 16 Sep 2026 05:00:00 -0600</pubDate>
+      <pubDate>Wed, 16 Sep 2026 11:11:10 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
       <description>Soybeans added 6¾ cents to $13.29 on strong demand and meal follow-through, while corn flatlined at $5.37 and cattle corrected across the board. WTI held $103.73 -- the Saudi pipeline shutdown, which began forcing spot crude sales outside the Strait of Hormuz last week, kept the bid alive despite a $1 pullback.
 Action: New-crop beans at a 52-week high: price the first 10% on any settle above $13.35. Do not wait.
 • BEANS FIRM; CORN FLAT

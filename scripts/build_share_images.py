@@ -60,7 +60,7 @@ import share_cards as SC  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://agsist.com"
 OG_DIR = os.path.join(ROOT, "img", "og")
-BYLINE = "Sigurd Lindquist, Certified Crop Adviser (CCA)"
+BYLINE = "Sigurd Lindquist, CCA"
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August",
                "September", "October", "November", "December"]
@@ -145,6 +145,7 @@ LINES = {
     "grain-bin-calculator": ("Grain bins", "Bin size to bushels, moisture shrink and what the grain is worth."),
     "grain-emc": ("Grain EMC", "Drying, cooling or holding corn, soybeans and wheat: which hours to run fans where you are."),
     "harvest-or-wait": ("Harvest or wait", "Drying bill now vs after field drydown, against the field loss you expect."),
+    "editorial-standards": ("Editorial standards", "How the AGSIST Daily is made, where the numbers come from, and how corrections work."),
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hay-prices": ("Hay prices", "Alfalfa and other hay, dollars a ton, every state USDA publishes."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),

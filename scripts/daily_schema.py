@@ -83,6 +83,8 @@ OPTIONAL_TOP_LEVEL = [
     "named_week",          # {title, started_at, theme} — Mon-Fri week-arc title
     "otp_week_ahead",      # 2026-10-11: bool, outside_the_pit is a dated upcoming event (generate_daily.mark_week_ahead)
     "harvest_clock",       # 2026-10-09: {asof, start, end, crops, lines, note, url} from scripts/harvest_clock.py
+    "corrections",         # 2026-10-16: [{date, text}] dated correction notes, added by hand (editorial-standards#corrections)
+    "first_published_at",  # 2026-10-16: ISO UTC, when this date's issue first went up (generate_daily.keep_first_published)
 ]
 
 # Deprecated field names — if present, validation warns but does not fail.

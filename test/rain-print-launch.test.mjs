@@ -554,7 +554,7 @@ test("copy batch: size, proof, business words", () => {
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
-  assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)<\/p>/);
+  assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
   assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);

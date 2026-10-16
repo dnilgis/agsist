@@ -198,7 +198,7 @@ test("your county fills rent and the paired trend yield, says where they came fr
 });
 
 test("a byline under the H1, the author in the JSON-LD, and no sideways scroll on a phone", { skip }, async () => {
-  assert.match(HTML, /<h1>Break-even price calculator<\/h1><p class="be-by">Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(HTML, /<h1>Break-even price calculator<\/h1><p class="be-by">Sigurd Lindquist, CCA/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(HTML)[1]);
   const app = ld["@graph"].find((g) => g["@type"] === "WebApplication");
   assert.equal(app.author.name, "Sigurd Lindquist");

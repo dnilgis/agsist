@@ -293,7 +293,7 @@ test("ZIP bid: the nearest elevator posting that grain, from the network snapsho
 test("page: head, canonical, byline, JSON-LD, baked tables match the math", () => {
   assert.match(page, /<title>Grain shrink and moisture discount calculator \| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/grain-shrink">/);
-  assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /Sigurd Lindquist, CCA/);
   for (const m of page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(m[1]);
   assert.equal(bake(page), page, "run node scripts/build_grain_shrink.mjs");
   const ld = JSON.parse(page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
