@@ -10,6 +10,14 @@ on:
     # Tuesday, and the Monday-night run finds nothing new. This catch-up run
     # picks it up; on a normal week it finds no change and commits nothing.
     - cron: '12 1 * * 3'    # Wednesdays 01:12 UTC = Tuesday evening CT
+  # 2026-10-16: GitHub dropped the Wednesday fire after Columbus Day. Now this
+  # also runs whenever data/crop-progress.json is on a newer week than
+  # data/conditions/conditions.json: right after "Fetch Crop Progress", and
+  # every two hours for five days off "Fetch Grain Bids" (scripts/cron_gate.py
+  # behind). A run with nothing to chase stops at the gate in seconds.
+  workflow_run:
+    workflows: ["Fetch Crop Progress", "Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -20,7 +28,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            data/crop-progress.json
+            data/conditions/conditions.json
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
+        run: python3 scripts/cron_gate.py conditions
+
   fetch:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

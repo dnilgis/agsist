@@ -29,6 +29,17 @@ anything to do:
          one look Tuesday to Saturday 15:00-15:19 UTC (a late posting the
          evening before, and the 8:35 am CT ending values).
 
+  behind For conditions.yml and cond-yield.yml (2026-10-16 audit: the nowcast sat a
+         week behind because the Wednesday holiday catch-up fires were dropped,
+         and a manual run raced conditions.yml and read last week's file). Each
+         runs when its input file is on a newer USDA week than its output:
+           conditions  have conditions.json  < want crop-progress.json
+           condyield   have yield-nowcast    < want conditions.json
+         at once when the upstream job that wrote the input just finished, and
+         otherwise once every two hours (minute 0-14 of even UTC hours) for
+         five days after the week ends, so a slow Quick Stats load is retried
+         instead of waiting a week. Nothing runs once the output is caught up.
+
 A manual Run workflow, a push and a repository_dispatch always go.
 
 Writes go=0|1 and reason=... to $GITHUB_OUTPUT (stdout when unset).
@@ -235,6 +246,51 @@ def decide_lrp(event, now, today_json):
     return 1, "watching for %s's offers; the site has %s" % (want, have or "none")
 
 
+# ── the "behind" decision (conditions.yml, cond-yield.yml) ───────────────────
+BEHIND = {
+    # mode: (have file, have path, want file, want path, upstream workflow name)
+    "conditions": ("data/conditions/conditions.json", ("crops", "corn", "week_ending"),
+                   "data/crop-progress.json", ("corn", "report_date"), "Fetch Crop Progress"),
+    "condyield": ("data/yield-nowcast.json", ("crops", "corn", "week_ending"),
+                  "data/conditions/conditions.json", ("crops", "corn", "week_ending"), "conditions"),
+}
+RETRY_DAYS = 5      # retry window after the week ends (Sunday) -> through Friday
+STALE_DAYS = 21     # same off-season rule as build_yield_nowcast.py
+
+
+def week_at(path, keys):
+    """A YYYY-MM-DD date at keys inside a JSON file, or None."""
+    try:
+        with open(path) as f:
+            v = json.load(f)
+        for k in keys:
+            v = v[k]
+        return date.fromisoformat(str(v)[:10])
+    except Exception:
+        return None
+
+
+def decide_behind(event, now, have, want, upstream_done):
+    """(go, reason). have = the week the output is on, want = the week its input
+    is on; upstream_done = this run was started by the job that writes the input."""
+    if event in ALWAYS_GO:
+        return 1, "%s always runs" % event
+    if want is None:
+        return 0, "input week unreadable; nothing to chase"
+    age = (now.date() - want).days
+    if age > STALE_DAYS:
+        return 0, "input is on %s, %d days old: off-season" % (want, age)
+    if have is not None and have >= want:
+        return 0, "already on the week ending %s" % want
+    if upstream_done:
+        return 1, "input just moved to %s (output on %s)" % (want, have)
+    if age > RETRY_DAYS:
+        return 0, "behind (%s vs %s) but past the %d-day retry window" % (have, want, RETRY_DAYS)
+    if now.hour % 2 == 0 and now.minute < 15:
+        return 1, "behind (%s vs %s): two-hourly retry" % (have, want)
+    return 0, "behind (%s vs %s): waiting for the next two-hourly retry" % (have, want)
+
+
 # ── output ───────────────────────────────────────────────────────────────────
 def emit(go, reason):
     print("go=%d (%s)" % (go, reason), file=sys.stderr)
@@ -250,7 +306,7 @@ def emit(go, reason):
 def main(argv):
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("mode", nargs="?", choices=["tick", "cot", "lrp"])
+    p.add_argument("mode", nargs="?", choices=["tick", "cot", "lrp", "conditions", "condyield"])
     p.add_argument("--workflow")
     p.add_argument("--cron", action="append", default=[])
     p.add_argument("--max-lag", type=int, default=120)
@@ -277,6 +333,12 @@ def main(argv):
         except Exception:
             today_json = None
         emit(*decide_lrp(event, now, today_json))
+        return 0
+    if a.mode in BEHIND:
+        hf, hk, wf, wk, up = BEHIND[a.mode]
+        trig = os.environ.get("TRIGGER_WORKFLOW", "")
+        emit(*decide_behind(event, now, week_at(hf, hk), week_at(wf, wk),
+                            event == "schedule" or (event == "workflow_run" and trig == up)))
         return 0
     if a.mode != "tick" or not a.workflow or not a.cron:
         p.error("tick needs --workflow and at least one --cron")
@@ -389,6 +451,33 @@ def selftest():
     # 23:30 UTC in December is still the same Central day (17:30 CST)
     check(decide_lrp("schedule", T("2026-12-15 23:30"), {"sed": "20261215"})[0] == 0,
           "LRP: Central date in standard time")
+
+    # behind (conditions.yml, cond-yield.yml). Week ending Sun Oct 11, 2026;
+    # NASS released Tue Oct 13 after Columbus Day.
+    D = date.fromisoformat
+    w4, w11 = D("2026-10-04"), D("2026-10-11")
+    check(decide_behind("workflow_run", T("2026-10-14 01:20"), w4, w11, True)[0] == 1,
+          "behind: upstream just wrote the new week, go at once")
+    check(decide_behind("workflow_run", T("2026-10-14 01:20"), w4, w11, False)[0] == 0,
+          "behind: odd hour, wait for the two-hourly slot")
+    check(decide_behind("workflow_run", T("2026-10-14 02:07"), w4, w11, False)[0] == 1,
+          "behind: even hour minute 7, retry")
+    check(decide_behind("workflow_run", T("2026-10-14 02:22"), w4, w11, False)[0] == 0,
+          "behind: one retry per slot (minute 0-14 only)")
+    check(decide_behind("schedule", T("2026-10-14 04:03"), w11, w11, True)[0] == 0,
+          "behind: caught up, nothing runs")
+    check(decide_behind("workflow_run", T("2026-10-17 10:07"), w4, w11, False)[0] == 0,
+          "behind: past the five-day retry window, stop retrying")
+    check(decide_behind("workflow_run", T("2026-10-17 10:07"), w4, w11, True)[0] == 1,
+          "behind: upstream still triggers after the retry window")
+    check(decide_behind("workflow_run", T("2026-12-15 02:07"), w4, D("2026-11-22"), True)[0] == 0,
+          "behind: three-week-old input is off-season")
+    check(decide_behind("workflow_run", T("2026-10-14 02:07"), None, w11, False)[0] == 1,
+          "behind: no output yet counts as behind")
+    check(decide_behind("workflow_run", T("2026-10-14 02:07"), w4, None, True)[0] == 0,
+          "behind: unreadable input, no run")
+    check(decide_behind("workflow_dispatch", T("2026-10-14 03:00"), w11, w11, False)[0] == 1,
+          "behind: manual always goes")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_gate checks passed")
     return 1 if fails else 0

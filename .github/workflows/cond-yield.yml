@@ -4,12 +4,21 @@ name: cond-yield
 # Tuesdays in season, after Monday's Crop Progress lands (conditions.yml
 # runs 01:12 Tue; this at 03:18 so both see the same fresh week).
 on:
+  # 2026-10-16 audit: the nowcast stayed on the week ending Oct 4 after the
+  # Columbus Day report. The Tuesday fire ran before NASS released (Tuesday
+  # after a holiday), GitHub dropped the Wednesday catch-up fire, and a manual
+  # run raced conditions.yml and read last week's ratings file. Now it runs
+  # whenever its input (data/conditions/conditions.json) is on a newer week
+  # than data/yield-nowcast.json: right after conditions.yml finishes, and
+  # otherwise every two hours for five days (scripts/cron_gate.py behind),
+  # off the 15-minute "Fetch Grain Bids" runs. The crons stay as a fallback.
   schedule:
     - cron: "18 3 * * 2"       # Tuesdays 03:18 UTC
-    # Holiday catch-up: after a Monday federal holiday NASS releases Tuesday,
-    # so this second pass (after conditions.yml's Wednesday run) picks it up.
-    # Lock and grade never duplicate a row, so a normal week is a no-op.
-    - cron: "18 3 * * 3"       # Wednesdays 03:18 UTC
+    - cron: "18 3 * * 3"       # Wednesdays 03:18 UTC (holiday week)
+    - cron: "18 15 * * 3,4"    # Wed-Thu 15:18 UTC (late Quick Stats)
+  workflow_run:
+    workflows: ["conditions", "Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -20,7 +29,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            data/conditions/conditions.json
+            data/yield-nowcast.json
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
+        run: python3 scripts/cron_gate.py condyield
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
