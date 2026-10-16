@@ -616,6 +616,14 @@
     {"id": "bench-lrp-6", "kind": "html",
      "url": "https://www.ever.ag/",
      "title": "Benchmark lrp: Ever.Ag / agent quote tools",
-     "why": "/lrp competitor benchmark Oct 16, 2026 (vendor)"}
+     "why": "/lrp competitor benchmark Oct 16, 2026 (vendor)"},
+    {"id": "purdue-grain-drydown", "kind": "html",
+     "url": "https://www.agry.purdue.edu/ext/corn/news/timeless/GrainDrydown.html",
+     "title": "Purdue (Nielsen): Field drydown of mature corn grain",
+     "why": "/harvest-or-wait: GDD per point of field drydown by moisture band; the page's GDD rule stays off until this is read"},
+    {"id": "isu-agdm-a2-31", "kind": "html",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a2-31.html",
+     "title": "Iowa State Ag Decision Maker A2-31: Estimating the cost for drying corn",
+     "why": "/harvest-or-wait: LP gallons per bushel per point, electricity, and the field drydown discussion"}
 ]
 }
