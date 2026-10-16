@@ -894,12 +894,30 @@ SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
 SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
-def page_end(ftr, table=False, signup=False, hist=False):
+# Rain Print, one quiet line on each town page in the gift season (Sig, 2026-10-16:
+# cross-promotion, at most one a page, after the main content). The page
+# carries the line only from Nov 1 to Dec 24 of the snapshot's Central date;
+# components/rain-print-promo.js then shows it only while data/rain-print.json
+# has promote on and today is inside promote_from..promote_until. Nothing
+# else promotes on these pages.
+RP_PROMO_SEASON = ((11, 1), (12, 24))
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=4" defer></script>\n'
+
+
+def rain_print_line(snap_ct):
+    """The empty, hidden gift-line slot for a town page, or '' out of season."""
+    md = (snap_ct.month, snap_ct.day)
+    if not (RP_PROMO_SEASON[0] <= md <= RP_PROMO_SEASON[1]):
+        return ""
+    return '<p class="rp-promo" data-rain-print-promo hidden></p>'
+
+
+def page_end(ftr, table=False, signup=False, hist=False, promo=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}</body>
 </html>
 """
 
@@ -1596,6 +1614,7 @@ def build_town_page(t, ctx):
     # without scrolling past every board. A town with no ZIP keeps the plain
     # Daily ask at the bottom: the box's two choices both need a ZIP.
     box = signup_box(t, box_zip(t, z, ctx), ssl, crops, tops)
+    promo_html = rain_print_line(snap_ct)
     # one line under the title that jumps to it, when a table sits between
     first = next((c for c in CROPS if c in crops), "corn")
     jump = (f'<p class="cbt-jump"><a href="#bid-email" data-bid-alerts-jump>Email me {esc(t["name"])} bids each '
@@ -1624,6 +1643,7 @@ def build_town_page(t, ctx):
   {hist_html}
   {near_html if indexable else ''}
   {faq_html(qs, t['name'])}
+  {promo_html}
   {ask}
   {quiet_html}
   {known_html}
@@ -1643,7 +1663,7 @@ def build_town_page(t, ctx):
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
-    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html)), meta
+    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -2672,6 +2692,13 @@ def selftest():
         assert delivery_label(dict(cdr, delivery=d)) != d[:3] + " 2026", d
     _selftest_known()
     _selftest_answer()
+    # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
+    for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
+                  (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
+        got = rain_print_line(dt.datetime(d.year, d.month, d.day, 12))
+        assert bool(got) == on, d
+        assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
+    assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     print("selftest OK")
 
 
