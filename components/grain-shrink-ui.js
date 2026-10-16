@@ -202,7 +202,10 @@
       (n.distance != null ? ', ' + (n.distance < 1 ? 'under a mile' : Math.round(n.distance) + ' miles') + ' from ' + esc(st.zip) : '') +
       (delivWord(n) ? ', for ' + esc(delivWord(n)) : '') +
       (t ? '. ' + (readOnly(n) ? 'Read ' : 'Posted ') + esc(ctTime(t)) : '') + '.';
-    if (z.remark) line += ' On today\'s futures that is <b>' + esc(z.text) + '</b> (' + esc(z.note) + '); the page uses ' + esc(z.text) + ', as the cash bids page does.';
+    if (z.remark) {
+      var parts = String(z.note || '').split(' · ');
+      line += ' Re-marked ' + esc(parts[0]) + ': <b>' + esc(z.text) + '</b>' + (parts[1] ? ' (board ' + esc(parts[1]) + ')' : '') + ', the same rule the cash bids page uses.';
+    }
     else if (z.old) line += ' Not updated for today\'s futures; the page uses the posted price.';
     setBid(z.price, 'zip', line + ' Call before you haul.');
   }
