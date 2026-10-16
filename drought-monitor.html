@@ -282,7 +282,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <h1>US Drought Monitor</h1>
     <p class="dm-answer" id="dm-answer" aria-live="polite">NDMC&rsquo;s share of the Lower 48 in drought shows here after each Thursday read. The map below is this week&rsquo;s.</p>
     <p class="page-lede dm-lede">This week&rsquo;s map, your county&rsquo;s numbers, and what each category means for crops.</p>
-    <p class="dm-by">By <a href="/about">Sigurd Lindquist, Certified Crop Adviser (CCA)</a>, Chetek, Wisconsin. The drought numbers are NDMC&rsquo;s.</p>
+    <p class="dm-by">By <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin. The drought numbers are NDMC&rsquo;s.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=" · "+h;else v.textContent=" · map valid "+d;window.__dmValid=d;var mv=document.getElementById("dm-map-valid");if(mv)mv.textContent=", valid "+d;}}).catch(function(){});</script>
       <div class="dm-next-update" id="dm-next-update">Next update: -</div>

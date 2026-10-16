@@ -101,3 +101,4 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - Harvest price tracker lives under Markets as "Harvest price tracker".
 - LRP: calculator first on /lrp; stats and tests on /lrp/record. Sells nothing, never routes to agents. 25,000 head limit counts every endorsement together (each class its own 25,000).
 - Stripe: payment-link redirects, shipping, glass description and descriptor done (Oct 15). Still open: STRIPE_READ_KEY secret and an 85-cent test order (refund returns the $19 minus Stripe's fee).
+- (Oct 16, Sig) Byline reads 'Sigurd Lindquist, CCA' everywhere on the site; structured data jobTitle keeps the full credential.
