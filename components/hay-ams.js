@@ -47,10 +47,13 @@
     return { lo: lo, hi: hi, tons: t };
   }
 
+  /* Pellets, cubes and ground hay are processed feed, not bales: shown in
+     the state table, kept out of the bale ranges. */
+  function processed(r) { return /^(pellets?|cubes?|ground)\b/i.test(r.bale || ''); }
   /* One line per report for the all-states list: alfalfa and other hay
-     ranges (hay rows only; straw is its own thing). */
+     ranges (baled hay rows only; straw is its own thing). */
   function summary(rep) {
-    var hay = (rep.rows || []).filter(function (r) { return r.kind === 'hay'; });
+    var hay = (rep.rows || []).filter(function (r) { return r.kind === 'hay' && !processed(r); });
     return {
       alfalfa: span(hay.filter(function (r) { return isAlfalfa(r.commodity); })),
       other: span(hay.filter(function (r) { return !isAlfalfa(r.commodity); })),
@@ -82,7 +85,7 @@
         date: r.date, week: r.week_ending || null, age: a, old: a != null && a > lim, biweekly: !!r.biweekly,
         tons: r.tons || {}, lastReported: r.last_reported || null, comment: r.comment || '',
         url: r.source_url || null, pdf: r.pdf_url || null, groups: groups, sum: summary(r),
-        perBale: r.per_bale_tables || 0, ok: !r.status || r.status.ok !== false
+        perBale: r.per_bale_tables || 0, skipped: r.skipped || null, ok: !r.status || r.status.ok !== false
       };
     }).sort(function (x, y) { return x.name < y.name ? -1 : x.name > y.name ? 1 : (x.date < y.date ? 1 : -1); });
   }
@@ -99,7 +102,7 @@
       released: nass.released ? day(nass.released) : '' };
   }
 
-  var api = { GRADES: GRADES, gradeRank: gradeRank, span: span, summary: summary, view: view, nassFor: nassFor, ageDays: ageDays, day: day, money: money };
+  var api = { GRADES: GRADES, gradeRank: gradeRank, processed: processed, span: span, summary: summary, view: view, nassFor: nassFor, ageDays: ageDays, day: day, money: money };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.HayAms = api;
 
@@ -140,19 +143,24 @@
         (r.ok ? '' : ' <span class="hp-ams-old">the latest read failed a check; this is the last good report</span>') + '</p>';
       var t = r.tons.hay;
       if (t) h += '<p class="hp-fine">Confirmed hay trades: ' + tons(t.week) + ' tons this report' + (r.lastReported ? ', ' + tons(t.last) + ' last reported (' + esc(day(r.lastReported)) + ')' : '') + ', ' + tons(t.year) + ' a year ago.</p>';
-      h += '<div class="hp-tw"><table class="hp-t hp-ams-t"><caption class="sr-only">' + esc(r.title) + ', $ a ton by grade and bale type</caption><thead><tr><th scope="col">Grade</th><th scope="col">Bale</th><th scope="col">Tons</th><th scope="col">$ a ton</th><th scope="col">Wtd avg</th></tr></thead><tbody>';
+      h += '<div class="hp-tw"><table class="hp-t hp-ams-t"><caption class="sr-only">' + esc(r.title) + ', $ a ton by grade and bale type</caption><thead><tr><th scope="col">Grade</th><th scope="col">Bale</th><th scope="col" class="hp-ams-q">Tons</th><th scope="col">$ a ton</th><th scope="col">Wtd avg</th></tr></thead><tbody>';
       r.groups.forEach(function (g) {
         h += '<tr class="hp-ams-g"><th colspan="5" scope="colgroup">' + esc(g.commodity) + (g.kind === 'straw' ? ' straw' : '') + (g.organic ? ', organic' : '') + '</th></tr>';
         g.rows.forEach(function (row) {
-          h += '<tr><th scope="row">' + esc(row.grade || 'not graded') + '</th><td class="tl">' + esc(row.bale) + (row.freight && row.freight !== 'F.O.B.' ? ' <span class="hp-flag">' + esc(row.freight) + '</span>' : '') +
-            (row.desc ? ' <span class="hp-flag">' + esc(row.desc) + '</span>' : '') + '</td><td>' + tons(row.qty) + '</td><td>' +
-            (row.lo === row.hi ? money(row.lo) : money(row.lo) + '&ndash;' + money(row.hi)) + '</td><td>' + (row.avg != null ? money(row.avg) : '<span class="hp-flag">none given</span>') + '</td></tr>';
+          var notes = [row.region, row.freight && row.freight !== 'F.O.B.' ? row.freight : '', row.desc].filter(Boolean).map(esc).join(' &middot; ');
+          h += '<tr><th scope="row">' + esc(row.grade || 'not graded').replace(/\//g, '/<wbr>') + '</th><td class="tl">' + esc(row.bale) + '<br><span class="hp-flag"><span class="hp-ams-tn">' + tons(row.qty) + ' t' + (notes ? ' &middot; ' : '') + '</span>' + notes + '</span>' +
+            '</td><td class="hp-ams-q">' + tons(row.qty) + '</td><td>' +
+            (row.lo === row.hi ? money(row.lo) : money(row.lo) + '&ndash;<wbr>' + money(row.hi)) + '</td><td>' + (row.avg != null ? money(row.avg) : '<span class="hp-flag">none given</span>') + '</td></tr>';
         });
       });
       h += '</tbody></table></div>';
       h += nassLine(r);
       if (r.comment) h += '<p class="hp-fine"><b>AMS market note:</b> ' + esc(r.comment) + '</p>';
-      if (r.perBale) h += '<p class="hp-fine">' + r.perBale + ' table' + (r.perBale > 1 ? 's' : '') + ' priced by the bale ' + (r.perBale > 1 ? 'are' : 'is') + ' left out here; this page shows tons only.</p>';
+      var sk = r.skipped || {}, left = [];
+      if (sk.ask) left.push(sk.ask + ' asking-price table' + (sk.ask > 1 ? 's' : '') + ' (offers, not sales)');
+      if (sk.contract) left.push(sk.contract + ' contract table' + (sk.contract > 1 ? 's' : ''));
+      if (sk.other_unit || (!r.skipped && r.perBale)) { var n = sk.other_unit || r.perBale; left.push(n + ' table' + (n > 1 ? 's' : '') + ' priced by the bale or point'); }
+      if (left.length) h += '<p class="hp-fine">Left out of this report: ' + left.join(', ') + '. This page shows sales by the ton only.</p>';
       h += '<p class="hp-fine">F.O.B. means at the seller&rsquo;s farm, before trucking. Grades are AMS&rsquo;s (<a href="https://www.ams.usda.gov/sites/default/files/media/HayQualityGuidelines.pdf">Hay Quality Guidelines</a>). Source: ' +
         (r.url ? '<a href="' + esc(r.url) + '">USDA AMS, ' + esc(r.title) + '</a>' : 'USDA AMS') + '.</p>';
       return h + '</div>';
@@ -164,7 +172,7 @@
         h += '<tr><th scope="row"><button type="button" class="hp-st" data-ams="' + esc(r.state) + '">' + esc(r.name) + '</button>' + (r.kind === 'auction' ? ' <span class="hp-flag">auction</span>' : '') + '</th><td>' + esc(day(r.date, false)) +
           (r.old ? ' <span class="hp-ams-old">old</span>' : '') + '</td><td>' + (rng(r.sum.alfalfa) || '<span class="hp-flag">none</span>') + '</td><td>' + (rng(r.sum.other) || '<span class="hp-flag">none</span>') + '</td></tr>';
       });
-      return h + '</tbody></table></div><p class="hp-fine">Ranges run from the lowest grade traded to the highest. Pick a state for each grade and bale type.</p>';
+      return h + '</tbody></table></div><p class="hp-fine">Ranges run from the lowest grade traded to the highest, baled hay only (pellets, cubes and ground hay are in each state&rsquo;s table). Pick a state for each grade and bale type.</p>';
     }
 
     function render() {

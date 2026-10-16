@@ -47,11 +47,16 @@ WHAT THIS FILE WILL NOT DO
     this week (when it gives them and has no per-bale tables).
   * Replace a newer report with an older one, or write a zero.
 
-LAYOUT: checked against three real reports read with pdftotext -layout (the
-same call fetch_dairy.pdf_to_text makes): South Dakota Direct Hay 3183 (Oct 16,
-2026) and Alabama Direct 3050 (Oct 1 and Sep 2, 2026), saved from the
-references branch to test/fixtures/hay-ams/. Hay AUCTION reports were not in
-hand: run the probe and add one as a fixture before trusting auction rows.
+LAYOUT: two text forms, both checked against real reports in
+test/fixtures/hay-ams/. pdftotext -layout (one row per line): SD 3183 and AL
+3050 from the references branch. pypdf, which the runner falls back to (one
+cell per line): the Oct 16, 2026 probe of 13 state Direct Hay reports
+(data/hay-ams-raw/); cells_to_layout() rebuilds the rows, and 11 of 13 read,
+every one whose tons can be checked adding up to the tons it reports. MO 2929
+and NM 2939 posted asking prices only that week and show nothing. Only
+"Trade" tables priced "Per Ton" are used: asks (offers), contracts and
+bale/point/bundle prices are counted and left out. No hay AUCTION report was in
+the probe: add one as a fixture before trusting auction rows.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy.pdf_to_text.
 """
@@ -124,11 +129,15 @@ NOISE_RE = re.compile(
     r"^(?:source:|general inquiries|https?://|email us|click here|ams livestock|agricultural marketing|"
     r"livestock, poultry|[a-z]{2} dept\.? of ag|page \d+ of \d+|qty\s+price range|n/a$)", re.I)
 SECTION_RE = re.compile(r"^(hay|straw)\s*\(([^)]*)\)$", re.I)
-TABLE_RE = re.compile(r"^(.+?)\s+-\s*(.*?)\s*\(\s*([a-z ]+?)\s*/\s*per\s+(ton|bale)\s*\)$", re.I)
+# "Alfalfa - Premium (Trade/Per Ton)", "Wheat -  (Ask/Per Bale)",
+# "Alfalfa - Fair/Good (Contract (Trade)/Per Ton)", "(Trade/Per Point/Ton)".
+TABLE_RE = re.compile(r"^(.+?)\s+-\s*(.*?)\s*\((.+?)\s*/\s*per\s+([a-z/ ]+?)\s*\)$", re.I)
+# The line just above a Hay/Straw heading names the region when there is one.
+REGION_RE = re.compile(r"^(?!.*\d)(?:.*\b(?:north|south|east|west)\w*|.*\b(?:central|valley|basin|county|counties|mountains|plains|panhandle|statewide)\b.*|n/a)$", re.I)
 NUM = r"(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
 PX = r"(\d{1,4}\.\d{2})"
 ROW_RE = re.compile(
-    r"^([A-Za-z][A-Za-z0-9/'.() ]*?)\s+" + NUM + r"\s+" + PX + r"(?:\s*-\s*" + PX + r")?"
+    r"^([A-Za-z][A-Za-z0-9/'.()% ]*?)\s+" + NUM + r"\s+" + PX + r"(?:\s*-\s*" + PX + r")?"
     r"(?:\s+" + PX + r")?(?:\s+(.*))?$")
 PRICE_LIKE = re.compile(r"\d{1,4}\.\d{2}\b")
 VOL_RE = re.compile(r"^(hay|straw|total)\s+" + NUM + r"\s+" + NUM + r"\s+" + NUM + r"$", re.I)
@@ -144,11 +153,136 @@ def split_rest(raw_line, rest):
     return parts[0], " / ".join(parts[1:])
 
 
+# ---- one-cell-per-line text (pypdf, which the runner falls back to) ----
+CELL_HEAD = {"qty", "price range", "wtd avg", "freight/use", "description", "crop age"}
+FREIGHT_RE = re.compile(r"^(?:f\.o\.b\.|delivered)(?:-[a-z/ ]+)?$", re.I)
+QTY_RE = re.compile(r"^\d{1,3}(?:,\d{3})+(?:\.\d+)?$|^\d+(?:\.\d+)?$")
+RANGE_RE = re.compile(r"^\d{1,4}\.\d{2}(?:\s*-\s*\d{1,4}\.\d{2})?$")
+AVG_RE = re.compile(r"^\d{1,4}\.\d{2}$")
+# A bale (or form) line: every bale type seen in the Oct 2026 probe reports
+# ("Large Square 3x4", "Small Square 3 Tie", "Medium Square" + "3x3",
+# "Pellets 17%" + "Dehydrated", "Ground", "In Windrow", "Bundled").
+BALE_RE = re.compile(r"^(?:large|medium|mid|small|mini|round|square|ground|pellets?|cubes?|bundled|in windrow|bulk|"
+                     r"loose|chopped|baleage|wrapped|tub|dehydrated|suncured|\d+x\d+)\b", re.I)
+
+
+def trim_comment(c, cap=420):
+    """The market note as AMS wrote it, cut at a sentence end. Grading tables
+    some reports paste into the note ("Alfalfa guidelines ...") are left out."""
+    c = re.split(r"\b(?:alfalfa (?:quality )?guidelines|grass hay guidelines|=====)", c, flags=re.I)[0]
+    c = re.sub(r"\s+", " ", c).strip()
+    if len(c) <= cap:
+        return c
+    cut = c[:cap]
+    k = max(cut.rfind(". "), cut.rfind("! "))
+    return cut[:k + 1] if k > 80 else cut.rsplit(" ", 1)[0] + " ..."
+
+
+def is_cells(text):
+    return bool(re.search(r"^\s*Qty\s*$", text or "", re.M))
+
+
+def cells_to_layout(text):
+    """The same report as one line per row, the way pdftotext -layout writes
+    it, so one parser reads both. A row's cells are: its bale lines, Qty, the
+    price range, the weighted average (if any) and Freight/Use, then any
+    description lines. Lines that cannot be placed are passed on as they are,
+    so a stray price still refuses the report."""
+    L = [norm(x) for x in (text or "").splitlines()]
+    # drop each page footer and the next page's header: "Source:" .. "Email us ..."
+    out, skip = [], False
+    for ln in L:
+        if re.match(r"^source:", ln, re.I):
+            skip = True
+            continue
+        if skip:
+            if re.match(r"^email us with accessibility", ln, re.I):
+                skip = False
+            continue
+        out.append(ln)
+    L = [x for x in out if x]
+    res = L[:2]
+    for ln in L[:8]:
+        if find_date(ln, weekday_first=True):
+            res.append(ln)
+            break
+    j = " ".join(L)
+    m = re.search(r"last reported\s*\(\s*(\d{1,2}/\d{1,2}/\d{4})\s*\)", j, re.I)
+    if m:
+        res.append("Last Reported (%s)" % m.group(1))
+    if "Tons:" in L:
+        i = L.index("Tons:") + 1
+        while i + 3 < len(L) and L[i] in ("Hay", "Straw", "Total") and all(QTY_RE.match(L[i + k]) for k in (1, 2, 3)):
+            res.append("%s %s %s %s" % tuple(L[i:i + 4]))
+            i += 4
+    hd = next((x for x in L if re.search(r"report for week ending", x, re.I)), "")
+    if hd:
+        res.append(hd)
+    if "Volume" in L:
+        a = L.index("Volume") + 1
+        b = next((k for k in range(a, len(L)) if re.match(r"^please note", L[k], re.I)), a)
+        res += ["", re.sub(r"\s+", " ", " ".join(L[a:b])).strip(), ""]
+    start = next((k for k, x in enumerate(L) if re.match(r"^please note", x, re.I)), 0)
+    body = [x for x in L[start:] if x.lower() not in CELL_HEAD and not NOISE_RE.match(x)
+            and not re.search(r"report for week ending|^include estimated volume|^please note", x, re.I)]
+    buf, last_row, skip_table = [], None, False
+
+    def flush_desc(lines):
+        """Lines after a row's freight and before the next bale: its description."""
+        nonlocal last_row
+        for x in lines:
+            if last_row is not None and not re.search(r"\d{1,4}\.\d{2}", x):
+                # "Picked Up Out of the" + "field" is one description
+                res[last_row] += (" " if x[:1].islower() else "  ") + x
+            else:
+                res.append(x)
+
+    for k, ln in enumerate(body):
+        nxt = body[k + 1] if k + 1 < len(body) else ""
+        if SECTION_RE.match(ln) or TABLE_RE.match(ln):
+            region = buf[-1] if buf and SECTION_RE.match(ln) and REGION_RE.search(buf[-1]) else None
+            if skip_table:
+                buf = buf[-1:] if region else []        # an ask, contract or per-bale table: its cells are not read
+            flush_desc(buf[:-1] if region else buf)
+            buf, last_row = [], None
+            t = TABLE_RE.match(ln)
+            if t:
+                skip_table = not (re.sub(r"\s+", " ", t.group(3)).strip().lower() == "trade"
+                                  and re.sub(r"\s+", "", t.group(4)).lower() == "ton")
+            if region:
+                res.append("REGION: " + region)
+            res.append(ln)
+            continue
+        buf.append(ln)
+        if not FREIGHT_RE.match(ln) or skip_table:
+            continue
+        # buf = [desc of the previous row..., bale lines..., qty, range, (avg), freight]
+        q = next((i for i in range(len(buf) - 2) if QTY_RE.match(buf[i]) and RANGE_RE.match(buf[i + 1])), None)
+        cells = buf[q:-1] if q is not None else []
+        ok = q is not None and (len(cells) == 2 or (len(cells) == 3 and AVG_RE.match(cells[2])))
+        b0 = q
+        while ok and b0 > 0 and BALE_RE.match(buf[b0 - 1]):
+            b0 -= 1
+        if not ok or b0 == q:
+            flush_desc([])
+            res.extend(buf)            # not a row we can read: passed on, and a price in it refuses the report
+            buf, last_row = [], None
+            continue
+        flush_desc(buf[:b0])
+        res.append("%s  %s  %s" % (" ".join(buf[b0:q]), "  ".join(cells), buf[-1]))
+        last_row = len(res) - 1
+        buf = []
+    flush_desc([] if skip_table else buf)
+    return "\n".join(res)
+
+
 def parse_report(text):
     """(report, None) or (None, reason). report: title, date, week_ending,
     last_reported, tons, comment, rows, per_bale_tables."""
     if not text or not text.strip():
         return None, "empty report"
+    if is_cells(text):
+        text = cells_to_layout(text)
     raw_lines = text.splitlines()
     lines = [norm(x) for x in raw_lines]
     title = title_of(lines)
@@ -191,24 +325,44 @@ def parse_report(text):
             while j < len(lines) and lines[j] and not re.match(r"^volume$", lines[j], re.I):
                 para.append(lines[j])
                 j += 1
-            comment = " ".join(para)
+            comment = trim_comment(" ".join(para))
             break
 
-    rows, per_bale, section, organic, table, began = [], 0, None, False, None, False
+    rows, per_bale, section, organic, table, began, region = [], 0, None, False, None, False, None
+    skipped = {"ask": 0, "contract": 0, "other_unit": 0}
+    prev = None
     for raw, ln in zip(raw_lines, lines):
         if not ln or NOISE_RE.match(ln) or ln == title:
             continue
         if find_date(ln, weekday_first=True) and not PRICE_LIKE.search(ln):
             continue                                            # the repeated page header
+        if ln.startswith("REGION: "):
+            region = ln[8:].strip()
+            region = None if region.lower() == "n/a" else region
+            continue
         s = SECTION_RE.match(ln)
         if s:
             section, organic, table = s.group(1).lower(), "organic" in s.group(2).lower(), None
+            if prev and REGION_RE.match(prev):                  # layout text: the region sits just above
+                region = None if prev.lower() == "n/a" else prev
+            prev = ln
             continue
+        prev = ln
         t = TABLE_RE.match(ln)
         if t:
             began = True
-            if t.group(4).lower() != "ton":
-                per_bale += 1
+            basis, unit = re.sub(r"\s+", " ", t.group(3)).strip().lower(), re.sub(r"\s+", "", t.group(4)).lower()
+            if basis != "trade" or unit != "ton":
+                # asks are offers, not trades; contracts are not this week's spot
+                # trades; a bale, point or bundle price is not a ton price
+                if basis == "ask":
+                    skipped["ask"] += 1
+                elif "contract" in basis:
+                    skipped["contract"] += 1
+                else:
+                    skipped["other_unit"] += 1
+                if basis != "ask" and unit != "ton":
+                    per_bale += 1
                 table = {"skip": True}
                 continue
             if section is None:
@@ -239,7 +393,7 @@ def parse_report(text):
                 if not (PRICE_RANGE[0] <= p <= PRICE_RANGE[1]):
                     return None, "price %.2f outside %s" % (p, PRICE_RANGE)
             rows.append({"kind": section, "organic": organic, "commodity": table["commodity"], "grade": table["grade"],
-                         "basis": table["basis"], "bale": r.group(1).strip(), "qty": qty, "lo": lo, "hi": hi,
+                         "basis": table["basis"], "region": region, "bale": r.group(1).strip(), "qty": qty, "lo": lo, "hi": hi,
                          "avg": avg, "freight": freight, "desc": desc})
             continue
         if PRICE_LIKE.search(ln):
@@ -248,7 +402,7 @@ def parse_report(text):
         return None, "no Per Ton hay or straw rows"
 
     # the row tons must add up to the tons the report says traded this week
-    if not per_bale:
+    if not skipped["contract"]:
         for k in ("hay", "straw"):
             if k in tons:
                 got = sum(r["qty"] for r in rows if r["kind"] == k)
@@ -257,7 +411,7 @@ def parse_report(text):
                     return None, "%s rows add to %.2f tons but the report says %.0f: a table was misread" % (k, got, want)
     return {"title": title, "heading": heading, "date": date, "week_ending": week, "last_reported": last_rep,
             "tons": {k: {"week": v[0], "last": v[1], "year": v[2]} for k, v in tons.items()},
-            "comment": comment[:600], "rows": rows, "per_bale_tables": per_bale}, None
+            "comment": comment[:600], "rows": rows, "per_bale_tables": per_bale, "skipped": skipped}, None
 
 
 # ------------------------------------------------------------------ feed
@@ -289,7 +443,7 @@ def merge(existing, src, rep, err, now_iso, slug):
     if b.get("date") and rep["date"] < b["date"]:
         b["status"] = {"ok": True, "note": "report %s older than %s held" % (rep["date"], b["date"]), "checked": now_iso}
         return b
-    b.update({k: rep[k] for k in ("title", "heading", "date", "week_ending", "last_reported", "tons", "comment", "rows", "per_bale_tables")})
+    b.update({k: rep[k] for k in ("title", "heading", "date", "week_ending", "last_reported", "tons", "comment", "rows", "per_bale_tables", "skipped")})
     b["kind"] = kind_of(rep["title"])
     b["biweekly"] = bool(re.search(r"bi-?weekly", rep["title"], re.I))
     b["slug"] = slug
@@ -494,6 +648,42 @@ def selftest():
     ck("real AL 3050 (Sep 2) parses, the Mixed Grass table after a page break read",
        al2 is not None and len(al2["rows"]) == 11 and al2["rows"][-2]["commodity"] == "Mixed Grass", why or len(al2["rows"]))
 
+    # Real reports as the runner reads them (pypdf: one cell per line), saved by the
+    # Oct 16, 2026 probe (data/hay-ams-raw/). Rows checked by hand against the text.
+    ks, why = parse_report((FIX / "ams_2885-cells.txt").read_text())
+    ck("real KS 2885 (cells) parses", ks is not None, why)
+    if ks:
+        ck("KS dated Tue Oct 13, week ending Oct 9", (ks["date"], ks["week_ending"]) == ("2026-10-13", "2026-10-09"))
+        ck("KS 65 trade rows; 8 contract and 12 per-bale/point tables left out",
+           len(ks["rows"]) == 65 and ks["skipped"] == {"ask": 0, "contract": 8, "other_unit": 12}, (len(ks["rows"]), ks["skipped"]))
+        r0 = ks["rows"][0]
+        ck("KS first row: North Central, Alfalfa Premium/Supreme, Large Square 3x4, 200 t, $225 delivered",
+           (r0["region"], r0["commodity"], r0["grade"], r0["bale"], r0["qty"], r0["lo"], r0["avg"], r0["freight"]) ==
+           ("North Central", "Alfalfa", "Premium/Supreme", "Large Square 3x4", 200, 225, 225, "Delivered"), r0)
+        pel = [r for r in ks["rows"] if r["bale"] == "Pellets 17% Dehydrated"]
+        ck("KS two-line bale 'Pellets 17%' + 'Dehydrated': 1300 t at $355 delivered",
+           len(pel) == 1 and (pel[0]["qty"], pel[0]["lo"], pel[0]["freight"]) == (1300, 355, "Delivered-Dealer/Mill/Processor"), pel)
+        ck("KS two-line description joined: 'Picked Up Out of the field'",
+           any(r["desc"] == "Picked Up Out of the field" for r in ks["rows"]))
+        ck("KS regions read (5)", len({r["region"] for r in ks["rows"]}) == 5)
+    wy, why = parse_report((FIX / "ams_3236-cells.txt").read_text())
+    ck("real WY 3236 (cells) parses, 12 rows, asks left out", wy is not None and len(wy["rows"]) == 12 and wy["skipped"]["ask"] == 3, why)
+    if wy:
+        e = wy["rows"][0]
+        ck("WY East Alfalfa Good 3x4: 1600 t, $270-300, avg 281.25, F.O.B.-Farm/Ranch",
+           (e["region"], e["qty"], e["lo"], e["hi"], e["avg"], e["freight"]) == ("East", 1600, 270, 300, 281.25, "F.O.B.-Farm/Ranch"), e)
+        ck("WY row tons add to the report's 2435", sum(r["qty"] for r in wy["rows"] if r["kind"] == "hay") == 2435)
+    mo, why = parse_report((FIX / "ams_2929-cells.txt").read_text())
+    ck("real MO 2929: asking prices only, no trades, so nothing is shown", mo is None and "no Per Ton" in why, why)
+    ca, why = parse_report((FIX / "ams_2904-cells.txt").read_text())
+    ck("real CA 2904 parses, 21 rows, contracts left out", ca is not None and len(ca["rows"]) == 21 and ca["skipped"]["contract"] == 6, why)
+    wa, why = parse_report((FIX / "ams_3058-cells.txt").read_text())
+    ck("real WA-OR 3058 parses, 12 rows adding to 52,600 t",
+       wa is not None and len(wa["rows"]) == 12 and sum(r["qty"] for r in wa["rows"]) == 52600, why)
+    ck("the same SD report reads the same from layout text and from cells",
+       sd is not None and [(r["commodity"], r["grade"], r["bale"], r["qty"], r["lo"], r["hi"], r["avg"]) for r in parse_report((FIX / "ams_3183-cells.txt").read_text())[0]["rows"]]
+       == [(r["commodity"], r["grade"], r["bale"], r["qty"], r["lo"], r["hi"], r["avg"]) for r in sd["rows"]])
+
     # refusals
     bad = sd_txt.replace("Large Round                200           210.00         210.00", "Large Round                200           210.00         220.00")
     ck("an average outside its own range refuses the report", parse_report(bad)[0] is None)
@@ -505,7 +695,10 @@ def selftest():
         "1625                                  625", "1625                                  625")
     ck("a price under the sane floor refuses the report", parse_report(bad)[0] is None)
     ck("no report date, no report", parse_report(sd_txt.replace("Fri Oct 16, 2026", ""))[0] is None)
-    bale = sd_txt.replace("Grass - Good (Trade/Per Ton)", "Grass - Good (Trade/Per Bale)")
+    # per-bale rows are not in the report's tons (seen in the Oct 2026 ID, OR, NE, OK, WY, CO reports), so
+    # the tons line moves with them: 1625 - 200 = 1425
+    bale = sd_txt.replace("Grass - Good (Trade/Per Ton)", "Grass - Good (Trade/Per Bale)").replace(
+        "Hay                                   1625", "Hay                                   1425")
     pb, why = parse_report(bale)
     ck("a Per Bale table is left out, counted, and never mixed with tons",
        pb is not None and pb["per_bale_tables"] == 1 and len(pb["rows"]) == 6, why or (pb and pb["per_bale_tables"]))
