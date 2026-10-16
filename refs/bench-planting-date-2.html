@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEM :: ISU Soil Moisture County Temperature Estimates</title>
+    <meta name="description" content="Iowa State University, Iowa Environmental Mesonet">
+    <meta name="author" content="daryl herzmann akrherz@iastate.edu">
+
+    <link href="/vendor/bootstrap/5.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons for UI and navigation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="/css/iastate-iem.css" rel="stylesheet">
+
+    <!-- Any page specific headextra content here -->
+    <link rel="stylesheet" href="soilt.css" />
+    <!-- Essential Social Tags -->
+    <meta property="og:title" content="IEM :: ISU Soil Moisture County Temperature Estimates">
+    <meta property="og:description" content="Iowa Environmental Mesonet of Iowa State University">
+    <meta property="og:image" content="https://mesonet.agron.iastate.edu/images/logo_large.png">
+    <meta property="og:url" content="https://mesonet.agron.iastate.edu/agclimate/soilt.php">
+        <meta name="twitter:card" content="summary">
+
+    <!-- Non-essential -->
+    <meta name="twitter:creator" content="@akrherz">
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/apple-touch-icon-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/apple-touch-icon-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">
+  </head>
+
+  <body>
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+<header>
+<!-- Mobile navbar: Simple single row with logo, search, and hamburger -->
+<nav class="navbar-site d-block d-lg-none" aria-label="Utility navigation">
+    <div class="container">
+        <div class="mobile-navbar-row d-flex align-items-center">
+            <div class="mobile-logo me-2">
+                <a href="/" title="Home">
+                    <img src="/images/logo_small.png" alt="IEM" height="30">
+                </a>
+            </div>
+            
+            <div class="mobile-search flex-fill me-2">
+                <form action="/search" method="GET" role="search">
+                    <input name="q" aria-label="Search" title="Search" placeholder="Search 'DSM' 'autoplot 100' 'street address'" type="text" class="form-control form-control-sm">
+                </form>
+            </div>
+            
+            <div class="mobile-menu d-flex align-items-center">
+                <!-- Utility toggler removed per design: keep only primary-nav toggler -->
+                <button type="button" class="navbar-toggler p-1 ms-2" data-bs-toggle="collapse" data-bs-target="#navbar-menu-collapse" aria-controls="navbar-menu-collapse" aria-expanded="false" aria-label="Toggle primary navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="visually-hidden">Primary navigation</span>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile site links (contact, disclaimer, apps) now unified target -->
+        <div class="collapse" id="mobile-nav-collapse">
+            <ul class="nav navbar-nav mobile-site-nav" aria-label="Utility navigation links">
+                <li class="nav-item"><a class="nav-link" href="/info/contacts.php">contact us</a></li>
+                <li class="nav-item"><a class="nav-link" href="/disclaimer.php">disclaimer</a></li>
+                <li class="nav-item"><a class="nav-link" href="/apps.php">apps</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Desktop navbar: ISU wordmark on left, search and links stacked on right -->
+<nav class="navbar-site d-none d-lg-block" aria-label="Utility navigation">
+    <div class="container">
+        <div class="desktop-navbar-row">
+            <div class="desktop-wordmark">
+                <a href="/" title="Home" class="wordmark-unit">
+                    <span class="wordmark-isu">Iowa State University</span>
+                    <span class="wordmark-unit-title">Iowa Environmental Mesonet</span>
+                </a>
+            </div>
+            
+            <div class="desktop-right">
+                <div class="desktop-search">
+                    <form action="/search" method="GET" role="search">
+                        <input name="q" aria-label="Search" title="Search" placeholder="Search 'DSM' 'autoplot 100' 'street address'" type="text" class="form-control">
+                    </form>
+                </div>
+                
+                <div class="desktop-links">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/info/contacts.php">contact us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/disclaimer.php">disclaimer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/apps.php">apps</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+</header>
+
+<!-- Main navigation menu navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom" aria-label="Primary navigation">
+    <div class="container">
+        <!-- Desktop IEM logo (visible in main nav on desktop) -->
+        <div class="d-none d-lg-block">
+            <a href="/"><img style="height: 50px;" alt="IEM" class="img-fluid float-start" src="/images/logo_small.png" /></a>
+        </div>
+        
+    <!-- Main navigation menu (collapsible on mobile) -->
+    <div class="navbar-collapse collapse" id="navbar-menu-collapse">
+            <div class="d-none d-lg-block">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                        href="#" aria-label="Home resources menu"> <i class="bi bi-house-fill" aria-hidden="true"></i><span class="visually-hidden">Home resources</span> </a>
+                        <ul class="dropdown-menu">
+<li><a class="dropdown-item" href="/projects/iao/">Iowa Atmospheric Observatory</a></li>
+<li><a class="dropdown-item" href="/">Iowa Environmental Mesonet</a></li>
+<li><a class="dropdown-item" href="https://cocorahs.org">CoCoRaHS</a></li>
+<li><a class="dropdown-item" href="https://dailyerosion.org">Daily Erosion Project</a></li>
+<li><a class="dropdown-item" href="https://weather.im">Weather.IM Project</a></li>
+                        </ul>
+                    </li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Apps</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/apps.php">Application Index</a></li>
+<li><a class="dropdown-item" href="/plotting/auto/">Automated Data Plotting</a></li>
+<li><a class="dropdown-item" href="/climodat/">Climodat</a></li>
+<li><a class="dropdown-item" href="/climodat/monitor.php">Climodat Monitor</a></li>
+<li><a class="dropdown-item" href="/explorer/">IEM Explorer</a></li>
+<li><a class="dropdown-item" href="/rainfall/obhour.phtml">Hourly Precip</a></li>
+<li><a class="dropdown-item" href="/GIS/apps/rview/warnings.phtml">Interactive Radar</a></li>
+<li><a class="dropdown-item" href="/topics/pests/">Pest Maps + Forecasting</a></li>
+<li><a class="dropdown-item" href="/my/current.phtml">Sortable Currents</a></li>
+<li><a class="dropdown-item" href="/timemachine/">Time Machine</a></li>
+<li><a class="dropdown-item" href="/sites/windrose.phtml?station=AMW&amp;network=IA_ASOS">Wind Roses</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Areas</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/agweather/">Ag Weather/Climate Info</a></li>
+<li><a class="dropdown-item" href="/archive/">Archive Mainpage</a></li>
+<li><a class="dropdown-item" href="/climate/">Climate Mainpage</a></li>
+<li><a class="dropdown-item" href="/current/">Current Mainpage</a></li>
+<li><a class="dropdown-item" href="/dm/">Drought</a></li>
+<li><a class="dropdown-item" href="/GIS/">GIS Mainpage</a></li>
+<li><a class="dropdown-item" href="/nws/">NWS Mainpage</a></li>
+<li><a class="dropdown-item" href="/current/severe.phtml">Severe Weather Mainpage</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Datasets</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/COOP/extremes.php">Daily Climatology</a></li>
+<li><a class="dropdown-item" href="/request/daily.phtml">Daily Observations</a></li>
+<li><a class="dropdown-item" href="/info/datasets/">Dataset Documentation</a></li>
+<li><a class="dropdown-item" href="/iemre/">IEM Reanalysis</a></li>
+<li><a class="dropdown-item" href="/mos/">Model Output Statistics</a></li>
+<li><a class="dropdown-item" href="/docs/nexrad_mosaic/">NEXRAD Mosaic</a></li>
+<li><a class="dropdown-item" href="/request/gis/pireps.php">PIREP - Pilot Reports</a></li>
+<li><a class="dropdown-item" href="/roads/">Roads Mainpage</a></li>
+<li><a class="dropdown-item" href="/current/radar.phtml">RADAR &amp; Satellite</a></li>
+<li><a class="dropdown-item" href="/rainfall/">Rainfall Data</a></li>
+<li><a class="dropdown-item" href="/archive/raob/">Sounding Archive</a></li>
+<li><a class="dropdown-item" href="/smos/">Soil Moisture Satellite</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Info</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/info.php">Info Mainpage</a></li>
+<li><a class="dropdown-item" href="/onsite/features/past.php">Daily Features</a></li>
+<li><a class="dropdown-item" href="/info/links.php">Links</a></li>
+<li><a class="dropdown-item" href="/onsite/news.phtml">News</a></li>
+<li><a class="dropdown-item" href="/present/">Presentations</a></li>
+<li><a class="dropdown-item" href="/info/refs.php">Referenced By</a></li>
+<li><a class="dropdown-item" href="/sites/locate.php">Station Data and Metadata</a></li>
+<li><a class="dropdown-item" href="/QC/">Quality Control</a></li>
+<li><a class="dropdown-item" href="/info/variables.phtml">Variables</a></li>
+</ul></li>
+<li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Networks</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/sites/networks.php">Network Tables</a></li>
+<li><a class="dropdown-item" href="/ASOS/">ASOS/AWOS Airports</a></li>
+<li><a class="dropdown-item" href="/cocorahs/">CoCoRaHS - Citizen Science</a></li>
+<li><a class="dropdown-item" href="/DCP/">DCP/HADS/SHEF - Hydrological</a></li>
+<li><a class="dropdown-item" href="/COOP/">NWS COOP - Daily Climate</a></li>
+<li><a class="dropdown-item active" href="/agclimate/">ISU Soil Moisture</a></li>
+<li><a class="dropdown-item" href="/nstl_flux/">NLAE Flux</a></li>
+<li><a class="dropdown-item" href="/RWIS/">RWIS - Roadway Weather</a></li>
+<li><a class="dropdown-item" href="/scan/">SCAN - NRCS Soil Climate</a></li>
+<li><a class="dropdown-item" href="/other/">Other</a></li>
+<li><a class="dropdown-item" href="/uscrn/">US Climate Reference</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">NWS Data</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/nws/">NWS Mainpage</a></li>
+<li><a class="dropdown-item" href="/lsr/">Local Storm Report App</a></li>
+<li><a class="dropdown-item" href="/cow/">IEM Cow (SBW Verification)</a></li>
+<li><a class="dropdown-item" href="/raccoon/">IEM Raccoon (SBW Powerpoints)</a></li>
+<li><a class="dropdown-item" href="/river/">River Summary</a></li>
+<li><a class="dropdown-item" href="/GIS/goes.phtml">Satellite Data</a></li>
+<li><a class="dropdown-item" href="/vtec/search.php">Search for Warnings</a></li>
+<li><a class="dropdown-item" href="/nws/sps_search/">Special Weather Statement (SPS) Search</a></li>
+<li><a class="dropdown-item" href="/nws/spc_outlook_search/">SPC Convective Outlook / MCD Search</a></li>
+<li><a class="dropdown-item" href="/GIS/apps/rview/watch.phtml">SPC Watches</a></li>
+<li><a class="dropdown-item" href="/nws/text.php">Text Archives Mainpage</a></li>
+<li><a class="dropdown-item" href="/wx/afos/list.phtml">Text Listing by WFO/Center/Product</a></li>
+<li><a class="dropdown-item" href="/wx/afos/">Text by Product ID</a></li>
+<li><a class="dropdown-item" href="/vtec/">VTEC Browser</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Services</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/api/">API Mainpage</a></li>
+<li><a class="dropdown-item" href="/api/#cgi">CGI / Bulk Data</a></li>
+<li><a class="dropdown-item" href="/request/grx/">Gibson Ridge Placefiles</a></li>
+<li><a class="dropdown-item" href="/projects/iembot/">iembot</a></li>
+<li><a class="dropdown-item" href="/api/#json">JSON Webservices</a></li>
+<li><a class="dropdown-item" href="/request/ldm.php">LDM</a></li>
+<li><a class="dropdown-item" href="/request/maxcsv.py?help">Max CSV</a></li>
+<li><a class="dropdown-item" href="/ogc/">OGC Webservices</a></li>
+<li><a class="dropdown-item" href="/GIS/radmap_api.phtml">RadMap API</a></li>
+<li><a class="dropdown-item" href="/GIS/radview.phtml">RADAR Services</a></li>
+</ul></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Webcams</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="/projects/webcam.php">Webcam mainpage</a></li>
+<li><a class="dropdown-item" href="/current/bloop.phtml">Build your own lapses</a></li>
+<li><a class="dropdown-item" href="/cool/">Cool lapses</a></li>
+<li><a class="dropdown-item" href="/current/viewer.phtml">IEM Webcam Viewer</a></li>
+<li><a class="dropdown-item" href="/current/isucams.phtml">ISU Campus Webcams</a></li>
+<li><a class="dropdown-item" href="/current/camlapse/">Recent lapses</a></li>
+<li><a class="dropdown-item" href="/current/webcam.php">Still images</a></li>
+</ul></li>
+                </ul>
+            </div>
+            <div class="d-lg-none py-2">
+                <div class="accordion" id="mobile-primary-nav-accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="mobile-nav-home-heading">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#mobile-nav-home-collapse" aria-expanded="false"
+                                aria-controls="mobile-nav-home-collapse">Home</button>
+                        </h2>
+                        <div id="mobile-nav-home-collapse" class="accordion-collapse collapse"
+                            aria-labelledby="mobile-nav-home-heading" data-bs-parent="#mobile-primary-nav-accordion">
+                            <div class="accordion-body py-2">
+<a class="d-block py-1 text-decoration-none" href="/projects/iao/">Iowa Atmospheric Observatory</a>
+<a class="d-block py-1 text-decoration-none" href="/">Iowa Environmental Mesonet</a>
+<a class="d-block py-1 text-decoration-none" href="https://cocorahs.org">CoCoRaHS</a>
+<a class="d-block py-1 text-decoration-none" href="https://dailyerosion.org">Daily Erosion Project</a>
+<a class="d-block py-1 text-decoration-none" href="https://weather.im">Weather.IM Project</a>
+                            </div>
+                        </div>
+                    </div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-0-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-0-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-0-collapse">Apps</button></h2><div id="mobile-nav-tab-0-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-0-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/apps.php">Application Index</a>
+<a class="d-block py-1 text-decoration-none" href="/plotting/auto/">Automated Data Plotting</a>
+<a class="d-block py-1 text-decoration-none" href="/climodat/">Climodat</a>
+<a class="d-block py-1 text-decoration-none" href="/climodat/monitor.php">Climodat Monitor</a>
+<a class="d-block py-1 text-decoration-none" href="/explorer/">IEM Explorer</a>
+<a class="d-block py-1 text-decoration-none" href="/rainfall/obhour.phtml">Hourly Precip</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/apps/rview/warnings.phtml">Interactive Radar</a>
+<a class="d-block py-1 text-decoration-none" href="/topics/pests/">Pest Maps + Forecasting</a>
+<a class="d-block py-1 text-decoration-none" href="/my/current.phtml">Sortable Currents</a>
+<a class="d-block py-1 text-decoration-none" href="/timemachine/">Time Machine</a>
+<a class="d-block py-1 text-decoration-none" href="/sites/windrose.phtml?station=AMW&amp;network=IA_ASOS">Wind Roses</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-1-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-1-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-1-collapse">Areas</button></h2><div id="mobile-nav-tab-1-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-1-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/agweather/">Ag Weather/Climate Info</a>
+<a class="d-block py-1 text-decoration-none" href="/archive/">Archive Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/climate/">Climate Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/current/">Current Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/dm/">Drought</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/">GIS Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/nws/">NWS Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/current/severe.phtml">Severe Weather Mainpage</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-2-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-2-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-2-collapse">Datasets</button></h2><div id="mobile-nav-tab-2-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-2-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/COOP/extremes.php">Daily Climatology</a>
+<a class="d-block py-1 text-decoration-none" href="/request/daily.phtml">Daily Observations</a>
+<a class="d-block py-1 text-decoration-none" href="/info/datasets/">Dataset Documentation</a>
+<a class="d-block py-1 text-decoration-none" href="/iemre/">IEM Reanalysis</a>
+<a class="d-block py-1 text-decoration-none" href="/mos/">Model Output Statistics</a>
+<a class="d-block py-1 text-decoration-none" href="/docs/nexrad_mosaic/">NEXRAD Mosaic</a>
+<a class="d-block py-1 text-decoration-none" href="/request/gis/pireps.php">PIREP - Pilot Reports</a>
+<a class="d-block py-1 text-decoration-none" href="/roads/">Roads Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/current/radar.phtml">RADAR &amp; Satellite</a>
+<a class="d-block py-1 text-decoration-none" href="/rainfall/">Rainfall Data</a>
+<a class="d-block py-1 text-decoration-none" href="/archive/raob/">Sounding Archive</a>
+<a class="d-block py-1 text-decoration-none" href="/smos/">Soil Moisture Satellite</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-3-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-3-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-3-collapse">Info</button></h2><div id="mobile-nav-tab-3-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-3-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/info.php">Info Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/onsite/features/past.php">Daily Features</a>
+<a class="d-block py-1 text-decoration-none" href="/info/links.php">Links</a>
+<a class="d-block py-1 text-decoration-none" href="/onsite/news.phtml">News</a>
+<a class="d-block py-1 text-decoration-none" href="/present/">Presentations</a>
+<a class="d-block py-1 text-decoration-none" href="/info/refs.php">Referenced By</a>
+<a class="d-block py-1 text-decoration-none" href="/sites/locate.php">Station Data and Metadata</a>
+<a class="d-block py-1 text-decoration-none" href="/QC/">Quality Control</a>
+<a class="d-block py-1 text-decoration-none" href="/info/variables.phtml">Variables</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-4-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-4-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-4-collapse">Networks</button></h2><div id="mobile-nav-tab-4-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-4-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/sites/networks.php">Network Tables</a>
+<a class="d-block py-1 text-decoration-none" href="/ASOS/">ASOS/AWOS Airports</a>
+<a class="d-block py-1 text-decoration-none" href="/cocorahs/">CoCoRaHS - Citizen Science</a>
+<a class="d-block py-1 text-decoration-none" href="/DCP/">DCP/HADS/SHEF - Hydrological</a>
+<a class="d-block py-1 text-decoration-none" href="/COOP/">NWS COOP - Daily Climate</a>
+<a class="d-block py-1 text-decoration-none fw-semibold text-primary" href="/agclimate/">ISU Soil Moisture</a>
+<a class="d-block py-1 text-decoration-none" href="/nstl_flux/">NLAE Flux</a>
+<a class="d-block py-1 text-decoration-none" href="/RWIS/">RWIS - Roadway Weather</a>
+<a class="d-block py-1 text-decoration-none" href="/scan/">SCAN - NRCS Soil Climate</a>
+<a class="d-block py-1 text-decoration-none" href="/other/">Other</a>
+<a class="d-block py-1 text-decoration-none" href="/uscrn/">US Climate Reference</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-5-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-5-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-5-collapse">NWS Data</button></h2><div id="mobile-nav-tab-5-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-5-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/nws/">NWS Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/lsr/">Local Storm Report App</a>
+<a class="d-block py-1 text-decoration-none" href="/cow/">IEM Cow (SBW Verification)</a>
+<a class="d-block py-1 text-decoration-none" href="/raccoon/">IEM Raccoon (SBW Powerpoints)</a>
+<a class="d-block py-1 text-decoration-none" href="/river/">River Summary</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/goes.phtml">Satellite Data</a>
+<a class="d-block py-1 text-decoration-none" href="/vtec/search.php">Search for Warnings</a>
+<a class="d-block py-1 text-decoration-none" href="/nws/sps_search/">Special Weather Statement (SPS) Search</a>
+<a class="d-block py-1 text-decoration-none" href="/nws/spc_outlook_search/">SPC Convective Outlook / MCD Search</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/apps/rview/watch.phtml">SPC Watches</a>
+<a class="d-block py-1 text-decoration-none" href="/nws/text.php">Text Archives Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/wx/afos/list.phtml">Text Listing by WFO/Center/Product</a>
+<a class="d-block py-1 text-decoration-none" href="/wx/afos/">Text by Product ID</a>
+<a class="d-block py-1 text-decoration-none" href="/vtec/">VTEC Browser</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-6-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-6-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-6-collapse">Services</button></h2><div id="mobile-nav-tab-6-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-6-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/api/">API Mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/api/#cgi">CGI / Bulk Data</a>
+<a class="d-block py-1 text-decoration-none" href="/request/grx/">Gibson Ridge Placefiles</a>
+<a class="d-block py-1 text-decoration-none" href="/projects/iembot/">iembot</a>
+<a class="d-block py-1 text-decoration-none" href="/api/#json">JSON Webservices</a>
+<a class="d-block py-1 text-decoration-none" href="/request/ldm.php">LDM</a>
+<a class="d-block py-1 text-decoration-none" href="/request/maxcsv.py?help">Max CSV</a>
+<a class="d-block py-1 text-decoration-none" href="/ogc/">OGC Webservices</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/radmap_api.phtml">RadMap API</a>
+<a class="d-block py-1 text-decoration-none" href="/GIS/radview.phtml">RADAR Services</a>
+</div></div></div>
+<div class="accordion-item"><h2 class="accordion-header" id="mobile-nav-tab-7-heading"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav-tab-7-collapse" aria-expanded="false" aria-controls="mobile-nav-tab-7-collapse">Webcams</button></h2><div id="mobile-nav-tab-7-collapse" class="accordion-collapse collapse" aria-labelledby="mobile-nav-tab-7-heading" data-bs-parent="#mobile-primary-nav-accordion"><div class="accordion-body py-2"><a class="d-block py-1 text-decoration-none" href="/projects/webcam.php">Webcam mainpage</a>
+<a class="d-block py-1 text-decoration-none" href="/current/bloop.phtml">Build your own lapses</a>
+<a class="d-block py-1 text-decoration-none" href="/cool/">Cool lapses</a>
+<a class="d-block py-1 text-decoration-none" href="/current/viewer.phtml">IEM Webcam Viewer</a>
+<a class="d-block py-1 text-decoration-none" href="/current/isucams.phtml">ISU Campus Webcams</a>
+<a class="d-block py-1 text-decoration-none" href="/current/camlapse/">Recent lapses</a>
+<a class="d-block py-1 text-decoration-none" href="/current/webcam.php">Still images</a>
+</div></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<main role="main" id="main-content">
+<div class="container-fluid">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/agclimate/">ISU Soil Moisture Network</a></li>
+    <li class="breadcrumb-item active" aria-current="page">County 4 inch Soil Temperature Maps</li>
+  </ol>
+</nav>
+
+<h1 class="mb-3">County 4 inch Soil Temperature Maps</h1>
+<h2 class="h5">About These Maps</h2>
+<p>This page presents daily soil temperature analysis maps. The left column combines ISU Soil Moisture Network observations and bias-corrected NWS NAM forecast model analyses for higher resolution. The right column shows simple GFS forecast model outputs without bias correction.</p>
+
+<div class="mb-3">
+  <strong>Links:</strong>
+  <a class="btn btn-outline-secondary mb-1" href="/timemachine/?product=57">Archive of This Map</a>
+  <a class="btn btn-outline-secondary mb-1" href="/agclimate/hist/daily.php">Observation Download</a>
+  <a class="btn btn-outline-secondary mb-1" href="/agclimate/#soil04t">Real-time Map</a>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="caption">
+  <span class="close" aria-label="Close dialog">&times;</span>
+  <img class="modal-content" id="img01" alt="Soil temperature map preview">
+  <div id="caption"></div>
+</div>
+
+<div class="row g-3 clickme">
+  <div class="col-12 col-md-6">
+    <h2 class="h5">Past Three Day Observations</h2>
+    <img src="/data/soilt_day1.png?1792166063" class="img-fluid mb-3" alt="Soil temperature map for day 1">
+    <img src="/data/soilt_day2.png?1792166063" class="img-fluid mb-3" alt="Soil temperature map for day 2">
+    <img src="/data/soilt_day3.png?1792166063" class="img-fluid mb-3" alt="Soil temperature map for day 3">
+  </div>
+  <div class="col-12 col-md-6">
+    <h2 class="h5">GFS Forecast</h2>
+        <img src="/data/forecast/gfs_soilt_day_f0.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 0">
+    <img src="/data/forecast/gfs_soilt_day_f1.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 1">
+    <img src="/data/forecast/gfs_soilt_day_f2.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 2">
+    <img src="/data/forecast/gfs_soilt_day_f3.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 3">
+    <img src="/data/forecast/gfs_soilt_day_f4.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 4">
+    <img src="/data/forecast/gfs_soilt_day_f5.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 5">
+    <img src="/data/forecast/gfs_soilt_day_f6.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 6">
+    <img src="/data/forecast/gfs_soilt_day_f7.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 7">
+    <img src="/data/forecast/gfs_soilt_day_f8.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 8">
+    <img src="/data/forecast/gfs_soilt_day_f9.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 9">
+    <img src="/data/forecast/gfs_soilt_day_f10.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 10">
+    <img src="/data/forecast/gfs_soilt_day_f11.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 11">
+    <img src="/data/forecast/gfs_soilt_day_f12.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 12">
+    <img src="/data/forecast/gfs_soilt_day_f13.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 13">
+    <img src="/data/forecast/gfs_soilt_day_f14.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 14">
+    <img src="/data/forecast/gfs_soilt_day_f15.png?1792166063" class="img-fluid mb-3" alt="GFS soil temperature forecast day 15">
+  </div>
+</div>
+</div><!--/.container-->
+</main>
+<footer>
+    <div class="container" id="iem-footer" aria-label="Site footer">
+        <div class="row">
+
+            <!-- footer-associates -->
+            <section class="footer-associates col-sm-12 col-md-3">
+                <ul>
+                    <li><a href="https://iastate.edu"><img src="/vendor/img/isu-stacked.svg" class="wordmark-isu" alt="Iowa State University"></a></li>
+                    <li><a href="https://www.ag.iastate.edu">College of Ag</a></li>
+                    <li><a href="https://www.agron.iastate.edu">Department of Agronomy</a></li>
+                </ul>
+            </section>
+
+            <!-- footer-contact -->
+            <section class="footer-contact col-sm-12 col-md-3" aria-labelledby="footer-contact-heading">
+                <h2 id="footer-contact-heading" class="visually-hidden">Contact</h2>
+                <address class="mb-2">
+                    <strong>Department of Agronomy</strong><br>
+                    <a href="https://maps.google.com/?q=716+Farm+House+Ln+Ames,+IA+50011">716 Farm House Ln<br>
+                    Ames, IA 50011</a>
+                </address>
+                <a href="mailto:akrherz@iastate.edu">akrherz@iastate.edu</a><br>
+            </section>
+
+            <!-- footer-social -->
+            <section class="footer-social col-sm-12 col-md-3" aria-labelledby="footer-social-heading">
+                <h2 id="footer-social-heading" class="visually-hidden">Social media</h2>
+                <ul class=" labeled">
+                <li><a href="https://www.facebook.com/IEM-157789644737/"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> Facebook</a></li>
+                <li><a href="https://x.com/akrherz"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> Twitter</a></li>
+                <li><a href="https://github.com/akrherz/iem"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> Github</a></li>
+                <li><a href="https://youtube.com/akrherz"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> YouTube</a></li>
+                <li><a href="/rss.php"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> RSS</a></li>
+                </ul>
+            </section>
+
+            <!-- footer-legal -->
+            <section class="footer-legal col-sm-12 col-md-3" aria-labelledby="footer-legal-heading">
+                <h2 id="footer-legal-heading" class="visually-hidden">Legal</h2>
+                <p>Copyright &copy; 2001-2026<br>
+                                Iowa State University<br>
+                                of Science and Technology<br>
+                                All rights reserved.</p>
+                <ul>
+                    <li><a href="https://www.policy.iastate.edu/policy/discrimination">Non-discrimination Policy</a></li>
+                    <li><a href="https://www.policy.iastate.edu/electronicprivacy">Privacy Policy</a></li>
+                    <li><a href="https://digitalaccess.iastate.edu">Digital Access &amp; Accessibility</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+</footer>
+    <script src="/vendor/bootstrap/5.3.6/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/iastate-iem.js"></script>
+
+    <script type="module" src="soilt.module.js"></script>  </body>
+</html>

@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:49:41Z",
+ "run_utc": "2026-10-16T15:54:23Z",
  "sources": [
   {
    "bytes": null,
@@ -2191,6 +2191,31 @@
    ],
    "status": "new",
    "text_chars": 1322
+  },
+  {
+   "bytes": 34550,
+   "sha256": "072b53e93f2c4e009edc39fd7fc998824bb64761e6ee24db65e065bde30ceb18",
+   "fetched_utc": "2026-10-16T15:54:23Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-planting-date-2.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-planting-date-2",
+   "url": "https://mesonet.agron.iastate.edu/agclimate/soilt.php",
+   "title": "Benchmark planting-date: Iowa State / IEM soil temperature tools",
+   "why": "/planting-date competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:54:23Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 502
   },
   {
    "bytes": null,

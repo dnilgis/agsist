@@ -1,0 +1,26 @@
+# Benchmark planting-date: Iowa State / IEM soil temperature tools
+# https://mesonet.agron.iastate.edu/agclimate/soilt.php
+# fetched 2026-10-16T15:54:23Z, sha256 072b53e93f2c4e009edc39fd7fc998824bb64761e6ee24db65e065bde30ceb18
+
+IEM :: ISU Soil Moisture County Temperature Estimates
+
+-
+
+-
+
+County 4 inch Soil Temperature Maps
+
+About These Maps
+
+This page presents daily soil temperature analysis maps. The left column combines ISU Soil Moisture Network observations and bias-corrected NWS NAM forecast model analyses for higher resolution. The right column shows simple GFS forecast model outputs without bias correction.
+
+Links:
+Archive of This Map
+Observation Download
+Real-time Map
+
+×
+
+Past Three Day Observations
+
+GFS Forecast
