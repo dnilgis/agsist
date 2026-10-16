@@ -128,15 +128,20 @@ try {
       sp.textContent='Rank since '+String(c.first_week||'2010').slice(0,4)+': '+t;sp.title=(c.crowd&&c.crowd.word?c.crowd.word+': ':'')+'net as a share of open interest, against every week since '+String(c.first_week||'2010').slice(0,4);
     });
   }
-  function renderCOT(data){
-    window.AGSIST_COT._d=data;placeCOT(data);
-    COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
+  /* The crowding badges and rank lines: drawn again once cot-analysis.json
+     arrives (it loads when the COT card comes near the screen; see below). */
+  function cxPaint(data){
     badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
     badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
     /* both quiet: one short line instead of two right-aligned badges */
     (function(){var g=document.getElementById('cot-verdict'),l=document.getElementById('cot-verdict-lv');
       if(g&&l&&!g.hidden&&!l.hidden&&/none crowded$/.test(g.textContent)&&/none crowded$/.test(l.textContent)){g.textContent='No market crowded';l.hidden=true;}})();
     rankRows(data);
+  }
+  function renderCOT(data){
+    window.AGSIST_COT._d=data;placeCOT(data);
+    COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
+    cxPaint(data);
     var dateEl=document.getElementById('cot-date');
     if(dateEl&&data.report_date){
       var _rds=String(data.report_date);
@@ -158,13 +163,25 @@ try {
       })();
     }
   }
+  /* 2026-10-16: cot-analysis.json is about 100 KB for a few crowding words,
+     so it loads only when the COT card comes within reach of the screen (on
+     a phone the card sits in a closed fold, so most visits never pull it).
+     Until then the rows show with no badge; nothing is guessed. */
+  function lazyCX(d){
+    var w=document.getElementById('cot-widget'),done=false;
+    function go(){if(done)return;done=true;
+      fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){if(!a)return;COT_CX=a;cxPaint(window.AGSIST_COT._d||d);});}
+    if(!w||!('IntersectionObserver' in window)){go();return;}
+    var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();go();}},{rootMargin:'600px 0px'});
+    io.observe(w);
+  }
   /* WAVE3-L: a failed or malformed cot.json is one line, not ten rows of
      placeholders. */
   /* data/cot-analysis.json carries the one crowding measure (cot_analysis.py
      `crowd`); it is used only when it is for the same week as cot.json. */
   AG.json('/data/cot.json').then(function(d){
     if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
-  }).then(function(d){return fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){COT_CX=a;return d;});}).then(renderCOT,function(){
+  }).then(function(d){renderCOT(d);lazyCX(d);},function(){
     window.AGSIST_COT.failed=true;
     var verdict=document.getElementById('cot-verdict');if(verdict)verdict.hidden=true;var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
     var rows=document.getElementById('cot-rows');if(rows)rows.innerHTML='<p class="cot-fail" role="status">CFTC positions did not load.</p>';
@@ -1225,8 +1242,10 @@ try {
    worker is registered by components/loader.js (2026-10-12). */
 (function(){
   'use strict';
-  var hint = document.getElementById('pwa-hint');
-  if(!hint) return;
+  /* 2026-10-16: the banner and modals (about 16 KB, mostly SVG) used to sit in
+     index.html for every visit; they are built here only for a phone that
+     passes the gates below. PWA_HTML is the same markup, comments removed. */
+  var hint = null;
   // Bail if already running as installed PWA
   var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
   var iosStandalone = (window.navigator && window.navigator.standalone === true);
@@ -1247,6 +1266,15 @@ try {
   var isIOSSafari = isIOS && isSafari;
   // Only show on mobile — PWA install on desktop is uncommon
   if(!isIOS && !isAndroid) return;
+  if(!document.getElementById('pwa-hint')){
+    var PWA_HTML = "<div class=\"pwa-hint\" id=\"pwa-hint\" role=\"dialog\" aria-label=\"Install AGSIST to home screen\" aria-live=\"polite\">\n<span class=\"pwa-hint-icon\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-smartphone\"/></svg></span>\n<div class=\"pwa-hint-body\">\n<strong id=\"pwa-hint-title\">Add AGSIST to your home screen</strong>\n<em id=\"pwa-hint-text\">Open like a real app, faster, no browser bar.</em>\n</div>\n<div class=\"pwa-hint-actions\" id=\"pwa-hint-actions\">\n<button class=\"pwa-hint-btn pwa-hint-btn--primary\" id=\"pwa-install-btn\" type=\"button\">Show Me How</button>\n</div>\n<button class=\"pwa-hint-close\" id=\"pwa-hint-close\" type=\"button\" aria-label=\"Dismiss install hint\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-x\"/></svg></button>\n</div>\n<div class=\"pwa-modal\" id=\"pwa-modal-ios\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"pwa-modal-ios-title\" aria-hidden=\"true\">\n<div class=\"pwa-modal-card\" role=\"document\">\n<button class=\"pwa-modal-close\" id=\"pwa-modal-ios-close\" type=\"button\" aria-label=\"Close instructions\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-x\"/></svg></button>\n<div class=\"pwa-modal-head\">\n<h3 id=\"pwa-modal-ios-title\">Add AGSIST to Your iPhone</h3>\n<p>Three quick taps and AGSIST opens like an app from your home screen, no browser bar, no app store.</p>\n</div>\n<div class=\"pwa-modal-body\">\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">1</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Tap the Share button below</div>\n<div class=\"pwa-step-desc\">Look at the bottom of your screen. Find the <strong>square with an arrow pointing up</strong>. It&rsquo;s in Safari&rsquo;s toolbar between the back/forward arrows and the bookmarks icon.</div>\n<div class=\"pwa-visual\" aria-hidden=\"true\">\n<svg viewBox=\"0 0 360 200\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Diagram showing the Share button location in Safari’s bottom toolbar\">\n<rect x=\"40\" y=\"10\" width=\"280\" height=\"180\" rx=\"22\" fill=\"#0d0d0d\" stroke=\"#3a3a3a\" stroke-width=\"2\"/>\n<rect x=\"48\" y=\"22\" width=\"264\" height=\"156\" rx=\"14\" fill=\"#1a1a1a\"/>\n<rect x=\"60\" y=\"34\" width=\"240\" height=\"6\" rx=\"2\" fill=\"#2a3520\"/>\n<rect x=\"60\" y=\"46\" width=\"180\" height=\"4\" rx=\"2\" fill=\"#252525\"/>\n<rect x=\"60\" y=\"56\" width=\"220\" height=\"4\" rx=\"2\" fill=\"#252525\"/>\n<rect x=\"60\" y=\"66\" width=\"160\" height=\"4\" rx=\"2\" fill=\"#252525\"/>\n<rect x=\"60\" y=\"80\" width=\"240\" height=\"40\" rx=\"6\" fill=\"#1f2818\"/>\n<rect x=\"60\" y=\"128\" width=\"200\" height=\"4\" rx=\"2\" fill=\"#252525\"/>\n<rect x=\"60\" y=\"138\" width=\"220\" height=\"4\" rx=\"2\" fill=\"#252525\"/>\n<rect x=\"48\" y=\"156\" width=\"264\" height=\"22\" rx=\"0\" fill=\"#2a2a2a\"/>\n<line x1=\"48\" y1=\"156\" x2=\"312\" y2=\"156\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<path d=\"M70 167 L66 170 L70 173\" stroke=\"#888\" stroke-width=\"1.5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M105 167 L109 170 L105 173\" stroke=\"#666\" stroke-width=\"1.5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<g transform=\"translate(170 167)\">\n<rect x=\"-7\" y=\"-1\" width=\"14\" height=\"11\" rx=\"1.5\" fill=\"none\" stroke=\"#d4a23f\" stroke-width=\"1.6\"/>\n<line x1=\"0\" y1=\"-7\" x2=\"0\" y2=\"4\" stroke=\"#d4a23f\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>\n<path d=\"M-3 -4 L0 -7 L3 -4\" stroke=\"#d4a23f\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<path d=\"M225 164 L225 174 L228 172 L231 174 L231 164 Z\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.4\"/>\n<rect x=\"265\" y=\"164\" width=\"9\" height=\"9\" rx=\"1\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.4\"/>\n<rect x=\"269\" y=\"167\" width=\"9\" height=\"9\" rx=\"1\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.4\"/>\n<g class=\"pwa-arrow-anim\">\n<path d=\"M170 195 L170 184 L165 184 M170 184 L175 184\" stroke=\"#d4a23f\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<text x=\"170\" y=\"208\" text-anchor=\"middle\" fill=\"#d4a23f\" font-family=\"Archivo,sans-serif\" font-size=\"11\" font-weight=\"700\">TAP HERE</text>\n</g>\n</svg>\n</div>\n</div>\n</div>\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">2</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Scroll down, tap \"Add to Home Screen\"</div>\n<div class=\"pwa-step-desc\">A menu slides up. Scroll past the row of app icons (Messages, Mail, etc.) until you see <strong>Add to Home Screen</strong> with a <kbd>&plus;</kbd> icon. Tap it.</div>\n<div class=\"pwa-visual\" aria-hidden=\"true\">\n<svg viewBox=\"0 0 360 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Diagram showing the Add to Home Screen menu option\">\n<rect x=\"20\" y=\"10\" width=\"320\" height=\"160\" rx=\"12\" fill=\"#222\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<rect x=\"167\" y=\"16\" width=\"26\" height=\"3\" rx=\"1.5\" fill=\"#555\"/>\n<circle cx=\"50\" cy=\"40\" r=\"11\" fill=\"#34c759\"/>\n<circle cx=\"84\" cy=\"40\" r=\"11\" fill=\"#007aff\"/>\n<circle cx=\"118\" cy=\"40\" r=\"11\" fill=\"#5856d6\"/>\n<circle cx=\"152\" cy=\"40\" r=\"11\" fill=\"#ff3b30\"/>\n<circle cx=\"186\" cy=\"40\" r=\"11\" fill=\"#ff9500\"/>\n<circle cx=\"220\" cy=\"40\" r=\"11\" fill=\"#af52de\"/>\n<text x=\"50\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Msgs</text>\n<text x=\"84\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Mail</text>\n<text x=\"118\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Notes</text>\n<text x=\"152\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Reminders</text>\n<text x=\"186\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Maps</text>\n<text x=\"220\" y=\"60\" text-anchor=\"middle\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"6\">Contacts</text>\n<line x1=\"30\" y1=\"76\" x2=\"330\" y2=\"76\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<text x=\"40\" y=\"92\" fill=\"#888\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">Copy</text>\n<text x=\"320\" y=\"92\" text-anchor=\"end\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"14\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-clipboard-list\"/></svg></text>\n<line x1=\"30\" y1=\"102\" x2=\"330\" y2=\"102\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<text x=\"40\" y=\"118\" fill=\"#888\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">Add to Reading List</text>\n<text x=\"320\" y=\"118\" text-anchor=\"end\" fill=\"#666\" font-family=\"-apple-system,sans-serif\" font-size=\"14\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-book-open\"/></svg></text>\n<line x1=\"30\" y1=\"128\" x2=\"330\" y2=\"128\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<rect x=\"22\" y=\"130\" width=\"316\" height=\"28\" rx=\"4\" fill=\"rgba(var(--gold-rgb),0.15)\" stroke=\"#d4a23f\" stroke-width=\"1.5\"/>\n<text x=\"40\" y=\"148\" fill=\"#d4a23f\" font-family=\"-apple-system,sans-serif\" font-size=\"11.5\" font-weight=\"600\">Add to Home Screen</text>\n<g transform=\"translate(316 144)\">\n<rect x=\"-9\" y=\"-9\" width=\"18\" height=\"18\" rx=\"3.5\" fill=\"none\" stroke=\"#d4a23f\" stroke-width=\"1.5\"/>\n<line x1=\"-4\" y1=\"0\" x2=\"4\" y2=\"0\" stroke=\"#d4a23f\" stroke-width=\"1.6\"/>\n<line x1=\"0\" y1=\"-4\" x2=\"0\" y2=\"4\" stroke=\"#d4a23f\" stroke-width=\"1.6\"/>\n</g>\n<g class=\"pwa-arrow-anim\">\n<path d=\"M260 144 L246 144 M250 140 L246 144 L250 148\" stroke=\"#d4a23f\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n</svg>\n</div>\n</div>\n</div>\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">3</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Tap \"Add\" in the top corner</div>\n<div class=\"pwa-step-desc\">A confirmation screen pops up with &ldquo;AGSIST&rdquo; pre-filled. Tap <strong>Add</strong> in the top-right corner. The icon will appear on your home screen right away.</div>\n</div>\n</div>\n</div>\n<div class=\"pwa-modal-footer\">\n<div class=\"pwa-modal-footer-text\">Once installed, tap the <strong>AGSIST icon</strong> on your home screen any time. Opens like an app, no browser. Works offline for content you&rsquo;ve already viewed.</div>\n</div>\n</div>\n</div>\n<div class=\"pwa-modal\" id=\"pwa-modal-android\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"pwa-modal-android-title\" aria-hidden=\"true\">\n<div class=\"pwa-modal-card\" role=\"document\">\n<button class=\"pwa-modal-close\" id=\"pwa-modal-android-close\" type=\"button\" aria-label=\"Close instructions\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-x\"/></svg></button>\n<div class=\"pwa-modal-head\">\n<h3 id=\"pwa-modal-android-title\">Install AGSIST on Android</h3>\n<p>Quick install through Chrome&rsquo;s menu, no Play Store needed.</p>\n</div>\n<div class=\"pwa-modal-body\">\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">1</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Tap the menu button</div>\n<div class=\"pwa-step-desc\">In Chrome&rsquo;s top-right corner, tap the <strong>three vertical dots</strong> (&#x22EE;) to open the menu.</div>\n<div class=\"pwa-visual\" aria-hidden=\"true\">\n<svg viewBox=\"0 0 360 110\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Diagram showing the three-dot menu in Chrome’s top-right\">\n<rect x=\"20\" y=\"20\" width=\"320\" height=\"42\" rx=\"6\" fill=\"#202124\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<rect x=\"30\" y=\"28\" width=\"50\" height=\"6\" rx=\"3\" fill=\"#3a3a3a\"/>\n<rect x=\"40\" y=\"42\" width=\"220\" height=\"14\" rx=\"7\" fill=\"#3a3a3a\"/>\n<text x=\"50\" y=\"52\" fill=\"#888\" font-family=\"-apple-system,sans-serif\" font-size=\"8\">agsist.com</text>\n<rect x=\"278\" y=\"44\" width=\"12\" height=\"12\" rx=\"2\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.4\"/>\n<text x=\"284\" y=\"53\" text-anchor=\"middle\" fill=\"#888\" font-family=\"-apple-system,sans-serif\" font-size=\"7\">3</text>\n<g transform=\"translate(310 49)\">\n<circle cx=\"0\" cy=\"-7\" r=\"2.2\" fill=\"#d4a23f\"/>\n<circle cx=\"0\" cy=\"0\" r=\"2.2\" fill=\"#d4a23f\"/>\n<circle cx=\"0\" cy=\"7\" r=\"2.2\" fill=\"#d4a23f\"/>\n</g>\n<g class=\"pwa-arrow-anim\">\n<path d=\"M310 90 L310 75 M305 80 L310 75 L315 80\" stroke=\"#d4a23f\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<text x=\"310\" y=\"103\" text-anchor=\"middle\" fill=\"#d4a23f\" font-family=\"Archivo,sans-serif\" font-size=\"10\" font-weight=\"700\">TAP HERE</text>\n</g>\n</svg>\n</div>\n</div>\n</div>\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">2</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Tap \"Install app\" or \"Add to Home screen\"</div>\n<div class=\"pwa-step-desc\">Scroll the menu list. Look for <strong>Install app</strong> (newer Chrome) or <strong>Add to Home screen</strong> (older Chrome). Tap it.</div>\n<div class=\"pwa-visual\" aria-hidden=\"true\">\n<svg viewBox=\"0 0 360 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Diagram showing the Install app option in Chrome’s menu\">\n<rect x=\"120\" y=\"10\" width=\"220\" height=\"160\" rx=\"6\" fill=\"#2a2a2a\" stroke=\"#3a3a3a\" stroke-width=\"1\"/>\n<text x=\"135\" y=\"32\" fill=\"#aaa\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">New tab</text>\n<line x1=\"125\" y1=\"42\" x2=\"335\" y2=\"42\" stroke=\"#3a3a3a\" stroke-width=\"0.5\"/>\n<text x=\"135\" y=\"58\" fill=\"#aaa\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">New incognito tab</text>\n<line x1=\"125\" y1=\"68\" x2=\"335\" y2=\"68\" stroke=\"#3a3a3a\" stroke-width=\"0.5\"/>\n<text x=\"135\" y=\"84\" fill=\"#aaa\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">Bookmarks</text>\n<line x1=\"125\" y1=\"94\" x2=\"335\" y2=\"94\" stroke=\"#3a3a3a\" stroke-width=\"0.5\"/>\n<text x=\"135\" y=\"110\" fill=\"#aaa\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">Recent tabs</text>\n<line x1=\"125\" y1=\"120\" x2=\"335\" y2=\"120\" stroke=\"#3a3a3a\" stroke-width=\"0.5\"/>\n<rect x=\"122\" y=\"124\" width=\"216\" height=\"26\" rx=\"4\" fill=\"rgba(var(--gold-rgb),0.15)\" stroke=\"#d4a23f\" stroke-width=\"1.5\"/>\n<text x=\"135\" y=\"142\" fill=\"#d4a23f\" font-family=\"-apple-system,sans-serif\" font-size=\"11.5\" font-weight=\"600\">Install app</text>\n<g transform=\"translate(322 137)\">\n<path d=\"M-5 -2 L0 3 L5 -2\" stroke=\"#d4a23f\" stroke-width=\"1.5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<line x1=\"0\" y1=\"-5\" x2=\"0\" y2=\"3\" stroke=\"#d4a23f\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n</g>\n<g class=\"pwa-arrow-anim\">\n<path d=\"M95 137 L115 137 M111 132 L115 137 L111 142\" stroke=\"#d4a23f\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<line x1=\"125\" y1=\"156\" x2=\"335\" y2=\"156\" stroke=\"#3a3a3a\" stroke-width=\"0.5\"/>\n<text x=\"135\" y=\"170\" fill=\"#aaa\" font-family=\"-apple-system,sans-serif\" font-size=\"11\">Settings</text>\n</svg>\n</div>\n</div>\n</div>\n<div class=\"pwa-step\">\n<div class=\"pwa-step-num\">3</div>\n<div class=\"pwa-step-content\">\n<div class=\"pwa-step-title\">Confirm install</div>\n<div class=\"pwa-step-desc\">Chrome shows a confirmation dialog. Tap <strong>Install</strong> (or <strong>Add</strong>). The AGSIST icon appears on your home screen / app drawer right away.</div>\n</div>\n</div>\n</div>\n<div class=\"pwa-modal-footer\">\n<div class=\"pwa-modal-footer-text\">Once installed, tap the <strong>AGSIST icon</strong> any time. Opens like a real app, no browser bar.</div>\n</div>\n</div>\n</div>";
+    var wrap = document.createElement('div');
+    wrap.innerHTML = PWA_HTML;
+    var foot = document.getElementById('site-footer');
+    while(wrap.firstChild){ if(foot && foot.parentNode) foot.parentNode.insertBefore(wrap.firstChild, foot); else document.body.appendChild(wrap.firstChild); }
+  }
+  hint = document.getElementById('pwa-hint');
+  if(!hint) return;
   var hintTitle = document.getElementById('pwa-hint-title');
   var hintText = document.getElementById('pwa-hint-text');
   var installBtn = document.getElementById('pwa-install-btn');
@@ -1749,6 +1777,128 @@ try {
   /* home-season.js (deferred) sets s7-no-gdu; DOMContentLoaded comes after it runs. */
   word();setTimeout(word,0);document.addEventListener('DOMContentLoaded',word);
   b.addEventListener('click',function(){var on=!root.classList.contains('wx-fold-open');root.classList.toggle('wx-fold-open',on);b.setAttribute('aria-expanded',on?'true':'false');});
+})();
+} catch (e) { blockFailed(e); }
+/* ---- 2026-10-16: no location after a few seconds ----
+   A reader who neither allows nor blocks the browser's location question
+   used to sit on "Detecting your location..." and gray rows for the life of
+   the page (geo.js only hears back on allow or deny). After NOLOC_MS with no
+   saved ZIP and the skeleton still up, the cash bid card says so plainly,
+   opens the ZIP box (geo.js's own fallback) and offers a state pick that
+   shows that state's median basis from data/basis-states.json (AGSIST
+   network elevators, scripts/basis_method.py). If a location lands later,
+   geo.js and bids-homepage.js draw over all of it as usual. */
+try {
+(function(){
+  var NOLOC_MS=6000;
+  var AB={}; /* code -> state name, from basis-states.json itself */
+  var CROP={corn:'Corn',soybeans:'Soybeans',wheat_srw:'SRW wheat',wheat_hrw:'HRW wheat',wheat_hrs:'Spring wheat'};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function savedZip(){try{var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}catch(e){return false;}}
+  function pickedCode(){
+    try{var c=localStorage.getItem('agsist-pd-state');if(c&&AB[c])return c;
+      var n=localStorage.getItem('agsist-rma-state');for(var k in AB){if(AB[k]===n)return k;}}catch(e){}
+    return '';
+  }
+  function cents(m){var c=Math.round(m*10000)/100;return (window.AG&&AG.px&&AG.px.basis)?AG.px.basis(c):((c>0?'+':'−')+Math.abs(c)+'¢');}
+  function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
+  /* One state, as lines. Only crops with a median (basis-states.json prints
+     one at min_n elevators or more); a thinner crop is counted, not priced. */
+  window.__agsistNolocRows=function(doc,code){
+    var s=doc&&doc.states&&doc.states[code];if(!s)return null;
+    var rows=[],thin=[];
+    Object.keys(CROP).forEach(function(k){
+      var c=s.crops&&s.crops[k];if(!c)return;
+      if(c.median==null){if(k==='corn'||k==='soybeans')thin.push(CROP[k]);return;}
+      var wk='';
+      if(c.wow!=null&&c.wow_n>=(doc.min_n||3)){var w=Math.round(c.wow*4)/4;wk=w===0?'no change on the week':(AG.px.basis(w)+' on the week');}
+      rows.push({crop:CROP[k],basis:cents(c.median),contract:c.label||'',n:c.n,week:wk});
+    });
+    return {name:s.name,path:s.path||'',elevators:s.elevators,rows:rows,thin:thin};
+  }
+  function draw(box,doc,code){
+    var out=box.querySelector('.hn-out');if(!out)return;
+    if(!code){out.innerHTML='';return;}
+    var r=window.__agsistNolocRows(doc,code);
+    if(!r||!r.rows.length){out.innerHTML='<p class="hn-fine">Not enough fresh '+esc(AB[code])+' bids in the AGSIST network to print a state basis this week.'+(r&&r.path?' <a href="'+esc(r.path.replace(/#.*$/,''))+'">'+esc(r.name)+' bids</a>':'')+'</p>';return;}
+    out.innerHTML='<ul class="hn-rows">'+r.rows.map(function(x){
+      return '<li><span class="hn-crop">'+esc(x.crop)+'</span><span class="hn-b">'+esc(x.basis)+'</span><span class="hn-c">'+esc(x.contract)+'</span><span class="hn-n">'+x.n+' elevators'+(x.week?', '+esc(x.week):'')+'</span></li>';
+    }).join('')+'</ul><p class="hn-fine">Median basis of AGSIST network elevators with a fresh bid, read '+esc(day(doc.generated))+'. Your elevator will differ.'+(r.thin.length?' Too few bids to print: '+esc(r.thin.join(', '))+'.':'')+' <a href="'+esc(r.path||'/basis')+'">All '+esc(r.name)+' bids</a></p>';
+  }
+  function fallback(){
+    var area=document.getElementById('bids-list-area'),txt=document.getElementById('bids-geo-txt');
+    if(!area||!area.querySelector('.bids-skeleton')||savedZip())return;
+    if(txt&&!/Detecting/.test(txt.textContent||''))return;
+    try{if(typeof window._signalBidsGeoFailed==='function')window._signalBidsGeoFailed();}catch(e){}
+    try{var wl=document.getElementById('wx-loading');if(wl&&/Detecting/.test(wl.textContent||'')&&typeof window.showZipEntry==='function')window.showZipEntry();}catch(e){}
+    area.innerHTML='<div class="hn" id="bids-noloc"><p class="hn-h">Your location did not come through.</p>'
+      +'<p class="hn-p">Type your ZIP for the nearest elevators, or pick a state to see its basis now.</p>'
+      +'<div class="hn-pick"><button type="button" class="hn-zip">Enter ZIP</button>'
+      +'<label class="hn-sl"><span class="visually-hidden">State</span><select class="hn-sel" disabled><option value="">Pick a state</option></select></label></div>'
+      +'<div class="hn-out" aria-live="polite"></div></div>';
+    var box=area.querySelector('.hn'),sel=box.querySelector('.hn-sel'),doc=null;
+    /* The page has one ZIP box, in the hero band (agsistOpenZip opens and
+       focuses it); the in-card row only when the band is missing. */
+    box.querySelector('.hn-zip').addEventListener('click',function(){
+      if(typeof window.agsistOpenZip==='function'){window.agsistOpenZip();return;}
+      var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
+      if(row)row.style.display='block';if(z)z.focus();
+    });
+    sel.addEventListener('change',function(){
+      var v=sel.value;
+      try{if(v){localStorage.setItem('agsist-pd-state',v);localStorage.setItem('agsist-rma-state',AB[v]);}}catch(e){}
+      if(window.gaEvent)try{gaEvent('noloc_state_pick',{state:v||'none'});}catch(e){}
+      draw(box,doc,v);
+    });
+    AG.json('/data/basis-states.json').then(function(d){
+      doc=d;var st=(d&&d.states)||{};
+      Object.keys(st).forEach(function(k){if(st[k]&&st[k].name)AB[k]=st[k].name;});
+      var ks=Object.keys(AB).sort(function(a,b){return AB[a]<AB[b]?-1:1;});
+      if(!ks.length)throw new Error('no states');
+      sel.innerHTML='<option value="">Pick a state</option>'+ks.map(function(k){return '<option value="'+esc(k)+'">'+esc(AB[k])+'</option>';}).join('');
+      sel.disabled=false;
+      var pre=pickedCode();if(pre){sel.value=pre;draw(box,doc,pre);}
+    }).catch(function(){
+      var lab=box.querySelector('.hn-sl');if(lab)lab.remove();
+      var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
+    });
+  }
+  function arm(){setTimeout(fallback,NOLOC_MS);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
+})();
+} catch (e) { blockFailed(e); }
+/* ---- 2026-10-16: "Also today" under the briefing strip ----
+   The strip shows one teaser line. The briefing's other section titles
+   (same text bake_homepage.py writes and hydrateDaily refreshes) go on one
+   more line, so the first screen says what else happened today without a
+   tap. A title already in the headline or teaser is left out. The line hides
+   when home-season.js marks the teaser stale or the briefing is not today's. */
+try {
+(function(){
+  var hero=document.getElementById('daily-hero'),teaser=document.getElementById('daily-teaser');
+  if(!hero||!teaser)return;
+  function todayCT(){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){return '';}}
+  window.__agsistAlsoToday=function(titles,head){
+    var h=String(head||'').toLowerCase(),seen={};
+    return titles.map(function(t){return String(t||'').replace(/\s+/g,' ').trim();}).filter(function(t){
+      var k=t.toLowerCase();if(!t||seen[k]||h.indexOf(k)>=0)return false;seen[k]=1;return true;
+    }).slice(0,3);
+  };
+  function build(){
+    var line=document.getElementById('teaser-also');
+    var pv=document.getElementById('daily-teaser-text');
+    var stale=pv&&pv.getAttribute('data-s7')==='hidden-stale';
+    var bd=hero.getAttribute('data-briefing-date')||'',td=todayCT();
+    var titles=[];for(var i=1;i<=4;i++){var e=document.getElementById('daily-section-'+i+'-title');if(e)titles.push(e.textContent);}
+    var hl=document.getElementById('daily-headline');
+    var list=window.__agsistAlsoToday(titles,(hl?hl.textContent:'')+' '+(pv?pv.textContent:''));
+    if(stale||!list.length||(bd&&td&&bd!==td)){if(line)line.hidden=true;return;}
+    if(!line){line=document.createElement('span');line.id='teaser-also';line.className='teaser-also';teaser.appendChild(line);}
+    line.hidden=false;
+    line.textContent='Also today: '+list.join(' · ');
+  }
+  function go(){build();setTimeout(build,2500);setTimeout(build,8000);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
 })();
 } catch (e) { blockFailed(e); }
 })();

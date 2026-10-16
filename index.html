@@ -14,7 +14,7 @@
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
-<link rel="stylesheet" href="/css/home.css?v=19">
+<link rel="stylesheet" href="/css/home.css?v=20">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -316,6 +316,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          is drawn (or hidden) before first paint and the bids card below
          never jumps. -->
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
+    <!-- 2026-10-16: who stands behind the page, on the first screen. -->
+    <p class="hb-by">Built and checked by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wis. <a href="/editorial-standards">How the numbers are made</a></p>
     <!-- Sponsor credit: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. Drawn only for a paid sponsor; unsold it stays hidden and empty. -->
   <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
   </section>
@@ -1587,226 +1589,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     <a href="/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>
   </div>
 </div>
-<!-- PWA install hint banner + visual instruction modal (v2, May 4 2026) -->
-<div class="pwa-hint" id="pwa-hint" role="dialog" aria-label="Install AGSIST to home screen" aria-live="polite">
-  <span class="pwa-hint-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg></span>
-  <div class="pwa-hint-body">
-    <strong id="pwa-hint-title">Add AGSIST to your home screen</strong>
-    <em id="pwa-hint-text">Open like a real app, faster, no browser bar.</em>
-  </div>
-  <div class="pwa-hint-actions" id="pwa-hint-actions">
-    <button class="pwa-hint-btn pwa-hint-btn--primary" id="pwa-install-btn" type="button">Show Me How</button>
-  </div>
-  <button class="pwa-hint-close" id="pwa-hint-close" type="button" aria-label="Dismiss install hint"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-</div>
-<!-- iOS instruction modal -->
-<div class="pwa-modal" id="pwa-modal-ios" role="dialog" aria-modal="true" aria-labelledby="pwa-modal-ios-title" aria-hidden="true">
-  <div class="pwa-modal-card" role="document">
-    <button class="pwa-modal-close" id="pwa-modal-ios-close" type="button" aria-label="Close instructions"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-    <div class="pwa-modal-head">
-      <h3 id="pwa-modal-ios-title">Add AGSIST to Your iPhone</h3>
-      <p>Three quick taps and AGSIST opens like an app from your home screen, no browser bar, no app store.</p>
-    </div>
-    <div class="pwa-modal-body">
-      <div class="pwa-step">
-        <div class="pwa-step-num">1</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Tap the Share button below</div>
-          <div class="pwa-step-desc">Look at the bottom of your screen. Find the <strong>square with an arrow pointing up</strong>. It&rsquo;s in Safari&rsquo;s toolbar between the back/forward arrows and the bookmarks icon.</div>
-          <div class="pwa-visual" aria-hidden="true">
-            <!-- iPhone mockup with Safari toolbar at bottom, arrow pointing at share icon -->
-            <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing the Share button location in Safari’s bottom toolbar">
-              <!-- iPhone frame -->
-              <rect x="40" y="10" width="280" height="180" rx="22" fill="#0d0d0d" stroke="#3a3a3a" stroke-width="2"/>
-              <!-- Screen background -->
-              <rect x="48" y="22" width="264" height="156" rx="14" fill="#1a1a1a"/>
-              <!-- Page content stripes -->
-              <rect x="60" y="34" width="240" height="6" rx="2" fill="#2a3520"/>
-              <rect x="60" y="46" width="180" height="4" rx="2" fill="#252525"/>
-              <rect x="60" y="56" width="220" height="4" rx="2" fill="#252525"/>
-              <rect x="60" y="66" width="160" height="4" rx="2" fill="#252525"/>
-              <rect x="60" y="80" width="240" height="40" rx="6" fill="#1f2818"/>
-              <rect x="60" y="128" width="200" height="4" rx="2" fill="#252525"/>
-              <rect x="60" y="138" width="220" height="4" rx="2" fill="#252525"/>
-              <!-- Bottom Safari toolbar -->
-              <rect x="48" y="156" width="264" height="22" rx="0" fill="#2a2a2a"/>
-              <line x1="48" y1="156" x2="312" y2="156" stroke="#3a3a3a" stroke-width="1"/>
-              <!-- Toolbar icons: back, forward, SHARE, bookmark, tabs -->
-              <!-- Back arrow -->
-              <path d="M70 167 L66 170 L70 173" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Forward arrow -->
-              <path d="M105 167 L109 170 L105 173" stroke="#666" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- SHARE icon (highlighted) -->
-              <g transform="translate(170 167)">
-                <rect x="-7" y="-1" width="14" height="11" rx="1.5" fill="none" stroke="#d4a23f" stroke-width="1.6"/>
-                <line x1="0" y1="-7" x2="0" y2="4" stroke="#d4a23f" stroke-width="1.6" stroke-linecap="round"/>
-                <path d="M-3 -4 L0 -7 L3 -4" stroke="#d4a23f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-              <!-- Bookmarks icon -->
-              <path d="M225 164 L225 174 L228 172 L231 174 L231 164 Z" fill="none" stroke="#888" stroke-width="1.4"/>
-              <!-- Tabs icon -->
-              <rect x="265" y="164" width="9" height="9" rx="1" fill="none" stroke="#888" stroke-width="1.4"/>
-              <rect x="269" y="167" width="9" height="9" rx="1" fill="none" stroke="#888" stroke-width="1.4"/>
-              <!-- Animated arrow pointing at share button -->
-              <g class="pwa-arrow-anim">
-                <path d="M170 195 L170 184 L165 184 M170 184 L175 184" stroke="#d4a23f" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <text x="170" y="208" text-anchor="middle" fill="#d4a23f" font-family="Archivo,sans-serif" font-size="11" font-weight="700">TAP HERE</text>
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="pwa-step">
-        <div class="pwa-step-num">2</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Scroll down, tap "Add to Home Screen"</div>
-          <div class="pwa-step-desc">A menu slides up. Scroll past the row of app icons (Messages, Mail, etc.) until you see <strong>Add to Home Screen</strong> with a <kbd>&plus;</kbd> icon. Tap it.</div>
-          <div class="pwa-visual" aria-hidden="true">
-            <svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing the Add to Home Screen menu option">
-              <!-- Share sheet panel -->
-              <rect x="20" y="10" width="320" height="160" rx="12" fill="#222" stroke="#3a3a3a" stroke-width="1"/>
-              <!-- Drag handle -->
-              <rect x="167" y="16" width="26" height="3" rx="1.5" fill="#555"/>
-              <!-- Top app icons row -->
-              <circle cx="50" cy="40" r="11" fill="#34c759"/>
-              <circle cx="84" cy="40" r="11" fill="#007aff"/>
-              <circle cx="118" cy="40" r="11" fill="#5856d6"/>
-              <circle cx="152" cy="40" r="11" fill="#ff3b30"/>
-              <circle cx="186" cy="40" r="11" fill="#ff9500"/>
-              <circle cx="220" cy="40" r="11" fill="#af52de"/>
-              <text x="50" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Msgs</text>
-              <text x="84" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Mail</text>
-              <text x="118" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Notes</text>
-              <text x="152" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Reminders</text>
-              <text x="186" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Maps</text>
-              <text x="220" y="60" text-anchor="middle" fill="#666" font-family="-apple-system,sans-serif" font-size="6">Contacts</text>
-              <!-- Action rows -->
-              <line x1="30" y1="76" x2="330" y2="76" stroke="#3a3a3a" stroke-width="1"/>
-              <text x="40" y="92" fill="#888" font-family="-apple-system,sans-serif" font-size="11">Copy</text>
-              <text x="320" y="92" text-anchor="end" fill="#666" font-family="-apple-system,sans-serif" font-size="14"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></text>
-              <line x1="30" y1="102" x2="330" y2="102" stroke="#3a3a3a" stroke-width="1"/>
-              <text x="40" y="118" fill="#888" font-family="-apple-system,sans-serif" font-size="11">Add to Reading List</text>
-              <text x="320" y="118" text-anchor="end" fill="#666" font-family="-apple-system,sans-serif" font-size="14"><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg></text>
-              <line x1="30" y1="128" x2="330" y2="128" stroke="#3a3a3a" stroke-width="1"/>
-              <!-- HIGHLIGHTED ROW -->
-              <rect x="22" y="130" width="316" height="28" rx="4" fill="rgba(var(--gold-rgb),0.15)" stroke="#d4a23f" stroke-width="1.5"/>
-              <text x="40" y="148" fill="#d4a23f" font-family="-apple-system,sans-serif" font-size="11.5" font-weight="600">Add to Home Screen</text>
-              <g transform="translate(316 144)">
-                <rect x="-9" y="-9" width="18" height="18" rx="3.5" fill="none" stroke="#d4a23f" stroke-width="1.5"/>
-                <line x1="-4" y1="0" x2="4" y2="0" stroke="#d4a23f" stroke-width="1.6"/>
-                <line x1="0" y1="-4" x2="0" y2="4" stroke="#d4a23f" stroke-width="1.6"/>
-              </g>
-              <!-- Animated arrow pointing at the highlighted row -->
-              <g class="pwa-arrow-anim">
-                <path d="M260 144 L246 144 M250 140 L246 144 L250 148" stroke="#d4a23f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="pwa-step">
-        <div class="pwa-step-num">3</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Tap "Add" in the top corner</div>
-          <div class="pwa-step-desc">A confirmation screen pops up with &ldquo;AGSIST&rdquo; pre-filled. Tap <strong>Add</strong> in the top-right corner. The icon will appear on your home screen right away.</div>
-        </div>
-      </div>
-    </div>
-    <div class="pwa-modal-footer">
-      <div class="pwa-modal-footer-text">Once installed, tap the <strong>AGSIST icon</strong> on your home screen any time. Opens like an app, no browser. Works offline for content you&rsquo;ve already viewed.</div>
-    </div>
-  </div>
-</div>
-<!-- Android instruction modal (only shown if Chrome's native install prompt is unavailable) -->
-<div class="pwa-modal" id="pwa-modal-android" role="dialog" aria-modal="true" aria-labelledby="pwa-modal-android-title" aria-hidden="true">
-  <div class="pwa-modal-card" role="document">
-    <button class="pwa-modal-close" id="pwa-modal-android-close" type="button" aria-label="Close instructions"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-    <div class="pwa-modal-head">
-      <h3 id="pwa-modal-android-title">Install AGSIST on Android</h3>
-      <p>Quick install through Chrome&rsquo;s menu, no Play Store needed.</p>
-    </div>
-    <div class="pwa-modal-body">
-      <div class="pwa-step">
-        <div class="pwa-step-num">1</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Tap the menu button</div>
-          <div class="pwa-step-desc">In Chrome&rsquo;s top-right corner, tap the <strong>three vertical dots</strong> (&#x22EE;) to open the menu.</div>
-          <div class="pwa-visual" aria-hidden="true">
-            <svg viewBox="0 0 360 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing the three-dot menu in Chrome’s top-right">
-              <!-- Browser top bar -->
-              <rect x="20" y="20" width="320" height="42" rx="6" fill="#202124" stroke="#3a3a3a" stroke-width="1"/>
-              <!-- Tabs strip suggestion -->
-              <rect x="30" y="28" width="50" height="6" rx="3" fill="#3a3a3a"/>
-              <!-- Address bar -->
-              <rect x="40" y="42" width="220" height="14" rx="7" fill="#3a3a3a"/>
-              <text x="50" y="52" fill="#888" font-family="-apple-system,sans-serif" font-size="8">agsist.com</text>
-              <!-- Tabs icon -->
-              <rect x="278" y="44" width="12" height="12" rx="2" fill="none" stroke="#888" stroke-width="1.4"/>
-              <text x="284" y="53" text-anchor="middle" fill="#888" font-family="-apple-system,sans-serif" font-size="7">3</text>
-              <!-- Three-dot menu (highlighted) -->
-              <g transform="translate(310 49)">
-                <circle cx="0" cy="-7" r="2.2" fill="#d4a23f"/>
-                <circle cx="0" cy="0" r="2.2" fill="#d4a23f"/>
-                <circle cx="0" cy="7" r="2.2" fill="#d4a23f"/>
-              </g>
-              <!-- Animated arrow -->
-              <g class="pwa-arrow-anim">
-                <path d="M310 90 L310 75 M305 80 L310 75 L315 80" stroke="#d4a23f" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <text x="310" y="103" text-anchor="middle" fill="#d4a23f" font-family="Archivo,sans-serif" font-size="10" font-weight="700">TAP HERE</text>
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="pwa-step">
-        <div class="pwa-step-num">2</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Tap "Install app" or "Add to Home screen"</div>
-          <div class="pwa-step-desc">Scroll the menu list. Look for <strong>Install app</strong> (newer Chrome) or <strong>Add to Home screen</strong> (older Chrome). Tap it.</div>
-          <div class="pwa-visual" aria-hidden="true">
-            <svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing the Install app option in Chrome’s menu">
-              <!-- Menu panel -->
-              <rect x="120" y="10" width="220" height="160" rx="6" fill="#2a2a2a" stroke="#3a3a3a" stroke-width="1"/>
-              <!-- Menu items -->
-              <text x="135" y="32" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">New tab</text>
-              <line x1="125" y1="42" x2="335" y2="42" stroke="#3a3a3a" stroke-width="0.5"/>
-              <text x="135" y="58" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">New incognito tab</text>
-              <line x1="125" y1="68" x2="335" y2="68" stroke="#3a3a3a" stroke-width="0.5"/>
-              <text x="135" y="84" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">Bookmarks</text>
-              <line x1="125" y1="94" x2="335" y2="94" stroke="#3a3a3a" stroke-width="0.5"/>
-              <text x="135" y="110" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">Recent tabs</text>
-              <line x1="125" y1="120" x2="335" y2="120" stroke="#3a3a3a" stroke-width="0.5"/>
-              <!-- HIGHLIGHTED Install app -->
-              <rect x="122" y="124" width="216" height="26" rx="4" fill="rgba(var(--gold-rgb),0.15)" stroke="#d4a23f" stroke-width="1.5"/>
-              <text x="135" y="142" fill="#d4a23f" font-family="-apple-system,sans-serif" font-size="11.5" font-weight="600">Install app</text>
-              <g transform="translate(322 137)">
-                <path d="M-5 -2 L0 3 L5 -2" stroke="#d4a23f" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <line x1="0" y1="-5" x2="0" y2="3" stroke="#d4a23f" stroke-width="1.5" stroke-linecap="round"/>
-              </g>
-              <!-- Animated arrow -->
-              <g class="pwa-arrow-anim">
-                <path d="M95 137 L115 137 M111 132 L115 137 L111 142" stroke="#d4a23f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-              <!-- Settings (below highlighted item) -->
-              <line x1="125" y1="156" x2="335" y2="156" stroke="#3a3a3a" stroke-width="0.5"/>
-              <text x="135" y="170" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">Settings</text>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="pwa-step">
-        <div class="pwa-step-num">3</div>
-        <div class="pwa-step-content">
-          <div class="pwa-step-title">Confirm install</div>
-          <div class="pwa-step-desc">Chrome shows a confirmation dialog. Tap <strong>Install</strong> (or <strong>Add</strong>). The AGSIST icon appears on your home screen / app drawer right away.</div>
-        </div>
-      </div>
-    </div>
-    <div class="pwa-modal-footer">
-      <div class="pwa-modal-footer-text">Once installed, tap the <strong>AGSIST icon</strong> any time. Opens like a real app, no browser bar.</div>
-    </div>
-  </div>
-</div>
+<!-- PWA install hint and its two how-to modals: components/home.js builds them on a phone that passes its gates (second visit on, not installed, not dismissed). -->
 <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
@@ -1842,7 +1625,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/cb-myelev.js?v=3" defer></script>
 <script src="/components/homepage-extras.js?v=15" defer></script>
 <script src="/components/home-yield.js?v=3" defer></script>
-<script src="/components/home.js?v=4"></script>
+<script src="/components/home.js?v=5"></script>
 <script src="/components/home-planting.js?v=1" defer></script>
 <script src="/components/home-season.js?v=5" defer></script>
 </body>
