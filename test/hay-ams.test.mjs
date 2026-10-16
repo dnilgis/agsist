@@ -127,3 +127,12 @@ test('a data file, when present, is shaped right and checks out', () => {
     }
   }
 });
+
+test('pellets, cubes and ground hay stay in the table but out of the bale ranges', () => {
+  const r = { ...SD, rows: [...SD.rows, row('Alfalfa', 'Premium/Supreme', 'Pellets 17% Dehydrated', 1300, 355, 355, 355)] };
+  const v = A.view({ reports: [r] }, NOW)[0];
+  assert.deepEqual(v.sum.alfalfa, { lo: 180, hi: 300, tons: 1325 }, 'the $355 pellets do not stretch the alfalfa range');
+  assert.ok(v.groups[0].rows.some((x) => x.bale === 'Pellets 17% Dehydrated'), 'still listed for the state');
+  assert.equal(A.processed({ bale: 'Ground' }), true);
+  assert.equal(A.processed({ bale: 'Large Round' }), false);
+});
