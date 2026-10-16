@@ -1,0 +1,70 @@
+# Benchmark foreign-land: Acres.com foreign-owned land layer
+# https://www.acres.com/blog/map-highlight-foreign-owned-agricultural-land-map
+# fetched 2026-10-16T16:20:05Z, sha256 ed77353727da327e72a13afadcedccd1f0876c27b56bc14c19aa1ded1c60fda4
+
+Map Highlight: Foreign Owned Agricultural Land Map
+
+Who owns America’s farmland? While U.S. farmers remain the dominant stewards, foreign ownership of U.S. farmland has steadily increased—raising complex questions about land use, national security, and food production.
+
+Acres.com’s Foreign Owned Agricultural Land Map sheds light on this complex trend with up-to-date, county-level insights provided by the USDA.
+
+Map of Foreign Owned Agricultural Land
+
+This nationwide layer maps foreign-owned agricultural land across the U.S., offering a clear view of where international entities hold farmland by county. This layer gives you clear visualization of:
+
+- County population
+
+- Total acreage of foreign land holdings
+
+- Foreign-owned land percentage per county
+
+To explore this map and hundreds of other layers, connect with our sales team today!
+
+Acres’ nationwide foreign owned agricultural land data is derived from the U.S. Department of Agriculture (USDA).
+
+Key Trends in Foreign Land Ownership
+
+Foreign ownership of U.S. farmland is tracked under the Agricultural Foreign Investment Disclosure Act (AFIDA), which requires foreign entities to report their land holdings to the USDA. These disclosures feed directly into Acres' parcel-level intelligence tools, enabling users to pinpoint foreign acquisition of U.S. land with accuracy and confidence.
+
+Note that this data collection methodology only captures disclosed ownership, implying there are likely gaps in the reported data.
+
+Here are three key trends shaping foreign land ownership today:
+
+1. Renewable Energy & Timber Driving Foreign Land Acquisitions
+
+The leading motivation behind foreign land acquisitions? Renewable energy. Between 2018 and 2023, 76% of the growth in foreign-owned agricultural land was for wind or solar projects.
+
+Simultaneously, foreign owned timberland in the U.S. is gaining traction for its value in carbon markets and portfolio diversification. These holdings play a strategic role in climate-related investment trends and rural land markets.
+
+2. Top Countries Investing in US Farmland
+
+While headlines may focus on Chinese-owned farmland in the U.S., China owns less than 1% of foreign-held agricultural land. The top foreign investors are actually from Canada, the Netherlands, Italy, and other Western European countries.
+
+3. Foreign Farmland Ownership: Investment Strategy
+
+Foreign investors typically view U.S. farmland as a strategic, long-term asset. While some buyers are paying up to 13.7% more than domestic purchasers, their total share is likely too small to influence national land values.
+
+Nevertheless, concerns around national security and foreign land ownership have fueled debate and led to increased scrutiny of AFIDA reporting requirements.
+
+Get the Full Picture of Foreign Land Ownership
+
+The county-level insights in Acres’ Foreign Owned Agricultural Land map are just the beginning. If you want to know which parcels are foreign-owned, Acres can provide concise mapping down to the parcel level, providing enhanced ownership tracking and detail.
+
+Contact our team to access the full parcel-level foreign ownership data.
+
+Tagged
+
+-
+GIS & Mapping
+
+Written by
+
+Bevin Baskin
+
+-
+
+-
+
+-
+
+-

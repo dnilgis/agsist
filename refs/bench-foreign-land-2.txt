@@ -1,0 +1,25 @@
+# Benchmark foreign-land: Iowa State CARD Foreign Interest Tool
+# https://farmland.card.iastate.edu/resource/foreign-interest-tool
+# fetched 2026-10-16T16:20:01Z, sha256 df5bc6a6d0890eb424b77bb56dea487e1f594070ebcced2f2ce39ea84a040f0e
+
+Foreign Interest Tool | Iowa Farmland
+
+-
+
+-
+
+-
+
+Foreign Interest Tool
+
+Resource link:
+
+https://farmland.card.iastate.edu/tools/afida
+
+Explore patterns of foreign ownership of U.S. farmland with this interactive mapping tool, built from data reported under the Agricultural Foreign Investment Disclosure Act (AFIDA). The tool provides a county-level view of foreign-held farmland, cropland, pastureland, and forestland, broken down by country of ownership.
+
+Users can:
+• Visualize land ownership trends across the United States at the county level.
+• View data by land type (cropland, pasture, forest, other agricultural uses).
+• Compare ownership across different countries and regions.
+• Identify counties with the highest levels of foreign-held acreage.

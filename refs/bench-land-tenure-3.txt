@@ -1,0 +1,39 @@
+# Benchmark land-tenure: ISU Iowa Farmland Ownership and Tenure survey
+# https://farmland.card.iastate.edu/
+# fetched 2026-10-16T16:20:13Z, sha256 a63ea5a6af9720bd1411cd92b1dda586c946fee29c502a5033668e8a037a5f28
+
+Iowa Farmland
+
+Home
+
+Iowa Farmland
+
+-
+Overview
+
+-
+2025 Land Value Survey
+
+Welcome to the CARD Farmland Portal
+
+The CARD Farmland Portal, hosted by the Center for Agricultural and Rural Development (CARD) at Iowa State University, is an online resource designed to provide detailed insights and analysis on farmland value and ownership trends. Explore detailed insights from the annual Iowa State University Land Value Surveys and use interactive maps and graphs to analyze how land values evolved over time. You can also take a look at foreign ownership of US farmland and consolidation in the agricultural sector using our interactive data tools. Whether you're a farmer, researcher, or an agricultural professional, our platform equips you with the insights and tools you need to navigate and understand Iowa’s farmland market.
+
+Iowa’s farmland market is shaped by a variety of factors, including interest rates, crop yields, and regional land use patterns. With our interactive data tools, you can compare land values across different counties and districts, gaining insights into the key drivers of land price changes over time. Stay informed by exploring the latest data and predictions for Iowa’s farmland values.
+
+By far the largest asset in most farm portfolios is land. Unlike stocks, bonds, commodities, and equipment, however, land sales are few and far between. The value of that particular asset at a given time can be conjecture. This is why land surveys are so necessary. Farmers , appraisers, lenders, and managers cannot make equity and debt decisions without an unbiased and research-based understanding of land values.
+
+John Crespi
+
+Key Features
+
+Explore Iowa farmland values county by county
+
+Visualize Iowa farmland trends over time
+
+Learn from the latest findings on Iowa farmland values
+
+Did you know...
+
+In 2025, the survey reported a 0.7% increase in average land values, which is the sixth increase in Iowa’s land values for the past seven years. The portal allows you to dive deeper into district-level data, such as Dubuque County reporting the largest dollar increase ($553 per acre), while Clayton and Allamakee Counties reporting the largest percent increase in values (4.4%). You can also find which 78 counties reported a decrease in inflation-adjusted values, helping you make informed decisions.
+
+Highlights of the 2025 Iowa State Land Value Survey Results

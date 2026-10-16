@@ -1,0 +1,296 @@
+# Benchmark foreign-land: USDA FSA AFIDA report and ArcGIS map
+# https://www.fsa.usda.gov/resources/economic-policy-analysis/afida
+# fetched 2026-10-16T16:20:03Z, sha256 3e419b0fddbdfa511e78d57216ece7ed95f2023b51770e44757479f8630d1549
+
+Agricultural Foreign Investment Disclosure Act (AFIDA) | Farm Service AgencyLock
+
+-
+
+-
+
+-
+
+-
+
+Resources
+
+-
+Find a Program
+
+-
+Loans
+
+-
+Climate-Smart Agriculture and Farm Loan Programs
+
+-
+Emergency Farm Loans
+
+-
+Farm Operating Loans
+
+-
+Farm Ownership Loans
+
+-
+Farm Storage Facility Loan (FSFL) Program
+
+-
+Graze-Out
+
+-
+Guaranteed Farm Loans
+
+-
+Guaranteed Loans - Lender Toolkit
+
+-
+Highly Fractionated Indian Land Loan Program (HFIL)
+
+-
+Indian Tribal Land Acquisition Loan Program
+
+-
+Loan Deficiency Payments (LDP)
+
+-
+Marketing Assistance Loans (MAL)
+
+-
+Operating Microloan
+
+-
+Organic Dairy Marketing Assistance Program (ODMAP 2024)
+
+-
+Youth Loans
+
+-
+Conservation
+
+-
+CRP Grasslands
+
+-
+Conservation Reserve Enhancement Program (CREP)
+
+-
+Conservation Reserve Program (CRP)
+
+-
+Farmable Wetlands Program (FWP)
+
+-
+General CRP
+
+-
+Transition Incentives Program
+
+-
+Water-Saving Commodities (WSC) Program
+
+-
+Disaster Recovery
+
+-
+2023/2024 Supplemental Disaster Assistance
+
+-
+Disaster Set-Aside Program (DSA)
+
+-
+Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish (ELAP)
+
+-
+Emergency Conservation Program (ECP)
+
+-
+Emergency Forest Restoration Program (EFRP)
+
+-
+Emergency Livestock Relief Program (ELRP)
+
+-
+Emergency Relief Program (ERP)
+
+-
+Livestock Forage Disaster Program (LFP)
+
+-
+Livestock Indemnity Program (LIP)
+
+-
+Milk Loss Program (MLP)
+
+-
+Noninsured Disaster Assistance Program (NAP)
+
+-
+On-Farm Stored Commodity Loss Program (OFSCLP)
+
+-
+Supplemental Disaster Relief Program (SDRP)
+
+-
+Tree Assistance Program (TAP)
+
+-
+Income Support
+
+-
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC)
+
+-
+Assistance for Specialty Crop Farmers (ASCF) Program
+
+-
+Dairy Indemnity Payment Program (DIPP)
+
+-
+Dairy Margin Coverage Program (DMC)
+
+-
+Emergency Commodity Assistance Program (ECAP)
+
+-
+Farmer Bridge Assistance (FBA) Program
+
+-
+Marketing Assistance for Specialty Crops (MASC)
+
+-
+Organic Certification Cost Share Program (OCCSP)
+
+-
+Reimbursement Transportation Cost Payment (RTCP)
+
+-
+Strengthening Processing for U.S. Ranchers (SPUR) Program
+
+-
+General Programs
+
+-
+Certified Mediation Program (CMP)
+
+-
+Farm Labor Stabilization and Protection Pilot Grant Program
+
+-
+Food Safety Certification for Specialty Crops (FSCSC) Program
+
+-
+Outreach & Education
+
+-
+About Us
+
+-
+Programs
+
+-
+Partner Organization Resources
+
+-
+State Outreach Coordinators
+
+-
+Price Support
+
+-
+Commodity Loans
+
+-
+Commodity Loan Rates
+
+-
+Facility Loan Programs
+
+-
+Loan Deficiency Payments
+
+-
+Price Support Reports
+
+-
+Posted County Price Rates
+
+-
+Economic and Policy Analysis
+
+-
+EPAD Reports
+
+-
+Commodity Loan Activity Reports
+
+-
+ELS Cotton Reports
+
+-
+Honey Reports
+
+-
+Peanut Reports
+
+-
+Rice Reports
+
+-
+Upland Cotton Reports
+
+-
+Wool and Mohair Reports
+
+-
+Financial Management Information
+
+-
+Initiatives
+
+-
+Acreage Crop Reporting Streamlining Initiative (ACRSI)
+
+Agricultural Foreign Investment Disclosure Act (AFIDA)
+
+The Trump Administration is taking bold action to secure and protect American farmland. In July 2025, USDA launched the National Farm Security Action Plan and has taken steps to strengthen enforcement of the Agriculture Foreign Investment Disclosure Act (AFIDA). This includes an online filing portal for AFIDA disclosures as well as an online form for the general public to submit alleged failed or false disclosures.
+
+How to File
+
+Foreign persons who hold a “significant interest or substantial control” in agricultural land must file, either using the online portal directly below or the legacy FSA-153 hard copy form.
+
+File Online
+
+When you click “File Online” above, users will be prompted to enter the filing portal with Login.gov credentials. Users should select “Customer” and then “Login.gov.” Users will be prompted to enter their account username and password. If the user is new to Login.gov, the user can create an account. If a user encounters an error after identity verification, the user should reopen the above link in a new tab to access the portal.
+
+Login.gov is a sign in service that provides secure online access to participate in government programs. If you are new to Login.gov, resources are available to help you get started, including a help center and these frequently asked questions.
+
+The online portal gathers the same information found on form FSA-153 and filers may still use the current FSA-153 hard copy form instead of the portal, if desired. Filers should not duplicate filings by using both submission options.
+
+Additional Information for Filers
+
+- AFIDA Handbook (see Exhibit 4 for AFIDA statute language)
+
+- AFIDA Regulation
+
+- Brochure: Foreign Investors with Agricultural Land Holdings
+
+- Poster: Foreign Investors Must Report Interests Held in U.S. Agricultural Land to the USDA
+
+- For more information, contact AskAFIDA@usda.gov.
+
+AFIDA Compliance
+
+USDA takes compliance seriously. USDA encourages farmers, ranchers, and members of the general public to report potential failures to comply with AFIDA including underreporting or falsifying, and will review all claims. Anonymous submissions are allowed. Submit here.
+
+AFIDA Data
+
+The data gained from AFIDA disclosures are used in the preparation of an annual report to Congress, which is published online. View AFIDA annual reports or the underlying detailed data.
+
+News
+
+- January 22, 2026: USDA Launches New Online Portal for Reporting Foreign-Owned Agricultural Land Transactions
+
+- December 30, 2025: USDA Advances Farm Security Action Plan to Protect U.S. Farmland and Federal Programs from Foreign Adversaries
+
+- July 10, 2025: Secretary Rollins Continues Effort to Strengthen National Security by Defending Farm Security

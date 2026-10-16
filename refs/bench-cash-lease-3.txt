@@ -1,0 +1,159 @@
+# Benchmark cash-lease: National Agricultural Law Center, Agricultural Leases overview
+# https://nationalaglawcenter.org/overview/agleases/
+# fetched 2026-10-16T16:19:55Z, sha256 79419dea6352bf3cd5416990e89bd20196f6be23bccdf138dbc47615dba4ef13
+
+Agricultural Leases Overview – National Agricultural Law Center
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Agricultural Leases: An Overview
+
+Background
+
+The agriculture sector relies heavily on leases for land and equipment to meet the needs of farmers. With absentee ownership of farmland growing in the United States, farmers and ranchers lease many of the acres they farm and graze today. Because both private parties and governmental entities may enter into a leasing arrangement, the complexity and scope of these contracts can vary substantially.
+
+Even though leases may vary in form, a lease is a contract that may be implied through the parties’ actions, expressed through a written document, or created through oral communications. In a lease, the landlord operates as the lessor and the tenant as the lessee. In most states, statutes dealing with landlord-tenant law will apply to these agricultural leases. Many states have adopted provisions in their landlord-tenant laws that apply specifically to agriculture, such as providing for a landlord’s lien on crops when the tenant fails to pay the rent.
+
+In order to form a valid lease, the parties must typically include the following elements in their agreement: (1) the extent and boundary of the property to be leased; (2) a definite term that the lease will run; and (3) a definite rental rate. Stated more simply, a proper lease will generally describe the parties, the property, the rental rate, and the length of time it will run.
+
+Leases are not merely instruments allowing farmers and ranchers to gain use of certain assets. Leases may also be granted to take advantage of the land’s usefulness for certain activities. Landowners may grant a lease to an oil and gas company for the development of minerals under their property. Wind companies may seek leases for the development of wind energy on the land. In addition, a farmer or rancher may lease portions of their land for hunting or other recreational uses. For more discussion related to leased hunting and recreational uses of land, please visit the Landowner Liability Reading Room.
+
+Written Leases Versus Oral Leases
+
+Oral agricultural leases can be valid so long as certain requirements are met. Although some parties prefer oral leases, the benefits afforded by a written lease cannot be overlooked. A written lease is often preferable because it provides written evidence of the lease terms in case a dispute arises between the parties at a later date.
+
+Each state has enacted a “statute of frauds” that requires certain contracts to be in writing, subject to some exceptions.
+
+Contracts commonly covered by states’ statutes of frauds are real estate contracts and contracts exceeding one year. Under the statute of frauds in most states, leases lasting longer than one year need to be in writing in order to be enforceable. Most states do allow oral agricultural leases of under one year.
+
+There are common provisions that appear in many written agricultural leases. These include: the length of term for the lease, a rent clause, a termination process, limitations on subleasing and assignment, requirements to comply with federal and state conservation provisions, enrollment in federal farm programs, types of crops to plant, duties to control noxious weeds and purchase insurance, types of farming practices that can be used, who is responsible for the upkeep of improvements on the property, an option to purchase, and attorney fees provisions. Other terms may be added to meet the needs of the parties.
+
+Termination of the Lease
+
+Termination of a farm lease can come naturally at the end of the term or, if the lease is extended beyond the original term, the parties can terminate the lease upon meeting certain requirements of notification. Termination of the lease will also depend on the tenancy created by the lease.
+
+A tenancy for a period of years has a specific start date and a fixed termination date. The law views any fixed computable period of time as a tenancy for a period of years, even if the term of the lease is a fixed number of months. The common law rule does not require notification for termination of a tenancy for a period of years because the parties already know the day upon which the lease will terminate. This common law rule is not fixed, and the parties could choose to require a notification time in the lease. Finally, it should be noted that a particular state’s law could limit the length of time that this tenancy may last.
+
+A periodic tenancy runs from one fixed time period to another fixed time period, such as month-to-month or year-to-year. This tenancy has no definite end and is automatically renewed unless proper notification is given to terminate the lease. In general, proper notification for a year-to-year lease under the common law is six months before the lease is set to expire. However, some states have shortened this period by statute. A month-to-month periodic tenancy typically requires a thirty-day notice be given before the lease can be terminated.
+
+Other methods exist that allow for the termination of a lease. A lease can be ended at any time if all parties to the lease agree to terminate. Additionally, some leases have termination clauses included in the written lease that address circumstances in which one party can terminate the lease if the other party breaches one of the lease clauses.
+
+State Statutes on Leasing
+
+States can have a wide array of statutes dealing with agricultural leases, but there are some provisions common to all states. These provisions typically deal with matters such as termination of the tenancy, assignment of leases, landlord’s lien for rent, and control of noxious weeds. Where the common law is still in place, states have different rules when it comes to rights to remove fixtures, rights in permanent improvements, rights of entry by the landlord, tenancy termination, rights of the tenant to harvest the crops after the expiration of the lease, and the liability of the tenant for rent in the case of a natural disaster.
+
+Farmland Leases
+
+The most common lease in agriculture is a land lease. The cash rent lease and the crop-share lease are the two most frequently used land leases in agriculture. Both types of leases involve different forms of a definite rental rate.
+
+In a typical cash rent lease, the tenant is obligated to pay a set price per acre or a set rate for the leased land. With this form of lease, the tenant bears certain economic risks, and the landlord is guaranteed a predictable return, regardless of commodity prices. The landlord does carry the risk of the tenant not paying the rent or using farming practices that reap short-term benefits from the land. Parties can also negotiate terms to help limit their exposure to these risks. For instance, the tenant can negotiate for flexible rent terms, and the landlord can include terms that specify the type of farming practices that can be used.
+
+With a crop-share lease, the landlord receives a share of the crops produced in exchange for the use of the land by the tenant. The amount of the share typically depends on local custom. The landlord usually agrees to pay a portion of the input costs under a crop-share lease. This type of lease exposes the landlord to more risks but does allow the landlord to benefit if commodity prices or production increase. The crop-share lease also allows the tenant to spread the risk of reduced yields and reduces the amount of capital needed for the operation.
+
+A third type of lease that is becoming increasingly popular is the hybrid lease. The hybrid lease is a combination of the cash and crop-share leases and provides greater flexibility in certain circumstances.
+
+Grazing Permit
+
+A grazing permit is similar to a crop-share lease. Where a crop-share lease creates an interest in land called a leasehold, a grazing permit by statute does not create a right, title, interest, or estate in the public lands. A grazing permit creates only a license to use the public lands. The government can withdraw the license at any time without compensation, but a grazing permit holder may have a right to compensation when the permit is fully or partially canceled in order to use the land for public purposes.
+
+The Bureau of Land Management and the U.S. Forest Service administer grazing permits on federally-owned public lands. If the state has public lands available for grazing, the permits are administered by the appropriate state agency. For federal permits, the permits establish the requirements of the private party using the public lands for grazing and operate under a traditional “first-come, first-serve” method. In order to get a grazing permit, a private party must first own or lease base property or a private ranch. Base property is private land near the area to be grazed and is not easy to acquire. The term of the permit is statutorily set at ten years. The private party must pay a grazing fee that is based on a 1966 base value of 1.23 per animal unit month (AUM) and then adjusted based on current private grazing land lease rates, beef cattle prices, and the cost of livestock production. The fee cannot drop below $1.35 per AUM according to an Executive Order issued in 1986 by President Reagan.
+
+In addition to the Taylor Grazing Act of 1934, public lands grazing is controlled by the National Environmental Policy Act of 1969, the Endangered Species Act of 1973, the Federal Land Policy and Management Act of 1976, and the Public Rangelands Improvement Act of 1978. For many years, environmental groups have challenged the issuance and renewal of grazing permits, making the renewal of many grazing permits more difficult.
+
+For information pertaining to these statutes and other environmental issues, please visit the Environmental Law Reading Room.
+
+Wind Leases
+
+Wind leases are increasingly taking place on agricultural land across the country. With a wind lease, a company will lease the right to enter the landowner’s property and erect wind energy infrastructure. A typical wind lease document may exceed thirty to fifty pages. Prior to a lease being signed, the parties will typically sign an option agreement that provides for an option period lasting between two and ten years, depending on state law limits for option periods. During the option period, the wind company will conduct tests to determine if the land is suitable for the project. If the wind company determines that the property is suitable for the project, then the company will exercise the option to lease the property. In general, a company has no obligation to exercise the option to lease at the end of the option period if the property is unsuitable for the project.
+
+If the parties choose to sign a wind lease after the option agreement expires, the wind lease will include the length of the lease, which can be anywhere from twenty-five to fifty years. The lease can include terms about the nature of the wind company’s activities on the property and, in some cases, may limit the development rights of the landowner. A common lease term is a confidentiality clause, which prevents the terms of the lease from being made public. The typical lease will also include a decommission provision that details the removal of the turbines, the removal of any materials or equipment, and the removal of concrete to a certain depth.
+
+The compensation provisions can vary from lease to lease. Some leases provide for a fixed payment over the life of the lease. Other leases have compensation provisions that depend on the number of acres leased, the number of turbines installed, the amount of electricity produced, and the percentage of revenue. A variety of other methods can be used to calculate compensation as well. Leasing processes will often be an agricultural landowner’s first contact with the wind energy industry. Therefore, it is critical that the landowner familiarize themselves with this sector of the energy industry before signing any contracts.
+
+For more discussion on wind energy, please visit the Renewable Energy Reading Room.
+
+Oil & Gas Leases
+
+The majority of oil and gas production occurs on farmland (an estimated 67% in 2014). Recent technological developments have allowed for more expansive extraction across the country. Oil and gas leases differ from most agricultural leases in that they involve the leasing of below-ground mineral rights to a third party for extraction. Mineral rights are not always conveyed with the purchase of a property, so landowners should verify their mineral rights before entering into an agreement.
+
+The terms of an oil and gas lease vary, but typically consist of a primary term that commences before production begins, and a secondary term that commences following the start of production. If production is postponed, the landowner may be entitled to “delay rental payments.” While production is ongoing, the landowner will generally be compensated through a share of royalties. It may be beneficial to include provisions in the lease that allow options for termination in the event of late payments or non-payment. Once the secondary term begins following the location of a successful drilling site, the lease may continue indefinitely as long as the site remains productive.
+
+Due to the complexity of oil and gas leases, it is important for a landowner to research their rights and responsibilities under the lease and consult with a legal professional for assistance. Because the lessee will often erect infrastructure like roads, pipelines, and storage tanks on the property, the landowner should specify the location and type of infrastructure to be permitted on the property. Landowners can often continue agricultural production, like cropping and grazing on their land, under an oil and gas lease. In some cases, involving hydraulic fracturing, energy corporations will extract from neighboring properties without the use of above-ground intrusion. However, a pooling agreement must be in place for neighboring landowners to receive a percentage of the royalties.
+
+Compensation for oil and gas leases varies. The rates offered for oil & gas leases are controlled by several factors, including: the market for energy products at the time the lease is signed, the type of oil and gas extracted, the difficulty of extraction, and geographical location. Some leases provide a single payment based upon market rates, while others offer periodic payments that reflect a percentage of the proceeds generated from extraction. Other benefits may include signing bonuses, delay rental, and damage provisions. Often, costs for infrastructure and drilling may be subtracted before payments are received. Landowners may also want to consult with a legal professional regarding liability for pollution or other damages under state and federal law.
+
+Solar Leases
+
+Solar leases offer another alternative for those looking to lease agricultural land. In recent years, the price of solar energy equipment has dropped, allowing for further expansion of the industry and increasing profit protentional . It is important for landowners to become familiar with the solar industry and consult with an attorney before signing a solar lease.
+
+The terms of solar leases may vary. Like wind energy leases, solar leases have a development term and an operations term. The development term usually lasts 4-5 years, and the operations term lasts about 30-35 years. Compensation for solar leases includes a minimum payment threshold, which is tied to the market value of the land. For example, land outside of densely populated areas often has a higher value for solar developers than land in remote areas. Additionally, agricultural landowners may negotiate for royalties in addition to the minimum payment. Royalties normally vary from 3.5% – 4.5% of the gross revenue generated by the solar production. Both payment methods increase over time, keeping pace with the costs of solar energy, inflation, and land value. Minimum payments are usually received yearly, whereas the royalties may be received quarterly.
+
+Due to the lengthy terms of solar leases, there are a variety of factors that landowners should consider before signing a contract for utility-scale solar development. While landowners can often continue to use the majority of their property for agricultural purposes under other forms of energy leases, solar leases can be more limiting. Solar infrastructure takes up a large amount of ground area, called the “occupied area.” The landowner’s right to ingress and egress in the “occupied area” is usually waived, and any infrastructure fenced off. However, the solar lessee will hold rights to ingress and egress over the land located outside of the “occupied area” for purposes such as maintenance. Land occupied for solar production cannot be utilized for any other form of production for the term of the lease. Accordingly, landowners should consult with an attorney regarding any third-party easements and the status of the mineral rights on their land. Solar leases can also have tax implications, including loss of agricultural exemptions and effects on federal and state income tax.
+
+For more discussion on wind energy, please visit the Renewable Energy Reading Room.
+
+Hunting Leases
+
+Agricultural landowners may also lease their land for hunting purposes. The landowner may lease their land to individuals for a limited number of seasonal hunts, and can also lease to larger groups such as sporting clubs and outfitting businesses. Hunting leases may assist an agricultural landowner in covering the cost of property taxes and operating costs, and may also reduce wildlife damage to crops.
+
+The most common forms of hunting leases include annual leases, seasonal leases for a particular game species, and short-term leases that vary in length from a day, to a week or longer. Various factors may determine leasing rates, including the number of hunters who hold leases, the quantity and quality of game on the property, species diversity, geographical location, amenities and accommodations, and the size of the property. The fees for most hunting leases are assessed on a per-acre basis. Other important items to consider when drafting a hunting lease include dates, boundaries of the property, permitted species that can be hunted, number of hunters allowed at once, rights and responsibilities of each party, and remedies in the event of a breach of the lease.
+
+It is vital for landowners to familiarize themselves with any risks or liabilities associated with hunting leases. In some states, landowners have premises liability protection unless negligence can be proven. However, landowners may carry liability insurance for further protection or have lessees sign an agreement that releases them from liability in the event of any accident or personal injury.
+
+For more discussion related to leased hunting and recreational uses of land, please visit the Agritourism Reading Room.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

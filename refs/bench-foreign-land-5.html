@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
+<head>
+  <link rel="profile" href="http://www.w3.org/1999/xhtml/vocab"/>
+  <meta charset="utf-8"><script type="text/javascript">(window.NREUM||(NREUM={})).init={ajax:{deny_list:["bam.nr-data.net"]}};(window.NREUM||(NREUM={})).loader_config={licenseKey:"02b4dbddba",applicationID:"20127366",browserID:"20127377"};;/*! For license information please see nr-loader-rum-1.324.0.min.js.LICENSE.txt */
+(()=>{var e={8122(e,t,r){"use strict";r.d(t,{a:()=>i});var n=r(944);function i(e,t){try{if(!e||"object"!=typeof e)return(0,n.R)(3);if(!t||"object"!=typeof t)return(0,n.R)(4);const r=Object.create(Object.getPrototypeOf(t),Object.getOwnPropertyDescriptors(t)),a=0===Object.keys(r).length?e:r;for(let s in a)if(void 0!==e[s])try{if(null===e[s]){r[s]=null;continue}Array.isArray(e[s])&&Array.isArray(t[s])?r[s]=Array.from(new Set([...e[s],...t[s]])):e[s]instanceof Map||e[s]instanceof Set||e[s]instanceof Date||e[s]instanceof RegExp?r[s]=e[s]:"object"==typeof e[s]&&null!==t[s]&&"object"==typeof t[s]?r[s]=i(e[s],t[s]):r[s]=e[s]}catch(e){r[s]||(0,n.R)(1,e)}return r}catch(e){(0,n.R)(2,e)}}},2555(e,t,r){"use strict";r.d(t,{f:()=>s});var n=r(384),i=r(8122);const a={beacon:n.NT.beacon,errorBeacon:n.NT.errorBeacon,licenseKey:void 0,applicationID:void 0,sa:void 0,queueTime:void 0,applicationTime:void 0,ttGuid:void 0,user:void 0,account:void 0,product:void 0,extra:void 0,jsAttributes:{},userAttributes:void 0,atts:void 0,transactionName:void 0,tNamePlain:void 0};function s(e){try{return!!e.licenseKey&&!!e.errorBeacon&&!!e.applicationID}catch(e){return!1}}r.d(t,["D",0,e=>(0,i.a)(e,a)])},7699(e,t,r){"use strict";var n=r(860);const i=1e6,a={[n.K7.logging]:!0,[n.K7.genericEvents]:!0,[n.K7.jserrors]:!0,[n.K7.ajax]:!0};r.d(t,["It",0,i,"KC",0,a,"qh",0,"SESSION_ERROR","zd",0,5e5])},9324(e,t,r){"use strict";r.d(t,["xv",0,"1.324.0"])},981(e,t,r){"use strict";r.d(t,["R",0,{AJAX:"AjaxRequest",PA:"PageAction",UA:"UserAction",BP:"BrowserPerformance",WS:"WebSocket",SPV:"SecurityPolicyViolation",JSE:"JavaScriptError",LOG:"Log",PVE:"PageView",PVT:"PageViewTiming",SR:"SessionReplay",ST:"SessionTrace",BI:"BrowserInteraction"}])},6154(e,t,r){"use strict";var n=r(1863);const i="undefined"!=typeof window&&!!window.document,a="undefined"!=typeof WorkerGlobalScope&&("undefined"!=typeof self&&self instanceof WorkerGlobalScope&&self.navigator instanceof WorkerNavigator||"undefined"!=typeof globalThis&&globalThis instanceof WorkerGlobalScope&&globalThis.navigator instanceof WorkerNavigator),s=i?window:"undefined"!=typeof WorkerGlobalScope&&("undefined"!=typeof self&&self instanceof WorkerGlobalScope&&self||"undefined"!=typeof globalThis&&globalThis instanceof WorkerGlobalScope&&globalThis),o=Boolean("hidden"===s?.document?.visibilityState),c=""+s?.location,u=/iPad|iPhone|iPod/.test(s.navigator?.userAgent),d=u&&"undefined"==typeof SharedWorker,l=((()=>{const e=s.navigator?.userAgent?.match(/Firefox[/\s](\d+\.\d+)/);Array.isArray(e)&&e.length>=2&&e[1]})(),Date.now()-(0,n.t)());r.d(t,["OF",0,u,"RI",0,i,"WN",0,l,"bv",0,a,"gm",0,s,"m",0,c,"mw",0,o,"sb",0,d,"zk",0,()=>{const e=s?.performance?.getEntriesByType?.("navigation")?.[0];if(e&&e.responseStart>0&&e.responseStart<s.performance.now())return e}])},3241(e,t,r){"use strict";r.d(t,{W:()=>i});var n=r(6154);function i(e={}){try{n.gm.dispatchEvent(new CustomEvent("newrelic",{detail:e}))}catch(e){}}},1687(e,t,r){"use strict";r.d(t,{Ak:()=>o,Ze:()=>u,x3:()=>c});var n=r(3241),i=r(3606),a=r(860),s=r(2646);function o(e,t){if(!e)return;const r={staged:!1,priority:a.P3[t]||0};e.runtime.drainRegistry.get(t)||e.runtime.drainRegistry.set(t,r)}function c(e,t){if(!e)return;const r=e.runtime.drainRegistry;r&&(r.get(t)&&r.delete(t),l(e,t,!1),r.size&&d(e))}function u(e,t="feature",r=!1){if(e){if(!e.runtime.drainRegistry.get(t)||r)return l(e,t);e.runtime.drainRegistry.get(t).staged=!0,d(e)}}function d(e){if(!e)return;const t=Array.from(e.runtime.drainRegistry);t.every(([e,t])=>t.staged)&&(t.sort((e,t)=>e[1].priority-t[1].priority),t.forEach(([t])=>{e.runtime.drainRegistry.delete(t),l(e,t)}))}function l(e,t,r=!0){if(!e)return;const a=e.ee,o=i.i.handlers;if(a&&!a.aborted&&a.backlog&&o){if((0,n.W)({type:"lifecycle",name:"drain",feature:t}),r){const e=a.backlog[t],r=o[t];if(r){for(let t=0;e&&t<e.length;++t)f(e[t],r);Object.entries(r).forEach(([e,t])=>{Object.values(t||{}).forEach(t=>{t[0]?.on&&t[0].context()instanceof s.y&&!t[0].listeners(e).includes(t[1])&&t[0].on(e,t[1])})})}}a.isolatedBacklog||delete o[t],a.backlog[t]=null,a.emit("drain-"+t,[])}}function f(e,t){var r=e[1];Object.values(t[r]||{}).forEach(t=>{var r=e[0];if(t[0]===r){var n=t[1],i=e[3],a=e[2];n.apply(i,a)}})}},7836(e,t,r){"use strict";var n=r(384),i=r(8990),a=r(2646),s=r(5607);const o="nr@context:".concat(s.W),c=function e(t,r){var n={},s={},d={},l=!1;try{l=16===r.length&&u.initializedAgents?.[r]?.runtime.isolatedBacklog}catch(e){}var f={on:p,addEventListener:p,removeEventListener:function(e,t){var r=n[e];if(!r)return;for(var i=0;i<r.length;i++)r[i]===t&&r.splice(i,1)},emit:function(e,r,n,i,a){!1!==a&&(a=!0);if(c.aborted&&!i)return;t&&a&&t.emit(e,r,n);var o=g(n);m(e).forEach(e=>{e.apply(o,r)});var u=v()[s[e]];u&&u.push([f,e,r,o]);return o},get:h,listeners:m,context:g,buffer:function(e,t){const r=v();if(t=t||"feature",f.aborted)return;Object.entries(e||{}).forEach(([e,n])=>{s[n]=t,t in r||(r[t]=[])})},abort:function(){f._aborted=!0,Object.keys(f.backlog).forEach(e=>{delete f.backlog[e]})},isBuffering:function(e){return!!v()[s[e]]},debugId:r,backlog:l?{}:t&&"object"==typeof t.backlog?t.backlog:{},isolatedBacklog:l};return Object.defineProperty(f,"aborted",{get:()=>{let e=f._aborted||!1;return e||(t&&(e=t.aborted),e)}}),f;function g(e){return e&&e instanceof a.y?e:e?(0,i.I)(e,o,()=>new a.y(o)):new a.y(o)}function p(e,t){n[e]=m(e).concat(t)}function m(e){return n[e]||[]}function h(t){return d[t]=d[t]||e(f,t)}function v(){return f.backlog}}(void 0,"globalEE"),u=(0,n.Zm)();u.ee||(u.ee=c),r.d(t,["P",0,o,"ee",0,c])},2646(e,t,r){"use strict";r.d(t,{y:()=>n});class n{constructor(e){this.contextId=e}}},9908(e,t,r){"use strict";r.d(t,{d:()=>n,p:()=>i});var n=r(7836).ee.get("handle");function i(e,t,r,i,a){a?(a.buffer([e],i),a.emit(e,t,r)):(n.buffer([e],i),n.emit(e,t,r))}},3606(e,t,r){"use strict";r.d(t,{i:()=>a});var n=r(9908);a.on=s;var i=a.handlers={};function a(e,t,r,a){s(a||n.d,i,e,t,r)}function s(e,t,r,i,a){a||(a="feature"),e||(e=n.d);var s=t[a]=t[a]||{};(s[r]=s[r]||[]).push([e,i])}},3878(e,t,r){"use strict";function n(e,t){return{capture:e,passive:!1,signal:t}}function i(e,t,r=!1,i){window.addEventListener(e,t,n(r,i))}function a(e,t,r=!1,i){document.addEventListener(e,t,n(r,i))}r.d(t,{DD:()=>a,jT:()=>n,sp:()=>i})},5607(e,t,r){"use strict";const n=(0,r(9566).bz)();r.d(t,["W",0,n])},9566(e,t,r){"use strict";r.d(t,{LA:()=>s,bz:()=>a});var n=r(6154);function i(e,t){return e?15&e[t]:16*Math.random()|0}function a(){const e=n.gm?.crypto||n.gm?.msCrypto;let t,r=0;return e&&e.getRandomValues&&(t=e.getRandomValues(new Uint8Array(30))),"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".split("").map(e=>"x"===e?i(t,r++).toString(16):"y"===e?(3&i()|8).toString(16):e).join("")}function s(e){const t=n.gm?.crypto||n.gm?.msCrypto;let r,a=0;t&&t.getRandomValues&&(r=t.getRandomValues(new Uint8Array(e)));const s=[];for(var o=0;o<e;o++)s.push(i(r,a++).toString(16));return s.join("")}},2614(e,t,r){"use strict";r.d(t,["BB",0,18e5,"Wt",0,"NRBA_SESSION::","iL",0,{SAME_TAB:"same-tab",CROSS_TAB:"cross-tab"},"tS",0,{STARTED:"session-started",PAUSE:"session-pause",RESET:"session-reset",RESUME:"session-resume",UPDATE:"session-update"},"wk",0,144e5])},1863(e,t,r){"use strict";function n(){return Math.floor(performance.now())}r.d(t,{t:()=>n})},944(e,t,r){"use strict";r.d(t,{R:()=>i});var n=r(3241);function i(e,t){"function"==typeof console.debug&&(console.debug("New Relic Warning: https://github.com/newrelic/newrelic-browser-agent/blob/main/docs/warning-codes.md#".concat(e),t),(0,n.W)({drained:null,type:"data",name:"warn",feature:"warn",data:{code:e,secondary:t}}))}},8990(e,t,r){"use strict";r.d(t,{I:()=>i});var n=Object.prototype.hasOwnProperty;function i(e,t,r){if(n.call(e,t))return e[t];var i=r();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,t,{value:i,writable:!0,enumerable:!1}),i}catch(e){}return e[t]=i,i}},6389(e,t,r){"use strict";function n(e,t=500,r={}){const n=r?.leading||!1;let i;return(...r)=>{n&&void 0===i&&(e.apply(this,r),i=setTimeout(()=>{i=clearTimeout(i)},t)),n||(clearTimeout(i),i=setTimeout(()=>{e.apply(this,r)},t))}}function i(e){let t=!1;return(...r)=>{t||(t=!0,e.apply(this,r))}}r.d(t,{J:()=>i,s:()=>n})},1910(e,t,r){"use strict";r.d(t,{i:()=>a});var n=r(944);const i=new Map;function a(...e){return e.every(e=>{if(i.has(e))return i.get(e);const t="function"==typeof e?e.toString():"",r=t.includes("[native code]"),a=t.includes("nrWrapper");return r||a||(0,n.R)(64,e?.name||t),i.set(e,r),r})}},5289(e,t,r){"use strict";r.d(t,{GG:()=>s,Qr:()=>c,sB:()=>o});var n=r(3878),i=r(6389);function a(){return"undefined"==typeof document||"complete"===document.readyState}function s(e,t){if(a())return e();const r=(0,i.J)(e),s=setInterval(()=>{a()&&(clearInterval(s),r())},500);(0,n.sp)("load",r,t)}function o(e){if(a())return e();(0,n.DD)("DOMContentLoaded",e)}function c(e){if(a())return e();(0,n.sp)("popstate",e)}},384(e,t,r){"use strict";r.d(t,{Zm:()=>c,bQ:()=>d,dV:()=>u,pV:()=>l});var n=r(6154),i=r(1863),a=r(944),s=r(1910);const o={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net"};function c(){return n.gm.NREUM||(n.gm.NREUM={}),void 0===n.gm.newrelic&&(n.gm.newrelic=n.gm.NREUM),n.gm.NREUM}function u(){let e=c();return e.o||(e.o={ST:n.gm.setTimeout,SI:n.gm.setImmediate||n.gm.setInterval,CT:n.gm.clearTimeout,XHR:n.gm.XMLHttpRequest,REQ:n.gm.Request,EV:n.gm.Event,PR:n.gm.Promise,MO:n.gm.MutationObserver,FETCH:n.gm.fetch,WS:n.gm.WebSocket},(0,s.i)(...Object.values(e.o))),e}function d(e,t){let r=c();r.initializedAgents??={},t.initializedAt={ms:(0,i.t)(),date:new Date},r.initializedAgents[e]=t,2===Object.keys(r.initializedAgents).length&&(0,a.R)(69)}function l(){return function(){let e=c();const t=e.info||{};e.info={beacon:o.beacon,errorBeacon:o.errorBeacon,...t}}(),function(){let e=c();const t=e.init||{};e.init={...t}}(),u(),function(){let e=c();const t=e.loader_config||{};e.loader_config={...t}}(),c()}r.d(t,["NT",0,o])},2843(e,t,r){"use strict";r.d(t,{G:()=>a,u:()=>i});var n=r(3878);function i(e,t=!1,r,i){(0,n.DD)("visibilitychange",function(){if(t)return void("hidden"===document.visibilityState&&e());e(document.visibilityState)},r,i)}function a(e,t,r){(0,n.sp)("pagehide",e,t,r)}},9300(e,t,r){"use strict";r(860).K7.ajax;r.d(t,["mo",0,{NONE:"none",FAILURES:"failures",ALL:"all"}])},3969(e,t,r){"use strict";const n=r(860).K7.metrics;r.d(t,["TZ",0,n,"XG",0,"storeEventMetrics","xV",0,"storeSupportabilityMetrics"])},6630(e,t,r){"use strict";const n=r(860).K7.pageViewEvent;r.d(t,["T",0,n])},782(e,t,r){"use strict";const n=r(860).K7.pageViewTiming;r.d(t,["T",0,n])},4234(e,t,r){"use strict";r.d(t,{W:()=>i});var n=r(1687);class i{constructor(e,t){this.agentRef=e,this.ee=e?.ee,this.featureName=t,this.blocked=!1}deregisterDrain(){(0,n.x3)(this.agentRef,this.featureName)}}},7767(e,t,r){"use strict";var n=r(6154);r.d(t,["V",0,e=>n.RI&&!0===e?.privacy.cookies_enabled])},8362(e,t,r){"use strict";r.d(t,{d:()=>a});var n=r(9566),i=r(1741);class a extends i.W{agentIdentifier=(0,n.LA)(16)}},1741(e,t,r){"use strict";r.d(t,{W:()=>a});var n=r(944),i=r(4261);class a{#e(e,...t){if(this[e]!==a.prototype[e])return this[e](...t);(0,n.R)(35,e)}addPageAction(e,t){return this.#e(i.hG,e,t)}register(e){return this.#e(i.eY,e)}recordCustomEvent(e,t){return this.#e(i.fF,e,t)}setPageViewName(e,t){return this.#e(i.Fw,e,t)}setCustomAttribute(e,t,r){return this.#e(i.cD,e,t,r)}noticeError(e,t){return this.#e(i.o5,e,t)}setUserId(e,t=!1){return this.#e(i.Dl,e,t)}setApplicationVersion(e){return this.#e(i.nb,e)}setErrorHandler(e){return this.#e(i.bt,e)}addRelease(e,t){return this.#e(i.k6,e,t)}log(e,t){return this.#e("log",e,t)}start(){return this.#e("start")}finished(e){return this.#e(i.BL,e)}recordReplay(){return this.#e(i.CH)}pauseReplay(){return this.#e(i.Tb)}addToTrace(e){return this.#e(i.U2,e)}setCurrentRouteName(e){return this.#e(i.PA,e)}interaction(e){return this.#e(i.dT,e)}wrapLogger(e,t,r){return this.#e(i.Wb,e,t,r)}measure(e,t){return this.#e(i.V1,e,t)}consent(e){return this.#e(i.Pv,e)}}},4261(e,t,r){"use strict";r.d(t,["BL",0,"finished","CH",0,"recordReplay","Dl",0,"setUserId","Fw",0,"setPageViewName","PA",0,"setCurrentRouteName","Pv",0,"consent","Tb",0,"pauseReplay","U2",0,"addToTrace","V1",0,"measure","Wb",0,"wrapLogger","bt",0,"setErrorHandler","cD",0,"setCustomAttribute","dT",0,"interaction","eY",0,"register","fF",0,"recordCustomEvent","hG",0,"addPageAction","k6",0,"addRelease","nb",0,"setApplicationVersion","o5",0,"noticeError"])},1738(e,t,r){"use strict";r.d(t,{U:()=>l,Y:()=>d});var n=r(3241),i=r(9908),a=r(1863),s=r(944),o=r(3969),c=r(8362),u=r(860);function d(e,t,r,a){const d=a||r;!d||d[e]&&d[e]!==c.d.prototype[e]||(d[e]=function(){(0,i.p)(o.xV,["API/"+e+"/called"],void 0,u.K7.metrics,r.ee),(0,n.W)({drained:!!r.runtime?.activatedFeatures,type:"data",name:"api",feature:"api-"+e,data:{}});try{return t.apply(this,arguments)}catch(e){(0,s.R)(23,e)}})}function l(e,t,r,n,s){const o=e.info;null===r?delete o.jsAttributes[t]:o.jsAttributes[t]=r,(s||null===r)&&(0,i.p)("api-"+n,[(0,a.t)(),t,r],void 0,"session",e.ee)}},8374(e,t,r){r.nc=(()=>{try{return document?.currentScript?.nonce}catch(e){}return""})()},860(e,t,r){"use strict";const n="events",i="jserrors",a="browser/blobs",s="browser/logs",o={ajax:"ajax",genericEvents:"generic_events",jserrors:i,logging:"logging",metrics:"metrics",pageAction:"page_action",pageViewEvent:"page_view_event",pageViewTiming:"page_view_timing",sessionReplay:"session_replay",sessionTrace:"session_trace",softNav:"soft_navigations"},c={[o.pageViewEvent]:1,[o.pageViewTiming]:2,[o.metrics]:3,[o.jserrors]:4,[o.softNav]:5,[o.ajax]:6,[o.sessionTrace]:7,[o.sessionReplay]:8,[o.logging]:9,[o.genericEvents]:10},u={[o.pageViewEvent]:"rum",[o.pageViewTiming]:n,[o.ajax]:n,[o.softNav]:n,[o.metrics]:i,[o.jserrors]:i,[o.sessionTrace]:a,[o.sessionReplay]:a,[o.logging]:s,[o.genericEvents]:"ins"};r.d(t,["$J",0,u,"K7",0,o,"P3",0,c,"XX",0,i,"Yy",0,s,"df",0,a,"hg",0,"connect"])}};const t={};function r(n){const i=t[n];if(void 0!==i)return i.exports;const a=t[n]={exports:{}};return e[n](a,a.exports,r),a.exports}r.m=e,r.d=(e,t)=>{if(Array.isArray(t))for(var n=0;n<t.length;){var i=t[n++],a=t[n++];r.o(e,i)?0===a&&n++:0===a?Object.defineProperty(e,i,{enumerable:!0,value:t[n++]}):Object.defineProperty(e,i,{enumerable:!0,get:a})}else for(var i in t)r.o(t,i)&&!r.o(e,i)&&Object.defineProperty(e,i,{enumerable:!0,get:t[i]})},r.f={},r.e=e=>Promise.all(Object.keys(r.f).reduce((t,n)=>(r.f[n](e,t),t),[])),r.u=e=>"nr-rum-1.324.0.min.js",r.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{const e={},t="NRBA-1.324.0.PROD:";r.l=(n,i,a,s)=>{if(e[n])return void e[n].push(i);let o,c;if(void 0!==a){const e=document.getElementsByTagName("script");for(var u=0;u<e.length;u++){const r=e[u];if(r.getAttribute("src")==n||r.getAttribute("data-webpack")==t+a){o=r;break}}}if(!o){c=!0;var d={296:"sha512-Pjy0Jxmo6oAG6oGKLKrf8x8xyaSM1NuL7vLGv9xRLEw0hrpERDruLI5RxlCHNy0NpMyEPWhlC34zujXIR3qJPQ=="};o=document.createElement("script"),o.charset="utf-8",r.nc&&o.setAttribute("nonce",r.nc),o.setAttribute("data-webpack",t+a),o.src=n,0!==o.src.indexOf(window.location.origin+"/")&&(o.crossOrigin="anonymous"),d[s]&&(o.integrity=d[s])}e[n]=[i];const l=(t,r)=>{o.onerror=o.onload=null,clearTimeout(f);const i=e[n];if(delete e[n],o.parentNode?.removeChild(o),i?.forEach(e=>e(r)),t)return t(r)},f=setTimeout(l.bind(null,void 0,{type:"timeout",target:o}),12e4);o.onerror=l.bind(null,o.onerror),o.onload=l.bind(null,o.onload),c&&document.head.appendChild(o)}})(),r.r=e=>{Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.p="https://js-agent.newrelic.com/",(()=>{const e={374:0,840:0};r.f.j=(t,n)=>{let i=r.o(e,t)?e[t]:void 0;if(0!==i)if(i)n.push(i[2]);else{const a=new Promise((r,n)=>i=e[t]=[r,n]);n.push(i[2]=a);const s=r.p+r.u(t),o=new Error,c=n=>{if(r.o(e,t)&&(i=e[t],0!==i&&(e[t]=void 0),i)){const e=n&&("load"===n.type?"missing":n.type),r=n&&n.target&&n.target.src;o.message="Loading chunk "+t+" failed: ("+e+": "+r+")",o.name="ChunkLoadError",o.type=e,o.request=r,i[1](o)}};r.l(s,c,"chunk-"+t,t)}};const t=(t,n)=>{let[i,a,s]=n;var o,c,u=0;if(i.some(t=>0!==e[t])){for(o in a)r.o(a,o)&&(r.m[o]=a[o]);if(s)s(r)}for(t&&t(n);u<i.length;u++)c=i[u],r.o(e,c)&&e[c]&&e[c][0](),e[c]=0},n=self["webpackChunk:NRBA-1.324.0.PROD"]=self["webpackChunk:NRBA-1.324.0.PROD"]||[];n.forEach(t.bind(null,0)),n.push=t.bind(null,n.push.bind(n))})(),(()=>{"use strict";r(8374);var e=r(8362),t=r(860);const n=Object.values(t.K7);var i=r(384),a=r(1741);var s=r(2555),o=r(981);t.K7.genericEvents,o.R.PA,o.R.UA,o.R.BP;const c={RESOURCES:"experimental.resources",REGISTER:"register"};var u=r(9300);const d=e=>{if(!e||"string"!=typeof e)return!1;try{document.createDocumentFragment().querySelector(e)}catch{return!1}return!0};var l=r(2614),f=r(944),g=r(8122);const p="[data-nr-mask]",m=e=>(0,g.a)(e,(()=>{const e={feature_flags:[],experimental:{register:!1,resources:!1,iframe_bridge:!1,iframe_domains:[]},mask_selector:"*",block_selector:"[data-nr-block]",mask_input_options:{color:!1,date:!1,"datetime-local":!1,email:!1,month:!1,number:!1,range:!1,search:!1,tel:!1,text:!1,time:!1,url:!1,week:!1,textarea:!1,select:!1,password:!0}};return{ajax:{deny_list:void 0,block_internal:!0,enabled:!0,autoStart:!0,capture_payloads:u.mo.NONE},api:{register:{get enabled(){return e.feature_flags.includes(c.REGISTER)||e.experimental.register},set enabled(t){e.experimental.register=t},duplicate_data_to_container:!1,get allow_iframe_bridge(){return e.feature_flags.includes(c.IFRAME_BRIDGE)||e.experimental.iframe_bridge},set allow_iframe_bridge(t){e.experimental.iframe_bridge=t},get iframe_domains(){return e.experimental.iframe_domains},set iframe_domains(t){Array.isArray(t)?e.experimental.iframe_domains=t:(0,f.R)(1,t)}}},browser_consent_mode:{enabled:!1},distributed_tracing:{enabled:void 0,exclude_newrelic_header:void 0,cors_use_newrelic_header:void 0,cors_use_tracecontext_headers:void 0,allowed_origins:void 0},get feature_flags(){return e.feature_flags},set feature_flags(t){e.feature_flags=t},generic_events:{enabled:!0,autoStart:!0},harvest:{interval:30},jserrors:{enabled:!0,autoStart:!0},logging:{enabled:!0,autoStart:!0},metrics:{enabled:!0,autoStart:!0},obfuscate:void 0,page_action:{enabled:!0},page_view_event:{enabled:!0,autoStart:!0},page_view_timing:{enabled:!0,autoStart:!0},performance:{capture_marks:!1,capture_measures:!1,capture_detail:!0,resources:{get enabled(){return e.feature_flags.includes(c.RESOURCES)||e.experimental.resources},set enabled(t){e.experimental.resources=t},asset_types:[],first_party_domains:[],ignore_newrelic:!0}},privacy:{cookies_enabled:!0},proxy:{assets:void 0,beacon:void 0},session:{expiresMs:l.wk,inactiveMs:l.BB},session_replay:{autoStart:!0,enabled:!1,preload:!1,sampling_rate:10,error_sampling_rate:100,collect_fonts:!1,inline_images:!1,fix_stylesheets:!0,mask_all_inputs:!0,get mask_text_selector(){return e.mask_selector},set mask_text_selector(t){d(t)?e.mask_selector="".concat(t,",").concat(p):""===t||null===t?e.mask_selector=p:(0,f.R)(5,t)},get block_class(){return"nr-block"},get ignore_class(){return"nr-ignore"},get mask_text_class(){return"nr-mask"},get block_selector(){return e.block_selector},set block_selector(t){d(t)?e.block_selector+=",".concat(t):""!==t&&(0,f.R)(6,t)},get mask_input_options(){return e.mask_input_options},set mask_input_options(t){t&&"object"==typeof t?e.mask_input_options={...t,password:!0}:(0,f.R)(7,t)}},session_trace:{enabled:!0,autoStart:!0},soft_navigations:{enabled:!0,autoStart:!0},ssl:void 0,user_actions:{enabled:!0,elementAttributes:["id","className","tagName","type"]},web_sockets:{enabled:!1}}})());var h=r(6154),v=r(9324);let b=0;const y={buildEnv:"PROD",distMethod:"CDN",version:v.xv,originTime:h.WN},_={consented:!1},w={activatedFeatures:void 0,appMetadata:{},configured:!1,get consented(){return this.session?.state?.consent||_.consented},set consented(e){_.consented=e},customTransaction:void 0,denyList:[],disabled:!1,drainRegistry:new Map,connector:void 0,harvester:void 0,v2Target:void 0,isolatedBacklog:!1,isRecording:!1,loaderType:void 0,maxBytes:3e4,obfuscator:void 0,onerror:void 0,ptid:void 0,releaseIds:{},session:void 0,timeKeeper:void 0,registeredEntities:[],jsAttributesMetadata:{bytes:0},get harvestCount(){return++b},listeningForIframeMessages:!1},R="BA";var A=r(7836),x=r(3241);const E={accountID:void 0,trustKey:void 0,agentID:void 0,licenseKey:void 0,applicationID:void 0,xpid:void 0};var S=r(9908);const k="newrelic-iframe-";function T(e,t={},n,o){let{init:c,info:u,loader_config:d,runtime:l={},exposed:f=!0}=t;if(!u){const e=(0,i.pV)();c=e.init,u=e.info,d=e.loader_config}var p;e.init=m(c||{}),e.loader_config=(p=d||{},(0,g.a)(p,E)),u.jsAttributes??={},h.bv&&(u.jsAttributes.isWorker=!0),e.info=(0,s.D)(u);const v=e.init;e.runtime??=(e=>{const t=(0,g.a)(e,w),r=Object.keys(y).reduce((e,t)=>(e[t]={value:y[t],writable:!1,configurable:!0,enumerable:!0},e),{});return Object.defineProperties(t,r)})(l),e.runtime.v2Target??={type:R,instance:e.agentIdentifier,get id(){return e.runtime.appMetadata?.agents?.[0]?.entityGuid},get attributes(){return{"entity.guid":this.id,appId:e.info.applicationID}}},v.proxy.assets&&(e=>{const t=e.startsWith("http");e+="/",r.p=t?e:"https://"+e})(v.proxy.assets),e.runtime.configured||(Object.defineProperty(e,"beacons",{get:()=>[e.info.beacon,e.info.errorBeacon,e.init.proxy.assets,e.init.proxy.beacon].filter(Boolean)}),Object.defineProperty(e.runtime,"denyList",{get:()=>[...e.init.ajax.deny_list||[],...e.init.ajax.block_internal?e.beacons:[]]}),e.runtime.ptid=e.agentIdentifier,function(e){const t=(0,i.pV)();Object.getOwnPropertyNames(a.W.prototype).forEach(r=>{const n=a.W.prototype[r];if("function"!=typeof n||"constructor"===n)return;let i=t[r];e[r]&&!1!==e.exposed&&"micro-agent"!==e.runtime?.loaderType&&(t[r]=(...t)=>{const n=e[r](...t);return i?i(...t):n})})}(e),e.runtime.loaderType=n,e.ee=A.ee.get(e.agentIdentifier),e.exposed=f,(0,x.W)({drained:!!e.runtime.activatedFeatures,type:"lifecycle",name:"initialize",feature:void 0,data:e.config}),e.init.api.register.allow_iframe_bridge&&h.gm.addEventListener("message",t=>{"string"==typeof t.data?.type&&t.data.type.startsWith(k)&&(0,S.p)("iframe-message",[t],void 0,"IFRAME",e.ee)}),e.runtime.configured=!0)}var j=r(1863),P=r(4261),N=r(1738);var O=r(1687),M=r(4234),I=r(5289),D=r(7767);function V(e){return!!(0,i.dV)().o.MO&&(0,D.V)(e)&&!0===e?.session_trace.enabled}var W=r(6389),B=r(7699);const C=new WeakSet,K=new WeakMap;class U extends M.W{constructor(e,t){super(e,t),this.abortHandler=void 0,this.featAggregate=void 0,this.loadedSuccessfully=void 0,this.onAggregateImported=new Promise(e=>{this.loadedSuccessfully=e}),this.deferred=Promise.resolve(),!1===e.init[this.featureName].autoStart?this.deferred=new Promise((t,r)=>{this.ee.on("manual-start-all",(0,W.J)(()=>{(0,O.Ak)(e,this.featureName),t()}))}):(0,O.Ak)(e,t)}importAggregator(e,t,n={}){if(this.featAggregate)return;const i=async()=>{if(await this.deferred,this.#t(e),!(0,s.f)(e.info))return(0,f.R)(43),e.ee.abort(),void this.loadedSuccessfully(!1);try{await async function(e,t,n){if(K.has(e))return K.get(e);const i=(async()=>{if((0,D.V)(e.init))try{const{setupAgentSession:t}=await r.e(296).then(r.bind(r,1768));t(e)}catch(e){(0,f.R)(20,e),t.emit("internal-error",[e]),(0,S.p)(B.qh,[e],void 0,n,t)}if(e.init.api.register.allow_iframe_bridge)try{const{setupIframeMFEMessageListener:t}=await Promise.resolve().then(function(){const e=new Error("Cannot find module '../../loaders/configure/iframe-message-handler'");throw e.code="MODULE_NOT_FOUND",e});t(e)}catch(e){(0,f.R)(23,e)}const[{Connector:i},{Harvester:a}]=await Promise.all([r.e(296).then(r.bind(r,6589)),r.e(296).then(r.bind(r,5237))]);e.runtime.connector=new i(e),e.runtime.harvester=new a(e);const s=Object.values(e.features).filter(t=>e.runtime.drainRegistry.has(t.featureName));Promise.all(s.map(e=>e.onAggregateImported)).then(()=>e.runtime.harvester.startTimer())})();K.set(e,i),await i}(e,this.ee,this.featureName)}catch(e){return(0,f.R)(79,e),this.ee.abort(),void this.loadedSuccessfully(!1)}try{if(!this.#r(this.featureName,e.runtime.session,e.init))return this.abortHandler?.(),(0,O.Ze)(this.agentRef,this.featureName),void this.loadedSuccessfully(!1);const{Aggregate:r}=await t();this.featAggregate=new r(e,n),e.runtime.harvester.initializedAggregates.push(this.featAggregate),this.loadedSuccessfully(!0)}catch(e){(0,f.R)(34,e),this.abortHandler?.(),(0,O.Ze)(this.agentRef,this.featureName,!0),this.loadedSuccessfully(!1)}};h.RI?(0,I.GG)(()=>i(),!0):i()}#r(e,r,n){if(this.blocked)return!1;switch(e){case t.K7.sessionReplay:return V(n)&&!!r;case t.K7.sessionTrace:return!!r;default:return!0}}#t(e){if(!C.has(e)&&(C.add(e),!(0,s.f)(e.info))){const t=(0,i.pV)();let r={...t.info?.jsAttributes};try{r={...r,...e.info?.jsAttributes}}catch(e){}T(e,{...t,info:{...t.info,jsAttributes:r},runtime:e.runtime},e.runtime.loaderType)}}}var L=r(6630);class F extends U{static featureName=L.T;constructor(e){var t;super(e,L.T),this.setupInspectionEvents(),t=e,(0,N.Y)(P.Fw,function(e,r){"string"==typeof e&&("/"!==e.charAt(0)&&(e="/"+e),t.runtime.customTransaction=(r||"http://custom.transaction")+e,(0,S.p)("api-"+P.Fw,[(0,j.t)()],void 0,void 0,t.ee))},t),this.importAggregator(e,()=>e.init.feature_flags.includes("rum_v2")?r.e(296).then(r.bind(r,908)):r.e(296).then(r.bind(r,7927)))}setupInspectionEvents(){const e=(e,t)=>{e&&(0,x.W)({timeStamp:e.timeStamp,loaded:"complete"===e.target.readyState,type:"window",name:t,data:e.target.location+""})};(0,I.sB)(t=>{e(t,"DOMContentLoaded")}),(0,I.GG)(t=>{e(t,"load")}),(0,I.Qr)(t=>{e(t,"navigate")}),this.ee.on(l.tS.UPDATE,(e,t)=>{(0,x.W)({type:"lifecycle",name:"session",data:t})})}}class G extends e.d{constructor(e){var t;(super(),h.gm)?(this.features={},(0,i.bQ)(this.agentIdentifier,this),this.desiredFeatures=new Set(e.features||[]),this.desiredFeatures.add(F),T(this,e,e.loaderType||"agent"),t=this,(0,N.Y)(P.cD,function(e,r,n=!1){if("string"==typeof e){if(["string","number","boolean"].includes(typeof r)||null===r)return(0,N.U)(t,e,r,P.cD,n);(0,f.R)(40,typeof r)}else(0,f.R)(39,typeof e)},t),function(e){(0,N.Y)(P.Dl,function(t,r=!1){if("string"!=typeof t&&null!==t)return void(0,f.R)(41,typeof t);const n=e.info.jsAttributes["enduser.id"];r&&null!=n&&n!==t?(0,S.p)("api-setUserIdAndResetSession",[t],void 0,"session",e.ee):(0,N.U)(e,"enduser.id",t,P.Dl,!0)},e)}(this),function(e){(0,N.Y)(P.nb,function(t){if("string"==typeof t||null===t)return(0,N.U)(e,"application.version",t,P.nb,!1);(0,f.R)(42,typeof t)},e)}(this),function(e){(0,N.Y)("start",function(){e.ee.emit("manual-start-all")},e)}(this),function(e){(0,N.Y)(P.Pv,function(t=!0){if("boolean"==typeof t){if((0,S.p)("api-"+P.Pv,[t],void 0,"session",e.ee),e.runtime.consented=t,t){const t=e.features.page_view_event;t.onAggregateImported.then(e=>{const r=t.featAggregate;e&&!r.sentRum&&r.sendRum?.()})}}else(0,f.R)(65,typeof t)},e)}(this),this.run()):(0,f.R)(21)}get config(){return{info:this.info,init:this.init,loader_config:this.loader_config,runtime:this.runtime}}get api(){return this}run(){try{const e=function(e){const t={};return n.forEach(r=>{t[r]=!!e[r]?.enabled}),t}(this.init),r=[...this.desiredFeatures],i=this.init.feature_flags.includes("rum_v2");r.sort((e,r)=>t.P3[e.featureName]-t.P3[r.featureName]),r.forEach(r=>{if(!e[r.featureName]&&(i||r.featureName!==t.K7.pageViewEvent))return;const n=function(e){switch(e){case t.K7.ajax:return[t.K7.jserrors];case t.K7.sessionTrace:return[t.K7.ajax,t.K7.pageViewEvent];case t.K7.sessionReplay:return[t.K7.sessionTrace];case t.K7.pageViewTiming:return[t.K7.pageViewEvent];default:return[]}}(r.featureName).filter(e=>!(e in this.features));n.length>0&&(0,f.R)(36,{targetFeature:r.featureName,missingDependencies:n}),this.features[r.featureName]=new r(this)})}catch(e){(0,f.R)(22,e);for(const e in this.features)this.features[e].abortHandler?.();const t=(0,i.Zm)();delete t.initializedAgents[this.agentIdentifier]?.features,delete this.sharedAggregator;return t.ee.get(this.agentIdentifier).abort(),!1}}}var H=r(2843),z=r(782);class Y extends U{static featureName=z.T;constructor(e){super(e,z.T),h.RI&&((0,H.u)(()=>(0,S.p)("docHidden",[(0,j.t)()],void 0,z.T,this.ee),!0),(0,H.G)(()=>(0,S.p)("winPagehide",[(0,j.t)()],void 0,z.T,this.ee)),this.importAggregator(e,()=>r.e(296).then(r.bind(r,9981))))}}var Z=r(3969);class q extends U{static featureName=Z.TZ;constructor(e){super(e,Z.TZ),this.importAggregator(e,()=>r.e(296).then(r.bind(r,9623)))}}new G({features:[F,Y,q],loaderType:"lite"})})()})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="/foreign-holdings-kansas-ag-land-0" />
+<link rel="shortlink" href="/node/37755" />
+<link rel="shortcut icon" href="https://agmanager.info/favicon.ico" type="image/vnd.microsoft.icon" />
+  <title>Foreign Holdings of Kansas Ag Land | AgManager.info</title>
+  <link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_lQaZfjVpwP_oGNqdtWCSpJT1EMqXdMiU84ekLLxQnc4.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_Z5eWvWzvvhANwdiNzmy7HqC_LZTGbziZ41S9Z908K-A.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_EAPSxpjQ51Gkv1n2S6KnZOUevqksDeShVCBPoxHdFEA.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_XyELJoL1qsdMTQdFrViNSLevfcrzPM23hhX_NrpUCh0.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_iqe3qU5DaRQL5JFw-_yOvWGoFz3wvuUvsrUOGt0PvP8.css" media="all" />
+<style>.tb-megamenu.animate .mega > .mega-dropdown-menu,.tb-megamenu.animate.slide .mega > .mega-dropdown-menu > div{transition-delay:200ms;-webkit-transition-delay:200ms;-ms-transition-delay:200ms;-o-transition-delay:200ms;transition-duration:400ms;-webkit-transition-duration:400ms;-ms-transition-duration:400ms;-o-transition-duration:400ms;}
+</style>
+<link type="text/css" rel="stylesheet" href="https://agmanager.info/sites/default/files/css/css_GbDeXrlXqYhy5SgxfJAuPn-J01lx2RwpInRMyZ6QYFA.css" media="all" />
+  <!-- HTML5 element support for IE6-8 -->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="https://agmanager.info/sites/default/files/js/js_4WkLGZTP5OIov__I_0P6NGPWl2bSTfTiZ5H47BqcLsg.js"></script>
+<script src="https://agmanager.info/sites/default/files/js/js_onbE0n0cQY6KTDQtHO_E27UBymFC-RuqypZZ6Zxez-o.js"></script>
+<script src="https://agmanager.info/sites/default/files/js/js_NpX2cwCeepkWZZ194B6-ViyVBHleaYLOx5R9EWBOMRU.js"></script>
+<script src="https://agmanager.info/sites/default/files/js/js_QrGrfeknlSPrqY3oYeTIYq74jZmmNe93h5N_plQRPxw.js"></script>
+<script src="https://www.googletagmanager.com/gtag/js?id=G-NTESPK9SL3"></script>
+<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments)};gtag("js", new Date());gtag("set", "developer_id.dMDhkMT", true);gtag("config", "G-NTESPK9SL3", {"":"","groups":"default","anonymize_ip":true});gtag("config", "UA-15932463-1", {"":"","groups":"default","anonymize_ip":true});</script>
+<script src="https://agmanager.info/sites/default/files/js/js_Jvzfme7hjVKSeUqUQv3iGQmv_iL6Bsd-KPewB90fcK8.js"></script>
+<script src="https://agmanager.info/sites/default/files/js/js_4Q_NUimI4t1XIkkGgtmMxO8eyzqnmB3XI9CY3FzsxjU.js"></script>
+<script src="https://agmanager.info/sites/default/files/js/js_WbCw6vk-OROX5er6aHMX-u9WzMq1hN-SJODeAz-Bavc.js"></script>
+<script>jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"agmanager","theme_token":"FLBf0a5UyXJhACT1qTWQunY50JGF93pzeDwyDkjoaTU","js":{"sites\/all\/themes\/bootstrap\/js\/bootstrap.js":1,"sites\/all\/modules\/contrib\/jquery_update\/replace\/jquery\/1.10\/jquery.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/form-single-submit.js":1,"sites\/all\/modules\/contrib\/extlink\/extlink.js":1,"sites\/all\/libraries\/colorbox\/jquery.colorbox-min.js":1,"sites\/all\/modules\/contrib\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/contrib\/colorbox\/styles\/default\/colorbox_style.js":1,"sites\/all\/modules\/contrib\/tb_megamenu\/js\/tb-megamenu-frontend.js":1,"sites\/all\/modules\/contrib\/tb_megamenu\/js\/tb-megamenu-touch.js":1,"sites\/all\/modules\/contrib\/google_analytics\/googleanalytics.js":1,"https:\/\/www.googletagmanager.com\/gtag\/js?id=G-NTESPK9SL3":1,"0":1,"sites\/all\/libraries\/chosen\/chosen.jquery.min.js":1,"sites\/all\/modules\/contrib\/ctools\/js\/jump-menu.js":1,"sites\/all\/modules\/contrib\/flag\/theme\/flag.js":1,"sites\/all\/modules\/contrib\/chosen\/chosen.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/affix.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/alert.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/button.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/carousel.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/collapse.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/dropdown.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/modal.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/tooltip.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/popover.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/scrollspy.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/tab.js":1,"sites\/all\/themes\/agmanager\/bootstrap\/js\/transition.js":1,"sites\/all\/themes\/agmanager\/js\/sticky-kit.min.js":1,"sites\/all\/themes\/agmanager\/js\/jRespond.min.js":1,"sites\/all\/themes\/agmanager\/js\/tinynav.min.js":1,"sites\/all\/themes\/agmanager\/js\/scripts.js":1},"css":{"modules\/system\/system.base.css":1,"sites\/all\/libraries\/chosen\/chosen.css":1,"sites\/all\/modules\/contrib\/chosen\/css\/chosen-drupal.css":1,"sites\/all\/modules\/contrib\/date\/date_api\/date.css":1,"sites\/all\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css":1,"sites\/all\/modules\/contrib\/date\/date_repeat_field\/date_repeat_field.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/contrib\/file_maintenance\/css\/file_maintenance.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/contrib\/extlink\/extlink.css":1,"sites\/all\/modules\/contrib\/views\/css\/views.css":1,"sites\/all\/modules\/contrib\/colorbox\/styles\/default\/colorbox_style.css":1,"sites\/all\/modules\/contrib\/ctools\/css\/ctools.css":1,"https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/font-awesome\/4.4.0\/css\/font-awesome.min.css":1,"sites\/all\/modules\/contrib\/tb_megamenu\/css\/bootstrap.css":1,"sites\/all\/modules\/contrib\/tb_megamenu\/css\/base.css":1,"sites\/all\/modules\/contrib\/tb_megamenu\/css\/default.css":1,"sites\/all\/modules\/contrib\/tb_megamenu\/css\/compatibility.css":1,"0":1,"sites\/all\/themes\/agmanager\/css\/style.css":1}},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"better_exposed_filters":{"views":{"favorites":{"displays":{"block":{"filters":[]}}}}},"extlink":{"extTarget":"_blank","extClass":"ext","extLabel":"(link is external)","extImgClass":0,"extSubdomains":1,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":0,"extAlertText":"This link will take you to an external web site.","mailtoClass":"mailto","mailtoLabel":"(link sends e-mail)"},"googleanalytics":{"account":["G-NTESPK9SL3","UA-15932463-1"],"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip","trackColorbox":1},"chosen":{"selector":"select#edit-field-article-type-value, select#edit-summary-years, select#edit-summary-category, select#edit-field-crop-type-tid, select#edit-basis-map-date-select,select#edit-field-category,select#edit-field-author,select#edit-term-node-tid-depth, select#edit-field-author-und, select#edit-field-category-und","minimum_single":3,"minimum_multiple":0,"minimum_width":200,"options":{"disable_search":false,"disable_search_threshold":9,"search_contains":true,"placeholder_text_multiple":"Filter this list...","placeholder_text_single":"Choose an option","no_results_text":"No results match","inherit_select_classes":true}},"urlIsAjaxTrusted":{"\/node\/37755":true},"flag":{"anonymous":true,"templates":{"favorites_37755":"\u003Cspan class=\u0022flag-wrapper flag-favorites flag-favorites-37755\u0022\u003E\n      \u003Ca href=\u0022\/flag\/unflag\/favorites\/37755?destination=node\/37755\u0026amp;token=7973a61a1c939a4bda94853a6a1f5a8d\u0022 title=\u0022\u0022 class=\u0022flag unflag-action flag-link-normal\u0022 rel=\u0022nofollow\u0022\u003ERemove from Favorites\u003C\/a\u003E\u003Cspan class=\u0022flag-throbber\u0022\u003E\u0026nbsp;\u003C\/span\u003E\n    \u003C\/span\u003E\n"}},"bootstrap":{"anchorsFix":"0","anchorsSmoothScrolling":"0","formHasError":1,"popoverEnabled":1,"popoverOptions":{"animation":1,"html":0,"placement":"right","selector":"","trigger":"click","triggerAutoclose":1,"title":"","content":"","delay":0,"container":"body"},"tooltipEnabled":1,"tooltipOptions":{"animation":1,"html":0,"placement":"auto left","selector":"","trigger":"hover focus","delay":0,"container":"body"}}});</script>
+</head>
+<body class="html not-front not-logged-in one-sidebar sidebar-first page-node page-node- page-node-37755 node-type-page">
+<div id="skip-link">
+  <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+</div>
+<div class="banner">
+  <div class="container seal">
+    <a href="http://www.ageconomics.k-state.edu/"
+       class="agecon-wordmark sprite"><span>Department of Agricultural Economics</span></a>
+    <a href="http://www.k-state.edu" class="kstate-wordmark sprite"><span>Kansas State University</span></a>
+  </div>
+</div>
+
+<div class="nav-hero-wrapper">
+  <div class="navs-wrapper">
+          <div class="mini-navbar">
+        <div class="container">
+            <div class="region region-sub-navigation">
+    <ul class="nav navbar-nav navbar-right social-media-icons"><li><a href="https://twitter.com/agmanagerinfo"><i aria-hidden="true" class="fa fa-twitter">&nbsp;</i></a></li><li><a href="mailto:rvl@ksu.edu"><i aria-hidden="true" class="fa fa-envelope">&nbsp;</i></a></li><li><a href="https://www.facebook.com/AgManager.info/"><i aria-hidden="true" class="fa fa-facebook-official">&nbsp;</i></a></li></ul><ul class="menu nav menu-tree user-menu"><li><a href="/user">Sign In</a></li><li><a href="/user/register">Register</a></li></ul><div class="menu-block-wrapper menu-block-4 menu-name-menu-sub-navigation parent-mlid-0 menu-level-1">
+  <ul class="menu nav menu-tree"><li class="first leaf menu-mlid-808"><a href="/" title="">Home</a></li>
+<li class="leaf has-children menu-mlid-448"><a href="/about">About</a></li>
+<li class="leaf has-children menu-mlid-561"><a href="/events">Events</a></li>
+<li class="leaf menu-mlid-503"><a href="/contributors">Contributors</a></li>
+<li class="leaf menu-mlid-1179"><a href="http://www.agmanager.info/machinery/papers/custom-rates-survey" title="">Custom Rates</a></li>
+<li class="leaf has-children menu-mlid-1026"><a href="/farm-budgets">Farm Budgets</a></li>
+<li class="leaf menu-mlid-1059"><a href="/decision-tools">Tools</a></li>
+<li class="leaf has-children menu-mlid-1062"><a href="/news">News</a></li>
+<li class="leaf menu-mlid-1183"><a href="http://www.agmanager.info/grain-marketing/grain-supply-and-demand-wasde" title="">WASDE</a></li>
+<li class="leaf has-children menu-mlid-851"><a href="/kfma">KFMA</a></li>
+<li class="leaf has-children menu-mlid-970"><a href="/programs-and-centers">Programs</a></li>
+<li class="leaf has-children menu-mlid-1095"><a href="/ksfmra">KSFMRA</a></li>
+<li class="last leaf has-children menu-mlid-1056"><a href="/sponsors">Sponsors</a></li>
+</ul></div>
+  </div>
+        </div>
+      </div>
+    
+          <!-- Static navbar -->
+<nav class="navbar navbar-default color">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+              aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="logo navbar-brand pull-left agmanager-logo sprite" href="/"
+         title="Home" rel="home">
+        <span>AgManager.info Logo</span>
+      </a>
+      <a class="logo navbar-brand pull-right agecon-wordmark sprite" href="/"
+         title="Home" rel="home">
+        <span>Agricultural Economics - Kansas State University</span>
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+
+              <section id="block-menu-block-12" class="block block-menu-block clearfix">
+
+      
+  <div class="menu-block-wrapper menu-block-12 menu-name-menu-sub-navigation parent-mlid-0 menu-level-1">
+  <ul class="menu nav menu-tree"><li class="first leaf menu-mlid-808"><a href="/" title="">Home</a></li>
+<li class="leaf has-children menu-mlid-448"><a href="/about">About</a></li>
+<li class="leaf has-children menu-mlid-561"><a href="/events">Events</a></li>
+<li class="leaf menu-mlid-503"><a href="/contributors">Contributors</a></li>
+<li class="leaf menu-mlid-1179"><a href="http://www.agmanager.info/machinery/papers/custom-rates-survey" title="">Custom Rates</a></li>
+<li class="leaf has-children menu-mlid-1026"><a href="/farm-budgets">Farm Budgets</a></li>
+<li class="leaf menu-mlid-1059"><a href="/decision-tools">Tools</a></li>
+<li class="leaf has-children menu-mlid-1062"><a href="/news">News</a></li>
+<li class="leaf menu-mlid-1183"><a href="http://www.agmanager.info/grain-marketing/grain-supply-and-demand-wasde" title="">WASDE</a></li>
+<li class="leaf has-children menu-mlid-851"><a href="/kfma">KFMA</a></li>
+<li class="leaf has-children menu-mlid-970"><a href="/programs-and-centers">Programs</a></li>
+<li class="leaf has-children menu-mlid-1095"><a href="/ksfmra">KSFMRA</a></li>
+<li class="last leaf has-children menu-mlid-1056"><a href="/sponsors">Sponsors</a></li>
+</ul></div>
+
+</section>
+<section id="block-block-4--2" class="block block-block clearfix">
+
+      
+  <ul class="menu nav menu-tree user-menu"><li><a href="/user">Sign In</a></li><li><a href="/user/register">Register</a></li></ul>
+</section>
+<section id="block-menu-block-11" class="block block-menu-block clearfix">
+
+      
+  <div class="menu-block-wrapper menu-block-11 menu-name-main-menu parent-mlid-0 menu-level-1">
+  <ul class="menu nav menu-tree"><li class="first leaf has-children menu-mlid-487"><a href="/farm-management">Farm Management</a></li>
+<li class="leaf has-children menu-mlid-646"><a href="/crop-insurance">Crop Insurance</a></li>
+<li class="leaf has-children menu-mlid-888"><a href="/grain-marketing">Grain Marketing</a></li>
+<li class="leaf has-children menu-mlid-862"><a href="/livestock-meat">Livestock &amp; Meat</a></li>
+<li class="last leaf has-children active-trail menu-mlid-979 active"><a href="/ag-policy" class="active-trail">Ag Policy</a></li>
+</ul></div>
+
+</section>
+    <ul  class="tb-megamenu tb-megamenu-nav nav level-0 items-5 agmanager-primary navbar-nav">
+  
+<li  data-id="487" data-level="1" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-1 mega dropdown">
+  <a href="/farm-management"  class="dropdown-toggle">
+        Farm Management          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-6" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-1 items-7">
+  
+<li  data-id="504" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/land-leasing/land-buying-valuing"  class="dropdown-toggle">
+        Land Buying & Valuing          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-1" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-2">
+  
+<li  data-id="1612" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/land-buying-valuing/land-use-value-research" >
+        Land Use Value Research          </a>
+  </li>
+
+
+<li  data-id="488" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="http://www.cmegroup.com/trading/interest-rates/fed-funds.html"  title="Interest Rate Forecasts">
+        Interest Rate Forecasts          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="664" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/farm-management/land-rental-rates"  class="dropdown-toggle">
+        Land Rental Rates          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-2" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-3">
+  
+<li  data-id="1563" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/land-rental-rates/local-land-lease-information" >
+        Local Land Lease Information          </a>
+  </li>
+
+
+<li  data-id="665" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/land-rental-rates/papers-presentations" >
+        Papers & Presentations          </a>
+  </li>
+
+
+<li  data-id="666" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/land-rental-rates/forms" >
+        Forms          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="2017" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/farm-management/farm-profitability" >
+        Farm Profitability          </a>
+  </li>
+
+
+<li  data-id="1060" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/management-finance/precision-agriculture" >
+        Precision Agriculture          </a>
+  </li>
+
+
+<li  data-id="791" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/farm-management/finance"  class="dropdown-toggle">
+        Finance & Business Planning          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-3" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-4">
+  
+<li  data-id="792" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/finance-business-planning/farm-business-transition-planning" >
+        Business & Transition Planning          </a>
+  </li>
+
+
+<li  data-id="793" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/finance-business-planning/financial-management" >
+        Financial Management          </a>
+  </li>
+
+
+<li  data-id="794" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/finance-business-planning/financial-statements-ratios" >
+        Financial Statements & Ratios          </a>
+  </li>
+
+
+<li  data-id="1601" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/finance-business-planning/research-papers-and-presentations" >
+        Research Papers and Presentations          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="675" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/farm-management/machinery"  class="dropdown-toggle">
+        Machinery          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-4" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-6">
+  
+<li  data-id="1178" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="http://www.agmanager.info/machinery/papers/2016-rates-paid-kansas-farmers-custom-work"  title="Custom Rates">
+        Custom Rates          </a>
+  </li>
+
+
+<li  data-id="2009" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="https://agmanager.info/machinery/kansas-days-suitable-fieldwork/machinery-cost-calculator"  title="Machinery Cost Calculator">
+        Machinery Cost Calculator          </a>
+  </li>
+
+
+<li  data-id="676" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/machinery/fuel-price-forecasts" >
+        Price Forecasts          </a>
+  </li>
+
+
+<li  data-id="677" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/machinery/papers" >
+        Papers          </a>
+  </li>
+
+
+<li  data-id="1149" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/machinery/crop-progress-charts" >
+        Crop Progress Charts          </a>
+  </li>
+
+
+<li  data-id="1004" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/farm-management/machinery/k-state-fieldwork-capacity-tool" >
+        K-State Fieldwork Capacity Tool          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="800" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/farm-management/production-economics"  class="dropdown-toggle">
+        Production Economics          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-5" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-3">
+  
+<li  data-id="801" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/production-economics/prices-and-price-forecasts" >
+        Prices and Price Forecasts          </a>
+  </li>
+
+
+<li  data-id="1084" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/production-economics/energy" >
+        Energy          </a>
+  </li>
+
+
+<li  data-id="802" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/production-economics/production-publications" >
+        Production Publications          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="646" data-level="1" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-1 mega dropdown">
+  <a href="/crop-insurance"  class="dropdown-toggle">
+        Crop Insurance          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-7" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-1 items-5">
+  
+<li  data-id="647" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/crop-insurance/risk-management-strategies" >
+        Risk Management          </a>
+  </li>
+
+
+<li  data-id="2032" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/crop-insurance/livestock-insurance-papers-and-information" >
+        Livestock Insurance Papers and Information          </a>
+  </li>
+
+
+<li  data-id="1573" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/crop-insurance/crop-insurance-papers-and-information" >
+        Crop Insurance Papers          </a>
+  </li>
+
+
+<li  data-id="2018" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/crop-insurance/kansas-crop-insurance-maps" >
+        Kansas Crop Insurance Maps          </a>
+  </li>
+
+
+<li  data-id="1006" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/crop-insurance/crop-and-data-links"  title="Crop Links">
+        Crop Links          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="888" data-level="1" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-1 mega dropdown">
+  <a href="/grain-marketing"  class="dropdown-toggle">
+        Grain Marketing          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-8" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-1 items-7">
+  
+<li  data-id="977" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/grain-market-outlook-newsletter" >
+        Grain Market Outlook Newsletter          </a>
+  </li>
+
+
+<li  data-id="983" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/grain-supply-and-demand-wasde" >
+        Grain Supply and Demand (WASDE)          </a>
+  </li>
+
+
+<li  data-id="806" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/interactive-crop-basis-tool" >
+        Interactive Crop Basis Tool          </a>
+  </li>
+
+
+<li  data-id="887" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/grain-basis-maps" >
+        Crop Basis Maps          </a>
+  </li>
+
+
+<li  data-id="2128" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/usda-reports-wasde-nass-ers-and-other-reports" >
+        USDA Reports and Links          </a>
+  </li>
+
+
+<li  data-id="1115" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/presentations" >
+        Presentations          </a>
+  </li>
+
+
+<li  data-id="1116" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/grain-marketing/publications" >
+        Publications          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="862" data-level="1" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-1 mega dropdown">
+  <a href="/livestock-meat"  class="dropdown-toggle">
+        Livestock & Meat          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-15" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-1 items-5">
+  
+<li  data-id="971" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/livestock-meat/cattle-finishing-historical-and-projected-returns" >
+        Cattle Finishing Returns          </a>
+  </li>
+
+
+<li  data-id="1189" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/livestock-meat/meat-demand"  class="dropdown-toggle">
+        Meat Demand          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-10" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-6">
+  
+<li  data-id="1997" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/meat-demand/monthly-domestic-meat-demand-indices-usdabls-data" >
+        Monthly Domestic Meat Demand Indices [USDA/BLS Data]          </a>
+  </li>
+
+
+<li  data-id="1998" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/meat-demand/monthly-export-meat-demand-indices-usdabls-data" >
+        Monthly Export Meat Demand Indices [USDA/BLS Data]          </a>
+  </li>
+
+
+<li  data-id="1999" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/meat-demand/meat-demand-research-studies" >
+        Meat Demand Research Studies          </a>
+  </li>
+
+
+<li  data-id="2000" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega dropdown-submenu">
+  <a href="/livestock-meat/meat-demand/monthly-meat-demand-monitor-survey-data"  class="dropdown-toggle">
+        Monthly Meat Demand Monitor [Survey Data]          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-9" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-3 items-1">
+  
+<li  data-id="2021" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/meat-demand/monthly-meat-demand-monitor-survey-data/monthly-meat-demand-monitor-and" >
+        Monthly Meat Demand Monitor (Prior Years)          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="2040" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/meat-demand/maps-meat-demand" >
+        Maps - Meat Demand          </a>
+  </li>
+
+
+<li  data-id="2133" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/meat-demand/monthly-wholesale-pork-demand-index-usdabls-data" >
+        Monthly Wholesale Pork Demand Index [USDA/BLS Data]          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="863" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/livestock-meat/production-economics"  class="dropdown-toggle">
+        Production Economics          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-11" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-1">
+  
+<li  data-id="2010" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/production-economics/limit-feeding-stockers" >
+        Limit-Feeding Stockers          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="1111" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/livestock-meat/bulletins-and-links"  class="dropdown-toggle">
+        Bulletins and Links          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-14" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-5">
+  
+<li  data-id="1023" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega dropdown-submenu">
+  <a href="/livestock-meat/marketing-extension-bulletins"  class="dropdown-toggle">
+        Marketing Extension Bulletins          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-12" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-3 items-3">
+  
+<li  data-id="974" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/marketing-extension-bulletins/marketing-strategies-and-livestock-pricing" >
+        Marketing Strategies and Livestock Pricing          </a>
+  </li>
+
+
+<li  data-id="1024" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/marketing-extension-bulletins/trade-and-demand" >
+        Trade and Demand          </a>
+  </li>
+
+
+<li  data-id="1025" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/marketing-extension-bulletins/price-risk" >
+        Price Risk          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="1108" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/bulletins-and-links/cattle-markets-lmic" >
+        In the Cattle Markets (LMIC)          </a>
+  </li>
+
+
+<li  data-id="1087" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/cross-subject-areas" >
+        Cross-Subject Areas          </a>
+  </li>
+
+
+<li  data-id="1086" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/livestock-meat/bulletins-and-links/lrp-insurance" >
+        LRP Insurance          </a>
+  </li>
+
+
+<li  data-id="1117" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega dropdown-submenu">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news"  class="dropdown-toggle">
+        USDA Market News          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-13" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-3 items-11">
+  
+<li  data-id="1094" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/cattle" >
+        Cattle          </a>
+  </li>
+
+
+<li  data-id="1118" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/beef" >
+        Beef          </a>
+  </li>
+
+
+<li  data-id="1119" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/feeder-cattle" >
+        Feeder Cattle          </a>
+  </li>
+
+
+<li  data-id="1120" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="https://www.ams.usda.gov/mnreports/wa_ls718.txt"  title="Canadian (AMS)">
+        Canadian (AMS)          </a>
+  </li>
+
+
+<li  data-id="1121" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/hogs" >
+        Hogs          </a>
+  </li>
+
+
+<li  data-id="1122" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/pork" >
+        Pork          </a>
+  </li>
+
+
+<li  data-id="1123" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/livestock-slaughter" >
+        Livestock Slaughter          </a>
+  </li>
+
+
+<li  data-id="1124" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/hay" >
+        Hay          </a>
+  </li>
+
+
+<li  data-id="1125" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/grains" >
+        Grains          </a>
+  </li>
+
+
+<li  data-id="1126" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/other-reports" >
+        Other Reports          </a>
+  </li>
+
+
+<li  data-id="1127" data-level="4" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-4 mega">
+  <a href="/livestock-meat/bulletins-and-links/usda-market-news/futures-prices-cme" >
+        Futures Prices (CME)          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="2001" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/livestock-meat/us-meat-export-sentiment" >
+        U.S. Meat Export Sentiment          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="979" data-level="1" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-1 mega dropdown active active-trail">
+  <a href="/ag-policy"  class="dropdown-toggle">
+        Ag Policy          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-20" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-1 items-9">
+  
+<li  data-id="1800" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/ag-policy/farm-bill-0" >
+        Farm Bill          </a>
+  </li>
+
+
+<li  data-id="2126" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/ag-policy/20252026-arc-plc-payments" >
+        2025/2026 ARC & PLC Payments          </a>
+  </li>
+
+
+<li  data-id="1038" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/ag-policy/arc-co-actual-payment-maps"  class="dropdown-toggle">
+        ARC-CO Actual Payment Maps          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="" data-hidewcol="0" id="tb-megamenu-column-16" class="tb-megamenu-column span  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-7">
+  
+<li  data-id="2137" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/kansas-arc-payments-20252026" >
+        Kansas 2025/2026 ARC-County Payments          </a>
+  </li>
+
+
+<li  data-id="2099" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/kansas-20242025-arc-co-payment-rates" >
+        Kansas 2024/2025 ARC-County Payments          </a>
+  </li>
+
+
+<li  data-id="2100" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/national-20242025-arc-co-payment-rates" >
+        National 2024/2025 ARC-County Payments          </a>
+  </li>
+
+
+<li  data-id="2108" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/total-2018-farm-bill-kansas-arc-county-payments" >
+        Total 2018 Farm Bill KANSAS ARC-County Payments          </a>
+  </li>
+
+
+<li  data-id="2109" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/total-2018-farm-bill-national-arc-county-payments" >
+        Total 2018 Farm Bill NATIONAL ARC-County Payments          </a>
+  </li>
+
+
+<li  data-id="1172" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/total-2014-farm-bill-kansas-arc-co-payments" >
+        Total 2014 Farm Bill Kansas ARC-CO Payments          </a>
+  </li>
+
+
+<li  data-id="1173" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/arc-co-actual-payment-maps/total-2014-farm-bill-national-arc-co-payments" >
+        Total 2014 Farm Bill National ARC-CO Payments          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="1170" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/ag-policy/kansas-arcplc-enrollment-maps"  class="dropdown-toggle">
+        Kansas ARC/PLC Enrollment Maps          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="" data-hidewcol="0" id="tb-megamenu-column-17" class="tb-megamenu-column span  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-4">
+  
+<li  data-id="2111" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/kansas-arcplc-enrollment-maps/kansas-20242025-plc-enrollment-county" >
+        Kansas 2024/2025 PLC Enrollment by County          </a>
+  </li>
+
+
+<li  data-id="2069" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/kansas-arcplc-enrollment-maps/kansas-20232024-plc-enrollment-county" >
+        Kansas 2023/2024 PLC Enrollment by County          </a>
+  </li>
+
+
+<li  data-id="2045" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/kansas-arcplc-enrollment-maps/kansas-20222023-plc-enrollment-county" >
+        Kansas 2022/2023 PLC Enrollment by County          </a>
+  </li>
+
+
+<li  data-id="1169" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/kansas-arcplc-enrollment-maps/kansas-20212022-plc-enrollment-county" >
+        Kansas 2021/2022 PLC Enrollment by County          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="2047" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu active active-trail">
+  <a href="/ag-policy/foreign-holdings-us-agricultural-land"  class="dropdown-toggle">
+        Foreign Holdings of U.S. Agricultural Land          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="" data-hidewcol="0" id="tb-megamenu-column-18" class="tb-megamenu-column span  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-2">
+  
+<li  data-id="2061" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/foreign-holdings-us-agricultural-land/foreign-holdings-kansas-ag-land-wind-energy-leases" >
+        Foreign Holdings of Kansas Ag. Land - Wind Energy Leases          </a>
+  </li>
+
+
+<li  data-id="2063" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega active active-trail">
+  <a href="/foreign-holdings-kansas-ag-land-0" >
+        Foreign Holdings of Kansas Ag. Land          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+
+
+<li  data-id="1085" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/ag-policy/livestock-policy" >
+        Livestock Policy          </a>
+  </li>
+
+
+<li  data-id="1187" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/ag-policy/water-policy" >
+        Water Policy          </a>
+  </li>
+
+
+<li  data-id="2103" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega">
+  <a href="/ag-policy/historic-net-crop-insurance-payouts" >
+        Historic Net Crop Insurance Payouts          </a>
+  </li>
+
+
+<li  data-id="2131" data-level="2" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-2 mega dropdown-submenu">
+  <a href="/ag-policy/flinchbaugh-chair-media"  class="dropdown-toggle">
+        Flinchbaugh Chair Media          <span class="caret"></span>
+          </a>
+  <div  data-class="" data-width="" class="tb-megamenu-submenu dropdown-menu mega-dropdown-menu nav-child">
+  <div class="mega-dropdown-inner">
+    <div  class="tb-megamenu-row row-fluid">
+  <div  data-class="" data-width="12" data-hidewcol="0" id="tb-megamenu-column-19" class="tb-megamenu-column span12  mega-col-nav">
+  <div class="tb-megamenu-column-inner mega-inner clearfix">
+        <ul  class="tb-megamenu-subnav mega-nav level-2 items-2">
+  
+<li  data-id="2136" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/flinchbaugh-chair-media/smoke-mirrors-ag-policy-unfiltered" >
+        Smoke & Mirrors          </a>
+  </li>
+
+
+<li  data-id="2141" data-level="3" data-type="menu_item" data-class="" data-xicon="" data-caption="" data-alignsub="" data-group="0" data-hidewcol="0" data-hidesub="0" class="tb-megamenu-item level-3 mega">
+  <a href="/ag-policy/flinchbaugh-chair-media/clearing-air" >
+        Clearing the Air          </a>
+  </li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+</ul>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+</li>
+</ul>
+      
+
+      <ul class="nav navbar-nav navbar-right navbar-search">
+        <form action="/search"
+          class="navbar-form-expanded navbar-form navbar-left visible-lg-block visible-md-block visible-xs-block"
+          role="search">
+          <div class="input-group">
+            <input class="form-control" data-width="80px"
+                   data-width-expanded="150px" placeholder="Search"
+                   name="search_keys">
+            <span class="input-group-btn"><button class="btn btn-default"
+                                                  type="submit"><i
+                  class="fa fa-search"></i>&nbsp;</button></span>
+          </div>
+        </form>
+      </ul>
+
+
+    </div><!--/.nav-collapse -->
+  </div><!--/.container-fluid -->
+</nav>      </div>
+
+    </div>
+
+  <div class="breadcrumbs container">
+    <ol class="breadcrumb"><li><a href="/">Home</a></li>
+<li><a href="/ag-policy">Ag Policy</a></li>
+<li><a href="/ag-policy/foreign-holdings-us-agricultural-land">Foreign Holdings of U.S. Agricultural Land</a></li>
+<li class="active">Foreign Holdings of Kansas Ag Land</li>
+</ol>  </div>
+
+
+<div class="main-container container">
+
+  <header role="banner" id="page-header">
+    
+      <div class="region region-header">
+    <section id="block-menu-block-10" class="block block-menu-block clearfix">
+
+        <h2 class="block-title"><a href="/ag-policy" class="active-trail">Ag Policy</a></h2>
+    
+  <form action="/node/37755" method="post" id="ctools-jump-menu" accept-charset="UTF-8"><div><div class="container-inline"><div class="form-item form-item-jump form-type-select form-group"><select class="ctools-jump-menu-select ctools-jump-menu-change form-control form-select" id="edit-jump" name="jump"><option value="">- Choose -</option><option value="/ag-policy/farm-bill-0">Farm Bill</option><option value="/ag-policy/20252026-arc-plc-payments">2025/2026 ARC &amp; PLC Payments</option><option value="/ag-policy/arc-co-actual-payment-maps">ARC-CO Actual Payment Maps</option><option value="/ag-policy/kansas-arcplc-enrollment-maps">Kansas ARC/PLC Enrollment Maps</option><option value="/ag-policy/foreign-holdings-us-agricultural-land">Foreign Holdings of U.S. Agricultural Land</option><option value="/ag-policy/livestock-policy">Livestock Policy</option><option value="/ag-policy/water-policy">Water Policy</option><option value="/ag-policy/flinchbaugh-chair-media">Flinchbaugh Chair Media</option><option value="/ag-policy/historic-net-crop-insurance-payouts">Historic Net Crop Insurance Payouts</option></select></div><button class="ctools-jump-menu-button ctools-jump-menu-hide btn btn-default form-submit" type="submit" id="edit-go" name="op" value="Go">Go</button>
+</div><input type="hidden" name="form_build_id" value="form-ibgLnoSPReBzliIKZ_YeKVSQIxahGE1R_tbPozDN_Kw" />
+<input type="hidden" name="form_id" value="ctools_jump_menu" />
+</div></form>
+</section>
+  </div>
+  </header> <!-- /#page-header -->
+
+  <div class="row">
+
+          <aside class="col-md-3" role="complementary">
+          <div class="region region-sidebar-first well">
+    <section id="block-block-10" class="block block-block clearfix">
+
+      
+  <p><a href="http://www.ageconomics.k-state.edu/"><img alt="" height="30" src="/sites/default/files/wysiwyg/KSU_agecon-side.png" width="267"></a></p>
+</section>
+<section id="block-block-9" class="block block-block clearfix">
+
+      
+  <h5><u><a href="https://lp.constantcontactpages.com/sl/aO8o0Ta"><strong><font color="blue">Receive weekly email updates</font></strong></a></u></h5><p><a href="http://www.ag.k-state.edu/"><u><b>K-State College of Agriculture Links</b></u></a></p><p><a href="https://www.agkansitions.org/">AgKansitions and Kansas LandLink</a><br><a href="http://www.agronomy.k-state.edu/">Agronomy</a><br><a href="https://www.asi.k-state.edu/">Animal Science</a><br><a href="http://www.k-state.edu/kams/">Kansas Ag Mediation Service (KAMS)</a></p><p><u><strong><a href="http://www.agmanager.info/pft">Extension Agent Link</a></strong></u></p>
+</section>
+<section id="block-menu-block-3" class="block block-menu-block clearfix">
+
+        <h2 class="block-title"><a href="/ag-policy" class="active-trail">Ag Policy</a></h2>
+    
+  <div class="menu-block-wrapper menu-block-3 menu-name-main-menu parent-mlid-0 menu-level-2">
+  <ul class="menu nav menu-tree"><li class="first leaf menu-mlid-1800"><a href="/ag-policy/farm-bill-0">Farm Bill</a></li>
+<li class="leaf menu-mlid-2126"><a href="/ag-policy/20252026-arc-plc-payments">2025/2026 ARC &amp; PLC Payments</a></li>
+<li class="collapsed menu-mlid-1038"><a href="/ag-policy/arc-co-actual-payment-maps">ARC-CO Actual Payment Maps</a></li>
+<li class="collapsed menu-mlid-1170"><a href="/ag-policy/kansas-arcplc-enrollment-maps">Kansas ARC/PLC Enrollment Maps</a></li>
+<li class="expanded active-trail menu-mlid-2047 active"><a href="/ag-policy/foreign-holdings-us-agricultural-land" class="active-trail">Foreign Holdings of U.S. Agricultural Land</a><ul class="sub"><li class="first leaf menu-mlid-2061"><a href="/ag-policy/foreign-holdings-us-agricultural-land/foreign-holdings-kansas-ag-land-wind-energy-leases">Foreign Holdings of Kansas Ag. Land - Wind Energy Leases</a></li>
+<li class="last leaf active-trail active menu-mlid-2063 active active"><a href="/foreign-holdings-kansas-ag-land-0" class="active-trail active">Foreign Holdings of Kansas Ag. Land</a></li>
+</ul></li>
+<li class="leaf menu-mlid-1085"><a href="/ag-policy/livestock-policy">Livestock Policy</a></li>
+<li class="leaf menu-mlid-1187"><a href="/ag-policy/water-policy">Water Policy</a></li>
+<li class="collapsed menu-mlid-2131"><a href="/ag-policy/flinchbaugh-chair-media">Flinchbaugh Chair Media</a></li>
+<li class="last leaf menu-mlid-2103"><a href="/ag-policy/historic-net-crop-insurance-payouts">Historic Net Crop Insurance Payouts</a></li>
+</ul></div>
+
+</section>
+<section id="block-views-favorites-block" class="block block-views clearfix">
+
+        <h2 class="block-title">Your Favorites</h2>
+    
+  <div class="view view-favorites view-id-favorites view-display-id-block view-dom-id-b98aa610a21adeb97a831724c18c1942">
+        
+  
+  
+      <div class="view-empty">
+      Click the "Add to Favorites" to add that page to your favorites list    </div>
+  
+  
+  
+  
+  
+  
+</div>
+</section>
+  </div>
+      </aside>  <!-- /#sidebar-first -->
+    
+    <section class="content-column col-sm-9">
+            <a id="main-content"></a>
+      <div class="social-share">
+                  <span class="flag-wrapper flag-favorites flag-favorites-37755">
+      <a href="/flag/flag/favorites/37755?destination=node/37755&amp;token=7973a61a1c939a4bda94853a6a1f5a8d" title="" class="flag flag-action flag-link-normal" rel="nofollow">Add to Favorites</a><span class="flag-throbber">&nbsp;</span>
+    </span>
+                <div class="addthis_sharing_toolbox"></div>
+      </div>
+                    <h1 class="page-header">Foreign Holdings of Kansas Ag Land</h1>
+            
+      
+                                                    <div class="region region-content">
+    <section id="block-system-main" class="block block-system clearfix">
+
+      
+  <div  about="/foreign-holdings-kansas-ag-land-0" typeof="foaf:Document" class="ds-1col node node-page view-mode-full clearfix">
+
+
+<div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><div class="tableauPlaceholder" id="viz1682611961215"><p>The following map shows the total amount of acres, by county, reported as holdings through the&nbsp;<i>Agricultural Foreign Investment Disclosure Act of 1978 (AFIDA).&nbsp;&nbsp;</i>Data was obtained through&nbsp;<a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida" target="_blank">HERE</a>&nbsp;for the purpose of differentiating energy leases from other types of holdings in the national Farm Service Agency report&nbsp;<i><a href="https://www.fsa.usda.gov/documents/foreign-holdings-us-agricultural-land" target="_blank">Foreign Holdings of U.S. Agricultural Land through Dec. 31st, 2024</a>.&nbsp;</i>&nbsp;A summary report of explaining this information can be found&nbsp;<a href="https://www.agmanager.info/foreign-holdings-kansas-agricultural-land-%E2%80%93-update-through-dec-31-2024-data">HERE</a>.</p><p>Hover your cursor over the county of interest to get detail about that county.&nbsp; Zoom in using the "+" or go to full screen mode (bottom right corner) for better map viewing.</p><p>Questions can be directed to Robin Reid,&nbsp;<a href="mailto:robinreid@ksu.edu">robinreid@ksu.edu</a>, 785-532-0964</p><p>&nbsp;</p><div class="tableauPlaceholder" id="viz1772134246773"><noscript><a href='#'><img alt='Foreign Holdings of Kansas Ag. Land ' src='https://public.tableau.com/static/images/Fo/ForeignHoldingsofKansasAg_Landthrough2024/ForeignHoldingsofKansasAg_Land/1_rss.png' /></a></noscript><object class="tableauViz"><param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F"><param name="embed_code_version" value="3"><param name="site_root" value=""><param name="name" value="ForeignHoldingsofKansasAg_Landthrough2024/ForeignHoldingsofKansasAg_Land"><param name="tabs" value="no"><param name="toolbar" value="yes"><param name="static_image" value="https://public.tableau.com/static/images/Fo/ForeignHoldingsofKansasAg_Landthrough2024/ForeignHoldingsofKansasAg_Land/1.png"><param name="animate_transition" value="yes"><param name="display_static_image" value="yes"><param name="display_spinner" value="yes"><param name="display_overlay" value="yes"><param name="display_count" value="yes"><param name="language" value="en-US"><param name="filter" value="publish=yes"></object></div><script type="text/javascript">                    var divElement = document.getElementById('viz1772134246773');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script></div></div></div></div></div>
+
+
+</section>
+  </div>
+            <div class="clearfix"></div>
+    </section>
+
+    
+  </div>
+</div>
+
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="wrapper">
+        <div class="agmanager-menus">
+            <div class="wrapper"><div class="footer-menu-branch"><ul><li class="first expanded"><a href="/farm-management">Farm Management</a><ul class="menu nav main-menu"><li class="first collapsed"><a href="/land-leasing/land-buying-valuing">Land Buying &amp; Valuing</a></li>
+<li class="collapsed"><a href="/farm-management/land-rental-rates">Land Rental Rates</a></li>
+<li class="leaf"><a href="/farm-management/farm-profitability">Farm Profitability</a></li>
+<li class="collapsed"><a href="/management-finance/precision-agriculture">Precision Agriculture</a></li>
+<li class="collapsed"><a href="/farm-management/finance">Finance &amp; Business Planning</a></li>
+<li class="collapsed"><a href="/farm-management/machinery">Machinery</a></li>
+<li class="last collapsed"><a href="/farm-management/production-economics">Production Economics</a></li>
+</ul></li></ul></div><div class="footer-menu-branch"><ul><li class="expanded"><a href="/crop-insurance">Crop Insurance</a><ul class="menu nav main-menu"><li class="first leaf"><a href="/crop-insurance/risk-management-strategies">Risk Management</a></li>
+<li class="leaf"><a href="/crop-insurance/livestock-insurance-papers-and-information">Livestock Insurance Papers and Information</a></li>
+<li class="collapsed"><a href="/crop-insurance/crop-insurance-papers-and-information">Crop Insurance Papers</a></li>
+<li class="leaf"><a href="/crop-insurance/kansas-crop-insurance-maps">Kansas Crop Insurance Maps</a></li>
+<li class="last leaf"><a href="/crop-insurance/crop-and-data-links" title="">Crop Links</a></li>
+</ul></li></ul></div><div class="footer-menu-branch"><ul><li class="expanded"><a href="/grain-marketing">Grain Marketing</a><ul class="menu nav main-menu"><li class="first leaf"><a href="/grain-marketing/grain-market-outlook-newsletter">Grain Market Outlook Newsletter</a></li>
+<li class="leaf"><a href="/grain-marketing/grain-supply-and-demand-wasde">Grain Supply and Demand (WASDE)</a></li>
+<li class="leaf"><a href="/grain-marketing/interactive-crop-basis-tool">Interactive Crop Basis Tool</a></li>
+<li class="leaf"><a href="/grain-marketing/grain-basis-maps">Crop Basis Maps</a></li>
+<li class="leaf"><a href="/grain-marketing/usda-reports-wasde-nass-ers-and-other-reports">USDA Reports and Links</a></li>
+<li class="leaf"><a href="/grain-marketing/presentations">Presentations</a></li>
+<li class="last leaf"><a href="/grain-marketing/publications">Publications</a></li>
+</ul></li></ul></div><div class="footer-menu-branch"><ul><li class="expanded"><a href="/livestock-meat">Livestock &amp; Meat</a><ul class="menu nav main-menu"><li class="first leaf"><a href="/livestock-meat/cattle-finishing-historical-and-projected-returns">Cattle Finishing Returns</a></li>
+<li class="collapsed"><a href="/livestock-meat/meat-demand">Meat Demand</a></li>
+<li class="collapsed"><a href="/livestock-meat/production-economics">Production Economics</a></li>
+<li class="collapsed"><a href="/livestock-meat/bulletins-and-links">Bulletins and Links</a></li>
+<li class="last leaf"><a href="/livestock-meat/us-meat-export-sentiment">U.S. Meat Export Sentiment</a></li>
+</ul></li></ul></div></div><div class="wrapper"><div class="footer-menu-branch"><ul><li class="expanded"><a href="/ag-policy">Ag Policy</a><ul class="menu nav main-menu"><li class="first leaf"><a href="/ag-policy/farm-bill-0">Farm Bill</a></li>
+<li class="leaf"><a href="/ag-policy/20252026-arc-plc-payments">2025/2026 ARC &amp; PLC Payments</a></li>
+<li class="collapsed"><a href="/ag-policy/arc-co-actual-payment-maps">ARC-CO Actual Payment Maps</a></li>
+<li class="collapsed"><a href="/ag-policy/kansas-arcplc-enrollment-maps">Kansas ARC/PLC Enrollment Maps</a></li>
+<li class="collapsed"><a href="/ag-policy/foreign-holdings-us-agricultural-land">Foreign Holdings of U.S. Agricultural Land</a></li>
+<li class="leaf"><a href="/ag-policy/livestock-policy">Livestock Policy</a></li>
+<li class="leaf"><a href="/ag-policy/water-policy">Water Policy</a></li>
+<li class="collapsed"><a href="/ag-policy/flinchbaugh-chair-media">Flinchbaugh Chair Media</a></li>
+<li class="last leaf"><a href="/ag-policy/historic-net-crop-insurance-payouts">Historic Net Crop Insurance Payouts</a></li>
+</ul></li></ul></div><div class="footer-menu-branch"><ul><li class="expanded"><a href="/ag-law-and-human-resources" title="">Ag Law and Human Resources</a><ul class="menu nav menu-main-menu-secondary"><li class="first leaf"><a href="/ag-law-and-human-resources/ag-law-issues">Ag Law Issues</a></li>
+<li class="leaf"><a href="/human-resources/compensation">Compensation</a></li>
+<li class="leaf"><a href="/human-resources/employee-employer-forms">Employee &amp; Employer Forms</a></li>
+<li class="leaf"><a href="/ag-law-and-human-resources/labor-law">Labor Law</a></li>
+<li class="last leaf"><a href="/ag-law-and-human-resources/management">Management</a></li>
+</ul></li></ul></div><div class="footer-menu-branch"><ul><li class="last expanded"><a href="/agribusiness-management">Agribusiness Management</a><ul class="menu nav menu-main-menu-secondary"><li class="first leaf"><a href="/agribusiness-management/business-development">Business Development</a></li>
+<li class="leaf"><a href="/agribusiness-management/macro-and-global-economic-perspectives">Macro &amp; Global Economic Perspectives</a></li>
+<li class="leaf"><a href="/agribusiness-management/papers">Papers</a></li>
+<li class="leaf"><a href="/agribusiness-management/usda-metss-project">USDA METSS Project</a></li>
+<li class="last leaf"><a href="/agribusiness-management/agribusiness-links">Agribusiness Links</a></li>
+</ul></li></ul></div></div>        </div>
+        <div class="contact-information">
+            <a class="agmanager-logo sprite" href="http://agmanager.info"><span>AgManager Logo</span></a>
+  <section id="block-block-2" class="block block-block clearfix">
+
+      
+  <h3>Kansas State University</h3><h4>Department of Agricultural Economics</h4><p>342 Waters Hall<br>Manhattan,&nbsp;KS 66506<br>(785) 532-6702<br><a href="mailto:lsbyers@ksu.edu">lsbyers@ksu.edu</a><br><a href="http://www.ageconomics.k-state.edu/">www.ageconomics.k-state.edu/</a></p>
+</section>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+<script src="https://agmanager.info/sites/default/files/js/js_MRdvkC2u4oGsp5wVxBG1pGV5NrCPW3mssHxIn6G9tGE.js"></script>
+<!--<script type="text/javascript">-->
+<!--  var addthis_share = {-->
+<!--    url_transforms : {-->
+<!--      shorten: {-->
+<!--        twitter: 'bitly'-->
+<!--      }-->
+<!--    },-->
+<!--    shorteners : {-->
+<!--      bitly : {}-->
+<!--    }-->
+<!--  }-->
+<!--</script>-->
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-578cfcd9f3349faa"></script>
+
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"02b4dbddba","applicationID":"20127366","transactionName":"NlBbYEpVXUYCVxFZVw8abEZRGxxcDVAASBYRXUk=","queueTime":0,"applicationTime":276,"atts":"GhdYFgJPTkg=","errorBeacon":"bam.nr-data.net","agent":""}</script></body>
+</html>

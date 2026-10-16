@@ -1,0 +1,43 @@
+# Benchmark land-tenure: USDA ERS Charts of Note, 2022 rented share
+# https://www.ers.usda.gov/data-products/charts-of-note/109182
+# fetched 2026-10-16T16:20:09Z, sha256 6d39f5479a3d65570ac54a22b8260fbb45de3ce0821c16ae1bf52a3d3175252d
+
+2022 Census of Agriculture: Share of farmland rented holds steady at 39 percent | Economic Research ServiceLock
+
+-
+
+-
+
+-
+
+-
+
+2022 Census of Agriculture: Share of farmland rented holds steady at 39 percent
+
+-
+by
+Clayton P. Winters-Michaud
+
+- 5/22/2024
+
+Download chart image
+
+Thirty-nine percent of the 880 million acres of U.S. farmland in 2022 was rented or leased, a similar rate to that in 2017, according to new data from the 2022 Census of Agriculture. Over the past 50 years, the share of farmland rented across the nation has been relatively stable, with a slight but noticeable increase during the farm financial crisis of the 1980s. In general, rental activity is concentrated in grain production areas, with cash grains such as rice, corn, soybeans, and wheat commonly being grown in areas where more than 50 percent of farmland is rented. The region along the Mississippi River is home to the majority of U.S. rice production, while corn and soybeans dominate the Corn Belt, and corn and wheat dominate the Northern Plains. In 2022, higher rates of farmland rental were reported in counties along the Mississippi River, as well as in the Corn Belt and the Northern Plains. Higher rates of farmland rental are concentrated in areas where farms tend to be larger. Roughly two-thirds (68 percent) of rented farmland is on operations with 2,000 acres or more. According to USDA, Economic Research Service (ERS) studies, more than half the cropland in the contiguous U.S. is rented, but just over a quarter of pastureland is rented. For more information on farmland ownership and tenure, see the ERS topic page Land Use, Land Value & Tenure.
+
+Related Content
+
+- Farm Economy
+
+- Land Use, Land Value & Tenure
+
+- Data Visualizations
+
+- U.S. Farmland Ownership, Tenure, and Transfer
+
+- Major Uses of Land in the United States, 2012
+
+Get Charts of Note delivered!
+
+Subscribe
+
+See our Privacy Policy.

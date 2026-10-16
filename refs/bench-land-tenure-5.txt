@@ -1,0 +1,105 @@
+# Benchmark land-tenure: farmdoc daily, owned vs rented incomes 2026
+# https://farmdocdaily.illinois.edu/2026/01/projected-incomes-on-owned-vs-rented-farmland-for-2026.html
+# fetched 2026-10-16T16:20:17Z, sha256 2873b5281be02e322225d4840eef844dd59c25f61e348552c8f0fda4f87cc097
+
+Projected Incomes on Owned vs Rented Farmland for 2026 - farmdoc daily
+
+Share This
+
+-
+
+Twitter
+
+-
+
+Facebook
+
+-
+
+LinkedIn
+
+download PDF
+
+Weekly Farm Economics
+
+- Nick Paulson and Gary Schnitkey
+
+- Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+- Bradley Zwilling
+
+- Illinois FBFM Association and Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+- Carl Zulauf
+
+- Department of Agricultural, Environmental and Development Economics
+
+- Ohio State University
+
+January 20, 2026
+
+farmdoc daily (16):9
+
+Recommended citation format:
+Paulson, N., G. Schnitkey, B. Zwilling and C. Zulauf. "Projected Incomes on Owned vs Rented Farmland for 2026." farmdoc daily (16):9, Department of Agricultural and Consumer Economics, University of Illinois at
+Urbana-Champaign, January 20, 2026. Permalink
+
+Projections in the latest Illinois Crop Budgets suggest negative returns on cash rented farmland for the 2026 crop year (see farmdoc daily article from January 13, 2026). This article compares projected incomes on rented farmland to owned farmland. Owned farmland with low to no real estate debt is projected to provide significantly larger incomes to the farmer. Projections for 2026 show that every debt-free owned acre of farmland can subsidize the projected losses on 15 acres of cash rented farmland. The average land tenure position of Illinois grain farms suggests an average net farm income in 2026 that will be positive but insufficient to cover average family living expenses and income taxes without additional non-farm income. Higher rates of farmland ownership with low debt loads results in better income prospects for 2026 and more resiliency during poor income periods in general. However, limited purchase opportunities and the cash flows needed to finance farmland purchases remain significant barriers for farmers.
+
+2026 Return Projections
+
+Table 1 summarizes per acre income projections for different land tenure scenarios based on the January 2026 Crop Budgets for central Illinois, high-productivity farmland. A 50-50 corn-soybean rotation is projected to generate $312 per acre in operator and land returns. This includes a $56 per acre projected ARC/PLC program payment that, if triggered, would not be received until October of 2027.
+
+For owned farmland, costs include property taxes and, if applicable, interest expenses on land debt. Property taxes for farmland in central Illinois are estimated to average $80 per acre. For farmland with no debt, the projected net income to owned land is $232 per acre. Owned farmland with an average debt load for Illinois grain farms would also include an interest cost of around $50 per acre, reducing the net farmer return projection to $182 per acre.
+
+For cash rented farmland, the average cash rent level projected for 2026 in central Illinois is $327 per acre. This results in a negative farmer income projection of -$15 per acre for 2026 on cash rented acres. Table 1 also provides a scenario for farmland rented under a typical 50/50 share lease where the net rental payment (land cost) for the farmer is 50% of the gross revenue less 50% of the direct costs (0.5x$963 – 0.5x$375 = $294 per acre). The projected farmer income for a share leased acre for 2026 is $18 per acre.
+
+In addition to strengthening the farm’s balance sheet and providing positive capital returns through increased land values over time, owned farmland has historically made farm business’s more resilient to extended periods in lower income environments after the cash flow requirements associated with the purchase have been met. This includes the current period where average returns to cash rented farmland in Illinois have been negative since the 2022 crop year. The 2026 projections suggest that every acre of debt-free owned farmland can offset the negative returns to 15 acres of cash rented farmland (232/15 = 15.47). Every acre of owned farmland with average debt levels could offset the losses on 12 acres of cash rented farmland (182/15 = 12.13).
+
+While average land tenure positions vary by region, the average Illinois grain farm rents approximately 75% of its farmland and owns the remaining 25% (see farmdoc daily from January 16, 2026). This suggests positive farm incomes, on average, for 2026.
+
+A 1,500 acre grain operation with an average debt load on 375 owned acres and cash renting the remaining 1,125 acres would have a projected net farm income of $51,375 in 2026 ($182/acre x 375 acres + -$15/acre x 1,125 acres = $51,375). If the 375 owned acres were debt free the income projection would increase to $70,125 ($232/acre x 375 acres + -$15/acre x 1,125 acres = $70,125).
+
+The average tenure positions of grain farms in Illinois typically also include some share rent arrangements on the rented farmland. With a tenure position of 375 owned acres with no debt, 375 share rented acres, and 750 acres of cash rented acres the projected average income would be $82,500. If the owned acres carried an average debt load, the average income projection would fall to $63,750.
+
+While the average Illinois grain farm would be projected to earn a positive farm income in 2026, a number of additional points should be considered:
+
+- Many farms rely more heavily on rented farmland than the average grain farm. In most cases, these tend to be farm businesses run by younger farmers. In the extreme, projected income on a 1,500 acre grain farm cash renting 100% of its acres would be -$22,500 for 2026.
+
+- Many farms with owned land are servicing larger-than-average real estate debt loads. This would increase the interest expenses and reduce the income on owned acres and the overall income level for the farm. Moreover, the cash requirements to service farmland debt (both principal repayment and interest expenses) could create serious cash flow concerns even with positive income (see farmdoc daily article from October 21, 2025).
+
+- Average family living and income tax expenses for Illinois grain farms has exceeded $135,000 in recent years, while average non-farm income has averaged nearly $65,000 (see farmdoc daily article from November 21, 2025). This implies the need for at approximately $70,000 in farm income in addition to non-farm income to cover living and tax expenses for the average Illinois grain farm.
+
+- The 2026 projections include a significant ARC/PLC payment of $56/acre. These payments are uncertain and, if triggered, would not be paid until October of 2027.
+
+Summary
+
+The latest Illinois Crop Budget projections for the 2026 crop year show negative returns to corn-soybean rotations on cash rented farmland in Illinois. Income on owned land can help to offset the losses on cash rented land if there is sufficiently low debt remaining on the land. Projected income on every acre of debt-free owned farmland can offset projected losses on 15 acres of cash rented farmland. However, this can only be achieved once the considerable cash flow requirements associated with the farmland purchase have been met.
+
+These projections include an expected ARC/PLC payment for 2026 of $56 per acre. No additional ad hoc assistance is included. Improved return prospects could be achieved with higher commodity prices or reductions in productions costs to levels below the average projections included in the crop budgets. In contrast, lower prices or costs exceeding current projections could result in even lower average returns and farm income levels.
+
+Acknowledgment
+
+The authors would like to acknowledge that data used in this study comes from Illinois Farm Business Farm Management (FBFM) Association. Without their cooperation, information as comprehensive and accurate as this would not be available for educational purposes. FBFM, which consists of 5,000 plus farmers and 70 plus professional field staff, is a not-for-profit organization available to all farm operators in Illinois. FBFM field staff provide on-farm counsel with computerized recordkeeping, farm financial management, business entity planning and income tax management. For more information, please contact the State FBFM Office located at the University of Illinois Department of Agricultural and Consumer Economics at 217-333-8346 or visit the FBFM website at www.fbfm.org.
+
+References
+
+Paulson, N., G. Schnitkey and C. Zulauf. "Cash Requirements of Owned Farmland: 2025 vs. 2005." farmdoc daily (15):194, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, October 21, 2025.
+
+Paulson, N., G. Schnitkey, B. Zwilling and C. Zulauf. "Revised Illinois Crop Budgets for 2026." farmdoc daily (16):6, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, January 13, 2026.
+
+Zwilling, B. "Tenure Characteristics of Illinois Farmland." farmdoc daily (16):8, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, January 16, 2026.
+
+Zwilling, B. "When Creating 2026 Crop Budgets, Keep in Mind Family Living Costs." farmdoc daily (15):216, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, November 21, 2025.
+
+Disclaimer: We request all readers, electronic media and others follow our citation guidelines when re-posting articles from farmdoc daily. Guidelines are available here. The farmdoc daily website falls under University of Illinois copyright and intellectual property rights. For a detailed statement, please see the University of Illinois Copyright Information and Policies here.
+
+Related Posts
+
+- Tenure Characteristics of Illinois Farmland
+
+- Expected Yields for SCO and ECO in Illinois
