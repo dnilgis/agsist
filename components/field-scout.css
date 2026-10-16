@@ -635,3 +635,7 @@
   html.fs-has-field .fs-stage{ height:48vh; height:48dvh; min-height:320px; }
 }
 .fs-search input{ min-width:0; width:100%; }  /* the input's default size pushed Go past the map edge at 390 px */
+.fs-by{ margin:.7rem 0 0; padding:0 2px; font-size:.8rem; color:var(--text-muted); }
+.fs-by a{ color:var(--brand); }
+.fs-math{ margin-top:2.2rem; }
+.fs-math details p+p{ margin-top:-.35rem; }

@@ -965,8 +965,11 @@
   var BOX_DIMS = { 20:[402.336,201.168], 40:[402.336,402.336], 80:[402.336,804.672], 160:[804.672,804.672] };
   function boxRing(lat, lng, ac){
     var d=BOX_DIMS[ac]||BOX_DIMS[40];
-    var dLat=(d[1]/2)/111320;
-    var dLng=(d[0]/2)/(111320*Math.max(0.2,Math.cos(lat*Math.PI/180)));
+    // meters to degrees with the ellipsoid's own radii at this latitude, so a 40 reads 40.00 ac
+    var sp=Math.sin(lat*Math.PI/180), w=1-0.0066943799901413165*sp*sp;
+    var M=6378137*(1-0.0066943799901413165)/Math.pow(w,1.5), N=6378137/Math.sqrt(w);
+    var dLat=(d[1]/2)/M*180/Math.PI;
+    var dLng=(d[0]/2)/(N*Math.max(0.2,Math.cos(lat*Math.PI/180)))*180/Math.PI;
     return [[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
   }
   var ghostPoly=null, ghostBar=null;
@@ -2184,6 +2187,8 @@
         snap.bids.forEach(function(r){
           var k = fsKey(r.facility, r.city, r.state);
           if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.town||r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
+          var pa=r.pricedAt||r.checkedAt||null;   // when this board's prices last changed (else last read)
+          if(pa && (!by[k].posted || pa>by[k].posted)) by[k].posted=pa;
           var d = fsPeriodDates(r.period);
           // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
           var nm = r.commodity||'';
@@ -2261,6 +2266,16 @@
     if(d) return MON3[d.getMonth()]+' \u2019'+String(d.getFullYear()).slice(2);
     var m=/^([A-Za-z]{3})(\d{2})$/.exec(b.deliveryMonth||''); return m?m[1]+' \u2019'+m[2]:'';
   }
+  // "Oct 15", or "today", in Central time, the way the cash-bids pages print it.
+  function postedDay(iso){
+    var d=new Date(iso); if(!iso || isNaN(d)) return '';
+    try{
+      var o={month:'short', day:'numeric', timeZone:'America/Chicago'};
+      var day=d.toLocaleDateString('en-US', o), today=new Date().toLocaleDateString('en-US', o);
+      return day===today ? 'today' : day;
+    }catch(e){ return ''; }
+  }
+  window.__fsPostedDay = postedDay;
   function renderBids(d, zip, gen){
     if(gen!==fieldGen) return;
     // Mirrors cash-bids.html flatten() exactly: handles both the nested shape
@@ -2277,7 +2292,8 @@
             delivery:b.delivery||b.deliveryStart||b.delivery_start||b.deliveryPeriod||b.delivery_end_formatted||'',
             dEnd:bidDate(b.delivery_end||b.deliveryEnd), dStart:bidDate(b.delivery_start||b.deliveryStart), mon:bidMon(b),
             cur:String(b.currency||item.currency||'USD').toUpperCase(),
-            cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null });
+            cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null,
+            posted:item.posted||null });
         });
       } else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
         flat.push({ elev:item.company||item.name||item.facility||item.locationName||'Elevator',
@@ -2347,7 +2363,8 @@
       var bTxt = bC!=null ? (Math.abs(bC%1)>=0.05 ? Math.abs(bC).toFixed(1) : String(Math.round(Math.abs(bC)))) : '';
       var basis = bC!=null ? '<span class="fs-bid-basis" style="color:'+(bC>=0?'#4aab4c':'#d9534f')+'">'+(bC>=0?'+':'\u2212')+bTxt+'\u00a2</span>' : '';
       var dlv = x.mon ? ' · '+esc(x.mon)+' delivery' : (x.delivery ? ' · '+esc(String(x.delivery).slice(0,18)) : '');
-      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+dlv+'</small></div>'+
+      var pd=postedDay(x.posted);
+      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+dlv+(pd?' · posted '+esc(pd):'')+'</small></div>'+
         '<div style="text-align:right"><div class="fs-bid-px">$'+x.cash.toFixed(2)+'</div>'+basis+'</div></div>';
     }).join('');
     setBody('fs-bids', html +
