@@ -1,0 +1,75 @@
+name: Planting date station normals
+
+# Writes data/planting/wi.json and data/planting/mn.json for planting-date.html:
+# NOAA NCEI 1991-2020 station normals (last spring and first fall 32 F and
+# 28 F dates at the 10/50/90% levels, and daily growing degree days base 50,
+# max 86). Read by scripts/fetch_planting_normals.py. The page shows its
+# "station numbers load after the first NOAA read" state until these exist.
+#
+# FIRST RUN: dispatch once with "probe" ticked. It saves the station list,
+# the normals listing and Madison's and Minneapolis's raw CSVs to
+# data/planting-normals-raw/ on the raw branch (never deployed), so the real
+# column names and date format can be checked against the parser. Then
+# dispatch again without probe. Normals change once a decade; the yearly
+# run only picks up NCEI corrections.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save raw NCEI files to data/planting-normals-raw/ on the raw branch"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '23 9 2 2 *'   # yearly, Feb 2, before planting season
+
+permissions:
+  contents: write
+
+concurrency:
+  group: planting-normals
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/fetch_planting_normals.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_planting_normals.py --probe
+      - name: Save the probe's raw files to the raw branch
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: bash scripts/push_raw.sh "planting-normals probe" data/planting-normals-raw
+      - name: Fetch and write data/planting/*.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: |
+          python scripts/fetch_planting_normals.py
+          python scripts/fetch_planting_normals.py --check
+      - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          [ -d data/planting ] || { echo "No output; nothing to commit."; exit 0; }
+          rm -rf /tmp/pn && mkdir -p /tmp/pn && cp -r data/planting /tmp/pn/
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/pn/planting data/
+            git add data/planting
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update planting date station normals $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
