@@ -97,6 +97,7 @@ def _refused_model(e):
 # Make the generator importable so we can re-archive after rewrite
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 import briefing_cut   # noqa: E402  ONE definition of the word budget
+import briefing_consistency   # noqa: E402  lead vs sections vs watch list vs teaser
 import voice_lint     # noqa: E402  ONE definition of an invented first person and a machine tell
 
 
@@ -322,11 +323,14 @@ def critique_briefing(briefing, threshold=7):
         "lede_defers": briefing_cut.lede_defers(briefing.get("lead", "")) or None,
         # Measured, not eyeballed: what voice_lint found in the draft.
         "voice_lint": _voice_payload(briefing),
+        # Measured: where the issue disagrees with itself (2026-10-16).
+        "consistency": briefing_consistency.check(briefing),
+        "teaser": briefing.get("teaser", ""),
     }
 
     user_message = f"""Score this AGSIST Daily draft against the 16 rules. Be honest. The threshold for rewrite is {threshold}.
 
-The locked_prices field near the bottom of the draft is the canonical close prices for today. When checking Rule 13 (level coherence), match each "broke $X" / "below $X" / "above $X" claim against locked_prices and flag any contradiction. word_counts / word_total are MEASURED; use them for Rule 8 instead of counting. lede_defers, when not null, is the lead's last sentence and it points forward (Rule 3). voice_lint, when not empty, is what a machine found: invented first person (`fabricated`) and machine tells (`tells`), each with its field (Rule 9).
+The locked_prices field near the bottom of the draft is the canonical close prices for today. When checking Rule 13 (level coherence), match each "broke $X" / "below $X" / "above $X" claim against locked_prices and flag any contradiction. word_counts / word_total are MEASURED; use them for Rule 8 instead of counting. lede_defers, when not null, is the lead's last sentence and it points forward (Rule 3). voice_lint, when not empty, is what a machine found: invented first person (`fabricated`) and machine tells (`tells`), each with its field (Rule 9). consistency, when not empty, is where the issue disagrees with itself: the lead or sections say funds are selling and the watch list or teaser says buying or short-covering, a watch trigger the market already sits on or has crossed, or a teaser or headline that has a grain going the other way from locked_changes. Score each one under Rule 13. Any watch item or teaser still listed there after your rewrite is dropped or replaced by the headline by code.
 
 DRAFT:
 {json.dumps(review_payload, indent=2, ensure_ascii=False)}
@@ -598,6 +602,21 @@ def main():
             print(f"  [warn] Rewrite payload missing or invalid for target {target!r}; stopping.")
             break
 
+    # Lead vs sections vs watch list vs teaser, by code, after the editor's
+    # turn (2026-10-16 benchmark: the lead said funds were selling and the
+    # watch list described a short-covering bounce; the trigger was half a
+    # cent from the price). A flagged watch item is dropped and a flagged
+    # teaser becomes the headline; anything else is reported, never guessed.
+    fixed, cons_log = briefing_consistency.fix(briefing)
+    for line in cons_log:
+        print(f"  [consistency] {line}")
+        if line.startswith("not fixed") or "left for a person" in line:
+            print(f"::warning title=Daily consistency::{line}")
+    if not args.dry_run and fixed != briefing:
+        briefing = fixed
+        rewrite_log.append({"pass": "consistency", "target": "; ".join(l for l in cons_log if not l.startswith("not fixed")),
+                            "rule": "13", "scores_before": {}})
+
     # Persist critic metadata on the briefing
     briefing["critic_pass"] = {
         "version": "2.0",
@@ -605,6 +624,7 @@ def main():
         "threshold": args.threshold,
         "final_scores": critique.get("scores", {}) if 'critique' in dir() else {},
         "rewrites_applied": rewrite_log,
+        "consistency": cons_log,
         "dry_run": args.dry_run,
     }
 
