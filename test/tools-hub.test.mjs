@@ -32,7 +32,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
     ["/usda-calendar", "/tariffs", "/"],
     ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/data-sources"],
-    ["/spray", "/fertilizer", "/urea", "/manure-value"],
+    ["/spray", "/fertilizer", "/urea", "/manure-value", "/nutrient-removal"],
     ["/grain-bin-calculator", "/grain-emc", "/grain-shrink"],
   ]);
 });

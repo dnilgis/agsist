@@ -146,6 +146,7 @@ LINES = {
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),
     "list-your-elevator": ("Elevators", "Post your elevator's cash bids free, where farmers already look."),
+    "nutrient-removal": ("Nutrient removal", "P and K hauled off in stalks, straw, silage and hay, in dollars."),
     "news": ("What moved", "Dated market events the moment they can be measured."),
     "planting-date": ("Planting", "Soil temperature, frost odds and the yield cost of each week's delay."),
     "pod-counts": ("Pod counts", "What the crop tour's soybean pod counts actually predict."),
