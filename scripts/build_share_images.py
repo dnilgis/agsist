@@ -138,6 +138,7 @@ LINES = {
     "elevators": ("Elevators", "Every elevator we track, and how to claim and post your own bids."),
     "farmland-atlas": ("Farmland Atlas", "Land value, rent, heat, water and risk for every county on one map."),
     "fast-facts": ("Fast Facts", "N rates, P and K, manure, crop removal, growth stages and thresholds."),
+    "fall-nitrogen": ("Fall nitrogen", "Soil at 4 inches near your county, against the 50 degree line."),
     "field-scout": ("Field Scout", "Draw a field: soils, crop history, weather, drought and cash bids nearby."),
     "foreign-land": ("Foreign-held land", "Who owns US farmland from abroad, county by county, from USDA."),
     "gdu-calculator": ("GDU calculator", "Growing degree units from your planting date, with real weather."),
