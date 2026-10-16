@@ -80,3 +80,12 @@ jobs:
           done
           echo "::error title=Prediction bot::push failed three times"
           exit 1
+
+      # Holiday weeks move the entry close (Columbus Day 2026 moved the Oct 6
+      # report's to Tue Oct 13) and that week GitHub started both evening runs
+      # past the cutoff: four calls missed, noticed two days later. From 5:30 PM
+      # CT on an entry day, a crop with no call and no recorded reason fails
+      # this step, so the run goes red while there is still time to dispatch.
+      - name: Entry-day watch
+        if: always()
+        run: python scripts/prediction_bot.py --watch

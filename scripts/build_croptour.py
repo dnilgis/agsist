@@ -593,9 +593,79 @@ def render_bias_claim(st, plain=False):
     return "".join(parts)
 
 
+# A week after the tour ends, the four night cards fold into one table.
+# 2026-10-16 benchmark: in October the per-night cards (Aug 17-20) made the
+# phone page 8,955 px tall, more screen than the October answer they support.
+FOLD_AFTER_DAYS = 7
+
+
+def folded(data, ph, today):
+    """True once tour week is well past and the nights are history."""
+    end = date.fromisoformat(data["tour"]["end"])
+    return ph in ("scored", "stale") and today >= end + timedelta(days=FOLD_AFTER_DAYS)
+
+
+def render_nights_table(data, sst, prog):
+    """Every state's tour figures in one compact table, inside a <details>.
+
+    Same figures as the night cards, no new arithmetic: the change columns
+    are the state figure minus the prior-year figure from state_history, the
+    one the cards print. A slot with no state figure (western Iowa on
+    Wednesday) says so in its row and keeps its districts behind their own
+    toggle under the table, still labeled as not the state.
+    """
+    nights = data["nights"]
+    first, last = nights[0]["date"], nights[-1]["date"]
+    py = prog.get("prior_year")
+    vs = f"vs {py}" if py else "vs last tour"
+    rows, extra = [], []
+    for nt in nights:
+        for s in nt["states"]:
+            ctx = sst.get(s.get("code")) or {}
+            name = esc(s["name"])
+            if s.get("publishes") is False or (s.get("corn") is None and s.get("pods") is None):
+                why = ("districts only, not a state figure" if s.get("publishes") is False
+                       else "not posted")
+                rows.append(f'<tr><td>{name}<span class="ct-ntbl-d">{short(nt["date"])}</span></td>'
+                            f'<td class="num ct-ntbl-na" colspan="4">{why}</td></tr>')
+                dd = render_districts(s)
+                if dd:
+                    extra.append(f'<details class="ct-dtoggle ct-ntbl-x"><summary>{name}: '
+                                 f'the districts it reported</summary>{dd}</details>')
+                continue
+            cells = []
+            for key, fmt, dfmt, pk in (("corn", "{:.1f}", "{:+.1f}", "prior_corn"),
+                                       ("pods", "{:,.0f}", "{:+,.0f}", "prior_pods")):
+                v = s.get(key)
+                pv = ctx.get(pk)
+                cells.append(f'<td class="num">{fmt.format(v)}</td>' if v is not None
+                             else '<td class="num">-</td>')
+                cells.append(f'<td class="num">{dfmt.format(v - pv)}</td>'
+                             if v is not None and pv is not None else '<td class="num">-</td>')
+            rows.append(f'<tr><td>{name}<span class="ct-ntbl-d">{short(nt["date"])}</span></td>'
+                        + "".join(cells) + "</tr>")
+    return ('<details class="ct-soytbl ct-nfold"><summary>Each state, '
+            f'{short(first)} to {short(last)}</summary>'
+            '<div class="ct-tbl-wrap"><table class="ct-ntbl">'
+            '<caption class="sr-only">Pro Farmer Crop Tour state results, corn in bushels per '
+            'acre and soybean pods in a three-foot square, with the change from the year before.</caption>'
+            f'<thead><tr><th>State</th><th class="num">Corn bu</th><th class="num">{vs}</th>'
+            f'<th class="num">Pods</th><th class="num">{vs}</th></tr></thead><tbody>'
+            + "".join(rows) + "</tbody></table></div>" + "".join(extra) + "</details>")
+
+
 def render_nights(data, ph, sst, today):
     out = []
     prog = tour_progress(data)
+    if folded(data, ph, today):
+        # The progress line's "posts at the end of the week" is a tour-week
+        # sentence; by now the national number is on the page.
+        lead = render_progress(prog, data, ph, today).replace(
+            "These are state samples, not a national yield: Pro Farmer's national "
+            "number is acreage-weighted and posts at the end of the week.",
+            "These are state samples, not a national yield; Pro Farmer's national "
+            "number is acreage-weighted.")
+        return lead + render_nights_table(data, sst, prog)
     nxt = next_night(data, today)
     for nt in data["nights"]:
         posted = bool(nt.get("posted"))
@@ -1558,7 +1628,11 @@ def gauntlet(html, st, ph=None):
     m = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
     assert m, "JSON-LD block missing"
     json.loads(m.group(1))
-    assert html.count("ct-night") >= 4, "nightly board did not bake"
+    # Tour week and the week after: four night cards. After that the nights
+    # fold into one table (FOLD_AFTER_DAYS), which must still carry the rows.
+    fold = re.search(r'<table class="ct-ntbl">(.*?)</table>', html, re.S)
+    assert html.count("ct-night") >= 4 or (fold and fold.group(1).count("<tr><td>") >= 4), \
+        "nightly board did not bake"
     # A signed zero reads as a miss the page did not measure. It got onto the
     # soybean table once; the gauntlet is where it stops being possible.
     assert ">-0.00<" not in html and ">+0.00<" not in html and \
@@ -2385,6 +2459,25 @@ def selftest():
         for ph in ("before", "during", "waiting", "scored"):
             r = render_nights(live, ph, lss, date(2026, 8, 17))
             ck(f"nights render in phase {ph}", "ct-night" in r)
+        # After tour week the cards fold into one table: one row per state
+        # slot, the same figures and changes the cards print.
+        end = date.fromisoformat(live["tour"]["end"])
+        ck("cards stay up for the week after the tour",
+           "ct-night" in render_nights(live, "scored", lss, end + timedelta(days=FOLD_AFTER_DAYS - 1)))
+        r = render_nights(live, "scored", lss, end + timedelta(days=FOLD_AFTER_DAYS))
+        ck("folded: no night cards, one table", 'class="ct-night' not in r and r.count("<table") == 1)
+        ck("folded table is inside a closed <details>", "<details class=\"ct-soytbl ct-nfold\">" in r)
+        slots = [s for nt in live["nights"] for s in nt["states"]]
+        ck("folded: one row per state slot", r.count("<tr><td>") == len(slots))
+        for s in slots:
+            if s.get("corn") is not None:
+                ctx = lss.get(s["code"]) or {}
+                ck(f"folded {s['code']} corn", f'<td class="num">{s["corn"]:.1f}</td>' in r)
+                if ctx.get("prior_corn") is not None:
+                    ck(f"folded {s['code']} corn change",
+                       f'<td class="num">{s["corn"] - ctx["prior_corn"]:+.1f}</td>' in r)
+            if s.get("publishes") is False:
+                ck(f"folded {s['code']} says not a state figure", "districts only, not a state figure" in r)
         ck("no night claims a number for an unpublished slot",
            all(s.get("corn") is None
                for nt in live["nights"] for s in nt["states"]

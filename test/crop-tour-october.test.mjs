@@ -32,3 +32,27 @@ test("the Pro Farmer source names the years the record table runs", () => {
   const yrs = data.history.filter((h) => h.tour_corn != null && h.usda_final_corn != null && h.usda_aug_corn != null).map((h) => h.year);
   assert.ok(html.includes(`Pro Farmer national estimates (${yrs[0]}-${yrs[yrs.length - 1]})`));
 });
+
+/* Oct 16 benchmark CT2: in October the four night cards (Aug 17-20) made the
+ * phone page 8,955 px tall. A week after the tour they fold into one table
+ * inside a closed <details>, one row per state slot, same figures. */
+test("after tour week the night cards fold into one table", () => {
+  const end = new Date(data.tour.end + "T12:00:00Z");
+  const baked = html.match(/<div class="ct-flow" data-phase="(\w+)"/)[1];
+  if (!(baked === "scored" || baked === "stale")) return; // tour week: cards are right
+  const nights = html.slice(html.indexOf("<!-- CT:nights -->"), html.indexOf("<!-- /CT:nights -->"));
+  if (Date.now() - end.getTime() < 7 * 86400e3) return;
+  assert.ok(!/class="ct-night/.test(nights), "no night cards left");
+  assert.match(nights, /<details class="ct-soytbl ct-nfold"><summary>Each state, /);
+  const tbl = nights.match(/<table class="ct-ntbl">([\s\S]*?)<\/table>/)[1];
+  const slots = data.nights.flatMap((n) => n.states);
+  assert.equal((tbl.match(/<tr><td>/g) || []).length, slots.length, "one row per state slot");
+  for (const s of slots) {
+    if (s.corn == null) continue;
+    const prior = (data.state_history[s.code] || []).slice(-1)[0];
+    assert.ok(tbl.includes(`<td class="num">${s.corn.toFixed(1)}</td>`), `${s.code} corn`);
+    if (prior) assert.ok(tbl.includes(`<td class="num">${(s.corn - prior.corn >= 0 ? "+" : "") + (s.corn - prior.corn).toFixed(1)}</td>`), `${s.code} change`);
+  }
+  assert.ok(!/posts at the end of the week/.test(nights), "no tour-week promise in October");
+  assert.ok(nights.includes("districts only, not a state figure"), "western Iowa is not passed off as a state");
+});

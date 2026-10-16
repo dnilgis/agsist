@@ -58,7 +58,7 @@
   </script>
 
   <style>
-    /* ── v5: Batch 5 audit — GA, skip link, touch-action, twitter:creator, favicon-16, author
+    /* ── v5: Batch 5 audit: GA, skip link, touch-action, twitter:creator, favicon-16, author
             .tool-card 12→8px; USDA Calendar coming-soon removed ── */
     
 
@@ -147,6 +147,7 @@
       line-height: 1.5;
       flex: 1;
     }
+    .tool-card .short { display: none; }
     .tool-card .tag {
       display: inline-block;
       margin-top: 12px;
@@ -175,6 +176,7 @@
       .tools-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
       .tool-card { padding: 14px; }
       .tool-card .desc { display: none; }
+      .tool-card .short { display: block; font-size: .85rem; color: var(--text-dim); line-height: 1.35; }
     }
     @media (max-width: 380px) {
       .tools-grid { grid-template-columns: 1fr; }
@@ -230,42 +232,49 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/cash-bids" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-banknote"></use></svg></div>
         <div class="name">Cash Bids</div>
+        <div class="short">Elevator bids near your ZIP</div>
         <div class="desc">Today&rsquo;s local cash bids from elevators near you, each with how long ago it was posted. Compare basis across locations.</div>
         <span class="tag">Local bids</span>
       </a>
       <a href="/breakeven" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
         <div class="name">Break-Even Calculator</div>
+        <div class="short">Your cost per bushel</div>
         <div class="desc">Full cost-per-acre analysis. Enter seed, fertilizer, chemicals, land, and machinery costs. Get break-even price, profit/loss, and sensitivity table.</div>
         <span class="tag">Corn · Soybeans · Wheat</span>
       </a>
       <a href="/arc-plc" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
         <div class="name">ARC or PLC, 2026 and 2027</div>
+        <div class="short">Which program pays more</div>
         <div class="desc">Effective reference prices with the math, FSA&rsquo;s official county ARC-CO benchmarks, and which program pays more at each price and county yield.</div>
         <span class="tag">Corn · Soybeans · Wheat</span>
       </a>
       <a href="/prf" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
         <div class="name">PRF Rainfall Insurance</div>
+        <div class="short">Premium and past payouts</div>
         <div class="desc">Pick your grid, acres and months. See the premium, USDA&rsquo;s share, and what the policy would have paid in every year since 1951. Compare two setups side by side.</div>
         <span class="tag">Pasture · Hay</span>
       </a>
       <a href="/store-or-sell" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
         <div class="name">Sell now or store?</div>
+        <div class="short">Later bids minus storage</div>
         <div class="desc">Your elevator&rsquo;s own later bids, minus storage, interest and shrink, in cents a bushel.</div>
         <span class="tag">Corn · Soybeans · Wheat</span>
       </a>
       <a href="/lrp" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-beef"></use></svg></div>
         <div class="name">LRP Livestock Insurance</div>
+        <div class="short">Premium per head today</div>
         <div class="desc">Today&rsquo;s LRP rates for feeder cattle, fed cattle and hogs, your premium per head after the subsidy, and how each coverage level did on RMA&rsquo;s record since 2013.</div>
         <span class="tag">Cattle · Hogs</span>
       </a>
       <a href="/commodity-loan" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
         <div class="name">Commodity Loan (CCC)</div>
+        <div class="short">Loan cash and interest</div>
         <div class="desc">Marketing loan cash now and interest per bushel per month, against your carry.</div>
         <span class="tag">FSA loan rates</span>
       </a>
@@ -278,24 +287,28 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/hail-map" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
         <div class="name">Hail Map</div>
+        <div class="short">Hail reports near you</div>
         <div class="desc">Five years of severe-hail storm reports on one national map, with reported stone sizes near your fields.</div>
         <span class="tag">Storm History</span>
       </a>
       <a href="/gdu-calculator" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-thermometer"></use></svg></div>
         <div class="name">GDU Tracker</div>
-        <div class="desc">Track growing degree units for corn and soybeans. Wisconsin 30-year normals shown as a reference.</div>
+        <div class="short">GDUs since planting</div>
+        <div class="desc">Your growing degree units since planting for corn and soybeans, projected ahead at your spot&rsquo;s own 1991-2020 normal.</div>
         <span class="tag">Growing Degrees</span>
       </a>
       <a href="/field-scout" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Field Scout</div>
+        <div class="short">Soils, rotation, rent</div>
         <div class="desc">Tap any US field: soil types, 10-year crop rotation, county rent, basis, weather, hail history, and a printable field report.</div>
         <span class="tag">Field Data</span>
       </a>
       <a href="/planting-date" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar"></use></svg></div>
         <div class="name">Planting Date Optimizer</div>
+        <div class="short">Planting windows by county</div>
         <div class="desc">Optimal corn and soybean planting windows by county, with yield drag estimates for late planting.</div>
         <span class="tag">Decision Support</span>
       </a>
@@ -307,30 +320,35 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/usda-calendar" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar-days"></use></svg></div>
         <div class="name">USDA Report Calendar</div>
+        <div class="short">Report dates ahead</div>
         <div class="desc">Upcoming WASDE, Crop Progress, and Prospective Plantings report dates with market impact notes.</div>
         <span class="tag">Reports + Dates</span>
       </a>
       <a href="/tariffs" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-landmark"></use></svg></div>
         <div class="name">Ag Tariff Tracker</div>
+        <div class="short">Export tariffs by country</div>
         <div class="desc">Tariff rates on US corn, soybean, wheat and pork exports, by destination market.</div>
         <span class="tag">Trade Policy</span>
       </a>
       <a href="/" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-trending-up"></use></svg></div>
         <div class="name">Dashboard</div>
+        <div class="short">Futures and weather</div>
         <div class="desc">Corn, soybean and wheat futures (delayed) and local weather on one page.</div>
         <span class="tag">Futures + Weather</span>
       </a>
       <a href="/hay-prices" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Hay Prices by State</div>
+        <div class="short">Hay $/ton by state</div>
         <div class="desc">Alfalfa and other hay, dollars a ton, every state USDA publishes, with the same month last year.</div>
         <span class="tag">USDA monthly</span>
       </a>
       <a href="/cattle-auction-prices" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Sale Barn Prices</div>
+        <div class="short">Feeder prices near you</div>
         <div class="desc">Feeder steer and heifer prices by weight class at the sale barns near your ZIP, from USDA auction reports.</div>
         <span class="tag">USDA weekly</span>
       </a>
@@ -342,24 +360,28 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/usda-quick-stats" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
         <div class="name">USDA Data Explorer</div>
+        <div class="short">NASS yields and acres</div>
         <div class="desc">Pull NASS crop yields, planted acres, and prices received by state. Pre-loaded tables plus a query builder that opens custom pulls on USDA Quick Stats.</div>
         <span class="tag">NASS · By State</span>
       </a>
       <a href="/yield-estimator" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
         <div class="name">Crop Yield Estimator</div>
+        <div class="short">Bu/ac from field counts</div>
         <div class="desc">Count ears and kernels, enter 3 numbers, get estimated bu/acre. The yield component method, sized for a phone in the field.</div>
         <span class="tag">Corn · Soybeans</span>
       </a>
       <a href="/fast-facts" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-book-open"></use></svg></div>
         <div class="name">Fast Facts Reference Tables</div>
+        <div class="short">Rates, tables, conversions</div>
         <div class="desc">Corn N rates, P and K by soil test, manure value, crop removal, growth stages, pest thresholds, herbicide groups, lime and conversions, with quick calculators.</div>
         <span class="tag">Reference tables · Calculators</span>
       </a>
       <a href="/data-sources" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-database"></use></svg></div>
         <div class="name">Data Sources</div>
+        <div class="short">Where each number comes from</div>
         <div class="desc">Where each number on AGSIST comes from: Yahoo Finance, Open-Meteo, NOAA, USDA and the rest.</div>
         <span class="tag">Sources</span>
       </a>
@@ -371,31 +393,36 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/spray" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-spray-can"></use></svg></div>
         <div class="name">Spray Timing Advisor</div>
+        <div class="short">Wind and inversion by hour</div>
         <div class="desc">Wind, temperature, humidity and inversion risk for your location, hour by hour.</div>
         <span class="tag">Weather + Conditions</span>
       </a>
       <a href="/fertilizer" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Fertilizer Prices &amp; Fertility Bill</div>
-        <div class="desc">Dealer N-P-K-S prices, each with the date it was quoted, a $/lb-nutrient comparison, and a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
+        <div class="short">Co-op posted prices</div>
+        <div class="desc">Co-op posted N-P-K-S cash prices, with the region named and the date each was posted, a $/lb-nutrient comparison, and a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
         <span class="tag">Inputs · Per-Acre Cost</span>
       </a>
       <a href="/urea" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-flask-conical"></use></svg></div>
         <div class="name">Urea Volatilization Risk</div>
+        <div class="short">N loss risk today</div>
         <div class="desc">Daily risk index for nitrogen loss from surface-applied urea. Based on temp, moisture, and soil conditions.</div>
         <span class="tag">Nitrogen Management</span>
       </a>
       <a href="/manure-value" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Manure Value</div>
-        <div class="desc">What dairy, hog, beef and poultry manure is worth in N, P and K at the latest dealer fertilizer prices, for your rate and acres.</div>
+        <div class="short">N, P, K value of manure</div>
+        <div class="desc">What dairy, hog, beef and poultry manure is worth in N, P and K at the latest co-op posted fertilizer prices, for your rate and acres.</div>
         <span class="tag">Nutrient value</span>
       </a>
       <a href="/nutrient-removal" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Nutrient Removal Value</div>
-        <div class="desc">What baling stalks, chopping silage or selling hay takes off in P and K, priced at posted fertilizer prices.</div>
+        <div class="short">P and K hauled off</div>
+        <div class="desc">What baling stalks, chopping silage or selling hay takes off in P and K, priced at co-op posted fertilizer prices.</div>
         <span class="tag">Stalks · Silage · Straw · Hay</span>
       </a>
     </div>
@@ -406,24 +433,28 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <a href="/grain-bin-calculator" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
         <div class="name">Grain Bin Calculator</div>
+        <div class="short">Bushels in your bin</div>
         <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round, hopper, and flat-floor bins.</div>
         <span class="tag">Capacity + Shrink + Value</span>
       </a>
       <a href="/grain-emc" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-thermometer"></use></svg></div>
         <div class="name">Grain EMC: Fans On or Off</div>
-        <div class="desc">When to run aeration fans to dry, cool or hold corn and wheat, hour by hour for the next 3 days where you are, plus EMC charts you can print.</div>
+        <div class="short">When to run fans</div>
+        <div class="desc">When to run aeration fans to dry, cool or hold corn, soybeans and wheat, hour by hour for the next 3 days where you are, plus EMC charts you can print.</div>
         <span class="tag">Drying · Cooling · Holding</span>
       </a>
       <a href="/grain-shrink" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
         <div class="name">Grain Shrink: Wet or Too Dry</div>
+        <div class="short">Wet grain net after shrink</div>
         <div class="desc">What wet corn, soybeans, wheat or sorghum nets after shrink and drying charges, and what delivering too dry gives away.</div>
         <span class="tag">Shrink · Drying charge · Overdry</span>
       </a>
       <a href="/combine-loss" class="tool-card">
         <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
         <div class="name">Combine Loss Check</div>
+        <div class="short">Bu/ac left behind</div>
         <div class="desc">Count beans or kernels behind the combine: bushels and dollars an acre left in the field.</div>
         <span class="tag">Soybeans · Corn · Ears</span>
       </a>
@@ -435,7 +466,7 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
 
     <h2 class="tool-more-hd">Everything else on the site</h2>
     <p class="tool-more-sub">The cards above are the tools people use most. These are the rest.</p>
-    <div class="tool-more"><a class="tool-more-item" href="/crop-tour"><span class="tm-name">Pro Farmer Crop Tour</span><span class="tm-desc">Nightly state results and the tour’s accuracy record</span></a><a class="tool-more-item" href="/harvest-price-tracker"><span class="tm-name">Harvest Price Tracker</span><span class="tm-desc">Insurance projected and harvest price discovery, plus how many bushels you can safely price ahead</span></a><a class="tool-more-item" href="/farmland-atlas"><span class="tm-name">Farmland Atlas</span><span class="tm-desc">Every county on 37 public records: heat, water, losses, land value, rent</span></a><a class="tool-more-item" href="/rent/"><span class="tm-name">Cash Rent by State</span><span class="tm-desc">USDA county rent survey</span></a><a class="tool-more-item" href="/cash-lease"><span class="tm-name">Cash Farm Lease</span><span class="tm-desc">State-adaptive printable lease</span></a><a class="tool-more-item" href="/farmland-atlas#l=ten_rent"><span class="tm-name">Rented vs Owner-Farmed</span><span class="tm-desc">Owned vs rented farmland, in the Farmland Atlas</span></a><a class="tool-more-item" href="/foreign-land"><span class="tm-name">Foreign-Owned Land</span><span class="tm-desc">AFIDA filings by country and county</span></a><a class="tool-more-item" href="/conditions"><span class="tm-name">Crop Conditions Rank</span><span class="tm-desc">This week’s ratings against every year since 2000</span></a><a class="tool-more-item" href="/conditions-yield"><span class="tm-name">Ratings vs Yield</span><span class="tm-desc">How well condition ratings predict yield</span></a><a class="tool-more-item" href="/drought-monitor"><span class="tm-name">Drought Monitor</span><span class="tm-desc">This week&rsquo;s US Drought Monitor map, national and by region and state</span></a><a class="tool-more-item" href="/basis"><span class="tm-name">Basis vs Normal</span><span class="tm-desc">Your region’s basis against its own five-year normal</span></a><a class="tool-more-item" href="/basis#storage"><span class="tm-name">Storage Crunch</span><span class="tm-desc">Grain grown vs bin space, by state</span></a><a class="tool-more-item" href="/elevators"><span class="tm-name">Elevator Coverage</span><span class="tm-desc">Which elevators post bids here</span></a><a class="tool-more-item" href="/cot"><span class="tm-name">COT Report</span><span class="tm-desc">Fund positioning in the grains</span></a><a class="tool-more-item" href="/whats-priced-in"><span class="tm-name">What’s Priced In</span><span class="tm-desc">What the trade expects before each USDA report</span></a><a class="tool-more-item" href="/scorecard"><span class="tm-name">Prediction Bot</span><span class="tm-desc">Grain calls, graded by code</span></a><a class="tool-more-item" href="/farm-bill"><span class="tm-name">Farm Bill Tracker</span><span class="tm-desc">Where the bill stands</span></a><a class="tool-more-item" href="/milk-prices"><span class="tm-name">Milk Prices</span><span class="tm-desc">Class III and IV, and how your check is built</span></a><a class="tool-more-item" href="/markets"><span class="tm-name">Ag Markets</span><span class="tm-desc">Grain, livestock and energy futures</span></a><a class="tool-more-item" href="/status"><span class="tm-name">System Status</span><span class="tm-desc">Live health of every data feed</span></a><a class="tool-more-item" href="/changelog"><span class="tm-name">What’s New</span><span class="tm-desc">What changed on the site, and when</span></a></div>
+    <div class="tool-more"><a class="tool-more-item" href="/crop-tour"><span class="tm-name">Pro Farmer Crop Tour</span><span class="tm-desc">Nightly state results and the tour’s accuracy record</span></a><a class="tool-more-item" href="/harvest-price-tracker"><span class="tm-name">Harvest Price Tracker</span><span class="tm-desc">Insurance projected and harvest price discovery, plus how many bushels you can safely price ahead</span></a><a class="tool-more-item" href="/farmland-atlas"><span class="tm-name">Farmland Atlas</span><span class="tm-desc">Every county on 37 public records: heat, water, losses, land value, rent</span></a><a class="tool-more-item" href="/rent/"><span class="tm-name">Cash Rent by State</span><span class="tm-desc">USDA county rent survey</span></a><a class="tool-more-item" href="/cash-lease"><span class="tm-name">Cash Farm Lease</span><span class="tm-desc">State-adaptive printable lease</span></a><a class="tool-more-item" href="/farmland-atlas#l=ten_rent"><span class="tm-name">Rented vs Owner-Farmed</span><span class="tm-desc">Owned vs rented farmland, in the Farmland Atlas</span></a><a class="tool-more-item" href="/foreign-land"><span class="tm-name">Foreign-Owned Land</span><span class="tm-desc">AFIDA filings by country and county</span></a><a class="tool-more-item" href="/conditions"><span class="tm-name">Crop Conditions Rank</span><span class="tm-desc">This week’s ratings against every year since 2000</span></a><a class="tool-more-item" href="/pod-counts"><span class="tm-name">Pod Counts vs Yield</span><span class="tm-desc">What the tour&rsquo;s soybean pod counts say about state yield, measured</span></a><a class="tool-more-item" href="/rain"><span class="tm-name">Rain by County</span><span class="tm-desc">This year&rsquo;s rain in your county, from the nearest station, against its normal</span></a><a class="tool-more-item" href="/conditions-yield"><span class="tm-name">Ratings vs Yield</span><span class="tm-desc">How well condition ratings predict yield</span></a><a class="tool-more-item" href="/drought-monitor"><span class="tm-name">Drought Monitor</span><span class="tm-desc">This week&rsquo;s US Drought Monitor map, national and by region and state</span></a><a class="tool-more-item" href="/basis"><span class="tm-name">Basis vs Normal</span><span class="tm-desc">Your region’s basis against its own five-year normal</span></a><a class="tool-more-item" href="/basis#storage"><span class="tm-name">Storage Crunch</span><span class="tm-desc">Grain grown vs bin space, by state</span></a><a class="tool-more-item" href="/elevators"><span class="tm-name">Elevator Coverage</span><span class="tm-desc">Which elevators post bids here</span></a><a class="tool-more-item" href="/cot"><span class="tm-name">COT Report</span><span class="tm-desc">Fund positioning in the grains</span></a><a class="tool-more-item" href="/whats-priced-in"><span class="tm-name">What’s Priced In</span><span class="tm-desc">What the trade expects before each USDA report</span></a><a class="tool-more-item" href="/scorecard"><span class="tm-name">Prediction Bot</span><span class="tm-desc">Grain calls, graded by code</span></a><a class="tool-more-item" href="/farm-bill"><span class="tm-name">Farm Bill Tracker</span><span class="tm-desc">Where the bill stands</span></a><a class="tool-more-item" href="/milk-prices"><span class="tm-name">Milk Prices</span><span class="tm-desc">Class III and IV, and how your check is built</span></a><a class="tool-more-item" href="/markets"><span class="tm-name">Ag Markets</span><span class="tm-desc">Grain, livestock and energy futures</span></a><a class="tool-more-item" href="/status"><span class="tm-name">System Status</span><span class="tm-desc">Live health of every data feed</span></a><a class="tool-more-item" href="/changelog"><span class="tm-name">What’s New</span><span class="tm-desc">What changed on the site, and when</span></a></div>
 
   </main>
 

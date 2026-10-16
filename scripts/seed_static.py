@@ -1116,6 +1116,59 @@ def _pb_verdict(r, label, R):
     return v, line, luck
 
 
+def _pb_why(c):
+    """The Why cell. Same words as why() in scorecard.html. For a trend call
+    the fund rank is said to be what let the trend decide (2026-10-16: "13-week
+    trend up (87th percentile ...)" read as if the percentile were the trend)."""
+    s = PB_SIGNAL.get(c.get("signal"), c.get("signal") or "")
+    pct = c.get("cot_pct")
+    if str(c.get("signal") or "").startswith("trend_"):
+        t = c.get("trend_pct")
+        if t is not None:
+            s += f" ({'+' if t > 0 else ''}{_fixed(t, 1)}% over 13 weeks)"
+        if pct is not None:
+            s += (f". Funds at the {_pb_ord(_jsround(pct))} percentile of the last 156 reports, "
+                  "not in the top or bottom tenth, so the trend decides")
+    elif pct is not None:
+        s += f" ({_pb_ord(_jsround(pct))} percentile of the last 156 reports)"
+    return s
+
+
+def _pb_cents(x):
+    s = _fixed(abs(x), 2)
+    return s.rstrip("0").rstrip(".") if "." in s else s
+
+
+def _pb_stand(c):
+    """Where an open call stands: the bot's latest close of the same contract
+    against the entry. Not a grade and never counted. Same words as stand()
+    in scorecard.html."""
+    if c.get("status") == "graded":
+        return "Graded: right" if c.get("outcome") == "hit" else "Graded: wrong"
+    if c.get("status") != "open":
+        return "-"
+    m = c.get("mark") or {}
+    if m.get("close") is None or c.get("entry") is None:
+        return "Shows after the bot\u2019s next run"
+    d = round((m["close"] - c["entry"]) * 100) / 100
+    md = _iso_date(m.get("date"))
+    head = f"{_pb_dollars(m['close'])} on {_md(md) if md else '-'}, "
+    if d == 0:
+        return head + "level with entry (a tie grades as a miss)"
+    right = (c.get("direction") == "up" and d > 0) or (c.get("direction") == "down" and d < 0)
+    return (head + f"{_pb_cents(d)} cents {'under' if d < 0 else 'over'} entry: "
+            + ("right side so far" if right else "wrong side so far"))
+
+
+def _pb_next(ne):
+    if not ne or not ne.get("day"):
+        return ""
+    out = f"Next calls: at the {_pb_date(ne['day'])} close, on the {_pb_date(ne.get('report'))} report."
+    if ne.get("after_holiday"):
+        out += f" {_pb_date(ne['after_holiday'])} is a federal holiday, so the entry moves to the next business day."
+    return out
+
+
 PB_PLAIN_COIN = {"coin_flip": "no better than a coin flip", "worse_than_coin": "worse than a coin flip",
                  "held_up": "better than a coin flip on this page's test"}
 
@@ -1152,7 +1205,8 @@ def seed_scorecard(today):
         for k in ("pb-live-line", "pb-bt-line", "pb-live-luck", "pb-bt-luck", "pb-bt-base", "pb-latest-when"):
             seeds["pb:" + k] = ""
         seeds["pb:pb-live-line"] = f"Record not shown: {why}."
-        seeds["pb:latest"] = f'<tr><td colspan="6">{why}.</td></tr>'
+        seeds["pb:latest"] = f'<tr><td colspan="7">{why}.</td></tr>'
+        seeds["pb:pb-next"] = ""
         seeds["pb:bycrop"] = f'<tr><td colspan="6">{why}.</td></tr>'
         seeds["pb:pb-updated"] = "-"
         seeds["pb:pb-plain"] = ""
@@ -1189,13 +1243,11 @@ def seed_scorecard(today):
                 ('<span class="pb-down">Down</span>' if x == "down" else "n/a"))
     rows = []
     for c in lc:
-        why = _e(PB_SIGNAL.get(c.get("signal"), c.get("signal") or ""))
-        if c.get("cot_pct") is not None:
-            why += f" ({_pb_ord(_jsround(c['cot_pct']))} percentile of the last 156 reports)"
         rows.append(f"<tr><td>{_e(labels.get(c.get('crop'), c.get('crop') or ''))}</td><td>{dir_span(c.get('direction'))}</td>"
                     f"<td>{_e(c.get('contract') or '')}</td><td class=\"num\">{_pb_dollars(c.get('entry'))}</td>"
-                    f"<td>{_pb_date(c.get('exit_day'))}</td><td>{why}</td></tr>")
-    seeds["pb:latest"] = "".join(rows) or '<tr><td colspan="6">No calls yet.</td></tr>'
+                    f"<td>{_pb_date(c.get('exit_day'))}</td><td>{_e(_pb_stand(c))}</td><td>{_e(_pb_why(c))}</td></tr>")
+    seeds["pb:latest"] = "".join(rows) or '<tr><td colspan="7">No calls yet.</td></tr>'
+    seeds["pb:pb-next"] = _e(_pb_next(d.get("next_entry")))
     lr = (d.get("live") or {}).get("records") or {}
     br = bt.get("records") or {}
     rows = []

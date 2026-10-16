@@ -245,7 +245,7 @@
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.pc-back{min-height:40px;display:inline-flex;align-items:center}}
 </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://agsist.com/pod-counts#article","headline":"Do pod counts predict soybean yield?","description":"Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.","url":"https://agsist.com/pod-counts","datePublished":"2026-08-19","dateModified":"2026-08-19","inLanguage":"en-US","author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"publisher":{"@id":"https://agsist.com/#org"},"isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"Dataset","@id":"https://agsist.com/pod-counts#dataset","name":"Pro Farmer Crop Tour state pod counts against USDA final state soybean yields, 2022-2025","description":"Twenty-eight state-years pairing Pro Farmer Crop Tour soybean pod counts in a 3-foot square with USDA NASS final state soybean yields.","url":"https://agsist.com/pod-counts","license":"https://agsist.com/terms","creator":{"@id":"https://agsist.com/#org"},"temporalCoverage":"2022/2025","variableMeasured":["soybean pods in a 3x3 foot square","soybean yield bushels per acre"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Crop Tour","item":"https://agsist.com/crop-tour"},{"@type":"ListItem","position":3,"name":"Pod counts and yield","item":"https://agsist.com/pod-counts"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://agsist.com/pod-counts#article","headline":"Do pod counts predict soybean yield?","description":"Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.","url":"https://agsist.com/pod-counts","datePublished":"2026-08-19","dateModified":"2026-10-16","inLanguage":"en-US","author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"publisher":{"@id":"https://agsist.com/#org"},"isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"Dataset","@id":"https://agsist.com/pod-counts#dataset","name":"Pro Farmer Crop Tour state pod counts against USDA final state soybean yields, 2022-2025","description":"Twenty-eight state-years pairing Pro Farmer Crop Tour soybean pod counts in a 3-foot square with USDA NASS final state soybean yields.","url":"https://agsist.com/pod-counts","license":"https://agsist.com/terms","creator":{"@id":"https://agsist.com/#org"},"temporalCoverage":"2022/2025","variableMeasured":["soybean pods in a 3x3 foot square","soybean yield bushels per acre"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Crop Tour","item":"https://agsist.com/crop-tour"},{"@type":"ListItem","position":3,"name":"Pod counts and yield","item":"https://agsist.com/pod-counts"}]}]}</script>
 
   <style>
   .pc-wrap{max-width:820px;margin:0 auto;padding:0 1rem 3rem;}
@@ -269,6 +269,7 @@
     text-transform:uppercase;letter-spacing:.07em;}
   .pc-tbl td.n{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text,#e7ece8);}
   .pc-tbl tr.hl td{color:var(--green,#4aab4c);}
+  #pc-2026 td.n{white-space:nowrap;}
   /* PHONES: the six-column fit table becomes one card per fit. A horizontally
      scrolling table is the fault the 2026-08-18 audit spent a night removing
      from the record table; it does not get to come back through a new page.
@@ -322,7 +323,7 @@
         <a href="/">Home</a> &rarr; <a href="/crop-tour">Crop Tour</a> &rarr; Pod counts
       </nav>
       <h1 style="margin:0 0 .3rem">Do pod counts predict soybean yield?</h1>
-      <div class="pc-stamp">AGSIST working paper &middot; 19 August 2026 &middot; 28 state-years &middot; By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA)</div>
+      <div class="pc-stamp">AGSIST working paper &middot; 19 August 2026, <a href="#y2026">2026 line added 16 October</a> &middot; 28 state-years &middot; By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA)</div>
 
       <p class="pc-lede">Nobody quotes a pod count when they talk soybean yield. The reason usually
       given is that pod counts don&rsquo;t convert, and that is half true. They do not convert
@@ -374,6 +375,31 @@
       corn directly and never measures a soybean yield at all, so a factor of 1.8 is a small price
       for a number that is only ever counted, never weighed. Pod counts deserve to be quoted. They
       deserve to be quoted with a band around them.</p></div>
+
+      <h2 class="pc-h2" id="y2026">The 2026 tour, read this way</h2>
+      <p class="pc-src">Added 16 October 2026. AGSIST calibration, not a Pro Farmer number. To be checked against NASS&rsquo;s January 2027 Annual Summary.</p>
+      <p>Each state&rsquo;s August 2026 pod count, set against its own 2022&ndash;2025 average and
+      turned into bushels with the within-state fit above (0.0227 bu per pod), with the &plusmn;6 bu band.
+      The answer is a difference from that state&rsquo;s own 2022&ndash;2025 average soybean yield,
+      not a yield.</p>
+      <div class="pc-tbl-wrap"><table class="pc-tbl" id="pc-2026">
+        <caption class="sr-only">2026 tour pod counts by state against each state's 2022 to 2025 average, in bushels with the 95% band.</caption>
+        <thead><tr><th scope="col">State</th><th scope="col">2026 pods</th><th scope="col">2022-25 average</th><th scope="col">Pods vs average</th><th scope="col">Bu vs state average</th><th scope="col">95% band</th></tr></thead>
+        <tbody>
+        <tr><td>Ohio</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,197.25</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,225.45</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>-28.2</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>-0.6</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-6.6 to +5.4</td></tr>
+        <tr><td>South Dakota</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>945.98</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,024.68</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>-78.7</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>-1.8</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-7.8 to +4.2</td></tr>
+        <tr><td>Indiana</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,318.64</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,315.38</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>+3.3</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>+0.1</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-5.9 to +6.1</td></tr>
+        <tr><td>Nebraska</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,219.62</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,186.13</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>+33.5</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>+0.8</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-5.2 to +6.8</td></tr>
+        <tr><td>Illinois</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,430.37</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,354.66</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>+75.7</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>+1.7</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-4.3 to +7.7</td></tr>
+        <tr><td>Iowa</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,362.93</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,265.38</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>+97.5</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>+2.2</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-3.8 to +8.2</td></tr>
+        <tr><td>Minnesota</td><td class="n"><span class="pc-lbl" aria-hidden="true">2026 pods</span>1,257.80</td><td class="n"><span class="pc-lbl" aria-hidden="true">2022-25 average</span>1,092.40</td><td class="n"><span class="pc-lbl" aria-hidden="true">Pods vs average</span>+165.4</td><td class="n"><span class="pc-lbl" aria-hidden="true">Bu vs state average</span>+3.8</td><td class="n"><span class="pc-lbl" aria-hidden="true">95% band</span>-2.2 to +9.8</td></tr>
+        </tbody></table></div>
+      <div class="pc-note"><p style="margin:0"><b>What it says.</b> Every state&rsquo;s band crosses zero.
+      On pod counts alone, 2026 cannot be told apart from an average year in any of the seven states.
+      Minnesota leans highest and South Dakota lowest. The band is if anything too narrow: 2026 is not in
+      the fit, and the fit&rsquo;s own misses are in-sample.</p></div>
+      <p class="pc-src">Pod counts: Pro Farmer&rsquo;s 2026 state results, Aug 17&ndash;20 (the state tables, checked against the
+      percent changes in the same articles). 2022&ndash;2025 averages: the counts in the measurement above.</p>
 
       <h2 class="pc-h2">The divisor everyone repeats is wrong</h2>
       <p>The rule of thumb you will hear is &ldquo;divide the pod count by 27.&rdquo; It traces to a
