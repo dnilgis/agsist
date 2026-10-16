@@ -80,16 +80,17 @@ test("the fertility bill prices from the shared list, with the math checked by h
   assert.ok(Math.abs(nS.cost - 950.1 / 1640) < 1e-9, "$/lb N = price / (20 x 82)");
   const prog = c.buildProgram(prods, "corn", 180, 0.9);
   const by = Object.fromEntries(prog.lines.map((l) => [l.role.split(" ")[0], l]));
-  // P: 66.6 lb P2O5 / 0.46 = 144.78 lb DAP x $0.42525 = $61.57, which also brings 26.06 lb N
+  // Removal per bu from UW A2809 Table 4.2 (corn 0.38 P2O5, 0.29 K2O), synced with /nutrient-removal Oct 16.
+  // P: 68.4 lb P2O5 / 0.46 = 148.70 lb DAP x $0.42525 = $63.23, which also brings 26.77 lb N
   assert.equal(by.Phosphate.product, "DAP");
-  assert.equal(by.Phosphate.cost.toFixed(2), "61.57");
-  // N: (162 - 26.06) / 0.82 = 165.78 lb NH3 x $0.47505 = $78.75
+  assert.equal(by.Phosphate.cost.toFixed(2), "63.23");
+  // N: (162 - 26.77) / 0.82 = 164.92 lb NH3 x $0.47505 = $78.35
   assert.equal(by.Nitrogen.product, "Anhydrous ammonia");
-  assert.equal(by.Nitrogen.cost.toFixed(2), "78.75");
+  assert.equal(by.Nitrogen.cost.toFixed(2), "78.35");
   assert.equal(by.Nitrogen.srcLabel, "Kansas co-ops, middle of 4, posted Oct 6, 2026");
-  // K: 43.2 / 0.60 = 72 lb x $0.2253 = $16.22
-  assert.equal(by.Potash.cost.toFixed(2), "16.22");
-  assert.equal(prog.costPerAcre.toFixed(2), "156.54");
+  // K: 52.2 / 0.60 = 87 lb x $0.2253 = $19.60
+  assert.equal(by.Potash.cost.toFixed(2), "19.60");
+  assert.equal(prog.costPerAcre.toFixed(2), "161.18");
   // no potash price: the bill says so instead of using an old number
   const noK = c.buildProgram(c.analyze(FS.rows({ prices: PRICES.prices.filter((p) => p.key !== "potash") })), "corn", 180, 0.9);
   assert.ok(noK.missing.includes("potash source"));
