@@ -1,0 +1,38 @@
+{
+ "id": "synergy-2026-10-01",
+ "coop": "Synergy Cooperative",
+ "region": "Northwest Wisconsin",
+ "state": "WI",
+ "how_received": "received by email",
+ "title": "Dry Fertilizer Price List - Spring 2027",
+ "sheet_date": "2026-10-01",
+ "season": "Spring 2027 booking",
+ "season_end": "2027-04-30",
+ "season_end_why": "the last date the sheet names (volume discounts on spring prepay thru April 30, 2027)",
+ "applies": "Excluding Ashland",
+ "unit": "$/ton",
+ "rows": [
+  {"key": "potash", "raw": "0-0-60", "symbol": "0-0-60", "cash": null, "charge": null, "changed": false},
+  {"key": null, "raw": "S10 (12-40-0-10S)", "symbol": "12-40-0-10S", "cash": null, "charge": null, "changed": false},
+  {"key": "urea", "raw": "46-0-0", "symbol": "46-0-0", "cash": 610, "charge": 628, "changed": true},
+  {"key": "ams", "raw": "21-0-0-24S", "symbol": "21-0-0-24S", "cash": null, "charge": null, "changed": false},
+  {"key": null, "raw": "K-MAG PREMIUM (0-0-20-22S-11Mg)", "symbol": "0-0-20-22S-11Mg", "cash": null, "charge": null, "changed": false},
+  {"key": null, "raw": "PEL LIME (SuperCal 98G)", "symbol": null, "cash": null, "charge": null, "changed": false},
+  {"key": null, "raw": "CAL-SOL (SuperCal SO4)", "symbol": null, "cash": null, "charge": null, "changed": false},
+  {"key": null, "raw": "Aspire (0-0-58-0.5B)", "symbol": "0-0-58-0.5B", "cash": null, "charge": null, "changed": false},
+  {"key": "esn", "raw": "N-EDGE EZ (~ESN 44-0-0)", "symbol": "44-0-0", "cash": 800, "charge": 824, "changed": true}
+ ],
+ "star_note": "* Indicates Price Change from Previous Price Sheet",
+ "notes": [
+  "Prices subject to change at any time.",
+  "For Spring Deferred Payment, Add $10/Ton for 25% down, 75% due March 31, 2027",
+  "Volume Discounts may be applied thru April 30th, 2027 on Spring Prepay Only"
+ ],
+ "provenance": {
+  "source": "Price sheet Synergy Cooperative emailed to Sig Lindquist; he forwarded a screenshot on Oct 16, 2026 and said to take the numbers from it.",
+  "entered": "2026-10-16",
+  "entered_by": "typed from the screenshot, checked row by row against it",
+  "image": "kept out of the public site (an emailed member sheet); only the numbers are stored here",
+  "na_rule": "rows the sheet prints as n/a are stored as null (not priced), never 0"
+ }
+}
