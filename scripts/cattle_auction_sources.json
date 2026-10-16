@@ -11,7 +11,7 @@
     {"id": "knoxville-ia", "name": "Knoxville Regional Livestock", "town": "Knoxville", "state": "IA", "lat": 41.32, "lon": -93.11, "slug": "2151", "match": "knoxville, ia|knoxville regional"},
     {"id": "russell-ia", "name": "Russell Livestock Market", "town": "Russell", "state": "IA", "lat": 40.98, "lon": -93.2, "slug": "2159", "match": "russell, ia|russell livestock market"},
     {"id": "dodge-city-ks", "name": "Winter Livestock", "town": "Dodge City", "state": "KS", "lat": 37.75, "lon": -100.02, "slug": "1889", "match": "dodge city"},
-    {"id": "pratt-ks", "name": "Pratt Livestock", "town": "Pratt", "state": "KS", "lat": 37.64, "lon": -98.74, "slug": "1891", "match": "pratt"},
+    {"id": "pratt-ks", "name": "Winter Livestock", "town": "Pratt", "state": "KS", "lat": 37.64, "lon": -98.74, "slug": "1891", "match": "pratt"},
     {"id": "salina-ks", "name": "Farmers and Ranchers Livestock", "town": "Salina", "state": "KS", "lat": 38.84, "lon": -97.61, "slug": "1892", "match": "salina, ks|farmers (and|&) ranchers", "check": true, "also": ["1894"]},
     {"id": "lexington-ky", "name": "Blue Grass Stockyards", "town": "Lexington", "state": "KY", "lat": 38.04, "lon": -84.5, "slug": "2128", "match": "blue ?grass", "also": ["2127"]},
     {"id": "paris-ky", "name": "Paris Stockyards", "town": "Paris", "state": "KY", "lat": 38.21, "lon": -84.25, "slug": "2204", "match": "paris", "also": ["3919"]},
@@ -44,10 +44,10 @@
     {"id": "amarillo-tx", "name": "Amarillo Livestock Auction", "town": "Amarillo", "state": "TX", "lat": 35.22, "lon": -101.83, "slug": "1952", "match": "amarillo"},
     {"id": "san-angelo-tx", "name": "Producers Livestock Auction", "town": "San Angelo", "state": "TX", "lat": 31.46, "lon": -100.44, "slug": "2015", "match": "san angelo"},
     {"id": "tulia-tx", "name": "Tulia Livestock Auction", "town": "Tulia", "state": "TX", "lat": 34.54, "lon": -101.77, "slug": "1954", "match": "tulia"},
-    {"id": "salina-ut", "name": "Salina Livestock Auction", "town": "Salina", "state": "UT", "lat": 38.96, "lon": -111.86, "slug": "2037", "match": "salina, ut"},
+    {"id": "salina-ut", "name": "Producers Livestock Auction", "town": "Salina", "state": "UT", "lat": 38.96, "lon": -111.86, "slug": "2037", "match": "salina, ut"},
     {"id": "marshall-va", "name": "Fauquier Livestock Exchange", "town": "Marshall", "state": "VA", "lat": 38.86, "lon": -77.86, "slug": "2173", "check": true, "match": "fauquier|marshall, va"},
     {"id": "toppenish-wa", "name": "Toppenish Livestock Auction", "town": "Toppenish", "state": "WA", "lat": 46.38, "lon": -120.31, "slug": "2132", "match": "toppenish"},
-    {"id": "riverton-wy", "name": "Riverton Livestock Auction", "town": "Riverton", "state": "WY", "lat": 43.02, "lon": -108.38, "slug": "2104", "match": "riverton"},
+    {"id": "riverton-wy", "name": "Winter Livestock Auction", "town": "Riverton", "state": "WY", "lat": 43.02, "lon": -108.38, "slug": "2104", "match": "riverton"},
     {"id": "torrington-wy", "name": "Torrington Livestock", "town": "Torrington", "state": "WY", "lat": 42.06, "lon": -104.18, "slug": "2103", "match": "torrington"}
   ],
   "state_reports": [

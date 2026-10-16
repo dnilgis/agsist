@@ -171,12 +171,36 @@ test("the parser says plainly it has not been checked against a real report yet"
 test("the barn list: unique ids, town and lower-48 coordinates, a title pattern for every source", () => {
   const ids = srcs.barns.map((b) => b.id).concat(srcs.state_reports.map((b) => b.id));
   assert.equal(new Set(ids).size, ids.length);
-  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 40);
+  // 47 barns on Oct 16 2026 after the barn fill; the cap keeps the list a hand-checked set, not a dump
+  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 60);
   for (const b of srcs.barns) {
     assert.ok(b.town && /^[A-Z]{2}$/.test(b.state), b.id);
     assert.ok(b.lat > 24 && b.lat < 50 && b.lon > -125 && b.lon < -66, b.id + " coordinates");
     assert.ok(b.match && new RegExp(b.match, "i"), b.id + " match");
   }
+});
+
+test("the page's barn list names every barn the fetcher reads, and no other", () => {
+  const ul = page.match(/<ul class="sb-barns">([\s\S]*?)<\/ul>/)[1];
+  const listed = [...ul.matchAll(/<li><b>([A-Z]{2})<\/b> ([^<]*)<\/li>/g)]
+    .flatMap((m) => m[2].split("; ").map((x) => m[1] + " " + x.replace(/&#x27;/g, "'").replace(/&amp;/g, "&")));
+  const want = srcs.barns.map((b) => `${b.state} ${b.name}, ${b.town}`);
+  assert.deepEqual([...listed].sort(), [...want].sort());
+});
+
+test("barns with a second sale day: also is a list of other report numbers, never the slug again", () => {
+  for (const b of srcs.barns.concat(srcs.state_reports)) {
+    if (b.slug != null) assert.match(b.slug, /^\d{3,5}$/, b.id);
+    if (!("also" in b)) continue;
+    assert.ok(Array.isArray(b.also) && b.also.length > 0, b.id);
+    for (const s of b.also) {
+      assert.match(s, /^\d{3,5}$/, b.id);
+      assert.notEqual(s, b.slug, b.id);
+    }
+  }
+  // no report number is claimed by two barns (a wrong number would show one barn twice)
+  const all = srcs.barns.concat(srcs.state_reports).flatMap((b) => [b.slug].concat(b.also || [])).filter(Boolean);
+  assert.equal(new Set(all).size, all.length);
 });
 
 test("a shipped data file, if any, holds only checked numbers", () => {
