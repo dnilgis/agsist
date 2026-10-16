@@ -1,0 +1,413 @@
+# Benchmark grain-emc: PAMI EMC charts
+# https://pami.ca/wp-content/uploads/2021/10/Equilibrium-Moisture-Content-Charts-for-Grain-Storage-Management_rev2.pdf
+# fetched 2026-10-16T15:39:35Z, sha256 8d49d029043bf97bae6d9ff97a075b55b2797ffc0585dd8aa8b7952be486eb81
+
+                              Prairie Agricultural Machinery Institute
+                              Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                              306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+        Equilibrium Moisture Content Charts for Grain Storage Management
+The equilibrium moisture content (EMC) of air can be used to predict how the ambient air used for natural
+air drying (NAD) will affect the moisture content of grain. The EMC of the air depends on its temperature
+and relative humidity (RH) as well as the grain type.
+
+The EMC represents the moisture content that the grain will eventually equilibrate to if the air conditions
+remain constant for a length of time. Although air conditions are rarely constant for longer than an hour,
+the EMC information can still be used to determine the range of air temperatures and relative humidities
+that will achieve drying.
+
+For example: if the ambient air has a temperature of 10°C and a RH of 60%, the EMC of the air for
+WHEAT is 13.6% (refer to EMC chart below). That means that if the air conditions stay constant at 10°C
+and 60% RH, wheat would eventually equilibrate to 13.6% moisture content (and 10°C). Whether the
+wheat started with a moisture content lower or higher than 13.6% doesn’t matter; the wheat would
+eventually equilibrate to 13.6%.
+
+Another example: if the goal is to dry wheat to 14.4%, the most effective time to run the fan would
+be when the EMC of air is less than 14.4%. Those conditions (air temperature and RH) are highlighted in
+red in the chart below.
+
+                   EQUILIBRIUM MOISTURE CONTENT FOR HARD RED SPRING WHEAT
+
+  Temp                                             Relative Humidity (%)
+   (°C)      35       40       45         50        55       60      65          70        75      80     85
+    -2      10.7     11.4     12.0       12.7      13.5     14.2    15.0        15.9      16.9    18.0   19.3
+     2      10.4     11.1     11.8       12.5      13.3     14.0    14.8        15.7      16.7    17.8   19.1
+     5      10.3     11.0     11.7       12.4      13.1     13.9    14.7        15.5      16.5    17.6   19.0
+     8      10.1     10.8     11.5       12.2      13.0     13.7    14.5        15.4      16.4    17.5   18.9
+    10      10.0     10.7     11.4       12.1      12.9     13.6    14.4        15.3      16.3    17.4   18.8
+    13      9.9      10.6     11.3       12.0      12.7     13.5    14.3        15.2      16.2    17.3   18.7
+    15      9.8      10.5     11.2       11.9      12.6     13.4    14.2        15.1      16.1    17.2   18.6
+    18      9.6      10.3     11.0       11.8      12.5     13.3    14.1        15.0      16.0    17.1   18.5
+    22      9.4      10.2     10.9       11.6      12.3     13.1    13.9        14.8      15.8    16.9   18.3
+    26      9.3      10.0     10.7       11.4      12.2     12.9    13.8        14.6      15.6    16.8   18.2
+    28      9.2      9.9      10.6       11.3      12.1     12.8    13.7        14.6      15.6    16.7   18.1
+
+
+
+REMEMBER that it is also important to manage grain temperature as well as moisture content to
+help prevent spoilage. If you are using warm air (temperature greater than 15°C) to help dry grain, the
+grain will also warm to that temperature. Once the target moisture content has been reached, aerate
+with cool air to bring the average grain temperature below 15°C. Due to the effect of grain temperature
+on the air’s ability to remove moisture, this cooling period will also result in some moisture loss, so
+cooling can start once the grain is within approximately half a percent of the target moisture content.
+                              Prairie Agricultural Machinery Institute
+                              Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                              306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+Also note that if the grain temperature is considerably different than the air temperature, the EMC of
+the air will be difficult to determine until the temperature of the air and grain equalizes (usually within 6
+to 24 hours of fan operation, depending on airflow rate).
+
+
+IMPORTANT NOTE: The EMC of air depends on the grain type as well as the air temperature
+and RH. The EMC charts for wheat, barley, peas, canola, oats, lentils, soybeans, barley, flax, and
+sunflowers are presented below.
+
+These charts are based on the moisture isotherm data summarized in the ASABE Standard D245.5
+(Moisture Relationships of Plant-based Agricultural Products) and various published studies (listed after
+the charts). These charts use the modified Henderson model for flax, peas and canola, the modified
+Chung-Pfost model for flax, oats, hard red spring wheat and barley, the modified Halsey equation for red
+lentils, soybeans and sunflowers, and the modified Oswin model for lentils, durum and oats. Note that
+much of the information in ASABE Standard D245.5 is based on research conducted in the 1980’s and
+1990’s. Since that time, plant breeding has resulted in different starch and oil contents of grains and
+oilseeds which may affect the EMC values. Therefore, these charts should be used as a guideline only.
+
+
+      EQUILIBRIUM MOISTURE CONTENT FOR HARD RED SPRING WHEAT (Modified Chung-Pfost)
+
+  Temp                                             Relative Humidity (%)
+   (°C)      35        40       45        50        55       60      65          70        75      80      85
+    -2      10.7      11.4     12.0      12.7      13.5     14.2    15.0        15.9      16.9    18.0    19.3
+     2      10.4      11.1     11.8      12.5      13.3     14.0    14.8        15.7      16.7    17.8    19.1
+     5      10.3      11.0     11.7      12.4      13.1     13.9    14.7        15.5      16.5    17.6    19.0
+     8      10.1      10.8     11.5      12.2      13.0     13.7    14.5        15.4      16.4    17.5    18.9
+    10      10.0      10.7     11.4      12.1      12.9     13.6    14.4        15.3      16.3    17.4    18.8
+    13      9.9       10.6     11.3      12.0      12.7     13.5    14.3        15.2      16.2    17.3    18.7
+    15      9.8       10.5     11.2      11.9      12.6     13.4    14.2        15.1      16.1    17.2    18.6
+    18      9.6       10.3     11.0      11.8      12.5     13.3    14.1        15.0      16.0    17.1    18.5
+    22      9.4       10.2     10.9      11.6      12.3     13.1    13.9        14.8      15.8    16.9    18.3
+    26      9.3       10.0     10.7      11.4      12.2     12.9    13.8        14.6      15.6    16.8    18.2
+    28      9.2       9.9      10.6      11.3      12.1     12.8    13.7        14.6      15.6    16.7    18.1
+                            Prairie Agricultural Machinery Institute
+                            Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                            306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+        EQUILIBRIUM MOISTURE CONTENT FOR HARD RED WINTER WHEAT (Modified Oswin)
+
+Temp                                             Relative Humidity (%)
+ (°C)      35       40        45        50        55       60      65          70        75      80     85
+  -2      10.2     11.2      12.3      13.4      14.6     15.9    17.4        19.1      21.1    23.6   26.9
+   2      10.0     11.0      12.0      13.2      14.3     15.6    17.1        18.8      20.8    23.2   26.5
+   5      9.9      10.8      11.9      13.0      14.1     15.4    16.9        18.5      20.5    23.0   26.2
+   8      9.7      10.7      11.7      12.8      14.0     15.2    16.7        18.3      20.3    22.7   25.9
+  10      9.6      10.6      11.6      12.7      13.8     15.1    16.5        18.1      20.1    22.5   25.7
+  13      9.5      10.4      11.4      12.5      13.6     14.9    16.3        17.9      19.8    22.2   25.4
+  15      9.4      10.3      11.3      12.4      13.5     14.7    16.1        17.7      19.6    22.0   25.1
+  18      9.2      10.2      11.2      12.2      13.3     14.5    15.9        17.5      19.4    21.7   24.8
+  22      9.0      10.0      10.9      11.9      13.0     14.2    15.6        17.2      19.0    21.3   24.4
+  26      8.9      9.8       10.7      11.7      12.8     14.0    15.3        16.8      18.7    20.9   24.0
+  28      8.8      9.7       10.6      11.6      12.6     13.8    15.1        16.7      18.5    20.7   23.7
+
+
+
+
+            EQUILIBRIUM MOISTURE CONTENT FOR DURUM WHEAT (Modified Oswin)
+
+Temp                                             Relative Humidity (%)
+ (°C)     35     40        45        50        55       60       65          70         75       80     85
+  -2      8.8    9.7      10.7      11.7      12.7     13.9    15.3         16.8       18.6     20.9   23.9
+   2      8.7    9.6      10.5      11.5      12.6     13.7    15.0         16.6       18.4     20.6   23.6
+   5      8.6    9.5      10.4      11.4      12.4     13.6    14.9         16.4       18.2     20.4   23.4
+   8      8.5    9.4      10.3      11.3      12.3     13.4    14.7         16.2       18.0     20.2   23.2
+  10      8.4    9.3      10.2      11.2      12.2     13.3    14.6         16.1       17.9     20.1   23.0
+  13      8.4    9.2      10.1      11.0      12.1     13.2    14.5         15.9       17.7     19.9   22.8
+  15      8.3    9.1      10.0      11.0      12.0     13.1    14.4         15.8       17.6     19.8   22.7
+  18      8.2    9.0       9.9      10.8      11.8     13.0    14.2         15.7       17.4     19.6   22.4
+  22      8.1    8.9       9.7      10.7      11.7     12.8    14.0         15.4       17.1     19.3   22.1
+  26      7.9    8.7       9.6      10.5      11.5     12.6    13.8         15.2       16.9     19.0   21.8
+  28      7.9    8.7       9.5      10.4      11.4     12.5    13.7         15.1       16.8     18.9   21.7
+                          Prairie Agricultural Machinery Institute
+                          Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                          306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+              EQUILIBRIUM MOISTURE CONTENT FOR BARLEY (Modified Chung-Pfost)
+
+Temp                                           Relative Humidity (%)
+ (°C)    35        40      45         50        55       60      65          70        75      80     85
+  -2    11.2      11.9    12.6       13.3      14.1     14.8    15.7        16.6      17.6    18.7   20.1
+   2    10.9      11.6    12.3       13.0      13.8     14.6    15.4        16.3      17.3    18.5   19.9
+   5    10.7      11.4    12.1       12.8      13.6     14.4    15.2        16.1      17.1    18.3   19.7
+   8    10.5      11.2    11.9       12.6      13.4     14.2    15.0        15.9      16.9    18.1   19.5
+  10    10.3      11.1    11.8       12.5      13.3     14.1    14.9        15.8      16.8    18.0   19.4
+  13    10.1      10.9    11.6       12.3      13.1     13.9    14.7        15.6      16.7    17.8   19.2
+  15    10.0      10.7    11.5       12.2      13.0     13.8    14.6        15.5      16.5    17.7   19.1
+  18    9.8       10.6    11.3       12.0      12.8     13.6    14.4        15.4      16.4    17.6   19.0
+  22    9.6       10.3    11.1       11.8      12.6     13.4    14.2        15.2      16.2    17.4   18.8
+  26    9.3       10.1    10.8       11.6      12.4     13.2    14.0        15.0      16.0    17.2   18.6
+  28    9.2       10.0    10.7       11.5      12.3     13.1    13.9        14.9      15.9    17.1   18.5
+
+
+
+               EQUILIBRIUM MOISTURE CONTENT FOR PEAS (Modified Henderson)
+
+Temp                                           Relative Humidity (%)
+ (°C)   35       40       45        50         55       60      65          70        75       80     85
+  -2    9.3     10.4     11.5      12.6       13.7    14.9     16.2        17.6      19.1     20.8   22.7
+   2    9.2     10.2     11.3      12.4       13.5    14.7     15.9        17.3      18.8     20.4   22.4
+   5    9.0     10.1     11.1      12.2       13.3    14.5     15.7        17.1      18.5     20.2   22.2
+   8    8.9      9.9     11.0      12.1       13.2    14.3     15.6        16.9      18.3     20.0   21.9
+  10    8.8      9.9     10.9      12.0       13.1    14.2     15.4        16.8      18.2     19.8   21.8
+  13    8.7      9.7     10.8      11.8       12.9    14.1     15.3        16.6      18.0     19.6   21.5
+  15    8.7      9.7     10.7      11.7       12.8    13.9     15.1        16.4      17.9     19.5   21.4
+  18    8.6      9.6     10.6      11.6       12.7    13.8     15.0        16.3      17.7     19.3   21.2
+  22    8.4      9.4     10.4      11.4       12.5    13.6     14.8        16.0      17.4     19.0   20.9
+  26    8.3      9.3     10.2      11.3       12.3    13.4     14.5        15.8      17.2     18.7   20.6
+  28    8.2      9.2     10.2      11.2       12.2    13.3     14.4        15.7      17.1     18.6   20.5
+                          Prairie Agricultural Machinery Institute
+                          Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                          306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+                EQUILIBRIUM MOISTURE CONTENT FOR OATS (Modified Oswin)
+
+Temp                                           Relative Humidity (%)
+ (°C)     35      40       45           50      55       60      65          70        75       80     85
+  -2     10.2    10.7     11.2         11.8    12.3     12.9    13.5        14.1      14.8     15.7   16.7
+   2     9.8     10.3     10.9         11.4    11.9     12.5    13.1        13.7      14.5     15.3   16.4
+   5     9.6     10.1     10.6         11.1    11.7     12.2    12.8        13.5      14.2     15.1   16.2
+   8     9.3     9.8      10.3         10.9    11.4     12.0    12.6        13.3      14.0     14.9   15.9
+  10     9.1     9.7      10.2         10.7    11.3     11.8    12.4        13.1      13.9     14.7   15.8
+  13     8.9     9.4      10.0         10.5    11.0     11.6    12.2        12.9      13.7     14.5   15.6
+  15     8.8     9.3      9.8          10.3    10.9     11.5    12.1        12.8      13.5     14.4   15.5
+  18     8.5     9.1      9.6          10.1    10.7     11.3    11.9        12.6      13.3     14.2   15.3
+  22     8.3     8.8      9.3          9.9     10.4     11.0    11.6        12.3      13.1     14.0   15.1
+  26     8.0     8.6      9.1          9.6     10.2     10.8    11.4        12.1      12.9     13.8   14.8
+  28     7.9     8.4      9.0          9.5     10.1     10.7    11.3        12.0      12.8     13.7   14.7
+
+
+        EQUILIBRIUM MOISTURE CONTENT FOR CANOLA/RAPESEED (Modified Henderson)
+
+Temp                                            Relative Humidity (%)
+ (°C)    35     40      45       50      55        60       65         70           75         80      85
+  -2     6.7    7.5     8.2      8.9     9.7      10.5     11.3       12.2         13.2       14.3    15.7
+   2     6.4    7.0     7.7      8.4     9.1      9.9      10.7       11.6         12.5       13.6    14.9
+   5     6.1    6.8     7.4      8.1     8.8      9.5      10.3       11.1         12.0       13.1    14.3
+   8     5.9    6.5     7.1      7.8     8.5      9.2       9.9       10.7         11.6       12.6    13.8
+  10     5.7    6.3     7.0      7.6     8.3      8.9       9.7       10.5         11.3       12.3    13.5
+  13     5.5    6.1     6.7      7.3     8.0      8.6       9.4       10.1         11.0       11.9    13.1
+  15     5.4    6.0     6.6      7.2     7.8      8.5       9.2       9.9          10.7       11.7    12.8
+  18     5.2    5.8     6.4      7.0     7.6      8.2       8.9       9.6          10.4       11.3    12.4
+  22     5.0    5.6     6.1      6.7     7.3      7.9       8.5       9.3          10.0       10.9    12.0
+  26     4.8    5.4     5.9      6.5     7.0      7.6       8.2       8.9          9.7        10.5    11.6
+  28     4.8    5.3     5.8      6.3     6.9      7.5       8.1       8.8          9.5        10.4    11.4
+                         Prairie Agricultural Machinery Institute
+                         Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                         306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+                EQUILIBRIUM MOISTURE CONTENT FOR LENTILS (Modified Oswin)
+
+Temp                                          Relative Humidity (%)
+ (°C)   35       40      45        50         55       60      65          70        75       80     85
+  -2    9.3     10.3    11.2      12.3       13.4    14.6     16.0        17.6      19.5     21.9   25.0
+   2    9.1     10.0    11.0      12.0       13.1    14.3     15.7        17.3      19.1     21.5   24.5
+   5    9.0      9.9    10.8      11.8       12.9    14.1     15.4        17.0      18.8     21.1   24.2
+   8    8.8      9.7    10.6      11.6       12.7    13.9     15.2        16.7      18.5     20.8   23.8
+  10    8.7      9.6    10.5      11.5       12.5    13.7     15.0        16.5      18.3     20.6   23.6
+  13    8.5      9.4    10.3      11.3       12.3    13.5     14.8        16.3      18.0     20.3   23.2
+  15    8.4      9.3    10.2      11.1       12.2    13.3     14.6        16.1      17.8     20.1   23.0
+  18    8.3      9.1    10.0      10.9       12.0    13.1     14.3        15.8      17.5     19.7   22.6
+  22    8.1      8.9     9.7      10.7       11.7    12.8     14.0        15.4      17.1     19.3   22.1
+  26    7.8      8.6     9.5      10.4       11.4    12.4     13.6        15.0      16.7     18.8   21.6
+  28    7.7      8.5     9.4      10.3       11.2    12.3     13.5        14.9      16.5     18.6   21.4
+
+
+              EQUILIBRIUM MOISTURE CONTENT FOR RED LENTILS (Modified Halsey)
+
+Temp                                          Relative Humidity (%)
+ (°C)   35     40       45       50         55       60       65          70         75       80     85
+  -2    8.9    9.5     10.0     10.6       11.2     12.0    12.8         13.8       15.0     16.5   18.6
+   2    8.8    9.3      9.8     10.4       11.0     11.8    12.6         13.5       14.7     16.2   18.3
+   5    8.7    9.2      9.7     10.3       10.9     11.6    12.4         13.4       14.5     16.0   18.0
+   8    8.5    9.0      9.6     10.1       10.7     11.4    12.2         13.2       14.3     15.8   17.8
+  10    8.5    8.9      9.5     10.0       10.6     11.3    12.1         13.1       14.2     15.7   17.7
+  13    8.3    8.8      9.3      9.9       10.5     11.2    12.0         12.9       14.0     15.5   17.4
+  15    8.3    8.7      9.3      9.8       10.4     11.1    11.9         12.8       13.9     15.3   17.3
+  18    8.2    8.6      9.1      9.7       10.3     10.9    11.7         12.6       13.7     15.1   17.1
+  22    8.0    8.5      9.0      9.5       10.1     10.7    11.5         12.4       13.5     14.9   16.8
+  26    7.9    8.3      8.8      9.3        9.9     10.6    11.3         12.2       13.3     14.6   16.5
+  28    7.8    8.2      8.7      9.2        9.8     10.5    11.2         12.1       13.1     14.5   16.4
+                        Prairie Agricultural Machinery Institute
+                        Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                        306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+              EQUILIBRIUM MOISTURE CONTENT FOR SOYBEANS (Modified Halsey)
+
+Temp                                       Relative Humidity (%)
+ (°C)   35     40    45      50        55      60       65        70              75         80     85
+  -2    7.0    7.6   8.3     9.1      10.0    11.0     12.2      13.6            15.5       17.9   21.4
+   2    6.9    7.5   8.2     8.9      9.8     10.8     12.0      13.5            15.3       17.7   21.1
+   5    6.8    7.4   8.1     8.9      9.7     10.7     11.9      13.3            15.1       17.5   20.9
+   8    6.7    7.3   8.0     8.8      9.6     10.6     11.8      13.2            15.0       17.4   20.8
+  10    6.7    7.3   8.0     8.7      9.6     10.5     11.7      13.1            14.9       17.3   20.6
+  13    6.6    7.2   7.9     8.6      9.5     10.4     11.6      13.0            14.8       17.1   20.5
+  15    6.6    7.2   7.8     8.6      9.4     10.4     11.5      12.9            14.7       17.0   20.3
+  18    6.5    7.1   7.7     8.5      9.3     10.3     11.4      12.8            14.5       16.9   20.2
+  22    6.4    7.0   7.6     8.4      9.2     10.1     11.2      12.6            14.3       16.6   19.9
+  26    6.3    6.9   7.5     8.2      9.0     10.0     11.1      12.5            14.2       16.4   19.7
+  28    6.3    6.8   7.5     8.2      9.0      9.9     11.0      12.4            14.1       16.3   19.6
+
+
+        EQUILIBRIUM MOISTURE CONTENT FOR FLAX (Modified Henderson/Chung-Pfost)
+
+Temp                                          Relative Humidity (%)
+ (°C)   35     40     45      50      55         60       65         70          75          80     85
+  -2    7.4    8.0    8.5     9.0     9.5       10.0     10.6       11.2        11.9        12.7   13.6
+   2    7.1    7.6    8.1     8.6     9.1       9.7      10.2       10.8        11.5        12.3   13.2
+   5    6.9    7.4    7.9     8.4     8.9       9.4      10.0       10.6        11.2        12.0   12.9
+   8    6.7    7.2    7.7     8.2     8.7       9.2       9.7       10.3        11.0        11.8   12.7
+  10    6.6    7.1    7.5     8.0     8.5       9.0       9.6       10.2        10.8        11.6   12.5
+  13    6.4    6.9    7.3     7.8     8.3       8.8       9.4       10.0        10.6        11.4   12.3
+  15    6.3    6.7    7.2     7.7     8.2       8.7       9.3       9.8         10.5        11.2   12.1
+  18    6.1    6.6    7.0     7.5     8.0       8.5       9.1       9.6         10.3        11.0   11.9
+  22    5.9    6.4    6.8     7.3     7.8       8.3       8.8       9.4         10.0        10.8   11.7
+  26    5.7    6.2    6.6     7.1     7.6       8.1       8.6       9.2         9.8         10.5   11.4
+  28    5.6    6.1    6.5     7.0     7.5       8.0       8.5       9.1         9.7         10.4   11.3
+                       Prairie Agricultural Machinery Institute
+                       Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                       306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+        EQUILIBRIUM MOISTURE CONTENT FOR SUNFLOWER SEEDS (Modified Halsey)
+
+Temp                                        Relative Humidity (%)
+ (°C)   35     40      45      50        55      60     65      70             75           80       85
+  -2    5.5    5.9     6.3     6.7       7.3     7.9    8.5     9.4           10.4         11.7     13.6
+   2    5.3    5.7     6.1     6.6       7.1     7.6    8.3     9.1           10.1         11.4     13.3
+   5    5.2    5.6     6.0     6.4       6.9     7.5    8.1     8.9           9.9          11.2     13.0
+   8    5.1    5.5     5.8     6.3       6.8     7.3    8.0     8.7           9.7          11.0     12.7
+  10    5.0    5.4     5.8     6.2       6.7     7.2    7.9     8.6           9.6          10.8     12.6
+  13    4.9    5.3     5.6     6.1       6.5     7.1    7.7     8.4           9.4          10.6     12.3
+  15    4.8    5.2     5.6     6.0       6.4     7.0    7.6     8.3           9.2          10.4     12.2
+  18    4.7    5.1     5.4     5.8       6.3     6.8    7.4     8.1           9.0          10.2     11.9
+  22    4.6    4.9     5.3     5.7       6.1     6.6    7.2     7.9           8.8          10.0     11.6
+  26    4.5    4.8     5.1     5.5       5.9     6.4    7.0     7.7           8.6          9.7      11.3
+  28    4.4    4.7     5.1     5.4       5.9     6.3    6.9     7.6           8.4          9.6      11.1
+
+
+        EQUILIBRIUM MOISTURE CONTENT FOR SUNFLOWER HULLS (Modified Halsey)
+
+Temp                                        Relative Humidity (%)
+ (°C)   35    40      45       50         55       60       65          70         75         80     85
+  -2    9.2   9.9    10.6     11.4       12.3     13.4    14.6         16.0       17.8       20.1   23.3
+   2    8.7   9.3    10.1     10.8       11.7     12.7    13.9         15.3       17.0       19.2   22.3
+   5    8.3   9.0     9.7     10.4       11.3     12.2    13.3         14.7       16.3       18.5   21.5
+   8    8.0   8.6     9.3     10.0       10.8     11.7    12.8         14.1       15.7       17.8   20.7
+  10    7.8   8.4     9.0      9.7       10.5     11.4    12.5         13.8       15.3       17.4   20.2
+  13    7.5   8.0     8.7      9.3       10.1     11.0    12.0         13.2       14.8       16.7   19.5
+  15    7.3   7.8     8.4      9.1        9.8     10.7    11.7         12.9       14.4       16.3   19.1
+  18    7.0   7.5     8.1      8.7        9.4     10.3    11.2         12.4       13.8       15.7   18.4
+  22    6.6   7.1     7.6      8.2        8.9      9.7    10.6         11.8       13.1       14.9   17.5
+  26    6.2   6.7     7.2      7.8        8.5      9.2    10.1         11.1       12.5       14.2   16.6
+  28    6.0   6.5     7.0      7.6        8.2      9.0     9.8         10.8       12.1       13.8   16.2
+                             Prairie Agricultural Machinery Institute
+                             Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                             306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+           EQUILIBRIUM MOISTURE CONTENT FOR SUNFLOWER KERNELS (Modified Halsey)
+
+  Temp                                             Relative Humidity (%)
+   (°C)     35       40      45         50        55       60      65        70        75        80     85
+    -2      4.3      4.6     4.9        5.3       5.7      6.2    6.8        7.4       8.3       9.4   11.0
+     2      4.1      4.4     4.8        5.1       5.5      6.0    6.6        7.2       8.0       9.1   10.6
+     5      4.0      4.3     4.7        5.0       5.4      5.9    6.4        7.0       7.9       8.9   10.4
+     8      4.0      4.2     4.6        4.9       5.3      5.7    6.3        6.9       7.7       8.7   10.2
+    10      3.9      4.2     4.5        4.8       5.2      5.7    6.2        6.8       7.6       8.6   10.0
+    13      3.8      4.1     4.4        4.7       5.1      5.5    6.0        6.6       7.4       8.4    9.8
+    15      3.7      4.0     4.3        4.6       5.0      5.4    5.9        6.5       7.3       8.3    9.7
+    18      3.7      3.9     4.2        4.5       4.9      5.3    5.8        6.4       7.1       8.1    9.5
+    22      3.5      3.8     4.1        4.4       4.8      5.2    5.6        6.2       6.9       7.9    9.2
+    26      3.4      3.7     4.0        4.3       4.6      5.0    5.5        6.0       6.7       7.6    8.9
+    28      3.4      3.6     3.9        4.2       4.5      4.9    5.4        5.9       6.6       7.5    8.8
+
+If you have any questions about the information presented in this document, please contact Dr. Joy
+Agnew at PAMI. Email jagnew@pami.ca or phone (306) 682-5033 ext 280.
+
+
+Reference information
+
+BARLEY
+   - Model: Chung Pfost
+   - Source: American Society of Agricultural and Biological Engineers (2012). ASABE Standard
+       D245.5. Moisture Relationships of Plant-Based Agricultural Products.
+
+CANOLA/RAPESEED
+   - Model: Modified Henderson
+   - Source: S. Sokhansanj, W. Zhijie, D. Jayas, T. Kameoka (1986) Equilibrium Relative Humidity-
+      Moisture Content of Rapeseed (Canola) from 5°C to 25°C.
+
+DURUM WHEAT
+   - Model: Modified Oswin
+   - Source: American Society of Agricultural and Biological Engineers (2012). ASABE Standard
+     D245.5. Moisture Relationships of Plant-Based Agricultural Products.
+
+FLAX
+   -   Varieties: Linnot, Dufferin, Mcgregor, Norlin, Norman (EMC chart is an average of all varieties)
+   -   Models: Average of Modified Henderson and Modified Chung-Pfost (EMC chart is an average of
+       both models)
+   -   Source: G. Mazza, D.S Jayas, N.D.G. White. (1990) Moisture Sorption Isotherms of Flax Seed.
+
+HARD RED SPRING WHEAT
+   - Variety: Sinton
+   - Model: Modified Chung-Pfost
+   - Source: American Society of Agricultural and Biological Engineers (2012). ASABE Standard
+      D245.5. Moisture Relationships of Plant-Based Agricultural Products.
+                             Prairie Agricultural Machinery Institute
+                             Box 1150, 2215 – 8th Ave., Humboldt, Saskatchewan S0K 2A0 Canada
+                             306-682-5033    1-800-567-7264 Fax: 306-682-5080      www.pami.ca
+
+
+HARD RED WINTER WHEAT
+   - Varieties: Waldron, Napayo (EMC chart is an average of both varieties)
+   - Model: Modified Oswin
+   - Source: American Society of Agricultural and Biological Engineers (2012). ASABE Standard
+      D245.5. Moisture Relationships of Plant-Based Agricultural Products.
+
+LENTILS
+   - Model: Modified Oswin
+   - Source: Nikolay D. Menkov. (2000). Moisture Sorption Isotherms of Lentil Seeds at Several
+        Temperatures.
+
+OATS
+   -    Varieties: Dumont, Newman (EMC chart is an average of both varieties)
+   -    Model: Modified Chung-Pfost
+   -    Source: D.S. Jayas, G. Mazza. (1993) Comparison of Five, Three-Parameter Equations for the
+        Description of Adsorption Data of Oats.
+
+PEAS
+   -    Model: Modified Henderson
+   -    Source: Chiachung Chen. (2002). Moisture Sorption Isotherms of Pea Seeds.
+
+RED LENTILS
+   - Varieties: Robin, Redberry, Blaze (EMC chart is an average of all varieties)
+   - Model: Modified Halsey
+   - Source: S. Cenkowski, J. Paliwal, S. Arntfield, M. Gervais. (2015) Sorption Characteristics of Red
+       Lentils as Affected by Postharvest Conditions.
+
+SOYBEANS
+   - Varieties: Essex, Britain (EMC chart is an average of both varieties)
+   - Model: Modified Halsey
+   - Source: Z. Yang, E. Zhu, Z. Zhu. (2012). Moisture Sorption Isotherms and Net Isostatic Heats of
+      Sorption of Green Soybeans.
+
+SUNFLOWER SEEDS/HULL/KERNEL
+   - Model: Modified Halsey
+   - Source: G. Mazza, D.S. Jayas. (1991). Equilibrium Moisture Characteristics of Sunflower Seeds,
+      Hulls, and Kernels.
+

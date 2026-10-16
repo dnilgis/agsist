@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:38:32Z",
+ "run_utc": "2026-10-16T15:39:45Z",
  "sources": [
   {
    "bytes": null,
@@ -2734,6 +2734,133 @@
    ],
    "status": "new",
    "text_chars": 2372
+  },
+  {
+   "bytes": 125059,
+   "sha256": "d00420078418a960cb2bd8ccf0d72402070e65730ed0bbd490b3f5589492b1f8",
+   "fetched_utc": "2026-10-16T15:39:22Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-grain-emc-2.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-emc-2",
+   "url": "https://www.uaex.uada.edu/farm-ranch/crops-commercial-horticulture/Grain_drying_and_storage/soybean_drying_and_storage.aspx",
+   "title": "Benchmark grain-emc: University of Arkansas soybean drying and storage",
+   "why": "/grain-emc competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:39:21Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 18644
+  },
+  {
+   "bytes": 17200,
+   "sha256": "cd0001122f75281e00c521f264734a87accfc37a0a6af22d726d74b8999eebaf",
+   "fetched_utc": "2026-10-16T15:39:24Z",
+   "pages": 1,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-grain-emc-3.pdf",
+   "final_url": null,
+   "content_type": "application/pdf",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-emc-3",
+   "url": "https://www.ag.ndsu.edu/news/newsreleases/2011/oct-10-2011/soybeans-may-need-rewetting/pdf-soybean-equilibrium-moisture-values.pdf/@@download/file/2011-10-13.6135210949.pdf",
+   "title": "Benchmark grain-emc: NDSU soybean EMC table",
+   "why": "/grain-emc competitor benchmark Oct 16, 2026 (university)",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T15:39:23Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 806
+  },
+  {
+   "bytes": 915216,
+   "sha256": "8d49d029043bf97bae6d9ff97a075b55b2797ffc0585dd8aa8b7952be486eb81",
+   "fetched_utc": "2026-10-16T15:39:35Z",
+   "pages": 10,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-grain-emc-5.pdf",
+   "final_url": "https://web.archive.org/web/20250812071352id_/https://pami.ca/wp-content/uploads/2021/10/Equilibrium-Moisture-Content-Charts-for-Grain-Storage-Management_rev2.pdf",
+   "content_type": "application/pdf",
+   "via": "wayback",
+   "archive_timestamp": "20250812071352",
+   "id": "bench-grain-emc-5",
+   "url": "https://pami.ca/wp-content/uploads/2021/10/Equilibrium-Moisture-Content-Charts-for-Grain-Storage-Management_rev2.pdf",
+   "title": "Benchmark grain-emc: PAMI EMC charts",
+   "why": "/grain-emc competitor benchmark Oct 16, 2026 (university)",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T15:39:26Z",
+   "error": null,
+   "attempts": [
+    "direct/python: expected a PDF, got text/html (275 bytes): <html><head><link rel=\"icon\" href=\"data:;\"><meta http-equiv=\"refresh\" content=\"0;/.well-known/sgcapt",
+    "direct/curl: expected a PDF, got text/html (275 bytes): <html><head><link rel=\"icon\" href=\"data:;\"><meta http-equiv=\"refresh\" content=\"0;/.well-known/sgcapt",
+    "wayback/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 30142
+  },
+  {
+   "bytes": 20405,
+   "sha256": "6114ed7ce20c66f15c24eede9d135ad5906a9500d1a3c8cfc7bb866a5612b2ad",
+   "fetched_utc": "2026-10-16T15:39:43Z",
+   "pages": null,
+   "etag": "\"4fb5-658cf1892ec61\"",
+   "last_modified": "Wed, 12 Aug 2026 00:59:14 GMT",
+   "saved_as": "refs/bench-grain-emc-6.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-emc-6",
+   "url": "https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/",
+   "title": "Benchmark grain-emc: Clemson EMC Calculator",
+   "why": "/grain-emc competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:39:36Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3120
+  },
+  {
+   "bytes": 188,
+   "sha256": "7dd587c2f3931f8522984cc24c035cb78c8a4228baefdc24547b306a82899bc8",
+   "fetched_utc": "2026-10-16T15:39:45Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-grain-emc-7.html",
+   "final_url": null,
+   "content_type": "text/html",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-emc-7",
+   "url": "https://opisystems.com/opi-emc-calculator/",
+   "title": "Benchmark grain-emc: OPI Systems EMC calculator",
+   "why": "/grain-emc competitor benchmark Oct 16, 2026 (vendor)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:39:44Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 1
   }
  ]
 }

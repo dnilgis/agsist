@@ -1,0 +1,22 @@
+# Benchmark grain-emc: NDSU soybean EMC table
+# https://www.ag.ndsu.edu/news/newsreleases/2011/oct-10-2011/soybeans-may-need-rewetting/pdf-soybean-equilibrium-moisture-values.pdf/@@download/file/2011-10-13.6135210949.pdf
+# fetched 2026-10-16T15:39:24Z, sha256 cd0001122f75281e00c521f264734a87accfc37a0a6af22d726d74b8999eebaf
+
+Soybean Equilibrium Moisture Values
+                         Relative humidity (percent)
+Temperature        50        60      70       80        90
+     (F)           - - - - soybean moisture content - - - -
+
+     32           10.0      11.8    13.7     16.2      19.8
+     40            9.8      11.5    13.5     16.0      19.6
+     50            9.5      11.2    13.2     15.7      19.4
+     60            9.2      11.0    13.0     15.4      19.1
+     70            8.9      10.7    12.7     15.2      18.9
+     80            8.6      10.4    12.5     15.0      18.7
+
+This table indicates bean moisture increases as
+relative humidity rises. It also shows how easily a layer
+of soybeans can be rewetted to a moisture content that
+is too high for safe storage (the market moisture content
+is 13 percent).
+

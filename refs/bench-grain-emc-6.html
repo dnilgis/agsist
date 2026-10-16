@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <link rel="icon" href="https://precisionag.sites.clemson.edu/paw.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+    <link rel="canonical" href="https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/" />
+
+    <title>Clemson EMC Calculator</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name='description' content='Estimate and forecast the Equilibrium Moisture Content (EMC) for a given crop and air conditions.'>
+    <meta http-equiv='content-language' content='en-us'>
+
+    <meta property="og:title" content="Clemson EMC Calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description"
+     content="Estimate and forecast the Equilibrium Moisture Content (EMC) for a given crop and air conditions." />
+    <meta property="og:image" content="https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/EMC_Icon_og.png" />
+
+    <!-- JS references moment weather conversion, google charts, main JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="scripts.js?"></script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124519210-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124519210-1');
+    </script>
+    <style>
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+ 
+      div.title {
+        font-size: 14px;
+        text-align: center;
+        font-weight: bolder;
+        font-variant: small-caps;
+        background-color:#F56600; 
+        display:block; 
+        border-radius:10px;
+        color:white;
+        width:auto;
+      }
+
+      div.heading {
+        font-size: 24px;
+        text-decoration: underline;
+        font-weight: bold;
+      }
+
+      div.default {
+        font-size: 20px;
+      }
+
+      div.secondary {
+        font-size: 16px;
+      }
+
+      div.info {
+        font-size: 16px;
+        background-color:#888B8D; 
+        width:auto; 
+        display:inline-block; 
+        border-radius:10px;
+        padding:5px;
+      }
+
+      div.warning {
+        font-size: 16px;
+        background-color:#FFFF00; 
+        width:auto; 
+        display:inline-block; 
+        border-radius:10px;
+        padding:5px;
+        margin-bottom:10px;
+      }
+
+      div.conversion {
+        font-size: 16px;
+        background-color:#333333; 
+        color:white;
+        width:auto; 
+        display:inline-block; 
+        border-radius:10px;
+        padding:5px;
+        float:right;
+      }
+
+      div.section {
+        background-color:#CBC4BC; 
+        width:auto; 
+        display:inline-block; 
+        padding:10px; 
+        margin-top:10px; 
+        border-radius:10px;
+      }
+
+      input[type=text], input[type=number], input[type=email], input[type=password], input[type=tel] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin: 0;
+        height: 40px;
+        line-height: 40px; font-size: 17px;
+        border: 1px solid #bbb;
+        border-radius:10px;
+        text-align: center;
+      }
+
+      select {
+        margin: 0;
+        height: 40px;
+        line-height: 40px; 
+        font-size: 17px;
+        border: 1px solid #bbb;
+        max-width: 82vw;
+        border-radius:10px;
+      }
+
+      button {
+        margin: 0;
+        height: 40px;
+        line-height: 40px; font-size: 17px;
+        border: 1px solid #bbb;
+        border-radius:10px;
+      }
+
+      ul, ol {
+        margin-top: 0px;
+      }
+
+      td {
+        padding:5px;
+      }
+
+      label.visuallyhidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+    </style>
+
+
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 105%;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+    </style>
+
+  </head>
+
+
+  <body style="margin:10;padding:10" onload="InitializeForm()">
+
+    <div class="secondary">
+      <center><a href="https://apps.cuagtech.com/">CU-CAT Apps Home</a>
+      </center>
+    </div>
+
+    <hr>
+  
+    <table style="margin-left:auto; margin-right:auto;">
+      <tr align="center">
+        <td>
+          <img src="https://precisionag.sites.clemson.edu/img/Clemson_Precision_Ag_wm.png" width="300" height="85"
+           alt="Clemson Precision Ag Wordmark">
+        </td>
+        <td>
+          <img src="EMC_Icon.png" style="max-height:90px; width:auto;" alt="Clemson EMC Calculator Icon">
+        </td>
+      </tr>
+    </table>
+
+    <hr>
+
+    <div class="title">
+      <h1>Clemson EMC Calculator</h1>
+    </div>
+
+    <div class="secondary" id="introduction_long" style="text-align:center;display:none;" onclick="introduction_short();">
+      This resource was developed to estimate the Equilibrium Moisture Content for a given crop and ambient conditions.
+      <br>
+      <div class="section" style="text-align:left;">
+        <ul style="margin-left:10px;padding-left:10px;">
+          <li>
+            Given enough time, grain moisture will come to equilibrium with ambient conditions (temperature and relative
+            humidity). This is referred to as equilibrium moisture content (EMC) and can be used as an indicator of how
+            grain moisture will change in the field during late season harvest or when drying in a bin using natural air.
+          </li>
+          <li>
+            If EMC, based on ambient conditions, is lower than the grain moisture, drying will occur. If EMC is higher
+            than the current moisture, rewetting occurs (although much slower than drying). 
+          </li>
+        </ul>
+        Several models to predict EMC have been experimentally developed. In the calculators below, you can select a
+        specific model, or a composite that averages multiple models. Models may perform poorly for extreme values of
+        temperature or relative humidity. These calculators are a work in progress, please report any issues with
+        functionality or results to the authors.
+      </div>
+      <br><br>
+      <i>(...click to collapse)</i>
+    </div>
+
+    <div class="secondary" id="introduction_short" style="text-align:center;" onclick="introduction_long();">
+      This resource was developed to estimate the Equilibrium Moisture Content for a given crop and ambient conditions.
+      <br><br>
+      <i>(...click for more)</i>
+    </div>
+
+    <hr>
+
+    <form id="SingleCal">
+
+    <center>
+
+        <div class="section">
+
+          <div class="heading">
+            <center>Single Value EMC Calculation</center>
+          </div>
+
+          <div class="default">
+ 
+            <table>
+              <tr>
+                <td> <label for="Temp">Enter Temperature (&#8457):</label></td>
+                <td> 
+                  <input type="number" id="Temp" size="5" name="Temp" placeholder="&#8457" onchange="Single_val_calc();" />
+                  <span id="span_degC"></span>
+                </td>
+              </tr>
+              <tr>
+                <td> <label for="RH">Enter Relative Humidity (%):</label></td>
+                <td> <input type="number" id="RH" size="5" name="RH" placeholder="RH" onchange="Single_val_calc();" /></td>
+              </tr>
+              <tr>
+                <td>Select Crop:</td>
+                <td> 
+                  <select name="Crop" id="Crop" type="text" onchange="Update_EQ_list();">
+                    <option value="Beans">Beans</option>
+                    <option value="Corn">Corn</option>
+                    <option value="Ear_Corn">Ear Corn</option>
+                    <option value="Soft_Wheat">Soft Wheat</option>
+                    <option value="Hard_Wheat">Hard Wheat</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Select Model</td>
+                <td> 
+                  <select name="Model" type='text' id="Model" onchange="Single_val_calc();"></select>
+                </td>
+              </tr>
+            </table>
+
+            <br>
+            <center>
+              <label for="single_result"><strong>Equilibrium Moisture Content (%w.b.):</strong></label><br>
+              <input type="text" id="single_result" name="TextBox3" readonly style="font-weight: bold;"><br><br>
+ 
+              <div class="info" id="single_result_info" style="display:none;">
+                Value above determined from <i>ASABE&nbsp;D245.6</i>.<br>Actual moisture will be influenced by variety.
+              </div>
+
+            </center>
+
+          </div>
+ 
+        </div>
+ 
+      </center>
+
+    </form>
+
+    <hr>
+
+    <center>
+
+      <div class="section">
+
+        <form>
+
+          <div class="heading" style="margin-bottom:10px;">
+            Clemson Natural Air Drying Decision Support
+          </div>
+
+          <div class="secondary" id="nadds_intro_short" style="text-align:center;" onclick="show_nadds_intro_long();">
+            This tool was developed to provide decision support for natural air drying by estimating changes in EMC based on
+            the weather forecast for a given zipcode. It can be utilized to estimate drying potential and identify drying windows.
+            <br><br>
+            <i>(click for detailed instructions...)</i>
+          </div>
+
+          <div class="secondary" id="nadds_intro_long" style="text-align:center;display:none;" onclick="show_nadds_intro_short();">
+            This tool was developed to provide decision support for natural air drying by estimating changes in EMC based on
+            the weather forecast for a given zipcode. It can be utilized to estimate drying potential and identify drying windows.
+            <br><br>
+            Enter your zipcode, select your crop and desired model and hit go. EMC will be forecast based on the 5day/3hour
+            forecast from: <a href="https://openweathermap.org/" rel="noopener" target="_blank">OpenWeather.</a></li>
+            <br><br>
+
+            <div class="info" style="text-align:left;">
+            <ul style="padding-left:10px;margin-left:10px;">
+              <li>Drying time will be determined by the airflow rate, initial moisture content, target moisture content, and EMC</li>
+              <li>The allowable storage time before spoilage occurs depends on moisture content and temperature. </li>
+              <li>Storage time guidelines are available from MWPS-13 (2017), but generally mold growth is suppressed when the
+               relative humidity in the air space between kernels is less than 65%.</li>
+              <li>Safe storage conditions can be achieved by reducing temperature or moisture content.</li>
+              <li>Drying costs can be reduced by running the fans only ambient conditions provide productive air (i.e. there is
+               potential to cool or dry the grain).</li>
+              <li>Fans should be run when the grain can be cooled or dried.</li>
+              <li> Options for fan control include continuous operation, automatic control using sensor in the grain, and manual
+               scheduling. For more reference information relating to natural air drying, visit these publications from <a
+               href="https://www.uaex.edu/publications/pdf/FSA-1060.pdf" rel="noopener" target="_blank">The University of Arkansas</a> and <a
+               href="https://www.ag.ndsu.edu/graindrying/documents/eb35.pdf" rel="noopener" target="_blank">North Dakota State University</a></li>
+              <li>Monitoring the grain with temperature or temperature and moisture cables provide cheap piece of mind and can
+               help identify issues early.</li>
+            </ul>
+            </div>
+            <br><br>
+            <i>(...click to collapse)</i>
+          </div>
+
+          <hr>
+
+        </form>
+
+        <form id="Forecast">
+
+          <div class="heading">
+            Forecast
+          </div>
+ 
+          <table>
+            <tr>
+              <td> <label for="Zipcode">Enter Zipcode:</label></td>
+              <td> <input type="text" inputmode="numeric" id="Zipcode" name="Zipcode" placeholder="Zip" pattern="[0-9]*" /></td>
+            </tr>
+
+            <tr>
+              <td>Select Crop:</td>
+              <td> 
+                <select name="Crop1" id="Crop1" type="text" onchange="Update_EQ_list_forecast() ">
+                  <option value="Beans">Beans</option>
+                  <option value="Corn">Corn</option>
+                  <option value="Ear_Corn">Ear Corn</option>
+                  <option value="Soft_Wheat">Soft Wheat</option>
+                  <option value="Hard_Wheat">Hard Wheat</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Select Model:</td>
+              <td> <select name="Model1" type='text' id="Model1"></select></td>
+            </tr>
+            <tr>
+              <td>Calculate:</td>
+              <td> 
+                <button id="Go" type="button" onclick="Func_Forecast();" />
+                  &nbsp;&nbsp;&nbsp;Go&nbsp;&nbsp;&nbsp;
+                </button>
+              </td>
+            </tr>
+          </table>
+
+          <div class="warning" id="zip_warning" style="display:none;">
+            <b>Could not find location. Please try another zipcode!</b>
+          </div>
+
+          <div id="output_forecast" style="display:none;">
+            <div class="info" style="margin-bottom:10px;">
+              Values below are determined from <i>ASABE&nbsp;D245.6</i>.
+              <br>
+              Actual moisture will be influenced by variety and local weather variations.
+            </div>
+
+            <div id="chart_div2" style="height: 500px;"></div>
+            <br>
+            <div id="chart_div" style="height: 500px;"></div>
+            <br>
+            <div id="myData"></div>
+            <div class="info" style="margin-bottom:10px;">
+
+              <label for="filter1_chk">
+                <input type="checkbox" checked id="filter1_chk" onchange="HighlightValues();">Highlight values in forecast below where:
+              </label>
+              <br>
+              <label class="visuallyhidden" for="filter1_param">Filter #1 Parameter for Highlighting</label>
+              <select name="filter1_param" id="filter1_param" onchange="HighlightValues();">
+                <option value="EMC" selected>EMC</option>
+                <option value="Temp">Temp</option>
+                <option value="RH">RH</option>
+              </select>
+              &nbsp;is&nbsp;
+              <label class="visuallyhidden" for="filter1_comp">Filter #1 Comparator for Highlighting</label>
+              <select name="filter1_comp" id="filter1_comp" onchange="HighlightValues();">
+                <option value="less_than">less than</option>
+                <option value="greater_than">greater than</option>
+              </select>
+              <label class="visuallyhidden" for="filter1_val">Filter #1 Value for Highlighting</label>
+              <input type="number" id="filter1_val" step="0.1" size="7" onchange="HighlightValues();" value="15">
+              <span id="filter1_units"> %w.b.</span>
+
+              <br><br>
+
+              <label for="filter2_chk">
+                <input type="checkbox" id="filter2_chk" onchange="HighlightValues();">Highlight values in forecast below where:
+              </label>
+              <br>
+              <label class="visuallyhidden" for="filter2_param">Filter #2 Parameter for Highlighting</label>
+              <select name="filter2_param" id="filter2_param" disabled onchange="HighlightValues();">
+                <option value="EMC">EMC</option>
+                <option value="Temp" selected>Temp</option>
+                <option value="RH">RH</option>
+              </select>
+              &nbsp;is&nbsp;
+              <label class="visuallyhidden" for="filter2_comp">Filter #2 Comparator for Highlighting</label>
+              <select name="filter2_comp" id="filter2_comp" disabled onchange="HighlightValues();">
+                <option value="less_than">less than</option>
+                <option value="greater_than">greater than</option>
+              </select>
+              <label class="visuallyhidden" for="filter2_val">Filter #2 Value for Highlighting</label>
+              <input type="number" id="filter2_val" step="0.1" size="7" disabled onchange="HighlightValues();" value="75">
+              <span id="filter2_units"> &#176;F</span>
+
+              
+              <span id="filter_alert" style="display:none;">
+                <br>
+                <div class="warning" style="margin-top:10px;">
+                  <b>Note: Both filters above reference the same parameter. Highlighting below only reflects the 
+                  second of the two entries above.</b>
+                </div>
+              </span>
+
+            </div>
+            <div id="table_div"></div>
+          </div>
+
+          <br>
+        </form>
+
+      </div>
+
+    </center>
+
+    <textarea id="model_params" value="" readonly style="display:none"></textarea>
+    <span id="table_array" style="display:none;"></span>
+
+    <hr>
+
+    <center>
+      <div class="section">
+        <div class="heading" style="margin-bottom:10px;">
+          References:
+        </div>
+        <div class="secondary" style="text-align:left;">
+          <ul style="margin-left:10px;padding-left:10px;margin-bottom:0;">
+            <li>ASABE Standards. (2007). D245.6 Moisture relationship of plant-based agricultural products. In (pp. 604-638). St. Joseph, MI: ASABE.</li>
+            <li>Brooker, D. B., Bakker-Arkema, F. W., & Hall, C. W. (1992). Drying and storage of grains and oilseeds. New York, NY: AVI, Van Nostrand Reinhold.</li>
+            <li>Maier, D. E., McNeill, S. G., & Hellevang, K. J. (2017). Grain Drying Handling and Storage Handbook (MWPS-13). Midwest Plan Service, Ames, IA.</li>
+          </ul>
+        </div>
+      </div>
+    </center>
+
+    <hr>
+
+    <div style="secondary">
+      <p>
+        APA Citation:<br>
+        Turner, A., Teddy, B., and Kirk, K.R. (2020). <i>Clemson EMC Calculator.</i> Clemson University Cooperative Extension. Retrieved from https://www.clemson.edu/extension/agronomy/PrecisionAgriculture/calculators/ 
+      </p>
+
+      <p>
+        Equilibrium Moisture Content Calculator<br>
+        (c) 2020-2021 Clemson University Cooperative Extension<br>
+        Authors:<br>
+        Aaron Turner, Assistant Professor, Agricutlural Sciences <br>
+        Brennan Teddy, Graduate Assistant <br>
+        Kendall R. Kirk, Precision Ag Engineer
+      </p>
+
+      <p>
+        <u>Disclaimer</u>: This Calculator is provided as a free service by Clemson University.
+        The accuracy of the calculator is not guaranteed. User assumes all risks and liabilities from its use.
+      </p>
+
+      <p>
+        We are dedicated to making this a valuable tool for you.
+        If you have suggestions for bug fixes,or any other improvements, please
+        contact us by <a href="mailto:apturne@clemson.edu?subject=Clemson%20EMC%20Calculator%20Suggestion" target="_blank">email</a>.
+      </p>
+
+    </div>
+
+
+  </body>
+
+</html>

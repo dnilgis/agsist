@@ -1,0 +1,823 @@
+# Benchmark grain-emc: University of Arkansas soybean drying and storage
+# https://www.uaex.uada.edu/farm-ranch/crops-commercial-horticulture/Grain_drying_and_storage/soybean_drying_and_storage.aspx
+# fetched 2026-10-16T15:39:22Z, sha256 d00420078418a960cb2bd8ccf0d72402070e65730ed0bbd490b3f5589492b1f8
+
+Soybean Drying and Storage
+
+skip to main content
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Crops and Commercial Horticulture
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Contact
+
+Dr. Kaushik Luthra
+
+Assistant Professor and Extension Engineer (Postharvest Grain Processing)
+
+Phone: (479)-799-8966
+Email: kluthra@uada.edu
+
+Office:
+Northeast Rice Research and Extension Center
+15327 Highway 1
+Harrisburg, AR 72432
+
+On-Farm Soybean Drying and Storage
+
+The goal of soybean drying is to reduce its moisture content to meet the recommended
+levels for safe, long-term storage. When placed in storage, soybean should be dried
+quickly to a moisture level of about 12% to minimize any quality deterioration. Soybean
+drying can be accomplished in bins by blowing large volumes of dry air through the
+grain. This website will explore the challenges of soybean drying and storage.
+
+Resources & Information:
+
+Arkansas farmers harvested more than 3.1 million acres of soybeans in 2013. With a
+state average of 43 bushels/acre, Arkansas soybean production reached 133 million
+bushels.
+
+Soybean producers are increasingly interested in on-farm drying and storage due to
+the various advantages they offer. For example, producers can afford to harvest soybean
+early at higher moisture contents than normal to reduce the possibility of harvest
+losses. Additionally, they may harvest soybean at faster rates if daily harvesting
+hours can be extended. Moreover, on-farm storage may provide marketing flexibility,
+and advantage, during soybean selling process.
+
+Since soybean quality is highest at harvest, soybean producers should promptly dry
+newly harvested beans to safe moisture levels in order to maintain their quality.
+In most cases, producers are able to adapt dryers that were designed for other grains
+for use with soybeans. However, dryers that recirculate or stir grain constantly should
+be avoided. Drying fans sized for rice or corn will produce greater airflow through
+soybeans, resulting in a higher drying rate.
+
+As mentioned earlier, in order to dry soybeans, a large quantity of high-quality drying
+air is passed through the bean pile deposited in a drying bin. At a given air temperature
+and relative humidity, there is a corresponding grain moisture content that the seed
+will achieve and will not gain or lose water beyond. This moisture level is known
+as the equilibrium moisture content (EMC).
+
+The following table shows the EMC of soybeans at different values of air temperature
+and relative humidity (RH). For example, if the air temperature and relative humidity
+are 60oF and 70%, respectively, the beans will be dried to 13.7% moisture content, assuming
+the air is allowed to pass through the soybean pile under the same conditions for
+a sufficient time. Increasing air temperature to 80oF at the same RH level will decrease EMC to 13.2%.
+
+Soybean Equilibrium Moisture Content
+
+Relative Humidity (%)
+
+Temperature (oF)
+
+30
+
+40
+
+50
+
+60
+
+70
+
+80
+
+90
+
+40
+
+6.4
+
+7.7
+
+9.3
+
+11.3
+
+14.2
+
+18.9
+
+28.7
+
+50
+
+6.3
+
+7.6
+
+9.1
+
+11.1
+
+14.0
+
+18.6
+
+28.2
+
+60
+
+6.2
+
+7.4
+
+8.9
+
+10.9
+
+13.7
+
+18.3
+
+27.8
+
+70
+
+6.1
+
+7.3
+
+8.8
+
+10.7
+
+13.5
+
+17.9
+
+27.3
+
+80
+
+5.9
+
+7.1
+
+8.6
+
+10.5
+
+13.2
+
+17.6
+
+26.9
+
+90
+
+5.8
+
+7.0
+
+8.4
+
+10.3
+
+13.0
+
+17.3
+
+26.5
+
+100
+
+5.7
+
+6.9
+
+8.3
+
+10.1
+
+12.7
+
+17.0
+
+26.1
+
+To determine the value of EMC in your area now, click the link Determination of the current temperature and relative humidity based on your zip code.
+
+To learn more about Equilibrium Moisture Content, see the fact sheet titled: "Grain Drying Tools: Equilibrium Moisture Content Tables and Psychrometric Charts"To determine the values of EMC for various grains, download the Excel sheet by clicking
+the link: "Equilibrium Moisture Content"
+
+Air is the means by which grain is dried, serving as the medium that transports moisture
+away from the grain. Air contains some energy and humidity. Air quantity and quality
+are important factors that determine the final moisture content of kernels. Its quantity
+is the volume of air that the drying fan can deliver More specifically, it should
+be divided by the number of bushels the drying air passes through, presented as cubic
+feet per minute per bushel (CFM/bu). On the other hand, air quality is related to
+its temperature, and relative humidity. Air properties are determined graphically
+using a psychrometric chart.
+
+It should be noted that a specific volume of air (say, 1 cubic foot) at a certain
+temperature has the capability to hold a specific amount of moisture. Increasing the
+temperature of that volume of air increases its capacity to carry more moisture. This
+means that the air-drying capabilities could be increased by adding energy to the
+drying air. As a rule, the drying time is reduced by passing larger volumes of air
+over soybean, or by increasing the air temperature, or both. However, it should be
+mentioned that soybeans are sensitive to temperature fluctuations and can be easily
+damaged by air that is too hot or too dry. Accordingly, the recommended minimum airflow
+rates for drying soybeans are shown in the following table.
+
+Minimum airflow rates for drying soybeans
+
+Measured moisture content
+
+(%)
+
+Minimum airflow rate
+
+(Cfm/bu)
+
+18% to 20%
+
+3.0
+
+15% to 18%
+
+2.0
+
+13% to 15%
+
+1.0
+
+11% to 13%
+
+0.5
+
+To select and maintain your fan, please see the fact sheet titled "Selection, Performance and Maintenance of Grain Bin Fans"
+
+Each soybean kernel contains dry matter and oil, which represent the grain’s primary
+value, in addition to water. Most buyers use the moisture content (MC) of 13.0% as
+the base moisture for soybeans. When grain is delivered to the elevator above its
+base MC, buyers use a factor called “the shrink factor” in order to adjust the quantity
+for the excess moisture. This is because grain buyers will not pay for the cost of
+removing the excess water. Applying the shrink factor approximates the equivalent
+number of bushels that would be in the load if the grain were dried to the base MC.
+
+Conversely, some farmers often deliver grain to the elevator at moisture levels below
+the base MC. This case is also less profitable to the producer since the buyer will
+not apply an expansion factor. These factors clearly demonstrate how sensitive the
+soybean production economics are to the moisture content of the soybean kernels sold.
+
+A good example to demonstrate the potential loss due to soybean shrinkage using 200
+tons of dry matter as basis for calculations is shown in following table. It is clear
+from column 6 that the penalty due to shrinkage increases with the increase in the
+soybean moisture. The buyer determines the penalty due to shrinkage as follows: Shrinkage
+penalty bu=total weight(bu)×0.013×[MC decimal−0.13]. It is clear that marketing soybean
+at any moisture level greater than 13.0% will decrease the total profit.
+
+Table 3. Effects of shrinkage factor on total loss.
+
+Dry matter content, lb
+
+Moisture content, %
+
+Excess moisture, %
+
+Soybean gross weight, lb
+
+Total soybean weight, bu
+
+Penalty due to shrinkage, bu
+
+200,000
+
+13.0
+
+0
+
+229,885
+
+3,831
+
+0
+
+200,000
+
+14.0
+
+1
+
+232,558
+
+3,876
+
+50
+
+200,000
+
+15.0
+
+2
+
+235,294
+
+3,922
+
+102
+
+200,000
+
+16.0
+
+3
+
+238,095
+
+3,968
+
+155
+
+200,000
+
+17.0
+
+4
+
+240,964
+
+4,016
+
+209
+
+On-farm drying methods
+
+As mentioned earlier, there are different factors that should be taken into account
+while drying soybeans. Therefore, drying systems that were designed for other grain
+can be used to dry soybeans but only after careful selection of the appropriate air
+temperature and relative humidity levels. Drying systems that facilitate extreme high
+temperatures for air-drying (130oF-150oF) should be avoided when drying soybeans to
+minimize seedcoat cracks. Batch and continuous-flow drying systems are less desirable
+in drying soybeans because the heat input is difficult to reduce, not to mention they
+require more handling than is required for in-bin drying systems. Consequently, bin-drying
+systems; i.e., natural-air drying and low-temperature drying, are usually the best
+options for drying soybeans.
+
+Natural-air drying
+
+Natural-air drying is a technique used to dry soybeans by passing unheated (natural)
+air through the soybean mass until its moisture content reaches the EMC level. Since
+soybeans are hygroscopic (susceptible to moisture absorption), their moisture content
+will adjust according to the quality of air used. Therefore, drying soybean with natural
+air can be accomplished only if the air temperature and relative humidity conditions
+allow a net moisture transfer from soybean to the air. The drying speed under natural-air
+drying depends on the moisture content of the soybeans as well as the temperature
+and relative humidity of the drying air. Natural air bin drying systems are very efficient
+for drying soybeans but can only be used under favorable weather conditions. As a
+rule, air temperature should be above 60oF and the humidity below 75% to achieve natural-air
+drying.
+
+A natural-air drying system typically consists of a bin with perforated floor equipped
+with a drying fan, a grain spreader, a sweep auger and an unloading auger. Stirring
+devices may also be added. An external energy source, typically from fossil fuels,
+is required to supply the electricity for the drying fan and the various augers. On
+the other hand, the energy required for evaporating the moisture from the soybeans
+comes from the energy already present in the ambient air. Successful soybean drying
+with natural air is usually the most energy-efficient method of drying. However, it
+is also the slowest drying method and has the greatest potential for grain spoilage.
+Furthermore, natural-air drying is extremely sensitive to weather conditions. Consequently,
+it requires the highest level of management if spoilage problems are to be prevented.
+Special attention should be paid to soybean management practices in natural air when
+excessive moisture or adverse weather is encountered. Unheated air-drying will not
+be feasible in extended periods of damp weather.
+
+Low-temperature drying
+
+In low-temperature drying of soybean, the drying air is heated 10°F above ambient
+conditions. Similar to natural-air drying, low-temperature drying also requires a
+perforated-floor bin, a grain spreader, under-floor unloading auger and a sweep auger.
+A stirring device may also be added. The low-temperature drying technique has a higher
+potential to dry soybean to the accepted long-term storage moisture contents when
+compared to natural-air drying. Soybeans could be dried using the low-temperature
+drying technique then stored in the same bin, thus minimizing handling and labor costs.
+Generally, the comparative total cost for drying decreases as less energy is used
+to heat the drying air. Thus, successful low-temperature drying is relatively economical
+in terms of energy cost when compared to higher temperature techniques. Attention
+should be paid also to the fact that more energy is required to operate the drying
+fans than is needed to heat the air.
+
+Corn Dryers Under Specific Environment
+
+Soybean producers could use their corn dryers under a specific environment. They should
+set the drying air temperature lower than they use for corn and they also should avoid
+dryers that recirculate the crop during drying. This is because the soybeans are susceptible
+to fracture if they are dried too fast or handled roughly. Some researchers reported
+that it might be possible to use the corn dryer for soybean drying. Producers should
+limit drying air temperature to 130°F-140°F for commercial beans and 100°F for seed
+beans. Retention time in the heated section of dryers should be less than 30 minutes.
+They also recommended that the relative humidity of the drying air should be greater
+than 40% to help prevent skin cracks. Studies have shown that it is possible to develop
+50-100% splits in less than 5 minutes of exposure time if incorrect drying procedures
+are followed. Cracked soybeans will not keep well in storage and will break easily
+during handling. Therefore, in some cases, it is recommended to use a simple shield
+to recirculate some of the moist drying air back to increase the humidity of the drying
+air. This approach facilitates a safe and gradual increase in drying temperatures.
+Alternatively, filling the bin halfway will double the drying air volume per bushel
+of grain, thus decreasing the time need to accomplish the desired drying levels.
+
+The following are some tips that may help soybean producers achieve better grain quality
+while minimizing the drying cost:
+
+- Harvest soybean at low moisture content as possible.
+
+- Load beans into clean bins immediately after harvest. Bins should be cleaned and sanitized
+prior to harvest to minimize insect problems. Move soybeans from the field to grain
+bins as soon as possible. The amount of time before spoilage begins depends on grain
+moisture content and air temperature. A safe rule of thumb is to hold freshly harvested
+beans in carts or trucks no longer than 12 hours. Warm air temperatures > 80oF, and
+higher grain moisture levels are the most critical factors for decreasing the time
+required for the grain to spoil.
+
+- Check the moisture content of each load of grain as it is placed in the drying bin.
+There can be some variation in moisture content, but you need to know the average
+moisture content of the bin to determine the minimum necessary air flow needed and
+the allowable depth of grain in the bin.
+
+- Open air exits and start the fan as soon as the grain depth is about 1 foot deep on
+the perforated floor. Be sure to use spreading devices or some other means to keep
+the grain leveled as the bin is being filled. If the grain is allowed to cone, there
+will be an increase of small particles in the center of the cone/ or central portion
+of the bin resulting in the air not being able to reach this grain because of increased
+resistance to flow. This makes it very hard to dry and control moisture uniformly
+in the grain bin and may cause spoilage.
+
+- Add soybean to drying bin in shallow layers until the moisture content decreases.
+High moisture soybean can be added in 4 feet layers on top of dry grain if the fan
+can provide at least 3 to 4 cfm/bu through the total depth in the bin.
+
+- Level beans inside each drying bin continuously – never allow coning to occur. Some
+manual work may be required to maintain a level surface on the top when the maximum
+depth is reached. This will ensure uniform airflow through all the grain assuming
+it has been placed in the bin with a good spreader.
+
+- Monitor the moisture content of soybeans daily. Beans must be cooled to avoid nighttime
+condensation on the inner walls. If the heat has been on long enough for the complete
+mass of wheat to be warmed and the weather is clear and dry with humidity below 60%,
+turn the heat off when the moisture content of the grain drops to within 1% of the
+target moisture content. Continue running the fans, and the residual heat in the grain
+will finish the drying process.
+
+- Probe the bin periodically to check for insect infestation and grain temperature increase.
+Beans temperature increase usually means moisture migration. Aerate whenever this
+is detected. If the problem is in the center of the bin and aeration is not effective,
+move the grain to another bin to solve this problem. Problems in the center of the
+bin usually indicate that a lot of fines and/or trash accumulated in this area during
+filling.
+
+- Never add more heat than necessary to adjust the humidity of the drying air down to
+about 55%. The maximum heat needed, even in rain or 100% humidity will be about 15-17oF
+above the outdoor temperature.
+
+- Cool the grain off as soon as possible in the fall. Target temperatures should be
+initially around 60°F.
+
+- Continue to aerate and uniformly cool grain to between 30°F to 40°F if possible. This
+will help avoid internal moisture migration and insect activity.
+
+- Monitor grain and aerate monthly to maintain uniform temperature and moisture levels
+throughout. Aerate more often if moisture or temperatures increase.
+
+- Keep the grain cool as long as possible into the early spring.
+
+- Do not aerate in early summer unless problems develop.
+
+- Cover fans and openings when not in use to help avoid air, moisture and potential
+insect movement.
+
+- Monitor carefully and fumigate if needed.
+
+- Inspect soybean surface at least every week throughout the storage period.
+
+It is quite important to maintain the drying cost in the minimum level in order to
+maximize the profits (returns on investment). As mentioned earlier, in order to dry
+soybeans, producers need to determine the total pounds of water they will remove from
+one bushel of grain. The number of BTUs to extract 1 pound of water will vary from
+1,100 to 1,400, depending on how easily moisture is given up by the kernel. As the
+kernel begins to dry, more energy is needed to extract the last bit of moisture. A
+good estimate is to use an average of 1,200 BTU/pound of water to calculate the energy
+needed to get rid of 1 pound of moisture. Table 3 summarizes the BTU/unit of fuel
+as well as the burning efficiency.
+
+- Soybean producers should always think safety first around drying and storage bins
+because grain suffocation accidents happen all too often. Wear an effective dust mask
+when exposed to grain dust when working in dusty conditions, particularly these resulting
+from moldy or spoiled grain. Exposure and inhalation of mold can cause severe allergic
+reactions.
+
+- Good safety practices are necessary for producers and workers who operate in soybean
+drying, storage and handling. Grain drying and handling can be dangerous. A deadly
+hazard exists for anyone in a grain bin as deaths occur every year from suffocation
+and injuries caused by unloading augers. Power to the unloading auger should be disconnected
+before entering bins. A knotted safety rope hanging near the center of the bin offers
+greater protection, and a second person should be standing by who can offer assistance.
+Air pockets sometimes form when grain bridges over unloading augers due to spoiled
+grain and moisture. This crusted surface should not be walked over because the pocket
+can collapse. Transport augers can hit power lines, unguarded augers can catch hands
+or feet, and fans and shafts can catch unsuspecting victims.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+©
+Top

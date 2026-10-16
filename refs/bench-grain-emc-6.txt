@@ -1,0 +1,109 @@
+# Benchmark grain-emc: Clemson EMC Calculator
+# https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/
+# fetched 2026-10-16T15:39:43Z, sha256 6114ed7ce20c66f15c24eede9d135ad5906a9500d1a3c8cfc7bb866a5612b2ad
+
+Clemson EMC Calculator
+
+CU-CAT Apps Home
+
+Clemson EMC Calculator
+
+This resource was developed to estimate the Equilibrium Moisture Content for a given crop and ambient conditions.
+
+-
+Given enough time, grain moisture will come to equilibrium with ambient conditions (temperature and relative
+humidity). This is referred to as equilibrium moisture content (EMC) and can be used as an indicator of how
+grain moisture will change in the field during late season harvest or when drying in a bin using natural air.
+
+-
+If EMC, based on ambient conditions, is lower than the grain moisture, drying will occur. If EMC is higher
+than the current moisture, rewetting occurs (although much slower than drying).
+
+Several models to predict EMC have been experimentally developed. In the calculators below, you can select a
+specific model, or a composite that averages multiple models. Models may perform poorly for extreme values of
+temperature or relative humidity. These calculators are a work in progress, please report any issues with
+functionality or results to the authors.
+
+(...click to collapse)
+
+This resource was developed to estimate the Equilibrium Moisture Content for a given crop and ambient conditions.
+
+(...click for more)
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Could not find location. Please try another zipcode!
+
+Values below are determined from ASABE D245.6.
+
+Actual moisture will be influenced by variety and local weather variations.
+
+Highlight values in forecast below where:
+
+Filter #1 Parameter for Highlighting
+
+is
+Filter #1 Comparator for Highlighting
+
+Filter #1 Value for Highlighting
+
+%w.b.
+
+Highlight values in forecast below where:
+
+Filter #2 Parameter for Highlighting
+
+is
+Filter #2 Comparator for Highlighting
+
+Filter #2 Value for Highlighting
+
+°F
+
+Note: Both filters above reference the same parameter. Highlighting below only reflects the
+second of the two entries above.
+
+References:
+
+- ASABE Standards. (2007). D245.6 Moisture relationship of plant-based agricultural products. In (pp. 604-638). St. Joseph, MI: ASABE.
+
+- Brooker, D. B., Bakker-Arkema, F. W., & Hall, C. W. (1992). Drying and storage of grains and oilseeds. New York, NY: AVI, Van Nostrand Reinhold.
+
+- Maier, D. E., McNeill, S. G., & Hellevang, K. J. (2017). Grain Drying Handling and Storage Handbook (MWPS-13). Midwest Plan Service, Ames, IA.
+
+APA Citation:
+
+Turner, A., Teddy, B., and Kirk, K.R. (2020). Clemson EMC Calculator. Clemson University Cooperative Extension. Retrieved from https://www.clemson.edu/extension/agronomy/PrecisionAgriculture/calculators/
+
+Equilibrium Moisture Content Calculator
+
+(c) 2020-2021 Clemson University Cooperative Extension
+
+Authors:
+
+Aaron Turner, Assistant Professor, Agricutlural Sciences
+
+Brennan Teddy, Graduate Assistant
+
+Kendall R. Kirk, Precision Ag Engineer
+
+Disclaimer: This Calculator is provided as a free service by Clemson University.
+The accuracy of the calculator is not guaranteed. User assumes all risks and liabilities from its use.
+
+We are dedicated to making this a valuable tool for you.
+If you have suggestions for bug fixes,or any other improvements, please
+contact us by email.
