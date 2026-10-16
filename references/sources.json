@@ -1362,6 +1362,14 @@
     {"id": "grainjournal-d245-7", "kind": "html",
      "url": "https://www.grainjournal.com/article/244875/asabe-revises-data-document-for-calculating-moisture-content-of-stored-agricultural-products",
      "title": "Grain Journal: ASABE revises D245 data document for moisture content of stored products",
-     "why": "/grain-emc: what changed from D245.6 to D245.7 (updated values, corrected equations)"}
+     "why": "/grain-emc: what changed from D245.6 to D245.7 (updated values, corrected equations)"},
+    {"id": "ecfr-7-1412", "kind": "html",
+     "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1412",
+     "title": "7 CFR part 1412: Agriculture Risk Coverage, Price Loss Coverage (eCFR)",
+     "why": "/arc-plc ARC-IC: guarantee, payment cap and paid share of base under the 2025 law, before any ARC-IC figure is printed"},
+    {"id": "fr-2026-00313", "kind": "html",
+     "url": "https://www.federalregister.gov/d/2026-00313",
+     "title": "Federal Register 2026-00313 (Jan 12, 2026): FSA rule for ARC and PLC under the 2025 law",
+     "why": "/arc-plc: the rule the build script cites as [FR26]; ARC-IC terms for the ARC-IC check"}
 ]
 }

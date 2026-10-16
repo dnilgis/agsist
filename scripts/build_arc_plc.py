@@ -1656,6 +1656,10 @@ def faq_items(D):
          "ARC-CO compares county revenue (county yield times the higher of the national season-average price or the loan rate) with 90% "
          "of the county benchmark revenue. The shortfall is paid, up to 12% of benchmark revenue, on 85% of your base acres. A farm with "
          "irrigated and non-irrigated county figures is weighted by its historical irrigated percentage."),
+        ("Does this calculator cover ARC-IC?",
+         "No. ARC-IC covers the whole farm on your own yields, where ARC-CO and PLC go crop by crop. Checking it needs your own yields "
+         "for each crop and every farm you would put in ARC-IC in the state, combined into one ARC-IC farm. Two free tools run it: "
+         "Texas A&M AFPC's 2026 ARC-IC Decision Aid and farmdoc's Farm Bill What-If Tool."),
         ("Can I buy SCO if I pick ARC?",
          "Under the 2025 law, yes: SCO is no longer tied to your ARC or PLC election. For 2026 the coverage up to 90% is sold as ECO; "
          "SCO itself goes to 90% in 2027. Confirm the details for your crop with your crop insurance agent."),
@@ -1950,8 +1954,22 @@ def build_main(D, ch):
     <li><b>10 base acres.</b> A farm with 10 or fewer total base acres gets no payment, unless the producer is socially disadvantaged, limited resource, a veteran or a beginning farmer.</li>
     <li><b>Income rule.</b> The $900,000 average adjusted gross income limit still applies to ARC and PLC. The new exception for those with 75% of gross income from farming covers certain conservation and disaster programs, not ARC or PLC.</li>
     <li><b>Payment limit.</b> Per person across all crops and farms, not per farm. Sequestration (5.7% lately) comes off before the limit.</li>
-    <li><b>ARC-IC</b> (individual coverage, whole farm) also exists. This tool does not model it.</li>
+    <li><b>ARC-IC.</b> A third choice, for the whole farm. <a href="#arc-ic">What it takes to check it</a>.</li>
   </ul>
+
+  <h2 id="arc-ic">What about ARC-IC?</h2>
+  <p>ARC-IC (ARC individual coverage) is the third choice at signup. FSA puts it this way: ARC-CO and PLC &ldquo;provide crop-by-crop
+  protection,&rdquo; while ARC-IC &ldquo;protects the entire farm.&rdquo; It is figured on your own farm&rsquo;s yields, not the
+  county&rsquo;s, so it is worth a look when your yields run well above or below the county&rsquo;s, or swing in different years.</p>
+  <p><b>This page does not run ARC-IC, and it does not guess.</b> An honest check needs three things we do not have:</p>
+  <ul class="ap-list">
+    <li><b>Your own yields</b> for each covered crop over the benchmark years, from your crop insurance or FSA records. County data cannot stand in for them; that is the whole point of ARC-IC.</li>
+    <li><b>Every farm you would put in ARC-IC in the state.</b> Texas A&amp;M&rsquo;s ARC-IC aid &ldquo;combines every FSA farm you have enrolled in ARC-IC in one state into a single ARC-IC farm.&rdquo;</li>
+    <li><b>FSA&rsquo;s ARC-IC guarantee, payment cap and paid share of base under the 2025 law.</b> We have not checked them against the rule text yet, so no ARC-IC figure appears on this site.</li>
+  </ul>
+  <p>Two free university tools run it with your numbers: Texas A&amp;M AFPC&rsquo;s <a href="https://afpc.tamu.edu/tools" rel="noopener">2026 ARC-IC Decision Aid</a>
+  (Excel, updated Oct 2026) and farmdoc&rsquo;s <a href="https://farmdoc.illinois.edu/fast-tools/arc-co-plc-model" rel="noopener">Farm Bill What-If Tool</a>
+  (Excel; it covers ARC-CO, PLC and ARC-IC). Then take your yield records to the <a href="{OFFICE}" rel="noopener">county FSA office</a>.</p>
 
   <h2 id="benchmark-yield">Where do I find my county&rsquo;s ARC-CO benchmark yield?</h2>
   <p>{fsa_line} FSA&rsquo;s benchmark is the Olympic average of the county&rsquo;s five most recent yields (2020 to 2024 for 2026), with low years raised to
@@ -2044,6 +2062,26 @@ def hist_table(e, cd=None):
             f'so they are history, not this year&rsquo;s benchmark.</p>')
 
 
+# A state's county table goes inline while it is small, so search engines read it. Past this
+# many bytes of table HTML (Oct 2026: Texas 118 KB, about 1,500 county, crop and practice rows,
+# which put its page at 143 KB of the 150 KB cap; Georgia 89 KB; Kansas 82 KB) the page keeps
+# every county link and loads the full table from data/arc-plc/table/<ST>.json when the reader
+# opens it (CLAUDE.md: bulk loads on demand). Every other state page stays under about 90 KB.
+TABLE_INLINE_MAX = 70000
+
+# Fills the on-demand table: the same rows, cells and rowspans the inline table has.
+TABLE_JS = (
+    "<script>(function(){var d=document.getElementById('ap-tbl');if(!d)return;var done=false;"
+    "function e(t){var x=document.createElement('div');x.textContent=t;return x.innerHTML;}"
+    "function fill(){if(done)return;done=true;var b=d.querySelector('tbody');"
+    "fetch(d.getAttribute('data-src')).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){var h=[];"
+    "j.rows.forEach(function(c){c[2].forEach(function(r,i){var th=i?'':'<th scope=\"row\"'+(c[2].length>1?' rowspan='+c[2].length:'')"
+    "+'><a href=\"/arc-plc/'+j.slug+'/'+c[1]+'\">'+e(c[0])+'</a></th>';"
+    "h.push('<tr>'+th+'<td>'+e(r[0])+'</td><td>'+e(r[1])+'</td><td>'+e(r[2])+'</td><td>'+e(r[3])+'</td></tr>');});});"
+    "b.innerHTML=h.join('');}).catch(function(){done=false;b.innerHTML='<tr><td colspan=5>The table did not load. Close and open this again, or use the county links above.</td></tr>';});}"
+    "d.addEventListener('toggle',function(){if(d.open)fill();});if(d.open)fill();})();</script>")
+
+
 def state_page(st, S, D, ch, nav_states):
     hdr, ftr, fonts = ch
     name, sl = S["n"], S["slug"]
@@ -2064,8 +2102,10 @@ def state_page(st, S, D, ch, nav_states):
         title = next((t for t in (f"{name} ARC or PLC 2026 and 2027 by County | AGSIST", f"{name} ARC or PLC by County | AGSIST")
                       if len(t) <= 60), f"{name} ARC or PLC")
         desc = f"{name} counties: FSA average PLC yields and ARC-CO history, and how to get your official 2026 benchmark."
-    rows = []
+    rows, trows = [], []   # trows: the same official rows as data, for the on-demand table
     for c in S["c"]:
+        if official:
+            trows.append([re.sub(r" (County|Parish)$", "", c["n"]), c["s"], []])
         if not official:
             pv = plcy.get(c["f"], {})
             rows.append(f'<tr><th scope="row"><a href="/arc-plc/{sl}/{c["s"]}">{esc(re.sub(r" (County|Parish)$", "", c["n"]))}</a></th>'
@@ -2086,6 +2126,8 @@ def state_page(st, S, D, ch, nav_states):
                     th = (f'<th scope="row"{f" rowspan={nrow}" if nrow > 1 else ""}>{link}</th>') if first else ""
                     rows.append(f'<tr>{th}<td>{esc(y6[k]["label"])}</td>'
                                 f'<td>{PRAC[e["d"]]}{", " + esc(e["sub"]) if e.get("sub") else ""}</td><td>{XC.yf(y6[k], e["by"])}</td><td>{usd(m["br"], 0)}</td></tr>')
+                    trows[-1][2].append([html.unescape(y6[k]["label"]), html.unescape(PRAC[e["d"]] + (", " + e["sub"] if e.get("sub") else "")),
+                                         html.unescape(XC.yf(y6[k], e["by"])), html.unescape(usd(m["br"], 0))])
                     first = False
                     continue
                 else:
@@ -2094,6 +2136,20 @@ def state_page(st, S, D, ch, nav_states):
                 first = False
     head_cells = ('<th class="num">Yield</th><th class="num">Revenue</th>' if official
                   else f'<th class="num">Avg PLC yield{f" ({plc_py})" if plc_py else ""}</th>')
+    crop_cells = "".join('<th class="num">' + CROPS[k]["label"] + "</th>" for k in CROPS)
+    thead = "<thead><tr><th>County</th>" + (("<th>Crop</th><th>Practice</th>" + head_cells) if official else crop_cells) + "</tr></thead>"
+    table_html = f"""<div class="ap-scroll"><table class="tbl ap-t ap-st">
+    {thead}
+    <tbody>{''.join(rows)}</tbody></table></div>"""
+    table_src = None
+    if official and len(table_html.encode("utf-8")) > TABLE_INLINE_MAX:
+        table_src = f"/{OUT_STATE_JSON}/table/{st}.json"
+        nrows = sum(len(c[2]) for c in trows)
+        links = " &middot; ".join(f'<a href="/arc-plc/{sl}/{c[1]}">{esc(c[0])}</a>' for c in trows)
+        table_html = (f'<p class="ap-states">{links}</p>\n'
+                      f'  <details class="ap-full" id="ap-tbl" data-src="{table_src}"><summary>Show all {nrows:,} county, crop and practice rows</summary>'
+                      f'<div class="ap-scroll"><table class="tbl ap-t ap-st">\n    {thead}\n    <tbody><tr><td colspan=5>Loading the table&hellip;</td></tr></tbody></table></div></details>\n'
+                      f'  {TABLE_JS}')
     jsonld = [{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
         {"@type": "ListItem", "position": 2, "name": "ARC or PLC", "item": f"{SITE}/arc-plc"},
@@ -2109,6 +2165,8 @@ def state_page(st, S, D, ch, nav_states):
                           "isBasedOn": FSA_DATA, "dateModified": D["updated"][:10],
                           "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"},
                           "variableMeasured": ["ARC-CO benchmark yield (bu/acre)", "ARC-CO benchmark revenue ($/acre)"]})
+        if table_src:
+            jsonld[0]["distribution"] = {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{SITE}{table_src}"}
     others = " &middot; ".join(f'<a href="/arc-plc/{x["slug"]}">{esc(x["n"])}</a>' for x in nav_states if x["slug"] != sl)
     rel = ['<a href="/arc-plc">ARC vs PLC calculator</a>']
     for d_, lab in (("rent", "cash rent by county"), ("yield", "yield by year")):
@@ -2144,9 +2202,7 @@ def state_page(st, S, D, ch, nav_states):
   {c2(trigger_c(y6['soybeans']))} for soybeans and {c2(trigger_c(y6['wheat']))} for wheat.</p>{XC.state_crops_line(D, S)}</div>
   <h2 id="counties">{table_h}</h2>
   <p class="ap-small">{table_note}</p>
-  <div class="ap-scroll"><table class="tbl ap-t ap-st">
-    <thead><tr><th>County</th>{('<th>Crop</th><th>Practice</th>' + head_cells) if official else ''.join(f'<th class="num">{CROPS[k]["label"]}</th>' for k in CROPS)}</tr></thead>
-    <tbody>{''.join(rows)}</tbody></table></div>
+  {table_html}
   <p class="ap-small">A county or crop not listed: FSA&rsquo;s files have nothing for it. {ASK}</p>
   <h2 id="crossover">PLC vs ARC-CO break-even at the benchmark yield</h2>
   <p>When the county yield comes in at its benchmark, which program pays more depends on the season-average price and on your PLC yield as a share of the
@@ -2164,7 +2220,8 @@ def state_page(st, S, D, ch, nav_states):
 </main>
 """
     page = head(title, desc, path, jsonld, indexable, fonts) + body + tail(ftr)
-    return page, {"path": path, "indexable": indexable, "title": title, "desc": desc}
+    tjson = ({"st": st, "n": name, "slug": sl, "rows": trows} if table_src else None)
+    return page, {"path": path, "indexable": indexable, "title": title, "desc": desc, "table": tjson}
 
 
 SHORT = {"plc": "Pick PLC", "arc": "Pick ARC-CO", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
@@ -3122,6 +3179,8 @@ def render_all(D):
     for st, S in sorted(D["states"].items()):
         page, m = state_page(st, S, D, ch, nav_states)
         out[f"{OUT_DIR}/{S['slug']}.html"] = page
+        if m.get("table"):
+            out[f"{OUT_STATE_JSON}/table/{st}.json"] = json.dumps(m["table"], separators=(",", ":"), ensure_ascii=False) + "\n"
         stats["states"] += 1
         if m["indexable"]:
             stats["states_indexed"] += 1

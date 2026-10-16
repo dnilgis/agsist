@@ -111,14 +111,43 @@
   var CHECK_BINS = [
     { name: 'GSI 30 ft, 9 rings', maker: 'GSI 40-Series chart', d: 30, eaveIn: 24 * 12 + 2, floorIn: 12, chart: 15337 },
     { name: 'GSI 36 ft, 12 rings', maker: 'GSI 40-Series chart', d: 36, eaveIn: 32 * 12 + 2, floorIn: 12, chart: 29404 },
-    { name: 'Brock 48 ft, 8 rings (unverified)', maker: 'Brock farm bin chart (search copy; the chart itself was not opened)', d: 48, eaveIn: 21 * 12 + 6, floorIn: 0, chart: 39053 }
+    { name: 'Brock 48 ft, 8 rings (7-04808)', maker: 'Brock BR-2286 narrow corrugation chart (Jan 2022)', d: 48, eaveIn: 21 * 12 + 6, floorIn: 0, belowEaveIn: 1, chart: 39053 }
   ];
+  /* belowEaveIn: Brock's footnote starts the 28 deg peak "one inch (25 mm)
+     below the eave", so the dealer column does the same. The plain column is
+     the bin filled to the eave, what a farmer gets typing the eave height. */
   function checkBin(b) {
     var gH = (b.eaveIn - b.floorIn) / 12;
-    var dealer = bushels(roundBin({ d: b.d, grainH: gH, surface: 'peaked', peakDeg: DEALER.peakDeg }).total, DEALER.packPct);
+    var gDealer = gH - (b.belowEaveIn || 0) / 12;
+    var dealer = bushels(roundBin({ d: b.d, grainH: gDealer, surface: 'peaked', peakDeg: DEALER.peakDeg }).total, DEALER.packPct);
     var plain = bushels(roundBin({ d: b.d, grainH: gH, surface: 'peaked', peakDeg: PLAIN.peakDeg }).total, 0);
-    return { grainH: gH, dealer: dealer, plain: plain,
+    return { grainH: gH, dealerGrainH: gDealer, dealer: dealer, plain: plain,
              dealerPct: (dealer / b.chart - 1) * 100, plainPct: (plain / b.chart - 1) * 100 };
+  }
+
+  /* Depth at the wall from a tape: grain sits `below` ft under the eave (or
+     under the top of a flat bin). maxH is the eave less any aeration floor.
+     Returns null for a blank or unusable reading. */
+  function depthFromBelow(maxH, below) {
+    if (!(maxH > 0) || !isFinite(below) || below < 0) return null;
+    return Math.max(0, maxH - below);
+  }
+
+  /* Room left in the bin, in bushels on the same basis as the grain now in it.
+     o: { shape: 'round' | 'hopper', d, maxH (eave less floor, or the hopper's
+     cylinder), grainH, surface, peakDeg, hopperDeg, packPct }.
+     toEave: filled level to the eave. toPeak: filled to the eave and peaked at
+     peakDeg. A peak already above the eave can make toEave negative; it is
+     reported as 0 with over = true. */
+  function roomLeft(o) {
+    var f = o.shape === 'hopper' ? hopperBin : roundBin;
+    var base = { d: o.d, hopperDeg: o.hopperDeg, peakDeg: o.peakDeg };
+    var at = function (gH, sf) { var b = {}; for (var k in base) b[k] = base[k]; b.grainH = gH; b.surface = sf;
+      return bushels(f(b).total, o.packPct); };
+    var now = at(o.grainH, o.surface);
+    var eave = at(o.maxH, 'level'), peak = at(o.maxH, 'peaked');
+    var toEave = eave - now, toPeak = peak - now;
+    return { now: now, full: peak, fullLevel: eave, toEave: Math.max(0, toEave), toPeak: Math.max(0, toPeak), over: toEave < -1e-6 };
   }
 
   function ftIn(ft) {
@@ -130,6 +159,7 @@
     BU_PER_CUFT: BU_PER_CUFT, PLAIN: PLAIN, DEALER: DEALER, DRAW_DEG: DRAW_DEG, RINGS_IN: RINGS_IN,
     cone: cone, wedge: wedge, roundBin: roundBin, hopperBin: hopperBin, bushels: bushels,
     marketBu: marketBu, shrink: shrink, dryingCost: dryingCost, sizeOptions: sizeOptions,
-    CHECK_BINS: CHECK_BINS, checkBin: checkBin, ftIn: ftIn
+    CHECK_BINS: CHECK_BINS, checkBin: checkBin, ftIn: ftIn,
+    depthFromBelow: depthFromBelow, roomLeft: roomLeft
   };
 })(typeof window !== 'undefined' ? window : this);
