@@ -682,7 +682,7 @@ def probe():
 
     save("uscrn-HEADERS.txt", USCRN + "HEADERS.txt")
     save("uscrn-README.txt", USCRN + "README.txt")
-    idx = save("uscrn-index.html", USCRN + "%d/" % today.year)
+    idx = save("uscrn-index.html.txt", USCRN + "%d/" % today.year)
     if idx:
         fl = sorted(uscrn_files(idx, today.year))
         summ["uscrn_files"] = fl
@@ -700,7 +700,7 @@ def probe():
     except Exception as e:  # noqa: BLE001
         summ["scan_error"] = str(e)
     g = save("isusm-network.geojson", IEM + "geojson/network/ISUSM.geojson")
-    save("isusm-daily-form.html", IEM + "agclimate/hist/dailyRequest.php")
+    save("isusm-daily-form.html.txt", IEM + "agclimate/hist/dailyRequest.php")
     try:
         meta = isusm_station_list(json.loads(g or "{}"))
         summ["isusm_stations"] = len(meta)
