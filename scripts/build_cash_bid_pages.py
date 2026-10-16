@@ -994,7 +994,7 @@ def live_board_list(towns):
             g = board_glance(bd)
             if not g:
                 continue
-            out.append({"town_key": (st, slug), "pin": bd["pin"], "name": bd["operator"] or bd["city"],
+            out.append({"town_key": (st, slug), "pin": bd["pin"], "name": head_name(bd, with_town=False),
                         "town": t["name"], "state": st,
                         "path": f"/cash-bids/{url_slug(STATE_NAMES[st])}/{slug}", "glance": g,
                         "posted": max(v[2] for v in g.values())})
@@ -1163,6 +1163,25 @@ HIST_NOTE = (" &ldquo;Basis since June&rdquo; reads AGSIST&rsquo;s daily basis l
 HIST_JS = '<script src="/components/cb-basis-hist.js?v=1" defer></script>\n'
 
 
+def head_name(bd, with_town=True):
+    """The elevator as the answer, FAQ and structured data name it. When the
+    board is a delivery point under the company's name ("Ingredion" posted by
+    Linn Coop), the point and the town go with it: "Linn Coop Oil Company
+    (Ingredion, Cedar Rapids)". Linn Coop's own board paid 27c less than its
+    Ingredion bid on 2026-10-15; the bare company name sent a farmer to the
+    wrong scale."""
+    op = (bd.get("operator") or "").strip()
+    city = re.sub(r"(,\s*[A-Z]{2})+$", "", (bd.get("city") or "").strip().rstrip(", ")).strip()
+    town = (bd.get("town") or "").strip()
+    if not op:
+        return city
+    if not city or not town or city.lower() in (op.lower(), town.lower()):
+        return op
+    if bd.get("how") == "near" or not with_town:
+        return f"{op} ({city})"
+    return f"{op} ({city}, {town})"
+
+
 def answer_picks(boards):
     """{crop: (row, elevator name)}: per elevator the commodity it posts most
     (a non-GMO premium is never the headline corn price), its nearest delivery
@@ -1179,7 +1198,7 @@ def answer_picks(boards):
             rs = [r for r in rs if r["commodity"].lower() == com]
             m = min(r["dm"] for r in rs)
             best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
-            cands.append((best, bd["operator"] or bd["city"]))
+            cands.append((best, head_name(bd)))
         if cands:
             m = min(r["dm"] for r, _ in cands)
             cands = sorted((x for x in cands if x[0]["dm"] == m), key=lambda x: x[1].lower())
@@ -1441,7 +1460,7 @@ def build_town_page(t, ctx):
         h, rows, ts, held = board_section(bd, snap_ct)
         any_hold = any_hold or bool(held)
         if held:
-            held_all.append((bd["operator"] or bd["city"], held))
+            held_all.append((head_name(bd), held))
         secs.append(h)
         times += ts
         shown += rows
@@ -2350,6 +2369,13 @@ def selftest():
     summ = {"IA": {"soybeans": {"contracts": [{"contract": ("ZS", 10, 2026), "median": -0.63, "n": 40}]}}}
     assert flag_odd(tw2) == 0 and flag_odd(tw2, summ) == 1
     assert share_prices({}) == ("", None)
+    # the delivery point goes with the company's name (Cedar Rapids, 2026-10-15)
+    lc = {"operator": "Linn Coop Oil Company", "city": "Ingredion", "town": "Cedar Rapids", "how": "zip"}
+    assert head_name(lc) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)"
+    assert head_name(lc, with_town=False) == "Linn Coop Oil Company (Ingredion)"
+    assert head_name({"operator": "Op", "city": "Hooper, NE", "town": "Hooper"}) == "Op"
+    assert head_name({"operator": "Op", "city": "Dewar, IA, IA", "town": "Dewar"}) == "Op"
+    assert head_name({"operator": "", "city": "Oran", "town": "Oran"}) == "Oran"
     merged, index = _fixture()
     # map pins for the nearby lists: Fremont and Hooper are about 13 mi apart, Iowa is far
     PINS = {"FREMONT": (41.433, -96.498), "Fremont": (41.433, -96.498), "Hooper": (41.611, -96.548),
