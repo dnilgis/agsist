@@ -156,5 +156,15 @@
     "band_method": "expanding-window"
    }
   ]
+ },
+ "held_back": {
+  "week_ending": "2026-10-11",
+  "iso_week": 41,
+  "crop": "corn",
+  "backtest_years": 9,
+  "need": 10,
+  "last_good_week": "2026-10-04",
+  "recorded": "2026-10-16T23:04:33Z",
+  "reason": "No nowcast from the ratings for the week ending 2026-10-11: this late in the season only 9 past years of corn ratings can be checked against the final yield, and the error band needs 10. The figures shown are from the week ending 2026-10-04, the last ratings week with enough history."
  }
 }
