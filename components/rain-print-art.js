@@ -55,11 +55,62 @@
   var n2 = function (v) { return +(+v).toFixed(2); };
   var f2 = function (v) { return (+v).toFixed(2); };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
-  function fmtDate(iso) { var p = String(iso).split('-').map(Number); return MON[p[1] - 1] + ' ' + p[2]; }
+
+  /* ---------- units and language (2026-10-16, Rain Print for Canada) ----------
+     input.loc = {units: 'in' | 'mm', lang: 'en' | 'fr'}; missing means inches and
+     English, the print as it always was. The engine's numbers stay in inches;
+     only what is printed changes: rain in mm (year and month totals whole, a
+     day to a tenth), snowfall in cm, French words (fr-CA, the strings in FR
+     below, marked for a native speaker's review in the plan). French puts a
+     space before : and %, a comma for the decimal point, a space between
+     thousands, and the day before the month ("3 mai"). */
+  var LOC = { mm: false, fr: false };
+  var MON_FR = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  var MONCAP_FR = ['JANV', 'FÉVR', 'MARS', 'AVR', 'MAI', 'JUIN', 'JUILL', 'AOÛT', 'SEPT', 'OCT', 'NOV', 'DÉC'];
+  /* FR-REVIEW: every French string on the print. Keys are the English words. */
+  var FR = {
+    'rain and melted snow': 'pluie et neige fondue', 'rain': 'pluie', 'precipitation': 'précipitations',
+    'Biggest rain': 'Plus grosse pluie', 'Wettest day': 'Journée la plus arrosée',
+    'About a usual year': 'Près d’une année normale',
+    'Days with rain': 'Jours de pluie', 'Days with rain or snow': 'Jours de pluie ou de neige',
+    'Snow': 'Neige', 'light blue: snow': 'bleu pâle : neige',
+    'This station’s snowfall record has holes, so no snow is drawn; melted snow is counted in the total':
+      'Les relevés de neige de cette station ont des trous, donc la neige n’est pas dessinée; la neige fondue est comptée dans le total',
+    'This station doesn’t report snowfall; melted snow is counted in the total':
+      'Cette station ne mesure pas la neige; la neige fondue est comptée dans le total',
+    'Light blue above the ground is snow, dark bars below it are rain': 'Bleu pâle au-dessus du sol : neige; barres foncées dessous : pluie',
+    'Dark blue steps are rain, light blue steps are snow': 'Marches bleu foncé : pluie; marches bleu pâle : neige',
+    'your year, rain and melted snow': 'votre année, pluie et neige fondue', 'your year, rain': 'votre année, pluie', 'your year': 'votre année',
+    'a usual year by then': 'une année normale à cette date', 'a usual year, same days': 'une année normale, mêmes jours', 'a usual year': 'une année normale',
+    'usual': 'normale', 'SNOWFALL': 'NEIGE', 'snow': 'neige', 'PREVIEW': 'APERÇU'
+  };
+  function tr(en) { return LOC.fr && FR[en] !== undefined ? FR[en] : en; }
+  function setLoc(l) { l = l || {}; LOC = { mm: l.units === 'mm', fr: l.lang === 'fr' }; }
+  // a number as the print writes it: d decimals, French comma and spaces, English commas over 9,999
+  function num(v, d) {
+    var s = (+v).toFixed(d), p = s.split('.'), neg = p[0].charAt(0) === '-', i = neg ? p[0].slice(1) : p[0];
+    if (i.length > (LOC.fr ? 3 : 4)) i = i.replace(/\B(?=(\d{3})+(?!\d))/g, LOC.fr ? ' ' : ',');
+    return (neg ? '-' : '') + i + (p[1] ? (LOC.fr ? ',' : '.') + p[1] : '');
+  }
+  var MM = 25.4, CM = 2.54;
+  // rain: kind 'tot' (the year, a month) or 'day'; snow in snowAmt
+  function rainNum(inches, kind) { return LOC.mm ? num(inches * MM, kind === 'day' ? 1 : 0) : num(inches, 2); }
+  function snowNum(inches) { return LOC.mm ? num(inches * CM, 0) : num(inches, 1); }
+  function rU() { return LOC.mm ? 'mm' : 'in'; }
+  function sU() { return LOC.mm ? 'cm' : 'in'; }
+  function rainAmt(inches, kind) { return rainNum(inches, kind) + ' ' + rU(); }
+  function snowAmt(inches) { return snowNum(inches) + ' ' + sU(); }
+  // "Snow: 8.0 in" / "Neige : 20 cm": French puts a space before the colon
+  function colon(words) { return words + (LOC.fr ? ' : ' : ': '); }
+  function pctText(p) { return LOC.fr ? p + ' %' : p + '%'; }
+
+  function fmtDate(iso) { var p = String(iso).split('-').map(Number); return LOC.fr ? (p[2] === 1 ? '1er' : p[2]) + ' ' + MON_FR[p[1] - 1] : MON[p[1] - 1] + ' ' + p[2]; }
   function fmtRange(a, b) {
     var A = String(a).split('-').map(Number), B = String(b).split('-').map(Number);
+    if (LOC.fr) return A[1] === B[1] ? 'du ' + (A[2] === 1 ? '1er' : A[2]) + ' au ' + B[2] + ' ' + MON_FR[B[1] - 1] : 'du ' + fmtDate(a) + ' au ' + fmtDate(b);
     return A[1] === B[1] ? MON[A[1] - 1] + ' ' + A[2] + ' to ' + B[2] : MON[A[1] - 1] + ' ' + A[2] + ' to ' + MON[B[1] - 1] + ' ' + B[2];
   }
+  function monCap(m) { return LOC.fr ? MONCAP_FR[m] : MON[m].toUpperCase(); }
   function isLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
   function doyOf(year, iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
@@ -334,8 +385,8 @@
     var snowNote = '';
     if (snowState === 'unknown' && n > 0) {
       var someSnow = days.some(function (x) { return x.v !== null && x.v !== undefined && x.s !== null && x.s !== undefined; });
-      snowNote = someSnow ? 'This station’s snowfall record has holes, so no snow is drawn; melted snow is counted in the total'
-        : 'This station doesn’t report snowfall; melted snow is counted in the total';
+      snowNote = tr(someSnow ? 'This station’s snowfall record has holes, so no snow is drawn; melted snow is counted in the total'
+        : 'This station doesn’t report snowfall; melted snow is counted in the total');
     }
     var cum = [], c = 0;
     P.forEach(function (p) { if (p !== null) c += p; cum.push(p === null ? null : c); });
@@ -349,18 +400,19 @@
     days.forEach(function (x, k) { if (P[k] !== null) monthHas[x.m] = true; });
     var mN = Array(12).fill(0);
     if (ov) days.forEach(function (x, k) { mN[x.m] += ov.daily[k] || 0; });
-    var total = D.total, Ts = f2(total);
-    var liquid = { full: 'rain and melted snow', none: 'rain', unknown: 'precipitation' }[snowState];
+    var total = D.total, Ts = rainNum(total, 'tot');
+    var liquid = tr({ full: 'rain and melted snow', none: 'rain', unknown: 'precipitation' }[snowState]);
     // the red mark is the biggest rain: with a whole snow record, picked from rain days only (Sig, 2026-10-13)
     var M = full && D.maxRain ? D.maxRain : D.max;
     var wi = M && M.v > 0 && M.doy >= 0 ? M.doy : -1;
     var wet = wi >= 0 ? { p: M.v, date: M.date } : null;
-    var wetLabel = full ? 'Biggest rain' : wi >= 0 && days[wi].s > 0 ? 'Wettest day' : 'Biggest rain';
+    var wetLabel = tr(full ? 'Biggest rain' : wi >= 0 && days[wi].s > 0 ? 'Wettest day' : 'Biggest rain');
     // no verdict on a usual year under an inch: a percent of almost nothing says nothing
     var pct = ov && ov.total >= 1 ? Math.round((total - ov.total) / ov.total * 100) : null;
-    var soFar = I.preview ? ' so far' : '';
-    var verdict = pct === null ? null : (Math.abs(pct) <= 3 ? 'About a usual year'
-      : pct > 100 ? (1 + pct / 100).toFixed(1) + ' times a usual year'
+    var soFar = I.preview ? (LOC.fr ? ' jusqu’ici' : ' so far') : '';
+    var verdict = pct === null ? null : (Math.abs(pct) <= 3 ? tr('About a usual year')
+      : pct > 100 ? num(1 + pct / 100, 1) + (LOC.fr ? ' fois une année normale' : ' times a usual year')
+      : LOC.fr ? pctText(Math.abs(pct)) + (pct < 0 ? ' de moins' : ' de plus') + ' qu’une année normale'
       : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than a usual year') + soFar;
     // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
@@ -376,12 +428,13 @@
     return {
       year: year, N: N, n: n, days: days, P: P, cum: cum, ncum: ncum, cmp: !!ov, ov: ov, normalRec: ov ? ov.total : null,
       starts: starts, ends: ends, monthHas: monthHas, month: D.month || Array(12).fill(0), mN: mN,
-      total: total, T: Ts, liquid: liquid, full: full, snowState: snowState, snowNote: snowNote, snowTot: Math.round(snowTot * 10) / 10,
+      total: total, T: Ts, TU: Ts + ' ' + rU(), liquid: liquid, full: full, snowState: snowState, snowNote: snowNote, snowTot: Math.round(snowTot * 10) / 10, snowRaw: snowTot,
       wi: wi, wet: wet, // the day in gray after the amount, like every other date on the print (2026-10-15)
-      wetText: wet ? wetLabel + ': ' + f2(wet.p) + ' in\u0001' + fmtDate(wet.date) + '\u0002' : null,
-      daysText: (snowState === 'none' ? 'Days with rain' : 'Days with rain or snow') + ': ' + D.wet,
-      snowText: full ? 'Snow: ' + (Math.round(snowTot * 10) / 10).toFixed(1) + ' in' : null,
-      snowKey: full ? 'light blue: snow' : null,
+      wetText: wet ? colon(wetLabel) + rainAmt(wet.p, 'day') + '\u0001' + fmtDate(wet.date) + '\u0002' : null,
+      daysText: colon(tr(snowState === 'none' ? 'Days with rain' : 'Days with rain or snow')) + D.wet,
+      // metric: the cm come from the days' own sum, not from the inches rounded to a tenth
+      snowText: full ? colon(tr('Snow')) + (LOC.mm ? snowAmt(snowTot) : (Math.round(snowTot * 10) / 10).toFixed(1) + ' in') : null,
+      snowKey: full ? tr('light blue: snow') : null,
       verdict: verdict, dry: dry, markers: markers, maxP: maxP, maxSnow: maxSnow,
       name: String(I.name || '').trim(), dedication: String(I.dedication || '').trim(), place: String(I.place || ''),
       showN: !!(ov && I.showNormals), ovNote: I.ovNote || '', preview: I.preview || null, soFar: soFar,
@@ -398,7 +451,7 @@
      8.0 in Feb 3", the date in gray). A week or other stretch prints its range ("Wettest week: 3.10 in May 3 to 9");
      a whole month or year is its own date and gets none. A tie note stays after the date: the date is the day drawn.
      pt.label is the words alone (what the layer said); pt.text is what is drawn and measured. */
-  var TIE_RE = / \((?:also [^)]*|on \d+ days)\)$/;
+  var TIE_RE = / \((?:also [^)]*|on \d+ days|aussi [^)]*|sur \d+ jours)\)$/;
   function recDate(E, r, sp) {
     if (sp) {
       var f = String(sp.from), t = String(sp.to), y = +f.slice(0, 4), m = +f.slice(5, 7);
@@ -450,13 +503,13 @@
     pts.forEach(function (p) {
       var prev = out.length ? out[out.length - 1] : null;
       if (prev && !p.span && !prev.span && prev.a === p.a) {
-        var A = /^(.*?): (.*)$/.exec(prev.label), B = /^(.*?): (.*)$/.exec(p.label);
-        var first = function (x) { return /^(First|Last) /.test(x[1]) ? 0 : 1; };
+        var A = /^(.*?) ?: (.*)$/.exec(prev.label), B = /^(.*?) ?: (.*)$/.exec(p.label);
+        var first = function (x) { return /^(First|Last|Premi|Derni)/.test(x[1]) ? 0 : 1; };
         var lc = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
         var d = DATE_RE.exec(p.text);
         if (A && B && A[2] === B[2]) {
           var pair = first(A) <= first(B) ? [A, B] : [B, A];
-          prev.label = pair[0][1] + ' and ' + lc(pair[1][1]) + ': ' + A[2];
+          prev.label = colon(pair[0][1] + (LOC.fr ? ' et ' : ' and ') + lc(pair[1][1])) + A[2];
           prev.text = dated(prev.label, d ? d[1] : '');
         } else {
           // one date at the end; a tie note before the last part keeps each date beside its own words, so no date reads as another's
@@ -529,14 +582,14 @@
   // ---------- a preview of this year: a band across the art, and the watermark ----------
   // across the chart only (2026-10-13): edge to edge it hid the scale's numbers
   function previewBand(E, b) {
-    var t = 'PREVIEW THROUGH ' + fmtDate(E.preview.last).toUpperCase(), y = b.y, cx = (b.x0 + b.x1) / 2;
+    var t = (LOC.fr ? 'APERÇU JUSQU’AU ' : 'PREVIEW THROUGH ') + fmtDate(E.preview.last).toUpperCase(), y = b.y, cx = (b.x0 + b.x1) / 2;
     return '<g data-rp="band" aria-hidden="true"><rect x="' + n2(b.x0) + '" y="' + (y - 34) + '" width="' + n2(b.x1 - b.x0) + '" height="68" fill="' + C.ink + '" opacity="0.88"/>' +
       T(cx, y - 4, t, { w: 500, size: 24, ls: 0.12, fill: '#FFFFFF', anchor: 'middle' }) +
-      T(cx, y + 22, 'Your print will show the full year, Jan 1 to Dec 31, ' + E.year, { size: 17, fill: '#FFFFFF', anchor: 'middle' }) + '</g>';
+      T(cx, y + 22, (LOC.fr ? 'Le tirage final montre toute l’année, du 1er janvier au 31 décembre ' : 'Your print will show the full year, Jan 1 to Dec 31, ') + E.year, { size: 17, fill: '#FFFFFF', anchor: 'middle' }) + '</g>';
   }
   function watermark() {
     var row = '', out = '', i;
-    for (i = 0; i < 6; i++) row += 'PREVIEW  ·  AGSIST.COM/RAIN-PRINT  ·  ';
+    for (i = 0; i < 6; i++) row += tr('PREVIEW') + '  ·  AGSIST.COM/RAIN-PRINT  ·  ';
     for (i = -6; i < 14; i++) out += '<text x="' + (-W0) + '" y="' + (i * 140) + '" font-family="' + esc(SANS) + '" font-size="38" font-weight="500" fill="' + C.ink + '" letter-spacing="4">' + row + '</text>';
     return '<g data-rp="wm" opacity="0.13" transform="rotate(-24 ' + (W0 / 2) + ' ' + (H0 / 2) + ')" aria-hidden="true">' + out + '</g>';
   }
@@ -544,8 +597,8 @@
   function open(I, E) {
     var b = I.bleed || 0;
     var size = I.px ? ' width="' + I.px[0] + '" height="' + I.px[1] + '"' : '';
-    var title = E.place + ', ' + E.year + ', rain print' + (E.preview ? ', preview through ' + fmtDate(E.preview.last) : '');
-    var desc = E.T + ' in of ' + E.liquid + (E.snowText ? '. ' + E.snowText : '') + '. ' + E.daysText + (E.verdict ? '. ' + E.verdict : '') + '.';
+    var title = E.place + ', ' + E.year + ', ' + (LOC.fr ? 'Rain Print' + (E.preview ? ', aperçu jusqu’au ' + fmtDate(E.preview.last) : '') : 'rain print' + (E.preview ? ', preview through ' + fmtDate(E.preview.last) : ''));
+    var desc = E.TU + (LOC.fr ? ' de ' : ' of ') + E.liquid + (E.snowText ? '. ' + E.snowText : '') + '. ' + E.daysText + (E.verdict ? '. ' + E.verdict : '') + '.';
     var id = I.idPrefix || 'rp';
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + (-b) + ' ' + (-b) + ' ' + (W0 + 2 * b) + ' ' + (H0 + 2 * b) + '"' + size +
       ' font-family="' + esc(SANS) + '" role="img" aria-labelledby="' + id + 'T" aria-describedby="' + id + 'D">' +
@@ -598,11 +651,11 @@
     var parts = [];
     if (E.gauge) parts.push(E.gauge);
     // which mark is snow and which is rain, in plain words (Sig, 2026-10-13: tell them apart at a glance)
-    if (E.full) parts.push(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow');
+    if (E.full) parts.push(tr(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow'));
     if (E.snowNote) parts.push(E.snowNote);
     /* Gaps, said short (Sig, 2026-10-15: the full sentence was too long for the foot line; the page's station line
        explains them in full). Three or fewer missing days say nothing on the print; more give the count. */
-    if (E.missing > GAP_QUIET) parts.push('Gaps: ' + E.missing + ' days with no report');
+    if (E.missing > GAP_QUIET) parts.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');
     (extra || []).forEach(function (t) { if (t) parts.push(t); });
     if (!parts.length) return null;
     var SEP = '  ·  ', st0 = { size: 15, fill: C.mute }, lines = [parts.join(SEP)];
@@ -772,10 +825,10 @@
     var months = [];
     E.starts.forEach(function (b, m) {
       var cx = (xs(b) + xs(E.ends[m])) / 2;
-      months.push([cx, MY, MON[m].toUpperCase(), { w: 500, size: 17, ls: 0.16, fill: C.ink, anchor: 'middle' }]);
+      months.push([cx, MY, monCap(m), { w: 500, size: 17, ls: 0.16, fill: C.ink, anchor: 'middle' }]);
       if (showN && E.monthHas[m]) {
-        months.push([cx, MY + 26, f2(E.month[m]) + (m === 0 ? ' in' : ''), { w: 500, size: 19, fill: C.rain, anchor: 'middle' }]);
-        months.push([cx, MY + 48, (m === 0 ? 'usual ' : '') + f2(E.mN[m]), { size: 15, fill: C.mute, anchor: 'middle' }]);
+        months.push([cx, MY + 26, rainNum(E.month[m], 'tot') + (m === 0 ? ' ' + rU() : ''), { w: 500, size: 19, fill: C.rain, anchor: 'middle' }]);
+        months.push([cx, MY + 48, (m === 0 ? tr('usual') + ' ' : '') + rainNum(E.mN[m], 'tot'), { size: 15, fill: C.mute, anchor: 'middle' }]);
       }
     });
     months.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'months'); });
@@ -790,7 +843,7 @@
     var dry = null, extraLines = [];
     if (E.dry && E.dry.len >= printDryMin(I)) {
       var da = xs(E.dry.s), db = xs(E.dry.e + 1);
-      dry = { a: da, b: db, text: E.dry.len + ' dry days', st: { size: 17, fill: C.mute, it: true } };
+      dry = { a: da, b: db, text: E.dry.len + (LOC.fr ? ' jours secs' : ' dry days'), st: { size: 17, fill: C.mute, it: true } };
       room.seg(da, RY - 24, da, RY - 18, 0.9, 'dry', 'lead'); room.seg(da, RY - 18, db, RY - 18, 0.9, 'dry', 'lead'); room.seg(db, RY - 24, db, RY - 18, 0.9, 'dry', 'lead');
     }
 
@@ -800,7 +853,7 @@
     var dateRows = [RY, RY + 26, RY + 52];
     var placedDates = [], labelOf = {};
     // ---- the header: verdict and the small facts, upper left inside the plot (the early year sits low there)
-    var head = E.verdict || (E.T + ' inches of ' + E.liquid + E.soFar);
+    var head = E.verdict || (LOC.fr ? E.TU + ' de ' : LOC.mm ? E.TU + ' of ' : E.T + ' inches of ') + E.liquid + E.soFar;
     var facts = [];
     if (E.snowText) facts.push(E.snowText + ' (' + E.snowKey + ')');
     facts.push(E.daysText);
@@ -811,10 +864,11 @@
     var yN = { fam: SERIF, w: 600, size: 40, fill: C.rain }, yL = { size: 19, w: 500, fill: C.rain };
     var uN = { fam: SERIF, w: 400, size: 32, fill: C.mute }, uL = { size: 19, fill: C.mute };
     var lineSt = { size: 19, w: 500, fill: C.rec };
-    var yLab = (E.full ? 'your year, rain and melted snow' : E.snowState === 'none' ? 'your year, rain' : 'your year') + E.soFar;
-    var uLab = E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year';
+    var yLab = tr(E.full ? 'your year, rain and melted snow' : E.snowState === 'none' ? 'your year, rain' : 'your year') + E.soFar;
+    var uLab = tr(E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year');
+    var nU = E.cmp ? rainAmt(E.normalRec, 'tot') : '';
     // the key row keys two lines; with nothing to compare, the headline already says the total, so it goes (no total said twice)
-    var keyW = E.cmp ? 46 + W(E.T + ' in', yN) + 10 + W(yLab, yL) + 40 + 46 + W(f2(E.normalRec) + ' in', uN) + 10 + W(uLab, uL) : 0;
+    var keyW = E.cmp ? 46 + W(E.TU, yN) + 10 + W(yLab, yL) + 40 + 46 + W(nU, uN) + 10 + W(uLab, uL) : 0;
     var hLines = recs.lines.concat(extraLines).concat(wetHead ? [E.wetText] : []);
     var hw = Math.max(W(head, hs), W(factLine, fs), keyW, Math.max.apply(null, [0].concat(hLines.map(function (t) { return W(t, lineSt); }))));
     var keyH = E.cmp ? 62 : 6;   // facts baseline: 102 under the headline with the key row, 46 without
@@ -823,11 +877,11 @@
       var HY = TOP + 62, KY = HY + keyH, kx = HX, p = [T(HX, HY, head, hs)];
       if (E.cmp) {
         p.push(line(kx, KY - 12, kx + 34, KY - 12, C.rain, 4.6)); kx += 46;
-        p.push(T(kx, KY, E.T + ' in', yN)); kx += W(E.T + ' in', yN) + 10;
+        p.push(T(kx, KY, E.TU, yN)); kx += W(E.TU, yN) + 10;
         p.push(T(kx, KY, yLab, yL)); kx += W(yLab, yL);
         kx += 40;
         p.push('<path d="M' + n2(kx) + ',' + (KY - 12) + 'h34" stroke="' + C.mute + '" stroke-width="2.2" stroke-dasharray="9 6"/>'); kx += 46;
-        p.push(T(kx, KY, f2(E.normalRec) + ' in', uN)); kx += W(f2(E.normalRec) + ' in', uN) + 10;
+        p.push(T(kx, KY, nU, uN)); kx += W(nU, uN) + 10;
         p.push(T(kx, KY, uLab, uL));
       }
       p.push(T(HX, KY + 40, factLine, fs));
@@ -837,8 +891,11 @@
 
     // ---- the scale, and where the header can sit without the year's lines running through it
     var top = Math.max(E.total, E.cmp ? E.normalRec : 0, 1);
-    var step = top > 50 ? 10 : top > 12 ? 5 : top > 5 ? 2 : 1;
-    var dom0 = Math.ceil(top / step - 1e-6) * step;
+    /* metric: the steps are picked in mm (a round 50, 100 or 200 mm), then worked in inches like the rest */
+    var K = LOC.mm ? MM : 1, topK = top * K;
+    var stepK = LOC.mm ? (topK > 2000 ? 500 : topK > 1000 ? 200 : topK > 400 ? 100 : topK > 150 ? 50 : topK > 60 ? 20 : 10) : (top > 50 ? 10 : top > 12 ? 5 : top > 5 ? 2 : 1);
+    var step = stepK / K;
+    var dom0 = Math.ceil(topK / stepK - 1e-6) * stepK / K;
     function geom(dom) {
       var y = function (v) { return PB - v * (PB - PTOP) / dom; }, segs = [], prev = 0, pen = false;
       var addH = function (x1, x2, yy) { var L = segs[segs.length - 1]; if (L && L[1] === yy && L[3] === yy && Math.abs(L[2] - x1) < 1e-6) L[2] = x2; else segs.push([x1, yy, x2, yy]); };
@@ -885,7 +942,8 @@
       tickVals.push(v);
     }
     var topTick = tickVals[tickVals.length - 1];
-    var tickText = function (v) { return v === topTick && (v > 0 || tickVals.length === 1) ? v + ' in' : String(v); };
+    var tickNum = function (v) { return LOC.mm ? num(Math.round(v * MM), 0) : String(+v.toFixed(6)); };
+    var tickText = function (v) { return v === topTick && (v > 0 || tickVals.length === 1) ? tickNum(v) + ' ' + rU() : tickNum(v); };
     for (v = 0; v <= dom + 1e-9; v += step) if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft');
     tickVals.forEach(function (v) { room.text(box(X0 - 14, y(v) + 5, tickText(v), { size: 15, anchor: 'end' }), 'axis'); });
     g.stair.forEach(function (s) { room.add({ s: s, sw: STAIR_W, own: 'data', k: 'data' }); });
@@ -994,7 +1052,7 @@
         });
       });
       if (dsol) { dry.at = dsol; room.text(dsol.b, 'dry'); }
-      else { extraLines.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range); dry.at = null; }
+      else { extraLines.push(LOC.fr ? 'Plus longue période sèche : ' + E.dry.len + ' jours, ' + E.dry.range : 'Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range); dry.at = null; }
     }
 
     // ---- remarkable days: a small open ring on the line, a label clear of everything
@@ -1118,11 +1176,24 @@
      the chart (to the next tenth of an inch), the tallest snow pile the top of the snow band. They used to have
      floors of 2 in and 8 in, so a dry year was a strip of short bars over blank paper. */
   function niceRain(maxP) {
+    if (LOC.mm) {
+      // metric: to the next whole mm, ticks at round mm; returned in inches with the mm to print (lab)
+      var dm = Math.max(12, Math.ceil(maxP * MM - 1e-6));
+      var tm = dm <= 50 ? [10, 20, 30, 40, 50] : dm <= 100 ? [20, 40, 60, 80, 100] : dm <= 200 ? [50, 100, 150, 200] : [100, 200, 300, 400];
+      tm = tm.filter(function (t) { return t <= dm + 1e-9; });
+      return { dom: dm / MM, ticks: tm.map(function (t) { return t / MM; }), lab: tm.map(function (t) { return num(t, 0); }) };
+    }
     var dom = Math.max(0.5, Math.ceil(maxP * 10 - 1e-6) / 10);
     var ticks = dom <= 2 ? [0.5, 1, 1.5, 2] : dom <= 4 ? [0.5, 1, 2, 3, 4] : dom <= 8 ? [1, 2, 4, 6, 8] : [2, 4, 8, 12, 16];
     return { dom: dom, ticks: ticks.filter(function (t) { return t <= dom + 1e-9; }) };
   }
-  function niceSnow(maxS) {
+  // the snow scale in cm: the same steps, picked in cm, returned in inches with the cm to print (lab)
+  function niceSnowCm(maxS) {
+    var c = niceSnowIn(Math.max(0.5, (maxS || 0) * CM));
+    return { dom: c.dom / CM, ticks: c.ticks.map(function (t) { return t / CM; }), lab: c.ticks.map(function (t) { return num(t, 0); }) };
+  }
+  function niceSnow(maxS) { return LOC.mm ? niceSnowCm(maxS) : niceSnowIn(maxS); }
+  function niceSnowIn(maxS) {
     // at most four steps on the short snow scale (a 40 in day once drew eight labels on top of each other)
     var m = Math.max(0.5, maxS || 0), steps = [1, 2, 4, 5, 10, 20, 25, 50, 100], step = steps[steps.length - 1], ticks = [];
     for (var k = 0; k < steps.length; k++) if (Math.ceil(m / steps[k] - 1e-9) <= 4) { step = steps[k]; break; }
@@ -1154,15 +1225,15 @@
     var NAME_MAX = 78, py = E.name ? 202 : 196;
     function layTotals() {
       totals = [];
-      totals.push([X1, 214, E.T + ' in', Object.assign({ anchor: 'end' }, big)]);
-      totals.push([X1, 140, (E.liquid + (E.soFar ? ', so far' : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }]);
+      totals.push([X1, 214, E.TU, Object.assign({ anchor: 'end' }, big)]);
+      totals.push([X1, 140, (E.liquid + (E.soFar ? (LOC.fr ? ', jusqu’ici' : ', so far') : '')).toUpperCase(), { w: 500, size: 14, ls: 0.16, fill: C.mute, anchor: 'end' }]);
       if (E.verdict) totals.push([X1, 254, E.verdict, vst]);
-      rightEdge = X1 - W(E.T + ' in', big);
+      rightEdge = X1 - W(E.TU, big);
       if (E.full) {
-        var bxs = Math.min(rightEdge - 70, X1 - W(totals[1][2], totals[1][3]) - 40);
-        totals.push([bxs, 214, E.snowTot.toFixed(1) + ' in', Object.assign({ fill: C.snowInk, anchor: 'end' }, snowBig)]);
-        totals.push([bxs, 140, 'SNOWFALL', { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }]);
-        rightEdge = bxs - W(E.snowTot.toFixed(1) + ' in', snowBig);
+        var bxs = Math.min(rightEdge - 70, X1 - W(totals[1][2], totals[1][3]) - 40), sTot = LOC.mm ? snowAmt(E.snowRaw) : E.snowTot.toFixed(1) + ' in';
+        totals.push([bxs, 214, sTot, Object.assign({ fill: C.snowInk, anchor: 'end' }, snowBig)]);
+        totals.push([bxs, 140, tr('SNOWFALL'), { w: 500, size: 14, ls: 0.16, fill: C.snowInk, anchor: 'end' }]);
+        rightEdge = bxs - W(sTot, snowBig);
       }
       leftRoom = rightEdge - 50 - TX;
     }
@@ -1203,8 +1274,8 @@
 
     // guides and scales
     var axisT = [];
-    R.ticks.forEach(function (t) { room.seg(X0, ry(t), X1, ry(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, ry(t) + 5, String(t), { size: 15, fill: C.mute, anchor: 'end' }]); });
-    if (E.full) S.ticks.forEach(function (t) { room.seg(X0, sy(t), X1, sy(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, sy(t) + 5, String(t), { size: 15, fill: C.snowInk, anchor: 'end' }]); });
+    R.ticks.forEach(function (t, k) { room.seg(X0, ry(t), X1, ry(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, ry(t) + 5, R.lab ? R.lab[k] : String(t), { size: 15, fill: C.mute, anchor: 'end' }]); });
+    if (E.full) S.ticks.forEach(function (t, k) { room.seg(X0, sy(t), X1, sy(t), 0.7, 'axis', 'soft'); axisT.push([X0 - 14, sy(t) + 5, S.lab ? S.lab[k] : String(t), { size: 15, fill: C.snowInk, anchor: 'end' }]); });
 
     // bars: a snow day shows only above the line (its melted water still counts in the total)
     // bars 0.85 of a day, so a year reads as a texture across the room, not hairlines (panel 4, 2026-10-14; were 0.66)
@@ -1239,20 +1310,20 @@
     if (E.wi >= 0) { wcx = xs(E.wi); wy2 = ry(E.wet.p); barBoxes.push(room.add({ b: { x: wcx - 1.9, y: G + 1.5, w: 3.8, h: wy2 - G - 1.5 }, own: 'wet', k: 'mark' }).b); }
 
     // the scale's names: rain at the foot of its scale, or under the soil if a bar is in the way
-    var rainTitle = E.full ? 'rain, in' : E.liquid + ', in', rtSt = { size: 15, fill: C.mute };
+    var rainTitle = (E.full ? tr('rain') : E.liquid) + ', ' + rU(), rtSt = { size: 15, fill: C.mute };
     var rty = [ry(R.ticks[R.ticks.length - 1]) + 36, RB + 24].filter(function (yy) { return room.free(box(ML, yy, rainTitle, rtSt), 'axis', false); })[0] || RB + 24;
     axisT.push([ML, rty, rainTitle, rtSt]);
-    if (E.full) axisT.push([ML, sy(S.dom) - 14, 'snow, in', { size: 15, fill: C.snowInk }]);
+    if (E.full) axisT.push([ML, sy(S.dom) - 14, tr('snow') + ', ' + sU(), { size: 15, fill: C.snowInk }]);
     put(axisT, 'axis');
 
     // month labels and totals; with normals on, each month's normal under its total
     var MY = 316, TY = 345, months = [];
     E.starts.forEach(function (b, m) {
       var cx2 = X0 + (b + E.ends[m]) / 2 * w;
-      months.push([cx2, MY, MON[m].toUpperCase(), { w: 500, size: 14, ls: 0.18, fill: C.mute, anchor: 'middle' }]);
+      months.push([cx2, MY, monCap(m), { w: 500, size: 14, ls: 0.18, fill: C.mute, anchor: 'middle' }]);
       if (!E.monthHas[m]) return;
-      months.push([cx2, TY, f2(E.month[m]) + (m === 0 ? ' in' : ''), { w: 500, size: 20, anchor: 'middle' }]);
-      if (E.showN) months.push([cx2, TY + 23, (m === 0 ? 'usual ' : '') + f2(E.mN[m]), { size: 15, fill: C.mute, anchor: 'middle' }]);
+      months.push([cx2, TY, rainNum(E.month[m], 'tot') + (m === 0 ? ' ' + rU() : ''), { w: 500, size: 20, anchor: 'middle' }]);
+      if (E.showN) months.push([cx2, TY + 23, (m === 0 ? tr('usual') + ' ' : '') + rainNum(E.mN[m], 'tot'), { size: 15, fill: C.mute, anchor: 'middle' }]);
     });
     put(months, 'months');
     var mBoxes = months.map(function (t) { return box(t[0], t[1], t[2], t[3]); });
@@ -1393,7 +1464,7 @@
     var dryAt = null;
     if (E.dry) {
       var da = X0 + E.dry.s * w, db = X0 + (E.dry.e + 1) * w, dcx = (da + db) / 2;
-      var ds = E.dry.len + ' dry days', dst = { it: true, size: 15, fill: C.mute, anchor: 'middle' };
+      var ds = E.dry.len + (LOC.fr ? ' jours secs' : ' dry days'), dst = { it: true, size: 15, fill: C.mute, anchor: 'middle' };
       var dw = W(ds, dst), dc = [];
       for (var dd2 = 0; dd2 <= (db - da) / 2 + 4; dd2 += 6) [dcx - dd2, dcx + dd2].forEach(function (x) { if (x >= da && x <= db && dc.indexOf(x) < 0) dc.push(x); });
       [G + 30, G + 52].some(function (yy) {
@@ -1406,8 +1477,8 @@
       });
       if (dryAt) room.text(dryAt.b, 'dry');
     }
-    if (E.dry && !dryAt) foot.push('Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
-    else if (E.dry) foot.push(E.dry.len + ' dry days: ' + E.dry.range);
+    if (E.dry && !dryAt) foot.push(LOC.fr ? 'Plus longue période sèche : ' + E.dry.len + ' jours, ' + E.dry.range : 'Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
+    else if (E.dry) foot.push(LOC.fr ? E.dry.len + ' jours secs : ' + E.dry.range : E.dry.len + ' dry days: ' + E.dry.range);
     var small = smallLine(E, ML, 1440, foot);
 
     // ================= draw, back to front
@@ -1465,6 +1536,7 @@
   var last_skipped = [], last_logo = null, last_forced = false, last_unplaced = [];
   function render(I) {
     measure = typeof I.measure === 'function' ? I.measure : defaultMeasure;
+    setLoc(I.loc);
     var all = (I.markers || []).map(function (mk, k) { return { mk: mk, k: k }; }), n = (I.days || []).length;
     var live = all.filter(function (m) { return m.mk && m.mk.doy >= 0 && m.mk.doy < n; }).slice(0, MAX_MARKS), out = [], svg;
     for (;;) {
@@ -1485,6 +1557,8 @@
     lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
     logoSize: logoSize, lastLogo: function () { return last_logo ? Object.assign({}, last_logo) : null; },
-    STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW
+    STYLES: ['r1', 'r2'], W: W0, H: H0, QR_INK: QR_INK, INK: C.ink, roughW: roughW,
+    // the French words on the print, for the review list and the tests (FR-REVIEW)
+    FR: FR, MON_FR: MON_FR
   };
 })(typeof window !== 'undefined' ? window : this);
