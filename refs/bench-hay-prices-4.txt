@@ -1,0 +1,89 @@
+# Benchmark hay-prices: USDA AMS national hay summary (3183)
+# https://www.ams.usda.gov/mnreports/AMS_3183.pdf
+# fetched 2026-10-16T15:42:53Z, sha256 30ae3c93ee26b3fc9d89fc34bbaa6cc0b0f840cf81d609ea1698c53590096d41
+
+                      South Dakota Direct Hay Report
+                      AMS Livestock, Poultry and Grain Market News
+                      SD Dept. of Ag Market News                                                                          Fri Oct 16, 2026
+
+Email us with accessibility issues with this report.
+
+
+
+Direct Hay Weighted Average Report for week ending 10/16/2026
+
+Good to very good demand for all classes of hay. Best demand is coming from western South Dakota where the drought has been severe and
+little hay was made this year. Grass hay supplies are limited as the weather wasn't conducive to growing grass as it was dry during April and
+May. Drought has gripped the eastern side of the state as well, some areas are very short and made substantially less hay than normal, while
+in others spots the alfalfa produced pretty well.
+
+                                                                   Volume
+                                                       This Week                         Last Reported                      Last Year
+                                                                                          (8/31/2026)
+Tons:
+                   Hay                                   1625                                  625                            1650
+                  Straw                                    0                                    0                             1700
+                  Total                                  1625                                  625                            3350
+
+Please Note: The above volumes (tonnage, acres, and bales) listed on this USDA LPGMN report are for confirmed trades only, it does not
+include estimated volume (tonnage) for bids or offers to the trade.
+
+                                                                    N/A
+                                                           Hay (Conventional)
+Alfalfa - Supreme (Trade/Per Ton)
+                           Qty         Price Range      Wtd Avg               Freight/Use                   Description          Crop Age
+Large Square 3x4           250           300.00         300.00                   F.O.B.
+
+Alfalfa - Premium (Trade/Per Ton)
+                           Qty         Price Range      Wtd Avg               Freight/Use                   Description          Crop Age
+Large Round                200           210.00         210.00                   F.O.B.
+
+Large Square 3x4           250            250.00        250.00                  F.O.B.
+
+Alfalfa - Good/Premium (Trade/Per Ton)
+                           Qty         Price Range      Wtd Avg               Freight/Use                   Description          Crop Age
+Large Round                500           200.00         200.00                   F.O.B.
+
+Alfalfa - Fair (Trade/Per Ton)
+                           Qty         Price Range      Wtd Avg               Freight/Use                   Description          Crop Age
+Large Round                125           180.00         180.00                   F.O.B.
+
+Grass - Premium (Trade/Per Ton)
+                           Qty         Price Range      Wtd Avg               Freight/Use                   Description          Crop Age
+Large Round                100           200.00         200.00                   F.O.B.
+
+
+
+
+Source:    USDA AMS Livestock, Poultry & Grain Market News                                                                    Page 1 of 2
+           General inquiries, please call: (202) 720-1990 or email: mymarketnews@usda.gov
+           http://www.ams.usda.gov/lpgmn
+           https://mymarketnews.ams.usda.gov/ | https://mymarketnews.ams.usda.gov/viewReport/3183
+                      South Dakota Direct Hay Report
+                      AMS Livestock, Poultry and Grain Market News
+                      SD Dept. of Ag Market News                                                              Fri Oct 16, 2026
+
+Email us with accessibility issues with this report.
+
+
+Grass - Good (Trade/Per Ton)
+                           Qty         Price Range     Wtd Avg          Freight/Use             Description         Crop Age
+Large Round                200           175.00        175.00              F.O.B.
+
+
+Click here for more information on Hay Quality Designation Guidelines
+
+https://www.ams.usda.gov/sites/default/files/media/HayQualityGuidelines.pdf
+
+Click here for Hay glossary of terms
+
+https://www.ams.usda.gov/market-news/livestock-poultry-and-grain-hay-terms
+
+
+
+
+Source:    USDA AMS Livestock, Poultry & Grain Market News                                                        Page 2 of 2
+           General inquiries, please call: (202) 720-1990 or email: mymarketnews@usda.gov
+           http://www.ams.usda.gov/lpgmn
+           https://mymarketnews.ams.usda.gov/ | https://mymarketnews.ams.usda.gov/viewReport/3183
+

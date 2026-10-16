@@ -1,0 +1,31 @@
+# Benchmark hay-prices: Hay & Forage Grower monthly alfalfa price column
+# https://hayandforage.com/article-3036-Alfalfa-price-jumps-$6-during-April.html
+# fetched 2026-10-16T15:42:49Z, sha256 9f8990dc401ecc82fe8c84f133c975a55d0800907ad5246bf21525de735f67cb
+
+Alfalfa price jumps $6 during April | Hay and Forage Magazine
+
+The monthly U.S. average alfalfa price for April climbed $6 per ton after making a $4 per ton gain for April. The latest USDA Agricultural Prices report pegged alfalfa at $181 per ton, which still is $17 per ton lower than one year ago.
+
+In most years, the top alfalfa average price occurs in April or May. Last year, it peaked in May at $204 per ton before retreating to $175 by year’s end.
+
+Interestingly, only one state posted a double-digit price gain, and that was Idaho with a $10 per ton improvement.
+
+Double-digit price decliners included only Pennsylvania, down $24 per ton, and New York, down $20.
+
+The highest average alfalfa hay prices were reported in Pennsylvania ($241 per ton), Colorado ($230), New York ($223), and New Mexico ($220).
+
+The lowest prices were posted in North Dakota ($90 per ton), South Dakota ($102), and Nebraska ($111).
+
+Keep in mind that the USDA average prices account for all qualities of hay sold. Also, the final U.S. estimate is a volume-weighted average rather than a simple average of state values. Those states with the most volume sales will impact the final U.S. dollar value more than those states with fewer sales.
+
+The USDA also tracks the prices of Premium and Supreme quality alfalfa in the major dairy states and determines an average price from the five leading milk-producing states. This data is being used to determine feed prices in the Dairy Margin Coverage (DMC) program.
+
+For April, the average price of Premium and Supreme alfalfa hay increased by $4 per ton to $209 after dropping by $5 per ton last month. A year ago, the average price of Premium and Supreme alfalfa hay was $219 per ton.
+
+Other hay
+
+The April average price of other hay (mostly grass hay) dropped by $6 per ton from the previous month to $124. It marked the second consecutive $6 per ton monthly drop.
+
+The highest prices for hay other than alfalfa were reported in Colorado ($225 per ton), Arizona ($190), and New Mexico ($190).
+
+States with the lowest reported other hay average prices included North Dakota ($67 per ton), South Dakota ($81), and Oklahoma ($85).
