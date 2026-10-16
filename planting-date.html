@@ -142,11 +142,15 @@ html[data-theme="light"]{--pd-red:#b3432c}
 .frost-table .p10{color:var(--green)}.frost-table .p50{color:var(--gold);font-weight:700}.frost-table .p90{color:var(--pd-red)}
 .frost-table td{font-family:'JetBrains Mono',monospace}
 .frost-table td:first-child{font-family:var(--font-body)}
+.frost-table td+td{white-space:nowrap}
+@media(max-width:480px){.frost-table th,.frost-table td{padding:.35rem .3rem}}
 .gdu-table tr.mine td{background:rgba(230,176,66,.12)}
 .soil-table .ok{color:var(--green)}.soil-table .mid{color:var(--gold)}.soil-table .bad{color:var(--pd-red)}
 /* Phone: the yield table's notes drop to a full-width line under each row, so no sideways scroll */
 @media(max-width:560px){
-  .pen-table:not(.soil-table) thead tr,.pen-table:not(.soil-table) tbody tr{display:grid;grid-template-columns:3.6rem minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr)}
+  .pen-table:not(.soil-table) thead tr,.pen-table:not(.soil-table) tbody tr{display:grid;grid-template-columns:4.3rem minmax(0,1fr) minmax(0,1.1fr) minmax(0,1.3fr)}
+  .pen-table:not(.soil-table) td:first-child{white-space:nowrap}
+  .pen-table:not(.soil-table) th,.pen-table:not(.soil-table) td{padding-left:.3rem;padding-right:.3rem}
   .pen-table:not(.soil-table) td.pen-note{grid-column:1/-1;padding-top:0}
   .pen-table:not(.soil-table) th.pen-note{display:none}
   .pen-table:not(.soil-table) td,.pen-table:not(.soil-table) th{border-bottom:none}

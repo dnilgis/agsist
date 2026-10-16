@@ -239,7 +239,7 @@ function renderPenaltyTable(){
     : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day past May 1, a straight line; the row colour uses the 0.4 middle. Rates from <a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison (Conley)</a>: about 0.4 bu/a a day past May 1, 0.2&ndash;0.5 after Apr 25. Actual loss varies by year, variety and field.';
   $('penalty-section').innerHTML = '<div class="pd-card"><h2 class="pd-card-title">'+(isCorn?'Corn':'Soybean')+' Yield Penalty by Planting Date</h2>'
     +'<div class="pen-wrap"><table class="pen-table">'
-    +'<thead><tr><th>Planted</th><th>% of max</th><th>Loss</th><th>Est. yield</th><th class="pen-note">Notes</th></tr></thead>'
+    +'<thead><tr><th>Planted</th><th>% max</th><th>Loss</th><th>Est. yield</th><th class="pen-note">Notes</th></tr></thead>'
     +'<tbody>'+rows+'</tbody></table></div>'
     +'<p class="f-hint">'+foot+'</p></div>';
 }
