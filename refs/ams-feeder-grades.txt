@@ -1,0 +1,95 @@
+# USDA AMS: feeder cattle grades and standards
+# https://www.ams.usda.gov/grades-standards/feeder-cattle-grades-and-standards
+# fetched 2026-10-16T03:47:44Z, sha256 40a2b9e9f8ad671a9b1fe7bb5647c7fa865e06a63c38672917598bdf827e9afa
+
+Feeder Cattle Grades and Standards | Agricultural Marketing ServiceLock
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Grades of Thrifty Feeder Cattle (Frame Size)
+
+-
+
+Large Frame (L). Feeder cattle which possess typical minimum qualifications for this grade are thrifty, have large frames, and are tall and long bodied for their age. Steers and heifers would not be expected to produce U.S. Choice carcasses (about 0.50 inch fat at twelfth rib) until their live weights exceed 1250 pounds and 1150 pounds, respectively.
+
+-
+
+Medium Frame (M). Feeder cattle which possess typical minimum qualifications for this grade are thrifty, have slightly large frames, and are slightly tall and slightly long bodied for their age. Steers and heifers would be expected to produce U.S. Choice carcasses (about 0.50 inch fat at twelfth rib) at live weights of 1100 to 1250 pounds and 1000 to 1150 pounds, respectively.
+
+-
+
+Small Frame (S). Feeder cattle included in this grade are thrifty, have small frames, and shorter bodied and not as tall as specified as the minimum for the Medium Frame grade. Steers and heifers would be expected to produce U.S. Choice carcasses (about 0.50 inch fat at twelfth rib) at live weights ofless than 1100 pounds and 1000 pounds, respectively.
+
+Grades of Thrifty Feeder Cattle (Thickness)
+
+-
+
+No. 1. Feeder cattle which possess minimum qualifications for this grade usually display predominate beef breeding. They must be thrifty and moderately thick throughout. They are moderately thick and full in the forearm and gaskin, showing a rounded appearance through the back and loin with moderate width between the legs, both front and rear. Cattle show this thickness with a slightly thin covering of fat; however, cattle eligible for this grade may carry varying degrees of fat.
+
+-
+
+No. 2. Feeder cattle which possess minimum qualifications for this grade usually show a high proportion of beef breeding and slight dairy breeding may be detected. They must be thrifty and tend to be slightly thick throughout. They tend to be slightly thick and full in the forearm and gaskin, showing a rounded appearance through the back and loin with slight width between the legs, both front and rear. Cattle show this thickness with a slightly thin covering of fat; however, cattle eligible for this grade may carry varying degrees of fat.
+
+-
+
+No. 3. Feeder cattle which possess minimum qualifications for this grade are thrifty and thin through the forequarter and the middle part of the rounds. The forearm and gaskin are thin and the back and loin have a sunken appearance. The legs are set close together, both front and rear. Cattle show this narrowness with a slightly thin covering of fat; however, cattle eligible for this grade may carry varying degrees of fat.
+
+-
+
+No. 4. Feeder cattle included in this grade are thrifty animals which have less thickness than the minimum requirements specified for the No.3 grade.
+
+Grades of Unthrifty Feeder Cattle
+
+1.Inferior. This grade includes those feeder cattle which are not expected to perform normally in their present state and those that are "double-muscled." Cattle in this grade may have any combination of thickness and frame size.
+
+Detailed standards, Inspection Instructions & Other Resources:
+
+- U.S. Grade Standards for Feeder Cattle (pdf)
+
+-
+
+U.S. Feeder Cattle Grade Standard Presentation

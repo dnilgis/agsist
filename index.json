@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T03:22:40Z",
+ "run_utc": "2026-10-16T03:47:44Z",
  "sources": [
   {
    "bytes": null,
@@ -1895,6 +1895,56 @@
    "checked_utc": "2026-10-16T03:22:38Z",
    "error": "direct/python: HTTP 404; direct/curl: HTTP 404; wayback: availability API: Too Many Requests",
    "status": "failed"
+  },
+  {
+   "bytes": 135657,
+   "sha256": "46e07df8c5a8f63d19f21dba30bdfbf6f4ff6bbb8adc9f78619ba50923911daa",
+   "fetched_utc": "2026-10-16T03:47:42Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/ams-feeder-auction-list.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "ams-feeder-auction-list",
+   "url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
+   "title": "USDA AMS: feeder and replacement cattle auction reports, by state",
+   "why": "/cattle-auction-prices: which barns USDA reports on and their report numbers",
+   "kind": "html",
+   "checked_utc": "2026-10-16T03:47:42Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 36975
+  },
+  {
+   "bytes": 49020,
+   "sha256": "40a2b9e9f8ad671a9b1fe7bb5647c7fa865e06a63c38672917598bdf827e9afa",
+   "fetched_utc": "2026-10-16T03:47:44Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/ams-feeder-grades.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "ams-feeder-grades",
+   "url": "https://www.ams.usda.gov/grades-standards/feeder-cattle-grades-and-standards",
+   "title": "USDA AMS: feeder cattle grades and standards",
+   "why": "/cattle-auction-prices FAQ: what Medium and Large 1 and 1-2 mean",
+   "kind": "html",
+   "checked_utc": "2026-10-16T03:47:43Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3384
   }
  ]
 }

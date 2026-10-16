@@ -1,0 +1,1083 @@
+# USDA AMS: feeder and replacement cattle auction reports, by state
+# https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions
+# fetched 2026-10-16T03:47:42Z, sha256 46e07df8c5a8f63d19f21dba30bdfbf6f4ff6bbb8adc9f78619ba50923911daa
+
+Feeder and Replacement Cattle Auctions | Agricultural Marketing ServiceLock
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Sales of Feeder Cattle are reported at local auctions. Information is collected and reports are listed by state.
+
+- Alabama
+
+- Arkansas
+
+- Colorado
+
+- Florida
+
+- Georgia
+
+- Illinois
+
+- Indiana
+
+- Iowa
+
+- Kansas
+
+- Kentucky
+
+- Maryland
+
+- Mississippi
+
+- Missouri
+
+- Montana
+
+- Nebraska
+
+- New Mexico
+
+- New York
+
+- North Carolina
+
+- North Dakota
+
+- Oklahoma
+
+- Pennsylvania
+
+- South Carolina
+
+- South Dakota
+
+- Tennessee
+
+- Texas
+
+- Utah
+
+- Virginia
+
+- Washington
+
+- West Virginia
+
+- Wyoming
+
+Alabama
+
+- Alabama Daily Cattle Auction Summary (pdf)
+
+- Alabama Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Alabama Weekly Market Recap (Mon) (pdf)
+
+- Alabama Association Board Sale (Seasonal) (pdf)
+
+- Alabama Livestock Auction – Cattle Auction – Uniontown, AL (Tue) (pdf)
+
+- Alabama Livestock Auction – Feeder Cattle Board Sale – Uniontown, AL (Tue) (pdf)
+
+- Alabama Livestock Auction – Replacement Cattle Special – Uniontown, AL (Seasonal) (pdf)
+
+- Arab Livestock Market – Cattle Auction – Arab, AL (Tue) (pdf)
+
+- Arab Livestock Market – Feeder Cattle Board Sale – Arab, AL (Tue) (pdf)
+
+- Ashville Stockyard – Cattle Auction – Ashville, AL (Mon) (pdf)
+
+- Clay County Livestock Auction – Cattle Auction – Lineville, AL (Tue) (pdf)
+
+- Clay County Livestock Auction – Feeder and Replacement Cattle Special – Lineville, AL (Seasonal) (pdf)
+
+- Coffee County Stockyards – Cattle Auction – New Brockton, AL (Mon) (pdf)
+
+- Coffee County Stockyards – Feeder and Replacement Cattle Special – New Brockton, AL (Seasonal) (pdf)
+
+- Cullman Stockyard – Cattle Auction – Cullman, AL (Tue) (pdf)
+
+- Cullman Stockyard – Feeder Cattle Board Sale – Cullman, AL (Tues) (pdf)
+
+- Cullman Stockyard – Replacement Cow and Bred Heifer Special – Cullman, AL (Seasonal) (pdf)
+
+- Dothan Livestock Co. – Cattle Auction – Dothan, AL (Mon) (pdf)
+
+- Dothan Livestock Co. – Feeder and Replacement Cattle Special – Dothan, AL (Seasonal) (pdf)
+
+- Dothan Livestock Co. – Feeder Cattle Board Sale – Dothan, AL (Seasonal) (pdf)
+
+- Frisco City Stockyard – Cattle Auction – Frisco City, AL (Wed) (pdf)
+
+- Frisco City Stockyard – Feeder Cattle Board Sale – Frisco City, AL (Wed) (pdf)
+
+- Mid State Stockyards Inc. – Cattle Auction – Letohatchee, AL (Tue) (pdf)
+
+- Mid State Stockyards Inc. – Feeder Cattle Board Sale – Letohatchee, AL (Tue) (pdf)
+
+- Mid State Stockyards Inc. – Replacement Cattle Special – Letohatchee, AL (Seasonal) (pdf)
+
+- Northwest Alabama Livestock – Cattle Auction – Russellville, AL (Mon) (pdf)
+
+- Northwest Alabama Livestock – Cattle Video/Board Sale – Russellville, AL (Seasonal) (pdf)
+
+- Opp Livestock – Cattle Auction – Opp, AL (Tue) (pdf)
+
+- Opp Livestock – Feeder Cattle Board Sale – Opp, AL (Tue) (pdf)
+
+- Roanoke Stockyards – Cattle Auction – Roanoke, AL (Wed) (pdf)
+
+- Roanoke Stockyards – Feeder Cattle Board Sale – Roanoke, AL (Wed) (pdf)
+
+- Sand Mountain Stockyards Inc. – Cattle Auction – Kilpatrick, AL (Wed) (pdf)
+
+- Sand Mountain Stockyards Inc. – Feeder Cattle Board Sale – Kilpatrick, AL (Wed) (pdf)
+
+- South Alabama Stockyards – Cattle Auction – Brundidge, AL (Wed) (pdf)
+
+- South Alabama Stockyards – Feeder Cattle Board Sale – Brundidge, AL (Wed) (pdf)
+
+- South Alabama Stockyards – Replacement Cattle Special – Brundidge, AL (Seasonal) (pdf)
+
+- Tennessee Valley Livestock – Cattle Auction – Florence, AL (Mon) (pdf)
+
+- Valley Livestock – Cattle Auction – Moulton, AL (Wed) (pdf)
+
+- Valley Livestock – Feeder Cattle Board Sale – Moulton, AL (Wed) (pdf)
+
+Arkansas
+
+- Arkansas Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Arkansas Cattle Auction LLC – Cattle Auction – Searcy, AR (Tue) (pdf)
+
+- Ash Flat Livestock – Cattle Auction – Ash Flat, AR (Fri) (pdf)
+
+- Benton County Sale Barn – Cattle Auction – Siloam Springs, AR (Thu) (pdf)
+
+- Cattlemen’s Livestock Exchange – Cattle Auction – Cord, AR (Thursday) (pdf)
+
+- Cleburne County Livestock – Cattle Auction – Heber Springs, AR (Mon) (pdf)
+
+- County Line Sale – Cattle Auction – Ratcliff, AR (Wed) (pdf)
+
+- Hope Livestock – Cattle Auction – Hope, AR (Thu) (pdf)
+
+- I-40 Livestock – Cattle Auction – Ozark, AR (Thu) (pdf)
+
+- I-40 Livestock – Feeder Cattle Special – Ozark, AR (Monthly)(pdf)
+
+- McGrew Livestock Auction – Cattle Auction – Glenwood, AR (Thu) (pdf)
+
+- Green Forest Stockyards – Cattle Auction – Green Forest, AR (Wed) (pdf)
+
+- Ouachita Livestock – Cattle Auction – Ola, AR (Tue) (pdf)
+
+Colorado
+
+- Centennial Livestock Monthly Dairy Feeder Cattle Sale – Fort Collins, CO (1st Mon) (pdf)
+
+- Centennial Livestock Auction – Stock Show Special – Fort Collins, CO (Seasonal) (pdf)
+
+- Colorado Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Livestock Exchange LLC – Cattle Auction – Brush, CO (Thu) (pdf)
+
+- Livestock Exchange LLC – Feeder Cattle Auction – Brush, CO (Fri) (pdf)
+
+- La Junta Livestock Commission Co. Inc. – Replacement Cattle Special – La Junta, CO (Seasonal) (pdf)
+
+- La Junta Livestock Commission Co. Inc. – Cattle Auction – La Junta, CO (Wed) (pdf)
+
+- Producers Livestock Auction – Stock Show Special – Greeley, CO (Seasonal) (pdf)
+
+- Sterling Livestock Commission Company Inc. – Cattle Auction – Sterling, CO (Wed) (pdf)
+
+- Sterling Livestock Commission Company Inc. – Stock Show Special – Sterling, CO (Seasonal) (pdf)
+
+- Winter Livestock Inc. – Cattle Auction – La Junta, CO (Tue) (pdf)
+
+- Winter Livestock Inc. – Feeder Cattle Auction – La Junta, CO (Seasonal – Mon) (pdf)
+
+- Winter Livestock Inc. – Replacement Cattle Special – La Junta, CO (Seasonal) (pdf)
+
+Florida
+
+- Arcadia Livestock Auction – Cattle Auction – Arcadia, FL (Mon) (pdf)
+
+- Arcadia Livestock Auction – Cattle Auction – Arcadia, FL (Wed) (pdf)
+
+- Cattlemen’s Livestock Auction – Cattle Auction – Lakeland, FL (Tue) (pdf)
+
+- Columbia Livestock Auction – Cattle Auction – Lake City, FL (Mon) (pdf)
+
+- Florida Daily Cattle Auction Summary (pdf)
+
+- Florida Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Ocala Livestock Auction – Cattle Auction – Ocala, FL (Mon) (pdf)
+
+- Okeechobee Livestock Auction – Cattle Auction – Okeechobee, FL (Mon) (pdf)
+
+- Okeechobee Livestock Auction – Cattle Auction – Okeechobee, FL (Tue) (pdf)
+
+- Sumter County Livestock Auction – Cattle Auction – Webster, FL (Tue) (pdf)
+
+- Townsend Livestock Auction – Cattle Auction – Madison, FL (Tue) (pdf)
+
+Georgia
+
+- Calhoun Stockyard – Cattle Auction – Calhoun, GA (Tue) (pdf)
+
+- Calhoun Stockyard – Feeder Cattle Board Sale – Calhoun, GA (Seasonal) (pdf)
+
+- Calhoun Stockyard – Feeder Cattle Special – Calhoun, GA (Seasonal) (pdf)
+
+- Carroll County Livestock – Cattle Auction – Carrollton, GA (Mon) (pdf)
+
+- Carroll County Livestock – Feeder Cattle Board Sale – Carrollton, GA (Seasonal) (pdf)
+
+- Duvall Livestock – Cattle Auction – Greensboro, GA (Mon) (pdf)
+
+- Eastanollee Livestock – Cattle Auction – Eastanollee, GA (Mon) (pdf)
+
+- Franklin County Livestock – Cattle Auction – Carnesville, GA (Tue) (pdf)
+
+- Georgia Daily Cattle Auction Summary (Daily) (pdf)
+
+- Georgia Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Georgia Weekly Market Recap (pdf)
+
+- Georgia Video Board Sale Weekly Cattle Summary (Fri) (pdf)
+
+- Jackson Regional Stockyards – Cattle Auction – Jackson, GA (Wed)(pdf)
+
+- Jackson Regional Stockyards – Special Cattle Auction – Jackson, GA (Seasonal)(pdf)
+
+- Mosely Livestock – Feeder Cattle Board Sale – Blakely, GA (pdf)
+
+- Moultrie Livestock – Cattle Auction – Moultrie, GA (Wed) (pdf)
+
+- Northeast Georgia Livestock – Cattle Auction – Athens, GA (Wed) (pdf)
+
+- Northeast Georgia Livestock Board Sales – Feeder Cattle Auction (Thu) (pdf)
+
+- Northeast Georgia Livestock – Feeder Cattle Special – Athens, GA (Monthly – Thu) (pdf)
+
+- Pulaski County Stockyard – Cattle Auction – Hawkinsville, GA (Tue) (pdf)
+
+- Seminole Livestock Exchange – Cattle Auction – Donalsonville, GA (Wed) (pdf)
+
+- Seminole Livestock Exchange – Feeder Cattle Board Sale – Donalsonville, GA (Seasonal) (pdf)
+
+- South Central Livestock – Cattle Auction – Fitzgerald, GA (Mon) (pdf)
+
+- Southern Livestock – Cattle Auction – Oak Park, GA (Tue) (pdf)
+
+- Thomasville Stockyard – Cattle Auction – Thomasville, GA (Tue) (pdf)
+
+- Thomasville Stockyard – Feeder Cattle Board Sale – Thomasville, GA (pdf)
+
+- Turner County Stockyard – Cattle Auction – Ashburn, GA (Wed) (pdf)
+
+- Turner County Stockyard – Feeder Cattle Board Sale – Ashburn, GA (pdf)
+
+- Upson County Livestock – Cattle Auction – Thomaston, GA (Mon) (pdf)
+
+- Upson County Livestock – Feeder and Replacement Cattle Auction – Thomaston, GA (Seasonal) (pdf)
+
+- Wilkes County Stockyard – Cattle Auction – Washington, GA (Tue) (pdf)
+
+Illinois
+
+- Illinois Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Fairview Livestock – Feeder and Replacement Cattle Special – Fairview, IL (Seasonal) (pdf)
+
+- Greenville Livestock Auction – Feeder and Replacement Cattle Special – Greenville, IL (Seasonal) (pdf)
+
+- Reel Livestock – Feeder and Replacement Cattle Special – Congerville, IL (Seasonal-Wed) (pdf)
+
+- Walnut Livestock Auction – Feeder and Replacement Cattle Special – Walnut, IL (Seasonal-Wed) (pdf)
+
+Indiana
+
+- Indiana Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Indianapolis Stockyards – Cattle Auction – Rockville, IN (Tue) (pdf)
+
+- Shipshewana Livestock – Cattle Auction – Shipshewana, IN (Wed) (pdf)
+
+- Springville Feeder Auction – Cattle Auction – Springville, IN (Seasonal - Fri) (pdf)
+
+- Stoney Pike Livestock – Cattle Auction – Logansport, IN (Thu) (pdf)
+
+- Topeka Livestock Auction – Cattle Auction – Topeka, IN (Tue) (pdf)
+
+- United Producers Inc. – Cattle Auction – Vincennes, IN (Wed) (pdf)
+
+- White River Valley Feeder Auction Association – Cattle Auction – Worthington, IN (Seasonal – Thu) (pdf)
+
+Iowa
+
+- Appanoose County Livestock Inc. – Feeder Cattle Auction – Centerville, IA (Thu) (pdf)
+
+- Bloomfield Livestock Market – Feeder Cattle Auction – Bloomfield, IA (Wed) (pdf)
+
+- Bloomfield Livestock Market – IMBIO Feeder Cattle Special – Bloomfield, IA (Seasonal) (pdf)
+
+- Central Plains Stockyards Livestock Auction – Feeder Cattle Auction – Humeston, IA (Seasonal – Wed) (pdf)
+
+- Clarinda Livestock Auction – Feeder Cattle Auction – Clarinda, IA (Seasonal – Thu) (pdf)
+
+- Creston Livestock Auction – Feeder Cattle Auction – Creston, IA (Seasonal – Wed) (pdf)
+
+- Denison Livestock Auction – Feeder Cattle Auction – Denison, IA (Thu) (pdf)
+
+- Denison Livestock Auction – Feeder Cattle Special – Denison, IA (Seasonal) (pdf)
+
+- Dunlap Livestock Auction – Feeder Cattle Auction – Dunlap, IA (Fri) (pdf)
+
+- Dunlap Livestock Auction – Feeder Cattle Special – Dunlap, IA (Seasonal) (pdf)
+
+- Iowa Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Keoco Auction Company LLC – Feeder Cattle Auction – Sigourney, IA (Mon) (pdf)
+
+- Knoxville Regional Livestock Market – Feeder Cattle Auction – Knoxville, IA (Seasonal – Tue) (pdf)
+
+- Lamoni Livestock Auction Market – Feeder Cattle Auction – Lamoni, IA (Thu) (pdf)
+
+- Russell Livestock Market – Feeder Cattle Auction – Russell, IA (Mon) (pdf)
+
+- Sheldon Livestock – Feeder Cattle Auction – Sheldon, IA (Seasonal) (pdf)
+
+- Tama Livestock Auction – Feeder Cattle Auction –Tama, IA (Mon) (pdf)
+
+- Tama Livestock Auction – Feeder Cattle Special – Tama, IA (Seasonal) (pdf)
+
+Kansas
+
+- Farmers and Ranchers Livestock Commission Company – Feeder Cattle Auction – Salina, KS (Thu) (pdf)
+
+- Farmers and Ranchers Livestock Commission Company – Replacement Cattle Special – Salina, KS (Seasonal - Tue) (pdf)
+
+- Farmers and Ranchers Livestock Commission Company – Feeder Cattle Special – Salina, KS (Seasonal - Tue) (pdf)
+
+- Kansas Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Kansas Weekly Market Recap (Mon) (pdf)
+
+- Winter Livestock Inc. – Cattle Auction – Dodge City, KS (Wed) (pdf)
+
+- Winter Livestock Inc. – Cattle Auction – Pratt, KS (Thu) (pdf)
+
+Kentucky
+
+- Blue Grass South Stockyards – Cattle Auction – Stanford, KY (Mon) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Lexington, KY (Mon) (pdf)
+
+- Cattleman’s Livestock – Cattle Auction – Bowling Green, KY (Mon) (pdf)
+
+- Farmers Regional Livestock Market – Cattle Auction – Glasgow, KY (Mon) (pdf)
+
+- Kentuckiana Livestock Market – Cattle Auction – Owensboro, KY (Mon) (pdf)
+
+- Kentucky Weekly Market Recap (Mon) (pdf)
+
+- Kentucky Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Paris Stockyards – Cattle Auction – Paris, KY (Mon) (pdf)
+
+- United Producers Inc. – Cattle Auction – Harned, KY (Mon) (pdf)
+
+- Washington Co. Livestock – Cattle Auction – Springfield, KY (Tue) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Lexington, KY (Tue) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Maysville, KY (Tue) (pdf)
+
+- Farmers Regional Livestock Auction of Glasgow Dairy Auction – Cattle Auction – Smiths Grove, KY (Tue) (pdf)
+
+- Farmers Stockyards – Cattle Auction – Flemingsburg, KY (Tue) (pdf)
+
+- Livingston Co. Livestock Market – Cattle Auction – Ledbetter, KY (Tue) (pdf)
+
+- Mid-Kentucky Livestock Market – Cattle Auction – Upton, KY (Tue) (pdf)
+
+- United Producers Inc. – Cattle Auction – Bowling Green, KY (Tue) (pdf)
+
+- Wilson Livestock Market – Cattle Auction – London, KY (Tue) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Albany, KY (Wed) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Campbellsville, KY (Wed) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Mt. Sterling, KY (Wed) (pdf)
+
+- Christian Co Livestock – Cattle Auction – Hopkinsville, KY (Wed) (pdf)
+
+- Russell Co. Stockyard – Cattle Auction – Russell Springs, KY (Wed) (pdf)
+
+- United Producers Inc. – Cattle Auction – Owenton, KY (Wed) (pdf)
+
+- Blue Grass South Stockyards – Cattle Auction – Stanford, KY (Thu) (pdf)
+
+- KY – TN Livestock Market – Cattle Auction – Guthrie, KY (Thu) (pdf)
+
+- Paris Stockyards – Cattle Auction – Paris, KY (Thu) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Richmond, KY (Fri) (pdf)
+
+- Blue Grass Stockyards – Cattle Auction – Campbellsville, KY (Sat) (pdf)
+
+- Lake Cumberland Livestock – Cattle Auction – Somerset, KY (Sat) (pdf)
+
+- Blue Grass Stockyards – Special Graded Feeder Cattle Sale – Stanford, KY (Seasonal) (pdf)
+
+- Blue Grass Stockyards – Replacement Cattle Sale – Lexington, KY (Seasonal) (pdf)
+
+- Blue Grass Stockyards – Special Graded Feeder Cattle Sale – Lexington, KY (Seasonal) (pdf)
+
+- Blue Grass Stockyards – Special Graded Feeder Cattle Sale – Richmond, KY (Seasonal) (pdf)
+
+- Farmers Regional Livestock Market – Monthly Cattle Sale – Glasgow, KY (2nd/4th Thu) (pdf)
+
+- Farmers Regional Livestock Market – Special Graded Feeder Cattle Sale – Glasgow, KY (Seasonal) (pdf)
+
+- Kentuckiana Livestock Market – Special Graded Feeder Cattle Sale – Owensboro, KY (Seasonal) (pdf)
+
+- KY – TN Livestock Market – Special Graded Feeder Cattle Sale – Guthrie, KY (Seasonal) (pdf)
+
+- Livingston Co. Livestock Market – Special Feeder Cattle Sale – Ledbetter, KY (Seasonal) (pdf)
+
+- Paris Stockyards – Special Feeder Cattle Sale – Paris, KY (Seasonal) (pdf)
+
+- United Producers Inc. – Special Feeder Cattle Sale – Harned, KY (Seasonal) (pdf)
+
+- Washington Co. Livestock – Special Graded Feeder Cattle Sale – Springfield, KY (Seasonal) (pdf)
+
+Maryland
+
+- Four States Livestock Sales – Livestock Auction – Hagerstown, MD (Wed) (pdf)
+
+- Friends Livestock Auction – Livestock Auction – Accident, MD (Mon) (pdf)
+
+Missouri
+
+Regional Missouri Cattle Markets
+
+- Missouri Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Southeast Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- South Central Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Southwest Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- East Central Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- North Central Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- West Central Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Northeast Missouri Weekly Cattle Auction Summary (Fri) (pdf)
+
+Missouri Auctions
+
+- Callaway Livestock Center – Cattle Auction – Kingdom City, MO (Mon) (pdf)
+
+- Callaway Livestock Center – Replacement Cattle Special – Kingdom City, MO (Monthly) (pdf)
+
+- Eastern Missouri Commission Company – Cattle Auction – Bowling Green, MO (Fri) (pdf)
+
+- Farmington Livestock Auction – Cattle Auction – Farmington, MO (Wed) (pdf)
+
+- F&T Livestock Market – Cattle Auction – Palmyra, MO (Mon) (pdf)
+
+- Four State Stockyards – Cattle Auction – Exeter, MO (Tue) (pdf)
+
+- Green City Livestock Auction – Cattle Auction – Green City, MO (Wed) (pdf)
+
+- Green City Livestock Auction – Replacement Cattle Special – Green City, MO (Seasonal) (pdf)
+
+- Interstate Regional Stockyards, Inc. – Cattle Auction – Cuba, MO (Tue) (pdf)
+
+- Joplin Regional Stockyards – Feeder Cattle Auction – Carthage, MO (Mon) (pdf)
+
+- Joplin Regional Stockyards – Cattle Auction – Carthage, MO (Wed) (pdf)
+
+- Joplin Regional Stockyards – Replacement Cattle Special – Carthage, MO (Monthly) (pdf)
+
+- Joplin Regional Stockyards – Feeder Cattle Special – Carthage, MO (Seasonal) (pdf)
+
+- Kingsville Livestock Auction – Feeder Cattle Auction – Kingsville, MO (Tue) (pdf)
+
+- Lolli Brothers Livestock Market – Cattle Auction – Macon, MO (Tue) (pdf)
+
+- Lolli Brothers Livestock Market – Replacement Cattle Special – Macon, MO (Seasonal) (pdf)
+
+- Mid Missouri Stockyards – Cattle Auction – Phillipsburg, MO (Thu) (pdf)
+
+- MO-KAN Livestock Market, Inc. – Cattle Auction – Butler, MO (Thu) (pdf)
+
+- New Cambria Livestock Auction – Cattle Auction – New Cambria, MO (Thu) (pdf)
+
+- New Cambria Livestock Auction – Replacement Cattle Special – New Cambria, MO (Seasonal) (pdf)
+
+- Ozarks Regional Stockyards – Feeder Cattle Auction – West Plains, MO (Tue) (pdf)
+
+- Ozarks Regional Stockyards – Feeder and Replacement Cattle Special – West Plains, MO (Seasonal) (pdf)
+
+- Ozarks Regional Stockyards – Slaughter/Replacement Auction – West Plains, MO (Wed) (pdf)
+
+- SEMO Livestock Sales – Cattle Auction – Jackson, MO (Tue) (pdf)
+
+- South Central Regional Stockyards – Cattle Auction – Vienna, MO (Wed) (pdf)
+
+- Springfield Livestock Market – Feeder Cattle Auction – Springfield, MO (Wed) (pdf)
+
+- Springfield Livestock Market – Slaughter/Replacement Cattle Auction – Springfield, MO (Mon) (pdf)
+
+- Springfield Livestock Market – Replacement Cattle Special – Springfield, MO (Monthly) (pdf)
+
+- Tina Livestock Market – Cattle Auction – Tina, MO (Mon) (pdf)
+
+- Tina Livestock Market – Replacement Cattle Special – Tina, MO (Seasonal) (pdf)
+
+- Unionville Livestock Market – Cattle Auction –Unionville, MO (Tue) (pdf)
+
+- Unionville Livestock Market – Replacement Cattle Special – Unionville, MO (Seasonal) (pdf)
+
+- Wheeler Livestock Auction – Cattle Auction – Osceola, MO (Thu) (pdf)
+
+- Windsor Livestock Auction – Cattle Auction – Windsor, MO (Wed) (pdf)
+
+Show Me Select Heifers
+
+- Show-Me-Select – Replacement Cattle Auction – Carthage, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Farmington, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Fruitland, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Kingsville, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Kirksville, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Palmyra, MO (Seasonal) (pdf)
+
+- Show-Me-Select – Replacement Cattle Auction – Vienna, MO (Seasonal) (pdf)
+
+Mississippi
+
+- Cattlemens Stockyard LLC – Cattle Auction – West Point, MS (Mon) (pdf)
+
+- East Mississippi Livestock Company – Cattle Auction – Philadelphia, MS (Tue) (pdf)
+
+- Glenwild Stockyard Inc. – Cattle Auction – Grenada, MS (Mon) (pdf)
+
+- Johnson Stockyard – Cattle Auction – Kosciusko, MS (Wed) (pdf)
+
+- Lincoln County Livestock – Cattle Auction – Brookhaven, MS (Tue) (pdf)
+
+- Lipscomb Brothers Livestock – Cattle Auction – Como, MS (Wed) (pdf)
+
+- Livestock Producers Sale Barn – Cattle Auction – Tylertown, MS (Tue) (pdf)
+
+- Lucedale Livestock Producers – Cattle Auction – Lucedale, MS (Wed) (pdf)
+
+- Macon Stockyard – Cattle Auction – Macon, MS (Mon) (pdf)
+
+- Meridian Stock Yards Inc. – Cattle Auction – Meridian, MS (Mon) (pdf)
+
+- Mississippi Daily Cattle Auction Summary (pdf)
+
+- Mississippi Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Peoples Livestock Auction – Cattle Auction – Houston, MS (Mon) (pdf)
+
+- Southeast Mississippi Livestock – Cattle Auction – Hattiesburg, MS (Mon) (pdf)
+
+- Tadlock Stockyard – Cattle Auction – Forest, MS (Mon) (pdf)
+
+- Winona Stockyard – Cattle Auction – Winona, MS (Tue) (pdf)
+
+Montana
+
+- Billings Livestock Commission – Cattle Auction – Billings, MT (Mon) (pdf)
+
+- Billings Livestock Commission – Cattle Auction – Billings, MT (Thu) (pdf)
+
+- Miles City Livestock Commission – Cattle Auction – Miles City, MT (Tue) (pdf)
+
+- Public Auction Yards – Cattle Auction – Billings, MT (Wed) (pdf)
+
+- Public Auction Yards – Cattle Auction – Billings, MT (Fri) (pdf)
+
+- Public Auction Yards – Replacement Cattle Special – Billings, MT (Seasonal) (pdf)
+
+- Montana Weekly Cattle Auction Summary (Mon) (pdf)
+
+Nebraska
+
+- Bassett Livestock Auction – Feeder Cattle Auction – Bassett, NE (Wed) (pdf)
+
+- Burwell Livestock Market – Feeder Cattle Auction – Burwell, NE (Fri) (pdf)
+
+- Crawford Livestock Market – Feeder Cattle Auction – Crawford, NE (Fri) (pdf)
+
+- Ericson Livestock Market – Feeder Cattle Auction – Ericson, NE (Sat) (pdf)
+
+- Ericson Livestock Market – Feeder and Replacement Cattle Special – Ericson, NE (Seasonal) (pdf)
+
+- Gordon Livestock Market – Feeder Cattle Auction – Gordon, NE (Tue) (pdf)
+
+- Gordon Livestock Market – Feeder Cattle Special – Gordon, NE (Seasonal) (pdf)
+
+- Huss Livestock Market – Feeder Cattle Auction – Kearney, NE (Wed) (pdf)
+
+- Imperial Livestock Market – Feeder Cattle Auction – Imperial, NE (Tue) (pdf)
+
+- Lexington Livestock Market – Feeder Cattle Auction – Lexington, NE (Fri) (pdf)
+
+- Nebraska Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Nebraska Weekly Market Recap (pdf)
+
+- North Platte Stockyards – Feeder Cattle Auction – North Platte, NE (Tue)(pdf)
+
+- Ogallala Livestock Auction – Feeder Cattle Auction – Ogallala, NE (Thu) (pdf)
+
+- Tri-State Livestock Auction – Feeder Cattle Auction – McCook, NE (Mon) (pdf)
+
+- Valentine Livestock Auction – Feeder Cattle Auction – Valentine, NE (Thu) (pdf)
+
+- Valentine Livestock Auction – Feeder and Replacement Cattle Special – Valentine, NE (Seasonal) (pdf)
+
+- West Point Livestock Auction – Feeder Cattle Auction – West Point, NE (Mon) (pdf)
+
+New Mexico
+
+- Cattlemen's Livestock – Cattle Auction – Belen, NM (Fri) (pdf)
+
+- Clovis Livestock – Cattle Auction – Clovis, NM (Wed) (pdf)
+
+- Clovis Livestock – Replacement Cattle Special – Clovis, NM (Thu – Seasonal) (pdf)
+
+- New Mexico Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Roswell Livestock – Cattle Auction – Roswell, NM (Mon) (pdf)
+
+- Santa Teresa Livestock Auction – Cattle Auction – Santa Teresa, NM (Fri) (pdf)
+
+- Santa Teresa Livestock (Spanish) – Cattle Auction – Santa Teresa, NM (Fri) (pdf)
+
+New York
+
+- Cambridge Livestock – Livestock Auction – Cambridge, NY (Tue) (pdf)
+
+- Canandaigua Stockyards – Livestock Auction – Canandaigua, NY (Wed) (pdf)
+
+- Canandaigua Stockyards – Feeder and Replacement Cattle Auction – Canandaigua, NY (Monthly) (pdf)
+
+- Empire Livestock – Livestock Auction – Bath, NY (Thu) (pdf)
+
+- Empire Livestock – Feeder and Replacement Cattle Auction – Cherry Creek, NY (Monthly) (pdf)
+
+- Empire Livestock – Feeder and Replacement Cattle Auction – Bath, NY (Monthly) (pdf)
+
+- Empire Livestock – Feeder and Replacement Cattle Video Board Sale – Bath, NY (Seasonal) (pdf)
+
+- Hosking Livestock Auction – Special Cattle Auction – Berlin, NY (pdf)
+
+North Carolina
+
+- Carolina Stockyards – Livestock Auction – Siler City, NC (Mon) (pdf)
+
+- Carolina Stockyards – Livestock Auction – Siler City, NC (Fri) (pdf)
+
+- Cleveland County Agriculture & Livestock Exchange – Cattle Auction – Shelby, NC (Tue) (pdf)
+
+- Harward Brothers Livestock Market – Cattle Auction – Turnersburg, NC (Mon) (pdf)
+
+- North Carolina Weekly Livestock Auction Summary (Mon) (pdf)
+
+- North Carolina Weekly Market Recap (Mon) (pdf)
+
+- North Carolina Graded Cattle Auction (Seasonal) (pdf)
+
+- Powell Livestock Company – Cattle Auction – Smithfield, NC (Thu) (pdf)
+
+- Southeastern Auction Co. Inc. – Livestock Auction – Chadbourn, NC (Mon) (pdf)
+
+- Stanly County Livestock Market – Cattle Auction – Norwood, NC (Wed) (pdf)
+
+- Wilkes Livestock Exchange – Cattle Auction – North Wilkesboro, NC (Wed) (pdf)
+
+- Wilkes Livestock Exchange – Replacement Cattle Auction – North Wilkesboro, NC (Seasonal) (pdf)
+
+- WNC Regional Livestock Center – Livestock Auction – Canton, NC (Mon) (pdf)
+
+North Dakota
+
+- Kist Livestock – Feeder Cattle Auction – Mandan, ND (Wed) (pdf)
+
+- Napoleon Livestock – Feeder Cattle Auction – Napoleon, ND (Thu) (pdf)
+
+- North Dakota Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Stockmen's Livestock Exchange – Feeder Cattle Auction – Dickinson, ND (Thu) (pdf)
+
+Oklahoma
+
+- Apache Livestock Auction – Cattle Auction – Apache, OK (Thu) (pdf)
+
+- Apache Livestock Auction – Replacement Cattle Special – Apache, OK (Seasonal) (pdf)
+
+- Beaver Livestock Auction – Cattle Auction – Beaver, OK (Tue) (pdf)
+
+- Beaver Livestock Auction – Slaughter/Replacement Cattle – Beaver, OK (Tue/Wed in the Fall)(pdf)
+
+- McAlester Union Stockyards – Cattle Auction – McAlester, OK (Tue) (pdf)
+
+- OKC West Livestock Market – Feeder Cattle Auction – El Reno, OK (Tue/Wed) (pdf)
+
+- OKC West Livestock Market – Slaughter/Replacement Cattle – El Reno, OK (Mon) (pdf)
+
+- Oklahoma National Stockyards – Feeder Cattle Auction – Oklahoma City, OK (Mon) (pdf)
+
+- Oklahoma National Stockyards – Slaughter/Replacement Cattle – Oklahoma City, OK (Tue) (pdf)
+
+- Oklahoma Weekly Cattle Auction Summary – Oklahoma City, OK (Fri) (pdf)
+
+- Southern Oklahoma Livestock – Feeder Cattle Auction – Ada, OK (Wed) (pdf)
+
+- Southern Oklahoma Livestock – Slaughter/Replacement Cattle – Ada, OK (Thu) (pdf)
+
+- Southern Oklahoma Livestock – Replacement Cattle Special – Ada, OK (Seasonal) (pdf)
+
+- Tulsa Stockyards Inc. – Cattle Auction – Tulsa, OK (Mon) (pdf)
+
+- Woodward Livestock Inc. – Feeder Cattle Auction – Woodward, OK (Thu) (pdf)
+
+- Woodward Livestock Inc. – Slaughter/Replacement Cattle – Woodward, OK (Tue) (pdf)
+
+Pennsylvania
+
+- 84 Livestock Auction – Cattle Auction – Eighty Four, PA (Mon) (pdf)
+
+- Greencastle Livestock Market – Cattle Auction – Greencastle, PA (Mon) (pdf)
+
+- Greencastle Livestock Market – Cattle Auction – Greencastle, PA (Thu) (pdf)
+
+- Greencastle Livestock Market – Monthly Feeder Cattle Sale – Greencastle, PA (1st Sat) (pdf)
+
+- Middleburg Livestock Auction – Cattle Auction – Middleburg, PA (Tue) (pdf)
+
+- Middleburg Livestock Auction – Seasonal Feeder Cattle Sale – Middleburg, PA (3rd Fri) (pdf)
+
+- New Holland Sale Stable Inc. – Cattle Auction – New Holland, PA (Mon) (pdf)
+
+- New Holland Sale Stable Inc. – Cattle Auction – New Holland, PA (Thu) (pdf)
+
+- New Holland Sale Stable Inc. – Dairy Replacement Cattle Auction – New Holland, PA (Wed) (pdf)
+
+- New Holland Sale Stable Inc. – Feeder Cattle Special – New Holland, PA (Seasonal) (pdf)
+
+- New Wilmington Livestock Auction – Feeder Cattle Special – New Wilmington, PA (Seasonal) (pdf)
+
+- Pennsylvania Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Pennsylvania Livestock Auction – Cattle Auction – Waynesburg, PA (Thursday) (pdf)
+
+- Vintage Sale Stables Inc. – Monthly Feeder Cattle Sale – Paradise, PA (2nd Fri) (pdf)
+
+South Carolina
+
+- Laurens Livestock Exchange – Livestock Auction – Laurens, SC (Wed) (pdf)
+
+- Low Country Livestock Exchange – Livestock Auction – Darlington, SC (Tue) (pdf)
+
+- Orangeburg Stockyards – Livestock Auction – Orangeburg, SC (Wed) (pdf)
+
+- Saluda Stockyards – Livestock Auction – Saluda, SC (Mon) (pdf)
+
+- Saluda Livestock Exchange – Livestock Auction – Saluda, SC (Mon) (pdf)
+
+- South Carolina Daily Farm Report
+
+- South Carolina Weekly Livestock Auction Summary (Fri) (pdf)
+
+- South Carolina Weekly Market Recap (Mon) (pdf)
+
+- Upstate Livestock Exchange – Livestock Auction – Williamston, SC (Mon) (pdf)
+
+South Dakota
+
+- Ft. Pierre Livestock Auction – Cattle Auction – Ft. Pierre, SD (Fri) (pdf)
+
+- Ft. Pierre Livestock Auction – Seasonal Calf Auction – Ft. Pierre, SD (Seasonal-Wed) (pdf)
+
+- Herried Livestock Market – Cattle Auction – Herreid, SD (Fri) (pdf)
+
+- Hub City Livestock Auction – Cattle Auction – Aberdeen, SD (Wed) (pdf)
+
+- Mitchell Livestock – Cattle Auction – Mitchell, SD (Thu) (pdf)
+
+- Mobridge Livestock Exchange – Cattle Auction – Mobridge, SD (Thu) (pdf)
+
+- Mobridge Livestock Exchange – Seasonal Calf Auction – Mobridge, SD (Seasonal-Tue) (pdf)
+
+- Philip Livestock Auction – Cattle Auction – Philip, SD (Tue) (pdf)
+
+- Sioux Falls Regional Livestock Inc. – Cattle Auction – Worthing, SD (Mon) (pdf)
+
+- South Dakota Weekly Cattle Auction Summary (Mon) (pdf)
+
+- St. Onge Livestock Ltd – Cattle Auction – St. Onge (Fri) (pdf)
+
+- St. Onge Livestock Ltd – Seasonal Calf Auction – St. Onge SD (Seasonal – Wed) (pdf)
+
+Tennessee
+
+- Athens Livestock Market – Cattle Auction – Athens, TN (Tue) (pdf)
+
+- Athens Livestock Market – Preconditioned Sale – Athens, TN (Monthly)(pdf)
+
+- Browning Livestock Market – Feeder Cattle Auction – Lafayette, TN (Wed) (pdf)
+
+- Columbia Livestock Center (UPI) – Cattle Auction – Columbia, TN (Wed) (pdf)
+
+- Crossville Stockyard – Cattle Auction – Crossville, TN (Sat) (pdf)
+
+- Dickson Regional Livestock Center Inc. – Cattle Auction – Dickson, TN (Mon) (pdf)
+
+- Dickson Regional Livestock West – Cattle Auction – Huntingdon, TN (Tue) (pdf)
+
+- Dickson Regional Livestock West – Replacement Cattle Auction – Huntingdon, TN (Seasonal) (pdf)
+
+- Dickson Regional Livestock Center Inc. – Yearling Special – Dickson, TN (Annual) (pdf)
+
+- East Tennessee Cattle Alliance – Graded Feeder Cattle Auction – Greeneville, TN (Thu) (pdf)
+
+- East Tennessee Livestock Center, Inc. – Cattle Auction – Sweetwater, TN (Wed) (pdf)
+
+- East Tennessee Livestock Center, Inc. – Graded Holstein Feeder Cattle Auction – Sweetwater, TN (Fri) (pdf)
+
+- East Tennessee Livestock Center, Inc. – Graded Feeder Cattle Auction – Sweetwater, TN (Fri) (pdf)
+
+- East Tennessee Livestock Center, Inc. – Replacement Cattle Auction – Sweetwater, TN (Seasonal) (pdf)
+
+- Hardin County Stockyard – Cattle Auction – Savannah, TN (Wed) (pdf)
+
+- Hardin County Stockyard – Graded Feeder Cattle Auction – Savannah, TN (Seasonal) (pdf)
+
+- Kentucky Tennessee Livestock – Cattle Auction – Cross Plains, TN (Mon) (pdf)
+
+- Knoxville Livestock Auction Center Inc. – Cattle Auction – Knoxville, TN (Tue) (pdf)
+
+- Mid-South Regional Livestock Center LLC – Cattle Auction – Unionville, TN (Mon) (pdf)
+
+- Pulaski Stockyard – Cattle Auction – Pulaski, TN (Tue) (pdf)
+
+- Smith County Commission Co. – Cattle Auction – Carthage, TN (Sat) (pdf)
+
+- Tennessee Daily Livestock Auction Summary (pdf)
+
+- Tennessee Weekly Cattle Auction Summary (Mon) (pdf)
+
+- Tennessee Weekly Market Recap (Mon) (pdf)
+
+- Trenton Regional Stockyards – Cattle Auction – (Wed) (pdf)
+
+- United Producers, Inc. Beef Alliance Sale – Cattle Auction – Columbia, TN (Seasonal-Mon) (pdf)
+
+- United Producers, Inc. – Special Graded Feeder and Replacement Cattle Sale – Columbia, TN (Seasonal) (pdf)
+
+- United Producers, Inc. – Cattle Auction – Fayetteville, TN (Tue) (pdf)
+
+- Volunteer Stockyards – Cattle Auction – Greeneville, TN (Sat) (pdf)
+
+- Warren County Livestock – Cattle Auction – McMinnville, TN (Mon) (pdf)
+
+- Warren County Livestock – Graded Feeder Cattle Auction – McMinnville, TN (Wed) (pdf)
+
+- Wilson Livestock Market – Replacement Cattle Auction – Newport, TN (Seasonal) (pdf)
+
+Texas
+
+- Cattlemen’s Livestock – Cattle Auction – Dalhart, TX (Thu) (pdf)
+
+- Giddings Livestock Commission – Cattle Auction – Giddings, TX (Mon) (pdf)
+
+- Lonestar Stockyards – Cattle Auction – Wildorado, TX (Tue) (pdf)
+
+- Producers Livestock Auction Co. – Cattle Auction – San Angelo, TX (Thu) (pdf)
+
+- Producers Livestock Auction Co. – Feeder Calf Special – San Angelo, TX (Seasonal - Mon) (pdf)
+
+- Texas Weekly Cattle Auction Summary (Fri) (pdf)
+
+- Tulia Livestock – Cattle Auction – Tulia, TX (Thu) (pdf)
+
+Utah
+
+- Cedar Livestock – Cattle Auction – Cedar City, UT (Thu) (pdf)
+
+- Cedar Livestock – Feeder Cattle Special – Cedar City, UT (Seasonal) (pdf)
+
+- Producers Livestock – Cattle Auction – Salina, UT (Tue) (pdf)
+
+- Producers Livestock – Feeder Cattle Special – Salina, UT (Seasonal) (pdf)
+
+- ‘R’ Livestock Connection – Cattle Auction – Monroe, UT (Wed) (pdf)
+
+- ‘R’ Livestock Connection – Feeder Cattle Special – Monroe, UT (Seasonal) (pdf)
+
+- Utah Weekly Cattle Auction Summary (Mon) (pdf)
+
+Virginia
+
+- Appalachian Regional Livestock, LLC – Feeder Cattle Board Sale – Wytheville, VA (Seasonal) (pdf)
+
+- Appalachian Regional Livestock, LLC – Graded Cattle Sale – Wytheville, VA (Wed) (pdf)
+
+- Culpeper – Graded Feeder Cattle Sale – Culpeper, VA (Fri) (pdf)
+
+- Culpeper – Feeder Cattle Board Sale – Culpeper, VA (Seasonal) (pdf)
+
+- Farmers Livestock Exchange – Graded Feeder Cattle Sale – Winchester, VA (Mon) (pdf)
+
+- Farmers Livestock Exchange – Feeder Cattle Board Sale – Winchester, VA (Seasonal) (pdf)
+
+- Fauquier Livestock Exchange – Graded Feeder Cattle Sale – Marshall, VA (Fri) (pdf)
+
+- Fauquier Livestock Exchange – Feeder Cattle Board Sale – Marshall, VA (Seasonal) (pdf)
+
+- Lynchburg Livestock – Graded Feeder Cattle Sale – Rustburg, VA (Mon) (pdf)
+
+- Monterey Stockyard LLC – Graded Feeder Cattle Sale – Monterey, VA (Wed) (pdf)
+
+- Monterey Stockyard LLC – Feeder Cattle Board Sale – Monterey, VA (Seasonal) (pdf)
+
+- Pulaski Livestock – Feeder Cattle Board Sale – Dublin, VA (Seasonal) (pdf)
+
+- Pulaski Livestock – Graded Feeder Cattle Sale – Dublin, VA (Wed) (pdf)
+
+- Radiant Livestock – Feeder Cattle Board Sale – Radiant, VA (Seasonal) (pdf)
+
+- Radiant Livestock – Graded Feeder Cattle Sale – Radiant, VA (Tue) (pdf)
+
+- Roanoke-Hollins – Graded Feeder Cattle Sale – Roanoke, VA (Mon) (pdf)
+
+- Rockingham Livestock – Feeder Cattle Board Sale – Harrisonburg, VA (Seasonal) (pdf)
+
+- Rockingham Livestock – Graded Feeder Cattle Sale – Harrisonburg, VA (Thu) (pdf)
+
+- Shenandoah Valley Livestock – Graded Feeder Cattle Sale – Harrisonburg, VA (Sat) (pdf)
+
+- Southside Livestock – Graded Feeder Cattle Sale – Blackstone, VA (Wed) (pdf)
+
+- Springlake Stockyard – Graded Feeder Cattle Sale – Moneta, VA (Sat) (pdf)
+
+- Springlake Stockyard – Feder Cattle Board Sale – Moneta, VA (Sat) (pdf)
+
+- Staunton Livestock – Graded Feeder Cattle Sale – Staunton, VA (Fri) (pdf)
+
+- Staunton Livestock – Feeder Cattle Board Sale – Staunton, VA (Tue) (pdf)
+
+- Tri-State Livestock – Feeder Cattle Board Sale – Abingdon, VA (Seasonal) (pdf)
+
+- Virginia Feeder Cattle Tel-O-Auction (pdf)
+
+- Virginia Livestock LLC – Feeder Cattle Board Sale – Fort Royal, VA (Seasonal) (pdf)
+
+- Virginia Livestock LLC – Graded Feeder Cattle Sale – Fort Royal, VA (Seasonal) (pdf)
+
+- Virginia Weekly Graded Feeder Cattle Auction Summary (Mon) (pdf)
+
+- Virginia Weekly Feeder Cattle Board Sale Summary (Mon) (pdf)
+
+Washington
+
+- Toppenish Livestock Commission – Dairy Replacement Cattle Auction – Toppenish, WA (Monthly) (pdf)
+
+- Toppenish Livestock Commission – Cattle Auction – Toppenish, WA (Thu) (pdf)
+
+- Toppenish Livestock Commission – Feeder Cattle Special – Toppenish, WA (Seasonal) (pdf)
+
+West Virginia
+
+- Buckhannon Stockyards – Cattle Auction – Buckhannon, WV (Wed) (pdf)
+
+- Buckhannon Stockyards – Special Graded Sale – Buckhannon, WV (Seasonal) (pdf)
+
+- Buckhannon Stockyards – Board Sale – Buckhannon, WV (Seasonal) (pdf)
+
+- Cattlemen’s Livestock Exchange – Livestock Auction – Caldwell, WV (Fri) (pdf)
+
+- Jackson County Regional – Livestock Auction – Ripley, WV (Sat) (pdf)
+
+- Jackson County Regional – Board Sale – Ripley, WV (Seasonal) (pdf)
+
+- Parkersburg Livestock Market – Livestock Auction – Mineral Wells, WV (Thu) (pdf)
+
+- Pocahontas Producers Co-op Association – Special Graded Sale – Marlington, WV (Seasonal) (pdf)
+
+- Preston Farmers Market – Cattle Auction – Terra Alta, WV (Fri) (pdf)
+
+- Preston Farmers Market – Special Graded Sale – Terra Alta, WV (Seasonal) (pdf)
+
+- South Branch Valley Livestock Exchange – Cattle Auction – Moorefield, WV (Wed) (pdf)
+
+- South Branch Valley Livestock Exchange – Special Graded Sale – Moorefield, WV (Seasonal) (pdf)
+
+- South Branch Valley Livestock Exchange – Board Sale – Moorefield, WV (Seasonal) (pdf)
+
+- South Branch Valley Livestock Exchange – Slaughter Cattle Special Sale – Moorefield, WV (Seasonal) (pdf)
+
+- Weston Livestock Marketing – Cattle Auction – Weston, WV (Sat) (pdf)
+
+- Weston Livestock Marketing – Special Graded Sale – Weston, WV (Seasonal) (pdf)
+
+- Weston Livestock Marketing – Board Sale – Weston, WV (Seasonal) (pdf)
+
+- West Virginia Weekly Cattle Auction (Board Sale) Summary (pdf)
+
+- West Virginia Weekly Cattle Auction Summary (Fri) (pdf)
+
+Wyoming
+
+- Torrington Livestock Commission Co. – Cattle Auction – Torrington, WY (Fri) (pdf)
+
+- Torrington Livestock Commission Co. – Feeder Cattle Auction – Torrington, WY (Wed) (pdf)
+
+- Torrington Livestock Commission Co. – Cattle Auction – Torrington, WY (Seasonal-Mon) (pdf)
+
+- Winter Livestock Auction – Cattle Auction – Riverton, WY (Tue) (pdf)
+
+- Wyoming Weekly Cattle Auction Summary (Mon) (pdf)
