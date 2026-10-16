@@ -55,6 +55,7 @@ setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.
 
 /* ─── FERTILIZER PRICES ─────────────────────────────────────────────── */
 var PRICES={};
+var ECO_TYPED={};   /* cost-builder boxes the reader typed in */
 /* data/fertilizer-prices.json (scripts/build_fert_prices.py): each product's
    middle cash price posted by the co-ops Sig sent, nothing else. Every row
    names its co-ops, region and date, and every
@@ -162,8 +163,6 @@ function loadFertPrices(){
   }).catch(function(){calcNC();});
 }
 function loadNFertPrice(pplb,name,ton){
-  var lbl=document.getElementById('eco-n-source-label');if(lbl)lbl.textContent=name;
-  var enil=document.getElementById('eco-n-pplb');if(enil)enil.value=pplb.toFixed(2);
   PRICES['N_PPLB']=pplb;
   var eup=document.getElementById('eco-urea-price');if(eup)eup.textContent='$'+ton;
   updateEcoCosts();
@@ -356,6 +355,9 @@ function calcNC(){
   var tr=document.querySelector('#nc-table tr[data-row="'+rowKey()+'"]');
   if(tr&&tr.children[ci+1])tr.children[ci+1].classList.add('act');
   t('ans-rate',String(r.rate));
+  ecoFill('eco-n-rate',r.rate);ecoFill('eco-n-pplb',pplb.toFixed(2));
+  if(!ECO_TYPED['eco-n-pplb']){var nl=g('eco-n-source-label');if(nl)nl.textContent=(isCustom?pct+'% N':fertSel.options[fertSel.selectedIndex].text)+' at $'+Math.round(ton)+'/ton';}
+  if(typeof updateEcoCosts==='function')updateEcoCosts();
   t('ans-range','Profitable range '+r.lo+'–'+r.hi);
   t('ans-cost','N cost $'+Math.round(r.rate*pplb)+'/ac at '+money(pplb)+'/lb');
   var form=isCustom?(pct+'% N product'):fertSel.options[fertSel.selectedIndex].text.replace('Amm. nitrate','Ammonium nitrate');
@@ -418,16 +420,20 @@ function updateEcoCosts(){
   s('eco-n-cost',nCost);s('eco-p-cost',pCost);s('eco-k-cost',kCost);
   s('eco-seed-echo',seed);s('eco-chem-echo',chem);s('eco-rent-echo',rent);s('eco-other-echo',other);
   var total=nCost+pCost+kCost+seed+chem+rent+other;
-  var te=document.getElementById('eco-total');if(te)te.textContent='$'+total.toFixed(2)+'/ac';
+  var blank=['eco-seed','eco-chem','eco-rent','eco-other'].filter(function(id){var e=document.getElementById(id);return e&&e.value==='';}).length;
+  var te=document.getElementById('eco-total');if(te)te.textContent='$'+total.toFixed(2)+'/ac'+(blank?' so far':'');
   if(PRICES['DAP_PPLB']){
     var pkOut=document.getElementById('pk-cost-out');
     if(pkOut){pkOut.style.display='flex';}
   }
   updateSTCost();
 }
+/* Boxes the reader typed in keep their number; the rest follow the N box
+   and the corn soil test. ECO_TYPED is declared with PRICES, above. */
 ['eco-n-rate','eco-n-pplb','eco-p-rate','eco-p-pplb','eco-k-rate','eco-k-pplb','eco-seed','eco-chem','eco-rent','eco-other'].forEach(function(id){
-  var el=document.getElementById(id);if(el)el.addEventListener('input',updateEcoCosts);
+  var el=document.getElementById(id);if(el)el.addEventListener('input',function(){ECO_TYPED[id]=el.value!=='';updateEcoCosts();});
 });
+function ecoFill(id,v){var el=document.getElementById(id);if(el&&!ECO_TYPED[id]&&v!=null)el.value=v;}
 
 /* ─── SOIL TEST INTERPRETER ──────────────────────────────────────── */
 /* UW A2809 Tables 7.1, 7.2 and 7.4 (components/a2809.js, the one copy of
@@ -458,6 +464,7 @@ function calcST(){
   }
   s('st-pcat',r.pCatName);
   s('st-kcat',r.kCatName);
+  if(crop==='corn'){ecoFill('eco-p-rate',r.p2o5);ecoFill('eco-k-rate',r.k2o);}
   s('st-prec',r.p2o5+' lb/ac');
   s('st-krec',r.k2o+' lb/ac');
   var n=[];

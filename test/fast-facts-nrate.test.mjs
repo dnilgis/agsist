@@ -185,6 +185,14 @@ test("the top box gives the A2809 rate at the posted price and next year's corn"
     assert.match(await txt(pg, "#ans-src"), /corn futures \$5\.00, CBOT close Oct 16, delayed/);
     // The same cell is marked in the full table.
     assert.equal(await pg.$eval('#nc-table tr[data-row="hi_soy"] td.act strong', (e) => e.textContent), "120");
+    // The cost builder takes the same rate and price, and the corn soil test's
+    // P and K (200 bu, P 22, K 110: A2809 40 and 60); no made-up seed or rent.
+    assert.equal(await pg.inputValue("#eco-n-rate"), "120");
+    assert.equal(await pg.inputValue("#eco-n-pplb"), "0.50");
+    assert.equal(await pg.inputValue("#eco-p-rate"), "40");
+    assert.equal(await pg.inputValue("#eco-k-rate"), "60");
+    for (const id of ["#eco-seed", "#eco-chem", "#eco-rent", "#eco-other"]) assert.equal(await pg.inputValue(id), "", id);
+    assert.match(await txt(pg, "#eco-total"), /^\$[\d.]+\/ac so far$/);
     // States with fewer elevators than the file's minimum are not offered.
     assert.equal(await pg.$("#ans-state option[value=AL]"), null);
     // Iowa basis: 5.00 - 0.40 = 4.60; 0.50 / 4.60 = 0.109 -> 0.10. After corn: 165.
