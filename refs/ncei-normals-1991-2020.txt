@@ -1,0 +1,384 @@
+# NOAA NCEI: U.S. Climate Normals (1991-2020)
+# https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals
+# fetched 2026-10-16T22:18:32Z, sha256 c0793fb1f09153de24f105208b1e76877179c3af09dfe46506230c0f50468aaa
+
+U.S. Climate Normals | National Centers for Environmental Information (NCEI)
+
+The U.S. Climate Normals are a large suite of data products that provide information about typical climate conditions for thousands of locations across the United States. Normals act both as a ruler to compare today’s weather and tomorrow’s forecast, and as a predictor of conditions in the near future. The official normals are calculated for a uniform 30 year period, and consist of annual/seasonal, monthly, daily, and hourly averages and statistics of temperature, precipitation, and other climatological variables from almost 15,000 U.S. weather stations.
+
+NCEI generates the official U.S. normals every 10 years in keeping with the needs of our user community and the requirements of the World Meteorological Organization (WMO) and National Weather Service (NWS). The 1991–2020 U.S. Climate Normals are the latest in a series of decadal normals first produced in the 1950s. They were first released in May 2021 (v1.0.0), and the statistics for 23 of the sites were reissued in 2023 (v1.0.1). These data allow travelers to pack the right clothes, farmers to plant the best crop varieties, and utilities to plan for seasonal energy usage. Many other important economic decisions that are made beyond the predictive range of standard weather forecasts are either based on or influenced by climate normals. Monthly gridded climate normals are available for the contiguous U.S., see the Gridded Normals tab for more information.
+
+-
+Data Access
+
+-
+Comparisons
+
+-
+About
+
+-
+Gridded Normals
+
+-
+Help
+
+-
+Older Versions
+
+Documentation
+
+Version 1.0.1
+
+Access Methods
+
+Quick Access
+
+Search for maximum, minimum, and average temperature normals and precipitation total normals for individual station locations from about 15,000 stations across the United States. Find annual/seasonal, monthly, daily, or hourly conventional 30-year normals and 15-year normals normals by station names.
+
+Launch Quick Access
+
+Full Access
+
+Search for one or multiple station locations, conventional 30-year normals and 15-year normals for all available variables and statistics. Map and text station search and selection capabilities are also available. The Data Access Tool has separate access options for both conventional 30-year (1991–2020) and supplemental 15-year (2006–2020) time periods.
+
+Note: Older normals sets are available through the Quick Access Tool, and on the previous versions tab. We recommend using the current 1991–2020 release unless you have a specific use case for the older versions.
+
+30-Year Normals (1991–2020)
+
+Search
+
+Annual/SeasonalMonthlyDailyHourly
+
+Overview
+
+Annual/SeasonalMonthlyDailyHourly
+
+15-Year Normals (2006–2020)
+
+Search
+
+Annual/SeasonalMonthlyDailyHourly
+
+Overview
+
+Annual/SeasonalMonthlyDailyHourly
+
+Bulk Download
+
+Download CSV versions of the full suite of normals organized by variable or by station in our Web Accessible Folders for Annual/Seasonal, Monthly, Daily, and Hourly normals. More instructions and format information readme files are available in the documentation folders at these sites.
+
+- Annual/Seasonal
+
+- Monthly
+
+- Daily
+
+- Hourly
+
+Partner Access Tools
+
+Two NOAA Regional Climate Centers partners have tools that provide unique types of access to normals products.
+
+Custom Climatology Tool
+
+The RCC Custom Climatology Tool allows users to dynamically produce supplemental temperature normals for any period of time and station of interest.
+
+Launch Climatology Tool
+
+Gridded Normals Mapper
+
+The Northeast RCC developed this tool to create custom maps of monthly gridded normals for the contiguous U.S.
+
+Launch Interactive Map
+
+Overview
+
+Most of the U.S. was warmer, and the eastern two-thirds of the contiguous U.S. was wetter, from 1991–2020 than the previous normals period, 1981–2010. The Southwest was considerably drier on an annual basis, while the central northern U.S. has cooled somewhat.
+
+There are twenty years of overlap between the current normals and the previous iteration (1991–2010), which makes the annual changes between these two datasets somewhat muted compared to trends over the same period. Monthly and seasonal changes are more dynamic. For example, the current normals for the north-central U.S. are cooler in the spring, while much of the Southeast is now warmer in October, cooler in November, and warmer again in December. Atmospheric circulation dynamics and surface feedbacks result in substantial differences from month-to-month and region-to-region.
+
+Core Month Differences
+
+Changes during the core months of each season (January, April, July, and October) can be representative of broader differences between different normals iterations. The following examples illustrate the percent change in precipitation and the change in degrees Fahrenheit in maximum temperature for each core month.
+
+January
+
+January temperatures have risen in the new normals by 0.5–1.5°F across most of the country. The north-central region was a notable outlier that cooled by more than 1.0° F in some places, but generally follows annual cooling patterns. Outliers aside, this winter warming correlates with increased precipitation normals throughout much of the country, as warmer air can hold more water vapor during winter. This is especially true on the western and eastern edges of the cooler north-central zone, where precipitation increased by 10–25% in January. Texas and Florida were also notably wetter during 1991–2020.
+
+April
+
+April is the most dynamic core month, and exhibits a variety of significant changes in maximum temperature and precipitation. The maximum temperature normals are considerably lower in the north-central U.S. compared to the previous normals period. The entire northern tier is cooler, but changes reach more than -2°F in parts of the Dakotas. Cooling patches reach all the way to Louisiana, although the areas to the west and east of the Mississippi Valley have warmed considerably. The entire southeastern quarter of the U.S. is now considerably wetter in April, while the southwest is drier. Additional precipitation is also seen in the lee of the northern Rocky Mountains and the Great Lakes.
+
+July
+
+The Northwest is considerably drier as a percentage of the previous normal during what is already a dry season. The rest of the West is pockmarked with wetter and drier zones. The eastern two-thirds of the U.S. has an indistinct pattern of changes in the precipitation normals. Most of the East also remained near the same temperature levels, except for persistent cooling in the north central U.S. and warming in the Northeast. However, the entire West and lee of the Rocky Mountains and Texas are all considerably (up to 2°) warmer.
+
+October
+
+A strong zonal pattern in the western two-thirds of the northern U.S. marked both wetter and cooler normals for 1991–2020 than 1981–2010. The rest of the country was consistently warmer, but the southwest and south-central U.S. were also drier. The East was warm and displayed alternating zones of wetter and drier conditions that were reminiscent of shifting storm tracks.
+
+Overall, the central month of each season displayed cooling normals in the north-central U.S. to varying degrees, most distinctly in April. Precipitation normals were generally wetter east of the Rockies, and drier in the central and southern West. While annual normals changes were generally consistent, the single months showed pattern shifts that indicate a relationship to repeated preference of certain upper air wind patterns and storm tracks that shifted north or south with the seasons. The patterns of normals changes are following spatial trends in climate circulation dynamics and surface feedbacks, but still demonstrate the warmer conditions expected in the U.S. overall and the reduction of precipitation in the West and increase in precipitation in the East as anticipated by models of future climate change
+
+Many long-time users of NCEI’s station-based normals wonder how the 1991-2020 values that were released in 2021 differ from the 1981-2010 values released in 2011. There are both climatic and non-climatic causes of differences between the two sets of normals. The large-scale climatic differences are illustrated by the comparison maps shown above for which the same set of monthly gridded data was used to calculate averages for both periods. The non-climatic differences arise primarily from the fact that the 1981-2010 normals were calculated from the 2011 version of NCEI’s data holdings, while the 1991-2020 normals are based on a version from early 2021 which incorporates additions and corrections made to the historical record over the previous decade. The 1981–2010 and 1991–2020 station normals use data that was homogenized at different times (2011 for the first time period, and 2021 for the second).
+
+However, station-based temperature comparisons based on this same set of station normals are not reliable, because the homogenization process that removes artificial discontinuities (station moves, instrument changes, etc.) from station temperature data applies those adjustments to the entire dataset. This process aligns the whole time series with current station site and instrument characteristics so that it can be compared to today’s measurements, but it also creates substantial differences between the 2021 and 2011 normals calculations.
+
+For example, the maximum temperature record for the KOKC station developed a substantial warming deviation from other nearby stations during early 2017 (see KOCK Oklahoma City - January Maximum Temperature).
+
+The discontinuity adjustment assigned was -0.68°C (-1.22°F) starting in April 2017, which was subtracted from previous Januaries in this example, until another discontinuity was found in 2003, causing a further adjustment. A comparison between the 1991–2020 normals and the 2011 version of the 1981–2020 normals would not recognize this change to the underlying temperature time series, and would give the incorrect impression that the station was getting cooler.
+
+To address this concern, NCEI provides a set of derived 1981–2010 monthly maximum and minimum temperature normals for all stations in the U.S. that have overlapping normals calculations from both 2011 and 2021.
+
+Comparison Files
+
+- Monthly Maximum Temperature Normals Comparison Data (.csv)
+
+- Monthly Minimum Temperature Normals Comparison Data (.csv)
+
+- Annual Temperature Normals Comparison Worksheet (.xlsx)
+
+File Contents and Structure
+
+The two .csv comparison files have all three data types. Files are arranged in the following structure:
+
+- Column 1: Station ID
+
+- Column 2: Two-letter state/territory code
+
+- Column 3: Station Name
+
+- Column 4: Month (1-12)
+
+- Column 5: Original 1981–2010 Normals (in tenths of °F)
+
+- Column 6: New 1981–2010 Normals (in tenths of °F)
+
+- Column 7: New 1991–2020 Normals (in tenths of °F)
+
+The third file has a spreadsheet that compares annual maximum and minimum temperature normals between the three categories for quick station-to-station comparisons. Columns are labelled and normals are in tenths of degrees F.
+
+Note: These new 1981–2010 temperature calculations are not a complete set of temperature related normals; only monthly maximum and minimum temperatures are provided. These new maximum and minimum temperature normals are not meant to replace the 1981–2010 normals if those are required by a regulatory body or for official business. Their only purpose is to compare station temperature normals properly using the same version of the underlying homogenized temperature data set for both periods. These data will render an equivalent comparison that accurately reflects the temperature change between the two latest normals time intervals.
+
+What are Climate Normals?
+
+A "normal" is the 30-year average of a particular variable’s measurements, calculated for a uniform time period. Climate normals are derived from weather and climate observations captured by weather stations. The monthly minimum temperature normal in January for a given station is computed by averaging the 30 January values of monthly averaged minimum temperatures from 1991–2020 after they have been adjusted for any changes in the observing station or observing practices, and had missing months estimated from nearby more complete stations. Temperature daily normals are calculated using a procedure that ensures the daily normals for a month agree with the monthly normals when averaged. Climate Normals also include many statistics other than averages.
+
+NOAA produces Climate Normals in accordance with the World Meteorological Organization (WMO), of which the United States is a member. The WMO requires each member nation to compute 30-year meteorological quantity averages at least every 30 years (1931–1960, 1961–1990, 1991–2020, etc.), and recommends an update each decade, in part to incorporate newer weather stations. NCEI is also responsible for fulfilling the congressional mandate "... to establish and record the climatic conditions of the United States." This stems from a provision of the Organic Act of October 1, 1890, which established the Weather Bureau as a civilian agency (15 U.S.C. 311).
+
+In addition to basic averages for temperature, precipitation, and snowfall, more than 500 separate types of weather and climate statistics are available as part of the U.S. Normals dataset. Some are well known metrics like heating and cooling degree days, growing season length for various temperature thresholds, numbers of days with precipitation or with temperatures below freezing, etc. Other statistics are less well known, but are needed by various user communities, including percentiles and probabilities of key variables. All available variables serve a purpose, and are described in more detailed documentation available through the Data Access tool.
+
+Normals Calculations
+
+The science and methodologies used to generate official climate normals for the United States were well established during the creation of the 1981–2010 U.S. Climate Normals. A team of NCEI researchers spent considerable time and effort improving and automating these processes, particularly for daily and hourly normals. These methods are documented in a series of five peer-reviewed publications (Applequist et al. 2012; Arguez et al. 2012; Arguez and Applequist 2013; Durre et al. 2013; Durre and Squires 2015).
+
+The 1991–2020 Normals calculation software was updated to incorporate feedback and recommendations from WMO Guidelines for Calculating Climate Normals (No. 1203) published in 2017, as well as users requests for calculation changes and new normals variables. These changes are summarized in the Normals Calculation Methodology 2020 document, along with additional technical documentation released with 1981–2010 Normals.
+
+2023 Update
+
+Version 1.0.1 reflects changes in the daily, monthly, seasonal, and annual normals at a total of 23 stations. Hourly and agricultural normals remain unchanged.
+
+During the year following the initial release of the 1991-2020 station-based U.S. Climate Normals in May 2021, National Weather Service Forecast Offices submitted inquiries regarding the Normals at a total of 60 stations. Staff at NCEI carefully adjudicated each inquiry in collaboration with its NWS partners. At 21 stations, NWS staff was able to provide data additions and corrections, and NCEI staff recalculated or added the affected normals parameters based on the updated data records. In most cases, changes the monthly normals were <0.5°C for temperature, <0.1 in for precipitation, and <0.5 in for snowfall. At two additional sites, certain normals parameters were removed because they were judged to be inaccurate, and no correction to the underlying data was feasible. The following stations were affected by changes in one or more of their Normals parameters.
+
+References
+
+- Applequist, S., A. Arguez, I. Durre, M. F. Squires, R. S. Vose, and X. Yin, 2012: 1981–2010 U.S. Hourly Normals. Bulletin of the American Meteorological Society, 93, 1637-1640. doi:10.1175/BAMS-D-11-00173.1.
+
+- Arguez, A., I. Durre, S. Applequist, R. S. Vose, M. F. Squires, X. Yin, R. R. Heim, Jr., and T. W. Owen, 2012: NOAA's 1981–2010 U.S. Climate Normals: An Overview. Bulletin of the American Meteorological Society, 93, 1687-169. doi:10.1175/BAMS-D-11-00197.1.
+
+- Arguez, A., and S. Applequist, 2013: A Harmonic Approach for Calculating Daily Temperature Normals Constrained by Homogenized Monthly Temperature Normals. Journal of Atmospheric and Oceanic Technology, 30, 1259–1265. doi:10.1175/JTECH-D-12-00195.1.
+
+- Durre, I., M. F. Squires, R. S. Vose, X. Yin, A. Arguez, and S. Applequist, 2012: NOAA's 1981–2010 U.S. Climate Normals: Monthly Precipitation, Snowfall, and Snow Depth. Journal of Applied Meteorology and Climatology, 52, 2377- 2395. doi:10.1175/JAMC-D-13-051.1.
+
+- Durre, I., and M. F. Squires, 2015: White Christmas? An Application of NOAA's 1981–2010 Daily Normals. Bulletin of the American Meteorological Society, 96, 1853-1858. doi:10.1175/BAMS-D-15-00038.1.
+
+Source Grids
+
+There are two types of monthly gridded normals for the contiguous United States. One set expresses the averages for 1991–2020, 2006–2020, and 1901–2000. The second consists of averages and other statistics conditioned by the El Niño/Southern Oscillation (ENSO) phase. The nClimGrid dataset (Vose et al. 2014) was the input for both sets of gridded normals.
+
+The nClimGrid dataset contains monthly gridded temperature and precipitation. Vose et al. used climatologically aided interpolation to transform NCEI’s extensive collection of station temperature and precipitation values into nClimGrid monthly grids at a 1/24 degree latitude/longitude spatial resolution (about 4km) covering the contiguous United States.
+
+Monthly Gridded Climate Normals
+
+The nClimGrid monthly data provides a nearly homogenous temperature time series and a serially complete precipitation record. Unlike complex station climate normals, monthly gridded normals are simple averages of the maximum temperature, minimum temperature, mean temperature, and precipitation totals for each month of the year.
+
+The 30-year normal is an average of months from 1991 to 2020. For example, the 30-year January maximum temperature normal is the average of the 30 January values between 1991 and 2020. This is the gridded monthly normal to use for most activities that require spatially complete or high-resolution climatologies. For users who require representation of a period closer to the present, a normal for 2006–2020 is also provided. For longer term climate change study comparisons, we also produced the 20th Century Baseline, a set of averages from 1901–2000. Climate normals for climate seasons of March-April-May, June-July-August, September-October-November, December-January-February and annual periods are also available.
+
+Figure 1: An example of 1991-2020 monthly gridded normals for April mean temperature (°F) and precipitation (inches). The data are found in four netCDF files for each normal or baseline set, one each for maximum temperature, minimum temperature, mean temperature, and precipitation. Each data file is approximately 275 MB.
+
+Monthly Gridded Normals Data Table
+
+1991–2020 Monthly Normals
+2006–2020 Monthly Normals
+1901–2000 Monthly Baseline
+
+Precipitation
+Precipitation
+Precipitation
+
+Maximum Temperature
+Maximum Temperature
+Maximum Temperature
+
+Minimum Temperature
+Minimum Temperature
+Minimum Temperature
+
+Mean Temperature
+Mean Temperature
+Mean Temperature
+
+Resources
+
+- See the Monthly Gridded Normals Readme for a description of the file contents and structure.
+
+- For more information about the production of the dataset, see the Monthly Gridded Normals Documentation.
+
+Daily Gridded Normals
+
+The Daily Gridded Climate Normals Dataset is derived from the nClimGrid Daily Dataset, and can be used to calculate daily anomalies or examine the climatology of individual days of the year.
+
+Variables and Values
+
+The variables available as daily normals include daily maximum, minimum, and mean temperatures and daily average, month-to-date, and year-to date precipitation totals. The same smoothing methods that are used to generate daily normals for observation stations have been applied to the values for each grid cell to make them transition smoothly from one day to another. The daily temperature normals are constrained so their monthly averages equal the monthly temperature normals, and the daily precipitation normals are adjusted to total to the monthly precipitation normals.
+
+Time Frames
+
+The 30-year normal set is derived from daily values for 1991–2020. There are also 15-year normals for 2006–2020 that provide a more recent period of reference. The data are found in six netCDF files for each normal set. Each data file has grids for 365 calendar days and is approximately 1.2 GB in size. February 29 values are provided for the three temperature datasets and daily precipitation, and are simply the average of February 28 and March 1 values.
+
+Figure 2: An example of 1991–2020 daily gridded normals for May 1 mean temperature (°F).
+
+Daily Gridded Normals Data Table
+
+1991–2020 Daily Normals
+2006–2020 Daily Normals
+
+Daily Precipitation
+Daily Precipitation
+
+Month-to-Date Precipitation
+Month-to-Date Precipitation
+
+Year-to-Date Precipitation
+Year-to-Date Precipitation
+
+Maximum Temperature
+Maximum Temperature
+
+Minimum Temperature
+Minimum Temperature
+
+Mean Temperature
+Mean Temperature
+
+Resources
+
+- See the Daily Gridded Normals Readme for a description of the file contents and structure
+
+- For more information about the production of the dataset, see the Daily Gridded Normals Documentation
+
+ENSO Gridded Climate Normals
+
+ENSO Normals 2020 is a monthly climatology product that covers the contiguous United States. These monthly climate normals are provided for five different phase categories of ENSO: Strong La Niña, Weak La Niña, Neutral, Weak El Niño, and Strong El Niño. The resulting climatologies are centered around a 15-yr running average (instead of the traditional 30-year normal) to account for the impacts of climate change. Arguez et al. (2019) describes the methods used to generate the ENSO normals in detail.
+
+ENSO Status: 1950–2020
+
+The product suite includes monthly climate normals of daily maximum temperature, daily minimum temperature, and precipitation. In addition to the monthly ENSO-adjusted normals, quantile values are provided for the 10th, 25th, 75th, and 90th percentiles. The product is intended for users in climate-sensitive industries and activities to plan for a broad array of possible ENSO impacts in a changing climate.
+
+The data are in three netCDF files, one each for maximum temperature, minimum temperature, and precipitation. Each data file is approximately 1.1 GB.
+
+- ENSO_MaxTemp
+
+- ENSO_MinTemp
+
+- ENSO_Precip
+
+Resources
+
+- See the ENSO Normals Readme for a description of file contents and structure.
+
+- For more information about the production of the dataset, see the ENSO Normals Documentation.
+
+References
+
+- Arguez, A., A. Inamdar, M. A. Palecki, C. J. Schreck, and A. H. Young, 2019: ENSO Normals: A New U.S. Climate Normals Product Conditioned by ENSO Phase and Intensity and Accounting for Secular Trends. J. Appl. Meteor. Climatol., 58, 1381-1397. https://doi.org/10.1175/JAMC-D-18-0252.1
+
+- Vose, R. S., S. Applequist, M. Squire, I. Durre, M. Menne, C. N. Willams Jr., C. Fenimore, K. Gleason, and D. Arndt, 2014: Improved Historical Temperature and Precipitation Time Series for U.S. Climate Divisions. J. Appl. Meteor. Climatol., 53, 1232-1251. https://doi.org/10.1175/JAMC-D-13-0248.1
+
+Frequently Asked Questions
+
+Why were the Alaska temperature normals updated in July 2021?
+
+During the temperature data homogenization process, abrupt but real changes in sea ice on the west and northern coasts of Alaska could be mistaken for artificial air temperature changes at stations close to the coast (north of 70°N or west of 160°W). To address this issue, we replaced the homogenized temperature records with original observations that were quality controlled but not homogenized, and reran the normals process.
+
+Normals at 18 stations within this zone were slightly modified. In addition, normals for 7 stations near the zone were under the influence of the coastal stations for filling missing data or estimating normals, and also had changed values.
+
+New temperature normals for impacted stations include annual/seasonal, monthly, and daily temperature normals and temperature-related normals (seasonal variables, exceedance counts, etc.) for both 1991-2020 and 2006-2020. The quick access tool will have the changes available for temperature averages, while the full access tool can extract all temperature variables. New versions of files containing Alaska temperature normals have been uploaded to our Web Accessible Folders that contain the entire dataset, including both by-variable and by-station bulk files.
+
+AK Modified Stations List
+
+Were the 1991–2020 Climate Normals computed in the same way as 1981–2010 version?
+
+Yes. Station normals calculations for 1991– 2020 follow the approaches pioneered in the last cycle. The Normals Calculation Methodology 2020 documentation includes references to all the detailed normals methodology publications. Some technical changes to the way normals values are rounded, percentiles calculation, and data formatting have been adopted to align with World Meteorological Organization (WMO) Guidelines on the Calculation of Climate Normals (No. 1203).
+
+What criteria determines which stations are included in U.S. Climate Normals products?
+
+Climate Normals are computed for as many NOAA and partner weather stations with sufficient data for 1991–2020 as reasonably possible, including those in the National Weather Services (NWS) Cooperative Observer Program (COOP) Network and the Automated Surface Observing System (ASOS) Network found at many airports. Normals are also calculated for some stations with a Weather Bureau–Army–Navy (WBAN) station identification number, including stations from the U.S. Climate Reference Network (USCRN). Finally, precipitation normals are being calculated for selected U.S. Department of Agriculture Snow Telemetry (SNOTEL) Network stations and citizen science Community Collaborative Rain, Hail, and Snow (CoCoRaHS) Network for the first time.
+
+How many stations are included in the 1991–2020 U.S. Climate Normals?
+
+The 1991–2020 Climate Normals includes data from more than 15,000 stations reporting precipitation and more than 7,300 stations reporting temperature. Of the stations reporting precipitation, more than 5,700 have adequate observations to report snowfall and snow depth normals. About 467 stations report hourly normals.
+
+The 2006–2020 Climate Normals includes data from more than 13,000 stations reporting precipitation and more than 5,500 stations reporting temperature. Of the stations reporting precipitation, more than 1,600 have adequate observations to report snowfall and snow depth normals. About 1,150 stations report hourly normals.
+
+What do climate normals tell us about global warming or climate change?
+
+Climate Normals were not developed to track or document climate change, but instead to characterize the current climate. However, the differences between each installment do provide some evidence of climate change. This is especially apparent if current normals are compared to a long term average, such as the 1901-2000 20th Century Average often used by the NCEI Monitoring Section to compare to long time series of climate variables.
+
+What are heating and cooling degree days? What are growing degree days?
+
+Heating and cooling degree days are energy demand metrics associated with the variation of mean temperature across space and time. Growing degree days are climate metrics that measure the temperature inputs into agricultural systems, also as a function of mean temperature.
+
+Degree day computations use certain threshold temperatures (e.g., 65°F for heating and cooling degree days, 50°F for growing degree days ) as base temperatures, and accumulate degree day metrics daily as departures from these baselines. Different baselines are useful for different assessments, so the Climate Normals product provides access to numerous degree day normals types with different baselines.
+
+Does the 1991–2020 installment include Supplemental Temperature Normals?
+
+Supplemental Temperature Normals were not developed for 1991–2020. Instead, an entire suite of 15-year normals for 2006-2020 have been calculated for all variables using the same methods used for the 30-year normals. The 15 year normals are optimized for use cases that require more recent climate information, such as predicting energy system loads and other economic decisions.
+
+However, NCEI partners at the High Plains Regional Climate Center have developed a custom climatology tool that allows users to calculate monthly temperature normals for any time frame within the current period for the same set of stations as the conventional normals.
+
+Do other agencies and individuals compute their own Climate Normals?
+
+Yes. Many agencies, including the NOAA Climate Prediction Center, develop their own averages and change base periods for specific applications and/or internal use. Similarly, numerous individuals calculate their own Climate Normals for a variety of reasons. NCEI is the official source for the conventional 30-year U.S. Climate Normals.
+
+1981–2010 U.S. Climate Normals Access Methods
+
+Quick Access Tool
+
+Search for temperature and precipitation Climate Normals from over 9,800 stations across the United States. Find annual, seasonal, monthly, daily, or hourly Normals by location using a map or by location and station names.
+
+Launch Quick Access
+
+Supplemental Monthly Temperature Normals
+
+This product provides multiple estimates of monthly temperature normals using different definitions of the normal time period (other than 30 years) so users can make better-informed decisions tuned to their planning applications.
+
+Launch Supplemental Normals
+
+Interactive Map
+
+Use the interactive map to search for temperature and precipitation normals by station, zip code, city, county, or state as well as other normals variables, which include snowfall, heating and cooling degree days, frost and freeze dates, and growing degree days.
+
+Launch Interactive Map
+
+U.S. Climate Atlas
+
+This tool provides access to maps of average monthly and annual minimum temperature, maximum temperature, and total precipitation. Monthly maps of minimum temperature, maximum temperature, and precipitation from 1895 through 2015 are also available, as well as map animation and comparison tools.
+
+Launch Atlas
+
+Download Via HTTPS
+
+Download CSV/ASCII versions of the full suite of Climate Normals products from our HTTPS area.
+
+Download Data

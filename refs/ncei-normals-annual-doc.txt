@@ -1,0 +1,40 @@
+# NOAA NCEI: 1991-2020 annual/seasonal normals documentation folder
+# https://www.ncei.noaa.gov/data/normals-annualseasonal/1991-2020/doc/
+# fetched 2026-10-16T22:18:34Z, sha256 bafcf0722b5ec882095cb0c12bbe923799ba0026930d4e7561a8b9a945d1a6ba
+
+Index of /data/normals-annualseasonal/1991-2020/doc/
+
+Index of /data/normals-annualseasonal/1991-2020/doc/
+
+Name
+Last modified
+Size
+Description
+
+Parent Directory
+
+-
+
+Normals_ANN_1991-2020_sample.csv
+2021-04-27 19:51
+14756
+
+Normals_ANN_1991-2020_sample.pdf
+2021-04-27 19:51
+3904
+
+Normals_ANN_Documentation_1991-2020.pdf
+2021-04-26 15:45
+167246
+
+Normals_Calculation_Methodology_2020.pdf
+2021-04-26 15:45
+945869
+
+Readme_By-Variable_By-Station_Normals_Files.txt
+2021-04-24 16:22
+39945
+
+inventory_30yr.txt
+2021-04-28 21:04
+1342890

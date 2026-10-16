@@ -1,0 +1,7 @@
+# UW-Madison Wisconet weather and soil network
+# https://wisconet.wisc.edu/
+# fetched 2026-10-16T22:18:36Z, sha256 89614c3810a801611a3030a4e884d8c567a5e831c460fc0b48bfad0a31817d21
+
+Wisconet
+
+
