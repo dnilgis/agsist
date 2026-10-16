@@ -224,6 +224,27 @@ def numbers_el(rows):
             + "".join(body) + "</tbody></table>" + note + "</div>")
 
 
+# Line-for-line port of toBeatEl() in whats-priced-in.html; test/wpi-to-beat.test.mjs
+# compares the two byte for byte.
+MO3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def to_beat_el(tb, next_report):
+    if not tb or not tb.get("rows"):
+        return ""
+    p = str(tb.get("date") or "").split("-")
+    md = (MO3[int(p[1]) - 1] + " " + str(int(p[2]))) if len(p) == 3 else _esc4(tb.get("date"))
+    body = "".join('<tr><td>' + _esc4(r.get("label")) + '</td><td class="n"><b>' + _esc4(_sig(r.get("value")))
+                   + " " + _esc4(r.get("unit")) + "</b></td></tr>" for r in tb["rows"])
+    return ('<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '
+            + _esc4(tb.get("report")) + " (" + md + "), standing until the " + _esc4(next_report or "next report")
+            + "</span></div>"
+            + "<table><thead><tr><th>Number</th><th>USDA now</th></tr></thead><tbody>" + body + "</tbody></table>"
+            + '<div class="src">USDA\u2019s own figures' + ((" (" + _esc4(tb["wasde_no"]) + ")") if tb.get("wasde_no") else "")
+            + ". A survey average, high and low go beside them once a pre-report survey posts, with the source and time. "
+            + '<a href="' + _esc4(tb.get("source")) + '" rel="noopener" target="_blank">USDA WASDE</a></div></div>')
+
+
 def next_card(n, skip_nums=False):
     if not n:
         return ('<div class="wp-err">No upcoming report is scheduled right now. '
@@ -295,7 +316,7 @@ def next_card(n, skip_nums=False):
     return (
         f'<div class="wp-card"><div class="hd"><span class="rpt">{esc(n["report"])}</span>'
         f'<span class="cd">{esc(n["date"])}{time_part} · {cd}</span></div>'
-        f'{commodity}{expectation}{range_html}{odds}{thr}{pos}'
+        f'{commodity}{expectation}{to_beat_el(n.get("to_beat"), n.get("report"))}{range_html}{odds}{thr}{pos}'
         f'{"" if skip_nums else numbers_el(n.get("numbers"))}</div>'
     )
 
@@ -418,15 +439,19 @@ def history_el(h):
             cls = "bull" if r.get("surprise") == "bullish" else ("bear" if r.get("surprise") == "bearish" else "flat")
             # An empty surprise means there was no estimate to compare against,
             # which is not the same as landing in line. See report_bands.py.
-            tag = r.get("surprise") or "no trade estimate"
+            tag = "not graded" if r.get("ungraded_why") else (r.get("surprise") or "no trade estimate")
             gp = r.get("gap_pct")
             ctx = f' &middot; {esc(r["context"])}' if r.get("context") else ""
             gap_line = (f'<div class="wp-hr-gap">{"+" if gp > 0 else ""}{gp}% vs trade{ctx}</div>'
                         if gp is not None else "")
-            if r.get("source_date_unknown"):
+            if r.get("ungraded_why"):
+                gap_line += f'<div class="wp-hr-gap">{esc(r["ungraded_why"])}</div>'
+            elif r.get("source_date_unknown"):
                 gap_line += '<div class="wp-hr-gap">Trade survey source date unknown.</div>'
-            reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}</div>' if r.get("reaction")
-                        else '<div class="wp-hr-gap">No note written on how the market took it.</div>')
+            src_link = (f' <a href="{esc(r["reaction_source"])}" rel="nofollow noopener" target="_blank">Source</a>'
+                        if r.get("reaction_source") else "")
+            reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}{src_link}</div>' if r.get("reaction")
+                        else f'<div class="wp-hr-gap">{esc(r.get("reaction_why") or "No note written on how the market took it.")}</div>')
             body.append(
                 f'<div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">{esc(r["metric"])}</span>'
                 f'<span class="wp-tag {cls}">{tag}</span></div>'
