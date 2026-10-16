@@ -1,28 +1,17 @@
-/* components/your-area.js -- the "Your area" box on /daily (and every issue
-   page), /scorecard, /cot and /whats-priced-in. One shared file; a page opts
-   in with one empty, hidden element after its main answer:
-
+/* components/your-area.js: the "Your area" box on /daily and every issue page,
+   /scorecard, /cot and /whats-priced-in. A page opts in with one hidden element
+   after its main answer, plus this script (defer):
      <aside class="ya" data-your-area="daily|cot|scorecard|wpi" hidden></aside>
-     <script src="/components/your-area.js?v=1" defer></script>
-
-   data-after="<selector>" (optional): when that element shows up (pages that
-   draw their answer with JS), the box moves to sit right after it.
-
-   READS ONLY. The location is the one the site already saved (agsist-wx-loc,
-   written by geo.js; else agsist_zip from the cash bid search). Nothing is
-   written and nothing about the reader is sent anywhere: the box fetches
-   three or four public files from this site and does the arithmetic here.
-
-   What it prints, all from files on disk, each with its date:
-     - the state's median cash basis per crop and its change on the week
-       (data/basis-states.json, AGSIST network elevators)
-     - futures close + that median basis, only when prices.json carries the
-       same contract and its close is within 5 days of the basis read
-     - the state's harvest pace vs the 5-year average (data/crop-progress.json)
-     - per page, what a national futures move means at the reader's basis:
-       futures one for one, basis separate and not covered by futures
-   Stale or missing data stays missing. No location: one small link to the
-   ZIP search, no prompt, no pop-up. Tests: test/your-area.test.mjs. */
+   data-after="<selector>": move the box after that element once JS draws it.
+   READS ONLY the location the site already saved (agsist-wx-loc from geo.js,
+   else agsist_zip). Writes nothing, sends nothing about the reader; it fetches
+   public files from this site and does the arithmetic here:
+   state median basis + week change (data/basis-states.json); futures close +
+   that basis, only for the same contract within 5 days (data/prices.json);
+   state harvest pace (data/crop-progress.json); per page, a futures move
+   reaches a bid one for one and basis is not covered by futures. Stale or
+   missing data stays missing. No location: one link to the ZIP search.
+   Tests: test/your-area.test.mjs. */
 (function (root) {
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -141,7 +130,7 @@
     var links = [];
     if (loc.zip) links.push('<a href="/cash-bids?zip=' + loc.zip + '">Bids near ' + loc.zip + ' &rarr;</a>');
     if (st && st.path && lead) links.push('<a href="' + esc(st.path) + '">' + esc(name) + ' basis map</a>');
-    return '<p class="ya-k">Your area' + (name ? ': ' + esc(name) : '') + '</p>' +
+    return '<p class="ya-k">Your area' + (name ? ': ' + esc(name) : '') + (src.length && basisOk ? ' &middot; ' + ct(bs.generated) : '') + '</p>' +
       out.map(function (s) { return '<p>' + s + '</p>'; }).join('') +
       (links.length ? '<p class="ya-l">' + links.join(' &middot; ') + '</p>' : '') +
       (src.length ? '<p class="ya-s">' + src.join('. ') + '.</p>' : '');
@@ -152,7 +141,7 @@
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AGSIST_YOUR_AREA = api;
 
-  var doc = root.document, CSS = '.ya{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}.ya p{margin:.25rem 0}.ya b{color:var(--text)}.ya-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}.ya a{color:var(--gold);display:inline-block;padding:.35rem 0}.ya-s{font-size:.76rem;color:var(--text-muted)}.ya.ya-n{border:0;background:none;padding:0;margin:.5rem 0}';
+  var doc = root.document, CSS = 'aside.ya{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.ya p{margin:.25rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.ya b{color:var(--text)}aside.ya .ya-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}aside.ya a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.ya .ya-s{font-size:.76rem;color:var(--text-muted)}aside.ya.ya-n{border:0;background:none;padding:0;margin:.5rem 0}';
   function get(u) { return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function fill(el, loc) {
     var mode = el.getAttribute('data-your-area') || 'daily';
