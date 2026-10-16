@@ -46,7 +46,7 @@
   {
    "k": "Status &amp; length",
    "h": "Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.",
-   "s": "Draft Jun 23; revised text Aug 1; committee markup failed Aug 6, then <b>passed 12&ndash;11 on Sep 16</b> along party lines; reported Sep 24 as <b>S.&nbsp;5526</b> (Senate calendar); no CBO score found as of Oct 15; no Senate floor vote before the Sep 30 recess."
+   "s": "Failed in committee Aug 6, then <b>passed 12&ndash;11 on Sep 16</b>; reported Sep 24 as <b>S.&nbsp;5526</b>. No CBO score found as of Oct 15; no floor vote yet."
   },
   {
    "k": "Overall cost",
@@ -81,7 +81,7 @@
   {
    "k": "Economic aid",
    "h": "Not included.",
-   "s": "Not included. The $15&ndash;17B aid proposals (January; $17.3B by June) are separate."
+   "s": "Not included. The $15&ndash;17B aid proposals are separate."
   }
  ],
  "tracker": [
@@ -469,7 +469,7 @@
    "num": "XI",
    "name": "Crop Insurance",
    "cover": "Federal Crop Insurance Program, premium subsidies, products",
-   "change": "Brings more specialty crops into crop insurance: a new Specialty Crop Advisory Committee and coordinator, a reconstituted FCIC board, and research on organic, wine-grape smoke, mushroom, blueberry, and pecan policies. Both bills extend <b>enhanced premium support to veteran farmers and ranchers</b> and clarify FCIC yield and revenue authority.",
+   "change": "Brings more specialty crops into crop insurance: a new Specialty Crop Advisory Committee and coordinator, a reconstituted FCIC board, and research on organic, wine-grape smoke, mushroom, blueberry, and pecan policies. Both bills extend <b>enhanced premium support to veteran farmers and ranchers</b> and clarify FCIC yield and revenue authority. The Senate bill also writes the 2025 law&rsquo;s higher administrative-and-operating reimbursement rates for insurance companies into statute for 2026 and later reinsurance years; that is company pay, not your premium or guarantee.",
    "amt": "$155.5B",
    "share": "11.3%",
    "bar": 15.8

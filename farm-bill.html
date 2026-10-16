@@ -230,6 +230,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .lg .name{font-size:13.6px;font-weight:500}
 .lg .figs{font-family:var(--mono);font-size:13.3px;color:var(--dim);padding-left:18px}
 .lg .figs b{color:var(--text);font-weight:600}
+@media(max-width:600px){.bignum-grid,.alloc-legend{grid-template-columns:1fr 1fr}.bignum{padding:14px 12px}.bignum .l{font-size:11.5px;letter-spacing:.03em}.bignum:last-child:nth-child(odd),.lg:last-child:nth-child(odd){grid-column:1/-1}.lg{padding:10px 12px}}
 .cmp{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden}
 .cmp-head,.cmp-row{display:grid;grid-template-columns:200px 1fr 1fr;gap:1px;background:var(--hair)}
 .cmp-head>div{background:var(--raised);padding:13px 18px;font-family:var(--mono);font-size:12.9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
@@ -414,7 +415,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     <div class="foryou" id="for-you" aria-label="What this means for your operation">
       <div class="fy-tag">If you farm for a living</div>
       <ul>
-        <li><b>Your program numbers aren't in play.</b> The 2025 reconciliation law (P.L.&nbsp;119&ndash;21) runs <a class="inl" href="/arc-plc">ARC and PLC</a> through the 2031 crop year and set the statutory reference prices at $4.10 for corn and $10.00 for soybeans for 2025 through 2030; from 2031 they rise 0.5% a year. Its crop-insurance premium-support changes are permanent. Neither of these bills reopens them.</li>
+        <li><b>Your program numbers aren't in play.</b> The 2025 reconciliation law (P.L.&nbsp;119&ndash;21) runs <a class="inl" href="/arc-plc">ARC and PLC</a> through the 2031 crop year and set the reference prices through 2030. Its crop-insurance premium-support changes are permanent. Neither bill reopens them.</li>
         <li><b>Little here needs action from you.</b> Sep 30 was Congress's deadline, not yours. No insurance date or <a class="inl" href="/arc-plc">ARC/PLC signup</a> changes while the bill is pending. The exception: <b>new CRP enrollment is paused</b> until Congress acts, and crop insurance runs on permanent law either way.</li>
         <li><b>The aid money isn't real yet.</b> The $15&ndash;17B economic-aid push (proposed in January; $17.3B by June) sits outside both bills: no rules, no signup, no timeline. Anyone quoting your payment is guessing. Know your own number instead: <a href="/breakeven">break-even per acre</a> &middot; <a href="/harvest-price-tracker#presell">what you can safely pre-sell</a>.</li>
       </ul>
@@ -551,12 +552,9 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   <section id="changes">
     <div class="sec-eyebrow"><span class="n">02</span> What the bills actually change</div>
     <h2>Both close to budget-neutral</h2>
-    <p class="sec-intro">Headlines say "trillion-dollar farm bill," but each bill's own <b>score</b> (its
-      effect versus the baseline) is small. Most program funding was already set, much of it in the 2025
-      reconciliation law. The figures below are the Congressional Budget Office score of the
-      <b>House bill (H.R. 7567)</b>: its mandatory-spending change is essentially a wash, with the real
-      action a reshuffle inside the conservation title. The Senate committee's bill, S.&nbsp;5526, is also
-      described as <b>budget-neutral</b>; we have not found a CBO score for it as of Oct 15.</p>
+    <p class="sec-intro">Each bill&rsquo;s own <b>score</b>, its change from the baseline, is small. The figures below are
+      CBO&rsquo;s score of the <b>House bill (H.R. 7567)</b>: a wash on mandatory spending, with the real action a
+      reshuffle inside conservation. We have not found a CBO score for S.&nbsp;5526 as of Oct 15.</p>
     <div class="bignum-grid" style="margin-bottom:24px">
       <div class="bignum"><div class="v" style="color:var(--text)">+$162M</div><div class="l">House mandatory change<br>FY2026&ndash;FY2031 (6 yr)</div></div>
       <div class="bignum"><div class="v">$0</div><div class="l">House mandatory change<br>FY2026&ndash;FY2036 (11 yr), neutral</div></div>
@@ -569,23 +567,20 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   <section id="compare">
     <div class="sec-eyebrow"><span class="n">03</span> House vs Senate</div>
     <h2>The two bills, side by side</h2>
-    <p class="sec-intro">Both bills run on the same twelve-title structure and both build on the 2025
-      reconciliation law, so much of the content overlaps. Where they differ is what a conference committee would have to settle. The main differences, updated for the Senate's Aug 1 revised text.</p>
+    <p class="sec-intro">Same twelve titles, same 2025 base. These are the differences a House-Senate deal would have to settle.</p>
     <div class="cmp">
       <div class="cmp-head"><div></div><div class="ch">House &middot; H.R. 7567</div><div class="cs">Senate &middot; S.&nbsp;5526, Agricultural Act of 2026</div></div>
       <!--FB:compare-->
-      <div class="cmp-row"><div class="rk">Status &amp; length</div><div class="cv h">Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.</div><div class="cv s">Draft Jun 23; revised text Aug 1; committee markup failed Aug 6, then <b>passed 12&ndash;11 on Sep 16</b> along party lines; reported Sep 24 as <b>S.&nbsp;5526</b> (Senate calendar); no CBO score found as of Oct 15; no Senate floor vote before the Sep 30 recess.</div></div>
+      <div class="cmp-row"><div class="rk">Status &amp; length</div><div class="cv h">Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.</div><div class="cv s">Failed in committee Aug 6, then <b>passed 12&ndash;11 on Sep 16</b>; reported Sep 24 as <b>S.&nbsp;5526</b>. No CBO score found as of Oct 15; no floor vote yet.</div></div>
       <div class="cmp-row"><div class="rk">Overall cost</div><div class="cv h"><b>Budget-neutral</b> by CBO (+$162M over 6 yr, $0 over 11 yr).</div><div class="cv s">Described as <b>budget-neutral</b>; no detailed CBO score found as of Oct 15.</div></div>
       <div class="cmp-row"><div class="rk">Conservation</div><div class="cv h">Cuts <b>EQIP &minus;$786M</b> and redistributes to other conservation programs.</div><div class="cv s">Raises easement cost-share (50&rarr;60%); new Forest Conservation Easement and State Conservation Assistance ($50M/yr) programs. <b>Pays for part of that by cutting EQIP and CSP funding</b> (CRS, on the Jun 23 draft).</div></div>
       <div class="cmp-row"><div class="rk">Farm loan limits</div><div class="cv h">Guaranteed operating loans to <b>$3M</b>, guaranteed ownership loans to <b>$3.5M</b> (NALC, on the House-passed text).</div><div class="cv s">The same <b>$3M</b> and <b>$3.5M</b> guaranteed caps, indexed to inflation; direct limits also rise.</div></div>
       <div class="cmp-row"><div class="rk">Trade</div><div class="cv h">Moves Food for Peace administration toward USDA; extends Bill Emerson Trust.</div><div class="cv s"><b>More than doubles</b> MAP and FMD funding; defends common food names abroad.</div></div>
       <div class="cmp-row"><div class="rk">Nutrition (SNAP)</div><div class="cv h">Extends SNAP through 2031; states may outsource certification.</div><div class="cv s">Extends SNAP; staffing flexibility, permanent online purchasing, Buy American school meals. The <b>state cost-share timing sank the Aug 6 vote</b>: Republicans want a one-year delay (to FY2029), Democrats a two-year delay (to FY2030) so all states start together.</div></div>
       <div class="cmp-row"><div class="rk">Contentious riders</div><div class="cv h">The floor <b>struck the pesticide-labeling preemption</b> sections, 280&ndash;142 (Luna amendment, Apr 30). It <b>kept the Prop 12 fix</b> (Sec. 12006, barring state rules on how out-of-state livestock is raised); a bid to strike it was not allowed a floor vote.</div><div class="cv s">The revised text <b>includes year-round E15</b> and replaces small-refinery exemptions after 2027. On Aug 6 the committee adopted 34 amendments in one bipartisan package (moving Food for Peace to USDA among them) and one by roll call: <b>Thune&rsquo;s beef country-of-origin labeling amendment, 17&ndash;6</b>. The other 13 failed on party lines. Hemp and state animal-confinement laws (Prop 12) stay out.</div></div>
-      <div class="cmp-row"><div class="rk">Economic aid</div><div class="cv h">Not included.</div><div class="cv s">Not included. The $15&ndash;17B aid proposals (January; $17.3B by June) are separate.</div></div>
+      <div class="cmp-row"><div class="rk">Economic aid</div><div class="cv h">Not included.</div><div class="cv s">Not included. The $15&ndash;17B aid proposals are separate.</div></div>
       <!--/FB:compare-->
     </div>
-    <p class="note">Both chambers must still reconcile these into a single bill in conference before
-      anything reaches the President. Nutrition is what stopped it in committee on Aug 6; the committee cleared it 12&ndash;11 on Sep 16, but the same nutrition fight is likely to resurface on the Senate floor, where 60 votes are needed.</p>
   </section>
 
   <section id="titles">
@@ -607,10 +602,9 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       <ul>
         <li><b>Committee is done. The floor is not.</b> On Aug 6 Sen. McConnell was out, and a committee proxy vote cannot be the deciding vote, so the 11&ndash;11 committee could not report the bill. He came back for the 12&ndash;11 vote on Sep 16.</li>
         <li><b>The 60-vote math still applies.</b> A farm bill needs 60 votes to pass the full Senate, and Republicans hold nowhere near that on their own. The committee vote was party-line. Democrats are still holding out for a two-year delay in the SNAP state cost-share; the bill has one year.</li>
-        <li><b>No floor time until Nov 9.</b> The Senate adjourned Sep 30 for the Nov 3 election and returns Nov 9 for a lame-duck session. That session also has to fund the government past Dec 11. Boozman says the House and Senate committees will keep working on a deal until then and bring a final version to the floor after the election.</li>
+        <li><b>No floor time until Nov 9.</b> The lame-duck session also has to fund the government past Dec 11. Boozman says the committees will keep working on a deal with the House until then.</li>
         <li><b>Conference is still ahead.</b> Even a Senate floor win only produces a Senate bill. It would still need to be reconciled with the House-passed H.R. 7567 before either version reaches the President. Republican staff from both committees started informal talks in late September; no formal conference has been named.</li>
       </ul>
-      <p class="fb-holdups-note">One for the insurance industry, not your policy: the Senate bill also writes the 2025 law’s higher administrative-and-operating reimbursement rates for insurance providers into statute for 2026 and later reinsurance years. Your <a class="inl" href="/harvest-price-tracker#guarantee-math">revenue guarantee math</a> doesn’t change.</p>
     </div>
     <details class="fold" id="tracker">
       <summary><span class="fold-title">Every step so far, from House committee to enactment</span> <span class="fold-hint">Each step with its date: done, pending and still ahead.</span></summary>
