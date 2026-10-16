@@ -96,10 +96,15 @@ def rent_verdict(yoy):
     if yoy > -3:     return ("RENT EASED", "#5fc28a")
     return ("RENT FELL", "#5fc28a")
 
-def reconcile_verdict(vw, sa_chg):
+def reconcile_verdict(vw, sa_chg, have_sa=True):
     """The headline word comes from the median of matched counties. When USDA's own
     state average moved the other way (Illinois 2026: counties flat, state average
-    $264 to $261), say both, so the page does not read 'held flat' against a decline."""
+    $264 to $261), say both, so the page does not read 'held flat' against a decline.
+    When the data file has no state average yet (have_sa False), the word is named
+    as the middle county's, never as the state's (2026-10-16: Illinois still read
+    'RENT HELD FLAT' with no state figure on file)."""
+    if not have_sa:
+        return vw.replace("RENT ", "MIDDLE COUNTY ", 1) if vw.startswith("RENT ") else vw
     if sa_chg is None or abs(sa_chg) < 1:
         return vw
     up_word = vw in ("RENT ROSE", "RENT EDGED UP")
@@ -772,8 +777,10 @@ def build_state_page(st, d, s, all_states, aslug=None):
                + (f', {"+" if s["state_avg_chg"] >= 0 else "-"}{money(abs(s["state_avg_chg"]))} vs {yr-1}' if s.get("state_avg_chg") is not None else "")
                + '</div></div>') if s.get("state_avg") else ""
     vw, vc = rent_verdict(s["yoy"])
-    vw = reconcile_verdict(vw, s.get("state_avg_chg"))
-    sa_line = state_avg_line(name, plabel, yr, s)
+    vw = reconcile_verdict(vw, s.get("state_avg_chg"), have_sa=s.get("state_avg") is not None)
+    sa_line = state_avg_line(name, plabel, yr, s) or (
+        '<div class="rs-rel">That is the middle county on this page, not USDA NASS&rsquo;s statewide average, '
+        'which is not on this page yet.</div>')
     # PRF link beside the pasture figure; a state with no pasture rent gets it in the links note
     has_pasture = "pasture" in s["have_types"]
     pasture_prf = ("\n  " + prf_line(st)) if has_pasture and prf_line(st) else ""

@@ -60,7 +60,8 @@ test("rows come from the shared price list as written, every row says whose and 
   assert.equal(rows.find((r) => r.key === "uan32").srcLabel, "Farmers Coop, Kansas, posted Sep 24, 2026", "one co-op: named");
   assert.ok(rows.filter((r) => r.key !== "uan32").every((r) => r.srcLabel === "Kansas co-ops, middle of 4, posted Oct 6, 2026"));
   assert.equal(FS.coverNote(PRICES),
-    "Urea, Anhydrous ammonia, UAN 28%, UAN 32%, DAP and Potash: Kansas co-ops&rsquo; middle cash price. Each price names its co-ops, region and date.");
+    "Urea, Anhydrous ammonia, UAN 28%, UAN 32%, DAP and Potash: Kansas co-ops\u2019 middle cash price. Each price names its co-ops, region and date.");
+  assert.ok(!FS.coverNote(PRICES).includes("&"), "the note is set as text: no HTML entity shows on the page");
 });
 
 test("no USDA AMS Illinois figure on /fertilizer: no box, no copy, no fetch, no code to draw one", () => {

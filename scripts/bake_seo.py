@@ -874,7 +874,10 @@ def seo_fertilizer(c):
     for i, (s, r, _) in enumerate(named):
         bit = f"{s if s.isupper() else s.lower()} ${r['price']:,.0f}" + ("/ton" if i == 0 else "")
         parts.append(bit)
-    lo, hi = min(a for *_, a in named), max(a for *_, a in named)
+    # lo is the oldest sheet inside any named middle (2026-10-16: "posted Oct 6"
+    # was printed for a middle that took in Sep 24 sheets)
+    lo = min(min(a, _d(r.get("oldest")) or a) for _, r, a in named)
+    hi = max(a for *_, a in named)
     if lo == hi:
         when = f"posted {mdY(hi)}"
     elif lo.year == hi.year:
@@ -1645,6 +1648,11 @@ def selftest():
        and "Kansas and Kansas" not in t3 + d3, (t3, d3))
     ck("fertilizer: the date range is the named prices' own, not a product left out of them",
        "posted Sep 24 to Oct 6, 2026" in d2 and "Oct 12" not in d2, d2)
+    old_in = dict(two, fertilizer={"prices": [
+        {"key": "urea", "price": 615.95, "as_of": "2026-10-06", "oldest": "2026-09-24", "src": "coop", "region": "Kansas"},
+        {"key": "anhydrous", "price": 832.1, "as_of": "2026-10-06", "oldest": "2026-10-06", "src": "coop", "region": "Kansas"}]})
+    ck("fertilizer: a middle that took in a Sep 24 sheet is dated from Sep 24 (2026-10-16)",
+       "posted Sep 24 to Oct 6, 2026" in seo_fertilizer(old_in)[1], seo_fertilizer(old_in)[1])
     ck("fertilizer: newest price 31 days old gives the plain title (30-day rule)",
        seo_fertilizer(dict(ctx, today=date(2026, 9, 1))) == FERT_PLAIN)
     ck("fertilizer: newest price 30 days old still names it", seo_fertilizer(dict(ctx, today=date(2026, 8, 31))) != FERT_PLAIN)

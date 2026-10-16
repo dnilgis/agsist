@@ -149,7 +149,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = 10 # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=13" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=14" defer></script>'
 
 
 def rp_prices():
@@ -286,19 +286,34 @@ def chart(c, year, county, noun="station", ready=None):
            + f". Days with no report add nothing to {'either line' if has_us else 'the line'}.")
     if not ready:
         return f'<figure class="rc-chart">{"".join(out)}<figcaption>{cap}</figcaption></figure>'
-    st, fips, place, gauge, done, snow = ready
+    st, fips, place, gauge, done, snow = ready[:6]
+    period = ready[6] if len(ready) > 6 else None
+    # The usual-year line on the print (2026-10-16; it was off, showNormals false). The page has
+    # NOAA's normal for each month summed over the days the station reported (c["months"][m][1],
+    # the same numbers as the month table); they add up to the page's usual. The print spreads each
+    # month's figure over that month's reported days, so every month's usual and the year's usual
+    # are NOAA's own sums; only the line inside a month is drawn straight.
+    mn = None
+    if has_us and c.get("months") and all(m[1] is not None for m in c["months"]) \
+            and abs(sum(m[1] for m in c["months"]) - c["usual"]) <= 0.015:
+        mn = ",".join(f"{m[1]:.2f}" for m in c["months"])
     pcap = (f"Every day of {year}{'' if done else ' so far'} at this {noun}, drawn by Rain Print. "
             + {"drawn": "Light blue is snow. ",
                "gaps": "Its snowfall record has gaps, so no snow is drawn. ",
                "little": "Under 0.1 in of snow, so none is drawn. "}.get(
                   snow, f"This {noun} keeps no snowfall record, so snow is counted as water, not drawn. ")
-            + "A gap is a day with no report." + ("" if done else " The empty months are still to come."))
+            + "A gap is a day with no report." + ("" if done else " The empty months are still to come.")
+            + ((" The dashed line is the usual year: NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
+                + f" normals for this {noun}, added up over the days it reported, with each month&rsquo;s usual under its total; "
+                "inside a month the line is drawn straight.") if mn else ""))
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
               '<button type="button" data-style="r1" aria-pressed="true">Staircase</button>'
               '<button type="button" data-style="r2" aria-pressed="false">Roots</button>'
               '<button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>')
     return (f'<figure class="rc-chart rc-print" id="rc-print" data-st="{st.lower()}" data-fips="{fips}" data-year="{year}" '
-            f'data-days="{c["days"]}" data-total="{c["total"]:.2f}" data-place="{e(place)}" data-gauge="{e(gauge)}">'
+            f'data-days="{c["days"]}" data-total="{c["total"]:.2f}" data-place="{e(place)}" data-gauge="{e(gauge)}"'
+            + (f' data-mn="{mn}" data-usual="{c["usual"]:.2f}" data-norm="{"1991-2020" if period == "1991-2020" else "30"}"' if mn else "")
+            + '>'
             f'{styles}<div class="rc-print-art">{"".join(out)}</div>'
             f'<figcaption><span class="rc-cap-chart">{cap}</span><span class="rc-cap-print" hidden>{pcap}</span></figcaption></figure>')
 
@@ -558,7 +573,7 @@ def county_page(ctx):
     ready = None
     if print_ready(c, ctx.get("day")):
         gauge = f"Weather station: {stw['name']}, {miles_from(stw['mi'])} the middle of {name}"
-        ready = (st, fips, f"{name}, {stn}", gauge, done, print_snow(ctx["day"]))
+        ready = (st, fips, f"{name}, {stn}", gauge, done, print_snow(ctx["day"]), d.get("normals"))
     pr = rp_prices()
     price = f": framed ${pr[0]}, print ${pr[1]}" if pr else ""
     so_far = "" if done else " so far"

@@ -37,3 +37,16 @@ test("cargo counts carry a date", () => {
   }
   assert.ok(texts.every((t) => !t.includes("—")), "no em dash");
 });
+
+// 2026-10-16 (gaps1): the status note is not drawn when a headline exists
+// (tariffs.html: data.headline || data.status_note), so the 9.97 figure has to
+// sit in the timeline entry that prints 13.7, where a reader sees it.
+test("the timeline entry that prints 13.7 MMT also prints USDA's 9.97 MMT marketing-year count", () => {
+  const e = d.timeline.find((t) => /13\.7 MMT/.test(t.event));
+  assert.ok(e, "13.7 entry");
+  assert.match(e.event, /9\.97 MMT committed for the 2026\/27 marketing year \(Sep-Aug\), as S&P Global reported Sep 24/);
+  const sp = d.timeline.find((t) => /spglobal\.com/.test(t.source_url));
+  assert.equal(sp.date, "2026-09-24", "the S&P Sep 24 report is a dated, linked entry");
+  const html = readFileSync(new URL("../tariffs.html", import.meta.url), "utf8");
+  assert.match(html, /class="tl-src" href="'\+esc\(item\.source_url\)/, "each timeline entry links its source");
+});

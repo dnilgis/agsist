@@ -48,10 +48,14 @@ test("section: middle price only where the file gives one, every co-op named and
   assert.ok(!/—/.test(h), "no em dashes");
 });
 
-test("dates: the co-ops' own, and an undated price is counted apart", () => {
+test("dates: the co-ops' own, and an undated price is listed but not counted", () => {
   const h = FC.section(FEED, AMS);
-  assert.match(h, /newest posted Oct 6, oldest Sep 24, 1 with no date shown/, "DAP: Two Rivers 'close out' has no date");
-  assert.match(h, /not shown; first seen Oct 15, 2026 \(close out\)/);
+  assert.match(h, /newest posted Oct 6, oldest Sep 24<\/div>/, "DAP: the middle rests only on dated prices");
+  assert.ok(!/with no date shown/.test(h), "no undated price in a middle");
+  assert.match(h, /not shown; first seen Oct 15, 2026 \(close out\)\. no date shown, not counted/);
+  const dap = FEED.summary.find((p) => p.key === "dap");
+  assert.equal(dap.n, 3, "DAP: three dated co-ops (921.50, 936.05, 970)");
+  assert.equal(dap.median, 936.05);
   assert.match(h, /21-0-0-24S<\/b>[^<]*<span class="fcp-when">Aug 4, 2026\. 72 days old, not counted/);
 });
 

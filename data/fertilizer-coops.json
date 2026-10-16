@@ -1,6 +1,6 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-10-16T20:01:15Z",
+ "generated": "2026-10-16T22:05:28Z",
  "stale_days": 60,
  "min_median": 2,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price from 2 co-ops up (from 2 it is their average); one co-op is named.",
@@ -91,15 +91,14 @@
    "key": "dap",
    "name": "DAP",
    "symbol": "18-46-0",
-   "n": 4,
-   "median": 928.77,
-   "low": 820.0,
+   "n": 3,
+   "median": 936.05,
+   "low": 921.5,
    "high": 970.0,
    "oldest": "2026-09-24",
    "newest": "2026-10-06",
-   "undated": 1,
+   "undated": 0,
    "coops": [
-    "tworivers-ks",
     "mccune-ks",
     "mulvane-ks",
     "farmerscoop-columbus-ks"
@@ -1062,7 +1061,7 @@
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-16T20:01:15Z",
+   "fetched": "2026-10-16T22:05:28Z",
    "ok": true,
    "note": null
   }
