@@ -22,7 +22,7 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=12/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=13/, `${p} page loads the new futures.js`);
   }
 });
 

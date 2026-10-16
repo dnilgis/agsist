@@ -299,9 +299,9 @@ function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
    page's wheat card read ZW=F (-10 1/2) while the wheat page read ZWZ26
    (-11 1/4) at the same refresh. {d, label} or null; label null means the
    continuous series. Twin: scripts/seed_static.py nearby_of. */
-var MONS3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 function nearbyOf(q,root){
   if(!q||!root)return null;
+  var MONS3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
   var n=q[root+'-nearby'];
   if(n&&n.close!=null)return {d:n,label:n.contract||contractLabel(n)||null};
   var re=new RegExp('^'+root+'-([a-z]{3})(\\d{2})$'),best=null,bi=Infinity,bl=null;
@@ -651,11 +651,11 @@ function loadCropProgress(){
    holiday delay), and the fall rows come from the national progress block:
    winter wheat planted and emerged against the 5-year average. Pure: rows from
    crop-progress.json and a clock. */
-var WHEAT_PROGRESS_MAX_DAYS=10;
 function cpAgeDays(ds,nowMs){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(ds||'');if(!m)return null;return Math.floor((nowMs-Date.UTC(+m[1],+m[2]-1,+m[3]))/864e5);}
 /* "2026-10-11" -> "Oct 11, 2026" */
 function isoMDY(x){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(x||'');return m?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+(+m[3])+', '+m[1]:'';}
 function wheatProgressRows(d,nowMs){
+  var WHEAT_PROGRESS_MAX_DAYS=10;
   if(!d)return [];
   var rows=[],P=d.progress||{},ww=d.winter_wheat||{},sw=d.spring_wheat||{};
   function fresh(ds){var a=cpAgeDays(ds,nowMs);return a!=null&&a>=0&&a<=WHEAT_PROGRESS_MAX_DAYS;}
