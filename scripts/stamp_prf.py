@@ -54,8 +54,9 @@ DESC = ("Free PRF (Pasture, Rangeland, Forage) calculator for every USDA grid: {
 OGALT = ("PRF insurance calculator, crop year {cy}: {grids} grids in {states} states, every year since {y0}. "
          "Sign-up deadline {sales_long}.")
 # The day prf.html's wording last changed (scripts/make_prf_html.py). The page's
-# dateModified is the later of this and the date of USDA's files; the Dataset
-# block keeps the files' date. Move it in the same commit as a wording change.
+# dateModified is the later of this and the date of USDA's files, in every
+# JSON-LD block (Oct 16: the Dataset used to carry the files' date alone, so the
+# page showed search engines two dates). Move it in the same commit as a wording change.
 PAGE_REVISED = "2026-10-15"
 LONG_IV = ["January to February", "February to March", "March to April", "April to May", "May to June", "June to July",
            "July to August", "August to September", "September to October", "October to November", "November to December"]
@@ -221,7 +222,7 @@ def jsonld(page, v, meta=None):
                                        f"for {meta['counts']['grids']:,} grids from {meta['years']['first']} to {meta['years']['last_complete']}."),
                        "url": URL, "temporalCoverage": f"{meta['years']['first']}/{meta['years']['last_complete']}",
                        "spatialCoverage": {"@type": "Place", "name": "48 contiguous United States"},
-                       "dateModified": v["_built"], "isAccessibleForFree": True, "license": "https://www.usa.gov/government-works",
+                       "dateModified": max(v["_built"], PAGE_REVISED), "isAccessibleForFree": True, "license": "https://www.usa.gov/government-works",
                        "creator": {"@type": "Organization", "name": "USDA Risk Management Agency", "url": "https://www.rma.usda.gov/"},
                        "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
                        "isBasedOn": [meta["sources"]["adm"], meta["sources"]["index"]],
