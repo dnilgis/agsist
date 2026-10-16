@@ -477,7 +477,7 @@ def probe(root, today=None):
 # Built from how FSA words the release (search results), not a fetched page.
 RELEASE_FIX = """<html><head><title>USDA Announces October 2026 Lending Rates for Agricultural Producers | Farm Service Agency</title></head>
 <body><h1>USDA Announces October 2026 Lending Rates for Agricultural Producers</h1>
-<p>WASHINGTON, Oct. 1, 2026 &ndash; The U.S. Department of Agriculture announced loan interest rates for October 2026, which are effective Oct. 1, 2026.</p>
+<p>WASHINGTON, Oct. 1, 2026 \u2013 The U.S. Department of Agriculture announced loan interest rates for October 2026, which are effective Oct. 1, 2026.</p>
 <p>Commodity and Storage Facility Loans</p>
 <ul><li>Commodity Loans (less than one year disbursed): 5.250%</li>
 <li>Farm Storage Facility Loans (3-year loan terms): 4.500%</li></ul>
