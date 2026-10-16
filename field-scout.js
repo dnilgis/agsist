@@ -879,7 +879,7 @@
     if(prev.pDep!=null && cur.pDep!=null){
       var dd=+(cur.pDep-prev.pDep).toFixed(1);
       if(Math.abs(dd)>=0.3){
-        if(dd<0) out.push('&#9650; The field got drier: rain ran <strong>'+Math.abs(dd)+'&Prime; further below normal</strong> since your last look.');
+        if(dd<0) out.push('&#9650; The field got drier: rain ran <strong>'+Math.abs(dd)+'&Prime; further below the 5-yr average</strong> since your last look.');
         else out.push('&#9660; The field caught rain: running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
       }
     }
@@ -1619,7 +1619,7 @@
   function seasonHtml(s, cumMap, cur, prior){
     var fmtDate=function(iso){ var d=new Date(iso+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
     var depTxt=function(v,unit){ var a=Math.abs(v).toFixed(unit==='in'?1:0);
-      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ normal</span>';
+      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ '+s.n+'-yr avg</span>';
       var up=v>0, col=(unit==='in')?(up?'#4aab4c':'#d9534f'):(up?'#4aab4c':'#e0a32e');
       return '<span style="color:'+col+'">'+(up?'+':'−')+a+(unit==='in'?'″':'')+' vs '+s.n+'-yr avg</span>'; };
     var rainBlock='<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div>'+
@@ -1633,11 +1633,11 @@
     else if(hot&&wet) seasonSay='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
     else if(cool&&wet) seasonSay='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
     else if(cool&&dry) seasonSay='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
-    else if(hot) seasonSay='Heat is running ahead of normal on near-normal rain; development is ahead of the calendar.';
-    else if(cool) seasonSay='Heat units are lagging on near-normal rain. Expect development a few days behind a typical year.';
-    else if(wet) seasonSay='Rain is running ahead of normal at a normal heat pace: moisture is banked, not a limiting factor so far.';
-    else if(dry) seasonSay='Rain is running behind normal at a normal heat pace, not acute yet, but the deficit is the number to watch.';
-    else seasonSay='Both rain and heat are tracking close to this spot\u2019s normal, an unremarkable season in the best sense.';
+    else if(hot) seasonSay='Heat is running ahead of the last '+s.n+' years on about average rain; development is ahead of the calendar.';
+    else if(cool) seasonSay='Heat units are lagging the last '+s.n+' years on about average rain. Expect development a few days behind.';
+    else if(wet) seasonSay='Rain is running ahead of the last '+s.n+' years at an average heat pace: moisture is banked, not a limiting factor so far.';
+    else if(dry) seasonSay='Rain is running behind the last '+s.n+' years at an average heat pace, not acute yet, but the deficit is the number to watch.';
+    else seasonSay='Both rain and heat are tracking close to this spot\u2019s last '+s.n+' years, an unremarkable season in the best sense.';
     return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
       '<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+seasonSay+'</div>'+
       spark +
@@ -2198,7 +2198,7 @@
       .then(function(g){
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
+        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0,noZip:1}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
         return Promise.all([fsFromNetwork(zip), fsFromLicensed(zip)])
           .then(function(x){
             if(gen!==fieldGen) return;
@@ -2206,7 +2206,7 @@
             renderBids(fsMerge(x[0].rows, x[1].rows), zip, gen);
           });
       })
-      .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0,err:1}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
   window.__fsBidsInternals = { fsKey:fsKey, fsPeriodDates:fsPeriodDates, fsMerge:fsMerge, loadBids:loadBids };
   function bidDate(v){ if(!v) return null; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
@@ -2556,6 +2556,8 @@
     var bidV, bidSub;
     if(!b){ bidV=null; bidSub=null; }                                    // still loading -> ...
     else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = (bid===b.bean?'cash beans':'cash corn')+(bid.mon?' \u00b7 '+bid.mon:''); }
+    else if(b.err){ bidV='-'; bidSub='feed didn\u2019t answer'; }     // a failed read is not "no elevator"
+    else if(b.noZip){ bidV='-'; bidSub='no ZIP here'; }
     else { bidV='-'; bidSub='none nearby'; }                       // loaded, no elevator
     renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub});
     el.innerHTML =
@@ -3038,9 +3040,9 @@
     function pacePhrase(){
       if(!se||se.gDep==null) return null;
       var dd=Math.abs(Math.round(se.gDep/GDU_PER_DAY));
-      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of a normal year (at a typical midsummer pace)';
-      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind a normal year (at a typical midsummer pace)';
-      return 'tracking close to the normal pace';
+      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of the '+se.n+'-year average (at a typical midsummer pace)';
+      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind the '+se.n+'-year average (at a typical midsummer pace)';
+      return 'tracking close to the '+se.n+'-year average pace';
     }
 
     // Depth #3 (dollars + a Monday action): translate a corn-on-corn yield drag into a
@@ -3148,7 +3150,7 @@
           detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> its '+se.n+'-year average.',
           watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
       } else if(wetEnough && cool){
-        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
+        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above the '+se.n+'-year average and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
         lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above its '+se.n+'-year average so far this season.');
       }
@@ -3243,7 +3245,7 @@
       if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
         push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
           title:'the wet spots are likely drowning the weak zones; walk the low ground',
-          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above the '+se.n+'-year average on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
           watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
