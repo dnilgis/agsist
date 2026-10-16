@@ -93,7 +93,7 @@
   }
   function ok(p) { return p && typeof p.price === 'number' && isFinite(p.price) && p.price > 0; }
   function srcOf(p) {
-    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, label: p.src_label || null, src: p.src || null };
+    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
   }
 
   /* $/lb of N, P2O5 and K2O from fertilizer-prices.json. A product with no
@@ -260,6 +260,7 @@
     v['p-nlb'] = pr.pNlb != null ? String(Math.round(pr.pNlb)) : NQ;
     v['p-prod'] = pr.src.p ? pr.src.p.name + ' ' + pr.src.p.symbol : NQ;
     v['p-name'] = pr.src.p ? pr.src.p.name : 'MAP or DAP';
+    v['region-co-op'] = pr.src.n && pr.src.n.region ? pr.src.n.region + ' co-op' : 'co-op';
     var dv = derivation(pr);
     ['n', 'p', 'k'].forEach(function (x) {
       var s = pr.src[x];
