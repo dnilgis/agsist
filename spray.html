@@ -448,6 +448,8 @@ body {
 .edu-card-tip-red    { background: rgba(240,96,96,.12); color: var(--red); }
 .edu-card-tip-blue   { background: rgba(91,163,224,.12); color: var(--blue); }
 
+.fcard-net { font-size:.78rem; line-height:1.45; color:var(--text-dim); margin:.45rem 0 0; }
+.fcard-net a { color:var(--gold); font-weight:600; }
 /* ── Inversion Diagram Box ───────────────────────────────────────── */
 .inv-box {
   background: var(--surface2); border: 2px solid rgba(184,76,42,.18);
@@ -1192,7 +1194,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="fcard" id="fc-temp"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span>Temperature</div><span class="fchip na" id="fc-temp-chip">-</span></div><div class="fcard-val" id="fc-temp-val">--&deg;F</div><div class="fcard-desc" id="fc-temp-desc">Spray between 50&ndash;85&deg;F. Heat causes volatilization of dicamba/2,4-D; cold slows uptake and risks frost injury.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-temp-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-humid"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Humidity</div><span class="fchip na" id="fc-humid-chip">-</span></div><div class="fcard-val" id="fc-humid-val">--%</div><div class="fcard-desc" id="fc-humid-desc">Target 40&ndash;90% RH. Below 40%, droplets evaporate before reaching the leaf. Above 90%, leaves may be wet or near dew. Check the canopy before contact products.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-humid-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-dt"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-tornado"/></svg></span>Delta T</div><span class="fchip na" id="fc-dt-chip">-</span></div><div class="fcard-val" id="fc-dt-val">-</div><div class="fcard-desc" id="fc-dt-desc">Delta T is a dryness score: how fast spray droplets shrink and blow away before they land. It&rsquo;s the number professional applicators watch. Ideal 3.6&ndash;14.4&deg;F (2&ndash;8&deg;C). Above 18&deg;F (10&deg;C), droplets evaporate before reaching the target and drift; below 3.6&deg;F (2&deg;C) means very humid air or inversion risk.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dt-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span>Thermal Inversion</div><span class="fchip na" id="fc-inv-chip">-</span></div><div class="fcard-val" id="fc-inv-val">-</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably, sometimes miles.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold-fill,var(--gold))"></div></div></div>
+          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span>Thermal Inversion</div><span class="fchip na" id="fc-inv-chip">-</span></div><div class="fcard-val" id="fc-inv-val">-</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably, sometimes miles.</div><p class="fcard-net" id="fc-inv-net" hidden></p><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold-fill,var(--gold))"></div></div></div>
           <div class="fcard" id="fc-dew"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg></span>Dew point risk</div><span class="fchip na" id="fc-dew-chip">-</span></div><div class="fcard-val" id="fc-dew-val">--&deg;F dew</div><div class="fcard-desc" id="fc-dew-desc">If temp approaches dew point, dew formation is imminent. Spraying onto wet leaves reduces efficacy of contact herbicides.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dew-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-precip" style="display:none"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span>Precipitation</div><span class="fchip poor" id="fc-precip-chip">Active</span></div><div class="fcard-val" id="fc-precip-val">Rain</div><div class="fcard-desc" id="fc-precip-desc">Active precipitation washes product off leaves before absorption. Wait for dry conditions and foliage to dry.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-precip-bar" style="width:90%;background:var(--red)"></div></div></div>
         </div>
@@ -1251,7 +1253,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
             <div class="dicamba-rule"><strong>Nozzles</strong>Only EPA-approved air induction nozzles (AITTJ, TTI, AI). Standard flat fan nozzles are a federal label violation. Verify against the approved nozzle list on your label.</div>
             <div class="dicamba-rule"><strong>Tank Mix: No AMS</strong>Ammonium sulfate and other ammonium-containing adjuvants are prohibited in OTT dicamba loads, they sharply increase volatility. A volatility-reduction agent (VRA) and drift-reduction agent (DRA) are required in every application.</div>
             <div class="dicamba-rule"><strong>Buffer Zones</strong>2026 OTT labels (Stryax, Engenia, Tavium) require a 240-ft downwind buffer, larger near listed endangered-species areas. Some label-approved mitigations (hooded booms, windbreaks) can reduce it. Confirm on your label and Bulletins Live! Two.</div>
-            <div class="dicamba-rule"><strong>Application Timing</strong>Apply only through R1 (beginning bloom) for Engenia and Stryax, or V4 for Tavium, or the label's cutoff date, whichever comes first, and only from 1 hour after sunrise to 2 hours before sunset. Never during a temperature inversion. Some states cut off earlier: Illinois June 20; Minnesota June 12 south of I-94, June 30 north of it. Check your label and your state.</div>
+            <div class="dicamba-rule"><strong>Application Timing</strong>Apply only through R1 (beginning bloom) for Engenia and Stryax, or V4 for Tavium, or the label's cutoff date, whichever comes first, and only from 1 hour after sunrise to 2 hours before sunset. Never during a temperature inversion. Some states cut off earlier: Illinois June 20; Minnesota June 12 south of I-94, June 30 north of it. Check your label and your state. This page has not read a 2026 label cutoff date at the source, so from June 13 it tells you to check yours, and after June 30 it rates no dicamba window in any state.</div>
             <div class="dicamba-rule"><strong>Record Keeping</strong>All three approved dicamba products require detailed application records including wind speed, direction, temperature, and nozzle type. Keep records for a minimum of 2 years.</div>
           </div>
           <p class="method-note"><b>Method:</b> the status and the 24-hour strip rate the Open-Meteo forecast (wind and gusts at 10 m, temperature, humidity, dew point, cloud cover) against the limits for the product you pick. Labels limit wind at boom height, so the page estimates it from the 10 m forecast with the FAO-56 wind profile (Allen et al. 1998, eq. 47): about 0.75 of the 10 m speed, which is wind at 2 m; a boom usually rides lower, so measure there. Steady wind sets the rating; a gust over the product&rsquo;s max drops a good hour to marginal. For dicamba it also applies the 95&deg;F block, the 85&ndash;94&deg;F acreage cap, the sunrise/sunset hours and, if you pick Minnesota or Illinois, the state&rsquo;s 85&deg;F rule and cutoff dates &middot; <b>Sources:</b> 2026 OTT dicamba labels (Engenia, Stryax, Tavium), Minnesota Department of Agriculture 2026 dicamba rules, Illinois Adm. Code 250.230, FAO Irrigation and Drainage Paper 56, the Enlist One and Duo labels, ASABE S572.3 droplet classes, Bulletins Live! Two &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</p>
@@ -1852,7 +1854,25 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   };
   function showStatePick(){var w=document.getElementById('state-wrap'),e=document.getElementById('in-product');if(w)w.style.display=(e&&e.value==='dicamba')?'flex':'none';}
   // The field's state picks the state rule: Minnesota or Illinois get theirs, anywhere else gets the label only.
-  function setStateFromName(name){var e=document.getElementById('in-state');if(!e||typeof name!=='string'||!name)return false;var v=/\bMinnesota\b/.test(name)?'MN':/\bIllinois\b/.test(name)?'IL':'';if(e.value===v)return false;e.value=v;try{localStorage.setItem('agsist-spray-state',v);}catch(x){}return true;}
+  // Measured inversion networks, from the MRCC list of networks that show inversion conditions live (checked Oct 16, 2026:
+  // https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion), plus Oklahoma's Drift Risk Advisor. A plain link
+  // under the inversion row for a field in one of these states; nothing is copied from them.
+  var INV_NETS={
+    Iowa:{n:'Iowa Environmental Mesonet',u:'https://mesonet.agron.iastate.edu/agclimate/#tmpf'},
+    Indiana:{n:'Purdue Mesonet',u:'https://ag.purdue.edu/indiana-state-climate/purdue-mesonet/purdue-mesonet-data-hub/'},
+    Kansas:{n:'Kansas Mesonet',u:'https://mesonet.k-state.edu/agriculture/inversion/'},
+    Michigan:{n:'MSU Enviroweather',u:'https://legacy.enviroweather.msu.edu/soy.php'},
+    Missouri:{n:'Missouri Mesonet',u:'http://agebb.missouri.edu/weather/realTime/maps/index.php#temp_inversion/'},
+    'North Dakota':{n:'NDAWN (North Dakota Agricultural Weather Network)',u:'https://www.ndsu.edu/agriculture/ag-hub/ndawn-inversion'},
+    Minnesota:{n:'NDAWN (North Dakota Agricultural Weather Network)',u:'https://www.ndsu.edu/agriculture/ag-hub/ndawn-inversion'},
+    'South Dakota':{n:'SD Mesonet Spray Tool',u:'https://climate.sdstate.edu/tools/spray/'},
+    Oklahoma:{n:'Oklahoma Mesonet Drift Risk Advisor',u:'https://www.mesonet.org/agriculture/drift-risk-advisor'}
+  };
+  // The state is the last comma part that is exactly a state name ("Kansas City, Missouri" is Missouri).
+  function invKey(name){if(typeof name!=='string')return'';var p=name.split(',');for(var i=p.length-1;i>=0;i--){var t=p[i].trim();if(Object.prototype.hasOwnProperty.call(INV_NETS,t))return t;}return'';}
+  function renderInvNet(key){var el=document.getElementById('fc-inv-net');if(!el)return;var net=Object.prototype.hasOwnProperty.call(INV_NETS,key)?INV_NETS[key]:null;if(!net){el.hidden=true;el.textContent='';return;}el.innerHTML='Measured inversion near you: <a href="'+net.u+'" target="_blank" rel="noopener">'+net.n+'</a>. Their stations read temperature at two heights; the rating above is a forecast rule.';el.hidden=false;}
+  function setInvState(name){if(typeof name!=='string'||!name)return;var key=invKey(name);try{localStorage.setItem('agsist-spray-net',key);}catch(x){}renderInvNet(key);}
+  function setStateFromName(name){setInvState(name);var e=document.getElementById('in-state');if(!e||typeof name!=='string'||!name)return false;var v=/\bMinnesota\b/.test(name)?'MN':/\bIllinois\b/.test(name)?'IL':'';if(e.value===v)return false;e.value=v;try{localStorage.setItem('agsist-spray-state',v);}catch(x){}return true;}
   function currentState(){var e=document.getElementById('in-state');return(e&&DICAMBA_STATES[e.value])||null;}
   function currentProduct(){var e=document.getElementById('in-product');return PRODUCTS[(e&&e.value)||'general']||PRODUCTS.general;}
   function windRatingP(mph,p){if(mph<p.wMin)return'poor';if(mph<=p.wHiCaution)return'good';if(mph<=p.wMax)return'marginal';return'poor';}
@@ -1891,8 +1911,21 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     if(S.southI94&&md>S.southI94)r.push(S.name+': south of I-94 the last day was '+fmtMD(S.southI94)+'.');
     return r.length?{level:'caution',reason:r.join(' ')}:null;
   }
+  // Label cutoff, every state. The 2026 OTT labels allow soybeans only through R1 (Engenia, Stryax) or V4 (Tavium), or
+  // the label's cutoff date, whichever comes first. This page has not read a 2026 label date at the source, so it does
+  // not guess one: after June 30 (the latest calendar cutoff any OTT dicamba label or state rule has used) it rates no
+  // dicamba hour at all, and from June 13 it says to check the label date. A soybean field in October is long past R1.
+  var DICAMBA_LABEL={warnAfter:'06-12',last:'06-30'};
+  var DICAMBA_STAGE='the 2026 labels allow OTT dicamba on soybeans only through R1 for Engenia and Stryax, or V4 for Tavium, or the label cutoff date, whichever comes first';
+  function dicambaLabelCheck(daily,k){
+    if(!daily||!daily.time||!daily.time[k])return null;
+    var md=String(daily.time[k]).slice(5,10);
+    if(md>DICAMBA_LABEL.last||md<'03-01')return{level:'block',reason:'past June 30, the last day this page rates OTT dicamba: '+DICAMBA_STAGE};
+    if(md>DICAMBA_LABEL.warnAfter)return{level:'caution',reason:'check the cutoff date on your label: '+DICAMBA_STAGE};
+    return null;
+  }
   function mergeDicamba(a,b){if(!a)return b;if(!b)return a;if(a.level==='block')return a;if(b.level==='block')return b;return{level:'caution',reason:a.reason+' '+b.reason};}
-  function dicambaDay(daily,k,S){var h=dicambaHeat(daily,k);if(h&&h.level==='block')return h;return mergeDicamba(h,dicambaStateCheck(S,daily,k,null));}
+  function dicambaDay(daily,k,S){var h=dicambaHeat(daily,k);if(h&&h.level==='block')return h;var sc=dicambaStateCheck(S,daily,k,null);if(sc&&sc.level==='block')return sc;var lc=dicambaLabelCheck(daily,k);if(lc&&lc.level==='block')return lc;return mergeDicamba(mergeDicamba(h,sc),lc);}
   function dicambaHeat(daily,k){
     var mx=daily.temperature_2m_max||[],hiA=num(mx[k]),hiB=(k+1<daily.time.length)?num(mx[k+1]):null;
     var wA=dayWord(daily,k),wB=dayWord(daily,k+1),on=function(w){return(w==='today'||w==='tomorrow')?w:('on '+w);};
@@ -1904,7 +1937,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     if(Math.max(hiA==null?-1e9:hiA,hiB==null?-1e9:hiB)>=85)r.push(DICAMBA_CAP);
     return r.length?{level:'caution',reason:r.join(' ')}:null;
   }
-  function dicambaStatus(P,daily,t,slotMs,S,tempF){if(P!==PRODUCTS.dicamba||!daily||!daily.time||!(t instanceof Date)||isNaN(t))return null;var ds=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2),k=daily.time.indexOf(ds);if(k<0)return null;var h=dicambaHeat(daily,k);if(h&&h.level==='block')return h;var sc=dicambaStateCheck(S,daily,k,tempF);if(sc&&sc.level==='block')return sc;h=mergeDicamba(h,sc);var sr=daily.sunrise&&daily.sunrise[k]?new Date(daily.sunrise[k]).getTime()+36e5:null,ss=daily.sunset&&daily.sunset[k]?new Date(daily.sunset[k]).getTime()-72e5:null;var ms=t.getTime();if((sr!=null&&ms<sr)||(ss!=null&&ms+(slotMs||0)>ss))return{level:'block',reason:'outside the hours the page lists: 1 hr after sunrise to 2 hrs before sunset'};return h;}
+  function dicambaStatus(P,daily,t,slotMs,S,tempF){if(P!==PRODUCTS.dicamba||!daily||!daily.time||!(t instanceof Date)||isNaN(t))return null;var ds=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2),k=daily.time.indexOf(ds);if(k<0)return null;var h=dicambaHeat(daily,k);if(h&&h.level==='block')return h;var sc=dicambaStateCheck(S,daily,k,tempF);if(sc&&sc.level==='block')return sc;var lc=dicambaLabelCheck(daily,k);if(lc&&lc.level==='block')return lc;h=mergeDicamba(mergeDicamba(h,sc),lc);var sr=daily.sunrise&&daily.sunrise[k]?new Date(daily.sunrise[k]).getTime()+36e5:null,ss=daily.sunset&&daily.sunset[k]?new Date(daily.sunset[k]).getTime()-72e5:null;var ms=t.getTime();if((sr!=null&&ms<sr)||(ss!=null&&ms+(slotMs||0)>ss))return{level:'block',reason:'outside the hours the page lists: 1 hr after sunrise to 2 hrs before sunset'};return h;}
   function dicambaLine(st){return /^Dicamba/.test(st.reason)?st.reason:('Dicamba: '+st.reason);}
   function applyDicamba(overall,st){if(!st||overall==='frozen')return overall;if(st.level==='block')return'poor';if(st.level==='caution'&&overall==='good')return'marginal';return overall;}
   function nextHourTrend(hourly,now){try{if(!hourly||!hourly.time||!hourly.temperature_2m)return null;now=now||new Date();for(var i=0;i<hourly.time.length-1;i++){var t2=new Date(hourly.time[i+1]);if(t2>now){var a=num(hourly.temperature_2m[i]),b=num(hourly.temperature_2m[i+1]);return(a==null||b==null)?null:Math.round((b-a)*10)/10;}}return null;}catch(e){return null;}}
@@ -2069,6 +2102,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   document.getElementById('spray-zip').addEventListener('keydown',function(e){if(e.key==='Enter')loadZip();});
   document.getElementById('btn-change-loc').addEventListener('click',function(){document.getElementById('loc-setup').style.display='block';});
   (function(){var ps=document.getElementById('in-product');if(ps){try{var sv=localStorage.getItem('agsist-spray-product');if(sv&&PRODUCTS[sv])ps.value=sv;}catch(e){}ps.addEventListener('change',function(){try{localStorage.setItem('agsist-spray-product',ps.value);}catch(e){}showStatePick();rerenderSpray();});}
+    try{var nv=localStorage.getItem('agsist-spray-net');if(nv)renderInvNet(nv);}catch(e){}
     var st=document.getElementById('in-state');if(st){try{var sv2=localStorage.getItem('agsist-spray-state');if(sv2!=null&&(sv2===''||DICAMBA_STATES[sv2]))st.value=sv2;}catch(e){}st.addEventListener('change',function(){try{localStorage.setItem('agsist-spray-state',st.value);}catch(e){}rerenderSpray();});}
     showStatePick();})();
   function autoLoad(){try{var s=localStorage.getItem('agsist-wx-loc');if(s){var p=JSON.parse(s);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}}}catch(e){}requestGeo();}
