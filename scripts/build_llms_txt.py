@@ -103,7 +103,7 @@ PAGES = [
     ("How big is this crop?", [
         ("/conditions-yield", "2026 Crop Size: Every Forecast", "every US corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model"),
         ("/crop-tour", "Pro Farmer Crop Tour", "the tour's state results and national estimate, set against USDA's, with the tour's record since 2015"),
-        ("/conditions", "Crop Conditions Ranked", "each state's good-to-excellent share ranked against the same week of every year since 2000"),
+        ("/conditions", "Crop Conditions Ranked", "each state's good-to-excellent share ranked against the same week of every year USDA rated it"),
         ("/pod-counts", "Do Pod Counts Predict Soybean Yield?", "what 28 state-years of crop tour pod counts actually predict"),
         ("/yield-estimator", "Yield Estimator", "corn ear counts and soybean pod counts turned into bushels per acre"),
     ]),

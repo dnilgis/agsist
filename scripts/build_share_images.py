@@ -174,7 +174,7 @@ LINES = {
     "combine-loss": ("Combine loss", "Count beans or kernels behind the combine: bushels and dollars an acre left in the field."),
     "commodity-loan": ("Commodity loan", "CCC marketing loan: cash now, interest per bushel per month, against your carry."),
     "cattle-auction-prices": ("Sale barn prices", "Feeder steer and heifer prices by weight at the barns near you, from USDA."),
-    "conditions": ("Crop conditions", "Every state's crop rating, ranked against the same week since 2000."),
+    "conditions": ("Crop conditions", "Every state's crop rating, ranked against its own record for this week."),
     "conditions-yield": ("Crop size", "Every 2026 corn and soybean yield forecast, side by side."),
     "crop-tour": ("Crop tour", "The tour's yield, set against USDA's and how close it has been."),
     "harvest-price-tracker": ("Harvest price", "Projected and harvest prices, and what your RP guarantee is worth."),
