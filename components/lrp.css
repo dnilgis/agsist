@@ -58,6 +58,10 @@
 .lrp .lot{font-size:.9rem;color:var(--text)}
 .lrp-rec td span.nt{color:var(--gold)}
 .lrp-closed{font-size:.9rem;color:var(--text);border-left:4px solid var(--gold);padding-left:.6rem}
+.lrp-ex{border:1px dashed var(--border,#ccc);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem;font-size:.92rem;line-height:1.45}
+.lrp-ex p{margin:0 0 .35rem}
+.lrp-ex p:last-child{margin:0}
+.lrp-ex .lrp-ex-k{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold)}
 .lrp-off td.pick{white-space:nowrap}
 .lrp-off .rowbtn{min-height:40px;min-width:4.6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-family:'JetBrains Mono',monospace;font-weight:700;cursor:pointer}
 .lrp-off .rowbtn[aria-pressed=true]{background:var(--gold);color:var(--bg);border-color:var(--gold)}

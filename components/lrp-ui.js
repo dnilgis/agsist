@@ -274,7 +274,7 @@
     /* a close more than four days older than the sales day is another day's market: left out */
     if (!f || f.date < L.addDays(day, -4)) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = 'For context: ' + esc(f.name) + ' closed at <b>' + money(f.close) + '</b> on ' + esc(L.ymdLong(f.date).replace(/, \d{4}$/, '')) + ', the first contract after the end date. RMA&rsquo;s expected ending value for this ' + (R.comm === '0801' && +R.o.paf !== 1 ? 'type, with its factor of ' + (+R.o.paf).toFixed(2) + ',' : 'endorsement') + ' is ' + money(R.o.eev / 1000) + '.';
+    el.innerHTML = 'For context: ' + esc(f.name) + ' ' + L.futuresStamp(f, prices.fetched).text + ', the first contract after the end date. RMA&rsquo;s expected ending value for this ' + (R.comm === '0801' && +R.o.paf !== 1 ? 'type, with its factor of ' + (+R.o.paf).toFixed(2) + ',' : 'endorsement') + ' is ' + money(R.o.eev / 1000) + '.';
   }
 
   /* every coverage level, with the cwt math for the row picked */
@@ -310,8 +310,10 @@
   }
 
   function render() {
-    var out = $('lrp-out'), R = resolve();
+    var out = $('lrp-out'), R = resolve(), ex = $('lrp-example');
     fillInputs(R);
+    /* the dated example stands in until the reader has an answer of their own */
+    if (ex) ex.hidden = !!(R && R.o);
     $('lrp-typehint').textContent = '';
     if (!R) {
       $('lrp-wnote').innerHTML = '';

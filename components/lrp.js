@@ -553,10 +553,36 @@
     return { key: k, name: MON[m - 1] + ' ' + y + ' ' + f.name + ' futures', close: +x.close, date: String(x.close_date).replace(/-/g, '') };
   }
 
+  /* How to word a futures price from data/prices.json, by when the file was
+     read, the way the futures pages and the homepage ticker do it
+     (components/home-yield.js): a quote read while CME livestock trade
+     (8:30 a.m. to 1:05 p.m. CT, weekdays) is a delayed last trade, never a
+     close; one read in the 15 minutes after the bell may not be final; only
+     a quote read after that, or one dated before the read day, is a close.
+     These are Yahoo Finance prices, so a close is never called a settlement.
+     Returns { kind: 'delayed'|'intraday'|'unsettled'|'close', text } where
+     text follows the contract name. */
+  function futuresStamp(f, fetchedIso, now) {
+    var price = money(f.close), F = new Date(fetchedIso || '');
+    var closeWords = 'closed at <b>' + price + '</b> on ' + ymdLong(f.date).replace(/, \d{4}$/, '') + ' (a Yahoo Finance close, not a CME settlement)';
+    if (isNaN(F)) return { kind: 'close', text: closeWords };
+    var c = centralNow(F), day = c.slice(0, 8), m = +c.slice(8, 10) * 60 + +c.slice(10, 12);
+    var wd = weekday(day), trading = wd !== 'Sat' && wd !== 'Sun';
+    if (!trading || f.date !== day || m < 510) return { kind: 'close', text: closeWords };
+    var clock = centralClock(F.toISOString()).replace(/^[A-Z][a-z]{2} \d+, /, '');
+    if (m < 785) {
+      var age = ((now || new Date()).getTime() - F.getTime()) / 60000;
+      if (age <= 45) return { kind: 'delayed', text: 'were at <b>' + price + '</b> at ' + clock + ' (delayed about 15 minutes, trading still open)' };
+      return { kind: 'intraday', text: 'were at <b>' + price + '</b> at ' + clock + ' on ' + ymdLong(day).replace(/, \d{4}$/, '') + ', mid-session, before the close' };
+    }
+    if (m < 800) return { kind: 'unsettled', text: 'were at <b>' + price + '</b> at ' + clock + ', just after the 1:05 p.m. close; the closing price may not be final yet' };
+    return { kind: 'close', text: closeWords };
+  }
+
   root.AgLrp = {
     ANIMALS: ANIMALS, ANIMAL_OF: ANIMAL_OF, CLASSES: CLASSES, classesFor: classesFor, inferType: inferType, classRange: classRange,
     switchAnimal: switchAnimal, parseQuery: parseQuery, toQuery: toQuery, netFloor: netFloor, payAt: payAt, billDate: billDate,
-    carcassHint: carcassHint, futuresFor: futuresFor,
+    carcassHint: carcassHint, futuresFor: futuresFor, futuresStamp: futuresStamp,
     LENGTHS: LENGTHS, PRODUCTS: PRODUCTS, BAND_IDS: BAND_IDS, SUBSIDY_NOW: SUBSIDY_NOW, TYPE_NAMES: TYPE_NAMES,
     bandOf: bandOf, subsidyNow: subsidyNow, productOf: productOf, typeName: typeName,
     ymdLong: ymdLong, addDays: addDays, money: money, pct: pct, levelPct: levelPct, odds: odds, esc: esc,

@@ -1,0 +1,82 @@
+name: Hay market reports (AMS)
+
+# Writes data/hay/ams-hay.json for /hay-prices: this week's hay trades by
+# state, grade and bale type, from public USDA AMS hay report PDFs, read by
+# scripts/fetch_hay_ams.py. The reports are in scripts/hay_ams_sources.json.
+# The page shows a "trades load after the first USDA read" box until this file
+# exists. A report that fails a check keeps its last good issue.
+#
+# FIRST RUN: dispatch once with "probe" ticked (and "scan" set, e.g.
+# 2800-3300, if the listing pages name few reports). It saves the AMS hay
+# listing and the text of every report it finds to data/hay-ams-raw/ and
+# commits them. Check that text against the parser, add any new layout (hay
+# auctions especially) as a selftest fixture, then run without probe.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the AMS hay listing and report text to data/hay-ams-raw/ and commit them"
+        type: boolean
+        default: false
+      scan:
+        description: "With probe: also try these report numbers (A-B, at most 1500), keep the ones titled hay"
+        type: string
+        default: ""
+  schedule:
+    # State reports come out on their own days, most Thursday or Friday.
+    - cron: '17 23 * * 1-5'
+    - cron: '41 14 * * 6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hay-ams
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_hay_ams.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        env:
+          SCAN: ${{ inputs.scan }}
+        run: |
+          if [ -n "$SCAN" ]; then python scripts/fetch_hay_ams.py --probe --scan "$SCAN"; else python scripts/fetch_hay_ams.py --probe; fi
+      - name: Fetch and write data/hay/ams-hay.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_hay_ams.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/hay/ams-hay.json data/hay-ams-raw"
+          rm -rf /tmp/ha && mkdir -p /tmp/ha
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/ha/ || true
+          done
+          [ -n "$(ls -A /tmp/ha)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/ha/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update AMS hay reports $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
