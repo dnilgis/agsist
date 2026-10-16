@@ -9,6 +9,9 @@
  *     moisture) and Table 4 (60 F soybean row).
  *   NDSU (Hellevang): 10.2% EMC at 70 F/60% (slides hosted by Cornell, 2015);
  *     16% beans at 42 F/70% dry to about 13.5% (news release, Jan 2020).
+ *   NDSU 2011 soybean EMC table (refs/bench-grain-emc-3, Oct 16 copy), 32-80 F,
+ *     50-90% RH. It follows neither fit; the page must say so, and the dry
+ *     calls must stay safe against it.
  * The browser check needs Playwright and Chromium and is skipped without them.
  *
  *   node --test test/grain-emc-soybeans.test.mjs
@@ -65,7 +68,17 @@ const CELLS = [
   ...Object.entries(AR).flatMap(([t, row]) => row.map((v, i) => ["AR", +t, AR_RH[i], v])),
 ];
 const UMN = [[50, 8.6], [60, 10.5], [70, 12.8], [80, 15.7]]; // 60 F
-const NDSU = [[70, 60, 10.2, 0.05], [42, 70, 13.5, 0.05]];    // the 42 F figure is "about 13.5"
+const NDSU = [[70, 60, 10.2, 0.05], [42, 70, 13.5, 0.05]];    // Hellevang slide and release; the 42 F figure is "about 13.5"
+const ND11_RH = [50, 60, 70, 80, 90];
+const ND11 = {
+  32: [10.0, 11.8, 13.7, 16.2, 19.8],
+  40: [9.8, 11.5, 13.5, 16.0, 19.6],
+  50: [9.5, 11.2, 13.2, 15.7, 19.4],
+  60: [9.2, 11.0, 13.0, 15.4, 19.1],
+  70: [8.9, 10.7, 12.7, 15.2, 18.9],
+  80: [8.6, 10.4, 12.5, 15.0, 18.7],
+};
+const ND11_CELLS = Object.entries(ND11).flatMap(([t, row]) => row.map((v, i) => ["NDSU2011", +t, ND11_RH[i], v]));
 
 /* High (Halsey) fit at any RH, including Kentucky's 10% column that the page clamps at 20%. */
 const halseyWb = (tF, rh) => E.dbToWb(E.fitDb(E.GRAINS[S].fits[1], E.fToC(tF), rh / 100));
@@ -103,7 +116,7 @@ test("the high fit reproduces all 266 printed Kentucky and Arkansas soybean cell
   }
 });
 
-test("the low fit reproduces Minnesota's 60 F soybean row and NDSU's two soybean numbers", () => {
+test("the low fit reproduces Minnesota's 60 F soybean row and Hellevang's two soybean numbers", () => {
   for (const [rh, v] of UMN) assert.equal(E.emc(S, 60, rh).wb.toFixed(1), v.toFixed(1), `UMN 60 F ${rh}%`);
   for (const [t, rh, v, tol] of NDSU) near(E.emc(S, t, rh).wb, v, tol, `NDSU ${t} F ${rh}%`);
 });
@@ -121,14 +134,22 @@ test("soybean 'dries to target' is safe against every published soybean value, f
     ...CELLS.filter(([, , rh]) => rh >= E.LIMITS.rhMin),
     ...UMN.map(([rh, v]) => ["UMN", 60, rh, v]),
     ...NDSU.map(([t, rh, v]) => ["NDSU", t, rh, v]),
+    ...ND11_CELLS,
   ];
+  assert.equal(ND11_CELLS.length, 30);
   let dryCalls = 0;
   for (const [src, t, rh, v] of all) {
     const e = E.emc(S, t, rh);
     for (let T = E.LIMITS.targetMin; T <= E.LIMITS.targetMax; T += 0.5) {
       const call = E.holdCall(S, e, T);
       if (call === "dry") { dryCalls++; assert.ok(v < T + 0.05, `${src} ${t} F ${rh}% T ${T}: dry call but table ${v}`); }
-      if (v > T + 0.05 && src !== "UMN" && src !== "NDSU") assert.equal(call, "wet", `${src} ${t} F ${rh}% T ${T}: table over target must read wet`);
+      if (v > T + 0.05 && src !== "UMN" && src !== "NDSU" && src !== "NDSU2011") assert.equal(call, "wet", `${src} ${t} F ${rh}% T ${T}: table over target must read wet`);
+      // NDSU 2011 runs wetter than the high fit in dry air: there the call may be "close", never "dry",
+      // and the table may sit at most 0.3 point over a target the page does not call wet
+      if (src === "NDSU2011" && v > T + 0.05 && call !== "wet") {
+        assert.equal(call, "close", `NDSU 2011 ${t} F ${rh}% T ${T}`);
+        assert.ok(v - T <= 0.35, `NDSU 2011 ${t} F ${rh}% T ${T}: ${v}`);
+      }
     }
   }
   assert.ok(dryCalls > 100, "the check covers real dry calls");
@@ -210,7 +231,9 @@ test("storage moisture copy matches the documents", () => {
 
 test("the soybean spread table prints what the equations give", () => {
   const show = (t, rh) => { const e = E.emc(S, t, rh); return `${e.wb.toFixed(1)} to ${e.wet.toFixed(1)}%`; };
-  const rows = [[40, 70, "not listed", "not listed", "14.2%", "14.2%"], [60, 70, "12.8%", "not listed", "13.7%", "13.7%"], [70, 60, "not listed", "10.2%", "10.7%", "10.7%"]];
+  const nd = (t, rh) => ND11[t][ND11_RH.indexOf(rh)].toFixed(1) + "%";
+  const rows = [[40, 70, "not listed", nd(40, 70), "14.2%", "14.2%"], [50, 50, "not listed", nd(50, 50), "9.1%", "9.1%"], [60, 70, "12.8%", nd(60, 70), "13.7%", "13.7%"],
+    [70, 60, "not listed", nd(70, 60), "10.7%", "10.7%"], [50, 90, "not listed", nd(50, 90), "28.2%", "28.2%"]];
   for (const [t, rh, umn, ndsu, ky, ar] of rows) {
     const html = `<tr><th scope="row">${t} F, ${rh}%</th><td>${show(t, rh)}</td><td>${umn}</td><td>${ndsu}</td><td>${ky}</td><td>${ar}</td></tr>`;
     assert.ok(page.includes(html), html);
@@ -218,6 +241,8 @@ test("the soybean spread table prints what the equations give", () => {
   // the printed values in that table are the documents' own cells
   assert.equal(KY[40][KY_RH.indexOf(70)], 14.2); assert.equal(AR[40][AR_RH.indexOf(70)], 14.2);
   assert.equal(KY[70][KY_RH.indexOf(60)], 10.7); assert.equal(AR[70][AR_RH.indexOf(60)], 10.7);
+  assert.equal(KY[50][KY_RH.indexOf(50)], 9.1); assert.equal(AR[50][AR_RH.indexOf(50)], 9.1);
+  assert.equal(KY[50][KY_RH.indexOf(90)], 28.2); assert.equal(AR[50][AR_RH.indexOf(90)], 28.2);
 });
 
 test("method note states the honest provenance of the Halsey constants", () => {
@@ -288,4 +313,34 @@ test("browser: ?grain=soy opens soybeans at 13%, the typed reading shows the ran
     assert.deepEqual(errors, []);
     await c.close();
   } finally { await browser.close(); srv.close(); }
+});
+
+test("NDSU's 2011 soybean table: the page says it follows neither fit, and the counts are right", () => {
+  const out = ND11_CELLS.filter(([, t, rh, v]) => { const e = E.emc(S, t, rh); return v < +e.wb.toFixed(1) || v > +e.wet.toFixed(1); });
+  assert.equal(out.length, 22, "cells outside the printed range");
+  let overHi = 0, overLo = 0;
+  for (const [, t, rh, v] of ND11_CELLS) {
+    const e = E.emc(S, t, rh);
+    if (rh <= 60) { overHi = Math.max(overHi, v - +e.wet.toFixed(1)); overLo = Math.max(overLo, v - +e.wb.toFixed(1)); }
+    if (rh >= 80) assert.ok(v <= +e.wb.toFixed(1), `${t} F ${rh}%: at or under the low fit`);
+  }
+  // drying calls too: "dries to target" never lands over target by NDSU 2011, for any bean moisture
+  let dries = 0;
+  for (const [, t, rh, v] of ND11_CELLS) for (let T = E.LIMITS.targetMin; T <= E.LIMITS.targetMax; T += 0.5) for (const M of [14, 16, 18, 20, 22]) {
+    if (E.dryCall(S, E.emc(S, t, rh), M, T, null) === "dry") { dries++; assert.ok(v < T + 0.05, `${t} F ${rh}% M ${M} T ${T}: NDSU ${v}`); }
+  }
+  assert.ok(dries > 50);
+  assert.equal(overHi.toFixed(1), "0.5");
+  assert.equal(overLo.toFixed(1), "0.7");
+  const t = unesc(page);
+  assert.ok(!/low fit lands on Minnesota and NDSU/.test(t), "the old match claim is gone");
+  assert.ok(!/Low matches Minnesota Extension \(60 F\) and NDSU/.test(t));
+  assert.match(t, /The low fit lands on Minnesota, the high fit on Kentucky and Arkansas\. NDSU's 2011 table is a third set that follows neither: from 50 to 60% humidity it runs up to 0\.7 point wetter than the low fit and up to 0\.5 over the high one, and at 80 to 90% it runs as dry as the low fit or drier\. 22 of its 30 values fall outside this page's range/);
+  assert.match(t, /It does not match NDSU's own 2011 soybean table/);
+  assert.match(t, /checked against all 30 of its values, no hour this page calls "dries to target" would leave beans over that target by NDSU's numbers/);
+  assert.match(t, /NDSU's 2011 table lists 13\.0%/);
+  for (const [tt, rh] of [[40, 70], [50, 50], [60, 70], [70, 60], [50, 90]]) {
+    const v = ND11[tt][ND11_RH.indexOf(rh)];
+    assert.ok(page.includes(`<th scope="row">${tt} F, ${rh}%</th>`) && new RegExp(`<th scope="row">${tt} F, ${rh}%</th><td>[^<]*</td><td>[^<]*</td><td>${v.toFixed(1)}%</td>`).test(page), `${tt} F ${rh}% NDSU ${v}`);
+  }
 });

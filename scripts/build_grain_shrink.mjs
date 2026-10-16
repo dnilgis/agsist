@@ -33,7 +33,7 @@ export const FAQ = [
   ["What is a normal shrink factor for corn?",
    "NCH-61 says flat factors typically run 1.2 to 1.5% a point. Water alone is 1.183% a point when the base is 15.5%, so anything over that is handling loss. On 28% corn, a 1.25 factor assumes " + f(corn28(1.25), 2) + "% handling loss and a 1.4 factor assumes " + f(corn28(1.4), 2) + "%. Iowa State measured 0.22 to 1.71% on farms and 0.64 to 1.33% at commercial dryers; NCH-61 calls more than 1% a bigger loss than those surveys found."],
   ["Should I sell wet corn or dry it myself?",
-   "Run both. Iowa State's 2019 example: 1,000 wet bushels of 20.5% corn at $3.50, with a 4.8 cent drying charge a point and a 1.4% factor from a 15% base, nets $2,967 sold wet. Dried on the farm at their figured 3 cents a point, with 1% handling loss and $40 of extra hauling, the same corn netted $3,033. Your elevator's numbers and your own drying cost decide it."],
+   "Run both. Iowa State's 2019 example: 1,000 wet bushels of 20.5% corn at $3.50, with a 4.8 cent drying charge a point and a 1.4% factor from a 15% base, nets $2,967 sold wet. Dried on the farm at their figured 3 cents a point, with 1% handling loss and $40 of extra hauling, the same corn netted $3,033. Your elevator's numbers and your own drying cost decide it: the \"Sell wet, or dry it myself?\" box on this page runs both sides with your LP, power and haul."],
   ["How much do overdry soybeans cost?",
    "Beans delivered under 13% are paid on the weight you haul, so the water you dried off is beans you did not sell. At 9%, 1,000 delivered bushels would have been " + f(S.overdry({ m: 9, base: 13, bu: 1000 }).atBase, 0) + " bushels at 13%, " + f(S.overdry({ m: 9, base: 13, bu: 1000 }).extraBu, 0) + " more. Nebraska CropWatch's example: 75 bushels an acre at 13% harvested at 9% sells 3.3 fewer bushels an acre, $33 an acre at $10 beans."],
   ["What is the base moisture for corn, soybeans, wheat and sorghum?",
@@ -41,7 +41,7 @@ export const FAQ = [
   ["Is a moisture discount the same as shrink?",
    "Not quite. Some buyers knock a share off the price instead of the bushels: Iowa State's example takes 2% of the price per point over 15%, 11% for 20.5% corn. Paid on wet bushels, that comes to the same dollars as a flat 2% a point shrink with no drying charge, so enter it that way."],
   ["Where does the bid come from?",
-   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted bid for that grain from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest futures settle less that state's median basis, labeled as such. Sorghum has no state basis yet, so it needs your ZIP or your own bid."]
+   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted bid for that grain from the same boards as the cash bids page. If that board was posted before today and states its futures month, the page re-marks it to today's futures the way the cash bids page does and shows the posted price beside it. With no ZIP, pick a state and the page uses the latest futures price less that state's median basis: the settle once it is recorded, otherwise the delayed quote with the time it was read. Sorghum has no state basis yet, so it needs your ZIP or your own bid."]
 ];
 
 function water() {

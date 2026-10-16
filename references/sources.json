@@ -1342,6 +1342,14 @@
     {"id": "usc-7-9032", "kind": "html",
      "url": "https://www.law.cornell.edu/uscode/text/7/9032",
      "title": "7 U.S.C. 9032: term of marketing assistance loans",
-     "why": "/commodity-loan: nine month loan term"}
+     "why": "/commodity-loan: nine month loan term"},
+    {"id": "asabe-d245-7-listing", "kind": "html",
+     "url": "https://standards.globalspec.com/std/14462453/d245-7",
+     "title": "ASABE D245.7 (2021) Moisture Relationships of Plant-based Agricultural Products: standard listing and edition history",
+     "why": "/grain-emc: the D245 edition the soybean and corn constants come from (the standard text is paywalled at elibrary.asabe.org; no free copy found Oct 16, 2026)"},
+    {"id": "grainjournal-d245-7", "kind": "html",
+     "url": "https://www.grainjournal.com/article/244875/asabe-revises-data-document-for-calculating-moisture-content-of-stored-agricultural-products",
+     "title": "Grain Journal: ASABE revises D245 data document for moisture content of stored products",
+     "why": "/grain-emc: what changed from D245.6 to D245.7 (updated values, corrected equations)"}
 ]
 }
