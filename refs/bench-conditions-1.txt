@@ -1,0 +1,952 @@
+# Benchmark conditions: USDA NASS Crop Progress (weekly PDF)
+# https://www.nass.usda.gov/Publications/Todays_Reports/reports/prog4026.pdf
+# fetched 2026-10-16T16:11:38Z, sha256 8dd835b5e617248a8386d899aa740dd9bbc22fe9700319913c62df63ef2127e5
+
+                                                                                                    Crop Progress
+ISSN: 1948-3007
+
+
+Released October 5, 2026, by the National Agricultural Statistics Service (NASS), Agricultural Statistics Board, United States Department of
+Agriculture (USDA).
+
+
+
+       Special Note
+
+       Due to a lapse in federal funding in October and November 2025, the Crop Progress reports for the weeks ending
+       October 5, 2025, through November 9, 2025, were canceled. Therefore, previous year estimates for the
+       corresponding weeks will not be available. Five-year average estimates will reflect the years 2021-2025 using
+       published estimates for 2021-2024 and imputed estimates for 2025.
+
+
+
+
+Corn Mature – Selected States
+[These 18 States planted 91% of the 2025 corn acreage]
+                                                                       Week ending
+                                                                                                                         2021-2025
+                    State                          October 4,          September 27,          October 4,                  Average
+                                                     2025                  2026                 2026
+                                                   (percent)             (percent)             (percent)                  (percent)
+Colorado ...................................                    (NA)                   31                    49                         64
+Illinois .......................................                (NA)                   83                    92                         88
+Indiana .....................................                   (NA)                   62                    77                         81
+Iowa ..........................................                 (NA)                   72                    85                         88
+Kansas .....................................                    (NA)                   93                    97                         93
+Kentucky ...................................                    (NA)                   92                    94                         92
+Michigan ...................................                    (NA)                   23                    30                         64
+Minnesota .................................                     (NA)                   79                    89                         85
+Missouri ....................................                   (NA)                   89                    94                         94
+Nebraska ..................................                     (NA)                   70                    85                         84
+North Carolina ..........................                       (NA)                   94                    95                         97
+North Dakota ............................                       (NA)                   58                    74                         69
+Ohio ..........................................                 (NA)                   48                    53                         70
+Pennsylvania ............................                       (NA)                   58                    65                         54
+South Dakota ............................                       (NA)                   73                    85                         78
+Tennessee ................................                      (NA)                   93                    97                         97
+Texas .......................................                   (NA)                   91                    93                         97
+Wisconsin .................................                     (NA)                   54                    72                         70
+
+18 States ..................................                    (NA)                   72                    83                         83
+(NA) Not available.
+Corn Harvested – Selected States
+[These 18 States harvested 93% of the 2025 corn acreage]
+                                                                                        Week ending
+                                                                                                                                                       2021-2025
+                    State                              October 4,                       September 27,                  October 4,                       Average
+                                                         2025                               2026                         2026
+                                                        (percent)                          (percent)                       (percent)                    (percent)
+Colorado ...................................                            (NA)                              -                                5                            15
+Illinois ........................................                       (NA)                             26                               36                            30
+Indiana ......................................                          (NA)                             13                               21                            23
+Iowa ..........................................                         (NA)                              5                                7                            20
+Kansas ......................................                           (NA)                             48                               54                            53
+Kentucky ...................................                            (NA)                             58                               69                            57
+Michigan ...................................                            (NA)                              1                                2                            14
+Minnesota .................................                             (NA)                              6                               12                            16
+Missouri ....................................                           (NA)                             42                               50                            49
+Nebraska ..................................                             (NA)                             11                               15                            24
+North Carolina ...........................                              (NA)                             75                               81                            84
+North Dakota .............................                              (NA)                              8                               12                            10
+Ohio ..........................................                         (NA)                              3                                6                            12
+Pennsylvania ............................                               (NA)                              -                                6                             6
+South Dakota ............................                               (NA)                              8                               11                            16
+Tennessee ................................                              (NA)                             73                               83                            68
+Texas ........................................                          (NA)                             79                               82                            84
+Wisconsin .................................                             (NA)                              4                                8                             9
+
+18 States ..................................                            (NA)                             18                               23                            27
+   - Represents zero.
+(NA) Not available.
+
+
+
+Corn Condition – Selected States: Week Ending October 4, 2026
+[These 18 States planted 91% of the 2025 corn acreage]
+                   State                            Very poor                    Poor                     Fair                         Good                Excellent
+                                                    (percent)                  (percent)                (percent)                  (percent)               (percent)
+Colorado ................................                         6                          31                      22                         41                       -
+Illinois .....................................                    3                           9                      30                         43                      15
+Indiana ...................................                       3                           7                      29                         54                       7
+Iowa .......................................                      2                           7                      19                         57                      15
+Kansas ...................................                       15                          19                      26                         30                      10
+Kentucky ................................                         -                           4                      17                         55                      24
+Michigan ................................                         2                           6                      36                         36                      20
+Minnesota ..............................                          4                           9                      27                         45                      15
+Missouri .................................                        2                           7                      25                         53                      13
+Nebraska ...............................                          6                          15                      33                         33                      13
+North Carolina ........................                          22                          30                      34                         11                       3
+North Dakota ..........................                          13                          25                      35                         25                       2
+Ohio .......................................                      1                           7                      27                         52                      13
+Pennsylvania .........................                            -                           5                      16                         46                      33
+South Dakota .........................                           12                          19                      34                         32                       3
+Tennessee .............................                           1                           3                      15                         44                      37
+Texas .....................................                      12                          23                      30                         24                      11
+Wisconsin ..............................                          5                          10                      26                         50                       9
+
+18 States ...............................                           6                        12                      28                         42                      12
+
+Previous week .......................                              6                         11                       26                         44                      13
+Previous year .........................                         (NA)                       (NA)                     (NA)                       (NA)                    (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+2                                                                                                                                        Crop Progress (October 2026)
+                                                                                                                              USDA, National Agricultural Statistics Service
+Soybeans Dropping Leaves – Selected States
+[These 18 States planted 96% of the 2025 soybean acreage]
+                                                                       Week ending
+                                                                                                              2021-2025
+                    State                          October 4,          September 27,        October 4,         Average
+                                                     2025                  2026               2026
+                                                   (percent)             (percent)          (percent)         (percent)
+Arkansas ..................................                     (NA)                   87                93               81
+Illinois .......................................                (NA)                   79                87               90
+Indiana .....................................                   (NA)                   74                86               88
+Iowa ..........................................                 (NA)                   62                81               90
+Kansas .....................................                    (NA)                   72                82               76
+Kentucky ...................................                    (NA)                   68                74               64
+Louisiana ..................................                    (NA)                   96                98               93
+Michigan ...................................                    (NA)                   65                70               89
+Minnesota .................................                     (NA)                   88                94               92
+Mississippi ................................                    (NA)                   93                98               91
+Missouri ....................................                   (NA)                   68                81               78
+Nebraska ..................................                     (NA)                   80                90               94
+North Carolina ..........................                       (NA)                   60                69               66
+North Dakota ............................                       (NA)                   84                94               93
+Ohio ..........................................                 (NA)                   59                65               88
+South Dakota ............................                       (NA)                   83                92               91
+Tennessee ................................                      (NA)                   86                91               77
+Wisconsin .................................                     (NA)                   70                88               85
+
+18 States ..................................                    (NA)                   75                85               87
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                   3
+USDA, National Agricultural Statistics Service
+Soybeans Harvested – Selected States
+[These 18 States harvested 96% of the 2025 soybean acreage]
+                                                                                        Week ending
+                                                                                                                                                       2021-2025
+                    State                              October 4,                       September 27,                  October 4,                       Average
+                                                         2025                               2026                         2026
+                                                        (percent)                          (percent)                       (percent)                    (percent)
+Arkansas ...................................                            (NA)                             61                               72                            46
+Illinois ........................................                       (NA)                             21                               31                            29
+Indiana ......................................                          (NA)                             14                               27                            28
+Iowa ..........................................                         (NA)                              3                                5                            38
+Kansas ......................................                           (NA)                             13                               16                            22
+Kentucky ...................................                            (NA)                             36                               44                            28
+Louisiana ..................................                            (NA)                             80                               87                            77
+Michigan ...................................                            (NA)                             10                               11                            24
+Minnesota .................................                             (NA)                             14                               25                            51
+Mississippi ................................                            (NA)                             72                               87                            65
+Missouri ....................................                           (NA)                             14                               21                            17
+Nebraska ..................................                             (NA)                              5                                9                            34
+North Carolina ...........................                              (NA)                              7                               10                            11
+North Dakota .............................                              (NA)                             22                               34                            36
+Ohio ..........................................                         (NA)                              2                               10                            22
+South Dakota ............................                               (NA)                              8                               17                            34
+Tennessee ................................                              (NA)                             50                               59                            32
+Wisconsin .................................                             (NA)                              5                               11                            27
+
+18 States ..................................                            (NA)                             17                               25                            33
+(NA) Not available.
+
+
+
+Soybean Condition – Selected States: Week Ending October 4, 2026
+[These 18 States planted 96% of the 2025 soybean acreage]
+                   State                            Very poor                    Poor                     Fair                         Good                Excellent
+                                                    (percent)                  (percent)                (percent)                  (percent)               (percent)
+Arkansas ................................                         5                           6                      26                         49                      14
+Illinois .....................................                    4                           8                      30                         44                      14
+Indiana ...................................                       3                           7                      27                         54                       9
+Iowa .......................................                      2                           6                      22                         55                      15
+Kansas ...................................                       13                          20                      32                         31                       4
+Kentucky ................................                         1                           5                      23                         58                      13
+Louisiana ...............................                         1                           5                      27                         60                       7
+Michigan ................................                         1                          12                      40                         33                      14
+Minnesota ..............................                          3                           9                      30                         47                      11
+Mississippi .............................                         1                           4                      26                         38                      31
+Missouri .................................                        3                           9                      31                         49                       8
+Nebraska ...............................                          2                          12                      33                         41                      12
+North Carolina ........................                           2                          13                      22                         55                       8
+North Dakota ..........................                           9                          19                      37                         34                       1
+Ohio .......................................                      1                           6                      24                         56                      13
+South Dakota .........................                            9                          16                      33                         39                       3
+Tennessee .............................                           2                           5                      22                         49                      22
+Wisconsin ..............................                          4                          11                      27                         48                      10
+
+18 States ...............................                           4                        10                      29                         46                      11
+
+Previous week .......................                              4                          9                       29                         47                      11
+Previous year .........................                         (NA)                       (NA)                     (NA)                       (NA)                    (NA)
+(NA) Not available.
+
+
+
+
+4                                                                                                                                        Crop Progress (October 2026)
+                                                                                                                              USDA, National Agricultural Statistics Service
+Cotton Bolls Opening – Selected States
+[These 15 States planted 99% of the 2025 cotton acreage]
+                                                                     Week ending
+                                                                                                            2021-2025
+                   State                         October 4,          September 27,        October 4,         Average
+                                                   2025                  2026               2026
+                                                 (percent)             (percent)          (percent)         (percent)
+Alabama ...................................                   (NA)                   77                83               84
+Arizona .....................................                 (NA)                   91                92               92
+Arkansas ..................................                   (NA)                   97                99               96
+California ..................................                 (NA)                   60                75               72
+Georgia ....................................                  (NA)                   79                85               82
+Kansas .....................................                  (NA)                   78                81               72
+Louisiana ..................................                  (NA)                   90                95               97
+Mississippi ................................                  (NA)                   89                95               91
+Missouri ....................................                 (NA)                   85                93               88
+North Carolina ..........................                     (NA)                   74                85               81
+Oklahoma .................................                    (NA)                   67                72               82
+South Carolina ..........................                     (NA)                   83                91               82
+Tennessee ................................                    (NA)                   89                93               79
+Texas .......................................                 (NA)                   60                63               69
+Virginia .....................................                (NA)                   79                94               87
+
+15 States ..................................                  (NA)                   70                74               76
+(NA) Not available.
+
+
+
+Cotton Harvested – Selected States
+[These 15 States harvested 99% of the 2025 cotton acreage]
+                                                                     Week ending
+                                                                                                            2021-2025
+                   State                         October 4,          September 27,        October 4,         Average
+                                                   2025                  2026               2026
+                                                 (percent)             (percent)          (percent)         (percent)
+Alabama ...................................                   (NA)                    7                18               14
+Arizona .....................................                 (NA)                   40                41               31
+Arkansas ..................................                   (NA)                   13                30               21
+California ..................................                 (NA)                    2                 5                7
+Georgia ....................................                  (NA)                    6                10               10
+Kansas .....................................                  (NA)                    5                 6                6
+Louisiana ..................................                  (NA)                   31                48               48
+Mississippi ................................                  (NA)                   23                40               31
+Missouri ....................................                 (NA)                    -                 2               11
+North Carolina ..........................                     (NA)                    2                 5                5
+Oklahoma .................................                    (NA)                    -                 -                4
+South Carolina ..........................                     (NA)                    1                 4                7
+Tennessee ................................                    (NA)                    9                22               10
+Texas .......................................                 (NA)                   32                35               30
+Virginia .....................................                (NA)                    5                10               12
+
+15 States ..................................                  (NA)                   17                23               21
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                 5
+USDA, National Agricultural Statistics Service
+Cotton Condition – Selected States: Week Ending October 4, 2026
+[These 15 States planted 99% of the 2025 cotton acreage]
+                  State                        Very poor            Poor               Fair                   Good                   Excellent
+                                               (percent)          (percent)          (percent)              (percent)                (percent)
+Alabama ................................                     2                  7                 23                     53                       15
+Arizona ..................................                   1                  1                  3                     49                       46
+Arkansas ................................                    2                  3                 24                     49                       22
+California ...............................                   -                  -                  5                      5                       90
+Georgia ..................................                   2                  7                 36                     48                        7
+Kansas ...................................                  13                 30                 35                     18                        4
+Louisiana ...............................                    -                  5                 25                     67                        3
+Mississippi .............................                    1                  4                 60                     25                       10
+Missouri .................................                   -                  -                 15                     84                        1
+North Carolina ........................                      -                  1                 21                     60                       18
+Oklahoma ..............................                      2                 61                 28                      8                        1
+South Carolina .......................                       4                 11                 31                     41                       13
+Tennessee .............................                      4                 12                 27                     51                        6
+Texas .....................................                 19                 35                 31                     13                        2
+Virginia ...................................                14                 21                 37                     28                        -
+
+15 States ...............................                   12                 25                 30                     27                        6
+
+Previous week .......................                        12                 23                 30                     29                        6
+Previous year .........................                    (NA)               (NA)               (NA)                   (NA)                     (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+6                                                                                                                  Crop Progress (October 2026)
+                                                                                                        USDA, National Agricultural Statistics Service
+Sorghum Coloring – Selected States
+[These 6 States planted 100% of the 2025 sorghum acreage]
+                                                                    Week ending
+                                                                                                            2021-2025
+                   State                        October 4,          September 27,        October 4,          Average
+                                                  2025                  2026               2026
+                                                (percent)             (percent)          (percent)          (percent)
+Colorado ...................................                 (NA)                   93                 97                96
+Kansas .....................................                 (NA)                   91                 95                96
+Nebraska ..................................                  (NA)                   88                 93                99
+Oklahoma .................................                   (NA)                   86                 91                92
+South Dakota ............................                    (NA)                   97                 99                99
+Texas .......................................                (NA)                   99                100               100
+
+6 States ....................................                (NA)                   93                96                98
+(NA) Not available.
+
+
+
+
+Sorghum Mature – Selected States
+[These 6 States planted 100% of the 2025 sorghum acreage]
+                                                                    Week ending
+                                                                                                            2021-2025
+                   State                        October 4,          September 27,        October 4,          Average
+                                                  2025                  2026               2026
+                                                (percent)             (percent)          (percent)          (percent)
+Colorado ...................................                 (NA)                   40                55                58
+Kansas .....................................                 (NA)                   59                64                66
+Nebraska ..................................                  (NA)                   57                65                72
+Oklahoma .................................                   (NA)                   79                84                67
+South Dakota ............................                    (NA)                   61                73                84
+Texas .......................................                (NA)                   90                92                97
+
+6 States ....................................                (NA)                   67                72                75
+(NA) Not available.
+
+
+
+
+Sorghum Harvested – Selected States
+[These 6 States harvested 100% of the 2025 sorghum acreage]
+                                                                    Week ending
+                                                                                                            2021-2025
+                   State                        October 4,          September 27,        October 4,          Average
+                                                  2025                  2026               2026
+                                                (percent)             (percent)          (percent)          (percent)
+Colorado ...................................                 (NA)                    -                 2                12
+Kansas .....................................                 (NA)                   12                15                19
+Nebraska ..................................                  (NA)                    5                 9                17
+Oklahoma .................................                   (NA)                   46                51                29
+South Dakota ............................                    (NA)                   16                19                25
+Texas .......................................                (NA)                   79                81                89
+
+6 States ....................................                (NA)                   29                32                38
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                  7
+USDA, National Agricultural Statistics Service
+Sorghum Condition – Selected States: Week Ending October 4, 2026
+[These 6 States planted 100% of the 2025 sorghum acreage]
+                  State                           Very poor                    Poor                     Fair                         Good                Excellent
+                                                  (percent)                  (percent)                (percent)                  (percent)               (percent)
+Colorado ................................                      12                          17                      28                         43                       -
+Kansas ...................................                     13                          25                      39                         19                       4
+Nebraska ...............................                        6                          19                      40                         31                       4
+Oklahoma ..............................                         7                          29                      39                         23                       2
+South Dakota .........................                         16                          18                      38                         26                       2
+Texas .....................................                     7                          22                      47                         19                       5
+
+6 States .................................                     11                          23                      40                         22                       4
+
+Previous week .......................                           12                         24                       38                         22                       4
+Previous year .........................                       (NA)                       (NA)                     (NA)                       (NA)                    (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Peanuts Harvested – Selected States
+[These 8 States harvested 95% of the 2025 peanut acreage]
+                                                                                      Week ending
+                                                                                                                                                     2021-2025
+                   State                             October 4,                       September 27,                  October 4,                       Average
+                                                       2025                               2026                         2026
+                                                      (percent)                          (percent)                       (percent)                    (percent)
+Alabama ...................................                           (NA)                             10                               25                            29
+Florida .......................................                       (NA)                             20                               24                            45
+Georgia .....................................                         (NA)                             11                               21                            22
+North Carolina ...........................                            (NA)                              5                               23                            17
+Oklahoma .................................                            (NA)                             12                               17                             7
+South Carolina ..........................                             (NA)                             13                               23                            21
+Texas ........................................                        (NA)                             14                               15                            11
+Virginia ......................................                       (NA)                             30                               46                            35
+
+8 States ....................................                         (NA)                             12                               22                            23
+(NA) Not available.
+
+
+
+
+Peanut Condition – Selected States: Week Ending October 4, 2026
+[These 8 States planted 95% of the 2025 peanut acreage]
+                  State                           Very poor                    Poor                     Fair                         Good                Excellent
+                                                  (percent)                  (percent)                (percent)                  (percent)               (percent)
+Alabama ................................                          2                        12                      26                         53                       7
+Florida ....................................                      -                         4                      32                         63                       1
+Georgia ..................................                        1                         8                      35                         50                       6
+North Carolina ........................                           -                         2                      13                         64                      21
+Oklahoma ..............................                           4                        16                      32                         45                       3
+South Carolina .......................                            1                         6                      33                         51                       9
+Texas .....................................                       4                        20                      42                         31                       3
+Virginia ...................................                      7                        12                      26                         48                       7
+
+8 States .................................                        1                         9                      33                         50                       7
+
+Previous week .......................                            2                          8                       32                         51                       7
+Previous year .........................                       (NA)                       (NA)                     (NA)                       (NA)                    (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+8                                                                                                                                      Crop Progress (October 2026)
+                                                                                                                            USDA, National Agricultural Statistics Service
+Sugarbeets Harvested – Selected States
+[These 4 States harvested 87% of the 2025 sugarbeet acreage]
+                                                                     Week ending
+                                                                                                            2021-2025
+                   State                         October 4,          September 27,        October 4,         Average
+                                                   2025                  2026               2026
+                                                 (percent)             (percent)          (percent)         (percent)
+Idaho ........................................                (NA)                   13                15               23
+Michigan ...................................                  (NA)                    8                11               25
+Minnesota .................................                   (NA)                   16                17               18
+North Dakota ............................                     (NA)                   25                33               21
+
+4 States ....................................                 (NA)                   16                19               22
+(NA) Not available.
+
+
+
+
+Sunflowers Harvested – Selected States
+[These 4 States harvested 85% of the 2025 sunflower acreage]
+                                                                     Week ending
+                                                                                                            2021-2025
+                   State                         October 4,          September 27,        October 4,         Average
+                                                   2025                  2026               2026
+                                                 (percent)             (percent)          (percent)         (percent)
+Colorado ...................................                  (NA)                   -                  2                7
+Kansas .....................................                  (NA)                   8                 15               18
+North Dakota ............................                     (NA)                   3                 10                4
+South Dakota ............................                     (NA)                   -                  1                4
+
+4 States ....................................                 (NA)                   2                 6                5
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Rice Harvested – Selected States
+[These 6 States harvested 100% of the 2025 rice acreage]
+                                                                     Week ending
+                                                                                                            2021-2025
+                   State                         October 4,          September 27,        October 4,         Average
+                                                   2025                  2026               2026
+                                                 (percent)             (percent)          (percent)         (percent)
+Arkansas ..................................                   (NA)                   90                95               82
+California ..................................                 (NA)                   20                30               40
+Louisiana ..................................                  (NA)                   98                99               98
+Mississippi ................................                  (NA)                   88                95               89
+Missouri ....................................                 (NA)                   84                93               70
+Texas .......................................                 (NA)                   96                98               97
+
+6 States ....................................                 (NA)                   80                86               79
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                 9
+USDA, National Agricultural Statistics Service
+Winter Wheat Planted – Selected States
+[These 18 States planted 90% of the 2025 winter wheat acreage]
+                                                                        Week ending
+                                                                                                                         2021-2025
+                    State                           October 4,          September 27,        October 4,                   Average
+                                                      2025                  2026               2026
+                                                    (percent)             (percent)          (percent)                    (percent)
+Arkansas ...................................                     (NA)                    4                  10                            11
+California ..................................                    (NA)                    5                  10                             9
+Colorado ...................................                     (NA)                   50                  61                            74
+Idaho .........................................                  (NA)                   35                  59                            59
+Illinois ........................................                (NA)                    6                  15                            16
+Indiana ......................................                   (NA)                    7                  16                            20
+Kansas ......................................                    (NA)                   18                  24                            40
+Michigan ...................................                     (NA)                   18                  23                            33
+Missouri ....................................                    (NA)                    3                   8                             9
+Montana ....................................                     (NA)                   55                  62                            62
+Nebraska ..................................                      (NA)                   38                  62                            76
+North Carolina ...........................                       (NA)                    4                   5                             5
+Ohio ..........................................                  (NA)                    -                   2                            24
+Oklahoma .................................                       (NA)                    7                  14                            35
+Oregon ......................................                    (NA)                   25                  47                            33
+South Dakota ............................                        (NA)                   53                  71                            71
+Texas ........................................                   (NA)                   30                  35                            48
+Washington ...............................                       (NA)                   67                  83                            74
+
+18 States ..................................                     (NA)                   27                  36                            46
+   - Represents zero.
+(NA) Not available.
+
+
+
+Winter Wheat Emerged – Selected States
+[These 18 States planted 90% of the 2025 winter wheat acreage]
+                                                                        Week ending
+                                                                                                                         2021-2025
+                    State                           October 4,          September 27,        October 4,                   Average
+                                                      2025                  2026               2026
+                                                    (percent)             (percent)          (percent)                    (percent)
+Arkansas ...................................                     (NA)                    -                   1                             2
+California ..................................                    (NA)                    2                   5                             1
+Colorado ...................................                     (NA)                   20                  27                            38
+Idaho .........................................                  (NA)                    8                  20                            20
+Illinois ........................................                (NA)                    1                   2                             4
+Indiana ......................................                   (NA)                    -                   2                             6
+Kansas ......................................                    (NA)                    3                  10                            16
+Michigan ...................................                     (NA)                    3                   4                            13
+Missouri ....................................                    (NA)                    -                   1                             2
+Montana ....................................                     (NA)                   11                  30                            28
+Nebraska ..................................                      (NA)                   14                  38                            40
+North Carolina ...........................                       (NA)                    -                   1                             1
+Ohio ..........................................                  (NA)                    -                   -                             3
+Oklahoma .................................                       (NA)                    -                   3                            16
+Oregon ......................................                    (NA)                    5                  21                            11
+South Dakota ............................                        (NA)                   17                  37                            28
+Texas ........................................                   (NA)                   12                  16                            21
+Washington ...............................                       (NA)                   33                  55                            43
+
+18 States ..................................                     (NA)                   8                   16                            20
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+10                                                                                                         Crop Progress (October 2026)
+                                                                                                USDA, National Agricultural Statistics Service
+Pasture and Range Condition – Selected States: Week Ending October 4, 2026
+[National pasture and range conditions for selected States are weighted based on pasture acreage and/or livestock inventories]
+                  State                         Very poor            Poor                Fair                   Good             Excellent
+                                                (percent)          (percent)           (percent)              (percent)          (percent)
+Alabama ................................                      3                  8                  39                     46                  4
+Arizona ..................................                   22                 16                  17                     15                 30
+Arkansas ...............................                     38                 34                  22                      5                  1
+California ...............................                    -                 30                  35                     30                  5
+Colorado ................................                    19                 29                  42                      7                  3
+Connecticut ...........................                       -                  5                  40                     55                  -
+Delaware ...............................                     14                 27                  33                     24                  2
+Florida ...................................                   3                 18                  29                     41                  9
+Georgia .................................                    12                 24                  39                     23                  2
+Idaho .....................................                   7                 46                  31                     15                  1
+Illinois ....................................                 7                 17                  36                     33                  7
+Indiana ..................................                    4                  8                  32                     51                  5
+Iowa .......................................                  2                  5                  24                     58                 11
+Kansas ..................................                    12                 23                  32                     30                  3
+Kentucky ................................                     5                 14                  32                     44                  5
+Louisiana ...............................                     6                 28                  35                     30                  1
+Maine ....................................                    4                  6                  34                     54                  2
+Maryland ................................                     4                 11                  46                     32                  7
+Massachusetts .......................                         -                  5                  40                     55                  -
+Michigan ................................                     2                 11                  35                     35                 17
+Minnesota ..............................                     13                 24                  39                     21                  3
+Mississippi .............................                    13                 26                  32                     27                  2
+Missouri .................................                    7                 24                  35                     33                  1
+Montana ................................                     20                 28                  30                     20                  2
+Nebraska ...............................                     28                 17                  29                     25                  1
+Nevada ..................................                     5                 35                  40                     15                  5
+New Hampshire .....................                           -                  -                  24                     76                  -
+New Jersey ............................                       -                  -                   3                     97                  -
+New Mexico ...........................                       21                 29                  21                     11                 18
+New York ...............................                      -                  8                  24                     59                  9
+North Carolina .......................                        3                  6                  43                     44                  4
+North Dakota .........................                       16                 24                  36                     24                  -
+Ohio .......................................                  2                  4                  32                     57                  5
+Oklahoma ..............................                      32                 29                  28                      9                  2
+Oregon ..................................                    11                 28                  31                     29                  1
+Pennsylvania .........................                        1                  3                  21                     55                 20
+Rhode Island .........................                        -                  5                  40                     55                  -
+South Carolina .......................                        7                 26                  45                     21                  1
+South Dakota .........................                       29                 31                  29                     11                  -
+Tennessee .............................                      16                 24                  34                     24                  2
+Texas ....................................                   29                 28                  27                     14                  2
+Utah .......................................                  9                 55                  17                     18                  1
+Vermont .................................                     4                  4                  70                     22                  -
+Virginia ..................................                  13                 18                  28                     37                  4
+Washington ...........................                       10                 17                  16                     57                  -
+West Virginia .........................                       6                 11                  41                     38                  4
+Wisconsin ..............................                      6                 15                  39                     34                  6
+Wyoming ...............................                      41                 27                  32                      -                  -
+
+48 States ...............................                    22                 27                  28                     18                  5
+
+Previous week .......................                         24                 27                  30                     15                  4
+Previous year .........................                     (NA)               (NA)                (NA)                   (NA)               (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                                   11
+USDA, National Agricultural Statistics Service
+Days Suitable for Fieldwork - Selected States
+[Days suitable for fieldwork are weighted based on cropland acreage]
+                                                                                       Week ending
+                            State                                  October 4,          September 27,                         October 4,
+                                                                     2025                  2026                                2026
+                                                                    (Days)                (Days)                               (Days)
+Alabama ..................................................                      (NA)                       6.3                                  6.3
+Arizona ....................................................                    (NA)                       6.0                                  6.0
+Arkansas ..................................................                     (NA)                       6.8                                  6.1
+California .................................................                    (NA)                       7.0                                  7.0
+Colorado ..................................................                     (NA)                       5.8                                  5.0
+Connecticut ..............................................                      (NA)                       6.0                                  6.0
+Delaware .................................................                      (NA)                       3.5                                  4.0
+Florida ......................................................                  (NA)                       6.8                                  6.2
+Georgia ....................................................                    (NA)                       6.5                                  5.9
+Idaho ........................................................                  (NA)                       6.3                                  7.0
+Illinois .......................................................                (NA)                       5.3                                  5.0
+Indiana .....................................................                   (NA)                       5.0                                  5.2
+Iowa .........................................................                  (NA)                       1.1                                  1.2
+Kansas .....................................................                    (NA)                       4.5                                  2.3
+Kentucky ..................................................                     (NA)                       6.5                                  6.2
+Louisiana .................................................                     (NA)                       6.8                                  6.2
+Maine .......................................................                   (NA)                       6.1                                  5.8
+Maryland ..................................................                     (NA)                       4.0                                  4.7
+Massachusetts .........................................                         (NA)                       6.0                                  6.0
+Michigan ..................................................                     (NA)                       4.4                                  4.3
+Minnesota ................................................                      (NA)                       2.8                                  3.4
+Mississippi ...............................................                     (NA)                       6.8                                  6.4
+Missouri ...................................................                    (NA)                       4.7                                  4.0
+Montana ...................................................                     (NA)                       6.4                                  6.9
+Nebraska .................................................                      (NA)                       2.8                                  3.0
+Nevada ....................................................                     (NA)                       7.0                                  6.4
+New Hampshire .......................................                           (NA)                       6.3                                  5.0
+New Jersey ..............................................                       (NA)                       5.0                                  6.0
+New Mexico .............................................                        (NA)                       5.5                                  4.8
+New York .................................................                      (NA)                       6.0                                  5.0
+North Carolina ..........................................                       (NA)                       5.2                                  5.9
+North Dakota ............................................                       (NA)                       4.8                                  5.1
+Ohio .........................................................                  (NA)                       2.6                                  4.8
+Oklahoma ................................................                       (NA)                       5.9                                  5.1
+Oregon .....................................................                    (NA)                       6.9                                  7.0
+Pennsylvania ...........................................                        (NA)                       5.0                                  6.0
+Rhode Island ............................................                       (NA)                       6.0                                  6.0
+South Carolina .........................................                        (NA)                       5.9                                  5.7
+South Dakota ...........................................                        (NA)                       2.7                                  4.4
+Tennessee ...............................................                       (NA)                       6.7                                  6.2
+Texas .......................................................                   (NA)                       5.8                                  4.7
+Utah .........................................................                  (NA)                       6.9                                  6.6
+Vermont ...................................................                     (NA)                       6.6                                  5.0
+Virginia .....................................................                  (NA)                       5.0                                  6.0
+Washington ..............................................                       (NA)                       6.2                                  6.7
+West Virginia ............................................                      (NA)                       4.3                                  5.2
+Wisconsin ................................................                      (NA)                       5.2                                  4.3
+Wyoming ..................................................                      (NA)                       6.4                                  6.8
+(NA) Not available.
+
+
+
+
+12                                                                                                                Crop Progress (October 2026)
+                                                                                                       USDA, National Agricultural Statistics Service
+Topsoil Moisture Condition - Selected States: Week Ending October 4, 2026
+[National topsoil moisture conditions for selected States are weighted based on cropland acreage]
+                       State                              Very short           Short                Adequate           Surplus
+                                                          (percent)           (percent)             (percent)          (percent)
+Alabama ..........................................                      16                 39                    35                 10
+Arizona ............................................                    10                  7                    62                 21
+Arkansas .........................................                      59                 28                    13                  -
+California .........................................                    15                 10                    75                  -
+Colorado ..........................................                     22                 48                    22                  8
+Connecticut .....................................                        -                  -                   100                  -
+Delaware .........................................                      27                  4                    60                  9
+Florida .............................................                   10                 20                    64                  6
+Georgia ...........................................                     17                 47                    35                  1
+Idaho ...............................................                    8                 29                    57                  6
+Illinois ..............................................                 11                 24                    55                 10
+Indiana ............................................                     6                 17                    68                  9
+Iowa .................................................                   -                  1                    54                 45
+Kansas ............................................                      6                 19                    53                 22
+Kentucky ..........................................                     14                 39                    46                  1
+Louisiana .........................................                     36                 34                    28                  2
+Maine ..............................................                    12                 49                    39                  -
+Maryland ..........................................                      1                  9                    79                 11
+Massachusetts .................................                          -                  -                    97                  3
+Michigan ..........................................                      -                  5                    74                 21
+Minnesota ........................................                       4                 16                    63                 17
+Mississippi .......................................                     54                 34                    12                  -
+Missouri ...........................................                     9                 34                    50                  7
+Montana ..........................................                      13                 37                    50                  -
+Nebraska .........................................                       7                 16                    58                 19
+Nevada ............................................                     50                 40                    10                  -
+New Hampshire ...............................                            -                  4                    94                  2
+New Jersey ......................................                        -                  -                    60                 40
+New Mexico .....................................                        15                 24                    44                 17
+New York .........................................                       -                  3                    90                  7
+North Carolina .................................                        12                 32                    52                  4
+North Dakota ...................................                        11                 30                    56                  3
+Ohio .................................................                   -                  9                    61                 30
+Oklahoma ........................................                       17                 38                    43                  2
+Oregon ............................................                     28                 45                    26                  1
+Pennsylvania ...................................                         2                  5                    92                  1
+Rhode Island ...................................                         -                  -                   100                  -
+South Carolina .................................                        14                 40                    44                  2
+South Dakota ...................................                        12                 37                    48                  3
+Tennessee .......................................                       39                 33                    27                  1
+Texas ..............................................                    20                 32                    41                  7
+Utah .................................................                  18                 28                    54                  -
+Vermont ...........................................                      -                 75                    25                  -
+Virginia ............................................                    9                 25                    63                  3
+Washington .....................................                        27                 25                    48                  -
+West Virginia ...................................                        1                 12                    74                 13
+Wisconsin ........................................                       5                 15                    67                 13
+Wyoming .........................................                       57                 29                    14                  -
+
+48 States .........................................                     13                 24                    52                 11
+
+Previous week .................................                          17                 26                    48                  9
+Previous year ...................................                      (NA)               (NA)                  (NA)               (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+Crop Progress (October 2026)                                                                                                         13
+USDA, National Agricultural Statistics Service
+Subsoil Moisture Condition - Selected States: Week Ending October 4, 2026
+[National subsoil moisture conditions for selected States are weighted based on cropland acreage]
+                       State                              Very short           Short                Adequate                    Surplus
+                                                          (percent)           (percent)             (percent)                   (percent)
+Alabama .........................................                       15                 41                    42                             2
+Arizona ...........................................                     11                  7                    71                            11
+Arkansas .........................................                      53                 37                    10                             -
+California ........................................                     15                 10                    75                             -
+Colorado .........................................                      36                 30                    33                             1
+Connecticut .....................................                        -                  -                   100                             -
+Delaware ........................................                       20                 17                    59                             4
+Florida .............................................                   18                 13                    68                             1
+Georgia ...........................................                     18                 49                    33                             -
+Idaho ...............................................                    9                 33                    56                             2
+Illinois ..............................................                 12                 26                    55                             7
+Indiana ............................................                     7                 20                    67                             6
+Iowa ................................................                    -                  5                    61                            34
+Kansas ............................................                     13                 28                    48                            11
+Kentucky .........................................                      13                 37                    49                             1
+Louisiana ........................................                      34                 38                    26                             2
+Maine ..............................................                    13                 49                    38                             -
+Maryland .........................................                       1                 18                    75                             6
+Massachusetts ................................                           6                 11                    83                             -
+Michigan .........................................                       5                 19                    64                            12
+Minnesota .......................................                        7                 25                    59                             9
+Mississippi ......................................                      52                 35                    13                             -
+Missouri ..........................................                     10                 26                    56                             8
+Montana ..........................................                      20                 50                    29                             1
+Nebraska ........................................                       12                 20                    55                            13
+Nevada ...........................................                      15                 50                    35                             -
+New Hampshire ..............................                             -                  4                    96                             -
+New Jersey .....................................                         -                  -                    64                            36
+New Mexico ....................................                         18                 29                    39                            14
+New York ........................................                        -                  2                    92                             6
+North Carolina .................................                         8                 32                    57                             3
+North Dakota ...................................                        16                 31                    51                             2
+Ohio ................................................                    2                  6                    77                            15
+Oklahoma .......................................                        39                 35                    25                             1
+Oregon ............................................                     38                 37                    25                             -
+Pennsylvania ..................................                          2                  2                    93                             3
+Rhode Island ...................................                         -                  -                   100                             -
+South Carolina ................................                         16                 41                    42                             1
+South Dakota ..................................                         21                 44                    34                             1
+Tennessee ......................................                        35                 42                    22                             1
+Texas ..............................................                    32                 29                    34                             5
+Utah ................................................                   13                 35                    51                             1
+Vermont ..........................................                       5                 32                    63                             -
+Virginia ............................................                   18                 27                    55                             -
+Washington .....................................                        23                 30                    47                             -
+West Virginia ...................................                        3                 15                    69                            13
+Wisconsin .......................................                        6                 18                    66                            10
+Wyoming .........................................                       55                 30                    15                             -
+
+48 States ........................................                      17                 27                     49                            7
+
+Previous week ................................                           19                 29                    46                           6
+Previous year ..................................                       (NA)               (NA)                  (NA)                        (NA)
+   - Represents zero.
+(NA) Not available.
+
+
+
+
+14                                                                                                              Crop Progress (October 2026)
+                                                                                                     USDA, National Agricultural Statistics Service
+Crop Progress and Condition Tables Expected Next Week
+
+Corn: Mature, Harvested, Condition                               Rice: Harvested
+Cotton: Bolls Opening, Harvested, Condition                      Winter Wheat: Planted, Emerged (2027 Crop)
+Peanuts: Harvested, Condition                                    Pasture and Range: Condition
+Sorghum: Mature, Harvested, Condition                            Days Suitable for Fieldwork
+Soybeans: Dropping Leaves, Harvested, Condition                  Topsoil Moisture Condition
+Sunflowers: Harvested                                            Subsoil Moisture Condition
+Sugarbeets: Harvested
+
+
+Statistical Methodology
+
+Survey Procedures: Crop progress and condition estimates are based on survey data collected each week from early
+April through the end of November. The non-probability crop progress and condition surveys include input from
+approximately 3,600 respondents whose occupations provide them opportunities to make visual observations and
+frequently bring them in contact with farmers in their counties. Based on standard definitions, these respondents
+subjectively estimate the progress of crops through various stages of development, as well as the progress of producer
+activities. They also provide subjective evaluations of crop conditions.
+
+Most respondents complete their questionnaires on Friday or early Monday morning and submit them to the National
+Agricultural Statistics Service (NASS) Field Offices in their States by mail, telephone, fax, e-mail, or through a secured
+internet website. A small number of reports are completed on Thursday, Saturday, and Sunday. Regardless of when
+questionnaires are completed, respondents are asked to report for the entire week ending on Sunday. For reports submitted
+prior to the Sunday reference date, a degree of uncertainty is introduced by projections for weekend changes in progress
+and condition. By the end of the 2020 season, over 95 percent of the data were being submitted through the internet
+website. As a result, the majority of all data are submitted on Monday morning, significantly reducing projection
+uncertainty.
+
+Respondents are sent written reporting instructions at the beginning of each season and are contacted periodically to
+ensure proper reporting. Terms and definitions of crop stages and condition categories used as reporting guidelines are
+available on the NASS website at www.nass.usda.gov/Publications/National_Crop_Progress.
+
+Estimating Procedures: Reported data are reviewed for reasonableness and consistency by comparing with data reported
+the previous week and data reported in surrounding counties for the current week. Field Offices summarize the reported
+data to district and State levels, weighting each county’s reported data by NASS county acreage estimates. Summarized
+indications are compared with previous week estimates, and progress items are compared with earlier stages of
+development and historical averages to ensure reasonableness. Weather events and respondent comments are also taken
+into consideration. State estimates are submitted to the Agricultural Statistics Board (ASB) along with supporting
+comments, where they are compared with surrounding States and compiled into a National level summary by weighting
+each State by its acreage estimates. National crop planting progress, progress of development stages, and condition
+estimates are weighted using the program State’s average planted acres over the previous three crop years. National crop
+harvest progress estimates are weighted using the program State’s average harvested acres over the previous three crop
+years. Pasture and range condition is weighted using pasture acreage and/or livestock inventories from the most recent
+Census of Agriculture. Days suitable for fieldwork, topsoil moisture and subsoil moisture are weighted using cropland
+acreage from the Census of Agriculture.
+
+Revision Policy: Progress and condition estimates in the Crop Progress report are released after 4:00 pm ET on the first
+business day of the week. These estimates are subject to revision the following week.
+
+
+
+
+Crop Progress (October 2026)                                                                                               15
+USDA, National Agricultural Statistics Service
+USDA National Agricultural Statistics Service - Estimation Branch Contacts
+
+For more information about specific data items, please contact the Estimation Branch staff members below. You can also
+email inquiries to nass@usda.gov.
+
+Anthony Prillaman, Associate Deputy Administrator ..................................................................... (202) 720-2127
+
+
+Darin Jantzi, Section Chief ................................................................................................................. (701) 412-5953
+
+      Crops: Apricots, Bell Peppers, Broccoli, Canola, Cauliflower, Chile Peppers, Cucumbers, Hemp, Macadamias,
+      Mustard Seed, Nectarines, Peaches, Plums, Pumpkins, Prunes, Rapeseed, Rye, Safflower, Soybeans, Squash,
+      Sunflower
+
+Jeff Lemmons, Section Chief .............................................................................................................. (202) 973-3272
+
+      Crops: Artichokes, Avocados, Cabbage, Crop Progress, Dates, Dry Edible Beans, Grapes, Green Peas, Hops, Olives,
+      Pistachios, Potatoes, Rice, Snap Beans, Sugarbeets, Sugarcane, Sweet Potatoes, Tomatoes, Walnuts, Wheat
+
+Fleming Gibson, Section Chief (Acting) ............................................................................................ (202) 236-2428
+
+      Crops: Almonds, Asparagus, Barley, Beets, Blueberries, Carrots, Chickpeas, Coffee, Corn, Cranberries, Dry Edible
+      Peas, Garlic, Grapefruit, Lemons, Lentils, Mandarins/Tangerines, Maple, Mushrooms, Onions, Oranges, Papayas,
+      Pears, Pecans, Raspberries, Sweet Corn, Tobacco
+
+Julie Weber, Section Chief ................................................................................................................. (202) 317-0165
+
+      Crops: Apples, Cantaloupe, Cotton, Cotton Ginnings, Cotton System Consumption and Stocks, Fats and Oils,
+      Flaxseed, Flour Milling Products, Grain Crushings, Hay, Hazelnuts, Honeydew, Kale, Kiwifruit, Lettuce, Mint, Oats,
+      Peanuts, Proso Millet, Sorghum, Spinach, Strawberries, Sweet Cherries, Tart Cherries, Watermelon
+
+
+Access to NASS Reports
+
+For your convenience, you may access NASS reports and products the following ways:
+
+     ➢ All reports are available electronically, at no cost, on the NASS web site: www.nass.usda.gov.
+
+     ➢ The national specific reports are available via a free e-mail subscription. To set-up this free subscription, visit
+       www.nass.usda.gov and click on “National” in upper right corner above “search” box to create an account and
+       select the reports you would like to receive.
+
+     ➢ Economics, Statistics, and Market Information (ESMIS) – National Agricultural Library (NAL) website houses
+       NASS’s and other agency archived reports at https://esmis.nal.usda.gov. All email subscriptions containing
+       reports will be sent from https://esmis.nal.usda.gov. To receive the reports via e-mail, you will have to go to the
+       website, create a new account and subscribe to the reports. You should whitelist
+       notifications@esmis.nal.usda.gov in your email client to avoid the emails going into spam/junk folders.
+
+
+For more information on NASS surveys and reports, call the NASS Agricultural Statistics Hotline at (800) 727-9540,
+7:30 a.m. to 4:00 p.m. ET, or e-mail: nass@usda.gov.
+
+If you have specific questions you would like an expert to respond to, please visit our “Ask A Specialist” website at
+www.nass.usda.gov/Contact_Us/Ask_a_Specialist.
+In accordance with Federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and
+policies, the USDA, its Agencies, offices, and employees, and institutions participating in or administering USDA
+programs are prohibited from discriminating based on race, color, national origin, religion, sex, disability, age, marital
+status, family/parental status, income derived from a public assistance program, political beliefs, or reprisal or retaliation
+for prior civil rights activity, in any program or activity conducted or funded by USDA (not all bases apply to all
+programs). Remedies and complaint filing deadlines vary by program or incident.
+
+Persons with disabilities who require alternative means of communication for program information (e.g., Braille, large
+print, audiotape, American Sign Language, etc.) should contact the responsible Agency or USDA's TARGET Center at
+(202) 720-2600 (voice and TTY) or contact USDA through the Federal Relay Service at (800) 877-8339. Additionally,
+program information may be made available in languages other than English.
+
+To file a program discrimination complaint, complete the USDA Program Discrimination Complaint Form, AD-3027,
+found online at How to File a Program Discrimination Complaint and at any USDA office or write a letter addressed to
+USDA and provide in the letter all of the information requested in the form. To request a copy of the complaint form, call
+(866) 632-9992. Submit your completed form or letter to USDA by: (1) mail: U.S. Department of Agriculture, Office of
+the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW, Washington, D.C. 20250-9410; (2) fax: (202)
+690-7442; or (3) email: program.intake@usda.gov.
+
+USDA is an equal opportunity provider, employer, and lender.
+

@@ -1,0 +1,191 @@
+# Benchmark hail-map: NOAA SPC storm reports
+# https://www.spc.noaa.gov/climo/reports/today.html
+# fetched 2026-10-16T16:12:03Z, sha256 10cf8fc01b00f633f689e30361ca054670dc8d8ab8ad2a7e03eadfaba9876867
+
+Storm Prediction Center Today's Storm Reports
+
+weather.gov
+
+Site Map
+
+News
+
+Organization
+
+SPC on Facebook
+
+@NWSSPC
+
+Home (Classic)
+
+SPC Products
+
+All SPC Forecasts
+
+Current Watches
+
+Meso. Discussions
+
+Conv. Outlooks
+
+Tstm. Outlooks
+
+Fire Wx Outlooks
+
+RSS Feeds
+
+E-Mail Alerts
+
+Weather Information
+
+Storm Reports
+
+Storm Reports Dev.
+
+NWS Hazards Map
+
+National RADAR
+
+Product Archive
+
+NOAA Weather Radio
+
+Research
+
+Non-op. Products
+
+Forecast Tools
+
+Svr. Tstm. Events
+
+SPC Publications
+
+SPC-NSSL HWT
+
+Education & Outreach
+
+About the SPC
+
+SPC FAQ
+
+About Tornadoes
+
+About Derechos
+
+Video Lecture Series
+
+WCM Page
+
+Enh. Fujita Page
+
+Our History
+
+Public Tours
+
+Misc.
+
+Staff
+
+Contact Us
+
+SPC Feedback
+
+Today's Storm Reports (20261016 1200 UTC - 20261017 1159 UTC) (Print Version)
+
+< 261015 Reports
+261016 Reports >
+
+Note: All Reports Are Considered Preliminary
+
+Unfiltered Reports (ESRI Maps)
+Filtered Reports (ESRI Maps) (More Info)
+
+Tornado Reports (CSV) (Raw Tornado CSV)(?)
+
+No reports received
+
+Hail Reports (CSV) (Raw Hail CSV)(?)
+
+No reports received
+
+Wind Reports (CSV) (Raw Wind CSV)(?)
+
+No reports received
+
+Filtered Tornado Reports (CSV) (Raw Tornado CSV)(?)
+
+No reports received
+
+Filtered Hail Reports (CSV) (Raw Hail CSV)(?)
+
+No reports received
+
+Filtered Wind Reports (CSV) (Raw Wind CSV)(?)
+
+No reports received
+
+The Storm Reports page is organized based on reports received from 1200 UTC to 1159 UTC the next day. For example, storm report page for 20150430 covers reports from 20150430 at 1200 UTC to 20150501 at 1159 UTC.
+
+Full report in comma-separated values (CSV) format and in KML format.
+
+Full filtered report in comma-separated values (CSV) format and in KML format.
+
+KML files are created with time-enabled placemarks compatible with Google Earth Time Slider.
+
+Raw full report in comma-separated values (CSV) format.
+
+Fields marked UNK are unknown.
+
+All Times UTC.
+
+Wind Gusts in MPH.
+
+Hail Sizes in 1/100 of an Inch (175 = 1.75")
+
+LAT/LON in decimal degrees to two decimals, see SPC FAQ for more info.
+
+List of Weather Forecast Office 3-letter IDs appear in the report comments section.
+
+Top/Storm Reports/Home
+
+Weather Topics:
+
+Watches,
+Mesoscale Discussions,
+Outlooks,
+Fire Weather,
+All Products,
+Contact Us
+
+NOAA /
+National Weather Service
+
+National Centers for Environmental Prediction
+
+Storm Prediction Center
+
+120 David L. Boren Blvd.
+
+Norman, OK 73072 U.S.A.
+
+spc.feedback@noaa.gov
+
+Page last modified:
+
+October 16, 2026
+
+Disclaimer
+
+Information Quality
+
+Help
+
+Glossary
+
+Privacy Policy
+
+Freedom of Information Act (FOIA)
+
+About Us
+
+Career Opportunities

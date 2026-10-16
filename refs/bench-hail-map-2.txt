@@ -1,0 +1,7 @@
+# Benchmark hail-map: NOAA NCEI Storm Events
+# https://www.ncdc.noaa.gov/stormevents/
+# fetched 2026-10-16T16:12:04Z, sha256 b4f85cc01988ba162c767ef5989aaaa0a215001882a62bf1735df58d0d2cd5c5
+
+Storm Events Database
+
+

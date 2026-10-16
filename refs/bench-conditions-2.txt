@@ -1,0 +1,415 @@
+# Benchmark conditions: DTN weekly article
+# https://www.dtnpf.com/agriculture/web/ag/crops/article/2026/10/13/usda-crop-progress-corn-33-harvested
+# fetched 2026-10-16T16:11:40Z, sha256 4d223d6109a890e741bf49d74a12dc37bc65258392b94c6dbd37d7f6ee3e6dcf
+
+USDA Crop Progress: Corn 33% Harvested, Soybeans 46% Harvested as of Oct. 11
+
+By
+
+EllaMae Reiff
+,
+DTN Content Editor
+
+Connect with EllaMae:
+
+@ellareiff
+
+This map shows soybean harvest progress by state for the week ended Sunday, Oct. 11, according to USDA NASS. Nationwide, 46% of the crop was harvested, 4 percentage points behind the five-year average. (USDA NASS data; DTN graphic by Kathy Myers)
+
+This article was originally published at 3:04 p.m. CDT on Tuesday, Oct. 13. It was last updated with additional information at 3:46 p.m. CDT on Tuesday, Oct. 13.
+
+**
+
+OMAHA (DTN) -- A week of dry weather helped farmers advance corn and soybean harvests, though both remained slightly behind the five-year average, according to USDA NASS's weekly Crop Progress report released Tuesday. The report, which is normally released on Mondays, was delayed this week due to the Columbus Day holiday.
+
+CORN
+
+-- Crop development: Corn mature was pegged at 91%, steady with the five-year average.
+
+-- Harvest progress: NASS estimated that 33% of corn had been harvested nationally as of Oct. 11, 6 percentage points behind the five-year average of 39%. DTN Lead Analyst Rhett Montgomery noted that harvest progress remains slow in top-producing Iowa, where just 14% of the corn crop is harvested.
+
+-- Crop condition: NASS estimated that 56% of the crop remaining in fields was in good-to-excellent condition, 2 percentage points higher than the previous week's 54%. Seventeen percent of the crop was rated very poor to poor, 1 percentage point below the previous week's 18%.
+
+SOYBEANS
+
+-- Crop development: Soybeans dropping leaves were pegged at 92%, 2 percentage points behind the five-year average of 94%.
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+-- Harvest progress: NASS estimated that 46% of soybeans had been harvested as of Sunday, 4 percentage points behind the five-year average of 50%. Montgomery said Illinois was slightly ahead of schedule, with 48% harvested compared to its five-year average of 46%. Iowa was running well behind its normal pace, with 31% harvested compared to its five-year average of 59%.
+
+-- Crop condition: NASS estimated that 57% of soybeans were in good-to-excellent condition, steady with the previous week.
+
+WINTER WHEAT
+
+-- Planting progress: Winter wheat planting was estimated at 51% complete nationally, 7 percentage points behind the five-year average of 58%. Montgomery said Kansas was 44% planted, compared to the state's five-year average of 56%.
+
+-- Crop development: Winter wheat emerged was estimated at 27%, 5 percentage points behind the five-year average 32%.
+
+THE WEEK AHEAD IN WEATHER
+
+Recent dry weather gave farmers a chance to make fieldwork progress, but heavy rain will affect parts of the Central U.S. this week, and a shot of cold may bring frosty mornings to the Corn Belt before warmer and drier conditions return, according to DTN Ag Meteorologist John Baranick.
+
+"Last week was a really great week of dry weather that should have helped a lot of areas to drain and accelerate their fieldwork," Baranick said. "But we did have heavy rain move through the Southeast and Mid-Atlantic due to Hurricane Isaias and its remnants. We've got some more disruptions this week. A system brought snow to Montana over the weekend and moved across the north this week that will leave some areas a bit too wet. But a much larger system in the West will start to impact areas east of the Rockies later Tuesday and continue through Friday as it slowly moves through the country. Areas of heavy rain will once again fall from west Texas into Missouri with more moderate rain being likely elsewhere in the Corn Belt. Rain won't make it down into the Delta or Southeast though, causing drought to grow in the Delta, but allowing those in the Southeast to recover from the heavy rain from Isaias.
+
+"A shot of cold is following in behind the system and that may make for a frosty morning on Friday or Saturday across the Western Corn Belt and Saturday or Sunday in the Eastern Corn Belt. But any cold air will be brief as another window of warmer and drier conditions moves back in for the weekend and early next week, giving us another good window for fieldwork."
+
+**
+
+To view weekly crop progress reports issued by National Ag Statistics Service offices in individual states, visit http://www.nass.usda.gov/…. Look for the U.S. map in the "Find Data and Reports by" section and choose the state you wish to view in the drop-down menu. Then look for that state's "Crop Progress & Condition" report.
+
+**
+
+Editor's Note: How are your crops looking? Are they better, worse or right on track with USDA NASS' observations this week? Send us your comments, and we'll include them in next week's Crop Progress report story. You can email comments to talk@dtn.com. Please include the location of where you farm.
+
+**
+
+National Crop Progress Summary
+
+This
+
+Last
+
+Last
+
+5-Year
+
+Week
+
+Week
+
+Year
+
+Avg.
+
+Corn mature
+91
+
+83
+
+NA
+
+91
+
+Corn harvested
+33
+
+23
+
+NA
+
+39
+
+Soybeans dropping leaves
+92
+
+85
+
+NA
+
+94
+
+Soybeans harvested
+46
+
+25
+
+NA
+
+50
+
+Winter wheat planted
+51
+
+36
+
+NA
+
+58
+
+Winter wheat emerged
+27
+
+16
+
+NA
+
+32
+
+Cotton bolls opening
+82
+
+74
+
+NA
+
+83
+
+Cotton harvested
+31
+
+23
+
+NA
+
+29
+
+Sorghum mature
+80
+
+72
+
+NA
+
+85
+
+Sorghum harvested
+40
+
+32
+
+NA
+
+48
+
+Rice harvested
+92
+
+86
+
+NA
+
+87
+
+Sugarbeets harvested
+32
+
+19
+
+NA
+
+36
+
+Sunflowers harvested
+14
+
+6
+
+NA
+
+14
+
+Peanuts harvested
+29
+
+22
+
+NA
+
+34
+
+**
+
+National Crop Condition Summary
+
+(VP=Very Poor; P=Poor; F=Fair; G=Good; E=Excellent)
+
+VP
+
+P
+
+F
+
+G
+
+E
+
+Corn
+
+This Week
+5
+
+12
+
+27
+
+44
+
+12
+
+Prev Week
+6
+
+12
+
+28
+
+42
+
+12
+
+Prev Year
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+DTN 5-Yr Avg
+5
+
+10
+
+26
+
+46
+
+13
+
+Soybeans
+
+This Week
+4
+
+10
+
+29
+
+46
+
+11
+
+Prev Week
+4
+
+10
+
+29
+
+46
+
+11
+
+Prev Year
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+DTN 5-Yr Avg
+4
+
+10
+
+28
+
+47
+
+11
+
+Peanuts
+
+This Week
+2
+
+11
+
+33
+
+48
+
+6
+
+Prev Week
+1
+
+9
+
+33
+
+50
+
+7
+
+Prev Year
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+DTN 5-Yr Avg
+2
+
+8
+
+32
+
+51
+
+7
+
+Cotton
+
+This Week
+12
+
+24
+
+30
+
+28
+
+6
+
+Prev Week
+12
+
+25
+
+30
+
+27
+
+6
+
+Prev Year
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+DTN 5-Yr Avg
+12
+
+17
+
+30
+
+34
+
+6
+
+EllaMae Reiff can be reached at ellamae.reiff@dtn.com
+
+Follow her on social platform X @ellareiff
+
+(c) Copyright 2026 DTN, LLC. All rights reserved.

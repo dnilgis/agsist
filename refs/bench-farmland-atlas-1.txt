@@ -1,0 +1,39 @@
+# Benchmark farmland-atlas: ISU Land Value Survey portal
+# https://farmland.card.iastate.edu/isu-land-value-survey-2025
+# fetched 2026-10-16T16:11:33Z, sha256 39da4e69890d68e1b1571f0991aba5b9523bc9c85217c08b9e964efd9d8a1dc1
+
+2025 Survey | Iowa Farmland
+
+-
+
+-
+
+2025 Survey
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
