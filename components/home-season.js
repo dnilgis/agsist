@@ -83,7 +83,7 @@
   var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',fallN:'Fall nitrogen window',
     report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
     soilPlant:'Planting soil temperature',spray:'Spray today',prf:'PRF pasture insurance'};
-  var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/urea',report:'/usda-calendar',
+  var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/fall-nitrogen',report:'/usda-calendar',
     rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';

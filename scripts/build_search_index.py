@@ -93,6 +93,8 @@ PAGES = [
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/grain-emc", "Grain EMC: fans on or off", "When to run aeration fans, EMC charts", "emc equilibrium moisture content chart aeration fans dry wet grain humidity bin corn soybean soybeans beans wheat natural air drying cooling"),
     ("/grain-shrink", "Grain shrink: wet or too dry", "Shrink, drying charges and overdry loss", "grain shrink moisture discount drying charge wet corn overdry soybeans dry beans 13 percent 15.5 elevator settlement calculator sorghum wheat"),
+    ("/harvest-or-wait", "Harvest now or wait", "Drying bill now vs after 7 to 14 days of field drydown, with", "harvest now or wait corn field drydown drying cost LP propane field loss break-even moisture"),
+    ("/fall-nitrogen", "Fall nitrogen: cold enough?", "Measured 4 in soil temperature near your county, last 7 days", "fall anhydrous nitrogen soil temperature 50 degrees NH3 fall application cold enough county"),
     ("/commodity-loan", "Commodity Loan (CCC)", "Marketing loan cash now and interest per bushel per month, a", "ccc loan marketing assistance loan commodity loan fsa loan rate interest stored grain"),
     ("/combine-loss", "Combine Loss Check", "Count beans or kernels behind the combine: bushels and dolla", "combine loss harvest loss beans per square foot kernels header loss soybean shatter ear drop"),
     ("/nutrient-removal", "Nutrient removal value", "P and K in stalks, silage, straw and hay", "nutrient removal value phosphorus potassium p2o5 k2o corn stalks stover bales baling silage straw hay alfalfa sell selling fertilizer replace"),
