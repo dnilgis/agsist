@@ -27,6 +27,16 @@ name: farmland-atlas
 # exists, so only the FIRST run of each is long. refetch_all forces the whole
 # history back through them.
 #
+# THE RAW PULLS LIVE ON THE `raw` BRANCH, NOT MAIN -- 2026-10-16. Pages
+# publishes all of main, and data/atlas/raw/ was 74 MB no page ever fetches.
+# Each run unpacks them from raw (scripts/pull_raw.sh) before any fetch, so the
+# fetchers still find last month's files and the build reads every layer, and
+# saves them back to raw (scripts/push_raw.sh) after the build. The paths are
+# in .gitignore, so `git add -A data/atlas` never puts them back on main.
+# drought.json alone stays on main (test/drought-county-week.test.mjs reads
+# it). If raw cannot be read the run stops before fetching: a build on missing
+# raw files would mark those layers "not yet measured" and commit a dark map.
+#
 # Monthly, because none of the sources moves faster: NCEI refreshes the county
 # file around the 8th, RMA reposts the current crop year through the season,
 # NASS census and cash rent are yearly. Off the hour and off the top of the
@@ -120,6 +130,20 @@ jobs:
           python atlas_reads.py --selftest
           python atlas_reads_cleanup.py --selftest
           python atlas_geometry.py --selftest
+
+      # Before any fetch: the fetchers append to last month's files (sob and
+      # drought refetch only the last two years when their file exists) and the
+      # build reads every layer. pull_raw.sh fails the run if the branch or the
+      # folder is missing; the check below fails it if the pulls came back thin.
+      - name: Unpack the raw pulls (raw branch)
+        run: |
+          bash scripts/pull_raw.sh data/atlas/raw
+          n=$(ls data/atlas/raw/*.json | grep -vc '/drought\.json$' || true)
+          ls -l data/atlas/raw/
+          for f in heat water loss sob value crp energy; do
+            [ -s "data/atlas/raw/$f.json" ] || { echo "::error::data/atlas/raw/$f.json did not come back from the raw branch; not building"; exit 1; }
+          done
+          echo "raw pulls: $n files"
 
       - name: Which layers
         id: which
@@ -370,6 +394,14 @@ jobs:
             sleep $((30 * i))
           done
           echo "push failed after 4 attempts"; exit 1
+
+      # After the main commit, and even when the build failed: a five-hour
+      # fetch is never thrown away. Copies over the same paths on raw and never
+      # deletes there. A failed push turns the run red; the next run still
+      # starts from the last pulls that did land.
+      - name: Save the raw pulls to the raw branch
+        if: ${{ !cancelled() }}
+        run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json | grep -v '/drought\.json$')
 
       - name: IndexNow ping
         run: |

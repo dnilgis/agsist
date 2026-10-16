@@ -8,7 +8,7 @@ name: Cattle auction prices
 #
 # FIRST RUN: dispatch this once with "probe" ticked. It saves the AMS auction
 # listing and every report it could get to data/cattle-auction-raw/ and
-# commits them. The parser was written without a real report in hand: check
+# saves them on the raw branch (never deployed). The parser was written without a real report in hand: check
 # the saved text against it, add one as a selftest fixture, then run without
 # probe.
 #
@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       probe:
-        description: "Probe only: save the AMS listing and raw auction reports to data/cattle-auction-raw/ and commit them"
+        description: "Probe only: save the AMS listing and raw auction reports to data/cattle-auction-raw/ on the raw branch"
         type: boolean
         default: false
       scan:
@@ -60,6 +60,11 @@ jobs:
           else
             python scripts/fetch_cattle_auction.py --probe
           fi
+      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
+      # Runs even when the probe step failed part way, so what it did capture is kept. The listing stays on main too: the normal run reads it.
+      - name: Save the probe's raw files to the raw branch
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: bash scripts/push_raw.sh "cattle-auction probe" data/cattle-auction-raw
       - name: Fetch and write data/cattle-auction.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_cattle_auction.py
@@ -68,7 +73,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/cattle-auction.json data/cattle-auction-raw"
+          FILES="data/cattle-auction.json data/cattle-auction-raw/listing.json"
           rm -rf /tmp/ca && mkdir -p /tmp/ca
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/ca/ || true

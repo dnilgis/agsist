@@ -7,14 +7,14 @@ name: Hay prices
 # file exists. A failed check writes nothing and fails the job.
 #
 # FIRST RUN: dispatch this once with "probe" ticked. It saves a trimmed copy of
-# what NASS returned and a summary to data/hay-raw/ and commits them, so the
+# what NASS returned and a summary to data/hay-raw/ and saves them on the raw branch (never deployed), so the
 # series names, units and counts can be checked before trusting a number.
 
 on:
   workflow_dispatch:
     inputs:
       probe:
-        description: "Probe only: save the raw NASS rows and a summary to data/hay-raw/ and commit them"
+        description: "Probe only: save the raw NASS rows and a summary to data/hay-raw/ on the raw branch"
         type: boolean
         default: false
   schedule:
@@ -46,6 +46,11 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_hay_prices.py --probe
+      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
+      # Runs even when the probe step failed part way, so what it did capture is kept.
+      - name: Save the probe's raw files to the raw branch
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: bash scripts/push_raw.sh "hay-prices probe" data/hay-raw
       - name: Fetch and write data/hay/hay-prices.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         env:
@@ -56,7 +61,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/hay data/hay-raw"
+          FILES="data/hay"
           rm -rf /tmp/hp && mkdir -p /tmp/hp
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/hp/ || true
