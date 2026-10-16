@@ -1,5 +1,5 @@
 {
- "generated":"2026-10-15",
+ "generated":"2026-10-16",
  "units":"integer cents per bushel",
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
@@ -41,7 +41,7 @@
   "IA":{
    "rows":13037,
    "facilities":765,
-   "kb":581.8
+   "kb":581.9
   },
   "ID":{
    "rows":89,
@@ -49,19 +49,19 @@
    "kb":4.1
   },
   "IL":{
-   "rows":9098,
+   "rows":9109,
    "facilities":426,
-   "kb":402.0
+   "kb":403.4
   },
   "IN":{
    "rows":1934,
    "facilities":111,
-   "kb":83.1
+   "kb":83.2
   },
   "KS":{
-   "rows":7399,
+   "rows":7407,
    "facilities":433,
-   "kb":321.0
+   "kb":322.2
   },
   "KY":{
    "rows":100,
@@ -79,14 +79,14 @@
    "kb":33.9
   },
   "MN":{
-   "rows":7911,
+   "rows":7915,
    "facilities":328,
-   "kb":344.1
+   "kb":344.7
   },
   "MO":{
    "rows":1212,
    "facilities":96,
-   "kb":52.9
+   "kb":53.0
   },
   "MT":{
    "rows":258,
@@ -99,14 +99,14 @@
    "kb":1.4
   },
   "ND":{
-   "rows":5674,
+   "rows":5682,
    "facilities":114,
-   "kb":242.8
+   "kb":243.1
   },
   "NE":{
-   "rows":9551,
+   "rows":9561,
    "facilities":328,
-   "kb":423.5
+   "kb":425.6
   },
   "NY":{
    "rows":10,
@@ -114,14 +114,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4204,
+   "rows":4210,
    "facilities":198,
-   "kb":180.1
+   "kb":180.8
   },
   "OK":{
-   "rows":2299,
+   "rows":2304,
    "facilities":90,
-   "kb":99.5
+   "kb":100.6
   },
   "ON":{
    "rows":26,
@@ -146,17 +146,17 @@
   "SD":{
    "rows":3395,
    "facilities":168,
-   "kb":148.1
+   "kb":148.2
   },
   "TN":{
    "rows":152,
    "facilities":11,
-   "kb":7.2
+   "kb":7.3
   },
   "TX":{
    "rows":333,
    "facilities":20,
-   "kb":14.9
+   "kb":15.0
   },
   "VA":{
    "rows":27,
@@ -169,9 +169,9 @@
    "kb":23.8
   },
   "WI":{
-   "rows":2726,
+   "rows":2729,
    "facilities":153,
-   "kb":117.4
+   "kb":117.8
   },
   "WY":{
    "rows":53,
