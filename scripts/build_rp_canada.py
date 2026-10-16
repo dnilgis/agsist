@@ -18,7 +18,7 @@ Per station:
          -  more than 31 days without a report (no print), or no record
        The page uses it only to try the likely stations first; it still reads
        the year itself and applies the same missing-day rules as the US path.
-  last: the last day with a rain report (YYYY-MM-DD),
+  last: the last day with a rain report (YYYY-MM-DD), f: the first year of its rain record,
   nm:  1991-2020 monthly normals in mm, or null. A month counts only when every
        one of its days has a report (a multi-day total inside the month counts
        for its days); a normal needs 20 such years in every one of the twelve
@@ -55,6 +55,7 @@ SOURCES = {"C", "N"}
 MISS_OK, MISS_BLOCK = 10, 31
 NORMAL_YEARS = (1991, 2020)
 NORMAL_MIN = 20
+FIELDS = ["id", "n", "p", "la", "lo", "el", "src", "q", "last", "nm", "ny", "f"]
 
 
 def get(url, tries=4):
@@ -220,7 +221,7 @@ def one(s, this_year):
     el = s["el"]
     return {"id": s["id"], "n": s["name"], "p": s["prov"], "la": round(s["lat"], 4), "lo": round(s["lon"], 4),
             "el": None if el <= -999 else round(el), "src": max(src, key=src.get), "q": q,
-            "last": last[:4] + "-" + last[4:6] + "-" + last[6:], "nm": nm, "ny": ny if nm else None}
+            "last": last[:4] + "-" + last[4:6] + "-" + last[6:], "nm": nm, "ny": ny if nm else None, "f": s["first"]}
 
 
 def build():
@@ -250,8 +251,8 @@ def build():
                   "months (ny years at least in every month), not ECCC's published normals. Built by scripts/build_rp_canada.py "
                   "from NOAA GHCN-Daily on S3 (noaa-ghcn-pds).",
         "built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "y0": Y0, "fields": ["id", "n", "p", "la", "lo", "el", "src", "q", "last", "nm", "ny"],
-        "s": [[r[k] for k in ["id", "n", "p", "la", "lo", "el", "src", "q", "last", "nm", "ny"]] for r in out],
+        "y0": Y0, "fields": FIELDS,
+        "s": [[r[k] for k in FIELDS] for r in out],
     }
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as fh:

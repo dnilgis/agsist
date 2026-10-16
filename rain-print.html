@@ -172,6 +172,11 @@
   .rp-opts fieldset{border:0;margin:0;padding:0;min-width:0}
   .rp-opts legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin:0 0 .3rem;padding:0}
   .rp-seg{display:flex;flex-wrap:wrap;gap:.35rem}
+  .rp-ca{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;margin:.7rem 0 .2rem}
+  .rp-ca .rp-seg{gap:0}
+  .rp-ca .rp-seg label:first-child span{border-radius:var(--r-sm) 0 0 var(--r-sm)}
+  .rp-ca .rp-seg label:last-child span{border-radius:0 var(--r-sm) var(--r-sm) 0;margin-left:-1px}
+  .rp-ca-hint{margin:.45rem 0 0}
   .rp-seg label{position:relative}
   .rp-seg input{position:absolute;opacity:0;width:1px;height:1px}
   .rp-seg span{display:inline-flex;align-items:center;min-height:var(--btn-h);padding:.3rem .85rem;border:1px solid var(--border-2);border-radius:var(--r-sm);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer;background:var(--bg)}
@@ -541,6 +546,13 @@
             <label class="field rp-year"><span>Year</span><select id="rp-year"><option value="2025">2025</option></select></label>
             <button class="btn btn-primary" id="rp-go" type="submit">Draw my year</button>
           </form>
+          <!-- Canada (2026-10-16, components/rp-canada.js): shows once a Canadian town is drawn -->
+          <div class="rp-ca" id="rp-ca" hidden>
+            <span class="rp-seg" role="radiogroup" aria-label="Units" id="rp-units-g"><label><input type="radio" name="rp-units" value="mm"><span id="rp-units-mm">mm and cm</span></label><label><input type="radio" name="rp-units" value="in"><span id="rp-units-in">Inches</span></label></span>
+            <span class="rp-seg" role="radiogroup" aria-label="Language" id="rp-lang-g"><label><input type="radio" name="rp-lang" value="en"><span lang="en">English</span></label><label><input type="radio" name="rp-lang" value="fr"><span lang="fr">Français</span></label></span>
+          </div>
+          <p class="rp-count rp-ca-hint" id="rp-ca-hint">In Canada? Type the town and province, like Regina, SK, or a postal code. <span lang="fr">Au Canada? La ville et la province, par exemple Saint-Hyacinthe, QC.</span></p>
+          <p class="rp-note rp-ca-ship" id="rp-ca-ship" hidden></p>
           <p class="rp-note rp-year-note" id="rp-year-note" hidden></p>
           <p class="rp-status rp-bad" id="rp-link-note" hidden></p>
           <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
@@ -880,8 +892,9 @@
   <script src="/components/form-post.js?v=4"></script>
   <script src="/components/rp-short.js?v=5"></script>
   <script src="/components/rp-logo.js?v=2"></script>
-  <script src="/components/rain-print-art.js?v=11"></script>
-  <script src="/components/rain-print.js?v=41"></script>
+  <script src="/components/rain-print-art.js?v=12"></script>
+  <script src="/components/rp-canada.js?v=1"></script>
+  <script src="/components/rain-print.js?v=42"></script>
   <script src="/components/rp-gift.js?v=4" defer></script>
 </body>
 </html>

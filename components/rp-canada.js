@@ -239,6 +239,7 @@
         L = prev === 'a' || prev === 'b' ? prev : 'c';
       }
       out.push({ sid: s.id, name: niceName(s.n, s.src), rawName: s.n, state: String(s.p).toUpperCase(), ll: [s.lo, s.la],
+        valid_daterange: [[(s.f || year) + '-01-01', String(s.last || year + '-12-31')]],
         elev: typeof s.el === 'number' ? Math.round(s.el * 3.28084) : null, km: km,
         snowOk: L === 'a' ? true : L === 'b' ? false : null, whole: L === 'a' || L === 'b', ca: true, src: s.src, nm: s.nm, ny: s.ny });
     });
@@ -466,6 +467,18 @@
     }
   };
   function words(lang) { return T[lang === 'fr' ? 'fr' : 'en']; }
+  /* The station by its id, in words: "Environment Canada climate station 4016322" (the
+     last seven characters of a GHCN id are ECCC's own Climate ID), "CoCoRaHS gauge CA1SK000002". */
+  function sidPlain(sid, lang) {
+    var s = String(sid || ''), fr = lang === 'fr';
+    if (/^CA1/.test(s)) return (fr ? 'pluviomètre CoCoRaHS ' : 'CoCoRaHS gauge ') + s;
+    return fr ? 'station climatologique ' + s.slice(-7) + ' d’Environnement Canada' : 'Environment Canada climate station ' + s.slice(-7);
+  }
+  function snowWord(st, snowOk, lang) {
+    var fr = lang === 'fr';
+    if (st) return st === 'unknown' ? (fr ? 'pluie seulement' : 'rain only') : (fr ? 'pluie et neige' : 'rain and snow');
+    return snowOk === true ? (fr ? 'pluie et neige' : 'rain and snow') : snowOk === false ? (fr ? 'pluie seulement' : 'rain only') : '';
+  }
   function kmText(km, lang) { var s = km < 1 ? (lang === 'fr' ? 'moins de 1' : 'under 1') : km < 10 ? (Math.round(km * 10) / 10).toFixed(1) : String(Math.round(km)); return (lang === 'fr' ? s.replace('.', ',') : s) + ' km'; }
   /* The station line on the print: "Weather station: Regina RCS, SK, 4.1 km from Regina". */
   function gaugeLine(m, lang) {
@@ -534,12 +547,93 @@
     return (list || []).map(function (r) { var l = recordLabel(r, loc); return l === r.label ? r : Object.assign({}, r, { label: l }); });
   }
 
+  // ---------------------------------------------------------------- the page in French
+  /* FR-REVIEW: the page's own words, by element: [selector, how, English for a
+     Canadian design, French]. how: 'text' (the whole text), 'tail' (the text
+     after a numbered badge), 'ph' (the placeholder), 'opt' (a select's options,
+     by value). The English column is what a Canadian design shows in English
+     where the US words would be wrong (the comparison is not NOAA's). The US
+     page keeps its own words: restore() puts back what was there. The order
+     step, checkout and Sig's emails stay in English (the page says so). */
+  var PAGE = [
+    ['#rp-draw-h', 'tail', null, 'Où et quand'],
+    ['label.rp-place > span', 'text', null, 'Ville la plus proche de la ferme ou de la maison'],
+    ['label.rp-year > span', 'text', null, 'Année'],
+    ['#rp-go', 'text', null, 'Dessiner mon année'],
+    ['#rp-design-h', 'tail', null, 'Vos mots '],
+    ['#rp-design-h .rp-step-opt', 'text', null, '(tout est facultatif)'],
+    ['#rp-name', 'label', null, 'Nom sur le tirage'],
+    ['#rp-name', 'ph', null, 'La ferme Tremblay'],
+    ['#rp-ded', 'label', null, 'Une ligne sous le nom'],
+    ['#rp-ded', 'ph', null, 'Pour papa, sa 40e récolte. Bisous, Julie'],
+    ['#rp-dates-h', 'tail0', null, 'Marquer une journée '],
+    ['#rp-dates-h .rp-step-opt', 'text', null, '(jusqu’à 5)'],
+    ['#rp-m1h', 'text', null, 'Jour 1'], ['#rp-m2h', 'text', null, 'Jour 2'], ['#rp-m3h', 'text', null, 'Jour 3'], ['#rp-m4h', 'text', null, 'Jour 4'], ['#rp-m5h', 'text', null, 'Jour 5'],
+    ['#rp-add-day', 'text', null, '+ Marquer une autre journée'],
+    ['#rp-more > summary', 'text', null, 'Plus d’options : comparaison, station, normales, journées remarquables, logo'],
+    ['#rp-cmp', 'label', null, 'Comparer avec'],
+    ['#rp-cmp', 'opt', { normal: '1991\u20132020 average' }, { none: 'Rien', normal: 'Moyenne 1991\u20132020', station: 'Tout l’historique de la station' }],
+    ['#rp-cmp-hint', 'text', 'Nothing: just your year. 1991\u20132020 average: a usual year by this station\u2019s own 1991\u20132020 months (or the nearest station\u2019s, named on the print). Full record: this station\u2019s own average over every year it has kept.',
+      'Rien : seulement votre année. Moyenne 1991\u20132020 : une année normale selon les mois 1991\u20132020 de cette station (ou de la station la plus proche, nommée sur le tirage). Tout l’historique : la moyenne de cette station sur toutes ses années.'],
+    ['#rp-station', 'label', null, 'Station météo'],
+    ['#rp-station-hint', 'text', null, 'Pluie et neige : elle mesure aussi la neige, donc la neige peut paraître sur le tirage. Pluie seulement : pas de neige sur le tirage. Toutes ces stations peuvent faire le tirage.'],
+    ['#rp-normals', 'label', 'Show the 1991\u20132020 averages', 'Afficher les moyennes 1991\u20132020'],
+    ['#rp-records', 'label', null, 'Afficher les journées remarquables'],
+    ['.rp-stats-d > summary', 'text', null, 'L’année en chiffres'],
+    ['#rp-dl', 'text', null, 'Télécharger un aperçu'],
+    ['#rp-copy', 'text', null, 'Copier le lien'],
+    ['#rp-buy-h', 'tail', null, 'Comment le voulez-vous?'],
+    ['.rp-prod[data-choice="framed12x18"] .rp-prod-t', 'text', null, 'Encadré'],
+    ['.rp-prod[data-choice="print12x18"] .rp-prod-t', 'text', null, 'Tirage'],
+    ['.rp-prod[data-choice="digital"] .rp-prod-t', 'text', null, 'Fichier numérique'],
+    ['#rp-units-mm', 'text', null, 'mm et cm'],
+    ['#rp-units-in', 'text', null, 'Pouces']
+  ];
+  function nodeFor(doc, sel, how) {
+    var el = doc.querySelector(sel);
+    if (!el) return null;
+    if (how === 'label') { var lb = el.closest('label'); return lb ? lb.querySelector('span') : null; }
+    return el;
+  }
+  // the text node a 'tail' (after the badge) or 'tail0' (before the small print) rewrites
+  function textNode(el, how) {
+    var kids = Array.prototype.slice.call(el.childNodes).filter(function (n) { return n.nodeType === 3 && n.nodeValue.trim(); });
+    return how === 'tail0' ? kids[0] : kids[kids.length - 1];
+  }
+  var SAVED = null;
+  /* lang: 'en' | 'fr'; ca: a Canadian design. English for a US design puts every word back. */
+  function applyPage(doc, lang, ca) {
+    if (!doc || !doc.querySelector) return;
+    if (!SAVED) {
+      SAVED = PAGE.map(function (r) {
+        var el = nodeFor(doc, r[0], r[1]);
+        if (!el) return null;
+        if (r[1] === 'ph') return el.getAttribute('placeholder');
+        if (r[1] === 'opt') { var o = {}; Array.prototype.forEach.call(el.options, function (x) { o[x.value] = x.textContent; }); return o; }
+        if (r[1] === 'tail' || r[1] === 'tail0') { var t = textNode(el, r[1]); return t ? t.nodeValue : null; }
+        return el.textContent;
+      });
+    }
+    var fr = ca && lang === 'fr';
+    PAGE.forEach(function (r, i) {
+      var el = nodeFor(doc, r[0], r[1]), orig = SAVED[i];
+      if (!el || orig === null || orig === undefined) return;
+      var want = fr ? r[3] : ca && r[2] ? r[2] : orig;
+      if (r[1] === 'ph') el.setAttribute('placeholder', want);
+      else if (r[1] === 'opt') Array.prototype.forEach.call(el.options, function (x) { var w = (fr ? r[3] : ca && r[2] ? Object.assign({}, orig, r[2]) : orig)[x.value]; if (w) x.textContent = w; });
+      else if (r[1] === 'tail' || r[1] === 'tail0') { var t = textNode(el, r[1]); if (t) t.nodeValue = want; }
+      else el.textContent = want;
+    });
+    if (doc.documentElement && doc.documentElement.setAttribute) doc.documentElement.setAttribute('lang', fr ? 'fr-CA' : 'en');
+  }
+
   root.AgRpCanada = {
+    applyPage: applyPage, PAGE: PAGE,
     PROV: PROV, POSTAL_PROV: POSTAL_PROV, parseQuery: parseQuery, isCanadian: isCanadian, provOf: provOf, defaultsFor: defaultsFor,
     placeShort: placeShort, placeLong: placeLong, fsaTown: fsaTown, geoPick: geoPick, geoAsk: geoAsk,
     isSid: isSid, niceName: niceName, nearby: nearby, stations: stations, stationIndex: stationIndex, stationMeta: stationMeta, setIndex: setIndex,
     yearLines: yearLines, rowsByDate: rowsByDate, acisRows: acisRows, yearJson: yearJson, porJson: porJson, porRows: porRows, normalJson: normalJson, normalFrom: normalFrom, normalFor: normalFor,
-    words: words, kmText: kmText, gaugeLine: gaugeLine, recordLabel: recordLabel, localizeRecords: localizeRecords,
+    words: words, kmText: kmText, gaugeLine: gaugeLine, sidPlain: sidPlain, snowWord: snowWord, recordLabel: recordLabel, localizeRecords: localizeRecords,
     LICENCE_URL: LICENCE_URL, LICENCE_URL_FR: LICENCE_URL_FR, S3: S3, T: T
   };
 })(typeof window !== 'undefined' ? window : this);
