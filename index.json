@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:56:56Z",
+ "run_utc": "2026-10-16T15:57:35Z",
  "sources": [
   {
    "bytes": null,
@@ -2291,6 +2291,31 @@
    ],
    "status": "new",
    "text_chars": 610
+  },
+  {
+   "bytes": 302080,
+   "sha256": "14f7085cb9b710a41f52e8da304d283684b1b4527bb3fdd202380e2d9ad32f3c",
+   "fetched_utc": "2026-10-16T15:57:35Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": "Fri, 16 Oct 2026 15:57:35 GMT",
+   "saved_as": "refs/bench-planting-date-6.html",
+   "final_url": "https://badgercropnetwork.com/",
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-planting-date-6",
+   "url": "https://coolbean.info/",
+   "title": "Benchmark planting-date: UW-Madison Cool Bean soybean planting date (Conley)",
+   "why": "/planting-date competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:57:34Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 2637
   },
   {
    "bytes": null,
