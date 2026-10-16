@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-16",
   "status": "mixed",
   "status_label": "China truce runs to Jan 10, 2027. Soybeans still pay the extra 10%.",
-  "status_note": "What applies today: US soybeans into China face about 13% (3% MFN plus China's broad 10% retaliatory levy); corn and wheat about 11%, pork about 22%. On Sep 28, 2026, after the Trump-Xi summit in Washington, the two governments published matching tariff-cut lists on about $60B of two-way trade. China's list trims duties on US corn, wheat, sorghum, meat, dairy, vegetable oils and meals; soybeans are not on it. No timing or size was given. The July 6 report that the 10% would go for all US farm goods arriving after Oct 1 did not come true for soybeans.\n\nThe Busan truce, due to end Nov 10, was extended to Jan 10, 2027 (Bessent, Sep 24; China's commerce ministry confirmed Sep 29). China's purchase commitment is 25 MMT of soybeans a year for 2026-2028. About 13.7 MMT was bought before Chinese state firms booked 8 to 10 more cargoes the week of Oct 12 (Reuters, Oct 14).\n\nTariff authority: the Supreme Court voided the IEEPA tariffs on Feb 20, 2026. The Section 122 surcharge that replaced them was ruled invalid by the Court of International Trade on May 7, 2026 (under appeal) and ran out around Jul 24. Section 301 'forced labor' duties took effect Jul 24, 2026 at 10-12.5% on 60 trading partners and about 99.4% of US imports. Fertilizer, pesticides, in-quota sugar and certain planting seeds are exempt.\n\nCanada: counter-tariffs took effect Sep 8, 2026 on C$27.6B of US goods at 15%, 25% and 50% (steel, dairy, appliances, farm equipment, pulp and paper, electronics; natural honey is on the list). Bulk grain, oilseeds, fertilizer and seeds are not, so the 0% rows are unchanged. The US answered with five Section 338 proclamations: import bans on certain Canadian alcohol and dairy since Sep 29, and list changes effective Sep 15. This is running alongside a USMCA renegotiation, and August's 50% Section 338 duties already overrode USMCA origin once.\n\nBrazil: a 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation. That helps US corn ethanol at home.\n\nCheck USTR, the Federal Register and Canada's Department of Finance before any trading decision.",
-  "headline": "China's Sep 28 tariff-cut list covers US corn, wheat, sorghum, meat and dairy but not soybeans, which still face about 13%. China has not said when the cuts start or how big they are, so the corn, wheat and pork rates below stand until it does. State buyers took 8 to 10 US soybean cargoes this week, the first since the summit, for December shipment (Reuters, Oct 14). Canada's counter-tariffs (Sep 8) and the US bans on some Canadian alcohol and dairy (Sep 29) do not touch grain, oilseeds, fertilizer or seed.",
+  "status_note": "What applies today: US soybeans into China face about 13% (3% MFN plus China's broad 10% retaliatory levy); corn and wheat about 11%, pork about 22%. On Sep 28, 2026, after the Trump-Xi summit in Washington, the two governments published matching tariff-cut lists on about $60B of two-way trade. China's list trims duties on US corn, wheat, sorghum, meat, dairy, vegetable oils and meals; soybeans are not on it. No timing or size was given. The July 6 report that the 10% would go for all US farm goods arriving after Oct 1 did not come true for soybeans.\n\nThe Busan truce, due to end Nov 10, was extended to Jan 10, 2027 (Bessent, Sep 24; China's commerce ministry confirmed Sep 29). China's purchase commitment is 25 MMT of soybeans a year for 2026-2028, and neither government has said whether it counts sales, shipments or arrivals, or a calendar or marketing year. Two counts are out. USDA export sales put China's 2026/27 marketing-year (Sep-Aug) commitments at 9.97 MMT as of S&P Global's Sep 24 report. Reuters put the total at about 13.7 MMT on Oct 14, basis not given. Since the summit, state firms have booked at least 20 more cargoes, about 1.3 million tons (Farm Policy News, Oct 16).\n\nTariff authority: the Supreme Court voided the IEEPA tariffs on Feb 20, 2026. The Section 122 surcharge that replaced them was ruled invalid by the Court of International Trade on May 7, 2026 (under appeal) and ran out around Jul 24. Section 301 'forced labor' duties took effect Jul 24, 2026 at 10-12.5% on 60 trading partners and about 99.4% of US imports. Fertilizer, pesticides, in-quota sugar and certain planting seeds are exempt.\n\nCanada: counter-tariffs took effect Sep 8, 2026 on C$27.6B of US goods at 15%, 25% and 50% (steel, dairy, appliances, farm equipment, pulp and paper, electronics; natural honey is on the list). Bulk grain, oilseeds, fertilizer and seeds are not, so the 0% rows are unchanged. The US answered with five Section 338 proclamations: import bans on certain Canadian alcohol and dairy since Sep 29, and list changes effective Sep 15. This is running alongside a USMCA renegotiation, and August's 50% Section 338 duties already overrode USMCA origin once.\n\nBrazil: a 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation. That helps US corn ethanol at home.\n\nCheck USTR, the Federal Register and Canada's Department of Finance before any trading decision.",
+  "headline": "China's Sep 28 tariff-cut list covers US corn, wheat, sorghum, meat and dairy but not soybeans, which still face about 13%. China has not said when the cuts start or how big they are, so the corn, wheat and pork rates below stand until it does. State buyers have booked at least 20 US soybean cargoes, about 1.3 million tons, since the summit (Farm Policy News, Oct 16). Canada's counter-tariffs (Sep 8) and the US bans on some Canadian alcohol and dairy (Sep 29) do not touch grain, oilseeds, fertilizer or seed.",
   "rows": [
     {
       "commodity": "Soybeans",
@@ -12,7 +12,7 @@
       "rate": "~13%",
       "baseline": "3%",
       "status": "mixed",
-      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' levy, so US soybeans face about 13% (3% MFN + 10%), a lasting edge for Brazil. Soybeans were left off China's Sep 28 tariff-cut list, so the 10% stays. State buyers still booked 8 to 10 cargoes the week of Oct 12 (Reuters). The truce runs to Jan 10, 2027.",
+      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' levy, so US soybeans face about 13% (3% MFN + 10%), a lasting edge for Brazil. Soybeans were left off China's Sep 28 tariff-cut list, so the 10% stays. State buyers still booked at least 20 cargoes, about 1.3 million tons, after the summit (Farm Policy News, Oct 16). The truce runs to Jan 10, 2027.",
       "effective": "2025-11-10",
       "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet"
     },
@@ -85,10 +85,16 @@
   ],
   "timeline": [
     {
+      "date": "2026-10-16",
+      "impact": "medium",
+      "source_url": "https://farmpolicynews.illinois.edu",
+      "event": "State-owned Chinese firms have booked at least 20 US soybean cargoes, about 1.3 million tons, since the summit (Farm Policy News, University of Illinois, Oct 16). That is up from the 8 to 10 Reuters reported on Oct 14."
+    },
+    {
       "date": "2026-10-14",
       "impact": "medium",
       "source_url": "https://www.investing.com/news/commodities-news/exclusivechina-buys-810-us-soybean-cargoes-in-first-deals-since-trumpxi-summit-sources-say-4948374",
-      "event": "Chinese state firms buy 8 to 10 US soybean cargoes for December shipment, the first deals since the Trump-Xi summit, trade sources tell Reuters. China had bought about 13.7 MMT toward its 25 MMT commitment before these. Private crushers are still mostly out because of the 10% levy."
+      "event": "Chinese state firms buy 8 to 10 US soybean cargoes for December shipment, the first deals since the Trump-Xi summit, trade sources tell Reuters. Reuters put China's buying before these at about 13.7 MMT toward the 25 MMT a year, without saying whether that counts calendar 2026 or the 2026/27 marketing year, or sales or shipments. Private crushers are still mostly out because of the 10% levy."
     },
     {
       "date": "2026-09-29",
@@ -112,7 +118,7 @@
       "date": "2026-09-17",
       "impact": "medium",
       "source_url": "https://www.upi.com/Top_News/World-News/2026/09/17/china-soybean-purchases/4421789590419",
-      "event": "China is roughly halfway through its 25 MMT 2026 soybean commitment after buying about 1 MMT in a week. The 10% levy still makes US beans less attractive to private Chinese crushers."
+      "event": "China is roughly halfway through its 25 MMT 2026 soybean commitment after buying about 1 MMT in a week (UPI's count, basis not given: calendar or marketing year, sales or shipments). The 10% levy still makes US beans less attractive to private Chinese crushers."
     },
     {
       "date": "2026-09-08",
@@ -141,7 +147,7 @@
     {
       "date": "2026-08-10",
       "impact": "medium",
-      "event": "China is roughly a quarter of the way through its 25 MMT/yr soybean commitment for 2026, behind pace with a Trump-Xi meeting expected in September. Buying accelerated into that meeting; private crushers reportedly held back.",
+      "event": "China is roughly a quarter of the way through its 25 MMT/yr soybean commitment for 2026 (basis not given: calendar or marketing year, sales or shipments), behind pace with a Trump-Xi meeting expected in September. Buying accelerated into that meeting; private crushers reportedly held back.",
       "source_url": "https://farmpolicynews.illinois.edu/2026/08/china-ramping-up-us-soybean-purchases/"
     },
     {
