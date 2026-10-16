@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Hay prices by state: alfalfa and other hay, $ per ton | AGSIST</title>
+  <meta name="description" content="Hay prices by state from USDA: alfalfa, other hay and all hay in dollars a ton, the newest month, the same month last year and three years of history.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/hay-prices">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Hay prices by state: what a ton of hay brings">
+  <meta property="og:description"  content="Hay prices by state from USDA: alfalfa, other hay and all hay in dollars a ton, the newest month, the same month last year and three years of history.">
+  <meta property="og:url"          content="https://agsist.com/hay-prices">
+  <meta property="og:image" content="https://agsist.com/img/og/hay-prices.jpg?v=38f46cd7">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Hay prices by state. Alfalfa and other hay, dollars a ton, every state USDA publishes.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/hay-prices.jpg?v=38f46cd7">
+  <meta name="twitter:title"       content="Hay prices by state: what a ton of hay brings">
+  <meta name="twitter:description" content="Hay prices by state from USDA: alfalfa, other hay and all hay in dollars a ton, the newest month, the same month last year and three years of history.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .hp{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .hp .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .hp h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .hp .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .6rem}
+    .hp h2{font-size:1.15rem;line-height:1.3;margin:2rem 0 .6rem;color:var(--text)}
+    .hp p,.hp li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .hp p{margin:0 0 1rem}
+    .hp a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .hp b{color:var(--text)}
+    .hp-lede{font-size:1rem!important}
+    .hp-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .8rem}
+    .hp-seg[hidden]{display:none}
+    .hp-seg button{flex:1 1 0;min-height:44px;padding:0 .5rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
+    .hp-seg button+button{border-left:1px solid var(--border)}
+    .hp-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .hp-empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:1rem 1.1rem;color:var(--text-dim)}
+    .hp-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
+    .hp-answer p{margin:0 0 .35rem}
+    .hp-k{font-size:.85rem!important;color:var(--text-muted)!important;font-weight:700}
+    .hp-big{font-size:clamp(1.9rem,8vw,2.5rem)!important;font-weight:800;line-height:1.1!important;color:var(--text)!important;font-family:'JetBrains Mono',monospace}
+    .hp-big span{font-size:.45em;font-weight:600;color:var(--text-muted);font-family:var(--font-body,inherit)}
+    .hp-big .hp-flag{font-size:.5em}
+    .hp-sub{font-size:.92rem!important;color:var(--text)!important}
+    .hp-fine{font-size:.82rem!important;color:var(--text-muted)!important}
+    .hp-warn{color:var(--text)!important;border-left:3px solid var(--gold);padding-left:.5rem}
+    .hp-flag{font-family:inherit;font-size:.78rem;color:var(--text-muted);font-style:italic;white-space:normal}
+    .hp-chart{outline-offset:4px;border-radius:6px;touch-action:pan-y}
+    .hp-chart svg{display:block;height:auto;overflow:visible}
+    .hp-line{fill:none;stroke:var(--green);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+    .hp-dot{fill:var(--green);stroke:var(--bg);stroke-width:2}
+    .hp-grid{stroke:var(--border);stroke-width:1}
+    .hp-ax{fill:var(--text-muted);font-size:12px;font-family:'JetBrains Mono',monospace}
+    .hp-cross{stroke:var(--text-muted);stroke-width:1;stroke-dasharray:3 3}
+    .hp-tip{font-size:.86rem!important;color:var(--text)!important;min-height:1.5em;margin:.2rem 0 .6rem!important}
+    .hp-bale{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .7rem;margin:0 0 .5rem!important}
+    .hp-bale label{display:inline-flex;align-items:center;gap:.35rem;font-size:.88rem;color:var(--text-dim)}
+    .hp-bale input{width:5.5rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .hp-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .hp-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .6rem}
+    .hp-t caption{text-align:left;font-size:.85rem;color:var(--text-muted);padding:0 0 .3rem}
+    .hp-t th,.hp-t td{padding:.45rem .4rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
+    .hp-t th:first-child{text-align:left}
+    .hp-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .hp-t thead th button{background:none;border:0;padding:.2rem 0;min-height:36px;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;text-align:inherit}
+    .hp-t thead th button[aria-pressed="true"]{color:var(--text)}
+    .hp-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .hp-t tr.hp-us th,.hp-t tr.hp-us td{font-weight:800}
+    .hp-st{background:none;border:0;padding:.25rem 0;min-height:36px;color:var(--link,var(--brand));font:inherit;font-weight:600;text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+    .hp-st[aria-expanded="true"]{color:var(--text);text-decoration:none}
+    .hp-open td{text-align:left;padding:.5rem 0 .2rem}
+    .hp-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .hp-faq details:last-child{border-bottom:1px solid var(--border)}
+    .hp-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .hp-faq details p{margin:.6rem 0 .2rem}
+    .hp .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    @media(max-width:420px){.hp-t{font-size:.84rem}.hp-t th,.hp-t td{padding:.4rem .25rem}.hp-seg button{font-size:.86rem}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/hay-prices#page","name":"Hay prices by state","url":"https://agsist.com/hay-prices","description":"Hay prices by state from USDA: alfalfa, other hay and all hay in dollars a ton, the newest month, the same month last year and three years of history.","author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"Dataset","@id":"https://agsist.com/hay-prices#data","name":"Hay prices received by state, monthly, $ per ton","description":"USDA NASS prices received by farmers for alfalfa hay, other hay and all hay, monthly, by state and US, newest month plus 36 months, from the Agricultural Prices report via Quick Stats.","url":"https://agsist.com/hay-prices","isBasedOn":"https://quickstats.nass.usda.gov/","creator":{"@type":"Organization","name":"USDA National Agricultural Statistics Service"},"distribution":{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://agsist.com/data/hay/hay-prices.json"},"isAccessibleForFree":true,"license":"https://www.usa.gov/government-works"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Markets","item":"https://agsist.com/markets"},{"@type":"ListItem","position":3,"name":"Hay prices","item":"https://agsist.com/hay-prices"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a ton of hay worth right now?","acceptedAnswer":{"@type":"Answer","text":"The box at the top shows USDA's newest US average for the hay you pick, the month it is for, and the same month last year. The table below it has every state NASS publishes. These are averages of all hay sold, so good hay brings more and poor hay less."}},{"@type":"Question","name":"What is \"other hay\"?","acceptedAnswer":{"@type":"Answer","text":"All hay that is not alfalfa or an alfalfa mix: grass, clover, small grain and wild hay. \"All hay\" is alfalfa and other hay together."}},{"@type":"Question","name":"Why is my state missing or blank?","acceptedAnswer":{"@type":"Answer","text":"NASS publishes hay prices only for the states and months where it has enough sales to report. Some months it withholds a state's number so no single farm's sales can be worked out from it. The page leaves those blank and says why. It never fills them in."}},{"@type":"Question","name":"How do I turn a price per ton into a price per bale?","acceptedAnswer":{"@type":"Answer","text":"Multiply the price per ton by the bale weight in pounds and divide by 2,000. A 1,200 lb round bale at $180 a ton is 180 x 1,200 / 2,000 = $108 a bale. Weigh a few bales if you can; guessed weights are often off by a couple hundred pounds. Type a bale weight above the table and the page does the math for every state."}},{"@type":"Question","name":"Why is the USDA price lower than what hay brings at the sale barn?","acceptedAnswer":{"@type":"Answer","text":"It averages every ton sold, every quality and bale type, across the state. Auctions often draw the hay people want to show off. Weekly USDA hay market reports split prices by grade and bale type if you need that detail."}},{"@type":"Question","name":"When does this page update?","acceptedAnswer":{"@type":"Answer","text":"USDA NASS puts out Agricultural Prices near the end of each month. The page reads it in the last days of the month and again early the next month. Every number carries the month it is for and the day USDA released it."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="hp">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/markets">Markets</a> &rarr; Hay prices</nav>
+      <h1>Hay prices by state</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+      <p class="hp-lede">What farmers got for baled hay, in dollars a ton, state by state. The numbers are USDA&rsquo;s monthly prices received for alfalfa, other hay and all hay, with the same month last year and three years of history.</p>
+
+      <div class="hp-seg" id="hp-seg" role="group" aria-label="Which hay" hidden>
+        <button type="button" data-hay="alfalfa" aria-pressed="true">Alfalfa</button><button type="button" data-hay="other" aria-pressed="false">Other hay</button><button type="button" data-hay="all" aria-pressed="false">All hay</button>
+      </div>
+
+      <section id="hp-live" class="hp-live" aria-live="polite">
+<!--HAY:STATIC-->
+<p class="hp-empty"><b>Prices load after the first USDA read.</b> This page fills in from USDA NASS once the monthly hay prices are pulled. Nothing is shown until then.</p>
+<!--/HAY:STATIC-->
+      </section>
+
+      <h2 id="about">What these prices are</h2>
+      <p>Each number is USDA NASS&rsquo;s estimate of the average price farmers received for baled hay sold in that month, every quality and bale type together. It comes from the monthly <i>Agricultural Prices</i> report, out near the end of each month. NASS revises the newest month in its next report, so the last month on this page can move a few dollars.</p>
+      <p>Because it is an average of everything sold, a load of top dairy alfalfa or small squares can bring well over it, and rained-on or weedy hay well under. Use it to see where your state sits and which way prices are going, not to price one load.</p>
+      <p><b>Blank cells.</b> NASS does not publish hay prices for every state. A state is listed only for the months NASS put out a number. &ldquo;Withheld by USDA&rdquo; means NASS kept the number back so no single farm&rsquo;s sales can be figured out from it. &ldquo;Too few reports&rdquo; means NASS did not get enough sales to publish. Neither is a zero.</p>
+
+      <h2 id="questions">Questions</h2>
+      <div class="hp-faq">
+        <details><summary>What is a ton of hay worth right now?</summary><p>The box at the top shows USDA&rsquo;s newest US average for the hay you pick, the month it is for, and the same month last year. The table below it has every state NASS publishes. These are averages of all hay sold, so good hay brings more and poor hay less.</p></details>
+        <details><summary>What is &ldquo;other hay&rdquo;?</summary><p>All hay that is not alfalfa or an alfalfa mix: grass, clover, small grain and wild hay. &ldquo;All hay&rdquo; is alfalfa and other hay together.</p></details>
+        <details><summary>Why is my state missing or blank?</summary><p>NASS publishes hay prices only for the states and months where it has enough sales to report. Some months it withholds a state&rsquo;s number so no single farm&rsquo;s sales can be worked out from it. The page leaves those blank and says why. It never fills them in.</p></details>
+        <details><summary>How do I turn a price per ton into a price per bale?</summary><p>Multiply the price per ton by the bale weight in pounds and divide by 2,000. A 1,200 lb round bale at $180 a ton is 180 x 1,200 / 2,000 = $108 a bale. Weigh a few bales if you can; guessed weights are often off by a couple hundred pounds. Type a bale weight above the table and the page does the math for every state.</p></details>
+        <details><summary>Why is the USDA price lower than what hay brings at the sale barn?</summary><p>It averages every ton sold, every quality and bale type, across the state. Auctions often draw the hay people want to show off. Weekly USDA hay market reports split prices by grade and bale type if you need that detail.</p></details>
+        <details><summary>When does this page update?</summary><p>USDA NASS puts out <i>Agricultural Prices</i> near the end of each month. The page reads it in the last days of the month and again early the next month. Every number carries the month it is for and the day USDA released it.</p></details>
+      </div>
+
+      <p class="src">Source: USDA National Agricultural Statistics Service, <a href="https://usda.library.cornell.edu/concern/publications/c821gj76b"><i>Agricultural Prices</i></a>, read through <a href="https://quickstats.nass.usda.gov/">Quick Stats</a>: prices received for hay, alfalfa hay and other hay (excluding alfalfa), $ per ton, monthly, by state and US. Data file: <a href="/data/hay/hay-prices.json">/data/hay/hay-prices.json</a>.</p>
+
+      <h2>Related</h2>
+      <ul class="rel">
+        <li><a href="/prf">PRF pasture, rangeland and forage insurance</a></li>
+        <li><a href="/cattle-futures-prices">Cattle prices</a></li>
+        <li><a href="/milk-prices">Milk prices</a></li>
+        <li><a href="/drought-monitor">Drought monitor</a></li>
+        <li><a href="/usda-calendar">USDA report calendar</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script>
+/*hay:start*/
+var HAY_FLAG = {D: 'withheld by USDA', S: 'too few reports', NA: 'not available'};
+var HAY_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var HAY_MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function hayNum(v) { return typeof v === 'number' && isFinite(v) && v > 0; }
+function hayMoney(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+function hayCell(v) {
+  if (hayNum(v)) return {txt: hayMoney(v), flag: false};
+  if (typeof v === 'string') return {txt: HAY_FLAG[v] || 'not published', flag: true};
+  return {txt: 'not published', flag: true};
+}
+function hayMonthLabel(mk, long) { var m = +mk.slice(5, 7) - 1; return (long ? HAY_MONTH[m] : HAY_MON[m]) + ' ' + mk.slice(0, 4); }
+function hayDate(iso) { var p = iso.split('-'); return HAY_MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0]; }
+function hayChange(now, ago) {
+  if (!hayNum(now) || !hayNum(ago)) return null;
+  var d = Math.round(now) - Math.round(ago), pct = Math.round((now - ago) / ago * 100);
+  return {d: d, pct: pct, txt: (d > 0 ? '+' : d < 0 ? '-' : '') + '$' + Math.abs(d) + ' (' + (pct > 0 ? '+' : '') + pct + '%)'};
+}
+function hayPerBale(v, lb) {
+  if (!hayNum(v) || !(lb >= 100 && lb <= 3000)) return null;
+  return Math.round(v * lb / 2000);
+}
+// The whole view as plain data. null until the file exists and checks out.
+function hayView(d, key, sort, now, lb) {
+  if (!d || !d.series || !d.months || !d.latest) return null;
+  var s = d.series[key];
+  if (!s) return {missing: true, label: ({alfalfa: 'Alfalfa hay', other: 'Other hay', all: 'All hay'})[key] || key};
+  var i = d.months.indexOf(d.latest), j = i - 12;
+  if (i < 0 || j < 0) return null;
+  var rows = [];
+  Object.keys(s.states).forEach(function (st) {
+    var v = s.states[st], c = hayChange(v[i], v[j]);
+    rows.push({st: st, name: (d.names && d.names[st]) || st, now: v[i], ago: v[j], chg: c,
+      nowCell: hayCell(v[i]), agoCell: hayCell(v[j]), bale: hayPerBale(v[i], lb), hist: v});
+  });
+  var num = function (r, f) { return f === 'chg' ? (r.chg ? r.chg.d : null) : (hayNum(r[f]) ? r[f] : null); };
+  rows.sort(function (a, b) {
+    if (sort === 'name') return a.name < b.name ? -1 : 1;
+    var x = num(a, sort), y = num(b, sort);
+    if (x === null && y === null) return a.name < b.name ? -1 : 1;
+    if (x === null) return 1;
+    if (y === null) return -1;
+    return y - x || (a.name < b.name ? -1 : 1);
+  });
+  var rel = Date.parse(d.released + 'T20:00:00Z');
+  return {
+    label: s.label, latest: d.latest, monthLong: hayMonthLabel(d.latest, true),
+    nowHead: hayMonthLabel(d.latest), agoHead: hayMonthLabel(d.months[j]),
+    released: 'USDA released ' + hayDate(d.released),
+    stale: isFinite(rel) && now - rel > 40 * 864e5,
+    us: {now: s.us[i], ago: s.us[j], nowCell: hayCell(s.us[i]), agoCell: hayCell(s.us[j]),
+      chg: hayChange(s.us[i], s.us[j]), bale: hayPerBale(s.us[i], lb), hist: s.us},
+    months: d.months, rows: rows
+  };
+}
+// A line over the months; nulls and flags are gaps. Returns SVG markup.
+function haySpark(months, vals, w, h, big) {
+  var pts = [], lo = Infinity, hi = -Infinity;
+  vals.forEach(function (v) { if (hayNum(v)) { lo = Math.min(lo, v); hi = Math.max(hi, v); } });
+  if (lo === Infinity) return '';
+  var padL = big ? 44 : 2, padR = 6, padT = 8, padB = big ? 22 : 4;
+  var span = hi - lo || hi * 0.1 || 1;
+  lo = Math.max(0, lo - span * 0.12); hi = hi + span * 0.12;
+  var x = function (k) { return padL + (w - padL - padR) * k / (months.length - 1); };
+  var y = function (v) { return padT + (h - padT - padB) * (1 - (v - lo) / (hi - lo)); };
+  var seg = '', on = false;
+  vals.forEach(function (v, k) {
+    if (hayNum(v)) { seg += (on ? 'L' : 'M') + x(k).toFixed(1) + ',' + y(v).toFixed(1); on = true; } else { on = false; }
+  });
+  var g = '';
+  if (big) {
+    [lo + (hi - lo) * 0.15, (lo + hi) / 2, hi - (hi - lo) * 0.15].forEach(function (t) {
+      g += '<line x1="' + padL + '" x2="' + (w - padR) + '" y1="' + y(t).toFixed(1) + '" y2="' + y(t).toFixed(1) + '" class="hp-grid"/>' +
+        '<text x="' + (padL - 6) + '" y="' + (y(t) + 4).toFixed(1) + '" text-anchor="end" class="hp-ax">' + hayMoney(t) + '</text>';
+    });
+    months.forEach(function (mk, k) {
+      if (mk.slice(5) === '01') g += '<text x="' + x(k).toFixed(1) + '" y="' + (h - 5) + '" text-anchor="middle" class="hp-ax">' + mk.slice(0, 4) + '</text>' +
+        '<line x1="' + x(k).toFixed(1) + '" x2="' + x(k).toFixed(1) + '" y1="' + (h - padB) + '" y2="' + (h - padB + 4) + '" class="hp-grid"/>';
+    });
+  }
+  var last = vals.length - 1, dot = hayNum(vals[last]) ? '<circle cx="' + x(last).toFixed(1) + '" cy="' + y(vals[last]).toFixed(1) + '" r="' + (big ? 4 : 2.5) + '" class="hp-dot"/>' : '';
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" aria-hidden="true" focusable="false">' + g +
+    '<path d="' + seg + '" class="hp-line" vector-effect="non-scaling-stroke"/>' + dot +
+    '<line class="hp-cross" x1="0" x2="0" y1="' + padT + '" y2="' + (h - padB) + '" visibility="hidden"/></svg>';
+}
+/*hay:end*/
+(function () {
+  var live = document.getElementById('hp-live');
+  if (!live || !window.fetch) return;
+  var KEY = 'alfalfa', SORT = 'now', LB = null, DATA = null, OPEN = {};
+  try { var sv = JSON.parse(localStorage.getItem('agsist-hay') || 'null'); if (sv) { if (/^(alfalfa|other|all)$/.test(sv.k)) KEY = sv.k; if (sv.lb) LB = +sv.lb; } } catch (e) {}
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  var cell = function (c) { return c.flag ? '<span class="hp-flag">' + esc(c.txt) + '</span>' : esc(c.txt); };
+  function save() { try { localStorage.setItem('agsist-hay', JSON.stringify({k: KEY, lb: LB})); } catch (e) {} }
+  function setButtons() {
+    document.querySelectorAll('[data-hay]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-hay') === KEY ? 'true' : 'false'); });
+  }
+  function chart(id, months, vals, label) {
+    return '<div class="hp-chart" id="' + id + '" role="img" tabindex="0" aria-label="' + esc(label) + ', monthly, ' + esc(hayMonthLabel(months[0])) + ' to ' + esc(hayMonthLabel(months[months.length - 1])) + '. Use the arrow keys to read each month." data-chart="' + id + '">' +
+      haySpark(months, vals, 640, 190, true) + '</div><p class="hp-tip" id="' + id + '-tip">Touch or hover the line to read a month.</p>';
+  }
+  function render() {
+    var v = hayView(DATA, KEY, SORT, Date.now(), LB);
+    setButtons();
+    if (!v) return;
+    if (v.missing) {
+      live.innerHTML = '<p class="hp-empty"><b>' + esc(v.label) + ' is not on the page this month.</b> The latest USDA read did not pass the checks for it. The other hay types still show.</p>';
+      return;
+    }
+    var us = v.us, h = '';
+    h += '<div class="hp-answer"><p class="hp-k">' + esc(v.label) + ', US average, ' + esc(v.monthLong) + '</p>' +
+      '<p class="hp-big">' + cell(us.nowCell) + (us.nowCell.flag ? '' : '<span> a ton</span>') + '</p>' +
+      '<p class="hp-sub">' + esc(v.agoHead) + ': ' + cell(us.agoCell) + (us.chg ? ' &middot; change ' + esc(us.chg.txt) : '') +
+      (us.bale ? ' &middot; ' + esc(hayMoney(us.bale)) + ' a ' + LB.toLocaleString('en-US') + ' lb bale' : '') + '</p>' +
+      '<p class="hp-fine">' + esc(v.released) + '. NASS revises the newest month in its next report.</p>' +
+      (v.stale ? '<p class="hp-fine hp-warn">USDA has not posted a newer month yet. This is the newest one on file.</p>' : '') + '</div>';
+    h += '<h2>' + esc(v.label) + ', US, last three years</h2>' + chart('hp-us-chart', v.months, us.hist, v.label + ' US average price, dollars a ton');
+    h += '<h2 id="states">' + esc(v.label) + ' by state</h2>';
+    h += '<p class="hp-bale"><label>Bale weight <input id="hp-lb" type="number" inputmode="numeric" min="100" max="3000" step="50" placeholder="1200" value="' + (LB || '') + '"> lb</label> <span class="hp-fine">adds a price per bale</span></p>';
+    var th = function (k, t) { return '<th scope="col"><button type="button" data-sort="' + k + '" aria-pressed="' + (SORT === k) + '">' + t + (SORT === k ? (k === 'name' ? ' &#9650;' : ' &#9660;') : '') + '</button></th>'; };
+    h += '<div class="hp-tw"><table class="hp-t"><caption class="sr-only">' + esc(v.label) + ', $ per ton, by state. Tap a state for its history.</caption><thead><tr>' +
+      th('name', 'State') + th('now', esc(v.nowHead)) + th('ago', esc(v.agoHead)) + th('chg', 'Change') + (LB ? '<th scope="col">Per bale</th>' : '') + '</tr></thead><tbody>';
+    v.rows.forEach(function (r) {
+      var open = !!OPEN[r.st];
+      h += '<tr class="hp-row"><th scope="row"><button type="button" class="hp-st" data-st="' + r.st + '" aria-expanded="' + open + '">' + esc(r.name) + '</button></th>' +
+        '<td>' + cell(r.nowCell) + '</td><td>' + cell(r.agoCell) + '</td><td>' + (r.chg ? esc(r.chg.txt) : '') + '</td>' +
+        (LB ? '<td>' + (r.bale ? esc(hayMoney(r.bale)) : '') + '</td>' : '') + '</tr>';
+      if (open) h += '<tr class="hp-open"><td colspan="' + (LB ? 5 : 4) + '">' + chart('hp-c-' + r.st, v.months, r.hist, v.label + ' in ' + r.name + ', dollars a ton') + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    h += '<p class="hp-fine">' + v.rows.length + ' states with a ' + esc(v.label.toLowerCase()) + ' price from NASS in the last three years. Blank means NASS put out no number; it is never a zero.</p>';
+    live.innerHTML = h;
+    wire();
+  }
+  function wire() {
+    live.querySelectorAll('[data-chart]').forEach(function (el) {
+      var id = el.getAttribute('data-chart'), st = id.indexOf('hp-c-') === 0 ? id.slice(5) : null;
+      var s = DATA.series[KEY], vals = st ? s.states[st] : s.us, n = DATA.months.length, k = n - 1;
+      var tip = document.getElementById(id + '-tip'), svg = el.querySelector('svg'), cross = el.querySelector('.hp-cross');
+      if (!svg) return;
+      var padL = 44, padR = 6, w = 640;
+      function show(i) {
+        k = Math.max(0, Math.min(n - 1, i));
+        var xx = padL + (w - padL - padR) * k / (n - 1);
+        cross.setAttribute('x1', xx); cross.setAttribute('x2', xx); cross.setAttribute('visibility', 'visible');
+        tip.textContent = hayMonthLabel(DATA.months[k], true) + ': ' + hayCell(vals[k]).txt + (hayNum(vals[k]) ? ' a ton' : '');
+      }
+      function at(e) {
+        var r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * w;
+        show(Math.round((px - padL) / (w - padL - padR) * (n - 1)));
+      }
+      el.addEventListener('pointermove', at);
+      el.addEventListener('pointerdown', at);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(k + (e.key === 'ArrowLeft' ? -1 : 1)); }
+      });
+    });
+    var lb = document.getElementById('hp-lb');
+    if (lb) lb.addEventListener('change', function () {
+      var x = +lb.value; LB = x >= 100 && x <= 3000 ? x : null; save(); render();
+      var again = document.getElementById('hp-lb'); if (again) again.focus();
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-hay],[data-sort],[data-st]');
+    if (!b || !DATA) return;
+    if (b.hasAttribute('data-hay')) { KEY = b.getAttribute('data-hay'); OPEN = {}; save(); }
+    else if (b.hasAttribute('data-sort')) SORT = b.getAttribute('data-sort');
+    else { var st = b.getAttribute('data-st'); OPEN[st] = !OPEN[st]; }
+    var focusSel = b.hasAttribute('data-st') ? '[data-st="' + b.getAttribute('data-st') + '"]' : b.hasAttribute('data-sort') ? '[data-sort="' + b.getAttribute('data-sort') + '"]' : null;
+    render();
+    if (focusSel) { var f = live.querySelector(focusSel); if (f) f.focus(); }
+  });
+  setButtons();
+  fetch('/data/hay/hay-prices.json', {cache: 'no-cache'}).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { if (d && hayView(d, 'alfalfa', 'now', Date.now()) !== null) { DATA = d; var sg = document.getElementById('hp-seg'); if (sg) sg.hidden = false; render(); } })
+    .catch(function () {});
+})();
+  </script>
+</body>
+</html>
