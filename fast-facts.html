@@ -174,6 +174,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-pill-name{font-size:0.77rem;font-weight:600;color:var(--text);}
 .fert-pill-sym{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);}
 .fert-pill-price{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:var(--gold);margin-left:auto;}
+#pk-cats td{white-space:nowrap;}
 .sv-wrap{position:relative;margin:1rem 0;}
 .sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#5fc28a,#5aaa5c,#d4a23f,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
 .sv-marks{display:flex;overflow-x:auto;padding-bottom:.3rem;}
@@ -600,12 +601,14 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- P&K TAB -->
 <div class="ff-panel" id="tab-pk" role="tabpanel" aria-labelledby="tab-btn-pk" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Soil Test Interpreter</div>
-<p class="ff-sub">Enter your soil test values. Get your P&#x2082;O&#x2085; / K&#x2082;O recommendation. Uses the Bray P1 method (common across the Corn Belt). High-pH or Western soils tested by Olsen P: multiply &times; 1.6.</p>
+<p class="ff-sub">Enter your soil tests. Get the P&#x2082;O&#x2085; and K&#x2082;O rate from UW Extension A2809 (Wisconsin): soil test categories from Tables 7.1 and 7.2, rates from Table 7.4. P is the Bray P1 test. Other states set their own categories, so check yours.</p>
 <div class="ff-calc">
   <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg> Soil Test &rarr; Recommendation Calculator</div>
   <div class="ff-cr">
-    <div class="ff-cf"><label class="ff-cl" for="st-crop">Crop</label><select class="ff-cs" id="st-crop"><option value="corn">Corn Grain</option><option value="corn_silage">Corn Silage</option><option value="soybean">Soybean</option><option value="alfalfa">Alfalfa</option></select></div>
-    <div class="ff-cf"><label class="ff-cl" for="st-yield">Yield Goal</label><input class="ff-ci" id="st-yield" type="number" value="200" step="5" min="50" max="400"></div>
+    <div class="ff-cf"><label class="ff-cl" for="st-crop">Crop</label><select class="ff-cs" id="st-crop"><option value="corn">Corn Grain</option><option value="corn_silage">Corn Silage</option><option value="soybean">Soybean</option><option value="alfalfa">Alfalfa, established</option><option value="alfalfa_seeding">Alfalfa, seeding year</option></select></div>
+    <div class="ff-cf"><label class="ff-cl" for="st-yield">Yield Goal (<span id="st-yield-unit">bu/ac</span>)</label><input class="ff-ci" id="st-yield" type="number" value="200" step="5" min="1" max="400"></div>
+    <div class="ff-cf"><label class="ff-cl" for="st-soil">Soil Group</label><select class="ff-cs" id="st-soil"><option value="loamy">Loamy (silt loam, clay)</option><option value="sandy">Sandy or organic</option></select></div>
+    <div class="ff-cf"><label class="ff-cl" for="st-rot">Rotation</label><select class="ff-cs" id="st-rot"><option value="1">Corn, soybean, small grains</option><option value="2">Has alfalfa, silage or wheat, or irrigated</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="st-p">Bray P1 (ppm)</label><input class="ff-ci" id="st-p" type="number" value="22" step="1" min="0" max="200"></div>
     <div class="ff-cf"><label class="ff-cl" for="st-k">K (ppm)</label><input class="ff-ci" id="st-k" type="number" value="110" step="5" min="0" max="600"></div>
   </div>
@@ -623,25 +626,34 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <div class="ff-cn" id="st-note"></div>
 </div>
-<div class="ff-h3">Soil Test Category Breakpoints (ppm)</div>
-<div class="ff-tw" tabindex="0" role="region" aria-label="Soil Test Category Breakpoints (ppm) table, scrolls sideways"><table class="ff-t">
-<thead><tr><th class="tl">Category</th><th>Bray P1 (ppm)</th><th>K (ppm)</th><th class="tl">Interpretation</th></tr></thead>
+<div class="ff-h3">Soil Test Categories (ppm), UW A2809 Tables 7.1 and 7.2</div>
+<p class="ff-sub">P is Bray P1 and K is soil test K, both in ppm. The highest-demand crop in the rotation sets the categories. A corn and soybean field that is irrigated uses level 2. Loamy means medium and fine-textured soils; sandy means sands and loamy sands. P has no Very High class.</p>
+<div class="ff-tw" tabindex="0" role="region" aria-label="Soil test categories (ppm) table, scrolls sideways"><table class="ff-t" id="pk-cats">
+<thead><tr><th class="tl">Demand level and soil</th><th class="tl">Test</th><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr></thead>
 <tbody>
-  <tr><td class="tl re">Very Low</td><td class="re">&lt;11</td><td class="re">&lt;61</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Deficient: yield loss likely</td></tr>
-  <tr><td class="tl" style="color:var(--gold)">Low</td><td style="color:var(--gold)">11&ndash;15</td><td style="color:var(--gold)">61&ndash;90</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Below optimum: good response likely</td></tr>
-  <tr><td class="tl gr">Optimum</td><td class="gr">16&ndash;25</td><td class="gr">91&ndash;130</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Sufficient: maintenance rate</td></tr>
-  <tr><td class="tl">High</td><td>26&ndash;50</td><td>131&ndash;200</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">No response expected: reduce or eliminate</td></tr>
-  <tr><td class="tl dim">Very High</td><td class="dim">51&ndash;75</td><td class="dim">201&ndash;300</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">No response: draw down levels</td></tr>
-  <tr><td class="tl dim">Extremely High</td><td class="dim">&gt;75</td><td class="dim">&gt;300</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Do not apply</td></tr>
+  <tr class="tg"><td class="tl" colspan="8">Level 1: corn grain, soybean</td></tr>
+  <tr data-a2809="P-1-loamy"><td class="tl">Loamy</td><td class="tl">P</td><td class="re">&lt;10</td><td>10&ndash;15</td><td class="gr">16&ndash;20</td><td>21&ndash;30</td><td class="dim">n/a</td><td class="dim">&gt;30</td></tr>
+  <tr data-a2809="K-1-loamy"><td class="tl">Loamy</td><td class="tl">K</td><td class="re">&lt;70</td><td>70&ndash;100</td><td class="gr">101&ndash;130</td><td>131&ndash;160</td><td class="dim">161&ndash;190</td><td class="dim">&gt;190</td></tr>
+  <tr data-a2809="P-1-sandy"><td class="tl">Sandy, organic</td><td class="tl">P</td><td class="re">&lt;12</td><td>12&ndash;22</td><td class="gr">23&ndash;32</td><td>33&ndash;42</td><td class="dim">n/a</td><td class="dim">&gt;42</td></tr>
+  <tr data-a2809="K-1-sandy"><td class="tl">Sandy, organic</td><td class="tl">K</td><td class="re">&lt;45</td><td>45&ndash;65</td><td class="gr">66&ndash;90</td><td>91&ndash;130</td><td class="dim">n/a</td><td class="dim">&gt;130</td></tr>
+  <tr class="tg"><td class="tl" colspan="8">Level 2: alfalfa, corn silage, wheat</td></tr>
+  <tr data-a2809="P-2-loamy"><td class="tl">Loamy</td><td class="tl">P</td><td class="re">&lt;12</td><td>12&ndash;17</td><td class="gr">18&ndash;25</td><td>26&ndash;35</td><td class="dim">n/a</td><td class="dim">&gt;35</td></tr>
+  <tr data-a2809="K-2-loamy"><td class="tl">Loamy</td><td class="tl">K</td><td class="re">&lt;90</td><td>90&ndash;110</td><td class="gr">111&ndash;140</td><td>141&ndash;170</td><td class="dim">171&ndash;240</td><td class="dim">&gt;240</td></tr>
+  <tr data-a2809="P-2-sandy"><td class="tl">Sandy, organic</td><td class="tl">P</td><td class="re">&lt;18</td><td>18&ndash;25</td><td class="gr">26&ndash;37</td><td>38&ndash;55</td><td class="dim">n/a</td><td class="dim">&gt;55</td></tr>
+  <tr data-a2809="K-2-sandy"><td class="tl">Sandy, organic</td><td class="tl">K</td><td class="re">&lt;50</td><td>50&ndash;80</td><td class="gr">81&ndash;120</td><td>121&ndash;160</td><td class="dim">161&ndash;200</td><td class="dim">&gt;200</td></tr>
 </tbody></table></div>
-<div class="ff-h2">Corn P&#x2082;O&#x2085; &amp; K&#x2082;O Recommendation Tables</div>
-<div class="ff-tw" tabindex="0" role="region" aria-label="Corn P₂O₅ &amp; K₂O Recommendation Tables table, scrolls sideways"><table class="ff-t">
+<div class="ff-note">How A2809 sets the rate: <strong>Optimum</strong> is what the crop removes. <strong>Low</strong> and <strong>Very Low</strong> add build-up over 4 to 8 years. <strong>High</strong> is half the optimum rate, <strong>Very High</strong> (K only) a quarter, and <strong>Excessively High</strong> none. Rates are the total, starter included.</div>
+<div class="ff-h2">Corn Grain P&#x2082;O&#x2085; &amp; K&#x2082;O Rates (A2809 Table 7.4)</div>
+<div class="ff-tw" tabindex="0" role="region" aria-label="Corn grain P₂O₅ and K₂O rates table, scrolls sideways"><table class="ff-t">
 <thead>
   <tr><th class="tl" rowspan="2">Corn Yield Goal (bu/ac)</th><th colspan="6">Soil Test Level</th></tr>
   <tr><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr>
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
+  <tr><td class="tl">71&ndash;90</td><td class="re">70</td><td>60</td><td class="hi">30</td><td>15</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">91&ndash;110</td><td class="re">80</td><td>70</td><td class="hi">40</td><td>20</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">111&ndash;130</td><td class="re">85</td><td>75</td><td class="hi">45</td><td>25</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">131&ndash;150</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">151&ndash;170</td><td class="re">100</td><td>90</td><td class="hi">60</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">171&ndash;190</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
@@ -650,6 +662,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">231&ndash;250</td><td class="re">130</td><td>120</td><td class="hi">90</td><td>45</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">251&ndash;270</td><td class="re">140</td><td>130</td><td class="hi">100</td><td>50</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
+  <tr><td class="tl">71&ndash;90</td><td class="re">70</td><td>55</td><td class="hi">25</td><td>15</td><td>5</td><td class="ze">0</td></tr>
+  <tr><td class="tl">91&ndash;110</td><td class="re">75</td><td>60</td><td class="hi">30</td><td>15</td><td>10</td><td class="ze">0</td></tr>
+  <tr><td class="tl">111&ndash;130</td><td class="re">80</td><td>65</td><td class="hi">35</td><td>20</td><td>10</td><td class="ze">0</td></tr>
   <tr><td class="tl">131&ndash;150</td><td class="re">85</td><td>70</td><td class="hi">40</td><td>20</td><td>10</td><td class="ze">0</td></tr>
   <tr><td class="tl">151&ndash;170</td><td class="re">90</td><td>75</td><td class="hi">45</td><td>25</td><td>10</td><td class="ze">0</td></tr>
   <tr><td class="tl">171&ndash;190</td><td class="re">95</td><td>80</td><td class="hi">50</td><td>25</td><td>15</td><td class="ze">0</td></tr>
@@ -658,27 +673,82 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">231&ndash;250</td><td class="re">115</td><td>100</td><td class="hi">70</td><td>35</td><td>20</td><td class="ze">0</td></tr>
   <tr><td class="tl">251&ndash;270</td><td class="re">120</td><td>105</td><td class="hi">75</td><td>40</td><td>20</td><td class="ze">0</td></tr>
 </tbody></table></div>
-<div class="ff-h2">Soybean P&#x2082;O&#x2085; &amp; K&#x2082;O Recommendations</div>
-<div class="ff-tw" tabindex="0" role="region" aria-label="Soybean P₂O₅ &amp; K₂O Recommendations table, scrolls sideways"><table class="ff-t">
+<div class="ff-h2">Soybean P&#x2082;O&#x2085; &amp; K&#x2082;O Rates (A2809 Table 7.4)</div>
+<div class="ff-tw" tabindex="0" role="region" aria-label="Soybean P₂O₅ and K₂O rates table, scrolls sideways"><table class="ff-t">
 <thead>
   <tr><th class="tl" rowspan="2">Yield Goal (bu/ac)</th><th colspan="6">Soil Test Level</th></tr>
   <tr><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr>
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
+  <tr><td class="tl">15&ndash;25</td><td class="re">55</td><td>45</td><td class="hi">15</td><td>10</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">26&ndash;35</td><td class="re">65</td><td>55</td><td class="hi">25</td><td>15</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">36&ndash;45</td><td class="re">70</td><td>60</td><td class="hi">30</td><td>15</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">46&ndash;55</td><td class="re">80</td><td>70</td><td class="hi">40</td><td>20</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">56&ndash;65</td><td class="re">90</td><td>80</td><td class="hi">50</td><td>25</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">66&ndash;75</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">76&ndash;85</td><td class="re">105</td><td>95</td><td class="hi">65</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr><td class="tl">86&ndash;95</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">96&ndash;105</td><td class="re">120</td><td>110</td><td class="hi">80</td><td>40</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
+  <tr><td class="tl">15&ndash;25</td><td class="re">75</td><td>60</td><td class="hi">30</td><td>15</td><td>10</td><td class="ze">0</td></tr>
+  <tr><td class="tl">26&ndash;35</td><td class="re">85</td><td>70</td><td class="hi">40</td><td>20</td><td>10</td><td class="ze">0</td></tr>
+  <tr><td class="tl">36&ndash;45</td><td class="re">100</td><td>85</td><td class="hi">55</td><td>30</td><td>15</td><td class="ze">0</td></tr>
   <tr><td class="tl">46&ndash;55</td><td class="re">115</td><td>100</td><td class="hi">70</td><td>35</td><td>20</td><td class="ze">0</td></tr>
   <tr><td class="tl">56&ndash;65</td><td class="re">130</td><td>115</td><td class="hi">85</td><td>45</td><td>20</td><td class="ze">0</td></tr>
   <tr><td class="tl">66&ndash;75</td><td class="re">145</td><td>130</td><td class="hi">100</td><td>50</td><td>25</td><td class="ze">0</td></tr>
   <tr><td class="tl">76&ndash;85</td><td class="re">155</td><td>140</td><td class="hi">110</td><td>55</td><td>30</td><td class="ze">0</td></tr>
   <tr><td class="tl">86&ndash;95</td><td class="re">170</td><td>155</td><td class="hi">125</td><td>65</td><td>30</td><td class="ze">0</td></tr>
+  <tr><td class="tl">96&ndash;105</td><td class="re">185</td><td>170</td><td class="hi">140</td><td>70</td><td>35</td><td class="ze">0</td></tr>
 </tbody></table></div>
-<div class="ff-note"><strong>Olsen P users:</strong> Multiply Olsen P &times; 1.6 to approximate Bray P1.</div>
+<div class="ff-h2">Corn Silage P&#x2082;O&#x2085; &amp; K&#x2082;O Rates (A2809 Table 7.4)</div>
+<div class="ff-tw" tabindex="0" role="region" aria-label="Corn silage P₂O₅ and K₂O rates table, scrolls sideways"><table class="ff-t">
+<thead>
+  <tr><th class="tl" rowspan="2">Silage Yield Goal (ton/ac, 65% moisture)</th><th colspan="6">Soil Test Level</th></tr>
+  <tr><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr>
+</thead>
+<tbody>
+  <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
+  <tr><td class="tl">10&ndash;15</td><td class="re">85</td><td>75</td><td class="hi">45</td><td>25</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">15.1&ndash;20</td><td class="re">105</td><td>95</td><td class="hi">65</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">20.1&ndash;25</td><td class="re">120</td><td>110</td><td class="hi">80</td><td>40</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">25.1&ndash;30</td><td class="re">140</td><td>130</td><td class="hi">100</td><td>50</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">30.1&ndash;35</td><td class="re">155</td><td>145</td><td class="hi">115</td><td>60</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">35.1&ndash;40</td><td class="re">175</td><td>165</td><td class="hi">135</td><td>70</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
+  <tr><td class="tl">10&ndash;15</td><td class="re">160</td><td>145</td><td class="hi">105</td><td>55</td><td>25</td><td class="ze">0</td></tr>
+  <tr><td class="tl">15.1&ndash;20</td><td class="re">200</td><td>185</td><td class="hi">145</td><td>75</td><td>35</td><td class="ze">0</td></tr>
+  <tr><td class="tl">20.1&ndash;25</td><td class="re">240</td><td>225</td><td class="hi">185</td><td>95</td><td>45</td><td class="ze">0</td></tr>
+  <tr><td class="tl">25.1&ndash;30</td><td class="re">285</td><td>270</td><td class="hi">230</td><td>115</td><td>60</td><td class="ze">0</td></tr>
+  <tr><td class="tl">30.1&ndash;35</td><td class="re">325</td><td>310</td><td class="hi">270</td><td>135</td><td>70</td><td class="ze">0</td></tr>
+  <tr><td class="tl">35.1&ndash;40</td><td class="re">365</td><td>350</td><td class="hi">310</td><td>155</td><td>80</td><td class="ze">0</td></tr>
+</tbody></table></div>
+<div class="ff-h2">Alfalfa P&#x2082;O&#x2085; &amp; K&#x2082;O Rates, Established Stand (A2809 Table 7.4)</div>
+<div class="ff-tw" tabindex="0" role="region" aria-label="Alfalfa P₂O₅ and K₂O rates table, scrolls sideways"><table class="ff-t">
+<thead>
+  <tr><th class="tl" rowspan="2">Alfalfa Yield Goal (ton/ac dry matter)</th><th colspan="6">Soil Test Level</th></tr>
+  <tr><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr>
+</thead>
+<tbody>
+  <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
+  <tr><td class="tl">2.6&ndash;3.5</td><td class="re">80</td><td>70</td><td class="hi">40</td><td>20</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">3.6&ndash;4.5</td><td class="re">90</td><td>80</td><td class="hi">50</td><td>25</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">4.6&ndash;5.5</td><td class="re">105</td><td>95</td><td class="hi">65</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">5.6&ndash;6.5</td><td class="re">120</td><td>110</td><td class="hi">80</td><td>40</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">6.6&ndash;7.5</td><td class="re">130</td><td>120</td><td class="hi">90</td><td>45</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">7.6&ndash;8.5</td><td class="re">145</td><td>135</td><td class="hi">105</td><td>55</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">8.6&ndash;9.5</td><td class="re">155</td><td>145</td><td class="hi">115</td><td>60</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
+  <tr><td class="tl">2.6&ndash;3.5</td><td class="re">235</td><td>220</td><td class="hi">180</td><td>90</td><td>45</td><td class="ze">0</td></tr>
+  <tr><td class="tl">3.6&ndash;4.5</td><td class="re">295</td><td>280</td><td class="hi">240</td><td>120</td><td>60</td><td class="ze">0</td></tr>
+  <tr><td class="tl">4.6&ndash;5.5</td><td class="re">355</td><td>340</td><td class="hi">300</td><td>150</td><td>75</td><td class="ze">0</td></tr>
+  <tr><td class="tl">5.6&ndash;6.5</td><td class="re">415</td><td>400</td><td class="hi">360</td><td>180</td><td>90</td><td class="ze">0</td></tr>
+  <tr><td class="tl">6.6&ndash;7.5</td><td class="re">475</td><td>460</td><td class="hi">420</td><td>210</td><td>105</td><td class="ze">0</td></tr>
+  <tr><td class="tl">7.6&ndash;8.5</td><td class="re">535</td><td>520</td><td class="hi">480</td><td>240</td><td>120</td><td class="ze">0</td></tr>
+  <tr><td class="tl">8.6&ndash;9.5</td><td class="re">595</td><td>580</td><td class="hi">540</td><td>270</td><td>135</td><td class="ze">0</td></tr>
+</tbody></table></div>
+<div class="ff-note">Seeding-year alfalfa (1.5&ndash;2.5 ton): 65, 55, 25, 15 and 0 lb P&#x2082;O&#x2085;; 160, 145, 105, 55, 25 and 0 lb K&#x2082;O, Very Low to Excessively High. Keeping a stand more than 3 years, A2809 raises topdressed K&#x2082;O by 20%. Silage and alfalfa take the whole plant, so retest every 2 years. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a> (Laboski and Peters), read Oct 16, 2026.</div>
+<div class="ff-note"><strong>Olsen P users:</strong> A2809 categories are for the Bray P1 test. A2809 gives no Olsen conversion, so ask your lab for Bray P1 or use your state's Olsen guide.</div>
 </div><!-- /tab-pk -->
 
 <!-- CROP REMOVAL TAB -->
@@ -833,29 +903,40 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <div class="ff-h2">Lime Requirement Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-axe"/></svg> Lime Rate Estimator (SMP Buffer, Upper-Midwest Calibration)</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-axe"/></svg> Lime Rate (UW A2809 Table 5.1: water pH and buffer pH)</div>
   <div class="ff-cr">
-    <div class="ff-cf"><label class="ff-cl" for="lime-buf">SMP Buffer pH</label><input class="ff-ci" id="lime-buf" type="number" value="6.5" step="0.1" min="5.0" max="7.0"></div>
+    <div class="ff-cf"><label class="ff-cl" for="lime-wph">Water pH</label><input class="ff-ci" id="lime-wph" type="number" value="6.0" step="0.1" min="4.0" max="8.0"></div>
+    <div class="ff-cf"><label class="ff-cl" for="lime-buf">Buffer pH</label><input class="ff-ci" id="lime-buf" type="number" value="6.5" step="0.1" min="5.0" max="7.5"></div>
     <div class="ff-cf"><label class="ff-cl" for="lime-target">Target pH</label>
       <select class="ff-cs" id="lime-target">
-        <option value="6.0">6.0 (Corn / Small grains)</option><option value="6.3">6.3 (Soybean / Red Clover)</option><option value="6.8" selected>6.8 (Alfalfa)</option>
+        <option value="5.6">5.6</option><option value="5.8">5.8</option><option value="6.0">6.0 (Corn, small grains)</option><option value="6.3">6.3 (Soybean)</option><option value="6.5">6.5</option><option value="6.6">6.6</option><option value="6.8" selected>6.8 (Alfalfa)</option>
       </select>
     </div>
-    <div class="ff-cf"><label class="ff-cl" for="lime-cce">Lime Quality (% CCE)</label>
-      <select class="ff-cs" id="lime-cce">
-        <option value="90">90% CCE (high quality)</option><option value="75" selected>75% CCE (typical aglime)</option><option value="60">60% CCE (low quality)</option><option value="98">98% CCE (pelletized)</option><option value="custom">Custom&hellip;</option>
+    <div class="ff-cf"><label class="ff-cl" for="lime-ni">Lime Grade (NI)</label>
+      <select class="ff-cs" id="lime-ni">
+        <option value="65">60&ndash;69 NI</option><option value="75">70&ndash;79 NI</option><option value="85" selected>80&ndash;89 NI</option><option value="95">90&ndash;99 NI</option><option value="custom">Other NI&hellip;</option>
       </select>
     </div>
-    <div class="ff-cf" id="lime-cce-wrap" style="display:none"><label class="ff-cl" for="lime-cce-custom">Custom CCE %</label><input class="ff-ci" id="lime-cce-custom" type="number" value="75" step="1" min="20" max="100"></div>
+    <div class="ff-cf" id="lime-ni-wrap" style="display:none"><label class="ff-cl" for="lime-ni-custom">Your lime&#8217;s NI</label><input class="ff-ci" id="lime-ni-custom" type="number" value="85" step="1" min="20" max="110"></div>
+    <div class="ff-cf"><label class="ff-cl" for="lime-depth">Tillage Depth</label>
+      <select class="ff-cs" id="lime-depth">
+        <option value="7" selected>7 in or less</option><option value="8">7.1&ndash;8 in (&times;1.15)</option><option value="9">8.1&ndash;9 in (&times;1.31)</option><option value="10">Over 9 in (&times;1.46)</option>
+      </select>
+    </div>
+    <div class="ff-cf"><label class="ff-cl" for="lime-soil">Soil</label>
+      <select class="ff-cs" id="lime-soil">
+        <option value="other" selected>Loamy, or sand over 1% OM</option><option value="sandy">Sand under 1% organic matter</option>
+      </select>
+    </div>
     <div class="ff-cf"><label class="ff-cl" for="lime-price">Your lime $/ton, spread</label><input class="ff-ci" id="lime-price" type="number" step="1" min="0" max="1000" placeholder="your price"></div>
   </div>
   <div class="ff-res" id="lime-res">
-    <div class="ff-ri"><div class="ff-ril">Tons Pure CaCO&#x2083;/ac</div><div class="ff-riv" id="lime-pure">-</div></div>
-    <div class="ff-ri"><div class="ff-ril">Tons Aglime/ac</div><div class="ff-riv green" id="lime-ag">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">60&ndash;69 Lime (A2809 base)</div><div class="ff-riv" id="lime-base">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Your Lime, ton/ac</div><div class="ff-riv green" id="lime-ag">-</div></div>
     <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">-</div></div>
     <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">-</div></div>
   </div>
-  <div class="ff-cn">Cost uses the price you type, for the lime you picked. Aglime prices swing with haul distance, so I don't guess one. Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
+  <div class="ff-cn">How it works: A2809 Table 5.1 gives tons of 60&ndash;69 NI lime from your water pH and buffer pH (the Sikora buffer on a Wisconsin soil report). Your lime = that &times; 65 &divide; NI (use the middle of the grade, 85 for 80&ndash;89). Lime only when water pH is more than 0.2 below target. Minimum 2 ton of 60&ndash;69 lime (1.5 of 80&ndash;89); never over 12 ton. NI is not the same as CCE: use the NI on the lime label or ask the quarry. Example: buffer 6.5, water 6.0, target 6.8 is 195 &minus; 28.4 &times; 6.5 + 0.144 &times; 6.0 = 11.3 ton of 60&ndash;69 lime, or 8.5 ton of 80&ndash;89. Cost uses the price you type; lime prices swing with haul distance. Source: <a href="https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf">UW Extension A2809</a>, Chapter 5, read Oct 16, 2026. Other states use other buffers and formulas; use your state&#8217;s guide outside Wisconsin.</div>
 </div>
 <div class="ff-h2">Micronutrient Reference: Upper Midwest</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Micronutrient Reference: Upper Midwest table, scrolls sideways"><table class="ff-t">
@@ -894,14 +975,14 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- CROP STAGES TAB -->
 <div class="ff-panel" id="tab-stages" role="tabpanel" aria-labelledby="tab-btn-stages" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Corn Growth Stages: Interactive GDU Timeline</div>
-<p class="ff-sub">Tap any stage to see GDU accumulation, crop description, and key management windows. Based on base 50&deg;F GDUs.</p>
+<p class="ff-sub">Tap any stage for its GDUs, what the plant is doing and what to watch. GDUs from planting, 86/50 method, for a 2,700-GDU hybrid (Purdue NCH-40), the same table as the <a href="/gdu-calculator">GDU calculator</a>.</p>
 <div class="sv-wrap" id="corn-sv-wrap">
   <div class="sv-track"></div>
   <div class="sv-marks" id="corn-sv-marks"></div>
   <div class="sv-detail" id="corn-sv-detail"><span style="color:var(--text-muted);font-size:0.795rem">Select a stage above to view details</span></div>
 </div>
 <div class="ff-h2">Soybean Growth Stages: Interactive Timeline</div>
-<p class="ff-sub">Vegetative (V) and reproductive (R) stages with GDU accumulation from emergence. Tap any stage.</p>
+<p class="ff-sub">GDUs from planting. Soybean stages follow day length as much as heat, so read these GDU marks as rough. Tap any stage.</p>
 <div class="sv-wrap" id="bean-sv-wrap">
   <div class="sv-track"></div>
   <div class="sv-marks" id="bean-sv-marks"></div>
@@ -913,7 +994,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="gdu-max">Daily Max (&deg;F)</label><input class="ff-ci" id="gdu-max" type="number" value="82" step="1" min="50" max="120"></div>
     <div class="ff-cf"><label class="ff-cl" for="gdu-min">Daily Min (&deg;F)</label><input class="ff-ci" id="gdu-min" type="number" value="58" step="1" min="20" max="100"></div>
-    <div class="ff-cf"><label class="ff-cl" for="gdu-acc">Accumulated GDU</label><input class="ff-ci" id="gdu-acc" type="number" value="0" step="1" min="0"></div>
+    <div class="ff-cf"><label class="ff-cl" for="gdu-acc">GDU Since Planting</label><input class="ff-ci" id="gdu-acc" type="number" value="0" step="1" min="0"></div>
   </div>
   <div class="ff-res" id="gdu-res">
     <div class="ff-ri"><div class="ff-ril">Today&#8217;s GDUs</div><div class="ff-riv" id="gdu-day">-</div></div>
@@ -1140,6 +1221,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- FIX: loader.js defer — prevents render-blocking -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/manure-value.js?v=7" defer></script>
-<script src="/components/fast-facts.js?v=6" defer></script>
+<script src="/components/a2809.js?v=1" defer></script>
+<script src="/components/gdu-stages.js?v=1" defer></script>
+<script src="/components/fast-facts.js?v=7" defer></script>
 </body>
 </html>

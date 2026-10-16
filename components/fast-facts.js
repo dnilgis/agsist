@@ -340,69 +340,55 @@ function updateEcoCosts(){
 });
 
 /* ─── SOIL TEST INTERPRETER ──────────────────────────────────────── */
-var ST_P={
-  corn:{VL:[0,10],L:[11,15],O:[16,25],H:[26,50],VH:[51,75],EH:[76,9999],
-    recs:{VL:[95,100,110,115,125,130,140],L:[85,90,100,105,115,120,130],O:[55,60,70,75,85,90,100],H:[30,30,35,40,45,45,50],VH:[0,0,0,0,0,0,0],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]},
-  soybean:{VL:[0,10],L:[11,15],O:[16,25],H:[26,50],VH:[51,75],EH:[76,9999],
-    recs:{VL:[80,90,95,105,110],L:[70,80,85,95,100],O:[40,50,55,65,70],H:[20,25,30,35,35],VH:[0,0,0,0,0],EH:[0,0,0,0,0]},
-    yields:[55,65,75,85,95]},
-  corn_silage:{VL:[0,10],L:[11,15],O:[16,25],H:[26,50],VH:[51,75],EH:[76,9999],
-    recs:{VL:[95,100,110,115,125,130,140],L:[85,90,100,105,115,120,130],O:[55,60,70,75,85,90,100],H:[30,30,35,40,45,45,50],VH:[0,0,0,0,0,0,0],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]},
-  alfalfa:{VL:[0,10],L:[11,15],O:[16,25],H:[26,50],VH:[51,75],EH:[76,9999],
-    recs:{VL:[95,100,110,115,125,130,140],L:[85,90,100,105,115,120,130],O:[55,60,70,75,85,90,100],H:[30,30,35,40,45,45,50],VH:[0,0,0,0,0,0,0],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]}
-};
-var ST_K={
-  corn:{VL:[0,60],L:[61,90],O:[91,130],H:[131,200],VH:[201,300],EH:[301,9999],
-    recs:{VL:[85,90,95,105,110,115,120],L:[70,75,80,90,95,100,105],O:[40,45,50,60,65,70,75],H:[20,25,25,30,35,35,40],VH:[10,10,15,15,15,20,20],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]},
-  soybean:{VL:[0,60],L:[61,90],O:[91,130],H:[131,200],VH:[201,300],EH:[301,9999],
-    recs:{VL:[115,130,145,155,170],L:[100,115,130,140,155],O:[70,85,100,110,125],H:[35,45,50,55,65],VH:[20,20,25,30,30],EH:[0,0,0,0,0]},
-    yields:[55,65,75,85,95]},
-  corn_silage:{VL:[0,60],L:[61,90],O:[91,130],H:[131,200],VH:[201,300],EH:[301,9999],
-    recs:{VL:[85,90,95,105,110,115,120],L:[70,75,80,90,95,100,105],O:[40,45,50,60,65,70,75],H:[20,25,25,30,35,35,40],VH:[10,10,15,15,15,20,20],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]},
-  alfalfa:{VL:[0,60],L:[61,90],O:[91,130],H:[131,200],VH:[201,300],EH:[301,9999],
-    recs:{VL:[85,90,95,105,110,115,120],L:[70,75,80,90,95,100,105],O:[40,45,50,60,65,70,75],H:[20,25,25,30,35,35,40],VH:[10,10,15,15,15,20,20],EH:[0,0,0,0,0,0,0]},
-    yields:[150,170,190,210,230,250,270]}
-};
-var CAT_NAMES={'VL':'Very Low','L':'Low','O':'Optimum','H':'High','VH':'Very High','EH':'Extremely High'};
-function getSTCat(val,crop,nutrient){
-  var tbl=nutrient==='P'?ST_P[crop]:ST_K[crop];if(!tbl)return{cat:'?',rec:0};
-  var cats=['VL','L','O','H','VH','EH'];
-  for(var i=0;i<cats.length;i++){var c=cats[i];if(val>=tbl[c][0]&&val<=tbl[c][1]){
-    var yields=tbl.yields;var yieldGoal=parseFloat(document.getElementById('st-yield').value)||200;
-    var yIdx=yields.length-1;
-    for(var j=0;j<yields.length;j++){if(yieldGoal<=yields[j]){yIdx=j;break;}}
-    var rec=tbl.recs[c]&&tbl.recs[c][yIdx]!==undefined?tbl.recs[c][yIdx]:0;
-    return{cat:c,catName:CAT_NAMES[c],rec:rec};
-  }}
-  return{cat:'?',catName:'Unknown',rec:0};
-}
+/* UW A2809 Tables 7.1, 7.2 and 7.4 (components/a2809.js, the one copy of
+   those numbers). The categories depend on the crop's demand level, the
+   highest-demand crop in the rotation and the soil group; the rate on the
+   crop's own yield row. */
+var ST_YIELD={corn:200,soybean:60,corn_silage:25,alfalfa:5,alfalfa_seeding:2};
+var stLastCrop=null;
 function calcST(){
-  var crop=document.getElementById('st-crop').value||'corn';
-  var p=parseFloat(document.getElementById('st-p').value)||0;
-  var k=parseFloat(document.getElementById('st-k').value)||0;
-  var pResult=getSTCat(p,crop,'P');
-  var kResult=getSTCat(k,crop,'K');
+  var A=window.AgA2809;if(!A)return;
+  var cropEl=document.getElementById('st-crop');
+  var crop=cropEl.value||'corn';
+  var c=A.CROPS[crop];if(!c)return;
+  var yEl=document.getElementById('st-yield');
+  if(stLastCrop!==null&&stLastCrop!==crop){yEl.value=ST_YIELD[crop];}
+  stLastCrop=crop;
+  var yl=document.getElementById('st-yield-unit');if(yl)yl.textContent=c.unit==='ton'?'ton/ac':'bu/ac';
+  yEl.step=c.unit==='ton'?'0.5':'5';
+  var soilEl=document.getElementById('st-soil'), rotEl=document.getElementById('st-rot');
+  var pv=document.getElementById('st-p').value, kv=document.getElementById('st-k').value;
+  var r=A.pk({crop:crop,yieldGoal:parseFloat(yEl.value),p:pv===''?'':parseFloat(pv),k:kv===''?'':parseFloat(kv),
+    soil:soilEl?soilEl.value:'loamy',rotation:rotEl?parseInt(rotEl.value,10):1});
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
-  s('st-pcat',pResult.catName||pResult.cat);
-  s('st-kcat',kResult.catName||kResult.cat);
-  s('st-prec',pResult.rec+' lb/ac');
-  s('st-krec',kResult.rec+' lb/ac');
-  var note='';
-  if(pResult.cat==='VL'||pResult.cat==='L')note+='Low P may limit yield. ';
-  if(kResult.cat==='VL'||kResult.cat==='L')note+='Low K may limit yield. ';
-  if(pResult.cat==='H'||pResult.cat==='VH'||pResult.cat==='EH')note+='High P: reduce or eliminate P application. ';
-  s('st-note',note);
-  updateSTCost(pResult.rec,kResult.rec);
+  if(!r){
+    s('st-pcat','-');s('st-kcat','-');s('st-prec','-');s('st-krec','-');
+    s('st-note','Type a yield goal and both soil tests to see the A2809 rate.');
+    updateSTCost(0,0);return;
+  }
+  s('st-pcat',r.pCatName);
+  s('st-kcat',r.kCatName);
+  s('st-prec',r.p2o5+' lb/ac');
+  s('st-krec',r.k2o+' lb/ac');
+  var n=[];
+  n.push('A2809 demand level '+r.demand+', '+(r.soil==='sandy'?'sandy or organic':'loamy')+' soil, '+r.cropName.toLowerCase()+' '+r.rowLabel+' row.');
+  if(r.aboveTable)n.push('Your yield goal is above A2809\u2019s top row, so this is the top row\u2019s rate. A2809 adds crop removal for yields past its table.');
+  if(r.belowTable)n.push('Your yield goal is below A2809\u2019s lowest row, so this is the lowest row\u2019s rate.');
+  if(r.pCat==='VL'||r.pCat==='L')n.push('Low P: the rate includes build-up over 4 to 8 years.');
+  if(r.kCat==='VL'||r.kCat==='L')n.push('Low K: the rate includes build-up over 4 to 8 years.');
+  if(r.pCat==='H')n.push('High P: half the optimum rate.');
+  if(r.pCat==='EH')n.push('Excessively high P: A2809 says apply none.');
+  if(r.kCat==='EH')n.push('Excessively high K: A2809 says apply none.');
+  if(crop==='corn'&&(r.pCat==='EH'||r.kCat==='EH'))n.push('Corn may still pay for up to 20 lb each of P\u2082O\u2085 and K\u2082O as starter (A2809 Chapter 10).');
+  if(r.kNote)n.push('Keeping the stand more than 3 years? A2809 says raise topdressed K\u2082O by 20%.');
+  if(crop==='alfalfa'||crop==='corn_silage')n.push('Whole-plant harvest pulls a lot of K: retest every 2 years.');
+  s('st-note',n.join(' '));
+  updateSTCost(r.p2o5,r.k2o);
 }
 function updateSTCost(prec,krec){
   var pEl=document.getElementById('st-prec');var kEl=document.getElementById('st-krec');
-  var p=prec||parseFloat((pEl&&pEl.textContent)||'0');
-  var k=krec||parseFloat((kEl&&kEl.textContent)||'0');
+  var p=prec!=null?prec:(parseFloat((pEl&&pEl.textContent)||'0')||0);
+  var k=krec!=null?krec:(parseFloat((kEl&&kEl.textContent)||'0')||0);
   // From the live file (or the reader's own entry); no price -> no cost line, never a fallback number.
   var pPplb=parseFloat(document.getElementById('eco-p-pplb')&&document.getElementById('eco-p-pplb').value)||0;
   var kPplb=parseFloat(document.getElementById('eco-k-pplb')&&document.getElementById('eco-k-pplb').value)||0;
@@ -414,7 +400,7 @@ function updateSTCost(prec,krec){
   var pkOut=document.getElementById('pk-cost-out');
   if(pkOut)pkOut.style.display=(pCost>0||kCost>0)?'flex':'none';
 }
-['st-crop','st-yield','st-p','st-k'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcST);});
+['st-crop','st-yield','st-p','st-k','st-soil','st-rot'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',calcST);el.addEventListener('change',calcST);}});
 calcST();
 
 /* ─── CROP REMOVAL CALCULATOR ──────────────────────────────────────── */
@@ -461,43 +447,51 @@ function calcManApp(){
 calcManApp();
 
 /* ─── LIME CALCULATOR ──────────────────────────────────────────────── */
+/* UW A2809 Table 5.1 (water pH and buffer pH), Table 5.2 (plow depth) and its
+   rounding, minimum and maximum rules, all in components/a2809.js. */
 function calcLime(){
-  var buf=parseFloat(document.getElementById('lime-buf').value)||6.5;
-  var target=parseFloat(document.getElementById('lime-target').value)||6.8;
-  var cceEl=document.getElementById('lime-cce');
-  var cce=cceEl.value==='custom'?parseFloat(document.getElementById('lime-cce-custom').value)||75:parseFloat(cceEl.value)||75;
-  document.getElementById('lime-cce-wrap').style.display=cceEl.value==='custom'?'flex':'none';
-  var SMP_FACTORS={6.0:{6.8:3.2,6.3:2.8,6.0:2.4},6.1:{6.8:2.9,6.3:2.5,6.0:2.1},6.2:{6.8:2.6,6.3:2.2,6.0:1.8},6.3:{6.8:2.3,6.3:1.9,6.0:1.5},6.4:{6.8:2.0,6.3:1.6,6.0:1.2},6.5:{6.8:1.7,6.3:1.3,6.0:0.9},6.6:{6.8:1.4,6.3:1.0,6.0:0.6},6.7:{6.8:1.1,6.3:0.7,6.0:0.3},6.8:{6.8:0,6.3:0,6.0:0}};
-  var bufKey=Math.round(buf*10)/10;if(bufKey>6.8)bufKey=6.8;if(bufKey<6.0)bufKey=6.0;bufKey=parseFloat(bufKey.toFixed(1));
-  var tKey=parseFloat(target).toFixed(1);if(!SMP_FACTORS[bufKey])bufKey=6.5;
-  var pureTons=SMP_FACTORS[bufKey]?SMP_FACTORS[bufKey][tKey]||0:0;
-  var agTons=pureTons/(cce/100);
-  function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
-  s('lime-pure',pureTons.toFixed(1)+' ton');
-  s('lime-ag',agTons.toFixed(1)+' ton');
-  var note='';
-  if(agTons>12)note='Exceeds max: apply 12 ton this year, retest in 2-3 yrs';
-  else if(agTons<2&&agTons>0)note='Min rate 2 ton (most soils) or 1 ton (sandy <1% OM)';
-  else if(agTons===0)note='No lime needed for target pH';
-  else note='Apply in fall for spring benefit. Disk in if possible.';
-  s('lime-note',note);
+  var A=window.AgA2809;if(!A)return;
+  function v(id){var el=document.getElementById(id);return el?el.value:'';}
+  var niSel=v('lime-ni');
+  document.getElementById('lime-ni-wrap').style.display=niSel==='custom'?'flex':'none';
+  var ni=niSel==='custom'?parseFloat(v('lime-ni-custom')):parseFloat(niSel);
+  var r=A.lime({wph:parseFloat(v('lime-wph')),bph:parseFloat(v('lime-buf')),target:parseFloat(v('lime-target')),
+    ni:ni,depth:parseInt(v('lime-depth'),10)||7,sandyLowOM:v('lime-soil')==='sandy'});
+  function s(id,t){var el=document.getElementById(id);if(el)el.textContent=t;}
   var costEl=document.getElementById('lime-cost');
+  function fmtT(t){return (t%1===0?t.toFixed(0):t.toFixed(1))+' ton';}
+  if(!r){
+    s('lime-base','-');s('lime-ag','-');s('lime-note','Type water pH, buffer pH and the lime\u2019s NI.');
+    if(costEl){costEl.textContent='-';costEl.style.color='var(--text-muted)';}
+    return;
+  }
+  var note;
+  if(!r.need){
+    s('lime-base','0 ton');s('lime-ag','0 ton');
+    note='No lime: pH not more than 0.2 below target';
+  } else {
+    s('lime-base',fmtT(r.base60));
+    s('lime-ag',fmtT(r.tons));
+    if(r.capped)note='Capped at 12 ton (A2809 max). Retest in 2\u20133 yrs';
+    else if(r.rule==='sandy')note='1 ton: sand under 1% OM (A2809)';
+    else if(r.rule==='min')note='A2809 minimum rate (formula is lower)';
+    else note='Rounded as A2809 says';
+  }
+  s('lime-note',note);
   if(costEl){
-    // Lime has no live price source (the hand-typed dealer sheet that priced
-    // pelletized lime is gone), so lime is priced only at the reader's own $/ton.
-    var priceEl=document.getElementById('lime-price');
-    var own=priceEl?parseFloat(priceEl.value):NaN;
+    // Lime has no live price source, so it is priced only at the reader's own $/ton.
+    var own=parseFloat(v('lime-price'));
     costEl.style.color='var(--gold)';
-    if(agTons===0){
+    if(!r.need){
       costEl.textContent='None needed';costEl.style.color='var(--text-muted)';
     } else if(own>0){
-      costEl.textContent='$'+(agTons*own).toFixed(0)+'/ac at your $'+own+'/ton';
+      costEl.textContent='$'+(r.tons*own).toFixed(0)+'/ac at your $'+own+'/ton';
     } else {
       costEl.textContent='Type your $/ton to see cost';costEl.style.color='var(--text-muted)';
     }
   }
 }
-['lime-buf','lime-target','lime-cce','lime-cce-custom','lime-price'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcLime);});
+['lime-wph','lime-buf','lime-target','lime-ni','lime-ni-custom','lime-depth','lime-soil','lime-price'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',calcLime);el.addEventListener('change',calcLime);}});
 calcLime();
 
 /* ─── GDU CALCULATOR ────────────────────────────────────────────────── */
@@ -510,11 +504,11 @@ function calcGDU(){
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   s('gdu-day',day.toFixed(1)+' GDU');
   s('gdu-new',newAcc.toFixed(1)+' GDU total');
-  var CORN_STAGES=[['VE',0],['V1',100],['V3',200],['V5',350],['V6',475],['V8',610],['V10',750],['V12',900],['V14',1050],['VT',1250],['R1',1400],['R2',1600],['R3',1750],['R4',1925],['R5',2200],['R6',2700]];
-  var BEAN_STAGES=[['VE',0],['VC',50],['V1',120],['V2',250],['V3',400],['R1',550],['R2',650],['R3',750],['R4',900],['R5',1000],['R6',1200],['R7',1450],['R8',1650]];
-  function getStage(acc,stages){for(var i=stages.length-1;i>=0;i--){if(acc>=stages[i][1])return stages[i][0];}return 'Pre-plant';}
-  s('gdu-corn-stage',getStage(newAcc,CORN_STAGES));
-  s('gdu-bean-stage',getStage(newAcc,BEAN_STAGES));
+  // The site's one stage table (components/gdu-stages.js), GDU from planting.
+  var G=window.AgGduStages;
+  function stage(list,first){if(!G)return '-';var st=G.stageAt(list,newAcc);return st?st.s:first;}
+  s('gdu-corn-stage',stage(G&&G.corn,'Before emergence'));
+  s('gdu-bean-stage',stage(G&&G.bean,'Before emergence'));
 }
 ['gdu-max','gdu-min','gdu-acc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcGDU);});
 calcGDU();
@@ -625,39 +619,42 @@ function updateScout(){
 var stagesInited=false;
 function initStages(){
   if(stagesInited)return;stagesInited=true;
-  var CORN_VIS=[
-    {s:'VE',gdu:0,key:true,desc:'Coleoptile emerges through soil surface.',mgmt:'Check soil temp \u226550\u00b0F. Scout for stand establishment and black cutworm.'},
-    {s:'V1',gdu:100,desc:'First leaf collar visible.',mgmt:'Count stand. 1/1000 ac row count for plant population.'},
-    {s:'V3',gdu:200,key:true,desc:'3rd leaf collar visible. Growing point still below soil.',mgmt:'BCW threshold: 3+ cut plants/100. Point of no return for replant decision near.'},
-    {s:'V5',gdu:350,desc:'5th leaf collar. Growing point near soil surface.',mgmt:'Last safe opportunity for anhydrous side-dress. Rapid leaf appearance begins.'},
-    {s:'V6',gdu:475,desc:'Growing point above soil. Ear shoots determined.',mgmt:'Side-dress N window: V4\u2013V6 optimal. UAN Y-drop effective to V8.'},
-    {s:'V8',gdu:610,key:true,desc:'8 leaf collars. Ear shoots forming, row number set.',mgmt:'Scout for European Corn Borer egg masses. Begin fungicide watch if conditions favor disease.'},
-    {s:'V10',gdu:750,desc:'10 collars. Ear row number determined.',mgmt:'Final N uptake push begins. Make sure K is adequate for stalk strength.'},
-    {s:'V12',gdu:900,desc:'12 collars. Kernel row number set, potential kernels/row determined.',mgmt:'Scout GLS on lower leaves. Fungicide efficacy window: before VT.'},
-    {s:'VT',gdu:1250,key:true,desc:'Tassel fully emerged. Pollen shed begins.',mgmt:'Critical pollination window. Corn rootworm adults: 5+/plant in the first week of pollen shed. Japanese beetle: 3+/ear with silks clipped under 1".'},
-    {s:'R1',gdu:1400,key:true,desc:'Silking. One or more silks visible outside husk. Pollination occurs.',mgmt:'Avoid canopy disturbance. Drought/heat stress now = yield loss. Monitor silk clipping.'},
-    {s:'R2',gdu:1600,desc:'Blister. Kernels white, blister-like, fluid-filled.',mgmt:'Drought stress still damaging. Kernel number now fixed.'},
-    {s:'R3',gdu:1750,key:true,desc:'Milk. Kernels yellow, milky fluid inside.',mgmt:'Yield estimate: count ear length \u00d7 circumference. Dry matter accumulation underway.'},
-    {s:'R4',gdu:1925,desc:'Dough. Kernel contents doughy, resistance when squeezed.',mgmt:'50% of final dry weight deposited. Stalk cannibalizes if N/K deficient.'},
-    {s:'R5',gdu:2200,key:true,desc:'Dent. All kernels dented. Milk line appears.',mgmt:'Black layer forms when milk line reaches kernel tip. Watch for Diplodia ear rot.'},
-    {s:'R6',gdu:2700,key:true,desc:'Black Layer / Physiological Maturity. Kernel dry weight maximum.',mgmt:'Moisture ~35%. Begin monitoring for harvest timing (28\u201330% for combine harvest).'}
-  ];
-  var BEAN_VIS=[
-    {s:'VE',gdu:0,desc:'Unifoliate leaves emerge through soil.',mgmt:'Check stand. Seedcorn maggot or pythium risk in cold wet soils.'},
-    {s:'VC',gdu:50,desc:'Unifoliate leaves unrolled.',mgmt:'Stand establishment assessment. Replant threshold: <100,000 plants/ac.'},
-    {s:'V1',gdu:120,desc:'First trifoliate fully open.',mgmt:'Bean leaf beetle and slug activity. 20-30% defoliation threshold.'},
-    {s:'V2',gdu:200,desc:'Second trifoliate.',mgmt:'Continue scouting for bean leaf beetle, slugs, and aphid early detection.'},
-    {s:'V3',gdu:300,desc:'Third trifoliate.',mgmt:'Aphid colonies may begin. Iron deficiency chlorosis (IDC) visible on calcareous soils.'},
-    {s:'V4',gdu:400,key:true,desc:'4th trifoliate. Branching begins.',mgmt:'Aphid scouting: 250/plant threshold. Begin regular aphid counts.'},
-    {s:'R1',gdu:550,key:true,desc:'Beginning bloom. One open flower on any node.',mgmt:'Aphid threshold critical: 250/plant on over 80% of plants, increasing. Japanese beetle: 20% defoliation.'},
-    {s:'R2',gdu:650,desc:'Full bloom.',mgmt:'Fungicide window: R1\u2013R3 for white mold in susceptible varieties under wet conditions.'},
-    {s:'R3',gdu:750,key:true,desc:'Beginning pod. 3/16" pod on one of the 4 uppermost nodes.',mgmt:'Critical yield-forming stage. Aphid threshold still applies. White mold pressure peak.'},
-    {s:'R4',gdu:900,key:true,desc:'Full pod. 3/4" pod at uppermost 4 nodes.',mgmt:'Aphid threshold still applies. Pod feeding by beetles increases yield loss risk.'},
-    {s:'R5',gdu:1000,key:true,desc:'Beginning seed. Seed 1/8" long in pod at uppermost 4 nodes.',mgmt:'Last stage the 250/plant aphid threshold covers. Pod and seed fill critical. Spider mite watch in dry heat.'},
-    {s:'R6',gdu:1200,desc:'Full seed. Pod contains a green seed filling the pod cavity.',mgmt:'Defoliation threshold rises to 25%. Harvest planning begins.'},
-    {s:'R7',gdu:1450,key:true,desc:'Beginning maturity. One mature brown pod.',mgmt:'Safe to harvest when pods dry to <15% moisture. Watch for harvest loss from shattering.'},
-    {s:'R8',gdu:1650,desc:'Full maturity. 95% of pods are mature brown color.',mgmt:'Timely harvest critical. 1% per day yield loss from shattering and weathering.'}
-  ];
+  /* GDU numbers come from components/gdu-stages.js (the table /gdu-calculator
+     uses). Only the notes below are this page's own, by stage name. */
+  var CORN_NOTES={
+    VE:['Coleoptile through the soil surface.','Check soil temp \u226550\u00b0F. Scout for stand establishment and black cutworm.'],
+    V2:['2nd leaf collar visible. Growing point still below soil.','Count stand. Black cutworm: 3+ cut plants/100.'],
+    V4:['4th leaf collar. Ear shoots being started.','Side-dress N window: V4\u2013V6.'],
+    V6:['Growing point above soil.','Side-dress window closing. Post herbicide cutoffs on many labels: read yours.'],
+    V8:['8 leaf collars. Kernel row number being set.','Scout for European corn borer. Fungicide watch if conditions favor disease.'],
+    V10:['10 collars. Rapid growth.','Heavy N and K uptake. Make sure K is adequate for stalk strength.'],
+    V12:['12 collars. Ear size being set.','Scout gray leaf spot on lower leaves.'],
+    VT:['Tassel fully out. Pollen shed.','Critical pollination window. Corn rootworm adults: 5+/plant in the first week of pollen shed. Japanese beetle: 3+/ear with silks clipped under 1".'],
+    R1:['Silking. Silks outside the husk. Pollination.','Drought or heat stress now costs yield. Watch silk clipping.'],
+    R2:['Blister. Kernels white, fluid-filled.','Drought stress still damaging. Kernel number now fixed.'],
+    R4:['Dough. Kernel contents doughy.','About half of final dry weight in. Stalks cannibalize if N or K is short.'],
+    R5:['Dent. Kernels dented, milk line showing.','Watch for stalk rots and Diplodia ear rot. Plan harvest order.'],
+    'R5.5':['Full dent, milk line moving down.','Silage harvest window opens.'],
+    R6:['Black layer. Kernel dry weight at its most.','Moisture near 30\u201335%. Moisture checks beat calendar dates for harvest order.']
+  };
+  var BEAN_NOTES={
+    VE:['Unifoliate leaves through the soil.','Check stand. Seedcorn maggot or pythium risk in cold wet soils.'],
+    V1:['First trifoliate open.','Bean leaf beetle and slug activity.'],
+    V3:['Third trifoliate.','Post herbicide cutoffs are set by the label. Iron deficiency chlorosis shows on high-pH soils.'],
+    V5:['Fifth trifoliate. Branching.','Start regular soybean aphid counts.'],
+    R1:['Beginning bloom. One open flower on any node.','Soybean aphid: 250/plant on over 80% of plants, increasing.'],
+    R2:['Full bloom.','White mold fungicide window in susceptible varieties under wet weather: R1\u2013R3.'],
+    R3:['Beginning pod. 3/16" pod on one of the top 4 nodes.','Yield-forming stretch. Aphid threshold still applies.'],
+    R4:['Full pod. 3/4" pod on one of the top 4 nodes.','Aphid threshold still applies. Pod feeding raises yield loss.'],
+    R5:['Beginning seed. 1/8" seed in a pod on one of the top 4 nodes.','Last stage the 250/plant aphid threshold covers. Spider mite watch in dry heat.'],
+    R6:['Full seed. A green seed fills the pod cavity.','Harvest planning begins.'],
+    R7:['Beginning maturity. One mature-color pod on the main stem.',''],
+    R8:['Full maturity. 95% of pods at mature color.','Harvest under 15% moisture; shatter losses climb when beans wait.']
+  };
+  var G=window.AgGduStages;
+  if(!G)return;
+  function vis(list,notes){return list.map(function(st){var n=notes[st.s]||[st.desc,''];return {s:st.s,gdu:st.gdu,hi:st.hi,key:st.key,desc:n[0],mgmt:n[1]};});}
+  var CORN_VIS=vis(G.corn,CORN_NOTES), BEAN_VIS=vis(G.bean,BEAN_NOTES);
   function buildTimeline(wrapId,markId,detailId,stages){
     var marks=document.getElementById(markId);var detail=document.getElementById(detailId);
     if(!marks||!detail)return;
@@ -666,15 +663,16 @@ function initStages(){
       var div=document.createElement('div');
       div.className='sv-mark'+(st.key?' key':'');
       div.setAttribute('role','button');div.setAttribute('tabindex','0');
-      div.setAttribute('aria-label',st.s+', '+st.gdu+' GDU');
-      div.innerHTML='<div class="sv-dot"></div><div class="sv-lbl">'+st.s+'</div><div class="sv-gdu">'+st.gdu+'</div>';
+      var g=st.hi?st.gdu+'\u2013'+st.hi:String(st.gdu);
+      div.setAttribute('aria-label',st.s+', '+g+' GDU from planting');
+      div.innerHTML='<div class="sv-dot"></div><div class="sv-lbl">'+st.s+'</div><div class="sv-gdu">'+st.gdu+(st.hi?'+':'')+'</div>';
       div.addEventListener('click',function(){
         document.querySelectorAll('#'+markId+' .sv-mark').forEach(function(m){m.classList.remove('active');});
         div.classList.add('active');
         detail.innerHTML='<div class="sv-detail-stage">'+st.s+'</div>'
-          +'<div class="sv-detail-gdu">~'+st.gdu+' GDUs from emergence (base 50\u00b0F)</div>'
+          +'<div class="sv-detail-gdu">~'+g+' GDUs from planting (86/50 method)</div>'
           +'<div class="sv-detail-desc">'+st.desc+'</div>'
-          +'<div class="sv-detail-mgmt"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+st.mgmt+'</div>';
+          +(st.mgmt?'<div class="sv-detail-mgmt"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+st.mgmt+'</div>':'');
       });
       div.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();div.click();}});
       marks.appendChild(div);

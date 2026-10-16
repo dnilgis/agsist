@@ -1,5 +1,8 @@
 /* /fast-facts calculators in a real browser, checked against hand math.
  *
+ *   Lime tons follow UW A2809 Table 5.1 since 2026-10-16 (see
+ *   test/fast-facts-a2809.test.mjs for the rounding, minimum and cap).
+ *
  *   Lime cost: the page once multiplied tons of ordinary 75% aglime by a
  *   pelletized lime quote ("$646/ac at $285/ton pelletized"). Since 2026-10-15
  *   there is no lime price at all: the hand-typed dealer sheet that carried
@@ -74,32 +77,32 @@ test("lime cost is priced only at the reader's own $/ton, for every lime", { ski
   try {
     const { pg, errors } = await open(browser, port, "/fast-facts#soilhealth");
     await pg.waitForFunction(() => document.querySelector(".fert-pill"));
-    // Default: SMP 6.5 -> pH 6.8 is 1.7 t CaCO3; at 75% CCE that is 1.7/0.75 = 2.27 t aglime.
-    assert.equal(await pg.textContent("#lime-pure"), "1.7 ton");
-    assert.equal(await pg.textContent("#lime-ag"), "2.3 ton");
+    // Default (UW A2809 Table 5.1): buffer 6.5, water 6.0, target 6.8 is
+    // 195 - 28.4 x 6.5 + 0.144 x 6.0 = 11.264 t of 60-69 lime (11 t rounded);
+    // 80-89 grade: 11.264 x 65/85 = 8.61 -> 8.5 t (half-ton rounding).
+    assert.equal(await pg.textContent("#lime-base"), "11 ton");
+    assert.equal(await pg.textContent("#lime-ag"), "8.5 ton");
     const c0 = await cost(pg);
-    assert.ok(!/\$\d/.test(c0), "no dollar figure for aglime without the reader's price: " + c0);
+    assert.ok(!/\$\d/.test(c0), "no dollar figure for lime without the reader's price: " + c0);
     assert.ok(!/pelletized/.test(c0), c0);
     assert.equal(c0, "Type your $/ton to see cost");
-    // Reader types $40/ton spread: 2.2667 t x $40 = $90.67 -> $91/ac.
+    // Reader types $40/ton spread: 8.5 t x $40 = $340/ac.
     await pg.fill("#lime-price", "40");
-    assert.equal(await cost(pg), "$91/ac at your $40/ton");
-    // 90% CCE: 1.7/0.90 = 1.889 t x $40 = $75.56 -> $76.
-    await pg.selectOption("#lime-cce", "90");
-    assert.equal(await cost(pg), "$76/ac at your $40/ton");
-    // 98% pelletized with no price typed: no live lime price exists, so no number.
+    assert.equal(await cost(pg), "$340/ac at your $40/ton");
+    // 90-99 grade (NI 95): 11.264 x 65/95 = 7.71 -> 7.5 t x $40 = $300.
+    await pg.selectOption("#lime-ni", "95");
+    assert.equal(await cost(pg), "$300/ac at your $40/ton");
+    // No price typed: no live lime price exists, so no number.
     await pg.fill("#lime-price", "");
-    await pg.selectOption("#lime-cce", "98");
     assert.equal(await cost(pg), "Type your $/ton to see cost");
-    // 98% pelletized at the reader's $300: 1.7/0.98 = 1.7347 t x $300 = $520.41 -> $520.
-    await pg.fill("#lime-price", "300");
-    assert.equal(await cost(pg), "$520/ac at your $300/ton");
+    // 60-69 grade at the reader's $25: 11 t x $25 = $275.
+    await pg.selectOption("#lime-ni", "65");
+    await pg.fill("#lime-price", "25");
+    assert.equal(await cost(pg), "$275/ac at your $25/ton");
     await pg.fill("#lime-price", "");
-    // 60% aglime: still no number without the reader's price.
-    await pg.selectOption("#lime-cce", "60");
     assert.equal(await cost(pg), "Type your $/ton to see cost");
-    // No lime needed.
-    await pg.fill("#lime-buf", "6.8");
+    // No lime needed: water pH 6.7 is within 0.2 of the 6.8 target.
+    await pg.fill("#lime-wph", "6.7");
     assert.equal(await cost(pg), "None needed");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
