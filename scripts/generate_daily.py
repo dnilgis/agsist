@@ -2789,7 +2789,7 @@ def render_byline_block_html():
     # and Google asks that automation be evident to the reader.
     return ('<div class="dv3-byline">'
             'By <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA). '
-            'Software drafts it from the morning&rsquo;s market data and news, under my rules, '
+            'Software drafts it in my voice, from my own example issues and my rules, using the morning&rsquo;s market data and news, '
             'and code checks its prices against the market feed before it posts. '
             '<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>. '
             'Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
