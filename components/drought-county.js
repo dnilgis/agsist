@@ -87,7 +87,7 @@
         li.push(part+': '+inch(x[0])+(x[1]!=null?', usual '+inch(x[1]):'')+gap);
       }
       return head+'<p style="margin:0 0 .2rem">'+t+'</p>'+(li.length?'<ul style="margin:.1rem 0 .2rem;padding-left:1.1rem">'+li.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'')
-        +'<p style="margin:0 0 .6rem;font-size:.8rem;color:var(--text-muted)">One '+gauge+(c.missing?', which missed '+c.missing+' days this year':'')+'. Usual is the 1991-2020 normal (NOAA) added up over the days it reported. Daily records via RCC-ACIS.</p>';
+        +'<p style="margin:0 0 .6rem;font-size:.8rem;color:var(--text-muted)">One '+gauge+(c.missing?', which missed '+c.missing+(c.missing===1?' day':' days')+' this year':'')+'. Usual is the 1991-2020 normal (NOAA) added up over the days it reported. Daily records via RCC-ACIS.</p>';
     }
     function missingYears(d){
       if(d.missing_years)return d.missing_years.map(Number);
