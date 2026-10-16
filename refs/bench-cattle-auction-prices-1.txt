@@ -1,0 +1,94 @@
+# Benchmark cattle-auction-prices: USDA AMS National Weekly Feeder & Stocker Cattle Summary
+# https://www.ams.usda.gov/mnreports/LSWNFSS.pdf
+# fetched 2026-10-16T15:43:50Z, sha256 a3e633843b47f5af731a29be4b4e5bf344c2e591d9797364fb01cbd9d0929bf8
+
+NATIONAL WEEKLY FEEDER & STOCKER CATTLE SUMMARY              USDA LIVESTOCK, POULTRY & GRAIN MARKET NEWS
+St. Joseph, Missouri      Monday, April 6, 2026       for w/e Saturday, 04/04/26. Email: stjoe.lpgmn@usda.gov
+Receipts:      This Week  Last Week          Year Ago                         CME FEEDER CATTLE INDEX ($/CWT)
+SJ_LS850        243,500     251,400          232,700                  $400
+                                                                                                       $380
+  Compared to last week, steers and heifers sold 2.00 to 8.00 higher. Demand was                       $360
+ good to very good nationwide as buyers were hungry to take on inventory as cash fed                   $340
+                                                                                                       $320
+ cattle moved higher again this week. As the cattle futures contracts continued to rise,               $300
+ so did cattle producers’ optimism that the fat cattle market would improve. The CME                   $280
+                                                                                                       $260
+ Cattle Complex is nearing all-time highs for listed contracts after lower markets this                $240
+ winter. This Friday was Good Friday and some auctions in the North Plains didn’t have                 $220
+ sales on account of the holiday or a winter storm curtailed movement of stock in the                  $200
+                                                                                                       $180
+ Dakotas. Offerings are now including fall calves, old crop spring calves and yearling                           J           F           M       A       M       J        J        A       S   O      N        D
+
+ cattle as some of this week's offerings might have been slated for summer turnout but                                                   2026                        2025                      5 YR AVG
+ with the state in a drought some cattlemen have opted to sell their grass cattle to
+ preserve their pastures for later use when the rains come along. There continues to be
+ some variability especially with the fall calves coming to town now as health, fleshiness                               NATIONWIDE REPORTED WEEKLY FEEDER
+ and weaning programs are playing a factor in where bidding ends. Ranchers are willing                                        CATTLE AUCTION RECEIPTS
+ to pay up for those that they will get some compensatory gain from. In Kansas and                                       (Receipts vary depending on the number of auctions
+ TX/OK/NM, the negotiated sales finished the week 7.00 to mostly 8.00 higher at 245.00                     400                               reported)
+ to 246.00. Sales in Nebraska were 10.00 higher on a live basis at 245.00, while
+ dressed sales were 13.00 higher at 385.00. Choice boxed beef closed on Friday at                          300
+
+
+
+
+                                                                                               Thousands
+ 387.78, 5.19 lower and Select closed at 386.19, 3.68 lower when compared to last
+ week. Weekly Cattle Slaughter under federal inspection estimated at 533K, 10K more                        200
+ than last week and 53K less than a year ago. Auction volume this week included 56
+ percent weighing over 600 lbs and 42 percent heifers.                                                     100
+
+
+                                                                                    More……..                0
+                                                                                                                     J           F       M       A       M       J        J     A      S       O      N    D
+                        REGIONAL WEIGHTED AVERAGE                                                                                            2025                             2026                     5 Yr Avg
+                                   FEEDER STEER PRICES
+NORTH CENTRAL REGION
+                                                                                                                             YEAR TO DATE AUCTION RECEIPTS
+                                                                                                           32
+   Steers:              This Week              Last Week                    Last Year
+    600-700 lbs           $448.05                $439.66                     $344.50
+                                                                                                x 100000
+
+
+
+
+                                                                                                           30
+
+     700-800 lbs           $398.48               $392.34                     $310.03
+                                                                                                           28
+
+     800-900 lbs           $365.05               $361.46                     $285.51
+                                                                                                           26
+                                                                                                                                 2026 YTD                            2025 YTD                       5 Yr Avg
+SOUTH CENTRAL REGION
+
+   Steers:              This Week              Last Week                    Last Year                                            5 AREA WEEKLY WEIGHTED AVERAGE
+    500-600 lbs           $486.07                $484.71                     $370.42                                                  SLTR STEER PRICE ($/CWT)
+
+                                                                                                  $260
+     600-700 lbs           $425.69               $422.03                     $329.44              $250
+                                                                                                  $240
+                                                                                                  $230
+                                                                                                  $220
+     700-800 lbs           $382.69               $377.70                     $295.51              $210
+                                                                                                  $200
+                                                                                                  $190
+                                                                                                  $180
+                                                                                                  $170
+SOUTHEAST REGION                                                                                  $160
+                                                                                                  $150
+                                                                                                             J           F           M       A       M       J        J        A       S       O      N       D
+
+   Steers:              This Week              Last Week                    Last Year                                                    2026                        2025                          5 YR AVG
+    400-500 lbs           $521.33                $517.74                     $387.72
+                                                                                                    USDA Livestock, Poultry, & Grain Market News
+     500-600 lbs           $470.85               $464.08                     $347.86                            St. Joseph, Missouri
+                                                                                                               Phone: 202-720-1990
+     600-700 lbs           $408.42               $410.38                     $314.96
+***Starting on April 13, 2026 this pdf report will be discontinued and a National Feeder &
+Stocker Cattle Dashboard will be available at:
+   https://mymarketnews.ams.usda.gov/National_Feeder_Stocker_Dashboard
+              For detailed state-by-state feeder cattle quotes:
+              State Feeder & Replacement Cattle Summaries                                                  http://www.ams.usda.gov/LSMarketNews
+

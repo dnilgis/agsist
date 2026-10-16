@@ -1,0 +1,262 @@
+# Benchmark cattle-auction-prices: cattle.com barn reports
+# https://www.cattle.com/markets/barn_report_new.aspx?id=1714
+# fetched 2026-10-16T15:43:54Z, sha256 bce33369384025a34dfb573c30b232ac8af9415236b6dc865d893edc2837883d
+
+Cattlemen's Livestock Auction | 7/13/2023 | Cattle.com Market Reports
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Cattlemen's Livestock Auction
+
+- Cattle.com
+
+- Market Reports
+
+- Texas
+
+- Cattlemen's Livestock Auction
+
+Most Recent Report
+
+7/13/2023
+
+Total Run: 2,898
+
+Market Notes
+
+Compared to two weeks ago: Feeder Steers did not have enough comparable sales to call a trend but generally higher prices were noted. Feeder Heifers traded 5.00 to 10.00 higher. There were not enough comparable sales on steer or heifer calves to call a market trend. Slaughter Cows traded mostly steady. Slaughter Bulls traded 5.00 higher. Trading was active on good buyer demand.
+
+Supply included: 79% Feeder Cattle (41% Steers, 58% Heifers, 1% Bulls); 21% Slaughter Cattle (99% Cows, 1% Bulls). Feeder cattle supply over 600 lbs was 83%. AUCTION This Week Last Reported 6/29/2023 Last Year Total Receipts: 2,898 1,501 2,509 Feeder Cattle: 2,293(79.1%) 981(65.4%) 1,091(43.5%) Slaughter Cattle: 605(20.9%) 520(34.6%) 1,418(56.5%)
+
+Feeder Steers
+
+Weight
+Min
+Avg
+Max
+Approx*
+
+200-300
+255
+261
+263
+
+$651
+
+300-400
+314
+322
+325
+
+$1,128
+
+400-500
+300
+314
+330
+
+$1,413
+
+500-600
+291
+296
+299
+
+$1,630
+
+600-700
+242
+253
+264
+
+$1,643
+
+700-800
+233
+242
+243
+
+$1,817
+
+Feeder Heifers
+
+Weight
+Min
+Avg
+Max
+Approx*
+
+200-300
+
+$--
+
+300-400
+280
+289
+295
+
+$1,010
+
+400-500
+273
+286
+302
+
+$1,285
+
+500-600
+245
+269
+277
+
+$1,477
+
+600-700
+236.5
+240
+241.5
+
+$1,563
+
+700-800
+224
+226
+229
+
+$1,692
+
+*Approx is the middle weight of the weight group multiplied by the mid point of the high and low for the group. It's meant as a quick method to see what cattle of that weight class are bringing per head.
+
+Cows & Bulls
+
+Type
+Min
+Avg
+Max
+
+Slaughter Bulls
+$106
+$118
+$120
+
+2023-06-29
+
+View Full Report
+
+Past Reports
+
+- 2020
+
+- 2020
+
+- 2020
+
+- 2020
+
+Location
+
+Dalhart, Texas
+
+2020 Cattle.com. All Rights Reserved.
+
+Privacy Policy|Site Terms & Disclosures
+
+- Home
+
+- Back to top

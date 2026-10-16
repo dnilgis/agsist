@@ -1,0 +1,820 @@
+# Benchmark cattle-auction-prices: Oklahoma Dept of Agriculture market report
+# https://ag.ok.gov/wp-content/uploads/2026/01/mkrp01132026.pdf
+# fetched 2026-10-16T15:44:09Z, sha256 8287eb80e1127eefd799bbeaddacbfaa10504ad0faf9de1bfa71c5f7582a9d44
+
+2800 N. Lincoln Blvd. Oklahoma City, OK 73105                                    Oklahoma Department of Agriculture, Food & Forestry
+
+
+                                                                                     OKLAHOMA
+January 13, 2026 Vol. 74 No. 2
+Kevin Stitt, Governor
+
+                                                                                   MARKET REPORT
+Blayne Arthur, Commissioner
+Meriruth Cohenour, Market Development Director
+Brady Womack, Market Reporter
+
+
+                     Oklahoma National Stockyards                          #2 Grain                            #11 El Reno Livestock
+                                                                           #3 Livestock Summary                #12 Beaver Livestock
+                               1-13-26                                     #4 Fed Cattle                       #13 Tulsa Livestock
+                                                                           #5 Sheep Report                     #14 Woodward Livestock
+Receipts: 11,549 Last Reported : 9,266 Year Ago: 7,909                     #6 Hay Report
+Compared to last week: Feeder steers mostly steady to 2.00 lower. Feed-    #7 Ada Livestock
+er heifers steady to 4.00 higher. Steer calves 8.00-12.00 higher. Heifer   #8 Apache Livestock
+calves mostly steady.                                                      #9 McAlester Livestock
+                                                                           #10 OKC Livestock
+ Feeder Steers Medium and Large 1
+Head      Wt Range     Avg Wt Price Range             Avg Price             For 24-hour statewide market information, dial 405-621-5533 and press
+ 12       294-297      296       615.00-625.00        620.03                                      the report number above
+ 31       321-342      329       610.00-635.00        629.31
+ 22       373-389      380       567.50-610.00        590.86
+                                                                            This report along with archived reports, current market prices, and
+ 69       415-449      439       500.00-555.00        529.67
+ 79       402-441      428       580.00-610.00        593.37                       other available state reports are accessible online at:
+132       470-499      487       477.50-545.00        510.12                        https://ag.ok.gov/current-years-market-reports/
+ 54       462-470      466       557.50-582.00        572.97
+299       507-549      535       447.00-535.00        493.95
+118       500-540      530       520.00-559.00        535.69                 Oklahoma National Stockyards, Oklahoma City, OK Cows and
+   9        536        536          442.00            442.00                                                 Bulls
+ 27         501        501          564.00            564.00                                                1-6-26
+432       551-598      580       427.50-523.00        450.72               Compared to last week: Slaughter cows 2.00-4.00 higher. Slaughter
+ 89       556-578      573       502.00-540.00        516.06               bulls 7.00-8.00 higher. Packer demand good following the holiday peri-
+ 14       560-573      565       400.00-425.00        415.94               od. A total of 496 cows and bulls sold.
+367       602-648      622       391.00-460.00        425.64               Slaughter Cows: Average Dress           High Dress      Low Dress
+135       620-628      622       464.00-473.00        469.56               Breakers             155.00-165.00         167.00       129.00-155.00
+ 41       625-641      633          390.00            390.00               Boners               150.00-161.00      161.00-166.00   125.00-148.00
+946       651-699      680       378.00-426.00        396.81               Lean                 142.00-146.00         154.00       119.00-130.00
+ 20         663        663          444.00            444.00               Slaughter Bulls: Average Dress          High Dress      Low Dress
+ 41         652        652          447.00            447.00               Y.G. 1-2             139.00-142.00        143.00        106.00-134.00
+330       702-744      730       359.00-395.00        375.56
+   9        701        701          343.00            343.00               BRED COWS - Medium and Large 1
+627       751-794      779       348.00-370.00        360.05               Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+499       803-846      820       337.50-365.00        347.36               2-4 T1     1      1045   1045      2700.00        2700.00
+ 22         814        814          369.00            369.00               2-4 T2     5   995-1600 1185 2450.00-2950.00 2683.94
+223       861-898      873       324.00-347.50        336.92               5-8 T1     15 1307-1415 1393 2145.00-2900.00 2758.36
+   8        870        870          320.00            320.00               5-8 T2     2   1425-1475 1450 2700.00-3150.00 2928.88
+218       919-942      929       318.00-334.00        327.05               5-8 T2-3 30 1065-1124 1089 3000.00-3600.00 3260.89
+161       968-980      972       313.00-321.00        318.36                >8 T1     6      1277   1277      2200.00        2200.00
+ Feeder Heifers Medium and Large 1                                          >8 T2-3 27 1134-1169 1150 2375.00-2400.00 2392.69
+Head      Wt Range     Avg Wt Price Range             Avg Price             >8 T3     3      1353   1353      2100.00        2100.00
+   8        336        336          570.00            570.00               COW-CALF PAIRS - Medium and Large 1 w/150-300lbs calf
+  35      358-398      377       480.00-530.00        508.33               Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+  21        361        361          575.00            575.00                -    -    -       ---    ---      ----            ----
+144       400-448      430       460.00-505.00        477.88
+   4        416        416          440.00            440.00
+300       450-499      479       435.00-492.00        451.04
+  31        455        455          491.00            491.00
+  29      455-499      478       405.00-430.00        415.91
+  26        465        465          459.00            459.00
+288       502-546      528       387.00-447.50        414.33
+   6        528        528          380.00            380.00
+679       550-599      570       360.00-422.00        401.52
+458       602-643      629       352.00-397.00        378.54
+389       653-699      675       342.00-380.00        360.89
+   3        663        663          349.00            349.00
+126       703-747      730       332.00-353.00        340.70
+  76      706-722      712       360.00-368.00        364.45
+199       750-796      774       328.00-357.00        337.89               Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+  96      806-818      811       315.00-327.00        324.34               = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+  71      860-883      864       309.50-310.50        310.22               T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+  13        854        854          313.00            313.00               months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+   7        954        954          299.00            299.00               months; E = Exposed; B = Bred)
+   9        1073       1073         265.00            265.00
+          PRICES PAID TO PRODUCERS:
+                                                                                      SOYBEANS       MILO             CORN
+          WHEAT        Wednesday      Thursday     Friday     Monday    Tuesday       (bu.)          (bu.)            (bu.)
+                         (1-7)        (1-8)        (1-9)      (1-12)    (1-13)        (1-13)         (1-13)           (1-13)
+          Alva            4.46            4.45     4.45        4.42     4.34          9.34           3.20
+          Banner          4.56            4.60     4.60        4.57     4.49
+          Buffalo         4.41            4.40     4.40        4.37     4.29          9.19           3.15
+          Cherokee        4.61            4.60     4.60        4.57     4.49
+          Clinton         4.51            4.50     4.50        4.47     4.39
+          Davis           4.06            4.05     4.05        4.02     3.94
+          El Reno         4.51            4.50     4.50        4.47     4.39
+          Eldorado        4.36            4.35     4.35        4.32     4.24
+          Frederick       4.41            4.40     4.40        4.37     4.29
+          Geary           4.51            4.50     4.50        4.47     4.39
+          Hobart          4.41            4.40     4.40        4.42     4.34                         3.05
+          Hooker          4.41            4.40     4.40        4.37     4.29          9.14           3.20             4.10
+          Keys            4.41            4.40     4.40        4.37     4.29                         3.15             4.10
+          Lawton          4.46            4.45     4.45        4.42     4.34                         ---              4.00
+          Manchester      4.51            4.50     4.50        4.47     4.39          9.34           3.15             3.75
+          Medford         4.51            4.50     4.50        4.47     4.39          9.34           3.20             3.70
+          Okarche         4.51            4.50     4.50        4.47     4.39
+          Okeene          4.46            4.45     4.45        4.42     4.34
+          Perry           4.51            4.50     4.50        4.47     4.39
+          Ponca City      4.51            4.50     4.50        4.47     4.39          9.34           3.20             3.70
+          Shattuck        4.61            4.60     4.60        4.57     4.49          9.39           3.45             4.30
+          Stillwater      4.51            4.50     4.50        4.47     4.39          9.40
+          Temple          4.71            4.70     4.70        4.67     4.59
+          Watonga         4.51            4.50     4.50        4.47     4.39
+          Weatherford     4.46            4.50     4.50        4.47     4.39          9.24           3.10             3.90
+          GULF Export 6.41 1/2            6.40 1/4 6.40 1/4    6.36 3/4 6.29 1/2
+
+
+               Oklahoma Direct Feeder Cattle Trade                                           WEEKLY FEEDSTUFFS
+                            1-9-26                                                                 1-9-26
+
+Receipts: 3,288 Last Reported 630 Last Year 5,556                                                           Prices per ton     Kansas City
+Compared to last week: Feeder steers 800-900lbs steady. Feeder heif-    Soybean Meal 46.5-48% Ask               298.60            UP1.30
+ers 800-900lbs 4.00 higher Demand good.
+                                                                        Soybean Hulls Ask                       120.00             UP5.00
+ Feeder Steers Medium and Large 1
+   Head Wt Range Avg Wt Price Range Avg Price Comments                  Soybean Hulls-Pellets Ask               180.00       UP45.00-UNCH
+900          630     630      405.22    405.22 Current FOB
+ 75          700     700      363.13    363.13                          Corn Gluten Feed Pellets 21% Ask 207.00-225.00 UNCH-DN3.00
+300          895     895      333.70    333.70
+ Feeder Heifers Medium and Large 1                                      Dehydrated Alfalfa Ask              345.00-375.00          UNCH
+   Head      Wt Range Avg Wt Price Range Avg Price Comments
+500          625     625      376.97     376.97 Current FOB             Cottonseed Meal 41% Ask             295.00-315.00 UNCH-UP20.00
+275          725     725 337.00 - 343.00 340.05
+ 60          810     810      323.00     323.00                         Wheat Middling Ask Truck            220.00-240.00 DN100.00-DN90.00
+240          850     850      324.25     324.25
+725          600     600      367.90     367.90 Jan - Feb FOB           Wheat Middling Ask Rail             180.00-190.00          DN20.00
+ 63          775     775      322.50     322.50 Feb FOB
+150          650     650      350.50     350.50 Apr FOB
+
+
+
+                                                                                             South Central Region Eggs
+                                                                        Prices to retailers sales to volume buyers, USDA Grade A and Grade A
+                                                                                       white eggs in cartons, CENTS PER DOZEN
+                                                                                     PRICES DELIVERED TO WAREHOUSE:
+
+                                                                        EGG PRICES           DATE    RANGE           DATE        RANGE
+                Daily Spot Cotton Quotations
+               Grade41, Leaf4, Staple34 Cotton
+      Southwestern Oklahoma Averaged Cents Per Pound                    A EXTRA LARGE (1-2)          110.50-119.00(1-9)          86.50-95.00
+
+              Wednesday          (1-7)             60.10                A LARGE              (1-2)   103.50-112.00(1-9)          79.50-88.00
+              Thursday           (1-8)             59.71
+              Friday             (1-9)             59.66                A MEDIUM             (1-2)   55.50-68.00(1-9)            47.50-56.00
+              Monday             (1-12)            60.16                                    SOUTHERN PLAINS
+              Tuesday            (1-13)            60.13                              SLAUGHTER STEERS & HEIFERS
+                                                                                          Friday 1-9-26:229.00-232.00
+      Southern Oklahoma Livestock Auction, Ada Oklahoma                        Southern Oklahoma Livestock Cow and Bull Sale Ada, OK
+                           1-7-26                                                                     1-8-26
+
+Receipts: 2,672 Last Reported: 1,745 Year Ago: 1,216                       Compared to last sale in December. Slaughter Cows steady to 5.00 high-
+Compared to last sale in December. Steers 10.00 to 25.00 higher. Heifers   er. Slaughter Bulls 3.00 to 8.00 lower. Good demand for replacement
+steady to 10.00 lower. Quality plain to average.                           and stock cows. Cows. A total of 581 cows and bulls sold
+
+Feeder Steers Medium and Large 1                                           Slaughter cows:    Average Dress      High Dress         Low Dress
+Head     Wt Range     Avg Wt Price Range              Avg Price            Breakers            165.00-167.00         ----           156.00-164.00
+  5      200-240      228          600.00             600.00               Boners              154.00-159.00     160.00-166.00      147.00-153.00
+  6      265-285      272       600.00-625.00         616.56               Leans               134.00-139.00     140.00-147.00      129.00-133.00
+  1        320        320          605.00             605.00               Slaughter Bulls:    Average Dress     High Dress         Low Dress
+ 18      355-371      368          625.00             625.00               Y.G. 1-2           175.00-189.00         190.00         130.00-170.00
+  6      414-420      415       485.00-515.00         509.94
+ 16        481        481          523.00             523.00               BRED COWS - Medium and Large 1-2
+ 25      505-548      524       470.00-497.50         484.33               Age Stage Head Wt Range Avg Wt Price Range      Avg Price
+  8      502-538      515       442.50-465.00         454.14               2-4 T1     5   820-1125 1012 2200.00-3150.00     2786.02
+  6      555-568      562       440.00-450.00         444.94               2-4 T2     6   805-1355 993 1950.00-3500.00      2670.93
+ 28      602-648      630       422.50-430.00         425.63               2-8 T3     1      1050   1050      2750.00       2750.00
+  6        625        625          390.00             390.00               5-8 T1     28 910-1475 1131 1760.00-3100.00      2375.26
+ 32      708-747      715       370.00-375.00         372.62               5-8 T2     34 875-1450 1171 1900.00-3600.00      2827.74
+  1        700        700          350.00             350.00               5-8 T3     9   900-1545 1189 1750.00-3550.00     3020.78
+  1        780        780          350.00             350.00                >8 T1     2   1225-1405 1315 1935.00-2275.00    2116.63
+  7        814        814          345.00             345.00                >8 T2     33 920-1395 1179 1505.00-2500.00      1995.69
+  1        945        945          325.00             325.00                >8 T2-3 3        1353   1353      2260.00       2260.00
+ 55        965        965          321.00             321.00                >8 T3     3   1040-1295 1187 1920.00-2750.00    2318.37
+Feeder Heifers Medium and Large 1                                          COW-CALF PAIRS - Medium and Large 1-2w/150-300lbs calf
+Head     Wt Range     Avg Wt Price Range              Avg Price            Age Stage Head Wt Range Avg Wt Price Range      Avg Price
+  9        213        213          525.00             525.00               5-8 O     1      1005   1005       3200.00      3200.00
+  6        257        257          560.00             560.00
+  1        265        265          520.00             520.00
+  2        320        320          510.00             510.00
+  8        416        416          535.00             535.00
+ 34      411-435      420       450.00-480.00         467.39
+ 48      500-542      513       407.50-415.00         412.98
+ 16      502-512      504       400.00-417.50         412.32
+ 24      607-611      610       360.00-365.00         361.04
+ 11      611-627      621       347.50-355.00         350.18
+  4      717-740      723       337.50-340.00         338.14
+ 30        869        869          315.00             315.00
+
+
+
+
+                                                                           Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                           = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                           T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                           months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                           months; E = Exposed; B = Bred)
+                                                                           See previous page for explanatory notes on cows.
+            McAlester Livestock Auction McAlester, OK                                  McAlester Livestock Auction Cows and Bulls
+                              1-7-26                                                                       1-7-26
+                                                                           Slaughter cows; 4.00 to 7.00 lower Slaughter bulls; 2.00 higher A total of
+Receipts 1,871 Last Reported: 750 Year Ago: 610                            271 cows and bulls sold.
+Compared to calf prices on Dec. 16. Steer calves and Heifer calves 20.00
+to 30.00 higher .Demand was very good. Quality was average through         Slaughter cows:    Average Dress       High Dress         Low Dress
+attractive.                                                                Breakers            159.00-164.00      166.00-169.00     151.00-157.00
+                                                                           Boners              160.00-165.00      167.00-173.00     149.00-155.00
+Feeder Steers Medium and Large 1                                           Lean                149.00-154.00      157.00-161.00     139.00-146.00
+Head     Wt Range     Avg Wt Price Range              Avg Price            Slaughter Bulls:    Average Dress      High Dress        Low Dress
+ 13      300-345      327       575.00-625.00         592.61               Y.G. 1-2            179.00-183.00      184.00-188.00     173.00-178.00
+ 13      353-385      374       535.00-550.00         544.05
+ 19      403-440      426       500.00-545.00         527.86               BRED COWS - Medium and Large 1-2
+  5      405-445      420       400.00-440.00         421.97               Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+ 27      455-493      483       480.00-510.00         496.10               -     -    -      ---    ---       ----           ----
+  4      465-488      480       455.00-475.00         470.00               COW-CALF PAIRS - Medium and Large 1-2 w/150-300lbs calf
+ 49      509-548      529       475.00-495.00         482.05               Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+  7      510-543      531       404.00-455.00         424.26               -     -    -      ---    ---       ----           ----
+ 41      560-591      576       440.00-460.00         448.80
+  6      550-596      583       428.00-439.00         430.05
+ 15      602-633      611       428.00-445.00         435.20
+ 16      655-673      670       364.00-385.00         381.65
+ 35      700-749      734       363.00-375.00         367.04
+  6      760-795      769       343.00-360.00         355.10
+  2        800        800          321.00             321.00
+  1        895        895          333.00             333.00
+  6      900-937      923       303.00-329.00         320.09
+Feeder Heifers Medium and Large 1
+Head     Wt Range     Avg Wt Price Range              Avg Price
+ 11      310-348      336       480.00-510.00         488.76
+  4      305-335      328         535.00              535.00
+  2      315-335      325       459.00-471.00         464.82
+ 27      355-396      378       480.00-513.00         491.09
+  5      360-395      378       360.00-415.00         384.40
+ 30      413-448      429       483.00-510.00         493.65
+  5      420-445      437       350.00-439.00         392.16
+ 21      450-488      459       452.00-470.00         461.80
+  5      450-495      469       393.00-448.00         419.78
+ 29      500-549      526       390.00-415.00         399.03
+  5      500-545      529       312.00-380.00         365.99
+ 25      552-595      570       374.00-395.00         387.36
+  3        562        562         415.00              415.00
+  1        565        565         285.00              285.00
+ 46      600-645      622       363.00-385.00         374.31
+  2        635        635         373.00              373.00
+ 52      650-695      676       343.00-360.00         351.51
+  1        675        675         399.00              399.00
+ 11      713-743      729       332.00-345.00         343.01
+ 12      760-794      778       320.00-332.00         327.67
+  1        835        835         297.00              297.00
+  2      850-895      873       285.00-301.00         292.79
+  6      915-938      924       253.00-275.00         267.98
+ 12      955-980      957       270.00-285.00         283.72
+
+
+
+
+                                                                            Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                            = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                            T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                            months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                            months; E = Exposed; B = Bred)
+                                                                            See previous page for explanatory notes on cows.
+            Apache Livestock Auction, Apache, Oklahoma                                    Apache Livestock Auction, Cows and Bulls
+                              1-8-26                                                                         1-8-26
+                                                                             Slaughter cows and slaughter bulls 3.00 to 5.00 higher. A total of 327
+Receipts 3,365 Last Reported: 1,708 Year Ago: 1,653                          cows and bulls sold
+Compared to last sale on Dec. 18: Feeder steers 15.00 to 25.00 higher
+with instances 30.00 higher. Feeder heifers 10.00 to 15.00 higher. Steer     Slaughter Cows: Average Dress          High Dress         Low Dress
+calves 20.00 to 35.00 higher. Heifer calves 10.00 to 30.00 higher. Quality   Breakers         157.00-165.00             ----           138.00-154.00
+average to attractive with very good demand.                                 Boners           151.00-160.00         162.00-171.00      145.00-149.00
+                                                                             Lean                145.00                 ----           107.00-133.00
+Feeder Steers Medium and Large 1                                             Slaughter Bulls: Average Dress         High Dress         Low Dress
+Head      Wt Range     Avg Wt Price Range              Avg Price             Y.G. 1-2            182.00                 ----           141.00-167.00
+   3     265-270       268          700.00             700.00
+ 18      305-340       324       650.00-725.00         680.38                BRED COWS - Medium and Large 1
+ 22      357-397       378       575.00-677.50         610.64                Age Stage Head Wt Range Avg Wt Price Range        Avg Price
+ 52      402-437       417       555.00-600.00         568.95                2-4 T3    6      1220    1220      2800.00        2800.00
+ 37      450-498       473       510.00-545.00         523.35                5-8 T1    6      1415    1415      3000.00        3000.00
+ 60      505-547       522       500.00-553.00         530.36                5-8 T2    21   1260-1310 1293  2850.00-3250.00 3120.10
+ 19      516-526       520       465.00-475.00         472.08                5-8 T3    5      1330    1330      2900.00        2900.00
+ 53      550-595       569       445.00-530.00         497.21                 >8 T2    12     1190    1190      2050.00        2050.00
+   3        581        581          435.00             435.00                >8 T3     13     1170    1170      2630.00        2630.00
+155      600-647       629       416.00-459.50         445.41                COW-CALF PAIRS - Medium and Large 1w/<150lbs calf
+ 48      650-695       662       387.00-453.00         428.06                Age Stage Head Wt Range Avg Wt Price Range        Avg Price
+177      700-744       725       342.00-380.00         368.76                -     -     -     ---     ---      ----            ----
+ 67      768-790       780       349.00-357.00         352.36
+ 37      815-833       824       348.00-357.50         352.72
+ 52      856-882       867       330.00-352.00         342.11
+ 21      902-943       910       325.00-331.50         330.22
+ Feeder Heifers Medium and Large 1
+Head     Wt Range      Avg Wt Price Range              Avg Price
+  30     305-348       328       565.00-605.00         584.20
+  38     356-395       374       485.00-580.00         526.32
+  77     402-446       421       465.00-515.00         490.27
+  57     455-499       479       420.00-470.00         446.64
+   9        491        491         420.00              420.00
+  54     502-535       521       395.00-442.50         424.28
+  14     512-537       521       392.50-417.50         407.61
+122      552-595       573       370.00-410.00         387.16
+   7        560        560         380.00              380.00
+  88     602-640       610       364.00-391.00         381.68
+   3        645        645         345.00              345.00
+  90     651-686       671       340.00-364.00         353.90
+   6        677        677         335.00              335.00
+162      700-742       728       328.00-348.00         339.92
+  33        767        767         334.00              334.00
+  40     801-820       807       322.00-333.00         329.37
+   8     991-998       995       280.00-285.00         282.49
+
+
+
+
+                                                                              Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                              = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                              T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                              months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                              months; E = Exposed; B = Bred)
+                                                                              See previous page for explanatory notes on cows.
+                       Tulsa Livestock Auction                                               Tulsa Livestock Cows and Bulls
+                               1-13-26                                                                   1-13-26
+                                                                        Slaughter cows and Slaughter bulls remained steady with a lighter test
+Receipts: 3,557 Last Reported: 3,924 Year Ago: 1,960                    on bulls. Total of 274 cows and bulls sold.
+Compared to last week: Steers were steady to 6.00 higher. Heifers re-   Slaughter cows: Average Dress          High Dress       Low Dress
+mained steady. Quality overall was average to good.                     Breakers             160.00-172.50     177.00-185.00         ----
+                                                                        Boners               140.00-159.00          165.00      132.00-138.00
+Feeder Steers Medium and Large 1                                        Leans                122.00-127.50           ----           117.00
+Head     Wt Range      Avg Wt Price Range              Avg Price        Slaughter Bulls: Average Dress         High Dress       Low Dress
+   2     230-235       233       620.00-680.00         650.32           Y.G. 1-2            163.00-180.00     184.00-204.00          ----
+ 19      263-288       280       632.50-695.00         677.57
+ 22      306-320       309       642.50-685.00         659.46           BRED COWS - Medium and Large 1
+   6     303-341       328       590.00-617.50         598.46           Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+ 19      355-390       366       569.00-617.50         593.32           2-4 T1     4   910-1215 1028 2400.00-2700.00       2541.00
+ 29      375-398       386       543.00-575.00         551.36           2-4 T2     1      1065   1065      3000.00         3000.00
+ 68      400-447       420       527.00-595.00         563.34           2-4 T3     1      990    990       2850.00         2850.00
+ 38      400-445       429       515.00-537.50         524.57           2-8 T3     1      1065   1065      2850.00         2850.00
+125      456-499       470       500.00-537.50         520.26           5-8 T1     3   1035-1100 1072 2600.00-2800.00      2702.02
+   1        450        450          517.50             517.50           5-8 T2     10 945-1570 1166 2500.00-3000.00        2775.61
+106      500-528       518       497.00-523.00         507.09           5-8 T3     4   1025-1240 1119 2500.00-3100.00      2682.07
+ 32      511-540       534       452.50-483.00         462.85            >8 T1     3   1105-1190 1143 1700.00-1975.00      1827.62
+ 65      553-593       569       415.00-469.00         447.11            >8 T2     7   1110-1480 1202 2025.00-2900.00      2329.36
+146      600-648       627       403.00-457.00         425.78            >8 T3     3   1190-1375 1268 2450.00-2700.00      2531.47
+   6        639        639          401.00             401.00           COW-CALF PAIRS - Medium and Large 1 w/<150lbs calf
+ 43      661-698       689       366.00-396.00         390.72           Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+   2     665-695       680       340.00-360.00         350.22           5-8 T1    1       950   950     3400.00          3400.00
+ 23      708-741       719       361.00-389.00         378.46
+ 32      758-798       780       330.00-362.50         357.65
+ 12      805-846       834       354.00-371.00         357.77
+   7     850-898       891          320.00             320.00
+ Feeder Heifers Medium and Large 1
+Head     Wt Range      Avg Wt Price Range              Avg Price
+   6     229-245       232       515.00-535.00         531.47
+  10     273-288       279       532.50-537.50         534.24
+   5        275        275       527.50-550.00         536.50
+  27     300-345       324       500.00-567.50         538.42
+  11     310-345       323       500.00-547.50         535.39
+  83     352-398       367       501.00-555.00         527.73
+   3     378-390       382       470.00-487.00         481.21
+  45     405-442       418       480.00-511.00         487.45
+  22     420-445       434       450.00-480.00         468.35
+  80     450-498       467       422.00-485.00         452.91
+  26     450-499       483       400.00-460.00         420.94
+103      505-540       522       401.00-443.00         424.97
+  85     550-597       576       381.00-419.00         403.54
+   3     573-580       575          350.00             350.00
+  79     605-647       629       349.00-390.00         366.65
+   2     600-630       615       325.00-347.00         336.27
+  16     650-692       671       320.00-347.00         328.50
+   1        650        650          343.00             343.00
+  24     715-743       733       300.00-325.00         318.76
+   5     755-768       760       310.00-311.00         310.60
+   4     800-845       813       270.00-299.00         286.93
+   2     870-885       878       269.00-280.00         274.55
+   1        915        915          298.00             298.00
+   1        985        985          277.00             277.00
+
+
+
+
+                                                                        Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                        = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                        T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                        months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                        months; E = Exposed; B = Bred)
+                                                                        See previous page for explanatory notes on cows.
+                    Woodward Livestock Auction                                           Woodward Livestock Auction Cows and Bulls
+                             1-8-26                                                                           1-6-26
+                                                                            Compared to the last slaughter cow sale December 16th: Slaughter cows
+Receipts: 1,748 Last Reported: 1,543 Year Ago: 1,150                        2.00 to 4.00 lower. Slaughter bulls steady. Demand was moderate. A total
+Compared to last sale December 18th: Feeder steers 6.00 to 10.00 high-      of 437 cows and bulls sold.
+er. Feeder heifers 8.00 to 12.00 higher. Steer and heifer calves unevenly   Slaughter Cows: Average Dress           High Dress      Low Dress
+steady. Demand moderate to active. Quality average to good.                 Breakers             158.00-165.00      169.00-170.00   154.00-157.00
+                                                                            Boners               155.00-156.00      159.00-162.00   152.00-155.00
+Feeder Steers Medium and Large 1                                            Lean                 147.00-155.00          ----        143.00-144.00
+Head     Wt Range     Avg Wt Price Range                Avg Price           Slaughter Bulls: Average Dress          High Dress      Low Dress
+  6       328        328          602.00                 602.00             Y.G. 1-2             169.00-178.00      181.00-189.00   158.00-163.00
+  8     423-448      436       530.00-565.00             548.00
+ 18     400-423      407       530.00-560.00             539.11             BRED COWS - Medium and Large 1
+ 27       481        481          535.00                 535.00             Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+  7     455-492      476       445.00-485.00             468.62             2-4 T2     1      1395   1395      3000.00         3000.00
+ 14     500-531      518       455.00-495.00             462.71             5-8 T2     8   1000-1302 1222 2600.00-3050.00 2878.14
+  9     501-545      523       445.00-465.00             454.00              >8 T2     60 1087-1440 1185 2025.00-2650.00 2348.50
+  9     567-572      571       419.00-422.00             419.66              >8 T3     4   1150-1399 1292 2400.00-3100.00 2826.20
+ 26       553        553          479.00                 479.00             COW-CALF PAIRS - Medium and Large 1 w/<150lbs calf
+  5       594        594          414.00                 414.00             Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+ 51     600-638      624       390.00-425.00             409.39             5-8 O     1      1120   1120       2850.00       2850.00
+ 22       617        617          439.00                 439.00              >8 O     1      1170   1170       3000.00       3000.00
+  8     607-637      630       385.00-389.00             385.96
+ 38     658-699      673       364.00-387.00             377.41
+  3       698        698          359.00                 359.00
+ 85     710-742      732       361.00-379.50             373.92
+ 47     753-792      777       346.00-360.00             353.73
+  6       849        849          337.00                 337.00
+ 22       864        864          337.00                 337.00
+ 67     936-947      947       316.50-336.00             335.14
+ 25     1029-1040    1031      309.50-310.25             310.10
+Feeder Heifers Medium and Large 1
+Head     Wt Range     Avg Wt Price Range                Avg Price
+  9       342        342          525.00                 525.00
+ 22     300-348      331       490.00-540.00             496.17
+ 20     379-396      389       435.00-460.00             447.11
+ 32     411-417      414       445.00-475.00             459.07
+ 11       423        423          452.00                 452.00
+  9     481-498      489       380.00-407.00             390.11
+ 37     453-465      463       382.00-430.00             407.50
+ 23     510-520      517       425.00-445.00             439.86
+ 14     526-538      531       342.00-377.00             363.90
+ 47     571-595      583       352.00-369.00             364.93
+ 36     552-563      558       402.00-404.00             403.07
+ 17     578-590      580          340.00                 340.00
+ 97     605-642      635       356.50-375.00             364.61
+ 15       601        601          384.00                 384.00
+  9     600-602      601          340.00                 340.00
+ 23     658-695      678       339.00-354.00             346.07
+  8       684        684          320.00                 320.00
+ 40     711-737      726       329.00-347.50             344.61
+  3       706        706          291.00                 291.00
+ 17     803-808      804       324.00-326.00             324.47
+  7       895        895          305.00                 305.00
+
+
+
+
+                                                                              Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                              = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                              T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                              months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                              months; E = Exposed; B = Bred)
+                                                                              See previous page for explanatory notes on cows.
+                      OKC West El Reno, OK                                                   OKC West Cows and Bulls
+                         1-6-26/1-7-26                                                                1-12-26
+                                                                        Compared to last week: Slaughter cows steady to 4.00 lower. Slaughter
+Receipts: 10,128 Last Reported: 8,162 Year Ago: 6,848                   4.00 lower. Demand for replacement cattle very good. A total of 612
+Compared to last sale: Feeder steers over 750lbs 10.00-15.00 higher,    cows and bulls sold.
+under 750lbs 15.00-20.00 higher. Feeder heifers over 750lbs steady to
+5.00 higher, under 750lbs 5.00-10.00 higher. Feeder demand good.        Slaughter Cows: Average Dress          High Dress         Low Dress
+Steer calves 25.00-35.00 higher, except 500-600lbs 8.00-16.00 higher.   Breakers         160.00-162.50            170.00         145.00-157.50
+Heifer calves 15.00-25.00 higher. Calf demand extremely good            Boners           152.50-162.50             ----          140.00-150.00
+                                                                        Lean             150.00-157.50            160.00         130.00-145.00
+Feeder Steers Medium and Large 1                                        Slaughter Bulls: Average Dress         High Dress        Low Dress
+Head     Wt Range      Avg Wt Price Range             Avg Price         Y.G. 1-2         178.00-192.00            195.00         160.00-177.50
+  9         252        252          670.00            670.00
+ 32      305-334       330       625.00-650.00        628.66            BRED COWS - Medium and Large 1
+  3         318        318          600.00            600.00            Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+ 25      379-396       387       580.00-600.00        593.65            2-4 T1     1      970    970       2200.00        2200.00
+100      400-438       424       550.00-590.00        568.37            2-4 T2     3   915-1250 1048 2600.00-3100.00 2785.21
+  5         407        407          530.00            530.00            5-8 T2     6   1128-1585 1284 2900.00-3500.00 3176.13
+246      456-497       480       520.00-560.00        534.14            5-8 T3     4   1160-1300 1256 3200.00-3500.00 3321.00
+ 11         456        456          605.00            605.00             >5 T2     1      1490   1490      2400.00        2400.00
+  6      454-488       465       450.00-480.00        460.49             >5 T2-3 13       1278   1278      2350.00        2350.00
+141      505-544       525       475.00-520.00        490.82             >8 T2     29 940-1330 1173 2000.00-2450.00 2221.90
+  7         506        506          545.00            545.00             >8 T2-3 10 973-1136 1087 2100.00-2200.00 2173.15
+  9      505-528       515       450.00-455.00        452.28             >8 T3     1      1085   1085      2000.00        2000.00
+156      551-597       581       435.00-475.00        459.49            COW-CALF PAIRS - Medium and Large 1w/150-300lbs calf
+ 36         566        566          537.50            537.50            Age Stage Head Wt Range Avg Wt Price Range       Avg Price
+  3         555        555          400.00            400.00            5-8 O     1      900    900        3400.00       3400.00
+ 25         557        557          510.00            510.00
+  3         565        565          420.00            420.00
+297      600-648       620       400.00-445.00        424.98
+ 40         601        601          460.00            460.00
+ 16         616        616          455.00            455.00
+380      650-695       672       380.00-420.00        398.09
+ 12         658        658          430.00            430.00
+463      702-746       718       362.50-397.50        374.78
+ 10         706        706          405.00            405.00
+649      752-797       777       354.00-371.00        362.69
+668      800-848       824       344.00-369.00        355.94
+444      855-895       873       340.50-349.00        345.55
+331      908-946       919       327.50-344.50        336.37
+226      960-993       974       312.50-332.00        321.61
+ 76      1000-1038     1028      313.50-325.00        316.59
+ 81         1073       1073         295.50            295.50
+ Feeder Heifers Medium and Large 1
+Head     Wt Range      Avg Wt Price Range             Avg Price
+ 16         338        338         620.00             620.00
+ 17      311-338       316      540.00-570.00         564.33
+ 96      351-398       384      500.00-530.00         508.71
+ 60      354-365       362      585.00-590.00         586.39
+ 13      377-388       382      470.00-500.00         486.03
+100      403-449       421      480.00-530.00         498.67
+ 27      403-434       415         540.00             540.00
+ 22      408-432       419      440.00-460.00         445.47
+398      450-495       472      430.00-480.00         445.16
+  7         459        459         500.00             500.00
+ 17      450-473       462      400.00-430.00         417.73
+307      503-546       526      400.00-440.00         422.65
+ 19         502        502         450.00             450.00
+  7      500-530       517      390.00-410.00         398.29
+225      554-590       572      360.00-410.00         387.78
+386      600-642       618      357.50-390.00         372.15
+ 17         604        604         395.00             395.00
+476      651-697       681      345.00-375.00         353.81
+ 10         698        698         387.50             387.50
+  9      656-674       666      325.00-327.50         326.41
+280      700-746       717      332.50-351.00         345.35
+169      751-799       777      316.00-335.50         322.29            Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+  9         788        788         310.00             310.00            = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+226      803-849       823      313.00-330.00         319.84            T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+  4         821        821         305.00             305.00            months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+ 27      851-869       862      300.00-318.00         307.24            months; E = Exposed; B = Bred)
+ 13         891        891         297.50             297.50            See previous page for explanatory notes on cows.
+ 94      900-923       917      303.00-308.00         304.16
+  3         942        942         285.00             285.00
+       Beaver Livestock Auction Feeder Cattle - Beaver, OK                       Beaver Livestock Auction Slaughter/Replacement Cattle
+                             1-7-26                                                                      1-12-26
+                                                                          Compared to last week: Slaughter cows steady to 2.00 lower. Slaughter
+Receipts: 7,188 Last Reported: 6,758 Year Ago: 3,821                      bulls steady. Demand good for replacement cattle. A total of 500 cows
+Compared to last sale: Feeder steers and steer calves 5.00-10.00 higher   and bulls sold.
+conservatively. Feeder heifers 5.00-10.00 higher with 650 lb heifers as
+much as 30.00 higher. Heifer calves 15.00-20.00 higher. Demand            Slaughter Cows: Average Dress          High Dress         Low Dress
+strong. Quality attractive with several fancy drafts.                     Breakers         160.00-166.00            ----               155.00
+                                                                          Boners           157.00-168.00            ----               ----
+ Feeder Steers Medium and Large 1                                         Lean             151.00-161.00            167.00             ----
+Head      Wt Range     Avg Wt Price Range              Avg Price          Slaughter Bulls: Average Dress         High Dress        Low Dress
+  3        322        322          610.00               610.00            Y.G. 1-2         173.00-185.00            189.00         165.00-172.00
+  8      305-337      325       590.00-595.00           593.24
+  8      350-398      380       575.00-585.00           581.55            BRED COWS - Medium and Large 1
+  4        414        414          545.00               545.00            Age Stage Head Wt Range Avg Wt Price Range        Avg Price
+ 26      405-447      440       522.00-532.00           525.27            2-4 T1     3   765-1135 888    2300.00-2350.00 2328.71
+ 24      455-460      456       527.50-539.00           535.62            2-4 T2     22 874-1330 1036 3025.00-3450.00 3422.96
+ 59      470-494      482       500.00-514.00           507.29            5-8 T2     6   125-1184 831    3000.00-3200.00 3010.03
+ 50      507-524      517       497.00-514.00           504.51             >5 T2     28 1130-1375 1251 2375.00-2950.00 2655.38
+ 90      554-597      593       464.00-475.00           465.83             >5 T3     13 1260-1471 1420 2700.00-3150.00 2828.32
+ 88      551-585      559       449.00-455.00           451.17             >8 T2     51 1157-1294 1240 2200.00-2500.00 2322.79
+201      600-628      607       437.50-478.00           467.31             >8 T3     39 1181-1324 1253 2250.00-2725.00 2557.96
+208      606-643      619       424.00-440.00           436.72            COW-CALF PAIRS - Medium and Large 1w/<150lbs calf
+ 42      652-654      653       430.00-431.00           430.59            Age Stage Head Wt Range Avg Wt Price Range        Avg Price
+ 34      652-671      661       406.00-410.00           406.81             >5 O      1      1285   1285      3100.00         3100.00
+112      650-696      668       380.00-399.00           391.46
+ 69      701-731      711       384.00-390.00           386.76
+268      750-789      760       367.00-381.00           374.47
+442      807-843      830       355.00-368.00           364.47
+264      851-884      863       342.50-360.00           355.16
+728      902-944      920       325.25-345.00           336.91
+ 53        950        950          323.00               323.00
+ 97      959-973      967       335.00-337.00           335.86
+ Feeder Heifers Medium and Large 1
+Head      Wt Range     Avg Wt Price Range              Avg Price
+  2        300        300          545.00               545.00
+  4      310-325      321       500.00-522.00           516.69
+  7      355-360      357       482.00-500.00           490.14
+  9        354        354          525.00               525.00
+  7      355-370      361       450.00-452.50           452.15
+ 23      408-443      419       477.50-497.50           488.54
+ 31      430-435      432       462.50-470.00           468.42
+ 45      456-492      477       455.00-466.00           460.25
+ 51      460-496      487       425.00-435.00           430.96
+130      502-549      535       446.00-462.00           455.38
+  6        508        508          483.00               483.00
+ 40      508-536      519       416.00-436.00           427.29
+287      551-596      561       415.00-445.00           431.35
+114      560-597      576       396.00-402.00           399.49
+125      601-642      619       373.00-391.00           381.68
+ 73      605-639      610       397.00-399.00           398.34
+ 56      618-637      623       355.00-365.00           357.85
+ 45      650-678      670       372.50-385.00           381.50
+ 22        694        694          400.00               400.00
+155      670-687      681       357.00-366.00           362.97
+124      709-742      716       343.00-357.00           347.22
+ 19        741        741          392.50               392.50
+120      751-779      762       338.00-349.50           342.44
+ 90      808-834      826       320.00-325.25           324.90
+ 44        813        813          341.00               341.00
+177      852-879      861       312.00-316.00           314.06
+ 32      1034-1038    1036      301.00-303.00           302.00
+  6        1062       1062         303.00               303.00
+
+
+
+
+                                                                          Explanatory Notes: Stage - Represents pregnancy stage (O = open; T1
+                                                                          = 1st Trimester, 1 to 3 months; T1-2 = 1st/2nd trimester, 1 to 6 months;
+                                                                          T2 = 2nd Trimester, 4 to 6 months; T2-3 = 2nd/3rd Trimester, 4 to 9
+                                                                          months; T3 = 3rd Trimester, 7 to 9months; T1-3 = all trimesters, 1 to 9
+                                                                          months; E = Exposed; B = Bred)
+                                                                          See previous page for explanatory notes on cows.
+            OKLAHOMA HAY MARKET REPORT                                       Northeastern
+                                                                       Prairie/Meadow Grass: Good/Premium (Trade/Per Bale)
+                               1-2-26
+                                                                       Size         Qty    Price Range Wtd.Avg. Freight/Used
+       Receipts: 1,172 Last Reported: 1,172 Year Ago:3,018             Large Square 400    60.00       60.00     F.O.B.
+            Resending through Christmas and New Years.                 Prairie/Meadow Grass: Good/Premium (Trade/Per Bale)
+                                                                       Size         Qty    Price Range Wtd.Avg. Freight/Used
+Compared to the last report. Movement is at a standstill to steady.    Medium Round 200    55.00       55.00     F.O.B.
+Drought worsens; 79 percent of the state has some form of drought.
+We do not see any cold weather or moisture in the future. Christmas    Prairie/Meadow Grass: Good (Ask/Per Bale)
+and New Year's are a few days away, and movement might slow            Size         Qty    Price Range Wtd.Avg. Freight/Used
+down even more.
+                                                                       Medium Round        45.00                 F.O.B.
+Trends: No Trends currently.
+                                                                             Northwestern
+The Oklahoma Mesonet Drought Monitor shows that 0 percent of           Alfalfa: Premium(Ask/Per Ton)
+the state is in exceptional drought, 4.80 percent is in extreme        Size           Qty     Price Range Wtd.Avg. Freight/Used
+drought, 13.95 percent is in severe drought, 53.74 percent is moder-
+ate, 79.13 percent is abnormally dry conditions, and 20.87 percent     Large Square           160.00      160.00   F.O.B
+has no drought conditions.
+                                                                       Alfalfa: Good/Premium(Ask/Per Ton)
+                                                                       Size           Qty     Price Range Wtd.Avg. Freight/Used
+*** The next report release will be on January 16th ***
+                                                                       Ground                 90.00       90.00    F.O.B
+                                                                       Alfalfa: Fair (Ask/Per Ton)
+      Central
+                                                                       Size           Qty     Price Range Wtd.Avg. Freight/Used
+Alfalfa: Good/Premium (Ask/Per Ton)
+                                                                       Large Round            130.00               F.O.B
+Size           Qty    Price Range Wtd.Avg. Freight/Used
+                                                                       Bermuda Grass: Premium/Supreme(Ask/Per Ton)
+Large Square          160.00               F.O.B
+                                                                       Size           Qty     Price Range Wtd.Avg. Freight/Used
+Alfalfa: Good (Ask/Per Ton)
+                                                                       Large Round            80.00                F.O.B
+Size           Qty    Price Range Wtd.Avg. Freight/Used
+                                                                       Wheat Straw: Good(Trade/Per Bale)
+Large Square          150.00               F.O.B
+                                                                       Size           Qty     Price Range Wtd.Avg. Freight/Used
+Alfalfa: Fair/Good (Ask/Per Ton)
+                                                                       Large Round 320        40.00       40.00    F.O.B
+Size           Qty    Price Range Wtd.Avg. Freight/Used
+Ground                90.00                F.O.B
+Bermuda Grass: Fair/Good(Ask/Per Bale)
+Size           Qty    Price Range Wtd.Avg. Freight/Used
+Medium Round          50.00                F.O.B
+
+      North Central
+Bermuda Grass: Premium/Supreme(Trade/Per Bale)
+Size         Qty    Price Range Wtd.Avg. Freight/Used
+Large Round 92      80.00       80.00    F.O.B
+Bermuda Grass: Premium (Ask/Per Bale)
+Size         Qty    Price Range Wtd.Avg. Freight/Used
+Small Square        11.00                F.O.B
+Bermuda Grass: Good/Premium(Trade/Per Bale)
+Size         Qty    Price Range Wtd.Avg. Freight/Used
+Large Round 160     60.00       60.00    F.O.B
+Bermuda Grass: Good(Ask/Per Bale)
+Size         Qty    Price Range Wtd.Avg. Freight/Used
+Large Round         55.00                F.O.B
+Bermuda Grass: Fair/Good(AskPer Bale)
+Size         Qty    Price Range Wtd.Avg. Freight/Used
+Large Round         50.00                F.O.B
+
+                                                                               If you would like to be apart of our free hay directory AD
+                                                                                      Click Here: Oklahoma Hay Directory Form
+                                                                                       If you would like to see our hay directory
+                                                                                     Click Here: Hay Provider – ODAFF (ok.gov)
+                                                                                               Hay Report Information
+                                                                                           Hay Quality Guidelines (usda.gov)
+                                                                              F.O.B: Free on board, price at place of origin not including
+                                                                                                transportation charges.
+            Pawnee Sale Barn Sheep/Goat Pawnee, OK
+                           12-18-25
+
+Receipts: 1,004 Last Reported: 1,035 Year Ago: 1,377
+Compared to the last sale: Slaughter Lambs unevenly steady. Slaughter
+Ewes sold 15.00-25.00 lower. Slaughter Goats 10.00-20.00 lower. Feed-
+er Goats were the bright spot of the sale and sold sharply higher with
+very good demand. Demand moderate to good for all other classes. Sev-
+eral large groups available.
+
+ Feeder Lambs Medium and Large 1-2
+Head      Wt Range        Avg Wt Price Range     Avg Price
+    8     32-35           34       360.00-441.00 388.69
+    3        45           45          360.00     360.00
+ Feeder Hair Lambs Medium and Large 1-2
+Head      Wt Range        Avg Wt Price Range     Avg Price
+  53      42-48           46       312.00-400.00 335.39
+    4        53           53          300.00     300.00
+  Feeder Goats Kids-Selection 1
+Head      Wt Range        Avg Wt Price Range     Avg Price
+    3        37           37          409.00     409.00
+  34      40-45           42       340.00-375.00 359.44
+  48      50-53           53       385.00-393.00 392.53
+    2        88           88          400.00     400.00
+Slaughter Sheep/Lambs
+  WOOLED & SHORN - Choice and Prime 1-2
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+152       57-58           58       383.00-385.00 384.19 Average
+    2        60           60          315.00     315.00 Average
+  42      71-73           71       340.00-347.00 346.32 Average
+  Hair Breeds—Choice and Prime 1-2
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+    2        48           48          340.00     340.00 Average
+101       56-57           56       340.00-392.00 372.22 Average
+  84      64-68           68       355.00-363.00 359.18 Average
+    4        86           86          276.00     276.00 Average
+    2        93           93       251.00        251.00 Average
+  EWES—Good and Choice 1-2
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+  -           ---          ---         ----       ----
+Replacement Goats
+Slaughter Goats
+  Kids Selection 1
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+  21      50-58           53       380.00-389.00 383.62 Average
+122       62-69           68       330.00-390.00 340.77 Average
+  10         72           72          343.00     343.00 Average
+  Nannies/Does Selection 1
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+    3        88           88          156.00     156.00 Average
+  17      90-98           93       130.00-160.00 149.67 Average
+  39      102-142         118      129.00-181.00 159.35 Average
+    3        160          160         175.00     175.00 Average
+  Bucks/Billies Selection 1
+Head      Wt Range        Avg Wt Price Range Avg Price/Dressing
+-     -       -        ---     ---        ----        ----
+                                    Oklahoma Production Cost Report (Bi-Weekly)
+                                                           1-9-26
+Compared to last report: Most of the major fertilizers have decreased in price from late last year. DAP, MAP and Urea
+prices have fallen sharply as early estimates suggest corn acreage will be significantly lower this year. Eased tariffs
+across many countries have allowed fertilizer imports to climb over the past few months, adding to the overall supply. Of
+the seven major fertilizers, all have increased in price compared to this time last year: Anhydrous 11%, DAP 15%, MAP
+12%, UAN 32 23%, UAN 28 22%, Urea 18%, and Potash 3% higher than last year. Current dry conditions have softened
+fertilizer demand. While some areas picked up rain yesterday, soils are drying quickly as temperatures have been well
+above normal for this time of year. Farm diesel prices have fallen sharply. Despite warmer weather, propane demand
+remains strong.
+
+
+Fertilizer (Synthetic)
+Distributor (Dollars Per Ton)
+Class                    Sale Type Price Range Average Change Freight            DEL Period
+Ammonium Sulfate              Ask   430.00 - 604.00 517.25     0.00     F.O.B.     Current
+Ammonium Polyphosphate Ask                ----       ----       ---     ----       ----
+(10-34-0)
+Anhydrous Ammonia             Ask   680.00 - 800.00 740.00     0.00     F.O.B.     Current
+ATS (Sulfate)                 Ask   360.00 - 370.00 366.67     0.00     F.O.B.     Current
+Blend (10-10-10)              Ask         ----       ----       ---     ----       ----
+Blend (13-13-13)              Ask        480.00     480.00     0.00     F.O.B.     Current
+Blend (17-17-17)              Ask         ----       ----       ---     ----       ----
+Blend (18-18-18)              Ask         ----       ----       ---     ----       ----
+Blend (19-19-19)              Ask   575.00-717.00 660.00       (4.00)   F.O.B.     Current
+DAP (Diammonium               Ask   725.00-980.00 881.42       (13.16) F.O.B.      Current
+Phosphate 18 -46-0)
+Lime                          Ask   225.00-332.00 279.80       0.00     F.O.B.     Current
+Liquid Nitrogen (28-0-0)      Ask   328.00 - 440.00 386.60     (4.00)   F.O.B.     Current
+Liquid Nitrogen (32-0-0 )     Ask   386.00 - 475.00 429.14     0.00     F.O.B.     Current
+MAP (Monoammonium             Ask         ----       ----       ---     ----       ----
+Phosphate 11-34-0)
+MAP (Monoammonium             Ask   800.00 - 952.00 893.14     (15.71) F.O.B.      Current
+Phosphate 11-52-0)
+Potash (Red 0-0-60)           Ask   450.00 - 550.00 490.63     (1.84)   F.O.B.     Current
+Urea (46-0-0)                 Ask   480.00 - 680.00 593.14     (13.81) F.O.B.      Current
+Fuels
+Fuels Distributor (Dollars Per Gallon)
+Class                       Sale Type Price Range Average Change Freight         DEL Period
+No. 2 Diesel (Farm)           Ask    2.36 - 2.95    2.63       (0.23)   F.O.B.     Current
+Propane                       Ask    2.00 - 2.51    2.26       0.02     F.O.B.     Current
+Agriculture Interest Rates
+For Current USDA Farm Service Agency (FSA) Loan Interest Rates, click on link below: https://www.fsa.usda.gov/
+programs-and-services/farm-loan-programs/index
+Freight Codes: FOB: Freight On Board Del: Delivered
+                                              Oklahoma Retail Feed Cost Report (Monthly)
+                                                                     1-9-26
+                Compared to last report: Feed prices have adjusted slightly on commodity types feeds. This winter has
+                been unusally mild but very dry. Some areas of Oklahoma received light rain yesterday, which will pro-
+                vide short-term relief for wheat, though soils are drying out quickly with temperatures remaining well
+                above normal. CME cattle futures have risen since the last report. Demand remains very strong for all
+                classes of cattle with prices reaching near-record levels during the first week of sales this year. While
+                cow-calf producers are benefiting from these cattle prices, tightening supplies and strong demand have
+                many in the industry questioning how much futher prices can climb before stocker producers begin to
+                lose money.
+                Feed
+                Distributor (Dollars Per Ton)
+                Class                      Sale Type          Package          Price Range AVG.         Change DEL Period
+                20% Cubes                   Ask-FOB Bulk (> 24 Ton) 290.00-385.00 346.47 UNCH                       Current
+                14% Creep Pellets           Ask - FOB Bulk (> 24 Ton) 224.00-359.00 301.07 UNCH                     Current
+                4 Way Mix 14% Protein Ask - FOB Bulk (> 24 Ton) 235.00-292.00 262.25 UP 1.46                        Current
+                5 Way Mix 16% Protein Ask - FOB Bulk (> 24 Ton) 248.00-334.00 294.71 UP 0.42                        Current
+                Feed
+                Distributor (Dollars Per Bag)
+                Class                      Sale Type          Package          Price Range AVG.         Change DEL Period
+                20% Cubes                   Ask - FOB        50lb Bag         8.25-13.99      10.58     UNCH        Current
+                14% Creep Pellets           Ask - FOB        50lb Bag         7.35-9.80       8.88      UNCH        Current
+                Hi Protein Cubes            Ask - FOB        50lb Bag         12.50-20.10     15.41     DN 0.49     Current
+                Commodities
+                Distributor (Dollars Per Ton)
+                Class                      Sale Type          Package          Price Range AVG.         Change DEL Period
+                Corn Guten                  Ask- FOB         Bulk             210.00-300.00 256.43 UP 0.72          Current
+                Wheat Midds                 Ask- FOB         Bulk             210.00-220.00 270.00 UNCH             Current
+                Alfalfa Pellets             Ask- FOB         Bulk             280.00-440.00 386.43 UP 0.86          Current
+                Cottonseed Meal             Ask- FOB         Bulk             450.00-520.00 495.00 UNCH             Current
+                DDG                         Ask- FOB         Bulk             215.00-300.00 255.56 DN 0.44          Current
+                Soy Hulls                   Ask- FOB         Bulk             218.00-300.00 241.60 UP 2.90          Current
+                Whole Corn                  Ask - FOB        Bulk             191.00-300.00 247.56 UP 0.56          Current
+                Organic Feed
+                Distributor (Dollars Per Ton)
+                Class                      Sale Type          Package          Price Range AVG.         Change DEL Period
+                Corn Meal                   Ask- FOB         Bulk                NQ           NQ        NQ          Current
+                Soy Meal                    Ask- FOB         Bulk                NQ           NQ        NQ          Current
+                Freight Codes: FOB: Freight On Board Del: Delivered
+
+
+
+
+This publication is issued by the Oklahoma Department of Agriculture, Food and Forestry as authorized by the State Board of Agriculture, Blayne Arthur,
+     Commissioner. Copies have not been printed, but are available through the agency website at https://ag.ok.gov/current-years-market-reports/.
+

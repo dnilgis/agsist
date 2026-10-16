@@ -1,0 +1,147 @@
+# Benchmark cattle-auction-prices: USDA AMS Missouri Weekly Cattle Auction Summary
+# https://esmis.nal.usda.gov/publication/missouri-weekly-cattle-auction-summary
+# fetched 2026-10-16T15:43:52Z, sha256 e62eefb4963fe33cc61c71c192fb812ea38ffbd37613248164bee76da591ea1c
+
+Missouri Weekly Cattle Auction Summary | Economics, Statistics, and Market Information Systemdot gov iconhttps iconUSDA Logo
+
+-
+
+-
+
+Missouri Weekly Cattle Auction Summary
+
+This report contains information on weekly feeder cattle sales in the state of Missouri, with commentary on prices and changes from the previous week, trade, future markets, and weather conditions potentially impacting purchases. Also included are weight and price statistics for cattle sold.
+
+Agency
+
+Agricultural Marketing Service, Livestock, Poultry and Seed Program
+
+Frequency of Release
+
+Weekly
+
+Category
+
+Livestock
+
+Keywords
+
+missouri, cattle, prices, auctions
+
+Releases
+
+Date
+Download
+Operations
+
+Aug 23 2025
+
+Aug 23 2025
+- PDF
+
+- View
+
+Aug 16 2025
+
+Aug 16 2025
+- PDF
+
+- View
+
+Aug 09 2025
+
+Aug 09 2025
+- PDF
+
+- View
+
+Aug 02 2025
+
+Aug 02 2025
+- PDF
+
+- View
+
+Jul 26 2025
+
+Jul 26 2025
+- PDF
+
+- View
+
+Jul 19 2025
+
+Jul 19 2025
+- PDF
+
+- View
+
+Jul 12 2025
+
+Jul 12 2025
+- PDF
+
+- View
+
+Jul 05 2025
+
+Jul 05 2025
+- PDF
+
+- View
+
+Jun 28 2025
+
+Jun 28 2025
+- PDF
+
+- View
+
+Jun 21 2025
+
+Jun 21 2025
+- PDF
+
+- View
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Latest Release
+
+Date
+Download
+
+Aug 23 2025
+
+Missouri Weekly Cattle Auction Summary - Aug 23 2025
+- PDF
+
+Contact office name
+
+Livestock, Poultry, and Grain Market News
+
+Contact email
+
+Websupport.lpgmn@ams.usda.gov
