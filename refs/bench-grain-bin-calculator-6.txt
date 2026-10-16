@@ -1,0 +1,197 @@
+# Benchmark grain-bin-calculator: ToolGrit
+# https://www.toolgrit.com/guides/what-size-grain-bin
+# fetched 2026-10-16T16:06:19Z, sha256 9f15887d7fe05f873e9aa2c63b31dbbcf47dbf740e4cf4ef777140331ffdbdb4
+
+Grain Bin Sizing Guide
+
+Agriculture
+8 min read
+Feb 10, 2026
+
+What Size Grain Bin Do I Need?
+
+How to screen bin capacity before checking the actual manufacturer table, grain records, and safety requirements
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Grain bin sizing starts with geometry, but geometry is not the whole decision. Manufacturer rated capacity, measured inside diameter, roof clearance, grain condition, fill practice, moisture shrink, settlement rules, aeration needs, and safety procedures can all change the usable number.
+
+This guide uses source-aware planning language. Treat the formulas as a first screening step, then verify the actual bin model, load tickets, measured test weight, moisture, dockage, insurance method, structural requirements, and bin-entry safety program before purchasing equipment or certifying inventory.
+
+1.
+Why Bin Sizing Is Not Just About Bushels
+
+Round-bin volume changes with the square of radius, so diameter usually moves capacity faster than height. That geometric fact is useful for screening alternatives, but the final usable capacity still comes from the actual bin dimensions and manufacturer rating method.
+
+Spec sheets may list level, peaked, or other rated capacities. Peaked fill depends on roof clearance, fill point, spreader behavior, grain condition, fines, and whether the surface is leveled for aeration. A geometry model can estimate the difference, but it should not be treated as a universal percent gain.
+
+Test weight rows such as 56 lb/bu corn or 60 lb/bu soybeans are planning defaults. Actual settlement and inventory depend on measured test weight, moisture, dockage, foreign material, broken kernels, load tickets, and buyer or insurer rules.
+
+The practical result is that you need to think about verified usable capacity, not just one rated number. Compare level fill, ideal peaked fill, wet-to-dry shrink, headspace, aeration requirements, and inventory method before deciding whether the bin meets your target.
+
+Warning
+
+Common mistake: Treating one rated bushel number as usable capacity without checking whether it is level, peaked, based on a specific test weight, or affected by shrink, headspace, and field measurement.
+
+2.
+The Geometry: Why Diameter Matters More Than Height
+
+Simple round-bin screening starts with the cylinder formula: V = π × (D/2)² × H, where D is diameter and H is eave height. The app uses 1.2444 cubic feet per bushel as a rounded planning conversion. The squared radius term is why diameter strongly affects capacity.
+
+A 30-foot bin with 22 feet of eave height holds about 15,500 cubic feet, or 12,500 bushels at level fill. A 36-foot bin with the same eave height holds about 22,300 cubic feet, or 17,900 bushels. That's a 43% increase in capacity from adding 6 feet to the diameter. If you added 6 feet to the height instead (keeping diameter at 30 feet), you get to about 19,800 cubic feet, or 15,900 bushels. A 27% increase — still meaningfully less than the diameter bump delivers.
+
+This is why most bin sizing decisions come down to diameter first, then height. Diameter gives you capacity. Height gives you flexibility (easier to unload with an underfloor system, better aeration uniformity). But if you need more bushels, you need more diameter.
+
+Formula
+
+Cylinder volume screen:
+V = π × (D/2)² × H
+Bushels = V ÷ 1.2444
+
+Where D = diameter (ft), H = eave height (ft), V = volume (cubic feet). Verify actual manufacturer and inventory method before using results.
+
+Agriculture
+
+Grain Bin Capacity Calculator
+
+Calculate bushel capacity for flat-bottom and hopper-bottom grain bins. Enter diameter, eave height, and commodity to get level fill, peaked fill, and partial fill volumes with weight estimates.
+
+Launch Calculator →
+
+3.
+Peaked Fill vs Level Fill: The 20% You Might Not Get
+
+Peaked fill adds a modeled cone of grain above the eave. The height of that cone depends on the selected angle of repose, but that angle changes with moisture, fines, foreign material, kernel condition, and fill method. Treat the app row as a local planning default unless you have a validated value.
+
+For a 36-foot bin, the cone height is roughly (D/2) × tan(angle). At 25 degrees, that's about 8.4 feet. The cone adds about 2,850 cubic feet, or 2,300 bushels. That's where the difference between 17,900 bushels (level) and 20,000+ bushels (peaked) comes from.
+
+But you only get peaked fill if you have a spreader or if you're filling slowly from the center and letting the grain naturally pile. If you're using a spout that swings around the perimeter, you get something closer to level fill. The grain might peak slightly in the center, but not enough to hit the rated capacity.
+
+The other issue with peaked fill is aeration. Air doesn't move well through a peaked pile because the path length varies too much. If you're planning to aerate or dry in the bin, level fill works better. Many operators use a spreader to fill, then level the pile before starting fans. That defeats the capacity advantage of peaked fill.
+
+Note
+
+Angle of repose:
+The app uses editable local defaults for the ideal peak cone. Actual angle depends on moisture, fines, foreign material, kernel size, fill rate, and whether the surface has been leveled.
+
+4.
+Moisture Shrink Changes Deliverable Bushels
+
+If you are storing wet grain and drying it in the bin, physical water-shrink math reduces the calculated dry bushels. The planning formula is: dry_bu = wet_bu × (100 - wet%) / (100 - dry%). If you put 20,000 bushels of 20% moisture corn in the bin and dry it to 15%, the local arithmetic gives about 18,824 dry bushels, or about 5.9% water shrink.
+
+That is a planning screen for water removed, not a complete settlement or storage model. Actual tickets, moisture tests, grade, dockage, test weight, handling loss, quality discounts, buyer schedules, contracts, and crop-insurance or accounting rules can change the business result.
+
+The practical impact is that if you need to deliver 30,000 bushels of dry grain, you should screen how many wet bushels are needed and then verify the plan against bin capacity, safe storage guidance, buyer terms, and qualified grain-storage review.
+
+Formula
+
+Moisture shrink:
+dry_bu = wet_bu × (100 - wet%) / (100 - dry%)
+
+Example: 20,000 bu at 20% moisture, dried to 15%
+dry_bu = 20,000 × (100 - 20) / (100 - 15) = 18,824 bu
+Shrink: 1,176 bu (5.9%)
+
+Agriculture
+
+Grain Moisture Shrink Calculator
+
+Calculate physical grain shrink from drying vs. elevator-applied shrink. See the hidden margin in your elevator's shrink factor and the dollar impact at current commodity prices.
+
+Launch Calculator →
+
+5.
+Matching the Auger to the Bin
+
+A 50,000 bushel bin is useless if your auger takes two days to fill it. Auger capacity is rated in bushels per hour at a reference angle (usually 45 degrees for portable augers, vertical for permanent systems). Capacity derates as angle increases because the flights have to lift the grain higher per revolution.
+
+A 10-inch auger might move 3,000 bu/hr at 45 degrees but only 2,400 bu/hr at 60 degrees. If you're filling a 30,000 bushel bin, that's the difference between 10 hours and 12.5 hours. For a single bin, that might not matter. For a multi-bin setup where you're moving grain all day, it adds up.
+
+The other constraint is unloading. If you have an underfloor unload system with a 6-inch auger, it might only pull 1,500 bu/hr. If you need to turn the bin around in 8 hours to make room for the next load, you're capped at 12,000 bushels. A bigger bin doesn't help if you can't empty it fast enough.
+
+Use auger capacity as a planning check, not a universal rule. Verify actual auger or conveyor manufacturer curves, angle, grain condition, horsepower, power supply, wet-grain handling, and unload-system limits before depending on a fill or unload time.
+
+Agriculture
+
+Auger & Conveyor Sizing Calculator
+
+Find the right auger diameter for your target bushels per hour. See capacity derating by angle and commodity, HP requirements, and time to fill a bin.
+
+Launch Calculator →
+
+6.
+Thinking About Expansion
+
+The most expensive parts of a grain bin are the concrete pad and the aeration system. The steel rings are relatively cheap. This is why most farmers size bins for future needs, not current needs. If you think you'll need 40,000 bushels of storage in three years, build the 40,000 bushel bin now. The incremental cost is small compared to pouring a second pad.
+
+The concrete pad has to carry the full weight of the bin and the grain, plus snow load and wind load. A 30-foot bin with 20,000 bushels of corn weighs about 600 tons. The pad is typically 6-8 inches thick with rebar and a compacted gravel base. If you pour a pad for a 30-foot bin and later decide you need a 36-foot bin, you have to pour a new pad. That's $8,000-12,000 plus site work.
+
+The aeration system is similar. If you design for 1 CFM per bushel (a common target for humid climates), a 30,000 bushel bin needs a 30,000 CFM fan. A 40,000 bushel bin needs a 40,000 CFM fan. You can't just bolt a bigger fan onto an undersized plenum. The ductwork and perforated floor have to be sized for the airflow from the start.
+
+Expansion planning is a business and site decision. Check crop rotation, land base, harvest rate, marketing plan, drying system, electrical service, foundation design, local permits, and qualified dealer or engineer review before treating a larger bin as a low-risk upgrade.
+
+Tip
+
+The marginal cost of going from a 30-foot to a 36-foot bin is often less than 30%, but the capacity increase is 40-45%. The pad and foundation are the same complexity. The aeration system needs a bigger fan but the same design. If you're on the fence, size up.
+
+Frequently Asked Questions
+
+You need at least 12-18 inches of headspace for aeration and to prevent grain from spilling when you open the hatch. Most operators target 2-3 feet of headspace for safety and to allow for grain movement during aeration cycles. If you're drying in the bin, you need even more headspace because the grain will settle as moisture leaves.
+
+The weight estimate changes directly with the test weight you enter. Actual bushels, inventory, and payment still depend on measured test weight, moisture, dockage, foreign material, scale records, grade rules, and the buyer or insurer method.
+
+Drying time scales with grain depth, not bin diameter. A 30-foot bin and a 36-foot bin with the same eave height take roughly the same time to dry if airflow per bushel is the same. But the bigger bin holds more bushels, so you need a bigger fan to maintain the same CFM per bushel. Depth is the enemy of drying speed, which is why many operators prefer shorter, wider bins over tall, narrow ones.
+
+Depends on whether you need segregation. Two bins let you separate varieties, moisture levels, or delivery schedules. One large bin is cheaper per bushel of capacity and uses less land. If you're storing a single commodity and marketing it all at once, one large bin is more efficient. If you need flexibility, two smaller bins are worth the premium.
+
+Disclaimer: Bin sizing depends on site-specific factors including measured dimensions, actual grain condition, manufacturer tables, moisture shrink, aeration design, soil conditions, foundation, wind, snow, unloading equipment, electrical service, local permits, and bin-entry safety controls. This guide provides planning context only. Consult qualified grain storage, structural, electrical, safety, insurance, and dealer resources before purchasing, certifying inventory, entering bins, or installing grain storage equipment.
+
+Calculators referenced in this guide
+
+Agriculture
+Live
+
+Grain Drying Cost Estimator
+
+Calculate on-farm grain drying cost per bushel including fuel, shrink, and labor. Compare against elevator docking charges to find the cheaper option for your operation.
+
+Launch Tool →
+
+Related guides
+
+Agriculture
+10 min
+
+Farm Power Planning: Panel, Feeder, and PTO Loads
+
+How to frame farm panel, feeder, motor, PTO, drawbar, and generator planning while keeping NEC, utility, OEM, field-condition, and qualified-review gaps visible.
+
+Read Guide →
+
+Agriculture
+9 min
+
+Irrigation Pump and Pipe Planning Boundaries
+
+How to calculate GPM per acre, friction loss in irrigation pipe, NPSH for centrifugal pumps, and pipe velocity limits for agricultural irrigation systems.
+
+Read Guide →
+
+Agriculture
+9 min
+
+Bulk Fuel Storage Planning for Farms and Shops
+
+Tank sizing by consumption rate, SPCC requirements at the 1320 gallon threshold, secondary containment, above-ground vs below-ground tanks, and fuel quality management.
+
+Read Guide →

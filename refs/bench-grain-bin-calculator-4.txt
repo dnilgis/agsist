@@ -1,0 +1,105 @@
+# Benchmark grain-bin-calculator: UNL CropWatch
+# https://cropwatch.unl.edu/how-estimate-bushels-grain-bin/
+# fetched 2026-10-16T16:06:15Z, sha256 dffb8188ed78fd5c3c897a0781c042c5eeb92a645f7552d2cc4b52bc889f77b3
+
+How to Estimate Bushels of Grain in a Bin | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+September 14, 2012
+
+How to Estimate Bushels of Grain in a Bin
+
+By Tom Dorn - Former Nebraska Extension Educator
+
+With harvest underway or fast approaching, here are two methods for estimating the remaining storage capacity of a partially filled grain bin.
+
+Shutterstock
+
+With harvest underway or fast approaching, you may be trying to estimate the number of bushels in a partially filled bin and how much capacity is remaining.
+
+Round Bins
+
+Use the following calculation to estimate the bushels of grain in a round bin.
+
+Bushels = 0.628 x D2 x H
+
+Where:
+
+- D is the diameter of the bin, in feet.
+
+- H is the height of the grain mass in the bin (depth of grain), in feet.
+
+- 0.628 is a conversion constant.
+
+Note: The method described above uses the bin's diameter, while the calculator uses the bin's radius (half the length of the diameter).
+
+Example
+
+1. Calculate the number of bushels of corn in a 30-foot diameter bin with the eave 18 feet above the concrete foundation with the drying floor, 1 foot above the foundation. This would make the maximum grain depth 17 feet when the bin is full.
+In this case, to calculate the bushels of grain contained from drying floor to the eave:
+
+- Bushels = 0.628 x D2 x H
+
+- Bushels = 0.628 x (30 x 30) x 17
+
+- Bushels = 9,608
+
+2. If you have peaked grain at the top of the bin, the bushels in the peak can be estimated by using a different conversion constant in the equation.
+
+- Bushels = 0.209 x D2 x H
+
+Where:
+
+- D is the diameter of the bin, in feet.
+
+- H is the height of the grain peak above the eave, in feet.
+
+- 0.209 is a conversion constant for bushels in a cone-shaped pile of grain that extends to the bin wall.
+
+For example, if the top of the peak is 6 feet above the normal depth of grain in the bin, the volume of the peaked grain is calculated as follows.
+
+- Bushels = 0.209 x D2 x H
+
+- Bushels = 0209 x (30 x 30) x 6 = 1,128 bu
+
+Add the totals from example equation 1 and equation 2. Total grain in the bin is 10,736 bushels (9,608 + 1,128)
+
+Rectangular, Flat Storage Buildings
+
+For rectangular flat storage buildings, the math is simpler. Multiply length (ft) by width (ft) by grain depth (ft) by 0.8 bushels per cubic foot.
+
+Let's calculate the amount of grain in a flat storage building that is 40 feet by 60 feet and has a grain depth of 10 feet.
+
+- 40 x 60 x 10 x 0.8 = 19,200 bushels in the bin
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Related Links
+
+Grain Bin Volume Calculator
+
+How to Estimate Bushels in a Round Grain Bin
+
+Explore our full collection of CropWatch articles.
+Explore Articles

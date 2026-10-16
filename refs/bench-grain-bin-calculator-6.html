@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grain Bin Sizing Guide</title>
+    <meta name="description" content="The real math behind grain bin capacity. Peaked vs level fill difference, moisture shrink losses, auger sizing, and what the salesman skips.">
+        <meta name="keywords" content="what size grain bin do i need, grain bin sizing guide, grain bin capacity explained, how many bushels fit in a grain bin, grain storage planning">
+    
+        
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.toolgrit.com/guides/what-size-grain-bin">
+    <meta property="og:title" content="Grain Bin Sizing Guide">
+    <meta property="og:description" content="The real math behind grain bin capacity. Peaked vs level fill difference, moisture shrink losses, auger sizing, and what the salesman skips.">
+    <meta property="og:image" content="https://www.toolgrit.com/assets/Logos/logo-dark-wide-768.png">
+    <meta property="og:site_name" content="ToolGrit">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Grain Bin Sizing Guide">
+    <meta name="twitter:description" content="The real math behind grain bin capacity. Peaked vs level fill difference, moisture shrink losses, auger sizing, and what the salesman skips.">
+    <meta name="twitter:image" content="https://www.toolgrit.com/assets/Logos/logo-dark-wide-768.png">
+
+    <!-- Site Verification -->
+        
+        <link rel="canonical" href="https://www.toolgrit.com/guides/what-size-grain-bin">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/Icons/favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/Icons/apple-touch-icon.png">
+
+    <!-- Preload: hero image (LCP element, responsive — homepage only) + self-hosted font -->
+        <link rel="preload" href="/assets/fonts/open-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Theme: prevent flash of wrong theme -->
+    <script>
+        (function(){var t=localStorage.getItem('tg-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();
+    </script>
+
+    <!-- Critical CSS (inlined for instant above-the-fold render) -->
+    <style>:root{--color-primary:#FB8500;--color-primary-dark:#e07600;--color-primary-light:#ffa033;--color-accent:#2ea3f2;--color-accent-dark:#1a8fd8;--color-header-bg:#a35600;--color-bg:#111827;--color-bg-alt:#1a2235;--color-bg-dark:#0d1117;--color-bg-darker:#080c11;--color-text:#e5e7eb;--color-text-light:#9ca3af;--color-text-muted:#9199a5;--color-border:#374151;--color-border-light:#1f2937;--cat-hvac:#e74c3c;--cat-electrical:#f39c12;--cat-industrial:#3498db;--cat-safety:#2ecc71;--cat-productivity:#9b59b6;--cat-agriculture:#27ae60;--cat-municipal:#1abc9c;--cat-emissions:#e67e22;--cat-shops:#8b5cf6;--cat-machinist:#4a90d9;--cat-woodworking:#a0522d;--cat-solar:#d4a017;--cat-geology:#8B6914;--cat-foodservice:#c0392b;--cat-marine:#006994;--cat-hardscaping:#78909c;--cat-arboriculture:#2d6a4f;--cat-events:#e91e63;--cat-structural:#546e7a;--space-xs:0.25rem;--space-sm:0.5rem;--space-md:1rem;--space-lg:1.5rem;--space-xl:2rem;--space-xxl:3rem;--space-xxxl:4rem;--font-family:'Open Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-size-sm:0.875rem;--font-size-base:1rem;--font-size-lg:1.125rem;--font-size-xl:1.25rem;--font-size-2xl:1.5rem;--font-size-3xl:2rem;--font-size-4xl:2.5rem;--font-size-5xl:3.5rem;--radius-sm:6px;--radius-md:10px;--radius-lg:16px;--radius-xl:24px;--shadow-sm:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 4px 12px rgba(0,0,0,0.4);--shadow-lg:0 8px 30px rgba(0,0,0,0.5);--shadow-xl:0 12px 40px rgba(0,0,0,0.6);--container-width:1200px;--header-height:70px}[data-theme="light"]{--color-bg:#ffffff;--color-bg-alt:#f8f9fa;--color-bg-dark:#1a1a2e;--color-bg-darker:#0f0f1e;--color-text:#2d3436;--color-text-light:#636e72;--color-text-muted:#657380;--color-primary:#b85e00;--color-primary-dark:#a05200;--color-primary-light:#d97706;--color-accent:#1b6fa3;--color-accent-dark:#155d8a;--color-border:#dfe6e9;--color-border-light:#eef1f3;--shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 12px rgba(0,0,0,0.1);--shadow-lg:0 8px 30px rgba(0,0,0,0.12);--shadow-xl:0 12px 40px rgba(0,0,0,0.15)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-family);font-size:var(--font-size-base);line-height:1.6;color:var(--color-text);background:var(--color-bg);-webkit-font-smoothing:antialiased}.site-header{background:var(--color-header-bg);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15)}.header-container{max-width:var(--container-width);margin:0 auto;padding:0 var(--space-lg);display:flex;align-items:center;justify-content:space-between;height:var(--header-height)}.site-logo-img{height:50px;width:auto;display:block;object-fit:contain}.site-nav ul{display:flex;list-style:none;gap:var(--space-xs)}.site-nav a{color:#fff;padding:var(--space-sm) var(--space-md);border-radius:var(--radius-sm);font-weight:600;font-size:var(--font-size-sm);text-transform:uppercase;letter-spacing:0.04em;transition:background .2s,color .2s}.header-actions{display:flex;align-items:center;gap:var(--space-md)}.btn-explore{background:#fff;color:var(--color-header-bg);padding:var(--space-sm) var(--space-lg);border-radius:50px;font-weight:700;font-size:var(--font-size-sm);text-transform:uppercase;letter-spacing:0.04em;transition:transform .2s,box-shadow .2s;text-decoration:none}.mobile-nav-toggle{display:none}.hero{color:#fff;padding:var(--space-xxxl) 0;text-align:center}.hero h1{color:#fff;font-size:var(--font-size-5xl);margin-bottom:var(--space-md)}.hero .lead{font-size:var(--font-size-xl);color:rgba(255,255,255,0.8);max-width:700px;margin:0 auto var(--space-xl)}.container{max-width:var(--container-width);margin:0 auto;padding:0 var(--space-lg)}.btn{display:inline-flex;align-items:center;gap:var(--space-sm);padding:.75rem 1.5rem;border-radius:var(--radius-md);font-weight:600;font-size:var(--font-size-base);text-decoration:none;border:2px solid transparent;cursor:pointer;transition:all .2s}.btn-primary{background:var(--color-primary);color:#1a1a1a}.btn-white{background:#fff;color:#1a1a1a}.btn-lg{padding:1rem 2rem;font-size:var(--font-size-lg)}a{color:var(--color-primary);text-decoration:none;transition:color .2s}.tool-search{max-width:520px;margin:0 auto var(--space-xl)}.tool-search-wrap{position:relative;display:flex;align-items:center}.tool-search-icon{position:absolute;left:var(--space-md);width:20px;height:20px;color:var(--color-text-muted);pointer-events:none}.tool-search-input{width:100%;padding:.75rem 2.75rem;border:2px solid var(--color-border);border-radius:50px;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family);font-size:var(--font-size-base)}</style>
+
+    <!-- Full stylesheet -->
+        <link rel="stylesheet" href="/css/styles.min.css?v=1789833655">
+
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://www.toolgrit.com/#website",
+          "url": "https://www.toolgrit.com/",
+          "name": "ToolGrit",
+          "description": "ToolGrit provides free online calculators and tools for HVAC technicians, electricians, industrial workers, farmers, and DIYers. All tools run in your browser with no sign-ups, no popup ads, and no data selling.",
+          "inLanguage": "en-US",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://www.toolgrit.com/tools?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.toolgrit.com/#organization",
+          "name": "ToolGrit",
+          "url": "https://www.toolgrit.com/",
+          "logo": "https://www.toolgrit.com/assets/Logos/logo-dark-wide-768.png",
+          "description": "ToolGrit provides free online calculators and tools for HVAC technicians, electricians, industrial workers, farmers, and DIYers. All tools run in your browser with no sign-ups, no popup ads, and no data selling.",
+          "foundingDate": "2025"
+                    ,"sameAs": ["https://www.facebook.com/profile.php?id=61579724470877"]
+                  }
+      ]
+    }
+    </script>
+
+            <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.toolgrit.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Guides",
+            "item": "https://www.toolgrit.com/guides"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Agriculture",
+            "item": "https://www.toolgrit.com/guides?category=agriculture"
+        },
+        {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "What Size Grain Bin Do I Need?",
+            "item": "https://www.toolgrit.com/guides/what-size-grain-bin"
+        }
+    ]
+}    </script>
+    
+        <script type="application/ld+json">
+    [
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "What Size Grain Bin Do I Need?",
+        "description": "How to calculate grain bin capacity using real geometry, account for peaked vs level fill, factor in moisture shrink, and match your auger to the bin.",
+        "url": "https://www.toolgrit.com/guides/what-size-grain-bin",
+        "datePublished": "2026-02-10",
+        "dateModified": "2026-02-10",
+        "author": {
+            "@type": "Organization",
+            "name": "ToolGrit",
+            "url": "https://www.toolgrit.com"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "ToolGrit",
+            "url": "https://www.toolgrit.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.toolgrit.com/assets/Logos/logo-dark-wide-768.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.toolgrit.com/guides/what-size-grain-bin"
+        }
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Can I fill a bin to the top or do I need headspace?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You need at least 12-18 inches of headspace for aeration and to prevent grain from spilling when you open the hatch. Most operators target 2-3 feet of headspace for safety and to allow for grain movement during aeration cycles. If you're drying in the bin, you need even more headspace because the grain will settle as moisture leaves."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What happens if I use test weight different from the default?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The weight estimate changes directly with the test weight you enter. Actual bushels, inventory, and payment still depend on measured test weight, moisture, dockage, foreign material, scale records, grade rules, and the buyer or insurer method."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How much does bin size affect drying time?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Drying time scales with grain depth, not bin diameter. A 30-foot bin and a 36-foot bin with the same eave height take roughly the same time to dry if airflow per bushel is the same. But the bigger bin holds more bushels, so you need a bigger fan to maintain the same CFM per bushel. Depth is the enemy of drying speed, which is why many operators prefer shorter, wider bins over tall, narrow ones."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is it better to build two small bins or one large bin?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Depends on whether you need segregation. Two bins let you separate varieties, moisture levels, or delivery schedules. One large bin is cheaper per bushel of capacity and uses less land. If you're storing a single commodity and marketing it all at once, one large bin is more efficient. If you need flexibility, two smaller bins are worth the premium."
+                }
+            }
+        ]
+    }
+]    </script>
+    
+    <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4C5EFZ1ZLL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-4C5EFZ1ZLL', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    </head>
+<body>
+    <a href="#main-content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <a class="site-logo-link" href="/" title="ToolGrit - Home">
+                <img src="/assets/Logos/logo-gray-220.webp"
+                     srcset="/assets/Logos/logo-gray-220.webp 220w, /assets/Logos/logo-gray.webp 551w"
+                     sizes="(max-width: 768px) 190px, 108px"
+                     alt="ToolGrit" class="site-logo-img" width="220" height="101">
+            </a>
+
+            <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+                <ul role="list">
+                    <li><a href="/" >Home</a></li>
+                    <li><a href="/tools" >Tools</a></li>
+                    <li><a href="/guides" class="active">Guides</a></li>
+                    <li><a href="/pro" >Support</a></li>
+                    <li><a href="/about" >About</a></li>
+                    <li><a href="/contact" >Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="/tools" class="btn-explore">Explore Tools</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="siteNav">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="header-container">
+            <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                        <a href="/" itemprop="item">
+                        <span itemprop="name">Home</span>
+                    </a>
+                                        <meta itemprop="position" content="1" />
+                </li>
+                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                        <a href="/guides" itemprop="item">
+                        <span itemprop="name">Guides</span>
+                    </a>
+                                        <meta itemprop="position" content="2" />
+                </li>
+                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                        <a href="/guides?category=agriculture" itemprop="item">
+                        <span itemprop="name">Agriculture</span>
+                    </a>
+                                        <meta itemprop="position" content="3" />
+                </li>
+                                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                        <span itemprop="name">What Size Grain Bin Do I Need?</span>
+                                        <meta itemprop="position" content="4" />
+                </li>
+                            </ol>
+        </div>
+    </nav>
+    
+    <main id="main-content">
+
+<!-- Guide Header -->
+<section class="hero hero-small guide-leaf-hero" data-tg-go-nonce="eyJ2IjoxLCJwIjoiL2d1aWRlcy93aGF0LXNpemUtZ3JhaW4tYmluIiwiaWF0X21zIjoxNzkyMTY2NzgwMTY4LCJpZCI6ImRmZjE2YjA1M2FkZmYxNTg2YjEzZmQ1YzFhM2YwMDljIn0.43ee3a47de0dfe184825e6d938c6ec9fe9821f660c1dca263ee516a7f7c83116" data-tg-go-base="/go/">
+    <div class="container">
+        <div class="guide-meta">
+            <span class="tool-card-badge badge-agriculture">Agriculture</span>
+            <span class="guide-meta-text">8 min read</span>
+            <span class="guide-meta-text">Feb 10, 2026</span>
+        </div>
+        <h1>What Size Grain Bin Do I Need?</h1>
+                <p class="lead">How to screen bin capacity before checking the actual manufacturer table, grain records, and safety requirements</p>
+            </div>
+</section>
+
+<!-- Guide Article -->
+<article class="section guide-manual">
+    <div class="container">
+    <div class="guide-article">
+        
+                        <nav class="guide-toc">
+            <p class="guide-toc-title">In This Guide</p>
+            <ol>
+                                <li>
+                    <a href="#bushels-vs-geometry">
+                        <span class="guide-toc-num">1.</span>
+                        <span class="guide-toc-text">Why Bin Sizing Is Not Just About Bushels</span>
+                    </a>
+                </li>
+                                <li>
+                    <a href="#cylinder-geometry">
+                        <span class="guide-toc-num">2.</span>
+                        <span class="guide-toc-text">The Geometry: Why Diameter Matters More Than Height</span>
+                    </a>
+                </li>
+                                <li>
+                    <a href="#peaked-vs-level">
+                        <span class="guide-toc-num">3.</span>
+                        <span class="guide-toc-text">Peaked Fill vs Level Fill: The 20% You Might Not Get</span>
+                    </a>
+                </li>
+                                <li>
+                    <a href="#moisture-shrink">
+                        <span class="guide-toc-num">4.</span>
+                        <span class="guide-toc-text">Moisture Shrink Changes Deliverable Bushels</span>
+                    </a>
+                </li>
+                                <li>
+                    <a href="#auger-matching">
+                        <span class="guide-toc-num">5.</span>
+                        <span class="guide-toc-text">Matching the Auger to the Bin</span>
+                    </a>
+                </li>
+                                <li>
+                    <a href="#expansion-planning">
+                        <span class="guide-toc-num">6.</span>
+                        <span class="guide-toc-text">Thinking About Expansion</span>
+                    </a>
+                </li>
+                            </ol>
+        </nav>
+        
+                <div class="guide-intro">
+            <p>Grain bin sizing starts with geometry, but geometry is not the whole decision. Manufacturer rated capacity, measured inside diameter, roof clearance, grain condition, fill practice, moisture shrink, settlement rules, aeration needs, and safety procedures can all change the usable number.</p>
+<p>This guide uses source-aware planning language. Treat the formulas as a first screening step, then verify the actual bin model, load tickets, measured test weight, moisture, dockage, insurance method, structural requirements, and bin-entry safety program before purchasing equipment or certifying inventory.</p>        </div>
+
+                                <section class="guide-section"
+            id="bushels-vs-geometry">
+            <h2>
+                <span class="guide-section-num">1.</span>
+                <span>Why Bin Sizing Is Not Just About Bushels</span>
+            </h2>
+            <p>Round-bin volume changes with the square of radius, so diameter usually moves capacity faster than height. That geometric fact is useful for screening alternatives, but the final usable capacity still comes from the actual bin dimensions and manufacturer rating method.</p>
+<p>Spec sheets may list level, peaked, or other rated capacities. Peaked fill depends on roof clearance, fill point, spreader behavior, grain condition, fines, and whether the surface is leveled for aeration. A geometry model can estimate the difference, but it should not be treated as a universal percent gain.</p>
+<p>Test weight rows such as 56 lb/bu corn or 60 lb/bu soybeans are planning defaults. Actual settlement and inventory depend on measured test weight, moisture, dockage, foreign material, broken kernels, load tickets, and buyer or insurer rules.</p>
+<p>The practical result is that you need to think about verified usable capacity, not just one rated number. Compare level fill, ideal peaked fill, wet-to-dry shrink, headspace, aeration requirements, and inventory method before deciding whether the bin meets your target.</p>
+                                                <div class="guide-callout callout-warning">
+                <strong class="guide-callout-label">Warning</strong>
+                <div class="guide-callout-content"><strong>Common mistake:</strong> Treating one rated bushel number as usable capacity without checking whether it is level, peaked, based on a specific test weight, or affected by shrink, headspace, and field measurement.</div>
+            </div>
+            
+                                </section>
+                <section class="guide-section"
+            id="cylinder-geometry">
+            <h2>
+                <span class="guide-section-num">2.</span>
+                <span>The Geometry: Why Diameter Matters More Than Height</span>
+            </h2>
+            <p>Simple round-bin screening starts with the cylinder formula: V = &pi; &times; (D/2)&sup2; &times; H, where D is diameter and H is eave height. The app uses 1.2444 cubic feet per bushel as a rounded planning conversion. The squared radius term is why diameter strongly affects capacity.</p>
+<p>A 30-foot bin with 22 feet of eave height holds about 15,500 cubic feet, or 12,500 bushels at level fill. A 36-foot bin with the same eave height holds about 22,300 cubic feet, or 17,900 bushels. That's a 43% increase in capacity from adding 6 feet to the diameter. If you added 6 feet to the height instead (keeping diameter at 30 feet), you get to about 19,800 cubic feet, or 15,900 bushels. A 27% increase &mdash; still meaningfully less than the diameter bump delivers.</p>
+<p>This is why most bin sizing decisions come down to diameter first, then height. Diameter gives you capacity. Height gives you flexibility (easier to unload with an underfloor system, better aeration uniformity). But if you need more bushels, you need more diameter.</p>
+                                                <div class="guide-callout callout-formula">
+                <strong class="guide-callout-label">Formula</strong>
+                <div class="guide-callout-content"><strong>Cylinder volume screen:</strong><br>V = &pi; &times; (D/2)&sup2; &times; H<br>Bushels = V &divide; 1.2444<br><br>Where D = diameter (ft), H = eave height (ft), V = volume (cubic feet). Verify actual manufacturer and inventory method before using results.</div>
+            </div>
+            
+                                                <div class="guide-tool-cta">
+                <div class="guide-tool-cta-body">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <h4>Grain Bin Capacity Calculator</h4>
+                    <p>Calculate bushel capacity for flat-bottom and hopper-bottom grain bins. Enter diameter, eave height, and commodity to get level fill, peaked fill, and partial fill volumes with weight estimates.</p>
+                </div>
+                <a href="/tools/grain-bin-capacity-calculator"
+                    class="btn btn-primary">Launch Calculator &rarr;</a>
+            </div>
+                    </section>
+                <section class="guide-section"
+            id="peaked-vs-level">
+            <h2>
+                <span class="guide-section-num">3.</span>
+                <span>Peaked Fill vs Level Fill: The 20% You Might Not Get</span>
+            </h2>
+            <p>Peaked fill adds a modeled cone of grain above the eave. The height of that cone depends on the selected angle of repose, but that angle changes with moisture, fines, foreign material, kernel condition, and fill method. Treat the app row as a local planning default unless you have a validated value.</p>
+<p>For a 36-foot bin, the cone height is roughly (D/2) &times; tan(angle). At 25 degrees, that's about 8.4 feet. The cone adds about 2,850 cubic feet, or 2,300 bushels. That's where the difference between 17,900 bushels (level) and 20,000+ bushels (peaked) comes from.</p>
+<p>But you only get peaked fill if you have a spreader or if you're filling slowly from the center and letting the grain naturally pile. If you're using a spout that swings around the perimeter, you get something closer to level fill. The grain might peak slightly in the center, but not enough to hit the rated capacity.</p>
+<p>The other issue with peaked fill is aeration. Air doesn't move well through a peaked pile because the path length varies too much. If you're planning to aerate or dry in the bin, level fill works better. Many operators use a spreader to fill, then level the pile before starting fans. That defeats the capacity advantage of peaked fill.</p>
+                                                <div class="guide-callout callout-note">
+                <strong class="guide-callout-label">Note</strong>
+                <div class="guide-callout-content"><strong>Angle of repose:</strong><br>The app uses editable local defaults for the ideal peak cone. Actual angle depends on moisture, fines, foreign material, kernel size, fill rate, and whether the surface has been leveled.</div>
+            </div>
+            
+                                </section>
+                <section class="guide-section"
+            id="moisture-shrink">
+            <h2>
+                <span class="guide-section-num">4.</span>
+                <span>Moisture Shrink Changes Deliverable Bushels</span>
+            </h2>
+            <p>If you are storing wet grain and drying it in the bin, physical water-shrink math reduces the calculated dry bushels. The planning formula is: dry_bu = wet_bu &times; (100 - wet%) / (100 - dry%). If you put 20,000 bushels of 20% moisture corn in the bin and dry it to 15%, the local arithmetic gives about 18,824 dry bushels, or about 5.9% water shrink.</p>
+<p>That is a planning screen for water removed, not a complete settlement or storage model. Actual tickets, moisture tests, grade, dockage, test weight, handling loss, quality discounts, buyer schedules, contracts, and crop-insurance or accounting rules can change the business result.</p>
+<p>The practical impact is that if you need to deliver 30,000 bushels of dry grain, you should screen how many wet bushels are needed and then verify the plan against bin capacity, safe storage guidance, buyer terms, and qualified grain-storage review.</p>
+                                                <div class="guide-callout callout-formula">
+                <strong class="guide-callout-label">Formula</strong>
+                <div class="guide-callout-content"><strong>Moisture shrink:</strong><br>dry_bu = wet_bu &times; (100 - wet%) / (100 - dry%)<br><br>Example: 20,000 bu at 20% moisture, dried to 15%<br>dry_bu = 20,000 &times; (100 - 20) / (100 - 15) = 18,824 bu<br>Shrink: 1,176 bu (5.9%)</div>
+            </div>
+            
+                                                <div class="guide-tool-cta">
+                <div class="guide-tool-cta-body">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <h4>Grain Moisture Shrink Calculator</h4>
+                    <p>Calculate physical grain shrink from drying vs. elevator-applied shrink. See the hidden margin in your elevator&#039;s shrink factor and the dollar impact at current commodity prices.</p>
+                </div>
+                <a href="/tools/grain-moisture-shrink-calculator"
+                    class="btn btn-primary">Launch Calculator &rarr;</a>
+            </div>
+                    </section>
+                <section class="guide-section"
+            id="auger-matching">
+            <h2>
+                <span class="guide-section-num">5.</span>
+                <span>Matching the Auger to the Bin</span>
+            </h2>
+            <p>A 50,000 bushel bin is useless if your auger takes two days to fill it. Auger capacity is rated in bushels per hour at a reference angle (usually 45 degrees for portable augers, vertical for permanent systems). Capacity derates as angle increases because the flights have to lift the grain higher per revolution.</p>
+<p>A 10-inch auger might move 3,000 bu/hr at 45 degrees but only 2,400 bu/hr at 60 degrees. If you're filling a 30,000 bushel bin, that's the difference between 10 hours and 12.5 hours. For a single bin, that might not matter. For a multi-bin setup where you're moving grain all day, it adds up.</p>
+<p>The other constraint is unloading. If you have an underfloor unload system with a 6-inch auger, it might only pull 1,500 bu/hr. If you need to turn the bin around in 8 hours to make room for the next load, you're capped at 12,000 bushels. A bigger bin doesn't help if you can't empty it fast enough.</p>
+<p>Use auger capacity as a planning check, not a universal rule. Verify actual auger or conveyor manufacturer curves, angle, grain condition, horsepower, power supply, wet-grain handling, and unload-system limits before depending on a fill or unload time.</p>
+                        
+                                                <div class="guide-tool-cta">
+                <div class="guide-tool-cta-body">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <h4>Auger &amp; Conveyor Sizing Calculator</h4>
+                    <p>Find the right auger diameter for your target bushels per hour. See capacity derating by angle and commodity, HP requirements, and time to fill a bin.</p>
+                </div>
+                <a href="/tools/auger-conveyor-sizing-calculator"
+                    class="btn btn-primary">Launch Calculator &rarr;</a>
+            </div>
+                    </section>
+                <section class="guide-section"
+            id="expansion-planning">
+            <h2>
+                <span class="guide-section-num">6.</span>
+                <span>Thinking About Expansion</span>
+            </h2>
+            <p>The most expensive parts of a grain bin are the concrete pad and the aeration system. The steel rings are relatively cheap. This is why most farmers size bins for future needs, not current needs. If you think you'll need 40,000 bushels of storage in three years, build the 40,000 bushel bin now. The incremental cost is small compared to pouring a second pad.</p>
+<p>The concrete pad has to carry the full weight of the bin and the grain, plus snow load and wind load. A 30-foot bin with 20,000 bushels of corn weighs about 600 tons. The pad is typically 6-8 inches thick with rebar and a compacted gravel base. If you pour a pad for a 30-foot bin and later decide you need a 36-foot bin, you have to pour a new pad. That's $8,000-12,000 plus site work.</p>
+<p>The aeration system is similar. If you design for 1 CFM per bushel (a common target for humid climates), a 30,000 bushel bin needs a 30,000 CFM fan. A 40,000 bushel bin needs a 40,000 CFM fan. You can't just bolt a bigger fan onto an undersized plenum. The ductwork and perforated floor have to be sized for the airflow from the start.</p>
+<p>Expansion planning is a business and site decision. Check crop rotation, land base, harvest rate, marketing plan, drying system, electrical service, foundation design, local permits, and qualified dealer or engineer review before treating a larger bin as a low-risk upgrade.</p>
+                                                <div class="guide-callout callout-tip">
+                <strong class="guide-callout-label">Tip</strong>
+                <div class="guide-callout-content">The marginal cost of going from a 30-foot to a 36-foot bin is often less than 30%, but the capacity increase is 40-45%. The pad and foundation are the same complexity. The aeration system needs a bigger fan but the same design. If you're on the fence, size up.</div>
+            </div>
+            
+                                </section>
+                
+                
+                        <div class="guide-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="tool-faq">
+                                <div class="tool-faq-item">
+                    <button class="tool-faq-q"
+                        id="guide-faq-q-0"
+                        aria-expanded="false"
+                        aria-controls="guide-faq-a-0">Can I fill a bin to the top or do I need headspace?</button>
+                    <div class="tool-faq-a"
+                        id="guide-faq-a-0"
+                        role="region"
+                        aria-labelledby="guide-faq-q-0">You need at least 12-18 inches of headspace for aeration and to prevent grain from spilling when you open the hatch. Most operators target 2-3 feet of headspace for safety and to allow for grain movement during aeration cycles. If you're drying in the bin, you need even more headspace because the grain will settle as moisture leaves.</div>
+                </div>
+                                <div class="tool-faq-item">
+                    <button class="tool-faq-q"
+                        id="guide-faq-q-1"
+                        aria-expanded="false"
+                        aria-controls="guide-faq-a-1">What happens if I use test weight different from the default?</button>
+                    <div class="tool-faq-a"
+                        id="guide-faq-a-1"
+                        role="region"
+                        aria-labelledby="guide-faq-q-1">The weight estimate changes directly with the test weight you enter. Actual bushels, inventory, and payment still depend on measured test weight, moisture, dockage, foreign material, scale records, grade rules, and the buyer or insurer method.</div>
+                </div>
+                                <div class="tool-faq-item">
+                    <button class="tool-faq-q"
+                        id="guide-faq-q-2"
+                        aria-expanded="false"
+                        aria-controls="guide-faq-a-2">How much does bin size affect drying time?</button>
+                    <div class="tool-faq-a"
+                        id="guide-faq-a-2"
+                        role="region"
+                        aria-labelledby="guide-faq-q-2">Drying time scales with grain depth, not bin diameter. A 30-foot bin and a 36-foot bin with the same eave height take roughly the same time to dry if airflow per bushel is the same. But the bigger bin holds more bushels, so you need a bigger fan to maintain the same CFM per bushel. Depth is the enemy of drying speed, which is why many operators prefer shorter, wider bins over tall, narrow ones.</div>
+                </div>
+                                <div class="tool-faq-item">
+                    <button class="tool-faq-q"
+                        id="guide-faq-q-3"
+                        aria-expanded="false"
+                        aria-controls="guide-faq-a-3">Is it better to build two small bins or one large bin?</button>
+                    <div class="tool-faq-a"
+                        id="guide-faq-a-3"
+                        role="region"
+                        aria-labelledby="guide-faq-q-3">Depends on whether you need segregation. Two bins let you separate varieties, moisture levels, or delivery schedules. One large bin is cheaper per bushel of capacity and uses less land. If you're storing a single commodity and marketing it all at once, one large bin is more efficient. If you need flexibility, two smaller bins are worth the premium.</div>
+                </div>
+                            </div>
+        </div>
+        
+                        <div class="tool-disclaimer guide-disclaimer">
+            <strong>Disclaimer:</strong> Bin sizing depends on site-specific factors including measured dimensions, actual grain condition, manufacturer tables, moisture shrink, aeration design, soil conditions, foundation, wind, snow, unloading equipment, electrical service, local permits, and bin-entry safety controls. This guide provides planning context only. Consult qualified grain storage, structural, electrical, safety, insurance, and dealer resources before purchasing, certifying inventory, entering bins, or installing grain storage equipment.        </div>
+        
+    </div>
+    </div>
+</article>
+
+<script src="/js/affiliate-activation.js?v=20260919"></script>
+<script>window.installAffiliateActivationGuard(document);</script>
+
+<!-- Related Tools -->
+<section class="section section-alt spec-related-section">
+    <div class="container">
+        <h3 class="spec-related-heading">Calculators referenced in this guide</h3>
+        <div class="tool-grid spec-related-grid">
+                        <div class="tool-card spec-related-card"
+                data-category="agriculture">
+                <div class="tool-card-header">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <span class="tool-card-status status-live">Live</span>
+                </div>
+                <h3>Grain Drying Cost Estimator</h3>
+                <p>Calculate on-farm grain drying cost per bushel including fuel, shrink, and labor. Compare against elevator docking charges to find the cheaper option for your operation.</p>
+                <div class="tool-card-footer">
+                    <a href="/tools/grain-drying-cost-calculator"
+                        class="tool-card-link"
+                        aria-label="Launch Grain Drying Cost Estimator">
+                        Launch Tool <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+                    </div>
+    </div>
+</section>
+
+<!-- Related Guides -->
+<section class="section spec-related-section">
+    <div class="container">
+        <h3 class="spec-related-heading">Related guides</h3>
+        <div class="tool-grid spec-related-grid">
+                        <div class="guide-card spec-related-card"
+                 data-category="agriculture">
+                <div class="tool-card-header">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <span class="guide-meta-text">10 min</span>
+                </div>
+                <h3>Farm Power Planning: Panel, Feeder, and PTO Loads</h3>
+                <p>How to frame farm panel, feeder, motor, PTO, drawbar, and generator planning while keeping NEC, utility, OEM, field-condition, and qualified-review gaps visible.</p>
+                <div class="tool-card-footer">
+                    <a href="/guides/farm-power-planning"
+                        class="tool-card-link"
+                        aria-label="Read Farm Power Planning: Panel, Feeder, and PTO Loads">
+                        Read Guide <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+                        <div class="guide-card spec-related-card"
+                 data-category="agriculture">
+                <div class="tool-card-header">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <span class="guide-meta-text">9 min</span>
+                </div>
+                <h3>Irrigation Pump and Pipe Planning Boundaries</h3>
+                <p>How to calculate GPM per acre, friction loss in irrigation pipe, NPSH for centrifugal pumps, and pipe velocity limits for agricultural irrigation systems.</p>
+                <div class="tool-card-footer">
+                    <a href="/guides/irrigation-pump-pipe-explained"
+                        class="tool-card-link"
+                        aria-label="Read Irrigation Pump and Pipe Planning Boundaries">
+                        Read Guide <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+                        <div class="guide-card spec-related-card"
+                 data-category="agriculture">
+                <div class="tool-card-header">
+                    <span class="tool-card-badge badge-agriculture">Agriculture</span>
+                    <span class="guide-meta-text">9 min</span>
+                </div>
+                <h3>Bulk Fuel Storage Planning for Farms and Shops</h3>
+                <p>Tank sizing by consumption rate, SPCC requirements at the 1320 gallon threshold, secondary containment, above-ground vs below-ground tanks, and fuel quality management.</p>
+                <div class="tool-card-footer">
+                    <a href="/guides/bulk-fuel-storage-explained"
+                        class="tool-card-link"
+                        aria-label="Read Bulk Fuel Storage Planning for Farms and Shops">
+                        Read Guide <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+                    </div>
+    </div>
+</section>
+
+<!-- Category Guide Navigation -->
+<section class="section guide-end-nav-section">
+    <div class="container">
+        <nav class="guide-end-nav"
+            aria-label="More Agriculture guides">
+                                    <a class="guide-end-link guide-end-link-next"
+                href="/guides/irrigation-pump-pipe-explained">
+                <span class="guide-end-kicker">Next Agriculture guide</span>
+                <span class="guide-end-title">Irrigation Pump and Pipe Planning Boundaries</span>
+            </a>
+                    </nav>
+    </div>
+</section>
+
+        </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <!-- Brand Column -->
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo-link">
+                        <img src="/assets/Logos/logo-light-180.webp"
+                             srcset="/assets/Logos/logo-light-180.webp 180w, /assets/Logos/logo-light-480.webp 1999w"
+                             sizes="87px"
+                             alt="ToolGrit" class="footer-logo-img" width="180" height="83">
+                    </a>
+                    <p class="footer-tagline">Practical Tools. Rugged Solutions. Built for Results.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <nav class="footer-links" aria-label="Quick links">
+                    <p class="footer-heading">Quick Links</p>
+                    <ul>
+                        <li><a href="/tools">Tools & Calculators</a></li>
+                        <li><a href="/guides">Guides & How-To</a></li>
+                        <li><a href="/pro">Support ToolGrit</a></li>
+                        <li><a href="/about">About ToolGrit</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Tool Categories -->
+                <nav class="footer-links" aria-label="Tool categories">
+                    <p class="footer-heading">Categories</p>
+                                        <div style="display: flex; gap: 1.5rem;">
+                        <ul style="margin: 0; padding: 0;">
+                                                        <li><a href="/tools?category=shops">Shops &amp; Outbuildings</a></li>
+                                                        <li><a href="/tools?category=industrial">Industrial</a></li>
+                                                        <li><a href="/tools?category=electrical">Electrical</a></li>
+                                                        <li><a href="/tools?category=safety">Safety</a></li>
+                                                        <li><a href="/tools?category=productivity">Productivity</a></li>
+                                                        <li><a href="/tools?category=machinist">Machinist</a></li>
+                                                        <li><a href="/tools?category=hvac">HVAC</a></li>
+                                                        <li><a href="/tools?category=emissions">Emissions</a></li>
+                                                        <li><a href="/tools?category=municipal">Municipal</a></li>
+                                                        <li><a href="/tools?category=geology">Geology &amp; Drilling</a></li>
+                                                        <li><a href="/tools?category=agriculture">Agriculture</a></li>
+                                                    </ul>
+                        <ul style="margin: 0; padding: 0;">
+                                                        <li><a href="/tools?category=hauling">Hauling</a></li>
+                                                        <li><a href="/tools?category=residential">Residential</a></li>
+                                                        <li><a href="/tools?category=solar">Solar &amp; Renewables</a></li>
+                                                        <li><a href="/tools?category=structural">Structural</a></li>
+                                                        <li><a href="/tools?category=foodservice">Foodservice</a></li>
+                                                        <li><a href="/tools?category=hardscaping">Hardscaping</a></li>
+                                                        <li><a href="/tools?category=marine">Marine</a></li>
+                                                        <li><a href="/tools?category=arboriculture">Arboriculture</a></li>
+                                                        <li><a href="/tools?category=events">Live Events</a></li>
+                                                        <li><a href="/tools?category=woodworking">Woodworking</a></li>
+                                                    </ul>
+                    </div>
+                </nav>
+
+                <!-- Legal & Social -->
+                <nav class="footer-links" aria-label="Legal">
+                    <p class="footer-heading">Legal</p>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/refunds">Refund Policy</a></li>
+                        <li><a href="/affiliate-disclosure">Affiliate Disclosure</a></li>
+                    </ul>
+                                        <div class="footer-social">
+                        <a href="https://www.facebook.com/profile.php?id=61579724470877" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                    </div>
+                                    </nav>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolGrit. All tools run locally in your browser.</p>
+                <p style="font-size: var(--font-size-sm); opacity: 0.75; margin-top: 0.25rem;">ToolGrit participates in affiliate advertising programs. Some links on this site may earn a commission at no cost to you.</p>
+                <p class="footer-credit">Built and Powered by <a href="https://www.dirtriverdesign.com" target="_blank" rel="noopener noreferrer">Dirt River Design</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&uarr;</button>
+
+    <script src="/js/main.js" defer></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"ce4454ece4864a91b1e2e0bf1ce42aaa","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

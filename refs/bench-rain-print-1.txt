@@ -1,0 +1,7 @@
+# Benchmark rain-print: Show Your Stripes
+# https://showyourstripes.info/
+# fetched 2026-10-16T16:06:21Z, sha256 e79d1951b3bb94dba4b17096e633049415b8e2567da4c19eb2b0adc3f4940976
+
+#ShowYourStripes
+
+

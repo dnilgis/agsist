@@ -1,0 +1,171 @@
+# Benchmark grain-bin-calculator: Omni Calculator
+# https://www.omnicalculator.com/biology/grain-bin
+# fetched 2026-10-16T16:06:17Z, sha256 d2f5e13b855e5f2593debd7666d546f2a7314392d3a7a8d2892406364e6c78e3
+
+Grain Bin CalculatorOmni Calculator on FacebookOmni Calculator on YouTubeOmni Calculator on XOmni Calculator on LinkedInOmni Calculator on Instagram
+
+Grain Bin Calculator
+
+Grain bin type
+
+Roof
+
+Diameter
+
+Radius
+
+Sidewall height
+
+Grain weight
+
+Volume of grain
+
+Grain volume in bushels
+
+Total grain weight
+
+Did we solve your problem today?
+
+Check out 4 similar livestock calculators 🐄
+
+Feed conversion ratio
+
+Livestock fence cost
+
+Cattle per acre
+
+Build your calculator with Builder
+
+Add as preferred on Google
+
+-
+
+-
+
+-
+
+-
+
+The grain bin calculator can estimate the contents or capacity of a grain bin. You can use the tool as a grain bin bushel calculator to conveniently determine the number of bushels you can store for your farming operation’s dry storage, or the volume and product weight. In this article, you'll learn how to calculate grain bin capacity and why grain bins get designed the way they are.
+
+🔎 If the grain will be used as animal feed, our feed conversion ratio calculator can help estimate how efficiently that feed becomes animal weight gain.
+
+What is a grain bin?
+
+Grain bins or grain silo towers are vast galvanized metal tins used to store harvested grains such as soybeans, corn, and wheat. It protects your months of hard work and harvests from rodents, weather, and other destructive elements.
+
+Most metal grain bins come in circular or cylindrical shapes, but different shapes (e.g., square and rectangular flat storage) are readily available for farm producers interested in custom designs. The round shapes are popular because they are easier to clean compared to shapes with corners.
+
+Another common feature of grain bin designs is a piled or conical top and, sometimes, a hopper bottom. These top-fills allow the grain bin to be quickly loaded with grains through a central hatch, while the hopper bottom allows the grain bin's content to be easily emptied thanks to gravity.
+
+The structure also ensures proper ventilation and movement of air current through the metal grain bins. Flat bottom rectangular grain bins are also common. They are easier and cheaper to construct with a concrete foundation that makes them suited for holding grains indefinitely.
+
+Just like shapes, the sizes also vary if you're considering grain bins for sale. Some metal grain bins can hold 1,000 bushels (about 25.4 metric tons) of grain, while others can hold up to 1 million bushels.
+
+The grain bin capacity calculator allows you to calculate the volume and bushels of grain in these large grain silos. You can determine the grain bin capacity by inputting the grain bin dimensions or use the tool as a grain bin size calculator when you provide the capacity you're looking to get.
+
+Suppose you are developing a custom grain storage plan for your farm operation. In that case, you can use the grain bin bushel calculator during your initial site analysis and make estimates for the storage requirements.
+
+How to use the grain bin bushel calculator
+
+Follow these steps in no particular order to get the grain bin capacity and product of a grain bin:
+
+- Select the grain bin type, round or rectangular.
+
+- Indicate if the grain bin has a roof by selecting the shape/type of roof. Fill in the roof's height.
+
+- Indicate if the grain bin has a hopper. Fill in the hopper's height.
+
+- Provide the dimensions of the grain bin — height, Width, Length, and Diameter. The Radius of the grain is half of the grain bin diameter, which is provided in the manufacturer's information.
+
+- If you want to find the total grain weight in the grain bin, all you need to do is provide the test grain weight.
+
+How to calculate grain bin capacity?
+
+You can use the grain bin calculator whether the grain bin gets partially filled or you want to know how much capacity is remaining.
+
+The formulae to calculate the grain bin capacity for different grain bin shapes are as follows:
+
+-
+
+Round grain bin capacity (bushels) = πR2⋅H⋅conversion constant\small πR^2 \cdot H \cdot \text{conversion constant} πR2⋅H⋅conversion constant
+
+When the grain bin body has top fill and hopper;
+
+Round grain bin with peaked top and hopper (bushels) = πR2⋅H⋅conversion constant+13πR2⋅H2⋅conversion constant+13πR2⋅H3⋅conversion constant\small πR^2\cdot H \cdot \text{conversion constant} + \frac{1}{3}πR^2\cdot H_2 \cdot \text{conversion constant}+ \frac{1}{3}πR^2\cdot H_3 \cdot \text{conversion constant}πR2⋅H⋅conversion constant+31​πR2⋅H2​⋅conversion constant+31​πR2⋅H3​⋅conversion constant
+
+Round grain bin with curved top and hopper (bushels) = πR2⋅H⋅conversion constant+πR2⋅(23R+H2)⋅conversion constant+13πR2⋅(23R+H3)⋅conversion constant\small πR^2 \cdot H \cdot \text{conversion constant} + πR^2\cdot (\frac{2}{3}R+H_2) \cdot \text{conversion constant}+ \frac{1}{3}πR^2\cdot (\frac{2}{3}R+H_3) \cdot \text{conversion constant}πR2⋅H⋅conversion constant+πR2⋅(32​R+H2​)⋅conversion constant+31​πR2⋅(32​R+H3​)⋅conversion constant
+
+-
+
+Rectangle grain bin capacity (bushels) = L⋅W⋅H⋅conversion constant\small L \cdot W \cdot H \cdot \text{conversion constant}L⋅W⋅H⋅conversion constant
+
+When the grain bin body has a top fill:
+
+Rectangle grain bin with peaked top (bushels) = L⋅W⋅H⋅conversion constant+13L⋅W⋅H2⋅conversion constant\small L \cdot W \cdot H \cdot \text{conversion constant} + \frac{1}{3}L \cdot W \cdot H_2 \cdot \text{conversion constant}L⋅W⋅H⋅conversion constant+31​L⋅W⋅H2​⋅conversion constant
+
+Rectangle grain bin with curved top (bushels) = L⋅W⋅H⋅conversion constant+L⋅W⋅(23+H2)⋅conversion constant\small L \cdot W \cdot H \cdot \text{conversion constant} + L \cdot W \cdot(\frac{2}{3}+ H_2)\cdot \text{conversion constant}L⋅W⋅H⋅conversion constant+L⋅W⋅(32​+H2​)⋅conversion constant
+
+where:
+
+- RRR — Radius of the grain bin, which equals its diameter divided by 2;
+
+- HHH — Peak height of the grain bin, where:
+
+- H1H_1H1​ — Body height of the grain bin;
+
+- H2H_2H2​ — Height of top fill if the grain bin has a piled or conical fill; and
+
+- H3H_3H3​ — Height of the bottom fill if the grain bin has a hopper.
+
+- LLL — Body length of the grain bin;
+
+- WWW — Width of the grain bin; and
+
+- conversion constant\text{conversion constant}conversion constant — 0.7786 bushels per cubic feet.
+
+Disclaimer:
+
+- All dimensions have to be in the same units when using the formulae. With the grain bin calculator, you can switch between imperial and metric measures to get your results irrespective of units.
+
+- The grain bin calculator results are estimated values based on the figures you provide. Estimates provided when a grain bin has a roof and/or hopper do not account for the variability in the angle of repose as the grains are filled or piled.
+
+Before you go, check out our corn yield calculator.
+
+FAQs
+
+How do you calculate grain bin capacity?
+
+Depending on the shape of the grain bin, you calculate the grain bin capacity by first calculating its volume in cubic feet and converting it to bushels using a conversion factor of 0.7786 bushels per cubic foot.
+
+How to calculate bushels in a grain bin?
+
+To calculate the number of bushels in a grain bin, multiply the volume by the conversion constant of 0.7786 bushels per cubic foot. You can use this tool as a grain bin bushel capacity calculator to find the number of bushels in a grain bin.
+
+How do you calculate grain bin capacity of corn?
+
+You can calculate the grain bin capacity for a grain bin storing the corn by using the formula:
+
+π × Radius of grain bin2 × Height of corn in grain bin × 0.7786
+
+How do you calculate grain bin cone capacity of corn?
+
+You can calculate the grain bin cone capacity for a grain bin storing corn using the formula:
+
+π × Radius of the cone2 × Height of the cone × 0.2595
+
+How much does a grain bin cost?
+
+The cost of a grain bin depends on the size, shape, and ease of construction. You should consult an agriculture construction or engineering company to get an accurate quote. You can use this tool as a grain bin size calculator to estimate the size of the grain bin you will need for your operation's dry storage. Before you buy a grain silo, consider exploring firms that offer custom-built grain bins for sale.
+
+How to find bushels in grain bin?
+
+You can find the number of bushels in a grain bin by multiplying the volume of the grain bin by a conversion factor of 0.7786. Simply input figures into the bin bushel capacity calculator to find the number of bushels in any grain bin.
+
+Flat bottom vs round large grain silos — which is a better?
+
+The main difference between the round and flat bottom grain bins is the construction cost. Flat bottom grain bins are easier and cheaper to construct than the large round grain silos with hopper bottoms. Suppose you will be accessing your grain storage often, or you're holding grain for the short term. In that case, a round grain bin is preferred because it is easier to unload the grains, but if you are storing grains for the long term, the flat bottom grain bins are cheaper. However, you will need a piece of equipment such as an auger transporter or conveyor to unload grains.
+
+- VPD Calculator (Vapor Pressure Deficit)
+
+- Sod Calculator

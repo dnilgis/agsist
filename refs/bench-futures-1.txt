@@ -1,0 +1,5 @@
+# Benchmark futures: Barchart
+# https://www.barchart.com/futures/quotes/ZCZ26
+# fetched 2026-10-16T16:06:31Z, sha256 a8a4479b026ebd5bf574cb50aa1a53cdf1a2b9f43df81d3edba7d05308edcd1f
+
+
