@@ -117,3 +117,25 @@ test("editorial standards page: how the Daily is made, corrections, no em dashes
   const org = ld["@graph"].find((x) => x["@type"] === "NewsMediaOrganization");
   assert.equal(org.correctionsPolicy, "https://agsist.com/editorial-standards#corrections");
 });
+
+test("feed.xml: each item's pubDate is the issue's real publish time, one headline", () => {
+  const x = read("feed.xml");
+  const items = [...x.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
+  assert.ok(items.length > 0);
+  for (const it of items.slice(0, 10)) {
+    const d = it.match(/daily\/(\d{4}-\d{2}-\d{2})<\/link>/)[1];
+    const h = read("daily/" + d + ".html");
+    const a = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .map((m) => JSON.parse(m[1])).find((o) => o["@type"] === "NewsArticle");
+    const pub = Date.parse(it.match(/<pubDate>([^<]+)<\/pubDate>/)[1]);
+    assert.equal(pub, Date.parse(a.datePublished), d + ": pubDate = datePublished");
+    assert.equal(unesc(it.match(/<title>([^<]*)<\/title>/)[1]), a.headline, d + ": feed title = headline");
+  }
+  assert.ok(!/05:00:00 -0600/.test(x), "no made-up 5:00 AM stamps");
+});
+
+test("daily.html byline links how the briefing is made", () => {
+  const h = read("daily.html");
+  assert.ok(h.includes('<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>'));
+  assert.ok(!h.includes("Written by <strong>Sigurd"));
+});
