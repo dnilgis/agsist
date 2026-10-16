@@ -127,6 +127,8 @@ test("ZIP in May: station frost odds, heat units by hand, county dates, soil tre
     assert.equal(await pg.$eval("#pd-local", (e) => e.hidden), true, "hidden before a location");
     await loadZip(pg);
     assert.equal(await pg.$eval("#pd-local", (e) => e.hidden), false);
+    // One set of numbers: the rough zone card goes away once the station answers.
+    assert.equal(await pg.$eval("#pd-zone-card", (e) => e.hidden), true);
     const stn = await txt(pg, "#pd-stn");
     // Fixture station is about 14 miles from the geocoded point (45.31, -91.65 to 45.40, -91.85).
     assert.match(stn, /Frost odds at Testville Airport/);
@@ -199,6 +201,7 @@ test("no station file yet: a clear empty state, zone averages stand in", { skip 
     const { pg, errors } = await open(browser, port, { noStations: true });
     await loadZip(pg);
     assert.match(await txt(pg, "#pd-stn"), /load after the first NOAA read/);
+    assert.equal(await pg.$eval("#pd-zone-card", (e) => e.hidden), false, "zone averages stand in");
     assert.equal(await pg.$eval("#pd-stn-gdu", (e) => e.hidden), true);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
@@ -212,8 +215,13 @@ test("far from any WI or MN station: says so, no numbers borrowed", { skip }, as
     const { pg } = await open(browser, port, { place });
     await loadZip(pg, "50309");
     const s = await txt(pg, "#pd-stn");
-    assert.match(s, /No NOAA normals station in Wisconsin or Minnesota within 75 miles/);
+    assert.match(s, /Station frost dates and heat units cover Wisconsin and Minnesota so far\. Your ZIP is in IA\./);
+    assert.match(s, /zone averages further down are rough Wisconsin and Minnesota numbers, shown only as a fallback/);
     assert.doesNotMatch(s, /Median/);
+    // The zone card stays, labeled as the fallback.
+    assert.equal(await pg.$eval("#pd-zone-card", (e) => e.hidden), false);
+    assert.match(await txt(pg, "#pd-zone-h"), /no station for your ZIP/i);
+    assert.match(await txt(pg, "#pd-zone-why"), /not your field/);
     // Polk County, IA is in the RMA file, so the county block still answers.
     assert.match(await txt(pg, "#pd-rma"), /Polk County, IA/);
   } finally { await browser.close(); srv.close(); }
@@ -271,4 +279,34 @@ test("the soybean rate is attributed to UW as UW said it", () => {
     assert.doesNotMatch(s, /UW-Madison; 0\.2.{1,10}0\.5 bu\/a\/day after Apr 25/);
   }
   assert.match(readFileSync(join(ROOT, "planting-date.html"), "utf8"), /2\.1 bu\/a \(UW-Madison\)/);
+});
+
+// Real station file on main (NOAA NCEI 1991-2020, data/planting/wi.json): a Madison point gets the
+// UW Arboretum station, its name with UW in capitals, and no zone card beside it.
+test("real WI file: Madison gets UW Arboretum, acronym kept, zone card hidden", { skip: skip || (!existsSync(join(ROOT, "data/planting/wi.json")) && "no station file on this checkout") }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const real = readFileSync(join(ROOT, "data/planting/wi.json"), "utf8");
+    const place = { lat: "43.0447", lon: "-89.4253", display_name: "Madison, Dane County, Wisconsin", address: { county: "Dane County", state: "Wisconsin", "ISO3166-2-lvl4": "US-WI" } };
+    const { pg } = await open(browser, port, { place });
+    await pg.route("**/data/planting/wi.json", (r) => r.fulfill({ contentType: "application/json", body: real }));
+    await loadZip(pg, "53711");
+    const s = await txt(pg, "#pd-stn");
+    assert.match(s, /Frost odds at UW Arboretum/);
+    assert.doesNotMatch(await pg.$eval("#pd-local", (e) => e.textContent), /\bUw\b|\bNws\b|\bDnr\b/);
+    assert.equal(await pg.$eval("#pd-zone-card", (e) => e.hidden), true);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("names from a title-cased file are put right on the page", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port);
+    const fx = JSON.parse(FIX); fx.stations[0].n = "Fond Du Lac 3Sw Uw Dnr Hq";
+    await pg.route("**/data/planting/wi.json", (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(fx) }));
+    await loadZip(pg);
+    assert.match(await txt(pg, "#pd-stn"), /Frost odds at Fond du Lac 3 SW UW DNR HQ/);
+  } finally { await browser.close(); srv.close(); }
 });
