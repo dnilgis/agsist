@@ -292,7 +292,7 @@ def title_ok(src, title):
 def merge_barn(existing, src, sale, err, now_iso, slug):
     """One barn, keep-last-good, never older, newest sale first."""
     b = dict(existing or {})
-    for k in ("name", "town", "state", "lat", "lon"):
+    for k in ("name", "town", "state", "lat", "lon", "label"):
         if k in src:
             b[k] = src[k]
     b["id"] = src["id"]

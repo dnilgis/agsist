@@ -100,13 +100,15 @@
     var s0 = b.sales[0], key = S.sex + '|' + S.grade;
     var rows = classRows(b, key);
     var age = daysBetween(s0.date, today());
-    var where = b.town ? esc(b.town) + ', ' + esc(b.state) : esc(b.state) + ' weekly summary';
-    var h = '<section class="sb-card"><header><h3>' + esc(b.name || (b.state + ' auctions, weekly')) + '</h3>' +
+    var kind = b.label || 'weekly summary';
+    var where = b.town ? esc(b.town) + ', ' + esc(b.state) : esc(b.state) + ' ' + esc(kind);
+    var h = '<section class="sb-card"><header><h3>' + esc(b.name || (b.state + ' auctions, ' + kind.replace(/ summary$/, ''))) + '</h3>' +
       '<p class="sb-where">' + where + (mi != null ? ' &middot; ' + Math.round(mi) + ' mi' : '') + '</p></header>';
     h += '<p class="sb-sale">Sale of <b>' + niceDate(s0.date) + '</b>' + (s0.receipts ? ' &middot; ' + s0.receipts.toLocaleString('en-US') + ' head on the report' : '') +
       (age > STALE_DAYS ? ' <span class="sb-old">' + age + ' days old</span>' : '') + '</p>';
     var barnWhy = rows.length && rows.every(function (r) { return r.chg == null && /sale/.test(r.chgWhy) && r.chgWhy === rows[0].chgWhy; }) ? rows[0].chgWhy : '';
-    if (barnWhy) h += '<p class="sb-src">No change shown: ' + esc(barnWhy) + '.</p>';
+    if (barnWhy === 'first sale on file') h += '<p class="sb-src">First sale on file; the change shows after the next USDA report.</p>';
+    else if (barnWhy) h += '<p class="sb-src">No change shown: ' + esc(barnWhy) + '.</p>';
     if (!rows.length) {
       h += '<p class="sb-none">No ' + (S.sex === 'steers' ? 'steers' : 'heifers') + ' graded Medium and Large ' + S.grade + ' in the 300 to 899 lb classes on this report.</p>';
     } else {

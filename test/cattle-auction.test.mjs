@@ -285,7 +285,8 @@ test("browser: a ZIP shows the nearest barns with sale date, classes, change and
     assert.match(first, /400-499.*21.*400\.19.*394\.00-418\.00.*\$1,872.*468 lb.*\+1\.84/s);
     assert.match(first, /Reported by USDA AMS, not the barn\./);
     const second = await p.$$eval(".sb-card", (x) => x[1].textContent);
-    assert.match(second, /No change shown: first sale on file\./);
+    assert.match(second, /First sale on file; the change shows after the next USDA report\./);
+    assert.doesNotMatch(second, /No change shown/);
     assert.match(second, /days old/);
     await p.click('[data-sex="heifers"]');
     assert.match(await p.textContent(".sb-card"), /400-499.*14.*391\.75/s);

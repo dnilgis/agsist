@@ -53,7 +53,7 @@
   "state_reports": [
     {"id": "mo-weekly", "state": "MO", "slug": "1821", "match": "missouri.*(summary|weekly)"},
     {"id": "ky-weekly", "state": "KY", "slug": "2193", "match": "kentucky.*(summary|weekly)"},
-    {"id": "tn-weekly", "state": "TN", "slug": "2082", "match": "tennessee.*(summary|weekly)"},
+    {"id": "tn-daily", "state": "TN", "label": "daily auction summary", "slug": "2082", "match": "tennessee daily cattle auction summary"},
     {"id": "ar-weekly", "state": "AR", "slug": "2056", "match": "arkansas.*(summary|weekly)"},
     {"id": "tx-weekly", "state": "TX", "slug": "1955", "match": "texas.*(summary|weekly)"},
     {"id": "sd-weekly", "state": "SD", "slug": "2027", "match": "south dakota.*(summary|weekly)"},
