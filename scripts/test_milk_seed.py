@@ -8,6 +8,7 @@ a crawler never reads a number the page itself would withhold. Run:
     python3 scripts/test_milk_seed.py
 """
 import copy
+import os
 import sys
 
 sys.path.insert(0, "scripts")
@@ -120,6 +121,23 @@ def main():
        and S.milk_mailbox_seeds(dict(MB, value=0), "2026-10-15") == {}
        and S.milk_mailbox_seeds(None, "2026-10-15") == {})
     ck("no em dash in the mailbox seeds", not any("—" in v for v in list(m1.values()) + list(m2.values())))
+
+    print("mailbox by area")
+    import json as _json
+    real = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dairy-mailbox.json")))
+    ma = S.milk_mailbox_seeds(real, "2026-10-16")["milkmbareas"]
+    ck("areas table: Wisconsin $18.13, down $1.00 from May, down $3.02 from Jun 2025 (21.15 - 18.13)",
+       '<th scope="row">Wisconsin</th><td class="num">$18.13</td><td class="num dp-neg">▼ −$1.00</td><td class="num dp-neg">▼ −$3.02</td>' in ma, ma[:300])
+    ck("areas table: Minnesota $18.04 is the low, Florida $27.59 the high, 20 areas",
+       "(20 areas): highest Florida $27.59, lowest Minnesota $18.04." in ma)
+    ck("areas table: national row matches the average", "All federal order areas</th><td class=\"num\">$20.18</td>" in ma)
+    ck("areas table: grouped areas say what they cover", "Corn Belt States <span class=\"dp-mb-grp\">(KS, NE, northern Missouri)</span>" in ma)
+    ck("areas for another month: an empty hidden box, never an old table",
+       S.milk_mailbox_seeds(dict(real, areas=dict(real["areas"], month_key="2026-05")), "2026-10-16")["milkmbareas"]
+       == '<div id="dp-mb-areas" hidden></div>')
+    ck("a mailbox month too old to show also hides the areas",
+       'hidden' in S.milk_mailbox_seeds(dict(real, month_key="2026-03", areas=dict(real["areas"], month_key="2026-03")), "2026-10-16")["milkmbareas"])
+    ck("no em dash in the areas table", "—" not in ma)
 
     print("bad files")
     fut = copy.deepcopy(SEP)

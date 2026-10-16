@@ -1789,7 +1789,59 @@ def milk_mailbox_seeds(mb, today):
            "This is the only number that pays your bills, and it's the one the market reports never lead with.</div></div>"
            f'<div class="dp-row-val">{_cwt(v)}<span class="u">/cwt</span></div></div>')
     return {"milkmbli": f'<li><span class="n">{sh}</span><span id="dp-v-mb">{li_txt}</span></li>',
-            "milkmbcell": cell, "milkmbrow": row}
+            "milkmbcell": cell, "milkmbrow": row, "milkmbareas": milk_mailbox_areas(mb, idx, behind)}
+
+
+# What each starred AMS reporting area covers (MMPR-0626 footnote, page 3).
+MILK_MB_GROUPS = {
+    "New England States": "CT, ME, MA, NH, RI, VT",
+    "Eastern Pennsylvania": "PA east of the Western PA line",
+    "Appalachian States": "KY, NC, SC, TN, VA",
+    "Southeast States": "AL, AR, GA, LA, MS",
+    "Southern Missouri": "southern Missouri counties",
+    "Western Pennsylvania": "Warren to Fayette counties and west",
+    "Corn Belt States": "KS, NE, northern Missouri",
+    "Western Texas": "Texas west of the Fannin to Shelby county line",
+    "Northwest States": "OR, WA",
+}
+
+
+def milk_mailbox_areas(mb, idx, behind):
+    """The mailbox price by AMS reporting area for the same month as the
+    average (fetch_mailbox.parse_areas, which checks each area against the
+    report's by-month table). Empty when the areas are missing, for another
+    month, or the month is too old to show; an old table never lingers."""
+    a = mb.get("areas") if isinstance(mb, dict) else None
+    rows = (a or {}).get("rows") if isinstance(a, dict) else None
+    if (behind or not rows or a.get("month_key") != mb.get("month_key")
+            or not all(isinstance(r, dict) and _pos(r.get("value")) for r in rows)):
+        return '<div id="dp-mb-areas" hidden></div>'
+    ml, sh = _ilong(idx), _ishort(idx)
+    hi = max(rows, key=lambda r: r["value"])
+    lo = min(rows, key=lambda r: r["value"])
+
+    def chg(v):
+        return (f'<td class="num {_cl(v)}">{_arr(v)} {_sg(v, 2)}</td>' if _fin(v) else '<td class="num">-</td>')
+    body = []
+    for r in rows:
+        g = MILK_MB_GROUPS.get(r["area"])
+        name = _e(r["area"]) + (f' <span class="dp-mb-grp">({_e(g)})</span>' if g else "")
+        p, y = r.get("prev"), r.get("year_ago")
+        body.append(f'<tr><th scope="row">{name}</th><td class="num">{_cwt(r["value"])}</td>'
+                    + chg(r["value"] - p if _pos(p) else None) + chg(r["value"] - y if _pos(y) else None) + "</tr>")
+    body.append(f'<tr class="dp-mb-all"><th scope="row">All federal order areas</th><td class="num">{_cwt(mb["value"])}</td>'
+                + chg(mb.get("prev_month_change")) + chg(mb.get("year_ago_change")) + "</tr>")
+    return (f'<div id="dp-mb-areas"><details class="dp-states">'
+            f'<summary>Mailbox price by area, {ml} ({len(rows)} areas): highest {_e(hi["area"])} {_cwt(hi["value"])}, '
+            f'lowest {_e(lo["area"])} {_cwt(lo["value"])}.</summary>'
+            '<div class="dp-tbl-wrap"><table class="dp-tbl" aria-describedby="dp-mb-areas-cap">'
+            '<caption class="dp-sr">Mailbox milk price by USDA AMS reporting area, dollars per hundredweight</caption>'
+            f'<thead><tr><th scope="col">Area</th><th scope="col" class="num">{sh} $/cwt</th>'
+            f'<th scope="col" class="num">vs {MON3[(idx - 1) % 12]}</th><th scope="col" class="num">vs {_ishort(idx - 12)}</th></tr></thead>'
+            "<tbody>" + "".join(body) + "</tbody></table></div>"
+            '<p class="dp-note-src" id="dp-mb-areas-cap">Net pay price after hauling and co-op deductions, as USDA AMS '
+            "reports it for each area. Areas in AMS order; some are groups of states or parts of a state. "
+            f"Source: {MILK_MB_LINK}.</p></details></div>")
 
 
 def milk_spread_why(s):
