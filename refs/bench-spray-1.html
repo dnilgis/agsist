@@ -1,0 +1,1273 @@
+
+<html lang="en">
+
+<head> 
+	<title>Mesonet Spray Tool</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link defer rel="stylesheet" href="/js/tempbanner/boot.css" crossorigin="anonymous">
+<script  src="/js/tempbanner/jquery.3.7.1.js"></script>
+<script defer src="/js/tempbanner/boot.js" crossorigin="anonymous"></script>
+<link defer href="/js/tempbanner/fa.css" rel="stylesheet" crossorigin="anonymous">
+
+<link async rel='Stylesheet' type="text/css" href="/CSS/common.css?v=10/16/2026 4:12:44 PM" />
+<link rel="preload" as="font" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="shortcut icon" type="image/png" href="/favicon.ico">
+	<link rel="apple-touch-icon" sizes="48x48" href="https://climate.sdstate.edu/favicon.png?">
+	<link rel="shortcut icon" href="https://climate.sdstate.edu/favicon.ico?"  />	
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=6.0"/>
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@SDMesonet" />
+<meta name="twitter:creator" content="@SDMesonet" />
+<meta property="og:url" content="https://climate.sdstate.edu/tools/spray/" />
+<meta property="og:title" content="Mesonet at SD State" />
+<meta property="og:description" content="Mesonet at SD State is South Dakota's live weather network serving the general public, agriculture, natural resources, emergency management and research." />
+<meta property="og:image" content="https://climate.sdstate.edu/sm/images/Mesonet_LogoV2-04_1200x628.png" />
+	<link href="/fonts/weather-icons/css/weather-icons.min.css" rel="stylesheet">
+	<link href="/fonts/weather-icons/css/weather-icons-wind.min.css" rel="stylesheet">
+	<script type="text/javascript" src="/js/moment/moment.2.31.0.js"></script>
+<script src="/js/moment/moment-timezone-10yr.0.6.5.js"></script>
+    <link rel="stylesheet" href="/js/leaflet/plugins/leaflet-plugins.css" />
+	<script src="/js/leaflet/plugins/leaflet-plugins.min.js"></script>
+	<script src="https://unpkg.com/leaflet.nontiledlayer@1.0.7/dist/NonTiledLayer.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script src="/js/leaflet/scripts/displayfunctions.js"></script>
+	<link rel="stylesheet" href="spray.css?352773755" />
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EYCYVHPY0D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EYCYVHPY0D');
+</script>
+
+<body>
+	<div  class="wrapper " id="page">
+
+<header>
+<div class="skipnav sr-only sr-only-focusable"><a href="#maincontent">Skip main navigation</a> </div>
+<div class="header p-0 container sticky-top-z">
+<nav  class="navbar navbar-toggleable-xs  header-bootstrap   ">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" rel="preload" as "font">
+<style>
+.roboto {font-family: 'Roboto Slab', serif; font-display: swap;}
+.s {font-size: .75rem !important;}
+.dropdown-toggle:focus {outline: 2px solid !important;}
+</style>
+
+<nav class="header-banner navbar navbar-toggleable-md navbar-light " >
+	 <button class="navbar-toggler navbar-toggler-right pt-3 " type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <i class="fa fa-bars fa-2x  text-yellow"></i>
+  </button>
+	
+	<span class='navbar-brand  pull-left'>
+  
+<a class="" href="https://climate.sdstate.edu">
+<img defer src="/climate_site/svg/Mesonet LogoV2-04.svg" alt='Mesonet at SDSTATE Logo' height='63'></img>
+     </a>
+	  </span> 
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+    <ul class="navbar-nav justify-content-end"  >
+    
+	  <li class="nav-item dropdown " >
+        <a class="nav-link dropdown-toggle"  aria-label='Current' href="" id='CurrentMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Current
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="CurrentMenu">
+          <a class="dropdown-item" href="https://climate.sdstate.edu">State Maps</a>          
+		  <a class="dropdown-item" href="/weather">Local Data</a>		  
+        </div>
+      </li>
+	  <li class="nav-item dropdown " >
+        <a class="nav-link dropdown-toggle"  aria-label='Archives' href="" id="ArchiveMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Archives
+        </a>
+		
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="ArchiveMenu">
+		  <!--<a class="dropdown-item"  href="/information/issues/precipitation/may222024/">May 22nd Precip Notice</a>	-->
+          <a class="dropdown-item"  href="/archive/maps">State Maps</a>	
+		  <a class="dropdown-item"  href="/archive/">Local Data Graphs</a>	
+		  <!--<a class="dropdown-item" href="/request/hourly/">Hourly Data Request</a>-->	
+		  <a class="dropdown-item"  href="/request/daily/">Daily Data Request</a>
+		   <!--<a class="dropdown-item" href="/request/research/">Research Data Request</a>-->	
+		  <a class="dropdown-item"  href="/request/custom/">Custom Data Request</a>	
+		  
+		  
+        </div>
+      </li>	  
+	  <li class="nav-item dropdown " >
+        <a class="nav-link dropdown-toggle"  aria-label='Tools' href="" id="ToolsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tools
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="ToolsMenu">
+          <a class="dropdown-item"  href="/tools/et/">Ag Weather</a>
+		  <a class="dropdown-item"  href="/tools/degreedays/">Degree Days</a>	
+		  <a class="dropdown-item"  href="/tools/livestock/">Livestock Stress</a>	
+		  <a class="dropdown-item"  href="/tools/smallgrains/">Small Grains Disease</a>
+		  <a class="dropdown-item"  href="/tools/spray/">Spray Tool</a>
+        </div>
+      </li>
+	  <li class="nav-item dropdown " >
+        <a class="nav-link dropdown-toggle"  aria-label='Climatologist' href="" id="ClimatologistMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Climatologist
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="ClimatologistMenu">		  
+		  <a class="dropdown-item"  href="https://www.sdstate.edu/state-climatologist">Information</a>	
+		  <!--<a class="dropdown-item"  href="/tools/dashboard/">Drought Dashboard</a>-->	
+          <a class="dropdown-item"  href="/tools/normals/daily.asp">Daily Coop Normals</a>
+		  <a class="dropdown-item"  href="/tools/frost/">Frost/Freeze Maps</a>	
+		  <a class="dropdown-item"  href="/tools/windrose/windrose.shtm">Windrose</a>	
+          <a class="dropdown-item" href="https://extension.sdstate.edu/about/our-experts/laura-edwards">SDSU Extension</a>
+    			  
+        </div>
+      </li>
+	<!--<li class="nav-item dropdown " >
+        <a class="nav-link dropdown-toggle"  aria-label='Hosting' href="" id="HostMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Hosting
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="HostMenu">		  
+		  <a class="dropdown-item"  href="/host/faq">More Information</a>	
+		  <!--<a class="dropdown-item"  href="/host/application">Application</a>-->	   			  
+        <!--</div>
+      </li>-->
+	  <li class="nav-item dropdown" >
+        <a class="nav-link dropdown-toggle"  aria-label='About' href="" id="AboutMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          About
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="AboutMenu">	
+			<a class="dropdown-item"  href="/information/?tab=faq">FAQ</a>
+			<a class="dropdown-item"  href="/information/stations/">Station Info</a>
+			<a class="dropdown-item"  href="/information/measurements/">Measurements</a>
+			<a class="dropdown-item"  href="/information/sponsor/">Sponsors</a>		
+			<a class="dropdown-item"  href="/feedback/feedback.asp">Contact Us</a>
+			<a class="dropdown-item"  href="/information/?tab=tou">Terms of Use</a>
+					  
+        </div>
+		
+      </li>
+      <!--<a href="https://twitter.com/sdmesonet" class=''  > <img defer src="/climate_site/social/twitter/twitter_socialicon_roundedsquare/Twitter_Social_Icon_rounded_Square_white.svg" alt='Twitter Logo link to Mesonet Twitter account' height='32'></img></a>
+		-->
+    </ul>
+  </div>
+</nav>  
+   
+  
+  
+
+
+<a href='/host/'
+target="" onclick="bannerLinkClick(''); return true;">
+
+<div class=' p-0' style="background-color:#FED106; color:#0D223E !important; line-height: 2rem;" align="center" >
+Wanted: landowner to host a station in SE Union County
+</div>
+
+</a>
+<script type="text/javascript">
+  var bannerLinkClick = function(url) {
+ //  ga('send', 'event', 'annoucement', 'click', url);  
+}
+</script>
+ 
+</nav>
+</div>
+<meta http-equiv="X-UA-Compatible" content="IE=11" />
+</header>
+<div id='maincontent'></div> 
+		<div class="bodytext" role='main'>
+	
+
+<div class="container my-2 p-0">	
+	<div class="row equal no-gutters col-12 p-0 ">
+<script>
+		window.onpageshow = function(event) {
+if (event.persisted) {
+    window.location.reload() 
+}
+};
+</script>
+
+
+			
+<div  class='p-0 pull-left col-12 ' id='dropdowndiv'><div class='p-0 pull-left col-12 ' ><select aria-label="Station County Dropdown" id='num' class="stationcountydropdown styled custom-select " >
+<option lat='' long='' station='' county='' value='0' >-- Station Select --</option>
+   <option lat='45.405479' long='-98.683357' station='Aberdeen W' county='BROWN' value='778' >Aberdeen W</option><option lat='43.499167' long='-99.092967' station='Academy' county='CHARLES_MIX' value='779' >Academy</option><option lat='45.519279' long='-103.288785' station='Antelope' county='HARDING' value='181' >Antelope</option><option lat='44.093326' long='-97.907766' station='Artesian' county='SANBORN' value='703' >Artesian</option><option lat='43.009601' long='-98.000193' station='Avon' county='BON_HOMME' value='771' >Avon</option><option lat='43.731801' long='-96.683243' station='Baltic' county='MINNEHAHA' value='721' >Baltic</option><option lat='43.131135' long='-102.099518' station='Batesland' county='BENNETT' value='780' >Batesland</option><option lat='43.04041' long='-96.901127' station='Beresford' county='CLAY' value='174' >Beresford</option><option lat='45.518211' long='-102.486748' station='Bison' county='PERKINS' value='183' >Bison</option><option lat='45.438765' long='-99.672858' station='Bowdle' county='EDMUNDS' value='190' >Bowdle</option><option lat='45.154518' long='-98.278202' station='Brentford' county='SPINK' value='772' >Brentford</option><option lat='45.777839' long='-97.60516' station='Britton' county='MARSHALL' value='784' >Britton</option><option lat='44.325' long='-96.7685' station='Brookings' county='BROOKINGS' value='502' >Brookings</option><option lat='45.571032' long='-103.718589' station='Buffalo' county='HARDING' value='785' >Buffalo</option><option lat='45.423477' long='-104.016779' station='Camp Crook' county='HARDING' value='763' >Camp Crook</option><option lat='44.000849' long='-103.000818' station='Caputa' county='PENNINGTON' value='99' >Caputa</option><option lat='44.573202' long='-98.01212' station='Carpenter' county='CLARK' value='764' >Carpenter</option><option lat='44.167343' long='-97.660491' station='Carthage' county='MINER' value='773' >Carthage</option><option lat='44.967266' long='-103.771034' station='Center of the Nation' county='BUTTE' value='781' >Center of the Nation</option><option lat='44.707903' long='-101.365814' station='Cherry Creek' county='ZIEBACH' value='766' >Cherry Creek</option><option lat='44.937414' long='-97.846426' station='Clark' county='CLARK' value='743' >Clark</option><option lat='44.72442' long='-96.843487' station='Clear Lake' county='DEUEL' value='704' >Clear Lake</option><option lat='43.7687' long='-96.8897' station='Colton' county='MINNEHAHA' value='722' >Colton</option><option lat='45.140371' long='-97.97548' station='Conde' county='CLARK' value='708' >Conde</option><option lat='43.44861' long='-98.646159' station='Corsica' county='DOUGLAS' value='715' >Corsica</option><option lat='43.960125' long='-101.854093' station='Cottonwood' county='JACKSON' value='505' >Cottonwood</option><option lat='44.495086' long='-97.532496' station='De Smet' county='KINGSBURY' value='753' >De Smet</option><option lat='45.023721' long='-101.077108' station='Eagle Butte' county='DEWEY' value='195' >Eagle Butte</option><option lat='43.473881' long='-103.971952' station='Edgemont' county='FALL_RIVER' value='182' >Edgemont</option><option lat='44.3142' long='-102.486' station='Elm Springs' county='MEADE' value='786' >Elm Springs</option><option lat='45.255233' long='-102.320366' station='Faith NW' county='PERKINS' value='783' >Faith NW</option><option lat='44.864218' long='-102.042181' station='Faith S' county='MEADE' value='709' >Faith S</option><option lat='43.100203' long='-103.05496' station='Fall River SE' county='FALL_RIVER' value='738' >Fall River SE</option><option lat='44.086965' long='-96.584703' station='Flandreau' county='MOODY' value='172' >Flandreau</option><option lat='44.321222' long='-100.475582' station='Fort Pierre' county='STANLEY' value='798' >Fort Pierre</option><option lat='44.078802' long='-99.157598' station='Fort Thompson' county='BUFFALO' value='711' >Fort Thompson</option><option lat='44.9895' long='-99.9537' station='Gettysburg' county='POTTER' value='184' >Gettysburg</option><option lat='45.005688' long='-100.242115' station='Gettysburg W' county='POTTER' value='775' >Gettysburg W</option><option lat='43.137324' long='-99.493424' station='Gregory' county='GREGORY' value='731' >Gregory</option><option lat='43.464167' long='-99.438965' station='Gregory N' county='GREGORY' value='751' >Gregory N</option><option lat='45.573457' long='-98.030209' station='Groton' county='BROWN' value='720' >Groton</option><option lat='43.593784' long='-99.712106' station='Hamill' county='TRIPP' value='175' >Hamill</option><option lat='44.61094' long='-99.82975' station='Harrold' county='SULLY' value='787' >Harrold</option><option lat='44.312514' long='-101.129072' station='Hayes' county='STANLEY' value='723' >Hayes</option><option lat='44.559611' long='-101.141806' station='Hayes N' county='STANLEY' value='788' >Hayes N</option><option lat='43.738743' long='-102.922522' station='Hermosa' county='CUSTER' value='756' >Hermosa</option><option lat='45.866462' long='-100.091072' station='Herreid' county='CAMPBELL' value='776' >Herreid</option><option lat='44.5256' long='-99.4601' station='Highmore' county='HYDE' value='196' >Highmore</option><option lat='44.857214' long='-99.414367' station='Highmore N' county='HYDE' value='760' >Highmore N</option><option lat='43.346132' long='-103.414172' station='Hot Springs' county='FALL_RIVER' value='714' >Hot Springs</option><option lat='43.234973' long='-97.171636' station='Hurley' county='TURNER' value='762' >Hurley</option><option lat='45.386336' long='-101.492384' station='Isabel' county='DEWEY' value='767' >Isabel</option><option lat='43.7343' long='-103.8278' station='Jewel Cave' county='CUSTER' value='31' >Jewel Cave</option><option lat='43.874' long='-101.591493' station='Kadoka' county='JACKSON' value='761' >Kadoka</option><option lat='43.816073' long='-99.825408' station='Kennebec' county='LYMAN' value='739' >Kennebec</option><option lat='43.417227' long='-102.17123' station='Kyle' county='OGLALA_LAKOTA' value='789' >Kyle</option><option lat='45.145559' long='-100.672958' station='La Plant' county='DEWEY' value='770' >La Plant</option><option lat='45.82681' long='-103.716846' station='Ladner' county='HARDING' value='744' >Ladner</option><option lat='45.087062' long='-101.484353' station='Lantry' county='DEWEY' value='768' >Lantry</option><option lat='44.343402' long='-103.752082' station='Lead' county='LAWRENCE' value='713' >Lead</option><option lat='45.9189' long='-102.1081' station='Lemmon' county='PERKINS' value='193' >Lemmon</option><option lat='45.71667' long='-98.93135' station='Leola' county='MCPHERSON' value='188' >Leola</option><option lat='43.902839' long='-98.109623' station='Letcher' county='SANBORN' value='724' >Letcher</option><option lat='45.906494' long='-99.25544' station='Long Lake' county='MCPHERSON' value='765' >Long Lake</option><option lat='44.082176' long='-99.611052' station='Lower Brule' county='LYMAN' value='733' >Lower Brule</option><option lat='45.281539' long='-99.977321' station='Lowry' county='WALWORTH' value='742' >Lowry</option><option lat='45.833213' long='-103.370708' station='Ludlow' county='HARDING' value='707' >Ludlow</option><option lat='43.914647' long='-97.089762' station='Madison' county='LAKE' value='752' >Madison</option><option lat='43.199151' long='-101.65114' station='Martin' county='BENNETT' value='192' >Martin</option><option lat='45.9154' long='-101.3448' station='McIntosh' county='CORSON' value='199' >McIntosh</option><option lat='45.7963' long='-100.7805' station='McLaughlin' county='CORSON' value='124' >McLaughlin</option><option lat='43.210921' long='-97.452351' station='Menno' county='HUTCHINSON' value='734' >Menno</option><option lat='44.085132' long='-101.090927' station='Midland' county='HAAKON' value='748' >Midland</option><option lat='44.474848' long='-101.899149' station='Milesville' county='HAAKON' value='725' >Milesville</option><option lat='44.493842' long='-100.693681' station='Mission Ridge' county='STANLEY' value='797' >Mission Ridge</option><option lat='45.671242' long='-100.115069' station='Mound City' county='CAMPBELL' value='143' >Mound City</option><option lat='43.717328' long='-98.279337' station='Mount Vernon' county='DAVISON' value='735' >Mount Vernon</option><option lat='44.919572' long='-102.753859' station='Mud Butte' county='MEADE' value='757' >Mud Butte</option><option lat='44.010764' long='-100.767604' station='Murdo' county='JONES' value='796' >Murdo</option><option lat='44.235' long='-102.8288' station='New Underwood' county='MEADE' value='792' >New Underwood</option><option lat='44.900363' long='-103.488019' station='Newell' county='BUTTE' value='701' >Newell</option><option lat='44.678235' long='-103.560272' station='Nisland' county='BUTTE' value='70' >Nisland</option><option lat='43.599858' long='-101.101352' station='Norris' county='MELLETTE' value='726' >Norris</option><option lat='43.798202' long='-99.415724' station='Oacoma' county='LYMAN' value='428' >Oacoma</option><option lat='44.5073' long='-96.5302' station='Oak Lake' county='BROOKINGS' value='504' >Oak Lake</option><option lat='43.040959' long='-103.347715' station='Oelrichs' county='FALL_RIVER' value='737' >Oelrichs</option><option lat='43.179806' long='-102.989103' station='Oglala' county='OGLALA_LAKOTA' value='730' >Oglala</option><option lat='44.646455' long='-100.319983' station='Onida' county='SULLY' value='727' >Onida</option><option lat='43.488497' long='-97.079275' station='Parker' county='TURNER' value='750' >Parker</option><option lat='43.380818' long='-98.01433' station='Parkston' county='HUTCHINSON' value='187' >Parkston</option><option lat='44.181677' long='-101.525947' station='Philip' county='HAAKON' value='793' >Philip</option><option lat='44.35412' long='-99.99973' station='Pierre' county='HUGHES' value='749' >Pierre</option><option lat='43.046192' long='-102.465278' station='Pine Ridge' county='OGLALA_LAKOTA' value='794' >Pine Ridge</option><option lat='43.475731' long='-102.50221' station='Porcupine' county='OGLALA_LAKOTA' value='791' >Porcupine</option><option lat='45.338795' long='-102.919475' station='Prairie City' county='PERKINS' value='745' >Prairie City</option><option lat='43.037476' long='-103.798617' station='Provo' county='FALL_RIVER' value='728' >Provo</option><option lat='45.905876' long='-102.922642' station='Ralph' county='PERKINS' value='729' >Ralph</option><option lat='44.885916' long='-98.406672' station='Redfield' county='SPINK' value='21' >Redfield</option><option lat='45.3195' long='-103.5495' station='Redig' county='HARDING' value='746' >Redig</option><option lat='44.822449' long='-98.796518' station='Rockham' county='HAND' value='754' >Rockham</option><option lat='43.19998' long='-100.720516' station='Rosebud' county='TODD' value='141' >Rosebud</option><option lat='43.818' long='-97.361882' station='Salem' county='MCCOOK' value='702' >Salem</option><option lat='43.757398' long='-102.442019' station='Scenic' county='PENNINGTON' value='755' >Scenic</option><option lat='43.5033' long='-96.9218' station='SF Landfill' county='MINNEHAHA' value='173' >SF Landfill</option><option lat='45.735929' long='-97.253722' station='Sica Hollow' county='MARSHALL' value='790' >Sica Hollow</option><option lat='43.504757' long='-96.762349' station='Sioux Falls' county='MINNEHAHA' value='180' >Sioux Falls</option><option lat='45.105356' long='-97.102487' station='South Shore' county='CODINGTON' value='506' >South Shore</option><option lat='44.565582' long='-103.916395' station='Spearfish' county='LAWRENCE' value='747' >Spearfish</option><option lat='44.424508' long='-103.379197' station='Sturgis' county='MEADE' value='142' >Sturgis</option><option lat='45.416613' long='-101.085024' station='Timber Lake' county='DEWEY' value='198' >Timber Lake</option><option lat='43.206104' long='-101.229541' station='Tuthill' county='BENNETT' value='741' >Tuthill</option><option lat='44.566395' long='-102.670914' station='Union Center' county='MEADE' value='197' >Union Center</option><option lat='44.704684' long='-102.896376' station='Union Center NW' county='MEADE' value='758' >Union Center NW</option><option lat='43.750784' long='-100.296345' station='Vivian' county='LYMAN' value='740' >Vivian</option><option lat='44.012379' long='-100.324422' station='Vivian N' county='LYMAN' value='710' >Vivian N</option><option lat='44.303994' long='-96.91879' station='Volga' county='BROOKINGS' value='45' >Volga</option><option lat='44.212086' long='-102.196793' station='Wall ' county='PENNINGTON' value='706' >Wall </option><option lat='43.588517' long='-101.560878' station='Wanblee' county='JACKSON' value='795' >Wanblee</option><option lat='44.037344' long='-102.379995' station='Wasta' county='PENNINGTON' value='705' >Wasta</option><option lat='45.2932' long='-97.5154' station='Webster' county='DAY' value='140' >Webster</option><option lat='44.459207' long='-98.761392' station='Wessington' county='HAND' value='759' >Wessington</option><option lat='44.056969' long='-98.886751' station='Wessington Springs' county='JERAULD' value='712' >Wessington Springs</option><option lat='43.737271' long='-98.69359' station='White Lake' county='AURORA' value='185' >White Lake</option><option lat='43.558554' long='-100.742285' station='White River' county='MELLETTE' value='186' >White River</option><option lat='43.314185' long='-99.693085' station='Winner' county='TRIPP' value='732' >Winner</option><option lat='44.111355' long='-98.310282' station='Woonsocket' county='SANBORN' value='736' >Woonsocket</option>
+</select></div></div>
+
+
+
+
+			<script>
+			
+			var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+		
+    }
+};
+function getUrlParam(name) {
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return (results && results[1]) || undefined;
+}
+var thevalue = -1;
+var exists;
+if (getUrlParam('num') > "") {
+    exists = 1;
+} else {
+    exists =0;
+}
+ thevalue = getUrlParam('num');
+
+
+if (exists){
+	$("#num").val(thevalue);
+	thevalue = "?num="+thevalue;
+	}
+else{
+	thevalue= "";
+	$('#dropdowndiv').removeClass('p-0').addClass('p-1').addClass('bg-red');
+		$('document').ready(function(){$('#pageerror, #errorradar').toggle();});
+		
+	}
+
+	$( "#num" ).change(function() {
+		var selected = $("#num").find('option:selected').attr('value');
+		if (selected != 0){ 
+			aerial = getUrlParam('a') == 1 ? aerial = "&a=1" : "";	
+			window.location.href = window.location.origin + window.location.pathname + "?num=" + selected +aerial;
+		}
+	});
+
+</script> 
+	</div>
+</div>
+
+	
+	<div  class="row equal no-gutters col-12 hidden-lg-up  border-0" >
+			<div class='col-3 '></div>
+				<div class='col-6 text-center  radarbutton ' ><button  class="btn btn-outline-navy col-12" >Open Maps</button></div>
+				<div class='col-3 '></div>
+			</div>
+			
+<!-- Modal -->
+	<div class="modal fade text-black" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class=' text-center '><div class='p-2  text-center' >Mesonet Spray Tool Help</div></div>
+					<div class="btn btn-danger p-1" data-dismiss="modal" data-dismiss="modal">Close</div>
+				</div>
+				<div class="modal-body p-1">
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item pr-1" aria-label="Help Text Tab">
+							<a class="nav-link active " href="#help" role="tab" data-toggle="tab" style="font-size: smaller;"> <i id='' class="fa fa-145 fa-question-circle" ></i></a>
+						</li>
+						<li class="nav-item pr-1">
+							<a class="nav-link " href="#wnd" role="tab" data-toggle="tab" style="font-size: smaller;">3-ft Wind <i class="fa " aria-hidden="true"></i></a>
+						</li>
+						<li class="nav-item pr-1">
+							<a class="nav-link  " href="#invers" role="tab" data-toggle="tab" style="font-size: smaller;">Temperature<i  class="fa  invColor"></i></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link " href="#delt" role="tab" data-toggle="tab" style="font-size: smaller;">&Delta;T <i class="fa " aria-hidden="true"></i></a>
+						</li>
+						
+					</ul>
+
+<!-- Tab panes -->
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane fade in active show pt-2" id="help" >
+							<div class=' col-12 mb-2'>
+								The Mesonet Spray Tool reports live and forecast weather critical to pesticide applicators.
+								</div>
+							<div class="row equal no-gutters col-12">
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 mb-2'>Applicators can use the "Record by Email" button to request spray weather conditions from any station in the last 7 days.</div>															
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 mb-2'>Wind at 3 ft, inversion, and &Delta;T are stoplight color-coded to provide guidance to the applicator (<i class="fa fa-circle green" aria-hidden="true"></i><i class="fa fa-circle orange" aria-hidden="true"></i><i class="fa fa-circle red" aria-hidden="true"></i>)</div>
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 mb-2'><button class="btn btn-sm btn-outline-grey " aria-label="Refresh button Example">
+									<i class="fa fa-fw fa-refresh p-1" aria-hidden="true" ></i></button> 
+									Stations update every 5 minutes.  Tap the refresh button  to load the latest data.
+								</div>
+							</div>
+							<!--<div class="row equal no-gutters col-12">	
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 '>Inversion and wind are the most important weather conditions to assess prior to spraying.</div>
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 mb-2'>Delta T is used by some for nozzle selection and for drift and volatility avoidance.</div>
+								<div class=' col-1 text-center'> <li> </li> </div>
+								<div class=' col-11 mb-2'>The most important factors are displayed with stoplight color-coded icons (<i class="fa fa-circle green" aria-hidden="true"></i><i class="fa fa-circle orange" aria-hidden="true"></i><i class="fa fa-circle red" aria-hidden="true"></i>)</div>
+								<div class=' col-12 mb-2'><button class="btn btn-sm btn-outline-grey " aria-label="Refresh button Example">
+									<i class="fa fa-fw fa-refresh p-1" aria-hidden="true" ></i></button> 
+									Stations update every 5 minutes.  Tap the refresh button  to load the latest data.
+								</div>
+							</div>-->
+						</div>
+						
+						<div role="tabpanel" class="tab-pane fade pt-2" id="wnd">
+							<div class='col-12'><h4>3-ft Wind Speed</h4> </div>
+							
+							<div class="row equal no-gutters col-12  pt-2 mb-2 border-0 ">
+								<div class='col-2 bg-danger text-center'></div>
+								<div class='col-1'></div>
+								<div class='col-9 '>Calm</div>
+								<div class='col-2 bg-warning  text-center'></div>	
+								<div class='col-1'></div>				
+								<div class='col-9  '>2 mph</div>
+								<div class='col-2 bg-success text-center'></div>
+								<div class='col-1'></div>				
+								<div class='col-9  '>3 to 10 mph</div>
+								<div class='col-2 bg-warning text-center'></div>	
+								<div class='col-1'></div>				
+								<div class='col-9  '>11 to 15 mph</div>
+								<div class='col-2 bg-danger text-center'></div>		
+								<div class='col-1'></div>				
+								<div class='col-9  '>16+ mph</div>
+							</div>
+							<!--<div class='col-12 mb-2'><h4>Boom Speed</h4> </div>
+								<div class=' col-12 mb-2'>
+									Wind speed at a height of 40 inches is calculated from 10-foot wind speed using EPA methods.  
+									This should only be used for labels that specify a boom height wind (XtendiMax, FeXapan, Engenia).
+								</div>
+							<div class="row equal no-gutters col-12  pt-2 mb-2 border-0 ">
+								<div class='col-2 bg-red text-center'></div>
+								<div class='col-1'></div>
+								<div class='col-9 '>Calm to 2 mph</div>
+								<div class='col-2 bg-green  text-center'></div>	
+								<div class='col-1'></div>				
+								<div class='col-9  '>3 to 10 mph</div>
+								<div class='col-2 bg-red text-center'></div>	
+								<div class='col-1'></div>				
+								<div class='col-9  '>11+ mph</div>
+							</div>-->
+							<div class=' col-12 mb-2'>
+								All wind reports in the Mesonet Spray Tool are at a height of 3 feet for ground applications which can range from
+								28% to 85% of a standard height wind depending on conditions. For maximum applicability across a station's coverage area,
+								the 3-ft wind is derived using EPA methods from measurements made at a greater height (either 10 or 33 feet).
+							</div>
+						</div>
+						
+						
+						<div role="tabpanel" class="tab-pane fade pt-2" id="invers" >
+							<div class='col-12 mb-2'><h4>Inversion</h4> </div>
+							<div class="row equal no-gutters col-12   border-0 ">
+								
+								
+
+								<div class="row equal no-gutters col-12  border-0 ">	
+									<div class='col-8 bg-danger text-center'>Inversion, Unsuitable </div>
+									<div class='col-4 text-center'>Positive </div>	
+								</div>
+								
+								<!--<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Cooler air under warmer air</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Mostly night and first and last hours of daylight</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Unsuitable for spraying</div>-->
+	
+								<div class="row equal no-gutters col-12   border-0 ">	
+									<div class='col-8 bg-warning text-center'>No Inversion, Marginal </div>
+									<div class='col-4 text-center'>Zero </div>	
+								</div>
+								<!--<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>No detectable temperature difference</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Anytime, especially first two and last two hours of daylight</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Marginal for spraying</div>-->
+	
+								<div  class="row equal no-gutters col-12 mb-2  border-0 ">	
+									<div class='col-8 bg-success text-center'>No Inversion, Preferred</div>
+									<div class='col-4 text-center'>Negative </div>	
+								</div>
+								<!--<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Warmer air under cooler air</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Rarely at night and the first and last hours of daylight</div>
+								<div class=' col-1 text-center'> <li></li> </div>
+								<div class=' col-11 '>Preferred for spraying</div>	-->		
+
+		
+							</div>	
+							<div class=' col-12 mb-2'>
+									A temperature inversion (inv) is a condition when cooler air is trapped under warmer air. It is determinded
+									from the vertical temperature difference (either 3 and 10 ft or 6 and 33 ft). Inversions allow concentrated
+									clouds of pesticide to be transported long distance with being broken up. Inversions are closely tied to times
+									when the sun is unable to heat the earth's surface: during the night and the first/last hour of the day.
+								</div>
+								
+								<div class='col-12 mb-2'><h4>Temperature</h4> </div>
+							<div class="row equal no-gutters col-12   border-0 ">
+	
+								<div class="row equal no-gutters col-12  border-0 ">	
+									<div class='col-3 bg-danger text-center'> </div>
+									<div class='col-9 text-center'>95&deg;F and up </div>	
+								</div>
+								
+	
+								<div class="row equal no-gutters col-12   border-0 ">	
+									<div class='col-3 bg-warning text-center'> </div>
+									<div class='col-9 text-center'>85-94&deg;F </div>	
+								</div>
+								
+	
+								<div  class="row equal no-gutters col-12 mb-2  border-0 ">	
+									<div class='col-3 bg-success text-center'></div>
+									<div class='col-9 text-center'>up to 84&deg;F  </div>	
+								</div>
+								
+		
+							</div>	
+							<div class=' col-12 mb-2'>
+									At high temperatures, volatility risk increases.
+								</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade pt-2" id="delt">
+							<div class='col-12'><h4>Delta T (&Delta;T)</h4> </div>
+							<div class="row equal no-gutters col-12  pt-2 mb-2 border-0 ">
+								
+								<div class='col-6 col-lg-4 bg-warning text-center'>Low</div>
+								<div class='col-1'></div>	
+								<div class=' col-5 col-lg-7 '>0-3&deg;F</div>
+								<div class='col-6 col-lg-4 bg-success text-center'>Preferred</div>	
+								<div class='col-1'></div>					
+								<div class='col-5 col-lg-7  '>4-14&deg;F</div>
+								<div class='col-6 col-lg-4 bg-warning  text-center'>High</div>		
+								<div class='col-1'></div>					
+								<div class='col-5 col-lg-7  '>15-18&deg;F</div>
+								<div class='col-6 col-lg-4 bg-danger  text-center'>Very High</div>	
+								<div class='col-1'></div>					
+								<div class='col-5 col-lg-7  '>19+&deg;F</div>
+							</div>
+							<div class=' col-12 mb-2'>
+								&Delta;T is the term used in the pesticide applicator community to refer to wet bulb depression. 
+								Roughly speaking, it is the difference between the temperature of the air and a water droplet suspended in it (°F). 
+								It combines the effects of both temperature and humidity to give a good picture of the evaporation rate of a 
+								pesticide droplet. At low &Delta;T values, low evaporation rates mean that droplets can travel extended 
+								distances increasing drift risk. At high &Delta;T values, increased droplet evaporation (in the air and on surfaces) 
+								can reduce product effectiveness. All else being equal, the impact at high &Delta;T values is less pronounced 
+								when using COARSE or greater nozzles. &Delta;T is not restricted on labels in the US.
+							</div>
+							<div class='col-12 p-0'>
+								<a href='citation/Pesticide-Spraying-Bureau-of-Meteorology-Australian-Government.pdf'>
+									<span class='small'>Adapted from "Weather for Pesticide Spraying", Bureau of Meteorology, Australian Government<span>
+								</a>
+							</div>
+						</div>
+
+						
+					</div>
+				</div>
+         	</div>
+		</div>
+	</div>
+
+
+<!-- Email request modal -->
+	<div class="modal fade text-black" id="emailModal" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class=' text-center '><div class='p-2  text-center' >SD Mesonet Spray Tool</div></div>
+					<div  class="btn btn-danger p-1" data-dismiss="modal" data-dismiss="modal">Close</div>
+				</div>
+				<div class="modal-body p-1">
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item ">
+							<a class="nav-link active" href="#requestForm" role="tab" data-toggle="tab" style="font-size: smaller;" id='requestEmail'>Record by Email </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link " href="#requestResults" role="tab" data-toggle="tab" style="font-size: smaller;" id='requestResultsID'>Results </a>
+						</li>
+					</ul>
+					<div class="tab-content" >
+						<div role="tabpanel" class="tab-pane fade in active show pt-2" id="requestForm" >
+							<div class="row equal no-gutters p-0 col-12">
+								<div class='col-12'>
+									<i class="fa fa-fw fa-times-circle text-red " aria-hidden="true"  id='stn-x'></i>
+									<i class="fa fa-fw fa-check-circle text-green " aria-hidden="true" style='display: none' id='stn-check'></i>
+									<span id='step1Lable'> Step 1 - Select a station: </span>
+								</div>
+
+			
+<div  class='p-1 pull-left col-12 ' id='dropdowndiv-spray-email'><select aria-label="Station Dropdown" id='stn-spray-email' class="stationcountydropdown styled custom-select " >
+<option  station='' county='' start='' end='' value='0' >-- Station Select --</option>
+   <option station='Aberdeen W' county='BROWN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='778' >Aberdeen W</option><option station='Academy' county='CHARLES_MIX' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='779' >Academy</option><option station='Antelope' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='181' >Antelope</option><option station='Artesian' county='SANBORN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='703' >Artesian</option><option station='Avon' county='BON_HOMME' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='771' >Avon</option><option station='Baltic' county='MINNEHAHA' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='721' >Baltic</option><option station='Batesland' county='BENNETT' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='780' >Batesland</option><option station='Beresford' county='CLAY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='174' >Beresford</option><option station='Bison' county='PERKINS' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='183' >Bison</option><option station='Bowdle' county='EDMUNDS' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='190' >Bowdle</option><option station='Brentford' county='SPINK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='772' >Brentford</option><option station='Britton' county='MARSHALL' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='784' >Britton</option><option station='Brookings' county='BROOKINGS' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='502' >Brookings</option><option station='Buffalo' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='785' >Buffalo</option><option station='Camp Crook' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='763' >Camp Crook</option><option station='Caputa' county='PENNINGTON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='99' >Caputa</option><option station='Carpenter' county='CLARK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='764' >Carpenter</option><option station='Carthage' county='MINER' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='773' >Carthage</option><option station='Center of the Nation' county='BUTTE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='781' >Center of the Nation</option><option station='Cherry Creek' county='ZIEBACH' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='766' >Cherry Creek</option><option station='Clark' county='CLARK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='743' >Clark</option><option station='Clear Lake' county='DEUEL' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='704' >Clear Lake</option><option station='Colton' county='MINNEHAHA' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='722' >Colton</option><option station='Conde' county='CLARK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='708' >Conde</option><option station='Corsica' county='DOUGLAS' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='715' >Corsica</option><option station='Cottonwood' county='JACKSON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='505' >Cottonwood</option><option station='De Smet' county='KINGSBURY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='753' >De Smet</option><option station='Eagle Butte' county='DEWEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='195' >Eagle Butte</option><option station='Edgemont' county='FALL_RIVER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='182' >Edgemont</option><option station='Elm Springs' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='786' >Elm Springs</option><option station='Faith NW' county='PERKINS' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='783' >Faith NW</option><option station='Faith S' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='709' >Faith S</option><option station='Fall River SE' county='FALL_RIVER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='738' >Fall River SE</option><option station='Flandreau' county='MOODY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='172' >Flandreau</option><option station='Fort Pierre' county='STANLEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='798' >Fort Pierre</option><option station='Fort Thompson' county='BUFFALO' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='711' >Fort Thompson</option><option station='Gettysburg' county='POTTER' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='184' >Gettysburg</option><option station='Gettysburg W' county='POTTER' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='775' >Gettysburg W</option><option station='Gregory' county='GREGORY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='731' >Gregory</option><option station='Gregory N' county='GREGORY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='751' >Gregory N</option><option station='Groton' county='BROWN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='720' >Groton</option><option station='Hamill' county='TRIPP' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='175' >Hamill</option><option station='Harrold' county='SULLY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='787' >Harrold</option><option station='Hayes' county='STANLEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='723' >Hayes</option><option station='Hayes N' county='STANLEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='788' >Hayes N</option><option station='Hermosa' county='CUSTER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='756' >Hermosa</option><option station='Herreid' county='CAMPBELL' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='776' >Herreid</option><option station='Highmore' county='HYDE' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='196' >Highmore</option><option station='Highmore N' county='HYDE' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='760' >Highmore N</option><option station='Hot Springs' county='FALL_RIVER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='714' >Hot Springs</option><option station='Hurley' county='TURNER' s='10/2/2026 11:15' e='10/16/2026 11:5'  value='762' >Hurley</option><option station='Isabel' county='DEWEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='767' >Isabel</option><option station='Jewel Cave' county='CUSTER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='31' >Jewel Cave</option><option station='Kadoka' county='JACKSON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='761' >Kadoka</option><option station='Kennebec' county='LYMAN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='739' >Kennebec</option><option station='Kyle' county='OGLALA_LAKOTA' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='789' >Kyle</option><option station='La Plant' county='DEWEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='770' >La Plant</option><option station='Ladner' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='744' >Ladner</option><option station='Lantry' county='DEWEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='768' >Lantry</option><option station='Lead' county='LAWRENCE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='713' >Lead</option><option station='Lemmon' county='PERKINS' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='193' >Lemmon</option><option station='Leola' county='MCPHERSON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='188' >Leola</option><option station='Letcher' county='SANBORN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='724' >Letcher</option><option station='Long Lake' county='MCPHERSON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='765' >Long Lake</option><option station='Lower Brule' county='LYMAN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='733' >Lower Brule</option><option station='Lowry' county='WALWORTH' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='742' >Lowry</option><option station='Ludlow' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='707' >Ludlow</option><option station='Madison' county='LAKE' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='752' >Madison</option><option station='Martin' county='BENNETT' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='192' >Martin</option><option station='McIntosh' county='CORSON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='199' >McIntosh</option><option station='McLaughlin' county='CORSON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='124' >McLaughlin</option><option station='Menno' county='HUTCHINSON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='734' >Menno</option><option station='Midland' county='HAAKON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='748' >Midland</option><option station='Milesville' county='HAAKON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='725' >Milesville</option><option station='Mission Ridge' county='STANLEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='797' >Mission Ridge</option><option station='Mound City' county='CAMPBELL' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='143' >Mound City</option><option station='Mount Vernon' county='DAVISON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='735' >Mount Vernon</option><option station='Mud Butte' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='757' >Mud Butte</option><option station='Murdo' county='JONES' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='796' >Murdo</option><option station='New Underwood' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='792' >New Underwood</option><option station='Newell' county='BUTTE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='701' >Newell</option><option station='Nisland' county='BUTTE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='70' >Nisland</option><option station='Norris' county='MELLETTE' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='726' >Norris</option><option station='Oacoma' county='LYMAN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='428' >Oacoma</option><option station='Oak Lake' county='BROOKINGS' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='504' >Oak Lake</option><option station='Oelrichs' county='FALL_RIVER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='737' >Oelrichs</option><option station='Oglala' county='OGLALA_LAKOTA' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='730' >Oglala</option><option station='Onida' county='SULLY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='727' >Onida</option><option station='Parker' county='TURNER' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='750' >Parker</option><option station='Parkston' county='HUTCHINSON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='187' >Parkston</option><option station='Philip' county='HAAKON' s='10/2/2026 11:15' e='10/16/2026 10:5'  value='793' >Philip</option><option station='Pierre' county='HUGHES' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='749' >Pierre</option><option station='Pine Ridge' county='OGLALA_LAKOTA' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='794' >Pine Ridge</option><option station='Porcupine' county='OGLALA_LAKOTA' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='791' >Porcupine</option><option station='Prairie City' county='PERKINS' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='745' >Prairie City</option><option station='Provo' county='FALL_RIVER' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='728' >Provo</option><option station='Ralph' county='PERKINS' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='729' >Ralph</option><option station='Redfield' county='SPINK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='21' >Redfield</option><option station='Redig' county='HARDING' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='746' >Redig</option><option station='Rockham' county='HAND' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='754' >Rockham</option><option station='Rosebud' county='TODD' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='141' >Rosebud</option><option station='Salem' county='MCCOOK' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='702' >Salem</option><option station='Scenic' county='PENNINGTON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='755' >Scenic</option><option station='SF Landfill' county='MINNEHAHA' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='173' >SF Landfill</option><option station='Sica Hollow' county='MARSHALL' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='790' >Sica Hollow</option><option station='Sioux Falls' county='MINNEHAHA' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='180' >Sioux Falls</option><option station='South Shore' county='CODINGTON' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='506' >South Shore</option><option station='Spearfish' county='LAWRENCE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='747' >Spearfish</option><option station='Sturgis' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='142' >Sturgis</option><option station='Timber Lake' county='DEWEY' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='198' >Timber Lake</option><option station='Tuthill' county='BENNETT' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='741' >Tuthill</option><option station='Union Center' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='197' >Union Center</option><option station='Union Center NW' county='MEADE' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='758' >Union Center NW</option><option station='Vivian' county='LYMAN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='740' >Vivian</option><option station='Vivian N' county='LYMAN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='710' >Vivian N</option><option station='Volga' county='BROOKINGS' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='45' >Volga</option><option station='Wall ' county='PENNINGTON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='706' >Wall </option><option station='Wanblee' county='JACKSON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='795' >Wanblee</option><option station='Wasta' county='PENNINGTON' s='10/2/2026 11:15' e='10/16/2026 10:10'  value='705' >Wasta</option><option station='Webster' county='DAY' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='140' >Webster</option><option station='Wessington' county='HAND' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='759' >Wessington</option><option station='Wessington Springs' county='JERAULD' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='712' >Wessington Springs</option><option station='White Lake' county='AURORA' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='185' >White Lake</option><option station='White River' county='MELLETTE' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='186' >White River</option><option station='Winner' county='TRIPP' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='732' >Winner</option><option station='Woonsocket' county='SANBORN' s='10/2/2026 11:15' e='10/16/2026 11:10'  value='736' >Woonsocket</option>
+</select>
+
+</div>
+ 
+								<div class='col-12 nav-tabs my-2'  ></div>
+								<div class='col-12' id='dateLabel'>
+									<i class="fa fa-fw fa-times-circle text-red " aria-hidden="true"  id='date-x'></i>
+									<i class="fa fa-fw fa-check-circle text-green " aria-hidden="true" style='display: none' id='date-check'></i>	
+									<span id='step2Label'> Step 2 - Select a Date/Time:</span>
+									<input class='col-12' id="moment" placeholder="What Date and time?" aria-labelledby='step2Label'/>
+								</div>
+								<div class='col-12 nav-tabs my-2'></div>
+								<div class='col-12' id='emailLabel'>
+									<i class="fa fa-fw fa-times-circle text-red " aria-hidden="true"  id='email-x'></i>
+									<i class="fa fa-fw fa-check-circle text-green " aria-hidden="true" style='display: none' id='email-check'></i>
+									<span id='step3Label'> Step 3 - Enter an e-mail address:</span>
+									<input class='col-12' type="email" id="email" placeholder="Where do you want it sent?" aria-labelledby='step3Label'/>
+								</div>
+								<div class='col-12 nav-tabs my-2'></div>
+								<div class='col-12'>
+									Step 4 - <a href='https://climate.sdstate.edu/mobile/terms_of_use.asp' target='blank'>Terms of Use</a>: 
+								</div>
+								<label id='termsLabel' class='col-12' mbsc-form>
+									<input  type="checkbox" id='terms'>I agree to the Terms of Use.
+								</label>
+								<div class='col-12 nav-tabs my-2' ></div>
+								<!--<div class='row no-gutters mt-1 col-12'>
+									<div class='col-12'>Step 5: </div>
+									<div class='col-12' >
+										<div class="g-recaptcha" data-sitekey="6LdEJUAUAAAAAHFwoFTgjYpTq2pyOTK5MU8nAhR8"></div>
+									</div>
+								</div>-->
+								<div class='col-12 nav-tabs my-2' ></div>
+								<div class='row no-gutters mt-1 col-12'>
+									<div class='col-2'>Step 6: </div>
+									<div class='col-1'> </div>
+									<div class='col-9' >
+										<button id='email-submit' class="btn btn-md  col-9" disabled aria-label="Help Button Example">
+										<i id='email-submit-icon' class="fa fa-fw fa-envelope p-1" aria-hidden="true"></i> Send record</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade in pt-2" id="requestResults" >
+							<div class="alert alert-info col-12 row no-gutters " role="alert" id='processing' style='display: none'>
+								<div class='col-3'><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
+								<div class='col-8'>Processing your email request now...</div>
+							</div>
+							<div class="alert alert-success" role="alert" style='display: none' id='success'> 
+								<span class='spray-msg'> </span>
+							</div>
+							<div class="alert alert-info" role="alert" style='display: none' id='info'>
+								<span class='spray-msg'> </span>
+							</div>
+							<div class="alert alert-warning" role="alert" style='display: none' id='warning'>
+								<span class='spray-msg'> </span>
+							</div>
+							<div class="alert alert-danger" role="alert" style='display: none' id='danger'>
+								<span class='spray-msg'> </span>
+							</div>
+							<div class='col-12 nav-tabs my-2'  ></div>
+							<div id='confirmation' style='display: none'>
+								<div class='col-sm-12 col-md-6 p-0'> Your SD Mesonet Spray Record for </div>
+								<div class='col-sm-12 col-md-6 p-0'><span id='sprayLocation'></span> County</div>
+								<div class='col-sm-12 col-md-6 p-0'><span id='sprayTime'></span></div>
+								<div class='col-sm-12 col-md-6 p-0'> has been sent from noreply.mesonet@sdstate.edu</div>
+								<div class='col-sm-12 col-md-6 p-0'>to <span id='sprayEmail'></span>.</div>
+								<div  class='col-12 nav-tabs my-2'></div>
+								<div class='col-sm-12  p-0'> 
+									Problems?  Check your junk folder, then 
+									<a href='https://climate.sdstate.edu/feedback/feedback.asp'> contact us.</a> 
+								</div>
+							</div>
+							<div class="alert alert-danger" role="alert" style='display: none' id='danger-v'>
+								<strong> The following data is missing:</strong> <br><span id='spray-missing'> </span>
+							</div>
+							<div class="alert alert-success" role="alert" style='display: none' id='success-v'>
+								<strong> The following data is available:</strong> <br><span id='spray-found'> </span>
+							</div>
+							<div class='col-12 nav-tabs my-2' ></div>
+							<div>
+								To request another record, use the "Record by Email" tab. Refresh the page to get access to the most recent data. 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<link rel="stylesheet" href="/js/mobiscroll/css/mobiscroll.javascript.min.css" />
+	<script src="/js/mobiscroll/js/mobiscroll.javascript.min.js"></script>
+  
+<script>
+	email = false;
+	terms = false;
+	dt = false;
+	stn = false;
+
+	$( document ).ready(function() {
+		$('#email').val(getCookie("email"));
+		$("#email").trigger('change');
+	});
+
+	var check = function (){
+		if (email && dt && stn && terms){
+			$('#email-submit').addClass('btn-outline-navy').prop("disabled", false);
+			$('#email-submit-icon').addClass('fa-envelope-open').removeClass('fa-envelope');
+		}
+		else{
+			$('#email-submit').removeClass('btn-outline-navy').prop("disabled", true);
+			$('#email-submit-icon').removeClass('fa-envelope-open').addClass('fa-envelope');
+		}
+	};
+
+	$('#terms').change(function(){
+		if ($('#terms').is(':checked')) 
+			terms = true;
+		else
+			terms = false;
+		check();		
+	});
+
+	mobiscroll.settings = {theme: 'ios'};
+
+	var momentInstance = mobiscroll.datetime('#moment', {
+        dateWheels: '|D M d|',		
+		timeWheels: '|HH|ii|',//A|
+		headerText: '{value}',
+		showLabel: true,
+		monthtext: 'test',
+		hourText: 'Hour',
+		minuteText: 	'Minutes',
+        returnFormat: 'moment',
+		circular: false,
+		min: new Date(2019, 4, 5, 17, 40),
+		max: new Date(2019, 4, 19, 17, 40),
+		steps: {minute: 5},
+		responsive: {       
+			large: {display: 'center'
+			}},
+		onClear:
+			function (event, inst) {
+				$('#date-x').show();
+				$('#date-check').hide();
+				dt = false;
+				check();
+			},
+			onSet: function (event, inst) {
+				$('#date-x').hide();
+				$('#date-check').show();
+				dt = true;
+				check();
+			}
+	});
+
+	$("#email").on("propertychange change keyup paste input", function(){
+		var test_email = $('#email').val();
+	
+		if( /(.+)@(.+){2,}\.(.+){2,}/.test(test_email) ){
+			email = true;
+			$('#email-x').hide();
+			$('#email-check').show();
+		} else {
+			email =false;
+			$('#email-x').show();
+			$('#email-check').hide();
+		}
+		check();
+	});
+
+	$('#stn-spray-email').change(function(){
+		if ($('#stn-spray-email').val()!=0){
+			stn = true;
+			$('#stn-x').hide();
+			$('#stn-check').show();
+			momentInstance.option({
+				min:$('#stn-spray-email').find('option:selected').attr('s'),
+				max:$('#stn-spray-email').find('option:selected').attr('e')
+			});
+			momentInstance.clear();
+			check();
+		}
+		else{
+			$('#stn-x').show();
+			$('#stn-check').hide();
+			stn=false;
+		}
+	});
+	
+	$('#requestEmail').click(function() {grecaptcha.reset();});
+
+	$('#email-submit').click(function() {
+		trackButtonUse('SprayEmail','sendEmail','');
+		sendEmail();
+	});
+	
+	function errorSummary(msg){
+		//console.log("error");
+		$('#processing').hide();
+		$('#warning').show();
+		$('.spray-msg').html("Error ("+msg.status+") has occured in the attempt to find your request; Please try again later. If the problem persists, provide the error listed with station and date/time you attempting to request a report so that we can look into the the issue. You can find our feedback form <a href='https://climate.sdstate.edu/feedback/feedback.asp'>here</a>");
+		trackButtonUse('SprayEmail','receiveEmail','UnKnown');
+	};
+	
+	var sendEmail = function(){
+		e = $('#email').val();
+		setCookie("email", e, 1000);
+		/*if ($('#cookie').is(':checked')) {
+			setCookie("email", e, 1000);
+		}
+		else{
+			setCookie("email","" , -1000);
+		}*/
+
+		$('#danger, #info, #success, #warning, #confirmation,#success-v,#danger-v, #processing').hide();
+		num = $('#stn-spray-email').find('option:selected').attr('value');
+		te = "";
+		if (terms) te = "1"; 
+		d = momentInstance.getVal().format("M/D/YY");
+		t1 = momentInstance.getVal().format("k")*12;
+		if (t1==288) t1=0
+		t2 = momentInstance.getVal().format("m")/5;
+		t=t1+t2;
+		var gre = "";//grecaptcha.getResponse(); //Temp removed
+		var link = "https://climate.sdstate.edu/tools/spray/emailrecord.asp?num="+num+"&terms="+te+"&d="+d+"&t="+t+"&e="+e+"&gre="+gre;
+		//console.log(gre);
+		$("#requestResultsID").trigger("click");
+		$('#processing').show();
+		
+		setTimeout(function(){ 
+			$.ajax({type: "GET", url: link,dataType: "json", timeout: 30000}).done(postData).fail(errorSummary);
+		}, 1000);
+	};
+
+	function postData(msg){
+		//console.log("postData");
+		var alldata = msg;//$.parseJSON(msg);
+		if (alldata.success == 0){
+			$('#danger').show();
+			trackButtonUse('SprayEmail','receiveEmail','Failed');
+		}
+		else if (alldata.success == 1){
+			$('#info').show();
+			$('#success-v').show();
+			$('#danger-v').show();
+			$('#spray-found').text( alldata.found);
+			$('#spray-missing').text( alldata.missing);
+			trackButtonUse('SprayEmail','receiveEmail','Incomplete');
+		}
+		else if (alldata.success == 2){
+			$('#success').show();
+			trackButtonUse('SprayEmail','receiveEmail','Complete');
+		}
+		else{
+			$('#warning').show();
+			trackButtonUse('SprayEmail','receiveEmail','UnKnown');
+		}
+	
+		if (alldata.success == 0)
+			$('.spray-msg').text( alldata.msg);
+		else if (alldata.success == 1 || alldata.success == 2){
+			$('#confirmation').show();
+			$('.spray-msg').text( alldata.msg);
+			$('#sprayLocation').text( alldata.sprayLoc);
+			$('#sprayTime').text( alldata.sprayTime);
+			$('#sprayEmail').text( $('#email').val());
+		}
+		$('#processing').hide();
+	};
+
+	function setCookie(cname, cvalue, exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		var expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/tools/spray/"; //Needs to be set to local use only. 
+	};
+
+	function getCookie(cname) {
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for(var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+	return "";
+	};
+</script>
+
+			<div  class="container pt-2">
+
+				<div  id="map-display"></div>
+				<div  class='row col-12 hidden-md-down '>
+					<div class='col-12 maps '><div id ='testc'><div id="map-canvas2"></div></div></div>
+					<div class='col-12 maps '>
+						<nav class="row nav flex no-gutters">
+<!--<button id="nwsradar" class="btn btn-outline-navy col-12" onClick="window.open('https://www.weather.gov/images/unr/soo/obs/sdeoc-anim.gif'); return false;"><span >NWS Radar <i class="fa fa-external-link" aria-hidden="true"></i></span></button>--></nav>
+					</div>
+				</div>
+			
+			</div>	
+
+
+<script>
+//fullscreenControl: {pseudoFullscreen: true }
+//fullscreenControl: true
+	var alldata = $.parseJSON($.ajax({type: "GET", url: "/maps/spray.asp", async: false}).responseText);
+	var data = alldata.maps;
+	
+	var mymap = L.map('map-canvas2', {fullscreenControl: true,condensedAttributionControl: false}).setView([44.29, -99.606], 7);
+	L.tileLayer('https://climate.sdstate.edu/maps/LaunchMap/{z}/{x}/{y}.png', {maxZoom: 8,minZoom: 7,id: 'sdstate.mesonet.custom.county'}).addTo(mymap);
+	L.control.condensedAttribution({ emblem: '<div class="emblem-wrap"><img alt="Mesonet at SDSTATE Logo" src="/climate_site/svg/Mesonet LogoV2-04.svg"/></div>',
+		prefix: '<a href="'+alldata.copyright[2]+'" title="">'+alldata.copyright[1]+'</a> | <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
+		}).addTo(mymap);
+    var southWest = L.latLng(41.8725, -106.525796),
+        northEast = L.latLng(46.754235, -93.764816),
+		bounds = L.latLngBounds(southWest, northEast);
+    mymap.setMaxBounds(bounds);
+
+	var canvas = L.canvas();
+    var svg = L.svg();
+	function circle (latlng, options) {
+       return L.semiCircle(latlng, L.extend({
+            radius: 10000,
+            color: 'red',
+            opacity: 0.7,
+            renderer: svg,
+            weight: 2
+			}
+		, options));
+    };
+	
+	function popUp(f,l){
+		var out = [];
+	};
+
+	var createLabelIcon = function(labelClass,labelText){
+		return L.divIcon({ 
+			className: labelClass,
+			html: labelText
+			})
+	};
+	
+	var circleOptions = {};
+	function initCircle() {
+		circleOptions = {}
+		circleOptions={
+			radius:4,
+			color: '#223E94',
+			fillColor: '#223E94',
+			fillOpacity: 1};
+	};
+	initCircle();
+	
+	function style(value) {
+		return {
+			radius:4,
+			color: '#223E94',
+			fillColor: '#223E94',
+			fillOpacity: (value=="" ? 0 : 1)};
+	};
+	
+	function getColor(d) {
+		return d == 'green' ? '#009a44' :
+				d == 'orange'  ? '#ffa300' :
+				d == 'red'  ? '#d22630' :
+							'#ccc';
+	};
+	
+	function styleSpray(x) {
+		return {
+			radius:4,
+			color:  getColor(x),
+			fillColor:  getColor(x),
+			fillOpacity: 1
+		};
+	};
+	
+	function onEachFeatureHandler(f, l){
+		l.on('click', function(e){
+			window.location.href = "https://climate.sdstate.edu/tools/spray/?num="+f.properties["fivemincode"];
+		});
+}	
+	
+	var GeoDisplay = function (d,v) {
+		return new L.GeoJSON(d,{onEachFeature:onEachFeatureHandler,pointToLayer: function (feature, latlng) {return L.circleMarker(latlng, style(feature.properties[v]))
+			.bindTooltip(feature.properties[v],{permanent:"true",interactive: true, direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});
+			}});
+	};
+	var GeoDisplaySpray = function (d,v) {
+		return new L.GeoJSON(d,{onEachFeature:onEachFeatureHandler,pointToLayer: function (feature, latlng) {return L.circleMarker(latlng, styleSpray(feature.properties[v][1]))
+			.bindTooltip(feature.properties[v][0],{permanent:"true",interactive: true, direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});
+			}});
+	};
+	
+	//Generic displays
+	//var displayname = GeoDisplaySpray(data,"displayname");
+	var displayname = GeoDisplay(data,"displayname");
+	var TA = GeoDisplay(data,"TA");
+	var XR = GeoDisplay(data,"XR");
+	var dewPt = GeoDisplay(data,"dewPt");
+	var DT = GeoDisplaySpray(data,"dt");
+	var inv = GeoDisplaySpray(data,"inv");
+	var UG1hr = GeoDisplay(data,"UG1hr");
+	//Specific Displays
+	var PPmidNight= new L.GeoJSON(data,{onEachFeature:onEachFeatureHandler,pointToLayer: function (feature, latlng) {
+		var PP = feature.properties["PPmidnight"];
+		var icon = ""
+		if (PP[1] == "broken"){icon = "<i class='wi size-wind wi-degrees'></i>"	;}
+		else if (PP[1] == "*"){icon = "<i class='fa fa-asterisk' aria-hidden='true'></i> ";}
+		
+		if (icon == "")	
+			return L.circleMarker(latlng, style(PP[0]))
+			.bindTooltip(PP[0],{permanent:"true",interactive: true, direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});		
+		else
+			return L.marker(latlng, {icon:createLabelIcon("textLabelclass ",icon)})
+			.bindTooltip(PP[0],{permanent:"true", interactive: true,direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});
+	}});
+	var USUD = new L.GeoJSON(data,{onEachFeature:onEachFeatureHandler,pointToLayer: function (feature, latlng) {
+		var UD = feature.properties["UD"];
+		var US = feature.properties["US"];
+		var UG = feature.properties["UG"];
+		if (UD == "")
+			UD = "size-wind wi-degrees"
+		else if (UD =="calm")
+			UD = "size-wind wi-degrees"
+		else 
+			UD = "size-wind  wi-direction-"+feature.properties["UD"];
+			
+		if (UG != "")
+			US = US +"G"+UG;
+		
+		return L.marker(latlng, {icon:createLabelIcon("textLabelclass ","<i class='wi "+UD+"'></i> ")})
+		.bindTooltip(US,{permanent:"true", interactive: true,direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});
+    }});
+
+	var boom = new L.GeoJSON(data,{onEachFeature:onEachFeatureHandler,pointToLayer: function (feature, latlng) {
+		var UD = feature.properties["UD"];		
+		if (UD == "")
+			UD = "size-wind wi-degrees"
+		else if (UD =="calm")
+			UD = "size-wind wi-degrees"
+		else 
+			UD = "size-wind  wi-direction-"+feature.properties["UD"];	
+			
+		//var day = feature.properties["boom"][0];
+		//var night = feature.properties["boom"][1];
+		//var utcDate = feature.properties.utcdate;
+		//var TZ = feature.properties.tz;
+		//var today = SunCalc.getTimes(new Date(utcDate), latlng.lat, latlng.lng);
+		//var todayrise = moment(today.sunrise).tz(TZ);
+		//var todayset = moment(today.sunset).tz(TZ);
+		//var now = moment().tz(TZ);
+		//console.log(feature.properties.displayname,todayrise.format("hh:mm"),now.format("hh:mm"),todayset.format("hh:mm"));
+		//var print = day;
+		//console.log(now.diff(todayrise, 'minutes'),now.diff(todayset, 'minutes'))
+		//if (now.diff(todayrise, 'minutes') <= 60 ||  now.diff(todayset, 'minutes') >= -60)
+		//	print = night
+		
+		return L.marker(latlng, {icon:createLabelIcon("textLabelclass ","<i class='wi "+UD+"'></i> ")})
+		.bindTooltip(feature.properties["boom"],{permanent:"true", interactive: true,direction:properDirection(feature.properties["nwsid"]),className: 'myCSSClass'});
+    }});
+	
+	//Stations
+	//Weather and Radar
+	//Wind
+	//Inversion
+	//deltaT
+	//Temperature
+	//Humidity
+	//Today's Precip
+		
+	var baseTree = [];
+	baseTree = [   
+		{	label: '<i class="fa size-menu fa-circle aria-hidden="true"></i> Stations ', layer: displayname, name: 'Select Layer <i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: 'Stations' , mapinfotext:'Station locations  and National Weather Service radar from the last hour.', GA:'spray/stations',
+			radar: true},
+		// Add in near future
+		//{	label: 'Weather & Radar', layer: dewPt, name: 'Weather & Radar<i class="fa size-menu fa-caret-down"></i>',
+		//	mapinfoname: 'Weather & Radar', mapinfotext:'Current weather (icon) and air temperature (&deg;F) with 1-hr National Weather Service radar loop', GA:'spray/WeatherWithRadar',
+		//	radar: true},			
+		{	label: '<i class="wi size-menu wi-strong-wind"></i> 3-ft Wind ', layer: boom, name: '3-ft Wind  <i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: '3-ft Wind', mapinfotext:'Curection direction (icon) and speed (mph) at 3 ft.'
+			, GA:'spray/boomSpeed'},
+		{   label: '<i class="wi size-menu wi-dust"></i> Inversion', layer: inv, name: 'Inversion <i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: 'Inversion', mapinfotext:'Current temperature inversion (&deg;F).', GA:'spray/inversion'},
+		{   label: '<i class="wi size-menu wi-thermometer"></i> &Delta;T (Delta T)', layer: DT, name: '&Delta; T (Delta T)<i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: '&Delta; T (Delta T)', mapinfotext:'Current &Delta;T (&deg;F).',
+			GA:'spray/DeltaT'},	
+		{   label: '<i class="wi size-menu wi-thermometer"></i> Temperature', layer: TA, name: 'Temperature <i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: 'Temperature', mapinfotext:'Current air temperature (&deg;F).', GA:'spray/temperature'},		
+		{   label: '<i class="wi size-menu blue-drop wi-humidity"></i> Humidity', layer: XR, name: 'Humidity <i class="fa size-menu fa-caret-down"></i>',
+			mapinfoname: 'Humidity', mapinfotext:'Current relative humidity (%).', GA:'spray/humidity'},
+		{	label: '<i class="fa size-menu blue-drop fa-tint"></i> Today&rsquo;s Precip', layer: PPmidNight, name: 'Today&rsquo;s Precip<i class="fa size-menu fa-caret-down"></i>',
+				mapinfoname: 'Today&rsquo;s Precip', mapinfotext:' Precipitation (in) since midnight local time and National Weather Service radar from the last hour.<br><br> <i class="fa fa-asterisk" aria-hidden="true"></i> Precipitation uncertain on freezing days.', GA:'spray/PPmidNightWithRadar',
+				radar: true},
+		
+					
+    ];
+	displayname.addTo(mymap);
+	
+	var	overlaysTree = [];
+	var lay = L.control.layers.tree(baseTree, overlaysTree,
+        {
+            namedToggle: true,
+            selectorBack: false,
+            position: 'topright'
+        });
+
+    lay.addTo(mymap);	
+	
+	L.easyButton('fa-lg fa-question-circle '+ (iOS() ? 'l' : ''), function(btn, map){
+		if (dialog.options.op == 1){
+			dialog.options.op = 0;
+			dialog.close();
+			trackButtonUse('Leaflet','Button','HelpClose');	
+		}
+		else if (dialog.options.op == 0){
+			dialog.options.op = 1;
+			dialog.open();
+			trackButtonUse('Leaflet','Button','HelpOpen');
+		}
+		
+		if (dialog2.options.op == 1){
+			dialog2.options.op = 0;
+			dialog2.close();
+		}
+	}, 'Help Button').addTo( mymap);
+	
+	L.easyButton('fa-lg fa-info-circle '+ (iOS() ? 'l' : ''), function(btn, map){
+		if (dialog2.options.op == 1){
+			dialog2.options.op = 0;
+			dialog2.close();
+			trackButtonUse('Leaflet','Button','InfoClose');
+		}
+		else if (dialog2.options.op == 0)
+		{
+			dialog2.options.op = 1;
+			dialog2.open();
+			trackButtonUse('Leaflet','Button','InfoOpen');
+		}
+		if (dialog.options.op == 1){
+			dialog.options.op = 0;
+			dialog.close();
+		}
+	}, 'Information Button').addTo( mymap);    
+	mymap.on('dialog:closed', function(e){ e.options.op=0; });
+ 
+	var contents = [
+        "<h5>Map Help:</h5>",
+		"<p><i class='fa fa-lg fa-plus'></i>&nbsp;<i class='fa fa-lg fa-minus'></i> Zoom in/out</p>",
+        "<p><i class='fa fa-lg fa-info-circle'></i> Information about current Layer</p>",
+		//"<p><i class='fa fa-lg fa-question-circle'></i> Help</p>",
+		"<p><img src='https://climate.sdstate.edu/js/leaflet/plugins/fullscreen.png' alt='Full screen the map button' height='52px' width='24px'></img> Full screen</p>",
+		"<p>Click on a location to link to station's detailed report.</p>"
+	].join('');
+
+    var dialog = L.control.dialog({anchor:[30,40],size:[190,350],initOpen:false, op:0 }).setContent(contents).addTo(mymap).freeze();
+			  
+	contents = [
+		"<h6><span'>Current Layer</h6>",
+        "<strong><span id='mapinfoname' class='underline'>Stations & Radar</span>:</strong>",
+		"<p id= 'mapinfotext'>Station locations with National Weather Service radar reflectivity.</p>"
+        ].join('');
+
+    var dialog2 = L.control.dialog({anchor:[30,40],size:[190,275],initOpen:false, op:0}).setContent(contents).addTo(mymap).freeze();
+	mymap.on('baselayerchange', function (eventLayer) {
+		$('#mapinfoname').html(baseTree[eventLayer.name].mapinfoname);
+		$('#mapinfotext').html(baseTree[eventLayer.name].mapinfotext);
+		trackButtonUse('Leaflet','MapChange',baseTree[eventLayer.name].GA);
+		if (mymap.isFullscreen() && screen.width < 600){
+			$('.leaflet-control-layers-expanded').removeClass( "leaflet-control-layers-expanded" );
+		}
+		if ( baseTree[eventLayer.name].radar === true)
+			Rlayer.addTo(mymap);
+		else
+			Rlayer.remove(mymap);
+	});
+
+	$(".leaflet-layerstree-header-name").click( function () {
+		if (mymap.isFullscreen() && screen.width < 600){
+			$('.leaflet-control-layers-expanded').removeClass( "leaflet-control-layers-expanded" );
+		}
+    });
+
+	mymap.on('fullscreenchange', function () {
+		if (mymap.isFullscreen()) {trackButtonUse('Leaflet','Button','OpenFullscreen');} 
+		else {$("#map-canvas2").prependTo("#testc");}
+		setTimeout(function() {mymap.invalidateSize();}, 100);
+	});
+	
+	$('document').ready(function(){	
+		var displayed = true;
+		$('.radarbutton').on('click', function(){
+			if ( window.orientation === undefined || window.orientation === 0){
+				$("#map-canvas2").prependTo("#map-display");
+				mymap.toggleFullscreen();
+				if (!displayed){
+					displayname.remove(mymap);
+					displayname.addTo(mymap);
+					displayed = !displayed
+				}
+				setTimeout(function() {mymap.invalidateSize();}, 100);  
+			}
+		else {
+			alert("Map does not currently function in this orentation, hold the device vertical in it's default orentation.");
+		}
+		});
+	});
+	
+	window.addEventListener("orientationchange", function() {  
+		if (mymap.isFullscreen()){
+			alert("Map does not currently function in this orentation, hold the device vertical in it's default orentation.");
+			mymap.toggleFullscreen();
+		}
+	}, false);
+	
+	var legend = L.control({position: 'topright'});
+		
+
+
+//NowCoast radar	
+	var prevHour = moment.utc().subtract(60, 'm');
+	var Rlayer = new L.LayerGroup();
+	var radarLayers = [];
+	var wmsUrl = "https://nowcoast.noaa.gov/geoserver/weather_radar/wms"
+		for (var x = 0; x < 12; x++){
+			var url = wmsUrl + "?time="+moment(prevHour).add(x*5, 'm').format();
+			radarLayers[x]=L.nonTiledLayer.wms(url, {layers: 'base_reflectivity_mosaic',format: 'image/png',transparent: true,opacity: 0.6,attribution: 'nowCOAST',minZoom: 7,maxZoom: 8}).addTo(Rlayer);
+		}
+	var radarOpacity = .4;
+	var start = 0;
+	var Rend = Object.keys(radarLayers).length;
+	var radarLoopCount = 0;
+
+	
+	function changeImage(){
+		radarLayers.map(function(layer){ layer.setOpacity(0)});
+		radarLayers[radarLoopCount].setOpacity(radarOpacity);
+		radarLoopCount++;
+	
+		if(radarLoopCount > (Rend-1)){
+			radarLoopCount = 0;
+		} 
+	}
+
+	function playRadar(){
+		start = setInterval("changeImage()", 500);
+	}
+	Rlayer.addTo(mymap);
+	$(document).ready(function (){playRadar(); setTimeout(function() {mymap.invalidateSize();}, 100);});
+</script>
+
+	<div class="container mt-2 p-0">
+		<div class="card mb-2 p-0  " style="background-color:transparent;">
+			<div class="card-header p-0 bg-card-header ">
+			<div class="row equal no-gutters col-12 p-1 ">
+				<div class="col-11 p-2 pull-left font-weight-bold">About the Mesonet Spray Tool</div> 
+				<div class='col-1 pt-1'>
+					<button data-toggle="modal" data-target="#myModal" aria-label="Help button" class="btn btn-sm btn-outline-navy pull-right"> 
+						<i class="fa fa-fw fa-question p-1" aria-hidden="true" ></i>
+					</button>
+				</div> 				
+			</div>			
+		</div>
+			<div class="card-block bg-white p-1 no-gutters shadow">
+				<div class="row equal no-gutters col-12 p-1">
+				<!--<div class='col-12'>The Mesonet Spray Tool provides live reports of weather conditions critical to pesticide applicators. Wind, inversion, and &Delta;T are all have stoplight color-coded guidance 
+				(<i class="fa fa-circle green" aria-hidden="true"></i><i class="fa fa-circle orange" aria-hidden="true"></i><i class="fa fa-circle red" aria-hidden="true"></i>). These reports are accepted for record keeping by the South Dakota Department of Agriculture and Natural Resources. Spray records are available by email.</div>
+				-->
+				<div class='col-12'>
+				The Mesonet Spray Tool provides live reports and forecasts of weather critical to pesticide applicators including 3-ft wind, inversion, 
+				and &Delta;T. Current conditions update every five minutes. Forecast updates every hour. 
+				Reports for any station from any time in the last 7 days can be sent to the user using the "Record by Email" button.
+				</div>
+				<div class='col-12'><br></div>
+				<div class='col-12'><strong>3-ft Wind</strong>: Direction and speed (mph) at boom height for ground applications (these can be significantly lower than standard wind speeds) </div>
+				<div class='col-12'><strong>Inversion</strong>: A positive vertical temperature difference indicates an inversion (Yes/No/Marginal or Y/N/M)</div>
+				<div class='col-12'><strong>&Delta;T (DeltaT)</strong>: Used to estimate droplet evaporation rates</div>
+				<div class='col-12'><strong>Precipitation</strong></div>
+				<div class='col-12 pl-4'>Today: measured since midnight</div>
+				<div class='col-12 pl-4'>Today's forecast: remainder of the day</div>
+				<div class='col-12 pl-4'>Tomorrow's forecast: 24-hour forecast</div>
+				<div class='col-12'><br></div>
+				<div class='col-12 col-lg-6'><img  src="SDSRPC_logo.svg" alt="South Dakota Soybean Research and Promotion Council Logo" height="65"></img>
+				<p class='small'>The Mesonet Spray Tool is made possible by the South Dakota Soybean Research & Promotion Council.</p></div>
+				<div class='col-12 col-lg-6 small'><div class='p-2'>
+					<a href='https://extension.sdstate.edu/' alt='Link to SDSU extension website'><img height='55' width='' src='/climate_site/svg/SDSU_Extension_Logo.svg' alt='SDSU extension logo'></img></a>
+					
+					<p>PI: <a href='https://extension.sdstate.edu/about/our-experts/laura-edwards' alt='More informatino about Laura Edwards'>Laura Edwards, SDSU Extension State Climatologist</a></p>
+				</div>				
+				</div>
+			</div>
+		</div>
+	</div>
+<div class='container mb-2 p-0'><div class='col-12 col-sm-8'></div><div class='col-12 '>&copy;2026 South Dakota Board of Regents</div><div class='col-12 '><span class='small'>The South Dakota Department of Agriculture accepts SD Mesonet data for recordkeeping purposes. Always read and follow pesticide label instructions. Although every effort is made to ensure the accuracy of the information contained on this webpage, this is unreviewed and unverified data, and is not an opinion as to the  propriety of spraying at a particular location. Anyone receiving or using this information assumes the entire risk related to its use and agrees that the State of South Dakota, the South Dakota Board of Regents, and South Dakota State University, their officers, employees, and agents, are not legally responsible for the accuracy of the information, the reliability of the network, or any decisions made as a result of the use of the information. This information is provided on the condition of acceptance of terms at  <a href='https://mesonet.sdstate.edu/legal'>Legal</a>.</span></div></div>
+		</div>
+		<br>
+		
+	<div id="footer">
+		<footer>
+<div class="row pt-1 pb-1 pl-2 pr-2 no-gutters">
+	<div class='col-sm-12 hidden-md-up no-gutters p-0 center' >
+		<a href="https://www.sdstate.edu" aria-label='Link to sdstate.edu (opens in a new page)' target="_blank" style="border:none; ">
+			<img src="https://climate.sdstate.edu/climate_site/svg/SD Stacked White.svg" alt="SDSTATE Logo" height='75'></img>
+		</a>
+	</div>
+	<div class="hidden-sm-down col-md-4 p-0">
+		<a href="https://www.sdstate.edu" aria-label='Link to sdstate.edu (opens in a new page)' target="_blank" style="border:none; ">
+			<img src="https://climate.sdstate.edu/climate_site/svg/SD Stacked White.svg" alt="SDSTATE Logo" height='75'></img>
+		</a>
+	</div>
+	<div class="col-sm-12 col-md-4 offset-md-4  aes p-0 pr-1" >
+		<a href="https://www.sdstate.edu/aes" aria-label='Link to sdstate.edu AES page (opens in a new page)' target="_blank" style="border:none; ">
+			<img src="https://climate.sdstate.edu/climate_site/svg/AES logo at SDSU_CMYK_CC_outlined.svg" alt="South Dakota Agricultural Experiment Station Logo" height='75'></img>
+		</a>
+	</div>
+</div>
+<div class='col-12 p-0 no-gutters footer-navy homelink center' id="homelink" >    	 
+	<!--<a href="/information/?tab=faq" style="border:none;">Information</a>-->
+	<a href="/information/?tab=tou" style="border:none;">Terms of Use</a>
+	<a href="https://climate.sdstate.edu/feedback/feedback.asp" class='contactus' >Contact Us</a> 
+	<a href="https://twitter.com/sdmesonet" aria-label='Link to SD Mesonet on Twitter' > <img defer src="/climate_site/social/twitter/logo.svg" alt='Twitter Logo link to Mesonet Twitter account' height='32' class='m-1'></img></a>
+	<a href="https://www.facebook.com/SDMesonet" aria-label='Link to SD Mesonet on Facebook'  > <img defer src="/climate_site/social/facebook/f-Logos-2019-1/f_Logo_Online_04_2019/Color/PNG/f_logo_RGB-Blue_512.png" alt='Facebook Logo link to Mesonet Facebook account' height='32' class='m-2'></img></a>
+</div>
+<div class='col-12 p-0 no-gutters homelink footer-navy center'> &copy; South Dakota State University. All rights reserved.</div>
+</footer>  
+	</div>
+
+	</div>
+</body>
+
+</html>
+
+<script>
+
+
+function one(){
+	$("#refreshbutton").removeClass("btn-outline-navy").addClass("btn-outline-yellow");
+setTimeout(function() { two()},400); //turn after .4 sec
+}
+function two(){
+$("#refreshbutton").removeClass("btn-outline-yellow").addClass(" btn-outline-navy");
+setTimeout(function() { one()},600); //turn after .6 sec
+}
+
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+
+	var trackButtonUse = function(cat, action, label) {
+	//ga('send', 'event', cat, action, label);
+	};	
+
+</script>
+
+
+

@@ -1,0 +1,119 @@
+# Benchmark spray: SDSU Extension spray tool guide
+# https://extension.sdstate.edu/use-sd-spray-tool-inversion-detection-and-weather-pesticide-application
+# fetched 2026-10-16T16:12:57Z, sha256 87f617fadf724ee86b803695df04c5b1c7d57734772aebdbdb627d51dc3857a4
+
+Use the SD Spray Tool for Inversion Detection and Weather for Pesticide ApplicationSouth Dakota State University extension logoSouth Dakota State University extension logoFacebook logoX logoYouTube logoInstagram logo
+
+-
+
+Use the SD Spray Tool for Inversion Detection and Weather for Pesticide Application
+
+Written collaboratively by Laura Edwards and Nathan Edwards.
+
+May is a busy month as field work progresses and pesticide applications are a critical component for management of most farm operations. Weeds, insects and diseases are all best treated early in their development before there is significant damage or yield loss.
+
+The SD Mesonet Spray Tool provides real-time weather data for pesticide applicators. This dedicated website for pesticide applicators uses the SD Mesonet weather data, which is updated every five minutes.
+
+In 2018, the network of weather stations was augmented with additional thermometers specifically for measuring temperature inversions. This information, in addition to wind speed and direction, temperature, humidity, and an abbreviated weather forecast, are all posted on the Spray Tool website. The website is designed for both desktop and mobile devices.
+
+Temperature inversions are dangerous for pesticide applicators, as inversions trap droplets in the atmosphere. The droplets can remain airborne for several hours, maybe as much as 12 or more during overnight hours. Then, there is a risk of drift and damage to neighboring areas when the air or wind moves the droplets away from the intended target area. Pesticide application during an inversion should be avoided. Some pesticide labels strictly forbid application during an inversion.
+
+The Spray Tool can inform an applicator if there is an inversion present or not, but can also provide much of the other required weather information for recordkeeping. As of the 2019 spray season, SD Department of Agriculture will accept SD Mesonet data as one of a few acceptable sources for weather recordkeeping.
+
+For applicators who are spraying over-the-top formulations of dicamba in soybeans, the Spray Tool will also provide an estimate of boom-height wind speed. This uses the wind speed measurement at 10’ height, and an EPA calculation to estimate 40” wind speed for the boom height.
+
+To use the Spray Tool for the inversion detection and wind speed, there are three colors to indicate levels of risk. Similar to a stoplight, green, yellow and red colors indicate increasing level of risk or unfavorable conditions for pesticide application.
+
+Inversion Color Codes
+
+The reported strength of inversion is the temperature (°F) of the air at 10 ft minus the temperature of the air at 40 in. For inversions, the color codes are described below:
+
+Inversion Detected (Red)
+
+- Positive number
+
+- Cooler air under warmer air
+
+- Occurs most often at night and first and last hours of daylight
+
+- Unsuitable for spraying
+
+No Inversion, Marginal (Yellow)
+
+- Zero
+
+- No detectable temperature difference
+
+- Can occur anytime, but often during the first two and last two hours of daylight
+
+- Marginal for spraying
+
+Inversion Not Detected (Green)
+
+- Negative number
+
+- Warmer air under cooler air
+
+- Rarely at night and the first and last hours of daylight
+
+- Preferred for spraying
+
+Wind Speed Color Codes
+
+For wind speed, the color codes are described below:
+
+Wind Speed
+
+Wind direction, speed and gust (mph) is measured at the agricultural weather standard of 10 feet. Label restrictions for wind speeds vary, so check your label.
+
+Color
+Wind Speed
+
+Red
+Calm
+
+Yellow
+2 mph
+
+Green
+3 to 10 mph
+
+Yellow
+11 to 15 mph
+
+Red
+16+ mph
+
+40-in (Boom Height) Speed
+
+Wind speed at a height of 40 inches is calculated from 10-foot wind speed using EPA methods. This should only be used for labels that specify a boom height wind (i.e., XtendiMax, FeXapan, Engenia).
+
+Color
+Wind Speed
+
+Red
+Calm to 2 mph
+
+Green
+3 to 10 mph
+
+Red
+11+ mph
+
+The SD Mesonet Spray Tool is funded in part by SD Soybean Research and Promotion Council.
+
+Related Topics
+
+Forage, Field Pea, Sorghum, Pulse Crops, Oilseed, Cover Crops, Crop Treatments, Pasture, Range, Corn Insects, Corn Diseases, Climate, Corn Weeds, Wheat Diseases, Wheat Insects, Wheat Weeds, Soybean Diseases, Soybean Insects, Soybean Weeds
+
+Prescribed Fire Timing for South Dakota USDA Conservation Programs, Native Grass Plantings, and Native Pastures
+
+Use this publication to determine suitable times for prescribed fire burns in South Dakota.
+
+Grazing Corn Stalks to Combat Volunteer Corn Following Drought Periods
+
+The incidence of volunteer corn in subsequent crops tends to be greater following periods of drought. Utilizing livestock to graze corn residue following harvest is a strategic management practice to reduce volunteer corn in the following crop.
+
+Effectiveness of Saflufenacil (Sharpen) Mixed with Imazapic (Plateau) to Manage Leafy Spurge
+
+Leafy spurge is a noxious weed of many pastures and rangelands in South Dakota. This research study looks at the effectiveness of Saflufenacil mixed with imazapic to manage leafy spurge.

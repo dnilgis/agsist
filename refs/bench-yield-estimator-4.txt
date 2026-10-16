@@ -1,0 +1,102 @@
+# Benchmark yield-estimator: Bayer/Channel estimating corn yield
+# https://www.cropscience.bayer.us/articles/channel/estimating-corn-yield
+# fetched 2026-10-16T16:13:07Z, sha256 60ef15cd5af40a49c3b0dcf10c138c7f4c9d031f00dbbf858621b9156b15f135
+
+Estimating Corn Yield | Crop Science US
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Estimating Corn Yield
+
+August 14, 2023
+
+Get Year-Round Updates From Our Agronomic Experts
+
+Sign Upchevron_right
+
+There are multiple ways to estimate yield some take a little more work than others. The most common one is the Yield Component Method where the number of harvestable ears in 1000th of an acre (17’ 5” for 30” row width) are counted. Within this measurement, the number of rows and kernels per row on the 5th ear are counted. This should be done in several areas in the field to get a good average.
+
+To do this method follow these steps:
+
+1. Measure 1000th of an acre (Table 1).
+
+2. Count and record the number of harvestable ears in the 1000th acre measurement. Don’t count nubbins.
+
+3. Count and record the number of complete kernel rows and number of kernels per row on a set number of ear, for example, every 5th ear per sample. Then multiply the number of rows by the number of kernels to get the number of kernels per ear.
+
+4. Repeat steps 1-3 in various areas of the field for a representative field average.
+
+5. After completing step 4, add the kernels per ear numbers together then divide by the number of ears counted. This provides the field average for the number of kernels per ear.
+
+6. Now you are ready to calculate the estimated yield. Standard practice is to assume there are 90,000 kernels per bushel of corn. Since every region and year is different, use a couple of factors to give a yield range. I use 100,000 for light test weight corn and 70,000 for heavy test weight corn. With 80,000 and 90,000 for average test weight. To calculate yield, (average number of kernels per ear X average number of harvestable ears) ÷ number of kernels per bushel (remember you are using 1000th acre, so use 90 for 90,000).
+
+For example, after counting, you average 34 harvestable ears per 1000th acre and 540 kernels per ear (18 rows X 30 kernels/row). Using the formula above, 540 kernel average X 34 average number of harvestable ears = 18,360 kernels ÷ 90 (90,000 kernels/bu) = 204 bu/acre estimate. If you use 80,000 kernels, the average bu/acre is 229.
+
+Other methods for calculating yield estimates can be found in Methods for Calculating Corn Yields – University of Wisconsin Extension.1 Keep in mind, any method, other than over the scale, is just an estimate.
+
+Nathan Falk
+
+CHANNEL Agronomist
+
+Source:
+
+1Lauer, J. 2002. Methods for calculating corn yield. Agronomy Advice. University of Wisconsin Agronomy. https://green.extension.wisc.edu/files/2010/05/Corn-Yields.pdf
+
+1110_282551
+
+You may also like...
+
+Here are some articles that may also be of interest to you
+
+featured
+
+Article
+
+Economic Considerations for Fertilizer Inputs
+October 29, 2025
+
+featured
+
+Article
+
+Plot Results Evaluation
+October 7, 2024
+
+Article
+
+Cotton Stem Canker and Dieback - Diaporthe ueckeri
+October 15, 2026
+
+Article
+
+Does Corn Test Weight Affect Grain Yield?
+October 7, 2026
+
+Article
+
+Fall Soil Tests After Harvesting Corn and Soybean
+October 6, 2026
+
+Article
+
+Mid- to Late-Season Cotton Leaf Diseases – Identification and Control
+September 29, 2026
+
+Article
+
+Cover Crop Termination
+September 10, 2026
+
+Disclaimer
+
+ALWAYS READ AND FOLLOW GRAIN MARKETING AND ALL OTHER STEWARDSHIP PRACTICES AND PESTICIDE LABEL DIRECTIONS.

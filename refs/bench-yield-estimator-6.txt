@@ -1,0 +1,105 @@
+# Benchmark yield-estimator: DTN easy formulas
+# https://www.dtnpf.com/agriculture/web/ag/news/article/2022/08/10/easy-formulas-help-estimate-corn
+# fetched 2026-10-16T16:13:18Z, sha256 b476749e04223c7d2fb1ec642fbf29c19f0f0e7547b2a14d92f9a380e6857798
+
+Easy Formulas Help Estimate Your Corn Crop
+
+By
+
+Pamela Smith
+,
+Crops Technology Editor
+
+Connect with Pamela:
+
+@PamSmithDTN
+
+There's a whole lot of kernel counting going on this time of year as the industry tries to assess potential corn yields. (DTN photo by Pamela Smith)
+
+Editor's Note: The original version of this story was published in 2021. It has been updated with the latest information and thinking on the subject of taking yield estimates.
+
+**
+
+DECATUR, Ill. (DTN) -- It's the time of year to take pre-harvest yield checks. Not only is it a good way to see if your crops measure up, but you can get a read on maturity levels, lurking harvest problems and storage needs. The important thing is to remember the yield numbers prior to harvest are a snapshot in time.
+
+When a lot of early yields are being revealed by crop tours, some of the crop is still only at the R3, R4, R5 growth stages, said Purdue University corn agronomist Dan Quinn. "Even at R5 that corn plant still has about 30 days left to go and still has to pack on about 50% of its kernel weight."
+
+There are a couple of easy formulas that can be used to figure yields, and one may fit a region better than another. Central Nebraska farmer Ethan Zoerb has pulled estimates from his fields and found some formulas to be far from the mark.
+
+"Some formulas can run 40 to 50 bushel off to the low side for us because they are based on 90,000 seeds per bushel, and we can typically run around 75,000 to 80,000. Our ability to add water late through irrigation contributes to that," said Zoerb.
+
+A range of possible yields based on kernel weights is one reason Quinn prefers what many call the Yield Component Method. Originally described by the University of Illinois, it is based on the premise that one can estimate grain yield from estimates of the yield components that constitute grain yield. These yield components include number of ears per acre, number of kernel rows per ear, number of kernels per row, and weight per kernel.
+
+Weight per kernel is the big question this time of year. Since that value isn't known until black layer, the formula uses some "fudge factors" to estimate kernel weight based on the standard premise that there are 90,000 kernels in a 56-pound bushel of corn.
+
+Here's how the Yield Component Method works:
+
+Step 1: Walk to a representative portion of the field and measure off a length of a single row equal to 1/1000th acre. For 30-inch (2.5 feet) rows, this equals 17.4 linear feet. For other row spacings, divide 43,560 by the row spacing (in feet) and then divide that result by 1,000 (e.g., [43,560 ÷ 2.5] ÷ 1,000 = 17.4 ft).
+
+Step 2: Count and record the number of ears on the plants in the 1/1000th acre of row that you deem to be harvestable.
+
+Step 3: For every fifth ear in the sample row, record the number of complete kernel rows per ear and average number of kernels per row. Then multiply each ear's row number by its number of kernels per row to calculate the total number of kernels for each ear.
+
+Step 4: Calculate the average number of kernels per ear by summing the values for all the sampled ears and dividing by the number of ears.
+
+Step 5: Estimate the yield for each site by multiplying the ear number (Step 2) by the average number of kernels per ear (Step 4) and then dividing that result by a kernel weight "fudge factor." Quinn recommends using a range of kernel weight values equal to 75, 85 and 95. "Those are the weights we most commonly experience in the central Corn Belt," he said.
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+Here's an example of how to do the calculation:
+
+You counted 30 harvestable ears and 511 kernels per ear on average. Using the fudge factor values, the estimated range in yield for that sampled site would be 15,330 (30 x 511) divided by 75 = 204 bushels per acre (bpa), or divided by 85 = 180 bpa, or divided by 95 = 161 bpa.
+
+To read all the detail behind this formula and some tips on how to measure oddly shaped ears, tip back and problem fields go to: https://www.agry.purdue.edu/….
+
+Purdue University offers details of those calculations here: https://www.agry.purdue.edu/….
+
+University of Illinois offers a formula here: http://extension.cropsciences.illinois.edu/….
+
+Michigan State University's explanation is here: https://www.canr.msu.edu/….
+
+FARMER EXAMPLE
+
+Blue Mound, Illinois, farmer Jeff Brown also likes to use a version of the yield component formula for pre-harvest yield checks. To do it, he prefers to use the kernel rows around, length of ear with viable kernels (kernel rows) and number of ears per acre to come up with a representative number of kernels per acre.
+
+He also likes to factor in weight per kernel.
+
+For example, a 2021 in-field measurement Brown took using the traditional 90,000 kernels per bushel produced an estimate of 243 bushels per acre (bpa), a disappointing result for the conditions in that field at the time.
+
+Using 80,000 kernels per bushel, the yield potential jumped to 273 bpa, a more likely result, he figured. If the crop really packed on the starch in the waning days before harvest and weighed in at 70,000 kernels per bushel, yield potential would have tallied 312 bpa.
+
+What did that 43-acre field yield in 2021? It was 268.9 bushels per acre, Brown told DTN. In other words, close to the 80,000-kernel-per-bushel estimate that he'd anticipated.
+
+YIELD TOUR FORMULA
+
+There is another simple formula often deployed by crops tours and originally developed by University of Minnesota agronomist Dale Hicks. It combines the use of several yield components (ears per acre and kernel rows per ear) with a measurement of ear length (a substitute for kernel number per row).
+
+Here's how it works:
+
+Step 1 -- Measure and record the row spacing (inches) used in the field.
+
+Step 2 -- Walk past the end rows into the bulk of the field, then walk about 35 paces down the rows before taking a sample. You are looking for a representative sample of the field.
+
+Step 3 -- Measure or step off 30 feet down the row. If you are doing a lot of sampling, a rope cut to length helps. Count all ears in the two adjacent rows. Divide that number by two and record your average ear count.
+
+Step 4 -- Pull the fifth, eighth and 11th ears from plants in one row of the sampling area.
+
+Step 5 -- Measure length of the portion of each ear that successfully developed kernels (do not include tip-backed areas). Calculate the average ear length of the three ears in inches and record it.
+
+Step 6 -- Count the number of kernel rows on each ear. Calculate the average kernel row number and record it. The kernel row number should be an even number.
+
+Step 7-- Grain yield is calculated by multiplying the average ear count by the average ear length by the average kernel row number, then dividing by the row spacing.
+
+Here's an example of how to do the calculation: Let's say your sample had a 43.5 average ear count x 6 inches average length x 15.3 average kernel rows. Divided by 30-inch rows = 133 bpa yield estimate.
+
+Search and you'll find several other methods, such as The Ear Weight Method described in this Ohio State University release https://agcrops.osu.edu/…. This formula can only be used after the grain is physiologically mature (black layer/30%-35% grain moisture) since it is based on actual ear weight.
+
+Each season, various growing regions are thrown environmental curveballs, so getting out to your sample fields is a good step. Again, just keep in mind that the corn crop isn't made at R5, as Quinn said.
+
+The DTN Digital Yield Tour, Powered by Gro Intelligence, which typically runs the second full week of August, uses state-of-the-art yield models from Gro Intelligence with insights from farmers, agronomists and other experts in 10 states to paint a picture of state and national yields at that point in time. Find all the coverage of those yields here: https://spotlights.dtnpf.com/….
+
+Pamela Smith can be reached at pamela.smith@dtn.com
+
+Follow her on Twitter @PamSmithDTN
+
+(c) Copyright 2022 DTN, LLC. All rights reserved.

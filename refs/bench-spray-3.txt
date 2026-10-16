@@ -1,0 +1,11 @@
+# Benchmark spray: Oklahoma Mesonet DRA
+# https://www.mesonet.org/agriculture/drift-risk-advisor
+# fetched 2026-10-16T16:12:52Z, sha256 75a9fbb2debc70fe7549a85c1ceec9a9bf6530a5fd3b522260879c955149d8f8
+
+Drift Risk Advisor | Mesonet
+
+Drift Risk Advisor
+
+-
+
+-

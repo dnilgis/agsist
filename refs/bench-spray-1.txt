@@ -1,0 +1,186 @@
+# Benchmark spray: SDSU Mesonet Spray Tool
+# https://climate.sdstate.edu/tools/spray/
+# fetched 2026-10-16T16:12:47Z, sha256 9cf36a04f81d27a8dc2ca1426aaa4207cd976afb3bdf373a1739c2c6174e3bcb
+
+Mesonet Spray Tool
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Mesonet Spray Tool Help
+
+Close
+
+-
+
+-
+3-ft Wind
+
+-
+Temperature
+
+-
+ΔT
+
+The Mesonet Spray Tool reports live and forecast weather critical to pesticide applicators.
+
+-
+
+Applicators can use the "Record by Email" button to request spray weather conditions from any station in the last 7 days.
+
+-
+
+Wind at 3 ft, inversion, and ΔT are stoplight color-coded to provide guidance to the applicator ()
+
+-
+
+Stations update every 5 minutes. Tap the refresh button to load the latest data.
+
+3-ft Wind Speed
+
+Calm
+
+2 mph
+
+3 to 10 mph
+
+11 to 15 mph
+
+16+ mph
+
+All wind reports in the Mesonet Spray Tool are at a height of 3 feet for ground applications which can range from
+28% to 85% of a standard height wind depending on conditions. For maximum applicability across a station's coverage area,
+the 3-ft wind is derived using EPA methods from measurements made at a greater height (either 10 or 33 feet).
+
+Inversion
+
+Inversion, Unsuitable
+
+Positive
+
+No Inversion, Marginal
+
+Zero
+
+No Inversion, Preferred
+
+Negative
+
+A temperature inversion (inv) is a condition when cooler air is trapped under warmer air. It is determinded
+from the vertical temperature difference (either 3 and 10 ft or 6 and 33 ft). Inversions allow concentrated
+clouds of pesticide to be transported long distance with being broken up. Inversions are closely tied to times
+when the sun is unable to heat the earth's surface: during the night and the first/last hour of the day.
+
+Temperature
+
+95°F and up
+
+85-94°F
+
+up to 84°F
+
+At high temperatures, volatility risk increases.
+
+Delta T (ΔT)
+
+Low
+
+0-3°F
+
+Preferred
+
+4-14°F
+
+High
+
+15-18°F
+
+Very High
+
+19+°F
+
+ΔT is the term used in the pesticide applicator community to refer to wet bulb depression.
+Roughly speaking, it is the difference between the temperature of the air and a water droplet suspended in it (°F).
+It combines the effects of both temperature and humidity to give a good picture of the evaporation rate of a
+pesticide droplet. At low ΔT values, low evaporation rates mean that droplets can travel extended
+distances increasing drift risk. At high ΔT values, increased droplet evaporation (in the air and on surfaces)
+can reduce product effectiveness. All else being equal, the impact at high ΔT values is less pronounced
+when using COARSE or greater nozzles. ΔT is not restricted on labels in the US.
+
+Adapted from "Weather for Pesticide Spraying", Bureau of Meteorology, Australian Government
+
+SD Mesonet Spray Tool
+
+Close
+
+-
+Record by Email
+
+-
+Results
+
+Step 1 - Select a station:
+
+Step 2 - Select a Date/Time:
+
+Step 3 - Enter an e-mail address:
+
+Step 4 - Terms of Use:
+
+I agree to the Terms of Use.
+
+Step 6:
+
+Processing your email request now...
+
+Your SD Mesonet Spray Record for
+
+County
+
+has been sent from noreply.mesonet@sdstate.edu
+
+to .
+
+Problems? Check your junk folder, then
+contact us.
+
+The following data is missing:
+
+The following data is available:
+
+To request another record, use the "Record by Email" tab. Refresh the page to get access to the most recent data.
+
+About the Mesonet Spray Tool
+
+The Mesonet Spray Tool provides live reports and forecasts of weather critical to pesticide applicators including 3-ft wind, inversion,
+and ΔT. Current conditions update every five minutes. Forecast updates every hour.
+Reports for any station from any time in the last 7 days can be sent to the user using the "Record by Email" button.
+
+3-ft Wind: Direction and speed (mph) at boom height for ground applications (these can be significantly lower than standard wind speeds)
+
+Inversion: A positive vertical temperature difference indicates an inversion (Yes/No/Marginal or Y/N/M)
+
+ΔT (DeltaT): Used to estimate droplet evaporation rates
+
+Precipitation
+
+Today: measured since midnight
+
+Today's forecast: remainder of the day
+
+Tomorrow's forecast: 24-hour forecast
+
+The Mesonet Spray Tool is made possible by the South Dakota Soybean Research & Promotion Council.
+
+PI: Laura Edwards, SDSU Extension State Climatologist
+
+©2026 South Dakota Board of Regents
+
+The South Dakota Department of Agriculture accepts SD Mesonet data for recordkeeping purposes. Always read and follow pesticide label instructions. Although every effort is made to ensure the accuracy of the information contained on this webpage, this is unreviewed and unverified data, and is not an opinion as to the propriety of spraying at a particular location. Anyone receiving or using this information assumes the entire risk related to its use and agrees that the State of South Dakota, the South Dakota Board of Regents, and South Dakota State University, their officers, employees, and agents, are not legally responsible for the accuracy of the information, the reliability of the network, or any decisions made as a result of the use of the information. This information is provided on the condition of acceptance of terms at Legal.

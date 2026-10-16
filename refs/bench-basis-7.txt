@@ -1,0 +1,216 @@
+# Benchmark basis: Iowa State CARD basis maps (retired)
+# https://www.card.iastate.edu/tools/retired/basis-maps/
+# fetched 2026-10-16T16:13:27Z, sha256 f9a885621050fcc9b699b499560dac7ead035120e4d88e68c21fbd99322fdd80
+
+Daily Corn and Soybean Basis Maps for Iowa and the Midwest | CARD
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+- iastate.edu
+
+- ISU A-Z Index
+
+-
+
+- ISU Directory
+
+- Maps
+
+- Sign Ons
+
+☰ Menu
+
+CARD @ Iowa State University
+
+- Home
+
+- Products/Output
+
+- News
+
+- Tools
+
+- Ag Policy Review
+
+- Farmland
+
+- China Ag
+
+- Conservation
+
+- People
+
+- About
+
+- ARC/PLC Payments
+
+- Iowa Cash Rents
+
+- Yield Prediction
+
+- Cover Crops Net Returns
+
+- Ethanol Operating Margins
+
+- Biodiesel Operating Margins
+
+Daily Corn and Soybean Basis Maps for Iowa and the Midwest
+
+Updates of the basis maps have been suspended because of technical issues. We hope to resume basis updates as soon as the problem is resolved. Thank you.
+
+On a pilot basis CARD is posting daily basis maps for corn and soybeans. The purpose of this pilot project is to determine if farmer decisions about where to deliver corn and soybeans can be enhanced. We present maps showing both old crop basis and new crop basis. Old crop basis equals the current local cash price minus the nearby futures price on the Chicago Board of Trade. New crop basis equals the local forward price for future delivery less the new crop futures price on the Chicago Board of Trade. Local price data are obtained from DTN. We then employ a spatial smoothing algorithm to develop the maps.
+
+Maps for different days can be obtained using the "Change Date" link below. Also, historical county-average basis patterns for corn and soybeans throughout the year are available. Click on your county in the map below or choose your county from the menu below the map. The basis is computed as the difference between the local cash price for the crop and the nearby futures price on the Chicago Board of Trade. Historical local cash price data was obtained from CashGrainBids.com.
+
+Map date is January 21, 2011
+
+Contact Us |
+Site Map |
+Links |
+Staff Intranet
+
+Iowa State University
+
+578 Heady Hall
+
+518 Farm House Lane
+
+Ames, Iowa 50011-1054
+
+Phone: 515-294-1183
+
+Fax: 515-294-6336
+
+© Copyright 2022 CARD
+
+CARD is a center located within the College of Agriculture and Life Sciences at Iowa State University.

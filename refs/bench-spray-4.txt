@@ -1,0 +1,72 @@
+# Benchmark spray: Purdue MRCC temperature inversion page
+# https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion
+# fetched 2026-10-16T16:12:54Z, sha256 4f131ea357ec0c66db1d5eb2cfc995ed8766b175321274b90f1c5f2038084b5d
+
+MRCC - Monitoring Temperature InversionsU.S. States
+
+-
+
+-
+
+-
+
+-
+
+- About Temperature Inversions
+
+- Inversions Matter
+
+- Additional Resources
+
+- Monitoring Inversions
+
+Monitoring Temperature Inversions
+
+The weather networks below have started monitoring, or will soon, the conditions which make temperature inversions likely and displaying that information in near real-time.
+
+While detecting temperature inversions is important, observational data are limited. Most weather data networks only measure temperature at a single height. However, inversion monitoring requires temperature sensors at multiple heights above the ground and computing temperature differences to determine if an inversion is present.
+
+IA
+Iowa Environmental Mesonet
+
+Status: Live
+
+IL
+Illinois Climate Network
+
+Status: Coming Soon
+
+IN
+Purdue Mesonet
+
+Status: Live
+
+KS
+Kansas Mesonet
+
+Status: Live
+
+KY
+Kentucky Mesonet
+
+Status: Coming Soon
+
+MI
+MSU Enviroweather
+
+Status: Live
+
+MO
+Missouri Mesonet
+
+Status: Live
+
+MN & ND
+North Dakota Agricultural Network
+
+Status: Live
+
+SD
+South Dakota Mesonet Spray Tool
+
+Status: Live
