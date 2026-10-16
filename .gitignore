@@ -33,6 +33,7 @@ build/shots/
 /data/hay-ams-raw/*
 !/data/hay-ams-raw/listing.json
 /data/cattle-cash-raw/
+/data/planting-normals-raw/
 /data/ccc-loan-raw/
 /data/dairy-raw/
 /data/fall-nitrogen-raw/

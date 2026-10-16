@@ -18,7 +18,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
 <title>Planting Date Calculator: Corn &amp; Soybean Windows | AGSIST</title>
-<meta name="description" content="Free corn and soybean planting date tool for Wisconsin and Minnesota growers: live soil temps at your location, last-frost odds, yield penalty by week, GDU projection.">
+<meta name="description" content="Corn and soybean planting dates for Wisconsin and Minnesota: soil temperature and a 5-day soil forecast at your ZIP, frost odds, your county&#x27;s final planting date and yield loss by planting week.">
 <meta name="keywords" content="corn planting date calculator, soybean planting date, optimal planting window Wisconsin, Minnesota planting date, soil temperature planting, last frost date Wisconsin, yield penalty late planting, corn planting GDU, best planting date corn WI MN">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -39,143 +39,147 @@
 <meta name="twitter:image"       content="https://agsist.com/img/og/planting-date.jpg?v=450900dd">
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"When should I plant corn in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal corn planting window in Wisconsin is April 25 \u2013 May 10. Soil temperature at 2\" depth should be at least 50\u00b0F for 3 consecutive days before planting. Yield is about 5% down by May 20 and loses roughly 1% per day from there, then roughly 1 to 1.5 points a day in early June (UMN Lamberton, Morris and Waseca trials). Northern Wisconsin should target May 1\u201310 to get enough GDUs before fall frost."}},
-  {"@type":"Question","name":"When should I plant soybeans in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"Plant soybeans as soon as the field is fit and soil is at least 50\u00b0F. Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2\u20130.5 bu/a/day after Apr 25). Early planting can raise SDS pressure; manage it with variety choice and seed treatment."}},
-  {"@type":"Question","name":"What soil temperature do I need to plant corn?","acceptedAnswer":{"@type":"Answer","text":"Corn should be planted when soil temperature at 2\" depth reaches a consistent 50\u00b0F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50\u00b0F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure."}},
-  {"@type":"Question","name":"How much yield do I lose for late corn planting?","acceptedAnswer":{"@type":"Answer","text":"Corn yield loss for late planting in Wisconsin: about 5% down by May 20, roughly 1% per day from May 20 to June 1, then roughly 1 to 1.5 points a day in early June (UMN Lamberton, Morris and Waseca trials). A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. On this page\u2019s table, April 25 yields 2% more than May 10."}},
-  {"@type":"Question","name":"What is the last frost date in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"At Madison the median last spring freeze is about May 5 (UW-Madison SSEC, 1940-2024 records). The zone table on this page runs earlier than that: Southern WI 50% April 22, 90% May 5; Central WI 50% May 2, 90% May 15; Northern WI 50% May 15, 90% May 28. Treat those dates as approximate and check your nearest station in the NOAA NCEI 1991-2020 climate normals before planting. Actual dates vary year to year."}}
-]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When should I plant corn in Wisconsin?", "acceptedAnswer": {"@type": "Answer", "text": "In southern and central Wisconsin and Minnesota, about April 25 to May 10, once soil at 2 inches holds 50°F. University of Minnesota planting date studies found April 21 to May 6 within 1% of the maximum yield at Lamberton (1988-2003) and April 25 to May 10 best on average at Lamberton, Morris and Waseca (2009-2011). Northern areas plant later as soils allow. Enter your ZIP on this page for soil temperature now and your nearest station's frost odds."}}, {"@type": "Question", "name": "When should I plant soybeans in Wisconsin?", "acceptedAnswer": {"@type": "Answer", "text": "As soon as the field is fit and soil is near 50°F, often before corn. UW-Madison soybean specialist Shawn Conley puts the loss in southern Wisconsin at about 2.1 bushels per acre per week of delay past roughly April 10, about 0.3 a day, and sees no real penalty for an April 20 planting. Early planting can raise SDS pressure; manage it with variety choice and seed treatment."}}, {"@type": "Question", "name": "What soil temperature do I need to plant corn?", "acceptedAnswer": {"@type": "Answer", "text": "Corn should be planted when soil temperature at 2\" depth reaches a consistent 50°F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50°F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure."}}, {"@type": "Question", "name": "How much yield do I lose for late corn planting?", "acceptedAnswer": {"@type": "Answer", "text": "In the University of Minnesota studies, corn planted May 20 made 92 to 95% of the maximum yield, May 30 made 82 to 89% and June 9 made 69 to 79% (Lamberton 1988-2003; Lamberton, Morris and Waseca 2009-2011). That is roughly 1 point a day after May 20 and faster into June. On a 200 bu field a May 30 planting gives up about 22 to 36 bu. Final planting dates for crop insurance are May 25 or May 31 in every Wisconsin and Minnesota county."}}, {"@type": "Question", "name": "What is the last frost date in Wisconsin?", "acceptedAnswer": {"@type": "Answer", "text": "At Madison the median last spring freeze is about May 5 (UW-Madison SSEC, 1940-2024 records). The zone table on this page runs earlier than that: Southern WI 50% April 22, 90% May 5; Central WI 50% May 2, 90% May 15; Northern WI 50% May 15, 90% May 28. Treat those dates as approximate and check your nearest station in the NOAA NCEI 1991-2020 climate normals before planting. Actual dates vary year to year."}}]}
 </script>
 
 <style>
-/* ── LAYOUT ──────────────────────────────────────────────────────────── */
-
-
-
-
-.pd-page { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
-
-.pd-hero { padding: 1.3rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-.pd-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
-.pd-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
-.pd-hero p { font-size:.82rem; color:var(--text-dim); line-height:1.6; max-width:680px; margin:0; }
-
-.pd-card { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.1rem 1.2rem; margin-bottom:1.1rem; }
-.pd-card-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
-
-.pd-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.1rem; }
-@media(min-width:680px){ .pd-layout { grid-template-columns:minmax(0,320px) minmax(0,1fr); align-items:start; } }
-
-/* inputs */
-.f-label { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
-.f-input { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; box-sizing:border-box; }
-.f-input:focus { border-color:var(--gold); }
-.f-group { margin-bottom:.85rem; }
-.f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
-.f-btn {width:100%;padding:.7rem 1rem;border-radius:var(--btn-r);border:none;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;transition:opacity .15s;min-height:48px;margin-bottom:.6rem;text-transform:none;letter-spacing:0}
-.f-btn:hover { opacity:.88; }
-.f-btn:disabled { opacity:.4; cursor:not-allowed; }
-.f-status { font-size:0.77rem; color:var(--text-muted); text-align:center; min-height:1.1rem; }
-.f-status.ok { color:var(--green); }
+.pd-page{max-width:820px;margin:0 auto;padding:0 1rem 3rem}
+.pd-hero{padding:1.1rem 0 .8rem}
+.pd-eyebrow{font-size:.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+.pd-hero h1{font-family:var(--font-display);font-size:1.65rem;font-weight:800;color:var(--text);margin:0 0 .3rem;line-height:1.1}
+.pd-hero .by{font-size:.8rem;color:var(--text-muted);margin:0}
+.pd-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1rem 1.1rem;margin:0 0 1rem}
+.pd-card-title{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 .8rem;display:flex;align-items:center;gap:.4rem}
+.pd-ans-h{font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--text);margin:0 0 .6rem}
+.pd-where{font-family:var(--font-body);font-size:.85rem;font-weight:600;color:var(--text-muted)}
+.pd-ans{margin:0;display:grid;gap:.55rem}
+.pd-ans div{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.6rem;align-items:baseline}
+.pd-ans dt{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.pd-ans dd{margin:0;font-size:.95rem;line-height:1.5;color:var(--text)}
+.pd-season{font-size:.9rem;line-height:1.5;color:var(--text-dim);margin:.8rem 0 0;padding:.55rem .75rem;border-left:3px solid var(--green);background:var(--bg);border-radius:0 6px 6px 0}
+.pd-season:empty{display:none}
+.pd-form{margin-top:1rem;border-top:1px solid var(--border);padding-top:.9rem}
+.f-label{font-size:.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.3rem}
+.f-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.5rem .6rem;width:100%;outline:none;box-sizing:border-box;min-height:44px}
+.f-input:focus{border-color:var(--gold)}
+.f-group{margin:.7rem 0 0}
+.f-hint{font-size:.78rem;color:var(--text-muted);margin-top:.3rem;line-height:1.5}
+.f-btn{width:100%;padding:.7rem 1rem;border-radius:var(--btn-r);border:none;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:48px;margin:.7rem 0 .4rem}
+.f-btn:disabled{opacity:.5;cursor:not-allowed}
+.f-status{font-size:.78rem;color:var(--text-muted);text-align:center;min-height:1.1rem}
+.f-status.ok{color:var(--green)}
 :root{--pd-red:#ec6b6b}
 html[data-theme="light"]{--pd-red:#b3432c}
-.f-status.err { color:var(--pd-red); }
-
-/* crop pills */
-.crop-pills { display:flex; gap:.4rem; margin-bottom:.85rem; }
-.crop-pill { flex:1; padding:.45rem .5rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.77rem; font-weight:700; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.25rem; }
-.crop-pill:hover { border-color:var(--gold); }
-.crop-pill.active { border-color:var(--gold); background:rgba(230,176,66,.12); color:var(--text); }
-
-/* soil temp display */
-.st-display { background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04)); border:2px solid rgba(58,139,60,.25); border-radius:10px; padding:.9rem 1rem; margin-bottom:.85rem; }
-.st-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin-top:.5rem; }
-.st-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem; text-align:center; }
-.st-card-lbl { font-size:0.745rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.2rem; }
-.st-card-val { font-family:'JetBrains Mono',monospace; font-size:1.3rem; font-weight:900; color:var(--gold); }
-.st-card-sub { font-size:0.745rem; color:var(--text-muted); margin-top:.1rem; }
-.st-verdict { font-size:0.787rem; font-weight:700; padding:.35rem .75rem; border-radius:6px; display:inline-block; margin-top:.55rem; }
-.st-verdict.go { background:rgba(58,139,60,.15); color:var(--green); border:1px solid rgba(58,139,60,.35); }
-.st-verdict.wait { background:rgba(230,176,66,.15); color:var(--gold); border:1px solid rgba(230,176,66,.35); }
-.st-verdict.no { background:rgba(224,92,92,.15); color:var(--pd-red); border:1px solid rgba(224,92,92,.35); }
-
-/* window card */
-.window-card { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:10px; padding:.9rem 1rem; }
-.window-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.75rem; }
-.window-bar-wrap { margin-bottom:.4rem; }
-.window-bar-label { font-size:0.755rem; font-weight:700; color:var(--text-dim); margin-bottom:.2rem; display:flex; justify-content:space-between; }
-.window-bar { height:12px; background:var(--border); border-radius:6px; overflow:hidden; margin-bottom:.5rem; position:relative; }
-.window-bar-fill { height:100%; border-radius:6px; transition:width .5s ease; }
-.window-bar-fill.green { background:var(--green); }
-.window-bar-fill.gold  { background:var(--gold-fill,var(--gold)); }
-.window-bar-fill.red   { background:#e05c5c; }
-.window-bar-marker { position:absolute; top:-3px; width:3px; height:18px; background:#fff; border-radius:2px; transition:left .5s ease; }
-
-/* result rows */
-.r-row { display:flex; justify-content:space-between; align-items:baseline; padding:.28rem 0; border-bottom:1px solid rgba(255,255,255,.04); }
-.r-row:last-child { border-bottom:none; }
-.r-lbl { font-size:0.79rem; color:var(--text-dim); }
-.r-val { font-family:'JetBrains Mono',monospace; font-size:.84rem; font-weight:700; color:var(--text); }
-.r-val.gold { color:var(--gold); }
-.r-val.green { color:var(--green); }
-.r-val.red { color:var(--pd-red); }
-
-/* yield penalty table */
-.pen-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
-.pen-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.75rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
-.pen-table td { padding:.35rem .5rem; border-bottom:1px solid rgba(255,255,255,.04); }
-.pen-table td:first-child { color:var(--text); font-weight:600; }
-.pen-table tr:last-child td { border-bottom:none; }
-.pen-table tr.opt td { background:rgba(58,139,60,.07); }
-.pen-table tr.warn td { background:rgba(230,176,66,.06); }
-.pen-table tr.hi td { background:rgba(224,92,92,.06); }
-.pen-table tr.hl td { background:rgba(224,92,92,.12); }
-
-/* GDU compare */
-.cmp-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
-@media(min-width:520px){ .cmp-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
-.cmp-card { background:var(--bg); border:2px solid var(--border); border-radius:8px; padding:.7rem .75rem; text-align:center; transition:border-color .2s; }
-.cmp-card.best { border-color:var(--green); }
-.cmp-card.good { border-color:rgba(58,139,60,.4); }
-.cmp-card.warn { border-color:rgba(230,176,66,.4); }
-.cmp-card.late { border-color:rgba(224,92,92,.4); }
-.cmp-date { font-size:0.755rem; font-weight:700; color:var(--text-dim); margin-bottom:.3rem; }
-.cmp-gdu { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:900; color:var(--gold); }
-.cmp-delta { font-size:0.763rem; margin-top:.2rem; }
-.cmp-delta.pos { color:var(--green); }
-.cmp-delta.neg { color:var(--pd-red); }
-.cmp-label { font-size:0.745rem; color:var(--text-muted); margin-top:.2rem; }
-
-/* frost table */
-.frost-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
-.frost-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.75rem; padding:.42rem .55rem; text-align:left; border-bottom:1px solid var(--border); }
-.frost-table td { padding:.38rem .55rem; border-bottom:1px solid rgba(255,255,255,.04); }
-.frost-table td:first-child { color:var(--text); font-weight:600; }
-.frost-table tr:last-child td { border-bottom:none; }
-.frost-table .p10 { color:var(--green); font-family:'JetBrains Mono',monospace; }
-.frost-table .p50 { color:var(--gold); font-family:'JetBrains Mono',monospace; }
-.frost-table .p90 { color:var(--pd-red); font-family:'JetBrains Mono',monospace; }
-
-/* info boxes */
-.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
-.info-box.green { border-color:var(--green); }
-.info-box.red   { border-color:var(--pd-red); }
-.info-box strong { color:var(--text); }
-.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
-
-
-@media(max-width:480px){
-  .pd-hero h1 { font-size:1.35rem; }
-  .cmp-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .st-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.f-status.err{color:var(--pd-red)}
+.pd-loc-row{display:flex;gap:.4rem}
+.pd-geo{padding:0 .8rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);cursor:pointer;min-height:44px;min-width:44px}
+.pd-more{margin-top:.4rem}
+.pd-more summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--text-dim);padding:.4rem 0;min-height:32px}
+.crop-pills{display:flex;gap:.4rem;margin-bottom:.8rem}
+.crop-pill{flex:1;padding:.45rem .5rem;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.crop-pill.active{border-color:var(--gold);background:rgba(230,176,66,.12);color:var(--text)}
+.pd-local h3,.st-head h3{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .45rem}
+.pd-local-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.9rem}
+@media(min-width:720px){.pd-local-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pd-local-grid .st-display{grid-row:span 2}}
+.pd-block{min-width:0}
+#pd-stn-gdu{margin-top:1rem;border-top:1px solid var(--border);padding-top:.9rem}
+.pd-empty{font-size:.85rem;line-height:1.55;color:var(--text-dim);background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem}
+.pd-empty strong{color:var(--text)}
+.stn-meta{font-size:.8rem;color:var(--text-muted);margin:0 0 .4rem;line-height:1.45}
+.stn-tgt{font-size:.88rem;color:var(--text);line-height:1.5;margin:.6rem 0 0}
+.rma-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.rma-c{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.55rem .7rem;text-align:center}
+.rma-l{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.rma-v{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:800;color:var(--gold)}
+.st-display{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:10px;padding:.8rem .9rem}
+.st-head{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.st-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .6rem;text-align:center}
+.st-card-lbl{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.st-card-val{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:900;color:var(--gold)}
+.st-card-sub{font-size:.74rem;color:var(--text-muted)}
+.st-trend{font-size:.8rem;color:var(--text-dim);margin:.55rem 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .45rem}
+.st-trend:empty{display:none}
+.tr-l{flex-basis:100%}
+.tr-d{display:inline-flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.15rem .35rem;min-width:2.6rem}
+.tr-d b{font-family:'JetBrains Mono',monospace;color:var(--text)}
+.tr-d i{font-style:normal;font-size:.68rem;color:var(--text-muted)}
+.tr-w{font-weight:700;text-transform:uppercase;font-size:.72rem;letter-spacing:.06em}
+.tr-warming{color:var(--green)}.tr-cooling{color:var(--pd-red)}.tr-steady{color:var(--gold)}
+.st-verdict{font-size:.85rem;font-weight:700;padding:.35rem .75rem;border-radius:6px;display:inline-block;margin-top:.55rem}
+.st-verdict.go{background:rgba(58,139,60,.15);color:var(--green);border:1px solid rgba(58,139,60,.35)}
+.st-verdict.wait{background:rgba(230,176,66,.15);color:var(--gold);border:1px solid rgba(230,176,66,.35)}
+.st-verdict.no{background:rgba(224,92,92,.15);color:var(--pd-red);border:1px solid rgba(224,92,92,.35)}
+.live-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:20px;padding:.1rem .5rem}
+.window-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1rem 1.1rem;margin:0 0 1rem}
+.window-title{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 .7rem}
+.window-bar-label{font-size:.82rem;font-weight:700;color:var(--text);display:flex;justify-content:space-between;margin-bottom:.2rem}
+.wb-dates{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim)}
+.window-bar{height:10px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:.3rem}
+.window-bar-fill{height:100%;border-radius:6px}
+.window-bar-fill.green{background:var(--green)}
+.window-bar-fill.gold{background:var(--gold-fill,var(--gold))}
+.window-bar-fill.red{background:#e05c5c}
+.wb-tip{font-size:.8rem;color:var(--text-dim);margin-bottom:.6rem;line-height:1.45}
+.pen-wrap{overflow-x:auto}
+.pen-table,.frost-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.pen-table th,.frost-table th{background:rgba(230,176,66,.1);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.74rem;padding:.4rem .45rem;text-align:left;border-bottom:1px solid var(--border)}
+.pen-table td,.frost-table td{padding:.38rem .45rem;border-bottom:1px solid var(--border)}
+.pen-table td:first-child,.frost-table td:first-child{color:var(--text);font-weight:600}
+.pen-table tr:last-child td,.frost-table tr:last-child td{border-bottom:none}
+.pen-table tr.opt td{background:rgba(58,139,60,.07)}
+.pen-table tr.warn td{background:rgba(230,176,66,.06)}
+.pen-table tr.hi td{background:rgba(224,92,92,.06)}
+.pen-table tr.hl td{background:rgba(224,92,92,.12)}
+.pen-note{font-size:.78rem;color:var(--text-dim)}
+.mono{font-family:'JetBrains Mono',monospace}
+.frost-table .p10{color:var(--green)}.frost-table .p50{color:var(--gold);font-weight:700}.frost-table .p90{color:var(--pd-red)}
+.frost-table td{font-family:'JetBrains Mono',monospace}
+.frost-table td:first-child{font-family:var(--font-body)}
+.frost-table td+td{white-space:nowrap}
+@media(max-width:480px){.frost-table th,.frost-table td{padding:.35rem .3rem}}
+.gdu-table tr.mine td{background:rgba(230,176,66,.12)}
+.soil-table .ok{color:var(--green)}.soil-table .mid{color:var(--gold)}.soil-table .bad{color:var(--pd-red)}
+/* Phone: the yield table's notes drop to a full-width line under each row, so no sideways scroll */
+@media(max-width:560px){
+  .pen-table:not(.soil-table) thead tr,.pen-table:not(.soil-table) tbody tr{display:grid;grid-template-columns:4.3rem minmax(0,1fr) minmax(0,1.1fr) minmax(0,1.3fr)}
+  .pen-table:not(.soil-table) th,.pen-table:not(.soil-table) td{padding-left:.3rem;padding-right:.3rem}
+  .pen-table:not(.soil-table) td.pen-note{grid-column:1/-1;padding-top:0}
+  .pen-table:not(.soil-table) th.pen-note{display:none}
+  .pen-table:not(.soil-table) td,.pen-table:not(.soil-table) th{border-bottom:none}
+  .pen-table:not(.soil-table) tr{border-bottom:1px solid var(--border)}
 }
-.pd-source { font-size:0.763rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
-.pd-source a { color:var(--gold); text-decoration:none; }
-/* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
+.pd-sub{font-size:.9rem;font-weight:700;color:var(--text);margin:1rem 0 .5rem}
+.cmp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+@media(min-width:520px){.cmp-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.cmp-card{background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:.6rem .7rem;text-align:center}
+.cmp-card.best{border-color:var(--green)}.cmp-card.good{border-color:rgba(58,139,60,.4)}.cmp-card.warn{border-color:rgba(230,176,66,.4)}.cmp-card.late{border-color:rgba(224,92,92,.4)}
+.cmp-date{font-size:.78rem;font-weight:700;color:var(--text-dim)}
+.cmp-gdu{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--gold)}
+.cmp-delta{font-size:.76rem}.cmp-delta.pos{color:var(--green)}.cmp-delta.neg{color:var(--pd-red)}
+.cmp-label{font-size:.74rem;color:var(--text-muted)}
+.cmp-verdict{font-size:.88rem;color:var(--text);line-height:1.5;margin:.75rem 0 0}
+.pd-det>summary{cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;min-height:32px;list-style:none}
+.pd-det>summary::-webkit-details-marker{display:none}
+.pd-det>summary::after{content:"+";margin-left:auto}
+.pd-det[open]>summary::after{content:"\2212"}
+.pd-det[open]>summary{margin-bottom:.7rem}
+.disease-grid{display:grid;gap:.6rem}
+.info-box{background:var(--bg);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.6rem .85rem;font-size:.84rem;color:var(--text-dim);line-height:1.55;margin:.6rem 0 0}
+.info-box.green{border-color:var(--green)}.info-box.red{border-color:var(--pd-red)}
+.info-box strong{color:var(--text)}
+.info-box .risk{color:var(--gold)}
+.pd-src{margin:0;padding-left:1.1rem;font-size:.85rem;line-height:1.55;color:var(--text-dim)}
+.pd-src li{margin:0 0 .45rem}
+.pd-src a,.pd-card a{color:var(--gold)}
+.pd-related{display:flex;flex-wrap:wrap;gap:.5rem}
+.pd-related a{display:inline-flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px}
+.pd-source{font-size:.78rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;padding-top:.75rem;border-top:1px solid var(--border);line-height:1.6}
+.pd-source a{color:var(--gold);text-decoration:none}
 :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
+@media(max-width:480px){.pd-hero h1{font-size:1.4rem}.pd-ans div{grid-template-columns:minmax(0,1fr);gap:.1rem}}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AGSIST Corn & Soybean Planting Date Calculator","url":"https://agsist.com/planting-date","applicationCategory":"Agricultural planting date calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Free corn and soybean planting date tool for Wisconsin and Minnesota growers: live soil temperatures at your location, last-frost odds, yield penalty by planting week, and GDU accumulation by planting date.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Live soil temperature at your location","Last spring frost probability by zone","Yield penalty by planting date","GDU accumulation by planting date","Soil temperature planting guide"]},{"@type":"BreadcrumbList","@id":"https://agsist.com/planting-date#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Planting Date Calculator","item":"https://agsist.com/planting-date"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AGSIST Corn & Soybean Planting Date Calculator","url":"https://agsist.com/planting-date","applicationCategory":"Agricultural planting date calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Corn and soybean planting dates for Wisconsin and Minnesota: soil temperature and a 5-day soil forecast at your ZIP, frost odds, your county's final planting date and yield loss by planting week.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"featureList":["Soil temperature now and a 5-day soil forecast at your location","Nearest NOAA station frost odds, 1991-2020 normals","Heat units from planting date to fall frost","County final planting dates (USDA RMA)","Yield penalty by planting date"],"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"dateModified":"2026-10-16","isAccessibleForFree":true},{"@type":"BreadcrumbList","@id":"https://agsist.com/planting-date#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Planting Date Calculator","item":"https://agsist.com/planting-date"}]}]}</script>
 </head>
 
 <body>
@@ -233,138 +237,142 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <main id="main" tabindex="-1" class="pd-page">
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Planting date calculator</nav>
 
-<div class="pd-hero">
-  <div class="pd-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Planting windows · soil temps · frost risk · WI and MN</div>
-  <h1>Planting date<br>calculator</h1>
-  <p class="page-lede">Soil temperature at your location, frost odds by zone, yield loss by planting week, and the heat units four planting dates get before fall frost. Built for Wisconsin and Minnesota corn and soybeans.</p>
-</div>
+<header class="pd-hero">
+  <div class="pd-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn and soybeans · Wisconsin and Minnesota</div>
+  <h1>Planting date calculator</h1>
+  <p class="by">Sigurd Lindquist, CCA, Chetek, Wisconsin · Checked <time datetime="2026-10-16">Oct 16, 2026</time></p>
+</header>
 
-<div class="pd-layout">
-  <!-- ── LEFT: INPUTS ─────────────────────────────────────────────── -->
-  <div>
-    <div class="pd-card">
-      <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Setup</div>
-      <div class="crop-pills">
-        <button class="crop-pill active" id="pill-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
-        <button class="crop-pill" id="pill-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
-      </div>
+<section class="pd-card pd-answer" aria-labelledby="pd-ans-h">
+  <h2 class="pd-ans-h" id="pd-ans-h">When to plant</h2>
+  <dl class="pd-ans">
+    <div><dt>Corn</dt><dd>About <b>Apr 25 to May 10</b> in southern and central WI and MN, once 2-inch soil holds 50&deg;F. After May 20, about 1 point of yield a day, more in June (UMN trials).</dd></div>
+    <div><dt>Soybeans</dt><dd><b>As soon as the field is fit</b> and soil is 50&deg;F. In southern Wisconsin each week past about Apr 10 costs about 2.1 bu/a (UW-Madison).</dd></div>
+    <div><dt>Deadline</dt><dd>Insurance final planting dates in every WI and MN county: corn <b>May 25 or 31</b>, soybeans <b>Jun 10 or 15</b> (USDA RMA, 2026).</dd></div>
+  </dl>
+  <p class="pd-season" id="pd-season"></p>
 
-      <div class="f-group">
-        <label class="f-label" for="pd-rm" id="pd-rm-lbl">Relative Maturity (RM days)</label>
-        <input class="f-input" id="pd-rm" type="number" value="108" min="70" max="135" step="1">
-        <div class="f-hint" id="pd-rm-hint">108-day corn typical for south-central WI &middot; 95&ndash;100-day for north WI</div>
-      </div>
-
-      <div class="f-group">
-        <label class="f-label" for="pd-zip">Your Location</label>
-        <div style="display:flex;gap:.4rem">
-          <input class="f-input" id="pd-zip" type="text" placeholder="ZIP code or city" maxlength="40" style="flex:1" aria-label="ZIP code or city">
-          <button id="pd-auto-btn" type="button" aria-label="Use my location" title="Use my location" style="padding:.42rem .7rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
-        </div>
-        <div class="f-hint" id="pd-loc-display">Enter location for live soil temperature</div>
-      </div>
-
-      <button class="f-btn" id="pd-fetch-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Load soil temp and conditions</button>
-      <div class="f-status" id="pd-status">Ready: enter location and click above</div>
+  <div class="pd-form">
+    <div class="crop-pills" role="group" aria-label="Crop">
+      <button type="button" class="crop-pill active" id="pill-corn" aria-pressed="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
+      <button type="button" class="crop-pill" id="pill-bean" aria-pressed="false"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
     </div>
-
-    <!-- Zone Selector for Frost Tables -->
-    <div class="pd-card">
-      <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> WI / MN frost zone</div>
-      <div class="f-group">
-        <label class="f-label" for="pd-zone">Select your zone for frost probability table</label>
-        <select class="f-input" id="pd-zone" style="cursor:pointer">
-          <option value="sw_wi">Southern Wisconsin (Madison, Milwaukee area)</option>
-          <option value="cw_wi" selected>Central Wisconsin (Wausau, Stevens Point)</option>
-          <option value="nw_wi">Northern Wisconsin (Rhinelander, Superior)</option>
-          <option value="smn">Southern Minnesota (Rochester, Mankato)</option>
-          <option value="cmn">Central Minnesota (St. Cloud, Willmar)</option>
-          <option value="nmn">Northern Minnesota (Brainerd, Bemidji)</option>
-        </select>
-      </div>
-      <div id="frost-table-wrap"></div>
-      <p class="method-note"><b>Method:</b> approximate freeze-percentile dates by zone; they run early against station records &middot; <b>Sources:</b> UW-Madison SSEC (Madison median last freeze about May 5, 1940-2024); <a href="https://www.ncei.noaa.gov/access/us-climate-normals/" target="_blank" rel="noopener">NOAA NCEI 1991-2020 climate normals</a> and the <a href="https://mrcc.purdue.edu/" target="_blank" rel="noopener">Midwestern Regional Climate Center</a> for your station &middot; Reviewed by Sigurd Lindquist, CCA</p>
+    <label class="f-label" for="pd-zip">Your ZIP or town</label>
+    <div class="pd-loc-row">
+      <input class="f-input" id="pd-zip" type="text" inputmode="text" autocomplete="postal-code" placeholder="e.g. 54728 or Chetek, WI" maxlength="40">
+      <button id="pd-auto-btn" type="button" class="pd-geo" aria-label="Use my location" title="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
     </div>
+    <div class="f-hint" id="pd-loc-display">ZIP or town in Wisconsin or Minnesota</div>
+    <button type="button" class="f-btn" id="pd-fetch-btn">Show my numbers</button>
+    <div class="f-status" id="pd-status" role="status"></div>
+    <details class="pd-more">
+      <summary>Maturity and planting date</summary>
+      <div class="f-group">
+        <label class="f-label" for="pd-rm" id="pd-rm-lbl">Relative maturity (days)</label>
+        <input class="f-input" id="pd-rm" type="number" inputmode="decimal" value="108" min="70" max="135" step="1">
+        <div class="f-hint" id="pd-rm-hint">Use your seed&rsquo;s rating. 108-day corn is common in south-central WI, 95 to 100-day in the north.</div>
+      </div>
+      <div class="f-group">
+        <label class="f-label" for="pd-plant">Your planned planting date (optional)</label>
+        <input class="f-input" id="pd-plant" type="date" min="2027-04-01" max="2027-06-30">
+        <div class="f-hint">Adds a row to the heat-unit table once your station is in.</div>
+      </div>
+    </details>
   </div>
+</section>
 
-  <!-- ── RIGHT: RESULTS ────────────────────────────────────────────── -->
-  <div>
-    <!-- Live Soil Temp -->
+<section id="pd-local" class="pd-card pd-local" aria-labelledby="pd-local-h" hidden>
+  <h2 class="pd-ans-h" id="pd-local-h">Your numbers <span id="pd-local-where" class="pd-where"></span></h2>
+  <div class="pd-local-grid">
     <div class="st-display">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.3rem">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Current soil temperature</span>
-        <span class="live-badge" id="st-badge" style="display:none"><span class="live-dot"></span>Live</span>
-      </div>
+      <div class="st-head"><h3>Soil temperature now</h3><span class="live-badge" id="st-badge" style="display:none"><span class="live-dot"></span>Live</span></div>
       <div class="st-grid">
-        <div class="st-card"><div class="st-card-lbl">Soil 6 cm (~2")</div><div class="st-card-val" id="st-2in">-</div><div class="st-card-sub" id="st-2in-sub">&deg;F &middot; 3-day mean</div></div>
-        <div class="st-card"><div class="st-card-lbl">Air temp now</div><div class="st-card-val" id="st-air">-</div><div class="st-card-sub">&deg;F current</div></div>
+        <div class="st-card"><div class="st-card-lbl">Soil 6 cm (~2")</div><div class="st-card-val" id="st-2in">-</div><div class="st-card-sub" id="st-2in-sub">3-day mean</div></div>
+        <div class="st-card"><div class="st-card-lbl">Air now</div><div class="st-card-val" id="st-air">-</div><div class="st-card-sub">&deg;F</div></div>
       </div>
-      <div id="st-verdict-wrap" style="margin-top:.55rem"></div>
-      <div class="f-hint" id="st-note" style="margin-top:.4rem">Soil temp is a weather-model estimate at 6 cm (~2 in), not a probe reading. For precision, check your local extension weather station.</div>
+      <div class="st-trend" id="st-trend"></div>
+      <div id="st-verdict-wrap"></div>
+      <div class="f-hint" id="st-note">A weather-model estimate at 6 cm (~2 in), not a probe reading.</div>
+      <div class="f-hint" id="st-asof"></div>
     </div>
-
-    <!-- Planting Window -->
-    <div class="window-card" style="margin-bottom:1.1rem">
-      <div class="window-title" id="win-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn planting window: Wisconsin</div>
-      <div id="win-bars"></div>
-      <div style="margin-top:.75rem" id="win-rows"></div>
-    </div>
-
-    <!-- GDU Projection Compare -->
-    <div class="pd-card">
-      <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU accumulation by planting date: central WI average</div>
-      <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation from each planting date to the zone's 50% first-fall-frost date, for four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
-      <div class="cmp-grid" id="cmp-grid"></div>
-      <p id="cmp-verdict" style="font-size:0.85rem;color:var(--text);line-height:1.5;margin:.75rem 0 0"></p>
-      <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
-    </div>
+    <div class="pd-block" id="pd-stn"></div>
+    <div class="pd-block" id="pd-rma"></div>
   </div>
+  <div class="pd-block" id="pd-stn-gdu" hidden></div>
+</section>
+
+<div class="window-card">
+  <h2 class="window-title" id="win-title">Corn planting window: Wisconsin and Minnesota</h2>
+  <div id="win-bars"></div>
 </div>
+
+<div id="penalty-section"></div>
+
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the planting date guide. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=planting-date&amp;utm_source=planting-date&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
-<!-- ── YIELD PENALTY TABLES ──────────────────────────────────────────── -->
-<div style="display:grid;grid-template-columns:minmax(0,1fr);gap:1.1rem;margin-top:1.1rem">
-  <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:1.1rem" id="penalty-section">
+<section class="pd-card" aria-labelledby="pd-zone-h">
+  <h2 class="pd-card-title" id="pd-zone-h"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> No ZIP? Rough zone averages</h2>
+  <div class="f-group">
+    <label class="f-label" for="pd-zone">Zone</label>
+    <select class="f-input" id="pd-zone">
+      <option value="sw_wi">Southern Wisconsin (Madison, Milwaukee area)</option>
+      <option value="cw_wi" selected>Central Wisconsin (Wausau, Stevens Point)</option>
+      <option value="nw_wi">Northern Wisconsin (Rhinelander, Superior)</option>
+      <option value="smn">Southern Minnesota (Rochester, Mankato)</option>
+      <option value="cmn">Central Minnesota (St. Cloud, Willmar)</option>
+      <option value="nmn">Northern Minnesota (Brainerd, Bemidji)</option>
+    </select>
   </div>
-</div>
+  <div id="frost-table-wrap"></div>
+  <h3 class="pd-sub" id="cmp-title">GDUs by planting date, Wisconsin monthly averages</h3>
+  <div class="cmp-grid" id="cmp-grid"></div>
+  <p id="cmp-verdict" class="cmp-verdict"></p>
+  <p class="f-hint" id="cmp-note"></p>
+</section>
 
-<!-- ── SDS / DISEASE RISK ─────────────────────────────────────────────  -->
-<div class="pd-card" style="margin-top:1.1rem">
-  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Early planting disease risks</div>
-  <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem">
-    <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem" id="disease-grid">
-    </div>
-  </div>
-</div>
-
-<!-- ── SOIL TEMP PLANTING GUIDE ──────────────────────────────────────── -->
-<div class="pd-card" style="margin-top:1.1rem">
-  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Soil temperature planting guide</div>
-  <div style="overflow-x:auto">
-  <table class="pen-table">
-  <thead><tr><th>Soil Temp (2")</th><th>Corn Risk</th><th>Soybean Risk</th><th>Action</th></tr></thead>
+<details class="pd-card pd-det">
+  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Soil temperature guide</summary>
+  <div class="pen-wrap">
+  <table class="pen-table soil-table">
+  <thead><tr><th>Soil (2")</th><th>Corn</th><th>Soybeans</th><th>Action</th></tr></thead>
   <tbody>
-    <tr class="opt"><td>&ge;55&deg;F</td><td style="color:var(--green)">&#10003; Ideal</td><td style="color:var(--green)">&#10003; Ideal</td><td>Good for both crops</td></tr>
-    <tr class="opt"><td>50&ndash;54&deg;F</td><td style="color:var(--green)">&#10003; Acceptable</td><td style="color:var(--green)">&#10003; Acceptable</td><td>Plant if forecast shows warming trend</td></tr>
-    <tr class="warn"><td>46&ndash;49&deg;F</td><td style="color:var(--gold)">&#9651; Marginal</td><td style="color:var(--gold)">&#9651; Caution</td><td>Wait 2&ndash;3 days; cold soil injury risk rises</td></tr>
-    <tr class="hi"><td>40&ndash;45&deg;F</td><td style="color:var(--pd-red)">✗ High risk</td><td style="color:var(--pd-red)">✗ High risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
-    <tr class="hl"><td>&lt;40&deg;F</td><td style="color:var(--pd-red)">✗ Do not plant</td><td style="color:var(--pd-red)">✗ Do not plant</td><td>Significant stand and seedling disease risk</td></tr>
+    <tr class="opt"><td>55&deg;F+</td><td class="ok">Ideal</td><td class="ok">Ideal</td><td>Good for both crops</td></tr>
+    <tr class="opt"><td>50&ndash;54&deg;F</td><td class="ok">Acceptable</td><td class="ok">Acceptable</td><td>Plant if the forecast warms</td></tr>
+    <tr class="warn"><td>46&ndash;49&deg;F</td><td class="mid">Marginal</td><td class="mid">Caution</td><td>Wait 2 to 3 days; cold injury risk rises</td></tr>
+    <tr class="hi"><td>40&ndash;45&deg;F</td><td class="bad">High risk</td><td class="bad">High risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
+    <tr class="hl"><td>Under 40&deg;F</td><td class="bad">Do not plant</td><td class="bad">Do not plant</td><td>Big stand and seedling disease risk</td></tr>
   </tbody>
   </table>
   </div>
-  <div class="info-box green" style="margin-top:.75rem"><strong>Imbibitional chilling injury</strong> occurs when dry corn seed rapidly absorbs cold water (&lt;50&deg;F) within the first 24&ndash;48 hours after planting. Seed cells rupture, causing irregular emergence or outright seed death. Risk is highest with a cold rain immediately after planting in soil below 50&deg;F.</div>
-</div>
+  <div class="info-box green"><strong>Imbibitional chilling injury</strong> happens when dry seed soaks up cold water (under 50&deg;F) in the first 24 to 48 hours after planting. Cells rupture, and emergence is uneven or the seed dies. Risk is highest with a cold rain right after planting into soil under 50&deg;F.</div>
+</details>
 
-<!-- ── RELATED TOOLS ─────────────────────────────────────────────────── -->
-<div class="pd-card" style="margin-top:1.1rem">
-  <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Related Tools</div>
-  <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-    <a href="/gdu-calculator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"> GDU Calculator</a>
-    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
-    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Fast Facts</a>
-    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even</a>
-  </div>
-</div>
+<details class="pd-card pd-det">
+  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Early planting disease risks</summary>
+  <div id="disease-grid" class="disease-grid"></div>
+</details>
+
+<details class="pd-card pd-det" id="pd-method">
+  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> How the numbers are made, and sources</summary>
+  <ul class="pd-src">
+    <li><b>Soil temperature:</b> <a href="https://open-meteo.com/en/docs" target="_blank" rel="noopener">Open-Meteo</a> forecast-model soil temperature at 6 cm (~2 in), hourly. The reading is the mean of the last 72 hours; the forecast line is each coming day&rsquo;s mean. A model, not a probe. Wisconsin growers can compare with the measured soil temperatures on UW&rsquo;s <a href="https://wisconet.wisc.edu/" target="_blank" rel="noopener">Wisconet</a> stations.</li>
+    <li><b>Station frost dates and heat units:</b> <a href="https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals" target="_blank" rel="noopener">NOAA NCEI U.S. Climate Normals, 1991-2020</a>: freeze probability dates (32&deg;F and 28&deg;F at the 10, 50 and 90% levels) and daily growing degree days (base 50&deg;F, cap 86&deg;F), nearest station within 75 miles.</li>
+    <li><b>Final planting dates:</b> <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">USDA RMA</a> Revenue Protection final planting dates, 2026 crop year.</li>
+    <li><b>Corn yield by planting date:</b> <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a>&rsquo;s table of two planting date studies, Lamberton 1988-2003 and Lamberton, Morris and Waseca 2009-2011, % of maximum yield. Each row shows both as a range.</li>
+    <li><b>Soybean yield by planting date:</b> a straight line of 0.2 to 0.5 bu/a a day past May 1 on a 55 bu base. The band is this page&rsquo;s approximation. <a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison (Conley, 2026)</a> gives about 2.1 bu/a a week (0.3 a day) past roughly Apr 10 for southern Wisconsin, so the table leaves out losses before May 1.</li>
+    <li><b>GDU ratings:</b> corn uses a reference line through K-State (110-day about 2,670) and Purdue (112-day about 2,700) figures; soybeans use <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU&rsquo;s soybean GDD model</a> for MG 1.1 and earlier only. Your seed company&rsquo;s rating beats both.</li>
+    <li><b>Zone averages:</b> approximate freeze dates by zone that run early (Madison median last spring freeze is about May 5, UW-Madison SSEC, 1940-2024) and a Wisconsin monthly GDU table with no April rate. Shown only as a fallback.</li>
+  </ul>
+  <p class="method-note">Reviewed by Sigurd Lindquist, CCA. No seed, insurance or input sales here.</p>
+</details>
+
+<nav class="pd-card pd-related" aria-label="Related tools">
+  <a href="/gdu-calculator">GDU calculator</a>
+  <a href="/fall-nitrogen">Fall anhydrous soil temp</a>
+  <a href="/yield-estimator">Yield estimator</a>
+  <a href="/breakeven">Break-even</a>
+  <a href="/fast-facts">Fast Facts</a>
+</nav>
 
 <!--FAQ:START-->
 <style>
@@ -381,17 +389,17 @@ html[data-theme="light"]{--pd-red:#b3432c}
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>When should I plant corn in Wisconsin?</summary><div class="agf-a">The optimal corn planting window in Wisconsin is April 25 – May 10. Soil temperature at 2" depth should be at least 50°F for 3 consecutive days before planting. Yield is about 5% down by May 20 and loses roughly 1% per day from there, then roughly 1 to 1.5 points a day in early June (UMN Lamberton, Morris and Waseca trials). Northern Wisconsin should target May 1–10 to get enough GDUs before fall frost.</div></details>
-<details><summary>When should I plant soybeans in Wisconsin?</summary><div class="agf-a">Plant soybeans as soon as the field is fit and soil is at least 50°F. Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2–0.5 bu/a/day after Apr 25). Early planting can raise SDS pressure; manage it with variety choice and seed treatment.</div></details>
+<details><summary>When should I plant corn in Wisconsin?</summary><div class="agf-a">In southern and central Wisconsin and Minnesota, about April 25 to May 10, once soil at 2 inches holds 50°F. University of Minnesota planting date studies found April 21 to May 6 within 1% of the maximum yield at Lamberton (1988-2003) and April 25 to May 10 best on average at Lamberton, Morris and Waseca (2009-2011). Northern areas plant later as soils allow. Enter your ZIP on this page for soil temperature now and your nearest station's frost odds.</div></details>
+<details><summary>When should I plant soybeans in Wisconsin?</summary><div class="agf-a">As soon as the field is fit and soil is near 50°F, often before corn. UW-Madison soybean specialist Shawn Conley puts the loss in southern Wisconsin at about 2.1 bushels per acre per week of delay past roughly April 10, about 0.3 a day, and sees no real penalty for an April 20 planting. Early planting can raise SDS pressure; manage it with variety choice and seed treatment.</div></details>
 <details><summary>What soil temperature do I need to plant corn?</summary><div class="agf-a">Corn should be planted when soil temperature at 2" depth reaches a consistent 50°F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50°F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure.</div></details>
-<details><summary>How much yield do I lose for late corn planting?</summary><div class="agf-a">Corn yield loss for late planting in Wisconsin: about 5% down by May 20, roughly 1% per day from May 20 to June 1, then roughly 1 to 1.5 points a day in early June (UMN Lamberton, Morris and Waseca trials). A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. On this page’s table, April 25 yields 2% more than May 10.</div></details>
+<details><summary>How much yield do I lose for late corn planting?</summary><div class="agf-a">In the University of Minnesota studies, corn planted May 20 made 92 to 95% of the maximum yield, May 30 made 82 to 89% and June 9 made 69 to 79% (Lamberton 1988-2003; Lamberton, Morris and Waseca 2009-2011). That is roughly 1 point a day after May 20 and faster into June. On a 200 bu field a May 30 planting gives up about 22 to 36 bu. Final planting dates for crop insurance are May 25 or May 31 in every Wisconsin and Minnesota county.</div></details>
 <details><summary>What is the last frost date in Wisconsin?</summary><div class="agf-a">At Madison the median last spring freeze is about May 5 (UW-Madison SSEC, 1940-2024 records). The zone table on this page runs earlier than that: Southern WI 50% April 22, 90% May 5; Central WI 50% May 2, 90% May 15; Northern WI 50% May 15, 90% May 28. Treat those dates as approximate and check your nearest station in the NOAA NCEI 1991-2020 climate normals before planting. Actual dates vary year to year.</div></details>
 </section>
 <!--FAQ:END-->
 
 <div class="pd-source">
-  Frost data: approximate freeze-percentile dates that run early (Madison median last spring freeze is about May 5, UW-Madison SSEC, 1940-2024); check your station in the <a href="https://www.ncei.noaa.gov/access/us-climate-normals/" target="_blank" rel="noopener">NCEI 1991-2020 normals</a> &middot; Soil temp: Open-Meteo forecast-model soil temperature at 6 cm &middot; Yield penalty: corn, UW-Extension &amp; UMN Extension; soybean, UW-Madison (Conley), approximation &middot;
-  <a href="/">&#8592; AGSIST Dashboard</a> &middot; Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
+  Frost: NOAA NCEI 1991-2020 station normals for your nearest station; zone averages are approximate and run early &middot; Soil temp: Open-Meteo model at 6 cm &middot; Final planting dates: USDA RMA &middot; Yield: UMN (corn) and UW-Madison (soybeans) Extension &middot;
+  <a href="/">&#8592; AGSIST</a> &middot; Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
 </div>
 
 </main>
@@ -405,496 +413,6 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script>
-(function(){
-'use strict';
-
-/* ─── DATA ─────────────────────────────────────────────────────────── */
-var crop = 'corn';
-var userLat = null, userLon = null;
-var zipTouched = false; // true once the user has typed or located; stops the delayed geo prefill
-
-// WI/MN 30-year last frost probability dates (month/day as day-of-year approx)
-var FROST_DATA = {
-  sw_wi:  {zone:'Southern Wisconsin (Madison area)', spring10:'Apr 9',  spring50:'Apr 22', spring90:'May 5',  fall10:'Oct 7', fall50:'Sep 25', fall90:'Sep 13'},
-  cw_wi:  {zone:'Central Wisconsin (Wausau area)',   spring10:'Apr 21', spring50:'May 2',  spring90:'May 15', fall10:'Sep 28',fall50:'Sep 18', fall90:'Sep 8'},
-  nw_wi:  {zone:'Northern Wisconsin (Rhinelander)',  spring10:'May 3',  spring50:'May 15', spring90:'May 28', fall10:'Sep 18',fall50:'Sep 8',  fall90:'Aug 29'},
-  smn:    {zone:'Southern Minnesota (Rochester)',    spring10:'Apr 10', spring50:'Apr 23', spring90:'May 6',  fall10:'Oct 5', fall50:'Sep 24', fall90:'Sep 13'},
-  cmn:    {zone:'Central Minnesota (St. Cloud)',     spring10:'Apr 21', spring50:'May 4',  spring90:'May 17', fall10:'Sep 27',fall50:'Sep 17', fall90:'Sep 7'},
-  nmn:    {zone:'Northern Minnesota (Brainerd)',     spring10:'Apr 29', spring50:'May 13', spring90:'May 27', fall10:'Sep 20',fall50:'Sep 9',  fall90:'Aug 29'},
-};
-
-// SHARED TABLE: average GDU per day by month, May-Sep, Wisconsin. /gdu-calculator carries the
-// same constant (WI_HIST) with identical values; if you change one, change the other.
-// The "GDUs by planting date" card below counts day by day from this table, from the planting
-// date up to the 50% first-fall-frost date of the selected zone. There is no April rate in the
-// table, so the card starts at May 1.
-var WI_HIST = [7.5, 15.5, 21.5, 19.5, 10.0];
-var WI_DAYS = [31, 30, 31, 31, 30];
-var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-// GDU from (startMon startDay) up to, not including, (endMon endDay). Months are 0-based.
-function gduBetween(sm, sd, em, ed){
-  var total = 0;
-  for(var mo = 4; mo <= 8; mo++){
-    if(mo < sm || mo > em) continue;
-    var first = (mo === sm) ? sd : 1;
-    var last = (mo === em) ? ed - 1 : WI_DAYS[mo-4];
-    if(last >= first) total += (last - first + 1) * WI_HIST[mo-4];
-  }
-  return total;
-}
-function parseMD(str){
-  var m = /^([A-Za-z]{3}) (\d{1,2})$/.exec(str);
-  return m ? {mo: MONTHS.indexOf(m[1]), d: parseInt(m[2],10)} : null;
-}
-
-// Corn planting date yield penalty (% of maximum yield)
-var CORN_PENALTY = [
-  {label:'Apr 15', pct:97, note:'Early risk: cold soil injury possible'},
-  {label:'Apr 20', pct:98, note:'Excellent if soil temp ≥50°F'},
-  {label:'Apr 25', pct:100,note:'Optimal: peak yield window'},
-  {label:'May 1',  pct:100,note:'Optimal: peak yield window'},
-  {label:'May 5',  pct:99, note:'Still excellent'},
-  {label:'May 10', pct:98, note:'Good: minimal yield drag'},
-  {label:'May 15', pct:97, note:'Good'},
-  {label:'May 20', pct:95, note:'Moderate: yield drag begins'},
-  {label:'May 25', pct:90, note:'Noticeable: about 1%/day now'},
-  {label:'Jun 1',  pct:83, note:'Significant: about 1%/day in the week before'},
-  // UMN Extension, % of max yield for a Jun 9 planting: 69 (Lamberton 1988-2003) and 79
-  // (Lamberton, Morris, Waseca 2009-11). 74 is only the midpoint for row colouring; the row
-  // prints the range. https://extension.umn.edu/corn-planting/planting-date-considerations-corn
-  // No Jun 15 row: no cited source for it.
-  {label:'Jun 10', pct:74, lo:69, hi:79, note:'~69–79%: UMN trials, Jun 9 planting (Lamberton 1988–2003: 69%; Lamberton, Morris, Waseca 2009–11: 79%). Roughly 1 to 1.5 points a day in early June; last grain date for southern WI'},
-];
-
-// Soybean planting date yield response. APPROXIMATION, computed, not a trial table:
-// the 55 bu/a base minus 0.4 bu/a per day of planting delay past May 1 (UW-Madison, Conley:
-// about 0.4 bu/a/day past May 1; 0.2-0.5 bu/a/day after Apr 25). Straight line, no loss
-// counted before May 1. Same dates the page has always covered; none added.
-// The 0.4 is a single figure from one article; the same article gives 0.2-0.5 and it was not
-// re-read at the source for this page, so every row prints the 0.2-0.5 range and keeps 0.4
-// only as the midpoint for colour and the middle estimate.
-// https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/
-var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.4, BEAN_LOSS_LO = 0.2, BEAN_LOSS_HI = 0.5;
-var BEAN_PENALTY = [
-  {label:'Apr 25', days:0},
-  {label:'May 1',  days:0},
-  {label:'May 5',  days:4},
-  {label:'May 10', days:9},
-  {label:'May 15', days:14},
-  {label:'May 20', days:19},
-  {label:'May 25', days:24},
-  {label:'Jun 1',  days:31},
-  {label:'Jun 10', days:40},
-  {label:'Jun 15', days:45},
-  {label:'Jun 20', days:50, extra:'Past the final planting date in every WI and MN county (RMA)'},
-].map(function(r){
-  var loss = BEAN_LOSS_PER_DAY * r.days, bu = BEAN_BASE - loss;
-  r.bu = bu; r.lossBu = loss; r.pct = Math.round(bu / BEAN_BASE * 100);
-  r.lossLo = BEAN_LOSS_LO * r.days; r.lossHi = BEAN_LOSS_HI * r.days;
-  r.note = r.days===0
-    ? (r.label==='Apr 25' ? 'No loss counted before May 1 in this approximation (UW-Madison sees 0.2–0.5 bu/a/day after Apr 25)' : 'Base: no delay past May 1')
-    : r.days+' days past May 1 × 0.2–0.5 bu/a/day ≈ '+r.lossLo.toFixed(1)+' to '+r.lossHi.toFixed(1)+' bu/a (middle '+loss.toFixed(1)+')'+(r.extra?', '+r.extra:'');
-  return r;
-});
-
-var DISEASE_CORN = [
-  {name:'Imbibitional Chilling Injury',risk:'High risk <50°F soil',desc:'Dry seed rapidly absorbs cold water: cells rupture, causing stand gaps. Most damaging with cold rain in first 24 hrs after planting.'},
-  {name:'Pythium Seed Rot',risk:'High risk <50°F, wet soils',desc:'Pythium thrives in cold saturated soils. Kills germinating seed before emergence. Seed treatment helps but does not eliminate risk.'},
-  {name:'Seedling Blight (Fusarium)',risk:'Moderate below 55°F',desc:'Slows corn growth, causes discoloration of mesocotyl and seminal roots. More common in cold, compacted soils.'},
-];
-
-var DISEASE_BEAN = [
-  {name:'Sudden Death Syndrome (SDS)',risk:'Cold, wet soils at planting',desc:'Fusarium virguliforme infects roots early, near planting. Symptoms appear at R3-R5. Early planting can raise SDS pressure; manage it with variety choice and seed treatment.'},
-  {name:'Phytophthora Root Rot',risk:'High risk in wet, poorly drained soils',desc:'Cold saturated soils favor Phytophthora. Pre-plant drainage and Rps gene selection are primary defenses. Mefenoxam seed treatment helps.'},
-  {name:'Pythium Seed Rot',risk:'Cold wet soils <50°F',desc:'Same pathogen as corn; kills germinating seed in cold saturated soils. Metalaxyl seed treatment provides protection.'},
-];
-
-/* ─── INIT ──────────────────────────────────────────────────────────── */
-(function init(){
-  renderFrostTable('cw_wi');
-  renderWindowBars();
-  renderPenaltyTable();
-  renderGDUCompare();
-  renderDiseaseCards();
-  setTimeout(function(){
-    if(zipTouched)return;
-    if(window.AGSIST_STATE&&window.AGSIST_STATE.lat){
-      userLat=window.AGSIST_STATE.lat;
-      userLon=window.AGSIST_STATE.lon;
-      var city=window.AGSIST_STATE.city||'';
-      var state=window.AGSIST_STATE.state||'';
-      if(city) {
-        document.getElementById('pd-zip').value=city+(state?', '+state:'');
-        document.getElementById('pd-loc-display').textContent='Location: '+city+(state?', '+state:'');
-        fetchSoilTemp();
-      }
-    }
-  }, 1000);
-})();
-
-/* ─── CROP TOGGLE ───────────────────────────────────────────────────── */
-document.getElementById('pill-corn').addEventListener('click',function(){
-  crop='corn';
-  document.getElementById('pill-corn').classList.add('active');
-  document.getElementById('pill-bean').classList.remove('active');
-  document.getElementById('pd-rm-lbl').textContent='Relative Maturity (RM days)';
-  document.getElementById('pd-rm-hint').textContent='108-day corn typical for south-central WI \u00b7 95\u201398 for north WI';
-  var rmEl=document.getElementById('pd-rm');
-  rmEl.min=70; rmEl.max=135; rmEl.step=1; rmEl.value=108;
-  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards(); runVerdict();
-});
-document.getElementById('pill-bean').addEventListener('click',function(){
-  crop='bean';
-  document.getElementById('pill-bean').classList.add('active');
-  document.getElementById('pill-corn').classList.remove('active');
-  document.getElementById('pd-rm-lbl').textContent='Maturity Group (e.g. 3.0)';
-  document.getElementById('pd-rm-hint').textContent='MG 3.0\u20133.5 typical for south WI \u00b7 MG 1.5\u20132.5 for north WI/MN';
-  var mgEl=document.getElementById('pd-rm');
-  mgEl.min=0; mgEl.max=6; mgEl.step=0.5; mgEl.value=1;
-  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards(); runVerdict();
-});
-
-/* ─── FROST TABLE ───────────────────────────────────────────────────── */
-document.getElementById('pd-zone').addEventListener('change',function(){
-  renderFrostTable(this.value);
-  renderGDUCompare();
-});
-
-function renderFrostTable(zone){
-  var d = FROST_DATA[zone];
-  if(!d)return;
-  var html = '<table class="frost-table" style="margin-top:.5rem;width:100%;font-size:0.785rem">'
-    +'<thead><tr><th>Event</th><th class="p10">10% Prob</th><th class="p50">50% Prob</th><th class="p90">90% Prob</th></tr></thead>'
-    +'<tbody>'
-    +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
-    +'<tr><td>First fall frost</td><td class="p10">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p90">'+d.fall90+'</td></tr>'
-    +'</tbody></table>'
-    +'<div class="f-hint" style="margin-top:.4rem">These are percentiles of the freeze date, not planting advice. The columns are meant as the date by which the last spring freeze has passed in 1, 5 and 9 years of 10. In the fall row the dates run latest to earliest. The dates are approximate and run early: UW-Madison SSEC puts the Madison median last spring freeze near May 5 (1940-2024), 13 days after this table\u2019s 50% date for southern Wisconsin. The freeze temperature behind them is not stated. Check your nearest station before betting a stand on them.</div>';
-  var el = document.getElementById('frost-table-wrap');
-  if(el)el.innerHTML=html;
-}
-
-/* ─── PLANTING WINDOW BARS ──────────────────────────────────────────── */
-function renderWindowBars(){
-  var isCorn = crop==='corn';
-  var titleEl = document.getElementById('win-title');
-  if(titleEl)titleEl.textContent=(isCorn?'Corn':'Soybean')+' Planting Window: Wisconsin';
-
-  var windows = isCorn ? [
-    {label:'Optimal',     dates:'Apr 25 \u2013 May 10', pct:100, cls:'green', tip:'98% or more of peak yield on the table below. Plant when soil \u226550\u00b0F.'},
-    {label:'Good',        dates:'May 10 \u2013 May 20', pct:75,  cls:'gold',  tip:'Still good. Down 2 to 5% by May 20.'},
-    {label:'Acceptable',  dates:'May 20 \u2013 Jun 1',  pct:50,  cls:'gold',  tip:'~1% yield loss per day. Shorter hybrid may help.'},
-    {label:'Late',        dates:'After Jun 1',           pct:25,  cls:'red',   tip:'Significant yield loss. Consider replanting with 90-day hybrid.'},
-  ] : [
-    {label:'Optimal',     dates:'Apr 25 \u2013 May 1',  pct:100, cls:'green', tip:'No delay past May 1. Plant when the field is fit and soil \u226550\u00b0F.'},
-    {label:'Good',        dates:'May 1 \u2013 May 15',  pct:70,  cls:'gold',  tip:'Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2\u20130.5 bu/a/day after Apr 25).'},
-    {label:'Acceptable',  dates:'May 15 \u2013 Jun 1',  pct:45,  cls:'gold',  tip:'About 3 to 16 bu/a below May 1 on the 55 bu base, at 0.2 to 0.5 bu/a/day (approximation).'},
-    {label:'Late',        dates:'After Jun 1',           pct:20,  cls:'red',   tip:'More than 6 to 16 bu/a below May 1 on the same range. Check your insurance final planting date.'},
-  ];
-
-  var barsHtml = windows.map(function(w){
-    return '<div class="window-bar-wrap">'
-      +'<div class="window-bar-label"><span>'+w.label+'</span><span style="font-size:0.75rem;color:var(--text-muted)">'+w.dates+'</span></div>'
-      +'<div class="window-bar"><div class="window-bar-fill '+w.cls+'" style="width:'+w.pct+'%"></div></div>'
-      +'<div style="font-size:0.763rem;color:var(--text-dim);margin-bottom:.3rem">'+w.tip+'</div>'
-      +'</div>';
-  }).join('');
-
-  var rowsHtml = '';
-  if(isCorn){
-    rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">Apr 25 \u2013 May 10</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Soil temp target</span><span class="r-val gold">\u226550\u00b0F at 2" depth</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Yield loss begins</span><span class="r-val">By May 20 (5% down)</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Early June</span><span class="r-val red">~1\u20131.5 pts/day (UMN)</span></div>';
-  } else {
-    rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">By May 1</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Soil temp target</span><span class="r-val gold">\u226550\u00b0F at 2" depth</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Yield loss</span><span class="r-val">~0.2\u20130.5 bu/a/day past May 1 (UW-Madison)</span></div>'
-      +'<div class="r-row"><span class="r-lbl">SDS</span><span class="r-val">Early planting can raise pressure</span></div>'
-      +'<div class="f-hint">Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2\u20130.5 bu/a/day after Apr 25). Early planting can raise SDS pressure; manage it with variety choice and seed treatment.</div>';
-  }
-
-  var barsEl = document.getElementById('win-bars');
-  if(barsEl)barsEl.innerHTML=barsHtml;
-  var rowsEl = document.getElementById('win-rows');
-  if(rowsEl)rowsEl.innerHTML=rowsHtml;
-}
-
-/* ─── PENALTY TABLE ─────────────────────────────────────────────────── */
-function renderPenaltyTable(){
-  var data = crop==='corn' ? CORN_PENALTY : BEAN_PENALTY;
-  var label = crop==='corn' ? 'Corn' : 'Soybean';
-  var maxYield = crop==='corn' ? 200 : 55;
-
-  var rows = data.map(function(d){
-    var cls = d.pct===100?'opt':d.pct>=95?'':d.pct>=88?'warn':d.pct>=78?'hi':'hl';
-    var pctStr, lossStr, estYield;
-    if(d.bu!=null){ // soybean: computed from bu/a, approximation
-      if(d.days>0){
-        pctStr = Math.round((maxYield-d.lossHi)/maxYield*100)+'–'+Math.round((maxYield-d.lossLo)/maxYield*100)+'%';
-        lossStr = '-'+d.lossLo.toFixed(1)+' to -'+d.lossHi.toFixed(1)+' bu/a';
-        estYield = (maxYield-d.lossHi).toFixed(0)+'–'+(maxYield-d.lossLo).toFixed(0);
-      } else { pctStr = '100%'; lossStr = '-'; estYield = maxYield.toFixed(0); }
-    } else if(d.lo!=null){ // a published range, printed as a range
-      pctStr = '~'+d.lo+'–'+d.hi+'%';
-      lossStr = '-'+(100-d.hi)+' to -'+(100-d.lo)+'%';
-      estYield = (maxYield*d.lo/100).toFixed(0)+'–'+(maxYield*d.hi/100).toFixed(0);
-    } else {
-      pctStr = d.pct+'%';
-      lossStr = d.pct===100?'-':'-'+(100-d.pct)+'%';
-      estYield = (maxYield * d.pct / 100).toFixed(0);
-    }
-    return '<tr class="'+cls+'"><td>'+d.label+'</td>'
-      +'<td style="color:'+(d.pct===100?'var(--green)':d.pct>=95?'var(--gold)':'var(--pd-red)')+'">'+pctStr+'</td>'
-      +'<td>'+lossStr+'</td>'
-      +'<td style="font-family:\'JetBrains Mono\',monospace">~'+estYield+' bu/ac</td>'
-      +'<td style="font-size:0.77rem;color:var(--text-dim)">'+d.note+'</td>'
-      +'</tr>';
-  }).join('');
-
-  var foot = crop==='corn'
-    ? 'Est. yield based on bu/ac corn at 200 bu/ac baseline. Actual varies by hybrid, field, and weather. Source: UW-Extension &amp; UMN Extension agronomic guidelines. Jun 10 row: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a> trials, % of maximum yield for a Jun 9 planting: 69% (Lamberton 1988&ndash;2003) and 79% (Lamberton, Morris, Waseca 2009&ndash;11); optimum roughly Apr 21&ndash;May 10.'
-    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day of planting delay past May 1, a straight line; the row colour uses the 0.4 middle. Yield falls about 0.4 bu/a per day of planting delay past May 1 (<a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison, Conley</a>; 0.2&ndash;0.5 bu/a/day after Apr 25). Actual loss varies by year, variety and field.';
-  var html = '<div class="pd-card" style="margin-top:0"><div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> '+label+' Yield Penalty by Planting Date</div>'
-    +'<div style="overflow-x:auto"><table class="pen-table">'
-    +'<thead><tr><th>Planting Date</th><th>% of Max Yield</th><th>Yield Loss</th><th>Est. Yield</th><th>Notes</th></tr></thead>'
-    +'<tbody>'+rows+'</tbody></table></div>'
-    +'<div class="f-hint" style="margin-top:.5rem">'+foot+'</div>'
-    +'</div>';
-  var el = document.getElementById('penalty-section');
-  if(el)el.innerHTML=html;
-}
-
-/* ─── GDU COMPARE ────────────────────────────────────────────────────── */
-function renderGDUCompare(){
-  // GDU from each planting date to the selected zone's 50% first-fall-frost date, counted day by
-  // day from the shared monthly table (WI_HIST, same values as /gdu-calculator). Same dates for
-  // both crops: the table has no April rate.
-  var zoneKey = document.getElementById('pd-zone') ? document.getElementById('pd-zone').value : 'cw_wi';
-  var fz = FROST_DATA[zoneKey] || FROST_DATA.cw_wi;
-  var frost = parseMD(fz.fall50);
-  var dates = [{d:'May 1',m:4,dd:1,cls:'best'},{d:'May 10',m:4,dd:10,cls:'good'},{d:'May 20',m:4,dd:20,cls:'warn'},{d:'Jun 1',m:5,dd:1,cls:'late'}];
-  dates.forEach(function(x){ x.gdu = Math.round(gduBetween(x.m, x.dd, frost.mo, frost.d)); });
-
-  // Blank or out-of-range maturity is an em dash, never a default (MG 0 is a real group).
-  var _rmv = parseFloat(document.getElementById('pd-rm').value);
-  var rmOK = crop==='corn' ? (isFinite(_rmv)&&_rmv>=70&&_rmv<=135) : (isFinite(_rmv)&&_rmv>=0&&_rmv<=6);
-  var rm = rmOK ? _rmv : null;
-  // Corn: rm*22+250, an AGSIST line through K-State (110-day ~2,670) and Purdue (112-day ~2,700); same as /gdu-calculator.
-  // Soybean: 1750 + 280*MG, a straight line through NDSU's soybean GDD model (planting to R8:
-  // 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM), same as /gdu-calculator. Used ONLY for
-  // MG -0.2 to 1.1; any other MG has no published figure, so no target is printed.
-  // https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model
-  var gduTarget = null;
-  if(rm!==null){
-    gduTarget = crop==='corn' ? Math.round(rm*22+250) : ((rm>=-0.2&&rm<=1.1) ? Math.round(1750+280*rm) : null);
-  }
-
-  var html = dates.map(function(d,i){
-    var delta = i===0?0:d.gdu-dates[0].gdu;
-    return '<div class="cmp-card '+d.cls+'">'
-      +'<div class="cmp-date">Plant '+d.d+'</div>'
-      +'<div class="cmp-gdu">'+d.gdu.toLocaleString()+'</div>'
-      +'<div class="cmp-label">GDUs to '+fz.fall50+'</div>'
-      +(i>0?'<div class="cmp-delta neg">'+delta+' vs earliest</div>':'<div class="cmp-delta pos">Baseline</div>')
-      +'</div>';
-  }).join('');
-
-  // No maturity call. The frost dates are zone approximations the page itself calls early and
-  // unchecked, the heat units are a Wisconsin monthly average with no April rate, and the target
-  // is a line through two seed-company figures. On those inputs a 108-day hybrid (typical for
-  // south-central WI) came out "short" in every zone, which farmers there disprove every fall.
-  // Until frost and heat units come from the reader's station, the card only sets the two
-  // numbers side by side and sends the reader to the station and the seed rating.
-  var vEl = document.getElementById('cmp-verdict');
-  if(vEl){
-    var vtxt = '';
-    if(gduTarget!==null){
-      var who = crop==='corn' ? 'a '+rm+'-day hybrid is rated about ' : 'an MG '+rm+' variety needs about ';
-      vtxt = 'On these approximate numbers, a May 1 planting gets about '+dates[0].gdu.toLocaleString()+' GDUs before the median first fall frost ('+fz.fall50+'), and '+who+gduTarget.toLocaleString()+(crop==='corn'?' to black layer':' to R8')+'. That is not a maturity call: the frost dates and heat units here are rough zone averages, not your station. Check your nearest station\u2019s frost date and your seed\u2019s own GDU rating.';
-    }
-    vEl.textContent = vtxt;
-    vEl.hidden = !vtxt;
-  }
-
-  var noteEl = document.getElementById('cmp-note');
-  if(noteEl){
-    var tgt;
-    if(gduTarget===null){
-      if(rm===null) tgt = crop==='corn' ? 'Enter a corn relative maturity from 70 to 135.' : 'Enter a soybean maturity group from 0 to 6.';
-      else tgt = 'Soybean GDU target: n/a \u00b7 no published GDD-to-maturity figure for MG '+rm+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';
-    }
-    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day \u2248 2,670 and Purdue 112-day \u2248 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).'); }
-    noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. The zone frost dates are approximate: the spring ones run about 13 days earlier than the Madison station median, and the fall ones have not been checked against a station, so a short or thin margin is a reason to check your nearest station, not a final answer. '+tgt;
-  }
-
-  var titleEl = document.getElementById('cmp-title');
-  if(titleEl)titleEl.textContent='\u25B2 GDU Accumulation by Planting Date: Wisconsin Monthly Averages';
-
-  var el = document.getElementById('cmp-grid');
-  if(el)el.innerHTML=html;
-}
-document.getElementById('pd-rm').addEventListener('input',renderGDUCompare);
-
-/* ─── DISEASE CARDS ─────────────────────────────────────────────────── */
-function renderDiseaseCards(){
-  var diseases = crop==='corn' ? DISEASE_CORN : DISEASE_BEAN;
-  var html = '<div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem">'
-    + diseases.map(function(d){
-        return '<div class="info-box red"><strong>'+d.name+'</strong>, <span style="color:var(--gold)">'+d.risk+'</span><br>'+d.desc+'</div>';
-      }).join('')
-    +'</div>';
-  var el = document.getElementById('disease-grid');
-  if(el)el.innerHTML=html;
-}
-
-/* ─── AUTO LOCATION ─────────────────────────────────────────────────── */
-var autoBtnHTML=document.getElementById('pd-auto-btn').innerHTML; // the globe icon, restored after geolocation
-document.getElementById('pd-auto-btn').addEventListener('click',function(){
-  if(!navigator.geolocation)return;
-  var btn=this;btn.textContent='...';
-  navigator.geolocation.getCurrentPosition(function(pos){
-    zipTouched=true;
-    userLat=pos.coords.latitude;userLon=pos.coords.longitude;
-    document.getElementById('pd-loc-display').textContent='Location: '+userLat.toFixed(3)+'\u00b0N, '+Math.abs(userLon).toFixed(3)+'\u00b0W';
-    document.getElementById('pd-zip').value='';
-    btn.innerHTML=autoBtnHTML;
-    fetchSoilTemp();
-  },function(){btn.innerHTML=autoBtnHTML;});
-});
-
-// Typing a new ZIP/city drops the old coordinates so the next load geocodes what is in the
-// box (the same handler exists in /gdu-calculator). Without it the first location stuck.
-document.getElementById('pd-zip').addEventListener('input',function(){
-  zipTouched=true;
-  userLat=null;userLon=null;
-  document.getElementById('pd-loc-display').textContent='Enter location for live soil temperature';
-});
-
-function geocodeZip(q){
-  return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&countrycodes=us&format=json&limit=1')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(!d||!d[0])throw new Error('Location not found');
-      userLat=parseFloat(d[0].lat);userLon=parseFloat(d[0].lon);
-      var name=d[0].display_name.split(',').slice(0,2).join(',');
-      document.getElementById('pd-loc-display').textContent='Location: '+name;
-    });
-}
-
-document.getElementById('pd-fetch-btn').addEventListener('click',function(){
-  var zipVal=(document.getElementById('pd-zip').value||'').trim();
-  var btn=this;btn.disabled=true;btn.textContent='Loading\u2026';
-  setStatus('Fetching data\u2026','');
-  var p = (userLat&&userLon) ? Promise.resolve() : (zipVal ? geocodeZip(zipVal) : Promise.reject(new Error('Enter location or use Auto')));
-  p.then(fetchSoilTemp).catch(function(e){setStatus('\u2717 '+e.message,'err');}).finally(function(){btn.disabled=false;btn.innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Load Soil Temp &amp; Conditions';});
-});
-
-function setStatus(msg,cls){
-  var el=document.getElementById('pd-status');
-  el.textContent=msg;el.className='f-status'+(cls?' '+cls:'');
-}
-
-/* ─── SOIL TEMP FETCH ───────────────────────────────────────────────── */
-/* Verdict from the last soil reading. Re-run when the crop pill changes. */
-var lastSoil=null;
-function runVerdict(){
-  if(lastSoil==null)return;
-    var soilNum=parseFloat(lastSoil);
-    var verdict,cls,noteText;
-    // Soil temperature alone said "Plant Now" in August, because nothing here
-    // looked at the calendar. Corn and beans have a planting window; outside
-    // it, a warm 2-inch reading is not a green light.
-    var _mo=new Date().getMonth()+1, _dy=new Date().getDate();
-    var _md=_mo*100+_dy;
-    var _isBeans=(typeof crop!=='undefined'&&crop!=='corn');
-    // End of the window this page covers: corn Jun 15 (the latest corn final planting date in
-    // the RMA file, any state), soybeans Jun 30.
-    var _tooLate=_md>(_isBeans?630:615);
-    var _tooEarly=_mo<4;
-    // Latest RMA final planting date in any WI or MN county: corn May 31, soybeans Jun 15
-    // (data/rma-planting-dates.json: WI/MN corn May 25 or 31, soybeans Jun 10 or 15).
-    var _pastFinal=_md>(_isBeans?615:531);
-    if(_tooLate||_tooEarly){
-      verdict='Out of the planting window';
-      cls='wait';
-      noteText=_tooLate
-        ? 'The soil reading below is current, but this is past the '+(_isBeans?'soybean':'corn')+' planting window this page covers for Wisconsin and Minnesota. The yield table above shows what late planting costs, and insurance final planting dates are earlier still.'
-        : 'Too early in the year for this call to mean anything. Come back once soils are working in spring.';
-    }
-    else if(soilNum>=55){verdict='\u2713 Plant Now: Soil temp ideal (\u226555\u00b0F)';cls='go';noteText='Excellent planting conditions. Proceed when field is fit.';}
-    else if(soilNum>=50){verdict='\u2713 Acceptable: Soil temp at threshold (50\u201354\u00b0F)';cls='go';noteText='Plant if forecast shows warming trend. Monitor for cold rain within 24 hrs.';}
-    else if(soilNum>=46){verdict='Wait: Soil temp marginal (46\u201349\u00b0F)';cls='wait';noteText='Wait 2\u20133 days. Cold soil risk of imbibitional chilling and Pythium.';}
-    else{verdict='\u2717 Do Not Plant: Soil too cold (<46\u00b0F)';cls='no';noteText='Significant stand and disease risk. Wait for sustained warming.';}
-    // Warm soil past the last WI/MN final planting date is not a green light.
-    if(_pastFinal&&!_tooLate&&!_tooEarly&&cls==='go'){
-      verdict='Late: soil ok, check your insurance final planting date';
-      cls='wait';
-      noteText='Final planting dates are earlier than this in every WI and MN county (RMA): check your county. The yield table above shows the loss from planting this late.';
-    }
-    // The days just before the last final date: some WI/MN counties are already past theirs.
-    var _inFinalWeek=_md>(_isBeans?610:525)&&!_pastFinal&&!_tooLate&&!_tooEarly;
-    if(_inFinalWeek)noteText+=' Final planting dates in WI and MN are '+(_isBeans?'Jun 10 or Jun 15':'May 25 or May 31')+' (RMA): check your county.';
-    if(!_tooEarly)noteText+=' The verdict uses the 3-day mean of the weather model\u2019s hourly soil temperature at 6 cm (~2 in), not a probe reading.';
-    var vw=document.getElementById('st-verdict-wrap');
-    if(vw)vw.innerHTML='<div class="st-verdict '+cls+'">'+verdict+'</div>';
-    var nEl=document.getElementById('st-note');
-    if(nEl)nEl.textContent=noteText;
-}
-
-function fetchSoilTemp(){
-  if(!userLat||!userLon){setStatus('No location set','err');return Promise.resolve();}
-  // Open-Meteo forecast-model soil temperature at 6 cm (~2 in): hourly, with the past 3 days,
-  // in Fahrenheit (temperature_unit applies to soil temperature too), local time.
-  // The page's rule is 50°F for 3 days, so the verdict uses the mean of the last 72 hourly
-  // values up to the current hour, not one instantaneous value.
-  var url='https://api.open-meteo.com/v1/forecast'
-    +'?latitude='+userLat+'&longitude='+userLon
-    +'&current=temperature_2m'
-    +'&hourly=soil_temperature_6cm&past_days=3&forecast_days=1'
-    +'&temperature_unit=fahrenheit&timezone=auto';
-  return fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(data){
-    if(!data||!data.current)throw new Error('Weather data unavailable');
-    var cur=data.current;
-    var air=cur.temperature_2m!=null?cur.temperature_2m.toFixed(1):null;
-    // Last 72 hourly slots up to the current hour (times are local ISO strings, so they
-    // compare as text), then the non-null values among them.
-    var hr=data.hourly||{}, ht=hr.time||[], hv=hr.soil_temperature_6cm||[];
-    var curHour=String(cur.time||'').slice(0,13); // "YYYY-MM-DDTHH"
-    var win=[];
-    for(var i=0;i<ht.length;i++){ if(curHour&&String(ht[i]).slice(0,13)<=curHour) win.push(hv[i]); }
-    win=win.slice(-72);
-    var vals=win.filter(function(v){return v!=null&&isFinite(v);});
-    var soil2in=null, soilWhy='';
-    if(!curHour){ soilWhy='The weather model did not say what hour it is at this location, so the last 3 days cannot be picked out.'; }
-    else if(vals.length<60){ soilWhy='Only '+vals.length+' of the last 72 hourly soil readings came back (60 needed for a 3-day mean).'; }
-    else { soil2in=(vals.reduce(function(a,b){return a+b;},0)/vals.length).toFixed(1); }
-    var soilDisplay=soil2in!=null?soil2in+'\u00b0F':'-';
-    var airDisplay=air?air+'\u00b0F':'-';
-    document.getElementById('st-2in').textContent=soilDisplay;
-    var subEl=document.getElementById('st-2in-sub');
-    if(subEl)subEl.textContent=soil2in!=null?'\u00b0F \u00b7 3-day mean ('+vals.length+' h)':'3-day mean unavailable';
-    document.getElementById('st-air').textContent=airDisplay;
-    var badge=document.getElementById('st-badge');if(badge)badge.style.display='inline-flex';
-    // Verdict only from a real 3-day mean. No data, no verdict: a missing value must never
-    // become 0°F and print "Do Not Plant" under a display showing a dash.
-    if(soil2in==null){
-      lastSoil=null;
-      var vw0=document.getElementById('st-verdict-wrap');
-      if(vw0)vw0.innerHTML='<div class="st-verdict wait">No soil verdict</div>';
-      var nEl0=document.getElementById('st-note');
-      if(nEl0)nEl0.textContent=''+soilWhy+' No 3-day mean, no verdict. Try again in an hour or check a nearby ZIP.';
-      setStatus('\u2713 Loaded (no 3-day soil mean at this location)','ok');
-      return;
-    }
-    lastSoil=soil2in;
-    runVerdict();
-    setStatus('\u2713 Soil temperature loaded','ok');
-  }).catch(function(e){setStatus('\u2717 '+e.message,'err');});
-}
-
-})();
-</script>
+<script src="/components/planting-date.js?v=1" defer></script>
 </body>
 </html>
