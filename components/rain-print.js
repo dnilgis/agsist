@@ -215,7 +215,7 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(cutoffIso || ''));
     if (!m || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || ''))) return '';
     if (todayIso < m[1] + '-10-01' || todayIso > m[1] + '-12-25') return '';
-    if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery.';
+    if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery. OK your proof the day it comes.';
     return 'Orders placed now ship after Christmas.';
   }
   /* CHRISTMAS DATES (2026-10-13). The last day to order and still have it by
