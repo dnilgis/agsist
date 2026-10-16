@@ -356,7 +356,7 @@ function fnSpark(t, last, w, h) {
       var v = fnView(DATA, PLACE, Date.now());
       if (v && v.blank) {
         h += '<div class="fn-answer"><p class="fn-k">' + esc(v.label) + '</p><p class="fn-head">No station within ' + v.max + ' miles</p>' +
-          '<p class="fn-sub">This page leaves it blank rather than fill it from a model. Check your own field with a soil thermometer at 4 in, or your state&rsquo;s network below.</p>' + (v.st ? ruleLine(v.st) : '') + '</div>';
+          '<p class="fn-sub">This page leaves it blank rather than fill it from a model. Check your own field with a soil thermometer at 4 in, in the afternoon.</p>' + (v.st ? ruleLine(v.st) : '') + '</div>';
       } else if (v) {
         var s = v.station, r = v.read;
         h += '<div class="fn-answer' + (v.cold ? ' fn-cold' : '') + '" id="fn-answer"><p class="fn-k">' + esc(v.label) + '</p>' +
