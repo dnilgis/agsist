@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Combine loss calculator: beans and kernels behind the combine | AGSIST</title>
+  <meta name="description" content="Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/combine-loss">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Combine loss: what the beans on the ground cost you">
+  <meta property="og:description"  content="Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.">
+  <meta property="og:url"          content="https://agsist.com/combine-loss">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title"       content="Combine loss: what the beans on the ground cost you">
+  <meta name="twitter:description" content="Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .cl{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .cl .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .cl h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .cl .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .9rem}
+    .cl h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
+    .cl h3{font-size:1rem;margin:1.4rem 0 .5rem;color:var(--text)}
+    .cl p,.cl li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .cl p{margin:0 0 1rem}
+    .cl a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .cl b{color:var(--text)}
+    .cl-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .7rem}
+    .cl-seg button{flex:1 1 0;min-height:48px;padding:0 .4rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer}
+    .cl-seg button+button{border-left:1px solid var(--border)}
+    .cl-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .cl-lab{font-size:.82rem;color:var(--text-muted);margin:.2rem 0 .3rem}
+    .cl-in{display:flex;flex-wrap:wrap;gap:.6rem .9rem;margin:0 0 .6rem;align-items:flex-end}
+    .cl-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
+    .cl-in input,.cl-in select{width:6.2rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .cl-in select{width:auto;font-family:inherit;font-size:.92rem}
+    .cl-in input[aria-invalid="true"]{border-color:var(--red)}
+    .cl-in .wide{width:8rem}
+    .cl-count{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.8rem;margin:0 0 .8rem}
+    .cl-count h2{margin:0 0 .5rem;font-size:1rem}
+    .cl-tally{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:.5rem;align-items:stretch}
+    .cl-tally button{min-height:72px;border:1px solid var(--border);border-radius:12px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-size:1.5rem;font-weight:800;cursor:pointer;touch-action:manipulation}
+    .cl-tally button.plus{background:var(--gold);color:#111;border-color:var(--gold);font-size:2rem}
+    .cl-tally input{width:100%;min-height:72px;text-align:center;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700}
+    .cl-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0;align-items:center}
+    .cl-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .cl-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .cl-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
+    .cl-spots{font-family:'JetBrains Mono',monospace;font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
+    .cl-spots:empty{display:none}
+    .cl-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
+    .cl-v{display:block;font-size:clamp(1.35rem,6vw,1.9rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .4rem}
+    .cl-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
+    .cl-answer p.fine{font-size:.82rem;color:var(--text-muted)}
+    .cl-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:.5rem;margin:.6rem 0 0}
+    .cl-kv div{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem}
+    .cl-kv b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem}
+    .cl-kv span{font-size:.76rem;color:var(--text-muted)}
+    .cl-kv:empty{display:none}
+    .cl-bid{background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem}
+    .cl-bid p{margin:.25rem 0;font-size:.86rem}
+    .cl-src{font-size:.84rem!important;color:var(--text-muted)!important}
+    .cl-status{font-size:.86rem;color:var(--text-muted);margin:.3rem 0 0}
+    .cl-status.err{color:var(--red)}
+    .cl-status:empty{display:none}
+    .cl details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .cl details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+    .cl-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .8rem}
+    .cl-t th,.cl-t td{padding:.42rem .55rem;border-bottom:1px solid var(--border);text-align:right}
+    .cl-t th:first-child{text-align:left;white-space:nowrap}
+    .cl-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .cl-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .cl-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .cl .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .cl-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .cl-faq details:last-child{border-bottom:1px solid var(--border)}
+    .cl-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .cl-faq details p{margin:.6rem 0 .2rem}
+    .cl .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
+    .cl .srcs li{font-size:.86rem}
+    html:not([data-cl="corn"]) .corn-only,html:not([data-cl="soybeans"]) .soy-only{display:none!important}
+    @media(max-width:420px){.cl-seg button{font-size:.86rem}.cl-in input{width:5.4rem}}
+    @media print{#site-header,#site-footer,.skip,.breadcrumb,.cl-seg,.cl-tally,.cl-row,.cl-faq,.cl-rel,details.box:not([open]),.cl-btn{display:none!important}html,body,main{background:#fff!important;color:#000!important}.cl p,.cl li,.cl b,.cl-v{color:#000!important}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/combine-loss#app","name":"Combine loss calculator","url":"https://agsist.com/combine-loss","description":"Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Combine loss","item":"https://agsist.com/combine-loss"}]},{"@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How do I measure combine loss in soybeans?", "acceptedAnswer": {"@type": "Answer", "text": "Drop a frame behind the combine and count every bean inside it, loose and in pods. Nebraska CropWatch: 4 medium beans a square foot is 1 bushel an acre lost, 5 if the beans are small, 3 if they are large. In a 10 square foot frame that is 40 medium beans. Count a few spots and average them."}},{"@type": "Question", "name": "How many corn kernels a square foot is a bushel an acre?", "acceptedAnswer": {"@type": "Answer", "text": "Two kernels a square foot is 1 bushel an acre (Iowa State, NDSU), so 20 kernels in a 10 square foot frame. Count dropped ears on their own: one 3/4 pound ear in 1/100 acre is another bushel an acre."}},{"@type": "Question", "name": "How do I count dropped ears?", "acceptedAnswer": {"@type": "Answer", "text": "Walk 1/100 acre behind the combine and pick up every ear across the head. 1/100 acre is 435.6 square feet: 29 feet of row behind a 6-row 30-inch head, 21.8 feet behind an 8-row. One 3/4 pound ear in that strip is 1 bushel an acre, and a 1/2 pound ear about 2/3 of a bushel."}},{"@type": "Question", "name": "How much combine loss is normal?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State says machine loss in standing corn should run about 1 bushel an acre or less. NDSU aims for 1 to 2 bushels an acre of total loss. Down corn and short beans with low pods lose more, and some of that no setting will fix."}},{"@type": "Question", "name": "Why count ahead of the combine?", "acceptedAnswer": {"@type": "Answer", "text": "Some loss happens before the head gets there: pods shatter and ears drop. Nebraska CropWatch counts a spot in uncut crop too. Take that count off the count behind the combine and what is left is what the combine lost, the part a setting change can fix."}},{"@type": "Question", "name": "What is the loss worth?", "acceptedAnswer": {"@type": "Answer", "text": "Bushels an acre times your bid. Two bushels of beans at $10 is $20 an acre, $10,000 on 500 acres. Enter your ZIP for the nearest posted bid, or type your own."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="cl">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Combine loss</nav>
+      <h1>Combine loss: what the beans on the ground cost you</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+      <p>Drop a frame behind the combine, count what is inside it, and tap. The page turns the count into bushels an acre and dollars an acre at your bid. Once it is open, the counting works with no signal.</p>
+
+      <div class="cl-seg" role="group" aria-label="Crop"><button type="button" data-crop="soybeans" aria-pressed="true">Soybeans</button><button type="button" data-crop="corn" aria-pressed="false">Corn</button></div>
+
+      <p class="cl-lab">Frame size</p>
+      <div class="cl-seg" role="group" aria-label="Frame size"><button type="button" data-area="10" aria-pressed="true">10 sq ft</button><button type="button" data-area="1" aria-pressed="false">1 sq ft</button><button type="button" data-area="other" aria-pressed="false">Other</button></div>
+      <div class="cl-in" id="cl-areabox" hidden><label>Frame, sq ft<input id="cl-area" type="number" inputmode="decimal" step="0.1" min="0.1" max="1000" value="10"></label></div>
+
+      <div class="soy-only">
+        <p class="cl-lab">Bean size</p>
+        <div class="cl-seg" role="group" aria-label="Bean size"><button type="button" data-size="small" aria-pressed="false">Small</button><button type="button" data-size="medium" aria-pressed="true">Medium</button><button type="button" data-size="large" aria-pressed="false">Large</button></div>
+      </div>
+
+      <section class="cl-count" aria-labelledby="cl-ch">
+        <h2 id="cl-ch"><span class="soy-only">Beans</span><span class="corn-only">Loose kernels</span> in the frame, behind the combine</h2>
+        <div class="cl-tally">
+          <button type="button" id="cl-minus" aria-label="Take one off">&minus;1</button>
+          <input id="cl-n" type="number" inputmode="numeric" min="0" max="9999" step="1" value="0" aria-label="Count in this spot">
+          <button type="button" id="cl-plus" class="plus" aria-label="Add one">+1</button>
+        </div>
+        <div class="cl-row">
+          <button type="button" id="cl-save" class="cl-btn go">Save spot, count the next</button>
+          <button type="button" id="cl-clear" class="cl-btn sm">Start over</button>
+        </div>
+        <p id="cl-spots" class="cl-spots" aria-live="polite"></p>
+        <p class="cl-src soy-only" style="margin:.5rem 0 0">Count loose beans and the beans in any pods on the ground.</p>
+      </section>
+
+      <div class="corn-only">
+        <section class="cl-count" aria-labelledby="cl-eh">
+          <h2 id="cl-eh">Ears on the ground in 1/100 acre</h2>
+          <div class="cl-in">
+            <label>Rows on the head<input id="cl-rows" type="number" inputmode="numeric" step="1" min="1" max="48" value="8"></label>
+            <label>Row width, in<input id="cl-rowin" type="number" inputmode="decimal" step="1" min="5" max="60" value="30"></label>
+          </div>
+          <p id="cl-walk" class="cl-src" style="margin:0 0 .5rem"></p>
+          <div class="cl-tally">
+            <button type="button" id="cl-eminus" aria-label="Take one ear off">&minus;1</button>
+            <input id="cl-ears" type="number" inputmode="numeric" min="0" max="999" step="1" value="0" aria-label="Ears found">
+            <button type="button" id="cl-eplus" class="plus" aria-label="Add one ear">+1</button>
+          </div>
+          <p class="cl-lab" style="margin-top:.6rem">Typical ear</p>
+          <div class="cl-seg" role="group" aria-label="Ear size" style="margin:0"><button type="button" data-ear="0.75" aria-pressed="true">3/4 lb</button><button type="button" data-ear="0.5" aria-pressed="false">1/2 lb</button></div>
+        </section>
+      </div>
+
+      <div class="cl-bid">
+        <div class="cl-in" style="margin:0">
+          <label>Bid, $/bu<input id="cl-bid" type="number" inputmode="decimal" step="0.01" min="0" placeholder="10.00"></label>
+          <label>Your ZIP, for the nearest posted bid<input id="cl-zip" class="wide" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="ZIP code" maxlength="5"></label>
+          <button type="button" id="cl-zipgo" class="cl-btn go">Get my bid</button>
+          <label>Or your state's median basis<select id="cl-state" aria-label="State for the default bid"><option value="">Pick a state</option></select></label>
+        </div>
+        <p id="cl-bidsrc" class="cl-src">Type your bid, or let the page fill one in.</p>
+        <p id="cl-status" class="cl-status" role="status"></p>
+      </div>
+
+      <div id="cl-answer" class="cl-answer" aria-live="polite" aria-atomic="true">
+        <h2 id="cl-verdict" class="cl-v" style="margin-top:0">Count a spot to see the loss.</h2>
+        <p id="cl-sub"></p>
+        <div id="cl-kv" class="cl-kv"></div>
+        <p id="cl-fine" class="fine"></p>
+        <noscript><p>The counter needs JavaScript. The tables below work without it.</p></noscript>
+      </div>
+
+      <details class="box" id="cl-morebox">
+        <summary>Yield, acres, and loss ahead of the combine</summary>
+        <div class="cl-in">
+          <label>Yield, bu/ac<input id="cl-yield" type="number" inputmode="decimal" step="1" min="1" max="400" placeholder="60"></label>
+          <label>Acres left<input id="cl-acres" type="number" inputmode="decimal" step="1" min="1" placeholder="500"></label>
+          <label>Count ahead of the combine<input id="cl-ahead" type="number" inputmode="numeric" step="1" min="0" max="9999" placeholder="0"></label>
+        </div>
+        <p class="cl-src">Ahead of the combine: drop the same frame in crop not yet cut and count what is already on the ground. That part shattered or dropped before the head got there, so the combine did not lose it.</p>
+        <p class="cl-src soy-only">Seed size from a count instead: <label style="display:inline">seeds a pound <input id="cl-spl" type="number" inputmode="numeric" step="50" min="1000" max="6000" placeholder="2900" style="width:6rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace"></label></p>
+      </details>
+
+      <details class="box" id="cl-mathbox">
+        <summary>Show the math</summary>
+        <div id="cl-math" class="eq">Count a spot first.</div>
+      </details>
+
+      <h2 id="rules">The rules of thumb</h2>
+      <p>Nebraska CropWatch: in soybeans, <b>4 beans a square foot is 1 bushel an acre</b> lost for medium beans, 5 for small beans and 3 for large. Their example: 7 beans in a 1 square foot frame is 7 / 4 = 1.75 bushels an acre. Iowa State and NDSU use 4. In corn, <b>2 kernels a square foot is 1 bushel an acre</b> (Iowa State, NDSU), and <b>one 3/4 pound ear in 1/100 acre is another bushel an acre</b> (UW Extension).</p>
+
+      <h3>Soybeans: beans that make 1 bushel an acre</h3>
+      <div class="cl-tw"><table class="cl-t"><caption class="sr-only">Soybeans per frame for 1 bushel an acre of loss</caption><thead><tr><th scope="col">Bean size</th><th scope="col">Per sq ft</th><th scope="col">Per 10 sq ft</th><th scope="col">About seeds a lb</th></tr></thead><tbody>
+<tr><th scope="row">Small</th><td>5</td><td>50</td><td>3,630</td></tr>
+<tr><th scope="row">Medium</th><td>4</td><td>40</td><td>2,904</td></tr>
+<tr><th scope="row">Large</th><td>3</td><td>30</td><td>2,178</td></tr>
+      </tbody></table></div>
+      <p class="cl-src">Seeds a pound is the arithmetic behind each rule (beans a sq ft x 43,560 sq ft / 60 lb), not a number from CropWatch. It lets you use a seed count if you have one.</p>
+
+      <h3>Corn: feet of row that make 1/100 acre</h3>
+      <div class="cl-tw"><table class="cl-t"><caption class="sr-only">Feet of row behind the head that make 1/100 acre</caption><thead><tr><th scope="col">Head</th><th scope="col">20 in rows</th><th scope="col">22 in rows</th><th scope="col">30 in rows</th></tr></thead><tbody>
+<tr><th scope="row">6 rows</th><td>43.6 ft</td><td>39.6 ft</td><td>29.0 ft</td></tr>
+<tr><th scope="row">8 rows</th><td>32.7 ft</td><td>29.7 ft</td><td>21.8 ft</td></tr>
+<tr><th scope="row">12 rows</th><td>21.8 ft</td><td>19.8 ft</td><td>14.5 ft</td></tr>
+<tr><th scope="row">16 rows</th><td>16.3 ft</td><td>14.9 ft</td><td>10.9 ft</td></tr>
+      </tbody></table></div>
+      <p class="cl-src">1/100 acre is 435.6 square feet. Feet of row = 435.6 / (rows x row width in feet). Pick up every ear across the full head width for that distance.</p>
+
+      <h2 id="questions">Questions</h2>
+      <div class="cl-faq">
+        <details><summary>How do I measure combine loss in soybeans?</summary><p>Drop a frame behind the combine and count every bean inside it, loose and in pods. Nebraska CropWatch: 4 medium beans a square foot is 1 bushel an acre lost, 5 if the beans are small, 3 if they are large. In a 10 square foot frame that is 40 medium beans. Count a few spots and average them.</p></details>
+        <details><summary>How many corn kernels a square foot is a bushel an acre?</summary><p>Two kernels a square foot is 1 bushel an acre (Iowa State, NDSU), so 20 kernels in a 10 square foot frame. Count dropped ears on their own: one 3/4 pound ear in 1/100 acre is another bushel an acre.</p></details>
+        <details><summary>How do I count dropped ears?</summary><p>Walk 1/100 acre behind the combine and pick up every ear across the head. 1/100 acre is 435.6 square feet: 29 feet of row behind a 6-row 30-inch head, 21.8 feet behind an 8-row. One 3/4 pound ear in that strip is 1 bushel an acre, and a 1/2 pound ear about 2/3 of a bushel.</p></details>
+        <details><summary>How much combine loss is normal?</summary><p>Iowa State says machine loss in standing corn should run about 1 bushel an acre or less. NDSU aims for 1 to 2 bushels an acre of total loss. Down corn and short beans with low pods lose more, and some of that no setting will fix.</p></details>
+        <details><summary>Why count ahead of the combine?</summary><p>Some loss happens before the head gets there: pods shatter and ears drop. Nebraska CropWatch counts a spot in uncut crop too. Take that count off the count behind the combine and what is left is what the combine lost, the part a setting change can fix.</p></details>
+        <details><summary>What is the loss worth?</summary><p>Bushels an acre times your bid. Two bushels of beans at $10 is $20 an acre, $10,000 on 500 acres. Enter your ZIP for the nearest posted bid, or type your own.</p></details>
+      </div>
+
+      <h2>Sources</h2>
+      <ul class="srcs">
+        <li>Nebraska CropWatch: <a href="https://cropwatch.unl.edu/2023/how-estimate-harvest-losses-soybeans-and-corn-fields">How to estimate harvest losses in soybean and corn fields</a> (2023). The frame count, 5, 4 and 3 beans a square foot by seed size, the 1.75 bushel example, counting ahead of the combine.</li>
+        <li>Hanna, Iowa State ICM: <a href="https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine">Minimize the amount of corn left on the ground behind the combine</a> (2010). Two kernels a square foot or one ear in 1/100 acre is 1 bushel an acre; about 1 bushel an acre of machine loss in standing corn.</li>
+        <li>UW Extension Waupaca County: <a href="https://waupaca.extension.wisc.edu/files/2018/07/2017-18-FallWinter-Ag-Newsletter.pdf">Fall and winter ag newsletter, 2017-18</a>. One 3/4 pound ear in 1/100 acre is 1 bushel an acre; a 1/2 pound ear about 2/3.</li>
+        <li>NDSU Extension: <a href="https://www.ndsu.edu/agriculture/extension/impact-stories/measuring-harvest-losses-corn-and-soybean">Measuring harvest losses in corn and soybean</a>. Four beans or two kernels a square foot; 1 to 2 bushels an acre of total loss as a target.</li>
+      </ul>
+      <p class="cl-src">Bids: the nearest posted bid comes from the same elevator boards as <a href="/cash-bids">cash bids near me</a>. The state default is the futures settle less the state's median basis from <a href="/basis">the basis page</a>, labeled as an estimate.</p>
+
+      <h2>Related</h2>
+      <ul class="rel cl-rel">
+        <li><a href="/grain-shrink">Grain shrink: wet or too dry</a></li>
+        <li><a href="/yield-estimator">Yield estimator</a></li>
+        <li><a href="/pod-counts">Pod counts vs yield</a></li>
+        <li><a href="/cash-bids">Cash bids near me</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/bids-network.js?v=5" defer></script>
+  <script src="/components/grain-shrink.js?v=1" defer></script>
+  <script src="/components/combine-loss.js?v=1" defer></script>
+  <script src="/components/combine-loss-ui.js?v=1" defer></script>
+</body>
+</html>
