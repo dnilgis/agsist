@@ -1522,6 +1522,10 @@
     {"id": "mrcc-inversion-networks", "kind": "html",
      "url": "https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion",
      "title": "MRCC: Monitoring temperature inversions (state networks)",
-     "why": "/spray: which states link a measured inversion network"}
+     "why": "/spray: which states link a measured inversion network"},
+    {"id": "wssa-herbicide-sites", "kind": "html",
+     "url": "https://wssa.net/wssa/weed/herbicides/",
+     "title": "WSSA: Herbicide site of action classification",
+     "why": "/fast-facts: herbicide group numbers and sites of action in the Pest and weed tab"}
 ]
 }

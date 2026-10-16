@@ -30,7 +30,10 @@ test("corn rootworm adult threshold is the silking one, with 0.75 kept as next y
     assert.ok(!/0\.75 beetles(\/| per )plant \+/.test(src), "0.75/plant printed as a silking threshold");
     assert.ok(!/threshold: 0\.75\/plant/.test(src));
   }
-  assert.ok(js.includes("5+ beetles/plant in the first week of pollen shed"));
+  // 2026-10-16: the stage-picker scouting list (unsourced rows like "3+ cut
+  // plants per 100" and "8% egg mass") is gone from fast-facts.js; the
+  // threshold table in the HTML is the one copy, so the script carries none.
+  assert.ok(!/beetles\/plant|cut plants|egg mass|defoliation|stippling/.test(js), "a threshold copy in fast-facts.js");
   assert.ok(html.includes("https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk"));
   assert.ok(html.includes("https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf"));
 });

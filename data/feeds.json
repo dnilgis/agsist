@@ -211,7 +211,8 @@
   {
    "path": "data/basis-states.json",
    "pages": [
-    "basis.html"
+    "basis.html",
+    "fast-facts.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -906,6 +907,7 @@
   {
    "path": "data/fertilizer-prices.json",
    "pages": [
+    "fast-facts.html",
     "fertilizer.html",
     "urea.html"
    ],
@@ -1872,6 +1874,7 @@
     "breakeven.html",
     "cattle-futures-prices.html",
     "developer.html",
+    "fast-facts.html",
     "fertilizer.html",
     "index.html",
     "markets.html",
