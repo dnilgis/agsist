@@ -133,6 +133,7 @@ PAGES = [
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),
         ("/grain-bin-calculator", "Grain Bin Calculator", "bushels in a bin and moisture shrink"),
         ("/grain-emc", "Grain EMC Calculator", "when to run aeration fans for corn or wheat: drying wet grain (against its own moisture), cooling (outside air 10 to 15 F under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn and wheat EMC charts from published equations"),
+        ("/grain-shrink", "Grain Shrink Calculator", "what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate"),
     ]),
     ("My ground and programs", [
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
