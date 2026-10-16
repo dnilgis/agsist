@@ -187,7 +187,8 @@ def check(root=ROOT):
                 continue
             if f.endswith(".html") and clean_url(f) != u:
                 errors.append(f"{sm}: {u} is not the page's own URL {clean_url(f)}")
-            if f in in_sitemap:
+            if f in in_sitemap and "sitemap-news" not in sm and "sitemap-news" not in in_sitemap[f]:
+                # a Google News sitemap repeats recent issues by design
                 warnings.append(f"{sm}: {u} is listed more than once (also in {in_sitemap[f]})")
             in_sitemap.setdefault(f, sm)
 
