@@ -64,6 +64,9 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Drought Monitor](https://agsist.com/drought-monitor): this week's US Drought Monitor map and what each category means for crops
 - [Rain Print](https://agsist.com/rain-print): one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale
 - [Gifts for Farmers](https://agsist.com/gifts-for-farmers): Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links
+- [Rain Print for Businesses](https://agsist.com/rain-print-business): Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30
+- [Farmer Retirement Gifts](https://agsist.com/farmer-retirement-gifts): Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links
+- [Farm Anniversary Gifts](https://agsist.com/farm-anniversary-gifts): Gift ideas for a farm anniversary or a farmer who has everything, with a Rain Print of the founding or a remembered year as one option
 - [PRF State Sponsor](https://agsist.com/prf-sponsor): how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request
 - [Rain Gauge (in the works)](https://agsist.com/rain-gauge): a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email
 - [Field Scout](https://agsist.com/field-scout): draw a field and see its soils, crop history, weather, drought and nearby bids
