@@ -53,7 +53,7 @@
     .hw-in input,.hw-in select{width:6.4rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
     .hw-in select{width:auto;font-family:inherit;font-size:.92rem}
     .hw-in input[aria-invalid="true"]{border-color:var(--red)}
-    .hw-in .wide{width:8rem}
+    .hw-in .wide{width:8.6rem}
     .hw-box{background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem}
     .hw-box>p{margin:.25rem 0;font-size:.86rem}
     .hw-box h2{font-size:.92rem;margin:.1rem 0 .5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted)}
@@ -132,7 +132,7 @@
       <div class="hw-in">
         <label>Moisture now, %<input id="hw-m" type="number" inputmode="decimal" step="0.1" min="15" max="40" value="25"></label>
         <label>Yield, bu/ac dry<input id="hw-y" type="number" inputmode="decimal" step="1" min="20" max="400" value="200"></label>
-        <label>Acres left<input id="hw-ac" type="number" inputmode="decimal" step="1" min="1" placeholder="optional"></label>
+        <label>Acres left<input id="hw-ac" class="wide" type="number" inputmode="decimal" step="1" min="1" placeholder="optional"></label>
         <label>Dry to, %<input id="hw-to" type="number" inputmode="decimal" step="0.1" min="12" max="18" value="15.5"></label>
       </div>
 
@@ -160,8 +160,8 @@
       <div class="hw-box">
         <h2>Field loss, your number</h2>
         <div class="hw-in" style="margin:0">
-          <label>Bushels an acre lost a week<input id="hw-loss" type="number" inputmode="decimal" step="0.1" min="0" max="50" placeholder="your guess"></label>
-          <label>Your own drydown, points a week<input id="hw-own" type="number" inputmode="decimal" step="0.1" min="0" max="10" placeholder="optional"></label>
+          <label>Bushels an acre lost a week<input id="hw-loss" class="wide" type="number" inputmode="decimal" step="0.1" min="0" max="50" placeholder="your guess"></label>
+          <label>Your own drydown, points a week<input id="hw-own" class="wide" type="number" inputmode="decimal" step="0.1" min="0" max="10" placeholder="optional"></label>
         </div>
         <p class="hw-src">Leave field loss blank and the page shows how much loss waiting can stand. Stalk quality, lodging, ear drop and the weather decide the real number; you know your field.</p>
       </div>
@@ -179,9 +179,10 @@
 
       <h2 id="days">Day by day</h2>
       <div class="hw-tw"><table class="hw-t" id="hw-table"><caption class="sr-only">Estimated moisture and drying cost for each day you wait</caption>
-        <thead><tr><th scope="col">Day</th><th scope="col">Forecast heat, GDD</th><th scope="col">Moisture, est.</th><th scope="col">Drying, $/ac</th><th scope="col">Saved vs today</th><th scope="col">Loss that eats it, bu/ac</th></tr></thead>
+        <thead><tr><th scope="col">Day</th><th scope="col">GDD</th><th scope="col">Moisture</th><th scope="col">Drying $/ac</th><th scope="col">Saved</th><th scope="col">Break-even loss, bu/ac</th></tr></thead>
         <tbody id="hw-rows"><tr><td colspan="6" style="text-align:left;font-family:inherit;color:var(--text-muted)">Fills in from your numbers.</td></tr></tbody>
       </table></div>
+      <p class="hw-src">GDD is the forecast heat that day (86/50). Moisture is the estimate. Saved is drying saved against harvesting today; break-even loss is the field loss, in bushels an acre by that day, that would eat it.</p>
       <p id="hw-drysrc" class="hw-src">Moisture by the monthly drydown rates below. The forecast heat column fills in once you enter a ZIP.</p>
 
       <details class="box" id="hw-mathbox">
