@@ -74,7 +74,6 @@
   // ── Boot ────────────────────────────────────────────────────────────
   function init() {
     if (typeof L === 'undefined') { showFatal('Map library failed to load. Check your connection and refresh.'); return; }
-    if (typeof L.Draw === 'undefined' || !L.Draw.Polygon) { showFatal('The field-drawing tool failed to load. Refresh the page; if it persists, your network may be blocking unpkg.com.'); return; }
 
     map = L.map('fs-map', { zoomControl:true, attributionControl:true }).setView([41.878, -93.0977], 6); // Iowa-ish center
     map.on('dragstart', function(){ if(FIELD) FIELD._dragged=true; });   // the user moved it: stop auto-fitting
@@ -109,14 +108,9 @@
 
     drawnLayer = new L.FeatureGroup().addTo(map);
 
-    drawControl = new L.Draw.Polygon(map, {
-      allowIntersection:false,
-      shapeOptions:{ color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 }
-    });
-
-    map.on(L.Draw.Event.CREATED, function (e) {
-      commitField(e.layer, 'draw');
-    });
+    // The tracing tool (Leaflet.draw, vendored on agsist.com) loads on the first "Trace exact"
+    // tap, not with the page: most fields start from a tap, and a slow or blocked load can
+    // only ever cost the trace, never the map, the pin or the search (ensureDraw below).
     // Floating trace toolbar (Undo point / Finish) rides along while drawing —
     // Leaflet.draw's double-click-to-finish is near impossible on a phone.
     map.on('draw:drawstart', function(){ tracing=true; showTracebar(true); dismissInvite(); });
@@ -344,12 +338,46 @@
       }).catch(function(){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); flashHint('Hail history unavailable right now'); syncSheet(); });
   }
 
+  // Leaflet.draw on demand, from agsist.com's own copy (vendor/leaflet-draw-1.0.4).
+  var DRAW_JS='/vendor/leaflet-draw-1.0.4/leaflet.draw.js', DRAW_CSS='/vendor/leaflet-draw-1.0.4/leaflet.draw.css';
+  var _drawWait=null;
+  function drawReady(){ return typeof L!=='undefined' && L.Draw && L.Draw.Polygon; }
+  function ensureDraw(cb){
+    if(drawControl) return cb(true);
+    if(!_drawWait){
+      _drawWait=[];
+      var finish=function(){
+        var ok=!!drawReady();
+        if(ok && !drawControl){
+          drawControl = new L.Draw.Polygon(map, {
+            allowIntersection:false,
+            shapeOptions:{ color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 }
+          });
+          map.on(L.Draw.Event.CREATED, function (e) { commitField(e.layer, 'draw'); });
+        }
+        var w=_drawWait; _drawWait=null; w.forEach(function(f){ f(ok); });
+      };
+      if(drawReady()){ _drawWait.push(cb); return finish(); }
+      try{
+        var ln=document.createElement('link'); ln.rel='stylesheet'; ln.href=DRAW_CSS; document.head.appendChild(ln);
+        var sc=document.createElement('script'); sc.src=DRAW_JS; sc.async=true;
+        sc.onload=finish; sc.onerror=finish;
+        document.head.appendChild(sc);
+      }catch(e){ _drawWait.push(cb); return finish(); }
+    }
+    _drawWait.push(cb);
+  }
+  window.__fsEnsureDraw = ensureDraw;
+
   function wireControls() {
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
     document.getElementById('fs-draw').addEventListener('click', function(){
       // Tracing at county scale draws a "field" the size of a county — make them zoom first.
       if(map && map.getZoom() < 11){ flashHint('Zoom in to your field first, then trace it'); return; }
-      drawControl.enable();
+      ensureDraw(function(ok){
+        if(!ok){ flashHint('The tracing tool didn\u2019t load. Tap your field instead and drag the corners to fit.', 7000); return; }
+        drawControl.enable();
+      });
     });
     document.getElementById('fs-clear').addEventListener('click', clearField);
     var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); flashHint('Tap the map to drop a fresh field'); });
