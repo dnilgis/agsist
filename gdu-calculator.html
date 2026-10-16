@@ -70,6 +70,8 @@
 
 .gdu-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; }
 @media(min-width:700px){ .gdu-layout { grid-template-columns:minmax(0,360px) minmax(0,1fr); } }
+/* Phones: once real weather is in, the answer comes first and the setup below it. */
+@media(max-width:699px){ .gdu-layout.has-answer > .gdu-results { order:-1; } }
 
 /* ── INPUTS ──────────────────────────────────────────────────────────── */
 .gdu-card { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.1rem 1.2rem; }
@@ -324,7 +326,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="f-group">
         <label class="f-label" for="g-frost">First killing freeze, 28&deg;F (optional)</label>
         <input class="f-input" id="g-frost" type="date">
-        <div class="f-hint">Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5, central Corn Belt ~Oct 10&ndash;20. Your NWS office has local normals.</div>
+        <div class="f-hint" id="g-frost-hint">Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5, central Corn Belt ~Oct 10&ndash;20. After a fetch, this box fills with the typical date at your spot; change it to yours.</div>
       </div>
     </div>
 
@@ -388,7 +390,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   </div>
 
   <!-- ── RIGHT: RESULTS ────────────────────────────────────────────── -->
-  <div>
+  <div class="gdu-results" id="gdu-results">
     <!-- Arc Gauge -->
     <div class="gauge-wrap">
       <div class="gauge-center">
@@ -860,7 +862,9 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     if(gaps>0){ msg+=' \u00b7 '+gaps+' day'+(gaps>1?'s':'')+' missing inside the range, no GDU counted for '+(gaps>1?'them':'it'); }
     setStatus(msg,'ok');
     document.getElementById('r-source').textContent='Open-Meteo ERA5: through '+(thru||'n/a');
+    prefillFrost();
     calcGDU();
+    showAnswerFirst(true);
   }).catch(function(err){
     setStatus('\u2717 '+err.message,'err');
   }).finally(function(){
@@ -883,26 +887,67 @@ function normFrom(data){
     sum[k]=(sum[k]||0)+gduDay(hi,lo);n[k]=(n[k]||0)+1;
   }
   var out={},need=Math.round((NORM_TO-NORM_FROM+1)*0.8),d=new Date(2001,3,1);
+  out._frz=frz28From(dd,need);
   // Every day from Apr 1 to Oct 31 needs at least 80% of the years, or the normal is not used.
   while(d<=new Date(2001,NORM_END_MO,NORM_END_D)){var k2=mmdd(d);if(!(n[k2]>=need))return null;out[k2]=sum[k2]/n[k2];d.setDate(d.getDate()+1);}
   return out;
+}
+// Typical first fall freeze at 28F from the same 1991-2020 daily lows: for each year the first day
+// from Jul 1 on with a low at or below 28F (a year with none by Dec 31 counts as later than any date),
+// then the median year. A year needs at least 150 of its 184 Jul-Dec lows, and at least 80% of the
+// years must qualify, or no date is given. ERA5 is a grid-cell average, which runs warmer than a low
+// spot on a still, clear night, so the label says so and the box stays editable.
+function frz28From(dd,need){
+  var yr={},i,t,y,k,doy;
+  for(i=0;i<dd.time.length;i++){
+    t=String(dd.time[i]);k=t.slice(5,10);if(k<'07-01')continue;y=t.slice(0,4);
+    if(!yr[y])yr[y]={n:0,first:null};
+    var lo=dd.temperature_2m_min[i];if(lo==null)continue;
+    yr[y].n++;
+    if(yr[y].first==null&&lo<=28)yr[y].first=k;
+  }
+  var vals=[];
+  for(y in yr){if(yr[y].n<150)continue;vals.push(yr[y].first||'99-99');}
+  if(vals.length<need)return null;
+  vals.sort();
+  var a=vals[Math.floor((vals.length-1)/2)],b=vals[Math.ceil((vals.length-1)/2)];
+  if(a==='99-99'||b==='99-99')return null; // the median year had no 28F freeze by Dec 31
+  // Middle of the two middle years, by day of year (in 2001, no leap day), rounded down.
+  function dy(md){return Math.round((new Date(2001,+md.slice(0,2)-1,+md.slice(3))-new Date(2001,0,1))/864e5);}
+  var mid=Math.floor((dy(a)+dy(b))/2),dt=new Date(2001,0,1+mid);
+  return {md:mmdd(dt),years:vals.length};
+}
+function prefillFrost(){
+  var el=document.getElementById('g-frost'),h=document.getElementById('g-frost-hint');
+  if(!el||!localNorm||!localNorm._frz)return;
+  var md=localNorm._frz.md,nice=new Date(2001,+md.slice(0,2)-1,+md.slice(3)).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(h)h.textContent='Typical first 28\u00b0F freeze here: '+nice+', the median of '+NORM_FROM+'\u2013'+NORM_TO+' at this spot\u2019s weather grid cell (Open-Meteo ERA5), not a station. Low spots freeze earlier on still, clear nights. Change it to yours.';
+  if(el.value&&el.dataset.auto!=='1')return; // the farmer's own date stays
+  var ps=document.getElementById('g-plant').value,y=ps?ps.slice(0,4):String(new Date().getFullYear());
+  el.value=y+'-'+md;el.dataset.auto='1';
 }
 function loadLocalNorm(lat,lon){
   var key=(+lat).toFixed(2)+','+(+lon).toFixed(2);
   if(localNorm&&localNormKey===key)return Promise.resolve(localNorm);
   localNorm=null;localNormKey=null;
   // 30 years is a big download, so the 214 averages are kept per spot in this browser.
-  try{var c=JSON.parse(localStorage.getItem('agsist-gdu-norm')||'null');if(c&&c.key===key&&c.v===1&&c.norm&&c.norm['10-31']!=null){localNorm=c.norm;localNormKey=key;return Promise.resolve(localNorm);}}catch(e){}
+  try{var c=JSON.parse(localStorage.getItem('agsist-gdu-norm')||'null');if(c&&c.key===key&&c.v===2&&c.norm&&c.norm['10-31']!=null){localNorm=c.norm;localNormKey=key;return Promise.resolve(localNorm);}}catch(e){}
   var url='https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lon
     +'&start_date='+NORM_FROM+'-01-01&end_date='+NORM_TO+'-12-31'
     +'&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto';
   return fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(d){
     var nm=normFrom(d);
-    if(nm){localNorm=nm;localNormKey=key;try{localStorage.setItem('agsist-gdu-norm',JSON.stringify({v:1,key:key,norm:nm}));}catch(e){}}
+    if(nm){localNorm=nm;localNormKey=key;try{localStorage.setItem('agsist-gdu-norm',JSON.stringify({v:2,key:key,norm:nm}));}catch(e){}}
     return nm;
   }).catch(function(){return null;});
 }
 
+// On a phone, once real weather is in, the answer moves above the setup and comes into view.
+function showAnswerFirst(on){
+  var lay=document.querySelector('.gdu-layout'),res=document.getElementById('gdu-results');if(!lay)return;
+  lay.classList.toggle('has-answer',!!on);
+  if(on&&res&&window.matchMedia&&window.matchMedia('(max-width:699px)').matches){try{res.scrollIntoView({block:'start'});}catch(e){}}
+}
 /* ─── MAIN CALCULATION ──────────────────────────────────────────────── */
 // Inputs that INVALIDATE real weather data (dates force refetch)
 ['g-plant','g-today'].forEach(function(id){
@@ -910,15 +955,18 @@ function loadLocalNorm(lat,lon){
   if(el)el.addEventListener('input',function(){
     realAccum=null;realDays=null;realThrough=null;realSeries=null;
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
+    showAnswerFirst(false);
     calcGDU();
   });
 });
+// A date the farmer types is theirs, not the typical one.
+document.getElementById('g-frost').addEventListener('input',function(){delete this.dataset.auto;});
 // Typing a new ZIP/city drops the old coordinates and the old fetched data, so the
 // next Fetch geocodes what is in the box (the same handler exists in /planting-date).
 document.getElementById('g-zip').addEventListener('input',function(){
   zipTouched=true;
   userLat=null;userLon=null;userState=null;
-  realAccum=null;realDays=null;realThrough=null;realSeries=null;
+  realAccum=null;realDays=null;realThrough=null;realSeries=null;showAnswerFirst(false);
   var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
   document.getElementById('g-loc-display').textContent='Your location appears here after fetching';
   calcGDU();
@@ -1201,12 +1249,14 @@ function restoreState(){
   var z=val('zip'); if(z)document.getElementById('g-zip').value=z;
   var f=val('frost'); if(f)document.getElementById('g-frost').value=f;
 }
+// The typical date filled in after a fetch is not saved or shared; it is filled again on the next fetch.
+function frostOwn(){var e=document.getElementById('g-frost');return (e&&e.dataset.auto!=='1')?e.value:'';}
 function saveState(){
   if(!ready)return;
   try{ localStorage.setItem('agsist_gdu',JSON.stringify({
     crop:crop, plant:document.getElementById('g-plant').value, // 'today' is never saved: a stored end date would freeze the results on an old day
     rm:document.getElementById('g-rm').value, zip:(document.getElementById('g-zip').value||'').trim(),
-    frost:document.getElementById('g-frost').value })); }catch(e){}
+    frost:frostOwn() })); }catch(e){}
 }
 function shareURL(){
   var q=new URLSearchParams(); q.set('crop',crop);
@@ -1214,7 +1264,7 @@ function shareURL(){
   var t=document.getElementById('g-today').value; if(t)q.set('today',t);
   var r=document.getElementById('g-rm').value; if(r)q.set('rm',r);
   var z=(document.getElementById('g-zip').value||'').trim(); if(z)q.set('zip',z);
-  var f=document.getElementById('g-frost').value; if(f)q.set('frost',f);
+  var f=frostOwn(); if(f)q.set('frost',f);
   return location.origin+location.pathname+'?'+q.toString();
 }
 var shareBtn=document.getElementById('g-share-btn');
