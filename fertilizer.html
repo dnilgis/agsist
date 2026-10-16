@@ -368,7 +368,7 @@
       <summary>How this is calculated</summary>
       <div class="calc-method-body">
         <p>Cost per pound of nutrient = price &#xF7; (2000 lb/ton &#xD7; grade %). Each nutrient is sourced from the cheapest product carrying it; nitrogen already supplied by your phosphate source (e.g. MAP) is credited before pricing urea.</p>
-        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.37, K&#x2082;O 0.24 &middot; Soybeans 0.80 / 1.30 &middot; Wheat 0.50 / 0.30</code>: reflect grain nutrient removal commonly published by university extension and IPNI. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N), so the N line is a budget estimate, not a rate recommendation. Most Corn Belt extension services set corn N rates with the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>. These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
+        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.38, K&#x2082;O 0.29 &middot; Soybeans 0.80 / 1.40 &middot; Wheat 0.50 / 0.35</code>: grain removal from UW Extension A2809 Table 4.2, the same numbers the <a href="/nutrient-removal">nutrient removal calculator</a> uses. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N), so the N line is a budget estimate, not a rate recommendation. Most Corn Belt extension services set corn N rates with the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>. These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
       </div>
     </details>
   </section>
@@ -496,7 +496,7 @@ function mainlyN(pr){return !!(pr.grade&&pr.grade.N>0&&pr.grade.N>pr.grade.P&&pr
 function straightN(pr){return !!(pr.grade&&pr.grade.N>0&&!(pr.grade.P>0)&&!(pr.grade.K>0));}
 function primary(products,nut,ok){var b=null;products.forEach(function(p){if(ok&&!ok(p))return;if(p.grade&&p.grade[nut]>0&&(b===null||p.grade[nut]>b.grade[nut]))b=p;});return b;}
 function cheapest(products,nut,ok){var best=null;products.forEach(function(pr){if(!pr.grade||!pr.grade[nut]||pr.price==null)return;if(ok&&!ok(pr))return;var c=costPerLb(pr.price,pr.grade[nut]);if(c!=null&&(best===null||c<best.cost))best={name:pr.name,cost:c,product:pr};});return best;}
-var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.37,k2o:0.24,sNeed:18,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.30,sNeed:12,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.30,sNeed:12,fixesN:false}};
+var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29,sNeed:18,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.40,sNeed:12,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.35,sNeed:12,fixesN:false}};
 function buildProgram(products,cropKey,yieldGoal,nRateOverride){var c=CROPS[cropKey];var nr=(nRateOverride!=null?nRateOverride:c.nRate);var Nreq=nr*yieldGoal;var Preq=c.p2o5*yieldGoal;var Kreq=c.k2o*yieldGoal;var lines=[],missing=[],cost=0,sSupplied=0,mgSupplied=0,nFromP=0;
 /* pick(): the cheapest quoted source. If the main product for the nutrient has no quote there is no substitute: the line says so and the total is marked incomplete. */
 function pick(nut){var ok=nut==='N'?mainlyN:null;var pri=primary(products,nut,ok),src=cheapest(products,nut,ok),note='',unavail=null;
