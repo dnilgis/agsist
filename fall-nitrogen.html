@@ -47,15 +47,16 @@
     .fn p{margin:0 0 1rem}
     .fn a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .fn b{color:var(--text)}
-    .fn-pick{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;margin:0 0 .4rem}
+    .fn-pick{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:flex-end;margin:0 0 .4rem}
+    .fn-row{display:flex;flex-wrap:nowrap;gap:.5rem;align-items:flex-end;min-width:0}
+    .fn-row label{min-width:0}
     .fn-pick[hidden]{display:none}
     .fn-pick label{display:flex;flex-direction:column;gap:.2rem;font-size:.8rem;color:var(--text-muted);font-weight:600}
     .fn-pick input,.fn-pick select{min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem}
     .fn-pick input{width:7rem;font-family:'JetBrains Mono',monospace}
-    .fn-pick select{max-width:14rem}
+    .fn-pick select{max-width:14rem;width:100%}
     .fn-pick button{min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:8px;background:var(--gold);color:#111;font:inherit;font-weight:700;cursor:pointer}
     .fn-pick button.fn-ghost{background:var(--surface);color:var(--text)}
-    .fn-or{align-self:center;font-size:.85rem;color:var(--text-muted);padding:0 .2rem}
     .fn-status{font-size:.86rem!important;min-height:1.3em;margin:0 0 .6rem!important;color:var(--text-muted)!important}
     .fn-status.fn-err{color:var(--text)!important;border-left:3px solid var(--gold);padding-left:.5rem}
     .fn-empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:1rem 1.1rem;color:var(--text-dim)}
@@ -95,7 +96,7 @@
     .fn-faq details p{margin:.6rem 0 .2rem}
     .fn .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
     .fn .src li{font-size:.84rem;color:var(--text-muted)}
-    @media(max-width:420px){.fn-t{font-size:.82rem}.fn-t th,.fn-t td{padding:.4rem .25rem}.fn-pick select{max-width:100%}}
+    @media(max-width:420px){.fn-t{font-size:.82rem}.fn-t th,.fn-t td{padding:.4rem .25rem}.fn-row{width:100%}.fn-row label{flex:1 1 0}.fn-pick select{max-width:none}}
   </style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/fall-nitrogen#page", "name": "Is it cold enough for fall anhydrous? Soil temperature by county", "url": "https://agsist.com/fall-nitrogen", "description": "Measured soil temperature near 4 inches at the station nearest your county, its last 7 days, and the 50 degree line extension uses for fall anhydrous.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "inLanguage": "en-US"}, {"@type": "Dataset", "@id": "https://agsist.com/fall-nitrogen#data", "name": "Soil temperature near 4 inches, daily, fall nitrogen states", "description": "Daily mean soil temperature at 4 in (or 10 cm) from NOAA USCRN, USDA NRCS SCAN, the Iowa State Soil Moisture Network and the Kansas Mesonet, last 10 days per station, with the nearest station within 50 miles of each county in 12 Midwest and Plains states.", "url": "https://agsist.com/fall-nitrogen", "isBasedOn": ["https://www.ncei.noaa.gov/access/crn/", "https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network", "https://mesonet.agron.iastate.edu/agclimate/", "https://mesonet.k-state.edu/"], "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/fall-nitrogen.json"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Fall nitrogen soil temperature", "item": "https://agsist.com/fall-nitrogen"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When is it cold enough to apply fall anhydrous?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State, Nebraska and K-State all say to wait until soil at 4 inches is below 50 degrees F and trending cooler. Illinois uses the daily high of bare soil at 4 inches. Minnesota's best management practices use 6 inches. One cold morning is not enough; the soil has to stay there."}}, {"@type": "Question", "name": "Why 50 degrees?", "acceptedAnswer": {"@type": "Answer", "text": "Soil microbes turn ammonium into nitrate, and nitrate can leach or be lost to the air when soils are wet. That work slows a lot as soil cools below 50 degrees F. It does not stop, so later and colder is still better."}}, {"@type": "Question", "name": "Can I start at 55 degrees with a nitrification inhibitor?", "acceptedAnswer": {"@type": "Answer", "text": "Older Nebraska CropWatch advice put the line at 55 degrees F when a nitrification inhibitor goes on with the ammonia. The current Iowa State, K-State and Nebraska pages cited here still give 50 degrees and suggest an inhibitor on top of waiting, not as a reason to start sooner."}}, {"@type": "Question", "name": "Where should fall nitrogen not go on at all?", "acceptedAnswer": {"@type": "Answer", "text": "Sandy and other coarse soils, organic soils and very poorly drained soils, in the guidance from Illinois, Kansas and Nebraska. Illinois says no fall N for corn south of a line near Illinois Route 16. In Minnesota, fall nitrogen is restricted by rule from September 1 in vulnerable groundwater areas and some drinking water supply areas."}}, {"@type": "Question", "name": "Why is my county blank?", "acceptedAnswer": {"@type": "Answer", "text": "No station on this page is within 50 miles of the middle of the county, or the nearest one has not reported in the last 3 days. The page does not fill the gap with a model or a guess."}}, {"@type": "Question", "name": "Is the station reading the same as my field?", "acceptedAnswer": {"@type": "Answer", "text": "No. Residue, moisture, soil color and texture all change soil temperature. Bare ground warms and cools faster than ground under residue or sod. Use the station to see the trend, then check your own field with a soil thermometer at 4 inches in the afternoon."}}]}]}</script>
 </head>
@@ -126,11 +127,10 @@
       <p>Extension says to wait on fall anhydrous until soil at 4 inches stays below 50&deg;F. Pick your county or type a ZIP. You get the measured soil temperature at the nearest station, its last 7 days and how far away it is. No station within 50 miles, no number.</p>
 
       <div class="fn-pick" id="fn-pick" hidden>
-        <label>ZIP <input id="fn-zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="50010"></label>
-        <button type="button" id="fn-zipgo">Show</button>
-        <span class="fn-or">or</span>
-        <label>State <select id="fn-st"><option value="">Pick a state</option></select></label>
-        <label>County <select id="fn-co" disabled><option value="">Pick a county</option></select></label>
+        <div class="fn-row"><label>ZIP <input id="fn-zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="50010"></label>
+        <button type="button" id="fn-zipgo">Show</button></div>
+        <div class="fn-row"><label>or state <select id="fn-st"><option value="">Pick a state</option></select></label>
+        <label>County <select id="fn-co" disabled><option value="">Pick a county</option></select></label></div>
       </div>
       <p class="fn-status" id="fn-status" aria-live="polite"></p>
 
@@ -153,7 +153,7 @@
       <h2 id="how">How this page reads the soil</h2>
       <p>Every number is a measured daily mean from a soil sensor, never a model. The stations come from four networks: NOAA&rsquo;s Climate Reference Network (10 cm, 3.9 in), USDA NRCS&rsquo;s Soil Climate Analysis Network (4 in), the Iowa State Soil Moisture Network (4 in) and the Kansas Mesonet (10 cm). The depth of each station is printed next to its reading.</p>
       <p>For a county, the page uses the station closest to the middle of the county, up to 50 miles away. For a ZIP, the station closest to the ZIP. A station drops off the page when its newest reading is more than 3 days old, when it has fewer than 5 of the last 7 days, or when a reading jumps more than 18&deg;F in a day (a sensor problem, not weather).</p>
-      <p><b>Below 50&deg;F all week</b> means every one of the station&rsquo;s last 7 daily readings was under 50&deg;F. That is the condition extension describes. It is not a forecast. A warm week can push the soil back over 50&deg;F, and your field is not the station.</p>
+      <p><b>Under 50&deg;F all week</b> means every one of the station&rsquo;s last 7 daily readings was under 50&deg;F. That is the condition extension describes. It is not a forecast. A warm week can push the soil back over 50&deg;F, and your field is not the station.</p>
       <details class="fn-all" id="fn-all" hidden><summary>Every station, newest reading</summary><div id="fn-all-body"></div></details>
 
       <h2 id="questions">Questions</h2>
@@ -216,6 +216,11 @@ function fnRead(s, now, maxAge) {
   var state = latest === null ? null : latest >= 50 ? 'warm' : (below === week.length && week.length >= 5 ? 'holding' : 'dipping');
   return {latest: latest, change: latest === null || first === null ? null : Math.round((latest - first) * 10) / 10,
     below: below, n: week.length, state: stale ? 'stale' : state, age: age};
+}
+function fnRange(lo, hi) {
+  if (lo === null || hi === null) return '';
+  lo = Math.round(lo); hi = Math.round(hi);
+  return '<span style="white-space:nowrap">' + (lo === hi ? lo : lo + '&ndash;' + hi) + '&deg;F</span>';
 }
 function fnTrend(c) {
   if (c === null) return '';
@@ -332,18 +337,20 @@ function fnSpark(t, last, w, h) {
     var name = (DATA.state_names && DATA.state_names[st]) || '';
     if (!li) return '';
     var rt = li.querySelector('.fn-rt');
-    return '<p class="fn-fine fn-rule"><b>' + (RULE[st] ? esc(name) + ':' : 'Your state:') + '</b> ' +
+    return '<p class="fn-fine fn-rule">' + (RULE[st] ? '' : '<b>' + esc(name || 'Your state') + ':</b> ') +
       esc((rt ? rt.textContent : '').replace(/\s+/g, ' ').trim()) + ' <a href="#' + id + '">Sources</a></p>';
   }
   function summaryTable() {
-    var rows = fnStates(DATA, Date.now()), h = '<table class="fn-t"><caption>Soil near 4 in, by state, newest daily readings</caption><thead><tr><th scope="col">State</th><th scope="col">Stations</th><th scope="col">Below 50&deg;F all week</th><th scope="col">50&deg;F or warmer now</th><th scope="col">Range now</th></tr></thead><tbody>';
+    var rows = fnStates(DATA, Date.now()), h = '<table class="fn-t"><caption>Soil near 4 in, by state, newest daily readings</caption><thead><tr><th scope="col">State</th><th scope="col">Stations</th><th scope="col">Under 50&deg;F all week</th><th scope="col">50&deg;F+ now</th><th scope="col">Now</th></tr></thead><tbody>';
     rows.forEach(function (r) {
       h += '<tr><th scope="row">' + esc(r.name) + '</th><td>' + r.n + '</td><td>' + r.holding + '</td><td>' + r.warm + '</td><td>' +
-        (r.lo === null ? '' : Math.round(r.lo) + ' to ' + Math.round(r.hi) + '&deg;F') + '</td></tr>';
+        fnRange(r.lo, r.hi) + '</td></tr>';
     });
     return '<div class="fn-tw">' + h + '</tbody></table></div>';
   }
+  var CW = 640;
   function render() {
+    CW = Math.max(280, Math.min(720, Math.round((live.clientWidth || 640) - 34)));
     var h = '';
     if (PLACE) {
       var v = fnView(DATA, PLACE, Date.now());
@@ -358,7 +365,7 @@ function fnSpark(t, last, w, h) {
           h += '<p class="fn-big">' + Math.round(r.latest) + '&deg;F<span> on ' + esc(fnDate(s.last)) + '</span></p>' +
             '<p class="fn-sub">' + esc(v.trend ? v.trend[0].toUpperCase() + v.trend.slice(1) + '. ' : '') +
             r.below + ' of the last ' + r.n + ' days below 50&deg;F.</p>' +
-            '<div class="fn-chart" role="img" aria-label="' + esc('Daily soil temperature at ' + s.name + ', last ' + s.t.length + ' days, against the 50 degree line') + '">' + fnSpark(s.t, s.last, 640, 150) + '</div>';
+            '<div class="fn-chart" role="img" aria-label="' + esc('Daily soil temperature at ' + s.name + ', last ' + s.t.length + ' days, against the 50 degree line') + '">' + fnSpark(s.t, s.last, CW, 150) + '</div>';
         }
         h += '<p class="fn-sub">' + esc(v.why) + '</p>' +
           '<p class="fn-fine">Station: ' + esc(s.name) + ' (' + esc((DATA.net_labels && DATA.net_labels[s.net]) || s.net) + '), ' + v.mi + ' mi away. Soil at ' + esc(s.depth) + ', ' + esc(s.stat) + '.</p>' +
@@ -366,7 +373,7 @@ function fnSpark(t, last, w, h) {
       }
     }
     h += '<h2 id="states">Where the soil is, state by state</h2>' + summaryTable() +
-      '<p class="fn-fine">Readings updated ' + esc(String(DATA.updated_utc).slice(0, 10)) + '. &ldquo;Below 50&deg;F all week&rdquo; means all of a station&rsquo;s last 7 daily readings were under 50&deg;F.</p>';
+      '<p class="fn-fine">Readings checked ' + esc(fnDate(String(DATA.updated_utc).slice(0, 10)) + ', ' + String(DATA.updated_utc).slice(0, 4)) + '. &ldquo;Under 50&deg;F all week&rdquo; means all of a station&rsquo;s last 7 daily readings were under 50&deg;F.</p>';
     live.innerHTML = h;
   }
   function allStations() {
@@ -426,6 +433,11 @@ function fnSpark(t, last, w, h) {
       status(''); save(); render();
     }).catch(function () { if (my === seq) status('Could not find ZIP ' + z + '. Check it and try again.', true); });
   }
+  var rz = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(rz);
+    rz = setTimeout(function () { if (DATA && PLACE && Math.abs((live.clientWidth || 0) - 34 - CW) > 40) render(); }, 200);
+  });
   fetch('/data/fall-nitrogen.json', {cache: 'no-cache'}).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.stations || !d.stations.length) return;
     DATA = d;

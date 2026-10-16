@@ -595,13 +595,14 @@ def static_html(doc):
     rows = summary(doc)
     newest = max(r["last"] for r in rows)
     h = ['<p class="fn-static-lede">Station readings through %s. %d stations in %d states. '
-         'A station counts as &ldquo;below 50&deg;F all week&rdquo; when every one of its last 7 daily readings was under 50&deg;F.</p>'
+         'A station counts as &ldquo;under 50&deg;F all week&rdquo; when every one of its last 7 daily readings was under 50&deg;F.</p>'
          % (fmt_date(newest), sum(r["n"] for r in rows), len(rows))]
     h.append('<table class="fn-t"><caption>Soil near 4 in, by state, newest daily readings</caption><thead><tr>'
-             '<th scope="col">State</th><th scope="col">Stations</th><th scope="col">Below 50&deg;F all week</th>'
-             '<th scope="col">50&deg;F or warmer now</th><th scope="col">Range now</th></tr></thead><tbody>')
+             '<th scope="col">State</th><th scope="col">Stations</th><th scope="col">Under 50&deg;F all week</th>'
+             '<th scope="col">50&deg;F+ now</th><th scope="col">Now</th></tr></thead><tbody>')
     for r in rows:
-        rng = "" if r["lo"] is None else "%d to %d&deg;F" % (round(r["lo"]), round(r["hi"]))
+        lo, hi = (None, None) if r["lo"] is None else (round(r["lo"]), round(r["hi"]))
+        rng = "" if lo is None else '<span style="white-space:nowrap">%s&deg;F</span>' % (lo if lo == hi else "%d&ndash;%d" % (lo, hi))
         h.append('<tr><th scope="row">%s</th><td>%d</td><td>%d</td><td>%d</td><td>%s</td></tr>'
                  % (html.escape(r["name"]), r["n"], r["holding"], r["warm"], rng))
     h.append("</tbody></table>")
