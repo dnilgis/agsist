@@ -1605,9 +1605,8 @@ def storage_html(d, today, hist=None, basis=None):
     if pick:
         out += (f"<div class=\"st-you\" id=\"st-you\" aria-live=\"polite\" data-st=\"{pick}\">"
                 f"{storage_card(pick, blob[pick], hs_of(pick), bool(hst), meta)}</div>")
-    out += lead
-    out += (f"<p>Grain to hold = September 1 stocks plus the {yr} corn, soybean and sorghum crop ({_e(per_txt)}), "
-            f"over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p>")
+    out += lead[:-4] + (f" Grain to hold is September 1 stocks plus the {yr} corn, soybean and sorghum crop "
+                        f"({_e(per_txt)}); over 1.00&times; means more than the bins.</p>")
     if yr == 2026:
         # farmdoc's own conclusion, read 2026-10-15; it is about this year only
         out += (f"<p>That does not mean the bins run out. {FARMDOC} looked at how fast each state has cleared the "
