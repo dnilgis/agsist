@@ -126,6 +126,34 @@ def day(s):
         return None
 
 
+def when(s):
+    """'YYYY-MM-DD HH:MM[:SS]' (or with a T) -> datetime, else None."""
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})", str(s).strip())
+    if not m:
+        return None
+    try:
+        return datetime.datetime(*(int(x) for x in m.groups()))
+    except ValueError:
+        return None
+
+
+MIN_HOURS = 20            # hourly readings a day needs before its mean counts
+
+
+def hourly_means(points):
+    """[(datetime, degF)] -> {date: mean degF} for days with MIN_HOURS or more
+    readings. A reading stamped on the hour closes the hour before it (the
+    logger convention), so 00:00 belongs to the day that just ended. A day
+    still in progress never has enough hours to count."""
+    by = {}
+    for t, v in points:
+        if t is None or v is None:
+            continue
+        d = (t - datetime.timedelta(minutes=30)).date()
+        by.setdefault(d, []).append(v)
+    return {d: sum(vs) / len(vs) for d, vs in by.items() if len(vs) >= MIN_HOURS}
+
+
 def miles(lat1, lon1, lat2, lon2):
     r = 3958.8
     p1, p2 = math.radians(lat1), math.radians(lat2)
@@ -187,8 +215,12 @@ def get(url, tries=3, sleep=time.sleep, timeout=60):
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
-            last = "HTTP %s" % e.code
-            if e.code in (400, 404):
+            try:
+                body = e.read().decode("utf-8", "replace")[:400]
+            except Exception:  # noqa: BLE001
+                body = ""
+            last = "HTTP %s %s" % (e.code, " ".join(body.split()))
+            if e.code in (400, 404, 422):
                 break
         except Exception as e:  # noqa: BLE001
             last = "%s: %s" % (type(e).__name__, e)
@@ -277,8 +309,10 @@ def scan_station_list(doc):
 
 
 def scan_parse(doc):
-    """AWDB /data response -> {triplet: {date: degF}}. Each element block must
-    say STO, depth -4 and a degF unit, or the block is refused."""
+    """AWDB /data response, HOURLY -> {triplet: {date: daily mean degF}}.
+    Each element block must say STO, depth -4, HOURLY and a degF or degC
+    unit, or it is refused. AWDB's own DAILY STO value is not used: its
+    response does not say whether it is a mean or a single reading."""
     out = {}
     for s in doc if isinstance(doc, list) else []:
         trip = str(s.get("stationTriplet", ""))
@@ -292,10 +326,19 @@ def scan_parse(doc):
             unit = str(el.get("storedUnitCode") or el.get("originalUnitCode") or "")
             if unit.lower() not in ("degf", "degc"):
                 raise Refuse("SCAN %s STO unit %r" % (trip, unit))
-            rows = out.setdefault(trip, {})
-            for v in blk.get("values") or []:
-                rows[day(v.get("date"))] = to_f(num(v.get("value")), unit[-1])
+            dur = str(el.get("durationName") or "").upper()
+            if dur != "HOURLY":
+                raise Refuse("SCAN %s STO duration %r, expected HOURLY" % (trip, dur))
+            pts = [(when(v.get("date")), to_f(num(v.get("value")), unit[-1])) for v in blk.get("values") or []]
+            out[trip] = hourly_means(pts)
     return out
+
+
+def scan_url(trips, begin, today):
+    q = {"stationTriplets": ",".join(trips), "elements": "STO:-4:1", "duration": "HOURLY",
+         "beginDate": iso(begin) + " 00:00", "endDate": iso(today + datetime.timedelta(days=1)) + " 00:00",
+         "returnFlags": "false"}
+    return AWDB + "data?" + urllib.parse.urlencode(q)
 
 
 def fetch_scan(today, log):
@@ -305,14 +348,14 @@ def fetch_scan(today, log):
     if not meta:
         raise Refuse("AWDB lists no SCAN stations in the fall nitrogen states")
     begin = today - datetime.timedelta(days=DAYS + 2)
-    q = {"stationTriplets": ",".join(sorted(meta)), "elements": "STO:-4:1", "duration": "DAILY",
-         "beginDate": iso(begin), "endDate": iso(today), "returnFlags": "false"}
-    data = scan_parse(json.loads(get(AWDB + "data?" + urllib.parse.urlencode(q))))
+    data, trips = {}, sorted(meta)
+    for i in range(0, len(trips), 8):
+        data.update(scan_parse(json.loads(get(scan_url(trips[i:i + 8], begin, today)))))
     out = []
     for trip, m in sorted(meta.items()):
         try:
             out.append(station("SCAN", trip.split(":")[0], m["name"].title() + ", " + m["st"], m["st"],
-                               m["lat"], m["lon"], "4 in", "daily mean", data.get(trip, {}), today))
+                               m["lat"], m["lon"], "4 in", "daily mean of hourly readings", data.get(trip, {}), today))
         except Refuse as e:
             log("  scan %s: left out (%s)" % (trip, e))
     return out
@@ -320,7 +363,8 @@ def fetch_scan(today, log):
 
 # ---------------------------------------------------------------- ISU Soil Moisture Network (IEM)
 # Known names for the 4 in daily mean, with their unit. Any other column is ignored.
-ISUSM_COLS = {"t4_c_avg_qc": "C", "t4_c_avg": "C", "soil04t_avg": "F", "soil04t": "F", "tsoil_4in_f": "F"}
+ISUSM_COLS = {"t4_c_avg_qc": "C", "t4_c_avg": "C", "soil04t_avg": "F", "soil04t": "F", "soil04t_f": "F",
+              "tsoil_4in_f": "F", "soil04tavg": "F"}
 
 
 def isusm_station_list(doc):
@@ -329,7 +373,7 @@ def isusm_station_list(doc):
         p = f.get("properties") or {}
         sid = str(p.get("sid") or f.get("id") or "")
         g = (f.get("geometry") or {}).get("coordinates") or [None, None]
-        if sid:
+        if sid and p.get("online", True) is not False and not p.get("archive_end"):
             out[sid] = {"name": str(p.get("sname") or sid), "lat": g[1], "lon": g[0],
                         "st": str(p.get("state") or "IA")}
     return out
@@ -357,20 +401,39 @@ def isusm_parse(csv_text):
     return out
 
 
-def isusm_url(sids, today):
+def isusm_urls(sids, today):
+    """The IEM daily download, in the forms it may accept. The first run's
+    sts=YYYY-MM-DD drew HTTP 422 (the service wants a time zone on sts/ets).
+    Each form is tried in turn; the first one that returns a CSV with a known
+    4 in column is used."""
     begin = today - datetime.timedelta(days=DAYS + 2)
-    q = [("mode", "daily"), ("format", "comma"), ("todisk", "no"),
-         ("sts", iso(begin)), ("ets", iso(today))]
-    q += [("station", s) for s in sids]
-    q += [("vars", "soil04t")]
-    return IEM + "cgi-bin/request/isusm.py?" + urllib.parse.urlencode(q)
+    end = today + datetime.timedelta(days=1)
+    base = [("mode", "daily"), ("format", "comma"), ("todisk", "no")] + [("station", s) for s in sids]
+    forms = [
+        [("sts", iso(begin) + "T00:00Z"), ("ets", iso(end) + "T00:00Z"), ("vars", "soil04t")],
+        [("year1", begin.year), ("month1", begin.month), ("day1", begin.day),
+         ("year2", end.year), ("month2", end.month), ("day2", end.day), ("vars", "soil04t")],
+        [("sts", iso(begin) + "T00:00Z"), ("ets", iso(end) + "T00:00Z")],
+    ]
+    return [IEM + "cgi-bin/request/isusm.py?" + urllib.parse.urlencode(base + f) for f in forms]
+
+
+def isusm_fetch(sids, today, log):
+    errs = []
+    for u in isusm_urls(sids, today):
+        try:
+            return isusm_parse(get(u))
+        except Refuse as e:
+            errs.append(str(e)[-300:])
+            log("  isusm: %s" % errs[-1])
+    raise Refuse("no ISUSM request form worked: " + " | ".join(errs))
 
 
 def fetch_isusm(today, log):
     meta = isusm_station_list(json.loads(get(IEM + "geojson/network/ISUSM.geojson")))
     if not meta:
         raise Refuse("IEM lists no ISUSM stations")
-    data = isusm_parse(get(isusm_url(sorted(meta), today)))
+    data = isusm_fetch(sorted(meta), today, log)
     out = []
     for sid, m in sorted(meta.items()):
         try:
@@ -400,30 +463,35 @@ def ksm_station_list(csv_text):
 
 
 def ksm_parse(csv_text):
-    """stationdata CSV: TIMESTAMP, STATION and a SOILTMP10AVG* column in Celsius."""
+    """Hourly stationdata CSV -> {station: {date: daily mean degF}}. Needs
+    TIMESTAMP, STATION and a 10 cm average column (Celsius, per /rest/variables/:
+    SOILTMP10AVG from the thermistor first, else SOILTMP10AVG655 from the CS655
+    probe). Hourly, not the service's daily rows: a daily row stamped 00:00
+    does not say which day it covers."""
     lines = [ln for ln in csv_text.splitlines() if ln.strip()]
     if not lines:
         return {}
     head = [h.strip().upper() for h in lines[0].split(",")]
-    cols = [i for i, h in enumerate(head) if re.match(r"^SOILTMP10AVG\d*$", h)]
+    cols = [head.index(h) for h in ("SOILTMP10AVG", "SOILTMP10AVG655") if h in head]
     if not cols:
         raise Refuse("Kansas Mesonet data has no SOILTMP10AVG column (got %s)" % ",".join(head))
     if "TIMESTAMP" not in head or "STATION" not in head:
         raise Refuse("Kansas Mesonet data has no TIMESTAMP or STATION")
-    ti, si, out = head.index("TIMESTAMP"), head.index("STATION"), {}
+    ti, si, pts = head.index("TIMESTAMP"), head.index("STATION"), {}
     for ln in lines[1:]:
         p = [x.strip() for x in ln.split(",")]
         if len(p) != len(head):
             continue
         v = next((num(p[c]) for c in cols if num(p[c]) is not None), None)
-        out.setdefault(p[si], {})[day(p[ti])] = to_f(v, "C")
-    return out
+        pts.setdefault(p[si], []).append((when(p[ti]), to_f(v, "C")))
+    return {s: hourly_means(v) for s, v in pts.items()}
 
 
 def ksm_url(names, today):
     begin = today - datetime.timedelta(days=DAYS + 2)
-    q = {"stn": ",".join(names), "int": "day", "t_start": begin.strftime("%Y%m%d000000"),
-         "t_end": today.strftime("%Y%m%d000000"), "vars": "SOILTMP10AVG655"}
+    q = {"stn": ",".join(names), "int": "hour", "t_start": begin.strftime("%Y%m%d000000"),
+         "t_end": (today + datetime.timedelta(days=1)).strftime("%Y%m%d000000"),
+         "vars": "SOILTMP10AVG,SOILTMP10AVG655"}
     return KSM + "stationdata/?" + urllib.parse.urlencode(q)
 
 
@@ -431,13 +499,13 @@ def fetch_ksmeso(today, log):
     meta = ksm_station_list(get(KSM + "stationnames/"))
     data = {}
     names = sorted(meta)
-    for i in range(0, len(names), 20):
-        data.update(ksm_parse(get(ksm_url(names[i:i + 20], today))))
+    for i in range(0, len(names), 10):
+        data.update(ksm_parse(get(ksm_url(names[i:i + 10], today))))
     out = []
     for n, m in sorted(meta.items()):
         try:
             out.append(station("KSMESO", n, n + ", KS", "KS", m["lat"], m["lon"],
-                               "10 cm (3.9 in)", "daily mean", data.get(n, {}), today))
+                               "10 cm (3.9 in)", "daily mean of hourly readings", data.get(n, {}), today))
         except Refuse as e:
             log("  ksmeso %s: left out (%s)" % (n, e))
     return out
@@ -501,6 +569,37 @@ def assign(points, stations):
                 best = (i, d)
         out[fips] = [name, st, lat, lon] + ([best[0], int(round(best[1]))] if best else [])
     return out
+
+
+# ---------------------------------------------------------------- cross-check
+CHECK_NETS = ("ISUSM", "KSMESO")   # read through guessed request forms: must agree with neighbors
+CHECK_MI = 60
+CHECK_F = 12.0
+
+
+def cross_check(net, mine, others):
+    """Median gap between this network's newest readings and the nearest
+    station of another network (within CHECK_MI, same day). A unit or date
+    mistake shows up as a large gap; ordinary field-to-field spread does not.
+    Fewer than 3 pairs: no verdict (passes)."""
+    gaps = []
+    for s in mine:
+        best = None
+        for o in others:
+            if o["last"] != s["last"]:
+                continue
+            d = miles(s["lat"], s["lon"], o["lat"], o["lon"])
+            if d <= CHECK_MI and (best is None or d < best[0]):
+                best = (d, o)
+        if best and s["t"][-1] is not None and best[1]["t"][-1] is not None:
+            gaps.append(s["t"][-1] - best[1]["t"][-1])
+    if len(gaps) < 3:
+        return None
+    gaps.sort()
+    med = gaps[len(gaps) // 2]
+    if abs(med) > CHECK_F:
+        raise Refuse("%s reads %.1f F off its neighbors (median of %d pairs)" % (net, med, len(gaps)))
+    return med
 
 
 # ---------------------------------------------------------------- build
@@ -646,6 +745,15 @@ def main_run():
             results[net] = e
         except Exception as e:  # noqa: BLE001  a network's surprise never blocks the others
             results[net] = Refuse("%s: %s" % (type(e).__name__, e))
+    for net in CHECK_NETS:
+        got = results.get(net)
+        if isinstance(got, list):
+            others = [s for n, r in results.items() if n != net and isinstance(r, list) for s in r]
+            try:
+                med = cross_check(net, got, others)
+                print("  %s vs neighbors: %s" % (net, "no pairs" if med is None else "median gap %.1f F" % med))
+            except Refuse as e:
+                results[net] = e
     points = county_points(json.loads((ROOT / COUNTIES).read_text()))
     try:
         doc = build(results, today, now_utc, prev=load_prev(), points=points)
@@ -694,18 +802,32 @@ def probe():
         meta = scan_station_list(json.loads(st or "[]"))
         summ["scan_stations"] = len(meta)
         if meta:
-            q = {"stationTriplets": ",".join(sorted(meta)[:3]), "elements": "STO:-4:1", "duration": "DAILY",
+            few = sorted(meta)[:3]
+            q = {"stationTriplets": ",".join(few), "elements": "STO:-4:1", "duration": "DAILY",
                  "beginDate": iso(today - datetime.timedelta(days=DAYS)), "endDate": iso(today)}
-            save("scan-data-sample.json", AWDB + "data?" + urllib.parse.urlencode(q))
+            daily = save("scan-data-sample.json", AWDB + "data?" + urllib.parse.urlencode(q))
+            hourly = save("scan-hourly-sample.json", scan_url(few, today - datetime.timedelta(days=4), today))
+            # What AWDB's DAILY value is: compare it with the mean of the hours.
+            if daily and hourly:
+                hm = scan_parse(json.loads(hourly))
+                cmp = []
+                for s in json.loads(daily):
+                    for blk in s.get("data") or []:
+                        for v in blk.get("values") or []:
+                            m = hm.get(s.get("stationTriplet"), {}).get(day(v.get("date")))
+                            if m is not None and num(v.get("value")) is not None:
+                                cmp.append([s.get("stationTriplet"), v.get("date"), v.get("value"), round(m, 1)])
+                summ["scan_daily_vs_hourly_mean"] = cmp
     except Exception as e:  # noqa: BLE001
         summ["scan_error"] = str(e)
     g = save("isusm-network.geojson", IEM + "geojson/network/ISUSM.geojson")
-    save("isusm-daily-form.html.txt", IEM + "agclimate/hist/dailyRequest.php")
+    save("isusm-help.html.txt", IEM + "cgi-bin/request/isusm.py?help")
     try:
         meta = isusm_station_list(json.loads(g or "{}"))
         summ["isusm_stations"] = len(meta)
         if meta:
-            save("isusm-daily-sample.csv", isusm_url(sorted(meta)[:3], today))
+            for k, u in enumerate(isusm_urls(sorted(meta)[:3], today)):
+                save("isusm-daily-sample-%d.csv" % (k + 1), u)
     except Exception as e:  # noqa: BLE001
         summ["isusm_error"] = str(e)
     names = save("ksmeso-stationnames.csv", KSM + "stationnames/")
@@ -714,7 +836,12 @@ def probe():
         meta = ksm_station_list(names or "")
         summ["ksmeso_stations"] = len(meta)
         if meta:
-            save("ksmeso-data-sample.csv", ksm_url(sorted(meta)[:3], today))
+            few = sorted(meta)[:3]
+            save("ksmeso-hourly-sample.csv", ksm_url(few, today))
+            begin = today - datetime.timedelta(days=DAYS + 2)
+            q = {"stn": ",".join(few), "int": "day", "t_start": begin.strftime("%Y%m%d000000"),
+                 "t_end": today.strftime("%Y%m%d000000"), "vars": "SOILTMP10AVG,SOILTMP10AVG655"}
+            save("ksmeso-data-sample.csv", KSM + "stationdata/?" + urllib.parse.urlencode(q))
     except Exception as e:  # noqa: BLE001
         summ["ksmeso_error"] = str(e)
     # What would parse right now, network by network.
@@ -746,6 +873,10 @@ def selftest():
         fails.append(name + " (did not refuse)")
 
     today = datetime.date(2026, 10, 16)
+
+    def fixture(name):
+        txt = (ROOT / "test/fixtures/fall-nitrogen" / name).read_text()
+        return txt.split("\n", 1)[1] if txt.startswith("# http") else txt
     D = lambda n: today - datetime.timedelta(days=n)  # noqa: E731
 
     check("c_to_f 10 C = 50 F", c_to_f(10) == 50)
@@ -782,32 +913,65 @@ def selftest():
     refuses("too few days", lambda: series({today: 45.0, D(1): 45.0, D(2): 45.0, D(3): 45.0}, today))
     refuses("station outside the region", lambda: station("X", "1", "a", "TX", 30.2, -97.7, "4 in", "m", good, today))
 
-    # SCAN (AWDB) blocks: STO at -4 in only, unit read from the block.
-    doc = [{"stationTriplet": "2031:IA:SCAN", "data": [
-        {"stationElement": {"elementCode": "STO", "heightDepth": -4, "storedUnitCode": "degF"},
-         "values": [{"date": iso(D(i)), "value": 47.0 + i} for i in range(9)]},
-        {"stationElement": {"elementCode": "STO", "heightDepth": -8, "storedUnitCode": "degF"},
-         "values": [{"date": iso(today), "value": 99.0}]}]}]
-    p = scan_parse(doc)
-    check("scan -4 in kept, -8 in ignored", p["2031:IA:SCAN"][today] == 47.0)
+    # SCAN (AWDB): hourly STO at -4 in only, averaged per day; unit read from the block.
+    hrs = lambda d0, base: [{"date": "%s %02d:00" % (iso(d0 if h else d0 + datetime.timedelta(days=1)), h), "value": base + (h % 3)}  # noqa: E731
+                            for h in list(range(1, 24)) + [0]]
+    blk = {"stationElement": {"elementCode": "STO", "heightDepth": -4, "durationName": "HOURLY", "storedUnitCode": "degF"},
+           "values": [v for i in range(1, 10) for v in hrs(D(i), 45.0 + i)]}
+    doc = [{"stationTriplet": "2031:IA:SCAN", "data": [blk,
+        {"stationElement": {"elementCode": "STO", "heightDepth": -8, "durationName": "HOURLY", "storedUnitCode": "degF"},
+         "values": [{"date": iso(D(1)) + " 05:00", "value": 99.0}]}]}]
+    p = scan_parse(doc)["2031:IA:SCAN"]
+    # 24 hours of base + (h mod 3): 8 hours each of +0, +1, +2, so the mean is base + 1.
+    check("scan hourly -> daily mean, -8 in ignored", p[D(1)] == 47.0 and p[D(9)] == 55.0 and len(p) == 9)
+    check("scan 00:00 closes the day before", p[D(2)] == 48.0)
+    part = json.loads(json.dumps(doc))
+    part[0]["data"][0]["values"] += [{"date": iso(today) + " %02d:00" % h, "value": 40.0} for h in range(1, 13)]
+    check("scan day in progress does not count", today not in scan_parse(part)["2031:IA:SCAN"])
     bad = json.loads(json.dumps(doc))
     bad[0]["data"][0]["stationElement"]["storedUnitCode"] = "pct"
     refuses("scan unknown unit", lambda: scan_parse(bad))
+    # The real AWDB DAILY sample (probe, Oct 16 2026): refused, because the
+    # response does not say whether the daily value is a mean.
+    real = json.loads(fixture("scan-data-sample.json"))
+    check("real scan daily sample: STO, -4 in, degF", all(b["stationElement"]["elementCode"] == "STO" and b["stationElement"]["heightDepth"] == -4
+                                                      and b["stationElement"]["storedUnitCode"] == "degF" for s in real for b in s["data"]))
+    refuses("real scan DAILY block is not used", lambda: scan_parse(real))
+    sl = scan_station_list(json.loads(fixture("scan-stations.json")))
+    check("real scan station list: 31 in the fall N states", len(sl) == 31 and sl["2001:NE:SCAN"]["name"] == "Rogers Farm #1")
     sl = scan_station_list([{"stationTriplet": "2031:IA:SCAN", "name": "AMES", "latitude": 42.0, "longitude": -93.7},
                             {"stationTriplet": "2001:TX:SCAN", "name": "X", "latitude": 30, "longitude": -97}])
     check("scan list keeps fall N states", list(sl) == ["2031:IA:SCAN"])
+
+    # Real USCRN files: the column is found by name in the real HEADERS.txt.
+    rc = uscrn_columns(fixture("uscrn-HEADERS.txt"))
+    w, la, lo, rows = uscrn_parse(fixture("uscrn-sample.txt"), rc)
+    # Des Moines 17 E, Oct 15 2026: SOIL_TEMP_10_DAILY 17.3 C = 63.14 F. Oct 16 is -9999 (not in yet).
+    check("real uscrn Des Moines Oct 15 = 17.3 C", w == "54902" and abs(rows[datetime.date(2026, 10, 15)] - 63.14) < 1e-6)
+    check("real uscrn missing day", rows[datetime.date(2026, 10, 16)] is None)
 
     # ISUSM CSV: known column names only, unit from the name.
     csv = "station,valid,t4_c_avg_qc\nAEEI4,%s,9.5\nAEEI4,%s,M\n" % (iso(today), iso(D(1)))
     p = isusm_parse(csv)
     check("isusm C column -> F", abs(p["AEEI4"][today] - 49.1) < 1e-6 and p["AEEI4"][D(1)] is None)
     p = isusm_parse("station,valid,soil04t\nAEEI4,%s,49.1\n" % iso(today))
+    real = isusm_station_list(json.loads(fixture("isusm-network.geojson")))
+    check("real ISUSM network: online stations with names", "AEEI4" in real and real["AEEI4"]["name"] == "Ames - Horticulture ISU-RDF" and len(real) >= 20)
+    us = isusm_urls(["AEEI4"], today)
+    check("isusm request carries a time zone on sts", "sts=2026-10-04T00%3A00Z" in us[0] and "year1=2026" in us[1])
     check("isusm F column stays F", p["AEEI4"][today] == 49.1)
     refuses("isusm unknown column", lambda: isusm_parse("station,valid,soil_mystery\nA,%s,1\n" % iso(today)))
 
-    # Kansas Mesonet CSV.
-    p = ksm_parse("TIMESTAMP,STATION,SOILTMP10AVG655\n2026-10-16 00:00:00,Manhattan,10\n")
-    check("ksmeso C -> F", p["Manhattan"][today] == 50.0)
+    # Kansas Mesonet CSV: hourly, Celsius, thermistor column first.
+    ks = "TIMESTAMP,STATION,SOILTMP10AVG,SOILTMP10AVG655\n" + "".join(
+        "%s %02d:00:00,Manhattan,%s,11\n" % (iso(D(1) if h else today), h, "" if h == 5 else "10") for h in list(range(1, 24)) + [0])
+    p = ksm_parse(ks)
+    # 23 hours of 10 C (thermistor) and hour 5 from the CS655 (11 C): mean 10.0417 C = 50.075 F.
+    check("ksmeso hourly C -> daily mean F", abs(p["Manhattan"][D(1)] - (10 + 1 / 24) * 1.8 - 32) < 1e-9 and today not in p["Manhattan"])
+    # The real daily sample from the probe: one row a day is never enough hours.
+    real = ksm_parse(fixture("ksmeso-data-sample.csv"))
+    check("real ksmeso daily rows give no days", set(real) == {"Alma 5SE", "Ashland 8S", "Ashland Bottoms"} and all(not v for v in real.values()))
+    check("real ksmeso station list", ksm_station_list(fixture("ksmeso-stationnames.csv"))["Alma 5SE"]["lat"] == "38.966150")
     refuses("ksmeso no soil column", lambda: ksm_parse("TIMESTAMP,STATION,TEMP2MAVG\n2026-10-16,Manhattan,10\n"))
     check("ksmeso station list", ksm_station_list("NAME,LATITUDE,LONGITUDE\nManhattan,39.2,-96.6\n")["Manhattan"]["lat"] == "39.2")
 
@@ -838,6 +1002,13 @@ def selftest():
                                  dict(s, id="SCAN:2", net="SCAN", last=iso(D(9)))]})
     check("failed network carries fresh stations only", d["networks"]["SCAN"]["carried"] == 1 and len(d["stations"]) == MIN_STATIONS + 1)
     refuses("too few stations", lambda: build({"USCRN": many[:3]}, today, "x", log=lambda m: None))
+
+    # Cross-check: a network reading in the wrong unit is refused.
+    base = [dict(s, lat=41.5 + i * 0.1, lon=-93.3, last=iso(today), t=s["t"][:-1] + [48.0]) for i in range(4)]
+    near = [dict(b, lat=b["lat"] + 0.05, t=b["t"][:-1] + [46.0]) for b in base]
+    check("cross-check passes a close network", cross_check("ISUSM", near, base) == -2.0)
+    refuses("cross-check refuses a Celsius mix-up", lambda: cross_check("ISUSM", [dict(b, t=b["t"][:-1] + [9.0]) for b in near], base))
+    check("cross-check without pairs gives no verdict", cross_check("ISUSM", near[:2], base) is None)
 
     # Stamp.
     pg = "<p>a</p><!--FALLN:STATIC-->old<!--/FALLN:STATIC-->"
