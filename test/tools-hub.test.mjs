@@ -151,7 +151,7 @@ test("find box and chips filter the cards, hide empty groups, and say when nothi
 });
 
 test("byline, not-covered note and structured data", () => {
-  assert.match(html, /By <a href="\/about">Sigurd Lindquist, Certified Crop Adviser \(CCA\)<\/a>/);
+  assert.match(html, /By <a href="\/about">Sigurd Lindquist, CCA<\/a>/);
   assert.match(html, /id="not-here">Not on this site yet</);
   assert.match(html, /No irrigation scheduling tools\./);
   const ld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
