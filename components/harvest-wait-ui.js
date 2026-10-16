@@ -303,7 +303,7 @@
     if (c.saved != null) L.push('Saved by waiting = ' + money(c.now.perAcre) + ' - ' + money(c.then.perAcre) + ' = ' + money(c.saved) + ' an acre');
     if (c.breakEvenBu != null) L.push('Break-even loss = ' + money(c.saved) + ' / ' + money(o.bid) + ' = ' + c.breakEvenBu.toFixed(2) + ' bu an acre');
     if (c.net != null) L.push('Your loss = ' + o.lossPerWeek + ' bu a week x ' + D + ' / 7 = ' + c.lossBu.toFixed(2) + ' bu x ' + money(o.bid) + ' = ' + money(c.lossDollars) + '\nNet = ' + money(c.saved) + ' - ' + money(c.lossDollars) + ' = ' + money(c.net) + ' an acre');
-    if (o.cost.kind === 'lp') {
+    if (o.cost && o.cost.kind === 'lp') {
       var g = H.gq3FuelPerBu(m, to, o.cost.price);
       if (g != null) L.push('Cross-check, Purdue GQ-3 column dryer, ' + pct(m) + ' to ' + pct(to) + ': ' + Math.round(H.gq3Btu(m, to)).toLocaleString('en-US') + ' BTU x ' + money(o.cost.price) + ' / 92,000 = ' + cents(g) + ' a bushel (read between the table\'s columns)');
     }
