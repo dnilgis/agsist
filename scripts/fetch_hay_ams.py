@@ -181,9 +181,10 @@ def parse_report(text):
                 tons[k] = [float(v.group(i).replace(",", "")) for i in (2, 3, 4)]
 
     # the market comment: the paragraph after the "...for week ending" line
-    comment = ""
+    comment, heading = "", ""
     for i, ln in enumerate(lines):
         if re.search(r"weighted average report for week ending|report for week ending", ln, re.I):
+            heading = ln
             para, j = [], i + 1
             while j < len(lines) and not lines[j]:
                 j += 1
@@ -254,21 +255,24 @@ def parse_report(text):
                 want = tons[k][0]
                 if abs(got - want) > 1.0 + 0.005 * want:
                     return None, "%s rows add to %.2f tons but the report says %.0f: a table was misread" % (k, got, want)
-    return {"title": title, "date": date, "week_ending": week, "last_reported": last_rep,
+    return {"title": title, "heading": heading, "date": date, "week_ending": week, "last_reported": last_rep,
             "tons": {k: {"week": v[0], "last": v[1], "year": v[2]} for k, v in tons.items()},
             "comment": comment[:600], "rows": rows, "per_bale_tables": per_bale}, None
 
 
 # ------------------------------------------------------------------ feed
-def title_ok(src, title):
-    """The report's own title must say hay (or straw) and name the state."""
-    t = title or ""
+def title_ok(src, title, heading=""):
+    """The report's own title must name the state, and the title or the
+    report's own heading line ("Direct Hay Weighted Average Report for week
+    ending ...") must say hay or straw. Alabama's title is "Alabama Direct
+    Report (Bi-Weekly)": the hay is only in its heading."""
+    t = (title or "") + " " + (heading or "")
     if not re.search(r"\b(hay|straw)\b", t, re.I):
         return False
     if src.get("match") and not re.search(src["match"], t, re.I):
         return False
-    st = src["state"]
-    return bool(re.search(r"\b%s\b" % re.escape(STATES.get(st, st)), t, re.I) or re.search(r",\s*%s\b" % st, t))
+    st, ti = src["state"], title or ""
+    return bool(re.search(r"\b%s\b" % re.escape(STATES.get(st, st)), ti, re.I) or re.search(r",\s*%s\b" % st, ti))
 
 
 def kind_of(title):
@@ -285,7 +289,7 @@ def merge(existing, src, rep, err, now_iso, slug):
     if b.get("date") and rep["date"] < b["date"]:
         b["status"] = {"ok": True, "note": "report %s older than %s held" % (rep["date"], b["date"]), "checked": now_iso}
         return b
-    b.update({k: rep[k] for k in ("title", "date", "week_ending", "last_reported", "tons", "comment", "rows", "per_bale_tables")})
+    b.update({k: rep[k] for k in ("title", "heading", "date", "week_ending", "last_reported", "tons", "comment", "rows", "per_bale_tables")})
     b["kind"] = kind_of(rep["title"])
     b["biweekly"] = bool(re.search(r"bi-?weekly", rep["title"], re.I))
     b["slug"] = slug
@@ -332,7 +336,7 @@ def read_one(src, slug, got):
     rep, why = parse_report(text)
     if rep is None:
         return None, why
-    if not title_ok(src, rep["title"]):
+    if not title_ok(src, rep["title"], rep.get("heading")):
         return None, "report %s title %r does not name %s hay" % (slug, rep["title"][:90], src["state"])
     return rep, None
 
@@ -370,7 +374,7 @@ def parse_listing(html_text):
     out = {}
     for m in LINK_RE.finditer(html_text or ""):
         t = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(3))).strip()
-        if t and re.search(r"\b(hay|straw)\b", t, re.I):
+        if t and re.search(r"\b(hay|straw|forage)\b|\bdirect report\b", t, re.I):
             out[t] = m.group(1) or m.group(2)
     return out
 
@@ -410,7 +414,7 @@ def probe(root, scan=None):
             raw, text, err = fetch(slug, tries=1)
             if text:
                 t = title_of([norm(x) for x in text.splitlines()])
-                if re.search(r"\b(hay|straw)\b", t, re.I):
+                if re.search(r"\b(hay|straw)\b", t, re.I) or re.search(r"\bhay weighted average report\b", text[:3000], re.I):
                     listing[t] = slug
                     save_text(rd, slug, raw, text)
                     print("scan %s: %s" % (slug, t))
@@ -528,6 +532,12 @@ def selftest():
                         '<li><a href="https://www.ams.usda.gov/mnreports/ams_1245.pdf">Joplin Regional Stockyards</a></li>'
                         '<li><a href="https://mymarketnews.ams.usda.gov/viewReport/2911">Missouri Weekly Hay Summary</a></li>')
     ck("listing keeps hay links only", lst == {"South Dakota Direct Hay Report": "3183", "Missouri Weekly Hay Summary": "2911"}, lst)
+    ck("listing keeps a state 'Direct Report' link (Alabama's title has no 'hay')",
+       parse_listing('<a href="/mnreports/ams_3050.pdf">Alabama Direct Report (Bi-Weekly)</a>') == {"Alabama Direct Report (Bi-Weekly)": "3050"})
+    alrep, why = read_one({"id": "al-direct", "state": "AL", "match": "direct"}, "3050", (None, (FIX / "ams_3050-2026-10-01.txt").read_text(), None))
+    ck("Alabama is used: the hay is in its heading line, the state in its title", alrep is not None, why)
+    ck("a title that never says hay anywhere is refused",
+       not title_ok({"state": "AL"}, "Alabama Direct Report (Bi-Weekly)", "Feeder Cattle Weighted Average Report for week ending 10/2/2026"))
     ck("listing fills a missing slug by title", pick_slug({"state": "MO"}, lst) == "2911")
 
     import tempfile
