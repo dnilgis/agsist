@@ -3,6 +3,7 @@
  *   1. The GDU-before-frost card sets the hybrid's rating next to the GDUs a
  *      May 1 planting gets (2,626 and 2,139 to Sep 18 by default) and makes no
  *      maturity call: its inputs are rough zone averages (Oct 16 benchmark).
+ *   (Soybean rows: corrected Oct 16 from an unsourced 0.2-0.5 band to the saved UW figure.)
  *   2. The card says its fall frost dates are approximate and unchecked
  *      against a station (the spring ones run about 13 days early), and
  *      prints no raw "&asymp;" (the note is set as text).
@@ -98,7 +99,7 @@ test("southern WI and MN: the hint's own 108-day hybrid is not called short", { 
   } finally { await browser.close(); srv.close(); }
 });
 
-test("soybean penalty prints the 0.2 to 0.5 bu/a/day range, worked by hand", { skip }, async () => {
+test("soybean penalty is UW's southern WI 2.1 bu/a a week past Apr 10, worked by hand", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -107,15 +108,19 @@ test("soybean penalty prints the 0.2 to 0.5 bu/a/day range, worked by hand", { s
     await pg.waitForFunction(() => /Soybean Yield Penalty/.test(document.getElementById("penalty-section").textContent));
     const rows = await pg.$$eval("#penalty-section tbody tr", (trs) => trs.map((tr) => [...tr.cells].map((c) => c.textContent.trim())));
     const row = (d) => rows.find((r) => r[0] === d);
-    // May 5: 4 days. 0.2 x 4 = 0.8, 0.5 x 4 = 2.0. 55 - 2.0 = 53, 55 - 0.8 = 54.2. 53/55 = 96%, 54.2/55 = 99%.
-    assert.equal(row("May 5")[2], "-0.8 to -2.0 bu/a");
-    assert.equal(row("May 5")[3], "~53–54 bu/ac");
-    assert.equal(row("May 5")[1], "96–99%");
-    // Jun 15: 45 days. 9.0 to 22.5 bu. 55 - 22.5 = 32.5 -> 33 (toFixed rounds half away here), 46. 59% to 84%.
-    assert.equal(row("Jun 15")[2], "-9.0 to -22.5 bu/a");
-    assert.equal(row("Jun 15")[1], "59–84%");
-    assert.match(row("Jun 15")[4], /middle 18\.0/);
-    assert.equal(row("May 1")[2], "-");
+    // Corrected Oct 16 to the saved UW source (uw-soy-pivot-mid-may): 2.1 bu/a a week past
+    // roughly Apr 10 in southern WI = 0.3 bu/a a day, on a 55 bu/a example maximum.
+    // May 5: 25 days x 0.3 = 7.5 bu. 55 - 7.5 = 47.5 -> 48 bu. 47.5/55 = 86.4% -> 86%.
+    assert.equal(row("May 5")[2], "-7.5 bu/a");
+    assert.equal(row("May 5")[3], "~48 bu/ac");
+    assert.equal(row("May 5")[1], "86%");
+    // Jun 15: 66 days x 0.3 = 19.8 bu. 55 - 19.8 = 35.2 -> 35 bu. 35.2/55 = 64%.
+    assert.equal(row("Jun 15")[2], "-19.8 bu/a");
+    assert.equal(row("Jun 15")[1], "64%");
+    assert.match(row("Jun 15")[4], /66 days past Apr 10/);
+    // May 1: 21 days x 0.3 = 6.3 bu; Apr 10 is UW's start, no loss.
+    assert.equal(row("May 1")[2], "-6.3 bu/a");
+    assert.equal(row("Apr 10")[2], "-");
   } finally { await browser.close(); srv.close(); }
 });
 
