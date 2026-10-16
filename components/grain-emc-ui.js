@@ -333,7 +333,7 @@
     out.className = 'emc-mout v-' + (a.call || 'none');
     var s = '';
     if (!plenum && S.fan > 0) s += 'With the fan adding ' + S.fan + ' F, that air reaches the grain at ' + fmt(a.fanTF, 0) + ' F and ' + fmt(a.fanRh, 0) + '%. ';
-    s += g().name + ' in that air heads for <b>' + emcText(a.emc) + '</b>. ';
+    s += g().name + ' in that air ' + (soy() ? 'head' : 'heads') + ' for <b>' + emcText(a.emc) + '</b>. ';
     if (mode === 'dry') s += S.current == null ? 'Type your grain\'s moisture at the top to judge drying.' : 'For grain at ' + fmt(S.current, 1) + '%: <b>' + callWord(a.call) + '</b>.';
     else s += 'Against your ' + fmt(target(), 1) + '% target: <b>' + (a.call ? HEAD[a.call] : 'no answer') + '</b>.';
     out.innerHTML = s;

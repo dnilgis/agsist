@@ -26,14 +26,14 @@ const H = (o) => Object.assign({ mode: "hold", grain: "corn", target: 15.5, fan:
 
 /* ---------------- equations ---------------- */
 
-test("constants are the checked sets, and soybeans stay off", () => {
+test("constants are the checked sets (soybeans: test/grain-emc-soybeans.test.mjs)", () => {
   const [cp, he] = E.GRAINS.corn.fits;
   assert.deepEqual([cp.model, cp.A, cp.B, cp.C], ["chung-pfost", 374.34, 0.18662, 31.696]);
   assert.deepEqual([he.model, he.K, he.N, he.C], ["henderson", 8.6541e-5, 1.8634, 49.81]);
   const w = E.GRAINS.wheat.fits[0];
   assert.deepEqual([w.model, w.K, w.N, w.C], ["henderson", 2.3007e-5, 2.2857, 55.815]);
-  assert.deepEqual([...Object.keys(E.GRAINS)], ["corn", "wheat"]);
-  assert.match(page, /<p class="emc-soy">Soybeans: not yet\. Corn numbers do not fit beans\./);
+  assert.deepEqual([...Object.keys(E.GRAINS)], ["corn", "wheat", "soybeans"]);
+  assert.ok(!/Soybeans: not yet|not on the calculator/.test(page + ui), "the old soybean notice is gone");
 });
 
 test("corn at 50 F and 60%, worked by hand on both fits", () => {
@@ -201,7 +201,7 @@ test("runs and best window", () => {
 /* ---------------- page copy ---------------- */
 
 test("page: title, H1, byline, voice, structured data and the FAQ word for word", () => {
-  assert.match(page, /<title>Grain EMC calculator: when to run aeration fans \| AGSIST<\/title>/);
+  assert.match(page, /<title>Grain EMC calculator for corn, soybeans and wheat \| AGSIST<\/title>/);
   assert.match(page, /<h1>When to run aeration fans: will they dry your grain or wet it\?<\/h1>/);
   assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
   // Sig, Oct 15: no name in the hero; the byline sits at the bottom, after the credit line
