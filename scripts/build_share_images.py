@@ -181,6 +181,7 @@ LINES = {
     "lrp": ("LRP livestock insurance", "Today's LRP rates for cattle and hogs, and what RMA's record says."),
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
+    "rain-print-business": ("Rain Print for businesses", "Each customer's own year of rain, printed and framed. From 5 prints, shipping included."),
 }
 
 # Pages that borrow another page's card (drawn first, then pointed at).
