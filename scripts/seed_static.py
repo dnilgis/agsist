@@ -897,7 +897,7 @@ def harvest_lead(cp, rd):
     return ('<section class="cd-panel cd-hl" aria-labelledby="cd-hl-t">'
             '<div class="cd-panel-hd"><span class="cd-panel-t" id="cd-hl-t">Harvest pace by state vs average</span>'
             f'<span class="cd-fresh">week ending {rd.isoformat()}</span></div><div class="cd-panel-b">'
-            f'<div class="tblscroll"><table class="cd-tbl"><caption>Percent harvested, week ending {_mdy(rd)}, '
+            f'<div class="tblscroll"><table class="cd-tbl cd-hl-t"><caption>Percent harvested, week ending {_mdy(rd)}, '
             'and points ahead (+) or behind (&minus;) the five-year average</caption>'
             '<tr><th>State</th><th style="text-align:right">Corn</th><th style="text-align:right">Soybeans</th></tr>'
             + "".join(rows) +
