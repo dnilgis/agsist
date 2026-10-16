@@ -293,6 +293,17 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .ff-tile .v{font-size:.92rem;}
   .ff-tile .n{font-size:0.66rem;line-height:1.25;}
   .ff-tw-n{overflow-x:visible;}
+  .ff-stack thead{display:none;}
+  .ff-stack tr{display:block;padding:.45rem .5rem;border-bottom:1px solid var(--border);}
+  .ff-stack td{display:block;padding:.08rem 0!important;border:0!important;text-align:left;}
+  .ff-stack td[data-th]:not(:first-child)::before{content:attr(data-th) ": ";color:var(--text-muted);font-family:inherit;}
+  .ff-t th{font-size:0.6rem;}
+  .ff-t th,.ff-t td{padding:.3rem .14rem;letter-spacing:0;}
+  .ff-t th{white-space:normal;font-size:0.64rem;}
+  .ff-t td,.ff-t td.tl{font-size:0.72rem;}
+  .ff-tw{border-width:1px;}
+  #tab-manure .ff-t th,#tab-manure .ff-t td{overflow-wrap:anywhere;padding-left:.1rem;padding-right:.1rem;}
+  .ff-t .tg td{font-size:0.7rem;letter-spacing:0;}
   #nc-table th,#nc-table td{padding:.34rem .22rem;}
   #nc-table td.tl{font-size:0.74rem;}
   #nc-table th{letter-spacing:0;}
@@ -680,7 +691,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-h2">Corn Silage P&#x2082;O&#x2085; &amp; K&#x2082;O Rates (A2809 Table 7.4)</div>
 <div class="ff-tw" tabindex="0" role="region" aria-label="Corn silage P₂O₅ and K₂O rates table, scrolls sideways"><table class="ff-t">
 <thead>
-  <tr><th class="tl" rowspan="2">Silage Yield Goal (ton/ac, 65% moisture)</th><th colspan="6">Soil Test Level</th></tr>
+  <tr><th class="tl" rowspan="2">Silage goal, ton/ac at 65% moisture</th><th colspan="6">Soil Test Level</th></tr>
   <tr><th class="re">V.Low</th><th style="color:var(--gold)">Low</th><th class="gr">Opt</th><th>High</th><th class="dim">V.High</th><th class="dim">Ex.High</th></tr>
 </thead>
 <tbody>
@@ -925,12 +936,13 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <div class="ff-card">
     <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">How much (A2809 Ch. 8)</span></div>
-    <div class="ff-row"><span class="ff-rl">Zinc, low test, crop with medium or high need</span><span class="ff-rv">2&ndash;4 lb/ac band, 4&ndash;8 broadcast</span></div>
+    <div class="ff-row"><span class="ff-rl">Zinc, low test, banded</span><span class="ff-rv">2&ndash;4 lb/ac</span></div>
+    <div class="ff-row"><span class="ff-rl">Zinc, low test, broadcast</span><span class="ff-rv">4&ndash;8 lb/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Manganese, low test, high need</span><span class="ff-rv">5 lb/ac in the row</span></div>
     <div class="ff-row"><span class="ff-rl">Boron, low test, high need</span><span class="ff-rv">2 lb/ac (3 if very low)</span></div>
     <div class="ff-row"><span class="ff-rl">Sulfur, corn and small grains</span><span class="ff-rv">10&ndash;25 lb/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Sulfur, forage legumes topdressed</span><span class="ff-rv">15&ndash;25 lb/ac</span></div>
-    <div class="ff-cn" style="margin-top:.45rem">Confirm zinc need with a plant analysis first. Manganese is unlikely to be short below pH 6.8; broadcast Mn does not work. Over 6% organic matter, Mn goes by pH, not the test.</div>
+    <div class="ff-cn" style="margin-top:.45rem">Zinc and boron rates are for crops with a medium or high need; confirm zinc need with a plant analysis first. Manganese is unlikely to be short below pH 6.8; broadcast Mn does not work. Over 6% organic matter, Mn goes by pH, not the test.</div>
   </div>
 </div>
 <div class="ff-note"><strong>Tissue tests:</strong> A2809 prints no corn or soybean tissue table, so none is printed here. Use the sufficiency ranges your lab prints with the result.</div>
@@ -986,17 +998,17 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <p class="ff-sub">Western bean cutworm, European corn borer, bean leaf beetle, leaf feeders on soybeans and spider mites: use your state's current field crop pest guide (Wisconsin's is A3646). I print a threshold here only after checking it against a saved copy of its source.</p>
 <div class="ff-note" id="pest-sources"><strong>Where these numbers come from</strong> (read Oct 15, 2026): University of Wisconsin <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a> (Feb 2000), black cutworm and armyworm worksheets; SDSU Extension, <a href="https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk">Monitor Your Corn for Corn Rootworm Adults</a>, silk feeding section; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/watch-out-these-silk-feeding-insects">Watch out for these silk feeding insects</a>, Jul 9, 2024 (also the Japanese beetle row); University of Wisconsin, <a href="https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf">Corn IPM insect scouting sheet L023</a>, corn rootworm worksheet, root protection for the following year; University of Minnesota Extension, <a href="https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid">Scouting for soybean aphid</a>, economic threshold through R5; Iowa State ICM News, <a href="https://crops.extension.iastate.edu/post/why-use-economic-threshold-soybean-aphid">Why use the economic threshold for soybean aphid?</a>, Aug 28, 2017.</div>
 <div class="ff-h2">Herbicide MOA Reference: Common Classes</div>
-<div class="ff-tw" tabindex="0" role="region" aria-label="Herbicide MOA Reference: Common Classes table, scrolls sideways"><table class="ff-t">
+<div class="ff-tw" tabindex="0" role="region" aria-label="Herbicide groups table"><table class="ff-t ff-stack">
 <thead><tr><th class="tl">MOA Group</th><th class="tl">Site of Action</th><th class="tl">Common AI / Products</th><th class="tl">Crops</th><th class="tl">Resistance Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl"><span class="moa-badge moa-9">Group 9</span></td><td class="tl">EPSPS inhibitor</td><td class="tl">Glyphosate (Roundup)</td><td class="tl">RR corn &amp; soybean</td><td class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance across the Corn Belt; confirm weed ID before relying on glyphosate alone</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-2">Group 2</span></td><td class="tl">ALS inhibitor</td><td class="tl">Classic (chlorimuron), FirstRate (cloransulam), Pursuit (imazethapyr), Harmony GT (thifensulfuron)</td><td class="tl">Corn, soybean, others</td><td class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance in waterhemp, horseweed, giant ragweed</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-14">Group 14</span></td><td class="tl">PPO inhibitor</td><td class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td class="tl">Soybean</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Increasing waterhemp resistance: rotate with other MOAs</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine (Aatrex), metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state. Check your label and state rules</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:0.775rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan (trifluralin), Sonalan (ethalfluralin)</td><td class="tl">Soybean</td><td class="tl" style="font-size:0.775rem">Pre-emergent only. Incorporate into soil.</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-4">Group 4</span></td><td class="tl">Synthetic auxin</td><td class="tl">2,4-D, dicamba, MCPA</td><td class="tl">Corn, small grains; Xtend soybeans</td><td class="tl" style="font-size:0.775rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-other">Group 27</span></td><td class="tl">HPPD inhibitor</td><td class="tl">Callisto, Laudis, Impact, Balance</td><td class="tl">Corn</td><td class="tl" style="font-size:0.775rem">Strong on waterhemp; some populations now resist it (see below).</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-9">Group 9</span></td><td data-th="Site of action" class="tl">EPSPS inhibitor</td><td data-th="Products" class="tl">Glyphosate (Roundup)</td><td data-th="Crops" class="tl">RR corn &amp; soybean</td><td data-th="Resistance" class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance across the Corn Belt; confirm weed ID before relying on glyphosate alone</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-2">Group 2</span></td><td data-th="Site of action" class="tl">ALS inhibitor</td><td data-th="Products" class="tl">Classic (chlorimuron), FirstRate (cloransulam), Pursuit (imazethapyr), Harmony GT (thifensulfuron)</td><td data-th="Crops" class="tl">Corn, soybean, others</td><td data-th="Resistance" class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance in waterhemp, horseweed, giant ragweed</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-14">Group 14</span></td><td data-th="Site of action" class="tl">PPO inhibitor</td><td data-th="Products" class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td data-th="Crops" class="tl">Soybean</td><td data-th="Resistance" class="tl" style="font-size:0.775rem;color:var(--gold)">Increasing waterhemp resistance: rotate with other MOAs</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-5">Group 5</span></td><td data-th="Site of action" class="tl">PSII inhibitor</td><td data-th="Products" class="tl">Atrazine (Aatrex), metribuzin</td><td data-th="Crops" class="tl">Corn primarily; metribuzin on soybeans</td><td data-th="Resistance" class="tl" style="font-size:0.775rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state. Check your label and state rules</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-1">Group 1</span></td><td data-th="Site of action" class="tl">ACCase inhibitor</td><td data-th="Products" class="tl">Select Max, Poast, Assure II</td><td data-th="Crops" class="tl">Broadleaf crops</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-3">Group 3</span></td><td data-th="Site of action" class="tl">Microtubule inhibitor</td><td data-th="Products" class="tl">Treflan (trifluralin), Sonalan (ethalfluralin)</td><td data-th="Crops" class="tl">Soybean</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">Pre-emergent only. Incorporate into soil.</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-4">Group 4</span></td><td data-th="Site of action" class="tl">Synthetic auxin</td><td data-th="Products" class="tl">2,4-D, dicamba, MCPA</td><td data-th="Crops" class="tl">Corn, small grains; Xtend soybeans</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
+  <tr><td data-th="Group" class="tl"><span class="moa-badge moa-other">Group 27</span></td><td data-th="Site of action" class="tl">HPPD inhibitor</td><td data-th="Products" class="tl">Callisto, Laudis, Impact, Balance</td><td data-th="Crops" class="tl">Corn</td><td data-th="Resistance" class="tl" style="font-size:0.775rem">Strong on waterhemp; some populations now resist it (see below).</td></tr>
 </tbody></table></div>
 <div class="ff-alert"><strong>Waterhemp management priority across the Corn Belt:</strong> Confirmed resistance to Groups 2, 5, 9, 14 (and in some populations, 27) makes waterhemp the highest resistance-management priority in most corn and soybean regions. Use 3+ MOA programs with effective soil residual, and do not rely on post-only programs.</div>
 </div><!-- /tab-pest -->
