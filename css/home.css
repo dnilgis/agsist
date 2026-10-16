@@ -2265,3 +2265,8 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 #bids-noloc .hn-c{color:var(--text-dim);font-size:.8125rem}
 #bids-noloc .hn-n{grid-column:2/-1;color:var(--text-muted);font-size:.78rem}
 #bids-noloc .hn-fine{margin:.35rem 0 0;color:var(--text-muted);font-size:.78rem;line-height:1.45}
+/* 2026-10-16: first-screen byline under the hero ask */
+.hb-by{margin:.5rem 0 0;font-size:.78rem;line-height:1.45;color:var(--text-muted)}
+.hb-by a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
+.hb-by a+a{margin-left:.35rem}
+.hb-by a:last-child::before{content:"\00b7";display:inline-block;margin-right:.35rem;color:var(--text-muted);text-decoration:none}
