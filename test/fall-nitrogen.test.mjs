@@ -207,6 +207,8 @@ test('browser: empty state, county pick, blank county and ZIP', { skip }, async 
         const u = r.request().url(), h = { 'access-control-allow-origin': '*' };
         if (u.includes('/data/fall-nitrogen.json')) return withData ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(data) }) : r.fulfill({ status: 404, body: '' });
         if (u.includes('/bids/data/zips/')) return r.fulfill({ headers: h, contentType: 'application/json', body: JSON.stringify({ 50010: [42.1, -93.6] }) });
+        // the empty case: the page as it ships before any station read (stamp emptied), so a stamped page on disk does not hide the empty state
+        if (!withData && /\/fall-nitrogen(\?|$)/.test(u)) return r.fulfill({ contentType: 'text/html', body: page.replace(/(<!--FALLN:STATIC-->)[\s\S]*?(<!--\/FALLN:STATIC-->)/, '$1\n<p class="fn-empty"><b>Soil readings load after the first station read.</b></p>\n$2') });
         if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
         return r.abort();
       });
