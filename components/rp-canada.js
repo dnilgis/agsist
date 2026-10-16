@@ -268,11 +268,13 @@
     return null;
   }
   function dayNum(d) { return Date.UTC(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8)) / 86400000; }
+  /* no-store: NOAA rewrites each file daily and S3 sends no cache rules, so a size or a
+     piece kept from yesterday must never be mixed with today's file */
   function rangeText(F, url, a, b) {
-    return F(url, { headers: { Range: 'bytes=' + a + '-' + b } }).then(function (r) { return r.text(); });
+    return F(url, { cache: 'no-store', headers: { Range: 'bytes=' + a + '-' + b } }).then(function (r) { return r.text(); });
   }
   function fileSize(F, url) {
-    return F(url, { method: 'HEAD' }).then(function (r) {
+    return F(url, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
       var n = parseInt(r.headers && r.headers.get ? r.headers.get('content-length') : '', 10);
       if (!(n > 0)) throw new Error('NOAA didn’t say how big the station’s file is.');
       return n;
@@ -393,10 +395,27 @@
     var url = S3 + (gz ? '/csv.gz/by_station/' + sid + '.csv.gz' : '/csv/by_station/' + sid + '.csv');
     var p = F(url).then(function (r) {
       if (!gz) return r.text();
-      return new Response(r.body.pipeThrough(new root.DecompressionStream('gzip'))).text();
+      return r.arrayBuffer().then(gunzipAll);
     }).then(function (text) { return { data: porRows(text) }; });
     POR_CACHE[sid] = p.then(null, function (e) { delete POR_CACHE[sid]; throw e; });
     return POR_CACHE[sid];
+  }
+  /* NOAA's .csv.gz files are several gzip pieces back to back (3 for Qu'Appelle 1),
+     and the browser's DecompressionStream reads one piece only. A piece starts
+     with 1F 8B 08: each such spot is tried as the next piece's start, and kept
+     when the bytes before it unpack whole (a chance 1F 8B 08 inside a piece
+     doesn't, and is passed over). */
+  function gunzip(bytes) { return new Response(new Blob([bytes]).stream().pipeThrough(new root.DecompressionStream('gzip'))).text(); }
+  function gunzipAll(buf) {
+    var b = new Uint8Array(buf), cuts = [];
+    for (var i = 1; i + 2 < b.length; i++) if (b[i] === 0x1f && b[i + 1] === 0x8b && b[i + 2] === 0x08) cuts.push(i);
+    var parts = [], start = 0, k = 0;
+    var next = function () {
+      if (k >= cuts.length) return gunzip(b.subarray(start)).then(function (t) { parts.push(t); return parts.join(''); });
+      var c = cuts[k++];
+      return gunzip(b.subarray(start, c)).then(function (t) { parts.push(t); start = c; return next(); }, function () { return next(); });
+    };
+    return next();
   }
   function porRows(text) {
     var lines = String(text).split('\n').filter(function (l) { return /,(PRCP|MDPR|DAPR|TMAX|TMIN),/.test(l); });
@@ -411,7 +430,7 @@
 
   /* The comparison: the station's 1991-2020 monthly averages (mm), each spread
      evenly over its month's days, as ACIS normal rows [date, inches]. A station
-     without its own (fewer than 20 whole years in some month: every CoCoRaHS
+     without its own (fewer than 15 whole years in some month: every CoCoRaHS
      gauge, which started in 2013) borrows the nearest station's within
      NORMAL_KM, and the print says whose (normalFrom). None near: it fails, and
      the page says there's no comparison line, as for a US station with no normal. */
@@ -454,7 +473,7 @@
       usualLabel: '1991–2020 station average',
       source: function (src) { return 'Data Source: Environment and Climate Change Canada' + (src === 'N' ? ' and CoCoRaHS Canada volunteers' : '') + ', through NOAA’s GHCN-Daily'; },
       units: 'Units', mm: 'mm and cm', inch: 'Inches', lang: 'Language',
-      noNormal: 'This station has fewer than 20 whole years of 1991–2020 on record, so there’s no usual-year line. Pick an Environment Canada station under Weather station for one.'
+      noNormal: 'This station has fewer than 15 whole years of 1991–2020 on record, so there’s no usual-year line. Pick an Environment Canada station under Weather station for one.'
     },
     fr: {
       gauge: 'Station météo', from: 'de', near: 'près de',
@@ -463,7 +482,7 @@
       usualLabel: 'moyenne 1991–2020 de la station',
       source: function (src) { return 'Source des données : Environnement et Changement climatique Canada' + (src === 'N' ? ' et les bénévoles de CoCoRaHS Canada' : '') + ', par le GHCN-Daily de la NOAA'; },
       units: 'Unités', mm: 'mm et cm', inch: 'Pouces', lang: 'Langue',
-      noNormal: 'Cette station a moins de 20 années complètes entre 1991 et 2020, donc pas de ligne d’année normale. Choisissez une station d’Environnement Canada sous Station météo pour en avoir une.'
+      noNormal: 'Cette station a moins de 15 années complètes entre 1991 et 2020, donc pas de ligne d’année normale. Choisissez une station d’Environnement Canada sous Station météo pour en avoir une.'
     }
   };
   function words(lang) { return T[lang === 'fr' ? 'fr' : 'en']; }
@@ -586,6 +605,8 @@
     ['.rp-prod[data-choice="framed12x18"] .rp-prod-t', 'text', null, 'Encadré'],
     ['.rp-prod[data-choice="print12x18"] .rp-prod-t', 'text', null, 'Tirage'],
     ['.rp-prod[data-choice="digital"] .rp-prod-t', 'text', null, 'Fichier numérique'],
+    ['.rp-opts-note', 'text', 'Staircase steps up with every rain, so a flat stretch is a dry stretch and a tall step is a big rain. Roots draws each day as its own line, snow stacked above the ground and rain soaking down below it. The averages show the station\u2019s 1991\u20132020 average for each month under its total. Remarkable days marks the coldest and hottest days, the frosts, the biggest snow, the wettest week, and any month or year that stands out in that station\u2019s own history, if it has kept records long enough to tell.',
+      'L’escalier monte à chaque pluie : un palier plat est une période sèche, une haute marche une grosse pluie. Les racines montrent chaque jour à part, la neige empilée au-dessus du sol et la pluie qui descend dessous. Les moyennes donnent la moyenne 1991\u20132020 de la station sous le total de chaque mois. Les journées remarquables marquent les journées les plus froides et les plus chaudes, les gels, la plus grosse neige, la semaine la plus arrosée, et tout mois ou toute année qui ressort dans l’historique de la station, si elle a assez d’années pour le dire.'],
     ['#rp-units-mm', 'text', null, 'mm et cm'],
     ['#rp-units-in', 'text', null, 'Pouces']
   ];
@@ -601,6 +622,10 @@
     return how === 'tail0' ? kids[0] : kids[kids.length - 1];
   }
   var SAVED = null;
+  // FR-REVIEW: the label ideas (Planted, Harvest done...) in French
+  var PRESETS_FR = { 'Planted': 'Semis', 'Harvest done': 'Récolte finie', 'Turnout': 'Pâturage', 'Calving': 'Vêlage', 'Weaning': 'Sevrage',
+    'First cutting': '1re coupe', 'Hail': 'Grêle', 'Wedding': 'Mariage', 'Born': 'Naissance', 'Moved in': 'Emménagé', 'First frost': 'Premier gel',
+    'Anniversary': 'Anniversaire', 'Retired': 'Retraite' };
   /* lang: 'en' | 'fr'; ca: a Canadian design. English for a US design puts every word back. */
   function applyPage(doc, lang, ca) {
     if (!doc || !doc.querySelector) return;
@@ -624,11 +649,16 @@
       else if (r[1] === 'tail' || r[1] === 'tail0') { var t = textNode(el, r[1]); if (t) t.nodeValue = want; }
       else el.textContent = want;
     });
+    // the label ideas: French words on a French design (13 letters at most, like any label)
+    Array.prototype.forEach.call(doc.querySelectorAll('#rp-presets button[data-en]'), function (bt) {
+      var en = bt.getAttribute('data-en');
+      bt.textContent = fr && PRESETS_FR[en] ? PRESETS_FR[en] : en;
+    });
     if (doc.documentElement && doc.documentElement.setAttribute) doc.documentElement.setAttribute('lang', fr ? 'fr-CA' : 'en');
   }
 
   root.AgRpCanada = {
-    applyPage: applyPage, PAGE: PAGE,
+    applyPage: applyPage, PAGE: PAGE, PRESETS_FR: PRESETS_FR,
     PROV: PROV, POSTAL_PROV: POSTAL_PROV, parseQuery: parseQuery, isCanadian: isCanadian, provOf: provOf, defaultsFor: defaultsFor,
     placeShort: placeShort, placeLong: placeLong, fsaTown: fsaTown, geoPick: geoPick, geoAsk: geoAsk,
     isSid: isSid, niceName: niceName, nearby: nearby, stations: stations, stationIndex: stationIndex, stationMeta: stationMeta, setIndex: setIndex,

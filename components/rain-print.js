@@ -1475,6 +1475,8 @@
     if (!box) return;
     box.hidden = !ca;
     $('rp-ca-hint').hidden = ca;
+    // the US story links don't help a Canadian draw
+    if ($('rp-stories')) $('rp-stories').hidden = ca;
     var lc = LOC();
     radios('rp-units').forEach(function (r) { r.checked = ca && r.value === lc.units; });
     radios('rp-lang').forEach(function (r) { r.checked = ca && r.value === lc.lang; });
@@ -2009,6 +2011,7 @@
     if (!d || dayIndex(yy, d) < 0) return '';
     // this year's gift: a day past the preview isn't drawn yet, and it is on the print made in January (2026-10-15)
     if (PREVIEW && ST.gift && yy === ST.year && d > PREVIEW.last) return 'On the January print: ' + (w ? w + ', ' : '') + shortDate(d) + '. The preview stops at ' + shortDate(PREVIEW.last) + '.';
+    if (FR()) { var pf = d.split('-').map(Number); return 'Sur le tirage : ' + (w ? w + ', ' : '') + (pf[2] === 1 ? '1er' : pf[2]) + ' ' + (root.AgRainArt ? root.AgRainArt.MON_FR[pf[1] - 1] : MON3[pf[1] - 1]); }
     return 'On the print: ' + (w ? w + ', ' : '') + shortDate(d);
   }
   function rowProblems() {
@@ -2301,6 +2304,8 @@
     var nf = function (v, d) { var t = (+v).toFixed(d); return fr ? t.replace('.', ',') : t; };
     var rain = function (inch, day) { return mm ? nf(inch * 25.4, day ? 1 : 0) + ' mm' : nf(inch, 2) + ' in'; };
     var snow = function (inch) { return mm ? nf(inch * 2.54, 0) + ' cm' : nf(inch, 1) + ' in'; };
+    // the year's snowfall from the days themselves (as the print does), not from inches already rounded to a tenth
+    var snowRaw = D.snow === null || D.snow === undefined ? null : DATA.days.reduce(function (t, x) { return x.v === null || x.v === undefined || !(x.s > 0) ? t : t + x.s; }, 0);
     var dayW = function (iso) { var p = String(iso).split('-').map(Number); return fr ? (p[2] === 1 ? '1er' : p[2]) + ' ' + ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'][p[1] - 1] : longDate(iso); };
     var u = usualWords();
     if (PREVIEW) $('rp-preview-line').innerHTML = fr ? '<b>Aperçu jusqu’au ' + esc(dayW(PREVIEW.last)) + '.</b> Le tirage final montre toute l’année.' : '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
@@ -2321,13 +2326,13 @@
       (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') && !(NORM_WAIT && ST.cmp === 'normal') ? ' <b>' + esc(ST.cmp === 'normal' ? caWords().noNormal : L('The station history didn’t load, so there’s no comparison line.', 'L’historique de la station n’a pas chargé, donc pas de ligne de comparaison.')) + '</b>' : '');
     var rows = fr ? [
       [PREVIEW ? 'Précipitations jusqu’ici' : 'Précipitations', rain(D.total) + ' (pluie et neige fondue)'],
-      ['Neige', D.snow !== null && D.snow !== undefined ? snow(D.snow) : 'pas de relevés de neige complets à cette station'], ['Jours de pluie ou de neige', D.wet], ['Plus longue période sèche', D.dryMax.len + ' jours'],
+      ['Neige', snowRaw !== null ? snow(snowRaw) : 'pas de relevés de neige complets à cette station'], ['Jours de pluie ou de neige', D.wet], ['Plus longue période sèche', D.dryMax.len + ' jours'],
       ['Journée la plus arrosée', D.max.v > 0 ? dayW(D.max.date) + ', ' + rain(D.max.v, true) : D.wet ? 'inconnue : un relevé de plusieurs jours pourrait en cacher une plus grosse' : 'pas de pluie mesurable'],
       ['Jours de traces', D.trace], ['Jours sans relevé', D.missing],
       ['Comparé avec', OV ? OV.label + ', ' + rain(OV.total) + (PREVIEW ? ' (mêmes jours)' : '') : 'rien']
     ] : [
       [PREVIEW ? 'Precipitation so far' : 'Precipitation', rain(D.total) + ' (rain and melted snow)'],
-      ['Snowfall', D.snow !== null && D.snow !== undefined ? snow(D.snow) : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
+      ['Snowfall', snowRaw !== null ? snow(snowRaw) : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
       ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + rain(D.max.v, true) : D.wet ? 'not known: a report that covers several days could hold a bigger one' : 'no measurable rain'],
       ['Trace days', D.trace], ['Days with no report', D.missing],
       ['Compared with', OV ? OV.label + ', ' + rain(OV.total) + (PREVIEW ? ' (same days)' : '') : 'nothing']
@@ -2858,7 +2863,8 @@
      back to rain-print?paid=<product>&s=<session> (PAID below). */
   var PICK = 'framed12x18', NONAME_OK = false;
   var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' };
-  function pickPrice(id) { var J = OJ().j || {}; return typeof J[id] === 'number' ? money(J[id]) : ''; }
+  // a Canadian design reads "US$19": the prices are in US dollars
+  function pickPrice(id) { var J = OJ().j || {}; return typeof J[id] === 'number' ? (caOrder() ? 'US' : '') + money(J[id]) : ''; }
   function setPick(id) {
     if (PRODUCTS.indexOf(id) < 0) return;
     if (blockedPick(id)) id = 'digital';   // not shipped to Canada yet (data/rain-print.json canada.ships)
@@ -2887,7 +2893,7 @@
     var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(OJ().j, PICK, TODAY);
     // the prices at the top and the shipping line follow the country (Canada: data/rain-print.json canada)
     var OJj = OJ().j || {};
-    PRODUCTS.forEach(function (id) { var el = doc.querySelector('[data-price="' + id + '"]'); if (el && typeof OJj[id] === 'number') el.textContent = money(OJj[id]); });
+    PRODUCTS.forEach(function (id) { var el = doc.querySelector('[data-price="' + id + '"]'); if (el && typeof OJj[id] === 'number') el.textContent = (caOrder() ? 'US' : '') + money(OJj[id]); });
     if (OJj.ships_within) $('rp-ships').textContent = OJj.ships_within;
     $('rp-arrive').textContent = arr;
     $('rp-arrive').hidden = !arr;
@@ -3936,8 +3942,9 @@
      if it is closed (its month next), and says so (panel 5, 2026-10-15: a tap
      did nothing visible on a phone, and a 4th did nothing at all) */
   LABEL_PRESETS.forEach(function (w) {
-    var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
+    var b = doc.createElement('button'); b.type = 'button'; b.textContent = w; b.setAttribute('data-en', w);
     b.addEventListener('click', function () {
+      var w = b.textContent;   // the word as shown (French on a French design: components/rp-canada.js)
       endExample(); wordsEvent('day');
       for (var i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'l').value) {
         $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; TOUCHED[i] = false;

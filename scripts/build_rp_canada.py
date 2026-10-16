@@ -21,7 +21,8 @@ Per station:
   last: the last day with a rain report (YYYY-MM-DD), f: the first year of its rain record,
   nm:  1991-2020 monthly normals in mm, or null. A month counts only when every
        one of its days has a report (a multi-day total inside the month counts
-       for its days); a normal needs 20 such years in every one of the twelve
+       for its days); a normal needs 15 such years (ECCC's own floor for its
+       normals) in every one of the twelve
        months. ny: the fewest years any month had. Computed here from the
        station's own daily record; it is not ECCC's published normal.
 
@@ -54,7 +55,7 @@ LAST_FROM = 2000          # a station whose rain record ends before this year is
 SOURCES = {"C", "N"}
 MISS_OK, MISS_BLOCK = 10, 31
 NORMAL_YEARS = (1991, 2020)
-NORMAL_MIN = 20
+NORMAL_MIN = 15   # ECCC publishes normals for stations with at least 15 years of the 30 (climate normals readme)
 FIELDS = ["id", "n", "p", "la", "lo", "el", "src", "q", "last", "nm", "ny", "f"]
 
 
