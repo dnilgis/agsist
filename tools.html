@@ -144,7 +144,7 @@
     .tf-lab { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
     #tf-q { width: 100%; box-sizing: border-box; min-height: 46px; padding: .6rem .85rem; font: inherit; font-size: 1rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 9px; }
     #tf-q:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
-    .tf-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tf-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
     .tf-chips button, .tf-none button { flex: none; min-height: 36px; padding: .3rem .75rem; font: inherit; font-size: .85rem; color: var(--text-dim); background: none; border: 1px solid var(--border); border-radius: 18px; cursor: pointer; }
     .tf-chips button[aria-pressed="true"] { color: var(--text); border-color: var(--gold); background: var(--surface); font-weight: 700; }
     .tf-none { color: var(--text-dim); margin: 14px 0 0; }
@@ -167,7 +167,7 @@
       .tool-card .short { display: block; font-size: .85rem; color: var(--text-dim); line-height: 1.35; }
       .tool-card .icon { display: none; }
       .tool-card .tag { margin-top: 6px; }
-      .tf-chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
+      .tf-chips { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
     }
     @media (max-width: 380px) {
       .tools-grid { grid-template-columns: 1fr; }
