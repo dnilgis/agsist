@@ -122,7 +122,7 @@ var DISEASE_BEAN = [
 /* ─── SEASON LINE ────────────────────────────────────────────────────── */
 function seasonLine(now){
   var mo = now.getMonth()+1, y = now.getFullYear();
-  if(mo >= 7) return 'Planting is over for '+y+'. Put in your ZIP to see next spring’s numbers for your spot: your nearest NOAA station’s frost odds and heat units, and your county’s final planting dates.';
+  if(mo >= 7) return 'Planting is done for '+y+'. Your ZIP gives next spring\u2019s numbers: your nearest NOAA station\u2019s frost odds and heat units, and your county\u2019s final planting dates.';
   if(mo <= 3) return 'Planting has not started. Put in your ZIP to see your nearest NOAA station’s frost odds and heat units and your county’s final planting dates. Soil temperature means something once fields start to work in April.';
   return 'Planting season. Put in your ZIP for soil temperature now, a 5-day soil forecast, your station’s frost odds and your county’s final planting date.';
 }
