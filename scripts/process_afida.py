@@ -44,6 +44,44 @@ def norm_country(c):
     return c or "Unknown"
 
 
+def interest_col(hdr):
+    """Index of the AFIDA interest-type column (owned vs leasehold), or None.
+    Matched by header text, never by position; a file without one gets no split."""
+    for i, h in enumerate(hdr):
+        if re.search(r"\binterest\b", h, re.I) and re.search(r"type|kind|nature", h, re.I):
+            return i
+    return None
+
+
+def interest_kind(v):
+    """'owned', 'lease' or None. Anything not plainly one of the two stays unsorted,
+    and unsorted acres keep the page from printing a split (it needs 99% sorted)."""
+    t = str(v or "").lower()
+    if not t:
+        return None
+    if "lease" in t:
+        return "lease"
+    if re.search(r"\bfee\b|\bown", t):
+        return "owned"
+    return None
+
+
+def interest_split(rows):
+    """Owned vs lease acres for one year's rows, plus every raw value seen, so a
+    person can check the sorting. None when the file had no interest column."""
+    if not rows or all(r.get("interest") is None for r in rows):
+        return None
+    raw, out = defaultdict(float), {"owned": 0.0, "lease": 0.0, "unsorted": 0.0, "nocountry": 0.0}
+    for r in rows:
+        raw[r["interest"] or "(blank)"] += r["ac"]
+        out[interest_kind(r["interest"]) or "unsorted"] += r["ac"]
+        if re.match(r"\s*99[89]\b", r["country"]):
+            out["nocountry"] += r["ac"]
+    res = {k: round(v) for k, v in out.items()}
+    res["raw"] = {k: round(v) for k, v in sorted(raw.items(), key=lambda kv: -kv[1])}
+    return res
+
+
 def read_year(path):
     wb = load_workbook(path, read_only=True)
     ws = wb.worksheets[0]
@@ -57,6 +95,7 @@ def read_year(path):
         if n not in ix:
             raise SystemExit(f"{path}: missing column {n!r} — headers: {hdr[:12]}")
     li = {c: ix.get(c) for c in LAND_COLS}
+    ii = interest_col(hdr)
     out = []
     for r in rows:
         if r is None or r[ix["Number of Acres"]] is None:
@@ -89,6 +128,7 @@ def read_year(path):
             "country": norm_country(r[ix["Country"]]),
             "ac": ac,
             "land": land,
+            "interest": str(r[ii] or "").strip() if ii is not None else None,
         })
     return out
 
@@ -163,6 +203,7 @@ def main():
                          for f, n, s, a in top_counties],
         "counties_with_holdings": sum(1 for c in county.values() if c["y"].get(latest)),
         "no_fips_acres_by_year": {y: round(v) for y, v in sorted(no_fips.items())},
+        "by_interest": interest_split(latest_rows),
         "method": ("Row-sum of Number of Acres. It runs above USDA's published "
                    "headline (2024: 47,241,820 vs 46.3M in the AFIDA report). AFIDA is "
                    "self-reported disclosure data; leaseholds of 10+ years are "
@@ -177,6 +218,7 @@ def main():
     print("top countries:", list(national["by_country"])[:6])
     print("land types:", national["by_land_type"])
     print("missing years (honest gaps):", national["missing_years"])
+    print("owned vs lease:", national["by_interest"] or "no interest-type column found")
 
 
 if __name__ == "__main__":

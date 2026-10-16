@@ -12,7 +12,7 @@
   <link rel="preload" href="/components/styles.css?v=24" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=24">
   <script src="/components/util.js?v=17"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -36,7 +36,7 @@
   <meta name="twitter:site" content="@agsist">
 
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much American farmland does China own?", "acceptedAnswer": {"@type": "Answer", "text": "Not much. China is not among the top holders in the AFIDA files; Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea."}}, {"@type": "Question", "name": "Is 46 million acres a lot?", "acceptedAnswer": {"@type": "Answer", "text": "USDA puts it at 3.6% of privately held agricultural land. In USDA’s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest."}}, {"@type": "Question", "name": "Why is so much of it forest?", "acceptedAnswer": {"@type": "Answer", "text": "Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest, the single biggest reason raw AFIDA totals get misread as \"foreign corn ground.\""}}, {"@type": "Question", "name": "My county shows nothing. Does that mean no foreign ownership?", "acceptedAnswer": {"@type": "Answer", "text": "It means no disclosed holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof."}}, {"@type": "Question", "name": "Where can I get the raw data?", "acceptedAnswer": {"@type": "Answer", "text": "USDA FSA publishes the detailed holdings files annually, linked below. This page totals them with an open-source script without changing any figure."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much American farmland does China own?", "acceptedAnswer": {"@type": "Answer", "text": "Not much: 247,659 acres at the end of 2024, about 0.5% of the foreign-held acres in USDA's AFIDA detail files (our sum of the rows; Hong Kong is listed on its own, 144,090 acres). Canada holds 16.1 million. Chinese-connected holdings are politically sensitive and several states have restricted them, but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea."}}, {"@type": "Question", "name": "Is 46 million acres a lot?", "acceptedAnswer": {"@type": "Answer", "text": "USDA puts it at 3.6% of privately held agricultural land. In USDA’s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest."}}, {"@type": "Question", "name": "Why is so much of it forest?", "acceptedAnswer": {"@type": "Answer", "text": "Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest, the single biggest reason raw AFIDA totals get misread as \"foreign corn ground.\""}}, {"@type": "Question", "name": "My county shows nothing. Does that mean no foreign ownership?", "acceptedAnswer": {"@type": "Answer", "text": "It means no disclosed holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof."}}, {"@type": "Question", "name": "Where can I get the raw data?", "acceptedAnswer": {"@type": "Answer", "text": "USDA FSA publishes the detailed holdings files annually, linked below. This page totals them with an open-source script without changing any figure."}}]}
   </script>
 
   <style>
@@ -44,6 +44,8 @@
     .fl-hero{padding:26px 0 2px}
     .fl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
     .fl-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
+    .fl-facts{margin:.8rem 0 0;max-width:820px;font-size:.92rem;line-height:1.6;color:var(--text-muted,#8a948f)}
+    .fl-facts span{display:block;margin-top:.35rem}.fl-facts b{color:var(--text,#e6ebe9)}.fl-facts a{color:var(--gold)}
     .fl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
     .fl-sub strong{color:#e6ebe9}
     
@@ -207,6 +209,8 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     <p class="fl-kicker page-kicker">USDA AFIDA disclosures &middot; 2010&ndash;2024 &middot; county by county</p>
     <h1>Who owns American farmland from abroad</h1>
     <p class="fl-sub page-lede">USDA counts <strong>46.3 million acres</strong> of U.S. agricultural land held by foreign investors at the end of 2024, 3.6% of privately held agricultural land, and nearly double 2010, spread across <strong>2,559 counties</strong>. The biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s disclosure files.</p>
+    <p class="fl-facts"><span><b>China:</b> 247,659 acres, 0.5% of foreign-held acres (USDA AFIDA, Dec 31, 2024).</span>
+      <span id="fl-confirm"><b>Who is behind it:</b> 2.9 million of the 47.2 million acres in USDA&rsquo;s detail files (6.2%) name no foreign country (USDA codes 998 and 999). The files also say which holdings are owned and which are leases of 10 years or more. We have not added up that split yet, so there is no owned-outright number here; <a href="https://farmdocdaily.illinois.edu/?p=42961" rel="noopener">farmdoc daily (Sep 23, 2026)</a> has one.</span></p>
     <p class="fl-by">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; USDA AFIDA filings through Dec 31, 2024</p>
   </header>
 
@@ -286,7 +290,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
   <section class="fl-panel fl-faq-panel" aria-labelledby="fl-faq-t">
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-faq-t">Questions people actually ask</span></div>
     <div class="fl-panel-b fl-faq">
-      <details><summary>How much American farmland does China own?</summary><p>Not much. China is not among the top holders in the AFIDA files; Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea.</p></details>
+      <details><summary>How much American farmland does China own?</summary><p>Not much: 247,659 acres at the end of 2024, about 0.5% of the foreign-held acres in USDA's AFIDA detail files (our sum of the rows; Hong Kong is listed on its own, 144,090 acres). Canada holds 16.1 million. Chinese-connected holdings are politically sensitive and several states have restricted them, but by acreage they are a small slice. Since 2023 the filings carry specific flags for secondary interests from China, Iran, Russia, and North Korea.</p></details>
       <details><summary>Is 46 million acres a lot?</summary><p>USDA puts it at 3.6% of privately held agricultural land. In USDA&rsquo;s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest.</p></details>
       <details><summary>Why is so much of it forest?</summary><p>Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest, the single biggest reason raw AFIDA totals get misread as "foreign corn ground."</p></details>
       <details><summary>My county shows nothing. Does that mean no foreign ownership?</summary><p>It means no <em>disclosed</em> holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof.</p></details>
@@ -312,13 +316,13 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="/vendor/leaflet-1.9.4/leaflet.js"></script>
+<script src="/vendor/topojson-client-3.1.0/topojson-client.min.js"></script>
 <script>
 (function(){
   'use strict';
   var DATA='/data/afida/';
-  var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
+  var GEO='/vendor/us-atlas-3.0.1/counties-10m.json';
   var $=function(id){return document.getElementById(id);};
   var fmt=function(n){return Math.round(n).toLocaleString();};
   var county=null, nat=null, map=null, layer=null, breaks=null;
@@ -471,6 +475,18 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     $('fl-s-forest').textContent=forest?Math.round(forest/tot*100)+'%':'-';
   }
 
+  /* Owned vs 10+ year lease, from our own tabulation (scripts/process_afida.py writes
+     nat.by_interest when the AFIDA file has an interest-type column). Shown only when the
+     owned and lease buckets cover at least 99% of the row-summed acres; otherwise the
+     static line stays, which says the split is not tabulated. */
+  function interestLine(){
+    var bi=nat&&nat.by_interest, tot=nat&&nat.total_by_year&&nat.total_by_year[String(nat.latest_year)];
+    if(!bi||!tot||!(bi.owned>0)||!(bi.lease>0)) return;
+    if((bi.owned+bi.lease)/tot<0.99) return;
+    var el=$('fl-confirm'); if(!el) return;
+    var pct=function(v){ return (100*v/tot).toFixed(1)+'%'; };
+    el.innerHTML='<b>Owned or leased:</b> of '+fmt(tot)+' acres in USDA&rsquo;s '+nat.latest_year+' detail files, '+fmt(bi.owned)+' ('+pct(bi.owned)+') are owned and '+fmt(bi.lease)+' ('+pct(bi.lease)+') are leases of 10 years or more. Our own sum of the file&rsquo;s interest column. '+fmt(bi.nocountry||0)+' acres name no foreign country (codes 998 and 999).';
+  }
   function boot(){
     Promise.all([
       fetch(DATA+'county.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
@@ -479,7 +495,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     ]).then(function(res){
       county=res[0]; nat=res[1]; var topo=res[2];
       if(!county||!nat){ $('fl-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:13.2px">Data unavailable</div>'; return; }
-      stats(); natChart(); tables();
+      stats(); natChart(); tables(); interestLine();
       if(!topo||typeof L==='undefined'||typeof topojson==='undefined'){
         $('fl-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:13.2px">Map unavailable: the tables and chart above carry the story</div>'; return;
       }
