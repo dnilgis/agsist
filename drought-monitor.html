@@ -192,7 +192,8 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-wk { width: 100%; border-collapse: collapse; font-size: .84rem; margin: .35rem 0 .4rem; }
 .dm-wk th, .dm-wk td { padding: .3rem .4rem; border-bottom: 1px solid var(--border); text-align: right; }
 .dm-wk th:first-child, .dm-wk td:first-child { text-align: left; }
-.dm-wk th { font-size: .74rem; color: var(--text-muted); font-weight: 700; }
+.dm-wk th { font-size: .76rem; color: var(--text-muted); font-weight: 700; text-transform: none; letter-spacing: 0; font-family: inherit; vertical-align: bottom; }
+@media (max-width: 480px) { .dm-wk { font-size: .8rem; } .dm-wk th, .dm-wk td { padding: .3rem .25rem; } }
 .dm-wk-bar { display: flex; height: 14px; border-radius: 3px; overflow: hidden; border: 1px solid var(--border); margin: .35rem 0 .2rem; background: var(--bg); }
 .dm-wk-bar span { display: block; height: 100%; }
 .dm-wk-key { display: flex; flex-wrap: wrap; gap: .2rem .7rem; font-size: .76rem; color: var(--text-dim); }
