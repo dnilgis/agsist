@@ -1,0 +1,2152 @@
+# Federal Register 2026-00313 (Jan 12, 2026): FSA rule for ARC and PLC under the 2025 law
+# https://www.federalregister.gov/d/2026-00313
+# fetched 2026-10-16T18:22:10Z, sha256 b0acde07e4c5e5f6873e2e8979aefd8e9b79ddd3c86724546a1360a1c4261614
+
+Federal Register :: Changes to Agriculture Risk Coverage, Price Loss Coverage, and Dairy Margin Coverage Programs
+
+Legal Status
+
+This site displays a prototype of a “Web 2.0” version of the daily
+Federal Register. It is not an official legal edition of the Federal
+Register, and does not replace the official print version or the official
+electronic version on GPO’s govinfo.gov.
+
+The documents posted on this site are XML renditions of published Federal
+Register documents. Each document posted on the site includes a link to the
+corresponding official PDF file on govinfo.gov. This prototype edition of the
+daily Federal Register on FederalRegister.gov will remain an unofficial
+informational resource until the Administrative Committee of the Federal
+Register (ACFR) issues a regulation granting it official legal status.
+For complete information about, and access to, our official publications
+and services, go to
+
+About the Federal Register
+
+on NARA's archives.gov.
+
+The OFR/GPO partnership is committed to presenting accurate and reliable
+regulatory information on FederalRegister.gov with the objective of
+establishing the XML-based Federal Register as an ACFR-sanctioned
+publication in the future. While every effort has been made to ensure that
+the material on FederalRegister.gov is accurately displayed, consistent with
+the official SGML-based PDF version on govinfo.gov, those relying on it for
+legal research should verify their results against an official edition of
+the Federal Register. Until the ACFR grants it official status, the XML
+rendition of the daily Federal Register on FederalRegister.gov does not
+provide legal notice to the public or judicial notice to the courts.
+
+Legal Status
+
+Rule
+
+Enter a search term or FR citation e.g.
+
+88 FR 382
+30 FR 7878
+2024-13208
+USDA
+09/05/24
+RULE
+0503-AA39
+SORN
+
+Choosing an item from
+full text search results
+will bring you to those results. Pressing enter in the search box
+will also bring you to search results.
+Choosing an item from
+suggestions
+will bring you directly to the content.
+
+Background and more details are available in the
+
+Search & Navigation
+
+guide.
+
+Changes to Agriculture Risk Coverage, Price Loss Coverage, and Dairy Margin Coverage Programs
+
+A Rule by the Farm Service Agency and the Commodity Credit Corporation on 01/12/2026
+
+-
+
+-
+
+-
+
+Published Document: 2026-00313 (91 FR 1043)
+
+This document has been published in the Federal Register. Use the PDF linked in the document sidebar for the official electronic format.
+
+Published Document: 2026-00313 (91 FR 1043)
+
+- Document Details
+
+Published Content - Document Details
+
+Agencies
+
+Department of Agriculture
+
+Farm Service Agency
+
+Commodity Credit Corporation
+
+Agency/Docket Number
+
+Docket ID FSA-2025-0202
+
+CFR
+
+7 CFR 718
+
+7 CFR 1400
+
+7 CFR 1412
+
+7 CFR 1430
+
+Document Citation
+
+91 FR 1043
+
+Document Number
+
+2026-00313
+
+Document Type
+
+Rule
+
+Pages
+
+1043-1059
+(17 pages)
+
+Publication Date
+
+01/12/2026
+
+RIN
+
+0560-AI83
+
+Published Content - Document Details
+
+-
+
+- PDF
+
+Official Content
+
+-
+View printed version (PDF)
+
+Official Content
+
+- Document Details
+
+Published Content - Document Details
+
+Agencies
+
+Department of Agriculture
+
+Farm Service Agency
+
+Commodity Credit Corporation
+
+Agency/Docket Number
+
+Docket ID FSA-2025-0202
+
+CFR
+
+7 CFR 718
+
+7 CFR 1400
+
+7 CFR 1412
+
+7 CFR 1430
+
+Document Citation
+
+91 FR 1043
+
+Document Number
+
+2026-00313
+
+Document Type
+
+Rule
+
+Pages
+
+1043-1059
+(17 pages)
+
+Publication Date
+
+01/12/2026
+
+RIN
+
+0560-AI83
+
+Published Content - Document Details
+
+- Document Dates
+
+Published Content - Document Dates
+
+Effective Date
+
+2026-01-12
+
+Dates Text
+
+This rule is effective on January 12, 2026.
+
+Published Content - Document Dates
+
+- Table of Contents
+
+Enhanced Content - Table of Contents
+
+This table of contents is a navigational tool, processed from the
+headings within the legal text of Federal Register documents.
+This repetition of headings to form internal navigation links
+has no substantive legal effect.
+
+- AGENCY:
+
+- ACTION:
+
+- SUMMARY:
+
+- DATES:
+
+- FOR FURTHER INFORMATION CONTACT:
+
+- SUPPLEMENTARY INFORMATION:
+
+- Table of Contents
+
+- I. Background
+
+- II. ARC and PLC Programs
+
+- A. Continuation of ARC and PLC Programs
+
+- B. Base Acres
+
+- C. ARC Changes
+
+- D. Election of ARC or PLC Programs
+
+- E. Owners Make Base Allocation Decision, and Producers Elect and Enroll
+
+- F. ARC and PLC Payments
+
+- 1. PLC Payment Calculations
+
+- 2. ARC Payment Calculations
+
+- G. Eligibility for Crop Insurance
+
+- H. Deadlines for ARC and PLC Actions
+
+- I. General Provisions That Apply to ARC and PLC
+
+- F. Payment Limitations
+
+- III. Dairy Margin Coverage (DMC)
+
+- IV. Severability
+
+- V. Regulatory Analyses
+
+- A. Effective Date, Notice and Comment, and Paperwork Reduction Act
+
+- B. Executive Orders 12866, 13563, and 14192
+
+- C. Cost Benefit Analysis Summary
+
+- D. Environmental Review
+
+- E. Executive Order 13175
+
+- F. Unfunded Mandates Reform Act
+
+- G. E-Government Act Compliance
+
+- Federal Assistance Programs
+
+- List of Subjects
+
+- 7 CFR Part 718
+
+- 7 CFR Part 1400
+
+- 7 CFR Part 1412
+
+- 7 CFR Part 1430
+
+- PART 718—PROVISIONS APPLICABLE TO MULTIPLE PROGRAMS
+
+- Subpart A—General Provisions
+
+- Subpart C—Reconstitution of Farms, Allotments, Quotas, and Base Acres
+
+- PART 1400—PAYMENT LIMITATION AND PAYMENT ELIGIBILITY
+
+- Subpart A—General Provisions
+
+- Subpart B—Payment Limitation
+
+- PART 1412—AGRICULTURE RISK COVERAGE AND PRICE LOSS COVERAGE
+
+- Subpart A—General Provisions
+
+- Subpart B—Establishment of Base Acres for a Farm for Covered Commodities
+
+- Subpart D—ARC and PLC Contract Terms and Enrollment Provisions for Covered Commodities
+
+- Subpart E—Financial Considerations Including Sharing Payments
+
+- Subpart F—Violations and Compliance Provisions
+
+- Subpart G—ARC and PLC Election
+
+- Subpart H—[Reserved]
+
+- PART 1430—DAIRY PRODUCTS
+
+- Subpart A—[Reserved]
+
+- Subpart D—Dairy Margin Coverage Program
+
+- Footnotes
+
+Enhanced Content - Table of Contents
+
+-
+
+- Public Comments
+
+Enhanced Content - Public Comments
+
+Comments are no longer being accepted.
+See DATES for details.
+
+Enhanced Content - Public Comments
+
+- Regulations.gov Data
+
+Enhanced Content - Regulations.gov Data
+
+FederalRegister.gov retrieves relevant information about this document
+from Regulations.gov to provide users with additional context. This
+information is not part of the official Federal Register document.
+
+Changes to Agriculture Risk Coverage, Price Loss Coverage, and Dairy Margin Coverage Programs
+
+Docket ID
+
+FSA-2025-0202
+
+Supporting Documents
+
+Cost-Benefit Analysis
+
+Enhanced Content - Regulations.gov Data
+
+- Sharing
+
+Enhanced Content - Sharing
+
+Shorter Document URL
+
+https://www.federalregister.gov/d/2026-00313
+
+Email
+
+Email this document to a friend
+
+Enhanced Content - Sharing
+
+-
+
+- Print
+
+Enhanced Content - Print
+
+- Print this document
+
+Enhanced Content - Print
+
+- Document Statistics
+
+Enhanced Content - Document Statistics
+
+Document page views are updated periodically throughout the day and are
+cumulative counts for this document. Counts are subject to sampling,
+reprocessing and revision (up or down) throughout the day.
+
+Page views
+
+3,697
+as of
+10/16/2026 at 2:15 pm EDT
+
+Enhanced Content - Document Statistics
+
+- Other Formats
+
+Enhanced Content - Other Formats
+
+This document is also available in the following formats:
+
+JSON
+
+Normalized attributes and metadata
+
+XML
+
+Original full text XML
+
+MODS
+
+Government Publishing Office metadata
+
+More information and documentation can be found in our
+developer tools pages.
+
+Enhanced Content - Other Formats
+
+- Public Inspection
+
+Public Inspection
+
+This PDF is FR Doc. 2026-00313 as it appeared on Public Inspection on
+01/09/2026 at 8:45 am.
+
+It was viewed
+43
+times while on Public Inspection.
+
+If you are using public inspection listings for legal research, you
+should verify the contents of the documents against a final, official
+edition of the Federal Register. Only official editions of the
+Federal Register provide legal notice of publication to the public and judicial notice
+to the courts under 44 U.S.C. 1503 & 1507.
+Learn more here.
+
+Public Inspection
+
+Published Document: 2026-00313 (91 FR 1043)
+
+This document has been published in the Federal Register. Use the PDF linked in the document sidebar for the official electronic format.
+
+Document Headings
+
+Document headings vary by document type but may contain
+the following:
+
+-
+the agency or agencies that issued and signed a document
+
+-
+the number of the CFR title and the number of each part
+the document amends, proposes to amend, or is directly
+related to
+
+-
+the agency docket number / agency internal file number
+
+-
+the RIN which identifies each regulatory action listed in
+the Unified Agenda of Federal Regulatory and Deregulatory
+Actions
+
+See the
+
+Document Drafting Handbook
+
+for more details.
+
+Department of Agriculture
+
+Farm Service Agency
+
+Commodity Credit Corporation
+
+- 7 CFR Part 718
+
+- 7 CFR Parts 1400, 1412, and 1430
+
+- [Docket ID FSA-2025-0202]
+
+- RIN 0560-AI83
+
+( printed page 1043)
+
+AGENCY:
+
+Commodity Credit Corporation and Farm Service Agency, U.S. Department of Agriculture (USDA).
+
+ACTION:
+
+Final rule.
+
+SUMMARY:
+
+This rule revises the provisions of the Agriculture Risk Coverage (ARC), Price Loss Coverage (PLC), and Dairy Margin Coverage (DMC) programs to conform with provisions of the One Big Beautiful Bill Act (OBBBA). OBBBA authorized modifications to the 2025 crop year ARC and PLC programs and the continuation of the ARC and PLC programs for the 2026 through 2031 crop years. The modified provisions are related to the reference prices, the effective reference prices, base acres, program elections, and payment provisions. OBBBA also authorized DMC for calendar years 2026 through 2031, providing participating dairy operations with the ability to establish a new production history. In addition, the Tier 1 coverage level was increased by 1 million pounds of milk to a 6-million-pound limit and eligibility for multi-year (lock-in) contracts was maintained until December 30, 2031. The Farm Service Agency (FSA) is also making minor administrative changes and updates to the ARC, PLC, and DMC regulations and the regulations that apply to multiple FSA programs.
+
+DATES:
+
+This rule is effective on January 12, 2026.
+
+FOR FURTHER INFORMATION CONTACT:
+
+For ARC and PLC, Jamie Garriott; telephone: (202) 253-9843; or email:
+Jamie.Garriott@usda.gov.
+For DMC, Douglas E. Kilgore; telephone: (717) 887-0963; or email:
+Douglas.E.Kilgore@usda.gov.
+Individuals with disabilities who require alternative means for communication should contact the USDA Target Center at (202) 720-2600 (voice and text telephone (TTY mode)) or dial 711 for Telecommunications Relay Service (both voice and text telephone users can initiate this call from any telephone).
+
+SUPPLEMENTARY INFORMATION:
+
+Table of Contents
+
+I. Background
+
+II. ARC and PLC Programs
+
+A. Continuation of ARC and PLC Programs
+
+B. Base Acres
+
+C. ARC Changes
+
+D. Election of ARC or PLC Programs
+
+E. Owners Make Base Allocation Decision, and Producers Elect and Enroll
+
+F. ARC and PLC Payments
+
+1. PLC Payment Calculations
+
+2. ARC Payment Calculations
+
+G. Eligibility for Crop Insurance
+
+H. Deadlines for ARC and PLC Actions
+
+I. General Provisions That Apply to ARC and PLC
+
+J. Payment Limitations
+
+III. DMC Program
+
+IV. Severability
+
+V. Regulatory Analyses
+
+A. Effective Date, Notice and Comment, and Paperwork Reduction Act
+
+B. Executive Orders 12866, 13563, and 14192
+
+C. Cost Benefit Analysis Summary
+
+D. Environmental Review
+
+E. Executive Order 13175
+
+F. Unfunded Mandates Reform Act
+
+G. E-Government Act Compliance
+
+I. Background
+
+On July 4, 2025, President Trump signed into law H.R. 1 (Pub. L. 119-21), also known as the One Big Beautiful Bill Act. This rule amends the provisions of the ARC and PLC programs and the DMC program to implement changes made by OBBBA. This rule also makes several discretionary changes to those programs to improve program administration and clarify existing policy, in addition to minor changes such as updating references to the applicable program years and removing outdated provisions. FSA will implement other provisions of OBBBA for other Commodity Credit Corporation (CCC) programs in future rules.
+
+II. ARC and PLC Programs
+
+OBBBA amended the Agricultural Act of 2014 (“the 2014 Farm Bill”; Pub. L. 113-79), as amended by the Agriculture Improvement Act of 2018 (“the 2018 Farm Bill”; Pub. L. 115-334), to modify certain provisions for the 2025 crop year ARC and PLC programs and to authorize the continuation of the ARC and PLC programs, with modifications, for the 2026 through 2031 crop years. This rule amends 7 CFR part 1412 to implement those changes and discusses how the ARC and PLC programs will be conducted, which is similar to how they were conducted in recent years. ARC and PLC are CCC programs administered by FSA.
+
+FSA is making the following mandatory changes to implement the OBBBA provisions:
+
+- Revising the ARC guarantee calculation as defined in7 CFR 1412.3;
+
+- Revising the effective reference price calculation as defined in § 1412.3 for the 2025 crop year forward;
+
+- Updating reference prices as defined in § 1412.3 for the 2025 through 2030 crop years, with a further modification for the 2031 crop year;
+
+- Allocating up to 30 million additional base acres, based on a farm's planting history, to eligible farms beginning with the 2026 crop year;
+
+- Specifying that the higher of ARC-CO [1]
+
+or PLC payments will be issued for the 2025 crop year, regardless of whether the producer elected ARC-CO or PLC;
+
+- For base acres that are considered grass, idle, or fallow, continuing the 2018 Farm Bill provision that addresses those acres, but updating the ending year for which producers are ineligible for payment to the 2031 crop year;
+
+- Requiring an election of ARC or PLC for crop year 2026 or, in the case of no election being made, defaulting to the 2025 crop year ARC or PLC election with no payment for the 2026 crop year as explained in § 1412.74;
+
+- Updating the marketing years used to calculate the reference price for temperate japonica rice;
+
+( printed page 1044)
+
+- Updating the payment rate calculation for ARC-CO for the 2025 crop year forward; and
+
+- Increasing the payment limitations.
+
+In addition to changes mandated by OBBBA, this rule also makes discretionary changes to the ARC and PLC programs, including:
+
+- Adding definitions for tree, bush, vine, hemp, and eligible non-covered commodity;
+
+- Updating the definitions of average historical county yield, benchmark revenue for ARC-IC, historical irrigated percentage, marketing year, replacement crop, and subsequently planted crop acreage;
+
+- Updating the years used to calculate the historically irrigated percentage (HIP); and
+
+- Updating the eligible fruit and vegetable (FAV) double crop combination counties.
+
+This rule details the requirements necessary to carry out administration of ARC and PLC. This rule also clarifies and reaffirms which farms are eligible, which producers are eligible, election periods, enrollment periods, and more specifically, the actions that owners and producers must perform in order to ensure producer and farm payment eligibility.
+
+Because of the timing of OBBBA enactment and publication of this rule, producers will have planted and potentially harvested their 2026 crops before: (1) the crop year 2026 ARC or PLC election is made; and (2) the annual enrollment decision is made. Producers will know their 2026 production and yields before they decide whether to elect and subsequently enroll in ARC or PLC for the 2026 crop year. For the 2026 crop year, all producers with an interest in base acres on a farm, at the time the election is made, must unanimously elect ARC or PLC on each covered commodity having base acres and may enroll each or all of those covered commodities. For each of the 2027 through 2031 crop years, the producers with an interest in base acres on a farm, at the time the election is made, are eligible for covered-commodity-by-covered-commodity election of ARC or PLC and subsequent enrollment in each crop year.
+
+The terms “owners” and “producers” under this rule are defined as the person or legal entity for the applicable contract period for which that person or legal entity is signing forms or performing actions under this rule. Many of the actions required under the ARC and PLC programs (program election, enrollment, base allocation update, and subsequent opportunity to perform program election) can only be performed by the farm's owners and producers in that contract or program year. For the 2026 program year, as is discussed in greater detail below, and as required by the 2014 Farm Bill, as amended, the farm's producers must unanimously and irrevocably elect ARC or PLC during the prescribed election period. FSA will announce the election period each year.
+
+A. Continuation of ARC and PLC Programs
+
+Consistent with administration of the ARC and PLC programs in prior years, producers have a choice:
+
+- ARC is an income support program that provides payments when actual crop revenue declines below a specified guarantee level. ARC continues to have 2 options:
+
+○ Agriculture Risk Coverage—County Option (ARC-CO) provides payments when the actual county crop revenue for a covered commodity is less than the ARC-CO guarantee for the covered commodity. The actual county revenue and the revenue guarantee are based on county-level yield data for the physical location of the base acres on the farm and tract.
+
+○ Agriculture Risk Coverage—Individual Option (ARC-IC) provides payments when the actual individual crop revenue for all covered commodities planted on the ARC-IC farm is less than the ARC-IC guarantee for those covered commodities. ARC-IC uses producer's certified yields, rather than county level yields.
+
+- PLC provides payments when the price for a covered crop declines below its “effective reference price.”
+
+Eligible producers may elect to participate in either ARC-CO or PLC, but not both, for a single covered commodity on the farm, for the 2026 through 2031 crop years. An election of ARC-IC will apply to all covered commodities on the farm. Beginning in 2027 and in each subsequent program year, the farm's producers can unanimously choose a different program election for each of their covered commodities.
+
+Under the 2014 and 2018 farm bills, expected yield, revenue, and price were based on the most recent 5 crop years. Because the most recent yield and price data for the immediately preceding 5 crop years is not available in the current crop year, this rule uses the term “most recent 5 crop years available,” which is defined as the 5 years preceding the most immediately preceding crop year. For example, the most recent 5 crops years available for the 2026 crop year are the 2020 through 2024 crop years.
+
+OBBBA has updated the calculation of effective reference prices beginning with crop year 2025. The effective reference price for a covered commodity in any given crop year is the lesser of: (1) 115 percent of the reference price for a covered commodity; or (2) an amount equal to the greater of the reference price for the covered commodity or 88 percent of the average of the market year average (MYA) price [2]
+
+of the covered commodity for the most recent 5 crop years available, excluding each of the crop years with the highest and lowest MYA price.
+
+The reference prices are set through crop year 2031, at which time they will be updated to equal the reference price in the previous crop year multiplied by 1.005, with the stipulation that the reference price will not exceed 113 percent of the reference prices stated in OBBBA.
+
+Under OBBBA, all producers with an interest in base acres, on the farm, at the time the crop year 2026 election is made, are required to affirmatively and unanimously elect PLC or ARC and, if an election is not made, the farm's covered commodity will be ineligible for payments in the 2026 crop year and the election on the farm will default to the same ARC or PLC election that was in place for 2025 for each covered commodity on the farm. This 2025 election will be used for the 2027 through 2031 crop years unless a new election is completed. If a new election is completed, it is valid through 2031 unless it is changed again for a subsequent year. These provisions are specified in the OBBBA and FSA does not have discretion to deviate from the ineligibility of producers for payments for the 2026 crop year on farms if they do not have a valid election made during the election period for the 2026 crop year. Producers who do not make a valid election in the 2026 crop year election period will not be eligible for 2026 crop year payments. However, they are eligible to receive payments in the 2027 through 2031 crop years based on their election for the specific year.
+
+The 2018 Farm Bill amended the 2014 Farm Bill to specify that a farm on which all of the cropland was planted to grass or pasture, including cropland that was idle or fallow from January 1, 2009, through December 31, 2017, would have base acres and yields maintained for the covered commodities on the farm, except that no payment would be made with respect to those
+
+( printed page 1045)
+
+base acres for the 2019 through 2023 crop years. Additionally, the producers on a farm for which all of the base acres are maintained under this provision are ineligible to change the ARC or PLC election for the farm. The producers are also not permitted to reconstitute the farm to void or change this treatment of base acres. OBBBA extends these provisions through crop year 2031.
+
+Any farm that receives a base allocation described below will be permitted to update the applicable election on all covered commodity base acres; however, only the newly established base acres will be eligible for payment.
+
+B. Base Acres
+
+Base acres are central to the payment formulas for ARC and PLC. Section 1111 of the 2014 Farm Bill provides that the base acres in effect under sections 1001 and 1301 of the Food, Conservation, and Energy Act of 2008 (“2008 Farm Bill”; Pub. L. 110-246; 7 U.S.C. 8702, 8751), as adjusted, that were in effect September 30, 2013, constitute the base acres for the ARC and PLC programs, subject to any reallocation, adjustment, or reduction under section 1112 of the 2014 Farm Bill, as amended. The term “base acres” includes unassigned base acres, which are derived from generic base acres [3]
+
+where no ARC or PLC payments are generated or earned.
+
+OBBBA provides the one-time opportunity to allocate an additional 30,000,000 base acres nationwide in crop year 2026. The additional acres are automatically allocated to eligible farms, unless the owner requests not to receive additional base acres. A farm's eligibility to receive an allocation of new base acres is determined by the following:
+
+- Acreage on a farm that was either planted, or prevented from being planted, because of drought, flood, or other natural disaster or condition beyond the control of the producer, to a covered commodity during the 2019 through 2023 crop years; plus
+
+- The lesser of 15 percent of the total acres on the farm, which is the total of cropland acres minus acres enrolled in a federally funded conservation program that restricts the production of an agricultural commodity [4]
+
+except the Conservation Reserve Program (CRP), or the 5-year average of acreage planted and prevented from being planted, due to drought, flood, or other natural disaster or condition beyond the control of the producer, of eligible noncovered commodities for harvest, grazing, haying, silage, or other similar purposes during the 2019 through 2023 crop years.
+
+In cases where two different covered commodities were planted on the same acreage and were not in an approved double cropping practice, the acreage will only count once. The owner will have the opportunity to select which covered commodity is used for the new base acreage determination.
+
+A farm will be ineligible to receive an allocation of new base acres if:
+
+- The farm does not meet the criteria of a covered commodity planted or prevented from being planted in the 2019-2023 crop years; or
+
+- The 5-year average of planting history as outlined above does not exceed existing base acres on the farm excluding unassigned base acres.
+
+If a farm is ineligible to receive an allocation, and currently has base acres, it will maintain its current base acres.
+
+If a farm is eligible for an allocation of additional base acres and has unassigned base acres, those unassigned base acres will be converted to covered commodity base acres, on an acre-for-acre basis, first. If the amount of the additional base acres does not exceed the amount of unassigned base acres on the farm, the difference will remain as unassigned base acres.
+
+Allocation of new base acres will be in proportion to the ratio of the 5-year average of planted and considered planted [5]
+
+covered commodities calculated for acreage history purposes. For any base acre added, a PLC payment yield must be established. If the covered commodity already exists on the farm, then the current established yield will be used as the PLC payment yield. If the covered commodity base acre is new, the PLC payment yield will be equal to either the average PLC payment yield for the covered commodity for the county in which the farm is located or a yield for a similarly situated farm.
+
+If the total amount to be allocated exceeds the 30 million statutory limit, an across the board pro-rata reduction will be applied by FSA.
+
+FSA is also defining the terms “eligible non-covered commodity”, “tree”, “bush”, and “vine” for the purpose of base allocation. These definitions follow the intent provided by Congress in OBBBA. “Eligible non-covered commodity” means all other commodities that are not considered to be covered commodities, excluding the following:
+
+- Tobacco, consistent with other CCC programs;
+
+- Cannabis that does not meet the definition of hemp;
+
+- Commodities that are reported as a tree, bush, vine, grass, idle, or fallow;
+
+- Cover crops, such as oats, turnip mixture, or rye grass, reported specifically as cover; and
+
+- CRP and other conservation program acres due to being ineligible for dual payments.
+
+The following table provides an example of the base acre allocation on a farm with no current base acres.
+
+Base Acre Allocation Calculation Example
+
+[2024 Farm information: 50 total cropland acres, 0 base acres]
+
+2019-2023 Planting history
+25 acres planted to a covered commodity (CC) each year, 25 acres planted to an eligible non-covered commodity (ENCC) each year.
+
+5-year average planting history (25 (the total CC Acres P&CP divided by 5) + (the lesser of 7.5 (15% of total cropland) or 25 (total ENCC P&CP divided by 5))
+32.5 acres.
+
+Maximum potential allocation (5-year average planting history—2024 base)
+32.5 base acres.
+
+( printed page 1046)
+
+The following table provides an example of the base acre allocation on a farm with current base acres.
+
+Base Acre Allocation Calculation Example
+
+[2024 Farm information: 50 total cropland acres, 10 base acres]
+
+2019-2023 Planting history
+25 acres planted to a covered commodity (CC) each year, 25 acres planted to an eligible non-covered commodity (ENCC) each year.
+
+5-year average planting history (25 (the total CC Acres P&CP divided by 5) + (the lesser of 7.5 (15% of total cropland) or 25 (total ENCC P&CP divided by 5))
+32.5 acres.
+
+Maximum potential allocation (5-year average planting history—2024 base = 32.5−10)
+22.5 base acres.
+
+C. ARC Changes
+
+As provided by OBBBA, for each of the 2025 through 2031 crop years, FSA will:
+
+- Calculate the ARC guarantee at 90 percent of the benchmark revenue; and
+
+- Calculate the ARC payment rate using 12 percent of the benchmark revenue.
+
+FSA is also updating the years used to calculate the HIP to 2019 through 2023 to better align with the years used for the base allocation process. FSA is also updating the counties designated as irrigated counties for crop years 2026 forward. FSA is updating the definitions of “average historical county yield” and “benchmark revenue” for ARC-IC to incorporate the new HIP years as well. FSA is also making conforming changes to 7 CFR part 718, which are discussed below.
+
+Additionally, the 2018 Farm Bill allowed no more than 25 counties nationwide to be divided into two administrative units. Eligible counties for consideration of administrative units were those that were larger than 1,400 square miles and that contained more than 190,000 base acres. There were two counties that previously elected to be split into two administrative units and they will continue to be recognized as such through crop year 2031.
+
+D. Election of ARC or PLC Programs
+
+During the 2026 crop year election period that will be announced by FSA, all of the producers with an interest in base acres on a farm, at the time the election is made, must make a unanimous election of either of the two following options:
+
+- ARC-CO or PLC on a covered-commodity-by-covered-commodity basis (the election can be for ARC-CO, PLC, or a combination of ARC-CO and PLC); or
+
+- ARC-IC for all covered commodities on a farm.
+
+Producers are those with an interest in base acres that perform the election. The election, if valid as described in this rule, will apply to the farm for the 2026 through 2031 crop years, unless unanimously changed by the producers on the farm in any of crop years 2027, 2028, 2029, 2030, or 2031. Election of ARC and PLC will occur in a defined period that will be announced by FSA in a press release in each of those crop years.
+
+The election will be based on the farm structure for the 2026 crop year or, as may be applicable, the farm structure in the applicable 2027, 2028, 2029, 2030, or 2031 crop years. The term “farm structure” means the farm as last constituted in the crop year. Reconstitutions [6]
+
+of farms initiated after August 1, 2025, will not be considered by FSA until after the base allocation period has ended. Unless changed under provisions of this rule in any of the 2027 through 2031 crop years, the election of ARC and PLC for a farm will apply to that farm in all of the 2026 through 2031 crop years and, in the case of that farm being reconstituted, the farms resulting from that reconstitution. Neither the requesting of a farm reconstitution nor the reconstitution of any farm will change either the requirement that all producers with an interest in base acres on a farm, at the time the election is made, agree to the unanimous election during the election period or the valid election that was made by those producers.
+
+If no election is made in 2026 for a covered commodity's base acres, the farm will default to the same coverage for the covered commodity on the farm that was made in the 2025 crop year and the producers on that farm will not be eligible for 2026 crop year payments even if the farm is enrolled in ARC or PLC for the 2026 crop year. During the 2026 election period, all producers with an interest in base acres on the farm, at the time the election is made, must unanimously make the election as discussed in this rule in order to preserve the payment eligibility of all producers of the covered commodity on the farm for the 2026 crop year. If a valid election is submitted by all producers with an interest in base acres on the farm, at the time the election is made, that election will be recognized as valid for the farm in the 2026 through 2031 crop years unless that election is either rescinded or terminated by any 2026 producer on the farm during the election period, or unless the valid election for the 2026 crop year is modified and replaced by another valid election by producers during the 2026 crop year election period. At any time during the election period, a producer on a farm can rescind an election or terminate an election by withdrawing from the election or by providing written notice to FSA requesting to have the election rescinded.
+
+E. Owners Make Base Allocation Decision, and Producers Elect and Enroll
+
+OBBBA specifies the roles of owners and producers, and FSA does not have the discretion to set different requirements. If, within 90 days after FSA notification of a farm's eligibility for an additional allocation of base acres, owners exercise the option to decline additional base acres, that decision will apply to the farm unless the decision to decline is either withdrawn, rescinded, or modified by the owners in writing prior to the end of the same 90 day period. FSA is under no obligation to notify owners on a farm if a base allocation rejection has been filed, rescinded, modified, or withdrawn by one or more other owners during the base allocation period.
+
+All producers with an interest in base acres on a farm for the 2026 crop year, at the time the 2026 crop year election is made, must unanimously elect ARC, PLC, or a combination of ARC and PLC for each covered commodity and farm. If producers cannot agree, the farm's election for each covered commodity
+
+( printed page 1047)
+
+will default to the election made for the 2025 crop year for each covered commodity on the farm, and the farm's covered commodity will not be eligible for crop year 2026 payments. If a person or legal entity acquires ownership of a farm that has already had an election of ARC or PLC made by producers in crop year 2026 or by producers for the 2027, 2028, 2029, 2030, or 2031 crop years, FSA will provide the election status to that person or legal entity on request, but FSA is under no obligation to notify new owners or new producers as to whether an election has previously been made on that particular farm unless the new owner or new producer specifically makes a request.
+
+An election in ARC or PLC does not constitute enrollment. In order to be eligible for payments, producers must enroll their respective share interest of covered commodity base acres on the farm in ARC or PLC. Only producers who annually enroll, or who are subject to a valid multiyear enrollment,[7]
+
+may receive payments. In each crop year, the producers on the farm may choose to enroll base acres on the farm in ARC or PLC on a covered-commodity-by-covered-commodity basis.
+
+F. ARC and PLC Payments
+
+As noted earlier, ARC has two options—a county option (ARC-CO) and an individual farm coverage option (ARC-IC). For ARC-CO, the benchmark revenue is based on average revenues at the county level for covered commodities. For ARC-IC, the benchmark revenue is based on the average revenue for a specific farm. For ARC-CO, 85 percent of the specific covered commodity base acres for a commodity will be “payment acres” that are used to calculate payments; for ARC-IC, 65 percent of all covered commodity base acres on the farm will be “payment acres.” On a covered-commodity-by-covered-commodity basis, the farm's producers with an interest in base acres, at the time of the crop year 2026 election, can elect ARC-CO, PLC, or a combination of ARC-CO and PLC for a farm. In other words, they can elect ARC-CO for some covered commodities and PLC for others. However, if the farm's current producers with an interest in base acres, at the time the election is made, elect ARC-IC, the election applies to all the covered commodities and the whole farm.
+
+There are several factors that affect payments and, therefore, the decision as to whether to participate in ARC or PLC. ARC payments are limited to 12 percent of the benchmark revenue per acre. The PLC calculation does not include current yields, so if market year prices were above the effective reference price, but current yields were low, there would be no PLC payment.
+
+1. PLC Payment Calculations
+
+As noted above, PLC is a counter-cyclical price program that makes a payment to an enrolled producer with a share of base acres when the effective price for a covered commodity falls below its effective reference price. The effective price is the higher of the national market year average (MYA) price or the national average loan rate (the Marketing Assistance Loan rate) for that crop year. Usually, the market price will be the effective price. FSA will continue to establish separate reference prices for temperate japonica rice for high altitude or high latitude areas. This rule updates the years used to calculate the reference price to crop years 2017 through 2021.
+
+PLC payments for a given crop year will be made after October 1 of the following year. For example, 2025 crop year PLC payments will be made after October 1, 2026, and 2026 crop year PLC payments will be made after October 1, 2027. FSA is not changing the PLC payment calculation in this rule. For an explanation of the PLC payment calculation and an example, see 84 FR 45880-45881.
+
+2. ARC Payment Calculations
+
+As discussed above, ARC is an income support program that is designed to cover a portion of a farmer's out-of-pocket cost when crop revenues fall below guarantee revenue levels, with the benchmark revenue based on either county level historic revenue for ARC-CO or the individual farm's historic revenue for ARC-IC. Farmers may elect ARC-CO as an alternative to PLC on a covered-commodity-by-covered-commodity basis, or ARC-IC for all the covered commodities and the whole farm. For both ARC-CO and PLC, the payment calculation is based on covered commodity base acres. For ARC-IC, the payment calculation is based on the entirety of covered commodities grown on the farm during the crop year.
+
+Under ARC-CO, payments are issued when actual county crop revenue for a covered commodity is less than the ARC-CO guarantee for that covered commodity. Since payment is not based on the revenue or yield of the individual farm, the producer does not need to provide any additional price or yield data to FSA to qualify for the ARC-CO payment. The calculation uses county data for yields and national prices, not individual farm data.
+
+The ARC-CO guarantee is 90 percent of the crop's benchmark revenue in the county for each of the 2025 through 2031 crop years. Benchmark revenue is calculated by multiplying the ARC-CO average historical benchmark price by the ARC-CO average historical benchmark yield. The ARC-CO average historical benchmark price is equal to the most recently available previous 5-year MYA price, excluding the years with the highest and lowest prices. The ARC-CO benchmark yield is equal to the most recent 5-year average county yield available, excluding the years with the highest and lowest yields. The ARC-CO payment is equal to 85 percent of a farm's base acres of the covered commodity multiplied by the difference between the county's ARC-CO guarantee and the actual county revenue for the covered commodity.
+
+The ARC-CO payment cannot exceed 12 percent of the county benchmark revenue (the ARC-CO average historical benchmark price times the ARC-CO average historical benchmark yield) for the 2025 through 2031 crop years. The following table provides an example of an ARC-CO payment calculation using estimated 2025 soybean prices and yields. This example uses an estimated 2025 MYA price and estimated 2025 actual average county yield because these values are not available for crop year 2026 at this time.
+
+ARC-CO Payment Calculation Example
+
+[Soybeans—100 base acres]
+
+2025 MYA price (estimate)
+$10.00/bu.
+
+2025 actual average county yield (estimate)
+40
+
+Benchmark revenue (2019 through 2023 prices × yields for the county)
+$473.78
+
+( printed page 1048)
+
+Base acres
+100
+
+2025 Actual crop revenue (MYA price × actual county yield)
+$400
+
+ARC-CO guarantee (90% × benchmark revenue)
+$426.40
+
+Maximum payment (the ARC-CO average benchmark price of $12.17 × the ARC-CO average benchmark yield of 38.93 bushels per acre × 12%)
+$56.85
+
+Payment rate (ARC-CO guarantee of $426.40—actual crop revenue of $400, not to exceed maximum payment of $56.85)
+$26.40
+
+Payment (payment rate of $26.40 × 85% of 100 base acres)
+$2,244
+
+ARC-IC provides payments when an individual's actual revenues, averaged across all covered commodities planted on the ARC-IC farm, are less than the overall ARC-IC guarantee, averaged across those covered commodities on the farm. As specified in the 2014 Farm Bill, as amended, the farm for ARC-IC purposes is the sum of the producer's interest in all enrolled ARC-IC farms in a state, meaning that if a producer has an interest in multiple farms that have elected and enrolled in ARC-IC, the ARC-IC benchmark revenue for that producer will be a weighted average of the benchmark revenue from each of those farms. The farm's ARC-IC guarantee equals 90 percent of the farm's individual benchmark guarantee (5-year average of the annual benchmark revenues), excluding the years with the highest and lowest annual benchmark revenues, then averaging across all crops on the farm. Actual revenue is similarly calculated, with both the guarantee and the actual revenue calculated using planted acreage on the farm. The ARC-IC payment is equal to 65 percent of the sum of the base acres of all covered commodities on the farm multiplied by the difference between the individual guarantee revenue and the actual individual crop revenue across all covered commodities planted on the farm. Payments may not exceed 12 percent of the benchmark revenue. Since the payment is based on yields for that individual farm, the producers enrolled on ARC-IC elected farms must report acreage and yield data to qualify for payment.
+
+The following table provides an example of an ARC-IC payment calculation.
+
+ARC-IC Payment Calculation Example
+
+[Corn and Soybeans—100 base acres]
+
+[60 acres planted with corn and 40 acres planted with soybeans]
+
+Benchmark revenue corn
+$826
+
+Benchmark revenue soybean
+687
+
+Benchmark revenue total for the farm ((0.6 × $826) + (0.4 × $687))
+770.40
+
+Guarantee (90% of total benchmark revenue)
+693.36
+
+Actual revenue (2025 MYA price of each commodity × each commodity's actual yield * times ratio of planted covered commodity to farm's base acres 0.6 corn and 0.4 soybeans—in this case (0.6 × $702) + (0.4 × $540))
+637.20
+
+Maximum payment (12% of benchmark revenue of $770)
+92.45
+
+Payment rate (ARC-IC Guarantee minus Actual Crop Revenue; adjusted, if needed to not exceed maximum payment)
+56.16
+
+Payment (payment rate × 65% of 100 base acres)
+3,650.40
+
+* For corn, the 2025 projected actual price is $3.90 and the yield is 180 bushels per acre. For soybeans, the projected actual price is $10.00 and the yield is 54 bushels per acre.
+
+G. Eligibility for Crop Insurance
+
+Crop insurance is not required as a condition of eligibility for ARC and PLC, but ARC and PLC elections and enrollment may impact eligibility for crop insurance. Producers of upland cotton who choose to enroll upland cotton in ARC or PLC are ineligible for Stacked Income Protection Plan insurance under section 508B of the Federal Crop Insurance Act (7 U.S.C. 1508b).
+
+H. Deadlines for ARC and PLC Actions
+
+Annual enrollment for each covered commodity and crop year or multiyear contract enrollment will be announced by FSA. The contract year is based on the fiscal year, October 1 to September 30 of the next calendar year, with the enrollment occurring in the program year. Due to the timing of OBBBA and this regulation, producers will enroll by a deadline announced by FSA for the 2026 crop year, and that deadline will be in the 2027 contract year for a contract period that ended September 30, 2026. For each subsequent year, the enrollment deadline will be for a contract that began on the previous October 1. For example, the producer will enroll by March 15, 2027, for a 2027 contract that runs from October 1, 2026, to September 30, 2027.
+
+The enrollment deadline announced by FSA will be consistent with the deadline for similar FSA and CCC programs and take into consideration the reporting of cropland and crop acreage on the farm. The date is also in advance of compliance activities that are required to occur for the crop year (acreage and production reporting), and the final date for seeking reconstitution of farms.
+
+The following table provides a summary of deadlines for ARC and PLC:
+
+Activity
+Deadline
+
+2026 acreage reports by 2026 operator or producers on farm
+Not later than July 15, 2026, for covered commodities. For all other cropland on the farm, the acreage reporting date for the crop or crops in the State. (This deadline is unchanged by this rule.)
+
+2026 base allocation period
+As announced by FSA.
+
+Election and enrollment of ARC and PLC by 2026 producers on farms in election and enrollment period
+As announced by FSA.
+
+( printed page 1049)
+
+2027 contract election and enrollment by 2027 producers on farms
+As announced by FSA.
+
+2026 production report of covered commodities by ARC-IC producers
+July 15, 2027.
+
+2027 and subsequent crop year acreage reports by 2027 and subsequent operator or producers on farm
+Not later than July 15 for covered commodities. For all other cropland on the farm, the acreage reporting date for the crop or crops in the State.
+
+2028 and subsequent years contract election and enrollment by 2028 and subsequent year producers
+As announced by FSA.
+
+2027 and subsequent year production report of covered commodities by ARC-IC producers
+July 15 of the year following the program year (for example, the 2027 production report is due July 15, 2028).
+
+I. General Provisions That Apply to ARC and PLC
+
+The regulations in 7 CFR part 1412 specify certain requirements to which the participant must agree to be eligible for payments. One such provision requires producers to effectively control noxious weeds and otherwise maintain the land in accordance with sound agricultural practices.
+
+ARC and PLC continue to have provisions for planting flexibility and reductions of payment acreage for plantings of fruits, vegetables, and wild rice on base acres. FSA is updating the list of counties in § 1412.46(f) that have been determined to be regions having a history of double-cropping covered commodities or peanuts with fruits, vegetables, or wild rice beginning with crop year 2026.
+
+FSA is updating the definitions of “benchmark revenue for ARC-IC”, “historical irrigated percentage”, “replacement crop”, and “subsequently planted crop acreage” for clarity. FSA is also updating the definition of “marketing year” to clarify the dates for long grain and medium grain rice, and to add the period for temperate japonica rice. FSA is adding a definition of “corn” to § 1412.3 that does not exclude popcorn and blue corn; this definition will apply to ARC PLC instead of the definition currently in § 718.2. FSA is removing subpart H of 7 CFR part 1412, because that subpart provides the provisions for the Cotton Transition Assistance Program (CTAP), which has ended. FSA has also updated examples throughout part 1412 to use current dates.
+
+This rule also makes changes to provisions in 7 CFR part 718 that generally apply to FSA and CCC programs, including ARC and PLC. For clarity, FSA is adding the definitions of “administrative county” and “servicing FSA county office” to § 718.2. FSA is removing the definition of “partial reconstitution” because prior rules removed the provisions related to that term and it is no longer used in part 718. FSA is updating the definitions of “beginning farmer or rancher” and “limited resource farmer or rancher” for consistency with the certification statements on the FSA-860 and to update the references to specific years. FSA is also updating the definition of “county” to add a reference to councils of government. FSA is also amending the provisions for reconstitutions to clarify that they are effective for the fiscal year in which they are requested and adding the definition of “fiscal year”.
+
+F. Payment Limitations
+
+The regulations in 7 CFR part 1400 specify payment limitations for ARC and PLC for covered commodities and peanuts. Beginning with crop year 2025, payment limitations, prior to the inflation adjustment, are increased and the following payment limitations apply for ARC and PLC:
+
+- $155,000 for covered commodities (other than peanuts); and
+
+- $155,000 for peanuts.
+
+As mandated by OBBBA, and beginning with crop year 2025, FSA will annually adjust the payment limitation for inflation based on the Consumer Price Index for All Urban Consumers (CPI-U), which is published by the Bureau of Labor Statistics of the Department of Labor. FSA will publish the adjusted payment limitation as soon as practicable for each crop year, on or around October 1, on FSA's website.[8]
+
+To calculate the annual adjustment, FSA will compare the average CPI-U for the most recently available September to August 12-month period to the average CPI-U for the September 2022 to August 2023 base period to determine the payment limit adjustment. The adjustment will then be applied to the existing payment limitation for ARC and PLC for both covered commodities and for peanuts, which have a separate payment limit. Each calculated adjusted payment limitation will be rounded to the nearest $1,000.
+
+At no time for crop year 2025 and subsequent years will the payment limitation for ARC and PLC for covered commodities decline from one year to the next. If the calculated adjustment would result in a reduction in the payment limitation, the current payment limitation will remain in effect for the subsequent crop year. Applying the adjustment in this manner ensures that periods of negative inflation will not reduce the maximum payment amount.
+
+An example of how FSA will calculate an adjustment is provided below. This example is for illustration only and does not establish the 2025 or 2026 payment limitations.
+
+CPI-U *
+
+2022
+2023
+2024
+2025
+
+Jan
+281.148
+299.170
+308.417
+317.671
+
+Feb
+283.716
+300.840
+310.326
+319.082
+
+Mar
+287.504
+301.836
+312.332
+319.799
+
+Apr
+289.109
+303.363
+313.548
+320.795
+
+May
+292.296
+304.127
+314.548
+321.465
+
+June
+296.311
+305.109
+314.069
+322.561
+
+Jul
+296.276
+305.691
+314.175
+323.048
+
+( printed page 1050)
+
+Aug
+296.171
+307.026
+314.540
+323.976
+
+Sep
+296.808
+307.789
+314.796
+
+Oct
+298.012
+307.671
+315.664
+
+Nov
+297.711
+307.051
+315.493
+
+Dec
+296.797
+306.746
+315.605
+
+* CPI-U data is published at
+https://www.bls.gov/​cpi/​tables/​supplemental-files/​.
+
+To determine the 2025 payment limitation, FSA will complete the following steps:
+
+(1) The average of the September 2023 CPI-U through August 2024 CPI-U is 310.955.
+
+(2) The average of the September 2022 CPI-U through August 2023 CPI-U is 301.3742.
+
+(3) The inflation percentage is equal to 310.955 divided by 301.3742, which is 1.032, or 3.2 percent.
+
+(4) The 2025 payment limitation is $155,000 multiplied by 1.032, rounded to the nearest $1,000, which equals $160,000.
+
+To establish the 2026 payment limitation, FSA will use the same steps, comparing the average of the CPI-U for September 2024 through August 2025 (319.205) to the result of Step 2 above (301.3742), resulting in an adjustment of 1.059 or 5.9 percent. The payment limitation would equal $155,000 times 1.059, rounded to the nearest $1,000, which is $164,000.
+
+III. Dairy Margin Coverage (DMC)
+
+FSA is revising the DMC regulations in 7 CFR part 1430, subpart D, as required by OBBBA. Specifically, this rule amends the regulations to provide eligible dairy operations [9]
+
+with the ability to establish a new production history and provides for the reauthorization of DMC through calendar year 2031. In addition, the rule increases the pounds of Tier 1 coverage by 1 million pounds to a 6-million-pound limit, maintains eligibility of multi-year (lock-in) contracts until December 30, 2031, and streamlines the DMC regulation by removing unnecessary prior program and production history amendments that are no longer relevant for the administration of DMC in the 2026 and succeeding calendar years.
+
+Section 1403 of Subtitle D of Title I of the 2014 Farm Bill (7 U.S.C. 9053) authorizes DMC, which provides a risk management program for dairy operations that pays producers when the difference between the price of milk and the cost of feed (the margin) falls below a certain dollar amount selected by the producer. Producers are eligible for catastrophic-level margin protection (based on a $4 margin and 95 percent production history coverage) for their dairy operations by paying an annual administrative fee, and they are also able to purchase greater coverage (up to a $9.50 margin on 5 to 95 percent of production history) for an annual premium. A participating dairy operation from 2019 through 2025 enrolled their first 5 million pounds of covered production at the Tier 1 level with the remaining pounds of coverage over 5 million pounds enrolled at the Tier 2 coverage level.
+
+Section 10313 of Subtitle C of Title 1 of OBBBA provides all eligible participants in the DMC program with the opportunity to establish a new milk production history. This new milk production history, first used in the 2026 calendar year, is based on the highest marketed milk production level from any one of the 2021, 2022, or 2023 calendar years, rather than based on the highest annual milk marketings from the 2011, 2012, and 2013 calendar years. Beginning with the 2026 coverage year, all participating dairy operations will establish a new production history based on the specified years. The production history established during the years of 2014 through 2025 will no longer be applicable for coverage under DMC starting with the 2026 calendar year.
+
+OBBBA clarifies the definition of a new dairy operation, for purposes of establishing production history, based on when the dairy operation first began to commercially market milk. Operations that are determined to be “new dairy operations” under this rule are dairy operations that have never established a production history under DMC and have begun producing and commercially marketing milk within 60 calendar days prior to registering to participate in DMC.
+
+For new participating dairy operations that started to commercially market milk after January 1, 2023, OBBBA allows these operations to establish a production history by one of two methods:
+
+- The volume of first-year milk marketings for the months that a participating dairy operation has been in business extrapolated to a yearly amount; or
+
+- An estimate of the actual milk marketings based on the herd size for the first year of milk marketings of the participating dairy operation relative to the national rolling herd average data.
+
+For example, a dairy operation that started commercially marketing milk on January 1, 2025, does not have milk marketings from 2021, 2022, or 2023. Therefore, the dairy operation will be considered new and must select from the two options (either the extrapolation method or the rolling herd average method) to establish production history, even though the dairy operation may have 12 full months of milk marketings in 2025.
+
+The option selected by the new dairy operation will become their production history of record. Previous provisions allowed alternative conditions for establishing production history under DMC; those are no longer authorized and have been removed from the regulations.
+
+Prior to 2026, a participating dairy operation enrolled their first 5 million pounds of covered production at the Tier 1 level with applicable premium fees, and the remaining pounds of coverage over 5 million pounds were enrolled at the Tier 2 coverage level. OBBBA amends the Tier 1 premium rate schedule coverage limit from 5,000,000 pounds to 6,000,000 pounds, allowing mid-size dairy operations that market more than 5 million pounds of annual production to cover an additional 1
+
+( printed page 1051)
+
+million pounds of production history at the Tier 1 level. The increase to the maximum allowable pounds under Tier 1 is consistent with the growth of mid-sized dairies that currently milk 250 head of cattle with an average production of 24,000 pounds annually. For dairy operations with more than 6 million pounds of production history, the pounds over 6 million pounds will be assigned to Tier 2 pounds of coverage.
+
+OBBBA maintains the provision that a dairy operation can elect a Tier 1 coverage level threshold of $8.00, $8.50, or $9.00 and have the option to select a different coverage level threshold for Tier 2. Premium rate fees for producer-selected coverages under Tier I and Tier II are unchanged.
+
+OBBBA reauthorizes the DMC lock-in option for participating dairy operations. During the 2026 coverage election period, a dairy operation may make a one-time election of coverage level and coverage percentage, “locking-in” those elections for a six-year period beginning January 2026 and ending December 2031. All dairy operations that elect the lock-in option are required to participate in DMC at the same elected premium coverage level for a six-year period beginning in January 2026. DMC participating dairy operations locking in elections for the six-year period will receive a premium discount of 25 percent off the premium rate per cwt in each applicable Tier table. Annually, “locked-in” dairy operations are required to certify to commercially marketing milk and timely pay the administrative and premium fees (if applicable) when due according to FSA.
+
+FSA is also making additional discretionary changes. The administrative provisions of § 1430.401 have been updated to be consistent with other FSA and CCC programs. In addition, the rule clarifies that for an informal joint venture dairy operation, when a non-participating member declines participation in DMC for the coverage year, the premium obligation and payments will be pro-rated for only the participating members and will exclude the share percentage of the non-participating member. Also, to remain consistent in the rule with the 6-million-pound increase of production history coverage under Tier 1, for an intergenerational transfer production history increase according to § 1430.405(h), the amount of production history increase for an intergenerational transfer will also be limited to an amount not more than 6 million pounds. The rule also clarifies the effects of a participating dairy operation's failure to pay the administrative fee and premium fees when due. A participating dairy operation that does not timely pay their administrative fee for a coverage year is not eligible for DMC for that coverage year. Likewise, for a participating dairy operation that fails to pay a premium when due, the rule clarifies that an accrued DMC payment will process if applicable; however, the dairy operation must pay the amount of outstanding premium or receivable before a concurrent DMC contract application can be approved.
+
+The rule also removes unnecessary provisions and language pertaining to supplemental production history that is no longer relevant to DMC. For example, the authority to make DMC payments based on supplemental production history ended on December 31, 2023. In addition, production history “bump” adjustments and the establishment of an adjusted base production history are also no longer authorized under the DMC program.
+
+The Margin Protection Program for Dairy (MPP-Dairy) was the risk-based predecessor program to DMC. Since DMC replaced MPP-Dairy, FSA is removing all MPP-Dairy related references and language in this rule. FSA is also removing and reserving 7 CFR 1430, subpart A, which contained the regulations for MPP-Dairy.
+
+IV. Severability
+
+The modifications to the ARC, PLC, and DMC programs authorized by the OBBBA are distinct and severable from one another, as well as from the minor administrative changes and updates to the regulations. Each provision is designed to function independently, ensuring that the rule as a whole remains effective and aligned with the agency's intent, even if certain provisions were to be invalidated.
+
+V. Regulatory Analyses
+
+A. Effective Date, Notice and Comment, and Paperwork Reduction Act
+
+The OBBBA amended Title I of the 2014 Farm Bill to reauthorize the ARC, PLC, and DMC programs. As specified in 7 U.S.C. 9091(c)(2), the regulations to implement these provisions are exempt from:
+
+- The Paperwork Reduction Act (44 U.S.C. chapter 35), and
+
+- The notice and comment provisions of5 U.S.C. 553.
+
+Further, the Administrative Procedure Act (APA, 5 U.S.C. 553(a)(2)) provides that the provisions requiring notice and comment and a 30-day delay in the effective date do not apply when the rule involves specified actions, including matters relating to benefits or contracts. This rule governs payments to agricultural producers and therefore falls within the benefits exemption.
+
+In addition, 7 U.S.C. 9091(c)(3) directs the Secretary to use the authority provided in 5 U.S.C. 808 of the Congressional Review Act (CRA). Because this rule meets the criteria specified at 8 U.S.C. 804(2), the CRA would ordinarily necessitate delaying its effective date for 60 days (5 U.S.C. 801(a)(3)(A)). However, the CRA, at 5 U.S.C. 808(2), allows an agency to make such regulations effective immediately if the agency finds there is good cause to do so. USDA has determined that such good cause exists here. USDA believes that notice and comment is “unnecessary” under that subsection because it is exempt from the APA's public notice requirements as described above. Further, this rule is implementing mandatory requirements of the OBBBA, and the assistance provided by this rule is necessary to help the beneficiaries of this rule sustain their normal business operations. As a result, USDA finds that notice and public procedure are contrary to the public interest. Therefore, USDA is not required to delay the effective date for 60 days from the date of publication to allow for Congressional review. Accordingly, this rule is effective upon publication in the
+Federal Register
+.
+
+This rule is exempt from the regulatory analysis requirements of the Regulatory Flexibility Act (5 U.S.C. 601-612), as amended by the Small Business Regulatory Enforcement Fairness Act of 1996 (SBREFA) because it .is exempt from the public notice requirements of 5 U.S.C. 553 as described above. The requirements for the regulatory flexibility analysis in 5 U.S.C. 603 and 604 are specifically tied to the requirement for a proposed rule by section 553 or any other law; in addition, the definition of rule in 5 U.S.C. 601 is tied to the publication of a proposed rule.
+
+B. Executive Orders 12866, 13563, and 14192
+
+Executive Order 12866, “Regulatory Planning and Review,” and Executive Order 13563, “Improving Regulation and Regulatory Review,” direct agencies to assess all costs and benefits of available regulatory alternatives and, if regulation is necessary, to select regulatory approaches that maximize net benefits (including potential economic, environmental, public health and safety effects, distributive impacts, and equity). Executive Order 13563
+
+( printed page 1052)
+
+emphasized the importance of quantifying both costs and benefits, of reducing costs, of harmonizing rules, and of promoting flexibility. Executive Order 14192, “Unleashing Prosperity Through Deregulation,” announced the Administration policy to significantly reduce the private expenditures required to comply with Federal regulations to secure America's economic prosperity and national security and the highest possible quality of life for each citizen and to alleviate unnecessary regulatory burdens placed on the American people. In line with the Executive Order requirements, the Agency chose this regulatory approach, which implements mandatory provisions of the OBBBA and clarifies and simplifies program requirements, to maximize benefits and minimize burden on American producers. This rule is not an Executive Order 14192 regulatory action because it does not impose any more than de minimis regulatory costs.
+
+The Office of Management and Budget (OMB) designated this rule as economically significant under Executive Order 12866, section 3(f)(1), and therefore, OMB has reviewed this rule. The costs and benefits of this rule are summarized below. The full CBA is available on
+regulations.gov.
+
+C. Cost Benefit Analysis Summary
+
+OBBBA authorized modifications to the 2025 crop year ARC and PLC programs and the continuation of the ARC and PLC programs for the 2026 through 2031 crop years. The modified provisions are related to reference prices, effective reference prices, base acres, program elections, and payment provisions. The numerous changes to ARC and PLC increase the likelihood and the amount of payments in any given year relative to the pre-OBBBA amended programs. Payments for these programs are expected to be $72.19 billion in total for the FY2027-2036 period, an increase of $46.2 billion relative to expected outlays under the 2018 Farm Bill.
+
+OBBBA also increased ARC and PLC payment limits (to $155,000 for covered commodities and to a separate limit of $155,000 for peanuts) and indexes them to inflation as measured by the U.S. Bureau of Labor Statistics' Consumer Price Index for All Urban Consumers (CPI-U). The indexing will begin with the 2025 crop year payment limits. Each year in early October, USDA will announce the payment limit for the upcoming crop. For example, USDA will announce the 2027 crop ARC and PLC limits in October 2026. Outlays are projected to increase by around $592 million over 10 years due to the combined effect of the ARC and PLC payment limit increasing to $155,000 and the use of indexing.
+
+OBBBA extends the DMC program through the 2031 calendar year and makes two main changes. First, it defines production history as the highest annual milk marketings achieved in any one of the calendar years 2021, 2022, or 2023, allowing producers to establish a more current and often more favorable production benchmark. For new or recently established operations, production history may be calculated either by extrapolating from actual production or by estimating output based on herd size relative to the national rolling herd average published by USDA. Prior to these amendments, production history was based on highest milk production in 2011, 2012, and 2013.
+
+Second, OBBBA increases the Tier I coverage limit for a dairy operation from 5 million to 6 million pounds of milk per year. Tier I coverage includes subsidized premiums at higher coverage levels than Tier 2. As a result, OBBBA reduces per-unit program costs for a significant share of U.S. milk production. OBBBA also updates the premium discount and multi-year enrollment provisions and resets the program authority from 2019-2023 to 2026-2031, encouraging producers to commit to multi-year DMC participation. Combined, these DMC changes are estimated to result in about $238.2 million of additional cost over 10 years.
+
+The combined total cost of the above OBBBA changes is approximately $47 billion.
+
+D. Environmental Review
+
+The environmental impacts have been considered in a manner consistent with the provisions of the National Environmental Policy Act (NEPA, 42 U.S.C. 4321-4347) and the USDA regulation for compliance with NEPA (7 CFR part 1b).
+
+This rule implements primarily mandatory changes to the ARC, PLC, and DMC programs required by the OBBBA, with limited discretionary aspects that do not have the potential to impact the human environment as they are administrative. Accordingly, these discretionary aspects are covered by the FSA Categorical Exclusions specified in 7 CFR 1b.4(c)(16)(ix) that applies to safety net programs and § 1b.(c)(16)(vii) that applies to price support programs.
+
+No Extraordinary Circumstances (§ 1b.3(f)) exist because these are administrative payment programs. As such, the implementation of and participation in the ARC, PLC, and DMC programs do not constitute major Federal actions that would significantly affect the quality of the human environment, individually or cumulatively. Therefore, FSA will not prepare an environmental assessment or environmental impact statement for this action and, consistent with § 1b.3(g), this document serves as the programmatic finding of applicability and no extraordinary circumstance (FANEC) for this Federal action.
+
+E. Executive Order 13175
+
+This rule has been reviewed in accordance with the requirements of Executive Order 13175, “Consultation and Coordination with Indian Tribal Governments.” Executive Order 13175 requires Federal agencies to consult and coordinate with Tribes on a Government-to-Government basis on policies that have Tribal implications, including regulations, legislative comments or proposed legislation, and other policy statements or actions that have substantial direct effects on one or more Indian Tribes, on the relationship between the Federal Government and Indian Tribes, or on the distribution of power and responsibilities between the Federal Government and Indian Tribes.
+
+USDA has assessed the impact of this rule on Indian Tribes and determined that this rule does not, to our knowledge, have Tribal implications that required Tribal consultation at this time. If a Tribe requests consultation, FSA will engage the Office of Tribal Relations as needed, to ensure meaningful consultation is provided.
+
+F. Unfunded Mandates Reform Act
+
+Title II of the Unfunded Mandates Reform Act of 1995 (UMRA, Pub. L. 104-4) requires Federal agencies to assess the effects of their regulatory actions of State, local, and Tribal governments or the private sector. Agencies generally must prepare a written statement, including cost benefit analysis, for proposed and final rules with Federal mandates that may result in expenditures of $100 million or more in any 1 year for State, local or Tribal governments, in the aggregate, or to the private sector. UMRA generally requires agencies to consider alternatives and adopt the more cost effective or least burdensome alternative that achieves the objectives of the rule. This rule contains no Federal mandates, as defined in Title II of UMRA, for State, local and Tribal governments or the private sector. Therefore, this rule is not subject to the requirements of sections 202 and 205 of UMRA.
+
+( printed page 1053)
+
+G. E-Government Act Compliance
+
+FSA is committed to complying with the E-Government Act of 2002, to promote the use of the internet and other information technologies to provide increased opportunities for citizen access to Government information and services, and for other purposes.
+
+Federal Assistance Programs
+
+The titles and numbers of the Federal assistance programs, as found in the Assistance Listing, to which this document applies are 10.112—Price Loss Coverage, 10.113—Agriculture Risk Coverage, and 10.127—Dairy Margin Coverage.
+
+List of Subjects
+
+7 CFR Part 718
+
+- Acreage allotments
+
+- Drug traffic control
+
+- Loan programs—agriculture
+
+- Marketing quotas
+
+- Price support programs
+
+- Reporting and recordkeeping requirements
+
+7 CFR Part 1400
+
+- Agriculture
+
+- Grant programs—agriculture
+
+- Loan programs—agriculture
+
+- Natural resources
+
+- Price support programs
+
+7 CFR Part 1412
+
+- Acreage allotments
+
+- Cotton
+
+- Feed grains
+
+- Oilseeds
+
+- Peanuts
+
+- Price support programs
+
+- Reporting and recordkeeping requirements
+
+- Rice
+
+- Soil conservation
+
+- Wheat
+
+7 CFR Part 1430
+
+- Dairy products
+
+- Fraud
+
+- Penalties
+
+- Price support programs
+
+- Reporting and recordkeeping requirements
+
+For the reasons discussed above, FSA and CCC amend the regulations in 7 CFR parts 718, 1400, 1412, and 1430 as follows:
+
+PART 718—PROVISIONS APPLICABLE TO MULTIPLE PROGRAMS
+
+1. The authority citation for part 718 continues to read as follows:
+
+Authority:
+7 U.S.C. 1501-1531, 1921-2008v, 7201-7334, and 15 U.S.C. 714b.
+
+Subpart A—General Provisions
+
+2. Amend § 718.2 as follows:
+
+a. Add the definition of “Administrative county” in alphabetical order;
+
+b. In the definition of “Beginning farmer or rancher”, remove the words “all members must be related by blood or marriage and all members” and add “at least 50 percent of the interest” in their place;
+
+c. Revise the definition of “County”;
+
+d. Add the definition of “Fiscal year” in alphabetical order;
+
+e. Revise the definition of “Limited resource farmer or rancher”;
+
+f. Remove the definition of “Partial reconstitution”; and
+
+g. Add the definition of “Servicing FSA county office” in alphabetical order.
+
+The additions and revisions read as follows.
+
+§ 718.2
+
+Definitions.
+
+* * * * *
+
+Administrative county
+means the FSA-determined county of record for systematic control and administration under programs relying on such a determination.
+
+* * * * *
+
+County
+means the county, council of government, or parish of a state. For Alaska, Puerto Rico and the Virgin Islands, a county shall be an area designated by the State committee with the concurrence of the Deputy Administrator.
+
+* * * * *
+
+Fiscal year
+means the period October 1 through September 30.
+
+* * * * *
+
+Limited resource farmer or rancher
+means a farmer or rancher who is both of the following:
+
+(1) A person whose direct or indirect gross farm sales do not exceed $227,100 (2025 program year) in each of the 2 calendar years that precede the most immediately preceding complete taxable year before the relevant program year that corresponds to the relevant program year (for example, for the 2026 program year, the two years would be 2023 and 2024), adjusted upwards in later years for any general inflation; and
+
+(2) A person whose total household income was at or below the national poverty level for a family of four in each of the same two previous years referenced in paragraph (1) of this definition. (Limited resource farmer or rancher status can be determined using a website available through the Limited Resource Farmer and Rancher Online Self Determination Tool through National Resource and Conservation Service at
+https://lrftool.sc.egov.usda.gov.)
+
+(3) For legal entities, all members must meet the criteria in paragraphs (1) and (2) of this definition.
+
+* * * * *
+
+Servicing FSA county office
+means the FSA office which is responsible for updating, processing and maintaining the records of a specific administrative county and the associated producers and applications thereof.
+
+* * * * *
+
+Subpart C—Reconstitution of Farms, Allotments, Quotas, and Base Acres
+
+§ 718.204
+
+[Amended]
+
+3. In § 718.204(b), remove the word “calendar” and add the word “fiscal” in its place.
+
+PART 1400—PAYMENT LIMITATION AND PAYMENT ELIGIBILITY
+
+4. The authority citation continues to read as follows:
+
+Authority:
+7 U.S.C. 1308, 1308-1, 1308-2, 1308-3, 1308-3a, 1308-4, and 1308-5; and Title I, Pub. L. 115-123.
+
+Subpart A—General Provisions
+
+5. Amend § 1400.1 as follows:
+
+a. In Table 1 to paragraph (f), revise the entry for items (1) and (2) and add footnote 3 at the end of the table.
+
+§ 1400.1
+
+Applicability.
+
+* * * * *
+
+(f) * * *
+
+Table 1 to Paragraph (
+f
+)
+
+Payment or benefit
+Limitation per person
+or legal entity
+($)
+
+(1) Price Loss Coverage, Agriculture Risk Coverage payments (other than Peanuts)
+155,000 per program year.3
+
+(2) Price Loss Coverage and Agriculture Risk Coverage payments for Peanuts
+155,000 per program year.3
+
+( printed page 1054)
+
+*         *         *         *         *         *         *
+
+3
+The $155,000 limitation is the base total amount a person or legal entity can receive directly or indirectly for program year 2025, and future years. Beginning in program year 2025, the payment limitation amount will be adjusted annually for inflation based on the Consumer Price Index for all Urban Consumers as discussed in § 1400.106.
+
+6. In § 1400.3, add the definition of “CPI-U” in alphabetical order.
+
+§ 1400.3
+
+Definitions.
+
+* * * * *
+
+CPI-U
+means the Consumer Price Index for all Urban Consumers published by the Bureau of Labor Statistics of the Department of Labor at
+https://www.bls.gov/​cpi/​.
+
+* * * * *
+
+Subpart B—Payment Limitation
+
+7. In § 1400.106, add paragraph (d) to read as follows.
+
+§ 1400.106
+
+Payment limits.
+
+* * * * *
+
+(d) The payment limitations described in items (1) and (2) of table 1 to § 1400.1(f) will be annually adjusted for inflation based on the CPI-U beginning with crop year 2025 according to the following:
+
+(1) On or about October 1 of each year, FSA reviews the CPI-U for the most recently available twelve-month period on the date of review;
+
+(2) FSA will average the CPI-U data and compare the average of the previous 12-month period to determine the percentage of inflation;
+
+(3) The result of paragraph (d)(2) of this section will be applied to the limitation specified in items (1) and (2) of table 1 to § 1400.1(f), as adjusted; and
+
+(4) The resulting adjusted limitation will be rounded to the nearest thousand.
+
+PART 1412—AGRICULTURE RISK COVERAGE AND PRICE LOSS COVERAGE
+
+8. Revise the authority citation for part 1412 to read as follows:
+
+Authority:
+7 U.S.C. 1508b, 7911-7912, 7916, 8702, 8711-8712, 8751-8752, 9011-9018, and 15 U.S.C. 714b and 714c.
+
+9. Revise the heading for part 1412 as set forth above.
+
+Subpart A—General Provisions
+
+10. Amend § 1412.2 as follows:
+
+a. Revise paragraphs (a) and (b);
+
+b. In paragraph (c) introductory text, remove the word “may” and add “will” in its place;
+
+c. Revise paragraph (d); and
+
+d. Remove and reserve paragraph (e).
+
+The revisions read as follows.
+
+§ 1412.2
+
+Administration.
+
+(a) The ARC and PLC Programs will be administered under the general supervision and direction of the Executive Vice President, CCC, and will be carried out in the field by FSA State and county committees, respectively.
+
+(b) State and county committees, and representatives and their employees, do not have authority to modify or waive any of the provisions of the regulations set forth in this part.
+
+* * * * *
+
+(d) No provision or delegation to an FSA State or county committee will preclude the Executive Vice President, CCC, or a designee, from determining any question arising under this part, or from reversing or modifying any determination made by an FSA State or county committee.
+
+* * * * *
+
+11. Amend § 1412.3 as follows:
+
+a. In paragraph (3) of the definition of “Actual average county yield”, remove “2013” both times it appears and add “2019” in its place, and remove “2017” both times it appears and add “2023” in its place;
+
+b. In the definition of “ARC guarantee”, remove “86 percent” and add “90 percent” in its place;
+
+c. In the definition of “Average historical county yield”, remove “2013” both times it appears and add “2019” in its place, and remove “2017” both times it appears and add “2023” in its place;
+
+d. In paragraph (3) of the definition of “Benchmark revenue for ARC-IC”, remove “2023 and add “2031” in its place, and remove the words “and eligible subsequently planted crop acreage” both times they appear;
+
+e. Add the definition of “Bush” in alphabetical order;
+
+f. In the definitions of “Contract period” and “Contract year or program year”, remove “2019” each time it appears and add “2026” in its place, and remove “2018” each time it appears and add “2025” in its place;
+
+g. Add the definition of “Corn” in alphabetical order;
+
+h. In the definition of “Crop year”, remove “2019” each time it appears and add “2026” in its place, and remove “2018” each time it appears and add “2025” in its place;
+
+i. In paragraph (2)(ii) of the definition of “Effective reference price”, remove “85 percent” and add “Beginning with the 2025 crop year, 88 percent” in its place;
+
+j. Add the definition of “Eligible non-covered commodity” in alphabetical order;
+
+k. In the definition of “Fiscal year”, remove “2019” each time it appears and add “2026” in its place, and remove “2018” and add “2025” in its place;
+
+l. Add the definition of “Hemp” in alphabetical order;
+
+m. Revise the definitions of “Historical irrigated percentage” and “Marketing year”;
+
+n. In the definition of “Most recent 5 crop years available”, remove “2019” and add “2026” in its place, remove “2013” and add “2020” in its place, and remove “2017” and add “2024” in its place;
+
+o. Revise the definition of “Reference price”;
+
+p. In the definition of “Replacement crop”, remove the words “unless the replacement crop acreage meets the definition of eligible subsequently planted crop acreage as specified in this section; and” and add a period in their place;
+
+q. Revise the definition of “Subsequently planted crop acreage”;
+
+r. In the definition of “Temperate japonica rice”, remove “2012” both times it appears and add “2017” in its place, and remove “2016” both times it appears and add “2021” in its place; and
+
+s. Add the definitions of “Tree” and “Vine” in alphabetical order.
+
+The additions and revisions read as follows.
+
+§ 1412.3
+
+Definitions.
+
+* * * * *
+
+Bush
+means a low, branching, woody perennial plant, from which at maturity of the bush, an annual fruit or vegetable crop is produced.
+
+* * * * *
+
+( printed page 1055)
+
+Corn
+means field corn or sterile high-sugar corn that follows the standard planting and harvesting practices for corn for the area in which the corn is grown. Corn nuts, sweet corn, and corn varieties grown for decoration uses are not corn.
+
+* * * * *
+
+Eligible non-covered commodity
+means all other commodities that are not considered a covered commodity, excluding the following:
+
+(1) Tobacco;
+
+(2)
+Cannabis sativa
+L. and any part of that plant that does not meet the definition of hemp;
+
+(3) CRP, other Federal Conservation Program Acres;
+
+(4) Cover crops, and
+
+(5) Commodities that are reported as a tree, bush, vine, grass, idle, or fallow.
+
+* * * * *
+
+Hemp
+means the plant species
+Cannabis sativa
+L. and any part of that plant, including the seeds thereof and all derivatives, extracts, cannabinoids, isomers, acids, salts, and salts of isomers, whether growing or not, with a delta-9 tetrahydrocannabinol concentration of not more than 0.3 percent on a dry weight basis, that is grown under a license or other required authorization issued by the applicable governing authority that permits the production of the hemp.
+
+Historical irrigated percentage
+means the percentage of the P&CP covered commodity on a farm that was irrigated divided by the total acreage of the P&CP covered commodity between the years 2019 through 2023.
+
+* * * * *
+
+Marketing year
+means the 12-month period beginning in the calendar year the crop is normally harvested as follows:
+
+(1) Barley, oats, and wheat: June 1 through May 31;
+
+(2) Canola, flax and rapeseed, lentils, and dry edible peas: July 1 through June 30;
+
+(3) Peanuts and seed cotton: August 1 through July 31;
+
+(4) Corn, grain sorghum, soybeans, sunflowers, safflower, mustard, crambe, sesame, and chickpeas: September 1 through August 31;
+
+(5) Long grain and medium grain rice: August 1 through July 31; and
+
+(6) Temperate Japonica rice: October 1 through September 30.
+
+* * * * *
+
+Reference price
+means, with respect to a covered commodity for a crop year:
+
+(1) The following for the 2026 through 2030 crop years:
+
+(i) Wheat, $6.35 per bushel;
+
+(ii) Corn, $4.10 per bushel;
+
+(iii) Grain sorghum, $4.40 per bushel;
+
+(iv) Barley, $5.45 per bushel;
+
+(v) Oats, $2.65 per bushel;
+
+(vi) Long grain rice, $16.90 per hundredweight;
+
+(vii) Medium grain rice, $16.90 per hundredweight;
+
+(viii) Soybeans, $10.00 per bushel;
+
+(ix) Other oilseeds, $23.75 per hundredweight;
+
+(x) Peanuts, $630.00 per ton;
+
+(xi) Dry peas, $13.10 per hundredweight;
+
+(xii) Lentils, $23.75 per hundredweight;
+
+(xiii) Small chickpeas, $22.65 per hundredweight;
+
+(xiv) Large chickpeas, $25.65 per hundredweight; and
+
+(xv) Seed cotton, $0.42 per pound.
+
+(2) Beginning with the 2031 crop year, the reference price for the previous crop year multiplied by 1.005, not to exceed 113 percent of the reference price for the covered commodity provided in paragraph (1) of this definition.
+
+* * * * *
+
+Subsequently planted crop acreage
+means acreage of a crop following an initial crop that is not in an approved double cropping combination. Subsequently planted crop acreage can be used for base reallocation for ARC and PLC under subpart B.
+
+* * * * *
+
+Tree
+means a tall, woody plant having comparatively or potential great height.
+
+* * * * *
+
+Vine
+means a perennial plant that has a flexible stem supported by climbing, twining, or creeping along a surface.
+
+Subpart B—Establishment of Base Acres for a Farm for Covered Commodities
+
+§ 1412.26
+
+[Amended]
+
+12. In § 1412.26(a), remove “2023” and add “2031” in its place.
+
+13. Add § 1412.27 to read as follows.
+
+§ 1412.27
+
+Additional Base Acres.
+
+(a) An additional 30,000,000 base acres will be allocated to eligible farms for program year 2026. Owners will be notified by CCC and given the opportunity to elect to not receive the additional allocation no later than 90 days after the receipt of the notification. An owner may appeal a determination of ineligibility for an allocation of base acres by requesting a review of the accuracy of information contained in the notification by filing a written request to the County Committee within 30 calendar days after the notice is received. If an adverse decision is made by the County Committee, the owner may appeal the adverse decision to the FSA State Committee or the National Appeals Division, or request mediation.
+
+(b) Effective beginning with the 2026 crop year, a farm is eligible to receive an allocation of base acres if, with respect to the farm, the 5-year average sum exceeds the total number of base acres on the farm. The 5-year average sum is the sum of:
+
+(1) The 5-year average of:
+
+(i) The acreage planted on the farm to all covered commodities for harvest, grazing, haying, silage or other similar purposes for the 2019 through 2023 crop years; and
+
+(ii) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to covered commodities because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC; plus
+
+(2) The lesser of:
+
+(i) 15 percent of the total acres on the farm; or
+
+(ii) The 5-year average of:
+
+(A) The acreage planted on the farm to eligible noncovered commodities for harvest, grazing, haying, silage, or other similar purposes for the 2019 through 2023 crop years; and
+
+(B) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to eligible noncovered commodities because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC.
+
+(c) The total number of base acres for covered commodities, with respect to a farm, is the total number of base acres for covered commodities on the farm, excluding unassigned crop base, as in effect on September 30, 2024.
+
+(d) If the 5-year average planted acreage of covered commodities for a farm is equal to zero, that farm is ineligible to receive an allocation of base acres.
+
+(e) The number of base acres allocated to an eligible farm:
+
+(1) Is equal to the difference obtained by subtracting the total amount of base acres for covered commodities on the farm, excluding unassigned crop base, from the amount determined in the 5-year average sum calculation; and
+
+(2) Includes unassigned crop base.
+
+(f) The allocation of additional base acres for covered commodities is in proportion to the ratio of:
+
+(1) The 5-year average of:
+
+(i) The acreage planted on the farm to each covered commodity for harvest, grazing, haying, silage, or other similar purposes for the 2019 through 2023 crop years; and
+
+( printed page 1056)
+
+(ii) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to that covered commodity because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC; to
+
+(2) The 5-year average cropping history, as calculated in (b)(1). For the purpose of determining a 5-year acreage average, any crop year in which a covered commodity was not planted will not be excluded.
+
+(g) For the purpose of determining the acreage on a farm that producers planted or were prevented from planting during the 2019 through 2023 crop years to covered commodities, if the acreage that was planted or prevented from being planted was devoted to another covered commodity in the same crop year (other than a covered commodity produced under an established practice of double cropping), the owner may elect the covered commodity to be used for that crop year in determining the 5-year average, but may not include both the initial covered commodity and the subsequent covered commodity.
+
+(h) The allocation of additional base acres among covered commodities on a farm may not result in a total number of base acres for the farm in excess of the total number of acres on the farm according to § 1412.24 with the removal of the acres specified in (a)(2).
+
+(i) Unassigned base will be converted to covered commodity base acres on farms eligible for additional base acres. The allocation of additional acres will first be applied on an acre-for-acre basis not to exceed total amount of additional allocation, converting unassigned base acres to specific covered commodity base acres. These converted acres are not counted toward the additional 30 million acres and are not subject to any pro-rata reduction.
+
+(j) If the total number of eligible acres allocated to base acres across all farms in the United States would exceed 30,000,000 acres, CCC will apply an across-the-board, pro-rata reduction to the number of eligible acres to ensure the number of allocated base acres is equal to 30,000,000 acres.
+
+(k) Beginning with crop year 2026, for the purpose of making PLC payments, FSA will establish payment yields for new base acres allocated equal to:
+
+(1) The payment yield established on the farm for the applicable covered commodity; and
+
+(2) If no such payment yield for the applicable covered commodity exists, a payment yield:
+
+(i) Equal to the average payment yield for the covered commodity for the county in which the farm is situated; or
+
+(ii) Equal to a yield for the covered commodity for similarly situated farms.
+
+(l) In the case of a farm for which the owner on the date of base allocation eligibility notification was not the owner for the 2019 through 2023 crop years, CCC will use the planting history of the prior owner or owners of that farm for purposes of determining:
+
+(1) Eligibility;
+
+(2) Eligible acres; and
+
+(3) The allocation of acres.
+
+Subpart D—ARC and PLC Contract Terms and Enrollment Provisions for Covered Commodities
+
+14. Amend § 1412.41 as follows:
+
+a. In paragraphs (a)(1)(i) and (f), remove “2019” each time it appears and add “2026” in its place; and
+
+b. In paragraph (a)(1)(iii), add “or 2026” after “2019” each time it appears;
+
+15. Amend § 1412.46 as follows:
+
+a. Revise paragraph (f)(1);
+
+b. Remove paragraph (f)(6);
+
+c. Redesignate paragraphs (f)(7) through (f)(45) as (f)(6) through (f)(44);
+
+d. In newly redesignated paragraph (f)(6), add “Crowley and” before “Otero”;
+
+e. Revise newly redesignated paragraphs (f)(13), (f)(14), and (f)(27);
+
+f. In newly redesignated paragraph (f)(32), add “Oswego,” after “Orleans,”;
+
+g. In newly redesignated paragraph (f)(35), add “Pike,” after “Muskingum,”;
+
+h. In newly redesignated paragraph (f)(36), add “Comanche,” after “Cleveland,”;
+
+i. Revise newly redesignated paragraphs (f)(43) and (f)(44);
+
+j. Add new paragraph (f)(45); and
+
+k. In paragraph (49), remove “Yakima” and add “None” in its place.
+
+The revisions and addition read as follows.
+
+§ 1412.46
+
+Planting flexibility.
+
+* * * * *
+
+(f) * * *
+
+(1)
+Alabama.
+All counties.
+
+* * * * *
+
+(13)
+Illinois.
+Adams, Alexander, Bureau, Calhoun, Cass, Clark, Clay, Clinton, Crawford, DeKalb, Edgar, Edwards, Effingham, Franklin, Gallatin, Hamilton, Hardin, Iroquois, Jefferson, Jersey, Johnson, Kankakee, LaSalle, Lawrence, Lee, Madison, Marion, Mason, Monroe, Peoria, Pulaski, Randolph, Richland, St. Clair, Saline, Sangamon, Tazewell, Union, Vermilion, Wabash, Washington, Wayne, White, Woodford, and Whiteside.
+
+(14)
+Indiana.
+Allen, Bartholemew, Crawford, Daviess, Floyd, Gibson, Harrison, Jackson, Johnson, Knox, LaGrange, LaPorte, Madison, Marion, Martin, Miami, Pike, Posey, Ripley, Shelby, Sullivan, Vanderburgh, and Warrick.
+
+* * * * *
+
+(27)
+Nebraska.
+Dawes-North Sioux and Sheridan.
+
+* * * * *
+
+(43)
+Tennessee.
+All counties.
+
+(44)
+Texas.
+Anderson, Andrews, Aransas, Archer, Armstrong, Atascosa, Austin, Bailey, Bastrop, Baylor, Bee, Bell, Bexar, Borden, Bosque, Bowie, Brazos, Brazoria, Briscoe, Brooks, Brown, Burleson, Caldwell, Calhoun, Callahan, Cameron, Carson, Cass, Castro, Chambers, Cherokee, Childress, Clay, Cochran, Coleman, Collin, Collingsworth, Colorado, Comanche, Concho, Cooke, Coryell, Cottle, Crosby, Culberson, Dallam, Dallas, Dawson, Deaf Smith, Delta, Denton, Dickens, Dimmit, Donley, Duval, Eastland, Ellis, El Paso, Erath, Falls, Fannin, Fayette, Fischer, Floyd, Foard, Fort Bend, Franklin, Freestone, Frio, Gaines, Galveston, Garza, Gillespie, Glasscock, Gonzales, Gray, Grayson, Grimes, Guadalupe, Hale, Hall, Hamilton, Hansford, Hardeman, Hardin, Harris, Hartley, Haskell, Hemphill, Henderson, Hidalgo, Hill, Hockley, Hood, Hopkins, Houston, Howard, Hudspeth, Hunt, Hutchinson, Jackson, Jefferson, Jim Hogg, Jim Wells, Johnson, Jones Karnes, Kaufman, Kent, King, Kinney, Kleberg, Knox, Lamar, Lamb, LaSalle, Lee, Leon, Liberty, Limestone, Lipscomb, Live Oak, Llano, Loving, Lubbock, Lynn, Martin, Mason, Matagorda, Maverick, McCulloch, McLennan, Medina, Menard, Midland, Milam, Mills, Mitchell, Montague, Moore, Motley, Navarro, Nolan, Nueces, Ochiltree, Oldham, Palo Pinto, Parker, Parmer, Pecos, Potter, Rains, Randall, Reagan, Red River, Reeves, Refugio, Roberts, Robertson, Rockwall, Runnels, San Patricio, San Saba, Schleicher, Scurry, Sherman, Smith, Somervell, Starr, Stonewall, Swisher, Tarrant, Taylor, Terry, Tom Green, Travis, Upton, Uvalde, Van Zandt, Victoria, Walker, Waller, Washington, Webb, Wharton, Wheeler, Wichita, Wilbarger, Willacy, Williamson, Wise, Wilson, Wood, Yoakum, Young, Zapata, and Zavala.
+
+(45)
+U.S. Virgin Islands.
+None.
+
+* * * * *
+
+§ 1412.47-1412.48
+
+[Reserved]
+
+16. Add and reserve §§ 1412.47-1412.48.
+
+Subpart E—Financial Considerations Including Sharing Payments
+
+§ 1412.51
+
+[Amended]
+
+17. Amend § 1412.51 as follows:
+
+( printed page 1057)
+
+a. Remove and reserve paragraphs (b) and (c); and
+
+b. In paragraph (e), remove “2019” both times it appears and add “2026” in its place, remove “2020” and add “2026” in its place, and remove “2021” both times it appears and add “2028” in its place.
+
+§ 1412.52
+
+[Amended]
+
+18. Amend § 1412.52 as follows:
+
+a. In paragraph (d) introductory text, remove “in § 1412.51 and”; and
+
+b. In paragraph (e)(2), remove “Part 1403 of this chapter” and add “Part 3 of this title” in its place.
+
+19. Amend § 1412.53 as follows:
+
+a. In paragraph (b)(2), remove “10 percent” and add “12 percent” in its place;
+
+b. In paragraph (c), remove “2013” each time it appears and add “2019” in its place, and remove “2017” each time it appears and add “2023” in its place;
+
+c. In paragraph (d), remove “2019” and add “2026” in its place;
+
+d. Revise paragraph (e)(2); and
+
+e. Add new paragraph (h).
+
+The revision and addition read as follows.
+
+§ 1412.53
+
+ARC payment provisions.
+
+* * * * *
+
+(e) * * *
+
+(2) Payment is equal to the result of multiplying the payment acres for the covered commodities times the difference between actual crop revenue and the ARC-IC guarantee, not to exceed 12 percent of benchmark revenue for ARC-IC for each of the 2025 through 2031 crop years.
+
+* * * * *
+
+(h) For the 2025 crop year, CCC will make the higher of PLC payments or ARC-CO payments to the producers on a farm for the payment acres for each covered commodity on the farm.
+
+Subpart F—Violations and Compliance Provisions
+
+§ 1412.61
+
+[Amended]
+
+20. In § 1412.61, remove “part 1403 of this chapter” and add “part 3 of this title” in its place.
+
+§ 1412.62
+
+[Reserved]
+
+21. Add and reserve § 1412.62.
+
+§ 1412.65
+
+[Amended]
+
+22. In § 1412.65(a), remove “part 1403 of this chapter” and add “part 3 of this title” in its place.
+
+Subpart G—ARC and PLC Election
+
+§ 1412.71
+
+[Amended]
+
+23. Amend § 1412.71 as follows:
+
+a. In paragraph (a) introductory text, remove “2023” and add “2031” in its place, and remove “2019” and add “2026” in its place; and
+
+b. In paragraph (a)(2), add “or 2026” to the end of the paragraph.
+
+§ 1412.72
+
+[Amended]
+
+24. In § 1412.72(a), add “or 2026” after “2019”.
+
+§ 1412.74
+
+[Amended]
+
+25. Amend § 1412.74 as follows:
+
+a. In paragraph (a), remove “2019” and add “2026” in its place; and
+
+b. In paragraph (b), remove “2019” both times it appears and add “2026” in its place, remove “2023” and add “2025” in its place, and add “or 2027 through 2031 crop years as was applicable for the 2025 crop year” at the end of the paragraph.
+
+Subpart H—[Reserved]
+
+26. Remove and reserve subpart H, consisting of §§ 1412.81 through 1412.89.
+
+PART 1430—DAIRY PRODUCTS
+
+27. The authority citation for part 1430 continues to read as follows:
+
+Authority:
+7 U.S.C. 9051-9060 and 9071 and 15 U.S.C. 714b and 714c.
+
+Subpart A—[Reserved]
+
+28. Remove and reserve subpart A.
+
+Subpart D—Dairy Margin Coverage Program
+
+29. Amend § 1430.401 as follows:
+
+a. Revise paragraphs (a), (b), and (d); and
+
+b. Remove and reserve paragraph (e).
+
+The revisions read as follows.
+
+§ 1430.401
+
+Administration.
+
+(a) The Dairy Margin Coverage Program (DMC) will be administered under the general supervision and direction of the Executive Vice President, CCC, and will be carried out in the field by FSA State and county committees, respectively.
+
+(b) State and county committees, and representatives and their employees, do not have authority to modify or waive any of the provisions of the regulations set forth in this part.
+
+* * * * *
+
+(d) No provision or delegation to an FSA State or county committee will preclude the Executive Vice President, CCC, or a designee, from determining any question arising under this subpart, or from reversing or modifying any determination made by an FSA State or county committee.
+
+* * * * *
+
+30. Amend § 1430.402 as follows:
+
+a. Remove the definitions of “Adjusted Base Production History” and “Milk Income Loss Contract Program or MILC”,
+
+b. Revise the definitions of “New operation” and “Production history”; and
+
+c. Remove the definition of “Supplemental Production History”.
+
+The revisions read as follows.
+
+§ 1430.402
+
+Definitions.
+
+* * * * *
+
+New operation
+means a dairy operation that started commercially marketing milk:
+
+(1) After January 1, 2023, and does not have one full 365-day calendar year of commercial milk marketings from 2021, 2022, or 2023;
+
+(2) After January 1, 2023, with a full calendar year of commercial milk marketings for 2024 or subsequent year; or
+
+(3) Within 60 calendar days of submitting a contract application under DMC.
+
+* * * * *
+
+Production history
+means the production history determined for a participating dairy operation under this subpart when the participating dairy operation first registers to participate in DMC as determined under the provisions of this subpart.
+
+* * * * *
+
+31. Amend § 1430.403 as follows:
+
+a. Revise paragraphs (a)(1) and (e); and
+
+b. Remove paragraph (f).
+
+The revisions read as follows.
+
+§ 1430.403
+
+Eligible Dairy Operations.
+
+(a) * * *
+
+(1) Produce milk from cows in the United States that is marketed commercially at the time of each annual election for an applicable coverage year in DMC;
+
+* * * * *
+
+(e) CCC will determine additional dairy operations that operate in a manner that are separate and distinct from each other according to paragraph (d) of this section and may be considered an operation even though they may not meet the conditions otherwise imposed in this definition. CCC may combine dairy operations to be considered one dairy operation when the business is operating more than one milking facility that is not separate and distinct and is conducting business as one dairy operation.
+
+32. Amend § 1430.404 as follows:
+
+( printed page 1058)
+
+a. In paragraph (a), remove the words “and, if eligible, adjusted base production history,”;
+
+b. Revise paragraphs (b) introductory text, (c)(1), (d), and (e)(2) and (3);
+
+c. Remove paragraph (e)(4);
+
+d. Revise paragraphs (f)(2) and (g); and
+
+e. Remove paragraph (h).
+
+The revisions read as follows.
+
+§ 1430.404
+
+Time and method of registration and annual election.
+
+* * * * *
+
+(b) A dairy operation must submit completed contracts and any other supporting documentation, during the annual election period established by CCC to the administrative county FSA office serving the dairy operation. However, the production history must be established only once and approved by CCC before the contract is submitted and considered complete.
+
+* * * * *
+
+(c) * * *
+
+(1) The applicable year of coverage for contracts received during an annual election period will be the following calendar year.
+
+* * * * *
+
+(d) If the dairy producer operates more than one separate and distinct operation, the producer must register each operation for each operation to be eligible for coverage. If the producer moves the same herd of cattle between two facilities, then the two facilities will not be regarded as separate and distinct but as one operation. A separate operation must distinctly, as a single unit, have their own cattle, facilities, milk marketings, tanks, feed, records, State level licenses, and permits. A dairy operation operated by more than one dairy producer will be considered to be a single dairy operation for purposes of participating in DMC and may only submit one contract.
+
+(e) * * *
+
+(2) During the 2026 annual coverage election period only, participating dairy operations that make a one-time election of coverage level and percentage of coverage, according to § 1430.407(j), will be locked in at the same coverage level and percentage of coverage for a 6-year period beginning January 1, 2026, and ending December 31, 2031. Dairy operations that elect the lock-in option are required to pay the annual administrative fee and submit an annual contract during the annual contract election period for each coverage year to certify that the dairy operation is still in the business of producing and commercially marketing milk. If the operation fails to pay the applicable administrative fees or certify the status of the dairy operation, the dairy operation will remain obligated for all applicable unpaid administrative and premium fees calculated for the lock-in period.
+
+(3) All participating producers in the participating dairy operation must agree to the coverage level threshold and coverage percentage elected by the operation on the contract. Producers in the participating dairy operation that elect not to participate may not submit a separate contract for coverage. All producers that share in risk of the dairy operation's production must be indicated on the contract with their corresponding share in the dairy operation; however, a signature from the non-participating member will not be required for CCC approval. When a member of an informal joint venture declines participation on the DMC contract, the premium amount and potential payments for the participating members are prorated accordingly.
+
+(f) * * *
+
+(2) All information provided is subject to verification by CCC. CCC may require a dairy operation to provide documentation that supports all verifiable records.
+
+(g) At the time the completed contract is submitted to CCC for the first program year in which the operation is to participate in DMC, the dairy operation must also submit a separate form, as prescribed by CCC, to establish the production history for the dairy operation. An established production history and a completed contract are both required to have a complete submission that is subject to approval by CCC.
+
+33. Amend § 1430.405 as follows:
+
+a. Revise paragraph (a) introductory text;
+
+b. In paragraph (a)(2), remove the words “or 2019 milk marketings”;
+
+c. Remove paragraphs (a)(3) and (4), and (b);
+
+d. Redesignate paragraphs (c) and (d) as paragraphs (b) and (c);
+
+e. Revise newly redesignated paragraph (b) introductory text;
+
+f. Remove paragraph (e);
+
+g. Redesignate paragraphs (f) through (h) as paragraphs (d) through (f);
+
+h. In newly redesignated paragraph (d) introductory text, remove the words “or adjusted base production history”;
+
+i. In newly redesignated paragraphs (d)(1) and (d)(2), remove the words “and or adjusted base production history”;
+
+j. In newly redesignated paragraph (e), remove the words “and adjusted base production history”;
+
+k. In newly redesignated paragraph (f), remove “5 million” and add “6 million” in its place; and
+
+l. Revise paragraph (f)(1).
+
+The revisions read as follows.
+
+§ 1430.405
+
+Establishment and transfer of production history for a participating dairy operation.
+
+(a) Except as provided in paragraphs (b) of this section, CCC will establish the production history for a dairy operation for DMC as the highest annual milk marketings of the participating dairy operation during any one of the 2021, 2022, or 2023 calendar years.
+
+* * * * *
+
+(b) A participating dairy operation that began marketing milk after January 1, 2023, will be considered a new dairy operation according to § 1430.401. To establish the production history for such a new dairy operation the new dairy operation is required to elect one of the following methods:
+
+* * * * *
+
+(f) * * *
+
+(1) The dairy operation must notify CCC of the intergenerational transfer within 60 days of the purchase of the cows by filing form CCC-800C at the County office. The operation has the option of the additional production history taking effect beginning with the month the producer first began to commercially produce and market milk as part of the dairy operation, or the following January 1. If the additional production history takes effect between January 1 and August 31, the premium is due September 1, as specified in § 1430.407(h)(2). If the additional production history takes effect between September 1 and December 31, the premium is due immediately.
+
+* * * * *
+
+34. Amend § 1430.406 as follows:
+
+a. Revise paragraph (a); and
+
+b. In paragraph (c), remove “2024” and add “2031” in its place.
+
+The revision reads as follows.
+
+§ 1430.406
+
+Administrative Fees.
+
+(a) Except as provided in paragraph (e) of this section, dairy operations must pay an administrative fee to CCC in the amount of $100 at the time of enrollment during the annual election period for each applicable coverage year the dairy operation decides to participate in DMC. Annual administrative fees are due and payable to CCC through the administrative county FSA office no later than the close of business on the last day of the annual election period established by CCC for each applicable calendar year of dairy margin coverage under DMC. The administrative fee paid is non-refundable; however, if paid during the Coverage Election Period, and made in
+
+( printed page 1059)
+
+error or other detrimental circumstances, the COC may refund the administrative fee to the dairy operation.
+
+* * * * *
+
+35. Amend § 1430.407 as follows:
+
+a. In paragraphs (c), (d), and the headings of the second and third column in Table 1 to paragraph (e), remove “5 million” each time it appears and add “6 million” in its place;
+
+b. In paragraph (f) introductory text, remove the words “or adjusted base production history, as applicable,”;
+
+c. In paragraph (f)(1), remove the words “or adjusted base production history”;
+
+d. Revise paragraphs (i) and (j); and
+
+e. Remove paragraph (n).
+
+The revisions read as follows.
+
+§ 1430.407
+
+Buy-up coverage.
+
+* * * * *
+
+(i) If the total premium is not paid for an applicable calendar year of coverage as specified in paragraph (g) of this section, the participating dairy operation contract for a concurrent year cannot be approved until the prior year premium or receivable is paid.
+
+(j) For each calendar year 2026 through 2031, a participating dairy operation that makes a one-time election of a coverage level threshold and a percentage of coverage according to this section, for a 6-year period, will have their elected coverage level, as applicable to each tier, reduced by 25 percent. The option to lock in for the premium rate discount must be elected during the 2026 annual coverage election period announced by CCC. Except that, new dairy operations, not in existence during the 2026 annual election period, that elect to participate in DMC according to § 1430.404(b), are eligible to receive the premium rate discount for locking coverage for the period beginning with the first available calendar year and ending in 2031, except that new dairy operations registering for DMC for the first time for coverage year 2031 and dairy operations that stop producing and marketing milk in 2026 that are registering for eligible months in 2031 are not eligible for the multi-year premium rate discount. All dairy operations that elect the lock-in option are subject to full participation in DMC at the same elected premium coverage levels and calculated premium for the duration of DMC according to § 1430.413.
+
+* * * * *
+
+§ 1430.408
+
+[Removed and reserved]
+
+36. Remove and reserve § 1430.408.
+
+37. In § 1430.410, revise paragraph (a)(2) and add paragraph (a)(3).
+
+The revision and addition read as follows.
+
+§ 1430.410
+
+Effect of failure to pay administrative fees or premiums.
+
+(a) * * *
+
+(2) Upon such failure to pay the administrative fee when due, loses coverage under DMC for the coverage year; and
+
+(3) Upon such failure to pay the premium fee or receivable when due, a subsequent DMC contract cannot be approved.
+
+* * * * *
+
+§ 1430.412
+
+[Reserved]
+
+38. Remove and reserve § 1430.412.
+
+§ 1430.413
+
+[Amended]
+
+39. Amend § 1430.413 as follows:
+
+a. In paragraph (a) remove “2023” both times it appears and add “2031” in its place; and
+
+b. Remove paragraphs (d) and (e).
+
+§ 1430.416
+
+[Amended]
+
+40. In § 1430.416, remove “part 1403 of this chapter” and add “part 3 of this title” in its place.
+
+William Beam,
+
+Administrator, Farm Service Agency, and Executive Vice President, Commodity Credit Corporation.
+
+Footnotes
+
+1.
+
+Under ARC, 2 options are available for producers: a county option (ARC-CO) and an individual option (ARC-IC). These options are discussed further in section II.A.
+
+Back to Citation
+
+2.
+
+The crop year and market year are identical for each covered commodity. “Market year” is the term used by USDA's National Agricultural Statistics Service (NASS), which is the source of price data used for ARC and PLC.
+
+Back to Citation
+
+3.
+
+Base acres of upland cotton under the 2008 Farm Bill in effect as of September 30, 2013, subject to any adjustment or reduction, became “generic base acres” beginning with the 2014 crop year. Under terms of the Bipartisan Budget Act of 2018 (Pub. L. 115-123), if a covered commodity, including seed cotton, was not planted or prevented from being planted on the farm during the 2009 through 2016 years, the generic base acres became unassigned base acres, which are not eligible for any ARC or PLC benefits. For a discussion of generic base acres, see 83 FR 40653.
+
+Back to Citation
+
+4.
+
+This includes programs such as the Wetland Reserve Program.
+
+Back to Citation
+
+5.
+
+“Planted and considered planted” (P&CP) means, with respect to an acreage amount, the sum of the planted and prevented planted acres on the farm approved by the FSA county committee for a crop. P&CP is limited to initially planted or prevented planted crop acreage, except for crops planted in an FSA approved double-cropping sequence. Subsequently planted crop acreage and replacement crop acreage are not included as P&CP. See 7 CFR 718.2.
+
+Back to Citation
+
+6.
+
+As defined in § 718.2, “reconstitution” means a change in the land constituting a farm as a result of combination or division.
+
+Back to Citation
+
+7.
+
+The option to enroll in a multiyear contract for the 2026 through 2031 program years is available in each year; otherwise, enrollment must be completed annually. A multiyear contract will remain valid as long as there are no changes to farm records or producers associated with the farm. If a change occurs, the multiyear contract will be cancelled and enrollment must be completed on an annual basis in subsequent years.
+
+Back to Citation
+
+8.
+
+See
+https://www.fsa.usda.gov/​tools/​informational/​payment-eligibility/​payment-limitations.
+
+Back to Citation
+
+9.
+
+As defined in 7 CFR 1430.402, “dairy operation” means, as determined by the Deputy Administrator, and subject to conditions that the Deputy Administrator may impose to advance the achievement of the purposes of the DMC Program, any one or more dairy producers that produce and market milk commercially produced from cows as a single unit in which each dairy producer:
+
+(1) Shares in the pooling of resources under a common ownership structure;
+
+(2) Is at risk in the production of milk in the dairy operation;
+
+(3) Contributes land, labor, management, equipment, or capital to the dairy operation that are at least commensurate to the producer's share in the operation; and
+
+(4) Has production facilities located in the United States.
+
+Back to Citation
+
+[FR Doc. 2026-00313 Filed 1-9-26; 8:45 am]
+
+BILLING CODE 3411-E2-P
+
+Published Document: 2026-00313 (91 FR 1043)

@@ -1,0 +1,1740 @@
+# 7 CFR part 1412: Agriculture Risk Coverage, Price Loss Coverage (eCFR)
+# https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1412
+# fetched 2026-10-16T18:22:08Z, sha256 bf079cb8fed6b0effee81485e8973fb95ee345d0563fb30277f231291598bee9
+
+eCFR :: 7 CFR Part 1412 -- Agriculture Risk Coverage and Price Loss Coverage
+
+Site Feedback
+
+You are using an unsupported browser
+
+You are using an unsupported browser. This web site is designed for the current versions of
+Microsoft Edge, Google Chrome, Mozilla Firefox, or Safari.
+
+Site Feedback
+
+The Office of the Federal Register publishes documents on behalf of Federal agencies but does not have any authority over their programs. We recommend you directly contact the agency associated with the content in question.
+
+If you have comments or suggestions on how to improve the www.ecfr.gov website or have questions about using www.ecfr.gov, please choose the 'Website Feedback' button below.
+
+Website Feedback
+
+If you would like to comment on the current content, please use the 'Content Feedback' button below for instructions on contacting the issuing agency
+
+Content Feedback
+
+If you have questions for the Agency that issued the current document please contact the agency directly.
+
+Website Feedback
+
+-
+
+☰
+
+-
+
+-
+
+-
+
+Home
+
+-
+
+Browse
+
+-
+
+Titles
+
+-
+
+Agencies
+
+-
+
+CFR Updates
+
+-
+
+Recent Changes
+
+-
+
+Issue Summaries
+
+-
+
+Corrections
+
+-
+
+Finding Aids
+
+-
+
+Parallel Table of Authorities
+
+-
+
+Subject Index
+
+-
+
+Agency-prepared Indexes
+
+-
+
+Reader Aids
+
+-
+Reader Aids Home
+
+-
+Using the eCFR Point-in-Time System
+
+-
+Understanding the eCFR
+
+-
+Government Policy and OFR Procedures
+
+-
+Developer Resources
+
+-
+Recent Site Updates
+
+-
+
+My eCFR
+
+-
+My Subscriptions
+
+-
+Sign Out
+
+-
+Sign In / Sign Up
+
+-
+
+eCFR
+
+The Electronic Code of Federal Regulations
+
+Enhanced Content :: FR Reference
+
+Enhanced content is provided to the user to provide additional context.
+
+Enhanced Content :: FR Reference
+
+Title 7
+
+This content is from the eCFR and is authoritative but unofficial.
+
+Displaying title 7, up to date as of 10/14/2026. Title 7 was last amended 10/09/2026.
+
+view historical versions
+
+A drafting site is available for use when drafting amendatory language
+
+switch to drafting site
+
+Navigate by entering citations or phrases
+(eg:
+1 CFR 1.1
+49 CFR 172.101
+Organization and Purpose
+1/1.1
+Regulation Y
+FAR).
+
+Choosing an item from
+citations and headings
+will bring you directly to the content. Choosing an item from
+full text search results
+will bring you to those results. Pressing enter in the search box
+will also bring you to search results.
+
+Background and more details are available in the
+
+Search & Navigation
+
+guide.
+
+-
+Title 7 —Agriculture
+
+-
+Subtitle B —Regulations of the Department of Agriculture
+
+-
+Chapter XIV —Commodity Credit Corporation, Department of Agriculture
+
+-
+Subchapter B —Loans, Purchases, and Other Operations
+
+-
+Part 1412
+
+-
+Previous
+
+-
+Next
+
+-
+Top
+
+-
+
+- Table of Contents
+
+Enhanced Content - Table of Contents
+
+Part 1412 Agriculture Risk Coverage and Price Loss Coverage 1412.1 – 1412.74
+
+Subpart A General Provisions 1412.1 – 1412.4
+
+§ 1412.1 Applicability, changes in law, interest, application, and contract provisions.
+
+§ 1412.2 Administration.
+
+§ 1412.3 Definitions.
+
+§ 1412.4 Appeals.
+
+Subpart B Establishment of Base Acres for a Farm for Covered Commodities 1412.23 – 1412.27
+
+§ 1412.23 Base acres, and Conservation Reserve Program.
+
+§ 1412.24 Limitation of total base acres on a farm.
+
+§ 1412.25 Allocation of generic base acres on a farm and updating of records.
+
+§ 1412.26 Treatment of base acres on farms entirely in pasture, grass, idle, or fallow.
+
+§ 1412.27 Additional Base Acres.
+
+Subpart C Establishment of Price Loss Coverage Yields and Submitting Production 1412.31 – 1412.36
+
+§ 1412.31 PLC yields for covered commodities.
+
+§ 1412.32 Updating PLC yield for all covered commodities except seed cotton.
+
+§ 1412.33 Updating PLC yield for seed cotton.
+
+§ 1412.34 PLC yield for additional oilseeds.
+
+§ 1412.35 Submitting production evidence.
+
+§ 1412.36 Incorrect or false production evidence.
+
+Subpart D ARC and PLC Contract Terms and Enrollment Provisions for Covered Commodities 1412.41 – 1412.50
+
+§ 1412.41 ARC or PLC program contract.
+
+§ 1412.42 Eligible producers.
+
+§ 1412.43 Reconstitutions.
+
+§§ 1412.44-1412.45 [Reserved]
+
+§ 1412.46 Planting flexibility.
+
+§ 1412.47-1412.48 [Reserved]
+
+§ 1412.49 Matters of general applicability.
+
+§ 1412.50 Transfer of land and succession-in-interest.
+
+Subpart E Financial Considerations Including Sharing Payments 1412.51 – 1412.55
+
+§ 1412.51 Limitation of payments.
+
+§ 1412.52 PLC payment provisions.
+
+§ 1412.53 ARC payment provisions.
+
+§ 1412.54 Sharing of payments.
+
+§ 1412.55 Provisions relating to tenants and sharecroppers.
+
+Subpart F Violations and Compliance Provisions 1412.61 – 1412.69
+
+§ 1412.61 Contract violations.
+
+1412.62 [Reserved]
+
+§ 1412.63 Contract or application liability.
+
+§ 1412.64 Inaccurate representation, misrepresentation, and scheme or device.
+
+§ 1412.65 Offsets and assignments.
+
+§ 1412.66 Acreage and production reports, prevented planting, and notices of loss.
+
+§ 1412.67 Compliance with highly erodible land and wetland conservation provisions.
+
+§ 1412.68 Controlled substance violations.
+
+§ 1412.69 Control of noxious weeds.
+
+Subpart G ARC and PLC Election 1412.71 – 1412.74
+
+§ 1412.71 Election of ARC or PLC.
+
+§ 1412.72 Election period.
+
+§ 1412.73 Reconstitutions of farms and election.
+
+§ 1412.74 Failure to make election.
+
+Subpart H [Reserved]
+
+Enhanced Content - Table of Contents
+
+- Details
+
+Enhanced Content - Details
+
+URL
+
+https://www.ecfr.gov/current/title-7/part-1412
+
+Citation
+
+7 CFR Part 1412
+
+Agency
+
+Commodity Credit Corporation, Department of Agriculture
+
+Part 1412
+
+Authority:
+
+7 U.S.C. 1508b, 7911-7912, 7916, 8702, 8711-8712, 8751-8752, 9011-9018, and 15 U.S.C. 714b and 714c.
+
+Source:
+
+79 FR 46339, Aug. 8, 2014, unless otherwise noted.
+
+Enhanced Content - Details
+
+- Print/PDF
+
+Enhanced Content - Print
+
+Generate PDF (approximately 50+ pages)
+
+This content is from the eCFR and may include recent changes applied to the CFR.
+The official, published CFR, is updated annually and available below under
+"Published Edition". You can learn more about the process
+here.
+
+Enhanced Content - Print
+
+- Display Options
+
+Enhanced Content - Display Options
+
+Enhanced Content - Display Options
+
+- Subscribe
+
+Enhanced Content - Subscribe
+
+Subscribe to: 7 CFR Part 1412
+
+Enhanced Content - Subscribe
+
+-
+
+- Timeline
+
+Enhanced Content - Timeline
+
+-
+
+7/09/2026
+
+view on this date
+
+view change introduced
+
+-
+
+2/04/2026
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+1/12/2026
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+3/23/2020
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+1/24/2020
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+10/08/2019
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+9/03/2019
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+8/16/2018
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+Enhanced Content - Timeline
+
+- Go to Date
+
+Enhanced Content - Go to Date
+
+Enhanced Content - Go to Date
+
+- Compare Dates
+
+Enhanced Content - Compare Dates
+
+Show changes as:red/greenpurple/orange
+
+Show strike-through for removed contentyesno
+
+Enhanced Content - Compare Dates
+
+-
+
+- Published Edition
+
+Enhanced Content - Published Edition
+
+View the most recent official publication:
+
+-
+View Title 7 on govinfo.gov
+
+-
+View the PDF for 7 CFR Part 1412
+
+These links go to the official, published CFR, which is updated annually. As a
+result, it may not include the most recent changes applied to the CFR.
+Learn more.
+
+Enhanced Content - Published Edition
+
+-
+
+- Developer Tools
+
+Enhanced Content - Developer Tools
+
+Information and documentation can be found in our
+developer resources.
+
+Enhanced Content - Developer Tools
+
+eCFR Content
+
+The Code of Federal Regulations (CFR) is the official legal print publication containing the codification of the general and permanent rules published in the Federal Register by the departments and agencies of the Federal Government. The Electronic Code of Federal Regulations (eCFR) is a continuously updated online version of the CFR. It is not an official legal edition of the CFR.
+
+Learn more about the eCFR, its status, and the editorial process.
+
+Enhanced Content
+
+View
+table of contents
+for this page.
+
+Editorial Note on Subchapter B of Chapter XIV
+
+Editorial Note:
+
+For Federal Register citations to regulations affecting previous program years not included in this volume, see the List of CFR Sections Affected, which appears in the Finding Aids section of the printed volume and at www.govinfo.gov.
+
+PART 1412—AGRICULTURE RISK COVERAGE AND PRICE LOSS COVERAGE
+
+Authority:
+
+7 U.S.C. 1508b, 7911-7912, 7916, 8702, 8711-8712, 8751-8752, 9011-9018, and 15 U.S.C. 714b and 714c.
+
+Source:
+
+79 FR 46339, Aug. 8, 2014, unless otherwise noted.
+
+Subpart A—General Provisions
+
+§ 1412.1 Applicability, changes in law, interest, application, and contract provisions.
+
+(a) This part specifies how base acres and farm program payment yields are established or adjusted for the purpose of calculating payments for agriculture risk coverage (ARC) and price loss coverage (PLC) for covered commodities: Wheat, oats, and barley (including wheat, oats, and barley used for haying and grazing); corn; grain sorghum; long grain rice; medium grain rice; seed cotton; pulse crops; soybeans; other oilseeds; and peanuts. This part specifies how and when producers on a farm may make an election and enroll on a farm to obtain either ARC or PLC (and if ARC, whether to receive ARC payments based on county coverage applicable on a covered commodity-by-commodity basis; or individual coverage applicable to all the covered commodities on a farm).
+
+(b) Payments otherwise provided for in this part are subject to changes made by law in rates, conditions, and eligibility notwithstanding any contract under this part. However, any such modification may, as determined by FSA, allow producers the opportunity to withdraw their ARC or PLC contract.
+
+(c) If any refund is due to FSA under this part, interest will be due from the date of the FSA disbursement except as determined by FSA. The provisions of this section will apply notwithstanding any other provision of this or any other part. In order to receive payment under this part a participant is required to comply with the regulations in this part and any additional requirements imposed by the ARC or PLC contract.
+
+(d) For ARC and PLC, assistance under this part will be provided for producers satisfying all requirements of this part who have a share of eligible base acres of the covered commodity. The sum of the base acres on a farm are based on the farm's constitution according to part 718 of this title. FSA farm records and PLC yields are based on the administrative county of the farm. ARC-CO assistance under this part will be determined by FSA for the enrolled covered commodity base acres based on the physical location of covered commodity base acres on a farm weighted and summarized to the farm.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40656, Aug. 16, 2018; 84 FR 45887, Sept. 3, 2019]
+
+§ 1412.2 Administration.
+
+(a) The ARC and PLC Programs will be administered under the general supervision and direction of the Executive Vice President, CCC, and will be carried out in the field by FSA State and county committees, respectively.
+
+(b) State and county committees, and representatives and their employees, do not have authority to modify or waive any of the provisions of the regulations set forth in this part.
+
+(c) The State committee will take any action required by the regulations of this part that the county committee has not taken. The State committee will also:
+
+(1) Correct, or require a county committee to correct, any action taken by such county committee that is not in accordance with the regulations of this part; or
+
+(2) Require a county committee to withhold taking any action that is not in accordance with this part.
+
+(d) No provision or delegation to an FSA State or county committee will preclude the Executive Vice President, CCC, or a designee, from determining any question arising under this part, or from reversing or modifying any determination made by an FSA State or county committee.
+
+(e) [Reserved]
+
+(f) Items of general applicability to program participants, including, but not limited to, application periods, application deadlines, internal operating guidelines issued to State and county offices, prices, yields, and payment factors established for ARC or PLC, are not subject to appeal in accordance with part 780 of this title.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40656, Aug. 16, 2018; 91 FR 1054, Jan. 12, 2026]
+
+§ 1412.3 Definitions.
+
+The definitions in this section are applicable for all purposes of administering this part. The terms defined in part 718 of this title and part 1400 of this chapter are also applicable, except where those definitions conflict with the definitions specified in this section. Where there is a conflict or a difference in definitions specified in this part and part 718 of this title or part 1400 of this chapter, the regulations in this part will apply.
+
+2014 Farm Bill means the Agricultural Act of 2014 (Pub. L. 113-79), as amended.
+
+Actual average county yield means the yield, which is calculated as the crop year production of a covered commodity in the county divided by the commodity's total planted acres for a crop year in the county.
+
+(1) For wheat, corn, grain sorghum, barley and oats, planted acres are the harvested acres plus unharvested acres.
+
+(2) In determining the yield for a county, FSA uses data in order from the following data sources: RMA and yields determined by State committee.
+
+(3) Separate irrigated and non-irrigated yields will be established in a county having farms with P&CP acreage history of a covered commodity in 2019 through 2023. These separate yields will be established where FSA determines the covered commodity's P&CP acreage was both irrigated and non-irrigated in 2019 through 2023.
+
+(4) At FSA's discretion, FSA will calculate and use a trend-adjusted yield factor to adjust the yield taking into consideration, but not exceeding, the trend-adjusted yield factor that is used to increase yield history under the crop insurance endorsement under the Federal Crop Insurance Act (7 U.S.C. 1501-1524).
+
+Actual crop revenue is calculated as follows for:
+
+(1) ARC-CO, for a crop year of a covered commodity: The actual average county yield per planted acre of the covered commodity times the higher of either the market year average (MYA) price of the covered commodity or the national average loan rate for the covered commodity. If a county has separate irrigated and non-irrigated yields established for a covered commodity, the actual crop revenue calculated for a farm with that covered commodity will be weighted by FSA based on the farm's historical irrigated percentage.
+
+(2) ARC-IC, for a producer on a farm for a crop year, which is based on the producer's enrolled share of planted acres of all covered commodities on all farms for which ARC-IC has been elected and in which the producer has an interest for which the producer enrolled: the sum of the results of the following calculation for each covered commodity on the farm:
+
+(i) The total production of the covered commodity for all enrolled farms in the State in which the producer has an interest; times
+
+(ii) The higher of either the MYA price or national loan rate for the covered commodity; divided by
+
+(iii) The producer's share of the planted acres of the covered commodity in the State.
+
+Administrative units means, for the purposes of ARC-CO, the division of specific counties into two areas for counties that are each larger than 1,400 square miles and have more than 190,000 base acres where appropriate based on the differences in weather patterns, soil types, and other factors.
+
+Agriculture risk coverage (or ARC) means coverage provided under subparts D and E of this part.
+
+ARC-CO means the Agriculture Risk Coverage elected with the county option.
+
+ARC guarantee is calculated for a crop year for a covered commodity, and is equal to 90 percent of the benchmark revenue for ARC-CO and ARC-IC, as defined in this part.
+
+ARC-IC means the Agriculture Risk Coverage elected with the individual option.
+
+ARC-IC farm is calculated as the sum of the producer's interests in all of the producer's farms having an ARC-IC election and enrollment in the State.
+
+Average historical county yield means the 5-year Olympic determined by FSA as the average of actual average county yields for the most recent 5 years for which data is available, substituting 80 percent of the county transitional yield as defined in this part in each year in which the actual average county yield is less than 80 percent of the county transitional yield. Separate irrigated and non-irrigated yields will be established in a county having a sufficient number of farms with P&CP acreage history of a covered commodity in 2019 through 2023. These separate yields will be established for counties where a covered commodity's P&CP acreage was both irrigated and non-irrigated in 2019 through 2023. If needed, a trend-adjusted yield factor will be used to adjust the yield taking into consideration, but not exceeding, the trend-adjusted yield factor that is used to increase yield history under the crop insurance endorsement under the Federal Crop Insurance Act (7 U.S.C. 1501-1520).
+
+Base acres means, with respect to a covered commodity on a farm, the number of acres in effect on September 30, 2013, as defined in the regulations in 7 CFR part 1412, subpart B that were in effect on that date, subject to any reallocation, adjustment, or reduction. The term “base acres” includes any unassigned base acres.
+
+Benchmark revenue for ARC-CO is calculated as the product obtained by multiplying the average historical county yield times the average MYA price for the most recent 5 crop years available, excluding each of the crop years with the highest and lowest prices and substituting the effective reference price in each year where the MYA price is less than the effective reference price. If a county has separate irrigated and non-irrigated yields established for a covered commodity, the benchmark revenue calculated by FSA for that farm and covered commodity will be weighted based on the farm's historical irrigated percentage.
+
+Benchmark revenue for ARC-IC means a producer's share of all covered commodities planted on all farms in the State for which individual ARC has been elected and enrolled and in which the producer has an interest. FSA will calculate the benchmark revenue for ARC-IC using the following three steps, based on the producer's planted commodities:
+
+(1) For each planted covered commodity for each of the most recent 5 crop years available:
+
+(i) Yield per planted acre (substituting 80 percent of the county transitional yield in each year where the yield per planted acre is less than 80 percent of the county transitional yield); times
+
+(ii) The MYA price for the most recent 5 crop years, excluding each of the crop years with the highest and lowest prices and substituting the effective reference price in each year where the MYA price is less than the effective reference price.
+
+(2) For each covered commodity, the average of the revenues determined under paragraph (1) of this definition for the most recent 5 crop years available, excluding each of the crop years with the highest and lowest revenues; and
+
+(3) For each of the 2019 through 2031 crop years, the benchmark revenue for the ARC-IC farm is the sum of the amounts determined under paragraph (2) of this definition for all covered commodities on such farms, adjusted to reflect the ratio between the total number of P&CP acres on such farms to a covered commodity and the total P&CP acres of all covered commodities planted on such farms. If a producer has an interest in multiple farms that have enrolled in ARC-IC, the ARC-IC benchmark revenue for that producer will be a weighted average of the benchmark revenue for those multiple farms.
+
+Bush means a low, branching, woody perennial plant, from which at maturity of the bush, an annual fruit or vegetable crop is produced.
+
+Considered planted means acreage approved as prevented planted in accordance with part 718 of this title.
+
+Contract means the CCC-approved forms and appendixes that constitute the agreement for participation of producers and covered commodities in ARC or PLC Program, as applicable.
+
+Contract period means the compliance period specified for the contract for the particular program year, as designated on the contract or application. References to the “contract” period refer to the compliance period for the particular program year. The compliance period for each program year is October 1 through September 30. For example, for the 2026 contract (and therefore for the 20126 program), the period that begins on October 1, 2025 and ends on September 30, 2026.
+
+Contract year or program year means the particular year of the particular contract based on the compliance period for the contract or application. The compliance year will run from October 1 to the following September 30 and will have the same name as the corresponding fiscal year. For example, the 2026 contract or program year will be October 1, 2025, through September 30, 2026, and that year will also be considered the 2026 crop year. The same references will apply to all other years.
+
+Corn means field corn or sterile high-sugar corn that follows the standard planting and harvesting practices for corn for the area in which the corn is grown. Corn nuts, sweet corn, and corn varieties grown for decoration uses are not corn.
+
+Counter-cyclical payment yield means the farm's covered commodity yield as specified in the regulations for 7 CFR part 1412 that were in effect as of September 30, 2013.
+
+County coverage means agriculture risk coverage (ARC-CO) elected under subpart D of this part with the county option.
+
+Covered commodity means wheat, oats, and barley (including wheat, oats, and barley used for haying and grazing), corn, grain sorghum, long grain rice, medium grain rice, seed cotton, pulse crops, soybeans, other oilseeds, and peanuts.
+
+Covered commodity base acres means base acres of any covered commodity. The term does not include unassigned base acres on the farm.
+
+Crop year means the relevant contract or application year. For example, the 2026 crop year is the year that runs from October 1, 2025, through September 30, 2026, and references to payments for that year refer to payments made under contracts or applications with the compliance year that runs during those dates.
+
+Deputy Administrator means the Deputy Administrator for Farm Programs, FSA, or a designee.
+
+Developed means:
+
+(1) Land has been approved by the local government for uses other than commercial agricultural uses; and
+
+(2) Construction activity has begun to install any aspect of the development, for example utilities or roadways.
+
+Direct payment yield for upland cotton means the farm's upland cotton yield established as specified in the regulations for 7 CFR part 1412 that were in effect as of September 30, 2013.
+
+Double-cropping means for covered commodities, notwithstanding the meaning in subparts D and E of this part for fruits and vegetables, the planting of a covered commodity for harvest in a crop year, in cycle with another covered commodity on the same acres for harvest in the same crop year in counties that have been determined to be areas where there is determined to be substantial, successful, and long-term double cropping of the crop and where the producer has followed customary production techniques and planting deadlines as determined by FSA (that is, using techniques and deadlines used by the majority of farmers in the region to double crop the particular crops involved). In a county determined capable of supporting such double-cropping of the covered commodities, as determined by FSA, both an initial crop and a subsequent crop will be considered planted or prevented planted acres for the purpose of this part. Notwithstanding any of the provisions of 7 CFR part 718, in those instances where the subsequently planted or approved prevented planted covered commodity cannot be recognized as double-cropped acreage under this definition, the subsequently planted crop acreage will not be considered planted or prevented planted.
+
+Dry peas means Austrian, wrinkled seed, yellow, Umatilla, and green peas, excluding peas grown for the fresh, canning, or frozen market.
+
+Effective price is, the higher of the—
+
+(1) National average market price received by producers during the 12-month marketing year for the covered commodity (also known as the MYA price), as determined by FSA; or
+
+(2) National average loan rate as defined in this part for the covered commodity in effect for the crop year, which is the same as the loan rate for a marketing assistance loan for the commodity for that crop year.
+
+Effective reference price means the lesser of the following:
+
+(1) An amount equal to 115 percent of the reference price for a covered commodity; or
+
+(2) An amount equal to the greater of:
+
+(i) The reference price for a covered commodity; or
+
+(ii) Beginning with the 2025 crop year, 88 percent of the average of the MYA price of the covered commodity for the most recent 5 crop years available, excluding each of the crop years with the highest and lowest MYA price.
+
+Eligible non-covered commodity means all other commodities that are not considered a covered commodity, excluding the following:
+
+(1) Tobacco;
+
+(2) Cannabis sativa L. and any part of that plant that does not meet the definition of hemp;
+
+(3) CRP, other Federal Conservation Program Acres;
+
+(4) Cover crops, and
+
+(5) Commodities that are reported as a tree, bush, vine, grass, idle, or fallow.
+
+Extra long staple cotton means cotton that is other than upland cotton and both the following:
+
+(1) Produced from pure strain varieties of the Barbadense species or any hybrid of the species, or other similar types of extra long staple cotton, designated by the Secretary, having characteristics needed for various end uses for which United States upland cotton is not suitable and grown in irrigated cotton-growing regions of the United States designated by the Secretary or other areas designated by the Secretary as suitable for the production of the varieties or types; and
+
+(2) Ginned on a roller-type gin or, if authorized by the Secretary, ginned on another type of gin for experimental purposes.
+
+Fallow means any cropland or DCP cropland that is not devoted to any crop or trees.
+
+Farm structure means the constitution of the farm. References to “farm structure” can be by date or crop year. When references to farm structure are by crop year, that means the farm as was last constituted as specified in 7 CFR part 718 subpart C in that crop year.
+
+Fiscal year means the year running from October 1 to the following September 30 and will be designated by the same calendar year in which it ends. For example, the 2026 fiscal year begins on October 1, 2025 and ends on September 30, 2026.
+
+Generic base acres means the number of base acres for upland cotton in effect on September 30, 2013, as defined in the regulations in 7 CFR part 1412, subpart B that were in effect on that date, subject to any adjustment or reduction under this part. Generic base acres are subject to allocation according to § 1412.25.
+
+Grass or pasture means any cropland or DCP cropland devoted to grass, native grass, mixed forage two or more interseeded grass mix, and mixed forage native grass interseeded.
+
+Harvested means the producer has removed the crop from the field by hand, mechanically, or by grazing of livestock. The crop is considered harvested once it is removed from the field and placed in or on a truck or other conveyance or is consumed by livestock through the act of grazing. Crops normally placed in a truck or other conveyance and taken off the crop acreage, such as hay, are considered harvested when in the bale, whether removed from the field or not.
+
+Hemp means the plant species Cannabis sativa L. and any part of that plant, including the seeds thereof and all derivatives, extracts, cannabinoids, isomers, acids, salts, and salts of isomers, whether growing or not, with a delta-9 tetrahydrocannabinol concentration of not more than 0.3 percent on a dry weight basis, that is grown under a license or other required authorization issued by the applicable governing authority that permits the production of the hemp.
+
+Historical irrigated percentage means the percentage of the covered commodity on a farm that was irrigated, including both P&CP and subsequently planted crop acreage, divided by the total acreage of the P&CP and subsequently planted covered commodity between the years 2019 through 2023 on the farm.
+
+Idle means any cropland or DCP cropland that is not devoted to any crop or trees.
+
+Individual coverage means ARC (ARC-IC) elected under subpart D of this part with the individual option.
+
+Initial crop means acreage of a covered commodity planted or approved as prevented planted for harvest as peanuts, grain, or lint. The initial crop includes reseeded or replanted crop acreage.
+
+Marketing year means the 12-month period beginning in the calendar year the crop is normally harvested as follows:
+
+(1) Barley, oats, and wheat: June 1 through May 31;
+
+(2) Canola, flax and rapeseed, lentils, and dry edible peas: July 1 through June 30;
+
+(3) Peanuts, seed cotton, and rice: August 1 through July 31; and
+
+(4) Corn, grain sorghum, soybeans, sunflowers, safflower, mustard, crambe, sesame, and chickpeas: September 1 through August 31.
+
+Market year average (MYA) price means the national average price received by producers during the 12-month marketing year (as defined in this part), as determined by FSA for the relevant crop of the covered commodity.
+
+Medium grain rice means medium grain rice and includes short grain rice and temperate japonica rice.
+
+Most recent 5 crop years available means the 5 years preceding the most immediately preceding crop year. For example, for the 2026 crop year, the most recent 5 years available are 2020 through 2024.
+
+NASS means the National Agricultural Statistics Service.
+
+National average loan rate means the loan rate established for a crop year of the covered commodity as specified in 7 CFR part 1421.
+
+Other oilseed means a crop of sunflower seed, rapeseed, canola, safflower, flaxseed, mustard seed, crambe, sesame seed, or any oilseed designated by the Secretary.
+
+Owner means the person or legal entity meeting the definition of owner in part 718 of this title for the applicable contract period for which that person or legal entity is signing any form or performing any action required under this part. For example, if a signature of an “owner” is required under this part, the person or legal entity must be an owner for the applicable contract period for which the person or legal entity is signing the form or performing the action required under this part.
+
+Payment acres means:
+
+(1) For the purpose of ARC-CO and PLC, subject to planting flexibility provisions as specified § 1412.46, the payment acres for each covered commodity on a farm will be equal to 85 percent of the covered commodity's base acres on the farm.
+
+(2) For the purpose of ARC-IC, subject to planting flexibility provisions as specified in § 1412.46, the payment acres for a farm will be equal to 65 percent of all the covered commodity base acres on the farm.
+
+Payment yield means for a farm for a covered commodity, the yield established under subpart C of this part.
+
+Price Loss Coverage (or PLC) means coverage provided under subpart D of this part.
+
+Producer means the person or legal entity meeting the definition of producer in 7 CFR part 718 for the applicable contract period for which that person or legal entity is signing any form or performing any action required under this part. For example, if a signature of a “producer” is required under this part, the person or legal entity must be a producer during the applicable contract period for which that person or legal entity is signing the form or performing the action required under this part.
+
+Pulse crop means dry peas, lentils, small chickpeas, and large chickpeas.
+
+Reference price means, with respect to a covered commodity for a crop year:
+
+(1) The following for the 2026 through 2025 crop years:
+
+(i) Wheat, $6.35 per bushel;
+
+(ii) Corn, $4.10 per bushel;
+
+(iii) Grain sorghum, $4.40 per bushel;
+
+(iv) Barley, $5.45 per bushel;
+
+(v) Oats, $2.65 per bushel;
+
+(vi) Long grain rice, $16.90 per hundredweight;
+
+(vii) Medium grain rice, $16.90 per hundredweight;
+
+(viii) Soybeans, $10.00 per bushel;
+
+(ix) Other oilseeds, $23.75 per hundredweight;
+
+(x) Peanuts, $630.00 per ton;
+
+(xi) Dry peas, $13.10 per hundredweight;
+
+(xii) Lentils, $23.75 per hundredweight;
+
+(xiii) Small chickpeas, $22.65 per hundredweight;
+
+(xiv) Large chickpeas, $25.65 per hundredweight; and
+
+(xv) Seed cotton, $0.42 per pound.
+
+(2) Beginning with the 2031 crop year, the reference price for the previous crop year multiplied by 1.005, not to exceed 113 percent of the reference price for the covered commodity provided in paragraph (1) of this definition.
+
+Replacement crop means the planting or approved prevented planting of any crop for harvest following the failure of planted crop acreage or prevented planted acreage of a covered commodity not in a recognized double-cropping sequence (as specified in this section). Replacement crops cannot generate payments under this part.
+
+Reseeded or replanted crop means the second planting of a covered commodity on the same acreage after the first planting of that same crop has failed.
+
+RMA means the Risk Management Agency.
+
+Seed cotton means unginned upland cotton that includes both lint and seed.
+
+Subsequently planted crop acreage means acreage of a crop following an initial crop that is not in an approved double cropping combination. Subsequently planted crop acreage can be used for base reallocation for ARC and PLC under subpart B.
+
+Supportive and necessary contractual documents mean those documents including, but not limited to, those items substantiating the ARC or PLC contract such as leases, deeds, signatures of contract participants, owners, operators, and other tenant signatures, as determined by FSA.
+
+Temperate japonica rice means rice that is grown in high altitudes or temperate regions of high latitudes with cooler climate conditions, in the Western United States, as determined by FSA, for the purpose of the—
+
+(1) Reallocation of base acres under subpart B of this part;
+
+(2) Establishment of a reference price equal to the medium grain rice reference price multiplied by the ratio obtained by dividing:
+
+(i) The simple average of the marketing year average price of medium grain rice from the 2017 through 2021 crop years, by
+
+(ii) The simple average of the marketing year average price of all rice from the 2017 through 2021 crop years; and
+
+(3) Determination of the actual crop revenue and ARC guarantee under subparts D and E of this part.
+
+Transitional yield means the yield determined according to section 502(b) of the Federal Crop Insurance Act (7 U.S.C. 1502(b)).
+
+Tree means a tall, woody plant having comparatively or potential great height.
+
+Trend-adjusted yield means the yield computed by multiplying the benchmark yield by a factor determined by taking into consideration, but not exceeding, the trend-adjusted yield factor that is used to increase yield history under crop insurance endorsement under the Federal Crop Insurance Act (7 U.S.C. 1501-1524) for that crop and county.
+
+Unassigned base acres means the number of acres derived from generic base acres where no ARC or PLC payments are generated or earned.
+
+Upland cotton means cotton that is produced in the United States from other than pure strain varieties of the Barbadense species, any hybrid thereof, or any other variety of cotton in which one or more of these varieties predominate. In other words, it means any cotton that is not extra long staple cotton.
+
+Vine means a perennial plant that has a flexible stem supported by climbing, twining, or creeping along a surface.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 79 FR 57714, Sept. 26, 2014; 79 FR 74571, Dec. 15, 2014; 83 FR 40657, Aug. 16, 2018; 84 FR 45888, Sept. 3, 2019; 85 FR 16232, Mar. 23, 2020; 91 FR 1054, Jan. 12. 2026; 91 FR 42323, July 9, 2026]
+
+§ 1412.4 Appeals.
+
+A participant may seek reconsideration and review of any individual program eligibility adverse determination made under this part in accordance with the appeal regulations found at parts 11 and 780 of this title.
+
+Subpart B—Establishment of Base Acres for a Farm for Covered Commodities
+
+§ 1412.23 Base acres, and Conservation Reserve Program.
+
+(a) Subject to paragraphs (b) and (c) of this section, FSA will annually adjust the base acres for covered commodities with respect to the farm by the number of production flexibility contract acres or base acres protected by a Conservation Reserve Program (CRP) contract that expired, was voluntarily terminated, or was early released.
+
+(b) The total base acres on a farm cannot exceed the limitation specified in § 1412.24.
+
+(c) Adjustments to (not reallocation of) base acres on a farm in accordance with this section are to be completed by no later than August 1 or other date as determined and announced by the CRP contract expired or was voluntarily terminated.
+
+(d) For the fiscal year in which an adjustment to base acres under this section is made, the producer of the farm may elect to receive ARC or PLC payments, in accordance with any ARC and PLC election made under section 1115 of the 2014 Farm Bill with respect to the base acres added to the farm under this section, or a prorated payment under the CRP contract, but not both. For any farm that had all of its base acres reduced for participation in CRP, if the farm had no base acres or election in effect before an adjustment is made to put base acres of a covered commodity back on the farm, the owners of that farm will have an opportunity to reallocate base acres and the producers will have an opportunity to elect ARC or PLC within 30 days of being notified of the establishment of base acres on that farm before producers enroll base acres on that farm.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40657, Aug. 16, 2018; 84 FR 45889, Sept. 3, 2019]
+
+§ 1412.24 Limitation of total base acres on a farm.
+
+(a) The sum of the following cannot exceed the total cropland acreage on the farm, plus approved double-cropped acreage for the farm:
+
+(1) The sum of all base acres established for the farm in accordance with this part; plus
+
+(2) Any cropland acreage on the farm enrolled in a CRP contract in accordance with part 1410 of this chapter; plus
+
+(3) Any cropland acreage on the farm enrolled in a wetland reserve program contract in accordance with part 1467 of this chapter; plus
+
+(4) Any other acreage on the farm enrolled in a Federal conservation program for which payments are made in exchange for not producing an agricultural commodity on the acreage.
+
+(b) The Deputy Administrator will give the owner of the farm the opportunity to select the base acres against which any reduction required in this section will be made. Absent the owner selecting the base acres for reduction, FSA will apply a pro-rata reduction against the base acres before computing and issuing any payments for the program year when a reduction becomes necessary.
+
+(c) In applying paragraph (a) of this section, FSA will take into account the practice of double cropping on a farm, as determined by FSA.
+
+(d) For base acre reductions:
+
+(1) Subject to the limitation in paragraph (d)(2) of this section, a permanent reduction of all or a portion of a farm's base acres will be allowed when all owners of the farm execute and submit a written request for such reduction, on a CCC-approved standard, uniform form designated by CCC, to the FSA county office where the records for the farm are administratively maintained.
+
+(2) A permanent reduction of all or a portion of a farm's base acres to negate or reduce a program violation is not allowed.
+
+(e) When base acres on a farm are converted to a non-agricultural commercial or industrial use, the total base acres on the farm will be reduced accordingly regardless of the submission of a request for such reduction.
+
+(f) The base acres on a farm will be proportionately reduced when it is determined that the land has been subdivided and developed for multiple residential units or other nonfarming uses if, in the judgment of the county committee, the size of the tracts and the density of the subdivision is such that the land is unlikely to return to the previous agricultural use, unless either of the following applies:
+
+(1) The producers on the farm demonstrate that the land remains devoted to commercial agricultural production or is likely to be returned to the previous agricultural use and such land has not been divided from the farm with a farm reconstitution performed according to part 718 of this title; or
+
+(2) A properly constituted or reconstituted farm contains sufficient land that has not yet been subdivided and developed for multiple residential units or other nonfarming uses, and the producers on the farm demonstrate that the land remains devoted to commercial agricultural production or is likely to be returned to the previous agricultural use.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40657, Aug. 16, 2018; 84 FR 45889, Sept. 3, 2019]
+
+§ 1412.25 Allocation of generic base acres on a farm and updating of records.
+
+(a) Any or all of the owner(s) of a farm with generic base acres adjusted as of February 9, 2018, will have a one-time opportunity in an allocation period as announced by FSA, if a covered commodity including upland cotton was planted or prevented from being planted during the 2009 through 2016 crop years, to:
+
+(1) Allocate the farm's generic base acres to seed cotton base acres in a quantity equal to the greater of:
+
+(i) 80 percent of the generic base acres on the farm; or
+
+(ii) The average number of upland cotton acres planted and prevented from being planted on the farm during the 2009 through 2012 crop years, not to exceed the total generic base acres on the farm; or
+
+(2) Allocate base acres for covered commodities, including seed cotton, by applying paragraph (e) of this section.
+
+(b) Under no circumstances will the allocation of generic base acres on a farm as specified in paragraph (a) of this section result in any increase in total base acres on a farm. Additionally, if any owner submits a written statement that conflicts with the allocation request or expresses written disagreement with the allocation filed according to paragraph (a) of this section, no allocation will be approved for the farm unless all the owners of the farm provide FSA with written evidence of the dispute resolution during the allocation period.
+
+(c) FSA will provide the farm operator and owners of record with a summary of all covered commodities P&CP acres and subsequently planted crop acreage for the 2008 through 2012 crop years (as reported to FSA on acreage reports filed with FSA in each of those years). Acreage not reported to FSA by producers will not be included in the summary. The summary of records specified in paragraph (c) of this section is intended to assist owners of farms with the one-time opportunity for generic base acre allocation as provided in this section. Any owner of a farm may also at any time visit the FSA county office and request to obtain a copy of the summary referenced in this paragraph (c).
+
+(d) Owners will be provided a one-time opportunity to update the records identified in paragraph (c) of this section during the allocation period, provided that there are crop insurance records (or other verifiable documentation available to support those requested updates). In the event that an update to a farm's P&CP acres of a covered commodity for 2009 through 2012 causes any payment under another FSA or CCC program to become unearned, the overpayment must be refunded to FSA or CCC in accordance with the rules for that program and the FSA or CCC regulations governing overpayment (part 718 of this title and part 1403 of this chapter).
+
+(e) After an update as specified in paragraph (d) of this section, the owner may allocate the farm's generic base acres during the allocation period based on a proration of each covered commodity's P&CP acres or subsequently planted crop acreage in crop years 2009 through 2012 to the total P&CP acres or subsequently planted crop acreage of all covered commodities during that time.
+
+(f) Owners can allocate generic base acres at any time during the allocation period without receiving or requesting the summary records, and, therefore, failure to receive a summary record from FSA is not grounds for appeal or extension of the allocation period.
+
+(g) The option to allocate generic base acres is an “all or nothing” decision for the farm. Generic base acres will not be retained, partially or in whole. A decision by any owner to allocate generic base acres on a farm in accordance with this section is final and binding if made according to this section during the allocation period unless that allocation is withdrawn in writing by that owner or another owner. If another owner subsequently files a different allocation request in whatever time remains in the stated allocation period or if there are conflicting allocation requests of owners in the allocation period, FSA will not make the allocation unless the conflict is resolved via written agreement between the owners who filed the conflicting requests. In the event that a resolution is not presented, the provisions of paragraph (h) of this section will take effect. In the case of submitting evidence of resolution, the written agreement must be filed with FSA during the allocation period. Any and all updates and allocation requests mentioned in this section are subject to review and approval or disapproval by FSA for CCC.
+
+(h) In the event that an owner fails to make an allocation according to this part and the farm has met the planting requirement in paragraph (a) of this section, the farm will receive an allocation of seed cotton base acres in accordance with paragraph (a)(1)(i) of this section.
+
+[83 FR 40657, Aug. 16, 2018, as amended at 84 FR 45889, Sept. 3, 2019]
+
+§ 1412.26 Treatment of base acres on farms entirely in pasture, grass, idle, or fallow.
+
+(a) A farm on which all of the cropland was planted to grass or pasture, including cropland that was idle or fallow from January 1, 2009, through December 31, 2017, will have base acres and yields maintained for the covered commodities on the farm, except that no payment will be made with respect to those base acres under this part for the 2019 through 2031 crop years.
+
+(b) The producers on a farm for which all of the base acres are maintained under paragraph (a) of this section are:
+
+(1) Ineligible to change the election applicable to the producers on the farm under subpart G of this part; and
+
+(2) Not permitted to reconstitute the farm to void or change the treatment of base acres under paragraph (a) of this section.
+
+[84 FR 45890, Sept. 3, 2019, as amended at 91 FR 1055, Jan. 12, 2026]
+
+§ 1412.27 Additional Base Acres.
+
+(a) An additional 30,000,000 base acres will be allocated to eligible farms for program year 2026. Owners will be notified by CCC and given the opportunity to elect to not receive the additional allocation no later than 90 days after the receipt of the notification. An owner may appeal a determination of ineligibility for an allocation of base acres by requesting a review of the accuracy of information contained in the notification by filing a written request to the County Committee within 30 calendar days after the notice is received. If an adverse decision is made by the County Committee, the owner may appeal the adverse decision to the FSA State Committee or the National Appeals Division, or request mediation.
+
+(b) Effective beginning with the 2026 crop year, a farm is eligible to receive an allocation of base acres if, with respect to the farm, the 5-year average sum exceeds the total number of base acres on the farm. The 5-year average sum is the sum of:
+
+(1) The 5-year average of:
+
+(i) The acreage planted on the farm to all covered commodities for harvest, grazing, haying, silage or other similar purposes for the 2019 through 2023 crop years; and
+
+(ii) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to covered commodities because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC; plus
+
+(2) The lesser of:
+
+(i) 15 percent of the total acres on the farm; or
+
+(ii) The 5-year average of:
+
+(A) The acreage planted on the farm to eligible noncovered commodities for harvest, grazing, haying, silage, or other similar purposes for the 2019 through 2023 crop years; and
+
+(B) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to eligible noncovered commodities because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC.
+
+(c) The total number of base acres for covered commodities, with respect to a farm, is the total number of base acres for covered commodities on the farm, excluding unassigned crop base, as in effect on September 30, 2024.
+
+(d) If the 5-year average planted acreage of covered commodities for a farm is equal to zero, that farm is ineligible to receive an allocation of base acres.
+
+(e) The number of base acres allocated to an eligible farm:
+
+(1) Is equal to the difference obtained by subtracting the total amount of base acres for covered commodities on the farm, excluding unassigned crop base, from the amount determined in the 5-year average sum calculation; and
+
+(2) Includes unassigned crop base.
+
+(f) The allocation of additional base acres for covered commodities is in proportion to the ratio of:
+
+(1) The 5-year average of:
+
+(i) The acreage planted on the farm to each covered commodity for harvest, grazing, haying, silage, or other similar purposes for the 2019 through 2023 crop years; and
+
+(ii) Any acreage on the farm that the producers were prevented from planting during the 2019 through 2023 crop years to that covered commodity because of drought, flood, or other natural disaster, or other condition beyond the control of the producers, as determined by CCC; to
+
+(2) The 5-year average cropping history, as calculated in (b)(1). For the purpose of determining a 5-year acreage average, any crop year in which a covered commodity was not planted will not be excluded.
+
+(g) For the purpose of determining the acreage on a farm that producers planted or were prevented from planting during the 2019 through 2023 crop years to covered commodities, if the acreage that was planted or prevented from being planted was devoted to another covered commodity in the same crop year (other than a covered commodity produced under an established practice of double cropping), the owner may elect the covered commodity to be used for that crop year in determining the 5-year average, but may not include both the initial covered commodity and the subsequent covered commodity.
+
+(h) The allocation of additional base acres among covered commodities on a farm may not result in a total number of base acres for the farm in excess of the total number of acres on the farm according to § 1412.24 with the removal of the acres specified in (a)(2).
+
+(i) Unassigned base will be converted to covered commodity base acres on farms eligible for additional base acres. The allocation of additional acres will first be applied on an acre-for-acre basis not to exceed total amount of additional allocation, converting unassigned base acres to specific covered commodity base acres. These converted acres are not counted toward the additional 30 million acres and are not subject to any pro-rata reduction.
+
+(j) If the total number of eligible acres allocated to base acres across all farms in the United States would exceed 30,000,000 acres, CCC will apply an across-the-board, pro-rata reduction to the number of eligible acres to ensure the number of allocated base acres is equal to 30,000,000 acres.
+
+(k) Beginning with crop year 2026, for the purpose of making PLC payments, FSA will establish payment yields for new base acres allocated equal to:
+
+(1) The payment yield established on the farm for the applicable covered commodity; and
+
+(2) If no such payment yield for the applicable covered commodity exists, a payment yield:
+
+(i) Equal to the average payment yield for the covered commodity for the county in which the farm is situated; or
+
+(ii) Equal to a yield for the covered commodity for similarly situated farms.
+
+(l) In the case of a farm for which the owner on the date of base allocation eligibility notification was not the owner for the 2019 through 2023 crop years, CCC will use the planting history of the prior owner or owners of that farm for purposes of determining:
+
+(1) Eligibility;
+
+(2) Eligible acres; and
+
+(3) The allocation of acres.
+
+[91 FR 1055, Jan. 12, 2026]
+
+Subpart C—Establishment of Price Loss Coverage Yields and Submitting Production
+
+Source:
+
+79 FR 57716, Sept. 26, 2014, unless otherwise noted.
+
+§ 1412.31 PLC yields for covered commodities.
+
+(a) Except for seed cotton PLC yield for covered commodities on the farm is equal to the counter-cyclical payment yield established for each covered commodity on the farm that was effective September 30, 2013, unless the PLC yield is updated as specified in § 1421.32. If the Secretary designates an additional oilseed or pulse crop as a covered commodity that does not have a counter-cyclical payment yield, the PLC yield for that commodity will be established as specified in § 1412.34.
+
+(b) The PLC yield for seed cotton on the farm is equal to the counter-cyclical payment yield established for upland cotton on the farm as in effect September 30, 2013, times 2.4, unless the PLC yield is updated as specified in § 1421.33.
+
+(c) If a PLC yield is not already established for a covered commodity on a farm for which base acres are allocated through the base acres reallocation process a yield will be established for the covered commodity on the farm using the yield on similarly situated farms, as determined by FSA. The yield on similarly situated farms will then be used as the 2013 county average counter-cyclical yield for the covered commodity.
+
+[79 FR 57716, Sept. 26, 2014, as amended at 83 FR 40658, Aug. 16, 2018]
+
+§ 1412.32 Updating PLC yield for all covered commodities except seed cotton.
+
+(a) For any covered commodity on the farm that has base acres as adjusted, in excess of zero acres, an owner of the farm has a one-time opportunity in a specified period, as announced by FSA, to update PLC yields on a covered commodity-by-covered commodity basis equal to 90 percent of each covered commodity's 2013 through 2017 average yield per planted acre, excluding from the average any year when no acreage was planted to the covered commodity. If the yield per planted acre in any of the years 2013 through 2017 is less than 75 percent of the average of the county yield, then 75 percent of the average of the 2013 through 2017 county yield will be substituted for that year, excluding from the average any year when no acreage was planted to the covered commodity, multiplied by the ratio obtained by dividing:
+
+(1) The average of the 2008 through 2012 national average yield per planted acre for the covered commodity; by
+
+(2) The average of the 2013 through 2017 national average yield per planted acre for the covered commodity.
+
+(b) The owner of the farm may retain the counter-cyclical yield as the PLC yield or update the PLC yield, on a covered commodity-by-covered commodity basis.
+
+(c) PLC yields are exclusively used for PLC. However, any owner of a farm can update the PLC yields, regardless of program election or decision on enrollment or participation.
+
+(d) A decision by any owner of a farm to update any PLC yield as specified in this section is final and binding unless that decision to update the yield is withdrawn by that owner or a different yield update is made by that owner or another owner. If that owner or another owner requests a different PLC yield update for the covered commodity during the yield update period specified in paragraph (a) of this section that update will become final.
+
+(e) All PLC yield updates are subject to review and approval by FSA as specified in § 1412.36. FSA's decision to issue payments based on the PLC yield updated by an owner is subject to verification and spot check by FSA at any time.
+
+(f) Yield updates in this section will be permitted using the owner's certification of yield. The certification is subject to spot check or verification by FSA at any time. If selected for spot check or verification, the owner must submit evidence specified in § 1412.34 to support the certified yield.
+
+[79 FR 57716, Sept. 26, 2014, as amended at 83 FR 40658, Aug. 16, 2018; 84 FR 45890, Sept. 3, 2019]
+
+§ 1412.33 Updating PLC yield for seed cotton.
+
+(a) For a farm that has seed cotton base acres as adjusted, in excess of zero acres, an owner of the farm has a one-time opportunity in a specified period, as announced by FSA, to update the PLC yield equal to 90 percent of the seed cotton's 2013 through 2017 average yield per planted acre, excluding from the average any year that no acreage was planted to upland cotton, times 2.4. If the yield per planted acre in any of the years 2013 through 2017 is less than 75 percent of the average of the county yield, then 75 percent of the average of the 2013 through 2017 county yields will be substituted for that year, excluding from the average any year when no acreage was planted to the covered commodity, multiplied by the ratio obtained by dividing:
+
+(1) The average of the 2008 through 2012 national average yield per planted acre for the covered commodity; by
+
+(2) The average of the 2013 through 2017 national average yield per planted acre for the covered commodity.
+
+(b) The owner of the farm may retain the PLC yield or update the PLC yield.
+
+(c) PLC yields are exclusively used for PLC. However, any owner of a farm can update the seed cotton PLC yield as specified in paragraph (a) of this section, regardless of program election, enrollment, or participation.
+
+(d) A decision by any owner of a farm to update the seed cotton PLC yield as specified in this section is final and binding unless that decision to update the yield is withdrawn by that owner or a different yield update is made by that owner or another owner. If that owner or another owner requests a different PLC yield update for the covered commodity during the yield update period specified in paragraph (a) of this section, that update will become final.
+
+(e) All PLC yield updates are subject to review and approval by FSA as specified in § 1412.36. FSA's decision to issue payments based on the PLC yield updated by an owner is subject to verification and spot check by FSA at any time.
+
+(f) Yield updates in this section will be permitted using the owner's certification of yield. The certification is subject to spot check or verification by FSA at any time. If selected for spot check or verification, the owner must submit evidence specified in § 1412.35 to support the certified yield.
+
+[83 FR 40658, Aug. 16, 2018, as amended at 84 FR 45890, Sept. 3, 2019]
+
+§ 1412.34 PLC yield for additional oilseeds.
+
+(a) The PLC yield for the farm for additional oilseeds designated by the Secretary will be determined by multiplying the weighted average yield per planted acre for the crop on the farm, as determined in paragraph (b) of this section, times the ratio resulting from:
+
+(1) The national average yield for the crop, as determined by FSA, divided by
+
+(2) The national average yield for the crop for the 1998 through 2001 crop years, as determined by FSA.
+
+(b)
+
+(1) The yield per planted acre for such designated oilseed on the farm is calculated as follows:
+
+(i) The sum of the production of the crop for the 1998 through 2001 crop years, as determined in paragraph (b)(2) of this section; divided by
+
+(ii) The sum of the total planted acres of the crop for the 1998 through 2001 crop years.
+
+(2) The production of the crop for each of the 1998 through 2001 crop years will be the higher of the following, except in a year in which the acreage planted to the crop was zero, in which case the production for the crop for such year will be zero:
+
+(i) The total production for the applicable year based on the production evidence submitted in accordance with § 1412.35; or
+
+(ii) The amount equal to the product of:
+
+(A) The total planted acres for the crop, times
+
+(B) 75 percent of the harvested average county yield for that crop determined, where practicable, by calculating the weighted 4-year average of the National Agricultural Statistics Service (NASS) harvested acreage yields for the crop using the 1998 through 2001 crop years.
+
+(3) The NASS harvested acreage yield to be used in paragraph (b)(2) of this section will be based on:
+
+(i) NASS harvested irrigated yield for the crop, if available, for producers who irrigated the crop in the applicable years;
+
+(ii) NASS harvested non-irrigated yield for the crop, if available, for producers who did not irrigate the crop in the applicable years; or
+
+(iii) NASS harvested blended yield for all acreage, regardless of whether or not the acres were irrigated or non-irrigated, for all crops in all counties for which the yields in paragraphs (b)(3)(i) and (ii) of this section are unavailable.
+
+(4) If NASS harvested acreage yield data is not available, the Deputy Administrator will assign a yield to be used in paragraph (b)(2)(ii)(B) of this section.
+
+(c) The establishment of PLC yield for an additional oilseed in this section will be permitted using a producer certification of yield. The certification is subject to spot check or verification by FSA at any time. If selected for spot check or verification, the producer must submit evidence as specified in in § 1412.35 to support the certified yield.
+
+[79 FR 57716, Sept. 26, 2014. Redesignated and amended at 83 FR 40658, Aug. 16, 2018]
+
+§ 1412.35 Submitting production evidence.
+
+(a) When required by FSA as specified in this part, documentary evidence supporting any certification of yield or production must be provided to the county committee of the county where the farm is administratively located.
+
+(b) Documentary evidence acceptable to FSA includes, but is not limited to:
+
+(1) Production approved by the county committee for some other FSA program purpose;
+
+(2) Commercial receipts;
+
+(3) Settlement sheets;
+
+(4) Warehouse ledger sheets;
+
+(5) Elevator receipts or load summaries, supported by other evidence showing disposition, such as sales documents;
+
+(6) Evidence from harvested or appraised acreage, approved for FCIC or multi-peril crop insurance; or
+
+(7) Other production evidence determined acceptable by the Deputy Administrator.
+
+(c) Production evidence specified in paragraph (b) of this section must show:
+
+(1) The producer's name,
+
+(2) The commodity,
+
+(3) The buyer or name of storage facility,
+
+(4) The date of transaction or delivery, and
+
+(5) The quantity.
+
+(d) FSA may verify the production evidence submitted with records on file at the warehouse, Risk Management Agency, or other entity that received or may have received the reported production.
+
+[79 FR 57716, Sept. 26, 2014. Redesignated at 83 FR 40658, Aug. 16, 2018]
+
+§ 1412.36 Incorrect or false production evidence.
+
+(a) If a certification of production and yield or production evidence submitted in support of that certification is false or incorrect, as determined by the county committee, the county committee will determine whether the owner, operator, or producer submitting the certification or production evidence for a farm acted in good faith or took action to defeat the purpose of ARC or PLC.
+
+(b) If the county committee determines the owner or producer who submitted the certification or production evidence referenced in paragraph (a) of this section acted in good faith and did not take action to defeat the purpose of ARC or PLC, the county committee will, as applicable:
+
+(1) Correct the PLC yield for the applicable covered commodity to equal the yield that would have been calculated as specified in § 1412.32 based on accurate production evidence; and
+
+(2) Recalculate any payments based on the correct yield and require refunds of any payments that were issued as a result of the incorrect yield. Unearned payments must be refunded together with interest from the date of disbursement and are due from any producers who received payments that would not have issued absent the error or incorrect yield.
+
+(c) If the county committee determines the owner, operator, or producer who submitted the false or incorrect evidence did not act in good faith or took any action to defeat or undermine the purpose of ARC or PLC, the county committee will require a full refund of any payments, with interest, that were issued to any persons based on that false or erroneous certification or production evidence and the yield update request is invalid.
+
+[79 FR 57716, Sept. 26, 2014. Redesignated at 83 FR 40658, Aug. 16, 2018]
+
+Subpart D—ARC and PLC Contract Terms and Enrollment Provisions for Covered Commodities
+
+§ 1412.41 ARC or PLC program contract.
+
+(a) The following provisions apply to ARC and PLC Program contracts:
+
+(1) Eligible producers (as specified in § 1412.42) of covered commodities with base acres may enroll in ARC and PLC contracts during the enrollment period announced by FSA.
+
+(i) The 2026 contract period ends September 30, 2026. Accordingly, the enrollment for 2026 is the only program year a retroactive contract can be approved.
+
+(ii) Except as stated in this section, enrollment is not allowed after September 30 of the fiscal year in which the ARC or PLC payments are requested. FSA will not process offers of enrollment for a contract period after the contract period has ended. This is not a compliance provision but a rule of general applicability and will apply to every offer to contract in each contract year.
+
+(iii) If a 2019 or 2026 farm did not have a valid election made by producers in accordance with subpart G of this part, no producer on that farm is eligible for any 2019 or 2026 ARC or PLC payment for that farm. This is not an adverse decision for any enrolled producer on that farm; rather, the farm's producers are simply not eligible for payments on the enrolled farm because the farm's producers failed to make a valid election in 2019 or 2026.
+
+(2) Except as specified in this section for ARC-CO and PLC enrollments, contracts will not be approved unless all producers sharing in contract acreage with more than a zero share have submitted all applicable signatures on the contract and documentation necessary for FSA to approve the contract.
+
+(i) For ARC-IC contracts there are no exceptions to this provision for signatures and documentation.
+
+(ii) A contract not having all requisite signatures of producers having more than a zero share of contract acreage on or before the enrollment deadline is incomplete and will not be considered by FSA or CCC for any purpose and will not be acted on or approved.
+
+(iii) Contracts enrolled by a producer by the date specified in paragraph (a)(1) of this section that were not signed by other producers as required by this section will be withdrawn and will not be approved.
+
+(iv) An exception to this signature and documentation provision applies to ARC-CO and PLC offers of enrollment. In those instances in which, at the discretion of the Deputy Administrator and where no dispute of shares or other disagreement between producers is evident or suspected, ARC-CO and PLC offers of enrollment can be approved for the covered commodity to permit payment to only those eligible producers who did enroll and without regard to shares that do not have signatures. In this exception, the covered commodity on the farm will be considered enrolled. This exception will be made only if, in the sole judgment and discretion of FSA, FSA is satisfied that those producers who did sign in accordance with this section ensure compliance with all contract provisions and requirements of this part.
+
+(v) Producers have no right to payment on any farm that is not enrolled in ARC or PLC and they are not entitled to a decision to authorize the exception in paragraph (a)(2)(iv) for ARC-CO and PLC enrollments, as that is discretionary. CCC and FSA are not responsible for ensuring that producers annually enroll in ARC or PLC.
+
+(3) An eligible producer's valid share of enrolled base acres on a farm is always limited to the producer's share of reported crop acreage on the farm. For example, if a producer enrolled with a 75 percent share of a farm's 1,000 base acres, the producer's enrollment would only be valid if the producer had 100 percent share interest in 750 or more reported crop acres on that farm. Valid claimed shares of base acres must always be supported by reported crop acres on the farm.
+
+(4) Except for enrollments of ARC-IC, eligible producers who choose to enter into a contract with FSA do so on a covered commodity-by-covered commodity basis. If the decision is made to enroll a covered commodity on a farm, producers having not less than 100 percent of the interest in those covered commodity base acres must enroll all covered commodity base acres of the covered commodity on the farm. Enrollment of fewer than all base acres of the covered commodity by all the producers having a share interest in that covered commodity on the farm is not allowed and such covered commodity will not be considered enrolled unless all producers who share in the base acres complete enrollment by the end of the enrollment period. Producers on a farm are solely responsible for ensuring that enrollment occurs.
+
+(5) Producers who have enrolled according to this section must submit all required documents necessary to determine payment eligibility as specified in §§ 1412.51 and 1412.67.
+
+(b) Any eligible producer of an enrolled covered commodity or ARC-IC contract may withdraw from a contract at any time by the end of the contract period. The withdrawal must be filed in writing and submitted to CCC and FSA by the end of the contract period. If any producer of a covered commodity or ARC-IC contract submits a written request to withdraw, FSA will consider the enrollment of that covered commodity or ARC-IC contract withdrawn.
+
+(c) If the multiyear annual contract option is selected by all of a farm's producers of covered commodity base acres on the farm, the enrollment of any covered commodity on the farm in a year will be presumed by CCC and FSA to be the enrollment for following subsequent crop years unless any of the following, occur:
+
+(1) A change to the farm's constitution;
+
+(2) A change to any of the farm's base acres or PLC yield of any covered commodity;
+
+(3) A change to any of the producers or producer shares of covered commodities on the farm;
+
+(4) A change in either election or enrollment of any covered commodity on the farm; or
+
+(5) Any change, including a withdrawal of any enrolled producer, that FSA determines to require producers on the farm to reaffirm enrollment.
+
+(d) All contracts expire on September 30 of the fiscal year of the contract unless:
+
+(1) Withdrawn in accordance with paragraph (b) of this section;
+
+(2) Terminated in accordance with paragraph (e) or (f) of this section; or
+
+(3) Terminated at an earlier date by mutual consent of all parties, including CCC.
+
+(e) A transfer or change in the interest of an owner or producer in the farm or in acreage on the farm subject to a contract will result in the termination of the contract. The contract termination will be effective on the date of the transfer or change. Successors to the interest in the farm or crops on the farm subject to the contract may enroll the covered commodities on the farm in a new contract for the current year and assume all obligations under the contract.
+
+(f) In the event a 2026 or subsequent crop year farm reconstitution is completed on a properly enrolled farm or farms in accordance with part 718 of this title, FSA will issue notices to the farm operator and owners of record on a farm that all producers with an interest in the base acres on the farm must sign a new ARC or PLC program contract within the later of 30 days of the notice or September 30 of the fiscal year program payments are requested, after receiving written notification by the county committee indicating the reconstitution is completed. It is the responsibility of the operator and owners on a farm that producers with an interest in base acres are notified of the reconstitution and requirement for a new contract.
+
+[84 FR 45890, Sept. 3, 2019, as amended at 91 FR 1056, Jan. 12, 2026]
+
+§ 1412.42 Eligible producers.
+
+(a) Producers eligible to enter into a contract are:
+
+(1) An owner of a farm who has an ownership share of a crop and who assumes all or a part of the risk of producing a crop that is commensurate with that claimed ownership share of the crop; or
+
+(2) A producer, other than an owner, on a farm with a share-rent lease for such farm, regardless of the length of the lease, if the owner of the farm enters into the same contract; or
+
+(3) A producer, other than an owner, on a farm who cash rents such farm under a lease expiring on or after September 30 of the year of the contract in which case the owner is not required to enter into the contract; or
+
+(4) A producer, other than an owner, on a farm who cash rents such farm under a lease expiring before September 30 of the year of the contract. The owner of such farm must also enter into the same contract, failing which the farm is not enrolled; or
+
+(5) An owner of an eligible farm who cash rents such farm and the lease term expires before September 30 of the year of the contract, if the tenant declines to enter into a contract for the applicable year. In the case of an owner covered by this paragraph, payments will not begin under the contract until the lease held by the tenant ends.
+
+(b) A minor child will be eligible to enter into a contract only if one of the following conditions exist:
+
+(1) The right of majority has been conferred upon the minor by court proceedings or law;
+
+(2) A guardian has been appointed to manage the minor's property and the applicable program documents are executed by the guardian; or
+
+(3) A bond is furnished under which a surety guarantees any loss incurred for which the minor would be liable had the minor been an adult.
+
+(c) The owner of the farm may be considered the “producer” if there is no other producer, but the owner could have shared in the crop had a crop been produced, but only if the farm and owner otherwise meet all the requirements for payment.
+
+[79 FR 57717, Sept. 26, 2014]
+
+§ 1412.43 Reconstitutions.
+
+Farms will only be reconstituted in accordance with subpart G of this part and part 718 of this title.
+
+[79 FR 57717, Sept. 26, 2014]
+
+§§ 1412.44-1412.45 [Reserved]
+
+§ 1412.46 Planting flexibility.
+
+(a) Any crop may be planted and harvested on base acres on a farm, except as limited in this section. Any crop may be planted on cropland in excess of the base acres on a farm.
+
+(b) Base acres may be hayed or grazed at any time.
+
+(c) Except as specified in paragraph (e) of this section, the planting or harvesting of perennial or harvesting of non-perennial fruits, vegetables (except mung beans and covered commodities), or wild rice, as determined by FSA, will result in an acre for acre payment reduction when such crop or crops are planted and or harvested, as applicable, on more than:
+
+(1) 15 percent of the base acres of a farm enrolled in ARC or PLC using county coverage; or
+
+(2) 35 percent of the base acres of a farm enrolled in ARC using individual coverage.
+
+(d) For each crop year for which a reduction in payment acres is made according to paragraph (c) of this section, those acres will be considered to be P&CP to a covered commodity for the purpose of any adjustment or reduction of base acres for the farm.
+
+(e) Notwithstanding the provisions of paragraph (c) of this section, perennial fruits, vegetables, and wild rice may be planted or harvested on base acres of a farm and non-perennial fruits, vegetables, and wild rice may be harvested on base acres of a farm if a producer double-crops fruits, vegetables, or wild rice with a covered commodity in any region described in paragraph (f) of this section, in which case payment acres will not be reduced for the planting or harvesting of the fruit, vegetable, or wild rice.
+
+(f) Double-cropping for purposes of this section means planting for harvest non-perennial fruits, vegetables, or wild rice on the same acres in cycle with a planted covered commodity harvested for grain in a 12-month period under normal growing conditions for the region and being able to repeat the same cycle in the following 12-month period. For purposes of this part, the following counties have been determined to be regions having a history of double-cropping covered commodities or peanuts with fruits, vegetables, or wild rice. State committees have established the following counties as regions within their respective States:
+
+(1) Alabama. All counties.
+
+(2) Alaska. None.
+
+(3) Arizona. Cochise, Graham, Greenlee, LaPaz, Maricopa, Mohave, Pima, Pinal, and Yuma.
+
+(4) Arkansas. Ashley, Benton, Clay, Craighead, Crawford, Crittenden, Cross, Faulkner, Franklin, Greene, Independence, Jackson, Jefferson, Lawrence, Lee, Lincoln, Logan, Lonoke, Mississippi, Monroe, Phillips, Pulaski, St. Francis, Sebastian, Washington, Woodruff, and Yell.
+
+(5) California. Alameda, Amador, Butte, Colusa, Contra Costa, Fresno, Glenn, Imperial, Kern, Kings, Madera, Merced, Riverside, Sacramento, San Benito, San Joaquin, Santa Clara, Siskiyou, Solano, Sonoma, Stanislaus, Sutter, Tehama, Tulare, Yolo, and Yuba.
+
+(6) Colorado. Crowley and Otero.
+
+(7) Connecticut. None.
+
+(8) Delaware. All counties.
+
+(9) Florida. All counties except Monroe.
+
+(10) Georgia. All counties.
+
+(11) Hawaii. None.
+
+(12) Idaho. None.
+
+(13) Illinois. Adams, Alexander, Bureau, Calhoun, Cass, Clark, Clay, Clinton, Crawford, DeKalb, Edgar, Edwards, Effingham, Franklin, Gallatin, Hamilton, Hardin, Iroquois, Jefferson, Jersey, Johnson, Kankakee, LaSalle, Lawrence, Lee, Madison, Marion, Mason, Monroe, Peoria, Pulaski, Randolph, Richland, St. Clair, Saline, Sangamon, Tazewell, Union, Vermilion, Wabash, Washington, Wayne, White, Woodford, and Whiteside.
+
+(14) Indiana. Allen, Bartholemew, Crawford, Daviess, Floyd, Gibson, Harrison, Jackson, Johnson, Knox, LaGrange, LaPorte, Madison, Marion, Martin, Miami, Pike, Posey, Ripley, Shelby, Sullivan, Vanderburgh, and Warrick.
+
+(15) Iowa. Kossuth, Mitchell, Palo Alto, and Winnebago.
+
+(16) Kansas. None.
+
+(17) Kentucky. All counties.
+
+(18) Louisiana. Avoyelles, Franklin, Grant, Morehouse, Rapides, Richland, and West Carroll.
+
+(19) Maine. None.
+
+(20) Maryland. Anne Arundel, Baltimore, Calvert, Caroline, Carroll, Cecil, Charles, Dorchester, Harford, Kent, Prince George's, Queen Anne's, St. Mary's, Somerset, Talbot, Wicomico, and Worcester.
+
+(21) Massachusetts. None.
+
+(22) Michigan. St. Joseph and Kalamazoo.
+
+(23) Minnesota. Blue Earth, Brown, Carver, Chippewa, Cottonwood, Dakota, Dodge, Faribault, Fillmore, Freeborn, Goodhue, Houston, Kandiyohi, Le Sueur, Martin, McLeod, Meeker, Mower, Nicollet, Olmsted, Pope, Redwood, Renville, Rice, Scott, Sibley, Stearns, Steele, Swift, Waseca, Wabasha, Watonwan, and Winona.
+
+(24) Mississippi. All counties.
+
+(25) Missouri. Barton, Butler, Cape Girardeau, Dade, Dunklin, Jasper, Lawrence, Mississippi, New Madrid, Newton, Pemiscot, Perry, Ripley, Scott, and Stoddard.
+
+(26) Montana. None.
+
+(27) Nebraska. Dawes-North Sioux and Sheridan.
+
+(28) Nevada. None.
+
+(29) New Hampshire. None.
+
+(30) New Jersey. Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, Hunterdon, Mercer, Middlesex, Monmouth, Morris, Ocean, Salem, Somerset, Sussex, and Warren.
+
+(31) New Mexico. Chaves, Curry, Dona Ana, Eddy, Hidalgo, Lea, Luna, Quay, Roosevelt, San Juan, and Sierra.
+
+(32) New York. Cayuga, Columbia, Dutchess, Erie, Genesee, Greene, Livingston, Madison, Monroe, Niagara, Oneida, Onondaga, Ontario, Orange, Orleans, Oswego, Putnam, Rensselaer, Saratoga, Schoharie, Seneca, Steuben, Suffolk, Tompkins, Ulster, Warren, Washington, Wayne, Westchester, Wyoming, and Yates.
+
+(33) North Carolina. Alamance, Alexander, Alleghany, Anson, Ashe, Beaufort, Bertie, Bladen, Brunswick, Burke, Cabarrus, Caldwell, Camden, Carteret, Caswell, Catawba, Chatham, Cherokee, Chowan, Clay, Cleveland, Columbus, Craven, Cumberland, Currituck, Dare, Davidson, Davie, Duplin, Edgecombe, Franklin, Gaston, Gates, Graham, Granville, Greene, Halifax, Harnett, Hertford, Hoke, Hyde, Iredell, Johnston, Jones, Lee, Lenoir, Lincoln, Macon, Martin, McDowell, Mecklenburg, Montgomery, Moore, Nash, New Hanover, Northampton, Onslow, Pamlico, Pasquotank, Pender, Perquimans, Person, Pitt, Richmond, Robeson, Rockingham, Rutherford, Sampson, Scotland, Stanly, Stokes, Tyrell, Union, Vance, Wake, Warren, Washington, Wayne, Wilkes, Wilson, and Yadkin.
+
+(34) North Dakota. None.
+
+(35) Ohio. Carroll, Champaign, Clermont, Fulton, Henry, Jackson, Lucas, Miami, Morgan, Muskingum, Pike, Scioto, Stark, Tuscarawas, Wood, and Vinton.
+
+(36) Oklahoma. Adair, Alfalfa, Beckham, Blaine, Bryan, Caddo, Canadian, Carter, Cherokee, Cleveland, Comanche, Cotton, Custer, Delaware, Dewey, Ellis, Garfield, Garvin, Grady, Grant, Greer, Harmon, Haskell, Hughes, Jackson, Jefferson, Kay, Kingfisher, Kiowa, LeFlore, Logan, Love, McClain, McIntosh, Major, Marshall, Mayes, Muskogee, Noble, Nowata, Okmulgee, Osage, Pawnee, Payne, Pittsburg, Pottawatomie, Roger Mills, Rogers, Sequoyah, Stephens, Tillman, Tulsa, Wagoner, Washita, Woods, and Woodward.
+
+(37) Oregon. Clackamas, Marion, Morrow, Multnomah, Polk, Umatilla, and Yamhill.
+
+(38) Pennsylvania. Adams, Bucks, Carbon, Centre, Chester, Clinton, Columbia, Cumberland, Delaware, Erie, Franklin, Indiana, Lancaster, Lehigh, Montgomery, Monroe, Montour, Northampton, Northumberland, Schuylkill, Snyder, Union, and York.
+
+(39) Puerto Rico. None.
+
+(40) Rhode Island. None.
+
+(41) South Carolina. All counties.
+
+(42) South Dakota. None.
+
+(43) Tennessee. All counties.
+
+(44) Texas. Anderson, Andrews, Aransas, Archer, Armstrong, Atascosa, Austin, Bailey, Bastrop, Baylor, Bee, Bell, Bexar, Borden, Bosque, Bowie, Brazos, Brazoria, Briscoe, Brooks, Brown, Burleson, Caldwell, Calhoun, Callahan, Cameron, Carson, Cass, Castro, Chambers, Cherokee, Childress, Clay, Cochran, Coleman, Collin, Collingsworth, Colorado, Comanche, Concho, Cooke, Coryell, Cottle, Crosby, Culberson, Dallam, Dallas, Dawson, Deaf Smith, Delta, Denton, Dickens, Dimmit, Donley, Duval, Eastland, Ellis, El Paso, Erath, Falls, Fannin, Fayette, Fischer, Floyd, Foard, Fort Bend, Franklin, Freestone, Frio, Gaines, Galveston, Garza, Gillespie, Glasscock, Gonzales, Gray, Grayson, Grimes, Guadalupe, Hale, Hall, Hamilton, Hansford, Hardeman, Hardin, Harris, Hartley, Haskell, Hemphill, Henderson, Hidalgo, Hill, Hockley, Hood, Hopkins, Houston, Howard, Hudspeth, Hunt, Hutchinson, Jackson, Jefferson, Jim Hogg, Jim Wells, Johnson, Jones Karnes, Kaufman, Kent, King, Kinney, Kleberg, Knox, Lamar, Lamb, LaSalle, Lee, Leon, Liberty, Limestone, Lipscomb, Live Oak, Llano, Loving, Lubbock, Lynn, Martin, Mason, Matagorda, Maverick, McCulloch, McLennan, Medina, Menard, Midland, Milam, Mills, Mitchell, Montague, Moore, Motley, Navarro, Nolan, Nueces, Ochiltree, Oldham, Palo Pinto, Parker, Parmer, Pecos, Potter, Rains, Randall, Reagan, Red River, Reeves, Refugio, Roberts, Robertson, Rockwall, Runnels, San Patricio, San Saba, Schleicher, Scurry, Sherman, Smith, Somervell, Starr, Stonewall, Swisher, Tarrant, Taylor, Terry, Tom Green, Travis, Upton, Uvalde, Van Zandt, Victoria, Walker, Waller, Washington, Webb, Wharton, Wheeler, Wichita, Wilbarger, Willacy, Williamson, Wise, Wilson, Wood, Yoakum, Young, Zapata, and Zavala.
+
+(45) U.S. Virgin Islands. None.
+
+(46) Utah. None.
+
+(47) Vermont. None.
+
+(48) Virginia. Accomack, Albemarle, Alleghany, Amelia, Amherst, Appomattox, Augusta, Bath, Bedford, Bland, Botetourt, Brunswick, Buchanan, Buckingham, Campbell, Caroline, Carroll, Charles City, Charlotte, Chesapeake, Chesterfield, Clarke, Craig, Culpeper, Cumberland, Dickenson, Dinwiddie, Essex, Fairfax, Fauquier, Floyd, Fluvanna, Franklin, Frederick, Giles, Gloucester, Goochland, Grayson, Greene, Greensville, Halifax, Hanover, Henrico, Henry, Highland, Isle of Wight, James City, King and Queen, King George, King William, Lancaster, Lee, Loudoun, Louisa, Lunenburg, Madison, Mathews, Mecklenburg, Middlesex, Montgomery, Nelson, New Kent, Northampton, Northumberland, Nottoway, Orange, Page, Patrick, Pittsylvania, Powhatan, Prince Edward, Prince George, Prince William, Pulaski, Rappahannock, Richmond, Roanoke, Rockbridge, Rockingham, Russell, Scott, Shenandoah, Smyth, Southampton, Spotsylvania, Stafford, Suffolk, Surry, Sussex, Tazewell, Virginia Beach, Warren, Washington, Westmoreland, Wise, Wythe, and York.
+
+(49) Washington. None.
+
+(50) West Virginia. Monroe.
+
+(51) Wisconsin. Adams, Calumet, Columbia, Dane, Dodge, Fond du Lac, Green, Green Lake, Iowa, Kenosha, Milwaukee, Ozaukee, Portage, Racine, Richland, Rock, Sauk, Trempealeau, Walworth, Washington, Waukesha, Waushara, and Winnebago.
+
+(52) Wyoming. None.
+
+(g) The acreage of any fruit or vegetable specified in paragraph (i) of this section will first be attributed to cropland not having base acres, followed by base acres, before applying any payment acreage reduction required by paragraph (c) of this section. The reduction will be attributed to each of the covered commodities on the farm having payment acres on a pro rata basis to reflect the ratio of the payment acres of the covered commodity on the farm to the total payment acres of all covered commodities on the farm.
+
+(h) For the purposes of this part, fruits, vegetables, and wild rice planted on payment acres of a farm under ARC or PLC Program contract:
+
+(1) Will be considered harvested at the time of planting, unless the producer pays a fee to cover the cost of a farm visit, as specified in part 718 of this title, to verify that the fruit, vegetable, or wild rice has been destroyed before harvest, as determined by FSA; or
+
+(2) Will not be considered as planted to a fruit, vegetable, or wild rice when reported by a producer on the farm with an intended use of green manure or forage, as determined by FSA, and a fee to cover the cost of a farm visit is paid by the producer, as specified in part 718 of this title, to verify that the crop has not been harvested.
+
+(i) Unless otherwise specifically included as a covered commodity as specified in this part, fruits and vegetables include, but are not limited to, all nuts except peanuts, certain fruit-bearing trees and: Acerola (barbados cherry), antidesma, apples, apricots, aragula, ariona (chokeberry), artichokes, asparagus, atemoya (custard apple), avocados, babaco papayas, bananas, beans (except soybeans, mung, adzuki, faba, and lupin), beets—other than sugar, blackberries, blackeye peas, blueberries, bok spare choy, boysenberries, breadfruit, broccoflower, broccolo-cavalo, broccoli, brussel sprouts, cabbage, cailang, caimito, calabaza, carambola (star fruit), calaboose, carob, carrots, cascadeberries, cauliflower, celeriac, celery, chayote, cherimoyas (sugar apples), canary melon, cantaloupes, cardoon, casaba melon, cassava, cherries, chinese bitter melon, chicory, chinese cabbage, chinese mustard, chinese water chestnuts, chufes, citron, citron melon, coffee, collards, cowpeas, crabapples, cranberries, cressie greens, crenshaw melons, cucumbers, currants, cushaw, daikon, dasheen, dates, dry edible beans, dunga, eggplant, elderberries, elut, endive, escarole, etou, feijoas, figs, gai lien, gailon, galanga, genip, gooseberries, grapefruit, grapes, guambana, guavas, guy choy, honeydew melon, huckleberries, jackfruit, jerusalem artichokes, jicama, jojoba, kale, kenya, kiwifruit, kohlrabi, kumquats, leeks, lemons, lettuce, limequats, limes, lobok, loganberries, longon, loquats, lotus root, lychee (litchi), mandarins, mangos, marionberries, mar bub, melongene, mesple, mizuna, mongosteen, moqua, mulberries, murcotts, mushrooms, mustard greens, nectarines, ny Yu, okra, olallieberries, olives, onions, opo, oranges, papaya, paprika, parsnip, passion fruits, peaches, pears, peas, all peppers, persimmon, persian melon, pimentos, pineapple, pistachios, plantain, plumcots, plums, pomegranates, potatoes, prunes, pummelo, pumpkins, quinces, radicchio, radishes, raisins, raisins (distilling), rambutan, rape greens, rapini, raspberries, recao, rhubarb, rutabaga, santa claus melon, salsify, saodilla, sapote, savory, scallions, shallots, shiso, spinach, squash, strawberries, suk gat, swiss chard, sweet corn, sweet potatoes, tangelos, tangerines, tangos, tangors, taniers, taro root, tau chai, teff, tindora, tomatillos, tomatoes, turnips, turnip greens, watercress, watermelons, white sapote, yam, and yam yu choy.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 79 FR 57718, Sept. 26, 2014; 83 FR 40659, Aug. 16, 2018; 84 FR 45891, Sept. 3, 2019; 84 FR 53579, Oct. 8, 2019; 91 FR 1056, Jan. 12, 2026]
+
+§ 1412.47-1412.48 [Reserved]
+
+§ 1412.49 Matters of general applicability.
+
+(a) The regulations in this part and FSA and CCC's interpretation of the regulations in this part and internal agency directives issued to FSA State and county offices are matters of general applicability and are not individually appealable in administrative appeals according to §§ 11.3 and 780.5 of this title. Additionally, the regulations in this part and any decisions of CCC and FSA that are not based on specific facts derived from an individual participant's application, contract, or file are not appealable under part 11 or part 780 of this title. Examples of such decisions include how the program is generally administered, signup deadlines, payment rates, or any other generally applicable matter or determination that is made by CCC or FSA for use in all similarly situated applications. The only extent by which the matters referenced in this section are reviewable administratively in an appeal forum is whether FSA's or CCC's decision to apply the generally applicable matter is factually accurate and in conformance with the regulations in this part.
+
+(b) The relief provisions of 7 CFR part 718 are applicable only to ineligibility and noncompliance decisions. The relief provisions cannot be used to extend a benefit or assistance not otherwise available under law or not otherwise available to others who have satisfied or complied with every eligibility or compliance requirement of the provisions of this part. Equitable relief provisions of part 718 of this title cannot be used to obtain a review of either these regulations, the requirements of this part, the agency's interpretations of this part, or compliance provisions of this part.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 84 FR 45893, Sept. 3, 2019]
+
+§ 1412.50 Transfer of land and succession-in-interest.
+
+(a) Land subject to an election in subpart G will continue to be subject to the election even if there is a transfer of land or change in interest of any producer or owners on the farm. If a new owner or operator or producer purchases or obtains the right and interest in, or right to occupancy of, the land subject to an election option, such new owner or operator or producer, upon the approval of FSA, may enroll and participate under a new contract with FSA with respect to such transferred land in accordance with § 1412.41.
+
+(b) A succession in interest to an ARC or PLC program contract is required if there has been a change in the operation of a farm such as:
+
+(1) A sale of land;
+
+(2) A change of operator or producer, including a change in a partnership that increases or decreases the number or changes who are partners;
+
+(3) A foreclosure, bankruptcy, or involuntary loss of the farm;
+
+(4) A change in the producer shares to reflect changes in the producer's share of the crop(s) that were originally approved on the contract; or
+
+(5) Another change as otherwise determined by the Deputy Administrator by which the succession will not adversely affect nor defeat the purpose of the program.
+
+(c) A succession in interest to an ARC program contract is not permitted if FSA determines that the change:
+
+(1) Is not for all the time remaining under the ARC or PLC program contract;
+
+(2) Results in a violation of the landlord-tenant provisions specified in § 1412.55; or
+
+(3) Adversely affects or otherwise defeats the purpose of the program.
+
+(d) If a producer who is entitled to receive ARC or PLC payments dies, becomes incompetent, or is otherwise unable to receive the payment, CCC will make the payment in accordance with part 707 of this title.
+
+(e) A producer or owner of an enrolled farm must inform the county committee of changes in interest in base acres on the farm not later than:
+
+(1) August 1 of the fiscal year in which the change occurs if the change requires a reconstitution be completed in accordance with part 718 of this title or
+
+(2) September 30 of the fiscal year in which the change occurs if the change does not require a reconstitution be completed in accordance with part 718 of this title.
+
+(f) In any case in which either an ARC or PLC payment has previously been made to a predecessor, such payment will not be paid to the successor, unless such payment has been refunded in full by the predecessor, in accordance with § 1412.41(d).
+
+[79 FR 57718, Sept. 26, 2014]
+
+Subpart E—Financial Considerations Including Sharing Payments
+
+§ 1412.51 Limitation of payments.
+
+(a) The provisions of part 1400 of this chapter apply to this part. Payments under this part cannot exceed the amounts specified in part 1400 of this chapter.
+
+(b)-(c) [Reserved]
+
+(d) Notwithstanding any other provision of this part, a producer on a farm is not eligible to receive ARC and PLC payments if the sum of the base acres on the farm is 10 acres or less unless the sum of the base acres on the farm, when combined with the base acres of other farms in which the producer has an enrolled producer share interest greater than zero, is more than 10 acres. The 10-acre limitation of this section will not apply to a socially disadvantaged farmer or rancher, a beginning farmer or rancher, a veteran farmer or rancher, or a limited resource farmer or rancher.
+
+(e) Any person or legal entity interested in obtaining a payment under this part for a crop year, in addition to satisfying all eligibility requirements of this part, must submit any and all documents from which payment eligibility can be determined to FSA by March 1 of the second year after the end of the annual contract period for which payments are being made. For example, to obtain a payment for a 2026 contract, which ends in calendar year 2026, all documents must be submitted to FSA by March 1, 2028. This includes any payment eligibility document required under part 12 or part 1400 of this title. For example, for the 2026contract year, the final date for submission of documents from which payment eligibility will be determined and apply is March 1, 2028. Payments will not issue to any person or legal entity who fails to submit required forms and documents by this date. Further these payments will not be considered denied, as the person or legal entity is presumed to have forfeited their interest in the payment.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 79 FR 57719, Sept. 26, 2014; 83 FR 40659, Aug. 16, 2018; 84 FR 45893, Sept. 3, 2019; 91 FR 1056, Jan. 12, 2026]
+
+§ 1412.52 PLC payment provisions.
+
+(a) Provided all provisions of this part including but not limited to election have been satisfied for a contract year, a PLC payment will be made to eligible participants on a farm enrolled in PLC with respect to covered commodities for which a PLC yield and base acres are established:
+
+(1) When the effective price for a covered commodity in a crop year is less than the effective reference price for the PLC enrolled covered commodity for that crop year as specified in this part; and
+
+(2) As soon as practical, as determined by the Deputy Administrator, after October 1 following the end of the 12-month marketing year for the covered commodity as applicable.
+
+(b) The effective price for a covered commodity is equal to the higher of the:
+
+(1) MYA price received by producers during the 12-month marketing year for the crop year of the covered commodity, as determined by FSA, or
+
+(2) National loan rate for a marketing assistance loan for the covered commodity for such crop year.
+
+(c) The payment rate used to calculate PLC payments with respect to covered commodity for which PLC yields and base acres are attributed to the covered commodity on a farm enrolled in a PLC contract is the effective reference price of the covered commodity minus the effective price of the covered commodity for a crop year, as determined in accordance with paragraph (b) of this section.
+
+(d) For PLC contracts, when PLC payments are triggered in accordance with paragraph (a) of this section, subject to the limitation and in part 1400 of this chapter, the PLC payment to be paid to producers on a farm enrolled in a contract with respect to a covered commodity for which a PLC yield and base acres are attributed is equal to the product of:
+
+(1) The payment rate determined in accordance with paragraph (c) of this section, multiplied by
+
+(2) The relevant payment acres of the covered commodity, as applicable, minus any payment acre reduction in accordance with § 1412.46, multiplied by
+
+(3) The PLC payment yield for the covered commodity on the farm enrolled in a PLC contract as determined in accordance with § 1412.31, minus
+
+(4) Any reduction calculated in accordance with subpart F of this part.
+
+(e) If a producer declines to accept, has forfeited interest in the payment as specified under § 1412.51, or is determined to be ineligible for all or any part of the producer's share of the PLC payment computed for the farm in accordance with the provisions of this section, the:
+
+(1) Payment or portions thereof will not become available for any other producer and
+
+(2) Producer is required to refund to CCC any amounts representing payments that exceed the payments determined by FSA to have been earned under the program authorized by this part. Part 3 of this title is applicable to all unearned payments.
+
+(f) The payment of any amount due any producer on a farm enrolled in a PLC contract will be made only after all the producers subject to the contract are determined to be in full compliance with the contract and the requirements in this part or any other applicable part.
+
+(g) A participant on a farm enrolled in a contract may receive a payment amount due without regard to the eligibility of other participants on the farm if the:
+
+(1) Participant is in full compliance with the contract and the requirements in this part or any other applicable part;
+
+(2) Payment of such amount does not adversely affect or defeat the purpose of the program, as determined by the Deputy Administrator, or designee; and
+
+(3) Payment is approved by the Deputy Administrator, or designee.
+
+(h) Temperate japonica rice or medium and short grain rice grown:
+
+(1) In California will receive the effective price and guarantee for medium and short grain based only on the prices that temperate japonica or medium and short grain rice receives in California.
+
+(2) Outside of California will receive the effective price and guarantee for medium and short grain rice based only on the prices that temperate japonica or medium and short grain rice receives outside of California.
+
+[79 FR 57719, Sept. 26, 2014, as amended at 83 FR 40659, Aug. 16, 2018; 84 FR 45893, Sept. 3, 2019l 91 FR 1057, Jan. 12, 2026]
+
+§ 1412.53 ARC payment provisions.
+
+(a) Effective with the 2019 and subsequent crop years, ARC-CO actual crop revenue and guarantee will be based on the physical location of base acres of the farm.
+
+(1) FSA will divide up to 25 counties into administrative units. Each of the resulting administrative unit will be viewed as a county for ARC-CO payment purposes.
+
+(2) If a farm has base acres physically located in more than one physical location county, the ARC-CO actual revenue and ARC-CO guarantee will be weighted and summarized to the farm level.
+
+(3) If determined applicable by FSA, a historical irrigated percentage and trend-adjusted yield factor will be used to determine guarantee and revenue, which will also be weighted and summarized to the farm level.
+
+(b) Provided all provisions of this part, including but not limited to ARC-CO election and enrollment, have been satisfied for the contract year, CCC will issue, as applicable and consistent with the election and enrollment:
+
+(1) An ARC-CO payment beginning October 1, or as soon as practicable thereafter, after the end of the applicable marketing year for the covered commodity to the producers on a farm for a covered commodity in each crop year if the farm and covered commodity were enrolled in ARC-CO and the farm's weighted and summarized ARC-CO actual crop revenue was less than the farm's weighted and summarized ARC-CO guarantee.
+
+(2) Payment is equal to the result of multiplying the payment acres for the covered commodity times the difference between the farm's weighted and summarized actual crop revenue and the ARC-CO guarantee, not to exceed 12 percent of the farm's weighted and summarized ARC-CO benchmark revenue.
+
+(c) In a county having farms with P&CP acreage history of a covered commodity in 2019 through 2023, where a covered commodity's P&CP acreage was both irrigated and non-irrigated in 2019 through 2017, a separate irrigated and non-irrigated benchmark revenue, guarantee, and actual revenue will be maintained by FSA for the affected county. For farms in those counties with covered commodities enrolled in ARC-CO, the average 2019 through 2023 reported acreage of each covered commodity on the farm with irrigated and non-irrigated status will be used by FSA to calculate a percentage of each applicable covered commodity that will be applied against the irrigated and non-irrigated benchmark revenue, guarantee, and actual revenue.
+
+(d) FSA has determined the irrigated and non-irrigated counties and crops for the 2026 program year.
+
+(e) Provided all provisions of this part, including but not limited to ARC-IC election and enrollment, have been satisfied for the contract year, CCC will issue, as applicable and consistent with the election and enrollment:
+
+(1) An ARC-IC payment beginning October 1, or as soon as practicable thereafter, after the end of the applicable marketing year for the farm if the farm was enrolled in ARC-IC and the ARC-IC actual crop revenue for that farm is less than the ARC-IC guarantee.
+
+(2) Payment is equal to the result of multiplying the payment acres for the covered commodities times the difference between actual crop revenue and the ARC-IC guarantee, not to exceed 12 percent of benchmark revenue for ARC-IC for each of the 2025 through 2031 crop years.
+
+(f) If a producer has an interest in multiple farms that have enrolled in ARC-IC, the ARC-IC benchmark revenue for that producer used in the payment calculation will be a weighted average of the benchmark revenue for those multiple farms.
+
+(g) The effective price and guarantee for temperate japonica rice will be based on the price that all medium and short grain (including glutinous) rice receives in California. The effective price and guarantee for medium grain rice outside California will be based on the price that all medium and short grain rice receives outside California.
+
+(h) For the 2025 crop year, CCC will make the higher of PLC payments or ARC-CO payments to the producers on a farm for the payment acres for each covered commodity on the farm.
+
+[84 FR 45893, Sept. 3, 2019, as amended at 91 FR 1057, Jan. 12, 2026]
+
+§ 1412.54 Sharing of payments.
+
+(a) Each eligible producer on a farm may enroll in an ARC or PLC contract, as applicable, and receive assistance and payments determined to be fair and equitable as agreed to by all the producers on the farm and approved by the county committee.
+
+(b) When required by FSA, each person or legal entity leasing a farm who enrolls in ARC or PLC must provide a copy of their written lease to the county committee and, in the absence of a written lease, must provide to the county committee a complete written description of the terms and conditions of any oral agreement or lease.
+
+(1) If a farm is cash leased (that is, the landowner receives a zero share of covered commodities planted on the farm or a zero share of any base acres) and the producers on the farm cash leased the farm in the immediately preceding year, then the tenant(s) who enters a producer signature and has a share greater than zero on the contract, if the same was true for the immediately preceding year, is considered to have satisfied ARC and PLC Program requirements of landowner(s) signing to a zero share on the contract The evidence must have been submitted for the immediately preceding contract year or was referred to in that contract year to an immediately preceding contract year.
+
+(2) When required by FSA, an owner's or landlord's signature affirming a zero share on either an application for assistance or contract under this part, as applicable, may be accepted as evidence of a cash lease between the owner or landlord and tenant.
+
+(3) For the purposes of obtaining payments under this part, the signature or signatures, if entered on the contract to satisfy the requirement of furnishing a written lease, are required to be provided by the enrollment deadline established by CCC for the assistance or payment.
+
+(c) When land on which base acres is leased on a share basis, neither the landlord nor the tenant is eligible to receive 100 percent of the ARC or PLC contract payment for the farm.
+
+(d) CCC will approve an ARC or PLC contract for enrollment and approve the division of payment when CCC is satisfied and determines that all of the following apply:
+
+(1) The landlords, tenants, and sharecroppers sign the contract and agree to the payment shares shown on the contract;
+
+(2) The interests of tenants and sharecroppers are being protected; and
+
+(3) The payment shares shown on the application or contract do not circumvent either the provisions of this part or the provisions of part 1400 of this chapter.
+
+(4) If any civil dispute between persons, legal entities, or members of legal entities not involving FSA or CCC is known or suspected to exist that either FSA or CCC believes might impact the eligibility of any person or legal entity or administration of ARC or PLC under this part, the Deputy Administrator can elect to withhold making any determination on an application or contract until such time as the Deputy Administrator is satisfied that the dispute is resolved or no longer has any bearing on either the administration of ARC or PLC under this part or any eligible producer or potential eligible producer. A decision withheld under to this paragraph will not be construed to be a decision or adverse decision under any law or regulation nor will it be construed to be a failure of FSA or CCC to act under any law or regulation.
+
+(e) A lease will be considered to be a cash lease if the lease provides for only a guaranteed cash payment for a specified amount, or a fixed quantity of the crop (for example, pounds, or bushels per acre).
+
+(1) If a lease contains provisions that require the payment of rent on the basis of the amount of crop produced or the proceeds derived from the crop, or the interest such producer would have had if the crop had been produced, or combination thereof, the agreement will be considered to be a share lease.
+
+(2) If a lease provides for a guaranteed amount and a share of the crop or crop proceeds, the agreement will be considered a cash lease.
+
+(3) If the lease is a cash lease, the landlord is not eligible for assistance or payments under this part. The leasing of grazing or haying privileges is not considered cash leasing.
+
+(f) Shares of PLC and ARC-CO will be determined based on the shares entered on the contract. Shares of ARC-IC payments will be determined based on the shares recorded on the report of acreage filed as specified in § 1412.66. Further, each eligible producer having a share of planted or eligible subsequently planted crop acreage of covered commodities on a farm enrolled under an ARC or PLC Program contract has to do both of the following to be eligible for their share of a payment:
+
+(1) Unless otherwise already enrolled on the ARC or PLC Program contract, sign the ARC or PLC Program contract during the contract period; and
+
+(2) Have the producer's share recorded on the report of acreage filed as required by part 718 of this title and § 1412.66.
+
+(g) In a case where a producer has failed to sign an ARC or PLC Program contract by the signup deadline or contract period established for enrollment and participation for the producer's reported share of P&CP acres or eligible subsequently planted crop acreage of covered commodities on a farm enrolled as specified in this part, that producer's share will not receive any consideration for payment and will not generate any payment to the producer or to any other producer on the farm.
+
+(h) FSA's approval of an ARC or PLC contract or shares under this part on behalf of CCC based on the representations of persons or legal entities signing the ARC or PLC contract, or acreage report in no way implies or will be construed as FSA's determination that the representations or assertions made by persons or legal entities signing the ARC or PLC contract, or acreage report are correct or are approved as legitimate. Any and all assertions and representations of a person, persons, legal entity, or legal entities signing forms, applications, or contracts incidental to program participation in this part are always subject to review and scrutiny or spot check by CCC. On CCC's behalf, FSA can at any time demand documentation to substantiate any representation made by any program participant under this part and recover unearned amounts that are determined to have been paid based on such erroneous representation.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 79 FR 57720, Sept. 26, 2014; 83 FR 40659, Aug. 16, 2018; 84 FR 45894, Sept. 3, 2019]
+
+§ 1412.55 Provisions relating to tenants and sharecroppers.
+
+(a) No payment or assistance authorized under this part will be made by CCC if:
+
+(1) The landlord or operator has adopted a scheme or device for the purpose of depriving any tenant or sharecropper of the payments to which such person would otherwise be entitled under ARC or PLC. If any of such conditions occur or are discovered after payments have been made, all or any such part of the payments as the State committee may determine are required to be refunded to CCC; or
+
+(2) The landlord terminated a lease in violation of State law as determined by a State court.
+
+(b) [Reserved]
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018]
+
+Subpart F—Violations and Compliance Provisions
+
+§ 1412.61 Contract violations.
+
+Violations of contract or application requirements will result in the termination or cancellation of the ARC or PLC contract. Upon such termination or cancellation, all producers that signed the contract or application forfeit all rights to receive payments for the ARC or PLC contract and are required to refund all payments received, plus interest as specified in § 1412.1(d) of this part, as determined in accordance with part 3 of this title.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018; 91 FR 1057, Jan. 12, 2026]
+
+1412.62 [Reserved]
+
+§ 1412.63 Contract or application liability.
+
+All producers who signed an ARC or PLC Program contract made according to this part are jointly and severally liable for contract or application violations and resulting repayments and penalties.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018]
+
+§ 1412.64 Inaccurate representation, misrepresentation, and scheme or device.
+
+(a) Producers are required to accurately report and certify information provided to CCC for ARC or PLC. Any form containing the signature of a person or legal entity that contains a preprinted certification statement on the form will be construed to be a representation and certification of and from the person or legal entity signing the form regardless of whether or not the person or legal entity personally made the entry or entries on the form. Errors in reporting may impact eligibility or extent of eligibility. Payments under this part will be based on the most correct information available. CCC's issuing payments based on the face of a contract does not signify CCC's approval of the representations made by participants. Producers are responsible for refunding, with interest as specified in § 1412.1(d) of this part, any program benefits that were paid based on incorrect program information.
+
+(b) For those cases in which FSA determines that an inaccurate representation or certification is due to a misrepresentation, scheme, or device, the person or legal entity or members of the legal entity will be ineligible to receive ARC or PLC payments and will have the person, legal entity's or member's interest in all contracts or applications terminated if it is determined that such person, legal entity, or member of the legal entity has done any of the following:
+
+(1) Adopted any scheme or device that tends to defeat the purpose of this part;
+
+(2) Made any fraudulent representation;
+
+(3) Misrepresented any fact affecting an ARC or PLC Program contract or determination made under part 1400 of this chapter; or
+
+(4) Violated or been determined ineligible under § 1400.5 of this chapter.
+
+(c) Any remedies taken by FSA or CCC as specified in this section will be in addition to any other civil or other remedies that may be available, including, but not limited to, those provided in part 1400 of this chapter.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018]
+
+§ 1412.65 Offsets and assignments.
+
+(a) Except as provided in paragraph (b) of this section, any payment or portion thereof to any person will be made without regard to questions of title under State law and without regard to any claim or lien against the crop, or proceeds thereof, in favor of the owner or any other creditor except agencies of the U.S. Government. The regulations governing offsets and withholdings in part 3 of this title apply to contract payments.
+
+(b) Any participant entitled to any payment may assign any payments in accordance with regulations governing the assignment of payments in part 1404 of this chapter.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 91 FR 1057, Jan. 12, 2026]
+
+§ 1412.66 Acreage and production reports, prevented planting, and notices of loss.
+
+(a) An accurate report of all cropland acreage on the farm is required for ARC or PLC. How to submit the acreage report is specified in part 718 of this title.
+
+(b) Prevented planting acreage credit will only be available to acreage that CCC determines was prevented from being planted due to an eligible cause of loss. Acreage ineligible for prevented planted credit includes acreage not planted due to a management decision. Prevented planting acreage credit is subject to the provisions of part 718 of this title.
+
+(c) As a condition of producer payment eligibility for all ARC-IC payments under this part, all producers of all covered commodities on enrolled ARC-IC elected farms must accurately submit a report of production by the acreage reporting date for the crop in the year immediately following the crop year of the reported crop acreage for all the covered commodities elected and enrolled in ARC-IC. The report is due for each covered commodity for which an acreage report greater than zero planted acres was filed for the farm according to paragraph (a) of this section. The report of production for all of such covered commodity or covered commodities can be submitted by any of the producers of the covered commodity or covered commodities on the farm, the farm operator, or an owner on the farm. The absence of the required production report of any covered commodity being filed on an enrolled ARC-IC elected farm will cause all of the producers who share in any of the covered commodities on that farm to be ineligible for payment on that farm and on any other ARC-IC elected and enrolled farm in the State for the crop year for which the production report was not filed or is missing. At the discretion of CCC, the report of production must be accompanied by documentation acceptable to CCC. The report must include the date harvest was completed. Records of production acceptable to CCC may include those specified in:
+
+(1) Commercial receipts, settlement sheets, warehouse ledger sheets, or load summaries of the crop that was sold or otherwise disposed of through commercial channels provided the records are reliable or verifiable as determined by CCC; and
+
+(2) Such documentary evidence such as contemporaneous measurements, truck scale tickets, and contemporaneous diaries, as is necessary in order to verify the information provided if the crop has been fed to livestock or otherwise disposed of other than through commercial channels, provided the records are reliable or verifiable as determined by CCC. If the crop will be disposed of through retail sales, such as roadside stands, u-pick, etc. and the producer will not be able to certify acceptable records of production, the producer must request an appraisal of the crop acreage prior to harvest.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 79 FR 57720, Sept. 26, 2014; 83 FR 40659, Aug. 16, 2018]
+
+§ 1412.67 Compliance with highly erodible land and wetland conservation provisions.
+
+The provisions of part 12 of this title apply to this part.
+
+§ 1412.68 Controlled substance violations.
+
+The provisions of part 718 of this title apply to this part.
+
+§ 1412.69 Control of noxious weeds.
+
+Enrolled ARC and PLC contract participants agree to effectively control noxious weeds and otherwise maintain the land on the farm in accordance with sound agricultural practices; and use the land on the farm for an agricultural or conserving use, and not for a nonagricultural commercial, industrial, or residential use.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018]
+
+Subpart G—ARC and PLC Election
+
+Source:
+
+79 FR 57720, Sept. 26, 2014, unless otherwise noted.
+
+§ 1412.71 Election of ARC or PLC.
+
+(a) For the 2026 though 2031 crop years, subject to paragraph (f) of this section, all of the producers on a farm must make a one-time election in the 2026 enrollment and election period that is both:
+
+(1) Unanimous, and
+
+(2) Irrevocable through 2020 or 2026.
+
+(b) The election by producers is to obtain—
+
+(1) Either PLC or ARC-CO on a covered commodity-by-covered-commodity basis on the farm; or
+
+(2) ARC-IC for all covered commodities on the farm.
+
+(c) In general, a valid election will also apply to any subsequent year parent to the farm reconstitution as well as farms resulting from the parent farm as specified in § 1412.73. Neither the requesting of a farm reconstitution nor the reconstitution of any farm will impact either the requirement that all producers on a farm must make the unanimous irrevocable election in the defined election period or the valid election that was previously made by those producers.
+
+(d) FSA will process elections from producers on a farm based on the election as submitted. For example, if the producers of a farm attest that they are all or the only producers on the farm and FSA later learns that there was another producer at the time of election who did not agree to the election, the election is invalid. If at any time FSA determines that an election fails to satisfy the requirements of this subpart because it did not include the unanimous agreement of all producers on the farm at the time of election, the election will immediately be invalid. This is not a compliance provision. Only valid elections by all producers will be recognized and used by CCC. All ARC and PLC payments that were issued to any producers on a farm based on an election later determined by CCC to be invalid, for whatever reason, regardless of whether those producers who were issued unearned payments personally made or participated in the invalid election, must be refunded with interest.
+
+(e) Even if completed during the same period of time, election is separate from enrollment; producers on farms that have validly completed an election in the prescribed election period must enroll as specified in subpart D of this part for ARC and PLC payments, as applicable.
+
+(f) Except for those farms specified under § 1412.26, for the 2021 and each subsequent crop year, all the producers on a farm may change the election under paragraph (a) of this section.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018; 84 FR 45894, Sept. 3, 2019; 91 FR 1057, Jan. 12, 2026]
+
+§ 1412.72 Election period.
+
+(a) Election will be conducted in a defined period as announced by FSA. During the election period, all producers on a farm must unanimously make the irrevocable election as described in § 1412.71 to preserve the payment eligibility for 2019 or 2026 and determine whether the default election under § 1412.74 will apply to the farm.
+
+(b) If an election is submitted by all producers on a farm as specified in § 1412.71 and paragraph (a) of this section, that election will be recognized as valid for the farm unless any of the following occur:
+
+(1) The election is rescinded or terminated by any producer on the farm in accordance with paragraph (c) of this section during the election period;
+
+(2) The valid election is modified and replaced by another valid election by all producers during the election period;
+
+(3) A subsequent valid election by all producers is made with FSA during the election period; or
+
+(4) FSA determines the election at the time it was made was invalid for any reason.
+
+(c) At any time during an election period, a producer can rescind or terminate an election by providing written notice to FSA during the election period. The written notice to rescind or terminate must be physically received by FSA for CCC during the election period in order to be recognized. Immediately following receipt of such notice to rescind or terminate, the farm will be viewed as not having any effective valid election (in other words, no valid election will be determined to exist—even if there was another previous election in effect before the election that is rescinded, or terminated as specified in with this paragraph).
+
+(d) FSA is under no obligation to notify producers or owners on a farm that an election has been submitted, filed, rescinded, or terminated. Producers of a farm are solely responsible for filing a valid election during an election period or in whatever time remains in an election period following the rescission or termination of an election.
+
+(e) FSA is under no obligation to notify producers or owners of whether or not a valid election exists or is in place or whether any producer has rescinded or terminated an election. FSA will respond to inquiries regarding the status of election of a farm by any producer or owner on a farm including a producer or owner who gains a producer or owner interest on the farm during the election period.
+
+(f) The election period and final day in that election period in which producers can unanimously and irrevocably elect are not a compliance requirement or provision. The requirement of an election is mandated in the 2014 Farm Bill, as amended and as such is not subject to any of the equitable relief provisions of 7 CFR part 718, subpart D. Further, because the requirement of a unanimous irrevocable election and ramifications for not having a valid election are specified in the 2014 Farm Bill, as amended FSA will not consider any equitable relief. There are no late-file provisions for election.
+
+[79 FR 57720, Sept. 26, 2014, as amended at 84 FR 45894, Sept. 3, 2019; 91 FR 1057, Jan. 12, 2026]
+
+§ 1412.73 Reconstitutions of farms and election.
+
+(a) If a new producer or new owner gains an interest in a farm after the filing of a valid election on that farm during the election period, that new producer or new owner, whether or not known to FSA or the other producers or owners on the farm, will be subject to any previously submitted valid election under §§ 1412.71 and 1412.72 unless that new producer or new owner modifies, rescinds, or terminates the election as a producer or owner as specified in § 1412.72(c) during the remaining time in the election period.
+
+(b) Any reconstitution request initiated after August 1, 2019, will not be made until after the end of the election period specified in § 1412.72. Following the close of the election period in § 1412.72, a valid election on any farm cannot be changed by any reconstitution. This means that valid elected farms can only be combined with farms having an identical election for each and every covered commodity on the farm regardless of whether there are any base acres for any and all covered commodities on the farm. Reconstitutions will not be permitted to alter a valid election or the default election that may apply to a farm.
+
+[79 FR 57720, Sept. 26, 2014, as amended at 84 FR 45895, Sept. 3, 2019]
+
+§ 1412.74 Failure to make election.
+
+(a) If all producers on a farm do not make a unanimous election during the period specified in § 1412.72, that farm will not have a valid election and any producer on the farm is not eligible for 2026 ARC or PLC enrollment or payments.
+
+(b) If a valid election is not made for a farm in the 2026 crop year, FSA will not make any payments with respect to the farm for the 2026 crop year and the producers on the farm will, subject to § 1412.71(f), default to the same coverage for each covered commodity on the farm for the 2020 through 2025 crop years as was applicable for the 2015 through 2018 crop years or 2027 through 2031 crop years as was applicable for the 2025 crop year.
+
+[79 FR 46339, Aug. 8, 2014, as amended at 83 FR 40659, Aug. 16, 2018; 84 FR 45895, Sept. 3, 2019; 91 FR 1057, Jan. 12, 2026]
+
+Subpart H [Reserved]
+
+eCFR Content
+
+Pages
+
+- Home
+
+- Titles
+
+- Search
+
+- Recent Changes
+
+- Corrections
+
+Reader Aids
+
+-
+Using the eCFR Point-in-Time System
+
+-
+Understanding the eCFR
+
+-
+Government Policy and OFR Procedures
+
+-
+Developer Resources
+
+-
+Recent Site Updates
+
+Information
+
+- About This Site
+
+- Legal Status
+
+- Privacy
+
+- Accessibility
+
+- FOIA
+
+- No Fear Act
+
+- Continuity Information
+
+My eCFR
+
+-
+My Subscriptions
+
+-
+Sign In / Sign Up

@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T18:14:59Z",
+ "run_utc": "2026-10-16T18:22:10Z",
  "sources": [
   {
    "bytes": null,
@@ -8277,6 +8277,56 @@
    ],
    "status": "new",
    "text_chars": 8326
+  },
+  {
+   "bytes": 358369,
+   "sha256": "bf079cb8fed6b0effee81485e8973fb95ee345d0563fb30277f231291598bee9",
+   "fetched_utc": "2026-10-16T18:22:08Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/ecfr-7-1412.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "ecfr-7-1412",
+   "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1412",
+   "title": "7 CFR part 1412: Agriculture Risk Coverage, Price Loss Coverage (eCFR)",
+   "why": "/arc-plc ARC-IC: guarantee, payment cap and paid share of base under the 2025 law, before any ARC-IC figure is printed",
+   "kind": "html",
+   "checked_utc": "2026-10-16T18:22:07Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 127682
+  },
+  {
+   "bytes": 272437,
+   "sha256": "b0acde07e4c5e5f6873e2e8979aefd8e9b79ddd3c86724546a1360a1c4261614",
+   "fetched_utc": "2026-10-16T18:22:10Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/fr-2026-00313.html",
+   "final_url": "https://www.federalregister.gov/documents/2026/01/12/2026-00313/changes-to-agriculture-risk-coverage-price-loss-coverage-and-dairy-margin-coverage-programs",
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "fr-2026-00313",
+   "url": "https://www.federalregister.gov/d/2026-00313",
+   "title": "Federal Register 2026-00313 (Jan 12, 2026): FSA rule for ARC and PLC under the 2025 law",
+   "why": "/arc-plc: the rule the build script cites as [FR26]; ARC-IC terms for the ARC-IC check",
+   "kind": "html",
+   "checked_utc": "2026-10-16T18:22:09Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 113126
   },
   {
    "bytes": null,
