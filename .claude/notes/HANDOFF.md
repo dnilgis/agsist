@@ -40,11 +40,24 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Subscribers 146 (about 3 a day). Rent notice list 5, rain gauge waitlist 2.
 - Reminder set for Mon Oct 19: help Sig find more retailer fertilizer price pages (WI, IA, MN, IL first).
 
+- Oct 16 later: site audit panel (report: Claude artifact "Harvest site audit"). Shipped from it: cash-bid fixes (outlier bids flagged never Best,
+  delivery point in town headlines, road miles x1.25, Read vs Posted, clean elevator names via data/elevator-names.json), /grain-shrink,
+  /nutrient-removal (A2809 numbers; fertilizer page and Fast Facts now match), soybeans on /grain-emc, /hay-prices (NASS, monthly),
+  /cattle-auction-prices (USDA AMS auction PDFs; parser fixed against real reports, fixtures in test/fixtures/cattle-auction/).
+
 ## Open items
 - Sig: STRIPE_READ_KEY secret (restricted, read Charges + Checkout Sessions); the $19 test order (costs ~85 cents after refund);
   submit sitemaps in Search Console; Rain Print gift-guide pitches by Oct 31.
 - Bunge Ladoga (Haw Creek) email bid reader in dnilgis/bids (waits on Sig's Gmail app password).
-- Possible: soybeans in the EMC calculator (Kentucky Table 2, Arkansas FSA1074 Table B).
+- Sale barns: 21 of 40 sources read. 18 barns need their AMS report number (the probe's listing fetch failed; fix listing_slugs/probe);
+  Sioux Falls is wired to a slaughter report. scripts/cattle_auction_sources.json.
+- dnilgis/bids: week rows can hide month rows in merge_bids.mjs dedupe(); patch drafted (session scratchpad, bids-dedupe.patch) but needs the
+  agsist side to prefer whole-month rows first. This session could not attach the bids repo.
+- USDA payments: data/payments covers 21 states only; Sig downloads all FY2025 FSA payment xlsx files (FSA blocks datacenters), then
+  scripts/process_payments.py runs locally. Build /payments only with all states or a clear "21 states" label.
+- Soybean EMC low fit (Modified Henderson constants) is from ASAE D245 memory, matched to Minnesota and NDSU values; save D245 to references.
+- Gap list from the audit (not built): fall anhydrous soil-temp go/no-go by county (window is now), harvest now or wait in dollars,
+  CCC loan calculator, combine loss check, DDGS feed value.
 
 ## What the Bing AI data says (Oct 16 exports)
 - AI answers cited agsist about 500 to 800 times a weekday in mid-July and 2,300 to 2,800 by October; cited pages went from ~20 to ~118.
