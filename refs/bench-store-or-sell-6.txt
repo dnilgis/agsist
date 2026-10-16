@@ -1,0 +1,429 @@
+# Benchmark store-or-sell: K-State AgManager sample marketing plans
+# https://agmanager.info/sites/default/files/pdf/Nelson_WTG_05-29-24.pdf
+# fetched 2026-10-16T16:10:35Z, sha256 2471e9b325717050dd1b3772d3022c91f282453f26de030c96c16c4e605c32cd
+
+                                                                         May 29 2024
+                                                                          Webinar
+      A simple, approach to crop marketing,
+  emphasizing the development of both pre and
+  post harvest marketing plans, an openness to
+   various pricing tools, and a decision-making
+   framework focused on action and taking the
+            emotion out of marketing.
+Webinars, in person Seminars and ½ day Workshops
+
+
+
+              Developed by Dr. Ed Usset
+              Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+                                                                 Sample
+                                                              Marketing Plans
+1. Don’t think of these as recommendations, but as
+   an OUTLINE for you to consider and compare
+   your marketing plan and actions to.
+2. To be effective, marketing plans must include:
+   a) Pricing Increments, (how much each time);
+   b) Price Targets, (the price/profit you’ll sell at);
+   c) Date Targets, (designed to compel action
+      when/if price targets aren’t reached).
+Together, these can guide your decisions, lead to
+action, and help take the emotion out of marketing.
+              Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+         A Sample Pre‐Harvest 2024 Wheat Plan
+Began Oct 1, 2023: Buy crop insurance to protect production.
+Maximize price received on bushels sold before, or at harvest.
+Pricing four increments of total expected APH production
+1 Price 10% at $7.50 July futures or by Apr 15
+2 Price 20% at $8.00 July futures or by Jun 1
+3 Price 20% at $9.00 July futures
+4 Price 25% at $10.00 July futures
+
+• Be patient; Don’t ignore $0.50/$0.60 rallies but be aggressive
+  with price targets;
+• Plan is designed to price at least 30% of APH production, but
+  IF we see a significant rally of $2.00+, we’ll price up to 75%.
+• If using a “cash” marketing alternative, NEVER price at less
+  than your expected production cost per bushel. $6.35 + $0.25 -
+  ($0.40) = $7.00 minimum futures target            $6.31 COP, rounded to $6.35 per bu.
+
+                              Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+2024 Preharvest Wheat Plan Implementation
+Plan start: October 1, July                                                   10% of expected production priced at an
+CME HRW @ $6.97 ½                                                             average of $6.51 CME JUL Wheat Fut.
+                                                                              Position on
+
+
+
+
+                  $7.06 - $7.08 resistance/support
+                                    Let the uptrend continue &
+                                 Forward Contract the 2nd increment
+                                      in the next three weeks
+
+
+                                                                         10%, 4/29
+                                                                         @ $6.51
+
+
+   2nd Increment, 20%
+    Price target, $8.00
+    Date target, Jun 1
+    Min. price, $7.00
+
+
+                              Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+Estimating the 2024 Average US Wheat Price
+
+
+
+
+                  $6.33
+
+
+
+
+                                                       $6.78
+
+
+
+
+ 1) This is simply an X/Y plot.
+ 2) But . . . . $6.78 July CME futures thru the 28th, implies a $6.33 2024
+    U.S. Farm Price (versus USDA’s $6.00, and 2023’s $7.10)
+
+                             Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+Salina-based, on farm, comparison of 2024 postharvest wheat
+marketing alternatives    ~5/28/24
+2024 Wheat                Postharvest Alternatives                                                       1/17/25
+    8/1/2024                 (A)               (B)                (C)              ($0.57)                5.5                (D)
+  Date beginning                          Sell Grain, Sell Grain                   Current                                Storage
+                           Sell the                                                                   Months of           Hedge
+storage calculations                      Buy a Call & Bull Call                   Defered
+                            Grain                                                                      Storage            & Storage
+ 5/28/24 Example                           Option      Spread                       Basis                                   Costs
+Local Cash Price $7.16      $7.16   $7.16                                            March Futures    $7.73
+Buy an Option        March => Call   Call                                        Expected Basis      ($0.200)
+  A-T-M Strike              $7.70   $7.70                                        Interest     5.0%   ($0.164)
+ Option Premium            ($0.75) ($0.75)                                      Mo. Chrg. $0.000      $0.000
+Sell an Option               March => Call                                      or 1 time: 1% Shrink ($0.122)
+ O-T-M Strike                       $8.30                                       and $0.05 In-Out
+ Option Premium                     $0.55                                       Storage to date $0.00
+Minimum Price       $7.16   $6.40   $6.94                                         Expected Price                           $7.23
+Futures Price to BE w/ (A)  $8.46   $7.92                                         Expected Profit                          $0.07
+                YOU MUST SELL MARCH
+                CME WHEAT FUTURES!                                                         Suggesting a $0.07 return
+ DO NOT consider this a marketing recommendation or advice, and                            over selling at harvest, down
+ONLY work with tools you’re comfortable with, and a broker you trust.                      $0.23 from last month. On
+                                                                                           farm storage example.
+                             Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+     A Sample Postharvest 2024 Wheat Plan
+Objective: Maximize income relative to harvest time wheat value.
+Deliver the 20% Forward Contacted Bushels and then:
+1 Sell all uncontracted bushels at harvest.
+2 Consider a “March Call Spread” on 50% of production.
+
+• Seasonal trends, plus current futures market carry, make wheat
+  storage more concerning than a month ago.
+• A March Call Spread at current levels would allow for the
+  opportunity take advantage of any significant price rallies at
+  less cost than the simpler, “Buying a Call Option.”
+• BE futures for the Call Spread is currently $7.92, March HRW
+  futures, with a potential for a $0.38 gain.
+• Once implemented, a profit goal ($0.20) and date to close out
+  the position (Jan 31, 2025) should be added.
+                   Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+  A Sample Pre‐Harvest 2024 Feedgrain Plan
+Began Jan 1: Buy crop insurance to protect production risk and
+maximize price received on bushels sold before, or at harvest.
+Pricing four increments of total expected APH production
+1 Price 20% at $5.65 December futures or by Jun 1
+2 Price 10% at $6.25 December futures or by Jul 20
+3 Price 20% at $7.00
+4 Price 25% at $7.25 December futures
+
+
+• Be patient; Don’t ignore $0.50-$.75 rallies; Aggr. price targets;
+• Plan is designed to price at least 30% of APH production, but
+  IF we see a significant rally of $2.25, we’ll price up to 75%.
+• If using a “cash” marketing alternative, NEVER price at less
+  than your expected production cost per bushel. $4.50 + $0.30 -
+  ($0.20) = $5.00 minimum futures target
+                                                                         $4.47 WK IRR-weighted COP, rounded to $4.50/bu.
+
+                   Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+ Pricing Targets v. January 1                                                                        Jan 1, 2024
+                                                                                                        $4.98
+          Let’s sort’em by rally size
+Jan 1 thru Sep 30   Fifteen Years: CME December Corn Futures
+   New Crop                               Jan 1             Preharvest       Percent
+Futures Analysis       2009/23            Price             Max Price Change Change
+                        2012              $5.90               $8.39    $2.49  42%
+ 27% of the time, at 2011                 $5.53               $7.75    $2.23  40%
+  least a $2.00 rally   2022              $5.48               $7.66    $2.18  40%
+                        2021              $4.35               $6.37    $2.02  46%
+                        2010              $4.45               $5.22    $0.77  17%
+ 53% of the time, at 2016                 $3.77               $4.49    $0.72  19%
+  least a $0.65 rally   2019              $3.98               $4.69    $0.70  18%
+                        2014              $4.48               $5.13    $0.65  14%
+                        2018              $3.87               $4.27    $0.40  10%
+ 73% of the time, at
+                        2015              $4.20               $4.52    $0.32   8%
+  least a $0.25 rally
+                        2017              $3.84               $4.15    $0.31   8%
+                        2023              $6.07               $6.29    $0.22   4%
+ CRAP YEARS, little     2009              $4.56               $4.73    $0.17   4%
+to no rally vs. Jan. 1  2013              $5.92               $5.94    $0.01   0%
+                        2020              $4.05               $4.05    $0.00   0%
+                     Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+  • In “Crap” years, prices trend lower throughout preharvest.
+  • Summer rallies (Jun – Aug) back to Jan 1 levels can provide
+    opportunities that exceed harvest time price levels.
+
+                     Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+  2024 Preharvest Corn Plan Implementation
+ Plan start: Jan 1, December                                                                      Average $4.91 CME
+ CME Corn @ $4.98 ¼                                                                               DEC Futures Position
+
+
+                                     Price the second half of the 1st increment on any
+                                           Close above $5.10 DEC Corn futures.
+
+
+                                                    $5.02 gap
+                                                                                 10%, 5/14
+                                                                                 @ $4.91
+
+
+
+
+  1st Increment, (2nd 10%)
+   Price target, $5.65
+   Date target, Jun 1
+   Minimum price, $5.00
+
+
+                         Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+  A Sample Pre‐Harvest 2024 Soybean Plan
+Began Jan 1: Buy crop insurance to protect production risk.
+Maximize the price received on bushels sold before or at harvest.
+Pricing four increments of total expected APH production
+1 Price 20% at $13.25 November futures or by Jun 15
+2 Price 10% at $14.00 November futures or by Sep 15
+3 Price 20% at $14.50 November futures
+4 Price 25% at $15.25 November futures
+
+• Be patient; Don’t ignore $0.50-$1.50 rallies; Aggr. price targets;
+• Plan is designed to price at least 30% of APH production, but
+  IF we see a significant rally of $3.00, we’ll price up to 75%.
+• If using a “cash” marketing alternative, NEVER price at less
+  than your expected production cost per bushel. $10.00 + $0.30 -
+ ($0.70) = $11.00 minimum futures target
+                                                                                      $9.72 EK-weighted COP, rounded to $10/bu.
+
+                         Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+2024 Preharvest Bean Plan Implementation
+Plan start: Jan 1, November                                                                     Average $12.13 CME
+CME Bean @ $12.22                                                                               NOV Futures Position
+
+
+                                   Price the second half of the 1st increment on any
+                                      Close above $12.20 NOV Soybean futures.
+
+
+
+                                         $12.44 - $12.37 gap
+                                                                                 10%, 5/8
+                                                                                 @ $12.13
+
+
+
+
+1st Increment, (2nd 10%)
+ Price target, $13.25
+ Date target, Jun 15
+ Minimum price, $11.00
+
+
+                       Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+               Thank you so much!
+                      What About 2025?
+        Jul Hard Wheat                               Dec Corn                        Nov Soybeans
+   2025      $7.57                                    $4.91                              $11.85
+   2026      $7.00                                    $4.80                              $11.67
+   2027                                               $4.76                              $11.31
+
+                       5/28/24 closes
+                       Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+                                              On-Farm Storage Costs
+ “Our postharvest                             • Variable (Time, Shrink, Utilities, Repairs,
+  marketing goal                                Insecticide and Interest)
+                                              • “Variable Income” (Harvest Time Saved)
+should be to better
+our position versus                           Off-Farm/Commercial Storage Costs
+                                              • Variable Costs (Handling Charge and
+ harvest values.”                               Interest)
+
+
+Postharvest Alternatives
+1. Store & Hedge, (store the crop & sell futures or buy a put option)
+2. Store Unhedged (possibly what many folks consider)
+3. Sell the crop at harvest (What a lot folks do)
+4. Sell the crop & buy a call option (“minimum price contract”)
+5. Sell the crop; buy a call & sell an OTM call (i.e., spread)
+
+                    Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+  To assess the potential for basis appreciation, start with
+      the historical basis at the expected time of sale.
+
+
+
+
+ The 5-year average (March CME futures) basis in mid January is ($0.18).
+ Compare that to March basis today [$7.16 cash - $7.73 futures = ($0.57)].
+Implying the potential for $0.55 in basis appreciation! BUT! check at harvest!
+
+                    Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+     Call Spread
+                                           A “Retained Ownership” Position
+                                           With LIMITED UPSIDE potential
+This alternative involves selling the physical commodity.
+You benefit from overall market rallies but not basis gains.
+The call spread involves buying a call (ATM) and selling
+another call at a different, greater strike price (OTM), but
+with the same expiration and underlying contract.
+At a predetermined profit or date target, you exit both call
+option positions.
+This strategy establishes a higher floor than other
+minimum price alternatives (via call premium received).
+It also establishes a ceiling at the OTM call strike. As
+you pay margin as futures rise, offsetting ATM call gains.
+https://www.cmegroup.com/education/courses/option‐strategies/bull‐spread.html
+
+                       Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+         Let’s turn to our 2024 Postharvest
+          Wheat Marketing Plan Elements
+To be effective, marketing plans must include:
+   1. Pricing Increments, (how much each time);
+   2. Price Targets, (the price/profit you’ll sell at);
+   3. Date Targets, (designed to compel action
+      when/if price targets aren’t reached).
+Together, these can guide your decisions, lead to
+action, and help take the emotion out of marketing.
+    • Learn about different marketing tools.
+    • Create and work with a “Marketing Team.”
+
+                       Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+How are we doing with 2023 crop?
+
+ On Farm: One-time, 1% Shrink & 5-cent In/Out; Commercial Storage, $0.06/mo.;
+ Both: 3.5 & 7% Monthly Interest on November Value
+
+
+
+
+ $4.84
+                                                                       ?
+                                                           ?
+
+
+
+
+            Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+How are we doing with 2023 crop?
+
+
+
+
+                                On Farm: One-time, 1% Shrink & 5-cent In/Out;
+$13.00                          Commercial Storage: $0.065/mo.;
+                                Both: 3.5 & 7% Monthly Interest on November Value
+
+                                                                        ?
+                                                           ?
+
+
+
+
+            Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+      How are we doing with 2023 crop?
+
+       On Farm: One-time, 1% Shrink & 5-cent In/Out; Commercial Storage, $0.06/mo.;
+       Both: 3.5 & 7% Monthly Interest on November Value
+
+
+
+
+       $8.13
+
+
+                                                                                                                    ?
+
+
+                                                                                                         ?
+
+
+
+
+                   Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+
+
+
+
+2024 Costs of Production – Total expenses per bu. (yield)
+                  Dry Corn                       IRR Corn                       G. Sorghum
+        NW        $5.09 (89)                    $4.55 (240)                     $4.71 (85)
+        SW        $5.22 (82)                    $4.58 (225)                     $4.35 (85)
+        NC        $4.17 (120)                   $4.24 (240)                     $3.43 (120)
+        SC        $3.87 (110)                   $4.40 (225)                     $2.82 (110)
+        NE        $4.31 (145)                                                   $3.80 (125)
+        SE        $4.18 (120)                                                   $3.58 (100)
+
+                  Soybeans                                                      Wheat
+        NW        $13.44 (25)                                                   $6.95 (60)
+        SW        $13.33 (25)                                                   $7.35 (54)
+        NC        $8.91 (45)                                                    $5.98 (62)
+        SC        $8.17 (40)                                                    $5.07 (62)
+        NE        $8.36 (55)                                                    $6.55 (68)
+        SE        $4.18 (120)                                                   $6.05 (61)
+                   Copyright © 2017 Center for Farm Financial Management, University of Minnesota. All rights reserved.
+

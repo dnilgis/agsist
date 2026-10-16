@@ -1,0 +1,87 @@
+# Benchmark cash-rent: farmdoc daily, Illinois cash rents 2026 and outlook 2027
+# https://farmdocdaily.illinois.edu/2026/09/illinois-cash-rents-in-2026-and-outlook-for-2027.html
+# fetched 2026-10-16T16:10:37Z, sha256 221e0ea8b50d79ad04c2d695d9f9084fdc95506f9a6516ae78d5792d62a06b9d
+
+Illinois Cash Rents in 2026 and Outlook for 2027 - farmdoc daily
+
+Share This
+
+-
+
+Twitter
+
+-
+
+Facebook
+
+-
+
+LinkedIn
+
+download PDF
+
+Weekly Farm Economics
+
+- Nick Paulson, Gary Schnitkey, and Juo-Han Tsay
+
+- Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+- Carl Zulauf
+
+- Department of Agricultural, Environmental and Development Economics
+
+- Ohio State University
+
+September 15, 2026
+
+farmdoc daily (16):165
+
+Recommended citation format:
+Paulson, N., G. Schnitkey, J. Tsay and C. Zulauf. "Illinois Cash Rents in 2026 and Outlook for 2027." farmdoc daily (16):165, Department of Agricultural and Consumer Economics, University of Illinois at
+Urbana-Champaign, September 15, 2026. Permalink
+
+Tight margins have led to downward pressure on rental rates for farmland in Illinois. The average cash rental rate reported by the USDA for cropland in Illinois was $261 per acre for 2026, a small decline from the average rental rate of $264 for 2025 and $269 for 2024. County rental rate averages for 2026 varied with productivity across the state with higher rents in central and northern Illinois and lower rents in southern Illinois. Year over year changes varied by county with some having higher cash rent averages than in 2025 while others were lower. Return prospects for 2027 have improved relative to poor average returns experienced in Illinois from 2023 to 2025 but remain below longer-run averages (see farmdoc daily article from September 1, 2026). While the return outlook does not justify increases in cash rents for 2027, further reductions also seem unlikely.
+
+2026 Illinois Cash Rents
+
+According to the National Agricultural Statistics Service of the USDA (USDA-NASS), the average cash rent in Illinois in 2026 was $261 per acre. As shown in Figure 1, this is down $3 from the $264 average for 2025 and down $8 from the average rent of $269 for 2024. Changes in average rents for other midwestern states from 2024 to 2026 have varied. The average rent also declined in Iowa (-$5 per acre) but moderate increases have occurred in Indiana (+$1 per acre), Missouri (+$2), Ohio (+$3), Michigan (+$5), Minnesota (+$6), and Wisconsin (+$8 per acre).
+
+Figure 2 shows the county average cash rents reported by USDA-NASS for 2026 (left panel) and the change in average rent by county from 2025 (right panel). As is typical, average cash rent levels are higher for areas with greater soil productivity (higher crop yield potential). Average cash rents tend to exceed the statewide average in many counties in the central and northern regions (counties in shades of blue in the left panel of figure 2) with most counties in the southern region of Illinois having average cash rents below the statewide average (counties in yellow and orange in the left panel of figure 2).
+
+Average cash rents for 2026 exceeded $330 per acre in four Illinois counties (Christian, Macon, Moultrie, and Sangamon), all located in central Illinois. Average cash rents for 2026 were below $150 per acre in 6 Illinois counties. This group includes the southern Illinois counties of Franklin, Jefferson, Union, and Williamson, as well as Lake and Cook counties in northeastern Illinois.
+
+While the statewide average cash rent declined from $264 in 2025 to $261 in 2026, year over year changes in average cash rents at the county level varied. The map in the right panel of figure 2 shows the change in average rent levels from 2025 to 2026 for Illinois counties where average rents were reported by USDA-NASS in both years. Average cash rents declined in 45 Illinois counties from 2025 to 2026, while cash rents increased in 40 counties. Year over year changes in cash rent averages ranged from a greater than $30 dollar decline (Edgar, Pulaski, Sangamon, and Wabash) to increases in the range of $25 to $30 per acre (Edwards, Schuyler, Shelby, Vermillion). Since the reported averages are based on surveys, changes in the average rents across years will be at least partially driven by sampling variability.
+
+The Illinois Society of Professional Farm Managers and Rural Appraisers (ISPFMRA) provides another information source for farmland rental market characteristics and trends in Illinois. Professionally managed farms are a subset of all farmland and should not be viewed as representative of all farmland rental situations. As an example, rental rate averages on professionally managed farms are often higher than those for comparable farm types for all farmland. Importantly, rents on professionally managed farms include the commissions or fees earned by the farm manager so the net rent received by the landowner is less than what is reported. Additionally, while the direction is usually similar, the size of the change in rents on professionally managed farms is typically larger than in broader averages.
+
+Figure 3 shows average rental rates by land quality class from ISPFMRA. For 2026, ISPFMRA’s mid-year survey reported average cash rents by productivity class ranging from $227 per acre on fair quality farmland to $384 per acre on excellent quality farmland.
+
+Outlook and Considerations for 2027
+
+The relatively small declines in the average cash rent for Illinois over the past few years is consistent with the tight margin environment facing grain and oilseed producers since 2023.
+
+Professional farm managers’ expectations based on ISPFMRA’s mid-year survey conducted in the summer (shown in figure 3) suggest slight declines across all land quality classes for rents in 2027 (reductions of $3 to $5 per acre). This follows expectations for average reductions in rental rates from the past two years but at a slowing rate – declines from 2024 to 2025 were closer to $25 per acre, while declines from 2025 to 2026 were in the $15 to $20 per acre range.
+
+It is important to note that these expectations for 2027 were based on survey responses that were collected prior to the recent commodity price rally. Survey respondents’ expectations for corn and soybeans were close to $4.50 per bushel for corn and $11.50 per bushel for soybeans. More recent pricing opportunities for the 2027 corn and soybean crops are now closer to $5 and $12 per bushel. Thus, expectations for further average rental rate declines in 2027 are now likely lower than they were earlier this summer. In addition, relatively large payments from the ARC/PLC programs are expected to be made in October based on the 2025 crop year (see farmdoc daily article from May 14, 2026). Higher crop prices and government payments will contribute to upward pressures on farmland rents.
+
+Recently released Illinois crop budgets for 2027 suggest improved return prospects for the 2026 and 2027 crop years due to higher corn and soybean prices (see farmdoc daily article from September 1, 2026). However, expected returns – even with the higher corn and soybean prices – remain below longer-term averages. Thus, the shift towards improved return expectations don’t necessarily suggest that increases in farmland rental rates is warranted.
+
+Summary
+
+The average cash rent for Illinois farmland saw a small decline for the second year in a row in 2026. While average rents at the county level varied, more counties had lower average rents in 2026 compared with 2025 than counties with increases. Higher corn and soybean prices have improved the return outlook for both 2026 and 2027 compared to the previous three crop years, and producers are expected to receive relatively large payment from the 2025 ARC/PLC programs in the next month. However, expected returns remain below longer-term averages. This suggests farmland rental rates will likely remain relatively stable heading into 2027.
+
+References
+
+Monaco, H., G. Schnitkey, N. Paulson, J. Coppess and C. Zulauf. "2025 ARC/PLC Final Estimates." farmdoc daily (16):85, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, May 14, 2026.
+
+Paulson, N., G. Schnitkey, C. Zulauf and B. Zwilling. "Illinois Crop Budgets for 2027." farmdoc daily (16):157, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, September 1, 2026.
+
+Disclaimer: We request all readers, electronic media and others follow our citation guidelines when re-posting articles from farmdoc daily. Guidelines are available here. The farmdoc daily website falls under University of Illinois copyright and intellectual property rights. For a detailed statement, please see the University of Illinois Copyright Information and Policies here.
+
+Related Posts
+
+- Wheat Double-Crop Soybean Profitability in Recent Years
+
+- The 2027 Margin Coverage Option (MCO) Decision

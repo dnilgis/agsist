@@ -1,0 +1,62 @@
+# Benchmark store-or-sell: Univ. of Kentucky, large crops pressure storage
+# https://graincrops.mgcafe.uky.edu/articles/large-crops-and-low-prices-put-pressure-grain-storage
+# fetched 2026-10-16T16:10:25Z, sha256 7537296d3f47e3641352da75f9a8612a477ac71df0523a125b9af4758cf7de2d
+
+Large crops and low prices put pressure on grain storage | Grain Crops
+
+Large crops and low prices put pressure on grain storage
+
+Large crops and low prices put pressure on grain storage
+
+Large crops and low prices put pressure on grain storage
+
+By
+Sam McNeill and Grant Gardner
+
+Published on
+October 13, 2025
+
+Corn and soybean harvest is well underway in Kentucky, and slightly ahead of the 5-year average for late September (53 vs 48% and 28 vs 20%, respectively). This is largely due to the dry weather conditions throughout August and September, although there was sufficient rainfall during the growing season to make decent yields according to early reports. Assuming yields will ultimately be similar to last year, the total number of bushels for corn, soybeans and wheat will be just over 355 million bushels (Table 1). Barring any widespread damaging weather as harvest continues, this will be the 5th largest number of combined bushels historically. In comparison, the combined production of these crops in 2023 was an all-time record of just over 421 million bushels.
+
+Table 1. Corn, soybean, and wheat production (bu), average of cash prices and production value in Kentucky for 2024. (Source: USDA-NASS Kentucky).
+
+These large crops and low prices over the summer have put pressure on existing storage space, so we continue to see new bins on many farms. USDA estimates indicate that 5 million bushels of new on-farm storage was installed in the state in 2023, bringing the total capacity just over 260 million bushels (Figure 1). In comparison, off-farm storage capacity was unchanged for the same year at 94 million bushels, so on-farm storage remains among the highest portion of the total compared to other states (73%).
+
+Figure 1. On-farm, off-farm and total grain storage capacities compared to corn, soybean and wheat production in Kentucky (Mbu) from 2004 to 2023.
+
+From a marketing perspective, river terminals are currently offering strong basis bids to incentivize delivery. Normally, such strength would not be expected in a year of excess supply. However, Mississippi River levels are declining, and elevators appear eager to move as much grain as possible before barge traffic is restricted and new-crop supplies from the Corn Belt enter the market.
+
+This strength is unlikely to last, so it should be taken advantage of while available. Basis bids remain weaker at inland locations, and as river bids fade, storing grain will likely become the best strategy. When both futures and basis are low, a “store and wait” approach is generally appropriate. Still, producers must consider that with large supplies, it may take longer for both futures and basis to recover. Storage capacity, risk management, and cash flow needs should therefore remain central to marketing decisions through the rest of the marketing year.
+
+These challenges have created renewed interest in temporary grain storage structures, such as grain bags, machinery sheds with reinforced walls, and covered outdoor piles. Generally, it is best to hold soybeans in conventional bins and corn and wheat in bags and temporary structures, especially if they will be stored into late spring. However, if held into the late summer, quality grain (with minimal mechanical damage, trash, fines, and foreign material) should be held at least one point below market moisture, and poor quality grain should be held an additional 2-3 points lower (depending on the extent of damage) to reduce the risk of spoilage and potential buyer discounts. Equilibrium moisture charts for these and others crops as well as a decision tool for calculating the holding capacity of bins, grain bags, and temporary storage structures is available at the University of Kentucky Biosystems and Agricultural Engineering Department website.
+
+Another free decision tool is available to help farmers compare the costs of storing grain in bins or bags. Extension agricultural economists at the University of Kentucky and the University of Tennessee have developed a spreadsheet tool to compare the full costs of storing grain in silage bags versus conventional bins. A companion publication compares the pros and cons of the two systems.
+
+Although current cash prices are well below the seasonal average compared to previous years, the combined value of these major crops is still over $2B (Table 1). Considering that post-harvest losses of 1% or more are not uncommon during storage and most often result in discounts by the elevator or grain buyer, this represents a value over $20 million in lost income statewide! Hence, prudent post-harvest management of stored grain is essential to protect product value and quality during handling, drying and storage. More information on safe grain handling practices, energy-efficient drying methods, and proven post-harvest management tools for on-farm and off-farm storage facilities can also be found at County Extension Offices and the above UK website.
+
+Citation: McNeill, S., Gardner, G., 2025. Large Crops and Low Prices Put Pressure on Grain Storage. Kentucky Field Crops News, Vol 1, Issue 10. University of Kentucky, October 10, 2025.
+
+Sam McNeill, sam.mcneill@uky.edu
+
+Grant Gardner, grant.gardner@uky.edu
+
+Grain Handling and Storage
+Marketing
+
+Related Information
+
+Control Seed Moisture of Canola and Wheat after Harvest to Preserve Quality
+
+By Sam McNeill
+
+Published on Jun. 12, 2026
+
+Brazil’s Expanding Corn Ethanol Sector and Global Corn Markets
+
+Published on Apr. 21, 2026
+
+Fertilizer Costs Are Squeezing Farmers This Spring — Here's What You Need to Know
+
+By Grant Gardner
+
+Published on Apr. 21, 2026

@@ -1,0 +1,433 @@
+# Benchmark cash-rent: UNL Nebraska Farm Real Estate survey 2026
+# https://cap.unl.edu/realestate/
+# fetched 2026-10-16T16:10:39Z, sha256 181f30538ab4862c2affe7c339574f7449d7aa75ad42a510530f26c12eabb5d3
+
+Nebraska Farm Real Estate Report | Center for Agricultural Profitability | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Nebraska Farmland Values and Cash Rental Rates
+
+2026 Final Results
+
+Updated June 30, 2026
+
+The market value of agricultural land in Nebraska declined by 1% over the prior year to an average of $3,905 per acre as of Feb. 1, according to the 2026 Nebraska Farm Real Estate Market Survey. This marks the second consecutive year that the market value of agricultural land in Nebraska has declined since reaching the record high non-inflation-adjusted statewide land value in 2024.
+
+Results are published by region and land type below.
+
+2026 Final Report PDF 2026 Preliminary Report PDF
+
+Previous Years Reports
+
+2026 Survey Highlights
+
+- The statewide all-land average value for the year ending Feb. 1, 2026, averaged $3,905 per acre, a 1% decrease from the prior year’s value of $3,935 per acre.
+
+- This marks the second consecutive year of declining agricultural land values in Nebraska since the market reached a record non-inflation-adjusted statewide land value of $4,015 per acre in 2024.
+
+- Land industry professionals responding to the survey cited lower crop prices, elevated farm input costs, and prevailing interest rates as the primary factors influencing agricultural land values.
+
+- Lower commodity prices have tightened the financial positions of many crop producers, while interest rates remain above the 10-year average and continue to increase borrowing costs for operating credit and real estate purchases.
+
+- The estimated market value of dryland cropland without irrigation potential decreased 1% statewide compared to the previous year.
+
+- Dryland cropland with irrigation potential declined 2% statewide.
+
+- Center pivot irrigated cropland averaged 2% lower in 2026, with declines in several regions ranging from 4% to 8%.
+
+- Gravity irrigated cropland declined an average of 3% statewide.
+
+- In contrast, grazing land and hayland values increased between 4% and 7%, led by nontillable grazing land, which rose 7% statewide as strong cattle prices increased competition for grazing acres.
+
+- Cash rental rates for dryland and irrigated cropland declined across Nebraska, generally falling between 1% and 9% depending on land type and region.
+
+- Pasture and cow-calf pair rental rates increased about 4% to 5% statewide, reflecting stronger cattle prices and shifts in national livestock inventories.
+
+Contact
+
+Jim Jansen
+402-261-7572
+jjansen4@unl.edu
+
+Nebraska Agriculture Land Studies Fund
+
+Interested in helping support the Nebraska Farm Real Estate Survey & Report? Please consider donating to help cover future expenses.
+
+County-Level Cash Rents
+
+Survey findings from the USDA-National Agricultural Statistics Service (USDA-NASS) reported county-level cash rent estimates in Nebraska for the 2025 growing season (USDA-NASS 2025).
+
+County-Level Rental Rates
+
+Average Value of Nebraska Farmland by Land Type
+
+Land Type $/Acre %Change
+
+All Land Average 3,905 -1
+
+Center Pivot Irrigated Cropland 8,515 -2
+
+Gravity Irrigated Cropland 7,510 -3
+
+Dryland Cropland (Irrigation Potential) 6,070 -2
+
+Dryland Cropland (No Irrigation Potential) 4,395 -1
+
+Grazing Land (Tillable) 1,890 4
+
+Grazing Land (Nontillable) 1,315 7
+
+Hayland 2,525 5
+
+Due to the inherent limitations of this survey, the information in this report should not be used to set a specific rental rate or value a particular parcel of real property for sale or property taxes, security for a loan, and other related legal matters.
+
+Central
+
+Counties: Buffalo, Custer, Dawson, Greeley, Hall, Howard, Sherman, Valley
+
+Average Value of Farmland by Land Type (Central)
+
+Land Type $/Acre % Change
+
+All Land Average 4,420 2
+
+Center Pivot Irrigated Cropland 9,155 2
+
+Gravity Irrigated Cropland 6,470 -4
+
+Dryland Cropland (Irrigation Potential) 4,465 2
+
+Dryland Cropland (No Irrigation Potential) 4,035 -3
+
+Grazing Land (Tillable) 3,290 9
+
+Grazing Land (Nontillable) 2,405 7
+
+Hayland 3,120 5
+
+Average Cash Rental Rates by Land Type (Central)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 270 -5
+
+Gravity Irrigated Cropland 235 -6
+
+Dryland Cropland 120 -4
+
+Pasture 52 7
+
+Average Monthly Cash Rental Rates for Pasture (Central)
+
+Land Type $/Month
+
+Cow-Calf Pairs 74.60
+
+East
+
+Counties: Butler, Cass, Colfax, Dodge, Douglas, Hamilton, Lancaster, Merrick, Nance, Platte, Polk, Sarpy, Saunders, Seward, Washington, York
+
+East
+
+Average Value of Farmland by Land Type (East)
+
+Land Type $/Acre % Change
+
+All Land Average 9,315 -1
+
+Center Pivot Irrigated Cropland 12,430 -4
+
+Gravity Irrigated Cropland 11,045 -2
+
+Dryland Cropland (Irrigation Potential) 9,650 -1
+
+Dryland Cropland (No Irrigation Potential) 8,320 2
+
+Grazing Land (Tillable) 5,125 4
+
+Grazing Land (Nontillable) 3,475 2
+
+Hayland 4,630 3
+
+Average Cash Rental Rates by Land Type (East)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 335 -3
+
+Gravity Irrigated Cropland 305 -2
+
+Dryland Cropland 220 -6
+
+Pasture 68 4
+
+Average Monthly Cash Rental Rates for Pasture (East)
+
+Land Type $/Month
+
+Cow-Calf Pairs 69.20
+
+North
+
+Counties: Arthur, Blaine, Boyd, Brown, Cherry, Garfield, Grant, Holt, Hooker, Keya Paha, Logan, Loup, McPherson, Rock, Thomas, Wheeler
+
+Average Value of Farmland by Land Type (North)
+
+Land Type $/Acre % Change
+
+All Land Average 1,605 4
+
+Center Pivot Irrigated Cropland 4,760 -5
+
+Gravity Irrigated Cropland 4,255 -3
+
+Dryland Cropland (Irrigation Potential) 2,340 -1
+
+Dryland Cropland (No Irrigation Potential) 1,915 -5
+
+Grazing Land (Tillable) 1,710 6
+
+Grazing Land (Nontillable) 1,085 9
+
+Hayland 1,970 7
+
+Average Cash Rental Rates by Land Type (North)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 225 -6
+
+Gravity Irrigated Cropland 185 -3
+
+Dryland Cropland 73 -5
+
+Pasture 41 7
+
+Monthly Cash Rental Rates for Pasture (North)
+
+Land Type $/Month
+
+Cow-Calf Pairs 82.10
+
+Northeast
+
+Counties: Antelope, Boone, Burt, Cedar, Cuming, Dakota, Dixon, Knox, Madison, Pierce, Stanton, Thurston, Wayne
+
+Average Value of Farmland by Land Type (Northeast)
+
+Land Type $/Acre % Change
+
+All Land Average 8,185 -1
+
+Center Pivot Irrigated Cropland 11,735 -2
+
+Gravity Irrigated Cropland 9,710 -1
+
+Dryland Cropland (Irrigation Potential) 9,185 -3
+
+Dryland Cropland (No Irrigation Potential) 7,670 -1
+
+Grazing Land (Tillable) 4,535 3
+
+Grazing Land (Nontillable) 3,120 5
+
+Hayland 4,145 2
+
+Average Cash Rental Rates by Land Type (Northeast)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 360 -1
+
+Gravity Irrigated Cropland 320 -2
+
+Dryland Cropland 245 -2
+
+Pasture 79 3
+
+Average Monthly Cash Rental Rates for Pasture (Northeast)
+
+Land Type $/Month
+
+Cow-Calf Pairs 77.35
+
+Northwest
+
+Counties: Banner, Box Butte, Cheyenne, Dawes, Deuel, Garden, Kimball, Morrill, Scotts Bluff, Sheridan, Sioux
+
+Average Value of Farmland by Land Type (Northwest)
+
+Land Type $/Acre % Change
+
+All Land Average 970 1
+
+Center Pivot Irrigated Cropland 3,185 -1
+
+Gravity Irrigated Cropland 2,640 -2
+
+Dryland Cropland (Irrigation Potential) 955 -4
+
+Dryland Cropland (No Irrigation Potential) 890 -3
+
+Grazing Land (Tillable) 785 2
+
+Grazing Land (Nontillable) 670 6
+
+Hayland 965 1
+
+Average Cash Rental Rates by Land Type (Northwest)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 165 -5
+
+Gravity Irrigated Cropland 120 -7
+
+Dryland Cropland 34 -2
+
+Pasture 17 8
+
+Average Monthly Cash Rental Rates for Pasture (Northwest)
+
+Land Type $/Month
+
+Cow-Calf Pairs 56.45
+
+South
+
+Counties: Adams, Franklin, Furnas, Gosper, Harlan, Kearney, Phelps, Webster
+
+Average Value of Farmland by Land Type (South)
+
+Land Type $/Acre % Change
+
+All Land Average 4,915 -2
+
+Center Pivot Irrigated Cropland 8,490 2
+
+Gravity Irrigated Cropland 7,065 -7
+
+Dryland Cropland (Irrigation Potential) 4,715 -2
+
+Dryland Cropland (No Irrigation Potential) 4,360 1
+
+Grazing Land (Tillable) 2,940 1
+
+Grazing Land (Nontillable) 1,945 5
+
+Hayland 2,685 4
+
+Average Cash Rental Rates by Land Type (South)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 300 -2
+
+Gravity Irrigated Cropland 255 -2
+
+Dryland Cropland 105 -9
+
+Pasture 47 5
+
+Average Monthly Cash Rental Rates for Pasture (South)
+
+Land Type $/Month
+
+Cow-Calf Pairs 61.40
+
+Southeast
+
+Counties: Clay, Fillmore, Gage, Jefferson, Johnson, Nemaha, Nuckolls, Otoe, Pawnee, Richardson, Saline, Thayer
+
+Average Value of Farmland by Land Type (Southeast)
+
+Land Type $/Acre % Change
+
+All Land Average 6,985 -3
+
+Center Pivot Irrigated Cropland 10,870 -4
+
+Gravity Irrigated Cropland 8,820 1
+
+Dryland Cropland (Irrigation Potential) 7,685 -3
+
+Dryland Cropland (No Irrigation Potential) 6,430 -4
+
+Grazing Land (Tillable) 3,865 2
+
+Grazing Land (Nontillable) 3,270 4
+
+Hayland 3,940 2
+
+Average Cash Rental Rates by Land Type (Southeast)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 325 -3
+
+Gravity Irrigated Cropland 270 -4
+
+Dryland Cropland 185 -3
+
+Pasture 64 2
+
+Average Monthly Cash Rental Rates for Pasture (Southeast)
+
+Land Type $/Month
+
+Cow-Calf Pairs 66.75
+
+Southwest
+
+Counties: Chase, Dundy, Frontier, Hayes, Hitchcock, Keith, Lincoln, Perkins, Red Willow
+
+Average Value of Farmland by Land Type (Southwest)
+
+Land Type $/Acre % Change
+
+All Land Average 1,995 -2
+
+Center Pivot Irrigated Cropland 4,845 -8
+
+Gravity Irrigated Cropland 3,790 -5
+
+Dryland Cropland (Irrigation Potential) 1,930 -6
+
+Dryland Cropland (No Irrigation Potential) 1,745 -2
+
+Grazing Land (Tillable) 1,270 2
+
+Grazing Land (Nontillable) 1,160 8
+
+Hayland 2,115 6
+
+Average Cash Rental Rates by Land Type (Southwest)
+
+Land Type $/Acre % Change
+
+Center Pivot Irrigated Cropland 205 -4
+
+Gravity Irrigated Cropland 175 -5
+
+Dryland Cropland 54 -7
+
+Pasture 30 2
+
+Average Monthly Cash Rental Rates for Pasture (Southwest)
+
+Land Type $/Month
+
+Cow-Calf Pairs 64.95
+
+About the Nebraska Farm Real Estate Market Survey
+
+The Nebraska Farm Real Estate Market Survey is an annual survey of land professionals, including appraisers, farm and ranch managers and agricultural bankers. It is conducted by the Center for Agricultural Profitability, which is based in the Department of Agricultural Economics at the University of Nebraska-Lincoln. Results from the survey are divided by land class and agricultural statistic district. Land values and rental rates presented in the report are averages of survey participants’ responses by district. Actual land values and rental rates may vary depending upon the quality of the parcel and local market for an area. Preliminary land values and rental rates are subject to change as additional surveys are returned.

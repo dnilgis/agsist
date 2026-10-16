@@ -1,0 +1,29 @@
+# Benchmark cash-rent: Iowa Farm Bureau / Pro Farmer news on the ISU survey
+# https://www.profarmer.com/news/agriculture-news/2026-average-iowa-cash-rent-eases
+# fetched 2026-10-16T16:10:43Z, sha256 4b83cde27d451ed57f942391f29996006c3f887f9b7aad6b8b4c2c3cd29bd75f
+
+2026 Average Iowa Cash Rent Eases - Pro Farmer
+
+Pro Farmer/News/Agriculture News
+
+2026 Average Iowa Cash Rent Eases
+
+The $270 Statewide Average Is Down $9 from the 2023 and 2024 High.
+
+By Mike Walsten
+
+•
+
+May 22, 2026 12:59 PM
+
+While generally lower, a few counties report slight gains in average cash rental rate.
+
+(Farm Journal)
+
+The average 2026 cash rent paid for an acre of Iowa cropland is $270, according to the annual survey conducted by Iowa State University Extension. That is down $1, 0.4%, from 2025’s average and off $9, 3.2%, from the $279 high marked in both 2023 and 2024.
+
+According to the survey, the highest district-wide cash rent is $292 listed in the west central crop district (4). That average is down $3 from 2025 and down $6 from its high posted in 2023. It is followed by the northeast crop district (3) at $291, which is down $1 from the previous year and down $18 from its high posted in 2024. The third highest is the northwest district (1) at $290. However, 2026’s average is an increase of $2 from 2025. It is down $14 from it’s 2024 high.
+
+The lowest crop district average is the south-central (8) at $215. That average is unchanged from 2025 but down $16 from its 2024 high. The southwest district (7) is second lowest at $250, down $5 from last year and down $15 from its 2023 high. The southeast district (9) is third lowest at $255 an acre. That average is up $1 from 2025 and is the highest ever reported for that district.
+
+On a county basis, Sioux reports the highest average cash rent at $332 followed by Lyon at $331 an acre. In 2025, Sioux County reported an average of $339 while Lyon listed an average cash rent of $310. The lowest county average is Wayne at $173 an acre followed by Lucas at $187. In 2025, Wayne County listed an average of $177 and Lucas listed an average of $169 per acre.

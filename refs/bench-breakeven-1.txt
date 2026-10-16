@@ -1,0 +1,113 @@
+# Benchmark breakeven: farmdoc daily, 2026 Illinois crop budgets
+# https://farmdocdaily.illinois.edu/2026/05/spring-revision-to-2026-illinois-crop-budgets.html
+# fetched 2026-10-16T16:08:54Z, sha256 aa8ba8ec3c55ac42bef6758718250104ad4068420c2eeb5b3266ff1e5f90a57a
+
+Spring Revision to 2026 Illinois Crop Budgets - farmdoc daily
+
+Share This
+
+-
+
+Twitter
+
+-
+
+Facebook
+
+-
+
+LinkedIn
+
+download PDF
+
+Weekly Farm Economics
+
+- Nick Paulson and Gary Schnitkey
+
+- Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+- Carl Zulauf
+
+- Department of Agricultural, Environmental and Development Economics
+
+- Ohio State University
+
+- Bradley Zwilling
+
+- Illinois FBFM Association and Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+May 19, 2026
+
+farmdoc daily (16):88
+
+Recommended citation format:
+Paulson, N., G. Schnitkey, C. Zulauf and B. Zwilling. "Spring Revision to 2026 Illinois Crop Budgets." farmdoc daily (16):88, Department of Agricultural and Consumer Economics, University of Illinois at
+Urbana-Champaign, May 19, 2026. Permalink
+
+Revisions to 2026 Illinois crop budgets are provided along with updates to return estimates for the 2025 crop year. Return projections for 2026 are higher because of increases in expected prices for corn, soybeans, and wheat compared with the last crop budget release in January despite higher cost projections. Projected net returns to a typical corn-soybean rotation remain low relative to longer-run historical averages. Updates to estimates for the 2025 crop year result in slightly lower farmer returns compared with the January release.
+
+Revised 2026 Crop Budgets
+
+Revised crop budgets for corn, soybeans, wheat, and double-crop soybeans are provided in the 2026 Crop Budgets publication in the Management section of farmdoc. Budgets are provided for northern, central, and southern regions of Illinois with the central region including separate budgets for high-productivity and low-productivity soils.
+
+Table 1 shows the revised 2026 budgets for corn and soybeans for each region of Illinois. The May revisions to the 2026 budgets, relative to the January revisions, can be summarized as follows:
+
+- Projected revenues have increased. Projected yields remain at trend yield levels based on average to above-average planting progress and crop conditions as of mid-May (see the May 17th summary of the Illinois Crop Progress and Condition report). Projected prices are increased to $4.50 for corn from $4.25 in January, $11.50 for soybeans ($10.40), and $6.60 for wheat ($5.20). Expectations for 2026 ARC/PLC payments are lowered compared with January estimates based on the higher price projections.
+
+- Projected costs also increased. Total nonland cost projections are higher, with the increases spread fairly evenly across the direct, power and overhead cost categories. Fuel and fertilizer prices have increased significantly over the past 3 months due to the US conflict with Iran (see farmdoc daily articles from March 27 and May 5, 2026). The impact on average fertilizer costs for 2026 crops are expected to be relatively small due to most fertilizer being purchased prior to recent price increases. Larger percentage increases are applied to projected fuel costs for 2026. Average cash rents, the measure of land costs in the crop budgets, remain the same as in January projections for northern Illinois. Average land costs are projected down slightly for the central high-productivity region, and slightly higher for the southern and central low-productivity regions.
+
+- Per acre returns for corn are higher for central Illinois and down around $10 per acre for northern and southern Illinois. Projected returns for corn remain negative across all regions ranging from -$45 to -$53 in northern and central Illinois with larger losses of –$91 projected for southern Illinois. Soybean return projections are increased for all regions, ranging from $30 per acre for southern Illinois to $67 per acre for central high-productivity soils. Projected soybean returns exceed those for corn by $97 to $121 per acre. Break-even prices for corn to cover all production costs, including average cash rent, range from around $4.80 per bushel in northern and central Illinois to over $5 per bushel in southern Illinois. Break-even prices for soybeans range from $10.95 for high-productivity soils in central Illinois to $11.38 in southern Illinois.
+
+Updated 2025 Return Estimates
+
+In addition to the revised projections for 2026, updated estimates for 2025 are also provided. The updated 2025 estimates for all regions are included in the Revenue and Costs for Illinois Grain Crops publication which reports yearly averages for revenues, costs, and returns from producing corn, soybeans, wheat, and double-crop soybeans in Illinois. Historical figures from 2019 through 2024 are based on farms enrolled in Illinois Farm Business Farm Management (FBFM) while the figures provided for both 2025 and 2026 remain farmdoc projections. Estimates for the prior crop year are typically finalized in August once more information is known about government program and crop insurance payments and crop sales.
+
+Table 2 compares 2024 returns to the updated estimates for 2025 and the 2026 budget projections for central Illinois, high-productivity soils as an example. Updates to the 2025 estimates relative to the January release include:
+
+- Corn, soybean, and wheat prices are updated to reflect market conditions and information on new crop sales made in 2025 by FBFM farms. The updated prices are all within $0.05 per bushel of the estimates released in January.
+
+- Crop yields are updated to reflect those experienced by FBFM farms. Yields were near levels expected in January for northern and central Illinois while yields were lower in southern Illinois.
+
+- Recently revised estimates for 2025 ARC/PLC program payments (see the farmdoc daily article from May 14, 2026) are lower than previous estimates for northern Illinois, similar for central Illinois, and higher for southern Illinois. This is due to good to excellent yields in the northern and central regions, and poorer yields in much of southern Illinois. Final ARC/PLC payments will be based on yields released by FSA and full market year average prices. Thus, final payments will not be known until September and will likely vary from current estimates.
+
+- Based on information from FBFM farms (see farmdoc daily article from April 17, 2026), nonland costs on corn acres were adjusted up $20 to $25 per acre compared with January for all regions except low-productivity soils in central Illinois where costs were similar to the previous projections. Costs for soybeans were higher for the northern and central high-productivity soil regions and similar for central low-productivity soils and southern Illinois.
+
+- Farmer return projections for both corn and soybeans declined slightly relative to January. Returns to corn are negative for all regions, ranging from -$83 per acre for southern Illinois to -$30 for low-productivity soils in central Illinois. Returns to soybeans are positive for the northern and central regions ($13 to $37 per acre) but are negative for southern Illinois (-$20 per acre).
+
+Discussion
+
+The combination of higher corn prices, slightly higher cost expectations, and lower ARC/PLC payment projections for the 2026 crop year result in small improvements in projected returns to cash rented farmland in Illinois for 2026. However, projected returns on corn acres remain negative across Illinois and the positive returns projected for soybean acres result in an average expected return to 50-50 corn-soybean rotations at levels that remain low relative to historical standards.
+
+Figure 1 shows historical net returns to a 50-50 corn-soybean rotation for central Illinois high-productivity farmland at average cash rent levels. Average net farmer returns were negative from 2023-2025 even with large government support payments from ARC/PLC and ad hoc programs in 2024 (ECAP) and 2025 (FBA). Net returns are projected to be positive in 2026 but just $11 per acre. This includes an expected $25 per acre in ARC/PLC payments which would not be received until October 2027. Despite being positive, this return level remains well below the longer-run historical average return of around $100 per acre.
+
+The increases in fuel and fertilizer prices since the start of the US conflict with Iran will only partially impact average costs and returns in 2026 (see farmdoc daily article from May 5, 2026). Their impacts are expected to be much larger for the 2027 crop year (see farmdoc daily article from April 29, 2026). Crop budgets for 2027 will not officially be released until August but conditions would suggest another year of negative returns unless corn and soybean prices increase further or the cost of fertilizers, fuel and other inputs come down from current levels.
+
+Acknowledgments
+
+The author would like to acknowledge that data used in this study comes from Illinois Farm Business Farm Management (FBFM) Association. Without their cooperation, information as comprehensive and accurate as this would not be available for educational purposes. FBFM, which consists of 4,900 plus farmers and 80 plus professional field staff, is a not-for-profit organization available to all farm operators in Illinois. FBFM field staff provide on-farm counsel with recordkeeping, farm financial management, business entity planning and income tax management. For more information, please contact the State FBFM Office located at the University of Illinois Department of Agricultural and Consumer Economics at 217-333-8346 or visit the FBFM website at www.fbfm.org.
+
+References
+
+Arita, S., M. Wang, J. Kim, R. Chakravorty and S. Steinbach. "Strait of Hormuz Disruption Scenarios and Fertilizer Purchasing Risks for U.S. Crop Producers." farmdoc daily (16):75, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, April 29, 2026.
+
+Mashange, G. "The Strait of Hormuz: Why Global Trade Dependency Turns a Localized Conflict into a Global Crisis." farmdoc daily (16):52, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, March 27, 2026.
+
+Monaco, H., G. Schnitkey, N. Paulson, J. Coppess and C. Zulauf. "2025 ARC/PLC Final Estimates." farmdoc daily (16):85, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, May 14, 2026.
+
+Paulson, N., G. Schnitkey, B. Zwilling and C. Zulauf. "Revised Illinois Crop Budgets for 2026." farmdoc daily (16):6, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, January 13, 2026.
+
+Schnitkey, G., C. Zulauf and N. Paulson. "Fertilizer Cost Increases Resulting from the Iran Conflict." farmdoc daily (16):78, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, May 5, 2026.
+
+Zwilling, B. "Cost to Produce Corn and Soybeans in Illinois—2025." farmdoc daily (16):67, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, April 17, 2026.
+
+Disclaimer: We request all readers, electronic media and others follow our citation guidelines when re-posting articles from farmdoc daily. Guidelines are available here. The farmdoc daily website falls under University of Illinois copyright and intellectual property rights. For a detailed statement, please see the University of Illinois Copyright Information and Policies here.
+
+Related Posts
+
+- Costs and Returns for Illinois Beef Producers in 2025
+
+- Consolidation Trends in the U.S. Nitrogen Fertilizer Industry
