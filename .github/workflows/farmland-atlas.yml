@@ -49,6 +49,10 @@ on:
         description: "Refetch the whole history for loss, sob AND drought, not just recent years (type: yes)"
         required: false
         default: ""
+      drought_years:
+        description: "Drought only: refetch these whole years for every county, comma-separated (e.g. 2024). Other years are kept. Use with layers = drought"
+        required: false
+        default: ""
       reads_model:
         description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else claude-haiku-4-5-20251001"
         required: false
@@ -73,6 +77,7 @@ jobs:
       LAYERS: ${{ github.event.inputs.layers }}
       IN_LOSS_ALL: ${{ github.event.inputs.loss_all }}
       IN_REFETCH_ALL: ${{ github.event.inputs.refetch_all }}
+      IN_DROUGHT_YEARS: ${{ github.event.inputs.drought_years }}
     steps:
       # The job's own start time, for atlas_reads.py: its batch wait ends early
       # enough that the Commit step still runs inside the 300-minute ceiling.
@@ -281,7 +286,12 @@ jobs:
         if: steps.which.outputs.drought == '1'
         continue-on-error: true
         run: |
-          if [ "$IN_REFETCH_ALL" = "yes" ]; then
+          # drought_years (e.g. 2024) refetches whole years for every county and
+          # keeps every other year; a year only comes back where it now has at
+          # least as many weekly maps (2026-10-16: 2024 had been cut to 1 map).
+          if [ -n "$IN_DROUGHT_YEARS" ]; then
+            python scripts/fetch_atlas_drought.py --years "$IN_DROUGHT_YEARS"
+          elif [ "$IN_REFETCH_ALL" = "yes" ]; then
             python scripts/fetch_atlas_drought.py --all
           else
             python scripts/fetch_atlas_drought.py

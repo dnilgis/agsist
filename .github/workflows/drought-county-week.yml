@@ -1,0 +1,71 @@
+name: Drought county week
+
+# Writes data/drought/county-week.json for the county box on drought-monitor.html:
+# this week's Drought Monitor percent of each county in D0-D4, last week, and
+# four weeks back. USDM county statistics API (NDMC), read by
+# scripts/fetch_drought_county_week.py. The page shows a plain "not loaded yet"
+# line until this file exists, and the script writes nothing it cannot check.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves what the API
+# returned for Iowa, Story County and Oklahoma to data/drought/probe/ and
+# commits it, so the answer's shape can be checked before a number is trusted.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save raw API answers to data/drought/probe/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '52 13 * * 4'   # Thursday, after the 8:30 AM ET release
+    - cron: '37 14 * * 5'   # Friday backstop
+
+permissions:
+  contents: write
+
+concurrency:
+  group: drought-county-week
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/fetch_drought_county_week.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_drought_county_week.py --probe
+      - name: Fetch and write data/drought/county-week.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_drought_county_week.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/drought/county-week.json data/drought/probe"
+          rm -rf /tmp/dw && mkdir -p /tmp/dw
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/dw/ || true
+          done
+          [ -n "$(ls -A /tmp/dw)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/dw/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update drought county week $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

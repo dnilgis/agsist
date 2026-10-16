@@ -59,6 +59,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
+from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered  # noqa: E402  one full-year gate, one way to name a gap
 
 SITE = "https://agsist.com"
 DATA = "data/atlas"
@@ -579,7 +580,7 @@ COLUMNS = [
     ("loss_ratio_last10", "ratio", "RMA Summary of Business", "indemnity over total premium (farmer share plus subsidy), last ten closed years"),
     ("loss_ratio_all", "ratio", "RMA Summary of Business", "the same, 1989 to the last closed year"),
     ("years_loss_over_1", "years", "RMA Summary of Business", "years in which claims exceeded premium"),
-    ("d2_week_share_pct", "%", "U.S. Drought Monitor", "share of weeks with half the county or more in D2 (severe) drought or worse, 2000 on"),
+    ("d2_week_share_pct", "%", "U.S. Drought Monitor", "share of weeks with half the county or more in D2 (severe) drought or worse, full years from 2000; a year the Atlas copy is short of is left out and named on the county page"),
     ("jul_low_recent_f", "°F", "NOAA nClimDiv", "July average of daily lows, most recent ten years"),
     ("jul_low_normal_f", "°F", "NOAA nClimDiv", "July average of daily lows, 1991 to 2020 normal"),
     ("jul_low_trend_f_decade", "°F/decade", "NOAA nClimDiv", "trend in July lows since 1976"),
@@ -677,6 +678,19 @@ def flat_record(W, f, d=None):
 
 # ---------------------------------------------------------------------- SVG
 GOLD, BLUE = "var(--gold)", "var(--blue)"   # series colours; the CSS classes below use the same tokens
+
+
+def drought_missing(Dr):
+    """Finished years inside the drought record's span that it is short of.
+    Read from the layer when it says (atlas_layers_p1, 2026-10-16 on), else
+    worked out from the series, so a county file built before then says it too."""
+    if Dr.get("missing_years") is not None:
+        return sorted(int(y) for y in Dr["missing_years"])
+    ser = Dr.get("series") or {}
+    full = {int(k) for k, v in ser.items() if (v or {}).get("maps", 0) >= FULL_YEAR_MAPS}
+    if not Dr.get("first_year") or not Dr.get("last_full_year"):
+        return []
+    return [y for y in range(int(Dr["first_year"]), int(Dr["last_full_year"]) + 1) if y not in full]
 
 
 def bars_svg(series, label, unit_fmt, w=640, h=170, ref=None, ref_label=None, hatch_last=False, every=None):
@@ -1443,15 +1457,19 @@ def county_page(W, f, d, stamp):
 
     S5 = "<h2>Drought and weather</h2>"
     if ok(Dr):
-        ser = {int(k): v["d2"] for k, v in (Dr.get("series") or {}).items() if v.get("maps") and int(k) <= Dr["last_full_year"]}
+        # only full years: a year the file is short of is a gap in the chart, never a zero bar
+        ser = {int(k): v["d2"] for k, v in (Dr.get("series") or {}).items() if v.get("maps", 0) >= FULL_YEAR_MAPS and int(k) <= Dr["last_full_year"]}
+        miss = drought_missing(Dr)
         S5 += bars_svg(ser, "Weeks per year with half the county or more in severe drought or worse", lambda v: fmt(v, 0), every=5)
-        S5 += '<p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p>'
+        S5 += '<p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.%s</p>' % (
+            (" No bar for %s: the Atlas copy of that year is incomplete, so it is left out of every total here." % " or ".join(map(str, miss))) if miss else "")
         wk = Dr.get("weeks") or {}
-        S5 += fact("D2 or worse for half the county, %s–%s" % (Dr["first_year"], Dr["last_full_year"]), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s%% of weeks" % fmt(wk.get("share_d2_pct"), 0))
+        S5 += fact("D2 or worse for half the county, %s" % years_covered(Dr["first_year"], Dr["last_full_year"], miss), "%s of %s weeks" % (fmt(wk.get("d2"), 0), fmt(wk.get("counted"), 0)), "%s%% of weeks" % fmt(wk.get("share_d2_pct"), 0))
         if wk.get("d2") and Dr.get("worst_year"):
             S5 += fact("Year with the most D2+ weeks", str(Dr["worst_year"]["year"]), "%s weeks" % Dr["worst_year"]["d2"])
         if Dr.get("last5"):
-            S5 += fact("Last five years, %s–%s" % (Dr["last5"]["from"], Dr["last5"]["to"]), "%s weeks" % fmt(Dr["last5"]["d2"], 0))
+            l5m = [y for y in miss if Dr["last5"]["from"] <= y <= Dr["last5"]["to"]]
+            S5 += fact("Last five full years, %s" % years_covered(Dr["last5"]["from"], Dr["last5"]["to"], l5m), "%s weeks" % fmt(Dr["last5"]["d2"], 0))
     else:
         S5 += fwith("Drought", why(Dr))
     if ok(d.get("heat")) and jr:
@@ -2070,6 +2088,10 @@ def selftest():
     # (corrected 2026-09-25: bars became one path, so count its closed subpaths, not <rect>s)
     d = re.search(r'class="bf" d="([^"]*)"', svg).group(1)
     check("gap not drawn", d.count("z") == 3 and "M" in d)
+    # drought: a finished year the record is short of is named in every total (the 2024 hole, 2026-10-16)
+    _dr = {"first_year": 2022, "last_full_year": 2025, "series": {"2022": {"maps": 52}, "2023": {"maps": 52}, "2024": {"maps": 1}, "2025": {"maps": 52}}}
+    check("drought missing from series", drought_missing(_dr) == [2024] and drought_missing(dict(_dr, missing_years=[])) == [])
+    check("drought years label", years_covered(2000, 2025, [2024]) == "2000\u20132025 except 2024")
     check("labels escaped", "<script" not in head("a<script>", "b", "https://x", []).split("<title>")[1].split("</title>")[0])
     # a full build against the real data when present
     if os.path.exists(os.path.join(DATA, "atlas.json")):
@@ -2086,6 +2108,9 @@ def selftest():
                 t = open(p, encoding="utf-8").read()
                 check(f + " canonical", '<link rel="canonical" href="%s">' % W.url(f) in t)
                 check(f + " no nan", "NaN" not in t and "undefined" not in t and "None" not in t.replace("None reported", ""))
+                _cd = json.load(open(os.path.join(DATA, "counties", f + ".json"), encoding="utf-8")).get("drought") or {}
+                if _cd.get("status") == "ok" and drought_missing(_cd):
+                    check(f + " drought total names the missing year", "except %d" % drought_missing(_cd)[0] in t and "No bar for %d" % drought_missing(_cd)[0] in t)
                 check(f + " json-ld parses", all(json.loads(m) for m in re.findall(r'<script type="application/ld\+json">\s*(.*?)</script>', t, re.S)))
         # rent as a share of corn gross: the national.json ratio, its year, and the sum that makes it
         for f, r in list(W.rrev.items())[:300]:

@@ -583,7 +583,7 @@ details.fa-arith .body a{color:var(--gold)}
 <p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 of the 2475 counties with $1 million or more of premium, indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
 <p>Land value, 2022 census: the median county reports $4,382 an acre for land and buildings (range $325 to $2,551,600, 3067 counties). Non-irrigated cash rent as a share of that value is published for 933 counties, median 2.48%; under 2% in 263, over 4% in 12.</p>
 <p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 2,144,307 acres expire in the three fiscal years from 2027. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
-<p>Drought: summed over 3132 counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 was 2012 (41,841 county-weeks). In 2025, the latest full year, 121 counties spent half the year or more in that condition.</p>
+<p>Drought: summed over 3132 counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 (full years 2000–2025 except 2024: the Atlas copy of 2024 is incomplete, so it is not counted) was 2012 (41,841 county-weeks). In 2025, the latest full year, 121 counties spent half the year or more in that condition.</p>
 <p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind in 730 counties (825 counties counting proposed batteries).</p>
 <p>Wells and rights. Nebraska: 267,850 registered wells, 105,339 of them irrigation wells not decommissioned, median county median depth 197 ft. Kansas: 111,420 points of diversion, 51,917 active irrigation, median county median priority year 1977.</p>
 </div>
@@ -1607,6 +1607,27 @@ function chart(o){
     +'<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="'+esc(aria)+'">'+s+'</svg>'
     +(o.note?'<p class="fa-ch-note">'+esc(o.note)+'</p>':'')+'</figure>';
 }
+// Finished drought years the record is short of (the 2024 hole, 2026-10-16). Named in every
+// drought total, never skipped quietly. Per county from its series; across the Atlas from atlas.json.
+function drMissing(Dr){
+  if(!Dr) return [];
+  if(Dr.missing_years) return Dr.missing_years.map(Number);
+  var s=Dr.series||{}, out=[];
+  if(!Dr.first_year||!Dr.last_full_year) return out;
+  for(var y=+Dr.first_year;y<=+Dr.last_full_year;y++){ if(!s[y]||s[y].maps<40) out.push(y); }
+  return out;
+}
+function yrsCov(a,b,miss){
+  var m=(miss||[]).filter(function(y){return y>=a&&y<=b;});
+  return a+'–'+b+(m.length?' except '+(m.length>1?m.slice(0,-1).join(', ')+' and '+m[m.length-1]:m[0]):'');
+}
+function natDrMissing(A){
+  var d=A&&A.national&&A.national.drought; if(!d) return [];
+  if(d.missing_years) return d.missing_years.map(Number);
+  var by=d.county_weeks_d2_by_year||{}, ks=Object.keys(by).map(Number); if(!ks.length) return [];
+  var out=[]; for(var y=Math.min.apply(null,ks);y<=+d.latest_full_year;y++){ if(by[y]==null) out.push(y); }
+  return out;
+}
 function yearPts(series,fn,from,to,partialYear){
   var ks=Object.keys(series||{}).map(Number).filter(function(y){return !isNaN(y);}).sort(function(a,b){return a-b;});
   if(!ks.length) return [];
@@ -1782,14 +1803,16 @@ function renderPanel(fips,c){
   }
   f+=facthead('Drought');
   if(ok(Dr)){
-    var wk=Dr.weeks||{};
-    f+=fact('Weeks with half the county or more in D2 (severe) drought or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks, at least half the county in D2 or worse');
+    var wk=Dr.weeks||{}, drm=drMissing(d.drought||Dr);
+    f+=fact('Weeks with half the county or more in D2 (severe) drought or worse, '+yrsCov(Dr.first_year,Dr.last_full_year,drm), fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks, at least half the county in D2 or worse');
     var ds0=d.drought&&d.drought.series||{}, full=Object.keys(ds0).filter(function(y){return ds0[y].maps>=40;}), mx=Math.max.apply(null,full.map(function(y){return ds0[y].d2;}).concat([0]));
     if(mx>0){ var ties=full.filter(function(y){return ds0[y].d2===mx;}); f+=fact(ties.length>1?'Years with the most D2+ weeks':'Year with the most D2+ weeks', ties.join(', '), mx+' weeks'+(ties.length>1?' each':'')); }
     else f+=fact('Worst year','no week in D2 or worse since '+Dr.first_year);
-    if(Dr.last5) f+=fact('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, Dr.last5.d2+' weeks');
+    if(Dr.last5) f+=fact('Last five full years, '+yrsCov(Dr.last5.from,Dr.last5.to,drm), Dr.last5.d2+' weeks');
+    if(drm.length) f+=fact('Left out', drm.join(', '), 'the Atlas copy of that year is incomplete, so it is not in any total here');
     if(Dr.partial_year) f+=fact(Dr.partial_year.year+' so far', Dr.partial_year.d2+' of '+Dr.partial_year.maps+' weeks');
-    var ds=d.drought&&d.drought.series;
+    // full years and the running year only: a year the copy is short of is a gap, never a zero bar
+    var ds=null; if(d.drought&&d.drought.series){ ds={}; Object.keys(d.drought.series).forEach(function(y){ var r=d.drought.series[y]; if(r.maps>=40||(Dr.partial_year&&+y===Dr.partial_year.year)) ds[y]=r; }); }
     if(ds&&mx>0){ ch.push(chart({title:'Weeks a year in severe drought or worse',sub:'at least half the county in D2+, U.S. Drought Monitor',kind:'bars',
         pts:yearPts(ds,function(r){return r.d2;},null,null,Dr.partial_year?Dr.partial_year.year:null),y0:0,ticks:[0,13,26,39,52],fmtY:function(v){return String(v);},
         refs:[{v:26,label:'26 weeks = half the year'}],top:2})); }
@@ -2194,7 +2217,9 @@ function boot(){
     if(L.sob&&L.sob.status==='ok') v.push('Loss ratio '+L.sob.first_year+'–'+L.sob.latest_year); else v.push('Loss ratio: not yet measured');
     if(L.value&&L.value.status==='ok') v.push('Land value: census '+(L.value.years||[]).join(', ')); else v.push('Land value: not yet measured');
     if(L.crp&&L.crp.status==='ok') v.push('CRP'+(L.crp.history_years&&L.crp.history_years.length?' '+L.crp.history_years.join('–'):'')+', expiring from FY'+L.crp.this_fy); else v.push('CRP: not yet measured');
-    if(L.drought&&L.drought.status==='ok') v.push('Drought Monitor '+L.drought.first_year+'–'+L.drought.latest_year); else v.push('Drought: not yet measured');
+    var drm=natDrMissing(ATLAS);
+    if(drm.length) LAYERS.forEach(function(l){ if(l.needs==='drought'&&l.title.indexOf(' left out')<0) l.title+=' ('+drm.join(' and ')+' left out: the Atlas copy of that year is incomplete)'; });
+    if(L.drought&&L.drought.status==='ok') v.push('Drought Monitor '+L.drought.first_year+'–'+L.drought.latest_year+(drm.length?' ('+drm.join(' and ')+' left out, incomplete)':'')); else v.push('Drought: not yet measured');
     if(L.energy&&L.energy.status==='ok') v.push('Solar and wind: Form 860 '+L.energy.year); else v.push('Solar and wind: not yet measured');
     var regs=Object.keys(get(L,'wells_states','registers')||{}).sort();
     if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers'+(regs.length?', and '+regs.join(', '):'')+', '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');

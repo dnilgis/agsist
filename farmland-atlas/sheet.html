@@ -322,9 +322,11 @@ function render(){
   Rt+='<h2>Weather</h2>';
   if(ok(Dr)){
     var wk=Dr.weeks||{};
-    Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks');
+    // a finished year the record is short of is named, never skipped quietly (the 2024 hole, 2026-10-16)
+    var drm=(function(Dr){if(Dr.missing_years)return Dr.missing_years.map(Number);var s=Dr.series||{},o=[];if(!Dr.first_year||!Dr.last_full_year||!Dr.series)return o;for(var y=+Dr.first_year;y<=+Dr.last_full_year;y++){if(!s[y]||s[y].maps<40)o.push(y);}return o;})(Dr), exc=function(a,b){var m=drm.filter(function(y){return y>=a&&y<=b;});return a+'–'+b+(m.length?' except '+m.join(', '):'');};
+    Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+exc(Dr.first_year,Dr.last_full_year), fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks'+(drm.length?'; '+drm.join(', ')+' left out, incomplete in the Atlas copy':''));
     if(wk.d2&&Dr.worst_year) Rt+=fopt2('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
-    if(Dr.last5) Rt+=fopt('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, fmt(Dr.last5.d2,0)+' weeks');
+    if(Dr.last5) Rt+=fopt('Last five full years, '+exc(Dr.last5.from,Dr.last5.to), fmt(Dr.last5.d2,0)+' weeks');
   } else Rt+=fw('Drought', why(Dr));
   if(ok(d.heat)&&jr){
     Rt+=fct('July average of daily lows, '+jr.from+'–'+jr.to, f1(jr.mean)+' °F', jul.normal_1991_2020&&jul.normal_1991_2020.mean!=null?'1991–2020 normal '+f1(jul.normal_1991_2020.mean)+' °F':'');

@@ -2787,7 +2787,8 @@
     if(ok(Lo)&&Lo.share_all){ var NM={heat_drought:'heat and drought',wet:'excess moisture',hail:'hail',wind:'wind',cold:'cold',irrigation:'irrigation failure',price:'price decline',unassigned:'area plans',other:'other'};
       var top=Object.keys(Lo.share_all).filter(function(k){ return Lo.share_all[k]!=null; }).sort(function(a,b){ return Lo.share_all[b]-Lo.share_all[a]; })[0];
       if(top) rows.push(['Largest cause of crop insurance payouts', NM[top]||top, Math.round(Lo.share_all[top]*100)+'% of dollars paid, '+Lo.first_year+'–'+Lo.last_year]); }
-    if(ok(Dr)&&Dr.weeks&&Dr.weeks.share_d2_pct!=null) rows.push(['Weeks in severe drought or worse', Math.round(Dr.weeks.share_d2_pct)+'%', 'of weeks since '+Dr.first_year+' with half the county in D2+']);
+    if(ok(Dr)&&Dr.weeks&&Dr.weeks.share_d2_pct!=null){ var drm=(function(Dr){if(Dr.missing_years)return Dr.missing_years.map(Number);var s=Dr.series||{},o=[];if(!Dr.first_year||!Dr.last_full_year||!Dr.series)return o;for(var y=+Dr.first_year;y<=+Dr.last_full_year;y++){if(!s[y]||s[y].maps<40)o.push(y);}return o;})(Dr);
+      rows.push(['Weeks in severe drought or worse', Math.round(Dr.weeks.share_d2_pct)+'%', 'of weeks since '+Dr.first_year+' with half the county in D2+'+(drm.length?' ('+drm.join(', ')+' left out, incomplete in the Atlas copy)':'')]); }
     if(ok(Cl)&&Cl.gs_normal_in!=null) rows.push(['April–September rain, normal', Cl.gs_normal_in.toFixed(1)+' in', (Cl.gs_recent&&Cl.gs_recent.pct_of_normal!=null?'last ten seasons '+Cl.gs_recent.pct_of_normal+'% of normal; ':'')+'1991–2020']);
     if(ok(Fr)&&Fr.frost_free_days&&Fr.frost_free_days.median!=null) rows.push(['Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+Fr.frost_free_days.median,
       ((Fr.last_spring_freeze||{}).median||'')+' to '+((Fr.first_fall_freeze||{}).median||'')+(Fr.gdd?'; corn GDD '+n0(Fr.gdd.median):'')+'; county-average lows']);

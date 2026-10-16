@@ -27,6 +27,7 @@ USAGE
   python scripts/fetch_atlas_drought.py --selftest
   python scripts/fetch_atlas_drought.py            # first run 2000..now, later runs the last 2 years merged
   python scripts/fetch_atlas_drought.py --all
+  python scripts/fetch_atlas_drought.py --years 2024   # refetch whole years, every county
 """
 
 import concurrent.futures
@@ -97,14 +98,22 @@ def parse(body):
     return out
 
 
-def count_weeks(records, half=HALF):
-    """records for one county -> {year: {"maps": n, "d2": n, "d3": n}}"""
+def count_weeks(records, half=HALF, y_min=None, y_max=None):
+    """records for one county -> {year: {"maps": n, "d2": n, "d3": n}}
+
+    y_min / y_max drop maps dated outside the years asked for. THEY MUST BE
+    PASSED BY EVERY FETCH THAT IS NOT FROM 2000. A query that starts 1/1/2025
+    also returns the map dated 2024-12-31 (its valid week runs into January),
+    and before 2026-10-16 that one map was counted as "2024: 1 map" and then
+    written over the full 53-map 2024 record. Every county lost 2024 that way."""
     years = {}
     for r in records:
         md = str(r.get("MapDate") or "").strip()
         if len(md) < 4 or not md[:4].isdigit():
             continue
         y = int(md[:4])
+        if (y_min is not None and y < y_min) or (y_max is not None and y > y_max):
+            continue
         try:
             d2, d3 = float(r.get("D2") or 0), float(r.get("D3") or 0)
         except ValueError:
@@ -116,6 +125,39 @@ def count_weeks(records, half=HALF):
         if d3 >= half:
             rec["d3"] += 1
     return years
+
+
+def merge_years(old, new, this_year):
+    """Fold one county's fresh {year: rec} into its kept {year: rec}.
+
+    A finished year (before this_year) is never replaced by a record with FEWER
+    weekly maps: a short answer is a partial fetch, not a correction. The
+    running year always takes the fresh count. Returns (merged, kept_years),
+    kept_years being the finished years where the old, fuller record won."""
+    out = dict(old or {})
+    kept = []
+    for y, rec in (new or {}).items():
+        y = int(y)
+        prev = out.get(y)
+        if prev is not None and y < this_year and rec.get("maps", 0) < prev.get("maps", 0):
+            kept.append(y)
+            continue
+        out[y] = rec
+    return out, kept
+
+
+def full_year_gaps(counties, this_year, first_year=FIRST_YEAR, full=40):
+    """Finished years that most counties hold with under `full` maps (or not at
+    all). A year like that is a hole in the file, not a fact about drought."""
+    held = [c for c in counties.values() if c]
+    if not held:
+        return []
+    gaps = []
+    for y in range(first_year, this_year):
+        short = sum(1 for c in held if (c.get(y) or c.get(str(y)) or {}).get("maps", 0) < full)
+        if short > len(held) // 2:
+            gaps.append(y)
+    return gaps
 
 
 def fetch_county(fips, y0, y1, retries=4):
@@ -156,7 +198,41 @@ def selftest():
     y3 = count_weeks(parse(json.dumps([["20240102", "20055", "Finney County", "KS", "0", "100", "100", "100", "100", "50", "2024-01-02", "2024-01-08", 1]]).encode()))
     assert y3 == {2024: {"maps": 1, "d2": 1, "d3": 1}}, y3
     assert parse(b"") == [] and parse(b"MapDate,FIPS\r\n") == []
+    # THE 2024 HOLE (2026-10-16). A refetch starting 1/1/2025 got the 2024-12-31
+    # map too; it must not become "2024: 1 map", and if it ever does it must not
+    # replace the full year already kept.
+    edge = [{"MapDate": "20241231", "D2": "0", "D3": "0"}, {"MapDate": "20250107", "D2": "60", "D3": "0"}]
+    assert count_weeks(edge, y_min=2025) == {2025: {"maps": 1, "d2": 1, "d3": 0}}
+    assert count_weeks(edge, y_min=2024, y_max=2024) == {2024: {"maps": 1, "d2": 0, "d3": 0}}
+    kept_2024 = {2023: {"maps": 52, "d2": 2, "d3": 0}, 2024: {"maps": 53, "d2": 10, "d3": 1}}
+    merged, kept = merge_years(kept_2024, {2024: {"maps": 1, "d2": 0, "d3": 0}, 2026: {"maps": 40, "d2": 3, "d3": 0}}, 2026)
+    assert merged[2024]["maps"] == 53 and kept == [2024] and merged[2026]["maps"] == 40, (merged, kept)
+    merged, kept = merge_years({2026: {"maps": 39, "d2": 3, "d3": 0}}, {2026: {"maps": 40, "d2": 3, "d3": 0}}, 2026)
+    assert merged[2026]["maps"] == 40 and not kept
+    merged, kept = merge_years({2024: {"maps": 1, "d2": 0, "d3": 0}}, {2024: {"maps": 53, "d2": 5, "d3": 0}}, 2026)
+    assert merged[2024]["maps"] == 53 and not kept
+    holes = {"1": {2023: {"maps": 52}, 2024: {"maps": 1}, 2025: {"maps": 52}}, "2": {2023: {"maps": 52}, 2024: {"maps": 1}, 2025: {"maps": 52}}}
+    assert full_year_gaps(holes, 2026, first_year=2023) == [2024]
+    assert parse_years("2024") == [2024] and parse_years("2023, 2024") == [2023, 2024]
+    for bad in ("", "1999", "24", "2024-2025", "abc"):
+        try:
+            parse_years(bad, this_year=2026)
+        except ValueError:
+            continue
+        raise AssertionError(bad)
     log("selftest ok")
+
+
+def parse_years(text, this_year=None):
+    """--years "2024" or "2023,2024" -> sorted list. Refuses anything else."""
+    this_year = this_year or datetime.now(timezone.utc).year
+    out = []
+    for part in str(text).split(","):
+        part = part.strip()
+        if not (len(part) == 4 and part.isdigit()) or not (FIRST_YEAR <= int(part) <= this_year):
+            raise ValueError(f"--years wants 4-digit years {FIRST_YEAR}-{this_year}, comma-separated; got {text!r}")
+        out.append(int(part))
+    return sorted(set(out))
 
 
 def main():
@@ -165,16 +241,29 @@ def main():
         return
     this_year = datetime.now(timezone.utc).year
     fips_list = sorted(ft["id"] for ft in load_geometry()["features"])
+    only_years = None
+    if "--years" in sys.argv:
+        only_years = parse_years(sys.argv[sys.argv.index("--years") + 1], this_year)
     existing = None
     if os.path.exists(OUT) and "--all" not in sys.argv:
         with open(OUT, encoding="utf-8") as f:
             existing = json.load(f)
+    if only_years and existing is None:
+        sys.exit("--years refetches years into an existing file; there is none, run without it first")
     if existing is None:
         y0 = FIRST_YEAR
         counties = {}
+    elif only_years:
+        # --years: every county, those years only, everything else kept as is.
+        # A year comes back in only where it now has at least as many maps.
+        y0 = only_years[0]
+        counties = {f: {int(y): v for y, v in c.items()} for f, c in existing["counties"].items()}
+        log(f"  refetching only {', '.join(map(str, only_years))}; every other year kept")
     else:
         y0 = this_year - REFETCH_YEARS + 1
-        counties = {f: {int(y): v for y, v in c.items() if int(y) < y0} for f, c in existing["counties"].items()}
+        # Every kept year stays in, the refetched ones too: merge_years decides
+        # per year, so a short answer for 2025 cannot erase a full 2025.
+        counties = {f: {int(y): v for y, v in c.items()} for f, c in existing["counties"].items()}
         log(f"  keeping years before {y0}; refetching {y0}-{this_year}")
     # A COUNTY THE FILE HAS NEVER SEEN GETS ITS WHOLE HISTORY, NOT TWO YEARS.
     #
@@ -198,11 +287,13 @@ def main():
     # would come back empty every run. Found by the audit panel, 2026-09-19.
     prior = (existing or {}).get("counties") or {}
     for fips in fips_list:
-        if existing is None:
+        if only_years:
+            start_of[fips] = only_years[0]
+        elif existing is None:
             start_of[fips] = FIRST_YEAR
         elif fips not in prior:
             start_of[fips] = FIRST_YEAR
-        elif prior[fips] and not counties.get(fips):
+        elif prior[fips] and not any(y < y0 for y in counties.get(fips, {})):
             start_of[fips] = FIRST_YEAR
         else:
             start_of[fips] = y0
@@ -215,7 +306,10 @@ def main():
         the exception is carried back rather than raised so the pool keeps
         going and the caller decides, exactly as the serial loop did."""
         try:
-            years, err = count_weeks(fetch_county(fips, start_of[fips], this_year)), None
+            y_end = only_years[-1] if only_years else this_year
+            years, err = count_weeks(fetch_county(fips, start_of[fips], y_end), y_min=start_of[fips], y_max=y_end), None
+            if only_years and years is not None:
+                years = {y: v for y, v in years.items() if y in only_years}
         except RuntimeError as e:
             years, err = None, e
         time.sleep(SLEEP)
@@ -236,20 +330,31 @@ def main():
                 results[fips] = years
             if done % 100 == 0 or done == len(fips_list):
                 log(f"  {done}/{len(fips_list)} counties, {time.time() - t0:.0f}s")
+    kept_total = {}
     for fips in fips_list:
         if fips in results:
-            counties.setdefault(fips, {}).update(results[fips])
+            counties[fips], kept = merge_years(counties.get(fips), results[fips], this_year)
+            for y in kept:
+                kept_total[y] = kept_total.get(y, 0) + 1
+    for y, n in sorted(kept_total.items()):
+        log(f"  {y}: kept the fuller record already in the file for {n} counties (the fetch came back shorter)")
     if not counties:
         sys.exit("no counties fetched")
     if len(failed) > len(fips_list) // 10:
         sys.exit(f"{len(failed)} of {len(fips_list)} counties failed; refusing to write a file that is mostly holes")
     all_years = sorted({y for c in counties.values() for y in c})
+    # Said out loud in the file, so the Atlas and the drought page can name the
+    # years a "since 2000" total leaves out instead of skipping them silently.
+    gaps = full_year_gaps(counties, this_year)
+    if gaps:
+        log(f"  WARNING: finished years short of maps in most counties: {gaps}; dispatch with --years to refetch them")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump({"source": "U.S. Drought Monitor county statistics API (NDMC/UNL), cumulative area percent, weekly maps since 2000-01-04",
                    "url": API, "half": HALF, "first_year": all_years[0], "latest_year": all_years[-1],
                    "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                    "failed": failed,
+                   "missing_years": gaps,
                    "note": f"d2 = weeks with at least {HALF:.0f}% of the county's area in D2 or worse; d3 = same for D3 or worse; maps = weekly maps counted",
                    "counties": counties}, f, separators=(",", ":"))
     log(f"wrote {OUT}: {len(counties)} counties, {all_years[0]}-{all_years[-1]}, {len(failed)} failed")
