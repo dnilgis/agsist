@@ -1,0 +1,27 @@
+# Benchmark scorecard: farmdoc / Irwin forecast-accuracy research
+# https://farmdoc.illinois.edu/publications/the-pricing-performance-of-market-advisory-services-in-corn-and-soybeans-over-1995-2004
+# fetched 2026-10-16T16:18:36Z, sha256 9d9859b79e7b8e566148e131b5bdb746c1380de5fecf6fdd9496ca77626898a7
+
+The Pricing Performance of Market Advisory Services in Corn and Soybeans Over 1995-2004 - farmdoc
+
+The Pricing Performance of Market Advisory Services in Corn and Soybeans Over 1995-2004
+
+About This Publication
+
+- Publication Date: April 14, 2006
+
+Publication Date: April 14, 2006
+
+Scott H. Irwin, Darrel L. Good, Joao Martines Filho, and Ryan M. Batts
+
+Report ID: AgMAS_2006-02
+
+The purpose of this research report is to evaluate the pricing performance of market advisory services for the 1995-2004 corn and soybean crops. Marketing assumptions applied to advisory program track records are intended to accurately depict “real-world” marketing conditions facing a representative central Illinois corn and soybean farmer. Several key assumptions are: i) with a few exceptions, the marketing window for a crop year runs from September before harvest through August after harvest, ii) on-farm or commercial physical storage costs, as well as interest opportunity costs, are charged to post-harvest sales, iii) brokerage costs are subtracted for all futures and options transactions and iv) Commodity Credit Corporation (CCC) marketing loan recommendations made by advisory programs are followed wherever feasible. Based on these and other assumptions, the net price received by a subscriber to market advisory programs is calculated for the 1995-2004 corn and soybean crops.
+
+Market and farmer benchmarks are developed for the performance evaluations. Two market benchmarks are specified in order to test the sensitivity of performance results to changing benchmark assumptions. The 24-month market benchmark averages market prices for the entire 24-month marketing window. The 20-month market benchmark is computed in a similar fashion, except the first four months of the marketing window are omitted. Given the uncertainties involved in measuring the average price received by farmers, two alternative farmer benchmarks for central Illinois are specified. The market and farmer benchmarks are computed using the same assumptions applied to advisory program track records.
+
+Five basic indicators of performance are applied to advisory program prices and revenues over 1995-2004. Results show that advisory program prices fall in the top-third of the price range relatively infrequently. There is limited evidence that advisory programs as a group outperform market benchmarks, particularly after considering risk. The evidence is somewhat more positive with respect to farmer benchmarks, even after taking risk into account. For example, the average advisory return relative to the farmer benchmarks is 8 to $12 per acre with only a marginal increase in risk. Even though this return is small and mainly from corn, it nonetheless represents a non-trivial increase in net farm income per acre for grain farms in central Illinois. Test results also suggest that it is difficult to predict the year-to-year pricing performance of advisory programs based on past pricing performance. However, there is some evidence that performance is more predictable over longer time horizons, particularly at the extremes of performance rankings.
+
+The results raise the interesting possibility that even though advisory services do not appear to “beat the market,” they nonetheless provide the opportunity for some farmers to improve performance relative to the market. Mirroring debates about stock investing, the relevant issue is whether farmers can most effectively improve marketing performance by pursuing “active” strategies, like those recommended by advisory services, or “passive” strategies, which involve routinely spreading sales across the marketing window.
+
+AgMAS06 02

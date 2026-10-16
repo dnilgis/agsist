@@ -1,0 +1,193 @@
+# Benchmark conditions-yield: K-State wheat yield from ratings
+# https://agmanager.info/sites/default/files/pdf/WheatYields_03-31-26.pdf
+# fetched 2026-10-16T16:18:20Z, sha256 c2fd877b027aede56c1b43c0d1ec6c56b1b86c6ec15f94c085afd8ef2d98409b
+
+        Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+       Kansas Wheat Yield Outlook for 2026
+                               Week 13 - (3/30/26)
+                                    Gregg Ibendahl
+                                      March 30, 2026
+
+
+0.1    This week’s prediction
+
+Kansas wheat estimate for week 13 (March 30, 2026)
+Yield range from 41 to 46.4
+Predicted yield of 43.7
+Note: This is the initial estimate for 2026
+
+
+
+0.2    Introduction
+
+The USDA collects weekly crop conditions throughout the growing season. The crop is rated
+as either very poor, poor, fair, good, or excellent. For wheat, these estimates are reported
+for a few weeks in late fall, then resume in the spring. As shown by Ibendahl in previous
+reports on AgManager.info, these crop reports can be used to build a model to predict ﬁnal
+crop yields. In this publication, Ibendahl estimates Kansas wheat yields based on the week
+13 (March 30, 2026) crop condition report from NASS.
+
+As of week 13 in Kansas, for the winter wheat crop, 7% was rated very poor, 15% was poor,
+38% was fair, 35% was good, and 5% was excellent. While it is still very early in the wheat
+season, this paper explains the model process and projects a possible yield. This paper is
+part of a weekly estimate of wheat yields for 2025 in Kansas. Results from this paper can be
+compared to the crop reporting district’s predicted yields based on drought monitor data.
+All of these reports are on AgManager.info.
+
+
+
+0.3    Background
+
+The USDA has historical state wheat yields going back to 1866. Figure 1 plots these as a
+line graph. What is interesting about this graph is how ﬂat wheat yields were until 1950.
+Since then, yields have been steadily increasing. As shown in Figure 1, a regression of the
+
+
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com                 1
+        Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+last 30 years (the blue line) shows a 0.20 bushel increase in yield each year. The lowest yield
+in any year since 1970 is 25% higher than the highest yield before 1950.
+
+Figure 1 also shows that the state-average wheat yield has substantial variability. Yields
+were only 28 bushels per acre in 2014, while in 2016, yields were 57 bushels per acre.
+
+
+
+0.4    Estimate of Crop Condition
+
+The weekly Crop Progress and Condition Report issued by the USDA National Agricultural
+Statistics Service includes temperature, precipitation, and progress of crop planting, devel-
+opment, and harvesting. This report is issued weekly, except during winter months when
+it is entered monthly. While this report provides current crop conditions, it doesn’t make
+any yield projections for wheat. Predicting wheat yields can be diﬃcult, as the crop often
+performs better than it looks in the ﬁeld and can quickly improve with timely rains.
+
+Some research has attempted to match crop condition reports to yields. Bain and Forten-
+bery (Bain, R. and T. R. Fortenbery. 2013. “Impacts of Crop Conditions Reports on
+National and Local Wheat Markets.” Proceedings of the NCCC-134 Conference on Applied
+Commodity Price Analysis, Forecasting, and Market Risk Management. St. Louis, MO.
+[http://www.farmdoc.illinois.edu/nccc134] presented a paper that used an index of the crop
+condition report to estimate crop yields. Their procedure, described below, is used in this
+paper to show the relationship between crop conditions and wheat yields.
+
+
+
+0.5    Procedure
+
+Bain and Fortenbery construct an index of weekly crop conditions:
+
+
+      CCIndex =
+                  (% acreage Excellent) * 1    +
+                  (% acreage Good)      * 0.75 +
+                  (% acreage Fair)      * 0.50 +
+                  (% acreage Poor)      * 0.25 +
+                  (% acreage Very poor) * 0
+
+
+Weekly crop condition reports from NASS are available and go back to 1988. The start of
+the weekly wheat report in Kansas varies, but for all years since 1988, a weekly crop report
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com                    2
+        Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+is available either the last week of March or the ﬁrst week in April. There is also a series of
+crop reports in the fall before a break occurs. The last 20 years of the wheat crop condition
+for week 13 in Kansas is shown in Figure 2.
+
+In this analysis, the March 30, 2026 crop condition reports (week 13) are used to construct
+a CCI index for the last 30 years. These CCI indexes are then used in a regression analysis
+to estimate wheat yield per acre, where yield is a function of the CCI index. To account
+for the yield trend, the actual model estimates the deviation from the trend as a function of
+the CCI index. Figure 3 plots the deviation from the state average wheat yield trend line
+on the left axis and the CCI index on the bottom axis. The dark gray band represents the
+standard error. The standard error of the regression is the average distance between the
+observed values and the regression line.
+
+
+
+0.6    Results
+
+As might be expected for a wheat crop condition report this early in the year, the model
+doesn’t predict very well but is improving each week. Based on week 13 scores, the model
+predicts wheat yields with an R-squared of 0.21. The estimated yield equation is
+
+Yield = 0.308 * CCI_score -17.2
+
+That is, a 1% improvement in the CCI score can increase the average state yield by nearly
+0.3 bushels per acre. However, the low R-squared value is due to the large variation in ﬁnal
+wheat yield across CCI scores. In other words, the CCI index is far from a perfect indicator
+of ﬁnal wheat yields in the state, especially with the winter report on crop conditions. The
+large variability is evident in Figure 3. A model that perfectly predicted yield would have
+all the individual points aligning along the blue regression line. Thus, the model presented
+here should be looked at as more of an initial impression of wheat yields in the state.
+
+As of week 13 for 2025, the trend line yield is 44.2 bu/ac. The CCI score of 54 indicates that
+the model predicts a yield of 0.5 bu/ac below trend. Thus, the estimated yield for March
+30, 2026 is 43.7 bu/ac with a range from 41 to 46.4 bu/ac.
+
+
+
+0.7    Implications
+
+Producers should view these results as only a guide and likely a best-case scenario for Kansas.
+The low R-squared value indicates that much could change before harvest. Some timely rains
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com                    3
+        Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+in the next week would really help yield estimates. Likewise, little rain over the next two
+weeks will quickly push wheat conditions and yields down.
+
+
+
+0.8    Contact
+
+Kansas State University - Department of Agricultural Economics
+AgManager.info
+email: ibendahl@ksu.edu
+YouTube: https://www.youtube.com/@little_pond_farm
+Substack: https://agricultural.substack.com
+
+
+
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com                4
+       Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+
+
+                 Figure 1: Historical State Wheat Yields from Kansas
+
+
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com      5
+       Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+
+
+      Figure 2: Historical Crop Conditions for Wheat in Kansas for Speciﬁc Week
+
+
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com         6
+        Kansas Wheat Yield Outlook for 2026 - March 30, 2026 - AgManager.info
+
+
+
+
+Figure 3: Expected Yield (Trend Deviation) for Various CCI Index Values for Speciﬁc Week
+
+
+
+@ibendahl | www.youtube.com/@little_pond_farm | agricultural.substack.com             7
+

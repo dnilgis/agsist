@@ -1,0 +1,19 @@
+# Benchmark crop-tour: DTN crop tour coverage
+# https://www.dtnpf.com/agriculture/web/ag/crops
+# fetched 2026-10-16T16:18:34Z, sha256 654d5cceb7f5eb8021e20698317a782aaeff56d18d8ba8a9ad7b8cf4597ec707
+
+DTN's Crops News Headlines, Crop Markets, and Perspectives
+
+A California resident is suing Syngenta, claiming that the company failed to warn users of the potential of adverse health effects of its herbicide, atrazine.
+
+Seven of the eight major fertilizers were more expensive than a month ago, with UAN32 posting the only significant increase. DTN considers a move of 5% or more to be significant.
+
+Corn was 33% harvested, and the remaining crop was rated 56% in good-to-excellent condition as of Sunday, Oct. 11. Soybeans were 46% harvested and were rated 57% in good-to-excellent condition.
+
+As irrigation wells faltered 18 years ago, this Kansas farm family made the radical choice to stop pumping. Now, they're ready to pass on the legacy.
+
+The DTN Digital Yield Tour continues with updated national yield estimates for corn and soybeans based on Oct. 1 conditions.
+
+Prolonged wet weather in parts of the Corn Belt is leading to issues with mold, fungus and disease as harvest ramps up.
+
+Prolonged wet weather in parts of the Corn Belt is leading to issues with mold, fungus and disease as harvest ramps up.
