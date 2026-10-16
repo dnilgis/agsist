@@ -15,3 +15,4 @@ names and anything private out of it.
 - [ ] Forward the first morning bid email from the new elevator
 - [ ] Set up the bids Gmail and app password, then add the BIDS_IMAP_USER and BIDS_IMAP_PASSWORD secrets in dnilgis/bids
 - [ ] Join Something Special from Wisconsin
+- [ ] This week: find more co-ops and retailers that post fertilizer prices on their websites (WI, IA, MN, IL first) and send the links; each one is a line in scripts/coop_fert_sources.json
