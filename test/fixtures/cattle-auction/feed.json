@@ -1,0 +1,305 @@
+{
+ "updated": "2026-10-13T00:00:00Z",
+ "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
+ "classes": [
+  300,
+  400,
+  500,
+  600,
+  700,
+  800
+ ],
+ "barns": [
+  {
+   "name": "Joplin Regional Stockyards",
+   "town": "Carthage",
+   "state": "MO",
+   "lat": 37.18,
+   "lon": -94.31,
+   "id": "joplin-mo",
+   "sales": [
+    {
+     "date": "2026-10-12",
+     "receipts": 6412,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 12,
+        "avg_wt": 372,
+        "cwt": 433.1,
+        "per_head": 1611.13,
+        "lo": 420.0,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 21,
+        "avg_wt": 468,
+        "cwt": 400.19,
+        "per_head": 1871.94,
+        "lo": 394.0,
+        "hi": 418.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 40,
+        "avg_wt": 575,
+        "cwt": 356.4,
+        "per_head": 2049.3,
+        "lo": 350.0,
+        "hi": 362.5,
+        "rows": 1
+       },
+       "600": {
+        "head": 60,
+        "avg_wt": 668,
+        "cwt": 322.15,
+        "per_head": 2151.96,
+        "lo": 318.0,
+        "hi": 326.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 120,
+        "avg_wt": 728,
+        "cwt": 305.8,
+        "per_head": 2226.22,
+        "lo": 300.0,
+        "hi": 309.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "500": {
+        "head": 9,
+        "avg_wt": 522,
+        "cwt": 364.2,
+        "per_head": 1901.12,
+        "lo": 360.0,
+        "hi": 370.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 14,
+        "avg_wt": 420,
+        "cwt": 391.75,
+        "per_head": 1645.35,
+        "lo": 385.0,
+        "hi": 398.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 33,
+        "avg_wt": 566,
+        "cwt": 325.6,
+        "per_head": 1842.9,
+        "lo": 320.0,
+        "hi": 331.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 6
+    },
+    {
+     "date": "2026-10-05",
+     "receipts": 6412,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 12,
+        "avg_wt": 372,
+        "cwt": 433.1,
+        "per_head": 1611.13,
+        "lo": 420.0,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 21,
+        "avg_wt": 468,
+        "cwt": 398.35,
+        "per_head": 1863.34,
+        "lo": 394.0,
+        "hi": 412.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 40,
+        "avg_wt": 575,
+        "cwt": 356.4,
+        "per_head": 2049.3,
+        "lo": 350.0,
+        "hi": 362.5,
+        "rows": 1
+       },
+       "600": {
+        "head": 60,
+        "avg_wt": 668,
+        "cwt": 322.15,
+        "per_head": 2151.96,
+        "lo": 318.0,
+        "hi": 326.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 120,
+        "avg_wt": 728,
+        "cwt": 308.1,
+        "per_head": 2242.97,
+        "lo": 302.0,
+        "hi": 311.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "500": {
+        "head": 9,
+        "avg_wt": 522,
+        "cwt": 364.2,
+        "per_head": 1901.12,
+        "lo": 360.0,
+        "hi": 370.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 14,
+        "avg_wt": 420,
+        "cwt": 391.75,
+        "per_head": 1645.35,
+        "lo": 385.0,
+        "hi": 398.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 33,
+        "avg_wt": 566,
+        "cwt": 325.6,
+        "per_head": 1842.9,
+        "lo": 320.0,
+        "hi": 331.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 6
+    }
+   ],
+   "slug": "1245",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1245",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-13T00:00:00Z"
+   }
+  },
+  {
+   "name": "Winter Livestock",
+   "town": "Dodge City",
+   "state": "KS",
+   "lat": 37.75,
+   "lon": -100.02,
+   "id": "dodge-city-ks",
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-13T00:00:00Z"
+   },
+   "sales": [
+    {
+     "date": "2026-09-23",
+     "receipts": 6412,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 12,
+        "avg_wt": 372,
+        "cwt": 433.1,
+        "per_head": 1611.13,
+        "lo": 420.0,
+        "hi": 445.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 21,
+        "avg_wt": 468,
+        "cwt": 400.19,
+        "per_head": 1871.94,
+        "lo": 394.0,
+        "hi": 418.0,
+        "rows": 2
+       },
+       "500": {
+        "head": 40,
+        "avg_wt": 575,
+        "cwt": 356.4,
+        "per_head": 2049.3,
+        "lo": 350.0,
+        "hi": 362.5,
+        "rows": 1
+       },
+       "600": {
+        "head": 60,
+        "avg_wt": 668,
+        "cwt": 322.15,
+        "per_head": 2151.96,
+        "lo": 318.0,
+        "hi": 326.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 120,
+        "avg_wt": 728,
+        "cwt": 305.8,
+        "per_head": 2226.22,
+        "lo": 300.0,
+        "hi": 309.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "500": {
+        "head": 9,
+        "avg_wt": 522,
+        "cwt": 364.2,
+        "per_head": 1901.12,
+        "lo": 360.0,
+        "hi": 370.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "400": {
+        "head": 14,
+        "avg_wt": 420,
+        "cwt": 391.75,
+        "per_head": 1645.35,
+        "lo": 385.0,
+        "hi": 398.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 33,
+        "avg_wt": 566,
+        "cwt": 325.6,
+        "per_head": 1842.9,
+        "lo": 320.0,
+        "hi": 331.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 6
+    }
+   ],
+   "slug": "1889",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1889"
+  }
+ ],
+ "states": [],
+ "note": "TEST FIXTURE built from the made-up sample in scripts/fetch_cattle_auction.py (ROW_FIX), not real prices."
+}

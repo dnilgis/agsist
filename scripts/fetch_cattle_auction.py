@@ -68,7 +68,7 @@ PAGE = "https://mymarketnews.ams.usda.gov/viewReport/%s"
 PRICE_RANGE = (80.0, 1000.0)   # $/cwt; light calves have sold over $500 in 2025-26
 WT_RANGE = (200, 1100)         # rows read at all
 CLASSES = [300, 400, 500, 600, 700, 800]   # 300 = 300-399 lb
-KEEP_SALES = 6
+KEEP_SALES = 2           # the latest sale and the one before it, for the change
 MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
 
 # ------------------------------------------------------------------ text
