@@ -486,7 +486,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
                     (" and " + str(fig["n_states"] - 5) + " more" if fig["n_states"] > 5 else "") + "." +
                     (" Counties with the most reports: " + cty_txt + "." if cty_txt else "")))
     faq.append(("Did the " + nd + " hail hit my address?",
-         "Use the hail map's address search: it lists every dated report within 25 miles of any US address and, for days in the radar archive, tests your exact point against the estimated swath, then prints a sourced report you can keep."))
+         "Use the hail map's address search: it lists every dated report within 10 miles of any US address (5 or 25 if you pick) and, for days in the radar archive, tests your exact point against the estimated swath, then prints a sourced report you can keep."))
     faq_ld = ",".join('{"@type":"Question","name":' + json.dumps(q) +
                       ',"acceptedAnswer":{"@type":"Answer","text":' + json.dumps(a) + '}}'
                       for q, a in faq)
