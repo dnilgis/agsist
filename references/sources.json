@@ -268,6 +268,14 @@
     {"id": "coop-mulvane-fert", "kind": "html",
      "url": "https://www.mulvanecoop.com/fertilizer",
      "title": "Mulvane Co-op: fertilizer page",
-     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"}
+     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"},
+    {"id": "ams-feeder-auction-list", "kind": "html",
+     "url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
+     "title": "USDA AMS: feeder and replacement cattle auction reports, by state",
+     "why": "/cattle-auction-prices: which barns USDA reports on and their report numbers"},
+    {"id": "ams-feeder-grades", "kind": "html",
+     "url": "https://www.ams.usda.gov/grades-standards/feeder-cattle-grades-and-standards",
+     "title": "USDA AMS: feeder cattle grades and standards",
+     "why": "/cattle-auction-prices FAQ: what Medium and Large 1 and 1-2 mean"}
   ]
 }
