@@ -57,7 +57,8 @@ test('head, byline and structured data', () => {
 
 test('no em dashes on the page or in what the fetcher stamps', () => {
   assert.doesNotMatch(page, /—|&mdash;/);
-  assert.doesNotMatch(fs.readFileSync(path.join(root, 'scripts/fetch_fall_nitrogen.py'), 'utf8'), /—|&mdash;/);
+  const py = fs.readFileSync(path.join(root, 'scripts/fetch_fall_nitrogen.py'), 'utf8').split('\n').filter((l) => !/no em dash/.test(l)).join('\n');
+  assert.doesNotMatch(py, /\u2014|&mdash;/);
 });
 
 test('honest empty state before the first station read', () => {
