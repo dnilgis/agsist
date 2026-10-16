@@ -2270,3 +2270,6 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 .hb-by a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
 .hb-by a+a{margin-left:.35rem}
 .hb-by a:last-child::before{content:"\00b7";display:inline-block;margin-right:.35rem;color:var(--text-muted);text-decoration:none}
+/* 2026-10-16: "Also today" line in the briefing strip (components/home.js) */
+.daily-teaser .teaser-also{display:block;flex-basis:100%;margin-top:.15rem;font-size:.8125rem;line-height:1.35;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.daily-teaser .teaser-also[hidden]{display:none}
