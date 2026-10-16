@@ -40,7 +40,7 @@
   <meta name="twitter:image"       content="https://agsist.com/img/og/grain-bin-calculator.jpg?v=23422ff7">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
-    {"@type":"SoftwareApplication","name":"Grain Bin Calculator","description":"Free grain bin storage calculator for bushel capacity, moisture shrink, drying cost, and net market value.","url":"https://agsist.com/grain-bin-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"dateModified":"2026-10-15"},
+    {"@type":"SoftwareApplication","name":"Grain Bin Calculator","description":"Free grain bin storage calculator for bushel capacity, moisture shrink, drying cost, and net market value.","url":"https://agsist.com/grain-bin-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"dateModified":"2026-10-16"},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain Bin Calculator","item":"https://agsist.com/grain-bin-calculator"}]},
     {"@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How many bushels in a 30-foot bin?", "acceptedAnswer": {"@type": "Answer", "text": "A 30×24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft³). Add a peaked cone surface for ~14,950 bu. Counted the way dealer charts do (28° peak, 6% pack) it is about 16,050 bu."}}, {"@type": "Question", "name": "What is the grain shrink formula?", "acceptedAnswer": {"@type": "Answer", "text": "Shrink % = (moisture in minus standard moisture) times a factor. Buyers commonly figure 1.2 to 1.5 per point (Purdue NCH-61). Water alone is 1.183 per point drying to 15.5%; the rest is handling loss, which averaged under 1% in Iowa State’s on-farm and commercial measurements. This page defaults to 1.3, lets you edit it and shows the split."}}, {"@type": "Question", "name": "What is pack factor?", "acceptedAnswer": {"@type": "Answer", "text": "Grain settles under its own weight, so a bin holds more bushels than its volume says. Dealer charts count 6%. Real pack depends on bin size, grain depth, moisture and test weight. The WPACKING method in ASABE EP413.2 predicts it, and in field checks of 51 corn bins it came within 0.9% of the measured grain on average (Bhadra et al. 2015). Leave it at 0 for a conservative number."}}, {"@type": "Question", "name": "Hopper bottom vs. flat floor?", "acceptedAnswer": {"@type": "Answer", "text": "A hopper bin’s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor. The calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters."}}, {"@type": "Question", "name": "What size bin do I need for 50,000 bushels?", "acceptedAnswer": {"@type": "Answer", "text": "Counted the way dealer charts do (28° peak, 6% pack), a 48-ft bin with 11 rings of 32 in (29 ft 4 in eave) holds about 51,800 bu. Level full with no pack, the same 48-ft bin needs 13 rings of 32 in (34 ft 8 in) or 10 rings of 44 in (36 ft 8 in). Use the “Sizing new storage” box above with your ring height."}}, {"@type": "Question", "name": "How do I figure drying cost?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply points to dry × $/pt × wet bushels. Dryers charge on the wet bushels you bring in. Drying from 18% to 15.5% = 2.5 pts. At $0.035/pt: 2.5 × $0.035 = $0.0875 per wet bu, or $262.50 on 3,000 wet bu."}}]}
   ]}
@@ -80,6 +80,9 @@
     .depth-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 10px 12px; background: var(--bg); border: 2px solid var(--border); border-radius: 6px; }
     .depth-row label { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; min-width: 72px; }
     .depth-row input[type="range"] { flex: 1; accent-color: var(--green); cursor: pointer; min-width: 0; }
+    .below-row { display: flex; align-items: center; gap: 10px; margin: -8px 0 4px; }
+    .below-row label { font-size: 0.82rem; color: var(--text-dim); flex: 1; }
+    .below-row input { width: 96px; flex: none; }
     .depth-val { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--gold); min-width: 84px; text-align: right; white-space: nowrap; }
     .bin-viz-wrap { padding: 16px 8px 8px; margin-top: 8px; background: var(--bg); border: 2px solid var(--border); border-radius: 8px; text-align: center; }
     .bin-viz-wrap svg { max-width: 280px; width: 100%; height: auto; }
@@ -203,7 +206,7 @@
   <main id="main" class="main" tabindex="-1" aria-label="Grain bin storage calculator">
     <nav class="breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> → Grain bin calculator</nav>
     <div class="calc-title"><h1>Grain bin calculator</h1></div>
-    <p class="gb-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; Updated <time datetime="2026-10-15">Oct 15, 2026</time></p>
+    <p class="gb-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; Updated <time datetime="2026-10-16">Oct 16, 2026</time></p>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
@@ -288,6 +291,11 @@
               oninput="onDepth()">
             <span class="depth-val" id="depth-val">24.0 ft &bull; 100%</span>
           </div>
+          <div class="below-row">
+            <label for="belowEave" id="below-label">Or: grain is this far below the eave (ft)</label>
+            <input type="number" id="belowEave" value="" placeholder="tape it" min="0" step="0.5" inputmode="decimal" oninput="onBelow()">
+          </div>
+          <div class="field-hint">Measured at the wall, from the eave down to the grain. It sets the depth above; move the slider to clear it.</div>
 
           <div class="section-label">Price and test weight</div>
           <div class="input-grid cols-2" style="margin-bottom:8px">
@@ -434,6 +442,9 @@
           <div class="section-label">Bushels &amp; Weight</div>
           <div class="result-row"><span class="result-label">Bin bushels (volume)</span><span class="result-value highlight" id="rTotBu" style="font-size:1.2rem">-</span></div>
           <div class="field-hint" id="basis-note"></div>
+          <div class="result-row" id="room-eave-row"><span class="result-label" id="rRoomEaveLabel">Room left to the eave (level)</span><span class="result-value" id="rRoomEave">-</span></div>
+          <div class="result-row" id="room-peak-row"><span class="result-label">Room left to a full peak</span><span class="result-value" id="rRoomPeak">-</span></div>
+          <div class="field-hint" id="room-note"></div>
           <div class="result-row"><span class="result-label" id="rMktLabel">Market bushels (56 lb)</span><span class="result-value" id="rMktBu">-</span></div>
           <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">-</span></div>
 
@@ -505,11 +516,11 @@
             <tbody>
 <tr><td>GSI 30 ft, 9 rings</td><td>24 ft 2 in, 12 in floor</td><td>15,337</td><td class="hl">15,550 (+1.4%)</td><td>14,484 (&minus;5.6%)</td></tr>
 <tr><td>GSI 36 ft, 12 rings</td><td>32 ft 2 in, 12 in floor</td><td>29,404</td><td class="hl">29,789 (+1.3%)</td><td>27,782 (&minus;5.5%)</td></tr>
-<tr><td>Brock 48 ft, 8 rings (unverified)</td><td>21 ft 6 in</td><td>39,053</td><td class="hl">39,697 (+1.6%)</td><td>36,689 (&minus;6.1%)</td></tr>
+<tr><td>Brock 48 ft, 8 rings (7-04808)</td><td>21 ft 6 in, peak starts 1 in below</td><td>39,053</td><td class="hl">39,569 (+1.3%)</td><td>36,689 (&minus;6.1%)</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="gb-small">The GSI bushels and eave heights are as printed in GSI&rsquo;s 40-Series producer brochure (model 4002 table, 12 in plenum, &ldquo;28 degree angle of repose and 6% compaction factor&rdquo;; read Oct 15, 2026). I have not been able to open Brock&rsquo;s farm bin chart itself, so the Brock row is unverified. The other two columns are this page&rsquo;s formula on the same bins, peaked. With the dealer setting it lands within 2% of all three. The charts don&rsquo;t say exactly how they trim the peak or round the pack, so expect a small gap.</p>
+        <p class="gb-small">The GSI bushels and eave heights are as printed in GSI&rsquo;s 40-Series producer brochure (model 4002 table, 12 in plenum, &ldquo;28 degree angle of repose and 6% compaction factor&rdquo;; read Oct 15, 2026). The Brock row is model 7-04808 from Brock&rsquo;s BR-2286 capacity chart (Jan 2022; read Oct 16, 2026), which says its peak is 28&deg;, &ldquo;starting one inch (25 mm) below the eave,&rdquo; with 6% compaction. The dealer column starts the peak an inch down the same way; the plain column fills to the eave. The other two columns are this page&rsquo;s formula on the same bins, peaked. With the dealer setting it lands within 2% of all three. The charts don&rsquo;t say exactly how they trim the peak or round the pack, so expect a small gap.</p>
       </details>
 
       <h2>How moisture shrink works</h2>
@@ -545,7 +556,7 @@
 
       <h2>Sources</h2>
       <ul class="gb-sources">
-        <li>Dealer basis: GSI 40-Series bin capacity chart, &ldquo;based on 28 degree angle of repose and 6% compaction factor,&rdquo; capacities with a 12 in plenum. <a href="https://www.grainsystems.com/na/wp-content/uploads/sites/grainsystems/2015/06/gs401_40SeriesBins-Producer.pdf" rel="noopener">GSI 40-Series producer brochure (PDF)</a>, model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in. Brock farm bin capacity chart for the 48 ft bin: not checked against the chart itself, so that row is marked unverified.</li>
+        <li>Dealer basis: GSI 40-Series bin capacity chart, &ldquo;based on 28 degree angle of repose and 6% compaction factor,&rdquo; capacities with a 12 in plenum. <a href="https://www.grainsystems.com/na/wp-content/uploads/sites/grainsystems/2015/06/gs401_40SeriesBins-Producer.pdf" rel="noopener">GSI 40-Series producer brochure (PDF)</a>, model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in. Brock: <a href="https://www.brockgrain.com/wp-content/uploads/2022/02/BR-2286-202201-Brock-On-Farm-Storage-Capacities-EM.pdf" rel="noopener">BR-2286 on-farm storage capacities (PDF, Jan 2022)</a>, narrow corrugation bins: 48 ft, 8 rings (7-04808), 39,053 bu at 21 ft 6 in; 48 ft, 11 rings (7-04811), 51,241 bu at 29 ft 6 in. Its footnote: &ldquo;28&deg; angle of repose, starting one inch (25 mm) below the eave,&rdquo; ASAE S413.1, &ldquo;compaction factor of 6%.&rdquo;</li>
         <li>Pack: ASABE EP413.2, the WPACKING method. Bhadra, Turner, Casada and others, &ldquo;Pack factor measurements for corn in grain storage bins,&rdquo; Transactions of the ASABE 58(3), 2015, 51 bins, 0.90% average absolute difference. <a href="https://doi.org/10.13031/trans.58.11033" rel="noopener">doi:10.13031/trans.58.11033</a>. Same authors, soybeans, sorghum, oats, barley and wheat, Transactions of the ASABE 61(2), 2018 (names EP413.2 as the home of WPACKING). <a href="https://doi.org/10.13031/trans.12645" rel="noopener">doi:10.13031/trans.12645</a></li>
         <li>Water shrink and handling loss: <a href="https://www.extension.purdue.edu/extmedia/NCH/NCH-61.html" rel="noopener">Purdue Extension NCH-61</a>, National Corn Handbook, Hicks and Cloud (University of Minnesota): Table 1 water shrink factors, Table 2 handling loss by shrink factor.</li>
         <li>Drying charged per point per wet bushel: <a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall" rel="noopener">Iowa State Extension, Grain drying considerations this fall</a>.</li>
@@ -582,7 +593,7 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19"></script>
-  <script src="/components/grain-bin.js?v=2"></script>
+  <script src="/components/grain-bin.js?v=3"></script>
   <script>
   var G=window.AgGrainBin;   // all the math lives in components/grain-bin.js
   var CROPS={
@@ -633,6 +644,7 @@
     var hasTop = sh!=='rect';
     $('surface-wrap').style.opacity      = hasTop?'1':'0.35';
     $('surface-pills').style.pointerEvents = hasTop?'auto':'none';
+    $('below-label').textContent='Or: grain is this far below the '+(sh==='rect'?'top':'eave')+' (ft)';
     syncDepth();
   }
 
@@ -651,12 +663,17 @@
   }
 
   function floorFt(){var v=parseFloat($('floorIn').value); return (isFinite(v)&&v>0)?v/12:0;}
-  function onDepth(){calc();}  // calc() calls syncDepth() which calls showDepth() — no double call
+  // Moving the slider drops a taped "below the eave" reading; typing one sets the depth.
+  function onDepth(){$('belowEave').value=''; calc();}  // calc() calls syncDepth() which calls showDepth()
+  function onBelow(){calc();}
+  function belowFt(){var v=parseFloat($('belowEave').value); return (isFinite(v)&&v>=0)?v:null;}
 
   function showDepth(){
-    var pct=parseFloat($('grain-depth').value)||0;
     var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
-    var ft=(pct/100*maxH).toFixed(1);
+    var b=G.depthFromBelow(maxH, belowFt());
+    if(b!==null) $('grain-depth').value=maxH>0?Math.round(b/maxH*100):0;
+    var pct=b!==null&&maxH>0?b/maxH*100:(parseFloat($('grain-depth').value)||0);
+    var ft=(b!==null?b:pct/100*maxH).toFixed(1);
     var pctLabel=Math.round(pct)+'%';
     $('depth-val').textContent=ft+' ft \u2022 '+pctLabel;
     // v2: update ARIA value text so screen readers announce feet, not percent
@@ -666,8 +683,10 @@
   }
 
   function grainFt(){
-    var pct=parseFloat($('grain-depth').value)||0;
     var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
+    var b=G.depthFromBelow(maxH, belowFt());
+    if(b!==null) return b;
+    var pct=parseFloat($('grain-depth').value)||0;
     return pct/100*maxH;
   }
 
@@ -709,6 +728,7 @@
     var dc=f('dryingCost'); if(isFinite(dc)&&dc<0) return 'Drying cost cannot be negative.';
     var mp=f('mktPrice'); if(isFinite(mp)&&mp<0) return 'Price cannot be negative.';
     var tw=f('testWt'); if(!isFinite(tw)||tw<=0) return 'Test weight is blank or zero.';
+    var be=f('belowEave'); if(isFinite(be)&&be<0) return 'Distance below the eave cannot be negative.';
     return null;
   }
 
@@ -718,7 +738,7 @@
     var _err=inputError(sh), _errEl=$('calc-err');
     if(_err){
       _errEl.textContent=NA+' '+_err; _errEl.style.display='';
-      ['rCylVol','rAdjVol','rTotVol','rTotBu','rMktBu','rWeight','rShrink','rShrinkWater','rShrinkHand','rDryBu','rLost','rGrossVal','rDryVal','rNetVal','sb-bu','sb-val'].forEach(function(id){$(id).textContent=NA;});
+      ['rCylVol','rAdjVol','rTotVol','rTotBu','rRoomEave','rRoomPeak','rMktBu','rWeight','rShrink','rShrinkWater','rShrinkHand','rDryBu','rLost','rGrossVal','rDryVal','rNetVal','sb-bu','sb-val'].forEach(function(id){$(id).textContent=NA;});
       $('drying-row').style.display='none';
       $('cap-num').textContent=NA;
       $('sb-val').textContent=_err;
@@ -781,6 +801,7 @@
     $('basis-note').innerHTML=dealer
       ? 'Counted like a dealer chart: 28&deg; peak, 6% pack. Within 2% of the two GSI bins <a href="#dealer-check">we checked</a>.'
       : 'Dealer charts read about 5 to 6.5% higher: they count a 28&deg; peak and 6% pack. <a href="#dealer-check">Why</a>';
+    showRoom(sh,sf,r,gH,peakDeg,pack);
     $('rMktLabel').textContent='Market bushels ('+cr.lb+' lb)';
     $('std-lb').textContent=cr.lb;
     $('rMktBu').textContent=fN(mktBu)+' bu';
@@ -826,6 +847,27 @@
     }
 
     saveState();
+  }
+
+  // Room left: bushels from the grain in the bin now to the bin filled level at
+  // the eave, and to a full peak, on the same basis (peak angle and pack) as above.
+  function showRoom(sh,sf,r,gH,peakDeg,pack){
+    var maxH=parseFloat($('grain-depth').dataset.maxH)||0, note='';
+    $('rRoomEaveLabel').textContent=sh==='rect'?'Room left to the top':'Room left to the eave (level)';
+    if(sh==='rect'){
+      var area=parseFloat($('rlength').value)*parseFloat($('rwidth').value);
+      $('rRoomEave').textContent=fN(G.bushels(area*Math.max(0,maxH-gH),pack))+' bu';
+      $('room-peak-row').style.display='none';
+      note='Level fill to the top of the walls.';
+    }else{
+      var rm=G.roomLeft({shape:sh, d:2*r, maxH:maxH, grainH:gH, surface:sf, peakDeg:peakDeg,
+        hopperDeg:parseFloat($('hopperangle').value), packPct:pack});
+      $('rRoomEave').textContent=rm.over?'0 bu (the peak is above the eave)':fN(rm.toEave)+' bu';
+      $('rRoomPeak').textContent=fN(rm.toPeak)+' bu';
+      $('room-peak-row').style.display='';
+      note='A full peak is the bin filled to the eave and peaked at '+peakDeg+'&deg;: '+fN(rm.full)+' bu. Leave room under the roof for the spreader and air.';
+    }
+    $('room-note').innerHTML=note;
   }
 
   var BL=55,BR=225,BM=140,BT=65,BB=245,BH=180;
@@ -938,6 +980,7 @@
         moistTarget:$('moistTarget').value, dryingCost:$('dryingCost').value,
         pack:$('pack').disabled?($('pack').dataset.plain||'0'):$('pack').value, mktPrice:$('mktPrice').value,
         shrinkFactor:$('shrinkFactor').value, floorIn:$('floorIn').value, testWt:$('testWt').value,
+        belowEave:$('belowEave').value,
         basis:basis(), ring:String(ringIn())
       }));
     }catch(e){}
@@ -965,6 +1008,7 @@
       if(s.mktPrice)  $('mktPrice').value=s.mktPrice;
       if(s.shrinkFactor)$('shrinkFactor').value=s.shrinkFactor;
       if(s.floorIn)   $('floorIn').value=s.floorIn;
+      if(s.belowEave) $('belowEave').value=s.belowEave;
       // Saved before test weight existed: start at the crop's standard lb
       $('testWt').value=s.testWt||CROPS[$('crop').value].lb;
       if(s.basis){var bv=document.querySelector('input[name="basis"][value="'+s.basis+'"]');if(bv)bv.checked=true;}
@@ -982,7 +1026,7 @@
     $('diameter').value=30; $('height').value=24;
     $('hdiameter').value=30; $('hcylheight').value=18; $('hopperangle').value=45;
     $('rlength').value=40; $('rwidth').value=20; $('rheight').value=10;
-    $('grain-depth').value=100;
+    $('grain-depth').value=100; $('belowEave').value='';
     $('moistIn').value=15.5; $('moistTarget').value=15.5;
     $('dryingCost').value=0; $('pack').value=0; $('mktPrice').value='';
     $('shrinkFactor').value=1.3; $('floorIn').value=0; $('testWt').value=56;
@@ -1030,6 +1074,7 @@
       '<tr><td>Crop</td><td>'+crop+'</td></tr>'+
       '<tr><td>Bin</td><td>'+dims+'</td></tr>'+
       '<tr><td>Fill</td><td>'+pct+'% ('+fD(grainFt(),1)+' ft of grain)</td></tr>'+
+      '<tr><td>Room left (to the eave / full peak)</td><td>'+$('rRoomEave').textContent+(shape()==='rect'?'':' / '+$('rRoomPeak').textContent)+'</td></tr>'+
       '<tr><td>Moisture in / target</td><td>'+($('moistIn').value||NA)+'% / '+($('moistTarget').value||NA)+'%</td></tr>'+
       '<tr><td>Counted as</td><td>'+(basis()==='dealer'?'Dealer chart: 28&deg; peak, 6% pack':'Plain: 25&deg; peak, '+($('pack').value||0)+'% pack')+'</td></tr>'+
       '<tr><td>Shrink per point / test weight</td><td>'+($('shrinkFactor').value||NA)+'% / '+($('testWt').value||NA)+' lb</td></tr>'+

@@ -52,16 +52,63 @@ test("GSI 36 ft 12-ring bin, by hand", () => {
   near(r.plain, 27781.8, "plain setting");
 });
 
-/* Brock 48 ft, 8 rings. Chart: 39,053 bu, 21 ft 6 in eave, counted from the eave as printed.
-   Area = pi x 24^2 = 1,809.557 ft2;  cylinder = 1,809.557 x 21.5 = 38,905.5 ft3
+/* Brock 48 ft, 8 rings, model 7-04808 (BR-2286, Jan 2022). Chart: 39,053 bu,
+   21 ft 6 in eave. Footnote: 28 deg peak "starting one inch (25 mm) below the
+   eave", 6% compaction. So the dealer column starts the peak at 21 ft 5 in.
+   Area = pi x 24^2 = 1,809.557 ft2;  cylinder = 1,809.557 x 21.4167 = 38,754.7 ft3
    Peak, 28 deg = pi x 24^3 x 0.53171 / 3 = 7,697.3 ft3
-   Total = 46,602.8 ft3 x 0.8036 = 37,450.0 x 1.06 = 39,697.0 bu (+1.6%)
-   Plain: cone 6,750.5, total 45,656.0 ft3 = 36,689.1 bu (-6.1%) */
-test("Brock 48 ft 8-ring bin, by hand", () => {
+   Total = 46,452.0 ft3 x 0.8036 = 37,328.8 x 1.06 = 39,568.5 bu (+1.3%)
+   (From the full 21 ft 6 in it was 39,697.0, +1.6%.)
+   Plain, filled to the eave: 38,905.5 + cone 6,750.5 = 45,656.0 ft3 = 36,689.1 bu (-6.1%) */
+test("Brock 48 ft 8-ring bin, by hand, one inch below the eave", () => {
   const b = G.CHECK_BINS[2], r = G.checkBin(b);
   assert.equal(b.chart, 39053);
-  near(r.dealer, 39697.0, "dealer setting");
+  assert.equal(b.belowEaveIn, 1);
+  near(r.dealerGrainH, 21.4167, "peak starts 1 in down", 1e-3);
+  near(r.dealer, 39568.5, "dealer setting");
+  near(r.dealerPct, 1.32, "vs chart", 0.01);
   near(r.plain, 36689.1, "plain setting");
+});
+
+/* Room left, 30 ft bin, 24 ft eave, no floor, plain basis.
+   Taped 6 ft below the eave: depth at the wall 24 - 6 = 18 ft.
+   Level now:  pi x 225 x 18 = 12,723.5 ft3 = 10,224.6 bu
+   Level full: pi x 225 x 24 = 16,964.6 ft3 = 13,632.8 bu  -> room to the eave 3,408.2 bu
+   Full peak:  16,964.6 + 1,648.1 = 18,612.7 ft3 = 14,957.1 bu -> room to a full peak 4,732.5 bu
+   Peaked now at 18 ft: 12,723.5 + 1,648.1 = 14,371.6 ft3 = 11,549.0 bu
+     -> to the eave 2,083.8, to a full peak 3,408.2 (the 6 ft ring of cylinder) */
+test("room left in the bin, by hand", () => {
+  assert.equal(G.depthFromBelow(24, 6), 18);
+  assert.equal(G.depthFromBelow(24, 30), 0, "a tape longer than the wall means an empty bin");
+  assert.equal(G.depthFromBelow(24, NaN), null);
+  assert.equal(G.depthFromBelow(24, -1), null);
+  assert.equal(G.depthFromBelow(0, 2), null, "no bin size, no depth");
+  const lv = G.roomLeft({ shape: "round", d: 30, maxH: 24, grainH: 18, surface: "level", peakDeg: 25, packPct: 0 });
+  near(lv.now, 10224.6, "level now");
+  near(lv.toEave, 3408.2, "level to eave");
+  near(lv.toPeak, 4732.5, "level to full peak");
+  near(lv.full, 14957.1, "full peak = the page default");
+  const pk = G.roomLeft({ shape: "round", d: 30, maxH: 24, grainH: 18, surface: "peaked", peakDeg: 25, packPct: 0 });
+  near(pk.now, 11549.0, "peaked now");
+  near(pk.toEave, 2083.8, "peaked to eave");
+  near(pk.toPeak, 3408.2, "peaked to full peak");
+  // Peaked right at the eave: the peak sits above it, so no room to the eave
+  const full = G.roomLeft({ shape: "round", d: 30, maxH: 24, grainH: 24, surface: "peaked", peakDeg: 25, packPct: 0 });
+  assert.equal(full.toEave, 0); assert.equal(full.over, true); near(full.toPeak, 0, "full", 1e-6);
+  // Dealer basis carries its 6% pack through: room 3,408.2 x 1.06 = 3,612.7
+  const dl = G.roomLeft({ shape: "round", d: 30, maxH: 24, grainH: 18, surface: "level", peakDeg: 28, packPct: 6 });
+  near(dl.toEave, 3612.7, "dealer pack");
+  // Hopper: the cone is in both now and full, so it drops out of room left
+  const hp = G.roomLeft({ shape: "hopper", d: 30, maxH: 18, grainH: 12, surface: "level", hopperDeg: 45, peakDeg: 25, packPct: 0 });
+  near(hp.toEave, 3408.2, "hopper: 6 ft of cylinder", 0.5);
+});
+
+test("the page has room left and the taped depth input", () => {
+  assert.match(PAGE, /id="belowEave"/);
+  assert.match(PAGE, /id="rRoomEave"/);
+  assert.match(PAGE, /id="rRoomPeak"/);
+  assert.match(PAGE, /G\.roomLeft\(/);
+  assert.match(PAGE, /G\.depthFromBelow\(/);
 });
 
 test("the dealer setting lands within 2% of every chart; the plain one 5 to 6.5% under", () => {
@@ -187,8 +234,8 @@ test("the page: one copy of the math, the dealer setting, test weight, labels", 
 });
 
 test("byline, date and sources are on the page", () => {
-  assert.match(PAGE, /By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\) &middot; Updated <time datetime="2026-10-15">Oct 15, 2026<\/time>/);
-  assert.match(PAGE, /"dateModified":"2026-10-15"/);
+  assert.match(PAGE, /By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\) &middot; Updated <time datetime="2026-10-16">Oct 16, 2026<\/time>/);
+  assert.match(PAGE, /"dateModified":"2026-10-16"/);
   for (const s of ["NCH-61", "doi.org/10.13031/trans.58.11033", "EP413.2", "grain-drying-considerations-fall", "gs401_40SeriesBins-Producer.pdf"])
     assert.ok(PAGE.includes(s), `source ${s}`);
   assert.doesNotMatch(PAGE, /K-State\/USDA WPACKING/, "the uncited 2-6% claim is gone");
@@ -200,8 +247,10 @@ test("byline, date and sources are on the page", () => {
  * papers read in full (references branch). The GSI model 4002 table prints
  * 30 ft/9 rings 15,337 bu at 24'2" and 36 ft/12 rings 29,404 bu at 32'2", a
  * 12" plenum, "28 degree angle of repose and 6% compaction factor", and 32 in
- * rings (2'8" per ring). Brock's chart was not in the saved copy (home page
- * only), so its row says unverified. NCH-61 gives 1.2 to 1.5 per point. */
+ * rings (2'8" per ring). Oct 16: Brock BR-2286 (Jan 2022) read in full
+ * (references bench-grain-bin-calculator-2): narrow corrugation 7-04808, 8
+ * rings, 39,053 bu, eave 21'-6"; 7-04811, 51,241 bu at 29'-6". NCH-61 gives
+ * 1.2 to 1.5 per point. */
 test("dealer rows and shrink range match the documents", () => {
   assert.match(PAGE, /model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in/);
   assert.match(PAGE, /<tr><td>GSI 30 ft, 9 rings<\/td><td>24 ft 2 in, 12 in floor<\/td><td>15,337<\/td>/);
@@ -209,8 +258,11 @@ test("dealer rows and shrink range match the documents", () => {
   assert.match(PAGE, /&ldquo;28 degree angle of repose and 6% compaction factor&rdquo;/);
   assert.equal(G.DEALER.peakDeg, 28); assert.equal(G.DEALER.packPct, 6);
   assert.equal((24 * 12 + 2) - (21 * 12 + 6), 32, "GSI chart: 8 to 9 rings adds 32 in");
-  assert.match(PAGE, /<tr><td>Brock 48 ft, 8 rings \(unverified\)<\/td>/);
-  assert.match(PAGE, /so the Brock row is unverified/);
+  assert.match(PAGE, /<tr><td>Brock 48 ft, 8 rings \(7-04808\)<\/td><td>21 ft 6 in, peak starts 1 in below<\/td><td>39,053<\/td>/);
+  assert.doesNotMatch(PAGE, /unverified/, "the Brock chart has been read");
+  assert.match(PAGE, /BR-2286-202201-Brock-On-Farm-Storage-Capacities-EM\.pdf/);
+  assert.match(PAGE, /starting one inch \(25 mm\) below the eave/);
+  assert.match(PAGE, /7-04811\), 51,241 bu at 29 ft 6 in/);
   assert.doesNotMatch(PAGE, /GSI and Brock bins <a/);
   const faqs = PAGE.split("Buyers commonly figure 1.2 to 1.5 per point (Purdue NCH-61)").length - 1;
   assert.equal(faqs, 2, "FAQ and its JSON-LD say 1.2 to 1.5, as NCH-61 does");
