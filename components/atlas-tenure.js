@@ -79,7 +79,9 @@
   window.AgTenure={mount:function(el){
     if(!document.getElementById('at-css')){ var s=document.createElement('style'); s.id='at-css'; s.textContent=CSS; document.head.appendChild(s); }
     el.innerHTML='<p class="fa-note">Opening the census tenure file&hellip;</p>';
-    return fetch('/data/tenure/tenure.json').then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; }).then(function(d){
+    // one request per page: the Atlas shares the copy its map layer already loaded (window.AgTenureData)
+    var got=window.AgTenureData?window.AgTenureData():fetch('/data/tenure/tenure.json').then(function(r){ return r.ok?r.json():null; });
+    return Promise.resolve(got).catch(function(){ return null; }).then(function(d){
       if(!d){ el.innerHTML='<p class="fa-note">The census tenure file did not load. Close and open this section to try again.</p>'; el.removeAttribute('data-on'); return; }
       render(el,d);
       try{ gaEvent('atlas_tenure_open',{}); }catch(e){}

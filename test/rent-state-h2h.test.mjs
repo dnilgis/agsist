@@ -77,10 +77,11 @@ test("Iowa: the panel's arithmetic, worked by hand", () => {
   // 290 x 220 / 217.2 = 293.74
   assert.match(els["gr-out"].innerHTML, /At <b>220 bu<\/b> ground in Story County, the county&rsquo;s rent per bushel says about <b>\$294 an acre<\/b>/);
   assert.equal(els["gr-math"].textContent, "Story County: $290 rent ÷ 217.2 bu trend = $1.34 a bushel. $290 × 220 ÷ 217.2 = $294.");
-  // share of gross starts at the county's own: 290 / (217.2 x 4.10) = 32.6%
+  // share of gross starts at the county's own: 290 / (217.2 x 4.10) = 32.565%, shown to two places (Oct 16: one rounding,
+  // so share and per-bushel agree): 902 x 0.3257 = 293.78 -> $294, and 290 x 220 / 217.2 = 293.74 -> $294
   assert.equal(els["gr-p"].value, "4.10");
-  assert.equal(String(els["gr-s"].value), "32.6");
-  assert.equal(els["gr-sg"].textContent, "220 bu × $4.10 = $902 gross. 32.6% of that is $294 an acre.");
+  assert.equal(String(els["gr-s"].value), "32.57");
+  assert.equal(els["gr-sg"].textContent, "220 bu × $4.10 = $902 gross. 32.57% of that is $294 an acre.");
   set("gr-s", 30);                                     // a typed share sticks when the yield changes
   set("gr-y", 200);
   assert.equal(els["gr-sg"].textContent, "200 bu × $4.10 = $820 gross. 30% of that is $246 an acre.");
@@ -115,7 +116,7 @@ test("the 'average rent' answer says it is the middle county, not NASS's state a
 
 test("the hero says these are the newest NASS rents and when the next come", () => {
   // release day from the NASS release calendar: County Estimates Cash Rents, Friday, August 21, 2026
-  assert.match(IA, /These are the 2026 county rents, the newest NASS has put out \(released Aug 21, 2026\)\. The 2027 rents usually come out in August 2027\./);
+  assert.match(IA, /These are the 2026 county rents, the newest NASS has put out \(released Aug 21, 2026\)\. NASS says county rents come out in late August every year, and they have every year since 2019; the 2027 date is not on its calendar yet\./);
 });
 
 test("every rent page stays under the 150 KB cap for a generated set", () => {
