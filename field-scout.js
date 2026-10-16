@@ -1544,10 +1544,60 @@
         (rr.text?'<p class="fs-cline" style="margin-top:.55rem"><strong>'+esc(rr.text)+'</strong>'+(rr.predicted?', '+rr.nextYear+' is likely '+(rr.predicted===1?'corn':'soybeans')+' on that pattern.':'.')+'</p>':'')+
         cropChips()+
         '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · the crop at the field\u2019s center point each year</div>'+
-        '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
+        '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>'+
+        '<div id="fs-rot-spread"></div>';
         setBody('fs-rot', html);
+        rotationSpread(poly, gen, recent);
       })
       .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','The USDA crop-history service isn\u2019t responding right now: a temporary government-server hiccup, not your field. Redraw in a few minutes.'); });
+  }
+
+  // ── 2b. One pixel can't see a split field. Read the same CDL years at up to four more
+  // points inside the outline (each a quarter of the way out from the center) and say how
+  // often they agree with each other. The chips above stay the center read.
+  function spreadPoints(ring, c){
+    var lats=ring.map(function(p){ return p.lat; }), lngs=ring.map(function(p){ return p.lng; });
+    var dy=(Math.max.apply(null,lats)-Math.min.apply(null,lats))*0.25, dx=(Math.max.apply(null,lngs)-Math.min.apply(null,lngs))*0.25;
+    var rr=ring.map(function(p){ return [p.lng, p.lat]; });
+    return [[c.lat+dy,c.lng-dx],[c.lat+dy,c.lng+dx],[c.lat-dy,c.lng+dx],[c.lat-dy,c.lng-dx]]
+      .filter(function(q){ return _hmPointInRing(q[0], q[1], rr); });
+  }
+  // years[] oldest first; reads[] = one {year: code} map per point that answered (center first)
+  function spreadSummary(years, reads){
+    var agree=0, split=[];
+    years.forEach(function(y){
+      var n={}, k=0;
+      reads.forEach(function(r){ if(r[y]==null) return; var l=crop(r[y]).l; n[l]=(n[l]||0)+1; k++; });
+      var ls=Object.keys(n); if(!k) return;
+      if(ls.length===1) agree++;
+      else split.push({ year:y, parts:ls.sort(function(a,b){ return n[b]-n[a]; }).map(function(l){ return { l:l, n:n[l] }; }) });
+    });
+    return { points:reads.length, years:agree+split.length, agree:agree, split:split };
+  }
+  window.__fsSpread = { summary:spreadSummary, points:spreadPoints };
+  function rotationSpread(poly, gen, recent){
+    if(!poly || polyAcres(poly) < 8) return;
+    var c=polyCentroid(poly), pts=spreadPoints(latlngs(poly), c);
+    if(pts.length<2) return;
+    var years=recent.map(function(x){ return x.year; });
+    var center={}; recent.forEach(function(x){ center[x.year]=x.code; });
+    Promise.all(pts.map(function(q){
+      return fetchT(FS_WORKER+'/cdl?lat='+q[0].toFixed(5)+'&lon='+q[1].toFixed(5)+'&years=10', 20000)
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){ var m={}, h=d&&!d.error?(d.history&&d.history.length?d.history:d.rotation):null; if(!h||!h.length) return null; h.forEach(function(x){ m[x.year]=x.code; }); return m; })
+        .catch(function(){ return null; });
+    })).then(function(rs){
+      if(gen!==fieldGen) return;
+      var reads=[center].concat(rs.filter(Boolean));
+      var el=document.getElementById('fs-rot-spread'); if(!el || reads.length<3) return;
+      var S=spreadSummary(years, reads);
+      if(!S.years) return;
+      if(FIELD && FIELD.rotation) FIELD.rotation.spread=S;
+      var line='<strong>Checked at '+S.points+' points across the field:</strong> '+(S.agree===S.years?'all agree in every year on record.':'they agree in '+S.agree+' of '+S.years+' years.');
+      if(S.split.length) line+=' '+S.split.slice(-3).map(function(sp){ return sp.year+': '+sp.parts.map(function(p){ return esc(p.l.toLowerCase())+' '+p.n; }).join(', '); }).join('; ')+'.';
+      if(S.split.length) line+=' A split year is a split field, a waterway or edge, or a pixel miss.';
+      el.innerHTML='<p class="fs-cline" style="margin-top:.55rem">'+line+'</p>';
+    });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
