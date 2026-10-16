@@ -106,7 +106,7 @@ test("no em dashes, no 'today's prices', byline and sources on the page", () => 
   assert.ok(!body.includes("—") && !body.includes("&mdash;"), "em dash in fast-facts.html");
   assert.ok(!js.includes("—"), "em dash in fast-facts.js");
   assert.ok(!/today(?:'|&rsquo;|’)s prices/i.test(body));
-  assert.ok(html.includes("By <strong>Sigurd Lindquist, Certified Crop Adviser (CCA)</strong>"));
+  assert.ok(html.includes("By <strong>Sigurd Lindquist, CCA</strong>"));
   assert.ok(html.includes('id="ff-sources"'));
   assert.ok(html.includes("https://www.cornnratecalc.org/"));
 });
