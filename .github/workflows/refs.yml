@@ -21,6 +21,12 @@ name: refs
 #   gh workflow run refs.yml --ref main -f ids=rma-pm-20-064,uw-a2809-2026
 #
 # Monthly on the 3rd at 09:23 UTC. Polite: one request at a time, 1.5 s apart.
+#
+# Sources of kind "rendered" (pages built by JavaScript) open in headless
+# Chromium. Playwright and the browser are installed only when the run
+# includes one (blank ids = all, so the monthly run does), into a venv in
+# RUNNER_TEMP; the plain fetch needs nothing but Python. A page that shows a
+# bot check is never saved, rendered or not.
 on:
   schedule:
     - cron: '23 9 3 * *'
@@ -61,16 +67,39 @@ jobs:
           sudo apt-get install -y -qq poppler-utils >/dev/null
           pdftotext -v 2>&1 | head -1
 
-      - name: Selftest
-        run: |
-          python3 scripts/fetch_refs.py --selftest
-          python3 scripts/fetch_refs.py --check
-
       - name: Check the input
         run: |
           # an empty input means every source; grep sees no line at all for "", so test it only when set
           if [ -n "$IN_IDS" ] && ! printf '%s\n' "$IN_IDS" | grep -Eq '^[a-z0-9,-]+$'; then
             echo "::error::ids must be source ids separated by commas"; exit 1; fi
+
+      - name: Does this run need a browser?
+        id: need
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          rows = json.load(open("references/sources.json"))["sources"]
+          want = {i.strip() for i in os.environ.get("IN_IDS", "").split(",") if i.strip()}
+          hit = [r["id"] for r in rows if r["kind"] == "rendered" and (not want or r["id"] in want)]
+          print("browser=" + ("true" if hit else "false"))
+          PY
+          cat "$GITHUB_OUTPUT"
+
+      - name: Install Playwright and Chromium
+        if: ${{ steps.need.outputs.browser == 'true' }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pw"
+          "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
+          "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
+          echo "PY=$RUNNER_TEMP/pw/bin/python" >> "$GITHUB_ENV"
+          echo "REFS_REQUIRE_BROWSER=1" >> "$GITHUB_ENV"
+
+      # With a browser installed the selftest also renders a local fixture
+      # page and must pass that (REFS_REQUIRE_BROWSER=1).
+      - name: Selftest
+        run: |
+          "${PY:-python3}" scripts/fetch_refs.py --selftest
+          "${PY:-python3}" scripts/fetch_refs.py --check
 
       # THE MAIN CHECKOUT IS SPARSE, AND A NEW WORKTREE COPIES ITS SPARSE
       # PATTERNS (git 2.38+). The first run (2026-10-15) got a references
@@ -92,7 +121,7 @@ jobs:
 
       - name: Fetch the sources
         timeout-minutes: 75
-        run: python3 scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS"
+        run: '"${PY:-python3}" scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS"'
 
       # Only this workflow writes the branch and runs one at a time, but a
       # hand edit (the README) can land in between: retry on the newest tip.
