@@ -141,7 +141,7 @@
   .rp-bar .btn{flex:none}
   @media(min-width:900px){.rp-strip,.rp-bar{display:none!important}}
   /* room under the phone bar so it never hides the end of the page */
-  @media(max-width:899px){body:has(#rp-bar:not([hidden])) .rp{padding-bottom:84px}}
+  @media(max-width:899px){body:has(#rp-bar:not([hidden])) .rp,body.rp-bar-on .rp{padding-bottom:84px}}
 
   /* the draw form */
   .rp-form{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:0 0 .6rem}
@@ -287,6 +287,7 @@
   .rp-pay{width:100%;min-height:52px;font-size:1.05rem;font-weight:700}
   .rp-pay:disabled,.rp-bar .btn:disabled{opacity:.55;cursor:not-allowed}
   .rp-promise{margin:.4rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
+  .rp-arrive{margin:.5rem 0 0;font-size:var(--fs-sm);font-weight:600;color:var(--text);text-align:center}
   .rp-noname{margin:.6rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--gold);background:var(--surface2);font-size:var(--fs-sm)}
   .rp-noname p{margin:0 0 .3rem;font-weight:600;color:var(--text)}
   .rp-noname .rp-acts{margin:0}
@@ -649,6 +650,7 @@
           <p class="rp-note rp-bad" id="rp-buy-why" hidden></p>
           <div class="rp-pay-wrap" id="rp-pay-wrap">
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
+            <p class="rp-arrive" id="rp-arrive" hidden></p>
             <p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print.</p>
             <p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.</p>
             <p class="rp-note" id="rp-paid-hint" hidden></p>
@@ -727,7 +729,7 @@
 
     <section class="rp-sec rp-biz" id="rp-biz" aria-labelledby="rp-biz-h">
       <details class="rp-biz-d" id="rp-biz-d">
-      <summary class="rp-biz-card"><span class="rp-biz-q"><b id="rp-biz-h">Ordering 5 or more for customers?</b><span class="rp-biz-sub">Elevators, co-ops, ag lenders, seed dealers. Prices drop from 10 prints.</span></span><span class="btn btn-secondary rp-biz-go">Get a quote</span></summary>
+      <summary class="rp-biz-card"><span class="rp-biz-q"><b id="rp-biz-h">Ordering 5 or more for customers?</b><span class="rp-biz-sub" id="rp-biz-sub">Elevators, co-ops, ag lenders, seed dealers. Prices drop from 10 prints.</span></span><span class="btn btn-secondary rp-biz-go">Get a quote</span></summary>
       <h2 class="sec-h">For businesses</h2>
       <p class="rp-p">For elevators, co-ops, ag lenders, seed dealers and land auction companies that give customers something in December. Each print can be a different customer&rsquo;s town and year, or the same town for the whole set. Business orders start at 5 prints: 5 to 9 prints cost the regular price, on one invoice, and 10 or more cost less per print. Every price includes shipping. For fewer than 5, <a href="#rp-buy">order the regular way</a>.</p>
       <ol class="rp-biz-steps">

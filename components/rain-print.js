@@ -246,6 +246,16 @@
     }
     return null;
   }
+  /* WHEN IT ARRIVES (2026-10-16): the same sum the Christmas dates use (proof,
+     the buyer's OK, ship, the mail, in business days from data/rain-print.json),
+     counted forward from today. A birthday or an anniversary buyer needs the
+     date as much as a Christmas one. '' when a number is missing. */
+  function arriveBy(j, id, todayIso) {
+    var tr = j && j.transit_business_days && j.transit_business_days[id];
+    var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || !parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return '';
+    return addBizDays(todayIso, parts.reduce(function (a, b) { return a + b; }, 0), Array.isArray(j.holidays) ? j.holidays : []);
+  }
   function shortDate(iso) { var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[1] - 1] + ' ' + (+m[2]) : ''; }
 
   /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
@@ -1285,6 +1295,11 @@
   var PAID_WHAT = { framed12x18: 'framed print', print12x18: '12 x 18 print', digital: 'digital file' };
   var WEEKDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   function dayWords(iso) { return WEEKDAY[new Date(iso + 'T12:00:00Z').getUTCDay()] + ', ' + shortDate(iso); }
+  // "Ordered today, it should arrive by about Mon, Nov 2." for a print or framed print; '' for the file
+  function arriveText(j, id, todayIso) {
+    var d = id === 'digital' ? '' : arriveBy(j, id, todayIso);
+    return d ? 'Ordered today, it should arrive by about ' + dayWords(d) + '.' : '';
+  }
   function paidFromUrl(search) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, '')), c = q.get('paid'), sid = q.get('s') || '';
     if (!PAID_WHAT[c]) return null;
@@ -1319,7 +1334,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
   root.RainPrint = api;
@@ -2518,7 +2533,7 @@
       render();
       if (SAMPLE) setStatus(EMPTY_STATUS);
       else {
-        ga('rain_print_draw', { style: ST.style });
+        ga('rain_print_draw', { style: ST.style, near: NEAR && ST.place === NEAR ? 1 : 0, year_kind: yearMode(ST.year, TODAY) || 'done' });
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
         if (e && !e.auto && !artShown) showArt();
@@ -2654,6 +2669,10 @@
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
     $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
+    // when it comes: this year's gift ships in January and a year NOAA hasn't finished waits, so those say so instead
+    var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(PRICES, PICK, TODAY);
+    $('rp-arrive').textContent = arr;
+    $('rp-arrive').hidden = !arr;
     syncXmas();
   }
   var MADE_BY = { print: 'Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.',
@@ -2761,8 +2780,16 @@
   function showPaid(p, sv, fire) {
     var box = $('rp-paid'), lines = paidText({ choice: p.choice, today: TODAY, prices: PRICES, saved: sv });
     box.innerHTML = '<h2>Paid. Thank you.</h2>' + lines.map(function (t) { return '<p>' + esc(t).replace('sig@farmers1st.com', '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>') + '</p>'; }).join('') +
-      '<p><a href="/rain-print">Make another</a></p>';
+      // more than one (2026-10-16): one for each of the kids, or the home farm and the rented ground
+      '<p>One for each of the kids, or for the home farm and the rented ground? Each is its own order, with its own proof.</p>' +
+      '<p>' + (sv ? '<button type="button" class="rp-linkbtn" id="rp-paid-again">Same words, another town or year</button> or ' : '') + '<a href="/rain-print" id="rp-paid-new">Make another</a></p>';
     box.hidden = false;
+    if (sv) $('rp-paid-again').addEventListener('click', function () {
+      ga('rain_print_again', { choice: p.choice });
+      try { $('rp-where').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
+      try { $('rp-year').focus({ preventScroll: true }); } catch (e) {}
+    });
+    $('rp-paid-new').addEventListener('click', function () { ga('rain_print_again', { choice: p.choice, fresh: 1 }); });
     try { box.focus({ preventScroll: true }); root.scrollTo(0, 0); } catch (e) {}
     var q = new URLSearchParams(root.location.search); q.delete('paid'); q.delete('s');
     try { root.history.replaceState(null, '', root.location.pathname + (String(q) ? '?' + q : '')); } catch (e) {}
@@ -2867,6 +2894,8 @@
     var on = phone() && canOrder() && !SHOW_EX && !paidFor && !PAY_SEEN && !TYPING && !$('rp-proof').open && !(GIFT && GIFT.usable) && $('rp-order').hidden;
     if (on) $('rp-bar-where').textContent = (META ? META.place : ST.place) + ' ' + ST.year;
     bar.hidden = !on;
+    // the room under the page for the bar, also on phones too old for :has() (iOS before 15.4)
+    try { doc.body.classList.toggle('rp-bar-on', on); } catch (e) {}
   }
   // the pinned copy is redrawn only while it shows, when the page is idle
   var MINI_T = 0;
@@ -3247,6 +3276,9 @@
     $('rp-biz-note').textContent = note; $('rp-biz-note').hidden = !note;
     var rows = bizRows(j), off = bizOff(j), max = bizQuoteMax(j, bizTiers(j.business_tiers));
     var firstOff = rows.filter(function (r) { return !r.retail; })[0];
+    // the card's own line names the first discount price, so a dealer sees a number before opening it (2026-10-16)
+    if (firstOff) $('rp-biz-sub').textContent = 'Elevators, co-ops, ag lenders, seed dealers. From ' + firstOff.from + ' prints: ' +
+      money(firstOff.prices.framed12x18) + ' framed, ' + money(firstOff.prices.print12x18) + ' a print, delivered.';
     var offs = [];
     if (off.print12x18) offs.push(money(off.print12x18) + ' off each print');
     if (off.framed12x18) offs.push(money(off.framed12x18) + ' off each framed');
@@ -3657,11 +3689,19 @@
     setTimeout(function () { var n = readInputs(); if (!DRAWING && n.place && (SAMPLE || n.place !== ST.place)) run({ type: 'submit', preventDefault: noop, auto: true }); }, 300);
   });
   ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { catchPaste($(id)); });
+  /* THE FUNNEL (2026-10-16): one rain_print_words per kind of word a reader
+     touches (name, line, day), once per visit. It says which box, never what
+     was typed. */
+  var WORDS_SENT = {};
+  function wordsEvent(kind) { if (WORDS_SENT[kind]) return; WORDS_SENT[kind] = true; ga('rain_print_words', { field: kind }); }
+  ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) {
+    $(id).addEventListener('change', function () { if ($(id).value.trim()) wordsEvent(id === 'rp-name' ? 'name' : id === 'rp-ded' ? 'line' : 'day'); });
+  });
   ['rp-name', 'rp-ded'].concat(dayNums().map(function (i) { return 'rp-m' + i + 'l'; })).forEach(function (id) { $(id).addEventListener('input', function () { endExample(); cleanField(id); if (id === 'rp-name' && $(id).value) $('rp-noname').hidden = true; restyle(true); syncDates(); }); });
   dayNums().forEach(function (i) {
     // the chip's "now pick its month and day" has been followed (or the reader moved on): it goes
     $('rp-m' + i + 'mo').addEventListener('change', function () { endExample(); syncDayList(i); syncDates(); restyle(); stripSay(i); dateSay(''); });
-    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); dateSay(''); });
+    $('rp-m' + i + 'dy').addEventListener('change', function () { endExample(); syncDates(); restyle(); stripSay(i); dateSay(''); if ($('rp-m' + i + 'dy').value) wordsEvent('day'); });
     $('rp-m' + i + 'l').addEventListener('input', function () { dateSay(''); });
     $('rp-m' + i + 'l').addEventListener('change', function () { stripSay(i); });
     $('rp-m' + i + 'rm').addEventListener('click', function () { removeDay(i); });
@@ -3679,7 +3719,7 @@
   LABEL_PRESETS.forEach(function (w) {
     var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
     b.addEventListener('click', function () {
-      endExample();
+      endExample(); wordsEvent('day');
       for (var i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'l').value) {
         $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; TOUCHED[i] = false;
         cleanField('rp-m' + i + 'l'); syncRows(); restyle(); syncDates();
@@ -3709,7 +3749,7 @@
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
-  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); if (DATA) updateUrl(); } }); });
+  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
   $('rp-pay').addEventListener('click', checkIt);
   $('rp-bar-go').addEventListener('click', checkIt);
   $('rp-noname-add').addEventListener('click', function () {
@@ -3829,7 +3869,11 @@
     var later = function () { if (tick) return; tick = true; (root.requestAnimationFrame || setTimeout)(function () { tick = false; syncStrip(); syncBar(); }); };
     root.addEventListener('scroll', later, { passive: true });
     root.addEventListener('resize', later);
-    if (root.IntersectionObserver) new root.IntersectionObserver(function (es) { PAY_SEEN = es[es.length - 1].isIntersecting; syncBar(); }).observe($('rp-pay-wrap'));
+    if (root.IntersectionObserver) new root.IntersectionObserver(function (es) {
+      PAY_SEEN = es[es.length - 1].isIntersecting; syncBar();
+      // the funnel: the pay button came on screen, once a visit (sample says whether it was still the sample)
+      if (PAY_SEEN && !STEP3_SENT) { STEP3_SENT = true; ga('rain_print_step3', { choice: PICK, sample: SAMPLE ? 1 : 0 }); }
+    }).observe($('rp-pay-wrap'));
     var typing = function (el) { return el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !/^(radio|checkbox|button|submit|file)$/i.test(el.type || '') && !$('rp-proof').contains(el); };
     /* The bar goes the moment a box has the keyboard and comes back a moment
        after it leaves, so it never pops up under a finger that is already on
@@ -3845,6 +3889,9 @@
   // Back from Stripe with the page kept as it was: no "Opening checkout" left on the screen
   root.addEventListener('pageshow', function (e) { if (e.persisted) { proofSay(''); syncBar(); } });
   // the business card opens itself for a link to it
+  var STEP3_SENT = false;
+  $('rp-biz-d').addEventListener('toggle', function () { if ($('rp-biz-d').open && !BIZ_SENT) { BIZ_SENT = true; ga('rain_print_business_open', {}); } });
+  var BIZ_SENT = false;
   function bizHash() { if (root.location.hash === '#rp-biz' || root.location.hash === '#rb-form') $('rp-biz-d').open = true; }
   root.addEventListener('hashchange', bizHash);
   bizHash();
