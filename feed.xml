@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 15 Oct 2026 10:47:50 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 16 Oct 2026 10:48:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn and beans ease back as harvest pressure builds</title>
+      <link>https://agsist.com/daily/2026-10-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-16</guid>
+      <pubDate>Fri, 16 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn is at $4.75½ overnight, down 2¾ cents from Thursday's $4.78¼ settle, and beans are off 6 cents at $12.58¼. Fund selling has picked up as combines roll and bushels keep piling into the bins. Basis stays at seasonal lows with harvest in full swing.
+• Grain slips on fund selling
+• Cattle and feeders firm overnight
+• Crude heads for a weekly gain
+Read more: https://agsist.com/daily/2026-10-16</description>
+    </item>
     <item>
       <title>Grain holds steady overnight ahead of export sales report</title>
       <link>https://agsist.com/daily/2026-10-15</link>
@@ -333,18 +344,6 @@ Action: New-crop beans at a 52-week high: price the first 10% on any settle abov
 • BEANS FIRM; CORN FLAT
 • CRUDE HOLDS; CATTLE CORRECT
 Read more: https://agsist.com/daily/2026-09-16</description>
-    </item>
-    <item>
-      <title>HOGS BREAK HARD; CATTLE HOLD; CHS DROPS $700M ON CRUSH</title>
-      <link>https://agsist.com/daily/2026-09-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-15</guid>
-      <pubDate>Tue, 15 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs dropped 2.2% to $79.72, their sharpest single-session decline in weeks, while cattle ran the other way: live at $222.20, feeders at $343.70, both posting solid gains on strong cash and technicals. Beans recovered a nickel to $13.00, corn slipped a penny and a half.
-Action: Fall calves unpriced: feeders at $343.70 and rising; a close above $345.00 is the signal to lock at least the first third.
-• CATTLE RUN; HOGS BREAK
-• BEANS RECOVER; CORN FLAT
-• CRUDE HOLDS $102; SAUDI PIPELINE OUT WEEKS
-Read more: https://agsist.com/daily/2026-09-15</description>
     </item>
   </channel>
 </rss>
