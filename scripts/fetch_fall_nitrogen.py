@@ -843,7 +843,7 @@ def selftest():
     pg = "<p>a</p><!--FALLN:STATIC-->old<!--/FALLN:STATIC-->"
     out = stamp(pg, d)
     check("stamp names the state and the date", "Iowa" in out and "Oct 16, 2026" in out and "old" not in out)
-    check("stamp has no em dash", "—" not in out and "&mdash;" not in out)
+    check("stamp has no em dash", "\u2014" not in out and "&mdash;" not in out)
     refuses("stamp needs markers", lambda: stamp("<p>a</p>", d))
 
     if fails:
