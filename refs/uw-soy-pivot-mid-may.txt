@@ -1,0 +1,444 @@
+# UW-Madison (Conley): Agronomic pivot points for mid-May planted soybeans
+# https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/
+# fetched 2026-10-16T17:59:35Z, sha256 387f0685fa445055ab49f2c72089536df2690805f32dc8a5f3b15c50c54cdf1d
+
+▶ Agronomic Pivot Points for Mid-May Planted Soybeans – Crops and SoilsShare on FacebookShare on X (Twitter)Share via EmailCopy Link
+
+Share
+
+- Share:
+
+-
+
+-
+
+-
+
+-
+
+Copied!
+
+Video Summary
+
+Dr. Shawn Conley, UW–Madison Extension soybean and small grain specialist and professor of plant and agroecosystem sciences, discusses agronomic decisions for soybeans planted in mid‑May in Wisconsin.
+
+The presentation outlines key management pivot points to protect soybean yield potential, including prioritizing corn planting, adjusting row spacing to narrower rows, and maintaining standard soybean seeding rates and maturity groups. Practical recommendations are provided to help farmers make timely, research‑based decisions during delayed planting conditions.
+
+Resources
+
+- Biomass Thresholds for Cereal Rye Cover Crop Goals
+
+- Badger Crop Network website
+
+Transcript
+
+0:05
+Alright.
+
+0:05
+Thanks, Jordyn.
+
+0:06
+Welcome everyone.
+
+0:09
+As we kind of get into this, we’ll just kind of have a well there we go.
+
+0:14
+So we’ll kind of briefly walk through where we are in the season.
+
+0:18
+I know everyone is really busy this time of year and I appreciate those of you who are on board.
+
+0:22
+So in short, if you just want the quick and dirty of what I’m going to say is basically don’t change anything except maybe narrow your soybean rows up if you can.
+
+0:32
+So that’s pretty much what I’m going to be talking about for the next 20 minutes.
+
+0:35
+So there you go.
+
+0:37
+Beyond that, we’ll just kind of dig into sort of the specifics and how we came to those recommendations.
+
+0:42
+But before we kick things off, I always want to remind people that both myself, Harkirat, Damon and Rodrigo now have the Badger Crop Network, which is our web page that is funded through grants through the Wisconsin Soybean Marketing Board and the Wisconsin Corn Growers Association.
+
+0:59
+So again, we want to give them props, but this is where all of our research and extension information is
+
+1:04
+now
+
+1:05
+housed is together on this one web page.
+
+1:09
+So it’s a quick update of where we are in the planting season in terms of the soybean side of things.
+
+1:14
+So our program now has, if you look at our research sites across the state, basically we had everything planted as of last week Friday except for Spooner.
+
+1:24
+I’m waiting to get a text from Phil, from Phil Holman at Spooner to see where our Spooner beans are.
+
+1:33
+If they’re in the ground or still in the planter.
+
+1:36
+But regardless everything else is in the ground.
+
+1:39
+If we look at planting projections for 2026, I think what we’re we’ve heard is we could see up towards a half a million extra or more acres of soybean planted in 26 that we saw in 2025.
+
+1:54
+But again, it’s always hard to tell in terms of what planting intentions actually, you know, evolve into during the growing season.
+
+2:02
+But based on the spring we’ve had this year, I don’t expect that to probably change that much.
+
+2:07
+So I’m guessing an extra half million acres of soybeans will be planted in the state of Wisconsin in 2026.
+
+2:15
+In terms of in short, where we sitting at, we’re just basically most of the soybeans have been planted over the last two to three weeks are just cracking or just coming out of the ground.
+
+2:23
+Here are some pictures of some soybeans that we had planted on the left.
+
+2:28
+We have into some no-till corn ground.
+
+2:32
+They were planted on April 26th, excuse me April 22nd and then we have some in some different termination times for cover crops here.
+
+2:40
+So we’re basically right at that VE-VC growth stage.
+
+2:44
+So again even and we actually were just scouting one of our trial locations where we planted into dry dirt and it’s still dry dirt.
+
+2:53
+So those beans are still sitting whole and intact and waiting for some of this rainfall to come through hopefully this either Friday or Monday whenever we get the next significant rainfall event.
+
+3:05
+Now, one of the things that we’ve done this last year, as was referring to cover crops in the last slide is we work with Damon Smith and some others in order to develop a cereal rye biomass estimation tool.
+
+3:18
+So in the last slide you saw where we still had some living cover crops.
+
+3:23
+We ran this model that is, you know, free for everyone to use.
+
+3:26
+It’s up and running on our Crop Risk Tool platform and it estimates that we’re roughly at about 3600 lbs of biomass, of cereal rye biomass in that field as we speak right now.
+
+3:40
+Then why is that important?
+
+3:42
+Recently what we did is we developed this joint across different discipline publication called “Biomass Thresholds for Cereal Rye Cover Crop Goals”.
+
+3:52
+We have a really good info graphic here showing, you know termination times based on what we’re going to be controlling.
+
+3:59
+You see here when we said on the last slide, we’re estimating we’re about 3600 lbs in that field.
+
+4:05
+So that gives us enough biomass.
+
+4:06
+So we start seeing giant ragweed suppression.
+
+4:10
+In order to get waterhemp suppression, we need about 4000 lbs of cereal rye cover crop biomass in that field.
+
+4:19
+And if I’ll go back to that original slide, that’s where this green line is.
+
+4:23
+So what this model allows you to do is estimate what you have in the field right now, then also estimate if you’re trying to hit a specific cover crop termination goal timing where you might be in that.
+
+4:34
+So that thing, this is going to be probably next Monday or Tuesday, we’re going to hit that 4000 lb mark.
+
+4:40
+For more detailed information on this, we have a QR code on the right lower right-hand side to scan that and you can get more in depth information about all of the different metrics and how we came up with this information for hitting our cereal rye cover crop goals.
+
+4:58
+I’m going to quickly walk through, you know, where we are in terms of the growing season and what management changes we could do.
+
+5:04
+Obviously we’re at our delayed on planting date.
+
+5:07
+We’re going to talk a little bit about seeding rate, we’re going to talk a little bit about maturity group and a little bit about row spacing.
+
+5:13
+So again, I’m not going to spend a lot of time on this because basically I’m going to tell you don’t do anything, but I’ll kind of again address why not.
+
+5:20
+So as we’ve clearly been talking about for probably the last decade here, we’re trying to get farmers to, you know, plant soybeans earlier and earlier.
+
+5:27
+And in most cases trying to get at least depending on the time of year and planting availability, get your, some of your soybean crop planted before you even put a kernel of corn in the ground.
+
+5:39
+And this just shows some of the yield trends we see.
+
+5:42
+And for the most part, you know how you would read this.
+
+5:45
+I’ll go over this, TED
+
+5:46
+5R ’cause it’s just southern Wisconsin, this orange coloration. Past roughly April 10th, we’re losing 2.1 bushels per acre per week.
+
+5:55
+So we’re roughly, you know, lost at that point.
+
+6:00
+We’re probably about 5 or 4 weeks from that.
+
+6:03
+So we’ve lost about 8 bushels in theory from theoretical maximum yield.
+
+6:08
+That being said, I, you know, I don’t expect us given the delayed planting that we’ve seen in the cool season to have record yields like we did last year.
+
+6:16
+But you know, it’s always hard to tell on soybeans until we actually get that, you know, that grain in, in the bins.
+
+6:22
+But this is kind of where we’re sitting right right now.
+
+6:26
+With that being said that you know, we’ve been trying to push farmers to like I said earlier, put a little, put some soybeans in the ground and prioritize some of your acres of soybeans ahead of corn.
+
+6:36
+This is just an example farm in southern Wisconsin showing that that flip date, if you will was April 20th.
+
+6:43
+And again, that ranges if you’re in Spooner till later, it’s actually I think it was May 5th or 6th where that flip date is, you know, southern Wisconsin, it’s usually in that last week of April. And why this really comes into fruition is right here.
+
+6:58
+I think Harkirat did a really good job talking about the yield penalties across here.
+
+7:03
+So we see in this example, this is corn and this is our soybean yield penalty.
+
+7:09
+And then at this time of the growing season, where we are sitting, I believe we’re on May 13th, we’re really in this significant decline in yield penalty for delayed planting and corn versus where we are in soybean.
+
+7:20
+Obviously we’re losing yield by delaying planting, but not to the extent that we are with corn.
+
+7:26
+So again, it, it pains me to say, but I kind of tweeted this out last week.
+
+7:31
+It’s time to prioritize corn planting if possible, if the ground is fit and you know, you follow Harkirat’s, you know, notes from just prior to me speaking.
+
+7:42
+But again, looks like you should really be focusing on getting your corn in the ground and then finishing up all other soybean acres you might have after that.
+
+7:51
+Now in terms of some of our seeding rate recommendations, just some work that we did a few years ago.
+
+7:56
+Again, it’s getting a little bit old and we’ve got some new plots out this year.
+
+8:00
+But basically what it’s telling us is that even at this mid-May, May 13th timeframe, you know, we probably really don’t not need to be changing our seeding rate.
+
+8:10
+If we were planning a bag an acre at 140,000 seed count, we’d probably stick with a bag an acre at 140,000 seed coat.
+
+8:17
+Or seed count. If you’ve, if you’ve dropped it due to white mold or other things, you know, probably wouldn’t need to be dropping it as much.
+
+8:26
+Even if you’re going into these white mold fields, unless there’s like a lot of manure or high fertility, then you may still want to keep it at that 110,000.
+
+8:34
+But otherwise probably a bag an acre is where you want to stick to.
+
+8:37
+Now with that being said, we’re running a quick and dirty economic analysis and I know this will probably not surprise anyone here, but the recommendations still planting now in terms of return on investment for seed and we’re just talking about seed and yield, you know we’re not bringing in weed control at all.
+
+8:57
+The optimal seating rate would be 100,000 seeds per acre even in this May 13th time frame.
+
+9:03
+But again, this looks at based on the seed cost of $65 per unit of seed and then whatever you’ve priced your 2026 beans at, let’s say $10, we’re looking at roughly an 8 to $10 price increase by still dropping only 100,000 seeds per acre.
+
+9:22
+Again, that really doesn’t take into effect delayed canopy and management of waterhemp.
+
+9:31
+So again, I would still encourage farmers to stick at that 140,000 seed count unless you have a very strong weed management plan for waterhemp.
+
+9:42
+In terms of some of the replant decisions, generally what we tell farmers that unless you have under 60,000 plants per acre up and actively growing, you know, don’t do anything. Okay. Don’t even touch that crop.
+
+9:56
+Here’s where we are at 60,000.
+
+9:59
+You know, we’re, we would obviously have a yield reduction from 140,000.
+
+10:05
+We’d probably be down.
+
+10:06
+What is that 4, 3-4 bushels?
+
+10:11
+I guess this cost
+
+10:12
+depends on the cost of your replant decision.
+
+10:15
+But even if you have free seed, the cost of diesel is very expensive right now.
+
+10:19
+Your time as a farmer again.
+
+10:21
+I wouldn’t even touch that field unless it’s under 60,000 plants per acre.
+
+10:27
+And if it is under 60,000, just do a repair plant, which means you don’t start over from scratch.
+
+10:33
+You just go into that field, set the planter at an angle so as to not run over or disturb any of those existing growing plants as they are, and just plant into your existing stand.
+
+10:45
+That population that’s in the field right now has a higher yield potential than anything you’d be putting in the ground today.
+
+10:52
+Alright.
+
+10:55
+Now in terms of some maturity group decisions as we get later and later again at this time of the growing season, even as we get into June, I probably early June, we still ask farmers don’t really make any changes to the maturity group you’re planting.
+
+11:09
+Here’s an example of some work that we did where we planted anywhere from a 0.2 bean all the way to a 2.9 maturity group bean from April 12th all the way through July 20th.
+
+11:22
+This is a, an image from a drone on September 14th.
+
+11:27
+Here’s the same field 2 weeks later.
+
+11:29
+Again, this just gets at the fact that soybean has a tremendous amount of phenotypic plasticity that can understand and they don’t understand they they don’t know, but they sense that the season is ending and they quickly go through the the maturation process in order to make sure we have mature viable seeds.
+
+11:47
+So what we really look at here, it’s here we have some data from 2022 at this planting date of May 19th, we see anything from a maturity Group 1 to a 2.9 yielding relatively the same.
+
+12:03
+And we go into 2023, anything from a 1.0 to a 2, but roughly 6 yielding relatively the same.
+
+12:11
+So basically what we’re saying here is whatever maturity group full season bean you’re planting doesn’t matter, you don’t need to adjust it at all.
+
+12:19
+Even as we get into some of our later June plantings, as you can see from our data here, you know maturity group really doesn’t have a huge response in terms of yield potential.
+
+12:32
+All right, lastly, the whole thing with row spacing and we kind of talked a little bit about this.
+
+12:37
+This is data is a little bit older, but NASS doesn’t collect this information anymore because there’s a sense of most farmers are still planting 7 1/2 and 15 as they go into southern Wisconsin, southwest Wisconsin.
+
+12:50
+We still see a bunch of 30 inch row planters rolling.
+
+12:55
+And what we tend to see that is that, you know, we’ll talk about some of the older data, some of the smaller plot data that we’ve done in the past.
+
+13:03
+But as our yields have increased due to earlier planting, the yield difference between wide rows and narrow rows shrink.
+
+13:13
+However, as we get into lower yield potential, i.e., later planting, then we see those yield differences still remain.
+
+13:22
+So the point is, is that you have the capacity, it’s May 13th and you still have a 15 inch row planter and you maybe haven’t been utilizing that because you can’t cover the acres.
+
+13:34
+I think you need to be able to break that out and use that for finishing off your soybean planting versus remaining with your 30 inch row beans just because of yield potential at this time of the season.
+
+13:44
+Now for planting on April 20th, no problems, put your beans in 30s, you’re good to go.
+
+13:50
+We don’t really see any yield penalty with those earlier planting.
+
+13:53
+It’s just once we get into this mid-May and later we tend to see that breakout, this kind of just gets into that and this is some of the physiological reasons behind that.
+
+14:03
+And I’ll point here to the South.
+
+14:05
+Basically this just shows is the longer it takes from planting date to when those soybeans hit R3, the yield difference, yield differences between row spacing shrink.
+
+14:17
+So it’s short because we’re delayed planting
+
+14:20
+the number of days between when you plant today and the number of days it’s going to take to hit R3 soybeans is going to be probably in that 50 to 60 day range.
+
+14:30
+You’re going to see a yield penalty if you stick with your 30 inch rows.
+
+14:35
+So in summary and in conclusion, the only recommendation that I would ask farmers to even think about considering is narrowing up your row spacing back to 15s, 20s, you know, if at all possible.
+
+14:47
+Otherwise, don’t change your soybean maturity group, don’t change your variety, don’t change your seeding rate.
+
+14:53
+You know, planting date is set when you can get in.
+
+14:56
+So it’s pretty simple, easy peasy going forward on the soybean side of things.
+
+15:01
+So with that, I know I ran through stuff quickly, but again, there ain’t nothing to change.
+
+15:06
+If it ain’t broke, don’t fix it.
+
+15:08
+So with that, I’m going to stop, see if there’s any questions and bring everyone else on.
+
+Back to top
+
+Badger Crop Connect
+
+Timely Crop Updates for Wisconsin
+
+Second and fourth Thursdays 12:30 – 1:30 p.m.
+
+Live via Zoom
+
+More about Badger Crop Connect
+
+Print This Page
+
+You May Also Like
+
+- ▶ Wisconsin Soil Test Results Summary
+
+- ▶ Phosphorus Fertilizer Enhancement Products: Real Value or Just Extra Cost?
+
+- ▶ Evaluating Nutrient Removal in Wisconsin Alfalfa Fields
+
+- ▶ 2026 Mid-Summer Alfalfa and Forage Update

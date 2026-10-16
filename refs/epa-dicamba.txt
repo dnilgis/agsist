@@ -1,0 +1,69 @@
+# EPA: dicamba registration (2026 OTT labels)
+# https://www.epa.gov/pesticides/dicamba
+# fetched 2026-10-16T17:59:39Z, sha256 fe5f5b02c0c512aa184fd17202d667ac2191532760216546ee733a8344568de9
+
+Dicamba | US EPALockPrimary navigationOpen Sidenav MenuClose Sidenav Menu
+
+-
+
+-
+
+Dicamba
+
+Dicamba is a selective systemic herbicide used to control annual, biennial and perennial broadleaf weeds in a variety of food and feed crops and in non-agricultural settings.
+
+On this page:
+
+- Basic information
+
+- EPA actions
+
+- Additional information
+
+On a separate web page:
+
+- Registration of Dicamba for Use on Dicamba-Tolerant Crops
+
+Basic Information
+
+Dicamba has been used as a pesticide since 1967 in both agricultural and non-agricultural areas:
+
+- The largest agricultural markets for dicamba in terms of total pounds of active ingredient include corn, cotton, fallow, pasture, sorghum, soybeans, sugarcane and wheat crops.
+
+- It is also used on asparagus, barley, conservation reserve program land, uncultivated land, hay, grass grown for seed, oats, pastures/rangelands, proso millet and triticale.
+
+- Some dicamba products can be sprayed over-the-top (OTT) of genetically engineered soybeans and cotton after the crops have emerged from the ground.
+
+- Non-agricultural uses include agricultural premises, commercial and residential turf, cut stump treatment, forestry, golf courses, gardens/ornamentals, outdoor industrial areas, rights of ways, recreational and residential lawns, and residential areas.
+
+Dicamba products are sold as liquids, liquid concentrates, granules, water dispersible granules, ready-to-use sprays, and wettable powders. Products may be applied by ground and aerial equipment, banded wiper, soil incorporation, basal bark/cut stem and spot treatment methods.
+
+EPA Actions
+
+Registration Review
+
+Dicamba is currently undergoing registration review, a program that re-evaluates all pesticides on a 15-year cycle.
+
+In July 2022, EPA released a second addendum to the 2016 draft human health risk assessment and a draft ecological risk assessment and a draft ecological risk assessment for dicamba. The draft risk assessments (DRAs) are part of a multi-step re-evaluation process for the full dicamba case and considers all registered products and all registered uses, including OTT applications to growing plants. The human health risk assessment identified potential occupational handler risks of concern for mixing and loading dry flowable formulations for application to sod and field crops. The Agency did not identify dietary, residential, aggregate, or post-application risks of concern.
+
+In addition, the draft ecological risk assessment identified potential adverse effects to birds, mammals, bees (larvae), aquatic plants and non-target terrestrial plants for all dicamba uses but did not include an Endangered Species Act (ESA) assessment of risk to listed species. The primary ecological risk of concern is for non-target terrestrial plants from exposure through spray drift and volatilization. Numerous non-target plant incidents associated with the use of dicamba have been reported. Since the initial registration of OTT uses in 2016, there has been a substantial increase in the overall number of reported non-target plant incidents which appear to be linked to the OTT uses. EPA continues to monitor the incidents information for dicamba.
+
+After reviewing and considering the public comments received on the DRAs, EPA will issue a proposed interim decision (PID), which will identify potential risk mitigation and control measures for herbicide as needed to address any of concern identified in the DRAs. This PID is the next step in the Federal Insecticide, Fungicide, and Rodenticide Act (FIFRA) registration review process.
+
+Additional Information
+
+- Chemical Search (EPA risk assessments, decisions, and other documents)
+
+- Dicamba Registration Review Docket EPA-HQ-OPP-2016-0223 at www.regulations.gov.
+
+Pesticides
+
+-
+
+-
+
+Contact Us About Pesticides
+
+Contact Us About Pesticides to ask a question, provide feedback, or report a problem.
+
+Last updated on February 6, 2026

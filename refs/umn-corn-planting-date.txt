@@ -1,0 +1,156 @@
+# UMN Extension: Planting date considerations for corn
+# https://extension.umn.edu/corn-planting/planting-date-considerations-corn
+# fetched 2026-10-16T17:59:37Z, sha256 00301b01a273ec51bc7efd252ceb50421817f8340c88a1688a278463a6c1164c
+
+Planting date considerations for corn | UMN ExtensionPlus sign (+) if content is closed, 'X' if content is open.
+
+-
+Home
+
+-
+Agriculture
+
+-
+Crop production
+
+-
+Corn
+
+-
+Planting date considerations for corn
+
+Timely planting in good soil conditions is the foundation for successful corn production.
+
+Maximize yield
+
+- Generally, growers maximize corn yield if they plant in late April or early May.
+
+- When spring arrives early, planting in mid-April produces a similar yield if young plants are not damaged by a freeze in May.
+
+- In years with few growing degree days in late April and the first half of May, growers can maximize corn yield when planting in mid-May.
+
+How planting date affects corn yield, as a percent of maximum
+
+Planting date
+Percent of maximum grain yield
+Study 1: Lamberton (1988–2003)*
+
+Percent of maximum grain yield
+Study 2: Lamberton, Morris and Waseca (2009–2011)
+
+April 20
+99%
+98%
+
+April 25
+100%
+99%
+
+April 30
+100%
+100%
+
+May 5
+99%
+100%
+
+May 10
+98%
+99%
+
+May 15
+95%
+98%
+
+May 20
+92%
+95%
+
+May 25
+87%
+92%
+
+May 30
+82%
+89%
+
+June 4
+76%
+84%
+
+June 9
+69%
+79%
+
+*Source: Bruce Potter and Steve Quiring, University of Minnesota
+
+Optimal planting dates
+
+In Minnesota, soils are rarely fit for corn planting before the earliest date established for crop insurance. Corn planting date studies from 1988 to 2003 in Lamberton show that planting dates ranging from April 21 to May 6 produced yields within 1 percent of the maximum. A later study in Lamberton, Morris and Waseca supports these results. It showed growers optimized yield, on average, when they planted between April 25 to May 10. In the 10 instances when planting occurred before April 18, yields were 82 to 100 percent of the maximum, averaging at 94 percent.
+
+Corn yield response to planting dates in Lamberton, 1988 to 2003
+
+Corn yield response to planting dates in Lamberton, Morris and Waseca, 2009-2011
+
+Early spring planting considerations
+
+When spring arrives early in Minnesota, growers should weigh the risks and benefits of planting earlier than usual.
+
+Consider insurance coverage
+
+Farmers with Federal crop insurance will lose replant coverage if they plant before the earliest allowable planting dates specified by the United States Department of Agriculture (USDA) Risk Management Agency, even if they need to replant due to factors other than freeze damage or poor emergence.
+
+For Minnesota, the earliest allowable planting date is April 11.
+
+View information from the agency’s St. Paul Regional Office.
+
+Factor in frost risk
+
+Frost-damaged corn plant
+
+A risk of early planting is frost damage to young corn plants, which Minnesota experiences from time to time. Although the growing point on corn is below the soil surface until the five-leaf collar stage (V5), new growth often has trouble emerging through frost-damaged tissue, resulting in buggy-whipped plants.
+
+How frost damage affects yield
+
+Frost damage to plants shorter than 6 inches can reduce yield by 9 to 15 percent, according to the Texas A&M AgriLife Extension Service. This is likely related to the subsequent unevenness in the stand and competition among plants.
+
+For example, research in Lamberton found that when a corn plant lagged behind neighboring plants by one leaf stage early in the season, yield dropped by 20 percent. A corn plant two leaf stages behind neighboring plants early in the season had a 51 percent yield reduction.
+
+How to assess the risk of frost damage
+
+Emerging or spiking corn is less affected by a freeze than corn at later growth stages (V1 or later).
+
+Because corn requires about 155 growing degree days to reach the V1 stage, growers can assess frost damage risk by following these steps:
+
+- Calculate growing degree days (GDD) using expected air temperatures.
+
+- Use the planting date to project when the corn will reach the V1 stage (155 GDD later).
+
+- Compare the projected V1 stage date to the historical last spring freeze.
+
+For most regions in Minnesota, planting dates earlier than April 15 are likely to result in corn plants reaching the V1 stage or larger before the last spring freeze, based on long-term averages.
+
+Use the Corn Growing Degree Day (GDD) decision support tool to help predict the risk of spring frost or early fall frost.
+
+How to deal with delayed planting
+
+Typically, corn yield declines rapidly when planting is delayed beyond mid-May. Rapid yield declines did not occur in the research studies unless planting was delayed beyond that point.
+
+However, any advantages of planting before mid-May can disappear if growers plant when soils are too wet.
+
+When corn planting is delayed beyond the third week in May, switching from late-maturity hybrids to earlier-maturity hybrids reduces the risk of the corn freezing in the fall before it reaches maturity. Research from Illinois and Minnesota indicates the optimal final plant population for corn is not affected by planting date.
+
+Nafziger, E.D. (1994). Corn planting date and plant population. Journal of Production Agriculture, 7(1), 59-62. Corn Planting Date and Plant Population
+
+Van Roekel, R.J., & Coulter, J.A. (2011). Agronomic responses of corn to planting date and plant density. Agronomy Journal, 103(5), 1414-1422.
+
+Author: Jeff Coulter, Extension agronomist
+
+Thanks to the Minnesota Corn Growers Association for funding this research.
+
+Reviewed in
+2024
+
+-
+
+Page survey
