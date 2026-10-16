@@ -1,0 +1,133 @@
+# WSSA: Herbicide site of action classification
+# https://wssa.net/wssa/weed/herbicides/
+# fetched 2026-10-16T22:34:21Z, sha256 aadbec2dc1b1e981602064e53b33b45e6b1c11a03914b1929ce7102d07b1fdc1
+
+Herbicides - Weed Science Society of America
+
+Home » Weeds » Herbicides
+
+Resources
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Herbicides
+
+List of Herbicides
+
+- HRAC Global Herbicide MOA Classification (last modified:2024)
+
+- Common and chemical names used by WSSA
+
+- HRAC – Global Classification lookup tool
+
+Information for Submitting New Herbicide Site of Action/Classification
+
+- To request new herbicide MOA
+
+Chemical Structures
+
+Herbicide MOA Classification Master List with Molecular Structures (January 2026)
+
+Click here to download a zipped file (880KB) with all structures in wmf format. These structures have been provided by Bill Ahrens. They may be used for educational uses. *Please note that these resources are provided for reference only, and no age information is associated with the structures.
+
+Additional Resources
+
+- https://sitem.herts.ac.uk/aeru/ppdb/en/index.htm
+
+- https://pubchem.ncbi.nlm.nih.gov/
+
+Photography of Herbicide Effects on Plants
+
+These time-lapse photography videos show the effects of various herbicides on plants. The videos were originally prepared by Larry Burrill and Jerry Hill at Oregon State University and were further modified for digital format and made available for public use by D. R. Pike.
+
+This information is copyrighted and may not be reproduced without the express permission of Oregon State University. For full video and information contact Oregon State University.
+
+The movies are in AVI format, and will require a video player, such as Microsoft Windows Media Player, or similar.
+
+POSTEMERGENCE APPLICATIONS (POST)
+
+- 2,4-D on Tomato (4.7M)
+
+- Clopyralid on Canada Thistle (4.6M)
+
+- Paraquat on Bean (5.7M)
+
+- Paraquat on Corn (4.6M)
+
+- Fluazifop-butyl on Soybean and Oat (5.2M)
+
+- Fluazifop-butyl on Cotton and Johnsongrass (5.0M)
+
+- Sethoxydin on Soybean and Oat (5.0M)
+
+- Diclofop-methyl on Wheat and Oat (4.8M)
+
+- Glyphosate on Cowpea (5.0M)
+
+- Glyphosate on Barley and Oat (5.2M)
+
+- Atrazine on Cocklebur (4.2M)
+
+- Chlorsulfuron on Sugarbeet (3.8M)
+
+- Chlorimuron-ethyl on Soybean and Cocklebur (5.1M)
+
+PREEMERGENCE APPLICATIONS (PRE)
+
+- Atrazine on Oat (4.9M)
+
+- Trifluralin on Oat Roots (5.4M)
+
+- Metolachlor on Oat (5.0M)
+
+PREPLANT APPLICATIONS (INCORPORATED WITH IRRIGATION)
+
+- EPTC on Oat (2.8M)
+
+- EPTC plus Safener on Corn and Sudangrass (4.9M)
+
+- Chlorsulfuron on Bean (5.0M)
+
+WSSA Herbicide Handbook
+
+10th Edition
+
+Download the latest
+
+WSSA Newsletter
+
+Find Weed Science Books in the Bookstore
+
+News
+
+Farm Tour Takes Collaborative Approach to Endangered Species
+
+Don’t Miss Optimal Cover Crop Opportunities
+
+WSSA and APMS Collaborate to Advance Aquatic Weed Management

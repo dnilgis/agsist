@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T22:26:58Z",
+ "run_utc": "2026-10-16T22:34:21Z",
  "sources": [
   {
    "bytes": null,
@@ -8715,6 +8715,31 @@
    ],
    "status": "new",
    "text_chars": 1089
+  },
+  {
+   "bytes": 182014,
+   "sha256": "aadbec2dc1b1e981602064e53b33b45e6b1c11a03914b1929ce7102d07b1fdc1",
+   "fetched_utc": "2026-10-16T22:34:21Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/wssa-herbicide-sites.html",
+   "final_url": "https://wssa.net/weed/herbicides/",
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "wssa-herbicide-sites",
+   "url": "https://wssa.net/wssa/weed/herbicides/",
+   "title": "WSSA: Herbicide site of action classification",
+   "why": "/fast-facts: herbicide group numbers and sites of action in the Pest and weed tab",
+   "kind": "html",
+   "checked_utc": "2026-10-16T22:34:14Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 2645
   }
  ]
 }
