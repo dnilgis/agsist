@@ -610,69 +610,6 @@ function calcGDU(){
 ['gdu-max','gdu-min','gdu-acc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',calcGDU);});
 calcGDU();
 
-/* ─── SPRAY CONDITIONS ──────────────────────────────────────────────── */
-var sprayLat=null,sprayLon=null;
-function evalSprayFactor(type,val){
-  var chip,cls;
-  if(type==='temp'){chip=val<50?'Too Cold':val>90?'Too Hot':val>=60&&val<=85?'Good':'Marginal';cls=val>=60&&val<=85?'good':val<45||val>95?'poor':'marginal';}
-  else if(type==='wind'){chip=val<=10?'Good':val<=15?'Marginal':'Too Windy';cls=val<=10?'good':val<=15?'marginal':'poor';}
-  else if(type==='hum'){chip=val>=40?'Good':val>=25?'Marginal':'Too Dry';cls=val>=40?'good':val>=25?'marginal':'poor';}
-  else if(type==='cloud'){chip=val>=30?'Good':val>=15?'Marginal':'Very Sunny';cls=val>=30?'good':val>=15?'marginal':'poor';}
-  else if(type==='precip'){chip=val===0?'None':val<2?'Light':val>=2?'Rain':'None';cls=val===0?'good':val<2?'marginal':'poor';}
-  return{chip:chip,cls:cls};
-}
-function setSprayFactor(id,val,chipId,type){
-  var el=document.getElementById(id);if(el)el.textContent=val;
-  var chip=document.getElementById(chipId);if(!chip)return;
-  var r=evalSprayFactor(type,parseFloat(val)||0);
-  chip.textContent=r.chip;chip.className='spray-factor-chip '+r.cls;
-}
-function renderSprayConditions(w){
-  var t=w.temperature_2m||'--';var wind=w.windspeed_10m||'--';var hum=w.relativehumidity_2m||'--';
-  var cloud=w.cloudcover||'--';var precip=w.precipitation||0;
-  setSprayFactor('spr-temp',Math.round(t)+'\u00b0F','spr-temp-chip','temp');
-  setSprayFactor('spr-wind',Math.round(wind)+' mph','spr-wind-chip','wind');
-  setSprayFactor('spr-hum',Math.round(hum)+'%','spr-hum-chip','hum');
-  setSprayFactor('spr-cloud',Math.round(cloud)+'%','spr-cloud-chip','cloud');
-  setSprayFactor('spr-precip',precip+'"','spr-precip-chip','precip');
-  var scores=[evalSprayFactor('temp',t).cls,evalSprayFactor('wind',wind).cls,evalSprayFactor('hum',hum).cls,evalSprayFactor('precip',precip).cls];
-  var poor=scores.filter(function(s){return s==='poor';}).length;
-  var marginal=scores.filter(function(s){return s==='marginal';}).length;
-  var overall,ov_cls,rec;
-  if(poor>=2){overall='Poor';ov_cls='poor';rec='<strong>Do not spray</strong>: multiple unfavorable conditions present.';}
-  else if(poor>=1||marginal>=2){overall='Marginal';ov_cls='marginal';rec='<strong>Use caution</strong>: conditions are marginal. Monitor closely and adjust timing if possible.';}
-  else{overall='Good';ov_cls='good';rec='<strong>Conditions are suitable for application.</strong> Always verify wind &lt;10 mph and no rain within 4 hours.';}
-  var ove=document.getElementById('spr-overall');if(ove)ove.textContent=overall;
-  var ovc=document.getElementById('spr-overall-chip');if(ovc){ovc.textContent=overall;ovc.className='spray-factor-chip '+ov_cls;}
-  var ss=document.getElementById('spray-status');if(ss){ss.textContent=overall;ss.className='spray-widget-status '+ov_cls;}
-  var sr=document.getElementById('spray-rec');if(sr)sr.innerHTML=rec;
-}
-function fetchSprayWeather(lat,lon){
-  var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current_weather=false&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,cloudcover,precipitation&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&forecast_days=1&timezone=auto';
-  fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(data){
-    if(!data||!data.hourly)return;
-    var now=new Date();var hr=now.getHours();var h=data.hourly;
-    var w={temperature_2m:h.temperature_2m[hr],relativehumidity_2m:h.relativehumidity_2m[hr],windspeed_10m:h.windspeed_10m[hr],cloudcover:h.cloudcover[hr],precipitation:h.precipitation[hr]};
-    renderSprayConditions(w);
-  }).catch(function(){});
-}
-function sprayFromGeo(){
-  if(window.AGSIST_STATE&&window.AGSIST_STATE.lat){fetchSprayWeather(window.AGSIST_STATE.lat,window.AGSIST_STATE.lon);return;}
-  setTimeout(sprayFromGeo,800);
-}
-sprayFromGeo();
-document.getElementById('spray-go')&&document.getElementById('spray-go').addEventListener('click',function(){
-  var zip=document.getElementById('spray-zip').value.trim();
-  if(zip.length!==5)return;
-  fetch('https://nominatim.openstreetmap.org/search?postalcode='+zip+'&country=US&format=json&limit=1')
-    .then(function(r){return r.json();}).then(function(d){
-      if(!d||!d[0])return;
-      var lat=d[0].lat;var lon=d[0].lon;
-      var lbl=document.getElementById('spray-loc-label');if(lbl)lbl.textContent=d[0].display_name.split(',')[0];
-      fetchSprayWeather(lat,lon);
-    }).catch(function(){});
-});
-
 /* ─── CROP STAGES TIMELINE ──────────────────────────────────────────── */
 var stagesInited=false;
 function initStages(){

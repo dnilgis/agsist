@@ -181,32 +181,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-pest .pn{display:block;font-size:0.74rem;color:var(--text-muted);margin-top:.15rem;line-height:1.4;}
 .ff-pest td{vertical-align:top;}
 .sev-med{color:var(--gold);}.sev-high{color:#e05c5c;}
-.spray-widget{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin-bottom:1rem;}
-.spray-widget-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:.4rem;}
-.spray-widget-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;}
-.spray-widget-status{font-size:0.78rem;font-weight:700;padding:.22rem .7rem;border-radius:20px;border:1px solid;}
-.spray-widget-status.good{color:var(--green);border-color:rgba(58,139,60,.4);background:rgba(58,139,60,.1);}
-.spray-widget-status.marginal{color:var(--gold);border-color:rgba(230,176,66,.4);background:rgba(230,176,66,.1);}
-.spray-widget-status.poor{color:#e05c5c;border-color:rgba(224,92,92,.4);background:rgba(224,92,92,.1);}
-.spray-widget-status.loading{color:var(--text-muted);border-color:var(--border);background:transparent;}
-.spray-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem;}
-@media(min-width:600px){.spray-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
-.spray-factor{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .5rem;text-align:center;}
-.spray-factor-label{font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;}
-.spray-factor-val{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text);}
-.spray-factor-chip{font-size:0.755rem;font-weight:700;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;display:inline-block;}
-.spray-factor-chip.good{background:rgba(58,139,60,.15);color:var(--green);}
-.spray-factor-chip.marginal{background:rgba(230,176,66,.15);color:var(--gold);}
-.spray-factor-chip.poor{background:rgba(224,92,92,.15);color:#e05c5c;}
-.spray-rec{font-size:0.79rem;color:var(--text-dim);line-height:1.5;border-top:1px solid var(--border);padding-top:.65rem;}
-.spray-rec strong{color:var(--text);}
-.spray-loc-row{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap;}
-.spray-loc-in{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.32rem .55rem;width:100px;outline:none;}
-.spray-loc-in:focus{border-color:var(--gold);}
-.spray-loc-btn{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px;}
-.spray-loc-btn:hover{border-color:var(--gold);}
-.spray-link{font-size:0.77rem;color:var(--gold);text-decoration:none;margin-top:.4rem;display:inline-block;}
-.spray-link:hover{text-decoration:underline;}
 
 .eco-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1.2rem;}
 @media(min-width:500px){.eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
@@ -853,17 +827,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <p class="ff-sub">The N, P&#x2082;O&#x2085; and K&#x2082;O in the manure at dated posted prices: an acre, per 1,000 gal or ton, and for the field. All the pounds count, with the first-year part under the total; type your own test and it uses your pounds. The same calculator as on <a href="/manure-value#calculator">the manure value page</a>.</p>
 <div class="mvc" data-mv-calc><p class="ff-sub">The calculator needs JavaScript.</p></div>
 
-<div class="ff-h2" style="margin-top:1.5rem">Manure Output by Animal</div>
-<p class="ff-sub">As excreted, before bedding, wash water or rain get in. What goes to storage runs higher.</p>
-<div class="ff-tw" tabindex="0" role="region" aria-label="Manure Output by Animal table, scrolls sideways"><table class="ff-t">
-<thead><tr><th class="tl">Animal &amp; Weight</th><th>lb/day</th><th>ton/year</th><th>gal/day</th><th>1,000 gal/year</th></tr></thead>
-<tbody>
-  <tr><td class="tl">Dairy, 1,400 lb</td><td>148</td><td class="hi">27</td><td>17.7</td><td>6.5</td></tr>
-  <tr><td class="tl">Beef, 1,100 lb</td><td>80</td><td class="hi">15</td><td>9.5</td><td>3.5</td></tr>
-  <tr><td class="tl">Swine, 150 lb</td><td>9.5</td><td class="hi">1.7</td><td>1.2</td><td>0.44</td></tr>
-  <tr><td class="tl">Chicken, 2 lb</td><td>0.18</td><td class="hi">0.033</td><td>0.02</td><td>0.007</td></tr>
-  <tr><td class="tl">Horse, 1,000 lb</td><td>50</td><td class="hi">9.1</td><td>6.0</td><td>2.2</td></tr>
-</tbody></table></div>
 <div class="ff-h2">Application Rate Calculator</div>
 <div class="ff-calc">
   <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Application Rate Calculator</div>
@@ -1003,28 +966,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-ri"><div class="ff-ril">Soybean Stage</div><div class="ff-riv dim" id="gdu-bean-stage">-</div></div>
   </div>
 </div>
-<div class="ff-h2">Spray Advisory</div>
-<div class="spray-widget">
-  <div class="spray-widget-head">
-    <span class="spray-widget-title"><span class="live-dot-sm"></span> Current Spray Conditions</span>
-    <span class="spray-widget-status loading" id="spray-status">Loading&hellip;</span>
-  </div>
-  <div class="spray-loc-row">
-    <input class="spray-loc-in" id="spray-zip" type="text" placeholder="ZIP code" maxlength="5" aria-label="ZIP code for weather">
-    <button class="spray-loc-btn" id="spray-go">Update</button>
-    <span id="spray-loc-label" style="font-size:0.775rem;color:var(--text-muted);align-self:center"></span>
-  </div>
-  <div class="spray-grid" id="spray-grid">
-    <div class="spray-factor"><div class="spray-factor-label">Temp</div><div class="spray-factor-val" id="spr-temp">-</div><div class="spray-factor-chip" id="spr-temp-chip">-</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Wind</div><div class="spray-factor-val" id="spr-wind">-</div><div class="spray-factor-chip" id="spr-wind-chip">-</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Humidity</div><div class="spray-factor-val" id="spr-hum">-</div><div class="spray-factor-chip" id="spr-hum-chip">-</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Cloud</div><div class="spray-factor-val" id="spr-cloud">-</div><div class="spray-factor-chip" id="spr-cloud-chip">-</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Precip</div><div class="spray-factor-val" id="spr-precip">-</div><div class="spray-factor-chip" id="spr-precip-chip">-</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Overall</div><div class="spray-factor-val" id="spr-overall">-</div><div class="spray-factor-chip" id="spr-overall-chip">-</div></div>
-  </div>
-  <div class="spray-rec" id="spray-rec">Weather conditions loading&hellip;</div>
-  <a class="spray-link" href="/gdu-calculator">&#8594; Full GDU &amp; Weather History</a>
-</div>
+<p class="ff-sub" style="margin-top:1rem"><a href="/gdu-calculator">GDU calculator</a>: GDUs from your planting date on real weather. <a href="/spray">Spray conditions</a>: wind, temperature, humidity and inversion risk where you are.</p>
 </div><!-- /tab-stages -->
 
 <!-- PEST & WEED TAB -->
@@ -1097,7 +1039,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <div class="ff-card">
     <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span><span class="ff-card-title">Rate / Application</span></div>
-    <div class="ff-row"><span class="ff-rl">1 oz ai/ac = oz product/ac</span><span class="ff-rv dim">rate &divide; % ai &times; 100</span></div>
+    <div class="ff-row"><span class="ff-rl">Product for a set a.i. rate</span><span class="ff-rv">a.i. rate &divide; (% a.i. &divide; 100)</span></div>
     <div class="ff-row"><span class="ff-rl">gal/ac &rarr; oz/1000 ft&sup2;</span><span class="ff-rv dim">gal/ac &divide; 43.56 &times; 128</span></div>
     <div class="ff-row"><span class="ff-rl">1 ppm, top 6&ndash;7 in. of soil</span><span class="ff-rv">~2 lb/acre</span></div>
     <div class="ff-row"><span class="ff-rl">1 lb/gal</span><span class="ff-rv">119.8 g/L</span></div>
