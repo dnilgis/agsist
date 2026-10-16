@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T22:40:46Z",
+ "updated": "2026-10-16T17:53:27Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -61,7 +61,11 @@
     "outcome": null,
     "graded_on": null,
     "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
-    "entry_final": true
+    "entry_final": true,
+    "mark": {
+     "date": "2026-10-16",
+     "close": 474.0
+    }
    },
    {
     "id": "beans-2026-09-29",
@@ -82,7 +86,11 @@
     "outcome": null,
     "graded_on": null,
     "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
-    "entry_final": true
+    "entry_final": true,
+    "mark": {
+     "date": "2026-10-16",
+     "close": 1258.75
+    }
    },
    {
     "id": "wheat-2026-09-29",
@@ -103,7 +111,11 @@
     "outcome": null,
     "graded_on": null,
     "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
-    "entry_final": true
+    "entry_final": true,
+    "mark": {
+     "date": "2026-10-16",
+     "close": 659.0
+    }
    },
    {
     "id": "kcwheat-2026-09-29",
@@ -124,7 +136,11 @@
     "outcome": null,
     "graded_on": null,
     "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
-    "entry_final": true
+    "entry_final": true,
+    "mark": {
+     "date": "2026-10-16",
+     "close": 701.75
+    }
    }
   ]
  },
@@ -462,7 +478,11 @@
    "outcome": null,
    "graded_on": null,
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
-   "entry_final": true
+   "entry_final": true,
+   "mark": {
+    "date": "2026-10-16",
+    "close": 474.0
+   }
   },
   {
    "id": "beans-2026-09-29",
@@ -483,7 +503,11 @@
    "outcome": null,
    "graded_on": null,
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
-   "entry_final": true
+   "entry_final": true,
+   "mark": {
+    "date": "2026-10-16",
+    "close": 1258.75
+   }
   },
   {
    "id": "wheat-2026-09-29",
@@ -504,7 +528,11 @@
    "outcome": null,
    "graded_on": null,
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
-   "entry_final": true
+   "entry_final": true,
+   "mark": {
+    "date": "2026-10-16",
+    "close": 659.0
+   }
   },
   {
    "id": "kcwheat-2026-09-29",
@@ -525,7 +553,11 @@
    "outcome": null,
    "graded_on": null,
    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
-   "entry_final": true
+   "entry_final": true,
+   "mark": {
+    "date": "2026-10-16",
+    "close": 701.75
+   }
   }
  ],
  "skipped": [
@@ -554,8 +586,13 @@
    "reason": "missed: no run at its entry close on 2026-10-13; never made late"
   }
  ],
+ "next_entry": {
+  "report": "2026-10-13",
+  "day": "2026-10-19",
+  "after_holiday": null
+ },
  "backtest": {
-  "computed": "2026-10-15T22:40:46Z",
+  "computed": "2026-10-16T17:53:27Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
