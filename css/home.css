@@ -2448,3 +2448,17 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* On a phone the "Updated ... days old" stamp lands as a third line under the
    place and date; hold that line too. */
 @container hero (max-width:559px){html.has-zip .hb-where{min-height:66px;align-content:flex-start}}
+/* 2026-10-16: cash bid card with no location (components/home.js, no-location block) */
+#bids-noloc{padding:.4rem 0 .2rem}
+#bids-noloc .hn-h{margin:0 0 .25rem;font-weight:700;color:var(--text);font-size:.95rem}
+#bids-noloc .hn-p{margin:0 0 .6rem;color:var(--text-dim);font-size:.875rem;line-height:1.45}
+#bids-noloc .hn-pick{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+#bids-noloc .hn-zip{min-height:44px;padding:0 1rem;border-radius:6px;border:none;background:var(--gold-fill,var(--gold));color:#0a0c0d;font-weight:700;font-size:.875rem;cursor:pointer}
+#bids-noloc .hn-sel{min-height:44px;padding:0 .6rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.9rem;max-width:100%}
+#bids-noloc .hn-rows{list-style:none;margin:.75rem 0 .35rem;padding:0}
+#bids-noloc .hn-rows li{display:grid;grid-template-columns:6.5rem auto 1fr;column-gap:.5rem;align-items:baseline;padding:.4rem 0;border-top:1px solid var(--border)}
+#bids-noloc .hn-crop{font-weight:600;color:var(--text)}
+#bids-noloc .hn-b{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:var(--text)}
+#bids-noloc .hn-c{color:var(--text-dim);font-size:.8125rem}
+#bids-noloc .hn-n{grid-column:2/-1;color:var(--text-muted);font-size:.78rem}
+#bids-noloc .hn-fine{margin:.35rem 0 0;color:var(--text-muted);font-size:.78rem;line-height:1.45}

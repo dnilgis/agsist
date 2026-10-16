@@ -1751,4 +1751,92 @@ try {
   b.addEventListener('click',function(){var on=!root.classList.contains('wx-fold-open');root.classList.toggle('wx-fold-open',on);b.setAttribute('aria-expanded',on?'true':'false');});
 })();
 } catch (e) { blockFailed(e); }
+/* ---- 2026-10-16: no location after a few seconds ----
+   A reader who neither allows nor blocks the browser's location question
+   used to sit on "Detecting your location..." and gray rows for the life of
+   the page (geo.js only hears back on allow or deny). After NOLOC_MS with no
+   saved ZIP and the skeleton still up, the cash bid card says so plainly,
+   opens the ZIP box (geo.js's own fallback) and offers a state pick that
+   shows that state's median basis from data/basis-states.json (AGSIST
+   network elevators, scripts/basis_method.py). If a location lands later,
+   geo.js and bids-homepage.js draw over all of it as usual. */
+try {
+(function(){
+  var NOLOC_MS=6000;
+  var AB={}; /* code -> state name, from basis-states.json itself */
+  var CROP={corn:'Corn',soybeans:'Soybeans',wheat_srw:'SRW wheat',wheat_hrw:'HRW wheat',wheat_hrs:'Spring wheat'};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function savedZip(){try{var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}catch(e){return false;}}
+  function pickedCode(){
+    try{var c=localStorage.getItem('agsist-pd-state');if(c&&AB[c])return c;
+      var n=localStorage.getItem('agsist-rma-state');for(var k in AB){if(AB[k]===n)return k;}}catch(e){}
+    return '';
+  }
+  function cents(m){var c=Math.round(m*10000)/100;return (window.AG&&AG.px&&AG.px.basis)?AG.px.basis(c):((c>0?'+':'−')+Math.abs(c)+'¢');}
+  function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
+  /* One state, as lines. Only crops with a median (basis-states.json prints
+     one at min_n elevators or more); a thinner crop is counted, not priced. */
+  window.__agsistNolocRows=function(doc,code){
+    var s=doc&&doc.states&&doc.states[code];if(!s)return null;
+    var rows=[],thin=[];
+    Object.keys(CROP).forEach(function(k){
+      var c=s.crops&&s.crops[k];if(!c)return;
+      if(c.median==null){if(k==='corn'||k==='soybeans')thin.push(CROP[k]);return;}
+      var wk='';
+      if(c.wow!=null&&c.wow_n>=(doc.min_n||3)){var w=Math.round(c.wow*4)/4;wk=w===0?'no change on the week':(AG.px.basis(w)+' on the week');}
+      rows.push({crop:CROP[k],basis:cents(c.median),contract:c.label||'',n:c.n,week:wk});
+    });
+    return {name:s.name,path:s.path||'',elevators:s.elevators,rows:rows,thin:thin};
+  }
+  function draw(box,doc,code){
+    var out=box.querySelector('.hn-out');if(!out)return;
+    if(!code){out.innerHTML='';return;}
+    var r=window.__agsistNolocRows(doc,code);
+    if(!r||!r.rows.length){out.innerHTML='<p class="hn-fine">Not enough fresh '+esc(AB[code])+' bids in the AGSIST network to print a state basis this week.'+(r&&r.path?' <a href="'+esc(r.path.replace(/#.*$/,''))+'">'+esc(r.name)+' bids</a>':'')+'</p>';return;}
+    out.innerHTML='<ul class="hn-rows">'+r.rows.map(function(x){
+      return '<li><span class="hn-crop">'+esc(x.crop)+'</span><span class="hn-b">'+esc(x.basis)+'</span><span class="hn-c">'+esc(x.contract)+'</span><span class="hn-n">'+x.n+' elevators'+(x.week?', '+esc(x.week):'')+'</span></li>';
+    }).join('')+'</ul><p class="hn-fine">Median basis of AGSIST network elevators with a fresh bid, read '+esc(day(doc.generated))+'. Your elevator will differ.'+(r.thin.length?' Too few bids to print: '+esc(r.thin.join(', '))+'.':'')+' <a href="'+esc(r.path||'/basis')+'">All '+esc(r.name)+' bids</a></p>';
+  }
+  function fallback(){
+    var area=document.getElementById('bids-list-area'),txt=document.getElementById('bids-geo-txt');
+    if(!area||!area.querySelector('.bids-skeleton')||savedZip())return;
+    if(txt&&!/Detecting/.test(txt.textContent||''))return;
+    try{if(typeof window._signalBidsGeoFailed==='function')window._signalBidsGeoFailed();}catch(e){}
+    try{var wl=document.getElementById('wx-loading');if(wl&&/Detecting/.test(wl.textContent||'')&&typeof window.showZipEntry==='function')window.showZipEntry();}catch(e){}
+    area.innerHTML='<div class="hn" id="bids-noloc"><p class="hn-h">Your location did not come through.</p>'
+      +'<p class="hn-p">Type your ZIP for the nearest elevators, or pick a state to see its basis now.</p>'
+      +'<div class="hn-pick"><button type="button" class="hn-zip">Enter ZIP</button>'
+      +'<label class="hn-sl"><span class="visually-hidden">State</span><select class="hn-sel" disabled><option value="">Pick a state</option></select></label></div>'
+      +'<div class="hn-out" aria-live="polite"></div></div>';
+    var box=area.querySelector('.hn'),sel=box.querySelector('.hn-sel'),doc=null;
+    /* The page has one ZIP box, in the hero band (agsistOpenZip opens and
+       focuses it); the in-card row only when the band is missing. */
+    box.querySelector('.hn-zip').addEventListener('click',function(){
+      if(typeof window.agsistOpenZip==='function'){window.agsistOpenZip();return;}
+      var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
+      if(row)row.style.display='block';if(z)z.focus();
+    });
+    sel.addEventListener('change',function(){
+      var v=sel.value;
+      try{if(v){localStorage.setItem('agsist-pd-state',v);localStorage.setItem('agsist-rma-state',AB[v]);}}catch(e){}
+      if(window.gaEvent)try{gaEvent('noloc_state_pick',{state:v||'none'});}catch(e){}
+      draw(box,doc,v);
+    });
+    AG.json('/data/basis-states.json').then(function(d){
+      doc=d;var st=(d&&d.states)||{};
+      Object.keys(st).forEach(function(k){if(st[k]&&st[k].name)AB[k]=st[k].name;});
+      var ks=Object.keys(AB).sort(function(a,b){return AB[a]<AB[b]?-1:1;});
+      if(!ks.length)throw new Error('no states');
+      sel.innerHTML='<option value="">Pick a state</option>'+ks.map(function(k){return '<option value="'+esc(k)+'">'+esc(AB[k])+'</option>';}).join('');
+      sel.disabled=false;
+      var pre=pickedCode();if(pre){sel.value=pre;draw(box,doc,pre);}
+    }).catch(function(){
+      var lab=box.querySelector('.hn-sl');if(lab)lab.remove();
+      var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
+    });
+  }
+  function arm(){setTimeout(fallback,NOLOC_MS);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
+})();
+} catch (e) { blockFailed(e); }
 })();
