@@ -15,6 +15,19 @@
  *   from the elevator's own table for the band the moisture falls in.
  *     (ISU ICM 2019: 4.8 cents a wet bushel a point, 1.4% a point.)
  *
+ * DRY IT MYSELF (ISU ICM 2019 and 2022 "dry on-farm before selling"; Purdue GQ-3).
+ *   Dry matter = wet lb x (100 - Mw) / 100; weight at base = dry matter / (1 - Mb/100)
+ *   Handling loss = a % of the WET weight (ISU: 1% of 56,000 lb = 560 lb)
+ *   Bushels to sell = (weight at base - handling lb) / test weight
+ *   Drying, either:
+ *     fuel  : gallons LP a bushel a point x wet bu x points x $ a gallon
+ *             (ISU: 0.018 average, 0.010 to 0.025), plus electricity by
+ *             Purdue GQ-3 Eq. 2: HP x 0.746 x $/kWh / dry bu an hour, per dry bu
+ *     allin : cents a wet bushel a point (ISU's A2-32 figure: 3 cents in 2019,
+ *             4 cents in 2022)
+ *   Hauling = miles x cents a bushel a mile x wet bu (ISU: 1 cent, 4 miles, $40)
+ *   Fuel, power and hauling only: no labor, dryer payments or repairs.
+ *
  * DELIVERED TOO DRY. A bushel under base moisture is still weighed at the
  * standard test weight, so the water you dried off was grain you could have
  * sold. Bushels you would have had at base moisture:
@@ -107,6 +120,44 @@
     return out;
   }
 
+  /* Drying it on the farm, then selling at base moisture.
+     o = {m, base, lbs, tw, bid, handling (% of wet weight), mode:'fuel'|'allin',
+          gal, lp, hp, kwh, buHr, allin (cents), miles, haul (cents a bu a mile)}
+     Fuel mode needs gal and lp; electricity counts only with all three of
+     hp, kwh and buHr. Returns null when it cannot be answered. */
+  function farm(o) {
+    if (!o || !num(o.m) || !num(o.base) || !num(o.lbs) || !num(o.tw) || o.lbs <= 0 || o.tw <= 0) return null;
+    if (o.m <= o.base || o.m >= 60 || o.base <= 0 || o.base >= 40) return null;
+    var h = num(o.handling) && o.handling >= 0 ? o.handling : 1;
+    var wetBu = o.lbs / o.tw, pts = o.m - o.base;
+    var dm = o.lbs * (100 - o.m) / 100, atBase = dm / (1 - o.base / 100), hLb = o.lbs * h / 100;
+    var dryBu = (atBase - hLb) / o.tw;
+    if (!(dryBu > 0)) return null;
+    var fuel = null, power = 0, powerCounted = false, drying = null;
+    if (o.mode === 'allin') {
+      if (num(o.allin) && o.allin >= 0) drying = o.allin / 100 * pts * wetBu;
+    } else if (num(o.gal) && o.gal > 0 && num(o.lp) && o.lp >= 0) {
+      fuel = o.gal * wetBu * pts * o.lp;
+      if (num(o.hp) && o.hp > 0 && num(o.kwh) && o.kwh >= 0 && num(o.buHr) && o.buHr > 0) {
+        power = o.hp * 0.746 * o.kwh / o.buHr * dryBu; powerCounted = true;
+      }
+      drying = fuel + power;
+    }
+    var haul = num(o.miles) && o.miles > 0 && num(o.haul) && o.haul >= 0 ? o.miles * o.haul / 100 * wetBu : 0;
+    var out = {
+      wetBu: wetBu, points: pts, dryMatterLb: dm, atBaseLb: atBase, handlingLb: hLb, handlingPct: h,
+      sellLb: atBase - hLb, dryBu: dryBu, shrinkBu: wetBu - dryBu, shrinkPct: 100 * (1 - dryBu / wetBu),
+      fuel: fuel, power: power, powerCounted: powerCounted, drying: drying, haul: haul,
+      gallons: fuel != null ? o.gal * wetBu * pts : null
+    };
+    if (num(o.bid) && o.bid > 0) {
+      out.gross = dryBu * o.bid;
+      out.net = drying == null ? null : out.gross - drying - haul;
+      out.netPerWetBu = out.net == null ? null : out.net / wetBu;
+    }
+    return out;
+  }
+
   /* Grain delivered under base moisture. o = {m, base, bu (delivered, or lbs+tw), bid, yieldBu, acres} */
   function overdry(o) {
     if (!o || !num(o.m) || !num(o.base) || o.m <= 0 || o.base <= 0 || o.base >= 40) return null;
@@ -173,7 +224,7 @@
 
   var api = {
     CROPS: CROPS, num: num, r: r, waterShrink: waterShrink, waterFactor: waterFactor, totalShrink: totalShrink,
-    handlingIn: handlingIn, dryingPerBu: dryingPerBu, wet: wet, overdry: overdry,
+    handlingIn: handlingIn, dryingPerBu: dryingPerBu, wet: wet, farm: farm, overdry: overdry,
     quoteFor: quoteFor, defaultBid: defaultBid, nearestBid: nearestBid
   };
   if (typeof module === 'object' && module.exports) module.exports = api;
