@@ -1,0 +1,74 @@
+name: Cattle auction prices
+
+# Writes data/cattle-auction.json for cattle-auction-prices.html: feeder steer
+# and heifer prices by weight class at sale barns, from public USDA AMS
+# auction report PDFs, read by scripts/fetch_cattle_auction.py. The barn list
+# and report numbers are in scripts/cattle_auction_sources.json. The page
+# shows a "prices load after the first USDA read" box until this file exists.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves the AMS auction
+# listing and every report it could get to data/cattle-auction-raw/ and
+# commits them. The parser was written without a real report in hand: check
+# the saved text against it, add one as a selftest fixture, then run without
+# probe.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the AMS listing and raw auction reports to data/cattle-auction-raw/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '23 1 * * 2-6'    # evening after each sale day (Central), most barns sell Mon-Fri
+    - cron: '37 14 * * 1-5'   # morning pass for reports filed overnight
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cattle-auction
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_cattle_auction.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_cattle_auction.py --probe
+      - name: Fetch and write data/cattle-auction.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_cattle_auction.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/cattle-auction.json data/cattle-auction-raw"
+          rm -rf /tmp/ca && mkdir -p /tmp/ca
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/ca/ || true
+          done
+          [ -n "$(ls -A /tmp/ca)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/ca/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update cattle auction prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

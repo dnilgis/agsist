@@ -316,6 +316,14 @@
     {"id": "psu-agronomy-guide-fertility", "kind": "html",
      "url": "https://extension.psu.edu/soil-fertility-management",
      "title": "Penn State Agronomy Guide, soil fertility management",
-     "why": "/nutrient-removal: nutrient removal by crops including N and S, earlage/HMC if listed"}
+     "why": "/nutrient-removal: nutrient removal by crops including N and S, earlage/HMC if listed"},
+    {"id": "ams-feeder-auction-list", "kind": "html",
+     "url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
+     "title": "USDA AMS: feeder and replacement cattle auction reports, by state",
+     "why": "/cattle-auction-prices: which barns USDA reports on and their report numbers"},
+    {"id": "ams-feeder-grades", "kind": "html",
+     "url": "https://www.ams.usda.gov/grades-standards/feeder-cattle-grades-and-standards",
+     "title": "USDA AMS: feeder cattle grades and standards",
+     "why": "/cattle-auction-prices FAQ: what Medium and Large 1 and 1-2 mean"}
   ]
 }
