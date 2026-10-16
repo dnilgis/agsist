@@ -63,9 +63,13 @@
 
   /* Past falls as dots: September pressure (filled, gold) and December 1 use
      (hollow, blue) for each year, the 1.00 line where the bins are full, and
-     this fall's pressure as a ring. A table of the same numbers sits under it. */
-  function chart(name,rec,years,fallYear){
-    var P=rec.p, U=rec.u, s=rec.stats||{}, W=340, H=176, L=34, R=16, T=12, B=24;
+     this fall's pressure as a ring. A table of the same numbers sits under it.
+     width = the box's real width in px, so the viewBox draws 1:1 and the 11 px
+     axis text stays 11 px on a phone (a fixed 340 viewBox shrank it to ~8 px).
+     The "bins full" key lives in the legend, not on the dashed line. */
+  function chart(name,rec,years,fallYear,width){
+    var W=Math.round(Math.max(280,Math.min(560,+width||340)));
+    var P=rec.p, U=rec.u, s=rec.stats||{}, H=184, L=36, R=16, T=12, B=26;
     var xs=years.map(Number); if(s.this_p!=null) xs=xs.concat([fallYear]);
     var all=P.concat(U).filter(function(x){return x!=null;}); if(s.this_p!=null) all.push(s.this_p);
     if(!all.length) return '';
@@ -78,9 +82,11 @@
       g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" class="sc-grid"/>'
         +'<text x="'+(L-4)+'" y="'+(Y(v)+3).toFixed(1)+'" class="sc-ax" text-anchor="end">'+v.toFixed(1)+'</text>';
     }
-    g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(1).toFixed(1)+'" y2="'+Y(1).toFixed(1)+'" class="sc-full"/>'
-      +'<text x="'+(L+3)+'" y="'+(Y(1)-4).toFixed(1)+'" class="sc-ax">bins full</text>';
-    [x0, Math.round((x0+x1)/2/5)*5, x1].forEach(function(y){
+    g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(1).toFixed(1)+'" y2="'+Y(1).toFixed(1)+'" class="sc-full"/>';
+    var mid=Math.round((x0+x1)/2/5)*5, xl=[x0];
+    if(mid>x0&&mid<x1&&X(mid)-X(x0)>44&&X(x1)-X(mid)>44) xl.push(mid);
+    if(x1>x0) xl.push(x1);
+    xl.forEach(function(y){
       g+='<text x="'+X(y).toFixed(1)+'" y="'+(H-6)+'" class="sc-ax" text-anchor="'+(y===x1?'end':y===x0?'start':'middle')+'">'+y+'</text>'; });
     function line(A,cls){
       var d='', pen=false;
@@ -101,7 +107,8 @@
     for(i=years.length-1;i>=0;i--){ if(P[i]==null&&U[i]==null) continue;
       rows+='<tr><td>'+years[i]+'</td><td class="num">'+(P[i]==null?'&ndash;':fx(P[i],2))+'</td><td class="num">'+(U[i]==null?'&ndash;':fx(U[i],2))+'</td><td class="num">'+(P[i]==null||U[i]==null?'&ndash;':pts(P[i]-U[i]))+'</td></tr>'; }
     return '<div class="sc-leg"><span><i class="sc-k sc-kp"></i>September pressure</span><span><i class="sc-k sc-ku"></i>December 1 use</span>'
-      +(s.this_p!=null?'<span><i class="sc-k sc-kn"></i>'+fallYear+' so far</span>':'')+'</div>'
+      +(s.this_p!=null?'<span><i class="sc-k sc-kn"></i>'+fallYear+' so far</span>':'')
+      +'<span><i class="sc-k sc-kf"></i>1.00 = bins full</span></div>'
       +'<svg viewBox="0 0 '+W+' '+H+'" class="sc-svg" role="img" aria-label="'+esc(name)+': September storage pressure and December 1 use by year">'+g+'</svg>'
       +'<details class="sc-tbl"><summary>Year by year as a table</summary><table class="bs-tbl"><tr><th>Year</th><th style="text-align:right">September</th><th style="text-align:right">Dec 1</th><th style="text-align:right">Points off</th></tr>'+rows+'</table></details>';
   }
@@ -134,8 +141,8 @@
   you.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('.st-more'); if(!b) return;
     var box=you.querySelector('.st-chart'), open=b.getAttribute('aria-expanded')==='true';
-    if(!open&&!box.innerHTML) box.innerHTML=chart(D.states[cur].n,H.states[cur],H.years,H.fall_year);
-    box.hidden=open; b.setAttribute('aria-expanded',open?'false':'true');
+    box.hidden=open;
+    if(!open&&!box.innerHTML) box.innerHTML=chart(D.states[cur].n,H.states[cur],H.years,H.fall_year,box.clientWidth); b.setAttribute('aria-expanded',open?'false':'true');
     b.textContent=open?'Show past falls, year by year':'Hide past falls';
   });
   root.addEventListener('click',function(e){

@@ -151,7 +151,7 @@ test("no em dashes in the page script", () => {
 
 test("the section's script loads only when the section is opened", () => {
   assert.doesNotMatch(BASIS, /<script[^>]+src="\/components\/storage-detail\.js/);
-  assert.match(BASIS, /s\.src='\/components\/storage-detail\.js\?v=1'/);
+  assert.match(BASIS, /s\.src='\/components\/storage-detail\.js\?v=2'/);
   assert.match(BASIS, /d\.addEventListener\('toggle',go\)/);
 });
 
@@ -247,9 +247,40 @@ test("in the browser at 390: no sideways scroll, a tapped state fills the card, 
     assert.equal(await pg.locator("#st-you svg.sc-svg circle.sc-pd").count(), 26);
     const box = await pg.$eval("#st-you svg.sc-svg", (e) => e.getBoundingClientRect().right);
     assert.ok(box <= 390, "chart runs off the phone screen");
+    // chart text legible on a phone (>= 11 px as drawn) and no two labels overlap
+    const lab = await pg.$$eval("#st-you svg.sc-svg text", (ts) => ts.map((t) => {
+      const r = t.getBoundingClientRect();
+      return { s: t.textContent, h: parseFloat(getComputedStyle(t).fontSize) * (t.ownerSVGElement.getBoundingClientRect().width / t.ownerSVGElement.viewBox.baseVal.width), l: r.left, r: r.right, t: r.top, b: r.bottom };
+    }));
+    assert.ok(lab.length >= 5, "chart lost its axis labels");
+    for (const a of lab) assert.ok(a.h >= 10.9, `chart label "${a.s}" draws at ${a.h.toFixed(1)} px on a phone`);
+    for (let i = 0; i < lab.length; i++) for (let j = i + 1; j < lab.length; j++) {
+      const a = lab[i], b = lab[j];
+      assert.ok(a.r <= b.l || b.r <= a.l || a.b <= b.t || b.b <= a.t, `chart labels "${a.s}" and "${b.s}" overlap`);
+    }
+    assert.match(await pg.textContent("#st-you .sc-leg"), /1\.00 = bins full/);
     const wi = await pg.$('.st-b[data-st="WI"]');
     if (wi) { await wi.click(); assert.match(await pg.textContent("#st-you"), /Wisconsin: at least \d\.\d\d× a floor: no Sept 1 stocks figure for/); }
     assert.deepEqual(errors, []);
     await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("a jump to #storage lands with the heading below the sticky nav", { skip }, async () => {
+  const srv = await serve();
+  const port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });
+      const pg = await ctx.newPage();
+      await pg.route("**/*", (r) => r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort());
+      await pg.goto(`http://127.0.0.1:${port}/basis#storage`);
+      await pg.waitForFunction(() => document.getElementById("storage").open && document.querySelector(".nav"));
+      await pg.evaluate(() => document.getElementById("storage").scrollIntoView());
+      const [sum, nav] = await pg.evaluate(() => [document.querySelector("#storage > summary").getBoundingClientRect().top, document.querySelector(".nav").getBoundingClientRect().bottom]);
+      assert.ok(sum >= nav, `at ${width}px the storage heading sits under the nav (${sum} < ${nav})`);
+      await ctx.close();
+    }
   } finally { await browser.close(); srv.close(); }
 });
