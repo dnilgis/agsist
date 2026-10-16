@@ -1433,7 +1433,8 @@ def storage_hist_text(name, h):
            f"{_fixed(h['u_avg'], 2)}&times;, so moving and using grain took off {_pts(h['drop_avg'])} points by "
            f"December (most years {_pts(h['drop10'])} to {_pts(h['drop90'])}).")
     if h.get("this_p") is not None:
-        out += (f" This fall&rsquo;s {_fixed(h['this_p'], 2)}&times; is above {h['below']} of those {h['n']}. At the "
+        above = f"all {h['n']}" if h["below"] == h["n"] else f"{h['below']} of those {h['n']}"
+        out += (f" This fall&rsquo;s {_fixed(h['this_p'], 2)}&times; is above {above}. At the "
                 f"usual pace December 1 use would land near {_fixed(h['if_usual'], 2)}&times;; at the pace of the "
                 f"slowest tenth of years, {_fixed(h['if_slow'], 2)}&times;. Tried on past years, that usual-pace "
                 f"rule missed December by {_pts(h['loo_mae'])} points on average, {_pts(h['loo_max'])} at worst.")
@@ -1587,16 +1588,16 @@ def storage_html(d, today, hist=None, basis=None):
     us = cr.get("us")
     top = rows[0] if rows else None
     out = (f"<p class=\"st-ans\"><strong>{len(short)} of {len(rows)}</strong> states with full NASS figures have "
-           f"more grain to hold this fall than bin space")
+           f"more grain to hold this fall than bins")
     if top:
-        out += f"; most crowded, {_e(ST_NAME.get(top[0], top[0]))} at {_fixed(top[1]['ratio'], 2)}&times;"
+        out += f"; {_e(ST_NAME.get(top[0], top[0]))} is most crowded at {_fixed(top[1]['ratio'], 2)}&times;"
     out += ". "
     if us and us.get("ratio") is not None:
         out += (f"The US as a whole: <strong>{_fixed(us['ratio'], 2)}&times;</strong> ({mb(us['total'])} million bu "
                 f"to hold, {mb(us['cap'])} of bins).</p>")
     elif yr == 2026:
-        out += ("The US as a whole: grain to hold is about 99% of bin space by farmdoc daily&rsquo;s count on "
-                "NASS&rsquo;s September forecast, so there is room nationally; the pinch is local.</p>")
+        out += ("The US as a whole has room: grain to hold is about 99% of bin space (farmdoc daily, on "
+                "NASS&rsquo;s September forecast). The pinch is local.</p>")
     else:
         out += "</p>"
     # the reader's state (Iowa until the page knows better; the script swaps it)

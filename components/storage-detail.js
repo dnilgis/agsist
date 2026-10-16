@@ -26,7 +26,7 @@
       +fx(h.u_avg,2)+'&times;, so moving and using grain took off '+pts(h.drop_avg)+' points by '
       +'December (most years '+pts(h.drop10)+' to '+pts(h.drop90)+').';
     if(h.this_p!=null){
-      out+=' This fall&rsquo;s '+fx(h.this_p,2)+'&times; is above '+h.below+' of those '+h.n+'. At the '
+      out+=' This fall&rsquo;s '+fx(h.this_p,2)+'&times; is above '+(h.below===h.n?'all '+h.n:h.below+' of those '+h.n)+'. At the '
         +'usual pace December 1 use would land near '+fx(h.if_usual,2)+'&times;; at the pace of the '
         +'slowest tenth of years, '+fx(h.if_slow,2)+'&times;. Tried on past years, that usual-pace '
         +'rule missed December by '+pts(h.loo_mae)+' points on average, '+pts(h.loo_max)+' at worst.';
@@ -65,7 +65,7 @@
      (hollow, blue) for each year, the 1.00 line where the bins are full, and
      this fall's pressure as a ring. A table of the same numbers sits under it. */
   function chart(name,rec,years,fallYear){
-    var P=rec.p, U=rec.u, s=rec.stats||{}, W=340, H=176, L=34, R=10, T=12, B=24;
+    var P=rec.p, U=rec.u, s=rec.stats||{}, W=340, H=176, L=34, R=16, T=12, B=24;
     var xs=years.map(Number); if(s.this_p!=null) xs=xs.concat([fallYear]);
     var all=P.concat(U).filter(function(x){return x!=null;}); if(s.this_p!=null) all.push(s.this_p);
     if(!all.length) return '';
@@ -81,7 +81,7 @@
     g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(1).toFixed(1)+'" y2="'+Y(1).toFixed(1)+'" class="sc-full"/>'
       +'<text x="'+(L+3)+'" y="'+(Y(1)-4).toFixed(1)+'" class="sc-ax">bins full</text>';
     [x0, Math.round((x0+x1)/2/5)*5, x1].forEach(function(y){
-      g+='<text x="'+X(y).toFixed(1)+'" y="'+(H-6)+'" class="sc-ax" text-anchor="middle">'+y+'</text>'; });
+      g+='<text x="'+X(y).toFixed(1)+'" y="'+(H-6)+'" class="sc-ax" text-anchor="'+(y===x1?'end':y===x0?'start':'middle')+'">'+y+'</text>'; });
     function line(A,cls){
       var d='', pen=false;
       for(i=0;i<A.length;i++){ if(A[i]==null){pen=false;continue;} d+=(pen?'L':'M')+X(+years[i]).toFixed(1)+' '+Y(A[i]).toFixed(1); pen=true; }
