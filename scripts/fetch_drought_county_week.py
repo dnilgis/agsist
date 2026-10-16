@@ -284,6 +284,9 @@ def build_summary(us_rows, st_rows, latest, states):
     problems = []
     us = {}
     for r in us_rows:
+        area = pick_key(r, "AreaOfInterest")
+        if area is not None and str(area).strip().upper() != "CONUS":
+            continue                             # aoi=us mixes CONUS and Total rows (probe 2026-10-16)
         got, why = check_values(norm_row(r))
         if got is None:
             problems.append(f"conus row: {why}")
@@ -295,6 +298,10 @@ def build_summary(us_rows, st_rows, latest, states):
     for st, rows in sorted(st_rows.items()):
         ser = {}
         for r in rows:
+            ab = pick_key(r, "StateAbbreviation", "State")
+            if ab is not None and str(ab).strip().upper() != st:
+                bad += 1                         # a row for another state: the aoi was wrong
+                continue
             got, why = check_values(norm_row(r))
             if got is None:
                 bad += 1
@@ -321,11 +328,13 @@ def build_summary(us_rows, st_rows, latest, states):
 
 
 def fetch_summary(start, end, states):
+    """states: {ST: [county FIPS]}. The state endpoint takes the 2-digit state FIPS
+    (aoi=19); aoi=IA returns an empty body (probe 2026-10-16)."""
     us = parse_any(http_get(url_for("conus", start, end, API_US)))
     st = {}
     for s_ in sorted(states):
         try:
-            st[s_] = parse_any(http_get(url_for(s_, start, end, API_ST)))
+            st[s_] = parse_any(http_get(url_for(states[s_][0][:2], start, end, API_ST)))
         except RuntimeError as e:
             print(f"  state {s_}: {e}", flush=True)
             st[s_] = []
@@ -452,6 +461,24 @@ def selftest():
     badus = parse_any(csv_us.replace(b"53.73", b"80.00"))                                                        # D1 above D0
     assert build_summary(badus, {"IA": parse_any(js_ia)}, L, ["IA"])[0] is None
     assert build_summary(parse_any(csv_us), {"IA": []}, L, ["IA"])[0] is None                                   # no state on the date
+    # REAL answers (probe 2026-10-16, raw branch data/drought/probe/us-conus.txt, state-19.txt)
+    real_us = (b"MapDate,AreaOfInterest,None,D0,D1,D2,D3,D4,ValidStart,ValidEnd,StatisticFormatID\r\n"
+               b"20261013,CONUS,25.46,74.54,53.73,30.33,9.79,1.30,2026-10-13,2026-10-19,1\r\n"
+               b"20261006,CONUS,24.17,75.83,55.21,31.45,9.87,1.15,2026-10-06,2026-10-12,1\r\n"
+               b"20260915,CONUS,19.03,80.97,59.37,33.82,12.54,2.02,2026-09-15,2026-09-21,1\r\n")
+    real_ia = (b"MapDate,StateAbbreviation,None,D0,D1,D2,D3,D4,ValidStart,ValidEnd,StatisticFormatID\r\n"
+               b"20261013,IA,98.64,1.36,0.00,0.00,0.00,0.00,2026-10-13,2026-10-19,1\r\n"
+               b"20261006,IA,98.64,1.36,0.00,0.00,0.00,0.00,2026-10-06,2026-10-12,1\r\n"
+               b"20260915,IA,85.71,14.29,6.79,0.00,0.00,0.00,2026-09-15,2026-09-21,1\r\n")
+    sdoc, sp = build_summary(parse_any(real_us), {"IA": parse_any(real_ia)}, L, ["IA"])
+    assert not sp, sp
+    assert sdoc["conus"][0] == [74.5, 53.7, 30.3, 9.8, 1.3] and sdoc["conus"][1][1] == 55.2 and sdoc["conus"][2][1] == 59.4, sdoc["conus"]
+    assert sdoc["states"]["IA"][0] == [1.4, 0, 0, 0, 0] and sdoc["states"]["IA"][2] == [14.3, 6.8, 0, 0, 0], sdoc["states"]
+    assert build_summary(parse_any(real_us), {"OK": parse_any(real_ia)}, L, ["OK"])[0] is None     # IA rows filed as OK
+    assert build_summary(parse_any(real_us), {"IA": parse_any(b"")}, L, ["IA"])[0] is None        # aoi=IA's empty answer
+    mixed = parse_any(real_us + b"20261013,Total,37.12,62.88,45.05,25.37,8.19,1.09,2026-10-13,2026-10-19,1\r\n")
+    assert build_summary(mixed, {"IA": parse_any(real_ia)}, L, ["IA"])[0]["conus"][0][1] == 53.7   # Total rows never become the Lower 48
+    assert url_for("19", L, L, API_ST).startswith(API_ST + "?aoi=19&")
     assert url_for("IA", date(2026, 9, 4), date(2026, 10, 16)).endswith("aoi=IA&startdate=9/4/2026&enddate=10/16/2026&statisticsType=1")
     print("selftest ok")
 
